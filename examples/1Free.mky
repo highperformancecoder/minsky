@@ -696,12 +696,12 @@
     <id>47</id>
     <visible>true</visible>
     <coords>
-     <float>115.1</float>
-     <float>299.711</float>
-     <float>86.1</float>
-     <float>335.711</float>
-     <float>42.1</float>
-     <float>109.711</float>
+     <float>110.48</float>
+     <float>308.411</float>
+     <float>81.48</float>
+     <float>344.411</float>
+     <float>37.48</float>
+     <float>118.411</float>
      <float>0</float>
      <float>0</float>
     </coords>
@@ -710,12 +710,12 @@
     <id>48</id>
     <visible>true</visible>
     <coords>
-     <float>160.1</float>
-     <float>299.711</float>
-     <float>85.1</float>
-     <float>378.711</float>
-     <float>28.1</float>
-     <float>146.711</float>
+     <float>155.48</float>
+     <float>308.411</float>
+     <float>80.48</float>
+     <float>387.411</float>
+     <float>23.48</float>
+     <float>155.411</float>
      <float>0</float>
      <float>0</float>
     </coords>
@@ -724,10 +724,10 @@
     <id>49</id>
     <visible>true</visible>
     <coords>
-     <float>198.1</float>
-     <float>300.711</float>
-     <float>15.1</float>
-     <float>458.711</float>
+     <float>193.48</float>
+     <float>309.411</float>
+     <float>10.48</float>
+     <float>467.411</float>
      <float>0</float>
      <float>0</float>
     </coords>
@@ -737,29 +737,29 @@
     <visible>true</visible>
     <coords>
      <float>0</float>
-     <float>7.62939e-06</float>
-     <float>189.1</float>
-     <float>282.711</float>
+     <float>0</float>
+     <float>184.48</float>
+     <float>291.411</float>
     </coords>
    </Layout>
    <Layout>
     <id>51</id>
     <visible>true</visible>
     <coords>
-     <float>202.1</float>
-     <float>250.211</float>
-     <float>207.1</float>
-     <float>282.711</float>
+     <float>197.48</float>
+     <float>258.911</float>
+     <float>202.48</float>
+     <float>291.411</float>
     </coords>
    </Layout>
    <Layout>
     <id>52</id>
     <visible>true</visible>
     <coords>
-     <float>151.1</float>
-     <float>258.711</float>
-     <float>151.1</float>
-     <float>281.711</float>
+     <float>146.48</float>
+     <float>267.411</float>
+     <float>146.48</float>
+     <float>290.411</float>
     </coords>
    </Layout>
    <Layout>
@@ -767,9 +767,9 @@
     <visible>true</visible>
     <coords>
      <float>0</float>
-     <float>7.62939e-06</float>
-     <float>169.1</float>
-     <float>281.711</float>
+     <float>0</float>
+     <float>164.48</float>
+     <float>290.411</float>
     </coords>
    </Layout>
    <Layout>
@@ -777,45 +777,45 @@
     <visible>true</visible>
     <coords>
      <float>0</float>
-     <float>7.62939e-06</float>
-     <float>124.1</float>
-     <float>281.711</float>
+     <float>0</float>
+     <float>119.48</float>
+     <float>290.411</float>
     </coords>
    </Layout>
    <Layout>
     <id>55</id>
     <visible>true</visible>
     <coords>
-     <float>109.1</float>
-     <float>263.711</float>
-     <float>106.1</float>
-     <float>281.711</float>
+     <float>104.48</float>
+     <float>272.411</float>
+     <float>101.48</float>
+     <float>290.411</float>
     </coords>
    </Layout>
    <Layout>
     <id>56</id>
     <visible>true</visible>
     <coords>
-     <float>437.6</float>
-     <float>35.76</float>
-     <float>532.1</float>
-     <float>51.51</float>
+     <float>432.98</float>
+     <float>44.46</float>
+     <float>527.48</float>
+     <float>60.21</float>
     </coords>
    </Layout>
    <Layout>
     <id>57</id>
     <visible>true</visible>
     <coords>
-     <float>434.1</float>
-     <float>95.76</float>
-     <float>532.1</float>
-     <float>89.01</float>
+     <float>429.48</float>
+     <float>104.46</float>
+     <float>527.48</float>
+     <float>97.71</float>
     </coords>
    </Layout>
    <Layout>
     <id>58</id>
     <id>58</id>
-    <x>98.36</x>
+    <x>102.36</x>
     <y>186.04</y>
     <visible>false</visible>
     <rotation>90</rotation>
@@ -829,8 +829,8 @@
    <Layout>
     <id>59</id>
     <id>59</id>
-    <x>127.36</x>
-    <y>188.04</y>
+    <x>129.36</x>
+    <y>189.54</y>
     <visible>false</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -844,7 +844,7 @@
     <id>60</id>
     <id>60</id>
     <x>156.36</x>
-    <y>188.04</y>
+    <y>188.54</y>
     <visible>false</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -857,8 +857,8 @@
    <Layout>
     <id>61</id>
     <id>61</id>
-    <x>185.36</x>
-    <y>182.54</y>
+    <x>183.36</x>
+    <y>183.04</y>
     <visible>false</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -871,8 +871,8 @@
    <Layout>
     <id>62</id>
     <id>62</id>
-    <x>72.64</x>
-    <y>42.88</y>
+    <x>75</x>
+    <y>54.46</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -885,8 +885,8 @@
    <Layout>
     <id>63</id>
     <id>63</id>
-    <x>62.14</x>
-    <y>71.88</y>
+    <x>64</x>
+    <y>81.46</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -899,8 +899,8 @@
    <Layout>
     <id>64</id>
     <id>64</id>
-    <x>62.14</x>
-    <y>100.88</y>
+    <x>65</x>
+    <y>108.46</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -913,8 +913,8 @@
    <Layout>
     <id>65</id>
     <id>65</id>
-    <x>414.1</x>
-    <y>35.76</y>
+    <x>409.48</x>
+    <y>44.46</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -927,8 +927,8 @@
    <Layout>
     <id>66</id>
     <id>66</id>
-    <x>411.1</x>
-    <y>95.76</y>
+    <x>406.48</x>
+    <y>104.46</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -941,8 +941,8 @@
    <Layout>
     <id>67</id>
     <id>67</id>
-    <x>202.1</x>
-    <y>237.711</y>
+    <x>197.48</x>
+    <y>246.411</y>
     <visible>true</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -955,8 +955,8 @@
    <Layout>
     <id>68</id>
     <id>68</id>
-    <x>151.1</x>
-    <y>247.711</y>
+    <x>146.48</x>
+    <y>256.411</y>
     <visible>true</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -969,8 +969,8 @@
    <Layout>
     <id>69</id>
     <id>69</id>
-    <x>109.1</x>
-    <y>241.711</y>
+    <x>104.48</x>
+    <y>250.411</y>
     <visible>true</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -983,36 +983,36 @@
    <Layout>
     <id>70</id>
     <id>70</id>
-    <x>198.1</x>
-    <y>290.711</y>
+    <x>193.48</x>
+    <y>299.411</y>
     <visible>true</visible>
     <rotation>90</rotation>
    </Layout>
    <Layout>
     <id>71</id>
     <id>71</id>
-    <x>160.1</x>
-    <y>289.711</y>
+    <x>155.48</x>
+    <y>298.411</y>
     <visible>true</visible>
     <rotation>90</rotation>
    </Layout>
    <Layout>
     <id>72</id>
     <id>72</id>
-    <x>115.1</x>
-    <y>289.711</y>
+    <x>110.48</x>
+    <y>298.411</y>
     <visible>true</visible>
     <rotation>90</rotation>
    </Layout>
    <Layout>
     <id>73</id>
-    <x>155.1</x>
-    <y>84.64</y>
+    <x>150.48</x>
+    <y>93.34</y>
    </Layout>
    <Layout>
     <id>74</id>
-    <x>607.1</x>
-    <y>107.76</y>
+    <x>602.48</x>
+    <y>116.46</y>
     <width>150</width>
     <height>150</height>
    </Layout>
