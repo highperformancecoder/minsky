@@ -4,6 +4,9 @@
 
 # This script is intended to be called from make mac-dist target
 
+# ensure ~/usr/bin overrides every other TCL installation
+PATH=~/usr/bin:$PATH
+
 # check that EcoLab and Tk has been built for extract a quartz context
 if ! nm $HOME/usr/ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
     echo "Rebuild EcoLab with MAC_OSX_TK=1"
@@ -44,24 +47,15 @@ rewrite_dylibs()
 cp gui-tk/minsky $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/minsky
 
+# we're now linking to TkTable statically
 # TkTable.dylib seems to be its own little snowflake :)
-cp /usr/local/lib/libTktable2.11.dylib $MAC_DIST_DIR
-rewrite_dylibs $MAC_DIST_DIR/libTktable2.11.dylib
-install_name_tool -change libTktable2.11.dylib @executable_path/libTktable2.11.dylib $MAC_DIST_DIR/minsky
-
-# determine location of tcl library from tclsh - make sure the correct
-# tclsh is in your path
-eval `tclsh echo_tcl_lib.tcl`
+#cp /usr/local/lib/libTktable2.11.dylib $MAC_DIST_DIR
+#rewrite_dylibs $MAC_DIST_DIR/libTktable2.11.dylib
+#install_name_tool -change libTktable2.11.dylib @executable_path/libTktable2.11.dylib $MAC_DIST_DIR/minsky
 
 # copy the fontconfig info
 mkdir -p $MAC_DIST_DIR/../Resources/fontconfig
 cp -r /opt/local/etc/fonts/* $MAC_DIST_DIR/../Resources/fontconfig
-
-echo "$TCL_LIB $TK_LIB"
-mkdir -p $MAC_DIST_DIR/library
-rm -rf $MAC_DIST_DIR/library/{tcl,tk}
-cp -r $TCL_LIB $MAC_DIST_DIR/library/tcl
-cp -r $TK_LIB $MAC_DIST_DIR/library/tk
 
 #copy toplevel tcl scripts
     cp gui-tk/*.tcl $MAC_DIST_DIR
@@ -70,3 +64,14 @@ cp -r $TK_LIB $MAC_DIST_DIR/library/tk
     cp -r gui-tk/icons $MAC_DIST_DIR
     cp gui-tk/accountingRules $MAC_DIST_DIR
     pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky.$version-mac-dist.pkg
+    
+# determine location of tcl library from tclsh - make sure the correct
+# tclsh is in your path
+eval `tclsh echo_tcl_lib.tcl`
+
+echo "$TCL_LIB $TK_LIB"
+mkdir -p $MAC_DIST_DIR/library
+rm -rf $MAC_DIST_DIR/library/{tcl,tk}
+cp -r $TCL_LIB $MAC_DIST_DIR/library/tcl
+cp -r $TK_LIB $MAC_DIST_DIR/library/tk
+
