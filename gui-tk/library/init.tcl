@@ -49,3 +49,10 @@ proc unknown {procname args} {
     return [eval tclunknown $procname $args]
 }
 
+# default bgerror is fundamentally broken on Windows for some reason -
+# see ticket #684.
+if {$tcl_platform(platform)=="windows"} {
+    proc bgerror message {
+        tk_messageBox -message $message
+    }
+}

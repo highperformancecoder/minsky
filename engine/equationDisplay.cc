@@ -227,7 +227,7 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::constant>::render(Surface& surf) const 
   {
-    print(surf.cairo(), latexToPango(MathDAG::latex(init)),Anchor::nw);
+    assert(!"constant deprecated");
   }
 
   template <>
@@ -355,11 +355,12 @@ namespace MathDAG
   {print(surf.cairo(),"=",Anchor::nw);}
   template <>
   void OperationDAG<OperationType::integrate>::render(Surface& surf) const
-  {
-    if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      if (VariablePtr v=i->intVar)
-        print(surf.cairo(), latexToPango(mathrm(v->name())),Anchor::nw);
-  }
+  {throw error("should not be rendering integration operations");}
+    
+//    if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
+//      if (VariablePtr v=i->intVar)
+//        print(surf.cairo(), latexToPango(mathrm(v->name())),Anchor::nw);
+//  }
   template <>
   void OperationDAG<OperationType::differentiate>::render(Surface& surf) const 
   {throw error("should not be rendering differentiation operations");}
@@ -641,59 +642,39 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::min>::render(Surface& surf) const
   {
-    print(surf.cairo(),"min",Anchor::nw);
     if (!arguments.empty())
       {
-        if (!arguments[1].empty() && arguments[1][0])
-          if (!arguments[0].empty() && arguments[0][0])
-            parenthesise(surf, [&](Surface& surf){
-                arguments[0][0]->render(surf);
+        print(surf.cairo(),"min",Anchor::nw);
+        parenthesise(surf, [&](Surface& surf){
+            naryRender(surf,arguments[0],BODMASlevel(),",","∞");
+            if (!arguments[1].empty())
+              {
                 print(surf.cairo(),",",Anchor::nw);
-                arguments[1][0]->render(surf);
-              });
-          else
-            parenthesise(surf, [&](Surface& surf){
-                arguments[1][0]->render(surf);
-                print(surf.cairo(),",0",Anchor::nw);
-              });
-        else
-          if (!arguments[0].empty() && arguments[0][0])
-            parenthesise(surf, [&](Surface& surf){
-                arguments[0][0]->render(surf);
-                print(surf.cairo(),",0",Anchor::nw);
-              });
-        else
-          print(surf.cairo(),"(0,0)",Anchor::nw);
+                naryRender(surf,arguments[1],BODMASlevel(),",","∞");
+              }
+          });
       }
+    else
+      print(surf.cairo(),"∞",Anchor::nw);
   }
 
   template <>
   void OperationDAG<OperationType::max>::render(Surface& surf) const
   {
-    print(surf.cairo(),"max",Anchor::nw);
     if (!arguments.empty())
       {
-        if (!arguments[1].empty() && arguments[1][0])
-          if (!arguments[0].empty() && arguments[0][0])
-            parenthesise(surf, [&](Surface& surf){
-                arguments[0][0]->render(surf);
+        print(surf.cairo(),"max",Anchor::nw);
+        parenthesise(surf, [&](Surface& surf){
+            naryRender(surf,arguments[0],BODMASlevel(),",","-∞");
+            if (!arguments[1].empty())
+              {
                 print(surf.cairo(),",",Anchor::nw);
-                arguments[1][0]->render(surf);
-              });
-          else
-            parenthesise(surf, [&](Surface& surf){
-                arguments[1][0]->render(surf);
-                print(surf.cairo(),",0",Anchor::nw);
-              });
-        else
-          if (!arguments[0].empty() && arguments[0][0])
-            parenthesise(surf, [&](Surface& surf){
-                arguments[0][0]->render(surf);
-                print(surf.cairo(),",0",Anchor::nw);
-              });
-        else
-          print(surf.cairo(),"(0,0)",Anchor::nw);
+                naryRender(surf,arguments[1],BODMASlevel(),",","-∞");
+              }
+          });
       }
+    else
+      print(surf.cairo(),"-∞",Anchor::nw);
   }
 
   template <>
@@ -701,83 +682,32 @@ namespace MathDAG
   {
     if (!arguments.empty())
       {
-        if (!arguments[1].empty() && arguments[1][0])
-          if (!arguments[0].empty() && arguments[0][0])
-            {
-              print(surf.cairo(),"Θ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  arguments[0][0]->render(surf);
-                  print(surf.cairo()," - 0.5",Anchor::nw);
-                });
-              print(surf.cairo(),"Θ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  arguments[1][0]->render(surf);
-                  print(surf.cairo()," - 0.5",Anchor::nw);
-                });
-            }
-          else
-            {
-              print(surf.cairo(),"Θ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  arguments[0][0]->render(surf);
-                  print(surf.cairo()," - 0.5",Anchor::nw);
-                });
-            }
-        else if (!arguments[0].empty() && arguments[0][0])
+        naryRender(surf,arguments[0],BODMASlevel(),"∧","1");
+        if (!arguments[1].empty())
           {
-            print(surf.cairo(),"Θ",Anchor::nw);
-            parenthesise(surf, [&](Surface& surf){
-                arguments[1][0]->render(surf);
-                print(surf.cairo()," - 0.5",Anchor::nw);
-              });
+            print(surf.cairo(),"∧",Anchor::nw);
+            naryRender(surf,arguments[0],BODMASlevel(),"∧","1");
           }
-       else
-         print(surf.cairo(),"0",Anchor::nw);
       }
+    else
+      print(surf.cairo(),"1",Anchor::nw);
   }
+  
 
   template <>
   void OperationDAG<OperationType::or_>::render(Surface& surf) const
   {
     if (!arguments.empty())
       {
-        if (!arguments[1].empty() && arguments[1][0])
-          if (!arguments[0].empty() && arguments[0][0])
-            {
-              print(surf.cairo(),"max",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  print(surf.cairo(),"Θ",Anchor::nw);
-                  parenthesise(surf, [&](Surface& surf){
-                      arguments[0][0]->render(surf);
-                      print(surf.cairo()," - 0.5",Anchor::nw);
-                    });
-                  print(surf.cairo(),",",Anchor::nw);
-                  print(surf.cairo(),"Θ",Anchor::nw);
-                  parenthesise(surf, [&](Surface& surf){
-                      arguments[1][0]->render(surf);
-                      print(surf.cairo()," - 0.5",Anchor::nw);
-                    });
-                });
-            }
-          else
-            {
-              print(surf.cairo(),"Θ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  arguments[0][0]->render(surf);
-                  print(surf.cairo()," - 0.5",Anchor::nw);
-                });
-            }
-        else if (!arguments[0].empty() && arguments[0][0])
+        naryRender(surf,arguments[0],BODMASlevel(),"∨","0");
+        if (!arguments[1].empty())
           {
-            print(surf.cairo(),"Θ",Anchor::nw);
-            parenthesise(surf, [&](Surface& surf){
-                arguments[1][0]->render(surf);
-                print(surf.cairo()," - 0.5",Anchor::nw);
-              });
+            print(surf.cairo(),"∨",Anchor::nw);
+            naryRender(surf,arguments[0],BODMASlevel(),"∨","0");
           }
-        else
-          print(surf.cairo(),"0",Anchor::nw);
       }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
   }
 
   template <>
@@ -787,9 +717,8 @@ namespace MathDAG
       {
         if (!arguments[0].empty() && arguments[0][0])
           {
-            print(surf.cairo(),"Θ",Anchor::nw);
+            print(surf.cairo(),"¬",Anchor::nw);
             parenthesise(surf, [&](Surface& surf){
-                print(surf.cairo(),"0.5 - ",Anchor::nw);
                 arguments[0][0]->render(surf);
               });
           }

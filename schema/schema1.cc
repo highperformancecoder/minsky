@@ -109,8 +109,6 @@ namespace schema1
     void Combine::combine(minsky::OperationBase& x, const Operation& y) const
     {
       combine(static_cast<minsky::Item&>(x), y);
-      if (auto c=dynamic_cast<minsky::Constant*>(&x))
-        c->value=y.value;
       if (auto d=dynamic_cast<minsky::DataOp*>(&x))
         {
           d->data=y.data;
@@ -185,43 +183,12 @@ namespace schema1
     template <class K, class V> 
     shared_ptr<Layout> layoutFactory(int id, const minsky::IntrusiveWrap<K,V>& x)
     {return layoutFactory(id, static_cast<const V&>(x));}
-
-//    template <> shared_ptr<Layout> layoutFactory
-//    (int id, const minsky::Wire& w)
-//    {return shared_ptr<Layout>(new WireLayout(id,w));}
-
-//    template <> shared_ptr<Layout> layoutFactory
-//    (int id, const minsky::VariablePtr& v)
-//    {return shared_ptr<Layout>(new SliderLayout(id,*v));}
-
-//    template <> shared_ptr<Layout> layoutFactory
-//    (int id, const minsky::OperationBase& o)
-//    {
-//      if (const minsky::Constant* c=dynamic_cast<const minsky::Constant*>(&o))
-//        return shared_ptr<Layout>(new SliderLayout(id,*c));
-//      else
-//        return shared_ptr<Layout>(new ItemLayout(id,o));
-//    }
-
-//    template <> shared_ptr<Layout> layoutFactory
-//    (int id, const minsky::GodleyIcon& g)
-//    {return shared_ptr<Layout>(new PositionLayout(id,g));}
-
-//    template <> shared_ptr<Layout> layoutFactory
-//    (int id, const minsky::PlotWidget& p)
-//    {return shared_ptr<Layout>(new PlotLayout(id,p));}
-
-//    template <> shared_ptr<Layout> layoutFactory
-//    (int id, const minsky::Group& g)
-//    {return shared_ptr<Layout>(new GroupLayout(id,g));}
   }
-
+  
   Operation::Operation(int id, const minsky::OperationBase& op): 
     Item(id,op), type(op.type()), value(0), intVar(-1) 
   {
-    if (const minsky::Constant* c=dynamic_cast<const minsky::Constant*>(&op))
-       value=c->value;
-    else if (const minsky::IntOp* i=dynamic_cast<const minsky::IntOp*>(&op))
+    if (const minsky::IntOp* i=dynamic_cast<const minsky::IntOp*>(&op))
       {
         name=i->intVar->name();
         // intvar is populated at a higher level
@@ -346,33 +313,41 @@ namespace schema1
     // operations need to be after variables to allow integration
     // variables to be attached
     for (auto& i: model.operations)
-      {
-        auto o=imap.addItem(minsky::OperationBase::create(i.type), i);
-        combine.combine(*o,i);
-        if (auto d=dynamic_cast<minsky::DataOp*>(o))
-          d->data=i.data;
-        else if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-          {
-            // this ensures that the output port refers to this item,
-            // and not the variable that is deleted in the following
-            // statement
-            if (integ->coupled()) integ->toggleCoupled();
-            g.removeItem(*integ->intVar);
-            integ->intVar=imap[i.intVar];
-          }
-        pmap.asgPorts(o->ports, i.ports);
-        // ensure variable has correct visibility status
-        if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-          {integ->toggleCoupled();integ->toggleCoupled();}
+      if (i.type==minsky::OperationType::constant)
+        {
+          // handle legacy constant operations by converting them to variable constants
+          auto v=imap.addItem(minsky::VariableBase::create(VariableType::constant), i);
+          v->init(to_string(i.value));
+          pmap.asgPorts(v->ports, i.ports);
+        }
+      else
+        {
+          auto o=imap.addItem(minsky::OperationBase::create(i.type), i);
+          combine.combine(*o,i);
+          if (auto d=dynamic_cast<minsky::DataOp*>(o))
+            d->data=i.data;
+          else if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+            {
+              // this ensures that the output port refers to this item,
+              // and not the variable that is deleted in the following
+              // statement
+              if (integ->coupled()) integ->toggleCoupled();
+              g.removeItem(*integ->intVar);
+              integ->intVar=imap[i.intVar];
+            }
+          pmap.asgPorts(o->ports, i.ports);
+          // ensure variable has correct visibility status
+          if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+            {integ->toggleCoupled();integ->toggleCoupled();}
 #ifndef NDEBUG
-        // check the output port connects to correct item
-        if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-          assert((integ->coupled() && &integ->ports[0]->item==integ->intVar.get()) ||
-                 (!integ->coupled() && &integ->ports[0]->item==integ));
-        else
-          assert(o == &o->ports[0]->item);
+          // check the output port connects to correct item
+          if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+            assert((integ->coupled() && &integ->ports[0]->item==integ->intVar.get()) ||
+                   (!integ->coupled() && &integ->ports[0]->item==integ));
+          else
+            assert(o == &o->ports[0]->item);
 #endif
-      }
+        }
     for (auto& i: model.plots)
       {
         auto p=imap.addItem(new minsky::PlotWidget, i);
@@ -458,12 +433,6 @@ namespace schema1
     minsky::LocalMinsky lm(m);
     populateGroup(*m.model);
 
-    // strip any leading ':' from top level variables
-//    for (auto& i: m.model->items)
-//      if (auto v=dynamic_cast<minsky::VariableBase*>(i.get()))
-//        if (v->name()[0]==':')
-//          v->name(v->name().substr(1));
-    
     // In schema 1, the ratio of a GodleyIcon's zoomFactor to its
     // group's zoomFactor is the iconScale we need to extract those
     // values prior to setZoom

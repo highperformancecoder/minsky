@@ -106,8 +106,8 @@ namespace minsky
     /// @}
     
     /// @{ current value associated with this variable
-    double _value(double);
-    double _value() const;  
+    virtual double _value(double);
+    virtual double _value() const;  
     ecolab::Accessor<double> value {
       [this]() {return _value();},
         [this](double x){return _value(x);}};
@@ -185,9 +185,12 @@ namespace minsky
     std::string valueId() const override {return "constant:"+str(id);}
     std::string _name() const override {return init();}
     std::string _name(const std::string& nm) override {ensureValueExists(); return _name();}
+    double _value(double x) override {init(str(x)); return x;}
+    //    double _value() const override {return std::stod(init());}  
     VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
     std::string classType() const override {return "VarConstant";}
-  
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
+    {::TCL_obj(t,d,*this);}
   };
 
   class VariablePtr: 

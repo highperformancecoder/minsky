@@ -387,6 +387,24 @@ if {$classicMode} {
     tooltip .controls.step "Step simulation"
 }
 
+# enable auto-repeat on step button
+bind .controls.step <ButtonPress-1> {set buttonPressed 1; autoRepeatButton .controls.step}
+bind . <ButtonRelease-1> {set buttonPressed 0}
+
+# self submitting script that continues while a button is pressed
+proc invokeButton button {
+    global buttonPressed
+    if {$buttonPressed} {
+        $button invoke
+        update
+        autoRepeatButton $button
+    }
+}
+
+proc autoRepeatButton button {
+    after 500 invokeButton $button
+}
+
 label .controls.slowSpeed -text "slow"
 label .controls.fastSpeed -text "fast"
 scale .controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
@@ -605,6 +623,7 @@ proc runstop {} {
   global running classicMode
   if {$running} {
     set running 0
+    doPushHistory 1
     if {$classicMode} {
             .controls.run configure -text run
         } else {

@@ -39,12 +39,6 @@ namespace
 namespace minsky
 {
 
-  void EvalOpBase::reset()
-  {
-    if (Constant* c=dynamic_cast<Constant*>(state.get()))
-      ValueVector::flowVars[out]=c->value;
-  }
-
   void EvalOpBase::eval(double fv[], const double sv[])
   {
     switch (numArgs())
@@ -65,9 +59,9 @@ namespace minsky
           minsky().displayErrorItem(*state);
         string msg="Invalid: "+OperationBase::typeName(type())+"(";
         if (numArgs()>0)
-          msg+=str(flow1? fv[in1]: sv[in1]);
+          msg+=to_string(flow1? fv[in1]: sv[in1]);
         if (numArgs()>1)
-          msg+=","+str(flow2? fv[in2]: sv[in2]);
+          msg+=","+to_string(flow2? fv[in2]: sv[in2]);
         msg+=")";
         throw error(msg.c_str());
       }
@@ -115,7 +109,7 @@ namespace minsky
   {return value;}
   template <>
   double EvalOp<OperationType::constant>::evaluate(double in1, double in2) const
-  {return dynamic_cast<Constant&>(*state).value;}
+  {return 0;}
   template <>
   double EvalOp<OperationType::constant>::d1(double x1, double x2) const
   {return 0;}

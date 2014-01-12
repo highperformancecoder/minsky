@@ -200,20 +200,6 @@ clean:
 	cd gui-wt; $(BASIC_CLEAN)
 	cd server; $(BASIC_CLEAN)
 
-# we want to build this target always when under AEGIS, otherwise only
-# when non-existing
-ifdef AEGIS
-.PHONY: minskyVersion.h
-endif
-
-minskyVersion.h:
-	rm -f minskyVersion.h
-ifdef AEGIS
-	echo '#define MINSKY_VERSION "'$(version)'"' >minskyVersion.h
-else
-	echo '#define MINSKY_VERSION "unknown"' >minskyVersion.h
-endif
-
 mac-dist: gui-tk/minsky
 # create executable in the app package directory. Make it 32 bit only
 	mkdir -p minsky.app/Contents/MacOS

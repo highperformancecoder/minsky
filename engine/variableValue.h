@@ -98,7 +98,7 @@ namespace minsky
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
       if (scope<0) return ":"+stripActive(uqName(name));
-      else return str(scope)+":"+stripActive(uqName(name));
+      else return std::to_string(scope)+":"+stripActive(uqName(name));
     }
     static std::string valueId(std::string name) {
       return valueId(scope(name), name);

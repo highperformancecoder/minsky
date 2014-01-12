@@ -28,6 +28,7 @@
 namespace minsky
 {
   /// utility function to create a string representation of a numeric type
+  // works better than std::to_string
   template <class T> std::string str(T x) {
     std::ostringstream s;
     s<<x;

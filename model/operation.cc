@@ -16,10 +16,12 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "geometry.h"
 #define OPNAMEDEF
 #include "operation.h"
 #include "minsky.h"
 #include "str.h"
+#include "cairoItems.h"
 
 #include <cairo_base.h>
 #include <pango.h>
@@ -135,6 +137,227 @@ namespace minsky
         (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
 
+  void OperationBase::draw(cairo_t* cairo) const
+  {
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    double angle=rotation * M_PI / 180.0;
+    double fm=std::fmod(rotation,360);
+    bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
+    double coupledIntTranslation=0;
+
+    auto t=type();
+    // call the iconDraw method if data description is empty
+    if (t==OperationType::data && dynamic_cast<const NamedOp&>(*this).description.empty())
+      t=OperationType::numOps;
+
+    switch (t)
+      {
+        // at the moment its too tricky to get all the information
+        // together for rendering constants
+      case OperationType::constant:
+      case OperationType::data:
+        {
+        
+          const NamedOp& c=dynamic_cast<const NamedOp&>(*this);
+          cairo_save(cairo);
+        
+          Pango pango(cairo);
+          pango.setFontSize(10*zoomFactor);
+          pango.setMarkup(latexToPango(c.description));
+          pango.angle=angle + (textFlipped? M_PI: 0);
+          Rotate r(rotation+ (textFlipped? 180: 0),0,0);
+
+          // parameters of icon in userspace (unscaled) coordinates
+          float w, h, hoffs;
+          w=0.5*pango.width()+2*zoomFactor; 
+          h=0.5*pango.height()+4*zoomFactor;
+          hoffs=pango.top()/zoomFactor;
+    
+          cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*zoomFactor), r.y(-w+1,-h-hoffs+2*zoomFactor));
+          pango.show();
+          cairo_restore(cairo);
+          cairo_save(cairo);
+          cairo_rotate(cairo, angle);
+               
+          cairo_set_source_rgb(cairo,0,0,1);
+          cairo_move_to(cairo,-w,-h);
+          cairo_line_to(cairo,-w,h);
+          cairo_line_to(cairo,w,h);
+
+          cairo_line_to(cairo,w+2*zoomFactor,0);
+          cairo_line_to(cairo,w,-h);
+          cairo_close_path(cairo);
+          cairo_clip_preserve(cairo);
+          cairo_stroke(cairo);
+
+          // set the output ports coordinates
+          // compute port coordinates relative to the icon's
+          // point of reference
+          Rotate rr(rotation,0,0);
+
+          ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
+          if (numPorts()>1)
+            ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+          cairo_restore(cairo); // undo rotation
+          if (mouseFocus)
+            {
+              drawPorts(cairo);
+              displayTooltip(cairo);
+            }
+          if (selected) drawSelected(cairo);
+          return;
+        }
+      case OperationType::integrate:
+        if (const IntOp* i=dynamic_cast<const IntOp*>(this))
+          if (i->coupled())
+            {
+              auto& iv=*i->intVar;
+              //            iv.zoomFactor=zoomFactor;
+              RenderVariable rv(iv,cairo);
+              // we need to add some translation if the variable is bound
+              cairo_rotate(cairo,rotation*M_PI/180.0);
+              coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*zoomFactor;
+              //            cairo_translate(cairo, coupledIntTranslation, 0);
+              cairo_rotate(cairo,-rotation*M_PI/180.0);
+            }
+        cairo_save(cairo);
+        cairo_scale(cairo,zoomFactor,zoomFactor);
+        iconDraw(cairo);
+        cairo_restore(cairo);
+        break;
+      default:
+        cairo_save(cairo);
+        cairo_scale(cairo,zoomFactor,zoomFactor);
+        iconDraw(cairo);
+        cairo_restore(cairo);
+        break;
+      }
+
+    float l=OperationBase::l*zoomFactor, r=OperationBase::r*zoomFactor, 
+      h=OperationBase::h*zoomFactor;
+    int intVarWidth=0;
+    cairo_save(cairo);
+    cairo_rotate(cairo, angle);
+    cairo_move_to(cairo,l,h);
+    cairo_line_to(cairo,l,-h);
+    cairo_line_to(cairo,r,0);
+              
+    cairo_close_path(cairo);
+
+    //  cairo_save(cairo);
+    cairo_set_source_rgb(cairo,0,0,1);
+    cairo_stroke_preserve(cairo);
+    //  cairo_restore(cairo);
+
+    if (const IntOp* i=dynamic_cast<const IntOp*>(this))
+      if (i->coupled())
+        {
+          float ivo=i->intVarOffset*zoomFactor;
+          cairo_new_path(cairo);
+          cairo_move_to(cairo,r,0);
+          cairo_line_to(cairo,r+ivo,0);
+          cairo_set_source_rgb(cairo,0,0,0);
+          cairo_stroke(cairo);
+        
+          VariablePtr intVar=i->intVar;
+          intVar->zoomFactor=zoomFactor;
+          // display an integration variable next to it
+          RenderVariable rv(*intVar, cairo);
+          // save the render width for later use in setting the clip
+          intVarWidth=rv.width()*zoomFactor; 
+          // set the port location...
+          intVar->moveTo(i->x()+r+ivo+intVarWidth, i->y());
+            
+          cairo_save(cairo);
+          cairo_translate(cairo,r+ivo+intVarWidth,0);
+          // to get text to render correctly, we need to set
+          // the var's rotation, then antirotate it
+          i->intVar->rotation=i->rotation;
+          cairo_rotate(cairo, -M_PI*i->rotation/180.0);
+          rv.draw();
+          //i->getIntVar()->draw(cairo);
+          cairo_restore(cairo);
+
+          // build clip path the hard way grr...
+          cairo_move_to(cairo,l,h);
+          cairo_line_to(cairo,l,-h);
+          cairo_line_to(cairo,r,0);
+          cairo_line_to(cairo,r+ivo,0);
+          float rvw=rv.width()*zoomFactor, rvh=rv.height()*zoomFactor;
+          cairo_line_to(cairo,r+ivo,-rvh);
+          cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
+          cairo_line_to(cairo,r+ivo+2*rvw+2*zoomFactor,0);
+          cairo_line_to(cairo,r+ivo+2*rvw,rvh);
+          cairo_line_to(cairo,r+ivo,rvh);
+          cairo_line_to(cairo,r+ivo,0);
+          cairo_line_to(cairo,r,0);
+          cairo_close_path(cairo);
+        }
+
+    cairo::Path clipPath(cairo);
+
+    // compute port coordinates relative to the icon's
+    // point of reference
+    double x0=r-2, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+      x2=l, y2=numPorts() > 2? h-3: 0;
+                  
+    if (textFlipped) swap(y1,y2);
+
+    // adjust for integration variable
+    if (const IntOp* i=dynamic_cast<const IntOp*>(this))
+      if (i->coupled())
+        x0+=i->intVarOffset+2*intVarWidth+2;
+
+    cairo_save(cairo);
+    cairo_identity_matrix(cairo);
+    cairo_translate(cairo, x(), y());
+    //cairo_scale(cairo,zoomFactor,zoomFactor);
+    cairo_rotate(cairo, angle);
+    cairo_user_to_device(cairo, &x0, &y0);
+    cairo_user_to_device(cairo, &x1, &y1);
+    cairo_user_to_device(cairo, &x2, &y2);
+    cairo_restore(cairo);
+
+    if (numPorts()>0) 
+      ports[0]->moveTo(x0, y0);
+    if (numPorts()>1) 
+      {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+        if (type()==OperationType::pow)
+          ports[1]->moveTo(x2, y2);
+        else
+#endif
+          ports[1]->moveTo(x1, y1);
+      }
+
+    if (numPorts()>2)
+      {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+        if (type()==OperationType::pow)
+          ports[2]->moveTo(x1, y1);
+        else
+#endif
+          ports[2]->moveTo(x2, y2);
+      }
+
+    cairo_translate(cairo,-coupledIntTranslation,0);
+
+    cairo_restore(cairo); // undo rotation
+    if (mouseFocus)
+      {
+        drawPorts(cairo);
+        displayTooltip(cairo);
+      }
+
+    cairo_new_path(cairo);
+    clipPath.appendToCurrent(cairo);
+    cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
+  }
+
+
+  
   const IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 
@@ -222,7 +445,7 @@ namespace minsky
       {
       case integrate: return new IntOp;
       case data: return new DataOp;
-      case constant: return new Constant;
+      case constant: throw error("Constant deprecated");
       default: return operationFactory.create(type);
       }
   }
@@ -271,39 +494,12 @@ namespace minsky
   {
     string r="equations not yet constructed, please reset";
     if (ports.size()>0)
-      r="[out]="+str(ports[0]->value());
+      r="[out]="+to_string(ports[0]->value());
     if (ports.size()>1)
-      r+=" [in1]="+ str(ports[1]->value());
+      r+=" [in1]="+ to_string(ports[1]->value());
     if (ports.size()>2)
-      r+=" [in2]="+ str(ports[2]->value());
+      r+=" [in2]="+ to_string(ports[2]->value());
     return r;
-  }
-
-  void Constant::adjustSliderBounds()
-  {
-    if (sliderMax<value) sliderMax=value;
-    if (sliderMin>value) sliderMin=value;
-  }
-
-  void Constant::initOpSliderBounds()
-  {
-    if (!sliderBoundsSet) 
-      {
-        if (value==0)
-          {
-            sliderMin=-1;
-            sliderMax=1;
-            sliderStep=0.1;
-          }
-        else
-          {
-            sliderMin=-value*10;
-            sliderMax=value*10;
-            sliderStep=std::abs(0.1*value);
-          }
-        sliderStepRel=false;
-        sliderBoundsSet=true;
-      }
   }
 
   void DataOp::readData(const string& fileName)
@@ -398,8 +594,11 @@ namespace minsky
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
-    cairo_move_to(cairo,-4,2);
-    cairo_show_text(cairo,"=");
+    cairo_move_to(cairo,-4,-5);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("→");
+    pango.show();
   }
 
   template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
@@ -679,12 +878,6 @@ namespace minsky
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}
 
-  void Constant::pack(pack_t& x, const string& d) const
-  {::pack(x,d,*this);}
-      
-  void Constant::unpack(unpack_t& x, const string& d)
-  {::unpack(x,d,*this);}
- 
   void IntOp::pack(pack_t& x, const string& d) const
   {::pack(x,d,*this);}
       

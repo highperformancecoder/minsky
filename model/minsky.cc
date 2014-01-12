@@ -338,8 +338,7 @@ namespace minsky
        {
          if (auto p=dynamic_cast<PlotWidget*>(i->get()))
            {
-             p->yvars.clear(); // clear any old associations
-             p->xvars.clear(); 
+             p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();
              p->autoScale();
              for (size_t i=0; i<p->ports.size(); ++i)
@@ -351,9 +350,6 @@ namespace minsky
            }
          return false;
        });
-
-    for (EvalOpVector::iterator e=equations.begin(); e!=equations.end(); ++e)
-      (*e)->reset();
   }
 
   std::set<string> Minsky::matchingTableColumns(GodleyTable& currTable, GodleyAssetClass::AssetClass ac)
@@ -478,7 +474,7 @@ namespace minsky
                          if (destTable.initialConditionRow(r))
                            {
                              FlowCoef fc(srcTable.cell(row,srcCol));
-                             destTable.cell(r,col)=str(-fc.coef)+fc.name;
+                             destTable.cell(r,col)=to_string(-fc.coef)+fc.name;
                              break;
                            }
                    for (size_t row=1; row!=destTable.rows(); ++row)
@@ -857,7 +853,7 @@ namespace minsky
           { //traverse finished, check for cycle along branch
             if (::find(stack.begin(), stack.end(), p) != stack.end())
               {
-                cminsky().displayErrorItem(p->x(), p->y());
+                cminsky().displayErrorItem(p->item);
                 return true;
               }
             else
@@ -948,13 +944,24 @@ namespace minsky
 
   void Minsky::displayErrorItem(const Item& op) const
   {
+    // this method is logically const, but because of the way
+    // canvas rendering is done, canvas state needs updating
+    auto& canvas=const_cast<Canvas&>(this->canvas);
     if (op.visible())
-      displayErrorItem(op.x(),op.y());
+      {
+        canvas.item=canvas.model->findItem(op);
+        canvas.indicateItem();
+        canvas.requestRedraw();
+      }
     else if (auto g=op.group.lock())
       {
         while (g && !g->visible()) g=g->group.lock();
         if (g && g->visible())
-          displayErrorItem(g->x(), g->y());
+          {
+            canvas.item=g;
+            canvas.indicateItem();
+            canvas.requestRedraw();
+          }
       }
   }
   
@@ -1052,6 +1059,8 @@ namespace minsky
                            if (v->valueId()==name)
                              {
                                v.retype(type);
+                               if (*i==canvas.item)
+                                 canvas.item=v;
                                *i=v;
                              }
                          return false;

@@ -74,7 +74,7 @@ namespace MathDAG
           " on operation ";
         if (state)
           {
-            minsky::minsky().displayErrorItem(state->x(),state->y());
+            minsky::minsky().displayErrorItem(*state);
             r+=OperationType::typeName(state->type());
           }
         
@@ -269,23 +269,8 @@ namespace MathDAG
   {
     if (result.idx()<0)
       {
-        if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-          {
-            if (VariablePtr iv=i->intVar)
-              {
-                assert(VariableValue::isValueId(iv->valueId()));
-                assert(minsky::minsky().variableValues.count(iv->valueId()));
-                result=minsky::minsky().variableValues[iv->valueId()];
-                // integral copies need to be done now, in case of cycles
-                if (r.isFlowVar() && r.idx()>=0)
-                  ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-                return result; // integration handled as part of RK algorithm
-              }
-            else
-              throw error("no integration variable for %s",i->description().c_str());
-
-          }
-        else if (r.isFlowVar() && r.idx()>=0)
+        assert(!dynamic_cast<IntOp*>(state.get()));
+        if (r.isFlowVar() && r.idx()>=0)
           result=r;
         else 
           result.allocValue();
@@ -317,10 +302,26 @@ namespace MathDAG
           case divide:
             cumulate(ev, result, argIdx, divide, multiply, 1);
             break;
+          case min:
+            cumulate(ev, result, argIdx, min, min, numeric_limits<double>::max());
+            break;
+          case max:
+            cumulate(ev, result, argIdx, max, max, numeric_limits<double>::min());
+            break;
+          case and_:
+            cumulate(ev, result, argIdx, and_, and_, 1);
+            break;
+          case or_:
+            cumulate(ev, result, argIdx, or_, or_, 0);
+            break;
           case constant:
-            ev.push_back(EvalOpPtr(type(), result));
-            dynamic_cast<ConstantEvalOp&>(*ev.back()).value=
-              dynamic_cast<Constant&>(*state).value;
+            if (state) minsky::minsky().displayErrorItem(*state);
+            throw error("Constant deprecated");
+          case lt: case le: case eq:
+            for (size_t i=0; i<arguments.size(); ++i)
+              if (arguments[i].empty())
+                argIdx[i].push_back(VariableValue());
+            ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
             break;
           default:
             // sanity check that the correct number of arguments is provided 
@@ -524,8 +525,8 @@ namespace MathDAG
       else
         o<<"min("<<arguments[0][0]->matlab()<<",0)";
     else
-      if (arguments.size()>1 && !arguments[0].empty() && arguments[0][0])
-        o<<"min(0,"<<arguments[0][0]->matlab()<<")";
+      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+        o<<"min(0,"<<arguments[1][0]->matlab()<<")";
       else
         o<<"0";
     return o;
@@ -542,7 +543,7 @@ namespace MathDAG
         o<<"max("<<arguments[0][0]->matlab()<<",0)";
     else
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max(0,"<<arguments[0][0]->matlab()<<")";
+        o<<"max(0,"<<arguments[1][0]->matlab()<<")";
       else
         o<<"0";
     return o;
@@ -607,9 +608,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::integrate>::matlab(ostream& o) const
   {
-    if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      o << validMatlabIdentifier(i->description());
-    return o;
+    throw error("shouldn't be executed");
   }
         
   template <>
@@ -1008,9 +1007,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::integrate>::latex(ostream& o) const
   {
-    if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      o << mathrm(i->description());
-    return o;
+    throw error("shouldn't be executed");
   }
         
   template <>
@@ -1169,13 +1166,6 @@ namespace MathDAG
                   }
               }
           }
-        else if (const Constant* c=dynamic_cast<const Constant*>(it->get()))
-          {
-            VariablePtr v(VariableType::parameter, c->description());
-            // note makeDAG caches a reference to the object, and manages lifetime
-            variables.push_back(makeDAG(*v).get());
-            variables.back()->rhs=expressionCache.insertAnonymous(NodePtr(new ConstantDAG(c->value)));
-          }
         return false;
       });
 
@@ -1199,7 +1189,8 @@ namespace MathDAG
       {
         //        assert(g->second.godleyId>=0);
         integVarMap[VariableValue::valueId(g->first)]=
-          makeDAG(VariableValue::valueId(g->first), g->first, VariableValue::stock).get();
+          dynamic_cast<VariableDAG*>(
+                                     makeDAG(VariableValue::valueId(g->first), g->first, VariableValue::stock).get());
         VariableDAGPtr input(new IntegralInputVariableDAG);
         input->name=g->first;
         variables.push_back(input.get());
@@ -1215,24 +1206,33 @@ namespace MathDAG
     // are defined
     for (VariableValues::value_type v: m.variableValues)
       if (v.second.isFlowVar())
-        variables.push_back
-          (makeDAG(v.first, v.second.name, v.second.type()).get());
+        if (auto vv=dynamic_cast<VariableDAG*>
+            (makeDAG(v.first, v.second.name, v.second.type()).get()))
+          variables.push_back(vv);
           
     // sort variables into their order of definition
     sort(variables.begin(), variables.end(), 
          VariableDefOrder(expressionCache.size()));
   }
 
-  shared_ptr<VariableDAG> SystemOfEquations::makeDAG(const string& valueId, const string& name, VariableType::Type type)
+  NodePtr SystemOfEquations::makeDAG(const string& valueId, const string& name, VariableType::Type type)
   {
     if (expressionCache.exists(valueId))
-      return dynamic_pointer_cast<VariableDAG>(expressionCache[valueId]);
+      return expressionCache[valueId];
 
-    shared_ptr<VariableDAG> r(new VariableDAG(valueId, name, type));
-    expressionCache.insert(valueId, r);
     assert(VariableValue::isValueId(valueId));
     assert(minsky.variableValues.count(valueId));
     VariableValue vv=minsky.variableValues[valueId];
+
+    if (type==VariableType::constant)
+      {
+        NodePtr r(new ConstantDAG(vv.initValue(minsky.variableValues)));
+        expressionCache.insert(valueId, r);
+        return r;
+      }
+    
+    shared_ptr<VariableDAG> r(new VariableDAG(valueId, name, type));
+    expressionCache.insert(valueId, r);
     r->init=vv.initValue(minsky.variableValues);
     if (vv.isFlowVar()) 
       {
@@ -1254,12 +1254,19 @@ namespace MathDAG
         NodePtr expr;
         if (op.ports[1]->wires.size()==0 || !(expr=getNodeFromWire(*op.ports[1]->wires[0])))
           {
-            minsky.displayErrorItem(op);          
+            minsky::minsky().displayErrorItem(op);          
             throw error("derivative not wired");
           }
-
-        return expressionCache.insert
-          (op, expr->derivative(*this));
+        try
+          {
+            return expressionCache.insert
+              (op, expr->derivative(*this));
+          }
+        catch (...)
+          {
+            minsky::minsky().displayErrorItem(op);          
+            throw;
+          }
       }
     else
       {
@@ -1268,13 +1275,6 @@ namespace MathDAG
         r->state=dynamic_pointer_cast<OperationBase>(minsky.model->findItem(op));
         assert(r->state);
         assert( r->state->type()!=OperationType::numOps);
-        if (const Constant* c=dynamic_cast<const Constant*>(&op))
-          {
-            r->name=c->description();
-            r->init=c->value;
-          }
-        else if (const IntOp* i=dynamic_cast<const IntOp*>(&op))
-          r->name=i->description();
 
         r->arguments.resize(op.numPorts()-1);
         for (size_t i=1; i<op.ports.size(); ++i)
@@ -1525,9 +1525,6 @@ namespace MathDAG
             if (godley.signConventionReversed(c)) fc.coef*=-1;
 
             VariablePtr v(VariableType::flow, fc.name);
-            // if local variable, set scope
-//            if (fc.name.find(':')==string::npos)
-//              v->setScope(-1);
 
             if (abs(fc.coef)==1)
               gd.arguments[fc.coef<0? 1: 0].push_back(WeakNodePtr(makeDAG(*v)));

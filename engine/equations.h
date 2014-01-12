@@ -34,6 +34,7 @@
 #include <ostream>
 #include <vector>
 #include <map>
+#include <string>
 #include "integral.h"
 
 namespace minsky
@@ -217,9 +218,11 @@ namespace MathDAG
         {
         case OperationType::multiply:
         case OperationType::divide:
+        case OperationType::and_:
           return 1;
         case OperationType::subtract:
         case OperationType::add:
+        case OperationType::or_:
           return 2;
         case OperationType::constant: // varies, depending on what's in it
           if (name.find_first_of("+-")!=string::npos)
@@ -253,13 +256,13 @@ namespace MathDAG
     std::map<const Node*, NodePtr> reverseLookupCache;
   public:
     std::string key(const OperationBase& x) const {
-      return "op:"+str(x.ports[0]);
+      return "op:"+std::to_string(size_t(x.ports[0].get()));
     }
     std::string key(const VariableBase& x) const {
       return "var:"+x.valueId();
     }
     std::string key(const SwitchIcon& x) const {
-      return "switch:"+str(x.ports[0]);
+      return "switch:"+std::to_string(size_t(x.ports[0].get()));
     }
     /// strings refer to variable names
     std::string key(const string& x) const {
@@ -320,8 +323,8 @@ namespace MathDAG
     const Minsky& minsky;
 
     /// create a variable DAG. returns cached value if previously called
-    shared_ptr<VariableDAG> makeDAG(const string& valueId, const string& name, VariableType::Type type);
-    shared_ptr<VariableDAG> makeDAG(VariableBase& v)
+    NodePtr makeDAG(const string& valueId, const string& name, VariableType::Type type);
+    NodePtr makeDAG(VariableBase& v)
     {v.ensureValueExists(); return makeDAG(v.valueId(),v.name(),v.type());}
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationBase& op);

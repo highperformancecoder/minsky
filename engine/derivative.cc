@@ -82,7 +82,7 @@ namespace MathDAG
     string name=differentiateName(expr.name);
     // ensure variable value exists, even if only temporary
     VariablePtr tmp(VariableType::tempFlow, name);
-    VariableDAGPtr r(makeDAG(tmp->valueId(),tmp->name(),tmp->type()));
+    VariableDAGPtr r(dynamic_pointer_cast<VariableDAG>(makeDAG(tmp->valueId(),tmp->name(),tmp->type())));
     if (expr.rhs)
       r->rhs=expr.rhs->derivative(*this);
     else if (expr.type==VariableType::integral || expr.type==VariableType::stock)
@@ -239,8 +239,9 @@ namespace MathDAG
       return zero;
     else if (expr.arguments[1].empty())
       {
-        Expr dx(expressionCache, expr.arguments[0][0]->derivative(*this));
-        return dx * expr.derivative(*this);
+        Expr x(expressionCache, expr.arguments[0][0]);
+        Expr dx(expressionCache, x->derivative(*this));
+        return dx * x;
       }
     else
       {
@@ -308,25 +309,27 @@ namespace MathDAG
   (const OperationDAG<OperationType::min>& expr)
   {
     assert(expr.arguments.size()==2);
-    if (expr.arguments[0].empty())
-      return zero;
-    else if (expr.arguments[1].empty())
+    auto tmp=make_shared<OperationDAG<OperationType::min>>(expr);
+    // combine all arguments
+    tmp->arguments[1].clear();
+    for (auto i: expr.arguments[1])
+      tmp->arguments[0].push_back(i);
+    
+    switch (tmp->arguments[0].size())
       {
-        Expr x(expressionCache,expr.arguments[0][0]);
-        return (x <= 0)*x->derivative(*this);
-      }
-    else if (expr.arguments[0].empty())
-      {
-        Expr y(expressionCache,expr.arguments[0][0]);
-        return (y <= 0)*y->derivative(*this);
-      }
-    else
-      {
-        Expr x(expressionCache,expr.arguments[0][0]);
-        Expr y(expressionCache,expr.arguments[1][0]);
-        return (x<=y)*x->derivative(*this) +
-          (1-(x<=y))*y->derivative(*this);
-      }
+      case 0:
+        return zero;
+      case 1:
+        return tmp->arguments[0][0]->derivative(*this);
+      default:
+        {
+          Expr x(expressionCache,tmp->arguments[0].back());
+          tmp->arguments[0].pop_back();
+          Expr y(expressionCache,NodePtr(tmp));
+          return (x<=y)*x->derivative(*this) +
+            (1-(x<=y))*y->derivative(*this);
+        }
+      };
   }
 
   // nb strictly speaking, the derivative is undefined at x==y,
@@ -336,26 +339,27 @@ namespace MathDAG
   (const OperationDAG<OperationType::max>& expr)
   {
     assert(expr.arguments.size()==2);
-    Expr z(expressionCache,zero);
-    if (expr.arguments[0].empty())
-      return zero;
-    else if (expr.arguments[1].empty())
+    auto tmp=make_shared<OperationDAG<OperationType::max>>(expr);
+    // combine all arguments
+    tmp->arguments[1].clear();
+    for (auto i: expr.arguments[1])
+      tmp->arguments[0].push_back(i);
+    
+    switch (tmp->arguments[0].size())
       {
-        Expr x(expressionCache,expr.arguments[0][0]);
-        return (z<=x)*x->derivative(*this);
-      }
-    else if (expr.arguments[0].empty())
-      {
-        Expr y(expressionCache,expr.arguments[0][0]);
-        return (z<=y)*y->derivative(*this);
-      }
-    else
-      {
-        Expr x(expressionCache,expr.arguments[0][0]);
-        Expr y(expressionCache,expr.arguments[1][0]);
-        return (x<=y)*y->derivative(*this) +
-          (1-(x<=y))*x->derivative(*this);
-      }
+      case 0:
+        return zero;
+      case 1:
+        return tmp->arguments[0][0]->derivative(*this);
+      default:
+        {
+          Expr x(expressionCache,tmp->arguments[0].back());
+          tmp->arguments[0].pop_back();
+          Expr y(expressionCache,NodePtr(tmp));
+          return (x<=y)*y->derivative(*this) +
+            (1-(x<=y))*x->derivative(*this);
+        }
+      };
   }
 
   template <>
@@ -379,20 +383,14 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::integrate>& expr)
   {
-    if (!expr.arguments[0].empty() && expr.arguments[0][0])
-      return expressionCache.reverseLookup(*expr.arguments[0][0]);
-    else
-      return zero;
+    throw error("shouldn't be executed");
   }
 
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::differentiate>& expr)
   {
-    if (!expr.arguments[0].empty() && expr.arguments[0][0])
-      return expr.arguments[0][0]->derivative(*this)->derivative(*this);
-    else
-      return zero;
+    throw error("shouldn't be executed");
   }
  
   template <>
@@ -406,6 +404,8 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::sqrt>& expr)
   {
+    if (expr.arguments[0].empty())
+      return zero;
     Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, 0.5/sqrt(x));
   }
@@ -414,6 +414,8 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::exp>& expr)
   {
+    if (expr.arguments[0].empty())
+      return zero;
     Expr x(expressionCache, expr.arguments[0][0]);
     Expr expx(expressionCache, expressionCache.reverseLookup(expr));
     return chainRule(x, exp(x));

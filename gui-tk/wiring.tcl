@@ -380,7 +380,7 @@ bind .wiring.canvas <<contextMenu>> {
             default {contextMenu %x %y %X %Y}
         }
     } elseif [getWireAt %x %y] {
-        wireContextMenu %x %y
+        wireContextMenu %X %Y
     } else {
         canvasContext  %X %Y
     }
@@ -1008,7 +1008,7 @@ proc editItem {} {
     global constInput varInput editVarInput opInput
     set item minsky.canvas.item
     switch -regexp [$item.classType] {
-        "Variable*" {editVar}
+        "Variable*|VarConstant" {editVar}
         "Operation*" {
             set opType [minsky.canvas.item.type]
                 set opInput(title) [minsky.canvas.item.type]

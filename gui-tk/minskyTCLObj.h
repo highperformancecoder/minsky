@@ -44,6 +44,7 @@ namespace minsky
         argv0!="minsky.canvas.select" &&
         argv0!="minsky.canvas.recentre" &&
         argv0!="minsky.canvas.requestRedraw" &&
+        argv0!="minsky.canvas.mouseMove" &&
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
         argv0!="minsky.model.moveTo" &&

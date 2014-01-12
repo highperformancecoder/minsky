@@ -225,7 +225,7 @@ void GodleyTable::nameUnique()
 {
   for (int i=1;;++i)
     {
-      string trialName="Godley"+str(i);
+      string trialName="Godley"+to_string(i);
       
       if (!cminsky().model->findAny
           (&Group::items,
