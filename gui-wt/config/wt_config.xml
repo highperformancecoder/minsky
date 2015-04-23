@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+  @copyright Steve Keen 2012
+  @author Michael Roy
+  This file is part of Minsky.
+
+  Minsky is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Minsky is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+  English text resource file.
+ */
+-->
+<application-settings location="*">
+  <debug>
+    1
+  </debug>
+  <log-file>
+    minsky-log.txt
+  </log-file>
+  <max-request-size>100000000</max-request-size>
+  <properties>
+  </properties>  
+</application-settings>

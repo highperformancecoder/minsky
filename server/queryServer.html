@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <script type="application/javascript" src="queryServer.js"></script>
+  </head>
+  <body>
+    <form>
+      Server URL: 
+      <input type="text"  value="ws://localhost:8000" name="server" id="server">
+      <input type="button" value="Connect" onclick="connect()">
+    </form>
+    <div id="version">Server version</div>
+    <form>
+      <table>
+        <tr>
+          <td>Commands</td><td>Payloads</td>
+        </tr>
+        <tr>
+          <td>
+            <select id="commands">
+            </select>
+          </td>
+          <td>
+            <select id="payloads">
+            </select>
+          </td>
+          <td>
+            <input type="button" value="Execute" onclick="execute()">
+          </td>
+        </tr>
+      </table>
+    </form>
+    <pre id="response"> </pre>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">                             
+  <dict>                                            
+    <key>CFBundleExecutable</key>  
+    <string>minsky</string>   
+    <key>CFBundleIconFile</key>
+    <string>MinskyLogo</string>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>mky</string>   
+        </array>
+        <key>CFBundleTypeOSTypes</key>
+        <array>
+          <string>MINSKY</string>
+        </array>
+        <key>CFBundleTypeMIMETypes</key>
+        <array>
+          <string>application/minsky</string>
+        </array>
+	<key>CFBundleTypeRole</key>
+	<string>Editor</string>
+	<key>CFBundleTypeName</key>
+	<string>Minsky Project</string>
+        <key>CFBundleTypeIconFile</key>
+        <string>MinskyLogo.icns</string>
+      </dict>
+    </array>
+   <key>LSEnvironment</key>
+    <dict>
+      <key>DUMMY</key>
+      <string>dummy</string>
+      <key>FONTCONFIG_FILE</key>
+      <string>/Applications/Minsky.app/Contents/Resources/fontconfig/fonts.conf</string>
+      <key>FONTCONFIG_PATH</key>
+      <string>/Applications/Minsky.app/Contents/Resources/fontconfig/conf.d</string>
+    </dict>
+</dict>
+</plist> 

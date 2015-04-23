@@ -1,0 +1,378 @@
+\chapter{Reference}
+
+\section{Operations}\label{operations}
+
+\begin{description}
+
+\item[add]\label{op:add} Add multiple numbers together. The input ports allow
+multiple wires, which are all summed. If an input port is unwired, it
+is equivalent to setting it to zero.
+
+\item[subtract]\label{op:subtract} Subtract two numbers. The input ports
+allow multiple wires, which are summed prior to the subtraction being
+carried out. If an input port is unwired, it is equivalent to setting
+it to zero. Note the small `+' and `-' signs on the input port
+indicating which terms are aded or subtracted from the result.
+
+\item[multiply]\label{op:multiply} Multiple numbers with each other. The input ports
+allow multiple wires, which are all multiplied together. If an input
+port is unwired, it is equivalent to setting it to one.
+
+\item[divide]\label{op:divide} Divide a number by another. The input ports allow
+multiple wires, which are multiplied together prior to the division
+being carried out. If an input port is unwired, it is equivalent to
+setting it to one. Note the small `×' and `÷' signs indicating which
+port refers to the numerator and which the denominator.
+
+\item[pow]\label{op:pow} Raise one number to the power of another. The
+ports are labelled $x$ and $y$, referring the the formula $x^y$.
+
+\item[log]\label{op:log} Take the logarithm of the $x$ input port, to
+base $b$. The base $b$ needs to be specified --- if the natural
+logarithm is desired ($b=e$), use the \htmlref{ln operator}{op:ln} instead.
+
+\item[time]\label{op:time} Returns the current value of system time.
+
+\item[copy]\label{op:copy} This just copies its input to its output,
+which is redundant on wiring diagrams, but is needed for internal
+purposes.
+
+\item[integrate]\label{op:integrate} Creates an integration (or stock)
+variable. Editable attributes include the variable's name and its
+initial value at $t=0$.
+
+\item[data]\label{op:data} A data interpolation widget. Currently, the
+data must be imported from a file containing two values on each line,
+eg:
+\begin{tabular}{rr}
+0.1 &0.3\\
+0.5 &0.7\\
+0.9 &1\\
+\end{tabular}
+If the input is less than the minimum key value (0.1 here), then the
+operation outputs the corresponding value (0.3). Similarly if the
+input is greater than the maximum (0.9), the corresponding value (1)
+is output. If it lies in between two keys (eg 0.2), the the output is
+linearly interpolated (0.4).
+
+More formally, a data block is an empirical function, based on a table
+of pairs of values ($x_i, y_i, i=1\ldots n, x_{i+1}>x_i$) read in from
+a file. The function's output is linearly interpolated from the data,
+ie:
+\begin{displaymath}
+f(x) = \left\{
+\begin{array}{cl}
+y_1 & x\leq x_1\\
+y_n & x\geq x_n\\
+\frac{y_i(x_{i+1}-x)+y_{i+1}(x-x_i)}{x_{i+1}-x_i} & x_i \leq x \leq
+x_{i+1}\\
+\end{array}
+\right.
+\end{displaymath}
+
+\item[sqrt]\label{op:sqrt} Square root of the input
+
+\item[exp]\label{op:exp} Exponential of the input
+
+\item[ln]\label{op:ln} Natural logarithm
+
+\item[sin]\label{op:sin} sine function
+\item[cos]\label{op:cos} cosine function
+\item[tan]\label{op:tan} tangent function
+\item[asin]\label{op:asin} Arc sine, inverse of sine
+\item[acos]\label{op:acos} Arc cosine, inverse of cosine
+\item[atan]\label{op:atan} Arc tangent, inverse of tangent
+\item[sinh]\label{op:sinh} hyperbolic sine function $\frac{e^x-e^{-x}}2$
+\item[cosh]\label{op:cosh} hyperbolic cosine function $\frac{e^x+e^{-x}}2$
+\item[tanh]\label{op:tanh} hyperbolic tangent function $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
+
+\end{description}
+
+\section{Variables}
+
+Variables represent values in a calculation, and come in a number of
+varieties:
+\begin{description}
+\item[Constants] represent an explicit numerical value, and do not
+have a name. Their graphical representation shows the actual value of
+the constant.
+\item[Parameters] are named constants. All instances of a given name
+represent the same value, as with all other named variables, so
+changing the value of one parameter, either through its edit menu, or
+through a slider, will affect all the others of that name.
+\item[Flow variables] have an input port that defines how the value is
+to be calculated. Only one flow variable of a given name can have its
+input port connected, as they all refer to the same quantity. If no
+input ports are connected, then flow variables act just like
+parameters.
+\item[Integral variables] represent the result of integrating its
+input over time  by means of the differential
+equation solver. The integrand is represented by the input to an
+integral operator that is attached to the integral variable.
+\item[Stock variables] are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up the
+column.
+\end{description}
+
+Variables may be converted between types in the variable edit menu,
+available from the context menu.
+
+\subsection{Variable names}
+
+Variable names uniquely identify variables. Multiple icons on the
+canvas may have the same name --- they all refer to the same
+variable. Variable names have scope, which is either global (indicated
+by a leading `:', or the numerical id of a group. You may select a
+variable name from a drop down list in the ``name'' combo box.
+
+\subsection{Initial conditions}\label{var:init}
+
+Variable initial conditions can be defined through the ``init value''
+field of the variable edit menu, or in the case of Godley table stock
+variables, through the initial condition row of the Godley table. An
+initial value can be a simple number, or it can be a multiple of
+another named variable (or parameter). In case of symbolic
+definitions, it would be possible to set up a circular reference where
+the initial value of variable A is defined in terms of the initial
+value of variable B, which in turn depends on the intial value of
+A. Such a pathological situation is detected when the system is reset.
+
+\subsection{Sliders}
+
+From the context menu, one can select a slider to be attached to a
+variable, which is a GUI ``knob'' allowing one to control a variable's
+initial value, or the value of a parameter or constant. Adjusting the
+slider of an integral (or stock) variable while the system is running
+actually adjusts the present value of the variable.
+
+Slider parameters are specified in the edit menu: max, min and step
+size. A relative slider means that the step size is expressed as a
+fraction of max-min.
+
+\section{Wires}
+
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire
+attached, with the exception of +/- and $\times/\div$, where the
+multiple wires are summed or multiplied, respectively.
+
+Wires can be bent by dragging the blue dots (``handles''). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
+
+\section{Groups}\label{group}
+
+Grouping gives the capability to create reusable modules, or subroutines that
+can dramatically simplify more complicated systems. Groups may be
+created in the following ways:
+\begin{itemize}
+\item by lassoing a number of items to select them, then selecting
+"group" from the canvas context menu, or the edit menu.
+\item by pasting the selection
+\item by copying another group
+\item by inserting a Minsky file as a group
+\end{itemize}
+
+Zooming in on a group allows you see and edit its contents. Groups may
+be nested heirarchically, which gives an excellent way of zooming in
+to see the detail of a model, or zooming out to get an overview of it.
+
+Around the edges of a group are input or output variables, which allow
+one to parameterise the group. One can drag a variable and dock it in
+the I/O area to create a new input or output for the group.
+
+When creating a group, or dragging a variable or operation into or out
+of a group, if a wire ends up crossing the group boundary, a new
+temporary variable is added as an I/O variable.
+
+Variable names within groups are locally scoped to that group. That
+means that a variable of the same name outside the group refers to a
+different entity completely. One can refer to variables outside the
+current scope by qualifying the variable name. The simplest
+qualification to understand is global scope, which is specified by
+prepending a `:' to the variable name. To refer to a variable in
+another group, the notation is \verb+<group id>:<name>+, where
+\verb+<group id>+ is the integer id of the group in question. An
+alternative equivalent notation is \verb+<description>[<group id>]:<name>+, where \verb+<description>+ is the textual name given to
+the group. The description string is ignored by Minky on input - only
+the group id is important, but this mechanism makes it easier to see
+what variable belongs to which group in the drop down lists in the
+name field. Please try to keep the group names distinctive in their
+first five characters, as Minsky will truncate the descriptive string
+to fit in the drop fown menu.
+
+\section{Plot widget}
+\label{Plot}
+
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
+
+\htmladdimg{plotWidget.png}
+
+\begin{description}
+\item[left hand edge] Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+\item[right hand edge] Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+\item[bottom edge] Quantities controlling the x-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
+ \htmladdimg{plotLissajous.png}
+
+  If only one bottom port is connected, then that controls all pens
+  simultaneously, and if no ports are connected, then the simulation
+  time is used to provide the x coordinates
+\item[corners] Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the x, y and right hand
+  y axes. If left unwired, the scales are determined automatically
+  from the data. This can be used, for example, to implement a sliding
+  window graph
+ \htmladdimg{plotSlidingWindow.png}
+\end{description}
+
+\section{Note Widget}
+ \label{Notes} Notes allow arbitrary text to be
+placed on the canvas for explanatory purposes. Anything that can be
+entered on the keyboard can be placed here, including unicode
+characters, but LaTeX formatting is not currently supported. A note
+widget, like all canvas items, allow short additional tooltips to be
+specified (not in Mun!). 
+
+\section{Godley Tables}\label{godley}
+
+Godley tables describes sets of financial flows from the point of view
+of a particular economic agent, such as a bank. The columns of the
+table represent accounts (possibly aggregated), which are treated as
+integration variables by the system. In ``double entry'' mode,
+accounts may be assets, liabilities or equities. Assets may appear as
+liabilities in another agents Godley table, and vice versa, with the
+sense of the financial flows treated oppositely (a positive flow increasing the
+asset of one entity will appear as a negative flow, increasing the
+value of a liability). Instead of positive or negative flows, one can
+optionally use CR and DR prefixes, as specified in the options panel.
+
+The first row specifies the stock variables, after which follow the
+flow rows. Usually, the row marked ``Initial Conditions'' comes next,
+but may be placed in any position. These specify the initial
+conditions of the stock variables, and may refer to a multiple of
+another variable, just like the \htmlref{initial condition
+field}{var:init}, or just be a numerical value.
+
+Finally come the flows. The first column is a simple textual label
+(the word ``Initial Conditions'', regardless of capitalisation, is a
+reserved word for setting stock variable initial conditions)
+identifying the flow. The flows themselves are written as a numerical
+multipler times a flow variable. Unscoped variables are treated as
+global at present, however, in the future, Godley tables will be
+allowed to be part of groups, which will then define the context of
+the unqualified variable names.
+
+The final column displays the row sum. A correctly functioning Godley
+table should have each row sum to zero --- this ensures everything is
+accounted for, with no hidden sinks or sources.
+
+\section{Context Menu}
+
+All canvas items have a context menu, which allow a variety of
+operations to be applied to the canvas item. Common context menu items
+are explained here:
+\begin{description}
+\item[Help] bring up context specific help for the item
+\item[Description] Attach an annotation to the item. This is only
+visible by selecting the description item from the context menu,
+although whatever is set as the ``Short Description'' will also appear
+as a tooltip whenever the mouse hovers over the item.
+\item[Port values] When running a simulation, you can drill down into
+the actual values at the input and output ports of the variable or
+operation, which is a useful aid for debugging models.
+\item[Edit] set or query various attributes of an item. This function
+can also be accessed by double clicking on the item. (Plot widgets
+behave slightly differently).
+\item[Copy] Creates a copy of an item, retaining the same attributes
+of the original. This is very useful for creating copies of the same
+variable to reduce the amount of overlapping wiring (aka "rats nest")
+in a model.
+\item[Flip] actually rotates an object through $180^\circ$. You can
+specify aribtrary rotations of objects through the edit menu.
+\item[Raise/Lower] Raise and lower the canvas items relative to each
+other. You may need to do this if a large item such as a Godley table
+or plot is obscuring a wire, making it hard to access the wire's
+context menu or handles,
+\item[Browse object] gives a low level drilldown of the internal C++
+object this canvas item represents. It is perhaps more of interest to
+developers. 
+\item[Delete] delete the object.
+\end{description}
+
+Item specific context menu items:
+\begin{description}
+\item[variables, parameters and constants]
+\begin{description}
+\item[Slider] add a slider control to a variable. This is most
+effective for controlling parameters and constants, but can also be
+used to control inputless variables.
+\item[Add integral] attach an integration operation, and convert the
+variable into an integral type
+\end{description}
+\item[integrals]
+\begin{description}
+\item[Copy Var] copy just the integration variable, not the
+integration operation
+\item[Toggle Var Binding] Normally, integrals are tightly bound to their
+variables. By toggling the binding, the integral icon can then be
+moved independently of the variable it is bound to. 
+\end{description}
+\item[Godley tables]
+\begin{description}
+\item[Open Godley Table] opens a spreadsheet to allow financial flows
+defining the Godley table to entered or modified.
+\item[Edit/Copy var] allows individual stock and flow variables to be
+copied or edited.
+\end{description}
+\item[Plot Widgets]
+\begin{description}
+\item[Expand]
+By double-clicking, or selecting ``Expand'' from the context menu, a
+popup window is created of the plot, which can be used examine the
+plotting in more detail.
+
+\item[Resize] Allows you to resize the plot icon on the canvas
+\item[Options] Customize the plot by adding a title, axes labels and
+  control the number of axis ticks and grid lines on the detailed
+  plot. You can also add a legend, which is populated from the names
+  of variables attached to the plot.
+\item[Delete] remove the plot
+\end{description}
+
+\end{description}
+
+\section{Canvas background}
+
+The canvas is not simply an inert place for the canvas items to
+exist. There is also a background context menu, giving access to the
+edit menu functionality, and also keyboard entry.
+
+The following keystrokes insert an operation
+
+\begin{tabular}{rl}
++ & add\\
+- & subtract \\
+* & multiply\\
+/ & divide\\
+\verb+^+ & pow\\
+\& & integral\\
+= & Godley table\\
+@ & plot\\
+\% or \# & start a text comment, finish with return\\
+\end{tabular}
+
+Typing any other character, then return will insert an operation (if
+the name matches), or otherwise a variable with that name.

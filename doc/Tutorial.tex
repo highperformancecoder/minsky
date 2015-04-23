@@ -1,0 +1,502 @@
+\chapter{Tutorial}\label{tutorial}
+
+\section{Basic System Dynamics model}
+
+In 1965, Richard Goodwin, the great pioneer of complexity in
+economics, presented the paper \htmladdnormallink{``A Growth
+Cycle''}{http://en.wikipedia.org/wiki/Goodwin_model_(economics)} to
+the First World Congress of the Econometric Society in Rome. It was
+later published in a book collection (Goodwin, Richard M. 1967. "A
+Growth Cycle," in C. H. Feinstein, {\em Socialism, Capitalism and Economic
+Growth}. Cambridge: Cambridge University Press, pp. 54--58.); to my
+knowledge it was never published in a journal. 
+
+Goodwin's model has been subjected to much critical literature about
+implying stable cycles, not matching empirical data, etc., but Goodwin
+himself emphasized that it was a ``starkly schematized and hence quite
+unrealistic model of cycles in growth rates". He argued however that
+it was a better foundation for a more realistic model that "the more
+usual treatment of growth theory or of cycle theory, separately or in
+combination.'' 
+
+Goodwin emphasized the similarity of this model to the Lokta-Volterra
+model of interacting predator and prey, which can make it seem as if
+it was derived by analogy to the biological model. But in fact it can
+easily be derived from a highly simplified causal chain:
+
+\begin{itemize}
+
+\item The level of output ($Y$) determines the level of employment ($L$), with $L=Y/a$ where $a$ is a measure of labor productivity;
+\item Given a population $N$, the employment rate $\lambda=L/N$ plays
+a role in determining the {\bf\em rate of change} of the wage $w$:
+Goodwin used a linear approximation to a non-linear ``Phillips
+Curve'': 
+
+\htmladdimg{NewItem55.png}
+
+
+His linear approximation was:
+
+\begin{displaymath}
+\frac1w\frac{d}{dt}w=-\gamma+\rho\cdot\lambda
+\end{displaymath}
+
+\item In a simple two-class model, profits $\Pi$ equals the level of
+output $Y$ minus the wage bill: $\Pi=Y-w.L$ 
+\item For simplicity, Goodwin assumed that all profits were invested, so that Investment equals profits: $I=\Pi$.
+\item Investment is the rate of change of the capital stock $K$;
+\item The level of output is, to a first approximation, determined by
+the level of capital stock ($K$). A simple way of stating this is that
+$Y$ is proportional to $K$: $Y=K/v$, where $v$ is a constant (Goodwin
+notes that this relation ``could be softened but it would mean a
+serious complicating of the structure of the model''); and finally 
+\item Goodwin assumed that labor productivity grew at a constant rate $\alpha$, while population grew at a constant rate $\beta$.
+
+Goodwin published the model as a reduced form equation in the two
+system states the employment rate ($\lambda$) and the workers' share
+of output ($\omega$): 
+
+\begin{eqnarray*}
+\frac{d}{dt}\lambda&=&\lambda\left(\frac{1-\omega}{v}-\alpha-\beta\right)\\
+\frac{d}{dt}\omega&=&\omega\cdot\left(\rho\cdot\lambda-\gamma-\alpha\right)
+\end{eqnarray*}
+
+\end{itemize}
+
+This form is useful for analytic reasons, but it obscures the causal
+chain that actually lies behind the model. With modern system dynamic
+software, this can be laid out explicitly, and we can also use much
+more meaningful names. We'll start with defining output (which is a
+variable). Click on \htmladdimg{NewItem58.png} on the Icon Palette, or click on the Operations
+menu and choose ``Variable''. This will open up the ``Specify Variable
+Name'' window: 
+
+\htmladdimg{NewItem63.png} 
+
+Enter ``{\em\bf GDP}'' into the ``Name'' field, and leave the other
+fields blank---since {\em\bf GDP} is a variable and we're defining a
+dynamic system, the value of {\em\bf GDP} at any particular point in
+time will depend on the other entities in the model. Now Click OK (or
+press ``Enter''). The variable will now appear, attached to the
+cursor. Move to a point near the top of the screen and click, which
+will place the variable at that location:
+
+\htmladdimg{NewItem64.png} 
+
+
+We are now going to write the first part of the model, that Labor
+({\em\bf Labor}) equals output ({\em\bf GDP}) divided by labor
+productivity ({\em\bf LabProd}). Just for the sake of illustration,
+we'll make {\em\bf a} a constant (this can easily be modified
+later). For this we need to add a constant by clicking on \htmladdimg{NewItem61.png} on the
+Palette, or by choosing Operations/constant from the menu. This will
+pop-up the Edit Constant window: 
+
+\htmladdimg{NewItem66.png} 
+
+Give the variable the name ``{\em\bf LabProd}'' and the value of 1
+(i.e., one unit of output per worker). Click OK or press Enter and the
+constant \htmladdimg{NewItem67.png}  will now be attached to the
+cursor. Place it below {\em\bf GDP}: 
+
+\htmladdimg{NewItem66.png} 
+
+Now we need to divide {\em\bf GDP} by {\em\bf LabProd}. Click on the
+\htmladdimg{NewItem69.png} symbol on the palette and the symbol will
+be attached to the cursor. Drag it near the other two objects and
+click. Your Canvas will now look something like this: 
+
+\htmladdimg{NewItem70.png} 
+
+Now to complete the equation, you have to attach {\em\bf GDP}  to the top of the
+divide block and LabProd to the bottom. Go to the Mode buttons and
+click on Wire:  
+
+\htmladdimg{NewItem71.png} 
+
+
+Now move your cursor to the right hand side of
+\htmladdimg{NewItem72.png}  and click, hold the mouse button down, and
+drag. An arrow will come out from  \htmladdimg{NewItem72.png}. Drag
+this arrow to the top of the divide block (where you'll see a tiny
+multiply sign) and release the mouse. You should then see this: 
+
+\htmladdimg{NewItem74.png} 
+
+
+The program will ``snap'' to the nearest object when you're in Wire
+mode, so this should be easy to do. But if you have any problems, go
+to the File menu and click on ``Show Ports''. You will then see little
+circles that identify the input and output ports on all objects: 
+
+\htmladdimg{NewItem75.png} 
+
+Those are the connection points for wires, so start dragging from one
+and release on the other. Now wire LabProd to the bottom of the Divide
+block (where you'll see a miniature divide symbol (blown up below): 
+
+\htmladdimg{NewItem76.png} 
+
+
+To complete the equation, click on ``Move'' in the Mode buttons:
+
+\htmladdimg{NewItem77.png} 
+
+
+Then click on \htmladdimg{NewItem78.png} in the Design Icons to create a new variable, call it
+Labor, place it the the right of the Divide block, change back to Wire
+mode again, and wire the output port from the Divide block to the
+input port for {\bf\em Labor}: 
+
+\htmladdimg{NewItem79.png} 
+
+
+To show the correspondence between the flowchart above and a standard
+modeling equation, click on the File menu and choose ``Output
+LaTeX''. Give the file a suitable name (say ``Labor Equation'') and
+save it to disk. Then if you have a \LaTeX{} program, or if you know how
+to import \LaTeX{} equations into MathType, you will see that you have
+created the following equations: 
+
+\begin{eqnarray*}
+\mathrm{GDP}&=&\\
+\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\end{eqnarray*}
+
+If you don't have either \LaTeX, or MathType, you will see a text file with the following content:
+\begin{verbatim}
+\documentclass{article}
+\begin{document}
+\begin{eqnarray*}
+\mathrm{GDP}&=&\\
+\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\end{eqnarray*}
+\end{document}
+\end{verbatim}
+
+This is \LaTeX{} code, which is processed by a \LaTeX{} interpreter to
+produce beautifully formatted equations. A future release of Minsky
+will incorporate a \LaTeX{} processor, so that you will be able to see
+the equations within the program. 
+
+
+Now let's keep going with the model. With {\bf\em Labor} defined, the
+employment rate will be {\bf\em  Labor} divided by {\bf\em
+Population}. Define {\bf\em Population} as a constant (we'll later
+change it to a variable), and give it a value of 110. 
+
+\htmladdimg{NewItem81.png} 
+
+
+
+Add it to the Canvas and you are now ready to define the employment
+rate---another variable. Click on \htmladdimg{NewItem82.png}, give it
+the name ``$\backslash$lambda'' (be sure to include the backslash symbol), put
+another Divide block on the canvas, choose Wire mode and wire this
+next part of the model up. You should now have:
+
+\htmladdimg{NewItem83.png} 
+
+
+Now choose ``File>Output Latex'' again, give it an appropriate name (say ``EmploymentEquation''), and load this into your LaTeX processor. You will see
+
+\begin{eqnarray*}
+\mathrm{GDP}&=&\\
+\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\lambda&=&\frac{\mathrm{Labor}}{\mathrm{Population}}\\
+\end{eqnarray*}
+
+Notice that Minsky outputs a Greek $\lambda$ in the equation. In a
+later release, we'll allow the inputing of Greek and other symbols
+directly---for now, this is our workaround. 
+
+
+With the employment rate defined, we are now ready to define a
+``Phillips Curve'' relationship between the level of employment and the
+{\em\bf rate of change} of wages. There was far more to Phillips than this (he
+actually tried to introduce economists to system dynamics back in the
+1950s), and far more to his employment-wage change relation too, and
+he insisted that the relationship was nonlinear (as in Goodwin's
+figure above). But again for simplicity we'll define a linear
+relationship between employment and the rate of change of wages. 
+
+Here we need to manipulate the basic linear equation that Goodwin used:
+
+\begin{displaymath}
+\frac1w\frac d{dt}w = -\gamma+\rho\cdot\lambda
+\end{displaymath}
+
+Firstly multiply both sides by $w$:
+
+\begin{displaymath}
+\frac d{dt}w = w\cdot(-\gamma+\rho\cdot\lambda)
+\end{displaymath}
+
+Then integrate both sides (because integration is a numerically much
+more stable process than differentiation, all system dynamics programs
+use integration rather than differentiation): 
+
+\begin{displaymath}
+w=w_0+\int w\cdot(-\gamma+\rho\cdot\lambda)
+\end{displaymath}
+
+In English, this says that the wage now is the initial wage plus the
+integral of the wage multiplied by its rate of change function. That's
+what we now need to add to the Canvas, and the first step is to spell
+out the wage change function itself. Firstly, since we're using a
+linear wage response function, the rate of employment has to be
+referenced to a rate of employment at which the rate of changes is
+zero.  I suggest using Milton Friedman's concept of a
+``Non-Accelerating-Inflation-Rate-of-Unemployment'', or NAIRU. We need
+to define this constant, subtract it from 1, and subtract the result
+from the actual employment rate $\lambda$. To enter 1, click on \htmladdimg{NewItem89.png}, define a
+constant called 1, and give it a value of 1 (we'll have a more elegant
+way of doing this in a later release). Then define another constant
+NAIRU, and give it a value of 0.05 (5\% unemployment). Subtract this
+from 1 and subtract the result from $\lambda$. You should have the following:
+
+\htmladdimg{NewItem108.png}
+
+Now we need to multiply this gap between the actual employment rate
+and the ``NAIRE'' rate by a constant that represents the response of
+wages to this gap. Let's call this constant {\bf\em Emp\_Response} (remember to include the underscore). Define the constant, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
+
+\htmladdimg{NewItem109.png}
+
+Now we are ready to add a crucial component of a dynamic model: the
+integral block, which takes a flow as its input and has the integral
+of that flow as the output. The wage rate {\bf\em w} is such a variable, and we
+define it by clicking on the \htmladdimg{NewItem91.png} symbol in the Icon Palette (or by
+choosing Operations/Integrate from the menu). This then attaches the
+following block to the cursor: 
+
+\htmladdimg{NewItem92.png}
+
+
+Now we need to rename this from the default name of ``int'' to
+``{\em\bf w}'' for the wage rate. Either right click or double-click
+on ``int'' and this will bring up the edit window . Rename it to ``w'' and
+give it a value of 1: 
+
+\htmladdimg{NewItem93.png}
+
+To compete the integral equation, we need to multiply the linear
+employment response function by the current wage before we integrate
+it (see the last equation above). There are two ways to do
+this. First, place a multiply block between the wage change function
+and the integral block, wire the function up to one input on the
+multiply block, and then either:
+
+\begin{itemize}
+\item wire the output of the {\bf\em w} block back to the other input
+on multiply block; or
+\item Right-click on {\bf\em w}, choose "Copy Var", place that copy
+before the multiply block, and wire it up.
+\end{itemize}
+
+The first method gives you this initial result:
+
+\htmladdimg{NewItem110.png}
+
+That looks messy, but notice the blue dot on the wire? Click and drag
+on that and you will turn the straight line connector into a curve: 
+
+\htmladdimg{NewItem111.png}
+
+The second approach, which I personally prefer (it's neater, and it
+precisely emulates the integral equation), yields this result: 
+
+\htmladdimg{NewItem112.png}
+
+From this point on the model develops easily---``like money for old
+rope'', as one of my maths lecturers used to say. Firstly if we
+multiply the wage rate {\bf\em w} by {\bf\em Labor} we get the {\em\bf
+Wage Bill}. To do this,
+firstly create the variable Wage Bill, and put will well below where w
+currently is on your diagram: 
+
+\htmladdimg{NewItem113.png}
+
+Now right-click on {\bf\em WageBill} and choose ``Flip''. This rotates
+the block through 180 degrees (any arbitrary rotation can be applied
+from the variable definition window itself). Now right-click on
+{\bf\em Labor}, which you've already defined some time ago, and choose
+``Copy''. Place the copy of {\bf\em Labor} to the right of {\bf\em
+WageBill}:
+
+
+\htmladdimg{NewItem98.png}
+
+Now insert a multiply block before {\bf\em WageBill}, and wire {\bf\em
+w} and {\bf\em Labor} up to it. Curve the wire from w using the blue
+dots (you can do this multiple times to create a very curved path:
+each time you create a curve, another 2 curve points are added that
+you can also manipulate, as I have done below: 
+
+\htmladdimg{NewItem114.png}
+
+
+The next step is to subtract the {\bf\em WageBill} from {\bf\em GDP}
+to define {\bf\em Profits}. Take a copy of {\bf\em GDP}, insert it
+before {\bf\em WageBill}, insert a subtract block, and wire it up to
+define the variable {\bf\em Profits}:
+
+\htmladdimg{NewItem100.png}
+
+
+
+In the simple Goodwin model, all Profits are invested, and investment
+of course is the rate of change of the capital stock Capital. Create a
+variable called Investment, wire this up to Profits, and then create a
+new integral variable Capital using the \htmladdimg{NewItem101.png}
+icon. Right-click or double-click on to rename int2 to Capital, and
+give it an initial value of 300: 
+
+\htmladdimg{NewItem102.png}
+
+Wire this up to Investment:
+
+\htmladdimg{NewItem104.png}
+
+Now there's only one step left to complete the model: define a
+constant CapOutputRatio and give it a value of 3:
+
+\htmladdimg{NewItem103.png}
+
+
+Divide Capital by this, and wire the result up to the input on
+GDP. You have now built your first dynamic model in Minsky: 
+
+
+Before you attempt to run it, do two things. Firstly from the Runge
+Kutta menu item, change the Max Step Size to 0.01---to get a smoother
+simulation. 
+
+\htmladdimg{NewItem107.png}
+
+Secondly, add some graphs by clicking on the
+\htmladdimg{NewItem106.png} icon, placing the graph
+in the middle of the flowchart, and wiring up $\backslash$lambda and w to two of
+the four inputs on the left hand side. You will now see that, rather
+than reaching equilibrium, the model cycles constantly:
+
+\htmladdimg{NewItem116.png}
+
+If you choose File/Output LaTeX and load the file into a LaTeX
+processor, you will see that you have defined the following system of
+equations:
+
+\begin{eqnarray*}
+\mathrm{GDP}&=&\frac{\mathrm{Capital}}{\mathrm{CapOutRatio}}\\
+\mathrm{Investment}&=&\mathrm{Profits}\\
+\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\mathrm{Profits}&=&\mathrm{GDP}-\mathrm{WageBill}\\
+\mathrm{WageBill}&=&w\times\mathrm{Labor}\\
+\lambda&=&\frac{\mathrm{Labor}}{\mathrm{Population}}\\
+\omega&=&\frac{\mathrm{WageBill}}{\mathrm{GDP}}\\
+\frac{dw}{dt}&=&\mathrm{Emp}_\mathrm{Response}\times(\lambda-(1-\mathrm{NAIRU})
+        \times w\\
+\frac{d\mathrm{Capital}}{dt}&=&\mathrm{Investment}\\
+\end{eqnarray*}
+
+
+At this level of complexity, the equation form---if you're accustomed
+to working in equations---is as accessible as the flowchart model from
+which it was generated. But at much higher levels of complexity, the
+flowchart is far easier to understand since it displays the causal
+links in the model clearly, and can be structured in sub-groups that
+focus on particular parts of the system. 
+
+\section{Basic Banking model}\label{tut:basicBankModel}
+
+If you haven't yet read the section on \htmlref{Creating a Banking
+Model}{creatingBankingModel}, do so now. This tutorial starts from the
+skeleton of the ``Loanable Funds'' model built in that section, and
+using \htmlref{time constants}{time-constants} to specify how quickly
+lending occurs.  
+
+
+\subsection{Loanable Funds}
+
+Our model begins with the single operation of Patient lending to
+Impatient at a rate that, if kept constant at its initial level of of
+\$10 per annum, would empty the Patient account in 10 years. Because
+the rate of outflow declines as the Patient account declines, the
+money in the account decays towards zero but never quite reaches it.
+
+\htmladdimg{NewItem169.png}
+
+Many more actions need to be added to this model to complete it. For a
+start, Impatient should be paying interest to Patient on the amount
+lent. Add an additional row to the Godley Table by clicking on the
+\htmladdimg{NewItem170.png} key
+next to ``Patient lends to Impatient'' to create a blank row:
+
+\htmladdimg{NewItem171.png}
+
+Then label this flow ``Impatient pays interest'' and make the entry
+``Interest'' into the cell for Impatient on that row. Make the matching
+entry ``-Interest'' in the cell for Patient. The flow ``Interest'' now
+appears on the input side of the Godley Table on the Canvas: 
+
+\htmladdimg{NewItem172.png}
+
+Interest now has to be defined. It will be the amount in Impatient's
+account (since this began at zero) multiplied by the rate of interest
+charged by Patient:
+
+\htmladdimg{NewItem173.png}
+
+
+With that definition, the dynamics of the model change: rather than
+the Patient account falling to zero and Impatient rising to 100, the
+two accounts stabilize once the outflow of new loans by Patient equals
+the inflow of interest payments by Impatient:
+
+\htmladdimg{NewItem174.png}
+
+
+Though it stabilizes, this is is still a very incomplete model:
+neither Patient nor Impatient are doing anything with the money apart
+from lending it and paying interest. I am now going to assume that
+Impatient is borrowing the money in order to hire workers to work at a
+factory and produce output for sale. So we now need another account
+called Workers, and a payment from Impatient to Workers called Wage:
+
+\htmladdimg{NewItem174.png}
+
+
+
+In a more complex model, the Wage bill could be related to the current
+rate times the number of workers in employment. In this simple model I
+will regard the wage as a function of the amount of money in
+Impatient's account turning over several times a year in the payment
+of wages. Using a time constant, I will assume that the amount in
+Impatient's account turns over 3 times a year paying wages, so that
+the time constant is 1/3rd of a year:
+
+\htmladdimg{NewItem176.png}
+
+
+The dynamics of this incomplete model are very different again: very
+little money turns up in the Impatient account, and all of the money
+ends up in the Workers account. However economic activity also ceases
+as both lending and the flow of wages falls towards zero:
+
+\htmladdimg{NewItem177.png}
+
+
+This is because wages are being paid to workers, but they are doing
+nothing with it. So we need to include consumption by workers--and by
+Patient as well. Here the reason time constants are useful may be more
+obvious. The time constant for consumption by Workers is given the
+very low value of 0.05---or 1/20th of a year---which indicates that if
+their initial rate of consumption was maintained without any wage
+income, they would reduce their bank balances to zero in 1/20th of a
+year or about 2.5 weeks.
+
+\subsection{Endogenous Money}\label{tut:money}
+
+\section{Basic Combined Model}
+
+

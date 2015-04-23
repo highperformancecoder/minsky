@@ -1,0 +1,11 @@
+nsteps 10
+0.3 {:x} 1 {constant:one} 1 {constant:zero} 0 
+1 {:x} 1 {constant:one} 1 {constant:zero} 0 
+1.7 {:x} 3.1 {constant:one} 1 {constant:zero} 0 
+2.4 {:x} 6 {constant:one} 1 {constant:zero} 0 
+3.1 {:x} 9.7 {constant:one} 1 {constant:zero} 0 
+3.8 {:x} 14.6 {constant:one} 1 {constant:zero} 0 
+4.5 {:x} 20.5 {constant:one} 1 {constant:zero} 0 
+5.2 {:x} 25 {constant:one} 1 {constant:zero} 0 
+5.9 {:x} 25 {constant:one} 1 {constant:zero} 0 
+6.6 {:x} 25 {constant:one} 1 {constant:zero} 0 

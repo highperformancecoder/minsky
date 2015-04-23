@@ -1,0 +1,11 @@
+nsteps 10
+0.003 {:Investment} 0.152727 {:K} 300 {:L} 100 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 0.152727 {:WageBill} 99.8473 {:WageRate} 0.998473 {:Y} 100 {:emprate} 0.909092 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.01 {:Investment} 0.50907 {:K} 300.003 {:L} 100.001 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 0.50907 {:WageBill} 99.4918 {:WageRate} 0.994909 {:Y} 100.001 {:emprate} 0.909099 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.017 {:Investment} 0.865349 {:K} 300.007 {:L} 100.002 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 0.865349 {:WageBill} 99.1371 {:WageRate} 0.991347 {:Y} 100.002 {:emprate} 0.909113 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.024 {:Investment} 1.22152 {:K} 300.015 {:L} 100.005 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 1.22152 {:WageBill} 98.7834 {:WageRate} 0.987785 {:Y} 100.005 {:emprate} 0.909135 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.031 {:Investment} 1.57754 {:K} 300.024 {:L} 100.008 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 1.57754 {:WageBill} 98.4306 {:WageRate} 0.984226 {:Y} 100.008 {:emprate} 0.909165 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.038 {:Investment} 1.93337 {:K} 300.037 {:L} 100.012 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 1.93337 {:WageBill} 98.0789 {:WageRate} 0.980669 {:Y} 100.012 {:emprate} 0.909202 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.045 {:Investment} 2.28896 {:K} 300.052 {:L} 100.017 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 2.28896 {:WageBill} 97.7282 {:WageRate} 0.977114 {:Y} 100.017 {:emprate} 0.909247 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.052 {:Investment} 2.64426 {:K} 300.069 {:L} 100.023 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 2.64426 {:WageBill} 97.3787 {:WageRate} 0.973563 {:Y} 100.023 {:emprate} 0.909299 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.059 {:Investment} 2.99924 {:K} 300.089 {:L} 100.03 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 2.99924 {:WageBill} 97.0303 {:WageRate} 0.970016 {:Y} 100.03 {:emprate} 0.909359 {:v} 3 {constant:one} 1 {constant:zero} 0 
+0.066 {:Investment} 3.35385 {:K} 300.111 {:L} 100.037 {:N} 110 {:NAIRU} 0.96 {:PhillipsSlope} 10 {:Profit} 3.35385 {:WageBill} 96.6831 {:WageRate} 0.966474 {:Y} 100.037 {:emprate} 0.909427 {:v} 3 {constant:one} 1 {constant:zero} 0 

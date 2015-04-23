@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+  @copyright Steve Keen 2012
+  @author Michael Roy
+  This file is part of Minsky.
+
+  Minsky is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Minsky is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+  English (default) text resource file.
+ */
+-->
+<messages>
+  <!-- 
+      Application labels. 
+  -->
+  <message id="app.title">
+    Minsky
+  </message>
+  <message id="app.title.format">
+    {1} - Minsky
+  </message>
+  <message id="app.version">
+    0.0.0.0
+  </message>
+
+  <!-- 
+      Document default file name. 
+  -->
+  <message id="document.defaultfilename">
+    NewDocument{1}
+  </message>
+  <message id="document.extension">
+    msk
+  </message>
+  
+  <!-- 
+      Document properties data. 
+  -->
+  <message id="document.properties.filename">
+    File Name
+  </message>
+
+  <message id="propertiesdlg.title">
+    Properties
+  </message>
+  <message id="propertiesdlg.title.format">
+    {1} - Properties
+  </message>
+
+  <!--
+   -  General dialog resources.
+   -->
+  <message id="dialog.operation.properties">
+    Constant Properties
+  </message>
+  <message id="dialog.integrate.properties">
+    Integral Properties
+  </message>
+  <message id="dialog.constant.properties">
+    Constant Properties
+  </message>
+  <message id="dialog.ok">
+    Ok
+  </message>
+  <message id="dialog.cancel">
+    Cancel
+  </message>
+  <message id="dialog.name">
+    Name
+  </message>
+  <message id="dialog.value">
+    Value
+  </message>
+  <message id="dialog.rotation">
+    Rotation
+  </message>
+  <message id="dialog.slider.min">
+    Slider min.
+  </message>
+  <message id="dialog.slider.max">
+    Slider max.
+  </message>
+  <message id="dialog.slider.step">
+    Slider step
+  </message>
+  <message id="dialog.slider.relative">
+    Slider relative
+  </message>
+  <message id="dialog.slider.show">
+    Slider visible
+  </message>
+  <message id="dialog.godley.noassetclass">
+
+  </message>
+  <message id="dialog.godley.asset">
+    Asset
+  </message>
+  <message id="dialog.godley.liability">
+    Liability
+  </message>
+  <message id="dialog.godley.equity">
+    Equity
+  </message>
+  <message id="dialog.godley.rowsum">
+    Row Sum
+  </message>
+  <message id="dialog.var.title">
+    Variable Properties
+  </message>
+ 
+  <!--
+   -  Global Preferences dialog
+   -->
+  <message id="dialog.prefs.title">
+  	Global Preferences
+  </message>
+  <message id="dialog.prefs.godleyTableDoubleEntry">
+  	Godley Table Double Entry
+  </message>
+  <message id="dialog.prefs.godleyTableShowValues">
+  	Godley Table Show Values
+  </message>
+  <message id="dialog.prefs.godleyTableOutputStyle">
+  	Godley Table Output Style
+  </message>
+  <message id="dialog.prefs.godleyDrCr">
+  	DR/CR
+  </message>
+  <message id="dialog.prefs.godleyPlusMinus">
+  	+/-
+  </message>
+  
+  <!--
+   -  Main menu labels.
+   -->
+  <message id="menu.file">
+    File
+  </message>
+  <message id="menu.file.new">
+    New
+  </message>
+  <message id="menu.file.open">
+    Open...
+  </message>
+  <message id="menu.file.save">
+    Save
+  </message>
+  <message id="menu.file.saveas">
+    Save As...
+  </message>
+  <message id="menu.file.close">
+    Close
+  </message>
+  <message id="menu.file.properties">
+    Properties
+  </message>
+  <message id="menu.file.exit">
+    Exit
+  </message>
+
+  <message id="menu.edit">
+    Edit
+  </message>
+  <message id="menu.edit.cut">
+    Cut
+  </message>
+  <message id="menu.edit.copy">
+    Copy
+  </message>
+  <message id="menu.edit.paste">
+    Paste
+  </message>
+  <message id="menu.edit.group">
+    Group    
+  </message>
+  <message id="menu.edit.ungroup">
+    Ungroup
+  </message>
+
+  <message id="menu.view">
+    View
+  </message>
+
+  <message id="menu.help">
+    Help
+  </message>
+  <message id="menu.help.help">
+    Help
+  </message>
+  <message id="menu.help.about">
+    About
+  </message>
+
+  <!--
+   -  Main tool bar tooltips.
+   -->
+  <message id="toolbar.tool.default">
+    Select
+  </message>
+  <message id="toolbar.tool.link">
+    Insert Link
+  </message>
+  <message id="toolbar.tool.lasso">
+    Lasso
+  </message>
+  <message id="toolbar.tool.pan">
+    Pan
+  </message>
+  <message id="toolbar.zoom.in">
+    Zoom In
+  </message>
+  <message id="toolbar.zoom.out">
+    Zoom Out
+  </message>
+  <message id="toolbar.zoom.reset">
+    Zoom All
+  </message>
+  <message id="toolbar.table.godley">
+    Godley table
+  </message>
+  <message id="toolbar.operation.constant">
+    K
+  </message>
+  <message id="toolbar.operation.add">
+    x+y
+  </message>
+  <message id="toolbar.operation.substract">
+    x-y
+  </message>
+  <message id="toolbar.operation.multiply">
+    x*y
+  </message>
+  <message id="toolbar.operation.divide">
+    x/y
+  </message>
+  <message id="toolbar.operation.log">
+    log(x)
+  </message>
+  <message id="toolbar.operation.pow">
+    pow(x,y)
+  </message>
+  <message id="toolbar.operation.time">
+    Insert a time operation
+  </message>
+  <message id="toolbar.operation.copy">
+    Insert a copy
+  </message>
+  <message id="toolbar.operation.integrate">
+    integral(x)
+  </message>
+  <message id="toolbar.operation.sqrt">
+    sqrt(x)
+  </message>
+  <message id="toolbar.operation.exp">
+    exp(x)
+  </message>
+  <message id="toolbar.operation.ln">
+    log(x)
+  </message>
+  <message id="toolbar.operation.sin">
+    sin(x)
+  </message>
+  <message id="toolbar.operation.cos">
+    cos(x)
+  </message>
+  <message id="toolbar.operation.tan">
+    tan(x)
+  </message>
+  <message id="toolbar.operation.asin">
+    asin(x)
+  </message>
+  <message id="toolbar.operation.acos">
+    acos(x)
+  </message>
+  <message id="toolbar.operation.atan">
+    atan(x)
+  </message>
+  <message id="toolbar.operation.sinh">
+    sinh(x)
+  </message>
+  <message id="toolbar.operation.cosh">
+    cosh(x)
+  </message>
+  <message id="toolbar.operation.tanh">
+    tanh(x)
+  </message>
+  <message id="toolbar.plot">
+    Insert a graph
+  </message>
+  
+  <!--
+   -  Context menus.
+   -->
+  <message id="contextmenu.properties">
+  	Properties
+  </message> 
+  <message id="contextmenu.delete">
+  	Delete
+  </message> 
+
+  <!--
+   -  Message boxes.
+   -->
+  <message id ="messagebox.savefilebeforeclose">
+    Document has been modified. Do you want to save it before closing ?
+  </message>
+  <message id ="messagebox.filetoobig">
+    Document is too large for loading...  Check the value of parameter max-request-size in wt_config.xml.
+  </message>
+  <message id ="messagebox.fileformaterror">
+    Could not load document. Is is not recognized as a valid Minky model.
+  </message>
+  <message id ="messagebox.filesaveerror">
+    Could not save document. An error occured while streaming the model.
+  </message>
+</messages>

@@ -1,0 +1,11 @@
+nsteps 10
+0.3 {:I(t)_-_Investment_at_time_t} 7.10417 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 5.60769 {:O(t)_-_Output_at_time_t} 23.6806 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+1 {:I(t)_-_Investment_at_time_t} 9.52509 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 10.0808 {:O(t)_-_Output_at_time_t} 31.7503 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+1.7 {:I(t)_-_Investment_at_time_t} 11.7432 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 15.3225 {:O(t)_-_Output_at_time_t} 39.144 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+2.4 {:I(t)_-_Investment_at_time_t} 13.7755 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 21.0848 {:O(t)_-_Output_at_time_t} 45.9182 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+3.1 {:I(t)_-_Investment_at_time_t} 15.6374 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 27.17 {:O(t)_-_Output_at_time_t} 52.1248 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+3.8 {:I(t)_-_Investment_at_time_t} 17.3434 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 33.4217 {:O(t)_-_Output_at_time_t} 57.8115 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+4.5 {:I(t)_-_Investment_at_time_t} 18.9065 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 39.7174 {:O(t)_-_Output_at_time_t} 63.0217 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+5.2 {:I(t)_-_Investment_at_time_t} 20.3386 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 45.9622 {:O(t)_-_Output_at_time_t} 67.7954 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+5.9 {:I(t)_-_Investment_at_time_t} 21.6508 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 52.0839 {:O(t)_-_Output_at_time_t} 72.1692 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 
+6.6 {:I(t)_-_Investment_at_time_t} 22.8529 {:L(t)_-_Labor_at_time_t} 100 {:M(t)_-_Machines_at_time_t} 58.0286 {:O(t)_-_Output_at_time_t} 76.1765 {:d_-_Depreciation_Rate} 0.25 {:s_-_Savings_Rate} 0.3 {constant:one} 1 {constant:zero} 0 

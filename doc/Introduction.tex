@@ -1,0 +1,253 @@
+\chapter{Introduction}
+\label{Introduction}
+
+\section{Welcome}
+
+\subsection{New to system dynamics?}
+\label{intro:new}
+
+Minsky is one of a family of ``system dynamics'' computer
+programs. These programs allow a dynamic model to be constructed, not
+by writing mathematical equations or numerous lines of computer code,
+but by laying out a model of a system in a flowchart, which can then
+simulate the system. These programs are now the main tool used by
+engineers to design complex products, ranging from small electrical
+components right up to passenger jets.
+
+
+Minsky adds another means to create the dynamic equations that are
+needed to define monetary flows---the ``Godley Table''---which is
+discussed in the next help topic for users who are experienced in
+system dynamics. In this section, we'll give you a quick overview of
+the generic system dynamics approach to building a model.
+
+
+Though they differ in appearance, they all work the same way:
+variables in a set of equations are linked by wires to mathematical
+operators. What would otherwise be a long list of equations is
+converted into a flowchart, and the flowchart makes the causal chain
+in the equations explicit and visually obvious.
+
+For example, say you wanted to define the rate of employment as
+depending on output (GDP), labor productivity and population. Then you
+could define a set of equations in a suitable program (like Mathcad):
+
+\begin{center}
+\htmladdimg{NewItem.png}
+\end{center}
+
+Or you could define it in a flowchart, using a program like Vissim:
+
+\begin{center}
+\htmladdimg{NewItem1.png}
+\end{center}
+
+For a simple algebraic equation like this, modern computer algebra
+programs like Mathcad are just as good as a flowchart program like
+Vissim. But the visual metaphor excels when you want to describe a
+complex causal chain.
+
+
+These causal chains always involve a relationship between stocks and
+flows. Economists normally model stocks and flows by adding an
+increment to a stock in equations like this for the level of Capital,
+where capital in year $t$ is shown as being capital in year $t-1$ plus
+the investment that took place that year:
+
+\begin{displaymath}
+K_t=K_{t-1}+I_{t-1}
+\end{displaymath}
+
+For reasons that are explained in the FAQ \htmlref{``Why no difference
+  equations?}{faq:no-difference}, all stocks and flows in Minsky are
+handled instead as integral equations. The amount of capital at time
+$t$ is shown as the integral of net investment between time 0 and
+today:
+
+\begin{displaymath}
+K(t)=\int_0^t I(s)ds
+\end{displaymath}
+
+However, rather than being shown as an equation, the relationship is shown as a flowchart:
+
+\begin{center}
+\htmladdimg{NewItem7.png}
+\end{center}
+
+The advantages of the flowchart representation of dynamic equations
+over a list of equations are:
+\begin{itemize}
+\item    They make the causal relationships in a complex model
+  obvious. It takes a specialized mind to be able to see the causal
+  relations in a large set of mathematical equations; the same
+  equations laid out as flowcharts can be read by anyone who can read
+  a flowchart---and that's most of us;
+\item The flowchart paradigm makes it possible to store components of
+  a complex flowchart in a group. For example, the fuel delivery
+  system in a car can be treated as one group, the engine as another,
+  the exhaust as yet another. This reduces visual complexity and also
+  makes it possible for different components of a complex model to be
+  designed by different groups and then ``wired together'' at a later
+  stage.
+\end{itemize}
+
+For example, here's a model of a 4 cylinder engine car---one of the
+simple examples distributed with the program Vissim:
+
+\begin{center}
+\htmladdimg{NewItem8.png}
+\end{center}
+
+Programs like Vissim and Simulink have been in existence for almost 2
+decades, and they are now mature products that provide everything
+their user-base of engineers want for modeling and analyzing complex
+dynamic systems. \htmlref{So why has Minsky been
+  developed?}{intro:experienced}
+
+\subsection{Experienced in system dynamics?}
+\label{intro:experienced}
+
+As an experienced system dynamics user (or if you've just read \htmlref{``New to
+system dynamics?''}{intro:new}), what you need to know is what's does Minsky
+provide that other system dynamics programs don't. That boils down to
+one feature: The Godley Table that enables a dynamic model of
+financial flows to be derived from a table that is very similar to the
+accountant's double-entry bookkeeping table.
+
+
+The dynamics in financial flows could be modeled using the flowchart
+paradigm. But it would also be very, very easy to make a mistake
+modeling financial flows in such a system, for one simple reason:
+every financial flow needs to be entered at least twice in a
+system---once as a source, and once as a sink.
+
+
+For example, if you go shopping and buy a new computer with your
+credit card, you increase your debt to a bank and simultaneously
+increase the deposit account of the retailer from whom you buy the
+computer. The two system states in this model--your credit card
+(``BuyerCredit'') and the retailer's deposit account
+(``SellerDeposit'')---therefore have to have the same entry (let's call
+this ``Card'') made into them. In Vissim, such a transaction would look
+like this:
+
+
+\begin{center}
+\htmladdimg{NewItem11.png}
+\end{center}
+
+That would work, but there's nothing in the program that warns you if
+you make a mistake like, for example, wiring up the BuyerCredit entry,
+but forgetting the SellerDeposit one:
+
+\begin{center}
+\htmladdimg{NewItem12.png}
+\end{center}
+
+Or, perhaps, wiring up both blocks, but giving one the wrong sign:
+
+\begin{center}
+\htmladdimg{NewItem51.png}
+\end{center}
+
+In a very complex model, you might make a mistake like one of the above, run the simulation and get nonsense results, and yet be unable to locate your mistake.
+
+
+Minsky avoids this problem by using the paradigm that accountants
+developed half a millennium ago to keep financial accounts accurately:
+double-entry bookkeeping. Here is the same model in Minsky:
+
+\begin{center}
+\htmladdimg{NewItem13.png}
+\end{center}
+
+This is an inherently better way to generate a dynamic model of financial flows, for at least two reasons:
+\begin{itemize}
+\item All financial transactions are flows between entities. The
+  tabular layout captures this in a very natural way: each row shows
+  where a flow originates, and where it ends up
+\item The program adopts the accounting practice of double-entry
+  bookkeeping, in which entries on each row sum to zero. The source is
+  shown as a ``+'', the sink is shown as a ``-'', and assets are shown
+  as a positive sum while liabilities are shown as a negative. If you
+  don't ensure that each flow starts somewhere and ends
+  somewhere---say you make the same mistake as in the flowchart
+  examples above, then the program will identify your mistake.
+\end{itemize}
+
+If you forget to enter the recipient in this transaction, then the Row
+Sum identifies your mistake by showing that the row sums to ``Card''
+rather than zero:
+
+\begin{center}
+\htmladdimg{NewItem52.png}
+\end{center}
+
+And it also identifies if you give the wrong sign to one entry:
+
+\begin{center}
+\htmladdimg{NewItem53.png}
+\end{center}
+
+Minsky thus adds an element to the system dynamics toolkit which is
+fundamental for modeling the monetary flows that are an intrinsic
+aspect of a market economy. Future releases will dramatically extend
+this capability. 
+
+
+\section{What's new}
+
+Features released as part of Mun: (Minsky.1.D29) (Nov 29th 2013)
+
+\begin{itemize}
+\item Keyboard entry of operations and variables
+\item Notes
+\item Undo/Redo
+\item Cut/Copy/Paste
+\item Context dependent clicking (no more mouse mode required)
+\item Session recording
+\item Plot legends
+\item Variable scoping (in groups)
+\item Raise/Lower canvas items
+\end{itemize}
+
+Features released as part of Petty: (Minsky.1.D27) (Sep 10th 2013)
+
+\begin{itemize}
+\item Multiple Godley table integration
+\item User selection of ODE solver
+\item Line breaking in LaTeX
+\item Export of simulation data to CSV
+\item Variable name edit field a combobox
+\item Resizable plot icons
+\item Right hand side plot inputs
+\item Recent files
+\item Titles and labels on plots
+\item LaTeX renderering of variable names
+\item Data block
+\item Variable sliders
+\end{itemize}
+
+Features released as part of Aquinas: (Minsky.1.D14) (Mar 3rd 2013)
+
+\begin{itemize}
+\item XML schema to handle schema evolution
+\item Zooming
+\item Improved Groups, zoom to display
+\item Godley table displays running flow values
+\item Insert from file
+\item Matlab export
+\end{itemize}
+
+Features released as part of Aristotle: (Minsky.1.D8) (Oct 5th 2012)
+
+\begin{itemize}
+\item Menus
+\item Godley tables
+\item wiring, operations and variables
+\item Runge-Kutta ODE solver
+\item Plots
+\item Item rotation
+\item Groups
+\item Integration operators
+\end{itemize}

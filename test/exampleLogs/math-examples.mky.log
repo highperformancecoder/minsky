@@ -1,0 +1,11 @@
+nsteps 10
+0.3 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+1 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+1.7 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+2.4 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+3.1 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+3.8 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+4.5 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+5.2 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+5.9 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 
+6.6 {:aleph_0} 0 {:int_0^infty_e^-x^2/2} 0 {:mathrmfranccais} 0 {:mathrmuniversit"at} 0 {:partial_f(x)/partial_x|_0} 0 {:sqrt[3]2} 0 {:tau_mathrmRD} 0 {constant:one} 1 {constant:zero} 0 

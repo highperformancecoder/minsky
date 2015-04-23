@@ -1,0 +1,11 @@
+nsteps 10
+3 {:FirmInt} 0.711203 {:Firms} 71.1203 {:IntLoan} 3.84558 {:Loan} 11.0442 {:Loans} 76.9115 {:Safe} 5.79125 {:Vault} 22.0885 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+7.02059 {:FirmInt} 0.753449 {:Firms} 75.3449 {:IntLoan} 4.80239 {:Loan} 1.47615 {:Loans} 96.0477 {:Safe} 20.7028 {:Vault} 2.9523 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+11.0509 {:FirmInt} 0.609773 {:Firms} 60.9773 {:IntLoan} 4.93037 {:Loan} 0.196328 {:Loans} 98.6073 {:Safe} 37.63 {:Vault} 0.392656 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+15.1478 {:FirmInt} 0.432134 {:Firms} 43.2134 {:IntLoan} 4.94748 {:Loan} 0.0252432 {:Loans} 98.9495 {:Safe} 55.7361 {:Vault} 0.0504864 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+19.57 {:FirmInt} 0.228373 {:Firms} 22.8373 {:IntLoan} 4.94973 {:Loan} 0.00274556 {:Loans} 98.9945 {:Safe} 76.1572 {:Vault} 0.00549113 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+24.8742 {:FirmInt} -0.0287786 {:Firms} -2.87786 {:IntLoan} 4.94998 {:Loan} 0.000180463 {:Loans} 98.9996 {:Safe} 101.877 {:Vault} 0.000360925 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+31.8742 {:FirmInt} -0.389777 {:Firms} -38.9777 {:IntLoan} 4.95 {:Loan} -3.1858e-06 {:Loans} 99 {:Safe} 137.978 {:Vault} -6.3716e-06 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+38.8742 {:FirmInt} -0.776954 {:Firms} -77.6954 {:IntLoan} 4.95 {:Loan} 5.62406e-08 {:Loans} 99 {:Safe} 176.695 {:Vault} 1.12481e-07 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+45.8742 {:FirmInt} -1.19221 {:Firms} -119.221 {:IntLoan} 4.95 {:Loan} -9.92846e-10 {:Loans} 99 {:Safe} 218.221 {:Vault} -1.98569e-09 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 
+52.8742 {:FirmInt} -1.63757 {:Firms} -163.757 {:IntLoan} 4.95 {:Loan} 1.75272e-11 {:Loans} 99 {:Safe} 262.757 {:Vault} 3.50545e-11 {:rD} 0.01 {:rL} 0.05 {:tau_mathrmvault} 0.5 {constant:one} 1 {constant:zero} 0 

@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- top level container for Minsky documentation -->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script type="text/javascript">
+      // extract query portion to set the content URL
+      function setContent()
+      {
+        if (location.search)
+          document.getElementById("content").src=
+            location.protocol+"//"+location.host+
+            location.pathname.slice(0,location.pathname.lastIndexOf('/'))+
+            "/"+location.search.slice(1)+location.hash;
+      }
+    </script>
+  </head>
+
+  <body onload="setContent()">
+    <iframe src="minsky/minsky.html" align="left"  name="toc"
+    width="30%" height="1000"></iframe>
+    <iframe src="minsky/minsky.html" align="right" width="69%"
+    height="1000" name="content" id="content"></iframe>
+  </body>
+</html>

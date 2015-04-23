@@ -1,0 +1,124 @@
+id ICON "icons/MinskyLogo.ico"
+
+// copied and modified from tk_base.rc in the Tk.8.6.1 distribution
+#include <windows.h>
+#include <dlgs.h>
+
+FILEOPENORD DIALOG DISCARDABLE  36, 24, 218, 138
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Choose Directory"
+FONT 8, "Helv"
+BEGIN
+    LTEXT           "Directory &name:",-1,8,6,118,9
+    EDITTEXT        edt10,8,26,144,12, WS_TABSTOP | ES_AUTOHSCROLL
+    LISTBOX         lst2,8,40,144,64,LBS_SORT | LBS_OWNERDRAWFIXED | 
+                    LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | 
+                    LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Dri&ves:",stc4,8,106,92,9
+    COMBOBOX        cmb2,8,115,144,68,CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | 
+                    CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",1,160,6,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",2,160,24,50,14,WS_GROUP
+    PUSHBUTTON      "&Help",psh15,160,42,50,14,WS_GROUP
+    CHECKBOX        "&Read only",chx1,160,66,50,12,WS_GROUP
+    PUSHBUTTON      "Net&work...",psh14,160,115,50,14,WS_GROUP
+
+    LTEXT           "a",stc3,9,143,114,15
+    EDITTEXT        edt1,7,158,135,20,NOT WS_TABSTOP
+    LISTBOX         lst1,8,205,134,42,LBS_NOINTEGRALHEIGHT
+    COMBOBOX        cmb1,8,253,135,21,CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | 
+                    CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_BORDER | 
+                    WS_VSCROLL
+
+END
+
+
+//
+// Bitmaps
+//
+
+buttons			BITMAP  DISCARDABLE	"icons/buttons.bmp"
+
+//
+// Cursors
+//
+
+X_cursor                CURSOR  DISCARDABLE     "icons/cursor00.cur"
+arrow                   CURSOR  DISCARDABLE     "icons/cursor02.cur"
+based_arrow_down        CURSOR  DISCARDABLE     "icons/cursor04.cur"
+based_arrow_up          CURSOR  DISCARDABLE     "icons/cursor06.cur"
+boat                    CURSOR  DISCARDABLE     "icons/cursor08.cur"
+bogosity                CURSOR  DISCARDABLE     "icons/cursor0a.cur"
+bottom_left_corner      CURSOR  DISCARDABLE     "icons/cursor0c.cur"
+bottom_right_corner     CURSOR  DISCARDABLE     "icons/cursor0e.cur"
+bottom_side             CURSOR  DISCARDABLE     "icons/cursor10.cur"
+bottom_tee              CURSOR  DISCARDABLE     "icons/cursor12.cur"
+box_spiral              CURSOR  DISCARDABLE     "icons/cursor14.cur"
+center_ptr              CURSOR  DISCARDABLE     "icons/cursor16.cur"
+circle                  CURSOR  DISCARDABLE     "icons/cursor18.cur"
+clock                   CURSOR  DISCARDABLE     "icons/cursor1a.cur"
+coffee_mug              CURSOR  DISCARDABLE     "icons/cursor1c.cur"
+cross                   CURSOR  DISCARDABLE     "icons/cursor1e.cur"
+cross_reverse           CURSOR  DISCARDABLE     "icons/cursor20.cur"
+crosshair               CURSOR  DISCARDABLE     "icons/cursor22.cur"
+diamond_cross           CURSOR  DISCARDABLE     "icons/cursor24.cur"
+dot                     CURSOR  DISCARDABLE     "icons/cursor26.cur"
+dotbox                  CURSOR  DISCARDABLE     "icons/cursor28.cur"
+double_arrow            CURSOR  DISCARDABLE     "icons/cursor2a.cur"
+draft_large             CURSOR  DISCARDABLE     "icons/cursor2c.cur"
+draft_small             CURSOR  DISCARDABLE     "icons/cursor2e.cur"
+draped_box              CURSOR  DISCARDABLE     "icons/cursor30.cur"
+exchange                CURSOR  DISCARDABLE     "icons/cursor32.cur"
+fleur                   CURSOR  DISCARDABLE     "icons/cursor34.cur"
+gobbler                 CURSOR  DISCARDABLE     "icons/cursor36.cur"
+gumby                   CURSOR  DISCARDABLE     "icons/cursor38.cur"
+hand1                   CURSOR  DISCARDABLE     "icons/cursor3a.cur"
+hand2                   CURSOR  DISCARDABLE     "icons/cursor3c.cur"
+heart                   CURSOR  DISCARDABLE     "icons/cursor3e.cur"
+icon                    CURSOR  DISCARDABLE     "icons/cursor40.cur"
+iron_cross              CURSOR  DISCARDABLE     "icons/cursor42.cur"
+left_ptr                CURSOR  DISCARDABLE     "icons/cursor44.cur"
+left_side               CURSOR  DISCARDABLE     "icons/cursor46.cur"
+left_tee                CURSOR  DISCARDABLE     "icons/cursor48.cur"
+leftbutton              CURSOR  DISCARDABLE     "icons/cursor4a.cur"
+ll_angle                CURSOR  DISCARDABLE     "icons/cursor4c.cur"
+lr_angle                CURSOR  DISCARDABLE     "icons/cursor4e.cur"
+man                     CURSOR  DISCARDABLE     "icons/cursor50.cur"
+middlebutton            CURSOR  DISCARDABLE     "icons/cursor52.cur"
+mouse                   CURSOR  DISCARDABLE     "icons/cursor54.cur"
+pencil                  CURSOR  DISCARDABLE     "icons/cursor56.cur"
+pirate                  CURSOR  DISCARDABLE     "icons/cursor58.cur"
+plus                    CURSOR  DISCARDABLE     "icons/cursor5a.cur"
+question_arrow          CURSOR  DISCARDABLE     "icons/cursor5c.cur"
+right_ptr               CURSOR  DISCARDABLE     "icons/cursor5e.cur"
+right_side              CURSOR  DISCARDABLE     "icons/cursor60.cur"
+right_tee               CURSOR  DISCARDABLE     "icons/cursor62.cur"
+rightbutton             CURSOR  DISCARDABLE     "icons/cursor64.cur"
+rtl_logo                CURSOR  DISCARDABLE     "icons/cursor66.cur"
+sailboat                CURSOR  DISCARDABLE     "icons/cursor68.cur"
+sb_down_arrow           CURSOR  DISCARDABLE     "icons/cursor6a.cur"
+sb_h_double_arrow       CURSOR  DISCARDABLE     "icons/cursor6c.cur"
+sb_left_arrow           CURSOR  DISCARDABLE     "icons/cursor6e.cur"
+sb_right_arrow          CURSOR  DISCARDABLE     "icons/cursor70.cur"
+sb_up_arrow             CURSOR  DISCARDABLE     "icons/cursor72.cur"
+sb_v_double_arrow       CURSOR  DISCARDABLE     "icons/cursor74.cur"
+shuttle                 CURSOR  DISCARDABLE     "icons/cursor76.cur"
+sizing                  CURSOR  DISCARDABLE     "icons/cursor78.cur"
+spider                  CURSOR  DISCARDABLE     "icons/cursor7a.cur"
+spraycan                CURSOR  DISCARDABLE     "icons/cursor7c.cur"
+star                    CURSOR  DISCARDABLE     "icons/cursor7e.cur"
+target                  CURSOR  DISCARDABLE     "icons/cursor80.cur"
+tcross                  CURSOR  DISCARDABLE     "icons/cursor82.cur"
+top_left_arrow          CURSOR  DISCARDABLE     "icons/cursor84.cur"
+top_left_corner         CURSOR  DISCARDABLE     "icons/cursor86.cur"
+top_right_corner        CURSOR  DISCARDABLE     "icons/cursor88.cur"
+top_side                CURSOR  DISCARDABLE     "icons/cursor8a.cur"
+top_tee                 CURSOR  DISCARDABLE     "icons/cursor8c.cur"
+trek                    CURSOR  DISCARDABLE     "icons/cursor8e.cur"
+ul_angle                CURSOR  DISCARDABLE     "icons/cursor90.cur"
+umbrella                CURSOR  DISCARDABLE     "icons/cursor92.cur"
+ur_angle                CURSOR  DISCARDABLE     "icons/cursor94.cur"
+watch                   CURSOR  DISCARDABLE     "icons/cursor96.cur"
+xterm                   CURSOR  DISCARDABLE     "icons/cursor98.cur"
+none                    CURSOR  DISCARDABLE     "icons/cursor9a.cur"

@@ -1,0 +1,11 @@
+nsteps 10
+0.03 {:0} 0.909147 {:Investment} 1.23434 {:K} 300.018 {:L} 100.006 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 1.23434 {:Y} 100.006 {:a} 1 {:emprate} 0.909147 {:v} 3 {:w} 1.01234 {constant:one} 1 {constant:zero} 0 
+0.1 {:0} 0.909718 {:Investment} 4.15689 {:K} 300.207 {:L} 100.069 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 4.15689 {:Y} 100.069 {:a} 1 {:emprate} 0.909718 {:v} 3 {:w} 1.04154 {constant:one} 1 {constant:zero} 0 
+0.17 {:0} 0.910912 {:Investment} 7.10604 {:K} 300.601 {:L} 100.2 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 7.10604 {:Y} 100.2 {:a} 1 {:emprate} 0.910912 {:v} 3 {:w} 1.07092 {constant:one} 1 {constant:zero} 0 
+0.24 {:0} 0.912731 {:Investment} 10.0364 {:K} 301.201 {:L} 100.4 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 10.0364 {:Y} 100.4 {:a} 1 {:emprate} 0.912731 {:v} 3 {:w} 1.09996 {constant:one} 1 {constant:zero} 0 
+0.31 {:0} 0.915165 {:Investment} 12.8972 {:K} 302.005 {:L} 100.668 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 12.8972 {:Y} 100.668 {:a} 1 {:emprate} 0.915165 {:v} 3 {:w} 1.12812 {constant:one} 1 {constant:zero} 0 
+0.38 {:0} 0.918194 {:Investment} 15.6327 {:K} 303.004 {:L} 101.001 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 15.6327 {:Y} 101.001 {:a} 1 {:emprate} 0.918194 {:v} 3 {:w} 1.15478 {constant:one} 1 {constant:zero} 0 
+0.45 {:0} 0.921784 {:Investment} 18.1834 {:K} 304.189 {:L} 101.396 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 18.1834 {:Y} 101.396 {:a} 1 {:emprate} 0.921784 {:v} 3 {:w} 1.17933 {constant:one} 1 {constant:zero} 0 
+0.52 {:0} 0.925891 {:Investment} 20.4879 {:K} 305.544 {:L} 101.848 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 20.4879 {:Y} 101.848 {:a} 1 {:emprate} 0.925891 {:v} 3 {:w} 1.20116 {constant:one} 1 {constant:zero} 0 
+0.59 {:0} 0.930454 {:Investment} 22.4848 {:K} 307.05 {:L} 102.35 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 22.4848 {:Y} 102.35 {:a} 1 {:emprate} 0.930454 {:v} 3 {:w} 1.21969 {constant:one} 1 {constant:zero} 0 
+0.66 {:0} 0.935404 {:Investment} 24.1156 {:K} 308.683 {:L} 102.894 {:N} 110 {:NAIRU} 0.95 {:PhSlope} 10 {:Profit} 24.1156 {:Y} 102.894 {:a} 1 {:emprate} 0.935404 {:v} 3 {:w} 1.23437 {constant:one} 1 {constant:zero} 0 

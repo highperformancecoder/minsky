@@ -1,0 +1,11 @@
+nsteps 10
+0.03 {:a} -0.1 {:y} 0.997004 {constant:one} 1 {constant:zero} 0 
+0.1 {:a} -0.1 {:y} 0.99005 {constant:one} 1 {constant:zero} 0 
+0.17 {:a} -0.1 {:y} 0.983144 {constant:one} 1 {constant:zero} 0 
+0.24 {:a} -0.1 {:y} 0.976286 {constant:one} 1 {constant:zero} 0 
+0.31 {:a} -0.1 {:y} 0.969476 {constant:one} 1 {constant:zero} 0 
+0.38 {:a} -0.1 {:y} 0.962713 {constant:one} 1 {constant:zero} 0 
+0.45 {:a} -0.1 {:y} 0.955997 {constant:one} 1 {constant:zero} 0 
+0.52 {:a} -0.1 {:y} 0.949329 {constant:one} 1 {constant:zero} 0 
+0.59 {:a} -0.1 {:y} 0.942707 {constant:one} 1 {constant:zero} 0 
+0.66 {:a} -0.1 {:y} 0.936131 {constant:one} 1 {constant:zero} 0 
