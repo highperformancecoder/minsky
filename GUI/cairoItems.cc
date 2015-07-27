@@ -34,6 +34,10 @@
 #include <ecolab_epilogue.h>
 #include <boost/geometry/geometry.hpp>
 
+#if defined(MXE) && CAIRO_VERSION >= 11100
+#error "Please use Cairo 1.10.x. See ticket #435."
+#endif
+
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
@@ -524,6 +528,19 @@ namespace minsky
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"tanh");
+  }
+
+  template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-6,3);
+    cairo_show_text(cairo,"|x|");
+  }
+  template <> void Operation<OperationType::heaviside>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"Θ(x)");
   }
 
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const

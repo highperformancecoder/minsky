@@ -117,7 +117,7 @@ SUITE(Minsky)
       int nakedIntegral=-1;
       for (size_t i=0; i<integrals.size(); ++i)
         {
-          if (integrals[i].stock.name==":int")
+          if (integrals[i].stock.name==":int1")
             nakedIntegral=i;
           CHECK(!integrals[i].stock.isFlowVar());
         }
@@ -327,6 +327,7 @@ SUITE(Minsky)
       addWire(Wire(operations[1]->ports()[0], operations[2]->ports()[1]));
       //   addWire(Wire(operations[2]->ports()[0], variables[var]->inPort()));
  
+      variables.makeConsistent();
       constructEquations();
       double& value = dynamic_cast<Constant*>(operations[1].get())->value;
       value=10;

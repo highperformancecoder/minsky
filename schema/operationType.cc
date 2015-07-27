@@ -53,5 +53,7 @@ namespace minsky
     template <> int numArguments<OperationType::sinh>() {return 1;}
     template <> int numArguments<OperationType::cosh>() {return 1;}
     template <> int numArguments<OperationType::tanh>() {return 1;}
+    template <> int numArguments<OperationType::abs>() {return 1;}
+    template <> int numArguments<OperationType::heaviside>() {return 1;}
   }
 }

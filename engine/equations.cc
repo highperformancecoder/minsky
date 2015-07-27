@@ -198,6 +198,8 @@ namespace MathDAG
       case sinh: return new OperationDAG<sinh>(name);
       case cosh: return new OperationDAG<cosh>(name);
       case tanh: return new OperationDAG<tanh>(name);
+      case abs: return new OperationDAG<abs>(name);
+      case heaviside: return new OperationDAG<heaviside>(name);
       default: 
         throw error("invalid operation type %s,",typeName(type).c_str());
       }
@@ -590,6 +592,20 @@ namespace MathDAG
   }
 
   template <>
+  ostream& OperationDAG<OperationType::abs>::matlab(ostream& o) const
+  {
+    assert(arguments.size()==1 && arguments[0].size()==1);
+    return o<<"abs("<<arguments[0][0]->matlab()<<")";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::heaviside>::matlab(ostream& o) const
+  {
+    assert(arguments.size()==1 && arguments[0].size()==1);
+    return o<<"heaviside("<<arguments[0][0]->matlab()<<")";
+  }
+
+  template <>
   ostream& OperationDAG<OperationType::constant>::latex(ostream& o) const
   {
     return o<<mathrm(name);
@@ -825,6 +841,20 @@ namespace MathDAG
   {
     assert(arguments.size()==1 && arguments[0].size()==1);
     return o<<"\\tanh\\left("<<arguments[0][0]->latex()<<"\\right)";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::abs>::latex(ostream& o) const
+  {
+    assert(arguments.size()==1 && arguments[0].size()==1);
+    return o<<"\\left|"<<arguments[0][0]->latex()<<"\\right|";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::heaviside>::latex(ostream& o) const
+  {
+    assert(arguments.size()==1 && arguments[0].size()==1);
+    return o<<"\\Theta\\("<<arguments[0][0]->latex()<<"\\right)";
   }
 
   SystemOfEquations::SystemOfEquations(const Minsky& m): minsky(m)

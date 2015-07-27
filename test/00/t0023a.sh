@@ -36,14 +36,19 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 proc afterMinskyStarted {} {
 minsky.load 1Free.mky
+updateCanvas
 minsky.save checkpoint1.mky
 checkPushHistory
+.wiring.canvas delete op70
 deleteOperation 70
 checkPushHistory
+updateCanvas
 minsky.save checkpoint2.mky
 undo 1
+updateCanvas
 minsky.save checkpoint3.mky
 undo -1
+updateCanvas
 minsky.save checkpoint4.mky
 exit
 }

@@ -37,6 +37,8 @@ proc afterMinskyStarted {} {uplevel #0 {
  minsky.load $here/examples/GoodwinLinear02.mky
  recentreCanvas
  updateCanvas
+
+ saveGroupAsFile [group.id] yyy.mky
  set eventRecord [open $here/test/groupButton1Recording.tcl r]
   while {[gets \$eventRecord cmd]>=0} {
     eval \$cmd
@@ -44,9 +46,21 @@ proc afterMinskyStarted {} {uplevel #0 {
     after 10
   }
  minsky.copy
+ saveSelectionAsFile xxx.mky
  group.get [paste]
  assert {[llength [group.operations]]==2}
  resetEdited
+ minsky.load xxx.mky
+ assert {[operations.size]==2}
+ assert {[variables.size]==0}
+ assert {[wires.size]==1}
+
+ # now test group save to file
+ minsky.load yyy.mky
+ assert {[operations.size]==4}
+ assert {[variables.size]==4}
+ assert {[wires.size]==8}
+
  exit
 }}
 

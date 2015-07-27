@@ -34,7 +34,7 @@ namespace minsky
                data, // an interpolated data item
                // functions
                sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
-               sinh, cosh, tanh,
+               sinh, cosh, tanh, abs, heaviside,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type

@@ -114,6 +114,7 @@ proc groupContext {id x y} {
     .wiring.context add command -label "Zoom to display" -command "group::zoomToDisplay $id"
     .wiring.context add command -label "Resize" -command "group::resize $id"
     .wiring.context add command -label "Copy" -command "group::copy $id"
+    .wiring.context add command -label "Save group as" -command "group::save $id"
     .wiring.context add command -label "Flip" -command "group::flip $id"
     .wiring.context add command -label "Flip Contents" -command "group::flipContents $id"
     .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.groupItems.@elem $id].*"
@@ -264,8 +265,8 @@ namespace eval group {
         set angle [radian [group.rotation]]
         set rx [expr $scalex*cos($angle)-$scaley*sin($angle)]
         set ry [expr $scalex*sin($angle)+$scaley*cos($angle)]
-        group.width [expr int(ceil(abs($rx*[group.width])))]
-        group.height [expr int(ceil(abs($ry*[group.height])))]
+        group.width [expr abs($rx*[group.width])]
+        group.height [expr abs($ry*[group.height])]
         group.computeDisplayZoom
         group.set
         .wiring.canvas delete group$id
@@ -279,6 +280,14 @@ namespace eval group {
     }
 
     proc copy {id} {insertNewGroup [copyGroup $id]}
+
+    proc save {id} {
+        global workDir
+        set fname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+        if [string length $fname] {
+            saveGroupAsFile $id $fname
+        }
+    }
 
     proc flip {id} {
         group.get $id

@@ -45,12 +45,16 @@ proc afterMinskyStarted {} {uplevel #0 {
  set h [group.height]
  group::resize \$gid
 
+ variable group::orig_width
+ variable group::orig_height
+
  group::resizeRect resizeBBox [expr \$x+\$w]  [expr \$y+\$h]
  group::resizeItem resizeBBox \$gid  [expr \$x+151]  [expr \$y+151]
  assert "\$x==\[group.x\]"
  assert "\$y==\[group.y\]"
- assert {297==[group.width]}
- assert {297==[group.height]}
+# approximate here, because group is rotated by pi, which is  numerically approximate
+ assert {abs(300-[group.width])<6}
+ assert {abs(300-[group.height])<6}
  resetEdited
  exit
 }}

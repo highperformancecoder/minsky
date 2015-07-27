@@ -162,6 +162,12 @@ namespace MathDAG
       return Expr(x.cache,r);
     }
 
+    inline Expr heaviside(const Expr& x) {
+      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::heaviside));
+      r->arguments[0].push_back(x);
+      return Expr(x.cache,r);
+    }
+
     template <OperationType::Type T>
     struct CachedOp: std::shared_ptr<OperationDAGBase>
     {
@@ -581,6 +587,24 @@ namespace MathDAG
         return chainRule(x, sech*sech);
       }
   }
+
+  template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::abs>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return chainRule(x, 2*heaviside(x)-1);
+      }
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::heaviside>& expr)
+  {return zero;}
 
 
 }

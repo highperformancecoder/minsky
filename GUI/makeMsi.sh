@@ -5,7 +5,7 @@ productId=`uuidgen`
 upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
 componentId=`uuidgen`
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'|tr -d "D"`
-if [ $version=='"unknown"' ]; then
+if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 minskyWxs=`pwd`/minsky.wxs
@@ -17,7 +17,7 @@ cat >$minskyWxs <<EOF
     Language='1033' Codepage='1252' Version='$version' Manufacturer='High Performance Coders'>
     <Package Id='*' Keywords='Installer' Description="Minsky's Installer"
       Comments='Minsky is copyright Steve Keen, and licensed under GPL3' Manufacturer='High Performance Coders'
-      InstallerVersion='100' Languages='1033' Compressed='no' SummaryCodepage='1252' />
+      InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
     <Upgrade Id='$upgradeId'>
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
          Minimum='0.0.0' IncludeMinimum='yes'

@@ -134,7 +134,7 @@ endif
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
 # only perform link checking if online
-	if ping -c 1 www.google.com; then linkchecker GUI/library/help/minsky.html; fi
+#	if ping -c 1 www.google.com; then linkchecker GUI/library/help/minsky.html; fi
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
@@ -165,7 +165,7 @@ MinskyLogo.o: GUI/MinskyLogo.rc icons/MinskyLogo.ico
 
 GUI/minsky$(EXE): tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
-	-ctags -e -R .
+	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
 # make a local copy the TCL libraries
 	rm -rf GUI/library/{tcl,tk}

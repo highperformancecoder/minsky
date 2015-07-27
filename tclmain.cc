@@ -69,7 +69,6 @@ void printTimersAtEnd()
 #endif
 
 int main(int argc, char* argv[])
-//#endif
 {
   Timer timer("main");
   //  atexit(printTimersAtEnd);
@@ -79,11 +78,15 @@ int main(int argc, char* argv[])
 #endif
 
   Tcl_FindExecutable(argv[0]);
+#ifndef MXE
+  // For MXE builds, override tcl_library and tk_library to the self-contained versions
   if (Tcl_Init(interp())!=TCL_OK)
+#endif
     // one possible reason is that it failed to locate the TCL library, we we set tcl_library and try again
     {
       path exeDir=path(Tcl_GetNameOfExecutable()).parent_path();
       tclvar tcl_library("tcl_library", (exeDir/"library"/"tcl").string().c_str());
+      tclvar tk_library("tk_library", (exeDir/"library"/"tk").string().c_str());
       if (Tcl_Init(interp())!=TCL_OK)
         {
           fprintf(stderr,"%s\n",Tcl_GetStringResult(interp()));

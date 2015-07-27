@@ -65,6 +65,8 @@ namespace minsky
   template <> int EvalOp<OperationType::sinh>::numArgs() const {return 1;}
   template <> int EvalOp<OperationType::cosh>::numArgs() const {return 1;}
   template <> int EvalOp<OperationType::tanh>::numArgs() const {return 1;}
+  template <> int EvalOp<OperationType::abs>::numArgs() const {return 1;}
+  template <> int EvalOp<OperationType::heaviside>::numArgs() const {return 1;}
   template <> int EvalOp<OperationType::add>::numArgs() const {return 2;}
   template <> int EvalOp<OperationType::subtract>::numArgs() const {return 2;}
   template <> int EvalOp<OperationType::multiply>::numArgs() const {return 2;}
@@ -335,6 +337,26 @@ namespace minsky
   {return 0;}
 
   template <>
+  double EvalOp<OperationType::abs>::evaluate(double in1, double in2) const
+  {return ::fabs(in1);}
+  template <>
+  double EvalOp<OperationType::abs>::d1(double x1, double x2) const
+  {return (x1<0)? -1: 1;}
+  template <>
+  double EvalOp<OperationType::abs>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
+  double EvalOp<OperationType::heaviside>::evaluate(double in1, double in2) const
+  {return (in1==0)? 0.5: (in1<0)? 0: 1;}
+  template <>
+  double EvalOp<OperationType::heaviside>::d1(double x1, double x2) const
+  {return 0;} // TODO: thow exception if x1==0?
+  template <>
+  double EvalOp<OperationType::heaviside>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
   double EvalOp<OperationType::add>::evaluate(double in1, double in2) const
   {return in1+in2;}
   template <>
@@ -432,6 +454,10 @@ namespace minsky
         return new EvalOp<cosh>(out,in1,in2,flow1,flow2);
       case tanh:
         return new EvalOp<tanh>(out,in1,in2,flow1,flow2);
+      case abs:
+        return new EvalOp<abs>(out,in1,in2,flow1,flow2);
+      case heaviside:
+        return new EvalOp<heaviside>(out,in1,in2,flow1,flow2);
       case add:
         return new EvalOp<add>(out,in1,in2,flow1,flow2);
       case subtract:

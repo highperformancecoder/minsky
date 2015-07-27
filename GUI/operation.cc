@@ -68,6 +68,7 @@ namespace minsky
       case sin: case cos: case tan:
       case asin: case acos: case atan:
       case sinh: case cosh: case tanh:
+      case abs: case heaviside:
       case data: case differentiate:
         m_ports.push_back(minsky().addPort(Port(0,0,false)));
         m_ports.push_back(minsky().addPort(Port(0,0,true)));
@@ -132,86 +133,97 @@ namespace minsky
     m_ports.clear();
   }
 
-  namespace
+  void IntOp::newName()
   {
-    // operations that mutate integral variables should ensure the variable manager is consistent
-    struct EnsureVariablesConsistent
-    {
-      ~EnsureVariablesConsistent() 
-      {minsky().variables.makeConsistent();}
-    };
+    // if conversion unsuccessful, allocate a new variable name
+    int i=1;
+    string trialName;
+    do
+      trialName=m_description+str(i++);
+    while (variableManager().values.count(VariableManager::valueId(group, trialName)));
+    m_description=trialName;
+    if (intVar>-1)
+      variableManager()[intVar]->name(m_description);
   }
 
   void IntOp::setDescription()
   {
-    EnsureVariablesConsistent evc;
-    vector<Wire> savedWires;
-    // unscoped descriptions treated as global
-    if (m_description.find(":")==string::npos)
-      m_description=":"+m_description;
-
-    if (numPorts()>0)
+    // body of this method defined in a lambda to ensure
+    // makeConsistent() is called regardless of the return path.
+    // makeConsistent() potentially throws, soc cannot be called from
+    // a destructor
+    [&]()
       {
-        // save any attached wires for later use
-        array<int> outWires=minsky().wiresAttachedToPort(m_ports[0]);
-        for (array<int>::iterator i=outWires.begin(); i!=outWires.end(); ++i)
-          savedWires.push_back(minsky().wires[*i]);
-      }
+        vector<Wire> savedWires;
+        // unscoped descriptions treated as global
+        if (m_description.find(":")==string::npos)
+          m_description=":"+m_description;
+
+        if (numPorts()>0)
+          {
+            // save any attached wires for later use
+            array<int> outWires=minsky().wiresAttachedToPort(m_ports[0]);
+            for (array<int>::iterator i=outWires.begin(); i!=outWires.end(); ++i)
+              savedWires.push_back(minsky().wires[*i]);
+          }
 
 
-    if (intVar > -1)
-      {
-        const VariablePtr& v=variableManager()[intVar];
-        if (!m_ports.empty() && m_ports[0]!=v->outPort())
+        if (intVar > -1)
+          {
+            const VariablePtr& v=variableManager()[intVar];
+            if (!m_ports.empty() && m_ports[0]!=v->outPort())
+              minsky().delPort(m_ports[0]);
+            if (v->valueId()!=VariableManager::valueId(m_description))
+              {
+                minsky().variables.erase(intVar, true);
+                intVar=-1;
+              }
+            else
+              return; // nothing to be done
+          }
+        else if (!m_ports.empty())
           minsky().delPort(m_ports[0]);
-        if (v->valueId()!=VariableManager::valueId(m_description))
-          variableManager().removeVariable(v->valueId());
-        else
-          return; // nothing to be done
-      }
-    else if (!m_ports.empty())
-      minsky().delPort(m_ports[0]);
 
-    // set a default name if none given
-    if (m_description==":") m_description="int";
-    // if the variable name exists, and already has a connected input,
-    // then it is not a candidate for being an integral variable, so
-    // generate a new name that doesn't currently exist
-
-    if (variableManager().values.count(valueId())) 
-        try
+        // set a default name if none given
+        if (m_description==":") 
           {
-            variableManager().convertVarType(valueId(), VariableType::integral);
+            m_description="int";
+            newName();
           }
-        catch (...)
+        // if the variable name exists, and already has a connected input,
+        // then it is not a candidate for being an integral variable, so
+        // generate a new name that doesn't currently exist
+
+        if (variableManager().values.count(valueId())) 
+          try
+            {
+              variableManager().convertVarType(valueId(), VariableType::integral);
+            }
+          catch (...)
+            {
+              newName();
+            }
+
+        VariablePtr iv(VariableType::integral, m_description);
+        iv->visible=false; // we're managing our own display
+        iv->group=group;
+        intVar=variableManager().addVariable(iv);
+
+        // make the intVar outport the integral operator's outport
+        if (m_ports.size()<1) m_ports.resize(1);
+
+        m_ports[0]=iv->outPort();
+
+        // restore any previously attached wire
+        for (size_t i=0; i<savedWires.size(); ++i)
           {
-            // if conversion unsuccessful, allocate a new variable name
-            int i=1;
-            string trialName;
-            do
-              trialName=m_description+str(i++);
-            while (variableManager().values.count(VariableManager::valueId(group, trialName)));
-            m_description=trialName;
+            Wire& w=savedWires[i];
+            w.from=m_ports[0];
+            if (variableManager().addWire(w.to, w.from))
+              minsky().addWire(w);
           }
-
-    VariablePtr iv(VariableType::integral, m_description);
-    iv->visible=false; // we're managing our own display
-    iv->group=group;
-    intVar=variableManager().addVariable(iv);
-
-    // make the intVar outport the integral operator's outport
-    if (m_ports.size()<1) m_ports.resize(1);
-
-    m_ports[0]=iv->outPort();
-
-    // restore any previously attached wire
-    for (size_t i=0; i<savedWires.size(); ++i)
-      {
-        Wire& w=savedWires[i];
-        w.from=m_ports[0];
-        if (variableManager().addWire(w.to, w.from))
-          minsky().addWire(w);
-      }
+      }();
+    minsky().variables.makeConsistent();
   }
 
   bool OperationBase::selfWire(int from, int to) const
@@ -268,6 +280,10 @@ namespace minsky
         return new Operation<cosh>(ports);
       case tanh:
         return new Operation<tanh>(ports);
+      case abs:
+        return new Operation<abs>(ports);
+      case heaviside:
+        return new Operation<heaviside>(ports);
       case add:
         return new Operation<add>(ports);
       case subtract:
@@ -295,34 +311,42 @@ namespace minsky
 
   bool IntOp::toggleCoupled()
   {
-    EnsureVariablesConsistent evc;
-    if (type()!=integrate) return false;
-    if (intVar==-1) setDescription();
-
-    VariablePtr v=getIntVar();
-    v->toggleInPort();
-
-    assert(m_ports.size()==2);
-    if (coupled()) 
+    // body of this method defined in a lambda to ensure
+    // makeConsistent() is called regardless of the return path.
+    // makeConsistent() potentially throws, soc cannot be called from
+    // a destructor
+    bool r=[&]()
       {
-        // we are coupled, decouple variable
-        assert(v->inPort()>=0);
-        m_ports[0]=minsky().addPort(Port(x(),y(),false));
-        minsky().addWire(Wire(m_ports[0],v->inPort()));
-        v->visible=true;
-        v->rotation=rotation;
-        float angle=rotation*M_PI/180;
-        float xoffs=r+intVarOffset+RenderVariable(*v).width();
-        v->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
-      }
-    else
-      {
-        assert(v->inPort()==-1);
-        minsky().delPort(m_ports[0]);
-        m_ports[0]=v->outPort();
-        v->visible=false;
-      }
-    return coupled();
+        if (type()!=integrate) return false;
+        if (intVar==-1) setDescription();
+
+        VariablePtr v=getIntVar();
+        v->toggleInPort();
+
+        assert(m_ports.size()==2);
+        if (coupled()) 
+          {
+            // we are coupled, decouple variable
+            assert(v->inPort()>=0);
+            m_ports[0]=minsky().addPort(Port(x(),y(),false));
+            minsky().addWire(Wire(m_ports[0],v->inPort()));
+            v->visible=true;
+            v->rotation=rotation;
+            float angle=rotation*M_PI/180;
+            float xoffs=r+intVarOffset+RenderVariable(*v).width();
+            v->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
+          }
+        else
+          {
+            assert(v->inPort()==-1);
+            minsky().delPort(m_ports[0]);
+            m_ports[0]=v->outPort();
+            v->visible=false;
+          }
+        return coupled();
+      }();
+    minsky().variables.makeConsistent();
+    return r;
   }
 
   void OperationBase::zoom(float xOrigin, float yOrigin,float factor)
@@ -387,7 +411,7 @@ namespace minsky
           {
             sliderMin=-value*10;
             sliderMax=value*10;
-            sliderStep=abs(0.1*value);
+            sliderStep=std::abs(0.1*value);
           }
         sliderStepRel=false;
         sliderBoundsSet=true;

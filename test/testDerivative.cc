@@ -36,9 +36,12 @@ struct BinOpFixture: public Minsky
   OperationPtr pow{OperationType::pow};
   OperationPtr deriv{OperationType::differentiate};
   VariablePtr f; // to receive results of function before differentiation
-  IntOp& integ=dynamic_cast<IntOp&>
-    (*(operations[getNewId()]=OperationPtr(OperationType::integrate)));
-  BinOpFixture(): f(VariableType::flow,"f") {
+  IntOp& integ;
+  BinOpFixture(): 
+    f(VariableType::flow,"f"),
+    integ(dynamic_cast<IntOp&>
+          (*(operations[getNewId()]=OperationPtr(OperationType::integrate))))
+  {
     dynamic_cast<Constant&>(*offs).value=0.1;
     operations[getNewId()]=offs;
     operations[getNewId()]=t;
@@ -52,6 +55,7 @@ struct BinOpFixture: public Minsky
     addWire(Wire(offs->ports()[0],plus->ports()[2]));
     addWire(Wire(plus->ports()[0],tsq->ports()[2]));
     addWire(Wire(deriv->ports()[0], integ.ports()[1]));
+    variables.makeConsistent();
 
     stepMin=1e-6;
     stepMax=1e-3;
@@ -158,7 +162,8 @@ SUITE(Derivative)
           integ.getIntVar()->value(f0);
           nSteps=800; step();
           CHECK_CLOSE(1, f->value()/integ.getIntVar()->value(), 0.003);
-          CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+          if (op!=OperationType::heaviside)
+            CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
         }
     }
 }

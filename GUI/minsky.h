@@ -242,6 +242,7 @@ namespace minsky
     void ungroup(int id);
     /// delete a group and its contents
     void deleteGroup(int i);
+    void saveGroupAsFile(int i, const string& fileName) const;
 
     /// create a new godley icon at \a x, y
     int addGodleyTable(float x, float y) 
@@ -289,6 +290,7 @@ namespace minsky
     void copy() const;
     /// paste  clipboard as a new group. @return id of nre group
     int paste();
+    void saveSelectionAsFile(const string& fileName) const;
 
     /// @{ override to provide clipboard handling functionality
     virtual void putClipboard(const string&) const {}

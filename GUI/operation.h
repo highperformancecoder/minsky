@@ -203,6 +203,8 @@ namespace minsky
     }
     const string& description() const {return m_description;}
     /// @}
+    /// generate a new name not otherwise in the system
+    void newName(); 
 
     string valueId() const 
     {return VariableManager::valueId(group, m_description);}

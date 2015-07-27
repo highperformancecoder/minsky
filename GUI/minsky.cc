@@ -86,7 +86,13 @@ namespace minsky
   {
     gsl_odeiv2_system sys;
     gsl_odeiv2_driver* driver;
+
+    static void errHandler(const char* reason, const char* file, int line, int gsl_errno) {
+      throw error("gsl: %s:%d: %s",file,line,reason);
+    }
+
     RKdata(Minsky* minsky) {
+      gsl_set_error_handler(errHandler);
       sys.function=RKfunction;
       sys.jacobian=jacobian;
       sys.dimension=ValueVector::stockVars.size();
@@ -439,68 +445,27 @@ namespace minsky
   {
     // TODO - maybe use a minsky::Minsky object instead, particularly
     // once real references are deployed
-    schema1::Minsky m;
-    m.schemaVersion=1;
-    for (int i: currentSelection.wires)
-      {
-        const Wire& w=wires[i];
-        m.model.wires.push_back(schema1::Wire(i, w));
-        m.layout.push_back(make_shared<schema1::WireLayout>(i, w));
-      }
-    for (int i: currentSelection.operations)
-      {
-        const OperationPtr& o=operations[i];
-        m.model.operations.push_back(schema1::Operation(i, *o));
-        m.layout.push_back(make_shared<schema1::ItemLayout>(i, *o));
-        for (int pi: o->ports())
-          {
-            const Port& p=ports[pi];
-            m.model.ports.push_back(schema1::Port(pi, p));
-            m.layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
-          }
-      }
-    for (int i: currentSelection.variables)
-      {
-        const VariablePtr& v=variables[i];
-        m.model.variables.push_back(schema1::Variable(i, *v));
-        m.layout.push_back(make_shared<schema1::ItemLayout>(i, *v));
-        for (int pi: v->ports())
-          {
-            const Port& p=ports[pi];
-            m.model.ports.push_back(schema1::Port(pi, p));
-            m.layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
-          }
-      }
-    for (int i: currentSelection.groups)
-      { 
-        const GroupIcon& g=groupItems[i];
-        m.model.groups.push_back(schema1::Group(i, g));
-        m.layout.push_back(make_shared<schema1::GroupLayout>(i, g));
-        // group ports are just the ports of the underlying I/O variables
-      }
-     for (int i: currentSelection.godleys)
-      {
-        const GodleyIcon& g=godleyItems[i];
-        m.model.godleys.push_back(schema1::Godley(i, g));
-        m.layout.push_back(make_shared<schema1::PositionLayout>(i, g));
-        // godley ports are just the ports of the underlying variables
-      }
-     for (int i: currentSelection.plots)
-      {
-        const PlotWidget& p=plots[i];
-        m.model.plots.push_back(schema1::Plot(i, p));
-        m.layout.push_back(make_shared<schema1::PositionLayout>(i, p));
-        for (int pi: p.ports())
-          {
-            const Port& p=ports[pi];
-            m.model.ports.push_back(schema1::Port(pi, p));
-            m.layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
-          }
-      }
-     ostringstream os;
-     xml_pack_t packer(os, schemaURL);
-     xml_pack(packer, "Minsky", m);
-     putClipboard(os.str());
+    schema1::Minsky m(*this,currentSelection);
+    ostringstream os;
+    xml_pack_t packer(os, schemaURL);
+    xml_pack(packer, "Minsky", m);
+    putClipboard(os.str());
+  }
+
+  void Minsky::saveSelectionAsFile(const string& fileName) const
+  {
+    schema1::Minsky m(*this,currentSelection);
+    ofstream os(fileName);
+    xml_pack_t packer(os, schemaURL);
+    xml_pack(packer, "Minsky", m);
+  }
+
+  void Minsky::saveGroupAsFile(int i, const string& fileName) const
+  {
+    schema1::Minsky m(*this,groupItems[i]);
+    ofstream os(fileName);
+    xml_pack_t packer(os, schemaURL);
+    xml_pack(packer, "Minsky", m);
   }
 
   int Minsky::paste()

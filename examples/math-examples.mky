@@ -222,90 +222,10 @@
   </model>
   <layout>
    <Layout>
-    <id>0</id>
-    <x>39.0001</x>
-    <y>15</y>
-   </Layout>
-   <Layout>
-    <id>1</id>
-    <x>11</x>
-    <y>15</y>
-   </Layout>
-   <Layout>
-    <id>2</id>
-    <x>68.0002</x>
-    <y>68.0002</y>
-   </Layout>
-   <Layout>
-    <id>3</id>
+    <id>16</id>
+    <id>16</id>
     <x>0</x>
-    <y>68.0002</y>
-   </Layout>
-   <Layout>
-    <id>4</id>
-    <x>141</x>
-    <y>17.0002</y>
-   </Layout>
-   <Layout>
-    <id>5</id>
-    <x>119</x>
-    <y>17.0002</y>
-   </Layout>
-   <Layout>
-    <id>6</id>
-    <x>187.001</x>
-    <y>90.0002</y>
-   </Layout>
-   <Layout>
-    <id>7</id>
-    <x>115</x>
-    <y>90.0002</y>
-   </Layout>
-   <Layout>
-    <id>8</id>
-    <x>61.5002</x>
-    <y>156</y>
-   </Layout>
-   <Layout>
-    <id>9</id>
-    <x>30.5001</x>
-    <y>156</y>
-   </Layout>
-   <Layout>
-    <id>10</id>
-    <x>209.001</x>
-    <y>177.001</y>
-   </Layout>
-   <Layout>
-    <id>11</id>
-    <x>121</x>
-    <y>177.001</y>
-   </Layout>
-   <Layout>
-    <id>12</id>
-    <x>170</x>
-    <y>233.001</y>
-   </Layout>
-   <Layout>
-    <id>13</id>
-    <x>102</x>
-    <y>233.001</y>
-   </Layout>
-   <Layout>
-    <id>14</id>
-    <x>334.001</x>
-    <y>170.001</y>
-   </Layout>
-   <Layout>
-    <id>15</id>
-    <x>246.001</x>
-    <y>170.001</y>
-   </Layout>
-   <Layout>
-    <id>16</id>
-    <id>16</id>
-    <x>24</x>
-    <y>15</y>
+    <y>0</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -318,8 +238,8 @@
    <Layout>
     <id>17</id>
     <id>17</id>
-    <x>33.0001</x>
-    <y>68.0002</y>
+    <x>9.0001</x>
+    <y>53.0002</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -332,8 +252,8 @@
    <Layout>
     <id>18</id>
     <id>18</id>
-    <x>129</x>
-    <y>17.0002</y>
+    <x>105</x>
+    <y>2.0002</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -346,8 +266,8 @@
    <Layout>
     <id>19</id>
     <id>19</id>
-    <x>150</x>
-    <y>90.0002</y>
+    <x>126</x>
+    <y>75.0002</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -360,8 +280,8 @@
    <Layout>
     <id>20</id>
     <id>20</id>
-    <x>45.0001</x>
-    <y>156</y>
+    <x>21.0001</x>
+    <y>141</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -374,8 +294,8 @@
    <Layout>
     <id>21</id>
     <id>21</id>
-    <x>164.001</x>
-    <y>177.001</y>
+    <x>140.001</x>
+    <y>162.001</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -388,8 +308,8 @@
    <Layout>
     <id>22</id>
     <id>22</id>
-    <x>135</x>
-    <y>233.001</y>
+    <x>111</x>
+    <y>218.001</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -402,8 +322,8 @@
    <Layout>
     <id>23</id>
     <id>23</id>
-    <x>289.001</x>
-    <y>170.001</y>
+    <x>265.001</x>
+    <y>155.001</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>

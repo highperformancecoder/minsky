@@ -1065,9 +1065,18 @@ proc canvasContext {x y} {
     .wiring.context add command -label Help -command {help DesignCanvas}
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy" -command minsky.copy
+    .wiring.context add command -label "Save selection as" -command saveSelection
     .wiring.context add command -label "Paste" -command {insertNewGroup [paste]}
     .wiring.context add command -label "Group" -command "minsky.createGroup; updateCanvas"
     tk_popup .wiring.context $x $y
+}
+
+proc saveSelection {} {
+    global workDir
+    set fname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+    if [string length $fname] {
+        saveSelectionAsFile $fname
+    }
 }
 
 proc canvasHelp {x y} {

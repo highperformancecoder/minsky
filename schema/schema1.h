@@ -99,7 +99,7 @@ namespace schema1
   template <class T, class U>
   struct Join: virtual public T, virtual public U 
   {
-    Join* clone() const {return 0;}
+    Join* clone() const {return new Join(*this);}
     string type() const {return "";}
     void pack(pack_t& x, const string& d) const {}
     void unpack(unpack_t& x, const string& d) {}
@@ -186,6 +186,8 @@ namespace schema1
     Group() {}
     Group(int id, const minsky::GroupIcon& g): 
       Item(id,g), ports(g.ports()), name(g.name()) {}
+    // not called from constructor, as we may want to renumber items
+    void addItems(const minsky::GroupIcon& g);
   };
 
   struct Godley: public SPoly<Godley,Item>
@@ -310,13 +312,13 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
 
   struct RungeKutta
   {
-    double stepMin, stepMax;
-    int nSteps;
-    double epsRel, epsAbs;
-    int order;
-    bool implicit;
-    int simulationDelay;
-    RungeKutta(): order(4), implicit(false), simulationDelay(0) {}
+    double stepMin{0}, stepMax{0.01};
+    int nSteps{1};
+    double epsRel{1e-2}, epsAbs{1e-3};
+    int order{4};
+    bool implicit{false};
+    int simulationDelay{0};
+    RungeKutta() {}
     RungeKutta(const minsky::Minsky& m):
       stepMin(m.stepMin), stepMax(m.stepMax), nSteps(m.nSteps),
       epsRel(m.epsRel), epsAbs(m.epsAbs), order(m.order), 
@@ -349,6 +351,15 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     double zoomFactor;
     Minsky(): schemaVersion(-1), zoomFactor(1) {} // schemaVersion defined on read in
     Minsky(const minsky::Minsky& m);
+    /// construct a schema object containing contents of a selection
+    Minsky(const minsky::Minsky& m, const minsky::Selection&);
+    Minsky(const minsky::Minsky& m, const minsky::GroupIcon& g):
+      schemaVersion(version), zoomFactor(m.zoomFactor())
+    {populateWith(m,g,true);}
+      
+    /// fills a schema object from the contents of \a g. \a
+    /// visible refers to whether the contents of \a g will be visible
+    void populateWith(const minsky::Minsky& m, const minsky::GroupIcon& g, bool visible=true);
 
     /// create a Minsky model from this
     operator minsky::Minsky() const;

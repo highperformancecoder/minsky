@@ -6,7 +6,7 @@
 
 MAC_DIST_DIR=minsky.app/Contents/MacOS
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'|tr -d "D"`
-if [ $version=='"unknown"' ]; then
+if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 

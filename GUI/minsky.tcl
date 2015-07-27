@@ -52,7 +52,7 @@ if [file exists $rcfile] {
 # points to Minsky's library directory
 if {![file exists [file join $tcl_library init.tcl]] || 
     [file normalize $tcl_library]==[file normalize $minskyHome/library]} {
-    set tcl_library $minskyHome/library/tcl8.5
+    set tcl_library $minskyHome/library/tcl
 }
 
 
@@ -63,7 +63,7 @@ if {![info exists tk_library]} {
 }
 if {![file exists [file join $tk_library tk.tcl]]
 } {
-    set tk_library $minskyHome/library/tk8.5
+    set tk_library $minskyHome/library/tk
 }
 
 proc setFname {name} {
@@ -523,7 +523,7 @@ tooltip .controls.zoomIn "Zoom In"
 
 image create photo zoomOrigImg -file $minskyHome/icons/zoomOrig.gif
 button .controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
-    -command {zoom [expr 1/[zoomFactor]]; recentreCanvas}
+    -command {if {[zoomFactor]>0} {zoom [expr 1/[zoomFactor]]} else {setZoom 1}; recentreCanvas}
 tooltip .controls.zoomOrig "Reset Zoom/Origin"
 pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig -side left
 
@@ -724,7 +724,7 @@ proc newSystem {} {
     deleteSubsidiaryTopLevels
     clearHistory
     clearAll
-    zoom [expr 1/[zoomFactor]]
+    setZoom 1
     recentreCanvas
     updateCanvas 
     global fname

@@ -206,7 +206,7 @@ SUITE(Group)
 
     
     // now ungroup g1
-    zoom(g2.x(),g2.y(),g2.computeDisplayZoom()/g2.zoomFactor);
+    zoom(g2.x(),g2.y(),1.1*g2.computeDisplayZoom()/g2.zoomFactor);
     ungroup(g1.id());
     CHECK_EQUAL(0,g2.groups().size());
     CHECK_EQUAL(3, g2.variables().size());

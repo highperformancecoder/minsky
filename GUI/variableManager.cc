@@ -294,12 +294,20 @@ void VariableManager::makeConsistent()
         wiredVariables.insert((*this)[v->second]->valueId());
     }
 
-  // anything variable attached to an integral must also be wired
-  for (const OperationPtr o: minsky().operations)
-    if (auto i=dynamic_cast<const IntOp*>(o.get()))
+  // anything variable attached to an integral must also be wired.
+  // also checks for, and eliminates duplicate entries
+  set<string> intVarNames;
+  for (OperationPtr o: minsky().operations)
+    if (auto i=dynamic_cast<IntOp*>(o.get()))
       if (auto v=i->getIntVar())
         {
-          if (v->type()!=VariableType::integral) convertVarType(v->valueId(), VariableType::integral);
+          if (!intVarNames.insert(v->valueId()).second)
+            {
+              i->newName();
+              i->setDescription();
+            }
+          if (v->type()!=VariableType::integral) 
+            convertVarType(v->valueId(), VariableType::integral);
           wiredVariables.insert(v->valueId());
         }
 }
