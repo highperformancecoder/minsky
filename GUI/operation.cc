@@ -46,13 +46,6 @@ namespace minsky
   constexpr float OperationBase::h;
   constexpr float OperationBase::r;
 
-  void OperationBase::move(float x1, float y1)
-  {
-    m_x+=x1; m_y+=y1;
-    for (size_t i=0; i<m_ports.size(); ++i)
-      minsky().movePort(m_ports[i], x1, y1);
-  }
-
   void OperationBase::addPorts()
   {
     m_ports.clear();
@@ -61,7 +54,7 @@ namespace minsky
         // zero input port case
       case constant: 
       case time: 
-        m_ports.push_back(minsky().addPort(Port(0,0,false)));
+        m_ports.push_back(minsky().addOutputPort());
         break;
         // single input port case
       case copy: case sqrt: case exp: case ln:
@@ -70,25 +63,25 @@ namespace minsky
       case sinh: case cosh: case tanh:
       case abs: case heaviside:
       case data: case differentiate:
-        m_ports.push_back(minsky().addPort(Port(0,0,false)));
-        m_ports.push_back(minsky().addPort(Port(0,0,true)));
+        m_ports.push_back(minsky().addOutputPort());
+        m_ports.push_back(minsky().addInputPort());
         break;
         // dual input port case, multiwire inputs allowed
       case add: case subtract: 
       case multiply: case divide:
-        m_ports.push_back(minsky().addPort(Port(0,0,false)));
-        m_ports.push_back(minsky().addPort(Port(0,0,true, true)));
+        m_ports.push_back(minsky().addOutputPort());
+        m_ports.push_back(minsky().addMultipleInputPort());
         assert(minsky().ports[m_ports.back()].input());
-        m_ports.push_back(minsky().addPort(Port(0,0,true, true)));
+        m_ports.push_back(minsky().addMultipleInputPort());
         assert(minsky().ports[m_ports.back()].input());
         assert(minsky().ports.size()>2);
         break;
         // dual input port case, multiwire inputs not allowed
       case pow: case log:
-        m_ports.push_back(minsky().addPort(Port()));
-        m_ports.push_back(minsky().addPort(Port(0,0,true)));
+        m_ports.push_back(minsky().addOutputPort());
+        m_ports.push_back(minsky().addInputPort());
         assert(minsky().ports[m_ports.back()].input());
-        m_ports.push_back(minsky().addPort(Port(0,0,true)));
+        m_ports.push_back(minsky().addInputPort());
         assert(minsky().ports[m_ports.back()].input());
         assert(minsky().ports.size()>2);
         break;
@@ -122,14 +115,14 @@ namespace minsky
   {
     m_ports.clear();
     setDescription();
-    m_ports.push_back(minsky().addPort(Port(0,0,true)));
+    m_ports.push_back(minsky().addInputPort());
   }
 
 
   void OperationBase::delPorts()
   {
-    for (size_t i=0; i<m_ports.size(); ++i)
-      minsky().delPort(m_ports[i]);
+    for (int i: ports())
+      minsky().delPort(i);
     m_ports.clear();
   }
 
@@ -162,7 +155,7 @@ namespace minsky
         if (numPorts()>0)
           {
             // save any attached wires for later use
-            array<int> outWires=minsky().wiresAttachedToPort(m_ports[0]);
+            array<int> outWires=minsky().wiresAttachedToPort(ports()[0]);
             for (array<int>::iterator i=outWires.begin(); i!=outWires.end(); ++i)
               savedWires.push_back(minsky().wires[*i]);
           }
@@ -171,8 +164,8 @@ namespace minsky
         if (intVar > -1)
           {
             const VariablePtr& v=variableManager()[intVar];
-            if (!m_ports.empty() && m_ports[0]!=v->outPort())
-              minsky().delPort(m_ports[0]);
+            if (!ports().empty() && ports()[0]!=v->outPort())
+              minsky().delPort(ports()[0]);
             if (v->valueId()!=VariableManager::valueId(m_description))
               {
                 minsky().variables.erase(intVar, true);
@@ -181,8 +174,8 @@ namespace minsky
             else
               return; // nothing to be done
           }
-        else if (!m_ports.empty())
-          minsky().delPort(m_ports[0]);
+        else if (!ports().empty())
+          minsky().delPort(ports()[0]);
 
         // set a default name if none given
         if (m_description==":") 
@@ -210,7 +203,7 @@ namespace minsky
         intVar=variableManager().addVariable(iv);
 
         // make the intVar outport the integral operator's outport
-        if (m_ports.size()<1) m_ports.resize(1);
+        if (ports().size()<1) m_ports.resize(1);
 
         m_ports[0]=iv->outPort();
 
@@ -218,7 +211,7 @@ namespace minsky
         for (size_t i=0; i<savedWires.size(); ++i)
           {
             Wire& w=savedWires[i];
-            w.from=m_ports[0];
+            w.from=ports()[0];
             if (variableManager().addWire(w.to, w.from))
               minsky().addWire(w);
           }
@@ -328,18 +321,18 @@ namespace minsky
           {
             // we are coupled, decouple variable
             assert(v->inPort()>=0);
-            m_ports[0]=minsky().addPort(Port(x(),y(),false));
+            m_ports[0]=minsky().addOutputPort();
             minsky().addWire(Wire(m_ports[0],v->inPort()));
             v->visible=true;
             v->rotation=rotation;
             float angle=rotation*M_PI/180;
-            float xoffs=r+intVarOffset+RenderVariable(*v).width();
+            float xoffs=OperationBase::r+intVarOffset+RenderVariable(*v).width();
             v->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
           }
         else
           {
             assert(v->inPort()==-1);
-            minsky().delPort(m_ports[0]);
+            minsky().delPort(ports()[0]);
             m_ports[0]=v->outPort();
             v->visible=false;
           }
@@ -347,28 +340,6 @@ namespace minsky
       }();
     minsky().variables.makeConsistent();
     return r;
-  }
-
-  void OperationBase::zoom(float xOrigin, float yOrigin,float factor)
-  {
-    if (visible)
-      {
-        if (group==-1)
-          {
-            minsky::zoom(m_x,xOrigin,factor);
-            minsky::zoom(m_y,yOrigin,factor);
-          }
-        else
-          {
-            m_x*=factor;
-            m_y*=factor;
-          }
-        zoomFactor*=factor;
-        // ensure attached integral variable is at same zoom level
-        if (IntOp* i=dynamic_cast<IntOp*>(this))
-          if (auto v=i->getIntVar())
-            v->setZoom(zoomFactor);
-      }
   }
 
   string OperationBase::portValues() const

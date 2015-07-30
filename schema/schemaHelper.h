@@ -68,16 +68,19 @@ namespace minsky
     {o.m_x=x; o.m_y=y;}
 
     static void setPrivates(VariablePorts& op, int outPort, int inPort) {
-      op.m_outPort=outPort;
-      op.m_inPort=inPort;
+      op.m_ports[0]=outPort;
+      if (inPort>=0) 
+        {
+          op.m_ports.resize(2);
+          op.m_ports[1]=inPort;
+        }
     }
 
     /// move allocated ports from o to v. Used for converting old
     /// constants into new variables
     static void movePorts(VariablePorts& v, OperationBase& o)
     {
-      v.m_outPort=o.m_ports[0];
-      v.m_inPort=o.m_ports[1];
+      v.m_ports=o.m_ports;
       o.m_ports[0]=o.m_ports[1]=-1;
     }
 

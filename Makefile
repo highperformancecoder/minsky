@@ -1,27 +1,9 @@
 .SUFFIXES: .xcd $(SUFFIXES)
 
-# list of dlls required for win-dist build
-DLLS=libcairo-2.dll libexpat-1.dll \
- libgcc_s_dw2-1.dll libglib-2.0-0.dll libgmodule-2.0-0.dll libgobject-2.0-0.dll\
-libgslcblas-0.dll libgthread-2.0-0.dll libpango-1.0-0.dll \
-libpangocairo-1.0-0.dll libpangowin32-1.0-0.dll libpixman-1-0.dll \
-libstdc++-6.dll tcl85.dll tk85.dll Tktable211.dll libpng15-15.dll libz-1.dll \
-libintl-8.dll libiconv-2.dll libffi-6.dll libgsl-0.dll 
-
-# freetype6.dll libfontconfig-1.dll libpangoft2-1.0-0.dll  zlib1.dll
-
-WIN_DIST_DIR=$(shell pwd)-win-dist
-
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
 
 # Use the TCL stub libraries to be consistent with TkTable
-
-#TCLLIBS+=$(shell grep TK_STUB_LIB_FLAG\
-#    $(call search,lib*/tkConfig.sh) | cut -f2 -d\')
-#TCLLIBS+=$(shell grep TCL_STUB_LIB_FLAG\
-#    $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-
 
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
@@ -54,7 +36,8 @@ MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	variable.o variableManager.o variableValue.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
-	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o 
+	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
+	switchIcon.o
 ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema0.o schema1.o variableType.o operationType.o
@@ -134,21 +117,13 @@ endif
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
 # only perform link checking if online
-#	if ping -c 1 www.google.com; then linkchecker GUI/library/help/minsky.html; fi
+	if ping -c 1 www.google.com; then linkchecker GUI/library/help/minsky.html; fi
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
 include $(ALL_OBJS:.o=.d)
 
-
-ifeq ($(OS),MINGW)
-WINBUILD=1
-endif
 ifdef MXE
-WINBUILD=1
-endif
-
-ifdef WINBUILD
 ifndef DEBUG
 # This option removes the black window, but this also prevents being
 # able to    type TCL commands on the command line, so only use it for
@@ -225,15 +200,6 @@ ifdef AEGIS
 else
 	echo '#define MINSKY_VERSION "unknown"' >minskyVersion.h
 endif
-
-# builds an MSI installer from the MinGW environment. Obsoleted by an
-# MXE build, which requires running the script GUI/makeMsi.sh manually
-# on a Windows system post build
-win-dist: GUI/minsky$(EXE)
-	mkdir -p $(WIN_DIST_DIR)/Minsky
-	cp -rf /usr/local/lib/tcl8.5 /usr/local/lib/tk8.5 $(WIN_DIST_DIR)/Minsky/library
-	cp $(DLLS:%=/bin/%) $(WIN_DIST_DIR)/Minsky
-	sh GUI/makeMsi.sh
 
 ifeq ($(HOST),minskys-Mac-mini.local)
 mac-dist: tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)

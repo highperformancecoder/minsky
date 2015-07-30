@@ -91,6 +91,17 @@ foreach op [availableOperations] {
     set helpTopics(.wiring.menubar.line$menubarLine.$op) "op:$op"
 }
 
+if {[tk windowingsystem]=="aqua"} {
+    image create photo switchImg -file $minskyHome/icons/switch.gif
+} else {
+    image create photo switchImg -width 24 -height 24
+    operationIcon switchImg switch
+}
+button .wiring.menubar.line$menubarLine.switch -image switchImg \
+    -height 24 -width 37 -command {placeNewSwitch}
+tooltip .wiring.menubar.line$menubarLine.switch "Switch"
+pack .wiring.menubar.line$menubarLine.switch -side left 
+
 
 image create photo plotImg -file $minskyHome/icons/plot.gif
 button .wiring.menubar.line$menubarLine.plot -image plotImg \
@@ -976,6 +987,11 @@ proc updateCanvas {} {
         if {[op.group]==-1} {drawOperation $o}
     }
 
+    foreach s [switchItems.#keys] {
+        switchItem.get $s
+        if {[switchItem.group]==-1} {newSwitch $s}
+    }
+
     foreach im [plots.#keys] {
         plot.get $im
         newPlotItem $im [plot.x] [plot.y]
@@ -1252,6 +1268,19 @@ proc contextMenu {item x y} {
             .wiring.context add command -label "Lower" -command "lowerItem note$id"
             .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.notes.@elem $id].*"
             .wiring.context add command -label "Delete Note" -command "deleteNote $id; updateCanvas"
+        }
+        switchItem {
+            set tag [lindex $tags [lsearch -regexp $tags {switchItem[0-9]+}]]
+            set id [string range $tag 10 end]
+            .wiring.context delete 0 end
+            .wiring.context add command -label Help -command {help Switches}
+            .wiring.context add command -label Description -command "postNote switchItem $id"
+            .wiring.context add command -label "Add case" -command "incrCase $id 1" 
+            .wiring.context add command -label "Delete case" -command "incrCase $id -1" 
+            .wiring.context add command -label "Raise" -command "raiseItem $tag"
+            .wiring.context add command -label "Lower" -command "lowerItem $tag"
+            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.switchItems.@elem $id].*"
+            .wiring.context add command -label "Delete Switch" -command "deleteSwitch $id; updateCanvas"
         }
     }
 #    .wiring.context post $x $y

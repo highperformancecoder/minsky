@@ -171,22 +171,13 @@ namespace minsky
     f<<"\\end{document}\n";
   }
 
-//  set<string> MinskyTCL::matchingTableColumns(TCL_args args) 
-//  {
-//    return MatchingTableColumns
-//      (args[0], GodleyAssetClass::AssetClass
-//       (classdesc::enumKey<GodleyAssetClass::AssetClass>((char*)args[1])));
-//  }
-
-
   namespace
   {
-    struct OperationIcon: public ecolab::cairo::CairoImage
+    template <class T>
+    struct IconBase: public ecolab::cairo::CairoImage, public T
     {
-      OperationPtr op;
-      OperationIcon(const char* imageName, const char* opName):
-        //CairoImage(imageName),
-        op(OperationType::Type(enumKey<OperationType::Type>(opName))) 
+      template <class... U> 
+      IconBase(const char* imageName, U... x): T(std::forward<U>(x)...)
       {
         Tk_PhotoHandle photo = Tk_FindPhoto(interp(), imageName);
         if (photo)
@@ -200,15 +191,30 @@ namespace minsky
                   CAIRO_FONT_SLANT_ITALIC,CAIRO_FONT_WEIGHT_NORMAL);
         cairo_set_font_size(cairoSurface->cairo(),12);
         cairo_set_line_width(cairoSurface->cairo(),1);
-        RenderOperation(*op, cairoSurface->cairo()).draw();
+        T::draw(cairoSurface->cairo());
         cairoSurface->blit();
+      }
+    };
+
+    struct OperationIcon
+    {
+      OperationIcon(const char* opName):
+        op(OperationType::Type(enumKey<OperationType::Type>(opName))) 
+      {}
+      OperationPtr op;
+      void draw(cairo_t* cairo)
+      {
+        RenderOperation(*op, cairo).draw();
       }
     };
   }
 
   void MinskyTCL::operationIcon(const char* imageName, const char* opName) const
   {
-    OperationIcon(imageName, opName).draw();
+    if (string(opName)=="switch")
+      IconBase<SwitchIcon>(imageName).draw();
+    else
+      IconBase<OperationIcon>(imageName, opName).draw();
   }
 
 

@@ -30,6 +30,7 @@
 #include "portManager.h"
 #include "plotWidget.h"
 #include "groupIcon.h"
+#include "switchIcon.h"
 #include "version.h"
 #include "variable.h"
 #include "equations.h"
@@ -62,6 +63,9 @@ namespace minsky
     vector<Integral> integrals;
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
+    // A map that maps an input port to variable location that it
+    // receives data from
+    map<int,VariableValue> inputFrom;
 
     // make copy operations just dummies, as assignment of Minsky's
     // doesn't need to change this
@@ -160,6 +164,7 @@ namespace minsky
     VariableManager variables;
 
     GroupIcons groupItems;
+    SwitchIcons switchItems;
     typedef IntrusiveMap<int, OpVarBaseAttributes> Notes;
     Notes notes; ///< descriptive textual items
 
@@ -271,7 +276,7 @@ namespace minsky
         }
     }
 
-     int newNote() {
+    int newNote() {
       int id=getNewId();
       notes[id];
       return id;
@@ -280,6 +285,17 @@ namespace minsky
       notes.erase(id);
     }
 
+    int newSwitch() {
+      int id=getNewId();
+      switchItems[id];
+      return id;
+    }
+    void deleteSwitch(int id) {
+      switchItems.erase(id);
+    }
+
+    
+    
     /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
     void select(float x0, float y0, float x1, float y1);
     /// clear selection

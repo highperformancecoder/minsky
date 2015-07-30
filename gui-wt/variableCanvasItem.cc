@@ -86,7 +86,7 @@ bool VariableCanvasItem::editProperties()
 
 void VariableCanvasItem::getPortsList(PortsList& ports) const
 {
-  array<int> portsArray = variable->ports();
+  auto& portsArray = variable->ports();
   ports.clear();
 
   std::for_each(portsArray.begin(), portsArray.end(),

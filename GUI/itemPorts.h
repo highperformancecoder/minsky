@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2012
+  @copyright Steve Keen 2015
   @author Russell Standish
   This file is part of Minsky.
 
@@ -17,23 +17,22 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef NOTE_H
-#define NOTE_H
-// fields relevant to the note concept
+#ifndef ITEMPORTS_H
+#define ITEMPORTS_H
 
-#include "itemPorts.h"
-
-#include <string>
+#include <classdesc_access.h>
 #include <vector>
-
 namespace minsky
 {
-  struct Note: public ItemPorts
+  class ItemPorts
   {
-    /// commentary and short commentary on this item
-    std::string detailedText, tooltip;
+  protected:
+    std::vector<int> m_ports;
+    CLASSDESC_ACCESS(ItemPorts);
+  public:
+    const std::vector<int>& ports() const {return m_ports;}
   };
 }
 
-#include "note.cd"
+#include "itemPorts.cd"
 #endif

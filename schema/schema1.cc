@@ -264,13 +264,13 @@ namespace schema1
                 pports[i+6]=p1.ports[i];              
               // add new RHS scale control ports
               for (i=4; i<6; ++i)
-                pports[i]=minsky::minsky().addPort(minsky::Port(0,0,true)); 
+                pports[i]=minsky::minsky().addInputPort(); 
               // add new RHS input ports
               for (i=10; i<14; ++i)
-                pports[i]=minsky::minsky().addPort(minsky::Port(0,0,true));
+                pports[i]=minsky::minsky().addInputPort();
               // add x input ports for the RHS inputs
               for (i=18; i<22; ++i)
-                pports[i]=minsky::minsky().addPort(minsky::Port(0,0,true));
+                pports[i]=minsky::minsky().addInputPort();
             }
           else
             {

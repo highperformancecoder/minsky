@@ -42,7 +42,7 @@ namespace minsky
   template <class Item>
   ClickType::Type clickType(Item& item, float x, float y)
   {
-        // firstly, check whether a port has been selected
+    // firstly, check whether a port has been selected
     for (int p: item.ports())
       {
         const Port& port=cportManager().ports[p];

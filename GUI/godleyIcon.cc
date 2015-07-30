@@ -347,13 +347,13 @@ namespace minsky
     return numPorts;
   }
 
-  ecolab::array<int> GodleyIcon::ports() const
+  vector<int> GodleyIcon::ports() const
   {
-    array<int> ports;
-    for (Variables::const_iterator v=flowVars.begin(); v!=flowVars.end(); ++v)
-      ports<<=(*v)->ports();
-    for (Variables::const_iterator v=stockVars.begin(); v!=stockVars.end(); ++v)
-      ports<<=(*v)->ports();
+    vector<int> ports;
+    for (auto& v: flowVars)
+      ports.insert(ports.end(),v->ports().begin(),v->ports().end());
+    for (auto& v: stockVars)
+      ports.insert(ports.end(),v->ports().begin(),v->ports().end());
     return ports;
   }
 
@@ -390,7 +390,6 @@ namespace minsky
     for (VariablePtr& v: stockVars)
       v->zoomFactor=zoomFactor;
     update();
-    array<int> pp=ports();
   }
 
   void GodleyIcon::wtDraw(ecolab::cairo::Surface& cairoSurface)

@@ -39,4 +39,31 @@ namespace minsky
       return m_y;
   }
 
+  void OpVarBaseAttributes::move(float x1, float y1)
+  {
+    m_x+=x1; m_y+=y1;
+    for (int i: ports())
+      minsky().movePort(i, x1, y1);
+  }
+
+  void OpVarBaseAttributes::zoom(float xOrigin, float yOrigin,float factor)
+  {
+    if (visible)
+      {
+        if (group==-1)
+          {
+            minsky::zoom(m_x,xOrigin,factor);
+            minsky::zoom(m_y,yOrigin,factor);
+          }
+        else
+          {
+            m_x*=factor;
+            m_y*=factor;
+          }
+        zoomFactor*=factor;
+        setZoomOnAttachedVariable(zoomFactor);
+      }
+  }
+
+ 
 }

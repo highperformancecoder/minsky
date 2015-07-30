@@ -72,7 +72,7 @@ bool GodleyCanvasItem::editProperties()
 
 void GodleyCanvasItem::getPortsList(PortsList& ports) const
 {
-  array<int> portsArray = icon.ports();
+  auto portsArray = icon.ports();
   ports.clear();
 
   std::for_each(portsArray.begin(), portsArray.end(),

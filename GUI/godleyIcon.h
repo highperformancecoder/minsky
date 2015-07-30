@@ -91,7 +91,7 @@ namespace minsky
     void update();
 
     size_t numPorts() const;
-    ecolab::array<int> ports() const;
+    std::vector<int> ports() const;
     void moveTo(float x1, float x2);
 
     /// returns the name of a variable if point (x,y) is within a

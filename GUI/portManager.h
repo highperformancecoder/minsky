@@ -81,6 +81,9 @@ namespace minsky
 
     // add a port to the port map
     int addPort(const Port& p);
+    int addOutputPort() {return addPort(Port(0,0,false));}
+    int addInputPort() {return addPort(Port(0,0,true));}
+    int addMultipleInputPort() {return addPort(Port(0,0,true,true));}
 
     int addWire(Wire w); 
   

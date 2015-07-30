@@ -319,10 +319,10 @@ namespace minsky
   {
     vector<int> r;
     set<int>::const_iterator i=inVariables.begin();
-    for (; i!=inVariables.end(); ++i)
-      r.push_back(minsky().variables[*i]->inPort());
-    for (i=outVariables.begin(); i!=outVariables.end(); ++i)
-      r.push_back(minsky().variables[*i]->outPort());
+    for (int i: inVariables)
+      r.push_back(minsky().variables[i]->inPort());
+    for (int i: outVariables)
+      r.push_back(minsky().variables[i]->outPort());
     return r;
   }
 
@@ -1028,7 +1028,7 @@ namespace minsky
           }
         for (size_t i=0; i<m_variables.size(); ++i)
           {
-            const array<int>& p=minsky().variables[m_variables[i]]->ports();
+            auto& p=minsky().variables[m_variables[i]]->ports();
             containedPorts.insert(p.begin(), p.end());
           }
         vector<Wire> wiresToAdd;

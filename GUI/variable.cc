@@ -31,37 +31,39 @@ using ecolab::array;
 
 void VariablePorts::addPorts()
 {
-  m_outPort = m_inPort = -1;
+  m_ports.resize(numPorts());
   if (numPorts()>0)
-    m_outPort = minsky().addPort(Port(x(),y(),false));
+    m_ports[0] = minsky().addPort(Port(x(),y(),false));
   if (numPorts()>1)
-    m_inPort = minsky().addPort(Port(x(),y(),true));
+    m_ports[1] = minsky().addPort(Port(x(),y(),true));
 }
 
 void VariablePorts::delPorts()
 {
-  if (m_outPort>=0) minsky().delPort(m_outPort);
-  if (m_inPort>=0) minsky().delPort(m_inPort);
-  m_inPort=m_outPort=-1;
+  for (auto& p: ports())
+    if (p>-1) minsky().delPort(p);
+  m_ports.clear();
 }
 
 void VariablePorts::swapPorts(VariablePorts& v)
 {
   int n=min(numPorts(), v.numPorts());
-  if (n>0) swap(m_outPort, v.m_outPort);
-  if (n>1) swap(m_inPort, v.m_inPort);
+  if (n>0) swap(m_ports[0], v.m_ports[0]);
+  if (n>1) swap(m_ports[1], v.m_ports[1]);
 }
 
 void VariablePorts::toggleInPort()
 {
   if (type()==integral)
     {
-      if (m_inPort==-1)
-        m_inPort = minsky().addPort(Port(x(),y(),true));
+      if (m_ports.size()<2)
+        m_ports.resize(2,-1);
+      if (m_ports[1]==-1)
+        m_ports[1] = minsky().addPort(Port(x(),y(),true));
       else 
         {
-          minsky().delPort(m_inPort);
-          m_inPort=-1;
+          minsky().delPort(m_ports[1]);
+          m_ports[1]=-1;
         }
     }
 }
@@ -196,28 +198,6 @@ template <> size_t Variable<VariableBase::integral>::numPorts() const
 {
   return inPort()<0? 1: 2;
 }
-}
-
-
-void VariablePorts::move(float dx, float dy) 
-{
-  m_x+=dx; 
-  m_y+=dy;
-  if (m_outPort!=-1)
-    minsky().movePort(m_outPort, dx, dy);
-  if (m_inPort!=-1)
-    minsky().movePort(m_inPort, dx, dy);
-    
-}
-
-
-
-ecolab::array<int> VariablePorts::ports() const 
-{
-  ecolab::array<int> r(numPorts());
-  if (numPorts()>0) r[0]=outPort();
-  if (numPorts()>1) r[1]=inPort();
-  return r;
 }
 
 

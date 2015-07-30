@@ -193,7 +193,8 @@ SUITE(Group)
     GroupIcon& g1=groupItems[copyGroup(gid)];
     CHECK(variables.noMultipleWiredInputs());
     g1.moveTo(300,300);
-    select(275,0,450,400);
+    select(300,0,450,400);
+    save("B4createGroup.mky");
     GroupIcon& g2=groupItems[createGroup()];
     CHECK_EQUAL(1,g2.variables().size());
     CHECK_EQUAL(1,g2.numPorts());

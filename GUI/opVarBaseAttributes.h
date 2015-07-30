@@ -44,6 +44,8 @@ namespace minsky
                            mouseFocus(false), selected(false), visible(true)
     {}
 
+    virtual ~OpVarBaseAttributes() {}
+
     /// x -coordinate of items position on canvas
     float x() const;
     /// y -coordinate of items position on canvas
@@ -57,10 +59,18 @@ namespace minsky
     // TODO: can be better handled by generic code within this class,
     // but need to wait for big item refactor
     /// move relative
-    virtual void move(float x1, float y1) {
-      m_x+=x1; m_y+=y1;
-    }
-    ClickType::Type clickType(float x, float y) {return ClickType::onItem;}
+    virtual void move(float x1, float y1);
+
+    /// zoom by \a factor, scaling all widget's coordinates, using (\a
+    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
+    void zoom(float xOrigin, float yOrigin,float factor);
+    void setZoom(float factor) {zoomFactor=factor;}
+
+    /// set zoom factor on attached variable (if any) - eg IntOp
+    virtual void setZoomOnAttachedVariable(float) {}
+    virtual ClickType::Type clickType(float x, float y) const {
+      return ClickType::onItem;
+    };
   };
 }
 

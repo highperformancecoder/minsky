@@ -62,10 +62,9 @@ namespace minsky
     int m_scope=-1;
  
   public:
-    virtual int outPort() const = 0;
-    virtual int inPort() const = 0;
-    virtual size_t numPorts() const=0;
-    virtual ecolab::array<int> ports() const=0;
+    int outPort() const {return ports().size()>0? ports()[0]: -1;}
+    int inPort() const {return ports().size()>1? ports()[1]: -1;}
+    virtual size_t numPorts() const = 0;
 
     ///factory method
     static VariableBase* create(Type type); 
@@ -113,7 +112,7 @@ namespace minsky
     void adjustSliderBounds();
 
     /// variable is on left hand side of flow calculation
-    bool lhs() const {return numPorts()==2;} 
+    bool lhs() const {return inPort()>-1;} 
     /// variable is temporary
     bool temp() const {return type()==tempFlow || type()==undefined;}
     virtual Type type() const=0;
@@ -122,8 +121,6 @@ namespace minsky
     VariableBase() {}
     virtual ~VariableBase() {}
 
-    virtual void move(float dx, float dy)=0; ///< relative move
-  
     /// adds inPort for integral case (not relevant elsewhere) if one
     /// not allocated, removes it if one allocated
     virtual void toggleInPort()=0;
@@ -134,7 +131,7 @@ namespace minsky
     void draw(cairo_t*) const;
 
     /// returns the clicktype given a mouse click at \a x, \a y.
-    ClickType::Type clickType(double x, double y) const {
+    ClickType::Type clickType(float x, float y) const override {
       return minsky::clickType(*this,x,y);
     }
 
@@ -145,29 +142,25 @@ namespace minsky
   class VariablePorts: public VariableBase
   {
     void delPorts();
-    int m_outPort, m_inPort; 
     CLASSDESC_ACCESS(VariablePorts);
     friend struct minsky::SchemaHelper;
   protected:
     void addPorts();
   public:
-    VariablePorts(): m_outPort(-1), m_inPort(-1) {}
+    VariablePorts() {}
     ~VariablePorts() {delPorts();}
 
     VariablePorts(const VariablePorts& x): VariableBase(x) {addPorts();}
     VariablePorts& operator=(const VariablePorts& x) {
-      VariableBase::operator=(x);
       delPorts();
+      VariableBase::operator=(x);
+      m_ports.clear();
       addPorts();
       return *this;
     }
     
     void swapPorts(VariablePorts& v);
-    int outPort() const {return m_outPort;}
-    int inPort() const {return m_inPort;}
-    ecolab::array<int> ports() const;
     void toggleInPort();
-    void move(float dx, float dy); 
   };
 
   template <VariableType::Type T>

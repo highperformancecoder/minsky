@@ -55,8 +55,7 @@ namespace minsky
     static constexpr float l=-8, h=12, r=12;
     typedef OperationType::Type Type;
 
-    const vector<int>& ports() const {return m_ports;}
-    size_t numPorts() const  {return m_ports.size();}
+    size_t numPorts() const  {return ports().size();}
     ///factory method. \a ports is used for recreating an object read
     ///from a schema
     static OperationBase* create(Type type, 
@@ -65,7 +64,7 @@ namespace minsky
 
     OperationBase() {}
     OperationBase(const OpVarBaseAttributes& attr): OpVarBaseAttributes(attr) {}
-    OperationBase(const vector<int>& ports): m_ports(ports) {}
+    OperationBase(const vector<int>& ports) {m_ports=ports;}
     virtual ~OperationBase() {}
 
     /// visual representation of operation on the canvas
@@ -75,15 +74,6 @@ namespace minsky
     string name() const {return typeName(type());}
     /// return the symbolic name of \a type
     static string opName(int i) {return typeName(i);}
-
-    /// override of coordinate attributes, allowing group offsets to
-    // relative move
-    void move(float dx, float dy); 
-
-    /// zoom by \a factor, scaling all widget's coordinates, using (\a
-    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-    void zoom(float xOrigin, float yOrigin,float factor);
-    void setZoom(float factor) {zoomFactor=factor;}
 
     /// returns true if from matches the out port, and to matches one of
     /// the in ports
@@ -96,23 +86,22 @@ namespace minsky
     void draw(cairo_t*) const;
 
     /// returns the clicktype given a mouse click at \a x, \a y.
-    ClickType::Type clickType(float x, float y) const {
+    ClickType::Type clickType(float x, float y) const override {
       return minsky::clickType(*this,x,y);
     }
 
   protected:
     // manage the port structures associated with this operation
     virtual void addPorts();
-    void addPorts(const vector<int>& ports) {
-      if (!ports.empty())
+    void addPorts(const vector<int>& p) {
+      if (!p.empty())
         // TODO - possible consistency check possible here
-        m_ports=ports; 
+        m_ports=p; 
       else
         addPorts(); 
     }
     void delPorts();
 
-    vector<int> m_ports;
     friend struct EvalOpBase;
     friend class SchemaHelper;
   };
@@ -225,7 +214,12 @@ namespace minsky
     /// @return coupled state
     bool toggleCoupled();
     bool coupled() const {
-      return intVar>-1 && ports().size()>1 && ports()[0]==getIntVar()->outPort();
+      return intVar>-1 && ports().size()>0 && ports()[0]==getIntVar()->outPort();
+    }
+
+    void setZoomOnAttachedVariable() {
+      if (auto v=getIntVar())
+        v->setZoom(zoomFactor);
     }
 
     void pack(pack_t& x, const string& d) const

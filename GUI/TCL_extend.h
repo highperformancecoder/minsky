@@ -92,7 +92,6 @@ namespace minsky
       return ref->description();
     }
   };
-
 }
 
 #ifdef _CLASSDESC

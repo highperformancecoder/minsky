@@ -606,10 +606,7 @@ namespace minsky
     map<int,VariableValue> portValMap;
     system.populateEvalOpVector(equations, integrals, portValMap);
 
-    // A map that maps an input port to variable location that it
-    // receives data from
-    map<int,VariableValue> inputFrom;
-
+    inputFrom.clear();
     for (Wire w: wires)
       {
         map<int,VariableValue>::iterator i=portValMap.find(w.from);
@@ -1043,6 +1040,8 @@ namespace minsky
       g.zoom(xOrigin, yOrigin, factor);
     for (GroupIcon& g: groupItems)
       g.zoom(xOrigin, yOrigin, factor);
+    for (auto& s: switchItems)
+      s.zoom(xOrigin, yOrigin, factor);
     for (PlotWidget& p: plots)
       p.zoom(xOrigin, yOrigin, factor);
     m_zoomFactor*=factor;

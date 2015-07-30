@@ -159,7 +159,7 @@ namespace schema1
     string name;
     Variable(): type(VariableType::undefined), init("0") {}
     Variable(int id, const minsky::VariableBase& v): 
-      Item(id,v), type(v.type()), init(v.init()), ports(toVector(v.ports())), 
+      Item(id,v), type(v.type()), init(v.init()), ports(v.ports()), 
       name(v.fqName()) {}
   };
 
@@ -200,7 +200,7 @@ namespace schema1
     double zoomFactor;
     Godley(): doubleEntryCompliant(true), zoomFactor(1) {}
     Godley(int id, const minsky::GodleyIcon& g):
-      Item(id,g), ports(toVector(g.ports())), 
+      Item(id,g), ports(g.ports()), 
       doubleEntryCompliant(g.table.doubleEntryCompliant),
       name(g.table.title), data(g.table.getData()), 
       assetClasses(g.table._assetClass()),

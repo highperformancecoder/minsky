@@ -211,12 +211,12 @@ namespace minsky
     m_ports.resize(0);
 
     // xmin, xmax, ymin, ymax ports
-    m_ports<<=minsky().addPort(Port(0,0,true)); //xmin
-    m_ports<<=minsky().addPort(Port(0,0,true));  //xmax
-    m_ports<<=minsky().addPort(Port(0,0,true)); //ymin
-    m_ports<<=minsky().addPort(Port(0,0,true)); //ymax
-    m_ports<<=minsky().addPort(Port(0,0,true)); //ymax
-    m_ports<<=minsky().addPort(Port(0,0,true)); //ymax
+    m_ports<<=minsky().addInputPort(); //xmin
+    m_ports<<=minsky().addInputPort();  //xmax
+    m_ports<<=minsky().addInputPort(); //ymin
+    m_ports<<=minsky().addInputPort(); //ymax
+    m_ports<<=minsky().addInputPort(); //ymax
+    m_ports<<=minsky().addInputPort(); //ymax
 
     // y variable ports
     for (float y=0.5*(dy-h); y<0.5*h; y+=dy)

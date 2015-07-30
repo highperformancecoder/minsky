@@ -142,13 +142,15 @@ namespace minsky
     GetterSetter<Plots> plot;
     GetterSetter<GodleyIcons> godley;
     GetterSetter<GroupIcons> group;
+    GetterSetter<SwitchIcons> switchItem;
     GetterSetter<Notes> note;
 
     MinskyTCL(): port(ports), wire(wires), op(operations), 
                  constant(operations), integral(operations), 
                  data(operations), var(variables),
                  value(variables.values), plot(plots), 
-                 godley(godleyItems), group(groupItems), note(notes) {}
+                 godley(godleyItems), group(groupItems), 
+                 switchItem(switchItems), note(notes) {}
 
     void clearAllGetterSetters() {
       // need also to clear the GetterSetterPtr variables, as these
