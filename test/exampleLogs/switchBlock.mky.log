@@ -1,0 +1,11 @@
+nsteps 10
+0.03 {:int1} 0.015 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.1 {:int1} 0.05 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.17 {:int1} 0.085 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.24 {:int1} 0.12 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.31 {:int1} 0.155 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.38 {:int1} 0.19 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.45 {:int1} 0.225 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.52 {:int1} 0.26 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.59 {:int1} 0.295 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 
+0.66 {:int1} 0.33 {constant:0} 0.5 {constant:1} 1.5 {constant:2} 2.5 {constant:one} 1 {constant:zero} 0 

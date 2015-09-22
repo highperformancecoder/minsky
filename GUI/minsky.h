@@ -98,7 +98,7 @@ namespace minsky
   enum ItemType {wire, op, var, group, godley, plot};
 
   class Minsky: public ValueVector, public Exclude<MinskyExclude>, 
-                public PortManager
+                public PortManager, public GroupIcon
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -109,30 +109,26 @@ namespace minsky
     float m_zoomFactor{1};
     bool reset_needed{true}; ///< if a new model, or loaded from disk
     bool m_edited;  
-    int nextId{0};        ///< next id to assign to an item
 
     /// write current state of all variables to the log file
     void logVariables() const;
 
-    /// push current model state onto history if it differs from previous
-    void pushHistoryIfDifferent();
-
   protected:
-    //string m_outputDataFileName;
     /// contents of current selection
     Selection currentSelection;
+    int nextId{0};        ///< next id to assign to an item
+
   public:
+    using PortManager::ports;
+    using PortManager::wires;
 
     /// reflects whether the model has been changed since last save
     bool edited() const {return m_edited;}
-    void markEdited() {pushHistory(); m_edited=true; reset_needed=true;}
+    void markEdited() {m_edited=true; reset_needed=true;}
     /// override automatic reset on model update
     void resetNotNeeded() {reset_needed=false;}
     /// resets the edited (dirty) flags
     void resetEdited() {m_edited=false;}
-
-    typedef GodleyIcons GodleyItems;
-    GodleyItems godleyItems;
 
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
@@ -158,18 +154,6 @@ namespace minsky
     void resetNextId();
 
     EvalGodley evalGodley;
-
-
-    Operations operations;
-    VariableManager variables;
-
-    GroupIcons groupItems;
-    SwitchIcons switchItems;
-    typedef IntrusiveMap<int, OpVarBaseAttributes> Notes;
-    Notes notes; ///< descriptive textual items
-
-    Plots plots;
-
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky() {m_edited=false;}
@@ -263,13 +247,13 @@ namespace minsky
     /// delete godley table icon \a id
     void deleteGodleyTable(int id)
     {
-      GodleyItems::iterator g=godleyItems.find(id);
+      auto g=godleyItems.find(id);
       if (g!=godleyItems.end())
         {
-          for (GodleyIcon::Variables::iterator v=g->flowVars.begin();
+          for (auto v=g->flowVars.begin();
                v!=g->flowVars.end(); ++v)
             variables.erase(*v);
-          for (GodleyIcon::Variables::iterator v=g->stockVars.begin();
+          for (auto v=g->stockVars.begin();
                v!=g->stockVars.end(); ++v)
             variables.erase(*v);
           godleyItems.erase(g);
@@ -387,9 +371,9 @@ namespace minsky
     void step();  ///< step the equations (by n steps, default 1)
 
     /// save to a file
-    void save(const char* filename);
+    void save(const std::string& filename);
     /// load from a file
-    void load(const char* filename);
+    void load(const std::string& filename);
 
     void exportSchema(const char* filename, int schemaLevel=1);
 
@@ -414,9 +398,13 @@ namespace minsky
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}
     /// push state onto history
-    void pushHistory();
-    /// called periodically to ensure history up to date
-    void checkPushHistory() {if (historyPtr==history.size()) pushHistory();}
+//    void pushHistory();
+//    /// called periodically to ensure history up to date
+//    void checkPushHistory() {if (historyPtr==history.size()) pushHistory();}
+
+    /// push current model state onto history if it differs from previous
+    bool pushHistoryIfDifferent();
+
     /// restore model to state \a changes ago 
     void undo(int changes=1);
 

@@ -23,6 +23,7 @@
 #include "ecolab_epilogue.h"
 
 #include <boost/regex.hpp>
+#include <regex>
 
 using namespace classdesc;
 
@@ -102,7 +103,7 @@ string VariableBase::fqName()  const
   if (m_scope==-1)
     return ":"+m_name;
   else if (cminsky().groupItems.count(m_scope))
-    return cminsky().groupItems[m_scope].name().substr(0,5)+"["+str(m_scope)+"]:"+m_name;
+    return cminsky().groupItems[m_scope]->name().substr(0,5)+"["+str(m_scope)+"]:"+m_name;
   else
     return "["+str(m_scope)+"]:"+m_name;
 }
@@ -111,12 +112,12 @@ string VariableBase::fqName()  const
 string VariableBase::name(const std::string& name) 
 {
   // strip namespace, and extract scope
-  boost::regex namespaced_spec(R"((\d*)]?:(([^:])*))"); 
+  boost::regex namespaced_spec(R"(([[:digit:]]*)]?:([^:]*))"); 
   boost::smatch m;
   if (regex_search(name, m, namespaced_spec))
     {
       m_scope=-1;
-      assert(m.size()==4);
+      assert(m.size()>2);
       if (m[1].matched && m[1].length()>0)
         {
           int toScope;

@@ -73,6 +73,7 @@ proc afterMinskyStarted {} {
     }
     assert "\[value.value\]==\$v"
 
+    resetEdited
     exit
 }
 

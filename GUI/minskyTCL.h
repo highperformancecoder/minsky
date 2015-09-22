@@ -21,6 +21,7 @@
 #define MINSKYTCL_H
 #include "minsky.h"
 #include "TCL_extend.h"
+#include <fstream>
 
 // TCL specific definitions for global minsky object
 
@@ -28,7 +29,6 @@ namespace minsky
 {
   /// a TCL_obj_t that provides a hook for detecting model edits
   ecolab::TCL_obj_t& minskyTCL_obj();
-
 
   /**
      convenience class for accessing elements of a map from TCL
@@ -128,7 +128,7 @@ namespace minsky
   };
 
 
-  struct MinskyTCL: public Minsky
+  struct MinskyTCL: public Minsky, public TCL_obj_t
   {
     /// TCL accessors
     GetterSetter<Ports> port;
@@ -145,12 +145,43 @@ namespace minsky
     GetterSetter<SwitchIcons> switchItem;
     GetterSetter<Notes> note;
 
-    MinskyTCL(): port(ports), wire(wires), op(operations), 
-                 constant(operations), integral(operations), 
-                 data(operations), var(variables),
-                 value(variables.values), plot(plots), 
-                 godley(godleyItems), group(groupItems), 
-                 switchItem(switchItems), note(notes) {}
+    Exclude<std::unique_ptr<ostream> > eventRecord;
+    void startRecording(const char* file) {
+      eventRecord.reset(new std::ofstream(file));
+      resetNextId(); //ensures consistent IDs are allocated
+      if (nextId==0)
+        // empty system
+        (*eventRecord)<<"newSystem\n";
+      else
+        // save current system state to a mkytmp file
+        {
+          string savedState=file;
+          auto ext=savedState.rfind('.');
+          if (ext!=string::npos)
+            savedState.erase(ext);
+          savedState+=".mkytmp";
+          save(savedState);
+          tclcmd() << "newSystem\n";
+          load(savedState); // ensures ids are same as from a fresh load
+          resetNextId();
+          (*eventRecord)<<"newSystem\n";
+          (*eventRecord)<<"minsky.load {"<<savedState<<"}\n";
+          (*eventRecord)<<"minsky.resetNextId\n";
+          (*eventRecord)<<"recentreCanvas\n";
+        }
+    }
+    void stopRecording() {
+      eventRecord.reset();
+    }
+
+
+    /// flag to indicate whether a TCL should be pushed onto the
+    /// history stack, or logged in a recording. This is used to avoid
+    /// movements being added to recordings and undo history
+    bool doPushHistory=true;
+
+    MinskyTCL(const char* TCLname);
+    ~MinskyTCL() {}
 
     void clearAllGetterSetters() {
       // need also to clear the GetterSetterPtr variables, as these
@@ -204,8 +235,6 @@ namespace minsky
     void putClipboard(const std::string& s) const override; 
     std::string getClipboard() const override; 
 
-//    int newVariable(TCL_args args) 
-//    {return variables.newVariable(args[0],args[1].get<VariableType::Type>());}
     int newVariable(std::string name, VariableType::Type type)
     {return variables.newVariable(name,type);}
 
@@ -221,7 +250,7 @@ namespace minsky
     {
       clearSelection();
       if (groupItems.count(gid))
-        groupItems[gid].select(currentSelection,x0,y0,x1,y1);
+        groupItems[gid]->select(currentSelection,x0,y0,x1,y1);
     }
 
     /// remove a group, leaving its contents in place
@@ -229,7 +258,10 @@ namespace minsky
     /// remove a group, deleting all the contents too
     void deleteGroup(TCL_args args) {
       int id=args;
-      groupItems[id].deleteContents();
+      //remove any displayed items
+      tclcmd()|"if [winfo exists .wiring.canvas] {"
+        ".wiring.canvas delete groupitems"|id|"}\n"; 
+      groupItems[id]->deleteContents();
       groupItems.erase(id);
     }
 
@@ -244,11 +276,11 @@ namespace minsky
       if (g==-1 || (g==id && item=="groupItem"))
         return z*zoomFactor(); //global zoom factor
       else 
-        return z*groupItems.find(g)->localZoom();
+        return z*(*groupItems.find(g))->localZoom();
     }
 
     /// load from a file
-    void load(const char* filename) {
+    void load(const std::string& filename) {
       clearAllGetterSetters();
       Minsky::load(filename);
     }
@@ -277,6 +309,7 @@ namespace minsky
     }
 
   };
+
 }
 
 #ifdef _CLASSDESC

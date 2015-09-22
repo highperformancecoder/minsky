@@ -162,8 +162,7 @@ SUITE(Derivative)
           integ.getIntVar()->value(f0);
           nSteps=800; step();
           CHECK_CLOSE(1, f->value()/integ.getIntVar()->value(), 0.003);
-          if (op!=OperationType::heaviside)
-            CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+          CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
         }
     }
 }

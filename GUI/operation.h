@@ -90,9 +90,12 @@ namespace minsky
       return minsky::clickType(*this,x,y);
     }
 
+    // returns true if multiple input wires are allowed.
+    bool multiWire();
   protected:
     // manage the port structures associated with this operation
-    virtual void addPorts();
+    virtual void addPorts()=0;
+    void addPorts(unsigned numPorts);
     void addPorts(const vector<int>& p) {
       if (!p.empty())
         // TODO - possible consistency check possible here
@@ -124,6 +127,10 @@ namespace minsky
     Operation() {this->addPorts();}
     Operation(const vector<int>& ports) {this->addPorts(ports);}
     ~Operation() {this->delPorts();}
+  protected:
+    using OperationBase::addPorts;
+    void addPorts(unsigned n) {OperationBase::addPorts(n);} // delegate to work around classdesc
+    void addPorts() override {addPorts(OperationTypeInfo::numArguments<T>()+1);}
   };
 
   struct NamedOp
@@ -235,7 +242,7 @@ namespace minsky
   public:
     std::map<double, double> data;
     DataOp(const vector<int>& ports=vector<int>()):
-      Operation<OperationType::data>(ports) {description="\\uplus";}
+      Operation<OperationType::data>(ports) {}
     void readData(const string& fileName);
     // interpolates y data between x values bounding the argument
     double interpolate(double) const;
@@ -270,7 +277,7 @@ namespace minsky
 
 
 
-  struct Operations: public IntrusiveMap<int, OperationPtr>
+  struct Operations: public TrackedIntrusiveMap<int, OperationPtr>
   {
     array<int> visibleOperations() const;
   };

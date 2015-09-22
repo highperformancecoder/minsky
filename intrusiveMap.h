@@ -18,7 +18,7 @@
 */
 #ifndef INTRUSIVEMAP_H
 #define INTRUSIVEMAP_H
-#include <tcl++.h>
+#include <TCL_obj_base.h>
 #include <set>
 #include <stdlib.h>
 
@@ -44,10 +44,15 @@ namespace minsky
   {
     const Key m_id;
   public:
+    typedef const Key first_type;
+    typedef Val second_type;
     // Val can access id by declaring a virtual method of this name
     Key id() const {return m_id;};
     IntrusiveWrap(const Key& id, const Val& v=Val()): Val(v), m_id(id)
     {KeyAssertion<Key>(m_id);}
+    template <class K, class V>
+    IntrusiveWrap(const std::pair<K,V> x):
+      IntrusiveWrap(x.first,x.second) {}
     bool operator<(const IntrusiveWrap& x) const {
       return m_id<x.m_id;
     }
@@ -78,6 +83,11 @@ namespace minsky
     typedef Key key_type;
     typedef Val mapped_type;
 
+    /// track writeable access into this Map
+    std::set<Key> updateAccess;
+
+    template <class... A> explicit IntrusiveMap(A... a): Super(std::forward<A>(a)...) {}
+
     // iterator class allows for assignment of value portion
     struct iterator: public Super::const_iterator
     {
@@ -103,7 +113,10 @@ namespace minsky
     iterator end() {return iterator(Super::end());}
     const_iterator end() const {return Super::end();}
 
-    iterator find(const Key& k) {return iterator(Super::find(value_type(k)));}
+    iterator find(const Key& k) {
+      updateAccess.insert(k);
+      return iterator(Super::find(value_type(k)));
+    }
     const_iterator find(const Key& k) const {return Super::find(value_type(k));}
 
     size_t count(const Key& k) const {return Super::count(value_type(k));}
@@ -145,6 +158,18 @@ namespace minsky
 
   };
 
+  template <class K, class V>
+  struct TrackedIntrusiveMap: public IntrusiveMap<K,V>
+  {
+    const std::set<K>& accessLog() const {return this->updateAccess;}
+    void clearAccessLog() {this->updateAccess.clear();}
+    // returns true if item is in access log
+    bool hasBeenAccessed(K x) {return this->updateAccess.count(x);}
+    template <class... A> TrackedIntrusiveMap(A... a):
+      IntrusiveMap<K,V>(std::forward<A>(a)...) {}
+    
+  };
+
 }
 
 #ifdef _CLASSDESC
@@ -164,6 +189,20 @@ namespace ecolab
     for (const typename minsky::IntrusiveMap<K,T>::value_type&  i: o)
       r<<i.id();
   }
+  // ensures IntrusiveMap is treated as map, not a set
+  template <class Key, class Val>
+  struct is_map<minsky::IntrusiveWrap<Key,Val> >: public true_type
+  {
+    static string keys() {return ".#keys";}
+    static string type() {return ".@is_map";}
+  };
+}
+
+namespace classdesc
+{
+  template <class K, class T> 
+  struct is_associative_container<minsky::IntrusiveMap<K,T> >:
+    public std::true_type {};
 }
 
 #include <TCL_obj_stl.h>
@@ -212,14 +251,6 @@ namespace classdesc_access
           insert(a, v);
         }
     }
-  };
-
-  template <class K, class T> struct access_TCL_obj<minsky::IntrusiveMap<K,T> >
-  {
-    template <class U>
-    void operator()(ecolab::TCL_obj_t& targ, const classdesc::string& desc, 
-                    U& arg)
-    {ecolab::TCL_obj_map(targ,desc,arg);}
   };
 
 }

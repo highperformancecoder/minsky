@@ -5,7 +5,7 @@
 # This script is intended to be called from make mac-dist target
 
 MAC_DIST_DIR=minsky.app/Contents/MacOS
-version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'|tr -d "D"`
+version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
 if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi

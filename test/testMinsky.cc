@@ -657,7 +657,17 @@ SUITE(Minsky)
     for (int op=0; op<OperationType::numOps; ++op)
       {
         // derivatives should not have EvalOps instantiated
-        if (op==OperationType::differentiate) continue;
+        // other operation cannot be tested this way
+        switch (op)
+          {
+          case OperationType::differentiate:
+          case OperationType::and_:
+          case OperationType::or_:
+          case OperationType::not_:
+            continue;
+          default:
+            break;
+          }
         cout << "checking "<<OperationType::typeName(op)<<endl;
         EvalOpPtr evalOp=EvalOpPtr(OperationType::Type(op));
         if (evalOp->numArgs()==1 && evalOp->type()!=OperationType::integrate)

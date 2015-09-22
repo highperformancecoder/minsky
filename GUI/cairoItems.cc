@@ -352,7 +352,17 @@ namespace minsky
 
   template <> void Operation<OperationType::data>::iconDraw(cairo_t* cairo) const
   {
-    assert(false); //shouldn't be here
+    cairo_translate(cairo,-1,0);
+    cairo_scale(cairo,1.5,0.75);
+    cairo_arc(cairo,0,-3,3,0,2*M_PI);
+    cairo_arc(cairo,0,3,3,0,M_PI);
+    cairo_move_to(cairo,-3,3);
+    cairo_line_to(cairo,-3,-3);
+    cairo_move_to(cairo,3,3);
+    cairo_line_to(cairo,3,-3);
+    cairo_identity_matrix(cairo);
+    cairo_set_line_width(cairo,1);
+    cairo_stroke(cairo);
   }
 
   template <> void Operation<OperationType::time>::iconDraw(cairo_t* cairo) const
@@ -431,6 +441,62 @@ namespace minsky
 #else
     cairo_show_text(cairo,"y");
 #endif
+  }
+
+  template <> void Operation<OperationType::le>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"≤");
+  }
+
+  template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"<");
+  }
+
+  template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"=");
+  }
+
+  template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"min");
+  }
+
+  template <> void Operation<OperationType::max>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"max");
+  }
+
+  template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    cairo_set_source_rgb(cairo,0,0,0);
+    cairo_move_to(cairo,-4,3);
+    cairo_line_to(cairo,-1,-3);
+    cairo_line_to(cairo,2,3);
+    cairo_restore(cairo);
+  }
+
+  template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    cairo_set_source_rgb(cairo,0,0,0);
+    cairo_move_to(cairo,-4,-3);
+    cairo_line_to(cairo,-1,3);
+    cairo_line_to(cairo,2,-3);
+    cairo_restore(cairo);
+  }
+
+  template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"¬");
   }
 
   template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
@@ -536,13 +602,6 @@ namespace minsky
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"|x|");
   }
-  template <> void Operation<OperationType::heaviside>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,8);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"Θ(x)");
-  }
-
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);
@@ -594,7 +653,12 @@ void OperationBase::draw(cairo_t* cairo) const
   bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
   double coupledIntTranslation=0;
 
-  switch (type())
+  auto t=type();
+  // call the iconDraw method if data description is empty
+  if (t==OperationType::data && dynamic_cast<const NamedOp&>(*this).description.empty())
+    t=OperationType::numOps;
+
+  switch (t)
     {
       // at the moment its too tricky to get all the information
       // together for rendering constants

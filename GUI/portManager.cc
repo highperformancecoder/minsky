@@ -169,7 +169,7 @@ void PortManager::deleteWire(int id)
   if (w!=wires.end())
     {
       if (w->group>=0)
-        minsky().groupItems[w->group].delWire(id);
+        minsky().groupItems[w->group]->delWire(id);
       // urgh!
       minsky().variables.deleteWire(w->from);
       minsky().variables.deleteWire(w->to);

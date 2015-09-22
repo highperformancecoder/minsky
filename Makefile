@@ -28,7 +28,8 @@ include $(ECOLAB_HOME)/include/Makefile
 PREFIX=/usr/local
 
 
-EXES=gui-wt/minsky GUI/minsky server/server gui-wt/minsky
+#EXES=gui-wt/minsky GUI/minsky server/server
+EXES=GUI/minsky server/server
 # override MODLINK to remove tclmain.o, which allows us to provide a
 # custom one that picks up its scripts from a relative library
 # directory
@@ -60,7 +61,7 @@ ALL_OBJS=tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(WT
 
 
 # TODO - remove dependency on GUI directory here
-FLAGS+=-std=c++11 -Ischema -Iengine -IGUI -DTR1 $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
+FLAGS+=-std=c++11 -Ischema -Iengine -IGUI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
 
 VPATH= schema GUI engine server gui-wt $(ECOLAB_HOME)/include
 

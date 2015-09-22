@@ -2,19 +2,31 @@
 # Must be run from the toplevel directory of Minsky
 PATH=$PATH:/c/cygwin/bin
 productId=`uuidgen`
-upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
 componentId=`uuidgen`
-version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'|tr -d "D"`
-if [ $version = '"unknown"' ]; then
-    version=0.0.0.0
+version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
+if [ $version = 'unknown' ]; then
+    version=1.1.1
 fi
 minskyWxs=`pwd`/minsky.wxs
+msiVersion=`echo $version|tr -d D`
+
+# determine release or beta depending of whether a D appears in the second field
+if echo $version|cut -d. -f2|grep D; then
+  upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
+  productName=Minsky
+else
+  upgradeId=cba7e03a-c692-400d-9c75-2da0307c3efc
+  productName=MinskyBeta
+fi
+
+echo $version
+echo $productName
 
 cat >$minskyWxs <<EOF
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-<Product Name='Minsky' Id='$productId' UpgradeCode='$upgradeId'
-    Language='1033' Codepage='1252' Version='$version' Manufacturer='High Performance Coders'>
+<Product Name='$productName' Id='$productId' UpgradeCode='$upgradeId'
+    Language='1033' Codepage='1252' Version='$msiVersion' Manufacturer='High Performance Coders'>
     <Package Id='*' Keywords='Installer' Description="Minsky's Installer"
       Comments='Minsky is copyright Steve Keen, and licensed under GPL3' Manufacturer='High Performance Coders'
       InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
@@ -29,14 +41,13 @@ cat >$minskyWxs <<EOF
     <Media Id='1' Cabinet='minsky.cab' EmbedCab='yes'/>
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder'>
-        <Directory Id='Minsky' Name='Minsky'>
+        <Directory Id='Minsky' Name='$productName'>
           <Directory Id='INSTALLDIR'>
-
             <Component Id='MinskyFiles' Guid='$componentId'>
               <File Id='MinskyEXE' Name='minsky.exe' Source='GUI/minsky.exe' KeyPath='yes'>
-                <Shortcut Id="startmenuMinsky" Directory="ProgramMenuDir" Name="Minsky" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes">
+                <Shortcut Id="startmenuMinsky" Directory="ProgramMenuDir" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes">
                  </Shortcut>
-                <Shortcut Id="desktopMinsky" Directory="DesktopFolder" Name="Minsky" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes" />
+                <Shortcut Id="desktopMinsky" Directory="DesktopFolder" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes" />
               </File>
               <ProgId Id='MinskyData' Description='Minsky Project File' Icon='MinskyEXE'>
                 <Extension Id='mky' ContentType='application/minsky'>
@@ -103,7 +114,7 @@ cat >>$minskyWxs <<EOF
       </Directory>
 
       <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="ProgramMenuDir" Name="Minsky">
+        <Directory Id="ProgramMenuDir" Name="$productName">
           <Component Id="ProgramMenuDir" Guid="40e1115c-9edf-4ae9-b4d3-6508f1921f51">
             <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
             <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />

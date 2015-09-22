@@ -72,6 +72,8 @@ foreach op [availableOperations] {
         "copy" -
         "integrate"  continue 
     }
+
+    set opTrimmed [regsub {(.*)_$} $op {\1}] 
     # advance to next line in menubar
     if {$op=="data"} {
         incr menubarLine
@@ -85,7 +87,7 @@ foreach op [availableOperations] {
         operationIcon [set op]Img $op
     }
     button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "addOperation $op" -height 24 -width 24
-    tooltip .wiring.menubar.line$menubarLine.$op $op
+    tooltip .wiring.menubar.line$menubarLine.$op $opTrimmed
 
     pack .wiring.menubar.line$menubarLine.$op -side left 
     set helpTopics(.wiring.menubar.line$menubarLine.$op) "op:$op"
@@ -101,6 +103,7 @@ button .wiring.menubar.line$menubarLine.switch -image switchImg \
     -height 24 -width 37 -command {placeNewSwitch}
 tooltip .wiring.menubar.line$menubarLine.switch "Switch"
 pack .wiring.menubar.line$menubarLine.switch -side left 
+set helpTopics(.wiring.menubar.line$menubarLine.switch) "switch"
 
 
 image create photo plotImg -file $minskyHome/icons/plot.gif
@@ -114,6 +117,8 @@ button .wiring.menubar.line$menubarLine.note -image noteImg \
     -height 24 -width 37 -command {placeNewNote}
 tooltip .wiring.menubar.line$menubarLine.note "Note"
 pack .wiring.menubar.line$menubarLine.note -side left 
+
+clearAll
 
 # pack menubar lines
 for {set i 0} {$i<=$menubarLine} {incr i} {
@@ -172,7 +177,7 @@ proc zoom {factor} {
 .menubar.ops add command -label "Variable" -command "addVariable" 
 foreach var [availableOperations] {
     if {$var=="numOps"} break
-    .menubar.ops add command -label $var -command "addOperation $var"
+    .menubar.ops add command -label [regsub {(.*)_$} $var {\1}] -command "addOperation $var"
 }
 
 proc clearTempBindings {} {
@@ -405,8 +410,23 @@ proc cancelPlaceNewOp {id} {
 }
 
 proc redraw {item} {
-    
     .wiring.canvas coords $item [.wiring.canvas coords $item]
+    .wiring.canvas delete handles
+    foreach w [.wiring.canvas find withtag wires] {
+        set tags [.wiring.canvas gettags $w]
+        set tag [lindex $tags [lsearch -regexp $tags {wire[0-9]+}]]
+        set id [string range $tag 4 end]
+        if [string length $id] {
+            wire.get $id
+            .wiring.canvas coords $w [wire.coords]
+        }
+    }
+}
+
+proc redrawRegion {x0 y0 x1 y1} {
+    foreach item [.wiring.canvas find overlapping $x0 $y0 $x1 $y1] {
+        redraw $item
+    }
 }
 
 set itemFocused 0
@@ -462,7 +482,7 @@ proc drawOperation {id} {
     image create photo opImage$id -width 200 -height 200
 
     .wiring.canvas delete op$id
-    .wiring.canvas create operation [op.x] [op.y] -id $id -image opImage$id -tags "op$id operations" 
+    .wiring.canvas create operation [op.x] [op.y] -id $id -image opImage$id -tags "op$id operations groupitems[op.group]" 
 #    .wiring.canvas create rectangle [.wiring.canvas bbox op$id] -tags op$id
 
     setM1Binding op $id op$id
@@ -490,6 +510,7 @@ proc updateItemPos {item id} {
     }
     unset globals(updateItemPositionSubmitted$item$id)
     resetNotNeeded
+    doPushHistory 1
 }    
 
 proc submitUpdateItemPos {item id} {
@@ -521,6 +542,7 @@ proc moveSet {item id x y} {
 }
 
 proc move {item id x y} {
+    doPushHistory 0
     $item.get $id
    global moveOffs$item$id.x moveOffs$item$id.y
 # ticket #220: Windows 8 does not always generate mousedown events
@@ -561,7 +583,7 @@ proc newVar {id} {
     image create photo varImage$id -width 200 -height 50
     
     .wiring.canvas delete var$id
-    set itemId [.wiring.canvas create variable [var.x] [var.y] -image varImage$id -id $id -tags "variables var$id"]
+    set itemId [.wiring.canvas create variable [var.x] [var.y] -image varImage$id -id $id -tags "variables var$id groupitems[var.group]"]
     # wire drawing. Can only start from an output port
     .wiring.canvas bind var$id <<middleMouse>> \
         "wires::startConnect [var.outPort] var$id %x %y"
@@ -963,53 +985,92 @@ proc anyItems {tag} {
     return [expr [llength [.wiring.canvas find withtag $tag]]>0]
 }
 
+proc accessed {items item id} {
+    catch {if {$item.id==$id} {return 1}}
+    return [$items.hasBeenAccessed $id]
+}
+
+proc delIfAccessed {items item id} {
+    if [accessed $items $item $id] {.wiring.canvas delete $item$id}
+}
+
 proc updateCanvas {} {
     global fname showPorts
-    .wiring.canvas delete all
+#    .wiring.canvas delete all
     foreach var [info globals sliderCheck*] {global $var; unset $var}
     setInteractionMode
 
     # groups need to be done first, as they adjust port positions (hence wires)
     foreach g [groupItems.visibleGroups] {
-        group.get $g
-        if {[group.group]==-1} {newGroupItem $g}
+        delIfAccessed groupItems group $g
+        if {[llength [.wiring.canvas find withtag group$g]]==0} {
+            group.get $g
+            if {[group.group]==-1} {newGroupItem $g}
+        }
     }
+    groupItems.clearAccessLog
 
     foreach var [variables.visibleVariables] {
-        var.get $var
-        if {[var.group]==-1} {newVar $var}
-        drawSlider $var [var.x] [var.y]
+        delIfAccessed variables var $var
+        if {[llength [.wiring.canvas find withtag var$var]]==0} {
+            var.get $var
+            newVar $var
+            drawSlider $var [var.x] [var.y]
+        }
     }
+    variables.clearAccessLog
 
     # add operations
     foreach o [operations.visibleOperations] {
-        op.get $o
-        if {[op.group]==-1} {drawOperation $o}
+        delIfAccessed operations op $o
+        if {[llength [.wiring.canvas find withtag op$o]]==0} {
+            op.get $o
+            drawOperation $o
+        }
     }
+    operations.clearAccessLog
 
     foreach s [switchItems.#keys] {
-        switchItem.get $s
-        if {[switchItem.group]==-1} {newSwitch $s}
+        delIfAccessed switchItems switch $s
+        if {[llength [.wiring.canvas find withtag switch$s]]==0} {
+            switchItem.get $s
+            if {[switchItem.group]==-1} {newSwitch $s}
+        }
     }
+    switchItems.clearAccessLog
 
     foreach im [plots.#keys] {
-        plot.get $im
-        newPlotItem $im [plot.x] [plot.y]
+        delIfAccessed plots plot $im
+        if {[llength [.wiring.canvas find withtag plot$im]]==0} {
+            plot.get $im
+            newPlotItem $im [plot.x] [plot.y]
+        }
     }
+    plots.clearAccessLog
 
     foreach g [godleyItems.#keys] {
-        newGodleyItem $g
+        delIfAccessed godleyItems godley $g
+        if {[llength [.wiring.canvas find withtag godley$g]]==0} {
+            newGodleyItem $g
+        }
     }
+    godleyItems.clearAccessLog
 
-    foreach n [notes.#keys] {newNote $n}
+    foreach n [notes.#keys] {
+        delIfAccessed notes note $n
+        if {[llength [.wiring.canvas find withtag note$n]]==0} {
+            newNote $n
+        }
+    }
+    notes.clearAccessLog
 
-    # add wires to canvas
+    # update all wires
     foreach w [visibleWires] {
+        wire.get $w
         if {[llength [.wiring.canvas find withtag wire$w]]==0} {
-            wire.get $w
             set id [createWire [wire.coords]]
             newWire $id $w 
-        }
+        } else {.wiring.canvas coords wire$w [wire.coords]}
     }
 
 # the following loop helps debug port placement
@@ -1075,6 +1136,13 @@ proc addIntegral name {
     integral.description $name
 }
 
+proc groupSelection {} {
+    minsky.createGroup
+    # TODO find a smarter way of doing this
+    .wiring.canvas delete all
+    updateCanvas
+}
+
 # context menu on background canvas
 proc canvasContext {x y} {
     .wiring.context delete 0 end
@@ -1083,7 +1151,7 @@ proc canvasContext {x y} {
     .wiring.context add command -label "Copy" -command minsky.copy
     .wiring.context add command -label "Save selection as" -command saveSelection
     .wiring.context add command -label "Paste" -command {insertNewGroup [paste]}
-    .wiring.context add command -label "Group" -command "minsky.createGroup; updateCanvas"
+    .wiring.context add command -label "Group" -command groupSelection
     tk_popup .wiring.context $x $y
 }
 
@@ -1365,6 +1433,7 @@ proc deleteItem {id tag} {
     switch -regexp $tag {
         "^op" {
             deleteOperation $id
+            .wiring.canvas delete all
             updateCanvas
         }
         "^wire" {
@@ -1373,15 +1442,18 @@ proc deleteItem {id tag} {
         }
         "^var" {
             deleteVariable $id
+            .wiring.canvas delete all
             updateCanvas
         }
         "^godley" {
             deleteGodleyTable $id
             destroy .godley$id
+            .wiring.canvas delete all
             updateCanvas
         }
         "^note" {
             deleteNote $id
+            .wiring.canvas delete all
             updateCanvas
         }
         

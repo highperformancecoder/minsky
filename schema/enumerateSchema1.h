@@ -37,7 +37,9 @@ namespace schema1
     f.template registerType<Variable>();
     f.template registerType<Plot>();
     f.template registerType<Group>();
+    f.template registerType<Switch>();
     f.template registerType<Godley>();
+    f.template registerType<Group>();
   }
 
   template<class Factory>

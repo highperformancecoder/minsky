@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Variable names</TITLE>
-<META NAME="description" CONTENT="Variable names">
+<TITLE>Variables</TITLE>
+<META NAME="description" CONTENT="Variables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,53 +18,119 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node48.html">
+<LINK REL="next" HREF="node51.html">
 <LINK REL="previous" HREF="node46.html">
-<LINK REL="up" HREF="node46.html">
+<LINK REL="up" HREF="node44.html">
 <LINK REL="next" HREF="node48.html">
 </HEAD>
 
 <BODY >
 <!--Navigation Panel-->
-<A NAME="tex2html618"
+<A NAME="tex2html617"
   HREF="node48.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
  SRC="file:/usr/share/latex2html/icons/next.png"></A> 
-<A NAME="tex2html616"
-  HREF="node46.html">
+<A NAME="tex2html615"
+  HREF="node44.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
  SRC="file:/usr/share/latex2html/icons/up.png"></A> 
-<A NAME="tex2html610"
+<A NAME="tex2html609"
   HREF="node46.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
  SRC="file:/usr/share/latex2html/icons/prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html619"
-  HREF="node48.html">Initial conditions</A>
-<B> Up:</B> <A NAME="tex2html617"
-  HREF="node46.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html611"
-  HREF="node46.html">Variables</A>
+<B> Next:</B> <A NAME="tex2html618"
+  HREF="node48.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html616"
+  HREF="node44.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html610"
+  HREF="node46.html">Switch</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00421000000000000000">
-Variable names</A>
-</H2>
+<H1><A NAME="SECTION00430000000000000000">
+Variables</A>
+</H1>
 
 <P>
-Variable names uniquely identify variables. Multiple icons on the
-canvas may have the same name -- they all refer to the same
-variable. Variable names have scope, which is either global (indicated
-by a leading `:', or the numerical id of a group. You may select a
-variable name from a drop down list in the ``name'' combo box.
+Variables represent values in a calculation, and come in a number of
+varieties:
+<DL>
+<DT><STRONG>Constants</STRONG></DT>
+<DD>represent an explicit numerical value, and do not
+have a name. Their graphical representation shows the actual value of
+the constant.
+</DD>
+<DT><STRONG>Parameters</STRONG></DT>
+<DD>are named constants. All instances of a given name
+represent the same value, as with all other named variables, so
+changing the value of one parameter, either through its edit menu, or
+through a slider, will affect all the others of that name.
+</DD>
+<DT><STRONG>Flow variables</STRONG></DT>
+<DD>have an input port that defines how the value is
+to be calculated. Only one flow variable of a given name can have its
+input port connected, as they all refer to the same quantity. If no
+input ports are connected, then flow variables act just like
+parameters.
+</DD>
+<DT><STRONG>Integral variables</STRONG></DT>
+<DD>represent the result of integrating its
+input over time  by means of the differential
+equation solver. The integrand is represented by the input to an
+integral operator that is attached to the integral variable.
+</DD>
+<DT><STRONG>Stock variables</STRONG></DT>
+<DD>are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up the
+column.
+</DD>
+</DL>
+
+<P>
+Variables may be converted between types in the variable edit menu,
+available from the context menu.
 
 <P>
 <BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html619"
+  HREF="node48.html">Variable names</A>
+<LI><A NAME="tex2html620"
+  HREF="node49.html">Initial conditions</A>
+<LI><A NAME="tex2html621"
+  HREF="node50.html">Sliders</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html617"
+  HREF="node48.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html615"
+  HREF="node44.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html609"
+  HREF="node46.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html618"
+  HREF="node48.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html616"
+  HREF="node44.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html610"
+  HREF="node46.html">Switch</A>
+<!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2015-07-30
+2015-08-19
 </ADDRESS>
 </BODY>
 </HTML>

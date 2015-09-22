@@ -26,7 +26,7 @@ namespace minsky
   float OpVarBaseAttributes::x() const
   {
     if (group>=0)
-      return m_x + minsky().groupItems[group].x();
+      return m_x + minsky().groupItems[group]->x();
     else
       return m_x;
   }
@@ -34,7 +34,7 @@ namespace minsky
   float OpVarBaseAttributes::y() const
   {
     if (group>=0)
-      return m_y + minsky().groupItems[group].y();
+      return m_y + minsky().groupItems[group]->y();
     else
       return m_y;
   }

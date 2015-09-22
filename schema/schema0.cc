@@ -61,7 +61,7 @@ namespace schema0
   void asg(minsky::GroupIcons& m1, const Minsky::GroupIcons& m2)
   {
     for (Minsky::GroupIcons::const_iterator i=m2.begin(); i!=m2.end(); ++i)
-      m1[i->first]=i->second;
+      *m1[i->first]=i->second;
   }
  
   Operation::operator minsky::OperationPtr() const 
@@ -174,7 +174,12 @@ namespace schema0
   {
     minsky::GroupIcon g;
     minsky::SchemaHelper::setPrivates
-      (g, operations, variables, wires, vector<int>(), inVariables, outVariables);
+      (g, inVariables, outVariables);
+    for (int i: operations)
+        g.operations.insert(*minsky::minsky().operations.find(i));
+    for (int i: variables)
+      g.variables.addVariable(minsky::minsky().variables[i], i);
+    
     minsky::SchemaHelper::setXY(g, x, y);
     g.setName(name);
     g.width=width;

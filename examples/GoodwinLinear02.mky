@@ -1025,10 +1025,10 @@
       <int>119</int>
       <int>120</int>
       <int>121</int>
+      <int>107</int>
+      <int>109</int>
       <int>113</int>
       <int>114</int>
-      <int>109</int>
-      <int>107</int>
      </items>
      <ports>
       <int>60</int>
@@ -1039,6 +1039,8 @@
      <name>Phillips&#32;curve</name>
     </Group>
    </groups>
+   <switches>
+   </switches>
    <godleys>
    </godleys>
    <rungeKutta>
@@ -1644,7 +1646,7 @@
     <rotation>180</rotation>
     <width>153</width>
     <height>117</height>
-    <displayZoom>2.59707</displayZoom>
+    <displayZoom>2.7491</displayZoom>
    </Layout>
    <Layout>
     <id>126</id>

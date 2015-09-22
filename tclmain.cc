@@ -7,10 +7,8 @@
 */
 #include "ecolab.h"
 #include "timer.h"
-#include "object.h"
 #include "eco_hashmap.h"
-#include "pack_stream.h"
-
+#include "ecolab_epilogue.h"
 #include "init.h"
 
 #include <ecolab_epilogue.h>
@@ -18,6 +16,8 @@
 
 #include <boost/filesystem.hpp>
 using boost::filesystem::path;
+
+using namespace minsky;
 
 extern "C"
 {
@@ -42,7 +42,6 @@ extern "C"
 using namespace std;
 using namespace ecolab;
 using namespace classdesc;
-using namespace minsky;
 
 #include "version.h"
 NEWCMD(minsky_version,0)
@@ -70,6 +69,7 @@ void printTimersAtEnd()
 
 int main(int argc, char* argv[])
 {
+
   Timer timer("main");
   //  atexit(printTimersAtEnd);
 

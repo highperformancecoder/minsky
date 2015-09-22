@@ -351,21 +351,21 @@ label .controls.statusbar -text "t: 0 Δt: 0"
 set classicMode 0
 
 if {$classicMode} {
-        button .controls.run -text run -command runstop
-        button .controls.reset -text reset -command reset
-        button .controls.step -text step -command step
+    button .controls.run -text run -command runstop
+    button .controls.reset -text reset -command reset
+    button .controls.step -text step -command {step; updateCanvas}
 } else {
-        image create photo runButton -file "$minskyHome/icons/Play.gif" 
-        image create photo stopButton -file "$minskyHome/icons/Pause.gif"
-        image create photo resetButton -file "$minskyHome/icons/Rewind.gif"
-        image create photo stepButton -file "$minskyHome/icons/Last.gif"
-        # iconic mode
-        button .controls.run -image runButton -height 25 -width 25 -command runstop
-        button .controls.reset -image resetButton -height 25 -width 25 -command reset
-        button .controls.step -image stepButton -height 25 -width 25  -command step
-        tooltip .controls.run "Run/Stop"
-        tooltip .controls.reset "Reset simulation"
-        tooltip .controls.step "Step simulation"
+    image create photo runButton -file "$minskyHome/icons/Play.gif" 
+    image create photo stopButton -file "$minskyHome/icons/Pause.gif"
+    image create photo resetButton -file "$minskyHome/icons/Rewind.gif"
+    image create photo stepButton -file "$minskyHome/icons/Last.gif"
+    # iconic mode
+    button .controls.run -image runButton -height 25 -width 25 -command runstop
+    button .controls.reset -image resetButton -height 25 -width 25 -command reset
+    button .controls.step -image stepButton -height 25 -width 25  -command {step; updateCanvas}
+    tooltip .controls.run "Run/Stop"
+    tooltip .controls.reset "Reset simulation"
+    tooltip .controls.step "Step simulation"
 }
 
 label .controls.slowSpeed -text "slow"
@@ -424,7 +424,7 @@ menu .menubar.file.recent
 .menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
 .menubar.file add separator
 .menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
-.menubar.file add command -label "Redraw" -command updateCanvas
+.menubar.file add command -label "Redraw" -command {.wiring.canvas delete all; updateCanvas}
 .menubar.file add checkbutton -label "Show Ports" -variable showPorts -command updateCanvas -onvalue 1 -offvalue 0 
 .menubar.file add command -label "Object Browser" -command obj_browser
 .menubar.file add command -label "Command" -command cli
@@ -434,13 +434,16 @@ menu .menubar.file.recent
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
 .menubar.edit add command -label "Paste" -command {insertNewGroup [paste]} -accelerator $meta_menu-V
-.menubar.edit add command -label "Group selection" -command "minsky.createGroup; updateCanvas" -accelerator $meta_menu-G
+.menubar.edit add command -label "Group selection" -command groupSelection -accelerator $meta_menu-G
 
 proc undo {delta} {
     # clear canvas to remove reference holds
     .wiring.canvas delete all
+    # do not record changes to state from the undo command
+    doPushHistory 0
     minsky.undo $delta
-    updateCanvas   
+    updateCanvas 
+    doPushHistory 1
 }
 
 
@@ -462,7 +465,7 @@ bind . <$meta-z> "undo 1"
 bind . <$meta-x> {minsky.cut; updateCanvas}
 bind . <$meta-c> {minsky.copy}
 bind . <$meta-v> {insertNewGroup [paste]}
-bind . <$meta-g> {minsky.createGroup; updateCanvas}
+bind . <$meta-g> groupSelection
 
 # tabbed manager
 ttk::notebook .tabs
@@ -541,6 +544,7 @@ proc runstop {} {
         } else {
             .controls.run configure -image runButton
         }
+      updateCanvas
   } else {
     set running 1
     enableEventProcessing
@@ -558,9 +562,12 @@ proc step {} {
     if {$recordingReplay} {
         if {[gets $eventRecordR cmd]>=0} {
             eval $cmd
+            updateCanvas
             update
         } else {
             runstop
+            close $eventRecordR
+            set recordingReplay 0
         }
     } else {
         # run simulation
@@ -581,7 +588,7 @@ proc simulate {} {
           if {$recordingReplay} {
               # don't slow down recording quite so much (lots of mouse
               # movements)
-              after [expr $delay/25+10] {step; simulate}
+              after [expr $delay/25+0] {step; simulate}
           } else {
               set d [expr int(pow(10,$delay/4.0))]
               after $d {step; simulate}
@@ -727,6 +734,7 @@ proc newSystem {} {
     clearAll
     setZoom 1
     recentreCanvas
+    .wiring.canvas delete all
     updateCanvas 
     global fname
     set fname ""
@@ -1007,6 +1015,9 @@ proc exit {} {
     }
     # why is this needed?
     proc bgerror x {} 
+
+    .wiring.canvas delete all
+    update
     tcl_exit
 }
 
@@ -1072,33 +1083,18 @@ proc addEvent {event window button height state width x y delta keysym subwindow
     }
 }
 
-set eventsBound 0
 proc startRecording {filename} {
     if {[string length $filename]>0} {
-        # event logging for eventual replay
-        global eventRecord eventsBound
-        set eventRecord [open $filename w]
-        # record environmental settings here
-        puts $eventRecord ".wiring.canvas configure -width [winfo width .wiring.canvas] -height [winfo height .wiring.canvas]"
-        if {!$eventsBound} {
-            foreach event {<Button> <ButtonRelease> <Enter> <Leave> <FocusIn> <FocusOut>
-                <Key> <KeyRelease> <Motion> <MouseWheel>} {
-                bind all $event "+addEvent $event %W %b %h %s %w %x %y %D %K %S"
-            }
-        }
+        minsky.startRecording $filename
+        .wiring.canvas delete all
+        updateCanvas
+        recentreCanvas
     }
 }
 
 proc stopRecording {} {
-    global eventRecord
-    catch {
-        close $eventRecord
-    }
-    unset eventRecord
+    minsky.stopRecording
 }
-
-# whether we are recording events to a file
-set eventRecording 0
 
 proc toggleRecording {} {
     global eventRecording workDir
@@ -1115,21 +1111,23 @@ set recordingReplay 0
 proc replay {} {
     global recordingReplay eventRecordR workDir running
     if {$recordingReplay} {
+        # ensures consistent IDs are allocated
         set fname [tk_getOpenFile -defaultextension .tcl -initialdir $workDir]
         if {[string length $fname]>0} {
+            newSystem
             set eventRecordR [open $fname r]
             if {!$running} runstop
         } elseif {$running} {runstop}
     } 
 }
 
-# checks that the latest state has been pushed to history every second or so
-proc checkHistory {} {
-    global running
-    if {!$running} checkPushHistory
-    after 1000 checkHistory
-}
-after 1000 checkHistory
+## checks that the latest state has been pushed to history every second or so
+#proc checkHistory {} {
+#    global running
+#    if {!$running} checkPushHistory
+#    after 1000 checkHistory
+#}
+#after 1000 checkHistory
 
 proc attachTraceProc {namesp} {
     foreach p [info commands $namesp*] {

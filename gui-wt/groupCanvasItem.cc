@@ -24,7 +24,7 @@
 
 namespace minsky { namespace gui {
 
-GroupCanvasItem::GroupCanvasItem(MinskyDoc::ObjectId id, GroupIcon& _icon, CanvasView* parent)
+GroupCanvasItem::GroupCanvasItem(MinskyDoc::ObjectId id, GroupIconPtr& _icon, CanvasView* parent)
     : _base_class(id, parent),
       icon(_icon)
 {
@@ -43,8 +43,8 @@ GroupCanvasItem::~GroupCanvasItem()
 
 void GroupCanvasItem::getModelPos(double& x, double& y) const
 {
-  x = icon.x();
-  y = icon.y();
+  x = icon->x();
+  y = icon->y();
 }
 
 bool GroupCanvasItem::editProperties()
@@ -74,7 +74,7 @@ bool GroupCanvasItem::editProperties()
 
 void GroupCanvasItem::getPortsList(PortsList& ports) const
 {
-  ports = icon.ports();
+  ports = icon->ports();
 }
 
 void GroupCanvasItem::draw(CanvasPainter& painter, Polygon& outline)

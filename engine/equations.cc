@@ -18,6 +18,7 @@
 */
 
 #include "equations.h"
+#include "expr.h"
 #include "minsky.h"
 #include "str.h"
 #include <ecolab_epilogue.h>
@@ -171,38 +172,14 @@ namespace MathDAG
     return result;
   }
 
+  namespace {OperationFactory<OperationDAGBase, OperationDAG, 
+                              OperationType::numOps-1> operationDAGFactory;}
+
   OperationDAGBase* OperationDAGBase::create(Type type, const string& name)
   {
-    switch (type)
-      {
-      case constant: return new OperationDAG<constant>(name);
-      case add: return new OperationDAG<add>(name);
-      case subtract: return new OperationDAG<subtract>(name);
-      case multiply: return new OperationDAG<multiply>(name);
-      case divide: return new OperationDAG<divide>(name);
-      case log: return new OperationDAG<log>(name);
-      case pow: return new OperationDAG<pow>(name);
-      case time: return new OperationDAG<time>(name);
-      case copy: return new OperationDAG<copy>(name);
-      case integrate: return new OperationDAG<integrate>(name);
-      case data: return new OperationDAG<data>(name);
-      case sqrt: return new OperationDAG<sqrt>(name);
-      case exp: return new OperationDAG<exp>(name);
-      case ln: return new OperationDAG<ln>(name);
-      case sin: return new OperationDAG<sin>(name);
-      case cos: return new OperationDAG<cos>(name);
-      case tan: return new OperationDAG<tan>(name);
-      case asin: return new OperationDAG<asin>(name);
-      case acos: return new OperationDAG<acos>(name);
-      case atan: return new OperationDAG<atan>(name);
-      case sinh: return new OperationDAG<sinh>(name);
-      case cosh: return new OperationDAG<cosh>(name);
-      case tanh: return new OperationDAG<tanh>(name);
-      case abs: return new OperationDAG<abs>(name);
-      case heaviside: return new OperationDAG<heaviside>(name);
-      default: 
-        throw error("invalid operation type %s,",typeName(type).c_str());
-      }
+    auto r=operationDAGFactory.create(type);
+    r->name=name;
+    return r;
   }
 
   // the definition order of an operation is simply the maximum of all
@@ -222,7 +199,7 @@ namespace MathDAG
       for (size_t j=0; j<arguments[i].size(); ++j)
         {
           assert(arguments[i][j]);
-          order=max(order, arguments[i][j]->order(maxOrder-1));
+          order=std::max(order, arguments[i][j]->order(maxOrder-1));
         }
     return order;
   }
@@ -470,6 +447,123 @@ namespace MathDAG
   }
 
   template <>
+  ostream& OperationDAG<OperationType::lt>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      o<<"(("<<arguments[0][0]->matlab()<<")";
+    else
+      o<<"(0";
+    if (!arguments[1].empty() && arguments[1][0])
+      o<<"<("<<arguments[1][0]->matlab()<<")";
+    return o<<")";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::le>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      o<<"(("<<arguments[0][0]->matlab()<<")";
+    else
+      o<<"(0";
+    if (!arguments[1].empty() && arguments[1][0])
+      o<<"<=("<<arguments[1][0]->matlab()<<")";
+    return o<<")";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::eq>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      o<<"(("<<arguments[0][0]->matlab()<<")";
+    else
+      o<<"(0";
+    if (!arguments[1].empty() && arguments[1][0])
+      o<<"==("<<arguments[1][0]->matlab()<<")";
+    return o<<")";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::min>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"min("<<arguments[0][0]->matlab()<<"," <<
+          arguments[1][0]->matlab()<<")";
+      else
+        o<<"min("<<arguments[0][0]->matlab()<<",0)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"min(0,"<<arguments[0][0]->matlab()<<")";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::max>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"max("<<arguments[0][0]->matlab()<<"," <<
+          arguments[1][0]->matlab()<<")";
+      else
+        o<<"max("<<arguments[0][0]->matlab()<<",0)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"max(0,"<<arguments[0][0]->matlab()<<")";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::and_>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0] &&
+        !arguments[1].empty() && arguments[1][0])
+        o<<"(("<<arguments[0][0]->matlab()<<")>=0.5 && (" <<
+          arguments[1][0]->matlab()<<")>=0.5)";
+    else
+      o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::or_>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"(("<<arguments[0][0]->matlab()<<")>=0.5 || (" <<
+          arguments[1][0]->matlab()<<")>=0.5)";
+      else
+        o<<"(("<<arguments[0][0]->matlab()<<")>=0.5)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"(("<<arguments[1][0]->matlab()<<")>=0.5)";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::not_>::matlab(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      o<<"(("<<arguments[0][0]->matlab()<<")<0.5)";
+    else
+      o<<"1";
+    return o;
+  }
+
+  template <>
   ostream& OperationDAG<OperationType::time>::matlab(ostream& o) const
   {
     return o<<"t";
@@ -495,6 +589,12 @@ namespace MathDAG
     return o;
   }
         
+  template <>
+  ostream& OperationDAG<OperationType::differentiate>::matlab(ostream& o) const
+  {
+    throw error("derivative operator should not appear in matlab output");
+  }
+
   template <>
   ostream& OperationDAG<OperationType::data>::matlab(ostream& o) const
   {
@@ -596,13 +696,6 @@ namespace MathDAG
   {
     assert(arguments.size()==1 && arguments[0].size()==1);
     return o<<"abs("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::heaviside>::matlab(ostream& o) const
-  {
-    assert(arguments.size()==1 && arguments[0].size()==1);
-    return o<<"heaviside("<<arguments[0][0]->matlab()<<")";
   }
 
   template <>
@@ -729,6 +822,142 @@ namespace MathDAG
   }
 
   template <>
+  ostream& OperationDAG<OperationType::lt>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"-" <<
+          arguments[0][0]->latex()<<"\\right)";
+      else
+        o<<"\\Theta\\left(-"<<arguments[0][0]->latex()<<"\\right)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::le>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"-" <<
+          arguments[0][0]->latex()<<"\\right)+\\delta\\left("<<
+          arguments[1][0]->latex()<<"-" <<
+          arguments[0][0]->latex()<<"\\right)";
+      else
+        o<<"\\Theta\\left(-"<<arguments[0][0]->latex()<<"\\right)+\\delta\\left("<<
+          arguments[0][0]->latex()<<"\\right)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)+\\delta\\left("<<
+          arguments[1][0]->latex()<<"\\right)";
+      else
+        o<<"1";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::eq>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-" <<
+          arguments[1][0]->latex()<<"\\right)";
+      else
+        o<<"\\delta\\left("<<arguments[0][0]->latex()<<"\\right)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"\\delta\\left("<<arguments[1][0]->latex()<<"\\right)";
+      else
+        o<<"1";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::min>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"min\\left("<<arguments[0][0]->latex()<<"," <<
+          arguments[1][0]->latex()<<"\\right)";
+      else
+        o<<"min\\left("<<arguments[0][0]->latex()<<",0\\right)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"min\\left("<<arguments[1][0]->latex()<<",0\\right)";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::max>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"max\\left("<<arguments[0][0]->latex()<<"," <<
+          arguments[1][0]->latex()<<"\\right)";
+      else
+        o<<"max\\left("<<arguments[0][0]->latex()<<",0\\right)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"max\\left("<<arguments[1][0]->latex()<<",0\\right)";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::and_>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0] && 
+        !arguments[1].empty() && arguments[1][0])
+      o<<"\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)\\Theta\\left(" <<
+          arguments[1][0]->latex()<<"-0.5\\right)";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::or_>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"max\\left(\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)," <<
+          "\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)\\right)";
+      else
+        o<<"\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)";
+    else
+      if (!arguments[1].empty() && arguments[1][0])
+        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"-0.5\\right)";
+      else
+        o<<"0";
+    return o;
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::not_>::latex(ostream& o) const
+  {
+    assert(arguments.size()>0);
+    if (!arguments[0].empty() && arguments[0][0])
+      o<<"\\left(1-\\Theta(0.5-"<<arguments[0][0]->latex()<<"\\right)\right)";
+    else
+      o<<"1";
+    return o;
+  }
+
+  template <>
   ostream& OperationDAG<OperationType::time>::latex(ostream& o) const
   {
     return o<<" t ";
@@ -754,6 +983,12 @@ namespace MathDAG
     return o;
   }
         
+  template <>
+  ostream& OperationDAG<OperationType::differentiate>::latex(ostream& o) const
+  {
+    throw error("derivative operator should not appear in LaTeX output");
+  }
+
   template <>
   ostream& OperationDAG<OperationType::sqrt>::latex(ostream& o) const
   {
@@ -850,13 +1085,6 @@ namespace MathDAG
     return o<<"\\left|"<<arguments[0][0]->latex()<<"\\right|";
   }
 
-  template <>
-  ostream& OperationDAG<OperationType::heaviside>::latex(ostream& o) const
-  {
-    assert(arguments.size()==1 && arguments[0].size()==1);
-    return o<<"\\Theta\\("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
   SystemOfEquations::SystemOfEquations(const Minsky& m): minsky(m)
   {
     expressionCache.insertAnonymous(zero);
@@ -868,6 +1096,11 @@ namespace MathDAG
     for (const OperationPtr& o: minsky.operations)
       for (size_t i=0; i<o->numPorts(); ++i)
         portToOperation[o->ports()[i]]=o.id();
+
+    // then a map of ports belonging to switches
+    for (auto& s: minsky.switchItems)
+      for (int p: s.ports())
+        portToSwitch[p]=s.id();
 
     // store stock & integral variables for later reordering
     map<string, VariableDAG*> integVarMap;
@@ -907,7 +1140,7 @@ namespace MathDAG
 
     // process the Godley tables
     map<string, GodleyColumnDAG> godleyVars;
-    for (Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
+    for (GodleyIcons::const_iterator g=m.godleyItems.begin(); 
          g!=m.godleyItems.end(); ++g)
       processGodleyTable(godleyVars, g->table, g->id());
 
@@ -1022,6 +1255,40 @@ namespace MathDAG
       }
   }
 
+  NodePtr SystemOfEquations::makeDAG(const SwitchIcon& sw)
+  {
+    // grab list of input wires
+    vector<int> wires;
+    for (unsigned i=1; i<sw.ports().size(); ++i)
+      {
+        auto w=minsky.wiresAttachedToPort(sw.ports()[i]);
+        if (w.size()==0)
+          {
+            minsky.displayErrorItem(sw);
+            throw error("input port not wired");
+          }
+        // shouldn't be more than 1 wire, ignore exraneous wires is present
+        assert(w.size()==1);
+        wires.push_back(w[0]);
+      }
+
+    assert(wires.size()==sw.numCases()+1);
+    Expr input(expressionCache, getNodeFromWire(wires[0]));
+
+    auto r=make_shared<OperationDAG<OperationType::add>>();
+    expressionCache.insert(sw, r);
+    r->arguments[0].resize(sw.numCases());
+
+    // implemented as a sum of step functions
+    r->arguments[0][0]=getNodeFromWire(wires[1])*(input<1);        
+    for (unsigned i=1; i<sw.numCases()-1; ++i)
+      r->arguments[0][i]=getNodeFromWire
+        (wires[i+1])*((input<i+1) - (input<i));
+    r->arguments[0][sw.numCases()-1]=getNodeFromWire
+      (wires[sw.numCases()])*(1-(input<sw.numCases()-1));
+    return r;
+  };
+
   NodePtr SystemOfEquations::getNodeFromWire(int wire)
   {
     auto wi=minsky.wires.find(wire);
@@ -1038,6 +1305,14 @@ namespace MathDAG
             else
               // we're wired to an operation
               r=makeDAG(o);
+          }
+        else if (portToSwitch.count(w.from))
+          {
+            const SwitchIcon& s=minsky.switchItems[portToSwitch[w.from]];
+            if (expressionCache.exists(s))
+              return expressionCache[s];
+            else
+              r=makeDAG(s);
           }
         else
           {

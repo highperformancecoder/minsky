@@ -51,7 +51,7 @@ namespace minsky
     }
   };
 
-  typedef IntrusiveMap<int, SwitchIcon> SwitchIcons;
+  typedef TrackedIntrusiveMap<int, SwitchIcon> SwitchIcons;
 }
 
 #include "switchIcon.cd"

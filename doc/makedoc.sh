@@ -4,7 +4,7 @@ latex -interaction=batchmode minsky
 if [ $? -ne 0 ]; then exit 1; fi
 
 latex -interaction=batchmode minsky
-latex2html -info "" minsky
+latex2html -info "" -local_icons minsky
 if [ $? -ne 0 ]; then exit 1; fi
 
 # copy images, and mutate table of contents after latex2html suitable

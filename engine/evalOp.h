@@ -78,9 +78,9 @@ namespace minsky
     virtual int numArgs() const =0;
     /// evaluate expression on sv and current value of fv, storing result
     /// in output variable (of \a fv)
-    void eval(double fv[]=&ValueVector::flowVars[0], 
-              const double sv[]=&ValueVector::stockVars[0]);
- 
+    void eval(double fv[], const double sv[]);
+    //void eval();
+
     /// evaluate expression on given arguments, returning result
     virtual double evaluate(double in1=0, double in2=0) const=0;
     /**
@@ -120,7 +120,9 @@ namespace minsky
     }
 
     OperationType::Type type() const  override {return T;}
-    int numArgs() const override;
+    int numArgs() const override {
+      return OperationTypeInfo::numArguments<T>();
+    }
     double evaluate(double in1=0, double in2=0) const override;
     double d1(double x1=0, double x2=0) const override;
     double d2(double x1=0, double x2=0) const override;

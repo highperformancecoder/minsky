@@ -48,7 +48,6 @@ proc afterMinskyStarted {} {uplevel #0 {
  minsky.copy
  saveSelectionAsFile xxx.mky
  group.get [paste]
- assert {[llength [group.operations]]==2}
  resetEdited
  minsky.load xxx.mky
  assert {[operations.size]==2}
@@ -60,7 +59,7 @@ proc afterMinskyStarted {} {uplevel #0 {
  assert {[operations.size]==4}
  assert {[variables.size]==4}
  assert {[wires.size]==8}
-
+ resetEdited
  exit
 }}
 

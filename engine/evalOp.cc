@@ -43,36 +43,12 @@ namespace minsky
   void EvalOpBase::reset()
   {
     if (Constant* c=dynamic_cast<Constant*>(state.get()))
-      ValueVector::flowVars[out]=c->value;
+      minsky().flowVars[out]=c->value;
   }
 
-  template <> int EvalOp<OperationType::constant>::numArgs() const {return 0;}
-  template <> int EvalOp<OperationType::time>::numArgs() const {return 0;}
-  template <> int EvalOp<OperationType::copy>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::integrate>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::data>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::sqrt>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::exp>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::ln>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::log>::numArgs() const {return 2;}
-  template <> int EvalOp<OperationType::pow>::numArgs() const {return 2;}
-  template <> int EvalOp<OperationType::sin>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::cos>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::tan>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::asin>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::acos>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::atan>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::sinh>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::cosh>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::tanh>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::abs>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::heaviside>::numArgs() const {return 1;}
-  template <> int EvalOp<OperationType::add>::numArgs() const {return 2;}
-  template <> int EvalOp<OperationType::subtract>::numArgs() const {return 2;}
-  template <> int EvalOp<OperationType::multiply>::numArgs() const {return 2;}
-  template <> int EvalOp<OperationType::divide>::numArgs() const {return 2;}
-  template <> int EvalOp<OperationType::numOps>::numArgs() const {return 0;}
-
+//  void EvalOpBase::eval() {
+//    eval(&minsky().flowVars(), &minsky().stockVars[0]);
+//  }
 
   void EvalOpBase::eval(double fv[], const double sv[])
   {
@@ -105,7 +81,7 @@ namespace minsky
   void EvalOpBase::deriv(double df[], const double ds[],
                      const double sv[], const double fv[])
   {
-    assert(out>=0 && size_t(out)<ValueVector::flowVars.size());
+    assert(out>=0 && size_t(out)<minsky().flowVars.size());
     switch (numArgs())
       {
       case 0:
@@ -113,8 +89,8 @@ namespace minsky
         return;
       case 1:
         {
-          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
-                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
+          assert((flow1 && size_t(in1)<minsky().flowVars.size()) || 
+                 (!flow1 && size_t(in1)<minsky().stockVars.size()));
           double x1=flow1? fv[in1]: sv[in1];
           double dx1=flow1? df[in1]: ds[in1];
           df[out] = dx1!=0? dx1 * d1(x1,0): 0;
@@ -122,10 +98,10 @@ namespace minsky
         }
       case 2:
         {
-          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
-                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
-          assert((flow2 && size_t(in2)<ValueVector::flowVars.size()) || 
-                 (!flow2 && size_t(in2)<ValueVector::stockVars.size()));
+          assert((flow1 && size_t(in1)<minsky().flowVars.size()) || 
+                 (!flow1 && size_t(in1)<minsky().stockVars.size()));
+          assert((flow2 && size_t(in2)<minsky().flowVars.size()) || 
+                 (!flow2 && size_t(in2)<minsky().stockVars.size()));
           double x1=flow1? fv[in1]: sv[in1];
           double x2=flow2? fv[in2]: sv[in2];
           double dx1=flow1? df[in1]: ds[in1];
@@ -184,6 +160,16 @@ namespace minsky
   {return x1;}
   template <>
   double EvalOp<OperationType::integrate>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <> double
+  EvalOp<OperationType::differentiate>::evaluate(double in1, double in2) const
+  {throw error("evaluate for derivative operator should not be called");}
+  template <>
+  double EvalOp<OperationType::differentiate>::d1(double x1, double x2) const
+  {return x1;}
+  template <>
+  double EvalOp<OperationType::differentiate>::d2(double x1, double x2) const
   {return 0;}
 
   template <> double 
@@ -245,6 +231,86 @@ namespace minsky
   template <>
   double EvalOp<OperationType::pow>::d2(double x1, double x2) const
   {return ::pow(x1,x2)*::log(x1);}
+
+  template <>
+  double EvalOp<OperationType::lt>::evaluate(double in1, double in2) const
+  {return in1<in2;}
+  template <>
+  double EvalOp<OperationType::lt>::d1(double x1, double x2) const
+  {return 0;} // TODO: thow exception if x1==x2?
+  template <>
+  double EvalOp<OperationType::lt>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
+  double EvalOp<OperationType::le>::evaluate(double in1, double in2) const
+  {return in1<=in2;}
+  template <>
+  double EvalOp<OperationType::le>::d1(double x1, double x2) const
+  {return 0;} // TODO: thow exception if x1==x2?
+  template <>
+  double EvalOp<OperationType::le>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
+  double EvalOp<OperationType::eq>::evaluate(double in1, double in2) const
+  {return in1==in2;}
+  template <>
+  double EvalOp<OperationType::eq>::d1(double x1, double x2) const
+  {return 0;} // TODO: thow exception if x1==x2?
+  template <>
+  double EvalOp<OperationType::eq>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
+  double EvalOp<OperationType::min>::evaluate(double in1, double in2) const
+  {return std::min(in1,in2);}
+  template <>
+  double EvalOp<OperationType::min>::d1(double x1, double x2) const
+  {return x1<=x2;} // TODO: thow exception if x1==x2?
+  template <>
+  double EvalOp<OperationType::min>::d2(double x1, double x2) const
+  {return x1>x2;}
+
+  template <>
+  double EvalOp<OperationType::max>::evaluate(double in1, double in2) const
+  {return std::max(in1,in2);}
+  template <>
+  double EvalOp<OperationType::max>::d1(double x1, double x2) const
+  {return x1>x2;} // TODO: thow exception if x1==x2?
+  template <>
+  double EvalOp<OperationType::max>::d2(double x1, double x2) const
+  {return x1<=x2;}
+
+  template <>
+  double EvalOp<OperationType::and_>::evaluate(double in1, double in2) const
+  {return in1>0.5 && in2>0.5;}
+  template <>
+  double EvalOp<OperationType::and_>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::and_>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
+  double EvalOp<OperationType::or_>::evaluate(double in1, double in2) const
+  {return in1>0.5 || in2>0.5;}
+  template <>
+  double EvalOp<OperationType::or_>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::or_>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
+  double EvalOp<OperationType::not_>::evaluate(double in1, double in2) const
+  {return in1<=0.5;}
+  template <>
+  double EvalOp<OperationType::not_>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::not_>::d2(double x1, double x2) const
+  {return 0;}
 
   template <>
   double EvalOp<OperationType::sin>::evaluate(double in1, double in2) const
@@ -347,16 +413,6 @@ namespace minsky
   {return 0;}
 
   template <>
-  double EvalOp<OperationType::heaviside>::evaluate(double in1, double in2) const
-  {return (in1==0)? 0.5: (in1<0)? 0: 1;}
-  template <>
-  double EvalOp<OperationType::heaviside>::d1(double x1, double x2) const
-  {return 0;} // TODO: thow exception if x1==0?
-  template <>
-  double EvalOp<OperationType::heaviside>::d2(double x1, double x2) const
-  {return 0;}
-
-  template <>
   double EvalOp<OperationType::add>::evaluate(double in1, double in2) const
   {return in1+in2;}
   template <>
@@ -407,6 +463,8 @@ namespace minsky
   double EvalOp<OperationType::numOps>::d2(double x1, double x2) const
   {throw error("calling d2() on EvalOp<numOps> invalid");}
 
+  namespace {OperationFactory<EvalOpBase, EvalOp, OperationType::numOps-1> evalOpFactory;}
+
   EvalOpBase* EvalOpBase::create
   (Type op, int out, int in1, int in2, bool flow1, bool flow2)
   {
@@ -414,62 +472,16 @@ namespace minsky
       {
       case constant:
         return new ConstantEvalOp(out,in1,in2,flow1,flow2);
-      case time:
-        return new EvalOp<time>(out,in1,in2,flow1,flow2);
-      case copy:
-        return new EvalOp<copy>(out,in1,in2,flow1,flow2);
-      case integrate:
-        return new EvalOp<integrate>(out,in1,in2,flow1,flow2);
-      case data:
-         {
-          EvalOpBase* r=new EvalOp<data>(out,in1,in2,flow1,flow2);
-          //          r->state.reset(new DataOp); // needed to ensure evaluate and d do not fail
-          return r;
-         }
-      case sqrt:
-       return new EvalOp<sqrt>(out,in1,in2,flow1,flow2);
-      case exp:
-        return new EvalOp<exp>(out,in1,in2,flow1,flow2);
-      case ln:
-        return new EvalOp<ln>(out,in1,in2,flow1,flow2);
-      case log:
-        return new EvalOp<log>(out,in1,in2,flow1,flow2);
-      case pow:
-        return new EvalOp<pow>(out,in1,in2,flow1,flow2);
-      case sin:
-        return new EvalOp<sin>(out,in1,in2,flow1,flow2);
-      case cos:
-        return new EvalOp<cos>(out,in1,in2,flow1,flow2);
-      case tan:
-        return new EvalOp<tan>(out,in1,in2,flow1,flow2);
-      case asin:
-        return new EvalOp<asin>(out,in1,in2,flow1,flow2);
-      case acos:
-        return new EvalOp<acos>(out,in1,in2,flow1,flow2);
-      case atan:
-        return new EvalOp<atan>(out,in1,in2,flow1,flow2);
-      case sinh:
-        return new EvalOp<sinh>(out,in1,in2,flow1,flow2);
-      case cosh:
-        return new EvalOp<cosh>(out,in1,in2,flow1,flow2);
-      case tanh:
-        return new EvalOp<tanh>(out,in1,in2,flow1,flow2);
-      case abs:
-        return new EvalOp<abs>(out,in1,in2,flow1,flow2);
-      case heaviside:
-        return new EvalOp<heaviside>(out,in1,in2,flow1,flow2);
-      case add:
-        return new EvalOp<add>(out,in1,in2,flow1,flow2);
-      case subtract:
-        return new EvalOp<subtract>(out,in1,in2,flow1,flow2);
-      case multiply:
-        return new EvalOp<multiply>(out,in1,in2,flow1,flow2);
-      case divide:
-        return new EvalOp<divide>(out,in1,in2,flow1,flow2);
       case numOps:
         return NULL;
       default:
-        throw error("unknown operation type %s", typeName(op).c_str());
+        auto r=evalOpFactory.create(op);
+        r->out=out;
+        r->in1=in1;
+        r->in2=in2;
+        r->flow1=flow1;
+        r->flow2=flow2;
+        return r;
       }
   }
 

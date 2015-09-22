@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>Sliders</TITLE>
+<META NAME="description" CONTENT="Sliders">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,66 +18,57 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node51.html">
-<LINK REL="previous" HREF="node46.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="previous" HREF="node49.html">
+<LINK REL="up" HREF="node47.html">
 <LINK REL="next" HREF="node51.html">
 </HEAD>
 
 <BODY >
 <!--Navigation Panel-->
-<A NAME="tex2html646"
+<A NAME="tex2html648"
   HREF="node51.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
  SRC="file:/usr/share/latex2html/icons/next.png"></A> 
-<A NAME="tex2html644"
-  HREF="node44.html">
+<A NAME="tex2html646"
+  HREF="node47.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
  SRC="file:/usr/share/latex2html/icons/up.png"></A> 
-<A NAME="tex2html638"
+<A NAME="tex2html642"
   HREF="node49.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
  SRC="file:/usr/share/latex2html/icons/prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html647"
-  HREF="node51.html">Groups</A>
-<B> Up:</B> <A NAME="tex2html645"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html639"
-  HREF="node49.html">Sliders</A>
+<B> Next:</B> <A NAME="tex2html649"
+  HREF="node51.html">Wires</A>
+<B> Up:</B> <A NAME="tex2html647"
+  HREF="node47.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html643"
+  HREF="node49.html">Initial conditions</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00430000000000000000">
-Wires</A>
-</H1>
+<H2><A NAME="SECTION00433000000000000000">
+Sliders</A>
+</H2>
 
 <P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire
-attached, with the exception of +/- and <IMG
- WIDTH="37" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
- SRC="img52.png"
- ALT="$\times/\div$">, where the
-multiple wires are summed or multiplied, respectively.
+From the context menu, one can select a slider to be attached to a
+variable, which is a GUI ``knob'' allowing one to control a variable's
+initial value, or the value of a parameter or constant. Adjusting the
+slider of an integral (or stock) variable while the system is running
+actually adjusts the present value of the variable.
 
 <P>
-Wires can be bent by dragging the blue dots (``handles''). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+Slider parameters are specified in the edit menu: max, min and step
+size. A relative slider means that the step size is expressed as a
+fraction of max-min.
 
 <P>
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2015-07-30
+2015-08-19
 </ADDRESS>
 </BODY>
 </HTML>

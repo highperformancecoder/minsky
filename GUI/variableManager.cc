@@ -106,11 +106,11 @@ void VariableManager::erase(int i, bool eraseIfIntegral)
       if (j==end()) // didn't find any others
         values.erase((*it)->valueId());
 
-      if ((*it)->group>=0)
+      if (&minsky().variables==this && (*it)->group>=0)
         {
           GroupIcons::iterator g=minsky().groupItems.find((*it)->group);
           if (g!=minsky().groupItems.end())
-            g->removeVariable(*it);
+            (*g)->removeVariable(*it);
         }
       erase(it);
     }
@@ -251,8 +251,8 @@ const VariablePtr& VariableManager::getVariableFromPort(int port) const
 void VariableManager::reset()
 {
   // reallocate all variables
-  ValueVector::stockVars.clear();
-  ValueVector::flowVars.clear();
+  minsky().ValueVector::stockVars.clear();
+  minsky().flowVars.clear();
   for (VariableValues::iterator v=values.begin(); v!=values.end(); ++v)
     v->second.allocValue().reset(values);
 }

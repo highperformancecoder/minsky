@@ -131,7 +131,7 @@ namespace minsky
   };
 
   /// global register of plot widgets, indexed by the item image name
-  struct Plots: public IntrusiveMap<int, PlotWidget> 
+  struct Plots: public TrackedIntrusiveMap<int, PlotWidget> 
   {
     /// add an addition image surface to a PlotWidget
     /// @param id - image name identifying the plotWidget

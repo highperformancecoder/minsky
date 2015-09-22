@@ -15,8 +15,8 @@ FLAGS:=-I.. $(FLAGS)
 FLAGS+=-std=c++11 -I../GUI -I../engine -I../schema
 LIBS+=-ljson_spirit -lsoci_core -lwebsocketpp -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lboost_signals \
-	-lUnitTest++ -lgsl -lgslcblas  \
-	-lmegabitz -lwthttp -lwtext -lwt -lGraphicsMagick -lGraphicsMagick++ \
+	-lUnitTest++ -lgsl -lgslcblas \
+	-lwthttp -lwtext -lwt -lGraphicsMagick -lGraphicsMagick++ \
 	-ljpeg -llcms -lxml2 -ltiff
 
 # RSVG dependencies calculated here

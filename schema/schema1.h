@@ -190,6 +190,14 @@ namespace schema1
     void addItems(const minsky::GroupIcon& g);
   };
 
+  struct Switch: public SPoly<Switch,Item>
+  {
+    vector<int> ports;
+    Switch() {}
+    Switch(int id, const minsky::SwitchIcon& s):
+      Item(id,s), ports(s.ports()) {}
+  };
+
   struct Godley: public SPoly<Godley,Item>
   {
     vector<int> ports;
@@ -335,6 +343,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     vector<Variable> variables;
     vector<Plot> plots;
     vector<Group> groups;
+    vector<Switch> switches;
     vector<Godley> godleys;
     RungeKutta rungeKutta;
 

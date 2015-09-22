@@ -30,13 +30,13 @@ private:
   typedef AbstractCanvasItem _base_class;
 
 private:
-  GroupIcon& icon;      ///< Model icon this item renders.
+  GroupIconPtr& icon;      ///< Model icon this item renders.
 
 public:
   /**
    * Constructor
    */
-  GroupCanvasItem(MinskyDoc::ObjectId id, GroupIcon& icon, CanvasView* parent);
+  GroupCanvasItem(MinskyDoc::ObjectId id, GroupIconPtr& icon, CanvasView* parent);
 
   /**
    * Destructor
@@ -52,12 +52,12 @@ public:
    *  Accesses model icon object.
    */
   /** @{ */
-  inline GroupIcon& getIcon()
+  inline GroupIconPtr& getIcon()
   {
     return icon;
   }
 
-  inline const GroupIcon& getIcon() const
+  inline const GroupIconPtr& getIcon() const
   {
     return icon;
   }

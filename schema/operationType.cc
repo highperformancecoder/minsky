@@ -17,8 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <vector>
 #include "operationType.h"
 #include <ecolab_epilogue.h>
+
 
 using namespace classdesc;
 
@@ -36,6 +38,14 @@ namespace minsky
     template <> int numArguments<OperationType::divide>() {return 2;}
     template <> int numArguments<OperationType::log>() {return 2;}
     template <> int numArguments<OperationType::pow>() {return 2;}
+    template <> int numArguments<OperationType::lt>() {return 2;}
+    template <> int numArguments<OperationType::le>() {return 2;}
+    template <> int numArguments<OperationType::eq>() {return 2;}
+    template <> int numArguments<OperationType::min>() {return 2;}
+    template <> int numArguments<OperationType::max>() {return 2;}
+    template <> int numArguments<OperationType::and_>() {return 2;}
+    template <> int numArguments<OperationType::or_>() {return 2;}
+    template <> int numArguments<OperationType::not_>() {return 1;}
     template <> int numArguments<OperationType::time>() {return 0;}
     template <> int numArguments<OperationType::copy>() {return 1;}
     template <> int numArguments<OperationType::integrate>() {return 1;}
@@ -54,6 +64,6 @@ namespace minsky
     template <> int numArguments<OperationType::cosh>() {return 1;}
     template <> int numArguments<OperationType::tanh>() {return 1;}
     template <> int numArguments<OperationType::abs>() {return 1;}
-    template <> int numArguments<OperationType::heaviside>() {return 1;}
+    template <> int numArguments<OperationType::numOps>() {return -1;} //no output port as well
   }
 }

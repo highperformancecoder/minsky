@@ -29,6 +29,7 @@ namespace minsky
   protected:
     std::vector<int> m_ports;
     CLASSDESC_ACCESS(ItemPorts);
+    friend struct SchemaHelper;
   public:
     const std::vector<int>& ports() const {return m_ports;}
   };

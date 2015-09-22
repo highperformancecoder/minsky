@@ -29,6 +29,9 @@
 #include "selection.h"
 #include "note.h"
 #include "SVGItem.h"
+#include "godleyIcon.h"
+#include "switchIcon.h"
+#include "plotWidget.h"
 
 #include "classdesc_access.h"
 #include <TCL_obj_base.h>
@@ -41,16 +44,28 @@ namespace minsky
 {
   using namespace ecolab;
   class Minsky;
+  class GroupIcon;
+
+  struct GroupIconPtr: public classdesc::shared_ptr<GroupIcon> 
+  {
+    GroupIconPtr();
+    virtual int id() const {return -1;}
+  };
+
+  struct GroupIcons: public TrackedIntrusiveMap<int, GroupIconPtr>
+  {
+    std::vector<int> visibleGroups() const;
+    // ensures that contained variables, operations, wires and groups
+    // only belong to a single group within this container. This is a
+    // useful invariant to test in asserts
+    bool uniqueGroupMembership() const;
+  };
 
   class GroupIcon: public Note
   {
   public:
   private:
     CLASSDESC_ACCESS(GroupIcon);
-    std::vector<int> m_operations;
-    std::vector<int> m_variables;
-    std::vector<int> m_wires;
-    std::vector<int> m_groups;
     /// input and output port variables of this group
     std::set<int> inVariables, outVariables;
     /// used for ensuring that only one reference to a given variable
@@ -72,6 +87,18 @@ namespace minsky
     void drawVar(cairo_t*, const VariablePtr&) const;
 
   public:
+
+    GodleyIcons godleyItems;
+
+    Operations operations;
+    VariableManager variables;
+
+    GroupIcons groupItems;
+    SwitchIcons switchItems;
+    typedef TrackedIntrusiveMap<int, OpVarBaseAttributes> Notes;
+    Notes notes; ///< descriptive textual items
+
+    Plots plots;
 
     static SVGRenderer svgRenderer;
     /// resource name (usually filename) for icon graphics
@@ -107,10 +134,10 @@ namespace minsky
     /// eliminate any duplicate I/O variable references
     void eliminateIOduplicates();
 
-    const std::vector<int>& operations() const {return m_operations;}
-    const std::vector<int>& variables() const {return m_variables;}
-    const std::vector<int>& wires() const {return m_wires;}
-    const std::vector<int>& groups() const {return m_groups;}
+//    const std::vector<int>& operations() const {return m_operations;}
+//    const std::vector<int>& variables() const {return m_variables;}
+    std::vector<int> wires() const;
+//    const std::vector<int>& groups() const {return m_groups;}
     
     /// @{ coordinates of this icon on canvas
     float x() const;
@@ -121,9 +148,9 @@ namespace minsky
     /// synonym for parent(), for TCL scripting purposes
     int group() const {return parent();}
     
-    /// id of this group
-    virtual int id() const {return -1;}
-    int groupId() const {return id();}
+    /// id of this group. Expensive, try to avoid
+    int id() const;
+//    int groupId() const {return id();}
 
     /// @return true if gid is a parent, or parent of a parent, etc
     bool isAncestor(int gid) const;
@@ -141,8 +168,8 @@ namespace minsky
     /// ungroup all icons
     void ungroup();
 
-    bool empty() {return m_variables.empty() && m_operations.empty() && 
-        m_wires.empty() && m_groups.empty();}
+    bool empty() {return variables.empty() && operations.empty() && groupItems.empty() 
+        && godleyItems.empty() && switchItems.empty() && notes.empty() && plots.empty();}
 
     /// populates this with a copy of src (with all internal objects
     /// registered with minsky).
@@ -228,9 +255,9 @@ namespace minsky
     void removeOperation(Operations::value_type&);
     /// make group a child of this group
     /// @return true if successful
-    bool addGroup(IntrusiveWrap<int, GroupIcon>&);
+    bool addGroup(IntrusiveWrap<int, GroupIconPtr>&);
     /// remove child group from this group, and add it to the parent
-    void removeGroup(IntrusiveWrap<int, GroupIcon>&);
+    void removeGroup(IntrusiveWrap<int, GroupIconPtr>&);
     
     /// see if any attached wires should also be moved into the group
     /// \a ports is a sequence (vector or array) of ports
@@ -284,14 +311,7 @@ namespace minsky
 
   };
 
-  struct GroupIcons: public IntrusiveMap<int, GroupIcon>
-  {
-    std::vector<int> visibleGroups() const;
-    // ensures that contained variables, operations, wires and groups
-    // only belong to a single group within this container. This is a
-    // useful invariant to test in asserts
-    bool uniqueGroupMembership() const;
-  };
+  inline GroupIconPtr::GroupIconPtr(): classdesc::shared_ptr<GroupIcon>(new GroupIcon) {}
 
 }
 

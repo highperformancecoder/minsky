@@ -46,52 +46,29 @@ namespace minsky
   constexpr float OperationBase::h;
   constexpr float OperationBase::r;
 
-  void OperationBase::addPorts()
+  bool OperationBase::multiWire()
   {
-    m_ports.clear();
     switch (type())
       {
-        // zero input port case
-      case constant: 
-      case time: 
-        m_ports.push_back(minsky().addOutputPort());
-        break;
-        // single input port case
-      case copy: case sqrt: case exp: case ln:
-      case sin: case cos: case tan:
-      case asin: case acos: case atan:
-      case sinh: case cosh: case tanh:
-      case abs: case heaviside:
-      case data: case differentiate:
-        m_ports.push_back(minsky().addOutputPort());
-        m_ports.push_back(minsky().addInputPort());
-        break;
-        // dual input port case, multiwire inputs allowed
       case add: case subtract: 
       case multiply: case divide:
-        m_ports.push_back(minsky().addOutputPort());
-        m_ports.push_back(minsky().addMultipleInputPort());
-        assert(minsky().ports[m_ports.back()].input());
-        m_ports.push_back(minsky().addMultipleInputPort());
-        assert(minsky().ports[m_ports.back()].input());
-        assert(minsky().ports.size()>2);
-        break;
-        // dual input port case, multiwire inputs not allowed
-      case pow: case log:
-        m_ports.push_back(minsky().addOutputPort());
-        m_ports.push_back(minsky().addInputPort());
-        assert(minsky().ports[m_ports.back()].input());
-        m_ports.push_back(minsky().addInputPort());
-        assert(minsky().ports[m_ports.back()].input());
-        assert(minsky().ports.size()>2);
-        break;
-      case numOps: case integrate:
-        break;
+      case min: case max:
+      case and_: case or_:
+        return true;
       default:
-        throw error("unhandled OperationBase::addPorts case %s",name().c_str());
+        return false;
       }
-
   }
+
+  void OperationBase::addPorts(unsigned numPorts)
+  {
+    m_ports.clear();
+    if (numPorts>0)
+      m_ports.push_back(minsky().addOutputPort());
+    for (size_t i=1; i<numPorts; ++i)
+      m_ports.push_back(minsky().addPort(Port(0,0,true,multiWire())));
+  }
+
 
   IntOp::IntOp(const vector<int>& ports): Super(ports), intVar(-1) 
   {
@@ -228,67 +205,24 @@ namespace minsky
     return r;
   }
 
+  namespace
+  {
+    OperationFactory<OperationBase, Operation> operationFactory;
+  }
+
   OperationBase* OperationBase::create(OperationType::Type type,
                                        const vector<int>& ports)
   {
     switch (type)
       {
-      case constant:
-        return new Constant(ports);
-      case time:
-        return new Operation<time>(ports);
-      case copy:
-        return new Operation<copy>(ports);
-      case integrate:
-        return new IntOp(ports);
-      case differentiate:
-        return new Operation<differentiate>(ports);
-      case data:
-        return new DataOp(ports);
-      case sqrt:
-        return new Operation<sqrt>(ports);
-      case exp:
-        return new Operation<exp>(ports);
-      case ln:
-        return new Operation<ln>(ports);
-      case log:
-        return new Operation<log>(ports);
-      case pow:
-        return new Operation<pow>(ports);
-      case sin:
-        return new Operation<sin>(ports);
-      case cos:
-        return new Operation<cos>(ports);
-      case tan:
-        return new Operation<tan>(ports);
-      case asin:
-        return new Operation<asin>(ports);
-      case acos:
-        return new Operation<acos>(ports);
-      case atan:
-        return new Operation<atan>(ports);
-      case sinh:
-        return new Operation<sinh>(ports);
-      case cosh:
-        return new Operation<cosh>(ports);
-      case tanh:
-        return new Operation<tanh>(ports);
-      case abs:
-        return new Operation<abs>(ports);
-      case heaviside:
-        return new Operation<heaviside>(ports);
-      case add:
-        return new Operation<add>(ports);
-      case subtract:
-        return new Operation<subtract>(ports);
-      case multiply:
-        return new Operation<multiply>(ports);
-      case divide:
-        return new Operation<divide>(ports);
-      case numOps:  // default, do nothing op
-        return new Operation<numOps>(ports);
+      case integrate: return new IntOp(ports);
+      case data: return new DataOp(ports);
+      case constant: return new Constant(ports);
       default:
-        throw error("unknown operation type %s", typeName(type).c_str());
+        auto r=operationFactory.create(type);
+        if (!ports.empty())
+          r->addPorts(ports);
+        return r;
       }
   }
 
@@ -351,13 +285,13 @@ namespace minsky
       if (this==(*ei)->state.get())
         {
           const EvalOpBase& e=**ei;
-          r="[out]="+str(ValueVector::flowVars[e.out]);
+          r="[out]="+str(minsky().flowVars[e.out]);
           if (e.numArgs()>0)
-            r+=" [in1]="+ str(e.flow1? ValueVector::flowVars[e.in1]: 
-                               ValueVector::stockVars[e.in1]);
+            r+=" [in1]="+ str(e.flow1? minsky().flowVars[e.in1]: 
+                               minsky().stockVars[e.in1]);
           if (e.numArgs()>1)
-            r+=" [in2]="+ str(e.flow2? ValueVector::flowVars[e.in2]: 
-                               ValueVector::stockVars[e.in2]);
+            r+=" [in2]="+ str(e.flow2? minsky().flowVars[e.in2]: 
+                               minsky().stockVars[e.in2]);
         }
     return r;
   }

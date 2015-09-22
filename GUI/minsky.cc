@@ -64,10 +64,11 @@ namespace
   int jacobian(double t, const double y[], double * dfdy, double dfdt[], void * params)
   {
     if (params==NULL) return GSL_EBADFUNC;
-    Minsky::Matrix jac(ValueVector::stockVars.size(), dfdy);
+    Minsky& minsky=*(Minsky*)params;
+    Minsky::Matrix jac(minsky.stockVars.size(), dfdy);
     try
       {
-        ((Minsky*)params)->jacobian(jac,t,y);
+        minsky.jacobian(jac,t,y);
       }
      catch (std::exception& e)
       {
@@ -95,7 +96,7 @@ namespace minsky
       gsl_set_error_handler(errHandler);
       sys.function=RKfunction;
       sys.jacobian=jacobian;
-      sys.dimension=ValueVector::stockVars.size();
+      sys.dimension=minsky->stockVars.size();
       sys.params=minsky;
       const gsl_odeiv2_step_type* stepper;
       switch (minsky->order)
@@ -171,6 +172,7 @@ namespace minsky
     variables.values.clear();
     plots.clear();
     notes.clear();
+    switchItems.clear();
     // these two are needed, because they could be holding onto
     // operations or variables, which might cause port deletions in
     // later models
@@ -181,6 +183,13 @@ namespace minsky
     stockVars.clear();
     evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
         makeGodleyIt(godleyItems.end()), variables.values);
+
+#ifdef NDEBUG
+    nextId=0;
+#else
+    resetNextId();
+    assert(nextId==0);
+#endif
 
     reset_needed=true;
   }
@@ -225,7 +234,7 @@ namespace minsky
     groupTest.initGroupList(groupItems);
     array<float> c=w.coords();
     int g=groupTest.groupContainingBoth(c[0],c[1],c[c.size()-2],c[c.size()-1]);
-    if (g>-1) groupItems[g].addWire(id);
+    if (g>-1) groupItems[g]->addWire(id);
 
     markEdited();
     return id;
@@ -238,7 +247,7 @@ namespace minsky
         variables.deleteWire(wires[id].to);
         Wire& w=wires[id];
         if (w.group!=-1)
-          groupItems[w.group].delWire(id);
+          groupItems[w.group]->delWire(id);
         PortManager::deleteWire(id);
         markEdited();
       }
@@ -278,9 +287,8 @@ namespace minsky
         {
           GroupIcons::iterator g=minsky().groupItems.find((*op)->group);
           if (g!=minsky().groupItems.end())
-            g->removeOperation(*op);
+            (*g)->removeOperation(*op);
         }
-        assert(op->use_count()==1);
         operations.erase(op);
         markEdited();
       }
@@ -289,11 +297,11 @@ namespace minsky
   int Minsky::createGroup()
   {
     int id=getNewId();
-    GroupIcon& g=groupItems[id];
+    GroupIcon& g=*groupItems[id];
     g.addWires(currentSelection.wires);
     if (currentSelection.group>=0 && groupItems.count(currentSelection.group))
       {
-        GroupIcon& oldg=groupItems[currentSelection.group];
+        GroupIcon& oldg=*groupItems[currentSelection.group];
         for (int w: currentSelection.wires)
           oldg.delWire(w);
       }
@@ -331,7 +339,7 @@ namespace minsky
 
   void Minsky::ungroup(int id)
   {
-    groupItems[id].ungroup();
+    groupItems[id]->ungroup();
     groupItems.erase(id);
     markEdited();
   }
@@ -343,9 +351,9 @@ namespace minsky
       v->selected=false;
     for (const OperationPtr& o: operations)
       o->selected=false;
-    for (GroupIcon& g: groupItems)
-      g.selected=false;
-    for (GodleyIcon& g: godleyItems)
+    for (auto& g: groupItems)
+      g->selected=false;
+    for (auto& g: godleyItems)
       g.selected=false;
     for (PlotWidget& p: plots)
       p.selected=false;
@@ -383,12 +391,12 @@ namespace minsky
           o->selected=true;
         }
 
-    for (GroupIcon& g: groupItems)
-      if (g.group()==-1 && lasso.intersects(g))
+    for (auto& g: groupItems)
+      if (g->group()==-1 && lasso.intersects(*g))
         {
           assert(g.id()>-1);
           currentSelection.groups.push_back(g.id());
-          g.selected=true;
+          g->selected=true;
         }
 
     for (GodleyIcon& g: godleyItems)
@@ -415,11 +423,11 @@ namespace minsky
     GroupIcons::iterator g=groupItems.find(i);
     if (g!=groupItems.end())
       {
-        for (int i: g->operations())
+        for (int i: (*g)->operations.keys())
           deleteOperation(i);
-        for (int i: g->variables())
+        for (int i: (*g)->variables.keys())
           deleteOperation(i);
-        for (int i: g->groups())
+        for (int i: (*g)->groupItems.keys())
           deleteGroup(i);
         groupItems.erase(g);
       }
@@ -462,7 +470,7 @@ namespace minsky
 
   void Minsky::saveGroupAsFile(int i, const string& fileName) const
   {
-    schema1::Minsky m(*this,groupItems[i]);
+    schema1::Minsky m(*this,*groupItems[i]);
     ofstream os(fileName);
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -475,7 +483,7 @@ namespace minsky
     schema1::Minsky m;
     xml_unpack(unpacker, "Minsky", m);
     int id=getNewId();
-    m.populateGroup(groupItems[id]);
+    m.populateGroup(*groupItems[id]);
     return id;
   }
 
@@ -490,8 +498,8 @@ namespace minsky
     GroupIcons::iterator srcIt=groupItems.find(id);
     if (srcIt==groupItems.end()) return -1; //src not found
     int newId=getNewId();
-    GroupIcon& g=groupItems[newId];
-    g.copy(*srcIt);
+    GroupIcon& g=*groupItems[newId];
+    g.copy(**srcIt);
     markEdited();
     return newId;
   }
@@ -507,7 +515,7 @@ namespace minsky
       throw error("Invalid Minsky schema file");
 
     int newId=getNewId();
-    GroupIcon& g=groupItems[newId];
+    GroupIcon& g=*groupItems[newId];
     currentSchema.populateGroup(g);
     // all variables should be set to group scope, as this has come in from a file, so shouldn't reference 
     // outside of itself
@@ -572,6 +580,12 @@ namespace minsky
     for (const Operations::value_type& o: operations)
       {
         auto pp=o->ports();
+        portsToKeep.insert(pp.begin(), pp.end());
+      }
+
+    for (auto& o: switchItems)
+      {
+        auto pp=o.ports();
         portsToKeep.insert(pp.begin(), pp.end());
       }
 
@@ -649,7 +663,7 @@ namespace minsky
       }
 
     std::set<string> duplicatedColumns;
-    for (GodleyItems::iterator gi=godleyItems.begin(); 
+    for (GodleyIcons::iterator gi=godleyItems.begin(); 
          gi!=godleyItems.end(); ++gi)
       {
         vector<string> columns=gi->table.getColumnVariables();
@@ -676,7 +690,7 @@ namespace minsky
     const string& colName=trimWS(srcTable.cell(0,srcCol));
     if (colName.empty()) return; //ignore blank columns
 
-    for (GodleyItems::iterator gi=godleyItems.begin(); gi!=godleyItems.end(); ++gi)
+    for (auto gi=godleyItems.begin(); gi!=godleyItems.end(); ++gi)
       if (&gi->table!=&srcTable) // skip source table
         for (size_t col=1; col<gi->table.cols(); col++)
           if (trimWS(gi->table.cell(0,col))==colName) // we have a match
@@ -691,7 +705,7 @@ namespace minsky
     if (colName.empty()) return; //ignore blank columns
 
     bool matchFound=false;
-    for (GodleyItems::iterator gi=godleyItems.begin(); gi!=godleyItems.end(); ++gi)
+    for (auto gi=godleyItems.begin(); gi!=godleyItems.end(); ++gi)
       if (&gi->table!=&srcTable) // skip source table
         for (size_t col=1; col<gi->table.cols(); col++)
           if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
@@ -783,6 +797,7 @@ namespace minsky
 
   void Minsky::reset()
   {
+    EvalOpBase::t=t=0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed
@@ -792,7 +807,6 @@ namespace minsky
                                  makeGodleyIt(godleyItems.end()), variables.values);
 
     plots.reset();
-    t=0;
 
     if (stockVars.size()>0)
       {
@@ -923,7 +937,7 @@ namespace minsky
   
   }
 
-  void Minsky::save(const char* filename)
+  void Minsky::save(const std::string& filename)
   {
     ofstream of(filename);
     xml_pack_t saveFile(of, schemaURL);
@@ -932,12 +946,12 @@ namespace minsky
     m.relocateCanvas();
     xml_pack(saveFile, "Minsky", m);
     if (!of)
-      throw error("cannot save to %s",filename);
+      throw runtime_error("cannot save to "+filename);
     m_edited=false;
   }
 
 
-  void Minsky::load(const char* filename) 
+  void Minsky::load(const std::string& filename) 
   {
   
     clearAllMaps();
@@ -946,7 +960,7 @@ namespace minsky
     schema1::Minsky currentSchema;
     ifstream inf(filename);
     if (!inf)
-      throw error("failed to open %s",filename);
+      throw runtime_error("failed to open "+filename);
     xml_unpack_t saveFile(inf);
     xml_unpack(saveFile, "Minsky", currentSchema);
     // fix corruption caused by ticket #329
@@ -957,36 +971,34 @@ namespace minsky
     else
       { // fall back to the ill-defined schema '0'
         schema0::Minsky m;
-        m.load(filename);
+        m.load(filename.c_str());
         *this=m;
       }
 
     variables.makeConsistent();
-    for (GodleyItems::iterator g=godleyItems.begin(); g!=godleyItems.end(); ++g)
+    for (auto g=godleyItems.begin(); g!=godleyItems.end(); ++g)
       g->update();
 
-    for (GroupIcons::iterator g=groupItems.begin(); g!=groupItems.end(); ++g)
+    for (auto& g: groupItems)
       {
         // ensure group attributes correctly set
-        const vector<int>& vars= g->variables();
-        for (vector<int>::const_iterator i=vars.begin(); i!=vars.end(); ++i)
+        for (int i: g->variables.keys())
           {
-            const VariablePtr& v=variables[*i];
-            v->group=g->id();
+            const VariablePtr& v=variables[i];
+            v->group=g.id();
             v->visible=g->displayContents();
           }
-        const vector<int>& ops= g->operations();
-        for (vector<int>::const_iterator i=ops.begin(); i!=ops.end(); ++i)
+        for (int i: g->operations.keys())
           {
-            OperationPtr& o=operations[*i];
-            o->group=g->id();
+            OperationPtr& o=operations[i];
+            o->group=g.id();
             o->visible=g->displayContents();
           }
         const vector<int>& gwires= g->wires();
         for (vector<int>::const_iterator i=gwires.begin(); i!=gwires.end(); ++i)
           {
             Wire& w=wires[*i];
-            w.group=g->id();
+            w.group=g.id();
             w.visible=g->displayContents();
           }
       }
@@ -1038,8 +1050,8 @@ namespace minsky
       v->zoom(xOrigin, yOrigin, factor);
     for (GodleyIcon& g: godleyItems)
       g.zoom(xOrigin, yOrigin, factor);
-    for (GroupIcon& g: groupItems)
-      g.zoom(xOrigin, yOrigin, factor);
+    for (auto& g: groupItems)
+      g->zoom(xOrigin, yOrigin, factor);
     for (auto& s: switchItems)
       s.zoom(xOrigin, yOrigin, factor);
     for (PlotWidget& p: plots)
@@ -1055,13 +1067,13 @@ namespace minsky
     for (VariablePtr& v: variables)
       if (v->group==-1)
         v->setZoom(factor);
-    for (GroupIcons::iterator g=groupItems.begin(); g!=groupItems.end(); ++g)
+    for (auto& g: groupItems)
       if (g->group()==-1)
         g->setZoom(factor);
     // zoomFactor in a godleyItem also contains relative size
     // attribute of the godley icon within the canvas, so we need to
     // relative zoom this
-    for (GodleyItems::iterator g=godleyItems.begin(); g!=godleyItems.end(); ++g)
+    for (auto g=godleyItems.begin(); g!=godleyItems.end(); ++g)
       g->zoomFactor*=factor/m_zoomFactor;
     for (Plots::iterator p=plots.begin(); p!=plots.end(); ++p)
       p->zoomFactor=factor;
@@ -1078,10 +1090,10 @@ namespace minsky
           {
             GroupIcons::iterator pg=groupItems.find((*v)->group);
             if (pg!=groupItems.end())
-              pg->removeVariable(*v);
+              (*pg)->removeVariable(*v);
           }
-        g->addVariable(*v, checkIOregions);
-        g->addAnyWires((*v)->ports());
+        (*g)->addVariable(*v, checkIOregions);
+        (*g)->addAnyWires((*v)->ports());
       }
   }
 
@@ -1091,32 +1103,34 @@ namespace minsky
     VariableManager::iterator v=variables.find(varId);
     if (g!=groupItems.end() && v!=variables.end() && (*v)->group==groupId)
       {
-        g->removeVariable(*v);
-        g->removeAnyWires((*v)->ports());
-        g->addAnyWires((*v)->ports()); //break wires crossing group boundaries
-        if (g->parent()!=-1)
+        (*g)->removeVariable(*v);
+        (*g)->removeAnyWires((*v)->ports());
+        (*g)->addAnyWires((*v)->ports()); //break wires crossing group boundaries
+        if ((*g)->parent()!=-1)
           {
-            GroupIcons::iterator pg=groupItems.find(g->parent());
+            GroupIcons::iterator pg=groupItems.find((*g)->parent());
             if (pg!=groupItems.end())
-              pg->addVariable(*v);
+              (*pg)->addVariable(*v);
           }
       }
   }
 
   void Minsky::addOperationToGroup(int groupId, int opId)
   {
-    GroupIcons::iterator g=groupItems.find(groupId);
-    Operations::iterator o=operations.find(opId);
-    if (g!=groupItems.end() && o!=operations.end() && (*o)->group!=groupId)
+    GroupIcons::iterator gi=groupItems.find(groupId);
+    Operations::iterator oi=operations.find(opId);
+    if (gi!=groupItems.end() && oi!=operations.end() && (*oi)->group!=groupId)
       {
-        if ((*o)->group!=-1)
+        auto& g=**gi;
+        auto& o=**oi;
+        if (o.group!=-1)
           {
-            GroupIcons::iterator pg=groupItems.find((*o)->group);
+            GroupIcons::iterator pg=groupItems.find(o.group);
             if (pg!=groupItems.end())
-              pg->removeOperation(*o);
+              (*pg)->removeOperation(*oi);
           }
-        g->addOperation(*o);
-        g->addAnyWires((*o)->ports());
+        g.addOperation(*oi);
+        g.addAnyWires(o.ports());
       }
   }
 
@@ -1126,13 +1140,13 @@ namespace minsky
     Operations::iterator o=operations.find(opId);
     if (g!=groupItems.end() && o!=operations.end() && (*o)->group==groupId)
       {
-        g->removeOperation(*o);
-        g->removeAnyWires((*o)->ports());
-        if (g->parent()!=-1)
+        (*g)->removeOperation(*o);
+        (*g)->removeAnyWires((*o)->ports());
+        if ((*g)->parent()!=-1)
           {
-            GroupIcons::iterator pg=groupItems.find(g->parent());
+            GroupIcons::iterator pg=groupItems.find((*g)->parent());
             if (pg!=groupItems.end())
-              pg->addOperation(*o);
+              (*pg)->addOperation(*o);
           }
       }
   }
@@ -1143,15 +1157,15 @@ namespace minsky
     GroupIcons::iterator g=groupItems.find(groupId);
     GroupIcons::iterator dg=groupItems.find(destGroup);
     if (g!=groupItems.end() && dg!=groupItems.end() && 
-        g->parent()!=destGroup)
+        (*g)->parent()!=destGroup)
       {
-        if (g->parent()!=-1)
+        if ((*g)->parent()!=-1)
           {
-            GroupIcons::iterator pg=groupItems.find(g->parent());
+            GroupIcons::iterator pg=groupItems.find((*g)->parent());
             if (pg!=groupItems.end())
-              pg->removeGroup(*g);
+              (*pg)->removeGroup(*g);
           }
-        return dg->addGroup(*g);
+        return (*dg)->addGroup(*g);
       }
     return false;
   }
@@ -1162,12 +1176,12 @@ namespace minsky
     GroupIcons::iterator dg=groupItems.find(destGroup);
     if (g!=groupItems.end() && dg!=groupItems.end())
       {
-        dg->removeGroup(*g);
-        if (dg->parent()!=-1)
+        (*dg)->removeGroup(*g);
+        if ((*dg)->parent()!=-1)
           {
-            GroupIcons::iterator pg=groupItems.find(dg->parent());
+            GroupIcons::iterator pg=groupItems.find((*dg)->parent());
             if (pg!=groupItems.end())
-              pg->addGroup(*g);
+              (*pg)->addGroup(*g);
           }
       }
   }
@@ -1294,9 +1308,9 @@ namespace minsky
       displayErrorItem(op.x(),op.y());
     else if (op.group>-1)
       {
-        const GroupIcon* g=&minsky().groupItems[op.group];
+        const GroupIcon* g=&*minsky().groupItems[op.group];
         while (!g->visible && g->parent()>-1)
-          g=&minsky().groupItems[g->parent()];
+          g=&*minsky().groupItems[g->parent()];
         if (g->visible)
           displayErrorItem(g->x(), g->y());
       }
@@ -1315,7 +1329,7 @@ namespace minsky
       if (!plots.empty()) nextId=max(nextId, plots.rbegin()->id()+1);
     }
 
-  void Minsky::pushHistoryIfDifferent()
+  bool Minsky::pushHistoryIfDifferent()
   {
     // go via a schema object, as serialising minsky::Minsky has problems due to port management
     schema1::Minsky m(*this);
@@ -1323,19 +1337,24 @@ namespace minsky
     buf<<m;
     if (history.empty() || memcmp(buf.data(), history.back().data(), buf.size())!=0)
       {
-        history.resize(history.size()+1);
+        history.resize(historyPtr+1);
+        historyPtr=history.size();
         buf.swap(history.back());
+        while (history.size()>maxHistory)
+          history.pop_front();
+        return true;
       }
+    return false;
   }
 
-  void Minsky::pushHistory()
-  {
-    history.resize(historyPtr);
-    pushHistoryIfDifferent();
-    while (history.size()>maxHistory)
-      history.pop_front();
-    historyPtr=history.size();
-  }
+//  void Minsky::pushHistory()
+//  {
+//    history.resize(historyPtr);
+//    pushHistoryIfDifferent();
+//    while (history.size()>maxHistory)
+//      history.pop_front();
+//    historyPtr=history.size();
+//  }
   
   void Minsky::undo(int changes)
   {

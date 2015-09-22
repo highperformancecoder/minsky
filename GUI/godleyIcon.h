@@ -132,7 +132,7 @@ namespace minsky
     }
   };
 
-  typedef IntrusiveMap<int, GodleyIcon> GodleyIcons;
+  typedef TrackedIntrusiveMap<int, GodleyIcon> GodleyIcons;
 }
 
 #include "godleyIcon.cd"

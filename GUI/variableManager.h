@@ -42,9 +42,9 @@ namespace minsky
      A constant can be a variable with no input
   */
   // public inheritance for debugging, and scripting convenience: should be private
-  class VariableManager: public IntrusiveMap<int,VariablePtr>
+  class VariableManager: public TrackedIntrusiveMap<int,VariablePtr>
   {
-    typedef IntrusiveMap<int,VariablePtr> Super;
+    typedef TrackedIntrusiveMap<int,VariablePtr> Super;
   public:
     CLASSDESC_ACCESS(VariableManager);
     friend struct SchemaHelper;

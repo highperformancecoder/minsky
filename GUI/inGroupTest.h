@@ -53,7 +53,7 @@ namespace minsky
   public:
     /// initialise with a collection of GroupIcons
     /// \a exclude specifies a group id to exclude from the test
-    void initGroupList(const IntrusiveMap<int, GroupIcon>&, int exclude=-1);
+    void initGroupList(const GroupIcons&, int exclude=-1);
     /// return group containing (x,y) - if more than one group, then
     /// the smallest group (by area) is returned. If no group is
     /// applicable, -1 is returned

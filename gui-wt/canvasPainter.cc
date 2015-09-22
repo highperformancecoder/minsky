@@ -43,8 +43,6 @@
 #include "wtGeometry.h"
 #include <cairo_base.h>
 #include <algorithm>
-#include <megabitz/xgl.h>
-#include <megabitz/cairorenderer.h>
 #include <ecolab_epilogue.h>
 
 namespace minsky { namespace gui {
@@ -331,17 +329,17 @@ void CanvasPainter::draw(LinkCanvasItem& item, PointsList& lineSegments)
 
 void CanvasPainter::draw(GroupCanvasItem& item, gui::Polygon& extentsPolygon)
 {
-  GroupIcon& icon = item.getIcon();
+  auto& icon = item.getIcon();
   CanvasView* view = item.parent();
 
-  double w = icon.width * view->zoom();
-  double h = icon.height * view->zoom();
+  double w = icon->width * view->zoom();
+  double h = icon->height * view->zoom();
 
-  WPointF savedPos(icon.x(), icon.y());
-  item.setLocalOrigin(icon.width / 2, icon.height / 2);
+  WPointF savedPos(icon->x(), icon->y());
+  item.setLocalOrigin(icon->width / 2, icon->height / 2);
 
-  icon.moveTo(0, 0);
-  icon.zoomFactor = view->zoom();
+  icon->moveTo(0, 0);
+  icon->zoomFactor = view->zoom();
   //icon.update();
 
   item.resize(w, h);
@@ -349,7 +347,7 @@ void CanvasPainter::draw(GroupCanvasItem& item, gui::Polygon& extentsPolygon)
   Surface cairoSurface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h));
 
   cairo_translate(cairoSurface.cairo(), w / 2, h / 2);
-  icon.wtDraw(cairoSurface);
+  icon->wtDraw(cairoSurface);
 
 //  WPainter::Image bank("/resources/bank.png", "resources/bank.png");
 //
@@ -361,13 +359,13 @@ void CanvasPainter::draw(GroupCanvasItem& item, gui::Polygon& extentsPolygon)
   item.setImage(new OperationCanvasItem::Image(cairoSurface.surface()));
   drawImage(0., 0., item.painterImage());
 
-  icon.zoomFactor = 1;
-  icon.moveTo(savedPos.x(), savedPos.y());
-  icon.updatePortLocation();
+  icon->zoomFactor = 1;
+  icon->moveTo(savedPos.x(), savedPos.y());
+  icon->updatePortLocation();
 
-  WRectF extentsRect(-icon.width / 2, -icon.height / 2, icon.width, icon.height);
+  WRectF extentsRect(-icon->width / 2, -icon->height / 2, icon->width, icon->height);
   gui::rectToPolygon(extentsPolygon, extentsRect);
-  gui::translate(extentsPolygon, WPointF(icon.x(), icon.y()));
+  gui::translate(extentsPolygon, WPointF(icon->x(), icon->y()));
 }
 
 void CanvasPainter::draw(BezierHandleWidget& widget)

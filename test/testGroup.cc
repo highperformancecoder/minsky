@@ -56,9 +56,9 @@ namespace
       operations[addOperation("time")]->moveTo(100,75);
       operations[addOperation("time")]->moveTo(200,125);
       select(50,50,250,150);
-      GroupIcon& g=groupItems[gid=createGroup()];      
+      GroupIcon& g=*groupItems[gid=createGroup()];      
       save("TestGroupFixture.mky");
-      CHECK_EQUAL(2, g.variables().size());
+      CHECK_EQUAL(2, g.variables.size());
       CHECK_EQUAL(1, g.wires().size());
       CHECK_EQUAL(g.id(), a->group);
       CHECK(!a->visible);
@@ -82,11 +82,11 @@ SUITE(Group)
 {
   TEST_FIXTURE(TestFixture, AddVariable)
   {
-    GroupIcon& g=groupItems[gid];
+    GroupIcon& g=*groupItems[gid];
     addVariableToGroup(gid, variables.getIDFromVariable(c));
-    CHECK_EQUAL(3, g.variables().size());
+    CHECK_EQUAL(3, g.variables.size());
     CHECK_EQUAL(gid, c->group);
-    CHECK_EQUAL(variables.getIDFromVariable(c), g.variables().back());
+    CHECK(g.variables.count(variables.getIDFromVariable(c)));
     CHECK_EQUAL(2, g.wires().size());
     CHECK_EQUAL(bc, g.wires().back());
     CHECK(!wires[ab].visible);
@@ -96,7 +96,7 @@ SUITE(Group)
 
     // now check removal
     removeVariableFromGroup(gid, variables.getIDFromVariable(a));
-    CHECK_EQUAL(2, g.variables().size());
+    CHECK_EQUAL(2, g.variables.size());
     CHECK_EQUAL(-1, a->group);
     CHECK_EQUAL(1, g.wires().size());
     CHECK_EQUAL(bc, g.wires().back());
@@ -120,15 +120,15 @@ SUITE(Group)
     int timeA=PortManager::addWire(Wire(timeOp->ports()[0], a->inPort()));
     int bAdd=PortManager::addWire(Wire(b->outPort(), addOp->ports()[1]));
 
-    GroupIcon& g=groupItems[gid];
+    GroupIcon& g=*groupItems[gid];
 
     CHECK_EQUAL(1, g.wires().size());
     addOperationToGroup(gid, addOpId);
-    CHECK_EQUAL(3, g.operations().size());
-    CHECK_EQUAL(addOpId, g.operations().back());
+    CHECK_EQUAL(3, g.operations.size());
+    CHECK(g.operations.count(addOpId));
     CHECK_EQUAL(2, g.wires().size());
     CHECK_EQUAL(bAdd,  g.wires().back());
-    CHECK_EQUAL(2, g.variables().size());
+    CHECK_EQUAL(2, g.variables.size());
     CHECK(!addOp->visible);
     CHECK(timeOp->visible);
     CHECK_EQUAL(gid,addOp->group);
@@ -139,11 +139,14 @@ SUITE(Group)
     CHECK(uniqueGroupMembership());
 
     addOperationToGroup(gid, timeOpId);
-    CHECK_EQUAL(4, g.operations().size());
-    CHECK_EQUAL(timeOpId, g.operations().back());
+    CHECK_EQUAL(4, g.operations.size());
+    CHECK(g.operations.count(timeOpId));
     CHECK_EQUAL(3, g.wires().size());
-    CHECK_EQUAL(timeA,  g.wires().back());
-    CHECK_EQUAL(2, g.variables().size());
+    auto w=g.wires();
+    set<int> uw(w.begin(), w.end());
+    // check that timeA is in wires
+    CHECK(!uw.insert(timeA).second);
+    CHECK_EQUAL(2, g.variables.size());
     CHECK(!addOp->visible);
     CHECK(!timeOp->visible);
     CHECK_EQUAL(gid,addOp->group);
@@ -153,11 +156,11 @@ SUITE(Group)
     CHECK(uniqueGroupMembership());
    
     removeOperationFromGroup(gid, addOpId);
-    CHECK_EQUAL(3, g.operations().size());
-    CHECK_EQUAL(timeOpId, g.operations().back());
+    CHECK_EQUAL(3, g.operations.size());
+    CHECK(g.operations.count(timeOpId));
     CHECK_EQUAL(2, g.wires().size());
     CHECK_EQUAL(timeA,  g.wires().back());
-    CHECK_EQUAL(2, g.variables().size());
+    CHECK_EQUAL(2, g.variables.size());
     CHECK(addOp->visible);
     CHECK(!timeOp->visible);
     CHECK_EQUAL(-1,addOp->group);
@@ -169,19 +172,19 @@ SUITE(Group)
 
   TEST_FIXTURE(TestFixture, AddGroup)
   {
-    GroupIcon& g=groupItems[gid];
+    GroupIcon& g=*groupItems[gid];
     select(250,50,350,150);
-    GroupIcon& g1=groupItems[createGroup()];
+    GroupIcon& g1=*groupItems[createGroup()];
     addGroupToGroup(gid,g1.id());
     CHECK(g1.visible==g.displayContents());
-    CHECK_EQUAL(1,g.groups().size());
-    CHECK_EQUAL(g1.id(),g.groups()[0]);
+    CHECK_EQUAL(1,g.groupItems.size());
+    CHECK(g.groupItems.count(g1.id()));
     CHECK_EQUAL(g.localZoom(), g1.zoomFactor);
     CHECK(uniqueGroupMembership());
 
     removeGroupFromGroup(gid,g1.id());
     CHECK(g1.visible);
-    CHECK_EQUAL(0,g.groups().size());
+    CHECK_EQUAL(0,g.groupItems.size());
     CHECK_EQUAL(zoomFactor(), g1.zoomFactor);
     CHECK(uniqueGroupMembership());
   }
@@ -189,18 +192,18 @@ SUITE(Group)
 
   TEST_FIXTURE(TestFixture, NestedGroupUngroup)
   {
-    GroupIcon& g=groupItems[gid];
-    GroupIcon& g1=groupItems[copyGroup(gid)];
+    GroupIcon& g=*groupItems[gid];
+    GroupIcon& g1=*groupItems[copyGroup(gid)];
     CHECK(variables.noMultipleWiredInputs());
     g1.moveTo(300,300);
     select(300,0,450,400);
     save("B4createGroup.mky");
-    GroupIcon& g2=groupItems[createGroup()];
-    CHECK_EQUAL(1,g2.variables().size());
+    GroupIcon& g2=*groupItems[createGroup()];
+    CHECK_EQUAL(1,g2.variables.size());
     CHECK_EQUAL(1,g2.numPorts());
-    CHECK_EQUAL(0,g2.operations().size());
-    CHECK_EQUAL(1,g2.groups().size());
-    CHECK_EQUAL(g1.id(),g2.groups()[0]);
+    CHECK_EQUAL(0,g2.operations.size());
+    CHECK_EQUAL(1,g2.groupItems.size());
+    CHECK(g2.groupItems.count(g1.id()));
     CHECK_EQUAL(0,g2.wires().size()); 
     CHECK(uniqueGroupMembership());
     save("B4NestedGroupUngroup.mky");
@@ -209,9 +212,9 @@ SUITE(Group)
     // now ungroup g1
     zoom(g2.x(),g2.y(),1.1*g2.computeDisplayZoom()/g2.zoomFactor);
     ungroup(g1.id());
-    CHECK_EQUAL(0,g2.groups().size());
-    CHECK_EQUAL(3, g2.variables().size());
-    CHECK_EQUAL(2,g2.operations().size());
+    CHECK_EQUAL(0,g2.groupItems.size());
+    CHECK_EQUAL(3, g2.variables.size());
+    CHECK_EQUAL(2,g2.operations.size());
     CHECK_EQUAL(0,g2.wires().size());
     CHECK(uniqueGroupMembership());
 
@@ -223,17 +226,17 @@ SUITE(Group)
 
     clearSelection();
     g2.select(currentSelection, b0, b1, b2, b3);
-    GroupIcon& g3=groupItems[createGroup()]; 
+    GroupIcon& g3=*groupItems[createGroup()]; 
     addGroupToGroup(g2.id(), g3.id());
     save("NestedGroupUngroup.mky");
     //TODO: add some wires connecting variables to make the test a bit more demanding
-    CHECK_EQUAL(2,g3.variables().size());
-    CHECK_EQUAL(2,g3.operations().size());
+    CHECK_EQUAL(2,g3.variables.size());
+    CHECK_EQUAL(2,g3.operations.size());
     CHECK_EQUAL(0,g3.wires().size());
-    CHECK_EQUAL(1,g2.variables().size());
-    CHECK_EQUAL(0,g2.operations().size());
+    CHECK_EQUAL(1,g2.variables.size());
+    CHECK_EQUAL(0,g2.operations.size());
     CHECK_EQUAL(0,g2.wires().size());
-    CHECK_EQUAL(1,g2.groups().size());
+    CHECK_EQUAL(1,g2.groupItems.size());
     CHECK(uniqueGroupMembership());
   }
 
@@ -301,7 +304,7 @@ SUITE(Group)
     CHECK_EQUAL(vpref+"c",c->valueId());
 
     // now name group
-    groupItems[gid].setName("foo");
+    groupItems[gid]->setName("foo");
     CHECK_EQUAL(":a",a->fqName());
     CHECK_EQUAL("foo"+prefix+"b",b->fqName());
     CHECK_EQUAL("foo"+prefix+"c",c->fqName());
@@ -364,20 +367,20 @@ SUITE(Group)
 
   TEST(inGroup)
   {
-    IntrusiveMap<int, GroupIcon> groups;
+    GroupIcons groups;
     {
-      GroupIcon& g=groups[0];
+      GroupIcon& g=*groups[0];
       g.moveTo(50,50);
       g.width=g.height=50;
     }
     {
-      GroupIcon& g=groups[1];
+      GroupIcon& g=*groups[1];
       g.moveTo(100,100);
       g.width=g.height=100;
     }
-    groups[0].addGroup(groups[1]);
+    groups[0]->addGroup(groups[1]);
     {
-      GroupIcon& g=groups[2];
+      GroupIcon& g=*groups[2];
       g.moveTo(200,200);
       g.width=g.height=100;
     }

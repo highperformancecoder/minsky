@@ -37,18 +37,18 @@ InGroup::Cell::Cell(int id, const GroupIcon& g):
 namespace
 {
   void excludeSelfAndChildren(set<int>& excludeIds, 
-                              const IntrusiveMap<int, GroupIcon>& g, int id)
+                              const  GroupIcons& g, int id)
   {
     excludeIds.insert(id);
     auto excludeGroup=g.find(id);
     if (excludeGroup!=g.end())
-      for (int i: excludeGroup->groups())
+      for (int i: (*excludeGroup)->groupItems.keys())
         excludeSelfAndChildren(excludeIds, g, i);
   }
      
 }
 
-void InGroup::initGroupList(const IntrusiveMap<int, GroupIcon>& g, int exclude)
+void InGroup::initGroupList(const GroupIcons& g, int exclude)
 {
   cells.clear();
   // construct all the Cells
@@ -56,9 +56,9 @@ void InGroup::initGroupList(const IntrusiveMap<int, GroupIcon>& g, int exclude)
   set<int> excludeIds;
   excludeSelfAndChildren(excludeIds, g, exclude);
 
-  for (auto i=g.begin(); i!=g.end(); ++i)
-    if (excludeIds.count(i->id())==0)
-      rects.push_back(Cell(i->id(), *i));
+  for (auto& i: g)
+    if (excludeIds.count(i.id())==0)
+      rects.push_back(Cell(i.id(), *i));
 
   // compute total bounds
   ymin=xmin=numeric_limits<float>::max(); ymax=xmax=-xmin;

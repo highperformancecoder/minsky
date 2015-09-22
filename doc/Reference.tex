@@ -4,32 +4,56 @@
 
 \begin{description}
 
-\item[add]\label{op:add} Add multiple numbers together. The input ports allow
+\item[add +]\label{op:add} Add multiple numbers together. The input ports allow
 multiple wires, which are all summed. If an input port is unwired, it
 is equivalent to setting it to zero.
 
-\item[subtract]\label{op:subtract} Subtract two numbers. The input ports
+\item[subtract $-$]\label{op:subtract} Subtract two numbers. The input ports
 allow multiple wires, which are summed prior to the subtraction being
 carried out. If an input port is unwired, it is equivalent to setting
 it to zero. Note the small `+' and `-' signs on the input port
 indicating which terms are aded or subtracted from the result.
 
-\item[multiply]\label{op:multiply} Multiple numbers with each other. The input ports
+\item[multiply $\times$]\label{op:multiply} Multiple numbers with each other. The input ports
 allow multiple wires, which are all multiplied together. If an input
 port is unwired, it is equivalent to setting it to one.
 
-\item[divide]\label{op:divide} Divide a number by another. The input ports allow
+\item[divide $\div$]\label{op:divide} Divide a number by another. The input ports allow
 multiple wires, which are multiplied together prior to the division
 being carried out. If an input port is unwired, it is equivalent to
 setting it to one. Note the small `×' and `÷' signs indicating which
 port refers to the numerator and which the denominator.
 
-\item[pow]\label{op:pow} Raise one number to the power of another. The
-ports are labelled $x$ and $y$, referring the the formula $x^y$.
-
 \item[log]\label{op:log} Take the logarithm of the $x$ input port, to
 base $b$. The base $b$ needs to be specified --- if the natural
 logarithm is desired ($b=e$), use the \htmlref{ln operator}{op:ln} instead.
+
+\item[pow $x^y$]\label{op:pow} Raise one number to the power of another. The
+ports are labelled $x$ and $y$, referring the the formula $x^y$.
+
+\item[lt $<$]\label{op:lt} Returns 0 or 1, depending
+  on whether $x<y$ is true or false.
+
+\item[le $\le$]\label{op:le} Returns 0 or 1, depending
+  on whether $x\le y$ is true or false.
+
+\item[eq $=$]\label{op:eq} Returns 0 or 1, depending
+  on whether $x=y$ is true or false.
+
+\item[min]\label{op:min} Returns the minimum of $x$ and $y$.
+
+\item[max]\label{op:max} Returns the maximum of $x$ and $y$.
+
+\item[and $\wedge$]\label{op:and_} Logical and of $x$ and $y$, where $x<0.5$
+  means false, and $x>0.5$ means true. The output is 1 or 0, depending
+  on the result being true or false respectively.
+
+\item[or $\vee$]\label{op:or_} Logical or of $x$ and $y$, where $x<0.5$
+  means false, and $x>0.5$ means true. The output is 1 or 0, depending
+  on the result being true or false respectively.
+
+\item[not $\neg$]\label{op:not_} The output is 1 or 0, depending
+  on whether $x<0.5$ is true or false respectively.
 
 \item[time]\label{op:time} Returns the current value of system time.
 
@@ -70,7 +94,7 @@ x_{i+1}\\
 \right.
 \end{displaymath}
 
-\item[sqrt]\label{op:sqrt} Square root of the input
+\item[sqrt $\surd$]\label{op:sqrt} Square root of the input
 
 \item[exp]\label{op:exp} Exponential of the input
 
@@ -85,8 +109,32 @@ x_{i+1}\\
 \item[sinh]\label{op:sinh} hyperbolic sine function $\frac{e^x-e^{-x}}2$
 \item[cosh]\label{op:cosh} hyperbolic cosine function $\frac{e^x+e^{-x}}2$
 \item[tanh]\label{op:tanh} hyperbolic tangent function $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
+\item[abs $|x|$]\label{op:abs} absolute value function
 
 \end{description}
+
+\section{Switch}\label{switch}
+
+A switch block (also known as a case block, or select in the Fortran
+world) is a way of selecting from a range of alternatives according
+to the value of the input.
+
+\begin{center}
+\htmladdimg{switch.png}\\
+{\em An example switch block with 3 cases}
+\end{center}
+
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1,
+or false and true, a two case switch statement will naturally appear
+``upside down'' to how you might think of an if statement. In other
+words, it looks like:
+{\tt if not }{\em condition} {\tt then}\\
+ \ldots
+{\tt else}\\
+\ldots
+
+You can add or remove cases through the context menu. 
 
 \section{Variables}
 

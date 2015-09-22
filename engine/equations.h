@@ -28,6 +28,7 @@
 #include "variableManager.h"
 #include "portManager.h"
 #include "godley.h"
+#include "switchIcon.h"
 
 #include "operation.h"
 #include <cairo_base.h>
@@ -258,9 +259,6 @@ namespace MathDAG
   {
     int godleyId;
     GodleyColumnDAG(): godleyId(-1) {}
-//    int BODMASlevel() const {return 2;}
-//    ostream& latex(ostream&) const; 
-//    ostream& matlab(ostream&) const;
     int order(unsigned maxOrder) const override {return 0;} // Godley columns define integration vars
   };
 
@@ -275,6 +273,9 @@ namespace MathDAG
     }
     std::string key(const VariableBase& x) const {
       return "var:"+x.fqName();
+    }
+    std::string key(const SwitchIcon& x) const {
+      return "switch:"+str(x.ports()[0]);
     }
     /// strings refer to variable names
     std::string key(const string& x) const {
@@ -334,6 +335,7 @@ namespace MathDAG
 
     const Minsky& minsky;
     map<int, int> portToOperation;
+    map<int, int> portToSwitch;
 
     /// create a variable DAG. returns cached value if previously called
     shared_ptr<VariableDAG> makeDAG(const string& valueId, int scope, const string& name, VariableType::Type type);
@@ -341,6 +343,7 @@ namespace MathDAG
     {return makeDAG(v.valueId(),v.scope(),v.name(),v.type());}
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationPtr& op);
+    NodePtr makeDAG(const SwitchIcon& op);
 
     /// returns cached subexpression node representing what feeds the
     /// wire, creating a new one if necessary

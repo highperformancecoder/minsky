@@ -38,17 +38,14 @@ proc afterMinskyStarted {} {
 minsky.load 1Free.mky
 updateCanvas
 minsky.save checkpoint1.mky
-checkPushHistory
 .wiring.canvas delete op70
 deleteOperation 70
-checkPushHistory
-updateCanvas
+doPushHistory 0
 minsky.save checkpoint2.mky
 undo 1
-updateCanvas
+doPushHistory 0
 minsky.save checkpoint3.mky
 undo -1
-updateCanvas
 minsky.save checkpoint4.mky
 exit
 }

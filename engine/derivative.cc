@@ -20,6 +20,7 @@
 // contains implementation of symbolic differentiation
 
 #include "equations.h"
+#include "expr.h"
 #include <ecolab_epilogue.h>
 #include <boost/regex.hpp>
 using boost::regex;
@@ -28,156 +29,6 @@ using namespace minsky;
 
 namespace MathDAG
 {
-  namespace
-  {
-    // some nice syntactic sugar for representing expressions
-    struct Expr: public NodePtr
-    {
-      SubexpressionCache& cache; //for anonymous nodes
-      Expr(SubexpressionCache& cache, const NodePtr& x): 
-        NodePtr(x), cache(cache) {cache.insertAnonymous(x);}
-      Expr(SubexpressionCache& cache, const shared_ptr<OperationDAGBase>& x):
-        NodePtr(x), cache(cache) {cache.insertAnonymous(x);}
-      Expr(SubexpressionCache& cache, const Node& x): 
-        NodePtr(cache.reverseLookup(x)), cache(cache) {assert(*this);}
-      Expr(SubexpressionCache& cache, const WeakNodePtr& x): 
-        NodePtr(cache.reverseLookup(*x)), cache(cache) {assert(*this);}
-
-      shared_ptr<OperationDAGBase> newNode(OperationType::Type type) const {
-        shared_ptr<OperationDAGBase> r(OperationDAGBase::create(type));
-        cache.insertAnonymous(r);
-        return r;
-      }
-
-      Expr operator+(const NodePtr& x) const {
-        cache.insertAnonymous(x);
-        shared_ptr<OperationDAGBase> r=newNode(OperationType::add);
-        r->arguments[0].push_back(*this);
-        r->arguments[1].push_back(x);
-        return Expr(cache,r);
-      }
-      Expr operator-(const NodePtr& x) const {
-        cache.insertAnonymous(x);
-        shared_ptr<OperationDAGBase> r=newNode(OperationType::subtract);
-        r->arguments[0].push_back(*this);
-        r->arguments[1].push_back(x);
-        return Expr(cache,r);
-      }
-      Expr operator*(const NodePtr& x) const {
-        cache.insertAnonymous(x);
-        shared_ptr<OperationDAGBase> r=newNode(OperationType::multiply);
-        r->arguments[0].push_back(*this);
-        r->arguments[1].push_back(x);
-        return Expr(cache,r);
-      }
-      Expr operator/(const NodePtr& x) const {
-        cache.insertAnonymous(x);
-        shared_ptr<OperationDAGBase> r=newNode(OperationType::divide);
-        r->arguments[0].push_back(*this);
-        r->arguments[1].push_back(x);
-        return Expr(cache,r);
-      }
-    };
-
-    inline Expr operator+(const NodePtr& x, const Expr& y) {
-      return y+x;
-    }
-    inline Expr operator+(const Expr& x, const Expr& y) {
-      return x+NodePtr(y);
-    }
-    inline Expr operator+(double x, const Expr& y) {
-      return y+NodePtr(new ConstantDAG(x));
-    }
-
-    inline Expr operator-(const NodePtr& x, const Expr& y) {
-      return Expr(y.cache, x)-NodePtr(y);
-    }
-    inline Expr operator-(const Expr& x, const Expr& y) {
-      return x-NodePtr(y);
-    }
-    inline Expr operator-(double x, const Expr& y) {
-      return NodePtr(new ConstantDAG(x))-y;
-    }
-    inline Expr operator-(const Expr& x, double y) {
-      return x-NodePtr(new ConstantDAG(y));
-    }
-
-    inline Expr operator*(const NodePtr& x, const Expr& y) {
-      return y*x;
-    }
-    inline Expr operator*(const Expr& x, const Expr& y) {
-      return x*NodePtr(y);
-    }
-    inline Expr operator*(double x, const Expr& y) {
-      return y*NodePtr(new ConstantDAG(x));
-    }
-
-    inline Expr operator/(const Expr& x, const Expr& y) {
-      return x/NodePtr(y);
-    }
-    inline Expr operator/(const NodePtr& x, const Expr& y) {
-      return Expr(y.cache, x)/y;
-    }
-    inline Expr operator/(double x, const Expr& y) {
-      return NodePtr(new ConstantDAG(x))/y;
-    }
-
-    inline Expr log(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::ln));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-
-    inline Expr exp(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::exp));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-    inline Expr sin(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::sin));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-
-    inline Expr cos(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::cos));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-    inline Expr sinh(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::sinh));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-
-    inline Expr cosh(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::cosh));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-
-    inline Expr sqrt(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::sqrt));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-
-    inline Expr heaviside(const Expr& x) {
-      shared_ptr<OperationDAGBase> r(x.newNode(OperationType::heaviside));
-      r->arguments[0].push_back(x);
-      return Expr(x.cache,r);
-    }
-
-    template <OperationType::Type T>
-    struct CachedOp: std::shared_ptr<OperationDAGBase>
-    {
-      CachedOp(SubexpressionCache& ec):
-        std::shared_ptr<OperationDAGBase>(OperationDAGBase::create(T))
-      {ec.insertAnonymous(*this);}
-    };
-
-  }
-
   NodePtr VariableDAG::derivative(SystemOfEquations& se) const
   {return se.derivative(*this);}
   NodePtr ConstantDAG::derivative(SystemOfEquations& se) const
@@ -396,6 +247,105 @@ namespace MathDAG
 
   template <>
   NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::lt>& expr)
+  {
+    return zero;
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::le>& expr)
+  {
+    return zero;
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::eq>& expr)
+  {
+    return zero;
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::and_>& expr)
+  {
+    return zero;
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::or_>& expr)
+  {
+    return zero;
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::not_>& expr)
+  {
+    return zero;
+  }
+
+  // nb strictly speaking, the derivative is undefined at x==y,
+  // unless x(t)==y(t), but shouldn't cause problems on integration
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::min>& expr)
+  {
+    assert(expr.arguments.size()==2);
+    if (expr.arguments[0].empty())
+      return zero;
+    else if (expr.arguments[1].empty())
+      {
+        Expr x(expressionCache,expr.arguments[0][0]);
+        return (x <= 0)*x->derivative(*this);
+      }
+    else if (expr.arguments[0].empty())
+      {
+        Expr y(expressionCache,expr.arguments[0][0]);
+        return (y <= 0)*y->derivative(*this);
+      }
+    else
+      {
+        Expr x(expressionCache,expr.arguments[0][0]);
+        Expr y(expressionCache,expr.arguments[1][0]);
+        return (x<=y)*x->derivative(*this) +
+          (1-(x<=y))*y->derivative(*this);
+      }
+  }
+
+  // nb strictly speaking, the derivative is undefined at x==y,
+  // unless x(t)==y(t), but shouldn't cause problems on integration
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::max>& expr)
+  {
+    assert(expr.arguments.size()==2);
+    Expr z(expressionCache,zero);
+    if (expr.arguments[0].empty())
+      return zero;
+    else if (expr.arguments[1].empty())
+      {
+        Expr x(expressionCache,expr.arguments[0][0]);
+        return (z<=x)*x->derivative(*this);
+      }
+    else if (expr.arguments[0].empty())
+      {
+        Expr y(expressionCache,expr.arguments[0][0]);
+        return (z<=y)*y->derivative(*this);
+      }
+    else
+      {
+        Expr x(expressionCache,expr.arguments[0][0]);
+        Expr y(expressionCache,expr.arguments[1][0]);
+        return (x<=y)*y->derivative(*this) +
+          (1-(x<=y))*x->derivative(*this);
+      }
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::time>& expr)
   {
     return one;
@@ -597,14 +547,8 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, 2*heaviside(x)-1);
+        return chainRule(x, (one-(x<=zero)) - (x<=zero));
       }
   }
-
-  template <>
-  NodePtr SystemOfEquations::derivative<>
-  (const OperationDAG<OperationType::heaviside>& expr)
-  {return zero;}
-
 
 }

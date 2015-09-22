@@ -20,6 +20,7 @@
 #include "variableManager.h"
 #include "flowCoef.h"
 #include "str.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 #include <error.h>
 
@@ -27,9 +28,6 @@ using namespace ecolab;
 using namespace std;
 namespace minsky
 {
-  std::vector<double> ValueVector::stockVars(1);
-  std::vector<double> ValueVector::flowVars(1);
-
   VariableValue& VariableValue::allocValue()
   {
     switch (m_type)
@@ -41,14 +39,14 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        m_idx=ValueVector::flowVars.size();
-        ValueVector::flowVars.resize(ValueVector::flowVars.size()+1);
+        m_idx=minsky().flowVars.size();
+        minsky().flowVars.resize(m_idx+1,0);
         //      *this=init;
         break;
       case stock:
       case integral:
-        m_idx=ValueVector::stockVars.size();
-        ValueVector::stockVars.resize(ValueVector::stockVars.size()+1);
+        m_idx=minsky().stockVars.size();
+        minsky().stockVars.resize(m_idx+1);
         //     *this=init;
         break;
       default: break;
@@ -66,12 +64,12 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        assert(size_t(m_idx)<ValueVector::flowVars.size());
-        return ValueVector::flowVars[m_idx];
+        assert(size_t(m_idx)<minsky().flowVars.size());
+        return minsky().flowVars[m_idx];
       case stock:
       case integral:
-        assert(size_t(m_idx)<ValueVector::stockVars.size());
-        return ValueVector::stockVars[m_idx];
+        assert(size_t(m_idx)<minsky().stockVars.size());
+        return minsky().stockVars[m_idx];
       default: break;
       }
     throw error("invalid access of variable value reference");

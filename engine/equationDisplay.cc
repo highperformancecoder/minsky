@@ -281,7 +281,7 @@ namespace MathDAG
             double x, y; // starting position of current line
             cairo_get_current_point(surf.cairo(),&x,&y);
 
-            double solidusLength = max(num.width(),den.width());
+            double solidusLength = std::max(num.width(),den.width());
 
             cairo_move_to(surf.cairo(), x+0.5*(solidusLength-num.width()), y-num.height());
             naryRender(surf, arguments[0], BODMASlevel()," × ","1");
@@ -511,10 +511,281 @@ namespace MathDAG
   }
 
   template <>
-  void OperationDAG<OperationType::heaviside>::render(Surface& surf) const
+  void OperationDAG<OperationType::le>::render(Surface& surf) const
   {
-    print(surf.cairo(),"Θ",Anchor::nw);
-    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
-      {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
+    if (!arguments.empty())
+      {
+        if (!arguments[1].empty() && arguments[1][0])
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[1][0]->render(surf);
+                  print(surf.cairo()," - ",Anchor::nw);
+                  arguments[0][0]->render(surf);
+                });
+              print(surf.cairo(),"+δ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[1][0]->render(surf);
+                  print(surf.cairo()," - ",Anchor::nw);
+                  arguments[0][0]->render(surf);
+                });              
+            }
+          else
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
+              print(surf.cairo(),"+δ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
+            }
+        else
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  print(surf.cairo()," - ",Anchor::nw);
+                  arguments[0][0]->render(surf);
+                });
+              print(surf.cairo(),"+δ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+            }
+          else
+            print(surf.cairo(),"1",Anchor::nw);
+      }
+    else
+      print(surf.cairo(),"1",Anchor::nw);
   }
+
+  template <>
+  void OperationDAG<OperationType::lt>::render(Surface& surf) const
+  {
+    if (!arguments.empty())
+      {
+        if (!arguments[1].empty() && arguments[1][0])
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[1][0]->render(surf);
+                  print(surf.cairo()," - ",Anchor::nw);
+                  arguments[0][0]->render(surf);
+                });
+            }
+          else
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
+            }
+        else
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  print(surf.cairo()," - ",Anchor::nw);
+                  arguments[0][0]->render(surf);
+                });
+            }
+          else
+            print(surf.cairo(),"0",Anchor::nw);
+      }
+    else
+      print(surf.cairo(),"0",Anchor::nw);
+  }
+
+  template <>
+  void OperationDAG<OperationType::eq>::render(Surface& surf) const
+  {
+    if (!arguments.empty())
+      {
+        if (!arguments[1].empty() && arguments[1][0])
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"δ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[0][0]->render(surf);
+                  print(surf.cairo()," - ",Anchor::nw);
+                  arguments[1][0]->render(surf);
+                });              
+            }
+          else
+            {
+              print(surf.cairo(),"δ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
+            }
+        else
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"δ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+            }
+          else
+            print(surf.cairo(),"1",Anchor::nw);
+      }
+    else
+      print(surf.cairo(),"1",Anchor::nw);
+  }
+
+
+  template <>
+  void OperationDAG<OperationType::min>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"min",Anchor::nw);
+    if (!arguments.empty())
+      {
+        if (!arguments[1].empty() && arguments[1][0])
+          if (!arguments[0].empty() && arguments[0][0])
+            parenthesise(surf, [&](Surface& surf){
+                arguments[0][0]->render(surf);
+                print(surf.cairo(),",",Anchor::nw);
+                arguments[1][0]->render(surf);
+              });
+          else
+            parenthesise(surf, [&](Surface& surf){
+                arguments[1][0]->render(surf);
+                print(surf.cairo(),",0",Anchor::nw);
+              });
+        else
+          if (!arguments[0].empty() && arguments[0][0])
+            parenthesise(surf, [&](Surface& surf){
+                arguments[0][0]->render(surf);
+                print(surf.cairo(),",0",Anchor::nw);
+              });
+        else
+          print(surf.cairo(),"(0,0)",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::max>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"max",Anchor::nw);
+    if (!arguments.empty())
+      {
+        if (!arguments[1].empty() && arguments[1][0])
+          if (!arguments[0].empty() && arguments[0][0])
+            parenthesise(surf, [&](Surface& surf){
+                arguments[0][0]->render(surf);
+                print(surf.cairo(),",",Anchor::nw);
+                arguments[1][0]->render(surf);
+              });
+          else
+            parenthesise(surf, [&](Surface& surf){
+                arguments[1][0]->render(surf);
+                print(surf.cairo(),",0",Anchor::nw);
+              });
+        else
+          if (!arguments[0].empty() && arguments[0][0])
+            parenthesise(surf, [&](Surface& surf){
+                arguments[0][0]->render(surf);
+                print(surf.cairo(),",0",Anchor::nw);
+              });
+        else
+          print(surf.cairo(),"(0,0)",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::and_>::render(Surface& surf) const
+  {
+    if (!arguments.empty())
+      {
+        if (!arguments[1].empty() && arguments[1][0])
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[0][0]->render(surf);
+                  print(surf.cairo()," - 0.5",Anchor::nw);
+                });
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[1][0]->render(surf);
+                  print(surf.cairo()," - 0.5",Anchor::nw);
+                });
+            }
+          else
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[0][0]->render(surf);
+                  print(surf.cairo()," - 0.5",Anchor::nw);
+                });
+            }
+        else if (!arguments[0].empty() && arguments[0][0])
+          {
+            print(surf.cairo(),"Θ",Anchor::nw);
+            parenthesise(surf, [&](Surface& surf){
+                arguments[1][0]->render(surf);
+                print(surf.cairo()," - 0.5",Anchor::nw);
+              });
+          }
+       else
+         print(surf.cairo(),"0",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::or_>::render(Surface& surf) const
+  {
+    if (!arguments.empty())
+      {
+        if (!arguments[1].empty() && arguments[1][0])
+          if (!arguments[0].empty() && arguments[0][0])
+            {
+              print(surf.cairo(),"max",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  print(surf.cairo(),"Θ",Anchor::nw);
+                  parenthesise(surf, [&](Surface& surf){
+                      arguments[0][0]->render(surf);
+                      print(surf.cairo()," - 0.5",Anchor::nw);
+                    });
+                  print(surf.cairo(),",",Anchor::nw);
+                  print(surf.cairo(),"Θ",Anchor::nw);
+                  parenthesise(surf, [&](Surface& surf){
+                      arguments[1][0]->render(surf);
+                      print(surf.cairo()," - 0.5",Anchor::nw);
+                    });
+                });
+            }
+          else
+            {
+              print(surf.cairo(),"Θ",Anchor::nw);
+              parenthesise(surf, [&](Surface& surf){
+                  arguments[0][0]->render(surf);
+                  print(surf.cairo()," - 0.5",Anchor::nw);
+                });
+            }
+        else if (!arguments[0].empty() && arguments[0][0])
+          {
+            print(surf.cairo(),"Θ",Anchor::nw);
+            parenthesise(surf, [&](Surface& surf){
+                arguments[1][0]->render(surf);
+                print(surf.cairo()," - 0.5",Anchor::nw);
+              });
+          }
+        else
+          print(surf.cairo(),"0",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::not_>::render(Surface& surf) const
+  {
+    if (!arguments.empty())
+      {
+        if (!arguments[0].empty() && arguments[0][0])
+          {
+            print(surf.cairo(),"Θ",Anchor::nw);
+            parenthesise(surf, [&](Surface& surf){
+                print(surf.cairo(),"0.5 - ",Anchor::nw);
+                arguments[0][0]->render(surf);
+              });
+          }
+        else
+          print(surf.cairo(),"0",Anchor::nw);
+      }
+  }
+
+
+
 }

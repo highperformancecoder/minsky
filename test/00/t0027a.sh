@@ -47,6 +47,7 @@ reset
 assert {[t]==0}
 newSystem
 assert {[minsky.variables.size]==0}
+resetEdited
 exit
 }}
 EOF
