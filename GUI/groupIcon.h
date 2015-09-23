@@ -282,8 +282,8 @@ namespace minsky
     /// flip contents left to right (in rotated frame of reference)
     void flipContents();
 
-    /// returns the name of a variable if point (x,y) is within a
-    /// variable icon, "@" otherwise, indicating that the GroupIcon itself
+    /// returns the id of a variable if point (x,y) is within a
+    /// variable icon, -1 otherwise, indicating that the GroupIcon itself
     /// has been clicked on.
     int selectVariable(float x, float y) const;
 
