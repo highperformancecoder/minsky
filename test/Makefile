@@ -17,7 +17,6 @@ LIBS+=-ljson_spirit -lsoci_core -lwebsocketpp -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lboost_signals \
 	-lUnitTest++ -lgsl -lgslcblas \
 	-ljpeg -lxml2 -ltiff
-#	-lwthttp -lwtext -lwt -lGraphicsMagick -lGraphicsMagick++ -llcms \
 
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
