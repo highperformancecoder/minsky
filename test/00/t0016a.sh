@@ -37,7 +37,7 @@ assert {[minsky.ports.size]==0} \$argv(2)
 assert {[minsky.wires.size]==0} \$argv(2)
 assert {[minsky.variables.size]==0} \$argv(2)
 # should be just constant:zero and constant:one
-assert {[minsky.variables.values.size]==2} \$argv(2)
+assert {[minsky.values.size]==2} \$argv(2)
 assert {[minsky.operations.size]==0} \$argv(2)
 assert {[minsky.godleyItems.size]==0} \$argv(2)
 assert {[minsky.groupItems.size]==0} \$argv(2)

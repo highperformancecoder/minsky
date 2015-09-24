@@ -220,7 +220,7 @@ proc addVariablePostModal {} {
     global varType
 
     set name [string trim $varInput(Name)]
-    set varExists [variables.exists $name]
+    set varExists [values.count $name]
     set id [newVariable $name $varInput(Type)]
     var.get $id
     var.rotation $globals(default_rotation)
@@ -259,7 +259,7 @@ proc addConstantOrVariable {} {
     set varInput(Value) ""
     set varInput(Type) $varType
     deiconifyInitVar
-    .wiring.initVar.entry10 configure -values [variables.valueNames]
+    .wiring.initVar.entry10 configure -values [valueNames]
     ::tk::TabToWindow $varInput(initial_focus);
     tkwait visibility .wiring.initVar
     grab set .wiring.initVar
@@ -1833,7 +1833,7 @@ proc editItem {id tag} {
             deiconifyEditVar
             wm title .wiring.editVar "Edit [var.name]"
             # populate combobox with existing variable names
-            .wiring.editVar.entry10 configure -values [variables.valueNames]
+            .wiring.editVar.entry10 configure -values [valueNames]
 
             set "editVarInput(Name)" [var.name]
             set editVarInput(id) $id

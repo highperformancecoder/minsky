@@ -175,6 +175,13 @@ namespace minsky
     }
 
 
+//    /// TCL helper to check if a variable already exists by the same name
+//    bool varExists(std::string name) const {
+//      if (name.find(':')==std::string::npos) 
+//        name=":"+name; // make unqualified vars global
+//      return values.count(name);
+//    }
+
     /// flag to indicate whether a TCL should be pushed onto the
     /// history stack, or logged in a recording. This is used to avoid
     /// movements being added to recordings and undo history

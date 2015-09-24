@@ -84,7 +84,7 @@ namespace minsky
   MinskyTCL::MinskyTCL(const char* TCLname): port(ports), wire(wires), op(operations), 
                  constant(operations), integral(operations), 
                  data(operations), var(variables),
-                 value(variables.values), plot(plots), 
+                 value(values), plot(plots), 
                  godley(godleyItems), group(groupItems), 
                  switchItem(switchItems), note(notes) 
   {

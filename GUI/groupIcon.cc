@@ -409,7 +409,7 @@ namespace minsky
     // create a new edge variable
     static int nextVarName=0;
     string newName=str(id())+":"+str(nextVarName);
-    while (minsky().variables.values.count(newName)>0)
+    while (minsky().values.count(newName)>0)
       {
         ++nextVarName;
         newName=str(id())+":"+str(nextVarName);
@@ -1144,9 +1144,19 @@ namespace minsky
     for (int v: variables.keys())
       {
         const VariableBase& vv=*cminsky().variables[v];
-        minsky().variables.values[vv.valueId()].name=
+        minsky().values[vv.valueId()].name=
           vv.fqName();
       }
+  }
+
+  VariablePtr GroupIcon::getVariableFromPort(int port) const 
+  {
+    VariablePtr r=variables.getVariableFromPort(port);
+    if (r) return r;
+    for (auto& g: groupItems)
+      if ((r=g->variables.getVariableFromPort(port)))
+        return r;
+    return r;
   }
 
   void GroupIcon::addVariable(const VariableManager::value_type& pv, bool checkIOregions)

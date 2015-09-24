@@ -264,7 +264,7 @@ SUITE(Group)
     garbageCollect();
     save("NewIOVariables.mky");
     // +2 to allow for the extra constant:zero and constant:one values
-    CHECK_EQUAL(variables.size()+2, variables.values.size());
+    CHECK_EQUAL(variables.size()+2, values.size());
   }
 
   TEST_FIXTURE(TestFixture, scoping)

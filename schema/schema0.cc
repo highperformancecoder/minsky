@@ -140,12 +140,12 @@ namespace schema0
       wV.insert(valueId[*i]);
     minsky::SchemaHelper::setPrivates(vm, wV, portToVariable);
     
-    // rewrite and load values map
-    for (VariableValues::const_iterator i=values.begin(); i!=values.end(); ++i)
-      {
-        vm.values[valueId[i->first]] = i->second;
-        vm.values[valueId[i->first]].name = ":"+i->first;
-      }
+//    // rewrite and load values map
+//    for (VariableValues::const_iterator i=values.begin(); i!=values.end(); ++i)
+//      {
+//        vm.values[valueId[i->first]] = i->second;
+//        vm.values[valueId[i->first]].name = ":"+i->first;
+//      }
     return vm;
   }
 

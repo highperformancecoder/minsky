@@ -135,12 +135,22 @@ using namespace std;
 
 namespace minsky
 {
+  string Minsky::valueNames() const
+  {
+    string names;
+    // TODO boost regex's used because std::regex not properly implemented in GCC
+    boost::regex braces("[{}]"); // used to quote braces
+    for (VariableValues::const_iterator i=values.begin(); i!=values.end(); ++i)
+      names+=" {"+boost::regex_replace(i->second.name, braces, "\\\\$&")+"}";
+    return names;
+  }
+
   void Minsky::openLogFile(const string& name)
   {
     outputDataFile.reset(new ofstream(name));
     *outputDataFile<< "#time";
-    for (VariableValues::const_iterator v=variables.values.begin();
-         v!=variables.values.end(); ++v)
+    for (VariableValues::const_iterator v=values.begin();
+         v!=values.end(); ++v)
       *outputDataFile<<" "<<v->first;
     *outputDataFile<<endl;
   }
@@ -151,8 +161,8 @@ namespace minsky
     if (outputDataFile)
       {
         *outputDataFile<<t;
-        for (VariableValues::const_iterator v=variables.values.begin();
-             v!=variables.values.end(); ++v)
+        for (VariableValues::const_iterator v=values.begin();
+             v!=values.end(); ++v)
           *outputDataFile<<" "<<v->second.value();
         *outputDataFile<<endl;
       }
@@ -169,7 +179,7 @@ namespace minsky
     groupItems.clear();
     operations.clear();
     variables.clear();
-    variables.values.clear();
+    values.clear();
     plots.clear();
     notes.clear();
     switchItems.clear();
@@ -182,7 +192,7 @@ namespace minsky
     flowVars.clear();
     stockVars.clear();
     evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
-        makeGodleyIt(godleyItems.end()), variables.values);
+        makeGodleyIt(godleyItems.end()), values);
 
 #ifdef NDEBUG
     nextId=0;
@@ -560,10 +570,10 @@ namespace minsky
     flowVars.clear();
 
     // remove all temporaries
-    for (VariableValues::iterator v=variables.values.begin(); 
-         v!=variables.values.end();)
+    for (VariableValues::iterator v=values.begin(); 
+         v!=values.end();)
       if (v->second.temp())
-        variables.values.erase(v++);
+        values.erase(v++);
       else
         ++v;
 
@@ -596,7 +606,7 @@ namespace minsky
       }
 
     removeUnusedPorts(portsToKeep);
-    variables.reset();
+    for (auto& v: values) v.second.allocValue().reset(values);
   }
 
   void Minsky::renderEquationsToImage(const char* image)
@@ -755,10 +765,10 @@ namespace minsky
                     if (i->first.find(':')!=string::npos)
                       VariableManager::scope(i->first);
                     FlowCoef df;
-                    if (scope==-1 || !variables.values.count(i->first))
+                    if (scope==-1 || !values.count(i->first))
                       df.name=VariableManager::uqName(i->first);
                     else
-                      df.name=variables.values[i->first].name;
+                      df.name=values[i->first].name;
                     df.coef=-i->second-destFlows[i->first];
                     string flowEntry=df.str();
                     string rowLabel=srcRowLabels[srcGodley.valueId(i->first)];
@@ -804,7 +814,7 @@ namespace minsky
     if (stockVars.empty()) stockVars.resize(1,0);
 
     evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                 makeGodleyIt(godleyItems.end()), variables.values);
+                                 makeGodleyIt(godleyItems.end()), values);
 
     plots.reset();
 
@@ -869,8 +879,8 @@ namespace minsky
   string Minsky::diagnoseNonFinite() const
   {
     // firstly check if any variables are not finite
-    for (VariableValues::const_iterator v=variables.values.begin();
-         v!=variables.values.end(); ++v)
+    for (VariableValues::const_iterator v=values.begin();
+         v!=values.end(); ++v)
       if (!isfinite(v->second.value()))
         return v->first;
 
@@ -1243,7 +1253,7 @@ namespace minsky
     array<bool> fvInit(flowVars.size(), false);
     // firstly, find all flowVars that are constants
     for (VariableValues::const_iterator v=
-           variables.values.begin(); v!=variables.values.end(); ++v)
+           values.begin(); v!=values.end(); ++v)
       if (!variables.inputWired(v->first) && v->second.idx()>=0)
         fvInit[v->second.idx()]=true;
 

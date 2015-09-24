@@ -51,10 +51,10 @@ int VariableManager::addVariable(const VariablePtr& var, int id)
   Super::insert(value_type(id,var));
   if (var->lhs()) portToVariable[var->inPort()]=id;
   portToVariable[var->outPort()]=id;
-  if (!values.count(var->valueId())/* && !var->valueId().empty()*/)
-    values.insert
+  if (!minsky().values.count(var->valueId())/* && !var->valueId().empty()*/)
+    minsky().values.insert
       (VariableValues::value_type(var->valueId(), VariableValue(var->type(), var->fqName())));
-  if(var->type()!=values[var->valueId()].type())
+  if(var->type()!=minsky().values[var->valueId()].type())
     throw error("variable %s has inconsistent type",var->name().c_str());
 
   return id;
@@ -69,8 +69,8 @@ int VariableManager::newVariable(string name, VariableType::Type type)
 {
   if (name.find(':')==string::npos)
     name=":"+name; // make unqualified vars global
-  VariableValues::iterator v=values.find(VariableManager::valueId(name));
-  if (v==values.end())
+  VariableValues::iterator v=minsky().values.find(VariableManager::valueId(name));
+  if (v==minsky().values.end())
     return addVariable(VariablePtr(type,name));
   else
     return addVariable(VariablePtr(v->second.type(),name));
@@ -104,7 +104,7 @@ void VariableManager::erase(int i, bool eraseIfIntegral)
             (*j)->outPort()!=(*it)->outPort())
           break;
       if (j==end()) // didn't find any others
-        values.erase((*it)->valueId());
+        minsky().values.erase((*it)->valueId());
 
       if (&minsky().variables==this && (*it)->group>=0)
         {
@@ -167,7 +167,7 @@ void VariableManager::removeVariable(string name)
       erase(it++);
     else
       ++it;
-  values.erase(name);
+  minsky().values.erase(name);
 }     
 
 bool VariableManager::addWire(int from, int to)
@@ -248,14 +248,14 @@ const VariablePtr& VariableManager::getVariableFromPort(int port) const
   return undef;
 }
 
-void VariableManager::reset()
-{
-  // reallocate all variables
-  minsky().ValueVector::stockVars.clear();
-  minsky().flowVars.clear();
-  for (VariableValues::iterator v=values.begin(); v!=values.end(); ++v)
-    v->second.allocValue().reset(values);
-}
+//void VariableManager::reset()
+//{
+//  // reallocate all variables
+//  minsky().ValueVector::stockVars.clear();
+//  minsky().flowVars.clear();
+//  for (VariableValues::iterator v=minsky().values.begin(); v!=values.end(); ++v)
+//    v->second.allocValue().reset(values);
+//}
 
 void VariableManager::makeConsistent()
 {
@@ -265,11 +265,11 @@ void VariableManager::makeConsistent()
   existingNames.insert("constant:one");
   for (iterator i=begin(); i!=end(); ++i)
     existingNames.insert((*i)->valueId());
-  for (VariableValues::iterator i=values.begin(); i!=values.end(); )
+  for (VariableValues::iterator i=minsky().values.begin(); i!=minsky().values.end(); )
     if (existingNames.count(i->first))
       ++i;
     else
-      values.erase(i++);
+      minsky().values.erase(i++);
 
   // ensure Godley table variables are the correct types
   for (auto g: minsky().godleyItems) g.update();
@@ -317,31 +317,21 @@ void VariableManager::clear()
   Variables::clear();
   wiredVariables.clear();
   portToVariable.clear();
-  values.clear();
-}
-
-string VariableManager::valueNames() const
-{
-  string names;
-  // TODO boost regex's used because std::regex not properly implemented in GCC
-  boost::regex braces("[{}]"); // used to quote braces
-  for (VariableValues::const_iterator i=values.begin(); i!=values.end(); ++i)
-    names+=" {"+boost::regex_replace(i->second.name, braces, "\\\\$&")+"}";
-  return names;
+  //values.clear();
 }
 
 void VariableManager::makeVarConsistentWithValue(int id)
 {
   iterator v=find(id);
   if (v!=end())
-    v->retype(values[(*v)->valueId()].type());
+    v->retype(minsky().values[(*v)->valueId()].type());
 }
 
 void VariableManager::convertVarType(const string& name, VariableType::Type type)
 {
   assert(isValueId(name));
-  VariableValues::iterator i=values.find(name);
-  if (i==values.end())
+  VariableValues::iterator i=minsky().values.find(name);
+  if (i==minsky().values.end())
     throw error("variable %s doesn't exist",name.c_str());
   if (i->second.type()==type) return; // nothing to do!
 

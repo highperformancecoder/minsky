@@ -110,7 +110,7 @@ namespace minsky
     string trialName;
     do
       trialName=m_description+str(i++);
-    while (variableManager().values.count(VariableManager::valueId(group, trialName)));
+    while (minsky().values.count(VariableManager::valueId(group, trialName)));
     m_description=trialName;
     if (intVar>-1)
       variableManager()[intVar]->name(m_description);
@@ -164,7 +164,7 @@ namespace minsky
         // then it is not a candidate for being an integral variable, so
         // generate a new name that doesn't currently exist
 
-        if (variableManager().values.count(valueId())) 
+        if (minsky().values.count(valueId())) 
           try
             {
               variableManager().convertVarType(valueId(), VariableType::integral);

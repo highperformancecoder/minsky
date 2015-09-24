@@ -113,6 +113,8 @@ namespace minsky
     /// write current state of all variables to the log file
     void logVariables() const;
 
+    VariableValue undefined;
+
   protected:
     /// contents of current selection
     Selection currentSelection;
@@ -121,6 +123,39 @@ namespace minsky
   public:
     using PortManager::ports;
     using PortManager::wires;
+
+    VariableValues values;
+
+    VariableValue& getVariableValue(const std::string& name) {
+      assert(VariableManager::isValueId(name));
+      VariableValues::iterator v=values.find(name);
+      if (v!=values.end()) return v->second;
+      return undefined;
+    }
+//    VariableValue& getVariableValueFromPort(int port)  {
+//      return getVariableValue(getVariableFromPort(port)->valueId());
+//    }
+
+    std::string valueNames() const;
+
+    const VariableValue& getVariableValue(const std::string& name) const {
+      assert(VariableManager::isValueId(name));
+      VariableValues::const_iterator v=values.find(name);
+      if (v!=values.end()) return v->second;
+      return undefined;
+    }
+    const VariableValue& getVariableValueFromPort(int port) const {
+      return getVariableValue(getVariableFromPort(port)->valueId());
+    }
+
+    // return list of stock (or integration) variables
+    std::vector<std::string> stockVarNames() const {
+      std::vector<std::string> r;
+      for (VariableValues::const_iterator v=values.begin();
+           v!=values.end(); ++v)
+        if (!v->second.isFlowVar()) r.push_back(v->first);
+      return r;
+    }
 
     /// reflects whether the model has been changed since last save
     bool edited() const {return m_edited;}

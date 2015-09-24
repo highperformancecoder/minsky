@@ -214,22 +214,22 @@ SUITE(Minsky)
       godley.cell(2,2)="-:a";
       godleyItems[0].update();
  
-      variables.values[":a"].init="5";
+      values[":a"].init="5";
  
       garbageCollect();
       reset();
-      CHECK_EQUAL(10,variables.values[":c"].value());
-      CHECK_EQUAL(20,variables.values[":d"].value());
-      CHECK_EQUAL(30,variables.values[":e"].value());
-      CHECK_EQUAL(5,variables.values[":a"].value());
+      CHECK_EQUAL(10,values[":c"].value());
+      CHECK_EQUAL(20,values[":d"].value());
+      CHECK_EQUAL(30,values[":e"].value());
+      CHECK_EQUAL(5,values[":a"].value());
       for (size_t i=0; i<stockVars.size(); ++i)
         stockVars[i]=0;
      
       evalGodley.eval(&stockVars[0], &flowVars[0]);
-      CHECK_EQUAL(5,variables.values[":c"].value());
-      CHECK_EQUAL(-5,variables.values[":d"].value());
-      CHECK_EQUAL(0,variables.values[":e"].value());
-      CHECK_EQUAL(5,variables.values[":a"].value());
+      CHECK_EQUAL(5,values[":c"].value());
+      CHECK_EQUAL(-5,values[":d"].value());
+      CHECK_EQUAL(0,values[":e"].value());
+      CHECK_EQUAL(5,values[":a"].value());
     
     }
 
@@ -287,9 +287,9 @@ SUITE(Minsky)
       vector<double> j(stockVars.size()*stockVars.size());
       Matrix jac(stockVars.size(),&j[0]);
  
-      VariableValue& c=variables.values[":c"];   c=100;
-      VariableValue& d=variables.values[":d"];   d=200;
-      VariableValue& e=variables.values[":e"];   e=300;
+      VariableValue& c=values[":c"];   c=100;
+      VariableValue& d=values[":d"];   d=200;
+      VariableValue& e=values[":e"];   e=300;
       double& x=stockVars.back();   x=0; // temporary variable storing \int c+d
  
       CHECK_EQUAL(4, stockVars.size());
@@ -334,7 +334,7 @@ SUITE(Minsky)
       nSteps=1;
       step();
       CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-      CHECK_CLOSE(integrals[0].stock.value(), variables.values[":output"].value(), 1e-5);
+      CHECK_CLOSE(integrals[0].stock.value(), values[":output"].value(), 1e-5);
  
       // now integrate the linear function
       operations[3]=OperationPtr(OperationType::integrate);
@@ -433,8 +433,8 @@ SUITE(Minsky)
       VariablePtr varA = variables[variables.newVariable("a", VariableType::flow)];
       VariablePtr varB = variables[variables.newVariable("b", VariableType::flow)];
       VariablePtr varC = variables[variables.newVariable("c", VariableType::flow)];
-      variables.values[":a"].init="0.1";
-      variables.values[":b"].init="0.2";
+      values[":a"].init="0.1";
+      values[":b"].init="0.2";
 
       OperationPtr& intOp = operations[0]=OperationPtr(OperationType::integrate); //enables equations to step
   
@@ -457,7 +457,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.3, variables.values[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.3, values[":c"].value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsSubtract)
@@ -465,8 +465,8 @@ SUITE(Minsky)
       VariablePtr varA = variables[variables.newVariable("a", VariableType::flow)];
       VariablePtr varB = variables[variables.newVariable("b", VariableType::flow)];
       VariablePtr varC = variables[variables.newVariable("c", VariableType::flow)];
-      variables.values[":a"].init="0.1";
-      variables.values[":b"].init="0.2";
+      values[":a"].init="0.1";
+      values[":b"].init="0.2";
 
       OperationPtr& intOp = operations[0]=OperationPtr(OperationType::integrate); //enables equations to step
   
@@ -489,7 +489,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(-0.3, variables.values[":c"].value(), 1e-5);
+      CHECK_CLOSE(-0.3, values[":c"].value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsMultiply)
@@ -497,8 +497,8 @@ SUITE(Minsky)
       VariablePtr varA = variables[variables.newVariable("a", VariableType::flow)];
       VariablePtr varB = variables[variables.newVariable("b", VariableType::flow)];
       VariablePtr varC = variables[variables.newVariable("c", VariableType::flow)];
-      variables.values[":a"].init="0.1";
-      variables.values[":b"].init="0.2";
+      values[":a"].init="0.1";
+      values[":b"].init="0.2";
 
       OperationPtr& intOp = operations[0]=OperationPtr(OperationType::integrate); //enables equations to step
   
@@ -521,7 +521,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.02, variables.values[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.02, values[":c"].value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsDivide)
@@ -529,8 +529,8 @@ SUITE(Minsky)
       VariablePtr varA = variables[variables.newVariable("a", VariableType::flow)];
       VariablePtr varB = variables[variables.newVariable("b", VariableType::flow)];
       VariablePtr varC = variables[variables.newVariable("c", VariableType::flow)];
-      variables.values[":a"].init="0.1";
-      variables.values[":b"].init="0.2";
+      values[":a"].init="0.1";
+      values[":b"].init="0.2";
 
       OperationPtr& intOp = operations[0]=OperationPtr(OperationType::integrate); //enables equations to step
 
@@ -552,7 +552,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(50, variables.values[":c"].value(), 1e-5);
+      CHECK_CLOSE(50, values[":c"].value(), 1e-5);
     }
 
   // instantiate all operations and variables to ensure that definitions
@@ -702,7 +702,7 @@ SUITE(Minsky)
 
       // empty godleys should be fine
       evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+                                   makeGodleyIt(godleyItems.end()), values);
 
       godley1.resize(4,4);
       godley1.cell(0,1)=":hello"; godley1._assetClass(1, GodleyAssetClass::asset);
@@ -711,7 +711,7 @@ SUITE(Minsky)
 
       // should still be no problem
       evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+                                   makeGodleyIt(godleyItems.end()), values);
 
       godley2.resize(4,4);
       godley2.cell(0,1)=":hello2"; godley2._assetClass(1, GodleyAssetClass::asset);
@@ -725,13 +725,13 @@ SUITE(Minsky)
  
       // should be no problem - all columns are different
       evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+                                   makeGodleyIt(godleyItems.end()), values);
 
       godley3.cell(0,2)=":foo2"; 
 
       // two incompatible columns
       CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+                                               makeGodleyIt(godleyItems.end()), values), ecolab::error);
 
   
       godley3.cell(0,2)=":foo3"; 
@@ -739,38 +739,38 @@ SUITE(Minsky)
 
       // two incompatible columns asset columns
       CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+                                               makeGodleyIt(godleyItems.end()), values), ecolab::error);
 
       // should now be a compatible asset/liability pair
       godley3._assetClass(1, GodleyAssetClass::liability);
       evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+                                   makeGodleyIt(godleyItems.end()), values);
   
 
       // add in another asset/liability pair
       godley1.cell(0,3)=":bar3"; godley1._assetClass(3, GodleyAssetClass::asset);
       evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+                                   makeGodleyIt(godleyItems.end()), values);
 
       // now conflict that pair
       godley2.cell(0,3)=":bar3";
       CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+                                               makeGodleyIt(godleyItems.end()), values), ecolab::error);
       godley2.cell(0,3)=":bar2";
   
       // now add some flow variables and check those
       godley2.cell(2,1)="2:a";
       godley3.cell(2,1)="-:a";
       godley3.cell(3,1)="-:a";
-      variables.values[":a"]=VariableValue(VariableType::flow).allocValue();
-      variables.values[":hello2"]=VariableValue(VariableType::stock).allocValue();
+      values[":a"]=VariableValue(VariableType::flow).allocValue();
+      values[":hello2"]=VariableValue(VariableType::stock).allocValue();
 
       evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+                                   makeGodleyIt(godleyItems.end()), values);
 
       godley3.cell(3,1)="";
       CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+                                               makeGodleyIt(godleyItems.end()), values), ecolab::error);
  
 
     }

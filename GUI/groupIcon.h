@@ -309,6 +309,7 @@ namespace minsky
     /// sets the scope of all global variables to \a id. Applied recursively to contained groups
     void rehostGlobalVars(int id);
 
+    VariablePtr getVariableFromPort(int port) const;
   };
 
   inline GroupIconPtr::GroupIconPtr(): classdesc::shared_ptr<GroupIcon>(new GroupIcon) {}

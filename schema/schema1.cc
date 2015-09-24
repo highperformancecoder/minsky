@@ -942,8 +942,8 @@ namespace schema1
         portMap.remap(var.ports);
         portsUsed.insert(var.ports.begin(), var.ports.end());
         layout.push_back(layoutFactory(id, *v));
-        auto valIt=m.variables.values.find((*v)->valueId());
-        if (valIt!=m.variables.values.end())
+        auto valIt=m.values.find((*v)->valueId());
+        if (valIt!=m.values.end())
           var.init=valIt->second.init;
         varMap[v->id()]=id;
       }

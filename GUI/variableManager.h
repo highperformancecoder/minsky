@@ -56,13 +56,10 @@ namespace minsky
     WiredVariables wiredVariables; /// variables whose input port is wired
     PortMap portToVariable; /// map of ports to variables
 
-    VariableValue undefined;
-
     void erase(Variables::iterator it);
     // hide insertion
     void insert(int) {}
   public:
-    VariableValues values;
 
     /// remove ability for operator[] to insert non existent values
     /// use addVariable or newVariable instead
@@ -76,18 +73,15 @@ namespace minsky
         throw ecolab::error("invalid variable id %d",i);
     }
 
-    /// returns list of human readable variable names
-    std::string valueNames() const;
-
     /// set of ids of variable that are icons in their own right
     ecolab::array<int> visibleVariables() const;
 
-    // set/get an initial value
-    void setInit(const std::string& name, const std::string& val)
-    {
-      assert(isValueId(name));
-      if (values.count(name)>0) values[name].init=val;
-    }
+//    // set/get an initial value
+//    void setInit(const std::string& name, const std::string& val)
+//    {
+//      assert(isValueId(name));
+//      if (minsky().values.count(name)>0) minsky().values[name].init=val;
+//    }
 
     /// add a variable to this manager. if \a id==-1, then use the next available id
     /// @return variable id
@@ -117,12 +111,6 @@ namespace minsky
     /// returns a list of wires emanating from the variable
     ecolab::array<int> wiresFromVariable(const std::string& name) const;
 
-    /// TCL helper to check if a variable already exists by the same name
-    bool exists(std::string name) const {
-      if (name.find(':')==std::string::npos) 
-        name=":"+name; // make unqualified vars global
-     return values.count(name);
-    }
     /// remove all instances of variable with valueId \a name
     void removeVariable(std::string name);
     /// returns true if wire can successfully connect to port
@@ -153,28 +141,7 @@ namespace minsky
     /// extract unqualified portion of name
     static std::string uqName(const std::string& name);
 
-    /// return reference to variable owning \a port. Returns a default
-    /// constructed VariablePtr if no such variable is registered
     const VariablePtr& getVariableFromPort(int port) const;
-    VariableValue& getVariableValue(const std::string& name) {
-      assert(isValueId(name));
-      VariableValues::iterator v=values.find(name);
-      if (v!=values.end()) return v->second;
-      return undefined;
-    }
-    VariableValue& getVariableValueFromPort(int port)  {
-      return getVariableValue(getVariableFromPort(port)->valueId());
-    }
-
-    const VariableValue& getVariableValue(const std::string& name) const {
-      assert(isValueId(name));
-      VariableValues::const_iterator v=values.find(name);
-      if (v!=values.end()) return v->second;
-      return undefined;
-    }
-    const VariableValue& getVariableValueFromPort(int port) const {
-      return getVariableValue(getVariableFromPort(port)->valueId());
-    }
 
     int getIDFromVariable(const VariablePtr& v) const {
       PortMap::const_iterator i=portToVariable.find(v->outPort());
@@ -182,17 +149,8 @@ namespace minsky
       else return i->second;
     }
 
-    // return list of stock (or integration) variables
-    std::vector<std::string> stockVars() const {
-      std::vector<std::string> r;
-      for (VariableValues::const_iterator v=values.begin();
-           v!=values.end(); ++v)
-        if (!v->second.isFlowVar()) r.push_back(v->first);
-      return r;
-    }
-
     /// reallocates variables in ValueVector, and set value back to init
-    void reset();
+    //    void reset();
 
     /// scans variable, wire & port definitions to correct any inconsistencies
     /// - useful after a load to correct corrupt xml files
