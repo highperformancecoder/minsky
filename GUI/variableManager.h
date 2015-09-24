@@ -76,13 +76,6 @@ namespace minsky
     /// set of ids of variable that are icons in their own right
     ecolab::array<int> visibleVariables() const;
 
-//    // set/get an initial value
-//    void setInit(const std::string& name, const std::string& val)
-//    {
-//      assert(isValueId(name));
-//      if (minsky().values.count(name)>0) minsky().values[name].init=val;
-//    }
-
     /// add a variable to this manager. if \a id==-1, then use the next available id
     /// @return variable id
     int addVariable(const VariablePtr& var, int id=-1);

@@ -561,7 +561,7 @@ namespace schema1
     c.populate(m.operations, newOpList);
     c.populate(m.variables, newVarList);
 
-    m.variables.makeConsistent();
+    m.makeVariablesConsistent();
 
     m.resetNextId();
     c.populate(m.godleyItems, model.godleys);
@@ -783,7 +783,7 @@ namespace schema1
     c.populate(minsky().wires, wires);
     c.populate(minsky().operations, model.operations);
     c.populate(minsky().variables, model.variables);
-    minsky().variables.makeConsistent();
+    minsky().makeVariablesConsistent();
     c.populate(minsky().notes, model.notes);
 
     // dummy a very large group size to prevent added variables being

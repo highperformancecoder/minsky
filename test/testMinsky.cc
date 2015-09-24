@@ -327,7 +327,7 @@ SUITE(Minsky)
       addWire(Wire(operations[1]->ports()[0], operations[2]->ports()[1]));
       //   addWire(Wire(operations[2]->ports()[0], variables[var]->inPort()));
  
-      variables.makeConsistent();
+      makeVariablesConsistent();
       constructEquations();
       double& value = dynamic_cast<Constant*>(operations[1].get())->value;
       value=10;

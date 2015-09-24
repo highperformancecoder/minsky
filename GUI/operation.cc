@@ -193,7 +193,7 @@ namespace minsky
               minsky().addWire(w);
           }
       }();
-    minsky().variables.makeConsistent();
+    minsky().makeVariablesConsistent();
   }
 
   bool OperationBase::selfWire(int from, int to) const
@@ -272,7 +272,7 @@ namespace minsky
           }
         return coupled();
       }();
-    minsky().variables.makeConsistent();
+    minsky().makeVariablesConsistent();
     return r;
   }
 

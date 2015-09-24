@@ -132,11 +132,10 @@ namespace minsky
       if (v!=values.end()) return v->second;
       return undefined;
     }
-//    VariableValue& getVariableValueFromPort(int port)  {
-//      return getVariableValue(getVariableFromPort(port)->valueId());
-//    }
 
     std::string valueNames() const;
+
+    void makeVariablesConsistent();
 
     const VariableValue& getVariableValue(const std::string& name) const {
       assert(VariableManager::isValueId(name));

@@ -577,7 +577,7 @@ namespace minsky
       else
         ++v;
 
-    variables.makeConsistent();
+    makeVariablesConsistent();
 
     set<int> portsToKeep;
 
@@ -985,7 +985,7 @@ namespace minsky
         *this=m;
       }
 
-    variables.makeConsistent();
+    makeVariablesConsistent();
     for (auto g=godleyItems.begin(); g!=godleyItems.end(); ++g)
       g->update();
 
@@ -1383,5 +1383,28 @@ namespace minsky
       historyPtr+=changes; // revert
   }
 
+  void Minsky::makeVariablesConsistent()
+  {
+    // remove variableValues not in variables
+    set<string> existingNames;
+    existingNames.insert("constant:zero");
+    existingNames.insert("constant:one");
+    for (auto& v: variables)
+      existingNames.insert(v->valueId());
+    for (auto& g: groupItems)
+      for (auto& v: g->variables)
+        existingNames.insert(v->valueId());
+
+    for (VariableValues::iterator i=values.begin(); i!=values.end(); )
+      if (existingNames.count(i->first))
+        ++i;
+      else
+        values.erase(i++);
+
+    variables.makeConsistent();
+    for (auto& g: groupItems)
+      g->variables.makeConsistent();
+   
+  }
 }
 

@@ -248,28 +248,8 @@ const VariablePtr& VariableManager::getVariableFromPort(int port) const
   return undef;
 }
 
-//void VariableManager::reset()
-//{
-//  // reallocate all variables
-//  minsky().ValueVector::stockVars.clear();
-//  minsky().flowVars.clear();
-//  for (VariableValues::iterator v=minsky().values.begin(); v!=values.end(); ++v)
-//    v->second.allocValue().reset(values);
-//}
-
 void VariableManager::makeConsistent()
 {
-  // remove variableValues not in variables
-  set<string> existingNames;
-  existingNames.insert("constant:zero");
-  existingNames.insert("constant:one");
-  for (iterator i=begin(); i!=end(); ++i)
-    existingNames.insert((*i)->valueId());
-  for (VariableValues::iterator i=minsky().values.begin(); i!=minsky().values.end(); )
-    if (existingNames.count(i->first))
-      ++i;
-    else
-      minsky().values.erase(i++);
 
   // ensure Godley table variables are the correct types
   for (auto g: minsky().godleyItems) g.update();
