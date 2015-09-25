@@ -127,7 +127,7 @@ SUITE(Group)
     CHECK_EQUAL(3, g.operations.size());
     CHECK(g.operations.count(addOpId));
     CHECK_EQUAL(2, g.wires().size());
-    CHECK_EQUAL(bAdd,  g.wires().back());
+    CHECK_EQUAL(gid,  wires[bAdd].group);
     CHECK_EQUAL(2, g.variables.size());
     CHECK(!addOp->visible);
     CHECK(timeOp->visible);

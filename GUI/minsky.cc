@@ -1128,19 +1128,15 @@ namespace minsky
   void Minsky::addOperationToGroup(int groupId, int opId)
   {
     GroupIcons::iterator gi=groupItems.find(groupId);
-    Operations::iterator oi=operations.find(opId);
-    if (gi!=groupItems.end() && oi!=operations.end() && (*oi)->group!=groupId)
+    if (gi!=groupItems.end())
       {
-        auto& g=**gi;
-        auto& o=**oi;
-        if (o.group!=-1)
+        auto op=removeItem(&GroupIcon::operations, opId);
+        if (op)
           {
-            GroupIcons::iterator pg=groupItems.find(o.group);
-            if (pg!=groupItems.end())
-              (*pg)->removeOperation(*oi);
+            auto& g=**gi;
+            g.addOperation(op);
+            g.addAnyWires(op->ports());
           }
-        g.addOperation(*oi);
-        g.addAnyWires(o.ports());
       }
   }
 

@@ -297,7 +297,7 @@ namespace minsky
       return minsky::clickType(*this,x,y);
     }
 
-    void wtDraw(ecolab::cairo::Surface& cairoSurface);
+    //    void wtDraw(ecolab::cairo::Surface& cairoSurface);
 
     /// handle lasso selection within a group. Doesn't clear current
     /// selection, just adds to it.
@@ -310,6 +310,44 @@ namespace minsky
     void rehostGlobalVars(int id);
 
     VariablePtr getVariableFromPort(int port) const;
+
+    /// returns iterator to item id stored in map somewhere in the
+    /// group heirarchy based on this. Returns map::end() if not found
+    template <class M>
+    typename M::iterator findItem(M GroupIcon::*map, int id) {
+      M& m=this->*map;
+      typename M::iterator r=m.find(id);
+      if (r!=m.end()) 
+        return r;
+      else
+        for (auto& g: groupItems)
+          if ((r=g->findItem(map, id))!=((*g).*map).end())
+            return r;
+      return m.end();
+    }
+
+    /// removes and returns the item stored in map somewhere in the
+    /// group heirarchy based on this. Returns default constructed
+    /// item if not found
+    template <class M>
+    typename M::value_type removeItem(M GroupIcon::*map, int id) {
+      M& m=this->*map;
+      typename M::iterator it=m.find(id);
+      if (it!=m.end()) 
+        {
+          typename M::value_type r=*it;
+          m.erase(it);
+          return r;
+        }
+      else
+        for (auto& g: groupItems)
+          {
+            typename M::value_type r=g->removeItem(map, id);
+            if (r.id()!=-1)
+              return r;
+          }
+      return typename M::value_type(-1);
+    }
   };
 
   inline GroupIconPtr::GroupIconPtr(): classdesc::shared_ptr<GroupIcon>(new GroupIcon) {}

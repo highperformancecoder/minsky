@@ -1249,34 +1249,26 @@ namespace minsky
 
   void GroupIcon::addOperation(Operations::value_type& po)
   {
-    if (po->group!=id())
-      {
-        operations[po.id()]=minsky().operations[po.id()];
-        float x=po->x(), y=po->y();
-        po->group=id();
-        po->moveTo(x,y); // adjust to group relative coordinates
-        computeDisplayZoom();
-        po->visible=displayContents();
-      }
+    operations.insert(po);
+    float x=po->x(), y=po->y();
+    po->group=id();
+    po->moveTo(x,y); // adjust to group relative coordinates
+    computeDisplayZoom();
+    po->visible=displayContents();
   }
 
   void GroupIcon::removeOperation(Operations::value_type& po)
   {
-    for (int i: operations.keys())
-      if (i==po.id())
-        {
-          operations.erase(i);
-          computeDisplayZoom();
-          if (parent()==-1) //rebase coordinates
-            {
-              float x=po->x(), y=po->y();
-              po->group=-1;
-              po->visible=true;
-              po->moveTo(x,y); // adjust to group relative coordinates
-            }
-          computeDisplayZoom();
-          break;
-        }
+    operations.erase(po.id());
+    computeDisplayZoom();
+    if (parent()==-1) //rebase coordinates
+      {
+        float x=po->x(), y=po->y();
+        po->group=-1;
+        po->visible=true;
+        po->moveTo(x,y); // adjust to group relative coordinates
+      }
+    computeDisplayZoom();
   }
 
   bool GroupIcon::isAncestor(int gid) const
@@ -1574,118 +1566,118 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  void GroupIcon::wtDraw(ecolab::cairo::Surface& cairoSurface)
-  {
-    // TODO doesn't this just make g a reference to *this?
-    GroupIcon& g=*minsky::minsky().groupItems[id()];
-    double angle  = rotation * M_PI / 180.0;
-    double xScale = zoomFactor;
-    double yScale = zoomFactor;
-    //computeDisplayZoom();
-
-    // determine how big the group icon should be to allow
-    // sufficient space around the side for the edge variables
-    float leftMargin, rightMargin;
-    margins(leftMargin, rightMargin);
-    leftMargin *= xScale;
-    rightMargin *= xScale;
-
-    unsigned width = xScale  * this->width;
-    unsigned height = yScale * this->height;
-    // bitmap needs to be big enough to allow a rotated
-    // icon to fit on the bitmap.
-    float rotFactor = this->rotFactor();
-    //resize(rotFactor * width, rotFactor * height);
-    cairoSurface.clear();
-
-    // draw default group icon
-    cairo_save(cairoSurface.cairo());
-
-    cairo_translate(cairoSurface.cairo(), 0.5 * cairoSurface.width(), 0.5 * cairoSurface.height());
-    cairo_rotate(cairoSurface.cairo(), angle);
-
-    // display I/O region in grey
-    updatePortLocation();
-    drawIORegion(cairoSurface.cairo());
-
-    cairo_translate(cairoSurface.cairo(), (-0.5 * width) + leftMargin, -0.5 * height);
-
-
-    double scalex = double(width - leftMargin - rightMargin) / width;
-    cairo_scale(cairoSurface.cairo(), scalex, 1);
-
-    // draw a simple frame
-    cairo_rectangle(cairoSurface.cairo(),0,0,width,height);
-    cairo_save(cairoSurface.cairo());
-    cairo_identity_matrix(cairoSurface.cairo());
-    cairo_set_line_width(cairoSurface.cairo(),1);
-    cairo_stroke(cairoSurface.cairo());
-    cairo_restore(cairoSurface.cairo());
-
-    if (!displayContents())
-      {
-        // render below uses bitmap size to determine image
-        // size, so we need to scale by 1/rotFactor to get it to
-        // correctly fit in the bitmap
-        cairo_scale(cairoSurface.cairo(), 1/rotFactor, 1/rotFactor);
-        // replace contents with a graphic image
-        cairo_scale(cairoSurface.cairo(),width/svgRenderer.width(),height/svgRenderer.height());
-        svgRenderer.render(cairoSurface.cairo());
-      }
-    cairo_restore(cairoSurface.cairo());
-
-    cairo_t* cairo=cairoSurface.cairo();
-    cairo_identity_matrix(cairo);
-    cairo_translate(cairo, 0.5 * cairoSurface.width(), 0.5 * cairoSurface.height());
-
-    drawEdgeVariables(cairo);
-    //  if (displayContents())
-    //  {
-    //    createOrDeleteContentItems(g.displayContents());
-    //    displayContents=g.displayContents();
-    //  }
-
-    // display text label
-    if (!name().empty())
-      {
-        cairo_save(cairo);
-        cairo_identity_matrix(cairo);
-        cairo_translate(cairo, 0.5 * cairoSurface.width(), 0.5 * cairoSurface.height());
-        cairo_scale(cairo, xScale, yScale);
-        //initMatrix();
-        cairo_select_font_face
-          (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC,
-           CAIRO_FONT_WEIGHT_NORMAL);
-        cairo_set_font_size(cairo,12);
-
-        // extract the bounding box of the text
-        cairo_text_extents_t bbox;
-        cairo_text_extents(cairo,g.name().c_str(),&bbox);
-        double w=0.5*bbox.width+2;
-        double h=0.5*bbox.height+5;
-        double fm=std::fmod(g.rotation,360);
-
-        // if rotation is in 1st or 3rd quadrant, rotate as
-        // normal, otherwise flip the text so it reads L->R
-        if ((fm > -90 && fm < 90) || fm>270 || fm<-270)
-          cairo_rotate(cairo, angle);
-        else
-          cairo_rotate(cairo, angle+M_PI);
-
-        // prepare a background for the text, partially obscuring graphic
-        //double transparency=displayContents()? 0.25: 1;
-        double transparency=1;
-        cairo_set_source_rgba(cairo,0,1,1,0.5*transparency);
-        cairo_rectangle(cairo,-w,-h,2*w,2*h);
-        cairo_fill(cairo);
-
-        // display text
-        cairo_move_to(cairo,-w+1,h-4);
-        cairo_set_source_rgba(cairo,0,0,0,transparency);
-        cairo_show_text(cairo,g.name().c_str());
-        cairo_restore(cairo);
-      }
-  }
+//  void GroupIcon::wtDraw(ecolab::cairo::Surface& cairoSurface)
+//  {
+//    // TODO doesn't this just make g a reference to *this?
+//    GroupIcon& g=*minsky::minsky().groupItems[id()];
+//    double angle  = rotation * M_PI / 180.0;
+//    double xScale = zoomFactor;
+//    double yScale = zoomFactor;
+//    //computeDisplayZoom();
+//
+//    // determine how big the group icon should be to allow
+//    // sufficient space around the side for the edge variables
+//    float leftMargin, rightMargin;
+//    margins(leftMargin, rightMargin);
+//    leftMargin *= xScale;
+//    rightMargin *= xScale;
+//
+//    unsigned width = xScale  * this->width;
+//    unsigned height = yScale * this->height;
+//    // bitmap needs to be big enough to allow a rotated
+//    // icon to fit on the bitmap.
+//    float rotFactor = this->rotFactor();
+//    //resize(rotFactor * width, rotFactor * height);
+//    cairoSurface.clear();
+//
+//    // draw default group icon
+//    cairo_save(cairoSurface.cairo());
+//
+//    cairo_translate(cairoSurface.cairo(), 0.5 * cairoSurface.width(), 0.5 * cairoSurface.height());
+//    cairo_rotate(cairoSurface.cairo(), angle);
+//
+//    // display I/O region in grey
+//    updatePortLocation();
+//    drawIORegion(cairoSurface.cairo());
+//
+//    cairo_translate(cairoSurface.cairo(), (-0.5 * width) + leftMargin, -0.5 * height);
+//
+//
+//    double scalex = double(width - leftMargin - rightMargin) / width;
+//    cairo_scale(cairoSurface.cairo(), scalex, 1);
+//
+//    // draw a simple frame
+//    cairo_rectangle(cairoSurface.cairo(),0,0,width,height);
+//    cairo_save(cairoSurface.cairo());
+//    cairo_identity_matrix(cairoSurface.cairo());
+//    cairo_set_line_width(cairoSurface.cairo(),1);
+//    cairo_stroke(cairoSurface.cairo());
+//    cairo_restore(cairoSurface.cairo());
+//
+//    if (!displayContents())
+//      {
+//        // render below uses bitmap size to determine image
+//        // size, so we need to scale by 1/rotFactor to get it to
+//        // correctly fit in the bitmap
+//        cairo_scale(cairoSurface.cairo(), 1/rotFactor, 1/rotFactor);
+//        // replace contents with a graphic image
+//        cairo_scale(cairoSurface.cairo(),width/svgRenderer.width(),height/svgRenderer.height());
+//        svgRenderer.render(cairoSurface.cairo());
+//      }
+//    cairo_restore(cairoSurface.cairo());
+//
+//    cairo_t* cairo=cairoSurface.cairo();
+//    cairo_identity_matrix(cairo);
+//    cairo_translate(cairo, 0.5 * cairoSurface.width(), 0.5 * cairoSurface.height());
+//
+//    drawEdgeVariables(cairo);
+//    //  if (displayContents())
+//    //  {
+//    //    createOrDeleteContentItems(g.displayContents());
+//    //    displayContents=g.displayContents();
+//    //  }
+//
+//    // display text label
+//    if (!name().empty())
+//      {
+//        cairo_save(cairo);
+//        cairo_identity_matrix(cairo);
+//        cairo_translate(cairo, 0.5 * cairoSurface.width(), 0.5 * cairoSurface.height());
+//        cairo_scale(cairo, xScale, yScale);
+//        //initMatrix();
+//        cairo_select_font_face
+//          (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC,
+//           CAIRO_FONT_WEIGHT_NORMAL);
+//        cairo_set_font_size(cairo,12);
+//
+//        // extract the bounding box of the text
+//        cairo_text_extents_t bbox;
+//        cairo_text_extents(cairo,g.name().c_str(),&bbox);
+//        double w=0.5*bbox.width+2;
+//        double h=0.5*bbox.height+5;
+//        double fm=std::fmod(g.rotation,360);
+//
+//        // if rotation is in 1st or 3rd quadrant, rotate as
+//        // normal, otherwise flip the text so it reads L->R
+//        if ((fm > -90 && fm < 90) || fm>270 || fm<-270)
+//          cairo_rotate(cairo, angle);
+//        else
+//          cairo_rotate(cairo, angle+M_PI);
+//
+//        // prepare a background for the text, partially obscuring graphic
+//        //double transparency=displayContents()? 0.25: 1;
+//        double transparency=1;
+//        cairo_set_source_rgba(cairo,0,1,1,0.5*transparency);
+//        cairo_rectangle(cairo,-w,-h,2*w,2*h);
+//        cairo_fill(cairo);
+//
+//        // display text
+//        cairo_move_to(cairo,-w+1,h-4);
+//        cairo_set_source_rgba(cairo,0,0,0,transparency);
+//        cairo_show_text(cairo,g.name().c_str());
+//        cairo_restore(cairo);
+//      }
+//  }
 
   SVGRenderer GroupIcon::svgRenderer;
 
