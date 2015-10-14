@@ -130,6 +130,9 @@ namespace schema0
     std::map<int, int> portToVariable; /// map of ports to variables
     VariableValues values; 
 
+    /// scans variable, wire & port definitions to correct any inconsistencies
+    /// - useful after a load to correct corrupt xml files
+    //    void makeConsistent();
     operator minsky::VariableManager() const;
   };
 

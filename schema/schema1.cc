@@ -90,7 +90,7 @@ namespace schema1
 
       /// populate the GroupItem  from a vector of schema data
       void populate
-      (minsky::GroupIcons& m, const vector<Group>& v) const;
+      (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const;
 
       /// populate the variable manager from a vector of schema data
       void populate(minsky::VariableManager& vm, const vector<Variable>& v) const;
@@ -240,12 +240,13 @@ namespace schema1
       return v;
     }
 
-    template <> minsky::SwitchIcon 
-    Combine::combine(minsky::SwitchIcon& sw, const Switch& s) const
+    template <> minsky::SwitchIconPtr 
+    Combine::combine(minsky::SwitchIconPtr& sw, const Switch& s) const
     {
-      combine(static_cast<minsky::OpVarBaseAttributes&>(sw), 
+      if (!sw) sw.reset(new minsky::SwitchIcon);
+      combine(static_cast<minsky::OpVarBaseAttributes&>(*sw), 
               static_cast<const Item&>(s));
-      SchemaHelper::setPrivates(sw,s.ports);
+      SchemaHelper::setPrivates(*sw,s.ports);
       return sw;
     }
 
@@ -302,10 +303,10 @@ namespace schema1
       return p;
     }
 
-    template <> minsky::GroupIconPtr
-    Combine::combine(minsky::GroupIconPtr& g, const Group& g1) const
+    template <> minsky::GroupIcon
+    Combine::combine(minsky::GroupIcon& g, const Group& g1) const
     {
-      asgNote(*g, g1);
+      asgNote(g, g1);
       Layouts::const_iterator li=layout.find(g1.id);
       if (li!=layout.end())
         {
@@ -315,14 +316,14 @@ namespace schema1
           // they are
           //          SchemaHelper::setPrivates
           //            (g, g1.operations, g1.variables, g1.wires, g1.ports);
-          g->setName(g1.name);
-          minsky::SchemaHelper::setXY(*g, l.x, l.y);
-          g->width=l.width;
-          g->height=l.height;
-          g->displayZoom=l.displayZoom;
-          g->rotation=l.rotation;
-          g->visible=l.visible;
-          g->createdVars=g1.createdVars;
+          g.setName(g1.name);
+          minsky::SchemaHelper::setXY(g, l.x, l.y);
+          g.width=l.width;
+          g.height=l.height;
+          g.displayZoom=l.displayZoom;
+          g.rotation=l.rotation;
+          g.visible=l.visible;
+          g.createdVars=g1.createdVars;
         }
       return g;
     }
@@ -374,11 +375,11 @@ namespace schema1
     }
     
     void Combine::populate
-    (minsky::GroupIcons& m, const vector<Group>& v) const
+    (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const
     {
       for (vector<Group>::const_iterator i=v.begin(); i!=v.end(); ++i)
         {
-          auto& g = m[i->id];
+          minsky::GroupIcon& g = m[i->id];
           combine(g, *i);
         }
     }
@@ -393,7 +394,7 @@ namespace schema1
     void Combine::populate(minsky::SwitchIcons& switches, const vector<Switch>& v) const
     {
       for (auto& i: v)
-          combine(switches[i.id], i);
+        combine(switches[i.id], i);
     }
 
     void Combine::populate(minsky::VariableManager& vm, const vector<Variable>& v) const
@@ -453,8 +454,8 @@ namespace schema1
     {return shared_ptr<Layout>(new PlotLayout(id,p));}
 
     template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::GroupIconPtr& g)
-    {return shared_ptr<Layout>(new GroupLayout(id,*g));}
+    (int id, const minsky::GroupIcon& g)
+    {return shared_ptr<Layout>(new GroupLayout(id,g));}
   }
 
   Operation::Operation(int id, const minsky::OperationBase& op): 
@@ -561,7 +562,7 @@ namespace schema1
     c.populate(m.operations, newOpList);
     c.populate(m.variables, newVarList);
 
-    m.makeVariablesConsistent();
+    m.variables.makeConsistent();
 
     m.resetNextId();
     c.populate(m.godleyItems, model.godleys);
@@ -575,23 +576,23 @@ namespace schema1
     for (vector<Group>::const_iterator g=model.groups.begin(); 
          g!=model.groups.end(); ++g)
       {
-        minsky::GroupIcon& gi=*m.groupItems[g->id];
-        vector<int> ports, wires;
+        vector<int> ports, wires, ops, vars, groups;
         for (vector<int>::const_iterator item=g->items.begin(); 
              item!=g->items.end(); ++item)
           if (m.wires.count(*item))
             wires.push_back(*item);
           else if (m.operations.count(*item))
-            gi.operations.insert(*m.operations.find(*item));
+            ops.push_back(*item);
           else if (m.variables.count(*item))
-            gi.variables.addVariable(m.variables[*item],*item);
+            vars.push_back(*item);
           else if (m.groupItems.count(*item))
-            gi.groupItems.insert(*m.groupItems.find(*item));
+            groups.push_back(*item);
         // because variables and operator create ports, duplicate
         // entries in the port map may already exist, so we must place
         // the port check last
           else if (m.ports.count(*item))
             ports.push_back(*item);
+        minsky::GroupIcon& gi=m.groupItems[g->id];
 
         vector<int> inVars, outVars;
         for (size_t i=0; i<ports.size(); ++i)
@@ -605,15 +606,15 @@ namespace schema1
                   outVars.push_back(varId);
               }
           }
-        SchemaHelper::setPrivates(gi, inVars, outVars);
+        SchemaHelper::setPrivates(gi, ops, vars, wires, groups, inVars, outVars);
         // set the parent attribute of all child groups
-        for (auto& gg: gi.groupItems)
-          SchemaHelper::setParent(*gg, g->id);
+        for (vector<int>::const_iterator i=groups.begin(); i!=groups.end(); ++i)
+          SchemaHelper::setParent(m.groupItems[*i], g->id);
 
-        for (auto& o: gi.operations)
-          o->group=g->id;
-        for (auto& v: gi.variables)
-          v->group=g->id;
+        for (vector<int>::const_iterator o=ops.begin(); o!=ops.end(); ++o)
+          m.operations[*o]->group=g->id;
+        for (vector<int>::const_iterator v=vars.begin(); v!=vars.end(); ++v)
+          m.variables[*v]->group=g->id;
         for (vector<int>::const_iterator w=wires.begin(); w!=wires.end(); ++w)
           m.wires[*w].group=g->id;
       }
@@ -783,7 +784,7 @@ namespace schema1
     c.populate(minsky().wires, wires);
     c.populate(minsky().operations, model.operations);
     c.populate(minsky().variables, model.variables);
-    minsky().makeVariablesConsistent();
+    minsky().variables.makeConsistent();
     c.populate(minsky().notes, model.notes);
 
     // dummy a very large group size to prevent added variables being
@@ -831,27 +832,24 @@ namespace schema1
         if (gi!=minsky().groupItems.end()  && !alreadyGroupedIds.count(i.id))
           {
             g.addGroup(*gi);
-            g.addAnyWires((*gi)->ports());
+            g.addAnyWires(gi->ports());
 
-            minsky::GroupIcon& g1=**gi;
             // need to populate the groupIcon with the contained items
-            vector<int> ports, wires;
+            vector<int> ports, wires, ops, vars, groups;
             for (int item: i.items)
               if (minsky().wires.count(item))
                 wires.push_back(item);
               else if (minsky().operations.count(item))
-                g1.operations.insert(*minsky().operations.find(item));
+                ops.push_back(item);
               else if (minsky().variables.count(item))
-                g1.variables.addVariable(minsky().variables[item],item);
+                vars.push_back(item);
               else if (minsky().groupItems.count(item))
-                g1.groupItems.insert(*minsky().groupItems.find(item));
+                groups.push_back(item);
             // because variables and operator create ports, duplicate
             // entries in the port map may already exist, so we must place
             // the port check last
               else if (minsky().ports.count(item))
                 ports.push_back(item);
-
-            g1.addWires(wires);
 
             vector<int> inVars, outVars;
 
@@ -866,14 +864,17 @@ namespace schema1
                       outVars.push_back(varId);
                   }
               }
-            SchemaHelper::setPrivates(g1, inVars, outVars);
+            SchemaHelper::setPrivates(*gi, ops, vars, wires, groups, inVars, outVars);
             // set the parent attribute of all child groups
-            for (auto& j: g1.groupItems)
-              SchemaHelper::setParent(*j, i.id);
-            for (auto& j: g1.operations)
-              j->group=i.id;
-            for (auto& j: g1.variables)
-              j->group=i.id;
+            for (int j: groups)
+              SchemaHelper::setParent(minsky().groupItems[j], i.id);
+            for (int j: ops)
+              minsky().operations[j]->group=i.id;
+            for (int j: vars)
+              minsky().variables[j]->group=i.id;
+            for (int j: wires)
+              minsky().wires[j].group=i.id;
+
           }
       }
 
@@ -891,9 +892,9 @@ namespace schema1
       items.push_back(i);
     for (auto i: g.wires())
       items.push_back(i);
-    for (auto i: g.operations.keys())
+    for (auto i: g.operations())
       items.push_back(i);
-    for (auto i: g.variables.keys())
+    for (auto i: g.variables())
       items.push_back(i);
     for (auto i: g.createdVars)
       createdVars.push_back(i);
@@ -942,8 +943,8 @@ namespace schema1
         portMap.remap(var.ports);
         portsUsed.insert(var.ports.begin(), var.ports.end());
         layout.push_back(layoutFactory(id, *v));
-        auto valIt=m.values.find((*v)->valueId());
-        if (valIt!=m.values.end())
+        auto valIt=m.variables.values.find((*v)->valueId());
+        if (valIt!=m.variables.values.end())
           var.init=valIt->second.init;
         varMap[v->id()]=id;
       }
@@ -962,15 +963,15 @@ namespace schema1
 
     for (auto& s: m.switchItems)
       {
-        model.switches.push_back(Switch(id,s));
-        layout.emplace_back(new ItemLayout(id,s));
+        model.switches.push_back(Switch(id,*s));
+        layout.emplace_back(new ItemLayout(id,*s));
         Switch& sw=model.switches.back();
         portMap.remap(sw.ports);
         portsUsed.insert(sw.ports.begin(), sw.ports.end());
         ++id;
       }
 
-    for (auto g=m.godleyItems.begin(); 
+    for (minsky::Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
          g!=m.godleyItems.end(); ++g, ++id)
       {
         model.godleys.push_back(Godley(id, *g));
@@ -980,23 +981,23 @@ namespace schema1
         layout.push_back(layoutFactory(id, *g));
       }
 
-    for (auto g=m.groupItems.begin(); 
+    for (minsky::GroupIcons::const_iterator g=m.groupItems.begin(); 
          g!=m.groupItems.end(); ++g, ++id)
       {
-        model.groups.push_back(Group(id, **g));
+        model.groups.push_back(Group(id, *g));
         Group& group=model.groups.back();
 
         // add in reamapped items 
         group.items.clear(); // in case this was set during construction
-        const minsky::GroupIcon& g1=**g;
+        const minsky::GroupIcon& g1=*g;
         for (size_t i=0; i<g1.ports().size(); ++i)
           group.items.push_back(portMap[g1.ports()[i]]);
         for (size_t i=0; i<g1.wires().size(); ++i)
           group.items.push_back(wireMap[g1.wires()[i]]);
-        for (int i: g1.operations.keys())
-          group.items.push_back(opMap[i]);
-        for (int i: g1.variables.keys())
-          group.items.push_back(varMap[i]);
+        for (size_t i=0; i<g1.operations().size(); ++i)
+          group.items.push_back(opMap[g1.operations()[i]]);
+        for (size_t i=0; i<g1.variables().size(); ++i)
+          group.items.push_back(varMap[g1.variables()[i]]);
         for (size_t i=0; i<g1.createdVars.size(); ++i)
           group.createdVars.push_back(varMap[g1.createdVars[i]]);
 
@@ -1018,11 +1019,11 @@ namespace schema1
 
     // second pass to add in the child group ids, now that they're renumbered
     int j=0;
-    for (auto& g1: m.groupItems)
+    for (const minsky::GroupIcon& g1: m.groupItems)
       {
         Group& group=model.groups[j];
-        for (int i: g1->groupItems.keys())
-          group.items.push_back(groupMap[i]);
+        for (size_t i=0; i<g1.groups().size(); ++i)
+          group.items.push_back(groupMap[g1.groups()[i]]);
         ++j;
       }
 
@@ -1091,10 +1092,10 @@ namespace schema1
     for (int i: s.groups)
       { 
         const auto& g=m.groupItems[i];
-        model.groups.push_back(schema1::Group(i, *g));
-        model.groups.back().addItems(*g);
-        layout.push_back(make_shared<schema1::GroupLayout>(i, *g));
-        populateWith(m,*g,g->displayContents());
+        model.groups.push_back(schema1::Group(i, g));
+        model.groups.back().addItems(g);
+        layout.push_back(make_shared<schema1::GroupLayout>(i, g));
+        populateWith(m,g,g.displayContents());
       }
      for (int i: s.godleys)
       {
@@ -1129,7 +1130,7 @@ namespace schema1
         layout.push_back(make_shared<schema1::WireLayout>(i, w));
         dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
       }
-    for (int i: g.operations.keys())
+    for (int i: g.operations())
       {
         const auto& o=m.operations[i];
         model.operations.push_back(schema1::Operation(i, *o));
@@ -1141,7 +1142,7 @@ namespace schema1
             model.ports.push_back(schema1::Port(pi, p));
           }
       }
-    for (int i: g.variables.keys())
+    for (int i: g.variables())
       {
         const auto& v=m.variables[i];
         model.variables.push_back(schema1::Variable(i, *v));
@@ -1153,9 +1154,9 @@ namespace schema1
             model.ports.push_back(schema1::Port(pi, p));
           }
       }
-    for (int i: g.groupItems.keys())
+    for (int i: g.groups())
       { 
-        const auto& g=*m.groupItems[i];
+        const auto& g=m.groupItems[i];
         model.groups.push_back(schema1::Group(i, g));
         model.groups.back().addItems(g);
         layout.push_back(make_shared<schema1::GroupLayout>(i, g));

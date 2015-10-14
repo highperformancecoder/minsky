@@ -110,7 +110,7 @@ namespace minsky
     string trialName;
     do
       trialName=m_description+str(i++);
-    while (minsky().values.count(VariableManager::valueId(group, trialName)));
+    while (variableManager().values.count(VariableManager::valueId(group, trialName)));
     m_description=trialName;
     if (intVar>-1)
       variableManager()[intVar]->name(m_description);
@@ -164,7 +164,7 @@ namespace minsky
         // then it is not a candidate for being an integral variable, so
         // generate a new name that doesn't currently exist
 
-        if (minsky().values.count(valueId())) 
+        if (variableManager().values.count(valueId())) 
           try
             {
               variableManager().convertVarType(valueId(), VariableType::integral);
@@ -193,7 +193,7 @@ namespace minsky
               minsky().addWire(w);
           }
       }();
-    minsky().makeVariablesConsistent();
+    minsky().variables.makeConsistent();
   }
 
   bool OperationBase::selfWire(int from, int to) const
@@ -272,7 +272,7 @@ namespace minsky
           }
         return coupled();
       }();
-    minsky().makeVariablesConsistent();
+    minsky().variables.makeConsistent();
     return r;
   }
 
@@ -285,13 +285,13 @@ namespace minsky
       if (this==(*ei)->state.get())
         {
           const EvalOpBase& e=**ei;
-          r="[out]="+str(minsky().flowVars[e.out]);
+          r="[out]="+str(ValueVector::flowVars[e.out]);
           if (e.numArgs()>0)
-            r+=" [in1]="+ str(e.flow1? minsky().flowVars[e.in1]: 
-                               minsky().stockVars[e.in1]);
+            r+=" [in1]="+ str(e.flow1? ValueVector::flowVars[e.in1]: 
+                               ValueVector::stockVars[e.in1]);
           if (e.numArgs()>1)
-            r+=" [in2]="+ str(e.flow2? minsky().flowVars[e.in2]: 
-                               minsky().stockVars[e.in2]);
+            r+=" [in2]="+ str(e.flow2? ValueVector::flowVars[e.in2]: 
+                               ValueVector::stockVars[e.in2]);
         }
     return r;
   }

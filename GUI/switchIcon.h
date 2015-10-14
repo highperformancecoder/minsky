@@ -29,8 +29,8 @@ namespace minsky
     CLASSDESC_ACCESS(SwitchIcon);
     friend class SchemaHelper;
   public:
-    virtual int id() const {return -1;}
     SwitchIcon();
+    ~SwitchIcon();
 
     /** @{
         number of cases switched between.
@@ -43,6 +43,8 @@ namespace minsky
     /// value of switch according to current inputs
     unsigned value() const;
 
+    bool flipped=false;
+
     /// draw icon to \a context
     void draw(cairo_t* context) const;
 
@@ -51,7 +53,12 @@ namespace minsky
     }
   };
 
-  typedef TrackedIntrusiveMap<int, SwitchIcon> SwitchIcons;
+  struct SwitchIconPtr: public std::shared_ptr<SwitchIcon>
+  {
+    virtual int id() const {return -1;}
+  };
+
+  typedef TrackedIntrusiveMap<int, SwitchIconPtr> SwitchIcons;
 }
 
 #include "switchIcon.cd"

@@ -23,7 +23,6 @@
 #include "ecolab_epilogue.h"
 
 #include <boost/regex.hpp>
-#include <regex>
 
 using namespace classdesc;
 
@@ -32,7 +31,8 @@ using ecolab::array;
 
 void VariablePorts::addPorts()
 {
-  m_ports.resize(numPorts());
+  m_ports.clear();
+  m_ports.resize(numPorts(),-1);
   if (numPorts()>0)
     m_ports[0] = minsky().addPort(Port(x(),y(),false));
   if (numPorts()>1)
@@ -103,7 +103,7 @@ string VariableBase::fqName()  const
   if (m_scope==-1)
     return ":"+m_name;
   else if (cminsky().groupItems.count(m_scope))
-    return cminsky().groupItems[m_scope]->name().substr(0,5)+"["+str(m_scope)+"]:"+m_name;
+    return cminsky().groupItems[m_scope].name().substr(0,5)+"["+str(m_scope)+"]:"+m_name;
   else
     return "["+str(m_scope)+"]:"+m_name;
 }
@@ -112,12 +112,12 @@ string VariableBase::fqName()  const
 string VariableBase::name(const std::string& name) 
 {
   // strip namespace, and extract scope
-  boost::regex namespaced_spec(R"(([[:digit:]]*)]?:([^:]*))"); 
+  boost::regex namespaced_spec(R"((\d*)]?:(([^:])*))"); 
   boost::smatch m;
   if (regex_search(name, m, namespaced_spec))
     {
       m_scope=-1;
-      assert(m.size()>2);
+      assert(m.size()==4);
       if (m[1].matched && m[1].length()>0)
         {
           int toScope;
@@ -140,8 +140,8 @@ void VariableBase::ensureValueExists() const
 {
   string valueId=this->valueId();
   // disallow blank names
-  if (valueId.substr(valueId.length()-2)!=":_" && minsky().values.count(valueId)==0)
-    minsky().values.insert
+  if (valueId.substr(valueId.length()-2)!=":_" && variableManager().values.count(valueId)==0)
+    variableManager().values.insert
       (make_pair(valueId,VariableValue(type(), fqName())));
 }
 
@@ -156,8 +156,8 @@ void VariableBase::setScope(int s)
 
 string VariableBase::init() const
 {
-  auto value=minsky().values.find(valueId());
-  if (value!=minsky().values.end())
+  auto value=variableManager().values.find(valueId());
+  if (value!=variableManager().values.end())
     return value->second.init;
   else
     return "0";
@@ -166,23 +166,23 @@ string VariableBase::init() const
 string VariableBase::init(const string& x)
 {
   ensureValueExists(); 
-  VariableValue& val=minsky().getVariableValue(valueId());
+  VariableValue& val=minsky().variables.getVariableValue(valueId());
   val.init=x;
   // for constant types, we may as well set the current value. See ticket #433
   if (type()==constant || type()==parameter) 
-    val.reset(minsky().values);
+    val.reset(minsky().variables.values);
   return x;
 }
 
 double VariableBase::value() const
 {
-  return minsky::minsky().getVariableValue(valueId()).value();
+  return minsky::minsky().variables.getVariableValue(valueId()).value();
 }
 
 double VariableBase::value(double x)
 {
   if (!m_name.empty())
-    minsky().getVariableValue(valueId())=x;
+    minsky().variables.getVariableValue(valueId())=x;
   return x;
 }
 
@@ -226,9 +226,12 @@ void VariablePtr::retype(VariableBase::Type type)
   if (tmp && tmp->type()!=type)
     {
       reset(VariableBase::create(type));
-      **this=*tmp;
-      dynamic_cast<VariablePorts&>(**this).swapPorts
-        (dynamic_cast<VariablePorts&>(*tmp));
+      /// gnargh! ports need special handling to avoid clobbering
+      /// TODO: fix in refactoring
+      auto& thisAsVPorts=dynamic_cast<VariablePorts&>(**this);
+      auto& tmpAsVPorts=dynamic_cast<VariablePorts&>(*tmp);
+      thisAsVPorts=tmpAsVPorts;
+      thisAsVPorts.swapPorts(tmpAsVPorts);
       (*this)->ensureValueExists();
     }
 }

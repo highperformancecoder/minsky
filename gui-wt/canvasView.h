@@ -441,7 +441,7 @@ protected:
   /**
    * Loads a group from the model.
    */
-  void loadGroup(ObjectId id, GroupIconPtr& icon);
+  void loadGroup(ObjectId id, GroupIcon& icon);
 
   /**
    *  Handler for 'default tool' button on the main toolbar.
@@ -521,7 +521,7 @@ protected:
    *  indicates whether an item should be shown on the canvas.
    */
   /** @{ */
-  static bool isVisible(const GroupIconPtr& group);
+  static bool isVisible(const GroupIcon& group);
   static bool isVisible(const PlotWidget& plot);
   static bool isVisible(const OperationPtr op);
   static bool isVisible(const VariablePtr var);

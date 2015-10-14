@@ -55,7 +55,7 @@ struct BinOpFixture: public Minsky
     addWire(Wire(offs->ports()[0],plus->ports()[2]));
     addWire(Wire(plus->ports()[0],tsq->ports()[2]));
     addWire(Wire(deriv->ports()[0], integ.ports()[1]));
-    makeVariablesConsistent();
+    variables.makeConsistent();
 
     stepMin=1e-6;
     stepMax=1e-3;

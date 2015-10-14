@@ -92,11 +92,11 @@ namespace minsky
   {
     /// vector of variables that are integrated via Runge-Kutta. These
     /// variables label the columns of the Godley table
-    std::vector<double> stockVars;
+    static std::vector<double> stockVars;
     /// variables defined as a simple function of the stock variables,
     /// also known as lhs variables. These variables appear in the body
     /// of the Godley table
-    std::vector<double> flowVars;
+    static std::vector<double> flowVars;
   };
 
   struct VariableValues: public ConstMap<std::string, VariableValue>

@@ -38,13 +38,13 @@ namespace minsky
     struct SwitchIconItem: public CairoImage
     {
       static Tk_ConfigSpec configSpecs[];
-      int id;
+      SwitchIconPtr sw;
       void draw()
       {
-        if (cairoSurface && id>=0)
+        if (cairoSurface && sw)
           {
             cairoSurface->clear();
-            cminsky().switchItems[id].draw(cairoSurface->cairo());
+            sw->draw(cairoSurface->cairo());
           }
       }
 
@@ -80,7 +80,7 @@ namespace minsky
           SwitchIconItem* xglItem=(SwitchIconItem*)(tkXGLItem->cairoItem);
           if (xglItem) 
             {
-              xglItem->id = tkXGLItem->id;
+              xglItem->sw = minsky::minsky().switchItems[tkXGLItem->id];
               TkImageCode::ComputeImageBbox(canvas, tkXGLItem);
             }
         }
@@ -125,6 +125,13 @@ namespace minsky
     setNumCases(2); ///<default to if/then
   }
 
+  SwitchIcon::~SwitchIcon()
+  {
+    for (int i: ports())
+      minsky().delPort(i);
+    m_ports.clear();
+  }
+
   void SwitchIcon::setNumCases(unsigned n)
   {
     if (n<2) throw error("switches need at least two cases");
@@ -161,9 +168,11 @@ namespace minsky
     cairo_stroke(cairo);
 
 
+    float w=flipped? -width: width;
+    float o=flipped? -8: 8;
     // output port
-    drawTriangle(cairo, 0.5*width, 0, palette[0], 0);
-    minsky().movePortTo(ports()[0],x()+0.5*width+8, y());
+    drawTriangle(cairo, 0.5*w, 0, palette[0], flipped? M_PI: 0);
+    minsky().movePortTo(ports()[0],x()+0.5*w, y());
     // control port
     drawTriangle(cairo, 0, -0.5*width-8, palette[0], M_PI/2);
     minsky().movePortTo(ports()[1],x(), y()-0.5*width-8);
@@ -172,13 +181,13 @@ namespace minsky
     // case ports
     for (size_t i=2; i<ports().size(); ++i, y1+=dy)
       {
-        drawTriangle(cairo, -0.5*width-8, y1, palette[(i-2)%paletteSz], 0);
-        minsky().movePortTo(ports()[i],x()+-0.5*width-8, y()+y1);
+        drawTriangle(cairo, -0.5*w-o, y1, palette[(i-2)%paletteSz], flipped? M_PI: 0);
+        minsky().movePortTo(ports()[i],x()+-0.5*w-o, y()+y1);
       }
     // draw indicating arrow
-    cairo_move_to(cairo,0.5*width, 0);
+    cairo_move_to(cairo,0.5*w, 0);
     y1=-0.5*width+0.5*dy+value()*dy;
-    cairo_line_to(cairo,-0.45*width,0.9*y1);
+    cairo_line_to(cairo,-0.45*w,0.9*y1);
     cairo_stroke(cairo);
 
     if (mouseFocus)

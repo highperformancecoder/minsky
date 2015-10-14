@@ -43,12 +43,8 @@ namespace minsky
   void EvalOpBase::reset()
   {
     if (Constant* c=dynamic_cast<Constant*>(state.get()))
-      minsky().flowVars[out]=c->value;
+      ValueVector::flowVars[out]=c->value;
   }
-
-//  void EvalOpBase::eval() {
-//    eval(&minsky().flowVars(), &minsky().stockVars[0]);
-//  }
 
   void EvalOpBase::eval(double fv[], const double sv[])
   {
@@ -81,7 +77,7 @@ namespace minsky
   void EvalOpBase::deriv(double df[], const double ds[],
                      const double sv[], const double fv[])
   {
-    assert(out>=0 && size_t(out)<minsky().flowVars.size());
+    assert(out>=0 && size_t(out)<ValueVector::flowVars.size());
     switch (numArgs())
       {
       case 0:
@@ -89,8 +85,8 @@ namespace minsky
         return;
       case 1:
         {
-          assert((flow1 && size_t(in1)<minsky().flowVars.size()) || 
-                 (!flow1 && size_t(in1)<minsky().stockVars.size()));
+          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
+                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
           double x1=flow1? fv[in1]: sv[in1];
           double dx1=flow1? df[in1]: ds[in1];
           df[out] = dx1!=0? dx1 * d1(x1,0): 0;
@@ -98,10 +94,10 @@ namespace minsky
         }
       case 2:
         {
-          assert((flow1 && size_t(in1)<minsky().flowVars.size()) || 
-                 (!flow1 && size_t(in1)<minsky().stockVars.size()));
-          assert((flow2 && size_t(in2)<minsky().flowVars.size()) || 
-                 (!flow2 && size_t(in2)<minsky().stockVars.size()));
+          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
+                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
+          assert((flow2 && size_t(in2)<ValueVector::flowVars.size()) || 
+                 (!flow2 && size_t(in2)<ValueVector::stockVars.size()));
           double x1=flow1? fv[in1]: sv[in1];
           double x2=flow2? fv[in2]: sv[in2];
           double dx1=flow1? df[in1]: ds[in1];

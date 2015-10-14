@@ -61,7 +61,7 @@ namespace schema0
   void asg(minsky::GroupIcons& m1, const Minsky::GroupIcons& m2)
   {
     for (Minsky::GroupIcons::const_iterator i=m2.begin(); i!=m2.end(); ++i)
-      *m1[i->first]=i->second;
+      m1[i->first]=i->second;
   }
  
   Operation::operator minsky::OperationPtr() const 
@@ -140,12 +140,12 @@ namespace schema0
       wV.insert(valueId[*i]);
     minsky::SchemaHelper::setPrivates(vm, wV, portToVariable);
     
-//    // rewrite and load values map
-//    for (VariableValues::const_iterator i=values.begin(); i!=values.end(); ++i)
-//      {
-//        vm.values[valueId[i->first]] = i->second;
-//        vm.values[valueId[i->first]].name = ":"+i->first;
-//      }
+    // rewrite and load values map
+    for (VariableValues::const_iterator i=values.begin(); i!=values.end(); ++i)
+      {
+        vm.values[valueId[i->first]] = i->second;
+        vm.values[valueId[i->first]].name = ":"+i->first;
+      }
     return vm;
   }
 
@@ -174,12 +174,7 @@ namespace schema0
   {
     minsky::GroupIcon g;
     minsky::SchemaHelper::setPrivates
-      (g, inVariables, outVariables);
-    for (int i: operations)
-        g.operations.insert(*minsky::minsky().operations.find(i));
-    for (int i: variables)
-      g.variables.addVariable(minsky::minsky().variables[i], i);
-    
+      (g, operations, variables, wires, vector<int>(), inVariables, outVariables);
     minsky::SchemaHelper::setXY(g, x, y);
     g.setName(name);
     g.width=width;

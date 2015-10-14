@@ -102,8 +102,14 @@ namespace minsky
     }
 
     static void setPrivates
-    (minsky::GroupIcon& g, const vector<int>& inVariables, const vector<int>& outVariables)
+    (minsky::GroupIcon& g, const vector<int>& ops, const vector<int>& vars,
+     const vector<int>& wires, const vector<int>& groups, 
+     const vector<int>& inVariables, const vector<int>& outVariables)
     {
+      g.m_operations=ops;
+      g.m_variables=vars;
+      g.m_wires=wires;
+      g.m_groups=groups;
       g.inVariables.clear();
       g.inVariables.insert(inVariables.begin(), inVariables.end());
       g.outVariables.clear();

@@ -21,8 +21,8 @@ proc fclose {x y} {
 }
 
 # prepare element accessors for later use
-foreach name [values.#keys] {
-        values.@elem $name
+foreach name [variables.values.#keys] {
+        variables.values.@elem $name
 }
 use_namespace minsky
 set status 0
@@ -40,7 +40,7 @@ for {set step 0} {$step<10} {incr step} {
 
     # note - we must use the .@elem form, to prevent '\' embedded in
     # variable names from being expanded
-    foreach name [values.#keys] {
+    foreach name [variables.values.#keys] {
         value.get $name
         if {![fclose [value.value] $values($name)]} {
             puts "$argv(2) t=[t], $name=[value.value], logged  $values($name)"

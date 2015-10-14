@@ -43,11 +43,11 @@ proc afterMinskyStarted {} {uplevel #0 {
   assert {[operations.size]==4}
   assert {[variables.size]==4}
   assert {[wires.size]==8}
-  assert {[group.groupItems.size]==1}
+  assert {[llength [group.groups]]==1}
   # retrieve inner group
-  group.get [group.groupItems.#keys]
-  assert {[group.operations.size]==4}
-  assert {[group.variables.size]==4}
+  group.get [group.groups]
+  assert {[llength [group.operations]]==4}
+  assert {[llength [group.variables]]==4}
   assert {[llength [group.wires]]==8}
   resetEdited
   exit

@@ -161,8 +161,8 @@ namespace minsky
             newVar->setScope(-1); //unscoped variables are treated as local to containing scope
           newVar->visible=false;
           // ensure variable type is consistent
-          auto vv=minsky::cminsky().values.find(newVar->valueId());
-          if (vv!=minsky::cminsky().values.end() && 
+          auto vv=minsky::cminsky().variables.values.find(newVar->valueId());
+          if (vv!=minsky::cminsky().variables.values.end() && 
               vv->second.type()!=varType)
             minsky::minsky().variables.convertVarType(newVar->valueId(), varType);
           set<VariablePtr>::const_iterator v=oldVars.find(newVar);
@@ -281,7 +281,7 @@ namespace minsky
             // if local reference, then append namespace
             if (name.find(':')==string::npos)
               name=":"+name; 
-            VariableValue& v=minsky().getVariableValue(VariableManager::valueId(name));
+            VariableValue& v=minsky().variables.getVariableValue(VariableManager::valueId(name));
             v.godleyOverridden=false;
             string::size_type start=table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)

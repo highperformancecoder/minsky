@@ -448,21 +448,41 @@ proc whenIdleUpdateGodley {id} {
     # put the double entry book keeping mode button in top left corner
     .godley$id.table window configure 0,0 -window .godley$id.doubleEntryMode
 
+    global minskyHome tcl_platform
+    image create photo leftArrow -file $minskyHome/icons/leftArrow.gif 
+    image create photo rightArrow -file $minskyHome/icons/rightArrow.gif 
+    image create photo upArrow -file $minskyHome/icons/upArrow.gif 
+    image create photo downArrow -file $minskyHome/icons/downArrow.gif 
+    set bw 20
+    set bh 20
+    # en-dashes don't appear to display properly on windows
+    if {$tcl_platform(platform)=="windows"} {
+        set minus "-"
+    } else {
+        set minus "–"
+    }
+
     for {set r 1} {$r<[expr [godley.table.rows]+1]} {incr r} {
         set ro [expr $r+[godley.table.doubleEntryCompliant]]
         frame .godley$id.rowButtons{$r}
-        button .godley$id.rowButtons{$r}.add -foreground green -text "+" -command "addRow $id $r"
+        button .godley$id.rowButtons{$r}.add -foreground green -text "+" \
+            -command "addRow $id $r"
         pack .godley$id.rowButtons{$r}.add -side left
         if {$r>1} {
-            button .godley$id.rowButtons{$r}.del -foreground red -text "-" -command "delRow $id $r"
+            button .godley$id.rowButtons{$r}.del -foreground red -text $minus \
+                -command "delRow $id $r"
             pack .godley$id.rowButtons{$r}.del -side left
             if {$r>2} {
-                button .godley$id.rowButtons{$r}.up -text "↑" -command \
-                    "moveRow $id $r -1"
+#                button .godley$id.rowButtons{$r}.up -text "▲"  
+                button .godley$id.rowButtons{$r}.up -image upArrow \
+                    -width $bw -height $bh \
+                    -command "moveRow $id $r -1"
                 pack .godley$id.rowButtons{$r}.up -side left
             }
-            button .godley$id.rowButtons{$r}.down -text "↓" -command \
-                "moveRow $id $r 1"
+#            button .godley$id.rowButtons{$r}.down -text "▼" -command 
+            button .godley$id.rowButtons{$r}.down -image downArrow \
+                -width $bw -height $bh \
+                -command "moveRow $id $r 1"
             pack .godley$id.rowButtons{$r}.down -side left
         }
       
@@ -472,18 +492,24 @@ proc whenIdleUpdateGodley {id} {
     }
     for {set c 1} {$c<[expr [godley.table.cols]+1]} {incr c} {
         frame .godley$id.colButtons{$c}
-        button .godley$id.colButtons{$c}.add -foreground green -text "+" -command "addCol $id $c"
+        button .godley$id.colButtons{$c}.add -foreground green -text "+"  \
+            -command "addCol $id $c"
         pack .godley$id.colButtons{$c}.add  -side left
         if {$c>1} {
-            button .godley$id.colButtons{$c}.del -foreground red -text "-" -command "delCol $id $c"
+            button .godley$id.colButtons{$c}.del -foreground red -text $minus \
+                -command "delCol $id $c"
             pack .godley$id.colButtons{$c}.del  -side left
             if {$c>2} {
-                button .godley$id.colButtons{$c}.left -text "←" -command \
-                    "moveCol $id $c -1"
+#                button .godley$id.colButtons{$c}.left -text "◄" 
+                button .godley$id.colButtons{$c}.left -image leftArrow \
+                    -width $bw -height $bh \
+                    -command "moveCol $id $c -1"
                 pack .godley$id.colButtons{$c}.left -side left
             }
-            button .godley$id.colButtons{$c}.right -text "→" -command \
-                "moveCol $id $c 1"
+#            button .godley$id.colButtons{$c}.right -text "►" -command 
+            button .godley$id.colButtons{$c}.right -image rightArrow \
+                -width $bw -height $bh \
+                -command "moveCol $id $c 1"
             pack .godley$id.colButtons{$c}.right -side left
         }
         

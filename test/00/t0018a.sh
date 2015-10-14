@@ -39,22 +39,22 @@ openLogFile tmp1.dat
 set nsteps 10
 set out [open tmp2.dat w]
 puts -nonewline \$out "#time"
-foreach name [values.#keys] {
+foreach name [variables.values.#keys] {
   puts -nonewline \$out " \$name"
 }
 puts \$out ""
 
 # prepare element accessors for later use
-foreach name [values.#keys] {
-        values.@elem \$name
+foreach name [variables.values.#keys] {
+        variables.values.@elem \$name
 }
 use_namespace minsky
 
 for {set step 0} {\$step<\$nsteps} {incr step} {
   step
   puts -nonewline \$out "[t]"
-  foreach name [values.#keys] {
-    puts -nonewline \$out " [values(\$name).value]"
+  foreach name [variables.values.#keys] {
+    puts -nonewline \$out " [variables.values(\$name).value]"
   }
   puts \$out ""
 }

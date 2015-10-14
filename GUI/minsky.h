@@ -66,6 +66,8 @@ namespace minsky
     // A map that maps an input port to variable location that it
     // receives data from
     map<int,VariableValue> inputFrom;
+    bool reset_needed{true}; ///< if a new model, or loaded from disk
+    bool m_edited;  
 
     // make copy operations just dummies, as assignment of Minsky's
     // doesn't need to change this
@@ -98,7 +100,7 @@ namespace minsky
   enum ItemType {wire, op, var, group, godley, plot};
 
   class Minsky: public ValueVector, public Exclude<MinskyExclude>, 
-                public PortManager, public GroupIcon
+                public PortManager
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -107,13 +109,9 @@ namespace minsky
     std::string diagnoseNonFinite() const;
 
     float m_zoomFactor{1};
-    bool reset_needed{true}; ///< if a new model, or loaded from disk
-    bool m_edited;  
 
     /// write current state of all variables to the log file
     void logVariables() const;
-
-    VariableValue undefined;
 
   protected:
     /// contents of current selection
@@ -121,40 +119,6 @@ namespace minsky
     int nextId{0};        ///< next id to assign to an item
 
   public:
-    using PortManager::ports;
-    using PortManager::wires;
-
-    VariableValues values;
-
-    VariableValue& getVariableValue(const std::string& name) {
-      assert(VariableManager::isValueId(name));
-      VariableValues::iterator v=values.find(name);
-      if (v!=values.end()) return v->second;
-      return undefined;
-    }
-
-    std::string valueNames() const;
-
-    void makeVariablesConsistent();
-
-    const VariableValue& getVariableValue(const std::string& name) const {
-      assert(VariableManager::isValueId(name));
-      VariableValues::const_iterator v=values.find(name);
-      if (v!=values.end()) return v->second;
-      return undefined;
-    }
-    const VariableValue& getVariableValueFromPort(int port) const {
-      return getVariableValue(getVariableFromPort(port)->valueId());
-    }
-
-    // return list of stock (or integration) variables
-    std::vector<std::string> stockVarNames() const {
-      std::vector<std::string> r;
-      for (VariableValues::const_iterator v=values.begin();
-           v!=values.end(); ++v)
-        if (!v->second.isFlowVar()) r.push_back(v->first);
-      return r;
-    }
 
     /// reflects whether the model has been changed since last save
     bool edited() const {return m_edited;}
@@ -163,6 +127,9 @@ namespace minsky
     void resetNotNeeded() {reset_needed=false;}
     /// resets the edited (dirty) flags
     void resetEdited() {m_edited=false;}
+
+    typedef GodleyIcons GodleyItems;
+    GodleyItems godleyItems;
 
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
@@ -188,6 +155,18 @@ namespace minsky
     void resetNextId();
 
     EvalGodley evalGodley;
+
+
+    Operations operations;
+    VariableManager variables;
+
+    GroupIcons groupItems;
+    SwitchIcons switchItems;
+    typedef TrackedIntrusiveMap<int, OpVarBaseAttributes> Notes;
+    Notes notes; ///< descriptive textual items
+
+    Plots plots;
+
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky() {m_edited=false;}
@@ -281,13 +260,13 @@ namespace minsky
     /// delete godley table icon \a id
     void deleteGodleyTable(int id)
     {
-      auto g=godleyItems.find(id);
+      GodleyItems::iterator g=godleyItems.find(id);
       if (g!=godleyItems.end())
         {
-          for (auto v=g->flowVars.begin();
+          for (GodleyIcon::Variables::iterator v=g->flowVars.begin();
                v!=g->flowVars.end(); ++v)
             variables.erase(*v);
-          for (auto v=g->stockVars.begin();
+          for (GodleyIcon::Variables::iterator v=g->stockVars.begin();
                v!=g->stockVars.end(); ++v)
             variables.erase(*v);
           godleyItems.erase(g);
@@ -305,7 +284,7 @@ namespace minsky
 
     int newSwitch() {
       int id=getNewId();
-      switchItems[id];
+      switchItems[id].reset(new SwitchIcon);
       return id;
     }
     void deleteSwitch(int id) {
@@ -432,9 +411,9 @@ namespace minsky
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}
     /// push state onto history
-//    void pushHistory();
-//    /// called periodically to ensure history up to date
-//    void checkPushHistory() {if (historyPtr==history.size()) pushHistory();}
+    void pushHistory();
+    /// called periodically to ensure history up to date
+    void checkPushHistory() {if (historyPtr==history.size()) pushHistory();}
 
     /// push current model state onto history if it differs from previous
     bool pushHistoryIfDifferent();

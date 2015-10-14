@@ -28,7 +28,7 @@ setGroupIconResource $minskyHome/icons/group.svg
 proc newGroupItem {id} {
     global minskyHome
     group.get $id
-    .wiring.canvas create group [group.x] [group.y] -id $id  -tags "group$id groups groupitems[group.group]"
+    .wiring.canvas create group [group.x] [group.y] -id $id  -tags "group$id groups"
     .wiring.canvas lower group$id
 
     .wiring.canvas bind group$id <Button-1> "group::button1 $id %x %y"
@@ -75,7 +75,6 @@ proc deleteGroupItem {id} {
 
 proc ungroupGroupItem {id} {
     ungroup $id
-    .wiring.canvas delete all
     updateCanvas
 }
 
@@ -98,8 +97,6 @@ proc lassoEnd {x y} {
 #        eval group $x $y $lassoStart
         eval select $x $y $lassoStart
         .wiring.canvas delete lasso
-        # TODO be a bit more clever in handling items going in/out of group
-        .wiring.canvas delete all
         updateCanvas
         unset lassoStart
         # convert back to move mode for later editing

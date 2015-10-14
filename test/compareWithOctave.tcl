@@ -8,9 +8,9 @@ puts $dat "d=\["
 
 for {set i 0} {$i<7} {incr i} {
     puts -nonewline $dat "\[[minsky.t] "
-    foreach var [minsky.stockVarNames] {
+    foreach var [minsky.variables.stockVars] {
         #minsky.value.get "$var"
-        puts -nonewline $dat "[[minsky.values.@elem $var].value] "
+        puts -nonewline $dat "[[minsky.variables.values.@elem $var].value] "
         #####[minsky.value.value] "
     }
     puts $dat "\];"

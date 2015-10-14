@@ -4,8 +4,8 @@ proc afterMinskyStarted {} {
  source "assert.tcl"
  minsky.load constantCopyProblem.mky
  step
- set aVal [values.@elem :a]
- set bVal [values.@elem :b]
+ set aVal [variables.values.@elem :a]
+ set bVal [variables.values.@elem :b]
  assert \[$bVal.value\]==[$aVal.value]
  resetEdited
  exit

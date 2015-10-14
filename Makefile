@@ -28,7 +28,6 @@ include $(ECOLAB_HOME)/include/Makefile
 PREFIX=/usr/local
 
 
-#EXES=gui-wt/minsky GUI/minsky server/server
 EXES=GUI/minsky server/server
 # override MODLINK to remove tclmain.o, which allows us to provide a
 # custom one that picks up its scripts from a relative library
@@ -56,7 +55,7 @@ WTGUI_OBJS=canvasView.o mainMenu.o minskyApp.o propertiesDlg.o  \
 	globalPreferencesPropDlg.o globalPreferences.o disablingOverlay.o \
 	plotDlg.o
 
-ALL_OBJS=tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(WTGUI_OBJS) $(WTGUI_OBJS)
+ALL_OBJS=tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(WTGUI_OBJS)
 
 
 
@@ -98,6 +97,10 @@ ifndef MXE
 LIBS+=-lboost_thread$(BOOST_EXT) 
 endif
 
+ifdef CPUPROFILE
+LIBS+=-lprofiler
+endif
+
 # RSVG dependencies calculated here
 FLAGS+=$(shell $(PKG_CONFIG) --cflags librsvg-2.0)
 LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
@@ -116,7 +119,7 @@ default: GUI/minsky$(EXE)
 endif
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
-all: $(EXES) $(TESTS) minsky.xsd 
+all: $(EXES) $(TESTS) minsky.xsd
 # only perform link checking if online
 	if ping -c 1 www.google.com; then linkchecker GUI/library/help/minsky.html; fi
 	-$(CHMOD) a+x *.tcl *.sh *.pl

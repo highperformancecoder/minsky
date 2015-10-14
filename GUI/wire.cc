@@ -28,7 +28,7 @@ void Wire::zoom(float xOrigin, float yOrigin, float factor)
 {
   if (group>-1)
     {
-      GroupIcon& g=*minsky().groupItems[group];
+      GroupIcon& g=minsky().groupItems[group];
       xOrigin-=g.x();
       yOrigin-=g.y();
     }
@@ -52,7 +52,7 @@ ecolab::array<float> Wire::coords() const
   array<float> coords=m_coords;
   if (group>-1)
     {
-      GroupIcon& g=*minsky().groupItems[group];
+      GroupIcon& g=minsky().groupItems[group];
       coords[pcoord(coords.size()/2)*2]+=g.x();
       coords[pcoord(coords.size()/2)*2+1]+=g.y();
     }
@@ -64,7 +64,7 @@ ecolab::array<float> Wire::coords(const ecolab::array<float>& coords)
   array<float> offs(coords.size(), 0);
   if (group>-1)
     {
-      GroupIcon& g=*minsky().groupItems[group];
+      GroupIcon& g=minsky().groupItems[group];
       offs[pcoord(coords.size()/2)*2]=g.x();
       offs[pcoord(coords.size()/2)*2+1]=g.y();
     }

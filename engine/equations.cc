@@ -102,7 +102,7 @@ namespace MathDAG
           result.allocValue();
         result=value;
         // set the initial value of the actual variableValue (if it exists)
-        VariableValues& values=minsky::minsky().values;
+        VariableValues& values=minsky::minsky().variables.values;
         auto v=values.find(result.name);
         if (v!=values.end())
           v->second.init=str(value);
@@ -138,7 +138,7 @@ namespace MathDAG
   {
     if (result.idx()<0)
       {
-        result=minsky::minsky().getVariableValue(valueId);
+        result=minsky::minsky().variables.getVariableValue(valueId);
         if (result.type()==VariableType::undefined) 
           {
             result=VariableValue(VariableType::tempFlow);
@@ -250,7 +250,7 @@ namespace MathDAG
           {
             if (VariablePtr iv=i->getIntVar())
               {
-                result=minsky::minsky().getVariableValue(iv->valueId());
+                result=minsky::minsky().variables.getVariableValue(iv->valueId());
                 // integral copies need to be done now, in case of cycles
                 if (r.isFlowVar() && r.idx()>=0)
                   ev.push_back(EvalOpPtr(OperationType::copy, r, result));
@@ -1089,8 +1089,8 @@ namespace MathDAG
   {
     expressionCache.insertAnonymous(zero);
     expressionCache.insertAnonymous(one);
-    zero->result=m.values["constant:zero"];
-    one->result=m.values["constant:one"];
+    zero->result=m.variables.values["constant:zero"];
+    one->result=m.variables.values["constant:one"];
 
     // firstly, we need to create a map of ports belonging to operations
     for (const OperationPtr& o: minsky.operations)
@@ -1099,7 +1099,7 @@ namespace MathDAG
 
     // then a map of ports belonging to switches
     for (auto& s: minsky.switchItems)
-      for (int p: s.ports())
+      for (int p: s->ports())
         portToSwitch[p]=s.id();
 
     // store stock & integral variables for later reordering
@@ -1140,7 +1140,7 @@ namespace MathDAG
 
     // process the Godley tables
     map<string, GodleyColumnDAG> godleyVars;
-    for (GodleyIcons::const_iterator g=m.godleyItems.begin(); 
+    for (Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
          g!=m.godleyItems.end(); ++g)
       processGodleyTable(godleyVars, g->table, g->id());
 
@@ -1160,7 +1160,7 @@ namespace MathDAG
       }
 
     // reorder integration variables according to sVars
-    const vector<string>& sVars=minsky.stockVarNames();
+    const vector<string>& sVars=minsky.variables.stockVars();
     for (vector<string>::const_iterator v=sVars.begin(); 
          v!=sVars.end(); ++v)
       {
@@ -1172,7 +1172,7 @@ namespace MathDAG
 
     // now start with the variables, and work our way back to how they
     // are defined
-    for (VariableValues::value_type v: m.values)
+    for (VariableValues::value_type v: m.variables.values)
       if (v.second.isFlowVar())
         variables.push_back
           (makeDAG(v.first, 
@@ -1182,7 +1182,7 @@ namespace MathDAG
     // sort variables into their order of definition
     sort(variables.begin(), variables.end(), 
          VariableDefOrder(expressionCache.size()));
-    assert(integrationVariables.size()==m.stockVarNames().size());
+    assert(integrationVariables.size()==m.variables.stockVars().size());
   }
 
   shared_ptr<VariableDAG> SystemOfEquations::makeDAG(const string& valueId, int scope, const string& name, VariableType::Type type)
@@ -1192,8 +1192,8 @@ namespace MathDAG
 
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, scope, VariableManager::uqName(name), type));
     expressionCache.insert(valueId, r);
-    VariableValue vv=minsky.getVariableValue(valueId);
-    r->init=vv.initValue(minsky.values);
+    VariableValue vv=minsky.variables.getVariableValue(valueId);
+    r->init=vv.initValue(minsky.variables.values);
     if (vv.isFlowVar()) 
       {
         r->rhs=getNodeFromWire(minsky.variables.wireToVariable(valueId));
@@ -1308,7 +1308,7 @@ namespace MathDAG
           }
         else if (portToSwitch.count(w.from))
           {
-            const SwitchIcon& s=minsky.switchItems[portToSwitch[w.from]];
+            const SwitchIcon& s=*minsky.switchItems[portToSwitch[w.from]];
             if (expressionCache.exists(s))
               return expressionCache[s];
             else
@@ -1391,7 +1391,7 @@ namespace MathDAG
 
   ostream& SystemOfEquations::matlab(ostream& o) const
   {
-    assert(integrationVariables.size()==minsky.stockVarNames().size());
+    assert(integrationVariables.size()==minsky.variables.stockVars().size());
     o<<"function f=f(x,t)\n";
     // define names for the components of x for reference
     int j=1;
@@ -1436,7 +1436,7 @@ namespace MathDAG
   (EvalOpVector& equations, vector<Integral>& integrals, 
      std::map<int,VariableValue>& portValMap)
   {
-    assert(integrationVariables.size()==minsky.stockVarNames().size());
+    assert(integrationVariables.size()==minsky.variables.stockVars().size());
     equations.clear();
     integrals.clear();
     portValMap.clear();
@@ -1449,7 +1449,7 @@ namespace MathDAG
         string vid=VariableManager::valueId(i->scope,i->name);
         integrals.push_back(Integral());
         integrals.back().stock=
-          minsky.getVariableValue(vid);
+          minsky.variables.getVariableValue(vid);
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp.get());
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
@@ -1478,7 +1478,7 @@ namespace MathDAG
     for (const VariablePtr& v: minsky.variables)
       if (minsky.wiresAttachedToPort(v->outPort()).size()>0)
         portValMap[v->outPort()]=
-          minsky.getVariableValueFromPort(v->outPort());
+          minsky.variables.getVariableValueFromPort(v->outPort());
   }
 
   void SystemOfEquations::processGodleyTable

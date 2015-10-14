@@ -390,6 +390,7 @@ menu .menubar.file.recent
 .menubar.file add command -label "New System" -command newSystem  -underline 0 -accelerator $meta_menu-N
 .menubar.file add command -label "Open" -command openFile -underline 0 -accelerator $meta_menu-O
 .menubar.file add cascade -label "Recent Files"  -menu .menubar.file.recent
+.menubar.file add command -label "Library"  -command "openURL https://github.com/highperformancecoder/minsky-models"
 
 .menubar.file add command -label "Save" -command save -underline 0 -accelerator $meta_menu-S
 .menubar.file add command -label "SaveAs" -command saveAs 
@@ -424,7 +425,7 @@ menu .menubar.file.recent
 .menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
 .menubar.file add separator
 .menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
-.menubar.file add command -label "Redraw" -command {.wiring.canvas delete all; updateCanvas}
+.menubar.file add command -label "Redraw" -command updateCanvas
 .menubar.file add checkbutton -label "Show Ports" -variable showPorts -command updateCanvas -onvalue 1 -offvalue 0 
 .menubar.file add command -label "Object Browser" -command obj_browser
 .menubar.file add command -label "Command" -command cli
@@ -434,7 +435,7 @@ menu .menubar.file.recent
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
 .menubar.edit add command -label "Paste" -command {insertNewGroup [paste]} -accelerator $meta_menu-V
-.menubar.edit add command -label "Group selection" -command groupSelection -accelerator $meta_menu-G
+.menubar.edit add command -label "Group selection" -command "minsky.createGroup; updateCanvas" -accelerator $meta_menu-G
 
 proc undo {delta} {
     # clear canvas to remove reference holds
@@ -442,7 +443,7 @@ proc undo {delta} {
     # do not record changes to state from the undo command
     doPushHistory 0
     minsky.undo $delta
-    updateCanvas 
+    updateCanvas   
     doPushHistory 1
 }
 
@@ -465,7 +466,7 @@ bind . <$meta-z> "undo 1"
 bind . <$meta-x> {minsky.cut; updateCanvas}
 bind . <$meta-c> {minsky.copy}
 bind . <$meta-v> {insertNewGroup [paste]}
-bind . <$meta-g> groupSelection
+bind . <$meta-g> {minsky.createGroup; updateCanvas}
 
 # tabbed manager
 ttk::notebook .tabs
@@ -624,7 +625,7 @@ proc setSimulationDelay {delay} {
     # dirty
     if {$delay != [simulationDelay]} {
         simulationDelay $delay
-        resetNotNeeded
+        resetEdited
     }
 }
 
@@ -657,6 +658,7 @@ proc openNamedFile {ofname} {
     setFname $ofname
 
     eval minsky.load $fname
+    doPushHistory 0
     updateCanvas
     recentreCanvas
     
@@ -666,8 +668,9 @@ proc openNamedFile {ofname} {
     }
 
    .controls.simSpeed set [simulationDelay]
-        # setting preferences(godleyDE) causes the edited (dirty) flag to be set
+    # setting preferences(godleyDE) and simulationDelay causes the edited (dirty) flag to be set
     resetEdited
+    doPushHistory 1
 }
 
 proc insertFile {} {
@@ -903,16 +906,7 @@ proc helpFor {x y} {
     }
 }
 
-proc help {topic} {
-    global minskyHome externalLabel
-    # replace "Introduction" to framed toplevel document
-    # TODO - see if it is possible to wrap the deep links with a framed service
-    if {$topic=="Introduction"} {
-        set URL  "file://$minskyHome/library/help/minsky.html"
-    } else {
-#        set URL  "file://$minskyHome/library/help/minsky$externalLabel($topic)#$topic"
-        set URL  "file://$minskyHome/library/help/minsky.html?minsky$externalLabel($topic)#$topic"
-    }
+proc openURL {URL} {
     switch [tk windowingsystem] {
         "win32" {
             shellOpen $URL
@@ -932,6 +926,19 @@ please consult http://minsky.sf.net/help/$topic.html" -type ok -icon warning
             }
         }
     }
+}
+
+proc help {topic} {
+    global minskyHome externalLabel
+    # replace "Introduction" to framed toplevel document
+    # TODO - see if it is possible to wrap the deep links with a framed service
+    if {$topic=="Introduction"} {
+        set URL  "file://$minskyHome/library/help/minsky.html"
+    } else {
+#        set URL  "file://$minskyHome/library/help/minsky$externalLabel($topic)#$topic"
+        set URL  "file://$minskyHome/library/help/minsky.html?minsky$externalLabel($topic)#$topic"
+    }
+    openURL $URL
 }
 
 proc aboutMinsky {} {
@@ -1015,9 +1022,6 @@ proc exit {} {
     }
     # why is this needed?
     proc bgerror x {} 
-
-    .wiring.canvas delete all
-    update
     tcl_exit
 }
 
@@ -1046,6 +1050,7 @@ proc setFname {name} {
 if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     # ignore any exceptions thrown during load, in case it can be repaired later
     catch {minsky.load $argv(1)}
+    doPushHistory 0
     setFname $argv(1)
 # we have loaded a Minsky model, so must refresh the canvas
     updateCanvas
@@ -1054,10 +1059,12 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
         godley.get $g
         set preferences(godleyDE) [godley.table.doubleEntryCompliant]
     }
-    # setting preferences(godleyDE) causes the edited (dirty) flag to be set
-    resetEdited
-    # and ditto for simulationDelay - see ticket #416
     set delay [simulationDelay]
+    # setting preferences(godleyDE) causes the edited (dirty) flag to be set
+    # and ditto for simulationDelay - see ticket #416
+    pushHistory
+    resetEdited
+    doPushHistory 1
 }
 
 #return 

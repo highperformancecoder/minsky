@@ -35,7 +35,7 @@ namespace minsky
   };
 
   /// radius of circle marking ports at zoom=1
-  constexpr float portRadius=3;
+  constexpr float portRadius=6;
 
   /// returns the clicktype for \a item, given a mouse click at \a x, \a y.
   /// assumes that the icon is bounded by it's clip path

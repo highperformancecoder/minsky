@@ -38,22 +38,15 @@ namespace minsky
 
   Minsky& minsky()
   {
-    static MinskyTCL s_minsky("minsky");
+    static MinskyTCL s_minsky;
     if (l_minsky)
       return *l_minsky;
     else
       return s_minsky;
   }
-  // ensure the global Minsky object is constructed prior to TCL 
-  static Minsky& g_minsky=minsky();
 
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
   LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
-
-  ecolab::TCL_obj_t& minskyTCL_obj()
-  {
-    return static_cast<MinskyTCL&>(minsky());
-  }
 
   string to_string(CONST84 char* x) {return x;}
   string to_string(Tcl_Obj* x) {
@@ -64,13 +57,13 @@ namespace minsky
   template <class AV>
   void member_entry_hook(int argc, AV argv)
   {
-    static bool moving=false;
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
-    if (m.doPushHistory && argv0!="minsky.doPushHistory" && argv0.find(".get")==string::npos
-        && m.pushHistoryIfDifferent())
+    if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
+        argv0.find(".get")==string::npos  && 
+        m.pushHistoryIfDifferent())
       {
-        m.markEdited();
+        if (argv0!="minsky.load") m.markEdited();
         if (m.eventRecord.get() && argv0=="minsky.startRecording")
           {
             for (int i=0; i<argc; ++i)
@@ -78,26 +71,30 @@ namespace minsky
             (*m.eventRecord)<<endl;
           }
       }
- }
+  }
 
   
-  MinskyTCL::MinskyTCL(const char* TCLname): port(ports), wire(wires), op(operations), 
-                 constant(operations), integral(operations), 
-                 data(operations), var(variables),
-                 value(values), plot(plots), 
-                 godley(godleyItems), group(groupItems), 
-                 switchItem(switchItems), note(notes) 
+
+  TCL_obj_t& minskyTCL_obj() 
   {
-    member_entry_hook=minsky::member_entry_hook<CONST84 char**>;
-    member_entry_thook=minsky::member_entry_hook<Tcl_Obj* const *>;
-    TCL_obj_init(*this);
-    TCL_obj(*this,TCLname,*this);
+    static TCL_obj_t t;
+    static int dum=(
+                    t.member_entry_hook=member_entry_hook<CONST84 char**>,
+                    t.member_entry_thook=member_entry_hook<Tcl_Obj* const *>,
+                    1);
+    return t;
   }
 
   tclvar TCL_obj_lib("ecolab_library",ECOLAB_LIB);
+  int TCL_obj_minsky=
+    (
+     TCL_obj_init(minsky()),
+     ::TCL_obj(minskyTCL_obj(),"minsky",static_cast<MinskyTCL&>(minsky())),
+     1
+     );
 
-  void MinskyTCL::putClipboard(const string& s) const
-  {
+    void MinskyTCL::putClipboard(const string& s) const
+    {
 #ifdef MAC_OSX_TK
       int p[2];
       pipe(p);

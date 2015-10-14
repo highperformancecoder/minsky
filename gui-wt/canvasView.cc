@@ -130,7 +130,7 @@ bool CanvasView::moveItem(AbstractCanvasItem& item,
       }
       else if (dynamic_cast<GroupCanvasItem*>(&item))
       {
-        dynamic_cast<GroupCanvasItem*>(&item)->getIcon()->moveTo(x, y);
+        dynamic_cast<GroupCanvasItem*>(&item)->getIcon().moveTo(x, y);
       }
 
       std::for_each(affectedWires.begin(), affectedWires.end(),
@@ -163,7 +163,7 @@ bool CanvasView::moveItem(AbstractCanvasItem& item,
       }
       else if (dynamic_cast<GroupCanvasItem*>(&item))
       {
-        dynamic_cast<GroupCanvasItem*>(&item)->getIcon()->moveTo(x, y);
+        dynamic_cast<GroupCanvasItem*>(&item)->getIcon().moveTo(x, y);
       }
       scrollIntoView(item.getModelRect());
       std::for_each(affectedWires.begin(), affectedWires.end(),
@@ -523,18 +523,14 @@ void CanvasView::scanAndLoadDocument()
         }
       }
 
-//  std::for_each(model.godleyItems.begin(), model.godleyItems.end(),
-//      [this](minsky::Minsky::GodleyItems::value_type& val)
-//      {
-//        if (isVisible(val))
-//        {
-//          loadGodleyIcon(val.id(), val);
-//        }
-//      });
-
-  for (auto& g: model.godleyItems)
-    if (isVisible(g))
-        loadGodleyIcon(g.id(), g);
+  std::for_each(model.godleyItems.begin(), model.godleyItems.end(),
+      [this](minsky::Minsky::GodleyItems::value_type& val)
+      {
+        if (isVisible(val))
+        {
+          loadGodleyIcon(val.id(), val);
+        }
+      });
 
   std::for_each(model.variables.begin(), model.variables.end(),
       [this](VariableManager::value_type& val)
@@ -546,17 +542,14 @@ void CanvasView::scanAndLoadDocument()
         }
       });
 
-//  std::for_each(model.groupItems.begin(), model.groupItems.end(),
-//      [this](GroupIcons::value_type& val)
-//      {
-//        if (isVisible(val))
-//        {
-//          loadGroup(val.id(), val);
-//        }
-//      });
-  for (auto& g: model.groupItems)
-    if (isVisible(g))
-      loadGroup(g.id(), g);
+  std::for_each(model.groupItems.begin(), model.groupItems.end(),
+      [this](GroupIcons::value_type& val)
+      {
+        if (isVisible(val))
+        {
+          loadGroup(val.id(), val);
+        }
+      });
 
   computeModelExtents();
   zoomAll();
@@ -592,7 +585,7 @@ void CanvasView::loadVariable(ObjectId id, minsky::VariablePtr var)
   widgets[id] = item;
 }
 
-void CanvasView::loadGroup(ObjectId id, GroupIconPtr& icon)
+void CanvasView::loadGroup(ObjectId id, GroupIcon& icon)
 {
   GroupCanvasItem* item = new GroupCanvasItem(id, icon, this);
   widgets[id] = item;
@@ -969,10 +962,10 @@ void CanvasView::createItemsNotRendered()
       });
 }
 
-bool CanvasView::isVisible(const GroupIconPtr& group)
+bool CanvasView::isVisible(const GroupIcon& group)
 {
-  return (group.id() != MinskyDoc::invalidId
-          && group->parent() == MinskyDoc::invalidId);
+  return (group.groupId() != MinskyDoc::invalidId
+          && group.parent() == MinskyDoc::invalidId);
 }
 
 bool CanvasView::isVisible(const PlotWidget& plot)

@@ -6325,12 +6325,12 @@
       <int>736</int>
       <int>737</int>
       <int>738</int>
-      <int>637</int>
-      <int>638</int>
       <int>699</int>
       <int>700</int>
       <int>701</int>
       <int>702</int>
+      <int>637</int>
+      <int>638</int>
      </items>
      <ports>
       <int>43</int>
@@ -6371,12 +6371,12 @@
       <int>752</int>
       <int>753</int>
       <int>754</int>
-      <int>663</int>
-      <int>664</int>
       <int>707</int>
       <int>708</int>
       <int>709</int>
       <int>710</int>
+      <int>663</int>
+      <int>664</int>
      </items>
      <ports>
       <int>215</int>
@@ -6407,8 +6407,8 @@
       <int>502</int>
       <int>503</int>
       <int>504</int>
-      <int>563</int>
       <int>564</int>
+      <int>563</int>
       <int>739</int>
       <int>740</int>
       <int>741</int>
@@ -6417,12 +6417,12 @@
       <int>744</int>
       <int>745</int>
       <int>746</int>
-      <int>666</int>
-      <int>667</int>
       <int>703</int>
       <int>704</int>
       <int>705</int>
       <int>706</int>
+      <int>667</int>
+      <int>666</int>
      </items>
      <ports>
       <int>224</int>

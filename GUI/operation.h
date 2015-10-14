@@ -149,7 +149,7 @@ namespace minsky
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
-    Constant* clone() const {return new Constant(*this);}
+    Constant* clone() const  override {return new Constant(*this);}
     /// ensure slider does not override value
     void adjustSliderBounds();
     /// initialises sliderbounds based on current value, if not set otherwise
@@ -188,7 +188,7 @@ namespace minsky
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
-    IntOp* clone() const {return new IntOp(*this);}
+    IntOp* clone() const  override {return new IntOp(*this);}
 
     /// set integration variable name
     void setDescription();
@@ -250,6 +250,7 @@ namespace minsky
     // derivative is defined as the weighted average of the left & right
     // derivatives, weighted by the respective intervals
     double deriv(double) const;
+    DataOp* clone() const override {return new DataOp(*this);}
 
     void pack(pack_t& x, const string& d) const
     {::pack(x,d,*this);}

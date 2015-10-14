@@ -325,7 +325,7 @@ MinskyDoc::ObjectId MinskyDoc::addGodleyTable(AbstractView* caller, const Wt::WP
 
 void MinskyDoc::moveGodleyTable(AbstractView* caller, ObjectId id, double x, double y)
 {
-  auto it = getModel().godleyItems.find(id);
+  minsky::Minsky::GodleyItems::iterator it = getModel().godleyItems.find(id);
   if (it != getModel().godleyItems.end())
   {
     AnyParams data;
@@ -389,9 +389,9 @@ void MinskyDoc::moveGroup(AbstractView* caller, ObjectId id, double x, double y)
   if (it != getModel().groupItems.end())
   {
     AnyParams data;
-    data << id << (*it)->x() << (*it)->y() << x << y;
-    (*it)->moveTo(x, y);
-    (*it)->updatePortLocation();
+    data << id << it->x() << it->y() << x << y;
+    it->moveTo(x, y);
+    it->updatePortLocation();
     setModified();
     docHasChanged(caller, hintMoveGroup, data);
   }
