@@ -907,23 +907,20 @@ proc helpFor {x y} {
 }
 
 proc openURL {URL} {
-    switch [tk windowingsystem] {
-        "win32" {
-            shellOpen $URL
+    global tcl_platform
+    if {[tk windowingsystem]=="win32"} {
+        shellOpen $URL
+    } elseif {$tcl_platform(os)=="Darwin"} {
+        exec open $URL
+    } else {
+        # try a few likely suspects
+        foreach browser {firefox konqueror seamonkey opera} {
+            set browserNotFound [catch {exec firefox $URL &}]
+            if {!$browserNotFound} break
         }
-        "aqua" {
-            exec open $URL
-        }
-        default {
-            # try a few likely suspects
-            foreach browser {firefox konqueror seamonkey opera} {
-                set browserNotFound [catch {exec firefox $URL &}]
-                if {!$browserNotFound} break
-            }
-            if $browserNotFound {
-                tk_messageBox -detail "Unable to find a working web browser, 
-please consult http://minsky.sf.net/help/$topic.html" -type ok -icon warning
-            }
+        if $browserNotFound {
+            tk_messageBox -detail "Unable to find a working web browser, 
+please consult $URL" -type ok -icon warning
         }
     }
 }
