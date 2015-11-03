@@ -187,7 +187,6 @@ proc deiconify {widget} {
 menu .menubar -type menubar
 
 if {[tk windowingsystem] == "aqua"} {
-    puts "adding apple menu"
     menu .menubar.apple
     .menubar.apple add command -label "About Minsky" -command aboutMinsky
     .menubar add cascade -menu .menubar.apple
@@ -403,7 +402,6 @@ menu .menubar.file.recent
     } {
         set f [tk_getSaveFile -initialfile [file rootname [file tail $fname]] -defaultextension .tex -initialdir $workDir]
     }
-    puts $f
     if {$f ne ""} {latex $f $preferences(wrapLaTeXLines)}
 }
 .menubar.file add command -label "Output MatLab" -command {
@@ -732,6 +730,13 @@ proc saveAs {} {
 }
 
 proc newSystem {} {
+    if [edited] {
+        switch [tk_messageBox -message "Save?" -type yesnocancel] {
+            yes save
+            no {}
+            cancel {return -level [info level]}
+        }
+    }
     deleteSubsidiaryTopLevels
     clearHistory
     clearAll
@@ -993,7 +998,7 @@ proc exit {} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
             no {}
-            cancel return
+            cancel {return -level [info level]}
         }
     }
 

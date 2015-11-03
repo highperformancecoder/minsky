@@ -211,7 +211,7 @@ namespace MathDAG
     vector<vector<WeakNodePtr> > arguments;
     string name;
     double init;
-    std::shared_ptr<OperationBase> state;
+    OperationPtr state;
     OperationDAGBase(const string& name=""): 
       name(name) {}
     virtual Type type() const=0;
@@ -220,6 +220,7 @@ namespace MathDAG
     int order(unsigned maxOrder) const override;
     VariableValue addEvalOps(EvalOpVector&, std::map<int,VariableValue>& opValMap,  
                              const VariableValue&) const override;
+    void checkArg(unsigned i, unsigned j) const;
   };
 
   template <OperationType::Type T>

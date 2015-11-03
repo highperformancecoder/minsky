@@ -83,7 +83,7 @@ namespace minsky
     float x() const {return m_x;}
     float y() const {return m_y;}
     /// @}
-    float scale; ///< scale factor of the XGL image
+    //float scale; ///< scale factor of the XGL image
     typedef std::vector<VariablePtr> Variables;
     Variables flowVars, stockVars;
     GodleyTable table;

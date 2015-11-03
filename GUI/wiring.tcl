@@ -643,7 +643,7 @@ proc godleyToolTipText {id x y} {
 
 proc godleyToolTip {id x y} {
     if {[llength [.wiring.canvas find withtag tooltip]]==0} {
-        .wiring.canvas create text [expr $x+20] [expr $y-20] -tags "tooltip tooltiptext" -anchor w -text "[godleyToolTipText $id $x $y]"
+        .wiring.canvas create text [.wiring.canvas canvasx [expr $x+20]] [.wiring.canvas canvasy [expr $y-20]] -tags "tooltip tooltiptext" -anchor w -text "[godleyToolTipText $id $x $y]"
         .wiring.canvas create rectangle [.wiring.canvas bbox tooltiptext] -fill white -tags "tooltip tooltipBG"
         .wiring.canvas raise tooltiptext
     }
@@ -651,7 +651,7 @@ proc godleyToolTip {id x y} {
 
 proc changeToolTip {id x y} {
     .wiring.canvas itemconfigure tooltiptext -text "[godleyToolTipText $id $x $y]"
-    .wiring.canvas coords tooltiptext [expr $x+20] [expr $y-20]
+    .wiring.canvas coords tooltiptext [.wiring.canvas canvasx [expr $x+20]] [.wiring.canvas canvasy [expr $y-20]]
     .wiring.canvas coords tooltipBG [.wiring.canvas bbox tooltiptext]
 }
 
@@ -1062,6 +1062,8 @@ proc updateCanvas {} {
         if {[llength [.wiring.canvas find withtag switchItem$s]]==0} {
             switchItem.get $s
             if {[switchItem.group]==-1} {newSwitch $s}
+        } else {
+            redraw switchItem$s
         }
     }
     switchItems.clearAccessLog
@@ -1071,6 +1073,8 @@ proc updateCanvas {} {
         if {[llength [.wiring.canvas find withtag plot$im]]==0} {
             plot.get $im
             newPlotItem $im [plot.x] [plot.y]
+        } else {
+            redraw plot$im
         }
     }
     plots.clearAccessLog
@@ -1319,7 +1323,7 @@ proc contextMenu {item x y} {
             set id [string range $tag 4 end]
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Plot}
-            .wiring.context add command -label Description -command "postNote wire $id"
+            .wiring.context add command -label Description -command "postNote plot $id"
             .wiring.context add command -label "Expand" -command "plotDoubleClick $id"
             .wiring.context add command -label "Resize" -command "plot::resize $id"
             .wiring.context add command -label "Options" -command "doPlotOptions $id"
@@ -1456,27 +1460,26 @@ proc deleteItem {id tag} {
     switch -regexp $tag {
         "^op" {
             deleteOperation $id
-            updateCanvas
         }
         "^wire" {
             .wiring.canvas delete handles
             deleteWire $id
+            return
         }
         "^var" {
             deleteVariable $id
-            updateCanvas
         }
         "^godley" {
             deleteGodleyTable $id
             destroy .godley$id
-            updateCanvas
         }
         "^note" {
             deleteNote $id
-            updateCanvas
         }
         
     }
+    .wiring.canvas delete wires
+    updateCanvas
 }
 
 proc copyVar {id} {
@@ -1952,6 +1955,7 @@ proc editItem {id tag} {
 proc setVarVal {v x} {
     var.get $v
     var.sliderSet $x
+    resetNotNeeded
 }
 
 proc setSliderProperties {id} {

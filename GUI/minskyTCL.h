@@ -62,6 +62,7 @@ namespace minsky
     // assignment is do nothing, as reference member is created as part
     // of constructor
     void operator=(const GetterSetter&) {}
+    void clear() {}
   };
 
   template <class M, class V=typename M::mapped_type::element_type>
@@ -191,21 +192,24 @@ namespace minsky
     void clearAllGetterSetters() {
       // need also to clear the GetterSetterPtr variables, as these
       // potentially hold onto objects
+      port.clear();
+      wire.clear();
       op.clear();
       constant.clear();
       integral.clear();
       var.clear();
+      value.clear();
+      plot.clear();
+      godley.clear();
+      group.clear();
+      switchItem.clear();
+      note.clear();
     }
 
     void clearAll() {
       clearAllMaps();
       clearAllGetterSetters();
     }
-
-    /// @return available matching columns from other Godley tables
-    /// @param currTable - this table, not included in the matching process
-    //  @param ac type of column we wish matches for
-    //    std::set<string> matchingTableColumns(TCL_args args); 
 
     /// add a new wire connecting \a from port to \a to port with \a coordinates
     /// @return wireid, or -1 if wire is invalid
@@ -256,15 +260,6 @@ namespace minsky
       clearSelection();
       if (groupItems.count(gid))
         groupItems[gid].select(currentSelection,x0,y0,x1,y1);
-    }
-
-    /// remove a group, leaving its contents in place
-    //    void ungroup(TCL_args args) {Ungroup(args);}
-    /// remove a group, deleting all the contents too
-    void deleteGroup(TCL_args args) {
-      int id=args;
-      groupItems[id].deleteContents();
-      groupItems.erase(id);
     }
 
     void initGroupList(TCL_args args) {

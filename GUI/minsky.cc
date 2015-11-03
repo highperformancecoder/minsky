@@ -425,7 +425,7 @@ namespace minsky
         for (int i: g->operations())
           deleteOperation(i);
         for (int i: g->variables())
-          deleteOperation(i);
+          deleteVariable(i);
         for (int i: g->groups())
           deleteGroup(i);
         groupItems.erase(g);

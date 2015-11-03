@@ -34,11 +34,13 @@ namespace
     void draw()
     {
       if (cairoSurface)
-        {
-          MathDAG::SystemOfEquations system(cminsky());
-          cairo_move_to(cairoSurface->cairo(),0,0);
-          system.renderEquations(*cairoSurface);
-        }
+        try
+          {
+            MathDAG::SystemOfEquations system(cminsky());
+            cairo_move_to(cairoSurface->cairo(),0,0);
+            system.renderEquations(*cairoSurface);
+          }
+        catch (std::exception& ex) {} // ignore errors due to ill-formed models
     }
   };
 

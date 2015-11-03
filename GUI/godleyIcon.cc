@@ -506,7 +506,6 @@ namespace minsky
 
   void GodleyIcon::draw(cairo_t* cairo) const
   {
-    cairo_save(cairo);
     cairo_translate(cairo,-0.5*width(),-0.5*height());
 
     cairo_rectangle(cairo,0,0,width(),height());
@@ -545,7 +544,6 @@ namespace minsky
     if (mouseFocus)
       drawPorts(*this, ports(), cairo);
     if (selected) drawSelected(cairo);
-    cairo_restore(cairo);
   }
 
   SVGRenderer GodleyIcon::svgRenderer;

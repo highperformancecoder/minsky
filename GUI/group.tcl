@@ -70,11 +70,15 @@ proc rightMouseGroup {id x y X Y} {
 
 proc deleteGroupItem {id} {
     deleteGroup $id
+    .wiring.canvas delete all
+    clearAllGetterSetters
     updateCanvas
 }
 
 proc ungroupGroupItem {id} {
     ungroup $id
+    .wiring.canvas delete all
+    clearAllGetterSetters
     updateCanvas
 }
 

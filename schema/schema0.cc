@@ -163,7 +163,7 @@ namespace schema0
   {
     minsky::GodleyIcon g;
     g.moveTo(x, y);
-    g.scale=scale;
+    //g.scale=scale;
     asg(g.flowVars, flowVars);
     asg(g.stockVars, stockVars);
     g.table=table;
