@@ -328,7 +328,7 @@ namespace minsky
 
     cairo_translate(cairo, 10*zoomFactor,yoffs);
     cairo_set_line_width(cairo,1);
-    Plot::draw(cairo,w-20*zoomFactor,h-10);
+    Plot::draw(cairo,w-20*zoomFactor,h-yoffs);
     
     cairo_restore(cairo);
     if (mouseFocus)

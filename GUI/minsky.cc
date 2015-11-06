@@ -543,6 +543,7 @@ namespace minsky
         VariablePtr v(variables[id]->clone());
         v->visible=true; // a copied variable should always be visible!
         v->group=-1; // toplevel until placed
+        v->sliderVisible=false; // sliders should start out invisible
         int id=variables.addVariable(v);
         markEdited();
         return id;

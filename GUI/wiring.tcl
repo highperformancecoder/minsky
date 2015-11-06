@@ -1021,6 +1021,7 @@ proc delIfAccessed {items item id} {
 }
 
 proc updateCanvas {} {
+    doPushHistory 0
     global fname showPorts
 #    .wiring.canvas delete all
     .wiring.canvas delete errorItems
@@ -1063,7 +1064,8 @@ proc updateCanvas {} {
             switchItem.get $s
             if {[switchItem.group]==-1} {newSwitch $s}
         } else {
-            redraw switchItem$s
+            #redraw
+            .wiring.canvas coords switchItem$s [.wiring.canvas coords switchItem$s]
         }
     }
     switchItems.clearAccessLog
@@ -1074,7 +1076,8 @@ proc updateCanvas {} {
             plot.get $im
             newPlotItem $im [plot.x] [plot.y]
         } else {
-            redraw plot$im
+            #redraw
+            .wiring.canvas coords plot$im [.wiring.canvas coords plot$im]
         }
     }
     plots.clearAccessLog
@@ -1128,6 +1131,7 @@ proc updateCanvas {} {
 
     # refresh equations
     .equations.canvas itemconfigure eq -tag eq
+    doPushHistory 1
 }
 
 # mark a canvas item as in error

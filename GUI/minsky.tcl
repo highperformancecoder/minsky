@@ -547,6 +547,7 @@ proc runstop {} {
   } else {
     set running 1
     enableEventProcessing
+    doPushHistory 0
     if {$classicMode} {
             .controls.run configure -text stop
         } else {
@@ -747,6 +748,7 @@ proc newSystem {} {
     global fname
     set fname ""
     wm title . "Minsky: New System"
+    resetEdited
 }
 
 # for debugging purposes
@@ -1169,6 +1171,8 @@ if [info exists env(MINSKY_COV)] {
 # attach trace execuation to all created procs
     attachTraceProc ::
 }
+
+resetEdited
 
 # a hook to allow code to be run after Minsky has initialised itself
 if {[llength [info commands afterMinskyStarted]]>0} {

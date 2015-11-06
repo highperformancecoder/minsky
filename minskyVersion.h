@@ -1,1 +1,1 @@
-#define MINSKY_VERSION "1.D042"
+#define MINSKY_VERSION "1.D044"
