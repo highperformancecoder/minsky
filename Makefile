@@ -28,7 +28,9 @@ include $(ECOLAB_HOME)/include/Makefile
 PREFIX=/usr/local
 
 
-EXES=GUI/minsky server/server
+#EXES=gui-wt/minsky GUI/minsky server/server
+#EXES=GUI/minsky server/server
+
 # override MODLINK to remove tclmain.o, which allows us to provide a
 # custom one that picks up its scripts from a relative library
 # directory
@@ -38,31 +40,23 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
 	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
 	switchIcon.o
-ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o
-SERVER_OBJS=database.o message.o websocket.o databaseServer.o
-SCHEMA_OBJS=schema0.o schema1.o variableType.o operationType.o
-WTGUI_OBJS=canvasView.o mainMenu.o minskyApp.o propertiesDlg.o  \
-	toolbarBase.o mainWindow.o minskyDoc.o server-main.o \
-	remoteClipBoard.o abstractView.o viewManager.o mainToolbar.o \
-	fileLoader.o dialog.o fileOpenDlg.o cairoWidget.o displaySettings.o \
-	canvasPainter.o abstractCanvasItem.o linkCanvasItem.o \
-	operationCanvasItem.o plotCanvasItem.o godleyCanvasItem.o \
-	tempCairoImageFile.o scrollBarArea.o variablePropertiesDlg.o \
-	constantPropertiesDlg.o operationPropertiesDlg.o integralPropertiesDlg.o \
-	godleyTableDlg.o godleyTableWidget.o variableCanvasItem.o \
-	groupCanvasItem.o wtGeometry.o linkCanvasOverlay.o sliderWidget.o \
-	rectSelectionOverlay.o wireCreateOverlay.o deleteItemsOverlay.o \
-	globalPreferencesPropDlg.o globalPreferences.o disablingOverlay.o \
-	plotDlg.o
+MODEL_OBJS=wire.o item.o group.o port.o
+ENGINE_OBJS=
+#evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o
+SERVER_OBJS=
+#database.o message.o websocket.o databaseServer.o
+SCHEMA_OBJS=
+#schema0.o schema1.o variableType.o operationType.o
 
-ALL_OBJS=tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(WTGUI_OBJS)
-
+#ALL_OBJS=tclmain.o $(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS)
+ALL_OBJS=tclmain.o $(MODEL_OBJS)
+EXES=$(MODEL_OBJS)
 
 
 # TODO - remove dependency on GUI directory here
 FLAGS+=-std=c++11 -Ischema -Iengine -IGUI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
 
-VPATH= schema GUI engine server gui-wt $(ECOLAB_HOME)/include
+VPATH= schema model engine server $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -114,12 +108,14 @@ FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 ifndef AEGIS
 # just build the Minsky executable
-default: GUI/minsky$(EXE)
+#default: GUI/minsky$(EXE)
+default: $(MODEL_OBJS)
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
-all: $(EXES) $(TESTS) minsky.xsd
+#all: $(EXES) $(TESTS) minsky.xsd 
+all: $(EXES) $(TESTS)
 # only perform link checking if online
 	if ping -c 1 www.google.com; then linkchecker GUI/library/help/minsky.html; fi
 	-$(CHMOD) a+x *.tcl *.sh *.pl

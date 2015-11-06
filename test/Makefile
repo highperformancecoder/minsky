@@ -9,23 +9,24 @@ endif
 
 include $(ECOLAB_HOME)/include/Makefile
 
-UNITTESTOBJS=main.o testMinsky.o testGroup.o testGeometry.o testDatabase.o testLatexToPango.o testVariable.o testDerivative.o
+UNITTESTOBJS=main.o testModel.o
+#testMinsky.o testGroup.o testGeometry.o testDatabase.o testLatexToPango.o testVariable.o testDerivative.o
 MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o,$(wildcard ../*.o))
 FLAGS:=-I.. $(FLAGS)
-FLAGS+=-std=c++11 -I../GUI -I../engine -I../schema
+FLAGS+=-std=c++11 -I../model -I../engine -I../schema
 LIBS+=-ljson_spirit -lsoci_core -lwebsocketpp -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lboost_signals \
-	-lUnitTest++ -lgsl -lgslcblas  \
-	-ljpeg -lxml2 -ltiff
+	-lUnitTest++ -lgsl -lgslcblas -lxml2 -ltiff
 
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
 LIBS+=$(shell pkg-config --libs librsvg-2.0)
 
-EXES=unittests cmpFp testDatabase testLatexToPango testGroup 
+EXES=unittests cmpFp 
+#testDatabase testLatexToPango testGroup 
 
 ifdef AEGIS
-EXES+=tcl-cov
+#EXES+=tcl-cov
 endif
 
 all: $(EXES)
