@@ -7,26 +7,26 @@ before_install:
   - echo 'deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_14.04/ /' >/tmp/hpcoders.list 
   - sudo mv /tmp/hpcoders.list /etc/apt/sources.list.d/
   - sudo apt-get update -qq
-  - sudo apt-get tcl-dev
-  - sudo tk-dev
-  - sudo libcairo2-dev
-  - sudo zlib1g-dev
-  - sudo libreadline-dev
-  - sudo libgsl0-dev
-  - sudo libpango1.0-dev
-  - sudo exuberant-ctags
-  - sudo libdb-dev
-  - sudo libncurses5-dev
-  - sudo tktable
-  - sudo librsvg2-dev
-  - sudo json-spirit
-  - sudo libboost-dev
-  - sudo libboost-system-dev
-  - sudo libboost-regex-dev
-  - sudo libboost-date-time-dev
-  - sudo libboost-program-options-dev
-  - sudo libboost-filesystem-dev
-  - sudo libboost-thread-dev
+  - sudo apt-get install -y tcl-dev
+  - sudo apt-get install -y tk-dev
+  - sudo apt-get install -y libcairo2-dev
+  - sudo apt-get install -y zlib1g-dev
+  - sudo apt-get install -y libreadline-dev
+  - sudo apt-get install -y libgsl0-dev
+  - sudo apt-get install -y libpango1.0-dev
+  - sudo apt-get install -y exuberant-ctags
+  - sudo apt-get install -y libdb-dev
+  - sudo apt-get install -y libncurses5-dev
+  - sudo apt-get install -y tktable
+  - sudo apt-get install -y librsvg2-dev
+  - sudo apt-get install -y json-spirit
+  - sudo apt-get install -y libboost-dev
+  - sudo apt-get install -y libboost-system-dev
+  - sudo apt-get install -y libboost-regex-dev
+  - sudo apt-get install -y libboost-date-time-dev
+  - sudo apt-get install -y libboost-program-options-dev
+  - sudo apt-get install -y libboost-filesystem-dev
+  - sudo apt-get install -y libboost-thread-dev
 script: 
   - git clone https://github.com/highperformancecoder/ecolab.git
   - pushd ecolab
