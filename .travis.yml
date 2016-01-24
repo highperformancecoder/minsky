@@ -31,6 +31,7 @@ script:
   - git clone https://github.com/highperformancecoder/ecolab.git
   - pushd ecolab
   - make install
+  - popd
   - make AEGIS=1
   - Xvfb :0 &
   - export DISPLAY=:0
