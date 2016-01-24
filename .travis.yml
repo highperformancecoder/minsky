@@ -27,7 +27,6 @@ before_install:
   - sudo apt-get install -y libboost-program-options-dev
   - sudo apt-get install -y libboost-filesystem-dev
   - sudo apt-get install -y libboost-thread-dev
-  - sudo apt-get install -y libsoci-dev
 script: 
   - git clone https://github.com/highperformancecoder/ecolab.git
   - pushd ecolab
