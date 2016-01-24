@@ -35,4 +35,4 @@ script:
   - make AEGIS=1
   - Xvfb :0 &
   - export DISPLAY=:0
-  - for i in test/00/*; do if sh $i; then true; else exit 1; done
+  - for i in test/00/*; do if sh $i; then true; else exit 1; fi; done
