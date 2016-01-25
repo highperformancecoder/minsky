@@ -27,19 +27,19 @@ before_install:
   - sudo apt-get install -y libboost-program-options-dev
   - sudo apt-get install -y libboost-filesystem-dev
   - sudo apt-get install -y libboost-thread-dev
+  - sudo apt-get install -y libsoci-dev
+  - psql -c 'create database minsky;' -U postgres
+addons:
+  postgresql: "9.3"
 script: 
   - git clone https://github.com/highperformancecoder/ecolab.git
   - pushd ecolab
   - make install
   - popd
-  - wget http://downloads.sourceforge.net/project/soci/soci/soci-3.1.0/soci-3.1.0.zip?r=&ts=1453636047&use_mirror=internode
-  - unzip soci-3.1.0.zip
-  - pushd soci-3.1.0
-  - cmake .
-  - make
-  - sudo make install
-  - popd
   - make AEGIS=1
   - Xvfb :0 &
   - export DISPLAY=:0
+  - echo "testEq.mky" >testDb.dat
+  - echo "postgresql://dbname=postgres user=postgres password=">>testDb.dat
+  - export MINSKY_TEST_DATABASE_PARAMS=testDb.dat
   - for i in test/00/*; do if sh $i; then true; else exit 1; fi; done
