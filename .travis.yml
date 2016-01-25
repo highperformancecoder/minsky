@@ -29,8 +29,8 @@ before_install:
   - sudo apt-get install -y libboost-thread-dev
   - sudo apt-get install -y libsoci-dev
   - psql -c 'create database minsky;' -U postgres
-addons:
-  postgresql: "9.3"
+#addons:
+#  postgresql: "9.3"
 script: 
   - git clone https://github.com/highperformancecoder/ecolab.git
   - pushd ecolab
