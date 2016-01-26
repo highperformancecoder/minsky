@@ -37,6 +37,10 @@ script:
   - pushd ecolab
   - make install
   - popd
+  - git clone https://github.com/zaphoyd/websocketpp.git
+  - pushd websocketpp
+  - sudo make install
+  - popd 
   - make AEGIS=1
   - Xvfb :0 &
   - export DISPLAY=:0
