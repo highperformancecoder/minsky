@@ -28,6 +28,7 @@ before_install:
   - sudo apt-get install -y libboost-filesystem-dev
   - sudo apt-get install -y libboost-thread-dev
   - sudo apt-get install -y libsoci-dev
+  - ls /usr/include/soci
   - psql -c 'create database minsky;' -U postgres
 #addons:
 #  postgresql: "9.3"
