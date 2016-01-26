@@ -39,6 +39,7 @@ script:
   - popd
   - git clone https://github.com/zaphoyd/websocketpp.git
   - pushd websocketpp
+  - cmake .
   - sudo make install
   - popd
   - ls /usr/local/include/websocketpp 
