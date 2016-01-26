@@ -40,7 +40,8 @@ script:
   - git clone https://github.com/zaphoyd/websocketpp.git
   - pushd websocketpp
   - sudo make install
-  - popd 
+  - popd
+  - ls /usr/local/include/websocketpp 
   - make AEGIS=1
   - Xvfb :0 &
   - export DISPLAY=:0
