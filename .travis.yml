@@ -49,4 +49,4 @@ script:
   - echo "testEq.mky" >testDb.dat
   - echo "postgresql://dbname=postgres user=postgres password=">>testDb.dat
   - export MINSKY_TEST_DATABASE_PARAMS=testDb.dat
-  - for i in test/00/*; do if sh $i; then true; else exit 1; fi; done
+  - make sure
