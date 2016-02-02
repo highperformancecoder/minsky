@@ -100,7 +100,8 @@ FLAGS+=$(shell $(PKG_CONFIG) --cflags librsvg-2.0)
 LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
 
 GUI_LIBS=
-SERVER_LIBS=-lwebsocketpp -lsoci_core 
+#SERVER_LIBS=-lwebsocketpp -lsoci_core 
+SERVER_LIBS=-lsoci_core 
 WT_LIBS=-lwthttp -lwtext -lwt -lGraphicsMagick -lGraphicsMagick++ \
 	-ljpeg -llcms -lxml2 -ltiff -lboost_signals$(BOOST_EXT) -lboost_random$(BOOST_EXT)
 # disable a deprecation warning that comes from Wt
