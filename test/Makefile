@@ -13,10 +13,10 @@ UNITTESTOBJS=main.o testMinsky.o testGroup.o testGeometry.o testDatabase.o testL
 MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o,$(wildcard ../*.o))
 FLAGS:=-I.. $(FLAGS)
 FLAGS+=-std=c++11 -I../GUI -I../engine -I../schema
-LIBS+=-ljson_spirit -lsoci_core -lwebsocketpp -lboost_system -lboost_thread \
+LIBS+=-ljson_spirit -lsoci_core -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lboost_signals \
 	-lUnitTest++ -lgsl -lgslcblas  \
-	-ljpeg -lxml2 -ltiff
+	-lxml2 -ltiff
 
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
