@@ -37,10 +37,16 @@ script:
   - pushd ecolab
   - make install
   - popd
+  - git clone https://github.com/zaphoyd/websocketpp.git
+  - pushd websocketpp
+  - cmake .
+  - sudo make install
+  - popd
+  - ls /usr/local/include/websocketpp 
   - make AEGIS=1
   - Xvfb :0 &
   - export DISPLAY=:0
   - echo "testEq.mky" >testDb.dat
   - echo "postgresql://dbname=postgres user=postgres password=">>testDb.dat
   - export MINSKY_TEST_DATABASE_PARAMS=testDb.dat
-  - for i in test/00/*; do if sh $i; then true; else exit 1; fi; done
+  - make sure

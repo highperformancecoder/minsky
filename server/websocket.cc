@@ -18,12 +18,12 @@
 */
 
 #include "websocket.h"
-#include <websocketpp/websocketpp.hpp>
+//#include <websocketpp/websocketpp.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
 
-using namespace websocketpp;
+//using namespace websocketpp;
 using namespace boost;
 using namespace std;
 
@@ -47,13 +47,13 @@ namespace minsky
 {
   namespace websocket
   {
-    class ClientImpl: private server::handler::connection_ptr
+    class ClientImpl//: private server::handler::connection_ptr
     {
     public:
-      ClientImpl(const server::handler::connection_ptr& con): 
-        server::handler::connection_ptr(con) {}
+//      ClientImpl(const server::handler::connection_ptr& con): 
+//        server::handler::connection_ptr(con) {}
       void send(const MsgBase& msg) const {
-        (*this)->send(msg.json());
+        //        (*this)->send(msg.json());
       }
     };
 
@@ -75,27 +75,28 @@ namespace minsky
     public:
       void add_request(const Request& r) {
         unique_lock<mutex> lock(m_lock);
-        m_requests.push(r);
+        //        m_requests.push(r);
         lock.unlock();
         m_cond.notify_one();
       }
       
       void get_request(Request& value) {
-        boost::unique_lock<boost::mutex> lock(m_lock);
+        //        boost::unique_lock<boost::mutex> lock(m_lock);
         
-        while (m_requests.empty()) {
-          m_cond.wait(lock);
-        }
+//        while (m_requests.empty()) {
+//          m_cond.wait(lock);
+//        }
         
-        value = m_requests.front();
-        m_requests.pop();
+//        value = m_requests.front();
+//        m_requests.pop();
       }
     private:
-      queue<Request>         m_requests;
+      //      queue<Request>         m_requests;
       mutex                m_lock;
       condition_variable   m_cond;
     };
 
+#if 0 // disable websocket
     class Impl: public server::handler
     {
       Websocket& intf; // interface to handle callbacks
@@ -177,6 +178,13 @@ namespace minsky
       for (size_t i=0; i<threads.size(); ++i)
         threads[i]->join(); // potential block if a thread has died
     }
+#else
+    class Impl 
+    {
+    public:
+      Impl(Websocket& intf) {}
+    };
+#endif
   }
 
   // delegate to impl
@@ -184,11 +192,11 @@ namespace minsky
                           workerThreads(2), listenerThreads(2), port(80) {}
   void Websocket::start() 
   {
-    impl->start(workerThreads);
-    server(impl).listen(port, listenerThreads);
+//    impl->start(workerThreads);
+//    server(impl).listen(port, listenerThreads);
   }
 
-  Websocket::Client::Client(websocket::ClientImpl* c): impl(c) {}
-  void Websocket::Client::send(const MsgBase& msg) const {impl->send(msg);}  
+  Websocket::Client::Client(websocket::ClientImpl* c) {}//: impl(c) {}
+  void Websocket::Client::send(const MsgBase& msg) const {}//{impl->send(msg);}  
   string Websocket::Client::username() const {return ""; /*TODO*/}  
 }
