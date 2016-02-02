@@ -19,6 +19,8 @@
 
 #include "item.h"
 #include "group.h"
+#include "zoom.h"
+#include <cairo_base.h>
 #include <ecolab_epilogue.h>
 
 namespace minsky
@@ -54,5 +56,42 @@ namespace minsky
       }
     assert(x==this->x() && y==this->y());
   }
+
+  ClickType::Type Item::clickType(float x, float y)
+  {
+    // firstly, check whether a port has been selected
+    for (auto& p: ports)
+      {
+        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor)
+          return ClickType::onPort;
+      }
+    ecolab::cairo::Surface dummySurf
+      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
+    draw(dummySurf.cairo());
+    if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
+      return ClickType::onItem;
+    else
+      return ClickType::outside;
+  }
+
+  void Item::zoom(float xOrigin, float yOrigin,float factor)
+  {
+    if (visible)
+      {
+        auto g=group.lock();
+        if (!g)
+          {
+            minsky::zoom(m_x,xOrigin,factor);
+            minsky::zoom(m_y,yOrigin,factor);
+          }
+        else if (g->displayContents())
+          {
+            m_x*=factor;
+            m_y*=factor;
+          }
+        zoomFactor*=factor;
+      }
+  }
+
 
 }

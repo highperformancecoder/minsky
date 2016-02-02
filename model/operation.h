@@ -26,18 +26,20 @@
 // override EcoLab's default CLASSDESC_ACCESS macro
 #include "classdesc_access.h"
 
-#include "variableManager.h"
+#include "item.h"
+//#include "variableManager.h"
 #include "slider.h"
-#include "clickType.h"
+//#include "clickType.h"
 
 #include <vector>
 #include <cairo/cairo.h>
 
 #include <arrays.h>
 
+#include "polyBase.h"
 #include "polyPackBase.h"
 #include "operationType.h"
-#include "opVarBaseAttributes.h"
+//#include "opVarBaseAttributes.h"
 
 namespace minsky
 {
@@ -48,14 +50,14 @@ namespace minsky
 
   class OperationBase: public classdesc::PolyBase<minsky::OperationType::Type>,
                        virtual public classdesc::PolyPackBase,
-                       public OpVarBaseAttributes, public OperationType
+                       public Item, public OperationType
   {
     CLASSDESC_ACCESS(OperationBase);
   public:
     static constexpr float l=-8, h=12, r=12;
     typedef OperationType::Type Type;
 
-    size_t numPorts() const  {return ports().size();}
+    size_t numPorts() const  {return ports.size();}
     ///factory method. \a ports is used for recreating an object read
     ///from a schema
     static OperationBase* create(Type type, 
@@ -63,8 +65,8 @@ namespace minsky
     virtual OperationBase* clone() const=0;
 
     OperationBase() {}
-    OperationBase(const OpVarBaseAttributes& attr): OpVarBaseAttributes(attr) {}
-    OperationBase(const vector<int>& ports) {m_ports=ports;}
+    //    OperationBase(const OpVarBaseAttributes& attr): OpVarBaseAttributes(attr) {}
+    //    OperationBase(const vector<int>& ports) {m_ports=ports;}
     virtual ~OperationBase() {}
 
     /// visual representation of operation on the canvas
@@ -85,24 +87,19 @@ namespace minsky
     /// draws the icon onto the given cairo context 
     void draw(cairo_t*) const;
 
-    /// returns the clicktype given a mouse click at \a x, \a y.
-    ClickType::Type clickType(float x, float y) const override {
-      return minsky::clickType(*this,x,y);
-    }
-
     // returns true if multiple input wires are allowed.
     bool multiWire();
   protected:
     // manage the port structures associated with this operation
     virtual void addPorts()=0;
     void addPorts(unsigned numPorts);
-    void addPorts(const vector<int>& p) {
-      if (!p.empty())
-        // TODO - possible consistency check possible here
-        m_ports=p; 
-      else
-        addPorts(); 
-    }
+//    void addPorts(const vector<int>& p) {
+//      if (!p.empty())
+//        // TODO - possible consistency check possible here
+//        m_ports=p; 
+//      else
+//        addPorts(); 
+//    }
     void delPorts();
 
     friend struct EvalOpBase;
@@ -179,7 +176,7 @@ namespace minsky
 
     IntOp(): intVar(-1) {}
     IntOp(const vector<int>& ports);
-    ~IntOp() {if (!ecolab::interpExiting) variableManager().erase(intVarID(), true);}
+    //    ~IntOp() {if (!ecolab::interpExiting) variableManager().erase(intVarID(), true);}
 
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
@@ -208,14 +205,14 @@ namespace minsky
     /// return ID of integration variable
     int intVarID() const {return intVar;}
 
-    /// return reference to integration variable
-    VariablePtr getIntVar() const {
-      VariableManager::const_iterator i;
-      if (intVar>-1 && (i=variableManager().find(intVar))!=variableManager().end())
-        return *i;
-      else
-        return VariablePtr();
-    }
+//    /// return reference to integration variable
+//    VariablePtr getIntVar() const {
+//      VariableManager::const_iterator i;
+//      if (intVar>-1 && (i=variableManager().find(intVar))!=variableManager().end())
+//        return *i;
+//      else
+//        return VariablePtr();
+//    }
 
     /// toggles coupled state of integration variable. Only valid for integrate
     /// @return coupled state

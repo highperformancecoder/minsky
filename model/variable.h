@@ -21,7 +21,8 @@
 
 #include "slider.h"
 #include "str.h"
-#include "clickType.h"
+#include "group.h"
+//#include "clickType.h"
 
 #include <ecolab.h>
 #include <arrays.h>
@@ -34,7 +35,6 @@
 #include "polyBase.h"
 #include <polyPackBase.h>
 #include "variableType.h"
-#include "slider.h"
 #include "item.h"
 #include <cairo/cairo.h>
 
@@ -59,11 +59,19 @@ namespace minsky
     std::string m_name; 
 
     /// id of group or godely within which this variable is scoped. -1 = global
-    int m_scope=-1;
- 
+    int m_scope;
+
+    /// sets the scope of this variable. Does nothing if scope does not exist
+    void setScope(int);
+
+    friend class VariablePtr;
+    void addPorts(VariablePtr&);
+    
   public:
     ///factory method
     static VariableBase* create(Type type); 
+
+    virtual size_t numPorts() const=0;
 
     /// @{ variable displayed name
     virtual std::string name() const;
@@ -84,8 +92,6 @@ namespace minsky
 
     /// scope (namespace) of this variable. -1==global scope
     int scope() const {return m_scope;}
-    /// sets the scope of this variable. Does nothing if scope does not exist
-    void setScope(int);
 
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
@@ -108,7 +114,7 @@ namespace minsky
     void adjustSliderBounds();
 
     /// variable is on left hand side of flow calculation
-    bool lhs() const {return inPort()>-1;} 
+    bool lhs() const {return type()==flow || type()==tempFlow;} 
     /// variable is temporary
     bool temp() const {return type()==tempFlow || type()==undefined;}
     virtual Type type() const=0;
@@ -119,57 +125,50 @@ namespace minsky
 
     /// adds inPort for integral case (not relevant elsewhere) if one
     /// not allocated, removes it if one allocated
-    virtual void toggleInPort()=0;
+    virtual void toggleInPort();
 
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
     void draw(cairo_t*) const;
 
-    /// returns the clicktype given a mouse click at \a x, \a y.
-    ClickType::Type clickType(float x, float y) const override {
-      return minsky::clickType(*this,x,y);
-    }
-
   };
 
   // a separate class to allow automatic compiler generation of
   // VariableBase assignment to work
-  class VariablePorts: public VariableBase
-  {
-    void delPorts();
-    CLASSDESC_ACCESS(VariablePorts);
-    friend struct minsky::SchemaHelper;
-  protected:
-    void addPorts();
-  public:
-    VariablePorts() {}
-    ~VariablePorts() {delPorts();}
-
-    VariablePorts(const VariablePorts& x): VariableBase(x) {addPorts();}
-    VariablePorts& operator=(const VariablePorts& x) {
-      delPorts();
-      VariableBase::operator=(x);
-      m_ports.clear();
-      addPorts();
-      return *this;
-    }
-    
-    void swapPorts(VariablePorts& v);
-    void toggleInPort();
-  };
+//  class VariablePorts: public VariableBase
+//  {
+//    void delPorts();
+//    CLASSDESC_ACCESS(VariablePorts);
+//    friend struct minsky::SchemaHelper;
+//  protected:
+//    void addPorts();
+//  public:
+//    VariablePorts() {}
+//    ~VariablePorts() {delPorts();}
+//
+//    VariablePorts(const VariablePorts& x): VariableBase(x) {addPorts();}
+//    VariablePorts& operator=(const VariablePorts& x) {
+//      delPorts();
+//      VariableBase::operator=(x);
+//      m_ports.clear();
+//      addPorts();
+//      return *this;
+//    }
+//    
+//    void swapPorts(VariablePorts& v);
+//    void toggleInPort();
+//  };
 
   template <VariableType::Type T>
-  class Variable: public VariablePorts, public classdesc::PolyPack<Variable<T> >
+  class Variable: public VariableBase, public classdesc::PolyPack<Variable<T> >
   {
   public:
     typedef VariableBase::Type Type;
     Type type() const {return T;}
     size_t numPorts() const override;
 
-    Variable(const std::string& name="") {this->name(name); this->addPorts();}
-    Variable(const Variable& x) {*this=x;} // ensures addPorts correctly called
-    // clones the current object, allocating new ports
+    Variable(const std::string& name="") {this->name(name);}
     Variable* clone() const override {return new Variable(*this);}
   };
 
@@ -195,14 +194,15 @@ namespace minsky
     virtual int id() const {return -1;}
     VariablePtr(VariableBase::Type type=VariableBase::undefined, 
                 const std::string& name=""): 
-      PtrBase(VariableBase::create(type)) {get()->name(name);}
+      PtrBase(VariableBase::create(type)) {get()->name(name); get()->addPorts(*this);}
     template <class P>
     VariablePtr(P* var): PtrBase(dynamic_cast<VariableBase*>(var)) 
     {
+      get()->addPorts(*this);
       // check for incorrect type assignment
       assert(!var || *this);
     }
-    VariablePtr(const VariableBase& x): PtrBase(x.clone()) {}
+    VariablePtr(const VariableBase& x): PtrBase(x.clone()) {get()->addPorts(*this);}
     /// changes type of variable to \a type
     void retype(VariableBase::Type type);
   };

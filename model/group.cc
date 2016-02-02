@@ -19,8 +19,10 @@
 
 #include "group.h"
 #include "wire.h"
+#include <cairo_base.h>
 #include <ecolab_epilogue.h>
 using namespace std;
+using namespace ecolab::cairo;
 
 namespace minsky
 {
@@ -127,5 +129,101 @@ namespace minsky
         return true;
     return false;
   }
+
+  float Group::contentBounds(double& x0, double& y0, double& x1, double& y1) const
+  {
+    float localZoom=1;
+#ifndef CAIRO_HAS_RECORDING_SURFACE
+#error "Please upgrade your cairo to a version implementing recording surfaces"
+#endif
+    SurfacePtr surf
+      (new Surface
+       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+    for (auto& i: items)
+      try 
+        {
+          i->draw(surf->cairo());  
+          localZoom=i->zoomFactor;
+        }
+      catch (const std::exception& e) 
+        {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
+      catch (...) {cerr<<"illegal exception caught in draw()";}
+    cairo_recording_surface_ink_extents(surf->surface(),
+                                        &x0,&y0,&x1,&y1);
+
+    for (auto& i: groups)
+      {
+        float w=0.5f*i->width*i->zoomFactor,
+          h=0.5f*i->height*i->zoomFactor;
+        x0=min(i->x()-0.5*w, x0);
+        x1=max(i->x()+0.5*w, x1);
+        y0=min(i->y()-0.5*h, y0);
+        y1=max(i->x()+0.5*h, y1);
+      }
+
+
+    // if there are no contents, result is not finite. In this case,
+    // set the content bounds to a 10x10 sized box around the centroid of the I/O variables.
+
+    if (x0==numeric_limits<float>::max())
+      {
+        // TODO!
+//        float cx=0, cy=0;
+//        for (int i: inVariables)
+//          {
+//            cx+=cminsky().variables[i]->x();
+//            cy+=cminsky().variables[i]->y();
+//          }
+//        for (int i: outVariables)
+//          {
+//            cx+=cminsky().variables[i]->x();
+//            cy+=cminsky().variables[i]->y();
+//          }
+//        int n=inVariables.size()+outVariables.size();
+//        cx/=n;
+//        cy/=n;
+//        x0=cx-10;
+//        x1=cx+10;
+//        y0=cy-10;
+//        y1=cy+10;
+      }
+    else
+      {
+        // extend width by 2 pixels to allow for the slightly oversized variable icons
+        x0-=2*this->localZoom();
+        y0-=2*this->localZoom();
+        x1+=2*this->localZoom();
+        y1+=2*this->localZoom();
+      }
+
+    return localZoom;
+  }
+
+  float Group::computeDisplayZoom()
+  {
+    double x0, x1, y0, y1;
+    float l, r;
+    float lz=contentBounds(x0,y0,x1,y1);
+    x0=min(x0,double(x()));
+    x1=max(x1,double(x()));
+    y0=min(y0,double(y()));
+    y1=max(y1,double(y()));
+    // first compute the value assuming margins are of zero width
+    displayZoom = 2*max( max(x1-x(), x()-x0)/width, max(y1-y(), y()-y0)/height );
+
+    // account for shrinking margins
+    float readjust=zoomFactor/edgeScale() / (displayZoom>1? displayZoom:1);
+    //TODO    margins(l,r);
+    l*=readjust; r*=readjust;
+    displayZoom = max(displayZoom, 
+                      float(max((x1-x())/(0.5f*width-r), (x()-x0)/(0.5f*width-l))));
+  
+    // displayZoom*=1.1*rotFactor()/lz;
+
+    // displayZoom should never be less than 1
+    displayZoom=max(displayZoom, 1.0f);
+    return displayZoom;
+  }
+
 
 }

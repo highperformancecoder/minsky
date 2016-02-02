@@ -31,12 +31,24 @@ namespace minsky
 {
   class Group;
 
+  /// represents whether a mouse click is on the item, on an output
+  /// port (for wiring, or is actually outside the items boundary, and
+  /// a lasso is intended
+  struct ClickType
+  {
+    enum Type {onItem, onPort, outside};
+  };
+
+  /// radius of circle marking ports at zoom=1
+  constexpr float portRadius=6;
+
   class Item: public NoteBase
   {
   public:
     float m_x, m_y; ///< position in canvas, or within group
     float zoomFactor;
     double rotation; ///< rotation of icon, in degrees
+    bool visible=true;
     std::weak_ptr<Group> group;
   
     std::vector<std::shared_ptr<Port> > ports;
@@ -44,10 +56,14 @@ namespace minsky
     float y() const; 
 
     void moveTo(float x, float y);
+    void zoom(float xOrigin, float yOrigin,float factor);
 
     /// draw this item into a cairo context (circle is just some prelimary scaffolding)
     virtual void draw(cairo_t* cairo) {cairo_arc(cairo,0,0,3,0,2*M_PI);}
     virtual ~Item() {}
+ 
+    /// returns the clicktype given a mouse click at \a x, \a y.
+    ClickType::Type clickType(float x, float y);
   };
 
   class ItemPtr: public std::shared_ptr<Item>
@@ -63,6 +79,19 @@ namespace minsky
 
 }
 
+#ifdef CLASSDESC
+// omit these, because weak/shared pointers cause problems, and its
+// not needed anyway
+#pragma omit pack minsky::Item
+#pragma omit unpack minsky::Item
+#endif
+namespace classdesc_access
+{
+template <> struct access_pack<minsky::Item>: 
+  public classdesc::NullDescriptor<classdesc::pack_t> {};
+template <> struct access_unpack<minsky::Item>: 
+  public classdesc::NullDescriptor<classdesc::unpack_t> {};
+}
 #include "item.cd"
 #endif
 
