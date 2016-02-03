@@ -63,7 +63,7 @@ namespace minsky
         argv0.find(".get")==string::npos  && 
         m.pushHistoryIfDifferent())
       {
-        if (argv0!="minsky.load") m.markEdited();
+        if (argv0!="minsky.load" && argv0!="minsky.resetEdited") m.markEdited();
         if (m.eventRecord.get() && argv0=="minsky.startRecording")
           {
             for (int i=0; i<argc; ++i)

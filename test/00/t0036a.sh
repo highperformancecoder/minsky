@@ -38,6 +38,7 @@ proc afterMinskyStarted {} {uplevel #0 {
   minsky.load $here/examples/GoodwinLinear02.mky
   updateCanvas
   select [expr [group.x]-0.5*[group.width]] [expr [group.y]-0.5*[group.height]] [expr [group.x]+0.5*[group.width]] [expr [group.y]+0.5*[group.height]] 
+  resetEdited
   newSystem
   group.get [paste]
   assert {[operations.size]==4}

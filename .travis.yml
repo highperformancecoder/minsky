@@ -31,6 +31,7 @@ before_install:
   - sudo apt-get install -y libsoci-dev
   - sudo apt-get install -y libunittest++-dev
   - sudo apt-get install -y linkchecker
+  - sudo apt-get install -y csvprintf
   - psql -c 'create database minsky;' -U postgres
 #addons:
 #  postgresql: "9.3"
