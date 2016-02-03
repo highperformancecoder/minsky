@@ -62,12 +62,31 @@ namespace minsky
       assert(it.id()>=0);
       return addItem(it.id(), it);
     }
-    
+
+    template <class M>
+    bool recusiveDelete(M Group::*map, int id)
+    {
+      if ((this->*map).erase(id))
+        return true;
+      for (auto& g: groups)
+        if (g->recusiveDelete(map, id))
+          return true;
+      return false;
+    }
+
+    /// delete item from this, or contained group, if it exists
+    void deleteItem(int id) {recusiveDelete(&Group::items, id);}
+
+
     GroupPtr& addGroup(int id, const std::shared_ptr<Group>&);
     GroupPtr& addGroup(int id, Group* g) {return addGroup(id,std::shared_ptr<Group>(g));}
+    /// delete group from this, or contained group, if it exists
+    void deleteGroup(int id) {recusiveDelete(&Group::groups, id);}
 
     WirePtr& addWire(int id, const std::shared_ptr<Wire>&);
     WirePtr& addWire(int id, Wire* w) {return addWire(id, std::shared_ptr<Wire>(w));}
+    /// delete wire from this, or contained group, if it exists
+    void deleteWire(int id) {recusiveDelete(&Group::wires, id);}
 
     // finds item within this group or subgroups. Returns null if not found
     template <class T, class C> const ItemPtr& findItem(C) const;

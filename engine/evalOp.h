@@ -24,7 +24,7 @@
 #include <xml_unpack_base.h>
 
 #include "variableValue.h"
-#include "variableManager.h"
+//#include "variableManager.h"
 #include "operation.h"
 #include "polyPackBase.h"
 

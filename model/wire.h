@@ -22,6 +22,7 @@
 #include "noteBase.h"
 #include "intrusiveMap.h"
 
+#include <error.h>
 #include <arrays.h>
 #include <TCL_obj_base.h>
 #include "classdesc_access.h"
@@ -30,6 +31,7 @@ namespace minsky
 {
   class Port;
   class Group;
+  using ecolab::error;
 
   class Wire: public NoteBase
   {
@@ -46,7 +48,11 @@ namespace minsky
     Wire() {}
     Wire(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to, 
          const std::vector<float>& a_coords=std::vector<float>()): 
-      m_from(from), m_to(to) {coords(a_coords);}
+      m_from(from), m_to(to) 
+    {
+      if (!from || !to) throw error("wiring defunct ports");
+      coords(a_coords);
+    }
 
    ~Wire();
 

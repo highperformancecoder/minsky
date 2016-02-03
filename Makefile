@@ -40,7 +40,7 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
 	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
 	switchIcon.o
-MODEL_OBJS=wire.o item.o group.o port.o operation.o variable.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o
 ENGINE_OBJS=
 #evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o
 SERVER_OBJS=

@@ -64,7 +64,7 @@ namespace minsky
     Port(const std::shared_ptr<Item>& a_item, int f=noFlags): flags(f), item(a_item) {}
 
     ~Port();
-
+    
   };
 }
 
