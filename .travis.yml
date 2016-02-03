@@ -33,6 +33,7 @@ before_install:
   - sudo apt-get install -y linkchecker
   - sudo apt-get install -y csvprintf
   - psql -c 'create database minsky;' -U postgres
+  - ls /usr/lib/libsoci*
 #addons:
 #  postgresql: "9.3"
 script: 
@@ -44,6 +45,6 @@ script:
   - Xvfb :0 &
   - export DISPLAY=:0
   - echo "testEq.mky" >testDb.dat
-  - echo "postgresql://dbname=postgres user=postgres password=">>testDb.dat
+  - echo "postgresql://dbname=minsky user=postgres password=">>testDb.dat
   - export MINSKY_TEST_DATABASE_PARAMS=testDb.dat
   - make sure
