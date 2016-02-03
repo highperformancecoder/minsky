@@ -100,25 +100,30 @@ namespace minsky
     return *wires.insert(Wires::value_type(id,w)).first;
   }
 
-  const ItemPtr& Group::findItem(int id) const 
+  template <class T, class C> 
+  const ItemPtr& Group::findItem(C c) const
   {
     for (auto& i: items)
-      if (i.id()==id)
+      if (c(i))
         return i;
 
     for (auto& g: groups)
-      if (g.id()==id)
+      if (c(g))
         return g;
 
     for (auto& g: groups)
-      if (auto& i=g->findItem(id))
+      if (auto& i=g->findItem<T>(c))
         return i;
 
     static ItemPtr nullItem;
     return nullItem;
   }
 
-  
+  const ItemPtr& Group::findItem(int id) const
+  {return findItem<int>([&](const ItemPtr& i){return i.id()==id;});}
+  const ItemPtr& Group::findItem(const Item& it) const
+  {return findItem<const Item&>([&](const ItemPtr& i){return i.get()==&it;});}
+
   bool Group::higher(const GroupPtr& x) const
   {
     if (!x) return false; // global group x is always higher

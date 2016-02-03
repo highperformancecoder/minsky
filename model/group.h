@@ -70,7 +70,10 @@ namespace minsky
     WirePtr& addWire(int id, Wire* w) {return addWire(id, std::shared_ptr<Wire>(w));}
 
     // finds item within this group or subgroups. Returns null if not found
+    template <class T, class C> const ItemPtr& findItem(C) const;
     const ItemPtr& findItem(int id) const;
+    const ItemPtr& findItem(const Item& it) const;
+
     /// returns true if this is higher in the heirarchy than \a id
     bool higher(const GroupPtr&) const;
 

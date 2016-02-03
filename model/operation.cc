@@ -60,64 +60,40 @@ namespace minsky
       }
   }
 
-  void OperationBase::addPorts(unsigned numPorts)
+  void OperationBase::addPorts(const OperationPtr& ptr)
   {
-    m_ports.clear();
-    if (numPorts>0)
-      m_ports.push_back(minsky().addOutputPort());
-    for (size_t i=1; i<numPorts; ++i)
-      m_ports.push_back(minsky().addPort(Port(0,0,true,multiWire())));
-  }
-
-
-  IntOp::IntOp(const vector<int>& ports): Super(ports), intVar(-1) 
-  {
-    if (ports.empty())
-      {
-        delPorts(); // to be sure, although there shouldn't be any ports
-        addPorts();
-      }
+    ports.clear();
+    if (numPorts()>0)
+      ports.emplace_back(new Port(ptr,Port::noFlags));
+    for (size_t i=1; i<numPorts(); ++i)
+      ports.emplace_back
+        (new Port(ptr, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
 
   const IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 
-    intVar=-1;  // cause a new integral variable to be created
-    m_description=x.m_description; 
+    intVar.reset(x.intVar->clone());
     addPorts();
     return *this;
   }
 
-  void IntOp::addPorts()
-  {
-    m_ports.clear();
-    setDescription();
-    m_ports.push_back(minsky().addInputPort());
-  }
-
-
-  void OperationBase::delPorts()
-  {
-    for (int i: ports())
-      minsky().delPort(i);
-    m_ports.clear();
-  }
-
   void IntOp::newName()
   {
-    // if conversion unsuccessful, allocate a new variable name
-    int i=1;
-    string trialName;
-    do
-      trialName=m_description+str(i++);
-    while (variableManager().values.count(VariableManager::valueId(group, trialName)));
-    m_description=trialName;
-    if (intVar>-1)
-      variableManager()[intVar]->name(m_description);
+//    // if conversion unsuccessful, allocate a new variable name
+//    int i=1;
+//    string trialName;
+//    do
+//      trialName=m_description+str(i++);
+//    while (variableManager().values.count(VariableManager::valueId(group, trialName)));
+//    m_description=trialName;
+//    if (intVar>-1)
+//      variableManager()[intVar]->name(m_description);
   }
 
   void IntOp::setDescription()
   {
+#if 0 // TODO
     // body of this method defined in a lambda to ensure
     // makeConsistent() is called regardless of the return path.
     // makeConsistent() potentially throws, soc cannot be called from
@@ -194,14 +170,15 @@ namespace minsky
           }
       }();
     minsky().variables.makeConsistent();
+#endif
   }
 
-  bool OperationBase::selfWire(int from, int to) const
+  bool OperationBase::selfWire(const shared_ptr<Port>& from, const shared_ptr<Port>& to) const
   {
     bool r=false;
-    if (numPorts()>1 && from==ports()[0])
+    if (numPorts()>1 && from==ports[0])
       for (size_t i=1; !r && i<numPorts(); ++i) 
-        r|=to==ports()[i];
+        r|=to==ports[i];
     return r;
   }
 
@@ -210,25 +187,20 @@ namespace minsky
     OperationFactory<OperationBase, Operation> operationFactory;
   }
 
-  OperationBase* OperationBase::create(OperationType::Type type,
-                                       const vector<int>& ports)
+  OperationBase* OperationBase::create(OperationType::Type type)
   {
     switch (type)
       {
-      case integrate: return new IntOp(ports);
-      case data: return new DataOp(ports);
-      case constant: return new Constant(ports);
-      default:
-        auto r=operationFactory.create(type);
-        if (!ports.empty())
-          r->addPorts(ports);
-        return r;
+      case integrate: return new IntOp;
+      case data: return new DataOp;
+      case constant: return new Constant;
+      default: return operationFactory.create(type);
       }
   }
 
-  array<int> Operations::visibleOperations() const
+  ecolab::array<int> Operations::visibleOperations() const
   {
-    array<int> ret;
+    ecolab::array<int> ret;
     for (const_iterator i=begin(); i!=end(); ++i)
       if ((*i)->visible)
         ret<<=i->id();
@@ -245,34 +217,32 @@ namespace minsky
     bool r=[&]()
       {
         if (type()!=integrate) return false;
-        if (intVar==-1) setDescription();
 
-        VariablePtr v=getIntVar();
-        v->toggleInPort();
+        assert(intVar);
+        intVar->toggleInPort();
 
-        assert(m_ports.size()==2);
+        assert(ports.size()==2);
         if (coupled()) 
           {
             // we are coupled, decouple variable
             assert(v->inPort()>=0);
-            m_ports[0]=minsky().addOutputPort();
-            minsky().addWire(Wire(m_ports[0],v->inPort()));
-            v->visible=true;
-            v->rotation=rotation;
+            //TODO            ports[0].reset(new Port(minsky().findItem(intVar)));
+            //TODO minsky().addWire(Wire(m_ports[0],v->inPort()));
+            intVar->visible=true;
+            intVar->rotation=rotation;
             float angle=rotation*M_PI/180;
-            float xoffs=OperationBase::r+intVarOffset+RenderVariable(*v).width();
-            v->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
+            //TODO       float xoffs=OperationBase::r+intVarOffset+RenderVariable(*intVar).width();
+            //TODO intVar->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
           }
         else
           {
-            assert(v->inPort()==-1);
-            minsky().delPort(ports()[0]);
-            m_ports[0]=v->outPort();
-            v->visible=false;
+            intVar->ports[1].reset();
+            ports[0]=intVar->ports[0];
+            intVar->visible=false;
           }
         return coupled();
       }();
-    minsky().variables.makeConsistent();
+    //TODO minsky().variables.makeConsistent();
     return r;
   }
 
@@ -280,19 +250,19 @@ namespace minsky
   {
     string r="equations not yet constructed, please reset";
     // search the equation list for this operation
-    for (EvalOpVector::const_iterator ei=minsky().equations.begin();
-         ei!=minsky().equations.end(); ++ei)
-      if (this==(*ei)->state.get())
-        {
-          const EvalOpBase& e=**ei;
-          r="[out]="+str(ValueVector::flowVars[e.out]);
-          if (e.numArgs()>0)
-            r+=" [in1]="+ str(e.flow1? ValueVector::flowVars[e.in1]: 
-                               ValueVector::stockVars[e.in1]);
-          if (e.numArgs()>1)
-            r+=" [in2]="+ str(e.flow2? ValueVector::flowVars[e.in2]: 
-                               ValueVector::stockVars[e.in2]);
-        }
+//    for (EvalOpVector::const_iterator ei=minsky().equations.begin();
+//         ei!=minsky().equations.end(); ++ei)
+//      if (this==(*ei)->state.get())
+//        {
+//          const EvalOpBase& e=**ei;
+//          r="[out]="+str(ValueVector::flowVars[e.out]);
+//          if (e.numArgs()>0)
+//            r+=" [in1]="+ str(e.flow1? ValueVector::flowVars[e.in1]: 
+//                               ValueVector::stockVars[e.in1]);
+//          if (e.numArgs()>1)
+//            r+=" [in2]="+ str(e.flow2? ValueVector::flowVars[e.in2]: 
+//                               ValueVector::stockVars[e.in2]);
+//        }
     return r;
   }
 

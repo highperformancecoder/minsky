@@ -27,6 +27,7 @@
 #include "classdesc_access.h"
 
 #include "item.h"
+#include "variable.h"
 //#include "variableManager.h"
 #include "slider.h"
 //#include "clickType.h"
@@ -47,6 +48,7 @@ namespace minsky
   using namespace classdesc;
   using namespace std;
   using classdesc::shared_ptr;
+  class OperationPtr;
 
   class OperationBase: public classdesc::PolyBase<minsky::OperationType::Type>,
                        virtual public classdesc::PolyPackBase,
@@ -57,11 +59,10 @@ namespace minsky
     static constexpr float l=-8, h=12, r=12;
     typedef OperationType::Type Type;
 
-    size_t numPorts() const  {return ports.size();}
+    virtual size_t numPorts() const=0;
     ///factory method. \a ports is used for recreating an object read
     ///from a schema
-    static OperationBase* create(Type type, 
-                                 const vector<int>& ports = vector<int>()); 
+    static OperationBase* create(Type type); 
     virtual OperationBase* clone() const=0;
 
     OperationBase() {}
@@ -79,7 +80,7 @@ namespace minsky
 
     /// returns true if from matches the out port, and to matches one of
     /// the in ports
-    bool selfWire(int from, int to) const;
+    bool selfWire(const shared_ptr<Port>& from, const shared_ptr<Port>& to) const;
 
     /// returns a list of values the ports currently have
     string portValues() const;
@@ -89,18 +90,10 @@ namespace minsky
 
     // returns true if multiple input wires are allowed.
     bool multiWire();
-  protected:
+
     // manage the port structures associated with this operation
-    virtual void addPorts()=0;
-    void addPorts(unsigned numPorts);
-//    void addPorts(const vector<int>& p) {
-//      if (!p.empty())
-//        // TODO - possible consistency check possible here
-//        m_ports=p; 
-//      else
-//        addPorts(); 
-//    }
-    void delPorts();
+    void addPorts(const OperationPtr& ptr);
+  protected:
 
     friend struct EvalOpBase;
     friend class SchemaHelper;
@@ -115,19 +108,8 @@ namespace minsky
     typedef OperationType::Type Type;
     Type type() const {return T;}
     virtual void iconDraw(cairo_t *) const;
-
-    // ensure copies create new ports
-    Operation(const Operation& x): Super(x) {this->addPorts();}
-    const Operation& operator=(const Operation& x)
-    {Super::operator=(x); this->addPorts(); return *this;}
-
-    Operation() {this->addPorts();}
-    Operation(const vector<int>& ports) {this->addPorts(ports);}
-    ~Operation() {this->delPorts();}
-  protected:
-    using OperationBase::addPorts;
-    void addPorts(unsigned n) {OperationBase::addPorts(n);} // delegate to work around classdesc
-    void addPorts() override {addPorts(OperationTypeInfo::numArguments<T>()+1);}
+    virtual size_t numPorts() const override 
+    {return OperationTypeInfo::numArguments<T>()+1;}
   };
 
   struct NamedOp
@@ -140,9 +122,7 @@ namespace minsky
   {
     typedef Operation<OperationType::constant> Super;
   public:
-    double value; ///< constant value
-    Constant(const vector<int>& ports=vector<int>()):  
-      Super(ports), value(0) {}
+    double value=0; ///< constant value
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
@@ -163,10 +143,8 @@ namespace minsky
   {
     typedef Operation<OperationType::integrate> Super;
     // integrals have named integration variables
-    ///integration variable associated with this op. -1 if not used
-    int intVar; 
-    /// name of integration variable
-    string m_description; 
+    ///integration variable associated with this op.
+    VariablePtr intVar; 
     CLASSDESC_ACCESS(IntOp);
     void addPorts(); // override. Also allocates new integral var if intVar==-1
     friend struct SchemaHelper;
@@ -174,13 +152,12 @@ namespace minsky
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
 
-    IntOp(): intVar(-1) {}
-    IntOp(const vector<int>& ports);
+    IntOp() {}
     //    ~IntOp() {if (!ecolab::interpExiting) variableManager().erase(intVarID(), true);}
 
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x), intVar(-1), m_description(x.m_description)  {addPorts();}
+      OperationBase(x), Super(x), intVar(x.intVar->clone()) {addPorts();}
     const IntOp& operator=(const IntOp& x); 
 
     // clone has to be overridden, as default impl return object of
@@ -191,19 +168,20 @@ namespace minsky
     void setDescription();
     /// @{ name of the associated integral variable
     void description(const string& desc) {
-      m_description=desc;
+      assert(intVar);
+      intVar->name(desc);
       setDescription();
     }
-    const string& description() const {return m_description;}
+    string description() const {assert(intVar); return intVar->name();}
     /// @}
     /// generate a new name not otherwise in the system
     void newName(); 
 
     string valueId() const 
-    {return VariableManager::valueId(group, m_description);}
+    {return "";}//VariableManager::valueId(group, m_description);}
 
     /// return ID of integration variable
-    int intVarID() const {return intVar;}
+    int intVarID() const {assert(intVar); return intVar.id();}
 
 //    /// return reference to integration variable
 //    VariablePtr getIntVar() const {
@@ -218,12 +196,13 @@ namespace minsky
     /// @return coupled state
     bool toggleCoupled();
     bool coupled() const {
-      return intVar>-1 && ports().size()>0 && ports()[0]==getIntVar()->outPort();
+      assert(intVar);
+      return ports.size()>0 && intVar->ports.size()>0 && ports[0]==intVar->ports[0];
     }
 
     void setZoomOnAttachedVariable() {
-      if (auto v=getIntVar())
-        v->setZoom(zoomFactor);
+      assert(intVar);
+      intVar->setZoom(zoomFactor);
     }
 
     void pack(pack_t& x, const string& d) const
@@ -238,8 +217,6 @@ namespace minsky
     CLASSDESC_ACCESS(DataOp);
   public:
     std::map<double, double> data;
-    DataOp(const vector<int>& ports=vector<int>()):
-      Operation<OperationType::data>(ports) {}
     void readData(const string& fileName);
     // interpolates y data between x values bounding the argument
     double interpolate(double) const;
@@ -261,12 +238,11 @@ namespace minsky
   class OperationPtr: public classdesc::shared_ptr<OperationBase>
   {
   public:
-    OperationPtr(OperationType::Type type=OperationType::numOps,
-                 const vector<int>& ports=vector<int>()): 
-      shared_ptr<OperationBase>(OperationBase::create(type, ports)) {}
+    OperationPtr(OperationType::Type type=OperationType::numOps): 
+      shared_ptr<OperationBase>(OperationBase::create(type)) {get()->addPorts(*this);}
     // reset pointer to a newly created operation
     OperationPtr(OperationBase* op): shared_ptr<OperationBase>(op) 
-    {assert(op);}
+    {assert(op); get()->addPorts(*this);}
     OperationPtr clone() const {return OperationPtr(get()->clone());}
     virtual int id() const {return -1;}
     size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}
@@ -276,7 +252,7 @@ namespace minsky
 
   struct Operations: public TrackedIntrusiveMap<int, OperationPtr>
   {
-    array<int> visibleOperations() const;
+    ecolab::array<int> visibleOperations() const;
   };
 
 }
