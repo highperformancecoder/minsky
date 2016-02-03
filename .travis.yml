@@ -47,4 +47,5 @@ script:
   - echo "testEq.mky" >testDb.dat
   - echo "postgresql://dbname=minsky user=postgres password=">>testDb.dat
   - export MINSKY_TEST_DATABASE_PARAMS=testDb.dat
+  - export SOCI_BACKENDS_PATH=/usr/lib
   - make sure
