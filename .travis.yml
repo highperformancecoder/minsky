@@ -28,6 +28,7 @@ before_install:
   - sudo apt-get install -y libboost-filesystem-dev
   - sudo apt-get install -y libboost-thread-dev
   - sudo apt-get install -y libboost-signals-dev
+  - sudo apt-get install -y libsoci
   - sudo apt-get install -y libsoci-dev
   - sudo apt-get install -y libunittest++-dev
   - sudo apt-get install -y linkchecker
