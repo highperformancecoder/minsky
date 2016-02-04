@@ -45,8 +45,7 @@ script:
   - make AEGIS=1
   - Xvfb :0 &
   - export DISPLAY=:0
-  - echo "testEq.mky" >testDb.dat
-  - echo "postgresql://dbname=minsky user=postgres password=">>testDb.dat
-  - export MINSKY_TEST_DATABASE_PARAMS=`pwd`/testDb.dat
-  - export SOCI_BACKENDS_PATH=/usr/lib
+  - export MINSKY_TEST_DATABASE_PARAMS=$HOME/.testDatabase
+  - echo "testEq.mky" >$MINSKY_TEST_DATABASE_PARAMS
+  - echo "postgresql://dbname=minsky user=postgres password=">>$MINSKY_TEST_DATABASE_PARAMS
   - make sure
