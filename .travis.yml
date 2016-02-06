@@ -33,6 +33,8 @@ before_install:
   - sudo apt-get install -y libunittest++-dev
   - sudo apt-get install -y linkchecker
   - sudo apt-get install -y csvprintf
+  - sudo apt-get install -y libxml2-utils
+  - sudo apt-get install -y octave
 #  - psql -c 'create database minsky;' -U postgres
   - ls /usr/lib/libsoci*
 #addons:
