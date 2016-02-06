@@ -47,6 +47,6 @@ script:
   - export DISPLAY=:0
   - export MINSKY_TEST_DATABASE_PARAMS=$HOME/.testDatabase
   - echo "testEq.mky" >$MINSKY_TEST_DATABASE_PARAMS
-  - psql -U postgres <psql -U postgres <server/minskyPG.sql
+  - psql -U postgres <server/minskyPG.sql
   - echo "postgresql://dbname=postgres user=postgres password=">>$MINSKY_TEST_DATABASE_PARAMS
   - make sure
