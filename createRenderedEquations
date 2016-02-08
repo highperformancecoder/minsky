@@ -1,0 +1,20 @@
+#! /bin/sh
+
+here=`pwd`
+if test $? -ne 0; then exit 2; fi
+tmp=/tmp/$$
+mkdir $tmp
+if test $? -ne 0; then exit 2; fi
+cd $tmp
+if test $? -ne 0; then exit 2; fi
+
+
+cp $here/examples/*.mky $here/test/testEq.mky $here/test/test1argBinaryDisplays.mky .
+for i in *.mky; do
+  echo $i
+  $here/GUI/minsky $here/test/renderEquations.tcl $i
+done
+rsync *.gif home.hpcoders.com.au::tmp/renderedEquations
+
+cd
+rm -rf $tmp

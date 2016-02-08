@@ -75,7 +75,7 @@ int main(int argc, const char** argv)
         exp=RegExPredicate(argv[1]);
       if (listTests)
         {
-          for (Test* t=Test::GetTestList().GetHead(); t; t=t->next)
+          for (Test* t=Test::GetTestList().GetHead(); t; t=t->m_nextTest)
             if (exp(t))
               cout << name(*t)<<endl;
           return 0;

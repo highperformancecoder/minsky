@@ -27,9 +27,16 @@ before_install:
   - sudo apt-get install -y libboost-program-options-dev
   - sudo apt-get install -y libboost-filesystem-dev
   - sudo apt-get install -y libboost-thread-dev
+  - sudo apt-get install -y libboost-signals-dev
   - sudo apt-get install -y libsoci
-  - ls /usr/include/soci
-  - psql -c 'create database minsky;' -U postgres
+  - sudo apt-get install -y libsoci-dev
+  - sudo apt-get install -y libunittest++-dev
+  - sudo apt-get install -y linkchecker
+  - sudo apt-get install -y csvprintf
+  - sudo apt-get install -y libxml2-utils
+  - sudo apt-get install -y octave
+#  - psql -c 'create database minsky;' -U postgres
+  - ls /usr/lib/libsoci*
 #addons:
 #  postgresql: "9.3"
 script: 
@@ -37,16 +44,13 @@ script:
   - pushd ecolab
   - make install
   - popd
-  - git clone https://github.com/zaphoyd/websocketpp.git
-  - pushd websocketpp
-  - cmake .
-  - sudo make install
-  - popd
-  - ls /usr/local/include/websocketpp 
   - make AEGIS=1
-  - Xvfb :0 &
+  - Xvfb :0 &>/dev/null &
   - export DISPLAY=:0
-  - echo "testEq.mky" >testDb.dat
-  - echo "postgresql://dbname=postgres user=postgres password=">>testDb.dat
-  - export MINSKY_TEST_DATABASE_PARAMS=testDb.dat
+  - export MINSKY_TEST_DATABASE_PARAMS=$HOME/.testDatabase
+  - echo "testEq.mky" >$MINSKY_TEST_DATABASE_PARAMS
+  - psql -U postgres <server/minskyPG.sql
+  - echo "postgresql://dbname=postgres user=postgres password=">>$MINSKY_TEST_DATABASE_PARAMS
+# This step generates reference image files on the CI server 
+#  - sh createRenderedEquations
   - make sure

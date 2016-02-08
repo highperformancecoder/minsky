@@ -7595,7 +7595,7 @@
     <visible>true</visible>
     <coords>
      <float>951.729</float>
-     <float>3.76</float>
+     <float>3.76001</float>
      <float>984.729</float>
      <float>18.76</float>
     </coords>
@@ -8798,7 +8798,7 @@
     <id>668</id>
     <id>668</id>
     <x>938.729</x>
-    <y>3.76</y>
+    <y>3.76001</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -10110,7 +10110,7 @@
     <rotation>0</rotation>
     <width>138</width>
     <height>61</height>
-    <displayZoom>3.28699</displayZoom>
+    <displayZoom>3.30773</displayZoom>
    </Layout>
    <Layout>
     <id>790</id>
@@ -10121,7 +10121,7 @@
     <rotation>180</rotation>
     <width>154</width>
     <height>57</height>
-    <displayZoom>3.53773</displayZoom>
+    <displayZoom>3.55396</displayZoom>
    </Layout>
    <Layout>
     <id>791</id>
