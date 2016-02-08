@@ -44,7 +44,8 @@ script:
   - pushd ecolab
   - make install
   - popd
-  - make AEGIS=1
+#  - make AEGIS=1
+  - make 
   - Xvfb :0 &>/dev/null &
   - export DISPLAY=:0
   - export MINSKY_TEST_DATABASE_PARAMS=$HOME/.testDatabase
