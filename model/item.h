@@ -55,6 +55,8 @@ namespace minsky
     float x() const; 
     float y() const; 
 
+    virtual Item* clone() const {return new Item(*this);}
+
     void moveTo(float x, float y);
     void zoom(float xOrigin, float yOrigin,float factor);
 
@@ -70,6 +72,7 @@ namespace minsky
   {
   public:
     virtual int id() const {return -1;}
+    virtual ~ItemPtr() {}
 
     template <class... A> ItemPtr(A... x):
       std::shared_ptr<Item>(std::forward<A>(x)...) {}

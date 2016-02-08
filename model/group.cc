@@ -26,14 +26,17 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
-  Group& GroupPtr::operator*() const {return dynamic_cast<Group&>(ItemPtr::operator*());}
-  Group* GroupPtr::operator->() const {return dynamic_cast<Group*>(ItemPtr::operator->());}
+//  Group& GroupPtr::operator*() const {return dynamic_cast<Group&>(ItemPtr::operator*());}
+//  Group* GroupPtr::operator->() const {return dynamic_cast<Group*>(ItemPtr::operator->());}
 
 
-  ItemPtr& Group::addItem(int id, const shared_ptr<Item>& it)
+  ItemPtr Group::addItem(int id, const shared_ptr<Item>& it)
   {
     if (auto x=dynamic_pointer_cast<Group>(it))
-      return addGroup(id,x);
+      {
+        addGroup(id,x);
+        return it;
+      }
    
     auto origGroup=it->group.lock();
     assert(origGroup);
@@ -42,6 +45,8 @@ namespace minsky
 
     if (self.lock())
       it->group=self;
+    else
+      it->group.reset();
 
     // move wire to highest common group
     // TODO add in I/O variables if needed, and move wires to same group
@@ -67,21 +72,36 @@ namespace minsky
             // if origGroup is null, then it is global
             if (origGroup && otherGroup)
               {
-                if (origGroup->higher(otherGroup))
+                if (origGroup->higher(*otherGroup))
                   {
-                    if (higher(otherGroup))
+                    if (higher(*otherGroup))
                       w->moveGroup(*origGroup,*this);
                     else
                       w->moveGroup(*origGroup,*otherGroup);
                   }
                 else
-                  if (higher(otherGroup))
+                  if (higher(*otherGroup))
                     w->moveGroup(*otherGroup,*this);
               }
           }
       }
 
     return *items.insert(Items::value_type(id,it)).first;
+  }
+
+  void Group::moveContents(Group& source) {
+     if (&source!=this)
+       {
+         for (auto& i: source.groups)
+           if (i->higher(*this))
+             throw error("attempt to move a group into itself");
+          for (auto& i: source.items)
+            addItem(i);
+          for (auto& i: source.groups)
+            addGroup(i);
+          /// no need to move wires, as these are handled above
+          source.clear();
+       }
   }
 
   GroupPtr& Group::addGroup(int id, const std::shared_ptr<Group>& g)
@@ -124,15 +144,26 @@ namespace minsky
   const ItemPtr& Group::findItem(const Item& it) const
   {return findItem<const Item&>([&](const ItemPtr& i){return i.get()==&it;});}
 
-  bool Group::higher(const GroupPtr& x) const
+  bool Group::higher(const Group& x) const
   {
-    if (!x) return false; // global group x is always higher
+    //if (!x) return false; // global group x is always higher
     for (auto i: groups)
-      if (i==x) return true;
+      if (i.get()==&x) return true;
     for (auto i: groups)
-      if (higher(i))
+      if (higher(*i))
         return true;
     return false;
+  }
+
+  bool Group::uniqueKeys(set<int>& idset) const
+  {
+    for (auto& i: items)
+      if (!idset.insert(i.id()).second) return false;
+    for (auto& i: wires)
+      if (!idset.insert(i.id()).second) return false;
+    for (auto& i: groups)
+      if (!idset.insert(i.id()).second || !i->uniqueKeys(idset)) 
+        return false;
   }
 
   float Group::contentBounds(double& x0, double& y0, double& x1, double& y1) const
@@ -230,5 +261,13 @@ namespace minsky
     return displayZoom;
   }
 
+  int Group::maxId() const
+  {
+    int r=-1;
+    if (!items.empty()) r=items.rbegin()->id();
+    if (!wires.empty()) r=max(r,wires.rbegin()->id());
+    if (!groups.empty()) r=max(r,groups.rbegin()->id()); 
+    for (auto& g: groups) r=max(r,g->maxId());
+  }
 
 }

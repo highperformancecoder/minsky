@@ -191,7 +191,7 @@ namespace minsky
     void deleteOperation(int op);
 
     /// useful for debugging wiring diagrams
-    ecolab::array<int> unwiredOperations() const;
+    std::vector<int> unwiredOperations() const;
 
     //    int newVariable(const string& name) {return variables.newVariable(name, VariableType::flow);}
     int copyVariable(int id);
@@ -226,8 +226,6 @@ namespace minsky
     int createGroup();
     /// remove a group, leaving its contents in place
     void ungroup(int id);
-    /// delete a group and its contents
-    void deleteGroup(int i);
     void saveGroupAsFile(int i, const string& fileName) const;
 
     /// create a new godley icon at \a x, y
@@ -299,19 +297,30 @@ namespace minsky
 
     int insertGroupFromFile(const char* file);
 
+    /// move item from \a groupId into its parent
+    void addItemToGroup(int groupId, int varId);
+    void removeItemFromGroup(int groupId, int varId);
+
     /// add variable \a varid to group \a gid
-    void addVariableToGroup(int gid, int varid, bool checkIOregions=true);
+    void addVariableToGroup(int gid, int varid, bool checkIOregions=true)
+    {addItemToGroup(gid,varid); /* TODO checkIOregions */}
     /// remove variable \a varid from group \a gid
-    void removeVariableFromGroup(int gid, int varid);
+    void removeVariableFromGroup(int gid, int varid)
+    {removeItemFromGroup(gid,varid);}
     /// add operation \a opid to group \a gid
-    void addOperationToGroup(int gid, int opid);
+    void addOperationToGroup(int gid, int opid)
+    {addItemToGroup(gid,opid);}
     /// remove operation \a opid from group \a gid
-    void removeOperationFromGroup(int gid, int opid);
+    void removeOperationFromGroup(int gid, int opid)
+    {removeItemFromGroup(gid,opid);}
     /// add group \a gid1 to group \a group gid
     /// @return true if successful
-    bool addGroupToGroup(int gid, int gid1);
+    bool addGroupToGroup(int gid, int gid1)
+    {addItemToGroup(gid,gid1);}
+
     /// remove group \a gid1 from group \a group gid
-    void removeGroupFromGroup(int gid, int gid1);
+    void removeGroupFromGroup(int gid, int gid1)
+    {removeItemFromGroup(gid,gid1);}
 
     //    InGroup groupTest;
     /// current state of zoom
@@ -352,7 +361,7 @@ namespace minsky
 
     typedef MinskyMatrix Matrix; 
     void jacobian(Matrix& jac, double t, const double vars[]);
-
+    
     // Runge-Kutta parameters
     double stepMin{0}; ///< minimum step size
     double stepMax{0.01}; ///< maximum step size

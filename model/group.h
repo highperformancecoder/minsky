@@ -22,6 +22,7 @@
 #include "intrusiveMap.h"
 #include "item.h"
 #include "wire.h"
+#include <function.h>
 
 namespace minsky
 {
@@ -30,12 +31,14 @@ namespace minsky
   {
     void setself();
   public:
-    virtual int id() const {return -1;}
-
     template <class... A> GroupPtr(A... x):
       ItemPtr(std::forward<A>(x)...) {setself();}
-    virtual ~GroupPtr() {}
 
+    operator std::shared_ptr<Group>() const {
+      auto r=std::dynamic_pointer_cast<Group>(*this);
+      assert(r);
+      return r;
+    }
     Group& operator*() const;
     Group* operator->() const;
   };
@@ -53,15 +56,26 @@ namespace minsky
     std::weak_ptr<Group> self;
     float width{100}, height{100}; // size of icon
 
+    Group* clone() const {return new Group(*this);}
+
     int id() const {return m_id;}
 
+    void clear() {
+      items.clear();
+      groups.clear();
+      wires.clear();
+    }
+
     // add item, ownership is passed
-    ItemPtr& addItem(int id, Item* it) {return addItem(id,std::shared_ptr<Item>(it));}
-    ItemPtr& addItem(int id, const std::shared_ptr<Item>&);
-    ItemPtr& addItem(const ItemPtr& it) {
+    ItemPtr addItem(int id, Item* it) {return addItem(id,std::shared_ptr<Item>(it));}
+    ItemPtr addItem(int id, const std::shared_ptr<Item>&);
+    ItemPtr addItem(const ItemPtr& it) {
       assert(it.id()>=0);
       return addItem(it.id(), it);
     }
+
+    /// move all items from source to this
+    void moveContents(Group& source); 
 
     template <class M>
     bool recusiveDelete(M Group::*map, int id)
@@ -75,29 +89,92 @@ namespace minsky
     }
 
     /// delete item from this, or contained group, if it exists
-    void deleteItem(int id) {recusiveDelete(&Group::items, id);}
+    bool deleteItem(int id) {return recusiveDelete(&Group::items, id);}
 
 
     GroupPtr& addGroup(int id, const std::shared_ptr<Group>&);
     GroupPtr& addGroup(int id, Group* g) {return addGroup(id,std::shared_ptr<Group>(g));}
+    GroupPtr& addGroup(const GroupPtr& g) {
+      assert(g.id()>=0);
+      return addGroup(g.id(), g);
+    }
+
     /// delete group from this, or contained group, if it exists
-    void deleteGroup(int id) {recusiveDelete(&Group::groups, id);}
+    bool deleteGroup(int id) {return recusiveDelete(&Group::groups, id);}
 
     WirePtr& addWire(int id, const std::shared_ptr<Wire>&);
     WirePtr& addWire(int id, Wire* w) {return addWire(id, std::shared_ptr<Wire>(w));}
-    /// delete wire from this, or contained group, if it exists
-    void deleteWire(int id) {recusiveDelete(&Group::wires, id);}
+    WirePtr& addWire(const WirePtr& w) {
+      assert(w.id()>=0);
+      return addWire(w.id(), w);
+    }
 
-    // finds item within this group or subgroups. Returns null if not found
+    /// delete wire from this, or contained group, if it exists
+    bool deleteWire(int id) {return recusiveDelete(&Group::wires, id);}
+
+    /// finds item within this group or subgroups. Returns null if not found
     template <class T, class C> const ItemPtr& findItem(C) const;
     const ItemPtr& findItem(int id) const;
     const ItemPtr& findItem(const Item& it) const;
 
-    /// returns true if this is higher in the heirarchy than \a id
-    bool higher(const GroupPtr&) const;
+    /// finds all items/wires matching criterion \a c. Found items are transformed by \a tfm
+    //TODO - when functional has lambda support, use type deduction to remove the extra template argument
+    template <class Return, class R, class C, class M>
+    std::vector<Return> findItemsOrWires(C c, M (Group::*m), R tfm) const {
+      std::vector<Return> r;
+      for (auto& i: this->*m)
+        if (c(i)) r.push_back(tfm(i));
+
+      for (auto& i: groups)
+        {
+          //if (c(i)) r.push_back(tfm(i)); //TODO: Needed or not?
+          auto items=i->findItemsOrWires<Return>(c,m,tfm);
+          r.insert(r.end(), items.begin(), items.end());
+        }
+      return r;
+    }
+
+    /// returns list of items matching criterion \a c
+    template <class C>
+    std::vector<ItemPtr> findItems(C c) const {
+      return findItemsOrWires<ItemPtr>(c,&Group::items,[](ItemPtr x){return x;});
+    }
+
+    /// returns ids of items matching criterion \a c
+    template <class C>
+    std::vector<int> findItemIds(C c) const {
+      return findItemsOrWires<int>(c,&Group::items,[](const ItemPtr& x){return x.id();});
+    }
+   
+    /// returns list of wires matching criterion \a c
+    template <class C>
+    std::vector<WirePtr> findWires(C c) const {
+      return findItemsOrWires<WirePtr>(c,&Group::wires,[](WirePtr x){return x;});
+    }
+
+     /// returns list of groups matching criterion \a c
+    template <class C>
+    std::vector<GroupPtr> findGroups(C c) const {
+      return findItemsOrWires<GroupPtr>(c,&Group::groups,[](GroupPtr x){return x;});
+    }
+
+   
+
+    /// returns true if this is higher in the heirarchy than the argument
+    bool higher(const Group&) const;
 
     /// top level group
     Group& globalGroup() const;
+
+    /// returns true if items appear uniquely within the
+    /// heirarchy. Note the map structure does not guarantee that an
+    /// item doesn't appear within another group
+    bool uniqueKeys(std::set<int>& idset) const;
+    bool uniqueKeys() const {
+      std::set<int> idset;
+      return uniqueKeys(idset);
+    }
+    
 
     /// returns whether contents should be displayed
     bool displayContents() const {return zoomFactor>displayZoom;}
@@ -128,6 +205,10 @@ namespace minsky
       contentBounds(r[0],r[1],r[2],r[3]);
       return r;
     }
+
+    /// return maximum id in heirarchy routed at base
+    int maxId() const;
+
   };
 
   inline void GroupPtr::setself() {
