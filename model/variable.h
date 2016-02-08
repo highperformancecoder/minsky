@@ -64,8 +64,8 @@ namespace minsky
     /// sets the scope of this variable. Does nothing if scope does not exist
     void setScope(int);
 
-    friend class VariablePtr;
-    void addPorts(VariablePtr&);
+  protected:
+    void addPorts();
     
   public:
     ///factory method
@@ -95,7 +95,7 @@ namespace minsky
 
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-    void zoom(float xOrigin, float yOrigin,float factor);
+    //   void zoom(float xOrigin, float yOrigin,float factor);
     void setZoom(float factor) {zoomFactor=factor;}
 
     /// the initial value of this variable
@@ -125,12 +125,12 @@ namespace minsky
 
     /// adds inPort for integral case (not relevant elsewhere) if one
     /// not allocated, removes it if one allocated
-    virtual void toggleInPort();
+    // virtual void toggleInPort();
 
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
-    void draw(cairo_t*) const;
+    //   void draw(cairo_t*) const;
 
   };
 
@@ -168,7 +168,13 @@ namespace minsky
     Type type() const {return T;}
     size_t numPorts() const override;
 
-    Variable(const std::string& name="") {this->name(name);}
+    Variable(const Variable& x): VariableBase(x) {this->addPorts();}
+    Variable& operator=(const Variable& x) {
+      VariableBase::operator=(x);
+      this->addPorts();
+      return *this;
+    }
+    Variable(const std::string& name="") {this->name(name); this->addPorts();}
     Variable* clone() const override {return new Variable(*this);}
   };
 
@@ -194,15 +200,14 @@ namespace minsky
     virtual int id() const {return -1;}
     VariablePtr(VariableBase::Type type=VariableBase::undefined, 
                 const std::string& name=""): 
-      PtrBase(VariableBase::create(type)) {get()->name(name); get()->addPorts(*this);}
+      PtrBase(VariableBase::create(type)) {get()->name(name);}
     template <class P>
     VariablePtr(P* var): PtrBase(dynamic_cast<VariableBase*>(var)) 
     {
-      get()->addPorts(*this);
       // check for incorrect type assignment
       assert(!var || *this);
     }
-    VariablePtr(const VariableBase& x): PtrBase(x.clone()) {get()->addPorts(*this);}
+    VariablePtr(const VariableBase& x): PtrBase(x.clone()) {}
     /// changes type of variable to \a type
     void retype(VariableBase::Type type);
   };

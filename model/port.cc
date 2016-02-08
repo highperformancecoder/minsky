@@ -29,26 +29,17 @@ namespace minsky
 
   float Port::x() const 
   {
-    if (auto i=item.lock())
-      return m_x+i->x();
-    else
-      return m_x;
+    return m_x+item.x();
   }
 
   float Port::y() const 
   {
-    if (auto i=item.lock())
-      return m_y+i->y();
-    else
-      return m_y;
+    return m_y+item.y();
   }
 
   GroupPtr Port::group() const
   {
-    if (auto i=item.lock())
-      return i->group.lock();
-    else
-      return GroupPtr();
+    return item.group.lock();
   }
 
   void Port::eraseWire(Wire* w) 
@@ -71,10 +62,9 @@ namespace minsky
       wiresToDelete.push_back(w->id());
     wires.clear();
 
-    if (auto i=item.lock())
-      if (auto g=i->group.lock())
-        for (int w: wiresToDelete)
-          g->wires.erase(w);
+    if (auto g=item.group.lock())
+      for (int w: wiresToDelete)
+        g->wires.erase(w);
   }
 
 }

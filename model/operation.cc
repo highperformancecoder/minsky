@@ -20,7 +20,7 @@
 #include "operation.h"
 //#include "variable.h"
 //#include "portManager.h"
-//#include "minsky.h"
+#include "minsky.h"
 //#include "cairoItems.h"
 #include "str.h"
 
@@ -35,6 +35,69 @@ using namespace ecolab;
 namespace
 {
   inline double sqr(double x) {return x*x;}
+
+  struct DrawBinOp
+  {
+    cairo_t *cairo;
+    DrawBinOp(cairo_t *cairo): cairo(cairo) {}
+
+    void drawPlus() const
+    {
+      cairo_move_to(cairo,0,-5);
+      cairo_line_to(cairo,0,5);
+      cairo_move_to(cairo,-5,0);
+      cairo_line_to(cairo,5,0);
+      cairo_stroke(cairo);
+    }
+
+    void drawMinus() const
+    {
+      cairo_move_to(cairo,-5,0);
+      cairo_line_to(cairo,5,0);
+      cairo_stroke(cairo);
+    }
+
+    void drawMultiply() const
+    {
+      cairo_move_to(cairo,-5,-5);
+      cairo_line_to(cairo,5,5);
+      cairo_move_to(cairo,-5,5);
+      cairo_line_to(cairo,5,-5);
+      cairo_stroke(cairo);
+    }
+
+    void drawDivide() const
+    {
+      cairo_move_to(cairo,-5,0);
+      cairo_line_to(cairo,5,0);
+      cairo_new_sub_path(cairo);
+      cairo_arc(cairo,0,3,1,0,2*M_PI);
+      cairo_new_sub_path(cairo);
+      cairo_arc(cairo,0,-3,1,0,2*M_PI);
+      cairo_stroke(cairo);
+    }
+
+    // puts a small symbol to identify port
+    // x, y = position of symbol
+    void drawPort(void (DrawBinOp::*symbol)() const, float x, float y, float rotation)  const
+    {
+      cairo_save(cairo);
+      
+      double angle=rotation * M_PI / 180.0;
+      double fm=std::fmod(rotation,360);
+      if (!((fm>-90 && fm<90) || fm>270 || fm<-270))
+        y=-y;
+      cairo_rotate(cairo, angle);
+      
+      cairo_translate(cairo,0.7*x,0.6*y);
+      cairo_scale(cairo,0.5,0.5);
+      
+      // and counter-rotate
+      cairo_rotate(cairo, -angle);
+      (this->*symbol)();
+      cairo_restore(cairo);
+    }
+  };
 }
 
 namespace minsky
@@ -60,21 +123,20 @@ namespace minsky
       }
   }
 
-  void OperationBase::addPorts(const OperationPtr& ptr)
+  void OperationBase::addPorts()
   {
     ports.clear();
     if (numPorts()>0)
-      ports.emplace_back(new Port(ptr,Port::noFlags));
+      ports.emplace_back(new Port(*this,Port::noFlags));
     for (size_t i=1; i<numPorts(); ++i)
       ports.emplace_back
-        (new Port(ptr, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
+        (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
 
   const IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 
     intVar.reset(x.intVar->clone());
-    addPorts();
     return *this;
   }
 
@@ -219,15 +281,19 @@ namespace minsky
         if (type()!=integrate) return false;
 
         assert(intVar);
-        intVar->toggleInPort();
+        //        intVar->toggleInPort();
 
         assert(ports.size()==2);
         if (coupled()) 
           {
-            // we are coupled, decouple variable
-            assert(v->inPort()>=0);
-            //TODO            ports[0].reset(new Port(minsky().findItem(intVar)));
-            //TODO minsky().addWire(Wire(m_ports[0],v->inPort()));
+            intVar->ports.resize(2);
+            intVar->ports[0].reset(new Port(*intVar,Port::noFlags));
+            intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
+            Wire* newWire=new Wire(ports[0], intVar->ports[1]);
+            if (auto g=group.lock())
+              g->addWire(minsky().getNewId(), newWire);
+            else
+              minsky().addWire(minsky().getNewId(), newWire);
             intVar->visible=true;
             intVar->rotation=rotation;
             float angle=rotation*M_PI/180;
@@ -236,7 +302,7 @@ namespace minsky
           }
         else
           {
-            intVar->ports[1].reset();
+            intVar->ports.resize(1); // deletes wire also
             ports[0]=intVar->ports[0];
             intVar->visible=false;
           }
@@ -352,5 +418,303 @@ namespace minsky
     else 
       return (v->second-v1->second)/(v->first-v1->first);
   }
+
+  // virtual draw methods for operations - defined here rather than
+  // operations.cc because it is more related to the functionality in
+  // this file.
+
+  template <> void Operation<OperationType::constant>::iconDraw(cairo_t* cairo) const
+  {
+    assert(false); //shouldn't be here
+  }
+
+  template <> void Operation<OperationType::data>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_translate(cairo,-1,0);
+    cairo_scale(cairo,1.5,0.75);
+    cairo_arc(cairo,0,-3,3,0,2*M_PI);
+    cairo_arc(cairo,0,3,3,0,M_PI);
+    cairo_move_to(cairo,-3,3);
+    cairo_line_to(cairo,-3,-3);
+    cairo_move_to(cairo,3,3);
+    cairo_line_to(cairo,3,-3);
+    cairo_identity_matrix(cairo);
+    cairo_set_line_width(cairo,1);
+    cairo_stroke(cairo);
+  }
+
+  template <> void Operation<OperationType::time>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"t");
+  }
+
+  template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"=");
+  }
+
+  template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,4.5);
+    cairo_show_text(cairo,"\xE2\x88\xAB");
+    cairo_show_text(cairo,"dt");
+  }
+
+  template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    cairo_move_to(cairo,-7,-1);
+    cairo_set_font_size(cairo,8);
+    cairo_show_text(cairo,"d");
+    cairo_move_to(cairo,-7,0);cairo_line_to(cairo,2,0);
+    cairo_set_line_width(cairo,0.5);cairo_stroke(cairo);
+    cairo_move_to(cairo,-7,7);
+    cairo_show_text(cairo,"dt");
+    cairo_restore(cairo);
+  }
+
+  template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    cairo_set_font_size(cairo,10);   
+    cairo_move_to(cairo,-7,6);
+    cairo_show_text(cairo,"\xE2\x88\x9a");
+    cairo_set_line_width(cairo,0.5);
+    cairo_rel_move_to(cairo,0,-9);
+    cairo_rel_line_to(cairo,5,0);
+    cairo_set_source_rgb(cairo,0,0,0);
+    cairo_stroke(cairo);
+    cairo_restore(cairo);
+    //    cairo_show_text(cairo,"sqrt");
+  }
+
+  template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,3);
+    cairo_show_text(cairo,"e");
+    cairo_rel_move_to(cairo,0,-4);
+    cairo_set_font_size(cairo,7);
+    cairo_show_text(cairo,"x");
+  }
+
+  template <> void Operation<OperationType::pow>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-6,3);
+    cairo_show_text(cairo,"x");
+    cairo_rel_move_to(cairo,0,-4);
+    cairo_set_font_size(cairo,7);
+    cairo_show_text(cairo,"y");
+    cairo_set_font_size(cairo,5);
+    cairo_move_to(cairo, l+1, -h+6);
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+    cairo_show_text(cairo,"y");
+#else
+    cairo_show_text(cairo,"x");
+#endif
+    cairo_move_to(cairo, l+1, h-3);
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+    cairo_show_text(cairo,"x");
+#else
+    cairo_show_text(cairo,"y");
+#endif
+  }
+
+  template <> void Operation<OperationType::le>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"≤");
+  }
+
+  template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"<");
+  }
+
+  template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"=");
+  }
+
+  template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"min");
+  }
+
+  template <> void Operation<OperationType::max>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"max");
+  }
+
+  template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    cairo_set_source_rgb(cairo,0,0,0);
+    cairo_move_to(cairo,-4,3);
+    cairo_line_to(cairo,-1,-3);
+    cairo_line_to(cairo,2,3);
+    cairo_restore(cairo);
+  }
+
+  template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    cairo_set_source_rgb(cairo,0,0,0);
+    cairo_move_to(cairo,-4,-3);
+    cairo_line_to(cairo,-1,3);
+    cairo_line_to(cairo,2,-3);
+    cairo_restore(cairo);
+  }
+
+  template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"¬");
+  }
+
+  template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo," ln");
+  }
+
+  template <> void Operation<OperationType::log>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"log");
+    cairo_rel_move_to(cairo,0,3);
+    cairo_set_font_size(cairo,7);
+    cairo_show_text(cairo,"b");
+    cairo_set_font_size(cairo,5);
+    cairo_move_to(cairo, l+1, -h+6);
+    cairo_show_text(cairo,"x");
+    cairo_move_to(cairo, l+1, h-3);
+    cairo_show_text(cairo,"b");
+  
+  }
+
+  template <> void Operation<OperationType::sin>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"sin");
+  }
+
+  template <> void Operation<OperationType::cos>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"cos");
+  }
+
+  template <> void Operation<OperationType::tan>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"tan");
+  }
+
+  template <> void Operation<OperationType::asin>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,9);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"sin");
+    cairo_rel_move_to(cairo,0,-3);
+    cairo_set_font_size(cairo,7);
+    cairo_show_text(cairo,"-1");
+    cairo_rel_move_to(cairo,0,-2);
+  }
+
+  template <> void Operation<OperationType::acos>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,9);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"cos");
+    cairo_rel_move_to(cairo,0,-3);
+    cairo_set_font_size(cairo,7);
+    cairo_show_text(cairo,"-1");
+    cairo_rel_move_to(cairo,0,-2);
+  }
+
+  template <> void Operation<OperationType::atan>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,9);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"tan");
+    cairo_rel_move_to(cairo,0,-3);
+    cairo_set_font_size(cairo,7);
+    cairo_show_text(cairo,"-1");
+    cairo_rel_move_to(cairo,0,-2);
+  }
+
+  template <> void Operation<OperationType::sinh>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"sinh");
+  }
+
+  template <> void Operation<OperationType::cosh>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"cosh");
+  }
+
+  template <> void Operation<OperationType::tanh>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"tanh");
+  }
+
+  template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-6,3);
+    cairo_show_text(cairo,"|x|");
+  }
+  template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
+  {
+    DrawBinOp d(cairo);
+    d.drawPlus();
+    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation);
+    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
+  }
+
+  template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
+  {
+    DrawBinOp d(cairo);
+    d.drawMinus();
+    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
+    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation);
+  }
+
+  template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
+  {
+    DrawBinOp d(cairo);
+    d.drawMultiply();
+    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation);
+    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
+  }
+
+  template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
+  {
+    DrawBinOp d(cairo);
+    d.drawDivide();
+    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
+    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation);
+  }
+
+  template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
+  {/* needs to be here, and is actually called */}
+
+
 
 }

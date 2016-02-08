@@ -42,6 +42,15 @@ namespace minsky
   /// radius of circle marking ports at zoom=1
   constexpr float portRadius=6;
 
+  // ports are owned by their items, so it is not appropriate to
+  // default copy the port references
+  struct ItemPortVector: public std::vector<std::shared_ptr<Port> >
+  {
+    ItemPortVector() {}
+    ItemPortVector(const ItemPortVector&) {}
+    ItemPortVector& operator=(const ItemPortVector&) {return *this;}
+  };
+
   class Item: public NoteBase
   {
   public:
@@ -51,7 +60,7 @@ namespace minsky
     bool visible=true;
     std::weak_ptr<Group> group;
   
-    std::vector<std::shared_ptr<Port> > ports;
+    ItemPortVector ports;
     float x() const; 
     float y() const; 
 
@@ -63,7 +72,7 @@ namespace minsky
     /// draw this item into a cairo context (circle is just some prelimary scaffolding)
     virtual void draw(cairo_t* cairo) {cairo_arc(cairo,0,0,3,0,2*M_PI);}
     virtual ~Item() {}
- 
+
     /// returns the clicktype given a mouse click at \a x, \a y.
     ClickType::Type clickType(float x, float y);
   };

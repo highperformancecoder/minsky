@@ -26,8 +26,8 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
-//  Group& GroupPtr::operator*() const {return dynamic_cast<Group&>(ItemPtr::operator*());}
-//  Group* GroupPtr::operator->() const {return dynamic_cast<Group*>(ItemPtr::operator->());}
+  Group& GroupPtr::operator*() const {return dynamic_cast<Group&>(ItemPtr::operator*());}
+  Group* GroupPtr::operator->() const {return dynamic_cast<Group*>(ItemPtr::operator->());}
 
 
   ItemPtr Group::addItem(int id, const shared_ptr<Item>& it)
@@ -154,6 +154,15 @@ namespace minsky
         return true;
     return false;
   }
+
+  const Group& Group::globalGroup() const
+  {
+    auto g=this;
+    while (auto g1=g->group.lock())
+      g=g1.get();
+    return *g;
+  }
+
 
   bool Group::uniqueKeys(set<int>& idset) const
   {

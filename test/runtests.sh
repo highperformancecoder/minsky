@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# for now, just run unittests
+set -e
+test/unittests
+exit
+
 t=0
 for i in test/00/*.sh; do 
   sh $i

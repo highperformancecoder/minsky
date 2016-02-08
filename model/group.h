@@ -164,7 +164,7 @@ namespace minsky
     bool higher(const Group&) const;
 
     /// top level group
-    Group& globalGroup() const;
+    const Group& globalGroup() const;
 
     /// returns true if items appear uniquely within the
     /// heirarchy. Note the map structure does not guarantee that an

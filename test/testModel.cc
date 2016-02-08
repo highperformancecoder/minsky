@@ -18,11 +18,29 @@
 */
 
 #include "group.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 using namespace std;
+
+namespace minsky
+{
+  namespace
+  {
+    Minsky* l_minsky=NULL;
+  }
+
+  Minsky& minsky()
+  {
+    static Minsky s_minsky;
+    if (l_minsky)
+      return *l_minsky;
+    else
+      return s_minsky;
+  }
+}
 
 namespace
 {
@@ -38,7 +56,7 @@ namespace
     int gid;
     int aid,bid,cid;
     int abid,bcid; 
-    ItemPtr& addItem(int id, Item* it)
+    ItemPtr addItem(int id, Item* it)
     {
       it->group=dynamic_pointer_cast<Group>(*this);
       return self.addItem(id,it);
@@ -56,20 +74,17 @@ namespace
       aid(getNextId()), bid(getNextId()), cid(getNextId()),
       abid(getNextId()), bcid(getNextId())
    {
-     ItemPtr a=addItem(aid, new Item);
-     ItemPtr b=addItem(bid, new Item);
-     ItemPtr c=addItem(cid, new Item);
+     ItemPtr a=addItem(aid, new Variable<VariableType::flow>);
+     ItemPtr b=addItem(bid, new Variable<VariableType::flow>);
+     ItemPtr c=addItem(cid, new Variable<VariableType::flow>);
      // create 3 variables, wire them and add first two to a group,
      // leaving 3rd external
      a->moveTo(100,100);
      b->moveTo(200,100);
      c->moveTo(300,100);
-     a->ports.emplace_back(new Port(a));
-     a->ports.emplace_back(new Port(a,Port::inputPort));
-     b->ports.emplace_back(new Port(b));
-     b->ports.emplace_back(new Port(b,Port::inputPort));
-     c->ports.emplace_back(new Port(c));
-     c->ports.emplace_back(new Port(c,Port::inputPort));
+     CHECK_EQUAL(2,a->ports.size());
+     CHECK_EQUAL(2,b->ports.size());
+     CHECK_EQUAL(2,c->ports.size());
 
      WirePtr& ab=self.addWire(abid, new Wire);
      WirePtr& bc=self.addWire(bcid, new Wire);

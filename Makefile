@@ -45,12 +45,12 @@ ENGINE_OBJS=
 #evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o
 SERVER_OBJS=
 #database.o message.o websocket.o databaseServer.o
-SCHEMA_OBJS=
+SCHEMA_OBJS=variableType.o operationType.o
 #schema0.o schema1.o variableType.o operationType.o
 
 #ALL_OBJS=tclmain.o $(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS)
-ALL_OBJS=tclmain.o $(MODEL_OBJS)
-EXES=$(MODEL_OBJS)
+ALL_OBJS=tclmain.o $(MODEL_OBJS) $(SCHEMA_OBJS)
+EXES=$(MODEL_OBJS) $(SCHEMA_OBJS)
 
 
 # TODO - remove dependency on GUI directory here

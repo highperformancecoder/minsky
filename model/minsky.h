@@ -172,6 +172,7 @@ namespace minsky
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
     int addWire(int from, int to, unsigned toIdx, const std::vector<float>& coords); 
+    using Group::addWire;
     void deleteWire(int id);
 
 

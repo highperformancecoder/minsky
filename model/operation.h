@@ -65,9 +65,6 @@ namespace minsky
     static OperationBase* create(Type type); 
     virtual OperationBase* clone() const=0;
 
-    OperationBase() {}
-    //    OperationBase(const OpVarBaseAttributes& attr): OpVarBaseAttributes(attr) {}
-    //    OperationBase(const vector<int>& ports) {m_ports=ports;}
     virtual ~OperationBase() {}
 
     /// visual representation of operation on the canvas
@@ -86,13 +83,14 @@ namespace minsky
     string portValues() const;
 
     /// draws the icon onto the given cairo context 
-    void draw(cairo_t*) const;
+    //void draw(cairo_t*) const;
 
     // returns true if multiple input wires are allowed.
     bool multiWire();
 
     // manage the port structures associated with this operation
-    void addPorts(const OperationPtr& ptr);
+    virtual void addPorts();
+
   protected:
 
     friend struct EvalOpBase;
@@ -110,6 +108,13 @@ namespace minsky
     virtual void iconDraw(cairo_t *) const;
     virtual size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
+    Operation() {this->addPorts();}
+    Operation(const Operation& x): Super(x) {this->addPorts();}
+    Operation& operator=(const Operation& x) {
+      Super::operator=(x);
+      this->addPorts();
+      return *this;
+    }
   };
 
   struct NamedOp
@@ -146,18 +151,16 @@ namespace minsky
     ///integration variable associated with this op.
     VariablePtr intVar; 
     CLASSDESC_ACCESS(IntOp);
-    void addPorts(); // override. Also allocates new integral var if intVar==-1
+    //   void addPorts() override; //. Also allocates new integral var if intVar==-1
     friend struct SchemaHelper;
   public:
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
 
     IntOp() {}
-    //    ~IntOp() {if (!ecolab::interpExiting) variableManager().erase(intVarID(), true);}
-
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x), intVar(x.intVar->clone()) {addPorts();}
+      OperationBase(x), Super(x), intVar(x.intVar->clone()) {}
     const IntOp& operator=(const IntOp& x); 
 
     // clone has to be overridden, as default impl return object of
@@ -239,10 +242,10 @@ namespace minsky
   {
   public:
     OperationPtr(OperationType::Type type=OperationType::numOps): 
-      shared_ptr<OperationBase>(OperationBase::create(type)) {get()->addPorts(*this);}
+      shared_ptr<OperationBase>(OperationBase::create(type)) {}
     // reset pointer to a newly created operation
     OperationPtr(OperationBase* op): shared_ptr<OperationBase>(op) 
-    {assert(op); get()->addPorts(*this);}
+    {assert(op);}
     OperationPtr clone() const {return OperationPtr(get()->clone());}
     virtual int id() const {return -1;}
     size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}

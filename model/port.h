@@ -45,7 +45,7 @@ namespace minsky
     Port(const Port&)=delete;
     void operator=(const Port&)=delete;
   public:
-    std::weak_ptr<Item> item;
+    Item& item; // owner of this port
     std::vector<WirePtr*> wires;
     GroupPtr group() const;
 
@@ -60,8 +60,8 @@ namespace minsky
     bool multiWireAllowed() const {return flags&multiWire;}
     float x() const;
     float y() const;
-    Port() {}
-    Port(const std::shared_ptr<Item>& a_item, int f=noFlags): flags(f), item(a_item) {}
+    //Port() {}
+    Port(Item& a_item, int f=noFlags): flags(f), item(a_item) {}
 
     ~Port();
     

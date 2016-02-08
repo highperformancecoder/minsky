@@ -31,14 +31,14 @@ using namespace ecolab;
 using namespace minsky;
 using ecolab::array;
 
-void VariableBase::addPorts(VariablePtr& ptr)
+void VariableBase::addPorts()
 {
   ports.clear();
   if (numPorts()>0)
-    ports.emplace_back(new Port(ptr,Port::noFlags));
+    ports.emplace_back(new Port(*this,Port::noFlags));
   for (size_t i=1; i<numPorts(); ++i)
     ports.emplace_back
-      (new Port(ptr, Port::inputPort));
+      (new Port(*this, Port::inputPort));
 }
 //
 //void VariablePorts::delPorts()
@@ -59,14 +59,16 @@ void VariableBase::addPorts(VariablePtr& ptr)
 //{
 //  if (type()==integral)
 //    {
-//      if (m_ports.size()<2)
-//        m_ports.resize(2,-1);
-//      if (m_ports[1]==-1)
-//        m_ports[1] = minsky().addPort(Port(x(),y(),true));
-//      else 
+//      switch (ports.size())
 //        {
-//          minsky().delPort(m_ports[1]);
-//          m_ports[1]=-1;
+//        case 1:
+//          ports.emplace_back(new Port(ports[0]->item.lock(),Port::inputPort));
+//          break;
+//        case 2:
+//          ports.pop_back();
+//          break;
+//        default:
+//          throw error("invalid number of ports");
 //        }
 //    }
 //}
@@ -90,6 +92,7 @@ VariableBase* VariableBase::create(VariableType::Type type)
 
 string VariableBase::valueId() const 
 {
+  return m_name;
   //  return VariableManager::valueId(m_scope, m_name);
 }
 
