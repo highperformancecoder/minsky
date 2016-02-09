@@ -42,6 +42,15 @@ namespace minsky
       return m_y;
   }
 
+  bool Item::visible() const 
+  {
+    if (auto g=group.lock())
+      return m_visible && g->displayContents();
+    else
+      return m_visible;
+  }
+  
+
   void Item::moveTo(float x, float y)
   {
     if (auto g=group.lock())
@@ -76,7 +85,7 @@ namespace minsky
 
   void Item::zoom(float xOrigin, float yOrigin,float factor)
   {
-    if (visible)
+    if (visible())
       {
         auto g=group.lock();
         if (!g)

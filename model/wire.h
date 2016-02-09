@@ -47,12 +47,7 @@ namespace minsky
 
     Wire() {}
     Wire(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to, 
-         const std::vector<float>& a_coords=std::vector<float>()): 
-      m_from(from), m_to(to) 
-    {
-      if (!from || !to) throw error("wiring defunct ports");
-      coords(a_coords);
-    }
+         const std::vector<float>& a_coords=std::vector<float>()); 
 
    ~Wire();
 
@@ -62,19 +57,24 @@ namespace minsky
     /// display coordinates 
     std::vector<float> coords() const;
     std::vector<float> coords(const std::vector<float>& coords);
+
+    /// whether this wire is visible or not
+    bool visible() const;
+    /// move this from its group into dest
+    void moveIntoGroup(Group& dest);
   };
 
   class WirePtr: public std::shared_ptr<Wire>
   {
   public:
     virtual int id() const {return -1;}
-   template <class... A> WirePtr(A... x):
+    template <class... A> WirePtr(A... x):
       std::shared_ptr<Wire>(std::forward<A>(x)...) {}
     virtual ~WirePtr() {}
 
     /// move this wire from \a src to \a dest
     void moveGroup(Group& src, Group& dest);
-    void addPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
+    //    void addPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
     std::shared_ptr<Port> from() const {return get()->from();}
     std::shared_ptr<Port> to() const {return get()->to();}
   };

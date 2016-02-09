@@ -57,7 +57,7 @@ namespace minsky
     float m_x, m_y; ///< position in canvas, or within group
     float zoomFactor;
     double rotation; ///< rotation of icon, in degrees
-    bool visible=true;
+    bool m_visible=true; ///< if false, then this item is invisible
     std::weak_ptr<Group> group;
   
     ItemPortVector ports;
@@ -65,6 +65,9 @@ namespace minsky
     float y() const; 
 
     virtual Item* clone() const {return new Item(*this);}
+
+    /// whether this item is visible on the canvas. 
+    bool visible() const;
 
     void moveTo(float x, float y);
     void zoom(float xOrigin, float yOrigin,float factor);

@@ -264,7 +264,7 @@ namespace minsky
   {
     ecolab::array<int> ret;
     for (const_iterator i=begin(); i!=end(); ++i)
-      if ((*i)->visible)
+      if ((*i)->visible())
         ret<<=i->id();
     return ret;
   }
@@ -293,8 +293,8 @@ namespace minsky
             if (auto g=group.lock())
               g->addWire(minsky().getNewId(), newWire);
             else
-              minsky().addWire(minsky().getNewId(), newWire);
-            intVar->visible=true;
+              minsky().model->addWire(minsky().getNewId(), newWire);
+            intVar->m_visible=true;
             intVar->rotation=rotation;
             float angle=rotation*M_PI/180;
             //TODO       float xoffs=OperationBase::r+intVarOffset+RenderVariable(*intVar).width();
@@ -304,7 +304,7 @@ namespace minsky
           {
             intVar->ports.resize(1); // deletes wire also
             ports[0]=intVar->ports[0];
-            intVar->visible=false;
+            intVar->m_visible=false;
           }
         return coupled();
       }();

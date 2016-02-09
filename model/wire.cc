@@ -36,7 +36,7 @@ namespace minsky
         {
           c.push_back(f->x());
           c.push_back(f->y());
-          for (size_t i=0; i<m_coords.size()-1; i+=2)
+          for (size_t i=0; m_coords.size()>1 && i<m_coords.size()-1; i+=2)
             {
               c.push_back(f->x() + (t->x()-f->x())*m_coords[i]);
               c.push_back(f->y() + (t->y()-f->y())*m_coords[i+1]);
@@ -59,8 +59,6 @@ namespace minsky
         if (auto f=from())
           if (auto t=to())
             {
-              assert(f->x()==coords[0] && f->y()==coords[1]);
-              assert(t->x()==coords[coords.size()-1] && t->y()==coords[coords.size()-2]);
               float dx=coords[coords.size()-2]-coords[0];
               float dy=coords[coords.size()-1]-coords[1];
               m_coords.resize(coords.size()-4);
@@ -71,8 +69,18 @@ namespace minsky
                 }
             }
       }
-    assert(coords==this->coords());
     return coords;
+  }
+
+
+  Wire::Wire(const shared_ptr<Port>& from, const shared_ptr<Port>& to, 
+         const vector<float>& a_coords): 
+      m_from(from), m_to(to) 
+  {
+    if (!from || !to) throw error("wiring defunct ports");
+    coords(a_coords);
+    m_from.lock()->wires.push_back(this);
+    m_to.lock()->wires.push_back(this);
   }
 
   Wire::~Wire()
@@ -83,31 +91,33 @@ namespace minsky
       fromPort->eraseWire(this);
   }
 
-  void WirePtr::moveGroup(Group& src, Group& dest)
+  bool Wire::visible() const
   {
-    if (&src==&dest) return;
-    auto oldWit=src.wires.find(id());
-    auto& newWp=dest.wires[id()]=*oldWit;
-    // we need to ensure that the port references are updated too
-    assert(newWp->from() && newWp->to());
-    newWp->from()->eraseWire(oldWit->get());
-    newWp->from()->wires.push_back(&newWp);
-    newWp->to()->eraseWire(oldWit->get());
-    newWp->to()->wires.push_back(&newWp);
-
-    src.wires.erase(oldWit);
-    // TODO
-    // assert(w->from.lock().group()==dest);
-    // assert(w->to.lock().group()==dest);
+    auto f=from(), t=to();
+    return f && t && (f->item.visible() || (t->item.visible())); 
   }
-  void WirePtr::addPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
+
+  void Wire::moveIntoGroup(Group& dest)
   {
-    get()->m_from=from; 
-    get()->m_to=to;
-    if (from) 
-      from->wires.push_back(this);
-    if (to) 
-      to->wires.push_back(this);
+    WirePtr wp;
+    int id=-1;
+    // one hit find and remove wire from its map, saving the wire and
+    // its id
+    dest.globalGroup().recursiveDo
+      (&Group::wires, 
+       [&](Wires& wires, Wires::iterator i) {
+        if (i->get()==this) 
+          {
+            wp=*i;
+            id=i->id();
+            wires.erase(i);
+            return true;
+          }
+        else
+          return false;
+      }); 
+    if (wp)
+      dest.addWire(id,wp);
   }
 
 }

@@ -45,7 +45,7 @@ namespace minsky
   void Port::eraseWire(Wire* w) 
   {
     for (auto i=wires.begin(); i!=wires.end(); ++i)
-      if ((*i)->get()==w) 
+      if (*i==w) 
         {
           wires.erase(i);
           break;
@@ -57,14 +57,16 @@ namespace minsky
     // destruction of this port must also destroy all attached wires
 
     // copy out list of wire ids to prevent a snarl up from ~wires()
-    vector<int> wiresToDelete;
-    for (auto& w: wires)
-      wiresToDelete.push_back(w->id());
+    set<Wire*> wiresToDelete(wires.begin(), wires.end());
     wires.clear();
 
+    /// wires could be anywhere, so we need to walk the whole heirachy
     if (auto g=item.group.lock())
-      for (int w: wiresToDelete)
-        g->wires.erase(w);
+      g->globalGroup().recursiveDo(&Group::wires, [&](Wires& wires, Wires::iterator& i) {
+        if (wiresToDelete.erase(i->get()))
+          wires.erase(i);
+        return wiresToDelete.empty();
+      });
   }
 
 }

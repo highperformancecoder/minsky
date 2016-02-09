@@ -162,13 +162,7 @@ namespace minsky
 
   void Minsky::clearAllMaps()
   {
-    items.clear();
-    groups.clear();
-    wires.clear();
-    //    variables.values.clear();
-    // these two are needed, because they could be holding onto
-    // operations or variables, which might cause port deletions in
-    // later models
+    model->clear();
 //    equations.clear();
 //    integrals.clear();
 //    
@@ -191,7 +185,7 @@ namespace minsky
   const char* Minsky::minskyVersion=MINSKY_VERSION;
 
   int Minsky::addWire(int from, int to, unsigned toIdx, const std::vector<float>& coords) {
-    ItemPtr fromItem=findItem(from), toItem=findItem(to);
+    ItemPtr fromItem=model->findItem(from), toItem=model->findItem(to);
     if (!fromItem || !toItem)
       return -1;
     if (toIdx>=toItem->ports.size()) 
@@ -222,7 +216,7 @@ namespace minsky
 
     // TODO: don't add to top level group, but figure out which group
     int id=getNewId();
-    Group::addWire(id, new Wire(fromP, toP, coords));
+    model->addWire(id, new Wire(fromP, toP, coords));
 
 //    // work out which group to add the wire to (if any)
 //    groupTest.initGroupList(groupItems);
@@ -240,17 +234,17 @@ namespace minsky
                        (enumKey<OperationType::Type>(o)));
     if (!newOp) return -1;
     int id=getNewId();
-    Group::addItem(id, newOp);
+    model->addItem(id, newOp);
     markEdited();
     return id;
   }
 
   int Minsky::copyOperation(int id)
   {
-    auto source=findItem(id);
+    auto source=model->findItem(id);
     if (!source) return -1;
     int newId=getNewId();
-    addItem(newId, source->clone());
+    model->addItem(newId, source->clone());
     markEdited();
     return newId;
   }
@@ -258,7 +252,7 @@ namespace minsky
 
   void Minsky::deleteOperation(int opid)
   {
-    if (deleteItem(opid))
+    if (model->removeItem(opid))
       markEdited();
   }
 
@@ -266,7 +260,7 @@ namespace minsky
   {
     //TODO
     int id=getNewId();
-    GroupPtr g=addGroup(id, new Group);
+    GroupPtr g=model->addGroup(id, new Group);
 
 //    g->addWires(currentSelection.wires);
 //    if (currentSelection.group>=0 && groupItems.count(currentSelection.group))
@@ -309,13 +303,13 @@ namespace minsky
 
   void Minsky::ungroup(int id)
   {
-    if (auto src=dynamic_pointer_cast<Group>(findItem(id)))
+    if (auto src=dynamic_pointer_cast<Group>(model->findItem(id)))
       {
-        moveContents(*src);
+        model->moveContents(*src);
         if (auto parent=src->group.lock())
           parent->groups.erase(id);
         else
-          groups.erase(id);
+          model->groups.erase(id);
         markEdited();
       }
   }
@@ -488,7 +482,7 @@ namespace minsky
 
   vector<int> Minsky::unwiredOperations() const
   {
-    return findItemIds([&](const ItemPtr& x) {
+    return model->findItemIds([&](const ItemPtr& x) {
         if (auto o=dynamic_cast<OperationBase*>(x.get()))
           for (auto& p: o->ports)
             if (p->input() && !p->multiWireAllowed() && p->wires.empty())
@@ -500,14 +494,14 @@ namespace minsky
 
   int Minsky::copyVariable(int id)
   {
-    const auto& it=findItem(id);
+    const auto& it=model->findItem(id);
     if (auto v=dynamic_cast<const VariableBase*>(it.get()))
       {
         int id=getNewId();
         VariableBase* v1=v->clone();
         assert(v1);
-        addItem(id, v1);
-        v1->visible=true; // a copied variable should always be visible!
+        model->addItem(id, v1);
+        v1->m_visible=true; // a copied variable should always be visible!
         v1->sliderVisible=false; // sliders should start out invisible
         markEdited();
         return id;
@@ -1028,21 +1022,21 @@ namespace minsky
 
   void Minsky::addItemToGroup(int groupId, int id)
   {
-    if (auto g=dynamic_cast<Group*>(findItem(groupId).get()))
-      if (auto& it=findItem(id))
+    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
+      if (auto& it=model->findItem(id))
         g->addItem(it);
   }
 
   void Minsky::removeItemFromGroup(int groupId, int varId)
   {
-    if (auto g=dynamic_cast<Group*>(findItem(groupId).get()))
+    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
       {
         auto vit=g->items.find(varId);
-        if (vit!=items.end())
+        if (vit!=g->items.end())
           if (auto parent=g->group.lock())
             parent->addItem(*vit);
           else
-            addItem(*vit);
+            model->addItem(*vit);
       }
   }
 
@@ -1080,9 +1074,9 @@ namespace minsky
   {
     // construct the network schematic
     Network net;
-    for (auto& w: findWires([](WirePtr){return true;}))
+    for (auto& w: model->findWires([](WirePtr){return true;}))
       net.emplace(w->from().get(), w->to().get());
-    for (auto& i: findItems([](ItemPtr){return true;}))
+    for (auto& i: model->findItems([](ItemPtr){return true;}))
       for (size_t j=1; j<i->ports.size(); ++j)
         if (!dynamic_cast<IntOp*>(i.get()))
           net.emplace(i->ports[j].get(), i->ports[0].get());
@@ -1160,19 +1154,19 @@ namespace minsky
 
   void Minsky::displayErrorItem(const Item& op) const
   {
-    if (op.visible)
+    if (op.visible())
       displayErrorItem(op.x(),op.y());
     else if (auto g=op.group.lock())
       {
-        while (g && !g->visible) g=g->group.lock();
-        if (g && g->visible)
+        while (g && !g->visible()) g=g->group.lock();
+        if (g && g->visible())
           displayErrorItem(g->x(), g->y());
       }
   }
   
     void Minsky::resetNextId()
     {
-      nextId=maxId()+1;
+      nextId=model->maxId()+1;
     }
 
   bool Minsky::pushHistoryIfDifferent()

@@ -99,8 +99,7 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: /*public ValueVector,*/ public Exclude<MinskyExclude>, 
-                public Group
+  class Minsky: /*public ValueVector,*/ public Exclude<MinskyExclude>
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -157,6 +156,8 @@ namespace minsky
     Minsky() {m_edited=false;}
     ~Minsky() {clearAllMaps();} //improve shutdown times
 
+    GroupPtr model{new Group};
+
     void clearAllMaps();
 
     /// list the possible string values of an enum (for TCL)
@@ -172,7 +173,6 @@ namespace minsky
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
     int addWire(int from, int to, unsigned toIdx, const std::vector<float>& coords); 
-    using Group::addWire;
     void deleteWire(int id);
 
 
@@ -258,11 +258,11 @@ namespace minsky
 
     int newNote() {
       int id=getNewId();
-      addItem(id, new Item);
+      model->addItem(id, new Item);
       return id;
     }
     void deleteNote(int id) {
-      items.erase(id);
+      model->removeItem(id);
     }
 
 //    int newSwitch() {

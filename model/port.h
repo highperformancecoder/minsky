@@ -46,7 +46,7 @@ namespace minsky
     void operator=(const Port&)=delete;
   public:
     Item& item; // owner of this port
-    std::vector<WirePtr*> wires;
+    std::vector<Wire*> wires;
     GroupPtr group() const;
 
     /// remove wire from wires. No ownership passed.

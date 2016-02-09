@@ -45,7 +45,7 @@ script:
   - make install
   - popd
 #  - make AEGIS=1
-  - make 
+  - make DEBUG=1
   - Xvfb :0 &>/dev/null &
   - export DISPLAY=:0
   - export MINSKY_TEST_DATABASE_PARAMS=$HOME/.testDatabase
