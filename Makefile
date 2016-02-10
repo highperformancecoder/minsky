@@ -98,6 +98,7 @@ LIBS+=-lboost_thread$(BOOST_EXT)
 endif
 
 ifdef CPUPROFILE
+OPT+=-g
 LIBS+=-lprofiler
 endif
 

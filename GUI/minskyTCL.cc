@@ -53,6 +53,17 @@ namespace minsky
     return Tcl_GetString(x);
   }
 
+#if 0
+  // useful structure for for figuring what commands are being called.
+  struct CmdHist: public map<string,unsigned>
+  {
+    ~CmdHist() {
+      for (auto& i: *this)
+        cout << i.first<<" "<<i.second<<endl;
+    }
+  } cmdHist;
+#endif
+
   // a hook for recording when the minsky model's state changes
   template <class AV>
   void member_entry_hook(int argc, AV argv)
@@ -60,15 +71,24 @@ namespace minsky
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
     if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
-        argv0.find(".get")==string::npos  && 
-        m.pushHistoryIfDifferent())
+        argv0.find(".get")==string::npos &&
+        (argc>1 || argv0!="minsky.wire.coords") // this command gets called a lot as a getter!
+        )
       {
-        if (argv0!="minsky.load" && argv0!="minsky.resetEdited") m.markEdited();
-        if (m.eventRecord.get() && argv0=="minsky.startRecording")
+        auto& t=TCL_obj_properties()[argv0];
+        if ((!t || !t->is_const))
           {
-            for (int i=0; i<argc; ++i)
-              (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
-            (*m.eventRecord)<<endl;
+            //cmdHist[argv0]++;
+            if (m.pushHistoryIfDifferent())
+              {
+                if (argv0!="minsky.load" && argv0!="minsky.resetEdited") m.markEdited();
+                if (m.eventRecord.get() && argv0=="minsky.startRecording")
+                  {
+                    for (int i=0; i<argc; ++i)
+                      (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
+                    (*m.eventRecord)<<endl;
+                  }
+              }
           }
       }
   }
