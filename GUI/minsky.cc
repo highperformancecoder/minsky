@@ -646,7 +646,7 @@ namespace minsky
       (*e)->reset();
   }
 
-  std::set<string> Minsky::matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac)
+  std::set<string> Minsky::matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac) const
   {
     std::set<string> r;
     // matching liability with assets and vice-versa

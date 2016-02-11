@@ -53,6 +53,16 @@ namespace minsky
     return Tcl_GetString(x);
   }
 
+  cmd_data* getCommandData(const string& name)
+  {
+    Tcl_CmdInfo info;
+    if (Tcl_GetCommandInfo(interp(),name.c_str(),&info))
+      if (info.isNativeObjectProc)
+        return (cmd_data*)info.objClientData;
+      else
+        return (cmd_data*)info.clientData;
+  }
+  
 #if 0
   // useful structure for for figuring what commands are being called.
   struct CmdHist: public map<string,unsigned>
@@ -71,17 +81,16 @@ namespace minsky
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
     if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
-        argv0.find(".get")==string::npos &&
-        (argc>1 || argv0!="minsky.wire.coords") // this command gets called a lot as a getter!
+        argv0.find(".get")==string::npos 
         )
       {
-        auto& t=TCL_obj_properties()[argv0];
-        if ((!t || !t->is_const))
+        auto t=getCommandData(argv0);
+        if (!t || (!t->is_const && (!t->is_setterGetter || argc>1)))
           {
-            //cmdHist[argv0]++;
+            //            cmdHist[argv0]++;
             if (m.pushHistoryIfDifferent())
               {
-                if (argv0!="minsky.load" && argv0!="minsky.resetEdited") m.markEdited();
+                if (argv0!="minsky.load") m.markEdited();
                 if (m.eventRecord.get() && argv0=="minsky.startRecording")
                   {
                     for (int i=0; i<argc; ++i)
@@ -93,7 +102,34 @@ namespace minsky
       }
   }
 
-  
+  // Add any additional post TCL_obj processing commands here
+  void setTCL_objAttributes()
+  {
+    // setting this helps a lot in avoiding unnecessary callbacks, and
+    // also avoiding annoying "do you want to save the model message
+    // when closing Minsky
+    if (auto t=getCommandData("minsky.wire.coords"))
+      t->is_setterGetter=true;
+    if (auto t=getCommandData("minsky.var.name"))
+      t->is_setterGetter=true;
+    if (auto t=getCommandData("minsky.var.init"))
+      t->is_setterGetter=true;
+    if (auto t=getCommandData("minsky.var.value"))
+      t->is_setterGetter=true;
+    if (auto t=getCommandData("minsky.integral.description"))
+      t->is_setterGetter=true;
+    if (auto t=getCommandData("minsky.resetEdited"))
+      t->is_const=true;
+    if (auto t=getCommandData("minsky.initGroupList"))
+      t->is_const=true;
+    if (auto t=getCommandData("minsky.godley.mouseFocus"))
+      t->is_const=true;
+    if (auto t=getCommandData("minsky.godley.table.setDEmode"))
+      t->is_const=true;
+     if (auto t=getCommandData("minsky.resetNotNeeded"))
+      t->is_const=true;
+ }
+
 
   TCL_obj_t& minskyTCL_obj() 
   {
@@ -110,6 +146,7 @@ namespace minsky
     (
      TCL_obj_init(minsky()),
      ::TCL_obj(minskyTCL_obj(),"minsky",static_cast<MinskyTCL&>(minsky())),
+     setTCL_objAttributes(),
      1
      );
 

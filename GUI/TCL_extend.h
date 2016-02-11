@@ -92,6 +92,7 @@ namespace minsky
       return ref->description();
     }
   };
+
 }
 
 #ifdef _CLASSDESC
@@ -123,5 +124,7 @@ namespace classdesc_access
   };
 }
 
+
 #include "TCL_extend.cd"
+
 #endif

@@ -97,7 +97,7 @@ namespace minsky
     /// returns the name of a variable if point (x,y) is within a
     /// variable icon, "@" otherwise, indicating that the Godley table
     /// has been selected.
-    int select(float x, float y);
+    int select(float x, float y) const;
 
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
