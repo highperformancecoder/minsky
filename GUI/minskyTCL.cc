@@ -57,10 +57,13 @@ namespace minsky
   {
     Tcl_CmdInfo info;
     if (Tcl_GetCommandInfo(interp(),name.c_str(),&info))
-      if (info.isNativeObjectProc)
-        return (cmd_data*)info.objClientData;
-      else
-        return (cmd_data*)info.clientData;
+      {
+        if (info.isNativeObjectProc)
+          return (cmd_data*)info.objClientData;
+        else
+          return (cmd_data*)info.clientData;
+      }
+    return nullptr;
   }
   
 #if 0
