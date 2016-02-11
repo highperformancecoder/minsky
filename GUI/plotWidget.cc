@@ -537,6 +537,7 @@ namespace minsky
     PlotWidget& p=(*this)[id];
     p.expandedPlot.reset
       (new TkPhotoSurface(Tk_FindPhoto(interp(), image.c_str()), false));
+    cairo_surface_set_device_offset(p.expandedPlot->surface(),p.expandedPlot->width()/2,p.expandedPlot->height()/2);
     p.redraw();
   }
 
