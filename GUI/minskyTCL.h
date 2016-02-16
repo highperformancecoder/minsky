@@ -273,7 +273,7 @@ namespace minsky
       float z=1;
       // godley tables can have a user overridden zoom
       if (item=="godley") 
-        z=godleyItems[id].zoomFactor;
+        return godleyItems[id].zoomFactor;
       if (g==-1 || (g==id && item=="groupItem"))
         return z*zoomFactor(); //global zoom factor
       else 
