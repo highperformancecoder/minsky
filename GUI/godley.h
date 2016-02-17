@@ -157,8 +157,6 @@ namespace minsky
 
     /// accessor for schema access
     const vector<vector<string> >& getData() const {return data;}
-
-
   };
 
 }

@@ -423,6 +423,10 @@ namespace minsky
 
     /// set a Tk image to render equations to
     void renderEquationsToImage(const char* image);
+
+    /// export godley table \a id to filename \a fileName
+    void exportGodleyToCSV(int id, const char* fileName) const;
+    void exportGodleyToLaTeX(int id, const char* fileName) const;
   };
 
   /// global minsky object
