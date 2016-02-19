@@ -24,6 +24,7 @@
 #include <ecolab_epilogue.h>
 
 using namespace std;
+using classdesc::enum_keysData;
 
 namespace minsky
 {
@@ -58,6 +59,13 @@ namespace minsky
     for (unsigned i=1; i<g.cols(); ++i)
       s<<",\""<<trim(latexToPango(VariableManager::uqName(g.getCell(0,i))))<<'"';
     s<<'\n';
+    if (g.doubleEntryCompliant)
+      {
+        for (unsigned i=1; i<g.cols(); ++i)
+          s<<","<<enum_keysData<GodleyAssetClass::AssetClass>::
+            keysData[g._assetClass(i)].name;
+        s<<"\n";
+      }
     for (unsigned r=1; r<g.rows(); ++r)
       {
         s<<g.getCell(r,0);
@@ -76,7 +84,36 @@ namespace minsky
     f<<"|}\n\\hline\n";
     f<<"Flows $\\downarrow$ / Stock Variables $\\rightarrow$";
     for (unsigned i=1; i<g.cols(); ++i)
-      f<<"&$"<<VariableManager::uqName(g.getCell(0,i))<<'$';
+      f<<"&\\multicolumn{1}{|c|}{$"<<VariableManager::uqName(g.getCell(0,i))<<"$}";
+
+    // asset class descriptors
+    if (g.doubleEntryCompliant)
+      {
+        f<<"\\\\\\cline{2-"<<g.cols()<<"}";
+        unsigned repeat=0;
+        GodleyAssetClass::AssetClass asset=GodleyAssetClass::noAssetClass;
+
+        auto outputAC=[&]() {
+          if (repeat>0)
+            f<<"&\\multicolumn{"<<repeat<<"}{|c|}{"<<
+              enum_keysData<GodleyAssetClass::AssetClass>::
+              keysData[asset].name<<'}';
+        };
+          
+        for (unsigned i=1; i<g.cols(); ++i)
+          if (g._assetClass(i)!=asset)
+            {
+              outputAC();
+              asset=g._assetClass(i);
+              repeat=1;
+            }
+          else
+            repeat++;
+
+        // now output last column
+        outputAC();
+      }
+
     f<<"\\\\\\hline\n";
     for (unsigned r=1; r<g.rows(); ++r)
       {
