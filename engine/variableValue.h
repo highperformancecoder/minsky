@@ -23,6 +23,7 @@
 #include "classdesc_access.h"
 #include "constMap.h"
 #include "str.h"
+#include <boost/regex.hpp>
 
 namespace minsky
 {
@@ -86,6 +87,26 @@ namespace minsky
       return initValue(v, visited);
     }
     void reset(const VariableValues&); 
+
+    /// check that name is a valid valueId (useful for assertions)
+    static bool isValueId(const std::string& name)
+    {return boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\{}]*)"));}
+
+    /// construct a valueId
+    static std::string valueId(int scope, std::string name) {
+      if (scope<0) return ":"+stripActive(uqName(name));
+      else return str(scope)+":"+stripActive(uqName(name));
+    }
+    static std::string valueId(std::string name) {
+      return valueId(scope(name), name);
+    }
+
+    /// extract scope from a qualified variable name
+    /// @throw if name is unqualified
+    static int scope(const std::string& name);
+    /// extract unqualified portion of name
+    static std::string uqName(const std::string& name);
+
   };
 
   struct ValueVector

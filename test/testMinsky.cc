@@ -325,15 +325,16 @@ SUITE(Minsky)
       value=10;
       nSteps=1;
       step();
+      // for now, constructEquations doesn work
 //      CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-//      CHECK_CLOSE(integrals[0].stock.value(), variables.values[":output"].value(), 1e-5);
+//      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"].value(), 1e-5);
  
       // now integrate the linear function
       auto op3=addOperation("integrate");
       addWire(op2, op3, 1, vector<float>());
       reset();
       step();
-      //   CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
+      //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
       intOp=dynamic_cast<IntOp*>(model->items[op3].get());
       CHECK(intOp);
       CHECK_CLOSE(0.5*value*t*t, intOp->getIntVar()->value(), 1e-5);

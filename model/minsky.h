@@ -35,6 +35,8 @@
 //#include "equations.h"
 //#include "inGroupTest.h"
 #include "latexMarkup.h"
+#include "integral.h"
+#include "variableValue.h"
 
 #include <vector>
 #include <string>
@@ -60,7 +62,7 @@ namespace minsky
   struct MinskyExclude
   {
     //TODO EvalOpVector equations;
-    // vector<Integral> integrals;
+    vector<Integral> integrals;
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
     // A map that maps an input port to variable location that it
@@ -99,7 +101,7 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: /*public ValueVector,*/ public Exclude<MinskyExclude>
+  class Minsky: public ValueVector, public Exclude<MinskyExclude>
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -126,6 +128,8 @@ namespace minsky
     void resetNotNeeded() {reset_needed=false;}
     /// resets the edited (dirty) flags
     void resetEdited() {m_edited=false;}
+
+    VariableValues variableValues;
 
 //    void setGodleyIconResource(const string& s)
 //    {GodleyIcon::svgRenderer.setResource(s);}

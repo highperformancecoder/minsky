@@ -25,8 +25,6 @@
 #define EQUATIONS_H
 
 #include "evalOp.h"
-#include "variableManager.h"
-#include "portManager.h"
 #include "godley.h"
 #include "switchIcon.h"
 
@@ -41,15 +39,6 @@ namespace minsky
 {
   class Minsky;
 
-  // An integral is an additional stock variable, that integrates its flow variable
-  struct Integral
-  {
-    VariableValue stock;
-    VariableValue input;
-    IntOp* operation; //< reference to the interal operation object
-    Integral(VariableValue input=VariableValue()):
-      stock(VariableBase::integral), input(input), operation(NULL) {}
-  };
 
 }
 
