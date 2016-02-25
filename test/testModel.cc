@@ -25,23 +25,6 @@
 using namespace minsky;
 using namespace std;
 
-namespace minsky
-{
-  namespace
-  {
-    Minsky* l_minsky=NULL;
-  }
-
-  Minsky& minsky()
-  {
-    static Minsky s_minsky;
-    if (l_minsky)
-      return *l_minsky;
-    else
-      return s_minsky;
-  }
-}
-
 namespace
 {
 
