@@ -34,10 +34,6 @@
 #include <ecolab_epilogue.h>
 #include <boost/geometry/geometry.hpp>
 
-#if defined(MXE) && CAIRO_VERSION >= 11100
-#error "Please use Cairo 1.10.x. See ticket #435."
-#endif
-
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;

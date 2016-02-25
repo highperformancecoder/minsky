@@ -38,8 +38,7 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
 	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
 	switchIcon.o
-ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o \
-	evalOp.o flowCoef.o godleyExport.o latexMarkup.o
+ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema0.o schema1.o variableType.o operationType.o
 WTGUI_OBJS=canvasView.o mainMenu.o minskyApp.o propertiesDlg.o  \

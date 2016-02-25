@@ -236,4 +236,3 @@ void GodleyTable::nameUnique()
         }
     }
 }
-

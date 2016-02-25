@@ -270,13 +270,14 @@ namespace minsky
       groupTest.initGroupList(groupItems, (args.count? args: -1));}
     float localZoomFactor(std::string item, int id, float x, float y) const {
       int g=groupTest.containingGroup(x,y);
+      float z=1;
       // godley tables can have a user overridden zoom
       if (item=="godley") 
-        return godleyItems[id].zoomFactor;
+        z=godleyItems[id].zoomFactor;
       if (g==-1 || (g==id && item=="groupItem"))
-        return zoomFactor(); //global zoom factor
+        return z*zoomFactor(); //global zoom factor
       else 
-        return groupItems.find(g)->localZoom();
+        return z*groupItems.find(g)->localZoom();
     }
 
     /// load from a file

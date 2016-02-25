@@ -74,7 +74,7 @@ proc afterMinskyStarted {} {
     event generate .wiring.canvas <Button-3> -x 113 -y 69 -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] godley
     assert "\[.wiring.context entrycget 2 -command\]==\"openGodley \$godleyId\"" godley
-    assert "\[.wiring.context entrycget 8 -command]\==\"deleteItem \$godleyId godley\$godleyId\"" godley
+    assert "\[.wiring.context entrycget 7 -command]\==\"deleteItem \$godleyId godley\$godleyId\"" godley
 
     .wiring.context unpost
     # delivered to nowhere

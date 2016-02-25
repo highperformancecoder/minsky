@@ -19,7 +19,6 @@
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "cairoItems.h"
-#include "godleyExport.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -1376,21 +1375,6 @@ namespace minsky
       }
     else
       historyPtr+=changes; // revert
-  }
-
-  void Minsky::exportGodleyToCSV(int id, const char* fileName) const
-  {
-    ofstream f(fileName);
-    auto g=godleyItems.find(id);
-    if (g!=godleyItems.end())
-      exportToCSV(f, g->table);
-  }
-  void Minsky::exportGodleyToLaTeX(int id, const char* fileName) const
-  {
-    ofstream f(fileName);
-    auto g=godleyItems.find(id);
-    if (g!=godleyItems.end())
-      exportToLaTeX(f, g->table);
   }
 
 }

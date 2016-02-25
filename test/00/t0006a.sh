@@ -59,10 +59,10 @@ proc afterMinskyStarted {} {
 
     set v [value.value]
 
+    minsky.reset
     integral.get 34 # integral
     integral.toggleCoupled
 
-    minsky.reset
     step
     step
     value.get :y

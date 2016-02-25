@@ -25,13 +25,6 @@
 #include "pango.h"
 #include <timer.h>
 
-#ifdef CAIRO_HAS_WIN32_SURFACE
-#include <cairo/cairo-win32.h>
-#endif
-#if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
-#include <tkPlatDecls.h>
-#endif
-
 #include <ecolab_epilogue.h>
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -383,39 +376,8 @@ namespace minsky
     // store previous min/max values to determine if plot scale changes
     double minmax[]={minx,maxx,miny,maxy,miny1,maxy1};
     scalePlot();
-#if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
-    // draw directly into the Window for performance
-    Tk_Window win=Tk_CanvasTkwin(canvas);
-    HWND hwnd=Tk_GetHWND(Tk_WindowId(win));// Hwnd for the canvas
-    HDC hdc=GetDC(hwnd); 
-    Surface surf(cairo_win32_surface_create(hdc));
-    short drawableX, drawableY;
-    Tk_CanvasWindowCoords(canvas, x(), y(), &drawableX, &drawableY);
-//    ::Rectangle(hdc,drawableX-(width*zoomFactor)/2,drawableY-(height*zoomFactor)/2,drawableX+(width*zoomFactor)/2,
-//                drawableY+(height*zoomFactor)/2);
-    cairo_surface_set_device_offset(surf.surface(), drawableX, drawableY);
-
-    if (minx!=minmax[0] || maxx!=minmax[1] || miny!=minmax[2] || maxy!=minmax[3]
-        || miny1!=minmax[4] || maxy1!=minmax[5])
-    {
-      // clear the area about to be drawn into
-      tclcmd cmd;
-      cmd<<".wiring.canvas cget -background\n";
-      XColor* colour=Tk_GetColor(interp(),win,cmd.result.c_str());
-      cairo_save(surf.cairo());
-      cairo_set_source_rgb(surf.cairo(),1.526e-5*colour->red,1.526e-5*colour->green,1.526e-5*colour->blue);
-      Tk_FreeColor(colour);
-      cairo_rectangle(surf.cairo(),-(width*zoomFactor)/2,-(height*zoomFactor)/2,width*zoomFactor,height*zoomFactor);
-      cairo_fill(surf.cairo());
-      cairo_restore(surf.cairo());
-    }
-
-    draw(surf);
-    ReleaseDC(hwnd,hdc);
-#else
     if (cairoSurface.get())
       cairoSurface->requestRedraw();
-#endif
     if (expandedPlot.get())
       {
         expandedPlot->clear();
