@@ -566,24 +566,17 @@ namespace minsky
 
   void Minsky::constructEquations()
   {
-//    if (cycleCheck()) throw error("cyclic network detected");
-//    garbageCollect();
-//    equations.clear();
-//    integrals.clear();
-//
-//    MathDAG::SystemOfEquations system(*this);
-//    map<int,VariableValue> portValMap;
-//    system.populateEvalOpVector(equations, integrals, portValMap);
-//
-//    inputFrom.clear();
-//    for (Wire w: wires)
-//      {
-//        map<int,VariableValue>::iterator i=portValMap.find(w.from);
-//        if (i!=portValMap.end())
-//          inputFrom[w.to] = i->second;
-//      }
-//
-//    // attach the plots
+    if (cycleCheck()) throw error("cyclic network detected");
+    garbageCollect();
+    equations.clear();
+    integrals.clear();
+
+    MathDAG::SystemOfEquations system(*this);
+    map<Port*,VariableValue> portValMap;
+    system.populateEvalOpVector(equations, integrals);
+
+   // attach the plots
+    // TODO:
 //    for (PlotWidget& p: plots)
 //      {
 //        p.yvars.clear(); // clear any old associations
@@ -597,8 +590,8 @@ namespace minsky
 //              p.connectVar(vFrom->second, i);
 //          }
 //      }
-//    for (EvalOpVector::iterator e=equations.begin(); e!=equations.end(); ++e)
-//      (*e)->reset();
+    for (EvalOpVector::iterator e=equations.begin(); e!=equations.end(); ++e)
+      (*e)->reset();
   }
 
 //  std::set<string> Minsky::matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac)

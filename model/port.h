@@ -19,6 +19,7 @@
 #ifndef PORT_H
 #define PORT_H
 #include "classdesc_access.h"
+#include "variableValue.h"
 #include <error.h>
 #include <vector>
 #include <memory>
@@ -35,7 +36,7 @@ namespace minsky
   {
   public:
     enum Flags {noFlags=0, multiWire=1, inputPort=2};
-    private:
+  private:
     float m_x{0}, m_y{0};
     int flags{0};
     bool m_multiWireAllowed;
@@ -44,6 +45,7 @@ namespace minsky
     friend class SchemaHelper;
     Port(const Port&)=delete;
     void operator=(const Port&)=delete;
+    VariableValue variableValue; //refers to variable value representing this port
   public:
     Item& item; // owner of this port
     std::vector<Wire*> wires;
@@ -60,10 +62,16 @@ namespace minsky
     bool multiWireAllowed() const {return flags&multiWire;}
     float x() const;
     float y() const;
+    void moveTo(float x, float y);
     //Port() {}
     Port(Item& a_item, int f=noFlags): flags(f), item(a_item) {}
 
     ~Port();
+
+    /// sets the VariableValue associated with this port. Only for output ports
+    void setVariableValue(const VariableValue& v);
+    /// value associated with this port
+    double value() const;
     
   };
 }

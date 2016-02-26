@@ -24,7 +24,6 @@
 #include "variableValue.h"
 #include "str.h"
 #include "flowCoef.h"
-#include "variableManager.h"
 
 #include <ecolab.h>
 #include <arrays.h>

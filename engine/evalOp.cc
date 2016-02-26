@@ -19,7 +19,6 @@
 #define OPNAMEDEF
 #include "evalOp.h"
 #include "variable.h"
-#include "portManager.h"
 #include "minsky.h"
 #include "cairoItems.h"
 #include "str.h"

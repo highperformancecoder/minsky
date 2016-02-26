@@ -119,7 +119,8 @@ namespace minsky
     bool temp() const {return type()==tempFlow || type()==undefined;}
     virtual Type type() const=0;
     virtual VariableBase* clone() const=0;
-  
+    bool isStock() const {return type()==stock || type()==integral;}
+
     VariableBase() {}
     virtual ~VariableBase() {}
 
@@ -207,6 +208,7 @@ namespace minsky
       // check for incorrect type assignment
       assert(!var || *this);
     }
+    VariablePtr(const PtrBase& x): PtrBase(x) {}
     VariablePtr(const VariableBase& x): PtrBase(x.clone()) {}
     /// changes type of variable to \a type
     void retype(VariableBase::Type type);

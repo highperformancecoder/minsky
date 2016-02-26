@@ -37,6 +37,12 @@ namespace minsky
     return m_y+item.y();
   }
 
+  void Port::moveTo(float x, float y)
+  {
+    m_x=x-item.x();
+    m_y=y-item.y();
+  }
+
   GroupPtr Port::group() const
   {
     return item.group.lock();
@@ -67,6 +73,21 @@ namespace minsky
           wires.erase(i);
         return wiresToDelete.empty();
       });
+  }
+
+  /// sets the VariableValue associated with this port
+  void Port::setVariableValue(const VariableValue& v) {
+    if (!input())
+      variableValue=v;
+  }
+
+  /// value associated with this port
+  double Port::value() const {
+    if (input() && wires.size()==1)
+      return wires[0]->from()->value();
+    if (!input())
+      return variableValue.value();
+    return 0;
   }
 
 }

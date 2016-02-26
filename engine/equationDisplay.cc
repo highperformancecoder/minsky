@@ -179,7 +179,7 @@ namespace MathDAG
         double lineSpacing=num.height()+den.height()+2;
 
         VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableManager::valueId(i->scope,i->name));
+          (VariableValue::valueId(i->scope,i->name));
         if (input && input->rhs)
           { // adjust linespacing to allow enough height for RHS
           RecordingSurface rhs;

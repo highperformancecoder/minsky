@@ -64,7 +64,7 @@ namespace
 
   struct OperationItem: public MinskyItemImage
   {
-    OperationPtr op;    
+    ItemPtr op;    
     cairo_t * cairo;
 
 
@@ -83,14 +83,14 @@ namespace
           cairo_set_line_width(cairo,1);
 
 
-          RenderOperation(*op,cairo).draw();
+          //TODO          RenderOperation(*op,cairo).draw();
         }
     }
   };
 
   struct VariableItem: public MinskyItemImage
   {
-    VariablePtr var;
+    ItemPtr var;
     void draw()
     {
       if (cairoSurface && var)
@@ -102,8 +102,8 @@ namespace
           initMatrix();
           cairo_set_line_width(cairo,1);
 
-          RenderVariable rv(*var, cairo);
-          rv.draw();
+          //TODO RenderVariable rv(*var, cairo);
+          //rv.draw();
        }
     }
   };
@@ -143,7 +143,7 @@ namespace
         OperationItem* opItem=(OperationItem*)(tkMinskyItem->cairoItem);
         if (opItem) 
           {
-            opItem->op=minsky::minsky().operations[tkMinskyItem->id];
+            opItem->op=minsky::minsky().model->findItem(tkMinskyItem->id);
             TkImageCode::ComputeImageBbox(canvas, tkMinskyItem);
           }
       }
@@ -161,7 +161,7 @@ namespace
         VariableItem* varItem=dynamic_cast<VariableItem*>(tkMinskyItem->cairoItem);
         if (varItem) 
           {
-            varItem->var=minsky::minsky().variables[tkMinskyItem->id];
+            varItem->var=minsky::minsky().model->findItem(tkMinskyItem->id);
             TkImageCode::ComputeImageBbox(canvas, tkMinskyItem);
           }
       }
@@ -208,6 +208,7 @@ void minsky::drawSelected(cairo_t* cairo)
   cairo_restore(cairo);
 }
 
+#if 0
 RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
   op(op), cairo(cairo), hoffs(0)
 {
@@ -996,7 +997,7 @@ bool RenderVariable::inImage(float x, float y)
   float ry=dy*cos(var.rotation*M_PI/180)+dx*sin(var.rotation*M_PI/180);
   return rx>=-w && rx<=w && ry>=-h && ry <= h;
 }
-
+#endif
 
 void minsky::drawTriangle
 (cairo_t* cairo, double x, double y, cairo::Colour& col, double angle)

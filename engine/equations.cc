@@ -21,6 +21,7 @@
 #include "expr.h"
 #include "minsky.h"
 #include "str.h"
+#include "flowCoef.h"
 #include <ecolab_epilogue.h>
 using namespace minsky;
 
@@ -107,7 +108,7 @@ namespace MathDAG
   }
 
   VariableValue ConstantDAG::addEvalOps
-  (EvalOpVector& ev, std::map<int,VariableValue>& opValMap, const VariableValue& r) const 
+  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& opValMap,*/ const VariableValue& r) const 
   {
     if (result.idx()<0)
       {
@@ -117,7 +118,7 @@ namespace MathDAG
           result.allocValue();
         result=value;
         // set the initial value of the actual variableValue (if it exists)
-        VariableValues& values=minsky::minsky().variables.values;
+        VariableValues& values=minsky::minsky().variableValues;
         auto v=values.find(result.name);
         if (v!=values.end())
           v->second.init=str(value);
@@ -149,18 +150,18 @@ namespace MathDAG
   }
 
   VariableValue VariableDAG::addEvalOps
-  (EvalOpVector& ev, std::map<int,VariableValue>& portValMap, const VariableValue& r) const
+  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& portValMap,*/ const VariableValue& r) const
   {
     if (result.idx()<0)
       {
-        result=minsky::minsky().variables.getVariableValue(valueId);
+        result=minsky::minsky().variableValues[valueId];
         if (result.type()==VariableType::undefined) 
           {
             result=VariableValue(VariableType::tempFlow);
             result.allocValue();
           }
         if (rhs)
-          rhs->addEvalOps(ev,portValMap,result);
+          rhs->addEvalOps(ev,/*portValMap,*/result);
       }
     if (r.isFlowVar() && r.idx()>=0 && (r.idx()!=result.idx() || !result.isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, r, result));
@@ -168,7 +169,7 @@ namespace MathDAG
   }
 
   VariableValue IntegralInputVariableDAG::addEvalOps
-  (EvalOpVector& ev, std::map<int,VariableValue>& portValMap, const VariableValue& r) const
+  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& portValMap,*/ const VariableValue& r) const
   {
     if (result.idx()<0)
       {
@@ -180,7 +181,7 @@ namespace MathDAG
             result.allocValue();
           }
         if (rhs)
-          rhs->addEvalOps(ev,portValMap,result);
+          rhs->addEvalOps(ev,/*portValMap,*/result);
       }
     if (r.isFlowVar() && r.idx()>=0 && (r.idx()!=result.idx() || !result.isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, r, result));
@@ -264,7 +265,7 @@ namespace MathDAG
   }
 
   VariableValue OperationDAGBase::addEvalOps
-  (EvalOpVector& ev, std::map<int,VariableValue>& portValMap, const VariableValue& r) const
+  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& portValMap,*/ const VariableValue& r) const
   {
     if (result.idx()<0)
       {
@@ -272,12 +273,12 @@ namespace MathDAG
           {
             if (VariablePtr iv=i->getIntVar())
               {
-                result=minsky::minsky().variables.getVariableValue(iv->valueId());
+                result=minsky::minsky().variableValues[iv->valueId()];
                 // integral copies need to be done now, in case of cycles
                 if (r.isFlowVar() && r.idx()>=0)
                   ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-                if (state && state->numPorts()>0)
-                  portValMap[state->ports()[0]]=result;
+//                if (state && state->numPorts()>0)
+//                  portValMap[state->ports[0].get()]=result;
                 return result; // integration handled as part of RK arlgorithm
               }
             else
@@ -289,8 +290,8 @@ namespace MathDAG
         else 
           result.allocValue();
 
-        if (state && state->numPorts()>0)
-          portValMap[state->ports()[0]]=result;
+//        if (state && state->numPorts()>0)
+//          portValMap[state->ports[0].get()]=result;
 
 
         // prepare argument expressions
@@ -298,7 +299,7 @@ namespace MathDAG
         for (size_t i=0; type()!=integrate && i<arguments.size(); ++i)
           for (size_t j=0; j<arguments[i].size(); ++j)
             if (arguments[i][j])
-              argIdx[i].push_back(arguments[i][j]->addEvalOps(ev, portValMap));
+              argIdx[i].push_back(arguments[i][j]->addEvalOps(ev/*, portValMap*/));
             else
               argIdx[i].push_back(VariableValue());
         
@@ -1093,95 +1094,94 @@ namespace MathDAG
   {
     expressionCache.insertAnonymous(zero);
     expressionCache.insertAnonymous(one);
-    zero->result=m.variables.values["constant:zero"];
-    one->result=m.variables.values["constant:one"];
-
-    // firstly, we need to create a map of ports belonging to operations
-    for (const OperationPtr& o: minsky.operations)
-      for (size_t i=0; i<o->numPorts(); ++i)
-        portToOperation[o->ports()[i]]=o.id();
-
-    // then a map of ports belonging to switches
-    for (auto& s: minsky.switchItems)
-      for (int p: s->ports())
-        portToSwitch[p]=s.id();
+    zero->result=m.variableValues["constant:zero"];
+    one->result=m.variableValues["constant:one"];
 
     // store stock & integral variables for later reordering
     map<string, VariableDAG*> integVarMap;
 
     // search through operations looking for integrals
-    for (const OperationPtr& o: minsky.operations)
-      if (IntOp* i=dynamic_cast<IntOp*>(o.get()))
-        {
-          if (VariablePtr iv=i->getIntVar())
-            {
-              // .get() OK here because object lifetime controlled by
-              // expressionCache
-              VariableDAG* v=integVarMap[iv->valueId()]=
-                dynamic_cast<VariableDAG*>(makeDAG
+    minsky.model->recursiveDo
+      (&Group::items,
+       [&](const Items&, Items::const_iterator it){
+        if (IntOp* i=dynamic_cast<IntOp*>(it->get()))
+          {
+            if (VariablePtr iv=i->getIntVar())
+              {
+                // .get() OK here because object lifetime controlled by
+                // expressionCache
+                VariableDAG* v=integVarMap[iv->valueId()]=
+                  dynamic_cast<VariableDAG*>(makeDAG
                                            (iv->valueId(), iv->scope(), iv->name(), iv->type()).get());
-              v->intOp=o;
-              if (minsky.wiresAttachedToPort(i->ports()[1]).size()>0)
-                {
-                  // with integrals, we need to create a distinct variable to
-                  // prevent infinite recursion of order() in the case of graph cycles
-                  VariableDAGPtr input(new IntegralInputVariableDAG);
-                  input->name=iv->name();
-                  variables.push_back(input.get());
-                  // manage object's lifetime with expressionCache
-                  expressionCache.insertIntegralInput(iv->valueId(), input);
-                  input->rhs=getNodeFromWire(minsky.wiresAttachedToPort(i->ports()[1])[0]);
-                }
-            }
-        }
-      else if (const Constant* c=dynamic_cast<const Constant*>(o.get()))
-        {
-          VariablePtr v(VariableType::parameter, c->description);
-          // note makeDAG caches a reference to the object, and manages lifetime
-          variables.push_back(makeDAG(*v).get());
-          variables.back()->rhs=expressionCache.insertAnonymous(NodePtr(new ConstantDAG(c->value)));
-        }
+                v->intOp=i;
+                if (i->ports[1]->wires.size()>0)
+                  {
+                    // with integrals, we need to create a distinct variable to
+                    // prevent infinite recursion of order() in the case of graph cycles
+                    VariableDAGPtr input(new IntegralInputVariableDAG);
+                    input->name=iv->name();
+                    variables.push_back(input.get());
+                    // manage object's lifetime with expressionCache
+                    expressionCache.insertIntegralInput(iv->valueId(), input);
+                    input->rhs=getNodeFromWire(*(i->ports[1]->wires[0]));
+                  }
+              }
+          }
+        else if (const Constant* c=dynamic_cast<const Constant*>(it->get()))
+          {
+            VariablePtr v(VariableType::parameter, c->description);
+            // note makeDAG caches a reference to the object, and manages lifetime
+            variables.push_back(makeDAG(*v).get());
+            variables.back()->rhs=expressionCache.insertAnonymous(NodePtr(new ConstantDAG(c->value)));
+          }
+        return false;
+      });
 
-    // process the Godley tables
-    map<string, GodleyColumnDAG> godleyVars;
-    for (Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
-         g!=m.godleyItems.end(); ++g)
-      processGodleyTable(godleyVars, g->table, g->id());
-
-    for (map<string, GodleyColumnDAG>::iterator g=godleyVars.begin(); 
-         g!=godleyVars.end(); ++g)
-      {
-        assert(g->second.godleyId>=0);
-        VariableDAG* v=integVarMap[VariableManager::valueId(g->first)]=
-          makeDAG(VariableManager::valueId(g->first), VariableManager::scope(g->first), 
-                  VariableManager::uqName(g->first), VariableType::stock).get();
-        VariableDAGPtr input(new IntegralInputVariableDAG);
-        input->name=g->first;
-        variables.push_back(input.get());
-        // manage object's lifetime with expressionCache
-        expressionCache.insertIntegralInput(g->first, input);
-        input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g->second)));
-      }
+//    // process the Godley tables
+//    map<string, GodleyColumnDAG> godleyVars;
+//    for (Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
+//         g!=m.godleyItems.end(); ++g)
+//      processGodleyTable(godleyVars, g->table, g->id());
+//
+//    for (map<string, GodleyColumnDAG>::iterator g=godleyVars.begin(); 
+//         g!=godleyVars.end(); ++g)
+//      {
+//        assert(g->second.godleyId>=0);
+//        VariableDAG* v=integVarMap[VariableManager::valueId(g->first)]=
+//          makeDAG(VariableManager::valueId(g->first), VariableManager::scope(g->first), 
+//                  VariableManager::uqName(g->first), VariableType::stock).get();
+//        VariableDAGPtr input(new IntegralInputVariableDAG);
+//        input->name=g->first;
+//        variables.push_back(input.get());
+//        // manage object's lifetime with expressionCache
+//        expressionCache.insertIntegralInput(g->first, input);
+//        input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g->second)));
+//      }
 
     // reorder integration variables according to sVars
-    const vector<string>& sVars=minsky.variables.stockVars();
-    for (vector<string>::const_iterator v=sVars.begin(); 
-         v!=sVars.end(); ++v)
-      {
-        string vid=VariableManager::valueId(*v);
-        if (!integVarMap.count(vid))
-          throw error("no definition provided for stock variable %s",vid.c_str());
-        integrationVariables.push_back(integVarMap[vid]);
-      }
+    minsky.model->recursiveDo
+      (&Group::items,
+       [&](const Items&, Items::const_iterator i) 
+       {
+         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+           if (v->isStock())
+             {
+               string vid=v->valueId();
+               if (!integVarMap.count(vid))
+                 throw error("no definition provided for stock variable %s",vid.c_str());
+               integrationVariables.push_back(integVarMap[vid]);
+             }
+         return false;
+       });
 
     // now start with the variables, and work our way back to how they
     // are defined
-    for (VariableValues::value_type v: m.variables.values)
+    for (VariableValues::value_type v: m.variableValues)
       if (v.second.isFlowVar())
         variables.push_back
           (makeDAG(v.first, 
-                   v.second.type()==VariableType::constant? -1: VariableManager::scope(v.second.name),
-                   VariableManager::uqName(v.second.name), v.second.type()).get());
+                   v.second.type()==VariableType::constant? -1: VariableValue::scope(v.second.name),
+                   VariableValue::uqName(v.second.name), v.second.type()).get());
           
     // sort variables into their order of definition
     sort(variables.begin(), variables.end(), 
@@ -1194,66 +1194,57 @@ namespace MathDAG
     if (expressionCache.exists(valueId))
       return dynamic_pointer_cast<VariableDAG>(expressionCache[valueId]);
 
-    shared_ptr<VariableDAG> r(new VariableDAG(valueId, scope, VariableManager::uqName(name), type));
+    shared_ptr<VariableDAG> r(new VariableDAG(valueId, scope, VariableValue::uqName(name), type));
     expressionCache.insert(valueId, r);
-    VariableValue vv=minsky.variables.getVariableValue(valueId);
-    r->init=vv.initValue(minsky.variables.values);
+    VariableValue vv=minsky.variableValues[valueId];
+    r->init=vv.initValue(minsky.variableValues);
     if (vv.isFlowVar()) 
       {
-        r->rhs=getNodeFromWire(minsky.variables.wireToVariable(valueId));
-//        if (!r->rhs) // add initial condition
-//          {
-//            anonymousNodes.push_back(NodePtr(new ConstantDAG(r->init)));
-//            r->rhs=anonymousNodes.back();
-//          }
+        auto v=minsky.definingVar(valueId);
+        if (v)
+          r->rhs=getNodeFromWire(*v->ports[1]->wires[0]);
       }
     return r;
   }
 
-  NodePtr SystemOfEquations::makeDAG(const OperationPtr& op)
+  NodePtr SystemOfEquations::makeDAG(const OperationBase& op)
   {
-    if (expressionCache.exists(*op))
-      return dynamic_pointer_cast<OperationDAGBase>(expressionCache[*op]);
+    if (expressionCache.exists(op))
+      return dynamic_pointer_cast<OperationDAGBase>(expressionCache[op]);
 
-    if (op->type()==OperationType::differentiate)
+    if (op.type()==OperationType::differentiate)
       {
-        assert(op->numPorts()==2);
-        ecolab::array<int> wires=minsky.wiresAttachedToPort(op->ports()[1]);
-        assert(wires.size()<=1);
-        if (wires.size()==0)
+        assert(op.ports.size()==2);
+        if (op.ports[1]->wires.size()==0)
           {
-            minsky.displayErrorItem(*op);          
+            minsky.displayErrorItem(op);          
             throw error("derivative not wired");
           }
 
         return expressionCache.insert
-          (*op, getNodeFromWire(wires[0])->derivative(*this));
+          (op, getNodeFromWire(*op.ports[1]->wires[0])->derivative(*this));
       }
     else
       {
-        shared_ptr<OperationDAGBase> r(OperationDAGBase::create(op->type()));
-        expressionCache.insert(*op, NodePtr(r));
-        r->state=op;
+        shared_ptr<OperationDAGBase> r(OperationDAGBase::create(op.type()));
+        expressionCache.insert(op, NodePtr(r));
+        r->state=dynamic_pointer_cast<OperationBase>(minsky.model->findItem(op));
         assert(r->state);
         assert( r->state->type()!=OperationType::numOps);
-        if (const Constant* c=dynamic_cast<const Constant*>(op.get()))
+        if (const Constant* c=dynamic_cast<const Constant*>(&op))
           {
             r->name=c->description;
             r->init=c->value;
           }
-        else if (const IntOp* i=dynamic_cast<const IntOp*>(op.get()))
+        else if (const IntOp* i=dynamic_cast<const IntOp*>(&op))
           r->name=i->description();
 
-        r->arguments.resize(op->numPorts()-1);
-        for (size_t i=1; i<op->numPorts(); ++i)
+        r->arguments.resize(op.numPorts()-1);
+        for (size_t i=1; i<op.ports.size(); ++i)
           {
-            PortManager::Ports::const_iterator p=minsky.ports.find(op->ports()[i]);
-            if (p != minsky.ports.end() && p->input())
-              {
-                ecolab::array<int> wires=minsky.wiresAttachedToPort(op->ports()[i]);
-                for (size_t w=0; w<wires.size(); ++w)
-                  r->arguments[i-1].push_back(getNodeFromWire(wires[w]));
-              }
+            auto& p=op.ports[i];
+            for (auto w: p->wires)
+              r->arguments[i-1].push_back(getNodeFromWire(*w));
           }
         return r;
       }
@@ -1262,72 +1253,64 @@ namespace MathDAG
   NodePtr SystemOfEquations::makeDAG(const SwitchIcon& sw)
   {
     // grab list of input wires
-    vector<int> wires;
-    for (unsigned i=1; i<sw.ports().size(); ++i)
+    vector<Wire*> wires;
+    for (unsigned i=1; i<sw.ports.size(); ++i)
       {
-        auto w=minsky.wiresAttachedToPort(sw.ports()[i]);
+        auto w=sw.ports[i]->wires;
         if (w.size()==0)
           {
             minsky.displayErrorItem(sw);
             throw error("input port not wired");
           }
-        // shouldn't be more than 1 wire, ignore exraneous wires is present
+        // shouldn't be more than 1 wire, ignore extraneous wires is present
         assert(w.size()==1);
         wires.push_back(w[0]);
       }
 
     assert(wires.size()==sw.numCases()+1);
-    Expr input(expressionCache, getNodeFromWire(wires[0]));
+    Expr input(expressionCache, getNodeFromWire(*wires[0]));
 
     auto r=make_shared<OperationDAG<OperationType::add>>();
     expressionCache.insert(sw, r);
     r->arguments[0].resize(sw.numCases());
 
     // implemented as a sum of step functions
-    r->arguments[0][0]=getNodeFromWire(wires[1])*(input<1);        
+    r->arguments[0][0]=getNodeFromWire(*wires[1])*(input<1);        
     for (unsigned i=1; i<sw.numCases()-1; ++i)
       r->arguments[0][i]=getNodeFromWire
-        (wires[i+1])*((input<i+1) - (input<i));
+        (*wires[i+1])*((input<i+1) - (input<i));
     r->arguments[0][sw.numCases()-1]=getNodeFromWire
-      (wires[sw.numCases()])*(1-(input<sw.numCases()-1));
+      (*wires[sw.numCases()])*(1-(input<sw.numCases()-1));
     return r;
   };
 
-  NodePtr SystemOfEquations::getNodeFromWire(int wire)
+  NodePtr SystemOfEquations::getNodeFromWire(const Wire& wire)
   {
-    auto wi=minsky.wires.find(wire);
     NodePtr r;
-    if (wi != minsky.wires.end())
+    auto& item=wire.from()->item;
+    if (auto o=dynamic_cast<OperationBase*>(&item))
       {
-        const Wire& w=*wi;
-        if (portToOperation.count(w.from))
-          {
-            const OperationPtr& o=
-              *minsky.operations.find(portToOperation[w.from]);
-            if (expressionCache.exists(*o))
-              return expressionCache[*o];
-            else
-              // we're wired to an operation
-              r=makeDAG(o);
-          }
-        else if (portToSwitch.count(w.from))
-          {
-            const SwitchIcon& s=*minsky.switchItems[portToSwitch[w.from]];
-            if (expressionCache.exists(s))
-              return expressionCache[s];
-            else
-              r=makeDAG(s);
-          }
+        if (expressionCache.exists(*o))
+          return expressionCache[*o];
         else
-          {
-            VariablePtr v(minsky.variables.getVariableFromPort(w.from));
-            if (expressionCache.exists(*v))
-              return expressionCache[*v];
-            else
-              if (v && v->type()!=VariableBase::undefined) 
-                // we're wired to a variable
-                r=makeDAG(*v);
-          }
+          // we're wired to an operation
+          r=makeDAG(*o);
+      }
+    else if (auto s=dynamic_cast<SwitchIcon*>(&item))
+      {
+        if (expressionCache.exists(*s))
+          return expressionCache[*s];
+        else
+          r=makeDAG(*s);
+      }
+    else if (auto v=dynamic_cast<VariableBase*>(&item))
+      {
+        if (expressionCache.exists(*v))
+          return expressionCache[*v];
+        else
+          if (v && v->type()!=VariableBase::undefined) 
+            // we're wired to a variable
+            r=makeDAG(*v);
       }
     return r;
   }     
@@ -1354,7 +1337,7 @@ namespace MathDAG
         o << "\\frac{ d " << mathrm(i->name) << 
           "}{dt} &=&";
         VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableManager::valueId(i->scope,i->name));
+          (VariableValue::valueId(i->scope,i->name));
         if (input && input->rhs)
           input->rhs->latex(o);
         o << "\\\\\n";
@@ -1385,7 +1368,7 @@ namespace MathDAG
         o << "\\begin{dmath*}\n\\frac{ d " << mathrm(i->name) << 
           "}{dt} =";
         VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableManager::valueId(i->scope,i->name));
+          (VariableValue::valueId(i->scope,i->name));
         if (input && input->rhs)
           input->rhs->latex(o);
         o << "\\end{dmath*}\n";
@@ -1419,7 +1402,7 @@ namespace MathDAG
       {
         o << "f("<<j++<<")=";
         VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableManager::valueId(i->scope,i->name));
+          (VariableValue::valueId(i->scope,i->name));
         if (input && input->rhs)
           input->rhs->matlab(o);
         else
@@ -1437,52 +1420,51 @@ namespace MathDAG
   }
 
   void SystemOfEquations::populateEvalOpVector
-  (EvalOpVector& equations, vector<Integral>& integrals, 
-     std::map<int,VariableValue>& portValMap)
+  (EvalOpVector& equations, vector<Integral>& integrals)
   {
     assert(integrationVariables.size()==minsky.variables.stockVars().size());
     equations.clear();
     integrals.clear();
-    portValMap.clear();
+    //    portValMap.clear();
 
-    for (const VariableDAG* i: variables)
-      i->addEvalOps(equations, portValMap);
+//    for (const VariableDAG* i: variables)
+//      i->addEvalOps(equations, portValMap);
 
     for (const VariableDAG* i: integrationVariables)
       {
-        string vid=VariableManager::valueId(i->scope,i->name);
+        string vid=VariableValue::valueId(i->scope,i->name);
         integrals.push_back(Integral());
-        integrals.back().stock=
-          minsky.variables.getVariableValue(vid);
-        integrals.back().operation=dynamic_cast<IntOp*>(i->intOp.get());
+        integrals.back().stock=minsky.variableValues[vid];
+        integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
-          integrals.back().input=iInput->rhs->addEvalOps(equations, portValMap);
+          integrals.back().input=iInput->rhs->addEvalOps(equations/*, portValMap*/);
       }
 
     // loop over plots and ensure that each connected input port
     // has its expression evaluated 
-    for (const PlotWidget& p: minsky.plots)
-      for (int port: p.ports())
-        {
-          auto wires=minsky.wiresAttachedToPort(port);
-          for (int w: wires)
-            {
-              NodePtr n=getNodeFromWire(w);
-              n->addEvalOps(equations, portValMap);
-              // ensure portValMap is updated with results of
-              // anonymous operations (eg of differentiate)
-              auto wi=minsky.wires.find(w);
-              if (wi != minsky.wires.end())
-                portValMap[wi->from]=n->result;
-            }
-        }
+    //TODO
+//    for (const PlotWidget& p: minsky.plots)
+//      for (int port: p.ports())
+//        {
+//          auto wires=minsky.wiresAttachedToPort(port);
+//          for (int w: wires)
+//            {
+//              NodePtr n=getNodeFromWire(w);
+//              n->addEvalOps(equations, portValMap);
+//              // ensure portValMap is updated with results of
+//              // anonymous operations (eg of differentiate)
+//              auto wi=minsky.wires.find(w);
+//              if (wi != minsky.wires.end())
+//                portValMap[wi->from.get()]=n->result;
+//            }
+//        }
 
-    // load up variable output port associations
-    for (const VariablePtr& v: minsky.variables)
-      if (minsky.wiresAttachedToPort(v->outPort()).size()>0)
-        portValMap[v->outPort()]=
-          minsky.variables.getVariableValueFromPort(v->outPort());
+//    // load up variable output port associations
+//    for (const VariablePtr& v: minsky.variables)
+//      if (minsky.wiresAttachedToPort(v->outPort()).size()>0)
+//        portValMap[v->ports[0].get()]=
+//          minsky.variables.getVariableValueFromPort(v->outPort());
   }
 
   void SystemOfEquations::processGodleyTable
@@ -1491,11 +1473,11 @@ namespace MathDAG
     for (size_t c=1; c<godley.cols(); ++c)
       {
         string colName=stripActive(trimWS(godley.cell(0,c)));
-        if (VariableManager::uqName(colName).empty())
+        if (VariableValue::uqName(colName).empty())
           throw error("unnamed Godley table column found");
         // if local, append scope
         if (colName.find(':')==string::npos)
-          colName=VariableManager::valueId(-1, colName);
+          colName=VariableValue::valueId(-1, colName);
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
@@ -1511,9 +1493,10 @@ namespace MathDAG
 
             VariablePtr v(VariableType::flow, fc.name);
             // if local variable, set scope
-            if (fc.name.find(':')==string::npos)
-              v->setScope(-1);
-  
+//            if (fc.name.find(':')==string::npos)
+//              v->setScope(-1);
+            assert(fc.name.find(':')!=string::npos || v->scope()==-1);
+
             if (abs(fc.coef)==1)
               gd.arguments[fc.coef<0? 1: 0].push_back(WeakNodePtr(makeDAG(*v)));
             else

@@ -102,5 +102,18 @@ namespace minsky
       }
   }
 
+  void Item::drawPorts(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    for (auto& p: ports)
+      {
+        cairo_new_sub_path(cairo);
+        cairo_arc(cairo, p->x()-x(), p->y()-y(), portRadius*zoomFactor, 0, 2*M_PI);
+      }
+    cairo_set_source_rgb(cairo, 0,0,0);
+    cairo_set_line_width(cairo,1);
+    cairo_stroke(cairo);
+    cairo_restore(cairo);
+  }
 
 }

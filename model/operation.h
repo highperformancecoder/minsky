@@ -235,14 +235,16 @@ namespace minsky
   class OperationPtr: public classdesc::shared_ptr<OperationBase>
   {
   public:
+    typedef classdesc::shared_ptr<OperationBase> PtrBase;
     OperationPtr(OperationType::Type type=OperationType::numOps): 
-      shared_ptr<OperationBase>(OperationBase::create(type)) {}
+      PtrBase(OperationBase::create(type)) {}
     // reset pointer to a newly created operation
-    OperationPtr(OperationBase* op): shared_ptr<OperationBase>(op) 
-    {assert(op);}
+    OperationPtr(OperationBase* op): PtrBase(op) {assert(op);}
     OperationPtr clone() const {return OperationPtr(get()->clone());}
     virtual int id() const {return -1;}
     size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}
+    OperationPtr(const PtrBase& x): PtrBase(x) {}
+    OperationPtr& operator=(const PtrBase& x) {PtrBase::operator=(x); return *this;}
   };
 
 

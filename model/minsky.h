@@ -24,7 +24,7 @@
 //#include "selection.h"
 //#include "godleyIcon.h"
 #include "operation.h"
-//#include "evalOp.h"
+#include "evalOp.h"
 //#include "evalGodley.h"
 #include "wire.h"
 //#include "plotWidget.h"
@@ -32,7 +32,7 @@
 //#include "switchIcon.h"
 #include "version.h"
 #include "variable.h"
-//#include "equations.h"
+#include "equations.h"
 //#include "inGroupTest.h"
 #include "latexMarkup.h"
 #include "integral.h"
@@ -61,13 +61,13 @@ namespace minsky
   // be serialised.
   struct MinskyExclude
   {
-    //TODO EvalOpVector equations;
+    EvalOpVector equations;
     vector<Integral> integrals;
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
     // A map that maps an input port to variable location that it
     // receives data from
-    //map<int,VariableValue> inputFrom;
+    // map<Port*,VariableValue> inputFrom;
     bool reset_needed{true}; ///< if a new model, or loaded from disk
     bool m_edited;  
 
@@ -186,7 +186,16 @@ namespace minsky
     void variableTypes() {enumVals<VariableType::Type>();}
 
     /// return list of available asset classes
-    //    void assetClasses() {enumVals<GodleyTable::AssetClass>();}
+    void assetClasses() {enumVals<GodleyTable::AssetClass>();}
+
+    /// returns reference to variable defining (ie input wired) for valueId
+    VariablePtr definingVar(const std::string& valueId) const {
+      return dynamic_pointer_cast<VariableBase>
+        (model->findAny(&Group::items, [&](ItemPtr x) {
+            auto v=dynamic_cast<VariableBase*>(x.get());
+            return v && v->ports.size()>1 && v->ports[1]->wires.size()>0 && v->valueId()==valueId;
+          }));
+    }
 
     /// add an operation
     int addOperation(const char* op);

@@ -76,6 +76,8 @@ namespace minsky
     virtual void draw(cairo_t* cairo) {cairo_arc(cairo,0,0,3,0,2*M_PI);}
     virtual ~Item() {}
 
+    void drawPorts(cairo_t* cairo) const;
+
     /// returns the clicktype given a mouse click at \a x, \a y.
     ClickType::Type clickType(float x, float y);
   };

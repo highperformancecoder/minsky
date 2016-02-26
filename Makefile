@@ -40,9 +40,8 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
 	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
 	switchIcon.o
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o
-ENGINE_OBJS=variableValue.o flowCoef.o
-#evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o
+ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o variableValue.o
 SERVER_OBJS=
 #database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=variableType.o operationType.o
@@ -53,7 +52,7 @@ EXES=$(ALL_OBJS)
 
 
 # TODO - remove dependency on GUI directory here
-FLAGS+=-std=c++11 -Ischema -Iengine -IGUI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
+FLAGS+=-std=c++11 -Ischema -Iengine -Imodel $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
 
 VPATH= schema model engine server $(ECOLAB_HOME)/include
 
