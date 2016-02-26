@@ -90,8 +90,7 @@ namespace MathDAG
     /// directly, otherwise a copy operation is added to ensure it
     /// receives the result.
     virtual VariableValue addEvalOps
-    (EvalOpVector&, //std::map<Port*,VariableValue>& opValMap, 
-     const VariableValue& result=VariableValue()) const=0;
+    (EvalOpVector&, const VariableValue& result=VariableValue()) const=0;
     /// returns evaluation order in sequence of variable defintions
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
@@ -144,8 +143,7 @@ namespace MathDAG
     ostream& latex(ostream& o) const  override {return o<<MathDAG::latex(value);}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
-    VariableValue addEvalOps(EvalOpVector&, //std::map<Port*,VariableValue>& opValMap,  
-                             const VariableValue&) const override;
+    VariableValue addEvalOps(EvalOpVector&, const VariableValue&) const override;
     NodePtr derivative(SystemOfEquations&) const override;
   };
 
@@ -176,8 +174,7 @@ namespace MathDAG
     ostream& matlab(ostream&) const override;
     void render(ecolab::cairo::Surface& surf) const override;
     VariableValue addEvalOps
-    (EvalOpVector&, //std::map<Port*,VariableValue>& opValMap,  
-     const VariableValue& v=VariableValue()) const override;
+    (EvalOpVector&, const VariableValue& v=VariableValue()) const override;
     using Node::latex;
     using Node::matlab;
     NodePtr derivative(SystemOfEquations&) const override; 
@@ -206,8 +203,7 @@ namespace MathDAG
     /// factory method 
     static OperationDAGBase* create(Type type, const string& name="");
     int order(unsigned maxOrder) const override;
-    VariableValue addEvalOps(EvalOpVector&, //std::map<Port*,VariableValue>& opValMap,  
-                             const VariableValue&) const override;
+    VariableValue addEvalOps(EvalOpVector&, const VariableValue&) const override;
     void checkArg(unsigned i, unsigned j) const;
   };
 
@@ -355,8 +351,6 @@ namespace MathDAG
     /// @param portValMap - map of flowVar ids assigned with an output port
     void populateEvalOpVector
     (EvalOpVector& equations, std::vector<Integral>& integrals);
-
-    //     std::map<Port*,VariableValue>& portValMap);
 
     /// symbolically differentiate \a expr
     template <class Expr> NodePtr derivative(const Expr& expr);

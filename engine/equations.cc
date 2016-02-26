@@ -108,7 +108,7 @@ namespace MathDAG
   }
 
   VariableValue ConstantDAG::addEvalOps
-  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& opValMap,*/ const VariableValue& r) const 
+  (EvalOpVector& ev, const VariableValue& r) const 
   {
     if (result.idx()<0)
       {
@@ -150,7 +150,7 @@ namespace MathDAG
   }
 
   VariableValue VariableDAG::addEvalOps
-  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& portValMap,*/ const VariableValue& r) const
+  (EvalOpVector& ev, const VariableValue& r) const
   {
     if (result.idx()<0)
       {
@@ -161,7 +161,7 @@ namespace MathDAG
             result.allocValue();
           }
         if (rhs)
-          rhs->addEvalOps(ev,/*portValMap,*/result);
+          rhs->addEvalOps(ev, result);
       }
     if (r.isFlowVar() && r.idx()>=0 && (r.idx()!=result.idx() || !result.isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, r, result));
@@ -169,7 +169,7 @@ namespace MathDAG
   }
 
   VariableValue IntegralInputVariableDAG::addEvalOps
-  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& portValMap,*/ const VariableValue& r) const
+  (EvalOpVector& ev, const VariableValue& r) const
   {
     if (result.idx()<0)
       {
@@ -181,7 +181,7 @@ namespace MathDAG
             result.allocValue();
           }
         if (rhs)
-          rhs->addEvalOps(ev,/*portValMap,*/result);
+          rhs->addEvalOps(ev, result);
       }
     if (r.isFlowVar() && r.idx()>=0 && (r.idx()!=result.idx() || !result.isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, r, result));
@@ -265,7 +265,7 @@ namespace MathDAG
   }
 
   VariableValue OperationDAGBase::addEvalOps
-  (EvalOpVector& ev, /*std::map<Port*,VariableValue>& portValMap,*/ const VariableValue& r) const
+  (EvalOpVector& ev, const VariableValue& r) const
   {
     if (result.idx()<0)
       {
@@ -277,8 +277,6 @@ namespace MathDAG
                 // integral copies need to be done now, in case of cycles
                 if (r.isFlowVar() && r.idx()>=0)
                   ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-//                if (state && state->numPorts()>0)
-//                  portValMap[state->ports[0].get()]=result;
                 return result; // integration handled as part of RK arlgorithm
               }
             else
@@ -290,16 +288,12 @@ namespace MathDAG
         else 
           result.allocValue();
 
-//        if (state && state->numPorts()>0)
-//          portValMap[state->ports[0].get()]=result;
-
-
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
         for (size_t i=0; type()!=integrate && i<arguments.size(); ++i)
           for (size_t j=0; j<arguments[i].size(); ++j)
             if (arguments[i][j])
-              argIdx[i].push_back(arguments[i][j]->addEvalOps(ev/*, portValMap*/));
+              argIdx[i].push_back(arguments[i][j]->addEvalOps(ev));
             else
               argIdx[i].push_back(VariableValue());
         
@@ -1425,10 +1419,6 @@ namespace MathDAG
     assert(integrationVariables.size()==minsky.variables.stockVars().size());
     equations.clear();
     integrals.clear();
-    //    portValMap.clear();
-
-//    for (const VariableDAG* i: variables)
-//      i->addEvalOps(equations, portValMap);
 
     for (const VariableDAG* i: integrationVariables)
       {
@@ -1459,12 +1449,6 @@ namespace MathDAG
 //                portValMap[wi->from.get()]=n->result;
 //            }
 //        }
-
-//    // load up variable output port associations
-//    for (const VariablePtr& v: minsky.variables)
-//      if (minsky.wiresAttachedToPort(v->outPort()).size()>0)
-//        portValMap[v->ports[0].get()]=
-//          minsky.variables.getVariableValueFromPort(v->outPort());
   }
 
   void SystemOfEquations::processGodleyTable
