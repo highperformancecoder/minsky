@@ -429,6 +429,14 @@ namespace minsky
 
     /// set a Tk image to render equations to
     void renderEquationsToImage(const char* image);
+
+    /// Converts variable(s) named by \a name into a variable of type \a type.
+    /// @throw if conversion is disallowed
+    void convertVarType(const std::string& name, VariableType::Type type);
+
+    /// returns true if any variable of name \a name has a wired input
+    bool inputWired(const std::string&);
+
   };
 
   /// global minsky object

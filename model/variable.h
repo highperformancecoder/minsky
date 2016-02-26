@@ -212,6 +212,8 @@ namespace minsky
     VariablePtr(const VariableBase& x): PtrBase(x.clone()) {}
     /// changes type of variable to \a type
     void retype(VariableBase::Type type);
+    VariablePtr(const ItemPtr& x): 
+      PtrBase(std::dynamic_pointer_cast<VariableBase>(x)) {}
   };
 
 }

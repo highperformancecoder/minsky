@@ -140,99 +140,58 @@ namespace minsky
     return *this;
   }
 
-  void IntOp::newName()
+  void IntOp::description(string desc)
   {
-//    // if conversion unsuccessful, allocate a new variable name
-//    int i=1;
-//    string trialName;
-//    do
-//      trialName=m_description+str(i++);
-//    while (variableManager().values.count(VariableManager::valueId(group, trialName)));
-//    m_description=trialName;
-//    if (intVar>-1)
-//      variableManager()[intVar]->name(m_description);
-  }
 
-  void IntOp::setDescription()
-  {
-#if 0 // TODO
-    // body of this method defined in a lambda to ensure
-    // makeConsistent() is called regardless of the return path.
-    // makeConsistent() potentially throws, soc cannot be called from
-    // a destructor
-    [&]()
+    // set a default name if none given
+    if (desc.empty()) 
+      desc=minsky().variableValues.newName("int");
+
+    // unscoped descriptions treated as global
+    if (desc.find(":")==string::npos)
+      desc=":"+desc;
+
+    desc=VariableValue::valueId(desc);
+
+    if (intVar && intVar->valueId()==desc)
+      return; // nothing to do
+
+    vector<Wire> savedWires;
+    if (numPorts()>0)
       {
-        vector<Wire> savedWires;
-        // unscoped descriptions treated as global
-        if (m_description.find(":")==string::npos)
-          m_description=":"+m_description;
+        // save any attached wires for later use
+        for (auto w: ports[0]->wires)
+          savedWires.push_back(*w);
+      }
 
-        if (numPorts()>0)
-          {
-            // save any attached wires for later use
-            array<int> outWires=minsky().wiresAttachedToPort(ports()[0]);
-            for (array<int>::iterator i=outWires.begin(); i!=outWires.end(); ++i)
-              savedWires.push_back(minsky().wires[*i]);
-          }
+    // if the variable name exists, and already has a connected
+    // input, then it is not a candidate for being an integral
+    // variable, so generate a new name that doesn't currently
+    // exist
 
+    if (minsky().variableValues.count(desc)) 
+      try
+        {
+          minsky().convertVarType(desc, VariableType::integral);
+        }
+      catch (...)
+        {
+          desc=minsky().variableValues.newName(desc);
+        }
 
-        if (intVar > -1)
-          {
-            const VariablePtr& v=variableManager()[intVar];
-            if (!ports().empty() && ports()[0]!=v->outPort())
-              minsky().delPort(ports()[0]);
-            if (v->valueId()!=VariableManager::valueId(m_description))
-              {
-                minsky().variables.erase(intVar, true);
-                intVar=-1;
-              }
-            else
-              return; // nothing to be done
-          }
-        else if (!ports().empty())
-          minsky().delPort(ports()[0]);
+    intVar.reset(new Variable<VariableType::integral>(desc));
+    intVar->m_visible=false; // we're managing our own display
+    intVar->group=group;
+    // initialise in toggled state
+    ports[0]=intVar->ports[0];
 
-        // set a default name if none given
-        if (m_description==":") 
-          {
-            m_description="int";
-            newName();
-          }
-        // if the variable name exists, and already has a connected input,
-        // then it is not a candidate for being an integral variable, so
-        // generate a new name that doesn't currently exist
+    // recreate any previously attached wires, initially in global group.
+    for (auto& w: savedWires)
+      minsky().model->addWire(new Wire(intVar->ports[0], w.to(), w.coords()));
 
-        if (variableManager().values.count(valueId())) 
-          try
-            {
-              variableManager().convertVarType(valueId(), VariableType::integral);
-            }
-          catch (...)
-            {
-              newName();
-            }
-
-        VariablePtr iv(VariableType::integral, m_description);
-        iv->visible=false; // we're managing our own display
-        iv->group=group;
-        intVar=variableManager().addVariable(iv);
-
-        // make the intVar outport the integral operator's outport
-        if (ports().size()<1) m_ports.resize(1);
-
-        m_ports[0]=iv->outPort();
-
-        // restore any previously attached wire
-        for (size_t i=0; i<savedWires.size(); ++i)
-          {
-            Wire& w=savedWires[i];
-            w.from=ports()[0];
-            if (variableManager().addWire(w.to, w.from))
-              minsky().addWire(w);
-          }
-      }();
-    minsky().variables.makeConsistent();
-#endif
+    // this should also adjust the wire's group ownership appropriately
+    if (auto g=group.lock())
+      g->addItem(minsky().getNewId(), intVar);
   }
 
   bool OperationBase::selfWire(const shared_ptr<Port>& from, const shared_ptr<Port>& to) const

@@ -326,8 +326,8 @@ SUITE(Minsky)
       nSteps=1;
       step();
       // for now, constructEquations doesn work
-//      CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-//      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"].value(), 1e-5);
+      CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
+      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"].value(), 1e-5);
  
       // now integrate the linear function
       auto op3=addOperation("integrate");

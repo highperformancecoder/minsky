@@ -64,18 +64,18 @@ namespace
 
   int jacobian(double t, const double y[], double * dfdy, double dfdt[], void * params)
   {
- //   if (params==NULL) return GSL_EBADFUNC;
- //   Minsky::Matrix jac(ValueVector::stockVars.size(), dfdy);
- //   try
- //     {
- //       ((Minsky*)params)->jacobian(jac,t,y);
- //     }
- //    catch (std::exception& e)
- //     {
- //       Tcl_AppendResult(interp(),e.what(),NULL);
- //       Tcl_AppendResult(interp(),"\n",NULL);
- //       return GSL_EBADFUNC;
- //     }   
+   if (params==NULL) return GSL_EBADFUNC;
+   Minsky::Matrix jac(ValueVector::stockVars.size(), dfdy);
+   try
+     {
+       ((Minsky*)params)->jacobian(jac,t,y);
+     }
+    catch (std::exception& e)
+     {
+       Tcl_AppendResult(interp(),e.what(),NULL);
+       Tcl_AppendResult(interp(),"\n",NULL);
+       return GSL_EBADFUNC;
+     }   
     return GSL_SUCCESS;
   }
 }
@@ -572,7 +572,6 @@ namespace minsky
     integrals.clear();
 
     MathDAG::SystemOfEquations system(*this);
-    map<Port*,VariableValue> portValMap;
     system.populateEvalOpVector(equations, integrals);
 
    // attach the plots
@@ -1210,5 +1209,62 @@ namespace minsky
 //      historyPtr+=changes; // revert
   }
 
+  void Minsky::convertVarType(const string& name, VariableType::Type type)
+  {
+    assert(VariableValue::isValueId(name));
+    VariableValues::iterator i=variableValues.find(name);
+    if (i==variableValues.end())
+      throw error("variable %s doesn't exist",name.c_str());
+    if (i->second.type()==type) return; // nothing to do!
+
+//    for (auto g: minsky().godleyItems)
+//      {
+//        if (type!=VariableType::flow)
+//          for (auto v: g.flowVars)
+//            if (v->valueId()==name)
+//              throw error("flow variables in Godley tables cannot be converted to a different type");
+//        if (type!=VariableType::stock)
+//          for (auto v: g.stockVars)
+//            if (v->valueId()==name)
+//              throw error("stock variables in Godley tables cannot be converted to a different type");
+//      }
+
+    if (inputWired(name)) 
+      throw error("cannot convert a variable whose input is wired");
+
+    // filter out invalid targets
+    switch (type)
+      {
+      case VariableType::undefined: case VariableType::numVarTypes: 
+      case VariableType::tempFlow:
+        throw error("convertVarType not supported for type=%s",
+                    VariableType::typeName(type).c_str());
+      default: break;
+      }
+
+    // convert all references
+    model->recursiveDo(&Group::items,
+                       [&](Items&, Items::iterator i) {
+                         if (auto v=VariablePtr(*i))
+                           if (v->valueId()==name)
+                             {
+                               v.retype(type);
+                               *i=v;
+                             }
+                         return false;
+                       });
+    i->second=VariableValue(type,i->second.name,i->second.init);
+  }
+
+  bool Minsky::inputWired(const std::string& name)
+  {
+    return model->recursiveDo(&Group::items,
+                              [&](Items&,Items::const_iterator i) {
+                                if (auto v=dynamic_cast<VariableBase*>(i->get()))
+                                  return (v->valueId()==name && !v->ports[1]->wires.empty());
+                                return false;
+                              }
+                              );
+  }
 }
 

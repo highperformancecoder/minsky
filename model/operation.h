@@ -160,28 +160,21 @@ namespace minsky
     IntOp() {}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x), intVar(x.intVar->clone()) {}
+      OperationBase(x), Super(x) {}
     const IntOp& operator=(const IntOp& x); 
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
     IntOp* clone() const {return new IntOp(*this);}
 
-    /// set integration variable name
-    void setDescription();
     /// @{ name of the associated integral variable
-    void description(const string& desc) {
-      assert(intVar);
-      intVar->name(desc);
-      setDescription();
-    }
-    string description() const {assert(intVar); return intVar->name();}
+    void description(string desc);
+    string description() const {
+      return intVar? intVar->name(): "";}
     /// @}
-    /// generate a new name not otherwise in the system
-    void newName(); 
 
     string valueId() const 
-    {return "";}//VariableManager::valueId(group, m_description);}
+    {return intVar->valueId();}
 
     /// return ID of integration variable
     int intVarID() const {assert(intVar); return intVar.id();}
@@ -245,6 +238,8 @@ namespace minsky
     size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}
     OperationPtr(const PtrBase& x): PtrBase(x) {}
     OperationPtr& operator=(const PtrBase& x) {PtrBase::operator=(x); return *this;}
+    OperationPtr(const ItemPtr& x): 
+      PtrBase(std::dynamic_pointer_cast<OperationBase>(x)) {}
   };
 
 

@@ -16,10 +16,9 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-//#include "portManager.h"
+
 #include "variable.h"
-//#include "variableManager.h"
-//#include "minsky.h"
+#include "minsky.h"
 #include <error.h>
 #include <ecolab_epilogue.h>
 
@@ -92,8 +91,7 @@ VariableBase* VariableBase::create(VariableType::Type type)
 
 string VariableBase::valueId() const 
 {
-  return m_name;
-  //  return VariableManager::valueId(m_scope, m_name);
+  return VariableValue::valueId(m_scope, m_name);
 }
 
 string VariableBase::name()  const
@@ -147,9 +145,10 @@ void VariableBase::ensureValueExists() const
 {
   string valueId=this->valueId();
   // disallow blank names
-//  if (valueId.substr(valueId.length()-2)!=":_" && variableManager().values.count(valueId)==0)
-//    variableManager().values.insert
-//      (make_pair(valueId,VariableValue(type(), fqName())));
+  if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_" && 
+      minsky().variableValues.count(valueId)==0)
+    minsky().variableValues.insert
+      (make_pair(valueId,VariableValue(type(), fqName())));
 }
 
 

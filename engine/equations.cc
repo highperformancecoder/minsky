@@ -1180,7 +1180,6 @@ namespace MathDAG
     // sort variables into their order of definition
     sort(variables.begin(), variables.end(), 
          VariableDefOrder(expressionCache.size()));
-    assert(integrationVariables.size()==m.variables.stockVars().size());
   }
 
   shared_ptr<VariableDAG> SystemOfEquations::makeDAG(const string& valueId, int scope, const string& name, VariableType::Type type)
@@ -1372,7 +1371,6 @@ namespace MathDAG
 
   ostream& SystemOfEquations::matlab(ostream& o) const
   {
-    assert(integrationVariables.size()==minsky.variables.stockVars().size());
     o<<"function f=f(x,t)\n";
     // define names for the components of x for reference
     int j=1;
@@ -1416,7 +1414,6 @@ namespace MathDAG
   void SystemOfEquations::populateEvalOpVector
   (EvalOpVector& equations, vector<Integral>& integrals)
   {
-    assert(integrationVariables.size()==minsky.variables.stockVars().size());
     equations.clear();
     integrals.clear();
 
@@ -1428,7 +1425,7 @@ namespace MathDAG
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
-          integrals.back().input=iInput->rhs->addEvalOps(equations/*, portValMap*/);
+          integrals.back().input=iInput->rhs->addEvalOps(equations);
       }
 
     // loop over plots and ensure that each connected input port

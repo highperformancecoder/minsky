@@ -133,6 +133,8 @@ namespace minsky
         (value_type("constant:one",
                     VariableValue(VariableType::constant,"constant:one","1")));
     }
+    /// generate a new name not otherwise in the system, based on \a name
+    std::string newName(const std::string& name) const;
   };
 
 }

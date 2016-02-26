@@ -131,5 +131,16 @@ namespace minsky
     else
     return name.substr(p+1);
   }
-  
+ 
+  string VariableValues::newName(const string& name) const
+  {
+    // if conversion unsuccessful, allocate a new variable name
+    int i=1;
+    string trialName;
+    do
+      trialName=name+str(i++);
+    while (count(VariableValue::valueId(trialName)));
+    return trialName;
+  }
+
 }
