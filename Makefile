@@ -181,6 +181,7 @@ clean:
 	rm -f $(EXES)
 	cd test; $(MAKE) clean
 	cd GUI; $(BASIC_CLEAN)
+	cd model; $(BASIC_CLEAN)
 	cd engine; $(BASIC_CLEAN)
 	cd schema; $(BASIC_CLEAN)
 	cd gui-wt; $(BASIC_CLEAN)
