@@ -107,7 +107,6 @@ SUITE(Minsky)
 
       constructEquations();
 
-      //TODO
       CHECK_EQUAL(4, integrals.size());
       // check that integral  stock vars aren't flowVars
       int nakedIntegral=-1;
@@ -118,17 +117,17 @@ SUITE(Minsky)
           CHECK(!integrals[i].stock.isFlowVar());
         }
       CHECK(nakedIntegral>=0);
-//
-//      var["c"]->value(0.1);
-//      var["d"]->value(0.2);
-//      var["e"]->value(0.3);
-//
-//      step();
 
-//      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
-//      CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
-//      CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
-//      CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
+      var["c"]->value(0.1);
+      var["d"]->value(0.2);
+      var["e"]->value(0.3);
+
+      step();
+
+      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
+      CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
 
     }
 
