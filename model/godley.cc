@@ -218,7 +218,6 @@ void GodleyTable::setDEmode(bool mode)
               formula.insert(start,"-");
           }
   doubleEntryCompliant=mode;
-  markEdited();  
 }
 
 void GodleyTable::nameUnique()
