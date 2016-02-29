@@ -154,7 +154,9 @@ namespace minsky
     GroupPtr removeGroup(int id) {return removeItem(&Group::groups,id);}
     WirePtr removeWire(int id) {return removeItem(&Group::wires,id);}
 
+    ItemPtr removeItem(const Item&);
     WirePtr removeWire(const Wire&);
+    GroupPtr removeGroup(const Group&);
 
     /// finds item within this group or subgroups. Returns null if not found
     const ItemPtr& findItem(int id) const {return findId(&Group::items, id);}

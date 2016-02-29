@@ -140,6 +140,11 @@ namespace minsky
     return *this;
   }
 
+  IntOp::~IntOp() 
+  {
+    minsky().model->removeItem(*intVar);
+  }
+
   void IntOp::description(string desc)
   {
 
@@ -178,6 +183,8 @@ namespace minsky
         {
           desc=minsky().variableValues.newName(desc);
         }
+
+    minsky().model->removeItem(*intVar);
 
     intVar.reset(new Variable<VariableType::integral>(desc));
     intVar->m_visible=false; // we're managing our own display

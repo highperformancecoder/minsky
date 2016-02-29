@@ -159,10 +159,11 @@ namespace minsky
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
 
-    IntOp() {}
+    IntOp() {description("int");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {}
+      OperationBase(x), Super(x) {description("int");}
+    ~IntOp();
     const IntOp& operator=(const IntOp& x); 
 
     // clone has to be overridden, as default impl return object of

@@ -19,6 +19,8 @@
 
 #include "group.h"
 #include "wire.h"
+#include "operation.h"
+#include "minsky.h"
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
 using namespace std;
@@ -29,6 +31,22 @@ namespace minsky
   Group& GroupPtr::operator*() const {return dynamic_cast<Group&>(ItemPtr::operator*());}
   Group* GroupPtr::operator->() const {return dynamic_cast<Group*>(ItemPtr::operator->());}
 
+  ItemPtr Group::removeItem(const Item& it)
+  {
+    for (auto i=items.begin(); i!=items.end(); ++i)
+      if (i->get()==&it)
+        {
+          ItemPtr r=*i;
+          items.erase(i);
+          return r;
+        }
+
+    for (auto& g: groups)
+      if (ItemPtr r=g->removeItem(it))
+        return r;
+    return ItemPtr();
+  }
+       
   WirePtr Group::removeWire(const Wire& w)
   {
     for (auto i=wires.begin(); i!=wires.end(); ++i)
@@ -44,6 +62,24 @@ namespace minsky
         return r;
     return WirePtr();
   }
+
+  GroupPtr Group::removeGroup(const Group& group)
+  {
+    for (auto i=groups.begin(); i!=groups.end(); ++i)
+      if (i->get()==&group)
+        {
+          GroupPtr r=*i;
+          groups.erase(i);
+          return r;
+        }
+
+    for (auto& g: groups)
+      if (GroupPtr r=g->removeGroup(group))
+        return r;
+    return GroupPtr();
+  }
+       
+
 
   ItemPtr& Group::addItem(int id, const shared_ptr<Item>& it)
   {
@@ -91,6 +127,18 @@ namespace minsky
             w->moveIntoGroup(*p1);
           }
       }
+
+    // need to deal with integrals especially because of the attached variable
+    if (auto intOp=dynamic_cast<IntOp*>(it.get()))
+      if (intOp->getIntVar())
+        if (auto oldG=intOp->getIntVar()->group.lock())
+          {
+            if (oldG.get()!=this)
+              addItem(oldG->removeItem(*intOp->getIntVar()));
+          }
+        else
+          addItem(minsky().getNewId(), intOp->getIntVar());
+            
 
     return *items.insert(Items::value_type(id,it)).first;
   }

@@ -108,16 +108,16 @@ SUITE(Minsky)
       constructEquations();
 
       //TODO
-//      CHECK_EQUAL(4, integrals.size());
-//      // check that integral  stock vars aren't flowVars
-//      int nakedIntegral=-1;
-//      for (size_t i=0; i<integrals.size(); ++i)
-//        {
-//          if (integrals[i].stock.name==":int1")
-//            nakedIntegral=i;
-//          CHECK(!integrals[i].stock.isFlowVar());
-//        }
-//      CHECK(nakedIntegral>=0);
+      CHECK_EQUAL(4, integrals.size());
+      // check that integral  stock vars aren't flowVars
+      int nakedIntegral=-1;
+      for (size_t i=0; i<integrals.size(); ++i)
+        {
+          if (integrals[i].stock.name==":int")
+            nakedIntegral=i;
+          CHECK(!integrals[i].stock.isFlowVar());
+        }
+      CHECK(nakedIntegral>=0);
 //
 //      var["c"]->value(0.1);
 //      var["d"]->value(0.2);
