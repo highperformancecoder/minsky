@@ -131,7 +131,7 @@ namespace minsky
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
-    //   void draw(cairo_t*) const;
+    void draw(cairo_t*) const override;
 
   };
 

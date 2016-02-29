@@ -35,11 +35,11 @@ namespace minsky
   class EvalGodley
   {
     /// representation of matrix connecting flow variables to stock variables
-    array<int> sidx, fidx;
-    array<double> m;
+    ecolab::array<int> sidx, fidx;
+    ecolab::array<double> m;
 
     /// index of stock variables that need to be zeroed at start of eval
-    array<int> initIdx;
+    ecolab::array<int> initIdx;
 
     CLASSDESC_ACCESS(EvalGodley);
   public:

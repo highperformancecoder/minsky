@@ -90,4 +90,24 @@ namespace minsky
       sv[sidx[i]] += fv[fidx[i]] * m[i];
   }
 
+//  template <>
+//  const std::vector<std::vector<std::string> >& 
+//  GodleyIteratorAdaptor<GodleyIcons::iterator>::data() const
+//  {return it->table.getData();}
+//
+//  template <>
+//  const GodleyAssetClass::AssetClass
+//  GodleyIteratorAdaptor<GodleyIcons::iterator>::assetClass(size_t col) const
+//  {return it->table._assetClass(col);}
+//
+//  template <>
+//  bool GodleyIteratorAdaptor<GodleyIcons::iterator>::
+//  signConventionReversed(int col) const
+//  {return it->table.signConventionReversed(col);}
+//
+//  template <>
+//  bool GodleyIteratorAdaptor<GodleyIcons::iterator>::
+//  initialConditionRow(int row) const
+//  {return it->table.initialConditionRow(row);}
+ 
 }

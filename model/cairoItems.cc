@@ -58,7 +58,7 @@ namespace
     static Tk_ConfigSpec configSpecs[];
   };
 
-  struct OperationItem: public MinskyItemImage
+  struct MinskyCairoItem: public MinskyItemImage
   {
     ItemPtr op;    
     cairo_t * cairo;
@@ -77,30 +77,8 @@ namespace
                                  CAIRO_FONT_WEIGHT_NORMAL);
           cairo_set_font_size(cairo,12);
           cairo_set_line_width(cairo,1);
-
-
-          //TODO          RenderOperation(*op,cairo).draw();
+          op->draw(cairo);
         }
-    }
-  };
-
-  struct VariableItem: public MinskyItemImage
-  {
-    ItemPtr var;
-    void draw()
-    {
-      if (cairoSurface && var)
-        {
-          cairo_t *cairo=cairoSurface->cairo();
-          xScale=yScale=1;
-
-          cairo_reset_clip(cairo);
-          initMatrix();
-          cairo_set_line_width(cairo,1);
-
-          //TODO RenderVariable rv(*var, cairo);
-          //rv.draw();
-       }
     }
   };
 
@@ -128,36 +106,17 @@ namespace
     };
 #pragma GCC diagnostic pop
 
-  int operationCreatProc(Tcl_Interp *interp, Tk_Canvas canvas, 
+  int creatProc(Tcl_Interp *interp, Tk_Canvas canvas, 
                          Tk_Item *itemPtr, int objc,Tcl_Obj *CONST objv[])
   {
     TkMinskyItem* tkMinskyItem=(TkMinskyItem*)(itemPtr);
     tkMinskyItem->id=-1;
-    int r=createImage<OperationItem>(interp,canvas,itemPtr,objc,objv);
+    int r=createImage<MinskyCairoItem>(interp,canvas,itemPtr,objc,objv);
     if (r==TCL_OK && tkMinskyItem->id>=0)
       {
-        OperationItem* opItem=(OperationItem*)(tkMinskyItem->cairoItem);
-        if (opItem) 
+        if (MinskyCairoItem* i=(MinskyCairoItem*)(tkMinskyItem->cairoItem))
           {
-            opItem->op=minsky::minsky().model->findItem(tkMinskyItem->id);
-            TkImageCode::ComputeImageBbox(canvas, tkMinskyItem);
-          }
-      }
-    return r;
-  }
-
-  int varCreatProc(Tcl_Interp *interp, Tk_Canvas canvas, 
-                         Tk_Item *itemPtr, int objc,Tcl_Obj *CONST objv[])
-  {
-    TkMinskyItem* tkMinskyItem=(TkMinskyItem*)(itemPtr);
-    tkMinskyItem->id=-1;
-    int r=createImage<VariableItem>(interp,canvas,itemPtr,objc,objv);
-    if (r==TCL_OK && tkMinskyItem->id>=0)
-      {
-        VariableItem* varItem=dynamic_cast<VariableItem*>(tkMinskyItem->cairoItem);
-        if (varItem) 
-          {
-            varItem->var=minsky::minsky().model->findItem(tkMinskyItem->id);
+            i->op=minsky::minsky().model->findItem(tkMinskyItem->id);
             TkImageCode::ComputeImageBbox(canvas, tkMinskyItem);
           }
       }
@@ -175,21 +134,16 @@ namespace
   // register OperatorItem with Tk for use in canvases.
   int registerItems()
   {
-    static Tk_ItemType operationItemType = cairoItemType();
-    operationItemType.name=const_cast<char*>("operation");
-    operationItemType.itemSize=sizeof(TkMinskyItem);
-    operationItemType.createProc=operationCreatProc;
-    operationItemType.configProc=configureProc;
-    operationItemType.configSpecs=MinskyItemImage::configSpecs;
-    Tk_CreateItemType(&operationItemType);
+    static Tk_ItemType itemType = cairoItemType();
+    itemType.name=const_cast<char*>("item");
+    itemType.itemSize=sizeof(TkMinskyItem);
+    itemType.createProc=creatProc;
+    itemType.configProc=configureProc;
+    itemType.configSpecs=MinskyItemImage::configSpecs;
+    Tk_CreateItemType(&itemType);
 
-    static Tk_ItemType varItemType = operationItemType;
-    varItemType.name=const_cast<char*>("variable");
-    varItemType.createProc=varCreatProc;
-    Tk_CreateItemType(&varItemType);
     return 0;
   }
-
 }
 
 
@@ -204,7 +158,6 @@ void minsky::drawSelected(cairo_t* cairo)
   cairo_restore(cairo);
 }
 
-#if 0
 RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
   op(op), cairo(cairo), hoffs(0)
 {
@@ -338,302 +291,302 @@ namespace
 namespace minsky
 {
 
-  // virtual draw methods for operations - defined here rather than
-  // operations.cc because it is more related to the functionality in
-  // this file.
-
-  template <> void Operation<OperationType::constant>::iconDraw(cairo_t* cairo) const
-  {
-    assert(false); //shouldn't be here
-  }
-
-  template <> void Operation<OperationType::data>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_translate(cairo,-1,0);
-    cairo_scale(cairo,1.5,0.75);
-    cairo_arc(cairo,0,-3,3,0,2*M_PI);
-    cairo_arc(cairo,0,3,3,0,M_PI);
-    cairo_move_to(cairo,-3,3);
-    cairo_line_to(cairo,-3,-3);
-    cairo_move_to(cairo,3,3);
-    cairo_line_to(cairo,3,-3);
-    cairo_identity_matrix(cairo);
-    cairo_set_line_width(cairo,1);
-    cairo_stroke(cairo);
-  }
-
-  template <> void Operation<OperationType::time>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-4,2);
-    cairo_show_text(cairo,"t");
-  }
-
-  template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-4,2);
-    cairo_show_text(cairo,"=");
-  }
-
-  template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-7,4.5);
-    cairo_show_text(cairo,"\xE2\x88\xAB");
-    cairo_show_text(cairo,"dt");
-  }
-
-  template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_save(cairo);
-    cairo_move_to(cairo,-7,-1);
-    cairo_set_font_size(cairo,8);
-    cairo_show_text(cairo,"d");
-    cairo_move_to(cairo,-7,0);cairo_line_to(cairo,2,0);
-    cairo_set_line_width(cairo,0.5);cairo_stroke(cairo);
-    cairo_move_to(cairo,-7,7);
-    cairo_show_text(cairo,"dt");
-    cairo_restore(cairo);
-  }
-
-  template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_save(cairo);
-    cairo_set_font_size(cairo,10);   
-    cairo_move_to(cairo,-7,6);
-    cairo_show_text(cairo,"\xE2\x88\x9a");
-    cairo_set_line_width(cairo,0.5);
-    cairo_rel_move_to(cairo,0,-9);
-    cairo_rel_line_to(cairo,5,0);
-    cairo_set_source_rgb(cairo,0,0,0);
-    cairo_stroke(cairo);
-    cairo_restore(cairo);
-    //    cairo_show_text(cairo,"sqrt");
-  }
-
-  template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-7,3);
-    cairo_show_text(cairo,"e");
-    cairo_rel_move_to(cairo,0,-4);
-    cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"x");
-  }
-
-  template <> void Operation<OperationType::pow>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-6,3);
-    cairo_show_text(cairo,"x");
-    cairo_rel_move_to(cairo,0,-4);
-    cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"y");
-    cairo_set_font_size(cairo,5);
-    cairo_move_to(cairo, l+1, -h+6);
-#ifdef DISPLAY_POW_UPSIDE_DOWN
-    cairo_show_text(cairo,"y");
-#else
-    cairo_show_text(cairo,"x");
-#endif
-    cairo_move_to(cairo, l+1, h-3);
-#ifdef DISPLAY_POW_UPSIDE_DOWN
-    cairo_show_text(cairo,"x");
-#else
-    cairo_show_text(cairo,"y");
-#endif
-  }
-
-  template <> void Operation<OperationType::le>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"≤");
-  }
-
-  template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"<");
-  }
-
-  template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"=");
-  }
-
-  template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"min");
-  }
-
-  template <> void Operation<OperationType::max>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"max");
-  }
-
-  template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_save(cairo);
-    cairo_set_source_rgb(cairo,0,0,0);
-    cairo_move_to(cairo,-4,3);
-    cairo_line_to(cairo,-1,-3);
-    cairo_line_to(cairo,2,3);
-    cairo_restore(cairo);
-  }
-
-  template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_save(cairo);
-    cairo_set_source_rgb(cairo,0,0,0);
-    cairo_move_to(cairo,-4,-3);
-    cairo_line_to(cairo,-1,3);
-    cairo_line_to(cairo,2,-3);
-    cairo_restore(cairo);
-  }
-
-  template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"¬");
-  }
-
-  template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo," ln");
-  }
-
-  template <> void Operation<OperationType::log>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,10);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"log");
-    cairo_rel_move_to(cairo,0,3);
-    cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"b");
-    cairo_set_font_size(cairo,5);
-    cairo_move_to(cairo, l+1, -h+6);
-    cairo_show_text(cairo,"x");
-    cairo_move_to(cairo, l+1, h-3);
-    cairo_show_text(cairo,"b");
-  
-  }
-
-  template <> void Operation<OperationType::sin>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,10);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"sin");
-  }
-
-  template <> void Operation<OperationType::cos>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,10);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"cos");
-  }
-
-  template <> void Operation<OperationType::tan>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,10);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"tan");
-  }
-
-  template <> void Operation<OperationType::asin>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,9);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"sin");
-    cairo_rel_move_to(cairo,0,-3);
-    cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"-1");
-    cairo_rel_move_to(cairo,0,-2);
-  }
-
-  template <> void Operation<OperationType::acos>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,9);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"cos");
-    cairo_rel_move_to(cairo,0,-3);
-    cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"-1");
-    cairo_rel_move_to(cairo,0,-2);
-  }
-
-  template <> void Operation<OperationType::atan>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,9);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"tan");
-    cairo_rel_move_to(cairo,0,-3);
-    cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"-1");
-    cairo_rel_move_to(cairo,0,-2);
-  }
-
-  template <> void Operation<OperationType::sinh>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,8);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"sinh");
-  }
-
-  template <> void Operation<OperationType::cosh>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,8);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"cosh");
-  }
-
-  template <> void Operation<OperationType::tanh>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,8);
-    cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"tanh");
-  }
-
-  template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_set_font_size(cairo,8);
-    cairo_move_to(cairo,-6,3);
-    cairo_show_text(cairo,"|x|");
-  }
-  template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
-  {
-    DrawBinOp d(cairo);
-    d.drawPlus();
-    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation);
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
-  }
-
-  template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
-  {
-    DrawBinOp d(cairo);
-    d.drawMinus();
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
-    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation);
-  }
-
-  template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
-  {
-    DrawBinOp d(cairo);
-    d.drawMultiply();
-    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation);
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
-  }
-
-  template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
-  {
-    DrawBinOp d(cairo);
-    d.drawDivide();
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
-    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation);
-  }
-
-  template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
-  {/* needs to be here, and is actually called */}
-
+//  // virtual draw methods for operations - defined here rather than
+//  // operations.cc because it is more related to the functionality in
+//  // this file.
+//
+//  template <> void Operation<OperationType::constant>::iconDraw(cairo_t* cairo) const
+//  {
+//    assert(false); //shouldn't be here
+//  }
+//
+//  template <> void Operation<OperationType::data>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_translate(cairo,-1,0);
+//    cairo_scale(cairo,1.5,0.75);
+//    cairo_arc(cairo,0,-3,3,0,2*M_PI);
+//    cairo_arc(cairo,0,3,3,0,M_PI);
+//    cairo_move_to(cairo,-3,3);
+//    cairo_line_to(cairo,-3,-3);
+//    cairo_move_to(cairo,3,3);
+//    cairo_line_to(cairo,3,-3);
+//    cairo_identity_matrix(cairo);
+//    cairo_set_line_width(cairo,1);
+//    cairo_stroke(cairo);
+//  }
+//
+//  template <> void Operation<OperationType::time>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-4,2);
+//    cairo_show_text(cairo,"t");
+//  }
+//
+//  template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-4,2);
+//    cairo_show_text(cairo,"=");
+//  }
+//
+//  template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-7,4.5);
+//    cairo_show_text(cairo,"\xE2\x88\xAB");
+//    cairo_show_text(cairo,"dt");
+//  }
+//
+//  template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_save(cairo);
+//    cairo_move_to(cairo,-7,-1);
+//    cairo_set_font_size(cairo,8);
+//    cairo_show_text(cairo,"d");
+//    cairo_move_to(cairo,-7,0);cairo_line_to(cairo,2,0);
+//    cairo_set_line_width(cairo,0.5);cairo_stroke(cairo);
+//    cairo_move_to(cairo,-7,7);
+//    cairo_show_text(cairo,"dt");
+//    cairo_restore(cairo);
+//  }
+//
+//  template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_save(cairo);
+//    cairo_set_font_size(cairo,10);   
+//    cairo_move_to(cairo,-7,6);
+//    cairo_show_text(cairo,"\xE2\x88\x9a");
+//    cairo_set_line_width(cairo,0.5);
+//    cairo_rel_move_to(cairo,0,-9);
+//    cairo_rel_line_to(cairo,5,0);
+//    cairo_set_source_rgb(cairo,0,0,0);
+//    cairo_stroke(cairo);
+//    cairo_restore(cairo);
+//    //    cairo_show_text(cairo,"sqrt");
+//  }
+//
+//  template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-7,3);
+//    cairo_show_text(cairo,"e");
+//    cairo_rel_move_to(cairo,0,-4);
+//    cairo_set_font_size(cairo,7);
+//    cairo_show_text(cairo,"x");
+//  }
+//
+//  template <> void Operation<OperationType::pow>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-6,3);
+//    cairo_show_text(cairo,"x");
+//    cairo_rel_move_to(cairo,0,-4);
+//    cairo_set_font_size(cairo,7);
+//    cairo_show_text(cairo,"y");
+//    cairo_set_font_size(cairo,5);
+//    cairo_move_to(cairo, l+1, -h+6);
+//#ifdef DISPLAY_POW_UPSIDE_DOWN
+//    cairo_show_text(cairo,"y");
+//#else
+//    cairo_show_text(cairo,"x");
+//#endif
+//    cairo_move_to(cairo, l+1, h-3);
+//#ifdef DISPLAY_POW_UPSIDE_DOWN
+//    cairo_show_text(cairo,"x");
+//#else
+//    cairo_show_text(cairo,"y");
+//#endif
+//  }
+//
+//  template <> void Operation<OperationType::le>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"≤");
+//  }
+//
+//  template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"<");
+//  }
+//
+//  template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"=");
+//  }
+//
+//  template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"min");
+//  }
+//
+//  template <> void Operation<OperationType::max>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"max");
+//  }
+//
+//  template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_save(cairo);
+//    cairo_set_source_rgb(cairo,0,0,0);
+//    cairo_move_to(cairo,-4,3);
+//    cairo_line_to(cairo,-1,-3);
+//    cairo_line_to(cairo,2,3);
+//    cairo_restore(cairo);
+//  }
+//
+//  template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_save(cairo);
+//    cairo_set_source_rgb(cairo,0,0,0);
+//    cairo_move_to(cairo,-4,-3);
+//    cairo_line_to(cairo,-1,3);
+//    cairo_line_to(cairo,2,-3);
+//    cairo_restore(cairo);
+//  }
+//
+//  template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"¬");
+//  }
+//
+//  template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo," ln");
+//  }
+//
+//  template <> void Operation<OperationType::log>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,10);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"log");
+//    cairo_rel_move_to(cairo,0,3);
+//    cairo_set_font_size(cairo,7);
+//    cairo_show_text(cairo,"b");
+//    cairo_set_font_size(cairo,5);
+//    cairo_move_to(cairo, l+1, -h+6);
+//    cairo_show_text(cairo,"x");
+//    cairo_move_to(cairo, l+1, h-3);
+//    cairo_show_text(cairo,"b");
+//  
+//  }
+//
+//  template <> void Operation<OperationType::sin>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,10);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"sin");
+//  }
+//
+//  template <> void Operation<OperationType::cos>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,10);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"cos");
+//  }
+//
+//  template <> void Operation<OperationType::tan>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,10);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"tan");
+//  }
+//
+//  template <> void Operation<OperationType::asin>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,9);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"sin");
+//    cairo_rel_move_to(cairo,0,-3);
+//    cairo_set_font_size(cairo,7);
+//    cairo_show_text(cairo,"-1");
+//    cairo_rel_move_to(cairo,0,-2);
+//  }
+//
+//  template <> void Operation<OperationType::acos>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,9);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"cos");
+//    cairo_rel_move_to(cairo,0,-3);
+//    cairo_set_font_size(cairo,7);
+//    cairo_show_text(cairo,"-1");
+//    cairo_rel_move_to(cairo,0,-2);
+//  }
+//
+//  template <> void Operation<OperationType::atan>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,9);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"tan");
+//    cairo_rel_move_to(cairo,0,-3);
+//    cairo_set_font_size(cairo,7);
+//    cairo_show_text(cairo,"-1");
+//    cairo_rel_move_to(cairo,0,-2);
+//  }
+//
+//  template <> void Operation<OperationType::sinh>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,8);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"sinh");
+//  }
+//
+//  template <> void Operation<OperationType::cosh>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,8);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"cosh");
+//  }
+//
+//  template <> void Operation<OperationType::tanh>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,8);
+//    cairo_move_to(cairo,-9,3);
+//    cairo_show_text(cairo,"tanh");
+//  }
+//
+//  template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
+//  {
+//    cairo_set_font_size(cairo,8);
+//    cairo_move_to(cairo,-6,3);
+//    cairo_show_text(cairo,"|x|");
+//  }
+//  template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
+//  {
+//    DrawBinOp d(cairo);
+//    d.drawPlus();
+//    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation);
+//    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
+//  }
+//
+//  template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
+//  {
+//    DrawBinOp d(cairo);
+//    d.drawMinus();
+//    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
+//    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation);
+//  }
+//
+//  template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
+//  {
+//    DrawBinOp d(cairo);
+//    d.drawMultiply();
+//    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation);
+//    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
+//  }
+//
+//  template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
+//  {
+//    DrawBinOp d(cairo);
+//    d.drawDivide();
+//    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
+//    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation);
+//  }
+//
+//  template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
+//  {/* needs to be here, and is actually called */}
+//
 }
 
 void RenderOperation::draw()
@@ -700,20 +653,18 @@ void OperationBase::draw(cairo_t* cairo) const
         double xx=w+2, yy=0;
         cairo_user_to_device(cairo, &xx, &yy);
 
-        minsky().movePortTo
-          (ports()[0], x()+xx, y()+yy);
+        ports[0]->moveTo(x()+xx, y()+yy);
         if (numPorts()>1)
           {
             xx=-w, yy=0;
             cairo_user_to_device(cairo, &xx, &yy);
-            minsky().movePortTo
-              (ports()[1], x()+xx, y()+yy);
+            ports[1]->moveTo(x()+xx, y()+yy);
           }
         if (mouseFocus)
           {
             cairo_save(cairo);
             cairo_identity_matrix(cairo);
-            drawPorts(*this, ports(), cairo);
+            drawPorts(cairo);
             cairo_restore(cairo);
           }
         if (selected) drawSelected(cairo);
@@ -831,25 +782,25 @@ void OperationBase::draw(cairo_t* cairo) const
   cairo_restore(cairo);
 
   if (numPorts()>0) 
-    minsky().movePortTo(ports()[0], x0, y0);
+    ports[0]->moveTo(x0, y0);
   if (numPorts()>1) 
     {
 #ifdef DISPLAY_POW_UPSIDE_DOWN
     if (type()==OperationType::pow)
-      minsky().movePortTo(ports()[1], x2, y2);
+      ports[1]->moveTo(x2, y2);
     else
 #endif
-      minsky().movePortTo(ports()[1], x1, y1);
+      ports[1]->moveTo(x1, y1);
     }
 
   if (numPorts()>2)
     {
 #ifdef DISPLAY_POW_UPSIDE_DOWN
       if (type()==OperationType::pow)
-        minsky().movePortTo(ports()[2], x1, y1);
+        ports[2]->moveTo(x1, y1);
       else
 #endif
-        minsky().movePortTo(ports()[2], x2, y2);
+        ports[2]->moveTo(x2, y2);
     }
 
   cairo_translate(cairo,-coupledIntTranslation,0);
@@ -858,7 +809,7 @@ void OperationBase::draw(cairo_t* cairo) const
     {
       cairo_save(cairo);
       cairo_identity_matrix(cairo);
-      drawPorts(*this, ports(), cairo);
+      drawPorts(cairo);
       cairo_restore(cairo);
     }
   if (selected) drawSelected(cairo);
@@ -967,7 +918,7 @@ void VariableBase::draw(cairo_t *cairo) const
     {
       cairo_save(cairo);
       cairo_identity_matrix(cairo);
-      drawPorts(*this, ports(), cairo);
+      drawPorts(cairo);
       cairo_restore(cairo);
     }
   if (selected) drawSelected(cairo);
@@ -978,11 +929,9 @@ void RenderVariable::updatePortLocs()
   double angle=var.rotation * M_PI / 180.0;
   double x0=w, y0=0, x1=-w+2, y1=0;
   double sa=sin(angle), ca=cos(angle);
-  minsky().movePortTo(var.outPort(), 
-                           var.x()+var.zoomFactor*(x0*ca-y0*sa), 
+  var.ports[0]->moveTo(var.x()+var.zoomFactor*(x0*ca-y0*sa), 
                            var.y()+var.zoomFactor*(y0*ca+x0*sa));
-  minsky().movePortTo(var.inPort(), 
-                           var.x()+var.zoomFactor*(x1*ca-y1*sa), 
+  var.ports[1]->moveTo(var.x()+var.zoomFactor*(x1*ca-y1*sa), 
                            var.y()+var.zoomFactor*(y1*ca+x1*sa));
 }
 
@@ -993,7 +942,6 @@ bool RenderVariable::inImage(float x, float y)
   float ry=dy*cos(var.rotation*M_PI/180)+dx*sin(var.rotation*M_PI/180);
   return rx>=-w && rx<=w && ry>=-h && ry <= h;
 }
-#endif
 
 void minsky::drawTriangle
 (cairo_t* cairo, double x, double y, cairo::Colour& col, double angle)

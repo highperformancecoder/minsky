@@ -60,6 +60,8 @@ namespace minsky
 
     int id() const {return m_id;}
 
+    void draw(cairo_t* cairo) const override {}
+
     void clear() {
       items.clear();
       groups.clear();

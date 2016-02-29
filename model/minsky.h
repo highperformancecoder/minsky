@@ -22,7 +22,7 @@
 
 #include "intrusiveMap.h"
 //#include "selection.h"
-//#include "godleyIcon.h"
+#include "godleyIcon.h"
 #include "operation.h"
 #include "evalOp.h"
 //#include "evalGodley.h"
@@ -131,20 +131,20 @@ namespace minsky
 
     VariableValues variableValues;
 
-//    void setGodleyIconResource(const string& s)
-//    {GodleyIcon::svgRenderer.setResource(s);}
+    void setGodleyIconResource(const string& s)
+    {GodleyIcon::svgRenderer.setResource(s);}
 //    void setGroupIconResource(const string& s)
 //    {GroupIcon::svgRenderer.setResource(s);}
 
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
     //  @param ac type of column we wish matches for
-    //    std::set<string> matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac);
+    std::set<string> matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac);
 
     /// find any duplicate column, and use it as a source column for balanceDuplicateColumns
-    //    void importDuplicateColumn(const GodleyTable& srcTable, int srcCol);
+    void importDuplicateColumn(const GodleyTable& srcTable, int srcCol);
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
-    //    void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
+    void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
     /// returns next integral ID to allocate to an item
     inline int getNewId()

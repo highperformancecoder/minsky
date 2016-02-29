@@ -17,60 +17,63 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <plot.h>
+#include <cairo_base.h>
 #include <cairo/cairo.h>
-//#include "geometry.h"
+#include <geometry.h>
+#include "operation.h"
+#include "variable.h"
 
 namespace minsky
 {
-//  /** class that randers a variable into a cairo context. 
-//      A user can also query the size of the unrotated rendered image
-//  */
-//  class RenderOperation
-//  {
-//    const OperationBase& op;
-//    cairo_t *cairo;
-//    float w, h, hoffs;
-//
-//  public:
-//    // render a variable to a given cairo context
-//    RenderOperation(const OperationBase& var, cairo_t* cairo=NULL);
-//    /// render the cairo image
-//    void draw();
-//    /// half width of unrotated image
-//    float width() const {return w;}
-//    /// half height of unrotated image
-//    float height() const {return h;}
-//
-//    Polygon geom() const;
-//    bool inImage(float x, float y); ///< true if (x,y) within rendered image
-//  };
-//
-//
-//  /** class that randers a variable into a cairo context. 
-//      A user can also query the size of the unrotated rendered image
-//  */
-//  class RenderVariable
-//  {
-//    const VariableBase& var;
-//    cairo_t *cairo;
-//    float w, h, hoffs;
-//  public:
-//    // render a variable to a given cairo context
-//    RenderVariable(const VariableBase& var, cairo_t* cairo=NULL);
-//    /// render the cairo image
-//    void draw();
-//    /// compute and update port locations
-//    void updatePortLocs();
-//    /// half width of unrotated image
-//    float width() const {return w;}
-//    /// half height of unrotated image
-//    float height() const {return h;}
-//    /// return the boost geometry corresponding to this variable's shape
-//    Polygon geom() const;
-//    bool inImage(float x, float y); ///< true if (x,y) within rendered image
-//  };
+  /** class that renders an operation into a cairo context. 
+      A user can also query the size of the unrotated rendered image
+  */
+  class RenderOperation
+  {
+    const OperationBase& op;
+    cairo_t *cairo;
+    float w, h, hoffs;
 
-  void drawTriangle(cairo_t* cairo, double x, double y, cairo::Colour& col, double angle=0);
+  public:
+    // render a variable to a given cairo context
+    RenderOperation(const OperationBase& var, cairo_t* cairo=NULL);
+    /// render the cairo image
+    void draw();
+    /// half width of unrotated image
+    float width() const {return w;}
+    /// half height of unrotated image
+    float height() const {return h;}
+
+    Polygon geom() const;
+    bool inImage(float x, float y); ///< true if (x,y) within rendered image
+  };
+
+
+  /** class that randers a variable into a cairo context. 
+      A user can also query the size of the unrotated rendered image
+  */
+  class RenderVariable
+  {
+    const VariableBase& var;
+    cairo_t *cairo;
+    float w, h, hoffs;
+  public:
+    // render a variable to a given cairo context
+    RenderVariable(const VariableBase& var, cairo_t* cairo=NULL);
+    /// render the cairo image
+    void draw();
+    /// compute and update port locations
+    void updatePortLocs();
+    /// half width of unrotated image
+    float width() const {return w;}
+    /// half height of unrotated image
+    float height() const {return h;}
+    /// return the boost geometry corresponding to this variable's shape
+    Polygon geom() const;
+    bool inImage(float x, float y); ///< true if (x,y) within rendered image
+  };
+
+  void drawTriangle(cairo_t* cairo, double x, double y, ecolab::cairo::Colour& col, double angle=0);
 
   /// mark icon as selected.
   void drawSelected(cairo_t* cairo);

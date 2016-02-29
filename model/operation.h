@@ -91,6 +91,8 @@ namespace minsky
     // manage the port structures associated with this operation
     virtual void addPorts();
 
+    void draw(cairo_t*) const override;
+
   protected:
 
     friend struct EvalOpBase;

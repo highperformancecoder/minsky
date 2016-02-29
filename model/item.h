@@ -72,8 +72,8 @@ namespace minsky
     void moveTo(float x, float y);
     void zoom(float xOrigin, float yOrigin,float factor);
 
-    /// draw this item into a cairo context (circle is just some prelimary scaffolding)
-    virtual void draw(cairo_t* cairo) {cairo_arc(cairo,0,0,3,0,2*M_PI);}
+    /// draw this item into a cairo context
+    virtual void draw(cairo_t* cairo) const {}
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;

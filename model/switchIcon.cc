@@ -144,7 +144,7 @@ namespace minsky
       return unsigned(x);
   }
 
-  void SwitchIcon::draw(cairo_t* cairo)
+  void SwitchIcon::draw(cairo_t* cairo) const
   {
     cairo_set_line_width(cairo,1);
     // square icon

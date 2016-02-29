@@ -18,6 +18,7 @@
 */
 #include "classdesc_access.h"
 #include "minsky.h"
+#include "flowCoef.h"
 //#include "cairoItems.h"
 
 #include "TCL_obj_stl.h"
@@ -593,154 +594,171 @@ namespace minsky
       (*e)->reset();
   }
 
-//  std::set<string> Minsky::matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac)
-//  {
-//    std::set<string> r;
-//    // matching liability with assets and vice-versa
-//    switch (ac)
-//      {
-//      case GodleyAssetClass::liability:
-//        ac=GodleyAssetClass::asset;
-//        break;
-//      case GodleyAssetClass::asset:
-//        ac=GodleyAssetClass::liability;
-//        break;
-//      default:
-//        return r; // other types do not match anything
-//      }
-//
-//    std::set<string> duplicatedColumns;
-//    for (GodleyItems::iterator gi=godleyItems.begin(); 
-//         gi!=godleyItems.end(); ++gi)
-//      {
-//        vector<string> columns=gi->table.getColumnVariables();
-//        for (size_t i=0; i<columns.size(); ++i)
-//          {
-////            if (columns[i].find(':')==string::npos) 
-////              // local variable, need to qualify
-////              columns[i]=gi->table.title.substr(0,5)+"["+str(gi->id())+"]:"+columns[i];
-//            if (gi->id()==currTable || r.count(columns[i]) || gi->table._assetClass(i+1)!=ac) 
-//              {
-//                r.erase(columns[i]); // column already duplicated, or in current, nothing to match
-//                duplicatedColumns.insert(columns[i]);
-//              }
-//            else if (!duplicatedColumns.count(columns[i]))
-//              r.insert(columns[i]);
-//          }
-//      }
-//    return r;
-//  }
+  std::set<string> Minsky::matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac)
+  {
+    std::set<string> r;
+    // matching liability with assets and vice-versa
+    switch (ac)
+      {
+      case GodleyAssetClass::liability:
+        ac=GodleyAssetClass::asset;
+        break;
+      case GodleyAssetClass::asset:
+        ac=GodleyAssetClass::liability;
+        break;
+      default:
+        return r; // other types do not match anything
+      }
 
-//  void Minsky::importDuplicateColumn(const GodleyTable& srcTable, int srcCol)
-//  {
-//    // find any duplicate column, and use it to do balanceDuplicateColumns
-//    const string& colName=trimWS(srcTable.cell(0,srcCol));
-//    if (colName.empty()) return; //ignore blank columns
-//
-//    for (GodleyItems::iterator gi=godleyItems.begin(); gi!=godleyItems.end(); ++gi)
-//      if (&gi->table!=&srcTable) // skip source table
-//        for (size_t col=1; col<gi->table.cols(); col++)
-//          if (trimWS(gi->table.cell(0,col))==colName) // we have a match
-//            balanceDuplicateColumns(*gi, col);
-//  }
+    std::set<string> duplicatedColumns;
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator it)
+       {
+         if (auto gi=dynamic_cast<GodleyIcon*>(it->get()))
+           {
+             vector<string> columns=gi->table.getColumnVariables();
+             for (size_t i=0; i<columns.size(); ++i)
+               {
+                 //            if (columns[i].find(':')==string::npos) 
+                 //              // local variable, need to qualify
+                 //              columns[i]=gi->table.title.substr(0,5)+"["+str(gi->id())+"]:"+columns[i];
+                 if (it->id()==currTable || r.count(columns[i]) || gi->table._assetClass(i+1)!=ac) 
+                   {
+                     r.erase(columns[i]); // column already duplicated, or in current, nothing to match
+                     duplicatedColumns.insert(columns[i]);
+                   }
+                 else if (!duplicatedColumns.count(columns[i]))
+                   r.insert(columns[i]);
+               }
+           }
+         return false;
+       });
+    return r;
+  }
 
-//  void Minsky::balanceDuplicateColumns(const GodleyIcon& srcGodley, int srcCol)
-//  {
-//    const GodleyTable& srcTable=srcGodley.table;
-//    // find if there is a matching column
-//    const string& colName=srcGodley.valueId(trimWS(srcTable.cell(0,srcCol)));
-//    if (colName.empty()) return; //ignore blank columns
-//
-//    bool matchFound=false;
-//    for (GodleyItems::iterator gi=godleyItems.begin(); gi!=godleyItems.end(); ++gi)
-//      if (&gi->table!=&srcTable) // skip source table
-//        for (size_t col=1; col<gi->table.cols(); col++)
-//          if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
-//            {
-//              if (matchFound)
-//                throw error("more than one duplicated column detected for %s",colName.c_str());
-//              matchFound=true;
-//
-//              GodleyTable& destTable=gi->table;
-//
-//
-//              // reverse lookup tables for mapping flow variable to destination row numbers via row labels
-//              map<string,string> srcRowLabels;
-//              map<string, int> destRowLabels;
-//              for (size_t row=1; row!=srcTable.rows(); ++row)
-//                if (!srcTable.initialConditionRow(row) && !srcTable.cell(row,0).empty() &&
-//                    !srcTable.cell(row,srcCol).empty())
-//                  {
-//                    FlowCoef fc(srcTable.cell(row,srcCol));
-//                    if (!fc.name.empty())
-//                      srcRowLabels[srcGodley.valueId(fc.name)]=
-//                        trimWS(srcTable.cell(row,0));
-//                  }
-//                else if (srcTable.initialConditionRow(row))
-//                  // copy directly into destination initial condition,
-//                  // reversing sign
-//                  for (size_t r=1; r<destTable.rows(); ++r)
-//                    if (destTable.initialConditionRow(r))
-//                      {
-//                        FlowCoef fc(srcTable.cell(row,srcCol));
-//                        destTable.cell(r,col)=str(-fc.coef)+fc.name;
-//                        break;
-//                      }
-//              for (size_t row=1; row!=destTable.rows(); ++row)
-//                if (!destTable.initialConditionRow(row) && !destTable.cell(row,0).empty())
-//                  destRowLabels[trimWS(destTable.cell(row,0))]=row;
-//
-//
-//              // compute column signature for both src and destination columns
-//              map<string,double> srcFlows=srcGodley.flowSignature(srcCol), 
-//                destFlows=gi->flowSignature(col);
-//              // items to add
-//              for (map<string,double>::iterator i=srcFlows.begin(); i!=srcFlows.end(); ++i)
-//                if (i->second != -destFlows[i->first])
-//                  {
-//                    int scope=-1;
-//                    if (i->first.find(':')!=string::npos)
-//                      VariableManager::scope(i->first);
-//                    FlowCoef df;
-//                    if (scope==-1 || !variables.values.count(i->first))
-//                      df.name=VariableManager::uqName(i->first);
-//                    else
-//                      df.name=variables.values[i->first].name;
-//                    df.coef=-i->second-destFlows[i->first];
-//                    string flowEntry=df.str();
-//                    string rowLabel=srcRowLabels[srcGodley.valueId(i->first)];
-//                    map<string,int>::iterator dr=destRowLabels.find(rowLabel);
-//                    if (dr!=destRowLabels.end())
-//                      if (destTable.cell(dr->second, col).empty())
-//                        destTable.cell(dr->second, col) = flowEntry;
-//                      else
-//                        // add a new blank labelled flow line
-//                        {
-//                          destTable.resize(destTable.rows()+1,destTable.cols());
-//                          destTable.cell(destTable.rows()-1, col) = flowEntry;
-//                        }
-//                    else
-//                      // labels don't match, so add a new labelled line
-//                      {
-//                        destTable.resize(destTable.rows()+1,destTable.cols());
-//                        destTable.cell(destTable.rows()-1, 0) = rowLabel;
-//                        destRowLabels[rowLabel] = destTable.rows()-1;
-//                        destTable.cell(destTable.rows()-1, col) = flowEntry;
-//                      }
-//                  }
-//              // items to delete
-//              for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
-//                if (i->second!=0 && srcFlows[i->first]==0)
-//                  for (size_t row=1; row<destTable.rows(); ++row)
-//                    {
-//                      FlowCoef fc(destTable.cell(row, col));
-//                      if (!fc.name.empty())
-//                        fc.name=gi->valueId(fc.name);
-//                      if (fc.name==gi->valueId(i->first))
-//                        destTable.cell(row, col).clear();
-//                    }
-//            }   
-//  }
+  void Minsky::importDuplicateColumn(const GodleyTable& srcTable, int srcCol)
+  {
+    // find any duplicate column, and use it to do balanceDuplicateColumns
+    const string& colName=trimWS(srcTable.cell(0,srcCol));
+    if (colName.empty()) return; //ignore blank columns
+
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
+           if (&gi->table!=&srcTable) // skip source table
+             for (size_t col=1; col<gi->table.cols(); col++)
+               if (trimWS(gi->table.cell(0,col))==colName) // we have a match
+                 balanceDuplicateColumns(*gi, col);
+         return false;
+       });
+  }
+
+  void Minsky::balanceDuplicateColumns(const GodleyIcon& srcGodley, int srcCol)
+  {
+    const GodleyTable& srcTable=srcGodley.table;
+    // find if there is a matching column
+    const string& colName=srcGodley.valueId(trimWS(srcTable.cell(0,srcCol)));
+    if (colName.empty()) return; //ignore blank columns
+
+    bool matchFound=false;
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
+           if (&gi->table!=&srcTable) // skip source table
+             for (size_t col=1; col<gi->table.cols(); col++)
+               if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
+                 {
+                   if (matchFound)
+                     throw error("more than one duplicated column detected for %s",colName.c_str());
+                   matchFound=true;
+                   
+                   GodleyTable& destTable=gi->table;
+
+
+                   // reverse lookup tables for mapping flow variable to destination row numbers via row labels
+                   map<string,string> srcRowLabels;
+                   map<string, int> destRowLabels;
+                   for (size_t row=1; row!=srcTable.rows(); ++row)
+                     if (!srcTable.initialConditionRow(row) && !srcTable.cell(row,0).empty() &&
+                         !srcTable.cell(row,srcCol).empty())
+                       {
+                         FlowCoef fc(srcTable.cell(row,srcCol));
+                         if (!fc.name.empty())
+                           srcRowLabels[srcGodley.valueId(fc.name)]=
+                             trimWS(srcTable.cell(row,0));
+                       }
+                     else if (srcTable.initialConditionRow(row))
+                       // copy directly into destination initial condition,
+                       // reversing sign
+                       for (size_t r=1; r<destTable.rows(); ++r)
+                         if (destTable.initialConditionRow(r))
+                           {
+                             FlowCoef fc(srcTable.cell(row,srcCol));
+                             destTable.cell(r,col)=str(-fc.coef)+fc.name;
+                             break;
+                           }
+                   for (size_t row=1; row!=destTable.rows(); ++row)
+                     if (!destTable.initialConditionRow(row) && !destTable.cell(row,0).empty())
+                  destRowLabels[trimWS(destTable.cell(row,0))]=row;
+
+
+                   // compute column signature for both src and destination columns
+                   map<string,double> srcFlows=srcGodley.flowSignature(srcCol), 
+                     destFlows=gi->flowSignature(col);
+                   // items to add
+                   for (map<string,double>::iterator i=srcFlows.begin(); i!=srcFlows.end(); ++i)
+                     if (i->second != -destFlows[i->first])
+                       {
+                         int scope=-1;
+                         if (i->first.find(':')!=string::npos)
+                           VariableValue::scope(i->first);
+                         FlowCoef df;
+                         if (scope==-1 || !variableValues.count(i->first))
+                           df.name=VariableValue::uqName(i->first);
+                         else
+                           df.name=variableValues[i->first].name;
+                         df.coef=-i->second-destFlows[i->first];
+                         string flowEntry=df.str();
+                         string rowLabel=srcRowLabels[srcGodley.valueId(i->first)];
+                         map<string,int>::iterator dr=destRowLabels.find(rowLabel);
+                         if (dr!=destRowLabels.end())
+                           if (destTable.cell(dr->second, col).empty())
+                             destTable.cell(dr->second, col) = flowEntry;
+                           else
+                             // add a new blank labelled flow line
+                             {
+                               destTable.resize(destTable.rows()+1,destTable.cols());
+                               destTable.cell(destTable.rows()-1, col) = flowEntry;
+                             }
+                         else
+                           // labels don't match, so add a new labelled line
+                           {
+                             destTable.resize(destTable.rows()+1,destTable.cols());
+                             destTable.cell(destTable.rows()-1, 0) = rowLabel;
+                             destRowLabels[rowLabel] = destTable.rows()-1;
+                             destTable.cell(destTable.rows()-1, col) = flowEntry;
+                           }
+                       }
+                   // items to delete
+                   for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
+                     if (i->second!=0 && srcFlows[i->first]==0)
+                       for (size_t row=1; row<destTable.rows(); ++row)
+                         {
+                           FlowCoef fc(destTable.cell(row, col));
+                           if (!fc.name.empty())
+                             fc.name=gi->valueId(fc.name);
+                           if (fc.name==gi->valueId(i->first))
+                             destTable.cell(row, col).clear();
+                         }
+                 }   
+         return false;
+       });  // TODO - this lambda is FAR too long!
+  }
 
   void Minsky::reset()
   {
