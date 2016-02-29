@@ -106,9 +106,10 @@ proc updateDEmode args {
   global globals preferences
   foreach id [godleyItems.#keys] {
     godley.get $id
+    set edited [edited]
     godley.table.setDEmode $preferences(godleyDE)
-    godley.set
     updateGodley $id
+    if {!$edited} resetEdited
   }
 }
   
@@ -433,6 +434,8 @@ proc columnVarTrace {id col varName args} {
 }
 
 proc whenIdleUpdateGodley {id} {
+    doPushHistory 0
+    set wasEdited [edited]
     whenIdleUpdateGodleyDisplay $id
 
     # delete row/col buttons
@@ -549,6 +552,8 @@ proc whenIdleUpdateGodley {id} {
     global updateGodleyLaunched
     set updateGodleyLaunched 0
     update
+    doPushHistory 1
+    if {!$wasEdited} resetEdited
 }
 
 
@@ -562,6 +567,7 @@ proc updateGodleyDisplay {id} {
 }
 
 proc whenIdleUpdateGodleyDisplay {id} {
+    set wasEdited [edited]
     .godley$id.table clear cache
     godley.get $id
     
@@ -588,5 +594,6 @@ proc whenIdleUpdateGodleyDisplay {id} {
         # ensure buttons etc are drawn correctly
         after idle whenIdleUpdateGodley $id
     }
+    if {!$wasEdited} resetEdited
 }
 

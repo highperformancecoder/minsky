@@ -29,6 +29,7 @@ namespace minsky
 {
   /// a TCL_obj_t that provides a hook for detecting model edits
   ecolab::TCL_obj_t& minskyTCL_obj();
+  extern void setTCL_objAttributes();
 
 
   /**
@@ -51,6 +52,7 @@ namespace minsky
       if (map.count(key)) {
         ref.reset(new TclExtend<T>(map[key]));
         TCL_obj(minskyTCL_obj(), cmdPrefix, *ref);
+        setTCL_objAttributes();
       }
       else
         throw error("%s not found",(char*)args[0]);
@@ -97,6 +99,7 @@ namespace minsky
                 val=v;
                 ref.reset(new TclExtend<std::shared_ptr<V>>(val));
                 TCL_obj(minskyTCL_obj(), cmdPrefix, *ref);
+                setTCL_objAttributes();
               }
             }
           else
@@ -120,6 +123,7 @@ namespace minsky
           tclcmd() | "foreach cmd [info commands "|cmdPrefix|".*] {rename $cmd {}}\n";
           // reestablish default get/set command
           TCL_obj(minskyTCL_obj(), cmdPrefix, *this);
+          setTCL_objAttributes();
         }
       ref.reset();
     }

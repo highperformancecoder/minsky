@@ -369,14 +369,14 @@ namespace minsky
   }
 
 
-  int GodleyIcon::select(float x, float y)
+  int GodleyIcon::select(float x, float y) const
   {
-    for (Variables::iterator v=flowVars.begin(); v!=flowVars.end(); ++v)
-      if (RenderVariable(**v).inImage(x,y)) 
-        return minsky().variables.getIDFromVariable(*v);
-    for (Variables::iterator v=stockVars.begin(); v!=stockVars.end(); ++v)
-      if (RenderVariable(**v).inImage(x,y)) 
-        return minsky().variables.getIDFromVariable(*v);
+    for (auto& v: flowVars)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return minsky().variables.getIDFromVariable(v);
+    for (auto& v: stockVars)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return minsky().variables.getIDFromVariable(v);
     return -1;
   }
 

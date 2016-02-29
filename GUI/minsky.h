@@ -131,15 +131,15 @@ namespace minsky
     typedef GodleyIcons GodleyItems;
     GodleyItems godleyItems;
 
-    void setGodleyIconResource(const string& s)
+    void setGodleyIconResource(const string& s) const
     {GodleyIcon::svgRenderer.setResource(s);}
-    void setGroupIconResource(const string& s)
+    void setGroupIconResource(const string& s) const
     {GroupIcon::svgRenderer.setResource(s);}
 
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
     //  @param ac type of column we wish matches for
-    std::set<string> matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac);
+    std::set<string> matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac) const;
 
     /// find any duplicate column, and use it as a source column for balanceDuplicateColumns
     void importDuplicateColumn(const GodleyTable& srcTable, int srcCol);
@@ -179,7 +179,7 @@ namespace minsky
     using PortManager::closestInPort;
 
     /// list the possible string values of an enum (for TCL)
-    template <class E> void enumVals()
+    template <class E> static void enumVals() 
     {
       tclreturn r;
       for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
@@ -192,12 +192,12 @@ namespace minsky
 
 
     /// list of available operations
-    void availableOperations() {enumVals<OperationType::Type>();}
+    void availableOperations() const {enumVals<OperationType::Type>();}
     /// list of available variable types
-    void variableTypes() {enumVals<VariableType::Type>();}
+    void variableTypes() const  {enumVals<VariableType::Type>();}
 
     /// return list of available asset classes
-    void assetClasses() {enumVals<GodleyTable::AssetClass>();}
+    void assetClasses() const  {enumVals<GodleyTable::AssetClass>();}
 
     /// add an operation
     int addOperation(const char* op);

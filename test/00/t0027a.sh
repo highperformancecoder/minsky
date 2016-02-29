@@ -45,6 +45,7 @@ after 500 assert {[t]>0}
 assert "\$tt==[t]"
 reset
 assert {[t]==0}
+resetEdited
 newSystem
 assert {[minsky.variables.size]==0}
 resetEdited
