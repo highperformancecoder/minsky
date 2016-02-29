@@ -1131,26 +1131,31 @@ namespace MathDAG
         return false;
       });
 
-//    // process the Godley tables
-//    map<string, GodleyColumnDAG> godleyVars;
-//    for (Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
-//         g!=m.godleyItems.end(); ++g)
-//      processGodleyTable(godleyVars, g->table, g->id());
-//
-//    for (map<string, GodleyColumnDAG>::iterator g=godleyVars.begin(); 
-//         g!=godleyVars.end(); ++g)
-//      {
-//        assert(g->second.godleyId>=0);
-//        VariableDAG* v=integVarMap[VariableManager::valueId(g->first)]=
-//          makeDAG(VariableManager::valueId(g->first), VariableManager::scope(g->first), 
-//                  VariableManager::uqName(g->first), VariableType::stock).get();
-//        VariableDAGPtr input(new IntegralInputVariableDAG);
-//        input->name=g->first;
-//        variables.push_back(input.get());
-//        // manage object's lifetime with expressionCache
-//        expressionCache.insertIntegralInput(g->first, input);
-//        input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g->second)));
-//      }
+    // process the Godley tables
+    map<string, GodleyColumnDAG> godleyVars;
+    m.model->recursiveDo
+      (&Group::items,
+       [&](const Items&, Items::const_iterator i)
+       {
+         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+           processGodleyTable(godleyVars, g->table, i->id());
+         return false;
+       });
+
+    for (map<string, GodleyColumnDAG>::iterator g=godleyVars.begin(); 
+         g!=godleyVars.end(); ++g)
+      {
+        assert(g->second.godleyId>=0);
+        VariableDAG* v=integVarMap[VariableValue::valueId(g->first)]=
+          makeDAG(VariableValue::valueId(g->first), VariableValue::scope(g->first), 
+                  VariableValue::uqName(g->first), VariableValue::stock).get();
+        VariableDAGPtr input(new IntegralInputVariableDAG);
+        input->name=g->first;
+        variables.push_back(input.get());
+        // manage object's lifetime with expressionCache
+        expressionCache.insertIntegralInput(g->first, input);
+        input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g->second)));
+      }
 
     // reorder integration variables according to sVars
     minsky.model->recursiveDo

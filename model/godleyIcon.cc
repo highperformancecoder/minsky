@@ -88,23 +88,25 @@ namespace minsky
             {
               // add new variable
               vars.push_back(newVar);
-              minsky::minsky().model->addItem(newVar);
+              minsky::minsky().model->addItem(minsky::minsky().getNewId(), newVar);
             }
           else
             {
-              // copy existing variable
+              // move existing variable
               vars.push_back(*v);
+              oldVars.erase(v);
               assert(*v);
             }
         }
       // remove any previously existing variables
-      set<string> svName(varNames.begin(),varNames.end()) ;
+      set<string> svName;
+      for (auto& v: oldVars) svName.insert(v->uqName());
       minsky::minsky().model->recursiveDo
         (&Group::items,
          [&](Items& m, Items::iterator i) 
          {
-           if (auto v=dynamic_cast<VariableBase*>(i->get()))
-             if (svName.count(v->name())==0 && svName.count(v->fqName())==0)
+           if (auto v=dynamic_pointer_cast<VariableBase>(*i))
+             if (svName.count(v->uqName())>0)
                m.erase(i);
            return false;
          });
@@ -201,8 +203,10 @@ namespace minsky
             string name=trimWS(table.cell(0,c));
             // if local reference, then append namespace
             if (name.find(':')==string::npos)
-              name=":"+name; 
-            VariableValue& v=minsky().variableValues[VariableValue::valueId(name)];
+              name=":"+name;
+            auto vi=minsky().variableValues.find(VariableValue::valueId(name));
+            if (vi==minsky().variableValues.end()) continue;
+            VariableValue& v=vi->second;
             v.godleyOverridden=false;
             string::size_type start=table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)

@@ -35,7 +35,6 @@ namespace
 
 SUITE(Minsky)
 {
-#if 0
   /*
     ASCII Art diagram for the below test:
 
@@ -51,7 +50,9 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,constructEquationsEx1)
     {
-      GodleyTable& godley=godleyItems[0].table;
+      GodleyIcon& gi=dynamic_cast<GodleyIcon&>
+        (*model->items[addGodleyTable(0,0)]);
+      GodleyTable& godley=gi.table;
       godley.resize(3,4);
       godley.cell(0,1)="c";
       godley.cell(0,2)="d";
@@ -59,14 +60,17 @@ SUITE(Minsky)
       godley.cell(2,1)="a";
       godley.cell(2,2)="b";
       godley.cell(2,3)="f";
-      godleyItems[0].update();
+      gi.update();
 
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      for (VariablePtr& v: variables)
-        {
-          var[v->name()]=v;
-        }
+      map<string, int> varId;
+      for (ItemPtr& i: model->items)
+        if (auto v=dynamic_pointer_cast<VariableBase>(i))
+          {
+            var[v->name()]=v;
+            varId[v->name()]=i.id();
+          }
 
       CHECK(var["a"]->lhs());
       CHECK(var["b"]->lhs());
@@ -76,57 +80,59 @@ SUITE(Minsky)
       CHECK(var["f"]->lhs());
 
       int addOp=addOperation("add"); 
-      CHECK_EQUAL(3, operations[addOp]->numPorts());
+      CHECK_EQUAL(3, model->items[addOp]->ports.size());
       int intOp=addOperation("integrate"); 
-      CHECK_EQUAL(2, operations[intOp]->numPorts());
+      CHECK_EQUAL(2, model->items[intOp]->ports.size());
       int mulOp=addOperation("multiply"); 
-      CHECK_EQUAL(3, operations[mulOp]->numPorts());
+      CHECK_EQUAL(3, model->items[mulOp]->ports.size());
  
-      addWire(Wire(var["e"]->outPort(), var["f"]->inPort()));
-      addWire(Wire(var["c"]->outPort(), operations[addOp]->ports()[1]));
-      addWire(Wire(var["d"]->outPort(), operations[addOp]->ports()[2]));;
-      addWire(Wire(operations[addOp]->ports()[0], operations[intOp]->ports()[1]));
-      addWire(Wire(operations[intOp]->ports()[0], var["a"]->inPort()));
-      addWire(Wire(operations[intOp]->ports()[0], operations[mulOp]->ports()[1]));
-      addWire(Wire(var["e"]->outPort(), operations[mulOp]->ports()[2]));
-      addWire(Wire(operations[mulOp]->ports()[0], var["b"]->inPort()));
+      addWire(varId["e"], varId["f"], 1, {});
+      addWire(varId["c"], addOp, 1, {});
+      addWire(varId["d"], addOp, 2, {});
+      addWire(addOp, intOp, 1, {});
+      addWire(intOp, varId["a"], 1, {});
+      addWire(intOp, mulOp, 1, {});
+      addWire(varId["e"], mulOp, 2, {});
+      addWire(mulOp, varId["b"], 1, {});
 
-      for (PortManager::Wires::const_iterator w=wires.begin(); w!=wires.end(); ++w)
+      for (auto& w: model->wires)
         {
-          CHECK(!ports[w->from].input());
-          CHECK(ports[w->to].input());
+          CHECK(!w->from()->input());
+          CHECK(w->to()->input());
         }
 
-      save("constructEquationsEx1.xml");
+      save("constructEquationsEx1.mky");
 
       CHECK(!cycleCheck());
 
       constructEquations();
 
-      CHECK_EQUAL(4, integrals.size());
-      // check that integral  stock vars aren't flowVars
-      int nakedIntegral=-1;
-      for (size_t i=0; i<integrals.size(); ++i)
-        {
-          if (integrals[i].stock.name==":int1")
-            nakedIntegral=i;
-          CHECK(!integrals[i].stock.isFlowVar());
-        }
-      CHECK(nakedIntegral>=0);
+      //TODO
+//      CHECK_EQUAL(4, integrals.size());
+//      // check that integral  stock vars aren't flowVars
+//      int nakedIntegral=-1;
+//      for (size_t i=0; i<integrals.size(); ++i)
+//        {
+//          if (integrals[i].stock.name==":int1")
+//            nakedIntegral=i;
+//          CHECK(!integrals[i].stock.isFlowVar());
+//        }
+//      CHECK(nakedIntegral>=0);
+//
+//      var["c"]->value(0.1);
+//      var["d"]->value(0.2);
+//      var["e"]->value(0.3);
+//
+//      step();
 
-      var["c"]->value(0.1);
-      var["d"]->value(0.2);
-      var["e"]->value(0.3);
-
-      step();
-
-      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
-      CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
+//      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
+//      CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
+//      CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
+//      CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
 
     }
 
+#if 0
   /*
     ASCII Art diagram for the below test:
 
