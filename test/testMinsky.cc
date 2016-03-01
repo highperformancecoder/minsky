@@ -346,7 +346,7 @@ SUITE(Minsky)
       CHECK(intOp);
       CHECK_CLOSE(0.5*value*t*t, intOp->getIntVar()->value(), 1e-5);
     }
-#if 0
+
   /*
     check that cyclic networks throw an exception
 
@@ -360,19 +360,20 @@ SUITE(Minsky)
   TEST_FIXTURE(TestFixture,cyclicThrows)
     {
       // First, integrate a constant
-      operations[1]=OperationPtr(OperationType::add);
-      int w=variables.addVariable(VariablePtr(VariableType::flow,"w"));
-      int a=variables.addVariable(VariablePtr(VariableType::flow,"a"));
-      CHECK(variables.addWire(operations[1]->ports()[0], variables[w]->inPort()));
-      CHECK(variables.addWire(variables[w]->outPort(), operations[1]->ports()[1]));
-      PortManager::addWire(Wire(operations[1]->ports()[0], variables[w]->inPort()));
-      PortManager::addWire(Wire(variables[w]->outPort(), operations[1]->ports()[1]));
-      PortManager::addWire(Wire(variables[a]->outPort(), operations[1]->ports()[2]));
+      auto op1=model->addItem(getNewId(),OperationPtr(OperationType::add));
+      auto w=model->addItem(getNewId(),VariablePtr(VariableType::flow,"w"));
+      auto a=model->addItem(getNewId(),VariablePtr(VariableType::flow,"a"));
+      CHECK(model->addWire(getNewId(),new Wire(op1->ports[0], w->ports[1])));
+      CHECK(model->addWire(getNewId(), new Wire(w->ports[0], op1->ports[1])));
+      model->addWire(getNewId(), new Wire(op1->ports[0], w->ports[1]));
+      model->addWire(getNewId(), new Wire(w->ports[0], op1->ports[1]));
+      model->addWire(getNewId(), new Wire(a->ports[0], op1->ports[2]));
 
       CHECK(cycleCheck());
       CHECK_THROW(constructEquations(), ecolab::error);
     }
 
+#if 0
   /*
     but integration is allowed to cycle
 
