@@ -101,6 +101,7 @@ namespace minsky
 
   void VariableValue::reset(const VariableValues& v)
   {
+    assert(isValueId(name));
     if (m_idx<0) allocValue(); 
     operator=(initValue(v));
   }
@@ -141,6 +142,23 @@ namespace minsky
       trialName=name+str(i++);
     while (count(VariableValue::valueId(trialName)));
     return trialName;
+  }
+
+  void VariableValues::reset()
+  {
+    // reallocate all variables
+    ValueVector::stockVars.clear();
+    ValueVector::flowVars.clear();
+    for (auto& v: *this)
+      v.second.allocValue().reset(*this);
+}
+
+  bool VariableValues::validEntries() const
+  {
+    for (auto& v: *this)
+      if (!v.second.isValueId(v.second.name))
+        return false;
+    return true;
   }
 
 }

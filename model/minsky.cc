@@ -97,7 +97,7 @@ namespace minsky
       gsl_set_error_handler(errHandler);
       sys.function=RKfunction;
       sys.jacobian=jacobian;
-      sys.dimension=0;//ValueVector::stockVars.size();
+      sys.dimension=ValueVector::stockVars.size();
       sys.params=minsky;
       const gsl_odeiv2_step_type* stepper;
       switch (minsky->order)
@@ -164,11 +164,11 @@ namespace minsky
   void Minsky::clearAllMaps()
   {
     model->clear();
-//    equations.clear();
-//    integrals.clear();
-//    
-//    flowVars.clear();
-//    stockVars.clear();
+    equations.clear();
+    integrals.clear();
+    
+    flowVars.clear();
+    stockVars.clear();
 //    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
 //        makeGodleyIt(godleyItems.end()), variables.values);
 
@@ -493,6 +493,13 @@ namespace minsky
       );
   }
 
+  int Minsky::newVariable(const string& name) 
+  {
+    VariablePtr v(VariableType::flow, name);
+    return model->addItem(getNewId(), v).id();
+  }
+
+
   int Minsky::copyVariable(int id)
   {
     const auto& it=model->findItem(id);
@@ -552,7 +559,7 @@ namespace minsky
 //      }
 //
 //    removeUnusedPorts(portsToKeep);
-//    variables.reset();
+    variableValues.reset();
   }
 
   void Minsky::renderEquationsToImage(const char* image)
@@ -573,7 +580,9 @@ namespace minsky
     integrals.clear();
 
     MathDAG::SystemOfEquations system(*this);
+    assert(variableValues.validEntries());
     system.populateEvalOpVector(equations, integrals);
+    assert(variableValues.validEntries());
 
    // attach the plots
     // TODO:
@@ -760,146 +769,177 @@ namespace minsky
        });  // TODO - this lambda is FAR too long!
   }
 
+  namespace
+  {
+    struct GodleyIt: public vector<GodleyIcon*>::iterator
+    {
+      typedef vector<GodleyIcon*>::iterator Super;
+      GodleyIt(const Super& x): Super(x) {}
+      GodleyIcon& operator*() {return *Super::operator*();}
+      GodleyIcon* operator->() {return Super::operator*();}
+      const std::vector<std::vector<std::string> >& data() const {
+        return Super::operator*()->table.getData();
+      }
+      const GodleyAssetClass::AssetClass assetClass(size_t col) const
+      {return Super::operator*()->table._assetClass(col);}
+      bool signConventionReversed(int col) const
+      {return Super::operator*()->table.signConventionReversed(col);}
+      bool initialConditionRow(int row) const
+      {return Super::operator*()->table.initialConditionRow(row);}
+      string valueId(const std::string& x) const {
+       if (x.find(':')==string::npos) //local scope requested
+         {
+           int scope=-1;
+           if (auto g=Super::operator*()->group.lock()) scope=g->id();
+           return VariableValue::valueId(scope,x);
+         }
+       return VariableValue::valueId(x);}
+    };
+  }
+
   void Minsky::reset()
   {
-//    EvalOpBase::t=t=0;
-//    constructEquations();
-//    // if no stock variables in system, add a dummy stock variable to
-//    // make the simulation proceed
-//    if (stockVars.empty()) stockVars.resize(1,0);
-//
-//    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-//                                 makeGodleyIt(godleyItems.end()), variables.values);
-//
+    EvalOpBase::t=t=0;
+    constructEquations();
+    // if no stock variables in system, add a dummy stock variable to
+    // make the simulation proceed
+    if (stockVars.empty()) stockVars.resize(1,0);
+
+    auto toGodleyIcon=[](const ItemPtr& i) {return dynamic_cast<GodleyIcon*>(i.get());};
+    auto godleyItems=model->findAll<GodleyIcon*>
+      (toGodleyIcon, &Group::items, toGodleyIcon);
+
+    evalGodley.initialiseGodleys(GodleyIt(godleyItems.begin()), 
+                                 GodleyIt(godleyItems.end()), variableValues);
+
 //    plots.reset();
-//
-//    if (stockVars.size()>0)
-//      {
-//        if (order==1 && !implicit)
-//          ode.reset(); // do explicit Euler
-//        else
-//          ode.reset(new RKdata(this)); // set up GSL ODE routines
-//      }
-//
-//    reset_needed=false;
-//    // update flow variable
-//    for (size_t i=0; i<equations.size(); ++i)
-//      equations[i]->eval(&flowVars[0], &stockVars[0]);
+
+    if (stockVars.size()>0)
+      {
+        if (order==1 && !implicit)
+          ode.reset(); // do explicit Euler
+        else
+          ode.reset(new RKdata(this)); // set up GSL ODE routines
+      }
+
+    reset_needed=false;
+    // update flow variable
+    for (size_t i=0; i<equations.size(); ++i)
+      equations[i]->eval(&flowVars[0], &stockVars[0]);
   }
 
   void Minsky::step()
   {
-//    if (reset_needed)
-//      reset();
-//
-//
-//    if (ode)
-//      {
-//        gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
-//        int err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
-//                                        &stockVars[0]);
-//        switch (err)
-//          {
-//          case GSL_SUCCESS: case GSL_EMAXITER: break;
-//          case GSL_FAILURE:
-//            throw error("unspecified error GSL_FAILURE returned");
-//          case GSL_EBADFUNC: 
-//            gsl_odeiv2_driver_reset(ode->driver);
-//            throw error("Invalid arithmetic operation detected");
-//          default:
-//            throw error("gsl error: %s",gsl_strerror(err));
-//          }
-//      }
-//    else // do explicit Euler method
-//      {
-//        vector<double> d(stockVars.size());
-//        for (int i=0; i<nSteps; ++i, t+=stepMax)
-//          {
-//            evalEquations(&d[0], t, &stockVars[0]);
-//            for (size_t j=0; j<d.size(); ++j)
-//              stockVars[j]+=d[j];
-//          }
-//      }
-//
-//    // update flow variables
-//    for (size_t i=0; i<equations.size(); ++i)
-//      equations[i]->eval(&flowVars[0], &stockVars[0]);
-//
-//    logVariables();
-//
+    if (reset_needed)
+      reset();
+
+    if (ode)
+      {
+        gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
+        int err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
+                                        &stockVars[0]);
+        switch (err)
+          {
+          case GSL_SUCCESS: case GSL_EMAXITER: break;
+          case GSL_FAILURE:
+            throw error("unspecified error GSL_FAILURE returned");
+          case GSL_EBADFUNC: 
+            gsl_odeiv2_driver_reset(ode->driver);
+            throw error("Invalid arithmetic operation detected");
+          default:
+            throw error("gsl error: %s",gsl_strerror(err));
+          }
+      }
+    else // do explicit Euler method
+      {
+        vector<double> d(stockVars.size());
+        for (int i=0; i<nSteps; ++i, t+=stepMax)
+          {
+            evalEquations(&d[0], t, &stockVars[0]);
+            for (size_t j=0; j<d.size(); ++j)
+              stockVars[j]+=d[j];
+          }
+      }
+
+    // update flow variables
+    for (size_t i=0; i<equations.size(); ++i)
+      equations[i]->eval(&flowVars[0], &stockVars[0]);
+
+    logVariables();
+
 //    for (Plots::iterator i=plots.begin(); i!=plots.end(); ++i)
 //      i->addPlotPt(t);
   }
 
   string Minsky::diagnoseNonFinite() const
   {
-//    // firstly check if any variables are not finite
-//    for (VariableValues::const_iterator v=variables.values.begin();
-//         v!=variables.values.end(); ++v)
-//      if (!isfinite(v->second.value()))
-//        return v->first;
-//
-//    // now check operator equations
-//    for (EvalOpVector::const_iterator e=equations.begin(); e!=equations.end(); ++e)
-//      if (!isfinite(flowVars[(*e)->out]))
-//        return OperationType::typeName((*e)->type());
-//    return "";
+    // firstly check if any variables are not finite
+    for (VariableValues::const_iterator v=variableValues.begin();
+         v!=variableValues.end(); ++v)
+      if (!isfinite(v->second.value()))
+        return v->first;
+
+    // now check operator equations
+    for (EvalOpVector::const_iterator e=equations.begin(); e!=equations.end(); ++e)
+      if (!isfinite(flowVars[(*e)->out]))
+        return OperationType::typeName((*e)->type());
+    return "";
   }
 
   void Minsky::evalEquations(double result[], double t, const double vars[])
   {
-//    EvalOpBase::t=t;
-//    // firstly evaluate the flow variables. Initialise to flowVars so
-//    // that no input vars are correctly initialised
-//    vector<double> flow(flowVars);
-//    for (size_t i=0; i<equations.size(); ++i)
-//      equations[i]->eval(&flow[0], vars);
-//
-//    // then create the result using the Godley table
-//    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
-//    evalGodley.eval(result, &flow[0]);
-//    // integrations are kind of a copy
-//    for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
-//      {
-//        if (i->input.idx()<0)
-//          {
-//            if (i->operation)
-//              displayErrorItem(*i->operation);
-//            throw error("integral not wired");
-//          }
-//        result[i->stock.idx()] = i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()];
-//      }
+    EvalOpBase::t=t;
+    // firstly evaluate the flow variables. Initialise to flowVars so
+    // that no input vars are correctly initialised
+    vector<double> flow(flowVars);
+    for (size_t i=0; i<equations.size(); ++i)
+      equations[i]->eval(&flow[0], vars);
+
+    // then create the result using the Godley table
+    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
+    evalGodley.eval(result, &flow[0]);
+    // integrations are kind of a copy
+    for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
+      {
+        if (i->input.idx()<0)
+          {
+            if (i->operation)
+              displayErrorItem(*i->operation);
+            throw error("integral not wired");
+          }
+        result[i->stock.idx()] = i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()];
+      }
   }
 
   void Minsky::jacobian(Matrix& jac, double t, const double sv[])
   {
-//    EvalOpBase::t=t;
-//    // firstly evaluate the flow variables. Initialise to flowVars so
-//    // that no input vars are correctly initialised
-//    vector<double> flow=flowVars;
-//    for (size_t i=0; i<equations.size(); ++i)
-//      equations[i]->eval(&flow[0], sv);
-//
-//    // then determine the derivatives with respect to variable j
-//    for (size_t j=0; j<stockVars.size(); ++j)
-//      {
-//        vector<double> ds(stockVars.size()), df(flowVars.size());
-//        ds[j]=1;
-//        for (size_t i=0; i<equations.size(); ++i)
-//          equations[i]->deriv(&df[0], &ds[0], sv, &flow[0]);
-//        vector<double> d(stockVars.size());
-//        //        evalGodley.eval(&d[0], &df[0]);
-//        for (vector<Integral>::iterator i=integrals.begin(); 
-//             i!=integrals.end(); ++i)
-//          {
-//            assert(i->stock.idx()>=0 && i->input.idx()>=0);
-//            d[i->stock.idx()] = 
-//              i->input.isFlowVar()? df[i->input.idx()]: ds[i->input.idx()];
-//          }
-//        for (size_t i=0; i<stockVars.size(); i++)
-//          jac(i,j)=d[i];
-//      }
-//  
+    EvalOpBase::t=t;
+    // firstly evaluate the flow variables. Initialise to flowVars so
+    // that no input vars are correctly initialised
+    vector<double> flow=flowVars;
+    for (size_t i=0; i<equations.size(); ++i)
+      equations[i]->eval(&flow[0], sv);
+
+    // then determine the derivatives with respect to variable j
+    for (size_t j=0; j<stockVars.size(); ++j)
+      {
+        vector<double> ds(stockVars.size()), df(flowVars.size());
+        ds[j]=1;
+        for (size_t i=0; i<equations.size(); ++i)
+          equations[i]->deriv(&df[0], &ds[0], sv, &flow[0]);
+        vector<double> d(stockVars.size());
+        evalGodley.eval(&d[0], &df[0]);
+        for (vector<Integral>::iterator i=integrals.begin(); 
+             i!=integrals.end(); ++i)
+          {
+            assert(i->stock.idx()>=0 && i->input.idx()>=0);
+            d[i->stock.idx()] = 
+              i->input.isFlowVar()? df[i->input.idx()]: ds[i->input.idx()];
+          }
+        for (size_t i=0; i<stockVars.size(); i++)
+          jac(i,j)=d[i];
+      }
+  
   }
 
   void Minsky::save(const std::string& filename)

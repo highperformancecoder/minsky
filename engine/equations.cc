@@ -154,6 +154,7 @@ namespace MathDAG
   {
     if (result.idx()<0)
       {
+        assert(VariableValue::isValueId(valueId));
         result=minsky::minsky().variableValues[valueId];
         if (result.type()==VariableType::undefined) 
           {
@@ -273,6 +274,7 @@ namespace MathDAG
           {
             if (VariablePtr iv=i->getIntVar())
               {
+                assert(VariableValue::isValueId(iv->valueId()));
                 result=minsky::minsky().variableValues[iv->valueId()];
                 // integral copies need to be done now, in case of cycles
                 if (r.isFlowVar() && r.idx()>=0)
@@ -1123,7 +1125,7 @@ namespace MathDAG
           }
         else if (const Constant* c=dynamic_cast<const Constant*>(it->get()))
           {
-            VariablePtr v(VariableType::parameter, c->description);
+            VariablePtr v(VariableType::parameter, c->description());
             // note makeDAG caches a reference to the object, and manages lifetime
             variables.push_back(makeDAG(*v).get());
             variables.back()->rhs=expressionCache.insertAnonymous(NodePtr(new ConstantDAG(c->value)));
@@ -1194,6 +1196,7 @@ namespace MathDAG
 
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, scope, VariableValue::uqName(name), type));
     expressionCache.insert(valueId, r);
+    assert(VariableValue::isValueId(valueId));
     VariableValue vv=minsky.variableValues[valueId];
     r->init=vv.initValue(minsky.variableValues);
     if (vv.isFlowVar()) 
@@ -1231,7 +1234,7 @@ namespace MathDAG
         assert( r->state->type()!=OperationType::numOps);
         if (const Constant* c=dynamic_cast<const Constant*>(&op))
           {
-            r->name=c->description;
+            r->name=c->description();
             r->init=c->value;
           }
         else if (const IntOp* i=dynamic_cast<const IntOp*>(&op))
@@ -1422,16 +1425,24 @@ namespace MathDAG
     equations.clear();
     integrals.clear();
 
+    for (const VariableDAG* i: variables)
+      {
+        i->addEvalOps(equations);
+        assert(minsky.variableValues.validEntries());
+      }
+
     for (const VariableDAG* i: integrationVariables)
       {
         string vid=VariableValue::valueId(i->scope,i->name);
         integrals.push_back(Integral());
+        assert(VariableValue::isValueId(vid));
         integrals.back().stock=minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
           integrals.back().input=iInput->rhs->addEvalOps(equations);
       }
+    assert(minsky.variableValues.validEntries());
 
     // loop over plots and ensure that each connected input port
     // has its expression evaluated 

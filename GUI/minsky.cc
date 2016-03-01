@@ -826,7 +826,7 @@ namespace minsky
   {
     if (reset_needed)
       reset();
-
+    ode.reset();
 
     if (ode)
       {

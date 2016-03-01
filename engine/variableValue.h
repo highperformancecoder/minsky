@@ -89,8 +89,10 @@ namespace minsky
     void reset(const VariableValues&); 
 
     /// check that name is a valid valueId (useful for assertions)
-    static bool isValueId(const std::string& name)
-    {return boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\{}]*)"));}
+    static bool isValueId(const std::string& name) {
+      return name.length()>1 && name.substr(name.length()-2)!=":_" &&
+        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\{}]+)"));
+    }
 
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
@@ -135,6 +137,9 @@ namespace minsky
     }
     /// generate a new name not otherwise in the system, based on \a name
     std::string newName(const std::string& name) const;
+    void reset();
+    /// checks that all entry names are valid
+    bool validEntries() const;
   };
 
 }

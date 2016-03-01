@@ -147,8 +147,11 @@ void VariableBase::ensureValueExists() const
   // disallow blank names
   if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_" && 
       minsky().variableValues.count(valueId)==0)
-    minsky().variableValues.insert
-      (make_pair(valueId,VariableValue(type(), fqName())));
+    {
+      assert(VariableValue::isValueId(valueId));
+      minsky().variableValues.insert
+        (make_pair(valueId,VariableValue(type(), fqName())));
+    }
 }
 
 
@@ -172,24 +175,27 @@ string VariableBase::init() const
 string VariableBase::init(const string& x)
 {
   ensureValueExists(); 
-//  VariableValue& val=minsky().variables.getVariableValue(valueId());
-//  val.init=x;
-//  // for constant types, we may as well set the current value. See ticket #433
-//  if (type()==constant || type()==parameter) 
-//    val.reset(minsky().variables.values);
+  assert(VariableValue::isValueId(valueId()));
+  VariableValue& val=minsky().variableValues[valueId()];
+  val.init=x;
+  // for constant types, we may as well set the current value. See ticket #433
+  if (type()==constant || type()==parameter) 
+    val.reset(minsky().variableValues);
   return x;
 }
 
 double VariableBase::value() const
 {
-  //  return minsky::minsky().variables.getVariableValue(valueId()).value();
-  return 0;
+  return minsky::cminsky().variableValues[valueId()].value();
 }
 
 double VariableBase::value(double x)
 {
-//  if (!m_name.empty())
-//    minsky().variables.getVariableValue(valueId())=x;
+  if (!m_name.empty())
+    {
+      assert(VariableValue::isValueId(valueId()));
+      minsky().variableValues[valueId()]=x;
+    }
   return x;
 }
 

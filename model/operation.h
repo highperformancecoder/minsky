@@ -124,12 +124,14 @@ namespace minsky
     string description;
   };
 
-  class Constant: public NamedOp, public Slider, 
+  class Constant: public Slider, 
                   public Operation<minsky::OperationType::constant>
   {
     typedef Operation<OperationType::constant> Super;
   public:
     double value=0; ///< constant value
+
+    string description() const {return str(value);}
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>

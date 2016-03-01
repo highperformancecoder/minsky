@@ -25,7 +25,7 @@
 #include "godleyIcon.h"
 #include "operation.h"
 #include "evalOp.h"
-//#include "evalGodley.h"
+#include "evalGodley.h"
 #include "wire.h"
 //#include "plotWidget.h"
 //#include "groupIcon.h"
@@ -154,7 +154,7 @@ namespace minsky
     /// resets the nextId counter to the next available
     void resetNextId();
 
-    //    EvalGodley evalGodley;
+    EvalGodley evalGodley;
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky() {m_edited=false;}
@@ -176,7 +176,7 @@ namespace minsky
 
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
-    int addWire(int from, int to, unsigned toIdx, const std::vector<float>& coords); 
+    int addWire(int from, int to, unsigned toIdx, const std::vector<float>& coords = {}); 
     void deleteWire(int id);
 
 
@@ -207,7 +207,7 @@ namespace minsky
     /// useful for debugging wiring diagrams
     std::vector<int> unwiredOperations() const;
 
-    //    int newVariable(const string& name) {return variables.newVariable(name, VariableType::flow);}
+    int newVariable(const string& name);
     int copyVariable(int id);
 
     int copyGroup(int id);

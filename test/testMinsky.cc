@@ -122,16 +122,17 @@ SUITE(Minsky)
       var["d"]->value(0.2);
       var["e"]->value(0.3);
 
+      order=1;
+      implicit=false;
       step();
 
       CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
       CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
       CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
       CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
-
+      ode.reset();
     }
 
-#if 0
   /*
     ASCII Art diagram for the below test:
 
@@ -149,43 +150,40 @@ SUITE(Minsky)
 
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      for (VariablePtr& v: variables)
-        {
-          var[v->name()]=v;
-        }
- 
+      map<string, int> varId;
+      for (ItemPtr& i: model->items)
+        if (auto v=dynamic_pointer_cast<VariableBase>(i))
+          {
+            var[v->name()]=v;
+            varId[v->name()]=i.id();
+          }
+
       int op4=addOperation("constant");
-      CHECK_EQUAL(1, operations[op4]->numPorts());
+      CHECK_EQUAL(1, model->items[op4]->ports.size());
       int op5=addOperation("constant");
-      CHECK_EQUAL(1, operations[op5]->numPorts());
+      CHECK_EQUAL(1, model->items[op5]->ports.size());
       int op6=addOperation("add");
-      CHECK_EQUAL(3, operations[op6]->numPorts());
+      CHECK_EQUAL(3, model->items[op6]->ports.size());
 
       ecolab::array<float> coords(4,0);
  
-      int wire8=addWire(operations[op4]->ports()[0], var["g"]->inPort(), coords);
-      int wire9=addWire(operations[op4]->ports()[0], operations[op6]->ports()[1], coords);
-      int wire10=addWire(operations[op5]->ports()[0], operations[op6]->ports()[2], coords);
-      int wire11=addWire(operations[op6]->ports()[0], var["h"]->inPort(), coords);
+      int wire8=addWire(op4, varId["g"], 1);
+      int wire9=addWire(op4, op6, 1);
+      int wire10=addWire(op5, op6, 2);
+      int wire11=addWire(op6, varId["h"], 1);
  
-      for (PortManager::Wires::const_iterator w=wires.begin(); w!=wires.end(); ++w)
+      for (auto& w: model->wires)
         {
-          CHECK(!ports[w->from].input());
-          CHECK(ports[w->to].input());
+          CHECK(!w->from()->input());
+          CHECK(w->to()->input());
         }
  
-      CHECK(dynamic_cast<Constant*>(operations[op4].get()));
-      if (Constant* c=dynamic_cast<Constant*>(operations[op4].get()))
-        {
-          c->value=0.1;
-          c->description="0.1";
-        }
-      CHECK(dynamic_cast<Constant*>(operations[op5].get()));
-      if (Constant* c=dynamic_cast<Constant*>(operations[op5].get()))
-        {
-          c->value=0.2;
-          c->description="0.2";
-        }
+      CHECK(dynamic_cast<Constant*>(model->items[op4].get()));
+      if (Constant* c=dynamic_cast<Constant*>(model->items[op4].get()))
+        c->value=0.1;
+      CHECK(dynamic_cast<Constant*>(model->items[op5].get()));
+      if (Constant* c=dynamic_cast<Constant*>(model->items[op5].get()))
+        c->value=0.2;
 
       constructEquations();
       step();
@@ -195,6 +193,7 @@ SUITE(Minsky)
 
     }
 
+#if 0
   TEST_FIXTURE(TestFixture,godleyEval)
     {
       GodleyTable& godley=godleyItems[0].table;
@@ -323,9 +322,10 @@ SUITE(Minsky)
       CHECK(intOp);
       intOp->description("output");
       addWire(op1,op2,1,vector<float>());
- 
+
       //variables.makeConsistent();
       constructEquations();
+      CHECK(variableValues.validEntries());
       double& value = dynamic_cast<Constant*>(model->items[op1].get())->value;
       value=10;
       nSteps=1;
