@@ -193,10 +193,11 @@ SUITE(Minsky)
 
     }
 
-#if 0
   TEST_FIXTURE(TestFixture,godleyEval)
     {
-      GodleyTable& godley=godleyItems[0].table;
+      GodleyIcon& gi=dynamic_cast<GodleyIcon&>
+        (*model->items[addGodleyTable(0,0)]);
+      GodleyTable& godley=gi.table;
       godley.resize(3,4);
       godley.cell(0,1)=":c";
       godley.cell(0,2)=":d";
@@ -207,27 +208,28 @@ SUITE(Minsky)
       godley.cell(1,3)="30";
       godley.cell(2,1)=":a";
       godley.cell(2,2)="-:a";
-      godleyItems[0].update();
+      gi.update();
  
-      variables.values[":a"].init="5";
+      variableValues[":a"].init="5";
  
       garbageCollect();
       reset();
-      CHECK_EQUAL(10,variables.values[":c"].value());
-      CHECK_EQUAL(20,variables.values[":d"].value());
-      CHECK_EQUAL(30,variables.values[":e"].value());
-      CHECK_EQUAL(5,variables.values[":a"].value());
+      CHECK_EQUAL(10,variableValues[":c"].value());
+      CHECK_EQUAL(20,variableValues[":d"].value());
+      CHECK_EQUAL(30,variableValues[":e"].value());
+      CHECK_EQUAL(5,variableValues[":a"].value());
       for (size_t i=0; i<stockVars.size(); ++i)
         stockVars[i]=0;
      
       evalGodley.eval(&stockVars[0], &flowVars[0]);
-      CHECK_EQUAL(5,variables.values[":c"].value());
-      CHECK_EQUAL(-5,variables.values[":d"].value());
-      CHECK_EQUAL(0,variables.values[":e"].value());
-      CHECK_EQUAL(5,variables.values[":a"].value());
+      CHECK_EQUAL(5,variableValues[":c"].value());
+      CHECK_EQUAL(-5,variableValues[":d"].value());
+      CHECK_EQUAL(0,variableValues[":e"].value());
+      CHECK_EQUAL(5,variableValues[":a"].value());
     
     }
 
+#if 0
   /*
     ASCII Art diagram for the below test:
 
