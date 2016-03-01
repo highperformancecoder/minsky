@@ -55,8 +55,8 @@ namespace minsky
   {
   public:
     float m_x, m_y; ///< position in canvas, or within group
-    float zoomFactor;
-    double rotation; ///< rotation of icon, in degrees
+    float zoomFactor=1;
+    double rotation=0; ///< rotation of icon, in degrees
     bool m_visible=true; ///< if false, then this item is invisible
     std::weak_ptr<Group> group;
   

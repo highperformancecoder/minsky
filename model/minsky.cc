@@ -493,9 +493,9 @@ namespace minsky
       );
   }
 
-  int Minsky::newVariable(const string& name) 
+  int Minsky::newVariable(const string& name, VariableType::Type type) 
   {
-    VariablePtr v(VariableType::flow, name);
+    VariablePtr v(type, name);
     return model->addItem(getNewId(), v).id();
   }
 

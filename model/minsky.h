@@ -207,7 +207,7 @@ namespace minsky
     /// useful for debugging wiring diagrams
     std::vector<int> unwiredOperations() const;
 
-    int newVariable(const string& name);
+    int newVariable(const string& name, VariableType::Type=VariableType::flow);
     int copyVariable(int id);
 
     int copyGroup(int id);
