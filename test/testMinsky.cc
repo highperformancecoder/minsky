@@ -229,7 +229,6 @@ SUITE(Minsky)
     
     }
 
-#if 0
   /*
     ASCII Art diagram for the below test:
 
@@ -244,7 +243,9 @@ SUITE(Minsky)
   */
   TEST_FIXTURE(TestFixture,derivative)
     {
-      GodleyTable& godley=godleyItems[0].table;
+      GodleyIcon& gi=dynamic_cast<GodleyIcon&>
+        (*model->items[addGodleyTable(0,0)]);
+      GodleyTable& godley=gi.table;
       garbageCollect();
  
       godley.resize(3,4);
@@ -254,39 +255,39 @@ SUITE(Minsky)
       godley.cell(2,1)="a";
       godley.cell(2,2)="b";
       godley.cell(2,3)="f";
-      godleyItems[0].update();
+      gi.update();
  
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      for (VariablePtr& v: variables)
-        {
-          var[v->name()]=v;
-        }
- 
-      operations[1]=OperationPtr(OperationType::add);
-      CHECK_EQUAL(3, operations[1]->numPorts());
-      operations[2]=OperationPtr(OperationType::integrate);
-      CHECK_EQUAL(2, operations[2]->numPorts());
-      operations[3]=OperationPtr(OperationType::multiply);
-      CHECK_EQUAL(3, operations[3]->numPorts());
+      map<string, int> varId;
+      for (ItemPtr& i: model->items)
+        if (auto v=dynamic_pointer_cast<VariableBase>(i))
+          {
+            var[v->name()]=v;
+            varId[v->name()]=i.id();
+          }
+
+      int op1=addOperation("add");
+      int op2=addOperation("integrate");
+      int op3=addOperation("multiply");
   
-      addWire(Wire(var["e"]->outPort(), var["f"]->inPort()));
-      addWire(Wire(var["c"]->outPort(), operations[1]->ports()[1]));
-      addWire(Wire(var["d"]->outPort(), operations[1]->ports()[2]));
-      addWire(Wire(operations[1]->ports()[0], operations[2]->ports()[1]));
-      addWire(Wire(operations[2]->ports()[0], var["a"]->inPort()));
-      addWire(Wire(operations[2]->ports()[0], operations[3]->ports()[1]));
-      addWire(Wire(var["e"]->outPort(), operations[3]->ports()[2]));
-      addWire(Wire(operations[3]->ports()[0], var["b"]->inPort()));
+      addWire(varId["e"], varId["f"], 1);
+      addWire(varId["c"], op1, 1);
+      addWire(varId["d"], op1, 2);
+      addWire(op1, op2, 1);
+      addWire(op2, varId["a"], 1);
+      addWire(op2, op3, 1);
+      addWire(varId["e"], op3, 2);
+      addWire(op3, varId["b"], 1);
  
       CHECK(!cycleCheck());
       reset();
       vector<double> j(stockVars.size()*stockVars.size());
       Matrix jac(stockVars.size(),&j[0]);
  
-      VariableValue& c=variables.values[":c"];   c=100;
-      VariableValue& d=variables.values[":d"];   d=200;
-      VariableValue& e=variables.values[":e"];   e=300;
+      VariableValue& c=variableValues[":c"];   c=100;
+      VariableValue& d=variableValues[":d"];   d=200;
+      VariableValue& e=variableValues[":e"];   e=300;
       double& x=stockVars.back();   x=0; // temporary variable storing \int c+d
  
       CHECK_EQUAL(4, stockVars.size());
@@ -311,7 +312,6 @@ SUITE(Minsky)
       CHECK_EQUAL(0,jac(3,2));
       CHECK_EQUAL(0,jac(3,3));
     }
-#endif
 
   TEST_FIXTURE(TestFixture,integrals)
     {
