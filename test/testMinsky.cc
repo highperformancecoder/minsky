@@ -556,7 +556,6 @@ SUITE(Minsky)
       CHECK_CLOSE(50, variableValues[":c"].value(), 1e-5);
     }
 
-#if 0
   // instantiate all operations and variables to ensure that definitions
   // have been provided for all virtual methods
   TEST(checkAllOpsDefined)
@@ -688,7 +687,8 @@ SUITE(Minsky)
     gsl_integration_workspace_free(ws);
   }
 
-  
+#if 0
+
   TEST_FIXTURE(TestFixture,multiGodleyRules)
     {
       GodleyTable& godley1=godleyItems[1].table;
