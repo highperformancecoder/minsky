@@ -225,12 +225,14 @@ void GodleyTable::nameUnique()
   for (int i=1;;++i)
     {
       string trialName="Godley"+str(i);
-      // TODO
-//      GodleyIcons::iterator it=minsky().godleyItems.begin();
-//      for (; it!=minsky().godleyItems.end(); ++it)
-//        if (it->table.title == trialName)
-//          break;
-//      if (it==minsky().godleyItems.end())
+      
+      if (cminsky().model->findAny
+          (&Group::items,
+           [&](const ItemPtr& i)
+           {
+             auto g=dynamic_cast<GodleyIcon*>(i.get());
+             return g && g->table.title == trialName;
+           }).id()==-1)
         {
           title = trialName;
           break;

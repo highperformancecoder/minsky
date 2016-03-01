@@ -687,13 +687,14 @@ SUITE(Minsky)
     gsl_integration_workspace_free(ws);
   }
 
-#if 0
-
   TEST_FIXTURE(TestFixture,multiGodleyRules)
     {
-      GodleyTable& godley1=godleyItems[1].table;
-      GodleyTable& godley2=godleyItems[2].table;
-      GodleyTable& godley3=godleyItems[3].table;
+      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      auto g2=new GodleyIcon; model->addItem(getNewId(), g2);
+      auto g3=new GodleyIcon; model->addItem(getNewId(), g3);
+      GodleyTable& godley1=g1->table;
+      GodleyTable& godley2=g2->table;
+      GodleyTable& godley3=g3->table;
       godley1.resize(2,1);
       godley2.resize(2,1);
       godley3.resize(2,1);
@@ -703,8 +704,7 @@ SUITE(Minsky)
       godley3.doubleEntryCompliant=true;
 
       // empty godleys should be fine
-      evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+      initGodleys();
 
       godley1.resize(4,4);
       godley1.cell(0,1)=":hello"; godley1._assetClass(1, GodleyAssetClass::asset);
@@ -712,8 +712,7 @@ SUITE(Minsky)
       godley1.cell(0,3)=":bar"; godley1._assetClass(3, GodleyAssetClass::liability);
 
       // should still be no problem
-      evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+      initGodleys();
 
       godley2.resize(4,4);
       godley2.cell(0,1)=":hello2"; godley2._assetClass(1, GodleyAssetClass::asset);
@@ -726,62 +725,58 @@ SUITE(Minsky)
       godley3.cell(0,3)=":bar3"; godley3._assetClass(3, GodleyAssetClass::liability);
  
       // should be no problem - all columns are different
-      evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+      initGodleys();
 
       godley3.cell(0,2)=":foo2"; 
 
       // two incompatible columns
-      CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+      CHECK_THROW(initGodleys(), ecolab::error);
 
   
       godley3.cell(0,2)=":foo3"; 
       godley3.cell(0,1)=":hello2"; 
 
       // two incompatible columns asset columns
-      CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+      CHECK_THROW(initGodleys(), ecolab::error);
 
       // should now be a compatible asset/liability pair
       godley3._assetClass(1, GodleyAssetClass::liability);
-      evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+      initGodleys();
   
 
       // add in another asset/liability pair
       godley1.cell(0,3)=":bar3"; godley1._assetClass(3, GodleyAssetClass::asset);
-      evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+      initGodleys();
 
       // now conflict that pair
       godley2.cell(0,3)=":bar3";
-      CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+      CHECK_THROW(initGodleys(), ecolab::error);
       godley2.cell(0,3)=":bar2";
   
       // now add some flow variables and check those
       godley2.cell(2,1)="2:a";
       godley3.cell(2,1)="-:a";
       godley3.cell(3,1)="-:a";
-      variables.values[":a"]=VariableValue(VariableType::flow).allocValue();
-      variables.values[":hello2"]=VariableValue(VariableType::stock).allocValue();
+      variableValues[":a"]=VariableValue(VariableType::flow).allocValue();
+      variableValues[":hello2"]=VariableValue(VariableType::stock).allocValue();
 
-      evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                   makeGodleyIt(godleyItems.end()), variables.values);
+      initGodleys();
 
       godley3.cell(3,1)="";
-      CHECK_THROW(evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
-                                               makeGodleyIt(godleyItems.end()), variables.values), ecolab::error);
+      CHECK_THROW(initGodleys(), ecolab::error);
  
 
     }
 
   TEST_FIXTURE(TestFixture,matchingTableColumns)
     {
-      GodleyTable& godley1=godleyItems[1].table;
-      GodleyTable& godley2=godleyItems[2].table;
-      GodleyTable& godley3=godleyItems[3].table;
+      int id1=getNewId(), id2=getNewId(), id3=getNewId();
+      auto g1=new GodleyIcon; model->addItem(id1, g1);
+      auto g2=new GodleyIcon; model->addItem(id2, g2);
+      auto g3=new GodleyIcon; model->addItem(id3, g3);
+      GodleyTable& godley1=g1->table;
+      GodleyTable& godley2=g2->table;
+      GodleyTable& godley3=g3->table;
       godley1.resize(6,3);
       godley2.resize(3,3);
       godley3.resize(2,3);
@@ -803,26 +798,26 @@ SUITE(Minsky)
       godley2.cell(0,1)="l1";  
       godley2.cell(0,2)="l2";  
 
-      cols=matchingTableColumns(1,GodleyAssetClass::asset);
+      cols=matchingTableColumns(id1,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
 
-      cols=matchingTableColumns(1,GodleyAssetClass::liability);
+      cols=matchingTableColumns(id1,GodleyAssetClass::liability);
       CHECK_EQUAL(0, cols.size());
 
-      cols=matchingTableColumns(3,GodleyAssetClass::asset);
+      cols=matchingTableColumns(id3,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
 
-      cols=matchingTableColumns(3,GodleyAssetClass::liability);
+      cols=matchingTableColumns(id3,GodleyAssetClass::liability);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("a1", *cols.begin());
 
-      variables.newVariable(":a",VariableType::flow);
-      variables.newVariable(":b",VariableType::flow);
-      variables.newVariable(":c",VariableType::flow);
-      variables.newVariable(":d",VariableType::flow);
-      variables.newVariable(":e",VariableType::flow);
+      newVariable(":a",VariableType::flow);
+      newVariable(":b",VariableType::flow);
+      newVariable(":c",VariableType::flow);
+      newVariable(":d",VariableType::flow);
+      newVariable(":e",VariableType::flow);
 
       // OK now check some balanceDuplicateColumns functionality
       godley1.cell(1,0)="row1";
@@ -835,7 +830,7 @@ SUITE(Minsky)
       godley1.cell(5,2)="-e";
       godley2.cell(1,0)="row1";
       godley2.cell(2,1)="d";
-      balanceDuplicateColumns(godleyItems[1], 2);
+      balanceDuplicateColumns(*g1, 2);
       // two rows should have been added
       CHECK_EQUAL(5,godley2.rows());
       CHECK_EQUAL("-a",trimWS(godley2.cell(1,1)));
@@ -847,8 +842,10 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,importDuplicateColumn)
     {
-      GodleyTable& godley1=godleyItems[1].table;
-      GodleyTable& godley2=godleyItems[2].table;
+      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      auto g2=new GodleyIcon; model->addItem(getNewId(), g2);
+      GodleyTable& godley1=g1->table;
+      GodleyTable& godley2=g2->table;
       godley1.resize(4,2);
       godley2.resize(2,2);
 
@@ -869,19 +866,20 @@ SUITE(Minsky)
       CHECK_EQUAL("-b",godley2.cell(3,1));
 
       // move cell between columns
-      godleyItems[1].moveCell(2,1,2,2);
+      g1->moveCell(2,1,2,2);
       CHECK_EQUAL("a",godley1.cell(2,2));
       CHECK_EQUAL("",godley1.cell(2,1));
       CHECK_EQUAL("",godley2.cell(2,1));
 
-      godleyItems[1].moveCell(2,2,3,2);
+      g1->moveCell(2,2,3,2);
       CHECK_EQUAL("a",godley1.cell(3,2));
       CHECK_EQUAL("",godley1.cell(2,2));
     }
 
   TEST_FIXTURE(TestFixture,godleyRowSums)
     {
-      GodleyTable& godley1=godleyItems[1].table;
+      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      GodleyTable& godley1=g1->table;
       godley1.resize(6,3);
       godley1.cell(1,1)="a";
       godley1.cell(1,2)="2b";
@@ -891,7 +889,8 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyMoveRowCol)
     {
-      GodleyTable& godley1=godleyItems[1].table;
+      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      GodleyTable& godley1=g1->table;
       godley1.resize(6,3);
       godley1.cell(1,1)="a";
       godley1.cell(1,2)="2b";
@@ -911,9 +910,12 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyNameUnique)
     {
-      GodleyTable& godley1=godleyItems[1].table;
-      GodleyTable& godley2=godleyItems[2].table;
-      GodleyTable& godley3=godleyItems[3].table;
+      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      auto g2=new GodleyIcon; model->addItem(getNewId(), g2);
+      auto g3=new GodleyIcon; model->addItem(getNewId(), g3);
+      GodleyTable& godley1=g1->table;
+      GodleyTable& godley2=g2->table;
+      GodleyTable& godley3=g3->table;
       godley1.nameUnique();
       godley2.nameUnique();
       godley3.nameUnique();
@@ -924,12 +926,11 @@ SUITE(Minsky)
 
     TEST_FIXTURE(TestFixture,clearInitCond)
     {
-      GodleyIcon& godley=godleyItems[1];
-      CHECK(godley.table.initialConditionRow(1));
+      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      CHECK(g1->table.initialConditionRow(1));
       // to clear a cell, it first needs to contain something
-      godley.setCell(1,1,"1");
-      godley.setCell(1,1,"");
-      CHECK_EQUAL("0",godley.table.cell(1,1));
+      g1->setCell(1,1,"1");
+      g1->setCell(1,1,"");
+      CHECK_EQUAL("0",g1->table.cell(1,1));
     }
-#endif
 }

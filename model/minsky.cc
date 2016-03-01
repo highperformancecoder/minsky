@@ -797,6 +797,15 @@ namespace minsky
     };
   }
 
+  void Minsky::initGodleys()
+  {
+    auto toGodleyIcon=[](const ItemPtr& i) {return dynamic_cast<GodleyIcon*>(i.get());};
+    auto godleyItems=model->findAll<GodleyIcon*>
+      (toGodleyIcon, &Group::items, toGodleyIcon);
+    evalGodley.initialiseGodleys(GodleyIt(godleyItems.begin()), 
+                                 GodleyIt(godleyItems.end()), variableValues);
+  }
+
   void Minsky::reset()
   {
     EvalOpBase::t=t=0;
@@ -805,12 +814,7 @@ namespace minsky
     // make the simulation proceed
     if (stockVars.empty()) stockVars.resize(1,0);
 
-    auto toGodleyIcon=[](const ItemPtr& i) {return dynamic_cast<GodleyIcon*>(i.get());};
-    auto godleyItems=model->findAll<GodleyIcon*>
-      (toGodleyIcon, &Group::items, toGodleyIcon);
-
-    evalGodley.initialiseGodleys(GodleyIt(godleyItems.begin()), 
-                                 GodleyIt(godleyItems.end()), variableValues);
+    initGodleys();
 
 //    plots.reset();
 

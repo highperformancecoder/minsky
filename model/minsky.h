@@ -275,6 +275,8 @@ namespace minsky
       model->removeItem(id);
     }
 
+    void initGodleys();
+
     int newNote() {
       int id=getNewId();
       model->addItem(id, new Item);
