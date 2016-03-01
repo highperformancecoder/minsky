@@ -493,24 +493,23 @@ SUITE(Minsky)
       CHECK_CLOSE(-0.3, variableValues[":c"].value(), 1e-5);
     }
 
-#if 0
   TEST_FIXTURE(TestFixture,multiVariableInputsMultiply)
     {
-      VariablePtr varA = variables[variables.newVariable("a", VariableType::flow)];
-      VariablePtr varB = variables[variables.newVariable("b", VariableType::flow)];
-      VariablePtr varC = variables[variables.newVariable("c", VariableType::flow)];
-      variables.values[":a"].init="0.1";
-      variables.values[":b"].init="0.2";
+      auto& varA = model->items[newVariable("a", VariableType::flow)];
+      auto& varB = model->items[newVariable("b", VariableType::flow)];
+      auto& varC = model->items[newVariable("c", VariableType::flow)];
+      variableValues[":a"].init="0.1";
+      variableValues[":b"].init="0.2";
 
-      OperationPtr& intOp = operations[0]=OperationPtr(OperationType::integrate); //enables equations to step
-  
+      auto& intOp = model->items[addOperation("integrate")]; //enables equations to step
+ 
 
-      OperationPtr& op=operations[1]=OperationPtr(OperationType::multiply);
+      auto& op=model->items[addOperation("multiply")];
 
-      addWire(Wire(varA->outPort(), op->ports()[1]));
-      addWire(Wire(varB->outPort(), op->ports()[1]));
-      addWire(Wire(op->ports()[0], varC->inPort()));
-      addWire(Wire(varC->outPort(), intOp->ports()[1]));
+      model->addWire(getNewId(), new Wire(varA->ports[0], op->ports[2]));
+      model->addWire(getNewId(), new Wire(varB->ports[0], op->ports[2]));
+      model->addWire(getNewId(), new Wire(op->ports[0], varC->ports[1]));
+      model->addWire(getNewId(), new Wire(varC->ports[0], intOp->ports[1]));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -523,25 +522,25 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.02, variables.values[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.02, variableValues[":c"].value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsDivide)
     {
-      VariablePtr varA = variables[variables.newVariable("a", VariableType::flow)];
-      VariablePtr varB = variables[variables.newVariable("b", VariableType::flow)];
-      VariablePtr varC = variables[variables.newVariable("c", VariableType::flow)];
-      variables.values[":a"].init="0.1";
-      variables.values[":b"].init="0.2";
+      auto& varA = model->items[newVariable("a", VariableType::flow)];
+      auto& varB = model->items[newVariable("b", VariableType::flow)];
+      auto& varC = model->items[newVariable("c", VariableType::flow)];
+      variableValues[":a"].init="0.1";
+      variableValues[":b"].init="0.2";
 
-      OperationPtr& intOp = operations[0]=OperationPtr(OperationType::integrate); //enables equations to step
+      auto& intOp = model->items[addOperation("integrate")]; //enables equations to step
 
-      OperationPtr& op=operations[1]=OperationPtr(OperationType::divide);
+      auto& op=model->items[addOperation("divide")];
 
-      addWire(Wire(varA->outPort(), op->ports()[2]));
-      addWire(Wire(varB->outPort(), op->ports()[2]));
-      addWire(Wire(op->ports()[0], varC->inPort()));
-      addWire(Wire(varC->outPort(), intOp->ports()[1]));
+      model->addWire(getNewId(), new Wire(varA->ports[0], op->ports[2]));
+      model->addWire(getNewId(), new Wire(varB->ports[0], op->ports[2]));
+      model->addWire(getNewId(), new Wire(op->ports[0], varC->ports[1]));
+      model->addWire(getNewId(), new Wire(varC->ports[0], intOp->ports[1]));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -554,9 +553,10 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(50, variables.values[":c"].value(), 1e-5);
+      CHECK_CLOSE(50, variableValues[":c"].value(), 1e-5);
     }
 
+#if 0
   // instantiate all operations and variables to ensure that definitions
   // have been provided for all virtual methods
   TEST(checkAllOpsDefined)

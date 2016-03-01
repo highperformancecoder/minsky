@@ -54,7 +54,7 @@ namespace minsky
   class Item: public NoteBase
   {
   public:
-    float m_x, m_y; ///< position in canvas, or within group
+    float m_x=0, m_y=0; ///< position in canvas, or within group
     float zoomFactor=1;
     double rotation=0; ///< rotation of icon, in degrees
     bool m_visible=true; ///< if false, then this item is invisible
