@@ -373,7 +373,6 @@ SUITE(Minsky)
       CHECK_THROW(constructEquations(), ecolab::error);
     }
 
-#if 0
   /*
     but integration is allowed to cycle
 
@@ -387,16 +386,16 @@ SUITE(Minsky)
   TEST_FIXTURE(TestFixture,cyclicIntegrateDoesntThrow)
     {
       // First, integrate a constant
-      operations[1]=OperationPtr(OperationType::integrate);
-      operations[2]=OperationPtr(OperationType::multiply);
-      int a=variables.addVariable(VariablePtr(VariableType::flow,"a"));
-      CHECK(variables.addWire(operations[1]->ports()[0], operations[2]->ports()[1]));
-      CHECK(variables.addWire(operations[2]->ports()[0], operations[1]->ports()[1]));
-      CHECK(variables.addWire(variables[a]->outPort(), operations[2]->ports()[2]));
+      auto op1=model->addItem(getNewId(),OperationPtr(OperationType::integrate));
+      auto op2=model->addItem(getNewId(),OperationPtr(OperationType::multiply));
+      auto a=model->addItem(getNewId(),VariablePtr(VariableType::flow,"a"));
+      CHECK(model->addWire(getNewId(),new Wire(op1->ports[0], op2->ports[1])));
+      CHECK(model->addWire(getNewId(),new Wire(op2->ports[0], op1->ports[1])));
+      CHECK(model->addWire(getNewId(),new Wire(a->ports[0], op2->ports[2])));
 
-      PortManager::addWire(Wire(operations[1]->ports()[0], operations[2]->ports()[1]));
-      PortManager::addWire(Wire(operations[2]->ports()[0], operations[1]->ports()[1]));
-      PortManager::addWire(Wire(variables[a]->outPort(), operations[2]->ports()[2]));
+      model->addWire(getNewId(), new Wire(op1->ports[0], op2->ports[1]));
+      model->addWire(getNewId(), new Wire(op2->ports[0], op1->ports[1]));
+      model->addWire(getNewId(), new Wire(a->ports[0], op2->ports[2]));
 
       CHECK(!cycleCheck());
       constructEquations();
@@ -404,7 +403,8 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyIconVariableOrder)
     {
-      GodleyIcon& g=godleyItems[0];
+      GodleyIcon& g=dynamic_cast<GodleyIcon&>
+        (*model->items[addGodleyTable(0,0)]);
       g.table.dimension(3,4);
       g.table.cell(0,1)="a1";
       g.table.cell(0,2)="z2";
@@ -429,6 +429,7 @@ SUITE(Minsky)
   */
    
 
+#if 0
   TEST_FIXTURE(TestFixture,multiVariableInputsAdd)
     {
       VariablePtr varA = variables[variables.newVariable("a", VariableType::flow)];
