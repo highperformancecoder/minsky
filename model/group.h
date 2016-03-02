@@ -222,6 +222,8 @@ namespace minsky
       return addWire(w.id(), w);
     }
 
+    /// adjust wire's group to be the least common ancestor of its ports
+    void adjustWiresGroup(Wire& w);
 
     /// move all items from source to this
     void moveContents(Group& source); 

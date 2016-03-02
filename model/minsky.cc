@@ -209,9 +209,9 @@ namespace minsky
       if (w->from()==fromP)
         return -1;
 
-    // TODO: don't add to top level group, but figure out which group
     int id=getNewId();
-    model->addWire(id, new Wire(fromP, toP, coords));
+    auto& w=model->addWire(id, new Wire(fromP, toP, coords));
+    model->adjustWiresGroup(*w);
 
 //    // work out which group to add the wire to (if any)
 //    groupTest.initGroupList(groupItems);

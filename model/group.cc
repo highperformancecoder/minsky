@@ -93,38 +93,14 @@ namespace minsky
     it->group=self.lock();
 
     // move wire to highest common group
-    // TODO add in I/O variables if needed, and move wires to same group
+    // TODO add in I/O variables if needed
     for (auto& p: it->ports)
       {
         assert(p);
         for (auto& w: p->wires)
           {
             assert(w);
-            GroupPtr otherGroup;
-            if (p->input())
-              {
-                if (auto from=w->from())
-                  otherGroup=from->group();
-                assert(p==w->to());
-              }
-            else
-              {
-                if (auto to=w->to())
-                  otherGroup=to->group();
-                assert(p==w->from());
-              }
-
-            // Find common ancestor group, and move wire to it
-            shared_ptr<Group> p1=self.lock(), p2=otherGroup;
-            unsigned l1=p1->level(), l2=p2->level();
-            for (; l1>l2; l1--) p1=p1->group.lock();
-            for (; l2>l1; l2--) p2=p2->group.lock();
-            while (p1!=p2) 
-              {
-                p1=p1->group.lock();
-                p2=p2->group.lock();
-              }
-            w->moveIntoGroup(*p1);
+            adjustWiresGroup(*w);
           }
       }
 
@@ -141,6 +117,24 @@ namespace minsky
             
 
     return *items.insert(Items::value_type(id,it)).first;
+  }
+
+  void Group::adjustWiresGroup(Wire& w)
+  {
+    // Find common ancestor group, and move wire to it
+    assert(w.from() && w.to());
+    shared_ptr<Group> p1=w.from()->item.group.lock(), p2=w.to()->item.group.lock();
+    assert(p1 && p2);
+    unsigned l1=p1->level(), l2=p2->level();
+    for (; l1>l2; l1--) p1=p1->group.lock();
+    for (; l2>l1; l2--) p2=p2->group.lock();
+    while (p1!=p2) 
+      {
+        assert(p1 && p2);
+        p1=p1->group.lock();
+        p2=p2->group.lock();
+      }
+    w.moveIntoGroup(*p1);
   }
 
   void Group::moveContents(Group& source) {
