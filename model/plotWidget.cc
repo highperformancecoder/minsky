@@ -37,8 +37,6 @@ namespace minsky
   {
     const unsigned numLines = 4; // number of simultaneous variables to plot, on a side
 
-    Plots& plots() {return minsky::minsky().plots;}
-
     const unsigned nBoundsPorts=6;
     // orientation of bounding box ports
     const double orient[nBoundsPorts]={-0.4*M_PI, -0.6*M_PI, -0.2*M_PI, 0.2*M_PI, 1.2*M_PI, 0.8*M_PI};
@@ -77,110 +75,7 @@ namespace minsky
       }
     };
 
-    // we need some extra fields to handle the additional options
-    struct TkMinskyItem: public ImageItem
-    {
-      int id; // identifier of the C++ object this item represents
-    };
-
-    static Tk_CustomOption tagsOption = {
-      (Tk_OptionParseProc *) Tk_CanvasTagsParseProc,
-      Tk_CanvasTagsPrintProc, (ClientData) NULL
-    };
-
-    struct MinskyItemImage: public CairoImage
-    {
-      static Tk_ConfigSpec configSpecs[];
-    };
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-#pragma GCC diagnostic ignored "-Winvalid-offsetof"
-    Tk_ConfigSpec MinskyItemImage::configSpecs[] =
-    {
-      {TK_CONFIG_INT, "-id", NULL, NULL,
-       NULL, Tk_Offset(TkMinskyItem, id), 0},
-      {TK_CONFIG_CUSTOM, "-tags", NULL, NULL,
-       NULL, 0, TK_CONFIG_NULL_OK, &tagsOption},
-      {TK_CONFIG_END}
-    };
-#pragma GCC diagnostic pop
   }
-
-  struct PlotItem: public MinskyItemImage
-  {
-    PlotWidget* pw; // weak ref to plotWidget controlling this item
-    PlotItem(): pw(0) {}
-    void init(int id, Tk_Canvas canvas)
-    {
-      pw=&plots()[id];
-      pw->canvas=canvas;
-    }
-    void draw()
-    {
-      if (cairoSurface && pw)
-        {
-          pw->cairoSurface=cairoSurface;
-          xScale=yScale=pw->zoomFactor;
-          pw->draw(*cairoSurface);
-        }
-    }
-  };
-
-  namespace 
-  {
-    int creatProc(Tcl_Interp *interp, Tk_Canvas canvas, 
-                  Tk_Item *itemPtr, int objc,Tcl_Obj *CONST objv[])
-    {
-      TkMinskyItem* tkMinskyItem=(TkMinskyItem*)(itemPtr);
-      tkMinskyItem->id=-1;
-      int r=createImage<PlotItem>(interp,canvas,itemPtr,objc,objv);
-      if (r==TCL_OK && tkMinskyItem->id>=0)
-        {
-          PlotItem* p=static_cast<PlotItem*>(tkMinskyItem->cairoItem);
-          if (p)
-            {
-              p->init(tkMinskyItem->id, canvas);
-              TkImageCode::ComputeImageBbox(canvas, tkMinskyItem);
-            }
-          else
-            return TCL_ERROR;
-        }
-      return r;
-    }
-
-  // overrride cairoItem's configureProc to process the extra config options
-  int configureProc(Tcl_Interp *interp,Tk_Canvas canvas,Tk_Item *itemPtr,
-                    int objc,Tcl_Obj *CONST objv[],int flags)
-  {
-    return TkImageCode::configureCairoItem
-      (interp,canvas,itemPtr,objc,objv,flags, MinskyItemImage::configSpecs);
-  }
-  
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-#endif
-    // register PlotItem with Tk for use in canvases.
-    int registerPlotItem()
-    {
-      static Tk_ItemType plotItemType = cairoItemType();
-      plotItemType.name="plot";
-      plotItemType.itemSize=sizeof(TkMinskyItem);
-      plotItemType.createProc=creatProc;
-      plotItemType.configProc=configureProc;
-      plotItemType.configSpecs=MinskyItemImage::configSpecs;
-      Tk_CreateItemType(&plotItemType);
-      return 0;
-    }
-  
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-
-  }
-
-  static int reg=(initVec().push_back(registerPlotItem), 0);
 
   PlotWidget::PlotWidget()
   {
@@ -201,27 +96,27 @@ namespace minsky
     float w=width, h=height;
     float x = -0.5*w, dx=w/(2*numLines+1); // x location of ports
     float y=0.5*h, dy = h/(numLines);
-    m_ports.resize(0);
+    ports.resize(0);
 
     // xmin, xmax, ymin, ymax ports
-    m_ports<<=minsky().addInputPort(); //xmin
-    m_ports<<=minsky().addInputPort();  //xmax
-    m_ports<<=minsky().addInputPort(); //ymin
-    m_ports<<=minsky().addInputPort(); //ymax
-    m_ports<<=minsky().addInputPort(); //ymax
-    m_ports<<=minsky().addInputPort(); //ymax
+    ports.emplace_back(new Port(*this, Port::inputPort)); //xmin
+    ports.emplace_back(new Port(*this, Port::inputPort));  //xmax
+    ports.emplace_back(new Port(*this, Port::inputPort)); //ymin
+    ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
+    ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
+    ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
 
     // y variable ports
     for (float y=0.5*(dy-h); y<0.5*h; y+=dy)
-      m_ports<<=minsky().addPort(Port(x+m_x,y+m_y,true));
+      ports.emplace_back(new Port(*this, Port::inputPort));
 
     // RHS y variable ports
     for (float y=0.5*(dy-h); y<0.5*h; y+=dy)
-      m_ports<<=minsky().addPort(Port(0.5*w+m_x,y+m_y,true));
+      ports.emplace_back(new Port(*this, Port::inputPort));
 
     // add in the x variable ports
     for (float x=2*dx-0.5*w; x<0.5*w; x+=dx)
-      m_ports<<=minsky().addPort(Port(x+m_x,y+m_y,true));
+      ports.emplace_back(new Port(*this, Port::inputPort));
 
 
   }
@@ -287,7 +182,7 @@ namespace minsky
       {
         float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
-          minsky().movePortTo(m_ports[i], x + this->x(), y + this->y()+0.5*yoffs);
+          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%paletteSz], orient[i]);
         
       }
@@ -297,7 +192,7 @@ namespace minsky
       {
         float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
-          minsky().movePortTo(m_ports[i], x + this->x(), y + this->y()+0.5*yoffs);
+          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%paletteSz], 0);
       }
     
@@ -306,7 +201,7 @@ namespace minsky
       {
         float y=0.5*(dy-h) + (i-numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
-          minsky().movePortTo(m_ports[i],  x + this->x(), y + this->y()+0.5*yoffs);
+          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%paletteSz], M_PI);
       }
 
@@ -315,7 +210,7 @@ namespace minsky
       {
         float x=dx-0.5*w + (i-2*numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
-          minsky().movePortTo(m_ports[i], x + this->x(), y + this->y()+0.5*yoffs);
+          ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%paletteSz], -0.5*M_PI);
       }
 
@@ -325,30 +220,10 @@ namespace minsky
     
     cairo_restore(cairo);
     if (mouseFocus)
-      drawPorts(*this, ports(), cairo);
+      drawPorts(cairo);
     if (selected) drawSelected(cairo);
   }
   
-
-  /// TODO: better handled in a destructor, but for the moment, the
-  /// software architecture requires that this be called explicitly from
-  /// Minsky::deletePlot
-  void PlotWidget::deletePorts()
-  {
-    for (int p: m_ports)
-      minsky().delPort(p);
-    m_ports.resize(0);
-  }
-
-  void PlotWidget::moveTo(float x1, float y1)
-  {
-    float w=width, h=height;
-    float dx=x1-x(), dy=y1-y();
-    m_x=x1; m_y=y1;
-    for (int p: m_ports)
-      minsky().movePort(p, dx, dy);
-  }
-
   void PlotWidget::scalePlot()
   {
     // set any scale overrides
@@ -390,7 +265,7 @@ namespace minsky
 
   void PlotWidget::addPlotPt(double t)
   {
-    for (size_t pen=0; pen<yvars.size(); ++pen)
+    for (size_t pen=0; pen<2*numLines; ++pen)
       if (yvars[pen].idx()>=0)
         {
           double x,y;
@@ -431,9 +306,6 @@ namespace minsky
       }
   }
 
-  static VariableValue disconnected;
-  constexpr float PlotWidget::rotation;
-
   void PlotWidget::connectVar(const VariableValue& var, unsigned port)
   {
     if (port<nBoundsPorts)
@@ -461,52 +333,13 @@ namespace minsky
       }
   }
 
-  void PlotWidget::updatePortLocation()
+  void PlotWidget::addImage(const string& image) 
   {
-    double w = 150;    //   150 from constructor
-    double h = 150;    //   no zoom.
-
-    // bounding box ports
-    float x = -0.5 * w, dx = w / numLines; // x location of ports
-    float y =  0.5 * h, dy = h / numLines;
-
-    // bounds input ports
-    size_t i;
-    for (i = 0; i < 4; ++i)
-      {
-        float x=boundX[i]*w, y=boundY[i]*h;
-        minsky().movePortTo(m_ports[i], x + this->x(), y + this->y());
-      }
-
-    // y data ports
-    for ( ; i < (numLines + 4); ++i)
-      {
-        float y=0.5*(dy-h) + (i-4)*dy;
-        minsky().movePortTo(m_ports[i], x + this->x(), y + this->y());
-      }
-
-    // x data ports
-    for ( ; i < ((2 * numLines) + 4); ++i)
-      {
-        float x = 0.5 * (dx - w) + (i - numLines - 4) * dx;
-        minsky().movePortTo(m_ports[i], x + this->x(), y + this->y());
-      }
-
-  }
-
-  void Plots::addImage(int id, const string& image) 
-  {
-    PlotWidget& p=(*this)[id];
-    p.expandedPlot.reset
+    expandedPlot.reset
       (new TkPhotoSurface(Tk_FindPhoto(interp(), image.c_str()), false));
-    cairo_surface_set_device_offset(p.expandedPlot->surface(),p.expandedPlot->width()/2,p.expandedPlot->height()/2);
-    p.redraw();
+    cairo_surface_set_device_offset
+      (expandedPlot->surface(),
+       expandedPlot->width()/2,expandedPlot->height()/2);
+    redraw();
   }
-
-  void Plots::reset()
-  {
-    for (iterator p=begin(); p!=end(); ++p)
-      p->clear();
-  }
-
 }

@@ -27,7 +27,7 @@
 #include "evalOp.h"
 #include "evalGodley.h"
 #include "wire.h"
-//#include "plotWidget.h"
+#include "plotWidget.h"
 //#include "groupIcon.h"
 //#include "switchIcon.h"
 #include "version.h"

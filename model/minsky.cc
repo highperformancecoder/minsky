@@ -580,21 +580,28 @@ namespace minsky
     system.populateEvalOpVector(equations, integrals);
     assert(variableValues.validEntries());
 
-   // attach the plots
-    // TODO:
-//    for (PlotWidget& p: plots)
-//      {
-//        p.yvars.clear(); // clear any old associations
-//        p.xvars.clear(); 
-//        p.clearPenAttributes();
-//        p.autoScale();
-//        for (size_t i=0; i<p.ports().size(); ++i)
-//          {
-//            map<int,VariableValue>::iterator vFrom=inputFrom.find(p.ports()[i]);
-//            if (vFrom!=inputFrom.end())
-//              p.connectVar(vFrom->second, i);
-//          }
-//      }
+    // attach the plots
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+           {
+             p->yvars.clear(); // clear any old associations
+             p->xvars.clear(); 
+             p->clearPenAttributes();
+             p->autoScale();
+             for (size_t i=0; i<p->ports.size(); ++i)
+               {
+                 auto& pp=p->ports[i];
+                 assert(pp->wires.size()==1);
+                 if (pp->getVariableValue().idx()>=0)
+                   p->connectVar(pp->getVariableValue(), i);
+               }
+           }
+         return false;
+       });
+
     for (EvalOpVector::iterator e=equations.begin(); e!=equations.end(); ++e)
       (*e)->reset();
   }
@@ -812,7 +819,14 @@ namespace minsky
 
     initGodleys();
 
-//    plots.reset();
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+           p->clear();
+         return false;
+       });
 
     if (stockVars.size()>0)
       {
@@ -867,8 +881,10 @@ namespace minsky
 
     logVariables();
 
-//    for (Plots::iterator i=plots.begin(); i!=plots.end(); ++i)
-//      i->addPlotPt(t);
+    model->recursiveDo
+      (&Group::items, 
+       [&](Items&, Items::iterator i) 
+       {(*i)->updateIcon(t); return false;});
   }
 
   string Minsky::diagnoseNonFinite() const

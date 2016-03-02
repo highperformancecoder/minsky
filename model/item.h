@@ -74,6 +74,8 @@ namespace minsky
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const {}
+    /// update display after a step()
+    virtual void updateIcon(double t) {}
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
