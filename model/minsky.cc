@@ -138,25 +138,23 @@ namespace minsky
 {
   void Minsky::openLogFile(const string& name)
   {
-//    outputDataFile.reset(new ofstream(name));
-//    *outputDataFile<< "#time";
-//    for (VariableValues::const_iterator v=variables.values.begin();
-//         v!=variables.values.end(); ++v)
-//      *outputDataFile<<" "<<v->first;
-//    *outputDataFile<<endl;
+    outputDataFile.reset(new ofstream(name));
+    *outputDataFile<< "#time";
+    for (auto& v: variableValues)
+      *outputDataFile<<" "<<v.first;
+    *outputDataFile<<endl;
   }
 
   /// write current state of all variables to the log file
   void Minsky::logVariables() const
   {
-//    if (outputDataFile)
-//      {
-//        *outputDataFile<<t;
-//        for (VariableValues::const_iterator v=variables.values.begin();
-//             v!=variables.values.end(); ++v)
-//          *outputDataFile<<" "<<v->second.value();
-//        *outputDataFile<<endl;
-//      }
+    if (outputDataFile)
+      {
+        *outputDataFile<<t;
+        for (auto& v: variableValues)
+          *outputDataFile<<" "<<v.second.value();
+        *outputDataFile<<endl;
+      }
   }        
         
       
@@ -205,10 +203,6 @@ namespace minsky
     if (fromItem==toItem) 
       return -1;
 
-
-//    // check whether variable manager will allow the connection
-//    if (!variables.addWire(from, to))
-//      return -1;
 
     // check that a wire doesn't already exist connecting these two ports
     for (auto& w: toP->wires)
@@ -566,12 +560,12 @@ namespace minsky
 
   void Minsky::renderEquationsToImage(const char* image)
   {
-//    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
-//    //    surf.clear();
-//    cairo_move_to(surf.cairo(),0,0);
-//    MathDAG::SystemOfEquations system(*this);
-//    system.renderEquations(surf);
-//    surf.blit();
+    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
+    //    surf.clear();
+    cairo_move_to(surf.cairo(),0,0);
+    MathDAG::SystemOfEquations system(*this);
+    system.renderEquations(surf);
+    surf.blit();
   }
 
   void Minsky::constructEquations()
