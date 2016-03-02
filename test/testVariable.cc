@@ -17,14 +17,14 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <UnitTest++/UnitTest++.h>
-#include <variableManager.h>
+#include "variableValue.h"
 #include <ecolab_epilogue.h>
 
 using namespace minsky;
 
 SUITE(Variable)
 {
-  TEST_FIXTURE(VariableManager, scoping)
+  TEST_FIXTURE(VariableValue, scoping)
     {
       CHECK_EQUAL(-1, scope(":foo"));
       CHECK_EQUAL(1, scope("furry[1]:foo"));

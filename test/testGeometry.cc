@@ -1,5 +1,5 @@
-#include "../GUI/geometry.h"
-#include "../GUI/cairoItems.h"
+#include "../geometry.h"
+#include "../model/cairoItems.h"
 #include <ecolab_epilogue.h>
 #include <UnitTest++/UnitTest++.h>
 

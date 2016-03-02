@@ -131,10 +131,14 @@ namespace minsky
     std::vector<R> findAll(C c, M (Group::*m), X xfm) const {
       std::vector<R> r;
       for (auto& i: this->*m)
-        if (c(i)) r.push_back(xfm(i));
+        {
+          assert(i);
+          if (c(i)) r.push_back(xfm(i));
+        }
 
       for (auto& i: groups)
         {
+          assert(i);
           auto items=i->findAll<R>(c,m,xfm);
           r.insert(r.end(), items.begin(), items.end());
         }

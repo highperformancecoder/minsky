@@ -25,7 +25,7 @@ but any renamed attributes require bumping the schema number.
 #ifndef SCHEMA_1_H
 #define SCHEMA_1_H
 
-#include "GUI/minsky.h"
+#include "model/minsky.h"
 #include "schemaHelper.h"
 #include "classdesc.h"
 #include "polyXMLBase.h"

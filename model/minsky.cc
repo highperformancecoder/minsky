@@ -519,8 +519,10 @@ namespace minsky
         
   void Minsky::garbageCollect()
   {
-//    stockVars.clear();
-//    flowVars.clear();
+    stockVars.clear();
+    flowVars.clear();
+    equations.clear();
+    integrals.clear();
 //
 //    // remove all temporaries
 //    for (VariableValues::iterator v=variables.values.begin(); 

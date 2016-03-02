@@ -20,10 +20,9 @@
 #ifndef SCHEMA_HELPER
 #define SCHEMA_HELPER
 
-#include "../GUI/operation.h"
-#include "../GUI/variable.h"
+#include "../model/operation.h"
+#include "../model/variable.h"
 #include "../engine/variableValue.h"
-#include "../GUI/portManager.h"
 
 template <class T>
 ecolab::array<T> toArray(const std::vector<T>& v) 

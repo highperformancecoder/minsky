@@ -184,7 +184,8 @@ namespace minsky
           desc=minsky().variableValues.newName(desc);
         }
 
-    minsky().model->removeItem(*intVar);
+    if (intVar)
+      minsky().model->removeItem(*intVar);
 
     intVar.reset(new Variable<VariableType::integral>(desc));
     intVar->m_visible=false; // we're managing our own display

@@ -1216,14 +1216,15 @@ namespace MathDAG
     if (op.type()==OperationType::differentiate)
       {
         assert(op.ports.size()==2);
-        if (op.ports[1]->wires.size()==0)
+        NodePtr expr;
+        if (op.ports[1]->wires.size()==0 || !(expr=getNodeFromWire(*op.ports[1]->wires[0])))
           {
             minsky.displayErrorItem(op);          
             throw error("derivative not wired");
           }
 
         return expressionCache.insert
-          (op, getNodeFromWire(*op.ports[1]->wires[0])->derivative(*this));
+          (op, expr->derivative(*this));
       }
     else
       {
@@ -1288,30 +1289,33 @@ namespace MathDAG
   NodePtr SystemOfEquations::getNodeFromWire(const Wire& wire)
   {
     NodePtr r;
-    auto& item=wire.from()->item;
-    if (auto o=dynamic_cast<OperationBase*>(&item))
+    if (auto p=wire.from())
       {
-        if (expressionCache.exists(*o))
-          return expressionCache[*o];
-        else
-          // we're wired to an operation
-          r=makeDAG(*o);
-      }
-    else if (auto s=dynamic_cast<SwitchIcon*>(&item))
-      {
-        if (expressionCache.exists(*s))
-          return expressionCache[*s];
-        else
-          r=makeDAG(*s);
-      }
-    else if (auto v=dynamic_cast<VariableBase*>(&item))
-      {
-        if (expressionCache.exists(*v))
-          return expressionCache[*v];
-        else
-          if (v && v->type()!=VariableBase::undefined) 
-            // we're wired to a variable
-            r=makeDAG(*v);
+        auto& item=p->item;
+        if (auto o=dynamic_cast<OperationBase*>(&item))
+          {
+            if (expressionCache.exists(*o))
+              return expressionCache[*o];
+            else
+              // we're wired to an operation
+              r=makeDAG(*o);
+          }
+        else if (auto s=dynamic_cast<SwitchIcon*>(&item))
+          {
+            if (expressionCache.exists(*s))
+              return expressionCache[*s];
+            else
+              r=makeDAG(*s);
+          }
+        else if (auto v=dynamic_cast<VariableBase*>(&item))
+          {
+            if (expressionCache.exists(*v))
+              return expressionCache[*v];
+            else
+              if (v && v->type()!=VariableBase::undefined) 
+                // we're wired to a variable
+                r=makeDAG(*v);
+          }
       }
     return r;
   }     
