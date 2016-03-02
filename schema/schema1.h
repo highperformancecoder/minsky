@@ -136,7 +136,7 @@ namespace schema1
   {
     int from, to;
     Wire(): from(-1), to(-1) {}
-    Wire(int id, const minsky::Wire& w): Item(id,w), from(w.from), to(w.to) {}
+    Wire(int id, const minsky::Wire& w): Item(id,w) {}
   };
 
   struct Operation: public SPoly<Operation,Item>
@@ -159,8 +159,7 @@ namespace schema1
     string name;
     Variable(): type(VariableType::undefined), init("0") {}
     Variable(int id, const minsky::VariableBase& v): 
-      Item(id,v), type(v.type()), init(v.init()), ports(v.ports()), 
-      name(v.fqName()) {}
+      Item(id,v), type(v.type()), init(v.init()), name(v.fqName()) {}
   };
 
   // why is the schema1 qualifier needed here?
@@ -172,8 +171,7 @@ namespace schema1
     string title, xlabel, ylabel, y1label;
     Plot() {}
     Plot(int id, const minsky::PlotWidget& p): 
-      Item(id,p), ports(toVector(p.ports())), 
-      legend(p.legend? new Side(p.legendSide): NULL),
+      Item(id,p), legend(p.legend? new Side(p.legendSide): NULL),
       title(p.title), xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label) {}
   };
 
@@ -184,10 +182,10 @@ namespace schema1
     vector<int> createdVars;
     string name;
     Group() {}
-    Group(int id, const minsky::GroupIcon& g): 
-      Item(id,g), ports(g.ports()), name(g.name()) {}
+    Group(int id, const minsky::Group& g): 
+      Item(id,g), name(g.title) {}
     // not called from constructor, as we may want to renumber items
-    void addItems(const minsky::GroupIcon& g);
+    void addItems(const minsky::Group& g);
   };
 
   struct Switch: public SPoly<Switch,Item>
@@ -195,7 +193,7 @@ namespace schema1
     vector<int> ports;
     Switch() {}
     Switch(int id, const minsky::SwitchIcon& s):
-      Item(id,s), ports(s.ports()) {}
+      Item(id,s) {}
   };
 
   struct Godley: public SPoly<Godley,Item>
@@ -208,7 +206,7 @@ namespace schema1
     double zoomFactor;
     Godley(): doubleEntryCompliant(true), zoomFactor(1) {}
     Godley(int id, const minsky::GodleyIcon& g):
-      Item(id,g), ports(g.ports()), 
+      Item(id,g), 
       doubleEntryCompliant(g.table.doubleEntryCompliant),
       name(g.table.title), data(g.table.getData()), 
       assetClasses(g.table._assetClass()),
@@ -231,7 +229,7 @@ namespace schema1
 
     PositionLayout(): x(0), y(0) {}
     template <class T> PositionLayout(int id, const T& item): 
-      Layout(id), x(SchemaHelper::x(item)), y(SchemaHelper::y(item)) {}
+      Layout(id), x(item.x()), y(item.y()) {}
   };
 
   /// represents items with a visibility attribute
@@ -240,7 +238,7 @@ namespace schema1
     bool visible;
     VisibilityLayout(): visible(true) {}
     template <class T> VisibilityLayout(const T& item):
-      visible(item.visible) {}
+      visible(item.visible()) {}
   };
 
   struct SizeLayout
@@ -259,7 +257,7 @@ namespace schema1
     WireLayout() {}
     WireLayout(int id, const minsky::Wire& wire): 
       Layout(id), VisibilityLayout(wire), 
-      coords(toVector(SchemaHelper::coords(wire))) {}
+      coords(wire.coords()) {}
   };
 
   /// represents layouts of objects like variables and operators
@@ -280,7 +278,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
   {
     double displayZoom;
     GroupLayout(): displayZoom(1) {}
-    GroupLayout(int id, const minsky::GroupIcon& g):
+    GroupLayout(int id, const minsky::Group& g):
       Layout(id), PositionLayout(id, g), VisibilityLayout(g),
       ItemLayout(id, g), SizeLayout(g), 
       displayZoom(g.displayZoom) {}
@@ -359,23 +357,15 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     vector<shared_ptr<Layout> > layout;
     double zoomFactor;
     Minsky(): schemaVersion(-1), zoomFactor(1) {} // schemaVersion defined on read in
-    Minsky(const minsky::Minsky& m);
-    /// construct a schema object containing contents of a selection
-    Minsky(const minsky::Minsky& m, const minsky::Selection&);
-    Minsky(const minsky::Minsky& m, const minsky::GroupIcon& g):
-      schemaVersion(version), zoomFactor(m.zoomFactor())
-    {populateWith(m,g,true);}
+    Minsky(const minsky::Group& g);
+    Minsky(const minsky::Minsky& m): Minsky(*m.model) {model.rungeKutta=RungeKutta(m);}
       
-    /// fills a schema object from the contents of \a g. \a
-    /// visible refers to whether the contents of \a g will be visible
-    void populateWith(const minsky::Minsky& m, const minsky::GroupIcon& g, bool visible=true);
-
     /// create a Minsky model from this
     operator minsky::Minsky() const;
     /// populate a group object from this. This mutates the ids in a
     /// consistent way into the free id space of the global minsky
     /// object
-    void populateGroup(minsky::GroupIcon& g);
+    void populateGroup(minsky::Group& g);
     /// move locations such that minx, miny lies at (0,0) on canvas
     void relocateCanvas();
 

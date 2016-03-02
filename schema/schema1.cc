@@ -47,9 +47,9 @@ namespace schema1
     {
       typedef map<int, UnionLayout> Layouts;
       Layouts layout;
-      minsky::VariableManager& vm;
+      minsky::Group& vm;
     public:
-      Combine(const vector<shared_ptr<Layout> >& l, minsky::VariableManager& vm): vm(vm) {
+      Combine(const vector<shared_ptr<Layout> >& l, minsky::Group& vm): vm(vm) {
         for (size_t i=0; i<l.size(); ++i)
           layout.insert(make_pair(l[i]->id, UnionLayout(*l[i])));
       }
@@ -75,341 +75,341 @@ namespace schema1
           combine(m[i->id], *i);
       }
 
-      template <class T, class U>
-      void populate(minsky::PMMap<T>& m, const vector<U>& v) const
-      {
-        for (typename vector<U>::const_iterator i=v.begin(); i!=v.end(); ++i)
-          {
-            typename minsky::PMMap<T>::value_type v(i->id);
-            combine(v, *i);
-            SchemaHelper::insert(m,v);
-          }
-      }
+//      template <class T, class U>
+//      void populate(minsky::PMMap<T>& m, const vector<U>& v) const
+//      {
+//        for (typename vector<U>::const_iterator i=v.begin(); i!=v.end(); ++i)
+//          {
+//            typename minsky::PMMap<T>::value_type v(i->id);
+//            combine(v, *i);
+//            SchemaHelper::insert(m,v);
+//          }
+//      }
 
       
 
       /// populate the GroupItem  from a vector of schema data
       void populate
-      (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const;
+      (map<int, minsky::Group>& m, const vector<Group>& v) const;
 
-      /// populate the variable manager from a vector of schema data
-      void populate(minsky::VariableManager& vm, const vector<Variable>& v) const;
+//      /// populate the variable manager from a vector of schema data
+//      void populate(minsky::VariableManager& vm, const vector<Variable>& v) const;
 
-      /// populate the plots manager from a vector of schema data
-      void populate(minsky::Plots& plots, const vector<Plot>& v) const;
+//      /// populate the plots manager from a vector of schema data
+//      void populate(minsky::Plots& plots, const vector<Plot>& v) const;
     };
 
-    template <>
-    minsky::Port Combine::combine(minsky::Port& p, const Port& pp) const
-    {
-      Layouts::const_iterator l=layout.find(pp.id);
-      if (l!=layout.end())
-        p=minsky::Port(l->second.x, l->second.y, pp.input);
-      else
-        p=minsky::Port(0,0,pp.input);
-      return p;
-    }
+//    template <>
+//    minsky::Port Combine::combine(minsky::Port& p, const Port& pp) const
+//    {
+//      Layouts::const_iterator l=layout.find(pp.id);
+////      if (l!=layout.end())
+////        p=minsky::Port(l->second.x, l->second.y, pp.input);
+////      else
+////        p=minsky::Port(0,0,pp.input);
+//      return p;
+//    }
 
     template <>
     minsky::Wire Combine::combine(minsky::Wire& w, const Wire& w1) const
     {
       Layouts::const_iterator l=layout.find(w1.id);
-      if (l!=layout.end())
-        {
-          w.from=w1.from;
-          w.to=w1.to;
-          w.visible=l->second.visible;
-          if (l->second.coords.size()>=4)
-            w.coords(toArray(l->second.coords));
-          else //add straight wire
-            {
-              ecolab::array<float> coords;
-              l=layout.find(w.from);
-              if (l!=layout.end())
-                {
-                  (coords<<=l->second.x)<<=l->second.y;
-                  l=layout.find(w.to);
-                  if (l!=layout.end())
-                    {
-                      (coords<<=l->second.x)<<=l->second.y;
-                      w.coords(coords);
-                    }
-                }
-            }
-        }
+//      if (l!=layout.end())
+//        {
+//          w.from=w1.from;
+//          w.to=w1.to;
+//          w.visible=l->second.visible;
+//          if (l->second.coords.size()>=4)
+//            w.coords(toArray(l->second.coords));
+//          else //add straight wire
+//            {
+//              ecolab::array<float> coords;
+//              l=layout.find(w.from);
+//              if (l!=layout.end())
+//                {
+//                  (coords<<=l->second.x)<<=l->second.y;
+//                  l=layout.find(w.to);
+//                  if (l!=layout.end())
+//                    {
+//                      (coords<<=l->second.x)<<=l->second.y;
+//                      w.coords(coords);
+//                    }
+//                }
+//            }
+//        }
       return w;
     }
      
-    void asgNote(minsky::Note& n, const Item& i)
-    {
-      n.detailedText = i.detailedText;
-      n.tooltip = i.tooltip;
-    }     
+//    void asgNote(minsky::Note& n, const Item& i)
+//    {
+//      n.detailedText = i.detailedText;
+//      n.tooltip = i.tooltip;
+//    }     
 
-    template <> minsky::OpVarBaseAttributes 
-    Combine::combine(minsky::OpVarBaseAttributes& o, const Item& o1) const
-    {
-      asgNote(o, o1);
-      Layouts::const_iterator li=layout.find(o1.id);
-      if (li!=layout.end())
-        {
-          const UnionLayout& l=li->second;
-          o.rotation=l.rotation;
-          o.visible=l.visible;
-          o.m_x=l.x;
-          o.m_y=l.y;
-        }
-      return o;
-    }
+//    template <> minsky::OpVarBaseAttributes 
+//    Combine::combine(minsky::OpVarBaseAttributes& o, const Item& o1) const
+//    {
+//      asgNote(o, o1);
+//      Layouts::const_iterator li=layout.find(o1.id);
+//      if (li!=layout.end())
+//        {
+//          const UnionLayout& l=li->second;
+//          o.rotation=l.rotation;
+//          o.visible=l.visible;
+//          o.m_x=l.x;
+//          o.m_y=l.y;
+//        }
+//      return o;
+//    }
 
     template <> minsky::OperationPtr 
     Combine::combine(minsky::OperationPtr& o, const Operation& o1) const
     {
-      Layouts::const_iterator li=layout.find(o1.id);
-      o=minsky::OperationPtr(o1.type, o1.ports);
-      combine(static_cast<minsky::OpVarBaseAttributes&>(*o), 
-              static_cast<const Item&>(o1));
-      switch (o1.type)
-        {
-        case minsky::OperationType::integrate:
-          SchemaHelper::setPrivates
-            (dynamic_cast<minsky::IntOp&>(*o), o1.name, o1.intVar);
-          break;
-        case minsky::OperationType::add: case minsky::OperationType::subtract: 
-        case minsky::OperationType::multiply: case minsky::OperationType::divide: 
-          SchemaHelper::makePortMultiWired(minsky::minsky().ports[o1.ports[1]]);
-          SchemaHelper::makePortMultiWired(minsky::minsky().ports[o1.ports[2]]);
-          break;
-        case minsky::OperationType::constant:
-          if (minsky::Constant* c=dynamic_cast<minsky::Constant*>(o.get()))
-            {
-              c->value=o1.value;
-              c->description=o1.name;
-            }
-          break;
-        case minsky::OperationType::data:
-          if (minsky::DataOp* d=dynamic_cast<minsky::DataOp*>(o.get()))
-            {
-              d->data=o1.data;
-              d->description=o1.name;
-            }
-          break;
-        default: break;
-        }
-
-      if (li!=layout.end())
-        if (minsky::Constant* c=dynamic_cast<minsky::Constant*>(o.get()))
-          {
-            const UnionLayout& l=li->second;
-            c->sliderVisible=l.sliderVisible;
-            c->sliderBoundsSet=l.sliderBoundsSet;
-            c->sliderStepRel=l.sliderStepRel;
-            c->sliderMin=l.sliderMin;
-            c->sliderMax=l.sliderMax;
-            c->sliderStep=l.sliderStep;
-          }
-      return o;
+//      Layouts::const_iterator li=layout.find(o1.id);
+//      o=minsky::OperationPtr(o1.type, o1.ports);
+//      combine(static_cast<minsky::OpVarBaseAttributes&>(*o), 
+//              static_cast<const Item&>(o1));
+//      switch (o1.type)
+//        {
+//        case minsky::OperationType::integrate:
+//          SchemaHelper::setPrivates
+//            (dynamic_cast<minsky::IntOp&>(*o), o1.name, o1.intVar);
+//          break;
+//        case minsky::OperationType::add: case minsky::OperationType::subtract: 
+//        case minsky::OperationType::multiply: case minsky::OperationType::divide: 
+//          SchemaHelper::makePortMultiWired(minsky::minsky().ports[o1.ports[1]]);
+//          SchemaHelper::makePortMultiWired(minsky::minsky().ports[o1.ports[2]]);
+//          break;
+//        case minsky::OperationType::constant:
+//          if (minsky::Constant* c=dynamic_cast<minsky::Constant*>(o.get()))
+//            {
+//              c->value=o1.value;
+//              c->description=o1.name;
+//            }
+//          break;
+//        case minsky::OperationType::data:
+//          if (minsky::DataOp* d=dynamic_cast<minsky::DataOp*>(o.get()))
+//            {
+//              d->data=o1.data;
+//              d->description=o1.name;
+//            }
+//          break;
+//        default: break;
+//        }
+//
+//      if (li!=layout.end())
+//        if (minsky::Constant* c=dynamic_cast<minsky::Constant*>(o.get()))
+//          {
+//            const UnionLayout& l=li->second;
+//            c->sliderVisible=l.sliderVisible;
+//            c->sliderBoundsSet=l.sliderBoundsSet;
+//            c->sliderStepRel=l.sliderStepRel;
+//            c->sliderMin=l.sliderMin;
+//            c->sliderMax=l.sliderMax;
+//            c->sliderStep=l.sliderStep;
+//          }
+//      return o;
     }
    
     template <> minsky::VariablePtr 
     Combine::combine(minsky::VariablePtr& v, const Variable& v1) const
     {
-      assert(v);
-      combine(static_cast<minsky::OpVarBaseAttributes&>(*v), 
-              static_cast<const Item&>(v1));
-      Layouts::const_iterator li=layout.find(v1.id);
-      if (li!=layout.end())
-        {
-          const UnionLayout& l=li->second;
-          v->name(v1.name);
-          // any unscoped variables are considered global
-          if (v1.name.find(":")==string::npos)
-            v->setScope(-1);
-          v->init(v1.init);
-          v->sliderVisible=l.sliderVisible;
-          v->sliderBoundsSet=l.sliderBoundsSet;
-          v->sliderStepRel=l.sliderStepRel;
-          v->sliderMin=l.sliderMin;
-          v->sliderMax=l.sliderMax;
-          v->sliderStep=l.sliderStep;
-          int out=v1.ports.size()>0? v1.ports[0]: -1;
-          int in=v1.ports.size()>1? v1.ports[1]: -1;
-          SchemaHelper::setPrivates
-            (dynamic_cast<minsky::VariablePorts&>(*v), out, in);
-        }
-      return v;
+//      assert(v);
+//      combine(static_cast<minsky::OpVarBaseAttributes&>(*v), 
+//              static_cast<const Item&>(v1));
+//      Layouts::const_iterator li=layout.find(v1.id);
+//      if (li!=layout.end())
+//        {
+//          const UnionLayout& l=li->second;
+//          v->name(v1.name);
+//          // any unscoped variables are considered global
+//          if (v1.name.find(":")==string::npos)
+//            v->setScope(-1);
+//          v->init(v1.init);
+//          v->sliderVisible=l.sliderVisible;
+//          v->sliderBoundsSet=l.sliderBoundsSet;
+//          v->sliderStepRel=l.sliderStepRel;
+//          v->sliderMin=l.sliderMin;
+//          v->sliderMax=l.sliderMax;
+//          v->sliderStep=l.sliderStep;
+//          int out=v1.ports.size()>0? v1.ports[0]: -1;
+//          int in=v1.ports.size()>1? v1.ports[1]: -1;
+//          SchemaHelper::setPrivates
+//            (dynamic_cast<minsky::VariablePorts&>(*v), out, in);
+//        }
+//      return v;
     }
 
-    template <> minsky::SwitchIconPtr 
-    Combine::combine(minsky::SwitchIconPtr& sw, const Switch& s) const
-    {
-      if (!sw) sw.reset(new minsky::SwitchIcon);
-      combine(static_cast<minsky::OpVarBaseAttributes&>(*sw), 
-              static_cast<const Item&>(s));
-      SchemaHelper::setPrivates(*sw,s.ports);
-      return sw;
-    }
+//    template <> minsky::SwitchIconPtr 
+//    Combine::combine(minsky::SwitchIconPtr& sw, const Switch& s) const
+//    {
+//      if (!sw) sw.reset(new minsky::SwitchIcon);
+//      combine(static_cast<minsky::OpVarBaseAttributes&>(*sw), 
+//              static_cast<const Item&>(s));
+//      SchemaHelper::setPrivates(*sw,s.ports);
+//      return sw;
+//    }
 
     template <> minsky::PlotWidget 
     Combine::combine(minsky::PlotWidget& p, const Plot& p1) const
     {
-      asgNote(p, p1);
-      Layouts::const_iterator li=layout.find(p1.id);
-      if (li!=layout.end())
-        {
-          const UnionLayout& l=li->second;
-          //p.ports().resize(22);
-          vector<int> pports(22);
-          // schema migration fix - handle old 12 port case
-          if (p1.ports.size()==12)
-            {
-              size_t i=0;
-              for (; i<4; ++i)
-                pports[i]=p1.ports[i];
-              // skip the two new control ports
-              for (; i<8; ++i)
-                pports[i+2]=p1.ports[i];
-              // skip the new RHS input ports
-              for (; i<12; ++i)
-                pports[i+6]=p1.ports[i];              
-              // add new RHS scale control ports
-              for (i=4; i<6; ++i)
-                pports[i]=minsky::minsky().addInputPort(); 
-              // add new RHS input ports
-              for (i=10; i<14; ++i)
-                pports[i]=minsky::minsky().addInputPort();
-              // add x input ports for the RHS inputs
-              for (i=18; i<22; ++i)
-                pports[i]=minsky::minsky().addInputPort();
-            }
-          else
-            {
-              assert(pports.size()==p1.ports.size());
-              for (size_t i=0; i<p1.ports.size(); ++i)
-                pports[i]=p1.ports[i];
-            }
-          SchemaHelper::setPrivates(p,pports);
-          p.legend=bool(p1.legend);
-          if (p1.legend)
-            p.legendSide=*p1.legend;
-          p.title=p1.title;
-          p.xlabel=p1.xlabel;
-          p.ylabel=p1.ylabel;
-          p.y1label=p1.y1label;
-          SchemaHelper::setXY(p,l.x,l.y);
-          p.width=l.width;
-          p.height=l.height;
-        }
-      return p;
+//      asgNote(p, p1);
+//      Layouts::const_iterator li=layout.find(p1.id);
+//      if (li!=layout.end())
+//        {
+//          const UnionLayout& l=li->second;
+//          //p.ports().resize(22);
+//          vector<int> pports(22);
+//          // schema migration fix - handle old 12 port case
+//          if (p1.ports.size()==12)
+//            {
+//              size_t i=0;
+//              for (; i<4; ++i)
+//                pports[i]=p1.ports[i];
+//              // skip the two new control ports
+//              for (; i<8; ++i)
+//                pports[i+2]=p1.ports[i];
+//              // skip the new RHS input ports
+//              for (; i<12; ++i)
+//                pports[i+6]=p1.ports[i];              
+//              // add new RHS scale control ports
+//              for (i=4; i<6; ++i)
+//                pports[i]=minsky::minsky().addInputPort(); 
+//              // add new RHS input ports
+//              for (i=10; i<14; ++i)
+//                pports[i]=minsky::minsky().addInputPort();
+//              // add x input ports for the RHS inputs
+//              for (i=18; i<22; ++i)
+//                pports[i]=minsky::minsky().addInputPort();
+//            }
+//          else
+//            {
+//              assert(pports.size()==p1.ports.size());
+//              for (size_t i=0; i<p1.ports.size(); ++i)
+//                pports[i]=p1.ports[i];
+//            }
+//          SchemaHelper::setPrivates(p,pports);
+//          p.legend=bool(p1.legend);
+//          if (p1.legend)
+//            p.legendSide=*p1.legend;
+//          p.title=p1.title;
+//          p.xlabel=p1.xlabel;
+//          p.ylabel=p1.ylabel;
+//          p.y1label=p1.y1label;
+//          SchemaHelper::setXY(p,l.x,l.y);
+//          p.width=l.width;
+//          p.height=l.height;
+//        }
+//      return p;
     }
 
-    template <> minsky::GroupIcon
-    Combine::combine(minsky::GroupIcon& g, const Group& g1) const
-    {
-      asgNote(g, g1);
-      Layouts::const_iterator li=layout.find(g1.id);
-      if (li!=layout.end())
-        {
-          const UnionLayout& l=li->second;
-          // installing these has to happen later, as at this point,
-          // we just have a list of anonymous items, not what type
-          // they are
-          //          SchemaHelper::setPrivates
-          //            (g, g1.operations, g1.variables, g1.wires, g1.ports);
-          g.setName(g1.name);
-          minsky::SchemaHelper::setXY(g, l.x, l.y);
-          g.width=l.width;
-          g.height=l.height;
-          g.displayZoom=l.displayZoom;
-          g.rotation=l.rotation;
-          g.visible=l.visible;
-          g.createdVars=g1.createdVars;
-        }
-      return g;
-    }
+//    template <> minsky::GroupIcon
+//    Combine::combine(minsky::GroupIcon& g, const Group& g1) const
+//    {
+//      asgNote(g, g1);
+//      Layouts::const_iterator li=layout.find(g1.id);
+//      if (li!=layout.end())
+//        {
+//          const UnionLayout& l=li->second;
+//          // installing these has to happen later, as at this point,
+//          // we just have a list of anonymous items, not what type
+//          // they are
+//          //          SchemaHelper::setPrivates
+//          //            (g, g1.operations, g1.variables, g1.wires, g1.ports);
+//          g.setName(g1.name);
+//          minsky::SchemaHelper::setXY(g, l.x, l.y);
+//          g.width=l.width;
+//          g.height=l.height;
+//          g.displayZoom=l.displayZoom;
+//          g.rotation=l.rotation;
+//          g.visible=l.visible;
+//          g.createdVars=g1.createdVars;
+//        }
+//      return g;
+//    }
 
     template <> minsky::GodleyIcon
     Combine::combine(minsky::GodleyIcon& g, const Godley& g1) const
     {
-      asgNote(g, g1);
-      Layouts::const_iterator li=layout.find(g1.id);
-      if (li!=layout.end())
-        {
-          const UnionLayout& l=li->second;
-
-          vector<vector<string> > data(g1.data);
-
-          SchemaHelper::setPrivates(g.table, data, g1.assetClasses);
-          g.table.doubleEntryCompliant=g1.doubleEntryCompliant;
-          g.table.title=g1.name;
-          g.zoomFactor=g1.zoomFactor;
-          // add in variables from the port list. Duplications don't
-          // matter, as update() will fix this.
-          for (size_t i=0; i<g1.ports.size(); ++i)
-            {
-              minsky::VariablePtr v = vm.getVariableFromPort(g1.ports[i]);
-              v->visible=false;
-              switch (v->type())
-                {
-                case VariableType::flow:
-                  g.flowVars.push_back(v);
-                  break;
-                case VariableType::stock:
-                  g.stockVars.push_back(v);
-                  break;
-                default: break;
-                }
-            }
-          try 
-            {
-              g.update();
-            }
-          catch (const std::exception& ex)
-            {
-              // if something is inconsistent about the variables in the table, this can throw,
-              // so ignore it here. The problem should be flagged elsewhere.
-            }
-          g.moveTo(l.x, l.y);
-        }
+//      asgNote(g, g1);
+//      Layouts::const_iterator li=layout.find(g1.id);
+//      if (li!=layout.end())
+//        {
+//          const UnionLayout& l=li->second;
+//
+//          vector<vector<string> > data(g1.data);
+//
+//          SchemaHelper::setPrivates(g.table, data, g1.assetClasses);
+//          g.table.doubleEntryCompliant=g1.doubleEntryCompliant;
+//          g.table.title=g1.name;
+//          g.zoomFactor=g1.zoomFactor;
+//          // add in variables from the port list. Duplications don't
+//          // matter, as update() will fix this.
+//          for (size_t i=0; i<g1.ports.size(); ++i)
+//            {
+//              minsky::VariablePtr v = vm.getVariableFromPort(g1.ports[i]);
+//              v->visible=false;
+//              switch (v->type())
+//                {
+//                case VariableType::flow:
+//                  g.flowVars.push_back(v);
+//                  break;
+//                case VariableType::stock:
+//                  g.stockVars.push_back(v);
+//                  break;
+//                default: break;
+//                }
+//            }
+//          try 
+//            {
+//              g.update();
+//            }
+//          catch (const std::exception& ex)
+//            {
+//              // if something is inconsistent about the variables in the table, this can throw,
+//              // so ignore it here. The problem should be flagged elsewhere.
+//            }
+//          g.moveTo(l.x, l.y);
+//        }
       return g;
     }
-    
-    void Combine::populate
-    (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const
-    {
-      for (vector<Group>::const_iterator i=v.begin(); i!=v.end(); ++i)
-        {
-          minsky::GroupIcon& g = m[i->id];
-          combine(g, *i);
-        }
-    }
-     
-    void Combine::populate(minsky::Plots& plots, const vector<Plot>& v) const
-    {
-      for (vector<Plot>::const_iterator i=v.begin(); i!=v.end(); ++i)
-          combine(plots[i->id], *i);
-    }
-
-    template <> 
-    void Combine::populate(minsky::SwitchIcons& switches, const vector<Switch>& v) const
-    {
-      for (auto& i: v)
-        combine(switches[i.id], i);
-    }
-
-    void Combine::populate(minsky::VariableManager& vm, const vector<Variable>& v) const
-    {
-      for (vector<Variable>::const_iterator i=v.begin(); i!=v.end(); ++i)
-        {
-          auto type=i->type;
-          // old constants are now called parameters
-          if (type==VariableType::constant && i->name!=i->init)
-            type=VariableType::parameter;
-          minsky::VariablePtr v1(type);
-          vm.addVariable(combine(v1, *i), i->id);
-          //vm.setInit(minsky::stripActive(i->name), i->init);
-        }
-    }
+  
+//    void Combine::populate
+//    (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const
+//    {
+//      for (vector<Group>::const_iterator i=v.begin(); i!=v.end(); ++i)
+//        {
+//          minsky::GroupIcon& g = m[i->id];
+//          combine(g, *i);
+//        }
+//    }
+//     
+//    void Combine::populate(minsky::Plots& plots, const vector<Plot>& v) const
+//    {
+//      for (vector<Plot>::const_iterator i=v.begin(); i!=v.end(); ++i)
+//          combine(plots[i->id], *i);
+//    }
+//
+//    template <> 
+//    void Combine::populate(minsky::SwitchIcons& switches, const vector<Switch>& v) const
+//    {
+//      for (auto& i: v)
+//        combine(switches[i.id], i);
+//    }
+//
+//    void Combine::populate(minsky::VariableManager& vm, const vector<Variable>& v) const
+//    {
+//      for (vector<Variable>::const_iterator i=v.begin(); i!=v.end(); ++i)
+//        {
+//          auto type=i->type;
+//          // old constants are now called parameters
+//          if (type==VariableType::constant && i->name!=i->init)
+//            type=VariableType::parameter;
+//          minsky::VariablePtr v1(type);
+//          vm.addVariable(combine(v1, *i), i->id);
+//          //vm.setInit(minsky::stripActive(i->name), i->init);
+//        }
+//    }
 
     struct ItemMap: public map<int, int>
     {
@@ -454,18 +454,15 @@ namespace schema1
     {return shared_ptr<Layout>(new PlotLayout(id,p));}
 
     template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::GroupIcon& g)
+    (int id, const minsky::Group& g)
     {return shared_ptr<Layout>(new GroupLayout(id,g));}
   }
 
   Operation::Operation(int id, const minsky::OperationBase& op): 
-    Item(id,op), type(op.type()), value(0), ports(op.ports()), intVar(-1) 
+    Item(id,op), type(op.type()), value(0), intVar(-1) 
   {
     if (const minsky::Constant* c=dynamic_cast<const minsky::Constant*>(&op))
-      {
-        name=c->description;
-        value=c->value;
-      }
+       value=c->value;
     else if (const minsky::IntOp* i=dynamic_cast<const minsky::IntOp*>(&op))
       {
         name=i->getIntVar()->fqName();
@@ -518,119 +515,119 @@ namespace schema1
       v.check(variables) && v.check(groups) && v.check(godleys);
   }
 
-  
+
 
   Minsky::operator minsky::Minsky() const
   {
-    if (!model.validate())
-      throw ecolab::error("inconsistent Minsky model");
-
-    minsky::Minsky m;
-    Combine c(layout, m.variables);
-    // override default minsky object for this method
-    minsky::LocalMinsky lm(m);
-
-    // convert the old constant operation into the new constant variables
-    vector<Operation> newOpList;
-    vector<Variable> newVarList=model.variables;
-    // we need to back out of this change if there is a preexisting
-    // variable the same name as the constant
-    set<string> existingVarNames;
-    for (vector<Variable>::iterator v=newVarList.begin(); 
-         v!=newVarList.end(); ++v)
-      existingVarNames.insert(v->name);
-    for (vector<Operation>::const_iterator o=model.operations.begin();
-         o!=model.operations.end(); ++o)
-      if (o->type==minsky::OperationType::constant && !existingVarNames.count(o->name))
-        {
-          Variable v;
-          v.id=o->id;
-          v.init=minsky::str(o->value);
-          v.name=o->name;
-          v.type=v.name==v.init? VariableType::constant: VariableType::parameter;
-          v.ports=o->ports;
-          newVarList.push_back(v);
-        }
-      else
-        newOpList.push_back(*o);
-
-    c.populate(m.ports, model.ports);
-    c.populate(m.groupItems, model.groups);
-    c.populate(m.switchItems, model.switches);
-    c.populate(m.wires, model.wires);
-    //    m.resetNextId();
-    c.populate(m.operations, newOpList);
-    c.populate(m.variables, newVarList);
-
-    m.variables.makeConsistent();
-
-    m.resetNextId();
-    c.populate(m.godleyItems, model.godleys);
-    //    c.populate(m.groupItems, model.groups);
-    c.populate(m.plots, model.plots);
-    c.populate(m.notes, model.notes);
-
-    // separate the group item list into ports, wires, operations and
-    // variables. Then set the Minsky model group item list to these
-    // appropriate sublists.
-    for (vector<Group>::const_iterator g=model.groups.begin(); 
-         g!=model.groups.end(); ++g)
-      {
-        vector<int> ports, wires, ops, vars, groups;
-        for (vector<int>::const_iterator item=g->items.begin(); 
-             item!=g->items.end(); ++item)
-          if (m.wires.count(*item))
-            wires.push_back(*item);
-          else if (m.operations.count(*item))
-            ops.push_back(*item);
-          else if (m.variables.count(*item))
-            vars.push_back(*item);
-          else if (m.groupItems.count(*item))
-            groups.push_back(*item);
-        // because variables and operator create ports, duplicate
-        // entries in the port map may already exist, so we must place
-        // the port check last
-          else if (m.ports.count(*item))
-            ports.push_back(*item);
-        minsky::GroupIcon& gi=m.groupItems[g->id];
-
-        vector<int> inVars, outVars;
-        for (size_t i=0; i<ports.size(); ++i)
-          {
-            int varId=m.variables.getVariableIDFromPort(ports[i]);
-            if (varId>=0)
-              {
-                if (m.ports[ports[i]].input())
-                  inVars.push_back(varId);
-                else
-                  outVars.push_back(varId);
-              }
-          }
-        SchemaHelper::setPrivates(gi, ops, vars, wires, groups, inVars, outVars);
-        // set the parent attribute of all child groups
-        for (vector<int>::const_iterator i=groups.begin(); i!=groups.end(); ++i)
-          SchemaHelper::setParent(m.groupItems[*i], g->id);
-
-        for (vector<int>::const_iterator o=ops.begin(); o!=ops.end(); ++o)
-          m.operations[*o]->group=g->id;
-        for (vector<int>::const_iterator v=vars.begin(); v!=vars.end(); ++v)
-          m.variables[*v]->group=g->id;
-        for (vector<int>::const_iterator w=wires.begin(); w!=wires.end(); ++w)
-          m.wires[*w].group=g->id;
-      }
-
-    m.setZoom(zoomFactor);
-
-    m.stepMin=model.rungeKutta.stepMin; 
-    m.stepMax=model.rungeKutta.stepMax; 
-    m.nSteps=model.rungeKutta.nSteps;   
-    m.epsAbs=model.rungeKutta.epsAbs;   
-    m.epsRel=model.rungeKutta.epsRel;   
-    m.order=model.rungeKutta.order;
-    m.simulationDelay=model.rungeKutta.simulationDelay;
-    m.implicit=model.rungeKutta.implicit;
-    m.resetNextId();
-    return m;
+//    if (!model.validate())
+//      throw ecolab::error("inconsistent Minsky model");
+//
+//    minsky::Minsky m;
+//    Combine c(layout, m.variables);
+//    // override default minsky object for this method
+//    minsky::LocalMinsky lm(m);
+//
+//    // convert the old constant operation into the new constant variables
+//    vector<Operation> newOpList;
+//    vector<Variable> newVarList=model.variables;
+//    // we need to back out of this change if there is a preexisting
+//    // variable the same name as the constant
+//    set<string> existingVarNames;
+//    for (vector<Variable>::iterator v=newVarList.begin(); 
+//         v!=newVarList.end(); ++v)
+//      existingVarNames.insert(v->name);
+//    for (vector<Operation>::const_iterator o=model.operations.begin();
+//         o!=model.operations.end(); ++o)
+//      if (o->type==minsky::OperationType::constant && !existingVarNames.count(o->name))
+//        {
+//          Variable v;
+//          v.id=o->id;
+//          v.init=minsky::str(o->value);
+//          v.name=o->name;
+//          v.type=v.name==v.init? VariableType::constant: VariableType::parameter;
+//          v.ports=o->ports;
+//          newVarList.push_back(v);
+//        }
+//      else
+//        newOpList.push_back(*o);
+//
+//    c.populate(m.ports, model.ports);
+//    c.populate(m.groupItems, model.groups);
+//    c.populate(m.switchItems, model.switches);
+//    c.populate(m.wires, model.wires);
+//    //    m.resetNextId();
+//    c.populate(m.operations, newOpList);
+//    c.populate(m.variables, newVarList);
+//
+//    m.variables.makeConsistent();
+//
+//    m.resetNextId();
+//    c.populate(m.godleyItems, model.godleys);
+//    //    c.populate(m.groupItems, model.groups);
+//    c.populate(m.plots, model.plots);
+//    c.populate(m.notes, model.notes);
+//
+//    // separate the group item list into ports, wires, operations and
+//    // variables. Then set the Minsky model group item list to these
+//    // appropriate sublists.
+//    for (vector<Group>::const_iterator g=model.groups.begin(); 
+//         g!=model.groups.end(); ++g)
+//      {
+//        vector<int> ports, wires, ops, vars, groups;
+//        for (vector<int>::const_iterator item=g->items.begin(); 
+//             item!=g->items.end(); ++item)
+//          if (m.wires.count(*item))
+//            wires.push_back(*item);
+//          else if (m.operations.count(*item))
+//            ops.push_back(*item);
+//          else if (m.variables.count(*item))
+//            vars.push_back(*item);
+//          else if (m.groupItems.count(*item))
+//            groups.push_back(*item);
+//        // because variables and operator create ports, duplicate
+//        // entries in the port map may already exist, so we must place
+//        // the port check last
+//          else if (m.ports.count(*item))
+//            ports.push_back(*item);
+//        minsky::GroupIcon& gi=m.groupItems[g->id];
+//
+//        vector<int> inVars, outVars;
+//        for (size_t i=0; i<ports.size(); ++i)
+//          {
+//            int varId=m.variables.getVariableIDFromPort(ports[i]);
+//            if (varId>=0)
+//              {
+//                if (m.ports[ports[i]].input())
+//                  inVars.push_back(varId);
+//                else
+//                  outVars.push_back(varId);
+//              }
+//          }
+//        SchemaHelper::setPrivates(gi, ops, vars, wires, groups, inVars, outVars);
+//        // set the parent attribute of all child groups
+//        for (vector<int>::const_iterator i=groups.begin(); i!=groups.end(); ++i)
+//          SchemaHelper::setParent(m.groupItems[*i], g->id);
+//
+//        for (vector<int>::const_iterator o=ops.begin(); o!=ops.end(); ++o)
+//          m.operations[*o]->group=g->id;
+//        for (vector<int>::const_iterator v=vars.begin(); v!=vars.end(); ++v)
+//          m.variables[*v]->group=g->id;
+//        for (vector<int>::const_iterator w=wires.begin(); w!=wires.end(); ++w)
+//          m.wires[*w].group=g->id;
+//      }
+//
+//    m.setZoom(zoomFactor);
+//
+//    m.stepMin=model.rungeKutta.stepMin; 
+//    m.stepMax=model.rungeKutta.stepMax; 
+//    m.nSteps=model.rungeKutta.nSteps;   
+//    m.epsAbs=model.rungeKutta.epsAbs;   
+//    m.epsRel=model.rungeKutta.epsRel;   
+//    m.order=model.rungeKutta.order;
+//    m.simulationDelay=model.rungeKutta.simulationDelay;
+//    m.implicit=model.rungeKutta.implicit;
+//    m.resetNextId();
+//    return m;
   }
 
   namespace
@@ -715,456 +712,379 @@ namespace schema1
 
   using minsky::minsky;
 
-  void Minsky::populateGroup(minsky::GroupIcon& g)
+  namespace
   {
-    // We must renumber objects into free space, before inserting into the group
-    // first, compute the maximum item id within Minsky
-    int maxExistingId=minsky().ports.empty()? 0: minsky().ports.rbegin()->id();
-    if (!minsky().wires.empty())
-      maxExistingId=max(maxExistingId, minsky().wires.rbegin()->id());
-    if (!minsky().variables.empty())
-      maxExistingId=max(maxExistingId, minsky().variables.rbegin()->id());
-    if (!minsky().operations.empty())
-      maxExistingId=max(maxExistingId, minsky().operations.rbegin()->id());
-    if (!minsky().groupItems.empty())
-      maxExistingId=max(maxExistingId, minsky().groupItems.rbegin()->id());
-
-    // now compute min and max item ID within this import fragment
-    int minId=numeric_limits<int>::max();
-    minId=minRange(minId, model.ports);
-    minId=minRange(minId, model.wires);
-    minId=minRange(minId, model.operations);
-    minId=minRange(minId, model.variables);
-    minId=minRange(minId, model.groups);
-
-    // by adding offset, all item ids in this are in the free range
-    int offset=maxExistingId-minId+1;
-
-    if (offset>0)
-      {
-        addOffset(model.ports, offset);
-        addOffset(model.wires, offset);
-        addOffset(model.operations, offset);
-        addOffset(model.variables, offset);
-        addOffset(model.groups, offset);
-        for (size_t i=0; i<layout.size(); ++i)
-          layout[i]->id+=offset;
-      }
-    
-    // winnow ports and wires to just the relevant ones
-    set<int> pset;
-    for (vector<Operation>::const_iterator o=model.operations.begin(); 
-         o!=model.operations.end(); ++o)
-      for (size_t j=0; j<o->ports.size(); ++j)
-        pset.insert(o->ports[j]);
-    for (vector<Variable>::const_iterator v=model.variables.begin(); 
-         v!=model.variables.end(); ++v)
-      for (size_t j=0; j<v->ports.size(); ++j)
-        pset.insert(v->ports[j]);
-    for (vector<Group>::const_iterator gi=model.groups.begin(); 
-         gi!=model.groups.end(); ++gi)
-      for (size_t j=0; j<gi->ports.size(); ++j)
-        pset.insert(gi->ports[j]);
-    vector<Port> ports;
-    for (vector<Port>::const_iterator p=model.ports.begin(); 
-         p!=model.ports.end(); ++p)
-      if (pset.count(p->id))
-        ports.push_back(*p);
-
-    vector<Wire> wires;
-    for (vector<Wire>::const_iterator w=model.wires.begin();
-         w!=model.wires.end(); ++w)
-      if (pset.count(w->from) && pset.count(w->to))
-        wires.push_back(*w);
-
-    // now add the items to the global Minsky object, and build the group object
-    Combine c(layout, minsky().variables);
-    c.populate(minsky().ports, ports);
-    c.populate(minsky().groupItems, model.groups);
-    c.populate(minsky().wires, wires);
-    c.populate(minsky().operations, model.operations);
-    c.populate(minsky().variables, model.variables);
-    minsky().variables.makeConsistent();
-    c.populate(minsky().notes, model.notes);
-
-    // dummy a very large group size to prevent added variables being
-    // placed on the interface
-    g.width=1000000;
-    g.moveTo(0,0);
-
-    minsky().resetNextId();
-
-    // set of items already contained within a group, so not needed to
-    // be added to overall group
-    set<int> alreadyGroupedIds;
-    for (auto& g: model.groups)
-      for (int i: g.items)
-        alreadyGroupedIds.insert(i);
-
-    vector<int> wiresToAdd;
-    for (Wire w: wires)
-      if (!alreadyGroupedIds.count(w.id))
-        wiresToAdd.push_back(w.id);
-    g.addWires(wiresToAdd);
-    for (const Operation& i: model.operations)
-      {
-        minsky::Operations::iterator op = minsky().operations.find(i.id);
-        if (op!=minsky().operations.end() && !alreadyGroupedIds.count(i.id))
-          {
-            g.addOperation(*op);
-            g.addAnyWires((*op)->ports());
-          }
-      }
-
-    for (const Variable& i: model.variables)
-      {
-        minsky::VariableManager::iterator v = minsky().variables.find(i.id);
-        if (v!=minsky().variables.end()  && !alreadyGroupedIds.count(i.id))
-          {
-            g.addVariable(*v);
-            g.addAnyWires((*v)->ports());
-          }
-      }
-
-    for (auto& i: model.groups)
-      {
-        minsky::GroupIcons::iterator gi=minsky().groupItems.find(i.id);
-        if (gi!=minsky().groupItems.end()  && !alreadyGroupedIds.count(i.id))
-          {
-            g.addGroup(*gi);
-            g.addAnyWires(gi->ports());
-
-            // need to populate the groupIcon with the contained items
-            vector<int> ports, wires, ops, vars, groups;
-            for (int item: i.items)
-              if (minsky().wires.count(item))
-                wires.push_back(item);
-              else if (minsky().operations.count(item))
-                ops.push_back(item);
-              else if (minsky().variables.count(item))
-                vars.push_back(item);
-              else if (minsky().groupItems.count(item))
-                groups.push_back(item);
-            // because variables and operator create ports, duplicate
-            // entries in the port map may already exist, so we must place
-            // the port check last
-              else if (minsky().ports.count(item))
-                ports.push_back(item);
-
-            vector<int> inVars, outVars;
-
-            for (int p: ports)
-              {
-                int varId=minsky().variables.getVariableIDFromPort(p);
-                if (varId>=0)
-                  {
-                    if (minsky().ports[p].input())
-                      inVars.push_back(varId);
-                    else
-                      outVars.push_back(varId);
-                  }
-              }
-            SchemaHelper::setPrivates(*gi, ops, vars, wires, groups, inVars, outVars);
-            // set the parent attribute of all child groups
-            for (int j: groups)
-              SchemaHelper::setParent(minsky().groupItems[j], i.id);
-            for (int j: ops)
-              minsky().operations[j]->group=i.id;
-            for (int j: vars)
-              minsky().variables[j]->group=i.id;
-            for (int j: wires)
-              minsky().wires[j].group=i.id;
-
-          }
-      }
-
-    float x0, x1, y0, y1;
-    g.contentBounds(x0,y0,x1,y1);
-    // centre group on centroid of contents
-    g.moveContents(g.x()-0.5f*(x0+x1), g.y()-0.5f*(y0+y1));
-    g.height=100, g.width=100;
-    g.computeDisplayZoom();
-  }
-
-  void Group::addItems(const minsky::GroupIcon& g)
-  {
-    for (auto i: g.ports())
-      items.push_back(i);
-    for (auto i: g.wires())
-      items.push_back(i);
-    for (auto i: g.operations())
-      items.push_back(i);
-    for (auto i: g.variables())
-      items.push_back(i);
-    for (auto i: g.createdVars)
-      createdVars.push_back(i);
-  }
-
-
-  Minsky::Minsky(const minsky::Minsky& m)
-  {
-    schemaVersion = version;
-    zoomFactor=m.zoomFactor();
-
-    int id=0; // we're renumbering items
-    ItemMap portMap; // map old ports ids to the new ones
-    set<int> portsUsed; 
-    ItemMap wireMap;
-    ItemMap opMap;
-    ItemMap varMap;
-    ItemMap groupMap;
-    ItemMap noteMap;
-    
-    for (minsky::Minsky::Ports::const_iterator p=m.ports.begin(); 
-         p!=m.ports.end(); ++p, ++id)
-      {
-        model.ports.push_back(Port(id, *p));
-        //        layout.push_back(layoutFactory(id, *p));
-        portMap[p->id()]=id;
-      }
-
-    for (minsky::Minsky::Wires::const_iterator w=m.wires.begin(); 
-         w!=m.wires.end(); ++w, ++id)
-      {
-        model.wires.push_back(Wire(id, *w));
-        model.wires.back().from=portMap[w->from];
-        model.wires.back().to=portMap[w->to];
-        portsUsed.insert(model.wires.back().from);
-        portsUsed.insert(model.wires.back().to);
-        layout.push_back(layoutFactory(id, *w));
-        wireMap[w->id()]=id;
-      }
-
-    for (minsky::VariableManager::const_iterator v=m.variables.begin(); 
-         v!=m.variables.end(); ++v, ++id)
-      {
-        model.variables.push_back(Variable(id, **v));
-        Variable& var=model.variables.back();
-        portMap.remap(var.ports);
-        portsUsed.insert(var.ports.begin(), var.ports.end());
-        layout.push_back(layoutFactory(id, *v));
-        auto valIt=m.variables.values.find((*v)->valueId());
-        if (valIt!=m.variables.values.end())
-          var.init=valIt->second.init;
-        varMap[v->id()]=id;
-      }
-
-    for (minsky::Operations::const_iterator o=m.operations.begin(); 
-         o!=m.operations.end(); ++o, ++id)
-      {
-        model.operations.push_back(Operation(id, **o));
-        Operation& op=model.operations.back();
-        portMap.remap(op.ports);
-        portsUsed.insert(op.ports.begin(), op.ports.end());
-        model.operations.back().intVar=varMap[op.intVar];
-        layout.push_back(layoutFactory(id, **o));
-        opMap[o->id()]=id;
-      }
-
-    for (auto& s: m.switchItems)
-      {
-        model.switches.push_back(Switch(id,*s));
-        layout.emplace_back(new ItemLayout(id,*s));
-        Switch& sw=model.switches.back();
-        portMap.remap(sw.ports);
-        portsUsed.insert(sw.ports.begin(), sw.ports.end());
-        ++id;
-      }
-
-    for (minsky::Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
-         g!=m.godleyItems.end(); ++g, ++id)
-      {
-        model.godleys.push_back(Godley(id, *g));
-        Godley& godley=model.godleys.back();
-        portMap.remap(godley.ports);
-        portsUsed.insert(godley.ports.begin(), godley.ports.end());
-        layout.push_back(layoutFactory(id, *g));
-      }
-
-    for (minsky::GroupIcons::const_iterator g=m.groupItems.begin(); 
-         g!=m.groupItems.end(); ++g, ++id)
-      {
-        model.groups.push_back(Group(id, *g));
-        Group& group=model.groups.back();
-
-        // add in reamapped items 
-        group.items.clear(); // in case this was set during construction
-        const minsky::GroupIcon& g1=*g;
-        for (size_t i=0; i<g1.ports().size(); ++i)
-          group.items.push_back(portMap[g1.ports()[i]]);
-        for (size_t i=0; i<g1.wires().size(); ++i)
-          group.items.push_back(wireMap[g1.wires()[i]]);
-        for (size_t i=0; i<g1.operations().size(); ++i)
-          group.items.push_back(opMap[g1.operations()[i]]);
-        for (size_t i=0; i<g1.variables().size(); ++i)
-          group.items.push_back(varMap[g1.variables()[i]]);
-        for (size_t i=0; i<g1.createdVars.size(); ++i)
-          group.createdVars.push_back(varMap[g1.createdVars[i]]);
-
-        groupMap[g->id()]=id;
-
-        layout.push_back(layoutFactory(id, *g));
-      }
-
-    // loop over variables and remap group references in the var names
-    boost::regex fqNameSpec(R"(\[(\d+)\]:(.*))");
-    boost::smatch match;
-    for (Variable& v: model.variables)
-      if (regex_search(v.name, match, fqNameSpec))
-        {
-          assert(match.size()>=3);
-          v.name="["+minsky::str(groupMap[atoi(match[1].str().c_str())])+"]:"+
-            match[2].str();
-        }
-
-    // second pass to add in the child group ids, now that they're renumbered
-    int j=0;
-    for (const minsky::GroupIcon& g1: m.groupItems)
-      {
-        Group& group=model.groups[j];
-        for (size_t i=0; i<g1.groups().size(); ++i)
-          group.items.push_back(groupMap[g1.groups()[i]]);
-        ++j;
-      }
-
-    for (auto note=m.notes.begin(); note!=m.notes.end(); ++note, ++id)
-      {
-        model.notes.push_back(Item(id, *note));
-        layout.push_back(make_shared<ItemLayout>(id, *note));
-      }
-
-    for (minsky::Plots::const_iterator p=m.plots.begin(); 
-         p!=m.plots.end(); ++p, ++id)
-      {
-        model.plots.push_back(Plot(id, *p));
-        Plot& plot=model.plots.back();
-        portMap.remap(plot.ports);        
-        portsUsed.insert(plot.ports.begin(), plot.ports.end());
-        layout.push_back(layoutFactory(id, *p));
-      }
-
-    // remove unused ports
-    vector<Port> ports;
-    for (vector<Port>::iterator i=model.ports.begin(); 
-         i!=model.ports.end(); ++i)
-      if (portsUsed.count(i->id))
-        ports.push_back(*i);
-    ports.swap(model.ports);
-
-    model.rungeKutta=RungeKutta(m);
+    struct PopulateMinsky
+    {
+      map<const minsky::Item*,int> itemMap;
+      map<const minsky::Port*,int> portMap;
+      map<const minsky::Group*,int> groupMap;
+      map<const minsky::Wire*,int> wireMap;
+      int nextId=0;
+      vector<shared_ptr<Layout> >& l;
+      MinskyModel& m;
+      PopulateMinsky(Minsky& m): m(m.model), l(m.layout) {}
       
+      int portId(const minsky::Port* p) {
+        auto pmi=portMap.find(p);
+        if (pmi==portMap.end())
+          return portMap.emplace(p, nextId++).first->second;
+        else
+          return pmi->second;
+      }
+
+      vector<int> ports(const minsky::Item& it) {
+        vector<int> r;
+        for (auto& p: it.ports)
+          r.push_back(portId(p.get()));
+        return r;
+      }
+
+      struct DuplicateError: public std::exception
+      {
+        const char* what() {return "duplicate item processed";}
+      };
+
+      void processGroup(Group& s1g, const minsky::Group& g)
+      {
+        for (auto& i: g.items)
+          {
+            if (itemMap.count(i.get()))
+              throw DuplicateError();
+            int id=nextId++;
+            itemMap[i.get()]=id;
+            if (auto x=dynamic_cast<minsky::OperationBase*>(i.get()))
+              {
+                m.operations.emplace_back(id, *x);
+                m.operations.back().ports=ports(*x);
+                l.emplace_back(new ItemLayout(id,*x));
+              }
+            else if (auto x=dynamic_cast<minsky::VariableBase*>(i.get()))
+              {
+                m.variables.emplace_back(id, *x);
+                m.variables.back().ports=ports(*x);
+                l.emplace_back(new SliderLayout(id,*x));
+              }
+            else if (auto x=dynamic_cast<minsky::PlotWidget*>(i.get()))
+              {
+                m.plots.emplace_back(id, *x);
+                m.plots.back().ports=ports(*x);
+                l.emplace_back(new PlotLayout(id,*x));
+              }
+            else if (auto x=dynamic_cast<minsky::SwitchIcon*>(i.get()))
+              {
+                m.switches.emplace_back(id, *x);
+                m.switches.back().ports=ports(*x);
+                l.emplace_back(new ItemLayout(id,*x));
+              }
+            else if (auto x=dynamic_cast<minsky::GodleyIcon*>(i.get()))
+              {
+                m.godleys.emplace_back(id, *x);
+                m.godleys.back().ports=ports(*x);
+                l.emplace_back(new ItemLayout(id,*x));
+              }
+            else
+              m.notes.emplace_back(id, *i);
+            s1g.items.push_back(id);
+          }
+
+        for (auto& i: g.groups)
+          {
+            if (groupMap.count(&*i))
+              throw DuplicateError();
+            int id=nextId++;
+            groupMap[&*i]=id;
+            m.groups.emplace_back(id, *i);
+            processGroup(m.groups.back(), *i);
+            s1g.items.push_back(id);
+            l.emplace_back(new GroupLayout(id,*i));
+            //TODO ports and createdVars??
+          }
+        for (auto& i: g.wires)
+          {
+            if (wireMap.count(i.get()))
+              throw DuplicateError();
+            int id=nextId++;
+            wireMap[i.get()]=id;
+            m.wires.emplace_back(id, *i);
+            m.wires.back().from=portId(i->from().get());
+            m.wires.back().to=portId(i->to().get());
+            s1g.items.push_back(id);
+            l.emplace_back(new WireLayout(id,*i));
+          }
+      }
+    };
   }
 
-  Minsky::Minsky(const minsky::Minsky& m, const minsky::Selection& s)
+  Minsky::Minsky(const minsky::Group& g)
   {
-    schemaVersion = version;
-    zoomFactor=m.zoomFactor();
-    for (int i: s.wires)
-      {
-        const auto& w=m.wires[i];
-        model.wires.push_back(schema1::Wire(i, w));
-        layout.push_back(make_shared<schema1::WireLayout>(i, w));
-      }
-    for (int i: s.operations)
-      {
-        const auto& o=m.operations[i];
-        model.operations.push_back(schema1::Operation(i, *o));
-        layout.push_back(make_shared<schema1::ItemLayout>(i, *o));
-        for (int pi: o->ports())
-          {
-            const auto& p=m.ports[pi];
-            model.ports.push_back(schema1::Port(pi, p));
-            layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
-          }
-      }
-    for (int i: s.variables)
-      {
-        const auto& v=m.variables[i];
-        model.variables.push_back(schema1::Variable(i, *v));
-        layout.push_back(make_shared<schema1::ItemLayout>(i, *v));
-        for (int pi: v->ports())
-          {
-            const auto& p=m.ports[pi];
-            model.ports.push_back(schema1::Port(pi, p));
-            layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
-          }
-      }
-    for (int i: s.groups)
-      { 
-        const auto& g=m.groupItems[i];
-        model.groups.push_back(schema1::Group(i, g));
-        model.groups.back().addItems(g);
-        layout.push_back(make_shared<schema1::GroupLayout>(i, g));
-        populateWith(m,g,g.displayContents());
-      }
-     for (int i: s.godleys)
-      {
-        const auto& g=m.godleyItems[i];
-        model.godleys.push_back(schema1::Godley(i, g));
-        layout.push_back(make_shared<schema1::PositionLayout>(i, g));
-        // godley ports are just the ports of the underlying variables
-      }
-     for (int i: s.plots)
-      {
-        const auto& p=m.plots[i];
-        model.plots.push_back(schema1::Plot(i, p));
-        layout.push_back(make_shared<schema1::PositionLayout>(i, p));
-        for (int pi: p.ports())
-          {
-            const auto& p=m.ports[pi];
-            model.ports.push_back(schema1::Port(pi, p));
-            layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
-          }
-      }
+    Group topLevel;
+    PopulateMinsky(*this).processGroup(topLevel,g);
+  }    
 
-  }
 
-  void Minsky::populateWith(const minsky::Minsky& m, const minsky::GroupIcon& g, bool visible)
-  {
-    schemaVersion = version;
-    zoomFactor=m.zoomFactor();
-    for (int i: g.wires())
-      {
-        const auto& w=m.wires[i];
-        model.wires.push_back(schema1::Wire(i, w));
-        layout.push_back(make_shared<schema1::WireLayout>(i, w));
-        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
-      }
-    for (int i: g.operations())
-      {
-        const auto& o=m.operations[i];
-        model.operations.push_back(schema1::Operation(i, *o));
-        layout.push_back(make_shared<schema1::ItemLayout>(i, *o));
-        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
-        for (int pi: o->ports())
-          {
-            const auto& p=m.ports[pi];
-            model.ports.push_back(schema1::Port(pi, p));
-          }
-      }
-    for (int i: g.variables())
-      {
-        const auto& v=m.variables[i];
-        model.variables.push_back(schema1::Variable(i, *v));
-        layout.push_back(make_shared<schema1::ItemLayout>(i, *v));
-        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
-        for (int pi: v->ports())
-          {
-            const auto& p=m.ports[pi];
-            model.ports.push_back(schema1::Port(pi, p));
-          }
-      }
-    for (int i: g.groups())
-      { 
-        const auto& g=m.groupItems[i];
-        model.groups.push_back(schema1::Group(i, g));
-        model.groups.back().addItems(g);
-        layout.push_back(make_shared<schema1::GroupLayout>(i, g));
-        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
-        populateWith(m,g,g.displayContents());
-      }
-    // TODO: godley and plots when they're added to groups
-  }
+//    schemaVersion = version;
+//    zoomFactor=m.zoomFactor();
+//
+//    int id=0; // we're renumbering items
+//    ItemMap portMap; // map old ports ids to the new ones
+//    set<int> portsUsed; 
+//    ItemMap wireMap;
+//    ItemMap opMap;
+//    ItemMap varMap;
+//    ItemMap groupMap;
+//    ItemMap noteMap;
+//    
+//    for (minsky::Minsky::Ports::const_iterator p=m.ports.begin(); 
+//         p!=m.ports.end(); ++p, ++id)
+//      {
+//        model.ports.push_back(Port(id, *p));
+//        //        layout.push_back(layoutFactory(id, *p));
+//        portMap[p->id()]=id;
+//      }
+//
+//    for (minsky::Minsky::Wires::const_iterator w=m.wires.begin(); 
+//         w!=m.wires.end(); ++w, ++id)
+//      {
+//        model.wires.push_back(Wire(id, *w));
+//        model.wires.back().from=portMap[w->from];
+//        model.wires.back().to=portMap[w->to];
+//        portsUsed.insert(model.wires.back().from);
+//        portsUsed.insert(model.wires.back().to);
+//        layout.push_back(layoutFactory(id, *w));
+//        wireMap[w->id()]=id;
+//      }
+//
+//    for (minsky::VariableManager::const_iterator v=m.variables.begin(); 
+//         v!=m.variables.end(); ++v, ++id)
+//      {
+//        model.variables.push_back(Variable(id, **v));
+//        Variable& var=model.variables.back();
+//        portMap.remap(var.ports);
+//        portsUsed.insert(var.ports.begin(), var.ports.end());
+//        layout.push_back(layoutFactory(id, *v));
+//        auto valIt=m.variables.values.find((*v)->valueId());
+//        if (valIt!=m.variables.values.end())
+//          var.init=valIt->second.init;
+//        varMap[v->id()]=id;
+//      }
+//
+//    for (minsky::Operations::const_iterator o=m.operations.begin(); 
+//         o!=m.operations.end(); ++o, ++id)
+//      {
+//        model.operations.push_back(Operation(id, **o));
+//        Operation& op=model.operations.back();
+//        portMap.remap(op.ports);
+//        portsUsed.insert(op.ports.begin(), op.ports.end());
+//        model.operations.back().intVar=varMap[op.intVar];
+//        layout.push_back(layoutFactory(id, **o));
+//        opMap[o->id()]=id;
+//      }
+//
+//    for (auto& s: m.switchItems)
+//      {
+//        model.switches.push_back(Switch(id,*s));
+//        layout.emplace_back(new ItemLayout(id,*s));
+//        Switch& sw=model.switches.back();
+//        portMap.remap(sw.ports);
+//        portsUsed.insert(sw.ports.begin(), sw.ports.end());
+//        ++id;
+//      }
+//
+//    for (minsky::Minsky::GodleyItems::const_iterator g=m.godleyItems.begin(); 
+//         g!=m.godleyItems.end(); ++g, ++id)
+//      {
+//        model.godleys.push_back(Godley(id, *g));
+//        Godley& godley=model.godleys.back();
+//        portMap.remap(godley.ports);
+//        portsUsed.insert(godley.ports.begin(), godley.ports.end());
+//        layout.push_back(layoutFactory(id, *g));
+//      }
+//
+//    for (minsky::GroupIcons::const_iterator g=m.groupItems.begin(); 
+//         g!=m.groupItems.end(); ++g, ++id)
+//      {
+//        model.groups.push_back(Group(id, *g));
+//        Group& group=model.groups.back();
+//
+//        // add in reamapped items 
+//        group.items.clear(); // in case this was set during construction
+//        const minsky::GroupIcon& g1=*g;
+//        for (size_t i=0; i<g1.ports().size(); ++i)
+//          group.items.push_back(portMap[g1.ports()[i]]);
+//        for (size_t i=0; i<g1.wires().size(); ++i)
+//          group.items.push_back(wireMap[g1.wires()[i]]);
+//        for (size_t i=0; i<g1.operations().size(); ++i)
+//          group.items.push_back(opMap[g1.operations()[i]]);
+//        for (size_t i=0; i<g1.variables().size(); ++i)
+//          group.items.push_back(varMap[g1.variables()[i]]);
+//        for (size_t i=0; i<g1.createdVars.size(); ++i)
+//          group.createdVars.push_back(varMap[g1.createdVars[i]]);
+//
+//        groupMap[g->id()]=id;
+//
+//        layout.push_back(layoutFactory(id, *g));
+//      }
+//
+//    // loop over variables and remap group references in the var names
+//    boost::regex fqNameSpec(R"(\[(\d+)\]:(.*))");
+//    boost::smatch match;
+//    for (Variable& v: model.variables)
+//      if (regex_search(v.name, match, fqNameSpec))
+//        {
+//          assert(match.size()>=3);
+//          v.name="["+minsky::str(groupMap[atoi(match[1].str().c_str())])+"]:"+
+//            match[2].str();
+//        }
+//
+//    // second pass to add in the child group ids, now that they're renumbered
+//    int j=0;
+//    for (const minsky::GroupIcon& g1: m.groupItems)
+//      {
+//        Group& group=model.groups[j];
+//        for (size_t i=0; i<g1.groups().size(); ++i)
+//          group.items.push_back(groupMap[g1.groups()[i]]);
+//        ++j;
+//      }
+//
+//    for (auto note=m.notes.begin(); note!=m.notes.end(); ++note, ++id)
+//      {
+//        model.notes.push_back(Item(id, *note));
+//        layout.push_back(make_shared<ItemLayout>(id, *note));
+//      }
+//
+//    for (minsky::Plots::const_iterator p=m.plots.begin(); 
+//         p!=m.plots.end(); ++p, ++id)
+//      {
+//        model.plots.push_back(Plot(id, *p));
+//        Plot& plot=model.plots.back();
+//        portMap.remap(plot.ports);        
+//        portsUsed.insert(plot.ports.begin(), plot.ports.end());
+//        layout.push_back(layoutFactory(id, *p));
+//      }
+//
+//    // remove unused ports
+//    vector<Port> ports;
+//    for (vector<Port>::iterator i=model.ports.begin(); 
+//         i!=model.ports.end(); ++i)
+//      if (portsUsed.count(i->id))
+//        ports.push_back(*i);
+//    ports.swap(model.ports);
+//
+//    model.rungeKutta=RungeKutta(m);
+//      
+//  }
+
+//  Minsky::Minsky(const minsky::Minsky& m, const minsky::Selection& s)
+//  {
+//    schemaVersion = version;
+//    zoomFactor=m.zoomFactor();
+//    for (int i: s.wires)
+//      {
+//        const auto& w=m.wires[i];
+//        model.wires.push_back(schema1::Wire(i, w));
+//        layout.push_back(make_shared<schema1::WireLayout>(i, w));
+//      }
+//    for (int i: s.operations)
+//      {
+//        const auto& o=m.operations[i];
+//        model.operations.push_back(schema1::Operation(i, *o));
+//        layout.push_back(make_shared<schema1::ItemLayout>(i, *o));
+//        for (int pi: o->ports())
+//          {
+//            const auto& p=m.ports[pi];
+//            model.ports.push_back(schema1::Port(pi, p));
+//            layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
+//          }
+//      }
+//    for (int i: s.variables)
+//      {
+//        const auto& v=m.variables[i];
+//        model.variables.push_back(schema1::Variable(i, *v));
+//        layout.push_back(make_shared<schema1::ItemLayout>(i, *v));
+//        for (int pi: v->ports())
+//          {
+//            const auto& p=m.ports[pi];
+//            model.ports.push_back(schema1::Port(pi, p));
+//            layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
+//          }
+//      }
+//    for (int i: s.groups)
+//      { 
+//        const auto& g=m.groupItems[i];
+//        model.groups.push_back(schema1::Group(i, g));
+//        model.groups.back().addItems(g);
+//        layout.push_back(make_shared<schema1::GroupLayout>(i, g));
+//        populateWith(m,g,g.displayContents());
+//      }
+//     for (int i: s.godleys)
+//      {
+//        const auto& g=m.godleyItems[i];
+//        model.godleys.push_back(schema1::Godley(i, g));
+//        layout.push_back(make_shared<schema1::PositionLayout>(i, g));
+//        // godley ports are just the ports of the underlying variables
+//      }
+//     for (int i: s.plots)
+//      {
+//        const auto& p=m.plots[i];
+//        model.plots.push_back(schema1::Plot(i, p));
+//        layout.push_back(make_shared<schema1::PositionLayout>(i, p));
+//        for (int pi: p.ports())
+//          {
+//            const auto& p=m.ports[pi];
+//            model.ports.push_back(schema1::Port(pi, p));
+//            layout.push_back(make_shared<schema1::PositionLayout>(pi, p));
+//          }
+//      }
+//
+//  }
+
+//  void Minsky::populateWith(const minsky::Minsky& m, const minsky::GroupIcon& g, bool visible)
+//  {
+//    schemaVersion = version;
+//    zoomFactor=m.zoomFactor();
+//    for (int i: g.wires())
+//      {
+//        const auto& w=m.wires[i];
+//        model.wires.push_back(schema1::Wire(i, w));
+//        layout.push_back(make_shared<schema1::WireLayout>(i, w));
+//        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
+//      }
+//    for (int i: g.operations())
+//      {
+//        const auto& o=m.operations[i];
+//        model.operations.push_back(schema1::Operation(i, *o));
+//        layout.push_back(make_shared<schema1::ItemLayout>(i, *o));
+//        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
+//        for (int pi: o->ports())
+//          {
+//            const auto& p=m.ports[pi];
+//            model.ports.push_back(schema1::Port(pi, p));
+//          }
+//      }
+//    for (int i: g.variables())
+//      {
+//        const auto& v=m.variables[i];
+//        model.variables.push_back(schema1::Variable(i, *v));
+//        layout.push_back(make_shared<schema1::ItemLayout>(i, *v));
+//        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
+//        for (int pi: v->ports())
+//          {
+//            const auto& p=m.ports[pi];
+//            model.ports.push_back(schema1::Port(pi, p));
+//          }
+//      }
+//    for (int i: g.groups())
+//      { 
+//        const auto& g=m.groupItems[i];
+//        model.groups.push_back(schema1::Group(i, g));
+//        model.groups.back().addItems(g);
+//        layout.push_back(make_shared<schema1::GroupLayout>(i, g));
+//        dynamic_pointer_cast<VisibilityLayout>(layout.back())->visible=visible;
+//        populateWith(m,g,g.displayContents());
+//      }
+//    // TODO: godley and plots when they're added to groups
+//  }
 
 
   void Minsky::relocateCanvas()

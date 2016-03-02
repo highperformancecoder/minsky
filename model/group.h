@@ -50,6 +50,7 @@ namespace minsky
     int m_id=-1;
     friend class GroupPtr;
   public:
+    std::string title;
     Items items;
     Groups groups;
     Wires wires;
