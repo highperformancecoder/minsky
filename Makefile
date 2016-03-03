@@ -42,7 +42,7 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	switchIcon.o
 MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o 
 ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o variableValue.o
-SERVER_OBJS=
+SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 #database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema1.o variableType.o operationType.o
 #schema0.o schema1.o variableType.o operationType.o

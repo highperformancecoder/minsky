@@ -10,7 +10,7 @@ endif
 include $(ECOLAB_HOME)/include/Makefile
 VPATH= .. ../schema ../model ../engine ../server $(ECOLAB_HOME)/include
 
-UNITTESTOBJS=main.o testModel.o testMinsky.o testGeometry.o testLatexToPango.o testVariable.o testDerivative.o
+UNITTESTOBJS=main.o testModel.o testMinsky.o testGeometry.o testLatexToPango.o testVariable.o testDerivative.o testDatabase.o 
 #testGroup.o testDatabase.o 
 MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o,$(wildcard ../*.o))
 FLAGS:=-I.. $(FLAGS)
@@ -24,7 +24,7 @@ FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
 LIBS+=$(shell pkg-config --libs librsvg-2.0)
 
 EXES=unittests cmpFp 
-#testDatabase testLatexToPango testGroup 
+#testDatabase testGroup 
 
 ifdef AEGIS
 #EXES+=tcl-cov

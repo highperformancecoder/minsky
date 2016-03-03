@@ -47,7 +47,7 @@ namespace minsky
 //    }
 //  }
 
-  int Database::createElement(int modelId, Item& x) 
+  int Database::createElement(int modelId, schema1::Item& x) 
   {
     transaction tr(db);
     int maxItemId;
@@ -70,19 +70,19 @@ namespace minsky
     return maxItemId;
   }
 
-  unique_ptr<Item> Database::readElement(int modelId, int id)
+  unique_ptr<schema1::Item> Database::readElement(int modelId, int id)
   {
     string type, elemData;
     db << "select type, data from elements where id="<<id<<" and modelId="
        << modelId, into(type), into(elemData);
-    unique_ptr<Item> r(factory<Item>(type));
+    unique_ptr<schema1::Item> r(factory<schema1::Item>(type));
     r->json(elemData);
     return r;
   }
 
-  void Database::updateElement(int modelId, const Item& x) {}
+  void Database::updateElement(int modelId, const schema1::Item& x) {}
 
-  void Database::deleteElement(int modelId, const Item& x) {}
+  void Database::deleteElement(int modelId, const schema1::Item& x) {}
 
   auto_ptr<Layout> Database::readLayout(int modelId, int id) 
   {return auto_ptr<Layout>();}
@@ -114,13 +114,15 @@ namespace minsky
     // extract elements and layouts for later storage in their tables
     vector<string> elementType, elementData, layoutType, layoutData;
     vector<int> ids;
-    moveInto(ids, elementType, elementData, m.model.ports);
     moveInto(ids, elementType, elementData, m.model.wires);
     moveInto(ids, elementType, elementData, m.model.operations);
     moveInto(ids, elementType, elementData, m.model.variables);
     moveInto(ids, elementType, elementData, m.model.plots);
     moveInto(ids, elementType, elementData, m.model.groups);
     moveInto(ids, elementType, elementData, m.model.godleys);
+
+    if (elementData.empty())
+      throw error("cannot save an empty Minsky model");
 
     // prepare type and data vectors ready for the insert
     int maxElementId=0;
@@ -158,9 +160,10 @@ namespace minsky
     db << "insert into elements (modelid, id, type, data) values ("
        <<modelId<<", :id, :type, :data)",
       use(ids), use(elementType),use(elementData);
-    db << "insert into layouts (modelid, id, type, data) values ("<<
-      modelId << ", :id, :type, :data)",
-      use(ids), use(layoutType),use(layoutData);
+    if (!layoutData.empty())
+      db << "insert into layouts (modelid, id, type, data) values ("<<
+        modelId << ", :id, :type, :data)",
+        use(ids), use(layoutType),use(layoutData);
 
     tr.commit();
     return modelId;
@@ -180,7 +183,7 @@ namespace minsky
 
     for (size_t i=0; i<type.size(); ++i)
       {
-        unique_ptr<Item> r(factory<Item>(type[i]));
+        unique_ptr<schema1::Item> r(factory<schema1::Item>(type[i]));
         r->json(data[i]);
         if (schema1::Operation* op=dynamic_cast<schema1::Operation*>(r.get()))
           model.model.operations.push_back(*op);
