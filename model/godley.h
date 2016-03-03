@@ -39,11 +39,11 @@ namespace minsky
     friend struct SchemaHelper;
     friend class GodleyIcon;
   private:
-    vector<vector<string> > data;
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
     vector<AssetClass> m_assetClass;
-  
+    vector<vector<string> > data;
+
     void markEdited(); ///< mark model as having changed
     void _resize(unsigned rows, unsigned cols) {
       // resize existing

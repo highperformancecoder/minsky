@@ -93,13 +93,13 @@ namespace minsky
 //    {
 //      it.m_ports=ports;
 //    }
-//    static void setPrivates
-//    (minsky::GodleyTable& g, const vector<vector<string> >& data, 
-//     const vector<GodleyTable::AssetClass>& assetClass)
-//    {
-//      g.data=data;
-//      g.m_assetClass=assetClass;
-//    }
+    static void setPrivates
+    (minsky::GodleyTable& g, const vector<vector<string> >& data, 
+     const vector<GodleyTable::AssetClass>& assetClass)
+    {
+      g.data=data;
+      g.m_assetClass=assetClass;
+    }
 //
 //    static void setPrivates
 //    (minsky::GroupIcon& g, const vector<int>& ops, const vector<int>& vars,

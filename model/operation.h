@@ -153,7 +153,6 @@ namespace minsky
     typedef Operation<OperationType::integrate> Super;
     // integrals have named integration variables
     ///integration variable associated with this op.
-    VariablePtr intVar; 
     CLASSDESC_ACCESS(IntOp);
     //   void addPorts() override; //. Also allocates new integral var if intVar==-1
     friend struct SchemaHelper;
@@ -186,6 +185,7 @@ namespace minsky
 
     /// return reference to integration variable
     VariablePtr getIntVar() const {return intVar;}
+    VariablePtr intVar; 
 
     /// toggles coupled state of integration variable. Only valid for integrate
     /// @return coupled state

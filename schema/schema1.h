@@ -177,6 +177,9 @@ namespace schema1
 
   struct Group: public SPoly<Group,Item>
   {
+    //the following field is left commented out here to indicate this
+    //deprecated field is part of the version 1 spec
+    //vector<int> ports; 
     vector<int> items;
     vector<int> ports;
     vector<int> createdVars;
@@ -184,8 +187,6 @@ namespace schema1
     Group() {}
     Group(int id, const minsky::Group& g): 
       Item(id,g), name(g.title) {}
-    // not called from constructor, as we may want to renumber items
-    void addItems(const minsky::Group& g);
   };
 
   struct Switch: public SPoly<Switch,Item>
@@ -334,7 +335,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
 
   struct MinskyModel
   {
-    vector<Port> ports;
+    //    vector<Port> ports;
     vector<Wire> wires;
     vector<Item> notes; ///< descriptive notes
     vector<Operation> operations;
@@ -365,7 +366,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     /// populate a group object from this. This mutates the ids in a
     /// consistent way into the free id space of the global minsky
     /// object
-    void populateGroup(minsky::Group& g);
+    void populateGroup(minsky::Group& g) const;
     /// move locations such that minx, miny lies at (0,0) on canvas
     void relocateCanvas();
 

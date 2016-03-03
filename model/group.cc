@@ -79,6 +79,17 @@ namespace minsky
     return GroupPtr();
   }
        
+  const ItemPtr& Group::findItem(const Item& it) const 
+  {
+    // start by looking in the group it thnks it belongs to
+    if (auto g=it.group.lock())
+      if (g.get()!=this) 
+        {
+          auto& i=g->findItem(it);
+          if (i) return i;
+        }
+    return findAny(&Group::items, [&](const ItemPtr& x){return x.get()==&it;});
+  }
 
 
   ItemPtr& Group::addItem(int id, const shared_ptr<Item>& it)

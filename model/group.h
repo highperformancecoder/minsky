@@ -165,8 +165,7 @@ namespace minsky
 
     /// finds item within this group or subgroups. Returns null if not found
     const ItemPtr& findItem(int id) const {return findId(&Group::items, id);}
-    const ItemPtr& findItem(const Item& it) const 
-    {return findAny(&Group::items, [&](const ItemPtr& x){return x.get()==&it;});}
+    const ItemPtr& findItem(const Item& it) const; 
 
     /// finds group within this group or subgroups. Returns null if not found
     const GroupPtr& findGroup(int id) const {return findId(&Group::groups, id);}
