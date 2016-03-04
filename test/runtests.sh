@@ -2,7 +2,8 @@
 
 # for now, just run unittests
 set -e
-test/unittests
+cd test
+./unittests
 exit
 
 t=0
