@@ -133,8 +133,8 @@ namespace minsky
 
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
-//    void setGroupIconResource(const string& s)
-//    {GroupIcon::svgRenderer.setResource(s);}
+    void setGroupIconResource(const string& s)
+    {Group::svgRenderer.setResource(s);}
 
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process

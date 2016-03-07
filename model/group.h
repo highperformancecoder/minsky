@@ -23,6 +23,7 @@
 #include "item.h"
 #include "wire.h"
 #include <function.h>
+#include "SVGItem.h"
 
 namespace minsky
 {
@@ -60,6 +61,9 @@ namespace minsky
     Group* clone() const {return new Group(*this);}
 
     int id() const {return m_id;}
+
+    static SVGRenderer svgRenderer;
+
 
     void draw(cairo_t* cairo) const override {}
 
