@@ -159,6 +159,7 @@ proc deiconifyEditGroup {} {
         pack .wiring.editGroup.buttonBar -side bottom
         
         bind .wiring.editGroup <Key-Return> {invokeOKorCancel .wiring.editGroup.buttonBar}
+        bind .wiring.editGroup <Key-Escape> {.wiring.editGroup.buttonBar.cancel invoke}
     } else {
         wm deiconify .wiring.editGroup
     }
