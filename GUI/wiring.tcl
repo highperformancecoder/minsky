@@ -1822,7 +1822,7 @@ proc setItem {modelCmd attr dialogCmd} {
 
 proc closeEditWindow {window} {
     grab release $window
-    wm withdraw $window
+    destroy $window
     updateCanvas
 }
 
