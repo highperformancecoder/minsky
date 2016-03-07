@@ -44,14 +44,14 @@ proc afterMinskyStarted {} {
   # should open edit window
   assert {[winfo viewable .wiring.editVar]}
   .wiring.editVar.buttonBar.ok invoke
-  assert {![winfo viewable .wiring.editVar]}
+  assert {![winfo exists .wiring.editVar]}
 
   # double click on first variable
   set var [lindex [.wiring.canvas find withtag variables] 0]
   eval doubleClick \$var [.wiring.canvas coords \$var]
   assert {[winfo viewable .wiring.editVar]} {varclick}
   .wiring.editVar.buttonBar.ok invoke
-  assert {![winfo viewable .wiring.editVar]} {varclick}
+  assert {![winfo exists .wiring.editVar]} {varclick}
 
 
   resetEdited

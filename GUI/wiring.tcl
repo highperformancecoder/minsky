@@ -1665,7 +1665,6 @@ proc deiconifyInitVar {} {
         # initialise variable type when selected from combobox
         bind .wiring.initVar.entry10 <<ComboboxSelected>> {
             value.get [.wiring.initVar.entry10 get]
-            puts "[.wiring.initVar.entry10 get] [value.type]"
             .wiring.initVar.entry20 set [value.type]
         }
         

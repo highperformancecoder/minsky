@@ -88,7 +88,7 @@ proc afterMinskyStarted {} {uplevel #0 {
  update
  assert {[winfo viewable .wiring.editGroup]}
  .wiring.editGroup.buttonBar.ok invoke
- assert {![winfo viewable .wiring.editGroup]}
+ assert {![winfo exists .wiring.editGroup]}
 
  resetEdited
  exit
