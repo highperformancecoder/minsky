@@ -258,6 +258,8 @@ proc addConstantOrVariable {} {
     set varInput(Name) ""
     set varInput(Value) ""
     set varInput(Type) $varType
+    set "varInput(Short description)" ""
+    set "varInput(Detailed description)" ""
     deiconifyInitVar
     .wiring.initVar.entry10 configure -values [variables.valueNames]
     ::tk::TabToWindow $varInput(initial_focus);
@@ -1543,7 +1545,7 @@ proc deiconifyEditVar {} {
         set rowdict(Type) 20
         grid [label .wiring.editVar.label20 -text "Type"] -row 20 -column 10 -sticky e
         grid [ttk::combobox  .wiring.editVar.entry20 -textvariable editVarInput(Type) \
-                  -state readonly -values "constant parameter flow integral"] \
+                  -state readonly -values "constant parameter flow integral stock"] \
             -row 20 -column 20 -sticky ew -columnspan 2
 
         # disable or enable the name field depending on type being selected
@@ -1553,6 +1555,12 @@ proc deiconifyEditVar {} {
             } else {
                 .wiring.editVar.entry10 configure -state enabled
             }
+        }
+        
+        # initialise variable type when selected from combobox
+        bind .wiring.editVar.entry10 <<ComboboxSelected>> {
+            value.get [valueId [.wiring.editVar.entry10 get]]
+            .wiring.editVar.entry20 set [value.type]
         }
         
 
@@ -1610,6 +1618,11 @@ proc deiconifyEditVar {} {
     }
 }
 
+proc syncVarType {} {
+            values.get $varInput(Name)
+            set varInput(Type) [value.type]
+        }
+
 proc deiconifyInitVar {} {
     if {![winfo exists .wiring.initVar]} {
         toplevel .wiring.initVar
@@ -1647,6 +1660,12 @@ proc deiconifyInitVar {} {
             } else {
                 .wiring.initVar.entry10 configure -state enabled
             }
+        }
+
+        # initialise variable type when selected from combobox
+        bind .wiring.initVar.entry10 <<ComboboxSelected>> {
+            value.get [.wiring.initVar.entry10 get]
+            .wiring.initVar.entry20 set [value.type]
         }
         
         set row 30
@@ -1822,7 +1841,7 @@ proc setItem {modelCmd attr dialogCmd} {
 
 proc closeEditWindow {window} {
     grab release $window
-    wm withdraw $window
+    destroy $window
     updateCanvas
 }
 
@@ -1871,6 +1890,8 @@ proc editItem {id tag} {
             set "editVarInput(Slider Bounds: Min)" [var.sliderMin]
             set "editVarInput(Slider Step Size)" [var.sliderStep]
             set "editVarInput(relative)" [var.sliderStepRel]
+            set "editVarInput(Short description)" [var.tooltip]
+            set "editVarInput(Detailed description)" [var.detailedText]
             if {[value.godleyOverridden] || [variables.inputWired [var.valueId]]} {
                 $editVarInput(initial_focus_value) configure -state disabled  -foreground gray
 		::tk::TabToWindow $editVarInput(initial_focus_rotation)
