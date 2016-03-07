@@ -133,7 +133,6 @@ namespace minsky
     void operator=(const GetterSetterPtr&) {}
   };
 
-
   struct MinskyTCL: public Minsky
   {
     /// TCL accessors
@@ -308,6 +307,8 @@ namespace minsky
       if (args.count) Minsky::undo(args);
       else Minsky::undo();
     }
+
+    string valueId(const string& x) {return VariableManager::valueId(x);}
 
   };
 }

@@ -1545,7 +1545,7 @@ proc deiconifyEditVar {} {
         set rowdict(Type) 20
         grid [label .wiring.editVar.label20 -text "Type"] -row 20 -column 10 -sticky e
         grid [ttk::combobox  .wiring.editVar.entry20 -textvariable editVarInput(Type) \
-                  -state readonly -values "constant parameter flow integral"] \
+                  -state readonly -values "constant parameter flow integral stock"] \
             -row 20 -column 20 -sticky ew -columnspan 2
 
         # disable or enable the name field depending on type being selected
@@ -1555,6 +1555,12 @@ proc deiconifyEditVar {} {
             } else {
                 .wiring.editVar.entry10 configure -state enabled
             }
+        }
+        
+        # initialise variable type when selected from combobox
+        bind .wiring.editVar.entry10 <<ComboboxSelected>> {
+            value.get [valueId [.wiring.editVar.entry10 get]]
+            .wiring.editVar.entry20 set [value.type]
         }
         
 
@@ -1612,6 +1618,11 @@ proc deiconifyEditVar {} {
     }
 }
 
+proc syncVarType {} {
+            values.get $varInput(Name)
+            set varInput(Type) [value.type]
+        }
+
 proc deiconifyInitVar {} {
     if {![winfo exists .wiring.initVar]} {
         toplevel .wiring.initVar
@@ -1649,6 +1660,13 @@ proc deiconifyInitVar {} {
             } else {
                 .wiring.initVar.entry10 configure -state enabled
             }
+        }
+
+        # initialise variable type when selected from combobox
+        bind .wiring.initVar.entry10 <<ComboboxSelected>> {
+            value.get [.wiring.initVar.entry10 get]
+            puts "[.wiring.initVar.entry10 get] [value.type]"
+            .wiring.initVar.entry20 set [value.type]
         }
         
         set row 30
