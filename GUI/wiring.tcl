@@ -1613,6 +1613,7 @@ proc deiconifyEditVar {} {
         pack .wiring.editVar.buttonBar.ok [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
         grid .wiring.editVar.buttonBar -row 999 -column 0 -columnspan 1000
         bind .wiring.editVar <Key-Return> {invokeOKorCancel .wiring.editVar.buttonBar}
+        bind .wiring.editVar <Key-Escape> {.wiring.editVar.buttonBar.cancel invoke}
     } else {
         wm deiconify .wiring.editVar
     }
@@ -1639,7 +1640,8 @@ proc deiconifyInitVar {} {
         pack .wiring.initVar.buttonBar.ok [label .wiring.initVar.buttonBar.spacer -width 2] .wiring.initVar.buttonBar.cancel -side left -pady 10
         grid .wiring.initVar.buttonBar -row 999 -column 0 -columnspan 1000
         bind .wiring.initVar <Key-Return> {invokeOKorCancel .wiring.initVar.buttonBar}
-        
+        bind .wiring.initVar <Key-Escape> {.wiring.initVar.buttonBar.cancel invoke}
+
         global rowdict
         global varInput initVar_name
         set rowdict(Name) 10
@@ -1728,6 +1730,7 @@ proc deiconifyEditConstant {} {
         grid [checkbutton .wiring.editConstant.checkbox$row -text "relative" -variable "constInput(relative)"] -row $row -column 21 -sticky ew -columnspan 1
 
         bind .wiring.editConstant <Key-Return> {invokeOKorCancel .wiring.editConstant.buttonBar}
+        bind .wiring.editConstant <Key-Escape> {.wiring.editConstant.buttonBar.cancel invoke}
 
     } else {
         wm deiconify .wiring.editConstant
@@ -1810,10 +1813,11 @@ proc deiconifyEditOperation {} {
         }
         button .wiring.editOperation.buttonBar.cancel -text Cancel -command {
             closeEditWindow .wiring.editOperation}
+        bind .wiring.editOperation <Key-Return> {invokeOKorCancel .wiring.editOperation.buttonBar}
+        bind .wiring.editOperation <Key-Escape> {.wiring.editOperation.buttonBar.cancel invoke}
         pack .wiring.editOperation.buttonBar.ok [label .wiring.editOperation.buttonBar.spacer -width 2] .wiring.editOperation.buttonBar.cancel -side left -pady 10
         pack .wiring.editOperation.buttonBar -side bottom
         
-        bind .wiring.editOperation <Key-Return> {invokeOKorCancel .wiring.editOperation.buttonBar}
         
         frame .wiring.editOperation.rotation
         label .wiring.editOperation.rotation.label -text "Rotation"
@@ -2089,6 +2093,7 @@ proc deiconifyNote {} {
         frame .wiring.note.buttons
         button .wiring.note.buttons.cancel -text "Cancel" -command {closeEditWindow .wiring.note}
         button .wiring.note.buttons.ok -text "OK" -command OKnote
+        bind .wiring.note <Key-Escape> {.wiring.note.buttons.cancel invoke}
         pack .wiring.note.buttons.cancel  .wiring.note.buttons.ok -side left
         pack .wiring.note.tooltip .wiring.note.text .wiring.note.buttons
     } else {
