@@ -258,6 +258,8 @@ proc addConstantOrVariable {} {
     set varInput(Name) ""
     set varInput(Value) ""
     set varInput(Type) $varType
+    set "varInput(Short description)" ""
+    set "varInput(Detailed description)" ""
     deiconifyInitVar
     .wiring.initVar.entry10 configure -values [variables.valueNames]
     ::tk::TabToWindow $varInput(initial_focus);
@@ -1871,6 +1873,8 @@ proc editItem {id tag} {
             set "editVarInput(Slider Bounds: Min)" [var.sliderMin]
             set "editVarInput(Slider Step Size)" [var.sliderStep]
             set "editVarInput(relative)" [var.sliderStepRel]
+            set "editVarInput(Short description)" [var.tooltip]
+            set "editVarInput(Detailed description)" [var.detailedText]
             if {[value.godleyOverridden] || [variables.inputWired [var.valueId]]} {
                 $editVarInput(initial_focus_value) configure -state disabled  -foreground gray
 		::tk::TabToWindow $editVarInput(initial_focus_rotation)
