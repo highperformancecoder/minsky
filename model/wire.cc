@@ -100,16 +100,13 @@ namespace minsky
   void Wire::moveIntoGroup(Group& dest)
   {
     WirePtr wp;
-    int id=-1;
-    // one hit find and remove wire from its map, saving the wire and
-    // its id
+    // one hit find and remove wire from its map, saving the wire
     dest.globalGroup().recursiveDo
       (&Group::wires, 
        [&](Wires& wires, Wires::iterator i) {
         if (i->get()==this) 
           {
             wp=*i;
-            id=i->id();
             wires.erase(i);
             return true;
           }
@@ -117,7 +114,7 @@ namespace minsky
           return false;
       }); 
     if (wp)
-      dest.addWire(id,wp);
+      dest.addWire(wp);
   }
 
 }

@@ -79,27 +79,27 @@ namespace minsky
     return GroupPtr();
   }
        
-  const ItemPtr& Group::findItem(const Item& it) const 
+  ItemPtr Group::findItem(const Item& it) const 
   {
     // start by looking in the group it thnks it belongs to
     if (auto g=it.group.lock())
       if (g.get()!=this) 
         {
-          auto& i=g->findItem(it);
+          auto i=g->findItem(it);
           if (i) return i;
         }
     return findAny(&Group::items, [&](const ItemPtr& x){return x.get()==&it;});
   }
 
 
-  ItemPtr& Group::addItem(int id, const shared_ptr<Item>& it)
+  ItemPtr Group::addItem(const shared_ptr<Item>& it)
   {
     if (auto x=dynamic_pointer_cast<Group>(it))
-      return addGroup(id,x);
+      return addGroup(x);
    
     auto origGroup=it->group.lock();
     if (origGroup && origGroup.get()!=this)
-      origGroup->items.erase(id);
+      origGroup->removeItem(*it);
 
     it->group=self.lock();
 
@@ -124,10 +124,10 @@ namespace minsky
               addItem(oldG->removeItem(*intOp->getIntVar()));
           }
         else
-          addItem(minsky().getNewId(), intOp->getIntVar());
+          addItem(intOp->intVar);
             
-
-    return *items.insert(Items::value_type(id,it)).first;
+    items.push_back(it);
+    return items.back();
   }
 
   void Group::adjustWiresGroup(Wire& w)
@@ -163,19 +163,21 @@ namespace minsky
        }
   }
 
-  GroupPtr& Group::addGroup(int id, const std::shared_ptr<Group>& g)
+  GroupPtr Group::addGroup(const std::shared_ptr<Group>& g)
   {
     auto origGroup=g->group.lock();
     if (origGroup && origGroup.get()!=this)
-      origGroup->groups.erase(id);
+      origGroup->removeGroup(*g);
     g->group=self;
     g->self=g;
-    return *groups.insert(Groups::value_type(id,g)).first;
+    groups.push_back(g);
+    return groups.back();
   }
 
-  WirePtr& Group::addWire(int id, const std::shared_ptr<Wire>& w)
+  WirePtr Group::addWire(const std::shared_ptr<Wire>& w)
   {
-    return *wires.insert(Wires::value_type(id,w)).first;
+    wires.push_back(w);
+    return wires.back();
   }
 
   bool Group::higher(const Group& x) const
@@ -215,14 +217,14 @@ namespace minsky
   {return minsky::globalGroup(*this);}
 
 
-  bool Group::uniqueKeys(set<int>& idset) const
+  bool Group::uniqueItems(set<void*>& idset) const
   {
     for (auto& i: items)
-      if (!idset.insert(i.id()).second) return false;
+      if (!idset.insert(i.get()).second) return false;
     for (auto& i: wires)
-      if (!idset.insert(i.id()).second) return false;
+      if (!idset.insert(i.get()).second) return false;
     for (auto& i: groups)
-      if (!idset.insert(i.id()).second || !i->uniqueKeys(idset)) 
+      if (!idset.insert(i.get()).second || !i->uniqueItems(idset)) 
         return false;
     return true;
   }
@@ -322,14 +324,14 @@ namespace minsky
     return displayZoom;
   }
 
-  int Group::maxId() const
-  {
-    int r=-1;
-    if (!items.empty()) r=items.rbegin()->id();
-    if (!wires.empty()) r=max(r,wires.rbegin()->id());
-    if (!groups.empty()) r=max(r,groups.rbegin()->id()); 
-    for (auto& g: groups) r=max(r,g->maxId());
-    return r;
-  }
+//  int Group::maxId() const
+//  {
+//    int r=-1;
+//    if (!items.empty()) r=items.rbegin()->id();
+//    if (!wires.empty()) r=max(r,wires.rbegin()->id());
+//    if (!groups.empty()) r=max(r,groups.rbegin()->id()); 
+//    for (auto& g: groups) r=max(r,g->maxId());
+//    return r;
+//  }
 
 }

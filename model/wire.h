@@ -67,7 +67,6 @@ namespace minsky
   class WirePtr: public std::shared_ptr<Wire>
   {
   public:
-    virtual int id() const {return -1;}
     template <class... A> WirePtr(A... x):
       std::shared_ptr<Wire>(std::forward<A>(x)...) {}
     virtual ~WirePtr() {}
@@ -79,7 +78,7 @@ namespace minsky
     std::shared_ptr<Port> to() const {return get()->to();}
   };
 
-  typedef IntrusiveMap<int, WirePtr> Wires;
+  typedef std::vector<WirePtr> Wires;
 
 }
 #include "wire.cd"

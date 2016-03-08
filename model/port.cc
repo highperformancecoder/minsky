@@ -62,17 +62,14 @@ namespace minsky
   {
     // destruction of this port must also destroy all attached wires
 
-    // copy out list of wire ids to prevent a snarl up from ~wires()
-    set<Wire*> wiresToDelete(wires.begin(), wires.end());
-    wires.clear();
-
     /// wires could be anywhere, so we need to walk the whole heirachy
     if (auto g=item.group.lock())
-      g->globalGroup().recursiveDo(&Group::wires, [&](Wires& wires, Wires::iterator& i) {
-        if (wiresToDelete.erase(i->get()))
-          wires.erase(i);
-        return wiresToDelete.empty();
-      });
+      {
+        auto& gg=g->globalGroup();
+        for (auto& w: wires)
+          gg.removeWire(*w);
+      }
+    wires.clear();
   }
 
   /// sets the VariableValue associated with this port

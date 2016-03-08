@@ -117,7 +117,7 @@ namespace minsky
   protected:
     /// contents of current selection
     //TODO Selection currentSelection;
-    int nextId{0};        ///< next id to assign to an item
+    //    int nextId{0};        ///< next id to assign to an item
 
   public:
 
@@ -139,7 +139,7 @@ namespace minsky
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
     //  @param ac type of column we wish matches for
-    std::set<string> matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac);
+    std::set<string> matchingTableColumns(GodleyTable& currTable, GodleyAssetClass::AssetClass ac);
 
     /// find any duplicate column, and use it as a source column for balanceDuplicateColumns
     void importDuplicateColumn(const GodleyTable& srcTable, int srcCol);
@@ -147,12 +147,12 @@ namespace minsky
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
     /// returns next integral ID to allocate to an item
-    inline int getNewId()
-    {
-      return nextId++;
-    }
+    //inline int getNewId()
+    //{
+    //  return nextId++;
+    //}
     /// resets the nextId counter to the next available
-    void resetNextId();
+    //void resetNextId();
 
     EvalGodley evalGodley;
 
@@ -176,7 +176,8 @@ namespace minsky
 
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
-    int addWire(int from, int to, unsigned toIdx, const std::vector<float>& coords = {}); 
+    WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
+                const std::vector<float>& coords = {}); 
     void deleteWire(int id);
 
 
@@ -242,49 +243,49 @@ namespace minsky
     void ungroup(int id);
     void saveGroupAsFile(int i, const string& fileName) const;
 
-    /// create a new godley icon at \a x, y
-    int addGodleyTable(float x, float y) 
-    {
-      int id=getNewId();
-      GodleyIcon* g=new GodleyIcon;
-      model->addItem(id, g);
-      g->moveTo(x,y);
-      g->table.doubleEntryCompliant=true;
-      g->update();
-      return id;
-    }
+//    /// create a new godley icon at \a x, y
+//    int addGodleyTable(float x, float y) 
+//    {
+//      int id=getNewId();
+//      GodleyIcon* g=new GodleyIcon;
+//      model->addItem(id, g);
+//      g->moveTo(x,y);
+//      g->table.doubleEntryCompliant=true;
+//      g->update();
+//      return id;
+//    }
     
-    /// delete godley table icon \a id
-    void deleteGodleyTable(int id)
-    {
-      // remove all contained variables
-      if (auto g=dynamic_cast<GodleyIcon*>(model->findItem(id).get()))
-        {
-          set<VariablePtr> vars;
-          vars.insert(g->flowVars.begin(), g->flowVars.end());
-          vars.insert(g->stockVars.begin(), g->stockVars.end());
-          model->recursiveDo
-            (&Group::items,
-             [&](Items& m,Items::iterator i)
-             {
-               if (vars.count(*i))
-                 m.erase(i);
-               return false;
-             });
-        }
-      model->removeItem(id);
-    }
+//    /// delete godley table icon \a id
+//    void deleteGodleyTable(int id)
+//    {
+//      // remove all contained variables
+//      if (auto g=dynamic_cast<GodleyIcon*>(model->findItem(id).get()))
+//        {
+//          set<VariablePtr> vars;
+//          vars.insert(g->flowVars.begin(), g->flowVars.end());
+//          vars.insert(g->stockVars.begin(), g->stockVars.end());
+//          model->recursiveDo
+//            (&Group::items,
+//             [&](Items& m,Items::iterator i)
+//             {
+//               if (vars.count(*i))
+//                 m.erase(i);
+//               return false;
+//             });
+//        }
+//      model->removeItem(id);
+//    }
 
     void initGodleys();
 
-    int newNote() {
-      int id=getNewId();
-      model->addItem(id, new Item);
-      return id;
-    }
-    void deleteNote(int id) {
-      model->removeItem(id);
-    }
+//    int newNote() {
+//      int id=getNewId();
+//      model->addItem(id, new Item);
+//      return id;
+//    }
+//    void deleteNote(int id) {
+//      model->removeItem(id);
+//    }
 
 //    int newSwitch() {
 //      int id=getNewId();

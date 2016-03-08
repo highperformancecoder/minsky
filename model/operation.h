@@ -239,7 +239,6 @@ namespace minsky
     // reset pointer to a newly created operation
     OperationPtr(OperationBase* op): PtrBase(op) {assert(op);}
     OperationPtr clone() const {return OperationPtr(get()->clone());}
-    virtual int id() const {return -1;}
     size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}
     OperationPtr(const PtrBase& x): PtrBase(x) {}
     OperationPtr& operator=(const PtrBase& x) {PtrBase::operator=(x); return *this;}

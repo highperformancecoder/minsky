@@ -84,17 +84,8 @@ namespace minsky
     ClickType::Type clickType(float x, float y);
   };
 
-  class ItemPtr: public std::shared_ptr<Item>
-  {
-  public:
-    virtual int id() const {return -1;}
-    virtual ~ItemPtr() {}
-
-    template <class... A> ItemPtr(A... x):
-      std::shared_ptr<Item>(std::forward<A>(x)...) {}
-  };
-
-  typedef IntrusiveMap<int, ItemPtr> Items;
+  typedef std::shared_ptr<Item> ItemPtr;
+  typedef std::vector<ItemPtr> Items;
 
 }
 

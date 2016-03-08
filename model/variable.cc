@@ -97,7 +97,7 @@ string VariableBase::valueId() const
 string VariableBase::name()  const
 {
   auto g=group.lock();
-  if (g && m_scope==g->id())
+  if (g && m_scope==g->id)
     return m_name;
   return fqName();
 }
@@ -134,7 +134,7 @@ string VariableBase::name(const std::string& name)
     {
       m_name=name;
       if (auto g=group.lock())
-        m_scope=g->id();
+        m_scope=g->id;
     }
 
   ensureValueExists();

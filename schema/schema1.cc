@@ -597,8 +597,7 @@ namespace schema1
       ItemMap(minsky::Group& g): g(g) {}
       template <class T, class SI>
       T* addItem(T* x, const SI& i) {
-        int id=minsky::minsky().getNewId();
-        if (!emplace(i.id, g.addItem(id,x)).second)
+        if (!emplace(i.id, g.addItem(x)).second)
           throw error("duplicate item ids found");
         return x;
       }
@@ -661,22 +660,17 @@ namespace schema1
 
     /// process wires after all the items have been defined
     for (auto& i: model.wires)
-        {
-          g.addWire(minsky::minsky().getNewId(), new minsky::Wire(pmap[i.from],pmap[i.to]));
-        }
+      g.addWire(new minsky::Wire(pmap[i.from],pmap[i.to]));
 
     /// groups needs to be processed last so that all references are defined
     for (auto& i: model.groups)
       {
         if (auto gg=dynamic_cast<minsky::Group*>(imap[i.id].get()))
           for (auto id: i.items)
-            {
-              // a bit of a clumsy way of extracting the new id for this item.
-              auto& it=g.findItem(*imap[id]);
-              if (it)
-                // item will be moved to new group, and wires adjusted
-                gg->addItem(it.id(), it);
-            }
+            // a bit of a clumsy way of extracting the new id for this item.
+            if (auto it=g.findItem(*imap[id]))
+              // item will be moved to new group, and wires adjusted
+              gg->addItem(it);
       }
   }
 
@@ -705,8 +699,7 @@ namespace schema1
     m.order=model.rungeKutta.order;
     m.simulationDelay=model.rungeKutta.simulationDelay;
     m.implicit=model.rungeKutta.implicit;
-    m.resetNextId();
-    return m;
+   return m;
   }
 
   namespace

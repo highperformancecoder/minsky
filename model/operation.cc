@@ -199,7 +199,7 @@ namespace minsky
 
     // this should also adjust the wire's group ownership appropriately
     if (auto g=group.lock())
-      g->addItem(minsky().getNewId(), intVar);
+      g->addItem(intVar);
   }
 
   bool OperationBase::selfWire(const shared_ptr<Port>& from, const shared_ptr<Port>& to) const
@@ -258,9 +258,9 @@ namespace minsky
             intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
             Wire* newWire=new Wire(ports[0], intVar->ports[1]);
             if (auto g=group.lock())
-              g->addWire(minsky().getNewId(), newWire);
+              g->addWire(newWire);
             else
-              minsky().model->addWire(minsky().getNewId(), newWire);
+              minsky().model->addWire(newWire);
             intVar->m_visible=true;
             intVar->rotation=rotation;
             float angle=rotation*M_PI/180;

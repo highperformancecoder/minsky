@@ -40,22 +40,22 @@ struct BinOpFixture: public Minsky
   BinOpFixture(): 
     f(VariableType::flow,"f"),
     integ(dynamic_cast<IntOp&>
-          (*(model->addItem(getNewId(), OperationPtr(OperationType::integrate)))))
+          (*(model->addItem(OperationPtr(OperationType::integrate)))))
   {
     dynamic_cast<Constant&>(*offs).value=0.1;
-    model->addItem(getNewId(), offs);
-    model->addItem(getNewId(), t);
-    model->addItem(getNewId(), plus);
-    model->addItem(getNewId(), tsq);
-    model->addItem(getNewId(), minus);
-    model->addItem(getNewId(), pow);
-    model->addItem(getNewId(), deriv);
-    model->addItem(getNewId(), f);
-    model->addWire(getNewId(), new Wire(t->ports[0],plus->ports[1]));
-    model->addWire(getNewId(), new Wire(offs->ports[0],plus->ports[2]));
-    model->addWire(getNewId(), new Wire(plus->ports[0],tsq->ports[1]));
-    model->addWire(getNewId(), new Wire(plus->ports[0],tsq->ports[2]));
-    model->addWire(getNewId(), new Wire(deriv->ports[0], integ.ports[1]));
+    model->addItem(offs);
+    model->addItem(t);
+    model->addItem(plus);
+    model->addItem(tsq);
+    model->addItem(minus);
+    model->addItem(pow);
+    model->addItem(deriv);
+    model->addItem(f);
+    model->addWire(new Wire(t->ports[0],plus->ports[1]));
+    model->addWire(new Wire(offs->ports[0],plus->ports[2]));
+    model->addWire(new Wire(plus->ports[0],tsq->ports[1]));
+    model->addWire(new Wire(plus->ports[0],tsq->ports[2]));
+    model->addWire(new Wire(deriv->ports[0], integ.ports[1]));
     //    variables.makeConsistent();
 
     stepMin=1e-6;
@@ -84,10 +84,10 @@ SUITE(Derivative)
 
   TEST_FIXTURE(BinOpFixture,subtract)
   {
-    model->addWire(getNewId(), new Wire(t->ports[0],minus->ports[1]));
-    model->addWire(getNewId(), new Wire(tsq->ports[0],minus->ports[2]));
-    model->addWire(getNewId(), new Wire(minus->ports[0], deriv->ports[1]));
-    model->addWire(getNewId(), new Wire(minus->ports[0], f->ports[1]));
+    model->addWire(new Wire(t->ports[0],minus->ports[1]));
+    model->addWire(new Wire(tsq->ports[0],minus->ports[2]));
+    model->addWire(new Wire(minus->ports[0], deriv->ports[1]));
+    model->addWire(new Wire(minus->ports[0], f->ports[1]));
 
     reset(); 
     nSteps=1;step(); // ensure f is evaluated
@@ -102,10 +102,10 @@ SUITE(Derivative)
 
   TEST_FIXTURE(BinOpFixture,pow)
   {
-    model->addWire(getNewId(), new Wire(plus->ports[0],pow->ports[1]));
-    model->addWire(getNewId(), new Wire(tsq->ports[0],pow->ports[2]));
-    model->addWire(getNewId(), new Wire(pow->ports[0], deriv->ports[1]));
-    model->addWire(getNewId(), new Wire(pow->ports[0], f->ports[1]));
+    model->addWire(new Wire(plus->ports[0],pow->ports[1]));
+    model->addWire(new Wire(tsq->ports[0],pow->ports[2]));
+    model->addWire(new Wire(pow->ports[0], deriv->ports[1]));
+    model->addWire(new Wire(pow->ports[0], f->ports[1]));
 
     reset(); 
     nSteps=1;step(); // ensure f is evaluated
@@ -121,16 +121,16 @@ SUITE(Derivative)
   TEST_FIXTURE(BinOpFixture,log)
   {
     OperationPtr log{OperationType::log};
-    model->addItem(getNewId(), log);
+    model->addItem(log);
     OperationPtr exp{OperationType::exp};
-    model->addItem(getNewId(), exp);
+    model->addItem(exp);
 
 
-    model->addWire(getNewId(), new Wire(plus->ports[0],exp->ports[1]));
-    model->addWire(getNewId(), new Wire(exp->ports[0],log->ports[1]));
-    model->addWire(getNewId(), new Wire(tsq->ports[0],log->ports[2]));
-    model->addWire(getNewId(), new Wire(log->ports[0], deriv->ports[1]));
-    model->addWire(getNewId(), new Wire(log->ports[0], f->ports[1]));
+    model->addWire(new Wire(plus->ports[0],exp->ports[1]));
+    model->addWire(new Wire(exp->ports[0],log->ports[1]));
+    model->addWire(new Wire(tsq->ports[0],log->ports[2]));
+    model->addWire(new Wire(log->ports[0], deriv->ports[1]));
+    model->addWire(new Wire(log->ports[0], f->ports[1]));
 
     reset(); 
     nSteps=1;step(); // ensure f is evaluated
@@ -146,16 +146,17 @@ SUITE(Derivative)
   TEST_FIXTURE(BinOpFixture,singleArgFuncs)
     {
       // test functions
-      int funOp=getNewId();
+      OperationPtr funOp;
       for (int op=OperationType::sqrt; op<OperationType::numOps; ++op)
         {
           cout << OperationType::typeName(op) << endl;
-          OperationPtr fn{OperationType::Type(op)};
+          model->removeItem(*funOp);
+          funOp.reset(OperationBase::create(OperationType::Type(op)));
           garbageCollect();
-          model->addItem(funOp,fn);
-          model->addWire(getNewId(), new Wire(plus->ports[0], fn->ports[1]));
-          model->addWire(getNewId(), new Wire(fn->ports[0], f->ports[1]));
-          model->addWire(getNewId(), new Wire(fn->ports[0], deriv->ports[1]));
+          model->addItem(funOp);
+          model->addWire(new Wire(plus->ports[0], funOp->ports[1]));
+          model->addWire(new Wire(funOp->ports[0], f->ports[1]));
+          model->addWire(new Wire(funOp->ports[0], deriv->ports[1]));
           reset(); 
           nSteps=1;step(); // ensure f is evaluated
           // set the constant of integration to the value of f at t=0

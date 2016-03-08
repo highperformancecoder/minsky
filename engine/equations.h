@@ -242,8 +242,8 @@ namespace MathDAG
   /// represents a Godley column
   struct GodleyColumnDAG: public OperationDAG<OperationType::subtract>
   {
-    int godleyId;
-    GodleyColumnDAG(): godleyId(-1) {}
+    //    int godleyId;
+    //GodleyColumnDAG(): godleyId(-1) {}
     int order(unsigned maxOrder) const override {return 0;} // Godley columns define integration vars
   };
 
@@ -333,7 +333,7 @@ namespace MathDAG
     NodePtr getNodeFromWire(const Wire& wire);
 
     void processGodleyTable
-    (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley, int godleyId);
+    (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley/*, int godleyId*/);
 
     /// applies the chain rule to expression x
     template <class Expr> NodePtr chainRule(const Expr& x, const Expr& deriv);

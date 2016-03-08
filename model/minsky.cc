@@ -170,12 +170,12 @@ namespace minsky
 //    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
 //        makeGodleyIt(godleyItems.end()), variables.values);
 
-#ifdef NDEBUG
-    nextId=0;
-#else
-    resetNextId();
-    assert(nextId==0);
-#endif
+//#ifdef NDEBUG
+//    nextId=0;
+//#else
+//    resetNextId();
+//    assert(nextId==0);
+//#endif
 
     reset_needed=true;
   }
@@ -183,131 +183,121 @@ namespace minsky
 
   const char* Minsky::minskyVersion=MINSKY_VERSION;
 
-  int Minsky::addWire(int from, int to, unsigned toIdx, const std::vector<float>& coords) {
-    ItemPtr fromItem=model->findItem(from), toItem=model->findItem(to);
-    if (!fromItem || !toItem)
-      return -1;
-    if (toIdx>=toItem->ports.size()) 
-      return -1;
-    auto& fromP=fromItem->ports[0];
-    auto& toP=toItem->ports[toIdx];
+  WirePtr Minsky::addWire(const Item& from, const Item& to, unsigned toPortIdx, const std::vector<float>& coords) {
+    // disallow self-wiring
+    if (&from==&to) 
+      return WirePtr();
+
+    if (toPortIdx>=to.ports.size()) 
+      return WirePtr();
+
+    auto& fromP=from.ports[0];
+    auto& toP=to.ports[toPortIdx];
     // wire must go from an output port to an input port
     if (fromP->input() || !toP->input())
-      return -1;
+      return WirePtr();
 
     // check that multiple input wires are only to binary ops.
     if (toP->wires.size()>=1 && !toP->multiWireAllowed())
-      return -1;
-
-    // disallow self-wiring
-    if (fromItem==toItem) 
-      return -1;
-
+      return WirePtr();
 
     // check that a wire doesn't already exist connecting these two ports
     for (auto& w: toP->wires)
       if (w->from()==fromP)
-        return -1;
+        return WirePtr();
 
-    int id=getNewId();
-    auto& w=model->addWire(id, new Wire(fromP, toP, coords));
+    auto w=model->addWire(new Wire(fromP, toP, coords));
     model->adjustWiresGroup(*w);
 
-//    // work out which group to add the wire to (if any)
-//    groupTest.initGroupList(groupItems);
-//    array<float> c=w.coords();
-//    int g=groupTest.groupContainingBoth(c[0],c[1],c[c.size()-2],c[c.size()-1]);
-//    if (g>-1) groupItems[g].addWire(id);
-
     markEdited();
-    return id;
+    return w;
   }
 
-  int Minsky::addOperation(const char* o)
-  {
-    OperationPtr newOp(static_cast<OperationType::Type>
-                       (enumKey<OperationType::Type>(o)));
-    if (!newOp) return -1;
-    int id=getNewId();
-    model->addItem(id, newOp);
-    markEdited();
-    return id;
-  }
-
-  int Minsky::copyOperation(int id)
-  {
-    auto source=model->findItem(id);
-    if (!source) return -1;
-    int newId=getNewId();
-    model->addItem(newId, source->clone());
-    markEdited();
-    return newId;
-  }
-
-
-  void Minsky::deleteOperation(int opid)
-  {
-    if (model->removeItem(opid))
-      markEdited();
-  }
-
-  int Minsky::createGroup()
-  {
-    //TODO
-    int id=getNewId();
-    GroupPtr g=model->addGroup(id, new Group);
-
-//    g->addWires(currentSelection.wires);
-//    if (currentSelection.group>=0 && groupItems.count(currentSelection.group))
-//      {
-//        GroupIcon& oldg=groupItems[currentSelection.group];
-//        for (int w: currentSelection.wires)
-//          oldg.delWire(w);
-//      }
-//
-//    for (int i: currentSelection.operations)
-//      addOperationToGroup(id, i);
-//    for (int i: currentSelection.variables)
-//      addVariableToGroup(id, i, false /* don't check IO regions */);
-//    for (int i: currentSelection.groups)
-//      addGroupToGroup(id, i);
-//  
-//    if (g.empty())
-//      {
-//        groupItems.erase(id);
-//        return -1;
-//      }
-//
-//    // make width & height slightly smaller than contentBounds
-//    float x0,y0,x1,y1;
-//    g.contentBounds(x0,y0,x1,y1);
-//    g.width=0.95*abs(x1-x0); 
-//    g.height=0.95*abs(y1-y0);
-//
-//    g.centreIconOnContents();
-//    g.computeDisplayZoom();
-//    g.updatePortLocation();
-//
+//  int Minsky::addOperation(const char* o)
+//  {
+//    OperationPtr newOp(static_cast<OperationType::Type>
+//                       (enumKey<OperationType::Type>(o)));
+//    if (!newOp) return -1;
+//    int id=getNewId();
+//    model->addItem(id, newOp);
 //    markEdited();
+//    return id;
+//  }
+
+//  int Minsky::copyOperation(int id)
+//  {
+//    auto source=model->findItem(id);
+//    if (!source) return -1;
+//    int newId=getNewId();
+//    model->addItem(newId, source->clone());
+//    markEdited();
+//    return newId;
+//  }
 //
-//    if (currentSelection.group>=0) 
-//      addGroupToGroup(currentSelection.group, id);
+//
+//  void Minsky::deleteOperation(int opid)
+//  {
+//    if (model->removeItem(opid))
+//      markEdited();
+//  }
 
-    return id;
-  }
+//  int Minsky::createGroup()
+//  {
+//    //TODO
+//    int id=getNewId();
+//    GroupPtr g=model->addGroup(id, new Group);
+//
+////    g->addWires(currentSelection.wires);
+////    if (currentSelection.group>=0 && groupItems.count(currentSelection.group))
+////      {
+////        GroupIcon& oldg=groupItems[currentSelection.group];
+////        for (int w: currentSelection.wires)
+////          oldg.delWire(w);
+////      }
+////
+////    for (int i: currentSelection.operations)
+////      addOperationToGroup(id, i);
+////    for (int i: currentSelection.variables)
+////      addVariableToGroup(id, i, false /* don't check IO regions */);
+////    for (int i: currentSelection.groups)
+////      addGroupToGroup(id, i);
+////  
+////    if (g.empty())
+////      {
+////        groupItems.erase(id);
+////        return -1;
+////      }
+////
+////    // make width & height slightly smaller than contentBounds
+////    float x0,y0,x1,y1;
+////    g.contentBounds(x0,y0,x1,y1);
+////    g.width=0.95*abs(x1-x0); 
+////    g.height=0.95*abs(y1-y0);
+////
+////    g.centreIconOnContents();
+////    g.computeDisplayZoom();
+////    g.updatePortLocation();
+////
+////    markEdited();
+////
+////    if (currentSelection.group>=0) 
+////      addGroupToGroup(currentSelection.group, id);
+//
+//    return id;
+//  }
 
-  void Minsky::ungroup(int id)
-  {
-    if (auto src=dynamic_pointer_cast<Group>(model->findItem(id)))
-      {
-        model->moveContents(*src);
-        if (auto parent=src->group.lock())
-          parent->groups.erase(id);
-        else
-          model->groups.erase(id);
-        markEdited();
-      }
-  }
+//  void Minsky::ungroup(int id)
+//  {
+//    if (auto src=dynamic_pointer_cast<Group>(model->findItem(id)))
+//      {
+//        model->moveContents(*src);
+//        if (auto parent=src->group.lock())
+//          parent->groups.erase(id);
+//        else
+//          model->groups.erase(id);
+//        markEdited();
+//      }
+//  }
 
   void Minsky::clearSelection()
   {
@@ -443,73 +433,73 @@ namespace minsky
   }
 
 
-  int Minsky::copyGroup(int id)
-  {
-    // TODO: need to create copies of all contained items and wires
-//    GroupIcons::iterator srcIt=groupItems.find(id);
-//    if (srcIt==groupItems.end()) return -1; //src not found
-    int newId=getNewId();
-//    GroupIcon& g=groupItems[newId];
-//    g.copy(*srcIt);
-//    markEdited();
-    return newId;
-  }
+//  int Minsky::copyGroup(int id)
+//  {
+//    // TODO: need to create copies of all contained items and wires
+////    GroupIcons::iterator srcIt=groupItems.find(id);
+////    if (srcIt==groupItems.end()) return -1; //src not found
+//    int newId=getNewId();
+////    GroupIcon& g=groupItems[newId];
+////    g.copy(*srcIt);
+////    markEdited();
+//    return newId;
+//  }
 
-  int Minsky::insertGroupFromFile(const char* file)
-  {
-//    schema1::Minsky currentSchema;
-//    ifstream inf(file);
-//    xml_unpack_t saveFile(inf);
-//    xml_unpack(saveFile, "Minsky", currentSchema);
+//  int Minsky::insertGroupFromFile(const char* file)
+//  {
+////    schema1::Minsky currentSchema;
+////    ifstream inf(file);
+////    xml_unpack_t saveFile(inf);
+////    xml_unpack(saveFile, "Minsky", currentSchema);
+////
+////    if (currentSchema.version != currentSchema.schemaVersion)
+////      throw error("Invalid Minsky schema file");
+////
+//    int newId=getNewId();
+////    GroupIcon& g=groupItems[newId];
+////    currentSchema.populateGroup(g);
+////    // all variables should be set to group scope, as this has come in from a file, so shouldn't reference 
+////    // outside of itself
+////    g.rehostGlobalVars(newId);
 //
-//    if (currentSchema.version != currentSchema.schemaVersion)
-//      throw error("Invalid Minsky schema file");
+//    return newId;
+//  }
+
+//  vector<int> Minsky::unwiredOperations() const
+//  {
+//    return model->findItemIds([&](const ItemPtr& x) {
+//        if (auto o=dynamic_cast<OperationBase*>(x.get()))
+//          for (auto& p: o->ports)
+//            if (p->input() && !p->multiWireAllowed() && p->wires.empty())
+//              return true;
+//        return false;
+//      }
+//      );
+//  }
 //
-    int newId=getNewId();
-//    GroupIcon& g=groupItems[newId];
-//    currentSchema.populateGroup(g);
-//    // all variables should be set to group scope, as this has come in from a file, so shouldn't reference 
-//    // outside of itself
-//    g.rehostGlobalVars(newId);
-
-    return newId;
-  }
-
-  vector<int> Minsky::unwiredOperations() const
-  {
-    return model->findItemIds([&](const ItemPtr& x) {
-        if (auto o=dynamic_cast<OperationBase*>(x.get()))
-          for (auto& p: o->ports)
-            if (p->input() && !p->multiWireAllowed() && p->wires.empty())
-              return true;
-        return false;
-      }
-      );
-  }
-
-  int Minsky::newVariable(const string& name, VariableType::Type type) 
-  {
-    VariablePtr v(type, name);
-    return model->addItem(getNewId(), v).id();
-  }
+//  int Minsky::newVariable(const string& name, VariableType::Type type) 
+//  {
+//    VariablePtr v(type, name);
+//    return model->addItem(getNewId(), v).id();
+//  }
 
 
-  int Minsky::copyVariable(int id)
-  {
-    const auto& it=model->findItem(id);
-    if (auto v=dynamic_cast<const VariableBase*>(it.get()))
-      {
-        int id=getNewId();
-        VariableBase* v1=v->clone();
-        assert(v1);
-        model->addItem(id, v1);
-        v1->m_visible=true; // a copied variable should always be visible!
-        v1->sliderVisible=false; // sliders should start out invisible
-        markEdited();
-        return id;
-      }
-    return -1;
-  }
+//  int Minsky::copyVariable(int id)
+//  {
+//    const auto& it=model->findItem(id);
+//    if (auto v=dynamic_cast<const VariableBase*>(it.get()))
+//      {
+//        int id=getNewId();
+//        VariableBase* v1=v->clone();
+//        assert(v1);
+//        model->addItem(id, v1);
+//        v1->m_visible=true; // a copied variable should always be visible!
+//        v1->sliderVisible=false; // sliders should start out invisible
+//        markEdited();
+//        return id;
+//      }
+//    return -1;
+//  }
         
   void Minsky::garbageCollect()
   {
@@ -606,7 +596,7 @@ namespace minsky
       (*e)->reset();
   }
 
-  std::set<string> Minsky::matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac)
+  std::set<string> Minsky::matchingTableColumns(GodleyTable& currTable, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
     // matching liability with assets and vice-versa
@@ -623,6 +613,7 @@ namespace minsky
       }
 
     std::set<string> duplicatedColumns;
+    vector<string> columns=currTable.getColumnVariables();
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator it)
@@ -631,21 +622,37 @@ namespace minsky
            {
              vector<string> columns=gi->table.getColumnVariables();
              for (size_t i=0; i<columns.size(); ++i)
-               {
-                 //            if (columns[i].find(':')==string::npos) 
-                 //              // local variable, need to qualify
-                 //              columns[i]=gi->table.title.substr(0,5)+"["+str(gi->id())+"]:"+columns[i];
-                 if (it->id()==currTable || r.count(columns[i]) || gi->table._assetClass(i+1)!=ac) 
-                   {
-                     r.erase(columns[i]); // column already duplicated, or in current, nothing to match
-                     duplicatedColumns.insert(columns[i]);
-                   }
-                 else if (!duplicatedColumns.count(columns[i]))
-                   r.insert(columns[i]);
-               }
-           }
-         return false;
-       });
+              {
+                if (columns[i].find(':')==string::npos) 
+//                  // local variable, need to qualify
+//                  if (auto g=gi->group.lock())
+//                      columns[i]="["+str(g->id)+"]:"+columns[i];
+//                  else
+//                    columns[i]=':'+columns[i];
+                if (&gi->table==&currTable || r.count(columns[i]) || gi->table._assetClass(i+1)!=ac) 
+                  {
+                    r.erase(columns[i]); // column already duplicated, or in current, nothing to match
+                    duplicatedColumns.insert(columns[i]);
+                  }
+                else if (!duplicatedColumns.count(columns[i]))
+                  r.insert(columns[i]);
+              }
+          }
+        return false;
+      });
+    for (size_t i=0; i<columns.size(); ++i)
+      {
+        //            if (columns[i].find(':')==string::npos) 
+        //              // local variable, need to qualify
+        //              columns[i]=gi->table.title.substr(0,5)+"["+str(gi->id())+"]:"+columns[i];
+        if (r.count(columns[i]) || currTable._assetClass(i+1)!=ac) 
+          {
+            r.erase(columns[i]); // column already duplicated, or in current, nothing to match
+            duplicatedColumns.insert(columns[i]);
+          }
+        else if (!duplicatedColumns.count(columns[i]))
+          r.insert(columns[i]);
+      }
     return r;
   }
 
@@ -793,7 +800,7 @@ namespace minsky
        if (x.find(':')==string::npos) //local scope requested
          {
            int scope=-1;
-           if (auto g=Super::operator*()->group.lock()) scope=g->id();
+           if (auto g=Super::operator*()->group.lock()) scope=g->id;
            return VariableValue::valueId(scope,x);
          }
        return VariableValue::valueId(x);}
@@ -1086,25 +1093,25 @@ namespace minsky
 //    m_zoomFactor=factor;
   }
 
-  void Minsky::addItemToGroup(int groupId, int id)
-  {
-    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
-      if (auto& it=model->findItem(id))
-        g->addItem(it);
-  }
-
-  void Minsky::removeItemFromGroup(int groupId, int varId)
-  {
-    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
-      {
-        auto vit=g->items.find(varId);
-        if (vit!=g->items.end())
-          if (auto parent=g->group.lock())
-            parent->addItem(*vit);
-          else
-            model->addItem(*vit);
-      }
-  }
+//  void Minsky::addItemToGroup(int groupId, int id)
+//  {
+//    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
+//      if (auto& it=model->findItem(id))
+//        g->addItem(it);
+//  }
+//
+//  void Minsky::removeItemFromGroup(int groupId, int varId)
+//  {
+//    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
+//      {
+//        auto vit=g->items.find(varId);
+//        if (vit!=g->items.end())
+//          if (auto parent=g->group.lock())
+//            parent->addItem(*vit);
+//          else
+//            model->addItem(*vit);
+//      }
+//  }
 
   namespace
   {
@@ -1112,6 +1119,8 @@ namespace minsky
     {
       set<const Port*> portsVisited;
       vector<const Port*> stack;
+      void emplace(Port* x, Port* y) 
+      {multimap<const Port*,const Port*>::emplace(x,y);}
       // depth-first network walk, return true if cycle detected
       bool followWire(const Port* p)
       {
@@ -1230,10 +1239,10 @@ namespace minsky
       }
   }
   
-    void Minsky::resetNextId()
-    {
-      nextId=model->maxId()+1;
-    }
+//    void Minsky::resetNextId()
+//    {
+//      nextId=model->maxId()+1;
+//    }
 
   bool Minsky::pushHistoryIfDifferent()
   {

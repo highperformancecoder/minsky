@@ -50,9 +50,9 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,constructEquationsEx1)
     {
-      GodleyIcon& gi=dynamic_cast<GodleyIcon&>
-        (*model->items[addGodleyTable(0,0)]);
-      GodleyTable& godley=gi.table;
+      auto gi=new GodleyIcon;
+      model->addItem(gi);
+      GodleyTable& godley=gi->table;
       godley.resize(3,4);
       godley.cell(0,1)="c";
       godley.cell(0,2)="d";
@@ -60,17 +60,13 @@ SUITE(Minsky)
       godley.cell(2,1)="a";
       godley.cell(2,2)="b";
       godley.cell(2,3)="f";
-      gi.update();
+      gi->update();
 
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      map<string, int> varId;
       for (ItemPtr& i: model->items)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
-          {
-            var[v->name()]=v;
-            varId[v->name()]=i.id();
-          }
+          var[v->name()]=v;
 
       CHECK(var["a"]->lhs());
       CHECK(var["b"]->lhs());
@@ -79,21 +75,21 @@ SUITE(Minsky)
       CHECK(!var["e"]->lhs());
       CHECK(var["f"]->lhs());
 
-      int addOp=addOperation("add"); 
-      CHECK_EQUAL(3, model->items[addOp]->ports.size());
-      int intOp=addOperation("integrate"); 
-      CHECK_EQUAL(2, model->items[intOp]->ports.size());
-      int mulOp=addOperation("multiply"); 
-      CHECK_EQUAL(3, model->items[mulOp]->ports.size());
+      auto addOp=model->addItem(OperationBase::create(OperationType::add)); 
+      CHECK_EQUAL(3, addOp->ports.size());
+      auto intOp=model->addItem(OperationBase::create(OperationType::integrate)); 
+      CHECK_EQUAL(2, intOp->ports.size());
+      auto mulOp=model->addItem(OperationBase::create(OperationType::multiply)); 
+      CHECK_EQUAL(3, mulOp->ports.size());
  
-      addWire(varId["e"], varId["f"], 1, {});
-      addWire(varId["c"], addOp, 1, {});
-      addWire(varId["d"], addOp, 2, {});
-      addWire(addOp, intOp, 1, {});
-      addWire(intOp, varId["a"], 1, {});
-      addWire(intOp, mulOp, 1, {});
-      addWire(varId["e"], mulOp, 2, {});
-      addWire(mulOp, varId["b"], 1, {});
+      addWire(*var["e"], *var["f"], 1, {});
+      addWire(*var["c"], *addOp, 1, {});
+      addWire(*var["d"], *addOp, 2, {});
+      addWire(*addOp, *intOp, 1, {});
+      addWire(*intOp, *var["a"], 1, {});
+      addWire(*intOp, *mulOp, 1, {});
+      addWire(*var["e"], *mulOp, 2, {});
+      addWire(*mulOp, *var["b"], 1, {});
 
       for (auto& w: model->wires)
         {
@@ -145,32 +141,28 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,constructEquationsEx2)
     {
-      newVariable("g");
-      newVariable("h");
+      model->addItem(VariablePtr(VariableType::flow,"g"));
+      model->addItem(VariablePtr(VariableType::flow,"h"));
 
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      map<string, int> varId;
       for (ItemPtr& i: model->items)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
-          {
             var[v->name()]=v;
-            varId[v->name()]=i.id();
-          }
 
-      int op4=addOperation("constant");
-      CHECK_EQUAL(1, model->items[op4]->ports.size());
-      int op5=addOperation("constant");
-      CHECK_EQUAL(1, model->items[op5]->ports.size());
-      int op6=addOperation("add");
-      CHECK_EQUAL(3, model->items[op6]->ports.size());
+      auto op4=model->addItem(OperationBase::create(OperationType::constant));
+      CHECK_EQUAL(1, op4->ports.size());
+      auto op5=model->addItem(OperationBase::create(OperationType::constant));
+      CHECK_EQUAL(1, op5->ports.size());
+      auto op6=model->addItem(OperationBase::create(OperationType::add));
+      CHECK_EQUAL(3, op6->ports.size());
 
       ecolab::array<float> coords(4,0);
  
-      int wire8=addWire(op4, varId["g"], 1);
-      int wire9=addWire(op4, op6, 1);
-      int wire10=addWire(op5, op6, 2);
-      int wire11=addWire(op6, varId["h"], 1);
+      auto wire8=addWire(*op4, *var["g"], 1);
+      auto wire9=addWire(*op4, *op6, 1);
+      auto wire10=addWire(*op5, *op6, 2);
+      auto wire11=addWire(*op6, *var["h"], 1);
  
       for (auto& w: model->wires)
         {
@@ -178,11 +170,11 @@ SUITE(Minsky)
           CHECK(w->to()->input());
         }
  
-      CHECK(dynamic_cast<Constant*>(model->items[op4].get()));
-      if (Constant* c=dynamic_cast<Constant*>(model->items[op4].get()))
+      CHECK(dynamic_cast<Constant*>(op4.get()));
+      if (Constant* c=dynamic_cast<Constant*>(op4.get()))
         c->value=0.1;
-      CHECK(dynamic_cast<Constant*>(model->items[op5].get()));
-      if (Constant* c=dynamic_cast<Constant*>(model->items[op5].get()))
+      CHECK(dynamic_cast<Constant*>(op5.get()));
+      if (Constant* c=dynamic_cast<Constant*>(op5.get()))
         c->value=0.2;
 
       constructEquations();
@@ -195,9 +187,9 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyEval)
     {
-      GodleyIcon& gi=dynamic_cast<GodleyIcon&>
-        (*model->items[addGodleyTable(0,0)]);
-      GodleyTable& godley=gi.table;
+      auto gi=new GodleyIcon;
+      model->addItem(gi);
+      GodleyTable& godley=gi->table;
       godley.resize(3,4);
       godley.cell(0,1)=":c";
       godley.cell(0,2)=":d";
@@ -208,7 +200,7 @@ SUITE(Minsky)
       godley.cell(1,3)="30";
       godley.cell(2,1)=":a";
       godley.cell(2,2)="-:a";
-      gi.update();
+      gi->update();
  
       variableValues[":a"].init="5";
  
@@ -243,9 +235,9 @@ SUITE(Minsky)
   */
   TEST_FIXTURE(TestFixture,derivative)
     {
-      GodleyIcon& gi=dynamic_cast<GodleyIcon&>
-        (*model->items[addGodleyTable(0,0)]);
-      GodleyTable& godley=gi.table;
+      auto gi=new GodleyIcon;
+      model->addItem(gi);
+      GodleyTable& godley=gi->table;
       garbageCollect();
  
       godley.resize(3,4);
@@ -255,30 +247,26 @@ SUITE(Minsky)
       godley.cell(2,1)="a";
       godley.cell(2,2)="b";
       godley.cell(2,3)="f";
-      gi.update();
+      gi->update();
  
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      map<string, int> varId;
       for (ItemPtr& i: model->items)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
-          {
-            var[v->name()]=v;
-            varId[v->name()]=i.id();
-          }
+          var[v->name()]=v;
 
-      int op1=addOperation("add");
-      int op2=addOperation("integrate");
-      int op3=addOperation("multiply");
+      auto op1=model->addItem(OperationPtr(OperationType::add));
+      auto op2=model->addItem(OperationPtr(OperationType::integrate));
+      auto op3=model->addItem(OperationPtr(OperationType::multiply));
   
-      addWire(varId["e"], varId["f"], 1);
-      addWire(varId["c"], op1, 1);
-      addWire(varId["d"], op1, 2);
-      addWire(op1, op2, 1);
-      addWire(op2, varId["a"], 1);
-      addWire(op2, op3, 1);
-      addWire(varId["e"], op3, 2);
-      addWire(op3, varId["b"], 1);
+      addWire(*var["e"], *var["f"], 1);
+      addWire(*var["c"], *op1, 1);
+      addWire(*var["d"], *op1, 2);
+      addWire(*op1, *op2, 1);
+      addWire(*op2, *var["a"], 1);
+      addWire(*op2, *op3, 1);
+      addWire(*var["e"],* op3, 2);
+      addWire(*op3, *var["b"], 1);
  
       CHECK(!cycleCheck());
       reset();
@@ -315,20 +303,19 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,integrals)
     {
-      CHECK_EQUAL(0, nextId);
       // First, integrate a constant
-      auto op1=addOperation("constant");
-      auto op2=addOperation("integrate");
+      auto op1=model->addItem(OperationPtr(OperationBase::constant));
+      auto op2=model->addItem(OperationPtr(OperationBase::integrate));
       
-      IntOp* intOp=dynamic_cast<IntOp*>(model->items[op2].get());
+      IntOp* intOp=dynamic_cast<IntOp*>(op2.get());
       CHECK(intOp);
       intOp->description("output");
-      addWire(op1,op2,1,vector<float>());
+      addWire(*op1,*op2,1,vector<float>());
 
       //variables.makeConsistent();
       constructEquations();
       CHECK(variableValues.validEntries());
-      double& value = dynamic_cast<Constant*>(model->items[op1].get())->value;
+      double& value = dynamic_cast<Constant*>(op1.get())->value;
       value=10;
       nSteps=1;
       step();
@@ -337,12 +324,12 @@ SUITE(Minsky)
       CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"].value(), 1e-5);
  
       // now integrate the linear function
-      auto op3=addOperation("integrate");
-      addWire(op2, op3, 1, vector<float>());
+      auto op3=model->addItem(OperationPtr(OperationBase::integrate));
+      addWire(*op2, *op3, 1, vector<float>());
       reset();
       step();
       //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
-      intOp=dynamic_cast<IntOp*>(model->items[op3].get());
+      intOp=dynamic_cast<IntOp*>(op3.get());
       CHECK(intOp);
       CHECK_CLOSE(0.5*value*t*t, intOp->getIntVar()->value(), 1e-5);
     }
@@ -360,14 +347,14 @@ SUITE(Minsky)
   TEST_FIXTURE(TestFixture,cyclicThrows)
     {
       // First, integrate a constant
-      auto op1=model->addItem(getNewId(),OperationPtr(OperationType::add));
-      auto w=model->addItem(getNewId(),VariablePtr(VariableType::flow,"w"));
-      auto a=model->addItem(getNewId(),VariablePtr(VariableType::flow,"a"));
-      CHECK(model->addWire(getNewId(),new Wire(op1->ports[0], w->ports[1])));
-      CHECK(model->addWire(getNewId(), new Wire(w->ports[0], op1->ports[1])));
-      model->addWire(getNewId(), new Wire(op1->ports[0], w->ports[1]));
-      model->addWire(getNewId(), new Wire(w->ports[0], op1->ports[1]));
-      model->addWire(getNewId(), new Wire(a->ports[0], op1->ports[2]));
+      auto op1=model->addItem(OperationPtr(OperationType::add));
+      auto w=model->addItem(VariablePtr(VariableType::flow,"w"));
+      auto a=model->addItem(VariablePtr(VariableType::flow,"a"));
+      CHECK(model->addWire(new Wire(op1->ports[0], w->ports[1])));
+      CHECK(model->addWire(new Wire(w->ports[0], op1->ports[1])));
+      model->addWire(new Wire(op1->ports[0], w->ports[1]));
+      model->addWire(new Wire(w->ports[0], op1->ports[1]));
+      model->addWire(new Wire(a->ports[0], op1->ports[2]));
 
       CHECK(cycleCheck());
       CHECK_THROW(constructEquations(), ecolab::error);
@@ -386,16 +373,16 @@ SUITE(Minsky)
   TEST_FIXTURE(TestFixture,cyclicIntegrateDoesntThrow)
     {
       // First, integrate a constant
-      auto op1=model->addItem(getNewId(),OperationPtr(OperationType::integrate));
-      auto op2=model->addItem(getNewId(),OperationPtr(OperationType::multiply));
-      auto a=model->addItem(getNewId(),VariablePtr(VariableType::flow,"a"));
-      CHECK(model->addWire(getNewId(),new Wire(op1->ports[0], op2->ports[1])));
-      CHECK(model->addWire(getNewId(),new Wire(op2->ports[0], op1->ports[1])));
-      CHECK(model->addWire(getNewId(),new Wire(a->ports[0], op2->ports[2])));
+      auto op1=model->addItem(OperationPtr(OperationType::integrate));
+      auto op2=model->addItem(OperationPtr(OperationType::multiply));
+      auto a=model->addItem(VariablePtr(VariableType::flow,"a"));
+      CHECK(model->addWire(new Wire(op1->ports[0], op2->ports[1])));
+      CHECK(model->addWire(new Wire(op2->ports[0], op1->ports[1])));
+      CHECK(model->addWire(new Wire(a->ports[0], op2->ports[2])));
 
-      model->addWire(getNewId(), new Wire(op1->ports[0], op2->ports[1]));
-      model->addWire(getNewId(), new Wire(op2->ports[0], op1->ports[1]));
-      model->addWire(getNewId(), new Wire(a->ports[0], op2->ports[2]));
+      model->addWire(new Wire(op1->ports[0], op2->ports[1]));
+      model->addWire(new Wire(op2->ports[0], op1->ports[1]));
+      model->addWire(new Wire(a->ports[0], op2->ports[2]));
 
       CHECK(!cycleCheck());
       constructEquations();
@@ -403,8 +390,7 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyIconVariableOrder)
     {
-      GodleyIcon& g=dynamic_cast<GodleyIcon&>
-        (*model->items[addGodleyTable(0,0)]);
+      auto& g=dynamic_cast<GodleyIcon&>(*model->addItem(new GodleyIcon));
       g.table.dimension(3,4);
       g.table.cell(0,1)="a1";
       g.table.cell(0,2)="z2";
@@ -431,21 +417,21 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,multiVariableInputsAdd)
     {
-      auto& varA = model->items[newVariable("a", VariableType::flow)];
-      auto& varB = model->items[newVariable("b", VariableType::flow)];
-      auto& varC = model->items[newVariable("c", VariableType::flow)];
+      auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
+      auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
+      auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
       variableValues[":a"].init="0.1";
       variableValues[":b"].init="0.2";
 
-      auto& intOp = model->items[addOperation("integrate")]; //enables equations to step
+      auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
 
-      auto& op=model->items[addOperation("add")];
+      auto op=model->addItem(OperationBase::create(OperationType::add));
 
-      model->addWire(getNewId(), new Wire(varA->ports[0], op->ports[1]));
-      model->addWire(getNewId(), new Wire(varB->ports[0], op->ports[1]));
-      model->addWire(getNewId(), new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(getNewId(), new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports[0], op->ports[1]));
+      model->addWire(new Wire(varB->ports[0], op->ports[1]));
+      model->addWire(new Wire(op->ports[0], varC->ports[1]));
+      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -463,21 +449,20 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,multiVariableInputsSubtract)
     {
-      auto& varA = model->items[newVariable("a", VariableType::flow)];
-      auto& varB = model->items[newVariable("b", VariableType::flow)];
-      auto& varC = model->items[newVariable("c", VariableType::flow)];
+      auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
+      auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
+      auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
       variableValues[":a"].init="0.1";
       variableValues[":b"].init="0.2";
 
-      auto& intOp = model->items[addOperation("integrate")]; //enables equations to step
+      auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
+      auto op=model->addItem(OperationBase::create(OperationType::subtract));
 
-      auto& op=model->items[addOperation("subtract")];
-
-      model->addWire(getNewId(), new Wire(varA->ports[0], op->ports[2]));
-      model->addWire(getNewId(), new Wire(varB->ports[0], op->ports[2]));
-      model->addWire(getNewId(), new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(getNewId(), new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports[0], op->ports[2]));
+      model->addWire(new Wire(varB->ports[0], op->ports[2]));
+      model->addWire(new Wire(op->ports[0], varC->ports[1]));
+      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -495,21 +480,20 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,multiVariableInputsMultiply)
     {
-      auto& varA = model->items[newVariable("a", VariableType::flow)];
-      auto& varB = model->items[newVariable("b", VariableType::flow)];
-      auto& varC = model->items[newVariable("c", VariableType::flow)];
+      auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
+      auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
+      auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
       variableValues[":a"].init="0.1";
       variableValues[":b"].init="0.2";
 
-      auto& intOp = model->items[addOperation("integrate")]; //enables equations to step
- 
+      auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
+  
+      auto op=model->addItem(OperationBase::create(OperationType::multiply));
 
-      auto& op=model->items[addOperation("multiply")];
-
-      model->addWire(getNewId(), new Wire(varA->ports[0], op->ports[2]));
-      model->addWire(getNewId(), new Wire(varB->ports[0], op->ports[2]));
-      model->addWire(getNewId(), new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(getNewId(), new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports[0], op->ports[2]));
+      model->addWire(new Wire(varB->ports[0], op->ports[2]));
+      model->addWire(new Wire(op->ports[0], varC->ports[1]));
+      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -527,20 +511,20 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,multiVariableInputsDivide)
     {
-      auto& varA = model->items[newVariable("a", VariableType::flow)];
-      auto& varB = model->items[newVariable("b", VariableType::flow)];
-      auto& varC = model->items[newVariable("c", VariableType::flow)];
+      auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
+      auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
+      auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
       variableValues[":a"].init="0.1";
       variableValues[":b"].init="0.2";
 
-      auto& intOp = model->items[addOperation("integrate")]; //enables equations to step
+      auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
+  
+      auto op=model->addItem(OperationBase::create(OperationType::divide));
 
-      auto& op=model->items[addOperation("divide")];
-
-      model->addWire(getNewId(), new Wire(varA->ports[0], op->ports[2]));
-      model->addWire(getNewId(), new Wire(varB->ports[0], op->ports[2]));
-      model->addWire(getNewId(), new Wire(op->ports[0], varC->ports[1]));
-      model->addWire(getNewId(), new Wire(varC->ports[0], intOp->ports[1]));
+      model->addWire(new Wire(varA->ports[0], op->ports[2]));
+      model->addWire(new Wire(varB->ports[0], op->ports[2]));
+      model->addWire(new Wire(op->ports[0], varC->ports[1]));
+      model->addWire(new Wire(varC->ports[0], intOp->ports[1]));
 
       // move stuff around to make layout a bit better
       varA->moveTo(10,100);
@@ -689,9 +673,9 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,multiGodleyRules)
     {
-      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
-      auto g2=new GodleyIcon; model->addItem(getNewId(), g2);
-      auto g3=new GodleyIcon; model->addItem(getNewId(), g3);
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
+      auto g3=new GodleyIcon; model->addItem(g3);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
       GodleyTable& godley3=g3->table;
@@ -770,10 +754,9 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,matchingTableColumns)
     {
-      int id1=getNewId(), id2=getNewId(), id3=getNewId();
-      auto g1=new GodleyIcon; model->addItem(id1, g1);
-      auto g2=new GodleyIcon; model->addItem(id2, g2);
-      auto g3=new GodleyIcon; model->addItem(id3, g3);
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
+      auto g3=new GodleyIcon; model->addItem(g3);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
       GodleyTable& godley3=g3->table;
@@ -791,33 +774,33 @@ SUITE(Minsky)
       godley1.cell(0,1)="a1";  
       godley1.cell(0,2)="l1";
 
-      set<string> cols=matchingTableColumns(2,GodleyAssetClass::asset);
+      set<string> cols=matchingTableColumns(godley2,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l1", *cols.begin());
 
       godley2.cell(0,1)="l1";  
       godley2.cell(0,2)="l2";  
 
-      cols=matchingTableColumns(id1,GodleyAssetClass::asset);
+      cols=matchingTableColumns(godley1,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
 
-      cols=matchingTableColumns(id1,GodleyAssetClass::liability);
+      cols=matchingTableColumns(godley1,GodleyAssetClass::liability);
       CHECK_EQUAL(0, cols.size());
 
-      cols=matchingTableColumns(id3,GodleyAssetClass::asset);
+      cols=matchingTableColumns(godley3,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
 
-      cols=matchingTableColumns(id3,GodleyAssetClass::liability);
+      cols=matchingTableColumns(godley3,GodleyAssetClass::liability);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("a1", *cols.begin());
 
-      newVariable(":a",VariableType::flow);
-      newVariable(":b",VariableType::flow);
-      newVariable(":c",VariableType::flow);
-      newVariable(":d",VariableType::flow);
-      newVariable(":e",VariableType::flow);
+      model->addItem(VariablePtr(VariableType::flow, ":a"));
+      model->addItem(VariablePtr(VariableType::flow, ":b"));
+      model->addItem(VariablePtr(VariableType::flow, ":c"));
+      model->addItem(VariablePtr(VariableType::flow, ":d"));
+      model->addItem(VariablePtr(VariableType::flow, ":e"));
 
       // OK now check some balanceDuplicateColumns functionality
       godley1.cell(1,0)="row1";
@@ -842,8 +825,8 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,importDuplicateColumn)
     {
-      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
-      auto g2=new GodleyIcon; model->addItem(getNewId(), g2);
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
       godley1.resize(4,2);
@@ -878,7 +861,7 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyRowSums)
     {
-      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
       godley1.resize(6,3);
       godley1.cell(1,1)="a";
@@ -889,7 +872,7 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyMoveRowCol)
     {
-      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
       godley1.resize(6,3);
       godley1.cell(1,1)="a";
@@ -910,9 +893,9 @@ SUITE(Minsky)
 
   TEST_FIXTURE(TestFixture,godleyNameUnique)
     {
-      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
-      auto g2=new GodleyIcon; model->addItem(getNewId(), g2);
-      auto g3=new GodleyIcon; model->addItem(getNewId(), g3);
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
+      auto g3=new GodleyIcon; model->addItem(g3);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
       GodleyTable& godley3=g3->table;
@@ -926,7 +909,7 @@ SUITE(Minsky)
 
     TEST_FIXTURE(TestFixture,clearInitCond)
     {
-      auto g1=new GodleyIcon; model->addItem(getNewId(), g1);
+      auto g1=new GodleyIcon; model->addItem(g1);
       CHECK(g1->table.initialConditionRow(1));
       // to clear a cell, it first needs to contain something
       g1->setCell(1,1,"1");

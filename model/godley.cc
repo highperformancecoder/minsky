@@ -226,13 +226,13 @@ void GodleyTable::nameUnique()
     {
       string trialName="Godley"+str(i);
       
-      if (cminsky().model->findAny
+      if (!cminsky().model->findAny
           (&Group::items,
            [&](const ItemPtr& i)
            {
              auto g=dynamic_cast<GodleyIcon*>(i.get());
              return g && g->table.title == trialName;
-           }).id()==-1)
+           }))
         {
           title = trialName;
           break;

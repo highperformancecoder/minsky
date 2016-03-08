@@ -1140,14 +1140,14 @@ namespace MathDAG
        [&](const Items&, Items::const_iterator i)
        {
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-           processGodleyTable(godleyVars, g->table, i->id());
+           processGodleyTable(godleyVars, g->table/*, i->id()*/);
          return false;
        });
 
     for (map<string, GodleyColumnDAG>::iterator g=godleyVars.begin(); 
          g!=godleyVars.end(); ++g)
       {
-        assert(g->second.godleyId>=0);
+        //        assert(g->second.godleyId>=0);
         VariableDAG* v=integVarMap[VariableValue::valueId(g->first)]=
           makeDAG(VariableValue::valueId(g->first), VariableValue::scope(g->first), 
                   VariableValue::uqName(g->first), VariableValue::stock).get();
@@ -1469,7 +1469,7 @@ namespace MathDAG
   }
 
   void SystemOfEquations::processGodleyTable
-  (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley, int godleyId)
+  (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley/*, int godleyId*/)
   {
     for (size_t c=1; c<godley.cols(); ++c)
       {
@@ -1482,7 +1482,7 @@ namespace MathDAG
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
-        gd.godleyId=godleyId;
+        //        gd.godleyId=godleyId;
         gd.arguments.resize(2);
         vector<WeakNodePtr>& arguments=gd.arguments[0];
         for (size_t r=1; r<godley.rows(); ++r)

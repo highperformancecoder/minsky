@@ -80,7 +80,7 @@ namespace minsky
           SwitchIconItem* xglItem=(SwitchIconItem*)(tkXGLItem->cairoItem);
           if (xglItem) 
             {
-              xglItem->sw = minsky::minsky().model->findItem(tkXGLItem->id);
+              // TODO: xglItem->sw = minsky::minsky().model->findItem(tkXGLItem->id);
               TkImageCode::ComputeImageBbox(canvas, tkXGLItem);
             }
         }

@@ -116,7 +116,7 @@ namespace
       {
         if (MinskyCairoItem* i=(MinskyCairoItem*)(tkMinskyItem->cairoItem))
           {
-            i->op=minsky::minsky().model->findItem(tkMinskyItem->id);
+            //TODO i->op=minsky::minsky().model->findItem(tkMinskyItem->id);
             TkImageCode::ComputeImageBbox(canvas, tkMinskyItem);
           }
       }

@@ -82,6 +82,10 @@ namespace minsky
       else
         return VariableValue::valueId(x);
     }
+  private:
+    void updateVars(Variables& vars, 
+                    const vector<string>& varNames, 
+                    VariableBase::Type varType);
   };
 }
 

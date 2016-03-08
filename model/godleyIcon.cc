@@ -64,9 +64,30 @@ namespace minsky
       }
     };
 
-    void updateVars(GodleyIcon::Variables& vars, 
+    // determine the width and maximum height on screen of variables in vars
+    void accumulateWidthHeight(const GodleyIcon::Variables& vars,
+                               float& height, float& width)
+    {
+      float h=0;
+      for (auto& v: vars)
+        {
+          RenderVariable rv(*v);
+          h+=2*rv.height();
+          if (h>height) height=h;
+          float w=2*rv.width()+2;
+          if (w>width) width=w;
+        }
+    }
+
+    inline bool isDotOrDigit(char x)
+    {return x=='.' || isdigit(x);}
+
+
+  }
+
+    void GodleyIcon::updateVars(GodleyIcon::Variables& vars, 
                     const vector<string>& varNames, 
-                    VariableBase::Type varType)
+                    VariableType::Type varType)
     {
       // update the map of variables from the Godley table
       set<VariablePtr, OrderByName> oldVars(vars.begin(), vars.end());
@@ -88,7 +109,7 @@ namespace minsky
             {
               // add new variable
               vars.push_back(newVar);
-              minsky::minsky().model->addItem(minsky::minsky().getNewId(), newVar);
+              group.lock()->addItem(newVar);
             }
           else
             {
@@ -111,25 +132,6 @@ namespace minsky
            return false;
          });
     }
-
-    // determine the width and maximum height on screen of variables in vars
-    void accumulateWidthHeight(const GodleyIcon::Variables& vars,
-                               float& height, float& width)
-    {
-      float h=0;
-      for (auto& v: vars)
-        {
-          RenderVariable rv(*v);
-          h+=2*rv.height();
-          if (h>height) height=h;
-          float w=2*rv.width()+2;
-          if (w>width) width=w;
-        }
-    }
-  }
-
-  inline bool isDotOrDigit(char x)
-  {return x=='.' || isdigit(x);}
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
   {
@@ -294,16 +296,16 @@ namespace minsky
 //  }
 
 
-  int GodleyIcon::select(float x, float y) const
-  {
-    for (auto& v: flowVars)
-      if (RenderVariable(*v).inImage(x,y)) 
-        return minsky().model->findItem(*v).id();
-    for (auto& v: stockVars)
-      if (RenderVariable(*v).inImage(x,y)) 
-        return minsky().model->findItem(*v).id();
-    return -1;
-  }
+//  int GodleyIcon::select(float x, float y) const
+//  {
+//    for (auto& v: flowVars)
+//      if (RenderVariable(*v).inImage(x,y)) 
+//        return minsky().model->findItem(*v).id();
+//    for (auto& v: stockVars)
+//      if (RenderVariable(*v).inImage(x,y)) 
+//        return minsky().model->findItem(*v).id();
+//    return -1;
+//  }
 
 //  void GodleyIcon::zoom(float xOrigin, float yOrigin,float factor) {
 //    minsky::zoom(m_x, xOrigin, factor);
