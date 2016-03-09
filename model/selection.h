@@ -20,7 +20,7 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
-#include "wire.h"
+#include "group.h"
 
 #include <cairo_base.h>
 
@@ -29,16 +29,12 @@
 namespace minsky
 {
   /// represents items that have been selected
-  struct Selection
+  struct Selection: public Group
   {
-    std::vector<int> wires, operations, variables, groups, godleys, plots;
-
-    /// group within which selection refers (-1 == no group)
-    int group;
-
     void clear() {
-      wires.clear(); operations.clear(); variables.clear();
-      groups.clear(); godleys.clear(); plots.clear();
+      for (auto& i: items) i->selected=false;
+      for (auto& i: groups) i->selected=false;
+      Group::clear();
     }
   };
 
@@ -69,11 +65,12 @@ namespace minsky
     /// return true if both endpoints of the wire lie
     /// within the lasso
     bool contains(const Wire& wire) const {
-      ecolab::array<float> c=wire.coords();
+      auto c=wire.coords();
       return c[0]>=x0 && c[0]<=x1 && c[1]>=y0 && c[1]<=y1 &&
               c[c.size()-2]>=x0 && c[c.size()-2]<=x1 &&
               c[c.size()-1]>=y0 && c[c.size()-1]<=y1;
     }
+
   };
 }
 

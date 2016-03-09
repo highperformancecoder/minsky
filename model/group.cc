@@ -324,14 +324,16 @@ namespace minsky
     return displayZoom;
   }
 
-//  int Group::maxId() const
-//  {
-//    int r=-1;
-//    if (!items.empty()) r=items.rbegin()->id();
-//    if (!wires.empty()) r=max(r,wires.rbegin()->id());
-//    if (!groups.empty()) r=max(r,groups.rbegin()->id()); 
-//    for (auto& g: groups) r=max(r,g->maxId());
-//    return r;
-//  }
+  const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1) const
+  {
+    if (x0>x()-0.5*width || x1<x()+0.5*width || 
+        y0>y()-0.5*height || y1<y()+0.5*height)
+      return nullptr;
+    // at this point, this is a candidate. Check if any child groups are also
+    for (auto& g: groups)
+      if (auto mg=g->minimalEnclosingGroup(x0,y0,x1,y1))
+        return mg;
+    return this;
+  }
 
 }

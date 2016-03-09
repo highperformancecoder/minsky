@@ -21,7 +21,7 @@
 #define MINSKY_H
 
 #include "intrusiveMap.h"
-//#include "selection.h"
+#include "selection.h"
 #include "godleyIcon.h"
 #include "operation.h"
 #include "evalOp.h"
@@ -116,8 +116,7 @@ namespace minsky
 
   protected:
     /// contents of current selection
-    //TODO Selection currentSelection;
-    //    int nextId{0};        ///< next id to assign to an item
+    Selection currentSelection;
 
   public:
 

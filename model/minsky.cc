@@ -27,7 +27,7 @@
 #include <cairo_base.h>
 
 //#include <schema/schema0.h>
-//#include <schema/schema1.h>
+#include <schema/schema1.h>
 
 using namespace minsky;
 using namespace classdesc;
@@ -299,113 +299,71 @@ namespace minsky
 //      }
 //  }
 
-  void Minsky::clearSelection()
-  {
-//    currentSelection.clear();
-//    for (const VariablePtr& v: variables)
-//      v->selected=false;
-//    for (const OperationPtr& o: operations)
-//      o->selected=false;
-//    for (GroupIcon& g: groupItems)
-//      g.selected=false;
-//    for (GodleyIcon& g: godleyItems)
-//      g.selected=false;
-//    for (PlotWidget& p: plots)
-//      p.selected=false;
-  }
-
-
   void Minsky::select(float x0, float y0, float x1, float y1)
   {
-//    LassoBox lasso(x0,y0,x1,y1);
-//    clearSelection();
-//
-//    currentSelection.group=-1;
-//
-//    for (const Wire& w: wires)
-//      if (w.group==-1 && w.visible && lasso.contains(w))
-//        {
-//          assert(w.id()>-1);
-//          currentSelection.wires.push_back(w.id());
-//          
-//        }  
-//
-//    for (const VariablePtr& v: variables)
-//      if (v->group==-1 && v->visible && lasso.intersects(*v))
-//        {
-//           assert(v.id()>-1);
-//           currentSelection.variables.push_back(v.id());
-//           v->selected=true;
-//        }
-//
-//    for (const OperationPtr& o: operations)
-//      if (o->group==-1 && o->visible && lasso.intersects(*o))
-//        {
-//          assert(o.id()>-1);
-//          currentSelection.operations.push_back(o.id());
-//          o->selected=true;
-//        }
-//
-//    for (GroupIcon& g: groupItems)
-//      if (g.group()==-1 && lasso.intersects(g))
-//        {
-//          assert(g.id()>-1);
-//          currentSelection.groups.push_back(g.id());
-//          g.selected=true;
-//        }
-//
-//    for (GodleyIcon& g: godleyItems)
-//      if (lasso.intersects(g))
-//        {
-//          assert(g.id()>-1);
-//          currentSelection.godleys.push_back(g.id());
-//          g.selected=true;
-//        }
-//
-//    for (PlotWidget& p: plots)
-//      if (lasso.intersects(p))
-//        {
-//          assert(p.id()>=0);
-//          currentSelection.plots.push_back(p.id());
-//          p.selected=true;
-//        }
-//
-//    copy();
+    LassoBox lasso(x0,y0,x1,y1);
+    currentSelection.clear();
+
+    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
+
+    if (!topLevel) topLevel=&*model;
+
+    for (auto& i: topLevel->items)
+      if (i->visible() && lasso.intersects(*i))
+        {
+          currentSelection.items.push_back(i);
+          i->selected=true;
+        }
+
+    for (auto& i: topLevel->groups)
+      if (i->visible() && lasso.intersects(*i))
+        {
+          currentSelection.groups.push_back(i);
+          i->selected=true;
+        }
+
+    for (auto& i: topLevel->wires)
+      if (i->visible() && lasso.contains(*i))
+        currentSelection.wires.push_back(i);
+
+    copy();
   }
 
   void Minsky::cut()
   {
-//    copy();
-//    for (int i: currentSelection.operations)
-//      deleteOperation(i);
-//    for (int i: currentSelection.variables)
-//      deleteVariable(i);
-//    for (int i: currentSelection.groups)
-//      deleteGroup(i);
-//    for (int i: currentSelection.godleys)
-//      deleteGodleyTable(i);
-//    for (int i: currentSelection.plots)
-//      deletePlot(i);
-//    clearSelection();
+    copy();
+    for (auto& i: currentSelection.items)
+      model->removeItem(*i);
+    for (auto& i: currentSelection.groups)
+      model->removeGroup(*i);
+    for (auto& i: currentSelection.wires)
+      model->removeWire(*i);
+#ifndef NDEBUG
+    for (auto& i: currentSelection.items)
+      assert(i.use_count()==1);
+    for (auto& i: currentSelection.groups)
+      assert(i.use_count()==1);
+    for (auto& i: currentSelection.wires)
+      assert(i.use_count()==1);
+#endif
+    currentSelection.clear();
   }
 
   void Minsky::copy() const
   {
-    // TODO - maybe use a minsky::Minsky object instead, particularly
-    // once real references are deployed
-//    schema1::Minsky m(*this,currentSelection);
-//    ostringstream os;
-//    xml_pack_t packer(os, schemaURL);
-//    xml_pack(packer, "Minsky", m);
-//    putClipboard(os.str());
+    schema1::Minsky m(currentSelection);
+    ostringstream os;
+    xml_pack_t packer(os, schemaURL);
+    xml_pack(packer, "Minsky", m);
+    putClipboard(os.str());
   }
 
   void Minsky::saveSelectionAsFile(const string& fileName) const
   {
-//    schema1::Minsky m(*this,currentSelection);
-//    ofstream os(fileName);
-//    xml_pack_t packer(os, schemaURL);
-//    xml_pack(packer, "Minsky", m);
+    schema1::Minsky m(currentSelection);
+    ofstream os(fileName);
+    xml_pack_t packer(os, schemaURL);
+    xml_pack(packer, "Minsky", m);
   }
 
   void Minsky::saveGroupAsFile(int i, const string& fileName) const
