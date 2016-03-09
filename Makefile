@@ -40,12 +40,11 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
 	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
 	switchIcon.o
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o 
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o equationDisplayItem.o
 ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o latexMarkup.o flowCoef.o coverage.o variableValue.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
-#database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema1.o variableType.o operationType.o
-#schema0.o schema1.o variableType.o operationType.o
+#schema0.o 
 
 ALL_OBJS=tclmain.o $(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS)
 EXES=$(ALL_OBJS)
