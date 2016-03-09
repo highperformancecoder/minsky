@@ -240,7 +240,7 @@ namespace minsky
     int createGroup();
     /// remove a group, leaving its contents in place
     void ungroup(int id);
-    void saveGroupAsFile(int i, const string& fileName) const;
+    void saveGroupAsFile(const Group&, const string& fileName) const;
 
 //    /// create a new godley icon at \a x, y
 //    int addGodleyTable(float x, float y) 
@@ -306,7 +306,7 @@ namespace minsky
     /// copy items in current selection into clipboard
     void copy() const;
     /// paste  clipboard as a new group. @return id of nre group
-    int paste();
+    GroupPtr paste();
     void saveSelectionAsFile(const string& fileName) const;
 
     /// @{ override to provide clipboard handling functionality
@@ -317,7 +317,7 @@ namespace minsky
     /// toggle selected status of given item
     void toggleSelected(ItemType itemType, int item);
 
-    int insertGroupFromFile(const char* file);
+    GroupPtr insertGroupFromFile(const char* file);
 
     /// move item from \a groupId into its parent
     void addItemToGroup(int groupId, int varId);

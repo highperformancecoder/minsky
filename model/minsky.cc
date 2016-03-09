@@ -366,23 +366,23 @@ namespace minsky
     xml_pack(packer, "Minsky", m);
   }
 
-  void Minsky::saveGroupAsFile(int i, const string& fileName) const
+  void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
-//    schema1::Minsky m(*this,groupItems[i]);
-//    ofstream os(fileName);
-//    xml_pack_t packer(os, schemaURL);
-//    xml_pack(packer, "Minsky", m);
+    schema1::Minsky m(g);
+    ofstream os(fileName);
+    xml_pack_t packer(os, schemaURL);
+    xml_pack(packer, "Minsky", m);
   }
 
-  int Minsky::paste()
+  GroupPtr Minsky::paste()
   {
-//    istringstream is(getClipboard());
-//    xml_unpack_t unpacker(is);
-//    schema1::Minsky m;
-//    xml_unpack(unpacker, "Minsky", m);
-//    int id=getNewId();
-//    m.populateGroup(groupItems[id]);
-//    return id;
+    istringstream is(getClipboard());
+    xml_unpack_t unpacker(is);
+    schema1::Minsky m;
+    xml_unpack(unpacker, "Minsky", m);
+    GroupPtr g(new Group);
+    m.populateGroup(*model->addGroup(g));
+    return g;
   }
 
   void Minsky::toggleSelected(ItemType itemType, int item)
@@ -391,37 +391,20 @@ namespace minsky
   }
 
 
-//  int Minsky::copyGroup(int id)
-//  {
-//    // TODO: need to create copies of all contained items and wires
-////    GroupIcons::iterator srcIt=groupItems.find(id);
-////    if (srcIt==groupItems.end()) return -1; //src not found
-//    int newId=getNewId();
-////    GroupIcon& g=groupItems[newId];
-////    g.copy(*srcIt);
-////    markEdited();
-//    return newId;
-//  }
+  GroupPtr Minsky::insertGroupFromFile(const char* file)
+  {
+    schema1::Minsky currentSchema;
+    ifstream inf(file);
+    xml_unpack_t saveFile(inf);
+    xml_unpack(saveFile, "Minsky", currentSchema);
 
-//  int Minsky::insertGroupFromFile(const char* file)
-//  {
-////    schema1::Minsky currentSchema;
-////    ifstream inf(file);
-////    xml_unpack_t saveFile(inf);
-////    xml_unpack(saveFile, "Minsky", currentSchema);
-////
-////    if (currentSchema.version != currentSchema.schemaVersion)
-////      throw error("Invalid Minsky schema file");
-////
-//    int newId=getNewId();
-////    GroupIcon& g=groupItems[newId];
-////    currentSchema.populateGroup(g);
-////    // all variables should be set to group scope, as this has come in from a file, so shouldn't reference 
-////    // outside of itself
-////    g.rehostGlobalVars(newId);
-//
-//    return newId;
-//  }
+    if (currentSchema.version != currentSchema.schemaVersion)
+      throw error("Invalid Minsky schema file");
+
+    GroupPtr g(new Group);
+    currentSchema.populateGroup(*model->addGroup(g));
+    return g;
+  }
 
 //  vector<int> Minsky::unwiredOperations() const
 //  {
