@@ -201,6 +201,10 @@ namespace minsky
       return (displayZoom>0 && zoomFactor>displayZoom)
         ? zoomFactor/displayZoom: 1;
     }
+    /// sets the zoom factor to \a factor. Recursively set the
+    /// zoomfactor on contained objects to the computed localzoom
+    void setZoom(float factor);
+
     /// scale used to render io variables. Smoothly interpolates
     /// between the scale at which internal items are displayed, and
     /// the outside zoom factor

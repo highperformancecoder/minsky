@@ -359,7 +359,10 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     double zoomFactor;
     Minsky(): schemaVersion(-1), zoomFactor(1) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m): Minsky(*m.model) {model.rungeKutta=RungeKutta(m);}
+    Minsky(const minsky::Minsky& m): Minsky(*m.model) {
+      model.rungeKutta=RungeKutta(m);
+      zoomFactor=m.model->zoomFactor;
+    }
       
     /// create a Minsky model from this
     operator minsky::Minsky() const;

@@ -70,7 +70,9 @@ namespace minsky
     bool visible() const;
 
     void moveTo(float x, float y);
-    void zoom(float xOrigin, float yOrigin,float factor);
+    /// zoom by \a factor, scaling all widget's coordinates, using (\a
+    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
+    virtual void zoom(float xOrigin, float yOrigin,float factor);
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const {}

@@ -336,4 +336,15 @@ namespace minsky
     return this;
   }
 
+  void Group::setZoom(float factor)
+  {
+    zoomFactor=factor;
+    computeDisplayZoom();
+    float lzoom=localZoom();
+    for (auto& i: items)
+      i->zoomFactor=lzoom;
+    for (auto& i: groups)
+      i->setZoom(lzoom);
+  }
+
 }

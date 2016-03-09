@@ -109,8 +109,6 @@ namespace minsky
     /// NaN. Either a variable name, or and operator type.
     std::string diagnoseNonFinite() const;
 
-    float m_zoomFactor{1};
-
     /// write current state of all variables to the log file
     void logVariables() const;
 
@@ -345,14 +343,11 @@ namespace minsky
     {removeItemFromGroup(gid,gid1);}
 
     //    InGroup groupTest;
-    /// current state of zoom
-    float zoomFactor() const {return m_zoomFactor;}
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
     void zoom(float xOrigin, float yOrigin,float factor);
     /// set scaling factors in all widgets, without adjusting
     /// coordinates, for use in reloading the model
-    void setZoom(float);
 
     // runs over all ports and variables removing those not in use
     void garbageCollect();
@@ -443,7 +438,7 @@ namespace minsky
     void convertVarType(const std::string& name, VariableType::Type type);
 
     /// returns true if any variable of name \a name has a wired input
-    bool inputWired(const std::string&);
+    bool inputWired(const std::string&) const;
 
   };
 

@@ -689,7 +689,7 @@ namespace schema1
 //    // override default minsky object for this method
 //    minsky::LocalMinsky lm(m);
 //
-    m.setZoom(zoomFactor);
+    m.model->setZoom(zoomFactor);
     
     m.stepMin=model.rungeKutta.stepMin; 
     m.stepMax=model.rungeKutta.stepMax; 

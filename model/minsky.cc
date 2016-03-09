@@ -346,6 +346,7 @@ namespace minsky
     for (auto& i: currentSelection.wires)
       assert(i.use_count()==1);
 #endif
+    garbageCollect();
     currentSelection.clear();
   }
 
@@ -448,51 +449,19 @@ namespace minsky
     flowVars.clear();
     equations.clear();
     integrals.clear();
-//
-//    // remove all temporaries
-//    for (VariableValues::iterator v=variables.values.begin(); 
-//         v!=variables.values.end();)
-//      if (v->second.temp())
-//        variables.values.erase(v++);
-//      else
-//        ++v;
-//
-//    variables.makeConsistent();
-//
-//    set<int> portsToKeep;
-//
-//    for (const VariableManager::value_type& v: variables)
-//      {
-//        auto pp=v->ports();
-//        portsToKeep.insert(pp.begin(), pp.end());
-//      }
-//
-//    for (const Operations::value_type& o: operations)
-//      {
-//        auto pp=o->ports();
-//        portsToKeep.insert(pp.begin(), pp.end());
-//      }
-//
-//    for (auto& o: switchItems)
-//      {
-//        auto pp=o->ports();
-//        portsToKeep.insert(pp.begin(), pp.end());
-//      }
-//
-//    for (Plots::iterator pl=plots.begin(); pl!=plots.end(); ++pl)
-//      {
-//        auto pp=pl->ports();
-//        portsToKeep.insert(pp.begin(), pp.end());
-//      }
-//
-//    removeUnusedPorts(portsToKeep);
+
+    // remove all temporaries
+    for (auto v=variableValues.begin(); v!=variableValues.end();)
+      if (v->second.temp())
+        variableValues.erase(v++);
+      else
+        ++v;
     variableValues.reset();
   }
 
   void Minsky::renderEquationsToImage(const char* image)
   {
     ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
-    //    surf.clear();
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
     system.renderEquations(surf);
@@ -922,22 +891,25 @@ namespace minsky
 
   void Minsky::load(const std::string& filename) 
   {
-//  
-//    clearAllMaps();
-//
-//    // current schema
-//    schema1::Minsky currentSchema;
-//    ifstream inf(filename);
-//    if (!inf)
-//      throw runtime_error("failed to open "+filename);
-//    xml_unpack_t saveFile(inf);
-//    xml_unpack(saveFile, "Minsky", currentSchema);
-//    // fix corruption caused by ticket #329
-//    currentSchema.removeIntVarOrphans();
-//
-//    if (currentSchema.version == currentSchema.schemaVersion)
-//      *this = currentSchema;
-//    else
+  
+    clearAllMaps();
+
+    // current schema
+    schema1::Minsky currentSchema;
+    ifstream inf(filename);
+    if (!inf)
+      throw runtime_error("failed to open "+filename);
+    xml_unpack_t saveFile(inf);
+    xml_unpack(saveFile, "Minsky", currentSchema);
+    // fix corruption caused by ticket #329
+    currentSchema.removeIntVarOrphans();
+
+    if (currentSchema.version == currentSchema.schemaVersion)
+      *this = currentSchema;
+    else
+      {
+        throw error("Schema 0 not yet supported");
+      }
 //      { // fall back to the ill-defined schema '0'
 //        schema0::Minsky m;
 //        m.load(filename.c_str());
@@ -976,20 +948,20 @@ namespace minsky
 //
 //    removeDuplicateWires();
 //
-//    // try resetting the system, but ignore any errors
-//    try {reset();}
-//    catch (...) {}
-//    reset_needed=true;
-//    m_edited=false;
+    // try resetting the system, but ignore any errors
+    try {reset();}
+    catch (...) {}
+    reset_needed=true;
+    m_edited=false;
   }
 
   void Minsky::exportSchema(const char* filename, int schemaLevel)
   {
-//    xsd_generate_t x;
-//    // currently, there is only 1 schema level, so ignore second arg
-//    xsd_generate(x,"Minsky",schema1::Minsky());
-//    ofstream f(filename);
-//    x.output(f,schemaURL);
+    xsd_generate_t x;
+    // currently, there is only 1 schema level, so ignore second arg
+    xsd_generate(x,"Minsky",schema1::Minsky());
+    ofstream f(filename);
+    x.output(f,schemaURL);
   }
 
 //  int Minsky::opIdOfEvalOp(const EvalOpBase& e) const
@@ -1010,49 +982,6 @@ namespace minsky
 //      r<<opIdOfEvalOp(*equations[i]);
     return r;
   }
-
-  void Minsky::setZoom(float factor)
-  {
-    // TODO
-
-//    for (OperationPtr& o: operations)
-//      if (o->group==-1)
-//        o->setZoom(factor);
-//    for (VariablePtr& v: variables)
-//      if (v->group==-1)
-//        v->setZoom(factor);
-//    for (GroupIcons::iterator g=groupItems.begin(); g!=groupItems.end(); ++g)
-//      if (g->group()==-1)
-//        g->setZoom(factor);
-//    // zoomFactor in a godleyItem also contains relative size
-//    // attribute of the godley icon within the canvas, so we need to
-//    // relative zoom this
-//    for (GodleyItems::iterator g=godleyItems.begin(); g!=godleyItems.end(); ++g)
-//      g->zoomFactor*=factor/m_zoomFactor;
-//    for (Plots::iterator p=plots.begin(); p!=plots.end(); ++p)
-//      p->zoomFactor=factor;
-//    m_zoomFactor=factor;
-  }
-
-//  void Minsky::addItemToGroup(int groupId, int id)
-//  {
-//    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
-//      if (auto& it=model->findItem(id))
-//        g->addItem(it);
-//  }
-//
-//  void Minsky::removeItemFromGroup(int groupId, int varId)
-//  {
-//    if (auto g=dynamic_cast<Group*>(model->findItem(groupId).get()))
-//      {
-//        auto vit=g->items.find(varId);
-//        if (vit!=g->items.end())
-//          if (auto parent=g->group.lock())
-//            parent->addItem(*vit);
-//          else
-//            model->addItem(*vit);
-//      }
-//  }
 
   namespace
   {
@@ -1106,59 +1035,55 @@ namespace minsky
 
   bool Minsky::checkEquationOrder() const
   {
-//    array<bool> fvInit(flowVars.size(), false);
-//    // firstly, find all flowVars that are constants
-//    for (VariableValues::const_iterator v=
-//           variables.values.begin(); v!=variables.values.end(); ++v)
-//      if (!variables.inputWired(v->first) && v->second.idx()>=0)
-//        fvInit[v->second.idx()]=true;
-//
-//    for (EvalOpVector::const_iterator e=equations.begin(); 
-//         e!=equations.end(); ++e)
-//      {
-//        const EvalOpBase& eo=**e;
-//        if (eo.out < 0|| (eo.numArgs()>0 && eo.in1<0) ||
-//            (eo.numArgs() > 1 && eo.in2<0))
-//          {
-//            cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
-//            return false;
-//          }
-//        switch  (eo.numArgs())
-//          {
-//          case 0:
-//            fvInit[eo.out]=true;
-//            break;
-//          case 1:
-//            fvInit[eo.out]=!eo.flow1 || fvInit[eo.in1];
-//            break;
-//          case 2:
-//            // we need to check if an associated binary operator has
-//            // an unwired input, and if so, treat its input as
-//            // initialised, since it has already been initialised in
-//            // getInputFromVar()
-//            if (auto op=eo.state)
-//              switch (op->type())
-//                {
-//                case OperationType::add: case OperationType::subtract:
-//                case OperationType::multiply: case OperationType::divide:
-//                  fvInit[eo.in1] |= 
-//                    wiresAttachedToPort(op->ports()[1]).size()==0;
-//                  fvInit[eo.in2] |= 
-//                    wiresAttachedToPort(op->ports()[3]).size()==0;
-//                  break;
-//                default: break;
-//                }
-//            
-//            fvInit[eo.out]=
-//              (!eo.flow1 ||  fvInit[eo.in1]) && (!eo.flow2 ||  fvInit[eo.in2]);
-//            break;
-//          default: break;
-//          }
+    ecolab::array<bool> fvInit(flowVars.size(), false);
+    // firstly, find all flowVars that are constants
+    for (auto& v: variableValues)
+      if (!inputWired(v.first) && v.second.idx()>=0)
+        fvInit[v.second.idx()]=true;
+
+    for (auto& e: equations)
+      {
+        const EvalOpBase& eo=*e;
+        if (eo.out < 0|| (eo.numArgs()>0 && eo.in1<0) ||
+            (eo.numArgs() > 1 && eo.in2<0))
+          {
+            //cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
+            return false;
+          }
+        switch  (eo.numArgs())
+          {
+          case 0:
+            fvInit[eo.out]=true;
+            break;
+          case 1:
+            fvInit[eo.out]=!eo.flow1 || fvInit[eo.in1];
+            break;
+          case 2:
+            // we need to check if an associated binary operator has
+            // an unwired input, and if so, treat its input as
+            // initialised, since it has already been initialised in
+            // getInputFromVar()
+            if (auto op=eo.state)
+              switch (op->type())
+                {
+                case OperationType::add: case OperationType::subtract:
+                case OperationType::multiply: case OperationType::divide:
+                  fvInit[eo.in1] |= op->ports[1]->wires.empty();
+                  fvInit[eo.in2] |= op->ports[3]->wires.empty();
+                  break;
+                default: break;
+                }
+            
+            fvInit[eo.out]=
+              (!eo.flow1 ||  fvInit[eo.in1]) && (!eo.flow2 ||  fvInit[eo.in2]);
+            break;
+          default: break;
+          }
 //        if (!fvInit[eo.out])
 //          cerr << "Operation "<<opIdOfEvalOp(eo)<<" out of order"<<endl;
-//      }
-//    
-//    return all(fvInit);
+      }
+    
+    return all(fvInit);
   }
 
 
@@ -1180,30 +1105,25 @@ namespace minsky
       }
   }
   
-//    void Minsky::resetNextId()
-//    {
-//      nextId=model->maxId()+1;
-//    }
-
   bool Minsky::pushHistoryIfDifferent()
   {
-//    // go via a schema object, as serialising minsky::Minsky has
-//    // problems due to port management
-//    schema1::Minsky m(*this);
-//    pack_t buf;
-//    buf<<m;
-//    if (history.empty() || memcmp(buf.data(), history.back().data(), buf.size())!=0)
-//      {
-//        // This bit of code outputs an XML representation that can be
-//        //        used for debugging issues related to unnecessary
-//        //        history pushes.
-//        // xml_pack_t tb(cout);
-//        // xml_pack(tb,"Minsky",m); 
-//        // cout<<"------"<<endl;
-//        history.resize(history.size()+1);
-//        buf.swap(history.back());
-//        return true;
-//      }
+    // go via a schema object, as serialising minsky::Minsky has
+    // problems due to port management
+    schema1::Minsky m(*this);
+    pack_t buf;
+    buf<<m;
+    if (history.empty() || memcmp(buf.data(), history.back().data(), buf.size())!=0)
+      {
+        // This bit of code outputs an XML representation that can be
+        //        used for debugging issues related to unnecessary
+        //        history pushes.
+        // xml_pack_t tb(cout);
+        // xml_pack(tb,"Minsky",m); 
+        // cout<<"------"<<endl;
+        history.resize(history.size()+1);
+        buf.swap(history.back());
+        return true;
+      }
     return false;
   }
 
@@ -1218,19 +1138,19 @@ namespace minsky
   
   void Minsky::undo(int changes)
   {
-//    // save current state for later restoration if needed
-//    if (historyPtr==history.size())
-//      pushHistoryIfDifferent();
-//    historyPtr-=changes;
-//    if (historyPtr > 0 && historyPtr <= history.size())
-//      {
-//        schema1::Minsky m;
-//        history[historyPtr-1].reseto()>>m;
-//        clearAllMaps();
-//        *this=m;
-//      }
-//    else
-//      historyPtr+=changes; // revert
+    // save current state for later restoration if needed
+    if (historyPtr==history.size())
+      pushHistoryIfDifferent();
+    historyPtr-=changes;
+    if (historyPtr > 0 && historyPtr <= history.size())
+      {
+        schema1::Minsky m;
+        history[historyPtr-1].reseto()>>m;
+        clearAllMaps();
+        *this=m;
+      }
+    else
+      historyPtr+=changes; // revert
   }
 
   void Minsky::convertVarType(const string& name, VariableType::Type type)
@@ -1280,15 +1200,15 @@ namespace minsky
     i->second=VariableValue(type,i->second.name,i->second.init);
   }
 
-  bool Minsky::inputWired(const std::string& name)
+  bool Minsky::inputWired(const std::string& name) const
   {
-    return model->recursiveDo(&Group::items,
-                              [&](Items&,Items::const_iterator i) {
-                                if (auto v=dynamic_cast<VariableBase*>(i->get()))
-                                  return (v->valueId()==name && !v->ports[1]->wires.empty());
-                                return false;
-                              }
-                              );
+    return model->recursiveDo
+      (&Group::items,
+       [&](Items&,Items::const_iterator i) {
+        if (auto v=dynamic_cast<VariableBase*>(i->get()))
+          return (v->valueId()==name && !v->ports[1]->wires.empty());
+        return false;
+      });
   }
 }
 
