@@ -296,16 +296,16 @@ namespace minsky
 //  }
 
 
-//  int GodleyIcon::select(float x, float y) const
-//  {
-//    for (auto& v: flowVars)
-//      if (RenderVariable(*v).inImage(x,y)) 
-//        return minsky().model->findItem(*v).id();
-//    for (auto& v: stockVars)
-//      if (RenderVariable(*v).inImage(x,y)) 
-//        return minsky().model->findItem(*v).id();
-//    return -1;
-//  }
+  VariablePtr GodleyIcon::select(float x, float y) const
+  {
+    for (auto& v: flowVars)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return v;
+    for (auto& v: stockVars)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return v;
+    return VariablePtr();
+  }
 
 //  void GodleyIcon::zoom(float xOrigin, float yOrigin,float factor) {
 //    minsky::zoom(m_x, xOrigin, factor);

@@ -28,7 +28,6 @@ namespace minsky
 {
   class Item;
   class Wire;
-  class WirePtr;
   class Group;
   class GroupPtr;
 

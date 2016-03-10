@@ -136,19 +136,24 @@ namespace minsky
   struct MinskyTCL: public Minsky
   {
     /// TCL accessors
-    GetterSetter<Ports> port;
+    //    GetterSetter<Ports> port;
+    typedef IntrusiveMap<int,WirePtr> Wires;
+    Wires wires;
     GetterSetter<Wires> wire;
-    GetterSetterPtr<Operations> op;
-    GetterSetterPtr<Operations, Constant> constant;
-    GetterSetterPtr<Operations, IntOp> integral;
-    GetterSetterPtr<Operations, DataOp > data;
-    GetterSetterPtr<VariableManager> var;
-    GetterSetter<std::map<string, VariableValue> > value;
-    GetterSetter<Plots> plot;
-    GetterSetter<GodleyIcons> godley;
-    GetterSetter<GroupIcons> group;
-    GetterSetter<SwitchIcons> switchItem;
-    GetterSetter<Notes> note;
+    GetterSetter<VariableValues> value;
+    
+    typedef IntrusiveMap<int,ItemPtr> Items;
+    Items items;
+    GetterSetterPtr<Items, OperationBase> op;
+    GetterSetterPtr<Items, Constant> constant;
+    GetterSetterPtr<Items, IntOp> integral;
+    GetterSetterPtr<Items, DataOp > data;
+    GetterSetterPtr<Items, VariableBase> var;
+    GetterSetterPtr<Items, PlotWidget> plot;
+    GetterSetterPtr<Items, GodleyIcon> godley;
+    GetterSetterPtr<Items, Group> group;
+    GetterSetterPtr<Items, SwitchIcon> switchItem;
+    GetterSetterPtr<Items, Item> note;
 
     std::unique_ptr<ostream> eventRecord;
     void startRecording(const char* file) {
@@ -179,23 +184,26 @@ namespace minsky
       eventRecord.reset();
     }
 
-
+    int nextId=0;
+    void resetNextId() {nextId=0;}
+    int getNewId() {return nextId++;}
+ 
     /// flag to indicate whether a TCL should be pushed onto the
     /// history stack, or logged in a recording. This is used to avoid
     /// movements being added to recordings and undo history
     bool doPushHistory=true;
 
-    MinskyTCL(): port(ports), wire(wires), op(operations), 
-                 constant(operations), integral(operations), 
-                 data(operations), var(variables),
-                 value(variables.values), plot(plots), 
-                 godley(godleyItems), group(groupItems), 
-                 switchItem(switchItems), note(notes) {}
+    MinskyTCL(): /*port(ports),*/ wire(wires), op(items), 
+                 constant(items), integral(items), 
+                 data(items), var(items),
+                 value(variableValues), plot(items), 
+                 godley(items), group(items), 
+                 switchItem(items), note(items) {}
 
     void clearAllGetterSetters() {
       // need also to clear the GetterSetterPtr variables, as these
       // potentially hold onto objects
-      port.clear();
+      //port.clear();
       wire.clear();
       op.clear();
       constant.clear();
@@ -210,27 +218,52 @@ namespace minsky
     }
 
     void clearAll() {
+      wires.clear();
+      items.clear();
       clearAllMaps();
       clearAllGetterSetters();
+      resetNextId();
+    }
+
+    void buildMaps() {
+      wires.clear();
+      items.clear();
+      resetNextId();
+      model->recursiveDo
+        (&Group::items,[&](const minsky::Items&, minsky::Items::const_iterator it)
+         {
+           items.emplace(getNewId(), *it);
+           return false;
+         });
+      model->recursiveDo
+        (&Group::groups,[&](const Groups&, Groups::const_iterator it)
+         {
+           items.emplace(getNewId(), *it);
+           return false;
+         });
+      model->recursiveDo
+        (&Group::wires,[&](const minsky::Wires&, minsky::Wires::const_iterator it)
+         {
+           wires.emplace(getNewId(), *it);
+           return false;
+         });
     }
 
     /// add a new wire connecting \a from port to \a to port with \a coordinates
     /// @return wireid, or -1 if wire is invalid
     int addWire(TCL_args args) {
-      int from=args, to=args;
-      ecolab::array<float> coords;
+      int from=args, to=args, toPortIdx=args;
+      std::vector<float> coords;
+      int r=-1;
       if (args.count)
         args>>coords;
-      return Minsky::addWire(from, to, coords);
+      if (auto& fromItem=items[from])
+        if (auto& toItem=items[to])
+          if (auto w=Minsky::addWire(*fromItem, *toItem, toPortIdx, coords))
+            wires[r=getNewId()]=w;
+      return r;
     }
 
-    void deleteOperation(int id) {
-      // ticket #199, remove references held by getter/setter
-      op.clear();
-      integral.clear();
-      constant.clear();
-      Minsky::deleteOperation(id);
-    }
     /// fill in a Tk image with the icon for a specific operation
     /// @param Tk imageName
     /// @param operationName
@@ -247,42 +280,74 @@ namespace minsky
     void putClipboard(const std::string& s) const override; 
     std::string getClipboard() const override; 
 
-    int newVariable(std::string name, VariableType::Type type)
-    {return variables.newVariable(name,type);}
-
-    void convertVarType(const std::string& name, VariableType::Type type)
-    {variables.convertVarType(name, type);}
-    
-    void deleteVariable(int id) {
-      var.clear(); //remove references held by getter/setter
-      variables.erase(id);
+    int newVariable(std::string name, VariableType::Type type) {
+      int id=getNewId();
+      items[id]=model->addItem(VariablePtr(type,name));
+      return id;
     }
 
-    void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
-    {
-      clearSelection();
-      if (groupItems.count(gid))
-        groupItems[gid].select(currentSelection,x0,y0,x1,y1);
+    /// add an operation
+    int addOperation(OperationType::Type op) {
+      int id=getNewId();
+      items[id]=model->addItem(OperationBase::create(op));
+      return id;
+    }
+     
+    /// create a new operation that is a copy of \a id
+    int copyItem(int id) {
+      int r=-1;
+      auto it=items.find(id);
+      if (it!=items.end())
+        items[r=getNewId()]=model->addItem((*it)->clone());
+      return id;
     }
 
-    void initGroupList(TCL_args args) {
-      groupTest.initGroupList(groupItems, (args.count? args: -1));}
-    float localZoomFactor(std::string item, int id, float x, float y) const {
-      int g=groupTest.containingGroup(x,y);
-      float z=1;
-      // godley tables can have a user overridden zoom
-      if (item=="godley") 
-        z=godleyItems[id].zoomFactor;
-      if (g==-1 || (g==id && item=="groupItem"))
-        return z*zoomFactor(); //global zoom factor
-      else 
-        return z*groupItems.find(g)->localZoom();
-    }
+  void deleteItem(int id) {
+    auto it=items.find(id);
+    if (it!=items.end())
+      {
+        clearAllGetterSetters();
+        model->removeItem(**it);
+        items.erase(id);
+      }
+  }
+
+  void deleteWire(int id) {
+    auto it=wires.find(id);
+    if (it!=wires.end())
+      {
+        clearAllGetterSetters();
+        model->removeWire(**it);
+        wires.erase(id);
+      }
+  }
+
+//   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
+//    {
+//      clearSelection();
+//      if (groupItems.count(gid))
+//        groupItems[gid].select(currentSelection,x0,y0,x1,y1);
+//    }
+//
+//    void initGroupList(TCL_args args) {
+//      groupTest.initGroupList(groupItems, (args.count? args: -1));}
+//    float localZoomFactor(std::string item, int id, float x, float y) const {
+//      int g=groupTest.containingGroup(x,y);
+//      float z=1;
+//      // godley tables can have a user overridden zoom
+//      if (item=="godley") 
+//        z=godleyItems[id].zoomFactor;
+//      if (g==-1 || (g==id && item=="groupItem"))
+//        return z*zoomFactor(); //global zoom factor
+//      else 
+//        return z*groupItems.find(g)->localZoom();
+//    }
 
     /// load from a file
     void load(const std::string& filename) {
-      clearAllGetterSetters();
+      clearAll();
       Minsky::load(filename);
+      buildMaps();
     }
     void exportSchema(TCL_args args) {
       const char* filename=args;
@@ -308,7 +373,7 @@ namespace minsky
       else Minsky::undo();
     }
 
-    string valueId(const string& x) {return VariableManager::valueId(x);}
+    string valueId(const string& x) {return VariableValue::valueId(x);}
 
   };
 }

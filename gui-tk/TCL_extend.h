@@ -71,10 +71,10 @@ namespace minsky
     public TclExtendBase<minsky::Wire>
   {
     TclExtend(Wire& ref): TclExtendBase<Wire>(ref) {}
-    ecolab::array<float> coords(TCL_args args) {
+    std::vector<float> coords(TCL_args args) {
       if (args.count)
         {
-          ecolab::array<float> coords;
+          std::vector<float> coords;
           args>>coords;
           return ref.coords(coords);
         }

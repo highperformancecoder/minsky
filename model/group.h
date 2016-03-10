@@ -240,5 +240,18 @@ namespace minsky
 
 }
 
+#ifdef CLASSDESC
+// omit these, because weak/shared pointers cause problems, and its
+// not needed anyway
+#pragma omit pack minsky::Group
+#pragma omit unpack minsky::Group
+#endif
+namespace classdesc_access
+{
+template <> struct access_pack<minsky::Group>: 
+  public classdesc::NullDescriptor<classdesc::pack_t> {};
+template <> struct access_unpack<minsky::Group>: 
+  public classdesc::NullDescriptor<classdesc::unpack_t> {};
+}
 #include "group.cd"
 #endif

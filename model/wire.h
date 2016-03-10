@@ -42,7 +42,6 @@ namespace minsky
     std::vector<float> m_coords;
     /// ports this wire connects
     std::weak_ptr<Port> m_from, m_to;
-    friend class WirePtr;
   public:
 
     Wire() {}
@@ -64,22 +63,23 @@ namespace minsky
     void moveIntoGroup(Group& dest);
   };
 
-  class WirePtr: public std::shared_ptr<Wire>
-  {
-  public:
-    template <class... A> WirePtr(A... x):
-      std::shared_ptr<Wire>(std::forward<A>(x)...) {}
-    virtual ~WirePtr() {}
-
-    /// move this wire from \a src to \a dest
-    void moveGroup(Group& src, Group& dest);
-    //    void addPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
-    std::shared_ptr<Port> from() const {return get()->from();}
-    std::shared_ptr<Port> to() const {return get()->to();}
-  };
-
+  typedef std::shared_ptr<Wire> WirePtr;
   typedef std::vector<WirePtr> Wires;
 
+}
+
+#ifdef CLASSDESC
+// omit these, because weak/shared pointers cause problems, and its
+// not needed anyway
+#pragma omit pack minsky::Wire
+#pragma omit unpack minsky::Wire
+#endif
+namespace classdesc_access
+{
+template <> struct access_pack<minsky::Wire>: 
+  public classdesc::NullDescriptor<classdesc::pack_t> {};
+template <> struct access_unpack<minsky::Wire>: 
+  public classdesc::NullDescriptor<classdesc::unpack_t> {};
 }
 #include "wire.cd"
 #endif

@@ -28,9 +28,6 @@ include $(ECOLAB_HOME)/include/Makefile
 PREFIX=/usr/local
 
 
-#EXES=gui-wt/minsky GUI/minsky server/server
-#EXES=GUI/minsky server/server
-
 # override MODLINK to remove tclmain.o, which allows us to provide a
 # custom one that picks up its scripts from a relative library
 # directory
@@ -45,15 +42,17 @@ ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o lat
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema1.o variableType.o operationType.o
 #schema0.o 
+GUI_TK_OBJS=tclmain.o minskyTCL.o 
 
-ALL_OBJS=tclmain.o $(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS)
-EXES=$(ALL_OBJS)
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS)
 
+EXES=gui-tk/minsky $(SERVER_OBJS)
+#EXES=gui-tk/minsky server/server
 
 # TODO - remove dependency on GUI directory here
 FLAGS+=-std=c++11 -Ischema -Iengine -Imodel $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
 
-VPATH= schema model engine server $(ECOLAB_HOME)/include
+VPATH= schema model engine gui-tk server $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -100,15 +99,12 @@ LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
 GUI_LIBS=
 #SERVER_LIBS=-lwebsocketpp -lsoci_core 
 SERVER_LIBS=-lsoci_core 
-WT_LIBS=-lwthttp -lwtext -lwt -lGraphicsMagick -lGraphicsMagick++ \
-	-ljpeg -llcms -lxml2 -ltiff -lboost_signals$(BOOST_EXT) -lboost_random$(BOOST_EXT)
 # disable a deprecation warning that comes from Wt
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 ifndef AEGIS
 # just build the Minsky executable
-#default: GUI/minsky$(EXE)
-default: $(MODEL_OBJS)
+default: gui-tk/minsky$(EXE)
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
 
@@ -137,7 +133,7 @@ endif
 MinskyLogo.o: GUI/MinskyLogo.rc icons/MinskyLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
-GUI/minsky$(EXE): tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
@@ -151,19 +147,14 @@ server/server: tclmain.o $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SERVER_OBJS) $(GUI_OBJS
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS)  $(SERVER_LIBS) -o $@
 	-ln -sf `pwd`/GUI/library server
 
-# This version builds a standalone http server. Use -lwtfcgi for the
-# fast CGI version
-gui-wt/minsky: $(WTGUI_OBJS) $(SCHEMA_OBJS) $(GUI_OBJS) $(ENGINE_OBJS)
-	$(LINK) $(FLAGS) $^  $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(WT_LIBS) -o $@
-
-GUI/helpRefDb.tcl: doc/minsky/labels.pl
+gui-tk/helpRefDb.tcl: doc/minsky/labels.pl
 	rm -f $@
 	perl makeRefDb.pl $< >$@
 
 doc/minsky/labels.pl: $(wildcard doc/*.tex)
 	cd doc; sh makedoc.sh
 
-GUI/library/help: doc/minsky/labels.pl doc/minsky.html
+gui-tk/library/help: doc/minsky/labels.pl doc/minsky.html
 	rm -rf $@/*
 	mkdir -p $@/minsky
 	find doc/minsky \( -name "*.html" -o -name "*.css" -o -name "*.png" \) -exec cp {} $@/minsky \;

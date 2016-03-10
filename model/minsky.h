@@ -175,8 +175,6 @@ namespace minsky
     /// toIdx port of \a to, with \a coordinates
     WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
                 const std::vector<float>& coords = {}); 
-    void deleteWire(int id);
-
 
     /// list of available operations
     void availableOperations() {enumVals<OperationType::Type>();}
@@ -195,20 +193,20 @@ namespace minsky
           }));
     }
 
-    /// add an operation
-    int addOperation(const char* op);
-    /// create a new operation that is a copy of \a id
-    int copyOperation(int id);
-
-    void deleteOperation(int op);
-
-    /// useful for debugging wiring diagrams
-    std::vector<int> unwiredOperations() const;
-
-    int newVariable(const string& name, VariableType::Type=VariableType::flow);
-    int copyVariable(int id);
-
-    int copyGroup(int id);
+//    /// add an operation
+//    int addOperation(const char* op);
+//    /// create a new operation that is a copy of \a id
+//    int copyOperation(int id);
+//
+//    void deleteOperation(int op);
+//
+//    /// useful for debugging wiring diagrams
+//    std::vector<int> unwiredOperations() const;
+//
+//    int newVariable(const string& name, VariableType::Type=VariableType::flow);
+//    int copyVariable(int id);
+//
+//    int copyGroup(int id);
 
     //    void deleteVariable(int id)        {variables.erase(id);}
 
@@ -234,10 +232,10 @@ namespace minsky
 //      godleyItems[id].setCell(row, col, value);
 //    }
 
-    /// create a group from items found in the current selection
-    int createGroup();
-    /// remove a group, leaving its contents in place
-    void ungroup(int id);
+//    /// create a group from items found in the current selection
+//    int createGroup();
+//    /// remove a group, leaving its contents in place
+//    void ungroup(int id);
     void saveGroupAsFile(const Group&, const string& fileName) const;
 
 //    /// create a new godley icon at \a x, y
@@ -297,8 +295,8 @@ namespace minsky
     
     /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
     void select(float x0, float y0, float x1, float y1);
-    /// clear selection
-    void clearSelection();
+    ///// clear selection
+    //void clearSelection();
     /// erase items in current selection, put copy into clipboard
     void cut();
     /// copy items in current selection into clipboard
@@ -317,35 +315,35 @@ namespace minsky
 
     GroupPtr insertGroupFromFile(const char* file);
 
-    /// move item from \a groupId into its parent
-    void addItemToGroup(int groupId, int varId);
-    void removeItemFromGroup(int groupId, int varId);
+//    /// move item from \a groupId into its parent
+//    void addItemToGroup(int groupId, int varId);
+//    void removeItemFromGroup(int groupId, int varId);
 
     /// add variable \a varid to group \a gid
-    void addVariableToGroup(int gid, int varid, bool checkIOregions=true)
-    {addItemToGroup(gid,varid); /* TODO checkIOregions */}
-    /// remove variable \a varid from group \a gid
-    void removeVariableFromGroup(int gid, int varid)
-    {removeItemFromGroup(gid,varid);}
-    /// add operation \a opid to group \a gid
-    void addOperationToGroup(int gid, int opid)
-    {addItemToGroup(gid,opid);}
-    /// remove operation \a opid from group \a gid
-    void removeOperationFromGroup(int gid, int opid)
-    {removeItemFromGroup(gid,opid);}
-    /// add group \a gid1 to group \a group gid
-    /// @return true if successful
-    bool addGroupToGroup(int gid, int gid1)
-    {addItemToGroup(gid,gid1);}
-
-    /// remove group \a gid1 from group \a group gid
-    void removeGroupFromGroup(int gid, int gid1)
-    {removeItemFromGroup(gid,gid1);}
+//    void addVariableToGroup(int gid, int varid, bool checkIOregions=true)
+//    {addItemToGroup(gid,varid); /* TODO checkIOregions */}
+//    /// remove variable \a varid from group \a gid
+//    void removeVariableFromGroup(int gid, int varid)
+//    {removeItemFromGroup(gid,varid);}
+//    /// add operation \a opid to group \a gid
+//    void addOperationToGroup(int gid, int opid)
+//    {addItemToGroup(gid,opid);}
+//    /// remove operation \a opid from group \a gid
+//    void removeOperationFromGroup(int gid, int opid)
+//    {removeItemFromGroup(gid,opid);}
+//    /// add group \a gid1 to group \a group gid
+//    /// @return true if successful
+//    bool addGroupToGroup(int gid, int gid1)
+//    {addItemToGroup(gid,gid1);}
+//
+//    /// remove group \a gid1 from group \a group gid
+//    void removeGroupFromGroup(int gid, int gid1)
+//    {removeItemFromGroup(gid,gid1);}
 
     //    InGroup groupTest;
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-    void zoom(float xOrigin, float yOrigin,float factor);
+    //    void zoom(float xOrigin, float yOrigin,float factor);
     /// set scaling factors in all widgets, without adjusting
     /// coordinates, for use in reloading the model
 

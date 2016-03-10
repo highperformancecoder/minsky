@@ -66,10 +66,10 @@ namespace minsky
     /// updates the variable lists with the Godley table
     void update();
 
-    /// returns the id of a variable if point (x,y) is within a
-    /// variable icon, "@" otherwise, indicating that the Godley table
+    /// returns the variable if point (x,y) is within a
+    /// variable icon, null otherwise, indicating that the Godley table
     /// has been selected.
-    int select(float x, float y) const;
+    VariablePtr select(float x, float y) const;
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;

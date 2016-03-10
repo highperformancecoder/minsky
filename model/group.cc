@@ -31,6 +31,8 @@ namespace minsky
   Group& GroupPtr::operator*() const {return dynamic_cast<Group&>(ItemPtr::operator*());}
   Group* GroupPtr::operator->() const {return dynamic_cast<Group*>(ItemPtr::operator->());}
 
+  SVGRenderer Group::svgRenderer;
+
   ItemPtr Group::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
