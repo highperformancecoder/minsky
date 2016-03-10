@@ -67,18 +67,20 @@ namespace minsky
     }
   };
 
-  template <> struct TclExtend<minsky::Wire>: 
-    public TclExtendBase<minsky::Wire>
+  template <> struct TclExtend<minsky::WirePtr>: 
+    public TclExtendBase<minsky::WirePtr>
   {
-    TclExtend(Wire& ref): TclExtendBase<Wire>(ref) {}
+    std::shared_ptr<Port> from, to;
+    TclExtend(minsky::WirePtr& ref): 
+      TclExtendBase<minsky::WirePtr>(ref), from(ref->from()), to(ref->to()) {}
     std::vector<float> coords(TCL_args args) {
       if (args.count)
         {
           std::vector<float> coords;
           args>>coords;
-          return ref.coords(coords);
+          return ref->coords(coords);
         }
-      return ref.coords();
+      return ref->coords();
     }
 
   };

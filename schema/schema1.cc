@@ -549,8 +549,8 @@ namespace schema1
     void asgVar(minsky::VariableBase& x, const Variable& y)
     {
       asgItem(x,y);
-      x.init(y.init);
       x.name(y.name);
+      x.init(y.init);
     }
    
     void asgPlot(minsky::PlotWidget& x, const Plot& y)
@@ -586,8 +586,11 @@ namespace schema1
       void asgPorts(minsky::ItemPortVector& x, const vector<int>& pids)
       {
         for (size_t i=0; i<min(x.size(), pids.size()); ++i)
-          if (!emplace(pids[i],x[i]).second)
-            throw error("duplicate port ids found");
+          {
+            auto p=emplace(pids[i],x[i]);
+            if (!p.second)
+              x[i]=p.first->second;
+          }
       }
     };
 

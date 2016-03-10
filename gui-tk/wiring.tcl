@@ -29,13 +29,6 @@ proc createWire {coords} {
 frame .wiring 
 frame .wiring.menubar 
 
-# move mode initially
-set interactionMode 2 
-radiobutton .wiring.menubar.wiringmode -value 1 -variable interactionMode -command setInteractionMode -text wire
-radiobutton .wiring.menubar.movemode -value 2 -variable interactionMode -command setInteractionMode -text move
-radiobutton .wiring.menubar.panmode -value 3 -variable interactionMode -command setInteractionMode -text pan
-radiobutton .wiring.menubar.lassomode -value 4 -variable interactionMode -command setInteractionMode -text lasso
-
 set menubarLine 0
 ttk::frame .wiring.menubar.line0
 
@@ -57,8 +50,6 @@ image create photo integrateImg -file $minskyHome/icons/integrate.gif
 button .wiring.menubar.line0.integrate -image integrateImg -command {
     addOperation integrate}
 tooltip .wiring.menubar.line0.integrate integrate
-
-#pack .wiring.menubar.movemode .wiring.menubar.wiringmode .wiring.menubar.lassomode .wiring.menubar.panmode -side left
 
 pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.integrate -side left
 
@@ -184,7 +175,6 @@ proc clearTempBindings {} {
     bind .wiring.canvas <Motion> {}
     bind .wiring.canvas <Enter> {}
     bind . <Key-Escape> {handleEscapeKey}
-    setInteractionMode 2
 }
 
 # default command to execute when escape key is pressed
@@ -198,7 +188,6 @@ proc placeNewVar {id} {
     set moveOffsvar$id.x 0
     set moveOffsvar$id.y 0
     initGroupList
-    setInteractionMode 2
 
     bind .wiring.canvas <Enter> "move var $id %x %y"
     bind .wiring.canvas <Motion> "move var $id %x %y"
@@ -326,7 +315,6 @@ proc textInput {char} {
             var.rotation $globals(default_rotation)
             var.moveTo $x $y
             initGroupList
-            setInteractionMode 2
             newVar $id
         } else {
             set id [minsky.newNote]
@@ -387,7 +375,6 @@ proc placeNewOp {opid} {
     set moveOffsop$opid.x 0
     set moveOffsop$opid.y 0
     initGroupList
-    setInteractionMode 2
 
     drawOperation $opid
     bind .wiring.canvas <Enter> "move op $opid %x %y"
@@ -523,50 +510,57 @@ proc submitUpdateItemPos {item id} {
 # moveSet is used to determine the offset of where the mouse was
 # clicked to the anchor point of the item, so that clicking on an item
 # doesn't cause it to jump
-proc moveSet {item id x y} {
-    $item.get $id
+proc moveSet {id x y} {
+    item.get $id
     set x [.wiring.canvas canvasx $x]
     set y [.wiring.canvas canvasy $y]
-    global moveOffs$item$id.x moveOffs$item$id.y
-    set moveOffs$item$id.x [expr $x-[$item.x]]
-    set moveOffs$item$id.y [expr $y-[$item.y]]
-    if {"$item"=="group"} {
-        initGroupList $id
-    } {
-        initGroupList
-    }
+    global moveOffs$id.x moveOffs$id.y
+    set moveOffs$id.x [expr $x-[item.x]]
+    set moveOffs$id.y [expr $y-[item.y]]
+#TODO
+#    if {"$item"=="group"} {
+#        initGroupList $id
+#    } {
+#        initGroupList
+#    }
 }
 
-proc move {item id x y} {
+proc move {id x y} {
     doPushHistory 0
-    $item.get $id
-   global moveOffs$item$id.x moveOffs$item$id.y
+    item.get $id
+   global moveOffs$id.x moveOffs$id.y
 # ticket #220: Windows 8 does not always generate mousedown events
 # before sending mouse move events. This little bit of merde fakes a
 # mousedown event if it hasn't been received yet. This at least gets
 # rid of the error message, but the "acceleration" will probably still
 # be there.
-    if {![info exists moveOffs$item$id.x] || ![info exists moveOffs$item$id.y]} {
-        moveSet $item $id $x $y
+    if {![info exists moveOffs$id.x] || ![info exists moveOffs$id.y]} {
+        moveSet $id $x $y
     }
 
-    set x [expr $x-[set moveOffs$item$id.x]]
-    set y [expr $y-[set moveOffs$item$id.y]]
-    $item.moveTo [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]
-    $item.zoomFactor [localZoomFactor $item $id [$item.x] [$item.y]]
-    $item.set $id
-    submitUpdateItemPos $item $id
-    switch $item {
-        "var" {
-            foreach item [.wiring.canvas find withtag slider$id] {
-                set coords [.wiring.canvas coords $item]
-                # should be only one of these anyway...
-                .wiring.canvas coords $item [.wiring.canvas canvasx $x] \
-                    [sliderYCoord [.wiring.canvas canvasy $y]]
-            }
-        }
-    }
+    set x [expr $x-[set moveOffs$id.x]]
+    set y [expr $y-[set moveOffs$id.y]]
+    item.moveTo [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]
+    item.zoomFactor [localZoomFactor $id [item.x] [item.y]]
+    item.set $id
+    submitUpdateItemPos $id
+#TODO
+#    switch $item {
+#        "var" {
+#            foreach item [.wiring.canvas find withtag slider$id] {
+#                set coords [.wiring.canvas coords $item]
+#                # should be only one of these anyway...
+#                .wiring.canvas coords $item [.wiring.canvas canvasx $x] \
+#                    [sliderYCoord [.wiring.canvas canvasy $y]]
+#            }
+#        }
+#    }
     resetNotNeeded
+}
+
+proc newItem {id} {
+    item.get $id
+    .wiring.canvas create item [item.x] [item.y] -id $id -tags "items item$id"
 }
 
 # create a new canvas item for var id
@@ -596,8 +590,6 @@ proc addNewGodleyItem {id} {
     global moveOffsgodley$id.x moveOffsgodley$id.y
     set moveOffsgodley$id.x 0
     set moveOffsgodley$id.y 0
-    setInteractionMode 2
-
     
     newGodleyItem $id
   
@@ -616,7 +608,6 @@ proc addNewGodleyItemKey {} {
     global moveOffsgodley$id.x moveOffsgodley$id.y
     set moveOffsgodley$id.x 0
     set moveOffsgodley$id.y 0
-    setInteractionMode 2
 
     newGodleyItem $id
   
@@ -716,14 +707,14 @@ proc updateGodleyItem {id} {
 
 proc newWire {wire wireid} {
     wire.get $wireid
-    .wiring.canvas addtag wire$wireid withtag $wire 
-    .wiring.canvas addtag groupitems[wire.group] withtag $wire 
+    .wiring.canvas addtag wire$ withtag $wire 
+#    .wiring.canvas addtag groupitems[wire.group] withtag $wire 
     .wiring.canvas bind $wire <Enter> "decorateWire $wireid; set itemFocused 1"
     .wiring.canvas bind $wire <Leave> "set itemFocused 0"
     # mouse-1 clicking on wire starts wiring from the from port
-    .wiring.canvas bind $wire <Button-1> "set clicked 1; wires::startConnect [wire.from] $wire %x %y"
-    .wiring.canvas bind $wire <B1-Motion> "wires::extendConnect [wire.from] $wire %x %y"
-    .wiring.canvas bind $wire <B1-ButtonRelease> "set clicked 0; wires::finishConnect $wire %x %y"
+#    .wiring.canvas bind $wire <Button-1> "set clicked 1; wires::startConnect [wire.from] $wire %x %y"
+#    .wiring.canvas bind $wire <B1-Motion> "wires::extendConnect [wire.from] $wire %x %y"
+#    .wiring.canvas bind $wire <B1-ButtonRelease> "set clicked 0; wires::finishConnect $wire %x %y"
 }
 
 proc updateCoords {wire handle pos x y} {
@@ -915,11 +906,11 @@ proc unbindOnRelease {tag} {
 }
 
 # called when clicking on an item 
-proc onClick {item id tag x y} {
+proc onClick {id tag x y} {
     global clicked
     set clicked 1
-    $item.get $id
-    switch [$item.clickType [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
+    item.get $id
+    switch [item.clickType [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         "onPort" {
             wires::startConnect [closestOutPort $x $y] $tag $x $y
             .wiring.canvas bind $tag <B1-Motion> \
@@ -928,7 +919,7 @@ proc onClick {item id tag x y} {
                 "wires::finishConnect $tag %x %y; unbindOnRelease $tag"
         }
         "onItem" {
-            moveSet $item $id $x $y
+            moveSet item $id $x $y
              .wiring.canvas bind $tag <B1-Motion> "move $item $id %x %y"
             .wiring.canvas bind $tag <B1-ButtonRelease> "move $item $id %x %y; checkAddGroup $item $id %x %y; unbindOnRelease $tag"
         }
@@ -939,68 +930,18 @@ proc onClick {item id tag x y} {
     }
 }
 
-proc setM1Binding {item id tag} {
-    global interactionMode
-    switch $interactionMode {
-        1 {
-            $item.get $id
-            # wiring mode
-            .wiring.canvas bind $tag <Button-1> \
-                "wires::startConnect \[closestOutPort %x %y\] $tag %x %y"
-            .wiring.canvas bind $tag <B1-Motion> \
-                "wires::extendConnect \[closestOutPort %x %y\] $tag %x %y"
-            .wiring.canvas bind $tag <B1-ButtonRelease>  \
-                "wires::finishConnect $tag %x %y"
-        }
-        2 { 
-            .wiring.canvas bind $tag <Button-1> "onClick $item $id $tag %x %y"
-        }
-        default { 
-            # pan mode
-            .wiring.canvas bind $tag <Button-1> ""
-            .wiring.canvas bind $tag <B1-Motion> ""
-            .wiring.canvas bind $tag <B1-ButtonRelease> ""
-        }
-    }
+proc setM1Binding {id tag} {
+    .wiring.canvas bind $tag <Button-1> "onClick $id $tag %x %y"
 }
 
-proc setInteractionMode {args} {
-    global interactionMode clicked
-    if [llength $args] {set interactionMode [lindex $args 0]}
+# lasso mode when not clicked on an icon       
+bind .wiring.canvas <Button-1> {if {!$itemFocused} {lasso %x %y}}
+bind .wiring.canvas <B1-Motion> {if {!$itemFocused && !$clicked} {lasso %x %y}}
+bind .wiring.canvas <B1-ButtonRelease> {if {!$itemFocused && !$clicked} {lassoEnd %x %y}}
 
-    bind .wiring.canvas <Button-1> ""
-    bind .wiring.canvas <B1-Motion> ""
-    bind .wiring.canvas <B1-ButtonRelease> ""
-
-    # remove any insertion bindings in place
-    bind .wiring.canvas <Motion> {}
-    bind .wiring.canvas <Enter> {}
-    
-    switch -glob $interactionMode {
-        3 {
-            bind .wiring.canvas <Button-1> {.wiring.canvas scan mark %x %y}
-            bind .wiring.canvas <B1-Motion> {.wiring.canvas scan dragto %x %y 1}
-        } 
-        "\[24\]" {
-            # lasso mode when not clicked on an icon       
-            bind .wiring.canvas <Button-1> {if {!$itemFocused} {lasso %x %y}}
-            bind .wiring.canvas <B1-Motion> {if {!$itemFocused && !$clicked} {lasso %x %y}}
-            bind .wiring.canvas <B1-ButtonRelease> {if {!$itemFocused && !$clicked} {lassoEnd %x %y}}
- 
-            # pan mode
-            bind .wiring.canvas <Shift-Button-1> {.wiring.canvas scan mark %x %y}
-            bind .wiring.canvas <Shift-B1-Motion> {.wiring.canvas scan dragto %x %y 1}
-        }
-    }
-
-
-    foreach var [variables.#keys] {setM1Binding var $var var$var}
-    foreach op [operations.#keys] {setM1Binding op $op op$op}
-    foreach id [godleyItems.#keys] {setM1Binding godley $id godley$id}
-    foreach id [groupItems.#keys] {setM1Binding group $id group$id}
-    foreach id [plots.#keys] {setM1Binding plot $id plot$id}
-    foreach id [notes.#keys] {setM1Binding note $id note$id}
-}
+# pan mode
+bind .wiring.canvas <Shift-Button-1> {.wiring.canvas scan mark %x %y}
+bind .wiring.canvas <Shift-B1-Motion> {.wiring.canvas scan dragto %x %y 1}
 
 proc recentreCanvas {} {
     .wiring.canvas xview moveto 0.5
@@ -1028,108 +969,34 @@ proc updateCanvas {} {
 #    .wiring.canvas delete all
     .wiring.canvas delete errorItems
     foreach var [info globals sliderCheck*] {global $var; unset $var}
-    setInteractionMode
 
-    # groups need to be done first, as they adjust port positions (hence wires)
-    foreach g [groupItems.visibleGroups] {
-        delIfAccessed groupItems group $g
-        if {[llength [.wiring.canvas find withtag group$g]]==0} {
-            group.get $g
-            if {[group.group]==-1} {newGroupItem $g}
-        }
-    }
-    groupItems.clearAccessLog
-
-    foreach var [variables.visibleVariables] {
-        delIfAccessed variables var $var
-        if {[llength [.wiring.canvas find withtag var$var]]==0} {
-            var.get $var
-            if {[var.group]==-1} {newVar $var}
-            drawSlider $var [var.x] [var.y]
-        }
-    }
-    variables.clearAccessLog
-
-    # add operations
-    foreach o [operations.visibleOperations] {
-        delIfAccessed operations op $o
-        if {[llength [.wiring.canvas find withtag op$o]]==0} {
-            op.get $o
-            if {[op.group]==-1} {drawOperation $o}
-        }
-    }
-    operations.clearAccessLog
-
-    foreach s [switchItems.#keys] {
-        delIfAccessed switchItems switch $s
-        if {[llength [.wiring.canvas find withtag switchItem$s]]==0} {
-            switchItem.get $s
-            if {[switchItem.group]==-1} {newSwitch $s}
+    foreach i [items.#keys] {
+        delIfAccessed items item $i
+        item.get $i
+        puts "item $i visible=[item.visible]"
+        if [item.visible] {
+            if {[llength [.wiring.canvas find withtag item$i]]==0} {
+                newItem $i
+            } else { #redraw without recreating
+                .wiring.canvas coords item$i [.wiring.canvas coords item$i]
+            }
+            # draw slider if variable
         } else {
-            #redraw
-            .wiring.canvas coords switchItem$s [.wiring.canvas coords switchItem$s]
+            .wiring.canvas delete withtag item$i
         }
     }
-    switchItems.clearAccessLog
-
-    foreach im [plots.#keys] {
-        delIfAccessed plots plot $im
-        if {[llength [.wiring.canvas find withtag plot$im]]==0} {
-            plot.get $im
-            newPlotItem $im [plot.x] [plot.y]
-        } else {
-            #redraw
-            .wiring.canvas coords plot$im [.wiring.canvas coords plot$im]
-        }
-    }
-    plots.clearAccessLog
-
-    foreach g [godleyItems.#keys] {
-        delIfAccessed godleyItems godley $g
-        if {[llength [.wiring.canvas find withtag godley$g]]==0} {
-            newGodleyItem $g
-        }
-    }
-    godleyItems.clearAccessLog
-
-    foreach n [notes.#keys] {
-        delIfAccessed notes note $n
-        if {[llength [.wiring.canvas find withtag note$n]]==0} {
-            newNote $n
-        }
-    }
-    notes.clearAccessLog
+    items.clearAccessLog
 
     # update all wires
-    foreach w [visibleWires] {
+    foreach w [wires.#keys] {
         wire.get $w
-        if {[llength [.wiring.canvas find withtag wire$w]]==0} {
-            set id [createWire [wire.coords]]
-            newWire $id $w 
-        } else {.wiring.canvas coords wire$w [wire.coords]}
-    }
-
-# the following loop helps debug port placement
-    if {$showPorts} {
-        foreach port [ports.#keys] {
-            port.get $port
-            .wiring.canvas create oval \
-                [expr [port.x]-2] [expr [port.y]-2] [expr [port.x]+2] [expr [port.y]+2] \
-                -fill {} -outline blue 
+        if [wire.visible] {
+            if {[llength [.wiring.canvas find withtag wire$w]]==0} {
+                set id [createWire [wire.coords]]
+                newWire $id $w 
+            } else {.wiring.canvas coords wire$w [wire.coords]}
         }
-
     }
-  
-# debug code to display rectangles indicating bounding boxes for all items
-#    update
-#    foreach item [.wiring.canvas find all] {
-#            .wiring.canvas create rectangle [.wiring.canvas bbox $item] -outline green
-#    }
-
-# adjust wire coordinates to where the ports actually are
-#    foreach port [ports.#keys] {
-#        adjustWire $port
-#    }
 
     # refresh equations
     .equations.canvas itemconfigure eq -tag eq

@@ -872,10 +872,6 @@ set helpTopics(.controls.zoomIn) ZoomButtons
 set helpTopics(.controls.zoomOrig)  ZoomButtons
 set helpTopics(.wiring.menubar.line0.integrate) Integrate
 set helpTopics(.wiring.menubar.line1.plot) Plot
-set helpTopics(.wiring.menubar.movemode) ModeButtons
-set helpTopics(.wiring.menubar.wiringmode) ModeButtons
-set helpTopics(.wiring.menubar.lassomode) ModeButtons
-set helpTopics(.wiring.menubar.panmode) ModeButtons
 set helpTopics(.wiring.menubar.line0.godley)  GodleyTable
 set helpTopics(.wiring.menubar.line0.var) Variable
 set helpTopics(.wiring.menubar.line0.const) Constant 
@@ -1059,9 +1055,11 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
 # we have loaded a Minsky model, so must refresh the canvas
     updateCanvas
     recentreCanvas
-    foreach g [godleyItems.#keys] {
-        godley.get $g
-        set preferences(godleyDE) [godley.table.doubleEntryCompliant]
+    foreach g [items.#keys] {
+        catch {
+            godley.get $g
+            set preferences(godleyDE) [godley.table.doubleEntryCompliant]
+        }
     }
     set delay [simulationDelay]
     # setting preferences(godleyDE) causes the edited (dirty) flag to be set

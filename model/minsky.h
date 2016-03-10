@@ -155,7 +155,7 @@ namespace minsky
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky() {m_edited=false;}
-    ~Minsky() {clearAllMaps();} //improve shutdown times
+    //~Minsky() {clearAllMaps();} //improve shutdown times
 
     GroupPtr model{new Group};
 

@@ -137,12 +137,12 @@ namespace minsky
   {
     /// TCL accessors
     //    GetterSetter<Ports> port;
-    typedef IntrusiveMap<int,WirePtr> Wires;
+    typedef TrackedIntrusiveMap<int,WirePtr> Wires;
     Wires wires;
-    GetterSetter<Wires> wire;
+    GetterSetterPtr<Wires, Wire> wire;
     GetterSetter<VariableValues> value;
     
-    typedef IntrusiveMap<int,ItemPtr> Items;
+    typedef TrackedIntrusiveMap<int,ItemPtr> Items;
     Items items;
     GetterSetterPtr<Items, OperationBase> op;
     GetterSetterPtr<Items, Constant> constant;
@@ -153,7 +153,7 @@ namespace minsky
     GetterSetterPtr<Items, GodleyIcon> godley;
     GetterSetterPtr<Items, Group> group;
     GetterSetterPtr<Items, SwitchIcon> switchItem;
-    GetterSetterPtr<Items, Item> note;
+    GetterSetterPtr<Items, Item> item; //< generic item
 
     std::unique_ptr<ostream> eventRecord;
     void startRecording(const char* file) {
@@ -198,7 +198,7 @@ namespace minsky
                  data(items), var(items),
                  value(variableValues), plot(items), 
                  godley(items), group(items), 
-                 switchItem(items), note(items) {}
+                 switchItem(items), item(items) {}
 
     void clearAllGetterSetters() {
       // need also to clear the GetterSetterPtr variables, as these
@@ -214,7 +214,7 @@ namespace minsky
       godley.clear();
       group.clear();
       switchItem.clear();
-      note.clear();
+      item.clear();
     }
 
     void clearAll() {
@@ -329,8 +329,9 @@ namespace minsky
 //        groupItems[gid].select(currentSelection,x0,y0,x1,y1);
 //    }
 //
-//    void initGroupList(TCL_args args) {
-//      groupTest.initGroupList(groupItems, (args.count? args: -1));}
+    void initGroupList(TCL_args args) {
+      //      groupTest.initGroupList(groupItems, (args.count? args: -1));
+    }
 //    float localZoomFactor(std::string item, int id, float x, float y) const {
 //      int g=groupTest.containingGroup(x,y);
 //      float z=1;

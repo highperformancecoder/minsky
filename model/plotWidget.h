@@ -49,8 +49,6 @@ namespace minsky
     using Item::x;
     using Item::y;
 
-    void assignPorts();
-
     /// variable port attached to (if any)
     std::vector<VariableValue> yvars;
     std::vector<VariableValue> xvars;
@@ -69,7 +67,6 @@ namespace minsky
     int width{150}, height{150};
 
     PlotWidget();
-    ~PlotWidget();
 
     void addPlotPt(double t); ///< add another plot point
     void updateIcon(double t) override {addPlotPt(t);}

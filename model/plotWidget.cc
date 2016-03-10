@@ -84,15 +84,7 @@ namespace minsky
     fontScale=1;
     leadingMarker=true;
     grid=true;
-  }
 
-  PlotWidget::~PlotWidget()
-  {
-    // TODO deletePorts();
-  }
-
-  void PlotWidget::assignPorts()
-  {
     float w=width, h=height;
     float x = -0.5*w, dx=w/(2*numLines+1); // x location of ports
     float y=0.5*h, dy = h/(numLines);
@@ -117,8 +109,6 @@ namespace minsky
     // add in the x variable ports
     for (float x=2*dx-0.5*w; x<0.5*w; x+=dx)
       ports.emplace_back(new Port(*this, Port::inputPort));
-
-
   }
 
   void PlotWidget::draw(cairo::Surface& cairoSurface)
