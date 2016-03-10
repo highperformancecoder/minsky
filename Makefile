@@ -112,7 +112,7 @@ endif
 #all: $(EXES) $(TESTS) minsky.xsd 
 all: $(EXES) $(TESTS)
 # only perform link checking if online
-	if ping -c 1 www.google.com; then linkchecker GUI/library/help/minsky.html; fi
+	if ping -c 1 www.google.com; then linkchecker gui-tk/library/help/minsky.html; fi
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
