@@ -50,6 +50,7 @@ namespace minsky
   {
     friend class GroupPtr;
   public:
+    std::string classType() const override {return "Group";}
     int id=-1; // unique id used for variable scoping
     std::string title;
     Items items;

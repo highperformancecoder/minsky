@@ -60,6 +60,8 @@ namespace minsky
     bool m_visible=true; ///< if false, then this item is invisible
     std::weak_ptr<Group> group;
   
+    virtual std::string classType() const {return "Item";}
+
     ItemPortVector ports;
     float x() const; 
     float y() const; 

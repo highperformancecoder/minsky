@@ -39,6 +39,7 @@
 
 #include "polyBase.h"
 #include "polyPackBase.h"
+#include <pack_base.h>
 #include "operationType.h"
 //#include "opVarBaseAttributes.h"
 
@@ -64,6 +65,7 @@ namespace minsky
     ///from a schema
     static OperationBase* create(Type type); 
     virtual OperationBase* clone() const=0;
+    std::string classType() const override {return "OperationBase";}
 
     virtual ~OperationBase() {}
 
@@ -117,6 +119,7 @@ namespace minsky
       this->addPorts();
       return *this;
     }
+    std::string classType() const override {return "Operation<"+OperationType::typeName(T)+">";}
   };
 
   struct NamedOp
@@ -132,6 +135,7 @@ namespace minsky
     double value=0; ///< constant value
 
     string description() const {return str(value);}
+    std::string classType() const override {return "Constant";}
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
@@ -141,11 +145,8 @@ namespace minsky
     /// initialises sliderbounds based on current value, if not set otherwise
     void initOpSliderBounds();
 
-    void pack(pack_t& x, const string& d) const
-    {::pack(x,d,*this);}
-      
-    void unpack(unpack_t& x, const string& d)
-    {::unpack(x,d,*this);}
+    void pack(pack_t& x, const string& d) const override;
+    void unpack(unpack_t& x, const string& d) override;
   };
 
   class IntOp: public Operation<minsky::OperationType::integrate>
@@ -159,6 +160,7 @@ namespace minsky
   public:
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
+    std::string classType() const override {return "IntOp";}
 
     IntOp() {description("int");}
     // ensure that copies create a new integral variable
@@ -200,11 +202,8 @@ namespace minsky
       intVar->setZoom(zoomFactor);
     }
 
-    void pack(pack_t& x, const string& d) const
-    {::pack(x,d,*this);}
-      
-    void unpack(unpack_t& x, const string& d)
-    {::unpack(x,d,*this);}
+    void pack(pack_t& x, const string& d) const override;
+    void unpack(unpack_t& x, const string& d) override;
   };
 
   class DataOp: public NamedOp, public Operation<minsky::OperationType::data>
@@ -220,11 +219,8 @@ namespace minsky
     // derivatives, weighted by the respective intervals
     double deriv(double) const;
 
-    void pack(pack_t& x, const string& d) const
-    {::pack(x,d,*this);}
-      
-    void unpack(unpack_t& x, const string& d)
-    {::unpack(x,d,*this);}
+    void pack(pack_t& x, const string& d) const override;
+    void unpack(unpack_t& x, const string& d) override;
   };
 
   /// shared_ptr class for polymorphic operation objects. Note, you

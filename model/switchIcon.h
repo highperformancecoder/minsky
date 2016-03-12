@@ -41,6 +41,7 @@ namespace minsky
 
     /// value of switch according to current inputs
     unsigned value() const;
+    std::string classType() const override {return "SwitchIcon";}
 
     bool flipped=false;
 

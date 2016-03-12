@@ -42,7 +42,7 @@ ENGINE_OBJS=evalOp.o equations.o derivative.o equationDisplay.o evalGodley.o lat
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema1.o variableType.o operationType.o
 #schema0.o 
-GUI_TK_OBJS=tclmain.o minskyTCL.o 
+GUI_TK_OBJS=tclmain.o minskyTCL.o minskyCairoItem.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS)
 

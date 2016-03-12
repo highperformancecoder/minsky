@@ -52,6 +52,7 @@ namespace minsky
     /// variable port attached to (if any)
     std::vector<VariableValue> yvars;
     std::vector<VariableValue> xvars;
+    std::string classType() const override {return "PlotWidget";}
 
     /// variable ports specifying plot size
     VariableValue xminVar, xmaxVar, yminVar, ymaxVar, y1minVar, y1maxVar;

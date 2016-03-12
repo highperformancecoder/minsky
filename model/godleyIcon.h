@@ -40,7 +40,8 @@ namespace minsky
     friend class SchemaHelper;
   public:
     static SVGRenderer svgRenderer;
-        
+    std::string classType() const override {return "GodleyIcon";}
+   
     /// width of Godley icon in screen coordinates
     float width() const {return (flowMargin+iconSize)*zoomFactor;}
     /// height of Godley icon in screen coordinates

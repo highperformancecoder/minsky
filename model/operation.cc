@@ -682,6 +682,21 @@ namespace minsky
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}
 
+  void Constant::pack(pack_t& x, const string& d) const
+  {::pack(x,d,*this);}
+      
+  void Constant::unpack(unpack_t& x, const string& d)
+  {::unpack(x,d,*this);}
+ 
+  void IntOp::pack(pack_t& x, const string& d) const
+  {::pack(x,d,*this);}
+      
+  void IntOp::unpack(unpack_t& x, const string& d)
+  {::unpack(x,d,*this);}
 
-
+  void DataOp::pack(pack_t& x, const string& d) const
+  {::pack(x,d,*this);}
+      
+  void DataOp::unpack(unpack_t& x, const string& d)
+  {::unpack(x,d,*this);}
 }
