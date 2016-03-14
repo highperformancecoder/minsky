@@ -47,25 +47,20 @@ namespace schema1
     {
       typedef map<int, UnionLayout> Layouts;
       Layouts layout;
-      minsky::Group& vm;
     public:
-      Combine(const vector<shared_ptr<Layout> >& l, minsky::Group& vm): vm(vm) {
+      Combine(const vector<shared_ptr<Layout> >& l) {
         for (size_t i=0; i<l.size(); ++i)
           layout.insert(make_pair(l[i]->id, UnionLayout(*l[i])));
       }
 
       /// combine model and layout data
-      template <class T, class U>
-      T combine(T&, const U&) const;
-
-      template <class K, class V, class U>
-      V combine(minsky::IntrusiveWrap<K,V>& x, const U& y) const
-      {return combine(static_cast<V&>(x), y);}
-
-
-      template <class T, class U>
-      T combine(const T& t, const U& u) const
-      {T t1(t); return combine(t1,u);}
+      void combine(minsky::Item&, const Item&) const;
+      void combine(minsky::Wire& x, const Wire& y) const;
+      void combine(minsky::OperationBase& x, const Operation& y) const;
+      void combine(minsky::VariableBase& x, const Variable& y) const;
+      void combine(minsky::PlotWidget& x, const Plot& y) const;
+      void combine(minsky::GodleyIcon& x, const Godley& y) const;
+      void combine(minsky::Group& x, const Group& y) const;
 
       /// populate the usual integer-based map from a vector of schema data
       template <class M, class U>
@@ -110,61 +105,94 @@ namespace schema1
 //      return p;
 //    }
 
-    template <>
-    minsky::Wire Combine::combine(minsky::Wire& w, const Wire& w1) const
+    void Combine::combine(minsky::Item& x, const Item& y) const
     {
-      Layouts::const_iterator l=layout.find(w1.id);
-//      if (l!=layout.end())
-//        {
-//          w.from=w1.from;
-//          w.to=w1.to;
-//          w.visible=l->second.visible;
-//          if (l->second.coords.size()>=4)
-//            w.coords(toArray(l->second.coords));
-//          else //add straight wire
-//            {
-//              ecolab::array<float> coords;
-//              l=layout.find(w.from);
-//              if (l!=layout.end())
-//                {
-//                  (coords<<=l->second.x)<<=l->second.y;
-//                  l=layout.find(w.to);
-//                  if (l!=layout.end())
-//                    {
-//                      (coords<<=l->second.x)<<=l->second.y;
-//                      w.coords(coords);
-//                    }
-//                }
-//            }
-//        }
-      return w;
+      x.detailedText=y.detailedText;
+      x.tooltip=y.tooltip;
+      auto l=layout.find(y.id);
+      if (l!=layout.end())
+        {
+          x.moveTo(l->second.x, l->second.y);
+          x.m_visible=l->second.visible;
+          x.rotation=l->second.rotation;
+        }
     }
-     
-//    void asgNote(minsky::Note& n, const Item& i)
-//    {
-//      n.detailedText = i.detailedText;
-//      n.tooltip = i.tooltip;
-//    }     
 
-//    template <> minsky::OpVarBaseAttributes 
-//    Combine::combine(minsky::OpVarBaseAttributes& o, const Item& o1) const
-//    {
-//      asgNote(o, o1);
-//      Layouts::const_iterator li=layout.find(o1.id);
-//      if (li!=layout.end())
-//        {
-//          const UnionLayout& l=li->second;
-//          o.rotation=l.rotation;
-//          o.visible=l.visible;
-//          o.m_x=l.x;
-//          o.m_y=l.y;
-//        }
-//      return o;
-//    }
-
-    template <> minsky::OperationPtr 
-    Combine::combine(minsky::OperationPtr& o, const Operation& o1) const
+    void Combine::combine(minsky::Wire& x, const Wire& y) const
     {
+      Layouts::const_iterator l=layout.find(y.id);
+      if (l!=layout.end())
+          x.coords(l->second.coords);
+    }
+    
+    void Combine::combine(minsky::OperationBase& x, const Operation& y) const
+    {
+      combine(static_cast<minsky::Item&>(x), y);
+      if (auto c=dynamic_cast<minsky::Constant*>(&x))
+        c->value=y.value;
+      if (auto d=dynamic_cast<minsky::DataOp*>(&x))
+        d->data=y.data;
+    }
+
+    void Combine::combine(minsky::VariableBase& x, const Variable& y) const
+    {
+      combine(static_cast<minsky::Item&>(x), y);
+      x.name(y.name);
+      x.init(y.init);
+      auto l=layout.find(y.id);
+      if (l!=layout.end())
+        {
+          x.sliderVisible=l->second.sliderVisible;
+          x.sliderBoundsSet=l->second.sliderBoundsSet;
+          x.sliderStepRel=l->second.sliderStepRel;
+          x.sliderMin=l->second.sliderMin;
+          x.sliderMax=l->second.sliderMax;
+          x.sliderStep=l->second.sliderStep;
+        }
+    }
+
+    void Combine::combine(minsky::PlotWidget& x, const Plot& y) const
+    {
+      combine(static_cast<minsky::Item&>(x), y);
+      x.legend=y.legend.get();
+      if (y.legend)
+        x.legendSide=*y.legend;
+      x.title=y.title;
+      x.xlabel=y.xlabel;
+      x.ylabel=y.ylabel;
+      x.y1label=y.y1label;
+      auto l=layout.find(y.id);
+      if (l!=layout.end())
+        {
+          x.width=l->second.width;
+          x.height=l->second.height;
+        }
+    }
+
+    void Combine::combine(minsky::GodleyIcon& x, const Godley& y) const
+    {
+      combine(static_cast<minsky::Item&>(x), y);
+      x.table.setDEmode(y.doubleEntryCompliant);
+      x.table.title=y.name;
+    }
+
+    void Combine::combine(minsky::Group& x, const Group& y) const
+    {
+      combine(static_cast<minsky::Item&>(x), y);
+       //x.name=y.name;
+//        for (auto cv=y.model.createdVars)
+//          x.createdVars.push_back(imap[cv]);
+      auto l=layout.find(y.id);
+      if (l!=layout.end())
+        {
+          x.width=l->second.width;
+          x.height=l->second.height;
+          x.displayZoom=l->second.displayZoom;
+        }
+    }
+
+
+
 //      Layouts::const_iterator li=layout.find(o1.id);
 //      o=minsky::OperationPtr(o1.type, o1.ports);
 //      combine(static_cast<minsky::OpVarBaseAttributes&>(*o), 
@@ -209,11 +237,11 @@ namespace schema1
 //            c->sliderStep=l.sliderStep;
 //          }
 //      return o;
-    }
+//    }
    
-    template <> minsky::VariablePtr 
-    Combine::combine(minsky::VariablePtr& v, const Variable& v1) const
-    {
+//    template <> minsky::VariablePtr 
+//    Combine::combine(minsky::VariablePtr& v, const Variable& v1) const
+//    {
 //      assert(v);
 //      combine(static_cast<minsky::OpVarBaseAttributes&>(*v), 
 //              static_cast<const Item&>(v1));
@@ -238,7 +266,7 @@ namespace schema1
 //            (dynamic_cast<minsky::VariablePorts&>(*v), out, in);
 //        }
 //      return v;
-    }
+//    }
 
 //    template <> minsky::SwitchIconPtr 
 //    Combine::combine(minsky::SwitchIconPtr& sw, const Switch& s) const
@@ -250,9 +278,9 @@ namespace schema1
 //      return sw;
 //    }
 
-    template <> minsky::PlotWidget 
-    Combine::combine(minsky::PlotWidget& p, const Plot& p1) const
-    {
+//    template <> minsky::PlotWidget 
+//    Combine::combine(minsky::PlotWidget& p, const Plot& p1) const
+//    {
 //      asgNote(p, p1);
 //      Layouts::const_iterator li=layout.find(p1.id);
 //      if (li!=layout.end())
@@ -301,7 +329,7 @@ namespace schema1
 //          p.height=l.height;
 //        }
 //      return p;
-    }
+//    }
 
 //    template <> minsky::GroupIcon
 //    Combine::combine(minsky::GroupIcon& g, const Group& g1) const
@@ -328,9 +356,9 @@ namespace schema1
 //      return g;
 //    }
 
-    template <> minsky::GodleyIcon
-    Combine::combine(minsky::GodleyIcon& g, const Godley& g1) const
-    {
+//    template <> minsky::GodleyIcon
+//    Combine::combine(minsky::GodleyIcon& g, const Godley& g1) const
+//    {
 //      asgNote(g, g1);
 //      Layouts::const_iterator li=layout.find(g1.id);
 //      if (li!=layout.end())
@@ -371,8 +399,8 @@ namespace schema1
 //            }
 //          g.moveTo(l.x, l.y);
 //        }
-      return g;
-    }
+//      return g;
+//    }
   
 //    void Combine::populate
 //    (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const
@@ -531,47 +559,47 @@ namespace schema1
 
   namespace
   {
-    void asgItem(minsky::Item& x, const Item& y)
-    {
-      x.detailedText=y.detailedText;
-      x.tooltip=y.tooltip;
-    }
-
-    void asgOp(minsky::OperationBase& x, const Operation& y)
-    {
-      asgItem(x,y);
-      if (auto c=dynamic_cast<minsky::Constant*>(&x))
-        c->value=y.value;
-      if (auto d=dynamic_cast<minsky::DataOp*>(&x))
-        d->data=y.data;
-    }
-
-    void asgVar(minsky::VariableBase& x, const Variable& y)
-    {
-      asgItem(x,y);
-      x.name(y.name);
-      x.init(y.init);
-    }
-   
-    void asgPlot(minsky::PlotWidget& x, const Plot& y)
-    {
-      asgItem(x,y);
-      x.legend=y.legend.get();
-      if (y.legend)
-        x.legendSide=*y.legend;
-      x.title=y.title;
-      x.xlabel=y.xlabel;
-      x.ylabel=y.ylabel;
-      x.y1label=y.y1label;
-    }
-
-    void asgGodley(minsky::GodleyIcon& x, const Godley& y)
-    {
-      asgItem(x,y);
-      x.table.setDEmode(y.doubleEntryCompliant);
-      x.table.title=y.name;
-      SchemaHelper::setPrivates(x.table, y.data, y.assetClasses);
-    }
+//    void asgItem(minsky::Item& x, const Item& y)
+//    {
+//      x.detailedText=y.detailedText;
+//      x.tooltip=y.tooltip;
+//    }
+//
+//    void asgOp(minsky::OperationBase& x, const Operation& y)
+//    {
+//      asgItem(x,y);
+//      if (auto c=dynamic_cast<minsky::Constant*>(&x))
+//        c->value=y.value;
+//      if (auto d=dynamic_cast<minsky::DataOp*>(&x))
+//        d->data=y.data;
+//    }
+//
+//    void asgVar(minsky::VariableBase& x, const Variable& y)
+//    {
+//      asgItem(x,y);
+//      x.name(y.name);
+//      x.init(y.init);
+//    }
+//   
+//    void asgPlot(minsky::PlotWidget& x, const Plot& y)
+//    {
+//      asgItem(x,y);
+//      x.legend=y.legend.get();
+//      if (y.legend)
+//        x.legendSide=*y.legend;
+//      x.title=y.title;
+//      x.xlabel=y.xlabel;
+//      x.ylabel=y.ylabel;
+//      x.y1label=y.y1label;
+//    }
+//
+//    void asgGodley(minsky::GodleyIcon& x, const Godley& y)
+//    {
+//      asgItem(x,y);
+//      x.table.setDEmode(y.doubleEntryCompliant);
+//      x.table.title=y.name;
+//      SchemaHelper::setPrivates(x.table, y.data, y.assetClasses);
+//    }
 
     struct Portmap: public map<int, shared_ptr<minsky::Port> >
     {
@@ -612,15 +640,16 @@ namespace schema1
   {
     Portmap pmap;
     ItemMap imap(g);
+    Combine combine(layout);
     for (auto& i: model.notes)
       {
         auto it=imap.addItem(new minsky::Item, i);
-        asgItem(*it,i);
+        combine.combine(*it,i);
       }
     for (auto& i: model.variables)
       {
         auto v=imap.addItem(minsky::VariableBase::create(i.type), i);
-        asgVar(*v,i);
+        combine.combine(*v,i);
         pmap.asgPorts(v->ports, i.ports);
       }
     // operations need to be after variables to allow integration
@@ -628,7 +657,7 @@ namespace schema1
     for (auto& i: model.operations)
       {
         auto o=imap.addItem(minsky::OperationBase::create(i.type), i);
-        asgOp(*o,i);
+        combine.combine(*o,i);
         pmap.asgPorts(o->ports, i.ports);
         if (auto d=dynamic_cast<minsky::DataOp*>(o))
           d->data=i.data;
@@ -638,32 +667,30 @@ namespace schema1
     for (auto& i: model.plots)
       {
         auto p=imap.addItem(new minsky::PlotWidget, i);
-        asgPlot(*p,i);
+        combine.combine(*p,i);
         pmap.asgPorts(p->ports, i.ports);
       }
     for (auto& i: model.switches)
       {
         auto s=imap.addItem(new minsky::SwitchIcon, i);
-        asgItem(*s,i);
+        combine.combine(*s,i);
         pmap.asgPorts(s->ports, i.ports);
       }
     for (auto& i: model.switches)
       {
         auto s=imap.addItem(new minsky::SwitchIcon, i);
-        asgItem(*s,i);
+        combine.combine(*s,i);
         pmap.asgPorts(s->ports, i.ports);
       }
     for (auto& i: model.groups)
         {
-        auto g=imap.addItem(new minsky::Group, i);
-        //g->name=i.name;
-//        for (auto cv=i:model.createdVars)
-//          g->createdVars.push_back(imap[cv]);
+          auto g=imap.addItem(new minsky::Group, i);
+          combine.combine(*g, i);
       }
 
     /// process wires after all the items have been defined
     for (auto& i: model.wires)
-      g.addWire(new minsky::Wire(pmap[i.from],pmap[i.to]));
+      combine.combine(*g.addWire(new minsky::Wire(pmap[i.from],pmap[i.to])), i);
 
     /// groups needs to be processed last so that all references are defined
     for (auto& i: model.groups)
@@ -795,10 +822,11 @@ namespace schema1
       map<const minsky::Port*,int> portMap;
       map<const minsky::Group*,int> groupMap;
       map<const minsky::Wire*,int> wireMap;
+      Combine combine;
       int nextId=0;
       vector<shared_ptr<Layout> >& l;
       MinskyModel& m;
-      PopulateMinsky(Minsky& m): m(m.model), l(m.layout) {}
+      PopulateMinsky(Minsky& m): m(m.model), combine(m.layout), l(m.layout) {}
       
       int portId(const minsky::Port* p) {
         auto pmi=portMap.find(p);

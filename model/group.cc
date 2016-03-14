@@ -99,11 +99,14 @@ namespace minsky
     if (auto x=dynamic_pointer_cast<Group>(it))
       return addGroup(x);
    
+    // statsh position
+    float x=it->x(), y=it->y();
     auto origGroup=it->group.lock();
     if (origGroup && origGroup.get()!=this)
       origGroup->removeItem(*it);
 
     it->group=self.lock();
+    it->moveTo(x,y);
 
     // move wire to highest common group
     // TODO add in I/O variables if needed
