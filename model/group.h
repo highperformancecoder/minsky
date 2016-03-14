@@ -228,6 +228,7 @@ namespace minsky
     /// returns the smallest group whose icon completely encloses the
     /// rectangle given by the argument. If no candidate group found,
     /// returns nullptr. Weak reference returned, no ownership.
+    Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1);
     const Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1) const;
 
   };

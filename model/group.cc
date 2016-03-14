@@ -341,6 +341,18 @@ namespace minsky
     return this;
   }
 
+  Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1)
+  {
+    if (x0>x()-0.5*width || x1<x()+0.5*width || 
+        y0>y()-0.5*height || y1<y()+0.5*height)
+      return nullptr;
+    // at this point, this is a candidate. Check if any child groups are also
+    for (auto& g: groups)
+      if (auto mg=g->minimalEnclosingGroup(x0,y0,x1,y1))
+        return mg;
+    return this;
+  }
+
   void Group::setZoom(float factor)
   {
     zoomFactor=factor;

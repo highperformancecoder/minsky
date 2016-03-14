@@ -77,6 +77,23 @@ namespace minsky
     std::shared_ptr<V> val;
     string cmdPrefix;
   public:
+
+    template <class T>
+    void setRef(const std::shared_ptr<T>& v) {
+      auto tmp=std::dynamic_pointer_cast<V>(v);
+      if (!tmp)
+        throw error("object not of type %s",typeName<V>().c_str());
+      if (tmp!=val)
+        {
+          // we keep another reference to value here so that we
+          // never dereference an invalid object
+          val=tmp;
+          ref.reset(new TclExtend<std::shared_ptr<V>>(val));
+          TCL_obj(minskyTCL_obj(), cmdPrefix, *ref);
+          setTCL_objAttributes();
+        }
+    }
+
     // nb, in spite of appearances, this approach does not work well
     // with non-shared_pointer value types
     void get(TCL_args args) {
@@ -87,28 +104,7 @@ namespace minsky
       tmp>>key;
       typename M::iterator i=map.find(key);
       if (i!=map.end()) 
-        {
-          // register current object with TCL
-          auto v=std::dynamic_pointer_cast<V>(*i);
-          if (v)
-            {
-              if (v!=val)
-              {
-                // we keep another reference to value here so that we
-                // never dereference an invalid object
-                val=v;
-                ref.reset(new TclExtend<std::shared_ptr<V>>(val));
-                TCL_obj(minskyTCL_obj(), cmdPrefix, *ref);
-                setTCL_objAttributes();
-              }
-            }
-          else
-            {
-              ostringstream s;
-              s<<"gotten object "<<key<<" not of type "<<typeName<V>();
-              throw error(s.str().c_str());
-            }
-        }
+        setRef(*i);
       else
         throw error("object not found: %s[%s]",(char*)args[-1],(char*)args[0]);
       tclcmd() << "scopedDisableEventProcessing\n";
@@ -332,18 +328,14 @@ namespace minsky
     void initGroupList(TCL_args args) {
       //      groupTest.initGroupList(groupItems, (args.count? args: -1));
     }
-    float localZoomFactor(int id, float x, float y) const {
-      const Group* g=model->minimalEnclosingGroup(x,y,x,y);
-      float z=1;
-      auto item=items[id];
-      // godley tables can have a user overridden zoom
-      if (auto godley=dynamic_cast<GodleyIcon*>(item.get())) 
-        z=godley->zoomFactor;
-      if (!g || g==item.get())
-        return z*model->zoomFactor; //global zoom factor
-      else 
-        return z*g->localZoom();
-    }
+
+    /// returns the local zoom factor to be applied to item \a id at \a x,y
+    float localZoomFactor(int id, float x, float y) const;
+
+    /// checks whether item \a id needs to be moved to a different
+    /// group, and do the move if so
+    /// @return true if the item moved between groups
+    bool checkAddGroup(int id, float x, float y);
 
     /// load from a file
     void load(const std::string& filename) {

@@ -294,5 +294,31 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
+  float MinskyTCL::localZoomFactor(int id, float x, float y) const 
+  {
+    const Group* g=model->minimalEnclosingGroup(x,y,x,y);
+    float z=1;
+    auto item=items[id];
+    // godley tables can have a user overridden zoom
+    if (auto godley=dynamic_cast<GodleyIcon*>(item.get())) 
+      z=godley->zoomFactor;
+    if (!g || g==item.get())
+      return z*model->zoomFactor; //global zoom factor
+    else 
+      return z*g->localZoom();
+  }
 
+  bool MinskyTCL::checkAddGroup(int id, float x, float y)
+  {
+    auto i=items.find(id);
+    if (i!=items.end())
+      if (auto g=model->minimalEnclosingGroup(x,y,x,y))
+        {
+          if ((*i)->group.lock().get()!=g)
+            g->addItem(*i);
+        }
+      else if ((*i)->group.lock()!=model)
+        model->addItem(*i);
+  }
+ 
 }

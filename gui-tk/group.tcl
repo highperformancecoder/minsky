@@ -179,49 +179,6 @@ proc groupEdit {id} {
     grab .wiring.editGroup
 }
 
-proc checkAddGroup {item id x y} {
-    set gid [groupTest.containingGroup [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-    $item.get $id
-    # check for moves within group
-    if {[llength [info commands minsky.$item.group]]==0 || $gid==[$item.group]} {
-        return
-    }
-    if {$gid>=0} {
-        group.get $gid
-        if {![group.displayContents]} {.wiring.canvas delete $item$id}
-        switch $item {
-            "var" {addVariableToGroup $gid $id 1; .wiring.canvas delete $item$id}
-            "op" {addOperationToGroup $gid $id; .wiring.canvas delete $item$id}
-            "group" {
-                if [addGroupToGroup $gid $id] {
-                    .wiring.canvas delete $item$id
-                }
-            }
-        }
-        .wiring.canvas delete $item$id
-        # redraw group
-        .wiring.canvas delete group$gid groupitems$gid
-        newGroupItem $gid
-        submitUpdateItemPos group $gid
-    } else {
-        # check if it needs to be removed from a group
-        $item.get $id
-        set gid [$item.group]
-        if {$gid>=0} {
-            switch $item {
-                "var" {removeVariableFromGroup $gid $id}
-                "op" {removeOperationFromGroup $gid $id}
-                "group" {removeGroupFromGroup $gid $id}
-            }
-            # redraw group
-            .wiring.canvas dtag $item$id groupitems$gid
-            .wiring.canvas delete group$gid groupitems$gid
-            newGroupItem $gid
-        }
-    }
-    update
-}
-
 namespace eval group {
     proc resize {id} {
         group.get $id
