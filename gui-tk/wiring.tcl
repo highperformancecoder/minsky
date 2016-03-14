@@ -481,29 +481,29 @@ proc drawOperation {id} {
     .wiring.canvas bind op$id <Leave> "itemEnterLeave op $id op$id 0"
 }
 
-proc updateItemPos {item id} {
+proc updateItemPos {id} {
     global globals
     catch {
         # ignore errors that may occur if the object vanishes before now
-        $item.get $id
-        eval .wiring.canvas coords $item$id [$item.x] [$item.y]
-        foreach p [$item.ports]  {
+        item.get $id
+        eval .wiring.canvas coords item$id [item.x] [item.y]
+        foreach p [item.ports]  {
             adjustWire $p
         }
     }
-    unset globals(updateItemPositionSubmitted$item$id)
+    unset globals(updateItemPositionSubmitted$id)
     resetNotNeeded
     doPushHistory 1
 }    
 
-proc submitUpdateItemPos {item id} {
+proc submitUpdateItemPos {id} {
     global globals
     if {!
-        ([info exists globals(updateItemPositionSubmitted$item$id)] &&
-         [set globals(updateItemPositionSubmitted$item$id)])} {
+        ([info exists globals(updateItemPositionSubmitted$id)] &&
+         [set globals(updateItemPositionSubmitted$id)])} {
         # only submitted if no update already scheduled
-        set globals(updateItemPositionSubmitted$item$id) 1
-        after idle updateItemPos $item $id
+        set globals(updateItemPositionSubmitted$id) 1
+        after idle updateItemPos $id
     }
 }
 
@@ -561,6 +561,10 @@ proc move {id x y} {
 proc newItem {id} {
     item.get $id
     .wiring.canvas create item [item.x] [item.y] -id $id -tags "items item$id"
+    .wiring.canvas bind item$id <Double-Button-1> "doubleClick item$id %X %Y"
+    .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
+    .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
+    .wiring.canvas bind item$id <Button-1> "onClick $id item$id %x %y"
 }
 
 # create a new canvas item for var id
@@ -919,9 +923,9 @@ proc onClick {id tag x y} {
                 "wires::finishConnect $tag %x %y; unbindOnRelease $tag"
         }
         "onItem" {
-            moveSet item $id $x $y
-             .wiring.canvas bind $tag <B1-Motion> "move $item $id %x %y"
-            .wiring.canvas bind $tag <B1-ButtonRelease> "move $item $id %x %y; checkAddGroup $item $id %x %y; unbindOnRelease $tag"
+            moveSet $id $x $y
+             .wiring.canvas bind $tag <B1-Motion> "move $id %x %y"
+            .wiring.canvas bind $tag <B1-ButtonRelease> "move $id %x %y; checkAddGroup item $id %x %y; unbindOnRelease $tag"
         }
         "outside" {
             .wiring.canvas bind $tag <B1-Motion> "lasso %x %y"
@@ -1091,19 +1095,19 @@ bind .wiring.canvas <<contextMenu>> {
         canvasContext %X %Y
     } else {
         foreach item $items {
-            if {[.wiring.canvas type $item]=="godley"} {
+            if {[.wiring.canvas type $item]=="item"} {
                 # TODO - this is so kludgy
                 set tags [.wiring.canvas gettags $item]
-                set tag [lindex $tags [lsearch -regexp $tags {godley[0-9]+}]]
-                set id [string range $tag 6 end]
-                rightMouseGodley $id %x %y %X %Y
-            } elseif {[.wiring.canvas type $item]=="group"} {
-                set tags [.wiring.canvas gettags $item]
-                set tag [lindex $tags [lsearch -regexp $tags {group[0-9]+}]]
-                set id [string range $tag 5 end]
-                rightMouseGroup $id %x %y %X %Y
-            } else {
-                contextMenu $item %X %Y
+                set tag [lindex $tags [lsearch -regexp $tags {item[0-9]+}]]
+                set id [string range $tag 4 end]
+                puts $tags
+                puts "$tag $id"
+                item.get $id
+                switch [item.classType] {
+                    "godleyIcon" "rightMouseGodley $id %x %y %X %Y"
+                    "group" "rightMouseGroup $id %x %y %X %Y"
+                    default "contextMenu $item %X %Y"
+                }
             }
         }
     }
@@ -1319,7 +1323,6 @@ namespace eval godley {
         }
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
-        setInteractionMode
    }
 }
 
@@ -1991,7 +1994,6 @@ proc OKnote {item id} {
 proc newNote {id} {
     note.get $id
     .wiring.canvas create text [note.x] [note.y] -text [note.detailedText] -tags "note$id notes"
-    setInteractionMode
     .wiring.canvas bind note$id <Double-Button-1> "postNote note $id"
 }
 

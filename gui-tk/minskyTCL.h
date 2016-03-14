@@ -332,17 +332,18 @@ namespace minsky
     void initGroupList(TCL_args args) {
       //      groupTest.initGroupList(groupItems, (args.count? args: -1));
     }
-//    float localZoomFactor(std::string item, int id, float x, float y) const {
-//      int g=groupTest.containingGroup(x,y);
-//      float z=1;
-//      // godley tables can have a user overridden zoom
-//      if (item=="godley") 
-//        z=godleyItems[id].zoomFactor;
-//      if (g==-1 || (g==id && item=="groupItem"))
-//        return z*zoomFactor(); //global zoom factor
-//      else 
-//        return z*groupItems.find(g)->localZoom();
-//    }
+    float localZoomFactor(int id, float x, float y) const {
+      const Group* g=model->minimalEnclosingGroup(x,y,x,y);
+      float z=1;
+      auto item=items[id];
+      // godley tables can have a user overridden zoom
+      if (auto godley=dynamic_cast<GodleyIcon*>(item.get())) 
+        z=godley->zoomFactor;
+      if (!g || g==item.get())
+        return z*model->zoomFactor; //global zoom factor
+      else 
+        return z*g->localZoom();
+    }
 
     /// load from a file
     void load(const std::string& filename) {

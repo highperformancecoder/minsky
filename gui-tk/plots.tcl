@@ -271,7 +271,6 @@ namespace eval plot {
         }
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
-        setInteractionMode
     }
 
     proc setLegend {} {

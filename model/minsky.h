@@ -340,7 +340,7 @@ namespace minsky
 //    void removeGroupFromGroup(int gid, int gid1)
 //    {removeItemFromGroup(gid,gid1);}
 
-    //    InGroup groupTest;
+//    InGroup groupTest;
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
     //    void zoom(float xOrigin, float yOrigin,float factor);

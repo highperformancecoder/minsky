@@ -103,10 +103,6 @@ proc lassoEnd {x y} {
         .wiring.canvas delete lasso
         updateCanvas
         unset lassoStart
-        # convert back to move mode for later editing
-        global interactionMode
-        set interactionMode 2
-        setInteractionMode
     }
 }
 
@@ -281,7 +277,6 @@ namespace eval group {
         }
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
-        setInteractionMode
     }
 
     proc copy {id} {insertNewGroup [copyGroup $id]}
