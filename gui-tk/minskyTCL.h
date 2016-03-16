@@ -337,6 +337,9 @@ namespace minsky
     /// @return true if the item moved between groups
     bool checkAddGroup(int id, float x, float y);
 
+    /// adjust wires after item \id moves
+    void adjustWires(int id);
+
     /// load from a file
     void load(const std::string& filename) {
       clearAll();

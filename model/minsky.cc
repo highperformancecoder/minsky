@@ -494,8 +494,7 @@ namespace minsky
              for (size_t i=0; i<p->ports.size(); ++i)
                {
                  auto& pp=p->ports[i];
-                 assert(pp->wires.size()==1);
-                 if (pp->getVariableValue().idx()>=0)
+                 if (pp->wires.size()>0 && pp->getVariableValue().idx()>=0)
                    p->connectVar(pp->getVariableValue(), i);
                }
            }
@@ -917,6 +916,9 @@ namespace minsky
 //      }
 //
 //    variables.makeConsistent();
+
+    
+
 //    for (GodleyItems::iterator g=godleyItems.begin(); g!=godleyItems.end(); ++g)
 //      g->update();
 //

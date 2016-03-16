@@ -415,10 +415,12 @@ namespace minsky
           
 
     // render the variables
+    cairo_save(cairo);
     cairo_identity_matrix(cairo);
     DrawVars drawVars(cairo, x(), y(), zoomFactor);
     drawVars(flowVars); 
     drawVars(stockVars); 
+    cairo_restore(cairo);
 
     if (mouseFocus)
       drawPorts(cairo);

@@ -174,6 +174,8 @@ namespace schema1
       combine(static_cast<minsky::Item&>(x), y);
       x.table.setDEmode(y.doubleEntryCompliant);
       x.table.title=y.name;
+      SchemaHelper::setPrivates(x.table, y.data, y.assetClasses);
+      x.zoomFactor=y.zoomFactor;
     }
 
     void Combine::combine(minsky::Group& x, const Group& y) const
@@ -676,11 +678,12 @@ namespace schema1
         combine.combine(*s,i);
         pmap.asgPorts(s->ports, i.ports);
       }
-    for (auto& i: model.switches)
+    for (auto& i: model.godleys)
       {
-        auto s=imap.addItem(new minsky::SwitchIcon, i);
+        auto s=imap.addItem(new minsky::GodleyIcon, i);
         combine.combine(*s,i);
         pmap.asgPorts(s->ports, i.ports);
+        s->update();
       }
     for (auto& i: model.groups)
         {

@@ -1056,7 +1056,8 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     updateCanvas
     recentreCanvas
     foreach g [items.#keys] {
-        catch {
+        item.get $g
+        if {[item.classType]=="GodleyIcon"} {
             godley.get $g
             set preferences(godleyDE) [godley.table.doubleEntryCompliant]
         }

@@ -101,7 +101,6 @@ namespace minsky
 
   void VariableValue::reset(const VariableValues& v)
   {
-    assert(isValueId(name));
     if (m_idx<0) allocValue(); 
     operator=(initValue(v));
   }
@@ -156,7 +155,7 @@ namespace minsky
   bool VariableValues::validEntries() const
   {
     for (auto& v: *this)
-      if (!v.second.isValueId(v.second.name))
+      if (!v.second.isValueId(v.first))
         return false;
     return true;
   }

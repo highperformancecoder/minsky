@@ -104,12 +104,15 @@ trace add variable preferences(godleyDE) write {updateDEmode}
 
 proc updateDEmode args {
   global globals preferences
-  foreach id [godleyItems.#keys] {
-    godley.get $id
-    set edited [edited]
-    godley.table.setDEmode $preferences(godleyDE)
-    updateGodley $id
-    if {!$edited} resetEdited
+  foreach id [items.#keys] {
+      item.get $id
+      if {[item.classType]=="GodleyIcon"} {
+          godley.get $id
+          set edited [edited]
+          godley.table.setDEmode $preferences(godleyDE)
+          updateGodley $id
+          if {!$edited} resetEdited
+      }
   }
 }
   

@@ -483,14 +483,8 @@ proc drawOperation {id} {
 
 proc updateItemPos {id} {
     global globals
-    catch {
-        # ignore errors that may occur if the object vanishes before now
-        item.get $id
-        eval .wiring.canvas coords item$id [item.x] [item.y]
-        foreach p [item.ports]  {
-            adjustWire $p
-        }
-    }
+    # ignore errors that may occur if the object vanishes before now
+    catch {adjustWires $id}
     unset globals(updateItemPositionSubmitted$id)
     resetNotNeeded
     doPushHistory 1
@@ -869,20 +863,20 @@ namespace eval wires {
     proc finishConnect {id x y} {[set id]::finishConnect $x $y}
 }
 
-# adjust the begin or end of line when a port moves
-proc adjustWire {portId} {
-    foreach w [wiresAttachedToPort $portId] {
-        .wiring.canvas delete handles
-        wire.get $w
-        if [wire.visible] {
-            # ensure wire exists on canvas
-            if {[.wiring.canvas type wire$w]==""} {
-                newWire [createWire [wire.coords]] $w
-            }
-            eval .wiring.canvas coords wire$w [wire.coords]
-        }
-   }
-}
+## adjust the begin or end of line when a port moves
+#proc adjustWire {portId} {
+#    foreach w [wiresAttachedToPort $portId] {
+#        .wiring.canvas delete handles
+#        wire.get $w
+#        if [wire.visible] {
+#            # ensure wire exists on canvas
+#            if {[.wiring.canvas type wire$w]==""} {
+#                newWire [createWire [wire.coords]] $w
+#            }
+#            eval .wiring.canvas coords wire$w [wire.coords]
+#        }
+#   }
+#}
 
 proc straightenWire {id} {
     wire.get $id
@@ -1317,9 +1311,7 @@ namespace eval godley {
 
         .wiring.canvas delete godley$id
         newGodleyItem $id
-        foreach p [godley.ports]  {
-            adjustWire $p
-        }
+        adjustWires $id
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
    }
@@ -1381,9 +1373,7 @@ proc rotateOp {id angle} {
     op.rotation [expr [op.rotation]+$angle]
     op.set
     drawOperation $id
-    foreach p [op.ports] {
-        adjustWire $p
-    }
+    adjustWires $id
 }
 
 proc rotateVar {id angle} {
@@ -1391,8 +1381,7 @@ proc rotateVar {id angle} {
     var.rotation [expr [var.rotation]+$angle]
     var.set
     newVar $id
-    adjustWire [var.outPort]
-    adjustWire [var.inPort]
+    adjustWires $id
 }
 
 proc deiconifyEditVar {} {
