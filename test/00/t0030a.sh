@@ -39,7 +39,7 @@ proc afterMinskyStarted {} {
   updateCanvas
   set godley [lindex [godleyItems.#keys] 0]
   doubleMouseGodley \$godley 194 57
-  doubleMouseGodley \$godley 66 44
+  doubleMouseGodley \$godley 78 62
   update
   # should open edit window
   assert {[winfo viewable .wiring.editVar]}
