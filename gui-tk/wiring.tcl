@@ -1210,6 +1210,7 @@ proc contextMenu {item x y} {
             .wiring.context add command -label Description -command "postNote godley $id"
             .wiring.context add command -label "Open Godley Table" -command "openGodley $id"
             .wiring.context add command -label "Resize Godley" -command "godley::resize $id"
+            .wiring.context add command -label "Export to file" -command "godley::export $id"
             .wiring.context add command -label "Raise" -command "raiseItem godley$id"
             .wiring.context add command -label "Lower" -command "lowerItem godley$id"
             .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.godleyItems.@elem $id].*"
@@ -1315,6 +1316,24 @@ namespace eval godley {
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
    }
+
+    proc export {item} {
+        global workDir type
+
+        set fname [tk_getSaveFile -filetypes {{"CSV files" csv TEXT} {"LaTeX files" tex TEXT}} \
+                       -initialdir $workDir -typevariable type]  
+        if {$fname==""} return
+        if [string match -nocase *.csv "$fname"] {
+            exportGodleyToCSV $item $fname
+        } elseif [string match -nocase *.tex "$fname"] {
+            exportGodleyToLaTeX $item $fname
+        } else {
+            switch -glob $type {
+                "*(csv)" {exportGodleyToCSV $item $fname.csv}
+                "*(tex)" {exportGodleyToLaTeX $item $fname.tex}
+            }
+        }
+    }
 }
 
 proc flip_default {} {

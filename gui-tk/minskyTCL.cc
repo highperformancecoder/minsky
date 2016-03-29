@@ -297,15 +297,14 @@ namespace minsky
   float MinskyTCL::localZoomFactor(int id, float x, float y) const 
   {
     const Group* g=model->minimalEnclosingGroup(x,y,x,y);
-    float z=1;
     auto item=items[id];
     // godley tables can have a user overridden zoom
     if (auto godley=dynamic_cast<GodleyIcon*>(item.get())) 
-      z=godley->zoomFactor;
+      return godley->zoomFactor;
     if (!g || g==item.get())
-      return z*model->zoomFactor; //global zoom factor
+      return model->zoomFactor; //global zoom factor
     else 
-      return z*g->localZoom();
+      return g->localZoom();
   }
 
   bool MinskyTCL::checkAddGroup(int id, float x, float y)
