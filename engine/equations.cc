@@ -290,7 +290,8 @@ namespace MathDAG
         else 
           result.allocValue();
 
-        if (state) state->ports[0]->setVariableValue(result);
+        if (state && !state->ports.empty() && state->ports[0]) 
+          state->ports[0]->setVariableValue(result);
 
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
