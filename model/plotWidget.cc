@@ -109,7 +109,10 @@ namespace minsky
     // add in the x variable ports
     for (float x=2*dx-0.5*w; x<0.5*w; x+=dx)
       ports.emplace_back(new Port(*this, Port::inputPort));
-  }
+
+    yvars.resize(2*numLines);
+    xvars.resize(numLines);
+   }
 
   void PlotWidget::draw(cairo::Surface& cairoSurface)
   {
@@ -204,7 +207,7 @@ namespace minsky
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%paletteSz], -0.5*M_PI);
       }
 
-    cairo_translate(cairo, 10*zoomFactor,yoffs);
+   cairo_translate(cairo, 10*zoomFactor,yoffs);
     cairo_set_line_width(cairo,1);
     Plot::draw(cairo,w-20*zoomFactor,h-yoffs);
     

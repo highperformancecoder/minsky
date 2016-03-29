@@ -290,6 +290,8 @@ namespace MathDAG
         else 
           result.allocValue();
 
+        if (state) state->ports[0]->setVariableValue(result);
+
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
         for (size_t i=0; type()!=integrate && i<arguments.size(); ++i)
@@ -1447,6 +1449,17 @@ namespace MathDAG
           integrals.back().input=iInput->rhs->addEvalOps(equations);
       }
     assert(minsky.variableValues.validEntries());
+
+    // ensure all variables have their output port's variable value up to date
+    minsky.model->recursiveDo
+      (&Group::items,
+       [&](Items&, Items::iterator i)
+       {
+         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+           v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
+         return false;
+       });
+       
 
     // loop over plots and ensure that each connected input port
     // has its expression evaluated 

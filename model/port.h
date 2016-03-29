@@ -69,7 +69,7 @@ namespace minsky
 
     /// sets the VariableValue associated with this port. Only for output ports
     void setVariableValue(const VariableValue& v);
-    const VariableValue& getVariableValue() const {return variableValue;}
+    const VariableValue& getVariableValue() const;
     /// value associated with this port
     double value() const;
     

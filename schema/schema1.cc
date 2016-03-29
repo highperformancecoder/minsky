@@ -664,7 +664,10 @@ namespace schema1
         if (auto d=dynamic_cast<minsky::DataOp*>(o))
           d->data=i.data;
         else if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-          integ->intVar=imap[i.intVar];
+          {
+            g.removeItem(*integ->intVar);
+            integ->intVar=imap[i.intVar];
+          }
       }
     for (auto& i: model.plots)
       {

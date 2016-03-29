@@ -401,16 +401,21 @@ proc finishMoveCell {id} {
 
 proc updateGodleys {} {
   global globals
-  foreach id [godleyItems.#keys] {
-    updateGodley $id
+  foreach id [items.#keys] {
+      if {[item.classType]=="GodleyIcon"} {
+          updateGodley $id
+      }
   }
+
   
 }
 
 proc updateGodleysDisplay {} {
   global globals
-  foreach id [godleyItems.#keys] {
-    updateGodleyDisplay $id
+  foreach id [items.#keys] {
+      if {[item.classType]=="GodleyIcon"} {
+          updateGodleyDisplay $id
+      }
   }
   
 }
