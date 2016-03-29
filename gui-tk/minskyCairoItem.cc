@@ -58,6 +58,7 @@ namespace
     {
       if (cairoSurface && op)
         {
+          op->setCairoSurface(cairoSurface);
           cairo=cairoSurface->cairo();
           string label;
           cairo_reset_clip(cairo);

@@ -26,6 +26,7 @@
 
 #include <cairo.h>
 #include <vector>
+#include <cairo_base.h>
 
 namespace minsky 
 {
@@ -61,6 +62,8 @@ namespace minsky
     std::weak_ptr<Group> group;
   
     virtual std::string classType() const {return "Item";}
+    /// sets the cairo surface, allow redraws to be requested
+    virtual void setCairoSurface(const ecolab::cairo::SurfacePtr&) {}
 
     ItemPortVector ports;
     float x() const; 

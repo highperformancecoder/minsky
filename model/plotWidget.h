@@ -79,6 +79,8 @@ namespace minsky
     /// surfaces to draw into for redraw. expandedPlot refers to
     /// separate popup plot window
     Exclude<cairo::SurfacePtr> cairoSurface, expandedPlot; 
+    void setCairoSurface(const ecolab::cairo::SurfacePtr& s) override 
+    {cairoSurface=s;}
     void redraw(); // redraw plot using current data to all open windows
 
     /// set autoscaling
