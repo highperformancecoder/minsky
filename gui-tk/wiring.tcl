@@ -147,9 +147,9 @@ proc zoom {factor} {
     set y0 [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
     if {$factor>1} {
         .wiring.canvas scale all $x0 $y0 $factor $factor
-        minsky.zoom $x0 $y0 $factor
+        model.zoom $x0 $y0 $factor
     } else {
-        minsky.zoom $x0 $y0 $factor
+        model.zoom $x0 $y0 $factor
         .wiring.canvas scale all $x0 $y0 $factor $factor
     }  
     # sliders need to be readjusted, because zooming doesn't do the right thing
@@ -535,6 +535,7 @@ proc move {id x y} {
     set x [expr $x-[set moveOffs$id.x]]
     set y [expr $y-[set moveOffs$id.y]]
     item.moveTo [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]
+    .wiring.canvas coords item$id [item.x] [item.y]
     item.zoomFactor [localZoomFactor $id [item.x] [item.y]]
     item.set $id
     submitUpdateItemPos $id
@@ -705,7 +706,7 @@ proc updateGodleyItem {id} {
 
 proc newWire {wire wireid} {
     wire.get $wireid
-    .wiring.canvas addtag wire$ withtag $wire 
+    .wiring.canvas addtag wire$wireid withtag $wire 
 #    .wiring.canvas addtag groupitems[wire.group] withtag $wire 
     .wiring.canvas bind $wire <Enter> "decorateWire $wireid; set itemFocused 1"
     .wiring.canvas bind $wire <Leave> "set itemFocused 0"

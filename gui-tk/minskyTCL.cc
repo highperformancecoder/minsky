@@ -330,7 +330,6 @@ namespace minsky
           if (&w->from()->item == it->get() || 
               &w->to()->item == it->get())
             {
-              cout << "adjusting wire "<<w.id()<< endl;
               cmd |".wiring.canvas coords wire"|w.id();
               for (auto x: w->coords())
                 cmd <<x;
