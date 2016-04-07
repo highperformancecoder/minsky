@@ -747,7 +747,7 @@ Polygon RenderVariable::geom() const
 
 void RenderVariable::draw()
 {
-  updatePortLocs();
+  //  updatePortLocs();
   var.draw(cairo);
 }
 
@@ -801,7 +801,18 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_close_path(cairo);
   cairo_clip_preserve(cairo);
   cairo_stroke(cairo);
-  
+
+  {
+    double x0=w, y0=0, x1=-w+2, y1=0;
+    double sa=sin(angle), ca=cos(angle);
+    if (ports.size()>0)
+      ports[0]->moveTo(x()+zoomFactor*(x0*ca-y0*sa), 
+                       y()+zoomFactor*(y0*ca+x0*sa));
+    if (ports.size()>1)
+      ports[1]->moveTo(x()+zoomFactor*(x1*ca-y1*sa), 
+                       y()+zoomFactor*(y1*ca+x1*sa));
+  }
+
   //  cairo_restore(cairo);
   if (mouseFocus)
     {
@@ -813,7 +824,7 @@ void VariableBase::draw(cairo_t *cairo) const
   if (selected) drawSelected(cairo);
 }
 
-void RenderVariable::updatePortLocs()
+void RenderVariable::updatePortLocs() const
 {
   double angle=var.rotation * M_PI / 180.0;
   double x0=w, y0=0, x1=-w+2, y1=0;
