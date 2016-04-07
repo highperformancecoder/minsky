@@ -685,7 +685,16 @@ namespace schema1
       {
         auto s=imap.addItem(new minsky::GodleyIcon, i);
         combine.combine(*s,i);
-        pmap.asgPorts(s->ports, i.ports);
+        //        pmap.asgPorts(s->ports, i.ports);
+        for (auto p: i.ports)
+          {
+            if (auto v=dynamic_pointer_cast<minsky::VariableBase>
+                (g.findItem(pmap[p]->item)))
+              if (v->isStock())
+                s->stockVars.push_back(v);
+              else
+                s->flowVars.push_back(v);
+          }
         s->update();
       }
     for (auto& i: model.groups)

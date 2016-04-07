@@ -38,7 +38,7 @@ namespace minsky
     struct OrderByName
     {
       bool operator()(const VariablePtr& x, const VariablePtr& y) const
-      {assert(x&&y); return x->name() < y->name();}
+      {assert(x&&y); return x->fqName() < y->fqName();}
     };
 
     struct DrawVars

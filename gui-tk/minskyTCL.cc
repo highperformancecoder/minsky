@@ -320,21 +320,33 @@ namespace minsky
         model->addItem(*i);
   }
  
+  void MinskyTCL::adjustItemWires(Item* it)
+  {
+    tclcmd cmd;
+    for (auto& w: wires)
+      if (&w->from()->item == it || &w->to()->item == it)
+        {
+          cmd |".wiring.canvas coords wire"|w.id();
+          for (auto x: w->coords())
+            cmd <<x;
+          cmd << "\n";
+        }
+  }
+
   void MinskyTCL::adjustWires(int id) 
   {
     auto it=items.find(id);
     if (it!=items.end())
       {
-        tclcmd cmd;
-        for (auto& w: wires)
-          if (&w->from()->item == it->get() || 
-              &w->to()->item == it->get())
-            {
-              cmd |".wiring.canvas coords wire"|w.id();
-              for (auto x: w->coords())
-                cmd <<x;
-              cmd << "\n";
-            }
+        if (auto g=dynamic_cast<GodleyIcon*>(it->get()))
+          {
+            for (auto& v: g->stockVars)
+              adjustItemWires(&*v);
+            for (auto& v: g->flowVars)
+              adjustItemWires(&*v);
+          }
+        else
+          adjustItemWires(it->get());
       }
   }
 

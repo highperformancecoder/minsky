@@ -337,6 +337,8 @@ namespace minsky
     /// @return true if the item moved between groups
     bool checkAddGroup(int id, float x, float y);
 
+    void adjustItemWires(Item* it);
+
     /// adjust wires after item \id moves
     void adjustWires(int id);
 

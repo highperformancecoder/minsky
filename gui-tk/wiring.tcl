@@ -153,12 +153,15 @@ proc zoom {factor} {
         .wiring.canvas scale all $x0 $y0 $factor $factor
     }  
     # sliders need to be readjusted, because zooming doesn't do the right thing
-    foreach v [variables.visibleVariables] {
-        var.get $v
-        foreach item [.wiring.canvas find withtag slider$v] {
-            set coords [.wiring.canvas coords $item]
-            # should be only one of these anyway...
-            .wiring.canvas coords $item [var.x] [sliderYCoord [var.y]]
+    foreach v [items.#keys] {
+        item.get $v
+        if {[item.visible] && [string equal -length 8 "Variable" [item.classType]]} {
+            var.get $v
+            foreach item [.wiring.canvas find withtag slider$v] {
+                set coords [.wiring.canvas coords $item]
+                # should be only one of these anyway...
+                .wiring.canvas coords $item [var.x] [sliderYCoord [var.y]]
+            }
         }
     }
 }
