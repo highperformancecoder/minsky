@@ -118,6 +118,8 @@ namespace minsky
               oldVars.erase(v);
               assert(*v);
             }
+          ports.insert(ports.end(), vars.back()->ports.begin(),
+                       vars.back()->ports.end());
         }
       // remove any previously existing variables
       set<string> svName;
@@ -231,6 +233,7 @@ namespace minsky
               }
           }
 
+
     // determine height of variables part of icon
     float height=0;
     stockMargin=0;
@@ -239,62 +242,35 @@ namespace minsky
     accumulateWidthHeight(flowVars, height, flowMargin);
     iconSize=max(100.0, 1.8*height);
 
+    positionVariables();
+  }
+
+  void GodleyIcon::positionVariables() const
+  {
     // position of margin in absolute canvas coordinate
     float x= this->x() - 0.5*(0.9*iconSize-flowMargin)*zoomFactor;
     float y= this->y() - 0.2/*0.37*/*iconSize*zoomFactor;
-    for (Variables::iterator v=flowVars.begin(); v!=flowVars.end(); ++v)
+    for (auto& v: flowVars)
       {
         // right justification
-        RenderVariable rv(**v);
-        const_cast<VariablePtr&>(*v)->moveTo(x-rv.width()*zoomFactor,y);
-        y+=2*RenderVariable(**v).height()*zoomFactor;
+        RenderVariable rv(*v);
+        const_cast<VariablePtr&>(v)->moveTo(x-rv.width()*zoomFactor,y);
+        y+=2*RenderVariable(*v).height()*zoomFactor;
       }
     x=this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
     y=this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
 
-    for (Variables::iterator v=stockVars.begin(); v!=stockVars.end(); ++v)
+    for (auto& v: stockVars)
       {
         // top justification at bottom of icon
-        RenderVariable rv(**v);
+        RenderVariable rv(*v);
         //OK because we're not changing variable name
-        VariableBase& vv=const_cast<VariableBase&>(**v); 
+        VariableBase& vv=const_cast<VariableBase&>(*v); 
         vv.moveTo(x,y+rv.width()*zoomFactor);
         vv.rotation=90;
         x+=2*rv.height()*zoomFactor;
       }
   }
-
-//  size_t GodleyIcon::numPorts() const
-//  {
-//    int numPorts=0;
-//    for (Variables::const_iterator v=flowVars.begin(); v!=flowVars.end(); ++v)
-//      numPorts+=(*v)->numPorts();
-//    for (Variables::const_iterator v=stockVars.begin(); v!=stockVars.end(); ++v)
-//      numPorts+=(*v)->numPorts();
-//    return numPorts;
-//  }
-//
-//  vector<int> GodleyIcon::ports() const
-//  {
-//    vector<int> ports;
-//    for (auto& v: flowVars)
-//      ports.insert(ports.end(),v->ports().begin(),v->ports().end());
-//    for (auto& v: stockVars)
-//      ports.insert(ports.end(),v->ports().begin(),v->ports().end());
-//    return ports;
-//  }
-//
-//  void GodleyIcon::moveTo(float x1, float y1)
-//  {
-//    float dx=x1-x(), dy=y1-y();
-//    m_x=x1; m_y=y1;
-//    //const_cast OK below because location doesn't affect ordering
-//    for (Variables::iterator v=flowVars.begin(); v!=flowVars.end(); ++v)
-//      const_cast<VariableBase&>(**v).move(dx, dy); 
-//    for (Variables::iterator v=stockVars.begin(); v!=stockVars.end(); ++v)
-//      const_cast<VariableBase&>(**v).move(dx, dy);
-//  }
-
 
   VariablePtr GodleyIcon::select(float x, float y) const
   {
@@ -307,84 +283,10 @@ namespace minsky
     return VariablePtr();
   }
 
-//  void GodleyIcon::zoom(float xOrigin, float yOrigin,float factor) {
-//    minsky::zoom(m_x, xOrigin, factor);
-//    minsky::zoom(m_y, yOrigin, factor);
-//    // RKS - tika changed this to an assignment, but I don't think that is correct
-//    zoomFactor*=factor;
-//    for (VariablePtr& v: flowVars)
-//      v->zoomFactor=zoomFactor;
-//    for (VariablePtr& v: stockVars)
-//      v->zoomFactor=zoomFactor;
-//    update();
-//  }
-
-//  void GodleyIcon::updatePortLocation()
-//  {
-//    double xScale = zoomFactor;   //  zoomFactor should be 1 for Wt
-//    double yScale = zoomFactor;
-//
-//    // determine height of variables part of icon
-//
-//    float height=0;
-//    stockMargin=0;
-//    flowMargin=0;
-//    accumulateWidthHeight(stockVars, height, stockMargin);
-//    accumulateWidthHeight(flowVars, height, flowMargin);
-//    iconSize=max(100.0, 1.8*height);
-//
-//    Variables::iterator v;
-//
-//    float x= this->x() - 0.5*(0.8*iconSize-flowMargin)*zoomFactor;
-//    float y= this->y() - 0.37*iconSize*zoomFactor;
-//
-//    for (v = flowVars.begin(); v != flowVars.end(); ++v)
-//      {
-//        VariablePtr var = *v;
-//        RenderVariable rv(*var);
-//
-//        double angle=var->rotation * M_PI / 180.0;
-//        double x0=rv.width(), y0=0, x1=-rv.width()+2, y1=0;
-//        double sa=sin(angle), ca=cos(angle);
-//
-//        const_cast<VariablePtr&>(*v)->moveTo(x - rv.width() * zoomFactor, y);
-//        y += 2 * rv.height() * zoomFactor;
-//
-//        minsky().movePortTo(var->outPort(),
-//                            var->x()+xScale*(x0*ca-y0*sa),
-//                            var->y()+yScale*(y0*ca+x0*sa));
-//        minsky().movePortTo(var->inPort(),
-//                            var->x()+xScale*(x1*ca-y1*sa),
-//                            var->y()+yScale*(y1*ca+x1*sa));
-//      }
-//
-//    x=this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
-//    y=this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
-//
-//    for (v = stockVars.begin(); v != stockVars.end(); ++v)
-//      {
-//        VariablePtr var = *v;
-//        RenderVariable rv(*var);
-//
-//        // top justification at bottom of icon
-//        var->moveTo(x, y + rv.width() * zoomFactor);
-//        var->rotation = 90;
-//        x += 2 * rv.height() * zoomFactor;
-//
-//        double angle=var->rotation * M_PI / 180.0;
-//        double x0=rv.width(), y0=0, x1=-rv.width()+2, y1=0;
-//        double sa=sin(angle), ca=cos(angle);
-//        minsky().movePortTo(var->outPort(),
-//                            var->x()+xScale*(x0*ca-y0*sa),
-//                            var->y()+yScale*(y0*ca+x0*sa));
-//        minsky().movePortTo(var->inPort(),
-//                            var->x()+xScale*(x1*ca-y1*sa),
-//                            var->y()+yScale*(y1*ca+x1*sa));
-//      }
-//  }
-
   void GodleyIcon::draw(cairo_t* cairo) const
   {
+    positionVariables();
+    cairo_save(cairo);
     cairo_translate(cairo,-0.5*width(),-0.5*height());
 
     cairo_rectangle(cairo,0,0,width(),height());
@@ -415,7 +317,6 @@ namespace minsky
           
 
     // render the variables
-    cairo_save(cairo);
     cairo_identity_matrix(cairo);
     DrawVars drawVars(cairo, x(), y(), zoomFactor);
     drawVars(flowVars); 
@@ -428,6 +329,4 @@ namespace minsky
   }
 
   SVGRenderer GodleyIcon::svgRenderer;
-
- 
 }

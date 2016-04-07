@@ -87,6 +87,8 @@ namespace minsky
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 
                     VariableBase::Type varType);
+    /// move contained variables to correct locations within icon
+    void positionVariables() const;
   };
 }
 

@@ -213,8 +213,8 @@ proc plotDoubleClick {id} {
     bind .plot$id <Configure> "resizePlot $id  %w %h $dw $dh"
 }
     
-proc deletePlot {item id} {
-    .wiring.canvas delete $item
+proc deletePlot {id} {
+    .wiring.canvas delete item$id
     minsky.deletePlot $id
     updateCanvas
 }

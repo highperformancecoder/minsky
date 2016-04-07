@@ -674,7 +674,7 @@ proc rightMouseGodley {id x y X Y} {
     godley.get $id
     set var [godley.select [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
     if {$var==-1} {
-        contextMenu godley$id $X $Y
+        contextMenu $id $X $Y
     } else {
         .wiring.context delete 0 end
         .wiring.context add command -label "Edit" -command "editItem $var var"
@@ -710,6 +710,7 @@ proc newWire {wire wireid} {
 #    .wiring.canvas addtag groupitems[wire.group] withtag $wire 
     .wiring.canvas bind $wire <Enter> "decorateWire $wireid; set itemFocused 1"
     .wiring.canvas bind $wire <Leave> "set itemFocused 0"
+    .wiring.canvas bind $wire <<contextMenu>> "wireContextMenu $wireid %x %y"
     # mouse-1 clicking on wire starts wiring from the from port
 #    .wiring.canvas bind $wire <Button-1> "set clicked 1; wires::startConnect [wire.from] $wire %x %y"
 #    .wiring.canvas bind $wire <B1-Motion> "wires::extendConnect [wire.from] $wire %x %y"
@@ -919,7 +920,7 @@ proc onClick {id tag x y} {
         }
         "onItem" {
             moveSet $id $x $y
-             .wiring.canvas bind $tag <B1-Motion> "move $id %x %y"
+            .wiring.canvas bind $tag <B1-Motion> "move $id %x %y"
             .wiring.canvas bind $tag <B1-ButtonRelease> "move $id %x %y; checkAddGroup $id %x %y; unbindOnRelease $tag"
         }
         "outside" {
@@ -1088,6 +1089,7 @@ bind .wiring.canvas <<contextMenu>> {
     if {[llength $items]==0} {
         canvasContext %X %Y
     } else {
+        puts "items=$items"
         foreach item $items {
             if {[.wiring.canvas type $item]=="item"} {
                 # TODO - this is so kludgy
@@ -1097,10 +1099,11 @@ bind .wiring.canvas <<contextMenu>> {
                 puts $tags
                 puts "$tag $id"
                 item.get $id
+                puts "item.classType=[item.classType]"
                 switch [item.classType] {
                     "godleyIcon" "rightMouseGodley $id %x %y %X %Y"
                     "group" "rightMouseGroup $id %x %y %X %Y"
-                    default "contextMenu $item %X %Y"
+                    default "contextMenu $id %X %Y"
                 }
             }
         }
@@ -1114,20 +1117,31 @@ proc lowerItem {item} {
     .wiring.canvas lower $item all
 }
 
+proc wireContextMenu {id x y} {
+    wire.get $id
+    .wiring.context delete 0 end
+    .wiring.context add command -label Help -command {help Wires}
+    .wiring.context add command -label Description -command "postNote wire $id"
+    .wiring.context add command -label "Straighten" -command "straightenWire $id"
+    .wiring.context add command -label "Raise" -command "raiseItem wire$id"
+    .wiring.context add command -label "Lower" -command "lowerItem wire$id"
+    .wiring.context add command -label "Browse object" -command "obj_browser minsky.wire.*"
+    .wiring.context add command -label "Delete wire" -command "deleteItem $id wire$id"
+    tk_popup .wiring.context $x $y
+}
+
 # context menu
-proc contextMenu {item x y} {
+proc contextMenu {id x y} {
     # find out what type of item we're referring to
-    set tags [.wiring.canvas gettags $item]
-    switch -regexp $tags {
-        "variables" {
-            set tag [lindex $tags [lsearch -regexp $tags {var[0-9]+}]]
-            set id [string range $tag 3 end]
+    item.get $id
+    switch -regex [item.classType] {
+        "Variable*" {
             var.get $id
 	    .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Variable}
             .wiring.context add command -label Description -command "postNote var $id"
             .wiring.context add command -label "Value [var.value]" 
-            .wiring.context add command -label "Edit" -command "editItem $id $tag"
+            .wiring.context add command -label "Edit" -command "editItem $id item$id"
             .wiring.context add checkbutton -label "Slider" \
                 -command "drawSlider $id $x $y" \
                 -variable "sliderCheck$id"
@@ -1138,18 +1152,16 @@ proc contextMenu {item x y} {
             .wiring.context add command -label "Flip" -command "rotateVar $id 180; flip_default"
             .wiring.context add command -label "Raise" -command "raiseItem var$id"
             .wiring.context add command -label "Lower" -command "lowerItem var$id"
-            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.variables.@elem $id].*"
-	    .wiring.context add command -label "Delete variable" -command "deleteItem $id $tag"
+            .wiring.context add command -label "Browse object" -command "obj_browser minsky.var.*"
+	    .wiring.context add command -label "Delete variable" -command "deleteItem $id item$id"
         }
-        "operations" {
-            set tag [lindex $tags [lsearch -regexp $tags {op[0-9]+}]]
-            set id [string range $tag 2 end]
-            op.get $id
+        "Operation*" {
+           op.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command "help op:[op.name]"
             .wiring.context add command -label Description -command "postNote op $id"
             .wiring.context add command -label "Port values [op.portValues]" 
-            .wiring.context add command -label "Edit" -command "editItem $id $tag"             
+            .wiring.context add command -label "Edit" -command "editItem $id item$id"             
             if {[op.name]=="integrate"} {
                 integral.get $id
                 .wiring.context add command -label "Copy Var" -command "copyVar [integral.intVarID]"
@@ -1174,24 +1186,11 @@ proc contextMenu {item x y} {
             }
             .wiring.context add command -label "Raise" -command "raiseItem op$id"
             .wiring.context add command -label "Lower" -command "lowerItem op$id"
-            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.operations.@elem $id].*"
-            .wiring.context add command -label "Delete operator" -command "deleteItem $id $tag"
+            .wiring.context add command -label "Browse object" -command "obj_browser minsky.op.*"
+            .wiring.context add command -label "Delete operator" -command "deleteItem $id item$id"
         }
-        "wires" {
-            set tag [lindex $tags [lsearch -regexp $tags {wire[0-9]+}]]
-            set id [string range $tag 4 end]
-            .wiring.context delete 0 end
-            .wiring.context add command -label Help -command {help Wires}
-            .wiring.context add command -label Description -command "postNote wire $id"
-            .wiring.context add command -label "Straighten" -command "straightenWire $id"
-            .wiring.context add command -label "Raise" -command "raiseItem wire$id"
-            .wiring.context add command -label "Lower" -command "lowerItem wire$id"
-            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.wires.@elem $id].*"
-            .wiring.context add command -label "Delete wire" -command "deleteItem $id $tag"
-        }
-        "plots" {
-            set tag [lindex $tags [lsearch -regexp $tags {plot[0-9]+}]]
-            set id [string range $tag 4 end]
+        "PlotWidget" {
+            plot.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Plot}
             .wiring.context add command -label Description -command "postNote plot $id"
@@ -1200,12 +1199,11 @@ proc contextMenu {item x y} {
             .wiring.context add command -label "Options" -command "doPlotOptions $id"
             .wiring.context add command -label "Raise" -command "raiseItem plot$id"
             .wiring.context add command -label "Lower" -command "lowerItem plot$id"
-            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.plots.@elem $id].*"
-            .wiring.context add command -label "Delete plot" -command "deletePlot $item $id"
+            .wiring.context add command -label "Browse object" -command "obj_browser minsky.plot.*"
+            .wiring.context add command -label "Delete plot" -command "deletePlot $id"
         }
-        "godleys" {
-            set tag [lindex $tags [lsearch -regexp $tags {godley[0-9]+}]]
-            set id [string range $tag 6 end]
+        "GodleyIcon" {
+            godley.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help GodleyTable}
             .wiring.context add command -label Description -command "postNote godley $id"
@@ -1214,28 +1212,23 @@ proc contextMenu {item x y} {
             .wiring.context add command -label "Export to file" -command "godley::export $id"
             .wiring.context add command -label "Raise" -command "raiseItem godley$id"
             .wiring.context add command -label "Lower" -command "lowerItem godley$id"
-            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.godleyItems.@elem $id].*"
-            .wiring.context add command -label "Delete Godley Table" -command "deleteItem $id $tag"
+            .wiring.context add command -label "Browse object" -command "obj_browser minsky.godley.*"
+            .wiring.context add command -label "Delete Godley Table" -command "deleteItem $id item$id"
         }
-        "group" {
-            set tag [lindex $tags [lsearch -regexp $tags {group[0-9]+}]]
-            set id [string range $tag 5 end]
+        "Group" {
             groupContext $id $x $y
         }
-        "notes" {
-            set tag [lindex $tags [lsearch -regexp $tags {note[0-9]+}]]
-            set id [string range $tag 4 end]
+        "Item" {
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Notes}
             .wiring.context add command -label Edit -command "postNote note $id"
             .wiring.context add command -label "Raise" -command "raiseItem note$id"
             .wiring.context add command -label "Lower" -command "lowerItem note$id"
-            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.notes.@elem $id].*"
+            .wiring.context add command -label "Browse object" -command "obj_browser minsky.item.*"
             .wiring.context add command -label "Delete Note" -command "deleteNote $id; updateCanvas"
         }
         switchItem {
-            set tag [lindex $tags [lsearch -regexp $tags {switchItem[0-9]+}]]
-            set id [string range $tag 10 end]
+            switchItem.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Switches}
             .wiring.context add command -label Description -command "postNote switchItem $id"
@@ -1246,7 +1239,7 @@ proc contextMenu {item x y} {
                        redraw switchItem$id"
             .wiring.context add command -label "Raise" -command "raiseItem $tag"
             .wiring.context add command -label "Lower" -command "lowerItem $tag"
-            .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.switchItems.@elem $id].*"
+            .wiring.context add command -label "Browse object" -command "obj_browser minsky.switchItem.*"
             .wiring.context add command -label "Delete Switch" -command "deleteSwitch $id; updateCanvas"
         }
     }
