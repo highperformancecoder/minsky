@@ -20,8 +20,12 @@
 #include "item.h"
 #include "group.h"
 #include "zoom.h"
+#include "latexMarkup.h"
+#include <pango.h>
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
+
+using ecolab::Pango;
 
 namespace minsky
 {
@@ -116,4 +120,11 @@ namespace minsky
     cairo_restore(cairo);
   }
 
+  // default is just to display the detailed text (ie a "note")
+  void Item::draw(cairo_t* cairo) const
+  {
+    Pango pango(cairo);
+    pango.setMarkup(latexToPango(detailedText)); 
+    pango.show();
+  }
 }

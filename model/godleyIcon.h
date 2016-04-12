@@ -35,7 +35,7 @@ namespace minsky
   class GodleyIcon: public Item
   {
     /// for placement of bank icon within complex
-    float flowMargin, stockMargin, iconSize;
+    float flowMargin=0, stockMargin=0, iconSize=100;
     CLASSDESC_ACCESS(GodleyIcon);
     friend class SchemaHelper;
   public:

@@ -25,35 +25,35 @@ proc radian {deg} {
 
 setGroupIconResource $minskyHome/icons/group.svg
 
-proc newSwitch {id} {
-    global minskyHome
-    switchItem.get $id
-    .wiring.canvas create switch [switchItem.x] [switchItem.y] -id $id  -tags "switchItem$id switches"
-    .wiring.canvas lower switchItem$id
-
-    .wiring.canvas bind switchItem$id <Button-1> "onClick switchItem $id switchItem$id %x %y"
-    .wiring.canvas bind switchItem$id <<middleMouse-Motion>> \
-        "wires::extendConnect \[closestOutPort %x %y \] group$id %x %y"
-    .wiring.canvas bind switchItemgroup$id <<middleMouse-ButtonRelease>> \
-        "wires::finishConnect group$id %x %y"
-    .wiring.canvas bind group$id  <<contextMenu>> "rightMouseSwitch $id %x %y %X %Y"
-    .wiring.canvas bind switchItem$id  <Double-Button-1> "switchEdit $id"
-    .wiring.canvas bind switchItem$id <Enter> "itemEnterLeave switchItem $id switchItem$id 1"
-    .wiring.canvas bind switchItem$id <Leave> "itemEnterLeave switchItem $id switchItem$id 0"
-
-    
-}
+#proc newSwitch {id} {
+#    global minskyHome
+#    switchItem.get $id
+#    .wiring.canvas create switch [switchItem.x] [switchItem.y] -id $id  -tags "switchItem$id switches"
+#    .wiring.canvas lower switchItem$id
+#
+#    .wiring.canvas bind switchItem$id <Button-1> "onClick switchItem $id switchItem$id %x %y"
+#    .wiring.canvas bind switchItem$id <<middleMouse-Motion>> \
+#        "wires::extendConnect \[closestOutPort %x %y \] group$id %x %y"
+#    .wiring.canvas bind switchItemgroup$id <<middleMouse-ButtonRelease>> \
+#        "wires::finishConnect group$id %x %y"
+#    .wiring.canvas bind group$id  <<contextMenu>> "rightMouseSwitch $id %x %y %X %Y"
+#    .wiring.canvas bind switchItem$id  <Double-Button-1> "switchEdit $id"
+#    .wiring.canvas bind switchItem$id <Enter> "itemEnterLeave switchItem $id switchItem$id 1"
+#    .wiring.canvas bind switchItem$id <Leave> "itemEnterLeave switchItem $id switchItem$id 0"
+#
+#    
+#}
 
 proc placeNewSwitch {} {
     set id [minsky.newSwitch]
     switchItem.get $id
     switchItem.detailedText "Enter your note here"
-    newSwitch $id
-    global moveOffsswitchItem$id.x moveOffsswitchItem$id.y
-    set moveOffsswitchItem$id.x 0
-    set moveOffsswitchItem$id.y 0
-    bind .wiring.canvas <Enter> "move switchItem $id %x %y"
-    bind .wiring.canvas <Motion> "move switchItem $id %x %y"
+    newItem $id
+    global moveOffs$id.x moveOffs$id.y
+    set moveOffs$id.x 0
+    set moveOffs$id.y 0
+    bind .wiring.canvas <Enter> "move $id %x %y"
+    bind .wiring.canvas <Motion> "move $id %x %y"
     bind .wiring.canvas <Button-1> clearTempBindings
     bind . <Key-Escape> "clearTempBindings
        deleteSwitch $id

@@ -80,7 +80,7 @@ namespace minsky
     virtual void zoom(float xOrigin, float yOrigin,float factor);
 
     /// draw this item into a cairo context
-    virtual void draw(cairo_t* cairo) const {}
+    virtual void draw(cairo_t* cairo) const;
     /// update display after a step()
     virtual void updateIcon(double t) {}
     virtual ~Item() {}

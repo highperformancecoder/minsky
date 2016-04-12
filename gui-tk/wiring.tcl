@@ -34,7 +34,7 @@ ttk::frame .wiring.menubar.line0
 
 image create photo godleyImg -file $minskyHome/icons/bank.gif
 button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
-    -command {addNewGodleyItem [addGodleyTable 10 10]}
+    -command addNewGodleyItem
 tooltip .wiring.menubar.line0.godley "Godley table"
 
 image create photo varImg -file $minskyHome/icons/var.gif
@@ -166,7 +166,7 @@ proc zoom {factor} {
     }
 }
 
-.menubar.ops add command -label "Godley Table" -command {addNewGodleyItem [addGodleyTable 10 10]}
+.menubar.ops add command -label "Godley Table" -command addNewGodleyItem
 
 .menubar.ops add command -label "Variable" -command "addVariable" 
 foreach var [availableOperations] {
@@ -187,9 +187,9 @@ proc handleEscapeKey {} {
 bind . <Key-Escape> {handleEscapeKey}
 
 proc placeNewVar {id} {
-    global moveOffsvar$id.x moveOffsvar$id.y
-    set moveOffsvar$id.x 0
-    set moveOffsvar$id.y 0
+    global moveOffs$id.x moveOffs$id.y
+    set moveOffs$id.x 0
+    set moveOffs$id.y 0
     initGroupList
 
     bind .wiring.canvas <Enter> "move $id %x %y"
@@ -197,9 +197,7 @@ proc placeNewVar {id} {
     # newly created variables should be locally scoped
     bind .wiring.canvas <Button-1> \
         "clearTempBindings
-         checkAddGroup $id %x %y
-         var.get $id
-         var.setScope \[var.group\]"
+         checkAddGroup $id %x %y"
     bind . <Key-Escape> \
         "clearTempBindings
       deleteVariable $id
@@ -212,7 +210,7 @@ proc addVariablePostModal {} {
     global varType
 
     set name [string trim $varInput(Name)]
-    set varExists [variables.exists $name]
+    set varExists [variableValues.count $name]
     set id [newVariable $name $varInput(Type)]
     var.get $id
     var.rotation $globals(default_rotation)
@@ -253,7 +251,7 @@ proc addConstantOrVariable {} {
     set "varInput(Short description)" ""
     set "varInput(Detailed description)" ""
     deiconifyInitVar
-    .wiring.initVar.entry10 configure -values [variables.valueNames]
+    .wiring.initVar.entry10 configure -values [variableValues.#keys]
     ::tk::TabToWindow $varInput(initial_focus);
     tkwait visibility .wiring.initVar
     grab set .wiring.initVar
@@ -281,9 +279,9 @@ proc addOperationKey {op} {
     op.get $id
     op.rotation $globals(default_rotation)
     op.set
-    global moveOffsop$id.x moveOffsop$id.y 
-    set moveOffsop$id.x 0
-    set moveOffsop$id.y 0
+    global moveOffs$id.x moveOffs$id.y 
+    set moveOffs$id.x 0
+    set moveOffs$id.y 0
 
     move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
     newItem $id
@@ -374,9 +372,9 @@ proc deleteKey {} {
 }
 
 proc placeNewOp {opid} {
-    global moveOffsop$opid.x moveOffsop$opid.y
-    set moveOffsop$opid.x 0
-    set moveOffsop$opid.y 0
+    global moveOffs$opid.x moveOffs$opid.y
+    set moveOffs$opid.x 0
+    set moveOffs$opid.y 0
     initGroupList
 
     newItem $opid
@@ -583,12 +581,13 @@ proc newVar {id} {
     .wiring.canvas bind var$id <Leave> "itemEnterLeave var $id var$id 0"
 }
 
-proc addNewGodleyItem {id} {
-    global moveOffsgodley$id.x moveOffsgodley$id.y
-    set moveOffsgodley$id.x 0
-    set moveOffsgodley$id.y 0
+proc addNewGodleyItem {} {
+    set id [addGodleyTable]
+    global moveOffs$id.x moveOffs$id.y
+    set moveOffs$id.x 0
+    set moveOffs$id.y 0
     
-    newGodleyItem $id
+    newItem $id
   
     # event bindings for initial placement
     bind .wiring.canvas <Enter> "move $id %x %y"
@@ -601,12 +600,13 @@ proc addNewGodleyItem {id} {
 }
 
 proc addNewGodleyItemKey {} {
-    set id [addGodleyTable 10 10]
-    global moveOffsgodley$id.x moveOffsgodley$id.y
-    set moveOffsgodley$id.x 0
-    set moveOffsgodley$id.y 0
+    set id [addGodleyTable]
+    global moveOffs$id.x moveOffs$id.y
+    set moveOffs$id.x 0
+    set moveOffs$id.y 0
 
-    newGodleyItem $id
+    set id addGodleyItem
+    newItem $id
   
     move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
@@ -647,26 +647,26 @@ proc changeToolTip {id x y} {
 
 
 
-proc newGodleyItem {id} {
-    global minskyHome
-
-    godley.get $id
-
-    .wiring.canvas create godley [godley.x] [godley.y] -id $id -tags "godleys godley$id"
-    .wiring.canvas lower godley$id
-
-    setM1Binding godley $id godley$id
-    .wiring.canvas bind godley$id <<middleMouse>> \
-        "wires::startConnect \[closestOutPort %x %y \] godley$id %x %y"
-    .wiring.canvas bind godley$id <<middleMouse-Motion>> \
-        "wires::extendConnect \[closestOutPort %x %y \] godley$id %x %y"
-    .wiring.canvas bind godley$id <<middleMouse-ButtonRelease>> \
-        "wires::finishConnect godley$id %x %y"
-    .wiring.canvas bind godley$id  <Double-Button-1> "doubleMouseGodley $id %x %y"
-    .wiring.canvas bind godley$id <Enter> "godleyToolTip $id %x %y; itemEnterLeave godley $id godley$id 1"
-    .wiring.canvas bind godley$id <Leave> "itemEnterLeave godley $id godley$id 0"
-    .wiring.canvas bind godley$id <Motion> "changeToolTip $id %x %y"
-}
+#proc newGodleyItem {id} {
+#    global minskyHome
+#
+#    godley.get $id
+#
+#    .wiring.canvas create godley [godley.x] [godley.y] -id $id -tags "godleys godley$id"
+#    .wiring.canvas lower godley$id
+#
+#    setM1Binding godley $id godley$id
+#    .wiring.canvas bind godley$id <<middleMouse>> \
+#        "wires::startConnect \[closestOutPort %x %y \] godley$id %x %y"
+#    .wiring.canvas bind godley$id <<middleMouse-Motion>> \
+#        "wires::extendConnect \[closestOutPort %x %y \] godley$id %x %y"
+#    .wiring.canvas bind godley$id <<middleMouse-ButtonRelease>> \
+#        "wires::finishConnect godley$id %x %y"
+#    .wiring.canvas bind godley$id  <Double-Button-1> "doubleMouseGodley $id %x %y"
+#    .wiring.canvas bind godley$id <Enter> "godleyToolTip $id %x %y; itemEnterLeave godley $id godley$id 1"
+#    .wiring.canvas bind godley$id <Leave> "itemEnterLeave godley $id godley$id 0"
+#    .wiring.canvas bind godley$id <Motion> "changeToolTip $id %x %y"
+#}
 
 proc rightMouseGodley {id x y X Y} {
     godley.get $id
@@ -697,10 +697,10 @@ proc doubleMouseGodley {id x y} {
     }
 }
 
-proc updateGodleyItem {id} {
-    .wiring.canvas delete godley$id
-    newGodleyItem $id
-}
+#proc updateGodleyItem {id} {
+#    .wiring.canvas delete godley$id
+#    newItem $id
+#}
 
 proc newWire {wire wireid} {
     wire.get $wireid
@@ -1298,9 +1298,7 @@ namespace eval godley {
         }            
         godley.zoom [godley.x] [godley.y] $z
 
-        .wiring.canvas delete godley$id
-        newGodleyItem $id
-        adjustWires $id
+        redrawItem $id
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
    }
@@ -1986,26 +1984,26 @@ proc OKnote {item id} {
     closeEditWindow .wiring.note
 }
 
-proc newNote {id} {
-    note.get $id
-    .wiring.canvas create text [note.x] [note.y] -text [note.detailedText] -tags "note$id notes"
-    .wiring.canvas bind note$id <Double-Button-1> "postNote note $id"
-}
+#proc newNote {id} {
+#    note.get $id
+#    .wiring.canvas create text [note.x] [note.y] -text [note.detailedText] -tags "note$id notes"
+#    .wiring.canvas bind note$id <Double-Button-1> "postNote note $id"
+#}
 
 proc placeNewNote {} {
     set id [minsky.newNote]
-    note.get $id
-    note.detailedText "Enter your note here"
-    newNote $id
-    global moveOffsnote$id.x moveOffsnote$id.y
-    set moveOffsnote$id.x 0
-    set moveOffsnote$id.y 0
+    item.get $id
+    item.detailedText "Enter your note here"
+    newItem $id
+    global moveOffs$id.x moveOffs$id.y
+    set moveOffs$id.x 0
+    set moveOffs$id.y 0
     bind .wiring.canvas <Enter> "move $id %x %y"
     bind .wiring.canvas <Motion> "move $id %x %y"
     bind .wiring.canvas <Button-1> clearTempBindings
     bind . <Key-Escape> "clearTempBindings
        deleteNote $id
-       .wiring.canvas delete note$id"
+       .wiring.canvas delete item$id"
 
 }
 

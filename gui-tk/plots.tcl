@@ -18,32 +18,29 @@
 
 .menubar.ops add command -label Plot -command "newPlot"
 
-proc newPlotItem {id x y} {
-    plot.get $id
-    .wiring.canvas create plot $x $y -id $id -tags "plots plot$id"
-    .wiring.canvas lower plot$id
-    setM1Binding plot $id plot$id
-    .wiring.canvas bind plot$id <Double-Button-1> "plotDoubleClick $id"
-    .wiring.canvas bind plot$id <Enter> "itemEnterLeave plot $id plot$id 1"
-    .wiring.canvas bind plot$id <Leave> "itemEnterLeave plot $id plot$id 0"
-
-}
+#proc newPlotItem {id x y} {
+#    plot.get $id
+#    .wiring.canvas create plot $x $y -id $id -tags "plots plot$id"
+#    .wiring.canvas lower plot$id
+#    setM1Binding plot $id plot$id
+#    .wiring.canvas bind plot$id <Double-Button-1> "plotDoubleClick $id"
+#    .wiring.canvas bind plot$id <Enter> "itemEnterLeave plot $id plot$id 1"
+#    .wiring.canvas bind plot$id <Leave> "itemEnterLeave plot $id plot$id 0"
+#
+#}
 
 proc newPlot {} {
     # place this at the mouse if in canvas, otherwise at 0 0
 
-    set id [minsky.newPlot 0 0]
-    newPlotItem $id 0 0
-    plot.get $id
-    plot.zoomFactor [zoomFactor]
-    plot.set
+    set id [minsky.newPlot]
+    newItem $id
 
-    global moveOffsplot$id.x moveOffsplot$id.y
-    set moveOffsplot$id.x 0
-    set moveOffsplot$id.y 0
+    global moveOffs$id.x moveOffs$id.y
+    set moveOffs$id.x 0
+    set moveOffs$id.y 0
 
-    bind .wiring.canvas <Enter> "move plot $id %x %y"
-    bind .wiring.canvas <Motion> "move plot $id %x %y"
+    bind .wiring.canvas <Enter> "move $id %x %y"
+    bind .wiring.canvas <Motion> "move $id %x %y"
     bind .wiring.canvas <Button-1> clearTempBindings
     bind . <Key-Escape> "clearTempBindings; deletePlot plot$id $id"
 

@@ -289,6 +289,30 @@ namespace minsky
       return id;
     }
      
+    int addGodleyTable() {
+      int id=getNewId();
+      items[id]=model->addItem(new GodleyIcon);
+      return id;
+    }
+     
+    int newSwitch() {
+      int id=getNewId();
+      items[id]=model->addItem(new SwitchIcon);
+      return id;
+    }
+     
+    int newPlot() {
+      int id=getNewId();
+      items[id]=model->addItem(new PlotWidget);
+      return id;
+    }
+     
+    int newNote() {
+      int id=getNewId();
+      items[id]=model->addItem(new Item);
+      return id;
+    }
+     
     /// create a new operation that is a copy of \a id
     int copyItem(int id) {
       int r=-1;
