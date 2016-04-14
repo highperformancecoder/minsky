@@ -1382,7 +1382,7 @@ proc contextMenu {item x y} {
             .wiring.context add command -label "Raise" -command "raiseItem $tag"
             .wiring.context add command -label "Lower" -command "lowerItem $tag"
             .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.switchItems.@elem $id].*"
-            .wiring.context add command -label "Delete Switch" -command "deleteSwitch $id; updateCanvas"
+            .wiring.context add command -label "Delete Switch" -command "deleteItem $id switchItem$id"
         }
     }
 #    .wiring.context post $x $y
@@ -1500,6 +1500,9 @@ proc deleteItem {id tag} {
         }
         "^note" {
             deleteNote $id
+        }
+        "^switchItem" {
+            deleteSwitch $id
         }
         
     }
