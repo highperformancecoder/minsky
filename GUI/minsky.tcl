@@ -424,7 +424,6 @@ menu .menubar.file.recent
 .menubar.file add separator
 .menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
 .menubar.file add command -label "Redraw" -command updateCanvas
-.menubar.file add checkbutton -label "Show Ports" -variable showPorts -command updateCanvas -onvalue 1 -offvalue 0 
 .menubar.file add command -label "Object Browser" -command obj_browser
 .menubar.file add command -label "Command" -command cli
 

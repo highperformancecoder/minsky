@@ -1109,17 +1109,6 @@ proc updateCanvas {} {
         } else {.wiring.canvas coords wire$w [wire.coords]}
     }
 
-# the following loop helps debug port placement
-    if {$showPorts} {
-        foreach port [ports.#keys] {
-            port.get $port
-            .wiring.canvas create oval \
-                [expr [port.x]-2] [expr [port.y]-2] [expr [port.x]+2] [expr [port.y]+2] \
-                -fill {} -outline blue 
-        }
-
-    }
-  
 # debug code to display rectangles indicating bounding boxes for all items
 #    update
 #    foreach item [.wiring.canvas find all] {
