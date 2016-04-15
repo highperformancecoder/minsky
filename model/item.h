@@ -89,6 +89,13 @@ namespace minsky
 
     /// returns the clicktype given a mouse click at \a x, \a y.
     ClickType::Type clickType(float x, float y);
+
+    /// returns closest output port to \a x,y
+    virtual shared_ptr<Port> closestOutPort(float x, float y) const 
+    {return ports[0];}
+    virtual shared_ptr<Port> closestInPort(float x, float y) const;
+
+
   };
 
   typedef std::shared_ptr<Item> ItemPtr;

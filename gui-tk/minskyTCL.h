@@ -248,17 +248,21 @@ namespace minsky
     /// add a new wire connecting \a from port to \a to port with \a coordinates
     /// @return wireid, or -1 if wire is invalid
     int addWire(TCL_args args) {
-      int from=args, to=args, toPortIdx=args;
+      int from=args, to=args;
+      float fromx=args, fromy=args, tox=args, toy=args;
       std::vector<float> coords;
       int r=-1;
       if (args.count)
         args>>coords;
       if (auto& fromItem=items[from])
         if (auto& toItem=items[to])
-          if (auto w=Minsky::addWire(*fromItem, *toItem, toPortIdx, coords))
-            wires[r=getNewId()]=w;
+          if (auto fromPort=fromItem->closestOutPort(fromx, fromy))
+            if (auto toPort=toItem->closestInPort(tox, toy))
+              wires[r=getNewId()]=model->addWire(new Wire(fromPort, toPort, coords);
       return r;
     }
+
+    
 
     /// fill in a Tk image with the icon for a specific operation
     /// @param Tk imageName

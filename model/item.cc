@@ -127,4 +127,20 @@ namespace minsky
     pango.setMarkup(latexToPango(detailedText)); 
     pango.show();
   }
+
+  namespace
+  {
+    inline float sqr(float x) {return x*x;}
+  }
+
+  shared_ptr<Port> Item::closestInPort(float x, float y) const
+  {
+    shared_ptr<Port> r;
+    for (size_t i=1; i<ports.size(); ++i)
+      if (!r || sqr(ports[i].x()-x)+sqr(ports[i].y()-y) <
+          sqr(r->x()-x)+sqr(r->y()-y))
+        r=ports[i];
+    return r;
+  }
+
 }
