@@ -26,6 +26,7 @@
 #include <ecolab_epilogue.h>
 
 using ecolab::Pango;
+using namespace std;
 
 namespace minsky
 {
@@ -137,7 +138,7 @@ namespace minsky
   {
     shared_ptr<Port> r;
     for (size_t i=1; i<ports.size(); ++i)
-      if (!r || sqr(ports[i].x()-x)+sqr(ports[i].y()-y) <
+      if (!r || sqr(ports[i]->x()-x)+sqr(ports[i]->y()-y) <
           sqr(r->x()-x)+sqr(r->y()-y))
         r=ports[i];
     return r;
