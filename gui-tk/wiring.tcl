@@ -1314,27 +1314,7 @@ proc flip_default {} {
 
 proc deleteItem {id tag} {
     .wiring.canvas delete $tag
-    switch -regexp $tag {
-        "^op" {
-            deleteOperation $id
-        }
-        "^wire" {
-            .wiring.canvas delete handles
-            deleteWire $id
-            return
-        }
-        "^var" {
-            deleteVariable $id
-        }
-        "^godley" {
-            deleteGodleyTable $id
-            destroy .godley$id
-        }
-        "^note" {
-            deleteNote $id
-        }
-        
-    }
+    minsky.deleteItem $id
     .wiring.canvas delete wires
     updateCanvas
 }
