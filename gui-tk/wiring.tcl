@@ -709,7 +709,7 @@ proc newWire {wire wireid} {
 #    .wiring.canvas addtag groupitems[wire.group] withtag $wire 
     .wiring.canvas bind $wire <Enter> "decorateWire $wireid; set itemFocused 1"
     .wiring.canvas bind $wire <Leave> "set itemFocused 0"
-    .wiring.canvas bind $wire <<contextMenu>> "wireContextMenu $wireid %x %y"
+    .wiring.canvas bind $wire <<contextMenu>> "wireContextMenu $wireid %X %Y"
     # mouse-1 clicking on wire starts wiring from the from port
 #    .wiring.canvas bind $wire <Button-1> "set clicked 1; wires::startConnect [wire.from] $wire %x %y"
 #    .wiring.canvas bind $wire <B1-Motion> "wires::extendConnect [wire.from] $wire %x %y"
@@ -870,12 +870,7 @@ namespace eval wires {
 
 proc straightenWire {id} {
     wire.get $id
-    port.get [wire.from]
-    set fx [port.x]
-    set fy [port.y]
-    port.get [wire.to]
-    wire.coords "$fx $fy [port.x] [port.y]"
-    wire.set
+    wire.straighten
     eval .wiring.canvas coords wire$id [wire.coords]
 }
 

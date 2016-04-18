@@ -57,6 +57,8 @@ namespace minsky
     std::vector<float> coords() const;
     std::vector<float> coords(const std::vector<float>& coords);
 
+    void straighten() {m_coords.clear();}
+
     /// whether this wire is visible or not
     bool visible() const;
     /// move this from its group into dest
