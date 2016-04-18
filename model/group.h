@@ -45,6 +45,19 @@ namespace minsky
   };
 
   typedef std::vector<GroupPtr> Groups;
+  template <class G, class M, class O>
+  bool GroupRecursiveDo(G& gp, M Group::*map, O op) 
+    {
+      for (auto i=(gp.*map).begin(); i!=(gp.*map).end(); ++i)
+        if (op(gp.*map,i))
+          return true;
+      for (auto& g: gp.groups)
+        if (g->recursiveDo(map, op))
+          return true;
+      return false;
+    }
+
+  
 
   class Group: public Item
   {
@@ -75,16 +88,11 @@ namespace minsky
     /// Perform action heirarchically on elements of map \a map. If op returns true, the operation terminates.
     /// returns true if operation terminates early, false if every element processed.
     template <class M, class O>
+    bool recursiveDo(M Group::*map, O op) const 
+    {return GroupRecursiveDo(*this,map,op);}
+    template <class M, class O>
     bool recursiveDo(M Group::*map, O op)
-    {
-      for (auto i=(this->*map).begin(); i!=(this->*map).end(); ++i)
-        if (op(this->*map,i))
-          return true;
-      for (auto& g: groups)
-        if (g->recursiveDo(map, op))
-          return true;
-      return false;
-    }
+    {return GroupRecursiveDo(*this,map,op);}
 
     /// search for the first item in the heirarchy of \a map for which
     /// \a c is true. M::value_type must evaluate in a boolean
@@ -230,7 +238,6 @@ namespace minsky
     /// returns nullptr. Weak reference returned, no ownership.
     Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1);
     const Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1) const;
-
   };
 
   inline void GroupPtr::setself() {
@@ -239,6 +246,13 @@ namespace minsky
         g->self=std::dynamic_pointer_cast<Group>(*this);
       }
   }
+
+  /// find the closest (in or out) port to \a x or \a y.
+  struct ClosestPort: public std::shared_ptr<Port>
+  {
+    enum InOut {in, out};
+    ClosestPort(const Group&, InOut, float x, float y); 
+  };
 
 }
 

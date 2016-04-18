@@ -910,9 +910,9 @@ proc onClick {id tag x y} {
     item.get $id
     switch [item.clickType [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         "onPort" {
-            wires::startConnect [closestOutPort $x $y] $tag $x $y
+            wires::startConnect $id $tag $x $y
             .wiring.canvas bind $tag <B1-Motion> \
-                "wires::extendConnect \[closestOutPort %x %y\] $tag %x %y"
+                "wires::extendConnect $id $tag %x %y"
             .wiring.canvas bind $tag <B1-ButtonRelease>  \
                 "wires::finishConnect $tag %x %y; unbindOnRelease $tag"
         }

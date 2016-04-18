@@ -364,4 +364,26 @@ namespace minsky
       i->setZoom(lzoom);
   }
 
+  namespace {
+    inline float sqr(float x) {return x*x;}
+  }
+
+  ClosestPort::ClosestPort(const Group& g, InOut io, float x, float y)
+  {
+    float minr2=std::numeric_limits<float>::max();
+    g.recursiveDo(&Group::items, [&](const Items& m, Items::const_iterator i)
+                  {
+                    for (auto& p: (*i)->ports)
+                      if (io!=out && p->input() || io!=in && !p->input())
+                        {
+                          float r2=sqr(p->x()-x)+sqr(p->y()-y);
+                          if (r2<minr2)
+                            {
+                              shared_ptr<Port>::operator=(p);
+                              minr2=r2;
+                            }
+                        }
+                    return false;
+                  });
+  }
 }

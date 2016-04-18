@@ -255,10 +255,12 @@ namespace minsky
       if (args.count)
         args>>coords;
       if (auto& fromItem=items[from])
-        if (auto& toItem=items[to])
-          if (auto fromPort=fromItem->closestOutPort(fromx, fromy))
-            if (auto toPort=toItem->closestInPort(tox, toy))
+        if (auto fromPort=fromItem->closestOutPort(fromx, fromy))
+          {
+            ClosestPort toPort(*model, ClosestPort::in, tox, toy);
+            if (toPort)
               wires[r=getNewId()]=model->addWire(new Wire(fromPort, toPort, coords));
+          }
       return r;
     }
 
