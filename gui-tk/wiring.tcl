@@ -571,10 +571,10 @@ proc newVar {id} {
     set itemId [.wiring.canvas create variable [var.x] [var.y] -image varImage$id -id $id -tags "variables var$id"]
     # wire drawing. Can only start from an output port
     .wiring.canvas bind var$id <<middleMouse>> \
-        "wires::startConnect [var.outPort] var$id %x %y"
+        "wires::startConnect $id %x %y"
     .wiring.canvas bind var$id <<middleMouse-Motion>> \
-        "wires::extendConnect [var.outPort] var$id %x %y"
-    .wiring.canvas bind var$id <<middleMouse-ButtonRelease>> "wires::finishConnect var$id %x %y"
+        "wires::extendConnect $id %x %y"
+    .wiring.canvas bind var$id <<middleMouse-ButtonRelease>> "wires::finishConnect $id %x %y"
 
     .wiring.canvas bind var$id <Double-Button-1> "doubleClick var$id %X %Y"
     .wiring.canvas bind var$id <Enter> "itemEnterLeave var $id var$id 1"
@@ -704,6 +704,7 @@ proc doubleMouseGodley {id x y} {
 
 proc newWire {wire wireid} {
     wire.get $wireid
+    .wiring.canvas coords $wire [wire.coords]
     .wiring.canvas addtag wire$wireid withtag $wire 
 #    .wiring.canvas addtag groupitems[wire.group] withtag $wire 
     .wiring.canvas bind $wire <Enter> "decorateWire $wireid; set itemFocused 1"
@@ -797,14 +798,14 @@ proc decorateWire {wire} {
 }
 
 namespace eval wires {
-    proc startConnect {portId id x y} {
+    proc startConnect {id x y} {
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
         namespace children
         if {![namespace exists $id]} {
             namespace eval $id {
                 variable wire
-                variable fromPort
+                variable fromId
                 variable x0
                 variable y0 
                
@@ -819,23 +820,15 @@ namespace eval wires {
                     set x [.wiring.canvas canvasx $x]
                     set y [.wiring.canvas canvasy $y]
                     variable wire
-                    variable fromPort
+                    variable fromId
                     variable x0
                     variable y0 
-                    set portId [closestInPort $x $y]
-                    if {$portId>=0} {
-                        port.get $portId
-                        eval .wiring.canvas coords $wire $x0 $y0 [port.x] [port.y]
-                        set wireid [addWire $fromPort $portId \
-                                        [.wiring.canvas coords $wire]]
-                        if {$wireid == -1} {
-                            # wire is invalid
-                            .wiring.canvas delete $wire
-                        } else {
-                            newWire $wire $wireid
-                        }
-                    } else {
+                    set wireid [addWire $fromId $x0 $y0 $x $y [.wiring.canvas coords $wire]]
+                    if {$wireid == -1} {
+                        # wire is invalid
                         .wiring.canvas delete $wire
+                    } else {
+                        newWire $wire $wireid
                     }
                     namespace delete [namespace current]
                 }
@@ -843,16 +836,13 @@ namespace eval wires {
             }
 
             set [set id]::wire [createWire "$x $y $x $y"]
-#            set port [ports.@elem $portId]
-            set [set id]::fromPort $portId
-            port.get $portId
-            set [set id]::x0 [port.x]
-            set [set id]::y0 [port.y]
+            set [set id]::fromId $id
+            set [set id]::x0 $x
+            set [set id]::y0 $y
         }
-#        [set id]::startConnect $x $y
     }        
 
-    proc extendConnect {portId id x y} {
+    proc extendConnect {id x y} {
         if [namespace exists $id] {
             set x [.wiring.canvas canvasx $x]
             set y [.wiring.canvas canvasy $y]
@@ -910,11 +900,11 @@ proc onClick {id tag x y} {
     item.get $id
     switch [item.clickType [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         "onPort" {
-            wires::startConnect $id $tag $x $y
+            wires::startConnect $id $x $y
             .wiring.canvas bind $tag <B1-Motion> \
-                "wires::extendConnect $id $tag %x %y"
+                "wires::extendConnect $id %x %y"
             .wiring.canvas bind $tag <B1-ButtonRelease>  \
-                "wires::finishConnect $tag %x %y; unbindOnRelease $tag"
+                "wires::finishConnect $id %x %y; unbindOnRelease $tag"
         }
         "onItem" {
             moveSet $id $x $y

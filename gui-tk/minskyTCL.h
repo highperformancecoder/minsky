@@ -248,7 +248,7 @@ namespace minsky
     /// add a new wire connecting \a from port to \a to port with \a coordinates
     /// @return wireid, or -1 if wire is invalid
     int addWire(TCL_args args) {
-      int from=args, to=args;
+      int from=args;
       float fromx=args, fromy=args, tox=args, toy=args;
       std::vector<float> coords;
       int r=-1;
