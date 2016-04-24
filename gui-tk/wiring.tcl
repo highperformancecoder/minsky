@@ -319,12 +319,12 @@ proc textInput {char} {
             newVar $id
         } else {
             set id [minsky.newNote]
-            note.get $id
+            item.get $id
             # trim off leading comment character
-            note.detailedText [string range $textBuffer 1 end]
-            note.moveTo [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]\
+            item.detailedText [string range $textBuffer 1 end]
+            item.moveTo [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]\
                 [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
-            newNote $id
+            newItem $id
         }
         # TODO add arbitrary comment boxes
         set textBuffer ""
@@ -1118,7 +1118,7 @@ proc contextMenu {id x y} {
             var.get $id
 	    .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Variable}
-            .wiring.context add command -label Description -command "postNote var $id"
+            .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Value [var.value]" 
             .wiring.context add command -label "Edit" -command "editItem $id item$id"
             .wiring.context add checkbutton -label "Slider" \
@@ -1138,7 +1138,7 @@ proc contextMenu {id x y} {
            op.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command "help op:[op.name]"
-            .wiring.context add command -label Description -command "postNote op $id"
+            .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Port values [op.portValues]" 
             .wiring.context add command -label "Edit" -command "editItem $id item$id"             
             if {[op.name]=="integrate"} {
@@ -1172,7 +1172,7 @@ proc contextMenu {id x y} {
             plot.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Plot}
-            .wiring.context add command -label Description -command "postNote plot $id"
+            .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Expand" -command "plotDoubleClick $id"
             .wiring.context add command -label "Resize" -command "plot::resize $id"
             .wiring.context add command -label "Options" -command "doPlotOptions $id"
@@ -1185,7 +1185,7 @@ proc contextMenu {id x y} {
             godley.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help GodleyTable}
-            .wiring.context add command -label Description -command "postNote godley $id"
+            .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Open Godley Table" -command "openGodley $id"
             .wiring.context add command -label "Resize Godley" -command "godley::resize $id"
             .wiring.context add command -label "Export to file" -command "godley::export $id"
@@ -1200,7 +1200,7 @@ proc contextMenu {id x y} {
         "Item" {
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Notes}
-            .wiring.context add command -label Edit -command "postNote note $id"
+            .wiring.context add command -label Edit -command "postNote item $id"
             .wiring.context add command -label "Raise" -command "raiseItem note$id"
             .wiring.context add command -label "Lower" -command "lowerItem note$id"
             .wiring.context add command -label "Browse object" -command "obj_browser minsky.item.*"
@@ -1210,7 +1210,7 @@ proc contextMenu {id x y} {
             switchItem.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Switches}
-            .wiring.context add command -label Description -command "postNote switchItem $id"
+            .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Add case" -command "incrCase $id 1" 
             .wiring.context add command -label "Delete case" -command "incrCase $id -1" 
             .wiring.context add command -label "Flip" -command "switchItem.get $id

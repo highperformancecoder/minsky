@@ -21,6 +21,7 @@
 #include "group.h"
 #include "zoom.h"
 #include "latexMarkup.h"
+#include "geometry.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
@@ -124,9 +125,26 @@ namespace minsky
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
   {
+    Rotate r(rotation,0,0);
     Pango pango(cairo);
+    pango.angle=rotation * M_PI / 180.0;
+    pango.setFontSize(12*zoomFactor);
     pango.setMarkup(latexToPango(detailedText)); 
+    // parameters of icon in userspace (unscaled) coordinates
+    float w, h, hoffs;
+    w=0.5*pango.width()+2*zoomFactor; 
+    h=0.5*pango.height()+4*zoomFactor;
+    hoffs=pango.top()/zoomFactor;
+
+    cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2));
     pango.show();
+    cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));
+    cairo_line_to(cairo,r.x(w,-h), r.y(w,-h));
+    cairo_line_to(cairo,r.x(w,h), r.y(w,h));
+    cairo_line_to(cairo,r.x(-w,h), r.y(-w,h));
+    cairo_close_path(cairo);
+    //    cairo_stroke_preserve(cairo);
+    cairo_clip(cairo);
   }
 
   namespace
