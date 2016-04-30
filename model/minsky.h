@@ -233,7 +233,7 @@ namespace minsky
 //    }
 
 //    /// create a group from items found in the current selection
-//    int createGroup();
+    GroupPtr createGroup();
 //    /// remove a group, leaving its contents in place
 //    void ungroup(int id);
     void saveGroupAsFile(const Group&, const string& fileName) const;

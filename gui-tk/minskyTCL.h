@@ -318,6 +318,13 @@ namespace minsky
       items[id]=model->addItem(new Item);
       return id;
     }
+
+    int createGroup()
+    {
+      int id=getNewId();
+      items[id]=Minsky::createGroup();
+      return id;
+    }
      
     /// create a new operation that is a copy of \a id
     int copyItem(int id) {

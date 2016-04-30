@@ -202,7 +202,7 @@ proc plotDoubleClick {id} {
     
     plots.addImage $id .plot$id.image
 
-    # calculate the difference between the window an image sizes
+    # calculate the difference between the window and image sizes
     update
     set dw [expr [winfo width .plot$id]-[.plot$id.image cget -width]]
     set dh [expr [winfo height .plot$id]-[.plot$id.image cget -height]]
@@ -212,7 +212,7 @@ proc plotDoubleClick {id} {
     
 proc deletePlot {id} {
     .wiring.canvas delete item$id
-    minsky.deletePlot $id
+    minsky.item $id
     updateCanvas
 }
     

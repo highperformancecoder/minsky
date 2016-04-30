@@ -559,27 +559,27 @@ proc newItem {id} {
 }
 
 # create a new canvas item for var id
-proc newVar {id} {
-    global globals
-    var.get $id
-    if {[lsearch -exact [image name] varImage$id]!=-1} {
-        image delete varImage$id
-    }
-    image create photo varImage$id -width 200 -height 50
-    
-    .wiring.canvas delete var$id
-    set itemId [.wiring.canvas create variable [var.x] [var.y] -image varImage$id -id $id -tags "variables var$id"]
-    # wire drawing. Can only start from an output port
-    .wiring.canvas bind var$id <<middleMouse>> \
-        "wires::startConnect $id %x %y"
-    .wiring.canvas bind var$id <<middleMouse-Motion>> \
-        "wires::extendConnect $id %x %y"
-    .wiring.canvas bind var$id <<middleMouse-ButtonRelease>> "wires::finishConnect $id %x %y"
-
-    .wiring.canvas bind var$id <Double-Button-1> "doubleClick var$id %X %Y"
-    .wiring.canvas bind var$id <Enter> "itemEnterLeave var $id var$id 1"
-    .wiring.canvas bind var$id <Leave> "itemEnterLeave var $id var$id 0"
-}
+#proc newVar {id} {
+#    global globals
+#    var.get $id
+#    if {[lsearch -exact [image name] varImage$id]!=-1} {
+#        image delete varImage$id
+#    }
+#    image create photo varImage$id -width 200 -height 50
+#    
+#    .wiring.canvas delete var$id
+#    set itemId [.wiring.canvas create variable [var.x] [var.y] -image varImage$id -id $id -tags "variables var$id"]
+#    # wire drawing. Can only start from an output port
+#    .wiring.canvas bind var$id <<middleMouse>> \
+#        "wires::startConnect $id %x %y"
+#    .wiring.canvas bind var$id <<middleMouse-Motion>> \
+#        "wires::extendConnect $id %x %y"
+#    .wiring.canvas bind var$id <<middleMouse-ButtonRelease>> "wires::finishConnect $id %x %y"
+#
+#    .wiring.canvas bind var$id <Double-Button-1> "doubleClick var$id %X %Y"
+#    .wiring.canvas bind var$id <Enter> "itemEnterLeave item $id var$id 1"
+#    .wiring.canvas bind var$id <Leave> "itemEnterLeave item $id var$id 0"
+#}
 
 proc addNewGodleyItem {} {
     set id [addGodleyTable]

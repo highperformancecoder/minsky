@@ -241,50 +241,15 @@ namespace minsky
 //      markEdited();
 //  }
 
-//  int Minsky::createGroup()
-//  {
-//    //TODO
-//    int id=getNewId();
-//    GroupPtr g=model->addGroup(id, new Group);
-//
-////    g->addWires(currentSelection.wires);
-////    if (currentSelection.group>=0 && groupItems.count(currentSelection.group))
-////      {
-////        GroupIcon& oldg=groupItems[currentSelection.group];
-////        for (int w: currentSelection.wires)
-////          oldg.delWire(w);
-////      }
-////
-////    for (int i: currentSelection.operations)
-////      addOperationToGroup(id, i);
-////    for (int i: currentSelection.variables)
-////      addVariableToGroup(id, i, false /* don't check IO regions */);
-////    for (int i: currentSelection.groups)
-////      addGroupToGroup(id, i);
-////  
-////    if (g.empty())
-////      {
-////        groupItems.erase(id);
-////        return -1;
-////      }
-////
-////    // make width & height slightly smaller than contentBounds
-////    float x0,y0,x1,y1;
-////    g.contentBounds(x0,y0,x1,y1);
-////    g.width=0.95*abs(x1-x0); 
-////    g.height=0.95*abs(y1-y0);
-////
-////    g.centreIconOnContents();
-////    g.computeDisplayZoom();
-////    g.updatePortLocation();
-////
-////    markEdited();
-////
-////    if (currentSelection.group>=0) 
-////      addGroupToGroup(currentSelection.group, id);
-//
-//    return id;
-//  }
+  GroupPtr Minsky::createGroup()
+  {
+    GroupPtr r=model->addGroup(new Group);
+    for (auto& i: currentSelection.items)
+      r->addItem(i);
+    for (auto& i: currentSelection.groups)
+      r->addItem(i);
+    return r;
+  }
 
 //  void Minsky::ungroup(int id)
 //  {
