@@ -1151,8 +1151,11 @@ proc doubleClick {item x y} {
 
 proc toggleCoupled {id} {
     integral.get $id
-    integral.toggleCoupled
-    integral.set
+    if [integral.toggleCoupled] {
+        .wiring.canvas delete var[integral.intVarID]
+        # delete all wires, as we can't figure out what wire is attached
+        .wiring.canvas delete wires
+    }
     updateCanvas
 }
 
