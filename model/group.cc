@@ -21,6 +21,7 @@
 #include "wire.h"
 #include "operation.h"
 #include "minsky.h"
+#include "cairoItems.h"
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
 using namespace std;
@@ -386,4 +387,211 @@ namespace minsky
                     return false;
                   });
   }
+
+  void Group::draw(cairo_t* cairo) const
+  {
+    double angle=rotation * M_PI / 180.0;
+
+    // determine how big the group icon should be to allow
+    // sufficient space around the side for the edge variables
+    float leftMargin, rightMargin;
+    margins(leftMargin, rightMargin);
+    leftMargin*=zoomFactor; rightMargin*=zoomFactor;
+
+    unsigned width=zoomFactor*this->width, height=zoomFactor*this->height;
+    // bitmap needs to be big enough to allow a rotated
+    // icon to fit on the bitmap.
+    float rotFactor=this->rotFactor();
+
+
+    // set clip to indicate icon boundary
+    cairo_rotate(cairo, angle);
+    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
+    cairo_clip(cairo);
+
+   // draw default group icon
+    cairo_save(cairo);
+    //    cairo_rotate(cairo, angle);
+
+    // display I/O region in grey
+    //updatePortLocation();
+    drawIORegion(cairo);
+
+    cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
+
+
+              
+    double scalex=double(width-leftMargin-rightMargin)/width;
+    cairo_scale(cairo, scalex, 1);
+
+    // draw a simple frame 
+    cairo_rectangle(cairo,0,0,width,height);
+    cairo_save(cairo);
+    cairo_identity_matrix(cairo);
+    cairo_set_line_width(cairo,1);
+    cairo_stroke(cairo);
+    cairo_restore(cairo);
+
+    if (!displayContents())
+      {
+        cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
+        cairo_rectangle(cairo,0, 0,svgRenderer.width(), svgRenderer.height());
+        cairo_clip(cairo);
+        svgRenderer.render(cairo);
+      }
+    cairo_restore(cairo);
+
+    cairo_identity_matrix(cairo);
+
+    drawEdgeVariables(cairo);
+
+
+    // display text label
+    if (!title.empty())
+      {
+        cairo_save(cairo);
+        cairo_identity_matrix(cairo);
+        cairo_scale(cairo, zoomFactor, zoomFactor);
+        cairo_select_font_face
+          (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, 
+           CAIRO_FONT_WEIGHT_NORMAL);
+        cairo_set_font_size(cairo,12);
+              
+        // extract the bounding box of the text
+        cairo_text_extents_t bbox;
+        cairo_text_extents(cairo,title.c_str(),&bbox);
+        double w=0.5*bbox.width+2; 
+        double h=0.5*bbox.height+5;
+        double fm=std::fmod(rotation,360);
+
+        // if rotation is in 1st or 3rd quadrant, rotate as
+        // normal, otherwise flip the text so it reads L->R
+        if ((fm>-90 && fm<90) || fm>270 || fm<-270)
+          cairo_rotate(cairo, angle);
+        else
+          cairo_rotate(cairo, angle+M_PI);
+ 
+        // prepare a background for the text, partially obscuring graphic
+        double transparency=displayContents()? 0.25: 1;
+        cairo_set_source_rgba(cairo,0,1,1,0.5*transparency);
+        cairo_rectangle(cairo,-w,-h,2*w,2*h);
+        cairo_fill(cairo);
+
+        // display text
+        cairo_move_to(cairo,-w+1,h-4);
+        cairo_set_source_rgba(cairo,0,0,0,transparency);
+        cairo_show_text(cairo,title.c_str());
+        cairo_restore(cairo);
+      }
+
+    cairo_identity_matrix(cairo);
+
+    // shouldn't be needed??
+    // set clip to indicate icon boundary
+    cairo_rotate(cairo, angle);
+    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
+    cairo_clip(cairo);
+
+    if (mouseFocus)
+      drawPorts(cairo);
+
+    if (selected) drawSelected(cairo);
+  }
+
+  void Group::drawEdgeVariables(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    for (auto& i: inVariables)
+      {
+        cairo_identity_matrix(cairo);
+        cairo_translate(cairo,i->x()-x(),i->y()-y());
+        i->draw(cairo);
+      }
+    for (auto& i: outVariables)
+      {
+        cairo_identity_matrix(cairo);
+        cairo_translate(cairo,i->x()-x(),i->y()-y());
+        i->draw(cairo);
+      }
+    cairo_restore(cairo);
+  }
+
+  // draw notches in the I/O region to indicate docking capability
+  void Group::drawIORegion(cairo_t* cairo) const
+  {
+    cairo_save(cairo);
+    float left, right;
+    margins(left,right);
+    left*=zoomFactor;
+    right*=zoomFactor;
+    float y=0, dy=5*edgeScale();
+    for (auto& i: inVariables)
+      y=max(y, fabs(i->y()-this->y())+3*dy);
+    cairo_set_source_rgba(cairo,0,1,1,0.5);
+    float w=0.5*zoomFactor*width, h=0.5*zoomFactor*height;
+
+    cairo_move_to(cairo,-w,-h);
+    // create notch in input region
+    cairo_line_to(cairo,-w,y-dy);
+    cairo_line_to(cairo,left-w-2,y-dy);
+    cairo_line_to(cairo,left-w,y);
+    cairo_line_to(cairo,left-w-2,y+dy);
+    cairo_line_to(cairo,-w,y+dy);
+    cairo_line_to(cairo,-w,h);
+    cairo_line_to(cairo,left-w,h);
+    cairo_line_to(cairo,left-w,-h);
+    cairo_close_path(cairo);
+    cairo_fill(cairo);
+
+    y=0;
+    for (auto& i: outVariables)
+      y=max(y, fabs(i->y()-this->y())+3*dy);
+    cairo_move_to(cairo,w,-h);
+    // create notch in output region
+    cairo_line_to(cairo,w,y-dy);
+    cairo_line_to(cairo,w-right,y-dy);
+    cairo_line_to(cairo,w-right+2,y);
+    cairo_line_to(cairo,w-right,y+dy);
+    cairo_line_to(cairo,w,y+dy);
+    cairo_line_to(cairo,w,h);
+    cairo_line_to(cairo,w-right,h);
+    cairo_line_to(cairo,w-right,-h);
+    cairo_close_path(cairo);
+    cairo_fill(cairo);
+
+    cairo_restore(cairo);
+  }
+
+
+  void Group::margins(float& left, float& right) const
+  {
+    float scale=edgeScale()/zoomFactor;
+    left=right=10*scale;
+    for (auto& i: inVariables)
+      {
+        float w= scale * (2*RenderVariable(*i).width()+2);
+        assert(i->type()!=VariableType::undefined);
+        if (w>left) left=w;
+      }
+    for (auto& i: outVariables)
+      {
+        float w= scale * (2*RenderVariable(*i).width()+2);
+        assert(i->type()!=VariableType::undefined);
+        if (w>right) right=w;
+      }
+  }
+
+  float Group::rotFactor() const
+  {
+    float rotFactor;
+    float ac=abs(cos(rotation*M_PI/180));
+    static const float invSqrt2=1/sqrt(2);
+    if (ac>=invSqrt2) 
+      rotFactor=1.15/ac; //use |1/cos(angle)| as rotation factor
+    else
+      rotFactor=1.15/sqrt(1-ac*ac);//use |1/sin(angle)| as rotation factor
+    return rotFactor;
+  }
+
+
 }

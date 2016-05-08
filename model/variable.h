@@ -21,7 +21,7 @@
 
 #include "slider.h"
 #include "str.h"
-#include "group.h"
+//#include "group.h"
 //#include "clickType.h"
 
 #include <ecolab.h>

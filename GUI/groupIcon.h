@@ -265,6 +265,13 @@ namespace minsky
 
     /// draw the icon on \a context
     void draw(cairo_t* context) const;
+
+    void drawEdgeVariables(cairo_t* cairo) const;
+
+    /// draw notches in the I/O region to indicate docking capability
+    void drawIORegion(cairo_t* cairo) const
+
+
     /// returns the clicktype given a mouse click at \a x, \a y.
     ClickType::Type clickType(float x, float y) const {
       return minsky::clickType(*this,x,y);

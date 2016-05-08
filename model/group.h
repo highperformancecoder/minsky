@@ -22,6 +22,7 @@
 #include "intrusiveMap.h"
 #include "item.h"
 #include "wire.h"
+#include "variable.h"
 #include <function.h>
 #include "SVGItem.h"
 
@@ -62,6 +63,7 @@ namespace minsky
   class Group: public Item
   {
     friend class GroupPtr;
+    std::vector<VariablePtr> inVariables, outVariables;
   public:
     std::string classType() const override {return "Group";}
     int id=-1; // unique id used for variable scoping
@@ -77,7 +79,12 @@ namespace minsky
     static SVGRenderer svgRenderer;
 
 
-    void draw(cairo_t* cairo) const override {}
+    void draw(cairo_t*) const override;
+
+    /// draw representations of edge variables around group icon
+    void drawEdgeVariables(cairo_t*) const;
+    /// draw notches in the I/O region to indicate docability of variables there
+    void drawIORegion(cairo_t*) const;
 
     void clear() {
       items.clear();
@@ -202,6 +209,9 @@ namespace minsky
     /// returns whether contents should be displayed. Top level group always displayed
     bool displayContents() const {return !group.lock() || zoomFactor>displayZoom;}
 
+    /// margin sizes to allow space for edge variables. 
+    void margins(float& left, float& right) const;
+
     /// computes the zoom at which to show contents, given current
     /// contentBounds and width
     float displayZoom{1}; ///< zoom at which contents are displayed
@@ -238,6 +248,10 @@ namespace minsky
     /// returns nullptr. Weak reference returned, no ownership.
     Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1);
     const Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1) const;
+
+    /// scaling factor to allow a rotated icon to fit on the bitmap
+    float rotFactor() const;
+
   };
 
   inline void GroupPtr::setself() {
