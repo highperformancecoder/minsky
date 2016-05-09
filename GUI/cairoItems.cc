@@ -722,8 +722,10 @@ void OperationBase::draw(cairo_t* cairo) const
       if (const IntOp* i=dynamic_cast<const IntOp*>(this))
         if (i->coupled())
           {
+            auto& iv=*i->getIntVar();
+            //            iv.zoomFactor=zoomFactor;
+            RenderVariable rv(iv,cairo);
             // we need to add some translation if the variable is bound
-            RenderVariable rv(*i->getIntVar(),cairo);
             cairo_rotate(cairo,rotation*M_PI/180.0);
             coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*zoomFactor;
             cairo_translate(cairo, coupledIntTranslation, 0);
@@ -768,10 +770,11 @@ void OperationBase::draw(cairo_t* cairo) const
         cairo_stroke(cairo);
         
         VariablePtr intVar=i->getIntVar();
+        intVar->zoomFactor=zoomFactor;
         // display an integration variable next to it
         RenderVariable rv(*intVar, cairo);
         // save the render width for later use in setting the clip
-        intVarWidth=rv.width(); 
+        intVarWidth=rv.width()*zoomFactor; 
         // set the port location...
         intVar->moveTo(i->x()+ivo+intVarWidth, i->y());
             
@@ -791,12 +794,13 @@ void OperationBase::draw(cairo_t* cairo) const
         cairo_line_to(cairo,r,0);
         cairo_line_to(cairo,r+ivo,0);
         float rvw=rv.width()*zoomFactor, rvh=rv.height()*zoomFactor;
-        cairo_line_to(cairo,r+ivo,rvh);
-        cairo_line_to(cairo,r+ivo+2*rvw,rvh);
-        cairo_line_to(cairo,r+ivo+2*rvw+2*zoomFactor,0);
-        cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
         cairo_line_to(cairo,r+ivo,-rvh);
+        cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
+        cairo_line_to(cairo,r+ivo+2*rvw+2*zoomFactor,0);
+        cairo_line_to(cairo,r+ivo+2*rvw,rvh);
+        cairo_line_to(cairo,r+ivo,rvh);
         cairo_line_to(cairo,r+ivo,0);
+        cairo_line_to(cairo,r,0);
         cairo_close_path(cairo);
       }
 
