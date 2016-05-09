@@ -72,6 +72,7 @@ proc deleteGroupItem {id} {
     deleteGroup $id
     .wiring.canvas delete all
     clearAllGetterSetters
+    .wiring.canvas delete all
     updateCanvas
 }
 
@@ -79,6 +80,7 @@ proc ungroupGroupItem {id} {
     ungroup $id
     .wiring.canvas delete all
     clearAllGetterSetters
+    .wiring.canvas delete all
     updateCanvas
 }
 
@@ -100,7 +102,8 @@ proc lassoEnd {x y} {
         set y [.wiring.canvas canvasy $y]
 #        eval group $x $y $lassoStart
         eval select $x $y $lassoStart
-        .wiring.canvas delete lasso
+#        .wiring.canvas delete lasso
+        .wiring.canvas delete all
         updateCanvas
         unset lassoStart
         # convert back to move mode for later editing
@@ -122,7 +125,7 @@ proc groupContext {id x y} {
     .wiring.context add command -label "Flip" -command "group::flip $id"
     .wiring.context add command -label "Flip Contents" -command "group::flipContents $id"
     .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.groupItems.@elem $id].*"
-    .wiring.context add command -label "Group" -command "minsky.createGroup; updateCanvas"
+    .wiring.context add command -label "Group" -command "minsky.createGroup;.wiring.canvas delete all; updateCanvas"
     .wiring.context add command -label "Ungroup" -command "ungroupGroupItem $id"
     .wiring.context add command -label "Raise" -command "raiseItem group$id"
     .wiring.context add command -label "Lower" -command "lowerItem group$id"
@@ -311,6 +314,7 @@ namespace eval group {
         group.flipContents
         group.set
         # a bit kludgy to do a full redraw here...
+        .wiring.canvas delete all
         updateCanvas
     }
 
@@ -320,6 +324,7 @@ namespace eval group {
         minsky.zoom [group.x] [group.y] $factor
         .wiring.canvas scale all [group.x] [group.y] $factor $factor
         # oh, why???
+        .wiring.canvas delete all
         updateCanvas
     }
 
@@ -342,7 +347,8 @@ namespace eval group {
             set x [.wiring.canvas canvasx $x]
             set y [.wiring.canvas canvasy $y]
             eval inGroupSelect $id $x $y $lassoStart
-            .wiring.canvas delete lasso
+#            .wiring.canvas delete lasso
+            .wiring.canvas delete all
             updateCanvas
             unset lassoStart
         }
