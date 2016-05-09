@@ -636,7 +636,7 @@ proc populateRecentFiles {} {
     }
     foreach f $recentFiles {
         .menubar.file.recent add command -label "[file tail $f]" \
-            -command "openNamedFile \"$f\""
+            -command "openNamedFile \"[regsub -all {\\} $f /]\""
     }
 }
 populateRecentFiles
