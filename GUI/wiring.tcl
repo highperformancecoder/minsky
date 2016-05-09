@@ -2060,7 +2060,8 @@ proc drawSlider {var x y} {
         # configure command after slider initially set to prevent
         # constant value being set to initial state of slider when
         # constructed.
-        .wiring.slider$var configure -command "setVarVal $var"
+#        .wiring.slider$var configure -command "setVarVal $var"
+        .wiring.slider$var configure -variable "sliderVal[var.fqName]" -command "setVarVal $var"
 
         #.wiring.canvas bind .wiring.slider$op Keypress-Right 
         bind .wiring.slider$var <Enter> "focus .wiring.slider$var"
