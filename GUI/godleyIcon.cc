@@ -213,14 +213,19 @@ namespace minsky
     // if this operation is clearing an initial condition cell, set it to 0
     string& c=table.cell(row,col);
     if (newVal.empty() && !c.empty() && table.initialConditionRow(row))
-      c="0";
-    else
-      c=newVal; 
+      {
+        c="0";
+        table.markEdited();
+      }
+    else if (c!=newVal)
+      {
+        c=newVal; 
+        table.markEdited();
+      }
     if (row==0)
       minsky().importDuplicateColumn(table, col);
     else
       minsky().balanceDuplicateColumns(*this, col);
-    table.markEdited();
   }
 
   void GodleyIcon::deleteRow(unsigned row)
