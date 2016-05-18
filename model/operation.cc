@@ -189,7 +189,6 @@ namespace minsky
 
     intVar.reset(new Variable<VariableType::integral>(desc));
     intVar->m_visible=false; // we're managing our own display
-    intVar->group=group;
     // initialise in toggled state
     ports[0]=intVar->ports[0];
 

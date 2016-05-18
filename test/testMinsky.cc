@@ -331,7 +331,7 @@ SUITE(Minsky)
       //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
       intOp=dynamic_cast<IntOp*>(op3.get());
       CHECK(intOp);
-      CHECK_CLOSE(0.5*value*t*t, intOp->getIntVar()->value(), 1e-5);
+      CHECK_CLOSE(0.5*value*t*t, intOp->intVar->value(), 1e-5);
     }
 
   /*

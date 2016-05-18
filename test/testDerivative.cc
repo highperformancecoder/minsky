@@ -93,9 +93,9 @@ SUITE(Derivative)
     nSteps=1;step(); // ensure f is evaluated
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
-    integ.getIntVar()->value(f0);
+    integ.intVar->value(f0);
     nSteps=800; step();
-    CHECK_CLOSE(1, f->value()/integ.getIntVar()->value(), 0.003);
+    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
     CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
    
   }
@@ -111,9 +111,9 @@ SUITE(Derivative)
     nSteps=1;step(); // ensure f is evaluated
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
-    integ.getIntVar()->value(f0);
+    integ.intVar->value(f0);
     nSteps=800; step();step();
-    CHECK_CLOSE(1, f->value()/integ.getIntVar()->value(), 0.003);
+    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
     CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
    
   }
@@ -136,9 +136,9 @@ SUITE(Derivative)
     nSteps=1;step(); // ensure f is evaluated
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
-    integ.getIntVar()->value(f0);
+    integ.intVar->value(f0);
     nSteps=800; step();
-    CHECK_CLOSE(1, f->value()/integ.getIntVar()->value(), 0.003);
+    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
     CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
    
   }
@@ -161,9 +161,9 @@ SUITE(Derivative)
           nSteps=1;step(); // ensure f is evaluated
           // set the constant of integration to the value of f at t=0
           double f0=f->value();
-          integ.getIntVar()->value(f0);
+          integ.intVar->value(f0);
           nSteps=800; step();
-          CHECK_CLOSE(1, f->value()/integ.getIntVar()->value(), 0.003);
+          CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
           CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
         }
     }
