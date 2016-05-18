@@ -272,7 +272,7 @@ namespace MathDAG
       {
         if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
           {
-            if (VariablePtr iv=i->getIntVar())
+            if (VariablePtr iv=i->intVar)
               {
                 assert(VariableValue::isValueId(iv->valueId()));
                 result=minsky::minsky().variableValues[iv->valueId()];
@@ -1105,7 +1105,7 @@ namespace MathDAG
        [&](const Items&, Items::const_iterator it){
         if (IntOp* i=dynamic_cast<IntOp*>(it->get()))
           {
-            if (VariablePtr iv=i->getIntVar())
+            if (VariablePtr iv=i->intVar)
               {
                 // .get() OK here because object lifetime controlled by
                 // expressionCache

@@ -495,8 +495,8 @@ namespace schema1
        value=c->value;
     else if (const minsky::IntOp* i=dynamic_cast<const minsky::IntOp*>(&op))
       {
-        name=i->getIntVar()->fqName();
-        intVar=i->intVarID();
+        name=i->intVar->fqName();
+        // intvar is populated at a higher level
       }
     else if (const minsky::DataOp* d=dynamic_cast<const minsky::DataOp*>(&op))
       {
@@ -660,14 +660,26 @@ namespace schema1
       {
         auto o=imap.addItem(minsky::OperationBase::create(i.type), i);
         combine.combine(*o,i);
-        pmap.asgPorts(o->ports, i.ports);
         if (auto d=dynamic_cast<minsky::DataOp*>(o))
           d->data=i.data;
         else if (auto integ=dynamic_cast<minsky::IntOp*>(o))
           {
+            // this ensures that the output port refers to this item,
+            // and not the variable that is deleted in the following
+            // statement
+            if (integ->coupled()) integ->toggleCoupled();
             g.removeItem(*integ->intVar);
             integ->intVar=imap[i.intVar];
           }
+        pmap.asgPorts(o->ports, i.ports);
+#ifndef NDEBUG
+        // check the output port connects to correct item
+        if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+          assert(integ->coupled() && &integ->ports[0]->item==integ->intVar.get() ||
+                 !integ->coupled() && &integ->ports[0]->item==integ);
+        else
+          assert(o == &o->ports[0]->item);
+#endif
       }
     for (auto& i: model.plots)
       {
@@ -712,10 +724,12 @@ namespace schema1
       {
         if (auto gg=dynamic_cast<minsky::Group*>(imap[i.id].get()))
           for (auto id: i.items)
-            // a bit of a clumsy way of extracting the new id for this item.
-            if (auto it=g.findItem(*imap[id]))
-              // item will be moved to new group, and wires adjusted
-              gg->addItem(it);
+            if (imap.count(id))
+              {
+                // item will be moved to new group, and wires adjusted
+                gg->addItem(imap[id]);
+                assert(gg->uniqueItems());
+              }
       }
   }
 
@@ -865,6 +879,7 @@ namespace schema1
 
       void processGroup(Group& s1g, const minsky::Group& g)
       {
+        vector<pair<size_t,minsky::Item*>> integralItemsToAssociate;
         for (auto& i: g.items)
           {
             if (itemMap.count(i.get()))
@@ -876,6 +891,8 @@ namespace schema1
                 m.operations.emplace_back(id, *x);
                 m.operations.back().ports=ports(*x);
                 l.emplace_back(new ItemLayout(id,*x));
+                if (auto i=dynamic_cast<minsky::IntOp*>(x))
+                  integralItemsToAssociate.emplace_back(m.operations.size(), i->intVar.get());
               }
             else if (auto x=dynamic_cast<minsky::VariableBase*>(i.get()))
               {
@@ -905,6 +922,10 @@ namespace schema1
               m.notes.emplace_back(id, *i);
             s1g.items.push_back(id);
           }
+
+        // fix up integral variable associations
+        for (auto& i: integralItemsToAssociate)
+          m.operations[i.first].intVar=itemMap[i.second];
 
         for (auto& i: g.groups)
           {

@@ -182,11 +182,7 @@ namespace minsky
     string valueId() const 
     {return intVar->valueId();}
 
-    /// return ID of integration variable
-    int intVarID() const {assert(intVar); return intVar.id();}
-
     /// return reference to integration variable
-    VariablePtr getIntVar() const {return intVar;}
     VariablePtr intVar; 
 
     /// toggles coupled state of integration variable. Only valid for integrate

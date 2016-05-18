@@ -100,10 +100,12 @@ namespace minsky
     if (auto x=dynamic_pointer_cast<Group>(it))
       return addGroup(x);
    
-    // statsh position
+    // stash position
     float x=it->x(), y=it->y();
     auto origGroup=it->group.lock();
-    if (origGroup && origGroup.get()!=this)
+
+    if (origGroup.get()==this) return it; // nothing to do.
+    if (origGroup)
       origGroup->removeItem(*it);
 
     it->group=self.lock();
@@ -123,11 +125,11 @@ namespace minsky
 
     // need to deal with integrals especially because of the attached variable
     if (auto intOp=dynamic_cast<IntOp*>(it.get()))
-      if (intOp->getIntVar())
-        if (auto oldG=intOp->getIntVar()->group.lock())
+      if (intOp->intVar)
+        if (auto oldG=intOp->intVar->group.lock())
           {
             if (oldG.get()!=this)
-              addItem(oldG->removeItem(*intOp->getIntVar()));
+              addItem(oldG->removeItem(*intOp->intVar));
           }
         else
           addItem(intOp->intVar);
@@ -169,19 +171,37 @@ namespace minsky
        }
   }
 
+  namespace 
+  {
+    bool nocycles(const Group& g)
+    {
+      set<const Group*> sg;
+      sg.insert(&g);
+      for (auto i=g.group.lock(); i; i=i->group.lock())
+        if (!sg.insert(i.get()).second)
+          return false;
+      return true;
+    }
+  }
+
   GroupPtr Group::addGroup(const std::shared_ptr<Group>& g)
   {
     auto origGroup=g->group.lock();
-    if (origGroup && origGroup.get()!=this)
+    if (origGroup.get()==this) return g; // nothing to do
+    if (origGroup)
       origGroup->removeGroup(*g);
     g->group=self;
     g->self=g;
     groups.push_back(g);
+    assert(nocycles(*this));
     return groups.back();
   }
 
   WirePtr Group::addWire(const std::shared_ptr<Wire>& w)
   {
+    assert(w->from() && w->to());
+    assert(nocycles(*w->from()->item.group.lock()));
+    assert(nocycles(*w->to()->item.group.lock()));
     wires.push_back(w);
     return wires.back();
   }
@@ -199,10 +219,10 @@ namespace minsky
 
   unsigned Group::level() const
   {
-    if (auto g=group.lock())
-      return g->level()+1;
-    else
-      return 0;
+    assert(nocycles(*this));
+    unsigned l=0;
+    for (auto i=group.lock(); i; i=i->group.lock()) l++;
+    return l;
   }
 
   namespace

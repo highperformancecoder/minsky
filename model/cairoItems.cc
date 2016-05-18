@@ -83,7 +83,7 @@ RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
         const IntOp& i=dynamic_cast<const IntOp&>(op);
         if (i.coupled())
           {
-            RenderVariable rv(*i.getIntVar(),cairo);
+            RenderVariable rv(*i.intVar,cairo);
             w+=i.intVarOffset+rv.width(); 
             h=max(h, rv.height());
           }
@@ -564,7 +564,7 @@ void OperationBase::draw(cairo_t* cairo) const
         if (i->coupled())
           {
             // we need to add some translation if the variable is bound
-            RenderVariable rv(*i->getIntVar(),cairo);
+            RenderVariable rv(*i->intVar,cairo);
             cairo_rotate(cairo,rotation*M_PI/180.0);
             coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*zoomFactor;
             cairo_translate(cairo, coupledIntTranslation, 0);
@@ -608,7 +608,7 @@ void OperationBase::draw(cairo_t* cairo) const
         cairo_set_source_rgb(cairo,0,0,0);
         cairo_stroke(cairo);
         
-        VariablePtr intVar=i->getIntVar();
+        VariablePtr intVar=i->intVar;
         // display an integration variable next to it
         RenderVariable rv(*intVar, cairo);
         // save the render width for later use in setting the clip
@@ -620,7 +620,7 @@ void OperationBase::draw(cairo_t* cairo) const
         cairo_translate(cairo,r+ivo+intVarWidth,0);
         // to get text to render correctly, we need to set
         // the var's rotation, then antirotate it
-        i->getIntVar()->rotation=i->rotation;
+        i->intVar->rotation=i->rotation;
         cairo_rotate(cairo, -M_PI*i->rotation/180.0);
         rv.draw();
         //i->getIntVar()->draw(cairo);

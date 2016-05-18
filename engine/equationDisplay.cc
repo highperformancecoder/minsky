@@ -357,7 +357,7 @@ namespace MathDAG
   void OperationDAG<OperationType::integrate>::render(Surface& surf) const
   {
     if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      if (VariablePtr v=i->getIntVar())
+      if (VariablePtr v=i->intVar)
         print(surf.cairo(), latexToPango(mathrm(v->name())),Anchor::nw);
   }
   template <>
