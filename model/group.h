@@ -231,6 +231,12 @@ namespace minsky
       return zoomFactor>1? localZoom(): zoomFactor;
     }
 
+    void zoom(float xOrigin, float yOrigin,float factor) override {
+      Item::zoom(xOrigin, yOrigin, factor);
+      for (auto& i:items) i->zoom(xOrigin, yOrigin, factor);
+      for (auto& i:groups) i->zoom(xOrigin, yOrigin, factor);
+    }
+
     /// return bounding box coordinates for all variables, operators
     /// etc in this group. Returns the zoom scale (aka local zoom) of
     /// the contained items, or 1 if the group is empty.

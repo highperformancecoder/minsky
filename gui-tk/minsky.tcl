@@ -741,7 +741,7 @@ proc newSystem {} {
     deleteSubsidiaryTopLevels
     clearHistory
     clearAll
-    setZoom 1
+    model.setZoom 1
     recentreCanvas
     .wiring.canvas delete all
     updateCanvas 
