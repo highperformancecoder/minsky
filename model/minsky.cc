@@ -841,15 +841,15 @@ namespace minsky
 
   void Minsky::save(const std::string& filename)
   {
-//    ofstream of(filename);
-//    xml_pack_t saveFile(of, schemaURL);
-//    saveFile.prettyPrint=true;
-//    schema1::Minsky m(*this);
-//    m.relocateCanvas();
-//    xml_pack(saveFile, "Minsky", m);
-//    if (!of)
-//      throw runtime_error("cannot save to "+filename);
-//    m_edited=false;
+    ofstream of(filename);
+    xml_pack_t saveFile(of, schemaURL);
+    saveFile.prettyPrint=true;
+    schema1::Minsky m(*this);
+    m.relocateCanvas();
+    xml_pack(saveFile, "Minsky", m);
+    if (!of)
+      throw runtime_error("cannot save to "+filename);
+    m_edited=false;
   }
 
 

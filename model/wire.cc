@@ -53,23 +53,18 @@ namespace minsky
       m_coords.clear();
     else
       {
-        assert(from() && to());
         assert(coords.size() % 2 == 0);
         
-        if (auto f=from())
-          if (auto t=to())
-            {
-              float dx=coords[coords.size()-2]-coords[0];
-              float dy=coords[coords.size()-1]-coords[1];
-              m_coords.resize(coords.size()-4);
-              for (size_t i=2; i<coords.size()-3; i+=2)
-                {
-                  m_coords[i-2] = (coords[i]-coords[0])/dx;
-                  m_coords[i-1] = (coords[i+1]-coords[1])/dy;
-                }
-            }
+        float dx=coords[coords.size()-2]-coords[0];
+        float dy=coords[coords.size()-1]-coords[1];
+        m_coords.resize(coords.size()-4);
+        for (size_t i=2; i<coords.size()-3; i+=2)
+          {
+            m_coords[i-2] = (coords[i]-coords[0])/dx;
+            m_coords[i-1] = (coords[i+1]-coords[1])/dy;
+          }
       }
-    return coords;
+    return this->coords();
   }
 
 

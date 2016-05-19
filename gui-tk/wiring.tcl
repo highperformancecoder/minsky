@@ -1125,7 +1125,7 @@ proc contextMenu {id x y} {
                 -command "drawSlider $id $x $y" \
                 -variable "sliderCheck$id"
             .wiring.context add command -label "Copy" -command "copyVar $id"
-            if {[var.type]=="flow" && ![variables.inputWired [var.valueId]]} {
+            if {[var.type]=="flow" && ![inputWired [var.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral [var.name]"
             }
             .wiring.context add command -label "Flip" -command "rotateVar $id 180; flip_default"

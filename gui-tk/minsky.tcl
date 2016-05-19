@@ -661,10 +661,10 @@ proc openNamedFile {ofname} {
     updateCanvas
     recentreCanvas
     
-    foreach g [godleyItems.#keys] {
-        godley.get $g
-        set preferences(godleyDE) [godley.table.doubleEntryCompliant]
-    }
+#    foreach g [godleyItems.#keys] {
+#        godley.get $g
+#        set preferences(godleyDE) [godley.table.doubleEntryCompliant]
+#    }
 
    .controls.simSpeed set [simulationDelay]
     # setting preferences(godleyDE) and simulationDelay causes the edited (dirty) flag to be set

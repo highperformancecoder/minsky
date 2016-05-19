@@ -353,7 +353,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
   struct Minsky
   {
     static const int version=1;
-    int schemaVersion;
+    int schemaVersion=Minsky::version;
     MinskyModel model;
     vector<shared_ptr<Layout> > layout;
     double zoomFactor;
