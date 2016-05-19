@@ -383,6 +383,8 @@ namespace minsky
     void load(const std::string& filename) {
       clearAll();
       Minsky::load(filename);
+      // load resets the model pointer, etc, so rebuild TCL commands
+      TCL_obj(minskyTCL_obj(), "minsky", *this);
       buildMaps();
     }
     void exportSchema(TCL_args args) {
