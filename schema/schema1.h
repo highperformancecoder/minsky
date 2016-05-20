@@ -362,6 +362,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     Minsky(const minsky::Minsky& m): Minsky(*m.model) {
       model.rungeKutta=RungeKutta(m);
       zoomFactor=m.model->zoomFactor;
+      assert(model.validate());
     }
       
     /// create a Minsky model from this

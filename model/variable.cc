@@ -165,10 +165,10 @@ void VariableBase::setScope(int s)
 
 string VariableBase::init() const
 {
-//  auto value=variableManager().values.find(valueId());
-//  if (value!=variableManager().values.end())
-//    return value->second.init;
-//  else
+  auto value=minsky().variableValues.find(valueId());
+  if (value!=minsky().variableValues.end())
+    return value->second.init;
+  else
     return "0";
 }
 

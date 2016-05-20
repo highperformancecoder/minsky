@@ -892,7 +892,7 @@ namespace schema1
                 m.operations.back().ports=ports(*x);
                 l.emplace_back(new ItemLayout(id,*x));
                 if (auto i=dynamic_cast<minsky::IntOp*>(x))
-                  integralItemsToAssociate.emplace_back(m.operations.size(), i->intVar.get());
+                  integralItemsToAssociate.emplace_back(m.operations.size()-1, i->intVar.get());
               }
             else if (auto x=dynamic_cast<minsky::VariableBase*>(i.get()))
               {
@@ -925,7 +925,10 @@ namespace schema1
 
         // fix up integral variable associations
         for (auto& i: integralItemsToAssociate)
-          m.operations[i.first].intVar=itemMap[i.second];
+          {
+            assert(m.operations[i.first].type==minsky::OperationType::integrate);
+            m.operations[i.first].intVar=itemMap[i.second];
+          }
 
         for (auto& i: g.groups)
           {
