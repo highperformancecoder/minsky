@@ -81,28 +81,28 @@ namespace minsky
   template <class AV>
   void member_entry_hook(int argc, AV argv)
   {
-//    string argv0=to_string(argv[0]);
-//    MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
-//    if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
-//        argv0.find(".get")==string::npos 
-//        )
-//      {
-//        auto t=getCommandData(argv0);
-//        if (!t || (!t->is_const && (!t->is_setterGetter || argc>1)))
-//          {
-//            //            cmdHist[argv0]++;
-//            if (m.pushHistoryIfDifferent())
-//              {
-//                if (argv0!="minsky.load") m.markEdited();
-//                if (m.eventRecord.get() && argv0=="minsky.startRecording")
-//                  {
-//                    for (int i=0; i<argc; ++i)
-//                      (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
-//                    (*m.eventRecord)<<endl;
-//                  }
-//              }
-//          }
-//      }
+    string argv0=to_string(argv[0]);
+    MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
+    if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
+        argv0.find(".get")==string::npos 
+        )
+      {
+        auto t=getCommandData(argv0);
+        if (!t || (!t->is_const && (!t->is_setterGetter || argc>1)))
+          {
+            //            cmdHist[argv0]++;
+            if (m.pushHistoryIfDifferent())
+              {
+                if (argv0!="minsky.load") m.markEdited();
+                if (m.eventRecord.get() && argv0=="minsky.startRecording")
+                  {
+                    for (int i=0; i<argc; ++i)
+                      (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
+                    (*m.eventRecord)<<endl;
+                  }
+              }
+          }
+      }
   }
 
   // Add any additional post TCL_obj processing commands here
