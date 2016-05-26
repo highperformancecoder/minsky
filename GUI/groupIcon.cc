@@ -24,6 +24,7 @@
 #include <cairo_base.h>
 #include <plot.h>
 #include <ecolab_epilogue.h>
+#include <assert.h>
 
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -116,6 +117,7 @@ namespace minsky
       void createOrDeleteContentItems(bool display)
       {
         DisableEventProcessing e;
+        assert(processEventsNest);
         tclcmd cmd;
         GroupIcon& g=minsky::minsky().groupItems[id];
         g.updatePortLocation();
@@ -214,6 +216,7 @@ namespace minsky
             toLower=minsky::minsky().groupItems[toLower].parent();
           }          
         cmd|"\n";
+        assert(processEventsNest);
       }
     };
 

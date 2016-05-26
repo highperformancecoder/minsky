@@ -75,36 +75,39 @@ proc setFname {name} {
     }
 }
 
+disableEventProcessing
+
 #reenable event processing on stack frame exit
-proc enableEventProcessingOnExit {cmd level args} {
-    array set frameInfo [info frame 1]
+proc enableEventProcessingOnExit {level cmd args} {
     if {[info level]==$level} {
-            enableEventProcessing
-            trace remove execution $cmd leave \
-                "enableEventProcessingOnExit $cmd $level"
+        enableEventProcessing
+        foreach t [trace info execution $cmd] {
+            eval trace remove execution $cmd $t
         }
+    }
 }
 
 # disable event processing, and arrange for it to be reenabled on
 # stack frame exit. Called from minsky.xxx.get 
 proc scopedDisableEventProcessing {} {
-    if {[info level]>2} {
-            disableEventProcessing
-            set cmd [lindex [info level [expr [info level]-2]]] 
-    # under some weird circumstances (ticket #287), that actual
-    # command has some spaces in it, and $cmd is corrupted, in which
-    # case back out of disableEventProcessing
-            if [catch {
-                        trace add execution $cmd leave \
-                            "enableEventProcessingOnExit $cmd [expr [info level]-2]"
-                        }] {
-                    enableEventProcessing
-                }
-        }
+#    if {[info level]>2} {
+#        set cmd [lindex [info level -2] 0]
+#        if {[llength  [trace info execution $cmd]]==0} {
+#            disableEventProcessing
+#    # under some weird circumstances (ticket #287), that actual
+#    # command has some spaces in it, and $cmd is corrupted, in which
+#    # case back out of disableEventProcessing
+#            if [catch {
+#                trace add execution $cmd leave \
+#                    "enableEventProcessingOnExit [expr [info level]-2] $cmd"
+#                #Why is this needed???
+#                if {[llength $scopedCommands]==0} {}
+#            }] {
+#                enableEventProcessing
+#            }
+#        }
+#    }
 }
-
-rename exit tcl_exit
-
 
 #if argv(1) has .tcl extension, it is a script, otherwise it is data
 if {$argc>1} {
@@ -1025,7 +1028,7 @@ proc exit {} {
     }
     # why is this needed?
     proc bgerror x {} 
-    tcl_exit
+    exit_ecolab
 }
 
 proc setFname {name} {

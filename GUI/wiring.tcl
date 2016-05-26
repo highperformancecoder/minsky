@@ -165,7 +165,6 @@ proc zoom {factor} {
     foreach v [variables.visibleVariables] {
         var.get $v
         foreach item [.wiring.canvas find withtag slider$v] {
-            set coords [.wiring.canvas coords $item]
             # should be only one of these anyway...
             .wiring.canvas coords $item [var.x] [sliderYCoord [var.y]]
         }
