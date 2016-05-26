@@ -75,8 +75,6 @@ proc setFname {name} {
     }
 }
 
-disableEventProcessing
-
 #reenable event processing on stack frame exit
 proc enableEventProcessingOnExit {level cmd args} {
     if {[info level]==$level} {
@@ -108,6 +106,9 @@ proc scopedDisableEventProcessing {} {
 #        }
 #    }
 }
+
+# needed for scripts/tests
+rename exit tcl_exit
 
 #if argv(1) has .tcl extension, it is a script, otherwise it is data
 if {$argc>1} {
@@ -1180,4 +1181,6 @@ resetEdited
 if {[llength [info commands afterMinskyStarted]]>0} {
     afterMinskyStarted
 }
+
+disableEventProcessing
 
