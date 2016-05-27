@@ -497,7 +497,7 @@ pack .equations.canvas -fill both -expand 1
 .tabs select 0
 
 ttk::sizegrip .sizegrip
-proc scrollCanvases {xyview args} {eval .wiring.canvas $xyview $args; eval .equations.canvas yview $args}
+proc scrollCanvases {xyview args} {eval .wiring.canvas $xyview $args; eval .equations.canvas $xyview $args}
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
 
