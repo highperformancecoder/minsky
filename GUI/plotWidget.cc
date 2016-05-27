@@ -121,7 +121,6 @@ namespace minsky
       if (cairoSurface && pw)
         {
           pw->cairoSurface=cairoSurface;
-          xScale=yScale=pw->zoomFactor;
           pw->draw(*cairoSurface);
         }
     }

@@ -151,16 +151,19 @@ bind .wiring.canvas <Alt-Button-1> {
     tk_messageBox -message "Mouse coordinates [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]"
 }
 
+.wiring.canvas create rectangle 0 0 0 0 -tag p0bbox -outline red
 proc zoom {factor} {
     set x0 [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]
     set y0 [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
+
     if {$factor>1} {
-        .wiring.canvas scale all $x0 $y0 $factor $factor
         minsky.zoom $x0 $y0 $factor
+        .wiring.canvas scale all $x0 $y0 $factor $factor
     } else {
-        minsky.zoom $x0 $y0 $factor
         .wiring.canvas scale all $x0 $y0 $factor $factor
-    }  
+        minsky.zoom $x0 $y0 $factor
+    }
+       
     # sliders need to be readjusted, because zooming doesn't do the right thing
     foreach v [variables.visibleVariables] {
         var.get $v
