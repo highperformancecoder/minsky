@@ -278,6 +278,13 @@ namespace minsky
 
   string OperationBase::portValues() const
   {
+    if (auto* i=dynamic_cast<const IntOp*>(this))
+      {
+        double r=0;
+        if (auto iv=i->getIntVar().get()) r=iv->value();
+        return "[out]="+str(r);
+      }
+
     string r="equations not yet constructed, please reset";
     // search the equation list for this operation
     for (EvalOpVector::const_iterator ei=minsky().equations.begin();
