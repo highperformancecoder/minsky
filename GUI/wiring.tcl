@@ -1474,6 +1474,11 @@ proc flip_default {} {
    set globals(default_rotation) [expr ($globals(default_rotation)+180)%360]
 }
 
+proc deleteVariable {id} {
+    minsky.deleteVariable $id
+    .wiring.canvas delete slider$id
+}
+
 proc deleteItem {id tag} {
     .wiring.canvas delete $tag
     switch -regexp $tag {
