@@ -84,7 +84,10 @@ namespace minsky
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
     if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
-        argv0.find(".get")==string::npos 
+        argv0!="minsky.resetNotNeeded" &&
+        argv0!="minsky.select" &&
+        argv0.find(".get")==string::npos && 
+        argv0.find(".mouseFocus")==string::npos 
         )
       {
         auto t=getCommandData(argv0);

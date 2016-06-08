@@ -100,11 +100,11 @@ proc lassoEnd {x y} {
     if [info exists lassoStart] {
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
-#        eval group $x $y $lassoStart
         eval select $x $y $lassoStart
-#        .wiring.canvas delete lasso
-        .wiring.canvas delete all
-        updateCanvas
+        foreach item [eval .wiring.canvas find all] {
+            .wiring.canvas coords $item [.wiring.canvas coords $item]
+        }
+        .wiring.canvas delete lasso
         unset lassoStart
         # convert back to move mode for later editing
         global interactionMode

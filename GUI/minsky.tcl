@@ -75,38 +75,6 @@ proc setFname {name} {
     }
 }
 
-#reenable event processing on stack frame exit
-proc enableEventProcessingOnExit {level cmd args} {
-    if {[info level]==$level} {
-        enableEventProcessing
-        foreach t [trace info execution $cmd] {
-            eval trace remove execution $cmd $t
-        }
-    }
-}
-
-# disable event processing, and arrange for it to be reenabled on
-# stack frame exit. Called from minsky.xxx.get 
-proc scopedDisableEventProcessing {} {
-#    if {[info level]>2} {
-#        set cmd [lindex [info level -2] 0]
-#        if {[llength  [trace info execution $cmd]]==0} {
-#            disableEventProcessing
-#    # under some weird circumstances (ticket #287), that actual
-#    # command has some spaces in it, and $cmd is corrupted, in which
-#    # case back out of disableEventProcessing
-#            if [catch {
-#                trace add execution $cmd leave \
-#                    "enableEventProcessingOnExit [expr [info level]-2] $cmd"
-#                #Why is this needed???
-#                if {[llength $scopedCommands]==0} {}
-#            }] {
-#                enableEventProcessing
-#            }
-#        }
-#    }
-}
-
 # needed for scripts/tests
 rename exit tcl_exit
 
@@ -540,7 +508,6 @@ proc runstop {} {
   global running classicMode
   if {$running} {
     set running 0
-    disableEventProcessing
     if {$classicMode} {
             .controls.run configure -text run
         } else {
@@ -549,7 +516,6 @@ proc runstop {} {
       updateCanvas
   } else {
     set running 1
-    enableEventProcessing
     doPushHistory 0
     if {$classicMode} {
             .controls.run configure -text stop
@@ -577,6 +543,7 @@ proc step {} {
         global running
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
+        resetNotNeeded
         .controls.statusbar configure -text "t: [t] Δt: [format %g [expr [t]-$lastt]]"
         updateGodleysDisplay
         update
@@ -594,7 +561,7 @@ proc simulate {} {
               after [expr $delay/25+0] {step; simulate}
           } else {
               set d [expr int(pow(10,$delay/4.0))]
-              after $d {step; simulate}
+              after $d {if {$running} {step;} simulate}
           }
         }
     }
@@ -741,6 +708,7 @@ proc newSystem {} {
             cancel {return -level [info level]}
         }
     }
+    reset
     deleteSubsidiaryTopLevels
     clearHistory
     clearAll
