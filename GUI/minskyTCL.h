@@ -56,7 +56,6 @@ namespace minsky
       }
       else
         throw error("%s not found",(char*)args[0]);
-      tclcmd() << "scopedDisableEventProcessing\n";
     }
     void set(TCL_args args) {
     }
@@ -111,7 +110,6 @@ namespace minsky
         }
       else
         throw error("object not found: %s[%s]",(char*)args[-1],(char*)args[0]);
-      tclcmd() << "scopedDisableEventProcessing\n";
     }
     // for backward compatibility
     void set(TCL_args args) {}

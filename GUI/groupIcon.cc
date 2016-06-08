@@ -116,7 +116,6 @@ namespace minsky
       // canvas, if false, then delete content itemse
       void createOrDeleteContentItems(bool display)
       {
-        DisableEventProcessing e;
         assert(processEventsNest);
         tclcmd cmd;
         GroupIcon& g=minsky::minsky().groupItems[id];
@@ -461,7 +460,6 @@ namespace minsky
 
   void GroupIcon::ungroup()
   {
-    DisableEventProcessing e;
     if (parent()>-1)
       {
         GroupIcons::iterator parentGroup=minsky().groupItems.find(parent());
@@ -604,7 +602,6 @@ namespace minsky
     */
     if (displayContents())
       {
-        DisableEventProcessing e;
         tclcmd cmd;
         cmd<<"llength [info commands .wiring.canvas]\n";
         if (cmd.result=="0") return; // not in GUI environment

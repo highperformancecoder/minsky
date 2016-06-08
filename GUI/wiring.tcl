@@ -442,8 +442,6 @@ proc deleteTooltipIfLeft {item id} {
 
 set inItemEnterLeave 0
 proc itemEnterLeave {item id tag enter} {
-    scopedDisableEventProcessing
-    
     global itemFocused inItemEnterLeave
     if {$inItemEnterLeave} return
     set inItemEnterLeave 1
@@ -1605,7 +1603,6 @@ proc deiconifyEditVar {} {
         
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
-            scopedDisableEventProcessing
             .wiring.canvas delete all
             convertVarType [var.valueId] $editVarInput(Type)
     
