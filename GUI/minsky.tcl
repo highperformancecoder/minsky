@@ -542,9 +542,7 @@ proc step {} {
         # run simulation
         global running
         set lastt [t]
-        set errMsg ""
-        set options {}
-        if {$running && [catch minsky.step errMsg options]} {runstop}
+        if {[catch minsky.step errMsg options] && $running} {runstop}
         resetNotNeeded
         .controls.statusbar configure -text "t: [t] Δt: [format %g [expr [t]-$lastt]]"
         updateGodleysDisplay
@@ -563,7 +561,7 @@ proc simulate {} {
               after [expr $delay/25+0] {step; simulate}
           } else {
               set d [expr int(pow(10,$delay/4.0))]
-              after $d {step; simulate}
+              after $d {if {$running} {step;} simulate}
           }
         }
     }
@@ -703,7 +701,6 @@ proc saveAs {} {
 }
 
 proc newSystem {} {
-    reset
     if [edited] {
         switch [tk_messageBox -message "Save?" -type yesnocancel] {
             yes save
@@ -711,6 +708,7 @@ proc newSystem {} {
             cancel {return -level [info level]}
         }
     }
+    reset
     deleteSubsidiaryTopLevels
     clearHistory
     clearAll
