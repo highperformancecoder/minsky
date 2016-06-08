@@ -70,6 +70,12 @@ proc deiconifyPltWindowOptions {} {
         checkbutton .pltWindowOptions.grid.val -variable plotWindowOptions_grid -command {plot.grid $plotWindowOptions_grid}
         checkbutton .pltWindowOptions.grid.subval -variable plotWindowOptions_subgrid -command {plot.subgrid $plotWindowOptions_subgrid}
 
+        frame .pltWindowOptions.logscale
+        label .pltWindowOptions.logscale.x -text "x log scale"
+        label .pltWindowOptions.logscale.y -text "y log scale"
+        checkbutton .pltWindowOptions.logscale.xv -variable plotWindowOptions_xlog -command {plot.logx $plotWindowOptions_xlog}
+        checkbutton .pltWindowOptions.logscale.yv -variable plotWindowOptions_ylog -command {plot.logy $plotWindowOptions_ylog}
+
         frame .pltWindowOptions.legend
         label .pltWindowOptions.legend.label -text "Legend:"
         label .pltWindowOptions.legend.noneLabel -text none
@@ -104,6 +110,8 @@ proc deiconifyPltWindowOptions {} {
 
         pack .pltWindowOptions.grid.label  .pltWindowOptions.grid.val  .pltWindowOptions.grid.sublabel  .pltWindowOptions.grid.subval  -side left
 
+        pack .pltWindowOptions.logscale.x  .pltWindowOptions.logscale.xv  .pltWindowOptions.logscale.y  .pltWindowOptions.logscale.yv  -side left
+
         frame .pltWindowOptions.buttonBar
         button .pltWindowOptions.buttonBar.ok -text OK
         button .pltWindowOptions.buttonBar.cancel -text Cancel -command {
@@ -113,7 +121,7 @@ proc deiconifyPltWindowOptions {} {
         pack .pltWindowOptions.buttonBar.ok .pltWindowOptions.buttonBar.cancel -side left
         pack .pltWindowOptions.buttonBar -side bottom
 
-        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.grid .pltWindowOptions.legend
+        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.grid .pltWindowOptions.legend .pltWindowOptions.logscale
     } else {
         wm deiconify .pltWindowOptions
     }
