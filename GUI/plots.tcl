@@ -154,10 +154,12 @@ proc setPlotOptions {id} {
 
 proc doPlotOptions {id} {
     global plotWindowOptions_grid plotWindowOptions_subgrid
+    global plotWindowOptions_xlog plotWindowOptions_ylog
     plot.get $id
     set plotWindowOptions_grid [plot.grid]
     set plotWindowOptions_subgrid [plot.subgrid]
-
+    set plotWindowOptions_xlog [plot.logx]
+    set plotWindowOptions_ylog [plot.logy]
     deiconifyPltWindowOptions
 
     .pltWindowOptions.xticks.val delete 0 end
