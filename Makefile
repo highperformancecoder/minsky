@@ -37,7 +37,7 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	variable.o variableManager.o variableValue.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
 	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
-	switchIcon.o
+	switchIcon.o 
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o \
 	evalOp.o flowCoef.o godleyExport.o latexMarkup.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
@@ -58,7 +58,9 @@ WTGUI_OBJS=canvasView.o mainMenu.o minskyApp.o propertiesDlg.o  \
 
 ALL_OBJS=tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(WTGUI_OBJS)
 
-
+ifeq ($(OS),Darwin)
+FLAGS+=-DENABLE_DARWIN_EVENTS
+endif
 
 # TODO - remove dependency on GUI directory here
 FLAGS+=-std=c++11 -Ischema -Iengine -IGUI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
@@ -212,7 +214,7 @@ ifeq ($(HOST),minskys-Mac-mini.local)
 mac-dist: tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
 # create executable in the app package directory. Make it 32 bit only
 	mkdir -p minsky.app/Contents/MacOS
-	$(LINK) -m32 $(FLAGS) $(MODLINK) tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) -L$(HOME)/usr/lib -L/opt/local/lib -L$(HOME)/usr/ecolab/lib -L/usr/X11/lib -lecolab /usr/local/lib/libpangocairo-1.0.a /opt/local/lib/libcairo.a /opt/local/lib/libpng16.a /opt/local/lib/libz.a /usr/local/lib/libpangoft2-1.0.a -lharfbuzz /usr/local/lib/libpango-1.0.a -Wl,-framework,Carbon -Wl,-framework,Foundation /opt/local/lib/librsvg-2.a /opt/local/lib/libgio-2.0.a -Wl,-framework,Foundation -Wl,-framework,Carbon -lgdk_pixbuf-2.0 /opt/local/lib/libgmodule-2.0.a /opt/local/lib/libgobject-2.0.a  /opt/local/lib/libcairo.a /opt/local/lib/libffi.a /opt/local/lib/libglib-2.0.a /opt/local/lib/libintl.a /opt/local/lib/libiconv.a -Wl,-framework,Carbon -Wl,-framework,Foundation /opt/local/lib/libpixman-1.a -lfontconfig /opt/local/lib/libxml2.a /opt/local/lib/liblzma.a -lcroco-0.6 /opt/local/lib/libexpat.a /opt/local/lib/libfreetype.a /opt/local/lib/libz.a /opt/local/lib/libbz2.a /opt/local/lib/libpng16.a /opt/local/lib/libX11-xcb.a /opt/local/lib/libxcb-render.a /opt/local/lib/libXrender.a /opt/local/lib/libXext.a /opt/local/lib/libX11.a /opt/local/lib/libxcb.a /opt/local/lib/libXau.a /opt/local/lib/libXdmcp.a /usr/local/lib/libboost_regex.a /usr/local/lib/libboost_filesystem.a /usr/local/lib/libboost_system.a -lTkTable2.11 /opt/local/lib/libexpat.a -ljson_spirit /usr/local/lib/libtk8.5.a /usr/local/lib/libtcl8.5.a -L/usr/X11R6/lib -lX11 -Wl,-weak-lXss -lXext -L/usr/X11/lib -lXft -lX11 -L/usr/X11/lib -lfreetype -L/usr/X11/lib -lfontconfig -L/usr/X11/lib -lXrender -lX11  -framework CoreFoundation   -framework CoreFoundation -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-framework,CoreServices -Wl,-framework,ApplicationServices /opt/local/lib/libXrender.a  /opt/local/lib/libX11.a -lresolv -lm /opt/local/lib/libgsl.a  /opt/local/lib/libgslcblas.a /opt/local/lib/libz.a /opt/local/lib/libreadline.a /opt/local/lib/libncurses.a -ldb -pthread -o $(MAC_DIST_DIR)/minsky
+	$(LINK) -m32 $(FLAGS) $(MODLINK) tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) -L$(HOME)/usr/lib -L/opt/local/lib -L$(HOME)/usr/ecolab/lib -L/usr/X11/lib -lecolab /usr/local/lib/libpangocairo-1.0.a /opt/local/lib/libcairo.a /opt/local/lib/libpng16.a /opt/local/lib/libz.a /usr/local/lib/libpangoft2-1.0.a -lharfbuzz /usr/local/lib/libpango-1.0.a -Wl,-framework,Carbon -Wl,-framework,Foundation /opt/local/lib/librsvg-2.a /opt/local/lib/libgio-2.0.a -Wl,-framework,Foundation -Wl,-framework,Carbon -lgdk_pixbuf-2.0 /opt/local/lib/libgmodule-2.0.a /opt/local/lib/libgobject-2.0.a  /opt/local/lib/libcairo.a /opt/local/lib/libffi.a /opt/local/lib/libglib-2.0.a /opt/local/lib/libintl.a /opt/local/lib/libiconv.a -Wl,-framework,Carbon -Wl,-framework,Foundation /opt/local/lib/libpixman-1.a -lfontconfig /opt/local/lib/libxml2.a /opt/local/lib/liblzma.a -lcroco-0.6 /opt/local/lib/libexpat.a /opt/local/lib/libfreetype.a /opt/local/lib/libz.a /opt/local/lib/libbz2.a /opt/local/lib/libpng16.a /opt/local/lib/libX11-xcb.a /opt/local/lib/libxcb-render.a /opt/local/lib/libXrender.a /opt/local/lib/libXext.a /opt/local/lib/libX11.a /opt/local/lib/libxcb.a /opt/local/lib/libXau.a /opt/local/lib/libXdmcp.a /usr/local/lib/libboost_regex.a /usr/local/lib/libboost_filesystem.a /usr/local/lib/libboost_system.a -lTkTable2.11 /opt/local/lib/libexpat.a -ljson_spirit /usr/local/lib/libtk8.5.a /usr/local/lib/libtcl8.5.a -L/usr/X11R6/lib -lX11 -Wl,-weak-lXss -lXext -L/usr/X11/lib -lXft -lX11 -L/usr/X11/lib -lfreetype -L/usr/X11/lib -lfontconfig -L/usr/X11/lib -lXrender -lX11  -framework CoreFoundation   -framework CoreFoundation -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-framework,CoreServices -Wl,-framework,ApplicationServices /opt/local/lib/libXrender.a  /opt/local/lib/libX11.a -lresolv -lm /opt/local/lib/libgsl.a  /opt/local/lib/libgslcblas.a /opt/local/lib/libz.a /opt/local/lib/libreadline.a /opt/local/lib/libncurses.a -lpcre -pthread -o $(MAC_DIST_DIR)/minsky
 	sh -v mkMacDist.sh
 endif
 
