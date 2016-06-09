@@ -561,7 +561,7 @@ proc simulate {} {
               after [expr $delay/25+0] {step; simulate}
           } else {
               set d [expr int(pow(10,$delay/4.0))]
-              after $d {if {$running} {step;} simulate}
+              after $d {if {$running} {step;}; simulate}
           }
         }
     }
