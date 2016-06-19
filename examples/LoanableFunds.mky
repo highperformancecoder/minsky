@@ -4762,6 +4762,8 @@
       <int>175</int>
       <int>176</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Money&#32;and&#32;Bank&#32;Accounts</title>
      <xlabel>Years</xlabel>
      <ylabel>$</ylabel>
@@ -4795,6 +4797,8 @@
       <int>204</int>
       <int>205</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Incomes</title>
      <xlabel>Years</xlabel>
      <ylabel>$/Year</ylabel>
@@ -4828,6 +4832,8 @@
       <int>253</int>
       <int>254</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>GDP</title>
      <xlabel>Years</xlabel>
      <ylabel>$/Year</ylabel>
@@ -4861,6 +4867,8 @@
       <int>286</int>
       <int>287</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Velocity&#32;of&#32;Money</title>
      <xlabel>Years</xlabel>
      <ylabel>Times/Year</ylabel>
@@ -4894,6 +4902,8 @@
       <int>320</int>
       <int>321</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>D&#32;and&#32;Money&#32;Stock</title>
      <xlabel>Years</xlabel>
      <ylabel>$</ylabel>
@@ -4927,6 +4937,8 @@
       <int>353</int>
       <int>354</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Debt&#32;to&#32;GDP&#32;Ratio</title>
      <xlabel>Years</xlabel>
      <ylabel>Ratio</ylabel>

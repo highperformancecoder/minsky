@@ -3954,6 +3954,8 @@
       <int>187</int>
       <int>188</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Capitalist&#32;Bank&#32;Accounts</title>
      <xlabel>Years</xlabel>
      <ylabel>$</ylabel>
@@ -3987,6 +3989,8 @@
       <int>218</int>
       <int>219</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>GDP&#32;and&#32;Loans</title>
      <xlabel>Years</xlabel>
      <ylabel>$&#32;and&#32;$/Year</ylabel>
@@ -4020,6 +4024,8 @@
       <int>256</int>
       <int>257</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Money&#32;and&#32;Loans</title>
      <xlabel>Years</xlabel>
      <ylabel>$</ylabel>
@@ -4053,6 +4059,8 @@
       <int>281</int>
       <int>282</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Worker&#32;and&#32;Bank</title>
      <xlabel>Years</xlabel>
      <ylabel>$</ylabel>
@@ -4086,6 +4094,8 @@
       <int>319</int>
       <int>320</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Debt&#32;Ratio</title>
      <xlabel>Years</xlabel>
      <ylabel>Loans/GDP</ylabel>

@@ -1613,6 +1613,8 @@
       <int>122</int>
       <int>123</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -1646,6 +1648,8 @@
       <int>132</int>
       <int>133</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -1679,6 +1683,8 @@
       <int>142</int>
       <int>143</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -1712,6 +1718,8 @@
       <int>152</int>
       <int>153</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
