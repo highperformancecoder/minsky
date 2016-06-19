@@ -1604,9 +1604,9 @@ proc deiconifyEditVar {} {
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
             .wiring.canvas delete all
-            convertVarType [var.valueId] $editVarInput(Type)
     
             var.get $editVarInput(id)
+            convertVarType [var.valueId] $editVarInput(Type)
             setItem var name {set "editVarInput(Name)"}
             variables.makeVarConsistentWithValue $editVarInput(id)
             setItem var init {set "editVarInput(Initial Value)"}
