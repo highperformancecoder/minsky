@@ -289,6 +289,8 @@ namespace schema1
                 pports[i]=p1.ports[i];
             }
           SchemaHelper::setPrivates(p,pports);
+          p.logx=p1.logx;
+          p.logy=p1.logy;
           p.legend=bool(p1.legend);
           if (p1.legend)
             p.legendSide=*p1.legend;
