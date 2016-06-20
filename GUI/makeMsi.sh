@@ -10,8 +10,9 @@ fi
 minskyWxs=`pwd`/minsky.wxs
 msiVersion=`echo $version|tr -d D`
 
-# determine release or beta depending of whether a D appears in the second field
-if echo $version|cut -d. -f2|grep D; then
+# determine release or beta depending on the number of fields in the version
+numFields=`echo $version|tr . ' '|wc -w`
+if [ $numFields -le 2 ]; then
   upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
   productName=Minsky
 else
@@ -151,4 +152,4 @@ EOF
 candle minsky.wxs
 echo "light minsky.wixobj"
 light -ext WixUIExtension -dWixUILicenseRtf=license.rtf minsky.wixobj
-mv minsky.msi Minsky.$version-win-dist.msi
+mv minsky.msi Minsky-$version-win-dist.msi

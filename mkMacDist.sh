@@ -57,4 +57,4 @@ cp -r $TK_LIB $MAC_DIST_DIR/library/tk
     cp -r GUI/library $MAC_DIST_DIR
     cp -r GUI/icons $MAC_DIST_DIR
     cp GUI/accountingRules $MAC_DIST_DIR
-    pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky.$version-mac-dist.pkg
+    pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky-$version-mac-dist.pkg
