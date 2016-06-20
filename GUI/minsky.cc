@@ -612,10 +612,11 @@ namespace minsky
 
   void Minsky::constructEquations()
   {
-    if (cycleCheck()) throw error("cyclic network detected");
     garbageCollect();
     equations.clear();
     integrals.clear();
+
+    if (cycleCheck()) throw error("cyclic network detected");
 
     MathDAG::SystemOfEquations system(*this);
     map<int,VariableValue> portValMap;
@@ -799,6 +800,7 @@ namespace minsky
   void Minsky::reset()
   {
     EvalOpBase::t=t=0;
+    plots.reset();
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed
@@ -806,8 +808,6 @@ namespace minsky
 
     evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()), 
                                  makeGodleyIt(godleyItems.end()), variables.values);
-
-    plots.reset();
 
     if (stockVars.size()>0)
       {
