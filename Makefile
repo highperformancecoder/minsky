@@ -255,3 +255,9 @@ tcl-cov:
 	rm -f minsky.cov minsky.cov.{pag,dir} coverage.o
 	-env MINSKY_COV=`pwd`/minsky.cov $(MAKE) AEGIS=1 sure
 	sh test/run-tcl-cov.sh
+
+MINSKY_VERSION=$(shell git describe)
+
+dist:
+	git clone . /tmp/Minsky-$(MINSKY_VERSION)
+	cd /tmp; tar zcvf Minsky-$(MINSKY_VERSION).tar.gz Minsky-$(MINSKY_VERSION)
