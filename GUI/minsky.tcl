@@ -94,6 +94,16 @@ source $minskyHome/helpRefDb.tcl
 
 disableEventProcessing
 
+# Tk's implementation of bgerror does not mark the error dialog as
+# transient, creating a usability problem where a user could hide the
+# dialog, and wonder why the application is not responding.
+rename ::tk::SetFocusGrab ::tk::SetFocusGrab_
+proc ::tk::SetFocusGrab {grab focus} {
+  ::tk::SetFocusGrab_ $grab $focus
+  wm attributes $grab -topmost 1
+  wm transient $grab .
+}
+
 catch {console hide}
 
 proc setBackgroundColour bgc {
