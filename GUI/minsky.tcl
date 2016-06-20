@@ -587,7 +587,7 @@ proc reset {} {
         set simLogging 0
         closeLogFile
         # delay throwing exception to allow display to be updated
-        catch minsky.reset err
+        set err [catch minsky.reset result]
         .controls.statusbar configure -text "t: 0 Δt: 0"
         .controls.run configure -image runButton
 
@@ -596,7 +596,7 @@ proc reset {} {
         updateCanvas
         updateGodleysDisplay
         set lastOp -1
-        return -code $err
+        return -code $err $result
     }
 }
 
