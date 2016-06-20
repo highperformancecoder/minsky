@@ -260,4 +260,5 @@ MINSKY_VERSION=$(shell git describe)
 
 dist:
 	git clone . /tmp/Minsky-$(MINSKY_VERSION)
+	rm -rf /tmp/Minsky-$(MINSKY_VERSION)/.git
 	cd /tmp; tar zcvf Minsky-$(MINSKY_VERSION).tar.gz Minsky-$(MINSKY_VERSION)
