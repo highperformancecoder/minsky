@@ -4736,6 +4736,8 @@
       <int>124</int>
       <int>125</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Employment&#32;Rate</title>
      <xlabel>Years</xlabel>
      <ylabel>Ratio</ylabel>
@@ -4769,6 +4771,8 @@
       <int>165</int>
       <int>166</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Employment&#32;vs&#32;Wages&#32;Share</title>
      <xlabel>Wages&#32;Share</xlabel>
      <ylabel>Employment&#32;Rate</ylabel>
@@ -4802,6 +4806,8 @@
       <int>206</int>
       <int>207</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Debt&#32;to&#32;GDP&#32;Ratio</title>
      <xlabel>Years</xlabel>
      <ylabel>Ratio</ylabel>
@@ -4835,6 +4841,8 @@
       <int>236</int>
       <int>237</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Income&#32;Shares</title>
      <xlabel>Years</xlabel>
      <ylabel>Ratios&#32;to&#32;GDP</ylabel>
@@ -4868,6 +4876,8 @@
       <int>353</int>
       <int>354</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Growth&#32;Rate</title>
      <xlabel></xlabel>
      <ylabel></ylabel>

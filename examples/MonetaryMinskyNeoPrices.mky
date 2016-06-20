@@ -7640,6 +7640,8 @@
       <int>371</int>
       <int>372</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Employment&#32;Rate</title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -7673,6 +7675,8 @@
       <int>381</int>
       <int>382</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>I/Y</title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -7706,6 +7710,8 @@
       <int>391</int>
       <int>392</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>\lambda&#32;v&#32;\omega</title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -7739,6 +7745,8 @@
       <int>401</int>
       <int>402</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Debt&#32;Ratio</title>
      <xlabel>Years</xlabel>
      <ylabel>Percent&#32;of&#32;GDP</ylabel>
@@ -7772,6 +7780,8 @@
       <int>439</int>
       <int>440</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Wages&#32;share</title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -7805,6 +7815,8 @@
       <int>461</int>
       <int>462</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Inflation</title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -7838,6 +7850,8 @@
       <int>483</int>
       <int>484</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Inf.&#32;v&#32;Emp.</title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -7871,6 +7885,8 @@
       <int>562</int>
       <int>563</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title>Inflation--from&#32;two&#32;theories&#32;of&#32;prices</title>
      <xlabel></xlabel>
      <ylabel></ylabel>

@@ -1126,6 +1126,8 @@
       <int>80</int>
       <int>81</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
