@@ -75,36 +75,8 @@ proc setFname {name} {
     }
 }
 
-#reenable event processing on stack frame exit
-proc enableEventProcessingOnExit {cmd level args} {
-    array set frameInfo [info frame 1]
-    if {[info level]==$level} {
-            enableEventProcessing
-            trace remove execution $cmd leave \
-                "enableEventProcessingOnExit $cmd $level"
-        }
-}
-
-# disable event processing, and arrange for it to be reenabled on
-# stack frame exit. Called from minsky.xxx.get 
-proc scopedDisableEventProcessing {} {
-    if {[info level]>2} {
-            disableEventProcessing
-            set cmd [lindex [info level [expr [info level]-2]]] 
-    # under some weird circumstances (ticket #287), that actual
-    # command has some spaces in it, and $cmd is corrupted, in which
-    # case back out of disableEventProcessing
-            if [catch {
-                        trace add execution $cmd leave \
-                            "enableEventProcessingOnExit $cmd [expr [info level]-2]"
-                        }] {
-                    enableEventProcessing
-                }
-        }
-}
-
+# needed for scripts/tests
 rename exit tcl_exit
-
 
 #if argv(1) has .tcl extension, it is a script, otherwise it is data
 if {$argc>1} {
@@ -121,6 +93,16 @@ source $minskyHome/library/init.tcl
 source $minskyHome/helpRefDb.tcl
 
 disableEventProcessing
+
+# Tk's implementation of bgerror does not mark the error dialog as
+# transient, creating a usability problem where a user could hide the
+# dialog, and wonder why the application is not responding.
+rename ::tk::SetFocusGrab ::tk::SetFocusGrab_
+proc ::tk::SetFocusGrab {grab focus} {
+  ::tk::SetFocusGrab_ $grab $focus
+  wm attributes $grab -topmost 1
+  wm transient $grab .
+}
 
 catch {console hide}
 
@@ -424,7 +406,6 @@ menu .menubar.file.recent
 .menubar.file add separator
 .menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
 .menubar.file add command -label "Redraw" -command updateCanvas
-.menubar.file add checkbutton -label "Show Ports" -variable showPorts -command updateCanvas -onvalue 1 -offvalue 0 
 .menubar.file add command -label "Object Browser" -command obj_browser
 .menubar.file add command -label "Command" -command cli
 
@@ -494,7 +475,7 @@ pack .equations.canvas -fill both -expand 1
 .tabs select 0
 
 ttk::sizegrip .sizegrip
-proc scrollCanvases {xyview args} {eval .wiring.canvas $xyview $args; eval .equations.canvas yview $args}
+proc scrollCanvases {xyview args} {eval .wiring.canvas $xyview $args; eval .equations.canvas $xyview $args}
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
 
@@ -537,7 +518,6 @@ proc runstop {} {
   global running classicMode
   if {$running} {
     set running 0
-    disableEventProcessing
     if {$classicMode} {
             .controls.run configure -text run
         } else {
@@ -546,7 +526,6 @@ proc runstop {} {
       updateCanvas
   } else {
     set running 1
-    enableEventProcessing
     doPushHistory 0
     if {$classicMode} {
             .controls.run configure -text stop
@@ -574,6 +553,7 @@ proc step {} {
         global running
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
+        resetNotNeeded
         .controls.statusbar configure -text "t: [t] Δt: [format %g [expr [t]-$lastt]]"
         updateGodleysDisplay
         update
@@ -591,7 +571,7 @@ proc simulate {} {
               after [expr $delay/25+0] {step; simulate}
           } else {
               set d [expr int(pow(10,$delay/4.0))]
-              after $d {step; simulate}
+              after $d {if {$running} {step;}; simulate}
           }
         }
     }
@@ -606,7 +586,8 @@ proc reset {} {
         set tstep 0
         set simLogging 0
         closeLogFile
-        minsky.reset
+        # delay throwing exception to allow display to be updated
+        set err [catch minsky.reset result]
         .controls.statusbar configure -text "t: 0 Δt: 0"
         .controls.run configure -image runButton
 
@@ -615,6 +596,7 @@ proc reset {} {
         updateCanvas
         updateGodleysDisplay
         set lastOp -1
+        return -code $err $result
     }
 }
 
@@ -637,7 +619,7 @@ proc populateRecentFiles {} {
     }
     foreach f $recentFiles {
         .menubar.file.recent add command -label "[file tail $f]" \
-            -command "openNamedFile \"$f\""
+            -command "openNamedFile \"[regsub -all {\\} $f /]\""
     }
 }
 populateRecentFiles
@@ -738,6 +720,7 @@ proc newSystem {} {
             cancel {return -level [info level]}
         }
     }
+    reset
     deleteSubsidiaryTopLevels
     clearHistory
     clearAll
@@ -1022,7 +1005,7 @@ proc exit {} {
     }
     # why is this needed?
     proc bgerror x {} 
-    tcl_exit
+    exit_ecolab
 }
 
 proc setFname {name} {
@@ -1177,4 +1160,6 @@ resetEdited
 if {[llength [info commands afterMinskyStarted]]>0} {
     afterMinskyStarted
 }
+
+disableEventProcessing
 

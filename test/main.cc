@@ -26,6 +26,7 @@
 #include <UnitTest++/UnitTest++.h>
 #include <UnitTest++/TestReporterStdout.h>
 #include <boost/regex.hpp>
+#include <iostream>
 using namespace UnitTest;
 using std::string;
 using std::cout;

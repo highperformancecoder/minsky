@@ -161,6 +161,8 @@ namespace schema1
       x.xlabel=y.xlabel;
       x.ylabel=y.ylabel;
       x.y1label=y.y1label;
+          x.logx=y.logx;
+          x.logy=y.logy;
       auto l=layout.find(y.id);
       if (l!=layout.end())
         {

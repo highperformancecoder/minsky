@@ -976,6 +976,8 @@
       <int>73</int>
       <int>74</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -1009,6 +1011,8 @@
       <int>83</int>
       <int>84</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>

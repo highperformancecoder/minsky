@@ -142,16 +142,19 @@ bind .wiring.canvas <Alt-Button-1> {
     tk_messageBox -message "Mouse coordinates [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]"
 }
 
+.wiring.canvas create rectangle 0 0 0 0 -tag p0bbox -outline red
 proc zoom {factor} {
     set x0 [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]
     set y0 [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
+
     if {$factor>1} {
+        minsky.zoom $x0 $y0 $factor
         .wiring.canvas scale all $x0 $y0 $factor $factor
-        model.zoom $x0 $y0 $factor
     } else {
-        model.zoom $x0 $y0 $factor
         .wiring.canvas scale all $x0 $y0 $factor $factor
-    }  
+        minsky.zoom $x0 $y0 $factor
+    }
+       
     # sliders need to be readjusted, because zooming doesn't do the right thing
     foreach v [items.#keys] {
         item.get $v
@@ -428,8 +431,6 @@ proc deleteTooltipIfLeft {item id} {
 
 set inItemEnterLeave 0
 proc itemEnterLeave {item id tag enter} {
-    scopedDisableEventProcessing
-    
     global itemFocused inItemEnterLeave
     if {$inItemEnterLeave} return
     set inItemEnterLeave 1
@@ -1011,8 +1012,11 @@ proc doubleClick {item x y} {
 
 proc toggleCoupled {id} {
     integral.get $id
-    integral.toggleCoupled
-    integral.set
+    if [integral.toggleCoupled] {
+        .wiring.canvas delete var[integral.intVarID]
+        # delete all wires, as we can't figure out what wire is attached
+        .wiring.canvas delete wires
+    }
     updateCanvas
 }
 
@@ -1312,6 +1316,11 @@ proc flip_default {} {
    set globals(default_rotation) [expr ($globals(default_rotation)+180)%360]
 }
 
+proc deleteVariable {id} {
+    minsky.deleteVariable $id
+    .wiring.canvas delete slider$id
+}
+
 proc deleteItem {id tag} {
     .wiring.canvas delete $tag
     minsky.deleteItem $id
@@ -1412,11 +1421,10 @@ proc deiconifyEditVar {} {
         
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
-            scopedDisableEventProcessing
             .wiring.canvas delete all
-            convertVarType [var.valueId] $editVarInput(Type)
     
             var.get $editVarInput(id)
+            convertVarType [var.valueId] $editVarInput(Type)
             setItem var name {set "editVarInput(Name)"}
             variables.makeVarConsistentWithValue $editVarInput(id)
             setItem var init {set "editVarInput(Initial Value)"}
@@ -1874,7 +1882,8 @@ proc drawSlider {var x y} {
         # configure command after slider initially set to prevent
         # constant value being set to initial state of slider when
         # constructed.
-        .wiring.slider$var configure -command "setVarVal $var"
+#        .wiring.slider$var configure -command "setVarVal $var"
+        .wiring.slider$var configure -variable "sliderVal[var.fqName]" -command "setVarVal $var"
 
         #.wiring.canvas bind .wiring.slider$op Keypress-Right 
         bind .wiring.slider$var <Enter> "focus .wiring.slider$var"

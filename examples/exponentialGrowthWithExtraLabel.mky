@@ -320,6 +320,8 @@
       <int>28</int>
       <int>29</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>

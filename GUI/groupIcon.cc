@@ -24,6 +24,7 @@
 #include <cairo_base.h>
 #include <plot.h>
 #include <ecolab_epilogue.h>
+#include <assert.h>
 
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -115,7 +116,7 @@ namespace minsky
       // canvas, if false, then delete content itemse
       void createOrDeleteContentItems(bool display)
       {
-        DisableEventProcessing e;
+        assert(processEventsNest);
         tclcmd cmd;
         GroupIcon& g=minsky::minsky().groupItems[id];
         g.updatePortLocation();
@@ -214,6 +215,7 @@ namespace minsky
             toLower=minsky::minsky().groupItems[toLower].parent();
           }          
         cmd|"\n";
+        assert(processEventsNest);
       }
     };
 
@@ -458,7 +460,6 @@ namespace minsky
 
   void GroupIcon::ungroup()
   {
-    DisableEventProcessing e;
     if (parent()>-1)
       {
         GroupIcons::iterator parentGroup=minsky().groupItems.find(parent());
@@ -601,7 +602,6 @@ namespace minsky
     */
     if (displayContents())
       {
-        DisableEventProcessing e;
         tclcmd cmd;
         cmd<<"llength [info commands .wiring.canvas]\n";
         if (cmd.result=="0") return; // not in GUI environment

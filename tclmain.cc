@@ -122,6 +122,8 @@ int main(int argc, char* argv[])
 
   while (mainWin) /* we are running GUI mode */
     Tcl_DoOneEvent(0); /*Tk_MainLoop();*/
+  Tcl_DeleteInterp(interp());
+  Tcl_Finalize();
 }
 
 extern "C" int Tktable_Init(Tcl_Interp *interp);
@@ -164,7 +166,7 @@ NEWCMD(tcl_findLibrary,-1) {}
 
 NEWCMD(exit_ecolab,0)
 {
-mainWin=0;
+  mainWin=0;
 }
 
 

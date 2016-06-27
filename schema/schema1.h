@@ -168,10 +168,12 @@ namespace schema1
     typedef ecolab::Plot::Side Side;
     vector<int> ports;
     shared_ptr<Side> legend;
+    bool logx{0}, logy{0};
     string title, xlabel, ylabel, y1label;
     Plot() {}
     Plot(int id, const minsky::PlotWidget& p): 
       Item(id,p), legend(p.legend? new Side(p.legendSide): NULL),
+      logx(p.logx), logy(p.logy),
       title(p.title), xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label) {}
   };
 

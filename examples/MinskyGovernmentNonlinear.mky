@@ -3943,6 +3943,8 @@
       <int>260</int>
       <int>261</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -3976,6 +3978,8 @@
       <int>270</int>
       <int>271</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -4009,6 +4013,8 @@
       <int>280</int>
       <int>281</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>

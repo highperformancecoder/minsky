@@ -284,6 +284,8 @@
       <int>23</int>
       <int>24</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>

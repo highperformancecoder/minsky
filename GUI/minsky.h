@@ -127,6 +127,7 @@ namespace minsky
     void resetNotNeeded() {reset_needed=false;}
     /// resets the edited (dirty) flags
     void resetEdited() {m_edited=false;}
+    bool reset_flag() const {return m_edited;}
 
     typedef GodleyIcons GodleyItems;
     GodleyItems godleyItems;

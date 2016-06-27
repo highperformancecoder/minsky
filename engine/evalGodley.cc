@@ -35,6 +35,8 @@ namespace minsky
 
   void SharedColumnCheck::checkShared(const string& name, AssetClass ac)
   {
+    if (name==":_") 
+      throw error("Undefined (ie blank) column detected");
     if (!colAssetType.insert(make_pair(name, ac)).second)
       {
         switch (ac)
