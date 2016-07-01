@@ -323,6 +323,17 @@ namespace minsky
       items[id]=Minsky::createGroup();
       return id;
     }
+
+    void ungroup(int i)
+    {
+      if (Group* g=dynamic_cast<Group*>(items[i].get()))
+        if (auto parent=g->group.lock())
+          {
+            parent->moveContents(*g);
+            parent->removeGroup(*g);
+            items.erase(i);
+          }
+    }
      
     /// create a new operation that is a copy of \a id
     int copyItem(int id) {

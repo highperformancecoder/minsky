@@ -97,6 +97,7 @@ namespace minsky
 
   ItemPtr Group::addItem(const shared_ptr<Item>& it)
   {
+    assert(it);
     if (auto x=dynamic_pointer_cast<Group>(it))
       return addGroup(x);
    
@@ -162,12 +163,15 @@ namespace minsky
          for (auto& i: source.groups)
            if (i->higher(*this))
              throw error("attempt to move a group into itself");
-          for (auto& i: source.items)
-            addItem(i);
-          for (auto& i: source.groups)
-            addGroup(i);
-          /// no need to move wires, as these are handled above
-          source.clear();
+         // make temporary copies as addItem removes originals
+         auto copyOfItems=source.items;
+         for (auto& i: copyOfItems)
+           addItem(i);
+         auto copyOfGroups=source.groups;
+         for (auto& i: source.groups)
+           addGroup(i);
+         /// no need to move wires, as these are handled above
+         source.clear();
        }
   }
 
