@@ -171,6 +171,26 @@ namespace minsky
        }
   }
 
+  void Group::resizeOnContents()
+  {
+    double x0, x1, y0, y1;
+    contentBounds(x0,y0,x1,y1);
+    double xx=0.5*(x0+x1), yy=0.5*(y0+y1);
+    double dx=xx-x(), dy=yy-y();
+    float l,r; margins(l,r);
+    width=(x1-x0)+l+r;
+    height=(y1-y0);
+
+    // adjust contents by the offset
+    for (auto& i: items)
+      i->moveTo(i->x()-dx, i->y()-dy);
+    for (auto& i: groups)
+      i->moveTo(i->x()-dx, i->y()-dy);
+
+    moveTo(xx,yy);
+
+  }
+
   namespace 
   {
     bool nocycles(const Group& g)
@@ -258,6 +278,11 @@ namespace minsky
   float Group::contentBounds(double& x0, double& y0, double& x1, double& y1) const
   {
     float localZoom=1;
+    x0=numeric_limits<float>::max();
+    x1=-numeric_limits<float>::max();
+    y0=numeric_limits<float>::max();
+    y1=-numeric_limits<float>::max();
+
 #ifndef CAIRO_HAS_RECORDING_SURFACE
 #error "Please upgrade your cairo to a version implementing recording surfaces"
 #endif
@@ -268,13 +293,24 @@ namespace minsky
       try 
         {
           i->draw(surf->cairo());  
+          x0=min(double(i->x())-0.5*surf->width(), x0);
+          x1=max(double(i->x())+0.5*surf->width(), x1);
+          y0=min(double(i->y())-0.5*surf->height(), y0);
+          y1=max(double(i->y())+0.5*surf->height(), y1);
           localZoom=i->zoomFactor;
         }
       catch (const std::exception& e) 
         {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
       catch (...) {cerr<<"illegal exception caught in draw()";}
-    cairo_recording_surface_ink_extents(surf->surface(),
-                                        &x0,&y0,&x1,&y1);
+
+
+//
+//
+//    double xx=0.5*(x0+x1), yy=0.5*(y0+y1);
+//    x0+=x()-xx;
+//    x1+=x()-xx;
+//    y0+=y()-yy;
+//    y1+=y()-yy;
 
     for (auto& i: groups)
       {
@@ -284,14 +320,6 @@ namespace minsky
         x1=max(i->x()+0.5*w, x1);
         y0=min(i->y()-0.5*h, y0);
         y1=max(i->y()+0.5*h, y1);
-      }
-
-    for (auto& i: items)
-      {
-        x0=min(double(i->x()), x0);
-        x1=max(double(i->x()), x1);
-        y0=min(double(i->y()), y0);
-        y1=max(double(i->y()), y1);
       }
 
 
@@ -320,14 +348,14 @@ namespace minsky
 //        y0=cy-10;
 //        y1=cy+10;
       }
-    else
-      {
-        // extend width by 2 pixels to allow for the slightly oversized variable icons
-        x0-=2*this->localZoom();
-        y0-=2*this->localZoom();
-        x1+=2*this->localZoom();
-        y1+=2*this->localZoom();
-      }
+//    else
+//      {
+//        // extend width by 2 pixels to allow for the slightly oversized variable icons
+//        x0-=2*this->localZoom();
+//        y0-=2*this->localZoom();
+//        x1+=2*this->localZoom();
+//        y1+=2*this->localZoom();
+//      }
 
     return localZoom;
   }

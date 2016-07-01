@@ -187,6 +187,10 @@ namespace minsky
     /// move all items from source to this
     void moveContents(Group& source); 
 
+
+    /// adjust position and size of icon to just cover contents
+    void resizeOnContents();
+
     /// returns true if this is higher in the heirarchy than the argument
     bool higher(const Group&) const;
     /// return level in the heirarchy
