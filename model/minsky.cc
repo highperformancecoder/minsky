@@ -252,19 +252,6 @@ namespace minsky
     return r;
   }
 
-//  void Minsky::ungroup(int id)
-//  {
-//    if (auto src=dynamic_pointer_cast<Group>(model->findItem(id)))
-//      {
-//        model->moveContents(*src);
-//        if (auto parent=src->group.lock())
-//          parent->groups.erase(id);
-//        else
-//          model->groups.erase(id);
-//        markEdited();
-//      }
-//  }
-
   void Minsky::select(float x0, float y0, float x1, float y1)
   {
     LassoBox lasso(x0,y0,x1,y1);
