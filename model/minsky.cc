@@ -248,6 +248,11 @@ namespace minsky
       r->addItem(i);
     for (auto& i: currentSelection.groups)
       r->addItem(i);
+    double x0, x1, y0, y1;
+    r->contentBounds(x0,y0,x1,y1);
+    r->moveTo(0.5*(x0+x1), 0.5*(y0+y1));
+    r->width=(x1-x0);
+    r->height=(y1-y0);
     return r;
   }
 

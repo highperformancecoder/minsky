@@ -283,7 +283,15 @@ namespace minsky
         x0=min(i->x()-0.5*w, x0);
         x1=max(i->x()+0.5*w, x1);
         y0=min(i->y()-0.5*h, y0);
-        y1=max(i->x()+0.5*h, y1);
+        y1=max(i->y()+0.5*h, y1);
+      }
+
+    for (auto& i: items)
+      {
+        x0=min(double(i->x()), x0);
+        x1=max(double(i->x()), x1);
+        y0=min(double(i->y()), y0);
+        y1=max(double(i->y()), y1);
       }
 
 
