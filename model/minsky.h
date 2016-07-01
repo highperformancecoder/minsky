@@ -154,7 +154,9 @@ namespace minsky
     EvalGodley evalGodley;
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
-    Minsky() {m_edited=false;}
+    Minsky() {m_edited=false; 
+      model->height=model->width=std::numeric_limits<float>::max();
+    }
     //~Minsky() {clearAllMaps();} //improve shutdown times
 
     GroupPtr model{new Group};

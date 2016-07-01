@@ -535,6 +535,7 @@ proc move {id x y} {
     set x [expr $x-[set moveOffs$id.x]]
     set y [expr $y-[set moveOffs$id.y]]
     item.moveTo [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]
+    .wiring.canvas coords item$id [item.x] [item.y]
     if {[item.classType]=="Group"} {
         # update all item positions to ensure contained items are correctly updated
         foreach i [items.#keys] {
@@ -545,7 +546,6 @@ proc move {id x y} {
         }
         item.get $id
     }
-    .wiring.canvas coords item$id [item.x] [item.y]
     item.zoomFactor [localZoomFactor $id [item.x] [item.y]]
     item.set $id
     submitUpdateItemPos $id

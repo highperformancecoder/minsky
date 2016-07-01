@@ -675,6 +675,7 @@ proc insertNewGroup {gid} {
     bind .wiring.canvas <Button-1> \
         "bind .wiring.canvas <Motion> {}
          bind .wiring.canvas <Enter> {}
+         bind .wiring.canvas <Button-1>{}
          # redo this here, as binding on a group undoes it
          initGroupList $gid
          checkAddGroup group $gid %x %y

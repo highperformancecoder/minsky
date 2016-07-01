@@ -316,7 +316,7 @@ namespace minsky
     if (i!=items.end())
       if (auto g=model->minimalEnclosingGroup(x,y,x,y))
         {
-          if ((*i)->group.lock().get()!=g)
+          if (dynamic_cast<Group*>(i->get())!=g && (*i)->group.lock().get()!=g)
             g->addItem(*i);
         }
       else if ((*i)->group.lock()!=model)
