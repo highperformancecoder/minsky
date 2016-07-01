@@ -223,18 +223,13 @@ namespace minsky
     /// sets the zoom factor to \a factor. Recursively set the
     /// zoomfactor on contained objects to the computed localzoom
     void setZoom(float factor);
+    void zoom(float xOrigin, float yOrigin,float factor) override;
 
     /// scale used to render io variables. Smoothly interpolates
     /// between the scale at which internal items are displayed, and
     /// the outside zoom factor
     float edgeScale() const {
       return zoomFactor>1? localZoom(): zoomFactor;
-    }
-
-    void zoom(float xOrigin, float yOrigin,float factor) override {
-      Item::zoom(xOrigin, yOrigin, factor);
-      for (auto& i:items) i->zoom(xOrigin, yOrigin, factor);
-      for (auto& i:groups) i->zoom(xOrigin, yOrigin, factor);
     }
 
     /// return bounding box coordinates for all variables, operators

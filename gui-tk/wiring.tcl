@@ -146,13 +146,16 @@ bind .wiring.canvas <Alt-Button-1> {
 proc zoom {factor} {
     set x0 [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]
     set y0 [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
+    zoomAt $x0 $y0 $factor
+}
 
+proc zoomAt {x0 y0 factor} {
     if {$factor>1} {
-        minsky.zoom $x0 $y0 $factor
+        minsky.model.zoom $x0 $y0 $factor
         .wiring.canvas scale all $x0 $y0 $factor $factor
     } else {
         .wiring.canvas scale all $x0 $y0 $factor $factor
-        minsky.zoom $x0 $y0 $factor
+        minsky.model.zoom $x0 $y0 $factor
     }
        
     # sliders need to be readjusted, because zooming doesn't do the right thing

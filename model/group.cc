@@ -385,6 +385,25 @@ namespace minsky
       i->setZoom(lzoom);
   }
 
+  void Group::zoom(float xOrigin, float yOrigin,float factor)
+  {
+    Item::zoom(xOrigin, yOrigin, factor);
+    if (displayContents())
+      {
+        for (auto& i: items)
+          {
+            i->m_visible=true;
+            i->zoom(xOrigin, yOrigin, factor);
+          }
+        for (auto& i: groups)
+          {
+            i->m_visible=true;
+            i->zoom(xOrigin, yOrigin, factor);
+          }
+      }
+  }
+
+
   namespace {
     inline float sqr(float x) {return x*x;}
   }

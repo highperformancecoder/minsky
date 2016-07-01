@@ -120,7 +120,7 @@ proc groupContext {id x y} {
     .wiring.context add command -label "Save group as" -command "group::save $id"
     .wiring.context add command -label "Flip" -command "group::flip $id"
     .wiring.context add command -label "Flip Contents" -command "group::flipContents $id"
-    .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.groupItems.@elem $id].*"
+    .wiring.context add command -label "Browse object" -command "group.get $id; obj_browser minsky.group.*"
     .wiring.context add command -label "Group" -command "minsky.createGroup;.wiring.canvas delete all; updateCanvas"
     .wiring.context add command -label "Ungroup" -command "ungroupGroupItem $id"
     .wiring.context add command -label "Raise" -command "raiseItem group$id"
@@ -273,9 +273,8 @@ namespace eval group {
     proc zoomToDisplay {id} {
         group.get $id
         set factor [expr 1.1*[group.computeDisplayZoom]/[group.zoomFactor]]
-        minsky.zoom [group.x] [group.y] $factor
-        .wiring.canvas scale all [group.x] [group.y] $factor $factor
-        # oh, why???
+        zoomAt [group.x] [group.y] $factor
+        # recreate everything to pick up newly created items
         .wiring.canvas delete all
         updateCanvas
     }
