@@ -49,7 +49,7 @@ namespace minsky
   };
 
 
-  /** class that randers a variable into a cairo context. 
+  /** class that renders a variable into a cairo context. 
       A user can also query the size of the unrotated rendered image
   */
   class RenderVariable

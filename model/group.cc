@@ -579,20 +579,52 @@ namespace minsky
 
   void Group::drawEdgeVariables(cairo_t* cairo) const
   {
-    cairo_save(cairo);
-    for (auto& i: inVariables)
+    float left, right; margins(left,right);
+    float top=0, bottom=0;
+    float x=-0.5*width-left;
+    for (int i=0; i<inVariables.size(); ++i)
       {
-        cairo_identity_matrix(cairo);
-        cairo_translate(cairo,i->x()-x(),i->y()-y());
-        i->draw(cairo);
+        float y=i%2? top:bottom;
+        cairo_save(cairo);
+        cairo_translate(cairo,x,y);
+        auto& v=inVariables[i];
+        v->zoomFactor=edgeScale();
+        v->m_x=x; v->m_y=y;
+        RenderVariable rv(*v,cairo);
+        rv.draw();
+        if (i==0)
+          {
+            top=0.5*rv.height();
+            bottom=-top;
+          }
+        else if (i%2)
+          top+=rv.height();
+        else
+          bottom-=rv.height();
+        cairo_restore(cairo);
       }
-    for (auto& i: outVariables)
+    x=0.5*width;
+    for (int i=0; i<outVariables.size(); ++i)
       {
-        cairo_identity_matrix(cairo);
-        cairo_translate(cairo,i->x()-x(),i->y()-y());
-        i->draw(cairo);
+        float y=i%2? top:bottom;
+        cairo_save(cairo);
+        cairo_translate(cairo,x,y);
+        auto& v=inVariables[i];
+        v->zoomFactor=edgeScale();
+        v->m_x=x; v->m_y=y;
+        RenderVariable rv(*v,cairo);
+        rv.draw();
+        if (i==0)
+          {
+            top=0.5*rv.height();
+            bottom=-top;
+          }
+        else if (i%2)
+          top+=rv.height();
+        else
+          bottom-=rv.height();
+        cairo_restore(cairo);
       }
-    cairo_restore(cairo);
   }
 
   // draw notches in the I/O region to indicate docking capability
