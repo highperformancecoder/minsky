@@ -63,7 +63,6 @@ namespace minsky
   class Group: public Item
   {
     friend class GroupPtr;
-    std::vector<VariablePtr> inVariables, outVariables;
   public:
     std::string classType() const override {return "Group";}
     int id=-1; // unique id used for variable scoping
@@ -71,6 +70,7 @@ namespace minsky
     Items items;
     Groups groups;
     Wires wires;
+    std::vector<VariablePtr> inVariables, outVariables;
     std::weak_ptr<Group> self;
     float width{100}, height{100}; // size of icon
 
@@ -83,7 +83,8 @@ namespace minsky
 
     /// draw representations of edge variables around group icon
     void drawEdgeVariables(cairo_t*) const;
-    /// draw notches in the I/O region to indicate docability of variables there
+    /// draw notches in the I/O region to indicate dockability of
+    /// variables there
     void drawIORegion(cairo_t*) const;
 
     void clear() {

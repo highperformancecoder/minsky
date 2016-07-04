@@ -112,7 +112,8 @@ namespace schema1
       auto l=layout.find(y.id);
       if (l!=layout.end())
         {
-          x.moveTo(l->second.x, l->second.y);
+          x.m_x=l->second.x;
+          x.m_y=l->second.y;
           x.m_visible=l->second.visible;
           x.rotation=l->second.rotation;
         }
@@ -715,7 +716,7 @@ namespace schema1
         {
           auto g=imap.addItem(new minsky::Group, i);
           combine.combine(*g, i);
-      }
+        }
 
     /// process wires after all the items have been defined
     for (auto& i: model.wires)
@@ -725,13 +726,29 @@ namespace schema1
     for (auto& i: model.groups)
       {
         if (auto gg=dynamic_cast<minsky::Group*>(imap[i.id].get()))
-          for (auto id: i.items)
-            if (imap.count(id))
-              {
-                // item will be moved to new group, and wires adjusted
-                gg->addItem(imap[id]);
-                assert(gg->uniqueItems());
-              }
+          {
+            for (auto id: i.items)
+              if (imap.count(id))
+                {
+                  // item will be moved to new group, and wires
+                  // adjusted. Position needs to be adjusted by group
+                  // origin, though, because the schema saved values
+                  // are group relative
+                  auto it=imap[id];
+                  it->moveTo(it->x()+gg->x(), it->y()+gg->y());
+                  gg->addItem(it);
+                  assert(gg->uniqueItems());
+                }
+            // process ports list to populate io variables
+            for (int p: i.ports)
+              if (pmap[p])
+                if (minsky::VariablePtr v=gg->findItem(pmap[p]->item))
+                  if (pmap[p]->input())
+                    gg->inVariables.push_back(v);
+                  else
+                    gg->outVariables.push_back(v);
+                
+          }
       }
   }
 
