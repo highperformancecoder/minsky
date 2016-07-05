@@ -323,16 +323,33 @@ namespace minsky
         model->addItem(*i);
   }
  
+  namespace 
+  {
+    template <class W>
+    void adjustWire(const W& w)
+    {
+      tclcmd cmd;
+      cmd |".wiring.canvas coords wire"|w.id();
+      for (auto x: w->coords())
+        cmd <<x;
+      cmd << "\n";
+    }
+  }
+
   void MinskyTCL::adjustItemWires(Item* it)
   {
     tclcmd cmd;
     for (auto& w: wires)
       if (&w->from()->item == it || &w->to()->item == it)
+        adjustWire(w);
+      else if (auto g=dynamic_cast<Group*>(it))
         {
-          cmd |".wiring.canvas coords wire"|w.id();
-          for (auto x: w->coords())
-            cmd <<x;
-          cmd << "\n";
+          for (auto v: g->inVariables)
+            if (&w->to()->item == v.get())
+              adjustWire(w);
+          for (auto v: g->outVariables)
+            if (&w->to()->item == v.get())
+              adjustWire(w);
         }
   }
 

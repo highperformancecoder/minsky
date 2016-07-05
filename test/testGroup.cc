@@ -17,7 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "minsky.h"
-#include "inGroupTest.h"
 #include <ecolab_epilogue.h>
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
@@ -27,9 +26,8 @@ namespace
   void pWireCoords()
   {
     cout << "------------------------------------"<<endl;
-    for (PortManager::Wires::const_iterator w=minsky::minsky().wires.begin();
-           w!=minsky::minsky().wires.end(); ++w)
-      cout <<"Wire "<<w->id()<<": "<<w->coords()<<endl;
+//    for (auto& w: minsky::minsky().model->wires)
+//      cout <<"Wire "<<w->id()<<": "<<w->coords()<<endl;
   }
 
   struct TestFixture: public Minsky

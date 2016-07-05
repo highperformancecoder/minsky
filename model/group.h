@@ -83,6 +83,9 @@ namespace minsky
 
     /// draw representations of edge variables around group icon
     void drawEdgeVariables(cairo_t*) const;
+    /// draw the variables of one of the edges
+    void draw1edge(const std::vector<VariablePtr>& vars, cairo_t* cairo, 
+                   float x) const;
     /// draw notches in the I/O region to indicate dockability of
     /// variables there
     void drawIORegion(cairo_t*) const;

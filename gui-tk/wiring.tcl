@@ -536,16 +536,16 @@ proc move {id x y} {
     set y [expr $y-[set moveOffs$id.y]]
     item.moveTo [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]
     .wiring.canvas coords item$id [item.x] [item.y]
-    if {[item.classType]=="Group"} {
-        # update all item positions to ensure contained items are correctly updated
-        foreach i [items.#keys] {
-            if [item.visible] {
-                item.get $i
-                .wiring.canvas coords item$i [item.x] [item.y]
-            }
-        }
-        item.get $id
-    }
+#    if {[item.classType]=="Group"} {
+#        # update all item positions to ensure contained items are correctly updated
+#        foreach i [items.#keys] {
+#            if [item.visible] {
+#                item.get $i
+#                .wiring.canvas coords item$i [item.x] [item.y]
+#            }
+#        }
+#        item.get $id
+#    }
     item.zoomFactor [localZoomFactor $id [item.x] [item.y]]
     item.set $id
     submitUpdateItemPos $id
