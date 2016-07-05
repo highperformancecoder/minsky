@@ -674,14 +674,14 @@ namespace minsky
     for (auto& i: inVariables)
       {
         i->zoomFactor=edgeScale();
-        float w= (2*RenderVariable(*i).width()+2);
+        float w= scale*(2*RenderVariable(*i).width()+2);
         assert(i->type()!=VariableType::undefined);
         if (w>left) left=w;
       }
     for (auto& i: outVariables)
       {
         i->zoomFactor=edgeScale();
-        float w= (2*RenderVariable(*i).width()+2);
+        float w= scale*(2*RenderVariable(*i).width()+2);
         assert(i->type()!=VariableType::undefined);
         if (w>right) right=w;
       }
