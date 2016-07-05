@@ -274,9 +274,6 @@ namespace eval group {
         group.get $id
         set factor [expr 1.1*[group.computeDisplayZoom]/[group.zoomFactor]]
         zoomAt [group.x] [group.y] $factor
-        # recreate everything to pick up newly created items
-        .wiring.canvas delete all
-        updateCanvas
     }
 
     proc button1 {id x y} {

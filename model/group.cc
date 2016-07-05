@@ -416,31 +416,38 @@ namespace minsky
 
   void Group::setZoom(float factor)
   {
+    bool dpc=displayContents();
     zoomFactor=factor;
     computeDisplayZoom();
     float lzoom=localZoom();
     for (auto& i: items)
       i->zoomFactor=lzoom;
+    m_displayContentsChanged = dpc!=displayContents();
     for (auto& i: groups)
-      i->setZoom(lzoom);
+      {
+        i->setZoom(lzoom);
+        m_displayContentsChanged|=i->displayContentsChanged();
+      }
   }
 
   void Group::zoom(float xOrigin, float yOrigin,float factor)
   {
-    Item::zoom(xOrigin, yOrigin, factor);
-    if (displayContents())
-      {
-        for (auto& i: items)
-          {
-            i->m_visible=true;
-            i->zoom(xOrigin, yOrigin, factor);
-          }
-        for (auto& i: groups)
-          {
-            i->m_visible=true;
-            i->zoom(xOrigin, yOrigin, factor);
-          }
-      }
+     bool dpc=displayContents();
+     Item::zoom(xOrigin, yOrigin, factor);
+     m_displayContentsChanged = dpc!=displayContents();
+     for (auto& i: items)
+       {
+         i->m_visible=displayContents();
+         if (displayContents())
+           i->zoom(xOrigin, yOrigin, factor);
+       }
+     for (auto& i: groups)
+       {
+         i->m_visible=displayContents();
+         if (displayContents())
+           i->zoom(xOrigin, yOrigin, factor);
+         m_displayContentsChanged|=i->displayContentsChanged();
+       }
   }
 
 

@@ -156,6 +156,12 @@ proc zoomAt {x0 y0 factor} {
     } else {
         .wiring.canvas scale all $x0 $y0 $factor $factor
         minsky.model.zoom $x0 $y0 $factor
+        
+    }
+
+    if [minsky.model.displayContentsChanged] {
+        .wiring.canvas delete all
+        updateCanvas
     }
        
     # sliders need to be readjusted, because zooming doesn't do the right thing

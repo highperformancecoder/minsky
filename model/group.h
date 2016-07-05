@@ -63,6 +63,7 @@ namespace minsky
   class Group: public Item
   {
     friend class GroupPtr;
+    bool m_displayContentsChanged=false;
   public:
     std::string classType() const override {return "Group";}
     int id=-1; // unique id used for variable scoping
@@ -216,6 +217,9 @@ namespace minsky
 
     /// returns whether contents should be displayed. Top level group always displayed
     bool displayContents() const {return !group.lock() || zoomFactor>displayZoom;}
+    /// true if displayContents status changed on this or any
+    /// contained group last zoom
+    bool displayContentsChanged() const {return m_displayContentsChanged;}
 
     /// margin sizes to allow space for edge variables. 
     void margins(float& left, float& right) const;
