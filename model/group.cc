@@ -596,7 +596,7 @@ namespace minsky
         cairo_translate(cairo,x,y);
         cairo_rotate(cairo,M_PI*rotation/180);
         auto& v=vars[i];
-        v->zoomFactor=edgeScale();
+        v->m_visible=false;
         v->m_x=r.x(x,y); v->m_y=r.y(x,y);
         RenderVariable rv(*v,cairo);
         rv.draw();
