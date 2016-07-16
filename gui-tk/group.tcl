@@ -28,7 +28,7 @@ setGroupIconResource $minskyHome/icons/group.svg
 proc newGroupItem {id} {
     global minskyHome
     group.get $id
-    .wiring.canvas create group [group.x] [group.y] -id $id  -tags "group$id groups"
+    .wiring.canvas create item [group.x] [group.y] -id $id  -tags "item$id items"
     .wiring.canvas lower group$id
 
     .wiring.canvas bind group$id <Button-1> "group::button1 $id %x %y"
@@ -278,8 +278,7 @@ namespace eval group {
 
     proc button1 {id x y} {
         group.get $id
-        if {[group.displayContents] &&
-                [group.clickType [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]!="onPort"} {
+        if [group.displayContents] {
             # use lasso mode when zoomed in
             lasso $x $y
             .wiring.canvas bind group$id <B1-Motion> "lasso %x %y"

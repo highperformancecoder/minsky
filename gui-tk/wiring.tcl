@@ -156,7 +156,6 @@ proc zoomAt {x0 y0 factor} {
     } else {
         .wiring.canvas scale all $x0 $y0 $factor $factor
         minsky.model.zoom $x0 $y0 $factor
-        
     }
 
     if [minsky.model.displayContentsChanged] {
@@ -978,7 +977,11 @@ proc updateCanvas {} {
         item.get $i
         if [item.visible] {
             if {[llength [.wiring.canvas find withtag item$i]]==0} {
-                newItem $i
+                if {[item.classType]=="Group"} {
+                    newGroupItem $i
+                } else {
+                    newItem $i
+                }
             } else { #redraw without recreating
                 .wiring.canvas coords item$i [.wiring.canvas coords item$i]
             }

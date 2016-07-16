@@ -378,7 +378,7 @@ namespace minsky
 
     // account for shrinking margins
     float readjust=zoomFactor/edgeScale() / (displayZoom>1? displayZoom:1);
-    //TODO    margins(l,r);
+    margins(l,r);
     l*=readjust; r*=readjust;
     displayZoom = max(displayZoom, 
                       float(max((x1-x())/(0.5f*width-r), (x()-x0)/(0.5f*width-l))));
