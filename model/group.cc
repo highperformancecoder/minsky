@@ -383,7 +383,7 @@ namespace minsky
     displayZoom = max(displayZoom, 
                       float(max((x1-x())/(0.5f*width-r), (x()-x0)/(0.5f*width-l))));
   
-    // displayZoom*=1.1*rotFactor()/lz;
+    displayZoom*=1.1*rotFactor()/lz;
 
     // displayZoom should never be less than 1
     displayZoom=max(displayZoom, 1.0f);
