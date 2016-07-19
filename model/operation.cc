@@ -142,7 +142,8 @@ namespace minsky
 
   IntOp::~IntOp() 
   {
-    minsky().model->removeItem(*intVar);
+    if (auto g=group.lock())
+      g->removeItem(*intVar);
   }
 
   void IntOp::description(string desc)
