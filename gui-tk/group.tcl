@@ -29,17 +29,17 @@ proc newGroupItem {id} {
     global minskyHome
     group.get $id
     .wiring.canvas create item [group.x] [group.y] -id $id  -tags "item$id items"
-    .wiring.canvas lower group$id
+    .wiring.canvas lower item$id
 
-    .wiring.canvas bind group$id <Button-1> "group::button1 $id %x %y"
-    .wiring.canvas bind group$id <<middleMouse-Motion>> \
+    .wiring.canvas bind item$id <Button-1> "group::button1 $id %x %y"
+    .wiring.canvas bind item$id <<middleMouse-Motion>> \
         "wires::extendConnect \[closestOutPort %x %y \] group$id %x %y"
-    .wiring.canvas bind group$id <<middleMouse-ButtonRelease>> \
-        "wires::finishConnect group$id %x %y"
+    .wiring.canvas bind item$id <<middleMouse-ButtonRelease>> \
+        "wires::finishConnect item$id %x %y"
 #    .wiring.canvas bind group$id  <<contextMenu>> "rightMouseGroup $id %x %y %X %Y"
-    .wiring.canvas bind group$id  <Double-Button-1> "groupEdit $id"
-    .wiring.canvas bind group$id <Enter> "itemEnterLeave group $id group$id 1"
-    .wiring.canvas bind group$id <Leave> "itemEnterLeave group $id group$id 0"
+    .wiring.canvas bind item$id  <Double-Button-1> "groupEdit $id"
+    .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
+    .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
 
     
 }
@@ -284,7 +284,7 @@ namespace eval group {
             .wiring.canvas bind group$id <B1-Motion> "lasso %x %y"
             .wiring.canvas bind group$id <B1-ButtonRelease> "group::lassoEnd $id %x %y; unbindOnRelease group$id"
         } else {
-            onClick group $id group$id $x $y
+            onClick $id item$id $x $y
         }
     }
 
