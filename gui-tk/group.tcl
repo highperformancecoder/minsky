@@ -36,7 +36,6 @@ proc newGroupItem {id} {
         "wires::extendConnect \[closestOutPort %x %y \] group$id %x %y"
     .wiring.canvas bind item$id <<middleMouse-ButtonRelease>> \
         "wires::finishConnect item$id %x %y"
-#    .wiring.canvas bind group$id  <<contextMenu>> "rightMouseGroup $id %x %y %X %Y"
     .wiring.canvas bind item$id  <Double-Button-1> "groupEdit $id"
     .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
     .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
@@ -45,10 +44,9 @@ proc newGroupItem {id} {
 }
 
 proc rightMouseGroup {id x y X Y} {
-    group.get $id
-    set var [group.selectVariable [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
+    set var [selectGroupVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
     if {$var==-1} {
-        contextMenu group$id $X $Y
+        contextMenu $id $X $Y
     } else {
         .wiring.context delete 0 end
         .wiring.context add command -label "Edit" -command "editItem $var var"
@@ -63,7 +61,6 @@ proc rightMouseGroup {id x y X Y} {
            group.set
         "
         .wiring.context post $X $Y
-
     }
 }
 

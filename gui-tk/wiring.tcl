@@ -1107,7 +1107,7 @@ bind .wiring.canvas <<contextMenu>> {
                 item.get $id
                 switch [item.classType] {
                     "godleyIcon" "rightMouseGodley $id %x %y %X %Y"
-                    "group" "rightMouseGroup $id %x %y %X %Y"
+                    "Group" "rightMouseGroup $id %x %y %X %Y"
                     default "contextMenu $id %X %Y"
                 }
             }

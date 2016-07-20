@@ -297,6 +297,22 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
+  int MinskyTCL::selectGroupVar(int group, float x, float y)
+  {
+    auto gi=items.find(group);
+    if (gi!=items.end())
+      if (auto g=dynamic_cast<Group*>(gi->get()))
+        for (auto& i: items)
+          if (i->group.lock().get()==g)
+            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+              {
+                RenderVariable rv(*v);
+                if (rv.inImage(x,y))
+                  return i.id();
+              }
+    return -1;
+  }
+
   float MinskyTCL::localZoomFactor(int id, float x, float y) const 
   {
     const Group* g=model->minimalEnclosingGroup(x,y,x,y);

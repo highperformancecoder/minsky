@@ -375,6 +375,10 @@ namespace minsky
       //      groupTest.initGroupList(groupItems, (args.count? args: -1));
     }
 
+    /// @returns the id of an I/O variable within a group at (x,y), -1
+    /// if no variable is at (x,y)
+    int selectGroupVar(int group, float x, float y);
+
     /// returns the local zoom factor to be applied to item \a id at \a x,y
     float localZoomFactor(int id, float x, float y) const;
 
