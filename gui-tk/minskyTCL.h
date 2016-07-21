@@ -257,7 +257,11 @@ namespace minsky
           {
             ClosestPort toPort(*model, ClosestPort::in, tox, toy);
             if (toPort)
-              wires[r=getNewId()]=model->addWire(new Wire(fromPort, toPort, coords));
+              for (unsigned i=0; i<toPort->item.ports.size(); ++i)
+                if (toPort->item.ports[i].get()==toPort.get())
+                  if (auto newWire=
+                      Minsky::addWire(fromPort->item, toPort->item, i, coords))
+                wires[r=getNewId()]=newWire;
           }
       return r;
     }

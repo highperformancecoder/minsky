@@ -438,13 +438,13 @@ namespace minsky
      for (auto& i: items)
        {
          i->m_visible=displayContents();
-         if (displayContents())
+         if (displayContents() && !m_displayContentsChanged)
            i->zoom(xOrigin, yOrigin, factor);
        }
      for (auto& i: groups)
        {
          i->m_visible=displayContents();
-         if (displayContents())
+         if (displayContents() && !m_displayContentsChanged)
            i->zoom(xOrigin, yOrigin, factor);
          m_displayContentsChanged|=i->displayContentsChanged();
        }

@@ -29,7 +29,7 @@ pass()
 trap "fail" 1 2 3 15
 
 cp $here/test/testEq.mky .
-$here/GUI/minsky $here/test/testEq.tcl
+$here/gui-tk/minsky $here/test/testEq.tcl
 if test $? -ne 0; then fail; fi
 
 
