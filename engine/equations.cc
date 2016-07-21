@@ -1162,21 +1162,24 @@ namespace MathDAG
         input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g->second)));
       }
 
-    // reorder integration variables according to sVars
-    minsky.model->recursiveDo
-      (&Group::items,
-       [&](const Items&, Items::const_iterator i) 
-       {
-         if (auto v=dynamic_cast<VariableBase*>(i->get()))
-           if (v->isStock())
-             {
-               string vid=v->valueId();
-               if (!integVarMap.count(vid))
-                 throw error("no definition provided for stock variable %s",vid.c_str());
-               integrationVariables.push_back(integVarMap[vid]);
-             }
-         return false;
-       });
+//    // reorder integration variables according to sVars
+//    minsky.model->recursiveDo
+//      (&Group::items,
+//       [&](const Items&, Items::const_iterator i) 
+//       {
+//         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+//           if (v->isStock())
+//             {
+//               string vid=v->valueId();
+//               if (!integVarMap.count(vid))
+//                 throw error("no definition provided for stock variable %s",vid.c_str());
+//               integrationVariables.push_back(integVarMap[vid]);
+//             }
+//         return false;
+//       });
+
+    for (auto& v: integVarMap)
+      integrationVariables.push_back(v.second);
 
     // now start with the variables, and work our way back to how they
     // are defined

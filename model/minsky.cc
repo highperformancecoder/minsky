@@ -977,8 +977,8 @@ namespace minsky
     for (auto& w: model->findWires([](WirePtr){return true;}))
       net.emplace(w->from().get(), w->to().get());
     for (auto& i: model->findItems([](ItemPtr){return true;}))
-      for (size_t j=1; j<i->ports.size(); ++j)
-        if (!dynamic_cast<IntOp*>(i.get()))
+      if (!dynamic_cast<IntOp*>(i.get()))
+        for (unsigned j=1; j<i->ports.size(); ++j)
           net.emplace(i->ports[j].get(), i->ports[0].get());
     
     for (auto& i: net)
