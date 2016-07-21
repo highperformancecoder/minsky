@@ -426,6 +426,10 @@ namespace minsky
 
     string valueId(const string& x) {return VariableValue::valueId(x);}
 
+    /// make variable\a id's type consistent with its value
+    /// as a side effect, sets the var reference to the new variable
+    void makeVariableConsistentWithValue(int id);
+
   };
 }
 

@@ -218,6 +218,8 @@ namespace minsky
     void retype(VariableBase::Type type);
     VariablePtr(const ItemPtr& x): 
       PtrBase(std::dynamic_pointer_cast<VariableBase>(x)) {}
+    /// make variable's type consistent with the type of the valueId
+    void makeConsistentWithValue();
   };
 
 }

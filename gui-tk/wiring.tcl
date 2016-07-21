@@ -277,7 +277,7 @@ proc addOperation {op} {
     op.set
     placeNewOp $id
     if {$op=="constant"} {
-	editItem $id op$id
+	editItem $id
 	set constInput(cancelCommand) "cancelPlaceNewOp $id;closeEditWindow .wiring.editConstant"
     }
     return $id
@@ -297,7 +297,7 @@ proc addOperationKey {op} {
     move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
     newItem $id
     if {$op=="constant"} {
-	editItem $id op$id
+	editItem $id
 	set constInput(cancelCommand) "cancelPlaceNewOp $id;closeEditWindow .wiring.editConstant"
     }
     return $id
@@ -694,7 +694,7 @@ proc rightMouseGodley {id x y X Y} {
         contextMenu $id $X $Y
     } else {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editItem $var var"
+        .wiring.context add command -label "Edit" -command "editItem $var"
         var.get $var
         .wiring.context add command -label "Copy" -command "
            copyVar $var
@@ -712,7 +712,7 @@ proc doubleMouseGodley {id x y} {
     if {$var==-1} {
         openGodley $id
     } else {
-        editItem $var var
+        editItem $var
     }
 }
 
@@ -1022,12 +1022,12 @@ proc doubleClick {item x y} {
         "variables" {
             set tag [lindex $tags [lsearch -regexp $tags {var[0-9]+}]]
             set id [string range $tag 3 end]
-            editItem $id $tag
+            editItem $id
         }
         "operations" {
             set tag [lindex $tags [lsearch -regexp $tags {op[0-9]+}]]
             set id [string range $tag 2 end]
-            editItem $id $tag
+            editItem $id
         }
     }
 }
@@ -1146,7 +1146,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label Help -command {help Variable}
             .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Value [var.value]" 
-            .wiring.context add command -label "Edit" -command "editItem $id item$id"
+            .wiring.context add command -label "Edit" -command "editItem $id"
             .wiring.context add checkbutton -label "Slider" \
                 -command "drawSlider $id $x $y" \
                 -variable "sliderCheck$id"
@@ -1166,7 +1166,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label Help -command "help op:[op.name]"
             .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Port values [op.portValues]" 
-            .wiring.context add command -label "Edit" -command "editItem $id item$id"             
+            .wiring.context add command -label "Edit" -command "editItem $id"             
             if {[op.name]=="integrate"} {
                 integral.get $id
                 .wiring.context add command -label "Copy Var" -command "copyVar [integral.intVarID]"
@@ -1448,7 +1448,7 @@ proc deiconifyEditVar {} {
             var.get $editVarInput(id)
             convertVarType [var.valueId] $editVarInput(Type)
             setItem var name {set "editVarInput(Name)"}
-            variables.makeVarConsistentWithValue $editVarInput(id)
+            makeVariableConsistentWithValue $id
             setItem var init {set "editVarInput(Initial Value)"}
             setItem var rotation  {set editVarInput(Rotation)}
             setItem var tooltip  {set "editVarInput(Short description)"}
@@ -1731,16 +1731,17 @@ proc setIntegralIValue {} {
     setItem value init {set constInput(Value)}
 }
 
-proc editItem {id tag} {
+proc editItem {id} {
     global constInput varInput editVarInput opInput
-    switch -regexp $tag {
-        "^var" {
+    item.get $id
+    switch -regexp [item.classType] {
+        "Variable*" {
             var.get $id
             value.get [var.valueId]
             deiconifyEditVar
             wm title .wiring.editVar "Edit [var.name]"
             # populate combobox with existing variable names
-            .wiring.editVar.entry10 configure -values [variables.valueNames]
+            .wiring.editVar.entry10 configure -values [variableValues.#keys]
 
             set "editVarInput(Name)" [var.name]
             set editVarInput(id) $id
@@ -1754,7 +1755,7 @@ proc editItem {id tag} {
             set "editVarInput(relative)" [var.sliderStepRel]
             set "editVarInput(Short description)" [var.tooltip]
             set "editVarInput(Detailed description)" [var.detailedText]
-            if {[value.godleyOverridden] || [variables.inputWired [var.valueId]]} {
+            if {[value.godleyOverridden] || [inputWired [var.valueId]]} {
                 $editVarInput(initial_focus_value) configure -state disabled  -foreground gray
 		::tk::TabToWindow $editVarInput(initial_focus_rotation)
             } else {
@@ -1766,7 +1767,7 @@ proc editItem {id tag} {
 	    grab set .wiring.editVar
 	    wm transient .wiring.editVar
         }
-        "^op" {
+        "Operation*" {
             op.get $id
             if {[op.name]=="constant" || [op.name]=="integrate" || [op.name]=="data"} {
                 set constInput(Value) ""
@@ -1835,7 +1836,7 @@ proc editItem {id tag} {
 		wm transient .wiring.editOperation
             }
         }
-        "^group" {groupEdit $id}
+        "Group" {groupEdit $id}
     }
 }
 

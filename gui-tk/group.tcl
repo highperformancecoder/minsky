@@ -49,7 +49,7 @@ proc rightMouseGroup {id x y X Y} {
         contextMenu $id $X $Y
     } else {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editItem $var var"
+        .wiring.context add command -label "Edit" -command "editItem $var"
         var.get $var
         .wiring.context add command -label "Copy" -command "
            copyVar $var

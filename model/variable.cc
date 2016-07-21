@@ -251,4 +251,10 @@ void VariableBase::adjustSliderBounds()
   if (sliderMin>value()) sliderMin=value();
 }
 
+void VariablePtr::makeConsistentWithValue()
+{
+  retype(minsky::cminsky().variableValues[get()->valueId()].type());
+}
+
+
 int VarConstant::nextId=0;

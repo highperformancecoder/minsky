@@ -387,4 +387,27 @@ namespace minsky
   }
 
 
+  void MinskyTCL::makeVariableConsistentWithValue(int id) 
+  {
+    auto i=items.find(id);
+    if (i!=items.end())
+      if (auto v=dynamic_cast<VariableBase*>(i->get()))
+        {
+          auto& value=variableValues[v->valueId()];
+          if (value.type()!=v->type())
+            {
+              VariablePtr v(*i);
+              v.makeConsistentWithValue();
+              // now need to fix both the TCL items entry and minsky's
+              if (auto g=(*i)->group.lock())
+                {
+                  g->removeItem(**i);
+                  g->addItem(v);
+                  *i=v;
+                  var.setRef(v);
+                }
+            }
+        }
+  }
+
 }
