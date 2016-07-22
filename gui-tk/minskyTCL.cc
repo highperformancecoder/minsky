@@ -297,20 +297,16 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
-  int MinskyTCL::selectGroupVar(int group, float x, float y)
+  bool MinskyTCL::selectVar(int id, float x, float y)
   {
-    auto gi=items.find(group);
+    auto gi=items.find(id);
     if (gi!=items.end())
-      if (auto g=dynamic_cast<Group*>(gi->get()))
-        for (auto& i: items)
-          if (i->group.lock().get()==g)
-            if (auto v=dynamic_cast<VariableBase*>(i.get()))
-              {
-                RenderVariable rv(*v);
-                if (rv.inImage(x,y))
-                  return i.id();
-              }
-    return -1;
+      {
+        auto v=(*gi)->select(x,y);
+        var.setRef(v);
+        return v->type()!=VariableType::undefined;
+      }
+    return false;
   }
 
   float MinskyTCL::localZoomFactor(int id, float x, float y) const 

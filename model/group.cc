@@ -706,5 +706,15 @@ namespace minsky
     return rotFactor;
   }
 
+  VariablePtr Group::select(float x, float y) const
+  {
+    for (auto& v: inVariables)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return v;
+    for (auto& v: outVariables)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return v;
+    return VariablePtr();
+  }
 
 }

@@ -265,6 +265,11 @@ namespace minsky
     /// scaling factor to allow a rotated icon to fit on the bitmap
     float rotFactor() const;
 
+    /// returns the variable if point (x,y) is within a
+    /// I/O variable icon, null otherwise, indicating that the Godley table
+    /// has been selected.
+    VariablePtr select(float x, float y) const override;
+
   };
 
   inline void GroupPtr::setself() {

@@ -44,23 +44,21 @@ proc newGroupItem {id} {
 }
 
 proc rightMouseGroup {id x y X Y} {
-    set var [selectGroupVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-    if {$var==-1} {
-        contextMenu $id $X $Y
-    } else {
+    if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editItem $var"
-        var.get $var
+        .wiring.context add command -label "Edit" -command "editVar"
         .wiring.context add command -label "Copy" -command "
-           copyVar $var
+           copyVar 
            var.rotation 0
            var.set
         "
         .wiring.context add command -label "Remove" -command "
-           group.removeVariableById $var
+           group.removeVariableById 
            group.set
         "
         .wiring.context post $X $Y
+    } else {
+        contextMenu $id $X $Y
     }
 }
 

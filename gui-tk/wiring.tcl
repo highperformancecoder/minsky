@@ -636,12 +636,10 @@ proc addNewGodleyItemKey {} {
 setGodleyIconResource $minskyHome/icons/bank.svg
 
 proc godleyToolTipText {id x y} {
-    godley.get $id
-    set v [godley.select [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-    if {$v>=0} {
-        var.get $v
+    if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         set text [var.name]
     } else {
+        godley.get $id
         set text [godley.tooltip]
         if {$text==""} {
             set text [godley.table.title]
@@ -688,21 +686,16 @@ proc changeToolTip {id x y} {
 #}
 
 proc rightMouseGodley {id x y X Y} {
-    godley.get $id
-    set var [godley.select [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-    if {$var==-1} {
-        contextMenu $id $X $Y
-    } else {
+    if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editItem $var"
-        var.get $var
+        .wiring.context add command -label "Edit" -command "editVar"
         .wiring.context add command -label "Copy" -command "
-           copyVar $var
+           copyVar 
            var.rotation 0
-           var.set
         "
         .wiring.context post $X $Y
-
+    } else {
+        contextMenu $id $X $Y
     }
 }
 
@@ -1106,7 +1099,7 @@ bind .wiring.canvas <<contextMenu>> {
                 set id [string range $tag 4 end]
                 item.get $id
                 switch [item.classType] {
-                    "godleyIcon" "rightMouseGodley $id %x %y %X %Y"
+                    "GodleyIcon" "rightMouseGodley $id %x %y %X %Y"
                     "Group" "rightMouseGroup $id %x %y %X %Y"
                     default "contextMenu $id %X %Y"
                 }
@@ -1731,12 +1724,7 @@ proc setIntegralIValue {} {
     setItem value init {set constInput(Value)}
 }
 
-proc editItem {id} {
-    global constInput varInput editVarInput opInput
-    item.get $id
-    switch -regexp [item.classType] {
-        "Variable*" {
-            var.get $id
+proc editVar {} {
             value.get [var.valueId]
             deiconifyEditVar
             wm title .wiring.editVar "Edit [var.name]"
@@ -1766,6 +1754,15 @@ proc editItem {id} {
 	    tkwait visibility .wiring.editVar
 	    grab set .wiring.editVar
 	    wm transient .wiring.editVar
+}
+
+proc editItem {id} {
+    global constInput varInput editVarInput opInput
+    item.get $id
+    switch -regexp [item.classType] {
+        "Variable*" {
+            var.get $id
+            editVar
         }
         "Operation*" {
             op.get $id

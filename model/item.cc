@@ -20,6 +20,7 @@
 #include "item.h"
 #include "group.h"
 #include "zoom.h"
+#include "variable.h"
 #include "latexMarkup.h"
 #include "geometry.h"
 #include <pango.h>
@@ -170,5 +171,9 @@ namespace minsky
         r=ports[i];
     return r;
   }
+
+  VariablePtr Item::select(float x, float y) const
+  {return VariablePtr();}
+
 
 }

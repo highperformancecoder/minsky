@@ -52,6 +52,8 @@ namespace minsky
     ItemPortVector& operator=(const ItemPortVector&) {return *this;}
   };
 
+  class VariablePtr;
+
   class Item: public NoteBase
   {
   public:
@@ -95,7 +97,9 @@ namespace minsky
     {return ports[0];}
     virtual std::shared_ptr<Port> closestInPort(float x, float y) const;
 
-
+    /// returns the variable if point (x,y) is within a
+    /// visible variable icon, null otherwise.
+    virtual VariablePtr select(float x, float y) const;
   };
 
   typedef std::shared_ptr<Item> ItemPtr;

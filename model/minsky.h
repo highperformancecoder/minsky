@@ -238,39 +238,6 @@ namespace minsky
     GroupPtr createGroup();
     void saveGroupAsFile(const Group&, const string& fileName) const;
 
-//    /// create a new godley icon at \a x, y
-//    int addGodleyTable(float x, float y) 
-//    {
-//      int id=getNewId();
-//      GodleyIcon* g=new GodleyIcon;
-//      model->addItem(id, g);
-//      g->moveTo(x,y);
-//      g->table.doubleEntryCompliant=true;
-//      g->update();
-//      return id;
-//    }
-    
-//    /// delete godley table icon \a id
-//    void deleteGodleyTable(int id)
-//    {
-//      // remove all contained variables
-//      if (auto g=dynamic_cast<GodleyIcon*>(model->findItem(id).get()))
-//        {
-//          set<VariablePtr> vars;
-//          vars.insert(g->flowVars.begin(), g->flowVars.end());
-//          vars.insert(g->stockVars.begin(), g->stockVars.end());
-//          model->recursiveDo
-//            (&Group::items,
-//             [&](Items& m,Items::iterator i)
-//             {
-//               if (vars.count(*i))
-//                 m.erase(i);
-//               return false;
-//             });
-//        }
-//      model->removeItem(id);
-//    }
-
     void initGodleys();
 
 //    int newNote() {

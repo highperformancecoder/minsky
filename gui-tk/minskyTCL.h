@@ -187,7 +187,7 @@ namespace minsky
     /// movements being added to recordings and undo history
     bool doPushHistory=true;
 
-    MinskyTCL(): /*port(ports),*/ wire(wires), op(items), 
+    MinskyTCL(): wire(wires), op(items), 
                  constant(items), integral(items), 
                  data(items), var(items),
                  value(variableValues), plot(items), 
@@ -197,7 +197,6 @@ namespace minsky
     void clearAllGetterSetters() {
       // need also to clear the GetterSetterPtr variables, as these
       // potentially hold onto objects
-      //port.clear();
       wire.clear();
       op.clear();
       constant.clear();
@@ -379,9 +378,8 @@ namespace minsky
       //      groupTest.initGroupList(groupItems, (args.count? args: -1));
     }
 
-    /// @returns the id of an I/O variable within a group at (x,y), -1
-    /// if no variable is at (x,y)
-    int selectGroupVar(int group, float x, float y);
+    /// @returns true if (x,y) is over an I/O variable within a group id or a variable within at (x,y), false otherwise. var is set to the variable if it exists
+    bool selectVar(int id, float x, float y);
 
     /// returns the local zoom factor to be applied to item \a id at \a x,y
     float localZoomFactor(int id, float x, float y) const;
