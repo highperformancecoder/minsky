@@ -48,7 +48,7 @@ proc afterMinskyStarted {} {
     godley.update
     godley.set
 
-    newGodleyItem \$godleyId
+    newItem \$godleyId
     bind .wiring.canvas <Button-1> "puts {%x %y}"
 
     # delivered to foobar
@@ -85,7 +85,7 @@ proc afterMinskyStarted {} {
 }
 
 EOF
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass
