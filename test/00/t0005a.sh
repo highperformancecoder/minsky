@@ -38,13 +38,16 @@ proc afterMinskyStarted {} {
     # remove Destroy binding as it interferes with assert
     bind . <Destroy> {}
 
-    
-    op.get [addOperation  exp]
-    assert {[addWire [lindex [op.ports] 0] [lindex [op.ports] 1] {0 0 0 0}]==-1}
+    set opid [addOperation  exp]
+    op.get \$opid
+    # check self wiring fails
+    assert "\[addWire \$opid [op.x] [op.y] [op.x] [op.y] {0 0 0 0}\]==-1"
     assert {[wires.size]==0}
     
-    var.get [newVariable foo flow]
-    assert {[addWire [var.outPort] [var.inPort] {0 0 0 0}]==-1}
+    set varid [newVariable foo flow]
+    var.get \$varid
+    # check self wiring fails
+    assert "\[addWire \$varid [var.x] [var.y] [var.x] [var.y] {0 0 0 0}\]==-1"
     assert {[wires.size]==0}
 
     resetEdited
@@ -52,7 +55,7 @@ proc afterMinskyStarted {} {
 }
 
 EOF
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass
