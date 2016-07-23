@@ -447,7 +447,7 @@ namespace minsky
       }
     else
       {
-        assert(!ref->ports[0].wires.empty());
+        assert(ref->ports.size() && ref->ports[0]->wires.size());
         if (auto g=ref->group.lock())
           {
             int newWire=m.getNewId();
