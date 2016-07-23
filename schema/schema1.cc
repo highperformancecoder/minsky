@@ -37,7 +37,8 @@ namespace schema1
       set<int> items;
       template <class T> bool check(const T& x) {
         for (typename T::const_iterator i=x.begin(); i!=x.end(); ++i)
-          if (!items.insert(i->id).second) return false;
+          if (!items.insert(i->id).second) 
+            return false;
         return true;
       }
     };

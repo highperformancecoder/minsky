@@ -93,6 +93,8 @@ namespace minsky
         }
     }
 
+    const std::shared_ptr<V>& getRef() const {return val;}
+
     // nb, in spite of appearances, this approach does not work well
     // with non-shared_pointer value types
     void get(TCL_args args) {
@@ -292,7 +294,9 @@ namespace minsky
     /// add an operation
     int addOperation(OperationType::Type op) {
       int id=getNewId();
-      items[id]=model->addItem(OperationBase::create(op));
+      auto& it=items[id]=model->addItem(OperationBase::create(op));
+      if (IntOp* i=dynamic_cast<IntOp*>(it.get()))
+        items[getNewId()]=i->intVar;
       return id;
     }
      
@@ -338,35 +342,33 @@ namespace minsky
           }
     }
      
-    /// create a new operation that is a copy of \a id
-    int copyItem(int id) {
+    /// create a new item that is a copy of item
+    int copyItem() {
       int r=-1;
-      auto it=items.find(id);
-      if (it!=items.end())
-        items[r=getNewId()]=model->addItem((*it)->clone());
-      return id;
+      items[r=getNewId()]=model->addItem(item.getRef()->clone());
+      return r;
     }
 
-  void deleteItem(int id) {
-    auto it=items.find(id);
-    if (it!=items.end())
-      {
-        clearAllGetterSetters();
-        model->removeItem(**it);
-        items.erase(id);
-      }
-  }
-
-  void deleteWire(int id) {
-    auto it=wires.find(id);
-    if (it!=wires.end())
-      {
-        clearAllGetterSetters();
+    void deleteItem(int id) {
+      auto it=items.find(id);
+      if (it!=items.end())
+        {
+          clearAllGetterSetters();
+          model->removeItem(**it);
+          items.erase(id);
+        }
+    }
+    
+    void deleteWire(int id) {
+      auto it=wires.find(id);
+      if (it!=wires.end())
+        {
+          clearAllGetterSetters();
         model->removeWire(**it);
         wires.erase(id);
-      }
-  }
-
+        }
+    }
+    
 //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {
 //      clearSelection();

@@ -18,14 +18,6 @@
 
 set globals(default_rotation) 0
 
-# Wiring canvas
-
-
-proc createWire {coords} {
-    set id [.wiring.canvas create line $coords -tag wires -arrow last -smooth bezier]
-    return $id
-}
-
 frame .wiring 
 frame .wiring.menubar 
 
@@ -577,29 +569,6 @@ proc newItem {id} {
     .wiring.canvas bind item$id <Button-1> "onClick $id item$id %x %y"
 }
 
-# create a new canvas item for var id
-#proc newVar {id} {
-#    global globals
-#    var.get $id
-#    if {[lsearch -exact [image name] varImage$id]!=-1} {
-#        image delete varImage$id
-#    }
-#    image create photo varImage$id -width 200 -height 50
-#    
-#    .wiring.canvas delete var$id
-#    set itemId [.wiring.canvas create variable [var.x] [var.y] -image varImage$id -id $id -tags "variables var$id"]
-#    # wire drawing. Can only start from an output port
-#    .wiring.canvas bind var$id <<middleMouse>> \
-#        "wires::startConnect $id %x %y"
-#    .wiring.canvas bind var$id <<middleMouse-Motion>> \
-#        "wires::extendConnect $id %x %y"
-#    .wiring.canvas bind var$id <<middleMouse-ButtonRelease>> "wires::finishConnect $id %x %y"
-#
-#    .wiring.canvas bind var$id <Double-Button-1> "doubleClick var$id %X %Y"
-#    .wiring.canvas bind var$id <Enter> "itemEnterLeave item $id var$id 1"
-#    .wiring.canvas bind var$id <Leave> "itemEnterLeave item $id var$id 0"
-#}
-
 proc addNewGodleyItem {} {
     set id [addGodleyTable]
     global moveOffs$id.x moveOffs$id.y
@@ -631,8 +600,6 @@ proc addNewGodleyItemKey {} {
 }
 
 # global godley icon resource
-#godley.iconResource $minskyHome/icons/bank.svg
-#godley.svgRenderer.setResource $minskyHome/icons/bank.svg
 setGodleyIconResource $minskyHome/icons/bank.svg
 
 proc godleyToolTipText {id x y} {
@@ -714,14 +681,12 @@ proc doubleMouseGodley {id x y} {
 #    newItem $id
 #}
 
-proc newWire {wire wireid} {
+proc newWire {wireid} {
     wire.get $wireid
-    .wiring.canvas coords $wire [wire.coords]
-    .wiring.canvas addtag wire$wireid withtag $wire 
-#    .wiring.canvas addtag groupitems[wire.group] withtag $wire 
-    .wiring.canvas bind $wire <Enter> "decorateWire $wireid; set itemFocused 1"
-    .wiring.canvas bind $wire <Leave> "set itemFocused 0"
-    .wiring.canvas bind $wire <<contextMenu>> "wireContextMenu $wireid %X %Y"
+    .wiring.canvas create line [wire.coords] -tags "wires wire$wireid" -arrow last -smooth bezier
+    .wiring.canvas bind wire$wireid <Enter> "decorateWire $wireid; set itemFocused 1"
+    .wiring.canvas bind wire$wireid <Leave> "set itemFocused 0"
+    .wiring.canvas bind wire$wireid <<contextMenu>> "wireContextMenu $wireid %X %Y"
     # mouse-1 clicking on wire starts wiring from the from port
 #    .wiring.canvas bind $wire <Button-1> "set clicked 1; wires::startConnect [wire.from] $wire %x %y"
 #    .wiring.canvas bind $wire <B1-Motion> "wires::extendConnect [wire.from] $wire %x %y"
@@ -836,11 +801,9 @@ namespace eval wires {
                     variable x0
                     variable y0 
                     set wireid [addWire $fromId $x0 $y0 $x $y [.wiring.canvas coords $wire]]
-                    if {$wireid == -1} {
-                        # wire is invalid
-                        .wiring.canvas delete $wire
-                    } else {
-                        newWire $wire $wireid
+                    .wiring.canvas delete $wire
+                    if {$wireid >=0} {
+                        newWire $wireid
                     }
                     namespace delete [namespace current]
                 }
@@ -991,7 +954,7 @@ proc updateCanvas {} {
         if [wire.visible] {
             if {[llength [.wiring.canvas find withtag wire$w]]==0} {
                 set id [createWire [wire.coords]]
-                newWire $id $w 
+                newWire $w 
             } else {.wiring.canvas coords wire$w [wire.coords]}
         }
     }
@@ -1153,7 +1116,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label "Browse object" -command "obj_browser minsky.var.*"
 	    .wiring.context add command -label "Delete variable" -command "deleteItem $id item$id"
         }
-        "Operation*" {
+        "Operation*|IntOp" {
            op.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command "help op:[op.name]"
@@ -1162,7 +1125,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label "Edit" -command "editItem $id"             
             if {[op.name]=="integrate"} {
                 integral.get $id
-                .wiring.context add command -label "Copy Var" -command "copyVar [integral.intVarID]"
+                .wiring.context add command -label "Copy Var" -command "getIntVar; copyVar"
             }
             if {[op.name]=="constant"} {
                 constant.get $id
@@ -1343,9 +1306,9 @@ proc deleteItem {id tag} {
     updateCanvas
 }
 
-proc copyVar {id} {
+proc copyVar {} {
     global globals
-    set newId [copyVariable $id]
+    set newId [copyVariable]
     newVar $newId
     var.get $newId
     var.rotation $globals(default_rotation)
@@ -1977,12 +1940,6 @@ proc OKnote {item id} {
     $item.detailedText  [.wiring.note.text get 1.0 end]
     closeEditWindow .wiring.note
 }
-
-#proc newNote {id} {
-#    note.get $id
-#    .wiring.canvas create text [note.x] [note.y] -text [note.detailedText] -tags "note$id notes"
-#    .wiring.canvas bind note$id <Double-Button-1> "postNote note $id"
-#}
 
 proc placeNewNote {} {
     set id [minsky.newNote]

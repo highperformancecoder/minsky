@@ -93,6 +93,9 @@ namespace minsky
       if (args.count) {ref->description(args);}
       return ref->description();
     }
+    /// loads var with a reference to this intVar, and returns its id
+    int getIntVar();
+    bool toggleCoupled();
   };
 
 }

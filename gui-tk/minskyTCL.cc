@@ -406,4 +406,55 @@ namespace minsky
         }
   }
 
+  int TclExtend<std::shared_ptr<minsky::IntOp>>::getIntVar() 
+  {
+    auto& m=dynamic_cast<MinskyTCL&>(minsky());
+    m.var.setRef(ref->intVar);
+    for (auto& i: m.items)
+      if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
+        return i.id();
+    return -1;
+  }
+
+  bool TclExtend<std::shared_ptr<minsky::IntOp>>::toggleCoupled()
+  {
+    auto& m=dynamic_cast<MinskyTCL&>(minsky());
+    int wireId=-1; // stash id to wire if uncoupled
+    if (!ref->coupled())
+      {
+        auto& wires=ref->ports[0]->wires;
+        if (!wires.empty())
+          for (auto& w: m.wires)
+            if (find(wires.begin(), wires.end(), w.get())!=wires.end())
+              {
+                wireId=w.id();
+                break;
+              }
+      }
+
+    bool coupled=ref->toggleCoupled();
+    for (auto& i: m.items)
+      if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
+        if (coupled)
+          tclcmd() | ".wiring.canvas delete item"|i.id()|"\n";
+        else
+          tclcmd() << "newItem"<< i.id()<<"\n";
+
+    if (wireId>=0)
+      {
+        tclcmd() | ".wiring.canvas delete wire"|wireId|"\n";
+        m.wires.erase(wireId);
+      }
+    else
+      {
+        assert(!ref->ports[0].wires.empty());
+        if (auto g=ref->group.lock())
+          {
+            int newWire=m.getNewId();
+            m.wires[newWire]=g->findWire(*ref->ports[0]->wires[0]);
+            tclcmd() << "newWire"<< newWire<<"\n";
+          }
+      }
+  }
+  
 }

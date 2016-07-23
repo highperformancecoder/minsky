@@ -413,6 +413,7 @@ proc updateGodleys {} {
 proc updateGodleysDisplay {} {
   global globals
   foreach id [items.#keys] {
+      item.get $id
       if {[item.classType]=="GodleyIcon"} {
           updateGodleyDisplay $id
       }

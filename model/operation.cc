@@ -243,7 +243,7 @@ namespace minsky
     // makeConsistent() is called regardless of the return path.
     // makeConsistent() potentially throws, soc cannot be called from
     // a destructor
-    bool r=[&]()
+    [&]()
       {
         if (type()!=integrate) return false;
 
@@ -257,7 +257,7 @@ namespace minsky
             intVar->ports[0].reset(new Port(*intVar,Port::noFlags));
             intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
             ports[0].reset(new Port(*this,Port::noFlags));
-            Wire* newWire=new Wire(ports[0], intVar->ports[1]);
+            WirePtr newWire(new Wire(ports[0], intVar->ports[1]));
             if (auto g=group.lock())
               g->addWire(newWire);
             else
@@ -274,10 +274,9 @@ namespace minsky
             ports[0]=intVar->ports[0];
             intVar->m_visible=false;
           }
-        return coupled();
       }();
     //TODO minsky().variables.makeConsistent();
-    return r;
+    return coupled();
   }
 
   string OperationBase::portValues() const

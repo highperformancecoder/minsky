@@ -43,7 +43,7 @@ proc afterMinskyStarted {} {
     value.get :y
     assert {[value.value]==1}
 
-    var.get 33 # constant a
+    var.get 1 # constant a
     set a [var.value]
     assert {[var.value]!=0}
     minsky.reset
@@ -59,7 +59,7 @@ proc afterMinskyStarted {} {
 
     set v [value.value]
 
-    integral.get 34 # integral
+    integral.get 2 # integral
     integral.toggleCoupled
 
     minsky.reset
@@ -78,7 +78,7 @@ proc afterMinskyStarted {} {
 }
 
 EOF
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass
