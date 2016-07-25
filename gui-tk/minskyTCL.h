@@ -262,7 +262,7 @@ namespace minsky
                 if (toPort->item.ports[i].get()==toPort.get())
                   if (auto newWire=
                       Minsky::addWire(fromPort->item, toPort->item, i, coords))
-                wires[r=getNewId()]=newWire;
+                    wires[r=getNewId()]=newWire;
           }
       return r;
     }
