@@ -114,8 +114,7 @@ default: gui-tk/minsky$(EXE)
 endif
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
-#all: $(EXES) $(TESTS) minsky.xsd 
-all: $(EXES) $(TESTS)
+all: $(EXES) $(TESTS) minsky.xsd 
 # only perform link checking if online
 	if ping -c 1 www.google.com; then linkchecker gui-tk/library/help/minsky.html; fi
 	-$(CHMOD) a+x *.tcl *.sh *.pl
@@ -208,8 +207,8 @@ endif
 checkMissing:
 	sh test/checkMissing.sh
 
-minsky.xsd: GUI/minsky
-	GUI/minsky exportSchema.tcl
+minsky.xsd: gui-tk/minsky
+	gui-tk/minsky exportSchema.tcl
 
 upload-schema: minsky.xsd
 	scp minsky.xsd hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
