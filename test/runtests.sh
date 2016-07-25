@@ -1,14 +1,8 @@
 #!/bin/bash
 
-# for now, just run unittests
-set -e
-cd test
-./unittests
-exit
-
 t=0
-for i in test/00/*.sh; do 
-  sh $i
+for i in 01 03 04 05 06; do 
+  sh test/00/t00${i}a.sh
   status=$?
   if [ $status -ne 0 ]; then
       let $[t++]
