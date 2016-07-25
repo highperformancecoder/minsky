@@ -202,7 +202,7 @@ void OperationBase::draw(cairo_t* cairo) const
             // we need to add some translation if the variable is bound
             cairo_rotate(cairo,rotation*M_PI/180.0);
             coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*zoomFactor;
-            cairo_translate(cairo, coupledIntTranslation, 0);
+            //            cairo_translate(cairo, coupledIntTranslation, 0);
             cairo_rotate(cairo,-rotation*M_PI/180.0);
           }
       cairo_save(cairo);
@@ -250,7 +250,7 @@ void OperationBase::draw(cairo_t* cairo) const
         // save the render width for later use in setting the clip
         intVarWidth=rv.width()*zoomFactor; 
         // set the port location...
-        intVar->moveTo(i->x()+ivo+intVarWidth, i->y());
+        intVar->moveTo(i->x()+r+ivo+intVarWidth, i->y());
             
         cairo_save(cairo);
         cairo_translate(cairo,r+ivo+intVarWidth,0);
