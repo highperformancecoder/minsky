@@ -270,7 +270,13 @@ namespace minsky
           }
         else
           {
-            intVar->ports.resize(1); // deletes wire also
+            // need to explicitly remove wire, as deleting the port is
+            // not sufficient - wires hold a reference to the ports
+            // they connect
+            if (auto g=group.lock())
+              for (auto w: intVar->ports[1]->wires)
+                g->removeWire(*w);
+            intVar->ports.resize(1);
             ports[0]=intVar->ports[0];
             intVar->m_visible=false;
           }
