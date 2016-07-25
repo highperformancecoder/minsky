@@ -681,9 +681,13 @@ proc doubleMouseGodley {id x y} {
 #    newItem $id
 #}
 
+proc createWire {coords} {
+    return [.wiring.canvas create line $coords -tags "wires" -arrow last -smooth bezier]
+} 
+
 proc newWire {wireid} {
     wire.get $wireid
-    .wiring.canvas create line [wire.coords] -tags "wires wire$wireid" -arrow last -smooth bezier
+    .wiring.canvas addtag wire$wireid withtag [createWire [wire.coords]]  
     .wiring.canvas bind wire$wireid <Enter> "decorateWire $wireid; set itemFocused 1"
     .wiring.canvas bind wire$wireid <Leave> "set itemFocused 0"
     .wiring.canvas bind wire$wireid <<contextMenu>> "wireContextMenu $wireid %X %Y"
@@ -953,7 +957,6 @@ proc updateCanvas {} {
         wire.get $w
         if [wire.visible] {
             if {[llength [.wiring.canvas find withtag wire$w]]==0} {
-                set id [createWire [wire.coords]]
                 newWire $w 
             } else {.wiring.canvas coords wire$w [wire.coords]}
         }

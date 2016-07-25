@@ -254,7 +254,6 @@ namespace minsky
         if (coupled()) 
           {
             intVar->ports.resize(2);
-            intVar->ports[0].reset(new Port(*intVar,Port::noFlags));
             intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
             ports[0].reset(new Port(*this,Port::noFlags));
             WirePtr newWire(new Wire(ports[0], intVar->ports[1]));

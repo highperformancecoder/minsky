@@ -291,11 +291,6 @@ void OperationBase::draw(cairo_t* cairo) const
   if (const IntOp* i=dynamic_cast<const IntOp*>(this))
     if (i->coupled())
       x0+=i->intVarOffset+2*intVarWidth+2;
-  // adjust by the translation  used for coupled integrals
-  x0+=coupledIntTranslation;
-  x1+=coupledIntTranslation;
-  x2+=coupledIntTranslation;
-
 
   cairo_save(cairo);
   cairo_identity_matrix(cairo);
