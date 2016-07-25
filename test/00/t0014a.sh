@@ -33,7 +33,7 @@ cd $here/examples
 for i in *.mky; do
     # math-examples is not a runnable example
     if [ $i = "math-examples.mky" ]; then continue; fi
-    $here/GUI/minsky ../test/compareFileLog.tcl $i ../test/exampleLogs/$i.log
+    $here/gui-tk/minsky ../test/compareFileLog.tcl $i ../test/exampleLogs/$i.log
     if test $? -ne 0; then 
         echo "for $i"
         fail

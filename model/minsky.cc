@@ -396,19 +396,46 @@ namespace minsky
 //    return -1;
 //  }
         
+  void Minsky::makeVariablesConsistent()
+  {
+    // remove variableValues not in variables
+    set<string> existingNames;
+    existingNames.insert("constant:zero");
+    existingNames.insert("constant:one");
+    model->recursiveDo(&Group::items, 
+                       [&](Items&,Items::iterator i) {
+                         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+                           existingNames.insert(v->valueId());
+                         // ensure Godley table variables are the correct types
+                         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                           g->update();
+                         return false;
+                       }
+                       );
+    for (auto i=variableValues.begin(); i!=variableValues.end(); )
+      if (existingNames.count(i->first))
+        ++i;
+      else
+        variableValues.erase(i++);
+    
+  }
+
+
   void Minsky::garbageCollect()
   {
     stockVars.clear();
     flowVars.clear();
     equations.clear();
     integrals.clear();
+    makeVariablesConsistent();
 
-    // remove all temporaries
-    for (auto v=variableValues.begin(); v!=variableValues.end();)
-      if (v->second.temp())
-        variableValues.erase(v++);
-      else
-        ++v;
+//    // remove all temporaries
+//    for (auto v=variableValues.begin(); v!=variableValues.end();)
+//      if (v->second.temp())
+//        variableValues.erase(v++);
+//      else
+//        ++v;
+    
     variableValues.reset();
   }
 

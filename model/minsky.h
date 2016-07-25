@@ -314,6 +314,8 @@ namespace minsky
     /// set scaling factors in all widgets, without adjusting
     /// coordinates, for use in reloading the model
 
+    void makeVariablesConsistent();
+
     // runs over all ports and variables removing those not in use
     void garbageCollect();
 
