@@ -57,7 +57,7 @@ assert {"[minsky.godley.table.getVariables]"=="a b"} ""
 tcl_exit
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass
