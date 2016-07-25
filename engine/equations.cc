@@ -155,8 +155,10 @@ namespace MathDAG
     if (result.idx()<0)
       {
         assert(VariableValue::isValueId(valueId));
-        result=minsky::minsky().variableValues[valueId];
-        if (result.type()==VariableType::undefined) 
+        auto ri=minsky::minsky().variableValues.find(valueId);
+        if (ri!=minsky::minsky().variableValues.end())
+          result=ri->second;
+        else
           {
             result=VariableValue(VariableType::tempFlow);
             result.allocValue();
@@ -275,6 +277,7 @@ namespace MathDAG
             if (VariablePtr iv=i->intVar)
               {
                 assert(VariableValue::isValueId(iv->valueId()));
+                assert(minsky::minsky().variableValues.count(iv->valueId()));
                 result=minsky::minsky().variableValues[iv->valueId()];
                 // integral copies need to be done now, in case of cycles
                 if (r.isFlowVar() && r.idx()>=0)
@@ -1187,6 +1190,7 @@ namespace MathDAG
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, scope, VariableValue::uqName(name), type));
     expressionCache.insert(valueId, r);
     assert(VariableValue::isValueId(valueId));
+    assert(minsky.variableValues.count(valueId));
     VariableValue vv=minsky.variableValues[valueId];
     r->init=vv.initValue(minsky.variableValues);
     if (vv.isFlowVar()) 
@@ -1430,6 +1434,7 @@ namespace MathDAG
         string vid=VariableValue::valueId(i->scope,i->name);
         integrals.push_back(Integral());
         assert(VariableValue::isValueId(vid));
+        assert(minsky.variableValues.count(vid));
         integrals.back().stock=minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
@@ -1444,7 +1449,10 @@ namespace MathDAG
        [&](Items&, Items::iterator i)
        {
          if (auto v=dynamic_cast<VariableBase*>(i->get()))
-           v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
+           {
+             assert(minsky.variableValues.count(v->valueId()));
+             v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
+           }
          return false;
        });
        

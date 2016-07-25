@@ -695,6 +695,7 @@ namespace schema1
       {
         auto s=imap.addItem(new minsky::SwitchIcon, i);
         combine.combine(*s,i);
+        s->setNumCases(i.ports.size()-2);
         pmap.asgPorts(s->ports, i.ports);
       }
     for (auto& i: model.godleys)

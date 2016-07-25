@@ -79,7 +79,9 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative(const VariableDAG& expr)
   {
     string name=differentiateName(expr.name);
-    VariableDAGPtr r(makeDAG(VariableValue::valueId(expr.scope,name),expr.scope,name,VariableType::flow));
+    // ensure variable value exists, even if only temporary
+    VariablePtr tmp(VariableType::tempFlow, VariableValue::valueId(expr.scope,name));
+    VariableDAGPtr r(makeDAG(tmp->valueId(),tmp->scope(),tmp->name(),tmp->type()));
     if (expr.rhs)
       r->rhs=expr.rhs->derivative(*this);
     else if (expr.type==VariableType::integral || expr.type==VariableType::stock)
