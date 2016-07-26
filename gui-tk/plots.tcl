@@ -190,7 +190,8 @@ proc resizePlot {id w h dw dh} {
     if {[winfo width .plot$id]!=[expr [.plot$id.image cget -width]+$dw] ||
         [winfo height .plot$id]!=[expr [.plot$id.image cget -height]+$dh]} {
         .plot$id.image configure -height [expr [winfo height .plot$id]-$dh] -width [expr [winfo width .plot$id]-$dw]
-        plots.addImage $id .plot$id.image
+        plot.get $id
+        plot.addImage .plot$id.image
     }
 }
 
@@ -210,7 +211,7 @@ proc plotDoubleClick {id} {
     pack .plot$id.menubar  -side top -fill x
     pack .plot$id.label
     
-    plots.addImage $id .plot$id.image
+    plot.addImage .plot$id.image
 
     # calculate the difference between the window and image sizes
     update
@@ -222,7 +223,7 @@ proc plotDoubleClick {id} {
     
 proc deletePlot {id} {
     .wiring.canvas delete item$id
-    minsky.item $id
+    minsky.deleteItem $id
     updateCanvas
 }
     
