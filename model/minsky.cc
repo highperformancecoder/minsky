@@ -164,6 +164,7 @@ namespace minsky
     model->clear();
     equations.clear();
     integrals.clear();
+    variableValues.clear();
     
     flowVars.clear();
     stockVars.clear();
