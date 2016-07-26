@@ -8,10 +8,11 @@ puts $dat "d=\["
 
 for {set i 0} {$i<7} {incr i} {
     puts -nonewline $dat "\[[minsky.t] "
-    foreach var [minsky.variables.stockVars] {
-        #minsky.value.get "$var"
-        puts -nonewline $dat "[[minsky.variables.values.@elem $var].value] "
-        #####[minsky.value.value] "
+    foreach var [minsky.variableValues.#keys] {
+        minsky.value.get "$var"
+        if {![minsky.value.isFlowVar]} {
+            puts -nonewline $dat "[minsky.value.value] "
+        }
     }
     puts $dat "\];"
     minsky.step
