@@ -75,6 +75,7 @@ namespace minsky
     std::unique_ptr<TclExtend<std::shared_ptr<V> > > ref;
     std::shared_ptr<V> val;
     string cmdPrefix;
+    K key;
   public:
 
     template <class T>
@@ -100,7 +101,6 @@ namespace minsky
     void get(TCL_args args) {
       cmdPrefix=(char*)args[-1];
       cmdPrefix.erase(cmdPrefix.rfind(".get"));
-      K key;
       TCL_args tmp(args);
       tmp>>key;
       typename M::iterator i=map.find(key);
@@ -108,6 +108,7 @@ namespace minsky
         setRef(*i);
       else
         throw error("object not found: %s[%s]",(char*)args[-1],(char*)args[0]);
+      TCL_obj(minskyTCL_obj(), cmdPrefix+".id", key);
     }
     // for backward compatibility
     void set(TCL_args args) {}
@@ -277,9 +278,19 @@ namespace minsky
     void cut()
     {
       // need to clear getters/setters before calling Minsky::cut(),
-      // to remove extraneous references
+      // as well as minskTCL's maps to remove extraneous references
       clearAllGetterSetters();
+      items.clear();
+      wires.clear();
       Minsky::cut();
+      buildMaps();
+    }
+
+    int paste()
+    {
+      int r=getNewId();
+      items[r]=Minsky::paste();
+      return r;
     }
       
     void putClipboard(const std::string& s) const override; 

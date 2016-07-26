@@ -292,6 +292,7 @@ namespace minsky
       model->removeGroup(*i);
     for (auto& i: currentSelection.wires)
       model->removeWire(*i);
+    garbageCollect();
 #ifndef NDEBUG
     for (auto& i: currentSelection.items)
       assert(i.use_count()==1);
@@ -300,7 +301,6 @@ namespace minsky
     for (auto& i: currentSelection.wires)
       assert(i.use_count()==1);
 #endif
-    garbageCollect();
     currentSelection.clear();
   }
 

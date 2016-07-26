@@ -667,8 +667,8 @@ proc insertNewGroup {gid} {
     global moveOffsgroup$gid.x moveOffsgroup$gid.y
 
     group.get $gid
-    moveSet group $gid [group.x] [group.y] 
-    move group $gid [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+    moveSet $gid [group.x] [group.y] 
+    move $gid [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 
     bind .wiring.canvas <Enter> "move group $gid %x %y"
     bind .wiring.canvas <Motion> "move group $gid %x %y"

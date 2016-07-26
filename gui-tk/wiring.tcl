@@ -1404,10 +1404,9 @@ proc deiconifyEditVar {} {
         button .wiring.editVar.buttonBar.ok -text OK -command {
             .wiring.canvas delete all
     
-            var.get $editVarInput(id)
             convertVarType [var.valueId] $editVarInput(Type)
             setItem var name {set "editVarInput(Name)"}
-            makeVariableConsistentWithValue $id
+            makeVariablesConsistent
             setItem var init {set "editVarInput(Initial Value)"}
             setItem var rotation  {set editVarInput(Rotation)}
             setItem var tooltip  {set "editVarInput(Short description)"}
@@ -1416,7 +1415,7 @@ proc deiconifyEditVar {} {
             setItem var sliderMin  {set "editVarInput(Slider Bounds: Min)"}
             setItem var sliderStep  {set "editVarInput(Slider Step Size)"}
             setItem var sliderStepRel  {set editVarInput(relative)}
-            setSliderProperties $editVarInput(id)
+            setSliderProperties
             closeEditWindow .wiring.editVar
             updateCanvas
         }
@@ -1691,6 +1690,7 @@ proc setIntegralIValue {} {
 }
 
 proc editVar {} {
+    global editVarInput
             value.get [var.valueId]
             deiconifyEditVar
             wm title .wiring.editVar "Edit [var.name]"
@@ -1698,7 +1698,6 @@ proc editVar {} {
             .wiring.editVar.entry10 configure -values [variableValues.#keys]
 
             set "editVarInput(Name)" [var.name]
-            set editVarInput(id) $id
             set "editVarInput(Type)" [var.type]
 
             set "editVarInput(Initial Value)" [value.init]
@@ -1778,7 +1777,8 @@ proc editItem {id} {
                 # value needs to be regotten, as var name may have changed
                 set constInput(command) "
                         $setValue
-                        setSliderProperties $id
+                        var.get $id
+                        setSliderProperties
                         setItem op rotation {set constInput(Rotation)}
                         closeEditWindow .wiring.editConstant
                     "
@@ -1809,9 +1809,8 @@ proc setVarVal {v x} {
     resetNotNeeded
 }
 
-proc setSliderProperties {id} {
-    if [winfo  exists .wiring.slider$id] {
-        var.get $id
+proc setSliderProperties {} {
+    if [winfo  exists .wiring.slider[var.id]] {
         var.initSliderBounds
         if [var.sliderStepRel] {
             set res [expr [var.sliderStep]*([var.sliderMax]-[var.sliderMin])]
@@ -1831,7 +1830,7 @@ proc setSliderProperties {id} {
         # ensure slider does not override value
         var.adjustSliderBounds
 
-        .wiring.slider$id configure -to [var.sliderMax] \
+        .wiring.slider[var.id] configure -to [var.sliderMax] \
             -from [var.sliderMin] -resolution $res
         if [catch .wiring.slider$id set [var.init]] {
             .wiring.slider$id set [var.value]
@@ -1863,7 +1862,7 @@ proc drawSlider {var x y} {
                 -showvalue 1 -sliderlength 30 
         }
 
-        setSliderProperties $var
+        setSliderProperties
 
         # configure command after slider initially set to prevent
         # constant value being set to initial state of slider when
