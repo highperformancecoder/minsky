@@ -37,7 +37,7 @@ EOF
 
 touch readonly.mky
 chmod a-w readonly.mky
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass
