@@ -319,7 +319,7 @@ proc textInput {char} {
             var.rotation $globals(default_rotation)
             var.moveTo $x $y
             initGroupList
-            newVar $id
+            newItem $id
         } else {
             set id [minsky.newNote]
             item.get $id

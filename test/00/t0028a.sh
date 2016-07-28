@@ -35,36 +35,37 @@ proc afterMinskyStarted {} {
 uplevel #0 {
 
 addVariable
+set varInput(Name) "foo"
 .wiring.initVar.buttonBar.ok invoke
 event generate .wiring.canvas <Button-1>
-assert {[variables.size]==1}
+assert {[items.size]==1}
 
 addConstant
 .wiring.initVar.buttonBar.ok invoke
 event generate .wiring.canvas <Button-1>
-assert {[variables.size]==2}
+assert {[items.size]==2}
 
 addOperationKey add
-assert {[operations.size]==1}
+assert {[items.size]==3}
 
 textInput a
 textInput \r
-assert {[variables.size]==3}
+assert {[items.size]==4}
 textInput %
 textInput a
 deleteKey
 textInput b
 textInput \r
-assert {[notes.size]==1}
-assert {[note.detailedText]=="b"}
+assert {[items.size]==5}
+assert {[item.detailedText]=="b"}
 
-addNewGodleyItem [addGodleyTable 10 10]
+addNewGodleyItem
 event generate .wiring.canvas <Button-1>
-assert {[godleyItems.size]==1}
+assert {[items.size]==6}
 
 newPlot
 event generate .wiring.canvas <Button-1>
-assert {[plots.size]==1}
+assert {[items.size]==7}
 
 
 resetEdited
@@ -73,7 +74,7 @@ exit
 EOF
 
 cp $here/test/assert.tcl .
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass
