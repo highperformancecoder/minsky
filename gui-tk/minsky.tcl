@@ -670,16 +670,18 @@ proc insertNewGroup {gid} {
     moveSet $gid [group.x] [group.y] 
     move $gid [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 
-    bind .wiring.canvas <Enter> "move group $gid %x %y"
-    bind .wiring.canvas <Motion> "move group $gid %x %y"
+    bind .wiring.canvas <Enter> "move $gid %x %y"
+    bind .wiring.canvas <Motion> "move $gid %x %y"
     bind .wiring.canvas <Button-1> \
         "bind .wiring.canvas <Motion> {}
          bind .wiring.canvas <Enter> {}
          bind .wiring.canvas <Button-1>{}
          # redo this here, as binding on a group undoes it
-         initGroupList $gid
-         checkAddGroup group $gid %x %y
-         setInteractionMode"
+#         initGroupList $gid
+         move $gid %x %y
+         puts {in button 1 event}
+         checkAddGroup $gid %x %y
+#         setInteractionMode"
 }
 
 # adjust canvas so that -ve coordinates appear on canvas

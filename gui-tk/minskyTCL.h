@@ -353,6 +353,9 @@ namespace minsky
           }
     }
      
+    /// returns the id of the group containing \a item
+    int groupOf(int item);
+
     /// create a new item that is a copy of item
     int copyItem() {
       int r=-1;
@@ -399,8 +402,14 @@ namespace minsky
 
     /// checks whether item \a id needs to be moved to a different
     /// group, and do the move if so
-    /// @return true if the item moved between groups
-    bool checkAddGroup(int id, float x, float y);
+    void checkAddGroup(int id, float x, float y);
+
+    int insertGroupFromFile(const char* file) {
+      int r=-1;
+      if (auto g=Minsky::insertGroupFromFile(file))
+        items[r=getNewId()]=g;
+      return r;
+    }
 
     void adjustItemWires(Item* it);
 

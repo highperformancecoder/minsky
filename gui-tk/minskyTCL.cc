@@ -322,7 +322,7 @@ namespace minsky
       return g->localZoom();
   }
 
-  bool MinskyTCL::checkAddGroup(int id, float x, float y)
+  void MinskyTCL::checkAddGroup(int id, float x, float y)
   {
     auto i=items.find(id);
     if (i!=items.end())
@@ -334,7 +334,7 @@ namespace minsky
       else if ((*i)->group.lock()!=model)
         model->addItem(*i);
   }
- 
+
   namespace 
   {
     template <class W>
@@ -382,6 +382,16 @@ namespace minsky
       }
   }
 
+  int MinskyTCL::groupOf(int item)
+  {
+    auto i=items.find(item);
+    if (i!=items.end())
+      if (auto g=(*i)->group.lock())
+        for (auto& j: items)
+          if (j.get()==g.get())
+            return j.id();
+    return -1;
+  }
 
   void MinskyTCL::makeVariableConsistentWithValue(int id) 
   {

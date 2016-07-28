@@ -163,15 +163,13 @@ proc groupEdit {id} {
     group.get $id
     deiconifyEditGroup
     .wiring.editGroup.name.val delete 0 end
-    .wiring.editGroup.name.val insert 0 [group.name]
+    .wiring.editGroup.name.val insert 0 [group.title]
     .wiring.editGroup.rot.val delete 0 end
     .wiring.editGroup.rot.val insert 0 [group.rotation]
     .wiring.editGroup.buttonBar.ok configure \
         -command {
-            group.setName [.wiring.editGroup.name.val get]
-            group.rotate [expr [.wiring.editGroup.rot.val get]-[group.rotation]]
-            group.updatePortLocation
-            group.set
+            group.rotation [expr [.wiring.editGroup.rot.val get]-[group.rotation]]
+            group.title [.wiring.editGroup.name.val get]
             closeEditWindow .wiring.editGroup
         }
     grab .wiring.editGroup
@@ -234,7 +232,10 @@ namespace eval group {
         bind .wiring.canvas <ButtonRelease> {}
     }
 
-    proc copy {id} {insertNewGroup [copyGroup $id]}
+    proc copy {id} {
+        item.get $id
+        insertNewGroup [copyItem $id]
+    }
 
     proc save {id} {
         global workDir
@@ -294,6 +295,17 @@ namespace eval group {
             updateCanvas
             unset lassoStart
         }
+    }
+}
+
+proc checkAddGroup {id x y} {
+  puts "checkAddGroup $id $x $y"
+  minsky.checkAddGroup $id $x $y
+  item.get $id
+    if [item.visible] {
+        redraw $id
+    } else {
+        .wiring.canvas delete item$id
     }
 }
 

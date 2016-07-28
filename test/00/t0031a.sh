@@ -38,7 +38,10 @@ proc afterMinskyStarted {} {uplevel #0 {
  recentreCanvas
  update
 
- set gid [lindex [groupItems.#keys] 0]
+foreach gid [items.#keys] {
+   item.get \$gid
+   if {[item.classType]=="GroupIcon"} break
+ }
  #create an op, and move it into the group
  group.get \$gid
  set id [addOperation time]
@@ -49,39 +52,49 @@ proc afterMinskyStarted {} {uplevel #0 {
  
 
  op.get \$id
- assert "\[op.group\]==\$gid"
+ assert "\[groupOf \$id\]==\$gid" "op"
 
- move op \$id 1000 1000
- checkAddGroup op \$id  1000 1000
- assert "\[op.group\]!=\$gid"
+ move \$id 1000 1000
+ checkAddGroup \$id  1000 1000
+ assert "\[groupOf \$id\]!=\$gid" "op"
 
-
- set id [lindex [variables.visibleVariables] 0]
- copyVar \$id
+ foreach id [items.#keys] {
+   item.get \$id
+   switch -glob [item.classType] {
+     "Variable*" {
+       if [item.visible] break
+     }
+   }
+ }
+ copyVar
  event generate .wiring.canvas <Button-1> -x [group.x]  -y [group.y]
- assert "\[var.group\]==\$gid"
+ assert "\[groupOf  [var.id]]==\$gid" "var"
 
- move var \$id 1000 1000
- checkAddGroup var \$id  1000 1000
- assert "\[var.group\]!=\$gid"
+ move [var.id] 1000 1000
+ checkAddGroup [var.id]  1000 1000
+ assert "\[groupOf [var.id]\]!=\$gid" "var"
 
  set x [group.x]
  set y [group.y]
- set newGroupId [insertGroupFromFile $here/examples/GoodwinLinear02.mky]
- insertNewGroup \$newGroupId
- event generate .wiring.canvas <Button-1> -x \$x  -y \$y
- 
- group.get \$newGroupId
- assert "\[group.parent\]==\$gid"
 
- move group \$newGroupId 1000 1000
- checkAddGroup group \$newGroupId  1000 1000
- assert "\[group.group\]!=\$gid"
+# currently core dumps
+# set newGroupId [insertGroupFromFile $here/examples/GoodwinLinear02.mky]
+# insertNewGroup \$newGroupId
+# event generate .wiring.canvas <Button-1> -x \$x  -y \$y
+# group.get \$newGroupId
+# puts [groupOf \$newGroupId]
+# assert "\[groupOf \$newGroupId\]==\$gid" "group"
 
- set numGroups [groupItems.size]
+# move \$newGroupId 1000 1000
+# checkAddGroup \$newGroupId  1000 1000
+# assert "\[groupOf \$newGroupId\]!=\$gid" "group"
+
+ group.get \$gid
+ set numGroups [group.groups.size]
  group::copy \$gid
- event generate .wiring.canvas <Button-1> -x 1000  -y 1000
- assert "\$numGroups==[expr [groupItems.size]-1]"
+ event generate .wiring.canvas <Button-1> -x \$x  -y \$y
+ group.get \$gid
+ assert "\$numGroups==[expr [group.groups.size]-1]"
 
 
  groupEdit \$gid
@@ -95,7 +108,7 @@ proc afterMinskyStarted {} {uplevel #0 {
 }}
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

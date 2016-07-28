@@ -1107,7 +1107,7 @@ proc contextMenu {id x y} {
             .wiring.context add checkbutton -label "Slider" \
                 -command "drawSlider $id $x $y" \
                 -variable "sliderCheck$id"
-            .wiring.context add command -label "Copy" -command "copyVar $id"
+            .wiring.context add command -label "Copy" -command "var.get $id; copyVar"
             if {[var.type]=="flow" && ![inputWired [var.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral [var.name]"
             }
@@ -1309,11 +1309,10 @@ proc deleteItem {id tag} {
 
 proc copyVar {} {
     global globals
-    set newId [copyVariable]
-    newVar $newId
+    set newId [copyItem]
     var.get $newId
     var.rotation $globals(default_rotation)
-    var.set
+    newItem $newId
     placeNewVar $newId
 }
 
