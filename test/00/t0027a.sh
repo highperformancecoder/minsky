@@ -47,14 +47,18 @@ reset
 assert {[t]==0}
 resetEdited
 newSystem
-assert {[minsky.variables.size]==0}
+assert {[minsky.items.size]==0}
+assert {[minsky.wires.size]==0}
+assert {[minsky.model.items.size]==0}
+assert {[minsky.model.wires.size]==0}
+assert {[minsky.model.groups.size]==0}
 resetEdited
 exit
 }}
 EOF
 
 cp $here/test/assert.tcl .
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass
