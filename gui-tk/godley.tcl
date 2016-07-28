@@ -557,7 +557,7 @@ proc whenIdleUpdateGodley {id} {
 
     godley.update
     godley.set
-    updateGodleyItem $id
+    redraw $id
     global updateGodleyLaunched
     set updateGodleyLaunched 0
     update

@@ -303,7 +303,7 @@ namespace minsky
     if (gi!=items.end())
       {
         auto v=(*gi)->select(x,y);
-        var.setRef(v);
+        var.setRef(v,"minsky.var");        
         return v->type()!=VariableType::undefined;
       }
     return false;
@@ -385,6 +385,7 @@ namespace minsky
 
   void MinskyTCL::makeVariableConsistentWithValue(int id) 
   {
+    clearAllGetterSetters();
     auto i=items.find(id);
     if (i!=items.end())
       if (auto v=dynamic_cast<VariableBase*>(i->get()))
@@ -400,7 +401,6 @@ namespace minsky
                   g->removeItem(**i);
                   g->addItem(v);
                   *i=v;
-                  var.setRef(v);
                 }
             }
         }
@@ -409,7 +409,7 @@ namespace minsky
   int TclExtend<std::shared_ptr<minsky::IntOp>>::getIntVar() 
   {
     auto& m=dynamic_cast<MinskyTCL&>(minsky());
-    m.var.setRef(ref->intVar);
+    m.var.setRef(ref->intVar,"minsky.var");
     for (auto& i: m.items)
       if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
         return i.id();

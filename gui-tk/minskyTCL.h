@@ -79,7 +79,7 @@ namespace minsky
   public:
 
     template <class T>
-    void setRef(const std::shared_ptr<T>& v) {
+    void setRef(const std::shared_ptr<T>& v, const std::string& cmdPrefix) {
       auto tmp=std::dynamic_pointer_cast<V>(v);
       if (!tmp)
         throw error("object not of type %s",typeName<V>().c_str());
@@ -105,7 +105,7 @@ namespace minsky
       tmp>>key;
       typename M::iterator i=map.find(key);
       if (i!=map.end()) 
-        setRef(*i);
+        setRef(*i, cmdPrefix);
       else
         throw error("object not found: %s[%s]",(char*)args[-1],(char*)args[0]);
       TCL_obj(minskyTCL_obj(), cmdPrefix+".id", key);

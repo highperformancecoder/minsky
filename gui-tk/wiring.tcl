@@ -563,7 +563,7 @@ proc move {id x y} {
 proc newItem {id} {
     item.get $id
     .wiring.canvas create item [item.x] [item.y] -id $id -tags "items item$id"
-    .wiring.canvas bind item$id <Double-Button-1> "doubleClick item$id %X %Y"
+    .wiring.canvas bind item$id <Double-Button-1> "editItem $id %X %Y"
     .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
     .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
     .wiring.canvas bind item$id <Button-1> "onClick $id item$id %x %y"
@@ -667,12 +667,10 @@ proc rightMouseGodley {id x y X Y} {
 }
 
 proc doubleMouseGodley {id x y} {
-    godley.get $id
-    set var [godley.select [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-    if {$var==-1} {
-        openGodley $id
+    if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
+        editVar
     } else {
-        editItem $var
+        openGodley $id
     }
 }
 
@@ -974,22 +972,22 @@ proc indicateCanvasItemInError {x y} {
 
 menu .wiring.context -tearoff 0
 
-proc doubleClick {item x y} {
-    # find out what type of item we're referring to
-    set tags [.wiring.canvas gettags $item]
-    switch -regexp $tags {
-        "variables" {
-            set tag [lindex $tags [lsearch -regexp $tags {var[0-9]+}]]
-            set id [string range $tag 3 end]
-            editItem $id
-        }
-        "operations" {
-            set tag [lindex $tags [lsearch -regexp $tags {op[0-9]+}]]
-            set id [string range $tag 2 end]
-            editItem $id
-        }
-    }
-}
+#proc doubleClick {item x y} {
+#    # find out what type of item we're referring to
+#    item.get $item
+#    switch -glob [item.classType] {
+#        "Variable*" {
+#            set tag [lindex $tags [lsearch -regexp $tags {var[0-9]+}]]
+#            set id [string range $tag 3 end]
+#            editItem $id
+#        }
+#        "operations" {
+#            set tag [lindex $tags [lsearch -regexp $tags {op[0-9]+}]]
+#            set id [string range $tag 2 end]
+#            editItem $id
+#        }
+#    }
+#}
 
 proc toggleCoupled {id} {
     integral.get $id
@@ -1693,29 +1691,29 @@ proc editVar {} {
     global editVarInput
             value.get [var.valueId]
             deiconifyEditVar
-            wm title .wiring.editVar "Edit [var.name]"
+            wm title .wiring.editVar "Edit [minsky.var.name]"
             # populate combobox with existing variable names
             .wiring.editVar.entry10 configure -values [variableValues.#keys]
 
-            set "editVarInput(Name)" [var.name]
-            set "editVarInput(Type)" [var.type]
+            set "editVarInput(Name)" [minsky.var.name]
+            set "editVarInput(Type)" [minsky.var.type]
 
             set "editVarInput(Initial Value)" [value.init]
-            set "editVarInput(Rotation)" [var.rotation]
-            set "editVarInput(Slider Bounds: Max)" [var.sliderMax]
-            set "editVarInput(Slider Bounds: Min)" [var.sliderMin]
-            set "editVarInput(Slider Step Size)" [var.sliderStep]
-            set "editVarInput(relative)" [var.sliderStepRel]
-            set "editVarInput(Short description)" [var.tooltip]
-            set "editVarInput(Detailed description)" [var.detailedText]
-            if {[value.godleyOverridden] || [inputWired [var.valueId]]} {
+            set "editVarInput(Rotation)" [minsky.var.rotation]
+            set "editVarInput(Slider Bounds: Max)" [minsky.var.sliderMax]
+            set "editVarInput(Slider Bounds: Min)" [minsky.var.sliderMin]
+            set "editVarInput(Slider Step Size)" [minsky.var.sliderStep]
+            set "editVarInput(relative)" [minsky.var.sliderStepRel]
+            set "editVarInput(Short description)" [minsky.var.tooltip]
+            set "editVarInput(Detailed description)" [minsky.var.detailedText]
+            if {[value.godleyOverridden] || [inputWired [minsky.var.valueId]]} {
                 $editVarInput(initial_focus_value) configure -state disabled  -foreground gray
 		::tk::TabToWindow $editVarInput(initial_focus_rotation)
             } else {
                 $editVarInput(initial_focus_value) configure -state normal  -foreground black
 		::tk::TabToWindow $editVarInput(initial_focus_value)
              }
-            set editVarInput(title) "[var.name]: Value=[value.value]"
+            set editVarInput(title) "[minsky.var.name]: Value=[value.value]"
 	    tkwait visibility .wiring.editVar
 	    grab set .wiring.editVar
 	    wm transient .wiring.editVar
@@ -1810,12 +1808,12 @@ proc setVarVal {v x} {
 }
 
 proc setSliderProperties {} {
-    if [winfo  exists .wiring.slider[var.id]] {
-        var.initSliderBounds
+    if {[llength [info command minsky.var.id]] && [winfo  exists .wiring.slider[minsky.var.id]]} {
+        minsky.var.initSliderBounds
         if [var.sliderStepRel] {
-            set res [expr [var.sliderStep]*([var.sliderMax]-[var.sliderMin])]
+            set res [expr [minsky.var.sliderStep]*([minsky.var.sliderMax]-[minsky.var.sliderMin])]
         } else {
-            set res [var.sliderStep]
+            set res [minsky.var.sliderStep]
         }
         
         # ensure resolution is accurate enough to not mutate variable value
@@ -1828,12 +1826,12 @@ proc setSliderProperties {} {
        if {$newRes<$res} {set res $newRes}
 
         # ensure slider does not override value
-        var.adjustSliderBounds
+        minsky.var.adjustSliderBounds
 
-        .wiring.slider[var.id] configure -to [var.sliderMax] \
-            -from [var.sliderMin] -resolution $res
-        if [catch .wiring.slider$id set [var.init]] {
-            .wiring.slider$id set [var.value]
+        .wiring.slider[minsky.var.id] configure -to [minsky.var.sliderMax] \
+            -from [minsky.var.sliderMin] -resolution $res
+        if [catch .wiring.slider$id set [minsky.var.init]] {
+            .wiring.slider$id set [minsky.var.value]
         }
     }
 }
