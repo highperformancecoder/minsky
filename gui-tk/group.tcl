@@ -299,7 +299,6 @@ namespace eval group {
 }
 
 proc checkAddGroup {id x y} {
-  puts "checkAddGroup $id $x $y"
   minsky.checkAddGroup $id $x $y
   item.get $id
     if [item.visible] {

@@ -63,13 +63,13 @@ namespace MathDAG
       }
     };
 
-    struct NoArgument
+    struct NoArgument: public std::exception
     {
       OperationPtr state;
       unsigned argNum1, argNum2;
       NoArgument(const OperationPtr& s, unsigned a1, unsigned a2): 
         state(s), argNum1(a1), argNum2(a2) {}
-      const char* what() const {
+      const char* what() const noexcept override {
         if (state)
           minsky::minsky().displayErrorItem(state->x(),state->y());
         return ("missing argument "+str(argNum1)+","+str(argNum2)+

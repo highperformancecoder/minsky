@@ -77,17 +77,15 @@ foreach gid [items.#keys] {
  set x [group.x]
  set y [group.y]
 
-# currently core dumps
-# set newGroupId [insertGroupFromFile $here/examples/GoodwinLinear02.mky]
-# insertNewGroup \$newGroupId
-# event generate .wiring.canvas <Button-1> -x \$x  -y \$y
-# group.get \$newGroupId
-# puts [groupOf \$newGroupId]
-# assert "\[groupOf \$newGroupId\]==\$gid" "group"
+ set newGroupId [insertGroupFromFile $here/examples/GoodwinLinear02.mky]
+ insertNewGroup \$newGroupId
+ event generate .wiring.canvas <Button-1> -x \$x  -y \$y
+ group.get \$newGroupId
+ assert "\[groupOf \$newGroupId\]==\$gid" "group"
 
-# move \$newGroupId 1000 1000
-# checkAddGroup \$newGroupId  1000 1000
-# assert "\[groupOf \$newGroupId\]!=\$gid" "group"
+ move \$newGroupId 1000 1000
+ checkAddGroup \$newGroupId  1000 1000
+ assert "\[groupOf \$newGroupId\]!=\$gid" "group"
 
  group.get \$gid
  set numGroups [group.groups.size]

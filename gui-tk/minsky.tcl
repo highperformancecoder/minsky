@@ -679,7 +679,6 @@ proc insertNewGroup {gid} {
          # redo this here, as binding on a group undoes it
 #         initGroupList $gid
          move $gid %x %y
-         puts {in button 1 event}
          checkAddGroup $gid %x %y
 #         setInteractionMode"
 }

@@ -701,7 +701,7 @@ namespace minsky
   {
     auto toGodleyIcon=[](const ItemPtr& i) {return dynamic_cast<GodleyIcon*>(i.get());};
     auto godleyItems=model->findAll<GodleyIcon*>
-      (toGodleyIcon, &Group::items, toGodleyIcon);
+      (toGodleyIcon, &GroupItems::items, toGodleyIcon);
     evalGodley.initialiseGodleys(GodleyIt(godleyItems.begin()), 
                                  GodleyIt(godleyItems.end()), variableValues);
   }

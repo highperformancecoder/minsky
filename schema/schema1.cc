@@ -895,7 +895,8 @@ namespace schema1
 
       struct DuplicateError: public std::exception
       {
-        const char* what() {return "duplicate item processed";}
+        const char* what() const noexcept override 
+        {return "duplicate item processed";}
       };
 
       void processGroup(Group& s1g, const minsky::Group& g)
@@ -982,6 +983,14 @@ namespace schema1
   Minsky::Minsky(const minsky::Group& g)
   {
     Group topLevel;
+    // need to reserve enough memory on the group vector to prevent groups being moved
+    size_t cnt=0;
+    g.recursiveDo(&minsky::GroupItems::groups, 
+                  [&](const minsky::Groups&,minsky::Groups::const_iterator) {
+                    cnt++; return false;
+                  });
+    model.groups.reserve(cnt);
+
     PopulateMinsky(*this).processGroup(topLevel,g);
   }    
 

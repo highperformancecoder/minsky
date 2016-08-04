@@ -34,7 +34,65 @@ namespace minsky
 
   SVGRenderer Group::svgRenderer;
 
-  ItemPtr Group::removeItem(const Item& it)
+  // assigned the cloned equivalent of a port
+  void asgClonedPort(shared_ptr<Port>& p, const map<Item*,ItemPtr>& cloneMap)
+  {
+    auto clone=cloneMap.find(&p->item);
+    auto& oports=p->item.ports;
+    if (clone!=cloneMap.end())
+      {
+        auto opIt=find(oports.begin(), oports.end(), p);
+        assert(opIt != oports.end());
+        // set the new port to have the equivalent position in the clone
+        p=clone->second->ports[opIt-oports.begin()];
+      }
+  }
+
+  GroupItems& GroupItems::operator=(const GroupItems& x)
+  {
+    if (&x==this) return *this;
+    clear();
+    // a map of original to cloned items (weak references)
+    map<Item*,ItemPtr> cloneMap;
+    for (auto& i: x.items) cloneMap[i.get()]=addItem(i->clone());
+    for (auto& i: x.groups) cloneMap[i.get()]=addGroup(i->clone());
+    for (auto& w: x.wires) 
+      {
+        auto f=w->from(), t=w->to();
+        asgClonedPort(f,cloneMap);
+        asgClonedPort(t,cloneMap);
+        addWire(new Wire(f,t,w->coords()));
+      }
+
+    for (auto& v: x.inVariables)
+      {
+        assert(cloneMap.count(v.get()));
+        inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+      }
+    for (auto& v: x.outVariables)
+      {
+        assert(cloneMap.count(v.get()));
+        outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+      }
+    return *this;
+  }
+
+  shared_ptr<Group> Group::self() const
+  {
+    if (auto parent=group.lock())
+      {
+        for (auto& g: parent->groups)
+          if (g.get()==this)
+            return g;
+      }
+    else // check if we're the global group
+      if (cminsky().model.get()==this)
+        return cminsky().model;
+    else
+      return shared_ptr<Group>();
+  }
+
+  ItemPtr GroupItems::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
@@ -50,7 +108,7 @@ namespace minsky
     return ItemPtr();
   }
        
-  WirePtr Group::removeWire(const Wire& w)
+  WirePtr GroupItems::removeWire(const Wire& w)
   {
     for (auto i=wires.begin(); i!=wires.end(); ++i)
       if (i->get()==&w)
@@ -66,7 +124,7 @@ namespace minsky
     return WirePtr();
   }
 
-  GroupPtr Group::removeGroup(const Group& group)
+  GroupPtr GroupItems::removeGroup(const Group& group)
   {
     for (auto i=groups.begin(); i!=groups.end(); ++i)
       if (i->get()==&group)
@@ -82,7 +140,7 @@ namespace minsky
     return GroupPtr();
   }
        
-  ItemPtr Group::findItem(const Item& it) const 
+  ItemPtr GroupItems::findItem(const Item& it) const 
   {
     // start by looking in the group it thnks it belongs to
     if (auto g=it.group.lock())
@@ -95,7 +153,7 @@ namespace minsky
   }
 
 
-  ItemPtr Group::addItem(const shared_ptr<Item>& it)
+  ItemPtr GroupItems::addItem(const shared_ptr<Item>& it)
   {
     assert(it);
     if (auto x=dynamic_pointer_cast<Group>(it))
@@ -109,7 +167,8 @@ namespace minsky
     if (origGroup)
       origGroup->removeItem(*it);
 
-    it->group=self.lock();
+    if (auto _this=dynamic_cast<Group*>(this))
+      it->group=_this->self();
     it->moveTo(x,y);
 
     // move wire to highest common group
@@ -139,7 +198,7 @@ namespace minsky
     return items.back();
   }
 
-  void Group::adjustWiresGroup(Wire& w)
+  void GroupItems::adjustWiresGroup(Wire& w)
   {
     // Find common ancestor group, and move wire to it
     assert(w.from() && w.to());
@@ -195,37 +254,32 @@ namespace minsky
 
   }
 
-  namespace 
+  bool Group::nocycles() const
   {
-    bool nocycles(const Group& g)
-    {
-      set<const Group*> sg;
-      sg.insert(&g);
-      for (auto i=g.group.lock(); i; i=i->group.lock())
-        if (!sg.insert(i.get()).second)
-          return false;
-      return true;
-    }
+    set<const Group*> sg;
+    sg.insert(this);
+    for (auto i=group.lock(); i; i=i->group.lock())
+      if (!sg.insert(i.get()).second)
+        return false;
+    return true;
   }
 
-  GroupPtr Group::addGroup(const std::shared_ptr<Group>& g)
+  GroupPtr GroupItems::addGroup(const std::shared_ptr<Group>& g)
   {
     auto origGroup=g->group.lock();
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
       origGroup->removeGroup(*g);
-    g->group=self;
-    g->self=g;
+    if (auto _this=dynamic_cast<Group*>(this))
+      g->group=_this->self();
     groups.push_back(g);
-    assert(nocycles(*this));
+    assert(nocycles());
     return groups.back();
   }
 
-  WirePtr Group::addWire(const std::shared_ptr<Wire>& w)
+  WirePtr GroupItems::addWire(const std::shared_ptr<Wire>& w)
   {
     assert(w->from() && w->to());
-    assert(nocycles(*w->from()->item.group.lock()));
-    assert(nocycles(*w->to()->item.group.lock()));
     wires.push_back(w);
     return wires.back();
   }
@@ -243,7 +297,7 @@ namespace minsky
 
   unsigned Group::level() const
   {
-    assert(nocycles(*this));
+    assert(nocycles());
     unsigned l=0;
     for (auto i=group.lock(); i; i=i->group.lock()) l++;
     return l;
