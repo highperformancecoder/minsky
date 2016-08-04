@@ -37,7 +37,10 @@ proc afterMinskyStarted {} {uplevel #0 {
  minsky.load $here/examples/GoodwinLinear02.mky
  recentreCanvas
  updateCanvas
- set gid [lindex [groupItems.#keys] 0]
+ foreach gid [items.#keys] {
+   item.get \$gid
+   if {[item.classType]=="Group"} break
+ }
  group.get \$gid
  set x [group.x]
  set y [group.y]
@@ -60,7 +63,7 @@ proc afterMinskyStarted {} {uplevel #0 {
 }}
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

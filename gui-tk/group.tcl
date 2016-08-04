@@ -178,7 +178,7 @@ proc groupEdit {id} {
 namespace eval group {
     proc resize {id} {
         group.get $id
-        set bbox [.wiring.canvas bbox group$id]
+        set bbox [.wiring.canvas bbox item$id]
         variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
         variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
         variable orig_x [group.x]
