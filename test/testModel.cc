@@ -33,8 +33,9 @@ namespace
     GroupPtr group0;
     ItemPtr a,b,c;
     WirePtr ab,bc; 
+    LocalMinsky lm;
 
-    TestFixture()
+    TestFixture(): lm(*this)
     {
      a=model->addItem(new Variable<VariableType::flow>);
      b=model->addItem(new Variable<VariableType::flow>);
