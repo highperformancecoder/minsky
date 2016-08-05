@@ -36,6 +36,8 @@ for i in *.mky; do
   # deal with different GIF renderers on developer machine as on Travis
   # test passes if either rendered equations match
   if test $? -ne 0; then 
+      sha1sum $i.gif 
+      sha1sum $here/test/renderedEquations/$i.gif
       diff $i.gif $here/test/altRenderedEquations/$i.gif
       if test $? -ne 0; then fail; fi
   fi
