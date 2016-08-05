@@ -230,7 +230,7 @@ proc deletePlot {id} {
 namespace eval plot {
     proc resize {id} {
         plot.get $id
-        set bbox [.wiring.canvas bbox plot$id]
+        set bbox [.wiring.canvas bbox item$id]
         variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
         variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
         variable orig_x [plot.x]
@@ -272,11 +272,7 @@ namespace eval plot {
         plot.width [expr int(ceil(abs($scalex*[plot.width])))]
         plot.height [expr int(ceil(abs($scaley*[plot.height])))]
 
-        .wiring.canvas delete plot$id
-        newPlotItem $id [plot.x] [plot.y]
-        foreach p [plot.ports]  {
-            adjustWire $p
-        }
+        redraw $id
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
     }
