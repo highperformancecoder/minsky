@@ -133,7 +133,10 @@ namespace schema1
       if (auto c=dynamic_cast<minsky::Constant*>(&x))
         c->value=y.value;
       if (auto d=dynamic_cast<minsky::DataOp*>(&x))
-        d->data=y.data;
+        {
+          d->data=y.data;
+          d->description=y.name;
+        }
     }
 
     void Combine::combine(minsky::VariableBase& x, const Variable& y) const
