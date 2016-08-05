@@ -288,9 +288,12 @@ namespace minsky
 
     int paste()
     {
-      int r=getNewId();
-      items[r]=Minsky::paste();
-      return r;
+      auto g=Minsky::paste();
+      buildMaps();
+      // find the newly added group
+      for (auto& i: items)
+        if (i==g) return i.id();
+      return -1;
     }
       
     void putClipboard(const std::string& s) const override; 

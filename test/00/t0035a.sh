@@ -33,7 +33,12 @@ for i in *.mky; do
   echo $i
   $here/gui-tk/minsky $here/test/renderEquations.tcl $i
   diff $i.gif $here/test/renderedEquations/$i.gif
-  if test $? -ne 0; then fail; fi
+  # deal with different GIF renderers on developer machine as on Travis
+  # test passes if either rendered equations match
+  if test $? -ne 0; then 
+      diff $i.gif $here/test/altRenderedEquations/$i.gif
+      if test $? -ne 0; then fail; fi
+  fi
 done
 
 pass
