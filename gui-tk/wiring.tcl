@@ -686,7 +686,7 @@ proc createWire {coords} {
 proc newWire {wireid} {
     wire.get $wireid
     .wiring.canvas addtag wire$wireid withtag [createWire [wire.coords]]  
-    .wiring.canvas bind wire$wireid <Enter> "decorateWire $wireid; set itemFocused 1"
+    .wiring.canvas bind wire$wireid <Enter> "submitDecorateWire $wireid; set itemFocused 1"
     .wiring.canvas bind wire$wireid <Leave> "set itemFocused 0"
     .wiring.canvas bind wire$wireid <<contextMenu>> "wireContextMenu $wireid %X %Y"
     # mouse-1 clicking on wire starts wiring from the from port
@@ -741,7 +741,7 @@ proc deleteHandle {wire handle pos} {
     wire.get $wire
     wire.coords $coords
     wire.set
-    decorateWire $wire
+    submitDecorateWire $wire
 }
     
 
@@ -773,6 +773,17 @@ proc decorateWire {wire} {
             "insertCoords $wire $h [expr $i+2] %x %y" 
         .wiring.canvas bind $h <Double-Button-1> \
             "deleteHandle $wire $h [expr $i+2]"
+    }
+    global globals
+    set globals(decorateWireSubmitted) 0
+}
+
+proc submitDecorateWire {wire} {
+    global globals
+    if {!([info exists globals(decorateWireSubmitted)] &&
+        [set globals(decorateWireSubmitted)])} {
+        set globals(decorateWireSubmitted) 1
+        after idle decorateWire $wire
     }
 }
 
