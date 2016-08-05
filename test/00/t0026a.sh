@@ -47,8 +47,8 @@ set gid [paste]
 insertNewGroup \$gid
 event generate .wiring.canvas <Button-1>
 
-assert {[items.size]==25} {}
-assert {[wires.size]==23} {}
+assert {[items.size]==28} {}
+assert {[wires.size]==25} {}
 
 # find a wire with internal control points
 for {set i 0} {\$i<[wires.size]} {incr i} {
@@ -66,7 +66,7 @@ set item [lindex [items.#keys] 0]
 wires::startConnect \$item 405.5 170
 wires::extendConnect \$item 400 170
 wires::finishConnect \$item 183 173
-assert {[wires.size]==24} {}
+assert {[wires.size]==26} {}
 
 set w [lindex [wires.#keys] 0]
 wire.get \$w 
