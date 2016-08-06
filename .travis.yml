@@ -54,3 +54,4 @@ script:
 # This step generates reference image files on the CI server 
 #  - sh createRenderedEquations
   - make sure
+  - make doc

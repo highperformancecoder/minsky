@@ -180,6 +180,8 @@ GUI/library/help: doc/minsky/labels.pl doc/minsky.html
 	cp -r -f doc/minsky.html $@
 	linkchecker $@/minsky.html
 
+doc: GUI/library/help GUI/helpRefDb.tcl
+
 tests: $(EXES)
 	cd test; $(MAKE)
 
