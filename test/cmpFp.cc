@@ -8,6 +8,7 @@ be within relative error of 1e-3.
 #include <ctype.h>
 #include <math.h>
 #include <string>
+#include <iostream>
 using namespace std;
 
 int nextNonWS(FILE* f)
@@ -41,7 +42,7 @@ int main(int argc, const char** argv)
           fscanf(f2,"%g",&d2);
           if (d1*d2==0)
             {
-              if (fabs(d1-d2)>1e-30)
+              if (!inLayout && fabs(d1-d2)>1e-30)
                 return 1;
             }
           else if (!inLayout && fabs(d1-d2)>1e-3*(fabs(d1)+fabs(d2)))
