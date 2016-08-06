@@ -7,6 +7,8 @@ be within relative error of 1e-3.
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+#include <string>
+using namespace std;
 
 int nextNonWS(FILE* f)
 {
@@ -23,6 +25,11 @@ int main(int argc, const char** argv)
   FILE* f2=fopen(argv[2],"r");
   int c1, c2;
   
+  string tag;
+
+  // disable floating point check in the layout section
+  bool inLayout=false;
+
   while ((c1=nextNonWS(f1))!=EOF && (c2=nextNonWS(f2))!=EOF)
     {
       if (isdigit(c1) && isdigit(c2))
@@ -37,12 +44,22 @@ int main(int argc, const char** argv)
               if (fabs(d1-d2)>1e-30)
                 return 1;
             }
-          else if (fabs(d1-d2)>1e-3*(fabs(d1)+fabs(d2)))
+          else if (!inLayout && fabs(d1-d2)>1e-3*(fabs(d1)+fabs(d2)))
             return 1;
         }
       else
-        if (c1!=c2)
-          return 1;
+        {
+          if (c1!=c2)
+            return 1;
+          if (c1=='<') 
+            tag.clear();
+          else
+            tag+=c1;
+          if (tag=="layout>")
+            inLayout=true;
+          else if (tag=="/layout>")
+            inLayout=false;
+        }
     }
 
   return (nextNonWS(f2)==EOF)? 0: 1;
