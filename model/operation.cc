@@ -18,10 +18,7 @@
 */
 #define OPNAMEDEF
 #include "operation.h"
-//#include "variable.h"
-//#include "portManager.h"
 #include "minsky.h"
-//#include "cairoItems.h"
 #include "str.h"
 
 #include <cairo_base.h>
@@ -287,20 +284,12 @@ namespace minsky
   string OperationBase::portValues() const
   {
     string r="equations not yet constructed, please reset";
-    // search the equation list for this operation
-//    for (EvalOpVector::const_iterator ei=minsky().equations.begin();
-//         ei!=minsky().equations.end(); ++ei)
-//      if (this==(*ei)->state.get())
-//        {
-//          const EvalOpBase& e=**ei;
-//          r="[out]="+str(ValueVector::flowVars[e.out]);
-//          if (e.numArgs()>0)
-//            r+=" [in1]="+ str(e.flow1? ValueVector::flowVars[e.in1]: 
-//                               ValueVector::stockVars[e.in1]);
-//          if (e.numArgs()>1)
-//            r+=" [in2]="+ str(e.flow2? ValueVector::flowVars[e.in2]: 
-//                               ValueVector::stockVars[e.in2]);
-//        }
+    if (ports.size()>0)
+      r="[out]="+str(ports[0]->value());
+    if (ports.size()>1)
+      r+=" [in1]="+ str(ports[1]->value());
+    if (ports.size()>2)
+      r+=" [in2]="+ str(ports[2]->value());
     return r;
   }
 

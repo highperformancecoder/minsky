@@ -39,38 +39,6 @@ void VariableBase::addPorts()
     ports.emplace_back
       (new Port(*this, Port::inputPort));
 }
-//
-//void VariablePorts::delPorts()
-//{
-//  for (auto& p: ports())
-//    if (p>-1) minsky().delPort(p);
-//  m_ports.clear();
-//}
-//
-//void VariablePorts::swapPorts(VariablePorts& v)
-//{
-//  int n=min(numPorts(), v.numPorts());
-//  if (n>0) swap(m_ports[0], v.m_ports[0]);
-//  if (n>1) swap(m_ports[1], v.m_ports[1]);
-//}
-//
-//void VariableBase::toggleInPort()
-//{
-//  if (type()==integral)
-//    {
-//      switch (ports.size())
-//        {
-//        case 1:
-//          ports.emplace_back(new Port(ports[0]->item.lock(),Port::inputPort));
-//          break;
-//        case 2:
-//          ports.pop_back();
-//          break;
-//        default:
-//          throw error("invalid number of ports");
-//        }
-//    }
-//}
 
 //Factory
 VariableBase* VariableBase::create(VariableType::Type type)

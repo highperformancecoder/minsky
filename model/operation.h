@@ -28,9 +28,7 @@
 
 #include "item.h"
 #include "variable.h"
-//#include "variableManager.h"
 #include "slider.h"
-//#include "clickType.h"
 
 #include <vector>
 #include <cairo/cairo.h>
@@ -41,7 +39,6 @@
 #include "polyPackBase.h"
 #include <pack_base.h>
 #include "operationType.h"
-//#include "opVarBaseAttributes.h"
 
 namespace minsky
 {

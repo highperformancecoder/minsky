@@ -28,12 +28,9 @@
 #include "evalGodley.h"
 #include "wire.h"
 #include "plotWidget.h"
-//#include "groupIcon.h"
-//#include "switchIcon.h"
 #include "version.h"
 #include "variable.h"
 #include "equations.h"
-//#include "inGroupTest.h"
 #include "latexMarkup.h"
 #include "integral.h"
 #include "variableValue.h"
@@ -143,14 +140,6 @@ namespace minsky
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
-    /// returns next integral ID to allocate to an item
-    //inline int getNewId()
-    //{
-    //  return nextId++;
-    //}
-    /// resets the nextId counter to the next available
-    //void resetNextId();
-
     EvalGodley evalGodley;
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
@@ -195,71 +184,12 @@ namespace minsky
           }));
     }
 
-//    /// add an operation
-//    int addOperation(const char* op);
-//    /// create a new operation that is a copy of \a id
-//    int copyOperation(int id);
-//
-//    void deleteOperation(int op);
-//
-//    /// useful for debugging wiring diagrams
-//    std::vector<int> unwiredOperations() const;
-//
-//    int newVariable(const string& name, VariableType::Type=VariableType::flow);
-//    int copyVariable(int id);
-//
-//    int copyGroup(int id);
-
-    //    void deleteVariable(int id)        {variables.erase(id);}
-
-    /**
-     * Creates a new plot at (x, y)
-     */
-//    int newPlot(double x, double y)
-//    {
-//      int id = getNewId();
-//      plots[id].assignPorts();  //  create plot
-//      plots[id].moveTo(x, y);
-//      return id;
-//    }
-
-//    void deletePlot(int id)
-//    {
-//      plots[id].deletePorts();
-//      plots.erase(id);
-//    }
-
-//    void setGodleyCell(int id, int row, int col, const string& value)
-//    {
-//      godleyItems[id].setCell(row, col, value);
-//    }
-
 //    /// create a group from items found in the current selection
     GroupPtr createGroup();
     void saveGroupAsFile(const Group&, const string& fileName) const;
 
     void initGodleys();
 
-//    int newNote() {
-//      int id=getNewId();
-//      model->addItem(id, new Item);
-//      return id;
-//    }
-//    void deleteNote(int id) {
-//      model->removeItem(id);
-//    }
-
-//    int newSwitch() {
-//      int id=getNewId();
-//      switchItems[id].reset(new SwitchIcon);
-//      return id;
-//    }
-//    void deleteSwitch(int id) {
-//      switchItems.erase(id);
-//    }
-
-    
-    
     /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
     void select(float x0, float y0, float x1, float y1);
     ///// clear selection
@@ -281,38 +211,6 @@ namespace minsky
     void toggleSelected(ItemType itemType, int item);
 
     GroupPtr insertGroupFromFile(const char* file);
-
-//    /// move item from \a groupId into its parent
-//    void addItemToGroup(int groupId, int varId);
-//    void removeItemFromGroup(int groupId, int varId);
-
-    /// add variable \a varid to group \a gid
-//    void addVariableToGroup(int gid, int varid, bool checkIOregions=true)
-//    {addItemToGroup(gid,varid); /* TODO checkIOregions */}
-//    /// remove variable \a varid from group \a gid
-//    void removeVariableFromGroup(int gid, int varid)
-//    {removeItemFromGroup(gid,varid);}
-//    /// add operation \a opid to group \a gid
-//    void addOperationToGroup(int gid, int opid)
-//    {addItemToGroup(gid,opid);}
-//    /// remove operation \a opid from group \a gid
-//    void removeOperationFromGroup(int gid, int opid)
-//    {removeItemFromGroup(gid,opid);}
-//    /// add group \a gid1 to group \a group gid
-//    /// @return true if successful
-//    bool addGroupToGroup(int gid, int gid1)
-//    {addItemToGroup(gid,gid1);}
-//
-//    /// remove group \a gid1 from group \a group gid
-//    void removeGroupFromGroup(int gid, int gid1)
-//    {removeItemFromGroup(gid,gid1);}
-
-//    InGroup groupTest;
-    /// zoom by \a factor, scaling all widget's coordinates, using (\a
-    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-    //    void zoom(float xOrigin, float yOrigin,float factor);
-    /// set scaling factors in all widgets, without adjusting
-    /// coordinates, for use in reloading the model
 
     void makeVariablesConsistent();
 

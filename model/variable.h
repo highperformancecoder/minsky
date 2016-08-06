@@ -21,8 +21,6 @@
 
 #include "slider.h"
 #include "str.h"
-//#include "group.h"
-//#include "clickType.h"
 
 #include <ecolab.h>
 #include <arrays.h>
@@ -135,32 +133,6 @@ namespace minsky
     void draw(cairo_t*) const override;
 
   };
-
-  // a separate class to allow automatic compiler generation of
-  // VariableBase assignment to work
-//  class VariablePorts: public VariableBase
-//  {
-//    void delPorts();
-//    CLASSDESC_ACCESS(VariablePorts);
-//    friend struct minsky::SchemaHelper;
-//  protected:
-//    void addPorts();
-//  public:
-//    VariablePorts() {}
-//    ~VariablePorts() {delPorts();}
-//
-//    VariablePorts(const VariablePorts& x): VariableBase(x) {addPorts();}
-//    VariablePorts& operator=(const VariablePorts& x) {
-//      delPorts();
-//      VariableBase::operator=(x);
-//      m_ports.clear();
-//      addPorts();
-//      return *this;
-//    }
-//    
-//    void swapPorts(VariablePorts& v);
-//    void toggleInPort();
-//  };
 
   template <VariableType::Type T>
   class Variable: public VariableBase, public classdesc::PolyPack<Variable<T> >
