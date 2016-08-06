@@ -41,6 +41,7 @@ for {set step 0} {$step<10} {incr step} {
     # note - we must use the .@elem form, to prevent '\' embedded in
     # variable names from being expanded
     foreach name [variableValues.#keys] {
+        if [regexp "^constant:" $name] continue
         value.get $name
         if {![fclose [value.value] $values($name)]} {
             puts "$argv(2) t=[t], $name=[value.value], logged  $values($name)"

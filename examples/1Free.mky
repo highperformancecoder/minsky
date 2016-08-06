@@ -1,457 +1,151 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>1</schemaVersion>
   <model>
-   <ports>
-    <Port>
-     <id>0</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>1</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>2</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>3</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>4</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>5</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>6</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>7</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>8</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>9</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>10</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>11</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>12</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>13</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>14</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>15</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>16</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>17</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>18</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>19</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>20</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>21</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>22</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>23</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>24</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>25</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>26</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>27</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>28</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>29</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>30</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>31</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>32</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>33</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>34</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>35</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>36</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>37</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>38</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>39</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>40</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>41</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>42</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>43</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>44</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>45</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>46</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-   </ports>
    <wires>
     <Wire>
-     <id>47</id>
+     <id>64</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>16</from>
-     <to>5</to>
+     <from>37</from>
+     <to>10</to>
     </Wire>
     <Wire>
-     <id>48</id>
+     <id>65</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>13</from>
-     <to>7</to>
+     <from>33</from>
+     <to>13</to>
     </Wire>
     <Wire>
-     <id>49</id>
+     <id>66</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>10</from>
-     <to>9</to>
+     <from>29</from>
+     <to>16</to>
     </Wire>
     <Wire>
-     <id>50</id>
+     <id>67</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>2</from>
-     <to>11</to>
+     <from>5</from>
+     <to>30</to>
     </Wire>
     <Wire>
-     <id>51</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>19</from>
-     <to>12</to>
-    </Wire>
-    <Wire>
-     <id>52</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>20</from>
-     <to>14</to>
-    </Wire>
-    <Wire>
-     <id>53</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>1</from>
-     <to>15</to>
-    </Wire>
-    <Wire>
-     <id>54</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>0</from>
-     <to>18</to>
-    </Wire>
-    <Wire>
-     <id>55</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>21</from>
-     <to>17</to>
-    </Wire>
-    <Wire>
-     <id>56</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>22</from>
-     <to>29</to>
-    </Wire>
-    <Wire>
-     <id>57</id>
+     <id>68</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>23</from>
-     <to>30</to>
+     <to>31</to>
+    </Wire>
+    <Wire>
+     <id>69</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>25</from>
+     <to>34</to>
+    </Wire>
+    <Wire>
+     <id>70</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>3</from>
+     <to>35</to>
+    </Wire>
+    <Wire>
+     <id>71</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>1</from>
+     <to>39</to>
+    </Wire>
+    <Wire>
+     <id>72</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>27</from>
+     <to>38</to>
+    </Wire>
+    <Wire>
+     <id>73</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>18</from>
+     <to>47</to>
+    </Wire>
+    <Wire>
+     <id>74</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>20</from>
+     <to>48</to>
     </Wire>
    </wires>
    <notes>
    </notes>
    <operations>
     <Operation>
-     <id>70</id>
+     <id>28</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>multiply</type>
      <value>0</value>
      <ports>
-      <int>10</int>
-      <int>11</int>
-      <int>12</int>
+      <int>29</int>
+      <int>30</int>
+      <int>31</int>
      </ports>
      <data>
      </data>
      <name></name>
-     <intVar>0</intVar>
+     <intVar>-1</intVar>
     </Operation>
     <Operation>
-     <id>71</id>
+     <id>32</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>multiply</type>
      <value>0</value>
      <ports>
-      <int>13</int>
-      <int>14</int>
-      <int>15</int>
+      <int>33</int>
+      <int>34</int>
+      <int>35</int>
      </ports>
      <data>
      </data>
      <name></name>
-     <intVar>0</intVar>
+     <intVar>-1</intVar>
     </Operation>
     <Operation>
-     <id>72</id>
+     <id>36</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>multiply</type>
      <value>0</value>
      <ports>
-      <int>16</int>
-      <int>17</int>
-      <int>18</int>
+      <int>37</int>
+      <int>38</int>
+      <int>39</int>
      </ports>
      <data>
      </data>
      <name></name>
-     <intVar>0</intVar>
+     <intVar>-1</intVar>
     </Operation>
    </operations>
    <variables>
     <Variable>
-     <id>58</id>
+     <id>0</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>stock</type>
      <init>99</init>
      <ports>
-      <int>0</int>
+      <int>1</int>
      </ports>
      <name>:Vault</name>
     </Variable>
     <Variable>
-     <id>59</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>stock</type>
-     <init>0</init>
-     <ports>
-      <int>1</int>
-     </ports>
-     <name>:Loans</name>
-    </Variable>
-    <Variable>
-     <id>60</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>stock</type>
-     <init>0</init>
-     <ports>
-      <int>2</int>
-     </ports>
-     <name>:Firms</name>
-    </Variable>
-    <Variable>
-     <id>61</id>
+     <id>2</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>stock</type>
@@ -459,129 +153,151 @@
      <ports>
       <int>3</int>
      </ports>
+     <name>:Loans</name>
+    </Variable>
+    <Variable>
+     <id>4</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <type>stock</type>
+     <init>0</init>
+     <ports>
+      <int>5</int>
+     </ports>
+     <name>:Firms</name>
+    </Variable>
+    <Variable>
+     <id>6</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <type>stock</type>
+     <init>0</init>
+     <ports>
+      <int>7</int>
+     </ports>
      <name>:Safe</name>
     </Variable>
     <Variable>
-     <id>62</id>
+     <id>8</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>flow</type>
      <init>0</init>
      <ports>
-      <int>4</int>
-      <int>5</int>
+      <int>9</int>
+      <int>10</int>
      </ports>
      <name>:Loan</name>
     </Variable>
     <Variable>
-     <id>63</id>
+     <id>11</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>flow</type>
      <init>0</init>
      <ports>
-      <int>6</int>
-      <int>7</int>
+      <int>12</int>
+      <int>13</int>
      </ports>
      <name>:IntLoan</name>
     </Variable>
     <Variable>
-     <id>64</id>
+     <id>14</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>flow</type>
      <init>0</init>
      <ports>
-      <int>8</int>
-      <int>9</int>
+      <int>15</int>
+      <int>16</int>
      </ports>
      <name>:FirmInt</name>
     </Variable>
     <Variable>
-     <id>65</id>
+     <id>17</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>stock</type>
      <init>99</init>
      <ports>
-      <int>22</int>
+      <int>18</int>
      </ports>
      <name>:Vault</name>
     </Variable>
     <Variable>
-     <id>66</id>
+     <id>19</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>flow</type>
      <init>0</init>
      <ports>
-      <int>23</int>
-      <int>24</int>
+      <int>20</int>
+      <int>21</int>
      </ports>
      <name>:Loan</name>
     </Variable>
     <Variable>
-     <id>67</id>
+     <id>22</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>parameter</type>
      <init>0.01</init>
      <ports>
-      <int>19</int>
+      <int>23</int>
      </ports>
      <name>:rD</name>
     </Variable>
     <Variable>
-     <id>68</id>
+     <id>24</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>parameter</type>
      <init>0.05</init>
      <ports>
-      <int>20</int>
+      <int>25</int>
      </ports>
      <name>:rL</name>
     </Variable>
     <Variable>
-     <id>69</id>
+     <id>26</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>parameter</type>
      <init>0.5</init>
      <ports>
-      <int>21</int>
+      <int>27</int>
      </ports>
      <name>:\tau_\mathrm{vault}</name>
     </Variable>
    </variables>
    <plots>
     <Plot>
-     <id>74</id>
+     <id>40</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>25</int>
-      <int>26</int>
-      <int>27</int>
-      <int>28</int>
-      <int>37</int>
-      <int>38</int>
-      <int>29</int>
-      <int>30</int>
-      <int>31</int>
-      <int>32</int>
-      <int>39</int>
-      <int>40</int>
       <int>41</int>
       <int>42</int>
-      <int>33</int>
-      <int>34</int>
-      <int>35</int>
-      <int>36</int>
       <int>43</int>
       <int>44</int>
       <int>45</int>
       <int>46</int>
+      <int>47</int>
+      <int>48</int>
+      <int>49</int>
+      <int>50</int>
+      <int>51</int>
+      <int>52</int>
+      <int>53</int>
+      <int>54</int>
+      <int>55</int>
+      <int>56</int>
+      <int>57</int>
+      <int>58</int>
+      <int>59</int>
+      <int>60</int>
+      <int>61</int>
+      <int>62</int>
      </ports>
      <logx>false</logx>
      <logy>false</logy>
@@ -597,20 +313,40 @@
    </switches>
    <godleys>
     <Godley>
-     <id>73</id>
+     <id>63</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>4</int>
-      <int>5</int>
-      <int>6</int>
-      <int>7</int>
-      <int>8</int>
-      <int>9</int>
-      <int>0</int>
       <int>1</int>
-      <int>2</int>
       <int>3</int>
+      <int>5</int>
+      <int>7</int>
+      <int>9</int>
+      <int>10</int>
+      <int>12</int>
+      <int>13</int>
+      <int>15</int>
+      <int>16</int>
+      <int>1</int>
+      <int>3</int>
+      <int>5</int>
+      <int>7</int>
+      <int>9</int>
+      <int>10</int>
+      <int>12</int>
+      <int>13</int>
+      <int>15</int>
+      <int>16</int>
+      <int>1</int>
+      <int>3</int>
+      <int>5</int>
+      <int>7</int>
+      <int>9</int>
+      <int>10</int>
+      <int>12</int>
+      <int>13</int>
+      <int>15</int>
+      <int>16</int>
      </ports>
      <doubleEntryCompliant>false</doubleEntryCompliant>
      <name>Godley63</name>
@@ -695,130 +431,10 @@
   </model>
   <layout>
    <Layout>
-    <id>47</id>
-    <visible>true</visible>
-    <coords>
-     <float>110.48</float>
-     <float>308.411</float>
-     <float>81.48</float>
-     <float>344.411</float>
-     <float>37.48</float>
-     <float>118.411</float>
-     <float>0</float>
-     <float>0</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>48</id>
-    <visible>true</visible>
-    <coords>
-     <float>155.48</float>
-     <float>308.411</float>
-     <float>80.48</float>
-     <float>387.411</float>
-     <float>23.48</float>
-     <float>155.411</float>
-     <float>0</float>
-     <float>0</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>49</id>
-    <visible>true</visible>
-    <coords>
-     <float>193.48</float>
-     <float>309.411</float>
-     <float>10.48</float>
-     <float>467.411</float>
-     <float>0</float>
-     <float>0</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>50</id>
-    <visible>true</visible>
-    <coords>
-     <float>0</float>
-     <float>0</float>
-     <float>184.48</float>
-     <float>291.411</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>51</id>
-    <visible>true</visible>
-    <coords>
-     <float>197.48</float>
-     <float>258.911</float>
-     <float>202.48</float>
-     <float>291.411</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>52</id>
-    <visible>true</visible>
-    <coords>
-     <float>146.48</float>
-     <float>267.411</float>
-     <float>146.48</float>
-     <float>290.411</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>53</id>
-    <visible>true</visible>
-    <coords>
-     <float>0</float>
-     <float>0</float>
-     <float>164.48</float>
-     <float>290.411</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>54</id>
-    <visible>true</visible>
-    <coords>
-     <float>0</float>
-     <float>0</float>
-     <float>119.48</float>
-     <float>290.411</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>55</id>
-    <visible>true</visible>
-    <coords>
-     <float>104.48</float>
-     <float>272.411</float>
-     <float>101.48</float>
-     <float>290.411</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>56</id>
-    <visible>true</visible>
-    <coords>
-     <float>432.98</float>
-     <float>44.46</float>
-     <float>527.48</float>
-     <float>60.21</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>57</id>
-    <visible>true</visible>
-    <coords>
-     <float>429.48</float>
-     <float>104.46</float>
-     <float>527.48</float>
-     <float>97.71</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>58</id>
-    <id>58</id>
-    <x>102.36</x>
-    <y>186.04</y>
+    <id>0</id>
+    <id>0</id>
+    <x>65.22</x>
+    <y>150.28</y>
     <visible>false</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -829,10 +445,10 @@
     <sliderStep>4.6665e-86</sliderStep>
    </Layout>
    <Layout>
-    <id>59</id>
-    <id>59</id>
-    <x>129.36</x>
-    <y>189.54</y>
+    <id>2</id>
+    <id>2</id>
+    <x>94.22</x>
+    <y>152.28</y>
     <visible>false</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -843,10 +459,10 @@
     <sliderStep>3.16202e-322</sliderStep>
    </Layout>
    <Layout>
-    <id>60</id>
-    <id>60</id>
-    <x>156.36</x>
-    <y>188.54</y>
+    <id>4</id>
+    <id>4</id>
+    <x>123.22</x>
+    <y>152.28</y>
     <visible>false</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -857,10 +473,10 @@
     <sliderStep>9.8222e+252</sliderStep>
    </Layout>
    <Layout>
-    <id>61</id>
-    <id>61</id>
-    <x>183.36</x>
-    <y>183.04</y>
+    <id>6</id>
+    <id>6</id>
+    <x>152.22</x>
+    <y>146.78</y>
     <visible>false</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -871,10 +487,10 @@
     <sliderStep>1.72822e+212</sliderStep>
    </Layout>
    <Layout>
-    <id>62</id>
-    <id>62</id>
-    <x>75</x>
-    <y>54.46</y>
+    <id>8</id>
+    <id>8</id>
+    <x>39.5</x>
+    <y>7.12</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -885,10 +501,10 @@
     <sliderStep>9.8222e+252</sliderStep>
    </Layout>
    <Layout>
-    <id>63</id>
-    <id>63</id>
-    <x>64</x>
-    <y>81.46</y>
+    <id>11</id>
+    <id>11</id>
+    <x>29</x>
+    <y>36.12</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -899,10 +515,10 @@
     <sliderStep>9.8222e+252</sliderStep>
    </Layout>
    <Layout>
-    <id>64</id>
-    <id>64</id>
-    <x>65</x>
-    <y>108.46</y>
+    <id>14</id>
+    <id>14</id>
+    <x>29</x>
+    <y>65.12</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -913,10 +529,10 @@
     <sliderStep>9.8222e+252</sliderStep>
    </Layout>
    <Layout>
-    <id>65</id>
-    <id>65</id>
-    <x>409.48</x>
-    <y>44.46</y>
+    <id>17</id>
+    <id>17</id>
+    <x>380.96</x>
+    <y>0</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -927,10 +543,10 @@
     <sliderStep>2.37152e-322</sliderStep>
    </Layout>
    <Layout>
-    <id>66</id>
-    <id>66</id>
-    <x>406.48</x>
-    <y>104.46</y>
+    <id>19</id>
+    <id>19</id>
+    <x>377.96</x>
+    <y>60</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -941,10 +557,10 @@
     <sliderStep>1.23555e-307</sliderStep>
    </Layout>
    <Layout>
-    <id>67</id>
-    <id>67</id>
-    <x>197.48</x>
-    <y>246.411</y>
+    <id>22</id>
+    <id>22</id>
+    <x>168.96</x>
+    <y>201.951</y>
     <visible>true</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -955,10 +571,10 @@
     <sliderStep>6.95316e-310</sliderStep>
    </Layout>
    <Layout>
-    <id>68</id>
-    <id>68</id>
-    <x>146.48</x>
-    <y>256.411</y>
+    <id>24</id>
+    <id>24</id>
+    <x>117.96</x>
+    <y>211.951</y>
     <visible>true</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -969,10 +585,10 @@
     <sliderStep>6.95316e-310</sliderStep>
    </Layout>
    <Layout>
-    <id>69</id>
-    <id>69</id>
-    <x>104.48</x>
-    <y>250.411</y>
+    <id>26</id>
+    <id>26</id>
+    <x>75.96</x>
+    <y>205.951</y>
     <visible>true</visible>
     <rotation>90</rotation>
     <sliderVisible>false</sliderVisible>
@@ -983,40 +599,163 @@
     <sliderStep>0.05</sliderStep>
    </Layout>
    <Layout>
-    <id>70</id>
-    <id>70</id>
-    <x>193.48</x>
-    <y>299.411</y>
+    <id>28</id>
+    <id>28</id>
+    <x>164.96</x>
+    <y>254.951</y>
     <visible>true</visible>
     <rotation>90</rotation>
    </Layout>
    <Layout>
-    <id>71</id>
-    <id>71</id>
-    <x>155.48</x>
-    <y>298.411</y>
+    <id>32</id>
+    <id>32</id>
+    <x>126.96</x>
+    <y>253.951</y>
     <visible>true</visible>
     <rotation>90</rotation>
    </Layout>
    <Layout>
-    <id>72</id>
-    <id>72</id>
-    <x>110.48</x>
-    <y>298.411</y>
+    <id>36</id>
+    <id>36</id>
+    <x>81.96</x>
+    <y>253.951</y>
     <visible>true</visible>
     <rotation>90</rotation>
+   </Layout>
+   <Layout>
+    <id>40</id>
+    <x>573.96</x>
+    <y>72</y>
+    <width>150</width>
+    <height>150</height>
+   </Layout>
+   <Layout>
+    <id>63</id>
+    <id>63</id>
+    <x>121.96</x>
+    <y>48.88</y>
+    <visible>true</visible>
+    <rotation>5.53354e-322</rotation>
+   </Layout>
+   <Layout>
+    <id>64</id>
+    <visible>true</visible>
+    <coords>
+     <float>81.96</float>
+     <float>263.951</float>
+     <float>65.9586</float>
+     <float>293.93</float>
+     <float>41.6805</float>
+     <float>105.727</float>
+     <float>21</float>
+     <float>7.12</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>65</id>
+    <visible>true</visible>
+    <coords>
+     <float>126.96</float>
+     <float>263.951</float>
+     <float>65.7174</float>
+     <float>322.31</float>
+     <float>19.173</float>
+     <float>150.926</float>
+     <float>0</float>
+     <float>36.12</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>66</id>
+    <visible>true</visible>
+    <coords>
+     <float>164.96</float>
+     <float>264.951</float>
+     <float>8.9352</float>
+     <float>366.994</float>
+     <float>0</float>
+     <float>65.12</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>67</id>
+    <visible>true</visible>
+    <coords>
+     <float>123.22</float>
+     <float>176.78</float>
+     <float>155.96</float>
+     <float>246.951</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>68</id>
+    <visible>true</visible>
+    <coords>
+     <float>168.96</float>
+     <float>212.951</float>
+     <float>173.96</float>
+     <float>246.951</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>69</id>
+    <visible>true</visible>
+    <coords>
+     <float>117.96</float>
+     <float>221.951</float>
+     <float>117.96</float>
+     <float>245.951</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>70</id>
+    <visible>true</visible>
+    <coords>
+     <float>94.22</float>
+     <float>176.78</float>
+     <float>135.96</float>
+     <float>245.951</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>71</id>
+    <visible>true</visible>
+    <coords>
+     <float>65.22</float>
+     <float>172.78</float>
+     <float>90.96</float>
+     <float>245.951</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>72</id>
+    <visible>true</visible>
+    <coords>
+     <float>75.96</float>
+     <float>227.451</float>
+     <float>72.96</float>
+     <float>245.951</float>
+    </coords>
    </Layout>
    <Layout>
     <id>73</id>
-    <x>150.48</x>
-    <y>93.34</y>
+    <visible>true</visible>
+    <coords>
+     <float>403.46</float>
+     <float>0</float>
+     <float>498.96</float>
+     <float>15.75</float>
+    </coords>
    </Layout>
    <Layout>
     <id>74</id>
-    <x>602.48</x>
-    <y>116.46</y>
-    <width>150</width>
-    <height>150</height>
+    <visible>true</visible>
+    <coords>
+     <float>398.46</float>
+     <float>60</float>
+     <float>498.96</float>
+     <float>53.25</float>
+    </coords>
    </Layout>
   </layout>
   <zoomFactor>1</zoomFactor>

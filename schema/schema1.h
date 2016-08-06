@@ -232,7 +232,7 @@ namespace schema1
 
     PositionLayout(): x(0), y(0) {}
     template <class T> PositionLayout(int id, const T& item): 
-      Layout(id), x(item.x()), y(item.y()) {}
+      Layout(id), x(item.m_x), y(item.m_y) {}
   };
 
   /// represents items with a visibility attribute

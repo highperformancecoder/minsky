@@ -41,8 +41,7 @@ proc afterMinskyStarted {} {
     item.get \$godley
     if {[item.classType]=="GodleyIcon"} break
   }
-  doubleMouseGodley \$godley 194 57
-  doubleMouseGodley \$godley 78 62
+  doubleMouseGodley \$godley 38 36
   update
   # should open edit window
   assert {[winfo viewable .wiring.editVar]}

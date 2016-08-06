@@ -113,6 +113,7 @@ namespace schema1
       auto l=layout.find(y.id);
       if (l!=layout.end())
         {
+          //          x.moveTo(l->second.x,l->second.y); 
           x.m_x=l->second.x;
           x.m_y=l->second.y;
           x.m_visible=l->second.visible;
@@ -460,10 +461,6 @@ namespace schema1
     template <class K, class V> 
     shared_ptr<Layout> layoutFactory(int id, const minsky::IntrusiveWrap<K,V>& x)
     {return layoutFactory(id, static_cast<const V&>(x));}
-
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::Port& p)
-    {return shared_ptr<Layout>(new PositionLayout(id, p));}
 
     template <> shared_ptr<Layout> layoutFactory
     (int id, const minsky::Wire& w)
@@ -965,7 +962,6 @@ namespace schema1
             processGroup(m.groups.back(), *i);
             s1g.items.push_back(id);
             l.emplace_back(new GroupLayout(id,*i));
-            //TODO ports and createdVars??
           }
         for (auto& i: g.wires)
           {
@@ -979,7 +975,21 @@ namespace schema1
             s1g.items.push_back(id);
             l.emplace_back(new WireLayout(id,*i));
           }
-      }
+
+        // I/O variable information is stashed as "ports" in the schema
+        for (auto& v: g.inVariables)
+          for (auto& p: v->ports)
+            if (p->input())
+              s1g.ports.push_back(portId(p.get()));
+        for (auto& v: g.outVariables)
+          for (auto& p: v->ports)
+            if (!p->input())
+              s1g.ports.push_back(portId(p.get()));
+        // TODO - created variables??
+//        for (auto& v: g.createdVariables)
+//          s1g.createdVariables.push_back(itemMap[v.get()]);
+        s1g.name=g.title;
+       }
     };
   }
 
