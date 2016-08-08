@@ -35,6 +35,8 @@ before_install:
   - sudo apt-get install -y csvprintf
   - sudo apt-get install -y libxml2-utils
   - sudo apt-get install -y octave
+  - sudo apt-get install -y texlive
+  - sudo apt-get install -y latex2html
 #  - psql -c 'create database minsky;' -U postgres
   - ls /usr/lib/libsoci*
 #addons:
