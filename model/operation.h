@@ -61,6 +61,7 @@ namespace minsky
     ///factory method. \a ports is used for recreating an object read
     ///from a schema
     static OperationBase* create(Type type); 
+    virtual Type type() const override=0;
     virtual OperationBase* clone() const override=0;
     std::string classType() const override {return "OperationBase";}
 

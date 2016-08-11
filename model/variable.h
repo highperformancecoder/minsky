@@ -77,6 +77,8 @@ namespace minsky
     virtual std::string name(const std::string& nm);
     /// @}
 
+    virtual Type type() const override=0;
+
     /// unqualified portion of name
     virtual std::string uqName() const {return m_name;}
 
