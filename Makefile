@@ -130,11 +130,11 @@ ifndef DEBUG
 FLAGS+=-DCONSOLE
 FLAGS+=-mwindows
 endif
-GUI_OBJS+=MinskyLogo.o
+GUI_TK_OBJS+=MinskyLogo.o
 WINDRES=$(MXE_PREFIX)-windres
 endif
 
-MinskyLogo.o: GUI/MinskyLogo.rc icons/MinskyLogo.ico
+MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
 gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
@@ -142,9 +142,9 @@ gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
 # make a local copy the TCL libraries
-	rm -rf GUI/library/{tcl,tk}
-	cp -r $(TCL_LIB) GUI/library/tcl
-	cp -r $(TK_LIB) GUI/library/tk
+	rm -rf gui-tk/library/{tcl,tk}
+	cp -r $(TCL_LIB) gui-tk/library/tcl
+	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
 server/server: tclmain.o $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SERVER_OBJS) $(GUI_OBJS)
