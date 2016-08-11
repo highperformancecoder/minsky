@@ -164,7 +164,7 @@ namespace minsky
     void setItemGroup(const ItemPtr& it) const override {it->group=self();}
     bool nocycles() const override; 
 
-    Group* clone() const {return new Group(*this);}
+    Group* clone() const override {return new Group(*this);}
 
     static SVGRenderer svgRenderer;
 

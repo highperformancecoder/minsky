@@ -382,10 +382,12 @@ namespace schema1
           {
             if (auto v=dynamic_pointer_cast<minsky::VariableBase>
                 (g.findItem(pmap[p]->item)))
-              if (v->isStock())
-                s->stockVars.push_back(v);
-              else
-                s->flowVars.push_back(v);
+              {
+                if (v->isStock())
+                  s->stockVars.push_back(v);
+                else
+                  s->flowVars.push_back(v);
+              }
           }
         s->update();
       }
@@ -420,11 +422,12 @@ namespace schema1
             for (int p: i.ports)
               if (pmap[p])
                 if (minsky::VariablePtr v=gg->findItem(pmap[p]->item))
-                  if (pmap[p]->input())
-                    gg->inVariables.push_back(v);
-                  else
-                    gg->outVariables.push_back(v);
-                
+                  {
+                    if (pmap[p]->input())
+                      gg->inVariables.push_back(v);
+                    else
+                      gg->outVariables.push_back(v);
+                  }
           }
       }
   }

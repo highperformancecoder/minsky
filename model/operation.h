@@ -61,7 +61,7 @@ namespace minsky
     ///factory method. \a ports is used for recreating an object read
     ///from a schema
     static OperationBase* create(Type type); 
-    virtual OperationBase* clone() const=0;
+    virtual OperationBase* clone() const override=0;
     std::string classType() const override {return "OperationBase";}
 
     virtual ~OperationBase() {}
@@ -105,9 +105,9 @@ namespace minsky
     typedef OperationBase Super;
   public:
     typedef OperationType::Type Type;
-    Type type() const {return T;}
-    virtual void iconDraw(cairo_t *) const;
-    virtual size_t numPorts() const override 
+    Type type() const override {return T;}
+    void iconDraw(cairo_t *) const override;
+    size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
     Operation() {this->addPorts();}
     Operation(const Operation& x): Super(x) {this->addPorts();}
@@ -136,7 +136,7 @@ namespace minsky
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
-    Constant* clone() const {return new Constant(*this);}
+    Constant* clone() const override {return new Constant(*this);}
     /// ensure slider does not override value
     void adjustSliderBounds();
     /// initialises sliderbounds based on current value, if not set otherwise
@@ -168,7 +168,7 @@ namespace minsky
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
-    IntOp* clone() const {return new IntOp(*this);}
+    IntOp* clone() const override {return new IntOp(*this);}
 
     /// @{ name of the associated integral variable
     void description(string desc);

@@ -326,13 +326,15 @@ namespace minsky
   {
     auto i=items.find(id);
     if (i!=items.end())
-      if (auto g=model->minimalEnclosingGroup(x,y,x,y))
-        {
-          if (dynamic_cast<Group*>(i->get())!=g && (*i)->group.lock().get()!=g)
-            g->addItem(*i);
-        }
-      else if ((*i)->group.lock()!=model)
-        model->addItem(*i);
+      {
+        if (auto g=model->minimalEnclosingGroup(x,y,x,y))
+          {
+            if (dynamic_cast<Group*>(i->get())!=g && (*i)->group.lock().get()!=g)
+              g->addItem(*i);
+          }
+        else if ((*i)->group.lock()!=model)
+          model->addItem(*i);
+      }
   }
 
   namespace 
@@ -445,10 +447,12 @@ namespace minsky
     bool coupled=ref->toggleCoupled();
     for (auto& i: m.items)
       if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
-        if (coupled)
-          tclcmd() | ".wiring.canvas delete item"|i.id()|"\n";
-        else
-          tclcmd() << "newItem"<< i.id()<<"\n";
+        {
+          if (coupled)
+            tclcmd() | ".wiring.canvas delete item"|i.id()|"\n";
+          else
+            tclcmd() << "newItem"<< i.id()<<"\n";
+        }
 
     if (wireId>=0)
       {
@@ -465,6 +469,7 @@ namespace minsky
             tclcmd() << "newWire"<< newWire<<"\n";
           }
       }
+    return ref->coupled();
   }
   
 }

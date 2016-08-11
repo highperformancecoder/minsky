@@ -35,9 +35,13 @@ extern "C"
 #define	SIGABRT		6	/* Abort (ANSI).  */
 #endif
 
+#ifndef SIGBUS
 #define	SIGBUS		7	/* BUS error (4.2 BSD).  */
-#define	SIGSEGV		11	/* Segmentation violation (ANSI).  */
+#endif
 
+#ifndef SIGSEGV
+#define	SIGSEGV		11	/* Segmentation violation (ANSI).  */
+#endif
 
 using namespace std;
 using namespace ecolab;

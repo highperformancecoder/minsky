@@ -162,7 +162,7 @@ namespace MathDAG
     VariableDAG(const string& valueId, int scope, const string& name, Type type): 
       valueId(valueId), scope(scope), type(type), name(name) {}
     int BODMASlevel() const  override {return 0;}
-    int order(unsigned maxOrder) const {
+    int order(unsigned maxOrder) const override {
       if (rhs) {
         if (maxOrder==0) throw error("maximum order recursion reached");
         return rhs->order(maxOrder-1)+1;
@@ -210,10 +210,10 @@ namespace MathDAG
   template <OperationType::Type T>
   struct OperationDAG: public OperationDAGBase
   {
-    Type type() const {return T;}
+    Type type() const override {return T;}
     OperationDAG(const string& name=""): OperationDAGBase(name) 
     {arguments.resize(OperationTypeInfo::numArguments<T>());}
-    int BODMASlevel() const {
+    int BODMASlevel() const override {
       switch (type())
         {
         case OperationType::multiply:

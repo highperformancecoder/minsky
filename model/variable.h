@@ -116,8 +116,7 @@ namespace minsky
     bool lhs() const {return type()==flow || type()==tempFlow;} 
     /// variable is temporary
     bool temp() const {return type()==tempFlow || type()==undefined;}
-    virtual Type type() const=0;
-    virtual VariableBase* clone() const=0;
+    virtual VariableBase* clone() const override=0;
     bool isStock() const {return type()==stock || type()==integral;}
 
     VariableBase() {}
@@ -139,7 +138,7 @@ namespace minsky
   {
   public:
     typedef VariableBase::Type Type;
-    Type type() const {return T;}
+    Type type() const override {return T;}
     size_t numPorts() const override;
 
     Variable(const Variable& x): VariableBase(x) {this->addPorts();}

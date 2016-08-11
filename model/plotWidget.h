@@ -74,7 +74,7 @@ namespace minsky
     /// connect variable \a var to port \a port. 
     void connectVar(const VariableValue& var, unsigned port);
     // draw canvas widget
-    void draw(ecolab::cairo::Surface&);
+    void draw(ecolab::cairo::Surface&) override;
     void draw(cairo_t* cairo) const override;
     /// surfaces to draw into for redraw. expandedPlot refers to
     /// separate popup plot window

@@ -35,7 +35,13 @@ rewrite_dylibs()
     done
 }
 
+cp gui-tk/minsky $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/minsky
+
+# TkTable.dylib seems to be its own little snowflake :)
+cp ~/usr/lib/libTktable2.11.dylib $MAC_DIST_DIR
+rewrite_dylibs $MAC_DIST_DIR/libTktable2.11.dylib
+install_name_tool -change libTktable2.11.dylib @executable_path/libTktable2.11.dylib $MAC_DIST_DIR/minsky
 
 # determine location of tcl library from tclsh - make sure the correct
 # tclsh is in your path
@@ -52,9 +58,9 @@ cp -r $TCL_LIB $MAC_DIST_DIR/library/tcl
 cp -r $TK_LIB $MAC_DIST_DIR/library/tk
 
 #copy toplevel tcl scripts
-    cp GUI/*.tcl $MAC_DIST_DIR
+    cp gui-tk/*.tcl $MAC_DIST_DIR
 #copy library scripts 
-    cp -r GUI/library $MAC_DIST_DIR
-    cp -r GUI/icons $MAC_DIST_DIR
-    cp GUI/accountingRules $MAC_DIST_DIR
+    cp -r gui-tk/library $MAC_DIST_DIR
+    cp -r gui-tk/icons $MAC_DIST_DIR
+    cp gui-tk/accountingRules $MAC_DIST_DIR
     pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky.$version-mac-dist.pkg

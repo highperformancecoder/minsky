@@ -513,7 +513,7 @@ namespace minsky
              vector<string> columns=gi->table.getColumnVariables();
              for (size_t i=0; i<columns.size(); ++i)
               {
-                if (columns[i].find(':')==string::npos) 
+                //                if (columns[i].find(':')==string::npos) 
 //                  // local variable, need to qualify
 //                  if (auto g=gi->group.lock())
 //                      columns[i]="["+str(g->id)+"]:"+columns[i];

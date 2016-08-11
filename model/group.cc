@@ -88,8 +88,7 @@ namespace minsky
     else // check if we're the global group
       if (cminsky().model.get()==this)
         return cminsky().model;
-    else
-      return shared_ptr<Group>();
+    return shared_ptr<Group>();
   }
 
   ItemPtr GroupItems::removeItem(const Item& it)
@@ -186,14 +185,15 @@ namespace minsky
     // need to deal with integrals especially because of the attached variable
     if (auto intOp=dynamic_cast<IntOp*>(it.get()))
       if (intOp->intVar)
-        if (auto oldG=intOp->intVar->group.lock())
-          {
-            if (oldG.get()!=this)
-              addItem(oldG->removeItem(*intOp->intVar));
-          }
-        else
-          addItem(intOp->intVar);
-            
+        {
+          if (auto oldG=intOp->intVar->group.lock())
+            {
+              if (oldG.get()!=this)
+                addItem(oldG->removeItem(*intOp->intVar));
+            }
+          else
+            addItem(intOp->intVar);
+        }
     items.push_back(it);
     return items.back();
   }
@@ -515,7 +515,7 @@ namespace minsky
     g.recursiveDo(&Group::items, [&](const Items& m, Items::const_iterator i)
                   {
                     for (auto& p: (*i)->ports)
-                      if (io!=out && p->input() || io!=in && !p->input())
+                      if ((io!=out && p->input()) || (io!=in && !p->input()))
                         {
                           float r2=sqr(p->x()-x)+sqr(p->y()-y);
                           if (r2<minr2)
