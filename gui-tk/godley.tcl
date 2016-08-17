@@ -220,9 +220,7 @@ proc setGetCell_ {id r c i s w} {
 		   default { error "invalid prefix $prefix" }
 		}
 	    }
-            minsky.setGodleyCell $id $row $col $varName
-#            minsky.godley.set $id
-#            updateGodleys
+            minsky.godley.setCell $row $col $varName
             whenIdleUpdateGodley $id
         } else {
             set s [godley.table.getCell $row $col]
@@ -443,6 +441,8 @@ proc columnVarTrace {id col varName args} {
 }
 
 proc whenIdleUpdateGodley {id} {
+    if {![winfo exists .godley$id]} return
+
     doPushHistory 0
     set wasEdited [edited]
     whenIdleUpdateGodleyDisplay $id
@@ -576,6 +576,7 @@ proc updateGodleyDisplay {id} {
 }
 
 proc whenIdleUpdateGodleyDisplay {id} {
+    if {![winfo exists .godley$id]} return
     set wasEdited [edited]
     .godley$id.table clear cache
     godley.get $id

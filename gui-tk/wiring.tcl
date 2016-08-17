@@ -563,7 +563,7 @@ proc move {id x y} {
 proc newItem {id} {
     item.get $id
     .wiring.canvas create item [item.x] [item.y] -id $id -tags "items item$id"
-    .wiring.canvas bind item$id <Double-Button-1> "editItem $id %X %Y"
+    .wiring.canvas bind item$id <Double-Button-1> "editItem $id"
     .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
     .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
     .wiring.canvas bind item$id <Button-1> "onClick $id item$id %x %y"
@@ -1808,6 +1808,7 @@ proc editItem {id} {
             }
         }
         "Group" {groupEdit $id}
+        "GodleyIcon" {openGodley $id}
     }
 }
 
