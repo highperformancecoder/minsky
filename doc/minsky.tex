@@ -5,7 +5,8 @@
 
 % prevent having to place annoying mboxes
 %begin{latexonly}
-\renewcommand{\htmladdimg}{\mbox{}}
+%\renewcommand{\htmladdimg}[1]{\resizebox{\textwidth}{!}{\includegraphics{images/#1}}}
+\renewcommand{\htmladdimg}[1]{\includegraphics{images/#1}}
 %end{latexonly}
 
 \begin{document}

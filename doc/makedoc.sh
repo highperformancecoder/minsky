@@ -1,9 +1,9 @@
 #!/bin/bash
 
-latex -interaction=batchmode minsky
+pdflatex -interaction=batchmode minsky
 if [ $? -ne 0 ]; then exit 1; fi
 
-latex -interaction=batchmode minsky
+pdflatex -interaction=batchmode minsky
 latex2html -local_icons -info "" minsky
 if [ $? -ne 0 ]; then exit 1; fi
 

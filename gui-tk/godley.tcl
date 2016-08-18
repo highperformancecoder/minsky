@@ -385,7 +385,6 @@ proc finishMoveCell {id} {
         godley.get $id
         set destRow [expr [currCell $id row]-1-[godley.table.doubleEntryCompliant]]
         set destCol [expr [currCell $id col]-1]
-        puts "$destRow $cellMove(row) $destCol $cellMove(col)"
         if {$destRow==$cellMove(row) && $destCol==$cellMove(col)} {
             .godley$id.table activate @[get_pointer_x .godley$id.table],[get_pointer_y .godley$id.table]
         } elseif {$destRow>0 && $destCol>0} {
