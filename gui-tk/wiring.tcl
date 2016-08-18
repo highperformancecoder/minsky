@@ -1205,7 +1205,7 @@ proc contextMenu {id x y} {
 namespace eval godley {
     proc resize {id} {
         godley.get $id
-        set bbox [.wiring.canvas bbox godley$id]
+        set bbox [.wiring.canvas bbox item$id]
         variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
         variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
         variable orig_x [godley.x]
@@ -1259,7 +1259,7 @@ namespace eval godley {
         }            
         godley.zoom [godley.x] [godley.y] $z
 
-        redrawItem $id
+        redraw $id
         bind .wiring.canvas <Motion> {}
         bind .wiring.canvas <ButtonRelease> {}
    }
