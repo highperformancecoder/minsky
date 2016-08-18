@@ -563,7 +563,12 @@ proc newItem {id} {
     item.get $id
     .wiring.canvas create item [item.x] [item.y] -id $id -tags "items item$id"
     .wiring.canvas bind item$id <Double-Button-1> "editItem $id"
-    .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
+    if {[item.classType]=="GodleyIcon"} {
+        .wiring.canvas bind item$id <Enter> "godleyToolTip $id %x %y; itemEnterLeave item $id item$id 1"
+        .wiring.canvas bind item$id <Motion> "changeToolTip $id %x %y"
+    } else {
+        .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
+    }
     .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
     .wiring.canvas bind item$id <Button-1> "onClick $id item$id %x %y"
 }
