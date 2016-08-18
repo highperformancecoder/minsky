@@ -28,6 +28,7 @@ namespace minsky
   {
     CLASSDESC_ACCESS(SwitchIcon);
     friend class SchemaHelper;
+    ecolab::cairo::SurfacePtr cairoSurface;
   public:
     SwitchIcon();
 
@@ -38,6 +39,10 @@ namespace minsky
     unsigned numCases() const {return ports.size()-2;}
     void setNumCases(unsigned);
     /// @}
+
+    void updateIcon(double t) override {cairoSurface->requestRedraw();}
+    void setCairoSurface(const ecolab::cairo::SurfacePtr& s) override 
+    {cairoSurface=s;}
 
     /// value of switch according to current inputs
     unsigned value() const;
