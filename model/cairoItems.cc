@@ -438,11 +438,11 @@ void VariableBase::draw(cairo_t *cairo) const
     double x0=w, y0=0, x1=-w+2, y1=0;
     double sa=sin(angle), ca=cos(angle);
     if (ports.size()>0)
-      ports[0]->moveTo(x()+zoomFactor*(x0*ca-y0*sa), 
-                       y()+zoomFactor*(y0*ca+x0*sa));
+      ports[0]->moveTo(x()+(x0*ca-y0*sa), 
+                       y()+(y0*ca+x0*sa));
     if (ports.size()>1)
-      ports[1]->moveTo(x()+zoomFactor*(x1*ca-y1*sa), 
-                       y()+zoomFactor*(y1*ca+x1*sa));
+      ports[1]->moveTo(x()+(x1*ca-y1*sa), 
+                       y()+(y1*ca+x1*sa));
   }
 
   //  cairo_restore(cairo);

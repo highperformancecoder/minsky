@@ -142,7 +142,6 @@ namespace minsky
       else
         return "";
     }
-    void setCell(unsigned row, unsigned col, const string& v)
 
     /// get the set of column labels, in column order
     vector<string> getColumnVariables() const;
