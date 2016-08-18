@@ -1808,6 +1808,9 @@ proc editItem {id} {
         }
         "Group" {groupEdit $id}
         "GodleyIcon" {openGodley $id}
+        # plot widgets are slightly different, in that double-click
+        # expands the plot, rather than edits.
+        "PlotWidget" {plotDoubleClick $id}
     }
 }
 
