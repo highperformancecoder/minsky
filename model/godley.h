@@ -158,7 +158,8 @@ namespace minsky
     /// accessor for schema access
     const vector<vector<string> >& getData() const {return data;}
 
-
+    void exportToLaTeX(const char* filename);
+    void exportToCSV(const char* filename);
   };
 
 }

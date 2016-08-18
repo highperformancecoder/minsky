@@ -1261,18 +1261,19 @@ namespace eval godley {
 
     proc export {item} {
         global workDir type
+        godley.get $item
 
         set fname [tk_getSaveFile -filetypes {{"CSV files" csv TEXT} {"LaTeX files" tex TEXT}} \
                        -initialdir $workDir -typevariable type]  
         if {$fname==""} return
         if [string match -nocase *.csv "$fname"] {
-            exportGodleyToCSV $item $fname
+            godley.table.exportToCSV $fname
         } elseif [string match -nocase *.tex "$fname"] {
-            exportGodleyToLaTeX $item $fname
+            godley.table.exportToLaTeX $fname
         } else {
             switch -glob $type {
-                "*(csv)" {exportGodleyToCSV $item $fname.csv}
-                "*(tex)" {exportGodleyToLaTeX $item $fname.tex}
+                "*(csv)" {godley.table.exportToCSV $fname.csv}
+                "*(tex)" {godley.table.exportToLaTeX $fname.tex}
             }
         }
     }

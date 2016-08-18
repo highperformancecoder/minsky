@@ -20,6 +20,7 @@
 #include "port.h"
 #include "minsky.h"
 #include "flowCoef.h"
+#include "godleyExport.h"
 #include <ecolab_epilogue.h>
 using namespace minsky;
 
@@ -239,3 +240,16 @@ void GodleyTable::nameUnique()
         }
     }
 }
+
+void GodleyTable::exportToLaTeX(const char* filename)
+{
+  ofstream f(filename);
+  minsky::exportToLaTeX(f, *this);
+}
+
+void GodleyTable::exportToCSV(const char* filename)
+{
+  ofstream f(filename);
+  minsky::exportToCSV(f, *this);
+}
+

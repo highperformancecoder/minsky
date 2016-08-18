@@ -36,6 +36,8 @@ namespace minsky
         return nm;
       else if (fc.coef==-1)
         return "-"+nm;
+      else if (fc.coef==0)
+        return "";
       else
         return str(fc.coef)+nm;
     }
