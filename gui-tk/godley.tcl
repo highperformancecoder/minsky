@@ -364,7 +364,6 @@ proc moveCell {id} {
     if {[array size cellMove]==0} {
         set cellMove(row) [expr [currCell $id row]-1-[godley.table.doubleEntryCompliant]]
         set cellMove(col) [expr [currCell $id col]-1]
-        puts "$cellMove(row) $cellMove(col)"
         if {$cellMove(row)<1 || $cellMove(col)<1} {
 # outside movable cells
             array unset cellMove
@@ -436,7 +435,7 @@ proc columnVarTrace {id col varName args} {
     # putting a catch here allows us to present a cleaner error
     # message to the user, as this proc can be called by other
     # operations
-    if [catch {setGodleyCell $id 0 $col [set $varName]} msg] {
+    if [catch {minsky.godley.setCell 0 $col [set $varName]} msg] {
         bgerror $msg
     }
     updateGodleyDisplay $id

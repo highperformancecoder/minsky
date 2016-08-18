@@ -386,6 +386,15 @@ namespace minsky
         }
     }
     
+    std::set<string> matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac) {
+      auto it=items.find(currTable);
+      if (it!=items.end())
+        if (auto g=dynamic_cast<GodleyIcon*>(it->get()))
+          return Minsky::matchingTableColumns(g->table, ac);
+      return std::set<string>();
+    }
+
+
 //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {
 //      clearSelection();
