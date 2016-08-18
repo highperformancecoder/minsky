@@ -982,31 +982,9 @@ proc indicateCanvasItemInError {x y} {
 
 menu .wiring.context -tearoff 0
 
-#proc doubleClick {item x y} {
-#    # find out what type of item we're referring to
-#    item.get $item
-#    switch -glob [item.classType] {
-#        "Variable*" {
-#            set tag [lindex $tags [lsearch -regexp $tags {var[0-9]+}]]
-#            set id [string range $tag 3 end]
-#            editItem $id
-#        }
-#        "operations" {
-#            set tag [lindex $tags [lsearch -regexp $tags {op[0-9]+}]]
-#            set id [string range $tag 2 end]
-#            editItem $id
-#        }
-#    }
-#}
-
 proc toggleCoupled {id} {
     integral.get $id
-    if [integral.toggleCoupled] {
-        .wiring.canvas delete var[integral.intVarID]
-        # delete all wires, as we can't figure out what wire is attached
-        .wiring.canvas delete wires
-    }
-    updateCanvas
+    integral.toggleCoupled
 }
 
 proc addIntegral name {
