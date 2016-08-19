@@ -81,8 +81,7 @@ proc afterMinskyStarted {} {
     # delivered to nowhere
     event generate .wiring.canvas <Button-3> -x 200 -y 200 -rootx 100 -rooty 100
     assert {![winfo viewable .wiring.context]} nowhere
-    resetEdited
-    exit
+    tcl_exit
 }
 
 EOF

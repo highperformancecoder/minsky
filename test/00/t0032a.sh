@@ -58,8 +58,7 @@ proc afterMinskyStarted {} {uplevel #0 {
 # approximate here, because group is rotated by pi, which is  numerically approximate
  assert {abs(300-[group.width])<10}
  assert {abs(300-[group.height])<10}
- resetEdited
- exit
+ tcl_exit
 }}
 EOF
 

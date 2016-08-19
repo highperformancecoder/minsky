@@ -68,8 +68,7 @@ event generate .wiring.canvas <Button-1>
 assert {[items.size]==7}
 
 
-resetEdited
-exit
+tcl_exit
 }}
 EOF
 

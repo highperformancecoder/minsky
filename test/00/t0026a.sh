@@ -92,8 +92,7 @@ foreach it [items.#keys] {
 placeNewNote
 event generate .wiring.canvas <Button-1>
 
-resetEdited
-exit
+tcl_exit
 }
 EOF
 

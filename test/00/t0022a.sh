@@ -46,8 +46,7 @@ proc afterMinskyStarted {} {
   assert {[llength [.wiring.canvas find withtag tooltip]]==1}
   assert {[.wiring.canvas itemcget tooltip -text]=="foobar"}
   minsky.save saved.mky
-  resetEdited
-  exit
+  tcl_exit
 }
 EOF
 

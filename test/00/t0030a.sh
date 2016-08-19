@@ -61,8 +61,7 @@ proc afterMinskyStarted {} {
   assert {![winfo exists .wiring.editVar]} {varclick}
 
 
-  resetEdited
-  exit
+  tcl_exit
 }
 EOF
 

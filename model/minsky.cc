@@ -741,7 +741,7 @@ namespace minsky
 
   void Minsky::step()
   {
-    if (reset_needed)
+    if (reset_flag())
       reset();
 
     if (ode)

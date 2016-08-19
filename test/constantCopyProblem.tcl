@@ -6,6 +6,5 @@ proc afterMinskyStarted {} {
  step
  set bVal [variableValues.@elem :b]
  assert \[$bVal.value\]==12
- resetEdited
- exit
+ tcl_exit
 }

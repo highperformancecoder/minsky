@@ -50,8 +50,7 @@ proc afterMinskyStarted {} {
     assert "\[addWire \$varid [var.x] [var.y] [var.x] [var.y] {0 0 0 0}\]==-1"
     assert {[wires.size]==0}
 
-    resetEdited
-    exit
+    tcl_exit
 }
 
 EOF

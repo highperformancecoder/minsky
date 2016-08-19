@@ -59,8 +59,7 @@ resizePlot \$id 100 100 2 2
 
 deletePlot \$id
 
-resetEdited
-exit
+tcl_exit
 }
 EOF
 

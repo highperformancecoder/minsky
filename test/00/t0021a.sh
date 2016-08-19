@@ -44,8 +44,7 @@ proc afterMinskyStarted {} {
     update
     after 10
   }
-resetEdited
-exit
+tcl_exit
 }
 EOF
 

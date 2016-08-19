@@ -52,8 +52,7 @@ plot::resizeItem plotBBox \$id [expr [plot.x]+100] [expr [plot.y]+100]
 assert {abs(200-[plot.width])<2}
 assert {abs(200-[plot.height])<2}
 
-resetEdited
-exit
+tcl_exit
 
 }}
 EOF

@@ -40,7 +40,8 @@ namespace minsky
     void setNumCases(unsigned);
     /// @}
 
-    void updateIcon(double t) override {cairoSurface->requestRedraw();}
+    void updateIcon(double t) override 
+    {if (cairoSurface) cairoSurface->requestRedraw();}
     void setCairoSurface(const ecolab::cairo::SurfacePtr& s) override 
     {cairoSurface=s;}
 

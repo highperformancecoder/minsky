@@ -101,8 +101,7 @@ foreach gid [items.#keys] {
  .wiring.editGroup.buttonBar.ok invoke
  assert {![winfo exists .wiring.editGroup]}
 
- resetEdited
- exit
+ tcl_exit
 }}
 EOF
 

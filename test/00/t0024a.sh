@@ -112,8 +112,7 @@ proc afterMinskyStarted {} {
  assert {[operations.size]==0} {}
  assert {[wires.size]==0} {}
  # enable exiting without the save dialog
- resetEdited
- exit
+ tcl_exit
 }
 EOF
 

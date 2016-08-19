@@ -38,7 +38,6 @@ proc afterMinskyStarted {} {uplevel #0 {
   minsky.load $here/examples/GoodwinLinear02.mky
   updateCanvas
   select [expr [group.x]-0.55*[group.width]] [expr [group.y]-0.55*[group.height]] [expr [group.x]+0.55*[group.width]] [expr [group.y]+0.55*[group.height]] 
-  resetEdited
   newSystem
   group.get [paste]
   assert {[items.size]==10}
@@ -48,8 +47,7 @@ proc afterMinskyStarted {} {uplevel #0 {
   minsky.group.groups.@elem 0
   assert {[minsky.group.groups(0).items.size]==8}
   assert {[minsky.group.groups(0).wires.size]==8}
-  resetEdited
-  exit
+  tcl_exit
 }}
 EOF
 
