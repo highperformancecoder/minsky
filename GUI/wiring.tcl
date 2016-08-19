@@ -448,11 +448,11 @@ proc itemEnterLeave {item id tag enter} {
 
     $item.get $id
     # preserve dirty flag
-    set edited [edited] 
+#    set edited [edited] 
     $item.mouseFocus $enter
-    if {!$edited} resetEdited
-    resetNotNeeded
-    redraw $tag
+#    if {!$edited} resetEdited
+#    resetNotNeeded
+    redraw $id
     set x [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]] 
     set y [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
     if {$enter} {
@@ -505,7 +505,6 @@ proc updateItemPos {item id} {
         }
     }
     unset globals(updateItemPositionSubmitted$item$id)
-    resetNotNeeded
     doPushHistory 1
 }    
 
@@ -539,6 +538,7 @@ proc moveSet {item id x y} {
 
 proc move {item id x y} {
     doPushHistory 0
+    set resetFlag [reset_flag]
     $item.get $id
    global moveOffs$item$id.x moveOffs$item$id.y
 # ticket #220: Windows 8 does not always generate mousedown events
@@ -566,7 +566,7 @@ proc move {item id x y} {
             }
         }
     }
-    resetNotNeeded
+    if {!$resetFlag} resetNotNeeded
 }
 
 # create a new canvas item for var id
@@ -2001,8 +2001,9 @@ proc editItem {id tag} {
 
 proc setVarVal {v x} {
     var.get $v
+    set resetFlag [reset_flag]
     var.sliderSet $x
-    resetNotNeeded
+    if [!$resetFlag] resetNotNeeded
 }
 
 proc setSliderProperties {id} {
