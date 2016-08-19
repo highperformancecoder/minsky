@@ -298,6 +298,9 @@ namespace minsky
     void select(float x0, float y0, float x1, float y1);
     /// clear selection
     void clearSelection();
+    /// returns true if some items are in the selection
+    bool itemsSelected() {return !currentSelection.empty();}
+
     /// erase items in current selection, put copy into clipboard
     void cut();
     /// copy items in current selection into clipboard

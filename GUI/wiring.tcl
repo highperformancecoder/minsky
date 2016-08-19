@@ -375,7 +375,10 @@ proc deleteKey {} {
     if {[string length $textBuffer]>0} {
         set textBuffer [string range $textBuffer 0 end-1]
         .wiring.canvas itemconfigure textBuffer -text $textBuffer
+    } elseif [itemsSelected] {
+        cut
     } else {
+
         set tags [.wiring.canvas gettags  [.wiring.canvas find withtag current]]
         set re {([a-zA-Z]+)([0-9]+)}
         if [regexp $re [lsearch -regexp -inline $tags $re] tag item id] {

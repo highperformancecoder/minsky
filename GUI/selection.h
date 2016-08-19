@@ -40,6 +40,10 @@ namespace minsky
       wires.clear(); operations.clear(); variables.clear();
       groups.clear(); godleys.clear(); plots.clear();
     }
+
+    bool empty() const {return wires.empty() && operations.empty() &&
+        variables.empty() && groups.empty() && godleys.empty() && plots.empty();
+    }
   };
 
   /// represents rectangular region of a lasso operation

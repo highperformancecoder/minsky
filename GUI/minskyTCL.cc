@@ -86,6 +86,7 @@ namespace minsky
     if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
         argv0!="minsky.resetNotNeeded" &&
         argv0!="minsky.select" &&
+        argv0!="minsky.itemsSelected" &&
         argv0.find(".get")==string::npos && 
         argv0.find(".mouseFocus")==string::npos &&
         argv0.find(".adjustWire")==string::npos
