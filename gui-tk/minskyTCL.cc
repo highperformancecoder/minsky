@@ -83,17 +83,18 @@ namespace minsky
   {
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
-    if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
+    if (m.doPushHistory && argv0!="minsky.adjustWires" && 
+        argv0!="minsky.availableOperations" &&
+        argv0!="minsky.clearAll" &&
+        argv0!="minsky.doPushHistory" &&
+        argv0!="minsky.itemsSelected" &&
         argv0!="minsky.popFlags" &&
         argv0!="minsky.pushFlags" &&
         argv0!="minsky.select" &&
-        argv0!="minsky.availableOperations" &&
-        argv0!="minsky.adjustWires" &&
-        argv0!="minsky.step" &&
-        argv0!="minsky.clearAll" &&
+        argv0!="minsky.selectVar" &&
         argv0!="minsky.setGodleyIconResource" &&
         argv0!="minsky.setGroupIconResource" &&
-        argv0!="minsky.selectVar" &&
+        argv0!="minsky.step" &&
         argv0.find(".get")==string::npos && 
         argv0.find(".mouseFocus")==string::npos
         )

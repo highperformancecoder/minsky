@@ -207,6 +207,8 @@ namespace minsky
     /// paste  clipboard as a new group. @return id of nre group
     GroupPtr paste();
     void saveSelectionAsFile(const string& fileName) const;
+    /// returns true if selection has any items in it
+    bool itemsSelected() const {return !currentSelection.empty();}
 
     /// @{ override to provide clipboard handling functionality
     virtual void putClipboard(const string&) const {}

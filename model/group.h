@@ -63,6 +63,7 @@ namespace minsky
       inVariables.clear();
       outVariables.clear();
     }
+    bool empty() const {return items.empty() && groups.empty() && wires.empty();}
 
     /// sets the group pointer of \a it to this
     virtual void setItemGroup(const ItemPtr&) const=0;
