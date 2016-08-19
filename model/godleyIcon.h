@@ -67,6 +67,12 @@ namespace minsky
     /// updates the variable lists with the Godley table
     void update();
 
+    void zoom(float xOrigin, float yOrigin,float factor) override {
+      Item::zoom(xOrigin,yOrigin,factor);
+      update();
+    }
+
+
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table
     /// has been selected.

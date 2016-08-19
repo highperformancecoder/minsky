@@ -118,6 +118,7 @@ namespace minsky
               oldVars.erase(v);
               assert(*v);
             }
+          vars.back()->zoomFactor=zoomFactor;
           ports.insert(ports.end(), vars.back()->ports.begin(),
                        vars.back()->ports.end());
         }

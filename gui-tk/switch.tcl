@@ -88,6 +88,6 @@ proc rightMouseSwitch {id x y X Y} {
 proc incrCase {id delta} {
     switchItem.get $id
     switchItem.setNumCases [expr [switchItem.numCases]+$delta]
-    redraw switchItem$id
+    redraw $id
 }
 

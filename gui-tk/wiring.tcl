@@ -401,18 +401,11 @@ proc cancelPlaceNewOp {id} {
     updateCanvas
 }
 
-proc redraw {item} {
-    .wiring.canvas coords $item [.wiring.canvas coords $item]
+proc redraw {id} {
+    item.get $id
+    .wiring.canvas coords item$id [item.x] [item.y]
     .wiring.canvas delete handles
-    foreach w [.wiring.canvas find withtag wires] {
-        set tags [.wiring.canvas gettags $w]
-        set tag [lindex $tags [lsearch -regexp $tags {wire[0-9]+}]]
-        set id [string range $tag 4 end]
-        if [string length $id] {
-            wire.get $id
-            .wiring.canvas coords $w [wire.coords]
-        }
-    }
+    adjustWires $id
 }
 
 set itemFocused 0
@@ -440,7 +433,7 @@ proc itemEnterLeave {item id tag enter} {
     $item.mouseFocus $enter
     if {!$edited} resetEdited
     resetNotNeeded
-    redraw $tag
+    redraw $id
     set x [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]] 
     set y [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
     if {$enter} {
@@ -1191,7 +1184,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label "Delete case" -command "incrCase $id -1" 
             .wiring.context add command -label "Flip" -command "switchItem.get $id
                        switchItem.flipped [expr ![switchItem.flipped]]
-                       redraw switchItem$id"
+                       redraw $id"
             .wiring.context add command -label "Raise" -command "raiseItem $tag"
             .wiring.context add command -label "Lower" -command "lowerItem $tag"
             .wiring.context add command -label "Browse object" -command "obj_browser minsky.switchItem.*"
@@ -1244,6 +1237,7 @@ namespace eval godley {
         godley.get $id
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
+# delete guiding rectangle
         .wiring.canvas delete $item
         variable orig_width
         variable orig_height
@@ -1258,6 +1252,8 @@ namespace eval godley {
             set z [expr $w/$orig_width]
         }            
         godley.zoom [godley.x] [godley.y] $z
+# not quite sure why this is needed
+        godley.moveTo $orig_x $orig_y
 
         redraw $id
         bind .wiring.canvas <Motion> {}
