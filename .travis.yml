@@ -37,6 +37,7 @@ before_install:
   - sudo apt-get install -y octave
   - sudo apt-get install -y texlive
   - sudo apt-get install -y latex2html
+  - sudo apt-get install -y perl
 #  - psql -c 'create database minsky;' -U postgres
   - ls /usr/lib/libsoci*
 #addons:
