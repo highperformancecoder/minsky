@@ -178,7 +178,7 @@ namespace minsky
 //    assert(nextId==0);
 //#endif
 
-    reset_needed=true;
+    flags=reset_needed;
   }
 
 
@@ -733,7 +733,7 @@ namespace minsky
           ode.reset(new RKdata(this)); // set up GSL ODE routines
       }
 
-    reset_needed=false;
+    flags &= ~reset_needed;
     // update flow variable
     for (size_t i=0; i<equations.size(); ++i)
       equations[i]->eval(&flowVars[0], &stockVars[0]);
@@ -865,7 +865,7 @@ namespace minsky
     xml_pack(saveFile, "Minsky", m);
     if (!of)
       throw runtime_error("cannot save to "+filename);
-    m_edited=false;
+    flags &= ~is_edited;
   }
 
 
@@ -934,8 +934,7 @@ namespace minsky
     // try resetting the system, but ignore any errors
     try {reset();}
     catch (...) {}
-    reset_needed=true;
-    m_edited=false;
+    flags=reset_needed;
   }
 
   void Minsky::exportSchema(const char* filename, int schemaLevel)

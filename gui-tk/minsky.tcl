@@ -553,7 +553,6 @@ proc step {} {
         global running
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
-        resetNotNeeded
         .controls.statusbar configure -text "t: [t] Δt: [format %g [expr [t]-$lastt]]"
         updateGodleysDisplay
         update
@@ -605,8 +604,9 @@ proc setSimulationDelay {delay} {
     # simulationDelay to be set unnecessarily, marking the model
     # dirty
     if {$delay != [simulationDelay]} {
+        pushFlags
         simulationDelay $delay
-        resetEdited
+        popFlags
     }
 }
 
@@ -643,6 +643,8 @@ proc openNamedFile {ofname} {
     updateCanvas
     recentreCanvas
     
+    pushFlags
+
 #    foreach g [godleyItems.#keys] {
 #        godley.get $g
 #        set preferences(godleyDE) [godley.table.doubleEntryCompliant]
@@ -650,7 +652,7 @@ proc openNamedFile {ofname} {
 
    .controls.simSpeed set [simulationDelay]
     # setting preferences(godleyDE) and simulationDelay causes the edited (dirty) flag to be set
-    resetEdited
+    popFlags
     doPushHistory 1
 }
 
@@ -733,7 +735,6 @@ proc newSystem {} {
     global fname
     set fname ""
     wm title . "Minsky: New System"
-    resetEdited
 }
 
 # for debugging purposes
@@ -1032,6 +1033,7 @@ proc setFname {name} {
     }
 }
 
+pushFlags
 if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     # ignore any exceptions thrown during load, in case it can be repaired later
     catch {minsky.load $argv(1)}
@@ -1048,10 +1050,7 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
         }
     }
     set delay [simulationDelay]
-    # setting preferences(godleyDE) causes the edited (dirty) flag to be set
-    # and ditto for simulationDelay - see ticket #416
     pushHistory
-    resetEdited
     doPushHistory 1
 }
 
@@ -1156,7 +1155,6 @@ if [info exists env(MINSKY_COV)] {
     attachTraceProc ::
 }
 
-resetEdited
 
 # a hook to allow code to be run after Minsky has initialised itself
 if {[llength [info commands afterMinskyStarted]]>0} {
@@ -1164,4 +1162,4 @@ if {[llength [info commands afterMinskyStarted]]>0} {
 }
 
 disableEventProcessing
-
+popFlags

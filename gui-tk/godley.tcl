@@ -108,10 +108,10 @@ proc updateDEmode args {
       item.get $id
       if {[item.classType]=="GodleyIcon"} {
           godley.get $id
-          set edited [edited]
+          pushFlags
           godley.table.setDEmode $preferences(godleyDE)
           updateGodley $id
-          if {!$edited} resetEdited
+          popFlags
       }
   }
 }
@@ -444,7 +444,7 @@ proc whenIdleUpdateGodley {id} {
     if {![winfo exists .godley$id]} return
 
     doPushHistory 0
-    set wasEdited [edited]
+    pushFlags
     whenIdleUpdateGodleyDisplay $id
 
     # delete row/col buttons
@@ -562,7 +562,7 @@ proc whenIdleUpdateGodley {id} {
     set updateGodleyLaunched 0
     update
     doPushHistory 1
-    if {!$wasEdited} resetEdited
+    popFlags
 }
 
 
@@ -577,7 +577,7 @@ proc updateGodleyDisplay {id} {
 
 proc whenIdleUpdateGodleyDisplay {id} {
     if {![winfo exists .godley$id]} return
-    set wasEdited [edited]
+    pushFlags
     .godley$id.table clear cache
     godley.get $id
     
@@ -604,6 +604,6 @@ proc whenIdleUpdateGodleyDisplay {id} {
         # ensure buttons etc are drawn correctly
         after idle whenIdleUpdateGodley $id
     }
-    if {!$wasEdited} resetEdited
+    popFlags
 }
 

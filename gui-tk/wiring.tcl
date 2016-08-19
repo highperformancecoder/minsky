@@ -429,10 +429,7 @@ proc itemEnterLeave {item id tag enter} {
 
     $item.get $id
     # preserve dirty flag
-    set edited [edited] 
     $item.mouseFocus $enter
-    if {!$edited} resetEdited
-    resetNotNeeded
     redraw $id
     set x [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]] 
     set y [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
@@ -475,7 +472,6 @@ proc updateItemPos {id} {
     # ignore errors that may occur if the object vanishes before now
     catch {adjustWires $id}
     unset globals(updateItemPositionSubmitted$id)
-    resetNotNeeded
     doPushHistory 1
 }    
 
@@ -509,6 +505,7 @@ proc moveSet {id x y} {
 }
 
 proc move {id x y} {
+    pushFlags
     doPushHistory 0
     item.get $id
    global moveOffs$id.x moveOffs$id.y
@@ -549,7 +546,7 @@ proc move {id x y} {
 #            }
 #        }
 #    }
-    resetNotNeeded
+    popFlags
 }
 
 proc newItem {id} {
@@ -1796,8 +1793,9 @@ proc editItem {id} {
 
 proc setVarVal {v x} {
     var.get $v
+    pushFlags
     var.sliderSet $x
-    resetNotNeeded
+    popFlags
 }
 
 proc setSliderProperties {} {

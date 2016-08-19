@@ -62,11 +62,11 @@ namespace minsky
     vector<Integral> integrals;
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
-    // A map that maps an input port to variable location that it
-    // receives data from
-    // map<Port*,VariableValue> inputFrom;
-    bool reset_needed{true}; ///< if a new model, or loaded from disk
-    bool m_edited;  
+
+    enum StateFlags {is_edited=1, reset_needed=2};
+    int flags=reset_needed;
+    
+    std::vector<int> flagStack;
 
     // make copy operations just dummies, as assignment of Minsky's
     // doesn't need to change this
@@ -116,13 +116,22 @@ namespace minsky
   public:
 
     /// reflects whether the model has been changed since last save
-    bool edited() const {return m_edited;}
-    void markEdited() {m_edited=true; reset_needed=true;}
-    /// override automatic reset on model update
-    void resetNotNeeded() {reset_needed=false;}
-    /// resets the edited (dirty) flags
-    void resetEdited() {m_edited=false;}
+    bool edited() const {return flags & is_edited;}
+    /// true if reset needs to be called prior to numerical integration
+    bool reset_flag() const {return flags & reset_needed;}
+    /// indicate model has been changed since last saved
+    void markEdited() {flags |= is_edited | reset_needed;}
 
+    /// @{ push and pop state of the flags
+    void pushFlags() {flagStack.push_back(flags);}
+    void popFlags() {
+      if (!flagStack.empty()) {
+        flags=flagStack.back();
+        flagStack.pop_back();
+      }
+    }
+    /// @}
+    
     VariableValues variableValues;
 
     void setGodleyIconResource(const string& s)
@@ -143,10 +152,7 @@ namespace minsky
     EvalGodley evalGodley;
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
-    Minsky() {m_edited=false; 
-      model->height=model->width=std::numeric_limits<float>::max();
-    }
-    //~Minsky() {clearAllMaps();} //improve shutdown times
+    Minsky() {model->height=model->width=std::numeric_limits<float>::max();}
 
     GroupPtr model{new Group};
 

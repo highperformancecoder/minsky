@@ -84,10 +84,18 @@ namespace minsky
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
     if (m.doPushHistory && argv0!="minsky.doPushHistory" && 
-        argv0!="minsky.resetNotNeeded" &&
+        argv0!="minsky.popFlags" &&
+        argv0!="minsky.pushFlags" &&
         argv0!="minsky.select" &&
+        argv0!="minsky.availableOperations" &&
+        argv0!="minsky.adjustWires" &&
+        argv0!="minsky.step" &&
+        argv0!="minsky.clearAll" &&
+        argv0!="minsky.setGodleyIconResource" &&
+        argv0!="minsky.setGroupIconResource" &&
+        argv0!="minsky.selectVar" &&
         argv0.find(".get")==string::npos && 
-        argv0.find(".mouseFocus")==string::npos 
+        argv0.find(".mouseFocus")==string::npos
         )
       {
         auto t=getCommandData(argv0);
@@ -96,7 +104,7 @@ namespace minsky
             //            cmdHist[argv0]++;
             if (m.pushHistoryIfDifferent())
               {
-                if (argv0!="minsky.load" && argv0!="minsky.step") m.markEdited();
+                if (argv0!="minsky.load") m.markEdited();
                 if (m.eventRecord.get() && argv0=="minsky.startRecording")
                   {
                     for (int i=0; i<argc; ++i)
