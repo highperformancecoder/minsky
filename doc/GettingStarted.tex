@@ -56,20 +56,22 @@ There are 6 components to the Minsky interface:
 
 The menu controls the basic functions of saving and loading files,
 default settings for the program, etc. These will alter as the program
-is developed; the current menu items (as at November 2013, Mun release) are:
+is developed; the current menu items (as at August 2016 release) are:
 
 \subsubsection{File}
 \label{File}
 
 \begin{description}
-\item[About] Tells you the version of Minsky that you are using
+\item[About Minsky] Tells you the version of Minsky that you are using.
 
 \item[New System] Clear the Canvas.
 
 \item[Open] Open an existing Minsky file (Minsky files have the suffix of "mky").
 
 \item[Recent Files]\label{recentfiles} Provides a shortcut to some of
-your previously opened Minsky files
+your previously opened Minsky files.
+
+\item[Library] Opens a repository of models for the Minsky simulation system.
 
 \item[Save] Save the current file.
 
@@ -131,7 +133,7 @@ into a text-based application will be a Minsky schema XML document.
 
 \item\label{edit:group} Create a \htmlref{group}{group} using the
 contents of the selection. Groups allow you to organise a more
-complicated systems specification into heigher level modules that make
+complicated systems specification into higher level modules that make
 the overall system more comprehensible.
 
 \end{itemize}
@@ -192,6 +194,11 @@ number of solver steps per iteration decreases the overhead involved
 in updating the display, at the expense of smoothness of visual
 animation.
 
+\subsubsection{Help}
+\label{Help}
+
+Provides an in-program link to this manual.
+
 \subsection{Run Buttons}
 \label{RunButtons}
 
@@ -204,27 +211,6 @@ simulation is running, when it changes to a pause icon \htmladdimg{NewItem23.png
 \item Stop a simulation and reset the simulation time to zero
 \item Step through the simulation one time increment at a time.
 \end{enumerate}
-
-\subsection{Mode Buttons}
-\label{ModeButtons}
-
-\htmladdimg{NewItem16.png}
-
-
-These buttons alter the functions of the mouse. As of the Mun release,
-context dependent mouse actions have been implemented, so the mode
-buttons are redundant, and will likely be removed in a future release.
-
-\begin{description}
-\item[To move] and item, click on the interior of an item and drag it
-to the new position.
-\item[To wire items] click on the small circle representing the output
-port, and drag out a wire towards an input port on another item.
-\item[To lasso], click outside of any item and drag out a rectangular
-region.
-\item[To pan] the canvas, hold the shift key down whilst dragging on
-the canvas.
-\end{description}
 
 %\begin{description}
 %\item[Wire] This draws wires that connect one operator on the Canvas
