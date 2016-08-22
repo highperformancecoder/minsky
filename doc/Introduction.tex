@@ -32,14 +32,19 @@ For example, say you wanted to define the rate of employment as
 depending on output (GDP), labor productivity and population. Then you
 could define a set of equations in a suitable program (like Mathcad):
 
-\begin{center}
-\htmladdimg{NewItem.png}
-\end{center}
+\begin{eqnarray*}
+\mathrm{GDP}&:=&100\\
+\mathrm{LaborProductivity}&:=&1\\
+\mathrm{Population}&:=&100\\
+\mathrm{Workers}&:=&\mathrm{GDP}\div\mathrm{LaborProductivity}\\
+\mathrm{EmpRate}&:=&\mathrm{Workers}\div\mathrm{Population}\\
+\mathrm{EmpRate}&=&1
+\end{eqnarray*}
 
 Or you could define it in a flowchart, using a program like Vissim:
 
 \begin{center}
-\htmladdimg{NewItem1.png}
+\fwhtmladdimg{NewItem1.png}
 \end{center}
 
 For a simple algebraic equation like this, modern computer algebra
@@ -95,7 +100,7 @@ For example, here's a model of a 4 cylinder engine car---one of the
 simple examples distributed with the program Vissim:
 
 \begin{center}
-\htmladdimg{NewItem8.png}
+\fwhtmladdimg{NewItem8.png}
 \end{center}
 
 Programs like Vissim and Simulink have been in existence for almost 2
@@ -133,7 +138,7 @@ like this:
 
 
 \begin{center}
-\htmladdimg{NewItem11.png}
+\fwhtmladdimg{NewItem11.png}
 \end{center}
 
 That would work, but there's nothing in the program that warns you if
@@ -141,13 +146,13 @@ you make a mistake like, for example, wiring up the BuyerCredit entry,
 but forgetting the SellerDeposit one:
 
 \begin{center}
-\htmladdimg{NewItem12.png}
+\fwhtmladdimg{NewItem12.png}
 \end{center}
 
 Or, perhaps, wiring up both blocks, but giving one the wrong sign:
 
 \begin{center}
-\htmladdimg{NewItem51.png}
+\fwhtmladdimg{NewItem51.png}
 \end{center}
 
 In a very complex model, you might make a mistake like one of the above, run the simulation and get nonsense results, and yet be unable to locate your mistake.
@@ -158,7 +163,7 @@ developed half a millennium ago to keep financial accounts accurately:
 double-entry bookkeeping. Here is the same model in Minsky:
 
 \begin{center}
-\htmladdimg{NewItem13.png}
+\fwhtmladdimg{NewItem13.png}
 \end{center}
 
 This is an inherently better way to generate a dynamic model of financial flows, for at least two reasons:
@@ -168,7 +173,7 @@ This is an inherently better way to generate a dynamic model of financial flows,
   where a flow originates, and where it ends up
 \item The program adopts the accounting practice of double-entry
   bookkeeping, in which entries on each row sum to zero. The source is
-  shown as a ``+'', the sink is shown as a ``-'', and assets are shown
+  shown as a ``$+$'', the sink is shown as a ``$-$'', and assets are shown
   as a positive sum while liabilities are shown as a negative. If you
   don't ensure that each flow starts somewhere and ends
   somewhere---say you make the same mistake as in the flowchart
@@ -180,13 +185,13 @@ Sum identifies your mistake by showing that the row sums to ``Card''
 rather than zero:
 
 \begin{center}
-\htmladdimg{NewItem52.png}
+\fwhtmladdimg{NewItem52.png}
 \end{center}
 
 And it also identifies if you give the wrong sign to one entry:
 
 \begin{center}
-\htmladdimg{NewItem53.png}
+\fwhtmladdimg{NewItem53.png}
 \end{center}
 
 Minsky thus adds an element to the system dynamics toolkit which is

@@ -32,7 +32,7 @@ a role in determining the {\bf\em rate of change} of the wage $w$:
 Goodwin used a linear approximation to a non-linear ``Phillips
 Curve'': 
 
-\htmladdimg{NewItem55.png}
+\fwhtmladdimg{NewItem55.png}
 
 
 His linear approximation was:
@@ -67,11 +67,13 @@ This form is useful for analytic reasons, but it obscures the causal
 chain that actually lies behind the model. With modern system dynamic
 software, this can be laid out explicitly, and we can also use much
 more meaningful names. We'll start with defining output (which is a
-variable). Click on \htmladdimg{NewItem58.png} on the Icon Palette, or click on the Operations
+variable). Click on \smhtmladdimg{NewItem58.png} on the Icon Palette, or click on the Operations
 menu and choose ``Variable''. This will open up the ``Specify Variable
 Name'' window: 
 
+\begin{center}
 \htmladdimg{NewItem63.png} 
+\end{center}
 
 Enter ``{\em\bf GDP}'' into the ``Name'' field, and leave the other
 fields blank---since {\em\bf GDP} is a variable and we're defining a
@@ -81,47 +83,59 @@ press ``Enter''). The variable will now appear, attached to the
 cursor. Move to a point near the top of the screen and click, which
 will place the variable at that location:
 
+\begin{center}
 \htmladdimg{NewItem64.png} 
+\end{center}
 
 
 We are now going to write the first part of the model, that Labor
 ({\em\bf Labor}) equals output ({\em\bf GDP}) divided by labor
 productivity ({\em\bf LabProd}). Just for the sake of illustration,
 we'll make {\em\bf a} a constant (this can easily be modified
-later). For this we need to add a constant by clicking on \htmladdimg{NewItem61.png} on the
+later). For this we need to add a constant by clicking on \smhtmladdimg{NewItem61.png} on the
 Palette, or by choosing Operations/constant from the menu. This will
 pop-up the Edit Constant window: 
 
+\begin{center}
 \htmladdimg{NewItem66.png} 
+\end{center}
 
 Give the variable the name ``{\em\bf LabProd}'' and the value of 1
 (i.e., one unit of output per worker). Click OK or press Enter and the
-constant \htmladdimg{NewItem67.png}  will now be attached to the
+constant \smhtmladdimg{NewItem67.png}  will now be attached to the
 cursor. Place it below {\em\bf GDP}: 
 
+\begin{center}
 \htmladdimg{NewItem66.png} 
+\end{center}
 
 Now we need to divide {\em\bf GDP} by {\em\bf LabProd}. Click on the
-\htmladdimg{NewItem69.png} symbol on the palette and the symbol will
+\smhtmladdimg{NewItem69.png} symbol on the palette and the symbol will
 be attached to the cursor. Drag it near the other two objects and
 click. Your Canvas will now look something like this: 
 
+\begin{center}
 \htmladdimg{NewItem70.png} 
+\end{center}
 
 Now to complete the equation, you have to attach {\em\bf GDP}  to the top of the
 divide block and LabProd to the bottom. Go to the Mode buttons and
 click on Wire:  
 
+\begin{center}
 \htmladdimg{NewItem71.png} 
+\end{center}
 
 
 Now move your cursor to the right hand side of
-\htmladdimg{NewItem72.png}  and click, hold the mouse button down, and
-drag. An arrow will come out from  \htmladdimg{NewItem72.png}. Drag
+\smhtmladdimg{NewItem72.png}  and click, hold the mouse button down, and
+drag. An arrow will come out from  \smhtmladdimg{NewItem72.png}. Drag
 this arrow to the top of the divide block (where you'll see a tiny
 multiply sign) and release the mouse. You should then see this: 
 
+\begin{center}
 \htmladdimg{NewItem74.png} 
+\end{center}
 
 
 The program will ``snap'' to the nearest object when you're in Wire
@@ -129,26 +143,34 @@ mode, so this should be easy to do. But if you have any problems, go
 to the File menu and click on ``Show Ports''. You will then see little
 circles that identify the input and output ports on all objects: 
 
+\begin{center}
 \htmladdimg{NewItem75.png} 
+\end{center}
 
 Those are the connection points for wires, so start dragging from one
 and release on the other. Now wire LabProd to the bottom of the Divide
 block (where you'll see a miniature divide symbol (blown up below): 
 
+\begin{center}
 \htmladdimg{NewItem76.png} 
+\end{center}
 
 
 To complete the equation, click on ``Move'' in the Mode buttons:
 
+\begin{center}
 \htmladdimg{NewItem77.png} 
+\end{center}
 
 
-Then click on \htmladdimg{NewItem78.png} in the Design Icons to create a new variable, call it
+Then click on \smhtmladdimg{NewItem78.png} in the Design Icons to create a new variable, call it
 Labor, place it the the right of the Divide block, change back to Wire
 mode again, and wire the output port from the Divide block to the
 input port for {\bf\em Labor}: 
 
+\begin{center}
 \htmladdimg{NewItem79.png} 
+\end{center}
 
 
 To show the correspondence between the flowchart above and a standard
@@ -185,12 +207,14 @@ employment rate will be {\bf\em  Labor} divided by {\bf\em
 Population}. Define {\bf\em Population} as a constant (we'll later
 change it to a variable), and give it a value of 110. 
 
+\begin{center}
 \htmladdimg{NewItem81.png} 
+\end{center}
 
 
 
 Add it to the Canvas and you are now ready to define the employment
-rate---another variable. Click on \htmladdimg{NewItem82.png}, give it
+rate---another variable. Click on \smhtmladdimg{NewItem82.png}, give it
 the name ``$\backslash$lambda'' (be sure to include the backslash symbol), put
 another Divide block on the canvas, choose Wire mode and wire this
 next part of the model up. You should now have:
@@ -198,7 +222,7 @@ next part of the model up. You should now have:
 \htmladdimg{NewItem83.png} 
 
 
-Now choose ``File>Output Latex'' again, give it an appropriate name (say ``EmploymentEquation''), and load this into your LaTeX processor. You will see
+Now choose ``File$>$Output Latex'' again, give it an appropriate name (say ``EmploymentEquation''), and load this into your LaTeX processor. You will see
 
 \begin{eqnarray*}
 \mathrm{GDP}&=&\\
@@ -249,28 +273,30 @@ referenced to a rate of employment at which the rate of changes is
 zero.  I suggest using Milton Friedman's concept of a
 ``Non-Accelerating-Inflation-Rate-of-Unemployment'', or NAIRU. We need
 to define this constant, subtract it from 1, and subtract the result
-from the actual employment rate $\lambda$. To enter 1, click on \htmladdimg{NewItem89.png}, define a
+from the actual employment rate $\lambda$. To enter 1, click on \smhtmladdimg{NewItem89.png}, define a
 constant called 1, and give it a value of 1 (we'll have a more elegant
 way of doing this in a later release). Then define another constant
 NAIRU, and give it a value of 0.05 (5\% unemployment). Subtract this
 from 1 and subtract the result from $\lambda$. You should have the following:
 
-\htmladdimg{NewItem108.png}
+\fwhtmladdimg{NewItem108.png}
 
 Now we need to multiply this gap between the actual employment rate
 and the ``NAIRE'' rate by a constant that represents the response of
 wages to this gap. Let's call this constant {\bf\em Emp\_Response} (remember to include the underscore). Define the constant, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
 
-\htmladdimg{NewItem109.png}
+\fwhtmladdimg{NewItem109.png}
 
 Now we are ready to add a crucial component of a dynamic model: the
 integral block, which takes a flow as its input and has the integral
 of that flow as the output. The wage rate {\bf\em w} is such a variable, and we
-define it by clicking on the \htmladdimg{NewItem91.png} symbol in the Icon Palette (or by
+define it by clicking on the \smhtmladdimg{NewItem91.png} symbol in the Icon Palette (or by
 choosing Operations/Integrate from the menu). This then attaches the
 following block to the cursor: 
 
+\begin{center}
 \htmladdimg{NewItem92.png}
+\end{center}
 
 
 Now we need to rename this from the default name of ``int'' to
@@ -278,7 +304,9 @@ Now we need to rename this from the default name of ``int'' to
 on ``int'' and this will bring up the edit window . Rename it to ``w'' and
 give it a value of 1: 
 
+\begin{center}
 \htmladdimg{NewItem93.png}
+\end{center}
 
 To compete the integral equation, we need to multiply the linear
 employment response function by the current wage before we integrate
@@ -301,12 +329,12 @@ The first method gives you this initial result:
 That looks messy, but notice the blue dot on the wire? Click and drag
 on that and you will turn the straight line connector into a curve: 
 
-\htmladdimg{NewItem111.png}
+\fwhtmladdimg{NewItem111.png}
 
 The second approach, which I personally prefer (it's neater, and it
 precisely emulates the integral equation), yields this result: 
 
-\htmladdimg{NewItem112.png}
+\fwhtmladdimg{NewItem112.png}
 
 From this point on the model develops easily---``like money for old
 rope'', as one of my maths lecturers used to say. Firstly if we
@@ -315,7 +343,7 @@ Wage Bill}. To do this,
 firstly create the variable Wage Bill, and put will well below where w
 currently is on your diagram: 
 
-\htmladdimg{NewItem113.png}
+\fwhtmladdimg{NewItem113.png}
 
 Now right-click on {\bf\em WageBill} and choose ``Flip''. This rotates
 the block through 180 degrees (any arbitrary rotation can be applied
@@ -324,8 +352,9 @@ from the variable definition window itself). Now right-click on
 ``Copy''. Place the copy of {\bf\em Labor} to the right of {\bf\em
 WageBill}:
 
-
+\begin{center}
 \htmladdimg{NewItem98.png}
+\end{center}
 
 Now insert a multiply block before {\bf\em WageBill}, and wire {\bf\em
 w} and {\bf\em Labor} up to it. Curve the wire from w using the blue
@@ -333,7 +362,7 @@ dots (you can do this multiple times to create a very curved path:
 each time you create a curve, another 2 curve points are added that
 you can also manipulate, as I have done below: 
 
-\htmladdimg{NewItem114.png}
+\fwhtmladdimg{NewItem114.png}
 
 
 The next step is to subtract the {\bf\em WageBill} from {\bf\em GDP}
@@ -341,14 +370,15 @@ to define {\bf\em Profits}. Take a copy of {\bf\em GDP}, insert it
 before {\bf\em WageBill}, insert a subtract block, and wire it up to
 define the variable {\bf\em Profits}:
 
+\begin{center}
 \htmladdimg{NewItem100.png}
-
+\end{center}
 
 
 In the simple Goodwin model, all Profits are invested, and investment
 of course is the rate of change of the capital stock Capital. Create a
 variable called Investment, wire this up to Profits, and then create a
-new integral variable Capital using the \htmladdimg{NewItem101.png}
+new integral variable Capital using the \smhtmladdimg{NewItem101.png}
 icon. Right-click or double-click on to rename int2 to Capital, and
 give it an initial value of 300: 
 
@@ -375,12 +405,12 @@ simulation.
 \htmladdimg{NewItem107.png}
 
 Secondly, add some graphs by clicking on the
-\htmladdimg{NewItem106.png} icon, placing the graph
+\smhtmladdimg{NewItem106.png} icon, placing the graph
 in the middle of the flowchart, and wiring up $\backslash$lambda and w to two of
 the four inputs on the left hand side. You will now see that, rather
 than reaching equilibrium, the model cycles constantly:
 
-\htmladdimg{NewItem116.png}
+\fwhtmladdimg{NewItem116.png}
 
 If you choose File/Output LaTeX and load the file into a LaTeX
 processor, you will see that you have defined the following system of
@@ -424,22 +454,22 @@ Impatient at a rate that, if kept constant at its initial level of of
 the rate of outflow declines as the Patient account declines, the
 money in the account decays towards zero but never quite reaches it.
 
-\htmladdimg{NewItem169.png}
+\fwhtmladdimg{NewItem169.png}
 
 Many more actions need to be added to this model to complete it. For a
 start, Impatient should be paying interest to Patient on the amount
 lent. Add an additional row to the Godley Table by clicking on the
-\htmladdimg{NewItem170.png} key
+\smhtmladdimg{NewItem170.png} key
 next to ``Patient lends to Impatient'' to create a blank row:
 
-\htmladdimg{NewItem171.png}
+\fwhtmladdimg{NewItem171.png}
 
 Then label this flow ``Impatient pays interest'' and make the entry
 ``Interest'' into the cell for Impatient on that row. Make the matching
 entry ``-Interest'' in the cell for Patient. The flow ``Interest'' now
 appears on the input side of the Godley Table on the Canvas: 
 
-\htmladdimg{NewItem172.png}
+\fwhtmladdimg{NewItem172.png}
 
 Interest now has to be defined. It will be the amount in Impatient's
 account (since this began at zero) multiplied by the rate of interest
@@ -453,7 +483,7 @@ the Patient account falling to zero and Impatient rising to 100, the
 two accounts stabilize once the outflow of new loans by Patient equals
 the inflow of interest payments by Impatient:
 
-\htmladdimg{NewItem174.png}
+\fwhtmladdimg{NewItem174.png}
 
 
 Though it stabilizes, this is is still a very incomplete model:
@@ -463,7 +493,7 @@ Impatient is borrowing the money in order to hire workers to work at a
 factory and produce output for sale. So we now need another account
 called Workers, and a payment from Impatient to Workers called Wage:
 
-\htmladdimg{NewItem174.png}
+\fwhtmladdimg{NewItem174.png}
 
 
 
@@ -483,7 +513,7 @@ little money turns up in the Impatient account, and all of the money
 ends up in the Workers account. However economic activity also ceases
 as both lending and the flow of wages falls towards zero:
 
-\htmladdimg{NewItem177.png}
+\fwhtmladdimg{NewItem177.png}
 
 
 This is because wages are being paid to workers, but they are doing

@@ -21,7 +21,7 @@ port is unwired, it is equivalent to setting it to one.
 \item[divide $\div$]\label{op:divide} Divide a number by another. The input ports allow
 multiple wires, which are multiplied together prior to the division
 being carried out. If an input port is unwired, it is equivalent to
-setting it to one. Note the small `×' and `÷' signs indicating which
+setting it to one. Note the small `$\times$' and `$\div$' signs indicating which
 port refers to the numerator and which the denominator.
 
 \item[log]\label{op:log} Take the logarithm of the $x$ input port, to
@@ -119,8 +119,8 @@ A switch block (also known as a case block, or select in the Fortran
 world) is a way of selecting from a range of alternatives according
 to the value of the input.
 
+\fwhtmladdimg{switch.png}
 \begin{center}
-\htmladdimg{switch.png}\\
 {\em An example switch block with 3 cases}
 \end{center}
 
@@ -206,7 +206,7 @@ orientation), and then drag it towards an input port (on the left hand
 side of an unrotated icon). You can't connect an operator to itself
 (that would be a loop, which is not allowed, unless passing through an
 integral), nor can an input port have more than one wire
-attached, with the exception of +/- and $\times/\div$, where the
+attached, with the exception of $+/-$ and $\times/\div$, where the
 multiple wires are summed or multiplied, respectively.
 
 Wires can be bent by dragging the blue dots (``handles''). Every time
@@ -273,7 +273,8 @@ outside of the plot are a number of input ports that can be wired.
 \item[bottom edge] Quantities controlling the x-coordinates of the
   curves. The colours match up with the colour of the pen being
   controlled.
- \htmladdimg{plotLissajous.png}
+
+ \fwhtmladdimg{plotLissajous.png}
 
   If only one bottom port is connected, then that controls all pens
   simultaneously, and if no ports are connected, then the simulation
@@ -283,7 +284,8 @@ outside of the plot are a number of input ports that can be wired.
   y axes. If left unwired, the scales are determined automatically
   from the data. This can be used, for example, to implement a sliding
   window graph
- \htmladdimg{plotSlidingWindow.png}
+
+ \fwhtmladdimg{plotSlidingWindow.png}
 \end{description}
 
 \section{Note Widget}
@@ -411,15 +413,15 @@ edit menu functionality, and also keyboard entry.
 The following keystrokes insert an operation
 
 \begin{tabular}{rl}
-+ & add\\
-- & subtract \\
-* & multiply\\
-/ & divide\\
+\verb-+- & add\\
+\verb+-+ & subtract \\
+\verb+*+ & multiply\\
+\verb++/ & divide\\
 \verb+^+ & pow\\
-\& & integral\\
-= & Godley table\\
-@ & plot\\
-\% or \# & start a text comment, finish with return\\
+\verb+&+ & integral\\
+\verb+=+ & Godley table\\
+\verb+@+ & plot\\
+\verb+%+ or \verb+#+ & start a text comment, finish with return\\
 \end{tabular}
 
 Typing any other character, then return will insert an operation (if
