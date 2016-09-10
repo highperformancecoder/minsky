@@ -313,6 +313,13 @@ namespace minsky
     /// returns true if any variable of name \a name has a wired input
     bool inputWired(const std::string&) const;
 
+    /// render canvas to a cairo context
+    void renderCanvas(cairo_t*) const;
+
+    /// render canvas to a postscript file
+    void renderCanvasToPS(const char* filename) const;
+
+
   };
 
   /// global minsky object
