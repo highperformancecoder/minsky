@@ -544,14 +544,8 @@ namespace minsky
     float rotFactor=this->rotFactor();
 
 
-    // set clip to indicate icon boundary
-    cairo_rotate(cairo, angle);
-    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
-    cairo_clip(cairo);
-
    // draw default group icon
     cairo_save(cairo);
-    //    cairo_rotate(cairo, angle);
 
     // display I/O region in grey
     //updatePortLocation();
@@ -581,8 +575,6 @@ namespace minsky
       }
     cairo_restore(cairo);
 
-    cairo_identity_matrix(cairo);
-
     drawEdgeVariables(cairo);
 
 
@@ -590,7 +582,6 @@ namespace minsky
     if (!title.empty())
       {
         cairo_save(cairo);
-        cairo_identity_matrix(cairo);
         cairo_scale(cairo, zoomFactor, zoomFactor);
         cairo_select_font_face
           (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, 
@@ -623,14 +614,6 @@ namespace minsky
         cairo_show_text(cairo,title.c_str());
         cairo_restore(cairo);
       }
-
-    cairo_identity_matrix(cairo);
-
-    // shouldn't be needed??
-    // set clip to indicate icon boundary
-    cairo_rotate(cairo, angle);
-    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
-    cairo_clip(cairo);
 
     if (mouseFocus)
       drawPorts(cairo);

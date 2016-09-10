@@ -377,24 +377,36 @@ menu .menubar.file.recent
 .menubar.file add command -label "SaveAs" -command saveAs 
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
-.menubar.file add command -label "Output LaTeX" -command {
-   # MacOS version of this dialog is fundamentally broken, so need workaround - ticket #438
-    if {[tk windowingsystem] == "aqua"} {
-        set f [tk_getSaveFile -initialfile [file rootname [file tail $fname]].tex -initialdir $workDir]
-    } {
-        set f [tk_getSaveFile -initialfile [file rootname [file tail $fname]] -defaultextension .tex -initialdir $workDir]
+.menubar.file add command -label "Export Canvas" -command exportCanvas
+
+proc exportCanvas {} {
+    global workDir type fname preferences
+
+    set f [tk_getSaveFile -filetypes {
+        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"LaTeX" tex TEXT} {"Matlab" m TEXT}} \
+               -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
+    if {$f==""} return
+    if [string match -nocase *.svg "$f"] {
+        minsky.renderCanvasToSVG "$f"
+    } elseif [string match -nocase *.pdf "$f"] {
+        minsky.renderCanvasToPDF "$f"
+    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
+        minsky.renderCanvasToPS "$f"
+    } elseif {[string match -nocase *.tex "$f"]} {
+        latex "$f" $preferences(wrapLaTeXLines)
+    } elseif {[string match -nocase *.m "$f"]} {
+        matlab "$f"
+    } else {
+        switch -glob $type {
+            "*(svg)" {minsky.renderCanvasToSVG  "$f.svg"}
+            "*(pdf)" {minsky.renderCanvasToPDF "$f.pdf"}
+            "*(eps)" {minsky.renderCanvasToPS "$f.eps"}
+            "*(tex)" {latex "$f.tex" $preferences(wrapLaTeXLines)}
+            "*(m)" {matlab "$f.m"}
+        }
     }
-    if {$f ne ""} {latex $f $preferences(wrapLaTeXLines)}
 }
-.menubar.file add command -label "Output MatLab" -command {
-    # MacOS version of this dialog is fundamentally broken, so need workaround - ticket #438
-    if {[tk windowingsystem] == "aqua"} {
-        set f [tk_getSaveFile -initialfile [file rootname [file tail $fname]].m -initialdir $workDir]
-    } {
-        set f [tk_getSaveFile -initialfile [file rootname [file tail $fname]] -defaultextension .m -initialdir $workDir]
-    }
-    if {$f ne ""} {matlab $f}
-}
+
 .menubar.file add checkbutton -label "Log simulation" -variable simLogging \
     -command {
         openLogFile [tk_getSaveFile -defaultextension .dat -initialdir $workDir]

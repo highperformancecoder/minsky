@@ -476,7 +476,7 @@ bool RenderVariable::inImage(float x, float y)
 }
 
 void minsky::drawTriangle
-(cairo_t* cairo, double x, double y, cairo::Colour& col, double angle)
+(cairo_t* cairo, double x, double y, const cairo::Colour& col, double angle)
 {
   cairo_save(cairo);
   cairo_new_path(cairo);

@@ -73,7 +73,7 @@ namespace minsky
     bool inImage(float x, float y); ///< true if (x,y) within rendered image
   };
 
-  void drawTriangle(cairo_t* cairo, double x, double y, ecolab::cairo::Colour& col, double angle=0);
+  void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
 
   /// mark icon as selected.
   void drawSelected(cairo_t* cairo);

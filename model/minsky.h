@@ -318,6 +318,10 @@ namespace minsky
 
     /// render canvas to a postscript file
     void renderCanvasToPS(const char* filename) const;
+    /// render canvas to a PDF file
+    void renderCanvasToPDF(const char* filename) const;
+    /// render canvas to an SVG file
+    void renderCanvasToSVG(const char* filename) const;
 
 
   };

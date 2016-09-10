@@ -290,9 +290,6 @@ namespace minsky
     cairo_save(cairo);
     cairo_translate(cairo,-0.5*width(),-0.5*height());
 
-//    cairo_rectangle(cairo,0,0,width(),height());
-//    cairo_clip(cairo);
-
     cairo_translate(cairo, leftMargin(),0);
     cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
 
@@ -303,7 +300,6 @@ namespace minsky
     if (!table.title.empty())
       {
         cairo_save(cairo);
-        //        cairo_identity_matrix(cairo);
         cairo_move_to(cairo,0.5*leftMargin(),-0.5*bottomMargin()-0.25*height());
         cairo_select_font_face
           (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_NORMAL);
@@ -320,11 +316,9 @@ namespace minsky
           
 
     // render the variables
-    //    cairo_identity_matrix(cairo);
     DrawVars drawVars(cairo, x(), y(), zoomFactor);
     drawVars(flowVars); 
     drawVars(stockVars); 
-    //    cairo_restore(cairo);
 
     if (mouseFocus)
       drawPorts(cairo);

@@ -19,7 +19,7 @@
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
-//#include "cairoItems.h"
+#include "cairoItems.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -1202,8 +1202,26 @@ namespace minsky
 
   void Minsky::renderCanvas(cairo_t* cairo) const
   {
+    cairo_set_line_width(cairo, 1);
+    // items
     model->recursiveDo
       (&GroupItems::items, [&](const Items&, Items::const_iterator i)
+       {
+         auto& it=**i;
+         if (it.visible())
+           {
+             cairo_save(cairo);
+             cairo_identity_matrix(cairo);
+             cairo_translate(cairo,it.x(), it.y());
+             it.draw(cairo);
+             cairo_restore(cairo);
+             return false;
+           }
+       });
+
+    // groups
+    model->recursiveDo
+      (&GroupItems::groups, [&](const Groups&, Groups::const_iterator i)
        {
          auto& it=**i;
          if (it.visible())
@@ -1224,13 +1242,15 @@ namespace minsky
        {
 
          auto coords=(*i)->coords();
-         if (coords.size()<=4)
+         if (coords.size()<4 || !(*i)->visible()) return false;
+
+         double angle, lastx, lasty;
+         if (coords.size()==4)
            {
-             if (coords.size()==4)
-               {
-                 cairo_move_to(cairo,coords[0],coords[1]);
-                 cairo_line_to(cairo, coords[2], coords[3]);
-               }
+             cairo_move_to(cairo,coords[0],coords[1]);
+             cairo_line_to(cairo, coords[2], coords[3]);
+             angle=atan2(coords[3]-coords[1], coords[2]-coords[0]);
+             lastx=coords[2]; lasty=coords[3];
            }
          else
            {
@@ -1248,9 +1268,25 @@ namespace minsky
              cairo_move_to(cairo, points[0], points[1]);
              for (size_t i=2; i<2*numPoints; i+=2)
                cairo_line_to(cairo, points[i], points[i+1]);
+             cairo_stroke(cairo);
+             angle=atan2(points[2*numPoints-1]-points[2*numPoints-3], 
+                         points[2*numPoints-2]-points[2*numPoints-4]);
+             lastx=points[2*numPoints-2]; lasty=points[2*numPoints-1];
            }
-         cairo_set_line_width(cairo, 1);
          cairo_stroke(cairo);
+
+         // draw arrow
+         cairo_save(cairo);
+         cairo_translate(cairo, lastx, lasty);
+         cairo_rotate(cairo,angle);
+         cairo_move_to(cairo,0,0);
+         cairo_line_to(cairo,-5,-3); 
+         cairo_line_to(cairo,-3,0); 
+         cairo_line_to(cairo,-5,3);
+         cairo_close_path(cairo);
+         cairo_fill(cairo);
+         cairo_restore(cairo);
+         
          return false;
        });
   }
@@ -1260,9 +1296,28 @@ namespace minsky
     cairo::Surface rs(cairo_recording_surface_create
                       (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     renderCanvas(rs.cairo());
-    cout << rs.left() << " " <<rs.top() << " "<<rs.width()<< " "<<rs.height()<<endl;
     cairo::Surface s(cairo_ps_surface_create(filename, rs.width()-rs.left(), rs.height()-rs.top()));
     cairo_ps_surface_set_eps(s.surface(),true);
+    cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
+    renderCanvas(s.cairo());
+  }
+
+  void Minsky::renderCanvasToPDF(const char* filename) const 
+  {
+    cairo::Surface rs(cairo_recording_surface_create
+                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
+    renderCanvas(rs.cairo());
+    cairo::Surface s(cairo_pdf_surface_create(filename, rs.width()-rs.left(), rs.height()-rs.top()));
+    cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
+    renderCanvas(s.cairo());
+  }
+
+  void Minsky::renderCanvasToSVG(const char* filename) const 
+  {
+    cairo::Surface rs(cairo_recording_surface_create
+                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
+    renderCanvas(rs.cairo());
+    cairo::Surface s(cairo_svg_surface_create(filename, rs.width()-rs.left(), rs.height()-rs.top()));
     cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
     renderCanvas(s.cairo());
   }
