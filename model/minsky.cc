@@ -1296,7 +1296,7 @@ namespace minsky
     cairo::Surface rs(cairo_recording_surface_create
                       (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     renderCanvas(rs.cairo());
-    cairo::Surface s(cairo_ps_surface_create(filename, rs.width()-rs.left(), rs.height()-rs.top()));
+    cairo::Surface s(cairo_ps_surface_create(filename, rs.width()-rs.left()+20, rs.height()-rs.top()+20));
     cairo_ps_surface_set_eps(s.surface(),true);
     cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
     renderCanvas(s.cairo());
@@ -1307,7 +1307,7 @@ namespace minsky
     cairo::Surface rs(cairo_recording_surface_create
                       (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     renderCanvas(rs.cairo());
-    cairo::Surface s(cairo_pdf_surface_create(filename, rs.width()-rs.left(), rs.height()-rs.top()));
+    cairo::Surface s(cairo_pdf_surface_create(filename, rs.width()-rs.left()+20, rs.height()-rs.top()+20));
     cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
     renderCanvas(s.cairo());
   }
@@ -1317,7 +1317,8 @@ namespace minsky
     cairo::Surface rs(cairo_recording_surface_create
                       (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     renderCanvas(rs.cairo());
-    cairo::Surface s(cairo_svg_surface_create(filename, rs.width()-rs.left(), rs.height()-rs.top()));
+    // extra space required on right hand edge for some reason
+    cairo::Surface s(cairo_svg_surface_create(filename, rs.width()-rs.left()+20, rs.height()-rs.top()+20));
     cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
     renderCanvas(s.cairo());
   }
