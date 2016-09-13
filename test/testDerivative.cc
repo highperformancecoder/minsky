@@ -157,7 +157,14 @@ SUITE(Derivative)
           model->addWire(new Wire(plus->ports[0], funOp->ports[1]));
           model->addWire(new Wire(funOp->ports[0], f->ports[1]));
           model->addWire(new Wire(funOp->ports[0], deriv->ports[1]));
-          reset(); 
+          switch (OperationType::Type(op))
+            {
+            case OperationType::floor: case OperationType::frac:
+              CHECK_THROW(reset(), ecolab::error);
+              continue;
+            default:
+              reset(); 
+            }
           nSteps=1;step(); // ensure f is evaluated
           // set the constant of integration to the value of f at t=0
           double f0=f->value();

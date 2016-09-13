@@ -408,6 +408,26 @@ namespace minsky
   {return 0;}
 
   template <>
+  double EvalOp<OperationType::floor>::evaluate(double in1, double in2) const
+  {return ::floor(in1);}
+  template <>
+  double EvalOp<OperationType::floor>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::floor>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
+  double EvalOp<OperationType::frac>::evaluate(double in1, double in2) const
+  {return in1-::floor(in1);}
+  template <>
+  double EvalOp<OperationType::frac>::d1(double x1, double x2) const
+  {return 1;}
+  template <>
+  double EvalOp<OperationType::frac>::d2(double x1, double x2) const
+  {return 0;}
+
+  template <>
   double EvalOp<OperationType::add>::evaluate(double in1, double in2) const
   {return in1+in2;}
   template <>
