@@ -717,6 +717,20 @@ namespace MathDAG
   }
 
   template <>
+  ostream& OperationDAG<OperationType::floor>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"floor("<<arguments[0][0]->matlab()<<")";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::frac>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"frac("<<arguments[0][0]->matlab()<<")";
+  }
+
+  template <>
   ostream& OperationDAG<OperationType::constant>::latex(ostream& o) const
   {
     return o<<mathrm(name);
@@ -1087,6 +1101,20 @@ namespace MathDAG
   {
     checkArg(0,0);
     return o<<"\\left|"<<arguments[0][0]->latex()<<"\\right|";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::floor>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\left\\lfloor"<<arguments[0][0]->latex()<<"\\right\\rfloor)";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::frac>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\mathrm{frac}("<<arguments[0][0]->latex()<<")";
   }
 
   SystemOfEquations::SystemOfEquations(const Minsky& m): minsky(m)

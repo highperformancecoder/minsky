@@ -598,6 +598,18 @@ namespace minsky
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"|x|");
   }
+  template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-6,3);
+    cairo_show_text(cairo,"⌊x⌋");
+  }
+  template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"frac");
+  }
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);

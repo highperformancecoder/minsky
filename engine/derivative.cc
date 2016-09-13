@@ -553,4 +553,24 @@ namespace MathDAG
       }
   }
 
+  template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::floor>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      // should really be δ(x-⌊x⌋) 
+      throw error("floor is not differentiable");
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::frac>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("frac is not differentiable");
+  }
 }
