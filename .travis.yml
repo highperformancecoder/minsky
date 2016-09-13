@@ -44,6 +44,8 @@ before_install:
 script: 
   - git clone https://github.com/highperformancecoder/ecolab.git
   - pushd ecolab
+  - git submodule init
+  - git submodule update
   - make install
   - popd
   - make AEGIS=1
