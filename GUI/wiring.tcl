@@ -209,11 +209,13 @@ proc placeNewVar {id} {
         "clearTempBindings
          checkAddGroup var $id %x %y
          var.get $id
-         var.setScope \[var.group\]"
+         var.setScope \[var.group\]
+         updateCanvas"
     bind . <Key-Escape> \
         "clearTempBindings
       deleteVariable $id
-      .wiring.canvas delete var$id"
+      .wiring.canvas delete var$id
+      updateCanvas"
 }
 
 proc addVariablePostModal {} {
@@ -399,11 +401,13 @@ proc placeNewOp {opid} {
     bind .wiring.canvas <Motion> "move op $opid %x %y"
     bind .wiring.canvas <Button-1> \
         "clearTempBindings
-         checkAddGroup op $opid %x %y"
+         checkAddGroup op $opid %x %y
+         updateCanvas"
     bind . <Key-Escape> \
         "clearTempBindings
       deleteOperation $opid
-      .wiring.canvas delete op$opid"
+      .wiring.canvas delete op$opid
+      updateCanvas"
    
 }
 
@@ -1162,10 +1166,10 @@ proc toggleCoupled {id} {
     updateCanvas
 }
 
-proc addIntegral name {
+proc addIntegral {} {
     set id [addOperation integrate]
     integral.get $id
-    integral.description $name
+    integral.description [var.name]
 }
 
 # context menu on background canvas
@@ -1263,7 +1267,7 @@ proc contextMenu {item x y} {
                 -variable "sliderCheck$id"
             .wiring.context add command -label "Copy" -command "copyVar $id"
             if {[var.type]=="flow" && ![variables.inputWired [var.valueId]]} {
-                .wiring.context add command -label "Add integral" -command "addIntegral [var.name]"
+                .wiring.context add command -label "Add integral" -command "addIntegral"
             }
             .wiring.context add command -label "Flip" -command "rotateVar $id 180; flip_default"
             .wiring.context add command -label "Raise" -command "raiseItem var$id"
