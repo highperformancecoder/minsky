@@ -2010,7 +2010,7 @@ proc setVarVal {v x} {
     var.get $v
     set resetFlag [reset_flag]
     var.sliderSet $x
-    if [!$resetFlag] resetNotNeeded
+    if {!$resetFlag} resetNotNeeded
 }
 
 proc setSliderProperties {id} {
@@ -2064,7 +2064,7 @@ proc drawSlider {var x y} {
     if {[set sliderCheck$var]} {
         if {![winfo exists .wiring.slider$var]} {
             scale .wiring.slider$var -orient horizontal -width 7 -length 50 \
-                -showvalue 1 -sliderlength 30 
+                -showvalue 1 -sliderlength 30 -digits 3
         }
 
         setSliderProperties $var
