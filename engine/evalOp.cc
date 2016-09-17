@@ -232,7 +232,7 @@ namespace minsky
   {return in1<in2;}
   template <>
   double EvalOp<OperationType::lt>::d1(double x1, double x2) const
-  {return 0;} // TODO: thow exception if x1==x2?
+  {throw error("lt cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::lt>::d2(double x1, double x2) const
   {return 0;}
@@ -242,7 +242,7 @@ namespace minsky
   {return in1<=in2;}
   template <>
   double EvalOp<OperationType::le>::d1(double x1, double x2) const
-  {return 0;} // TODO: thow exception if x1==x2?
+  {throw error("le cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::le>::d2(double x1, double x2) const
   {return 0;}
@@ -252,7 +252,7 @@ namespace minsky
   {return in1==in2;}
   template <>
   double EvalOp<OperationType::eq>::d1(double x1, double x2) const
-  {return 0;} // TODO: thow exception if x1==x2?
+  {throw error("eq cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::eq>::d2(double x1, double x2) const
   {return 0;}
@@ -412,7 +412,7 @@ namespace minsky
   {return ::floor(in1);}
   template <>
   double EvalOp<OperationType::floor>::d1(double x1, double x2) const
-  {return 0;}
+  {throw error("floor cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::floor>::d2(double x1, double x2) const
   {return 0;}
@@ -422,7 +422,7 @@ namespace minsky
   {return in1-::floor(in1);}
   template <>
   double EvalOp<OperationType::frac>::d1(double x1, double x2) const
-  {return 1;}
+  {throw error("frac cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::frac>::d2(double x1, double x2) const
   {return 0;}
