@@ -860,11 +860,18 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::lt>::latex(ostream& o) const
   {
     if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"-" <<
-          arguments[0][0]->latex()<<"\\right)";
-      else
-        o<<"\\Theta\\left(-"<<arguments[0][0]->latex()<<"\\right)";
+      {
+        o<<"\\Theta\\left(";
+        if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+          o<<arguments[1][0]->latex()<<"-";
+        else
+          o<<"-";
+        {
+          ParenIf p(o, arguments[0][0]->BODMASlevel()>1);
+          o<<arguments[0][0]->latex();
+        }
+        o<<"\\right)";
+      }
     else
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
         o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)";
@@ -874,33 +881,18 @@ namespace MathDAG
   }
 
   template <>
-  ostream& OperationDAG<OperationType::le>::latex(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"-" <<
-          arguments[0][0]->latex()<<"\\right)+\\delta\\left("<<
-          arguments[1][0]->latex()<<"-" <<
-          arguments[0][0]->latex()<<"\\right)";
-      else
-        o<<"\\Theta\\left(-"<<arguments[0][0]->latex()<<"\\right)+\\delta\\left("<<
-          arguments[0][0]->latex()<<"\\right)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)+\\delta\\left("<<
-          arguments[1][0]->latex()<<"\\right)";
-      else
-        o<<"1";
-    return o;
-  }
-
-  template <>
   ostream& OperationDAG<OperationType::eq>::latex(ostream& o) const
   {
     if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-" <<
-          arguments[1][0]->latex()<<"\\right)";
+        {
+          o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-";
+          {
+            ParenIf p(o, arguments[1][0]->BODMASlevel()>BODMASlevel());
+            o<<arguments[1][0]->latex();
+          }
+          o <<"\\right)";
+        }
       else
         o<<"\\delta\\left("<<arguments[0][0]->latex()<<"\\right)";
     else
@@ -910,6 +902,22 @@ namespace MathDAG
         o<<"1";
     return o;
   }
+
+  template <>
+  ostream& OperationDAG<OperationType::le>::latex(ostream& o) const
+  {
+    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0] ||
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      {
+        OperationDAG<OperationType::lt> lt; lt.arguments=arguments;
+        OperationDAG<OperationType::eq> eq; eq.arguments=arguments;
+        lt.latex(o);
+        o<<"+";
+        return eq.latex(o);
+      }
+    else return o<<"1"<<endl;
+  }
+
 
   template <>
   ostream& OperationDAG<OperationType::min>::latex(ostream& o) const
