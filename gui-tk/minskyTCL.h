@@ -190,11 +190,10 @@ namespace minsky
     /// movements being added to recordings and undo history
     bool doPushHistory=true;
 
-    MinskyTCL(): wire(wires), op(items), 
+    MinskyTCL(): wire(wires), value(variableValues), op(items), 
                  constant(items), integral(items), 
                  data(items), var(items),
-                 value(variableValues), plot(items), 
-                 godley(items), group(items), 
+                 plot(items), godley(items), group(items), 
                  switchItem(items), item(items) {}
 
     void clearAllGetterSetters() {

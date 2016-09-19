@@ -66,8 +66,8 @@ namespace minsky
     }
 
     GodleyTable(const GodleyTable& other)
-      : data(other.data),
-        m_assetClass(other.m_assetClass),
+      : m_assetClass(other.m_assetClass),
+        data(other.data),
         doubleEntryCompliant(other.doubleEntryCompliant),
         title(other.title)
     { }

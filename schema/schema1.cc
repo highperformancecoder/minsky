@@ -179,34 +179,34 @@ namespace schema1
     shared_ptr<Layout> layoutFactory(int id, const minsky::IntrusiveWrap<K,V>& x)
     {return layoutFactory(id, static_cast<const V&>(x));}
 
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::Wire& w)
-    {return shared_ptr<Layout>(new WireLayout(id,w));}
+//    template <> shared_ptr<Layout> layoutFactory
+//    (int id, const minsky::Wire& w)
+//    {return shared_ptr<Layout>(new WireLayout(id,w));}
 
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::VariablePtr& v)
-    {return shared_ptr<Layout>(new SliderLayout(id,*v));}
+//    template <> shared_ptr<Layout> layoutFactory
+//    (int id, const minsky::VariablePtr& v)
+//    {return shared_ptr<Layout>(new SliderLayout(id,*v));}
 
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::OperationBase& o)
-    {
-      if (const minsky::Constant* c=dynamic_cast<const minsky::Constant*>(&o))
-        return shared_ptr<Layout>(new SliderLayout(id,*c));
-      else
-        return shared_ptr<Layout>(new ItemLayout(id,o));
-    }
+//    template <> shared_ptr<Layout> layoutFactory
+//    (int id, const minsky::OperationBase& o)
+//    {
+//      if (const minsky::Constant* c=dynamic_cast<const minsky::Constant*>(&o))
+//        return shared_ptr<Layout>(new SliderLayout(id,*c));
+//      else
+//        return shared_ptr<Layout>(new ItemLayout(id,o));
+//    }
 
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::GodleyIcon& g)
-    {return shared_ptr<Layout>(new PositionLayout(id,g));}
+//    template <> shared_ptr<Layout> layoutFactory
+//    (int id, const minsky::GodleyIcon& g)
+//    {return shared_ptr<Layout>(new PositionLayout(id,g));}
 
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::PlotWidget& p)
-    {return shared_ptr<Layout>(new PlotLayout(id,p));}
+//    template <> shared_ptr<Layout> layoutFactory
+//    (int id, const minsky::PlotWidget& p)
+//    {return shared_ptr<Layout>(new PlotLayout(id,p));}
 
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::Group& g)
-    {return shared_ptr<Layout>(new GroupLayout(id,g));}
+//    template <> shared_ptr<Layout> layoutFactory
+//    (int id, const minsky::Group& g)
+//    {return shared_ptr<Layout>(new GroupLayout(id,g));}
   }
 
   Operation::Operation(int id, const minsky::OperationBase& op): 
@@ -464,60 +464,60 @@ namespace schema1
       return minId;
     }
 
-    void addOffset(vector<Port>& v, int offs)
-    {
-      for (vector<Port>::iterator i=v.begin(); i!=v.end(); ++i)
-        i->id+=offs;
-    }
+//    void addOffset(vector<Port>& v, int offs)
+//    {
+//      for (vector<Port>::iterator i=v.begin(); i!=v.end(); ++i)
+//        i->id+=offs;
+//    }
 
-    void addOffset(vector<Wire>& v, int offs)
-    {
-      for (vector<Wire>::iterator i=v.begin(); i!=v.end(); ++i)
-        {
-          i->id+=offs;
-          i->from+=offs;
-          i->to+=offs;
-        }
-    }
-    void addOffset(vector<Variable>& v, int offs)
-    {
-      for (vector<Variable>::iterator i=v.begin(); i!=v.end(); ++i)
-        {
-          i->id+=offs;
-          for (size_t j=0; j<i->ports.size(); ++j)
-            i->ports[j]+=offs;
-          // if variable is scoped, then offset its scope also
-          int scope;
-          vector<char> uqName(i->name.size()+1);
-          if (sscanf(i->name.c_str(), "[%d]:%s", &scope, &uqName[0])==2)
-            i->name="["+to_string(scope+offs)+"]:"+&uqName[0];
-        }
-    }
+//    void addOffset(vector<Wire>& v, int offs)
+//    {
+//      for (vector<Wire>::iterator i=v.begin(); i!=v.end(); ++i)
+//        {
+//          i->id+=offs;
+//          i->from+=offs;
+//          i->to+=offs;
+//        }
+//    }
+//    void addOffset(vector<Variable>& v, int offs)
+//    {
+//      for (vector<Variable>::iterator i=v.begin(); i!=v.end(); ++i)
+//        {
+//          i->id+=offs;
+//          for (size_t j=0; j<i->ports.size(); ++j)
+//            i->ports[j]+=offs;
+//          // if variable is scoped, then offset its scope also
+//          int scope;
+//          vector<char> uqName(i->name.size()+1);
+//          if (sscanf(i->name.c_str(), "[%d]:%s", &scope, &uqName[0])==2)
+//            i->name="["+to_string(scope+offs)+"]:"+&uqName[0];
+//        }
+//    }
 
-    void addOffset(vector<Operation>& v, int offs)
-    {
-      for (vector<Operation>::iterator i=v.begin(); i!=v.end(); ++i)
-        {
-          i->id+=offs;
-          for (size_t j=0; j<i->ports.size(); ++j)
-            i->ports[j]+=offs;
-          if (i->intVar>=0) i->intVar+=offs;
-        }
-    }
+//    void addOffset(vector<Operation>& v, int offs)
+//    {
+//      for (vector<Operation>::iterator i=v.begin(); i!=v.end(); ++i)
+//        {
+//          i->id+=offs;
+//          for (size_t j=0; j<i->ports.size(); ++j)
+//            i->ports[j]+=offs;
+//          if (i->intVar>=0) i->intVar+=offs;
+//        }
+//    }
 
-    void addOffset(vector<Group>& v, int offs)
-    {
-      for (vector<Group>::iterator i=v.begin(); i!=v.end(); ++i)
-        {
-          i->id+=offs;
-          for (size_t j=0; j<i->items.size(); ++j)
-            i->items[j]+=offs;
-          for (size_t j=0; j<i->ports.size(); ++j)
-            i->ports[j]+=offs;
-          for (size_t j=0; j<i->createdVars.size(); ++j)
-            i->createdVars[j]+=offs;
-        }
-    }
+//    void addOffset(vector<Group>& v, int offs)
+//    {
+//      for (vector<Group>::iterator i=v.begin(); i!=v.end(); ++i)
+//        {
+//          i->id+=offs;
+//          for (size_t j=0; j<i->items.size(); ++j)
+//            i->items[j]+=offs;
+//          for (size_t j=0; j<i->ports.size(); ++j)
+//            i->ports[j]+=offs;
+//          for (size_t j=0; j<i->createdVars.size(); ++j)
+//            i->createdVars[j]+=offs;
+//        }
+//    }
 
     // return a vector ids from an item vector
     template <class Item>
@@ -549,7 +549,7 @@ namespace schema1
       int nextId=0;
       vector<shared_ptr<Layout> >& l;
       MinskyModel& m;
-      PopulateMinsky(Minsky& m): m(m.model), combine(m.layout), l(m.layout) {}
+      PopulateMinsky(Minsky& m): combine(m.layout), l(m.layout), m(m.model) {}
       
       int portId(const minsky::Port* p) {
         auto pmi=portMap.find(p);
@@ -790,13 +790,13 @@ namespace schema1
   Factory<schema1::Layout,string> factoryForLayout;
 
 
-  template <> std::auto_ptr<Item> factory<Item>(const std::string& name)
+  template <> unique_ptr<Item> factory<Item>(const string& name)
   {
-    return auto_ptr<Item>(itemFactory.create(name));
+    return unique_ptr<Item>(itemFactory.create(name));
   }
-  template <> std::auto_ptr<Layout> factory<Layout>(const std::string& name)
+  template <> unique_ptr<Layout> factory<Layout>(const string& name)
   {
-    return auto_ptr<Layout>(factoryForLayout.create(name));
+    return unique_ptr<Layout>(factoryForLayout.create(name));
   }
 
   Layout* Layout::create(const string& name)

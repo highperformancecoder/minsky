@@ -240,47 +240,40 @@ namespace minsky
 
   bool IntOp::toggleCoupled()
   {
-    // body of this method defined in a lambda to ensure
-    // makeConsistent() is called regardless of the return path.
-    // makeConsistent() potentially throws, soc cannot be called from
-    // a destructor
-    [&]()
+    if (type()!=integrate) return false;
+
+    assert(intVar);
+    //        intVar->toggleInPort();
+
+    assert(ports.size()==2);
+    if (coupled()) 
       {
-        if (type()!=integrate) return false;
-
-        assert(intVar);
-        //        intVar->toggleInPort();
-
-        assert(ports.size()==2);
-        if (coupled()) 
-          {
-            intVar->ports.resize(2);
-            intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
-            ports[0].reset(new Port(*this,Port::noFlags));
-            WirePtr newWire(new Wire(ports[0], intVar->ports[1]));
-            if (auto g=group.lock())
-              g->addWire(newWire);
-            else
-              minsky().model->addWire(newWire);
-            intVar->m_visible=true;
-            intVar->rotation=rotation;
-            float angle=rotation*M_PI/180;
-            //TODO       float xoffs=OperationBase::r+intVarOffset+RenderVariable(*intVar).width();
-            //TODO intVar->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
-          }
+        intVar->ports.resize(2);
+        intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
+        ports[0].reset(new Port(*this,Port::noFlags));
+        WirePtr newWire(new Wire(ports[0], intVar->ports[1]));
+        if (auto g=group.lock())
+          g->addWire(newWire);
         else
-          {
-            // need to explicitly remove wire, as deleting the port is
-            // not sufficient - wires hold a reference to the ports
-            // they connect
-            if (auto g=group.lock())
-              for (auto w: intVar->ports[1]->wires)
-                g->removeWire(*w);
-            intVar->ports.resize(1);
-            ports[0]=intVar->ports[0];
-            intVar->m_visible=false;
-          }
-      }();
+          minsky().model->addWire(newWire);
+        intVar->m_visible=true;
+        intVar->rotation=rotation;
+        float angle=rotation*M_PI/180;
+        //TODO       float xoffs=OperationBase::r+intVarOffset+RenderVariable(*intVar).width();
+        //TODO intVar->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
+      }
+    else
+      {
+        // need to explicitly remove wire, as deleting the port is
+        // not sufficient - wires hold a reference to the ports
+        // they connect
+        if (auto g=group.lock())
+          for (auto w: intVar->ports[1]->wires)
+            g->removeWire(*w);
+        intVar->ports.resize(1);
+        ports[0]=intVar->ports[0];
+        intVar->m_visible=false;
+      }
     //TODO minsky().variables.makeConsistent();
     return coupled();
   }

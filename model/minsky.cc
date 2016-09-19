@@ -1215,8 +1215,8 @@ namespace minsky
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
              cairo_restore(cairo);
-             return false;
            }
+         return false;
        });
 
     // groups
@@ -1231,8 +1231,8 @@ namespace minsky
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
              cairo_restore(cairo);
-             return false;
            }
+         return false;
        });
 
     // draw all wires - wires will go over the top of any icons. TODO
@@ -1266,7 +1266,7 @@ namespace minsky
                                  nullptr,points.data());
              
              cairo_move_to(cairo, points[0], points[1]);
-             for (size_t i=2; i<2*numPoints; i+=2)
+             for (int i=2; i<2*numPoints; i+=2)
                cairo_line_to(cairo, points[i], points[i+1]);
              cairo_stroke(cairo);
              angle=atan2(points[2*numPoints-1]-points[2*numPoints-3], 

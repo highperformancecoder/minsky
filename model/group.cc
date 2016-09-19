@@ -625,7 +625,7 @@ namespace minsky
                         float x) const
   {
     float top=0, bottom=0;
-    for (int i=0; i<vars.size(); ++i)
+    for (size_t i=0; i<vars.size(); ++i)
       {
         float y=i%2? top:bottom;
         Rotate r(rotation,0,0);

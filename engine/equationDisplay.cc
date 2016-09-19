@@ -70,21 +70,21 @@ namespace MathDAG
       return pango.height();
     }
 
-    // renders \a source (which is a recording surface) at current point
-    // note: doesn't work with nested recording surfaces, ie the destination surface cannot be a recording surface
-    void displaySurface(cairo_t* cairo, const Surface& source, Anchor anchor)
-    {
-      cairo_save(cairo);
-      double x,y;
-      moveToAnchor(cairo, source, anchor);
-      cairo_get_current_point(cairo, &x, &y);
-      cairo_rectangle(cairo, x,y,source.width(), source.height());
-      cairo_set_source_rgb(cairo,0,1,0);
-      cairo_stroke_preserve(cairo);
-      cairo_set_source_surface(cairo, source.surface(), x-source.left(),y-source.top());
-      cairo_fill(cairo);
-      cairo_restore(cairo);
-    }
+//    // renders \a source (which is a recording surface) at current point
+//    // note: doesn't work with nested recording surfaces, ie the destination surface cannot be a recording surface
+//    void displaySurface(cairo_t* cairo, const Surface& source, Anchor anchor)
+//    {
+//      cairo_save(cairo);
+//      double x,y;
+//      moveToAnchor(cairo, source, anchor);
+//      cairo_get_current_point(cairo, &x, &y);
+//      cairo_rectangle(cairo, x,y,source.width(), source.height());
+//      cairo_set_source_rgb(cairo,0,1,0);
+//      cairo_stroke_preserve(cairo);
+//      cairo_set_source_surface(cairo, source.surface(), x-source.left(),y-source.top());
+//      cairo_fill(cairo);
+//      cairo_restore(cairo);
+//    }
 
     struct RecordingSurface: public Surface
     {

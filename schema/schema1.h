@@ -387,7 +387,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
   };
 
   // Item and Layout factory
-  template <class T> std::auto_ptr<T> factory(const std::string&);
+  template <class T> std::unique_ptr<T> factory(const std::string&);
 
 }
 
