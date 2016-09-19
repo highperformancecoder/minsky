@@ -55,31 +55,31 @@ complex causal chain.
 
 These causal chains always involve a relationship between stocks and
 flows. Economists normally model stocks and flows by adding an
-increment to a stock in equations like this for the level of Capital,
-where capital in year $t$ is shown as being capital in year $t-1$ plus
-the investment that took place that year:
+increment to a stock. For example, the level of Capital is defined as
+a difference equation, where capital in year $t$ is shown as being 
+capital in year $t-1$ plus the investment that took place that year:
 
 \begin{displaymath}
 K_t=K_{t-1}+I_{t-1}
 \end{displaymath}
 
-For reasons that are explained in the FAQ \htmlref{``Why no difference
-  equations?}{faq:no-difference}, all stocks and flows in Minsky are
-handled instead as integral equations. The amount of capital at time
-$t$ is shown as the integral of net investment between time 0 and
-today:
+The problem with this approach is that capital is accumulating on a daily, 
+or even hourly, basis. It is better to model stock as continuous quantities
+and for this reason, all stocks and flows in Minsky are handled instead 
+as integral equations. The amount of capital at time $t$ is shown as 
+the integral of net investment between time 0 and today:
 
 \begin{displaymath}
 K(t)=\int_0^t I(s)ds
 \end{displaymath}
 
-However, rather than being shown as an equation, the relationship is shown as a flowchart:
+However, rather than being shown as an equation, the relationship is shown as a diagram:
 
 \begin{center}
 \htmladdimg{NewItem7.png}
 \end{center}
 
-The advantages of the flowchart representation of dynamic equations
+The advantages of the block diagram representation of dynamic equations
 over a list of equations are:
 \begin{itemize}
 \item    They make the causal relationships in a complex model
