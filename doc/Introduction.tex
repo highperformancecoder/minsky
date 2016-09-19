@@ -1,15 +1,13 @@
 \chapter{Introduction}
 \label{Introduction}
 
-\section{Welcome}
-
-\subsection{New to system dynamics?}
+\section{New to system dynamics?}
 \label{intro:new}
 
 Minsky is one of a family of ``system dynamics'' computer
 programs. These programs allow a dynamic model to be constructed, not
 by writing mathematical equations or numerous lines of computer code,
-but by laying out a model of a system in a flowchart, which can then
+but by laying out a model of a system in a block diagram, which can then
 simulate the system. These programs are now the main tool used by
 engineers to design complex products, ranging from small electrical
 components right up to passenger jets.
@@ -25,7 +23,7 @@ the generic system dynamics approach to building a model.
 Though they differ in appearance, they all work the same way:
 variables in a set of equations are linked by wires to mathematical
 operators. What would otherwise be a long list of equations is
-converted into a flowchart, and the flowchart makes the causal chain
+converted into a block diagram, and the block diagram makes the causal chain
 in the equations explicit and visually obvious.
 
 For example, say you wanted to define the rate of employment as
@@ -41,14 +39,14 @@ could define a set of equations in a suitable program (like Mathcad):
 \mathrm{EmpRate}&=&1
 \end{eqnarray*}
 
-Or you could define it in a flowchart, using a program like Vissim:
+Or you could define it using a block diagram, using a program like Vissim:
 
 \begin{center}
 \fwhtmladdimg{NewItem1.png}
 \end{center}
 
 For a simple algebraic equation like this, modern computer algebra
-programs like Mathcad are just as good as a flowchart program like
+programs like Mathcad are just as good as a block diagram program like
 Vissim. But the visual metaphor excels when you want to describe a
 complex causal chain.
 
@@ -73,22 +71,22 @@ today:
 K(t)=\int_0^t I(s)ds
 \end{displaymath}
 
-However, rather than being shown as an equation, the relationship is shown as a flowchart:
+However, rather than being shown as an equation, the relationship is shown as a block diagram:
 
 \begin{center}
 \htmladdimg{NewItem7.png}
 \end{center}
 
-The advantages of the flowchart representation of dynamic equations
+The advantages of the block diagram representation of dynamic equations
 over a list of equations are:
 \begin{itemize}
 \item    They make the causal relationships in a complex model
   obvious. It takes a specialized mind to be able to see the causal
   relations in a large set of mathematical equations; the same
-  equations laid out as flowcharts can be read by anyone who can read
-  a flowchart---and that's most of us;
-\item The flowchart paradigm makes it possible to store components of
-  a complex flowchart in a group. For example, the fuel delivery
+  equations laid out as block diagrams can be read by anyone who can read
+  a block diagram---and that's most of us;
+\item The block diagram paradigm makes it possible to store components of
+  a complex block diagram in a group. For example, the fuel delivery
   system in a car can be treated as one group, the engine as another,
   the exhaust as yet another. This reduces visual complexity and also
   makes it possible for different components of a complex model to be
@@ -109,7 +107,7 @@ their user-base of engineers want for modeling and analyzing complex
 dynamic systems. \htmlref{So why has Minsky been
   developed?}{intro:experienced}
 
-\subsection{Experienced in system dynamics?}
+\section{Experienced in system dynamics?}
 \label{intro:experienced}
 
 As an experienced system dynamics user (or if you've just read \htmlref{``New to
@@ -120,7 +118,7 @@ financial flows to be derived from a table that is very similar to the
 accountant's double-entry bookkeeping table.
 
 
-The dynamics in financial flows could be modeled using the flowchart
+The dynamics in financial flows could be modeled using the block diagram
 paradigm. But it would also be very, very easy to make a mistake
 modeling financial flows in such a system, for one simple reason:
 every financial flow needs to be entered at least twice in a
@@ -176,7 +174,7 @@ This is an inherently better way to generate a dynamic model of financial flows,
   shown as a ``$+$'', the sink is shown as a ``$-$'', and assets are shown
   as a positive sum while liabilities are shown as a negative. If you
   don't ensure that each flow starts somewhere and ends
-  somewhere---say you make the same mistake as in the flowchart
+  somewhere---say you make the same mistake as in the block diagram
   examples above, then the program will identify your mistake.
 \end{itemize}
 
