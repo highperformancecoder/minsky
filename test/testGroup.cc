@@ -24,13 +24,13 @@ using namespace minsky;
 
 namespace
 {
-  void pWireCoords()
-  {
-    cout << "------------------------------------"<<endl;
-    for (PortManager::Wires::const_iterator w=minsky::minsky().wires.begin();
-           w!=minsky::minsky().wires.end(); ++w)
-      cout <<"Wire "<<w->id()<<": "<<w->coords()<<endl;
-  }
+//  void pWireCoords()
+//  {
+//    cout << "------------------------------------"<<endl;
+//    for (PortManager::Wires::const_iterator w=minsky::minsky().wires.begin();
+//           w!=minsky::minsky().wires.end(); ++w)
+//      cout <<"Wire "<<w->id()<<": "<<w->coords()<<endl;
+//  }
 
   struct TestFixture: public Minsky
   {

@@ -33,14 +33,6 @@ namespace
   struct Dummy {};
 }
 
-namespace classdesc
-{
-  // set dummy type to "", meaning that an unspecified payloadClass gets this object
-  template <> string typeName<Dummy>() {return "";}
-  template <> void json_pack(json_pack_t&, const string&, Dummy&) {}
-  template <> void json_unpack(json_pack_t&, const string&, Dummy&) {}
-}
-
 #include "ecolab_epilogue.h"
 
 namespace minsky

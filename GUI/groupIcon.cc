@@ -44,42 +44,42 @@ namespace minsky
     const int portOffset=10;
 
     // for debugging
-    void printPortLoc(int i)
-    {
-      const Port& p=cminsky().ports[i];
-      printf("port[%d] @ (%f,%f)\n",i,p.x(),p.y());
-    }
+//    void printPortLoc(int i)
+//    {
+//      const Port& p=cminsky().ports[i];
+//      printf("port[%d] @ (%f,%f)\n",i,p.x(),p.y());
+//    }
 
     // returns true if x==y, within a certain relative constant
-    bool near_eq(double x, double y)
-    {
-      const double epsilon=1e-10;
-      return (abs(x)<epsilon && abs(y)<epsilon) || 
-                     (abs(x)>=epsilon && abs((x-y)/x)<epsilon);
-    }
+//    bool near_eq(double x, double y)
+//    {
+//      const double epsilon=1e-10;
+//      return (abs(x)<epsilon && abs(y)<epsilon) || 
+//                     (abs(x)>=epsilon && abs((x-y)/x)<epsilon);
+//    }
 
     // return true if \a rect overlaps partly, or wholly \a poly
-    bool includesPart(const Rectangle& rect, const Polygon& poly)
-    {
-      return covered_by(return_envelope<Rectangle>(poly), rect) || 
-        intersects(rect, poly);
-    }
+//    bool includesPart(const Rectangle& rect, const Polygon& poly)
+//    {
+//      return covered_by(return_envelope<Rectangle>(poly), rect) || 
+//        intersects(rect, poly);
+//    }
 
-    bool boundariesIntersect(const Rectangle& rect, const Polygon& poly)
-    {
-      return intersects(rect, poly) && 
-        !covered_by(return_envelope<Rectangle>(poly), rect) && 
-        !covered_by(rect, return_envelope<Rectangle>(poly));
-    }
+//    bool boundariesIntersect(const Rectangle& rect, const Polygon& poly)
+//    {
+//      return intersects(rect, poly) && 
+//        !covered_by(return_envelope<Rectangle>(poly), rect) && 
+//        !covered_by(rect, return_envelope<Rectangle>(poly));
+//    }
 
-    /// translate a wire coordinate list by (\a dx,\a dy)
-    array<float> translateWireCoords(array<float> c, float dx, float dy)
-    {
-      assert(c.size()%2==0);
-      c[2*pcoord(c.size()/2)]+=dx;
-      c[2*pcoord(c.size()/2)+1]+=dy;
-      return c;
-    }
+//    /// translate a wire coordinate list by (\a dx,\a dy)
+//    array<float> translateWireCoords(array<float> c, float dx, float dy)
+//    {
+//      assert(c.size()%2==0);
+//      c[2*pcoord(c.size()/2)]+=dx;
+//      c[2*pcoord(c.size()/2)+1]+=dy;
+//      return c;
+//    }
 
     bool itemExists(const string& item, int id)
     {
@@ -619,15 +619,16 @@ namespace minsky
           }
         for (vector<int>::const_iterator i=m_wires.begin(); 
              i!=m_wires.end(); ++i)
-          (cmd|".wiring.canvas coords wire"|*i)<<minsky().wires[*i].coords()<<"\n";       for (vector<int>::const_iterator i=m_groups.begin(); 
-                                                                                               i!=m_groups.end(); ++i)
-                                                                                            {
-                                                                                              GroupIcon& g=minsky().groupItems[*i];
-                                                                                              // force movement of canvas items contained within
-                                                                                              g.moveTo(g.x(),g.y());
-                                                                                              (cmd|".wiring.canvas coords groupItem"|*i)<<g.x()<<g.y()<<"\n";        
-                                                                                            }
- 
+          (cmd|".wiring.canvas coords wire"|*i)<<minsky().wires[*i].coords()<<"\n";
+        for (vector<int>::const_iterator i=m_groups.begin(); 
+             i!=m_groups.end(); ++i)
+          {
+            GroupIcon& g=minsky().groupItems[*i];
+            // force movement of canvas items contained within
+            g.moveTo(g.x(),g.y());
+            (cmd|".wiring.canvas coords groupItem"|*i)<<g.x()<<g.y()<<"\n";        
+          }
+        
       }      
   }
 

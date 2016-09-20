@@ -376,15 +376,15 @@ namespace schema1
       return g;
     }
     
-    void Combine::populate
-    (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const
-    {
-      for (vector<Group>::const_iterator i=v.begin(); i!=v.end(); ++i)
-        {
-          minsky::GroupIcon& g = m[i->id];
-          combine(g, *i);
-        }
-    }
+//    void Combine::populate
+//    (map<int, minsky::GroupIcon>& m, const vector<Group>& v) const
+//    {
+//      for (vector<Group>::const_iterator i=v.begin(); i!=v.end(); ++i)
+//        {
+//          minsky::GroupIcon& g = m[i->id];
+//          combine(g, *i);
+//        }
+//    }
      
     void Combine::populate(minsky::Plots& plots, const vector<Plot>& v) const
     {
@@ -426,10 +426,10 @@ namespace schema1
     shared_ptr<Layout> layoutFactory(int id, const minsky::IntrusiveWrap<K,V>& x)
     {return layoutFactory(id, static_cast<const V&>(x));}
 
-    template <> shared_ptr<Layout> layoutFactory
-    (int id, const minsky::Port& p)
-    {return shared_ptr<Layout>(new PositionLayout(id, p));}
-
+//    template <> shared_ptr<Layout> layoutFactory
+//    (int id, const minsky::Port& p)
+//    {return shared_ptr<Layout>(new PositionLayout(id, p));}
+//
     template <> shared_ptr<Layout> layoutFactory
     (int id, const minsky::Wire& w)
     {return shared_ptr<Layout>(new WireLayout(id,w));}
@@ -1278,13 +1278,13 @@ namespace schema1
   Factory<schema1::Layout,string> factoryForLayout;
 
 
-  template <> std::auto_ptr<Item> factory<Item>(const std::string& name)
+  template <> std::unique_ptr<Item> factory<Item>(const std::string& name)
   {
-    return auto_ptr<Item>(itemFactory.create(name));
+    return unique_ptr<Item>(itemFactory.create(name));
   }
-  template <> std::auto_ptr<Layout> factory<Layout>(const std::string& name)
+  template <> std::unique_ptr<Layout> factory<Layout>(const std::string& name)
   {
-    return auto_ptr<Layout>(factoryForLayout.create(name));
+    return unique_ptr<Layout>(factoryForLayout.create(name));
   }
 
   Layout* Layout::create(const string& name)

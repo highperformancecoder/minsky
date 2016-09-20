@@ -84,8 +84,8 @@ namespace minsky
 
   void Database::deleteElement(int modelId, const Item& x) {}
 
-  auto_ptr<Layout> Database::readLayout(int modelId, int id) 
-  {return auto_ptr<Layout>();}
+  unique_ptr<Layout> Database::readLayout(int modelId, int id) 
+  {return unique_ptr<Layout>();}
 
   void Database::updateLayout(int modelId, const Layout& x) {}
    

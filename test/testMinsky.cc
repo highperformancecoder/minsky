@@ -648,6 +648,19 @@ SUITE(Minsky)
 
   }
 
+  // Tests certain functions as throwing
+  TEST(checkDerivativesThrow)
+  {
+    CHECK_THROW(EvalOp<OperationType::and_>().d1(0,0),error); 
+    CHECK_THROW(EvalOp<OperationType::or_>().d1(0,0),error); 
+    CHECK_THROW(EvalOp<OperationType::not_>().d1(0,0),error); 
+    CHECK_THROW(EvalOp<OperationType::lt>().d1(0,0),error); 
+    CHECK_THROW(EvalOp<OperationType::le>().d1(0,0),error); 
+    CHECK_THROW(EvalOp<OperationType::eq>().d1(0,0),error); 
+    CHECK_THROW(EvalOp<OperationType::floor>().d1(0,0),error); 
+    CHECK_THROW(EvalOp<OperationType::frac>().d1(0,0),error); 
+ }
+  
   // Tests derivative definitions of one argument functions by
   // integration over [0.5,1], using fundamental theorem of calculus.
   // Hopefully, this range will avoid any singularities in the derivative
@@ -664,6 +677,11 @@ SUITE(Minsky)
           case OperationType::and_:
           case OperationType::or_:
           case OperationType::not_:
+          case OperationType::lt:
+          case OperationType::le:
+          case OperationType::eq:
+          case OperationType::floor:
+          case OperationType::frac:
             continue;
           default:
             break;

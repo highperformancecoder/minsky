@@ -76,7 +76,7 @@ VPATH= schema GUI engine server gui-wt $(ECOLAB_HOME)/include
 TESTS=
 ifdef AEGIS
 # ensure all exes get built in AEGIS mode
-TESTS=tests checkMissing 
+TESTS=tests
 # enable TCL coverage testing
 FLAGS+=-DTCL_COV
 endif

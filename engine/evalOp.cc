@@ -283,7 +283,7 @@ namespace minsky
   {return in1>0.5 && in2>0.5;}
   template <>
   double EvalOp<OperationType::and_>::d1(double x1, double x2) const
-  {return 0;}
+  {throw error("and cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::and_>::d2(double x1, double x2) const
   {return 0;}
@@ -293,7 +293,7 @@ namespace minsky
   {return in1>0.5 || in2>0.5;}
   template <>
   double EvalOp<OperationType::or_>::d1(double x1, double x2) const
-  {return 0;}
+  {throw error("or cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::or_>::d2(double x1, double x2) const
   {return 0;}
@@ -303,7 +303,7 @@ namespace minsky
   {return in1<=0.5;}
   template <>
   double EvalOp<OperationType::not_>::d1(double x1, double x2) const
-  {return 0;}
+  {throw error("not cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::not_>::d2(double x1, double x2) const
   {return 0;}
