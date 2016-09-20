@@ -900,18 +900,16 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::eq>::latex(ostream& o) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-" <<
-          arguments[1][0]->latex()<<"\\right)";
-      else
-        o<<"\\delta\\left("<<arguments[0][0]->latex()<<"\\right)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\delta\\left("<<arguments[1][0]->latex()<<"\\right)";
-      else
-        o<<"1";
-    return o;
+    if ((arguments.size()>0 && !arguments[0].empty() && arguments[0][0]) ||
+        (arguments.size()>1 && !arguments[1].empty() && arguments[1][0]))
+      {
+        OperationDAG<OperationType::lt> lt; lt.arguments=arguments;
+        OperationDAG<OperationType::eq> eq; eq.arguments=arguments;
+        lt.latex(o);
+        o<<"+";
+        return eq.latex(o);
+      }
+    else return o<<"1"<<endl;
   }
 
   template <>
