@@ -253,21 +253,30 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::lt>& expr)
   {
-    return zero;
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("lt is not differentiable");
   }
 
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::le>& expr)
   {
-    return zero;
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("le is not differentiable");
   }
 
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::eq>& expr)
   {
-    return zero;
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("eq is not differentiable");
   }
 
   template <>
@@ -551,7 +560,7 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, (one-(x<=zero)) - (x<=zero));
+        return chainRule(x, (one-2*(x<=zero)));
       }
   }
 
