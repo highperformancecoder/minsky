@@ -20,7 +20,7 @@ context-sensitive.
 There are 6 components to the Minsky interface:
 
 \begin{enumerate}
-\item  The menu.
+\item  The menus.
 
 \htmladdimg{NewItem14.png}
 
@@ -32,6 +32,7 @@ There are 6 components to the Minsky interface:
 
 \htmladdimg{NewItem16.png}
 
+
 \item The Zoom buttons
 
 \htmladdimg{NewItem17.png}
@@ -42,12 +43,12 @@ There are 6 components to the Minsky interface:
 
 \item The design icons
 
-\fwhtmladdimg{NewItem18.png}
+\htmladdimg{NewItem18.png}
 
 
 \item And finally the Design Canvas--the large drawing area beneath the buttons and icons.
 
-\fwhtmladdimg{NewItem19.png}
+\htmladdimg{NewItem19.png}
 \end{enumerate}
 
 \subsection{Menu}
@@ -66,7 +67,7 @@ is developed; the current menu items (as at August 2016 release) are:
 \begin{description}
 \item[About Minsky] Tells you the version of Minsky that you are using.
 
-\item[New System] Clear the Canvas.
+\item[New System] Clear the design canvas.
 
 \item[Open] Open an existing Minsky file (Minsky files have the suffix of "mky").
 
@@ -84,14 +85,14 @@ current model as a \htmlref{group}{group}
 
 \item[Output LaTeX] Produce the set of equations that define the
   current system for use in documenting the model, for use in LaTeX
-  compatible typesetting systems. If you LaTeX implement doesn't
+  compatible typesetting systems. If your LaTeX implemention doesn't
   support breqn, untick the \htmlref{wrap long equations
-  option}{wrap-equations}. 
-
+  option}{wrap-equations}, which can be found in the preferences panel under the options menu. 
+ 
 \item[Output MatLab] Output a MatLab function that can be used to
 simulate the system in a MatLab compatible system, such as
-\htmladdnormallinkfoot{MatLab}{https://en.wikipedia.org/wiki/MATLAB}
-or \htmladdnormallinkfoot{Octave}{http://www.gnu.org/software/octave/}.
+\htmladdnormallink{MatLab}{https://en.wikipedia.org/wiki/MATLAB}
+or \htmladdnormallink{Octave}{http://www.gnu.org/software/octave/}.
 
 \item[Log simulation] Outputs the results of the integration variables
 into a CSV data file for later use in spreadsheets or plotting
@@ -104,7 +105,7 @@ versions of Minsky.
 
 \item[Replay recording] Replay a recording of mouse and keystroke events.
 
-\item[Quit] Exit the program. Minsky will check to see whether you have saved your changes. If you have, you will exit the program; if not, you will get a reminder to save your changes:
+\item[Quit] Exit the program. Minsky will check to see whether you have saved your changes. If you have, you will exit the program; if not, you will get a reminder to save your changes.d4
 
 \item[Debugging use] Items under the line are intended for developer
   use, and will not be documented here. Redraw may be useful if the
@@ -140,22 +141,7 @@ the overall system more comprehensible.
 
 \end{itemize}
 
-%begin{latexonly}
-\begin{tabular}{ccc}
-\resizebox{0.45\textwidth}{!}{\htmladdimg{selectionExamplePrior.png}} & 
-\raisebox{1.5cm}{$\Rightarrow$} &
-\resizebox{0.45\textwidth}{!}{\htmladdimg{selectionExamplePost.png}}\\
-\end{tabular}
-%end{latexonly}
-\begin{rawhtml}
-<table>
-<tr>
-<td><img src="selectionExamplePrior.png"></td>
-<td><big>&#x21d2;</big></td>
-<td><img src="selectionExamplePost.png"></td>
-</tr>
-</table>
-\end{rawhtml}
+\htmladdimg{selectionExamplePrior.png} $\Rightarrow$ \htmladdimg{selectionExamplePost.png}
 
 \subsubsection{Insert}
 \label{Insert}
@@ -181,9 +167,9 @@ same.
 \item Godley table show values. When ticked, the values of flow
 variables are displayed in the Godley table whilst a simulation is
 running. This will tend to slow down the simulation somewhat.
-\item Godley table output style --- whether $+/-$ or DR/CR (debit/credit)
+\item Godley table output style - whether +/- or DR/CR (debit/credit)
 indicators are used.
-\item Number of recent files to display --- affects the \htmlref{recent
+\item Number of recent files to display - affects the \htmlref{recent
 files}{recentfiles} menu.
 \item\label{wrap-equations} Wrap long equations in LaTeX export. If ticked, use the breqn
 package to produce nicer looking automatically line-wrapped
@@ -228,19 +214,6 @@ simulation is running, when it changes to a pause icon \htmladdimg{NewItem23.png
 \item Stop a simulation and reset the simulation time to zero
 \item Step through the simulation one time increment at a time.
 \end{enumerate}
-
-%\subsection{Manipulating items on the canvas}
-%
-%\begin{description}
-%\item[To move] and item, click on the interior of an item and drag it
-%to the new position.
-%\item[To wire items] click on the small circle representing the output
-%port, and drag out a wire towards an input port on another item.
-%\item[To lasso], click outside of any item and drag out a rectangular
-%region.
-%\item[To pan] the canvas, hold the shift key down whilst dragging on
-%the canvas.
-%\end{description}
 
 %\begin{description}
 %\item[Wire] This draws wires that connect one operator on the Canvas
@@ -319,21 +292,17 @@ simulation is running, when it changes to a pause icon \htmladdimg{NewItem23.png
 \subsection{Zoom buttons}
 \label{ZoomButtons}
 
-\begin{center}
 \htmladdimg{NewItem17.png}
-\end{center}
 
 The Zoom buttons zoom in and out on the wiring canvas. The same functionality
 is embedded in the mouse scroll wheel. The reset zoom button
-\smhtmladdimg{zoomOrig.png} resets the zoom level to 1, and also
+\htmladdimg{zoomOrig.png} resets the zoom level to 1, and also
 recentres the canvas. It can also be used to recentre the equation view.
 
 \subsection{Speed slider}
 \label{Speedslider}
 
-\begin{center}
 \htmladdimg{NewItem184.png}
-\end{center}
 
 The speed slider controls the rate at which a model is simulated. The
 default speed is the maximum speed your system can support, but you
@@ -357,41 +326,38 @@ linear equations view.
 
 \subsection{Design Icons}
 
-\fwhtmladdimg{NewItem18.png}
+\htmladdimg{NewItem18.png}
 
 These are the ``nuts and bolts'' of any system dynamics program. The
 number of icons will grow over time, but the key ones are implemented
 now: 
 
 \begin{description}
-\item[Godley Table] \smhtmladdimg{NewItem28.png}. \label{GodleyTable} This is the
+\item[Godley Table] \htmladdimg{NewItem28.png}. \label{GodleyTable} This is the
 fundamental element of Minsky that is not found (yet) in any other
 system dynamics program. 
 
 Clicking on it and placing the resulting Bank Icon on the Canvas
 enters a bank into your model:
 
-\begin{center}
 \htmladdimg{NewItem29.png}
-\end{center}
+
 
 Double-click on the Bank Icon (or right-click and choose ``Open Godley
 Table'' from the menu) and you get a double-entry bookkeeping table we
 call a Godley Table: 
 
-\fwhtmladdimg{NewItem30.png}
+\htmladdimg{NewItem30.png}
 
  
 Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the \htmlref{Tutorial (Monetary)}{tut:money}.
 
-\item[Variable]  \smhtmladdimg{NewItem31.png}. \label{Variable} This creates an entity
+\item[Variable]  \htmladdimg{NewItem31.png}. \label{Variable} This creates an entity
 whose value changes as a function of time and its relationship with
 other entities in your model. Click on it and a variable definition
 window will appear:
 
-\begin{center}
 \htmladdimg{NewItem32.png}
-\end{center}
 
 The only essential step here is providing a name for the Variable. You
 can also enter a value for it (and a rotation in degrees), but these
@@ -405,14 +371,13 @@ cursor to where you want to place the variable on the Canvas, click,
 and it will be placed in that location.
 
 
-\item[Constant] \smhtmladdimg{NewItem33.png} \label{Constant} creates an entity whose
+\item[Constant] \htmladdimg{NewItem33.png} \label{Constant} creates an entity whose
 value is unaffected by the simulation or other entities in the
 model---but it can be varied during a simulation run by the
 user. Click on it and a constant definition window will appear:
 
-\begin{center}
 \htmladdimg{NewItem34.png}
-\end{center}
+
 
 The only essential elements here are the constant's name, and its
 value. You can also specify its rotation on the Canvas in degrees, and
@@ -423,7 +388,7 @@ to explore a range of policy options while a model is running.
 A constant is just a type of variable, which also include parameters
 (named constants), flow variables, stock variables and integration variables.
 
-\item[Time] \smhtmladdimg{NewItem35.png} embeds a reference to the
+\item[Time] \htmladdimg{NewItem35.png} embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
 simulations, but can be useful if you want to make a time-dependent
 process explicit, or control the appearance of a graph. 
@@ -442,37 +407,30 @@ to show a ten year range of the model only:
 
 
 
-\item[Integration] \smhtmladdimg{NewItem38.png}.\label{Integrate}
+\item[Integration] \htmladdimg{NewItem38.png}.\label{Integrate}
   This inserts a variable whose value depends on the integral of other
   variables in the system. This is the essential element for defining
   a dynamic model. Click on it and the following entity will appear at
   the top left hand side of the canvas (and move with your mouse until
   you click to place it somewhere:
 
-\begin{center}
 \htmladdimg{NewItem39.png}
-\end{center}
+
 
 ``int'' is short for ``integrated variable'', and the first thing you should do after creating one is give it a name. Double-click on the ``int'', or right click and choose Edit. This will bring up the following menu:
 
-\begin{center}
 \htmladdimg{NewItem40.png}
-\end{center}
 
 Change the name to something appropriate, and give it an initial
 value. For example, if you were building a model that included
 America's population, you would enter the following:
 
-\begin{center}
 \htmladdimg{NewItem41.png}
-\end{center}
 
 
 The integrated variable block would now look like this:
 
-\begin{center}
 \htmladdimg{NewItem42.png}
-\end{center}
 
 
 To model population, you need to include a growth rate. According to
@@ -518,7 +476,7 @@ and it emphasizes the link between the simple formula for a percentage
 rate of change and a differential equation. 
 
 \item[Plus, Minus, Multiply and Divide blocks]
-    \smhtmladdimg{NewItem49.png}. These execute the stated binary
+    \htmladdimg{NewItem49.png}. These execute the stated binary
     mathematical operations. Each input can take multiple wires as
     well---so that to add five numbers together, you can wire 1 input
     to one port on the Add block, and the other four to the other
@@ -554,31 +512,27 @@ The Design Canvas is where you develop your model. A model consists of
 a number of blocks---variables, constants and mathematical
 operators---connected by wires. 
 
-\fwhtmladdimg{NewItem19.png}
+\htmladdimg{NewItem19.png}
 
 \subsection{Wires}
 \label{Wires}
 
 The wires in a model connect blocks together to define equations. For
 example, to write an equation for 100/33, you would place a
-\smhtmladdimg{NewItem121.png} on the canvas, and give it the name and value of 33:
+\htmladdimg{NewItem121.png} on the canvas, and give it the name and value of 33:
 
-\begin{center}
 \htmladdimg{NewItem122.png}
-\end{center}
 
 Then do the same for 33, and place a divide block on the canvas:
 
-\begin{center}
 \htmladdimg{NewItem123.png}
-\end{center}
 
 To write the equation, you change the program mode to ``Wire'':
 
 \htmladdimg{NewItem124.png}
 
 
-Then click on the right hand edge of \smhtmladdimg{NewItem125.png}
+Then click on the right hand edge of \htmladdimg{NewItem125.png}
 and drag 
 
 \section{Working with Minsky}
@@ -592,7 +546,7 @@ There are a number of types of components in Minsky
 \item Variables whose values are calculated by the program during a simulation and depend on the values of constants and other variables; and
 \item Godley Tables, which define both financial accounts and the
 flows between them.
-\item Integrals --- represent a variable computed by integrating a
+\item Integrals - represent a variable computed by integrating a
 function forward in time.
 \end{enumerate}
 
@@ -605,22 +559,16 @@ There are three ways to insert a component of a model onto the Canvas:
 \item Click on the desired Icon on the Icon Palette, drag the block
 onto the Canvas and release the mouse where you want to insert it 
 
-\begin{center}
 \htmladdimg{NewItem160.png}
-\end{center}
 
 \item Choose Operations from the menu and select the desired block there
 
-\begin{center}
 \htmladdimg{NewItem159.png}
-\end{center}
 
 \item Right-click on an existing block and choose copy. Then place the
 copy where you want it on the palette. 
 
-\begin{center}
 \htmladdimg{NewItem161.png}
-\end{center}
 
 
 \end{enumerate}
@@ -636,7 +584,7 @@ For example, a simple equation like
 \begin{displaymath}
 100/3 = 33.3
 \end{displaymath}
-is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on\smhtmladdimg{NewItem130.png} :
+is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on\htmladdimg{NewItem130.png} :
 
 \htmladdimg{NewItem129.png} 
 
@@ -695,53 +643,48 @@ The first step in creating a model with a banking sector is to click on the Godl
 
 \subsubsection{Entering accounts}
 
-Double click or right click on the \smhtmladdimg{NewItem133.png} block
+Double click or right click on the \htmladdimg{NewItem133.png} block
 to bring up the Godley Table:
-\fwhtmladdimg{NewItem135.png} 
+
+\htmladdimg{NewItem135.png} 
 
 
-When a Godley Table is first loaded, it has room for one account to be
-defined. To create an additional account, click on the
-\smhtmladdimg{NewItem163.png} button above the first account. One
-click then adds another column in which an additional account can be
-defined.
+When a Godley Table is first loaded, it has room for one account to be defined. To create an additional account, click on the \htmladdimg{NewItem163.png} button above the first account. One click then adds another column in which an additional account can be defined.
 
-\fwhtmladdimg{NewItem164.png}
+\htmladdimg{NewItem164.png} 
 
 
-A column can be deleted by clicking on the \smhtmladdimg{NewItem165.png} button above the column.
+A column can be deleted by clicking on the \htmladdimg{NewItem165.png} button above the column.
 
 To define bank accounts in the system you enter a name into the row
-labeled ``\verb+Flows V / Stock Variables ->+''. For example, if you were
+labeled ``Flows V / Stock Variables ->''. For example, if you were
 going to define a banking sector that operated simply as an
 intermediary between ``Patient'' people and ``Impatient'' people---as
 in the Neoclassical ``Loanable Funds'' model--you might define the
 following accounts: 
 
-\fwhtmladdimg{NewItem138.png} 
+\htmladdimg{NewItem138.png} 
 
 As you enter the accounts, they appear at the bottom of the Bank block on the canvas:
 
-\fwhtmladdimg{NewItem145.png} 
+\htmladdimg{NewItem145.png} 
 
 \subsection{Defining account types}
 
 Bank accounts must be classified as either an Asset, a Liability, or
 the Equity of the relevant Bank, using the drop-down menu currently
-labeled \smhtmladdimg{NewItem139.png} at the top of each account. In
+labeled \htmladdimg{NewItem139.png} at the top of each account. In
 this model, Reserves are an Asset of the banking sector, the accounts
 of ``Patient'' and ``Impatient'' are liabilities, and the ``Safe'' is
 the Equity of the banking system. Click on the
-\smhtmladdimg{NewItem139.png} button and this drop-down menu will
+\htmladdimg{NewItem139.png} button and this drop-down menu will
 appear:
 
-\begin{center}
 \htmladdimg{NewItem140.png} 
-\end{center}
 
 Choose the relevant entry for each column, and the accounts will be properly classified when the model is simulated:
 
-\fwhtmladdimg{NewItem141.png} 
+\htmladdimg{NewItem141.png} 
 
 \subsubsection{Entering flows between accounts}
 
@@ -752,21 +695,21 @@ example, if Patient is lending money to Impatient, the word ``Lend''
 could be used to describe this action. Firstly you need to create a
 row beneath the ``Initial Conditions'' row (which records the amount of
 money in each account when the simulation begins). You do this by
-clicking on the \smhtmladdimg{NewItem166.png} key on the Initial Conditions row. This creates a
+clicking on the \htmladdimg{NewItem166.png} key on the Initial Conditions row. This creates a
 blank row for recording a flow between accounts.
 
-\fwhtmladdimg{NewItem167.png}
+\htmladdimg{NewItem167.png}
 
 The cell below ``Initial Conditions'' is used to give a verbal
 description of what the flow is: 
 
-\fwhtmladdimg{NewItem168.png}
+\htmladdimg{NewItem168.png}
 
 The flows between accounts are then recorded in the relevant cells
 underneath the columns. Here we will start with putting the label
 ``Lend'' into the Patient column. 
 
-\fwhtmladdimg{NewItem142.png}
+\htmladdimg{NewItem142.png}
 
 Notice that the program shows that the Row Sum for this transaction is
 currently ``Lend'', when it should be zero to obey the double-entry
@@ -775,7 +718,7 @@ destination for ``Lend'' has not yet been specified. The destination
 is Impatient's account, and to balance the row to zero this part of
 the transaction must be entered as ``-Lend'': 
 
-\fwhtmladdimg{NewItem143.png}
+\htmladdimg{NewItem143.png}
 
 This might appear strange if you are not used to accounting
 standards---``shouldn't the Patient account fall because of the loan,
@@ -794,11 +737,11 @@ entries on the Asset side of the Banking ledger that exactly match the
 sum of Liabilities and Equity (Equity is also shown as a negative in
 double-entry bookkeeping): 
 
-\fwhtmladdimg{NewItem144.png}
+\htmladdimg{NewItem144.png}
 
 As you enter flows, these appear on the left hand side of the bank block:
 
-\fwhtmladdimg{NewItem147.png}
+\htmladdimg{NewItem147.png}
 
 \subsubsection{Defining flows}
 
@@ -860,7 +803,8 @@ as 0.1 times the balance in Patient's account. This now results in a
 smooth exponential decay of the amount in the Patient account, matched
 by a rise in the amount in Impatient account.
 
-\fwhtmladdimg{NewItem152.png}
+\htmladdimg{NewItem152.png}
+
 
 This is because the equation you have defined is identical to a
 radioactive decay equation, with the amount in the Patient account
@@ -880,9 +824,8 @@ is a neater way to define flows.
 Right-click on the inputs and outputs of a Godley Table and choose
 ``copy'' from the drop-down menu:
 
-\begin{center}
 \htmladdimg{NewItem153.png}
-\end{center}
+
 
 Place the copied flows and accounts and place them away from the
 table. Then wire up your definition there:
@@ -893,7 +836,7 @@ table. Then wire up your definition there:
 This now results in a much neater model. The same process can be used
 to tidy up graphs as well:
 
-\fwhtmladdimg{NewItem155.png}
+\htmladdimg{NewItem155.png}
 
 
 A more complex model would have many more flows, and these in turn
@@ -918,7 +861,7 @@ variable called \\tau\_Lend, and gives it a value of 10:
 As the simulation shows, the two models have precisely the same result
 numerically:
 
-\fwhtmladdimg{NewItem157.png}
+\htmladdimg{NewItem157.png}
 
 
 The advantage of the time constant approach is that it is defined in
