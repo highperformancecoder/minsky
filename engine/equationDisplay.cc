@@ -624,8 +624,8 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::le>::render(Surface& surf) const
   {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0] ||
-        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+    if ((arguments.size()>0 && !arguments[0].empty() && arguments[0][0]) ||
+        (arguments.size()>1 && !arguments[1].empty() && arguments[1][0]))
       {
         OperationDAG<OperationType::lt> lt; lt.arguments=arguments;
         OperationDAG<OperationType::eq> eq; eq.arguments=arguments;
