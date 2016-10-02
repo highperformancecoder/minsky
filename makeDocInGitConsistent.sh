@@ -3,7 +3,7 @@ rm -rf doc/minsky
 (cd doc; sh makedoc.sh)
 
 target=gui-tk/library/help
-git rm -rf $target/*
+git rm -rf $target/minsky/*
 mkdir -p $target/minsky
 find doc/minsky \( -name "*.html" -o -name "*.css" -o -name "*.png" \) -exec cp {} $target/minsky \;
 cp -r -f doc/minsky.html $target
