@@ -1,123 +1,109 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2012 (1.2)
+<!--Converted with LaTeX2HTML 2008 (1.71)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Edit</TITLE>
-<META NAME="description" CONTENT="Edit">
+<TITLE>Options</TITLE>
+<META NAME="description" CONTENT="Options">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node13.html">
 <LINK REL="previous" HREF="node11.html">
-<LINK REL="up" HREF="node10.html">
+<LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node13.html">
 </HEAD>
 
 <BODY >
-<!--Navigation Panel-->
-<A NAME="tex2html243"
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html244"
   HREF="node13.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html241"
-  HREF="node10.html">
+<A NAME="tex2html242"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html235"
+<A NAME="tex2html236"
   HREF="node11.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html244"
-  HREF="node13.html">Insert</A>
-<B> Up:</B> <A NAME="tex2html242"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html236"
-  HREF="node11.html">File</A>
+<B> Next:</B> <A NAME="tex2html245"
+  HREF="node13.html">Runge Kutta</A>
+<B> Up:</B> <A NAME="tex2html243"
+  HREF="node8.html">Menu</A>
+<B> Previous:</B> <A NAME="tex2html237"
+  HREF="node11.html">Insert</A>
 <BR>
-<BR>
+<BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00231200000000000000"></A>
-<A NAME="Edit"></A>
+<H3><A NAME="SECTION00231400000000000000"></A>
+<A NAME="Options"></A>
 <BR>
-Edit
+Options
 </H3>
 
 <P>
+The options menu allows you to customise aspects of Minsky.
+
+<P>
+<DL>
+<DT><STRONG>Preferences</STRONG></DT>
+<DD><P>
 
 <UL>
-<LI><A NAME="edit:undo"></A> Undo and Redo allow you to step back and forward in your editing
-history. If you step back a few steps, and then edit the model, all
-subsequent model states will be erased from the history.
-
-<P>
+<LI>Godley table double entry. Applies double entry book keeping
+semantics to the Godley table, where assets and liabilites have
+opposite mathematical meaning. See the <A HREF="node54.html#godley">Godley table
+section</A> for more details. Unchecking this option reverts to a
+simpler mode where each stock (Godley table column) is treated the
+same.
 </LI>
-<LI><A NAME="edit:copy"></A> Cut/copy/paste. Selecting, or lassoing a region
-of the canvas will select a group of icons, which will be shaded to
-indicate the selected items. Wires joining two selected items will
-also be selected. Note that, compatible with X-windows, selecting
-automatically performs a copy, so the copy operation is strictly
-redundant, but provided for users familiar with systems where an
-explicit copy request is required. Cut deletes the selected
-items. Paste will paste the items in the clipboard as a
-<A HREF="node52.html#group">group</A> into the current model. At the time of writing,
-copy-pasting between different instances of Minsky, or into other
-applications, only works on X-windows systems. Pasting the clipboard
-into a text-based application will be a Minsky schema XML document.
-
-<P>
+<LI>Godley table show values. When ticked, the values of flow
+variables are displayed in the Godley table whilst a simulation is
+running. This will tend to slow down the simulation somewhat.
 </LI>
-<LI><A NAME="edit:group"></A> Create a <A HREF="node52.html#group">group</A> using the
-contents of the selection. Groups allow you to organise a more
-complicated systems specification into heigher level modules that make
-the overall system more comprehensible.
-
-<P>
+<LI>Godley table output style -- whether <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$+/-$"></SPAN> or DR/CR (debit/credit)
+indicators are used.
+</LI>
+<LI>Number of recent files to display -- affects the <A HREF="node9.html#recentfiles">recent
+files</A> menu.
+</LI>
+<LI><A NAME="wrap-equations"></A> Wrap long equations in LaTeX export. If ticked, use the breqn
+package to produce nicer looking automatically line-wrapped
+formulae. Because not all LaTeX implementations are guaranteed to
+support breqn, untick this option is you find difficulty.
 </LI>
 </UL>
 
 <P>
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="selectionExamplePrior.png"
- ALT="214"> <IMG
- WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img5.png"
- ALT="$\Rightarrow$"> <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="selectionExamplePost.png"
- ALT="215">
+</DD>
+<DT><STRONG>Background colour</STRONG></DT>
+<DD>-- select a colour from which a colour scheme
+is computed.
 
 <P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html243"
-  HREF="node13.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html241"
-  HREF="node10.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html235"
-  HREF="node11.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html244"
-  HREF="node13.html">Insert</A>
-<B> Up:</B> <A NAME="tex2html242"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html236"
-  HREF="node11.html">File</A>
-<!--End of Navigation Panel-->
+</DD>
+</DL>
+
+<P>
+<BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-19
+2016-10-02
 </ADDRESS>
 </BODY>
 </HTML>

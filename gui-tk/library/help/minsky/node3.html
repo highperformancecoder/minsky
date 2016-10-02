@@ -1,245 +1,208 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2012 (1.2)
+<!--Converted with LaTeX2HTML 2008 (1.71)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>New to system dynamics?</TITLE>
-<META NAME="description" CONTENT="New to system dynamics?">
+<TITLE>Experienced in system dynamics?</TITLE>
+<META NAME="description" CONTENT="Experienced in system dynamics?">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node4.html">
 <LINK REL="previous" HREF="node2.html">
-<LINK REL="up" HREF="node2.html">
+<LINK REL="up" HREF="node1.html">
 <LINK REL="next" HREF="node4.html">
 </HEAD>
 
 <BODY >
-<!--Navigation Panel-->
-<A NAME="tex2html107"
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html101"
   HREF="node4.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html105"
-  HREF="node2.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html99"
+  HREF="node1.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html95"
   HREF="node2.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html108"
-  HREF="node4.html">Experienced in system dynamics?</A>
-<B> Up:</B> <A NAME="tex2html106"
-  HREF="node2.html">Welcome</A>
-<B> Previous:</B> <A NAME="tex2html100"
-  HREF="node2.html">Welcome</A>
+<B> Next:</B> <A NAME="tex2html102"
+  HREF="node4.html">Getting Started</A>
+<B> Up:</B> <A NAME="tex2html100"
+  HREF="node1.html">Introduction</A>
+<B> Previous:</B> <A NAME="tex2html96"
+  HREF="node2.html">New to system dynamics?</A>
 <BR>
-<BR>
+<BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00111000000000000000"></A>
-<A NAME="intro:new"></A>
+<H1><A NAME="SECTION00120000000000000000"></A>
+<A NAME="intro:experienced"></A>
 <BR>
-New to system dynamics?
-</H2>
+Experienced in system dynamics?
+</H1>
 
 <P>
-Minsky is one of a family of ``system dynamics'' computer
-programs. These programs allow a dynamic model to be constructed, not
-by writing mathematical equations or numerous lines of computer code,
-but by laying out a model of a system in a flowchart, which can then
-simulate the system. These programs are now the main tool used by
-engineers to design complex products, ranging from small electrical
-components right up to passenger jets.
+As an experienced system dynamics user (or if you've just read <A HREF="node2.html#intro:new">``New to
+system dynamics?''</A>), what you need to know is what Minsky
+provides that other system dynamics programs don't. That boils down to
+one feature: The Godley Table that enables a dynamic model of
+financial flows to be derived from a table that is very similar to the
+accountant's double-entry bookkeeping table.
 
 <P>
-Minsky adds another means to create the dynamic equations that are
-needed to define monetary flows--the ``Godley Table''--which is
-discussed in the next help topic for users who are experienced in
-system dynamics. In this section, we'll give you a quick overview of
-the generic system dynamics approach to building a model.
+The dynamics in financial flows could be modeled using the block diagram
+paradigm. But it would also be very, very easy to make a mistake
+modeling financial flows in such a system, for one simple reason:
+every financial flow needs to be entered at least twice in a
+system--once as a source, and once as a sink.
 
 <P>
-Though they differ in appearance, they all work the same way:
-variables in a set of equations are linked by wires to mathematical
-operators. What would otherwise be a long list of equations is
-converted into a flowchart, and the flowchart makes the causal chain
-in the equations explicit and visually obvious.
-
-<P>
-For example, say you wanted to define the rate of employment as
-depending on output (GDP), labor productivity and population. Then you
-could define a set of equations in a suitable program (like Mathcad):
+For example, if you go shopping and buy a new computer with your
+credit card, you increase your debt to a bank and simultaneously
+increase the deposit account of the retailer from whom you buy the
+computer. The two system states in this model-your credit card
+(``BuyerCredit'') and the retailer's deposit account
+(``SellerDeposit'')--therefore have to have the same entry (let's call
+this ``Card'') made into them. In Vissim, such a transaction would look
+like this:
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem.png"
- ALT="16">
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem11.png"
+ ALT="81">
 
 </DIV>
 
 <P>
-Or you could define it in a flowchart, using a program like Vissim:
+That would work, but there's nothing in the program that warns you if
+you make a mistake like, for example, wiring up the BuyerCredit entry,
+but forgetting the SellerDeposit one:
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem1.png"
- ALT="19">
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem12.png"
+ ALT="82">
 
 </DIV>
 
 <P>
-For a simple algebraic equation like this, modern computer algebra
-programs like Mathcad are just as good as a flowchart program like
-Vissim. But the visual metaphor excels when you want to describe a
-complex causal chain.
-
-<P>
-These causal chains always involve a relationship between stocks and
-flows. Economists normally model stocks and flows by adding an
-increment to a stock in equations like this for the level of Capital,
-where capital in year <IMG
- WIDTH="10" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img1.png"
- ALT="$t$"> is shown as being capital in year <IMG
- WIDTH="38" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img2.png"
- ALT="$t-1$"> plus
-the investment that took place that year:
-
-<P>
-<BR><P></P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- \begin{displaymath}
-K_t=K_{t-1}+I_{t-1}
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="123" HEIGHT="28" BORDER="0"
- SRC="img3.png"
- ALT="\begin{displaymath}
-K_t=K_{t-1}+I_{t-1}
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-
-<P>
-For reasons that are explained in the FAQ <A HREF="node60.html#faq:no-difference">``Why no difference
-  equations?</A>, all stocks and flows in Minsky are
-handled instead as integral equations. The amount of capital at time
-<IMG
- WIDTH="10" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img1.png"
- ALT="$t$"> is shown as the integral of net investment between time 0 and
-today:
-
-<P>
-<BR><P></P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- \begin{displaymath}
-K(t)=\int_0^t I(s)ds
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="121" HEIGHT="46" BORDER="0"
- SRC="img4.png"
- ALT="\begin{displaymath}
-K(t)=\int_0^t I(s)ds
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-
-<P>
-However, rather than being shown as an equation, the relationship is shown as a flowchart:
+Or, perhaps, wiring up both blocks, but giving one the wrong sign:
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem7.png"
- ALT="30">
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem51.png"
+ ALT="83">
 
 </DIV>
 
 <P>
-The advantages of the flowchart representation of dynamic equations
-over a list of equations are:
+In a very complex model, you might make a mistake like one of the above, run the simulation and get nonsense results, and yet be unable to locate your mistake.
+
+<P>
+Minsky avoids this problem by using the paradigm that accountants
+developed half a millennium ago to keep financial accounts accurately:
+double-entry bookkeeping. Here is the same model in Minsky:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem13.png"
+ ALT="84">
+
+</DIV>
+
+<P>
+This is an inherently better way to generate a dynamic model of financial flows, for at least two reasons:
 
 <UL>
-<LI>They make the causal relationships in a complex model
-  obvious. It takes a specialized mind to be able to see the causal
-  relations in a large set of mathematical equations; the same
-  equations laid out as flowcharts can be read by anyone who can read
-  a flowchart--and that's most of us;
+<LI>All financial transactions are flows between entities. The
+  tabular layout captures this in a very natural way: each row shows
+  where a flow originates, and where it ends up
 </LI>
-<LI>The flowchart paradigm makes it possible to store components of
-  a complex flowchart in a group. For example, the fuel delivery
-  system in a car can be treated as one group, the engine as another,
-  the exhaust as yet another. This reduces visual complexity and also
-  makes it possible for different components of a complex model to be
-  designed by different groups and then ``wired together'' at a later
-  stage.
+<LI>The program adopts the accounting practice of double-entry
+  bookkeeping, in which entries on each row sum to zero. The source is
+  shown as a ``<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img6.png"
+ ALT="$+$"></SPAN>'', the sink is shown as a ``<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img7.png"
+ ALT="$-$"></SPAN>'', and assets are shown
+  as a positive sum while liabilities are shown as a negative. If you
+  don't ensure that each flow starts somewhere and ends
+  somewhere--say you make the same mistake as in the block diagram
+  examples above, then the program will identify your mistake.
 </LI>
 </UL>
 
 <P>
-For example, here's a model of a 4 cylinder engine car--one of the
-simple examples distributed with the program Vissim:
+If you forget to enter the recipient in this transaction, then the Row
+Sum identifies your mistake by showing that the row sums to ``Card''
+rather than zero:
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem8.png"
- ALT="35">
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem52.png"
+ ALT="85">
 
 </DIV>
 
 <P>
-Programs like Vissim and Simulink have been in existence for almost 2
-decades, and they are now mature products that provide everything
-their user-base of engineers want for modeling and analyzing complex
-dynamic systems. <A HREF="node4.html#intro:experienced">So why has Minsky been
-  developed?</A>
+And it also identifies if you give the wrong sign to one entry:
 
 <P>
-<HR>
+<DIV ALIGN="CENTER">
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem53.png"
+ ALT="86">
+
+</DIV>
+
+<P>
+Minsky thus adds an element to the system dynamics toolkit which is
+fundamental for modeling the monetary flows that are an intrinsic
+aspect of a market economy. Future releases will dramatically extend
+this capability. 
+
+<P>
+
+<DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html107"
+<A NAME="tex2html101"
   HREF="node4.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html105"
-  HREF="node2.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html99"
+  HREF="node1.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html95"
   HREF="node2.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html108"
-  HREF="node4.html">Experienced in system dynamics?</A>
-<B> Up:</B> <A NAME="tex2html106"
-  HREF="node2.html">Welcome</A>
-<B> Previous:</B> <A NAME="tex2html100"
-  HREF="node2.html">Welcome</A>
+<B> Next:</B> <A NAME="tex2html102"
+  HREF="node4.html">Getting Started</A>
+<B> Up:</B> <A NAME="tex2html100"
+  HREF="node1.html">Introduction</A>
+<B> Previous:</B> <A NAME="tex2html96"
+  HREF="node2.html">New to system dynamics?</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-08-19
+2016-10-02
 </ADDRESS>
 </BODY>
 </HTML>

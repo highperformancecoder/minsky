@@ -1,126 +1,68 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2012 (1.2)
+<!--Converted with LaTeX2HTML 2008 (1.71)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Plot widget</TITLE>
-<META NAME="description" CONTENT="Plot widget">
+<TITLE>Note Widget</TITLE>
+<META NAME="description" CONTENT="Note Widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node54.html">
 <LINK REL="previous" HREF="node52.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="up" HREF="node43.html">
 <LINK REL="next" HREF="node54.html">
 </HEAD>
 
 <BODY >
-<!--Navigation Panel-->
-<A NAME="tex2html678"
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html679"
   HREF="node54.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html676"
-  HREF="node44.html">
+<A NAME="tex2html677"
+  HREF="node43.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html670"
+<A NAME="tex2html671"
   HREF="node52.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html679"
-  HREF="node54.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html677"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html671"
-  HREF="node52.html">Groups</A>
+<B> Next:</B> <A NAME="tex2html680"
+  HREF="node54.html">Godley Tables</A>
+<B> Up:</B> <A NAME="tex2html678"
+  HREF="node43.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html672"
+  HREF="node52.html">Plot widget</A>
 <BR>
-<BR>
+<BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00460000000000000000"></A>
-<A NAME="Plot"></A>
+<H1><A NAME="SECTION00470000000000000000"></A>
+ <A NAME="Notes"></A>
 <BR>
-Plot widget
-</H1>
+Note Widget
+</H1> Notes allow arbitrary text to be
+placed on the canvas for explanatory purposes. Anything that can be
+entered on the keyboard can be placed here, including unicode
+characters, but LaTeX formatting is not currently supported. A note
+widget, like all canvas items, allow short additional tooltips to be
+specified (not in Mun!). 
 
 <P>
-A plot widget embeds a dynamic plot into the canvas. Around the
-outside of the plot are a number of input ports that can be wired.
-
-<P>
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="plotWidget.png"
- ALT="1606">
-
-<P>
-<DL>
-<DT><STRONG>left hand edge</STRONG></DT>
-<DD>Up to 4 quantities can be plotted on the graph
-  simultaneously, with line colour given by the colour of the input
-  port
-</DD>
-<DT><STRONG>right hand edge</STRONG></DT>
-<DD>Another 4 quantities can be added to the
-  plot. These are shown on a different scale to the left hand inputs,
-  allowing very different magnitudes to be compared on the one plot.
-</DD>
-<DT><STRONG>bottom edge</STRONG></DT>
-<DD>Quantities controlling the x-coordinates of the
-  curves. The colours match up with the colour of the pen being
-  controlled.
- <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="plotLissajous.png"
- ALT="1608">
-
-<P>
-If only one bottom port is connected, then that controls all pens
-  simultaneously, and if no ports are connected, then the simulation
-  time is used to provide the x coordinates
-</DD>
-<DT><STRONG>corners</STRONG></DT>
-<DD>Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the x, y and right hand
-  y axes. If left unwired, the scales are determined automatically
-  from the data. This can be used, for example, to implement a sliding
-  window graph
- <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="plotSlidingWindow.png"
- ALT="1609">
-</DD>
-</DL>
-
-<P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html678"
-  HREF="node54.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html676"
-  HREF="node44.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html670"
-  HREF="node52.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html679"
-  HREF="node54.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html677"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html671"
-  HREF="node52.html">Groups</A>
-<!--End of Navigation Panel-->
+<BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-19
+2016-10-02
 </ADDRESS>
 </BODY>
 </HTML>

@@ -1,128 +1,132 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2012 (1.2)
+<!--Converted with LaTeX2HTML 2008 (1.71)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Groups</TITLE>
-<META NAME="description" CONTENT="Groups">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node53.html">
 <LINK REL="previous" HREF="node51.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="up" HREF="node43.html">
 <LINK REL="next" HREF="node53.html">
 </HEAD>
 
 <BODY >
-<!--Navigation Panel-->
-<A NAME="tex2html668"
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html669"
   HREF="node53.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html666"
-  HREF="node44.html">
+<A NAME="tex2html667"
+  HREF="node43.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html660"
+<A NAME="tex2html661"
   HREF="node51.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html669"
-  HREF="node53.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html667"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html661"
-  HREF="node51.html">Wires</A>
+<B> Next:</B> <A NAME="tex2html670"
+  HREF="node53.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html668"
+  HREF="node43.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html662"
+  HREF="node51.html">Groups</A>
 <BR>
-<BR>
+<BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00450000000000000000"></A><A NAME="group"></A>
+<H1><A NAME="SECTION00460000000000000000"></A>
+<A NAME="Plot"></A>
 <BR>
-Groups
+Plot widget
 </H1>
 
 <P>
-Grouping gives the capability to create reusable modules, or subroutines that
-can dramatically simplify more complicated systems. Groups may be
-created in the following ways:
-
-<UL>
-<LI>by lassoing a number of items to select them, then selecting
-"group" from the canvas context menu, or the edit menu.
-</LI>
-<LI>by pasting the selection
-</LI>
-<LI>by copying another group
-</LI>
-<LI>by inserting a Minsky file as a group
-</LI>
-</UL>
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
 
 <P>
-Zooming in on a group allows you see and edit its contents. Groups may
-be nested heirarchically, which gives an excellent way of zooming in
-to see the detail of a model, or zooming out to get an overview of it.
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="plotWidget.png"
+ ALT="1757">
 
 <P>
-Around the edges of a group are input or output variables, which allow
-one to parameterise the group. One can drag a variable and dock it in
-the I/O area to create a new input or output for the group.
+<DL>
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+</DD>
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+</DD>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the x-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
 
 <P>
-When creating a group, or dragging a variable or operation into or out
-of a group, if a wire ends up crossing the group boundary, a new
-temporary variable is added as an I/O variable.
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="plotLissajous.png"
+ ALT="1792">
 
 <P>
-Variable names within groups are locally scoped to that group. That
-means that a variable of the same name outside the group refers to a
-different entity completely. One can refer to variables outside the
-current scope by qualifying the variable name. The simplest
-qualification to understand is global scope, which is specified by
-prepending a `:' to the variable name. To refer to a variable in
-another group, the notation is <code>&lt;group id&gt;:&lt;name&gt;</code>, where
-<code>&lt;group id&gt;</code> is the integer id of the group in question. An
-alternative equivalent notation is <code>&lt;description&gt;[&lt;group id&gt;]:&lt;name&gt;</code>, where <code>&lt;description&gt;</code> is the textual name given to
-the group. The description string is ignored by Minky on input - only
-the group id is important, but this mechanism makes it easier to see
-what variable belongs to which group in the drop down lists in the
-name field. Please try to keep the group names distinctive in their
-first five characters, as Minsky will truncate the descriptive string
-to fit in the drop fown menu.
+If only one bottom port is connected, then that controls all pens
+  simultaneously, and if no ports are connected, then the simulation
+  time is used to provide the x coordinates
+</DD>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the x, y and right hand
+  y axes. If left unwired, the scales are determined automatically
+  from the data. This can be used, for example, to implement a sliding
+  window graph
 
 <P>
-<HR>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="plotSlidingWindow.png"
+ ALT="1793">
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html668"
+<A NAME="tex2html669"
   HREF="node53.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html666"
-  HREF="node44.html">
+<A NAME="tex2html667"
+  HREF="node43.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html660"
+<A NAME="tex2html661"
   HREF="node51.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html669"
-  HREF="node53.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html667"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html661"
-  HREF="node51.html">Wires</A>
+<B> Next:</B> <A NAME="tex2html670"
+  HREF="node53.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html668"
+  HREF="node43.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html662"
+  HREF="node51.html">Groups</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-08-19
+2016-10-02
 </ADDRESS>
 </BODY>
 </HTML>

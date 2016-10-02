@@ -1,122 +1,105 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2012 (1.2)
+<!--Converted with LaTeX2HTML 2008 (1.71)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Creating an equation</TITLE>
-<META NAME="description" CONTENT="Creating an equation">
+<TITLE>Wiring components together</TITLE>
+<META NAME="description" CONTENT="Wiring components together">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node28.html">
 <LINK REL="previous" HREF="node26.html">
-<LINK REL="up" HREF="node24.html">
+<LINK REL="up" HREF="node23.html">
 <LINK REL="next" HREF="node28.html">
 </HEAD>
 
 <BODY >
-<!--Navigation Panel-->
-<A NAME="tex2html400"
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html401"
   HREF="node28.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html398"
-  HREF="node24.html">
+<A NAME="tex2html399"
+  HREF="node23.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html392"
+<A NAME="tex2html393"
   HREF="node26.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html401"
-  HREF="node28.html">Wiring components together</A>
-<B> Up:</B> <A NAME="tex2html399"
-  HREF="node24.html">Working with Minsky</A>
-<B> Previous:</B> <A NAME="tex2html393"
-  HREF="node26.html">Inserting a model component</A>
+<B> Next:</B> <A NAME="tex2html402"
+  HREF="node28.html">Creating a banking model</A>
+<B> Up:</B> <A NAME="tex2html400"
+  HREF="node23.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html394"
+  HREF="node26.html">Creating an equation</A>
 <BR>
-<BR>
+<BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00243000000000000000">
-Creating an equation</A>
+<H2><A NAME="SECTION00244000000000000000">
+Wiring components together</A>
 </H2>
 
 <P>
-Equations are entered in Minsky graphically. Mathematical operations
-like addition, multiplication and subtraction are performed by wiring
-the inputs up to the relevant mathematical block. The output of the
-block is then the result of the equation. 
+A model is constructed by wiring one component to another in a way
+that defines an equation. Wires are drawn from the output port of one
+block to the input port of another. Ports are circles on the blocks to
+which wires can be attached. Variables have an input and an output
+port; constants and parameters only have an output port. A
+mathematical operator has as many input ports as are needed to define
+the operation.
 
 <P>
-For example, a simple equation like
-<BR><P></P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- \begin{displaymath}
-100/3 = 33.3
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="88" HEIGHT="28" BORDER="0"
- SRC="img14.png"
- ALT="\begin{displaymath}
-100/3 = 33.3
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem130.png"
- ALT="327"> :
+To construct an equation, firstly put the program into Wire mode:
 
 <P>
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem129.png"
- ALT="328"> 
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem179.png"
+ ALT="372"> 
 
 <P>
-If you choose File/Output LaTeX and load the equation into a LaTeX processor, you will see that it is:
+Then click the mouse near the output port of one block and drag the
+cursor to the input port of another while holding the mouse button
+down. 
 
 <P>
-<BR><P></P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- \begin{displaymath}
-\mathrm{Answer}=\frac{100}{3}
-\end{displaymath}
- -->
-
 <IMG
- WIDTH="99" HEIGHT="38" BORDER="0"
- SRC="img15.png"
- ALT="\begin{displaymath}
-\mathrm{Answer}=\frac{100}{3}
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem180.png"
+ ALT="373"> 
 
 <P>
-Very complex equations--including dynamic elements like integral
-blocks and Godley Tables--are designed by wiring up lots of
-components, with the output of one being the input of the next. See
-the tutorial for examples.
+Release the mouse button near the required input port of the operator
+and then release the mouse button
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem181.png"
+ ALT="374"> 
+
+<P>
+The equation is completed by wiring up the other components in the same way.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem182.png"
+ ALT="375"> 
 
 <P>
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-19
+2016-10-02
 </ADDRESS>
 </BODY>
 </HTML>
