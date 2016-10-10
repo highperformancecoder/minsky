@@ -530,23 +530,28 @@ rate of change and a differential equation.
 \item[Plus, Minus, Multiply and Divide blocks]
     \smhtmladdimg{NewItem49.png}. These execute the stated binary
     mathematical operations. Each input can take multiple wires as
-    well---so that to add five numbers together, you can wire 1 input
+    well---so that to add five numbers together, for example you can wire 1 input
     to one port on the Add block, and the other four to the other
     port. 
 
+\item[Min & Max Functions] These take the minimum and maximum values, respectively.
+These also allow multiple wires per input.
 
 \item[Power and Logarithm] These are binary operations (taking two
 arguments). In the case of the power operation, the exponent is the
 top port, and the argument to be raised to that exponent is the bottom
 port. This is indicated by the $x$ and $y$ labels on the ports. In the
 case of logarithm, the bottom port (labelled $b$) is the base of the
-logarithm.  
+logarithm.
+
+\item[Logical Operators < ≤ and =. ∧ ∨ ¬ (and, or, not)] These return 0 for false and 1 for true.
+In which may be generated outside of Minsky, and imported as a CSV file.
 
 \item[Other functions] These are a fairly standard
-complement of mathematical functions.  
+complement of mathematical functions.
 
 \item[Data block] \htmlref{A data block}{op:data} interpolates a
-sequence of empirical values.
+sequence of empirical values. This effectively defines a piecewise linear function.
 
 \item[Plot widget] Add \htmlref{plots}{Plot} to the canvas.
 
