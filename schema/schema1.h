@@ -476,6 +476,7 @@ inline void xsd_generate(classdesc::xsd_generate_t& x,const string& d,
 
 #include "schema1.cd"
 #include "schema1.xcd"
+#include "polyBase.xcd"
 #include "enumerateSchema1.h"
 
 

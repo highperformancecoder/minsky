@@ -1325,8 +1325,6 @@ proc rotateOp {id angle} {
 proc rotateVar {id angle} {
     var.get $id
     var.rotation [expr [var.rotation]+$angle]
-    var.set
-    newVar $id
     adjustWires $id
 }
 
@@ -1670,7 +1668,7 @@ proc setDataValue {} {
 proc setIntegralIValue {} {
     global constInput
     integral.description "$constInput(Name)"
-    var.get [integral.intVarID]
+    integral.getIntVar
     value.get [var.valueId]
     setItem value init {set constInput(Value)}
 }
@@ -1784,6 +1782,38 @@ proc editItem {id} {
 		grab set .wiring.editOperation
 		wm transient .wiring.editOperation
             }
+        }
+        "IntOp" {
+            set constInput(Value) ""
+            set "constInput(Slider Bounds: Min)" ""
+            set "constInput(Slider Bounds: Max)" ""
+            set "constInput(Slider Step Size)" ""
+            deiconifyEditConstant
+            wm title .wiring.editConstant "Edit Integral"
+            integral.get $id
+            set constInput(ValueLabel) "Initial Value"
+            integral.getIntVar
+            value.get [var.valueId]
+            set constInput(Value) [value.init]
+            set setValue setIntegralIValue
+            set constInput(Name) [integral.description]
+            configEditConstantForIntegral
+            set constInput(title) $constInput(Name)
+            set constInput(Rotation) [integral.rotation]
+            # value needs to be regotten, as var name may have changed
+            set constInput(command) "
+                        $setValue
+                        integral.getIntVar
+                        setSliderProperties
+                        setItem integral rotation {set constInput(Rotation)}
+                        closeEditWindow .wiring.editConstant
+                    "
+            set constInput(cancelCommand) "closeEditWindow .wiring.editConstant"
+
+            ::tk::TabToWindow $constInput(initial_focus);
+            tkwait visibility .wiring.editConstant
+            grab set .wiring.editConstant
+            wm transient .wiring.editConstant
         }
         "Group" {groupEdit $id}
         "GodleyIcon" {openGodley $id}
