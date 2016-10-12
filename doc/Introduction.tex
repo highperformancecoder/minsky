@@ -48,25 +48,25 @@ complex causal chain.
 
 These causal chains always involve a relationship between stocks and
 flows. Economists normally model stocks and flows by adding an
-increment to a stock in equations like this for the level of Capital,
-where capital in year $t$ is shown as being capital in year $t-1$ plus
-the investment that took place that year:
+increment to a stock. For example, the level of Capital is defined as
+a difference equation, where capital in year $t$ is shown as being 
+capital in year $t-1$ plus the investment that took place that year:
 
 \begin{displaymath}
 K_t=K_{t-1}+I_{t-1}
 \end{displaymath}
 
-For reasons that are explained in the FAQ \htmlref{``Why no difference
-  equations?}{faq:no-difference}, all stocks and flows in Minsky are
-handled instead as integral equations. The amount of capital at time
-$t$ is shown as the integral of net investment between time 0 and
-today:
+The problem with this approach is that capital is accumulating on a daily, 
+or even hourly, basis. It is better to model stock as continuous quantities
+and for this reason, all stocks and flows in Minsky are handled instead 
+as integral equations. The amount of capital at time $t$ is shown as 
+the integral of net investment between time 0 and today:
 
 \begin{displaymath}
 K(t)=\int_0^t I(s)ds
 \end{displaymath}
 
-However, rather than being shown as an equation, the relationship is shown as a block diagram:
+However, rather than being shown as an equation, the relationship is shown as a diagram:
 
 \begin{center}
 \htmladdimg{NewItem7.png}
@@ -78,8 +78,8 @@ over a list of equations are:
 \item    They make the causal relationships in a complex model
   obvious. It takes a specialized mind to be able to see the causal
   relations in a large set of mathematical equations; the same
-  equations laid out as block diagrams can be read by anyone who can read
-  a block diagram---and that's most of us;
+  equations laid out as diagrams can be read by anyone who can read
+  a stock and flow diagram---and that's most of us;
 \item The block diagram paradigm makes it possible to store components of
   a complex block diagram in a group. For example, the fuel delivery
   system in a car can be treated as one group, the engine as another,
@@ -193,59 +193,59 @@ aspect of a market economy. Future releases will dramatically extend
 this capability. 
 
 
-\section{What's new}
+%\section{What's new}
 
-Features released as part of Mun: (Minsky.1.D29) (Nov 29th 2013)
+%Features released as part of Mun: (Minsky.1.D29) (Nov 29th 2013)
 
-\begin{itemize}
-\item Keyboard entry of operations and variables
-\item Notes
-\item Undo/Redo
-\item Cut/Copy/Paste
-\item Context dependent clicking (no more mouse mode required)
-\item Session recording
-\item Plot legends
-\item Variable scoping (in groups)
-\item Raise/Lower canvas items
-\end{itemize}
+%\begin{itemize}
+%\item Keyboard entry of operations and variables
+%\item Notes
+%\item Undo/Redo
+%\item Cut/Copy/Paste
+%\item Context dependent clicking (no more mouse mode required)
+%\item Session recording
+%\item Plot legends
+%\item Variable scoping (in groups)
+%\item Raise/Lower canvas items
+%\end{itemize}
 
-Features released as part of Petty: (Minsky.1.D27) (Sep 10th 2013)
+%Features released as part of Petty: (Minsky.1.D27) (Sep 10th 2013)
 
-\begin{itemize}
-\item Multiple Godley table integration
-\item User selection of ODE solver
-\item Line breaking in LaTeX
-\item Export of simulation data to CSV
-\item Variable name edit field a combobox
-\item Resizable plot icons
-\item Right hand side plot inputs
-\item Recent files
-\item Titles and labels on plots
-\item LaTeX renderering of variable names
-\item Data block
-\item Variable sliders
-\end{itemize}
+%\begin{itemize}
+%\item Multiple Godley table integration
+%\item User selection of ODE solver
+%\item Line breaking in LaTeX
+%\item Export of simulation data to CSV
+%\item Variable name edit field a combobox
+%\item Resizable plot icons
+%\item Right hand side plot inputs
+%\item Recent files
+%\item Titles and labels on plots
+%\item LaTeX renderering of variable names
+%\item Data block
+%\item Variable sliders
+%\end{itemize}
 
-Features released as part of Aquinas: (Minsky.1.D14) (Mar 3rd 2013)
+%Features released as part of Aquinas: (Minsky.1.D14) (Mar 3rd 2013)
 
-\begin{itemize}
-\item XML schema to handle schema evolution
-\item Zooming
-\item Improved Groups, zoom to display
-\item Godley table displays running flow values
-\item Insert from file
-\item Matlab export
-\end{itemize}
+%\begin{itemize}
+%\item XML schema to handle schema evolution
+%\item Zooming
+%\item Improved Groups, zoom to display
+%\item Godley table displays running flow values
+%\item Insert from file
+%\item Matlab export
+%\end{itemize}
 
-Features released as part of Aristotle: (Minsky.1.D8) (Oct 5th 2012)
+%Features released as part of Aristotle: (Minsky.1.D8) (Oct 5th 2012)
 
-\begin{itemize}
-\item Menus
-\item Godley tables
-\item wiring, operations and variables
-\item Runge-Kutta ODE solver
-\item Plots
-\item Item rotation
-\item Groups
-\item Integration operators
-\end{itemize}
+%\begin{itemize}
+%\item Menus
+%\item Godley tables
+%\item wiring, operations and variables
+%\item Runge-Kutta ODE solver
+%\item Plots
+%\item Item rotation
+%\item Groups
+%\item Integration operators
+%\end{itemize}
