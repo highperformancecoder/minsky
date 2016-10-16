@@ -527,6 +527,10 @@ Either method can be used. I prefer the latter because it's neater,
 and it emphasizes the link between the simple formula for a percentage
 rate of change and a differential equation. 
 
+\item[Derivative Operator] This operator symbolically differentiates its input,
+provided the input is differentiable. An error is generated if the input
+is not differentiable.
+
 \item[Plus, Minus, Multiply and Divide blocks]
     \smhtmladdimg{NewItem49.png}. These execute the stated binary
     mathematical operations. Each input can take multiple wires as
@@ -577,7 +581,7 @@ operators---connected by wires.
 
 The wires in a model connect blocks together to define equations. For
 example, to write an equation for 100/33, you would place a
-\smhtmladdimg{NewItem121.png} on the canvas, and give it the name and value of 33:
+\smhtmladdimg{NewItem121.png} on the canvas, and give it the value of 100:
 
 \begin{center}
 \htmladdimg{NewItem122.png}
@@ -589,13 +593,8 @@ Then do the same for 33, and place a divide block on the canvas:
 \htmladdimg{NewItem123.png}
 \end{center}
 
-To write the equation, you change the program mode to ``Wire'':
-
-\htmladdimg{NewItem124.png}
-
-
 Then click on the right hand edge of \smhtmladdimg{NewItem125.png}
-and drag 
+and drag to extend the wire to the numerator (x) port of the divide operation.
 
 \section{Working with Minsky}
 
@@ -622,10 +621,10 @@ There are three ways to insert a component of a model onto the Canvas:
 onto the Canvas and release the mouse where you want to insert it 
 
 \begin{center}
-\htmladdimg{NewItem160.png}
+\htmladdimg{NewItem18.png}
 \end{center}
 
-\item Choose Operations from the menu and select the desired block there
+\item Choose Insert from the menu and select the desired block there
 
 \begin{center}
 \htmladdimg{NewItem159.png}
