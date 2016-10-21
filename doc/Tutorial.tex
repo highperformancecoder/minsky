@@ -92,8 +92,8 @@ We are now going to write the first part of the model, that Labor
 ({\em\bf Labor}) equals output ({\em\bf GDP}) divided by labor
 productivity ({\em\bf LabProd}). Just for the sake of illustration,
 we'll make {\em\bf a} a constant (this can easily be modified
-later). For this we need to add a constant by clicking on \smhtmladdimg{NewItem61.png} on the
-Palette, or by choosing Operations/constant from the menu. This will
+later). For this we need to add a variable by clicking on \smhtmladdimg{NewItem78.png} on the
+Palette, or by choosing Insert/variable from the menu. This will
 pop-up the Edit Constant window: 
 
 \begin{center}
@@ -119,13 +119,7 @@ click. Your Canvas will now look something like this:
 \end{center}
 
 Now to complete the equation, you have to attach {\em\bf GDP}  to the top of the
-divide block and LabProd to the bottom. Go to the Mode buttons and
-click on Wire:  
-
-\begin{center}
-\htmladdimg{NewItem71.png} 
-\end{center}
-
+divide block and LabProd to the bottom.
 
 Now move your cursor to the right hand side of
 \smhtmladdimg{NewItem72.png}  and click, hold the mouse button down, and
@@ -139,9 +133,8 @@ multiply sign) and release the mouse. You should then see this:
 
 
 The program will ``snap'' to the nearest object when you're in Wire
-mode, so this should be easy to do. But if you have any problems, go
-to the File menu and click on ``Show Ports''. You will then see little
-circles that identify the input and output ports on all objects: 
+mode, so this should be easy to do. You will then see little
+circles that identify the input and output ports when the mouse hovers over a block: 
 
 \begin{center}
 \htmladdimg{NewItem75.png} 
@@ -155,17 +148,8 @@ block (where you'll see a miniature divide symbol (blown up below):
 \htmladdimg{NewItem76.png} 
 \end{center}
 
-
-To complete the equation, click on ``Move'' in the Mode buttons:
-
-\begin{center}
-\htmladdimg{NewItem77.png} 
-\end{center}
-
-
 Then click on \smhtmladdimg{NewItem78.png} in the Design Icons to create a new variable, call it
-Labor, place it the the right of the Divide block, change back to Wire
-mode again, and wire the output port from the Divide block to the
+Labor, place it the the right of the Divide block, and wire the output port from the Divide block to the
 input port for {\bf\em Labor}: 
 
 \begin{center}
@@ -174,33 +158,12 @@ input port for {\bf\em Labor}:
 
 
 To show the correspondence between the flowchart above and a standard
-modeling equation, click on the File menu and choose ``Output
-LaTeX''. Give the file a suitable name (say ``Labor Equation'') and
-save it to disk. Then if you have a \LaTeX{} program, or if you know how
-to import \LaTeX{} equations into MathType, you will see that you have
-created the following equations: 
+modeling equations, click on the equations tab: 
 
 \begin{eqnarray*}
 \mathrm{GDP}&=&\\
 \mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
 \end{eqnarray*}
-
-If you don't have either \LaTeX, or MathType, you will see a text file with the following content:
-\begin{verbatim}
-\documentclass{article}
-\begin{document}
-\begin{eqnarray*}
-\mathrm{GDP}&=&\\
-\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
-\end{eqnarray*}
-\end{document}
-\end{verbatim}
-
-This is \LaTeX{} code, which is processed by a \LaTeX{} interpreter to
-produce beautifully formatted equations. A future release of Minsky
-will incorporate a \LaTeX{} processor, so that you will be able to see
-the equations within the program. 
-
 
 Now let's keep going with the model. With {\bf\em Labor} defined, the
 employment rate will be {\bf\em  Labor} divided by {\bf\em
@@ -210,8 +173,6 @@ change it to a variable), and give it a value of 110.
 \begin{center}
 \htmladdimg{NewItem81.png} 
 \end{center}
-
-
 
 Add it to the Canvas and you are now ready to define the employment
 rate---another variable. Click on \smhtmladdimg{NewItem82.png}, give it
