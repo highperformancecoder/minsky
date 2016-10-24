@@ -119,12 +119,7 @@ click. Your Canvas will now look something like this:
 \end{center}
 
 Now to complete the equation, you have to attach {\em\bf GDP}  to the top of the
-divide block and LabProd to the bottom. Go to the Mode buttons and
-click on Wire:  
-
-\begin{center}
-\htmladdimg{NewItem71.png} 
-\end{center}
+divide block and LabProd to the bottom.
 
 
 Now move your cursor to the right hand side of
@@ -138,9 +133,7 @@ multiply sign) and release the mouse. You should then see this:
 \end{center}
 
 
-The program will ``snap'' to the nearest object when you're in Wire
-mode, so this should be easy to do. But if you have any problems, go
-to the File menu and click on ``Show Ports''. You will then see little
+When the mouse hovers over a block, you will then see little
 circles that identify the input and output ports on all objects: 
 
 \begin{center}
@@ -155,17 +148,8 @@ block (where you'll see a miniature divide symbol (blown up below):
 \htmladdimg{NewItem76.png} 
 \end{center}
 
-
-To complete the equation, click on ``Move'' in the Mode buttons:
-
-\begin{center}
-\htmladdimg{NewItem77.png} 
-\end{center}
-
-
 Then click on \smhtmladdimg{NewItem78.png} in the Design Icons to create a new variable, call it
-Labor, place it the the right of the Divide block, change back to Wire
-mode again, and wire the output port from the Divide block to the
+Labor, place it the the right of the Divide block, and wire the output port from the Divide block to the
 input port for {\bf\em Labor}: 
 
 \begin{center}
@@ -173,34 +157,13 @@ input port for {\bf\em Labor}:
 \end{center}
 
 
-To show the correspondence between the flowchart above and a standard
-modeling equation, click on the File menu and choose ``Output
-LaTeX''. Give the file a suitable name (say ``Labor Equation'') and
-save it to disk. Then if you have a \LaTeX{} program, or if you know how
-to import \LaTeX{} equations into MathType, you will see that you have
-created the following equations: 
+To show the correspondence between the flowchart above and standard
+modeling equations, click on the equations tab: 
 
 \begin{eqnarray*}
 \mathrm{GDP}&=&\\
 \mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
 \end{eqnarray*}
-
-If you don't have either \LaTeX, or MathType, you will see a text file with the following content:
-\begin{verbatim}
-\documentclass{article}
-\begin{document}
-\begin{eqnarray*}
-\mathrm{GDP}&=&\\
-\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
-\end{eqnarray*}
-\end{document}
-\end{verbatim}
-
-This is \LaTeX{} code, which is processed by a \LaTeX{} interpreter to
-produce beautifully formatted equations. A future release of Minsky
-will incorporate a \LaTeX{} processor, so that you will be able to see
-the equations within the program. 
-
 
 Now let's keep going with the model. With {\bf\em Labor} defined, the
 employment rate will be {\bf\em  Labor} divided by {\bf\em
@@ -222,7 +185,7 @@ next part of the model up. You should now have:
 \htmladdimg{NewItem83.png} 
 
 
-Now choose ``File$>$Output Latex'' again, give it an appropriate name (say ``EmploymentEquation''), and load this into your LaTeX processor. You will see
+Now switch to the equations tab, and you will see
 
 \begin{eqnarray*}
 \mathrm{GDP}&=&\\
@@ -230,9 +193,10 @@ Now choose ``File$>$Output Latex'' again, give it an appropriate name (say ``Emp
 \lambda&=&\frac{\mathrm{Labor}}{\mathrm{Population}}\\
 \end{eqnarray*}
 
-Notice that Minsky outputs a Greek $\lambda$ in the equation. In a
-later release, we'll allow the inputing of Greek and other symbols
-directly---for now, this is our workaround. 
+Notice that Minsky outputs a Greek $\lambda$ in the equation. You can
+input such characters directly, if your keyboard supports them as unicode
+characters, however you can also use a subset of the LaTeX language to give
+your variables more mathematial names.
 
 
 With the employment rate defined, we are now ready to define a
@@ -274,16 +238,16 @@ zero.  I suggest using Milton Friedman's concept of a
 ``Non-Accelerating-Inflation-Rate-of-Unemployment'', or NAIRU. We need
 to define this constant, subtract it from 1, and subtract the result
 from the actual employment rate $\lambda$. To enter 1, click on \smhtmladdimg{NewItem89.png}, define a
-constant called 1, and give it a value of 1 (we'll have a more elegant
-way of doing this in a later release). Then define another constant
+constant called 1, and give it a value of 1. Select "parameter"
+as the varibale type. Then define another variable
 NAIRU, and give it a value of 0.05 (5\% unemployment). Subtract this
 from 1 and subtract the result from $\lambda$. You should have the following:
 
 \fwhtmladdimg{NewItem108.png}
 
 Now we need to multiply this gap between the actual employment rate
-and the ``NAIRE'' rate by a constant that represents the response of
-wages to this gap. Let's call this constant {\bf\em Emp\_Response} (remember to include the underscore). Define the constant, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
+and the ``NAIRE'' rate by a parameter that represents the response of
+wages to this gap. Let's call this parameter {\bf\em Emp\_{Response}} (remember to include the underscore and the braces). Define the constant, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
 
 \fwhtmladdimg{NewItem109.png}
 
