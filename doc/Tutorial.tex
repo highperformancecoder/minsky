@@ -351,7 +351,7 @@ Wire this up to Investment:
 \htmladdimg{NewItem104.png}
 
 Now there's only one step left to complete the model: define a
-constant CapOutputRatio and give it a value of 3:
+parameter CapOutputRatio and give it a value of 3:
 
 \htmladdimg{NewItem103.png}
 
@@ -374,8 +374,7 @@ than reaching equilibrium, the model cycles constantly:
 
 \fwhtmladdimg{NewItem116.png}
 
-If you choose File/Output LaTeX and load the file into a LaTeX
-processor, you will see that you have defined the following system of
+If you click on the equations tab, you will see that you have defined the following system of
 equations:
 
 \begin{eqnarray*}
@@ -393,9 +392,9 @@ equations:
 
 
 At this level of complexity, the equation form---if you're accustomed
-to working in equations---is as accessible as the flowchart model from
+to working in equations---is as accessible as the block diagram model from
 which it was generated. But at much higher levels of complexity, the
-flowchart is far easier to understand since it displays the causal
+block diagram is far easier to understand since it displays the causal
 links in the model clearly, and can be structured in sub-groups that
 focus on particular parts of the system. 
 
@@ -439,14 +438,12 @@ charged by Patient:
 
 \htmladdimg{NewItem173.png}
 
-
 With that definition, the dynamics of the model change: rather than
 the Patient account falling to zero and Impatient rising to 100, the
 two accounts stabilize once the outflow of new loans by Patient equals
 the inflow of interest payments by Impatient:
 
 \fwhtmladdimg{NewItem174.png}
-
 
 Though it stabilizes, this is is still a very incomplete model:
 neither Patient nor Impatient are doing anything with the money apart
@@ -456,8 +453,6 @@ factory and produce output for sale. So we now need another account
 called Workers, and a payment from Impatient to Workers called Wage:
 
 \fwhtmladdimg{NewItem174.png}
-
-
 
 In a more complex model, the Wage bill could be related to the current
 rate times the number of workers in employment. In this simple model I
@@ -469,14 +464,12 @@ the time constant is 1/3rd of a year:
 
 \htmladdimg{NewItem176.png}
 
-
 The dynamics of this incomplete model are very different again: very
 little money turns up in the Impatient account, and all of the money
 ends up in the Workers account. However economic activity also ceases
 as both lending and the flow of wages falls towards zero:
 
 \fwhtmladdimg{NewItem177.png}
-
 
 This is because wages are being paid to workers, but they are doing
 nothing with it. So we need to include consumption by workers--and by
@@ -486,9 +479,3 @@ very low value of 0.05---or 1/20th of a year---which indicates that if
 their initial rate of consumption was maintained without any wage
 income, they would reduce their bank balances to zero in 1/20th of a
 year or about 2.5 weeks.
-
-\subsection{Endogenous Money}\label{tut:money}
-
-\section{Basic Combined Model}
-
-
