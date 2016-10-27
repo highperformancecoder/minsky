@@ -671,22 +671,25 @@ the tutorial for examples.
 A model is constructed by wiring one component to another in a way
 that defines an equation. Wires are drawn from the output port of one
 block to the input port of another. Ports are circles on the blocks to
-which wires can be attached, which can be seen when hovering the
-pointer over the block. Variables have an input and an output
+which wires can be attached. Variables have an input and an output
 port; constants and parameters only have an output port. A
 mathematical operator has as many input ports as are needed to define
 the operation.
 
 
-To construct an equation, such as Fred - Wilma = Barney:
+To construct an equation, firstly put the program into Wire mode:
 
-Click the mouse near the output port of one block and drag the
+\htmladdimg{NewItem179.png} 
+
+
+Then click the mouse near the output port of one block and drag the
 cursor to the input port of another while holding the mouse button
 down. 
 
 \htmladdimg{NewItem180.png} 
 
-Release the mouse button near the required input port of the operator.
+Release the mouse button near the required input port of the operator
+and then release the mouse button
 
 \htmladdimg{NewItem181.png} 
 
@@ -707,10 +710,10 @@ The first step in creating a model with a banking sector is to click on the Godl
 
 \subsubsection{Entering accounts}
 
-\fwhtmladdimg{NewItem135.png} 
-
 Double click or right click on the \smhtmladdimg{NewItem133.png} block
 to bring up the Godley Table:
+\fwhtmladdimg{NewItem135.png} 
+
 
 When a Godley Table is first loaded, it has room for one account to be
 defined. To create an additional account, click on the
@@ -923,7 +926,7 @@ The value of 0.1 means that the amount of money in the Patient account
 falls by one tenth every year (and therefore tapers towards zero). An
 equivalent way to express this is that the ``time constant'' for
 lending is the inverse of 1/10, or ten years. The next model uses a
-variable called \\tau\_Lend, and gives it a value of 10: 
+variable called τLend, and gives it a value of 10: 
 
 \htmladdimg{NewItem158.png}
 
