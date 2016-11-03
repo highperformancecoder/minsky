@@ -42,7 +42,7 @@ void minsky::drawSelected(cairo_t* cairo)
 {
   // implemented by filling the clip region with a transparent grey
   cairo_save(cairo);
-  cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.25);
+  cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.4);
   cairo_paint(cairo);
   cairo_restore(cairo);
 }
