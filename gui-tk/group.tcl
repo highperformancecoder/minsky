@@ -101,6 +101,7 @@ proc lassoEnd {x y} {
         }
         .wiring.canvas delete lasso
         unset lassoStart
+        updateCanvas
     }
 }
 

@@ -153,7 +153,7 @@ namespace minsky
   class Group: public Item, public GroupItems
   {
     friend class GroupPtr;
-    bool m_displayContentsChanged=false;
+    bool m_displayContentsChanged=true;
   public:
     std::string classType() const override {return "Group";}
     int id=-1; // unique id used for variable scoping

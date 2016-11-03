@@ -964,7 +964,10 @@ proc updateCanvas {} {
             if {[llength [.wiring.canvas find withtag wire$w]]==0} {
                 newWire $w 
             } else {.wiring.canvas coords wire$w [wire.coords]}
+        } else {
+            .wiring.canvas delete wire$w
         }
+        
     }
 
     # refresh equations
