@@ -27,21 +27,21 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY >
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html322"
+<A NAME="tex2html320"
   HREF="node21.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html320"
+<A NAME="tex2html318"
   HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html314"
+<A NAME="tex2html312"
   HREF="node19.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html323"
+<B> Next:</B> <A NAME="tex2html321"
   HREF="node21.html">Design Canvas</A>
-<B> Up:</B> <A NAME="tex2html321"
+<B> Up:</B> <A NAME="tex2html319"
   HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html315"
+<B> Previous:</B> <A NAME="tex2html313"
   HREF="node19.html">Wiring and Equations Tabs</A>
 <BR>
 <BR></DIV>
@@ -54,7 +54,7 @@ Design Icons</A>
 <P>
 <IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem18.png"
- ALT="461">
+ ALT="459">
 
 <P>
 These are the ``nuts and bolts'' of any system dynamics program. The
@@ -66,7 +66,7 @@ now:
 <DT><STRONG>Godley Table</STRONG></DT>
 <DD><IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem28.png"
- ALT="462">. <A NAME="GodleyTable"></A> This is the
+ ALT="460">. <A NAME="GodleyTable"></A> This is the
 fundamental element of Minsky that is not found (yet) in any other
 system dynamics program. 
 
@@ -90,17 +90,17 @@ call a Godley Table:
 <P>
 <IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem30.png"
- ALT="463">
+ ALT="461">
 
 <P>
-Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the <A HREF="node41.html#tut:money">Tutorial (Monetary)</A>.
+Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the <A HREF="#tut:money">Tutorial (Monetary)</A>.
 
 <P>
 </DD>
 <DT><STRONG>Variable</STRONG></DT>
 <DD><IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem31.png"
- ALT="464">. <A NAME="Variable"></A> This creates an entity
+ ALT="462">. <A NAME="Variable"></A> This creates an entity
 whose value changes as a function of time and its relationship with
 other entities in your model. Click on it and a variable definition
 window will appear:
@@ -130,7 +130,7 @@ and it will be placed in that location.
 <DT><STRONG>Constant</STRONG></DT>
 <DD><IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem33.png"
- ALT="465"> <A NAME="Constant"></A> creates an entity whose
+ ALT="463"> <A NAME="Constant"></A> creates an entity whose
 value is unaffected by the simulation or other entities in the
 model--but it can be varied during a simulation run by the
 user. Click on it and a constant definition window will appear:
@@ -159,7 +159,7 @@ A constant is just a type of variable, which also include parameters
 <DT><STRONG>Time</STRONG></DT>
 <DD><IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem35.png"
- ALT="466"> embeds a reference to the
+ ALT="464"> embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
 simulations, but can be useful if you want to make a time-dependent
 process explicit, or control the appearance of a graph. 
@@ -189,7 +189,7 @@ to show a ten year range of the model only:
 <DT><STRONG>Integration</STRONG></DT>
 <DD><IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem38.png"
- ALT="467">.<A NAME="Integrate"></A>  This inserts a variable whose value depends on the integral of other
+ ALT="465">.<A NAME="Integrate"></A>  This inserts a variable whose value depends on the integral of other
   variables in the system. This is the essential element for defining
   a dynamic model. Click on it and the following entity will appear at
   the top left hand side of the canvas (and move with your mouse until
@@ -342,10 +342,17 @@ rate of change and a differential equation.
 
 <P>
 </DD>
+<DT><STRONG>Derivative Operator</STRONG></DT>
+<DD>This operator symbolically differentiates its input,
+provided the input is differentiable. An error is generated if the input
+is not differentiable.
+
+<P>
+</DD>
 <DT><STRONG>Plus, Minus, Multiply and Divide blocks</STRONG></DT>
 <DD><IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem49.png"
- ALT="468">. These execute the stated binary
+ ALT="466">. These execute the stated binary
     mathematical operations. Each input can take multiple wires as
     well--so that to add five numbers together, for example you can wire 1 input
     to one port on the Add block, and the other four to the other
@@ -407,13 +414,13 @@ complement of mathematical functions.
 <P>
 </DD>
 <DT><STRONG>Data block</STRONG></DT>
-<DD><A HREF="node44.html#op:data">A data block</A> interpolates a
+<DD><A HREF="node42.html#op:data">A data block</A> interpolates a
 sequence of empirical values. This effectively defines a piecewise linear function.
 
 <P>
 </DD>
 <DT><STRONG>Plot widget</STRONG></DT>
-<DD>Add <A HREF="node52.html#Plot">plots</A> to the canvas.
+<DD>Add <A HREF="node50.html#Plot">plots</A> to the canvas.
 
 <P>
 </DD>
@@ -424,7 +431,7 @@ to the canvas. Also known as a hybrid function.
 <P>
 </DD>
 <DT><STRONG>Notes</STRONG></DT>
-<DD>Add <A HREF="node53.html#Notes">textual annotations</A>
+<DD>Add <A HREF="node51.html#Notes">textual annotations</A>
 
 <P>
 </DD>
@@ -434,26 +441,26 @@ to the canvas. Also known as a hybrid function.
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html322"
+<A NAME="tex2html320"
   HREF="node21.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html320"
+<A NAME="tex2html318"
   HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html314"
+<A NAME="tex2html312"
   HREF="node19.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html323"
+<B> Next:</B> <A NAME="tex2html321"
   HREF="node21.html">Design Canvas</A>
-<B> Up:</B> <A NAME="tex2html321"
+<B> Up:</B> <A NAME="tex2html319"
   HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html315"
+<B> Previous:</B> <A NAME="tex2html313"
   HREF="node19.html">Wiring and Equations Tabs</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-10-10
+2016-11-03
 </ADDRESS>
 </BODY>
 </HTML>

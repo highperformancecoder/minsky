@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -19,66 +19,114 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node51.html">
-<LINK REL="previous" HREF="node46.html">
-<LINK REL="up" HREF="node43.html">
+<LINK REL="previous" HREF="node49.html">
+<LINK REL="up" HREF="node41.html">
 <LINK REL="next" HREF="node51.html">
 </HEAD>
 
 <BODY >
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html649"
+<A NAME="tex2html644"
   HREF="node51.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html647"
-  HREF="node43.html">
+<A NAME="tex2html642"
+  HREF="node41.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html641"
+<A NAME="tex2html636"
   HREF="node49.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html650"
-  HREF="node51.html">Groups</A>
-<B> Up:</B> <A NAME="tex2html648"
-  HREF="node43.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html642"
-  HREF="node49.html">Sliders</A>
+<B> Next:</B> <A NAME="tex2html645"
+  HREF="node51.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html643"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html637"
+  HREF="node49.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00440000000000000000">
-Wires</A>
+<H1><A NAME="SECTION00460000000000000000"></A>
+<A NAME="Plot"></A>
+<BR>
+Plot widget
 </H1>
 
 <P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire
-attached, with the exception of <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img8.png"
- ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img73.png"
- ALT="$\times/\div$"></SPAN>, where the
-multiple wires are summed or multiplied, respectively.
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
 
 <P>
-Wires can be bent by dragging the blue dots (``handles''). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="plotWidget.png"
+ ALT="1723">
 
 <P>
-<BR><HR>
+<DL>
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+</DD>
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+</DD>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the x-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="plotLissajous.png"
+ ALT="1758">
+
+<P>
+If only one bottom port is connected, then that controls all pens
+  simultaneously, and if no ports are connected, then the simulation
+  time is used to provide the x coordinates
+</DD>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the x, y and right hand
+  y axes. If left unwired, the scales are determined automatically
+  from the data. This can be used, for example, to implement a sliding
+  window graph
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="plotSlidingWindow.png"
+ ALT="1759">
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html644"
+  HREF="node51.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html642"
+  HREF="node41.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html636"
+  HREF="node49.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html645"
+  HREF="node51.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html643"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html637"
+  HREF="node49.html">Groups</A></DIV>
+<!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-10-10
+2016-11-03
 </ADDRESS>
 </BODY>
 </HTML>

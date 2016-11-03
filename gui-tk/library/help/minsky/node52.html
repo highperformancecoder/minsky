@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Plot widget</TITLE>
-<META NAME="description" CONTENT="Plot widget">
+<TITLE>Godley Tables</TITLE>
+<META NAME="description" CONTENT="Godley Tables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,113 +20,97 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node53.html">
 <LINK REL="previous" HREF="node51.html">
-<LINK REL="up" HREF="node43.html">
+<LINK REL="up" HREF="node41.html">
 <LINK REL="next" HREF="node53.html">
 </HEAD>
 
 <BODY >
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html669"
+<A NAME="tex2html664"
   HREF="node53.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html667"
-  HREF="node43.html">
+<A NAME="tex2html662"
+  HREF="node41.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html661"
+<A NAME="tex2html656"
   HREF="node51.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html670"
-  HREF="node53.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html668"
-  HREF="node43.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html662"
-  HREF="node51.html">Groups</A>
+<B> Next:</B> <A NAME="tex2html665"
+  HREF="node53.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html663"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html657"
+  HREF="node51.html">Note Widget</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00460000000000000000"></A>
-<A NAME="Plot"></A>
+<H1><A NAME="SECTION00480000000000000000"></A><A NAME="godley"></A>
 <BR>
-Plot widget
+Godley Tables
 </H1>
 
 <P>
-A plot widget embeds a dynamic plot into the canvas. Around the
-outside of the plot are a number of input ports that can be wired.
+Godley tables describes sets of financial flows from the point of view
+of a particular economic agent, such as a bank. The columns of the
+table represent accounts (possibly aggregated), which are treated as
+integration variables by the system. In ``double entry'' mode,
+accounts may be assets, liabilities or equities. Assets may appear as
+liabilities in another agents Godley table, and vice versa, with the
+sense of the financial flows treated oppositely (a positive flow increasing the
+asset of one entity will appear as a negative flow, increasing the
+value of a liability). Instead of positive or negative flows, one can
+optionally use CR and DR prefixes, as specified in the options panel.
 
 <P>
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="plotWidget.png"
- ALT="1771">
+The first row specifies the stock variables, after which follow the
+flow rows. Usually, the row marked ``Initial Conditions'' comes next,
+but may be placed in any position. These specify the initial
+conditions of the stock variables, and may refer to a multiple of
+another variable, just like the <A HREF="node46.html#var:init">initial condition
+field</A>, or just be a numerical value.
 
 <P>
-<DL>
-<DT><STRONG>left hand edge</STRONG></DT>
-<DD>Up to 4 quantities can be plotted on the graph
-  simultaneously, with line colour given by the colour of the input
-  port
-</DD>
-<DT><STRONG>right hand edge</STRONG></DT>
-<DD>Another 4 quantities can be added to the
-  plot. These are shown on a different scale to the left hand inputs,
-  allowing very different magnitudes to be compared on the one plot.
-</DD>
-<DT><STRONG>bottom edge</STRONG></DT>
-<DD>Quantities controlling the x-coordinates of the
-  curves. The colours match up with the colour of the pen being
-  controlled.
+Finally come the flows. The first column is a simple textual label
+(the word ``Initial Conditions'', regardless of capitalisation, is a
+reserved word for setting stock variable initial conditions)
+identifying the flow. The flows themselves are written as a numerical
+multipler times a flow variable. Unscoped variables are treated as
+global at present, however, in the future, Godley tables will be
+allowed to be part of groups, which will then define the context of
+the unqualified variable names.
 
 <P>
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="plotLissajous.png"
- ALT="1806">
-
-<P>
-If only one bottom port is connected, then that controls all pens
-  simultaneously, and if no ports are connected, then the simulation
-  time is used to provide the x coordinates
-</DD>
-<DT><STRONG>corners</STRONG></DT>
-<DD>Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the x, y and right hand
-  y axes. If left unwired, the scales are determined automatically
-  from the data. This can be used, for example, to implement a sliding
-  window graph
-
-<P>
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="plotSlidingWindow.png"
- ALT="1807">
-</DD>
-</DL>
+The final column displays the row sum. A correctly functioning Godley
+table should have each row sum to zero -- this ensures everything is
+accounted for, with no hidden sinks or sources.
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html669"
+<A NAME="tex2html664"
   HREF="node53.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html667"
-  HREF="node43.html">
+<A NAME="tex2html662"
+  HREF="node41.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html661"
+<A NAME="tex2html656"
   HREF="node51.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html670"
-  HREF="node53.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html668"
-  HREF="node43.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html662"
-  HREF="node51.html">Groups</A></DIV>
+<B> Next:</B> <A NAME="tex2html665"
+  HREF="node53.html">Context Menu</A>
+<B> Up:</B> <A NAME="tex2html663"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html657"
+  HREF="node51.html">Note Widget</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-10-10
+2016-11-03
 </ADDRESS>
 </BODY>
 </HTML>

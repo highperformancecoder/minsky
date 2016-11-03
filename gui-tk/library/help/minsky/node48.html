@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Initial conditions</TITLE>
-<META NAME="description" CONTENT="Initial conditions">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -19,55 +19,66 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node49.html">
-<LINK REL="previous" HREF="node47.html">
-<LINK REL="up" HREF="node46.html">
+<LINK REL="previous" HREF="node44.html">
+<LINK REL="up" HREF="node41.html">
 <LINK REL="next" HREF="node49.html">
 </HEAD>
 
 <BODY >
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html631"
+<A NAME="tex2html624"
   HREF="node49.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html629"
-  HREF="node46.html">
+<A NAME="tex2html622"
+  HREF="node41.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html623"
+<A NAME="tex2html616"
   HREF="node47.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html632"
-  HREF="node49.html">Sliders</A>
-<B> Up:</B> <A NAME="tex2html630"
-  HREF="node46.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html624"
-  HREF="node47.html">Variable names</A>
+<B> Next:</B> <A NAME="tex2html625"
+  HREF="node49.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html623"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html617"
+  HREF="node47.html">Sliders</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00432000000000000000"></A><A NAME="var:init"></A>
-<BR>
-Initial conditions
-</H2>
+<H1><A NAME="SECTION00440000000000000000">
+Wires</A>
+</H1>
 
 <P>
-Variable initial conditions can be defined through the ``init value''
-field of the variable edit menu, or in the case of Godley table stock
-variables, through the initial condition row of the Godley table. An
-initial value can be a simple number, or it can be a multiple of
-another named variable (or parameter). In case of symbolic
-definitions, it would be possible to set up a circular reference where
-the initial value of variable A is defined in terms of the initial
-value of variable B, which in turn depends on the intial value of
-A. Such a pathological situation is detected when the system is reset.
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire
+attached, with the exception of <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img74.png"
+ ALT="$\times/\div$"></SPAN>, where the
+multiple wires are summed or multiplied, respectively.
+
+<P>
+Wires can be bent by dragging the blue dots (``handles''). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-10-10
+2016-11-03
 </ADDRESS>
 </BODY>
 </HTML>

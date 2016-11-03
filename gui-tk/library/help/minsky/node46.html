@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Variables</TITLE>
-<META NAME="description" CONTENT="Variables">
+<TITLE>Initial conditions</TITLE>
+<META NAME="description" CONTENT="Initial conditions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,115 +18,56 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node50.html">
+<LINK REL="next" HREF="node47.html">
 <LINK REL="previous" HREF="node45.html">
-<LINK REL="up" HREF="node43.html">
+<LINK REL="up" HREF="node44.html">
 <LINK REL="next" HREF="node47.html">
 </HEAD>
 
 <BODY >
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html608"
+<A NAME="tex2html606"
   HREF="node47.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html606"
-  HREF="node43.html">
+<A NAME="tex2html604"
+  HREF="node44.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html600"
+<A NAME="tex2html598"
   HREF="node45.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html609"
-  HREF="node47.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html607"
-  HREF="node43.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html601"
-  HREF="node45.html">Switch</A>
+<B> Next:</B> <A NAME="tex2html607"
+  HREF="node47.html">Sliders</A>
+<B> Up:</B> <A NAME="tex2html605"
+  HREF="node44.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html599"
+  HREF="node45.html">Variable names</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00430000000000000000">
-Variables</A>
-</H1>
+<H2><A NAME="SECTION00432000000000000000"></A><A NAME="var:init"></A>
+<BR>
+Initial conditions
+</H2>
 
 <P>
-Variables represent values in a calculation, and come in a number of
-varieties:
-<DL>
-<DT><STRONG>Constants</STRONG></DT>
-<DD>represent an explicit numerical value, and do not
-have a name. Their graphical representation shows the actual value of
-the constant.
-</DD>
-<DT><STRONG>Parameters</STRONG></DT>
-<DD>are named constants. All instances of a given name
-represent the same value, as with all other named variables, so
-changing the value of one parameter, either through its edit menu, or
-through a slider, will affect all the others of that name.
-</DD>
-<DT><STRONG>Flow variables</STRONG></DT>
-<DD>have an input port that defines how the value is
-to be calculated. Only one flow variable of a given name can have its
-input port connected, as they all refer to the same quantity. If no
-input ports are connected, then flow variables act just like
-parameters.
-</DD>
-<DT><STRONG>Integral variables</STRONG></DT>
-<DD>represent the result of integrating its
-input over time  by means of the differential
-equation solver. The integrand is represented by the input to an
-integral operator that is attached to the integral variable.
-</DD>
-<DT><STRONG>Stock variables</STRONG></DT>
-<DD>are the columns of Godley tables, and represent
-the integral over time of the sum of the flow variables making up the
-column.
-</DD>
-</DL>
-
-<P>
-Variables may be converted between types in the variable edit menu,
-available from the context menu.
+Variable initial conditions can be defined through the ``init value''
+field of the variable edit menu, or in the case of Godley table stock
+variables, through the initial condition row of the Godley table. An
+initial value can be a simple number, or it can be a multiple of
+another named variable (or parameter). In case of symbolic
+definitions, it would be possible to set up a circular reference where
+the initial value of variable A is defined in terms of the initial
+value of variable B, which in turn depends on the intial value of
+A. Such a pathological situation is detected when the system is reset.
 
 <P>
 <BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html610"
-  HREF="node47.html">Variable names</A>
-<LI><A NAME="tex2html611"
-  HREF="node48.html">Initial conditions</A>
-<LI><A NAME="tex2html612"
-  HREF="node49.html">Sliders</A>
-</UL>
-<!--End of Table of Child-Links-->
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html608"
-  HREF="node47.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html606"
-  HREF="node43.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html600"
-  HREF="node45.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html609"
-  HREF="node47.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html607"
-  HREF="node43.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html601"
-  HREF="node45.html">Switch</A></DIV>
-<!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-10-10
+2016-11-03
 </ADDRESS>
 </BODY>
 </HTML>

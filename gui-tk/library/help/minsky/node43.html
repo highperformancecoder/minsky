@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Reference</TITLE>
-<META NAME="description" CONTENT="Reference">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,80 +18,73 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node57.html">
-<LINK REL="previous" HREF="node37.html">
-<LINK REL="up" HREF="minsky.html">
+<LINK REL="next" HREF="node44.html">
+<LINK REL="previous" HREF="node42.html">
+<LINK REL="up" HREF="node41.html">
 <LINK REL="next" HREF="node44.html">
 </HEAD>
 
 <BODY >
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html565"
+<A NAME="tex2html573"
   HREF="node44.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html563"
-  HREF="minsky.html">
+<A NAME="tex2html571"
+  HREF="node41.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html557"
+<A NAME="tex2html565"
   HREF="node42.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html566"
-  HREF="node44.html">Operations</A>
-<B> Up:</B> <A NAME="tex2html564"
-  HREF="minsky.html">Minsky Simulation Engine</A>
-<B> Previous:</B> <A NAME="tex2html558"
-  HREF="node42.html">Basic Combined Model</A>
+<B> Next:</B> <A NAME="tex2html574"
+  HREF="node44.html">Variables</A>
+<B> Up:</B> <A NAME="tex2html572"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html566"
+  HREF="node42.html">Operations</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00400000000000000000">
-Reference</A>
+<H1><A NAME="SECTION00420000000000000000"></A><A NAME="switch"></A>
+<BR>
+Switch
 </H1>
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+A switch block (also known as a case block, or select in the Fortran
+world) is a way of selecting from a range of alternatives according
+to the value of the input.
 
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html567"
-  HREF="node44.html">Operations</A>
-<LI><A NAME="tex2html568"
-  HREF="node45.html">Switch</A>
-<LI><A NAME="tex2html569"
-  HREF="node46.html">Variables</A>
-<UL>
-<LI><A NAME="tex2html570"
-  HREF="node47.html">Variable names</A>
-<LI><A NAME="tex2html571"
-  HREF="node48.html">Initial conditions</A>
-<LI><A NAME="tex2html572"
-  HREF="node49.html">Sliders</A>
-</UL>
-<BR>
-<LI><A NAME="tex2html573"
-  HREF="node50.html">Wires</A>
-<LI><A NAME="tex2html574"
-  HREF="node51.html">Groups</A>
-<LI><A NAME="tex2html575"
-  HREF="node52.html">Plot widget</A>
-<LI><A NAME="tex2html576"
-  HREF="node53.html">Note Widget</A>
-<LI><A NAME="tex2html577"
-  HREF="node54.html">Godley Tables</A>
-<LI><A NAME="tex2html578"
-  HREF="node55.html">Context Menu</A>
-<LI><A NAME="tex2html579"
-  HREF="node56.html">Canvas background</A>
-</UL>
-<!--End of Table of Child-Links-->
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="switch.png"
+ ALT="1757">
+<DIV ALIGN="CENTER">
+<EM>An example switch block with 3 cases</EM>
+
+</DIV>
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1,
+or false and true, a two case switch statement will naturally appear
+``upside down'' to how you might think of an if statement. In other
+words, it looks like:
+<TT>if not </TT><EM>condition</EM> <TT>then</TT>
+<BR> ...
+<TT>else</TT>
+<BR>...
+
+<P>
+You can add or remove cases through the context menu. 
+
+<P>
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-10-10
+2016-11-03
 </ADDRESS>
 </BODY>
 </HTML>

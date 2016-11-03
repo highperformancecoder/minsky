@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Context Menu</TITLE>
-<META NAME="description" CONTENT="Context Menu">
+<TITLE>Brief History of system dynamics</TITLE>
+<META NAME="description" CONTENT="Brief History of system dynamics">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -19,183 +19,168 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node56.html">
-<LINK REL="previous" HREF="node54.html">
-<LINK REL="up" HREF="node43.html">
+<LINK REL="previous" HREF="node41.html">
+<LINK REL="up" HREF="minsky.html">
 <LINK REL="next" HREF="node56.html">
 </HEAD>
 
 <BODY >
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html699"
+<A NAME="tex2html692"
   HREF="node56.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html697"
-  HREF="node43.html">
+<A NAME="tex2html690"
+  HREF="minsky.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html691"
+<A NAME="tex2html684"
   HREF="node54.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html700"
-  HREF="node56.html">Canvas background</A>
-<B> Up:</B> <A NAME="tex2html698"
-  HREF="node43.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html692"
-  HREF="node54.html">Godley Tables</A>
+<B> Next:</B> <A NAME="tex2html693"
+  HREF="node56.html">FAQs</A>
+<B> Up:</B> <A NAME="tex2html691"
+  HREF="minsky.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html685"
+  HREF="node54.html">Canvas background</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00490000000000000000">
-Context Menu</A>
+<H1><A NAME="SECTION00500000000000000000">
+Brief History of system dynamics</A>
 </H1>
 
 <P>
-All canvas items have a context menu, which allow a variety of
-operations to be applied to the canvas item. Common context menu items
-are explained here:
-<DL>
-<DT><STRONG>Help</STRONG></DT>
-<DD>bring up context specific help for the item
-</DD>
-<DT><STRONG>Description</STRONG></DT>
-<DD>Attach an annotation to the item. This is only
-visible by selecting the description item from the context menu,
-although whatever is set as the ``Short Description'' will also appear
-as a tooltip whenever the mouse hovers over the item.
-</DD>
-<DT><STRONG>Port values</STRONG></DT>
-<DD>When running a simulation, you can drill down into
-the actual values at the input and output ports of the variable or
-operation, which is a useful aid for debugging models.
-</DD>
-<DT><STRONG>Edit</STRONG></DT>
-<DD>set or query various attributes of an item. This function
-can also be accessed by double clicking on the item. (Plot widgets
-behave slightly differently).
-</DD>
-<DT><STRONG>Copy</STRONG></DT>
-<DD>Creates a copy of an item, retaining the same attributes
-of the original. This is very useful for creating copies of the same
-variable to reduce the amount of overlapping wiring (aka "rats nest")
-in a model.
-</DD>
-<DT><STRONG>Flip</STRONG></DT>
-<DD>actually rotates an object through <SPAN CLASS="MATH"><IMG
- WIDTH="35" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
- ALT="$180^\circ$"></SPAN>. You can
-specify aribtrary rotations of objects through the edit menu.
-</DD>
-<DT><STRONG>Raise/Lower</STRONG></DT>
-<DD>Raise and lower the canvas items relative to each
-other. You may need to do this if a large item such as a Godley table
-or plot is obscuring a wire, making it hard to access the wire's
-context menu or handles,
-</DD>
-<DT><STRONG>Browse object</STRONG></DT>
-<DD>gives a low level drilldown of the internal C++
-object this canvas item represents. It is perhaps more of interest to
-developers. 
-</DD>
-<DT><STRONG>Delete</STRONG></DT>
-<DD>delete the object.
-</DD>
-</DL>
+ystem dynamics programs express equations using a visual
+metaphor. Before this metaphor was developed, anyone who wanted to
+simulate a system or procedure had to write a computer program
+(normally in
+<A NAME="tex2html6"
+  HREF="https://en.wikipedia.org/wiki/FORTRAN">FORTRAN</A>). The
+program might well replicate the system accurately, but only the
+author of the program would know that—-everyone else had to take it on
+faith, because the program code would be indecipherable to everyone
+but the author.
 
 <P>
-Item specific context menu items:
-<DL>
-<DT><STRONG>variables, parameters and constants</STRONG></DT>
-<DD><DL>
-<DT><STRONG>Slider</STRONG></DT>
-<DD>add a slider control to a variable. This is most
-effective for controlling parameters and constants, but can also be
-used to control inputless variables.
-</DD>
-<DT><STRONG>Add integral</STRONG></DT>
-<DD>attach an integration operation, and convert the
-variable into an integral type
-</DD>
-</DL>
-</DD>
-<DT><STRONG>integrals</STRONG></DT>
-<DD><DL>
-<DT><STRONG>Copy Var</STRONG></DT>
-<DD>copy just the integration variable, not the
-integration operation
-</DD>
-<DT><STRONG>Toggle Var Binding</STRONG></DT>
-<DD>Normally, integrals are tightly bound to their
-variables. By toggling the binding, the integral icon can then be
-moved independently of the variable it is bound to. 
-</DD>
-</DL>
-</DD>
-<DT><STRONG>Godley tables</STRONG></DT>
-<DD><DL>
-<DT><STRONG>Open Godley Table</STRONG></DT>
-<DD>opens a spreadsheet to allow financial flows
-defining the Godley table to entered or modified.
-</DD>
-<DT><STRONG>Edit/Copy var</STRONG></DT>
-<DD>allows individual stock and flow variables to be
-copied or edited.
-</DD>
-</DL>
-</DD>
-<DT><STRONG>Plot Widgets</STRONG></DT>
-<DD><DL>
-<DT><STRONG>Expand</STRONG></DT>
-<DD>By double-clicking, or selecting ``Expand'' from the context menu, a
-popup window is created of the plot, which can be used examine the
-plotting in more detail.
+For example, below is the Wikipedia’s example of a simple FORTRAN II
+program to calculate the area of a triangle. Enjoy the ``My Eyes Glaze
+Over'' effect of trying to understand what it does at your leisure.
 
 <P>
-</DD>
-<DT><STRONG>Resize</STRONG></DT>
-<DD>Allows you to resize the plot icon on the canvas
-</DD>
-<DT><STRONG>Options</STRONG></DT>
-<DD>Customize the plot by adding a title, axes labels and
-  control the number of axis ticks and grid lines on the detailed
-  plot. You can also add a legend, which is populated from the names
-  of variables attached to the plot.
-</DD>
-<DT><STRONG>Delete</STRONG></DT>
-<DD>remove the plot
-</DD>
-</DL>
+<PRE>
+LISTING
+     READ INPUT TAPE 5, 501, IA, IB, IC
+ 501 FORMAT (3I5)
+     IF (IA) 777, 777, 701
+ 701 IF (IB) 777, 777, 702
+ 702 IF (IC) 777, 777, 703
+ 703 IF (IA+IB-IC) 777,777,704
+ 704 IF (IA+IC-IB) 777,777,705
+ 705 IF (IB+IC-IA) 777,777,799
+ 777 STOP 1
+
+ 799 S = FLOATF (IA + IB + IC) / 2.0
+     AREA = SQRT( S * (S - FLOATF(IA)) * (S - FLOATF(IB)) *
+    +     (S - FLOATF(IC)))
+     WRITE OUTPUT TAPE 6, 601, IA, IB, IC, AREA
+ 601 FORMAT (4H A= ,I5,5H  B= ,I5,5H  C= ,I5,8H  AREA= ,F10.2,
+    +        13H SQUARE UNITS)
+     STOP
+     END
+</PRE>
 
 <P>
-</DD>
-</DL>
+A more complex problem would involve hundreds of pages of computer
+code that no-one could understand (bar, one hoped, the person who
+wrote it). <A NAME="tex2html7"
+  HREF="https://en.wikipedia.org/wiki/Jay_Forrester">Jay
+Forrester</A>, an engineer
+who had designed
+<A NAME="tex2html8"
+  HREF="https://en.wikipedia.org/wiki/Whirlwind_(computer)">Whirlwind</A>(the
+first computer with a video display for output), was confronted with
+such a problem: working out for GE why a Kentucky appliance factory
+had a regular three-year cycle in its employment. He developed a
+diagrammatic representation of the manufacturing and hiring processes
+at the factory, and showed that its internal hiring practices
+generated the cycle.
+
+<P>
+System dynamics was thus born as a visual way of understanding a
+complex system. With his background in developing computers that
+produced visual output on a
+<A NAME="tex2html9"
+  HREF="https://en.wikipedia.org/wiki/Cathode_ray_tube">CRT</A>
+(``cathode ray tube''; before Whirlwind--and for some time after
+it--most computers printed their results on line printers), it was a
+logical step for Forrester to move from hand-drawn diagrams to visual
+representations of a complex model on a computer screen. 
+
+<P>
+The first such program had a hoot of a name: SIMPLE, which stood for
+``Simulation of Industrial Management Problems with Lots of Equations''
+(it therefore qualifies for the annual COCOA award, given by the
+<A NAME="tex2html10"
+  HREF="https://www.acronymfinder.com/Committee-to-Outlaw-Contrived-and-Outrageous-Acronyms-(COCOA).html">Committee to Outlaw Contrived and Outrageous
+Acronyms</A>). After
+SIMPLE came
+<A NAME="tex2html11"
+  HREF="https://en.wikipedia.org/wiki/DYNAMO_(programming_language)">DYNAMO</A>
+(based on the slightly less outrageous acronym DYNAmic MOdels), and
+ultimately the proliferation of modern commercial and Open Source
+system dynamics programs. 
+
+<P>
+Now there are many programs--both commercial and Open Source--which
+have built on the initial ideas in SIMPLE and DYNAMO, and they are the
+workhorse tools of engineers all over the world. Here, for example, is
+a simple model of a 4 cylinder car (one of the example files supplied
+with Vissim). Real-world projects are substantially more complicated,
+but this gives an idea of the complexity of tasks that can be
+modelled, and the capability for breaking a complex system into
+sub-units for design purposes. 
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem2.png"
+ ALT="2031">
+
+<P>
+Management, marketing and social science disciplines use a related
+class of programs, like Stella. Here is a marketing model of customers
+switching from one product to another: 
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem3.png"
+ ALT="2030">
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html699"
+<A NAME="tex2html692"
   HREF="node56.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html697"
-  HREF="node43.html">
+<A NAME="tex2html690"
+  HREF="minsky.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html691"
+<A NAME="tex2html684"
   HREF="node54.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html700"
-  HREF="node56.html">Canvas background</A>
-<B> Up:</B> <A NAME="tex2html698"
-  HREF="node43.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html692"
-  HREF="node54.html">Godley Tables</A></DIV>
+<B> Next:</B> <A NAME="tex2html693"
+  HREF="node56.html">FAQs</A>
+<B> Up:</B> <A NAME="tex2html691"
+  HREF="minsky.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html685"
+  HREF="node54.html">Canvas background</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-10-10
+2016-11-03
 </ADDRESS>
 </BODY>
 </HTML>
