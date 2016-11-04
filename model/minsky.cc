@@ -191,64 +191,6 @@ namespace minsky
 
   const char* Minsky::minskyVersion=MINSKY_VERSION;
 
-  WirePtr Minsky::addWire(const Item& from, const Item& to, unsigned toPortIdx, const std::vector<float>& coords) {
-    // disallow self-wiring
-    if (&from==&to) 
-      return WirePtr();
-
-    if (toPortIdx>=to.ports.size()) 
-      return WirePtr();
-
-    auto& fromP=from.ports[0];
-    auto& toP=to.ports[toPortIdx];
-    // wire must go from an output port to an input port
-    if (fromP->input() || !toP->input())
-      return WirePtr();
-
-    // check that multiple input wires are only to binary ops.
-    if (toP->wires.size()>=1 && !toP->multiWireAllowed())
-      return WirePtr();
-
-    // check that a wire doesn't already exist connecting these two ports
-    for (auto& w: toP->wires)
-      if (w->from()==fromP)
-        return WirePtr();
-
-    auto w=model->addWire(new Wire(fromP, toP, coords));
-    model->adjustWiresGroup(*w);
-
-    markEdited();
-    return w;
-  }
-
-//  int Minsky::addOperation(const char* o)
-//  {
-//    OperationPtr newOp(static_cast<OperationType::Type>
-//                       (enumKey<OperationType::Type>(o)));
-//    if (!newOp) return -1;
-//    int id=getNewId();
-//    model->addItem(id, newOp);
-//    markEdited();
-//    return id;
-//  }
-
-//  int Minsky::copyOperation(int id)
-//  {
-//    auto source=model->findItem(id);
-//    if (!source) return -1;
-//    int newId=getNewId();
-//    model->addItem(newId, source->clone());
-//    markEdited();
-//    return newId;
-//  }
-//
-//
-//  void Minsky::deleteOperation(int opid)
-//  {
-//    if (model->removeItem(opid))
-//      markEdited();
-//  }
-
   GroupPtr Minsky::createGroup()
   {
     GroupPtr r=model->addGroup(new Group);

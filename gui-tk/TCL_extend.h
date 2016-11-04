@@ -20,9 +20,10 @@
 #ifndef TCL_EXTEND_H
 #define TCL_EXTEND_H
 #include "variable.h"
+#include "operation.h"
+#include "wire.h"
 
 #include "TCL_obj_base.h"
-
 
 namespace minsky
 {
@@ -47,19 +48,19 @@ namespace minsky
     public TclExtendBase<std::shared_ptr<minsky::VariableBase> >
   {
     TclExtend(std::shared_ptr<VariableBase>& ref): TclExtendBase<std::shared_ptr<VariableBase>>(ref) {}
-    std::string name(TCL_args args) {
+    std::string name(ecolab::TCL_args args) {
       if (args.count)
         return ref->name(args);
       else
         return ref->name();
     }
-    std::string init(TCL_args args) {
+    std::string init(ecolab::TCL_args args) {
       if (args.count)
         return ref->init(args);
       else
         return ref->init();
     }
-    double value(TCL_args args) {
+    double value(ecolab::TCL_args args) {
       if (args.count)
         return ref->value(args);
       else
@@ -73,7 +74,7 @@ namespace minsky
     std::shared_ptr<Port> from, to;
     TclExtend(minsky::WirePtr& ref): 
       TclExtendBase<minsky::WirePtr>(ref), from(ref->from()), to(ref->to()) {}
-    std::vector<float> coords(TCL_args args) {
+    std::vector<float> coords(ecolab::TCL_args args) {
       if (args.count)
         {
           std::vector<float> coords;
@@ -89,7 +90,7 @@ namespace minsky
     public TclExtendBase<std::shared_ptr<minsky::IntOp> >
   {
     TclExtend(std::shared_ptr<IntOp>& ref): TclExtendBase<std::shared_ptr<IntOp>>(ref) {}
-    string description(TCL_args args=TCL_args()) {
+    string description(ecolab::TCL_args args=TCL_args()) {
       if (args.count) {ref->description(args);}
       return ref->description();
     }
@@ -124,7 +125,7 @@ namespace classdesc_access
   template <class T> struct access_TCL_obj<minsky::TclExtendBase<T> >
   {
     template <class U>
-    void operator()(TCL_obj_t& t,const std::string& d, U& a)
+    void operator()(ecolab::TCL_obj_t& t,const std::string& d, U& a)
     {::TCL_obj(t,d,a.ref);}
   };
 }

@@ -166,13 +166,6 @@ namespace minsky
         r << enum_keysData<E>::keysData[i].name;
     }
 
-    //    int addWire(const Wire& w) {return PortManager::addWire(w);}
-
-    /// add a wire from item \a from, to item \a to, connecting to the
-    /// toIdx port of \a to, with \a coordinates
-    WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
-                const std::vector<float>& coords = {}); 
-
     /// list of available operations
     void availableOperations() {enumVals<OperationType::Type>();}
     /// list of available variable types

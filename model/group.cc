@@ -283,6 +283,35 @@ namespace minsky
     wires.push_back(w);
     return wires.back();
   }
+  WirePtr GroupItems::addWire(const Item& from, const Item& to, unsigned toPortIdx, const std::vector<float>& coords) {
+    // disallow self-wiring
+    if (&from==&to) 
+      return WirePtr();
+
+    if (toPortIdx>=to.ports.size()) 
+      return WirePtr();
+
+    auto& fromP=from.ports[0];
+    auto& toP=to.ports[toPortIdx];
+    // wire must go from an output port to an input port
+    if (fromP->input() || !toP->input())
+      return WirePtr();
+
+    // check that multiple input wires are only to binary ops.
+    if (toP->wires.size()>=1 && !toP->multiWireAllowed())
+      return WirePtr();
+
+    // check that a wire doesn't already exist connecting these two ports
+    for (auto& w: toP->wires)
+      if (w->from()==fromP)
+        return WirePtr();
+
+    auto w=addWire(new Wire(fromP, toP, coords));
+    adjustWiresGroup(*w);
+
+    return w;
+  }
+
 
   bool Group::higher(const Group& x) const
   {

@@ -18,6 +18,7 @@
 */
 
 #include "minskyTCL.h"
+#include "minskyTCLObj.h"
 #include "cairoItems.h"
 #include <ecolab.h>
 #include <ecolab_epilogue.h>
@@ -48,11 +49,6 @@ namespace minsky
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
   LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
 
-  string to_string(CONST84 char* x) {return x;}
-  string to_string(Tcl_Obj* x) {
-    return Tcl_GetString(x);
-  }
-
   cmd_data* getCommandData(const string& name)
   {
     Tcl_CmdInfo info;
@@ -76,46 +72,6 @@ namespace minsky
     }
   } cmdHist;
 #endif
-
-  // a hook for recording when the minsky model's state changes
-  template <class AV>
-  void member_entry_hook(int argc, AV argv)
-  {
-    string argv0=to_string(argv[0]);
-    MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
-    if (m.doPushHistory && argv0!="minsky.adjustWires" && 
-        argv0!="minsky.availableOperations" &&
-        argv0!="minsky.clearAll" &&
-        argv0!="minsky.doPushHistory" &&
-        argv0!="minsky.itemsSelected" &&
-        argv0!="minsky.popFlags" &&
-        argv0!="minsky.pushFlags" &&
-        argv0!="minsky.select" &&
-        argv0!="minsky.selectVar" &&
-        argv0!="minsky.setGodleyIconResource" &&
-        argv0!="minsky.setGroupIconResource" &&
-        argv0!="minsky.step" &&
-        argv0.find(".get")==string::npos && 
-        argv0.find(".mouseFocus")==string::npos
-        )
-      {
-        auto t=getCommandData(argv0);
-        if (!t || (!t->is_const && (!t->is_setterGetter || argc>1)))
-          {
-            //            cmdHist[argv0]++;
-            if (m.pushHistoryIfDifferent())
-              {
-                if (argv0!="minsky.load") m.markEdited();
-                if (m.eventRecord.get() && argv0=="minsky.startRecording")
-                  {
-                    for (int i=0; i<argc; ++i)
-                      (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
-                    (*m.eventRecord)<<endl;
-                  }
-              }
-          }
-      }
-  }
 
   // Add any additional post TCL_obj processing commands here
   void setTCL_objAttributes()
@@ -145,16 +101,6 @@ namespace minsky
       t->is_const=true;
  }
 
-
-  TCL_obj_t& minskyTCL_obj() 
-  {
-    static TCL_obj_t t;
-    static int dum=(
-                    t.member_entry_hook=member_entry_hook<CONST84 char**>,
-                    t.member_entry_thook=member_entry_hook<Tcl_Obj* const *>,
-                    1);
-    return t;
-  }
 
   tclvar TCL_obj_lib("ecolab_library",ECOLAB_LIB);
   int TCL_obj_minsky=
@@ -320,111 +266,15 @@ namespace minsky
 
   float MinskyTCL::localZoomFactor(int id, float x, float y) const 
   {
-    const Group* g=model->minimalEnclosingGroup(x,y,x,y);
+    const Group* g=Minsky::model->minimalEnclosingGroup(x,y,x,y);
     auto item=items[id];
     // godley tables can have a user overridden zoom
     if (auto godley=dynamic_cast<GodleyIcon*>(item.get())) 
       return godley->zoomFactor;
     if (!g || g==item.get())
-      return model->zoomFactor; //global zoom factor
+      return Minsky::model->zoomFactor; //global zoom factor
     else 
       return g->localZoom();
-  }
-
-  void MinskyTCL::checkAddGroup(int id, float x, float y)
-  {
-    auto i=items.find(id);
-    if (i!=items.end())
-      {
-        if (auto g=model->minimalEnclosingGroup(x,y,x,y))
-          {
-            if (dynamic_cast<Group*>(i->get())!=g && (*i)->group.lock().get()!=g)
-              g->addItem(*i);
-          }
-        else if ((*i)->group.lock()!=model)
-          model->addItem(*i);
-      }
-  }
-
-  namespace 
-  {
-    template <class W>
-    void adjustWire(const W& w)
-    {
-      tclcmd cmd;
-      cmd |".wiring.canvas coords wire"|w.id();
-      for (auto x: w->coords())
-        cmd <<x;
-      cmd << "\n";
-    }
-  }
-
-  void MinskyTCL::adjustItemWires(Item* it)
-  {
-    tclcmd cmd;
-    for (auto& w: wires)
-      if (&w->from()->item == it || &w->to()->item == it)
-        adjustWire(w);
-      else if (auto g=dynamic_cast<Group*>(it))
-        {
-          for (auto v: g->inVariables)
-            if (&w->to()->item == v.get())
-              adjustWire(w);
-          for (auto v: g->outVariables)
-            if (&w->to()->item == v.get())
-              adjustWire(w);
-        }
-  }
-
-  void MinskyTCL::adjustWires(int id) 
-  {
-    auto it=items.find(id);
-    if (it!=items.end())
-      {
-        if (auto g=dynamic_cast<GodleyIcon*>(it->get()))
-          {
-            for (auto& v: g->stockVars)
-              adjustItemWires(&*v);
-            for (auto& v: g->flowVars)
-              adjustItemWires(&*v);
-          }
-        else
-          adjustItemWires(it->get());
-      }
-  }
-
-  int MinskyTCL::groupOf(int item)
-  {
-    auto i=items.find(item);
-    if (i!=items.end())
-      if (auto g=(*i)->group.lock())
-        for (auto& j: items)
-          if (j.get()==g.get())
-            return j.id();
-    return -1;
-  }
-
-  void MinskyTCL::makeVariableConsistentWithValue(int id) 
-  {
-    clearAllGetterSetters();
-    auto i=items.find(id);
-    if (i!=items.end())
-      if (auto v=dynamic_cast<VariableBase*>(i->get()))
-        {
-          auto& value=variableValues[v->valueId()];
-          if (value.type()!=v->type())
-            {
-              VariablePtr v(*i);
-              v.makeConsistentWithValue();
-              // now need to fix both the TCL items entry and minsky's
-              if (auto g=(*i)->group.lock())
-                {
-                  g->removeItem(**i);
-                  g->addItem(v);
-                  *i=v;
-                }
-            }
-        }
   }
 
   int TclExtend<std::shared_ptr<minsky::IntOp>>::getIntVar() 
@@ -480,5 +330,29 @@ namespace minsky
       }
     return ref->coupled();
   }
-  
+
+  void MinskyTCL::makeVariableConsistentWithValue(int id) 
+  {
+    clearAllGetterSetters();
+    auto i=items.find(id);
+    if (i!=items.end())
+      if (auto v=dynamic_cast<VariableBase*>(i->get()))
+        {
+          auto& value=variableValues[v->valueId()];
+          if (value.type()!=v->type())
+            {
+              VariablePtr v(*i);
+              v.makeConsistentWithValue();
+              // now need to fix both the TCL items entry and minsky's
+              if (auto g=(*i)->group.lock())
+                {
+                  g->removeItem(**i);
+                  g->addItem(v);
+                  *i=v;
+                }
+            }
+        }
+  }
+
+
 }

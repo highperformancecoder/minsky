@@ -42,6 +42,7 @@ namespace minsky
     }
     Group& operator*() const;
     Group* operator->() const;
+    
   };
   typedef std::vector<GroupPtr> Groups;
 
@@ -136,6 +137,13 @@ namespace minsky
     /// adjust wire's group to be the least common ancestor of its ports
     void adjustWiresGroup(Wire& w);
 
+    /// add a wire from item \a from, to item \a to, connecting to the
+    /// toIdx port of \a to, with \a coordinates
+    WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
+                const std::vector<float>& coords = {}); 
+
+
+    
   };
 
   template <class G, class M, class O>

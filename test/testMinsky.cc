@@ -82,14 +82,14 @@ SUITE(Minsky)
       auto mulOp=model->addItem(OperationBase::create(OperationType::multiply)); 
       CHECK_EQUAL(3, mulOp->ports.size());
  
-      addWire(*var["e"], *var["f"], 1, {});
-      addWire(*var["c"], *addOp, 1, {});
-      addWire(*var["d"], *addOp, 2, {});
-      addWire(*addOp, *intOp, 1, {});
-      addWire(*intOp, *var["a"], 1, {});
-      addWire(*intOp, *mulOp, 1, {});
-      addWire(*var["e"], *mulOp, 2, {});
-      addWire(*mulOp, *var["b"], 1, {});
+      model->addWire(*var["e"], *var["f"], 1, {});
+      model->addWire(*var["c"], *addOp, 1, {});
+      model->addWire(*var["d"], *addOp, 2, {});
+      model->addWire(*addOp, *intOp, 1, {});
+      model->addWire(*intOp, *var["a"], 1, {});
+      model->addWire(*intOp, *mulOp, 1, {});
+      model->addWire(*var["e"], *mulOp, 2, {});
+      model->addWire(*mulOp, *var["b"], 1, {});
 
       for (auto& w: model->wires)
         {
@@ -159,10 +159,10 @@ SUITE(Minsky)
 
       ecolab::array<float> coords(4,0);
  
-      auto wire8=addWire(*op4, *var["g"], 1);
-      auto wire9=addWire(*op4, *op6, 1);
-      auto wire10=addWire(*op5, *op6, 2);
-      auto wire11=addWire(*op6, *var["h"], 1);
+      auto wire8=model->addWire(*op4, *var["g"], 1);
+      auto wire9=model->addWire(*op4, *op6, 1);
+      auto wire10=model->addWire(*op5, *op6, 2);
+      auto wire11=model->addWire(*op6, *var["h"], 1);
  
       for (auto& w: model->wires)
         {
@@ -259,14 +259,14 @@ SUITE(Minsky)
       auto op2=model->addItem(OperationPtr(OperationType::integrate));
       auto op3=model->addItem(OperationPtr(OperationType::multiply));
   
-      addWire(*var["e"], *var["f"], 1);
-      addWire(*var["c"], *op1, 1);
-      addWire(*var["d"], *op1, 2);
-      addWire(*op1, *op2, 1);
-      addWire(*op2, *var["a"], 1);
-      addWire(*op2, *op3, 1);
-      addWire(*var["e"],* op3, 2);
-      addWire(*op3, *var["b"], 1);
+      model->addWire(*var["e"], *var["f"], 1);
+      model->addWire(*var["c"], *op1, 1);
+      model->addWire(*var["d"], *op1, 2);
+      model->addWire(*op1, *op2, 1);
+      model->addWire(*op2, *var["a"], 1);
+      model->addWire(*op2, *op3, 1);
+      model->addWire(*var["e"],* op3, 2);
+      model->addWire(*op3, *var["b"], 1);
  
       CHECK(!cycleCheck());
       reset();
@@ -310,7 +310,7 @@ SUITE(Minsky)
       IntOp* intOp=dynamic_cast<IntOp*>(op2.get());
       CHECK(intOp);
       intOp->description("output");
-      addWire(*op1,*op2,1,vector<float>());
+      model->addWire(*op1,*op2,1,vector<float>());
 
       //variables.makeConsistent();
       constructEquations();
@@ -325,7 +325,7 @@ SUITE(Minsky)
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
-      addWire(*op2, *op3, 1, vector<float>());
+      model->addWire(*op2, *op3, 1, vector<float>());
       reset();
       step();
       //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
