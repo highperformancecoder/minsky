@@ -138,6 +138,7 @@ namespace minsky
   struct Model
   {
     GroupPtr model;
+    ~Model();
   };
 
   template <class Model> // Model must have a GroupPtr model member
@@ -172,7 +173,7 @@ namespace minsky
                  data(items), var(items),
                  plot(items), godley(items), group(items), 
                  switchItem(items), item(items) {}
-    
+
     int getNewId() {return nextId++;}
 
     void clearAllGetterSetters() {

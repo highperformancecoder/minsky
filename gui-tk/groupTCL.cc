@@ -24,6 +24,18 @@
 
 namespace minsky
 {
+  Model::~Model() 
+  {
+    if (model)
+      {
+        // reset visibility of edge variables
+        for (auto& i: model->inVariables)
+          i->m_visible=false;
+        for (auto& i: model->outVariables)
+          i->m_visible=false;
+      }
+  }
+        
   template <class Model>
   void GroupTCL<Model>::checkAddGroup(int id, float x, float y)
   {
@@ -124,6 +136,11 @@ namespace minsky
         {
           GroupTCL<Model>* newObj=new GroupTCL<Model>;
           newObj->model=g;
+          // make edge variables visible
+          for (auto& i: g->inVariables)
+            i->m_visible=true;
+          for (auto& i: g->outVariables)
+            i->m_visible=true;
           newObj->buildMaps();
           TCL_obj(minskyTCL_obj(), name, *newObj);
           Tcl_CreateCommand(ecolab::interp(),(name+".delete").c_str(),(Tcl_CmdProc*)groupTCLDeleter, 
