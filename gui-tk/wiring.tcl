@@ -1986,11 +1986,11 @@ proc placeNewNote {} {
 }
 
 proc openInCanvas id {
-    # save deleter for disposing the old wiring group object later
+    group::zoomToDisplay $id
+    # save deleter for disposing the old wiring group object later, since we need it to create the new one
     catch {rename wiringGroup.delete openInCanvas.tmp.delete}
     wiringGroup.newGroupTCL wiringGroup $id
     catch {openInCanvas.tmp.delete}
-    group::zoomToDisplay $id
     .wiring.canvas delete all
     updateCanvas
     recentreCanvas
@@ -2001,6 +2001,7 @@ proc openGlobalInCanvas {} {
     minsky.newGlobalGroupTCL wiringGroup
     .wiring.canvas delete all
     updateCanvas
+    recentreCanvas
 }
     
 

@@ -519,7 +519,11 @@ tooltip .controls.zoomIn "Zoom In"
 
 image create photo zoomOrigImg -file $minskyHome/icons/zoomOrig.gif
 button .controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
-    -command {if {[model.zoomFactor]>0} {zoom [expr 1/[model.zoomFactor]]} else {model.setZoom 1}; recentreCanvas}
+    -command {
+        openGlobalInCanvas
+        if {[model.zoomFactor]>0} {zoom [expr 1/[model.zoomFactor]]} else {model.setZoom 1}
+        recentreCanvas
+    }
 tooltip .controls.zoomOrig "Reset Zoom/Origin"
 pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig -side left
 

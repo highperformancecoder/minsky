@@ -150,7 +150,6 @@ namespace minsky
   public:
 
     /// TCL accessors
-    //    GetterSetter<Ports> port;
     typedef TrackedIntrusiveMap<int,WirePtr> Wires;
     Wires wires;
     GetterSetterPtr<Wires, Wire> wire;
