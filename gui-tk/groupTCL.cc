@@ -101,5 +101,42 @@ namespace minsky
     return -1;
   }
 
+  namespace
+  {
+    int groupTCLDeleter(ClientData cd, Tcl_Interp *interp, int argc, const char **argv)
+    {
+      std::string s(argv[0]); 
+      auto delpos=s.length()-strlen(".delete");
+      assert( s.rfind(".delete")==delpos);                                 
+      ecolab::TCL_obj_deregister(s.substr(0,delpos));
+      delete (DeleterBase*)cd;
+      return TCL_OK;                                 
+    }
+
+    // dummy model class needed to represent the group referenced by a pop up window
+    struct Model
+    {
+      GroupPtr model;
+    };
+  }
+  
+  template <class Model>
+  void GroupTCL<Model>::newGroupTCL(const std::string& name, int id)
+  {
+    auto i=items.find(id);
+    if (i!=items.end())
+      if (auto g=dynamic_pointer_cast<Group>(*i))
+        {
+          GroupTCL<Model>* newObj=new GroupTCL<Model>;
+          newObj->model=g;
+          TCL_obj(minskyTCL_obj(), name, *g);
+          Tcl_CreateCommand(ecolab::interp(),(name+".delete").c_str(),(Tcl_CmdProc*)groupTCLDeleter, 
+			  (ClientData)newObj,NULL); 
+        }
+  }
+
+  
+  
+  template class GroupTCL<Model>;
   template class GroupTCL<Minsky>;
 }

@@ -128,8 +128,14 @@ namespace minsky
     void operator=(const GetterSetterPtr&) {}
   };
 
+  // add a vtbl to allow deleters to work with generic types
+  struct DeleterBase
+  {
+    virtual ~DeleterBase() {}
+  };
+  
   template <class Model> // Model must have a GroupPtr model member
-  class GroupTCL: public Model
+  class GroupTCL: public DeleterBase, public Model
   {
     
   protected:
@@ -331,6 +337,10 @@ namespace minsky
     void checkAddGroup(int id, float x, float y);
 
     void adjustItemWires(Item* it);
+
+    /// create a new TCL C++ object of name \a name referring to group \a id
+    /// Use name.delete to clean up.
+    void newGroupTCL(const std::string& name, int id);
  };
 }
 
