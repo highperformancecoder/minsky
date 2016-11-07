@@ -113,15 +113,10 @@ namespace minsky
       return TCL_OK;                                 
     }
 
-    // dummy model class needed to represent the group referenced by a pop up window
-    struct Model
-    {
-      GroupPtr model;
-    };
   }
   
-  template <class Model>
-  void GroupTCL<Model>::newGroupTCL(const std::string& name, int id)
+  template <class M>
+  void GroupTCL<M>::newGroupTCL(const std::string& name, int id)
   {
     auto i=items.find(id);
     if (i!=items.end())
@@ -129,13 +124,21 @@ namespace minsky
         {
           GroupTCL<Model>* newObj=new GroupTCL<Model>;
           newObj->model=g;
-          TCL_obj(minskyTCL_obj(), name, *g);
+          newObj->buildMaps();
+          TCL_obj(minskyTCL_obj(), name, *newObj);
           Tcl_CreateCommand(ecolab::interp(),(name+".delete").c_str(),(Tcl_CmdProc*)groupTCLDeleter, 
-			  (ClientData)newObj,NULL); 
+                            (ClientData)newObj,NULL); 
         }
   }
 
-  
+  template <class Model>
+  void GroupTCL<Model>::newGlobalGroupTCL(const std::string& name)
+  {
+    TCL_obj(minskyTCL_obj(), name, *this);
+    Tcl_CreateCommand(ecolab::interp(),(name+".delete").c_str(),(Tcl_CmdProc*)groupTCLDeleter, 
+                            NULL
+                      ,NULL); 
+  }
   
   template class GroupTCL<Model>;
   template class GroupTCL<Minsky>;

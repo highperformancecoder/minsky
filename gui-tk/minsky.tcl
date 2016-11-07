@@ -652,6 +652,7 @@ proc openNamedFile {ofname} {
 
     eval minsky.load $fname
     doPushHistory 0
+    openGlobalInCanvas
     updateCanvas
     recentreCanvas
     
@@ -1045,20 +1046,34 @@ proc setFname {name} {
     }
 }
 
+rename unknown ecolab_unknown
+proc unknown {procname args} {
+    #delegate in case a getter hasn't correctly called its get
+    if [regexp ^wiringGroup\. $procname] {
+        # delegate to minsky (ie global group)
+        eval [regsub ^wiringGroup $procname minsky] $args
+    } elseif [regexp ^(wire|op|constant|integral|data|var|plot|godley|group|switchItem|item)\. $procname] {
+        eval wiringGroup.$procname $args
+    } else {
+        ecolab_unknown $procname $args
+    }
+}
+
 pushFlags
 if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     # ignore any exceptions thrown during load, in case it can be repaired later
     catch {minsky.load $argv(1)}
     doPushHistory 0
     setFname $argv(1)
-# we have loaded a Minsky model, so must refresh the canvas
+    # we have loaded a Minsky model, so must refresh the canvas
+    openGlobalInCanvas
     updateCanvas
     recentreCanvas
-    foreach g [items.#keys] {
-        item.get $g
-        if {[item.classType]=="GodleyIcon"} {
-            godley.get $g
-            set preferences(godleyDE) [godley.table.doubleEntryCompliant]
+    foreach g [wiringGroup.items.#keys] {
+        wiringGroup.item.get $g
+        if {[wiringGroup.item.classType]=="GodleyIcon"} {
+            wiringGroup.godley.get $g
+            set preferences(godleyDE) [wiringGroup.godley.table.doubleEntryCompliant]
         }
     }
     set delay [simulationDelay]

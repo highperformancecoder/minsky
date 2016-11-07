@@ -27,8 +27,8 @@ setGroupIconResource $minskyHome/icons/group.svg
 
 proc newGroupItem {id} {
     global minskyHome
-    group.get $id
-    .wiring.canvas create item [group.x] [group.y] -id $id  -tags "item$id items"
+    wiringGroup.group.get $id
+    .wiring.canvas create item [wiringGroup.group.x] [wiringGroup.group.y] -id $id  -tags "item$id items"
     .wiring.canvas lower item$id
 
     .wiring.canvas bind item$id <Button-1> "group::button1 $id %x %y"
@@ -53,8 +53,8 @@ proc rightMouseGroup {id x y X Y} {
            var.set
         "
         .wiring.context add command -label "Remove" -command "
-           group.removeVariableById 
-           group.set
+           wiringGroup.group.removeVariableById 
+           wiringGroup.group.set
         "
         .wiring.context post $X $Y
     } else {
@@ -110,21 +110,22 @@ proc groupContext {id x y} {
     .wiring.context add command -label Help -command {help Group}
     .wiring.context add command -label Description -command "postNote group $id"
     .wiring.context add command -label "Edit" -command "groupEdit $id"
+    .wiring.context add command -label "Open in canvas" -command "openInCanvas $id"
     .wiring.context add command -label "Zoom to display" -command "group::zoomToDisplay $id"
     .wiring.context add command -label "Resize" -command "group::resize $id"
     .wiring.context add command -label "Copy" -command "group::copy $id"
     .wiring.context add command -label "Save group as" -command "group::save $id"
     .wiring.context add command -label "Flip" -command "group::flip $id"
     .wiring.context add command -label "Flip Contents" -command "group::flipContents $id"
-    .wiring.context add command -label "Browse object" -command "group.get $id; obj_browser minsky.group.*"
-    .wiring.context add command -label "Group" -command "minsky.createGroup;.wiring.canvas delete all; updateCanvas"
+    .wiring.context add command -label "Browse object" -command "group.get $id; obj_browser wiringGroup.group.*"
+    .wiring.context add command -label "Group" -command "wiringGroup.createGroup;.wiring.canvas delete all; updateCanvas"
     .wiring.context add command -label "Ungroup" -command "ungroupGroupItem $id"
     .wiring.context add command -label "Raise" -command "raiseItem group$id"
     .wiring.context add command -label "Lower" -command "lowerItem group$id"
     .wiring.context add command -label "Delete" -command "deleteGroupItem $id"
     .wiring.context add command -label "content bounds" -command "
-      group.get $id
-      .wiring.canvas create rectangle \[group.cBounds\]
+      wiringGroup.group.get $id
+      .wiring.canvas create rectangle \[wiringGroup.group.cBounds\]
      "
 }
 
@@ -161,7 +162,7 @@ proc deiconifyEditGroup {} {
 }
 
 proc groupEdit {id} {
-    group.get $id
+    wiringGroup.group.get $id
     deiconifyEditGroup
     .wiring.editGroup.name.val delete 0 end
     .wiring.editGroup.name.val insert 0 [group.title]
@@ -169,21 +170,22 @@ proc groupEdit {id} {
     .wiring.editGroup.rot.val insert 0 [group.rotation]
     .wiring.editGroup.buttonBar.ok configure \
         -command {
-            group.rotation [expr [.wiring.editGroup.rot.val get]-[group.rotation]]
-            group.title [.wiring.editGroup.name.val get]
+            wiringGroup.group.rotation [expr [.wiring.editGroup.rot.val get]-[group.rotation]]
+            wiringGroup.group.title [.wiring.editGroup.name.val get]
             closeEditWindow .wiring.editGroup
         }
     grab .wiring.editGroup
 }
 
 namespace eval group {
+
     proc resize {id} {
-        group.get $id
+        wiringGroup.group.get $id
         set bbox [.wiring.canvas bbox item$id]
         variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
         variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
-        variable orig_x [group.x]
-        variable orig_y [group.y]
+        variable orig_x [wiringGroup.group.x]
+        variable orig_y [wiringGroup.group.y]
         set item [eval .wiring.canvas create rectangle $bbox -tags resizeBBox]
         # disable lasso mode
         bind .wiring.canvas <Button-1> ""
@@ -217,16 +219,16 @@ namespace eval group {
         set scalex [expr 2*abs($x-$orig_x)/double($orig_width)]
         set scaley [expr 2*abs($y-$orig_y)/double($orig_height)]
         # compute rotated scale factors
-        set angle [radian [group.rotation]]
+        set angle [radian [wiringGroup.group.rotation]]
         set rx [expr $scalex*cos($angle)-$scaley*sin($angle)]
         set ry [expr $scalex*sin($angle)+$scaley*cos($angle)]
-        group.width [expr abs($rx*[group.width])]
-        group.height [expr abs($ry*[group.height])]
-        group.computeDisplayZoom
-        group.set
+        wiringGroup.group.width [expr abs($rx*[wiringGroup.group.width])]
+        wiringGroup.group.height [expr abs($ry*[wiringGroup.group.height])]
+        wiringGroup.group.computeDisplayZoom
+        wiringGroup.group.set
         .wiring.canvas delete group$id
         newGroupItem $id
-        foreach p [group.ports]  {
+        foreach p [wiringGroup.group.ports]  {
             adjustWire $p
         }
         bind .wiring.canvas <Motion> {}
@@ -234,7 +236,7 @@ namespace eval group {
     }
 
     proc copy {id} {
-        item.get $id
+        wiringGroup.item.get $id
         insertNewGroup [copyItem $id]
     }
 
@@ -300,9 +302,9 @@ namespace eval group {
 }
 
 proc checkAddGroup {id x y} {
-  minsky.checkAddGroup $id $x $y
-  item.get $id
-    if [item.visible] {
+  wiringGroup.checkAddGroup $id $x $y
+  wiringGroup.item.get $id
+    if [wiringGroup.item.visible] {
         redraw $id
     } else {
         .wiring.canvas delete item$id

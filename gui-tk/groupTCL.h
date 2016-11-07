@@ -134,10 +134,15 @@ namespace minsky
     virtual ~DeleterBase() {}
   };
   
+  // dummy model class needed to represent the group referenced by a pop up window
+  struct Model
+  {
+    GroupPtr model;
+  };
+
   template <class Model> // Model must have a GroupPtr model member
   class GroupTCL: public DeleterBase, public Model
   {
-    
   protected:
     int nextId=0;
     void resetNextId() {nextId=0;}
@@ -341,6 +346,10 @@ namespace minsky
     /// create a new TCL C++ object of name \a name referring to group \a id
     /// Use name.delete to clean up.
     void newGroupTCL(const std::string& name, int id);
+
+    /// essentially as above, but refer to this rather than create a new C++ object
+    void newGlobalGroupTCL(const std::string& name);
+
  };
 }
 

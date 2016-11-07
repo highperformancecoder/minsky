@@ -106,9 +106,15 @@ namespace
     if (r==TCL_OK && tkMinskyItem->id>=0)
       {
         if (MinskyCairoItem* i=(MinskyCairoItem*)(tkMinskyItem->cairoItem))
-          if (auto m=dynamic_cast<const MinskyTCL*>(&minsky::cminsky()))
           {
-            i->op=m->items[tkMinskyItem->id];
+            // first check to see if a wiringGroup is in place
+            Tcl_CmdInfo cmdInfo;
+            if (Tcl_GetCommandInfo(interp, "wiringGroup.delete",&cmdInfo))
+              if (GroupTCL<Model>* g=dynamic_cast<GroupTCL<Model>*>((DeleterBase*)cmdInfo.clientData))
+                i->op=g->items[tkMinskyItem->id];
+            if (!i->op) // fall back to global Minsky model space if wiringGroup not set
+              if (auto m=dynamic_cast<const MinskyTCL*>(&minsky::cminsky()))
+                i->op=m->items[tkMinskyItem->id];
             if (!i->op)
               {
                 Tcl_AppendResult
