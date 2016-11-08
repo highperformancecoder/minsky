@@ -472,7 +472,7 @@ proc itemEnterLeave {item id tag enter} {
 proc updateItemPos {id} {
     global globals
     # ignore errors that may occur if the object vanishes before now
-    catch {wiringGroup.adjustWires $id}
+    catch {redraw $id}
     unset globals(updateItemPositionSubmitted$id)
     doPushHistory 1
 }    

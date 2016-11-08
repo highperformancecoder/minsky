@@ -431,9 +431,9 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_line_to(cairo,w+2*zoomFactor,0);
   cairo_line_to(cairo,w,-h);
   cairo_close_path(cairo);
-  cairo_clip_preserve(cairo);
-  cairo_stroke(cairo);
-
+  cairo_stroke_preserve(cairo);
+  cairo_clip(cairo);
+  
   {
     double x0=w, y0=0, x1=-w+2, y1=0;
     double sa=sin(angle), ca=cos(angle);
