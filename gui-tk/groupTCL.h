@@ -350,6 +350,8 @@ namespace minsky
     /// essentially as above, but refer to this rather than create a new C++ object
     void newGlobalGroupTCL(const std::string& name);
 
+    /// returns the local zoom factor to be applied to item \a id at \a x,y
+    float localZoomFactor(int id, float x, float y) const;
  };
 }
 

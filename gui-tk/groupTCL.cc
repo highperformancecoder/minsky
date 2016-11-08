@@ -157,7 +157,21 @@ namespace minsky
                       ,NULL);
     clearAllGetterSetters();
   }
-  
+
+  template <class Model>
+  float GroupTCL<Model>::localZoomFactor(int id, float x, float y) const 
+  {
+    const Group* g=Model::model->minimalEnclosingGroup(x,y,x,y);
+    auto item=items[id];
+    // godley tables can have a user overridden zoom
+    if (auto godley=dynamic_cast<GodleyIcon*>(item.get())) 
+      return godley->zoomFactor;
+    if (!g || g==item.get())
+      return Model::model->localZoom(); //global zoom factor
+    else 
+      return g->localZoom();
+  }
+
   template class GroupTCL<Model>;
   template class GroupTCL<Minsky>;
 }

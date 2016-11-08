@@ -534,7 +534,7 @@ proc move {id x y} {
 #        }
 #        item.get $id
 #    }
-    wiringGroup.item.zoomFactor [localZoomFactor $id [wiringGroup.item.x] [wiringGroup.item.y]]
+    wiringGroup.item.zoomFactor [wiringGroup.localZoomFactor $id [wiringGroup.item.x] [wiringGroup.item.y]]
     wiringGroup.item.set $id
     submitUpdateItemPos $id
 #TODO

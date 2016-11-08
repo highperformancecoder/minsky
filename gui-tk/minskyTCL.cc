@@ -264,19 +264,6 @@ namespace minsky
     return false;
   }
 
-  float MinskyTCL::localZoomFactor(int id, float x, float y) const 
-  {
-    const Group* g=Minsky::model->minimalEnclosingGroup(x,y,x,y);
-    auto item=items[id];
-    // godley tables can have a user overridden zoom
-    if (auto godley=dynamic_cast<GodleyIcon*>(item.get())) 
-      return godley->zoomFactor;
-    if (!g || g==item.get())
-      return Minsky::model->zoomFactor; //global zoom factor
-    else 
-      return g->localZoom();
-  }
-
   int TclExtend<std::shared_ptr<minsky::IntOp>>::getIntVar() 
   {
     auto& m=dynamic_cast<MinskyTCL&>(minsky());

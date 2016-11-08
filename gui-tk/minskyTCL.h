@@ -136,9 +136,6 @@ namespace minsky
     /// @returns true if (x,y) is over an I/O variable within a group id or a variable within at (x,y), false otherwise. var is set to the variable if it exists
     bool selectVar(int id, float x, float y);
 
-    /// returns the local zoom factor to be applied to item \a id at \a x,y
-    float localZoomFactor(int id, float x, float y) const;
-
     int insertGroupFromFile(const char* file) {
       int r=-1;
       if (auto g=Minsky::insertGroupFromFile(file))
