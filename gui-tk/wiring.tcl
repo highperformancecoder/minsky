@@ -407,7 +407,7 @@ proc redraw {id} {
     wiringGroup.item.get $id
     .wiring.canvas coords item$id [wiringGroup.item.x] [wiringGroup.item.y]
     .wiring.canvas delete handles
-    adjustWires $id
+    wiringGroup.adjustWires $id
 }
 
 set itemFocused 0
@@ -472,7 +472,7 @@ proc itemEnterLeave {item id tag enter} {
 proc updateItemPos {id} {
     global globals
     # ignore errors that may occur if the object vanishes before now
-    catch {adjustWires $id}
+    catch {wiringGroup.adjustWires $id}
     unset globals(updateItemPositionSubmitted$id)
     doPushHistory 1
 }    
@@ -1323,13 +1323,13 @@ proc rotateOp {id angle} {
     op.rotation [expr [op.rotation]+$angle]
     op.set
     drawOperation $id
-    adjustWires $id
+    wiringGroup.adjustWires $id
 }
 
 proc rotateVar {id angle} {
     var.get $id
     var.rotation [expr [var.rotation]+$angle]
-    adjustWires $id
+    wiringGroup.adjustWires $id
 }
 
 proc deiconifyEditVar {} {

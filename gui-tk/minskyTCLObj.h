@@ -39,7 +39,7 @@ namespace minsky
   {
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
-    if (m.doPushHistory && argv0!="minsky.adjustWires" && 
+    if (m.doPushHistory && argv0!="wiringGroup.adjustWires" && 
         argv0!="minsky.availableOperations" &&
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
