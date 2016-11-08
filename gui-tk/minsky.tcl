@@ -1059,7 +1059,7 @@ proc unknown {procname args} {
     } elseif [regexp ^(wire|op|constant|integral|data|var|plot|godley|group|switchItem|item)\. $procname] {
         eval wiringGroup.$procname $args
     } else {
-        ecolab_unknown $procname $args
+        eval ecolab_unknown $procname $args
     }
 }
 
