@@ -45,10 +45,18 @@ namespace minsky
         if (auto g=Model::model->minimalEnclosingGroup(x,y,x,y))
           {
             if (dynamic_cast<Group*>(i->get())!=g && (*i)->group.lock().get()!=g)
-              g->addItem(*i);
+              {
+                g->addItem(*i);
+                g->splitBoundaryCrossingWires();
+                buildMaps(); // need to do this, because wires may have changed
+              }
           }
         else if ((*i)->group.lock()!=Model::model)
-          Model::model->addItem(*i);
+          {
+            Model::model->addItem(*i);
+            Model::model->splitBoundaryCrossingWires();
+            buildMaps(); // need to do this, because wires may have changed
+         }
       }
   }
 
@@ -78,7 +86,7 @@ namespace minsky
             if (&w->to()->item == v.get())
               adjustWire(w);
           for (auto v: g->outVariables)
-            if (&w->to()->item == v.get())
+            if (&w->from()->item == v.get())
               adjustWire(w);
         }
   }

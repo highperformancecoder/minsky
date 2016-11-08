@@ -199,7 +199,7 @@ proc placeNewVar {id} {
     # newly created variables should be locally scoped
     bind .wiring.canvas <Button-1> \
         "clearTempBindings
-         checkAddGroup $id %x %y"
+         wiringGroup.checkAddGroup $id %x %y"
     bind . <Key-Escape> \
         "clearTempBindings
       deleteVariable $id
@@ -386,7 +386,7 @@ proc placeNewOp {opid} {
     bind .wiring.canvas <Motion> "move $opid %x %y"
     bind .wiring.canvas <Button-1> \
         "clearTempBindings
-         checkAddGroup $opid %x %y"
+         wiringGroup.checkAddGroup $opid %x %y"
     bind . <Key-Escape> \
         "clearTempBindings
       deleteOperation $opid
@@ -523,7 +523,8 @@ proc move {id x y} {
     set x [expr $x-[set moveOffs$id.x]]
     set y [expr $y-[set moveOffs$id.y]]
     wiringGroup.item.moveTo [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]
-    .wiring.canvas coords item$id [wiringGroup.item.x] [wiringGroup.item.y]
+    #.wiring.canvas coords item$id [wiringGroup.item.x] [wiringGroup.item.y]
+    redraw $id
 #    if {[item.classType]=="Group"} {
 #        # update all item positions to ensure contained items are correctly updated
 #        foreach i [items.#keys] {
@@ -888,7 +889,7 @@ proc onClick {id tag x y} {
         "onItem" {
             moveSet $id $x $y
             .wiring.canvas bind $tag <B1-Motion> "move $id %x %y"
-            .wiring.canvas bind $tag <B1-ButtonRelease> "move $id %x %y; checkAddGroup $id %x %y; unbindOnRelease $tag"
+            .wiring.canvas bind $tag <B1-ButtonRelease> "move $id %x %y; wiringGroup.checkAddGroup $id %x %y; unbindOnRelease $tag"
         }
         "outside" {
             .wiring.canvas bind $tag <B1-Motion> "lasso %x %y"
@@ -928,6 +929,11 @@ proc accessed {items item id} {
 
 proc delIfAccessed {items item id} {
     if [accessed $items $item $id] {.wiring.canvas delete $item$id}
+}
+
+proc rebuildCanvas {} {
+    .wiring.canvas delete all
+    updateCanvas
 }
 
 proc updateCanvas {} {

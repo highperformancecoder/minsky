@@ -220,6 +220,7 @@ namespace minsky
            wires.emplace(getNewId(), *it);
            return false;
          });
+      tclcmd() << "rebuildCanvas\n";
     }
 
     /// add a new wire connecting \a from port to \a to port with \a coordinates
@@ -287,10 +288,13 @@ namespace minsky
 
     int createGroup()
     {
-      int id=getNewId();
-      items[id]=minsky().createGroup();
-      Model::model->addItem(items[id]);
-      return id;
+      auto g=minsky().createGroup();
+      buildMaps();
+      // search for g in the item map
+      for (auto& i: items)
+        if (i.get()==g.get())
+          return i.id();
+      return -1;
     }
 
     void ungroup(int i)

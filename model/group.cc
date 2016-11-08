@@ -215,6 +215,15 @@ namespace minsky
       }
     w.moveIntoGroup(*p1);
   }
+  
+  void GroupItems::splitBoundaryCrossingWires()
+  {
+    for (auto& i: items)
+      for (auto& p: i->ports)
+        for (auto w: p->wires)
+          w->split();
+  }
+
 
   void Group::moveContents(Group& source) {
      if (&source!=this)
@@ -234,6 +243,13 @@ namespace minsky
        }
   }
 
+  VariablePtr Group::addIOVar()
+  {
+    VariablePtr v(VariableType::flow, cminsky().variableValues.newName(to_string(id)+":"));
+    addItem(v);
+    return v;
+  }
+  
   void Group::resizeOnContents()
   {
     double x0, x1, y0, y1;

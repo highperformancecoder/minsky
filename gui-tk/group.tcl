@@ -301,14 +301,4 @@ namespace eval group {
     }
 }
 
-proc checkAddGroup {id x y} {
-  wiringGroup.checkAddGroup $id $x $y
-  wiringGroup.item.get $id
-    if [wiringGroup.item.visible] {
-        redraw $id
-    } else {
-        .wiring.canvas delete item$id
-    }
-}
-
 #trace add execution checkAddGroup enterstep tout

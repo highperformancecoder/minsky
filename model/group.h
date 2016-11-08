@@ -142,8 +142,8 @@ namespace minsky
     WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
                 const std::vector<float>& coords = {}); 
 
-
-    
+    /// splits any wires that cross group boundaries
+    void splitBoundaryCrossingWires();
   };
 
   template <class G, class M, class O>
@@ -162,6 +162,7 @@ namespace minsky
   {
     friend class GroupPtr;
     bool m_displayContentsChanged=true;
+    VariablePtr addIOVar();
   public:
     std::string classType() const override {return "Group";}
     int id=-1; // unique id used for variable scoping
@@ -192,6 +193,8 @@ namespace minsky
     /// move all items from source to this
     void moveContents(Group& source); 
 
+    void addInputVar() {inVariables.push_back(addIOVar());}
+    void addOutputVar() {outVariables.push_back(addIOVar());}
 
     /// adjust position and size of icon to just cover contents
     void resizeOnContents();

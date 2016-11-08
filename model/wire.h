@@ -63,6 +63,8 @@ namespace minsky
     bool visible() const;
     /// move this from its group into dest
     void moveIntoGroup(Group& dest);
+    /// splits wires crossing group boundaries
+    void split();
   };
 
   typedef std::shared_ptr<Wire> WirePtr;

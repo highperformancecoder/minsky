@@ -199,6 +199,7 @@ namespace minsky
     for (auto& i: currentSelection.groups)
       r->addItem(i);
     r->resizeOnContents();
+    r->splitBoundaryCrossingWires();
     return r;
   }
 

@@ -112,4 +112,32 @@ namespace minsky
       dest.addWire(wp);
   }
 
+  void Wire::split()
+  {
+    // add I/O variables if this wire crosses a group boundary
+    if (auto fg=from()->item.group.lock())
+      if (auto tg=to()->item.group.lock())
+        if (fg!=tg) // crosses boundary
+          {
+            // check if this wire is in from group
+            auto cmp=[&](WirePtr w) {return w.get()==this;};
+            auto i=find_if(fg->wires.begin(), fg->wires.end(), cmp);
+            if (i==fg->wires.end())
+              {
+                fg->addOutputVar();
+                assert(fg->outVariables.back()->ports.size()>1);
+                fg->addWire(new Wire(from(),fg->outVariables.back()->ports[1]));
+                m_from=fg->outVariables.back()->ports[0];
+              }
+            // check if this wire is in to group
+            i=find_if(tg->wires.begin(), tg->wires.end(), cmp);
+            if (i==tg->wires.end())
+              {
+                tg->addInputVar();
+                assert(tg->inVariables.back()->ports.size()>1);
+                tg->addWire(new Wire(tg->inVariables.back()->ports[0],to()));
+                m_to=tg->inVariables.back()->ports[1];
+              }
+          }
+  }
 }

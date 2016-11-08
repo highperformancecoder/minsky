@@ -134,7 +134,6 @@ namespace minsky
  
   string VariableValues::newName(const string& name) const
   {
-    // if conversion unsuccessful, allocate a new variable name
     int i=1;
     string trialName;
     do
