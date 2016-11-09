@@ -199,9 +199,9 @@ namespace minsky
     }
 
     void buildMaps() {
-      wires.clear();
-      items.clear();
-      resetNextId();
+      
+      while (Tcl_DoOneEvent(TCL_DONT_WAIT));   // dump any pending events
+      clearAll();
       Model::model->recursiveDo
         (&Group::items,[&](const minsky::Items&, minsky::Items::const_iterator it)
          {

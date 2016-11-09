@@ -182,10 +182,6 @@ namespace eval group {
     proc resize {id} {
         wiringGroup.group.get $id
         set bbox [.wiring.canvas bbox item$id]
-        variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
-        variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
-        variable orig_x [wiringGroup.group.x]
-        variable orig_y [wiringGroup.group.y]
         set item [eval .wiring.canvas create rectangle $bbox -tags resizeBBox]
         # disable lasso mode
         bind .wiring.canvas <Button-1> ""
@@ -199,12 +195,10 @@ namespace eval group {
     proc resizeRect {item x y} {
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
-        variable orig_x
-        variable orig_y
-        set w [expr abs($x-$orig_x)]
-        set h [expr abs($y-$orig_y)]
-        .wiring.canvas coords $item  [expr $orig_x-$w] [expr $orig_y-$h] \
-            [expr $orig_x+$w] [expr $orig_y+$h]
+        set w [expr abs($x-[group.x])]
+               set h [expr abs($y-[group.y])]
+        .wiring.canvas coords $item  [expr [group.x]-$w] [expr [group.y]-$h] \
+            [expr [group.x]+$w] [expr [group.y]+$h]
     }
 
     # compute width and height and redraw item
@@ -212,12 +206,8 @@ namespace eval group {
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
         .wiring.canvas delete $item
-        variable orig_width
-        variable orig_height
-        variable orig_x
-        variable orig_y
-        set scalex [expr 2*abs($x-$orig_x)/double($orig_width)]
-        set scaley [expr 2*abs($y-$orig_y)/double($orig_height)]
+        set scalex [expr 2*abs($x-[group.x])/double([group.width])]
+        set scaley [expr 2*abs($y-[group.y])/double([group.height])]
         # compute rotated scale factors
         set angle [radian [wiringGroup.group.rotation]]
         set rx [expr $scalex*cos($angle)-$scaley*sin($angle)]
@@ -281,7 +271,7 @@ namespace eval group {
             # use lasso mode when zoomed in
             lasso $x $y
             .wiring.canvas bind group$id <B1-Motion> "lasso %x %y"
-            .wiring.canvas bind group$id <B1-ButtonRelease> "group::lassoEnd $id %x %y; unbindOnRelease group$id"
+           .wiring.canvas bind group$id <B1-ButtonRelease> "group::lassoEnd $id %x %y; unbindOnRelease group$id"
         } else {
             onClick $id item$id $x $y
         }

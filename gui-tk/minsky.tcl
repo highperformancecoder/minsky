@@ -81,6 +81,8 @@ rename exit tcl_exit
 #if argv(1) has .tcl extension, it is a script, otherwise it is data
 if {$argc>1} {
     if [string match "*.tcl" $argv(1)] {
+        # rebuildCanvas is needed for buildMaps(), which is called in various places
+        proc rebuildCanvas {} {} 
 	    source $argv(1)
 	}
 }
@@ -1050,13 +1052,20 @@ proc setFname {name} {
     }
 }
 
+# commands to redirect to wiringGroup (via unknown mechanism)
+set getters {wire op constant integral data var plot godley group switchItem item items wires}
+foreach i $getters {
+    foreach j [info commands $i.*] {rename $j {}}
+}
+    
 rename unknown ecolab_unknown
 proc unknown {procname args} {
     #delegate in case a getter hasn't correctly called its get
+    global getters
     if [regexp ^wiringGroup\. $procname] {
         # delegate to minsky (ie global group)
         eval [regsub ^wiringGroup $procname minsky] $args
-    } elseif [regexp ^(wire|op|constant|integral|data|var|plot|godley|group|switchItem|item)\. $procname] {
+    } elseif [regexp ^([join $getters |])\. $procname] {
         eval wiringGroup.$procname $args
     } else {
         eval ecolab_unknown $procname $args

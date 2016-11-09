@@ -218,10 +218,15 @@ namespace minsky
   
   void GroupItems::splitBoundaryCrossingWires()
   {
+    // Wire::split will invalidate the Items::iterator, so collect
+    // wires to split first
+    set<Wire*> wiresToSplit;
     for (auto& i: items)
       for (auto& p: i->ports)
         for (auto w: p->wires)
-          w->split();
+          wiresToSplit.insert(w);
+    for (auto w: wiresToSplit)
+      w->split();
   }
 
 

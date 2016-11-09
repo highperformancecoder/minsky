@@ -161,8 +161,7 @@ namespace minsky
   {
     TCL_obj(minskyTCL_obj(), name, *this);
     Tcl_CreateCommand(ecolab::interp(),(name+".delete").c_str(),(Tcl_CmdProc*)groupTCLDeleter, 
-                            NULL
-                      ,NULL);
+                            NULL,NULL);
     clearAllGetterSetters();
   }
 

@@ -1134,13 +1134,19 @@ namespace minsky
 
   bool Minsky::inputWired(const std::string& name) const
   {
-    return model->recursiveDo
+    bool r=false;
+    model->recursiveDo
       (&Group::items,
        [&](Items&,Items::const_iterator i) {
         if (auto v=dynamic_cast<VariableBase*>(i->get()))
-          return (v->valueId()==name && !v->ports[1]->wires.empty());
+          if (v->valueId()==name)
+            {
+              r=v->ports.size()>1 && !v->ports[1]->wires.empty();
+              return true;
+            }
         return false;
       });
+    return r;
   }
 
   void Minsky::renderCanvas(cairo_t* cairo) const

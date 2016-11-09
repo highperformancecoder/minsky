@@ -151,7 +151,6 @@ namespace minsky
       // load resets the model pointer, etc, so request rebuilding of
       // TCL commands
       rebuildTCLcommands=true;
-      buildMaps();
     }
     void exportSchema(TCL_args args) {
       const char* filename=args;

@@ -555,11 +555,12 @@ proc move {id x y} {
 proc newItem {id} {
     wiringGroup.item.get $id
     .wiring.canvas create item [wiringGroup.item.x] [wiringGroup.item.y] -id $id -tags "items item$id"
-    .wiring.canvas bind item$id <Double-Button-1> "editItem $id"
-    if {[wiringGroup.item.classType]=="GodleyIcon"} {
-        .wiring.canvas bind item$id <Enter> "godleyToolTip $id %x %y; itemEnterLeave item $id item$id 1"
-        .wiring.canvas bind item$id <Motion> "changeToolTip $id %x %y"
+   if {[wiringGroup.item.classType]=="GodleyIcon"} {
+       .wiring.canvas bind item$id <Double-Button-1> "doubleMouseGodley $id %x %y"
+       .wiring.canvas bind item$id <Enter> "godleyToolTip $id %x %y; itemEnterLeave item $id item$id 1"
+       .wiring.canvas bind item$id <Motion> "changeToolTip $id %x %y"
     } else {
+        .wiring.canvas bind item$id <Double-Button-1> "editItem $id"
         .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
     }
     .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
@@ -650,7 +651,7 @@ proc changeToolTip {id x y} {
 #}
 
 proc rightMouseGodley {id x y X Y} {
-    if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
+    if [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         .wiring.context delete 0 end
         .wiring.context add command -label "Edit" -command "editVar"
         .wiring.context add command -label "Copy" -command "
@@ -664,7 +665,7 @@ proc rightMouseGodley {id x y X Y} {
 }
 
 proc doubleMouseGodley {id x y} {
-    if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
+    if [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
         editVar
     } else {
         openGodley $id
@@ -1206,12 +1207,12 @@ proc contextMenu {id x y} {
 
 namespace eval godley {
     proc resize {id} {
-        godley.get $id
+        wiringGroup.godley.get $id
         set bbox [.wiring.canvas bbox item$id]
         variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
         variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
-        variable orig_x [godley.x]
-        variable orig_y [godley.y]
+        variable orig_x [wiringGroup.godley.x]
+        variable orig_y [wiringGroup.godley.y]
         set item [eval .wiring.canvas create rectangle $bbox]
         # disable lasso mode
         bind .wiring.canvas <Button-1> ""
@@ -1243,7 +1244,7 @@ namespace eval godley {
 
         # compute width and height and redraw item
     proc resizeItem {item id x y} {
-        godley.get $id
+        wiringGroup.godley.get $id
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
 # delete guiding rectangle
@@ -1260,9 +1261,9 @@ namespace eval godley {
         } else {
             set z [expr $w/$orig_width]
         }            
-        godley.zoom [godley.x] [godley.y] $z
+        wiringGroup.godley.zoom [wiringGroup.godley.x] [wiringGroup.godley.y] $z
 # not quite sure why this is needed
-        godley.moveTo $orig_x $orig_y
+        wiringGroup.godley.moveTo $orig_x $orig_y
 
         redraw $id
         bind .wiring.canvas <Motion> {}
@@ -1271,19 +1272,19 @@ namespace eval godley {
 
     proc export {item} {
         global workDir type
-        godley.get $item
+        wiringGroup.godley.get $item
 
         set fname [tk_getSaveFile -filetypes {{"CSV files" csv TEXT} {"LaTeX files" tex TEXT}} \
                        -initialdir $workDir -typevariable type]  
         if {$fname==""} return
         if [string match -nocase *.csv "$fname"] {
-            godley.table.exportToCSV $fname
+            wiringGroup.godley.table.exportToCSV $fname
         } elseif [string match -nocase *.tex "$fname"] {
-            godley.table.exportToLaTeX $fname
+            wiringGroup.godley.table.exportToLaTeX $fname
         } else {
             switch -glob $type {
-                "*(csv)" {godley.table.exportToCSV $fname.csv}
-                "*(tex)" {godley.table.exportToLaTeX $fname.tex}
+                "*(csv)" {wiringGroup.godley.table.exportToCSV $fname.csv}
+                "*(tex)" {wiringGroup.godley.table.exportToLaTeX $fname.tex}
             }
         }
     }
@@ -2010,6 +2011,12 @@ proc openGlobalInCanvas {} {
     recentreCanvas
 }
     
+proc findItemWithDetailedText desc {
+    foreach i [items.#keys] {
+        item.get $i
+        if {[item.detailedText]==$desc} {return $i}
+    }
+}
 
 proc tout {args} {
   puts "$args"
@@ -2018,3 +2025,4 @@ proc tout {args} {
 # example debugging trace statements
 #trace add execution placeNewVar enterstep tout
 #trace add execution move enterstep tout
+

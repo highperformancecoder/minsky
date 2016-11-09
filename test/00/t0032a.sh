@@ -42,22 +42,22 @@ proc afterMinskyStarted {} {uplevel #0 {
    if {[item.classType]=="Group"} break
  }
  group.get \$gid
- set x [group.x]
- set y [group.y]
+ set x [expr [group.x]-[.wiring.canvas canvasx 0]]
+ set y [expr [group.y]-[.wiring.canvas canvasy 0]]
  set w [group.width]
  set h [group.height]
  group::resize \$gid
 
- variable group::orig_width
- variable group::orig_height
+# variable group::orig_width
+# variable group::orig_height
 
  group::resizeRect resizeBBox [expr \$x+\$w]  [expr \$y+\$h]
  group::resizeItem resizeBBox \$gid  [expr \$x+151]  [expr \$y+151]
- assert "\$x==\[group.x\]"
- assert "\$y==\[group.y\]"
+ assert "abs([.wiring.canvas canvasx \$x]-\[group.x\])<2"
+ assert "abs([.wiring.canvas canvasy \$y]==\[group.y\])<2"
 # approximate here, because group is rotated by pi, which is  numerically approximate
- assert {abs(300-[group.width])<10}
- assert {abs(300-[group.height])<10}
+ assert {abs(300-[group.width])<5}
+ assert {abs(300-[group.height])<5}
  tcl_exit
 }}
 EOF

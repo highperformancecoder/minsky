@@ -104,12 +104,12 @@ trace add variable preferences(godleyDE) write {updateDEmode}
 
 proc updateDEmode args {
   global globals preferences
-  foreach id [items.#keys] {
-      item.get $id
+  foreach id [wiringGroup.items.#keys] {
+      wiringGroup.item.get $id
       if {[item.classType]=="GodleyIcon"} {
-          godley.get $id
+          wiringGroup.godley.get $id
           pushFlags
-          godley.table.setDEmode $preferences(godleyDE)
+          wiringGroup.godley.table.setDEmode $preferences(godleyDE)
           updateGodley $id
           popFlags
       }
@@ -156,10 +156,10 @@ proc parse_input {input p v} {
 
 
 proc updateGodleyTitle {id} {
-    godley.get $id
-    if {[godley.table.title]!=[.godley$id.topbar get]} {
-        godley.table.title [.godley$id.topbar get]
-        godley.set
+    wiringGroup.godley.get $id
+    if {[wiringGroup.godley.table.title]!=[.godley$id.topbar get]} {
+        wiringGroup.godley.table.title [.godley$id.topbar get]
+        wiringGroup.godley.set
         updateGodley $id
     }
 }
@@ -173,18 +173,18 @@ proc setGetCell_ {id r c i s w} {
     global preferences
 
     if {$r>0 && $c>0} {
-        godley.get $id
+        wiringGroup.godley.get $id
         set row [expr $r-1]
         set col [expr $c-1]
-	set doubleEntryMode [godley.table.doubleEntryCompliant]
+	set doubleEntryMode [wiringGroup.godley.table.doubleEntryCompliant]
         if $doubleEntryMode {
             # allow for asset class row
             incr row -1
             if {$row==-1} return "";
             # TODO: compute row sum here
-            if {$col==[godley.table.cols]} {
+            if {$col==[wiringGroup.godley.table.cols]} {
                 if {$row>0} {
-                    return [minsky.godley.table.rowSum $row]
+                    return [wiringGroup.godley.table.rowSum $row]
                 } else {
                     # don't sum column labels
                     return "Row Sum"
@@ -195,7 +195,7 @@ proc setGetCell_ {id r c i s w} {
 	    set varName $s
 	    if {$row>0 && $col>0} {
 		if {$doubleEntryMode} {
-		    set account_type [godley.table.assetClass $col]
+		    set account_type [wiringGroup.godley.table.assetClass $col]
 		    if {$account_type == "noAssetClass"} return
 		} else {
 		    set account_type "SingleEntry"
@@ -220,13 +220,13 @@ proc setGetCell_ {id r c i s w} {
 		   default { error "invalid prefix $prefix" }
 		}
 	    }
-            minsky.godley.setCell $row $col $varName
+            wiringGroup.godley.setCell $row $col $varName
             whenIdleUpdateGodley $id
         } else {
-            set s [godley.table.getCell $row $col]
+            set s [wiringGroup.godley.table.getCell $row $col]
 	    if {$row>0 && $col>0} {
 		if $doubleEntryMode {
-		    set account_type [godley.table.assetClass $col]
+		    set account_type [wiringGroup.godley.table.assetClass $col]
 		    if {$account_type == "noAssetClass"} {
 			return "Asset Class Not Set"
 		    }
@@ -234,7 +234,7 @@ proc setGetCell_ {id r c i s w} {
 		    set account_type "SingleEntry"
 		}
 		if [string length $s] {
-			set account_type [godley.table.assetClass $col]
+			set account_type [wiringGroup.godley.table.assetClass $col]
 			set show $s
 
 			# use parse_input to format output for consistency
@@ -306,50 +306,44 @@ proc openGodley {id} {
 }
 
 proc addRow {id r} {
-    godley.get $id
-    godley.table.insertRow $r
-    godley.set $id
+    wiringGroup.godley.get $id
+    wiringGroup.godley.table.insertRow $r
     # if we don't remove activation, sometimes the cell content is not correctly updated
     .godley$id.table activate 0,0
     updateGodley $id
 }
 
 proc delRow {id r} {
-    godley.get $id
-    godley.deleteRow $r
-    godley.set $id
+    wiringGroup.godley.get $id
+    wiringGroup.godley.deleteRow $r
     .godley$id.table activate 0,0
     updateGodley $id
 }
 
 proc addCol {id c} {
-    godley.get $id
-    godley.table.insertCol $c
-    godley.set $id
+    wiringGroup.godley.get $id
+    wiringGroup.godley.table.insertCol $c
     .godley$id.table activate 0,0
     updateGodley $id
 }
 
 proc delCol {id c} {
-    godley.get $id
-    godley.table.deleteCol $c
-    godley.set $id
+    wiringGroup.godley.get $id
+    wiringGroup.godley.table.deleteCol $c
     .godley$id.table activate 0,0
     updateGodley $id
 }
     
 proc moveRow {id row n} {
-    godley.get $id
-    godley.table.moveRow [expr $row-1] $n
-    godley.set $id
+    wiringGroup.godley.get $id
+    wiringGroup.godley.table.moveRow [expr $row-1] $n
     .godley$id.table activate 0,0
     updateGodley $id
 }
 
 proc moveCol {id col n} {
-    godley.get $id
-    godley.table.moveCol [expr $col-1] $n
-    godley.set $id
+    wiringGroup.godley.get $id
+    wiringGroup.godley.table.moveCol [expr $col-1] $n
     .godley$id.table activate 0,0
     updateGodley $id
 }
@@ -362,7 +356,7 @@ proc currCell {id rowOrCol} {
 proc moveCell {id} {
     global cellMove
     if {[array size cellMove]==0} {
-        set cellMove(row) [expr [currCell $id row]-1-[godley.table.doubleEntryCompliant]]
+        set cellMove(row) [expr [currCell $id row]-1-[wiringGroup.godley.table.doubleEntryCompliant]]
         set cellMove(col) [expr [currCell $id col]-1]
         if {$cellMove(row)<1 || $cellMove(col)<1} {
 # outside movable cells
@@ -382,13 +376,13 @@ proc moveCell {id} {
 proc finishMoveCell {id} {
     global cellMove
     if {[array size cellMove]>0} {
-        godley.get $id
-        set destRow [expr [currCell $id row]-1-[godley.table.doubleEntryCompliant]]
+        wiringGroup.godley.get $id
+        set destRow [expr [currCell $id row]-1-[wiringGroup.godley.table.doubleEntryCompliant]]
         set destCol [expr [currCell $id col]-1]
         if {$destRow==$cellMove(row) && $destCol==$cellMove(col)} {
             .godley$id.table activate @[get_pointer_x .godley$id.table],[get_pointer_y .godley$id.table]
         } elseif {$destRow>0 && $destCol>0} {
-            godley.moveCell $cellMove(row) $cellMove(col) $destRow $destCol
+            wiringGroup.godley.moveCell $cellMove(row) $cellMove(col) $destRow $destCol
             updateGodley $id
         }
     }
@@ -434,7 +428,7 @@ proc columnVarTrace {id col varName args} {
     # putting a catch here allows us to present a cleaner error
     # message to the user, as this proc can be called by other
     # operations
-    if [catch {minsky.godley.setCell 0 $col [set $varName]} msg] {
+    if [catch {wiringGroup.godley.setCell 0 $col [set $varName]} msg] {
         bgerror $msg
     }
     updateGodleyDisplay $id
@@ -474,8 +468,8 @@ proc whenIdleUpdateGodley {id} {
         set minus "–"
     }
 
-    for {set r 1} {$r<[expr [godley.table.rows]+1]} {incr r} {
-        set ro [expr $r+[godley.table.doubleEntryCompliant]]
+    for {set r 1} {$r<[expr [wiringGroup.godley.table.rows]+1]} {incr r} {
+        set ro [expr $r+[wiringGroup.godley.table.doubleEntryCompliant]]
         frame .godley$id.rowButtons{$r}
         button .godley$id.rowButtons{$r}.add -foreground green -text "+" \
             -command "addRow $id $r"
@@ -502,7 +496,7 @@ proc whenIdleUpdateGodley {id} {
             
 
     }
-    for {set c 1} {$c<[expr [godley.table.cols]+1]} {incr c} {
+    for {set c 1} {$c<[expr [wiringGroup.godley.table.cols]+1]} {incr c} {
         frame .godley$id.colButtons{$c}
         button .godley$id.colButtons{$c}.add -foreground green -text "+"  \
             -command "addCol $id $c"
@@ -528,20 +522,20 @@ proc whenIdleUpdateGodley {id} {
 
         .godley$id.table window configure 0,$c -window .godley$id.colButtons{$c}
 
-        if {$c>1 && [godley.table.doubleEntryCompliant]} {
+        if {$c>1 && [wiringGroup.godley.table.doubleEntryCompliant]} {
             # C++ table column offset by one wrt TkTable columns
             set col [expr $c-1]
             menubutton .godley$id.assetClass{$c} -menu .godley$id.assetClass{$c}.menu\
-                -text [godley.table.assetClass $col] -relief raised
+                -text [wiringGroup.godley.table.assetClass $col] -relief raised
             menu .godley$id.assetClass{$c}.menu
             # create a drop menu on the stock variable names to allow
             # population by available names
             foreach assetClass [assetClasses] {
                 .godley$id.assetClass{$c}.menu add command -label $assetClass \
                     -command "
-                      godley.get $id
-                      godley.table.assetClass $col $assetClass
-                      godley.set
+                      wiringGroup.godley.get $id
+                      wiringGroup.godley.table.assetClass $col $assetClass
+                      wiringGroup.godley.set
                       updateGodley $id
                     "
             }
@@ -549,14 +543,14 @@ proc whenIdleUpdateGodley {id} {
             global godley$id.stockVarName{$c}
             set godley$id.stockVarName{$c} [setGetCell $id 2 $c 0 {} .godley$id.table]
             ttk::combobox .godley$id.stockVarName{$c} -textvariable godley$id.stockVarName{$c} \
-                -values [matchingTableColumns $id [godley.table.assetClass $col] ]
+                -values [matchingTableColumns $id [wiringGroup.godley.table.assetClass $col] ]
             trace add variable godley$id.stockVarName{$c} write "columnVarTrace $id $col"
             .godley$id.table window configure 2,$c -window .godley$id.stockVarName{$c}
         }
     }
 
-    godley.update
-    godley.set
+    wiringGroup.godley.update
+    wiringGroup.godley.set
     redraw $id
     global updateGodleyLaunched
     set updateGodleyLaunched 0
@@ -579,11 +573,11 @@ proc whenIdleUpdateGodleyDisplay {id} {
     if {![winfo exists .godley$id]} return
     pushFlags
     .godley$id.table clear cache
-    godley.get $id
+    wiringGroup.godley.get $id
     
-    set nrows [expr [godley.table.rows]+1]
-    set ncols [expr [godley.table.cols]+1]
-    if [godley.table.doubleEntryCompliant] {
+    set nrows [expr [wiringGroup.godley.table.rows]+1]
+    set ncols [expr [wiringGroup.godley.table.cols]+1]
+    if [wiringGroup.godley.table.doubleEntryCompliant] {
         incr nrows
         incr ncols
     }
@@ -592,12 +586,12 @@ proc whenIdleUpdateGodleyDisplay {id} {
     .godley$id.table selection clear all
     .godley$id.table activate -1,-1
 
-    wm title .godley$id "Godley Table: [godley.table.title]"
+    wm title .godley$id "Godley Table: [wiringGroup.godley.table.title]"
     .godley$id.topbar delete 0 end
-    if {[godley.table.title]==""} {
+    if {[wiringGroup.godley.table.title]==""} {
         .godley$id.topbar insert 0 "Godley$id"
     } else {
-        .godley$id.topbar insert 0 [godley.table.title]
+        .godley$id.topbar insert 0 [wiringGroup.godley.table.title]
     }
     if {[.godley$id.table cget -rows]!=$nrows || [.godley$id.table cget -cols]!=$ncols} {
         .godley$id.table configure -rows $nrows -cols $ncols

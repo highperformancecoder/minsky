@@ -75,6 +75,7 @@ namespace minsky
       {
         TCL_obj(minskyTCL_obj(), "minsky", m);
         m.rebuildTCLcommands=false;
+        m.buildMaps();
       }
   }
 

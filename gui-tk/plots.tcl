@@ -231,10 +231,6 @@ namespace eval plot {
     proc resize {id} {
         plot.get $id
         set bbox [.wiring.canvas bbox item$id]
-        variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
-        variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
-        variable orig_x [plot.x]
-        variable orig_y [plot.y]
         set item [eval .wiring.canvas create rectangle $bbox -tags plotBBox]
         # disable lasso mode
         bind .wiring.canvas <Button-1> ""
@@ -248,12 +244,10 @@ namespace eval plot {
     proc resizeRect {item x y} {
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
-        variable orig_x
-        variable orig_y
-        set w [expr abs($x-$orig_x)]
-        set h [expr abs($y-$orig_y)]
-        .wiring.canvas coords $item  [expr $orig_x-$w] [expr $orig_y-$h] \
-            [expr $orig_x+$w] [expr $orig_y+$h]
+        set w [expr abs($x-[plot.x])]
+        set h [expr abs($y-[plot.y])]
+        .wiring.canvas coords $item  [expr [plot.x]-$w] [expr [plot.y]-$h] \
+            [expr [plot.x]+$w] [expr [plot.y]+$h]
     }
 
     # compute width and height and redraw item
@@ -262,12 +256,8 @@ namespace eval plot {
         set x [.wiring.canvas canvasx $x]
         set y [.wiring.canvas canvasy $y]
         .wiring.canvas delete $item
-        variable orig_width
-        variable orig_height
-        variable orig_x
-        variable orig_y
-        set scalex [expr 2*abs($x-$orig_x)/double($orig_width)]
-        set scaley [expr 2*abs($y-$orig_y)/double($orig_height)]
+        set scalex [expr 2*abs($x-[plot.x])/double([plot.width])]
+        set scaley [expr 2*abs($y-[plot.y])/double([plot.height])]
         # compute rotated scale factors
         plot.width [expr int(ceil(abs($scalex*[plot.width])))]
         plot.height [expr int(ceil(abs($scaley*[plot.height])))]
