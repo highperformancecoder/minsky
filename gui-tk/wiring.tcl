@@ -285,8 +285,8 @@ proc addOperationKey {op} {
     set moveOffs$id.x 0
     set moveOffs$id.y 0
 
-    move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
     newItem $id
+    move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
     if {$op=="constant"} {
 	editItem $id
 	set constInput(cancelCommand) "cancelPlaceNewOp $id;closeEditWindow .wiring.editConstant"
@@ -811,7 +811,7 @@ namespace eval wires {
                     variable fromId
                     variable x0
                     variable y0 
-                    set wireid [addWire $fromId $x0 $y0 $x $y [.wiring.canvas coords $wire]]
+                    set wireid [wiringGroup.addWire $fromId $x0 $y0 $x $y [.wiring.canvas coords $wire]]
                     .wiring.canvas delete $wire
                     if {$wireid >=0} {
                         newWire $wireid

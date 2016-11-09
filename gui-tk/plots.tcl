@@ -32,7 +32,7 @@
 proc newPlot {} {
     # place this at the mouse if in canvas, otherwise at 0 0
 
-    set id [minsky.newPlot]
+    set id [wiringGroup.newPlot]
     newItem $id
 
     global moveOffs$id.x moveOffs$id.y

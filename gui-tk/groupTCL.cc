@@ -144,12 +144,12 @@ namespace minsky
         {
           GroupTCL<Model>* newObj=new GroupTCL<Model>;
           newObj->model=g;
+          newObj->buildMaps();
           // make edge variables visible
           for (auto& i: g->inVariables)
             i->m_visible=true;
           for (auto& i: g->outVariables)
             i->m_visible=true;
-          newObj->buildMaps();
           TCL_obj(minskyTCL_obj(), name, *newObj);
           Tcl_CreateCommand(ecolab::interp(),(name+".delete").c_str(),(Tcl_CmdProc*)groupTCLDeleter, 
                             (ClientData)newObj,NULL); 
