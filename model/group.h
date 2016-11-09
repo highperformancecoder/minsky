@@ -21,6 +21,7 @@
 #define GROUP_H
 #include "intrusiveMap.h"
 #include "item.h"
+#include "plotWidget.h"
 #include "wire.h"
 #include "variable.h"
 #include <function.h>
@@ -65,6 +66,17 @@ namespace minsky
       outVariables.clear();
     }
     bool empty() const {return items.empty() && groups.empty() && wires.empty();}
+
+
+    /// plot widget used for group icon
+    std::shared_ptr<PlotWidget> displayPlot;
+    /// remove the display plot
+    void removeDisplayPlot() {
+      if (displayPlot)
+        displayPlot->groupPlot.reset();
+      displayPlot.reset();
+    }
+    
 
     /// sets the group pointer of \a it to this
     virtual void setItemGroup(const ItemPtr&) const=0;
@@ -178,8 +190,9 @@ namespace minsky
 
     static SVGRenderer svgRenderer;
 
-
     void draw(cairo_t*) const override;
+    void setCairoSurface(const ecolab::cairo::SurfacePtr& s) override 
+    {if (displayPlot) displayPlot->groupPlot=s;}
 
     /// draw representations of edge variables around group icon
     void drawEdgeVariables(cairo_t*) const;

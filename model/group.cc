@@ -101,6 +101,8 @@ namespace minsky
           return r;
         }
 
+    removeDisplayPlot();
+    
     for (auto& g: groups)
       if (ItemPtr r=g->removeItem(it))
         return r;
@@ -605,12 +607,15 @@ namespace minsky
     cairo_restore(cairo);
 
     if (!displayContents())
-      {
-        cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
-        cairo_rectangle(cairo,0, 0,svgRenderer.width(), svgRenderer.height());
-        cairo_clip(cairo);
-        svgRenderer.render(cairo);
-      }
+      if (displayPlot)
+        displayPlot->Plot::draw(cairo, width, height);
+      else
+        {
+          cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
+          cairo_rectangle(cairo,0, 0,svgRenderer.width(), svgRenderer.height());
+          cairo_clip(cairo);
+          svgRenderer.render(cairo);
+        }
     cairo_restore(cairo);
 
     drawEdgeVariables(cairo);

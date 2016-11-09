@@ -252,8 +252,17 @@ namespace minsky
         Plot::draw(*expandedPlot);
         expandedPlot->blit();
       }
+    if (groupPlot.get())
+      groupPlot->requestRedraw();
+     
   }
 
+  void PlotWidget::makeDisplayPlot() {
+    if (auto g=group.lock())
+      g->displayPlot=dynamic_pointer_cast<PlotWidget>(g->findItem(*this));
+  }
+
+  
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;
 
   void PlotWidget::addPlotPt(double t)

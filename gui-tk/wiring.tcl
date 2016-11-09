@@ -1152,6 +1152,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label Help -command {help Plot}
             .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Expand" -command "plotDoubleClick $id"
+            .wiring.context add command -label "Make Group Plot" -command "plot.makeDisplayPlot"
             .wiring.context add command -label "Resize" -command "plot::resize $id"
             .wiring.context add command -label "Options" -command "doPlotOptions $id"
             .wiring.context add command -label "Raise" -command "raiseItem plot$id"
