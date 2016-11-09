@@ -639,7 +639,7 @@ namespace minsky
           cairo_rotate(cairo, angle);
         else
           cairo_rotate(cairo, angle+M_PI);
- 
+
         // prepare a background for the text, partially obscuring graphic
         double transparency=displayContents()? 0.25: 1;
         cairo_set_source_rgba(cairo,0,1,1,0.5*transparency);
@@ -647,7 +647,7 @@ namespace minsky
         cairo_fill(cairo);
 
         // display text
-        cairo_move_to(cairo,-w+1,h-4);
+        cairo_move_to(cairo, -w+1, h-4 - displayContents()*0.45*this->height);
         cairo_set_source_rgba(cairo,0,0,0,transparency);
         cairo_show_text(cairo,title.c_str());
         cairo_restore(cairo);
@@ -691,9 +691,11 @@ namespace minsky
   void Group::drawEdgeVariables(cairo_t* cairo) const
   {
     float left, right; margins(left,right);
+    cairo_save(cairo);
     cairo_rotate(cairo,-M_PI*rotation/180);
     draw1edge(inVariables, cairo, -zoomFactor*0.5*(width-left));
     draw1edge(outVariables, cairo, zoomFactor*0.5*(width-right));
+    cairo_restore(cairo);
   }
 
   // draw notches in the I/O region to indicate docking capability

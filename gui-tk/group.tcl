@@ -159,6 +159,7 @@ proc deiconifyEditGroup {} {
     } else {
         wm deiconify .wiring.editGroup
     }
+    update
 }
 
 proc groupEdit {id} {
@@ -170,7 +171,7 @@ proc groupEdit {id} {
     .wiring.editGroup.rot.val insert 0 [group.rotation]
     .wiring.editGroup.buttonBar.ok configure \
         -command {
-            wiringGroup.group.rotation [expr [.wiring.editGroup.rot.val get]-[group.rotation]]
+            wiringGroup.group.rotation [.wiring.editGroup.rot.val get]
             wiringGroup.group.title [.wiring.editGroup.name.val get]
             closeEditWindow .wiring.editGroup
         }
