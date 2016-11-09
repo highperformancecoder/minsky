@@ -161,7 +161,7 @@ namespace schema1
     void Combine::combine(minsky::Group& x, const Group& y) const
     {
       combine(static_cast<minsky::Item&>(x), y);
-       //x.name=y.name;
+      x.title=y.name;
 //        for (auto cv=y.model.createdVars)
 //          x.createdVars.push_back(imap[cv]);
       auto l=layout.find(y.id);
