@@ -95,7 +95,9 @@ namespace minsky
     /// @param image - image name for new surface to be added
     /// TODO - move to minskyTCL?
     void addImage(const std::string& args);
-  };
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*this);}
+ };
 
 }
 

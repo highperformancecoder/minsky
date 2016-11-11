@@ -112,6 +112,7 @@ proc groupContext {id x y} {
     .wiring.context add command -label "Edit" -command "groupEdit $id"
     .wiring.context add command -label "Open in canvas" -command "openInCanvas $id"
     .wiring.context add command -label "Zoom to display" -command "group::zoomToDisplay $id"
+    .wiring.context add command -label "Remove plot icon" -command "group.get $id; group.removeDisplayPlot"
     .wiring.context add command -label "Resize" -command "group::resize $id"
     .wiring.context add command -label "Copy" -command "group::copy $id"
     .wiring.context add command -label "Save group as" -command "group::save $id"

@@ -118,6 +118,8 @@ namespace minsky
       return *this;
     }
     std::string classType() const override {return "Operation<"+OperationType::typeName(T)+">";}
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*this);}
   };
 
   struct NamedOp
@@ -198,6 +200,8 @@ namespace minsky
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*this);}
   };
 
   class DataOp: public NamedOp, public Operation<minsky::OperationType::data>
@@ -215,6 +219,10 @@ namespace minsky
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override {
+      std::cout << "in TCL_obj descriptor "<<classType()<<std::endl;
+      ::TCL_obj(t,d,*this);
+    }
   };
 
   /// shared_ptr class for polymorphic operation objects. Note, you

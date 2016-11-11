@@ -53,6 +53,8 @@ namespace minsky
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*this);}
   };
 }
 

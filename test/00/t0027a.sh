@@ -38,12 +38,12 @@ uplevel #0 {
 openNamedFile $here/examples/GoodwinLinear02.mky
 pushFlags
 runstop
+assert "\$running == 1"
 simulate
-after 500 assert {[t]>0}
-runstop
+after 500 runstop
+vwait running
+assert {[t]>0}
 set tt [t]
-after 500 assert {[t]>0}
-assert "\$tt==[t]"
 reset
 assert {[t]==0}
 popFlags

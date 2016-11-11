@@ -23,6 +23,7 @@
 #include "item.h"
 #include "plotWidget.h"
 #include "wire.h"
+#include "group.h"
 #include "variable.h"
 #include <function.h>
 #include "SVGItem.h"
@@ -286,7 +287,8 @@ namespace minsky
     /// I/O variable icon, null otherwise, indicating that the Group
     /// has been selected.
     VariablePtr select(float x, float y) const override;
-
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*this);}
   };
 
   /// find the closest (in or out) port to \a x or \a y.
@@ -333,7 +335,7 @@ namespace minsky
 // not needed anyway
 #pragma omit pack minsky::Group
 #pragma omit unpack minsky::Group
-#pragma omit TCL_obj minsky::GroupPtr
+//#pragma omit TCL_obj minsky::GroupPtr
 #endif
 namespace classdesc_access
 {
@@ -341,15 +343,15 @@ namespace classdesc_access
     public classdesc::NullDescriptor<classdesc::pack_t> {};
   template <> struct access_unpack<minsky::Group>: 
     public classdesc::NullDescriptor<classdesc::unpack_t> {};
-  template <> struct access_TCL_obj<minsky::GroupPtr>
-  {
-    template <class U>
-    void operator()(classdesc::TCL_obj_t& t, const classdesc::string& d, U& a)
-    {
-      if (auto g=dynamic_cast<minsky::Group*>(a.get())) 
-        TCL_obj(t,d,*g);
-    }
-  };
+//  template <> struct access_TCL_obj<minsky::GroupPtr>
+//  {
+//    template <class U>
+//    void operator()(classdesc::TCL_obj_t& t, const classdesc::string& d, U& a)
+//    {
+//      if (auto g=dynamic_cast<minsky::Group*>(a.get())) 
+//        TCL_obj(t,d,*g);
+//    }
+//  };
 }
 #include "group.cd"
 #endif

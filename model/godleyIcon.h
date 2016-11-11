@@ -89,6 +89,8 @@ namespace minsky
       else
         return VariableValue::valueId(x);
     }
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*this);}
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 

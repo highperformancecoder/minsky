@@ -35,7 +35,25 @@ namespace minsky
           i->m_visible=false;
       }
   }
-        
+
+  template <class Model>
+  set<string> GroupTCL<Model>::types()
+  {
+    set<string> r;
+    for (auto& i: items) r.insert(i->classType());
+    return r;
+  }
+
+  template <class Model>
+  void GroupTCL<Model>::filterOnType(const std::string& type)
+  {
+    filteredItems.clear();
+    for (auto& i: items)
+      if (type==i->classType())
+        filteredItems.push_back(i);
+  }
+
+  
   template <class Model>
   void GroupTCL<Model>::checkAddGroup(int id, float x, float y)
   {
@@ -162,7 +180,7 @@ namespace minsky
     TCL_obj(minskyTCL_obj(), name, *this);
     Tcl_CreateCommand(ecolab::interp(),(name+".delete").c_str(),(Tcl_CmdProc*)groupTCLDeleter, 
                             NULL,NULL);
-    clearAllGetterSetters();
+    buildMaps();
   }
 
   template <class Model>

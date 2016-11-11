@@ -168,6 +168,11 @@ namespace minsky
     GetterSetterPtr<Items, SwitchIcon> switchItem;
     GetterSetterPtr<Items, Item> item; //< generic item
 
+    /// stash of items that have been filtered - eg all variables
+    std::vector<ItemPtr> filteredItems;
+    std::set<string> types();
+    void filterOnType(const std::string&);
+    
     GroupTCL(): wire(wires), op(items), 
                  constant(items), integral(items), 
                  data(items), var(items),
@@ -189,6 +194,7 @@ namespace minsky
       group.clear();
       switchItem.clear();
       item.clear();
+      filteredItems.clear();
     }
 
     void clearAll() {

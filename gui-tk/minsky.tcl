@@ -421,6 +421,7 @@ proc exportCanvas {} {
 .menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
 .menubar.file add command -label "Redraw" -command updateCanvas
 .menubar.file add command -label "Object Browser" -command obj_browser
+.menubar.file add command -label "Select items" -command selectItems
 .menubar.file add command -label "Command" -command cli
 
 .menubar.edit add command -label "Undo" -command "undo 1" -accelerator $meta_menu-Z
@@ -429,6 +430,16 @@ proc exportCanvas {} {
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
 .menubar.edit add command -label "Paste" -command {insertNewGroup [paste]} -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup; updateCanvas" -accelerator $meta_menu-G
+
+menu .menubar.file.itemTypes
+proc selectItems {} {
+    .menubar.file.itemTypes delete 0 end
+    foreach i [wiringGroup.types] {
+        .menubar.file.itemTypes add command -label $i \
+            -command "filterOnType $i; obj_browser wiringGroup.filteredItems.*"
+    }
+    .menubar.file.itemTypes post [winfo pointerx .] [winfo pointery .]
+}
 
 proc undo {delta} {
     # clear canvas to remove reference holds
@@ -658,11 +669,11 @@ proc openNamedFile {ofname} {
 
     eval minsky.load $fname
     doPushHistory 0
+    pushFlags
     openGlobalInCanvas
     updateCanvas
     recentreCanvas
     
-    pushFlags
 
 #    foreach g [godleyItems.#keys] {
 #        godley.get $g

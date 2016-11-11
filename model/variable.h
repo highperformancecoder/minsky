@@ -153,6 +153,8 @@ namespace minsky
     Variable* clone() const override {return new Variable(*this);}
     std::string classType() const override 
     {return "Variable<"+typeName(T)+">";}
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*this);}
   };
 
   struct VarConstant: public Variable<VariableType::constant>

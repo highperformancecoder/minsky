@@ -20,6 +20,7 @@
 #include "godleyExport.h"
 #include "flowCoef.h"
 #include "latexMarkup.h"
+#include "group.h"
 #include <ecolab_epilogue.h>
 
 using namespace std;

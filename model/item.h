@@ -23,6 +23,7 @@
 #include "noteBase.h"
 #include "port.h"
 #include "intrusiveMap.h"
+#include <TCL_obj_base.h>
 
 #include <cairo.h>
 #include <vector>
@@ -100,6 +101,9 @@ namespace minsky
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
     virtual VariablePtr select(float x, float y) const;
+    virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
+    {::TCL_obj(t,d,*this);}
+
   };
 
   typedef std::shared_ptr<Item> ItemPtr;
@@ -115,11 +119,23 @@ namespace minsky
 #endif
 namespace classdesc_access
 {
-template <> struct access_pack<minsky::Item>: 
-  public classdesc::NullDescriptor<classdesc::pack_t> {};
-template <> struct access_unpack<minsky::Item>: 
-  public classdesc::NullDescriptor<classdesc::unpack_t> {};
+  template <> struct access_pack<minsky::Item>: 
+    public classdesc::NullDescriptor<classdesc::pack_t> {};
+  template <> struct access_unpack<minsky::Item>: 
+    public classdesc::NullDescriptor<classdesc::unpack_t> {};
+
+  // this implements polymorphic TCL_obj drilldown
+  template <>
+  struct access_TCL_obj<minsky::ItemPtr>
+  {
+    template <class U>
+    void operator()(cd::TCL_obj_t& t, const cd::string& d, U& a)
+    {
+      if (a) a->TCL_obj(t,d);
+    }
+  };
 }
 #include "item.cd"
+
 #endif
 
