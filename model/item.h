@@ -63,7 +63,10 @@ namespace minsky
     double rotation=0; ///< rotation of icon, in degrees
     bool m_visible=true; ///< if false, then this item is invisible
     std::weak_ptr<Group> group;
-  
+    /// indicates this is a group I/O variable
+    virtual bool ioVar() const {return false;}
+    
+
     virtual std::string classType() const {return "Item";}
     /// sets the cairo surface, allow redraws to be requested
     virtual void setCairoSurface(const ecolab::cairo::SurfacePtr&) {}

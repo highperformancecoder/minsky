@@ -78,6 +78,7 @@ namespace minsky
     /// @}
 
     virtual Type type() const override=0;
+    bool ioVar() const override;
 
     /// unqualified portion of name
     virtual std::string uqName() const {return m_name;}

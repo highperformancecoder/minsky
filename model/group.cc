@@ -227,6 +227,7 @@ namespace minsky
       for (auto& p: i->ports)
         for (auto w: p->wires)
           wiresToSplit.insert(w);
+
     for (auto w: wiresToSplit)
       w->split();
   }
@@ -413,14 +414,6 @@ namespace minsky
         {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
       catch (...) {cerr<<"illegal exception caught in draw()";}
 
-
-//
-//
-//    double xx=0.5*(x0+x1), yy=0.5*(y0+y1);
-//    x0+=x()-xx;
-//    x1+=x()-xx;
-//    y0+=y()-yy;
-//    y1+=y()-yy;
 
     for (auto& i: groups)
       {
@@ -678,6 +671,7 @@ namespace minsky
         auto& v=vars[i];
         v->m_visible=false;
         v->m_x=r.x(x,y); v->m_y=r.y(x,y);
+        v->zoomFactor=0.75*edgeScale();
         RenderVariable rv(*v,cairo);
         rv.draw();
         if (i==0)

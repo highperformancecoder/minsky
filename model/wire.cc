@@ -117,7 +117,7 @@ namespace minsky
     // add I/O variables if this wire crosses a group boundary
     if (auto fg=from()->item.group.lock())
       if (auto tg=to()->item.group.lock())
-        if (fg!=tg) // crosses boundary
+        if (fg!=tg && !from()->item.ioVar() && !to()->item.ioVar()) // crosses boundary
           {
             // check if this wire is in from group
             auto cmp=[&](WirePtr w) {return w.get()==this;};

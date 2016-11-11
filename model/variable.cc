@@ -62,6 +62,18 @@ string VariableBase::valueId() const
   return VariableValue::valueId(m_scope, m_name);
 }
 
+bool VariableBase::ioVar() const 
+{
+  if (auto g=group.lock())
+    {
+      for (auto& i:g->inVariables)
+        if (this==i.get()) return true;
+      for (auto& i:g->outVariables)
+        if (this==i.get()) return true;
+    }
+  return false;
+}
+
 string VariableBase::name()  const
 {
   auto g=group.lock();
