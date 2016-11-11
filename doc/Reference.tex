@@ -65,6 +65,8 @@ purposes.
 variable. Editable attributes include the variable's name and its
 initial value at $t=0$.
 
+\item[differentiate]\label{op:differentiate} Symbolically differentiates its input.
+
 \item[data]\label{op:data} A data interpolation widget. Currently, the
 data must be imported from a file containing two values on each line,
 eg:
@@ -86,9 +88,9 @@ ie:
 \begin{displaymath}
 f(x) = \left\{
 \begin{array}{cl}
-y_1 & x\leq x_1\\
+y_1 & x < x_1\\
 y_n & x\geq x_n\\
-\frac{y_i(x_{i+1}-x)+y_{i+1}(x-x_i)}{x_{i+1}-x_i} & x_i \leq x \leq
+\frac{y_i(x_{i+1}-x)+y_{i+1}(x-x_i)}{x_{i+1}-x_i} & x_i \leq x <
 x_{i+1}\\
 \end{array}
 \right.
@@ -120,7 +122,7 @@ x_{i+1}\\
 
 A switch block (also known as a case block, or select in the Fortran
 world) is a way of selecting from a range of alternatives according
-to the value of the input.
+to the value of the input, effectively defining a piecewise function.
 
 \fwhtmladdimg{switch.png}
 \begin{center}
@@ -210,7 +212,7 @@ side of an unrotated icon). You can't connect an operator to itself
 (that would be a loop, which is not allowed, unless passing through an
 integral), nor can an input port have more than one wire
 attached, with the exception of $+/-$ and $\times/\div$, where the
-multiple wires are summed or multiplied, respectively.
+multiple wires are summed or multiplied, respectively, and similarly max/min.
 
 Wires can be bent by dragging the blue dots (``handles''). Every time
 a handle is dragged out of a straight line with its neighbours, new
