@@ -255,6 +255,7 @@ namespace minsky
   {
     VariablePtr v(VariableType::flow, cminsky().variableValues.newName(to_string(id)+":"));
     addItem(v);
+    v->rotation=rotation;
     return v;
   }
   
@@ -657,6 +658,12 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
+  namespace
+  {
+    // ratio of variable size to text height
+    const float varToTextRatio=1.8;
+  }
+  
   void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
                         float x) const
   {
@@ -676,13 +683,13 @@ namespace minsky
         rv.draw();
         if (i==0)
           {
-            top=0.5*rv.height();
+            top=varToTextRatio*rv.height(); //??? should be 0.5*varToTextRatio
             bottom=-top;
           }
         else if (i%2)
-          top+=rv.height();
+          top+=varToTextRatio*rv.height();
         else
-          bottom-=rv.height();
+          bottom-=varToTextRatio*rv.height();
         cairo_restore(cairo);
       }
   }
@@ -705,11 +712,11 @@ namespace minsky
     margins(left,right);
     left*=zoomFactor;
     right*=zoomFactor;
-    float y=0, dy=5*edgeScale();
+    float y=0, dy=10*edgeScale();
     for (auto& i: inVariables)
       {
         RenderVariable rv(*i);
-        y=max(y, fabs(i->y()-this->y())+rv.height()*edgeScale());
+        y=max(y, fabs(i->y()-this->y())+varToTextRatio*rv.height()*edgeScale());
       }
     cairo_set_source_rgba(cairo,0,1,1,0.5);
     float w=0.5*zoomFactor*width, h=0.5*zoomFactor*height;
@@ -717,9 +724,9 @@ namespace minsky
     cairo_move_to(cairo,-w,-h);
     // create notch in input region
     cairo_line_to(cairo,-w,y-dy);
-    cairo_line_to(cairo,left-w-2,y-dy);
+    cairo_line_to(cairo,left-w-4,y-dy);
     cairo_line_to(cairo,left-w,y);
-    cairo_line_to(cairo,left-w-2,y+dy);
+    cairo_line_to(cairo,left-w-4,y+dy);
     cairo_line_to(cairo,-w,y+dy);
     cairo_line_to(cairo,-w,h);
     cairo_line_to(cairo,left-w,h);
@@ -731,14 +738,14 @@ namespace minsky
     for (auto& i: outVariables)
       {
         RenderVariable rv(*i);
-        y=max(y, fabs(i->y()-this->y())+rv.height()*edgeScale());
+        y=max(y, fabs(i->y()-this->y())+varToTextRatio*rv.height()*edgeScale());
       }
     cairo_move_to(cairo,w,-h);
     // create notch in output region
     cairo_line_to(cairo,w,y-dy);
-    cairo_line_to(cairo,w-right,y-dy);
+    cairo_line_to(cairo,w-right-2,y-dy);
     cairo_line_to(cairo,w-right+2,y);
-    cairo_line_to(cairo,w-right,y+dy);
+    cairo_line_to(cairo,w-right-2,y+dy);
     cairo_line_to(cairo,w,y+dy);
     cairo_line_to(cairo,w,h);
     cairo_line_to(cairo,w-right,h);

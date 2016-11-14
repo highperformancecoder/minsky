@@ -419,7 +419,7 @@ proc exportCanvas {} {
 .menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
 .menubar.file add separator
 .menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
-.menubar.file add command -label "Redraw" -command updateCanvas
+.menubar.file add command -label "Redraw" -command rebuildCanvas
 .menubar.file add command -label "Object Browser" -command obj_browser
 .menubar.file add command -label "Select items" -command selectItems
 .menubar.file add command -label "Command" -command cli
