@@ -1,0 +1,6 @@
+*.o
+*.d
+*.cd
+*.xcd
+GUI/minsky
+TAGS
