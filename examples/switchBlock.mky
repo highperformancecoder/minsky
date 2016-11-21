@@ -74,7 +74,7 @@
      </ports>
      <data>
      </data>
-     <name>:int1</name>
+     <name>int1</name>
      <intVar>6</intVar>
     </Operation>
    </operations>
@@ -122,7 +122,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:int1</name>
+     <name>int1</name>
     </Variable>
    </variables>
    <plots>

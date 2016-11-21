@@ -576,7 +576,18 @@ namespace schema1
         return r;
       }
 
-      struct DuplicateError: public std::exception
+      vector<int> ports(const minsky::GodleyIcon& g) {
+        vector<int> r;
+        for (auto& v: g.flowVars)
+          for (auto& p: v->ports)
+            r.push_back(portId(p.get()));
+        for (auto& v: g.stockVars)
+          for (auto& p: v->ports)
+            r.push_back(portId(p.get()));
+        return r;
+      }
+
+     struct DuplicateError: public std::exception
       {
         const char* what() const noexcept override 
         {return "duplicate item processed";}

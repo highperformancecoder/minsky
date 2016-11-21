@@ -18,7 +18,7 @@
       <int>1</int>
       <int>2</int>
      </ports>
-     <name>:\sqrt[3]2</name>
+     <name>\sqrt[3]2</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -30,7 +30,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
+     <name>\int_0^\infty&#32;e^{-x^2/2}</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -42,7 +42,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:\aleph_0</name>
+     <name>\aleph_0</name>
     </Variable>
     <Variable>
      <id>9</id>
@@ -54,7 +54,7 @@
       <int>10</int>
       <int>11</int>
      </ports>
-     <name>:\partial&#32;f(x)/\partial&#32;x|_0</name>
+     <name>\partial&#32;f(x)/\partial&#32;x|_0</name>
     </Variable>
     <Variable>
      <id>12</id>
@@ -66,7 +66,7 @@
       <int>13</int>
       <int>14</int>
      </ports>
-     <name>:\tau_\mathrm{RD}</name>
+     <name>\tau_\mathrm{RD}</name>
     </Variable>
     <Variable>
      <id>15</id>
@@ -78,7 +78,7 @@
       <int>16</int>
       <int>17</int>
      </ports>
-     <name>:\mathrm{universit\&quot;at}</name>
+     <name>\mathrm{universit\&quot;at}</name>
     </Variable>
     <Variable>
      <id>18</id>
@@ -90,7 +90,7 @@
       <int>19</int>
       <int>20</int>
      </ports>
-     <name>:\mathrm{fran\c{c}ais</name>
+     <name>\mathrm{fran\c{c}ais</name>
     </Variable>
     <Variable>
      <id>21</id>
@@ -102,7 +102,7 @@
       <int>22</int>
       <int>23</int>
      </ports>
-     <name>:\mathrm{universit\&quot;{a}t}</name>
+     <name>\mathrm{universit\&quot;{a}t}</name>
     </Variable>
    </variables>
    <plots>

@@ -939,7 +939,7 @@
      <ports>
       <int>2</int>
      </ports>
-     <name>:Reserves</name>
+     <name>Reserves</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -951,7 +951,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:Buy_C</name>
+     <name>Buy_C</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -963,7 +963,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:Inv_B</name>
+     <name>Inv_B</name>
     </Variable>
     <Variable>
      <id>9</id>
@@ -975,7 +975,7 @@
       <int>10</int>
       <int>11</int>
      </ports>
-     <name>:C_W</name>
+     <name>C_W</name>
     </Variable>
     <Variable>
      <id>12</id>
@@ -987,7 +987,7 @@
       <int>13</int>
       <int>14</int>
      </ports>
-     <name>:C_B</name>
+     <name>C_B</name>
     </Variable>
     <Variable>
      <id>15</id>
@@ -999,7 +999,7 @@
       <int>16</int>
       <int>17</int>
      </ports>
-     <name>:C_W</name>
+     <name>C_W</name>
     </Variable>
     <Variable>
      <id>18</id>
@@ -1011,7 +1011,7 @@
       <int>19</int>
       <int>20</int>
      </ports>
-     <name>:C_B</name>
+     <name>C_B</name>
     </Variable>
     <Variable>
      <id>21</id>
@@ -1023,7 +1023,7 @@
       <int>22</int>
       <int>23</int>
      </ports>
-     <name>:C_I</name>
+     <name>C_I</name>
     </Variable>
     <Variable>
      <id>24</id>
@@ -1035,7 +1035,7 @@
       <int>25</int>
       <int>26</int>
      </ports>
-     <name>:I_B</name>
+     <name>I_B</name>
     </Variable>
     <Variable>
      <id>27</id>
@@ -1047,7 +1047,7 @@
       <int>28</int>
       <int>29</int>
      </ports>
-     <name>:I_C</name>
+     <name>I_C</name>
     </Variable>
     <Variable>
      <id>30</id>
@@ -1059,7 +1059,7 @@
       <int>31</int>
       <int>32</int>
      </ports>
-     <name>:W_C</name>
+     <name>W_C</name>
     </Variable>
     <Variable>
      <id>33</id>
@@ -1071,7 +1071,7 @@
       <int>34</int>
       <int>35</int>
      </ports>
-     <name>:W_I</name>
+     <name>W_I</name>
     </Variable>
     <Variable>
      <id>36</id>
@@ -1083,7 +1083,7 @@
       <int>37</int>
       <int>38</int>
      </ports>
-     <name>:Lend</name>
+     <name>Lend</name>
     </Variable>
     <Variable>
      <id>39</id>
@@ -1095,7 +1095,7 @@
       <int>40</int>
       <int>41</int>
      </ports>
-     <name>:Fee</name>
+     <name>Fee</name>
     </Variable>
     <Variable>
      <id>42</id>
@@ -1107,7 +1107,7 @@
       <int>43</int>
       <int>44</int>
      </ports>
-     <name>:Repay</name>
+     <name>Repay</name>
     </Variable>
     <Variable>
      <id>45</id>
@@ -1119,7 +1119,7 @@
       <int>46</int>
       <int>47</int>
      </ports>
-     <name>:int</name>
+     <name>int</name>
     </Variable>
     <Variable>
      <id>48</id>
@@ -1131,7 +1131,7 @@
       <int>49</int>
       <int>50</int>
      </ports>
-     <name>:C_B</name>
+     <name>C_B</name>
     </Variable>
     <Variable>
      <id>51</id>
@@ -1143,7 +1143,7 @@
       <int>52</int>
       <int>53</int>
      </ports>
-     <name>:C_I</name>
+     <name>C_I</name>
     </Variable>
     <Variable>
      <id>54</id>
@@ -1155,7 +1155,7 @@
       <int>55</int>
       <int>56</int>
      </ports>
-     <name>:C_W</name>
+     <name>C_W</name>
     </Variable>
     <Variable>
      <id>57</id>
@@ -1167,7 +1167,7 @@
       <int>58</int>
       <int>59</int>
      </ports>
-     <name>:Fee</name>
+     <name>Fee</name>
     </Variable>
     <Variable>
      <id>60</id>
@@ -1179,7 +1179,7 @@
       <int>61</int>
       <int>62</int>
      </ports>
-     <name>:I_C</name>
+     <name>I_C</name>
     </Variable>
     <Variable>
      <id>63</id>
@@ -1191,7 +1191,7 @@
       <int>64</int>
       <int>65</int>
      </ports>
-     <name>:Lend</name>
+     <name>Lend</name>
     </Variable>
     <Variable>
      <id>66</id>
@@ -1203,7 +1203,7 @@
       <int>67</int>
       <int>68</int>
      </ports>
-     <name>:Repay</name>
+     <name>Repay</name>
     </Variable>
     <Variable>
      <id>69</id>
@@ -1215,7 +1215,7 @@
       <int>70</int>
       <int>71</int>
      </ports>
-     <name>:W_C</name>
+     <name>W_C</name>
     </Variable>
     <Variable>
      <id>72</id>
@@ -1227,7 +1227,7 @@
       <int>73</int>
       <int>74</int>
      </ports>
-     <name>:int</name>
+     <name>int</name>
     </Variable>
     <Variable>
      <id>75</id>
@@ -1238,7 +1238,7 @@
      <ports>
       <int>76</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>77</id>
@@ -1249,7 +1249,7 @@
      <ports>
       <int>78</int>
      </ports>
-     <name>:C_{NW}</name>
+     <name>C_{NW}</name>
     </Variable>
     <Variable>
      <id>79</id>
@@ -1261,7 +1261,7 @@
       <int>80</int>
       <int>81</int>
      </ports>
-     <name>:C_I</name>
+     <name>C_I</name>
     </Variable>
     <Variable>
      <id>82</id>
@@ -1273,7 +1273,7 @@
       <int>83</int>
       <int>84</int>
      </ports>
-     <name>:I_B</name>
+     <name>I_B</name>
     </Variable>
     <Variable>
      <id>85</id>
@@ -1285,7 +1285,7 @@
       <int>86</int>
       <int>87</int>
      </ports>
-     <name>:I_C</name>
+     <name>I_C</name>
     </Variable>
     <Variable>
      <id>88</id>
@@ -1297,7 +1297,7 @@
       <int>89</int>
       <int>90</int>
      </ports>
-     <name>:Lend</name>
+     <name>Lend</name>
     </Variable>
     <Variable>
      <id>91</id>
@@ -1309,7 +1309,7 @@
       <int>92</int>
       <int>93</int>
      </ports>
-     <name>:Repay</name>
+     <name>Repay</name>
     </Variable>
     <Variable>
      <id>94</id>
@@ -1321,7 +1321,7 @@
       <int>95</int>
       <int>96</int>
      </ports>
-     <name>:W_I</name>
+     <name>W_I</name>
     </Variable>
     <Variable>
      <id>97</id>
@@ -1333,7 +1333,7 @@
       <int>98</int>
       <int>99</int>
      </ports>
-     <name>:int</name>
+     <name>int</name>
     </Variable>
     <Variable>
      <id>100</id>
@@ -1344,7 +1344,7 @@
      <ports>
       <int>101</int>
      </ports>
-     <name>:I_{NW}</name>
+     <name>I_{NW}</name>
     </Variable>
     <Variable>
      <id>102</id>
@@ -1356,7 +1356,7 @@
       <int>103</int>
       <int>104</int>
      </ports>
-     <name>:C_W</name>
+     <name>C_W</name>
     </Variable>
     <Variable>
      <id>105</id>
@@ -1368,7 +1368,7 @@
       <int>106</int>
       <int>107</int>
      </ports>
-     <name>:W_C</name>
+     <name>W_C</name>
     </Variable>
     <Variable>
      <id>108</id>
@@ -1380,7 +1380,7 @@
       <int>109</int>
       <int>110</int>
      </ports>
-     <name>:W_I</name>
+     <name>W_I</name>
     </Variable>
     <Variable>
      <id>111</id>
@@ -1391,7 +1391,7 @@
      <ports>
       <int>112</int>
      </ports>
-     <name>:W_{NW}</name>
+     <name>W_{NW}</name>
     </Variable>
     <Variable>
      <id>113</id>
@@ -1403,7 +1403,7 @@
       <int>114</int>
       <int>115</int>
      </ports>
-     <name>:Lend</name>
+     <name>Lend</name>
     </Variable>
     <Variable>
      <id>116</id>
@@ -1415,7 +1415,7 @@
       <int>117</int>
       <int>118</int>
      </ports>
-     <name>:Repay</name>
+     <name>Repay</name>
     </Variable>
     <Variable>
      <id>119</id>
@@ -1427,7 +1427,7 @@
       <int>120</int>
       <int>121</int>
      </ports>
-     <name>:int</name>
+     <name>int</name>
     </Variable>
     <Variable>
      <id>122</id>
@@ -1439,7 +1439,7 @@
       <int>123</int>
       <int>124</int>
      </ports>
-     <name>:Fee</name>
+     <name>Fee</name>
     </Variable>
     <Variable>
      <id>125</id>
@@ -1451,7 +1451,7 @@
       <int>126</int>
       <int>127</int>
      </ports>
-     <name>:W_C</name>
+     <name>W_C</name>
     </Variable>
     <Variable>
      <id>128</id>
@@ -1463,7 +1463,7 @@
       <int>129</int>
       <int>130</int>
      </ports>
-     <name>:W_I</name>
+     <name>W_I</name>
     </Variable>
     <Variable>
      <id>131</id>
@@ -1475,7 +1475,7 @@
       <int>132</int>
       <int>133</int>
      </ports>
-     <name>:C_I</name>
+     <name>C_I</name>
     </Variable>
     <Variable>
      <id>134</id>
@@ -1487,7 +1487,7 @@
       <int>135</int>
       <int>136</int>
      </ports>
-     <name>:I_C</name>
+     <name>I_C</name>
     </Variable>
     <Variable>
      <id>137</id>
@@ -1499,7 +1499,7 @@
       <int>138</int>
       <int>139</int>
      </ports>
-     <name>:C_W</name>
+     <name>C_W</name>
     </Variable>
     <Variable>
      <id>140</id>
@@ -1511,7 +1511,7 @@
       <int>141</int>
       <int>142</int>
      </ports>
-     <name>:C_B</name>
+     <name>C_B</name>
     </Variable>
     <Variable>
      <id>143</id>
@@ -1523,7 +1523,7 @@
       <int>144</int>
       <int>145</int>
      </ports>
-     <name>:I_B</name>
+     <name>I_B</name>
     </Variable>
     <Variable>
      <id>146</id>
@@ -1534,7 +1534,7 @@
      <ports>
       <int>147</int>
      </ports>
-     <name>:C_D</name>
+     <name>C_D</name>
     </Variable>
     <Variable>
      <id>148</id>
@@ -1545,7 +1545,7 @@
      <ports>
       <int>149</int>
      </ports>
-     <name>:\tau_L</name>
+     <name>\tau_L</name>
     </Variable>
     <Variable>
      <id>150</id>
@@ -1556,7 +1556,7 @@
      <ports>
       <int>151</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>152</id>
@@ -1567,7 +1567,7 @@
      <ports>
       <int>153</int>
      </ports>
-     <name>:\tau_R</name>
+     <name>\tau_R</name>
     </Variable>
     <Variable>
      <id>154</id>
@@ -1578,7 +1578,7 @@
      <ports>
       <int>155</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>156</id>
@@ -1589,7 +1589,7 @@
      <ports>
       <int>157</int>
      </ports>
-     <name>:r_L</name>
+     <name>r_L</name>
     </Variable>
     <Variable>
      <id>158</id>
@@ -1600,7 +1600,7 @@
      <ports>
       <int>159</int>
      </ports>
-     <name>:b_f</name>
+     <name>b_f</name>
     </Variable>
     <Variable>
      <id>160</id>
@@ -1612,7 +1612,7 @@
       <int>161</int>
       <int>162</int>
      </ports>
-     <name>:int</name>
+     <name>int</name>
     </Variable>
     <Variable>
      <id>163</id>
@@ -1623,7 +1623,7 @@
      <ports>
       <int>164</int>
      </ports>
-     <name>:C_D</name>
+     <name>C_D</name>
     </Variable>
     <Variable>
      <id>165</id>
@@ -1634,7 +1634,7 @@
      <ports>
       <int>166</int>
      </ports>
-     <name>:\tau_{WC}</name>
+     <name>\tau_{WC}</name>
     </Variable>
     <Variable>
      <id>167</id>
@@ -1645,7 +1645,7 @@
      <ports>
       <int>168</int>
      </ports>
-     <name>:I_D</name>
+     <name>I_D</name>
     </Variable>
     <Variable>
      <id>169</id>
@@ -1656,7 +1656,7 @@
      <ports>
       <int>170</int>
      </ports>
-     <name>:\tau_{WI}</name>
+     <name>\tau_{WI}</name>
     </Variable>
     <Variable>
      <id>171</id>
@@ -1667,7 +1667,7 @@
      <ports>
       <int>172</int>
      </ports>
-     <name>:C_D</name>
+     <name>C_D</name>
     </Variable>
     <Variable>
      <id>173</id>
@@ -1678,7 +1678,7 @@
      <ports>
       <int>174</int>
      </ports>
-     <name>:I_D</name>
+     <name>I_D</name>
     </Variable>
     <Variable>
      <id>175</id>
@@ -1689,7 +1689,7 @@
      <ports>
       <int>176</int>
      </ports>
-     <name>:W_D</name>
+     <name>W_D</name>
     </Variable>
     <Variable>
      <id>177</id>
@@ -1700,7 +1700,7 @@
      <ports>
       <int>178</int>
      </ports>
-     <name>:B_E</name>
+     <name>B_E</name>
     </Variable>
     <Variable>
      <id>179</id>
@@ -1711,7 +1711,7 @@
      <ports>
       <int>180</int>
      </ports>
-     <name>:B_E</name>
+     <name>B_E</name>
     </Variable>
     <Variable>
      <id>181</id>
@@ -1722,7 +1722,7 @@
      <ports>
       <int>182</int>
      </ports>
-     <name>:\tau_{CI}</name>
+     <name>\tau_{CI}</name>
     </Variable>
     <Variable>
      <id>183</id>
@@ -1733,7 +1733,7 @@
      <ports>
       <int>184</int>
      </ports>
-     <name>:\tau_{IC}</name>
+     <name>\tau_{IC}</name>
     </Variable>
     <Variable>
      <id>185</id>
@@ -1744,7 +1744,7 @@
      <ports>
       <int>186</int>
      </ports>
-     <name>:\tau_{CW}</name>
+     <name>\tau_{CW}</name>
     </Variable>
     <Variable>
      <id>187</id>
@@ -1755,7 +1755,7 @@
      <ports>
       <int>188</int>
      </ports>
-     <name>:\tau_{CB}</name>
+     <name>\tau_{CB}</name>
     </Variable>
     <Variable>
      <id>189</id>
@@ -1766,7 +1766,7 @@
      <ports>
       <int>190</int>
      </ports>
-     <name>:\tau_{IB}</name>
+     <name>\tau_{IB}</name>
     </Variable>
     <Variable>
      <id>191</id>
@@ -1777,7 +1777,7 @@
      <ports>
       <int>192</int>
      </ports>
-     <name>:C_D</name>
+     <name>C_D</name>
     </Variable>
     <Variable>
      <id>193</id>
@@ -1788,7 +1788,7 @@
      <ports>
       <int>194</int>
      </ports>
-     <name>:I_D</name>
+     <name>I_D</name>
     </Variable>
     <Variable>
      <id>195</id>
@@ -1799,7 +1799,7 @@
      <ports>
       <int>196</int>
      </ports>
-     <name>:W_D</name>
+     <name>W_D</name>
     </Variable>
     <Variable>
      <id>197</id>
@@ -1810,7 +1810,7 @@
      <ports>
       <int>198</int>
      </ports>
-     <name>:B_E</name>
+     <name>B_E</name>
     </Variable>
     <Variable>
      <id>199</id>
@@ -1822,7 +1822,7 @@
       <int>200</int>
       <int>201</int>
      </ports>
-     <name>:W_C</name>
+     <name>W_C</name>
     </Variable>
     <Variable>
      <id>202</id>
@@ -1834,7 +1834,7 @@
       <int>203</int>
       <int>204</int>
      </ports>
-     <name>:W_I</name>
+     <name>W_I</name>
     </Variable>
     <Variable>
      <id>205</id>
@@ -1846,7 +1846,7 @@
       <int>206</int>
       <int>207</int>
      </ports>
-     <name>:W</name>
+     <name>W</name>
     </Variable>
     <Variable>
      <id>208</id>
@@ -1858,7 +1858,7 @@
       <int>209</int>
       <int>210</int>
      </ports>
-     <name>:C_W</name>
+     <name>C_W</name>
     </Variable>
     <Variable>
      <id>211</id>
@@ -1870,7 +1870,7 @@
       <int>212</int>
       <int>213</int>
      </ports>
-     <name>:C_B</name>
+     <name>C_B</name>
     </Variable>
     <Variable>
      <id>214</id>
@@ -1882,7 +1882,7 @@
       <int>215</int>
       <int>216</int>
      </ports>
-     <name>:C_I</name>
+     <name>C_I</name>
     </Variable>
     <Variable>
      <id>217</id>
@@ -1894,7 +1894,7 @@
       <int>218</int>
       <int>219</int>
      </ports>
-     <name>:C</name>
+     <name>C</name>
     </Variable>
     <Variable>
      <id>220</id>
@@ -1906,7 +1906,7 @@
       <int>221</int>
       <int>222</int>
      </ports>
-     <name>:I_C</name>
+     <name>I_C</name>
     </Variable>
     <Variable>
      <id>223</id>
@@ -1918,7 +1918,7 @@
       <int>224</int>
       <int>225</int>
      </ports>
-     <name>:I_B</name>
+     <name>I_B</name>
     </Variable>
     <Variable>
      <id>226</id>
@@ -1930,7 +1930,7 @@
       <int>227</int>
       <int>228</int>
      </ports>
-     <name>:I</name>
+     <name>I</name>
     </Variable>
     <Variable>
      <id>229</id>
@@ -1942,7 +1942,7 @@
       <int>230</int>
       <int>231</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>232</id>
@@ -1953,7 +1953,7 @@
      <ports>
       <int>233</int>
      </ports>
-     <name>:C_D</name>
+     <name>C_D</name>
     </Variable>
     <Variable>
      <id>234</id>
@@ -1964,7 +1964,7 @@
      <ports>
       <int>235</int>
      </ports>
-     <name>:I_D</name>
+     <name>I_D</name>
     </Variable>
     <Variable>
      <id>236</id>
@@ -1975,7 +1975,7 @@
      <ports>
       <int>237</int>
      </ports>
-     <name>:W_D</name>
+     <name>W_D</name>
     </Variable>
     <Variable>
      <id>238</id>
@@ -1986,7 +1986,7 @@
      <ports>
       <int>239</int>
      </ports>
-     <name>:B_E</name>
+     <name>B_E</name>
     </Variable>
     <Variable>
      <id>240</id>
@@ -1998,7 +1998,7 @@
       <int>241</int>
       <int>242</int>
      </ports>
-     <name>:M</name>
+     <name>M</name>
     </Variable>
     <Variable>
      <id>243</id>
@@ -2010,7 +2010,7 @@
       <int>244</int>
       <int>245</int>
      </ports>
-     <name>:M</name>
+     <name>M</name>
     </Variable>
     <Variable>
      <id>246</id>
@@ -2022,7 +2022,7 @@
       <int>247</int>
       <int>248</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>249</id>
@@ -2034,7 +2034,7 @@
       <int>250</int>
       <int>251</int>
      </ports>
-     <name>:M</name>
+     <name>M</name>
     </Variable>
     <Variable>
      <id>252</id>
@@ -2046,7 +2046,7 @@
       <int>253</int>
       <int>254</int>
      </ports>
-     <name>:V</name>
+     <name>V</name>
     </Variable>
     <Variable>
      <id>255</id>
@@ -2057,7 +2057,7 @@
      <ports>
       <int>256</int>
      </ports>
-     <name>:\tau_L</name>
+     <name>\tau_L</name>
     </Variable>
     <Variable>
      <id>257</id>
@@ -2068,7 +2068,7 @@
      <ports>
       <int>258</int>
      </ports>
-     <name>:\tau_R</name>
+     <name>\tau_R</name>
     </Variable>
     <Variable>
      <id>259</id>
@@ -2079,7 +2079,7 @@
      <ports>
       <int>260</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>261</id>
@@ -2090,7 +2090,7 @@
      <ports>
       <int>262</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>263</id>
@@ -2102,7 +2102,7 @@
       <int>264</int>
       <int>265</int>
      </ports>
-     <name>:M</name>
+     <name>M</name>
     </Variable>
     <Variable>
      <id>266</id>
@@ -2114,7 +2114,7 @@
       <int>267</int>
       <int>268</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>269</id>
@@ -2125,7 +2125,7 @@
      <ports>
       <int>270</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>271</id>
@@ -2137,7 +2137,7 @@
       <int>272</int>
       <int>273</int>
      </ports>
-     <name>:d_r</name>
+     <name>d_r</name>
     </Variable>
     <Variable>
      <id>274</id>
@@ -2149,7 +2149,7 @@
       <int>275</int>
       <int>276</int>
      </ports>
-     <name>:\Pi_C</name>
+     <name>\Pi_C</name>
     </Variable>
     <Variable>
      <id>277</id>
@@ -2161,7 +2161,7 @@
       <int>278</int>
       <int>279</int>
      </ports>
-     <name>:Fee</name>
+     <name>Fee</name>
     </Variable>
     <Variable>
      <id>280</id>
@@ -2173,7 +2173,7 @@
       <int>281</int>
       <int>282</int>
      </ports>
-     <name>:W_C</name>
+     <name>W_C</name>
     </Variable>
     <Variable>
      <id>283</id>
@@ -2185,7 +2185,7 @@
       <int>284</int>
       <int>285</int>
      </ports>
-     <name>:int</name>
+     <name>int</name>
     </Variable>
     <Variable>
      <id>286</id>
@@ -2197,7 +2197,7 @@
       <int>287</int>
       <int>288</int>
      </ports>
-     <name>:Fee</name>
+     <name>Fee</name>
     </Variable>
     <Variable>
      <id>289</id>
@@ -2209,7 +2209,7 @@
       <int>290</int>
       <int>291</int>
      </ports>
-     <name>:C</name>
+     <name>C</name>
     </Variable>
     <Variable>
      <id>292</id>
@@ -2221,7 +2221,7 @@
       <int>293</int>
       <int>294</int>
      </ports>
-     <name>:I</name>
+     <name>I</name>
     </Variable>
     <Variable>
      <id>295</id>
@@ -2233,7 +2233,7 @@
       <int>296</int>
       <int>297</int>
      </ports>
-     <name>:W_I</name>
+     <name>W_I</name>
     </Variable>
     <Variable>
      <id>298</id>
@@ -2245,7 +2245,7 @@
       <int>299</int>
       <int>300</int>
      </ports>
-     <name>:int</name>
+     <name>int</name>
     </Variable>
     <Variable>
      <id>301</id>
@@ -2257,7 +2257,7 @@
       <int>302</int>
       <int>303</int>
      </ports>
-     <name>:\Pi_I</name>
+     <name>\Pi_I</name>
     </Variable>
     <Variable>
      <id>304</id>
@@ -2269,7 +2269,7 @@
       <int>305</int>
       <int>306</int>
      </ports>
-     <name>:\Pi</name>
+     <name>\Pi</name>
     </Variable>
     <Variable>
      <id>307</id>
@@ -2281,7 +2281,7 @@
       <int>308</int>
       <int>309</int>
      </ports>
-     <name>:Fee</name>
+     <name>Fee</name>
     </Variable>
     <Variable>
      <id>310</id>
@@ -2292,7 +2292,7 @@
      <ports>
       <int>311</int>
      </ports>
-     <name>:C_D</name>
+     <name>C_D</name>
     </Variable>
     <Variable>
      <id>312</id>
@@ -2303,7 +2303,7 @@
      <ports>
       <int>313</int>
      </ports>
-     <name>:I_D</name>
+     <name>I_D</name>
     </Variable>
     <Variable>
      <id>314</id>
@@ -2314,7 +2314,7 @@
      <ports>
       <int>315</int>
      </ports>
-     <name>:W_D</name>
+     <name>W_D</name>
     </Variable>
     <Variable>
      <id>316</id>
@@ -2325,7 +2325,7 @@
      <ports>
       <int>317</int>
      </ports>
-     <name>:B_E</name>
+     <name>B_E</name>
     </Variable>
     <Variable>
      <id>318</id>
@@ -2336,7 +2336,7 @@
      <ports>
       <int>319</int>
      </ports>
-     <name>:C_D</name>
+     <name>C_D</name>
     </Variable>
     <Variable>
      <id>320</id>
@@ -2347,7 +2347,7 @@
      <ports>
       <int>321</int>
      </ports>
-     <name>:I_D</name>
+     <name>I_D</name>
     </Variable>
     <Variable>
      <id>322</id>
@@ -2358,7 +2358,7 @@
      <ports>
       <int>323</int>
      </ports>
-     <name>:W_D</name>
+     <name>W_D</name>
     </Variable>
    </variables>
    <plots>
@@ -2583,11 +2583,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>2</int>
-      <int>311</int>
-      <int>313</int>
-      <int>315</int>
-      <int>317</int>
       <int>37</int>
       <int>38</int>
       <int>43</int>
@@ -2615,55 +2610,6 @@
       <int>313</int>
       <int>315</int>
       <int>317</int>
-      <int>37</int>
-      <int>38</int>
-      <int>43</int>
-      <int>44</int>
-      <int>46</int>
-      <int>47</int>
-      <int>40</int>
-      <int>41</int>
-      <int>31</int>
-      <int>32</int>
-      <int>34</int>
-      <int>35</int>
-      <int>22</int>
-      <int>23</int>
-      <int>28</int>
-      <int>29</int>
-      <int>16</int>
-      <int>17</int>
-      <int>19</int>
-      <int>20</int>
-      <int>25</int>
-      <int>26</int>
-      <int>2</int>
-      <int>311</int>
-      <int>313</int>
-      <int>315</int>
-      <int>317</int>
-      <int>37</int>
-      <int>38</int>
-      <int>43</int>
-      <int>44</int>
-      <int>46</int>
-      <int>47</int>
-      <int>40</int>
-      <int>41</int>
-      <int>31</int>
-      <int>32</int>
-      <int>34</int>
-      <int>35</int>
-      <int>22</int>
-      <int>23</int>
-      <int>28</int>
-      <int>29</int>
-      <int>16</int>
-      <int>17</int>
-      <int>19</int>
-      <int>20</int>
-      <int>25</int>
-      <int>26</int>
      </ports>
      <doubleEntryCompliant>true</doubleEntryCompliant>
      <name>Banking&#32;Sector</name>
@@ -2788,9 +2734,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>319</int>
-      <int>76</int>
-      <int>78</int>
       <int>64</int>
       <int>65</int>
       <int>67</int>
@@ -2812,45 +2755,6 @@
       <int>319</int>
       <int>76</int>
       <int>78</int>
-      <int>64</int>
-      <int>65</int>
-      <int>67</int>
-      <int>68</int>
-      <int>73</int>
-      <int>74</int>
-      <int>58</int>
-      <int>59</int>
-      <int>70</int>
-      <int>71</int>
-      <int>49</int>
-      <int>50</int>
-      <int>52</int>
-      <int>53</int>
-      <int>55</int>
-      <int>56</int>
-      <int>61</int>
-      <int>62</int>
-      <int>319</int>
-      <int>76</int>
-      <int>78</int>
-      <int>64</int>
-      <int>65</int>
-      <int>67</int>
-      <int>68</int>
-      <int>73</int>
-      <int>74</int>
-      <int>58</int>
-      <int>59</int>
-      <int>70</int>
-      <int>71</int>
-      <int>49</int>
-      <int>50</int>
-      <int>52</int>
-      <int>53</int>
-      <int>55</int>
-      <int>56</int>
-      <int>61</int>
-      <int>62</int>
      </ports>
      <doubleEntryCompliant>true</doubleEntryCompliant>
      <name>Consumer&#32;Goods&#32;Sector</name>
@@ -2935,9 +2839,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>321</int>
-      <int>260</int>
-      <int>101</int>
       <int>89</int>
       <int>90</int>
       <int>92</int>
@@ -2955,37 +2856,6 @@
       <int>321</int>
       <int>260</int>
       <int>101</int>
-      <int>89</int>
-      <int>90</int>
-      <int>92</int>
-      <int>93</int>
-      <int>98</int>
-      <int>99</int>
-      <int>95</int>
-      <int>96</int>
-      <int>80</int>
-      <int>81</int>
-      <int>83</int>
-      <int>84</int>
-      <int>86</int>
-      <int>87</int>
-      <int>321</int>
-      <int>260</int>
-      <int>101</int>
-      <int>89</int>
-      <int>90</int>
-      <int>92</int>
-      <int>93</int>
-      <int>98</int>
-      <int>99</int>
-      <int>95</int>
-      <int>96</int>
-      <int>80</int>
-      <int>81</int>
-      <int>83</int>
-      <int>84</int>
-      <int>86</int>
-      <int>87</int>
      </ports>
      <doubleEntryCompliant>true</doubleEntryCompliant>
      <name>Investment&#32;Goods&#32;Sector</name>
@@ -3058,8 +2928,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>323</int>
-      <int>112</int>
       <int>106</int>
       <int>107</int>
       <int>109</int>
@@ -3068,20 +2936,6 @@
       <int>104</int>
       <int>323</int>
       <int>112</int>
-      <int>106</int>
-      <int>107</int>
-      <int>109</int>
-      <int>110</int>
-      <int>103</int>
-      <int>104</int>
-      <int>323</int>
-      <int>112</int>
-      <int>106</int>
-      <int>107</int>
-      <int>109</int>
-      <int>110</int>
-      <int>103</int>
-      <int>104</int>
      </ports>
      <doubleEntryCompliant>true</doubleEntryCompliant>
      <name>Workers</name>

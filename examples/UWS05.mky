@@ -237,7 +237,7 @@
      <ports>
       <int>1</int>
      </ports>
-     <name>:Firms</name>
+     <name>Firms</name>
     </Variable>
     <Variable>
      <id>2</id>
@@ -248,7 +248,7 @@
      <ports>
       <int>3</int>
      </ports>
-     <name>:Loans</name>
+     <name>Loans</name>
     </Variable>
     <Variable>
      <id>4</id>
@@ -259,7 +259,7 @@
      <ports>
       <int>5</int>
      </ports>
-     <name>:Safe</name>
+     <name>Safe</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -270,7 +270,7 @@
      <ports>
       <int>7</int>
      </ports>
-     <name>:Vault</name>
+     <name>Vault</name>
     </Variable>
     <Variable>
      <id>8</id>
@@ -281,7 +281,7 @@
      <ports>
       <int>9</int>
      </ports>
-     <name>:Workers</name>
+     <name>Workers</name>
     </Variable>
     <Variable>
      <id>10</id>
@@ -293,7 +293,7 @@
       <int>11</int>
       <int>12</int>
      </ports>
-     <name>:A</name>
+     <name>A</name>
     </Variable>
     <Variable>
      <id>13</id>
@@ -305,7 +305,7 @@
       <int>14</int>
       <int>15</int>
      </ports>
-     <name>:B</name>
+     <name>B</name>
     </Variable>
     <Variable>
      <id>16</id>
@@ -317,7 +317,7 @@
       <int>17</int>
       <int>18</int>
      </ports>
-     <name>:C</name>
+     <name>C</name>
     </Variable>
     <Variable>
      <id>19</id>
@@ -329,7 +329,7 @@
       <int>20</int>
       <int>21</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>22</id>
@@ -341,7 +341,7 @@
       <int>23</int>
       <int>24</int>
      </ports>
-     <name>:E</name>
+     <name>E</name>
     </Variable>
     <Variable>
      <id>25</id>
@@ -352,7 +352,7 @@
      <ports>
       <int>26</int>
      </ports>
-     <name>:Firms</name>
+     <name>Firms</name>
     </Variable>
     <Variable>
      <id>27</id>
@@ -363,7 +363,7 @@
      <ports>
       <int>28</int>
      </ports>
-     <name>:Loans</name>
+     <name>Loans</name>
     </Variable>
     <Variable>
      <id>29</id>
@@ -374,7 +374,7 @@
      <ports>
       <int>30</int>
      </ports>
-     <name>:Safe</name>
+     <name>Safe</name>
     </Variable>
     <Variable>
      <id>31</id>
@@ -385,7 +385,7 @@
      <ports>
       <int>32</int>
      </ports>
-     <name>:Vault</name>
+     <name>Vault</name>
     </Variable>
     <Variable>
      <id>33</id>
@@ -396,7 +396,7 @@
      <ports>
       <int>34</int>
      </ports>
-     <name>:Workers</name>
+     <name>Workers</name>
     </Variable>
     <Variable>
      <id>35</id>
@@ -408,7 +408,7 @@
       <int>36</int>
       <int>37</int>
      </ports>
-     <name>:A</name>
+     <name>A</name>
     </Variable>
     <Variable>
      <id>38</id>
@@ -420,7 +420,7 @@
       <int>39</int>
       <int>40</int>
      </ports>
-     <name>:B</name>
+     <name>B</name>
     </Variable>
     <Variable>
      <id>41</id>
@@ -432,7 +432,7 @@
       <int>42</int>
       <int>43</int>
      </ports>
-     <name>:C</name>
+     <name>C</name>
     </Variable>
     <Variable>
      <id>44</id>
@@ -444,7 +444,7 @@
       <int>45</int>
       <int>46</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>47</id>
@@ -456,7 +456,7 @@
       <int>48</int>
       <int>49</int>
      </ports>
-     <name>:E</name>
+     <name>E</name>
     </Variable>
     <Variable>
      <id>50</id>
@@ -467,7 +467,7 @@
      <ports>
       <int>51</int>
      </ports>
-     <name>:v</name>
+     <name>v</name>
     </Variable>
     <Variable>
      <id>52</id>
@@ -478,7 +478,7 @@
      <ports>
       <int>53</int>
      </ports>
-     <name>:rL</name>
+     <name>rL</name>
     </Variable>
     <Variable>
      <id>54</id>
@@ -489,7 +489,7 @@
      <ports>
       <int>55</int>
      </ports>
-     <name>:w</name>
+     <name>w</name>
     </Variable>
     <Variable>
      <id>56</id>
@@ -500,7 +500,7 @@
      <ports>
       <int>57</int>
      </ports>
-     <name>:wc</name>
+     <name>wc</name>
     </Variable>
     <Variable>
      <id>58</id>
@@ -511,7 +511,7 @@
      <ports>
       <int>59</int>
      </ports>
-     <name>:bc</name>
+     <name>bc</name>
     </Variable>
    </variables>
    <plots>
@@ -596,11 +596,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>26</int>
-      <int>28</int>
-      <int>30</int>
-      <int>32</int>
-      <int>34</int>
       <int>36</int>
       <int>37</int>
       <int>39</int>
@@ -616,31 +611,6 @@
       <int>30</int>
       <int>32</int>
       <int>34</int>
-      <int>36</int>
-      <int>37</int>
-      <int>39</int>
-      <int>40</int>
-      <int>42</int>
-      <int>43</int>
-      <int>45</int>
-      <int>46</int>
-      <int>48</int>
-      <int>49</int>
-      <int>26</int>
-      <int>28</int>
-      <int>30</int>
-      <int>32</int>
-      <int>34</int>
-      <int>36</int>
-      <int>37</int>
-      <int>39</int>
-      <int>40</int>
-      <int>42</int>
-      <int>43</int>
-      <int>45</int>
-      <int>46</int>
-      <int>48</int>
-      <int>49</int>
      </ports>
      <doubleEntryCompliant>false</doubleEntryCompliant>
      <name></name>

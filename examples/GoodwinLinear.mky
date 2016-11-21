@@ -236,7 +236,7 @@
      </ports>
      <data>
      </data>
-     <name>:WageRate</name>
+     <name>WageRate</name>
      <intVar>27</intVar>
     </Operation>
     <Operation>
@@ -283,7 +283,7 @@
      </ports>
      <data>
      </data>
-     <name>:K</name>
+     <name>K</name>
      <intVar>24</intVar>
     </Operation>
    </operations>
@@ -298,7 +298,7 @@
       <int>1</int>
       <int>2</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -310,7 +310,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:L</name>
+     <name>L</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -322,7 +322,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:N</name>
+     <name>N</name>
     </Variable>
     <Variable>
      <id>9</id>
@@ -334,7 +334,7 @@
       <int>10</int>
       <int>11</int>
      </ports>
-     <name>:emprate</name>
+     <name>emprate</name>
     </Variable>
     <Variable>
      <id>12</id>
@@ -346,7 +346,7 @@
       <int>13</int>
       <int>14</int>
      </ports>
-     <name>:L</name>
+     <name>L</name>
     </Variable>
     <Variable>
      <id>15</id>
@@ -358,7 +358,7 @@
       <int>16</int>
       <int>17</int>
      </ports>
-     <name>:WageBill</name>
+     <name>WageBill</name>
     </Variable>
     <Variable>
      <id>18</id>
@@ -370,7 +370,7 @@
       <int>19</int>
       <int>20</int>
      </ports>
-     <name>:Profit</name>
+     <name>Profit</name>
     </Variable>
     <Variable>
      <id>21</id>
@@ -382,7 +382,7 @@
       <int>22</int>
       <int>23</int>
      </ports>
-     <name>:Investment</name>
+     <name>Investment</name>
     </Variable>
     <Variable>
      <id>24</id>
@@ -394,7 +394,7 @@
       <int>25</int>
       <int>26</int>
      </ports>
-     <name>:K</name>
+     <name>K</name>
     </Variable>
     <Variable>
      <id>27</id>
@@ -406,7 +406,7 @@
       <int>28</int>
       <int>29</int>
      </ports>
-     <name>:WageRate</name>
+     <name>WageRate</name>
     </Variable>
     <Variable>
      <id>30</id>
@@ -417,7 +417,7 @@
      <ports>
       <int>31</int>
      </ports>
-     <name>:v</name>
+     <name>v</name>
     </Variable>
     <Variable>
      <id>32</id>
@@ -428,7 +428,7 @@
      <ports>
       <int>33</int>
      </ports>
-     <name>:NAIRU</name>
+     <name>NAIRU</name>
     </Variable>
     <Variable>
      <id>34</id>
@@ -439,7 +439,7 @@
      <ports>
       <int>35</int>
      </ports>
-     <name>:PhillipsSlope</name>
+     <name>PhillipsSlope</name>
     </Variable>
    </variables>
    <plots>

@@ -767,7 +767,7 @@
      </ports>
      <data>
      </data>
-     <name>:Capital</name>
+     <name>Capital</name>
      <intVar>0</intVar>
     </Operation>
     <Operation>
@@ -798,7 +798,7 @@
      </ports>
      <data>
      </data>
-     <name>:Productivity</name>
+     <name>Productivity</name>
      <intVar>6</intVar>
     </Operation>
     <Operation>
@@ -845,7 +845,7 @@
      </ports>
      <data>
      </data>
-     <name>:Population</name>
+     <name>Population</name>
      <intVar>15</intVar>
     </Operation>
     <Operation>
@@ -1019,7 +1019,7 @@
      </ports>
      <data>
      </data>
-     <name>:Wage</name>
+     <name>Wage</name>
      <intVar>27</intVar>
     </Operation>
     <Operation>
@@ -1289,7 +1289,7 @@
      </ports>
      <data>
      </data>
-     <name>:Debt</name>
+     <name>Debt</name>
      <intVar>75</intVar>
     </Operation>
     <Operation>
@@ -1543,7 +1543,7 @@
      </ports>
      <data>
      </data>
-     <name>:GovSpend</name>
+     <name>GovSpend</name>
      <intVar>96</intVar>
     </Operation>
    </operations>
@@ -1558,7 +1558,7 @@
       <int>1</int>
       <int>2</int>
      </ports>
-     <name>:Capital</name>
+     <name>Capital</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -1570,7 +1570,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:Output</name>
+     <name>Output</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -1582,7 +1582,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:Productivity</name>
+     <name>Productivity</name>
     </Variable>
     <Variable>
      <id>9</id>
@@ -1594,7 +1594,7 @@
       <int>10</int>
       <int>11</int>
      </ports>
-     <name>:Productivity</name>
+     <name>Productivity</name>
     </Variable>
     <Variable>
      <id>12</id>
@@ -1606,7 +1606,7 @@
       <int>13</int>
       <int>14</int>
      </ports>
-     <name>:Employment</name>
+     <name>Employment</name>
     </Variable>
     <Variable>
      <id>15</id>
@@ -1618,7 +1618,7 @@
       <int>16</int>
       <int>17</int>
      </ports>
-     <name>:Population</name>
+     <name>Population</name>
     </Variable>
     <Variable>
      <id>18</id>
@@ -1630,7 +1630,7 @@
       <int>19</int>
       <int>20</int>
      </ports>
-     <name>:Population</name>
+     <name>Population</name>
     </Variable>
     <Variable>
      <id>21</id>
@@ -1642,7 +1642,7 @@
       <int>22</int>
       <int>23</int>
      </ports>
-     <name>:E_\mathrm{Rate}</name>
+     <name>E_\mathrm{Rate}</name>
     </Variable>
     <Variable>
      <id>24</id>
@@ -1654,7 +1654,7 @@
       <int>25</int>
       <int>26</int>
      </ports>
-     <name>:Wage_\mathrm{Fn}</name>
+     <name>Wage_\mathrm{Fn}</name>
     </Variable>
     <Variable>
      <id>27</id>
@@ -1666,7 +1666,7 @@
       <int>28</int>
       <int>29</int>
      </ports>
-     <name>:Wage</name>
+     <name>Wage</name>
     </Variable>
     <Variable>
      <id>30</id>
@@ -1678,7 +1678,7 @@
       <int>31</int>
       <int>32</int>
      </ports>
-     <name>:Wage</name>
+     <name>Wage</name>
     </Variable>
     <Variable>
      <id>33</id>
@@ -1690,7 +1690,7 @@
       <int>34</int>
       <int>35</int>
      </ports>
-     <name>:Employment</name>
+     <name>Employment</name>
     </Variable>
     <Variable>
      <id>36</id>
@@ -1702,7 +1702,7 @@
       <int>37</int>
       <int>38</int>
      </ports>
-     <name>:Output</name>
+     <name>Output</name>
     </Variable>
     <Variable>
      <id>39</id>
@@ -1714,7 +1714,7 @@
       <int>40</int>
       <int>41</int>
      </ports>
-     <name>:Wages</name>
+     <name>Wages</name>
     </Variable>
     <Variable>
      <id>42</id>
@@ -1726,7 +1726,7 @@
       <int>43</int>
       <int>44</int>
      </ports>
-     <name>:Profit</name>
+     <name>Profit</name>
     </Variable>
     <Variable>
      <id>45</id>
@@ -1738,7 +1738,7 @@
       <int>46</int>
       <int>47</int>
      </ports>
-     <name>:Investment</name>
+     <name>Investment</name>
     </Variable>
     <Variable>
      <id>48</id>
@@ -1750,7 +1750,7 @@
       <int>49</int>
       <int>50</int>
      </ports>
-     <name>:Wages</name>
+     <name>Wages</name>
     </Variable>
     <Variable>
      <id>51</id>
@@ -1762,7 +1762,7 @@
       <int>52</int>
       <int>53</int>
      </ports>
-     <name>:Output</name>
+     <name>Output</name>
     </Variable>
     <Variable>
      <id>54</id>
@@ -1774,7 +1774,7 @@
       <int>55</int>
       <int>56</int>
      </ports>
-     <name>:WageShare</name>
+     <name>WageShare</name>
     </Variable>
     <Variable>
      <id>57</id>
@@ -1786,7 +1786,7 @@
       <int>58</int>
       <int>59</int>
      </ports>
-     <name>:E_\mathrm{Rate}</name>
+     <name>E_\mathrm{Rate}</name>
     </Variable>
     <Variable>
      <id>60</id>
@@ -1798,7 +1798,7 @@
       <int>61</int>
       <int>62</int>
      </ports>
-     <name>:WageShare</name>
+     <name>WageShare</name>
     </Variable>
     <Variable>
      <id>63</id>
@@ -1810,7 +1810,7 @@
       <int>64</int>
       <int>65</int>
      </ports>
-     <name>:Capital</name>
+     <name>Capital</name>
     </Variable>
     <Variable>
      <id>66</id>
@@ -1822,7 +1822,7 @@
       <int>67</int>
       <int>68</int>
      </ports>
-     <name>:Profit_\mathrm{Rate}</name>
+     <name>Profit_\mathrm{Rate}</name>
     </Variable>
     <Variable>
      <id>69</id>
@@ -1834,7 +1834,7 @@
       <int>70</int>
       <int>71</int>
      </ports>
-     <name>:Output</name>
+     <name>Output</name>
     </Variable>
     <Variable>
      <id>72</id>
@@ -1846,7 +1846,7 @@
       <int>73</int>
       <int>74</int>
      </ports>
-     <name>:Profit</name>
+     <name>Profit</name>
     </Variable>
     <Variable>
      <id>75</id>
@@ -1858,7 +1858,7 @@
       <int>76</int>
       <int>77</int>
      </ports>
-     <name>:Debt</name>
+     <name>Debt</name>
     </Variable>
     <Variable>
      <id>78</id>
@@ -1870,7 +1870,7 @@
       <int>79</int>
       <int>80</int>
      </ports>
-     <name>:Interest</name>
+     <name>Interest</name>
     </Variable>
     <Variable>
      <id>81</id>
@@ -1882,7 +1882,7 @@
       <int>82</int>
       <int>83</int>
      </ports>
-     <name>:Output</name>
+     <name>Output</name>
     </Variable>
     <Variable>
      <id>84</id>
@@ -1894,7 +1894,7 @@
       <int>85</int>
       <int>86</int>
      </ports>
-     <name>:Output</name>
+     <name>Output</name>
     </Variable>
     <Variable>
      <id>87</id>
@@ -1906,7 +1906,7 @@
       <int>88</int>
       <int>89</int>
      </ports>
-     <name>:G_{Fn}</name>
+     <name>G_{Fn}</name>
     </Variable>
     <Variable>
      <id>90</id>
@@ -1918,7 +1918,7 @@
       <int>91</int>
       <int>92</int>
      </ports>
-     <name>:Capital</name>
+     <name>Capital</name>
     </Variable>
     <Variable>
      <id>93</id>
@@ -1930,7 +1930,7 @@
       <int>94</int>
       <int>95</int>
      </ports>
-     <name>:Inv_{Fn}</name>
+     <name>Inv_{Fn}</name>
     </Variable>
     <Variable>
      <id>96</id>
@@ -1942,7 +1942,7 @@
       <int>97</int>
       <int>98</int>
      </ports>
-     <name>:GovSpend</name>
+     <name>GovSpend</name>
     </Variable>
     <Variable>
      <id>99</id>
@@ -1953,7 +1953,7 @@
      <ports>
       <int>100</int>
      </ports>
-     <name>:v</name>
+     <name>v</name>
     </Variable>
     <Variable>
      <id>101</id>
@@ -1964,7 +1964,7 @@
      <ports>
       <int>102</int>
      </ports>
-     <name>:Prod_{gr}</name>
+     <name>Prod_{gr}</name>
     </Variable>
     <Variable>
      <id>103</id>
@@ -1975,7 +1975,7 @@
      <ports>
       <int>104</int>
      </ports>
-     <name>:Pop_{gr}</name>
+     <name>Pop_{gr}</name>
     </Variable>
     <Variable>
      <id>105</id>
@@ -1986,7 +1986,7 @@
      <ports>
       <int>106</int>
      </ports>
-     <name>:y_i</name>
+     <name>y_i</name>
     </Variable>
     <Variable>
      <id>107</id>
@@ -1997,7 +1997,7 @@
      <ports>
       <int>108</int>
      </ports>
-     <name>:s_g</name>
+     <name>s_g</name>
     </Variable>
     <Variable>
      <id>109</id>
@@ -2008,7 +2008,7 @@
      <ports>
       <int>110</int>
      </ports>
-     <name>:min_i</name>
+     <name>min_i</name>
     </Variable>
     <Variable>
      <id>111</id>
@@ -2019,7 +2019,7 @@
      <ports>
       <int>112</int>
      </ports>
-     <name>:y_e</name>
+     <name>y_e</name>
     </Variable>
     <Variable>
      <id>113</id>
@@ -2030,7 +2030,7 @@
      <ports>
       <int>114</int>
      </ports>
-     <name>:min_e</name>
+     <name>min_e</name>
     </Variable>
     <Variable>
      <id>115</id>
@@ -2041,7 +2041,7 @@
      <ports>
       <int>116</int>
      </ports>
-     <name>:s_e</name>
+     <name>s_e</name>
     </Variable>
     <Variable>
      <id>117</id>
@@ -2052,7 +2052,7 @@
      <ports>
       <int>118</int>
      </ports>
-     <name>:min_e</name>
+     <name>min_e</name>
     </Variable>
     <Variable>
      <id>119</id>
@@ -2063,7 +2063,7 @@
      <ports>
       <int>120</int>
      </ports>
-     <name>:x_e</name>
+     <name>x_e</name>
     </Variable>
     <Variable>
      <id>121</id>
@@ -2074,7 +2074,7 @@
      <ports>
       <int>122</int>
      </ports>
-     <name>:y_e</name>
+     <name>y_e</name>
     </Variable>
     <Variable>
      <id>123</id>
@@ -2085,7 +2085,7 @@
      <ports>
       <int>124</int>
      </ports>
-     <name>:min_e</name>
+     <name>min_e</name>
     </Variable>
     <Variable>
      <id>125</id>
@@ -2096,7 +2096,7 @@
      <ports>
       <int>126</int>
      </ports>
-     <name>:y_g</name>
+     <name>y_g</name>
     </Variable>
     <Variable>
      <id>127</id>
@@ -2107,7 +2107,7 @@
      <ports>
       <int>128</int>
      </ports>
-     <name>:min_g</name>
+     <name>min_g</name>
     </Variable>
     <Variable>
      <id>129</id>
@@ -2118,7 +2118,7 @@
      <ports>
       <int>130</int>
      </ports>
-     <name>:s_i</name>
+     <name>s_i</name>
     </Variable>
     <Variable>
      <id>131</id>
@@ -2129,7 +2129,7 @@
      <ports>
       <int>132</int>
      </ports>
-     <name>:x_i</name>
+     <name>x_i</name>
     </Variable>
     <Variable>
      <id>133</id>
@@ -2140,7 +2140,7 @@
      <ports>
       <int>134</int>
      </ports>
-     <name>:y_i</name>
+     <name>y_i</name>
     </Variable>
     <Variable>
      <id>135</id>
@@ -2151,7 +2151,7 @@
      <ports>
       <int>136</int>
      </ports>
-     <name>:min_i</name>
+     <name>min_i</name>
     </Variable>
     <Variable>
      <id>137</id>
@@ -2162,7 +2162,7 @@
      <ports>
       <int>138</int>
      </ports>
-     <name>:min_i</name>
+     <name>min_i</name>
     </Variable>
     <Variable>
      <id>139</id>
@@ -2173,7 +2173,7 @@
      <ports>
       <int>140</int>
      </ports>
-     <name>:Int_{Rate}</name>
+     <name>Int_{Rate}</name>
     </Variable>
     <Variable>
      <id>141</id>
@@ -2184,7 +2184,7 @@
      <ports>
       <int>142</int>
      </ports>
-     <name>:y_g</name>
+     <name>y_g</name>
     </Variable>
     <Variable>
      <id>143</id>
@@ -2195,7 +2195,7 @@
      <ports>
       <int>144</int>
      </ports>
-     <name>:min_g</name>
+     <name>min_g</name>
     </Variable>
     <Variable>
      <id>145</id>
@@ -2206,7 +2206,7 @@
      <ports>
       <int>146</int>
      </ports>
-     <name>:x_g</name>
+     <name>x_g</name>
     </Variable>
     <Variable>
      <id>147</id>
@@ -2217,7 +2217,7 @@
      <ports>
       <int>148</int>
      </ports>
-     <name>:min_g</name>
+     <name>min_g</name>
     </Variable>
     <Variable>
      <id>149</id>
@@ -2228,7 +2228,7 @@
      <ports>
       <int>150</int>
      </ports>
-     <name>:\gamma</name>
+     <name>\gamma</name>
     </Variable>
    </variables>
    <plots>
@@ -4021,7 +4021,7 @@
      <float>402</float>
      <float>787.116</float>
      <float>421</float>
-     <float>840.574</float>
+     <float>840.573</float>
      <float>501</float>
      <float>1034.92</float>
      <float>480</float>

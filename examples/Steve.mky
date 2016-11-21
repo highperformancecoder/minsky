@@ -311,7 +311,7 @@
      <ports>
       <int>1</int>
      </ports>
-     <name>:Firm</name>
+     <name>Firm</name>
     </Variable>
     <Variable>
      <id>2</id>
@@ -322,7 +322,7 @@
      <ports>
       <int>3</int>
      </ports>
-     <name>:Loan</name>
+     <name>Loan</name>
     </Variable>
     <Variable>
      <id>4</id>
@@ -333,7 +333,7 @@
      <ports>
       <int>5</int>
      </ports>
-     <name>:Safe</name>
+     <name>Safe</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -344,7 +344,7 @@
      <ports>
       <int>7</int>
      </ports>
-     <name>:Vault</name>
+     <name>Vault</name>
     </Variable>
     <Variable>
      <id>8</id>
@@ -355,7 +355,7 @@
      <ports>
       <int>9</int>
      </ports>
-     <name>:Worker</name>
+     <name>Worker</name>
     </Variable>
     <Variable>
      <id>10</id>
@@ -367,7 +367,7 @@
       <int>11</int>
       <int>12</int>
      </ports>
-     <name>:A</name>
+     <name>A</name>
     </Variable>
     <Variable>
      <id>13</id>
@@ -379,7 +379,7 @@
       <int>14</int>
       <int>15</int>
      </ports>
-     <name>:B</name>
+     <name>B</name>
     </Variable>
     <Variable>
      <id>16</id>
@@ -391,7 +391,7 @@
       <int>17</int>
       <int>18</int>
      </ports>
-     <name>:C</name>
+     <name>C</name>
     </Variable>
     <Variable>
      <id>19</id>
@@ -403,7 +403,7 @@
       <int>20</int>
       <int>21</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>22</id>
@@ -415,7 +415,7 @@
       <int>23</int>
       <int>24</int>
      </ports>
-     <name>:E</name>
+     <name>E</name>
     </Variable>
     <Variable>
      <id>25</id>
@@ -427,7 +427,7 @@
       <int>26</int>
       <int>27</int>
      </ports>
-     <name>:F</name>
+     <name>F</name>
     </Variable>
     <Variable>
      <id>28</id>
@@ -439,7 +439,7 @@
       <int>29</int>
       <int>30</int>
      </ports>
-     <name>:G</name>
+     <name>G</name>
     </Variable>
     <Variable>
      <id>31</id>
@@ -450,7 +450,7 @@
      <ports>
       <int>32</int>
      </ports>
-     <name>:Vault</name>
+     <name>Vault</name>
     </Variable>
     <Variable>
      <id>33</id>
@@ -461,7 +461,7 @@
      <ports>
       <int>34</int>
      </ports>
-     <name>:Loan</name>
+     <name>Loan</name>
     </Variable>
     <Variable>
      <id>35</id>
@@ -472,7 +472,7 @@
      <ports>
       <int>36</int>
      </ports>
-     <name>:Firm</name>
+     <name>Firm</name>
     </Variable>
     <Variable>
      <id>37</id>
@@ -483,7 +483,7 @@
      <ports>
       <int>38</int>
      </ports>
-     <name>:Worker</name>
+     <name>Worker</name>
     </Variable>
     <Variable>
      <id>39</id>
@@ -494,7 +494,7 @@
      <ports>
       <int>40</int>
      </ports>
-     <name>:Safe</name>
+     <name>Safe</name>
     </Variable>
     <Variable>
      <id>41</id>
@@ -506,7 +506,7 @@
       <int>42</int>
       <int>43</int>
      </ports>
-     <name>:A</name>
+     <name>A</name>
     </Variable>
     <Variable>
      <id>44</id>
@@ -518,7 +518,7 @@
       <int>45</int>
       <int>46</int>
      </ports>
-     <name>:B</name>
+     <name>B</name>
     </Variable>
     <Variable>
      <id>47</id>
@@ -530,7 +530,7 @@
       <int>48</int>
       <int>49</int>
      </ports>
-     <name>:C</name>
+     <name>C</name>
     </Variable>
     <Variable>
      <id>50</id>
@@ -542,7 +542,7 @@
       <int>51</int>
       <int>52</int>
      </ports>
-     <name>:D</name>
+     <name>D</name>
     </Variable>
     <Variable>
      <id>53</id>
@@ -554,7 +554,7 @@
       <int>54</int>
       <int>55</int>
      </ports>
-     <name>:E</name>
+     <name>E</name>
     </Variable>
     <Variable>
      <id>56</id>
@@ -566,7 +566,7 @@
       <int>57</int>
       <int>58</int>
      </ports>
-     <name>:F</name>
+     <name>F</name>
     </Variable>
     <Variable>
      <id>59</id>
@@ -578,7 +578,7 @@
       <int>60</int>
       <int>61</int>
      </ports>
-     <name>:G</name>
+     <name>G</name>
     </Variable>
     <Variable>
      <id>62</id>
@@ -589,7 +589,7 @@
      <ports>
       <int>63</int>
      </ports>
-     <name>:v</name>
+     <name>v</name>
     </Variable>
     <Variable>
      <id>64</id>
@@ -600,7 +600,7 @@
      <ports>
       <int>65</int>
      </ports>
-     <name>:rL</name>
+     <name>rL</name>
     </Variable>
     <Variable>
      <id>66</id>
@@ -611,7 +611,7 @@
      <ports>
       <int>67</int>
      </ports>
-     <name>:rD</name>
+     <name>rD</name>
     </Variable>
     <Variable>
      <id>68</id>
@@ -622,7 +622,7 @@
      <ports>
       <int>69</int>
      </ports>
-     <name>:w</name>
+     <name>w</name>
     </Variable>
     <Variable>
      <id>70</id>
@@ -633,7 +633,7 @@
      <ports>
       <int>71</int>
      </ports>
-     <name>:cw</name>
+     <name>cw</name>
     </Variable>
     <Variable>
      <id>72</id>
@@ -644,7 +644,7 @@
      <ports>
       <int>73</int>
      </ports>
-     <name>:cb</name>
+     <name>cb</name>
     </Variable>
     <Variable>
      <id>74</id>
@@ -655,7 +655,7 @@
      <ports>
       <int>75</int>
      </ports>
-     <name>:repay</name>
+     <name>repay</name>
     </Variable>
    </variables>
    <plots>
@@ -810,11 +810,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>32</int>
-      <int>34</int>
-      <int>36</int>
-      <int>38</int>
-      <int>40</int>
       <int>42</int>
       <int>43</int>
       <int>45</int>
@@ -834,39 +829,6 @@
       <int>36</int>
       <int>38</int>
       <int>40</int>
-      <int>42</int>
-      <int>43</int>
-      <int>45</int>
-      <int>46</int>
-      <int>48</int>
-      <int>49</int>
-      <int>51</int>
-      <int>52</int>
-      <int>54</int>
-      <int>55</int>
-      <int>57</int>
-      <int>58</int>
-      <int>60</int>
-      <int>61</int>
-      <int>32</int>
-      <int>34</int>
-      <int>36</int>
-      <int>38</int>
-      <int>40</int>
-      <int>42</int>
-      <int>43</int>
-      <int>45</int>
-      <int>46</int>
-      <int>48</int>
-      <int>49</int>
-      <int>51</int>
-      <int>52</int>
-      <int>54</int>
-      <int>55</int>
-      <int>57</int>
-      <int>58</int>
-      <int>60</int>
-      <int>61</int>
      </ports>
      <doubleEntryCompliant>false</doubleEntryCompliant>
      <name></name>

@@ -181,7 +181,7 @@
      </ports>
      <data>
      </data>
-     <name>:K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
+     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
      <intVar>9</intVar>
     </Operation>
     <Operation>
@@ -308,7 +308,7 @@
       <int>1</int>
       <int>2</int>
      </ports>
-     <name>:O(t)&#32;-&#32;Output&#32;at&#32;time&#32;t</name>
+     <name>O(t)&#32;-&#32;Output&#32;at&#32;time&#32;t</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -320,7 +320,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
+     <name>I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -332,7 +332,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
+     <name>L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
     </Variable>
     <Variable>
      <id>9</id>
@@ -344,7 +344,7 @@
       <int>10</int>
       <int>11</int>
      </ports>
-     <name>:K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
+     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     </Variable>
     <Variable>
      <id>12</id>
@@ -356,7 +356,7 @@
       <int>13</int>
       <int>14</int>
      </ports>
-     <name>:K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
+     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     </Variable>
     <Variable>
      <id>15</id>
@@ -368,7 +368,7 @@
       <int>16</int>
       <int>17</int>
      </ports>
-     <name>:K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
+     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     </Variable>
     <Variable>
      <id>18</id>
@@ -380,7 +380,7 @@
       <int>19</int>
       <int>20</int>
      </ports>
-     <name>:A(t)&#32;-&#32;Technology&#32;at&#32;time&#32;t</name>
+     <name>A(t)&#32;-&#32;Technology&#32;at&#32;time&#32;t</name>
     </Variable>
     <Variable>
      <id>21</id>
@@ -391,7 +391,7 @@
      <ports>
       <int>22</int>
      </ports>
-     <name>:s&#32;-&#32;Savings&#32;Rate</name>
+     <name>s&#32;-&#32;Savings&#32;Rate</name>
     </Variable>
     <Variable>
      <id>23</id>
@@ -402,7 +402,7 @@
      <ports>
       <int>24</int>
      </ports>
-     <name>:d&#32;-&#32;Depreciation&#32;Rate</name>
+     <name>d&#32;-&#32;Depreciation&#32;Rate</name>
     </Variable>
     <Variable>
      <id>25</id>
@@ -413,7 +413,7 @@
      <ports>
       <int>26</int>
      </ports>
-     <name>:Beta</name>
+     <name>Beta</name>
     </Variable>
     <Variable>
      <id>27</id>
@@ -424,7 +424,7 @@
      <ports>
       <int>28</int>
      </ports>
-     <name>:1</name>
+     <name>1</name>
     </Variable>
     <Variable>
      <id>29</id>
@@ -435,7 +435,7 @@
      <ports>
       <int>30</int>
      </ports>
-     <name>:Beta</name>
+     <name>Beta</name>
     </Variable>
    </variables>
    <plots>

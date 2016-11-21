@@ -200,7 +200,7 @@
      </ports>
      <data>
      </data>
-     <name>:Predator</name>
+     <name>Predator</name>
      <intVar>3</intVar>
     </Operation>
     <Operation>
@@ -215,7 +215,7 @@
      </ports>
      <data>
      </data>
-     <name>:Prey</name>
+     <name>Prey</name>
      <intVar>6</intVar>
     </Operation>
     <Operation>
@@ -358,7 +358,7 @@
       <int>1</int>
       <int>2</int>
      </ports>
-     <name>:Predator&#32;Birth&#32;Rate</name>
+     <name>Predator&#32;Birth&#32;Rate</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -370,7 +370,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:Predator</name>
+     <name>Predator</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -382,7 +382,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:Prey</name>
+     <name>Prey</name>
     </Variable>
     <Variable>
      <id>9</id>
@@ -394,7 +394,7 @@
       <int>10</int>
       <int>11</int>
      </ports>
-     <name>:Prey</name>
+     <name>Prey</name>
     </Variable>
     <Variable>
      <id>12</id>
@@ -406,7 +406,7 @@
       <int>13</int>
       <int>14</int>
      </ports>
-     <name>:Predator&#32;Death&#32;Rate</name>
+     <name>Predator&#32;Death&#32;Rate</name>
     </Variable>
     <Variable>
      <id>15</id>
@@ -418,7 +418,7 @@
       <int>16</int>
       <int>17</int>
      </ports>
-     <name>:Prey&#32;Death&#32;Rate</name>
+     <name>Prey&#32;Death&#32;Rate</name>
     </Variable>
     <Variable>
      <id>18</id>
@@ -430,7 +430,7 @@
       <int>19</int>
       <int>20</int>
      </ports>
-     <name>:Prey</name>
+     <name>Prey</name>
     </Variable>
     <Variable>
      <id>21</id>
@@ -442,7 +442,7 @@
       <int>22</int>
       <int>23</int>
      </ports>
-     <name>:Prey&#32;Birth&#32;Rate</name>
+     <name>Prey&#32;Birth&#32;Rate</name>
     </Variable>
     <Variable>
      <id>24</id>
@@ -454,7 +454,7 @@
       <int>25</int>
       <int>26</int>
      </ports>
-     <name>:Predator</name>
+     <name>Predator</name>
     </Variable>
     <Variable>
      <id>27</id>
@@ -466,7 +466,7 @@
       <int>28</int>
       <int>29</int>
      </ports>
-     <name>:Predator&#32;Deaths</name>
+     <name>Predator&#32;Deaths</name>
     </Variable>
     <Variable>
      <id>30</id>
@@ -478,7 +478,7 @@
       <int>31</int>
       <int>32</int>
      </ports>
-     <name>:Prey&#32;Deaths</name>
+     <name>Prey&#32;Deaths</name>
     </Variable>
     <Variable>
      <id>33</id>
@@ -490,7 +490,7 @@
       <int>34</int>
       <int>35</int>
      </ports>
-     <name>:Prey</name>
+     <name>Prey</name>
     </Variable>
     <Variable>
      <id>36</id>
@@ -502,7 +502,7 @@
       <int>37</int>
       <int>38</int>
      </ports>
-     <name>:Predator</name>
+     <name>Predator</name>
     </Variable>
     <Variable>
      <id>39</id>
@@ -514,7 +514,7 @@
       <int>40</int>
       <int>41</int>
      </ports>
-     <name>:Predator&#32;Births</name>
+     <name>Predator&#32;Births</name>
     </Variable>
     <Variable>
      <id>42</id>
@@ -526,7 +526,7 @@
       <int>43</int>
       <int>44</int>
      </ports>
-     <name>:Prey&#32;Births</name>
+     <name>Prey&#32;Births</name>
     </Variable>
     <Variable>
      <id>45</id>
@@ -538,7 +538,7 @@
       <int>46</int>
       <int>47</int>
      </ports>
-     <name>:Prey&#32;Deaths</name>
+     <name>Prey&#32;Deaths</name>
     </Variable>
     <Variable>
      <id>48</id>
@@ -550,7 +550,7 @@
       <int>49</int>
       <int>50</int>
      </ports>
-     <name>:Predator&#32;Births</name>
+     <name>Predator&#32;Births</name>
     </Variable>
     <Variable>
      <id>51</id>
@@ -562,7 +562,7 @@
       <int>52</int>
       <int>53</int>
      </ports>
-     <name>:Predator&#32;Deaths</name>
+     <name>Predator&#32;Deaths</name>
     </Variable>
     <Variable>
      <id>54</id>
@@ -574,7 +574,7 @@
       <int>55</int>
       <int>56</int>
      </ports>
-     <name>:Prey&#32;Births</name>
+     <name>Prey&#32;Births</name>
     </Variable>
     <Variable>
      <id>57</id>
@@ -586,7 +586,7 @@
       <int>58</int>
       <int>59</int>
      </ports>
-     <name>:Predator</name>
+     <name>Predator</name>
     </Variable>
     <Variable>
      <id>60</id>
@@ -597,7 +597,7 @@
      <ports>
       <int>61</int>
      </ports>
-     <name>:.001</name>
+     <name>.001</name>
     </Variable>
     <Variable>
      <id>62</id>
@@ -608,7 +608,7 @@
      <ports>
       <int>63</int>
      </ports>
-     <name>:.0008</name>
+     <name>.0008</name>
     </Variable>
    </variables>
    <plots>

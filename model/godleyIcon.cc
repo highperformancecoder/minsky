@@ -123,17 +123,16 @@ namespace minsky
 //                       vars.back()->ports.end());
         }
       // remove any previously existing variables
-      set<string> svName;
-      for (auto& v: oldVars) svName.insert(v->name());
-      minsky::minsky().model->recursiveDo
-        (&Group::items,
-         [&](Items& m, Items::iterator i) 
-         {
-           if (auto v=dynamic_pointer_cast<VariableBase>(*i))
-             if (svName.count(v->name())>0)
+      set<ItemPtr> ov(oldVars.begin(), oldVars.end());
+      if (!ov.empty())
+        minsky::minsky().model->recursiveDo
+          (&Group::items,
+           [&](Items& m, Items::iterator i) 
+           {
+             if (ov.count(*i))
                m.erase(i);
-           return false;
-         });
+             return false;
+           });
     }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 

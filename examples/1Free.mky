@@ -142,7 +142,7 @@
      <ports>
       <int>1</int>
      </ports>
-     <name>:Vault</name>
+     <name>Vault</name>
     </Variable>
     <Variable>
      <id>2</id>
@@ -153,7 +153,7 @@
      <ports>
       <int>3</int>
      </ports>
-     <name>:Loans</name>
+     <name>Loans</name>
     </Variable>
     <Variable>
      <id>4</id>
@@ -164,7 +164,7 @@
      <ports>
       <int>5</int>
      </ports>
-     <name>:Firms</name>
+     <name>Firms</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -175,7 +175,7 @@
      <ports>
       <int>7</int>
      </ports>
-     <name>:Safe</name>
+     <name>Safe</name>
     </Variable>
     <Variable>
      <id>8</id>
@@ -187,7 +187,7 @@
       <int>9</int>
       <int>10</int>
      </ports>
-     <name>:Loan</name>
+     <name>Loan</name>
     </Variable>
     <Variable>
      <id>11</id>
@@ -199,7 +199,7 @@
       <int>12</int>
       <int>13</int>
      </ports>
-     <name>:IntLoan</name>
+     <name>IntLoan</name>
     </Variable>
     <Variable>
      <id>14</id>
@@ -211,7 +211,7 @@
       <int>15</int>
       <int>16</int>
      </ports>
-     <name>:FirmInt</name>
+     <name>FirmInt</name>
     </Variable>
     <Variable>
      <id>17</id>
@@ -222,7 +222,7 @@
      <ports>
       <int>18</int>
      </ports>
-     <name>:Vault</name>
+     <name>Vault</name>
     </Variable>
     <Variable>
      <id>19</id>
@@ -234,7 +234,7 @@
       <int>20</int>
       <int>21</int>
      </ports>
-     <name>:Loan</name>
+     <name>Loan</name>
     </Variable>
     <Variable>
      <id>22</id>
@@ -245,7 +245,7 @@
      <ports>
       <int>23</int>
      </ports>
-     <name>:rD</name>
+     <name>rD</name>
     </Variable>
     <Variable>
      <id>24</id>
@@ -256,7 +256,7 @@
      <ports>
       <int>25</int>
      </ports>
-     <name>:rL</name>
+     <name>rL</name>
     </Variable>
     <Variable>
      <id>26</id>
@@ -267,7 +267,7 @@
      <ports>
       <int>27</int>
      </ports>
-     <name>:\tau_\mathrm{vault}</name>
+     <name>\tau_\mathrm{vault}</name>
     </Variable>
    </variables>
    <plots>
@@ -317,10 +317,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>1</int>
-      <int>3</int>
-      <int>5</int>
-      <int>7</int>
       <int>9</int>
       <int>10</int>
       <int>12</int>
@@ -331,22 +327,6 @@
       <int>3</int>
       <int>5</int>
       <int>7</int>
-      <int>9</int>
-      <int>10</int>
-      <int>12</int>
-      <int>13</int>
-      <int>15</int>
-      <int>16</int>
-      <int>1</int>
-      <int>3</int>
-      <int>5</int>
-      <int>7</int>
-      <int>9</int>
-      <int>10</int>
-      <int>12</int>
-      <int>13</int>
-      <int>15</int>
-      <int>16</int>
      </ports>
      <doubleEntryCompliant>false</doubleEntryCompliant>
      <name>Godley63</name>

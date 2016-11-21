@@ -1103,7 +1103,7 @@
      </ports>
      <data>
      </data>
-     <name>:a</name>
+     <name>a</name>
      <intVar>29</intVar>
     </Operation>
     <Operation>
@@ -1150,7 +1150,7 @@
      </ports>
      <data>
      </data>
-     <name>:N</name>
+     <name>N</name>
      <intVar>41</intVar>
     </Operation>
     <Operation>
@@ -1197,7 +1197,7 @@
      </ports>
      <data>
      </data>
-     <name>:W</name>
+     <name>W</name>
      <intVar>47</intVar>
     </Operation>
     <Operation>
@@ -1356,7 +1356,7 @@
      </ports>
      <data>
      </data>
-     <name>:K_R</name>
+     <name>K_R</name>
      <intVar>105</intVar>
     </Operation>
     <Operation>
@@ -1483,7 +1483,7 @@
      </ports>
      <data>
      </data>
-     <name>:P</name>
+     <name>P</name>
      <intVar>128</intVar>
     </Operation>
     <Operation>
@@ -2103,7 +2103,7 @@
       <int>1</int>
       <int>2</int>
      </ports>
-     <name>:Invest</name>
+     <name>Invest</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -2115,7 +2115,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:IntL</name>
+     <name>IntL</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -2127,7 +2127,7 @@
       <int>7</int>
       <int>8</int>
      </ports>
-     <name>:IntDF</name>
+     <name>IntDF</name>
     </Variable>
     <Variable>
      <id>9</id>
@@ -2139,7 +2139,7 @@
       <int>10</int>
       <int>11</int>
      </ports>
-     <name>:Wages</name>
+     <name>Wages</name>
     </Variable>
     <Variable>
      <id>12</id>
@@ -2151,7 +2151,7 @@
       <int>13</int>
       <int>14</int>
      </ports>
-     <name>:ConsB</name>
+     <name>ConsB</name>
     </Variable>
     <Variable>
      <id>15</id>
@@ -2163,7 +2163,7 @@
       <int>16</int>
       <int>17</int>
      </ports>
-     <name>:ConsW</name>
+     <name>ConsW</name>
     </Variable>
     <Variable>
      <id>18</id>
@@ -2175,7 +2175,7 @@
       <int>19</int>
       <int>20</int>
      </ports>
-     <name>:Repay</name>
+     <name>Repay</name>
     </Variable>
     <Variable>
      <id>21</id>
@@ -2186,7 +2186,7 @@
      <ports>
       <int>22</int>
      </ports>
-     <name>:LF</name>
+     <name>LF</name>
     </Variable>
     <Variable>
      <id>23</id>
@@ -2197,7 +2197,7 @@
      <ports>
       <int>24</int>
      </ports>
-     <name>:DF</name>
+     <name>DF</name>
     </Variable>
     <Variable>
      <id>25</id>
@@ -2208,7 +2208,7 @@
      <ports>
       <int>26</int>
      </ports>
-     <name>:DW</name>
+     <name>DW</name>
     </Variable>
     <Variable>
      <id>27</id>
@@ -2219,7 +2219,7 @@
      <ports>
       <int>28</int>
      </ports>
-     <name>:EB</name>
+     <name>EB</name>
     </Variable>
     <Variable>
      <id>29</id>
@@ -2231,7 +2231,7 @@
       <int>30</int>
       <int>31</int>
      </ports>
-     <name>:a</name>
+     <name>a</name>
     </Variable>
     <Variable>
      <id>32</id>
@@ -2243,7 +2243,7 @@
       <int>33</int>
       <int>34</int>
      </ports>
-     <name>:a</name>
+     <name>a</name>
     </Variable>
     <Variable>
      <id>35</id>
@@ -2255,7 +2255,7 @@
       <int>36</int>
       <int>37</int>
      </ports>
-     <name>:Y_R</name>
+     <name>Y_R</name>
     </Variable>
     <Variable>
      <id>38</id>
@@ -2267,7 +2267,7 @@
       <int>39</int>
       <int>40</int>
      </ports>
-     <name>:L</name>
+     <name>L</name>
     </Variable>
     <Variable>
      <id>41</id>
@@ -2279,7 +2279,7 @@
       <int>42</int>
       <int>43</int>
      </ports>
-     <name>:N</name>
+     <name>N</name>
     </Variable>
     <Variable>
      <id>44</id>
@@ -2291,7 +2291,7 @@
       <int>45</int>
       <int>46</int>
      </ports>
-     <name>:N</name>
+     <name>N</name>
     </Variable>
     <Variable>
      <id>47</id>
@@ -2303,7 +2303,7 @@
       <int>48</int>
       <int>49</int>
      </ports>
-     <name>:W</name>
+     <name>W</name>
     </Variable>
     <Variable>
      <id>50</id>
@@ -2315,7 +2315,7 @@
       <int>51</int>
       <int>52</int>
      </ports>
-     <name>:W</name>
+     <name>W</name>
     </Variable>
     <Variable>
      <id>53</id>
@@ -2327,7 +2327,7 @@
       <int>54</int>
       <int>55</int>
      </ports>
-     <name>:Invest</name>
+     <name>Invest</name>
     </Variable>
     <Variable>
      <id>56</id>
@@ -2339,7 +2339,7 @@
       <int>57</int>
       <int>58</int>
      </ports>
-     <name>:IntL</name>
+     <name>IntL</name>
     </Variable>
     <Variable>
      <id>59</id>
@@ -2351,7 +2351,7 @@
       <int>60</int>
       <int>61</int>
      </ports>
-     <name>:IntDF</name>
+     <name>IntDF</name>
     </Variable>
     <Variable>
      <id>62</id>
@@ -2363,7 +2363,7 @@
       <int>63</int>
       <int>64</int>
      </ports>
-     <name>:IntDW</name>
+     <name>IntDW</name>
     </Variable>
     <Variable>
      <id>65</id>
@@ -2375,7 +2375,7 @@
       <int>66</int>
       <int>67</int>
      </ports>
-     <name>:IntDW</name>
+     <name>IntDW</name>
     </Variable>
     <Variable>
      <id>68</id>
@@ -2387,7 +2387,7 @@
       <int>69</int>
       <int>70</int>
      </ports>
-     <name>:ConsW</name>
+     <name>ConsW</name>
     </Variable>
     <Variable>
      <id>71</id>
@@ -2399,7 +2399,7 @@
       <int>72</int>
       <int>73</int>
      </ports>
-     <name>:ConsB</name>
+     <name>ConsB</name>
     </Variable>
     <Variable>
      <id>74</id>
@@ -2411,7 +2411,7 @@
       <int>75</int>
       <int>76</int>
      </ports>
-     <name>:Repay</name>
+     <name>Repay</name>
     </Variable>
     <Variable>
      <id>77</id>
@@ -2423,7 +2423,7 @@
       <int>78</int>
       <int>79</int>
      </ports>
-     <name>:L</name>
+     <name>L</name>
     </Variable>
     <Variable>
      <id>80</id>
@@ -2435,7 +2435,7 @@
       <int>81</int>
       <int>82</int>
      </ports>
-     <name>:Wages</name>
+     <name>Wages</name>
     </Variable>
     <Variable>
      <id>83</id>
@@ -2446,7 +2446,7 @@
      <ports>
       <int>84</int>
      </ports>
-     <name>:LF</name>
+     <name>LF</name>
     </Variable>
     <Variable>
      <id>85</id>
@@ -2458,7 +2458,7 @@
       <int>86</int>
       <int>87</int>
      </ports>
-     <name>:IntL</name>
+     <name>IntL</name>
     </Variable>
     <Variable>
      <id>88</id>
@@ -2469,7 +2469,7 @@
      <ports>
       <int>89</int>
      </ports>
-     <name>:DF</name>
+     <name>DF</name>
     </Variable>
     <Variable>
      <id>90</id>
@@ -2480,7 +2480,7 @@
      <ports>
       <int>91</int>
      </ports>
-     <name>:DW</name>
+     <name>DW</name>
     </Variable>
     <Variable>
      <id>92</id>
@@ -2491,7 +2491,7 @@
      <ports>
       <int>93</int>
      </ports>
-     <name>:EB</name>
+     <name>EB</name>
     </Variable>
     <Variable>
      <id>94</id>
@@ -2502,7 +2502,7 @@
      <ports>
       <int>95</int>
      </ports>
-     <name>:DW</name>
+     <name>DW</name>
     </Variable>
     <Variable>
      <id>96</id>
@@ -2514,7 +2514,7 @@
       <int>97</int>
       <int>98</int>
      </ports>
-     <name>:IntDF</name>
+     <name>IntDF</name>
     </Variable>
     <Variable>
      <id>99</id>
@@ -2526,7 +2526,7 @@
       <int>100</int>
       <int>101</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>102</id>
@@ -2538,7 +2538,7 @@
       <int>103</int>
       <int>104</int>
      </ports>
-     <name>:\Pi</name>
+     <name>\Pi</name>
     </Variable>
     <Variable>
      <id>105</id>
@@ -2550,7 +2550,7 @@
       <int>106</int>
       <int>107</int>
      </ports>
-     <name>:K_R</name>
+     <name>K_R</name>
     </Variable>
     <Variable>
      <id>108</id>
@@ -2562,7 +2562,7 @@
       <int>109</int>
       <int>110</int>
      </ports>
-     <name>:K_R</name>
+     <name>K_R</name>
     </Variable>
     <Variable>
      <id>111</id>
@@ -2574,7 +2574,7 @@
       <int>112</int>
       <int>113</int>
      </ports>
-     <name>:K</name>
+     <name>K</name>
     </Variable>
     <Variable>
      <id>114</id>
@@ -2586,7 +2586,7 @@
       <int>115</int>
       <int>116</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>117</id>
@@ -2597,7 +2597,7 @@
      <ports>
       <int>118</int>
      </ports>
-     <name>:LF</name>
+     <name>LF</name>
     </Variable>
     <Variable>
      <id>119</id>
@@ -2609,7 +2609,7 @@
       <int>120</int>
       <int>121</int>
      </ports>
-     <name>:P_K</name>
+     <name>P_K</name>
     </Variable>
     <Variable>
      <id>122</id>
@@ -2621,7 +2621,7 @@
       <int>123</int>
       <int>124</int>
      </ports>
-     <name>:I_R</name>
+     <name>I_R</name>
     </Variable>
     <Variable>
      <id>125</id>
@@ -2633,7 +2633,7 @@
       <int>126</int>
       <int>127</int>
      </ports>
-     <name>:\lambda</name>
+     <name>\lambda</name>
     </Variable>
     <Variable>
      <id>128</id>
@@ -2645,7 +2645,7 @@
       <int>129</int>
       <int>130</int>
      </ports>
-     <name>:P</name>
+     <name>P</name>
     </Variable>
     <Variable>
      <id>131</id>
@@ -2657,7 +2657,7 @@
       <int>132</int>
       <int>133</int>
      </ports>
-     <name>:P</name>
+     <name>P</name>
     </Variable>
     <Variable>
      <id>134</id>
@@ -2669,7 +2669,7 @@
       <int>135</int>
       <int>136</int>
      </ports>
-     <name>:W</name>
+     <name>W</name>
     </Variable>
     <Variable>
      <id>137</id>
@@ -2681,7 +2681,7 @@
       <int>138</int>
       <int>139</int>
      </ports>
-     <name>:a</name>
+     <name>a</name>
     </Variable>
     <Variable>
      <id>140</id>
@@ -2693,7 +2693,7 @@
       <int>141</int>
       <int>142</int>
      </ports>
-     <name>:P_K</name>
+     <name>P_K</name>
     </Variable>
     <Variable>
      <id>143</id>
@@ -2705,7 +2705,7 @@
       <int>144</int>
       <int>145</int>
      </ports>
-     <name>:P_K</name>
+     <name>P_K</name>
     </Variable>
     <Variable>
      <id>146</id>
@@ -2717,7 +2717,7 @@
       <int>147</int>
       <int>148</int>
      </ports>
-     <name>:K</name>
+     <name>K</name>
     </Variable>
     <Variable>
      <id>149</id>
@@ -2729,7 +2729,7 @@
       <int>150</int>
       <int>151</int>
      </ports>
-     <name>:\pi_r</name>
+     <name>\pi_r</name>
     </Variable>
     <Variable>
      <id>152</id>
@@ -2741,7 +2741,7 @@
       <int>153</int>
       <int>154</int>
      </ports>
-     <name>:P</name>
+     <name>P</name>
     </Variable>
     <Variable>
      <id>155</id>
@@ -2753,7 +2753,7 @@
       <int>156</int>
       <int>157</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>158</id>
@@ -2765,7 +2765,7 @@
       <int>159</int>
       <int>160</int>
      </ports>
-     <name>:Wages</name>
+     <name>Wages</name>
     </Variable>
     <Variable>
      <id>161</id>
@@ -2777,7 +2777,7 @@
       <int>162</int>
       <int>163</int>
      </ports>
-     <name>:\omega</name>
+     <name>\omega</name>
     </Variable>
     <Variable>
      <id>164</id>
@@ -2789,7 +2789,7 @@
       <int>165</int>
       <int>166</int>
      </ports>
-     <name>:\omega</name>
+     <name>\omega</name>
     </Variable>
     <Variable>
      <id>167</id>
@@ -2801,7 +2801,7 @@
       <int>168</int>
       <int>169</int>
      </ports>
-     <name>:\omega</name>
+     <name>\omega</name>
     </Variable>
     <Variable>
      <id>170</id>
@@ -2813,7 +2813,7 @@
       <int>171</int>
       <int>172</int>
      </ports>
-     <name>:P</name>
+     <name>P</name>
     </Variable>
     <Variable>
      <id>173</id>
@@ -2825,7 +2825,7 @@
       <int>174</int>
       <int>175</int>
      </ports>
-     <name>:inf_r</name>
+     <name>inf_r</name>
     </Variable>
     <Variable>
      <id>176</id>
@@ -2837,7 +2837,7 @@
       <int>177</int>
       <int>178</int>
      </ports>
-     <name>:inf_r</name>
+     <name>inf_r</name>
     </Variable>
     <Variable>
      <id>179</id>
@@ -2849,7 +2849,7 @@
       <int>180</int>
       <int>181</int>
      </ports>
-     <name>:inf_r</name>
+     <name>inf_r</name>
     </Variable>
     <Variable>
      <id>182</id>
@@ -2860,7 +2860,7 @@
      <ports>
       <int>183</int>
      </ports>
-     <name>:LF</name>
+     <name>LF</name>
     </Variable>
     <Variable>
      <id>184</id>
@@ -2872,7 +2872,7 @@
       <int>185</int>
       <int>186</int>
      </ports>
-     <name>:Y</name>
+     <name>Y</name>
     </Variable>
     <Variable>
      <id>187</id>
@@ -2884,7 +2884,7 @@
       <int>188</int>
       <int>189</int>
      </ports>
-     <name>:d_r</name>
+     <name>d_r</name>
     </Variable>
     <Variable>
      <id>190</id>
@@ -2896,7 +2896,7 @@
       <int>191</int>
       <int>192</int>
      </ports>
-     <name>:inf_r</name>
+     <name>inf_r</name>
     </Variable>
     <Variable>
      <id>193</id>
@@ -2908,7 +2908,7 @@
       <int>194</int>
       <int>195</int>
      </ports>
-     <name>:\lambda</name>
+     <name>\lambda</name>
     </Variable>
     <Variable>
      <id>196</id>
@@ -2920,7 +2920,7 @@
       <int>197</int>
       <int>198</int>
      </ports>
-     <name>:\d\lambda</name>
+     <name>\d\lambda</name>
     </Variable>
     <Variable>
      <id>199</id>
@@ -2932,7 +2932,7 @@
       <int>200</int>
       <int>201</int>
      </ports>
-     <name>:I_fn</name>
+     <name>I_fn</name>
     </Variable>
     <Variable>
      <id>202</id>
@@ -2943,7 +2943,7 @@
      <ports>
       <int>203</int>
      </ports>
-     <name>:\alpha</name>
+     <name>\alpha</name>
     </Variable>
     <Variable>
      <id>204</id>
@@ -2954,7 +2954,7 @@
      <ports>
       <int>205</int>
      </ports>
-     <name>:\beta</name>
+     <name>\beta</name>
     </Variable>
     <Variable>
      <id>206</id>
@@ -2965,7 +2965,7 @@
      <ports>
       <int>207</int>
      </ports>
-     <name>:r_L</name>
+     <name>r_L</name>
     </Variable>
     <Variable>
      <id>208</id>
@@ -2976,7 +2976,7 @@
      <ports>
       <int>209</int>
      </ports>
-     <name>:r_D</name>
+     <name>r_D</name>
     </Variable>
     <Variable>
      <id>210</id>
@@ -2987,7 +2987,7 @@
      <ports>
       <int>211</int>
      </ports>
-     <name>:r_D</name>
+     <name>r_D</name>
     </Variable>
     <Variable>
      <id>212</id>
@@ -2998,7 +2998,7 @@
      <ports>
       <int>213</int>
      </ports>
-     <name>:\tau_\mathrm{CB}</name>
+     <name>\tau_\mathrm{CB}</name>
     </Variable>
     <Variable>
      <id>214</id>
@@ -3009,7 +3009,7 @@
      <ports>
       <int>215</int>
      </ports>
-     <name>:\tau_\mathrm{CW}</name>
+     <name>\tau_\mathrm{CW}</name>
     </Variable>
     <Variable>
      <id>216</id>
@@ -3020,7 +3020,7 @@
      <ports>
       <int>217</int>
      </ports>
-     <name>:v</name>
+     <name>v</name>
     </Variable>
     <Variable>
      <id>218</id>
@@ -3031,7 +3031,7 @@
      <ports>
       <int>219</int>
      </ports>
-     <name>:\delta</name>
+     <name>\delta</name>
     </Variable>
     <Variable>
      <id>220</id>
@@ -3042,7 +3042,7 @@
      <ports>
       <int>221</int>
      </ports>
-     <name>:\tau_P</name>
+     <name>\tau_P</name>
     </Variable>
     <Variable>
      <id>222</id>
@@ -3053,7 +3053,7 @@
      <ports>
       <int>223</int>
      </ports>
-     <name>:1-s</name>
+     <name>1-s</name>
     </Variable>
     <Variable>
      <id>224</id>
@@ -3064,7 +3064,7 @@
      <ports>
       <int>225</int>
      </ports>
-     <name>:\lambda_w</name>
+     <name>\lambda_w</name>
     </Variable>
     <Variable>
      <id>226</id>
@@ -3075,7 +3075,7 @@
      <ports>
       <int>227</int>
      </ports>
-     <name>:v</name>
+     <name>v</name>
     </Variable>
     <Variable>
      <id>228</id>
@@ -3086,7 +3086,7 @@
      <ports>
       <int>229</int>
      </ports>
-     <name>:\alpha</name>
+     <name>\alpha</name>
     </Variable>
     <Variable>
      <id>230</id>
@@ -3097,7 +3097,7 @@
      <ports>
       <int>231</int>
      </ports>
-     <name>:\beta</name>
+     <name>\beta</name>
     </Variable>
     <Variable>
      <id>232</id>
@@ -3108,7 +3108,7 @@
      <ports>
       <int>233</int>
      </ports>
-     <name>:\delta</name>
+     <name>\delta</name>
     </Variable>
     <Variable>
      <id>551</id>
@@ -3669,10 +3669,6 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <ports>
-      <int>22</int>
-      <int>24</int>
-      <int>26</int>
-      <int>28</int>
       <int>1</int>
       <int>2</int>
       <int>4</int>
@@ -3693,42 +3689,6 @@
       <int>24</int>
       <int>26</int>
       <int>28</int>
-      <int>1</int>
-      <int>2</int>
-      <int>4</int>
-      <int>5</int>
-      <int>7</int>
-      <int>8</int>
-      <int>63</int>
-      <int>64</int>
-      <int>10</int>
-      <int>11</int>
-      <int>13</int>
-      <int>14</int>
-      <int>16</int>
-      <int>17</int>
-      <int>19</int>
-      <int>20</int>
-      <int>22</int>
-      <int>24</int>
-      <int>26</int>
-      <int>28</int>
-      <int>1</int>
-      <int>2</int>
-      <int>4</int>
-      <int>5</int>
-      <int>7</int>
-      <int>8</int>
-      <int>63</int>
-      <int>64</int>
-      <int>10</int>
-      <int>11</int>
-      <int>13</int>
-      <int>14</int>
-      <int>16</int>
-      <int>17</int>
-      <int>19</int>
-      <int>20</int>
      </ports>
      <doubleEntryCompliant>true</doubleEntryCompliant>
      <name>Godley0</name>
@@ -5628,7 +5588,7 @@
     <id>572</id>
     <visible>false</visible>
     <coords>
-     <float>510.616</float>
+     <float>512.116</float>
      <float>280.793</float>
      <float>560.342</float>
      <float>300.14</float>
@@ -5638,7 +5598,7 @@
     <id>573</id>
     <visible>false</visible>
     <coords>
-     <float>510.616</float>
+     <float>512.116</float>
      <float>280.793</float>
      <float>668.857</float>
      <float>199.21</float>
@@ -5648,7 +5608,7 @@
     <id>574</id>
     <visible>false</visible>
     <coords>
-     <float>511.291</float>
+     <float>512.791</float>
      <float>325.33</float>
      <float>560.342</float>
      <float>318.14</float>
@@ -5658,10 +5618,10 @@
     <id>575</id>
     <visible>false</visible>
     <coords>
-     <float>511.291</float>
+     <float>512.791</float>
      <float>325.33</float>
-     <float>699.993</float>
-     <float>-222.177</float>
+     <float>700.175</float>
+     <float>-222.178</float>
      <float>726.031</float>
      <float>266.8</float>
     </coords>
@@ -5670,7 +5630,7 @@
     <id>576</id>
     <visible>false</visible>
     <coords>
-     <float>511.291</float>
+     <float>512.791</float>
      <float>325.33</float>
      <float>668.857</float>
      <float>217.21</float>
@@ -5680,7 +5640,7 @@
     <id>577</id>
     <visible>false</visible>
     <coords>
-     <float>574.592</float>
+     <float>576.092</float>
      <float>283.47</float>
      <float>590.096</float>
      <float>284.971</float>
@@ -5690,7 +5650,7 @@
     <id>578</id>
     <visible>false</visible>
     <coords>
-     <float>575.675</float>
+     <float>577.175</float>
      <float>253.133</float>
      <float>595.347</float>
      <float>246.38</float>
@@ -5700,7 +5660,7 @@
     <id>579</id>
     <visible>false</visible>
     <coords>
-     <float>560.161</float>
+     <float>561.661</float>
      <float>263.52</float>
      <float>595.347</float>
      <float>228.38</float>
@@ -5712,7 +5672,7 @@
     <coords>
      <float>744.031</float>
      <float>257.8</float>
-     <float>647.161</float>
+     <float>645.661</float>
      <float>263.52</float>
     </coords>
    </Layout>
@@ -5949,7 +5909,7 @@
     <id>634</id>
     <visible>false</visible>
     <coords>
-     <float>1096.41</float>
+     <float>1094.91</float>
      <float>617.77</float>
      <float>1043.91</float>
      <float>624.77</float>
@@ -5959,10 +5919,10 @@
     <id>635</id>
     <visible>false</visible>
     <coords>
-     <float>1096.41</float>
+     <float>1094.91</float>
      <float>617.77</float>
-     <float>164.94</float>
-     <float>-2344.42</float>
+     <float>169.744</float>
+     <float>-2344.43</float>
      <float>874.911</float>
      <float>554.77</float>
     </coords>
@@ -5971,7 +5931,7 @@
     <id>636</id>
     <visible>false</visible>
     <coords>
-     <float>1078.41</float>
+     <float>1076.91</float>
      <float>674.77</float>
      <float>1043.91</float>
      <float>642.77</float>
@@ -5981,7 +5941,7 @@
     <id>637</id>
     <visible>false</visible>
     <coords>
-     <float>1078.41</float>
+     <float>1076.91</float>
      <float>674.77</float>
      <float>874.911</float>
      <float>572.77</float>
@@ -5991,10 +5951,10 @@
     <id>638</id>
     <visible>false</visible>
     <coords>
-     <float>1078.41</float>
+     <float>1076.91</float>
      <float>674.77</float>
-     <float>170.642</float>
-     <float>-2344.56</float>
+     <float>173.575</float>
+     <float>-2344.57</float>
      <float>771.411</float>
      <float>598.52</float>
     </coords>
@@ -6003,7 +5963,7 @@
     <id>639</id>
     <visible>false</visible>
     <coords>
-     <float>1019.91</float>
+     <float>1018.41</float>
      <float>607.77</float>
      <float>987.911</float>
      <float>603.77</float>
@@ -6013,7 +5973,7 @@
     <id>640</id>
     <visible>false</visible>
     <coords>
-     <float>1043.41</float>
+     <float>1041.91</float>
      <float>585.77</float>
      <float>1000.91</float>
      <float>584.77</float>
@@ -6023,7 +5983,7 @@
     <id>641</id>
     <visible>false</visible>
     <coords>
-     <float>988.661</float>
+     <float>987.161</float>
      <float>616.52</float>
      <float>1000.91</float>
      <float>566.77</float>
@@ -6035,7 +5995,7 @@
     <coords>
      <float>753.411</float>
      <float>589.52</float>
-     <float>882.161</float>
+     <float>883.661</float>
      <float>616.52</float>
     </coords>
    </Layout>
@@ -6048,7 +6008,7 @@
     <rotation>180</rotation>
     <width>154</width>
     <height>57</height>
-    <displayZoom>3.41384</displayZoom>
+    <displayZoom>3.47472</displayZoom>
    </Layout>
    <Layout>
     <id>644</id>
@@ -6272,7 +6232,7 @@
     <id>696</id>
     <visible>false</visible>
     <coords>
-     <float>757.869</float>
+     <float>759.369</float>
      <float>104.915</float>
      <float>827.172</float>
      <float>107.414</float>
@@ -6282,9 +6242,9 @@
     <id>697</id>
     <visible>false</visible>
     <coords>
-     <float>757.869</float>
+     <float>759.369</float>
      <float>104.915</float>
-     <float>393.951</float>
+     <float>397.403</float>
      <float>-157.393</float>
      <float>1038.05</float>
      <float>-21.2116</float>
@@ -6294,7 +6254,7 @@
     <id>698</id>
     <visible>false</visible>
     <coords>
-     <float>705.415</float>
+     <float>706.915</float>
      <float>128.551</float>
      <float>827.172</float>
      <float>125.414</float>
@@ -6304,9 +6264,9 @@
     <id>699</id>
     <visible>false</visible>
     <coords>
-     <float>705.415</float>
+     <float>706.915</float>
      <float>128.551</float>
-     <float>397.375</float>
+     <float>400.267</float>
      <float>-157.383</float>
      <float>1038.05</float>
      <float>-3.2116</float>
@@ -6316,10 +6276,10 @@
     <id>700</id>
     <visible>false</visible>
     <coords>
-     <float>705.415</float>
+     <float>706.915</float>
      <float>128.551</float>
-     <float>397.952</float>
-     <float>-157.378</float>
+     <float>400.56</float>
+     <float>-157.38</float>
      <float>1121.17</float>
      <float>75.4135</float>
     </coords>
@@ -6328,7 +6288,7 @@
     <id>701</id>
     <visible>false</visible>
     <coords>
-     <float>864.672</float>
+     <float>866.172</float>
      <float>87.4136</float>
      <float>902.172</float>
      <float>96.4136</float>
@@ -6338,7 +6298,7 @@
     <id>702</id>
     <visible>false</visible>
     <coords>
-     <float>877.172</float>
+     <float>878.672</float>
      <float>45.4135</float>
      <float>912.047</float>
      <float>46.7885</float>
@@ -6350,7 +6310,7 @@
     <coords>
      <float>1139.17</float>
      <float>66.4135</float>
-     <float>922.922</float>
+     <float>921.422</float>
      <float>52.101</float>
     </coords>
    </Layout>
@@ -6358,7 +6318,7 @@
     <id>704</id>
     <visible>false</visible>
     <coords>
-     <float>828.922</float>
+     <float>830.422</float>
      <float>52.101</float>
      <float>912.047</float>
      <float>28.7885</float>
@@ -6373,7 +6333,7 @@
     <rotation>0</rotation>
     <width>141</width>
     <height>61</height>
-    <displayZoom>5.18466</displayZoom>
+    <displayZoom>5.25008</displayZoom>
    </Layout>
    <Layout>
     <id>705</id>
@@ -7393,7 +7353,7 @@
     <coords>
      <float>472.422</float>
      <float>314.796</float>
-     <float>549.161</float>
+     <float>547.661</float>
      <float>263.52</float>
     </coords>
    </Layout>
@@ -7401,7 +7361,7 @@
     <id>807</id>
     <visible>true</visible>
     <coords>
-     <float>677.161</float>
+     <float>678.661</float>
      <float>263.52</float>
      <float>881.151</float>
      <float>254.52</float>
@@ -7413,7 +7373,7 @@
     <coords>
      <float>1162.42</float>
      <float>583.602</float>
-     <float>1005.66</float>
+     <float>1007.16</float>
      <float>616.52</float>
     </coords>
    </Layout>
@@ -7421,7 +7381,7 @@
     <id>809</id>
     <visible>true</visible>
     <coords>
-     <float>862.161</float>
+     <float>860.661</float>
      <float>616.52</float>
      <float>630.421</float>
      <float>604.602</float>
@@ -7431,7 +7391,7 @@
     <id>810</id>
     <visible>true</visible>
     <coords>
-     <float>862.161</float>
+     <float>860.661</float>
      <float>616.52</float>
      <float>852.361</float>
      <float>674.424</float>
@@ -7441,7 +7401,7 @@
     <id>811</id>
     <visible>true</visible>
     <coords>
-     <float>941.922</float>
+     <float>943.422</float>
      <float>52.101</float>
      <float>985.151</float>
      <float>42.52</float>

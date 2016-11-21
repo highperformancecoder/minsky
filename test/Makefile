@@ -23,14 +23,14 @@ LIBS+=-ljson_spirit -lsoci_core -lboost_system -lboost_thread \
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
 LIBS+=$(shell pkg-config --libs librsvg-2.0)
 
-EXES=unittests cmpFp 
+EXES=cmpFp checkSchemasAreSame
 #testDatabase testGroup 
 
 ifdef AEGIS
 #EXES+=tcl-cov
 endif
 
-all: $(EXES)
+all: unittests $(EXES)
 
 unittests: $(UNITTESTOBJS) $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS)  -o $@ $(UNITTESTOBJS) $(MINSKYOBJS) $(LIBS)
@@ -48,13 +48,16 @@ testGroup: main.o testGroup.o $(MINSKYOBJS)
 cmpFp: cmpFp.o
 	$(CPLUSPLUS) $(FLAGS) -o $@ $<
 
+checkSchemasAreSame: checkSchemasAreSame.o $(MINSKYOBJS)
+	$(CPLUSPLUS) $(FLAGS) -o $@ $^ $(LIBS)
+
 tcl-cov: tcl-cov.o $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS) -o $@ $^ $(LIBS)
 
-include $(UNITTESTOBJS:.o=.d)
+include $(UNITTESTOBJS:.o=.d) $(EXES:=.d)
 
 clean:
-	$(BASIC_CLEAN) $(EXES)
+	$(BASIC_CLEAN) unittests $(EXES)
 	cd 00; $(BASIC_CLEAN)
 	cd exampleLogs; $(BASIC_CLEAN)
 	cd oldSchema; $(BASIC_CLEAN)

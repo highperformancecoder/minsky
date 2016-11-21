@@ -53,7 +53,7 @@
      </ports>
      <data>
      </data>
-     <name>:y</name>
+     <name>y</name>
      <intVar>0</intVar>
     </Operation>
     <Operation>
@@ -84,7 +84,7 @@
       <int>1</int>
       <int>2</int>
      </ports>
-     <name>:y</name>
+     <name>y</name>
     </Variable>
     <Variable>
      <id>3</id>
@@ -96,7 +96,7 @@
       <int>4</int>
       <int>5</int>
      </ports>
-     <name>:yy</name>
+     <name>yy</name>
     </Variable>
     <Variable>
      <id>6</id>
@@ -107,7 +107,7 @@
      <ports>
       <int>7</int>
      </ports>
-     <name>:a</name>
+     <name>a</name>
     </Variable>
    </variables>
    <plots>
