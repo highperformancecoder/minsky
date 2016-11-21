@@ -300,7 +300,8 @@ placed on the canvas for explanatory purposes. Anything that can be
 entered on the keyboard can be placed here, including unicode
 characters, but LaTeX formatting is not currently supported. A note
 widget, like all canvas items, allow short additional tooltips to be
-specified (not in Mun!). 
+specified. It is also possible to annotate an ordinary block with some text,
+that is visible through the edit menu, or as a tooltip.
 
 \section{Godley Tables}\label{godley}
 
@@ -324,7 +325,7 @@ field}{var:init}, or just be a numerical value.
 
 Finally come the flows. The first column is a simple textual label
 (the word ``Initial Conditions'', regardless of capitalisation, is a
-reserved word for setting stock variable initial conditions)
+reserved phrase for setting stock variable initial conditions)
 identifying the flow. The flows themselves are written as a numerical
 multipler times a flow variable. Unscoped variables are treated as
 global at present, however, in the future, Godley tables will be
@@ -389,9 +390,12 @@ moved independently of the variable it is bound to.
 \item[Godley tables]
 \begin{description}
 \item[Open Godley Table] opens a spreadsheet to allow financial flows
-defining the Godley table to entered or modified.
+defining the Godley table to be entered or modified.
+\item[Resize Godley Table] allows the icon to be resized.
 \item[Edit/Copy var] allows individual stock and flow variables to be
 copied or edited.
+\item[Export to file] export table contents as either CSV data, or as a LaTeX
+table, for import into other software.
 \end{description}
 \item[Plot Widgets]
 \begin{description}
@@ -405,7 +409,6 @@ plotting in more detail.
   control the number of axis ticks and grid lines on the detailed
   plot. You can also add a legend, which is populated from the names
   of variables attached to the plot.
-\item[Delete] remove the plot
 \end{description}
 
 \end{description}
@@ -414,7 +417,7 @@ plotting in more detail.
 
 The canvas is not simply an inert place for the canvas items to
 exist. There is also a background context menu, giving access to the
-edit menu functionality, and also keyboard entry.
+edit menu functionality such as cut/copy/paste, and also keyboard entry.
 
 The following keystrokes insert an operation
 
