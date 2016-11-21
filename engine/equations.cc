@@ -132,21 +132,14 @@ namespace MathDAG
   {
     if (type==constant)
       return o<<init;
-    if (scope<0)
-      return o<<mathrm(name);
-    else
-      return o<<"{"<<mathrm(name)<<"}_{"<<scope<<"}";
+    return o<<mathrm(name);
   }
 
   ostream& VariableDAG::matlab(ostream& o) const
   {
     if (type==constant)
       return o<<init;
-    if (scope<0)
-      return o<<validMatlabIdentifier(name);
-    else
-      // TODO: could potentially clash with another identifier
-      return o<<validMatlabIdentifier(name)<<"__"<<scope;
+    return o<<validMatlabIdentifier(name);
   }
 
   VariableValue VariableDAG::addEvalOps
@@ -1149,8 +1142,7 @@ namespace MathDAG
                 // .get() OK here because object lifetime controlled by
                 // expressionCache
                 VariableDAG* v=integVarMap[iv->valueId()]=
-                  dynamic_cast<VariableDAG*>(makeDAG
-                                           (iv->valueId(), iv->scope(), iv->name(), iv->type()).get());
+                  dynamic_cast<VariableDAG*>(makeDAG(*iv).get());
                 v->intOp=i;
                 if (i->ports[1]->wires.size()>0)
                   {
@@ -1191,8 +1183,7 @@ namespace MathDAG
       {
         //        assert(g->second.godleyId>=0);
         VariableDAG* v=integVarMap[VariableValue::valueId(g->first)]=
-          makeDAG(VariableValue::valueId(g->first), VariableValue::scope(g->first), 
-                  VariableValue::uqName(g->first), VariableValue::stock).get();
+          makeDAG(VariableValue::valueId(g->first), g->first, VariableValue::stock).get();
         VariableDAGPtr input(new IntegralInputVariableDAG);
         input->name=g->first;
         variables.push_back(input.get());
@@ -1209,21 +1200,19 @@ namespace MathDAG
     for (VariableValues::value_type v: m.variableValues)
       if (v.second.isFlowVar())
         variables.push_back
-          (makeDAG(v.first, 
-                   v.second.type()==VariableType::constant? -1: VariableValue::scope(v.second.name),
-                   VariableValue::uqName(v.second.name), v.second.type()).get());
+          (makeDAG(v.first, v.second.name, v.second.type()).get());
           
     // sort variables into their order of definition
     sort(variables.begin(), variables.end(), 
          VariableDefOrder(expressionCache.size()));
   }
 
-  shared_ptr<VariableDAG> SystemOfEquations::makeDAG(const string& valueId, int scope, const string& name, VariableType::Type type)
+  shared_ptr<VariableDAG> SystemOfEquations::makeDAG(const string& valueId, const string& name, VariableType::Type type)
   {
     if (expressionCache.exists(valueId))
       return dynamic_pointer_cast<VariableDAG>(expressionCache[valueId]);
 
-    shared_ptr<VariableDAG> r(new VariableDAG(valueId, scope, VariableValue::uqName(name), type));
+    shared_ptr<VariableDAG> r(new VariableDAG(valueId, name, type));
     expressionCache.insert(valueId, r);
     assert(VariableValue::isValueId(valueId));
     assert(minsky.variableValues.count(valueId));
@@ -1371,8 +1360,7 @@ namespace MathDAG
         o << mathrm(i->name)<<"(0)&=&"<<MathDAG::latex(i->init)<<"\\\\\n";
         o << "\\frac{ d " << mathrm(i->name) << 
           "}{dt} &=&";
-        VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableValue::valueId(i->scope,i->name));
+        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           input->rhs->latex(o);
         o << "\\\\\n";
@@ -1402,8 +1390,7 @@ namespace MathDAG
         o << mathrm(i->name)<<"(0)="<<MathDAG::latex(i->init)<<"\n\\end{dmath*}\n";
         o << "\\begin{dmath*}\n\\frac{ d " << mathrm(i->name) << 
           "}{dt} =";
-        VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableValue::valueId(i->scope,i->name));
+        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           input->rhs->latex(o);
         o << "\\end{dmath*}\n";
@@ -1435,8 +1422,7 @@ namespace MathDAG
     for (const VariableDAG* i: integrationVariables)
       {
         o << "f("<<j++<<")=";
-        VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableValue::valueId(i->scope,i->name));
+        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           input->rhs->matlab(o);
         else
@@ -1467,7 +1453,7 @@ namespace MathDAG
 
     for (const VariableDAG* i: integrationVariables)
       {
-        string vid=VariableValue::valueId(i->scope,i->name);
+        string vid=i->valueId;
         integrals.push_back(Integral());
         assert(VariableValue::isValueId(vid));
         assert(minsky.variableValues.count(vid));
@@ -1541,7 +1527,6 @@ namespace MathDAG
             // if local variable, set scope
 //            if (fc.name.find(':')==string::npos)
 //              v->setScope(-1);
-            assert(fc.name.find(':')!=string::npos || v->scope()==-1);
 
             if (abs(fc.coef)==1)
               gd.arguments[fc.coef<0? 1: 0].push_back(WeakNodePtr(makeDAG(*v)));

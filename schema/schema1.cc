@@ -95,6 +95,8 @@ namespace schema1
 
     void Combine::combine(minsky::Wire& x, const Wire& y) const
     {
+      x.detailedText=y.detailedText;
+      x.tooltip=y.tooltip;
       Layouts::const_iterator l=layout.find(y.id);
       if (l!=layout.end())
           x.coords(l->second.coords);
@@ -216,7 +218,7 @@ namespace schema1
        value=c->value;
     else if (const minsky::IntOp* i=dynamic_cast<const minsky::IntOp*>(&op))
       {
-        name=i->intVar->fqName();
+        name=i->intVar->name();
         // intvar is populated at a higher level
       }
     else if (const minsky::DataOp* d=dynamic_cast<const minsky::DataOp*>(&op))
@@ -377,7 +379,9 @@ namespace schema1
       {
         auto s=imap.addItem(new minsky::GodleyIcon, i);
         combine.combine(*s,i);
-        //        pmap.asgPorts(s->ports, i.ports);
+
+        // need to load variables into the Godley table initially so
+        // as to capture them, and any attached wires
         for (auto p: i.ports)
           {
             if (auto v=dynamic_pointer_cast<minsky::VariableBase>
@@ -441,6 +445,12 @@ namespace schema1
     minsky::Minsky m;
     minsky::LocalMinsky lm(m);
     populateGroup(*m.model);
+
+    // strip any leading ':' from top level variables
+//    for (auto& i: m.model->items)
+//      if (auto v=dynamic_cast<minsky::VariableBase*>(i.get()))
+//        if (v->name()[0]==':')
+//          v->name(v->name().substr(1));
     
     m.model->setZoom(zoomFactor);
     

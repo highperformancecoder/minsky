@@ -38,7 +38,7 @@ namespace minsky
     struct OrderByName
     {
       bool operator()(const VariablePtr& x, const VariablePtr& y) const
-      {assert(x&&y); return x->fqName() < y->fqName();}
+      {assert(x&&y); return x->name() < y->name();}
     };
 
     struct DrawVars
@@ -119,18 +119,18 @@ namespace minsky
               assert(*v);
             }
           vars.back()->zoomFactor=zoomFactor;
-          ports.insert(ports.end(), vars.back()->ports.begin(),
-                       vars.back()->ports.end());
+//          ports.insert(ports.end(), vars.back()->ports.begin(),
+//                       vars.back()->ports.end());
         }
       // remove any previously existing variables
       set<string> svName;
-      for (auto& v: oldVars) svName.insert(v->uqName());
+      for (auto& v: oldVars) svName.insert(v->name());
       minsky::minsky().model->recursiveDo
         (&Group::items,
          [&](Items& m, Items::iterator i) 
          {
            if (auto v=dynamic_pointer_cast<VariableBase>(*i))
-             if (svName.count(v->uqName())>0)
+             if (svName.count(v->name())>0)
                m.erase(i);
            return false;
          });

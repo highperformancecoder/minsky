@@ -220,7 +220,6 @@ namespace minsky
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override {
-      std::cout << "in TCL_obj descriptor "<<classType()<<std::endl;
       ::TCL_obj(t,d,*this);
     }
   };

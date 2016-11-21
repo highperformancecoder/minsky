@@ -159,7 +159,7 @@ namespace schema1
     string name;
     Variable(): type(VariableType::undefined), init("0") {}
     Variable(int id, const minsky::VariableBase& v): 
-      Item(id,v), type(v.type()), init(v.init()), name(v.fqName()) {}
+      Item(id,v), type(v.type()), init(v.init()), name(v.name()) {}
   };
 
   // why is the schema1 qualifier needed here?

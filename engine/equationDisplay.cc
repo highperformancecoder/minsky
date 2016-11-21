@@ -178,8 +178,7 @@ namespace MathDAG
         num.setMarkup("d"+latexToPango(mathrm(i->name)));
         double lineSpacing=num.height()+den.height()+2;
 
-        VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableValue::valueId(i->scope,i->name));
+        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           { // adjust linespacing to allow enough height for RHS
           RecordingSurface rhs;

@@ -178,7 +178,6 @@ namespace minsky
     VariablePtr addIOVar();
   public:
     std::string classType() const override {return "Group";}
-    int id=-1; // unique id used for variable scoping
     std::string title;
     float width{100}, height{100}; // size of icon
 
@@ -231,7 +230,6 @@ namespace minsky
       return uniqueItems(idset);
     }
     
-
     /// returns whether contents should be displayed. Top level group always displayed
     bool displayContents() const {return !group.lock() || zoomFactor>displayZoom;}
     /// true if displayContents status changed on this or any

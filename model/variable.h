@@ -56,12 +56,6 @@ namespace minsky
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name; 
 
-    /// id of group or godely within which this variable is scoped. -1 = global
-    int m_scope;
-
-    /// sets the scope of this variable. Does nothing if scope does not exist
-    void setScope(int);
-
   protected:
     void addPorts();
     
@@ -75,13 +69,15 @@ namespace minsky
     /// @{ variable displayed name
     virtual std::string name() const;
     virtual std::string name(const std::string& nm);
+    // for the purposes of TCL drill downs
+    std::string Name() const {return m_name;}
     /// @}
 
     virtual Type type() const override=0;
     bool ioVar() const override;
 
     /// unqualified portion of name
-    virtual std::string uqName() const {return m_name;}
+    //virtual std::string uqName() const {return m_name;}
 
     /// ensure an associated variableValue exists
     void ensureValueExists() const;
@@ -90,10 +86,7 @@ namespace minsky
     virtual std::string valueId() const;
 
     /// fully qualified name (marked up with namespace scope)
-    virtual std::string fqName() const;
-
-    /// scope (namespace) of this variable. -1==global scope
-    int scope() const {return m_scope;}
+    //virtual std::string fqName() const;
 
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
@@ -123,7 +116,7 @@ namespace minsky
     bool isStock() const {return type()==stock || type()==integral;}
 
     VariableBase() {}
-    virtual ~VariableBase() {}
+    virtual ~VariableBase();
 
     /// adds inPort for integral case (not relevant elsewhere) if one
     /// not allocated, removes it if one allocated
@@ -166,8 +159,8 @@ namespace minsky
     std::string valueId() const override {return "constant:"+str(id);}
     std::string name() const override {return init();}
     std::string name(const std::string& nm) override {ensureValueExists(); return name();}
-    std::string fqName() const override {return name();}
-    std::string uqName() const override {return name();}
+//    std::string fqName() const override {return name();}
+//    std::string uqName() const override {return name();}
     VarConstant* clone() const override {return new VarConstant(*this);}
     std::string classType() const override {return "VarConstant";}
   

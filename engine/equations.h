@@ -151,7 +151,6 @@ namespace MathDAG
   {
   public:
     string valueId;
-    int scope=-1; ///< namespace for this variable
     Type type=undefined;
     string name;
     double init=0;
@@ -159,8 +158,8 @@ namespace MathDAG
     IntOp* intOp=0; /// reference to operation if this is
                                  /// an integral variable
     VariableDAG() {}
-    VariableDAG(const string& valueId, int scope, const string& name, Type type): 
-      valueId(valueId), scope(scope), type(type), name(name) {}
+    VariableDAG(const string& valueId, const string& name, Type type): 
+      valueId(valueId), type(type), name(name) {}
     int BODMASlevel() const  override {return 0;}
     int order(unsigned maxOrder) const override {
       if (rhs) {
@@ -257,7 +256,7 @@ namespace MathDAG
       return "op:"+str(x.ports[0]);
     }
     std::string key(const VariableBase& x) const {
-      return "var:"+x.fqName();
+      return "var:"+x.valueId();
     }
     std::string key(const SwitchIcon& x) const {
       return "switch:"+str(x.ports[0]);
@@ -321,9 +320,9 @@ namespace MathDAG
     const Minsky& minsky;
 
     /// create a variable DAG. returns cached value if previously called
-    shared_ptr<VariableDAG> makeDAG(const string& valueId, int scope, const string& name, VariableType::Type type);
+    shared_ptr<VariableDAG> makeDAG(const string& valueId, const string& name, VariableType::Type type);
     shared_ptr<VariableDAG> makeDAG(VariableBase& v)
-    {return makeDAG(v.valueId(),v.scope(),v.name(),v.type());}
+    {v.ensureValueExists(); return makeDAG(v.valueId(),v.name(),v.type());}
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationBase& op);
     NodePtr makeDAG(const SwitchIcon& op);

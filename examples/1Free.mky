@@ -4,77 +4,77 @@
    <wires>
     <Wire>
      <id>64</id>
-     <detailedText></detailedText>
+     <detailedText>64</detailedText>
      <tooltip></tooltip>
      <from>37</from>
      <to>10</to>
     </Wire>
     <Wire>
      <id>65</id>
-     <detailedText></detailedText>
+     <detailedText>65</detailedText>
      <tooltip></tooltip>
      <from>33</from>
      <to>13</to>
     </Wire>
     <Wire>
      <id>66</id>
-     <detailedText></detailedText>
+     <detailedText>66</detailedText>
      <tooltip></tooltip>
      <from>29</from>
      <to>16</to>
     </Wire>
     <Wire>
      <id>67</id>
-     <detailedText></detailedText>
+     <detailedText>67</detailedText>
      <tooltip></tooltip>
      <from>5</from>
      <to>30</to>
     </Wire>
     <Wire>
      <id>68</id>
-     <detailedText></detailedText>
+     <detailedText>68</detailedText>
      <tooltip></tooltip>
      <from>23</from>
      <to>31</to>
     </Wire>
     <Wire>
      <id>69</id>
-     <detailedText></detailedText>
+     <detailedText>69</detailedText>
      <tooltip></tooltip>
      <from>25</from>
      <to>34</to>
     </Wire>
     <Wire>
      <id>70</id>
-     <detailedText></detailedText>
+     <detailedText>70</detailedText>
      <tooltip></tooltip>
      <from>3</from>
      <to>35</to>
     </Wire>
     <Wire>
      <id>71</id>
-     <detailedText></detailedText>
+     <detailedText>71</detailedText>
      <tooltip></tooltip>
      <from>1</from>
      <to>39</to>
     </Wire>
     <Wire>
      <id>72</id>
-     <detailedText></detailedText>
+     <detailedText>72</detailedText>
      <tooltip></tooltip>
      <from>27</from>
      <to>38</to>
     </Wire>
     <Wire>
      <id>73</id>
-     <detailedText></detailedText>
+     <detailedText>73</detailedText>
      <tooltip></tooltip>
      <from>18</from>
      <to>47</to>
     </Wire>
     <Wire>
      <id>74</id>
-     <detailedText></detailedText>
+     <detailedText>74</detailedText>
      <tooltip></tooltip>
      <from>20</from>
      <to>48</to>

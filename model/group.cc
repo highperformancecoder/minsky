@@ -168,10 +168,19 @@ namespace minsky
     if (origGroup)
       origGroup->removeItem(*it);
 
+    // stash init value to initialise new variableValue
+    string init;
+    if (auto v=dynamic_cast<VariableBase*>(it.get()))
+      init=v->init();
+    
     if (auto _this=dynamic_cast<Group*>(this))
       it->group=_this->self();
     it->moveTo(x,y);
 
+    // take into account new scope
+    if (auto v=dynamic_cast<VariableBase*>(it.get()))
+      v->init(init); //NB calls ensureValueExists()
+      
     // move wire to highest common group
     // TODO add in I/O variables if needed
     for (auto& p: it->ports)
@@ -253,7 +262,7 @@ namespace minsky
 
   VariablePtr Group::addIOVar()
   {
-    VariablePtr v(VariableType::flow, cminsky().variableValues.newName(to_string(id)+":"));
+    VariablePtr v(VariableType::flow, cminsky().variableValues.newName(""));
     addItem(v);
     v->rotation=rotation;
     return v;

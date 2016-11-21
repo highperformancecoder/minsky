@@ -80,8 +80,8 @@ namespace MathDAG
   {
     string name=differentiateName(expr.name);
     // ensure variable value exists, even if only temporary
-    VariablePtr tmp(VariableType::tempFlow, VariableValue::valueId(expr.scope,name));
-    VariableDAGPtr r(makeDAG(tmp->valueId(),tmp->scope(),tmp->name(),tmp->type()));
+    VariablePtr tmp(VariableType::tempFlow, name);
+    VariableDAGPtr r(makeDAG(tmp->valueId(),tmp->name(),tmp->type()));
     if (expr.rhs)
       r->rhs=expr.rhs->derivative(*this);
     else if (expr.type==VariableType::integral || expr.type==VariableType::stock)

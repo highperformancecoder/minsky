@@ -637,13 +637,11 @@ namespace minsky
       bool initialConditionRow(int row) const
       {return Super::operator*()->table.initialConditionRow(row);}
       string valueId(const std::string& x) const {
-       if (x.find(':')==string::npos) //local scope requested
-         {
-           int scope=-1;
-           if (auto g=Super::operator*()->group.lock()) scope=g->id;
-           return VariableValue::valueId(scope,x);
-         }
-       return VariableValue::valueId(x);}
+        Variable<VariableBase::flow> tmp;
+        tmp.name(x);
+        tmp.group=Super::operator*()->group;
+        return tmp.valueId();
+      }
     };
   }
 

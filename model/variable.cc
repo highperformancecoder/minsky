@@ -30,6 +30,8 @@ using namespace ecolab;
 using namespace minsky;
 using ecolab::array;
 
+VariableBase::~VariableBase() {}
+
 void VariableBase::addPorts()
 {
   ports.clear();
@@ -59,7 +61,27 @@ VariableBase* VariableBase::create(VariableType::Type type)
 
 string VariableBase::valueId() const 
 {
-  return VariableValue::valueId(m_scope, m_name);
+  Group* scope=group.lock().get();
+  auto name=stripActive(m_name);
+  if (name[0]==':')
+    {
+      // find maximum enclosing scope that has this same-named variable
+      for (auto g=group.lock(); g; g=g->group.lock())
+        for (auto i: g->items)
+          if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            {
+              auto n=stripActive(v->m_name);
+              if (n==name || n==name.substr(1) /* without ':' qualifier*/)
+                {
+                  scope=g.get();
+                  break;
+                }
+            }
+    }
+  if (!scope || scope==cminsky().model.get())
+    return VariableValue::valueId(-1,name); // retain previous global var id
+  else
+    return VariableValue::valueId(size_t(scope), name);
 }
 
 bool VariableBase::ioVar() const 
@@ -76,47 +98,50 @@ bool VariableBase::ioVar() const
 
 string VariableBase::name()  const
 {
-  auto g=group.lock();
-  if (g && m_scope==g->id)
-    return m_name;
-  return fqName();
+  // hide any leading ':' in upper level
+  if (m_name[0]==':')
+    {
+      auto g=group.lock();
+      if (!g || g==cminsky().model)
+        return m_name.substr(1);
+    }
+  return m_name;
 }
-
-string VariableBase::fqName()  const
-{
-  if (m_scope==-1)
-    return ":"+m_name;
-//  else if (cminsky().groupItems.count(m_scope))
-//    return cminsky().groupItems[m_scope].name().substr(0,5)+"["+str(m_scope)+"]:"+m_name;
-  else
-    return "["+str(m_scope)+"]:"+m_name;
-}
+//
+//string VariableBase::fqName()  const
+//{
+//  if (scope.lock()==cminsky.model)
+//  if (auto s=scope.lock())
+//    if (s!=cminsky().model)
+//      return "["+str(s->title.substr(0,10))+"]:"+m_name;
+//  return ":"+m_name;
+//}
 
 
 string VariableBase::name(const std::string& name) 
 {
-  // strip namespace, and extract scope
-  boost::regex namespaced_spec(R"((\d*)]?:(([^:])*))"); 
-  boost::smatch m;
-  m_scope=-1;
-  if (regex_search(name, m, namespaced_spec))
-    {
-     assert(m.size()==4);
-      if (m[1].matched && m[1].length()>0)
-        {
-          int toScope;
-          sscanf(m[1].str().c_str(), "%d", &toScope);
-          setScope(toScope);
-        }
-      m_name=m[2];
-    }
-  else
-    {
-      m_name=name;
-      if (auto g=group.lock())
-        m_scope=g->id;
-    }
+//  // strip namespace, and extract scope
+//  boost::regex namespaced_spec(R"((\d*)]?:(([^:])*))"); 
+//  boost::smatch m;
+//  if (regex_search(name, m, namespaced_spec))
+//    {
+//     assert(m.size()==4);
+//      if (m[1].matched && m[1].length()>0)
+//        {
+//          int toScope;
+//          sscanf(m[1].str().c_str(), "%d", &toScope);
+//          setScope(toScope);
+//        }
+//      m_name=m[2];
+//    }
+//  else
+//    {
+//      m_name=name;
+//      if (auto g=group.lock())
+//        m_scope=g->id;
+//    }
 
+  m_name=name;
   ensureValueExists();
   return this->name();
 }
@@ -130,18 +155,18 @@ void VariableBase::ensureValueExists() const
     {
       assert(VariableValue::isValueId(valueId));
       minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(), fqName())));
+        (make_pair(valueId,VariableValue(type(), name())));
     }
 }
 
 
-void VariableBase::setScope(int s)
-{
-//  if (s>=0 && cminsky().groupItems.count(s)==0)
-//    return; //invalid scope passed
-  m_scope=s;
-  ensureValueExists();
-}
+//void VariableBase::setScope(int s)
+//{
+////  if (s>=0 && cminsky().groupItems.count(s)==0)
+////    return; //invalid scope passed
+//  m_scope=s;
+//  ensureValueExists();
+//}
 
 string VariableBase::init() const
 {
@@ -155,12 +180,14 @@ string VariableBase::init() const
 string VariableBase::init(const string& x)
 {
   ensureValueExists(); 
-  assert(VariableValue::isValueId(valueId()));
-  VariableValue& val=minsky().variableValues[valueId()];
-  val.init=x;
-  // for constant types, we may as well set the current value. See ticket #433
-  if (type()==constant || type()==parameter) 
-    val.reset(minsky().variableValues);
+  if (VariableValue::isValueId(valueId()))
+    {
+      VariableValue& val=minsky().variableValues[valueId()];
+      val.init=x;
+      // for constant types, we may as well set the current value. See ticket #433
+      if (type()==constant || type()==parameter) 
+        val.reset(minsky().variableValues);
+    }
   return x;
 }
 
