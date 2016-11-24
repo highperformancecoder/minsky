@@ -29,7 +29,7 @@ int main(int argc, const char*argv[])
 {
   if (argc<3)
     {
-      printf("usage: %s x.mky y.mky");
+      printf("usage: %s x.mky y.mky",argv[0]);
       return 1;
     }
   
