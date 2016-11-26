@@ -984,6 +984,7 @@ proc updateCanvas {} {
 
 # mark a canvas item as in error
 proc indicateCanvasItemInError {x y} {
+    .wiring.canvas delete errorItems
     .wiring.canvas create oval [expr $x-15] [expr $y-15] [expr $x+15] [expr $y+15] -outline red -width 2 -tags errorItems
 }
 
@@ -1087,6 +1088,21 @@ proc wireContextMenu {id x y} {
     tk_popup .wiring.context $x $y
 }
 
+proc findDefinition id {
+    var.get $id
+    if {[var.type]=="constant" || [var.type]=="parameter"} {
+        indicateCanvasItemInError [var.x] [var.y]
+    } else {
+        set v [wiringGroup.findVariableDefinition $id]
+        if {$v==-1} {
+            tk_messageBox -message "Definition not found"
+        } else {
+            item.get $v
+            indicateCanvasItemInError [item.x] [item.y]
+        }
+    }
+}
+
 # context menu
 proc contextMenu {id x y} {
     # find out what type of item we're referring to
@@ -1098,6 +1114,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label Help -command {help Variable}
             .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Value [var.value]" 
+            .wiring.context add command -label "Find definition" -command "findDefinition $id"
             .wiring.context add command -label "Edit" -command "editItem $id"
             .wiring.context add checkbutton -label "Slider" \
                 -command "drawSlider $id $x $y" \

@@ -127,6 +127,7 @@ namespace minsky
     */
     void draw(cairo_t*) const override;
 
+    bool inputWired() const;
   };
 
   template <VariableType::Type T>

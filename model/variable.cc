@@ -42,6 +42,12 @@ void VariableBase::addPorts()
       (new Port(*this, Port::inputPort));
 }
 
+bool VariableBase::inputWired() const
+{
+  return ports.size()>1 && !ports[1]->wires.empty();
+}
+
+
 //Factory
 VariableBase* VariableBase::create(VariableType::Type type)
 {

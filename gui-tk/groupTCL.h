@@ -340,6 +340,33 @@ namespace minsky
         wires.erase(id);
         }
     }
+
+    // returns item id defining variable. NB may be a Godley table or integral 
+    int findVariableDefinition(int id)
+    {
+      auto i=items.find(id);
+      if (i!=items.end())
+        if (auto iv=dynamic_cast<VariableBase*>(i->get()))
+          {
+            if (iv->inputWired()) return id;
+            for (auto& it: items)
+              if (auto v=dynamic_cast<VariableBase*>(it.get()))
+                {
+                  if (v->inputWired() && v->valueId()==iv->valueId())
+                    return it.id();
+                }
+              else if (auto g=dynamic_cast<GodleyIcon*>(it.get()))
+                for (auto& v: g->stockVars)
+                  {
+                    if (v->valueId()==iv->valueId())
+                      return it.id();
+                  }
+              else if (auto o=dynamic_cast<IntOp*>(it.get()))
+                if (o->intVar->valueId()==iv->valueId())
+                  return it.id();
+        }
+      return -1;
+    }
     
     /// adjust wires after item \id moves
     void adjustWires(int id);
