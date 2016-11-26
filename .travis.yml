@@ -58,6 +58,6 @@ script:
   - psql -U postgres <server/minskyPG.sql
   - echo "postgresql://dbname=postgres user=postgres password=">>$MINSKY_TEST_DATABASE_PARAMS
 # This step generates reference image files on the CI server 
-#  - sh createRenderedEquations
+  - sh createRenderedEquations
   - make AEGIS=1 sure
   - make doc
