@@ -89,6 +89,12 @@ namespace minsky
     /// @param operationName
     void operationIcon(const char* imageName, const char* opName) const;
 
+    void displayErrorItem(float x, float y) const override
+    {
+      tclcmd() << "catch {indicateCanvasItemInError"<<x<<y<<"}\n";
+      Tcl_ResetResult(interp());
+    }
+    
     void cut()
     {
       // need to clear getters/setters before calling Minsky::cut(),

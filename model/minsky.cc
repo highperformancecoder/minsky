@@ -928,7 +928,7 @@ namespace minsky
           { //traverse finished, check for cycle along branch
             if (::find(stack.begin(), stack.end(), p) != stack.end())
               {
-                Minsky::displayErrorItem(p->x(), p->y());
+                cminsky().displayErrorItem(p->x(), p->y());
                 return true;
               }
             else
@@ -1016,12 +1016,6 @@ namespace minsky
     return all(fvInit);
   }
 
-
-  void Minsky::displayErrorItem(float x, float y)
-  {
-    tclcmd() << "catch {indicateCanvasItemInError"<<x<<y<<"}\n";
-    Tcl_ResetResult(interp());
-  }
 
   void Minsky::displayErrorItem(const Item& op) const
   {

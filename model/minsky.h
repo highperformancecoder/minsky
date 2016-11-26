@@ -267,7 +267,7 @@ namespace minsky
     void exportSchema(const char* filename, int schemaLevel=1);
 
     /// indicate position of error on canvas
-    static void displayErrorItem(float x, float y);
+    virtual void displayErrorItem(float x, float y) const {}
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
 
