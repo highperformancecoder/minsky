@@ -314,6 +314,9 @@ namespace minsky
           }
     }
      
+    /// @returns true if (x,y) is over an I/O variable within a group id or a variable within at (x,y), false otherwise. item is set to the variable if it exists
+    bool selectVar(int id, float x, float y);
+
     /// create a new item that is a copy of item
     int copyItem() {
       int r=-1;

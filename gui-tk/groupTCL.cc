@@ -37,6 +37,19 @@ namespace minsky
   }
 
   template <class Model>
+  bool GroupTCL<Model>::selectVar(int id, float x, float y)
+  {
+    auto gi=items.find(id);
+    if (gi!=items.end())
+      {
+        auto v=(*gi)->select(x,y);
+        item.setRef(v,"wiringGroup.item");        
+        return v->type()!=VariableType::undefined;
+      }
+    return false;
+  }
+
+  template <class Model>
   set<string> GroupTCL<Model>::types()
   {
     set<string> r;

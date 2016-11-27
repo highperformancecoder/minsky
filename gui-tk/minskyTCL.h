@@ -139,9 +139,6 @@ namespace minsky
       //      groupTest.initGroupList(groupItems, (args.count? args: -1));
     }
 
-    /// @returns true if (x,y) is over an I/O variable within a group id or a variable within at (x,y), false otherwise. var is set to the variable if it exists
-    bool selectVar(int id, float x, float y);
-
     int insertGroupFromFile(const char* file) {
       int r=-1;
       if (auto g=Minsky::insertGroupFromFile(file))

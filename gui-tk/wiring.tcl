@@ -602,7 +602,7 @@ setGodleyIconResource $minskyHome/icons/bank.svg
 
 proc godleyToolTipText {id x y} {
     if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
-        set text [var.name]
+        set text [item.name]
     } else {
         godley.get $id
         set text [godley.tooltip]
@@ -656,7 +656,7 @@ proc rightMouseGodley {id x y X Y} {
         .wiring.context add command -label "Edit" -command "editVar"
         .wiring.context add command -label "Copy" -command "
            copyVar 
-           var.rotation 0
+           item.rotation 0
         "
         .wiring.context post $X $Y
     } else {
@@ -1119,7 +1119,7 @@ proc contextMenu {id x y} {
             .wiring.context add checkbutton -label "Slider" \
                 -command "drawSlider $id $x $y" \
                 -variable "sliderCheck$id"
-            .wiring.context add command -label "Copy" -command "var.get $id; copyVar"
+            .wiring.context add command -label "Copy" -command "item.get $id; copyVar"
             if {[var.type]=="flow" && ![inputWired [var.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral [var.name]"
             }
@@ -1138,7 +1138,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label "Edit" -command "editItem $id"             
             if {[op.name]=="integrate"} {
                 integral.get $id
-                .wiring.context add command -label "Copy Var" -command "getIntVar; copyVar"
+                .wiring.context add command -label "Copy Var" -command "integral.getIntVar; copyVar"
             }
             if {[op.name]=="constant"} {
                 constant.get $id
@@ -1336,10 +1336,10 @@ proc copyVar {} {
 
 proc copyOp  {id} {
     global globals
-    set newId [copyOperation $id]
-    op.get $id
+    item.get $id
+    set newId [copyItem]
+    op.get $newId
     op.rotation $globals(default_rotation)
-    op.set
     placeNewOp $newId 
 }
 
@@ -1698,7 +1698,7 @@ proc setIntegralIValue {} {
     global constInput
     integral.description "$constInput(Name)"
     integral.getIntVar
-    value.get [var.valueId]
+    value.get [item.valueId]
     setItem value init {set constInput(Value)}
 }
 
@@ -1822,7 +1822,7 @@ proc editItem {id} {
             integral.get $id
             set constInput(ValueLabel) "Initial Value"
             integral.getIntVar
-            value.get [var.valueId]
+            value.get [item.valueId]
             set constInput(Value) [value.init]
             set setValue setIntegralIValue
             set constInput(Name) [integral.description]

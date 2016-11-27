@@ -252,22 +252,10 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
-  bool MinskyTCL::selectVar(int id, float x, float y)
-  {
-    auto gi=items.find(id);
-    if (gi!=items.end())
-      {
-        auto v=(*gi)->select(x,y);
-        var.setRef(v,"minsky.var");        
-        return v->type()!=VariableType::undefined;
-      }
-    return false;
-  }
-
   int TclExtend<std::shared_ptr<minsky::IntOp>>::getIntVar() 
   {
     auto& m=dynamic_cast<MinskyTCL&>(minsky());
-    m.var.setRef(ref->intVar,"minsky.var");
+    m.item.setRef(ref->intVar,"wiringGroup.item");
     for (auto& i: m.items)
       if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
         return i.id();
