@@ -229,7 +229,7 @@ install: GUI/minsky$(EXE)
 
 # runs the regression tests
 sure: all tests
-	bash test/runtests.sh
+	env TRAVIS=$(TRAVIS) bash test/runtests.sh
 
 # produce doxygen annotated web pages
 doxydoc: $(wildcard *.h) $(wildcard *.cc) \
