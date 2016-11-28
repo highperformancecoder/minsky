@@ -78,17 +78,6 @@ namespace minsky
         m.buildMaps();
       }
   }
-
-  inline TCL_obj_t& minskyTCL_obj() 
-  {
-    static TCL_obj_t t;
-    static int dum=(
-                    t.member_entry_hook=member_entry_hook<CONST84 char**>,
-                    t.member_entry_thook=member_entry_hook<Tcl_Obj* const *>,
-                    1);
-    return t;
-  }
-
 }
 
 #endif
