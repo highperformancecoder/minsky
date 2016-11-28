@@ -55,7 +55,7 @@ namespace minsky
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
     for (auto& i: x.items) cloneMap[i.get()]=addItem(i->clone());
-    for (auto& i: x.groups) cloneMap[i.get()]=addGroup(i->clone());
+    for (auto& i: x.groups) cloneMap[i.get()]=addGroup(dynamic_cast<Group*>(i->clone()));
     for (auto& w: x.wires) 
       {
         auto f=w->from(), t=w->to();

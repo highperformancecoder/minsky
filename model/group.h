@@ -171,13 +171,12 @@ namespace minsky
       return false;
     }
 
-  class Group: public Item, public GroupItems
+  class Group: public ItemT<Group>, public GroupItems
   {
     friend class GroupPtr;
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
   public:
-    std::string classType() const override {return "Group";}
     std::string title;
     float width{100}, height{100}; // size of icon
 
@@ -185,8 +184,6 @@ namespace minsky
     std::shared_ptr<Group> self() const;
     void setItemGroup(const ItemPtr& it) const override {it->group=self();}
     bool nocycles() const override; 
-
-    Group* clone() const override {return new Group(*this);}
 
     static SVGRenderer svgRenderer;
 
@@ -285,8 +282,6 @@ namespace minsky
     /// I/O variable icon, null otherwise, indicating that the Group
     /// has been selected.
     VariablePtr select(float x, float y) const override;
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-    {::TCL_obj(t,d,*this);}
   };
 
   /// find the closest (in or out) port to \a x or \a y.
