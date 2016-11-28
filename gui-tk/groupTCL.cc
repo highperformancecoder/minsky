@@ -37,16 +37,16 @@ namespace minsky
   }
 
   template <class Model>
-  bool GroupTCL<Model>::selectVar(int id, float x, float y)
+  int GroupTCL<Model>::selectVar(int id, float x, float y)
   {
     auto gi=items.find(id);
     if (gi!=items.end())
       {
         auto v=(*gi)->select(x,y);
-        item.setRef(v,"wiringGroup.item");        
-        return v->type()!=VariableType::undefined;
+        if (v->type()!=VariableType::undefined)
+          return idOf(*v);
       }
-    return false;
+    return -1;
   }
 
   template <class Model>
@@ -141,14 +141,21 @@ namespace minsky
   }
 
   template <class Model>
+  int GroupTCL<Model>::idOf(const Item& item)
+  {
+    for (auto& j: items)
+      if (j.get()==&item)
+        return j.id();
+    return -1;
+  }
+  
+  template <class Model>
   int GroupTCL<Model>::groupOf(int item)
   {
     auto i=items.find(item);
     if (i!=items.end())
       if (auto g=(*i)->group.lock())
-        for (auto& j: items)
-          if (j.get()==g.get())
-            return j.id();
+        return idOf(*g);
     return -1;
   }
 

@@ -131,7 +131,8 @@ namespace minsky
   };
 
   template <VariableType::Type T>
-  class Variable: public VariableBase, public classdesc::PolyPack<Variable<T> >
+  class Variable: public VariableBase,
+                  public classdesc::PolyPack<Variable<T> >
   {
   public:
     typedef VariableBase::Type Type;

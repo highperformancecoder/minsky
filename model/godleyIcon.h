@@ -32,7 +32,7 @@
 
 namespace minsky
 {
-  class GodleyIcon: public Item
+  class GodleyIcon: public ItemT<GodleyIcon>
   {
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0, iconSize=100;
@@ -40,8 +40,7 @@ namespace minsky
     friend class SchemaHelper;
   public:
     static SVGRenderer svgRenderer;
-    std::string classType() const override {return "GodleyIcon";}
-   
+    
     /// width of Godley icon in screen coordinates
     float width() const {return (flowMargin+iconSize)*zoomFactor;}
     /// height of Godley icon in screen coordinates
@@ -89,8 +88,6 @@ namespace minsky
       else
         return VariableValue::valueId(x);
     }
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-    {::TCL_obj(t,d,*this);}
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 

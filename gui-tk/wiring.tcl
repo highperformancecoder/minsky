@@ -601,8 +601,10 @@ proc addNewGodleyItemKey {} {
 setGodleyIconResource $minskyHome/icons/bank.svg
 
 proc godleyToolTipText {id x y} {
-    if [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
-        set text [item.name]
+    set varId [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
+    if {$varId>=0} {
+        var.get $varId
+        set text [var.name]
     } else {
         godley.get $id
         set text [godley.tooltip]
@@ -651,10 +653,12 @@ proc changeToolTip {id x y} {
 #}
 
 proc rightMouseGodley {id x y X Y} {
-    if [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
+    set varId [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
+    if {$varId>=0} {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editVar"
+        .wiring.context add command -label "Edit" -command "wiringGroup.var.get $varId; editVar"
         .wiring.context add command -label "Copy" -command "
+           item.get $varId
            copyVar 
            item.rotation 0
         "
@@ -665,7 +669,9 @@ proc rightMouseGodley {id x y X Y} {
 }
 
 proc doubleMouseGodley {id x y} {
-    if [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]] {
+    set varId [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
+    if {$varId>=0} {
+        var.get $varId
         editVar
     } else {
         openGodley $id
@@ -1136,10 +1142,6 @@ proc contextMenu {id x y} {
             .wiring.context add command -label Description -command "postNote item $id"
             .wiring.context add command -label "Port values [op.portValues]" 
             .wiring.context add command -label "Edit" -command "editItem $id"             
-            if {[op.name]=="integrate"} {
-                integral.get $id
-                .wiring.context add command -label "Copy Var" -command "integral.getIntVar; copyVar"
-            }
             if {[op.name]=="constant"} {
                 constant.get $id
                 global sliderCheck$id
@@ -1152,7 +1154,12 @@ proc contextMenu {id x y} {
                .wiring.context add command -label "Import Data" \
                     -command "importData $id" 
             }
-            .wiring.context add command -label "Copy" -command "copyOp $id"
+            if {[op.name]=="integrate"} {
+                integral.get $id
+                .wiring.context add command -label "Copy" -command "integral.getIntVar; copyVar"
+            } else {
+                .wiring.context add command -label "Copy" -command "copyOp $id"
+            }
             .wiring.context add command -label "Flip" -command "rotateOp $id 180; flip_default"
             op.get $id
             if {[op.name]=="integrate"} {
@@ -1327,7 +1334,7 @@ proc deleteItem {id tag} {
 
 proc copyVar {} {
     global globals
-    set newId [copyItem]
+    set newId [wiringGroup.copyItem]
     var.get $newId
     var.rotation $globals(default_rotation)
     newItem $newId

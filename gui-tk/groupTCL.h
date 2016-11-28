@@ -229,6 +229,22 @@ namespace minsky
       tclcmd() << "rebuildCanvas\n";
     }
 
+    /// adds any missing Godley variables to the maps
+    void updateOnNewGodleyVars(int id)
+    {
+      auto i=items.find(id);
+      if (i!=items.end())
+        if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+          {
+            for (auto& v: g->flowVars)
+              if (idOf(*v)==-1)
+                items.emplace(getNewId(), v);
+            for (auto& v: g->stockVars)
+              if (idOf(*v)==-1)
+                items.emplace(getNewId(), v);
+          }
+     }
+    
     /// add a new wire connecting \a from port to \a to port with \a coordinates
     /// @return wireid, or -1 if wire is invalid
     int addWire(TCL_args args)
@@ -314,16 +330,26 @@ namespace minsky
           }
     }
      
-    /// @returns true if (x,y) is over an I/O variable within a group id or a variable within at (x,y), false otherwise. item is set to the variable if it exists
-    bool selectVar(int id, float x, float y);
+    /// @returns id of the variable if (x,y) is over an I/O variable within a group or godley icon if a variable within is at (x,y), -1 otherwise.
+    int selectVar(int id, float x, float y);
 
     /// create a new item that is a copy of item
     int copyItem() {
       int r=-1;
       items[r=getNewId()]=Model::model->addItem(item.getRef()->clone());
+      assert(item.getRef()->classType() == items[r]->classType());
       return r;
     }
 
+    
+    int copyVar() {
+      int r=-1;
+      items[r=getNewId()]=Model::model->addItem(var.getRef()->clone());
+      assert(var.getRef()->classType() == items[r]->classType());
+      return r;
+    }
+
+   
     void deleteItem(int id) {
       auto it=items.find(id);
       if (it!=items.end())
@@ -374,6 +400,8 @@ namespace minsky
     /// adjust wires after item \id moves
     void adjustWires(int id);
 
+    /// returns the id of the \a item
+    int idOf(const Item&);
     /// returns the id of the group containing \a item
     int groupOf(int item);
 

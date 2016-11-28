@@ -32,7 +32,7 @@ namespace minsky
 {
   using namespace ecolab;
   // a container item for a plot widget
-  class PlotWidget: public Item, public ecolab::Plot
+  class PlotWidget: public ItemT<PlotWidget>, public ecolab::Plot
   {
     CLASSDESC_ACCESS(PlotWidget);
     friend class SchemaHelper;
@@ -52,7 +52,6 @@ namespace minsky
     /// variable port attached to (if any)
     std::vector<VariableValue> yvars;
     std::vector<VariableValue> xvars;
-    std::string classType() const override {return "PlotWidget";}
 
     /// variable ports specifying plot size
     VariableValue xminVar, xmaxVar, yminVar, ymaxVar, y1minVar, y1maxVar;
@@ -95,8 +94,6 @@ namespace minsky
     /// @param image - image name for new surface to be added
     /// TODO - move to minskyTCL?
     void addImage(const std::string& args);
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-    {::TCL_obj(t,d,*this);}
  };
 
 }

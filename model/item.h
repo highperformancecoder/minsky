@@ -112,6 +112,24 @@ namespace minsky
   typedef std::shared_ptr<Item> ItemPtr;
   typedef std::vector<ItemPtr> Items;
 
+  /** curiously recursive template pattern for generating overrides */
+  template <class T>
+  struct ItemT: virtual public Item
+  {
+    std::string classType() const override {
+      auto s=classdesc::typeName<T>();
+      // remove minsky namespace
+      static const char* ns="minsky::";
+      static const int eop=strlen(ns);
+      if (s.substr(0,eop)==ns)
+        s=s.substr(eop);
+      return s;
+    }
+    Item* clone() const override {return new T(*dynamic_cast<const T*>(this));}
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
+  };
+  
 }
 
 #ifdef CLASSDESC
