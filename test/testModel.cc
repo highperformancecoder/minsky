@@ -18,6 +18,7 @@
 */
 
 #include "group.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 
 #include <UnitTest++/UnitTest++.h>
@@ -26,91 +27,54 @@ using namespace std;
 
 namespace
 {
-  int getNextId() 
-  {
-    static int id=0;
-    return id++;
-  }
 
-  struct TestFixture: public GroupPtr
+  struct TestFixture: public Minsky
   {
-    Group &self;
-    int gid;
-    int aid,bid,cid;
-    int abid,bcid; 
-    ItemPtr& addItem(int id, Item* it)
-    {
-      it->group=dynamic_pointer_cast<Group>(*this);
-      return self.addItem(id,it);
-    }
-    GroupPtr& addGroup(int id, Group* it)
-    {
-      it->group=dynamic_pointer_cast<Group>(*this);
-      return self.addGroup(id,it);
-    }
+    GroupPtr group0;
+    ItemPtr a,b,c;
+    WirePtr ab,bc; 
+    LocalMinsky lm;
 
-    TestFixture(): 
-      GroupPtr(new Group),
-      self(**this),
-      gid(getNextId()),
-      aid(getNextId()), bid(getNextId()), cid(getNextId()),
-      abid(getNextId()), bcid(getNextId())
-   {
-     ItemPtr a=addItem(aid, new Item);
-     ItemPtr b=addItem(bid, new Item);
-     ItemPtr c=addItem(cid, new Item);
+    TestFixture(): lm(*this)
+    {
+     a=model->addItem(new Variable<VariableType::flow>);
+     b=model->addItem(new Variable<VariableType::flow>);
+     c=model->addItem(new Variable<VariableType::flow>);
      // create 3 variables, wire them and add first two to a group,
      // leaving 3rd external
      a->moveTo(100,100);
      b->moveTo(200,100);
      c->moveTo(300,100);
-     a->ports.emplace_back(new Port(a));
-     a->ports.emplace_back(new Port(a,Port::inputPort));
-     b->ports.emplace_back(new Port(b));
-     b->ports.emplace_back(new Port(b,Port::inputPort));
-     c->ports.emplace_back(new Port(c));
-     c->ports.emplace_back(new Port(c,Port::inputPort));
+     CHECK_EQUAL(2,a->ports.size());
+     CHECK_EQUAL(2,b->ports.size());
+     CHECK_EQUAL(2,c->ports.size());
 
-     WirePtr& ab=self.addWire(abid, new Wire);
-     WirePtr& bc=self.addWire(bcid, new Wire);
-     ab.addPorts(a->ports[0], b->ports[1]);
-     bc.addPorts(b->ports[0], c->ports[1]);
+     ab=model->addWire(new Wire(a->ports[0], b->ports[1]));
+     bc=model->addWire(new Wire(b->ports[0], c->ports[1]));
      checkWiresConsistent();
 
-     GroupPtr group0=addGroup(gid,new Group);
+     group0=model->addGroup(new Group);
      checkWiresConsistent();
-     group0->addItem(aid,a);
+     group0->addItem(a);
      checkWiresConsistent();
-     group0->addItem(bid,b);
+     group0->addItem(b);
 
      CHECK_EQUAL(2,group0->items.size());
      CHECK_EQUAL(1,group0->wires.size());
-     CHECK_EQUAL(1,self.items.size());
+     CHECK_EQUAL(1,model->items.size());
      CHECK_EQUAL(1,group0->wires.size());
      checkWiresConsistent();
 
-//      // add a couple of time operators, to ensure the group has finite size
-//      operations[addOperation("time")]->moveTo(100,75);
-//      operations[addOperation("time")]->moveTo(200,125);
-//      select(50,50,250,150);
-//      GroupIcon& g=*groupItems[gid=createGroup()];      
-//      save("TestGroupFixture.mky");
-//      CHECK_EQUAL(2, g.variables.size());
-//      CHECK_EQUAL(1, g.wires().size());
-//      CHECK_EQUAL(g.id(), a->group);
-//      CHECK(!a->visible);
-//      CHECK_EQUAL(g.id(), b->group);
-//      CHECK(!b->visible); 
-//      CHECK_EQUAL(-1, c->group);
-//      CHECK(c->visible);
-//      CHECK(!wires[ab].visible);
-//      CHECK(wires[bc].visible);
-//      CHECK_EQUAL(ab, g.wires()[0]); 
-//      CHECK(uniqueGroupMembership());
+      // add a couple of time operators, to ensure the group has finite size
+     model->addItem(OperationPtr(OperationType::time))->moveTo(100,75);
+     model->addItem(OperationPtr(OperationType::time))->moveTo(200,125);
+     select(50,50,250,150);
+     save("TestGroupFixture.mky");
+     CHECK(model->uniqueItems());
     }
 
     void checkWiresConsistent() {
-      for (auto& i: self.items)
+      for (auto& i: model->items)
         for (auto& p: i->ports)
           for (auto& w: p->wires)
             {
@@ -118,7 +82,7 @@ namespace
               CHECK(p->input() || p==w->from());
               CHECK(!p->input() || p==w->to());
             }
-      for (auto& g: self.groups)
+      for (auto& g: model->groups)
         for (auto& i: g->items)
           for (auto& p: i->ports)
             for (auto& w: p->wires)
@@ -134,24 +98,42 @@ namespace
 
 SUITE(Group)
 {
+  TEST_FIXTURE(TestFixture, SelectGroup)
+  {
+    Group& g=*model->addGroup(new Group);
+    g.addItem(a);
+    g.addItem(b);
+    CHECK_EQUAL(2, g.items.size());
+    CHECK_EQUAL(1, g.wires.size());
+    CHECK(&g==a->group.lock().get());
+    CHECK(!a->visible());
+    CHECK(&g==b->group.lock().get());
+    CHECK(!b->visible()); 
+    CHECK(c->group.lock()==model);
+    CHECK(c->visible());
+    CHECK(!model->findWire(*ab)->visible());
+    CHECK(model->findWire(*bc)->visible());
+    CHECK(find(g.wires.begin(), g.wires.end(), ab) != g.wires.end()); 
+    CHECK(model->uniqueItems());
+  }
+
   TEST_FIXTURE(TestFixture, AddVariable)
   {
-    GroupPtr group0=self.groups[gid];
-    ItemPtr c=self.findItem(cid);
-    group0->addItem(cid,c);
+    group0->addItem(c);
+    CHECK(model->uniqueItems());
     CHECK_EQUAL(3,group0->items.size());
-    CHECK_EQUAL(0,self.items.size());
+    CHECK_EQUAL(2,model->items.size());
     CHECK_EQUAL(2,group0->wires.size());
-    CHECK_EQUAL(0,self.wires.size());
+    CHECK_EQUAL(0,model->wires.size());
     
     checkWiresConsistent();
 
     // now check removal
-    group0->group.lock()->addItem(cid,c);
+    group0->group.lock()->addItem(c);
 
     CHECK_EQUAL(2,group0->items.size());
     CHECK_EQUAL(1,group0->wires.size());
-    CHECK_EQUAL(1,self.items.size());
-    CHECK_EQUAL(1,self.wires.size());
+    CHECK_EQUAL(3,model->items.size());
+    CHECK_EQUAL(1,model->wires.size());
   }
 }

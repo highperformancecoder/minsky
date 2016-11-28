@@ -35,67 +35,98 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
  minsky.load $here/examples/GoodwinLinear02.mky
+ openGlobalInCanvas
  recentreCanvas
  update
 
- set gid [lindex [groupItems.#keys] 0]
+foreach gid [items.#keys] {
+   item.get \$gid
+  if {[item.classType]=="GroupIcon"} break
+ }
  #create an op, and move it into the group
  group.get \$gid
- set id [addOperation time]
+ group.detailedText "the group"
+ item.get [addOperation time]
+ item.detailedText "addedTimeOp"
 
  event generate .wiring.canvas <Button-1> -x [group.x]  -y [group.y]
 
  # do the same thing with a variable
  
-
+ set id [findItemWithDetailedText "addedTimeOp"]
+ set gid [findItemWithDetailedText "the group"]
  op.get \$id
- assert "\[op.group\]==\$gid"
+ assert "\[groupOf \$id\]==\$gid" "op"
 
- move op \$id 1000 1000
- checkAddGroup op \$id  1000 1000
- assert "\[op.group\]!=\$gid"
+ move \$id 1000 1000
+ update
+ checkAddGroup \$id  1000 1000
+ set id [findItemWithDetailedText "addedTimeOp"]
+ set gid [findItemWithDetailedText "the group"]
+ assert "\[groupOf \$id\]!=\$gid" "op1"
 
-
- set id [lindex [variables.visibleVariables] 0]
- copyVar \$id
+ foreach id [items.#keys] {
+   item.get \$id
+   switch -glob [item.classType] {
+     "Variable*" {
+       if [item.visible] break
+     }
+   }
+ }
+ copyVar
+ var.detailedText "copied var"
  event generate .wiring.canvas <Button-1> -x [group.x]  -y [group.y]
- assert "\[var.group\]==\$gid"
+ set varId [findItemWithDetailedText "copied var"]
+ set gid [findItemWithDetailedText "the group"]
+ assert "\[groupOf  \$varId]==\$gid" "var"
 
- move var \$id 1000 1000
- checkAddGroup var \$id  1000 1000
- assert "\[var.group\]!=\$gid"
+ move \$varId 1000 1000
+ update
+ checkAddGroup \$varId  1000 1000
+ set varId [findItemWithDetailedText "copied var"]
+ set gid [findItemWithDetailedText "the group"]
+ assert "\[groupOf \$varId\]!=\$gid" "var"
 
  set x [group.x]
  set y [group.y]
+
  set newGroupId [insertGroupFromFile $here/examples/GoodwinLinear02.mky]
  insertNewGroup \$newGroupId
- event generate .wiring.canvas <Button-1> -x \$x  -y \$y
- 
  group.get \$newGroupId
- assert "\[group.parent\]==\$gid"
+ group.detailedText "inserted group from file"
 
- move group \$newGroupId 1000 1000
- checkAddGroup group \$newGroupId  1000 1000
- assert "\[group.group\]!=\$gid"
+ event generate .wiring.canvas <Button-1> -x \$x  -y \$y
+ set newGroupId [findItemWithDetailedText "inserted group from file"]
+ set gid [findItemWithDetailedText "the group"]
+ assert "\[groupOf \$newGroupId\]==\$gid" "group"
 
- set numGroups [groupItems.size]
+ move \$newGroupId 1000 1000
+ checkAddGroup \$newGroupId  1000 1000
+ set newGroupId [findItemWithDetailedText "inserted group from file"]
+ set gid [findItemWithDetailedText "the group"]
+ assert "\[groupOf \$newGroupId\]!=\$gid" "group"
+
+ group.get \$gid
+ set numGroups [group.groups.size]
  group::copy \$gid
- event generate .wiring.canvas <Button-1> -x 1000  -y 1000
- assert "\$numGroups==[expr [groupItems.size]-1]"
-
+ event generate .wiring.canvas <Button-1> -x \$x  -y \$y
+ set gid [findItemWithDetailedText "the group"]
+ group.get \$gid
+ assert "\$numGroups==[expr [group.groups.size]-1]"
 
  groupEdit \$gid
+
  update
+
  assert {[winfo viewable .wiring.editGroup]}
  .wiring.editGroup.buttonBar.ok invoke
  assert {![winfo exists .wiring.editGroup]}
 
- resetEdited
- exit
+ tcl_exit
 }}
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

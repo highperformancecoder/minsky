@@ -25,8 +25,6 @@
 #define EQUATIONS_H
 
 #include "evalOp.h"
-#include "variableManager.h"
-#include "portManager.h"
 #include "godley.h"
 #include "switchIcon.h"
 
@@ -36,21 +34,11 @@
 #include <ostream>
 #include <vector>
 #include <map>
+#include "integral.h"
 
 namespace minsky
 {
   class Minsky;
-
-  // An integral is an additional stock variable, that integrates its flow variable
-  struct Integral
-  {
-    VariableValue stock;
-    VariableValue input;
-    IntOp* operation; //< reference to the interal operation object
-    Integral(VariableValue input=VariableValue()):
-      stock(VariableBase::integral), input(input), operation(NULL) {}
-  };
-
 }
 
 namespace MathDAG
@@ -102,8 +90,7 @@ namespace MathDAG
     /// directly, otherwise a copy operation is added to ensure it
     /// receives the result.
     virtual VariableValue addEvalOps
-    (EvalOpVector&, std::map<int,VariableValue>& opValMap, 
-     const VariableValue& result=VariableValue()) const=0;
+    (EvalOpVector&, const VariableValue& result=VariableValue()) const=0;
     /// returns evaluation order in sequence of variable defintions
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
@@ -156,8 +143,7 @@ namespace MathDAG
     ostream& latex(ostream& o) const  override {return o<<MathDAG::latex(value);}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
-    VariableValue addEvalOps(EvalOpVector&, std::map<int,VariableValue>& opValMap,  
-                             const VariableValue&) const override;
+    VariableValue addEvalOps(EvalOpVector&, const VariableValue&) const override;
     NodePtr derivative(SystemOfEquations&) const override;
   };
 
@@ -165,18 +151,17 @@ namespace MathDAG
   {
   public:
     string valueId;
-    int scope=-1; ///< namespace for this variable
     Type type=undefined;
     string name;
     double init=0;
     WeakNodePtr rhs;
-    OperationPtr intOp; /// reference to operation if this is
+    IntOp* intOp=0; /// reference to operation if this is
                                  /// an integral variable
     VariableDAG() {}
-    VariableDAG(const string& valueId, int scope, const string& name, Type type): 
-      valueId(valueId), scope(scope), type(type), name(name) {}
+    VariableDAG(const string& valueId, const string& name, Type type): 
+      valueId(valueId), type(type), name(name) {}
     int BODMASlevel() const  override {return 0;}
-    int order(unsigned maxOrder) const {
+    int order(unsigned maxOrder) const override {
       if (rhs) {
         if (maxOrder==0) throw error("maximum order recursion reached");
         return rhs->order(maxOrder-1)+1;
@@ -188,8 +173,7 @@ namespace MathDAG
     ostream& matlab(ostream&) const override;
     void render(ecolab::cairo::Surface& surf) const override;
     VariableValue addEvalOps
-    (EvalOpVector&, std::map<int,VariableValue>& opValMap,  
-     const VariableValue& v=VariableValue()) const override;
+    (EvalOpVector&, const VariableValue& v=VariableValue()) const override;
     using Node::latex;
     using Node::matlab;
     NodePtr derivative(SystemOfEquations&) const override; 
@@ -202,7 +186,7 @@ namespace MathDAG
   struct IntegralInputVariableDAG: public VariableDAG
   {
     VariableValue addEvalOps
-    (EvalOpVector&, std::map<int,VariableValue>& opValMap,  
+    (EvalOpVector&, //std::map<Port*,VariableValue>& opValMap,  
      const VariableValue& v=VariableValue()) const override;
   };
 
@@ -218,18 +202,17 @@ namespace MathDAG
     /// factory method 
     static OperationDAGBase* create(Type type, const string& name="");
     int order(unsigned maxOrder) const override;
-    VariableValue addEvalOps(EvalOpVector&, std::map<int,VariableValue>& opValMap,  
-                             const VariableValue&) const override;
+    VariableValue addEvalOps(EvalOpVector&, const VariableValue&) const override;
     void checkArg(unsigned i, unsigned j) const;
   };
 
   template <OperationType::Type T>
   struct OperationDAG: public OperationDAGBase
   {
-    Type type() const {return T;}
+    Type type() const override {return T;}
     OperationDAG(const string& name=""): OperationDAGBase(name) 
     {arguments.resize(OperationTypeInfo::numArguments<T>());}
-    int BODMASlevel() const {
+    int BODMASlevel() const override {
       switch (type())
         {
         case OperationType::multiply:
@@ -258,8 +241,8 @@ namespace MathDAG
   /// represents a Godley column
   struct GodleyColumnDAG: public OperationDAG<OperationType::subtract>
   {
-    int godleyId;
-    GodleyColumnDAG(): godleyId(-1) {}
+    //    int godleyId;
+    //GodleyColumnDAG(): godleyId(-1) {}
     int order(unsigned maxOrder) const override {return 0;} // Godley columns define integration vars
   };
 
@@ -270,13 +253,13 @@ namespace MathDAG
     std::map<const Node*, NodePtr> reverseLookupCache;
   public:
     std::string key(const OperationBase& x) const {
-      return "op:"+str(x.ports()[0]);
+      return "op:"+str(x.ports[0]);
     }
     std::string key(const VariableBase& x) const {
-      return "var:"+x.fqName();
+      return "var:"+x.valueId();
     }
     std::string key(const SwitchIcon& x) const {
-      return "switch:"+str(x.ports()[0]);
+      return "switch:"+str(x.ports[0]);
     }
     /// strings refer to variable names
     std::string key(const string& x) const {
@@ -335,23 +318,21 @@ namespace MathDAG
     set<string> processedColumns; // to avoid double counting shared columns
 
     const Minsky& minsky;
-    map<int, int> portToOperation;
-    map<int, int> portToSwitch;
 
     /// create a variable DAG. returns cached value if previously called
-    shared_ptr<VariableDAG> makeDAG(const string& valueId, int scope, const string& name, VariableType::Type type);
+    shared_ptr<VariableDAG> makeDAG(const string& valueId, const string& name, VariableType::Type type);
     shared_ptr<VariableDAG> makeDAG(VariableBase& v)
-    {return makeDAG(v.valueId(),v.scope(),v.name(),v.type());}
+    {v.ensureValueExists(); return makeDAG(v.valueId(),v.name(),v.type());}
     /// create an operation DAG. returns cached value if previously called
-    NodePtr makeDAG(const OperationPtr& op);
+    NodePtr makeDAG(const OperationBase& op);
     NodePtr makeDAG(const SwitchIcon& op);
 
     /// returns cached subexpression node representing what feeds the
     /// wire, creating a new one if necessary
-    NodePtr getNodeFromWire(int wire);
+    NodePtr getNodeFromWire(const Wire& wire);
 
     void processGodleyTable
-    (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley, int godleyId);
+    (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley/*, int godleyId*/);
 
     /// applies the chain rule to expression x
     template <class Expr> NodePtr chainRule(const Expr& x, const Expr& deriv);
@@ -368,8 +349,7 @@ namespace MathDAG
     /// @param vector of integrals to be constructed
     /// @param portValMap - map of flowVar ids assigned with an output port
     void populateEvalOpVector
-    (EvalOpVector& equations, std::vector<Integral>& integrals, 
-     std::map<int,VariableValue>& portValMap);
+    (EvalOpVector& equations, std::vector<Integral>& integrals);
 
     /// symbolically differentiate \a expr
     template <class Expr> NodePtr derivative(const Expr& expr);

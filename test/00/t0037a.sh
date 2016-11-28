@@ -30,7 +30,7 @@ trap "fail" 1 2 3 15
 
 # checks for the presence of debug print statements to stdout in the TCL files,
 # which cause problems in the Windows release build
-numDebugPrintStmts=`grep puts $here/GUI/*.tcl|csvprintf -s ' ' "%0\\\$d\n"|grep 3|wc -l`
+numDebugPrintStmts=`grep puts $here/gui-tk/*.tcl|csvprintf -s ' ' "%0\\\$d\n"|grep 3|wc -l`
 
 #There should be precisely 1 statement, in the definition of tout
 if [ $numDebugPrintStmts -gt 1 ]; then fail; fi

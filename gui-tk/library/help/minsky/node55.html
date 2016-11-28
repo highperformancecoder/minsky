@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Brief History of system dynamics</TITLE>
+<META NAME="description" CONTENT="Brief History of system dynamics">
+<META NAME="keywords" CONTENT="minsky">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="minsky.css">
+
+<LINK REL="next" HREF="node56.html">
+<LINK REL="previous" HREF="node41.html">
+<LINK REL="up" HREF="minsky.html">
+<LINK REL="next" HREF="node56.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html692"
+  HREF="node56.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html690"
+  HREF="minsky.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html684"
+  HREF="node54.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html693"
+  HREF="node56.html">FAQs</A>
+<B> Up:</B> <A NAME="tex2html691"
+  HREF="minsky.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html685"
+  HREF="node54.html">Canvas background</A>
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00500000000000000000">
+Brief History of system dynamics</A>
+</H1>
+
+<P>
+ystem dynamics programs express equations using a visual
+metaphor. Before this metaphor was developed, anyone who wanted to
+simulate a system or procedure had to write a computer program
+(normally in
+<A NAME="tex2html6"
+  HREF="https://en.wikipedia.org/wiki/FORTRAN">FORTRAN</A>). The
+program might well replicate the system accurately, but only the
+author of the program would know that—-everyone else had to take it on
+faith, because the program code would be indecipherable to everyone
+but the author.
+
+<P>
+For example, below is the Wikipedia’s example of a simple FORTRAN II
+program to calculate the area of a triangle. Enjoy the ``My Eyes Glaze
+Over'' effect of trying to understand what it does at your leisure.
+
+<P>
+<PRE>
+LISTING
+     READ INPUT TAPE 5, 501, IA, IB, IC
+ 501 FORMAT (3I5)
+     IF (IA) 777, 777, 701
+ 701 IF (IB) 777, 777, 702
+ 702 IF (IC) 777, 777, 703
+ 703 IF (IA+IB-IC) 777,777,704
+ 704 IF (IA+IC-IB) 777,777,705
+ 705 IF (IB+IC-IA) 777,777,799
+ 777 STOP 1
+
+ 799 S = FLOATF (IA + IB + IC) / 2.0
+     AREA = SQRT( S * (S - FLOATF(IA)) * (S - FLOATF(IB)) *
+    +     (S - FLOATF(IC)))
+     WRITE OUTPUT TAPE 6, 601, IA, IB, IC, AREA
+ 601 FORMAT (4H A= ,I5,5H  B= ,I5,5H  C= ,I5,8H  AREA= ,F10.2,
+    +        13H SQUARE UNITS)
+     STOP
+     END
+</PRE>
+
+<P>
+A more complex problem would involve hundreds of pages of computer
+code that no-one could understand (bar, one hoped, the person who
+wrote it). <A NAME="tex2html7"
+  HREF="https://en.wikipedia.org/wiki/Jay_Forrester">Jay
+Forrester</A>, an engineer
+who had designed
+<A NAME="tex2html8"
+  HREF="https://en.wikipedia.org/wiki/Whirlwind_(computer)">Whirlwind</A>(the
+first computer with a video display for output), was confronted with
+such a problem: working out for GE why a Kentucky appliance factory
+had a regular three-year cycle in its employment. He developed a
+diagrammatic representation of the manufacturing and hiring processes
+at the factory, and showed that its internal hiring practices
+generated the cycle.
+
+<P>
+System dynamics was thus born as a visual way of understanding a
+complex system. With his background in developing computers that
+produced visual output on a
+<A NAME="tex2html9"
+  HREF="https://en.wikipedia.org/wiki/Cathode_ray_tube">CRT</A>
+(``cathode ray tube''; before Whirlwind--and for some time after
+it--most computers printed their results on line printers), it was a
+logical step for Forrester to move from hand-drawn diagrams to visual
+representations of a complex model on a computer screen. 
+
+<P>
+The first such program had a hoot of a name: SIMPLE, which stood for
+``Simulation of Industrial Management Problems with Lots of Equations''
+(it therefore qualifies for the annual COCOA award, given by the
+<A NAME="tex2html10"
+  HREF="https://www.acronymfinder.com/Committee-to-Outlaw-Contrived-and-Outrageous-Acronyms-(COCOA).html">Committee to Outlaw Contrived and Outrageous
+Acronyms</A>). After
+SIMPLE came
+<A NAME="tex2html11"
+  HREF="https://en.wikipedia.org/wiki/DYNAMO_(programming_language)">DYNAMO</A>
+(based on the slightly less outrageous acronym DYNAmic MOdels), and
+ultimately the proliferation of modern commercial and Open Source
+system dynamics programs. 
+
+<P>
+Now there are many programs--both commercial and Open Source--which
+have built on the initial ideas in SIMPLE and DYNAMO, and they are the
+workhorse tools of engineers all over the world. Here, for example, is
+a simple model of a 4 cylinder car (one of the example files supplied
+with Vissim). Real-world projects are substantially more complicated,
+but this gives an idea of the complexity of tasks that can be
+modelled, and the capability for breaking a complex system into
+sub-units for design purposes. 
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem2.png"
+ ALT="2031">
+
+<P>
+Management, marketing and social science disciplines use a related
+class of programs, like Stella. Here is a marketing model of customers
+switching from one product to another: 
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem3.png"
+ ALT="2030">
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html692"
+  HREF="node56.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html690"
+  HREF="minsky.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html684"
+  HREF="node54.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html693"
+  HREF="node56.html">FAQs</A>
+<B> Up:</B> <A NAME="tex2html691"
+  HREF="minsky.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html685"
+  HREF="node54.html">Canvas background</A></DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Russell Standish
+2016-11-03
+</ADDRESS>
+</BODY>
+</HTML>

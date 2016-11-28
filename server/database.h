@@ -45,7 +45,7 @@ namespace minsky
     /// versions perform these 
 
     /// reads layout element from database, using id as key
-    auto_ptr<schema1::Layout> readLayout(int modelId, int id);
+    unique_ptr<schema1::Layout> readLayout(int modelId, int id);
     /// updates database layout element with \a x
     void updateLayout(int modelId, const schema1::Layout& x);
  

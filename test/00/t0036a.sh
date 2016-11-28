@@ -37,25 +37,21 @@ source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
   minsky.load $here/examples/GoodwinLinear02.mky
   updateCanvas
-  select [expr [group.x]-0.5*[group.width]] [expr [group.y]-0.5*[group.height]] [expr [group.x]+0.5*[group.width]] [expr [group.y]+0.5*[group.height]] 
-  resetEdited
+  select [expr [group.x]-0.55*[group.width]] [expr [group.y]-0.55*[group.height]] [expr [group.x]+0.55*[group.width]] [expr [group.y]+0.55*[group.height]] 
   newSystem
   group.get [paste]
-  assert {[operations.size]==4}
-  assert {[variables.size]==4}
+  assert {[items.size]==10}
   assert {[wires.size]==8}
-  assert {[llength [group.groups]]==1}
+  assert {[minsky.group.groups.size]==1}
   # retrieve inner group
-  group.get [group.groups]
-  assert {[llength [group.operations]]==4}
-  assert {[llength [group.variables]]==4}
-  assert {[llength [group.wires]]==8}
-  resetEdited
-  exit
+  minsky.group.groups.@elem 0
+  assert {[minsky.group.groups(0).items.size]==8}
+  assert {[minsky.group.groups(0).wires.size]==8}
+  tcl_exit
 }}
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

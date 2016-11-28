@@ -48,18 +48,18 @@ proc afterMinskyStarted {} {uplevel #0 {
 
 plot::resize  \$id
 plot::resizeRect plotBBox [expr [plot.x]+100] [expr [plot.y]+100] 
-plot::resizeItem plotBBox \$id [expr [plot.x]+100] [expr [plot.y]+100] 
-puts "[plot.width] [plot.height]"
+set x [expr [plot.x]-[.wiring.canvas canvasx 0]]
+set y [expr [plot.y]-[.wiring.canvas canvasy 0]]
+plot::resizeItem plotBBox \$id [expr \$x+100] [expr \$y+100] 
 assert {abs(200-[plot.width])<2}
 assert {abs(200-[plot.height])<2}
 
-resetEdited
-exit
+tcl_exit
 
 }}
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

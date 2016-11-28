@@ -64,6 +64,8 @@ namespace minsky
     template <> int numArguments<OperationType::cosh>() {return 1;}
     template <> int numArguments<OperationType::tanh>() {return 1;}
     template <> int numArguments<OperationType::abs>() {return 1;}
+    template <> int numArguments<OperationType::floor>() {return 1;}
+    template <> int numArguments<OperationType::frac>() {return 1;}
     template <> int numArguments<OperationType::numOps>() {return -1;} //no output port as well
   }
 }

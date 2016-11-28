@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Variables</TITLE>
+<META NAME="description" CONTENT="Variables">
+<META NAME="keywords" CONTENT="minsky">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="minsky.css">
+
+<LINK REL="next" HREF="node48.html">
+<LINK REL="previous" HREF="node43.html">
+<LINK REL="up" HREF="node41.html">
+<LINK REL="next" HREF="node45.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html583"
+  HREF="node45.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html581"
+  HREF="node41.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html575"
+  HREF="node43.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html584"
+  HREF="node45.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html582"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html576"
+  HREF="node43.html">Switch</A>
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00430000000000000000">
+Variables</A>
+</H1>
+
+<P>
+Variables represent values in a calculation, and come in a number of
+varieties:
+<DL>
+<DT><STRONG>Constants</STRONG></DT>
+<DD>represent an explicit numerical value, and do not
+have a name. Their graphical representation shows the actual value of
+the constant.
+</DD>
+<DT><STRONG>Parameters</STRONG></DT>
+<DD>are named constants. All instances of a given name
+represent the same value, as with all other named variables, so
+changing the value of one parameter, either through its edit menu, or
+through a slider, will affect all the others of that name.
+</DD>
+<DT><STRONG>Flow variables</STRONG></DT>
+<DD>have an input port that defines how the value is
+to be calculated. Only one flow variable of a given name can have its
+input port connected, as they all refer to the same quantity. If no
+input ports are connected, then flow variables act just like
+parameters.
+</DD>
+<DT><STRONG>Integral variables</STRONG></DT>
+<DD>represent the result of integrating its
+input over time  by means of the differential
+equation solver. The integrand is represented by the input to an
+integral operator that is attached to the integral variable.
+</DD>
+<DT><STRONG>Stock variables</STRONG></DT>
+<DD>are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up the
+column.
+</DD>
+</DL>
+
+<P>
+Variables may be converted between types in the variable edit menu,
+available from the context menu.
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html585"
+  HREF="node45.html">Variable names</A>
+<LI><A NAME="tex2html586"
+  HREF="node46.html">Initial conditions</A>
+<LI><A NAME="tex2html587"
+  HREF="node47.html">Sliders</A>
+</UL>
+<!--End of Table of Child-Links-->
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html583"
+  HREF="node45.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html581"
+  HREF="node41.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html575"
+  HREF="node43.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html584"
+  HREF="node45.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html582"
+  HREF="node41.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html576"
+  HREF="node43.html">Switch</A></DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Russell Standish
+2016-11-03
+</ADDRESS>
+</BODY>
+</HTML>

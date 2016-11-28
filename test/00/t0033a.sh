@@ -35,6 +35,7 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
  minsky.load $here/examples/GoodwinLinear02.mky
+ pushFlags
  recentreCanvas
  updateCanvas
 
@@ -49,7 +50,7 @@ proc afterMinskyStarted {} {uplevel #0 {
  saveSelectionAsFile xxx.mky
  group.get [paste]
  assert {[llength [group.operations]]==2}
- resetEdited
+ popFlags
  minsky.load xxx.mky
  assert {[operations.size]==2}
  assert {[variables.size]==0}

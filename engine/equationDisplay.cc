@@ -70,21 +70,21 @@ namespace MathDAG
       return pango.height();
     }
 
-    // renders \a source (which is a recording surface) at current point
-    // note: doesn't work with nested recording surfaces, ie the destination surface cannot be a recording surface
-    void displaySurface(cairo_t* cairo, const Surface& source, Anchor anchor)
-    {
-      cairo_save(cairo);
-      double x,y;
-      moveToAnchor(cairo, source, anchor);
-      cairo_get_current_point(cairo, &x, &y);
-      cairo_rectangle(cairo, x,y,source.width(), source.height());
-      cairo_set_source_rgb(cairo,0,1,0);
-      cairo_stroke_preserve(cairo);
-      cairo_set_source_surface(cairo, source.surface(), x-source.left(),y-source.top());
-      cairo_fill(cairo);
-      cairo_restore(cairo);
-    }
+//    // renders \a source (which is a recording surface) at current point
+//    // note: doesn't work with nested recording surfaces, ie the destination surface cannot be a recording surface
+//    void displaySurface(cairo_t* cairo, const Surface& source, Anchor anchor)
+//    {
+//      cairo_save(cairo);
+//      double x,y;
+//      moveToAnchor(cairo, source, anchor);
+//      cairo_get_current_point(cairo, &x, &y);
+//      cairo_rectangle(cairo, x,y,source.width(), source.height());
+//      cairo_set_source_rgb(cairo,0,1,0);
+//      cairo_stroke_preserve(cairo);
+//      cairo_set_source_surface(cairo, source.surface(), x-source.left(),y-source.top());
+//      cairo_fill(cairo);
+//      cairo_restore(cairo);
+//    }
 
     struct RecordingSurface: public Surface
     {
@@ -178,8 +178,7 @@ namespace MathDAG
         num.setMarkup("d"+latexToPango(mathrm(i->name)));
         double lineSpacing=num.height()+den.height()+2;
 
-        VariableDAGPtr input=expressionCache.getIntegralInput
-          (VariableManager::valueId(i->scope,i->name));
+        VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
         if (input && input->rhs)
           { // adjust linespacing to allow enough height for RHS
           RecordingSurface rhs;
@@ -357,7 +356,7 @@ namespace MathDAG
   void OperationDAG<OperationType::integrate>::render(Surface& surf) const
   {
     if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      if (VariablePtr v=i->getIntVar())
+      if (VariablePtr v=i->intVar)
         print(surf.cairo(), latexToPango(mathrm(v->name())),Anchor::nw);
   }
   template <>
@@ -505,55 +504,41 @@ namespace MathDAG
       xx+=pango.width()+r.width();
       pango.setMarkup("|");
       cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
-      //      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
       pango.show();
       cairo_move_to(s.cairo(),xx+pango.width(),yy);
   }
 
   template <>
-  void OperationDAG<OperationType::le>::render(Surface& surf) const
+  void OperationDAG<OperationType::floor>::render(Surface& s) const
   {
-    if (!arguments.empty())
-      {
-        if (!arguments[1].empty() && arguments[1][0])
-          if (!arguments[0].empty() && arguments[0][0])
-            {
-              print(surf.cairo(),"Θ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  arguments[1][0]->render(surf);
-                  print(surf.cairo()," - ",Anchor::nw);
-                  arguments[0][0]->render(surf);
-                });
-              print(surf.cairo(),"+δ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  arguments[1][0]->render(surf);
-                  print(surf.cairo()," - ",Anchor::nw);
-                  arguments[0][0]->render(surf);
-                });              
-            }
-          else
-            {
-              print(surf.cairo(),"Θ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
-              print(surf.cairo(),"+δ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
-            }
-        else
-          if (!arguments[0].empty() && arguments[0][0])
-            {
-              print(surf.cairo(),"Θ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){
-                  print(surf.cairo()," - ",Anchor::nw);
-                  arguments[0][0]->render(surf);
-                });
-              print(surf.cairo(),"+δ",Anchor::nw);
-              parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-            }
-          else
-            print(surf.cairo(),"1",Anchor::nw);
-      }
-    else
-      print(surf.cairo(),"1",Anchor::nw);
+      double xx,yy;
+      cairo_get_current_point(s.cairo(),&xx,&yy);
+ 
+      RecordingSurface r;
+      arguments[0][0]->render(r);
+
+      Pango pango(s.cairo());
+      double oldFs=pango.getFontSize();
+      pango.setFontSize(r.height());
+      pango.setMarkup("⌊");
+      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
+      pango.show();
+      cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
+      cairo_rel_move_to(s.cairo(),pango.width(),0);
+      arguments[0][0]->render(s);
+      xx+=pango.width()+r.width();
+      pango.setMarkup("⌋");
+      cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
+      pango.show();
+      cairo_move_to(s.cairo(),xx+pango.width(),yy);
+  }
+
+  template <>
+  void OperationDAG<OperationType::frac>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"frac",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
   }
 
   template <>
@@ -568,7 +553,12 @@ namespace MathDAG
               parenthesise(surf, [&](Surface& surf){
                   arguments[1][0]->render(surf);
                   print(surf.cairo()," - ",Anchor::nw);
-                  arguments[0][0]->render(surf);
+                  if (arguments[0][0]->BODMASlevel()>1)
+                    parenthesise(surf, [&](Surface& surf){
+                        arguments[0][0]->render(surf);
+                      });
+                  else
+                    arguments[0][0]->render(surf);
                 });
             }
           else
@@ -582,7 +572,12 @@ namespace MathDAG
               print(surf.cairo(),"Θ",Anchor::nw);
               parenthesise(surf, [&](Surface& surf){
                   print(surf.cairo()," - ",Anchor::nw);
-                  arguments[0][0]->render(surf);
+                  if (arguments[0][0]->BODMASlevel()>1)
+                    parenthesise(surf, [&](Surface& surf){
+                        arguments[0][0]->render(surf);
+                      });
+                  else
+                    arguments[0][0]->render(surf);
                 });
             }
           else
@@ -620,6 +615,22 @@ namespace MathDAG
             }
           else
             print(surf.cairo(),"1",Anchor::nw);
+      }
+    else
+      print(surf.cairo(),"1",Anchor::nw);
+  }
+
+  template <>
+  void OperationDAG<OperationType::le>::render(Surface& surf) const
+  {
+    if ((arguments.size()>0 && !arguments[0].empty() && arguments[0][0]) ||
+        (arguments.size()>1 && !arguments[1].empty() && arguments[1][0]))
+      {
+        OperationDAG<OperationType::lt> lt; lt.arguments=arguments;
+        OperationDAG<OperationType::eq> eq; eq.arguments=arguments;
+        lt.render(surf);
+        print(surf.cairo(),"+",Anchor::nw);
+        eq.render(surf);
       }
     else
       print(surf.cairo(),"1",Anchor::nw);

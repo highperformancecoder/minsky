@@ -97,12 +97,12 @@ assert {[minsky.godley.table.rowSum 1]==0} ""
 assert {[minsky.godley.table.rowSum 2]=="b"} ""
 assert {"[minsky.godley.table.getVariables]"=="a b"} ""
 
-minsky.deleteGodleyTable \$godley
-assert {[minsky.godleyItems.size]==0} ""
+minsky.deleteItem \$godley
+assert {[minsky.items.size]==0} ""
 tcl_exit
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

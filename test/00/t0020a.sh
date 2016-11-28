@@ -31,7 +31,7 @@ trap "fail" 1 2 3 15
 cp $here/test/constantCopyProblem* .
 cp $here/test/assert.tcl .
 
-$here/GUI/minsky constantCopyProblem.tcl
+$here/gui-tk/minsky constantCopyProblem.tcl
 if test $? -ne 0; then fail; fi
 
 pass

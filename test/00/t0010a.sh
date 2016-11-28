@@ -34,23 +34,25 @@ source $here/test/assert.tcl
 set op0 [minsky.addOperation exp]
 set op1 [minsky.addOperation exp]
 minsky.op.get \$op0
-set ports0 [minsky.op.ports]
+set x0 [minsky.op.x]
+set y0 [minsky.op.y]
 minsky.op.get \$op1
-set ports1 [minsky.op.ports]
-assert "[minsky.addWire [lindex \$ports0 0] [lindex \$ports1 1]]==-1" "wire needs coordinates"
-set wireAdded [minsky.addWire [lindex \$ports0 0] [lindex \$ports1 1] {0 0 0 0}]
+minsky.op.moveTo 100 100
+set x1 [minsky.op.x]
+set y1 [minsky.op.y]
+set wireAdded [minsky.addWire \$op0 \$x0 \$y0 \$x1 \$y1]
+assert {[minsky.wires.size]==1} ""
 assert "\$wireAdded!=-1" ""
-assert "[minsky.addWire [lindex \$ports0 0] [lindex \$ports1 1] {0 0 0 0}]==-1" "duplicate wire added!"
-assert "[minsky.addWire [lindex \$ports0 0] [lindex \$ports0 1] {0 0 0 0}]==-1" "self wire allowed!"
-assert "[minsky.addWire [lindex \$ports0 1] [lindex \$ports1 0] {0 0 0 0}]==-1" "input wired to output!"
+assert "[minsky.addWire \$op0 \$x0 \$y0 \$x1 \$y1 {0 0 0 0}]==-1" "duplicate wire added!"
+assert "[minsky.addWire \$op0 \$x0 \$y0 \$x0 \$y0 {0 0 0 0}]==-1" "self wire allowed!"
 minsky.wire.get \$wireAdded
-assert "[minsky.wire.from]==[lindex \$ports0 0] && [minsky.wire.to]==[lindex \$ports1 1]" ""
+#assert "[minsky.wire.from]==[lindex \$ports0 0] && [minsky.wire.to]==[lindex \$ports1 1]" ""
 minsky.deleteWire \$wireAdded
 assert {[minsky.wires.size]==0} ""
 tcl_exit
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

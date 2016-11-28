@@ -105,7 +105,6 @@ SUITE(Database)
 
     int model=db.createModel(modelFile, "testUser", minsky);
 
-    checkVectorElements(db, model, minsky.model.ports);
     checkVectorElements(db, model, minsky.model.wires);
     checkVectorElements(db, model, minsky.model.operations);
     checkVectorElements(db, model, minsky.model.variables);

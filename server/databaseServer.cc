@@ -52,10 +52,10 @@ namespace minsky
             client.send(r);
             return;
           }
-        if (const Item* p=dynamic_cast<const Item*>(msg.payloadAsPolyBase()))
+        if (auto p=dynamic_cast<const schema1::Item*>(msg.payloadAsPolyBase()))
           {
-            MsgPPtr<Item> r(msg);
-            r.setPayload(p->cloneT<Item>());
+            MsgPPtr<schema1::Item> r(msg);
+            r.setPayload(p->cloneT<schema1::Item>());
             db.createElement(r.modelId, *r.payload);
             client.send(r);
             return;
@@ -70,10 +70,9 @@ namespace minsky
             client.send(r);
             return;
           }
-        if (const Item* p=
-            dynamic_cast<const Item*>(msg.payloadAsPolyBase()))
+        if (auto p=dynamic_cast<const schema1::Item*>(msg.payloadAsPolyBase()))
           {
-            MsgPPtr<Item> r(msg);
+            MsgPPtr<schema1::Item> r(msg);
             r.setPayload(db.readElement(msg.modelId, p->id).release());
             client.send(r);
             return;

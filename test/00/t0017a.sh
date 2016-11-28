@@ -45,7 +45,7 @@ for i in examples/*.mky; do
         echo "Fix MinskyNonLinear.mky!!"
         continue; fi
     echo "doing: $i"
-    $here/GUI/minsky $here/test/compareWithOctave.tcl $i
+    $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
     if test $? -ne 0; then fail; fi
     octave --silent $here/test/compareWithOctave.m $i
     if test $? -ne 0; then fail; fi

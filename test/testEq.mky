@@ -1090,7 +1090,7 @@
     </Variable>
     <Variable>
      <id>146</id>
-     <type>constant</type>
+     <type>parameter</type>
      <init>0</init>
      <ports>
       <int>2</int>
@@ -1099,7 +1099,7 @@
     </Variable>
     <Variable>
      <id>147</id>
-     <type>constant</type>
+     <type>parameter</type>
      <init>0</init>
      <ports>
       <int>43</int>

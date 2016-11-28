@@ -37,9 +37,11 @@ proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
   recentreCanvas
   updateCanvas
-  set godley [lindex [godleyItems.#keys] 0]
-  doubleMouseGodley \$godley 194 57
-  doubleMouseGodley \$godley 78 62
+  foreach godley [items.#keys] {
+    item.get \$godley
+    if {[item.classType]=="GodleyIcon"} break
+  }
+  doubleMouseGodley \$godley 38 118
   update
   # should open edit window
   assert {[winfo viewable .wiring.editVar]}
@@ -47,19 +49,23 @@ proc afterMinskyStarted {} {
   assert {![winfo exists .wiring.editVar]}
 
   # double click on first variable
-  set var [lindex [.wiring.canvas find withtag variables] 0]
-  eval doubleClick \$var [.wiring.canvas coords \$var]
+  foreach var [items.#keys] {
+    item.get \$var
+    switch -glob [item.classType] {
+      "Variable*" break
+    }
+  }
+  editItem \$var
   assert {[winfo viewable .wiring.editVar]} {varclick}
   .wiring.editVar.buttonBar.ok invoke
   assert {![winfo exists .wiring.editVar]} {varclick}
 
 
-  resetEdited
-  exit
+  tcl_exit
 }
 EOF
 
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

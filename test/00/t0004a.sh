@@ -40,15 +40,16 @@ proc afterMinskyStarted {} {
     bind . <Destroy> {}
 
     # create godley table with an input and output variable
-    set godleyId [addGodleyTable 100 100]
+    set godleyId [addGodleyTable]
     godley.get \$godleyId
+    godley.moveTo 100 100
     godley.table.resize 3 2
     godley.setCell 0 1 foobar
     godley.setCell 2 1 bar
     godley.update
-    godley.set
+    wiringGroup.updateOnNewGodleyVars \$godleyId
 
-    newGodleyItem \$godleyId
+    newItem \$godleyId
     bind .wiring.canvas <Button-1> "puts {%x %y}"
 
     # delivered to foobar
@@ -56,7 +57,7 @@ proc afterMinskyStarted {} {
     # check context menu is posted
     assert {[winfo viewable .wiring.context]} foobar
     # check the menu items are what is expected
-    assert {[string match "editItem * var" "[.wiring.context entrycget 0 -command]"]} foobar
+    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} foobar
     assert {[.wiring.context entrycget 1 -label]=="Copy"} foobar
 
 
@@ -65,7 +66,7 @@ proc afterMinskyStarted {} {
     # delivered to bar
     event generate .wiring.canvas <Button-3> -x 55 -y 80 -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] bar
-    assert {[string match "editItem * var" "[.wiring.context entrycget 0 -command]"]} bar
+    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} bar
     assert {[.wiring.context entrycget 1 -label]=="Copy"} bar
 
     .wiring.context unpost
@@ -74,18 +75,17 @@ proc afterMinskyStarted {} {
     event generate .wiring.canvas <Button-3> -x 113 -y 69 -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] godley
     assert "\[.wiring.context entrycget 2 -command\]==\"openGodley \$godleyId\"" godley
-    assert "\[.wiring.context entrycget 8 -command]\==\"deleteItem \$godleyId godley\$godleyId\"" godley
+    assert "\[.wiring.context entrycget 8 -command]\==\"deleteItem \$godleyId item\$godleyId\"" godley
 
     .wiring.context unpost
     # delivered to nowhere
     event generate .wiring.canvas <Button-3> -x 200 -y 200 -rootx 100 -rooty 100
     assert {![winfo viewable .wiring.context]} nowhere
-    resetEdited
-    exit
+    tcl_exit
 }
 
 EOF
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

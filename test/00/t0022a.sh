@@ -33,7 +33,7 @@ cat >input.tcl <<EOF
 source assert.tcl
 proc afterMinskyStarted {} {
   set id [newVariable foo flow]
-  newVar \$id
+  newItem \$id
   deiconifyNote
   .wiring.note.tooltip.entry insert 0 foobar
   .wiring.note.text insert 1.0 "some longer text"
@@ -46,27 +46,26 @@ proc afterMinskyStarted {} {
   assert {[llength [.wiring.canvas find withtag tooltip]]==1}
   assert {[.wiring.canvas itemcget tooltip -text]=="foobar"}
   minsky.save saved.mky
-  resetEdited
-  exit
+  tcl_exit
 }
 EOF
 
 cp $here/test/assert.tcl .
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 # check that it reloads
 cat >reload.tcl <<EOF
 source assert.tcl
 minsky.load saved.mky
-set id [lindex [minsky.variables.#keys] 0]
+set id [lindex [minsky.items.#keys] 0]
 minsky.var.get \$id
 assert {"foobar"==[minsky.var.tooltip]}
 assert {"some longer text\n"==[minsky.var.detailedText]}
 tcl_exit
 EOF
 
-$here/GUI/minsky reload.tcl
+$here/gui-tk/minsky reload.tcl
 if test $? -ne 0; then fail; fi
 
 pass

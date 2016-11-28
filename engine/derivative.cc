@@ -79,7 +79,9 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative(const VariableDAG& expr)
   {
     string name=differentiateName(expr.name);
-    VariableDAGPtr r(makeDAG(VariableManager::valueId(expr.scope,name),expr.scope,name,VariableType::flow));
+    // ensure variable value exists, even if only temporary
+    VariablePtr tmp(VariableType::tempFlow, name);
+    VariableDAGPtr r(makeDAG(tmp->valueId(),tmp->name(),tmp->type()));
     if (expr.rhs)
       r->rhs=expr.rhs->derivative(*this);
     else if (expr.type==VariableType::integral || expr.type==VariableType::stock)
@@ -251,21 +253,30 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::lt>& expr)
   {
-    return zero;
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("lt is not differentiable");
   }
 
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::le>& expr)
   {
-    return zero;
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("le is not differentiable");
   }
 
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::eq>& expr)
   {
-    return zero;
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("eq is not differentiable");
   }
 
   template <>
@@ -549,8 +560,28 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, (one-(x<=zero)) - (x<=zero));
+        return chainRule(x, (one-2*(x<=zero)));
       }
   }
 
+  template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::floor>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      // should really be δ(x-⌊x⌋) 
+      throw error("floor is not differentiable");
+  }
+
+  template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::frac>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+       throw error("frac is not differentiable");
+  }
 }

@@ -27,6 +27,6 @@ pass()
 trap "fail" 1 2 3 15
 
 cd $here/test
-$here/GUI/minsky parseGodley.tcl
+$here/gui-tk/minsky parseGodley.tcl
 if test $? -ne 0; then fail; fi
 pass

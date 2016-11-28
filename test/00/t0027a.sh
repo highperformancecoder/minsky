@@ -36,25 +36,29 @@ source assert.tcl
 proc afterMinskyStarted {} {
 uplevel #0 {
 openNamedFile $here/examples/GoodwinLinear02.mky
+pushFlags
 runstop
+assert "\$running == 1"
 simulate
-after 500 assert {[t]>0}
-runstop
+after 500 runstop
+vwait running
+assert {[t]>0}
 set tt [t]
-after 500 assert {[t]>0}
-assert "\$tt==[t]"
 reset
 assert {[t]==0}
-resetEdited
+popFlags
 newSystem
-assert {[minsky.variables.size]==0}
-resetEdited
-exit
+assert {[minsky.items.size]==0}
+assert {[minsky.wires.size]==0}
+assert {[minsky.model.items.size]==0}
+assert {[minsky.model.wires.size]==0}
+assert {[minsky.model.groups.size]==0}
+tcl_exit
 }}
 EOF
 
 cp $here/test/assert.tcl .
-$here/GUI/minsky input.tcl
+$here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
 pass

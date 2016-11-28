@@ -36,56 +36,68 @@ proc afterMinskyStarted {} {
 
 minsky.load $here/examples/GoodwinLinear02.mky
 recentreCanvas
-assert {[variables.size]==15} {}
-assert {[operations.size]==10} {}
+assert {[items.size]==27} {}
 assert {[wires.size]==27} {}
 lasso 378 27
 lassoEnd  450 106
 cut
-assert {[variables.size]==13} {}
-assert {[operations.size]==9} {}
+assert {[items.size]==24} {}
 assert {[wires.size]==23} {}
 set gid [paste]
 insertNewGroup \$gid
 event generate .wiring.canvas <Button-1>
 
-assert {[variables.size]==15} {}
-assert {[operations.size]==10} {}
+assert {[items.size]==28} {}
 assert {[wires.size]==25} {}
 
-wire.get 81
-decorateWire 81
+# find a wire with internal control points
+for {set i 0} {\$i<[wires.size]} {incr i} {
+  set w [lindex [wires.#keys] \$i]
+  wire.get \$w
+  if {[llength [wire.coords]]>4} break
+}
+decorateWire \$w
 assert {[llength [wire.coords]]>4}
-straightenWire 81
+straightenWire \$w
 assert {[llength [wire.coords]]==4}
 
 # add another wire
-wires::startConnect 16 xx 405.5 170
-wires::extendConnect 16 xx 400 170
-wires::finishConnect xx 183 173
+set item [lindex [items.#keys] 0]
+wires::startConnect \$item 405.5 170
+wires::extendConnect \$item 400 170
+wires::finishConnect \$item 183 173
 assert {[wires.size]==26} {}
 
-wire.get [lindex [wires.#keys] 0]
-decorateWire [wire.id]
+set w [lindex [wires.#keys] 0]
+wire.get \$w 
+decorateWire \$w
 set handle [lindex [.wiring.canvas find withtag handles] 0]
-insertCoords [wire.id] \$handle 0 100 100
-deleteHandle [wire.id] \$handle 0
+insertCoords \$w \$handle 0 100 100
+deleteHandle \$w \$handle 0
 
-editItem 105 var105
-.wiring.editVar.buttonBar.ok invoke
-editItem 123 op123
-.wiring.editOperation.buttonBar.ok invoke
+foreach it [items.#keys] {
+  item.get \$it
+  switch -glob [item.classType] { 
+    "Variable*" {
+      editItem \$it
+      .wiring.editVar.buttonBar.ok invoke
+     }
+    "Operation*" {
+      editItem \$it
+      .wiring.editOperation.buttonBar.ok invoke
+    }
+  }
+}
 
 placeNewNote
 event generate .wiring.canvas <Button-1>
 
-resetEdited
-exit
+tcl_exit
 }
 EOF
 
 cp $here/test/assert.tcl .
-$here/GUI/minsky cut-paste.tcl
+$here/gui-tk/minsky cut-paste.tcl
 if test $? -ne 0; then fail; fi
 
 pass

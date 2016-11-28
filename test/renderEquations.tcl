@@ -9,7 +9,6 @@ proc afterMinskyStarted {} {
         renderEquationsToImage equations
 
         equations write $argv(2).gif -format gif -background white
-        resetEdited
-        exit
+        tcl_exit
     }
 }

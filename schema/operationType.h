@@ -39,6 +39,7 @@ namespace minsky
                // functions
                sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
+               floor, frac,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type

@@ -1,8 +1,8 @@
 #!/opt/local/bin/tclsh
 
-set minskyHome ../GUI
+set minskyHome ../gui-tk
 
-source ../GUI/godley.tcl
+source ../gui-tk/godley.tcl
 
 proc a {s} {
     set prefix ""

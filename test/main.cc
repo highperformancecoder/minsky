@@ -47,6 +47,9 @@ namespace
   };
 }
 
+#include "minsky.h"
+#include <ecolab_epilogue.h>
+
 int main(int argc, const char** argv)
 {
   if (argc>1)

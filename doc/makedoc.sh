@@ -1,9 +1,9 @@
 #!/bin/bash
 
-latex -interaction=batchmode minsky
+pdflatex -interaction=batchmode minsky
 if [ $? -ne 0 ]; then exit 1; fi
 
-latex -interaction=batchmode minsky
+pdflatex -interaction=batchmode minsky
 latex2html -local_icons -info "" minsky
 if [ $? -ne 0 ]; then exit 1; fi
 
@@ -11,8 +11,7 @@ if [ $? -ne 0 ]; then exit 1; fi
 # for our in house help file style
 
 cp -f images/* minsky
-sed -e 's/^\(  HREF=[^>]*\)>/\1 target="content">/' <minsky/minsky.html >tmp
-mv tmp minsky/minsky.html
+sed -i -e 's/^\(  HREF=[^>]*\)>/\1 target="content">/' minsky/minsky.html
 
 #check for any broken links
 linkchecker minsky.html

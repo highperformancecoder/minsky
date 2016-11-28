@@ -9,8 +9,8 @@ use_namespace minsky
 minsky.load $argv(2)
 
 # prepare element accessors for later use
-foreach name [variables.values.#keys] {
-    variables.values.@elem $name
+foreach name [variableValues.#keys] {
+    variableValues.@elem $name
 }
 use_namespace minsky
 
@@ -23,7 +23,8 @@ for {set step 0} {$step<$nsteps} {incr step} {
     # note - we must use the .@elem form, to prevent '\' embedded in
     # variable names from being expanded
 
-    foreach name [variables.values.#keys] {
+    foreach name [variableValues.#keys] {
+        if [regexp "^constant:"] continue
         value.get "$name"
         puts -nonewline "{$name} [value.value] "
     }

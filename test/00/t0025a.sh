@@ -57,14 +57,13 @@ doPlotOptions \$id
 plotDoubleClick \$id
 resizePlot \$id 100 100 2 2
 
-deletePlot plot\$id \$id
+deletePlot \$id
 
-resetEdited
-exit
+tcl_exit
 }
 EOF
 
-$here/GUI/minsky mainModals.tcl
+$here/gui-tk/minsky mainModals.tcl
 if test $? -ne 0; then fail; fi
 
 pass
