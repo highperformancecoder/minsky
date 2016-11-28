@@ -5,7 +5,7 @@ t=0
 for i in test/00/*.sh; do
     if [ $i = "test/00/t0008a.sh" ]; then continue; fi # TODO schema 0 support
     # rendering to GIFs is too unstable, so diable on the Travis platform
-    if [ "$TRAVIS" = 1 && $i = test/00/t0035a.sh ]; then continue; fi
+    if [ "$TRAVIS" = 1 -a $i = test/00/t0035a.sh ]; then continue; fi
     sh $i
   status=$?
   if [ $status -ne 0 ]; then

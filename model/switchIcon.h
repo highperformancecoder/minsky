@@ -24,7 +24,7 @@
 
 namespace minsky
 {
-  class SwitchIcon: public Item
+  class SwitchIcon: public ItemT<SwitchIcon>
   {
     CLASSDESC_ACCESS(SwitchIcon);
     friend class SchemaHelper;
@@ -47,14 +47,11 @@ namespace minsky
 
     /// value of switch according to current inputs
     unsigned value() const;
-    std::string classType() const override {return "SwitchIcon";}
 
     bool flipped=false;
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-    {::TCL_obj(t,d,*this);}
   };
 }
 

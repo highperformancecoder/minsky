@@ -47,7 +47,7 @@ proc afterMinskyStarted {} {
     godley.setCell 0 1 foobar
     godley.setCell 2 1 bar
     godley.update
-    godley.set
+    wiringGroup.updateOnNewGodleyVars \$godleyId
 
     newItem \$godleyId
     bind .wiring.canvas <Button-1> "puts {%x %y}"
@@ -57,7 +57,7 @@ proc afterMinskyStarted {} {
     # check context menu is posted
     assert {[winfo viewable .wiring.context]} foobar
     # check the menu items are what is expected
-    assert {[string match "editVar" "[.wiring.context entrycget 0 -command]"]} foobar
+    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} foobar
     assert {[.wiring.context entrycget 1 -label]=="Copy"} foobar
 
 
@@ -66,7 +66,7 @@ proc afterMinskyStarted {} {
     # delivered to bar
     event generate .wiring.canvas <Button-3> -x 55 -y 80 -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] bar
-    assert {[string match "editVar" "[.wiring.context entrycget 0 -command]"]} bar
+    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} bar
     assert {[.wiring.context entrycget 1 -label]=="Copy"} bar
 
     .wiring.context unpost
