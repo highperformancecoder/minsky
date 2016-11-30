@@ -20,6 +20,7 @@
 // contains implementation of symbolic differentiation
 
 #include "equations.h"
+#include "minsky.h"
 #include "expr.h"
 #include <ecolab_epilogue.h>
 #include <boost/regex.hpp>

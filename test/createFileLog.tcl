@@ -24,7 +24,7 @@ for {set step 0} {$step<$nsteps} {incr step} {
     # variable names from being expanded
 
     foreach name [variableValues.#keys] {
-        if [regexp "^constant:"] continue
+        if [regexp "^constant:" $name] continue
         value.get "$name"
         puts -nonewline "{$name} [value.value] "
     }

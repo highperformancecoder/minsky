@@ -152,10 +152,9 @@ namespace MathDAG
         if (ri!=minsky::minsky().variableValues.end())
           result=ri->second;
         else
-          {
-            result=VariableValue(VariableType::tempFlow);
-            result.allocValue();
-          }
+          result=VariableValue(VariableType::tempFlow);
+        if (result.idx()==-1)
+          result.allocValue();
         if (rhs)
           rhs->addEvalOps(ev, result);
       }
@@ -275,7 +274,7 @@ namespace MathDAG
                 // integral copies need to be done now, in case of cycles
                 if (r.isFlowVar() && r.idx()>=0)
                   ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-                return result; // integration handled as part of RK arlgorithm
+                return result; // integration handled as part of RK algorithm
               }
             else
               throw error("no integration variable for %s",i->description().c_str());
@@ -1131,6 +1130,8 @@ namespace MathDAG
     // store stock & integral variables for later reordering
     map<string, VariableDAG*> integVarMap;
 
+    vector<pair<VariableDAGPtr,Wire*>> integralInputs;
+    
     // search through operations looking for integrals
     minsky.model->recursiveDo
       (&Group::items,
@@ -1153,7 +1154,13 @@ namespace MathDAG
                     variables.push_back(input.get());
                     // manage object's lifetime with expressionCache
                     expressionCache.insertIntegralInput(iv->valueId(), input);
-                    input->rhs=getNodeFromWire(*(i->ports[1]->wires[0]));
+                    try
+                      {input->rhs=getNodeFromWire(*(i->ports[1]->wires[0]));}
+                    catch (...)
+                      {
+                        // try again later
+                        integralInputs.emplace_back(input,i->ports[1]->wires[0]);
+                      }
                   }
               }
           }
@@ -1166,6 +1173,10 @@ namespace MathDAG
           }
         return false;
       });
+
+    // wire up integral inputs, now that all integrals are defined, do that derivative works. See #511
+    for (auto& i: integralInputs)
+      i.first->rhs=getNodeFromWire(*i.second);
 
     // process the Godley tables
     map<string, GodleyColumnDAG> godleyVars;
