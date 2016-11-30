@@ -3,6 +3,9 @@
 Dynamic flow systems program to simulate economic flows (ie. complex system dynamics).
 For a full overview, please see the [Introduction](Introduction.md)
 
+- [File Structure](File Structure.md) for an overview of folders and files
+- [Architecture](Architecture.md) for an overview of the app and DAG engine
+
 ## Getting Started
 
 ## System requirements
@@ -17,8 +20,8 @@ Go to our [SourceForge](http://minsky.sf.net) to download a version
 Linux packages are available from the [OpenSUSE build service]
 (https://build.opensuse.org/package/show/home:hpcoder1/minsky)
 
-See the [Changelog](Changelog.md) for latest changes (new features, bug fixes etc)
-See the [Roadmap](Roadmap.md) for our plans for new features, changes etc
+-  [Changelog](Changelog.md) for latest changes (new features, bug fixes etc)
+-  [Roadmap](Roadmap.md) for our plans for new features, changes etc
 
 ## Getting help
 Press the F1 key, or select ``help'' from the context menu. Help is
