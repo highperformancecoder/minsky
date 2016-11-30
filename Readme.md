@@ -5,13 +5,13 @@ Dynamic flow systems program to simulate economic flows with complex system dyna
 ## Getting Started
 
 ## System requirements
-Minsky is an open source program available for: 
+Minsky is an open source program available for:
 - Windows
 - Mac OS X,
 - various Linux distributions
 
-Also compilable on any suitable Posix compliant system. 
-Go to our [SourceForge](http://minsky.sf.net) to download a version 
+Also compilable on any suitable Posix compliant system.
+Go to our [SourceForge](http://minsky.sf.net) to download a version
 
 Linux packages are available from the [OpenSUSE build service]
 (https://build.opensuse.org/package/show/home:hpcoder1/minsky)
@@ -25,34 +25,34 @@ There are 6 components to the Minsky interface
 
 *menus*
 
-![menus](/images/NewItem14.png)
+![menus](doc/images/NewItem14.png)
 
 *Run buttons*
 
-![run buttons](/images/NewItem15.png)
+![run buttons](doc/images/NewItem15.png)
 
 *simulation speed slider*
 
-![simulation speed slider](/images/NewItem16.png)
+![simulation speed slider](doc/images/NewItem16.png)
 
 *Zoom buttons*
 
-![Zoom buttons](/images/NewItem17.png)
+![Zoom buttons](doc/images/NewItem17.png)
 
 *Wiring and Equation tabs*
 
-![Zoom buttons](/images/WiringEquationsTab.png)
+![Zoom buttons](doc/images/WiringEquationsTab.png)
 
 *Design icons*
 
-![design icons](/images/NewItem18.png)
+![design icons](doc/images/NewItem18.png)
 
 *Design Canvas*
 
-![design icons](/images/NewItem19.png)
+![design icons](doc/images/NewItem19.png)
 
 ## Menu
-![menus](/images/NewItem14.png)
+![menus](doc/images/NewItem14.png)
 
 The menu controls the basic functions of saving and loading files,
 default settings for the program, etc. These will alter as the program
@@ -107,27 +107,21 @@ indicate the selected items. Wires joining two selected items will
 also be selected. Note that, compatible with X-windows, selecting
 automatically performs a copy, so the copy operation is strictly
 redundant, but provided for users familiar with systems where an
-explicit copy request is required. 
+explicit copy request is required.
 
-Cut deletes the selected items. 
+Cut deletes the selected items.
 
 Paste will paste the items in the clipboard as a
-`group` into the current model. 
+`group` into the current model.
 
 At the time of writing, copy-pasting between different instances of Minsky, or into other applications, may not work on certain systems. Pasting the clipboard
 into a text-based application will be a Minsky schema XML document.
 
-*Prior example*
-![prior example](/images/selectionExamplePrior.png)
-
-*Post example*
-![post example](/images/selectionExamplePost.png)
-
 <table>
 <tr>
-<td><img src="/images/selectionExamplePrior.png"></td>
+<td><img src="doc/images/selectionExamplePrior.png"></td>
 <td><big>&#x21d2;</big></td>
-<td><img src="/images/selectionExamplePost.png"></td>
+<td><img src="doc/images/selectionExamplePost.png"></td>
 </tr>
 </table>
 
@@ -169,18 +163,18 @@ is computed.
 
 ### Runge Kutta
 Controls aspect of the adaptive Runge-Kutta equation solver, which
-trade off performance and accuracy of the model. 
+trade off performance and accuracy of the model.
 
 Note a first order explicit solver is the classic Jacobi method, which is the fastest,
-but least accurate solver. 
+but least accurate solver.
 
 The algorithm is adaptive, so will vary the
 step size according to how stiff the system of equations
-is. 
+is.
 
 Specifying a minimum step size prevents the system from stalling,
 at the expense of accuracy when the step size reaches that
-minimum. 
+minimum.
 
 Specifying a maximum step size is useful to ensure one has
 sufficient data points for smooth plots.
@@ -193,10 +187,10 @@ in updating the display, at the expense of smoothness of the plots.
 Provides an in-program link to this manual.
 
 ### Run Buttons
-![run buttons](/images/NewItem15.png)
+![run buttons](doc/images/NewItem15.png)
 
 - `Start simulation` when started the button changes to a pause icon,
-allowing you to pause the simulation ![start](/images/NewItem23.png).
+allowing you to pause the simulation ![start](doc/images/NewItem23.png).
 - `Stop simulation` and reset the simulation time to zero
 - `Step through simulation` one iteration at a time.
 
@@ -214,20 +208,20 @@ the canvas.
 to another. For example, if you have placed these icons on the
 
 *Palette*
-![Palette](/images/NewItem24.png)
+![Palette](doc/images/NewItem24.png)
 
 and you now want to link them together into an equation, then click on
 the `Wire` button, move the cursor to the right end of `GDP`, and click
 and drag to the top of the divide symbol:
 
-![symbol](/images/NewItem25.png)
+![symbol](doc/images/NewItem25.png)
 
 Do the same for `LabProd`, and to attach the `Divide` icon to the left
 hand side of `Workers`, and you've defined the equation that the number
 of workers employed equals GDP divided by labor productivity. The
 flowchart will look like this:
 
-![flowchart](/images/NewItem26.png)
+![flowchart](doc/images/NewItem26.png)
 
 And you will have created an equation
 
@@ -257,14 +251,14 @@ release).
 Grouping. Choose Lasso, click and hold down the mouse button,
 then drag over the region you wish to make into a group:
 
-![lasso](/images/NewItem117.png)
+![lasso](doc/images/NewItem117.png)
 
 Release the mouse button, and a box will be drawn around the selected
 items which can now be moved as a single entity. The inputs to the
 group are noted on the input side of the group, and the outputs on the
 output side:
 
-![Selecting](/images/NewItem118.png)
+![Selecting](doc/images/NewItem118.png)
 
 One unique feature of Minsky (when compared to existing system
 dynamics programs) is that the contents of the group can still be seen
@@ -274,18 +268,18 @@ inside the group (this feature is still being implemented, so some
 tidying up was needed, but was possible without having to open the
 group in a separate window):
 
-![Grouping](/images/NewItem119.png)
+![Grouping](doc/images/NewItem119.png)
 
 ### Zoom buttons
-![zoom](/images/NewItem17.png)
+![zoom](doc/images/NewItem17.png)
 
 The `Zoom` buttons zoom in and out on the wiring canvas. The same functionality
 is accessed via the mouse scroll wheel. The reset zoom button
-![reset](/images/zoomOrig.png) resets the zoom level to 1, and also
+![reset](doc/images/zoomOrig.png) resets the zoom level to 1, and also
 recentres the canvas. It can also be used to recentre the equation view.
 
 ### Speed slider
-![speed](/images/NewItem184.png)
+![speed](doc/images/NewItem184.png)
 
 The speed slider controls the rate at which a model is simulated. The
 default speed is the maximum speed your system can support, but you
@@ -298,39 +292,39 @@ simulation time $t$, and the current (adaptive) difference between
 iterations $\Delta t$.
 
 ### Wiring and Equations Tabs
-![wiring](/images/WiringEquationsTab.png)
+![wiring](doc/images/WiringEquationsTab.png)
 
 This allows you to switch between the visual block diagram wiring view and the more mathematical equations view.
 
 ### Design Icons
-![design](/images/NewItem18.png)
+![design](doc/images/NewItem18.png)
 
 These are the "nuts and bolts" of any system dynamics program. The
 number of icons will grow over time, but the key ones are implemented
 now:
 
-`Godley Table` ![design](/images/NewItem28.png). `GodleyTable` This is the
+`Godley Table` ![design](doc/images/NewItem28.png). `GodleyTable` This is the
 fundamental element of Minsky that is not found (yet) in any other
 system dynamics program.
 
 Clicking on it and placing the resulting Bank Icon on the Canvas
 enters a Godley table into your model:
 
-![Godley table](/images/NewItem29.png)
+![Godley table](doc/images/NewItem29.png)
 
 Double-click on the `Bank` icon (or right-click and choose `Open Godley
 Table` from the menu) and you get a double-entry bookkeeping table we
-call a Godley Table: 
+call a Godley Table:
 
-![Godley table](/images/NewItem30.png)
+![Godley table](doc/images/NewItem30.png)
 
 Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the `Tutorial (Monetary)`
 
-`Variable`  ![Variable](/images/NewItem31.png). `Variable` This creates an entity whose value changes as a function of time and its relationship with
+`Variable`  ![Variable](doc/images/NewItem31.png). `Variable` This creates an entity whose value changes as a function of time and its relationship with
 other entities in your model. Click on it and a variable definition
 window will appear:
 
-![Variable definition](/images/NewItem32.png)
+![Variable definition](doc/images/NewItem32.png)
 
 The only essential step here is providing a name for the `Variable`. You
 can also enter a value for it (and a rotation in degrees), but these
@@ -342,11 +336,11 @@ appear in the top left hand corner of the Canvas. Move the mouse
 cursor to where you want to place the variable on the Canvas, click,
 and it will be placed in that location.
 
-`Constant` ![constant](/images/NewItem33.png) `Constant` creates an entity whose value is unaffected by the simulation or other entities in the
+`Constant` ![constant](doc/images/NewItem33.png) `Constant` creates an entity whose value is unaffected by the simulation or other entities in the
 model---but it can be varied during a simulation run by the
 user. Click on it and a constant definition window will appear:
 
-![def window](/images/NewItem34.png)
+![def window](doc/images/NewItem34.png)
 
 The only essential element here is its value. You can also specify its rotation on the Canvas in degrees, and
 its parameters if you make the slider active. This lets you vary a
@@ -356,24 +350,24 @@ to explore a range of policy options while a model is running.
 A constant is just a type of variable, which also include parameters
 (named constants), flow variables, stock variables and integration variables.
 
-`Time` ![time](/images/NewItem35.png) embeds a reference to the
+`Time` ![time](doc/images/NewItem35.png) embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
 simulations, but can be useful if you want to make a time-dependent
-process explicit, or control the appearance of a graph. 
+process explicit, or control the appearance of a graph.
 
 For example, by default a graph displays the simulation time on the
 horizontal axis, so that cycles get compressed as a simulation runs
 for a substantial period:
 
-![time example](/images/NewItem36.png)
+![time example](doc/images/NewItem36.png)
 
 If a `Time` block is added to the marker for the x-axis range, you can
 control the number of years that are displayed. This graph is set up
-to show a ten year range of the model only: 
+to show a ten year range of the model only:
 
-![ten year range](/images/NewItem37.png)
+![ten year range](doc/images/NewItem37.png)
 
-`Integration` ![integration](/images/NewItem38.png).
+`Integration` ![integration](doc/images/NewItem38.png).
 
 This inserts a variable whose value depends on the integral of other
 variables in the system. This is the essential element for defining
@@ -381,26 +375,26 @@ a dynamic model. Click on it and the following entity will appear at
 the top left hand side of the canvas (and move with your mouse until
 you click to place it somewhere:
 
-![integration](/images/NewItem39.png)
+![integration](doc/images/NewItem39.png)
 
 `int` is just a placeholder for the integration variable, and the first thing you should do after creating one is give it a name. Double-click on the `int`, or right click and choose `Edit`. This will bring up the following menu:
 
-![integration menu](/images/NewItem40.png)
+![integration menu](doc/images/NewItem40.png)
 
 Change the name to something appropriate, and give it an initial
 value. For example, if you were building a model that included
 America's population, you would enter the following:
 
-![input](/images/NewItem41.png)
+![input](doc/images/NewItem41.png)
 
 The integrated variable block would now look like this:
 
-![integrated variable block](/images/NewItem42.png)
+![integrated variable block](doc/images/NewItem42.png)
 
 To model population, you need to include a growth rate. According to
 Wikipedia, the current US population growth rate is `0.97` percent per
 annum.  Expressed as an equation, this says that the annual change in
-population, divided by its current level, equals `0.0097`: 
+population, divided by its current level, equals `0.0097`:
 
 *TODO: equation image*
 
@@ -416,27 +410,27 @@ the population will be `T` years into the future as:
 
 Here, `315` (million) equals the current population of the USA, the year
 zero is today, and `$T$` is some number of years from today. The same
-equation done as a block diagram looks like this: 
+equation done as a block diagram looks like this:
 
-![block diagram](/images/NewItem46.png)
+![block diagram](doc/images/NewItem46.png)
 
 Or you can make it look more like the mathematical equation by
 right-clicking on ``Population'' and choosing ``Copy Var''. Then you will
 get another copy of the Population variable, and you can wire up the
 equation this way:
 
-![wire equation](/images/NewItem47.png)
+![wire equation](doc/images/NewItem47.png)
 
 Either method can be used. I prefer the latter because it's neater,
 and it emphasizes the link between the simple formula for a percentage
-rate of change and a differential equation. 
+rate of change and a differential equation.
 
 `Derivative Operator` This operator symbolically differentiates its input,
 provided the input is differentiable. An error is generated if the input
 is not differentiable.
 
 `Plus, Minus, Multiply and Divide blocks`
-![wire equation](/images/NewItem49.png). These execute the stated binary
+![wire equation](doc/images/NewItem49.png). These execute the stated binary
 mathematical operations. Each input can take multiple wires as
 well---so that to add five numbers together, for example you can wire 1 input
 to one port on the Add block, and the other four to the other
@@ -478,21 +472,21 @@ to the canvas. Also known as a hybrid function.
 ### Design Canvas
 The `Design Canvas` is where you develop your model. A model consists of
 a number of blocks---variables, constants and mathematical
-operators---connected by wires. 
+operators---connected by wires.
 
-![design](/images/NewItem19.png)
+![design](doc/images/NewItem19.png)
 
 The wires in a model connect blocks together to define equations. For
 example, to write an equation for 100/33, you would place a
 \smhtmladdimg{NewItem121.png} on the canvas, and give it the value of 100:
 
-![equation](/images/NewItem122.png)
+![equation](doc/images/NewItem122.png)
 
 Then do the same for 33, and place a divide block on the canvas:
 
-![divide block](/images/NewItem123.png)
+![divide block](doc/images/NewItem123.png)
 
-Then click on the right hand edge of ![divide block](/images/NewItem125.png)
+Then click on the right hand edge of ![divide block](doc/images/NewItem125.png)
 and drag to extend the wire to the numerator (x) port of the divide operation.
 
 ## Working with Minsky
@@ -511,32 +505,32 @@ function forward in time.
 There are three ways to insert a component of a model onto the Canvas:
 
 Click on the desired `Icon` on the `Icon Palette`, drag the block
-onto the Canvas and release the mouse where you want to insert it 
+onto the Canvas and release the mouse where you want to insert it
 
-![icon](/images/NewItem18.png)
+![icon](doc/images/NewItem18.png)
 
 Choose `Insert` from the menu and select the desired block there
 
-![insert block](/images/NewItem159.png)
+![insert block](doc/images/NewItem159.png)
 
 `Right-click` on an existing block and choose copy. Then place the
-copy where you want it on the palette. 
+copy where you want it on the palette.
 
-![example](/images/NewItem161.png)
+![example](doc/images/NewItem161.png)
 
 ### Creating an equation
 Equations are entered in Minsky graphically. Mathematical operations
 like addition, multiplication and subtraction are performed by wiring
 the inputs up to the relevant mathematical block. The output of the
-block is then the result of the equation. 
+block is then the result of the equation.
 
 For example, a simple equation like
 
         100/3 = 33.3
 
-is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on ![example](/images/NewItem130.png) :
+is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on ![example](doc/images/NewItem130.png) :
 
-![example](/images/NewItem129.png)
+![example](doc/images/NewItem129.png)
 
 If you choose `File/Output LaTeX` and load the equation into a LaTeX processor, you will see that it is:
 
@@ -563,51 +557,51 @@ Click the mouse near the output port of one block and drag the
 cursor to the input port of another while holding the mouse button
 down.
 
-![example](/images/NewItem180.png)
+![example](doc/images/NewItem180.png)
 
 Release the mouse button near the required input port of the operator.
 
-![example](/images/NewItem181.png)
+![example](doc/images/NewItem181.png)
 
 The equation is completed by wiring up the other components in the same way.
 
-![example](/images/NewItem182.png)
+![example](doc/images/NewItem182.png)
 
 ## Creating a banking model}
 
 ### Creating a bank
 The first step in creating a model with a banking sector is to click on the Godley Table Icon in the Icon Palette, and place the block somewhere on the Canvas:
 
-![example](/images/NewItem134.png)
+![example](doc/images/NewItem134.png)
 
 ### Entering accounts
-![example](/images/NewItem135.png)
+![example](doc/images/NewItem135.png)
 
-Double click or right click on the ![example](/images/NewItem133.png) block
+Double click or right click on the ![example](doc/images/NewItem133.png) block
 to bring up the Godley Table:
 
 When a Godley Table is first loaded, it has room for one account to be
 defined. To create an additional account, click on the
-![example](/images/NewItem163.png) button above the first account. One
+![example](doc/images/NewItem163.png) button above the first account. One
 click then adds another column in which an additional account can be
 defined.
 
-![example](/images/NewItem164.png)
+![example](doc/images/NewItem164.png)
 
-A column can be deleted by clicking on the ![example](/images/NewItem165.png)button above the column.
+A column can be deleted by clicking on the ![example](doc/images/NewItem165.png)button above the column.
 
 To define bank accounts in the system you enter a name into the row
 labeled `\verb+Flows V / Stock Variables ->+`. For example, if you were
 going to define a banking sector that operated simply as an
 intermediary between ``Patient'' people and `Impatient` people---as
 in the Neoclassical `Loanable Funds` model--you might define the
-following accounts: 
+following accounts:
 
-![example](/images/NewItem138.png)
+![example](doc/images/NewItem138.png)
 
 As you enter the accounts, they appear at the bottom of the `Bank` block on the canvas:
 
-![example](/images/NewItem145.png)
+![example](doc/images/NewItem145.png)
 
 ### Defining account types
 Bank accounts must be classified as either an Asset, a Liability, or
@@ -619,11 +613,11 @@ the Equity of the banking system. Click on the
 \smhtmladdimg{NewItem139.png} button and this drop-down menu will
 appear:
 
-![example](/images/NewItem140.png)
+![example](doc/images/NewItem140.png)
 
 Choose the relevant entry for each column, and the accounts will be properly classified when the model is simulated:
 
-![example](/images/NewItem141.png)
+![example](doc/images/NewItem141.png)
 
 ### Entering flows between accounts
 Flows between accounts are entered by typing text labels in the
@@ -632,29 +626,29 @@ example, if `Patient` is lending money to Impatient, the word `Lend`
 could be used to describe this action. Firstly you need to create a
 row beneath the `Initial Conditions` row (which records the amount of
 money in each account when the simulation begins). You do this by
-clicking on the ![key](/images/NewItem166.png) key on the `Initial Conditions` row. This creates a blank row for recording a flow between accounts.
+clicking on the ![key](doc/images/NewItem166.png) key on the `Initial Conditions` row. This creates a blank row for recording a flow between accounts.
 
-![flow example](/images/NewItem167.png)
+![flow example](doc/images/NewItem167.png)
 
 The cell below `Initial Conditions` is used to give a verbal
-description of what the flow is: 
+description of what the flow is:
 
-![flow example](/images/NewItem168.png)
+![flow example](doc/images/NewItem168.png)
 
 The flows between accounts are then recorded in the relevant cells
 underneath the columns. Here we will start with putting the label
-``Lend'' into the Patient column. 
+``Lend'' into the Patient column.
 
-![example](/images/NewItem142.png)
+![example](doc/images/NewItem142.png)
 
 Notice that the program shows that the `Row Sum` for this transaction is
 currently `Lend`, when it should be zero to obey the double-entry
 bookkeeping rule that all rows must sum to zero. This is because a
 destination for `Lend` has not yet been specified. The destination
 is Impatient's account, and to balance the row to zero this part of
-the transaction must be entered as `-Lend`: 
+the transaction must be entered as `-Lend`:
 
-![example](/images/NewItem143.png)
+![example](doc/images/NewItem143.png)
 
 This might appear strange if you are not used to accounting
 standards.
@@ -667,20 +661,20 @@ point of view. Deposits at a bank are liabilities for the bank, and
 are shown as a negative amount, while assets are recorded as a
 positive amount. So a loan from `Patient` to `Impatient` decreases the
 `Bank`'s liabilities to `Patient`, and increases the Bank's liabilities to
-`Impatient`. 
+`Impatient`.
 
 The same rule applies to the `Initial Conditions` (the amount of money
 in each of the accounts prior to the flows between accounts): the
 `Initial Conditions` must sum to zero. This requires that there are
 entries on the Asset side of the `Banking ledger` that exactly match the
 sum of `Liabilities` and `Equity` (`Equity` is also shown as a negative in
-double-entry bookkeeping): 
+double-entry bookkeeping):
 
-![bank](/images/NewItem144.png)
+![bank](doc/images/NewItem144.png)
 
 As you enter flows, these appear on the left hand side of the bank block:
 
-![bank](/images/NewItem147.png)
+![bank](doc/images/NewItem147.png)
 
 ### Defining flows}
 The entries in the `Godley Table` represent flows of money, which are
@@ -696,11 +690,11 @@ loan of `$10` per year by `Patient` to `Impatient`) by:
 
 Creating a constant called `10`, with a value of `10`:
 
-![constant](/images/NewItem148.png)
+![constant](doc/images/NewItem148.png)
 
 And attaching this to the input side of `Lend`:
 
-![lend](/images/NewItem149.png)
+![lend](doc/images/NewItem149.png)
 
 What you have now defined is an annual flow from `Patient` to `Impatient`
 of `$10`. In the dynamic equations this model generates, Minsky
@@ -716,7 +710,7 @@ two accounts. `Patient`'s account begins at `$100` and falls at `$10` per
 year, while `Patient`'s account begins at `$0` and rises by `$10` per
 year.
 
-![account](/images/NewItem151.png)
+![account](doc/images/NewItem151.png)
 
 Obviously this will result in a negative total worth for `Patient` after
 `10` years, so it is not a realistic model. A more sensible simple model
@@ -728,7 +722,7 @@ as `0.1` times the balance in `Patient`'s account. This now results in a
 smooth exponential decay of the amount in the `Patient` account, matched
 by a rise in the amount in Impatient account.
 
-![account](/images/NewItem152.png)
+![account](doc/images/NewItem152.png)
 
 This is because the equation you have defined is identical to a
 radioactive decay equation, with the amount in the `Patient` account
@@ -744,24 +738,24 @@ is a neater way to define flows.
 Right-click on the inputs and outputs of a Godley Table and choose
 `copy` from the drop-down menu:
 
-![copy](/images/NewItem153.png)
+![copy](doc/images/NewItem153.png)
 
 Place the copied flows and accounts and place them away from the
 table. Then wire up your definition there:
 
-![wire def](/images/NewItem154.png)
+![wire def](doc/images/NewItem154.png)
 
 This now results in a much neater model. The same process can be used
 to tidy up graphs as well:
 
-![tidy](/images/NewItem155.png)
+![tidy](doc/images/NewItem155.png)
 
 A more complex model would have many more flows, and these in turn
 would depend on other entities in the model, and be time-varying
-rather than using a constant `lendrate` as in this example. 
+rather than using a constant `lendrate` as in this example.
 
-See the Tutorial on a `Basic Banking Model` for an example. 
-This example uses the engineering concept of a `time constant`, which is explained in the next section. 
+See the Tutorial on a `Basic Banking Model` for an example.
+This example uses the engineering concept of a `time constant`, which is explained in the next section.
 
 Using `Time Constants`
 
@@ -771,12 +765,12 @@ equivalent way to express this is that the `time constant` for
 lending is the inverse of `1/10`, or ten years. The next model uses a
 variable called `tau_Lend`, and gives it a value of `10`:
 
-![model](/images/NewItem158.png)
+![model](doc/images/NewItem158.png)
 
 As the simulation shows, the two models have precisely the same result
 numerically:
 
-![simulation](/images/NewItem157.png)
+![simulation](doc/images/NewItem157.png)
 
 The advantage of the time constant approach is that it is defined in
 terms of the time that a process takes. A time constant of 10 says
@@ -792,7 +786,7 @@ diagram. The name of the institution can be altered by clicking on the
 default name (`Godley0` in the first one created) and altering
 it. Here is an example with 4 such institutions/sectors defined:
 
-![sectors examples](/images/NewItem136.png)
+![sectors examples](doc/images/NewItem136.png)
 
 If there are interlocking accounts in these banks. If one lends to
 another for example, then what is an asset for one must be shown as a
