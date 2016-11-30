@@ -41,9 +41,6 @@ for i in examples/*.mky; do
     if [ $i = "examples/LoanableFunds.mky" ]; then 
         echo "Fix LoanableFunds.mky!!"
         continue; fi
-    if [ $i = "examples/MinskyNonLinear.mky" ]; then 
-        echo "Fix MinskyNonLinear.mky!!"
-        continue; fi
     echo "doing: $i"
     $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
     if test $? -ne 0; then fail; fi
