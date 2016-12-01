@@ -152,7 +152,7 @@ namespace minsky
 
     // set a default name if none given
     if (desc.empty()) 
-      desc=minsky().variableValues.newName("int");
+      desc=minsky().variableValues.newName(":int");
 
     // unscoped descriptions treated as global
     if (desc.find(":")==string::npos)

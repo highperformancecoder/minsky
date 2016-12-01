@@ -117,6 +117,7 @@ namespace schema1
     void Combine::combine(minsky::VariableBase& x, const Variable& y) const
     {
       combine(static_cast<minsky::Item&>(x), y);
+      assert(!y.name.empty());
       x.name(y.name);
       x.init(y.init);
       auto l=layout.find(y.id);

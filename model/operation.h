@@ -162,7 +162,7 @@ namespace minsky
     static constexpr float intVarOffset=10;
     std::string classType() const override {return "IntOp";}
 
-    IntOp() {description("int");}
+    IntOp() {description("");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
       OperationBase(x), Super(x) {description("int");}
