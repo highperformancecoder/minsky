@@ -1,0 +1,702 @@
+<!DOCTYPE html><html>
+<head>
+<title>3.1 Basic System Dynamics model‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine</title>
+<!--Generated on Thu Nov  3 16:02:22 2016 by LaTeXML (version 0.8.0) http://dlmf.nist.gov/LaTeXML/.-->
+<!--Document created on November 3, 2016.-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="LaTeXML.css" type="text/css">
+<link rel="stylesheet" href="ltx-book.css" type="text/css">
+<link rel="up" href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="up up" href="." title="Minsky Simulation Engine">
+<link rel="start" href="." title="Minsky Simulation Engine">
+<link rel="prev" href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="next" href="Ch3.S2.html" title="3.2 Basic Banking model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch3.S2.html" title="3.2 Basic Banking model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch1.html" title="Chapter 1 Introduction ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch2.html" title="Chapter 2 Getting Started ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch5.html" title="Chapter 5 Brief History of system dynamics ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch6.html" title="Chapter 6 FAQs ‣ Minsky Simulation Engine">
+</head>
+<body>
+<div class="ltx_page_main">
+<header class="ltx_page_header">
+<div>
+<a href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="up"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3 </span>Tutorial</span></a><a href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3 </span>Tutorial</span></a><a href="Ch3.S2.html" title="3.2 Basic Banking model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3.2 </span>Basic Banking model</span></a>
+</div></header>
+<div class="ltx_page_content">
+<section class="ltx_section">
+<h1 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3.1 </span>Basic System Dynamics model</h1>
+<div class="ltx_date ltx_role_creation"></div>
+
+<div id="p1" class="ltx_para">
+<p class="ltx_p">In 1965, Richard Goodwin, the great pioneer of complexity in
+economics, presented the paper <a href="https://en.wikipedia.org/wiki/Goodwin_model_(economics)" title="" class="ltx_ref">“A Growth
+Cycle”</a> to
+the First World Congress of the Econometric Society in Rome. It was
+later published in a book collection (Goodwin, Richard M. 1967. ”A
+Growth Cycle,” in C. H. Feinstein, <span class="ltx_text ltx_font_italic">Socialism, Capitalism and Economic
+Growth</span>. Cambridge: Cambridge University Press, pp. 54–58.); to my
+knowledge it was never published in a journal.</p>
+</div>
+<div id="p2" class="ltx_para">
+<p class="ltx_p">Goodwin’s model has been subjected to much critical literature about
+implying stable cycles, not matching empirical data, etc., but Goodwin
+himself emphasized that it was a “starkly schematized and hence quite
+unrealistic model of cycles in growth rates”. He argued however that
+it was a better foundation for a more realistic model that ”the more
+usual treatment of growth theory or of cycle theory, separately or in
+combination.”</p>
+</div>
+<div id="p3" class="ltx_para">
+<p class="ltx_p">Goodwin emphasized the similarity of this model to the Lokta-Volterra
+model of interacting predator and prey, which can make it seem as if
+it was derived by analogy to the biological model. But in fact it can
+easily be derived from a highly simplified causal chain:</p>
+</div>
+<div id="p4" class="ltx_para">
+<ul id="Ch3.I1" class="ltx_itemize">
+<li id="Ch3.I1.i1" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I1.i1.p1" class="ltx_para">
+<p class="ltx_p">The level of output (<math id="Ch3.I1.i1.p1.m1" class="ltx_Math" alttext="Y" display="inline"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>) determines the level of employment (<math id="Ch3.I1.i1.p1.m2" class="ltx_Math" alttext="L" display="inline"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>), with <math id="Ch3.I1.i1.p1.m3" class="ltx_Math" alttext="L=Y/a" display="inline"><semantics><mrow><mi>L</mi><mo>=</mo><mrow><mi>Y</mi><mo>/</mo><mi>a</mi></mrow></mrow><annotation encoding="application/x-tex">L=Y/a</annotation></semantics></math> where <math id="Ch3.I1.i1.p1.m4" class="ltx_Math" alttext="a" display="inline"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math> is a measure of labor productivity;</p>
+</div>
+</li>
+<li id="Ch3.I1.i2" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I1.i2.p1" class="ltx_para">
+<p class="ltx_p">Given a population <math id="Ch3.I1.i2.p1.m1" class="ltx_Math" alttext="N" display="inline"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>, the employment rate <math id="Ch3.I1.i2.p1.m2" class="ltx_Math" alttext="\lambda=L/N" display="inline"><semantics><mrow><mi>λ</mi><mo>=</mo><mrow><mi>L</mi><mo>/</mo><mi>N</mi></mrow></mrow><annotation encoding="application/x-tex">\lambda=L/N</annotation></semantics></math> plays
+a role in determining the <span class="ltx_text ltx_font_bold ltx_font_italic">rate of change</span> of the wage <math id="Ch3.I1.i2.p1.m3" class="ltx_Math" alttext="w" display="inline"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>:
+Goodwin used a linear approximation to a non-linear “Phillips
+Curve”:</p>
+</div>
+<div id="Ch3.I1.i2.p2" class="ltx_para">
+<img src="x1.png" id="Ch3.I1.i2.p2.g1" class="ltx_graphics ltx_centering" width="396" height="215" alt="">
+</div>
+<div id="Ch3.I1.i2.p3" class="ltx_para">
+<p class="ltx_p">His linear approximation was:</p>
+</div>
+<div id="Ch3.I1.i2.p4" class="ltx_para">
+<table id="Ch3.Ex1" class="ltx_equation">
+
+<tr class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_align_center"><math id="Ch3.Ex1.m1" class="ltx_Math" alttext="\frac{1}{w}\frac{d}{dt}w=-\gamma+\rho\cdot\lambda" display="block"><semantics><mrow><mrow><mfrac><mn>1</mn><mi>w</mi></mfrac><mo>⁢</mo><mfrac><mi>d</mi><mrow><mi>d</mi><mo>⁢</mo><mi>t</mi></mrow></mfrac><mo>⁢</mo><mi>w</mi></mrow><mo>=</mo><mrow><mo>-</mo><mi>γ</mi><mo>+</mo><mrow><mi>ρ</mi><mo>⋅</mo><mi>λ</mi></mrow></mrow></mrow><annotation encoding="application/x-tex">\frac{1}{w}\frac{d}{dt}w=-\gamma+\rho\cdot\lambda</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+</li>
+<li id="Ch3.I1.i3" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I1.i3.p1" class="ltx_para">
+<p class="ltx_p">In a simple two-class model, profits <math id="Ch3.I1.i3.p1.m1" class="ltx_Math" alttext="\Pi" display="inline"><semantics><mi mathvariant="normal">Π</mi><annotation encoding="application/x-tex">\Pi</annotation></semantics></math> equals the level of
+output <math id="Ch3.I1.i3.p1.m2" class="ltx_Math" alttext="Y" display="inline"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> minus the wage bill: <math id="Ch3.I1.i3.p1.m3" class="ltx_Math" alttext="\Pi=Y-w.L" display="inline"><semantics><mrow><mrow><mi mathvariant="normal">Π</mi><mo>=</mo><mrow><mi>Y</mi><mo>-</mo><mi>w</mi></mrow></mrow><mo separator="true">.</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">\Pi=Y-w.L</annotation></semantics></math></p>
+</div>
+</li>
+<li id="Ch3.I1.i4" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I1.i4.p1" class="ltx_para">
+<p class="ltx_p">For simplicity, Goodwin assumed that all profits were invested, so that Investment equals profits: <math id="Ch3.I1.i4.p1.m1" class="ltx_Math" alttext="I=\Pi" display="inline"><semantics><mrow><mi>I</mi><mo>=</mo><mi mathvariant="normal">Π</mi></mrow><annotation encoding="application/x-tex">I=\Pi</annotation></semantics></math>.</p>
+</div>
+</li>
+<li id="Ch3.I1.i5" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I1.i5.p1" class="ltx_para">
+<p class="ltx_p">Investment is the rate of change of the capital stock <math id="Ch3.I1.i5.p1.m1" class="ltx_Math" alttext="K" display="inline"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>;
+</p>
+</div>
+</li>
+<li id="Ch3.I1.i6" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I1.i6.p1" class="ltx_para">
+<p class="ltx_p">The level of output is, to a first approximation, determined by
+the level of capital stock (<math id="Ch3.I1.i6.p1.m1" class="ltx_Math" alttext="K" display="inline"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>). A simple way of stating this is that
+<math id="Ch3.I1.i6.p1.m2" class="ltx_Math" alttext="Y" display="inline"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math> is proportional to <math id="Ch3.I1.i6.p1.m3" class="ltx_Math" alttext="K" display="inline"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>: <math id="Ch3.I1.i6.p1.m4" class="ltx_Math" alttext="Y=K/v" display="inline"><semantics><mrow><mi>Y</mi><mo>=</mo><mrow><mi>K</mi><mo>/</mo><mi>v</mi></mrow></mrow><annotation encoding="application/x-tex">Y=K/v</annotation></semantics></math>, where <math id="Ch3.I1.i6.p1.m5" class="ltx_Math" alttext="v" display="inline"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math> is a constant (Goodwin
+notes that this relation “could be softened but it would mean a
+serious complicating of the structure of the model”); and finally</p>
+</div>
+</li>
+<li id="Ch3.I1.i7" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I1.i7.p1" class="ltx_para">
+<p class="ltx_p">Goodwin assumed that labor productivity grew at a constant rate <math id="Ch3.I1.i7.p1.m1" class="ltx_Math" alttext="\alpha" display="inline"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>, while population grew at a constant rate <math id="Ch3.I1.i7.p1.m2" class="ltx_Math" alttext="\beta" display="inline"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>.</p>
+</div>
+<div id="Ch3.I1.i7.p2" class="ltx_para">
+<p class="ltx_p">Goodwin published the model as a reduced form equation in the two
+system states the employment rate (<math id="Ch3.I1.i7.p2.m1" class="ltx_Math" alttext="\lambda" display="inline"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>) and the workers’ share
+of output (<math id="Ch3.I1.i7.p2.m2" class="ltx_Math" alttext="\omega" display="inline"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\omega</annotation></semantics></math>):</p>
+</div>
+<div id="Ch3.I1.i7.p3" class="ltx_para">
+<table id="Ch6.S1.EGx4" class="ltx_equationgroup ltx_eqn_eqnarray">
+
+<tr id="Ch3.Ex2" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex2.m1" class="ltx_Math" alttext="\displaystyle\frac{d}{dt}\lambda" display="inline"><semantics><mrow><mstyle displaystyle="true"><mfrac><mi>d</mi><mrow><mi>d</mi><mo>⁢</mo><mi>t</mi></mrow></mfrac></mstyle><mo>⁢</mo><mi>λ</mi></mrow><annotation encoding="application/x-tex">\displaystyle\frac{d}{dt}\lambda</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex2.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex2.m3" class="ltx_Math" alttext="\displaystyle\lambda\left(\frac{1-\omega}{v}-\alpha-\beta\right)" display="inline"><semantics><mrow><mi>λ</mi><mo>⁢</mo><mrow><mo>(</mo><mrow><mstyle displaystyle="true"><mfrac><mrow><mn>1</mn><mo>-</mo><mi>ω</mi></mrow><mi>v</mi></mfrac></mstyle><mo>-</mo><mi>α</mi><mo>-</mo><mi>β</mi></mrow><mo>)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle\lambda\left(\frac{1-\omega}{v}-\alpha-\beta\right)</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex3" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex3.m1" class="ltx_Math" alttext="\displaystyle\frac{d}{dt}\omega" display="inline"><semantics><mrow><mstyle displaystyle="true"><mfrac><mi>d</mi><mrow><mi>d</mi><mo>⁢</mo><mi>t</mi></mrow></mfrac></mstyle><mo>⁢</mo><mi>ω</mi></mrow><annotation encoding="application/x-tex">\displaystyle\frac{d}{dt}\omega</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex3.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex3.m3" class="ltx_Math" alttext="\displaystyle\omega\cdot\left(\rho\cdot\lambda-\gamma-\alpha\right)" display="inline"><semantics><mrow><mi>ω</mi><mo>⋅</mo><mrow><mo>(</mo><mrow><mrow><mi>ρ</mi><mo>⋅</mo><mi>λ</mi></mrow><mo>-</mo><mi>γ</mi><mo>-</mo><mi>α</mi></mrow><mo>)</mo></mrow></mrow><annotation encoding="application/x-tex">\displaystyle\omega\cdot\left(\rho\cdot\lambda-\gamma-\alpha\right)</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+<div id="p5" class="ltx_para">
+<p class="ltx_p">This form is useful for analytic reasons, but it obscures the causal
+chain that actually lies behind the model. With modern system dynamic
+software, this can be laid out explicitly, and we can also use much
+more meaningful names. We’ll start with defining output (which is a
+variable). Click on 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem58.png" id="p5.g1" class="ltx_graphics" width="46" height="30" alt="">
+</span>
+ on the Icon Palette, or click on the Operations
+menu and choose “Variable”. This will open up the “Specify Variable
+Name” window:
+</p>
+</div>
+<div id="p6" class="ltx_para">
+<img src="images/NewItem63.png" id="p6.g1" class="ltx_graphics ltx_centering" width="192" height="191" alt="">
+</div>
+<div id="p7" class="ltx_para">
+<p class="ltx_p">Enter “<span class="ltx_text ltx_font_bold">GDP</span>” into the “Name” field, and leave the other
+fields blank—since <span class="ltx_text ltx_font_bold">GDP</span> is a variable and we’re defining a
+dynamic system, the value of <span class="ltx_text ltx_font_bold">GDP</span> at any particular point in
+time will depend on the other entities in the model. Now Click OK (or
+press “Enter”). The variable will now appear, attached to the
+cursor. Move to a point near the top of the screen and click, which
+will place the variable at that location:</p>
+</div>
+<div id="p8" class="ltx_para">
+<img src="images/NewItem64.png" id="p8.g1" class="ltx_graphics ltx_centering" width="310" height="148" alt="">
+</div>
+<div id="p9" class="ltx_para">
+<p class="ltx_p">We are now going to write the first part of the model, that Labor
+(<span class="ltx_text ltx_font_bold">Labor</span>) equals output (<span class="ltx_text ltx_font_bold">GDP</span>) divided by labor
+productivity (<span class="ltx_text ltx_font_bold">LabProd</span>). Just for the sake of illustration,
+we’ll make <span class="ltx_text ltx_font_bold">a</span> a constant (this can easily be modified
+later). For this we need to add a variable by clicking on 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem78.png" id="p9.g1" class="ltx_graphics" width="46" height="31" alt="">
+</span>
+ on the
+Palette, or by choosing Insert/variable from the menu. This will
+pop-up the Edit Constant window:
+</p>
+</div>
+<div id="p10" class="ltx_para">
+<img src="images/NewItem66.png" id="p10.g1" class="ltx_graphics ltx_centering" width="313" height="257" alt="">
+</div>
+<div id="p11" class="ltx_para">
+<p class="ltx_p">Give the variable the name “<span class="ltx_text ltx_font_bold">LabProd</span>” and the value of 1
+(i.e., one unit of output per worker). Click OK or press Enter and the
+constant 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem67.png" id="p11.g1" class="ltx_graphics" width="71" height="28" alt="">
+</span>
+ will now be attached to the
+cursor. Place it below <span class="ltx_text ltx_font_bold">GDP</span>:</p>
+</div>
+<div id="p12" class="ltx_para">
+<img src="images/NewItem66.png" id="p12.g1" class="ltx_graphics ltx_centering" width="313" height="257" alt="">
+</div>
+<div id="p13" class="ltx_para">
+<p class="ltx_p">Now we need to divide <span class="ltx_text ltx_font_bold">GDP</span> by <span class="ltx_text ltx_font_bold">LabProd</span>. Click on the
+
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem69.png" id="p13.g1" class="ltx_graphics" width="33" height="35" alt="">
+</span>
+ symbol on the palette and the symbol will
+be attached to the cursor. Drag it near the other two objects and
+click. Your Canvas will now look something like this:</p>
+</div>
+<div id="p14" class="ltx_para">
+<img src="images/NewItem70.png" id="p14.g1" class="ltx_graphics ltx_centering" width="126" height="75" alt="">
+</div>
+<div id="p15" class="ltx_para">
+<p class="ltx_p">Now to complete the equation, you have to attach <span class="ltx_text ltx_font_bold">GDP</span> to the top of the
+divide block and LabProd to the bottom.
+</p>
+</div>
+<div id="p16" class="ltx_para">
+<p class="ltx_p">Now move your cursor to the right hand side of
+
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem72.png" id="p16.g1" class="ltx_graphics" width="47" height="30" alt="">
+</span>
+ and click, hold the mouse button down, and
+drag. An arrow will come out from 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem72.png" id="p16.g2" class="ltx_graphics" width="47" height="30" alt="">
+</span>
+. Drag
+this arrow to the top of the divide block (where you’ll see a tiny
+multiply sign) and release the mouse. You should then see this:</p>
+</div>
+<div id="p17" class="ltx_para">
+<img src="images/NewItem74.png" id="p17.g1" class="ltx_graphics ltx_centering" width="119" height="64" alt="">
+</div>
+<div id="p18" class="ltx_para">
+<p class="ltx_p">When the mouse hovers over a block, you will then see little
+circles that identify the input and output ports on all objects:</p>
+</div>
+<div id="p19" class="ltx_para">
+<img src="images/NewItem75.png" id="p19.g1" class="ltx_graphics ltx_centering" width="122" height="69" alt="">
+</div>
+<div id="p20" class="ltx_para">
+<p class="ltx_p">Those are the connection points for wires, so start dragging from one
+and release on the other. Now wire LabProd to the bottom of the Divide
+block (where you’ll see a miniature divide symbol (blown up below):</p>
+</div>
+<div id="p21" class="ltx_para">
+<img src="images/NewItem76.png" id="p21.g1" class="ltx_graphics ltx_centering" width="294" height="160" alt="">
+</div>
+<div id="p22" class="ltx_para">
+<p class="ltx_p">Then click on 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem78.png" id="p22.g1" class="ltx_graphics" width="46" height="31" alt="">
+</span>
+ in the Design Icons to create a new variable, call it
+Labor, place it the the right of the Divide block, and wire the output port from the Divide block to the
+input port for <span class="ltx_text ltx_font_bold ltx_font_italic">Labor</span>:</p>
+</div>
+<div id="p23" class="ltx_para">
+<img src="images/NewItem79.png" id="p23.g1" class="ltx_graphics ltx_centering" width="261" height="74" alt="">
+</div>
+<div id="p24" class="ltx_para">
+<p class="ltx_p">To show the correspondence between the flowchart above and standard
+modeling equations, click on the equations tab:</p>
+</div>
+<div id="p25" class="ltx_para">
+<table id="Ch6.S1.EGx5" class="ltx_equationgroup ltx_eqn_eqnarray">
+
+<tr id="Ch3.Ex4" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex4.m1" class="ltx_Math" alttext="\displaystyle\mathrm{GDP}" display="inline"><semantics><mi>GDP</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{GDP}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex4.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex5" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex5.m1" class="ltx_Math" alttext="\displaystyle\mathrm{Labor}" display="inline"><semantics><mi>Labor</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{Labor}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex5.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex5.m3" class="ltx_Math" alttext="\displaystyle\frac{\mathrm{GDP}}{\mathrm{LabProd}}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mi>GDP</mi><mi>LabProd</mi></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{\mathrm{GDP}}{\mathrm{LabProd}}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+<div id="p26" class="ltx_para">
+<p class="ltx_p">Now let’s keep going with the model. With <span class="ltx_text ltx_font_bold ltx_font_italic">Labor</span> defined, the
+employment rate will be <span class="ltx_text ltx_font_bold ltx_font_italic">Labor</span> divided by <span class="ltx_text ltx_font_bold ltx_font_italic">Population</span>. Define <span class="ltx_text ltx_font_bold ltx_font_italic">Population</span> as a constant (we’ll later
+change it to a variable), and give it a value of 110.</p>
+</div>
+<div id="p27" class="ltx_para">
+<img src="images/NewItem81.png" id="p27.g1" class="ltx_graphics ltx_centering" width="309" height="253" alt="">
+</div>
+<div id="p28" class="ltx_para">
+<p class="ltx_p">Add it to the Canvas and you are now ready to define the employment
+rate—another variable. Click on 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem82.png" id="p28.g1" class="ltx_graphics" width="44" height="33" alt="">
+</span>
+, give it
+the name “<math id="p28.m1" class="ltx_Math" alttext="\backslash" display="inline"><semantics><mo>\</mo><annotation encoding="application/x-tex">\backslash</annotation></semantics></math>lambda” (be sure to include the backslash symbol), put
+another Divide block on the canvas, choose Wire mode and wire this
+next part of the model up. You should now have:</p>
+</div>
+<div id="p29" class="ltx_para">
+<img src="images/NewItem83.png" id="p29.g1" class="ltx_graphics" width="395" height="105" alt="">
+</div>
+<div id="p30" class="ltx_para">
+<p class="ltx_p">Now switch to the equations tab, and you will see</p>
+</div>
+<div id="p31" class="ltx_para">
+<table id="Ch6.S1.EGx6" class="ltx_equationgroup ltx_eqn_eqnarray">
+
+<tr id="Ch3.Ex7" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex7.m1" class="ltx_Math" alttext="\displaystyle\mathrm{GDP}" display="inline"><semantics><mi>GDP</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{GDP}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex7.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex8" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex8.m1" class="ltx_Math" alttext="\displaystyle\mathrm{Labor}" display="inline"><semantics><mi>Labor</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{Labor}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex8.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex8.m3" class="ltx_Math" alttext="\displaystyle\frac{\mathrm{GDP}}{\mathrm{LabProd}}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mi>GDP</mi><mi>LabProd</mi></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{\mathrm{GDP}}{\mathrm{LabProd}}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex9" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex9.m1" class="ltx_Math" alttext="\displaystyle\lambda" display="inline"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\displaystyle\lambda</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex9.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex9.m3" class="ltx_Math" alttext="\displaystyle\frac{\mathrm{Labor}}{\mathrm{Population}}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mi>Labor</mi><mi>Population</mi></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{\mathrm{Labor}}{\mathrm{Population}}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+<div id="p32" class="ltx_para">
+<p class="ltx_p">Notice that Minsky outputs a Greek <math id="p32.m1" class="ltx_Math" alttext="\lambda" display="inline"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> in the equation. You can
+input such characters directly, if your keyboard supports them as unicode
+characters, however you can also use a subset of the LaTeX language to give
+your variables more mathematial names.</p>
+</div>
+<div id="p33" class="ltx_para">
+<p class="ltx_p">With the employment rate defined, we are now ready to define a
+“Phillips Curve” relationship between the level of employment and the
+<span class="ltx_text ltx_font_bold">rate of change</span> of wages. There was far more to Phillips than this (he
+actually tried to introduce economists to system dynamics back in the
+1950s), and far more to his employment-wage change relation too, and
+he insisted that the relationship was nonlinear (as in Goodwin’s
+figure above). But again for simplicity we’ll define a linear
+relationship between employment and the rate of change of wages.</p>
+</div>
+<div id="p34" class="ltx_para">
+<p class="ltx_p">Here we need to manipulate the basic linear equation that Goodwin used:</p>
+</div>
+<div id="p35" class="ltx_para">
+<table id="Ch3.Ex11" class="ltx_equation">
+
+<tr class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_align_center"><math id="Ch3.Ex11.m1" class="ltx_Math" alttext="\frac{1}{w}\frac{d}{dt}w=-\gamma+\rho\cdot\lambda" display="block"><semantics><mrow><mrow><mfrac><mn>1</mn><mi>w</mi></mfrac><mo>⁢</mo><mfrac><mi>d</mi><mrow><mi>d</mi><mo>⁢</mo><mi>t</mi></mrow></mfrac><mo>⁢</mo><mi>w</mi></mrow><mo>=</mo><mrow><mo>-</mo><mi>γ</mi><mo>+</mo><mrow><mi>ρ</mi><mo>⋅</mo><mi>λ</mi></mrow></mrow></mrow><annotation encoding="application/x-tex">\frac{1}{w}\frac{d}{dt}w=-\gamma+\rho\cdot\lambda</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+<div id="p36" class="ltx_para">
+<p class="ltx_p">Firstly multiply both sides by <math id="p36.m1" class="ltx_Math" alttext="w" display="inline"><semantics><mi>w</mi><annotation encoding="application/x-tex">w</annotation></semantics></math>:</p>
+</div>
+<div id="p37" class="ltx_para">
+<table id="Ch3.Ex12" class="ltx_equation">
+
+<tr class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_align_center"><math id="Ch3.Ex12.m1" class="ltx_Math" alttext="\frac{d}{dt}w=w\cdot(-\gamma+\rho\cdot\lambda)" display="block"><semantics><mrow><mrow><mfrac><mi>d</mi><mrow><mi>d</mi><mo>⁢</mo><mi>t</mi></mrow></mfrac><mo>⁢</mo><mi>w</mi></mrow><mo>=</mo><mrow><mi>w</mi><mo>⋅</mo><mrow><mo>(</mo><mrow><mo>-</mo><mi>γ</mi><mo>+</mo><mrow><mi>ρ</mi><mo>⋅</mo><mi>λ</mi></mrow></mrow><mo>)</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">\frac{d}{dt}w=w\cdot(-\gamma+\rho\cdot\lambda)</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+<div id="p38" class="ltx_para">
+<p class="ltx_p">Then integrate both sides (because integration is a numerically much
+more stable process than differentiation, all system dynamics programs
+use integration rather than differentiation):
+</p>
+</div>
+<div id="p39" class="ltx_para">
+<table id="Ch3.Ex13" class="ltx_equation">
+
+<tr class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_align_center"><math id="Ch3.Ex13.m1" class="ltx_Math" alttext="w=w_{0}+\int w\cdot(-\gamma+\rho\cdot\lambda)" display="block"><semantics><mrow><mi>w</mi><mo>=</mo><mrow><msub><mi>w</mi><mn>0</mn></msub><mo>+</mo><mrow><mo largeop="true" symmetric="true">∫</mo><mrow><mi>w</mi><mo>⋅</mo><mrow><mo>(</mo><mrow><mo>-</mo><mi>γ</mi><mo>+</mo><mrow><mi>ρ</mi><mo>⋅</mo><mi>λ</mi></mrow></mrow><mo>)</mo></mrow></mrow></mrow></mrow></mrow><annotation encoding="application/x-tex">w=w_{0}+\int w\cdot(-\gamma+\rho\cdot\lambda)</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+<div id="p40" class="ltx_para">
+<p class="ltx_p">In English, this says that the wage now is the initial wage plus the
+integral of the wage multiplied by its rate of change function. That’s
+what we now need to add to the Canvas, and the first step is to spell
+out the wage change function itself. Firstly, since we’re using a
+linear wage response function, the rate of employment has to be
+referenced to a rate of employment at which the rate of changes is
+zero. I suggest using Milton Friedman’s concept of a
+“Non-Accelerating-Inflation-Rate-of-Unemployment”, or NAIRU. We need
+to define this constant, subtract it from 1, and subtract the result
+from the actual employment rate <math id="p40.m1" class="ltx_Math" alttext="\lambda" display="inline"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>. To enter 1, click on 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem89.png" id="p40.g1" class="ltx_graphics" width="48" height="38" alt="">
+</span>
+, define a
+constant called 1, and give it a value of 1. Select ”parameter”
+as the varibale type. Then define another variable
+NAIRU, and give it a value of 0.05 (5% unemployment). Subtract this
+from 1 and subtract the result from <math id="p40.m2" class="ltx_Math" alttext="\lambda" display="inline"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>. You should have the following:</p>
+</div>
+<div id="p41" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem108.png" id="p41.g1" class="ltx_graphics" width="456" height="124" alt="">
+</span>
+</div>
+<div id="p42" class="ltx_para">
+<p class="ltx_p">Now we need to multiply this gap between the actual employment rate
+and the “NAIRE” rate by a parameter that represents the response of
+wages to this gap. Let’s call this parameter <span class="ltx_text ltx_font_bold ltx_font_italic">Emp_Response</span> (remember to include the underscore and the braces). Define the constant, give it a value of 10, and multiply (<math id="p42.m1" class="ltx_Math" alttext="\lambda" display="inline"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> minus NAIRE) by it:
+</p>
+</div>
+<div id="p43" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem109.png" id="p43.g1" class="ltx_graphics" width="520" height="119" alt="">
+</span>
+</div>
+<div id="p44" class="ltx_para">
+<p class="ltx_p">Now we are ready to add a crucial component of a dynamic model: the
+integral block, which takes a flow as its input and has the integral
+of that flow as the output. The wage rate <span class="ltx_text ltx_font_bold ltx_font_italic">w</span> is such a variable, and we
+define it by clicking on the 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem91.png" id="p44.g1" class="ltx_graphics" width="28" height="37" alt="">
+</span>
+ symbol in the Icon Palette (or by
+choosing Operations/Integrate from the menu). This then attaches the
+following block to the cursor:</p>
+</div>
+<div id="p45" class="ltx_para">
+<img src="images/NewItem92.png" id="p45.g1" class="ltx_graphics ltx_centering" width="91" height="52" alt="">
+</div>
+<div id="p46" class="ltx_para">
+<p class="ltx_p">Now we need to rename this from the default name of “int” to
+“<span class="ltx_text ltx_font_bold">w</span>” for the wage rate. Either right click or double-click
+on “int” and this will bring up the edit window . Rename it to “w” and
+give it a value of 1:</p>
+</div>
+<div id="p47" class="ltx_para">
+<img src="images/NewItem93.png" id="p47.g1" class="ltx_graphics ltx_centering" width="312" height="255" alt="">
+</div>
+<div id="p48" class="ltx_para">
+<p class="ltx_p">To compete the integral equation, we need to multiply the linear
+employment response function by the current wage before we integrate
+it (see the last equation above). There are two ways to do
+this. First, place a multiply block between the wage change function
+and the integral block, wire the function up to one input on the
+multiply block, and then either:</p>
+</div>
+<div id="p49" class="ltx_para">
+<ul id="Ch3.I2" class="ltx_itemize">
+<li id="Ch3.I2.i1" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I2.i1.p1" class="ltx_para">
+<p class="ltx_p">wire the output of the <span class="ltx_text ltx_font_bold ltx_font_italic">w</span> block back to the other input
+on multiply block; or</p>
+</div>
+</li>
+<li id="Ch3.I2.i2" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch3.I2.i2.p1" class="ltx_para">
+<p class="ltx_p">Right-click on <span class="ltx_text ltx_font_bold ltx_font_italic">w</span>, choose ”Copy Var”, place that copy
+before the multiply block, and wire it up.</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="p50" class="ltx_para">
+<p class="ltx_p">The first method gives you this initial result:</p>
+</div>
+<div id="p51" class="ltx_para">
+<img src="images/NewItem110.png" id="p51.g1" class="ltx_graphics" width="197" height="83" alt="">
+</div>
+<div id="p52" class="ltx_para">
+<p class="ltx_p">That looks messy, but notice the blue dot on the wire? Click and drag
+on that and you will turn the straight line connector into a curve:</p>
+</div>
+<div id="p53" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem111.png" id="p53.g1" class="ltx_graphics" width="725" height="120" alt="">
+</span>
+</div>
+<div id="p54" class="ltx_para">
+<p class="ltx_p">The second approach, which I personally prefer (it’s neater, and it
+precisely emulates the integral equation), yields this result:</p>
+</div>
+<div id="p55" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem112.png" id="p55.g1" class="ltx_graphics" width="704" height="120" alt="">
+</span>
+</div>
+<div id="p56" class="ltx_para">
+<p class="ltx_p">From this point on the model develops easily—“like money for old
+rope”, as one of my maths lecturers used to say. Firstly if we
+multiply the wage rate <span class="ltx_text ltx_font_bold ltx_font_italic">w</span> by <span class="ltx_text ltx_font_bold ltx_font_italic">Labor</span> we get the <span class="ltx_text ltx_font_bold">Wage Bill</span>. To do this,
+firstly create the variable Wage Bill, and put will well below where w
+currently is on your diagram:</p>
+</div>
+<div id="p57" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem113.png" id="p57.g1" class="ltx_graphics" width="712" height="510" alt="">
+</span>
+</div>
+<div id="p58" class="ltx_para">
+<p class="ltx_p">Now right-click on <span class="ltx_text ltx_font_bold ltx_font_italic">WageBill</span> and choose “Flip”. This rotates
+the block through 180 degrees (any arbitrary rotation can be applied
+from the variable definition window itself). Now right-click on
+<span class="ltx_text ltx_font_bold ltx_font_italic">Labor</span>, which you’ve already defined some time ago, and choose
+“Copy”. Place the copy of <span class="ltx_text ltx_font_bold ltx_font_italic">Labor</span> to the right of <span class="ltx_text ltx_font_bold ltx_font_italic">WageBill</span>:</p>
+</div>
+<div id="p59" class="ltx_para">
+<img src="images/NewItem98.png" id="p59.g1" class="ltx_graphics ltx_centering" width="206" height="75" alt="">
+</div>
+<div id="p60" class="ltx_para">
+<p class="ltx_p">Now insert a multiply block before <span class="ltx_text ltx_font_bold ltx_font_italic">WageBill</span>, and wire <span class="ltx_text ltx_font_bold ltx_font_italic">w</span> and <span class="ltx_text ltx_font_bold ltx_font_italic">Labor</span> up to it. Curve the wire from w using the blue
+dots (you can do this multiple times to create a very curved path:
+each time you create a curve, another 2 curve points are added that
+you can also manipulate, as I have done below:</p>
+</div>
+<div id="p61" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem114.png" id="p61.g1" class="ltx_graphics" width="889" height="575" alt="">
+</span>
+</div>
+<div id="p62" class="ltx_para">
+<p class="ltx_p">The next step is to subtract the <span class="ltx_text ltx_font_bold ltx_font_italic">WageBill</span> from <span class="ltx_text ltx_font_bold ltx_font_italic">GDP</span>
+to define <span class="ltx_text ltx_font_bold ltx_font_italic">Profits</span>. Take a copy of <span class="ltx_text ltx_font_bold ltx_font_italic">GDP</span>, insert it
+before <span class="ltx_text ltx_font_bold ltx_font_italic">WageBill</span>, insert a subtract block, and wire it up to
+define the variable <span class="ltx_text ltx_font_bold ltx_font_italic">Profits</span>:</p>
+</div>
+<div id="p63" class="ltx_para">
+<img src="x2.png" id="p63.g1" class="ltx_graphics ltx_centering" width="244" height="97" alt="">
+</div>
+<div id="p64" class="ltx_para">
+<p class="ltx_p">In the simple Goodwin model, all Profits are invested, and investment
+of course is the rate of change of the capital stock Capital. Create a
+variable called Investment, wire this up to Profits, and then create a
+new integral variable Capital using the 
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem101.png" id="p64.g1" class="ltx_graphics" width="31" height="32" alt="">
+</span>
+
+icon. Right-click or double-click on to rename int2 to Capital, and
+give it an initial value of 300:</p>
+</div>
+<div id="p65" class="ltx_para">
+<img src="images/NewItem102.png" id="p65.g1" class="ltx_graphics" width="309" height="253" alt="">
+</div>
+<div id="p66" class="ltx_para">
+<p class="ltx_p">Wire this up to Investment:</p>
+</div>
+<div id="p67" class="ltx_para">
+<img src="images/NewItem104.png" id="p67.g1" class="ltx_graphics" width="366" height="51" alt="">
+</div>
+<div id="p68" class="ltx_para">
+<p class="ltx_p">Now there’s only one step left to complete the model: define a
+parameter CapOutputRatio and give it a value of 3:</p>
+</div>
+<div id="p69" class="ltx_para">
+<img src="images/NewItem103.png" id="p69.g1" class="ltx_graphics" width="311" height="256" alt="">
+</div>
+<div id="p70" class="ltx_para">
+<p class="ltx_p">Divide Capital by this, and wire the result up to the input on
+GDP. You have now built your first dynamic model in Minsky:</p>
+</div>
+<div id="p71" class="ltx_para">
+<p class="ltx_p">Before you attempt to run it, do two things. Firstly from the Runge
+Kutta menu item, change the Max Step Size to 0.01—to get a smoother
+simulation.</p>
+</div>
+<div id="p72" class="ltx_para">
+<img src="images/NewItem107.png" id="p72.g1" class="ltx_graphics" width="255" height="231" alt="">
+</div>
+<div id="p73" class="ltx_para">
+<p class="ltx_p">Secondly, add some graphs by clicking on the
+
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem106.png" id="p73.g1" class="ltx_graphics" width="33" height="31" alt="">
+</span>
+ icon, placing the graph
+in the middle of the flowchart, and wiring up <math id="p73.m1" class="ltx_Math" alttext="\backslash" display="inline"><semantics><mo>\</mo><annotation encoding="application/x-tex">\backslash</annotation></semantics></math>lambda and w to two of
+the four inputs on the left hand side. You will now see that, rather
+than reaching equilibrium, the model cycles constantly:</p>
+</div>
+<div id="p74" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem116.png" id="p74.g1" class="ltx_graphics" width="901" height="616" alt="">
+</span>
+</div>
+<div id="p75" class="ltx_para">
+<p class="ltx_p">If you click on the equations tab, you will see that you have defined the following system of
+equations:</p>
+</div>
+<div id="p76" class="ltx_para">
+<table id="Ch6.S1.EGx7" class="ltx_equationgroup ltx_eqn_eqnarray">
+
+<tr id="Ch3.Ex14" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex14.m1" class="ltx_Math" alttext="\displaystyle\mathrm{GDP}" display="inline"><semantics><mi>GDP</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{GDP}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex14.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex14.m3" class="ltx_Math" alttext="\displaystyle\frac{\mathrm{Capital}}{\mathrm{CapOutRatio}}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mi>Capital</mi><mi>CapOutRatio</mi></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{\mathrm{Capital}}{\mathrm{CapOutRatio}}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex15" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex15.m1" class="ltx_Math" alttext="\displaystyle\mathrm{Investment}" display="inline"><semantics><mi>Investment</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{Investment}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex15.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex15.m3" class="ltx_Math" alttext="\displaystyle\mathrm{Profits}" display="inline"><semantics><mi>Profits</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{Profits}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex16" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex16.m1" class="ltx_Math" alttext="\displaystyle\mathrm{Labor}" display="inline"><semantics><mi>Labor</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{Labor}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex16.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex16.m3" class="ltx_Math" alttext="\displaystyle\frac{\mathrm{GDP}}{\mathrm{LabProd}}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mi>GDP</mi><mi>LabProd</mi></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{\mathrm{GDP}}{\mathrm{LabProd}}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex17" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex17.m1" class="ltx_Math" alttext="\displaystyle\mathrm{Profits}" display="inline"><semantics><mi>Profits</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{Profits}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex17.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex17.m3" class="ltx_Math" alttext="\displaystyle\mathrm{GDP}-\mathrm{WageBill}" display="inline"><semantics><mrow><mi>GDP</mi><mo>-</mo><mi>WageBill</mi></mrow><annotation encoding="application/x-tex">\displaystyle\mathrm{GDP}-\mathrm{WageBill}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex18" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex18.m1" class="ltx_Math" alttext="\displaystyle\mathrm{WageBill}" display="inline"><semantics><mi>WageBill</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{WageBill}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex18.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex18.m3" class="ltx_Math" alttext="\displaystyle w\times\mathrm{Labor}" display="inline"><semantics><mrow><mi>w</mi><mo>×</mo><mi>Labor</mi></mrow><annotation encoding="application/x-tex">\displaystyle w\times\mathrm{Labor}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex19" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex19.m1" class="ltx_Math" alttext="\displaystyle\lambda" display="inline"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\displaystyle\lambda</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex19.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex19.m3" class="ltx_Math" alttext="\displaystyle\frac{\mathrm{Labor}}{\mathrm{Population}}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mi>Labor</mi><mi>Population</mi></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{\mathrm{Labor}}{\mathrm{Population}}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex20" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex20.m1" class="ltx_Math" alttext="\displaystyle\omega" display="inline"><semantics><mi>ω</mi><annotation encoding="application/x-tex">\displaystyle\omega</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex20.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex20.m3" class="ltx_Math" alttext="\displaystyle\frac{\mathrm{WageBill}}{\mathrm{GDP}}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mi>WageBill</mi><mi>GDP</mi></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{\mathrm{WageBill}}{\mathrm{GDP}}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex21" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex21.m1" class="ltx_Math" alttext="\displaystyle\frac{dw}{dt}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mrow><mi>d</mi><mo>⁢</mo><mi>w</mi></mrow><mrow><mi>d</mi><mo>⁢</mo><mi>t</mi></mrow></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{dw}{dt}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex21.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex21.m3" class="ltx_Math" alttext="\displaystyle\mathrm{Emp}_{\mathrm{Response}}\times(\lambda-(1-\mathrm{NAIRU})\times
+w" display="inline"><semantics><mrow><msub><mi>Emp</mi><mi>Response</mi></msub><mo>×</mo><mrow><mo>(</mo><mi>λ</mi><mo>-</mo><mrow><mo>(</mo><mn>1</mn><mo>-</mo><mi>NAIRU</mi><mo>)</mo></mrow><mo>×</mo><mi>w</mi></mrow></mrow><annotation encoding="application/x-tex">\displaystyle\mathrm{Emp}_{\mathrm{Response}}\times(\lambda-(1-\mathrm{NAIRU})\times
+w</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+<tr id="Ch3.Ex22" class="ltx_equation ltx_align_baseline">
+<td class="ltx_eqn_pad"></td>
+<td class="ltx_td ltx_align_right"><math id="Ch3.Ex22.m1" class="ltx_Math" alttext="\displaystyle\frac{d\mathrm{Capital}}{dt}" display="inline"><semantics><mstyle displaystyle="true"><mfrac><mrow><mi>d</mi><mo>⁢</mo><mi>Capital</mi></mrow><mrow><mi>d</mi><mo>⁢</mo><mi>t</mi></mrow></mfrac></mstyle><annotation encoding="application/x-tex">\displaystyle\frac{d\mathrm{Capital}}{dt}</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_center"><math id="Ch3.Ex22.m2" class="ltx_Math" alttext="\displaystyle=" display="inline"><semantics><mo>=</mo><annotation encoding="application/x-tex">\displaystyle=</annotation></semantics></math></td>
+<td class="ltx_td ltx_align_left"><math id="Ch3.Ex22.m3" class="ltx_Math" alttext="\displaystyle\mathrm{Investment}" display="inline"><semantics><mi>Investment</mi><annotation encoding="application/x-tex">\displaystyle\mathrm{Investment}</annotation></semantics></math></td>
+<td class="ltx_eqn_pad"></td>
+</tr>
+</table>
+</div>
+<div id="p77" class="ltx_para">
+<p class="ltx_p">At this level of complexity, the equation form—if you’re accustomed
+to working in equations—is as accessible as the block diagram model from
+which it was generated. But at much higher levels of complexity, the
+block diagram is far easier to understand since it displays the causal
+links in the model clearly, and can be structured in sub-groups that
+focus on particular parts of the system.</p>
+</div>
+</section>
+</div>
+<footer class="ltx_page_footer">
+<div>
+<a href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3 </span>Tutorial</span></a><a href="Ch3.S2.html" title="3.2 Basic Banking model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3.2 </span>Basic Banking model</span></a>
+</div>
+<div class="ltx_page_logo">Generated  on Thu Nov  3 16:02:22 2016 by <a href="http://dlmf.nist.gov/LaTeXML/">LaTeXML <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==" alt="[LOGO]"></a>
+</div></footer>
+</div>
+</body>
+</html>
