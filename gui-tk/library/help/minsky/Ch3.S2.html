@@ -1,0 +1,155 @@
+<!DOCTYPE html><html>
+<head>
+<title>3.2 Basic Banking model‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine</title>
+<!--Generated on Thu Nov  3 16:02:22 2016 by LaTeXML (version 0.8.0) http://dlmf.nist.gov/LaTeXML/.-->
+<!--Document created on November 3, 2016.-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="LaTeXML.css" type="text/css">
+<link rel="stylesheet" href="ltx-book.css" type="text/css">
+<link rel="up" href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="up up" href="." title="Minsky Simulation Engine">
+<link rel="start" href="." title="Minsky Simulation Engine">
+<link rel="prev" href="Ch3.S1.html" title="3.1 Basic System Dynamics model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="next" href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch3.S1.html" title="3.1 Basic System Dynamics model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch1.html" title="Chapter 1 Introduction ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch2.html" title="Chapter 2 Getting Started ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch5.html" title="Chapter 5 Brief History of system dynamics ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch6.html" title="Chapter 6 FAQs ‣ Minsky Simulation Engine">
+</head>
+<body>
+<div class="ltx_page_main">
+<header class="ltx_page_header">
+<div>
+<a href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="up"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3 </span>Tutorial</span></a><a href="Ch3.S1.html" title="3.1 Basic System Dynamics model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3.1 </span>Basic System Dynamics model</span></a><a href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4 </span>Reference</span></a>
+</div></header>
+<div class="ltx_page_content">
+<section class="ltx_section">
+<h1 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">3.2 </span>Basic Banking model</h1>
+<div class="ltx_date ltx_role_creation"></div>
+
+<div id="p1" class="ltx_para">
+<p class="ltx_p">If you haven’t yet read the section on <a href="Ch2.S4.html#SS5" title="2.4.5 Creating a banking model ‣ 2.4 Working with Minsky ‣ Chapter 2 Getting Started ‣ Minsky Simulation Engine" class="ltx_ref">Creating a Banking
+Model</a>, do so now. This tutorial starts from the
+skeleton of the “Loanable Funds” model built in that section, and
+using <a href="Ch2.S4.html#SS6.SSS4" title="Using “Time Constants” ‣ 2.4.6 Defining account types ‣ 2.4 Working with Minsky ‣ Chapter 2 Getting Started ‣ Minsky Simulation Engine" class="ltx_ref">time constants</a> to specify how quickly
+lending occurs.</p>
+</div>
+<section id="SS1" class="ltx_subsection">
+<h1 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">3.2.1 </span>Loanable Funds</h1>
+
+<div id="SS1.p1" class="ltx_para">
+<p class="ltx_p">Our model begins with the single operation of Patient lending to
+Impatient at a rate that, if kept constant at its initial level of of
+$10 per annum, would empty the Patient account in 10 years. Because
+the rate of outflow declines as the Patient account declines, the
+money in the account decays towards zero but never quite reaches it.</p>
+</div>
+<div id="SS1.p2" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem169.png" id="SS1.p2.g1" class="ltx_graphics" width="697" height="637" alt="">
+</span>
+</div>
+<div id="SS1.p3" class="ltx_para">
+<p class="ltx_p">Many more actions need to be added to this model to complete it. For a
+start, Impatient should be paying interest to Patient on the amount
+lent. Add an additional row to the Godley Table by clicking on the
+
+
+<span class="ltx_inline-block" style="width:0.0pt;height:17.9166666666667px;vertical-align:-0.0pt;"><img src="images/NewItem170.png" id="SS1.p3.g1" class="ltx_graphics" width="26" height="27" alt="">
+</span>
+ key
+next to “Patient lends to Impatient” to create a blank row:</p>
+</div>
+<div id="SS1.p4" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem171.png" id="SS1.p4.g1" class="ltx_graphics" width="705" height="181" alt="">
+</span>
+</div>
+<div id="SS1.p5" class="ltx_para">
+<p class="ltx_p">Then label this flow “Impatient pays interest” and make the entry
+“Interest” into the cell for Impatient on that row. Make the matching
+entry “-Interest” in the cell for Patient. The flow “Interest” now
+appears on the input side of the Godley Table on the Canvas:</p>
+</div>
+<div id="SS1.p6" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem172.png" id="SS1.p6.g1" class="ltx_graphics" width="697" height="650" alt="">
+</span>
+</div>
+<div id="SS1.p7" class="ltx_para">
+<p class="ltx_p">Interest now has to be defined. It will be the amount in Impatient’s
+account (since this began at zero) multiplied by the rate of interest
+charged by Patient:</p>
+</div>
+<div id="SS1.p8" class="ltx_para">
+<img src="images/NewItem173.png" id="SS1.p8.g1" class="ltx_graphics" width="175" height="53" alt="">
+</div>
+<div id="SS1.p9" class="ltx_para">
+<p class="ltx_p">With that definition, the dynamics of the model change: rather than
+the Patient account falling to zero and Impatient rising to 100, the
+two accounts stabilize once the outflow of new loans by Patient equals
+the inflow of interest payments by Impatient:</p>
+</div>
+<div id="SS1.p10" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem174.png" id="SS1.p10.g1" class="ltx_graphics" width="702" height="652" alt="">
+</span>
+</div>
+<div id="SS1.p11" class="ltx_para">
+<p class="ltx_p">Though it stabilizes, this is is still a very incomplete model:
+neither Patient nor Impatient are doing anything with the money apart
+from lending it and paying interest. I am now going to assume that
+Impatient is borrowing the money in order to hire workers to work at a
+factory and produce output for sale. So we now need another account
+called Workers, and a payment from Impatient to Workers called Wage:</p>
+</div>
+<div id="SS1.p12" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem174.png" id="SS1.p12.g1" class="ltx_graphics" width="702" height="652" alt="">
+</span>
+</div>
+<div id="SS1.p13" class="ltx_para">
+<p class="ltx_p">In a more complex model, the Wage bill could be related to the current
+rate times the number of workers in employment. In this simple model I
+will regard the wage as a function of the amount of money in
+Impatient’s account turning over several times a year in the payment
+of wages. Using a time constant, I will assume that the amount in
+Impatient’s account turns over 3 times a year paying wages, so that
+the time constant is 1/3rd of a year:</p>
+</div>
+<div id="SS1.p14" class="ltx_para">
+<img src="images/NewItem176.png" id="SS1.p14.g1" class="ltx_graphics" width="315" height="315" alt="">
+</div>
+<div id="SS1.p15" class="ltx_para">
+<p class="ltx_p">The dynamics of this incomplete model are very different again: very
+little money turns up in the Impatient account, and all of the money
+ends up in the Workers account. However economic activity also ceases
+as both lending and the flow of wages falls towards zero:</p>
+</div>
+<div id="SS1.p16" class="ltx_para">
+<span class="ltx_inline-block" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem177.png" id="SS1.p16.g1" class="ltx_graphics" width="695" height="815" alt="">
+</span>
+</div>
+<div id="SS1.p17" class="ltx_para">
+<p class="ltx_p">This is because wages are being paid to workers, but they are doing
+nothing with it. So we need to include consumption by workers–and by
+Patient as well. Here the reason time constants are useful may be more
+obvious. The time constant for consumption by Workers is given the
+very low value of 0.05—or 1/20th of a year—which indicates that if
+their initial rate of consumption was maintained without any wage
+income, they would reduce their bank balances to zero in 1/20th of a
+year or about 2.5 weeks.</p>
+</div>
+</section>
+</section>
+</div>
+<footer class="ltx_page_footer">
+<div>
+<a href="Ch3.S1.html" title="3.1 Basic System Dynamics model ‣ Chapter 3 Tutorial ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">3.1 </span>Basic System Dynamics model</span></a><a href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4 </span>Reference</span></a>
+</div>
+<div class="ltx_page_logo">Generated  on Thu Nov  3 16:02:22 2016 by <a href="http://dlmf.nist.gov/LaTeXML/">LaTeXML <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==" alt="[LOGO]"></a>
+</div></footer>
+</div>
+</body>
+</html>

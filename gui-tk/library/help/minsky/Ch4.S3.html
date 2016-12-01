@@ -1,0 +1,153 @@
+<!DOCTYPE html><html>
+<head>
+<title>4.3 Variables‣ Chapter 4 Reference ‣ Minsky Simulation Engine</title>
+<!--Generated on Thu Nov  3 16:02:22 2016 by LaTeXML (version 0.8.0) http://dlmf.nist.gov/LaTeXML/.-->
+<!--Document created on November 3, 2016.-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="LaTeXML.css" type="text/css">
+<link rel="stylesheet" href="ltx-book.css" type="text/css">
+<link rel="up" href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="up up" href="." title="Minsky Simulation Engine">
+<link rel="start" href="." title="Minsky Simulation Engine">
+<link rel="prev" href="Ch4.S2.html" title="4.2 Switch ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="next" href="Ch4.S4.html" title="4.4 Wires ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S1.html" title="4.1 Operations ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S2.html" title="4.2 Switch ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S4.html" title="4.4 Wires ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S5.html" title="4.5 Groups ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S6.html" title="4.6 Plot widget ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S7.html" title="4.7 Note Widget ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S8.html" title="4.8 Godley Tables ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S9.html" title="4.9 Context Menu ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch4.S10.html" title="4.10 Canvas background ‣ Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch1.html" title="Chapter 1 Introduction ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch2.html" title="Chapter 2 Getting Started ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch5.html" title="Chapter 5 Brief History of system dynamics ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch6.html" title="Chapter 6 FAQs ‣ Minsky Simulation Engine">
+</head>
+<body>
+<div class="ltx_page_main">
+<header class="ltx_page_header">
+<div>
+<a href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine" class="ltx_ref" rel="up"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4 </span>Reference</span></a><a href="Ch4.S2.html" title="4.2 Switch ‣ Chapter 4 Reference ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.2 </span>Switch</span></a><a href="Ch4.S4.html" title="4.4 Wires ‣ Chapter 4 Reference ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.4 </span>Wires</span></a>
+</div></header>
+<div class="ltx_page_content">
+<section class="ltx_section">
+<h1 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">4.3 </span>Variables</h1>
+<div class="ltx_date ltx_role_creation"></div>
+
+<div id="p1" class="ltx_para">
+<p class="ltx_p">Variables represent values in a calculation, and come in a number of
+varieties:</p>
+<dl id="Ch4.I2" class="ltx_description">
+<dt id="Ch4.I2.ix1" class="ltx_item"><span class="ltx_tag ltx_tag_description">Constants</span></dt>
+<dd class="ltx_item">
+<div id="Ch4.I2.ix1.p1" class="ltx_para">
+<p class="ltx_p">represent an explicit numerical value, and do not
+have a name. Their graphical representation shows the actual value of
+the constant.
+</p>
+</div>
+</dd>
+<dt id="Ch4.I2.ix2" class="ltx_item"><span class="ltx_tag ltx_tag_description">Parameters</span></dt>
+<dd class="ltx_item">
+<div id="Ch4.I2.ix2.p1" class="ltx_para">
+<p class="ltx_p">are named constants. All instances of a given name
+represent the same value, as with all other named variables, so
+changing the value of one parameter, either through its edit menu, or
+through a slider, will affect all the others of that name.</p>
+</div>
+</dd>
+<dt id="Ch4.I2.ix3" class="ltx_item"><span class="ltx_tag ltx_tag_description">Flow variables</span></dt>
+<dd class="ltx_item">
+<div id="Ch4.I2.ix3.p1" class="ltx_para">
+<p class="ltx_p">have an input port that defines how the value is
+to be calculated. Only one flow variable of a given name can have its
+input port connected, as they all refer to the same quantity. If no
+input ports are connected, then flow variables act just like
+parameters.</p>
+</div>
+</dd>
+<dt id="Ch4.I2.ix4" class="ltx_item"><span class="ltx_tag ltx_tag_description">Integral variables</span></dt>
+<dd class="ltx_item">
+<div id="Ch4.I2.ix4.p1" class="ltx_para">
+<p class="ltx_p">represent the result of integrating its
+input over time by means of the differential
+equation solver. The integrand is represented by the input to an
+integral operator that is attached to the integral variable.</p>
+</div>
+</dd>
+<dt id="Ch4.I2.ix5" class="ltx_item"><span class="ltx_tag ltx_tag_description">Stock variables</span></dt>
+<dd class="ltx_item">
+<div id="Ch4.I2.ix5.p1" class="ltx_para">
+<p class="ltx_p">are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up the
+column.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div id="p2" class="ltx_para">
+<p class="ltx_p">Variables may be converted between types in the variable edit menu,
+available from the context menu.</p>
+</div>
+<section id="SS1" class="ltx_subsection">
+<h1 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3.1 </span>Variable names</h1>
+
+<div id="SS1.p1" class="ltx_para">
+<p class="ltx_p">Variable names uniquely identify variables. Multiple icons on the
+canvas may have the same name — they all refer to the same
+variable. Variable names have scope, which is either global (indicated
+by a leading ‘:’, or the numerical id of a group. You may select a
+variable name from a drop down list in the “name” combo box.</p>
+</div>
+</section>
+<section id="SS2" class="ltx_subsection">
+<h1 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3.2 </span>Initial conditions</h1>
+
+<div id="SS2.p1" class="ltx_para">
+<p class="ltx_p">Variable initial conditions can be defined through the “init value”
+field of the variable edit menu, or in the case of Godley table stock
+variables, through the initial condition row of the Godley table. An
+initial value can be a simple number, or it can be a multiple of
+another named variable (or parameter). In case of symbolic
+definitions, it would be possible to set up a circular reference where
+the initial value of variable A is defined in terms of the initial
+value of variable B, which in turn depends on the intial value of
+A. Such a pathological situation is detected when the system is reset.</p>
+</div>
+</section>
+<section id="SS3" class="ltx_subsection">
+<h1 class="ltx_title ltx_title_subsection">
+<span class="ltx_tag ltx_tag_subsection">4.3.3 </span>Sliders</h1>
+
+<div id="SS3.p1" class="ltx_para">
+<p class="ltx_p">From the context menu, one can select a slider to be attached to a
+variable, which is a GUI “knob” allowing one to control a variable’s
+initial value, or the value of a parameter or constant. Adjusting the
+slider of an integral (or stock) variable while the system is running
+actually adjusts the present value of the variable.</p>
+</div>
+<div id="SS3.p2" class="ltx_para">
+<p class="ltx_p">Slider parameters are specified in the edit menu: max, min and step
+size. A relative slider means that the step size is expressed as a
+fraction of max-min.</p>
+</div>
+</section>
+</section>
+</div>
+<footer class="ltx_page_footer">
+<div>
+<a href="Ch4.S2.html" title="4.2 Switch ‣ Chapter 4 Reference ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.2 </span>Switch</span></a><a href="Ch4.S4.html" title="4.4 Wires ‣ Chapter 4 Reference ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">4.4 </span>Wires</span></a>
+</div>
+<div class="ltx_page_logo">Generated  on Thu Nov  3 16:02:22 2016 by <a href="http://dlmf.nist.gov/LaTeXML/">LaTeXML <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==" alt="[LOGO]"></a>
+</div></footer>
+</div>
+</body>
+</html>

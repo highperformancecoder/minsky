@@ -1,0 +1,149 @@
+<!DOCTYPE html><html>
+<head>
+<title>1.2 Experienced in system dynamics?‣ Chapter 1 Introduction ‣ Minsky Simulation Engine</title>
+<!--Generated on Thu Nov  3 16:02:22 2016 by LaTeXML (version 0.8.0) http://dlmf.nist.gov/LaTeXML/.-->
+<!--Document created on November 3, 2016.-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="LaTeXML.css" type="text/css">
+<link rel="stylesheet" href="ltx-book.css" type="text/css">
+<link rel="up" href="Ch1.html" title="Chapter 1 Introduction ‣ Minsky Simulation Engine">
+<link rel="up up" href="." title="Minsky Simulation Engine">
+<link rel="start" href="." title="Minsky Simulation Engine">
+<link rel="prev" href="Ch1.S1.html" title="1.1 New to system dynamics? ‣ Chapter 1 Introduction ‣ Minsky Simulation Engine">
+<link rel="next" href="Ch2.html" title="Chapter 2 Getting Started ‣ Minsky Simulation Engine">
+<link rel="section" href="Ch1.S1.html" title="1.1 New to system dynamics? ‣ Chapter 1 Introduction ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch1.html" title="Chapter 1 Introduction ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch2.html" title="Chapter 2 Getting Started ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch3.html" title="Chapter 3 Tutorial ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch4.html" title="Chapter 4 Reference ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch5.html" title="Chapter 5 Brief History of system dynamics ‣ Minsky Simulation Engine">
+<link rel="chapter" href="Ch6.html" title="Chapter 6 FAQs ‣ Minsky Simulation Engine">
+</head>
+<body>
+<div class="ltx_page_main">
+<header class="ltx_page_header">
+<div>
+<a href="Ch1.html" title="Chapter 1 Introduction ‣ Minsky Simulation Engine" class="ltx_ref" rel="up"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1 </span>Introduction</span></a><a href="Ch1.S1.html" title="1.1 New to system dynamics? ‣ Chapter 1 Introduction ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1.1 </span>New to system dynamics?</span></a><a href="Ch2.html" title="Chapter 2 Getting Started ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">2 </span>Getting Started</span></a>
+</div></header>
+<div class="ltx_page_content">
+<section class="ltx_section">
+<h1 class="ltx_title ltx_title_section">
+<span class="ltx_tag ltx_tag_section">1.2 </span>Experienced in system dynamics?</h1>
+<div class="ltx_date ltx_role_creation"></div>
+
+<div id="p1" class="ltx_para">
+<p class="ltx_p">As an experienced system dynamics user (or if you’ve just read <a href="Ch1.S1.html" title="1.1 New to system dynamics? ‣ Chapter 1 Introduction ‣ Minsky Simulation Engine" class="ltx_ref">``New to
+system dynamics?''</a>), what you need to know is what Minsky
+provides that other system dynamics programs don’t. That boils down to
+one feature: The Godley Table that enables a dynamic model of
+financial flows to be derived from a table that is very similar to the
+accountant’s double-entry bookkeeping table.</p>
+</div>
+<div id="p2" class="ltx_para">
+<p class="ltx_p">The dynamics in financial flows could be modeled using the block diagram
+paradigm. But it would also be very, very easy to make a mistake
+modeling financial flows in such a system, for one simple reason:
+every financial flow needs to be entered at least twice in a
+system—once as a source, and once as a sink.</p>
+</div>
+<div id="p3" class="ltx_para">
+<p class="ltx_p">For example, if you go shopping and buy a new computer with your
+credit card, you increase your debt to a bank and simultaneously
+increase the deposit account of the retailer from whom you buy the
+computer. The two system states in this model–your credit card
+(“BuyerCredit”) and the retailer’s deposit account
+(“SellerDeposit”)—therefore have to have the same entry (let’s call
+this “Card”) made into them. In Vissim, such a transaction would look
+like this:</p>
+</div>
+<div id="p4" class="ltx_para">
+<span class="ltx_inline-block ltx_align_center" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem11.png" id="p4.g1" class="ltx_graphics" width="367" height="74" alt="">
+</span>
+</div>
+<div id="p5" class="ltx_para">
+<p class="ltx_p">That would work, but there’s nothing in the program that warns you if
+you make a mistake like, for example, wiring up the BuyerCredit entry,
+but forgetting the SellerDeposit one:</p>
+</div>
+<div id="p6" class="ltx_para">
+<span class="ltx_inline-block ltx_align_center" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem12.png" id="p6.g1" class="ltx_graphics" width="367" height="74" alt="">
+</span>
+</div>
+<div id="p7" class="ltx_para">
+<p class="ltx_p">Or, perhaps, wiring up both blocks, but giving one the wrong sign:</p>
+</div>
+<div id="p8" class="ltx_para">
+<span class="ltx_inline-block ltx_align_center" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem51.png" id="p8.g1" class="ltx_graphics" width="489" height="111" alt="">
+</span>
+</div>
+<div id="p9" class="ltx_para">
+<p class="ltx_p">In a very complex model, you might make a mistake like one of the above, run the simulation and get nonsense results, and yet be unable to locate your mistake.</p>
+</div>
+<div id="p10" class="ltx_para">
+<p class="ltx_p">Minsky avoids this problem by using the paradigm that accountants
+developed half a millennium ago to keep financial accounts accurately:
+double-entry bookkeeping. Here is the same model in Minsky:</p>
+</div>
+<div id="p11" class="ltx_para">
+<span class="ltx_inline-block ltx_align_center" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem13.png" id="p11.g1" class="ltx_graphics" width="693" height="479" alt="">
+</span>
+</div>
+<div id="p12" class="ltx_para">
+<p class="ltx_p">This is an inherently better way to generate a dynamic model of financial flows, for at least two reasons:</p>
+<ul id="Ch1.I2" class="ltx_itemize">
+<li id="Ch1.I2.i1" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch1.I2.i1.p1" class="ltx_para">
+<p class="ltx_p">All financial transactions are flows between entities. The
+tabular layout captures this in a very natural way: each row shows
+where a flow originates, and where it ends up</p>
+</div>
+</li>
+<li id="Ch1.I2.i2" class="ltx_item" style="list-style-type:none;">
+<span class="ltx_tag ltx_tag_itemize">•</span> 
+<div id="Ch1.I2.i2.p1" class="ltx_para">
+<p class="ltx_p">The program adopts the accounting practice of double-entry
+bookkeeping, in which entries on each row sum to zero. The source is
+shown as a “<math id="Ch1.I2.i2.p1.m1" class="ltx_Math" alttext="+" display="inline"><semantics><mo>+</mo><annotation encoding="application/x-tex">+</annotation></semantics></math>”, the sink is shown as a “<math id="Ch1.I2.i2.p1.m2" class="ltx_Math" alttext="-" display="inline"><semantics><mo>-</mo><annotation encoding="application/x-tex">-</annotation></semantics></math>”, and assets are shown
+as a positive sum while liabilities are shown as a negative. If you
+don’t ensure that each flow starts somewhere and ends
+somewhere—say you make the same mistake as in the block diagram
+examples above, then the program will identify your mistake.</p>
+</div>
+</li>
+</ul>
+</div>
+<div id="p13" class="ltx_para">
+<p class="ltx_p">If you forget to enter the recipient in this transaction, then the Row
+Sum identifies your mistake by showing that the row sums to “Card”
+rather than zero:</p>
+</div>
+<div id="p14" class="ltx_para">
+<span class="ltx_inline-block ltx_align_center" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem52.png" id="p14.g1" class="ltx_graphics" width="678" height="168" alt="">
+</span>
+</div>
+<div id="p15" class="ltx_para">
+<p class="ltx_p">And it also identifies if you give the wrong sign to one entry:</p>
+</div>
+<div id="p16" class="ltx_para">
+<span class="ltx_inline-block ltx_align_center" style="width:433.6pt;height:0px;vertical-align:-0.0pt;"><img src="images/NewItem53.png" id="p16.g1" class="ltx_graphics" width="677" height="164" alt="">
+</span>
+</div>
+<div id="p17" class="ltx_para">
+<p class="ltx_p">Minsky thus adds an element to the system dynamics toolkit which is
+fundamental for modeling the monetary flows that are an intrinsic
+aspect of a market economy. Future releases will dramatically extend
+this capability.</p>
+</div>
+</section>
+</div>
+<footer class="ltx_page_footer">
+<div>
+<a href="Ch1.S1.html" title="1.1 New to system dynamics? ‣ Chapter 1 Introduction ‣ Minsky Simulation Engine" class="ltx_ref" rel="prev"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">1.1 </span>New to system dynamics?</span></a><a href="Ch2.html" title="Chapter 2 Getting Started ‣ Minsky Simulation Engine" class="ltx_ref" rel="next"><span class="ltx_text ltx_ref_title"><span class="ltx_tag ltx_tag_ref">2 </span>Getting Started</span></a>
+</div>
+<div class="ltx_page_logo">Generated  on Thu Nov  3 16:02:22 2016 by <a href="http://dlmf.nist.gov/LaTeXML/">LaTeXML <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAOCAYAAAD5YeaVAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wKExQZLWTEaOUAAAAddEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q72QlbgAAAdpJREFUKM9tkL+L2nAARz9fPZNCKFapUn8kyI0e4iRHSR1Kb8ng0lJw6FYHFwv2LwhOpcWxTjeUunYqOmqd6hEoRDhtDWdA8ApRYsSUCDHNt5ul13vz4w0vWCgUnnEc975arX6ORqN3VqtVZbfbTQC4uEHANM3jSqXymFI6yWazP2KxWAXAL9zCUa1Wy2tXVxheKA9YNoR8Pt+aTqe4FVVVvz05O6MBhqUIBGk8Hn8HAOVy+T+XLJfLS4ZhTiRJgqIoVBRFIoric47jPnmeB1mW/9rr9ZpSSn3Lsmir1fJZlqWlUonKsvwWwD8ymc/nXwVBeLjf7xEKhdBut9Hr9WgmkyGEkJwsy5eHG5vN5g0AKIoCAEgkEkin0wQAfN9/cXPdheu6P33fBwB4ngcAcByHJpPJl+fn54mD3Gg0NrquXxeLRQAAwzAYj8cwTZPwPH9/sVg8PXweDAauqqr2cDjEer1GJBLBZDJBs9mE4zjwfZ85lAGg2+06hmGgXq+j3+/DsixYlgVN03a9Xu8jgCNCyIegIAgx13Vfd7vdu+FweG8YRkjXdWy329+dTgeSJD3ieZ7RNO0VAXAPwDEAO5VKndi2fWrb9jWl9Esul6PZbDY9Go1OZ7PZ9z/lyuD3OozU2wAAAABJRU5ErkJggg==" alt="[LOGO]"></a>
+</div></footer>
+</div>
+</body>
+</html>
