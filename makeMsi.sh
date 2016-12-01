@@ -50,12 +50,16 @@ cat >$minskyWxs <<EOF
                  </Shortcut>
                 <Shortcut Id="desktopMinsky" Directory="DesktopFolder" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes" />
               </File>
+EOF
+if [ $productName = "Minsky" ]; then
+cat >>$minskyWxs <<EOF 
               <ProgId Id='MinskyData' Description='Minsky Project File' Icon='MinskyEXE'>
                 <Extension Id='mky' ContentType='application/minsky'>
                   <Verb Id='open' Command='Open' TargetFile='MinskyEXE' Argument='"%1"'/>
                  </Extension>
                </ProgId>
 EOF
+fi
 pushd gui-tk
 id=0
 fid=0
