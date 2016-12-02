@@ -151,7 +151,9 @@ namespace minsky
   {
 
     // set a default name if none given
-    if (desc.empty()) desc="int";
+    if (desc.empty())
+      desc=minsky().variableValues.newName
+        (VariableValue::valueId(group.lock(),"int"));
     
     if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
       return; // nothing to do
