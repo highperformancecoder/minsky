@@ -880,8 +880,8 @@ namespace minsky
 //    removeDuplicateWires();
 //
     // try resetting the system, but ignore any errors
-//    try {reset();}
-//    catch (...) {}
+    try {reset();}
+    catch (...) {}
     flags=reset_needed;
   }
 

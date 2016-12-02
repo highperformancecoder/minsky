@@ -108,7 +108,7 @@ SUITE(Minsky)
       int nakedIntegral=-1;
       for (size_t i=0; i<integrals.size(); ++i)
         {
-          if (integrals[i].stock.name=="int")
+          if (integrals[i].stock.name=="int1")
             nakedIntegral=i;
           CHECK(!integrals[i].stock.isFlowVar());
         }
