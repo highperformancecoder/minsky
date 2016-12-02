@@ -19,6 +19,7 @@
 #include "variableValue.h"
 #include "flowCoef.h"
 #include "str.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 #include <error.h>
 
@@ -121,6 +122,36 @@ namespace minsky
     else
       // no scope information is present
       throw error("scope requested for local variable");
+  }
+
+  string VariableValue::valueId(GroupPtr scope, string a_name)
+  {
+    auto name=stripActive(a_name);
+    if (name[0]==':')
+      {
+        // find maximum enclosing scope that has this same-named variable
+        for (auto g=scope; g; g=g->group.lock())
+          for (auto i: g->items)
+            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+              {
+                auto n=stripActive(v->name());
+                if (n==name)
+                  {
+                    scope=g;
+                    break; // break inner loop, continue looking
+                  }
+                if (n==name.substr(1)) // without ':' qualifier
+                  {
+                    scope=g;
+                    goto break_outerloop;
+                  }
+              }
+      break_outerloop: ;
+      }
+    if (!scope || scope==cminsky().model)
+      return VariableValue::valueId(-1,name); // retain previous global var id
+    else
+      return VariableValue::valueId(size_t(scope.get()), name);
   }
 
   std::string VariableValue::uqName(const std::string& name)

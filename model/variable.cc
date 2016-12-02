@@ -67,27 +67,7 @@ VariableBase* VariableBase::create(VariableType::Type type)
 
 string VariableBase::valueId() const 
 {
-  Group* scope=group.lock().get();
-  auto name=stripActive(m_name);
-  if (name[0]==':')
-    {
-      // find maximum enclosing scope that has this same-named variable
-      for (auto g=group.lock(); g; g=g->group.lock())
-        for (auto i: g->items)
-          if (auto v=dynamic_cast<VariableBase*>(i.get()))
-            {
-              auto n=stripActive(v->m_name);
-              if (n==name || n==name.substr(1) /* without ':' qualifier*/)
-                {
-                  scope=g.get();
-                  break;
-                }
-            }
-    }
-  if (!scope || scope==cminsky().model.get())
-    return VariableValue::valueId(-1,name); // retain previous global var id
-  else
-    return VariableValue::valueId(size_t(scope), name);
+  return VariableValue::valueId(group.lock(), m_name);
 }
 
 bool VariableBase::ioVar() const 
@@ -113,40 +93,9 @@ string VariableBase::name()  const
     }
   return m_name;
 }
-//
-//string VariableBase::fqName()  const
-//{
-//  if (scope.lock()==cminsky.model)
-//  if (auto s=scope.lock())
-//    if (s!=cminsky().model)
-//      return "["+str(s->title.substr(0,10))+"]:"+m_name;
-//  return ":"+m_name;
-//}
-
 
 string VariableBase::name(const std::string& name) 
 {
-//  // strip namespace, and extract scope
-//  boost::regex namespaced_spec(R"((\d*)]?:(([^:])*))"); 
-//  boost::smatch m;
-//  if (regex_search(name, m, namespaced_spec))
-//    {
-//     assert(m.size()==4);
-//      if (m[1].matched && m[1].length()>0)
-//        {
-//          int toScope;
-//          sscanf(m[1].str().c_str(), "%d", &toScope);
-//          setScope(toScope);
-//        }
-//      m_name=m[2];
-//    }
-//  else
-//    {
-//      m_name=name;
-//      if (auto g=group.lock())
-//        m_scope=g->id;
-//    }
-
   m_name=name;
   ensureValueExists();
   return this->name();

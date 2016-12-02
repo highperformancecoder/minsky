@@ -151,16 +151,9 @@ namespace minsky
   {
 
     // set a default name if none given
-    if (desc.empty()) 
-      desc=minsky().variableValues.newName(":int");
-
-    // unscoped descriptions treated as global
-    if (desc.find(":")==string::npos)
-      desc=":"+desc;
-
-    desc=VariableValue::valueId(desc);
-
-    if (intVar && intVar->valueId()==desc)
+    if (desc.empty()) desc="int";
+    
+    if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
       return; // nothing to do
 
     vector<Wire> savedWires;
@@ -176,15 +169,26 @@ namespace minsky
     // variable, so generate a new name that doesn't currently
     // exist
 
-    if (minsky().variableValues.count(desc)) 
-      try
-        {
-          minsky().convertVarType(desc, VariableType::integral);
-        }
-      catch (...)
-        {
-          desc=minsky().variableValues.newName(desc);
-        }
+    string vid=VariableValue::valueId(group.lock(),desc);
+    auto i=minsky().variableValues.find(vid);      
+    if (i!=minsky().variableValues.end())
+      {
+        if (i->second.type()!=VariableType::integral) 
+          try
+            {
+              minsky().convertVarType(vid, VariableType::integral);
+            }
+          catch (...)
+            {
+              desc=minsky().variableValues.newName(vid);
+              if (desc.find(':')!=string::npos)
+                // if not current scope, name takes on ':' prefix
+                if (VariableValue::scope(desc)!=size_t(group.lock().get()))
+                  desc=":"+desc;
+            }
+        else
+          desc=minsky().variableValues.newName(vid);
+      }
 
     if (intVar)
       minsky().model->removeItem(*intVar);

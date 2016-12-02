@@ -29,7 +29,8 @@ namespace minsky
 {
   class VariableValue;
   struct VariableValues;
-
+  class GroupPtr;
+  
   class VariableValue: public VariableType
   {
     CLASSDESC_ACCESS(VariableValue);
@@ -102,7 +103,8 @@ namespace minsky
     static std::string valueId(std::string name) {
       return valueId(scope(name), name);
     }
-
+    static std::string valueId(GroupPtr scope, std::string a_name);
+    
     /// extract scope from a qualified variable name
     /// @throw if name is unqualified
     static int scope(const std::string& name);
@@ -135,7 +137,7 @@ namespace minsky
         (value_type("constant:one",
                     VariableValue(VariableType::constant,"constant:one","1")));
     }
-    /// generate a new name not otherwise in the system, based on \a name
+    /// generate a new valueId not otherwise in the system
     std::string newName(const std::string& name) const;
     void reset();
     /// checks that all entry names are valid
