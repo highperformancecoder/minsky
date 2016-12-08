@@ -734,49 +734,56 @@ proc createHandle {w x y} {
 # attach wire information, allowing a wire context menu to be posted on right mouse click
         .wiring.canvas create oval \
         [expr $x-3] [expr $y-3] [expr $x+3] [expr $y+3] \
-        -fill blue  -tag "wires wire$w handles"
+        -fill blue  -tag "wires wire$w handle$w handles"
     ]
 }
 
 proc deleteHandle {wire handle pos} {
-    .wiring.canvas delete $handle
+    .wiring.canvas delete handles
     set coords [lreplace [.wiring.canvas coords wire$wire] $pos [expr $pos+1]]
     .wiring.canvas coords wire$wire $coords        
     wire.get $wire
     wire.coords $coords
-    wire.set
     submitDecorateWire $wire
 }
     
+proc createHandleInBetween {wire pos coords} {
+    set h [
+           createHandle $wire [
+                               expr ([lindex $coords $pos]+[lindex $coords [expr $pos+2]])/2
+                              ] [
+                                 expr ([lindex $coords [expr $pos+1]]+\
+                                           [lindex $coords [expr $pos+3]])/2]
+          ]
+    .wiring.canvas bind $h <B1-Motion> \
+        "insertCoords $wire $h [expr $pos+2] %x %y" 
+    .wiring.canvas bind $h <ButtonRelease-1> \
+        ".wiring.canvas delete handles"        
+}
+
 
 proc decorateWire {wire} {
-#    global TCLwireid
-#    set wireid $TCLwireid($wire)
-    .wiring.canvas delete handles
-    set coords [.wiring.canvas coords wire$wire]
-    for {set i 0} {$i<[llength $coords]-2} {incr i 2} {
-        if {$i>0} {
-            set h [
-                   createHandle $wire \
-                       [lindex $coords $i] [lindex $coords [expr $i+1]]
-                  ]
-            .wiring.canvas bind $h <B1-Motion> \
-                "updateCoords $wire $h $i %x %y"
-            .wiring.canvas bind $h <Double-Button-1> \
-                "deleteHandle $wire $h $i"
+    # no need to redecorate if wire is already done
+    if {[llength [.wiring.canvas find withtag handle$wire]]==0} {
+        .wiring.canvas delete handles
+        global handles
+        set coords [.wiring.canvas coords wire$wire]
+        for {set i 0} {$i<[llength $coords]-2} {incr i 2} {
+            if {$i>0} {
+                set h [
+                       createHandle $wire \
+                           [lindex $coords $i] [lindex $coords [expr $i+1]]
+                      ]
+                set handle($h) 1
+                .wiring.canvas bind $h <B1-Motion> \
+                    "updateCoords $wire $h $i %x %y"
+                .wiring.canvas bind $h <Double-Button-1> \
+                    "deleteHandle $wire $h $i"
+                .wiring.canvas bind $h <ButtonRelease-1> \
+                    "after 200 {.wiring.canvas delete handles}"
             }
-        # create a handle in between
-        set h [
-            createHandle $wire [
-                expr ([lindex $coords $i]+[lindex $coords [expr $i+2]])/2
-            ] [
-                expr ([lindex $coords [expr $i+1]]+\
-                    [lindex $coords [expr $i+3]])/2]
-        ]
-        .wiring.canvas bind $h <B1-Motion> \
-            "insertCoords $wire $h [expr $i+2] %x %y" 
-        .wiring.canvas bind $h <Double-Button-1> \
-            "deleteHandle $wire $h [expr $i+2]"
+            createHandleInBetween $wire $i $coords
+        }
     }
     global globals
     set globals(decorateWireSubmitted) 0
