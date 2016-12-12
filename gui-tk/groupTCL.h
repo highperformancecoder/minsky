@@ -370,6 +370,12 @@ namespace minsky
         }
     }
 
+    void convertVarType(const string& name, VariableType::Type type)
+    {
+      minsky().convertVarType(name,type);
+      buildMaps();
+    }
+
     // returns item id defining variable. NB may be a Godley table or integral 
     int findVariableDefinition(int id)
     {

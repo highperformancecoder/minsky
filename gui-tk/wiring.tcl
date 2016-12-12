@@ -1426,10 +1426,10 @@ proc deiconifyEditVar {} {
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
             .wiring.canvas delete all
-    
+
             convertVarType [var.valueId] $editVarInput(Type)
+            var.get $editVarInput(id)
             setItem var name {set "editVarInput(Name)"}
-            makeVariablesConsistent
             setItem var init {set "editVarInput(Initial Value)"}
             setItem var rotation  {set editVarInput(Rotation)}
             setItem var tooltip  {set "editVarInput(Short description)"}
@@ -1438,6 +1438,7 @@ proc deiconifyEditVar {} {
             setItem var sliderMin  {set "editVarInput(Slider Bounds: Min)"}
             setItem var sliderStep  {set "editVarInput(Slider Step Size)"}
             setItem var sliderStepRel  {set editVarInput(relative)}
+            makeVariablesConsistent
             setSliderProperties
             closeEditWindow .wiring.editVar
             updateCanvas
@@ -1673,7 +1674,6 @@ proc deiconifyEditOperation {} {
 proc setItem {modelCmd attr dialogCmd} {
     global constInput varInput editVarInput opInput
     $modelCmd.$attr [string trim [eval $dialogCmd]]
-    $modelCmd.set
 }
 
 #proc setInitVal {var dialogCmd} {
@@ -1749,7 +1749,8 @@ proc editItem {id} {
     wiringGroup.item.get $id
     switch -regexp [wiringGroup.item.classType] {
         "Variable*" {
-            var.get $id
+            wiringGroup.var.get $id
+            set editVarInput(id) $id
             editVar
         }
         "Operation*" {

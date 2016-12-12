@@ -53,6 +53,9 @@ namespace minsky
     std::shared_ptr<Port> from() const {return m_from.lock();}
     std::shared_ptr<Port> to() const {return m_to.lock();}
 
+    /// switch ports this wire links to
+    void moveToPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
+
     /// display coordinates 
     std::vector<float> coords() const;
     std::vector<float> coords(const std::vector<float>& coords);

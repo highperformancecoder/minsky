@@ -92,6 +92,19 @@ namespace minsky
     return f && t && (f->item.visible() || (t->item.visible())); 
   }
 
+  void Wire::moveToPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
+  {
+    if (auto f=this->from())
+      f->wires.erase(remove(f->wires.begin(), f->wires.end(), this), f->wires.end());
+    if (auto t=this->to())
+      t->wires.erase(remove(t->wires.begin(), t->wires.end(), this), t->wires.end());
+    m_from=from;
+    m_to=to;
+    from->wires.push_back(this);
+    to->wires.push_back(this);
+  }
+
+  
   void Wire::moveIntoGroup(Group& dest)
   {
     WirePtr wp;

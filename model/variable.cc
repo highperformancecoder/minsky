@@ -180,8 +180,13 @@ void VariablePtr::retype(VariableBase::Type type)
   if (tmp && tmp->type()!=type)
     {
       reset(VariableBase::create(type));
+      static_cast<VariableBase&>(*get()) = *tmp;
       for (size_t i=0; i<get()->ports.size() && i< tmp->ports.size(); ++i)
-        get()->ports[i]=tmp->ports[i];
+        for (auto w: tmp->ports[i]->wires)
+          if (tmp->ports[i]->input())
+            w->moveToPorts(w->from(),get()->ports[i]);
+          else
+            w->moveToPorts(get()->ports[i], w->to());
       get()->ensureValueExists();
     }
 }
