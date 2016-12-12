@@ -109,17 +109,20 @@ namespace minsky
   {
     tclcmd cmd;
     for (auto& w: wires)
-      if (&w->from()->item == it || &w->to()->item == it)
-        adjustWire(w);
-      else if (auto g=dynamic_cast<Group*>(it))
-        {
-          for (auto v: g->inVariables)
-            if (&w->to()->item == v.get())
-              adjustWire(w);
-          for (auto v: g->outVariables)
-            if (&w->from()->item == v.get())
-              adjustWire(w);
-        }
+      {
+        auto fromPort=w->from(), toPort=w->to();
+        if (fromPort && &fromPort->item == it || toPort && &toPort->item == it)
+          adjustWire(w);
+        else if (auto g=dynamic_cast<Group*>(it))
+          {
+            for (auto v: g->inVariables)
+              if (toPort && &toPort->item == v.get())
+                adjustWire(w);
+            for (auto v: g->outVariables)
+              if (fromPort && &fromPort->item == v.get())
+                adjustWire(w);
+          }
+      }
   }
 
   template <class Model>

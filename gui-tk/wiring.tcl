@@ -202,7 +202,7 @@ proc placeNewVar {id} {
          wiringGroup.checkAddGroup $id %x %y"
     bind . <Key-Escape> \
         "clearTempBindings
-      deleteVariable $id
+      deleteItem $id
       .wiring.canvas delete var$id"
 }
 
@@ -1327,15 +1327,11 @@ proc flip_default {} {
    set globals(default_rotation) [expr ($globals(default_rotation)+180)%360]
 }
 
-proc deleteVariable {id} {
-    wiringGroup.deleteVariable $id
-    .wiring.canvas delete slider$id
-}
-
 proc deleteItem {id tag} {
     .wiring.canvas delete $tag
     wiringGroup.deleteItem $id
     .wiring.canvas delete wires
+    wiringGroup.buildMaps
     updateCanvas
 }
 
