@@ -15,4 +15,4 @@ sed -i -e 's/^\(  HREF=[^>]*\)>/\1 target="content">/' minsky/minsky.html
 
 #check for any broken links
 linkchecker --no-warnings minsky.html
-
+echo $?
