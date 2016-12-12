@@ -3,188 +3,33 @@
   <model>
    <wires>
     <Wire>
-     <id>52</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>1</from>
-     <to>25</to>
-    </Wire>
-    <Wire>
-     <id>53</id>
+     <id>9</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>4</from>
-     <to>26</to>
-    </Wire>
-    <Wire>
-     <id>54</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>24</from>
      <to>8</to>
     </Wire>
     <Wire>
-     <id>55</id>
+     <id>10</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>7</from>
-     <to>29</to>
-    </Wire>
-    <Wire>
-     <id>56</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>10</from>
-     <to>30</to>
-    </Wire>
-    <Wire>
-     <id>57</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>28</from>
-     <to>14</to>
-    </Wire>
-    <Wire>
-     <id>58</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>16</from>
-     <to>33</to>
-    </Wire>
-    <Wire>
-     <id>59</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>18</from>
-     <to>34</to>
-    </Wire>
-    <Wire>
-     <id>60</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>13</from>
-     <to>37</to>
-    </Wire>
-    <Wire>
-     <id>61</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>32</from>
-     <to>38</to>
-    </Wire>
-    <Wire>
-     <id>62</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>36</from>
-     <to>42</to>
-    </Wire>
-    <Wire>
-     <id>63</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>21</from>
-     <to>41</to>
-    </Wire>
-    <Wire>
-     <id>64</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>40</from>
-     <to>45</to>
-    </Wire>
-    <Wire>
-     <id>65</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>44</from>
-     <to>49</to>
-    </Wire>
-    <Wire>
-     <id>66</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <from>48</from>
-     <to>46</to>
+     <from>1</from>
+     <to>6</to>
     </Wire>
    </wires>
    <notes>
    </notes>
    <operations>
     <Operation>
-     <id>23</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>divide</type>
-     <value>0</value>
-     <ports>
-      <int>24</int>
-      <int>25</int>
-      <int>26</int>
-     </ports>
-     <data>
-     </data>
-     <name></name>
-     <intVar>-1</intVar>
-    </Operation>
-    <Operation>
-     <id>27</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>divide</type>
-     <value>0</value>
-     <ports>
-      <int>28</int>
-      <int>29</int>
-      <int>30</int>
-     </ports>
-     <data>
-     </data>
-     <name></name>
-     <intVar>-1</intVar>
-    </Operation>
-    <Operation>
-     <id>31</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>subtract</type>
-     <value>0</value>
-     <ports>
-      <int>32</int>
-      <int>33</int>
-      <int>34</int>
-     </ports>
-     <data>
-     </data>
-     <name></name>
-     <intVar>-1</intVar>
-    </Operation>
-    <Operation>
-     <id>35</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>subtract</type>
-     <value>0</value>
-     <ports>
-      <int>36</int>
-      <int>37</int>
-      <int>38</int>
-     </ports>
-     <data>
-     </data>
-     <name></name>
-     <intVar>-1</intVar>
-    </Operation>
-    <Operation>
-     <id>39</id>
+     <id>3</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>multiply</type>
      <value>0</value>
      <ports>
-      <int>40</int>
-      <int>41</int>
-      <int>42</int>
+      <int>4</int>
+      <int>5</int>
+      <int>6</int>
      </ports>
      <data>
      </data>
@@ -192,35 +37,19 @@
      <intVar>-1</intVar>
     </Operation>
     <Operation>
-     <id>43</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>multiply</type>
-     <value>0</value>
-     <ports>
-      <int>44</int>
-      <int>45</int>
-      <int>46</int>
-     </ports>
-     <data>
-     </data>
-     <name></name>
-     <intVar>-1</intVar>
-    </Operation>
-    <Operation>
-     <id>47</id>
+     <id>7</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>integrate</type>
      <value>0</value>
      <ports>
-      <int>48</int>
-      <int>49</int>
+      <int>1</int>
+      <int>8</int>
      </ports>
      <data>
      </data>
      <name>w</name>
-     <intVar>50</intVar>
+     <intVar>0</intVar>
     </Operation>
    </operations>
    <variables>
@@ -228,106 +57,11 @@
      <id>0</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <type>flow</type>
+     <type>integral</type>
      <init>0</init>
      <ports>
       <int>1</int>
       <int>2</int>
-     </ports>
-     <name>GDP</name>
-    </Variable>
-    <Variable>
-     <id>3</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>flow</type>
-     <init>0</init>
-     <ports>
-      <int>4</int>
-      <int>5</int>
-     </ports>
-     <name>LabProd</name>
-    </Variable>
-    <Variable>
-     <id>6</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>flow</type>
-     <init>0</init>
-     <ports>
-      <int>7</int>
-      <int>8</int>
-     </ports>
-     <name>Labor</name>
-    </Variable>
-    <Variable>
-     <id>9</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>flow</type>
-     <init>0</init>
-     <ports>
-      <int>10</int>
-      <int>11</int>
-     </ports>
-     <name>Population</name>
-    </Variable>
-    <Variable>
-     <id>12</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>flow</type>
-     <init>0</init>
-     <ports>
-      <int>13</int>
-      <int>14</int>
-     </ports>
-     <name>lambda</name>
-    </Variable>
-    <Variable>
-     <id>15</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>constant</type>
-     <init>1</init>
-     <ports>
-      <int>16</int>
-     </ports>
-     <name>1</name>
-    </Variable>
-    <Variable>
-     <id>17</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>flow</type>
-     <init>0</init>
-     <ports>
-      <int>18</int>
-      <int>19</int>
-     </ports>
-     <name>NAIRU</name>
-    </Variable>
-    <Variable>
-     <id>20</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>flow</type>
-     <init>0</init>
-     <ports>
-      <int>21</int>
-      <int>22</int>
-     </ports>
-     <name>EmpResponse</name>
-    </Variable>
-    <Variable>
-     <id>50</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <type>integral</type>
-     <init></init>
-     <ports>
-      <int>48</int>
-      <int>51</int>
      </ports>
      <name>w</name>
     </Variable>
@@ -355,176 +89,8 @@
    <Layout>
     <id>0</id>
     <id>0</id>
-    <x>86.67</x>
-    <y>54.48</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>0</sliderMin>
-    <sliderMax>1.29516e-318</sliderMax>
-    <sliderStep>1.39067e-309</sliderStep>
-   </Layout>
-   <Layout>
-    <id>3</id>
-    <id>3</id>
-    <x>76.99</x>
-    <y>112.56</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>0</sliderMin>
-    <sliderMax>0</sliderMax>
-    <sliderStep>0</sliderStep>
-   </Layout>
-   <Layout>
-    <id>6</id>
-    <id>6</id>
-    <x>218.56</x>
-    <y>75.05</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>1.34497e-284</sliderMin>
-    <sliderMax>6.63124e-316</sliderMax>
-    <sliderStep>4.77831e-299</sliderStep>
-   </Layout>
-   <Layout>
-    <id>9</id>
-    <id>9</id>
-    <x>201.62</x>
-    <y>147.65</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>3.95253e-323</sliderMin>
-    <sliderMax>1.63181e-311</sliderMax>
-    <sliderStep>1.13833e-320</sliderStep>
-   </Layout>
-   <Layout>
-    <id>12</id>
-    <id>12</id>
-    <x>357.71</x>
-    <y>113.77</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>3.95253e-323</sliderMin>
-    <sliderMax>4.8912e-311</sliderMax>
-    <sliderStep>0</sliderStep>
-   </Layout>
-   <Layout>
-    <id>15</id>
-    <id>15</id>
-    <x>367.39</x>
-    <y>160.96</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>3.95253e-323</sliderMin>
-    <sliderMax>4.8912e-311</sliderMax>
-    <sliderStep>0</sliderStep>
-   </Layout>
-   <Layout>
-    <id>17</id>
-    <id>17</id>
-    <x>346.82</x>
-    <y>212.99</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>3.95253e-323</sliderMin>
-    <sliderMax>4.8912e-311</sliderMax>
-    <sliderStep>0</sliderStep>
-   </Layout>
-   <Layout>
-    <id>20</id>
-    <id>20</id>
-    <x>407.32</x>
-    <y>59.32</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-    <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
-    <sliderStepRel>false</sliderStepRel>
-    <sliderMin>3.95253e-323</sliderMin>
-    <sliderMax>4.8912e-311</sliderMax>
-    <sliderStep>0</sliderStep>
-   </Layout>
-   <Layout>
-    <id>23</id>
-    <id>23</id>
-    <x>150.8</x>
-    <y>75.05</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-   </Layout>
-   <Layout>
-    <id>27</id>
-    <id>27</id>
-    <x>279.06</x>
-    <y>113.77</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-   </Layout>
-   <Layout>
-    <id>31</id>
-    <id>31</id>
-    <x>403.69</x>
-    <y>186.37</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-   </Layout>
-   <Layout>
-    <id>35</id>
-    <id>35</id>
-    <x>446.04</x>
-    <y>142.81</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-   </Layout>
-   <Layout>
-    <id>39</id>
-    <id>39</id>
-    <x>504.12</x>
-    <y>104.09</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-   </Layout>
-   <Layout>
-    <id>43</id>
-    <id>43</id>
-    <x>553.08</x>
-    <y>126.96</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-   </Layout>
-   <Layout>
-    <id>47</id>
-    <id>47</id>
-    <x>600.08</x>
-    <y>128.96</y>
-    <visible>true</visible>
-    <rotation>0</rotation>
-   </Layout>
-   <Layout>
-    <id>50</id>
-    <id>50</id>
-    <x>636.7</x>
-    <y>128.96</y>
+    <x>93.3</x>
+    <y>2.00001</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -535,153 +101,39 @@
     <sliderStep>2.122e-314</sliderStep>
    </Layout>
    <Layout>
-    <id>52</id>
+    <id>3</id>
+    <id>3</id>
+    <x>9.67999</x>
+    <y>0</y>
+    <visible>true</visible>
+    <rotation>0</rotation>
+   </Layout>
+   <Layout>
+    <id>7</id>
+    <id>7</id>
+    <x>56.68</x>
+    <y>2.00001</y>
+    <visible>true</visible>
+    <rotation>0</rotation>
+   </Layout>
+   <Layout>
+    <id>9</id>
     <visible>true</visible>
     <coords>
+     <float>22.2</float>
      <float>0</float>
+     <float>47</float>
+     <float>2.00001</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>10</id>
+    <visible>true</visible>
+    <coords>
+     <float>101.2</float>
+     <float>2.00001</float>
      <float>0</float>
-     <float>32.03</float>
-     <float>9.05</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>53</id>
-    <visible>true</visible>
-    <coords>
-     <float>7.82</float>
-     <float>58.08</float>
-     <float>32.03</float>
-     <float>32.09</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>54</id>
-    <visible>true</visible>
-    <coords>
-     <float>54.23</float>
-     <float>20.57</float>
-     <float>83.05</float>
-     <float>20.57</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>55</id>
-    <visible>true</visible>
-    <coords>
-     <float>137.89</float>
-     <float>20.57</float>
-     <float>160.29</float>
-     <float>47.77</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>56</id>
-    <visible>true</visible>
-    <coords>
-     <float>141.95</float>
-     <float>93.17</float>
-     <float>160.29</float>
-     <float>70.81</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>57</id>
-    <visible>true</visible>
-    <coords>
-     <float>182.49</float>
-     <float>59.29</float>
-     <float>215.2</float>
-     <float>59.29</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>58</id>
-    <visible>true</visible>
-    <coords>
-     <float>264.72</float>
-     <float>106.48</float>
-     <float>284.92</float>
-     <float>120.37</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>59</id>
-    <visible>true</visible>
-    <coords>
-     <float>271.15</float>
-     <float>158.51</float>
-     <float>284.92</float>
-     <float>143.41</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>60</id>
-    <visible>true</visible>
-    <coords>
-     <float>284.04</float>
-     <float>59.29</float>
-     <float>327.27</float>
-     <float>76.81</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>61</id>
-    <visible>true</visible>
-    <coords>
-     <float>307.12</float>
-     <float>131.89</float>
-     <float>327.27</float>
-     <float>99.85</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>62</id>
-    <visible>true</visible>
-    <coords>
-     <float>349.47</float>
-     <float>88.33</float>
-     <float>385.35</float>
-     <float>61.13</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>63</id>
-    <visible>true</visible>
-    <coords>
-     <float>360.15</float>
-     <float>4.84</float>
-     <float>385.35</float>
-     <float>38.09</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>64</id>
-    <visible>true</visible>
-    <coords>
-     <float>407.55</float>
-     <float>49.61</float>
-     <float>434.31</float>
-     <float>60.96</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>65</id>
-    <visible>true</visible>
-    <coords>
-     <float>456.51</float>
-     <float>72.48</float>
-     <float>481.31</float>
-     <float>74.48</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>66</id>
-    <visible>true</visible>
-    <coords>
-     <float>535.51</float>
-     <float>74.48</float>
-     <float>434.31</float>
-     <float>84</float>
+     <float>11.52</float>
     </coords>
    </Layout>
   </layout>
