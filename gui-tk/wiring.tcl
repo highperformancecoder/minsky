@@ -671,8 +671,7 @@ proc rightMouseGodley {id x y X Y} {
 proc doubleMouseGodley {id x y} {
     set varId [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
     if {$varId>=0} {
-        var.get $varId
-        editVar
+        editItem $varId
     } else {
         openGodley $id
     }
@@ -1428,7 +1427,7 @@ proc deiconifyEditVar {} {
             .wiring.canvas delete all
 
             convertVarType [var.valueId] $editVarInput(Type)
-            var.get $editVarInput(id)
+            if [info exists editVarInput(id)] {var.get $editVarInput(id)}
             setItem var name {set "editVarInput(Name)"}
             setItem var init {set "editVarInput(Initial Value)"}
             setItem var rotation  {set editVarInput(Rotation)}
