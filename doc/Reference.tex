@@ -124,8 +124,10 @@ A switch block (also known as a case block, or select in the Fortran
 world) is a way of selecting from a range of alternatives according
 to the value of the input, effectively defining a piecewise function.
 
-\fwhtmladdimg{switch.png}
 \begin{center}
+  % example doesn't yet run on Minsky 2.x
+  %\includegraphics{images/switch.eps}
+  \fwhtmladdimg{switch.png}
 {\em An example switch block with 3 cases}
 \end{center}
 
@@ -267,7 +269,9 @@ This allows you to build up a library of building blocks.
 A plot widget embeds a dynamic plot into the canvas. Around the
 outside of the plot are a number of input ports that can be wired.
 
-\htmladdimg{plotWidget.png}
+\begin{center}
+\includegraphics{images/plotWidget.eps}
+\end{center}
 
 \begin{description}
 \item[left hand edge] Up to 4 quantities can be plotted on the graph
@@ -280,7 +284,9 @@ outside of the plot are a number of input ports that can be wired.
   curves. The colours match up with the colour of the pen being
   controlled.
 
- \fwhtmladdimg{plotLissajous.png}
+\begin{center}
+\includegraphics{images/plotLissajous.eps}
+\end{center}
 
   If only one bottom port is connected, then that controls all pens
   simultaneously, and if no ports are connected, then the simulation
@@ -291,7 +297,9 @@ outside of the plot are a number of input ports that can be wired.
   from the data. This can be used, for example, to implement a sliding
   window graph
 
- \fwhtmladdimg{plotSlidingWindow.png}
+\begin{center}
+\includegraphics{images/plotSlidingWindow.eps}
+\end{center}
 \end{description}
 
 \section{Note Widget}

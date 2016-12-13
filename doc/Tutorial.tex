@@ -117,7 +117,7 @@ be attached to the cursor. Drag it near the other two objects and
 click. Your Canvas will now look something like this: 
 
 \begin{center}
-\htmladdimg{NewItem70.png} 
+\includegraphics{images/NewItem70.eps} 
 \end{center}
 
 Now to complete the equation, you have to attach {\em\bf GDP}  to the top of the
@@ -130,15 +130,15 @@ this arrow to the top of the divide block (where you'll see a tiny
 multiply sign) and release the mouse. You should then see this: 
 
 \begin{center}
-\htmladdimg{NewItem74.png} 
+\includegraphics{images/NewItem74.eps} 
 \end{center}
 
 
 When the mouse hovers over a block, you will then see little
-circles that identify the input and output ports on all objects: 
+circles that identify the input and output ports of the block: 
 
 \begin{center}
-\htmladdimg{NewItem75.png} 
+\includegraphics{images/NewItem75.eps} 
 \end{center}
 
 Those are the connection points for wires, so start dragging from one
@@ -146,7 +146,7 @@ and release on the other. Now wire LabProd to the bottom of the Divide
 block (where you'll see a miniature divide symbol (blown up below): 
 
 \begin{center}
-\htmladdimg{NewItem76.png} 
+\includegraphics{images/NewItem76.eps} 
 \end{center}
 
 Then click on \smhtmladdimg{NewItem78.png} in the Design Icons to create a new variable, call it
@@ -154,7 +154,7 @@ Labor, place it the the right of the Divide block, and wire the output port from
 input port for {\bf\em Labor}: 
 
 \begin{center}
-\htmladdimg{NewItem79.png} 
+\includegraphics{images/NewItem79.eps} 
 \end{center}
 
 
@@ -181,7 +181,9 @@ the name ``$\backslash$lambda'' (be sure to include the backslash symbol), put
 another Divide block on the canvas, choose Wire mode and wire this
 next part of the model up. You should now have:
 
-\htmladdimg{NewItem83.png} 
+\begin{center}
+\includegraphics{images/NewItem83.eps} 
+\end{center}
 
 
 Now switch to the equations tab, and you will see
@@ -242,13 +244,17 @@ as the varibale type. Then define another variable
 NAIRU, and give it a value of 0.05 (5\% unemployment). Subtract this
 from 1 and subtract the result from $\lambda$. You should have the following:
 
-\fwhtmladdimg{NewItem108.png}
+\begin{center}
+  \includegraphics{images/NewItem108.eps}
+\end{center}
 
 Now we need to multiply this gap between the actual employment rate
 and the ``NAIRE'' rate by a parameter that represents the response of
 wages to this gap. Let's call this parameter {\bf\em Emp\_{Response}} (remember to include the underscore and the braces). Define the constant, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
 
-\fwhtmladdimg{NewItem109.png}
+\begin{center}
+\includegraphics{images/NewItem109.eps}
+\end{center}
 
 Now we are ready to add a crucial component of a dynamic model: the
 integral block, which takes a flow as its input and has the integral
@@ -258,7 +264,7 @@ choosing Operations/Integrate from the menu). This then attaches the
 following block to the cursor: 
 
 \begin{center}
-\htmladdimg{NewItem92.png}
+\includegraphics{images/NewItem39.eps}
 \end{center}
 
 
@@ -287,17 +293,23 @@ before the multiply block, and wire it up.
 
 The first method gives you this initial result:
 
-\htmladdimg{NewItem110.png}
+\begin{center}
+\includegraphics{images/NewItem110.eps}
+\end{center}
 
 That looks messy, but notice the blue dot on the wire? Click and drag
 on that and you will turn the straight line connector into a curve: 
 
-\fwhtmladdimg{NewItem111.png}
+\begin{center}
+\includegraphics{images/NewItem111.eps}
+\end{center}
 
 The second approach, which I personally prefer (it's neater, and it
 precisely emulates the integral equation), yields this result: 
 
-\fwhtmladdimg{NewItem112.png}
+\begin{center}
+\includegraphics{images/NewItem112.eps}
+\end{center}
 
 From this point on the model develops easily---``like money for old
 rope'', as one of my maths lecturers used to say. Firstly if we
@@ -306,7 +318,9 @@ Wage Bill}. To do this,
 firstly create the variable Wage Bill, and put will well below where w
 currently is on your diagram: 
 
-\fwhtmladdimg{NewItem113.png}
+\begin{center}
+\includegraphics{images/NewItem113.eps}
+\end{center}
 
 Now right-click on {\bf\em WageBill} and choose ``Flip''. This rotates
 the block through 180 degrees (any arbitrary rotation can be applied
@@ -316,7 +330,7 @@ from the variable definition window itself). Now right-click on
 WageBill}:
 
 \begin{center}
-\htmladdimg{NewItem98.png}
+\includegraphics{images/NewItem98.eps}
 \end{center}
 
 Now insert a multiply block before {\bf\em WageBill}, and wire {\bf\em
@@ -325,7 +339,9 @@ dots (you can do this multiple times to create a very curved path:
 each time you create a curve, another 2 curve points are added that
 you can also manipulate, as I have done below: 
 
-\fwhtmladdimg{NewItem114.png}
+\begin{center}
+\includegraphics{images/NewItem114.eps}
+\end{center}
 
 
 The next step is to subtract the {\bf\em WageBill} from {\bf\em GDP}
@@ -334,7 +350,6 @@ before {\bf\em WageBill}, insert a subtract block, and wire it up to
 define the variable {\bf\em Profits}:
 
 \begin{center}
-%\htmladdimg{NewItem100.png}
 \includegraphics{images/NewItem100.eps}
 \end{center}
 
@@ -350,12 +365,16 @@ give it an initial value of 300:
 
 Wire this up to Investment:
 
-\htmladdimg{NewItem104.png}
+\begin{center}
+\includegraphics{images/NewItem104.eps}
+\end{center}
 
 Now there's only one step left to complete the model: define a
 parameter CapOutputRatio and give it a value of 3:
 
-\htmladdimg{NewItem103.png}
+\begin{center}
+\includegraphics{images/NewItem103.eps}
+\end{center}
 
 
 Divide Capital by this, and wire the result up to the input on
@@ -374,7 +393,9 @@ in the middle of the flowchart, and wiring up $\backslash$lambda and w to two of
 the four inputs on the left hand side. You will now see that, rather
 than reaching equilibrium, the model cycles constantly:
 
-\fwhtmladdimg{NewItem116.png}
+\begin{center}
+\includegraphics{images/NewItem116.eps}
+\end{center}
 
 If you click on the equations tab, you will see that you have defined the following system of
 equations:
@@ -438,7 +459,9 @@ Interest now has to be defined. It will be the amount in Impatient's
 account (since this began at zero) multiplied by the rate of interest
 charged by Patient:
 
-\htmladdimg{NewItem173.png}
+\begin{center}
+\includegraphics{images/NewItem173.eps}
+\end{center}
 
 With that definition, the dynamics of the model change: rather than
 the Patient account falling to zero and Impatient rising to 100, the

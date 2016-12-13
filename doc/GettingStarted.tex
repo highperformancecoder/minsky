@@ -43,7 +43,7 @@ There are 6 components to the Minsky interface:
 
 \item The design icons
 
-\htmladdimg{NewItem18.png}
+\fwhtmladdimg{NewItem18.png}
 
 
 \item And finally the Design Canvas--the large drawing area beneath the buttons and icons.
@@ -59,7 +59,7 @@ There are 6 components to the Minsky interface:
 
 The menu controls the basic functions of saving and loading files,
 default settings for the program, etc. These will alter as the program
-is developed; the current menu items (as at August 2016 release) are:
+is developed; the current menu items (as at the August 2016 Cantillon release) are:
 
 \subsubsection{File}
 \label{File}
@@ -69,7 +69,7 @@ is developed; the current menu items (as at August 2016 release) are:
 
 \item[New System] Clear the design canvas.
 
-\item[Open] Open an existing Minsky file (Minsky files have the suffix of "mky").
+\item[Open] Open an existing Minsky file (Minsky files have the suffix of ``mky").
 
 \item[Recent Files]\label{recentfiles} Provides a shortcut to some of
 your previously opened Minsky files.
@@ -136,9 +136,9 @@ into a text-based application will be a Minsky schema XML document.
 
 %begin{latexonly}
 \begin{tabular}{ccc}
-\resizebox{0.45\textwidth}{!}{\htmladdimg{selectionExamplePrior.png}} & 
+\resizebox{0.45\textwidth}{!}{\includegraphics{images/selectionExamplePrior.eps}} & 
 \raisebox{1.5cm}{$\Rightarrow$} &
-\resizebox{0.45\textwidth}{!}{\htmladdimg{selectionExamplePost.png}}\\
+\resizebox{0.45\textwidth}{!}{\includegraphics{images/selectionExamplePost.eps}}\\
 \end{tabular}
 %end{latexonly}
 \begin{rawhtml}
@@ -342,7 +342,7 @@ recentres the canvas. It can also be used to recentre the equation view.
 \label{Speedslider}
 
 \begin{center}
-\htmladdimg{NewItem184.png}
+\htmladdimg{NewItem16.png}
 \end{center}
 
 The speed slider controls the rate at which a model is simulated. The
@@ -382,7 +382,7 @@ Clicking on it and placing the resulting Bank Icon on the Canvas
 enters a Godley table into your model:
 
 \begin{center}
-\htmladdimg{NewItem29.png}
+\includegraphics{images/NewItem29.eps}
 \end{center}
 
 Double-click on the Bank Icon (or right-click and choose ``Open Godley
@@ -392,7 +392,7 @@ call a Godley Table:
 \fwhtmladdimg{NewItem30.png}
 
  
-Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the \htmlref{Tutorial (Monetary)}{tut:money}.
+Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the \htmlref{Tutorial (Monetary)}{tut:basicBankModel}.
 
 \item[Variable]  \smhtmladdimg{NewItem31.png}. \label{Variable} This creates an entity
 whose value changes as a function of time and its relationship with
@@ -442,13 +442,17 @@ For example, by default a graph displays the simulation time on the
 horizontal axis, so that cycles get compressed as a simulation runs
 for a substantial period:
 
-\htmladdimg{NewItem36.png}
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem36.eps}}
+\end{center}
 
 If a Time block is added to the marker for the x-axis range, you can
 control the number of years that are displayed. This graph is set up
 to show a ten year range of the model only: 
 
-\htmladdimg{NewItem37.png}
+\begin{center}
+\includegraphics{images/NewItem37.eps}
+\end{center}
 
 
 
@@ -460,7 +464,7 @@ to show a ten year range of the model only:
   you click to place it somewhere:
 
 \begin{center}
-\htmladdimg{NewItem39.png}
+\includegraphics{images/NewItem39.eps}
 \end{center}
 
 ``int'' is just a placeholder for the integration variable, and the first thing you should do after creating one is give it a name. Double-click on the ``int'', or right click and choose Edit. This will bring up the following menu:
@@ -481,7 +485,7 @@ America's population, you would enter the following:
 The integrated variable block would now look like this:
 
 \begin{center}
-\htmladdimg{NewItem42.png}
+\includegraphics{images/NewItem42.eps}
 \end{center}
 
 
@@ -513,15 +517,18 @@ Here, 315 (million) equals the current population of the USA, the year
 zero is today, and $T$ is some number of years from today. The same
 equation done as a block diagram looks like this: 
 
-\htmladdimg{NewItem46.png}
-
+\begin{center}
+\includegraphics{images/NewItem46.eps}
+\end{center}
 
 Or you can make it look more like the mathematical equation by
 right-clicking on ``Population'' and choosing ``Copy Var''. Then you will
 get another copy of the Population variable, and you can wire up the
 equation this way:
 
-\htmladdimg{NewItem47.png}
+\begin{center}
+\includegraphics{images/NewItem47.eps}
+\end{center}
 
 Either method can be used. I prefer the latter because it's neater,
 and it emphasizes the link between the simple formula for a percentage
@@ -560,7 +567,7 @@ sequence of empirical values. This effectively defines a piecewise linear functi
 
 \item[Plot widget] Add \htmlref{plots}{Plot} to the canvas.
 
-\item[Switch] Add \htmlref{a piecewise-defined function block}{Switch} 
+\item[Switch] Add \htmlref{a piecewise-defined function block}{switch} 
 to the canvas. Also known as a hybrid function.
 
 \item[Notes] Add \htmlref{textual annotations}{Notes}
@@ -590,7 +597,7 @@ example, to write an equation for 100/33, you would place a
 Then do the same for 33, and place a divide block on the canvas:
 
 \begin{center}
-\htmladdimg{NewItem123.png}
+\includegraphics{images/NewItem123.eps}
 \end{center}
 
 Then click on the right hand edge of \smhtmladdimg{NewItem125.png}
@@ -653,7 +660,9 @@ For example, a simple equation like
 \end{displaymath}
 is performed in Minsky by defining a constant block with a value of 100, defining another with a value of 3, and wiring them up to a divide-by block. Then attach the output of the divide block to a variable, and run the model by clicking on\smhtmladdimg{NewItem130.png} :
 
-\htmladdimg{NewItem129.png} 
+\begin{center}
+  \includegraphics{images/NewItem129.eps}
+\end{center}
 
 If you choose File/Output LaTeX and load the equation into a LaTeX processor, you will see that it is:
 
@@ -682,18 +691,20 @@ To construct an equation, such as Fred - Wilma = Barney:
 
 Click the mouse near the output port of one block and drag the
 cursor to the input port of another while holding the mouse button
-down. 
+down. An arrow extends out from the output port. Release the mouse
+button near the required input port of the operator. Connection will
+be made.
 
-\htmladdimg{NewItem180.png} 
-
-Release the mouse button near the required input port of the operator.
-
-\htmladdimg{NewItem181.png} 
+\begin{center}
+\includegraphics{images/NewItem181.eps} 
+\end{center}
 
 
 The equation is completed by wiring up the other components in the same way.
 
-\htmladdimg{NewItem182.png} 
+\begin{center}
+\includegraphics{images/NewItem182.eps} 
+\end{center}
 
 
 \subsection{Creating a banking model}
@@ -834,8 +845,9 @@ Creating a constant called 10, with a value of 10:
 
 And attaching this to the input side of Lend:
 
-\htmladdimg{NewItem149.png}
-
+\begin{center}
+\includegraphics{images/NewItem149.eps}
+\end{center}
 
 What you have now defined is an annual flow from Patient to Impatient
 of \$10. In the dynamic equations this model generates, Minsky
@@ -859,8 +871,9 @@ two accounts. Patient's account begins at \$100 and falls at \$10 per
 year, while Patient's account begins at \$0 and rises by \$10 per
 year.
 
-\htmladdimg{NewItem151.png}
-
+\begin{center}
+\includegraphics{images/NewItem151.eps}
+\end{center}
 
 Obviously this will result in a negative total worth for Patient after
 10 years, so it is not a realistic model. A more sensible simple model
@@ -899,13 +912,18 @@ Right-click on the inputs and outputs of a Godley Table and choose
 Place the copied flows and accounts and place them away from the
 table. Then wire up your definition there:
 
-\htmladdimg{NewItem154.png}
+
+\begin{center}
+\includegraphics{images/NewItem154.eps}
+\end{center}
 
 
 This now results in a much neater model. The same process can be used
 to tidy up graphs as well:
 
-\fwhtmladdimg{NewItem155.png}
+\begin{center}
+\includegraphics{images/NewItem155.eps}
+\end{center}
 
 
 A more complex model would have many more flows, and these in turn
@@ -925,12 +943,16 @@ equivalent way to express this is that the ``time constant'' for
 lending is the inverse of 1/10, or ten years. The next model uses a
 variable called \\tau\_Lend, and gives it a value of 10: 
 
-\htmladdimg{NewItem158.png}
+\begin{center}
+\includegraphics{images/NewItem158.eps}
+\end{center}
 
 As the simulation shows, the two models have precisely the same result
 numerically:
 
-\fwhtmladdimg{NewItem157.png}
+\begin{center}
+\includegraphics{images/NewItem157.eps}
+\end{center}
 
 
 The advantage of the time constant approach is that it is defined in
@@ -950,7 +972,9 @@ default name (``Godley0'' in the first one created) and altering
 it. Here is an example with 4 such institutions/sectors defined:
 
 
-\htmladdimg{NewItem136.png}
+\begin{center}
+\includegraphics{images/NewItem136.eps}
+\end{center}
 
 If there are interlocking accounts in these banks---if one lends to
 another for example---then what is an asset for one must be shown as a

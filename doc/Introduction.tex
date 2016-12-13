@@ -39,15 +39,16 @@ could define a set of equations in a suitable program (like Mathcad):
 \mathrm{EmpRate}&=&1
 \end{eqnarray*}
 
-Or you could define it using a block diagram, using a program like Vissim:
+Or you could define it using a block diagram, such as Minsky:
 
 \begin{center}
-\fwhtmladdimg{NewItem1.png}
+%\fwhtmladdimg{NewItem1.png}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem1.eps}}
 \end{center}
 
 For a simple algebraic equation like this, modern computer algebra
 programs like Mathcad are just as good as a block diagram program like
-Vissim. But the visual metaphor excels when you want to describe a
+Vissim or Minsky. But the visual metaphor excels when you want to describe a
 complex causal chain.
 
 
@@ -74,7 +75,7 @@ K(t)=\int_0^t I(s)ds
 However, rather than being shown as an equation, the relationship is shown as a diagram:
 
 \begin{center}
-\htmladdimg{NewItem7.png}
+\includegraphics{images/NewItem7.eps}
 \end{center}
 
 The advantages of the block diagram representation of dynamic equations
@@ -131,12 +132,12 @@ increase the deposit account of the retailer from whom you buy the
 computer. The two system states in this model--your credit card
 (``BuyerCredit'') and the retailer's deposit account
 (``SellerDeposit'')---therefore have to have the same entry (let's call
-this ``Card'') made into them. In Vissim, such a transaction would look
+this ``Card'') made into them. Such a transaction would look
 like this:
 
 
 \begin{center}
-\fwhtmladdimg{NewItem11.png}
+\includegraphics{images/NewItem11.eps}
 \end{center}
 
 That would work, but there's nothing in the program that warns you if
@@ -144,13 +145,13 @@ you make a mistake like, for example, wiring up the BuyerCredit entry,
 but forgetting the SellerDeposit one:
 
 \begin{center}
-\fwhtmladdimg{NewItem12.png}
+\includegraphics{images/NewItem12.eps}
 \end{center}
 
 Or, perhaps, wiring up both blocks, but giving one the wrong sign:
 
 \begin{center}
-\fwhtmladdimg{NewItem51.png}
+\includegraphics{images/NewItem51.eps}
 \end{center}
 
 In a very complex model, you might make a mistake like one of the above, run the simulation and get nonsense results, and yet be unable to locate your mistake.
@@ -197,59 +198,3 @@ fundamental for modeling the monetary flows that are an intrinsic
 aspect of a market economy. Future releases will dramatically extend
 this capability. 
 
-%\section{What's new}
-
-%Features released as part of Mun: (Minsky.1.D29) (Nov 29th 2013)
-
-%\begin{itemize}
-%\item Keyboard entry of operations and variables
-%\item Notes
-%\item Undo/Redo
-%\item Cut/Copy/Paste
-%\item Context dependent clicking (no more mouse mode required)
-%\item Session recording
-%\item Plot legends
-%\item Variable scoping (in groups)
-%\item Raise/Lower canvas items
-%\end{itemize}
-
-%Features released as part of Petty: (Minsky.1.D27) (Sep 10th 2013)
-
-%\begin{itemize}
-%\item Multiple Godley table integration
-%\item User selection of ODE solver
-%\item Line breaking in LaTeX
-%\item Export of simulation data to CSV
-%\item Variable name edit field a combobox
-%\item Resizable plot icons
-%\item Right hand side plot inputs
-%\item Recent files
-%\item Titles and labels on plots
-%\item LaTeX renderering of variable names
-%\item Data block
-%\item Variable sliders
-%\end{itemize}
-
-%Features released as part of Aquinas: (Minsky.1.D14) (Mar 3rd 2013)
-
-%\begin{itemize}
-%\item XML schema to handle schema evolution
-%\item Zooming
-%\item Improved Groups, zoom to display
-%\item Godley table displays running flow values
-%\item Insert from file
-%\item Matlab export
-%\end{itemize}
-
-%Features released as part of Aristotle: (Minsky.1.D8) (Oct 5th 2012)
-
-%\begin{itemize}
-%\item Menus
-%\item Godley tables
-%\item wiring, operations and variables
-%\item Runge-Kutta ODE solver
-%\item Plots
-%\item Item rotation
-%\item Groups
-%\item Integration operators
-%\end{itemize}
