@@ -451,7 +451,7 @@ control the number of years that are displayed. This graph is set up
 to show a ten year range of the model only: 
 
 \begin{center}
-\includegraphics{images/NewItem37.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem37.eps}}
 \end{center}
 
 
@@ -467,7 +467,10 @@ to show a ten year range of the model only:
 \includegraphics{images/NewItem39.eps}
 \end{center}
 
-``int'' is just a placeholder for the integration variable, and the first thing you should do after creating one is give it a name. Double-click on the ``int'', or right click and choose Edit. This will bring up the following menu:
+``int1'' is just a placeholder for the integration variable, and the
+first thing you should do after creating one is give it a
+name. Double-click on the ``int1'', or right click and choose
+Edit. This will bring up the following menu:
 
 \begin{center}
 \htmladdimg{NewItem40.png}
@@ -628,15 +631,22 @@ There are three ways to insert a component of a model onto the Canvas:
 onto the Canvas and release the mouse where you want to insert it 
 
 \begin{center}
-\htmladdimg{NewItem18.png}
+\fwhtmladdimg{NewItem18.png}
 \end{center}
 
 \item Choose Insert from the menu and select the desired block there
 
-\begin{center}
-\htmladdimg{NewItem159.png}
-\end{center}
-
+  \begin{center}
+    %begin{latexonly}
+    \resizebox{!}{0.6\textheight}{
+      %end{latexonly}
+      \htmladdimg{NewItem159.png}
+     %begin{latexonly}
+    }
+    %end{latexonly}
+  \end{center}
+  \newpage
+  
 \item Right-click on an existing block and choose copy. Then place the
 copy where you want it on the palette. 
 
@@ -885,7 +895,9 @@ as 0.1 times the balance in Patient's account. This now results in a
 smooth exponential decay of the amount in the Patient account, matched
 by a rise in the amount in Impatient account.
 
-\fwhtmladdimg{NewItem152.png}
+\begin{center}
+\includegraphics{images/NewItem152.eps}
+\end{center}
 
 This is because the equation you have defined is identical to a
 radioactive decay equation, with the amount in the Patient account
@@ -922,7 +934,7 @@ This now results in a much neater model. The same process can be used
 to tidy up graphs as well:
 
 \begin{center}
-\includegraphics{images/NewItem155.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem155.eps}}
 \end{center}
 
 
@@ -941,7 +953,7 @@ The value of 0.1 means that the amount of money in the Patient account
 falls by one tenth every year (and therefore tapers towards zero). An
 equivalent way to express this is that the ``time constant'' for
 lending is the inverse of 1/10, or ten years. The next model uses a
-variable called \\tau\_Lend, and gives it a value of 10: 
+variable called $\tau_{Lend}$, and gives it a value of 10: 
 
 \begin{center}
 \includegraphics{images/NewItem158.eps}
@@ -951,7 +963,7 @@ As the simulation shows, the two models have precisely the same result
 numerically:
 
 \begin{center}
-\includegraphics{images/NewItem157.eps}
+\resizebox{!}{0.9\textheight}{\includegraphics{images/NewItem157.eps}}
 \end{center}
 
 

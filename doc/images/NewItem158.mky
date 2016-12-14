@@ -105,8 +105,8 @@
    <Layout>
     <id>0</id>
     <id>0</id>
-    <x>117.739</x>
-    <y>0</y>
+    <x>0</x>
+    <y>58.3605</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -119,8 +119,8 @@
    <Layout>
     <id>3</id>
     <id>3</id>
-    <x>123.054</x>
-    <y>74.4056</y>
+    <x>3.00018</x>
+    <y>100.36</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -133,8 +133,8 @@
    <Layout>
     <id>6</id>
     <id>6</id>
-    <x>374.615</x>
-    <y>40.7459</y>
+    <x>145</x>
+    <y>81.3605</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
@@ -147,8 +147,8 @@
    <Layout>
     <id>9</id>
     <id>9</id>
-    <x>268.322</x>
-    <y>40.7459</y>
+    <x>85.0002</x>
+    <y>81.3605</y>
     <visible>true</visible>
     <rotation>0</rotation>
    </Layout>
@@ -156,32 +156,32 @@
     <id>13</id>
     <visible>true</visible>
     <coords>
-     <float>15.1853</float>
-     <float>123.827</float>
-     <float>92.0524</float>
-     <float>146.314</float>
+     <float>238.019</float>
+     <float>0</float>
+     <float>279.52</float>
+     <float>14</float>
     </coords>
    </Layout>
    <Layout>
     <id>14</id>
     <visible>true</visible>
     <coords>
-     <float>0</float>
-     <float>198.233</float>
-     <float>92.0524</float>
-     <float>182.832</float>
+     <float>228.02</float>
+     <float>42</float>
+     <float>279.52</float>
+     <float>32</float>
     </coords>
    </Layout>
    <Layout>
     <id>15</id>
     <visible>true</visible>
     <coords>
-     <float>125.484</float>
-     <float>164.573</float>
-     <float>170.475</float>
-     <float>164.573</float>
+     <float>297.52</float>
+     <float>23</float>
+     <float>323.019</float>
+     <float>23</float>
     </coords>
    </Layout>
   </layout>
-  <zoomFactor>1.77156</zoomFactor>
+  <zoomFactor>1</zoomFactor>
  </Minsky>
