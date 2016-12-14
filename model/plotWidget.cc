@@ -88,15 +88,14 @@ namespace minsky
     float w=width, h=height;
     float x = -0.5*w, dx=w/(2*numLines+1); // x location of ports
     float y=0.5*h, dy = h/(numLines);
-    ports.resize(0);
 
     // xmin, xmax, ymin, ymax ports
     ports.emplace_back(new Port(*this, Port::inputPort)); //xmin
     ports.emplace_back(new Port(*this, Port::inputPort));  //xmax
     ports.emplace_back(new Port(*this, Port::inputPort)); //ymin
     ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
-    ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
-    ports.emplace_back(new Port(*this, Port::inputPort)); //ymax
+    ports.emplace_back(new Port(*this, Port::inputPort)); //y1min
+    ports.emplace_back(new Port(*this, Port::inputPort)); //y1max
 
     // y variable ports
     for (float y=0.5*(dy-h); y<0.5*h; y+=dy)

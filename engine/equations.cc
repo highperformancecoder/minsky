@@ -1486,28 +1486,13 @@ namespace MathDAG
              assert(minsky.variableValues.count(v->valueId()));
              v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
            }
+         else if (auto pw=dynamic_cast<PlotWidget*>(i->get()))
+           for (auto& port: pw->ports) 
+             for (auto w: port->wires)
+               // ensure plot inputs are evaluated
+               port->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          return false;
        });
-       
-
-    // loop over plots and ensure that each connected input port
-    // has its expression evaluated 
-    //TODO
-//    for (const PlotWidget& p: minsky.plots)
-//      for (int port: p.ports())
-//        {
-//          auto wires=minsky.wiresAttachedToPort(port);
-//          for (int w: wires)
-//            {
-//              NodePtr n=getNodeFromWire(w);
-//              n->addEvalOps(equations, portValMap);
-//              // ensure portValMap is updated with results of
-//              // anonymous operations (eg of differentiate)
-//              auto wi=minsky.wires.find(w);
-//              if (wi != minsky.wires.end())
-//                portValMap[wi->from.get()]=n->result;
-//            }
-//        }
   }
 
   void SystemOfEquations::processGodleyTable
