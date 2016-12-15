@@ -3,57 +3,65 @@
   <model>
    <ports>
     <Port>
-     <id>0</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>1</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>2</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>3</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>4</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
      <id>5</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <input>false</input>
+    </Port>
+    <Port>
+     <id>6</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <input>false</input>
+    </Port>
+    <Port>
+     <id>7</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <input>false</input>
+    </Port>
+    <Port>
+     <id>8</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <input>true</input>
+    </Port>
+    <Port>
+     <id>9</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <input>true</input>
     </Port>
    </ports>
    <wires>
+    <Wire>
+     <id>10</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>5</from>
+     <to>8</to>
+    </Wire>
+    <Wire>
+     <id>11</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>6</from>
+     <to>9</to>
+    </Wire>
    </wires>
    <notes>
    </notes>
    <operations>
     <Operation>
-     <id>8</id>
+     <id>14</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>divide</type>
      <value>0</value>
      <ports>
-      <int>3</int>
-      <int>4</int>
-      <int>5</int>
+      <int>7</int>
+      <int>8</int>
+      <int>9</int>
      </ports>
      <data>
      </data>
@@ -63,27 +71,26 @@
    </operations>
    <variables>
     <Variable>
-     <id>6</id>
+     <id>12</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <type>flow</type>
-     <init>0</init>
+     <type>stock</type>
+     <init>-0</init>
      <ports>
-      <int>0</int>
-      <int>1</int>
+      <int>5</int>
      </ports>
-     <name>:GDP</name>
+     <name>:Impatient</name>
     </Variable>
     <Variable>
-     <id>7</id>
+     <id>13</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>parameter</type>
-     <init>0</init>
+     <init>0.333</init>
      <ports>
-      <int>2</int>
+      <int>6</int>
      </ports>
-     <name>:LabProd</name>
+     <name>:\tau_T</name>
     </Variable>
    </variables>
    <plots>
@@ -107,9 +114,29 @@
   </model>
   <layout>
    <Layout>
-    <id>6</id>
-    <id>6</id>
-    <x>17</x>
+    <id>10</id>
+    <visible>true</visible>
+    <coords>
+     <float>100.5</float>
+     <float>0</float>
+     <float>123</float>
+     <float>0</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>11</id>
+    <visible>true</visible>
+    <coords>
+     <float>11</float>
+     <float>18</float>
+     <float>123</float>
+     <float>18</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>12</id>
+    <id>12</id>
+    <x>59</x>
     <y>0</y>
     <visible>true</visible>
     <rotation>0</rotation>
@@ -117,28 +144,28 @@
     <sliderBoundsSet>false</sliderBoundsSet>
     <sliderStepRel>false</sliderStepRel>
     <sliderMin>0</sliderMin>
-    <sliderMax>1.69242e-308</sliderMax>
-    <sliderStep>3.45067e-273</sliderStep>
+    <sliderMax>2.14748e+12</sliderMax>
+    <sliderStep>6.92647e-310</sliderStep>
    </Layout>
    <Layout>
-    <id>7</id>
-    <id>7</id>
+    <id>13</id>
+    <id>13</id>
     <x>0</x>
-    <y>53</y>
+    <y>18</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
     <sliderBoundsSet>false</sliderBoundsSet>
     <sliderStepRel>false</sliderStepRel>
-    <sliderMin>8.02989e+283</sliderMin>
-    <sliderMax>5.13295e-210</sliderMax>
-    <sliderStep>-1.92447e-106</sliderStep>
+    <sliderMin>1223</sliderMin>
+    <sliderMax>0</sliderMax>
+    <sliderStep>10000</sliderStep>
    </Layout>
    <Layout>
-    <id>8</id>
-    <id>8</id>
-    <x>65</x>
-    <y>29</y>
+    <id>14</id>
+    <id>14</id>
+    <x>131</x>
+    <y>9</y>
     <visible>true</visible>
     <rotation>0</rotation>
    </Layout>

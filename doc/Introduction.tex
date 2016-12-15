@@ -162,7 +162,14 @@ developed half a millennium ago to keep financial accounts accurately:
 double-entry bookkeeping. Here is the same model in Minsky:
 
 \begin{center}
-\fwhtmladdimg{NewItem13.png}
+\begin{tabular}{|c|cc|c|}
+\hline
+Flows $\downarrow$ / Stock Variables
+$\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
+Initial Conditions&$0$&$0$&0\\
+Buyer Accesses Credit&$Card$&$-Card$&0\\
+\hline
+\end{tabular}
 \end{center}
 
 This is an inherently better way to generate a dynamic model of financial flows, for at least two reasons:
@@ -184,13 +191,27 @@ Sum identifies your mistake by showing that the row sums to ``Card''
 rather than zero:
 
 \begin{center}
-\fwhtmladdimg{NewItem52.png}
+\begin{tabular}{|c|cc|c|}
+\hline
+Flows $\downarrow$ / Stock Variables
+$\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
+Initial Conditions&$0$&$0$&0\\
+Buyer Accesses Credit&$Card$&&$Card$\\
+\hline
+\end{tabular}
 \end{center}
 
 And it also identifies if you give the wrong sign to one entry:
 
 \begin{center}
-\fwhtmladdimg{NewItem53.png}
+\begin{tabular}{|c|cc|c|}
+\hline
+Flows $\downarrow$ / Stock Variables
+$\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
+Initial Conditions&$0$&$0$&0\\
+Buyer Accesses Credit&$Card$&$Card$&$2Card$\\
+\hline
+\end{tabular}
 \end{center}
 
 Minsky thus adds an element to the system dynamics toolkit which is

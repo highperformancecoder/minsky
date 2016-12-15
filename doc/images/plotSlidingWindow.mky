@@ -240,29 +240,29 @@
      <id>38</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>27</from>
-     <to>14</to>
-    </Wire>
-    <Wire>
-     <id>39</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
      <from>30</from>
      <to>33</to>
     </Wire>
     <Wire>
-     <id>40</id>
+     <id>39</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>25</from>
      <to>32</to>
     </Wire>
     <Wire>
-     <id>41</id>
+     <id>40</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>31</from>
      <to>1</to>
+    </Wire>
+    <Wire>
+     <id>41</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <from>27</from>
+     <to>0</to>
     </Wire>
    </wires>
    <notes>
@@ -397,6 +397,8 @@
       <int>20</int>
       <int>21</int>
      </ports>
+     <logx>false</logx>
+     <logy>false</logy>
      <title></title>
      <xlabel></xlabel>
      <ylabel></ylabel>
@@ -455,7 +457,7 @@
     <id>37</id>
     <visible>true</visible>
     <coords>
-     <float>42.5</float>
+     <float>42</float>
      <float>202.25</float>
      <float>75</float>
      <float>200.25</float>
@@ -465,24 +467,14 @@
     <id>38</id>
     <visible>true</visible>
     <coords>
-     <float>93</float>
-     <float>191.25</float>
-     <float>150.667</float>
-     <float>131.25</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>39</id>
-    <visible>true</visible>
-    <coords>
-     <float>147</float>
+     <float>146.5</float>
      <float>231.25</float>
      <float>167</float>
      <float>207.25</float>
     </coords>
    </Layout>
    <Layout>
-    <id>40</id>
+    <id>39</id>
     <visible>true</visible>
     <coords>
      <float>46</float>
@@ -492,7 +484,7 @@
     </coords>
    </Layout>
    <Layout>
-    <id>41</id>
+    <id>40</id>
     <visible>true</visible>
     <coords>
      <float>185</float>
@@ -500,6 +492,16 @@
      <float>329</float>
      <float>259.25</float>
      <float>276.5</float>
+     <float>129.75</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>41</id>
+    <visible>true</visible>
+    <coords>
+     <float>93</float>
+     <float>191.25</float>
+     <float>140</float>
      <float>129.75</float>
     </coords>
    </Layout>

@@ -4,25 +4,28 @@
 
 \begin{description}
 
-\item[add +]\label{op:add} Add multiple numbers together. The input ports allow
-multiple wires, which are all summed. If an input port is unwired, it
-is equivalent to setting it to zero.
+\item[add +]\label{op:add} Add multiple numbers together. The input
+  ports allow multiple wires, which are all summed. If an input port
+  is unwired, it is equivalent to setting it to zero.
 
-\item[subtract $-$]\label{op:subtract} Subtract two numbers. The input ports
-allow multiple wires, which are summed prior to the subtraction being
-carried out. If an input port is unwired, it is equivalent to setting
-it to zero. Note the small `+' and `-' signs on the input port
-indicating which terms are aded or subtracted from the result.
+\item[subtract $-$]\label{op:subtract} Subtract two numbers. The input
+  ports allow multiple wires, which are summed prior to the
+  subtraction being carried out. If an input port is unwired, it is
+  equivalent to setting it to zero. Note the small `+' and `-' signs
+  on the input port indicating which terms are aded or subtracted from
+  the result.
 
-\item[multiply $\times$]\label{op:multiply} Multiple numbers with each other. The input ports
-allow multiple wires, which are all multiplied together. If an input
-port is unwired, it is equivalent to setting it to one.
+\item[multiply $\times$]\label{op:multiply} Multiply numbers with each
+  other. The input ports allow multiple wires, which are all
+  multiplied together. If an input port is unwired, it is equivalent
+  to setting it to one.
 
-\item[divide $\div$]\label{op:divide} Divide a number by another. The input ports allow
-multiple wires, which are multiplied together prior to the division
-being carried out. If an input port is unwired, it is equivalent to
-setting it to one. Note the small `$\times$' and `$\div$' signs indicating which
-port refers to the numerator and which the denominator.
+\item[divide $\div$]\label{op:divide} Divide a number by another. The
+  input ports allow multiple wires, which are multiplied together
+  prior to the division being carried out. If an input port is
+  unwired, it is equivalent to setting it to one. Note the small
+  `$\times$' and `$\div$' signs indicating which port refers to the
+  numerator and which the denominator.
 
 \item[log]\label{op:log} Take the logarithm of the $x$ input port, to
 base $b$. The base $b$ needs to be specified --- if the natural
@@ -308,7 +311,7 @@ placed on the canvas for explanatory purposes. Anything that can be
 entered on the keyboard can be placed here, including unicode
 characters, but LaTeX formatting is not currently supported. A note
 widget, like all canvas items, allow short additional tooltips to be
-specified. It is also possible to annotate an ordinary block with some text,
+specified. It is also possible to annotate an ordinary block with some text
 that is visible through the edit menu, or as a tooltip.
 
 \section{Godley Tables}\label{godley}
@@ -332,7 +335,7 @@ another variable, just like the \htmlref{initial condition
 field}{var:init}, or just be a numerical value.
 
 Finally come the flows. The first column is a simple textual label
-(the word ``Initial Conditions'', regardless of capitalisation, is a
+(the phrase ``Initial Conditions'', regardless of capitalisation, is a
 reserved phrase for setting stock variable initial conditions)
 identifying the flow. The flows themselves are written as a numerical
 multipler times a flow variable. Unscoped variables are treated as
@@ -363,7 +366,7 @@ can also be accessed by double clicking on the item. (Plot widgets
 behave slightly differently).
 \item[Copy] Creates a copy of an item, retaining the same attributes
 of the original. This is very useful for creating copies of the same
-variable to reduce the amount of overlapping wiring (aka "rats nest")
+variable to reduce the amount of overlapping wiring (aka ``rats nest")
 in a model.
 \item[Flip] actually rotates an object through $180^\circ$. You can
 specify aribtrary rotations of objects through the edit menu.
@@ -379,7 +382,7 @@ developers.
 
 Item specific context menu items:
 \begin{description}
-\item[variables, parameters and constants]
+\item[variables, parameters and constants]\mbox{}
 \begin{description}
 \item[Slider] add a slider control to a variable. This is most
 effective for controlling parameters and constants, but can also be
@@ -387,7 +390,7 @@ used to control inputless variables.
 \item[Add integral] attach an integration operation, and convert the
 variable into an integral type
 \end{description}
-\item[integrals]
+\item[integrals]\mbox{}
 \begin{description}
 \item[Copy Var] copy just the integration variable, not the
 integration operation
@@ -395,7 +398,7 @@ integration operation
 variables. By toggling the binding, the integral icon can then be
 moved independently of the variable it is bound to. 
 \end{description}
-\item[Godley tables]
+\item[Godley tables]\mbox{}
 \begin{description}
 \item[Open Godley Table] opens a spreadsheet to allow financial flows
 defining the Godley table to be entered or modified.
@@ -405,7 +408,7 @@ copied or edited.
 \item[Export to file] export table contents as either CSV data, or as a LaTeX
 table, for import into other software.
 \end{description}
-\item[Plot Widgets]
+\item[Plot Widgets]\mbox{}
 \begin{description}
 \item[Expand]
 By double-clicking, or selecting ``Expand'' from the context menu, a

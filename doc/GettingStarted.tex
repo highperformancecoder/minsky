@@ -387,7 +387,7 @@ enters a Godley table into your model:
 
 Double-click on the Bank Icon (or right-click and choose ``Open Godley
 Table'' from the menu) and you get a double-entry bookkeeping table we
-call a Godley Table: 
+call a Godley Table, which looks lioke the following onscreen: 
 
 \fwhtmladdimg{NewItem30.png}
 
@@ -400,7 +400,7 @@ other entities in your model. Click on it and a variable definition
 window will appear:
 
 \begin{center}
-\htmladdimg{NewItem32.png}
+\scalebox{0.5}{\htmladdimg{NewItem32.png}}
 \end{center}
 
 The only essential step here is providing a name for the Variable. You
@@ -421,17 +421,20 @@ model---but it can be varied during a simulation run by the
 user. Click on it and a constant definition window will appear:
 
 \begin{center}
-\htmladdimg{NewItem34.png}
+\scalebox{0.5}{\htmladdimg{NewItem34.png}}
 \end{center}
 
 The only essential element here is its
 value. You can also specify its rotation on the Canvas in degrees, and
-its parameters if you make the slider active. This lets you vary a
+its slider parameters if you make the slider active. This lets you vary a
 parameter while a simulation is running---which is useful if you wish
 to explore a range of policy options while a model is running.
 
 A constant is just a type of variable, which also include parameters
-(named constants), flow variables, stock variables and integration variables.
+(named constants), flow variables, stock variables and integration
+variables. In fact there is no real conceptual difference between
+creating a constant or creating a variable, as you can switch the type
+using the type field.
 
 \item[Time] \smhtmladdimg{NewItem35.png} embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
@@ -473,7 +476,7 @@ name. Double-click on the ``int1'', or right click and choose
 Edit. This will bring up the following menu:
 
 \begin{center}
-\htmladdimg{NewItem40.png}
+\scalebox{0.5}{\htmladdimg{NewItem40.png}}
 \end{center}
 
 Change the name to something appropriate, and give it an initial
@@ -481,7 +484,7 @@ value. For example, if you were building a model that included
 America's population, you would enter the following:
 
 \begin{center}
-\htmladdimg{NewItem41.png}
+\scalebox{0.5}{\htmladdimg{NewItem41.png}}
 \end{center}
 
 
@@ -594,7 +597,7 @@ example, to write an equation for 100/33, you would place a
 \smhtmladdimg{NewItem121.png} on the canvas, and give it the value of 100:
 
 \begin{center}
-\htmladdimg{NewItem122.png}
+\scalebox{0.5}{\htmladdimg{NewItem122.png}}
 \end{center}
 
 Then do the same for 33, and place a divide block on the canvas:
@@ -604,7 +607,16 @@ Then do the same for 33, and place a divide block on the canvas:
 \end{center}
 
 Then click on the right hand edge of \smhtmladdimg{NewItem125.png}
-and drag to extend the wire to the numerator (x) port of the divide operation.
+and drag to extend the wire to the numerator ($\times$) port of the divide operation.
+
+\begin{center}
+\includegraphics{images/wireExample1.eps}
+\end{center}
+
+Finally, add the other wire.
+\begin{center}
+\includegraphics{images/wireExample2.eps}
+\end{center}
 
 \section{Working with Minsky}
 
@@ -674,7 +686,7 @@ is performed in Minsky by defining a constant block with a value of 100, definin
   \includegraphics{images/NewItem129.eps}
 \end{center}
 
-If you choose File/Output LaTeX and load the equation into a LaTeX processor, you will see that it is:
+If you click on the equation tab, you will see that it is:
 
 \begin{displaymath}
 \mathrm{Answer}=\frac{100}{3}
@@ -722,27 +734,30 @@ The equation is completed by wiring up the other components in the same way.
 
 \subsubsection{Creating a bank}
 
-The first step in creating a model with a banking sector is to click on the Godley Table Icon in the Icon Palette, and place the block somewhere on the Canvas:
-
-\htmladdimg{NewItem134.png} 
+The first step in creating a model with a banking sector is to click on the Godley Table Icon in the Icon Palette, and place the block somewhere on the Canvas.
 
 \subsubsection{Entering accounts}
 
-\fwhtmladdimg{NewItem135.png} 
-
-Double click or right click on the \smhtmladdimg{NewItem133.png} block
-to bring up the Godley Table:
+Double click or right click on the Godley table block
+to bring up the Godley Table.
 
 When a Godley Table is first loaded, it has room for one account to be
-defined. To create an additional account, click on the
-\smhtmladdimg{NewItem163.png} button above the first account. One
+defined. To create an additional accounts, click on the
+`+' button above the first account. One
 click then adds another column in which an additional account can be
 defined.
 
-\fwhtmladdimg{NewItem164.png}
+\begin{center}
+\begin{tabular}{|c|cc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$$}&\multicolumn{1}{|c|}{$$}\\\cline{2-3}&\multicolumn{2}{|c|}{noAssetClass}\\\hline
+Initial Conditions&$0$&$0$\\
+\hline
+\end{tabular}
+\end{center}
 
 
-A column can be deleted by clicking on the \smhtmladdimg{NewItem165.png} button above the column.
+A column can be deleted by clicking on the `--' button above the column.
 
 To define bank accounts in the system you enter a name into the row
 labeled ``\verb+Flows V / Stock Variables ->+''. For example, if you were
@@ -751,21 +766,30 @@ intermediary between ``Patient'' people and ``Impatient'' people---as
 in the Neoclassical ``Loanable Funds'' model--you might define the
 following accounts: 
 
-\fwhtmladdimg{NewItem138.png} 
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{4}{|c|}{noAssetClass}\\\hline
+Initial Conditions&$0$&$0$&$0$&$0$\\
+\hline
+\end{tabular}
+\end{center}
 
 As you enter the accounts, they appear at the bottom of the Bank block on the canvas:
 
-\fwhtmladdimg{NewItem145.png} 
+\begin{center}
+  \scalebox{0.5}{\includegraphics{images/NewItem145.eps}}
+\end{center}
 
 \subsection{Defining account types}
 
 Bank accounts must be classified as either an Asset, a Liability, or
 the Equity of the relevant Bank, using the drop-down menu currently
-labeled \smhtmladdimg{NewItem139.png} at the top of each account. In
+labeled {\tt noAssetClass} at the top of each account. In
 this model, Reserves are an Asset of the banking sector, the accounts
 of ``Patient'' and ``Impatient'' are liabilities, and the ``Safe'' is
 the Equity of the banking system. Click on the
-\smhtmladdimg{NewItem139.png} button and this drop-down menu will
+{\tt noAssetClass} button and this drop-down menu will
 appear:
 
 \begin{center}
@@ -774,7 +798,14 @@ appear:
 
 Choose the relevant entry for each column, and the accounts will be properly classified when the model is simulated:
 
-\fwhtmladdimg{NewItem141.png} 
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$0$&$0$&$0$&$0$\\
+\hline
+\end{tabular}
+\end{center}
 
 \subsubsection{Entering flows between accounts}
 
@@ -785,21 +816,45 @@ example, if Patient is lending money to Impatient, the word ``Lend''
 could be used to describe this action. Firstly you need to create a
 row beneath the ``Initial Conditions'' row (which records the amount of
 money in each account when the simulation begins). You do this by
-clicking on the \smhtmladdimg{NewItem166.png} key on the Initial Conditions row. This creates a
+clicking on the `+' key on the Initial Conditions row. This creates a
 blank row for recording a flow between accounts.
 
-\fwhtmladdimg{NewItem167.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$0$&$0$&$0$&$0$\\
+&&&&\\
+\hline
+\end{tabular}
+\end{center}
 
 The cell below ``Initial Conditions'' is used to give a verbal
 description of what the flow is: 
 
-\fwhtmladdimg{NewItem168.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$0$&$0$&$0$&$0$\\
+Patient lends to Impatient&&&&\\
+\hline
+\end{tabular}
+\end{center}
 
 The flows between accounts are then recorded in the relevant cells
 underneath the columns. Here we will start with putting the label
 ``Lend'' into the Patient column. 
 
-\fwhtmladdimg{NewItem142.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$0$&$0$&$0$&$0$\\
+Patient lends to Impatient&&$Lend$&&\\
+\hline
+\end{tabular}
+\end{center}
 
 Notice that the program shows that the Row Sum for this transaction is
 currently ``Lend'', when it should be zero to obey the double-entry
@@ -808,7 +863,15 @@ destination for ``Lend'' has not yet been specified. The destination
 is Impatient's account, and to balance the row to zero this part of
 the transaction must be entered as ``-Lend'': 
 
-\fwhtmladdimg{NewItem143.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$0$&$0$&$0$&$0$\\
+Patient lends to Impatient&&$Lend$&$-Lend$&\\
+\hline
+\end{tabular}
+\end{center}
 
 This might appear strange if you are not used to accounting
 standards---``shouldn't the Patient account fall because of the loan,
@@ -827,11 +890,21 @@ entries on the Asset side of the Banking ledger that exactly match the
 sum of Liabilities and Equity (Equity is also shown as a negative in
 double-entry bookkeeping): 
 
-\fwhtmladdimg{NewItem144.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$120$&$-100$&$0$&$-20$\\
+Patient lends to Impatient&&$Lend$&$-Lend$&\\
+\hline
+\end{tabular}
+\end{center}
 
 As you enter flows, these appear on the left hand side of the bank block:
 
-\fwhtmladdimg{NewItem147.png}
+\begin{center}
+  \scalebox{0.5}{\includegraphics{images/NewItem147.eps}}
+\end{center}
 
 \subsubsection{Defining flows}
 
@@ -849,14 +922,11 @@ loan of \$10 per year by Patient to Impatient) by:
 
 
 
-Creating a constant called 10, with a value of 10:
-
-\htmladdimg{NewItem148.png}
-
-And attaching this to the input side of Lend:
+Create a constant with a value of 10, and attaching this to the input
+side of Lend:
 
 \begin{center}
-\includegraphics{images/NewItem149.eps}
+\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}
 \end{center}
 
 What you have now defined is an annual flow from Patient to Impatient
@@ -882,7 +952,7 @@ year, while Patient's account begins at \$0 and rises by \$10 per
 year.
 
 \begin{center}
-\includegraphics{images/NewItem151.eps}
+\scalebox{0.7}{\includegraphics{images/NewItem151.eps}}
 \end{center}
 
 Obviously this will result in a negative total worth for Patient after
@@ -896,7 +966,7 @@ smooth exponential decay of the amount in the Patient account, matched
 by a rise in the amount in Impatient account.
 
 \begin{center}
-\includegraphics{images/NewItem152.eps}
+\scalebox{0.7}{\includegraphics{images/NewItem152.eps}}
 \end{center}
 
 This is because the equation you have defined is identical to a

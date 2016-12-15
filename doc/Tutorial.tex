@@ -44,7 +44,7 @@ His linear approximation was:
 \end{displaymath}
 
 \item In a simple two-class model, profits $\Pi$ equals the level of
-output $Y$ minus the wage bill: $\Pi=Y-w.L$ 
+output $Y$ minus the wage bill: $\Pi=Y-wL$ 
 \item For simplicity, Goodwin assumed that all profits were invested, so that Investment equals profits: $I=\Pi$.
 \item Investment is the rate of change of the capital stock $K$;
 \item The level of output is, to a first approximation, determined by
@@ -69,12 +69,12 @@ This form is useful for analytic reasons, but it obscures the causal
 chain that actually lies behind the model. With modern system dynamic
 software, this can be laid out explicitly, and we can also use much
 more meaningful names. We'll start with defining output (which is a
-variable). Click on \smhtmladdimg{NewItem58.png} on the Icon Palette, or click on the Operations
-menu and choose ``Variable''. This will open up the ``Specify Variable
-Name'' window: 
+variable). Click on \smhtmladdimg{var.png} on the Icon Palette, or
+click on the Operations menu and choose ``Variable''. This will open
+up the ``Specify Variable Name'' window:
 
 \begin{center}
-\htmladdimg{NewItem63.png} 
+\scalebox{0.5}{\htmladdimg{NewItem63.png}}
 \end{center}
 
 Enter ``{\em\bf GDP}'' into the ``Name'' field, and leave the other
@@ -83,32 +83,34 @@ dynamic system, the value of {\em\bf GDP} at any particular point in
 time will depend on the other entities in the model. Now Click OK (or
 press ``Enter''). The variable will now appear, attached to the
 cursor. Move to a point near the top of the screen and click, which
-will place the variable at that location:
-
-\begin{center}
-\htmladdimg{NewItem64.png} 
-\end{center}
-
+will place the variable at that location.
 
 We are now going to write the first part of the model, that Labor
 ({\em\bf Labor}) equals output ({\em\bf GDP}) divided by labor
 productivity ({\em\bf LabProd}). Just for the sake of illustration,
-we'll make {\em\bf a} a constant (this can easily be modified
-later). For this we need to add a variable by clicking on \smhtmladdimg{NewItem78.png} on the
-Palette, or by choosing Insert/variable from the menu. This will
-pop-up the Edit Constant window: 
+we'll make {\em\bf a} a parameter, which is a named constant (this can
+easily be modified later). For this we start by clicking on
+\smhtmladdimg{const.png} on the Palette, or by choosing
+Insert/variable from the menu. This will pop-up the Edit Constant
+window:
 
 \begin{center}
-\htmladdimg{NewItem66.png} 
+\scalebox{0.5}{\htmladdimg{NewItem66.png}} 
 \end{center}
 
-Give the variable the name ``{\em\bf LabProd}'' and the value of 1
+There is actually no real difference between the ``Edit constant''
+dialog and the ``Edit variable'' dialog. The window's title differs,
+and the default value of Type is ``constant'' instead of
+``flow''. We're going to select ``parameter'', allowing one to give
+the parameter a name.
+
+Give the paramter the name ``{\em\bf LabProd}'' and the value of 1
 (i.e., one unit of output per worker). Click OK or press Enter and the
 constant \smhtmladdimg{NewItem67.png}  will now be attached to the
 cursor. Place it below {\em\bf GDP}: 
 
 \begin{center}
-\htmladdimg{NewItem66.png} 
+\scalebox{0.5}{\htmladdimg{NewItem66.png}}
 \end{center}
 
 Now we need to divide {\em\bf GDP} by {\em\bf LabProd}. Click on the
@@ -168,11 +170,11 @@ modeling equations, click on the equations tab:
 
 Now let's keep going with the model. With {\bf\em Labor} defined, the
 employment rate will be {\bf\em  Labor} divided by {\bf\em
-Population}. Define {\bf\em Population} as a constant (we'll later
+Population}. Define {\bf\em Population} as a parameter (we'll later
 change it to a variable), and give it a value of 110. 
 
 \begin{center}
-\htmladdimg{NewItem81.png} 
+\scalebox{0.5}{\htmladdimg{NewItem81.png}}
 \end{center}
 
 Add it to the Canvas and you are now ready to define the employment
@@ -182,7 +184,7 @@ another Divide block on the canvas, choose Wire mode and wire this
 next part of the model up. You should now have:
 
 \begin{center}
-\includegraphics{images/NewItem83.eps} 
+\includegraphics{images/NewItem83.eps}
 \end{center}
 
 
@@ -238,11 +240,12 @@ referenced to a rate of employment at which the rate of changes is
 zero.  I suggest using Milton Friedman's concept of a
 ``Non-Accelerating-Inflation-Rate-of-Unemployment'', or NAIRU. We need
 to define this constant, subtract it from 1, and subtract the result
-from the actual employment rate $\lambda$. To enter 1, click on \smhtmladdimg{NewItem89.png}, define a
-constant called 1, and give it a value of 1. Select "parameter"
-as the varibale type. Then define another variable
-NAIRU, and give it a value of 0.05 (5\% unemployment). Subtract this
-from 1 and subtract the result from $\lambda$. You should have the following:
+from the actual employment rate $\lambda$. To enter 1, click on
+\smhtmladdimg{NewItem89.png}, define a constant and give it
+a value of 1. Then define another variable NAIRU, and give it a value
+of 0.05 (5\% unemployment). Select ``parameter'' as the variable
+type. Subtract this from 1 and subtract the result from $\lambda$. You
+should have the following:
 
 \begin{center}
   \includegraphics{images/NewItem108.eps}
@@ -250,7 +253,7 @@ from 1 and subtract the result from $\lambda$. You should have the following:
 
 Now we need to multiply this gap between the actual employment rate
 and the ``NAIRE'' rate by a parameter that represents the response of
-wages to this gap. Let's call this parameter {\bf\em Emp\_{Response}} (remember to include the underscore and the braces). Define the constant, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
+wages to this gap. Let's call this parameter {\bf\em Emp\_\{Response\}} (remember to include the underscore and the braces). Define the parameter, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
 
 \begin{center}
 \includegraphics{images/NewItem109.eps}
@@ -268,13 +271,13 @@ following block to the cursor:
 \end{center}
 
 
-Now we need to rename this from the default name of ``int'' to
+Now we need to rename this from the default name of ``int1'' to
 ``{\em\bf w}'' for the wage rate. Either right click or double-click
-on ``int'' and this will bring up the edit window . Rename it to ``w'' and
+on ``int1'' and this will bring up the edit window . Rename it to ``w'' and
 give it a value of 1: 
 
 \begin{center}
-\htmladdimg{NewItem93.png}
+\scalebox{0.5}{\htmladdimg{NewItem93.png}}
 \end{center}
 
 To compete the integral equation, we need to multiply the linear
@@ -287,7 +290,7 @@ multiply block, and then either:
 \begin{itemize}
 \item wire the output of the {\bf\em w} block back to the other input
 on multiply block; or
-\item Right-click on {\bf\em w}, choose "Copy Var", place that copy
+\item Right-click on {\bf\em w}, choose ``Copy Var'', place that copy
 before the multiply block, and wire it up.
 \end{itemize}
 
@@ -301,14 +304,14 @@ That looks messy, but notice the blue dot on the wire? Click and drag
 on that and you will turn the straight line connector into a curve: 
 
 \begin{center}
-\includegraphics{images/NewItem111.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem111.eps}}
 \end{center}
 
 The second approach, which I personally prefer (it's neater, and it
 precisely emulates the integral equation), yields this result: 
 
 \begin{center}
-\includegraphics{images/NewItem112.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem112.eps}}
 \end{center}
 
 From this point on the model develops easily---``like money for old
@@ -319,7 +322,7 @@ firstly create the variable Wage Bill, and put will well below where w
 currently is on your diagram: 
 
 \begin{center}
-\includegraphics{images/NewItem113.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem113.eps}}
 \end{center}
 
 Now right-click on {\bf\em WageBill} and choose ``Flip''. This rotates
@@ -334,19 +337,19 @@ WageBill}:
 \end{center}
 
 Now insert a multiply block before {\bf\em WageBill}, and wire {\bf\em
-w} and {\bf\em Labor} up to it. Curve the wire from w using the blue
+w} and {\bf\em Labor} up to it. Curve the wire from $w$ using the blue
 dots (you can do this multiple times to create a very curved path:
 each time you create a curve, another 2 curve points are added that
 you can also manipulate, as I have done below: 
 
 \begin{center}
-\includegraphics{images/NewItem114.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem114.eps}}
 \end{center}
 
 
 The next step is to subtract the {\bf\em WageBill} from {\bf\em GDP}
 to define {\bf\em Profits}. Take a copy of {\bf\em GDP}, insert it
-before {\bf\em WageBill}, insert a subtract block, and wire it up to
+above {\bf\em WageBill}, insert a subtract block, and wire it up to
 define the variable {\bf\em Profits}:
 
 \begin{center}
@@ -358,10 +361,12 @@ In the simple Goodwin model, all Profits are invested, and investment
 of course is the rate of change of the capital stock Capital. Create a
 variable called Investment, wire this up to Profits, and then create a
 new integral variable Capital using the \smhtmladdimg{NewItem101.png}
-icon. Right-click or double-click on to rename int2 to Capital, and
+icon. Right-click or double-click on it to rename int2 to Capital, and
 give it an initial value of 300: 
 
-\htmladdimg{NewItem102.png}
+\begin{center}
+\scalebox{0.5}{\htmladdimg{NewItem102.png}}
+\end{center}
 
 Wire this up to Investment:
 
@@ -373,7 +378,7 @@ Now there's only one step left to complete the model: define a
 parameter CapOutputRatio and give it a value of 3:
 
 \begin{center}
-\includegraphics{images/NewItem103.eps}
+\scalebox{0.5}{\htmladdimg{NewItem103.png}}
 \end{center}
 
 
@@ -385,16 +390,18 @@ Before you attempt to run it, do two things. Firstly from the Runge
 Kutta menu item, change the Max Step Size to 0.01---to get a smoother
 simulation. 
 
-\htmladdimg{NewItem107.png}
+\begin{center}
+\scalebox{0.5}{\htmladdimg{NewItem107.png}}
+\end{center}
 
 Secondly, add some graphs by clicking on the
 \smhtmladdimg{NewItem106.png} icon, placing the graph
-in the middle of the flowchart, and wiring up $\backslash$lambda and w to two of
+in the middle of the flowchart, and wiring up $\lambda$ and $w$ to two of
 the four inputs on the left hand side. You will now see that, rather
 than reaching equilibrium, the model cycles constantly:
 
 \begin{center}
-\includegraphics{images/NewItem116.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem116.eps}}
 \end{center}
 
 If you click on the equations tab, you will see that you have defined the following system of
@@ -438,22 +445,49 @@ Impatient at a rate that, if kept constant at its initial level of of
 the rate of outflow declines as the Patient account declines, the
 money in the account decays towards zero but never quite reaches it.
 
-\fwhtmladdimg{NewItem169.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$120$&$-100$&$0$&$-20$\\
+Patient lends to Impatient&&$Lend$&$-Lend$&\\
+\hline
+\end{tabular}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem169.eps}}
+\end{center}
 
 Many more actions need to be added to this model to complete it. For a
 start, Impatient should be paying interest to Patient on the amount
 lent. Add an additional row to the Godley Table by clicking on the
-\smhtmladdimg{NewItem170.png} key
+`+' key
 next to ``Patient lends to Impatient'' to create a blank row:
 
-\fwhtmladdimg{NewItem171.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$120$&$-100$&$0$&$-20$\\
+Patient lends to Impatient&&$Lend$&$-Lend$&\\
+&&&&\\
+\hline
+\end{tabular}
+\end{center}
 
 Then label this flow ``Impatient pays interest'' and make the entry
 ``Interest'' into the cell for Impatient on that row. Make the matching
 entry ``-Interest'' in the cell for Patient. The flow ``Interest'' now
 appears on the input side of the Godley Table on the Canvas: 
 
-\fwhtmladdimg{NewItem172.png}
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$120$&$-100$&$0$&$-20$\\
+Patient lends to Impatient&&$Lend$&$-Lend$&\\
+Impatient pays interest&&$-Interest$&$Interest$&\\
+\hline
+\end{tabular}
+\end{center}
 
 Interest now has to be defined. It will be the amount in Impatient's
 account (since this began at zero) multiplied by the rate of interest
@@ -468,7 +502,9 @@ the Patient account falling to zero and Impatient rising to 100, the
 two accounts stabilize once the outflow of new loans by Patient equals
 the inflow of interest payments by Impatient:
 
-\fwhtmladdimg{NewItem174.png}
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem174.eps}}
+\end{center}
 
 Though it stabilizes, this is is still a very incomplete model:
 neither Patient nor Impatient are doing anything with the money apart
@@ -477,7 +513,19 @@ Impatient is borrowing the money in order to hire workers to work at a
 factory and produce output for sale. So we now need another account
 called Workers, and a payment from Impatient to Workers called Wage:
 
-\fwhtmladdimg{NewItem174.png}
+{
+  \noindent
+\small
+\begin{tabular}{|c|ccccc|}
+\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Workers$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-6}&\multicolumn{1}{|c|}{asset}&\multicolumn{3}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+Initial Conditions&$120$&$-100$&$0$&$-0$&$-20$\\
+Patient lends to Impatient&&$Lend$&$-Lend$&&\\
+Impatient pays interest&&$-Interest$&$Interest$&&\\
+Impatient pays Workers&&&$Wage$&$-Wage$&\\
+\hline
+\end{tabular}
+}
 
 In a more complex model, the Wage bill could be related to the current
 rate times the number of workers in employment. In this simple model I
@@ -485,16 +533,20 @@ will regard the wage as a function of the amount of money in
 Impatient's account turning over several times a year in the payment
 of wages. Using a time constant, I will assume that the amount in
 Impatient's account turns over 3 times a year paying wages, so that
-the time constant is 1/3rd of a year:
+the time constant $\tau_T$ is 1/3rd of a year:
 
-\htmladdimg{NewItem176.png}
+\begin{center}
+  \includegraphics{images/NewItem176.eps}
+\end{center}
 
 The dynamics of this incomplete model are very different again: very
 little money turns up in the Impatient account, and all of the money
 ends up in the Workers account. However economic activity also ceases
 as both lending and the flow of wages falls towards zero:
 
-\fwhtmladdimg{NewItem177.png}
+\begin{center}
+  \resizebox{\textwidth}{!}{\includegraphics{images/NewItem177.eps}}
+\end{center}
 
 This is because wages are being paid to workers, but they are doing
 nothing with it. So we need to include consumption by workers--and by

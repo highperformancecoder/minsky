@@ -1,103 +1,58 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>1</schemaVersion>
   <model>
-   <ports>
-    <Port>
-     <id>0</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>1</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>2</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>3</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>4</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>false</input>
-    </Port>
-    <Port>
-     <id>5</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-    <Port>
-     <id>6</id>
-     <detailedText></detailedText>
-     <tooltip></tooltip>
-     <input>true</input>
-    </Port>
-   </ports>
    <wires>
     <Wire>
-     <id>7</id>
+     <id>9</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>0</from>
-     <to>5</to>
+     <from>1</from>
+     <to>7</to>
     </Wire>
    </wires>
    <notes>
    </notes>
    <operations>
     <Operation>
-     <id>10</id>
+     <id>5</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>divide</type>
      <value>0</value>
      <ports>
-      <int>4</int>
-      <int>5</int>
       <int>6</int>
+      <int>7</int>
+      <int>8</int>
      </ports>
      <data>
      </data>
      <name></name>
-     <intVar>0</intVar>
+     <intVar>-1</intVar>
     </Operation>
    </operations>
    <variables>
     <Variable>
-     <id>8</id>
+     <id>0</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>flow</type>
-     <init></init>
+     <init>0</init>
      <ports>
-      <int>0</int>
       <int>1</int>
+      <int>2</int>
      </ports>
-     <name>:GDP</name>
+     <name>GDP</name>
     </Variable>
     <Variable>
-     <id>9</id>
+     <id>3</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <type>flow</type>
-     <init></init>
+     <type>parameter</type>
+     <init>0</init>
      <ports>
-      <int>2</int>
-      <int>3</int>
+      <int>4</int>
      </ports>
-     <name>:LabProd</name>
+     <name>LabProd</name>
     </Variable>
    </variables>
    <plots>
@@ -121,18 +76,8 @@
   </model>
   <layout>
    <Layout>
-    <id>7</id>
-    <visible>true</visible>
-    <coords>
-     <float>35.5</float>
-     <float>0</float>
-     <float>57</float>
-     <float>20</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>8</id>
-    <id>8</id>
+    <id>0</id>
+    <id>0</id>
     <x>17</x>
     <y>0</y>
     <visible>true</visible>
@@ -145,8 +90,8 @@
     <sliderStep>3.45067e-273</sliderStep>
    </Layout>
    <Layout>
-    <id>9</id>
-    <id>9</id>
+    <id>3</id>
+    <id>3</id>
     <x>0</x>
     <y>53</y>
     <visible>true</visible>
@@ -159,12 +104,22 @@
     <sliderStep>-1.92447e-106</sliderStep>
    </Layout>
    <Layout>
-    <id>10</id>
-    <id>10</id>
+    <id>5</id>
+    <id>5</id>
     <x>65</x>
     <y>29</y>
     <visible>true</visible>
     <rotation>0</rotation>
+   </Layout>
+   <Layout>
+    <id>9</id>
+    <visible>true</visible>
+    <coords>
+     <float>35.5</float>
+     <float>0</float>
+     <float>57</float>
+     <float>20</float>
+    </coords>
    </Layout>
   </layout>
   <zoomFactor>1</zoomFactor>
