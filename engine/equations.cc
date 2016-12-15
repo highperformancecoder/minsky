@@ -1490,7 +1490,7 @@ namespace MathDAG
            for (auto& port: pw->ports) 
              for (auto w: port->wires)
                // ensure plot inputs are evaluated
-               port->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+               w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
          return false;
        });
   }
