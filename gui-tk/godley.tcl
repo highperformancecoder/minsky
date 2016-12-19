@@ -403,14 +403,11 @@ proc updateGodleys {} {
 }
 
 proc updateGodleysDisplay {} {
-  global globals
-  foreach id [items.#keys] {
-      item.get $id
-      if {[item.classType]=="GodleyIcon"} {
-          updateGodleyDisplay $id
-      }
-  }
-  
+    foreach w [winfo children .] {
+        if [regexp "\.godley(\[0-9\]*)" $w match id] {
+            updateGodleyDisplay $id
+        }
+    }
 }
 
 # sets a when-idle job to update the godley table, to prevent the table being updated too often during rapid fire requests

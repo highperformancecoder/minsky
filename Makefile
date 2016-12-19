@@ -65,6 +65,15 @@ VPATH= schema model engine gui-tk server $(ECOLAB_HOME)/include
 	-I $(ECOLAB_HOME)/include  -i $< xml_pack xml_unpack xsd_generate json_pack \
 	json_unpack >$@
 
+# assorted performance profiling stuff using gperftools, or Russell's custom
+# timer calipers
+ifdef MEMPROFILE
+LIBS+=-ltcmalloc
+endif
+ifdef CPUPROFILE
+LIBS+=-lprofiler
+endif
+
 TESTS=
 ifdef AEGIS
 # ensure all exes get built in AEGIS mode
