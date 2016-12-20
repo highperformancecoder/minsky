@@ -1096,7 +1096,7 @@ proc wireContextMenu {id x y} {
     .wiring.context add command -label "Raise" -command "raiseItem wire$id"
     .wiring.context add command -label "Lower" -command "lowerItem wire$id"
     .wiring.context add command -label "Browse object" -command "obj_browser wiringGroup.wire.*"
-    .wiring.context add command -label "Delete wire" -command "deleteItem $id wire$id"
+    .wiring.context add command -label "Delete wire" -command "deleteWire $id; .wiring.canvas delete wire$id"
     tk_popup .wiring.context $x $y
 }
 
