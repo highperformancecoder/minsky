@@ -1,2 +1,2 @@
 [filtering]
-ignorewarnings=https-certificate-error
+ignorewarnings=https-certificate-error,http-moved-permanent
