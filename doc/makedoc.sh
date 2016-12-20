@@ -15,5 +15,5 @@ sed -e 's/^\(  HREF=[^>]*\)>/\1 target="content">/' <minsky/minsky.html >tmp
 mv tmp minsky/minsky.html
 
 #check for any broken links
-linkchecker minsky.html
+linkchecker -f ../linkcheckerrc minsky.html
 
