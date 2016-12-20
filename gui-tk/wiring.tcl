@@ -368,9 +368,14 @@ proc deleteKey {} {
         cut
     } else {
         set tags [.wiring.canvas gettags  [.wiring.canvas find withtag current]]
-        set re {([a-zA-Z]+)([0-9]+)}
-        if [regexp $re [lsearch -regexp -inline $tags $re] tag item id] {
+        set re {item([0-9]+)}
+        if [regexp $re [lsearch -regexp -inline $tags $re] tag id] {
             deleteItem $id $tag
+        }
+        set re {wire([0-9]+)}
+        if [regexp $re [lsearch -regexp -inline $tags $re] tag  id] {
+            deleteWire $id
+            .wiring.canvas delete wire$id
         }
     }
 }
