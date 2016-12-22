@@ -551,8 +551,8 @@ proc whenIdleUpdateGodley {id} {
     redraw $id
     global updateGodleyLaunched
     set updateGodleyLaunched 0
-    updateOnNewGodleyVars
-    updateCanvas
+    updateOnNewGodleyVars $id
+    # FIXME: this fails: updateCanvas
     update
     doPushHistory 1
     popFlags
