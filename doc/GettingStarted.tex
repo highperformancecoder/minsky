@@ -22,7 +22,9 @@ There are 6 components to the Minsky interface:
 \begin{enumerate}
 \item  The menus.
 
-\fwhtmladdimg{NewItem14.png}
+  \begin{tabular}{llllll}
+    File & Edit & Insert & Options & Runge Kutta & Help \\
+  \end{tabular}
 
 \item  The Run buttons
 
@@ -54,12 +56,14 @@ There are 6 components to the Minsky interface:
 \subsection{Menu}
 \label{Menu}
 
-\htmladdimg{NewItem14.png}
-
+  \begin{tabular}{llllll}
+    File & Edit & Insert & Options & Runge Kutta & Help \\
+  \end{tabular}
 
 The menu controls the basic functions of saving and loading files,
 default settings for the program, etc. These will alter as the program
-is developed; the current menu items (as at the August 2016 Cantillon release) are:
+is developed; the current menu items (as at the August 2016 Cantillon
+release) are: 
 
 \subsubsection{File}
 \label{File}
@@ -173,7 +177,7 @@ effect by clicking on the Design Icons. Also present are entries for
 The options menu allows you to customise aspects of Minsky.
 
 \begin{description}
-\item[Preferences]
+\item[Preferences]\mbox{}
 
 \begin{itemize}
 \item Godley table double entry. Applies double entry book keeping
@@ -192,7 +196,7 @@ files}{recentfiles} menu.
 \item\label{wrap-equations} Wrap long equations in LaTeX export. If ticked, use the breqn
 package to produce nicer looking automatically line-wrapped
 formulae. Because not all LaTeX implementations are guaranteed to
-support breqn, untick this option is you find difficulty.
+support breqn, untick this option if you find difficulty.
 \end{itemize}
 
 \item[Background colour] --- select a colour from which a colour scheme
@@ -374,7 +378,7 @@ number of icons will grow over time, but the key ones are implemented
 now: 
 
 \begin{description}
-\item[Godley Table] \smhtmladdimg{NewItem28.png}. \label{GodleyTable} This is the
+\item[Godley Table] \buttonIcon{NewItem29.eps}. \label{GodleyTable} This is the
 fundamental element of Minsky that is not found (yet) in any other
 system dynamics program. 
 
@@ -394,7 +398,7 @@ call a Godley Table, which looks lioke the following onscreen:
  
 Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the \htmlref{Tutorial (Monetary)}{tut:basicBankModel}.
 
-\item[Variable]  \smhtmladdimg{NewItem31.png}. \label{Variable} This creates an entity
+\item[Variable]  \buttonIcon{var.eps}. \label{Variable} This creates an entity
 whose value changes as a function of time and its relationship with
 other entities in your model. Click on it and a variable definition
 window will appear:
@@ -415,7 +419,7 @@ cursor to where you want to place the variable on the Canvas, click,
 and it will be placed in that location.
 
 
-\item[Constant] \smhtmladdimg{NewItem33.png} \label{Constant} creates an entity whose
+\item[Constant] \buttonIcon{const.eps} \label{Constant} creates an entity whose
 value is unaffected by the simulation or other entities in the
 model---but it can be varied during a simulation run by the
 user. Click on it and a constant definition window will appear:
@@ -436,7 +440,7 @@ variables. In fact there is no real conceptual difference between
 creating a constant or creating a variable, as you can switch the type
 using the type field.
 
-\item[Time] \smhtmladdimg{NewItem35.png} embeds a reference to the
+\item[Time] \buttonIcon{time.eps} embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
 simulations, but can be useful if you want to make a time-dependent
 process explicit, or control the appearance of a graph. 
@@ -459,7 +463,7 @@ to show a ten year range of the model only:
 
 
 
-\item[Integration] \smhtmladdimg{NewItem38.png}.\label{Integrate}
+\item[Integration] \buttonIcon{int.eps}.\label{Integrate}
   This inserts a variable whose value depends on the integral of other
   variables in the system. This is the essential element for defining
   a dynamic model. Click on it and the following entity will appear at
@@ -540,12 +544,12 @@ Either method can be used. I prefer the latter because it's neater,
 and it emphasizes the link between the simple formula for a percentage
 rate of change and a differential equation. 
 
-\item[Derivative Operator] This operator symbolically differentiates its input,
+\item[Derivative Operator] \buttonIcon{differentiate.eps} This operator symbolically differentiates its input,
 provided the input is differentiable. An error is generated if the input
 is not differentiable.
 
 \item[Plus, Minus, Multiply and Divide blocks]
-    \smhtmladdimg{NewItem49.png}. These execute the stated binary
+    \buttonIcon{add.eps}\buttonIcon{subtract.eps}\buttonIcon{multiply.eps}\buttonIcon{divide.eps}. These execute the stated binary
     mathematical operations. Each input can take multiple wires as
     well---so that to add five numbers together, for example you can wire 1 input
     to one port on the Add block, and the other four to the other
