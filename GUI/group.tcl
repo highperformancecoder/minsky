@@ -125,7 +125,6 @@ proc groupContext {id x y} {
     .wiring.context add command -label "Flip" -command "group::flip $id"
     .wiring.context add command -label "Flip Contents" -command "group::flipContents $id"
     .wiring.context add command -label "Browse object" -command "obj_browser [eval minsky.groupItems.@elem $id].*"
-    .wiring.context add command -label "Group" -command "minsky.createGroup;.wiring.canvas delete all; updateCanvas"
     .wiring.context add command -label "Ungroup" -command "ungroupGroupItem $id"
     .wiring.context add command -label "Raise" -command "raiseItem group$id"
     .wiring.context add command -label "Lower" -command "lowerItem group$id"
