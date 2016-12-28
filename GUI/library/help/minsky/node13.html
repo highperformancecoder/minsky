@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Insert</TITLE>
-<META NAME="description" CONTENT="Insert">
+<TITLE>Initial conditions</TITLE>
+<META NAME="description" CONTENT="Initial conditions">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,49 +20,53 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node14.html">
 <LINK REL="previous" HREF="node12.html">
-<LINK REL="up" HREF="node10.html">
+<LINK REL="up" HREF="node11.html">
 <LINK REL="next" HREF="node14.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html253"
+<A NAME="tex2html167"
   HREF="node14.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html251"
-  HREF="node10.html">
+<A NAME="tex2html165"
+  HREF="node11.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html245"
+<A NAME="tex2html159"
   HREF="node12.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html254"
-  HREF="node14.html">Options</A>
-<B> Up:</B> <A NAME="tex2html252"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html246"
-  HREF="node12.html">Edit</A>
+<B> Next:</B> <A NAME="tex2html168"
+  HREF="node14.html">Sliders</A>
+<B> Up:</B> <A NAME="tex2html166"
+  HREF="node11.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html160"
+  HREF="node12.html">Variable names</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00231300000000000000"></A>
-<A NAME="Insert"></A>
+<H2><A NAME="SECTION00332000000000000000"></A><A NAME="var:init"></A>
 <BR>
-Insert
-</H3>
+Initial conditions
+</H2>
 
 <P>
-This menu contains a set of <A HREF="node45.html#operations">mathematical operator
-blocks</A> for placement on the Canvas. You can get the same
-effect by clicking on the Design Icons. Also present are
-<A HREF="node55.html#godley">Godley table items</A> and <A HREF="node53.html#Plot">Plots</A>.
+Variable initial conditions can be defined through the ``init value''
+field of the variable edit menu, or in the case of Godley table stock
+variables, through the initial condition row of the Godley table. An
+initial value can be a simple number, or it can be a multiple of
+another named variable (or parameter). In case of symbolic
+definitions, it would be possible to set up a circular reference where
+the initial value of variable A is defined in terms of the initial
+value of variable B, which in turn depends on the intial value of
+A. Such a pathological situation is detected when the system is reset.
 
 <P>
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>

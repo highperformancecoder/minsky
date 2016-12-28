@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Experienced in system dynamics?</TITLE>
-<META NAME="description" CONTENT="Experienced in system dynamics?">
+<TITLE>Tutorial</TITLE>
+<META NAME="description" CONTENT="Tutorial">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,189 +18,58 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node3.html">
-<LINK REL="up" HREF="node2.html">
+<LINK REL="next" HREF="node8.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="minsky.html">
 <LINK REL="next" HREF="node5.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html115"
+<A NAME="tex2html63"
   HREF="node5.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html113"
-  HREF="node2.html">
+<A NAME="tex2html61"
+  HREF="minsky.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html109"
+<A NAME="tex2html55"
   HREF="node3.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html116"
-  HREF="node5.html">What's new</A>
-<B> Up:</B> <A NAME="tex2html114"
-  HREF="node2.html">Welcome</A>
-<B> Previous:</B> <A NAME="tex2html110"
-  HREF="node3.html">New to system dynamics?</A>
+<B> Next:</B> <A NAME="tex2html64"
+  HREF="node5.html">Basic System Dynamics model</A>
+<B> Up:</B> <A NAME="tex2html62"
+  HREF="minsky.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html56"
+  HREF="node3.html">Experienced in system dynamics?</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00112000000000000000"></A>
-<A NAME="intro:experienced"></A>
+<H1><A NAME="SECTION00200000000000000000"></A><A NAME="tutorial"></A>
 <BR>
-Experienced in system dynamics?
-</H2>
+Tutorial
+</H1>
 
 <P>
-As an experienced system dynamics user (or if you've just read <A HREF="node3.html#intro:new">``New to
-system dynamics?''</A>), what you need to know is what Minsky
-provides that other system dynamics programs don't. That boils down to
-one feature: The Godley Table that enables a dynamic model of
-financial flows to be derived from a table that is very similar to the
-accountant's double-entry bookkeeping table.
-
-<P>
-The dynamics in financial flows could be modeled using the flowchart
-paradigm. But it would also be very, very easy to make a mistake
-modeling financial flows in such a system, for one simple reason:
-every financial flow needs to be entered at least twice in a
-system--once as a source, and once as a sink.
-
-<P>
-For example, if you go shopping and buy a new computer with your
-credit card, you increase your debt to a bank and simultaneously
-increase the deposit account of the retailer from whom you buy the
-computer. The two system states in this model-your credit card
-(``BuyerCredit'') and the retailer's deposit account
-(``SellerDeposit'')--therefore have to have the same entry (let's call
-this ``Card'') made into them. In Vissim, such a transaction would look
-like this:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="367" HEIGHT="74" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem11.png"
- ALT="44">
-
-</DIV>
-
-<P>
-That would work, but there's nothing in the program that warns you if
-you make a mistake like, for example, wiring up the BuyerCredit entry,
-but forgetting the SellerDeposit one:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="367" HEIGHT="74" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem12.png"
- ALT="47">
-
-</DIV>
-
-<P>
-Or, perhaps, wiring up both blocks, but giving one the wrong sign:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="489" HEIGHT="111" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem51.png"
- ALT="50">
-
-</DIV>
-
-<P>
-In a very complex model, you might make a mistake like one of the above, run the simulation and get nonsense results, and yet be unable to locate your mistake.
-
-<P>
-Minsky avoids this problem by using the paradigm that accountants
-developed half a millennium ago to keep financial accounts accurately:
-double-entry bookkeeping. Here is the same model in Minsky:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="693" HEIGHT="479" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem13.png"
- ALT="53">
-
-</DIV>
-
-<P>
-This is an inherently better way to generate a dynamic model of financial flows, for at least two reasons:
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
 
 <UL>
-<LI>All financial transactions are flows between entities. The
-  tabular layout captures this in a very natural way: each row shows
-  where a flow originates, and where it ends up
-</LI>
-<LI>The program adopts the accounting practice of double-entry
-  bookkeeping, in which entries on each row sum to zero. The source is
-  shown as a ``+'', the sink is shown as a ``-'', and assets are shown
-  as a positive sum while liabilities are shown as a negative. If you
-  don't ensure that each flow starts somewhere and ends
-  somewhere--say you make the same mistake as in the flowchart
-  examples above, then the program will identify your mistake.
-</LI>
-</UL>
-
-<P>
-If you forget to enter the recipient in this transaction, then the Row
-Sum identifies your mistake by showing that the row sums to ``Card''
-rather than zero:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="678" HEIGHT="168" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem52.png"
- ALT="58">
-
-</DIV>
-
-<P>
-And it also identifies if you give the wrong sign to one entry:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="677" HEIGHT="164" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem53.png"
- ALT="61">
-
-</DIV>
-
-<P>
-Minsky thus adds an element to the system dynamics toolkit which is
-fundamental for modeling the monetary flows that are an intrinsic
-aspect of a market economy. Future releases will dramatically extend
-this capability. 
-
-<P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html115"
-  HREF="node5.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html113"
-  HREF="node2.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html109"
-  HREF="node3.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html116"
-  HREF="node5.html">What's new</A>
-<B> Up:</B> <A NAME="tex2html114"
-  HREF="node2.html">Welcome</A>
-<B> Previous:</B> <A NAME="tex2html110"
-  HREF="node3.html">New to system dynamics?</A>
-<!--End of Navigation Panel-->
+<LI><A NAME="tex2html65"
+  HREF="node5.html">Basic System Dynamics model</A>
+<LI><A NAME="tex2html66"
+  HREF="node6.html">Basic Banking model</A>
+<UL>
+<LI><A NAME="tex2html67"
+  HREF="node7.html">Loanable Funds</A>
+</UL></UL>
+<!--End of Table of Child-Links-->
+<BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>

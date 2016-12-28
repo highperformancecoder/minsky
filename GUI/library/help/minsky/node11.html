@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>File</TITLE>
-<META NAME="description" CONTENT="File">
+<TITLE>Variables</TITLE>
+<META NAME="description" CONTENT="Variables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,155 +18,116 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node12.html">
+<LINK REL="next" HREF="node15.html">
 <LINK REL="previous" HREF="node10.html">
-<LINK REL="up" HREF="node10.html">
+<LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node12.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html233"
+<A NAME="tex2html144"
   HREF="node12.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html231"
-  HREF="node10.html">
+<A NAME="tex2html142"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html225"
+<A NAME="tex2html136"
   HREF="node10.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html234"
-  HREF="node12.html">Edit</A>
-<B> Up:</B> <A NAME="tex2html232"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html226"
-  HREF="node10.html">Menu</A>
+<B> Next:</B> <A NAME="tex2html145"
+  HREF="node12.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html143"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html137"
+  HREF="node10.html">Switch</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00231100000000000000"></A>
-<A NAME="File"></A>
-<BR>
-File
-</H3>
+<H1><A NAME="SECTION00330000000000000000">
+Variables</A>
+</H1>
 
 <P>
+Variables represent values in a calculation, and come in a number of
+varieties:
 <DL>
-<DT><STRONG>About</STRONG></DT>
-<DD>Tells you the version of Minsky that you are using
-
-<P>
+<DT><STRONG>Constants</STRONG></DT>
+<DD>represent an explicit numerical value, and do not
+have a name. Their graphical representation shows the actual value of
+the constant.
 </DD>
-<DT><STRONG>New System</STRONG></DT>
-<DD>Clear the Canvas.
-
-<P>
+<DT><STRONG>Parameters</STRONG></DT>
+<DD>are named constants. All instances of a given name
+represent the same value, as with all other named variables, so
+changing the value of one parameter, either through its edit menu, or
+through a slider, will affect all the others of that name.
 </DD>
-<DT><STRONG>Open</STRONG></DT>
-<DD>Open an existing Minsky file (Minsky files have the suffix of "mky").
-
-<P>
+<DT><STRONG>Flow variables</STRONG></DT>
+<DD>have an input port that defines how the value is
+to be calculated. Only one flow variable of a given name can have its
+input port connected, as they all refer to the same quantity. If no
+input ports are connected, then flow variables act just like
+parameters.
 </DD>
-<DT><STRONG>Recent Files</STRONG></DT>
-<DD><A NAME="recentfiles"></A> Provides a shortcut to some of
-your previously opened Minsky files
-
-<P>
+<DT><STRONG>Integral variables</STRONG></DT>
+<DD>represent the result of integrating its
+input over time  by means of the differential
+equation solver. The integrand is represented by the input to an
+integral operator that is attached to the integral variable.
 </DD>
-<DT><STRONG>Save</STRONG></DT>
-<DD>Save the current file.
-
-<P>
-</DD>
-<DT><STRONG>Save As</STRONG></DT>
-<DD>Save the current file under a new name.
-
-<P>
-</DD>
-<DT><STRONG>Insert File as Group</STRONG></DT>
-<DD>Insert a Minsky file directly into the
-current model as a <A HREF="node52.html#group">group</A>
-
-<P>
-</DD>
-<DT><STRONG>Output LaTeX</STRONG></DT>
-<DD>Produce the set of equations that define the
-  current system for use in documenting the model, for use in LaTeX
-  compatible typesetting systems. If you LaTeX implement doesn't
-  support breqn, untick the <A HREF="node14.html#wrap-equations">wrap long equations
-  option</A>. 
-
-<P>
-</DD>
-<DT><STRONG>Output MatLab</STRONG></DT>
-<DD>Output a MatLab function that can be used to
-simulate the system in a MatLab compatible system, such as
-<A NAME="tex2html2"
-  HREF="https://en.wikipedia.org/wiki/MATLAB">MatLab</A>
-or <A NAME="tex2html3"
-  HREF="http://www.gnu.org/software/octave/">Octave</A>.
-
-<P>
-</DD>
-<DT><STRONG>Log simulation</STRONG></DT>
-<DD>Outputs the results of the integration variables
-into a CSV data file for later use in spreadsheets or plotting
-applications.
-
-<P>
-</DD>
-<DT><STRONG>Recording</STRONG></DT>
-<DD>Record the mouse movements and keystrokes for later
-replay. This is useful for demonstrating how to build a model, but
-bear in mind that recorded logs are not, in general, portable between
-versions of Minsky.
-
-<P>
-</DD>
-<DT><STRONG>Replay recording</STRONG></DT>
-<DD>Replay a recording of mouse and keystroke events.
-
-<P>
-</DD>
-<DT><STRONG>Quit</STRONG></DT>
-<DD>Exit the program. Minsky will check to see whether you have saved your changes. If you have, you will exit the program; if not, you will get a reminder to save your changes:
-
-<P>
-</DD>
-<DT><STRONG>Debugging use</STRONG></DT>
-<DD>Items under the line are intended for developer
-  use, and will not be documented here. Redraw may be useful if the
-  screen gets messed up because of a bug.
-
-<P>
+<DT><STRONG>Stock variables</STRONG></DT>
+<DD>are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up the
+column.
 </DD>
 </DL>
 
 <P>
+Variables may be converted between types in the variable edit menu,
+available from the context menu, subject to certain rules. For example,
+a variable whose input is wired anywhere on the canvas cannot be
+changed from ``flow''. Stock variables need to be defined in a Godley
+table, and so on.
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html146"
+  HREF="node12.html">Variable names</A>
+<LI><A NAME="tex2html147"
+  HREF="node13.html">Initial conditions</A>
+<LI><A NAME="tex2html148"
+  HREF="node14.html">Sliders</A>
+</UL>
+<!--End of Table of Child-Links-->
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html233"
+<A NAME="tex2html144"
   HREF="node12.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html231"
-  HREF="node10.html">
+<A NAME="tex2html142"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html225"
+<A NAME="tex2html136"
   HREF="node10.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html234"
-  HREF="node12.html">Edit</A>
-<B> Up:</B> <A NAME="tex2html232"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html226"
-  HREF="node10.html">Menu</A>
+<B> Next:</B> <A NAME="tex2html145"
+  HREF="node12.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html143"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html137"
+  HREF="node10.html">Switch</A>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>

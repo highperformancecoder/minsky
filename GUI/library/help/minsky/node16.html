@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Run Buttons</TITLE>
-<META NAME="description" CONTENT="Run Buttons">
+<TITLE>Groups</TITLE>
+<META NAME="description" CONTENT="Groups">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -19,66 +19,119 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node17.html">
-<LINK REL="previous" HREF="node10.html">
-<LINK REL="up" HREF="node9.html">
+<LINK REL="previous" HREF="node15.html">
+<LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node17.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html281"
+<A NAME="tex2html195"
   HREF="node17.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html279"
-  HREF="node9.html">
+<A NAME="tex2html193"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html273"
+<A NAME="tex2html187"
   HREF="node15.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html282"
-  HREF="node17.html">Mode Buttons</A>
-<B> Up:</B> <A NAME="tex2html280"
-  HREF="node9.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html274"
-  HREF="node15.html">Runge Kutta</A>
+<B> Next:</B> <A NAME="tex2html196"
+  HREF="node17.html">Plot widget</A>
+<B> Up:</B> <A NAME="tex2html194"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html188"
+  HREF="node15.html">Wires</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00232000000000000000"></A>
-<A NAME="RunButtons"></A>
+<H1><A NAME="SECTION00350000000000000000"></A><A NAME="group"></A>
 <BR>
-Run Buttons
-</H2>
+Groups
+</H1>
 
 <P>
-<IMG
- WIDTH="92" HEIGHT="36" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem15.png"
- ALT="235">
+Grouping gives the capability to create reusable modules, or subroutines that
+can dramatically simplify more complicated systems. Groups may be
+created in the following ways:
+
+<UL>
+<LI>by lassoing a number of items to select them, then selecting
+``group'' from the canvas context menu, or the edit menu.
+</LI>
+<LI>by pasting the selection. You may ``ungroup'' the group from the
+context menu if you don't desire the result of the paste to be a group.
+</LI>
+<LI>by copying another group
+</LI>
+<LI>by inserting a Minsky file as a group
+</LI>
+</UL>
 
 <P>
-The Run buttons respectively:
-
-<OL>
-<LI>Start a simulation-or pause it if you click on it while a
-simulation is running, when it changes to a pause icon <IMG
- WIDTH="28" HEIGHT="29" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem23.png"
- ALT="237">.
-</LI>
-<LI>Stop a simulation and reset the simulation time to zero
-</LI>
-<LI>Step through the simulation one time increment at a time.
-</LI>
-</OL>
+Zooming in on a group allows you see and edit its contents. Groups may
+be nested heirarchically, which gives an excellent way of zooming in
+to see the detail of a model, or zooming out to get an overview of it.
 
 <P>
-<BR><HR>
+Around the edges of a group are input or output variables, which allow
+one to parameterise the group. One can drag a variable and dock it in
+the I/O area to create a new input or output for the group.
+
+<P>
+When creating a group, or dragging a variable or operation into or out
+of a group, if a wire ends up crossing the group boundary, a new
+temporary variable is added as an I/O variable.
+
+<P>
+Variable names within groups are locally scoped to that group. That
+means that a variable of the same name outside the group refers to a
+different entity completely. One can refer to variables outside the
+current scope by qualifying the variable name. The simplest
+qualification to understand is global scope, which is specified by
+prepending a `:' to the variable name. To refer to a variable in
+another group, the notation is <code>&lt;group id&gt;:&lt;name&gt;</code>, where
+<code>&lt;group id&gt;</code> is the integer id of the group in question. An
+alternative equivalent notation is <code>&lt;description&gt;[&lt;group id&gt;]:&lt;name&gt;</code>, where <code>&lt;description&gt;</code> is the textual name given to
+the group. The description string is ignored by Minsky on input--only
+the group id is important, but this mechanism makes it easier to see
+what variable belongs to which group in the drop down lists in the
+name field. Please try to keep the group names distinctive in their
+first five characters, as Minsky will truncate the descriptive string
+to fit in the drop down menu. 
+
+<P>
+A group can also be exported to a file from the context menu.
+This allows you to build up a library of building blocks. There is a
+github project ``minsky-models'' allowing people to publish their
+building blocks and models for others to use. In the future, we hope
+to integrate Minsky with this github repository, allowing even more
+seamless sharing of models.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html195"
+  HREF="node17.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html193"
+  HREF="node8.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html187"
+  HREF="node15.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html196"
+  HREF="node17.html">Plot widget</A>
+<B> Up:</B> <A NAME="tex2html194"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html188"
+  HREF="node15.html">Wires</A>
+<!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>

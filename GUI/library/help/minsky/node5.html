@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>What's new</TITLE>
-<META NAME="description" CONTENT="What's new">
+<TITLE>Basic System Dynamics model</TITLE>
+<META NAME="description" CONTENT="Basic System Dynamics model">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,160 +18,961 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node2.html">
-<LINK REL="up" HREF="node1.html">
+<LINK REL="next" HREF="node6.html">
+<LINK REL="previous" HREF="node4.html">
+<LINK REL="up" HREF="node4.html">
 <LINK REL="next" HREF="node6.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html123"
+<A NAME="tex2html76"
   HREF="node6.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html121"
-  HREF="node1.html">
+<A NAME="tex2html74"
+  HREF="node4.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html117"
+<A NAME="tex2html68"
   HREF="node4.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html124"
-  HREF="node6.html">Getting Started</A>
-<B> Up:</B> <A NAME="tex2html122"
-  HREF="node1.html">Introduction</A>
-<B> Previous:</B> <A NAME="tex2html118"
-  HREF="node4.html">Experienced in system dynamics?</A>
+<B> Next:</B> <A NAME="tex2html77"
+  HREF="node6.html">Basic Banking model</A>
+<B> Up:</B> <A NAME="tex2html75"
+  HREF="node4.html">Tutorial</A>
+<B> Previous:</B> <A NAME="tex2html69"
+  HREF="node4.html">Tutorial</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00120000000000000000">
-What's new</A>
+<H1><A NAME="SECTION00210000000000000000">
+Basic System Dynamics model</A>
 </H1>
 
 <P>
-Features released as part of Mun: (Minsky.1.D29) (Nov 29th 2013)
+In 1965, Richard Goodwin, the great pioneer of complexity in
+economics, presented the paper <A NAME="tex2html1"
+  HREF="https://en.wikipedia.org/wiki/Goodwin_model_(economics)">``A Growth
+Cycle''</A>
+to
+the First World Congress of the Econometric Society in Rome. It was
+later published in a book collection (Goodwin, Richard M. 1967. "A
+Growth Cycle," in C. H. Feinstein, <EM>Socialism, Capitalism and Economic
+Growth</EM>. Cambridge: Cambridge University Press, pp. 54-58.); to my
+knowledge it was never published in a journal. 
+
+<P>
+Goodwin's model has been subjected to much critical literature about
+implying stable cycles, not matching empirical data, etc., but Goodwin
+himself emphasized that it was a ``starkly schematized and hence quite
+unrealistic model of cycles in growth rates". He argued however that
+it was a better foundation for a more realistic model than ``the more
+usual treatment of growth theory or of cycle theory, separately or in
+combination.'' 
+
+<P>
+Goodwin emphasized the similarity of this model to the Lokta-Volterra
+model of interacting predator and prey, which can make it seem as if
+it was derived by analogy to the biological model. But in fact it can
+easily be derived from a highly simplified causal chain:
 
 <P>
 
 <UL>
-<LI>Keyboard entry of operations and variables
+<LI>The level of output (<IMG
+ WIDTH="17" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img22.png"
+ ALT="$Y$">) determines the level of employment (<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img23.png"
+ ALT="$L$">), with <IMG
+ WIDTH="64" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img24.png"
+ ALT="$L=Y/a$"> where <IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img25.png"
+ ALT="$a$"> is a measure of labor productivity;
 </LI>
-<LI>Notes
+<LI>Given a population <IMG
+ WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$N$">, the employment rate <IMG
+ WIDTH="67" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img27.png"
+ ALT="$\lambda=L/N$"> plays
+a role in determining the <B><EM>rate of change</EM></B> of the wage <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$w$">:
+Goodwin used a linear approximation to a non-linear ``Phillips
+Curve'': 
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="498" HEIGHT="273" ALIGN="BOTTOM" BORDER="0"
+ SRC="img29.png"
+ ALT="\includegraphics{images/PhillipsCurve.eps}">
+
+</DIV>
+
+<P>
+His linear approximation was:
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac1w\frac{d}{dt}w=-\gamma+\rho\cdot\lambda
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="135" HEIGHT="39" BORDER="0"
+ SRC="img30.png"
+ ALT="\begin{displaymath}
+\frac1w\frac{d}{dt}w=-\gamma+\rho\cdot\lambda
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
 </LI>
-<LI>Undo/Redo
+<LI>In a simple two-class model, profits <IMG
+ WIDTH="17" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img31.png"
+ ALT="$\Pi$"> equals the level of
+output <IMG
+ WIDTH="17" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img22.png"
+ ALT="$Y$"> minus the wage bill: <IMG
+ WIDTH="93" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img32.png"
+ ALT="$\Pi=Y-wL$"> 
 </LI>
-<LI>Cut/Copy/Paste
+<LI>For simplicity, Goodwin assumed that all profits were invested, so that Investment equals profits: <IMG
+ WIDTH="46" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img33.png"
+ ALT="$I=\Pi$">.
 </LI>
-<LI>Context dependent clicking (no more mouse mode required)
+<LI>Investment is the rate of change of the capital stock <IMG
+ WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.png"
+ ALT="$K$">;
 </LI>
-<LI>Session recording
+<LI>The level of output is, to a first approximation, determined by
+the level of capital stock (<IMG
+ WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.png"
+ ALT="$K$">). A simple way of stating this is that
+<IMG
+ WIDTH="17" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img22.png"
+ ALT="$Y$"> is proportional to <IMG
+ WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.png"
+ ALT="$K$">: <IMG
+ WIDTH="69" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img34.png"
+ ALT="$Y=K/v$">, where <IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img35.png"
+ ALT="$v$"> is a constant (Goodwin
+notes that this relation ``could be softened but it would mean a
+serious complicating of the structure of the model''); and finally 
 </LI>
-<LI>Plot legends
-</LI>
-<LI>Variable scoping (in groups)
-</LI>
-<LI>Raise/Lower canvas items
+<LI>Goodwin assumed that labor productivity grew at a constant rate <IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img36.png"
+ ALT="$\alpha$">, while population grew at a constant rate <IMG
+ WIDTH="14" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img37.png"
+ ALT="$\beta$">.
+
+<P>
+Goodwin published the model as a reduced form equation in the two
+system states the employment rate (<IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img38.png"
+ ALT="$\lambda$">) and the workers' share
+of output (<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img39.png"
+ ALT="$\omega$">): 
+
+<P>
+<P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{eqnarray*}
+\frac{d}{dt}\lambda&=&\lambda\left(\frac{1-\omega}{v}-\alpha-\beta\right)\\
+\frac{d}{dt}\omega&=&\omega\cdot\left(\rho\cdot\lambda-\gamma-\alpha\right)
+\end{eqnarray*}
+ -->
+<IMG
+ WIDTH="204" HEIGHT="84" BORDER="0"
+ SRC="img40.png"
+ ALT="\begin{eqnarray*}
+\frac{d}{dt}\lambda&amp;=&amp;\lambda\left(\frac{1-\omega}{v}-\alpha-\...
+...}\omega&amp;=&amp;\omega\cdot\left(\rho\cdot\lambda-\gamma-\alpha\right)
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+
+<P>
 </LI>
 </UL>
 
 <P>
-Features released as part of Petty: (Minsky.1.D27) (Sep 10th 2013)
+This form is useful for analytic reasons, but it obscures the causal
+chain that actually lies behind the model. With modern system dynamic
+software, this can be laid out explicitly, and we can also use much
+more meaningful names. We'll start with defining output (which is a
+variable). Click on 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/var.eps}}$
+ -->
+<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img41.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/var.eps}}">
+   on the Icon Palette, or
+click on the Operations menu and choose ``Variable''. This will open
+up the ``Specify Variable Name'' window:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem63.png}}$
+ -->
+</DIV>
+
+<P>
+Enter ``<EM><B>GDP</B></EM>'' into the ``Name'' field, and leave the other
+fields blank--since <EM><B>GDP</B></EM> is a variable and we're defining a
+dynamic system, the value of <EM><B>GDP</B></EM> at any particular point in
+time will depend on the other entities in the model. Now Click OK (or
+press ``Enter''). The variable will now appear, attached to the
+cursor. Move to a point near the top of the screen and click, which
+will place the variable at that location.
+
+<P>
+We are now going to write the first part of the model, that Labor
+(<EM><B>Labor</B></EM>) equals output (<EM><B>GDP</B></EM>) divided by labor
+productivity (<EM><B>LabProd</B></EM>). Just for the sake of illustration,
+we'll make <EM><B>a</B></EM> a parameter, which is a named constant (this can
+easily be modified later). For this we start by clicking on
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/const.eps}}$
+ -->
+<IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img43.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/const.eps}}">
+   on the Palette, or by choosing
+Insert/variable from the menu. This will pop-up the Edit Constant
+window:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem66.png}}$
+ -->
+</DIV>
+
+<P>
+There is actually no real difference between the ``Edit constant''
+dialog and the ``Edit variable'' dialog. The window's title differs,
+and the default value of Type is ``constant'' instead of
+``flow''. We're going to select ``parameter'', allowing one to give
+the parameter a name.
+
+<P>
+Give the paramter the name ``<EM><B>LabProd</B></EM>'' and the value of 1
+(i.e., one unit of output per worker). Click OK or press Enter and the
+constant 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/LabProd.eps}}$
+ -->
+<IMG
+ WIDTH="33" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img45.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/LabProd.eps}}">
+    will now be attached to the
+cursor. Place it below <EM><B>GDP</B></EM>: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem66.png}}$
+ -->
+</DIV>
+
+<P>
+Now we need to divide <EM><B>GDP</B></EM> by <EM><B>LabProd</B></EM>. Click on the
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/divide.eps}}$
+ -->
+<IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img46.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/divide.eps}}">
+   symbol on the palette and the symbol will
+be attached to the cursor. Drag it near the other two objects and
+click. Your Canvas will now look something like this: 
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="179" HEIGHT="133" ALIGN="BOTTOM" BORDER="0"
+ SRC="img47.png"
+ ALT="\includegraphics{images/NewItem70.eps}"> 
+
+</DIV>
+
+<P>
+Now to complete the equation, you have to attach <EM><B>GDP</B></EM>  to the top of the
+divide block and LabProd to the bottom.
+
+<P>
+Now move your cursor to the right hand side of
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/GDP.eps}}$
+ -->
+<IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img48.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/GDP.eps}}">
+    and click, hold the mouse button down, and
+drag. An arrow will come out from  
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/GDP.eps}}$
+ -->
+<IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img48.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/GDP.eps}}">
+  . Drag
+this arrow to the top of the divide block (where you'll see a tiny
+multiply sign) and release the mouse. You should then see this: 
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="179" HEIGHT="133" ALIGN="BOTTOM" BORDER="0"
+ SRC="img49.png"
+ ALT="\includegraphics{images/NewItem74.eps}"> 
+
+</DIV>
+
+<P>
+When the mouse hovers over a block, you will then see little
+circles that identify the input and output ports of the block: 
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="227" HEIGHT="122" ALIGN="BOTTOM" BORDER="0"
+ SRC="img50.png"
+ ALT="\includegraphics{images/NewItem75.eps}"> 
+
+</DIV>
+
+<P>
+Those are the connection points for wires, so start dragging from one
+and release on the other. Now wire LabProd to the bottom of the Divide
+block (where you'll see a miniature divide symbol (blown up below): 
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="171" HEIGHT="139" ALIGN="BOTTOM" BORDER="0"
+ SRC="img51.png"
+ ALT="\includegraphics{images/NewItem76.eps}"> 
+
+</DIV>
+
+<P>
+Then click on 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/var.eps}}$
+ -->
+<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img41.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/var.eps}}">
+   in the Design Icons to create a new variable, call it
+Labor, place it the the right of the Divide block, and wire the output port from the Divide block to the
+input port for <B><EM>Labor</EM></B>: 
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="293" HEIGHT="139" ALIGN="BOTTOM" BORDER="0"
+ SRC="img52.png"
+ ALT="\includegraphics{images/NewItem79.eps}"> 
+
+</DIV>
+
+<P>
+To show the correspondence between the flowchart above and standard
+modeling equations, click on the equations tab: 
+
+<P>
+<P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{eqnarray*}
+\mathrm{GDP}&=&\\
+\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\end{eqnarray*}
+ -->
+<IMG
+ WIDTH="149" HEIGHT="76" BORDER="0"
+ SRC="img53.png"
+ ALT="\begin{eqnarray*}
+\mathrm{GDP}&amp;=&amp;\\
+\mathrm{Labor}&amp;=&amp;\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+
+<P>
+Now let's keep going with the model. With <B><EM>Labor</EM></B> defined, the
+employment rate will be <B><EM>Labor</EM></B> divided by <B><EM>Population</EM></B>. Define <B><EM>Population</EM></B> as a parameter (we'll later
+change it to a variable), and give it a value of 110. 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem81.png}}$
+ -->
+</DIV>
+
+<P>
+Add it to the Canvas and you are now ready to define the employment
+rate--another variable. Click on 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/var.eps}}$
+ -->
+<IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img41.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/var.eps}}">
+  , give it
+the name ``<IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img55.png"
+ ALT="$\backslash$">lambda'' (be sure to include the backslash symbol), put
+another Divide block on the canvas, choose Wire mode and wire this
+next part of the model up. You should now have:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="437" HEIGHT="190" ALIGN="BOTTOM" BORDER="0"
+ SRC="img56.png"
+ ALT="\includegraphics{images/NewItem83.eps}">
+
+</DIV>
+
+<P>
+Now switch to the equations tab, and you will see
+
+<P>
+<P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{eqnarray*}
+\mathrm{GDP}&=&\\
+\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\lambda&=&\frac{\mathrm{Labor}}{\mathrm{Population}}\\
+\end{eqnarray*}
+ -->
+<IMG
+ WIDTH="164" HEIGHT="115" BORDER="0"
+ SRC="img57.png"
+ ALT="\begin{eqnarray*}
+\mathrm{GDP}&amp;=&amp;\\
+\mathrm{Labor}&amp;=&amp;\frac{\mathrm{GDP}}{\mathr...
+...rod}}\\
+\lambda&amp;=&amp;\frac{\mathrm{Labor}}{\mathrm{Population}}\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+
+<P>
+Notice that Minsky outputs a Greek <IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img38.png"
+ ALT="$\lambda$"> in the equation. You can
+input such characters directly, if your keyboard supports them as unicode
+characters, however you can also use a subset of the LaTeX language to give
+your variables more mathematial names.
+
+<P>
+With the employment rate defined, we are now ready to define a
+``Phillips Curve'' relationship between the level of employment and the
+<EM><B>rate of change</B></EM> of wages. There was far more to Phillips than this (he
+actually tried to introduce economists to system dynamics back in the
+1950s), and far more to his employment-wage change relation too, and
+he insisted that the relationship was nonlinear (as in Goodwin's
+figure above). But again for simplicity we'll define a linear
+relationship between employment and the rate of change of wages. 
+
+<P>
+Here we need to manipulate the basic linear equation that Goodwin used:
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac1w\frac d{dt}w = -\gamma+\rho\cdot\lambda
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="135" HEIGHT="39" BORDER="0"
+ SRC="img58.png"
+ ALT="\begin{displaymath}
+\frac1w\frac d{dt}w = -\gamma+\rho\cdot\lambda
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+Firstly multiply both sides by <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$w$">:
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac d{dt}w = w\cdot(-\gamma+\rho\cdot\lambda)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="154" HEIGHT="39" BORDER="0"
+ SRC="img59.png"
+ ALT="\begin{displaymath}
+\frac d{dt}w = w\cdot(-\gamma+\rho\cdot\lambda)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+Then integrate both sides (because integration is a numerically much
+more stable process than differentiation, all system dynamics programs
+use integration rather than differentiation): 
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{displaymath}
+w=w_0+\int w\cdot(-\gamma+\rho\cdot\lambda)
+\end{displaymath}
+ -->
+
+<IMG
+ WIDTH="194" HEIGHT="42" BORDER="0"
+ SRC="img60.png"
+ ALT="\begin{displaymath}
+w=w_0+\int w\cdot(-\gamma+\rho\cdot\lambda)
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+
+<P>
+In English, this says that the wage now is the initial wage plus the
+integral of the wage multiplied by its rate of change function. That's
+what we now need to add to the Canvas, and the first step is to spell
+out the wage change function itself. Firstly, since we're using a
+linear wage response function, the rate of employment has to be
+referenced to a rate of employment at which the rate of changes is
+zero.  I suggest using Milton Friedman's concept of a
+``Non-Accelerating-Inflation-Rate-of-Unemployment'', or NAIRU. We need
+to define this constant, subtract it from 1, and subtract the result
+from the actual employment rate <IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img38.png"
+ ALT="$\lambda$">. To enter 1, click on
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/const.eps}}$
+ -->
+<IMG
+ WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img43.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/const.eps}}">
+  , define a constant and give it
+a value of 1. Then define another variable NAIRU, and give it a value
+of 0.05 (5% unemployment). Select ``parameter'' as the variable
+type. Subtract this from 1 and subtract the result from <IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img38.png"
+ ALT="$\lambda$">. You
+should have the following:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="562" HEIGHT="257" ALIGN="BOTTOM" BORDER="0"
+ SRC="img61.png"
+ ALT="\includegraphics{images/NewItem108.eps}">
+
+</DIV>
+
+<P>
+Now we need to multiply this gap between the actual employment rate
+and the ``NAIRE'' rate by a parameter that represents the response of
+wages to this gap. Let's call this parameter <B><EM>Emp_{Response}</EM></B> (remember to include the underscore and the braces). Define the parameter, give it a value of 10, and multiply (<IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img38.png"
+ ALT="$\lambda$"> minus NAIRE) by it:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem109.eps}}$
+ -->
+<IMG
+ WIDTH="555" HEIGHT="223" ALIGN="BOTTOM" BORDER="0"
+ SRC="img62.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem109.eps}}">
+</DIV>
+
+<P>
+Now we are ready to add a crucial component of a dynamic model: the
+integral block, which takes a flow as its input and has the integral
+of that flow as the output. The wage rate <B><EM>w</EM></B> is such a variable, and we
+define it by clicking on the 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/int.eps}}$
+ -->
+<IMG
+ WIDTH="29" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img63.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}">
+   symbol in the Icon Palette (or by
+choosing Operations/Integrate from the <EM>Insert</EM> menu). This then attaches the
+following block to the cursor: 
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="104" HEIGHT="48" ALIGN="BOTTOM" BORDER="0"
+ SRC="img64.png"
+ ALT="\includegraphics{images/NewItem39.eps}">
+
+</DIV>
+
+<P>
+Now we need to rename this from the default name of ``int1'' to
+``<EM><B>w</B></EM>'' for the wage rate. Either right click or double-click
+on ``int1'' and this will bring up the edit window . Rename it to ``w'' and
+give it a value of 1: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem93.png}}$
+ -->
+</DIV>
+
+<P>
+To compete the integral equation, we need to multiply the linear
+employment response function by the current wage before we integrate
+it (see the last equation above). There are two ways to do
+this. First, place a multiply block between the wage change function
+and the integral block, wire the function up to one input on the
+multiply block, and then either:
 
 <P>
 
 <UL>
-<LI>Multiple Godley table integration
+<LI>wire the output of the <B><EM>w</EM></B> block back to the other input
+on multiply block; or
 </LI>
-<LI>User selection of ODE solver
-</LI>
-<LI>Line breaking in LaTeX
-</LI>
-<LI>Export of simulation data to CSV
-</LI>
-<LI>Variable name edit field a combobox
-</LI>
-<LI>Resizable plot icons
-</LI>
-<LI>Right hand side plot inputs
-</LI>
-<LI>Recent files
-</LI>
-<LI>Titles and labels on plots
-</LI>
-<LI>LaTeX renderering of variable names
-</LI>
-<LI>Data block
-</LI>
-<LI>Variable sliders
+<LI>Right-click on <B><EM>w</EM></B>, choose ``Copy Var'', place that copy
+before the multiply block, and wire it up.
 </LI>
 </UL>
 
 <P>
-Features released as part of Aquinas: (Minsky.1.D14) (Mar 3rd 2013)
+The first method gives you this initial result:
 
 <P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="171" HEIGHT="58" ALIGN="BOTTOM" BORDER="0"
+ SRC="img66.png"
+ ALT="\includegraphics{images/NewItem110.eps}">
 
-<UL>
-<LI>XML schema to handle schema evolution
-</LI>
-<LI>Zooming
-</LI>
-<LI>Improved Groups, zoom to display
-</LI>
-<LI>Godley table displays running flow values
-</LI>
-<LI>Insert from file
-</LI>
-<LI>Matlab export
-</LI>
-</UL>
+</DIV>
 
 <P>
-Features released as part of Aristotle: (Minsky.1.D8) (Oct 5th 2012)
+That looks messy, but notice the blue dot on the wire? Click and drag
+on that and you will turn the straight line connector into a curve: 
 
 <P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem111.eps}}$
+ -->
+<IMG
+ WIDTH="555" HEIGHT="167" ALIGN="BOTTOM" BORDER="0"
+ SRC="img67.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem111.eps}}">
+</DIV>
 
-<UL>
-<LI>Menus
-</LI>
-<LI>Godley tables
-</LI>
-<LI>wiring, operations and variables
-</LI>
-<LI>Runge-Kutta ODE solver
-</LI>
-<LI>Plots
-</LI>
-<LI>Item rotation
-</LI>
-<LI>Groups
-</LI>
-<LI>Integration operators
-</LI>
-</UL>
+<P>
+The second approach, which I personally prefer (it's neater, and it
+precisely emulates the integral equation), yields this result: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem112.eps}}$
+ -->
+<IMG
+ WIDTH="554" HEIGHT="171" ALIGN="BOTTOM" BORDER="0"
+ SRC="img68.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem112.eps}}">
+</DIV>
+
+<P>
+From this point on the model develops easily--``like money for old
+rope'', as one of my maths lecturers used to say. Firstly if we
+multiply the wage rate <B><EM>w</EM></B> by <B><EM>Labor</EM></B> we get the <EM><B>Wage Bill</B></EM>. To do this,
+firstly create the variable Wage Bill, and put it well below where <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$w$">
+currently is on your diagram: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem113.eps}}$
+ -->
+<IMG
+ WIDTH="554" HEIGHT="350" ALIGN="BOTTOM" BORDER="0"
+ SRC="img69.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem113.eps}}">
+</DIV>
+
+<P>
+Now right-click on <B><EM>WageBill</EM></B> and choose ``Flip''. This rotates
+the block through 180 degrees (any arbitrary rotation can be applied
+from the variable definition window itself). Now right-click on
+<B><EM>Labor</EM></B>, which you've already defined some time ago, and choose
+``Copy''. Place the copy of <B><EM>Labor</EM></B> to the right of <B><EM>WageBill</EM></B>:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="279" HEIGHT="88" ALIGN="BOTTOM" BORDER="0"
+ SRC="img70.png"
+ ALT="\includegraphics{images/NewItem98.eps}">
+
+</DIV>
+
+<P>
+Now insert a multiply block before <B><EM>WageBill</EM></B>, and wire <B><EM>w</EM></B> and <B><EM>Labor</EM></B> up to it. Curve the wire from <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$w$"> using the blue
+dots (you can do this multiple times to create a very curved path:
+each time you create a curve, another 2 curve points are added that
+you can also manipulate, as I have done below: 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem114.eps}}$
+ -->
+<IMG
+ WIDTH="555" HEIGHT="279" ALIGN="BOTTOM" BORDER="0"
+ SRC="img71.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem114.eps}}">
+</DIV>
+
+<P>
+The next step is to subtract the <B><EM>WageBill</EM></B> from <B><EM>GDP</EM></B>
+to define <B><EM>Profits</EM></B>. Take a copy of <B><EM>GDP</EM></B>, insert it
+above <B><EM>WageBill</EM></B>, insert a subtract block, and wire it up to
+define the variable <B><EM>Profits</EM></B>:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="312" HEIGHT="123" ALIGN="BOTTOM" BORDER="0"
+ SRC="img72.png"
+ ALT="\includegraphics{images/NewItem100.eps}">
+
+</DIV>
+
+<P>
+In the simple Goodwin model, all Profits are invested, and investment
+of course is the rate of change of the capital stock Capital. Create a
+variable called Investment, wire this up to Profits, and then create a
+new integral variable <EM>Capital</EM> using the 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/int.eps}}$
+ -->
+<IMG
+ WIDTH="29" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img63.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}">
+  
+icon. Right-click or double-click on it to rename <EM>int2</EM> to <EM>Capital</EM>, and give it an initial value of 300:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem102.png}}$
+ -->
+</DIV>
+
+<P>
+Wire this up to Investment:
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="527" HEIGHT="48" ALIGN="BOTTOM" BORDER="0"
+ SRC="img74.png"
+ ALT="\includegraphics{images/NewItem104.eps}">
+
+</DIV>
+
+<P>
+Now there's only one step left to complete the model: define a
+parameter CapOutputRatio and give it a value of 3:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem103.png}}$
+ -->
+</DIV>
+
+<P>
+Divide Capital by this, and wire the result up to the input on
+GDP. You have now built your first dynamic model in Minsky: 
+
+<P>
+Before you attempt to run it, do two things. Firstly from the <EM>Runge
+Kutta</EM> menu item, change the Max Step Size to 0.01--to get a smoother
+simulation. 
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\htmladdimg{NewItem107.png}}$
+ -->
+</DIV>
+
+<P>
+Secondly, add some graphs by clicking on the
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="plot.png"
+ ALT="1420"> icon, placing the graph
+in the middle of the flowchart, and wiring up <IMG
+ WIDTH="14" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img38.png"
+ ALT="$\lambda$"> and <IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$w$"> to two of
+the four inputs on the left hand side. You will now see that, rather
+than reaching equilibrium, the model cycles constantly:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem116.eps}}$
+ -->
+<IMG
+ WIDTH="555" HEIGHT="254" ALIGN="BOTTOM" BORDER="0"
+ SRC="img77.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem116.eps}}">
+</DIV>
+
+<P>
+If you click on the equations tab, you will see that you have defined the following system of
+equations:
+
+<P>
+<P></P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ \begin{eqnarray*}
+\mathrm{GDP}&=&\frac{\mathrm{Capital}}{\mathrm{CapOutRatio}}\\
+\mathrm{Investment}&=&\mathrm{Profits}\\
+\mathrm{Labor}&=&\frac{\mathrm{GDP}}{\mathrm{LabProd}}\\
+\mathrm{Profits}&=&\mathrm{GDP}-\mathrm{WageBill}\\
+\mathrm{WageBill}&=&w\times\mathrm{Labor}\\
+\lambda&=&\frac{\mathrm{Labor}}{\mathrm{Population}}\\
+\omega&=&\frac{\mathrm{WageBill}}{\mathrm{GDP}}\\
+\frac{dw}{dt}&=&\mathrm{Emp}_\mathrm{Response}\times(\lambda-(1-\mathrm{NAIRU})
+        \times w\\
+\frac{d\mathrm{Capital}}{dt}&=&\mathrm{Investment}\\
+\end{eqnarray*}
+ -->
+<IMG
+ WIDTH="383" HEIGHT="315" BORDER="0"
+ SRC="img78.png"
+ ALT="\begin{eqnarray*}
+\mathrm{GDP}&amp;=&amp;\frac{\mathrm{Capital}}{\mathrm{CapOutRatio}}\\...
+...times w\\
+\frac{d\mathrm{Capital}}{dt}&amp;=&amp;\mathrm{Investment}\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+
+<P>
+At this level of complexity, the equation form--if you're accustomed
+to working in equations--is as accessible as the block diagram model from
+which it was generated. But at much higher levels of complexity, the
+block diagram is far easier to understand since it displays the causal
+links in the model clearly, and can be structured in sub-groups that
+focus on particular parts of the system. 
+
+<P>
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html123"
+<A NAME="tex2html76"
   HREF="node6.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html121"
-  HREF="node1.html">
+<A NAME="tex2html74"
+  HREF="node4.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html117"
+<A NAME="tex2html68"
   HREF="node4.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html124"
-  HREF="node6.html">Getting Started</A>
-<B> Up:</B> <A NAME="tex2html122"
-  HREF="node1.html">Introduction</A>
-<B> Previous:</B> <A NAME="tex2html118"
-  HREF="node4.html">Experienced in system dynamics?</A>
+<B> Next:</B> <A NAME="tex2html77"
+  HREF="node6.html">Basic Banking model</A>
+<B> Up:</B> <A NAME="tex2html75"
+  HREF="node4.html">Tutorial</A>
+<B> Previous:</B> <A NAME="tex2html69"
+  HREF="node4.html">Tutorial</A>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>

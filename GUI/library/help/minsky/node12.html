@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Edit</TITLE>
-<META NAME="description" CONTENT="Edit">
+<TITLE>Variable names</TITLE>
+<META NAME="description" CONTENT="Variable names">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,106 +20,49 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node13.html">
 <LINK REL="previous" HREF="node11.html">
-<LINK REL="up" HREF="node10.html">
+<LINK REL="up" HREF="node11.html">
 <LINK REL="next" HREF="node13.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html243"
+<A NAME="tex2html157"
   HREF="node13.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html241"
-  HREF="node10.html">
+<A NAME="tex2html155"
+  HREF="node11.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html235"
+<A NAME="tex2html149"
   HREF="node11.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html244"
-  HREF="node13.html">Insert</A>
-<B> Up:</B> <A NAME="tex2html242"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html236"
-  HREF="node11.html">File</A>
+<B> Next:</B> <A NAME="tex2html158"
+  HREF="node13.html">Initial conditions</A>
+<B> Up:</B> <A NAME="tex2html156"
+  HREF="node11.html">Variables</A>
+<B> Previous:</B> <A NAME="tex2html150"
+  HREF="node11.html">Variables</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00231200000000000000"></A>
-<A NAME="Edit"></A>
-<BR>
-Edit
-</H3>
+<H2><A NAME="SECTION00331000000000000000">
+Variable names</A>
+</H2>
 
 <P>
-
-<UL>
-<LI><A NAME="edit:undo"></A> Undo and Redo allow you to step back and forward in your editing
-history. If you step back a few steps, and then edit the model, all
-subsequent model states will be erased from the history.
-
-<P>
-</LI>
-<LI><A NAME="edit:copy"></A> Cut/copy/paste. Selecting, or lassoing a region
-of the canvas will select a group of icons, which will be shaded to
-indicate the selected items. Wires joining two selected items will
-also be selected. Note that, compatible with X-windows, selecting
-automatically performs a copy, so the copy operation is strictly
-redundant, but provided for users familiar with systems where an
-explicit copy request is required. Cut deletes the selected
-items. Paste will paste the items in the clipboard as a
-<A HREF="node52.html#group">group</A> into the current model. At the time of writing,
-copy-pasting between different instances of Minsky, or into other
-applications, only works on X-windows systems. Pasting the clipboard
-into a text-based application will be a Minsky schema XML document.
+Variable names uniquely identify variables. Multiple icons on the
+canvas may have the same name -- they all refer to the same
+variable. Variable names have scope, which is either global (indicated
+by a leading `:', or the numerical id of a group. You may select a
+variable name from a drop down list in the ``name'' combo box, which
+makes for an easier way of selecting exactly which variable you want.
 
 <P>
-</LI>
-<LI><A NAME="edit:group"></A> Create a <A HREF="node52.html#group">group</A> using the
-contents of the selection. Groups allow you to organise a more
-complicated systems specification into heigher level modules that make
-the overall system more comprehensible.
-
-<P>
-</LI>
-</UL>
-
-<P>
-<IMG
- WIDTH="264" HEIGHT="159" ALIGN="BOTTOM" BORDER="0"
- SRC="selectionExamplePrior.png"
- ALT="212"> <IMG
- WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img5.png"
- ALT="$\Rightarrow$"> <IMG
- WIDTH="268" HEIGHT="174" ALIGN="BOTTOM" BORDER="0"
- SRC="selectionExamplePost.png"
- ALT="213">
-
-<P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html243"
-  HREF="node13.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html241"
-  HREF="node10.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html235"
-  HREF="node11.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html244"
-  HREF="node13.html">Insert</A>
-<B> Up:</B> <A NAME="tex2html242"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html236"
-  HREF="node11.html">File</A>
-<!--End of Navigation Panel-->
+<BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>

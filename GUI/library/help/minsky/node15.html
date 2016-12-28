@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Runge Kutta</TITLE>
-<META NAME="description" CONTENT="Runge Kutta">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,61 +18,66 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node14.html">
-<LINK REL="up" HREF="node10.html">
+<LINK REL="next" HREF="node16.html">
+<LINK REL="previous" HREF="node11.html">
+<LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node16.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html271"
+<A NAME="tex2html185"
   HREF="node16.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html269"
-  HREF="node10.html">
+<A NAME="tex2html183"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html265"
+<A NAME="tex2html177"
   HREF="node14.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html272"
-  HREF="node16.html">Run Buttons</A>
-<B> Up:</B> <A NAME="tex2html270"
-  HREF="node10.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html266"
-  HREF="node14.html">Options</A>
+<B> Next:</B> <A NAME="tex2html186"
+  HREF="node16.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html184"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html178"
+  HREF="node14.html">Sliders</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00231500000000000000"></A>
-<A NAME="RungeKutta"></A>
-<BR>
-Runge Kutta
-</H3>
+<H1><A NAME="SECTION00340000000000000000">
+Wires</A>
+</H1>
 
 <P>
-Controls aspect of the adaptive Runge-Kutta equation solver, which
-trade off performance and accuracy of the model. Note a first order
-explicit solver is the classic Jacobi method, which is the fastest,
-but least accurate solver. The algorithm is adaptive, so will vary the
-step size according to how stiff the system of equations
-is. Specifying a minimum step size prevents the system from stalling,
-at the expense of accuracy when the step size reaches that
-minimum. Specifying a maximum step size is useful to ensure one has
-sufficient data points for smooth plots.
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire
+attached, with the exception of <IMG
+ WIDTH="37" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img134.png"
+ ALT="$+/-$"> and <IMG
+ WIDTH="37" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img135.png"
+ ALT="$\times/\div$">, where the
+multiple wires are summed or multiplied, respectively, and similarly max/min.
 
 <P>
-An iteration is the time between updates of the screen, increasing the
-number of solver steps per iteration decreases the overhead involved
-in updating the display, at the expense of smoothness of visual
-animation.
+Wires can be bent by dragging the blue dots (``handles''). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>

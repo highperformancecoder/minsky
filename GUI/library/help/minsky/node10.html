@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Menu</TITLE>
-<META NAME="description" CONTENT="Menu">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,73 +18,91 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node16.html">
+<LINK REL="next" HREF="node11.html">
 <LINK REL="previous" HREF="node9.html">
-<LINK REL="up" HREF="node9.html">
+<LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node11.html">
 </HEAD>
 
-<BODY >
+<BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html218"
+<A NAME="tex2html134"
   HREF="node11.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html216"
-  HREF="node9.html">
+<A NAME="tex2html132"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html210"
+<A NAME="tex2html126"
   HREF="node9.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html219"
-  HREF="node11.html">File</A>
-<B> Up:</B> <A NAME="tex2html217"
-  HREF="node9.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html211"
-  HREF="node9.html">Components of the Program</A>
+<B> Next:</B> <A NAME="tex2html135"
+  HREF="node11.html">Variables</A>
+<B> Up:</B> <A NAME="tex2html133"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html127"
+  HREF="node9.html">Operations</A>
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00231000000000000000"></A>
-<A NAME="Menu"></A>
+<H1><A NAME="SECTION00320000000000000000"></A><A NAME="switch"></A>
 <BR>
-Menu
-</H2>
+Switch
+</H1>
+
+<P>
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
+ -->
+<IMG
+ WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img131.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
+  
+A switch block (also known as a case block, or select in the Fortran
+world) is a way of selecting from a range of alternatives according
+to the value of the input, effectively defining a piecewise function.
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+ -->
+<IMG
+ WIDTH="553" HEIGHT="269" ALIGN="BOTTOM" BORDER="0"
+ SRC="img132.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}">
+<EM>An example switch block with 3 cases</EM>
+
+</DIV>
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1,
+or false and true, a two case switch statement will naturally appear
+``upside down'' to how you might think of an if statement. In other
+words, it looks like:
 
 <P>
 <IMG
- WIDTH="238" HEIGHT="36" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem14.png"
- ALT="187">
+ WIDTH="165" HEIGHT="65" ALIGN="MIDDLE" BORDER="0"
+ SRC="img133.png"
+ ALT="$\textstyle \parbox{\textwidth}{
+{\tt if not }{\em condition} {\tt then}\\
+\ldots
+{\tt else}\\
+\ldots
+}$">
+<P>
+You can add or remove cases through the context menu. 
 
 <P>
-The menu controls the basic functions of saving and loading files,
-default settings for the program, etc. These will alter as the program
-is developed; the current menu items (as at November 2013, Mun release) are:
-
-<P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL>
-<LI><A NAME="tex2html220"
-  HREF="node11.html">File</A>
-<LI><A NAME="tex2html221"
-  HREF="node12.html">Edit</A>
-<LI><A NAME="tex2html222"
-  HREF="node13.html">Insert</A>
-<LI><A NAME="tex2html223"
-  HREF="node14.html">Options</A>
-<LI><A NAME="tex2html224"
-  HREF="node15.html">Runge Kutta</A>
-</UL>
-<!--End of Table of Child-Links-->
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-08-07
+2016-12-28
 </ADDRESS>
 </BODY>
 </HTML>
