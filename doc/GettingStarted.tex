@@ -102,12 +102,12 @@ or \htmladdnormallinkfoot{Octave}{http://www.gnu.org/software/octave/}.
 into a CSV data file for later use in spreadsheets or plotting
 applications.
 
-\item[Recording] Record the mouse movements and keystrokes for later
+\item[Recording] Record the states of a model as it is being built for later
 replay. This is useful for demonstrating how to build a model, but
 bear in mind that recorded logs are not, in general, portable between
 versions of Minsky.
 
-\item[Replay recording] Replay a recording of mouse and keystroke events.
+\item[Replay recording] Replay a recording of model states.
 
 \item[Quit] Exit the program. Minsky will check to see whether you have saved your changes. If you have, you will exit the program; if not, you will get a reminder to save your changes.
 
@@ -156,7 +156,7 @@ into a text-based application will be a Minsky schema XML document.
 \end{rawhtml}
 
 \item\label{edit:group} Create a \htmlref{group}{group} using the
-contents of the selection. Groups allow you to organise a more
+contents of the selection. Groups allow you to organise more
 complicated systems specification into higher level modules that make
 the overall system more comprehensible.
 
@@ -212,8 +212,8 @@ is computed.
 trade off performance and accuracy of the model. 
 \item Note a first order explicit solver is the classic Jacobi method, which is the fastest,
 but least accurate solver. 
-\item The algorithm is adaptive, so will vary the
-step size according to how stiff the system of equations
+\item The algorithm is adaptive, so the
+step size will vary according to how stiff the system of equations
 is. 
 \item Specifying a minimum step size prevents the system from stalling,
 at the expense of accuracy when the step size reaches that
@@ -339,7 +339,7 @@ allowing you to pause the simulation \htmladdimg{NewItem23.png}.
 
 The Zoom buttons zoom in and out on the wiring canvas. The same functionality
 is accessed via the mouse scroll wheel. The reset zoom button
-\smhtmladdimg{zoomOrig.png} resets the zoom level to 1, and also
+\buttonIcon{zoomOrig.eps} resets the zoom level to 1, and also
 recentres the canvas. It can also be used to recentre the equation view.
 
 \subsection{Speed slider}
@@ -390,8 +390,8 @@ enters a Godley table into your model:
 \end{center}
 
 Double-click on the Bank Icon (or right-click and choose ``Open Godley
-Table'' from the menu) and you get a double-entry bookkeeping table we
-call a Godley Table, which looks lioke the following onscreen: 
+Table'' from the context menu) and you get a double-entry bookkeeping
+table we call a Godley Table, which looks like the following onscreen:
 
 \fwhtmladdimg{NewItem30.png}
 
@@ -528,7 +528,7 @@ zero is today, and $T$ is some number of years from today. The same
 equation done as a block diagram looks like this: 
 
 \begin{center}
-\includegraphics{images/NewItem46.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem46.eps}}
 \end{center}
 
 Or you can make it look more like the mathematical equation by
@@ -537,7 +537,7 @@ get another copy of the Population variable, and you can wire up the
 equation this way:
 
 \begin{center}
-\includegraphics{images/NewItem47.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem47.eps}}
 \end{center}
 
 Either method can be used. I prefer the latter because it's neater,
@@ -558,26 +558,30 @@ is not differentiable.
 \item[Min \& Max Functions] These take the minimum and maximum values, respectively.
 These also allow multiple wires per input.
 
-\item[Power and Logarithm] These are binary operations (taking two
+\item[Power and Logarithm] \buttonIcon{pow.eps} and
+\buttonIcon{log.eps} These are binary operations (taking two
 arguments). In the case of the power operation, the exponent is the
 top port, and the argument to be raised to that exponent is the bottom
 port. This is indicated by the $x$ and $y$ labels on the ports. In the
 case of logarithm, the bottom port (labelled $b$) is the base of the
 logarithm.
 
-\item[Logical Operators $<$ $\le$ and =. $\wedge$ $\vee$ $\neg$ (and,
-  or, not)] These return 0 for false and 1 for true.  In which may be
-  generated outside of Minsky, and imported as a CSV file.
+\item[Logical Operators $<$ $\le$, =, $\wedge$ $\vee$ $\neg$ (and,
+  or, not)] \buttonIcon{lt.eps}, \buttonIcon{le.eps},
+  \buttonIcon{eq.eps}, \buttonIcon{and_.eps}, \buttonIcon{or_.eps} and
+  \buttonIcon{not_.eps}. These return 0 for false and 1 for true.
 
 \item[Other functions] These are a fairly standard
 complement of mathematical functions.
 
-\item[Data block] \htmlref{A data block}{op:data} interpolates a
-sequence of empirical values. This effectively defines a piecewise linear function.
+\item[Data block] \buttonIcon{data.eps} \htmlref{A data
+block}{op:data} interpolates a sequence of empirical values, which may
+be generated outside of Minsky, and imported as a CSV file. This
+effectively defines a piecewise linear function.
 
-\item[Plot widget] Add \htmlref{plots}{Plot} to the canvas.
+\item[Plot widget] \buttonIcon{plot.eps} Add \htmlref{plots}{Plot} to the canvas.
 
-\item[Switch] Add \htmlref{a piecewise-defined function block}{switch} 
+\item[Switch] \buttonIcon{switchIcon.eps} Add \htmlref{a piecewise-defined function block}{switch} 
 to the canvas. Also known as a hybrid function.
 
 \item[Notes] Add \htmlref{textual annotations}{Notes}
@@ -598,7 +602,7 @@ operators---connected by wires.
 
 The wires in a model connect blocks together to define equations. For
 example, to write an equation for 100/33, you would place a
-\smhtmladdimg{NewItem121.png} on the canvas, and give it the value of 100:
+\buttonIcon{const.eps} on the canvas, and give it the value of 100:
 
 \begin{center}
 \scalebox{0.5}{\htmladdimg{NewItem122.png}}
@@ -610,7 +614,7 @@ Then do the same for 33, and place a divide block on the canvas:
 \includegraphics{images/NewItem123.eps}
 \end{center}
 
-Then click on the right hand edge of \smhtmladdimg{NewItem125.png}
+Then click on the right hand edge of \buttonIcon{const100.eps}
 and drag to extend the wire to the numerator ($\times$) port of the divide operation.
 
 \begin{center}
@@ -629,12 +633,17 @@ Finally, add the other wire.
 There are a number of types of components in Minsky
 \begin{enumerate}
 \item Mathematical operators such as plus (+), minus (-)
-\item Constants (or parameters) which are given a value by the user
+\item Constants (or parameters, which are named constants) which are
+given a value by the user 
 \item Variables whose values are calculated by the program during a simulation and depend on the values of constants and other variables; and
 \item Godley Tables, which define both financial accounts and the
-flows between them.
+flows between them. In the language of stock and flow modelling, the
+columns of a Godley table are the stocks, which are computed by
+integrating over a linear combination of flow variables.
 \item Integrals --- represent a variable computed by integrating a
 function forward in time.
+\item Groups, which allow components to be grouped into modules that
+can be used to construct more complex models.
 \end{enumerate}
 
 
@@ -718,7 +727,7 @@ To construct an equation, such as Fred - Wilma = Barney:
 Click the mouse near the output port of one block and drag the
 cursor to the input port of another while holding the mouse button
 down. An arrow extends out from the output port. Release the mouse
-button near the required input port of the operator. Connection will
+button near the required input port of the operator. A connection will
 be made.
 
 \begin{center}
@@ -790,9 +799,9 @@ As you enter the accounts, they appear at the bottom of the Bank block on the ca
 Bank accounts must be classified as either an Asset, a Liability, or
 the Equity of the relevant Bank, using the drop-down menu currently
 labeled {\tt noAssetClass} at the top of each account. In
-this model, Reserves are an Asset of the banking sector, the accounts
+this model, Reserves are an asset of the banking sector, the accounts
 of ``Patient'' and ``Impatient'' are liabilities, and the ``Safe'' is
-the Equity of the banking system. Click on the
+the equity of the banking system. Click on the
 {\tt noAssetClass} button and this drop-down menu will
 appear:
 
@@ -1051,8 +1060,8 @@ obvious in the \htmlref{tutorial}{tutorial}.
 
 \subsubsection{Multiple banks}
 
-There can be any number of Godley Tables--each representing a
-different financial institution or sector in an economy--in the one
+There can be any number of Godley Tables---each representing a
+different financial institution or sector in an economy---in the one
 diagram. The name of the institution can be altered by clicking on the
 default name (``Godley0'' in the first one created) and altering
 it. Here is an example with 4 such institutions/sectors defined:

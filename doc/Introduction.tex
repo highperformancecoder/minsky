@@ -15,7 +15,7 @@ components right up to passenger jets.
 
 Minsky adds another means to create the dynamic equations that are
 needed to define monetary flows---the ``Godley Table''---which is
-discussed in the next help topic for users who are experienced in
+discussed in the next section for users who are experienced in
 system dynamics. In this section, we'll give you a quick overview of
 the generic system dynamics approach to building a model.
 
@@ -47,14 +47,14 @@ Or you could define it using a block diagram, such as Minsky:
 \end{center}
 
 For a simple algebraic equation like this, modern computer algebra
-programs like Mathcad are just as good as a block diagram program like
+programs like Mathcad are just as good as a block diagram programs like
 Vissim or Minsky. But the visual metaphor excels when you want to describe a
 complex causal chain.
 
 
 These causal chains always involve a relationship between stocks and
 flows. Economists normally model stocks and flows by adding an
-increment to a stock. For example, the level of Capital is defined as
+increment to a stock. For example, the level of capital $K$ is defined as
 a difference equation, where capital in year $t$ is shown as being 
 capital in year $t-1$ plus the investment that took place that year:
 
@@ -62,11 +62,12 @@ capital in year $t-1$ plus the investment that took place that year:
 K_t=K_{t-1}+I_{t-1}
 \end{displaymath}
 
-The problem with this approach is that capital is accumulating on a daily, 
-or even hourly, basis. It is better to model stock as continuous quantities
-and for this reason, all stocks and flows in Minsky are handled instead 
-as integral equations. The amount of capital at time $t$ is shown as 
-the integral of net investment between time 0 and today:
+The problem with this approach is that in reality, capital is
+accumulating on a daily, or even hourly, basis. It is better to model
+stock as continuous quantities and for this reason, all stocks and
+flows in Minsky are handled instead as integral equations. The amount
+of capital at time $t$ is shown as the integral of net investment
+between time 0 and today:
 
 \begin{displaymath}
 K(t)=\int_0^t I(s)ds
@@ -114,7 +115,7 @@ dynamic systems. \htmlref{So why has Minsky been
 As an experienced system dynamics user (or if you've just read \htmlref{``New to
 system dynamics?''}{intro:new}), what you need to know is what Minsky
 provides that other system dynamics programs don't. That boils down to
-one feature: The Godley Table that enables a dynamic model of
+one feature: The Godley Table. It enables a dynamic model of
 financial flows to be derived from a table that is very similar to the
 accountant's double-entry bookkeeping table.
 
@@ -129,7 +130,7 @@ system---once as a source, and once as a sink.
 For example, if you go shopping and buy a new computer with your
 credit card, you increase your debt to a bank and simultaneously
 increase the deposit account of the retailer from whom you buy the
-computer. The two system states in this model--your credit card
+computer. The two system states in this model---your credit card
 (``BuyerCredit'') and the retailer's deposit account
 (``SellerDeposit'')---therefore have to have the same entry (let's call
 this ``Card'') made into them. Such a transaction would look

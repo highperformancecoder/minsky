@@ -61,7 +61,7 @@ namespace minsky
     GodleyTable(): doubleEntryCompliant(false)
     {
       _resize(2,2);
-      cell(0,0)="Flows V / Stock Variables ->";
+      cell(0,0)="Flows ↓ / Stock Variables →";
       cell(1,0)=initialConditions;
     }
 

@@ -11,8 +11,8 @@
 \item[subtract $-$]\label{op:subtract} Subtract two numbers. The input
   ports allow multiple wires, which are summed prior to the
   subtraction being carried out. If an input port is unwired, it is
-  equivalent to setting it to zero. Note the small `+' and `-' signs
-  on the input port indicating which terms are aded or subtracted from
+  equivalent to setting it to zero. Note the small `+' and `$-$' signs
+  on the input ports indicating which terms are added or subtracted from
   the result.
 
 \item[multiply $\times$]\label{op:multiply} Multiply numbers with each
@@ -47,37 +47,40 @@ ports are labelled $x$ and $y$, referring the the formula $x^y$.
 
 \item[max]\label{op:max} Returns the maximum of $x$ and $y$.
 
-\item[and $\wedge$]\label{op:and_} Logical and of $x$ and $y$, where $x<0.5$
+\item[and $\wedge$]\label{op:and_} Logical and of $x$ and $y$, where
+  $x\le 0.5$
   means false, and $x>0.5$ means true. The output is 1 or 0, depending
   on the result being true or false respectively.
 
-\item[or $\vee$]\label{op:or_} Logical or of $x$ and $y$, where $x<0.5$
+\item[or $\vee$]\label{op:or_} Logical or of $x$ and $y$, where $x\le0.5$
   means false, and $x>0.5$ means true. The output is 1 or 0, depending
   on the result being true or false respectively.
 
 \item[not $\neg$]\label{op:not_} The output is 1 or 0, depending
-  on whether $x<0.5$ is true or false respectively.
+  on whether $x\le0.5$ is true or false respectively.
 
-\item[time]\label{op:time} Returns the current value of system time.
+\item[time \buttonIcon{time.eps}]\label{op:time} Returns the current value of system time.
 
 \item[copy]\label{op:copy} This just copies its input to its output,
 which is redundant on wiring diagrams, but is needed for internal
 purposes.
 
-\item[integrate]\label{op:integrate} Creates an integration (or stock)
+\item[integrate \buttonIcon{int.eps}]\label{op:integrate} Creates an integration (or stock)
 variable. Editable attributes include the variable's name and its
 initial value at $t=0$.
 
-\item[differentiate]\label{op:differentiate} Symbolically differentiates its input.
+\item[differentiate \buttonIcon{differentiate.eps}]\label{op:differentiate} Symbolically differentiates its input.
 
-\item[data]\label{op:data} A data interpolation widget. Currently, the
-data must be imported from a file containing two values on each line,
-eg:
+\item[data \buttonIcon{data.eps}]\label{op:data} A data interpolation
+widget. Currently, the data must be imported from a file containing
+two values on each line, eg:
+\begin{quote}
 \begin{tabular}{rr}
 0.1 &0.3\\
 0.5 &0.7\\
 0.9 &1\\
 \end{tabular}
+\end{quote}
 If the input is less than the minimum key value (0.1 here), then the
 operation outputs the corresponding value (0.3). Similarly if the
 input is greater than the maximum (0.9), the corresponding value (1)
@@ -123,6 +126,7 @@ x_{i+1}\\
 
 \section{Switch}\label{switch}
 
+ \buttonIcon{switchIcon.eps}
 A switch block (also known as a case block, or select in the Fortran
 world) is a way of selecting from a range of alternatives according
 to the value of the input, effectively defining a piecewise function.
@@ -174,7 +178,10 @@ column.
 \end{description}
 
 Variables may be converted between types in the variable edit menu,
-available from the context menu.
+available from the context menu, subject to certain rules. For example,
+a variable whose input is wired anywhere on the canvas cannot be
+changed from ``flow''. Stock variables need to be defined in a Godley
+table, and so on.
 
 \subsection{Variable names}
 
@@ -182,7 +189,8 @@ Variable names uniquely identify variables. Multiple icons on the
 canvas may have the same name --- they all refer to the same
 variable. Variable names have scope, which is either global (indicated
 by a leading `:', or the numerical id of a group. You may select a
-variable name from a drop down list in the ``name'' combo box.
+variable name from a drop down list in the ``name'' combo box, which
+makes for an easier way of selecting exactly which variable you want.
 
 \subsection{Initial conditions}\label{var:init}
 
@@ -232,8 +240,9 @@ can dramatically simplify more complicated systems. Groups may be
 created in the following ways:
 \begin{itemize}
 \item by lassoing a number of items to select them, then selecting
-"group" from the canvas context menu, or the edit menu.
-\item by pasting the selection
+``group'' from the canvas context menu, or the edit menu.
+\item by pasting the selection. You may ``ungroup'' the group from the
+context menu if you don't desire the result of the paste to be a group.
 \item by copying another group
 \item by inserting a Minsky file as a group
 \end{itemize}
@@ -259,13 +268,19 @@ prepending a `:' to the variable name. To refer to a variable in
 another group, the notation is \verb+<group id>:<name>+, where
 \verb+<group id>+ is the integer id of the group in question. An
 alternative equivalent notation is \verb+<description>[<group id>]:<name>+, where \verb+<description>+ is the textual name given to
-the group. The description string is ignored by Minky on input - only
+the group. The description string is ignored by Minsky on input---only
 the group id is important, but this mechanism makes it easier to see
 what variable belongs to which group in the drop down lists in the
 name field. Please try to keep the group names distinctive in their
 first five characters, as Minsky will truncate the descriptive string
-to fit in the drop down menu. A group can also be exported to a file from the context menu.
-This allows you to build up a library of building blocks.
+to fit in the drop down menu. 
+
+A group can also be exported to a file from the context menu.
+This allows you to build up a library of building blocks. There is a
+github project ``minsky-models'' allowing people to publish their
+building blocks and models for others to use. In the future, we hope
+to integrate Minsky with this github repository, allowing even more
+seamless sharing of models.
 
 \section{Plot widget}
 \label{Plot}
@@ -284,7 +299,7 @@ outside of the plot are a number of input ports that can be wired.
 \item[right hand edge] Another 4 quantities can be added to the
   plot. These are shown on a different scale to the left hand inputs,
   allowing very different magnitudes to be compared on the one plot.
-\item[bottom edge] Quantities controlling the x-coordinates of the
+\item[bottom edge] Quantities controlling the $x$-coordinates of the
   curves. The colours match up with the colour of the pen being
   controlled.
 
@@ -294,10 +309,10 @@ outside of the plot are a number of input ports that can be wired.
 
   If only one bottom port is connected, then that controls all pens
   simultaneously, and if no ports are connected, then the simulation
-  time is used to provide the x coordinates
+  time is used to provide the $x$ coordinates
 \item[corners] Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the x, y and right hand
-  y axes. If left unwired, the scales are determined automatically
+  variables controlling minimum and maximum of the $x$, $y$ and right hand
+  $y$ axes. If left unwired, the scales are determined automatically
   from the data. This can be used, for example, to implement a sliding
   window graph
 
@@ -322,7 +337,7 @@ of a particular economic agent, such as a bank. The columns of the
 table represent accounts (possibly aggregated), which are treated as
 integration variables by the system. In ``double entry'' mode,
 accounts may be assets, liabilities or equities. Assets may appear as
-liabilities in another agents Godley table, and vice versa, with the
+liabilities in another agent's Godley table, and vice versa, with the
 sense of the financial flows treated oppositely (a positive flow increasing the
 asset of one entity will appear as a negative flow, increasing the
 value of a liability). Instead of positive or negative flows, one can
@@ -409,6 +424,21 @@ copied or edited.
 \item[Export to file] export table contents as either CSV data, or as a LaTeX
 table, for import into other software.
 \end{description}
+
+\item[Groups]\mbox{}
+\begin{description}
+\item[Zoom to Display] Zoom the canvas sufficiently to see the
+contents of the group.
+\item[Resize] Resize the group icon on the canvas.
+\item[Save group as] Save the group in it's own Minsky file.
+\item[Flip contents] Rotate each item within the group by 180$^\circ$
+\item[Ungroup] Ungroup the group, leaving it's contents as icons on
+the canvas.
+\item[contentBounds] Draws a box on the canvas indicating the smallest
+bounding box containing the group items.
+\end{description}
+
+
 \item[Plot Widgets]\mbox{}
 \begin{description}
 \item[Expand]

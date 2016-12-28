@@ -1,85 +1,83 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 
-<!--Converted with LaTeX2HTML 2008 (1.71)
+<!--Converted with LaTeX2HTML 2012 (1.2)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Run Buttons</TITLE>
-<META NAME="description" CONTENT="Run Buttons">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node16.html">
-<LINK REL="previous" HREF="node8.html">
-<LINK REL="up" HREF="node7.html">
+<LINK REL="previous" HREF="node11.html">
+<LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node16.html">
 </HEAD>
 
 <BODY >
-
-<DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html263"
+<!--Navigation Panel-->
+<A NAME="tex2html185"
   HREF="node16.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html261"
-  HREF="node7.html">
+<A NAME="tex2html183"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html255"
+<A NAME="tex2html177"
   HREF="node14.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html264"
-  HREF="node16.html">Zoom buttons</A>
-<B> Up:</B> <A NAME="tex2html262"
-  HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html256"
-  HREF="node14.html">Help</A>
+<B> Next:</B> <A NAME="tex2html186"
+  HREF="node16.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html184"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html178"
+  HREF="node14.html">Sliders</A>
 <BR>
-<BR></DIV>
+<BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00232000000000000000"></A>
-<A NAME="RunButtons"></A>
-<BR>
-Run Buttons
-</H2>
+<H1><A NAME="SECTION00340000000000000000">
+Wires</A>
+</H1>
 
 <P>
-<IMG
- WIDTH="92" HEIGHT="36" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem15.png"
- ALT="244">
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire
+attached, with the exception of <IMG
+ WIDTH="37" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img124.png"
+ ALT="$+/-$"> and <IMG
+ WIDTH="37" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img125.png"
+ ALT="$\times/\div$">, where the
+multiple wires are summed or multiplied, respectively, and similarly max/min.
 
 <P>
-The Run buttons respectively:
-
-<OL>
-<LI>Start a simulation-when started the button changes to a pause icon,
-allowing you to pause the simulation <IMG
- WIDTH="28" HEIGHT="29" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem23.png"
- ALT="246">.
-</LI>
-<LI>Stop a simulation and reset the simulation time to zero
-</LI>
-<LI>Step through the simulation one iteration at a time.
-</LI>
-</OL>
+Wires can be bent by dragging the blue dots (``handles''). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-12-12
+2016-12-27
 </ADDRESS>
 </BODY>
 </HTML>

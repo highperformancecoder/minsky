@@ -25,4 +25,13 @@ renderCanvasToPS var.eps
 clearAll
 newVariable const parameter
 renderCanvasToPS const.eps
+clearAll
+newVariable 100 parameter
+renderCanvasToPS const100.eps
+clearAll
+newVariable LabProd parameter
+renderCanvasToPS LabProd.eps
+clearAll
+newVariable GDP flow
+renderCanvasToPS GDP.eps
 tcl_exit

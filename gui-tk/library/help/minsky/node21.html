@@ -1,74 +1,95 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 
-<!--Converted with LaTeX2HTML 2008 (1.71)
+<!--Converted with LaTeX2HTML 2012 (1.2)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Design Canvas</TITLE>
-<META NAME="description" CONTENT="Design Canvas">
+<TITLE>Canvas background</TITLE>
+<META NAME="description" CONTENT="Canvas background">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node22.html">
 <LINK REL="previous" HREF="node20.html">
-<LINK REL="up" HREF="node7.html">
-<LINK REL="next" HREF="node22.html">
+<LINK REL="up" HREF="node8.html">
 </HEAD>
 
 <BODY >
-
-<DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html323"
-  HREF="node22.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html321"
-  HREF="node7.html">
+<!--Navigation Panel-->
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next_g.png"> 
+<A NAME="tex2html241"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html315"
+<A NAME="tex2html237"
   HREF="node20.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html324"
-  HREF="node22.html">Wires</A>
-<B> Up:</B> <A NAME="tex2html322"
-  HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html316"
-  HREF="node20.html">Design Icons</A>
+<B> Up:</B> <A NAME="tex2html242"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html238"
+  HREF="node20.html">Context Menu</A>
 <BR>
-<BR></DIV>
+<BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00238000000000000000"></A>
-<A NAME="DesignCanvas"></A>
-<BR>
-Design Canvas
-</H2>
+<H1><A NAME="SECTION003100000000000000000">
+Canvas background</A>
+</H1>
 
 <P>
-The Design Canvas is where you develop your model. A model consists of
-a number of blocks--variables, constants and mathematical
-operators--connected by wires. 
+The canvas is not simply an inert place for the canvas items to
+exist. There is also a background context menu, giving access to the
+edit menu functionality such as cut/copy/paste, and also keyboard entry.
 
 <P>
-<IMG
- WIDTH="1365" HEIGHT="729" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem19.png"
- ALT="467">
+The following keystrokes insert an operation
 
 <P>
+<TABLE CELLPADDING=3>
+<TR><TD ALIGN="RIGHT"><code>+</code></TD>
+<TD ALIGN="LEFT">add</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>-</code></TD>
+<TD ALIGN="LEFT">subtract</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>*</code></TD>
+<TD ALIGN="LEFT">multiply</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code></code>/</TD>
+<TD ALIGN="LEFT">divide</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>^</code></TD>
+<TD ALIGN="LEFT">pow</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>&amp;</code></TD>
+<TD ALIGN="LEFT">integral</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>=</code></TD>
+<TD ALIGN="LEFT">Godley table</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>@</code></TD>
+<TD ALIGN="LEFT">plot</TD>
+</TR>
+<TR><TD ALIGN="RIGHT"><code>%</code> or <code>#</code></TD>
+<TD ALIGN="LEFT">start a text comment, finish with return</TD>
+</TR>
+</TABLE>
+
+<P>
+Typing any other character, then return will insert an operation (if
+the name matches), or otherwise a variable with that name.
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2016-12-12
+2016-12-27
 </ADDRESS>
 </BODY>
 </HTML>

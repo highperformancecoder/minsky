@@ -1,69 +1,130 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 
-<!--Converted with LaTeX2HTML 2008 (1.71)
+<!--Converted with LaTeX2HTML 2012 (1.2)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Insert</TITLE>
-<META NAME="description" CONTENT="Insert">
+<TITLE>Variables</TITLE>
+<META NAME="description" CONTENT="Variables">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node12.html">
+<LINK REL="next" HREF="node15.html">
 <LINK REL="previous" HREF="node10.html">
 <LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node12.html">
 </HEAD>
 
 <BODY >
-
-<DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html225"
+<!--Navigation Panel-->
+<A NAME="tex2html144"
   HREF="node12.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html223"
+<A NAME="tex2html142"
   HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html217"
+<A NAME="tex2html136"
   HREF="node10.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html226"
-  HREF="node12.html">Options</A>
-<B> Up:</B> <A NAME="tex2html224"
-  HREF="node8.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html218"
-  HREF="node10.html">Edit</A>
+<B> Next:</B> <A NAME="tex2html145"
+  HREF="node12.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html143"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html137"
+  HREF="node10.html">Switch</A>
 <BR>
-<BR></DIV>
+<BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00231300000000000000"></A>
-<A NAME="Insert"></A>
-<BR>
-Insert
-</H3>
+<H1><A NAME="SECTION00330000000000000000">
+Variables</A>
+</H1>
 
 <P>
-This menu contains a set of <A HREF="node42.html#operations">mathematical operator
-blocks</A> for placement on the Canvas. You can get the same
-effect by clicking on the Design Icons. Also present are entries for
-<A HREF="node52.html#godley">Godley table items</A> and <A HREF="node50.html#Plot">Plots</A>.
+Variables represent values in a calculation, and come in a number of
+varieties:
+<DL>
+<DT><STRONG>Constants</STRONG></DT>
+<DD>represent an explicit numerical value, and do not
+have a name. Their graphical representation shows the actual value of
+the constant.
+</DD>
+<DT><STRONG>Parameters</STRONG></DT>
+<DD>are named constants. All instances of a given name
+represent the same value, as with all other named variables, so
+changing the value of one parameter, either through its edit menu, or
+through a slider, will affect all the others of that name.
+</DD>
+<DT><STRONG>Flow variables</STRONG></DT>
+<DD>have an input port that defines how the value is
+to be calculated. Only one flow variable of a given name can have its
+input port connected, as they all refer to the same quantity. If no
+input ports are connected, then flow variables act just like
+parameters.
+</DD>
+<DT><STRONG>Integral variables</STRONG></DT>
+<DD>represent the result of integrating its
+input over time  by means of the differential
+equation solver. The integrand is represented by the input to an
+integral operator that is attached to the integral variable.
+</DD>
+<DT><STRONG>Stock variables</STRONG></DT>
+<DD>are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up the
+column.
+</DD>
+</DL>
+
+<P>
+Variables may be converted between types in the variable edit menu,
+available from the context menu.
 
 <P>
 <BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html146"
+  HREF="node12.html">Variable names</A>
+<LI><A NAME="tex2html147"
+  HREF="node13.html">Initial conditions</A>
+<LI><A NAME="tex2html148"
+  HREF="node14.html">Sliders</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html144"
+  HREF="node12.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html142"
+  HREF="node8.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html136"
+  HREF="node10.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html145"
+  HREF="node12.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html143"
+  HREF="node8.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html137"
+  HREF="node10.html">Switch</A>
+<!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-12-12
+2016-12-27
 </ADDRESS>
 </BODY>
 </HTML>

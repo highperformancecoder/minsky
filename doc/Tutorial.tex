@@ -15,7 +15,7 @@ Goodwin's model has been subjected to much critical literature about
 implying stable cycles, not matching empirical data, etc., but Goodwin
 himself emphasized that it was a ``starkly schematized and hence quite
 unrealistic model of cycles in growth rates". He argued however that
-it was a better foundation for a more realistic model that "the more
+it was a better foundation for a more realistic model than ``the more
 usual treatment of growth theory or of cycle theory, separately or in
 combination.'' 
 
@@ -69,7 +69,7 @@ This form is useful for analytic reasons, but it obscures the causal
 chain that actually lies behind the model. With modern system dynamic
 software, this can be laid out explicitly, and we can also use much
 more meaningful names. We'll start with defining output (which is a
-variable). Click on \smhtmladdimg{var.png} on the Icon Palette, or
+variable). Click on \buttonIcon{var.eps} on the Icon Palette, or
 click on the Operations menu and choose ``Variable''. This will open
 up the ``Specify Variable Name'' window:
 
@@ -90,7 +90,7 @@ We are now going to write the first part of the model, that Labor
 productivity ({\em\bf LabProd}). Just for the sake of illustration,
 we'll make {\em\bf a} a parameter, which is a named constant (this can
 easily be modified later). For this we start by clicking on
-\smhtmladdimg{const.png} on the Palette, or by choosing
+\buttonIcon{const.eps} on the Palette, or by choosing
 Insert/variable from the menu. This will pop-up the Edit Constant
 window:
 
@@ -106,7 +106,7 @@ the parameter a name.
 
 Give the paramter the name ``{\em\bf LabProd}'' and the value of 1
 (i.e., one unit of output per worker). Click OK or press Enter and the
-constant \smhtmladdimg{NewItem67.png}  will now be attached to the
+constant \buttonIcon{LabProd.eps}  will now be attached to the
 cursor. Place it below {\em\bf GDP}: 
 
 \begin{center}
@@ -114,7 +114,7 @@ cursor. Place it below {\em\bf GDP}:
 \end{center}
 
 Now we need to divide {\em\bf GDP} by {\em\bf LabProd}. Click on the
-\smhtmladdimg{NewItem69.png} symbol on the palette and the symbol will
+\buttonIcon{divide.eps} symbol on the palette and the symbol will
 be attached to the cursor. Drag it near the other two objects and
 click. Your Canvas will now look something like this: 
 
@@ -126,8 +126,8 @@ Now to complete the equation, you have to attach {\em\bf GDP}  to the top of the
 divide block and LabProd to the bottom.
 
 Now move your cursor to the right hand side of
-\smhtmladdimg{NewItem72.png}  and click, hold the mouse button down, and
-drag. An arrow will come out from  \smhtmladdimg{NewItem72.png}. Drag
+\buttonIcon{GDP.eps}  and click, hold the mouse button down, and
+drag. An arrow will come out from  \buttonIcon{GDP.eps}. Drag
 this arrow to the top of the divide block (where you'll see a tiny
 multiply sign) and release the mouse. You should then see this: 
 
@@ -151,7 +151,7 @@ block (where you'll see a miniature divide symbol (blown up below):
 \includegraphics{images/NewItem76.eps} 
 \end{center}
 
-Then click on \smhtmladdimg{NewItem78.png} in the Design Icons to create a new variable, call it
+Then click on \buttonIcon{var.eps} in the Design Icons to create a new variable, call it
 Labor, place it the the right of the Divide block, and wire the output port from the Divide block to the
 input port for {\bf\em Labor}: 
 
@@ -178,7 +178,7 @@ change it to a variable), and give it a value of 110.
 \end{center}
 
 Add it to the Canvas and you are now ready to define the employment
-rate---another variable. Click on \smhtmladdimg{NewItem82.png}, give it
+rate---another variable. Click on \buttonIcon{var.eps}, give it
 the name ``$\backslash$lambda'' (be sure to include the backslash symbol), put
 another Divide block on the canvas, choose Wire mode and wire this
 next part of the model up. You should now have:
@@ -241,7 +241,7 @@ zero.  I suggest using Milton Friedman's concept of a
 ``Non-Accelerating-Inflation-Rate-of-Unemployment'', or NAIRU. We need
 to define this constant, subtract it from 1, and subtract the result
 from the actual employment rate $\lambda$. To enter 1, click on
-\smhtmladdimg{NewItem89.png}, define a constant and give it
+\buttonIcon{const.eps}, define a constant and give it
 a value of 1. Then define another variable NAIRU, and give it a value
 of 0.05 (5\% unemployment). Select ``parameter'' as the variable
 type. Subtract this from 1 and subtract the result from $\lambda$. You
@@ -256,14 +256,14 @@ and the ``NAIRE'' rate by a parameter that represents the response of
 wages to this gap. Let's call this parameter {\bf\em Emp\_\{Response\}} (remember to include the underscore and the braces). Define the parameter, give it a value of 10, and multiply ($\lambda$ minus NAIRE) by it:
 
 \begin{center}
-\includegraphics{images/NewItem109.eps}
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem109.eps}}
 \end{center}
 
 Now we are ready to add a crucial component of a dynamic model: the
 integral block, which takes a flow as its input and has the integral
 of that flow as the output. The wage rate {\bf\em w} is such a variable, and we
-define it by clicking on the \smhtmladdimg{NewItem91.png} symbol in the Icon Palette (or by
-choosing Operations/Integrate from the menu). This then attaches the
+define it by clicking on the \buttonIcon{int.eps} symbol in the Icon Palette (or by
+choosing Operations/Integrate from the {\em Insert} menu). This then attaches the
 following block to the cursor: 
 
 \begin{center}
@@ -318,7 +318,7 @@ From this point on the model develops easily---``like money for old
 rope'', as one of my maths lecturers used to say. Firstly if we
 multiply the wage rate {\bf\em w} by {\bf\em Labor} we get the {\em\bf
 Wage Bill}. To do this,
-firstly create the variable Wage Bill, and put will well below where w
+firstly create the variable Wage Bill, and put it well below where $w$
 currently is on your diagram: 
 
 \begin{center}
@@ -360,9 +360,9 @@ define the variable {\bf\em Profits}:
 In the simple Goodwin model, all Profits are invested, and investment
 of course is the rate of change of the capital stock Capital. Create a
 variable called Investment, wire this up to Profits, and then create a
-new integral variable Capital using the \smhtmladdimg{NewItem101.png}
-icon. Right-click or double-click on it to rename int2 to Capital, and
-give it an initial value of 300: 
+new integral variable {\em Capital} using the \buttonIcon{int.eps}
+icon. Right-click or double-click on it to rename {\em int2} to {\em
+Capital}, and give it an initial value of 300:
 
 \begin{center}
 \scalebox{0.5}{\htmladdimg{NewItem102.png}}
@@ -386,8 +386,8 @@ Divide Capital by this, and wire the result up to the input on
 GDP. You have now built your first dynamic model in Minsky: 
 
 
-Before you attempt to run it, do two things. Firstly from the Runge
-Kutta menu item, change the Max Step Size to 0.01---to get a smoother
+Before you attempt to run it, do two things. Firstly from the {\em Runge
+Kutta} menu item, change the Max Step Size to 0.01---to get a smoother
 simulation. 
 
 \begin{center}

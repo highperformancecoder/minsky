@@ -1,6 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 
-<!--Converted with LaTeX2HTML 2008 (1.71)
+<!--Converted with LaTeX2HTML 2012 (1.2)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
@@ -13,7 +13,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
@@ -24,26 +24,25 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 </HEAD>
 
 <BODY >
-
-<DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html92"
+<!--Navigation Panel-->
+<A NAME="tex2html53"
   HREF="node4.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html90"
+<A NAME="tex2html51"
   HREF="node1.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html86"
+<A NAME="tex2html47"
   HREF="node2.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html93"
-  HREF="node4.html">Getting Started</A>
-<B> Up:</B> <A NAME="tex2html91"
+<B> Next:</B> <A NAME="tex2html54"
+  HREF="node4.html">Tutorial</A>
+<B> Up:</B> <A NAME="tex2html52"
   HREF="node1.html">Introduction</A>
-<B> Previous:</B> <A NAME="tex2html87"
+<B> Previous:</B> <A NAME="tex2html48"
   HREF="node2.html">New to system dynamics?</A>
 <BR>
-<BR></DIV>
+<BR>
 <!--End of Navigation Panel-->
 
 <H1><A NAME="SECTION00120000000000000000"></A>
@@ -74,15 +73,15 @@ increase the deposit account of the retailer from whom you buy the
 computer. The two system states in this model-your credit card
 (``BuyerCredit'') and the retailer's deposit account
 (``SellerDeposit'')--therefore have to have the same entry (let's call
-this ``Card'') made into them. In Vissim, such a transaction would look
+this ``Card'') made into them. Such a transaction would look
 like this:
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- WIDTH="367" HEIGHT="74" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem11.png"
- ALT="81">
+ WIDTH="426" HEIGHT="133" ALIGN="BOTTOM" BORDER="0"
+ SRC="img8.png"
+ ALT="\includegraphics{images/NewItem11.eps}">
 
 </DIV>
 
@@ -94,9 +93,9 @@ but forgetting the SellerDeposit one:
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- WIDTH="367" HEIGHT="74" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem12.png"
- ALT="82">
+ WIDTH="426" HEIGHT="133" ALIGN="BOTTOM" BORDER="0"
+ SRC="img9.png"
+ ALT="\includegraphics{images/NewItem12.eps}">
 
 </DIV>
 
@@ -106,9 +105,9 @@ Or, perhaps, wiring up both blocks, but giving one the wrong sign:
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- WIDTH="489" HEIGHT="111" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem51.png"
- ALT="83">
+ WIDTH="416" HEIGHT="150" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.png"
+ ALT="\includegraphics{images/NewItem51.eps}">
 
 </DIV>
 
@@ -122,11 +121,53 @@ double-entry bookkeeping. Here is the same model in Minsky:
 
 <P>
 <DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="CENTER">Flows <IMG
+ WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img11.png"
+ ALT="$\downarrow$"> / Stock Variables
 <IMG
- WIDTH="693" HEIGHT="479" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem13.png"
- ALT="84">
-
+ WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$\rightarrow$"></TD>
+<TD ALIGN="CENTER" COLSPAN=1><IMG
+ WIDTH="97" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$BuyerCredit$"></TD>
+<TD ALIGN="CENTER" COLSPAN=1><IMG
+ WIDTH="103" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img14.png"
+ ALT="$SellerDeposit$"></TD>
+<TD ALIGN="CENTER">Row Sum</TD>
+</TR>
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=1>asset</TD>
+<TD ALIGN="CENTER" COLSPAN=1>liability</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Initial Conditions</TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img15.png"
+ ALT="$0$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img15.png"
+ ALT="$0$"></TD>
+<TD ALIGN="CENTER">0</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Buyer Accesses Credit</TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="41" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img16.png"
+ ALT="$Card$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="54" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img17.png"
+ ALT="$-Card$"></TD>
+<TD ALIGN="CENTER">0</TD>
+</TR>
+</TABLE>
 </DIV>
 
 <P>
@@ -139,13 +180,13 @@ This is an inherently better way to generate a dynamic model of financial flows,
 </LI>
 <LI>The program adopts the accounting practice of double-entry
   bookkeeping, in which entries on each row sum to zero. The source is
-  shown as a ``<SPAN CLASS="MATH"><IMG
+  shown as a ``<IMG
  WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img6.png"
- ALT="$+$"></SPAN>'', the sink is shown as a ``<SPAN CLASS="MATH"><IMG
+ SRC="img18.png"
+ ALT="$+$">'', the sink is shown as a ``<IMG
  WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img7.png"
- ALT="$-$"></SPAN>'', and assets are shown
+ SRC="img19.png"
+ ALT="$-$">'', and assets are shown
   as a positive sum while liabilities are shown as a negative. If you
   don't ensure that each flow starts somewhere and ends
   somewhere--say you make the same mistake as in the block diagram
@@ -160,11 +201,53 @@ rather than zero:
 
 <P>
 <DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="CENTER">Flows <IMG
+ WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img11.png"
+ ALT="$\downarrow$"> / Stock Variables
 <IMG
- WIDTH="678" HEIGHT="168" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem52.png"
- ALT="85">
-
+ WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$\rightarrow$"></TD>
+<TD ALIGN="CENTER" COLSPAN=1><IMG
+ WIDTH="97" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$BuyerCredit$"></TD>
+<TD ALIGN="CENTER" COLSPAN=1><IMG
+ WIDTH="103" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img14.png"
+ ALT="$SellerDeposit$"></TD>
+<TD ALIGN="CENTER">Row Sum</TD>
+</TR>
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=1>asset</TD>
+<TD ALIGN="CENTER" COLSPAN=1>liability</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Initial Conditions</TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img15.png"
+ ALT="$0$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img15.png"
+ ALT="$0$"></TD>
+<TD ALIGN="CENTER">0</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Buyer Accesses Credit</TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="41" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img16.png"
+ ALT="$Card$"></TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="41" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img16.png"
+ ALT="$Card$"></TD>
+</TR>
+</TABLE>
 </DIV>
 
 <P>
@@ -172,11 +255,56 @@ And it also identifies if you give the wrong sign to one entry:
 
 <P>
 <DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="CENTER">Flows <IMG
+ WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img11.png"
+ ALT="$\downarrow$"> / Stock Variables
 <IMG
- WIDTH="677" HEIGHT="164" ALIGN="BOTTOM" BORDER="0"
- SRC="NewItem53.png"
- ALT="86">
-
+ WIDTH="20" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$\rightarrow$"></TD>
+<TD ALIGN="CENTER" COLSPAN=1><IMG
+ WIDTH="97" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$BuyerCredit$"></TD>
+<TD ALIGN="CENTER" COLSPAN=1><IMG
+ WIDTH="103" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img14.png"
+ ALT="$SellerDeposit$"></TD>
+<TD ALIGN="CENTER">Row Sum</TD>
+</TR>
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=1>asset</TD>
+<TD ALIGN="CENTER" COLSPAN=1>liability</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Initial Conditions</TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img15.png"
+ ALT="$0$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img15.png"
+ ALT="$0$"></TD>
+<TD ALIGN="CENTER">0</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Buyer Accesses Credit</TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="41" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img16.png"
+ ALT="$Card$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="41" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img16.png"
+ ALT="$Card$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="49" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img20.png"
+ ALT="$2Card$"></TD>
+</TR>
+</TABLE>
 </DIV>
 
 <P>
@@ -184,31 +312,28 @@ Minsky thus adds an element to the system dynamics toolkit which is
 fundamental for modeling the monetary flows that are an intrinsic
 aspect of a market economy. Future releases will dramatically extend
 this capability. 
-
-<P>
-
-<DIV CLASS="navigation"><HR>
+<HR>
 <!--Navigation Panel-->
-<A NAME="tex2html92"
+<A NAME="tex2html53"
   HREF="node4.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html90"
+<A NAME="tex2html51"
   HREF="node1.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html86"
+<A NAME="tex2html47"
   HREF="node2.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html93"
-  HREF="node4.html">Getting Started</A>
-<B> Up:</B> <A NAME="tex2html91"
+<B> Next:</B> <A NAME="tex2html54"
+  HREF="node4.html">Tutorial</A>
+<B> Up:</B> <A NAME="tex2html52"
   HREF="node1.html">Introduction</A>
-<B> Previous:</B> <A NAME="tex2html87"
-  HREF="node2.html">New to system dynamics?</A></DIV>
+<B> Previous:</B> <A NAME="tex2html48"
+  HREF="node2.html">New to system dynamics?</A>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-12-12
+2016-12-27
 </ADDRESS>
 </BODY>
 </HTML>

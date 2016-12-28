@@ -1,0 +1,194 @@
+%!PS-Adobe-2.0 EPSF-2.0
+%%Title: /home/scratch/github/minsky/doc/images/plot.eps
+%%Creator: XV version 3.10a-jumboFix+Enh of 20081216 (interim!)  -  by John Bradley
+%%BoundingBox: 289 380 323 411
+%%Pages: 1
+%%DocumentFonts:
+%%EndComments
+%%EndProlog
+
+%%Page: 1 1
+
+% remember original state
+/origstate save def
+
+% build a temporary dictionary
+20 dict begin
+
+% define string to hold a scanline's worth of data
+/pix 102 string def
+
+% define space for color conversions
+/grays 34 string def  % space for gray scale line
+/npixls 0 def
+/rgbindx 0 def
+
+% lower left corner
+289 380 translate
+
+% size of image (on paper, in 1/72inch coords)
+33.98400 31.03200 scale
+
+% define 'colorimage' if it isn't defined
+%   ('colortogray' and 'mergeprocs' come from xwd2ps
+%     via xgrab)
+/colorimage where   % do we know about 'colorimage'?
+  { pop }           % yes: pop off the 'dict' returned
+  {                 % no:  define one
+    /colortogray {  % define an RGB->I function
+      /rgbdata exch store    % call input 'rgbdata'
+      rgbdata length 3 idiv
+      /npixls exch store
+      /rgbindx 0 store
+      0 1 npixls 1 sub {
+        grays exch
+        rgbdata rgbindx       get 20 mul    % Red
+        rgbdata rgbindx 1 add get 32 mul    % Green
+        rgbdata rgbindx 2 add get 12 mul    % Blue
+        add add 64 idiv      % I = .5G + .31R + .18B
+        put
+        /rgbindx rgbindx 3 add store
+      } for
+      grays 0 npixls getinterval
+    } bind def
+
+    % Utility procedure for colorimage operator.
+    % This procedure takes two procedures off the
+    % stack and merges them into a single procedure.
+
+    /mergeprocs { % def
+      dup length
+      3 -1 roll
+      dup
+      length
+      dup
+      5 1 roll
+      3 -1 roll
+      add
+      array cvx
+      dup
+      3 -1 roll
+      0 exch
+      putinterval
+      dup
+      4 2 roll
+      putinterval
+    } bind def
+
+    /colorimage { % def
+      pop pop     % remove 'false 3' operands
+      {colortogray} mergeprocs
+      image
+    } bind def
+  } ifelse          % end of 'false' case
+
+
+
+34 31 8			% dimensions of data
+[34 0 0 -31 0 31]		% mapping matrix
+{currentfile pix readhexstring pop}
+false 3 colorimage
+
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+dfdfdfdfdfdfe0dbdbed7c7cf63f3ff25454976d6ddfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
+dfdfdfdfdfdf848484dbdbdbdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf8d8d8dd2d2d2
+dfdfdfdfdfdfdfdfdfe4b9b9ea9595e99b9b959595cacacadfdfdfdfdfdf
+9f9f9fa29a9ae52a2aff0000ff0000ff0000fa0505b875759f9f9f9f9f9f9f9f9f9f9f9f
+9f9f9f9f9f9f8181819e9e9e9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f8484849b9b9b
+9f9f9f9f9f9f9f9f9fd54646ff0000f70c0c8787879898989f9f9f9f9f9f
+ffffffff6767ff0000ff1919ffa8a8fe5b5bff0000ff1010ffe1e1ffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffc9c9ff0505ff0000ff14149c9c9ce3e3e3ffffffffffff
+ffc0c0ff0101ff0808ffd0d0fffffffbfafad92929ff0000ff4c4cffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+fffffffffbfbff2c2cff0000ff6f6fffefef9c9c9ce3e3e3ffffffffffff
+ff3333ff0000ff8383fffffffffffffbfbfb8f7878ff0f0fff0000ffbcbcffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffff9999ff0000ff2323fff7f7ffffff9c9c9ce3e3e3ffffffffffff
+ff0000ff1b1bfff6f6fffffffffffffbfbfb848484ff8787ff0000ff3a3affffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+fff9f9ff1d1dff0000ffaaaaffffffffffff9c9c9ce3e3e3ffffffffffff
+ff0000ff9292fffffffffffffffffffbfbfb848484fff3f3ff1414ff0000ffc1c1ffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ff9e9eff0000ff2c2cfffefeffffffffffff9c9c9ce3e3e3ffffffffffff
+6b089cccc4f7fffffffffffffffffffbfbfb848484ffffffff7f7fff0000ff4f4fffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffdcdcff7979ff1e1ee91313fe
+1e05e64d00b2a166c4f8f8ffffffffffffff9c9c9ce3e3e3ffffffffffff
+0000ff0000ff5050ffdfdffffffffffbfbfb848484ffffffffe9e9ff0707ff0303ffdede
+ffffffffffff868686f9f9f9ffffffffffffededff6666ff0404ff0000ff0000ff0000ff
+0000ff0000ff0000ff1e1eff7575ff8282ff9c9c9ce3e3e3ffffffffffff
+7367f30d0dff0000ff0c0cff9999fffbfbfb848484ffffffffffffff5f5fff0000ff7676
+ffffffffffff868686f9f9f9ffffffb6b6ff1919ff0000ff0505ff6161ff6b6bade4465c
+dc00239a4eb32e2eff0000ff0000ff1414ff9c9c9ce3e3e3ffffffffffff
+bfbfbfadadc54141e90000ff0000ff3d3dea79798bbfbfbfbfbfbfcd9797ff0000fa0e0e
+c1b9b9bfbfbf838383b7b7be5353e30101ff0000ff2e2ef0a2a2c9bfbfbf957979fe0303
+fe0404c5adadbdbdbf5555e31919f62626f28e8e8eb1b1b1bfbfbfbfbfbf
+bfbfbfbfbfbfbfbfbf7c7cd50b0bfb0000ff0d0df28383d3bfbfbfbfbfbff22727ff0000
+d77979bfbfbf66669e2020f40000ff0404fe6666ddbdbdbfbfbfbfbfbfbfc54343ff0000
+e94141bfbfbfbfbfbfbfbfbfbfbfbfbfbfbf8e8e8eb1b1b1bfbfbfbfbfbf
+ffffffffffffffffffffffffdedeff3b3bfe0000ff0000ff3e3effa6a6ffe18caae60019
+b226735151ff0101ff0000ff2727ffcacafffffffffffffffffffffff9f9f50e0eff0000
+ffc1c1ffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffff9f9fb4d4db81313ff0000ff0000ff0000ff0000ff
+0000ff0000ff0505fb7878fcf6f6ffffffffffffffffffffffffffffa4a4ff0000fc2b2b
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484f2f2ff9393ff4646ff1919ff170bf3
+3b00c4842da8797991f9f9f9ffffffffffffffffffffffffffffffff3333ff0000f59292
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffe5e5
+ff0606ff0303977373f9f9f9ffffffffffffffffffffffffffbbbbff0000f50d0defe7e7
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ff6464ff0000d23232f9f9f9ffffffffffffffffffffffffff3b3bff0000c54c4ceeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffdedeff0707fe0101fac7c7ffffffffffffffffffffababff0000ff1515978a8aeeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffff7474ff0000fe2d2dfff6f6ffffffffe8e8ff1919ff0000ff9797919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+fffffffff4f4ed1414ff0000ff4242ffafafff2d2dff0000ff4040fffdfd919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9e9e9e8181819f9f9f9f9f9f9f9f9f9f9f9f9f9f9f
+9f9f9f9f9f9f956d6df60f0fff0000ff0000ff0000ef1a1aa791919f9f9f8484849b9b9b
+9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f8787879898989f9f9f9f9f9f
+dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdcdcdc838383dfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
+dfdfdfdfdfdf848484dfc6c6f16161f63c3cef6c6ce1d3d3dfdfdfdfdfdf8d8d8dd2d2d2
+dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf959595cacacadfdfdfdfdfdf
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
+ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
+ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
+
+showpage
+
+% stop using temporary dictionary
+end
+
+% restore original state
+origstate restore
+
+%%Trailer
