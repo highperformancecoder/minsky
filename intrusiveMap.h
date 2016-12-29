@@ -19,6 +19,7 @@
 #ifndef INTRUSIVEMAP_H
 #define INTRUSIVEMAP_H
 #include <TCL_obj_base.h>
+#include <TCL_obj_stl.h>
 #include <set>
 #include <stdlib.h>
 
@@ -42,19 +43,19 @@ namespace minsky
   template <class Key, class Val>
   struct IntrusiveWrap: public Val
   {
-    const Key m_id;
   public:
     typedef const Key first_type;
+    const first_type first;
     typedef Val second_type;
     // Val can access id by declaring a virtual method of this name
-    Key id() const {return m_id;};
-    IntrusiveWrap(const Key& id, const Val& v=Val()): Val(v), m_id(id)
-    {KeyAssertion<Key>(m_id);}
+    Key id() const {return first;};
+    IntrusiveWrap(const Key& id, const Val& v=Val()): Val(v), first(id)
+    {KeyAssertion<Key>(first);}
     template <class K, class V>
     IntrusiveWrap(const std::pair<K,V> x):
       IntrusiveWrap(x.first,x.second) {}
     bool operator<(const IntrusiveWrap& x) const {
-      return m_id<x.m_id;
+      return first<x.first;
     }
     IntrusiveWrap& operator=(const Val& v) {
       Val::operator=(v);
@@ -204,6 +205,13 @@ namespace classdesc
   struct is_associative_container<minsky::IntrusiveMap<K,T> >:
     public std::true_type {};
 }
+
+namespace ecolab
+{
+  template <class K, class T> 
+  struct is_map<minsky::IntrusiveMap<K,T>>: public is_map_map {};
+}
+
 
 #include <TCL_obj_stl.h>
 #include <pack_base.h>
