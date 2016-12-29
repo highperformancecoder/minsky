@@ -611,8 +611,11 @@ namespace minsky
     cairo_restore(cairo);
 
     if (!displayContents())
+      {
       if (displayPlot)
+        {
         displayPlot->Plot::draw(cairo, width, height);
+        }
       else
         {
           cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
@@ -620,6 +623,7 @@ namespace minsky
           cairo_clip(cairo);
           svgRenderer.render(cairo);
         }
+      }
     cairo_restore(cairo);
 
     drawEdgeVariables(cairo);
