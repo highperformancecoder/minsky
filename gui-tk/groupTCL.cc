@@ -111,7 +111,7 @@ namespace minsky
     for (auto& w: wires)
       {
         auto fromPort=w->from(), toPort=w->to();
-        if (fromPort && &fromPort->item == it || toPort && &toPort->item == it)
+        if ((fromPort && &fromPort->item == it) || (toPort && &toPort->item == it))
           adjustWire(w);
         else if (auto g=dynamic_cast<Group*>(it))
           {

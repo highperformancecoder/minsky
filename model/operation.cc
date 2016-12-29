@@ -185,7 +185,7 @@ namespace minsky
               desc=minsky().variableValues.newName(vid);
               if (desc.find(':')!=string::npos)
                 // if not current scope, name takes on ':' prefix
-                if (VariableValue::scope(desc)!=size_t(group.lock().get()))
+                if (size_t(VariableValue::scope(desc))!=size_t(group.lock().get()))
                   desc=":"+desc;
             }
         else
