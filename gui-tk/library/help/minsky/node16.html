@@ -1,6 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2012 (1.2)
+<!--Converted with LaTeX2HTML 2008 (1.71)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
@@ -13,7 +13,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
@@ -24,8 +24,9 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <LINK REL="next" HREF="node17.html">
 </HEAD>
 
-<BODY >
-<!--Navigation Panel-->
+<BODY  bgcolor="#ffffff">
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
 <A NAME="tex2html195"
   HREF="node17.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
@@ -43,7 +44,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <B> Previous:</B> <A NAME="tex2html188"
   HREF="node15.html">Wires</A>
 <BR>
-<BR>
+<BR></DIV>
 <!--End of Navigation Panel-->
 
 <H1><A NAME="SECTION00350000000000000000"></A><A NAME="group"></A>
@@ -58,9 +59,10 @@ created in the following ways:
 
 <UL>
 <LI>by lassoing a number of items to select them, then selecting
-"group" from the canvas context menu, or the edit menu.
+``group'' from the canvas context menu, or the edit menu.
 </LI>
-<LI>by pasting the selection
+<LI>by pasting the selection. You may ``ungroup'' the group from the
+context menu if you don't desire the result of the paste to be a group.
 </LI>
 <LI>by copying another group
 </LI>
@@ -93,16 +95,24 @@ prepending a `:' to the variable name. To refer to a variable in
 another group, the notation is <code>&lt;group id&gt;:&lt;name&gt;</code>, where
 <code>&lt;group id&gt;</code> is the integer id of the group in question. An
 alternative equivalent notation is <code>&lt;description&gt;[&lt;group id&gt;]:&lt;name&gt;</code>, where <code>&lt;description&gt;</code> is the textual name given to
-the group. The description string is ignored by Minky on input - only
+the group. The description string is ignored by Minsky on input--only
 the group id is important, but this mechanism makes it easier to see
 what variable belongs to which group in the drop down lists in the
 name field. Please try to keep the group names distinctive in their
 first five characters, as Minsky will truncate the descriptive string
-to fit in the drop down menu. A group can also be exported to a file from the context menu.
-This allows you to build up a library of building blocks.
+to fit in the drop down menu. 
 
 <P>
-<HR>
+A group can also be exported to a file from the context menu.
+This allows you to build up a library of building blocks. There is a
+github project ``minsky-models'' allowing people to publish their
+building blocks and models for others to use. In the future, we hope
+to integrate Minsky with this github repository, allowing even more
+seamless sharing of models.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
 <A NAME="tex2html195"
   HREF="node17.html">
@@ -119,11 +129,11 @@ This allows you to build up a library of building blocks.
 <B> Up:</B> <A NAME="tex2html194"
   HREF="node8.html">Reference</A>
 <B> Previous:</B> <A NAME="tex2html188"
-  HREF="node15.html">Wires</A>
+  HREF="node15.html">Wires</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-12-27
+2016-12-29
 </ADDRESS>
 </BODY>
 </HTML>

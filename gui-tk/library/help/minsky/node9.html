@@ -1,6 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2012 (1.2)
+<!--Converted with LaTeX2HTML 2008 (1.71)
 original version by:  Nikos Drakos, CBLU, University of Leeds
 * revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
 * with significant contributions from:
@@ -13,7 +13,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2012">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
@@ -24,8 +24,9 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <LINK REL="next" HREF="node10.html">
 </HEAD>
 
-<BODY >
-<!--Navigation Panel-->
+<BODY  bgcolor="#ffffff">
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
 <A NAME="tex2html124"
   HREF="node10.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
@@ -43,7 +44,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <B> Previous:</B> <A NAME="tex2html117"
   HREF="node8.html">Reference</A>
 <BR>
-<BR>
+<BR></DIV>
 <!--End of Navigation Panel-->
 
 <H1><A NAME="SECTION00310000000000000000"></A><A NAME="operations"></A>
@@ -60,23 +61,26 @@ Operations
 
 <P>
 </DD>
-<DT><STRONG>subtract <IMG
- WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img19.png"
- ALT="$-$"></STRONG></DT>
+<DT><STRONG>subtract <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img20.png"
+ ALT="$-$"></SPAN></STRONG></DT>
 <DD><A NAME="op:subtract"></A> Subtract two numbers. The input
   ports allow multiple wires, which are summed prior to the
   subtraction being carried out. If an input port is unwired, it is
-  equivalent to setting it to zero. Note the small `+' and `-' signs
-  on the input port indicating which terms are aded or subtracted from
+  equivalent to setting it to zero. Note the small `+' and `<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img20.png"
+ ALT="$-$"></SPAN>' signs
+  on the input ports indicating which terms are added or subtracted from
   the result.
 
 <P>
 </DD>
-<DT><STRONG>multiply <IMG
- WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img94.png"
- ALT="$\times$"></STRONG></DT>
+<DT><STRONG>multiply <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img100.png"
+ ALT="$\times$"></SPAN></STRONG></DT>
 <DD><A NAME="op:multiply"></A> Multiply numbers with each
   other. The input ports allow multiple wires, which are all
   multiplied together. If an input port is unwired, it is equivalent
@@ -84,177 +88,185 @@ Operations
 
 <P>
 </DD>
-<DT><STRONG>divide <IMG
- WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img95.png"
- ALT="$\div$"></STRONG></DT>
+<DT><STRONG>divide <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img101.png"
+ ALT="$\div$"></SPAN></STRONG></DT>
 <DD><A NAME="op:divide"></A> Divide a number by another. The
   input ports allow multiple wires, which are multiplied together
   prior to the division being carried out. If an input port is
   unwired, it is equivalent to setting it to one. Note the small
-  `<IMG
- WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img94.png"
- ALT="$\times$">' and `<IMG
- WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img95.png"
- ALT="$\div$">' signs indicating which port refers to the
+  `<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img100.png"
+ ALT="$\times$"></SPAN>' and `<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img101.png"
+ ALT="$\div$"></SPAN>' signs indicating which port refers to the
   numerator and which the denominator.
 
 <P>
 </DD>
 <DT><STRONG>log</STRONG></DT>
-<DD><A NAME="op:log"></A> Take the logarithm of the <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$"> input port, to
-base <IMG
- WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img97.png"
- ALT="$b$">. The base <IMG
- WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img97.png"
- ALT="$b$"> needs to be specified -- if the natural
-logarithm is desired (<IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img98.png"
- ALT="$b=e$">), use the <A HREF="#op:ln">ln operator</A> instead.
-
-<P>
-</DD>
-<DT><STRONG>pow <IMG
- WIDTH="21" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
- SRC="img99.png"
- ALT="$x^y$"></STRONG></DT>
-<DD><A NAME="op:pow"></A> Raise one number to the power of another. The
-ports are labelled <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$"> and <IMG
- WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img100.png"
- ALT="$y$">, referring the the formula <IMG
- WIDTH="21" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
- SRC="img99.png"
- ALT="$x^y$">.
-
-<P>
-</DD>
-<DT><STRONG>lt <IMG
- WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img101.png"
- ALT="$&lt;$"></STRONG></DT>
-<DD><A NAME="op:lt"></A> Returns 0 or 1, depending
-  on whether <IMG
- WIDTH="43" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+<DD><A NAME="op:log"></A> Take the logarithm of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
  SRC="img102.png"
- ALT="$x&lt;y$"> is true or false.
-
-<P>
-</DD>
-<DT><STRONG>le <IMG
- WIDTH="17" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ ALT="$x$"></SPAN> input port, to
+base <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
  SRC="img103.png"
- ALT="$\le$"></STRONG></DT>
-<DD><A NAME="op:le"></A> Returns 0 or 1, depending
-  on whether <IMG
- WIDTH="43" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ ALT="$b$"></SPAN>. The base <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img103.png"
+ ALT="$b$"></SPAN> needs to be specified -- if the natural
+logarithm is desired (<SPAN CLASS="MATH"><IMG
+ WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
  SRC="img104.png"
- ALT="$x\le y$"> is true or false.
+ ALT="$b=e$"></SPAN>), use the <A HREF="#op:ln">ln operator</A> instead.
 
 <P>
 </DD>
-<DT><STRONG>eq <IMG
- WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+<DT><STRONG>pow <SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
  SRC="img105.png"
- ALT="$=$"></STRONG></DT>
-<DD><A NAME="op:eq"></A> Returns 0 or 1, depending
-  on whether <IMG
- WIDTH="43" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ ALT="$x^y$"></SPAN></STRONG></DT>
+<DD><A NAME="op:pow"></A> Raise one number to the power of another. The
+ports are labelled <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img102.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
  SRC="img106.png"
- ALT="$x=y$"> is true or false.
+ ALT="$y$"></SPAN>, referring the the formula <SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img105.png"
+ ALT="$x^y$"></SPAN>.
+
+<P>
+</DD>
+<DT><STRONG>lt <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img107.png"
+ ALT="$&lt;$"></SPAN></STRONG></DT>
+<DD><A NAME="op:lt"></A> Returns 0 or 1, depending
+  on whether <SPAN CLASS="MATH"><IMG
+ WIDTH="43" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img108.png"
+ ALT="$x&lt;y$"></SPAN> is true or false.
+
+<P>
+</DD>
+<DT><STRONG>le <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img109.png"
+ ALT="$\le$"></SPAN></STRONG></DT>
+<DD><A NAME="op:le"></A> Returns 0 or 1, depending
+  on whether <SPAN CLASS="MATH"><IMG
+ WIDTH="43" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img110.png"
+ ALT="$x\le y$"></SPAN> is true or false.
+
+<P>
+</DD>
+<DT><STRONG>eq <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img111.png"
+ ALT="$=$"></SPAN></STRONG></DT>
+<DD><A NAME="op:eq"></A> Returns 0 or 1, depending
+  on whether <SPAN CLASS="MATH"><IMG
+ WIDTH="43" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img112.png"
+ ALT="$x=y$"></SPAN> is true or false.
 
 <P>
 </DD>
 <DT><STRONG>min</STRONG></DT>
-<DD><A NAME="op:min"></A> Returns the minimum of <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$"> and <IMG
- WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img100.png"
- ALT="$y$">.
+<DD><A NAME="op:min"></A> Returns the minimum of <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img102.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img106.png"
+ ALT="$y$"></SPAN>.
 
 <P>
 </DD>
 <DT><STRONG>max</STRONG></DT>
-<DD><A NAME="op:max"></A> Returns the maximum of <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$"> and <IMG
- WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img100.png"
- ALT="$y$">.
+<DD><A NAME="op:max"></A> Returns the maximum of <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img102.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img106.png"
+ ALT="$y$"></SPAN>.
 
 <P>
 </DD>
-<DT><STRONG>and <IMG
- WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img107.png"
- ALT="$\wedge$"></STRONG></DT>
-<DD><A NAME="op:and_"></A> Logical and of <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$"> and <IMG
- WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img100.png"
- ALT="$y$">, where <IMG
- WIDTH="55" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img108.png"
- ALT="$x&lt;0.5$">
-  means false, and <IMG
- WIDTH="55" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img109.png"
- ALT="$x&gt;0.5$"> means true. The output is 1 or 0, depending
-  on the result being true or false respectively.
-
-<P>
-</DD>
-<DT><STRONG>or <IMG
- WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img110.png"
- ALT="$\vee$"></STRONG></DT>
-<DD><A NAME="op:or_"></A> Logical or of <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$"> and <IMG
- WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img100.png"
- ALT="$y$">, where <IMG
- WIDTH="55" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img108.png"
- ALT="$x&lt;0.5$">
-  means false, and <IMG
- WIDTH="55" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img109.png"
- ALT="$x&gt;0.5$"> means true. The output is 1 or 0, depending
-  on the result being true or false respectively.
-
-<P>
-</DD>
-<DT><STRONG>not <IMG
+<DT><STRONG>and <SPAN CLASS="MATH"><IMG
  WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img111.png"
- ALT="$\neg$"></STRONG></DT>
-<DD><A NAME="op:not_"></A> The output is 1 or 0, depending
-  on whether <IMG
- WIDTH="55" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
- SRC="img108.png"
- ALT="$x&lt;0.5$"> is true or false respectively.
+ SRC="img113.png"
+ ALT="$\wedge$"></SPAN></STRONG></DT>
+<DD><A NAME="op:and_"></A> Logical and of <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img102.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img106.png"
+ ALT="$y$"></SPAN>, where
+  <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img114.png"
+ ALT="$x\le 0.5$"></SPAN>
+  means false, and <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img115.png"
+ ALT="$x&gt;0.5$"></SPAN> means true. The output is 1 or 0, depending
+  on the result being true or false respectively.
 
 <P>
 </DD>
-<DT><STRONG>time</STRONG></DT>
+<DT><STRONG>or <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img116.png"
+ ALT="$\vee$"></SPAN></STRONG></DT>
+<DD><A NAME="op:or_"></A> Logical or of <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img102.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img106.png"
+ ALT="$y$"></SPAN>, where <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img114.png"
+ ALT="$x\le 0.5$"></SPAN>
+  means false, and <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img115.png"
+ ALT="$x&gt;0.5$"></SPAN> means true. The output is 1 or 0, depending
+  on the result being true or false respectively.
+
+<P>
+</DD>
+<DT><STRONG>not <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
+ SRC="img117.png"
+ ALT="$\neg$"></SPAN></STRONG></DT>
+<DD><A NAME="op:not_"></A> The output is 1 or 0, depending
+  on whether <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img114.png"
+ ALT="$x\le 0.5$"></SPAN> is true or false respectively.
+
+<P>
+</DD>
+<DT><STRONG>time 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/time.eps}}$
+ -->
+<IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img118.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/time.eps}}"></STRONG></DT>
 <DD><A NAME="op:time"></A> Returns the current value of system time.
 
 <P>
@@ -266,25 +278,47 @@ purposes.
 
 <P>
 </DD>
-<DT><STRONG>integrate</STRONG></DT>
+<DT><STRONG>integrate 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/int.eps}}$
+ -->
+<IMG
+ WIDTH="29" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
+ SRC="img63.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}"></STRONG></DT>
 <DD><A NAME="op:integrate"></A> Creates an integration (or stock)
 variable. Editable attributes include the variable's name and its
-initial value at <IMG
- WIDTH="39" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img112.png"
- ALT="$t=0$">.
+initial value at <SPAN CLASS="MATH"><IMG
+ WIDTH="39" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img119.png"
+ ALT="$t=0$"></SPAN>.
 
 <P>
 </DD>
-<DT><STRONG>differentiate</STRONG></DT>
+<DT><STRONG>differentiate 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}$
+ -->
+<IMG
+ WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img120.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}"></STRONG></DT>
 <DD><A NAME="op:differentiate"></A> Symbolically differentiates its input.
 
 <P>
 </DD>
-<DT><STRONG>data</STRONG></DT>
-<DD><A NAME="op:data"></A> A data interpolation widget. Currently, the
-data must be imported from a file containing two values on each line,
-eg:
+<DT><STRONG>data 
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/data.eps}}$
+ -->
+<IMG
+ WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img121.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/data.eps}}"></STRONG></DT>
+<DD><A NAME="op:data"></A> A data interpolation
+widget. Currently, the data must be imported from a file containing
+two values on each line, eg:
+<BLOCKQUOTE>
 <TABLE CELLPADDING=3>
 <TR><TD ALIGN="RIGHT">0.1</TD>
 <TD ALIGN="RIGHT">0.3</TD>
@@ -296,6 +330,7 @@ eg:
 <TD ALIGN="RIGHT">1</TD>
 </TR>
 </TABLE>
+</BLOCKQUOTE>
 If the input is less than the minimum key value (0.1 here), then the
 operation outputs the corresponding value (0.3). Similarly if the
 input is greater than the maximum (0.9), the corresponding value (1)
@@ -307,14 +342,14 @@ More formally, a data block is an empirical function, based on a table
 of pairs of values (<!-- MATH
  $x_i, y_i, i=1\ldots n, x_{i+1}>x_i$
  -->
-<IMG
- WIDTH="187" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img113.png"
- ALT="$x_i, y_i, i=1\ldots n, x_{i+1}&gt;x_i$">) read in from
+<SPAN CLASS="MATH"><IMG
+ WIDTH="187" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img122.png"
+ ALT="$x_i, y_i, i=1\ldots n, x_{i+1}&gt;x_i$"></SPAN>) read in from
 a file. The function's output is linearly interpolated from the data,
 ie:
 <BR><P></P>
-<DIV ALIGN="CENTER">
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
 <!-- MATH
  \begin{displaymath}
 f(x) = \left\{
@@ -330,7 +365,7 @@ x_{i+1}\\
 
 <IMG
  WIDTH="328" HEIGHT="69" BORDER="0"
- SRC="img114.png"
+ SRC="img123.png"
  ALT="\begin{displaymath}
 f(x) = \left\{
 \begin{array}{cl}
@@ -346,10 +381,10 @@ x_{i+1}\\
 
 <P>
 </DD>
-<DT><STRONG>sqrt <IMG
- WIDTH="18" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
- SRC="img115.png"
- ALT="$\surd$"></STRONG></DT>
+<DT><STRONG>sqrt <SPAN CLASS="MATH"><IMG
+ WIDTH="18" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img124.png"
+ ALT="$\surd$"></SPAN></STRONG></DT>
 <DD><A NAME="op:sqrt"></A> Square root of the input
 
 <P>
@@ -386,66 +421,67 @@ x_{i+1}\\
 <DD><A NAME="op:sinh"></A> hyperbolic sine function <!-- MATH
  $\frac{e^x-e^{-x}}2$
  -->
-<IMG
- WIDTH="53" HEIGHT="41" ALIGN="MIDDLE" BORDER="0"
- SRC="img116.png"
- ALT="$\frac{e^x-e^{-x}}2$">
+<SPAN CLASS="MATH"><IMG
+ WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
+ SRC="img125.png"
+ ALT="$\frac{e^x-e^{-x}}2$"></SPAN>
 </DD>
 <DT><STRONG>cosh</STRONG></DT>
 <DD><A NAME="op:cosh"></A> hyperbolic cosine function <!-- MATH
  $\frac{e^x+e^{-x}}2$
  -->
-<IMG
- WIDTH="53" HEIGHT="41" ALIGN="MIDDLE" BORDER="0"
- SRC="img117.png"
- ALT="$\frac{e^x+e^{-x}}2$">
+<SPAN CLASS="MATH"><IMG
+ WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
+ SRC="img126.png"
+ ALT="$\frac{e^x+e^{-x}}2$"></SPAN>
 </DD>
 <DT><STRONG>tanh</STRONG></DT>
 <DD><A NAME="op:tanh"></A> hyperbolic tangent function <!-- MATH
  $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
  -->
-<IMG
- WIDTH="53" HEIGHT="41" ALIGN="MIDDLE" BORDER="0"
- SRC="img118.png"
- ALT="$\frac{e^x-e^{-x}}{e^x+e^{-x}}$">
+<SPAN CLASS="MATH"><IMG
+ WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
+ SRC="img127.png"
+ ALT="$\frac{e^x-e^{-x}}{e^x+e^{-x}}$"></SPAN>
 </DD>
-<DT><STRONG>abs <IMG
- WIDTH="23" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
- SRC="img119.png"
- ALT="$\vert x\vert$"></STRONG></DT>
+<DT><STRONG>abs <SPAN CLASS="MATH"><IMG
+ WIDTH="22" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img128.png"
+ ALT="$\vert x\vert$"></SPAN></STRONG></DT>
 <DD><A NAME="op:abs"></A> absolute value function
 </DD>
 <DT><STRONG>floor <!-- MATH
  $\lfloor x\rfloor$
  -->
-<IMG
- WIDTH="28" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
- SRC="img120.png"
- ALT="$\lfloor x\rfloor$"></STRONG></DT>
+<SPAN CLASS="MATH"><IMG
+ WIDTH="27" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img129.png"
+ ALT="$\lfloor x\rfloor$"></SPAN></STRONG></DT>
 <DD><A NAME="op:floor"></A> The greatest integer
-  less than or equal to <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$">.
+  less than or equal to <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img102.png"
+ ALT="$x$"></SPAN>.
 </DD>
 <DT><STRONG>frac</STRONG></DT>
-<DD><A NAME="op:frac"></A> Fractional part of <IMG
- WIDTH="14" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img96.png"
- ALT="$x$">, ie <!-- MATH
+<DD><A NAME="op:frac"></A> Fractional part of <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img102.png"
+ ALT="$x$"></SPAN>, ie <!-- MATH
  $x-\lfloor x\rfloor$
  -->
-<IMG
- WIDTH="56" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
- SRC="img121.png"
- ALT="$x-\lfloor x\rfloor$">. 
+<SPAN CLASS="MATH"><IMG
+ WIDTH="56" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img130.png"
+ ALT="$x-\lfloor x\rfloor$"></SPAN>. 
 
 <P>
 </DD>
 </DL>
 
 <P>
-<HR>
+
+<DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
 <A NAME="tex2html124"
   HREF="node10.html">
@@ -462,11 +498,11 @@ x_{i+1}\\
 <B> Up:</B> <A NAME="tex2html123"
   HREF="node8.html">Reference</A>
 <B> Previous:</B> <A NAME="tex2html117"
-  HREF="node8.html">Reference</A>
+  HREF="node8.html">Reference</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2016-12-27
+2016-12-29
 </ADDRESS>
 </BODY>
 </HTML>
