@@ -95,27 +95,6 @@ namespace minsky
       Tcl_ResetResult(interp());
     }
     
-    void cut()
-    {
-      // need to clear getters/setters before calling Minsky::cut(),
-      // as well as minskTCL's maps to remove extraneous references
-      clearAllGetterSetters();
-      items.clear();
-      wires.clear();
-      Minsky::cut();
-      buildMaps();
-    }
-
-    int paste()
-    {
-      auto g=Minsky::paste();
-      buildMaps();
-      // find the newly added group
-      for (auto& i: items)
-        if (i==g) return i.id();
-      return -1;
-    }
-      
     void putClipboard(const std::string& s) const override; 
     std::string getClipboard() const override; 
 
@@ -137,13 +116,6 @@ namespace minsky
 //
     void initGroupList(TCL_args args) {
       //      groupTest.initGroupList(groupItems, (args.count? args: -1));
-    }
-
-    int insertGroupFromFile(const char* file) {
-      int r=-1;
-      if (auto g=Minsky::insertGroupFromFile(file))
-        items[r=getNewId()]=g;
-      return r;
     }
 
 

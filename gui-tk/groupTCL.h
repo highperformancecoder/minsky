@@ -329,7 +329,33 @@ namespace minsky
             items.erase(i);
           }
     }
-     
+
+    void cut()
+    {
+      // need to clear getters/setters before calling Minsky::cut(),
+      // as well as minskTCL's maps to remove extraneous references
+      clearAllGetterSetters();
+      items.clear();
+      wires.clear();
+      minsky().cut();
+      buildMaps();
+    }
+
+    int paste()
+    {
+      int id=getNewId();
+      items[id]=this->model->addGroup(minsky().paste());
+      return id;
+    }
+
+    int insertGroupFromFile(const char* file) {
+      int r=-1;
+      if (auto g=minsky().insertGroupFromFile(file))
+        items[r=getNewId()]=this->model->addGroup(g);
+      return r;
+    }
+
+
     /// @returns id of the variable if (x,y) is over an I/O variable within a group or godley icon if a variable within is at (x,y), -1 otherwise.
     int selectVar(int id, float x, float y);
 
