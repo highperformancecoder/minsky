@@ -21,6 +21,7 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <vector>
 #include <string.h>
 
 namespace minsky
@@ -68,6 +69,20 @@ namespace minsky
     return r;
   }
 
+  /// arrange for a functional to be called on stack exit
+  template <class F> struct OnStackExit
+  {
+    F f;
+    OnStackExit(F f): f(f) {}
+    ~OnStackExit() {f();}
+  };
 
+  /// generator function
+  template <class F> OnStackExit<F> onStackExit(F f) {return OnStackExit<F>(f);}
+
+  /// remove an element from a vector. V must be comparable to a T
+  template <class T, class V>
+  void remove(std::vector<T>& x, const V& v)
+  {x.erase(std::remove(x.begin(),x.end(),v),x.end());}
 }
 #endif

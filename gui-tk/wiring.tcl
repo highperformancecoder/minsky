@@ -1143,7 +1143,7 @@ proc contextMenu {id x y} {
             .wiring.context add command -label "Flip" -command "rotateVar $id 180; flip_default"
             .wiring.context add command -label "Raise" -command "raiseItem var$id"
             .wiring.context add command -label "Lower" -command "lowerItem var$id"
-            .wiring.context add command -label "Browse object" -command "obj_browser wiringGroup.var.*"
+            .wiring.context add command -label "Browse object" -command "obj_browser wiringGroup.item.*"
 	    .wiring.context add command -label "Delete variable" -command "deleteItem $id item$id"
         }
         "Operation*|IntOp" {

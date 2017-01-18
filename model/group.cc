@@ -98,6 +98,11 @@ namespace minsky
         {
           ItemPtr r=*i;
           items.erase(i);
+          if (r->ioVar())
+            {
+              remove(inVariables, r);
+              remove(outVariables, r);
+            }
           return r;
         }
 
@@ -245,6 +250,7 @@ namespace minsky
   void Group::moveContents(Group& source) {
      if (&source!=this)
        {
+
          for (auto& i: source.groups)
            if (i->higher(*this))
              throw error("attempt to move a group into itself");
@@ -265,6 +271,7 @@ namespace minsky
     VariablePtr v(VariableType::flow,
                   cminsky().variableValues.newName(VariableValue::valueId(group.lock(),"")));
     addItem(v);
+    createdIOvariables.push_back(v);
     v->rotation=rotation;
     return v;
   }

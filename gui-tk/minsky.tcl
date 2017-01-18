@@ -1206,6 +1206,7 @@ if [info exists env(MINSKY_COV)] {
     attachTraceProc ::
 }
 
+openGlobalInCanvas
 
 # a hook to allow code to be run after Minsky has initialised itself
 if {[llength [info commands afterMinskyStarted]]>0} {

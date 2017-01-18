@@ -192,7 +192,7 @@ namespace minsky
     /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
     void select(float x0, float y0, float x1, float y1);
     ///// clear selection
-    //void clearSelection();
+    void clearSelection() {currentSelection.clear();}
     /// erase items in current selection, put copy into clipboard
     void cut();
     /// copy items in current selection into clipboard

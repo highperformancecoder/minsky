@@ -157,6 +157,19 @@ namespace minsky
 
     /// splits any wires that cross group boundaries
     void splitBoundaryCrossingWires();
+
+    /// returns whether all items (which are shared_ptrs) are uniquely owned
+    bool uniquely_owned() const {
+      return !recursiveDo(&GroupItems::items,[](const Items&,Items::const_iterator i){
+          return i->use_count()>1;
+        }) &&
+        !recursiveDo(&GroupItems::groups,[](const Groups&,Groups::const_iterator i){
+          return i->use_count()>1;
+        }) &&
+        !recursiveDo(&GroupItems::wires,[](const Wires&,Wires::const_iterator i){
+          return i->use_count()>1;
+          });
+    }
   };
 
   template <class G, class M, class O>
@@ -179,6 +192,7 @@ namespace minsky
   public:
     std::string title;
     float width{100}, height{100}; // size of icon
+    std::vector<VariablePtr> createdIOvariables;
 
     /// @returns a shared_ptr to this. NULL if this cannot be found in parent group
     std::shared_ptr<Group> self() const;
@@ -282,6 +296,7 @@ namespace minsky
     /// I/O variable icon, null otherwise, indicating that the Group
     /// has been selected.
     VariablePtr select(float x, float y) const override;
+
   };
 
   /// find the closest (in or out) port to \a x or \a y.

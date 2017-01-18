@@ -51,6 +51,8 @@ namespace minsky
         argv0!="minsky.setGodleyIconResource" &&
         argv0!="minsky.setGroupIconResource" &&
         argv0!="minsky.step" &&
+        argv0!="wiringGroup.newGroupTCL" &&
+        argv0!="minsky.newGlobalGroupTCL" &&
         argv0.find(".get")==string::npos && 
         argv0.find(".mouseFocus")==string::npos
         )

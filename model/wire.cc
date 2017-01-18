@@ -140,7 +140,7 @@ namespace minsky
                 fg->addOutputVar();
                 assert(fg->outVariables.back()->ports.size()>1);
                 fg->addWire(new Wire(from(),fg->outVariables.back()->ports[1]));
-                m_from=fg->outVariables.back()->ports[0];
+                moveToPorts(fg->outVariables.back()->ports[0], to());
               }
             // check if this wire is in to group
             i=find_if(tg->wires.begin(), tg->wires.end(), cmp);
@@ -149,7 +149,7 @@ namespace minsky
                 tg->addInputVar();
                 assert(tg->inVariables.back()->ports.size()>1);
                 tg->addWire(new Wire(tg->inVariables.back()->ports[0],to()));
-                m_to=tg->inVariables.back()->ports[1];
+                moveToPorts(from(), tg->inVariables.back()->ports[1]);
               }
           }
   }

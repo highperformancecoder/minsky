@@ -204,6 +204,12 @@ namespace minsky
       resetNextId();
     }
 
+    void check_uniquely_owned() {
+      clearAll();
+      auto ee{onStackExit([&]{this->buildMaps();})};
+      if (!Model::model->uniquely_owned()) throw error("not uniquely owned");
+    }
+    
     void buildMaps() {
       
       while (Tcl_DoOneEvent(TCL_DONT_WAIT));   // dump any pending events
@@ -322,12 +328,28 @@ namespace minsky
     void ungroup(int i)
     {
       if (Group* g=dynamic_cast<Group*>(items[i].get()))
-        if (auto parent=g->group.lock())
+        {
+          while (Tcl_DoOneEvent(TCL_DONT_WAIT));   // dump any pending events
+          // remove extra shared references
+          clearAll();
+          minsky().clearSelection();
+          if (auto parent=g->group.lock())
           {
+            // remove created IO variables
+            for (auto& v: g->createdIOvariables)
+              {
+                for (auto w: v->ports[0]->wires)
+                  if (v->ports[1]->wires.size()>0)
+                    w->moveToPorts(v->ports[1]->wires[0]->from(),w->to());
+                g->removeItem(*v);
+                assert(v.use_count()==1);
+              }
+            g->createdIOvariables.clear(); // force deletion of I/O variable
             parent->moveContents(*g);
             parent->removeGroup(*g);
-            items.erase(i);
           }
+          buildMaps();
+        }
     }
 
     void cut()
