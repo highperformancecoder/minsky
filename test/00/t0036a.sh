@@ -40,9 +40,10 @@ proc afterMinskyStarted {} {uplevel #0 {
   select [expr [group.x]-0.55*[group.width]] [expr [group.y]-0.55*[group.height]] [expr [group.x]+0.55*[group.width]] [expr [group.y]+0.55*[group.height]] 
   newSystem
   group.get [paste]
+  assert {[minsky.group.groups.size]==1}
+  buildMaps
   assert {[items.size]==10}
   assert {[wires.size]==8}
-  assert {[minsky.group.groups.size]==1}
   # retrieve inner group
   minsky.group.groups.@elem 0
   assert {[minsky.group.groups(0).items.size]==8}

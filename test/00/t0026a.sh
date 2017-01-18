@@ -47,6 +47,7 @@ set gid [paste]
 insertNewGroup \$gid
 event generate .wiring.canvas <Button-1>
 
+buildMaps
 assert {[items.size]==28} {}
 assert {[wires.size]==25} {}
 
