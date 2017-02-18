@@ -554,15 +554,16 @@ proc runstop {} {
         }
       updateCanvas
   } else {
-    set running 1
-    doPushHistory 0
-    if {$classicMode} {
-            .controls.run configure -text stop
-        } else {
-             .controls.run configure -image stopButton
-        }
-    simulate
- }
+      set running 1
+      doPushHistory 0
+      if {$classicMode} {
+          .controls.run configure -text stop
+      } else {
+          .controls.run configure -image stopButton
+      }
+      step
+      simulate
+  }
 }
 
 proc step {} {
@@ -599,7 +600,14 @@ proc simulate {} {
               after [expr $delay/25+0] {step; simulate}
           } else {
               set d [expr int(pow(10,$delay/4.0))]
-              after $d {if {$running} {step;}; simulate}
+              after $d {
+                  if {$running} {
+                      if [reset_flag] runstop else {
+                          step
+                          simulate
+                      }
+                  }
+              }
           }
         }
     }
