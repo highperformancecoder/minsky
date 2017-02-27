@@ -1,0 +1,30 @@
+
+
+	    asset
+     --------------------
+       DR     +    black
+       CR     -     red
+
+
+
+          liability
+     --------------------
+       CR     +    black
+       DR     -     red
+
+
+
+            equity
+     --------------------
+       CR     +    black
+       DR     -     red
+
+
+
+          SingleEntry
+     --------------------
+       CR     +    black
+       DR     -     red
+
+
+
