@@ -20,6 +20,5 @@ Go to our [SourceForge](http://minsky.sf.net) to download the official release
 Linux packages are available from the [OpenSUSE build service]
 (https://build.opensuse.org/package/show/home:hpcoder1/minsky)
 
--  [Changelog](Changelog.md) for latest changes (new features, bug fixes etc)
 -  [Roadmap](Roadmap.md) for our plans for new features, changes etc
 
