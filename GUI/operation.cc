@@ -222,6 +222,8 @@ namespace minsky
         auto r=operationFactory.create(type);
         if (!ports.empty())
           r->addPorts(ports);
+        else
+          r->addPorts();
         return r;
       }
   }

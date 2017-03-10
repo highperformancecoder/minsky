@@ -96,13 +96,7 @@ namespace minsky
     // manage the port structures associated with this operation
     virtual void addPorts()=0;
     void addPorts(unsigned numPorts);
-    void addPorts(const vector<int>& p) {
-      if (!p.empty())
-        // TODO - possible consistency check possible here
-        m_ports=p; 
-      else
-        addPorts(); 
-    }
+    void addPorts(const vector<int>& p) {m_ports=p;}
     void delPorts();
 
     friend struct EvalOpBase;
@@ -125,7 +119,12 @@ namespace minsky
     {Super::operator=(x); this->addPorts(); return *this;}
 
     Operation() {this->addPorts();}
-    Operation(const vector<int>& ports) {this->addPorts(ports);}
+    Operation(const vector<int>& ports) {
+      if (!ports.empty())
+        this->m_ports=ports;
+      else
+        Operation::addPorts();
+    }
     ~Operation() {this->delPorts();}
   protected:
     using OperationBase::addPorts;
