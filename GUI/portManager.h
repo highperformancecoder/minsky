@@ -41,11 +41,11 @@ namespace minsky
     
     typedef IntrusiveMap<int,T> Super;
     friend struct classdesc::base_cast<Super>;
-    using Super::iterator;
-    using Super::const_iterator;
-    using Super::mapped_type;
-    using Super::value_type;
-    using Super::key_type;
+    using typename Super::iterator;
+    using typename Super::const_iterator;
+    using typename Super::mapped_type;
+    using typename Super::value_type;
+    using typename Super::key_type;
     using Super::size;
     using Super::begin;
     using Super::end;
@@ -72,6 +72,7 @@ namespace minsky
 
   class PortManager
   {
+    CLASSDESC_ACCESS(PortManager);
   public:
 
     typedef PMMap<Port> Ports;

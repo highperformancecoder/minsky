@@ -87,8 +87,17 @@ ifdef MXE
 BOOST_EXT=-mt
 EXE=.exe
 else
-BOOST_EXT=
 EXE=
+BOOST_EXT=
+# try to autonomously figure out which boost extension we should be using
+  ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system>&/dev/null; then echo 1; else echo 0; fi),0)
+    ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system-mt>&/dev/null; then echo 1; else echo 0; fi),1)
+      BOOST_EXT=-mt
+    else
+      $(warning cannot figure out boost extension) 
+    endif
+  endif
+$(warning Boost extension=$(BOOST_EXT))
 endif
 
 LIBS+=	-ljson_spirit \
