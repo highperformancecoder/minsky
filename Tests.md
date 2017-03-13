@@ -1,28 +1,12 @@
 # Tests
 
-Tests are located in the `/test` folder
+Tests are located in the `/test/00` folder. Each test is a shell script that returns 0 on success and non-zero on failure, with file name ending in .sh. Test scripts should clean up any temporary directories created by them.
 
 ### Test Runner
 
-The main test runner is: `runtests.sh`
+- To run the tests, type "make sure" at the toplevel directory. This ensures all necessary executables are built prior to runnning the test scripts.
 
-```cc
-#for i in 01 02 03 04 05 06 09 10 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37; do
-for i in test/00/*.sh; do
-    if [ $i = "test/00/t0008a.sh" ]; then continue; fi # TODO schema 0 support
-    # rendering to GIFs is too unstable, so diable on the Travis platform
-    if [ "$TRAVIS" = 1 -a $i = test/00/t0035a.sh ]; then continue; fi
-    sh $i
-  status=$?
-  if [ $status -ne 0 ]; then
-      let $[t++]
-      echo "$i exited with nonzero code $status"
-  fi
-done
-```
-
-The runner runs through all the shell scripts in `test/00` and executes each one.
-Most of the current tests are GUI tests using the *Tcl*.
+- Individual tests can be run by running specific scripts from the test/00 directory.
 
 ### Test Coverage
 
@@ -30,20 +14,18 @@ Most of the current tests are GUI tests using the *Tcl*.
 
 ## Unit tests
 
-The main unit tests are:
+One of the test scripts runs the `test/unittests` executable. This executable has tests written using the the UnitTest++ framework, which is typically good for writing low level tests of individual classes.
 
-- `testVariable` - test variables
-- `testDerivative` - test derivative calculations
-- `testMinsky` test full diagram of connected nodes
+- `unittests -l` will list available tests
+- `unittests <regexpPattern>` will run all tests matching the regexp. Gives a way of running a selected subset of tests
+- without any argument, unittests runs all tests, ie is equivalent to `unittests .*`
 
-## UI unit tests
+## Integration tests
 
-The main unit tests are:
-
-- `testGroup`
-- `testGeometry`
-
-## IO/Data tests
-
-- `testDatabase` - SQL database tests
+The minsky executable can run in batch mode by passing a TCL script on the command line.
+- The GUI environment is not instantiated until the TCL script has completed. Therefore, and exit at the end of the script prevent the GUI environment being instantiated
+- To run commands against the GUI, define a procedure afterMinskyStarted
+- There is a TCL assert command available in test/assert.tcl.
+   - assert expr comment
+       if braces are placed around the expression, it is executed as part of the context of the assert proc, which doesn't have access to global variables. Instead, you can enclose the expression in quotes, and use the comment field to indicate what assertion failed.
 
