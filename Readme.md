@@ -25,5 +25,9 @@ To compile Minsky, you will need a suitable posix compliant system, with a numbe
 - [MacOSX](githubdocs/MacRelease.md)
 - Linux: Linux distributions are managed through the [OpenSUSE build service](https://build.opensuse.org/package/show/home:hpcoder1/minsky) which won't be documented here
 
--  [Roadmap](Roadmap.md) for our plans for new features, changes etc
+## Roadmap
+
+- Current focus is to bed down the refactored model, and release this as the first Quesnay iteration release (Minsky 2.1). This will include various features to assist pedagogy (marked "Kingston" in the SourceForge ticket tracker).
+
+- Support for an online library of models and snippets, via forkable Github repositories.
 
