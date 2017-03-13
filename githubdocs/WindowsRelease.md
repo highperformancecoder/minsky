@@ -8,8 +8,9 @@
 
 - Once these are built, unpack ecolab, and do
 
+~~~~
    make MXE=1 install.
-
+~~~~
   This installs EcoLab to ~/usr/mxe/ecolab
 
 - Then compile Minsky with
