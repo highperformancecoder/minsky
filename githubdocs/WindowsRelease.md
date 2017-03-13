@@ -11,7 +11,7 @@
 ~~~~
    make MXE=1 install.
 ~~~~
-  This installs EcoLab to ~/usr/mxe/ecolab
+     This installs EcoLab to ~/usr/mxe/ecolab
 
 - Then compile Minsky with
 
