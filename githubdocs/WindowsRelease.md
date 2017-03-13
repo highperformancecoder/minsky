@@ -14,7 +14,8 @@
 
 - Then compile Minsky with
 
-make MXE=1
-
+~~~~
+    make MXE=1
+~~~~
 - Once minsky.exe is compiled, copy the entire directory onto a windows system with a posix system like cygwin installed, as well as the WiX msi generator. 
 - The run GUI/makeMsi.sh to generate the installer version, which creates an msi file.
