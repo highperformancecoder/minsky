@@ -36,6 +36,10 @@ rewrite_dylibs()
 }
 
 rewrite_dylibs $MAC_DIST_DIR/minsky
+# not sure why this is it's own little snowflake
+cp /usr/local/lib/libTktable2.11.dylib $MAC_DIST_DIR
+install_name_tool -change libTktable2.11.dylib @executable_path/libTktable2.11.dylib $MAC_DIST_DIR/minsky
+
 
 # determine location of tcl library from tclsh - make sure the correct
 # tclsh is in your path
