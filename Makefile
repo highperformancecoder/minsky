@@ -3,6 +3,9 @@
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
 
+SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
+
+
 # Use the TCL stub libraries to be consistent with TkTable
 
 # location of TCL and TK libraries 
@@ -226,7 +229,7 @@ minsky.xsd: gui-tk/minsky
 	gui-tk/minsky exportSchema.tcl
 
 upload-schema: minsky.xsd
-	scp minsky.xsd hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
+	scp minsky.xsd $(SF_WEB)
 
 install: GUI/minsky$(EXE)
 	mkdir -p $(PREFIX)/bin
@@ -249,7 +252,11 @@ doxydoc: $(wildcard *.h) $(wildcard *.cc) \
 
 # upload doxygen webpages to SF
 install-doxydoc: doxydoc
-	rsync -r -z --progress --delete doxydoc hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
+	rsync -r -z --progress --delete doxydoc $(SF_WEB)
+
+# upload manual to SF
+install-manual: doc/minsky/labels.pl
+	rsync -r -z --progress --delete doc/minsky.html doc/minsky $(SF_WEB)/manual
 
 # run the regression suite checking for the TCL code coverage
 tcl-cov:
