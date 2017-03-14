@@ -19,6 +19,9 @@
 #include <boost/filesystem.hpp>
 using boost::filesystem::path;
 
+#include <unistd.h>
+#include <fcntl.h>
+
 extern "C"
 {
   typedef void (*__sighandler_t) (int);
@@ -340,3 +343,12 @@ namespace TCLcmd
 
 
 }
+
+// In order to get around a missing mkostemp function on MacOSX 10.11 and earlier systems 
+#if defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED < 101200
+extern "C" int mkostemp(char* templ, int flags)
+{
+  mktemp(templ);
+  return open(templ,flags);
+}
+#endif
