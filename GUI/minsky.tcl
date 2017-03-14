@@ -86,13 +86,6 @@ if {$argc>1} {
 }
 
 GUI
-if {$tcl_platform(os)=="Darwin" && [catch {GUI}]} {
-    # pop a message box about installing XQuartz
-    exec osascript << "tell application \"System Events\"
-    activate
-    display dialog \"GUI failed to initialise, try installing XQuartz\"
-    end tell"
-} else GUI
     
 source $tcl_library/init.tcl
 

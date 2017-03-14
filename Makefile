@@ -58,10 +58,6 @@ WTGUI_OBJS=canvasView.o mainMenu.o minskyApp.o propertiesDlg.o  \
 
 ALL_OBJS=tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(WTGUI_OBJS)
 
-ifeq ($(OS),Darwin)
-FLAGS+=-DENABLE_DARWIN_EVENTS
-endif
-
 # TODO - remove dependency on GUI directory here
 FLAGS+=-std=c++11 -Ischema -Iengine -IGUI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
 
@@ -125,6 +121,11 @@ WT_LIBS=-lwthttp -lwtext -lwt -lGraphicsMagick -lGraphicsMagick++ \
 	-ljpeg -llcms -lxml2 -ltiff -lboost_signals$(BOOST_EXT) -lboost_random$(BOOST_EXT)
 # disable a deprecation warning that comes from Wt
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
+
+ifeq ($(OS),Darwin)
+FLAGS+=-DENABLE_DARWIN_EVENTS
+LIBS+=-force_flat_namespace  # for ticket #654
+endif
 
 ifndef AEGIS
 # just build the Minsky executable
