@@ -955,6 +955,7 @@ proc rebuildCanvas {} {
 }
 
 proc updateCanvas {} {
+    canvas.redraw
     doPushHistory 0
     global fname showPorts
 #    .wiring.canvas delete all

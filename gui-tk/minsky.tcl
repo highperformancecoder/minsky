@@ -514,6 +514,11 @@ canvas .equations.canvas -height $canvasHeight -width $canvasWidth -scrollregion
 pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations
 
+image create photo newCanvas -width 500 -height 500 
+ttk::label .newCanvas -image newCanvas
+.tabs add .newCanvas -text "New Canvas"
+canvas.addImage newCanvas
+
 .tabs select 0
 
 ttk::sizegrip .sizegrip

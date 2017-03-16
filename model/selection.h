@@ -60,8 +60,6 @@ namespace minsky
       return w>0 && h>0;
     }
 
-    
-
     /// return true if both endpoints of the wire lie
     /// within the lasso
     bool contains(const Wire& wire) const {

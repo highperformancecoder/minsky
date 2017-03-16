@@ -34,6 +34,7 @@
 #include "latexMarkup.h"
 #include "integral.h"
 #include "variableValue.h"
+#include "canvas.h"
 
 #include <vector>
 #include <string>
@@ -82,6 +83,7 @@ namespace minsky
      */
     std::deque<classdesc::pack_t> history;
     size_t historyPtr;
+    
   };
 
   /// convenience class for accessing matrix elements from a data array
@@ -114,7 +116,7 @@ namespace minsky
     Selection currentSelection;
 
   public:
-
+    
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
     /// true if reset needs to be called prior to numerical integration
@@ -155,6 +157,7 @@ namespace minsky
     Minsky() {model->height=model->width=std::numeric_limits<float>::max();}
 
     GroupPtr model{new Group};
+    Canvas canvas{model};
 
     void clearAllMaps();
 

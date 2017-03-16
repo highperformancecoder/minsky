@@ -26,6 +26,7 @@
 #include <arrays.h>
 #include <TCL_obj_base.h>
 #include "classdesc_access.h"
+#include <cairo.h>
 
 namespace minsky
 {
@@ -55,7 +56,12 @@ namespace minsky
 
     /// switch ports this wire links to
     void moveToPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
+    /// draw this item into a cairo context
+    void draw(cairo_t* cairo) const;
+    float x() const {return 0;}
+    float y() const {return 0;}
 
+    
     /// display coordinates 
     std::vector<float> coords() const;
     std::vector<float> coords(const std::vector<float>& coords);
