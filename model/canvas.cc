@@ -18,8 +18,13 @@
 */
 
 #include "canvas.h"
+#include "minsky.h"
+#include "init.h"
+#include <cairo_base.h>
 #include <ecolab_epilogue.h>
 using namespace std;
+using namespace ecolab::cairo;
+using namespace minsky;
 
 namespace minsky
 {
@@ -85,3 +90,31 @@ namespace minsky
     surface->blit();
   }
 }
+
+namespace
+{
+  struct CanvasDisplayItem: public CairoImage
+  {
+    void draw()
+    {
+      if (cairoSurface)
+        {
+          minsky::minsky().canvas.surface=cairoSurface;
+          minsky::minsky().canvas.redraw();
+        }
+    }
+  };
+
+  // register OperatorItem with Tk for use in canvases.
+  int registerItems()
+  {
+    static Tk_ItemType canvasDisplayItemType = cairoItemType();
+    canvasDisplayItemType.name=const_cast<char*>("canvas");
+    canvasDisplayItemType.createProc=createImage<CanvasDisplayItem>;
+    Tk_CreateItemType(&canvasDisplayItemType);
+    return 0;
+  }
+
+}
+
+static int dum=(initVec().push_back(registerItems), 0);

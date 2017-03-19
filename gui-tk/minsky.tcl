@@ -514,17 +514,21 @@ canvas .equations.canvas -height $canvasHeight -width $canvasWidth -scrollregion
 pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations
 
-image create photo newCanvas -width 500 -height 500
-frame .newCanvas
-label .newCanvas.img -image newCanvas
-pack .newCanvas.img
+ttk::frame  .newCanvas
+canvas .newCanvas.canvas -height $canvasHeight -width $canvasWidth -scrollregion {-10000 -10000 10000 10000} \
+    -yscrollcommand ".vscroll set" -xscrollcommand ".hscroll set"
+.newCanvas.canvas create canvas 0 0 -tags canvas
+pack .newCanvas.canvas -fill both -expand 1
 .tabs add .newCanvas -text "New Canvas"
-canvas.addImage newCanvas
 
 .tabs select 0
 
 ttk::sizegrip .sizegrip
-proc scrollCanvases {xyview args} {eval .wiring.canvas $xyview $args; eval .equations.canvas $xyview $args}
+proc scrollCanvases {xyview args} {
+    eval .wiring.canvas $xyview $args;
+    eval .equations.canvas $xyview $args
+    eval .newCanvas.canvas $xyview $args
+}
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
 
