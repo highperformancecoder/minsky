@@ -31,8 +31,19 @@ namespace minsky
   void Canvas::mouseDown(float x, float y) {}
   void Canvas::mouseUp(float x, float y) {}
   void Canvas::mouseMove(float x, float y) {}
-  void Canvas::getItemAt(float x, float y) {}
-  void Canvas::getWireAt(float x, float y) {}
+  
+  void Canvas::getItemAt(float x, float y)
+  {
+    item=model->findAny(&Group::items,
+                       [&](const ItemPtr& i){return i->contains(x,y);});
+  }
+  
+  void Canvas::getWireAt(float x, float y)
+  {
+    wire=model->findAny(&Group::wires,
+                       [&](const WirePtr& i){return i->near(x,y);});
+  }
+
   void Canvas::redraw()
   {
     updateRegion.x0=updateRegion.y0=-numeric_limits<float>::max();

@@ -106,6 +106,13 @@ namespace minsky
       return std::set<string>();
     }
 
+    void getItemAt(float x, float y)
+    {
+      canvas.getItemAt(x,y);
+      cout << canvas.item.get() << endl;
+      if (canvas.item)
+        canvas.item->TCL_obj(minskyTCL_obj(),"minsky.canvas.item");
+    }
 
 //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {

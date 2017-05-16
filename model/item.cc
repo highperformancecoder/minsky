@@ -26,6 +26,7 @@
 #include <pango.h>
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
+#include <exception>
 
 using ecolab::Pango;
 using namespace std;
@@ -33,6 +34,25 @@ using namespace std;
 namespace minsky
 {
 
+  void BoundingBox::update(const Item& x)
+  {
+    ecolab::cairo::Surface surf
+       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+    try {x.draw(surf.cairo());}
+    catch (const std::exception& e) 
+      {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
+    catch (...) {cerr<<"illegal exception caught in draw()";}
+    double l,t,w,h;
+    cairo_recording_surface_ink_extents(surf.surface(),
+                                        &l,&t,&w,&h);
+    // note (0,0) is relative to the (x,y) of icon.
+    double invZ=1/x.zoomFactor;
+    left=l*invZ;
+    right=(l+w)*invZ;
+    top=t*invZ;
+    bottom=(t+h)*invZ;
+  }
+  
   float Item::x() const 
   {
     if (auto g=group.lock())

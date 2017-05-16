@@ -206,4 +206,28 @@ namespace minsky
               }
           }
   }
+
+  namespace
+  {
+    inline float sqr(float x) {return x*x;}
+
+    // returns true if x,y lies close to the line segment (x0,y0)-(x1,y1)
+    bool segNear(float x0, float y0, float x1, float y1, float x, float y)
+    {
+      float d=sqrt(sqr(x1-x0)+sqr(y1-y0));
+      float d1=sqrt(sqr(x-x0)+sqr(y-y0)), d2=sqrt(sqr(x-x1)+sqr(y-y1));
+      return d1+d2<=d+5;
+    }
+  }
+  
+  bool Wire::near(float x, float y) const
+  {
+    auto c=coords();
+    assert(c.size()>=4);
+    for (size_t i=0; i<c.size()-2; i+=2)
+      if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y))
+        return true;
+    return false;
+  }
+  
 }

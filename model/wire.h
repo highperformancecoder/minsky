@@ -66,6 +66,9 @@ namespace minsky
     std::vector<float> coords() const;
     std::vector<float> coords(const std::vector<float>& coords);
 
+    /// returns true if coordinates are near this wire
+    bool near(float x, float y) const;
+    
     void straighten() {m_coords.clear();}
 
     /// whether this wire is visible or not

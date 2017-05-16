@@ -137,3 +137,25 @@ SUITE(Group)
     CHECK_EQUAL(1,model->wires.size());
   }
 }
+
+SUITE(Canvas)
+{
+  TEST_FIXTURE(TestFixture, getItemAt)
+    {
+      canvas.getItemAt(a->x()+2,a->y()+2);
+      CHECK(a==canvas.item);
+      canvas.getItemAt(b->x()-2,b->y()-2);
+      CHECK(b==canvas.item);
+      canvas.getItemAt(c->x()-2,c->y()+2);
+      CHECK(c==canvas.item);
+    }
+  
+  TEST_FIXTURE(TestFixture, getWireAt)
+    {
+      auto from=a->ports[0], to=b->ports[1];
+      float x=0.5f*(from->x()+to->x())+1;
+      float y=0.5f*(from->y()+to->y())+1;
+      canvas.getWireAt(x,y);
+      CHECK(canvas.wire==ab);
+    }
+}

@@ -55,6 +55,19 @@ namespace minsky
 
   class VariablePtr;
 
+  class Item;
+  /// bounding box information (at zoom=1 scale)
+  class BoundingBox
+  {
+    float left=0, right=0, top, bottom;
+  public:
+    void update(const Item& x);
+    bool contains(float x, float y) const {
+      return left<=x && right>=x && bottom>=y && top<=y;
+    }
+    bool valid() const {return left!=right;}
+  };
+  
   class Item: public NoteBase
   {
   public:
@@ -63,6 +76,13 @@ namespace minsky
     double rotation=0; ///< rotation of icon, in degrees
     bool m_visible=true; ///< if false, then this item is invisible
     std::weak_ptr<Group> group;
+    /// canvas bounding box.
+    mutable BoundingBox bb;
+    bool contains(float x, float y) {
+      if (!bb.valid()) bb.update(*this);
+      return bb.contains((x-m_x)/zoomFactor, (y-m_y)/zoomFactor);
+    }
+    
     /// indicates this is a group I/O variable
     virtual bool ioVar() const {return false;}
     

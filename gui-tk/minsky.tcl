@@ -520,6 +520,8 @@ canvas .newCanvas.canvas -height $canvasHeight -width $canvasWidth -scrollregion
 pack .newCanvas.canvas -fill both -expand 1
 .tabs add .newCanvas -text "New Canvas"
 
+bind .newCanvas.canvas <Button-1> {puts "hello [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]";minsky.getItemAt [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
+
 .tabs select 0
 
 ttk::sizegrip .sizegrip
