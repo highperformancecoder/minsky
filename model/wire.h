@@ -43,6 +43,8 @@ namespace minsky
     std::vector<float> m_coords;
     /// ports this wire connects
     std::weak_ptr<Port> m_from, m_to;
+
+    constexpr static float handleRadius=3;
   public:
 
     Wire() {}

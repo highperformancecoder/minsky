@@ -75,6 +75,16 @@ namespace minsky
                                }        
                              return false;
                            });
+        model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
+                           {
+                             bool mf=(*i)->near(x,y);
+                             if (mf!=(*i)->mouseFocus)
+                               {
+                                 (*i)->mouseFocus=mf;
+                                 surface->requestRedraw();
+                               }        
+                             return false;
+                           });
       }
     // TODO - wire editing and lasso
   }

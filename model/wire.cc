@@ -176,6 +176,23 @@ namespace minsky
     cairo_close_path(cairo);
     cairo_fill(cairo);
     cairo_restore(cairo);
+
+    // draw handles
+    if (mouseFocus)
+      {
+        cairo_save(cairo);
+        cairo_set_source_rgb(cairo,0,0,1);
+        for (size_t i=0; i<coords.size()-3; i+=2)
+          {
+            double midx=0.5*(coords[i]+coords[i+2]);
+            double midy=0.5*(coords[i+1]+coords[i+3]);
+            cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
+            if (i>0) // draw existing interor handle
+              cairo_arc(cairo,coords[i],coords[i+1],handleRadius, 0, 2*M_PI);
+            cairo_fill(cairo);
+          }
+        cairo_restore(cairo);
+      }
   }
 
   void Wire::split()
