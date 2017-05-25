@@ -62,7 +62,20 @@ namespace minsky
         itemFocus->moveTo(x,y);
         surface->requestRedraw();
       }
-        
+    else
+      {
+        // set mouse focus to display ports etc.
+        model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
+                           {
+                             bool mf=(*i)->contains(x,y);
+                             if (mf!=(*i)->mouseFocus)
+                               {
+                                 (*i)->mouseFocus=mf;
+                                 surface->requestRedraw();
+                               }        
+                             return false;
+                           });
+      }
     // TODO - wire editing and lasso
   }
   

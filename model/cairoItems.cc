@@ -156,6 +156,7 @@ void OperationBase::draw(cairo_t* cairo) const
         cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*zoomFactor), r.y(-w+1,-h-hoffs+2*zoomFactor));
         pango.show();
         cairo_restore(cairo);
+        cairo_save(cairo);
         cairo_rotate(cairo, angle);
                
         cairo_set_source_rgb(cairo,0,0,1);
@@ -182,13 +183,9 @@ void OperationBase::draw(cairo_t* cairo) const
             cairo_user_to_device(cairo, &xx, &yy);
             ports[1]->moveTo(x()+xx, y()+yy);
           }
+        cairo_restore(cairo); // undo rotation
         if (mouseFocus)
-          {
-            cairo_save(cairo);
-            cairo_identity_matrix(cairo);
-            drawPorts(cairo);
-            cairo_restore(cairo);
-          }
+          drawPorts(cairo);
         if (selected) drawSelected(cairo);
         return;
     }
@@ -221,6 +218,7 @@ void OperationBase::draw(cairo_t* cairo) const
   float l=OperationBase::l*zoomFactor, r=OperationBase::r*zoomFactor, 
     h=OperationBase::h*zoomFactor;
   int intVarWidth=0;
+  cairo_save(cairo);
   cairo_rotate(cairo, angle);
   cairo_move_to(cairo,l,h);
   cairo_line_to(cairo,l,-h);
@@ -325,14 +323,10 @@ void OperationBase::draw(cairo_t* cairo) const
     }
 
   cairo_translate(cairo,-coupledIntTranslation,0);
- 
+
+  cairo_restore(cairo); // undo rotation
   if (mouseFocus)
-    {
-      cairo_save(cairo);
-      cairo_identity_matrix(cairo);
       drawPorts(cairo);
-      cairo_restore(cairo);
-    }
   if (selected) drawSelected(cairo);
 
 }
@@ -412,6 +406,7 @@ void VariableBase::draw(cairo_t *cairo) const
   pango.show();
   //  cairo_restore(cairo);
 
+  cairo_save(cairo);
   cairo_rotate(cairo, angle);
   // constants and parameters should be rendered in blue, all others in red
   switch (type())
@@ -445,14 +440,9 @@ void VariableBase::draw(cairo_t *cairo) const
                        y()+(y1*ca+x1*sa));
   }
 
-  //  cairo_restore(cairo);
+  cairo_restore(cairo); // undo rotation
   if (mouseFocus)
-    {
-      cairo_save(cairo);
-      cairo_identity_matrix(cairo);
-      drawPorts(cairo);
-      cairo_restore(cairo);
-    }
+    drawPorts(cairo);
   if (selected) drawSelected(cairo);
 }
 
