@@ -523,6 +523,13 @@ pack .newCanvas.canvas -fill both -expand 1
 bind .newCanvas.canvas <ButtonPress-1> {minsky.canvas.mouseDown [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
 bind .newCanvas.canvas <ButtonRelease-1> {minsky.canvas.mouseUp [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
 bind .newCanvas.canvas <Motion> {minsky.canvas.mouseMove [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
+bind .newCanvas.canvas <<contextMenu>> {
+    if [minsky.getItemAt [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]] {
+        .wiring.context delete 0 end
+        .wiring.context add command -label "Browse object" -command "obj_browser minsky.canvas.item.*"
+        tk_popup .wiring.context %X %Y
+    }
+}
 
 .tabs select 0
 
