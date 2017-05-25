@@ -28,9 +28,43 @@ using namespace minsky;
 
 namespace minsky
 {
-  void Canvas::mouseDown(float x, float y) {}
-  void Canvas::mouseUp(float x, float y) {}
-  void Canvas::mouseMove(float x, float y) {}
+  void Canvas::mouseDown(float x, float y)
+  {
+    // firstly, see if the user is selecting an item
+    itemFocus=model->findAny(&Group::items,
+                       [&](const ItemPtr& i){return i->contains(x,y);});
+    if (!itemFocus)
+      {
+        wireFocus=model->findAny(&Group::wires,
+                       [&](const WirePtr& i){return i->near(x,y);});
+        // TODO - decorate wire with handles
+      }
+    if (!wireFocus)
+      {
+        // TODO - lasso mode
+      }
+  }
+
+  
+  void Canvas::mouseUp(float x, float y)
+  {
+    mouseMove(x,y);
+    itemFocus.reset();
+    wireFocus.reset();
+    selection.clear();
+  }
+  
+  void Canvas::mouseMove(float x, float y)
+  {
+    if (itemFocus)
+      {
+        updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
+        itemFocus->moveTo(x,y);
+        surface->requestRedraw();
+      }
+        
+    // TODO - wire editing and lasso
+  }
   
   void Canvas::getItemAt(float x, float y)
   {
@@ -116,12 +150,24 @@ namespace
     }
   };
 
+  int createCanvasImage(Tcl_Interp *interp,	Tk_Canvas canvas, Tk_Item *itemPtr, 
+                        int objc,Tcl_Obj *CONST objv[])
+  {
+    int rc=createImage<CanvasDisplayItem>(interp,canvas,itemPtr,objc,objv);
+    // adjust image bounding box to the entire canvas, not just what's there
+    itemPtr->x1=-10000;
+    itemPtr->x2=10000;
+    itemPtr->y1=-10000;
+    itemPtr->y2=10000;
+    return rc;
+  }
+    
   // register OperatorItem with Tk for use in canvases.
   int registerItems()
   {
     static Tk_ItemType canvasDisplayItemType = cairoItemType();
     canvasDisplayItemType.name=const_cast<char*>("canvas");
-    canvasDisplayItemType.createProc=createImage<CanvasDisplayItem>;
+    canvasDisplayItemType.createProc=createCanvasImage;
     Tk_CreateItemType(&canvasDisplayItemType);
     return 0;
   }
