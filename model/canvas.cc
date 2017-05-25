@@ -33,22 +33,55 @@ namespace minsky
     // firstly, see if the user is selecting an item
     itemFocus=model->findAny(&Group::items,
                        [&](const ItemPtr& i){return i->contains(x,y);});
-    if (!itemFocus)
+    if (itemFocus)
+      {
+        auto clickType=itemFocus->clickType(x,y);
+        switch (clickType)
+          {
+          case ClickType::onPort:
+            // items all have their output port first, if they have an output port at all.
+            if (fromPort=itemFocus->closestOutPort(x,y))
+              {
+                termX=x;
+                termY=y;
+                itemFocus.reset();
+              }
+            break;
+          case ClickType::onItem:
+            break;
+          case ClickType::outside:
+            itemFocus.reset();
+            // TODO goto lasso mode
+            break;
+          }
+      }
+    else
       {
         wireFocus=model->findAny(&Group::wires,
                        [&](const WirePtr& i){return i->near(x,y);});
         // TODO - decorate wire with handles
+        if (!wireFocus)
+          {
+            // TODO - lasso mode
+          }
       }
-    if (!wireFocus)
-      {
-        // TODO - lasso mode
-      }
+
+
   }
 
   
   void Canvas::mouseUp(float x, float y)
   {
     mouseMove(x,y);
+    if (fromPort.get())
+      {
+        if (auto dest=model->findAny(&Group::items,
+                                     [&](const ItemPtr& i){return i->contains(x,y);}))
+          if (auto to=dest->closestInPort(x,y))
+            model->addWire(new Wire(fromPort,to));
+        fromPort.reset();
+      }
+        
     itemFocus.reset();
     wireFocus.reset();
     selection.clear();
@@ -60,6 +93,12 @@ namespace minsky
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
         itemFocus->moveTo(x,y);
+        surface->requestRedraw();
+      }
+    else if (fromPort.get())
+      {
+        termX=x;
+        termY=y;
         surface->requestRedraw();
       }
     else
@@ -155,6 +194,24 @@ namespace minsky
            w.draw(cairo);
          return false;
        });
+
+    if (fromPort.get()) // we're in process of creating a wire
+      {
+        cairo_move_to(cairo,fromPort->x(),fromPort->y());
+        cairo_line_to(cairo,termX,termY);
+        cairo_stroke(cairo);
+        // draw arrow
+        cairo_save(cairo);
+        cairo_translate(cairo, termX,termY);
+        cairo_rotate(cairo,atan2(termY-fromPort->y(), termX-fromPort->x()));
+        cairo_move_to(cairo,0,0);
+        cairo_line_to(cairo,-5,-3); 
+        cairo_line_to(cairo,-3,0); 
+        cairo_line_to(cairo,-5,3);
+        cairo_close_path(cairo);
+        cairo_fill(cairo);
+        cairo_restore(cairo);
+      }
     surface->blit();
   }
 }
