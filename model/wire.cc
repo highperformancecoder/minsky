@@ -235,15 +235,28 @@ namespace minsky
       float d1=sqrt(sqr(x-x0)+sqr(y-y0)), d2=sqrt(sqr(x-x1)+sqr(y-y1));
       return d1+d2<=d+5;
     }
+    
+    // returns true if x,y lies in the triangle (x0,y0),(x1,y1),(x2,y2)
+    bool inTriangle(float x0, float y0, float x1, float y1,
+                    float x2, float y2, float x, float y)
+    {
+      float l1 = (x-x0)*(y2-y0) - (x2-x0)*(y-y0), 
+        l2 = (x-x1)*(y0-y1) - (x0-x1)*(y-y1), 
+        l3 = (x-x2)*(y1-y2) - (x1-x2)*(y-y2);
+      return (l1>0 && l2>0  && l3>0) || (l1<0 && l2<0 && l3<0);
+    }
   }
   
   bool Wire::near(float x, float y) const
   {
     auto c=coords();
     assert(c.size()>=4);
-    for (size_t i=0; i<c.size()-2; i+=2)
-      if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y))
-        return true;
+    if (c.size()==4)
+      return segNear(c[0],c[1],c[2],c[3],x,y);
+    else
+      for (size_t i=0; i<c.size()-4; i+=2)
+        if (inTriangle(c[i],c[i+1],c[i+2],c[i+3],c[i+4],c[i+5],x,y))
+          return true;
     return false;
   }
   
