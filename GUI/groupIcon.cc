@@ -16,6 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <boost/geometry/geometry.hpp>
 #include "groupIcon.h"
 #include "minsky.h"
 #include "init.h"
@@ -32,7 +33,6 @@ using namespace std;
 using namespace minsky;
 
 #include <boost/regex.hpp>
-#include <boost/geometry/geometry.hpp>
 using namespace boost::geometry;
 
 namespace minsky
