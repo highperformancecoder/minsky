@@ -23,6 +23,7 @@
 #define DISPLAY_POW_UPSIDE_DOWN
 
 
+#include <boost/geometry/geometry.hpp>
 #include "operation.h"
 #include "minsky.h"
 #include "init.h"
@@ -31,7 +32,6 @@
 #include <arrays.h>
 #include <pango.h>
 #include <ecolab_epilogue.h>
-#include <boost/geometry/geometry.hpp>
 
 using namespace ecolab;
 using namespace std;
