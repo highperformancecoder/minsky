@@ -1,9 +1,10 @@
+#include <boost/geometry/geometry.hpp>
+
 #include "../GUI/geometry.h"
 #include "../GUI/cairoItems.h"
 #include <ecolab_epilogue.h>
 #include <UnitTest++/UnitTest++.h>
 
-#include <boost/geometry/geometry.hpp>
 
 using namespace minsky;
 using namespace boost::geometry;
