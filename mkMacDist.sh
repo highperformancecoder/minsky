@@ -6,7 +6,7 @@
 
 MAC_DIST_DIR=minsky.app/Contents/MacOS
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
-if [ $version = '"unknown"' ]; then
+if [ "$version" = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
@@ -14,7 +14,7 @@ rewrite_dylibs()
 {
     local target=$1
     echo "rewrite_dylibs $target"
-    otool -L $target|grep opt/local|cut -f1 -d' '|while read dylib; do
+    otool -L $target|grep opt/|cut -f1 -d' '|while read dylib; do
         # avoid infinite loops
         if [ "${dylib##*/}" == "${target##*/}" ]; then 
             install_name_tool -change $dylib @executable_path/${dylib##*/} $target
@@ -38,8 +38,8 @@ rewrite_dylibs()
 rewrite_dylibs $MAC_DIST_DIR/minsky
 # not sure why this is it's own little snowflake
 cp /usr/local/lib/libTktable2.11.dylib $MAC_DIST_DIR
+rewrite_dylibs $MAC_DIST_DIR/libTktable2.11.dylib
 install_name_tool -change libTktable2.11.dylib @executable_path/libTktable2.11.dylib $MAC_DIST_DIR/minsky
-
 
 # determine location of tcl library from tclsh - make sure the correct
 # tclsh is in your path
