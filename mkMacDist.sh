@@ -14,7 +14,7 @@ rewrite_dylibs()
 {
     local target=$1
     echo "rewrite_dylibs $target"
-    otool -L $target|grep opt/local|cut -f1 -d' '|while read dylib; do
+    otool -L $target|grep opt/|cut -f1 -d' '|while read dylib; do
         # avoid infinite loops
         if [ "${dylib##*/}" == "${target##*/}" ]; then 
             install_name_tool -change $dylib @executable_path/${dylib##*/} $target
@@ -39,7 +39,7 @@ cp gui-tk/minsky $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/minsky
 
 # TkTable.dylib seems to be its own little snowflake :)
-cp ~/usr/lib/libTktable2.11.dylib $MAC_DIST_DIR
+cp /usr/local/lib/libTktable2.11.dylib $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/libTktable2.11.dylib
 install_name_tool -change libTktable2.11.dylib @executable_path/libTktable2.11.dylib $MAC_DIST_DIR/minsky
 
