@@ -51,7 +51,7 @@ namespace minsky
             break;
           case ClickType::outside:
             itemFocus.reset();
-            // TODO goto lasso mode
+            lassoMode=true;
             break;
           }
       }
@@ -60,16 +60,16 @@ namespace minsky
         wireFocus=model->findAny(&Group::wires,
                        [&](const WirePtr& i){return i->near(x,y);});
         if (wireFocus)
-          {
-            handleSelected=wireFocus->nearestHandle(x,y);
-          }
+          handleSelected=wireFocus->nearestHandle(x,y);
         else
-          {
-            // TODO - lasso mode
-          }
+          lassoMode=true;
       }
 
-
+    if (lassoMode)
+      {
+        lasso.x0=x;
+        lasso.y0=y;
+      }
   }
 
   
@@ -87,6 +87,14 @@ namespace minsky
     
     if (wireFocus)
       wireFocus->editHandle(handleSelected,x,y);
+    
+    if (lassoMode)
+      {
+        minsky().select(lasso.x0,lasso.y0,x,y); //TODO move this into a method of selection
+        lassoMode=false;
+        surface->requestRedraw();
+      }
+
     
     itemFocus.reset();
     wireFocus.reset();
@@ -110,6 +118,12 @@ namespace minsky
     else if (wireFocus)
       {
         wireFocus->editHandle(handleSelected,x,y);
+        surface->requestRedraw();
+      }
+    else if (lassoMode)
+      {
+        lasso.x1=x;
+        lasso.y1=y;
         surface->requestRedraw();
       }
     else
@@ -222,6 +236,12 @@ namespace minsky
         cairo_close_path(cairo);
         cairo_fill(cairo);
         cairo_restore(cairo);
+      }
+
+    if (lassoMode)
+      {
+        cairo_rectangle(cairo,lasso.x0,lasso.y0,lasso.x1-lasso.x0,lasso.y1-lasso.y0);
+        cairo_stroke(cairo);
       }
     surface->blit();
   }

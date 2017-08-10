@@ -35,9 +35,13 @@ namespace minsky
     ItemPtr itemFocus; ///< item selected by clicking
     WirePtr wireFocus; ///< wire that mouse is hovering over
     unsigned handleSelected;
-    classdesc::Exclude<std::shared_ptr<Port>> fromPort; ///< from port when creating a new wire
+    Exclude<shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
 
+    /// lasso mode support
+    bool lassoMode=false;
+    LassoBox lasso{0,0,0,0};
+    
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
     void addImage(const char* imageName) {
