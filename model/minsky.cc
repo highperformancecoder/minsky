@@ -16,10 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "cairoItems.h"
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
-#include "cairoItems.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>

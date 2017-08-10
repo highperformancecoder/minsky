@@ -24,10 +24,10 @@
 
 
 #include <boost/geometry/geometry.hpp>
+#include "cairoItems.h"
 #include "operation.h"
 #include "minsky.h"
 #include "init.h"
-#include "cairoItems.h"
 #include "latexMarkup.h"
 #include <arrays.h>
 #include <pango.h>

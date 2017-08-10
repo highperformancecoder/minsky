@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairoItems.h"
 #include "group.h"
 #include "wire.h"
 #include "operation.h"
 #include "minsky.h"
-#include "cairoItems.h"
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
 using namespace std;

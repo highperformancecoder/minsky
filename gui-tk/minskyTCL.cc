@@ -17,9 +17,9 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairoItems.h"
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"
-#include "cairoItems.h"
 #include <ecolab.h>
 #include <ecolab_epilogue.h>
 

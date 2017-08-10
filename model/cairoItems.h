@@ -16,10 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <geometry.h>
 #include <plot.h>
 #include <cairo_base.h>
 #include <cairo/cairo.h>
-#include <geometry.h>
 #include "operation.h"
 #include "variable.h"
 
