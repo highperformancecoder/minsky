@@ -34,6 +34,7 @@ namespace minsky
     Exclude<ecolab::cairo::SurfacePtr> surface;
     ItemPtr itemFocus; ///< item selected by clicking
     WirePtr wireFocus; ///< wire that mouse is hovering over
+    unsigned handleSelected;
     classdesc::Exclude<std::shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
 

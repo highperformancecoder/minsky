@@ -59,8 +59,11 @@ namespace minsky
       {
         wireFocus=model->findAny(&Group::wires,
                        [&](const WirePtr& i){return i->near(x,y);});
-        // TODO - decorate wire with handles
-        if (!wireFocus)
+        if (wireFocus)
+          {
+            handleSelected=wireFocus->nearestHandle(x,y);
+          }
+        else
           {
             // TODO - lasso mode
           }
@@ -81,7 +84,10 @@ namespace minsky
             model->addWire(new Wire(fromPort,to));
         fromPort.reset();
       }
-        
+    
+    if (wireFocus)
+      wireFocus->editHandle(handleSelected,x,y);
+    
     itemFocus.reset();
     wireFocus.reset();
     selection.clear();
@@ -99,6 +105,11 @@ namespace minsky
       {
         termX=x;
         termY=y;
+        surface->requestRedraw();
+      }
+    else if (wireFocus)
+      {
+        wireFocus->editHandle(handleSelected,x,y);
         surface->requestRedraw();
       }
     else

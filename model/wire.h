@@ -70,6 +70,12 @@ namespace minsky
 
     /// returns true if coordinates are near this wire
     bool near(float x, float y) const;
+    /// returns the index into the coordinate list if x,y is close to
+    /// it. Otherwise inserts midpoints and returns that. Wire
+    /// endpoints are not returned
+    unsigned nearestHandle(float x, float y);
+    void insertHandle(unsigned position, float x, float y);
+    void editHandle(unsigned position, float x, float y);
     
     void straighten() {m_coords.clear();}
 

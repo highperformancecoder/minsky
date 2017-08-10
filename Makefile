@@ -268,3 +268,10 @@ MINSKY_VERSION=$(shell git describe)
 
 dist:
 	git archive --format=tar.gz --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar.gz
+
+lcov:
+	$(MAKE) clean
+	-$(MAKE) GCOV=1 sure
+	lcov -i -c -d . --no-external -o lcov.info
+	lcov -c -d . --no-external -o lcov.info
+	genhtml -o coverage lcov.info

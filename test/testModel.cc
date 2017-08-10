@@ -159,3 +159,40 @@ SUITE(Canvas)
       CHECK(canvas.wire==ab);
     }
 }
+
+SUITE(Wire)
+{
+  TEST(handles)
+    {
+      Item item;
+      item.ports.emplace_back(new Port(item));
+      item.ports.back()->moveTo(0,0);
+      item.ports.emplace_back(new Port(item));
+      item.ports.back()->moveTo(10,10);
+      Wire wire(item.ports[0],item.ports[1],{0,0,3,4,6,7,10,10});
+      CHECK_EQUAL(0, wire.nearestHandle(3.1, 3.9));
+      CHECK_EQUAL(1, wire.nearestHandle(6.2, 7.5));
+      // should not have inserted anything yet
+      CHECK_EQUAL(8, wire.coords().size());
+
+      // check for midpoint insertion
+      CHECK_EQUAL(0, wire.nearestHandle(1.6, 2));
+      CHECK_EQUAL(10, wire.coords().size());
+      CHECK_CLOSE(1.5, wire.coords()[2],0.01);
+      CHECK_CLOSE(2, wire.coords()[3],0.01);
+      
+      CHECK_EQUAL(2, wire.nearestHandle(4.5, 5.5));
+      CHECK_EQUAL(12, wire.coords().size());
+      CHECK_CLOSE(4.5, wire.coords()[6],0.01);
+      CHECK_CLOSE(5.5, wire.coords()[7],0.01);
+
+      CHECK_EQUAL(4, wire.nearestHandle(10, 10));
+      CHECK_EQUAL(14, wire.coords().size());
+      CHECK_CLOSE(8, wire.coords()[10],0.01);
+      CHECK_CLOSE(8.5, wire.coords()[11],0.01);
+
+      wire.editHandle(0,2.2,3.3);
+      CHECK_CLOSE(2.2, wire.coords()[2],0.01);
+      CHECK_CLOSE(3.3, wire.coords()[3],0.01);
+    }
+}

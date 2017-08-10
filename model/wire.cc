@@ -245,6 +245,9 @@ namespace minsky
         l3 = (x-x2)*(y1-y2) - (x1-x2)*(y-y2);
       return (l1>0 && l2>0  && l3>0) || (l1<0 && l2<0 && l3<0);
     }
+
+    inline float d2(float x0, float y0, float x1, float y1)
+    {return sqr(x0-x1)+sqr(y0-y1);}
   }
   
   bool Wire::near(float x, float y) const
@@ -259,5 +262,79 @@ namespace minsky
           return true;
     return false;
   }
+
+  unsigned Wire::nearestHandle(float x, float y)
+  {
+    auto c=coords();
+    unsigned n=0; // nearest index
+    float closestD=d2(c[0],c[1],x,y);
+    for (size_t i=2; i<c.size()-1; i+=2)
+      {
+        float d=d2(c[i],c[i+1],x,y);
+        if (d<closestD)
+          {
+            closestD=d;
+            n=i;
+          }
+      }
+    // now work out if we need to insert a midpoint handle
+    if (n>0)
+      {
+        float mx=0.5*(c[n]+c[n-2]), my=0.5*(c[n+1]+c[n-1]);
+        float d=d2(mx,my,x,y);
+        if (n==c.size()-2 || d<closestD)
+          {
+            insertHandle((n>>1)-1, mx, my);
+            return (n>>1)-1;
+          }
+      }
+    if (n<c.size()-3)
+      {
+        float mx=0.5*(c[n+2]+c[n]), my=0.5*(c[n+3]+c[n+1]);
+        float d=d2(mx,my,x,y);
+        if (n==0 || d<closestD)
+          {
+            insertHandle(n>>1, mx, my);
+            return (n>>1);
+          }
+      }
+    return (n>>1)-1;
+  }
+  
+  void Wire::insertHandle(unsigned n, float x, float y)
+  {
+    assert(n<=m_coords.size());
+    assert(from() && to());
+    n*=2;
+    if (auto f=from())
+      if (auto t=to())
+        if (n<m_coords.size())
+          {
+            m_coords.resize(m_coords.size()+2);
+            memcpy(&m_coords[n+2], &m_coords[n], sizeof(m_coords[0])*(m_coords.size()-n-2));
+            m_coords[n] = (x - f->x()) / (t->x() - f->x());
+            m_coords[n+1] = (y - f->y()) / (t->y() - f->y());
+          }
+        else if (n==m_coords.size())
+          {
+            m_coords.push_back((x - f->x()) / (t->x() - f->x()));
+            m_coords.push_back((y - f->y()) / (t->y() - f->y()));
+          }
+  }
+  
+  void Wire::editHandle(unsigned position, float x, float y)
+  {
+    assert(position<m_coords.size()-1);
+    assert(from() && to());
+    position*=2;
+    if (auto f=from())
+      if (auto t=to())
+        if (position<m_coords.size()-1)
+          {
+            m_coords[position]=(x - f->x()) / (t->x() - f->x());
+            m_coords[position+1]=(y - f->y()) / (t->y() - f->y());
+          }
+  }
+
   
 }
