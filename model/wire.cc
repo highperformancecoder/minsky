@@ -311,7 +311,7 @@ namespace minsky
         if (n<m_coords.size())
           {
             m_coords.resize(m_coords.size()+2);
-            memcpy(&m_coords[n+2], &m_coords[n], sizeof(m_coords[0])*(m_coords.size()-n-2));
+            memmove(&m_coords[n+2], &m_coords[n], sizeof(m_coords[0])*(m_coords.size()-n-2));
             m_coords[n] = (x - f->x()) / (t->x() - f->x());
             m_coords[n+1] = (y - f->y()) / (t->y() - f->y());
           }
