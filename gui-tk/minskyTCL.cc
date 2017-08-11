@@ -337,13 +337,11 @@ namespace minsky
     struct TkWinSurface: public ecolab::cairo::Surface
     {
       Canvas& canvas;
-      TkWinSurface(Canvas& canvas, cairo_surface_t* surf):
-        ecolab::cairo::Surface(surf), canvas(canvas) {}
+      Tk_ImageMaster imageMaster;
+      TkWinSurface(Canvas& canvas, Tk_ImageMaster imageMaster, cairo_surface_t* surf):
+        ecolab::cairo::Surface(surf), canvas(canvas),  imageMaster(imageMaster) {}
       void requestRedraw() override {
-        cairo_surface_flush(surface());
-        XClearWindow(cairo_xlib_surface_get_display(surface()),
-                     cairo_xlib_surface_get_drawable(surface()));
-        canvas.redraw();
+        Tk_ImageChanged(imageMaster,-1000000,-1000000,2000000,2000000,2000000,2000000);
       }
       void blit() override {cairo_surface_flush(surface());}
     };
@@ -369,13 +367,13 @@ namespace minsky
   }
   void MinskyTCL::addCanvasWindow(const char* windowName)
   {
-    Tk_Window win=Tk_NameToWindow(interp(),windowName,Tk_MainWindow(interp()));
-    // For now, just do xlib case
-    canvas.surface.reset
-      (new TkWinSurface
-       (canvas, cairo_xlib_surface_create
-        (Tk_Display(win),Tk_WindowId(win),Tk_Visual(win),Tk_ReqWidth(win),Tk_ReqHeight(win))));
-    Tk_CreateEventHandler(win,ExposureMask|StructureNotifyMask|VisibilityChangeMask,canvasEventHandler,canvas.surface.get());
+//    Tk_Window win=Tk_NameToWindow(interp(),windowName,Tk_MainWindow(interp()));
+//    // For now, just do xlib case
+//    canvas.surface.reset
+//      (new TkWinSurface
+//       (canvas, cairo_xlib_surface_create
+//        (Tk_Display(win),Tk_WindowId(win),Tk_Visual(win),Tk_ReqWidth(win),Tk_ReqHeight(win))));
+//    Tk_CreateEventHandler(win,ExposureMask|StructureNotifyMask|VisibilityChangeMask,canvasEventHandler,canvas.surface.get());
   }
 
 
@@ -392,6 +390,7 @@ namespace minsky
             ((member_entry_base*)(TCL_obj_properties()[canvas].get()));
           if (mb)
             {
+              mb->memberptr->surface.reset(new TkWinSurface(*mb->memberptr,master,0)); 
               *masterData=mb->memberptr;
               return TCL_OK;
             }
@@ -424,10 +423,11 @@ namespace minsky
       CD& c=*(CD*)cd;
       int depth;
       Visual *visual = Tk_GetVisual(interp(), c.tkWin, "default", &depth, NULL);
-      c.canvas.surface.reset(new ecolab::cairo::Surface
-                             (cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
-//      cairo_surface_set_device_offset
-//        (c.canvas.surface->surface(), drawableX, drawableY);
+      auto imageMaster=dynamic_cast<TkWinSurface&>(*c.canvas.surface).imageMaster;
+      c.canvas.surface.reset
+        (new TkWinSurface
+         (c.canvas, imageMaster,
+          cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
       c.canvas.redraw();
       cairo_surface_flush(c.canvas.surface->surface());
     }
