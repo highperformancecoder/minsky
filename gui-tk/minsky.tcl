@@ -515,13 +515,9 @@ pack .equations.canvas -fill both -expand 1
 
 image create canvasImage minskyCanvas -canvas minsky.canvas
 ttk::frame  .newCanvas
-#canvas .newCanvas.canvas -height $canvasHeight -width $canvasWidth -scrollregion {-10000 -10000 10000 10000} \
-#    -yscrollcommand ".vscroll set" -xscrollcommand ".hscroll set"
-#.newCanvas.canvas create canvas 0 0 -tags canvas
 label .newCanvas.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
 pack .newCanvas.canvas -fill both -expand 1
 .tabs add .newCanvas -text "New Canvas"
-#addCanvasWindow .newCanvas.canvas
 bind .newCanvas.canvas <ButtonPress-1> {minsky.canvas.mouseDown [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
 bind .newCanvas.canvas <ButtonRelease-1> {minsky.canvas.mouseUp [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
 bind .newCanvas.canvas <Motion> {minsky.canvas.mouseMove [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}

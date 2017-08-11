@@ -346,38 +346,6 @@ namespace minsky
       void blit() override {cairo_surface_flush(surface());}
     };
 
-    void canvasEventHandler(ClientData cd, XEvent *e)
-    {
-      auto& s=*(TkWinSurface*)cd;
-      switch (e->type)
-        {
-        case VisibilityNotify:
-          s.requestRedraw();
-          break;
-        case ConfigureNotify:
-          {
-            auto* ev=(XConfigureEvent*)e;
-            s.canvas.resizeWindow(ev->width,ev->height);
-          }
-          break;
-        default:
-          break;
-        }
-    }
-  }
-  void MinskyTCL::addCanvasWindow(const char* windowName)
-  {
-//    Tk_Window win=Tk_NameToWindow(interp(),windowName,Tk_MainWindow(interp()));
-//    // For now, just do xlib case
-//    canvas.surface.reset
-//      (new TkWinSurface
-//       (canvas, cairo_xlib_surface_create
-//        (Tk_Display(win),Tk_WindowId(win),Tk_Visual(win),Tk_ReqWidth(win),Tk_ReqHeight(win))));
-//    Tk_CreateEventHandler(win,ExposureMask|StructureNotifyMask|VisibilityChangeMask,canvasEventHandler,canvas.surface.get());
-  }
-
-
-  namespace {
     // Define a new image type that renders a minsky::Canvas
     int createCI(Tcl_Interp* interp, const char* name, int objc, Tcl_Obj *const objv[],
                  const Tk_ImageType* typePtr, Tk_ImageMaster master, ClientData *masterData)
