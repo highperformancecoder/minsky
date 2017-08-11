@@ -164,6 +164,8 @@ namespace minsky
     /// as a side effect, sets the var reference to the new variable
     void makeVariableConsistentWithValue(int id);
 
+    /// bind the canvas's surface to a Tk window
+    void addCanvasWindow(const char* windowName);
   };
 }
 

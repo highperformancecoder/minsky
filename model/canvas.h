@@ -44,11 +44,12 @@ namespace minsky
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
-    void addImage(const char* imageName) {
-      auto photo=Tk_FindPhoto(interp(),imageName);
-      if (!photo) throw ecolab::error("photo %s not found",imageName);
-      surface.reset(new ecolab::cairo::TkPhotoSurface(photo));
-    }
+//    void addImage(const char* imageName) {
+//      auto photo=Tk_FindPhoto(interp(),imageName);
+//      if (!photo) throw ecolab::error("photo %s not found",imageName);
+//      surface.reset(new ecolab::cairo::TkPhotoSurface(photo));
+//    }
+    void resizeWindow(int width, int height);
     
     /// event handling for the canvas
     void mouseDown(float x, float y);

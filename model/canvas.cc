@@ -21,6 +21,7 @@
 #include "minsky.h"
 #include "init.h"
 #include <cairo_base.h>
+#include <cairo/cairo-xlib.h>
 #include <ecolab_epilogue.h>
 using namespace std;
 using namespace ecolab::cairo;
@@ -245,6 +246,14 @@ namespace minsky
       }
     surface->blit();
   }
+
+  void Canvas::resizeWindow(int width, int height)
+  {
+    if (surface.get() && cairo_surface_get_type
+        (surface->surface())==CAIRO_SURFACE_TYPE_QUARTZ)
+      cairo_xlib_surface_set_size(surface->surface(),width,height);
+  }
+
 }
 
 namespace

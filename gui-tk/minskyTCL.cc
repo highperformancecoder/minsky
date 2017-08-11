@@ -20,8 +20,10 @@
 #include "cairoItems.h"
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"
+#include "init.h"
 #include <ecolab.h>
 #include <ecolab_epilogue.h>
+#include <cairo/cairo-xlib.h>
 
 #include <unistd.h>
 
@@ -329,5 +331,126 @@ namespace minsky
         }
   }
 
+  namespace
+  {
+    // TODO refactor Canvas class to directly redraw surface whenever anything changes
+    struct TkWinSurface: public ecolab::cairo::Surface
+    {
+      Canvas& canvas;
+      TkWinSurface(Canvas& canvas, cairo_surface_t* surf):
+        ecolab::cairo::Surface(surf), canvas(canvas) {}
+      void requestRedraw() override {
+        cairo_surface_flush(surface());
+        XClearWindow(cairo_xlib_surface_get_display(surface()),
+                     cairo_xlib_surface_get_drawable(surface()));
+        canvas.redraw();
+      }
+      void blit() override {cairo_surface_flush(surface());}
+    };
 
+    void canvasEventHandler(ClientData cd, XEvent *e)
+    {
+      auto& s=*(TkWinSurface*)cd;
+      switch (e->type)
+        {
+        case VisibilityNotify:
+          s.requestRedraw();
+          break;
+        case ConfigureNotify:
+          {
+            auto* ev=(XConfigureEvent*)e;
+            s.canvas.resizeWindow(ev->width,ev->height);
+          }
+          break;
+        default:
+          break;
+        }
+    }
+  }
+  void MinskyTCL::addCanvasWindow(const char* windowName)
+  {
+    Tk_Window win=Tk_NameToWindow(interp(),windowName,Tk_MainWindow(interp()));
+    // For now, just do xlib case
+    canvas.surface.reset
+      (new TkWinSurface
+       (canvas, cairo_xlib_surface_create
+        (Tk_Display(win),Tk_WindowId(win),Tk_Visual(win),Tk_ReqWidth(win),Tk_ReqHeight(win))));
+    Tk_CreateEventHandler(win,ExposureMask|StructureNotifyMask|VisibilityChangeMask,canvasEventHandler,canvas.surface.get());
+  }
+
+
+  namespace {
+    // Define a new image type that renders a minsky::Canvas
+    int createCI(Tcl_Interp* interp, const char* name, int objc, Tcl_Obj *const objv[],
+                 const Tk_ImageType* typePtr, Tk_ImageMaster master, ClientData *masterData)
+    {
+      try
+        {
+          TCL_args args(objc,objv);
+          string canvas=args; // arguments should be something like -canvas minsky.canvas
+          auto mb=dynamic_cast<member_entry<Canvas>*>
+            ((member_entry_base*)(TCL_obj_properties()[canvas].get()));
+          if (mb)
+            {
+              *masterData=mb->memberptr;
+              return TCL_OK;
+            }
+          else
+            {
+              Tcl_AppendResult(interp,"Not a Canvas",NULL);
+              return TCL_ERROR;
+            }
+        }
+      catch (const std::exception& e)
+        {
+          Tcl_AppendResult(interp,e.what(),NULL);
+          return TCL_ERROR;
+        }
+    }
+
+    struct CD
+    {
+      Tk_Window tkWin;
+      Canvas& canvas;
+    };
+    
+    ClientData getCI(Tk_Window win, ClientData masterData)
+    {return new CD{win,*(Canvas*)masterData};}
+  
+    void displayCI(ClientData cd, Display* display, Drawable win,
+                  int imageX, int imageY, int width, int height,
+                  int drawableX, int drawableY)
+    {
+      CD& c=*(CD*)cd;
+      int depth;
+      Visual *visual = Tk_GetVisual(interp(), c.tkWin, "default", &depth, NULL);
+      c.canvas.surface.reset(new ecolab::cairo::Surface
+                             (cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
+//      cairo_surface_set_device_offset
+//        (c.canvas.surface->surface(), drawableX, drawableY);
+      c.canvas.redraw();
+      cairo_surface_flush(c.canvas.surface->surface());
+    }
+
+    void freeCI(ClientData cd,Display*) {delete (CD*)cd;}
+    void deleteCI(ClientData) {}
+  
+    Tk_ImageType canvasImage = {
+      "canvasImage",
+      createCI,
+      getCI,
+      displayCI,
+      freeCI,
+      deleteCI
+    };
+
+    int registerCanvasImage() {
+      // ensure Tk_Init is called.
+      if (!Tk_MainWindow(interp())) Tk_Init(interp());
+      Tk_CreateImageType(&canvasImage);
+      return 0;
+    }
+  
+    int dum=(initVec().push_back(registerCanvasImage),0);
+  }
 }
