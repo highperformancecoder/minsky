@@ -76,8 +76,8 @@ namespace minsky
     virtual std::string _name() const;
     virtual std::string _name(const std::string& nm);
     ecolab::Accessor<std::string> name {
-      [this]() {return this->_name();},
-        [this](const std::string& s){return this->_name(s);}};
+      [this]() {return _name();},
+        [this](const std::string& s){return _name(s);}};
     /// @}
 
     virtual Type type() const override=0;
@@ -101,16 +101,16 @@ namespace minsky
     std::string _init() const; /// < return initial value for this variable
     std::string _init(const std::string&); /// < set the initial value for this variable
     ecolab::Accessor<std::string> init {
-      [this]() {return this->_init();},
-        [this](const std::string& s){return this->_init(s);}};
+      [this]() {return _init();},
+        [this](const std::string& s){return _init(s);}};
     /// @}
     
     /// @{ current value associated with this variable
     double _value(double);
     double _value() const;  
     ecolab::Accessor<double> value {
-      [this]() {return this->_value();},
-        [this](double x){return this->_value(x);}};
+      [this]() {return _value();},
+        [this](double x){return _value(x);}};
     /// @}
 
     /// sets variable value (or init value)
