@@ -18,8 +18,99 @@
 
 set globals(default_rotation) 0
 
-image create canvasImage minskyCanvas -canvas minsky.canvas
 ttk::frame  .wiring
+
+frame .wiring.menubar 
+
+set menubarLine 0
+ttk::frame .wiring.menubar.line0
+
+image create photo godleyImg -file $minskyHome/icons/bank.gif
+button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
+    -command addNewGodleyItem
+tooltip .wiring.menubar.line0.godley "Godley table"
+
+image create photo varImg -file $minskyHome/icons/var.gif
+button .wiring.menubar.line0.var -image varImg -height 24 -width 37 \
+    -command addVariable
+tooltip .wiring.menubar.line0.var "variable"
+
+image create photo constImg -file $minskyHome/icons/const.gif
+button .wiring.menubar.line0.const -height 24 -width 37 -image constImg -command {addConstant}
+tooltip .wiring.menubar.line0.const "constant"
+
+image create photo integrateImg -file $minskyHome/icons/integrate.gif
+button .wiring.menubar.line0.integrate -image integrateImg -command {
+    addOperation integrate}
+tooltip .wiring.menubar.line0.integrate integrate
+
+pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.integrate -side left
+
+# create buttons for all available operations (aside from those
+# handled especially)
+foreach op [availableOperations] {
+    if {$op=="numOps"} break
+    # ignore some operations
+    switch $op {
+        "constant" -
+        "copy" -
+        "integrate"  continue 
+    }
+
+    set opTrimmed [regsub {(.*)_$} $op {\1}] 
+    # advance to next line in menubar
+    if {$op=="data"} {
+        incr menubarLine
+        ttk::frame .wiring.menubar.line$menubarLine
+    }
+    if {[tk windowingsystem]=="aqua"} {
+        # ticket #187
+        image create photo [set op]Img -file $minskyHome/icons/$op.gif
+    } else {
+        image create photo [set op]Img -width 24 -height 24
+        operationIcon [set op]Img $op
+    }
+    button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "addOperation $op" -height 24 -width 24
+    tooltip .wiring.menubar.line$menubarLine.$op $opTrimmed
+
+    pack .wiring.menubar.line$menubarLine.$op -side left 
+    set helpTopics(.wiring.menubar.line$menubarLine.$op) "op:$op"
+}
+
+if {[tk windowingsystem]=="aqua"} {
+    image create photo switchImg -file $minskyHome/icons/switch.gif
+} else {
+    image create photo switchImg -width 24 -height 24
+    operationIcon switchImg switch
+}
+button .wiring.menubar.line$menubarLine.switch -image switchImg \
+    -height 24 -width 37 -command {placeNewSwitch}
+tooltip .wiring.menubar.line$menubarLine.switch "Switch"
+pack .wiring.menubar.line$menubarLine.switch -side left 
+set helpTopics(.wiring.menubar.line$menubarLine.switch) "switch"
+
+
+image create photo plotImg -file $minskyHome/icons/plot.gif
+button .wiring.menubar.line$menubarLine.plot -image plotImg \
+    -height 24 -width 37 -command {newPlot}
+tooltip .wiring.menubar.line$menubarLine.plot "Plot"
+pack .wiring.menubar.line$menubarLine.plot -side left 
+
+image create photo noteImg -file $minskyHome/icons/note.gif
+button .wiring.menubar.line$menubarLine.note -image noteImg \
+    -height 24 -width 37 -command {placeNewNote}
+tooltip .wiring.menubar.line$menubarLine.note "Note"
+pack .wiring.menubar.line$menubarLine.note -side left 
+
+clearAll
+
+# pack menubar lines
+for {set i 0} {$i<=$menubarLine} {incr i} {
+    pack .wiring.menubar.line$i -side top -anchor w
+}
+pack .wiring.menubar -fill x
+
+image create canvasImage minskyCanvas -canvas minsky.canvas
 label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
 pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {minsky.canvas.mouseDown %x %y}
@@ -32,101 +123,6 @@ bind .wiring.canvas <<contextMenu>> {
         tk_popup .wiring.context %X %Y
     }
 }
-
-#  frame .wiring 
-#  frame .wiring.menubar 
-#  
-#  set menubarLine 0
-#  ttk::frame .wiring.menubar.line0
-#  
-#  image create photo godleyImg -file $minskyHome/icons/bank.gif
-#  button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
-#      -command addNewGodleyItem
-#  tooltip .wiring.menubar.line0.godley "Godley table"
-#  
-#  image create photo varImg -file $minskyHome/icons/var.gif
-#  button .wiring.menubar.line0.var -image varImg -height 24 -width 37 \
-#      -command addVariable
-#  tooltip .wiring.menubar.line0.var "variable"
-#  
-#  image create photo constImg -file $minskyHome/icons/const.gif
-#  button .wiring.menubar.line0.const -height 24 -width 37 -image constImg -command {addConstant}
-#  tooltip .wiring.menubar.line0.const "constant"
-#  
-#  image create photo integrateImg -file $minskyHome/icons/integrate.gif
-#  button .wiring.menubar.line0.integrate -image integrateImg -command {
-#      addOperation integrate}
-#  tooltip .wiring.menubar.line0.integrate integrate
-#  
-#  pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.integrate -side left
-#  
-#  # create buttons for all available operations (aside from those
-#  # handled especially)
-#  foreach op [availableOperations] {
-#      if {$op=="numOps"} break
-#      # ignore some operations
-#      switch $op {
-#          "constant" -
-#          "copy" -
-#          "integrate"  continue 
-#      }
-#  
-#      set opTrimmed [regsub {(.*)_$} $op {\1}] 
-#      # advance to next line in menubar
-#      if {$op=="data"} {
-#          incr menubarLine
-#          ttk::frame .wiring.menubar.line$menubarLine
-#      }
-#      if {[tk windowingsystem]=="aqua"} {
-#          # ticket #187
-#          image create photo [set op]Img -file $minskyHome/icons/$op.gif
-#      } else {
-#          image create photo [set op]Img -width 24 -height 24
-#          operationIcon [set op]Img $op
-#      }
-#      button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "addOperation $op" -height 24 -width 24
-#      tooltip .wiring.menubar.line$menubarLine.$op $opTrimmed
-#  
-#      pack .wiring.menubar.line$menubarLine.$op -side left 
-#      set helpTopics(.wiring.menubar.line$menubarLine.$op) "op:$op"
-#  }
-#  
-#  if {[tk windowingsystem]=="aqua"} {
-#      image create photo switchImg -file $minskyHome/icons/switch.gif
-#  } else {
-#      image create photo switchImg -width 24 -height 24
-#      operationIcon switchImg switch
-#  }
-#  button .wiring.menubar.line$menubarLine.switch -image switchImg \
-#      -height 24 -width 37 -command {placeNewSwitch}
-#  tooltip .wiring.menubar.line$menubarLine.switch "Switch"
-#  pack .wiring.menubar.line$menubarLine.switch -side left 
-#  set helpTopics(.wiring.menubar.line$menubarLine.switch) "switch"
-#  
-#  
-#  image create photo plotImg -file $minskyHome/icons/plot.gif
-#  button .wiring.menubar.line$menubarLine.plot -image plotImg \
-#      -height 24 -width 37 -command {newPlot}
-#  tooltip .wiring.menubar.line$menubarLine.plot "Plot"
-#  pack .wiring.menubar.line$menubarLine.plot -side left 
-#  
-#  image create photo noteImg -file $minskyHome/icons/note.gif
-#  button .wiring.menubar.line$menubarLine.note -image noteImg \
-#      -height 24 -width 37 -command {placeNewNote}
-#  tooltip .wiring.menubar.line$menubarLine.note "Note"
-#  pack .wiring.menubar.line$menubarLine.note -side left 
-#  
-#  clearAll
-#  
-#  # pack menubar lines
-#  for {set i 0} {$i<=$menubarLine} {incr i} {
-#      pack .wiring.menubar.line$i -side top -anchor w
-#  }
-#  pack .wiring.menubar -fill x
-#  
-#  canvas .wiring.canvas -height $canvasHeight -width $canvasWidth -scrollregion {-10000 -10000 10000 10000} \
-#      -closeenough 2 -yscrollcommand ".vscroll set" -xscrollcommand ".hscroll set"
-#  pack .wiring.canvas -fill both -expand 1
 #  
 #  proc get_pointer_x {c} {
 #    return [expr {[winfo pointerx $c] - [winfo rootx $c]}]
@@ -2066,10 +2062,11 @@ menu .wiring.context -tearoff 0
 #      }
 #  }
 #  
-#  proc tout {args} {
-#    puts "$args"
-#  }
-#  
+
+proc tout {args} {
+  puts "$args"
+}
+
 #  # example debugging trace statements
 #  #trace add execution placeNewVar enterstep tout
 #  #trace add execution move enterstep tout
