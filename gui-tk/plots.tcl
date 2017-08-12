@@ -20,12 +20,12 @@
 
 #proc newPlotItem {id x y} {
 #    plot.get $id
-#    .wiring.canvas create plot $x $y -id $id -tags "plots plot$id"
-#    .wiring.canvas lower plot$id
+#    .old_wiring.canvas create plot $x $y -id $id -tags "plots plot$id"
+#    .old_wiring.canvas lower plot$id
 #    setM1Binding plot $id plot$id
-#    .wiring.canvas bind plot$id <Double-Button-1> "plotDoubleClick $id"
-#    .wiring.canvas bind plot$id <Enter> "itemEnterLeave plot $id plot$id 1"
-#    .wiring.canvas bind plot$id <Leave> "itemEnterLeave plot $id plot$id 0"
+#    .old_wiring.canvas bind plot$id <Double-Button-1> "plotDoubleClick $id"
+#    .old_wiring.canvas bind plot$id <Enter> "itemEnterLeave plot $id plot$id 1"
+#    .old_wiring.canvas bind plot$id <Leave> "itemEnterLeave plot $id plot$id 0"
 #
 #}
 
@@ -39,9 +39,9 @@ proc newPlot {} {
     set moveOffs$id.x 0
     set moveOffs$id.y 0
 
-    bind .wiring.canvas <Enter> "move $id %x %y"
-    bind .wiring.canvas <Motion> "move $id %x %y"
-    bind .wiring.canvas <Button-1> clearTempBindings
+    bind .old_wiring.canvas <Enter> "move $id %x %y"
+    bind .old_wiring.canvas <Motion> "move $id %x %y"
+    bind .old_wiring.canvas <Button-1> clearTempBindings
     bind . <Key-Escape> "clearTempBindings; deletePlot plot$id $id"
 
     return $id
@@ -222,7 +222,7 @@ proc plotDoubleClick {id} {
 }
     
 proc deletePlot {id} {
-    .wiring.canvas delete item$id
+    .old_wiring.canvas delete item$id
     minsky.deleteItem $id
     updateCanvas
 }
@@ -230,32 +230,32 @@ proc deletePlot {id} {
 namespace eval plot {
     proc resize {id} {
         plot.get $id
-        set bbox [.wiring.canvas bbox item$id]
-        set item [eval .wiring.canvas create rectangle $bbox -tags plotBBox]
+        set bbox [.old_wiring.canvas bbox item$id]
+        set item [eval .old_wiring.canvas create rectangle $bbox -tags plotBBox]
         # disable lasso mode
-        bind .wiring.canvas <Button-1> ""
-        bind .wiring.canvas <B1-Motion> ""
-        bind .wiring.canvas <B1-ButtonRelease> ""
-        bind .wiring.canvas <Motion> "plot::resizeRect $item %x %y"
-        bind .wiring.canvas <ButtonRelease> "plot::resizeItem $item $id %x %y"
+        bind .old_wiring.canvas <Button-1> ""
+        bind .old_wiring.canvas <B1-Motion> ""
+        bind .old_wiring.canvas <B1-ButtonRelease> ""
+        bind .old_wiring.canvas <Motion> "plot::resizeRect $item %x %y"
+        bind .old_wiring.canvas <ButtonRelease> "plot::resizeItem $item $id %x %y"
     }
 
     # resize the bounding box to indicate how big we want the icon to be
     proc resizeRect {item x y} {
-        set x [.wiring.canvas canvasx $x]
-        set y [.wiring.canvas canvasy $y]
+        set x [.old_wiring.canvas canvasx $x]
+        set y [.old_wiring.canvas canvasy $y]
         set w [expr abs($x-[plot.x])]
         set h [expr abs($y-[plot.y])]
-        .wiring.canvas coords $item  [expr [plot.x]-$w] [expr [plot.y]-$h] \
+        .old_wiring.canvas coords $item  [expr [plot.x]-$w] [expr [plot.y]-$h] \
             [expr [plot.x]+$w] [expr [plot.y]+$h]
     }
 
     # compute width and height and redraw item
     proc resizeItem {item id x y} {
         plot.get $id
-        set x [.wiring.canvas canvasx $x]
-        set y [.wiring.canvas canvasy $y]
-        .wiring.canvas delete $item
+        set x [.old_wiring.canvas canvasx $x]
+        set y [.old_wiring.canvas canvasy $y]
+        .old_wiring.canvas delete $item
         set scalex [expr 2*abs($x-[plot.x])/double([plot.width])]
         set scaley [expr 2*abs($y-[plot.y])/double([plot.height])]
         # compute rotated scale factors
@@ -263,8 +263,8 @@ namespace eval plot {
         plot.height [expr int(ceil(abs($scaley*[plot.height])))]
 
         redraw $id
-        bind .wiring.canvas <Motion> {}
-        bind .wiring.canvas <ButtonRelease> {}
+        bind .old_wiring.canvas <Motion> {}
+        bind .old_wiring.canvas <ButtonRelease> {}
     }
 
     proc setLegend {} {

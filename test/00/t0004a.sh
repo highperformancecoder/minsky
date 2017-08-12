@@ -50,37 +50,37 @@ proc afterMinskyStarted {} {
     wiringGroup.updateOnNewGodleyVars \$godleyId
 
     newItem \$godleyId
-    bind .wiring.canvas <Button-1> "puts {%x %y}"
+    bind .old_wiring.canvas <Button-1> "puts {%x %y}"
 
     # delivered to foobar
-    event generate .wiring.canvas <Button-3>  -x 75 -y 150 -rootx 100 -rooty 100
+    event generate .old_wiring.canvas <Button-3>  -x 75 -y 150 -rootx 100 -rooty 100
     # check context menu is posted
-    assert {[winfo viewable .wiring.context]} foobar
+    assert {[winfo viewable .old_wiring.context]} foobar
     # check the menu items are what is expected
-    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} foobar
-    assert {[.wiring.context entrycget 1 -label]=="Copy"} foobar
+    assert {[string match "Edit" "[.old_wiring.context entrycget 0 -label]"]} foobar
+    assert {[.old_wiring.context entrycget 1 -label]=="Copy"} foobar
 
 
-    .wiring.context unpost
+    .old_wiring.context unpost
 
     # delivered to bar
-    event generate .wiring.canvas <Button-3> -x 55 -y 80 -rootx 100 -rooty 100
-    assert [winfo viewable .wiring.context] bar
-    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} bar
-    assert {[.wiring.context entrycget 1 -label]=="Copy"} bar
+    event generate .old_wiring.canvas <Button-3> -x 55 -y 80 -rootx 100 -rooty 100
+    assert [winfo viewable .old_wiring.context] bar
+    assert {[string match "Edit" "[.old_wiring.context entrycget 0 -label]"]} bar
+    assert {[.old_wiring.context entrycget 1 -label]=="Copy"} bar
 
-    .wiring.context unpost
+    .old_wiring.context unpost
 
     # delivered to the Godley icon
-    event generate .wiring.canvas <Button-3> -x 113 -y 69 -rootx 100 -rooty 100
-    assert [winfo viewable .wiring.context] godley
-    assert "\[.wiring.context entrycget 2 -command\]==\"openGodley \$godleyId\"" godley
-    assert "\[.wiring.context entrycget 8 -command]\==\"deleteItem \$godleyId item\$godleyId\"" godley
+    event generate .old_wiring.canvas <Button-3> -x 113 -y 69 -rootx 100 -rooty 100
+    assert [winfo viewable .old_wiring.context] godley
+    assert "\[.old_wiring.context entrycget 2 -command\]==\"openGodley \$godleyId\"" godley
+    assert "\[.old_wiring.context entrycget 8 -command]\==\"deleteItem \$godleyId item\$godleyId\"" godley
 
-    .wiring.context unpost
+    .old_wiring.context unpost
     # delivered to nowhere
-    event generate .wiring.canvas <Button-3> -x 200 -y 200 -rootx 100 -rooty 100
-    assert {![winfo viewable .wiring.context]} nowhere
+    event generate .old_wiring.canvas <Button-3> -x 200 -y 200 -rootx 100 -rooty 100
+    assert {![winfo viewable .old_wiring.context]} nowhere
     tcl_exit
 }
 

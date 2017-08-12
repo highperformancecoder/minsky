@@ -97,7 +97,7 @@ namespace minsky
     void adjustWire(const W& w)
     {
       tclcmd cmd;
-      cmd |".wiring.canvas coords wire"|w.id();
+      cmd |".old_wiring.canvas coords wire"|w.id();
       for (auto x: w->coords())
         cmd <<x;
       cmd << "\n";

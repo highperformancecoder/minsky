@@ -35,16 +35,16 @@ proc afterMinskyStarted {} {
   set id [newVariable foo flow]
   newItem \$id
   deiconifyNote
-  .wiring.note.tooltip.entry insert 0 foobar
-  .wiring.note.text insert 1.0 "some longer text"
+  .old_wiring.note.tooltip.entry insert 0 foobar
+  .old_wiring.note.text insert 1.0 "some longer text"
   OKnote var \$id
   var.get \$id
   assert {"foobar"==[var.tooltip]}
   assert {"some longer text\n"==[var.detailedText]}
   itemEnterLeave var \$id var\$id 1
   # check for existence of tooltip
-  assert {[llength [.wiring.canvas find withtag tooltip]]==1}
-  assert {[.wiring.canvas itemcget tooltip -text]=="foobar"}
+  assert {[llength [.old_wiring.canvas find withtag tooltip]]==1}
+  assert {[.old_wiring.canvas itemcget tooltip -text]=="foobar"}
   minsky.save saved.mky
   tcl_exit
 }

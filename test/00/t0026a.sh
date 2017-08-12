@@ -45,7 +45,7 @@ assert {[items.size]==24} {}
 assert {[wires.size]==23} {}
 set gid [paste]
 insertNewGroup \$gid
-event generate .wiring.canvas <Button-1>
+event generate .old_wiring.canvas <Button-1>
 
 buildMaps
 assert {[items.size]==28} {}
@@ -72,7 +72,7 @@ assert {[wires.size]==26} {}
 set w [lindex [wires.#keys] 0]
 wire.get \$w 
 decorateWire \$w
-set handle [lindex [.wiring.canvas find withtag handles] 0]
+set handle [lindex [.old_wiring.canvas find withtag handles] 0]
 insertCoords \$w \$handle 0 100 100
 deleteHandle \$w \$handle 0
 
@@ -81,17 +81,17 @@ foreach it [items.#keys] {
   switch -glob [item.classType] { 
     "Variable*" {
       editItem \$it
-      .wiring.editVar.buttonBar.ok invoke
+      .old_wiring.editVar.buttonBar.ok invoke
      }
     "Operation*" {
       editItem \$it
-      .wiring.editOperation.buttonBar.ok invoke
+      .old_wiring.editOperation.buttonBar.ok invoke
     }
   }
 }
 
 placeNewNote
-event generate .wiring.canvas <Button-1>
+event generate .old_wiring.canvas <Button-1>
 
 tcl_exit
 }

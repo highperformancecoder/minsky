@@ -145,7 +145,7 @@ if {[tk windowingsystem]=="win32"} {
     # receive the event - see ticket #114 
     bind . <MouseWheel> {
         switch [winfo containing %X %Y] {
-            .wiring.canvas {
+            .old_wiring.canvas {
                 if {%D>=0} {
                     # on Winblows, min val of |%D| is 120, so just use sign
                     zoom 1.1
@@ -459,7 +459,7 @@ proc selectItems {} {
 
 proc undo {delta} {
     # clear canvas to remove reference holds
-    .wiring.canvas delete all
+    .old_wiring.canvas delete all
     # do not record changes to state from the undo command
     doPushHistory 0
     minsky.undo $delta
@@ -470,7 +470,7 @@ proc undo {delta} {
 
 proc cut {} {
     # need to remove canvas items to be deleted before calling cut
-    .wiring.canvas delete all
+    .old_wiring.canvas delete all
     minsky.cut
     updateCanvas
 }
@@ -496,13 +496,14 @@ grid columnconfigure . 0 -weight 1
 grid rowconfigure . 10 -weight 1
 
 source $minskyHome/godley.tcl
+source $minskyHome/old-wiring.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
 source $minskyHome/switch.tcl
 
 # add the tabbed windows
-.tabs add .wiring -text wiring
+.tabs add .old_wiring -text wiring
 
 image create photo renderedEquations -width 500 -height 500 
 #-file $minskyHome/icons/plot.gif
@@ -512,28 +513,12 @@ canvas .equations.canvas -height $canvasHeight -width $canvasWidth -scrollregion
 .equations.canvas create equations 0 0 -tags eq
 pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations
-
-image create canvasImage minskyCanvas -canvas minsky.canvas
-ttk::frame  .newCanvas
-label .newCanvas.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
-pack .newCanvas.canvas -fill both -expand 1
-.tabs add .newCanvas -text "New Canvas"
-bind .newCanvas.canvas <ButtonPress-1> {minsky.canvas.mouseDown [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
-bind .newCanvas.canvas <ButtonRelease-1> {minsky.canvas.mouseUp [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
-bind .newCanvas.canvas <Motion> {minsky.canvas.mouseMove [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]}
-bind .newCanvas.canvas <<contextMenu>> {
-    if [minsky.getItemAt [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]] {
-        .wiring.context delete 0 end
-        .wiring.context add command -label "Browse object" -command "obj_browser minsky.canvas.item.*"
-        tk_popup .wiring.context %X %Y
-    }
-}
-
+.tabs add .wiring -text "New Canvas"
 .tabs select 0
 
 ttk::sizegrip .sizegrip
 proc scrollCanvases {xyview args} {
-    eval .wiring.canvas $xyview $args;
+    eval .old_wiring.canvas $xyview $args;
     eval .equations.canvas $xyview $args
     eval .newCanvas.canvas $xyview $args
 }
@@ -744,14 +729,14 @@ proc insertNewGroup {gid} {
 
     group.get $gid
     moveSet $gid [group.x] [group.y] 
-    move $gid [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+    move $gid [get_pointer_x .old_wiring.canvas] [get_pointer_y .old_wiring.canvas]
 
-    bind .wiring.canvas <Enter> "move $gid %x %y"
-    bind .wiring.canvas <Motion> "move $gid %x %y"
-    bind .wiring.canvas <Button-1> \
-        "bind .wiring.canvas <Motion> {}
-         bind .wiring.canvas <Enter> {}
-         bind .wiring.canvas <Button-1>{}
+    bind .old_wiring.canvas <Enter> "move $gid %x %y"
+    bind .old_wiring.canvas <Motion> "move $gid %x %y"
+    bind .old_wiring.canvas <Button-1> \
+        "bind .old_wiring.canvas <Motion> {}
+         bind .old_wiring.canvas <Enter> {}
+         bind .old_wiring.canvas <Button-1>{}
          # redo this here, as binding on a group undoes it
 #         initGroupList $gid
          move $gid %x %y
@@ -761,14 +746,14 @@ proc insertNewGroup {gid} {
 
 # adjust canvas so that -ve coordinates appear on canvas
 proc recentreCanvas {} {
-    set bounds [.wiring.canvas bbox all]
-    set scrollRegion [.wiring.canvas cget -scrollregion]
+    set bounds [.old_wiring.canvas bbox all]
+    set scrollRegion [.old_wiring.canvas cget -scrollregion]
     set xfrac [expr double([lindex $bounds 0]-[lindex $scrollRegion 0])/\
                    ([lindex $scrollRegion 2]-[lindex $scrollRegion 0])]
     set yfrac [expr double([lindex $bounds 1]-[lindex $scrollRegion 1])/\
                    ([lindex $scrollRegion 3]-[lindex $scrollRegion 1])]
-    .wiring.canvas xview moveto $xfrac
-    .wiring.canvas yview moveto $yfrac
+    .old_wiring.canvas xview moveto $xfrac
+    .old_wiring.canvas yview moveto $yfrac
     .equations.canvas xview moveto 0.5
     .equations.canvas yview moveto 0.5
 }
@@ -804,7 +789,7 @@ proc newSystem {} {
     clearAll
     model.setZoom 1
     recentreCanvas
-    .wiring.canvas delete all
+    .old_wiring.canvas delete all
     updateCanvas 
     global fname
     set fname ""
@@ -816,9 +801,9 @@ proc newSystem {} {
 #    global oplist lastOp
 #
 #    if {[llength $oplist]>0} {
-#        if {$lastOp>=0} {.wiring.canvas itemconfigure $lastOp -outline black}
-#        set lastOp [.wiring.canvas create rectangle \
-#                    [.wiring.canvas bbox op[lindex $oplist 0]] -outline red
+#        if {$lastOp>=0} {.old_wiring.canvas itemconfigure $lastOp -outline black}
+#        set lastOp [.old_wiring.canvas create rectangle \
+#                    [.old_wiring.canvas bbox op[lindex $oplist 0]] -outline red
 #                   ]
 #        set oplist [lrange $oplist 1 end]
 #        }
@@ -930,13 +915,13 @@ set helpTopics(.controls.statusbar) SimTime
 set helpTopics(.controls.zoomOut) ZoomButtons
 set helpTopics(.controls.zoomIn) ZoomButtons
 set helpTopics(.controls.zoomOrig)  ZoomButtons
-set helpTopics(.wiring.menubar.line0.integrate) Integrate
-set helpTopics(.wiring.menubar.line1.plot) Plot
-set helpTopics(.wiring.menubar.line0.godley)  GodleyTable
-set helpTopics(.wiring.menubar.line0.var) Variable
-set helpTopics(.wiring.menubar.line0.const) Constant 
+set helpTopics(.old_wiring.menubar.line0.integrate) Integrate
+set helpTopics(.old_wiring.menubar.line1.plot) Plot
+set helpTopics(.old_wiring.menubar.line0.godley)  GodleyTable
+set helpTopics(.old_wiring.menubar.line0.var) Variable
+set helpTopics(.old_wiring.menubar.line0.const) Constant 
 # TODO - the following association interferes with canvas item context menus
-#set helpTopics(.wiring.canvas) DesignCanvas
+#set helpTopics(.old_wiring.canvas) DesignCanvas
 
 
 menu .contextHelp -tearoff 0
@@ -960,7 +945,7 @@ proc helpContext {x y} {
 proc helpFor {x y} {
     global helpTopics
     set win [winfo containing $x $y]
-    if {$win==".wiring.canvas"} {
+    if {$win==".old_wiring.canvas"} {
         canvasHelp $x $y
     } elseif [info exists helpTopics($win)] {
         help $helpTopics($win)
@@ -1042,7 +1027,7 @@ proc deleteSubsidiaryTopLevels {} {
 
     foreach w [info commands .godley*] {destroy $w}
     foreach w [info commands .plot*] {destroy $w}
-    .wiring.canvas delete all
+    .old_wiring.canvas delete all
     foreach image [image names] {
         if [regexp ".plot.*|godleyImage.*|groupImage.*|varImage.*|opImage.*|plot_image.*" $image] {
                 image delete $image
@@ -1071,8 +1056,8 @@ proc exit {} {
     if {$rcfile!=""} {
         set rc [open $rcfile w]
         puts $rc "set workDir $workDir"
-        puts $rc "set canvasWidth [winfo width .wiring.canvas]"
-        puts $rc "set canvasHeight [winfo height .wiring.canvas]"
+        puts $rc "set canvasWidth [winfo width .old_wiring.canvas]"
+        puts $rc "set canvasHeight [winfo height .old_wiring.canvas]"
         puts $rc "set backgroundColour $backgroundColour"
         foreach p [array names preferences] {
             puts $rc "set preferences($p) $preferences($p)"
@@ -1175,7 +1160,7 @@ proc addEvent {event window button height state width x y delta keysym subwindow
 proc startRecording {filename} {
     if {[string length $filename]>0} {
         minsky.startRecording $filename
-        .wiring.canvas delete all
+        .old_wiring.canvas delete all
         updateCanvas
         recentreCanvas
     }

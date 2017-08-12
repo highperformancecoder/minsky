@@ -285,14 +285,14 @@ namespace minsky
       if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
         {
           if (coupled)
-            tclcmd() | ".wiring.canvas delete item"|i.id()|"\n";
+            tclcmd() | ".old_wiring.canvas delete item"|i.id()|"\n";
           else
             tclcmd() << "newItem"<< i.id()<<"\n";
         }
 
     if (wireId>=0)
       {
-        tclcmd() | ".wiring.canvas delete wire"|wireId|"\n";
+        tclcmd() | ".old_wiring.canvas delete wire"|wireId|"\n";
         m.wires.erase(wireId);
       }
     else

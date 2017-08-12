@@ -28,18 +28,18 @@ setGroupIconResource $minskyHome/icons/group.svg
 #proc newSwitch {id} {
 #    global minskyHome
 #    switchItem.get $id
-#    .wiring.canvas create switch [switchItem.x] [switchItem.y] -id $id  -tags "switchItem$id switches"
-#    .wiring.canvas lower switchItem$id
+#    .old_wiring.canvas create switch [switchItem.x] [switchItem.y] -id $id  -tags "switchItem$id switches"
+#    .old_wiring.canvas lower switchItem$id
 #
-#    .wiring.canvas bind switchItem$id <Button-1> "onClick switchItem $id switchItem$id %x %y"
-#    .wiring.canvas bind switchItem$id <<middleMouse-Motion>> \
+#    .old_wiring.canvas bind switchItem$id <Button-1> "onClick switchItem $id switchItem$id %x %y"
+#    .old_wiring.canvas bind switchItem$id <<middleMouse-Motion>> \
 #        "wires::extendConnect \[closestOutPort %x %y \] group$id %x %y"
-#    .wiring.canvas bind switchItemgroup$id <<middleMouse-ButtonRelease>> \
+#    .old_wiring.canvas bind switchItemgroup$id <<middleMouse-ButtonRelease>> \
 #        "wires::finishConnect group$id %x %y"
-#    .wiring.canvas bind group$id  <<contextMenu>> "rightMouseSwitch $id %x %y %X %Y"
-#    .wiring.canvas bind switchItem$id  <Double-Button-1> "switchEdit $id"
-#    .wiring.canvas bind switchItem$id <Enter> "itemEnterLeave switchItem $id switchItem$id 1"
-#    .wiring.canvas bind switchItem$id <Leave> "itemEnterLeave switchItem $id switchItem$id 0"
+#    .old_wiring.canvas bind group$id  <<contextMenu>> "rightMouseSwitch $id %x %y %X %Y"
+#    .old_wiring.canvas bind switchItem$id  <Double-Button-1> "switchEdit $id"
+#    .old_wiring.canvas bind switchItem$id <Enter> "itemEnterLeave switchItem $id switchItem$id 1"
+#    .old_wiring.canvas bind switchItem$id <Leave> "itemEnterLeave switchItem $id switchItem$id 0"
 #
 #    
 #}
@@ -52,34 +52,34 @@ proc placeNewSwitch {} {
     global moveOffs$id.x moveOffs$id.y
     set moveOffs$id.x 0
     set moveOffs$id.y 0
-    bind .wiring.canvas <Enter> "move $id %x %y"
-    bind .wiring.canvas <Motion> "move $id %x %y"
-    bind .wiring.canvas <Button-1> clearTempBindings
+    bind .old_wiring.canvas <Enter> "move $id %x %y"
+    bind .old_wiring.canvas <Motion> "move $id %x %y"
+    bind .old_wiring.canvas <Button-1> clearTempBindings
     bind . <Key-Escape> "clearTempBindings
        deleteSwitch $id
-       .wiring.canvas delete switchItem$id"
+       .old_wiring.canvas delete switchItem$id"
 
 }
 
 proc rightMouseSwitch {id x y X Y} {
     group.get $id
-    set var [group.selectVariable [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
+    set var [group.selectVariable [.old_wiring.canvas canvasx $x] [.old_wiring.canvas canvasy $y]]
     if {$var==-1} {
         contextMenu group$id $X $Y
     } else {
-        .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editItem $var var"
+        .old_wiring.context delete 0 end
+        .old_wiring.context add command -label "Edit" -command "editItem $var var"
         var.get $var
-        .wiring.context add command -label "Copy" -command "
+        .old_wiring.context add command -label "Copy" -command "
            copyVar $var
            var.rotation 0
            var.set
         "
-        .wiring.context add command -label "Remove" -command "
+        .old_wiring.context add command -label "Remove" -command "
            group.removeVariableById $var
            group.set
         "
-        .wiring.context post $X $Y
+        .old_wiring.context post $X $Y
 
     }
 }

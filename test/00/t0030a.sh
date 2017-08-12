@@ -44,9 +44,9 @@ proc afterMinskyStarted {} {
   doubleMouseGodley \$godley 38 118
   update
   # should open edit window
-  assert {[winfo viewable .wiring.editVar]}
-  .wiring.editVar.buttonBar.ok invoke
-  assert {![winfo exists .wiring.editVar]}
+  assert {[winfo viewable .old_wiring.editVar]}
+  .old_wiring.editVar.buttonBar.ok invoke
+  assert {![winfo exists .old_wiring.editVar]}
 
   # double click on first variable
   foreach var [items.#keys] {
@@ -56,9 +56,9 @@ proc afterMinskyStarted {} {
     }
   }
   editItem \$var
-  assert {[winfo viewable .wiring.editVar]} {varclick}
-  .wiring.editVar.buttonBar.ok invoke
-  assert {![winfo exists .wiring.editVar]} {varclick}
+  assert {[winfo viewable .old_wiring.editVar]} {varclick}
+  .old_wiring.editVar.buttonBar.ok invoke
+  assert {![winfo exists .old_wiring.editVar]} {varclick}
 
 
   tcl_exit

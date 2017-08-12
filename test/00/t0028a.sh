@@ -36,13 +36,13 @@ uplevel #0 {
 
 addVariable
 set varInput(Name) "foo"
-.wiring.initVar.buttonBar.ok invoke
-event generate .wiring.canvas <Button-1>
+.old_wiring.initVar.buttonBar.ok invoke
+event generate .old_wiring.canvas <Button-1>
 assert {[items.size]==1}
 
 addConstant
-.wiring.initVar.buttonBar.ok invoke
-event generate .wiring.canvas <Button-1>
+.old_wiring.initVar.buttonBar.ok invoke
+event generate .old_wiring.canvas <Button-1>
 assert {[items.size]==2}
 
 addOperationKey add
@@ -60,11 +60,11 @@ assert {[items.size]==5}
 assert {[item.detailedText]=="b"}
 
 addNewGodleyItem
-event generate .wiring.canvas <Button-1>
+event generate .old_wiring.canvas <Button-1>
 assert {[items.size]==6}
 
 newPlot
-event generate .wiring.canvas <Button-1>
+event generate .old_wiring.canvas <Button-1>
 assert {[items.size]==7}
 
 
