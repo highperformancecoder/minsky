@@ -2051,10 +2051,6 @@ proc findItemWithDetailedText desc {
     }
 }
 
-proc tout {args} {
-  puts "$args"
-}
-
 # example debugging trace statements
 #trace add execution placeNewVar enterstep tout
 #trace add execution move enterstep tout
