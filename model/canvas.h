@@ -21,6 +21,7 @@
 #define CANVAS_H
 
 #include "group.h"
+#include "operation.h"
 #include "selection.h"
 #include <cairo_base.h>
 
@@ -44,11 +45,6 @@ namespace minsky
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
-//    void addImage(const char* imageName) {
-//      auto photo=Tk_FindPhoto(interp(),imageName);
-//      if (!photo) throw ecolab::error("photo %s not found",imageName);
-//      surface.reset(new ecolab::cairo::TkPhotoSurface(photo));
-//    }
     void resizeWindow(int width, int height);
     
     /// event handling for the canvas
@@ -62,6 +58,13 @@ namespace minsky
     void getItemAt(float x, float y);
     void getWireAt(float x, float y);
 
+//    void addOperation(OperationType::Type op) {
+//      itemFocus=model->addItem(OperationBase::create(op));
+//    }
+//    void newVariable(const std::string& name, VariableType::Type type) {
+//      itemFocus=model->addItem(VariablePtr(type,name));
+//    }
+    
     /// redraw whole model
     void redraw();
     /// region to be updated

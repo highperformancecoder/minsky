@@ -70,7 +70,7 @@ foreach op [availableOperations] {
         image create photo [set op]Img -width 24 -height 24
         operationIcon [set op]Img $op
     }
-    button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "addOperation $op" -height 24 -width 24
+    button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "canvas.addOperation $op" -height 24 -width 24
     tooltip .wiring.menubar.line$menubarLine.$op $opTrimmed
 
     pack .wiring.menubar.line$menubarLine.$op -side left 
@@ -217,36 +217,36 @@ bind .wiring.canvas <<contextMenu>> {
 #        .wiring.canvas delete var$id"
 #  }
 #  
-#  proc addVariablePostModal {} {
-#      global globals
-#      global varInput
-#      global varType
-#  
-#      set name [string trim $varInput(Name)]
-#      set varExists [variableValues.count $name]
-#      set id [newVariable $name $varInput(Type)]
-#      var.get $id
-#      var.rotation $globals(default_rotation)
-#      var.init $varInput(Value)
-#      var.set
-#      if {!$varExists} {
-#          value.get [var.valueId]
-#          setItem var rotation {set varInput(Rotation)}
-#          setItem var tooltip {set "varInput(Short description)"}
-#          setItem var detailedText {set "varInput(Detailed description)"}
-#      }
-#      closeEditWindow .wiring.initVar
-#  
-#      placeNewVar $id
-#  }
-#  
-#  proc addVariable {} {
-#      global varInput varType initVar_name
-#      set varType flow
-#      set varInput(title) "Create Variable"
-#      addConstantOrVariable
-#      .wiring.initVar.$initVar_name configure -state enabled
-#  }
+proc addVariablePostModal {} {
+    global globals
+    global varInput
+    global varType
+
+    set name [string trim $varInput(Name)]
+    set varExists [variableValues.count $name]
+    minsky.addVariable $name $varInput(Type)
+    canvas.itemFocus.rotation $globals(default_rotation)
+    canvas.itemFocus.init $varInput(Value)
+    if {!$varExists} {
+        value.get [canvas.itemFocus.valueId]
+        canvas.itemFocus.rotation {set varInput(Rotation)}
+        canvas.itemFocus.tooltip {set "varInput(Short description)"}
+        canvas.itemFocus.detailedText {set "varInput(Detailed description)"}
+    }
+    closeEditWindow .wiring.initVar
+
+#    placeNewVar $id
+}
+
+
+proc addVariable {} {
+    global varInput varType initVar_name
+    set varType flow
+    set varInput(title) "Create Variable"
+    addConstantOrVariable
+    .wiring.initVar.$initVar_name configure -state enabled
+}
+
 #  
 #  proc addConstant {} {
 #      global varInput varType initVar_name
@@ -256,34 +256,21 @@ bind .wiring.canvas <<contextMenu>> {
 #      .wiring.initVar.$initVar_name configure -state disabled
 #  }
 #  
-#  proc addConstantOrVariable {} {
-#      global varInput varType
-#      set varInput(Name) ""
-#      set varInput(Value) ""
-#      set varInput(Type) $varType
-#      set "varInput(Short description)" ""
-#      set "varInput(Detailed description)" ""
-#      deiconifyInitVar
-#      .wiring.initVar.entry10 configure -values [variableValues.#keys]
-#      ::tk::TabToWindow $varInput(initial_focus);
-#      tkwait visibility .wiring.initVar
-#      grab set .wiring.initVar
-#      wm transient .wiring.initVar
-#  }
-#  
-#  proc addOperation {op} {
-#      global globals constInput
-#      set id [wiringGroup.addOperation $op]
-#      op.get $id
-#      op.rotation $globals(default_rotation)
-#      op.set
-#      placeNewOp $id
-#      if {$op=="constant"} {
-#  	editItem $id
-#  	set constInput(cancelCommand) "cancelPlaceNewOp $id;closeEditWindow .wiring.editConstant"
-#      }
-#      return $id
-#  }
+proc addConstantOrVariable {} {
+    global varInput varType
+    set varInput(Name) ""
+    set varInput(Value) ""
+    set varInput(Type) $varType
+    set "varInput(Short description)" ""
+    set "varInput(Detailed description)" ""
+    deiconifyInitVar
+    .wiring.initVar.entry10 configure -values [variableValues.#keys]
+    ::tk::TabToWindow $varInput(initial_focus);
+    tkwait visibility .wiring.initVar
+    grab set .wiring.initVar
+    wm transient .wiring.initVar
+}
+
 #  
 #  # add operation from a keypress
 #  proc addOperationKey {op} {
@@ -1479,72 +1466,72 @@ menu .wiring.context -tearoff 0
 #              set varInput(Type) [value.type]
 #          }
 #  
-#  proc deiconifyInitVar {} {
-#      if {![winfo exists .wiring.initVar]} {
-#          toplevel .wiring.initVar
-#          wm resizable .wiring.initVar 0 0
-#          wm title .wiring.initVar "Specify variable name"
-#          wm transient .wiring.initVar .wiring
-#  
-#          set row 0
-#          grid [label .wiring.initVar.title -textvariable varInput(title)] -row $row -column 0 -columnspan 999 -pady 10
-#          frame .wiring.initVar.buttonBar
-#          button .wiring.initVar.buttonBar.ok -text OK -command "addVariablePostModal"
-#          button .wiring.initVar.buttonBar.cancel -text Cancel -command {
-#              closeEditWindow .wiring.initVar}
-#          pack .wiring.initVar.buttonBar.ok [label .wiring.initVar.buttonBar.spacer -width 2] .wiring.initVar.buttonBar.cancel -side left -pady 10
-#          grid .wiring.initVar.buttonBar -row 999 -column 0 -columnspan 1000
-#          bind .wiring.initVar <Key-Return> {invokeOKorCancel .wiring.initVar.buttonBar}
-#          bind .wiring.initVar <Key-Escape> {.wiring.initVar.buttonBar.cancel invoke}
-#  
-#          global rowdict
-#          global varInput initVar_name
-#          set rowdict(Name) 10
-#          set initVar_name entry10
-#          grid [label .wiring.initVar.label10 -text Name] -row 10 -column 10 -sticky e
-#          grid [ttk::combobox  .wiring.initVar.entry10 -textvariable varInput(Name)] -row 10 -column 20 -sticky ew -columnspan 2
-#  
-#          set rowdict(Type) 20
-#          grid [label .wiring.initVar.label20 -text "Type"] -row 20 -column 10 -sticky e
-#          grid [ttk::combobox  .wiring.initVar.entry20 -textvariable varInput(Type) \
-#                    -state readonly -values "constant parameter flow integral"] \
-#              -row 20 -column 20 -sticky ew -columnspan 2
-#          
-#          # disable or enable the name field depending on type being selected
-#          bind .wiring.initVar.entry20 <<ComboboxSelected>> {
-#              if {[.wiring.initVar.entry20 get]=="constant"} {
-#                  .wiring.initVar.entry10 configure -state disabled
-#              } else {
-#                  .wiring.initVar.entry10 configure -state enabled
-#              }
-#          }
-#  
-#          # initialise variable type when selected from combobox
-#          bind .wiring.initVar.entry10 <<ComboboxSelected>> {
-#              value.get [.wiring.initVar.entry10 get]
-#              .wiring.initVar.entry20 set [value.type]
-#          }
-#          
-#          set row 30
-#          foreach var {
-#              "Value"
-#              "Rotation"
-#              "Short description"
-#              "Detailed description"
-#              "Slider Bounds: Max"
-#              "Slider Bounds: Min"
-#              "Slider Step Size"
-#          } {
-#              set rowdict($var) $row
-#              grid [label .wiring.initVar.label$row -text $var] -row $row -column 10 -sticky e
-#              grid [entry  .wiring.initVar.entry$row -textvariable varInput($var)] -row $row -column 20 -sticky ew -columnspan 2
-#              incr row 10
-#          }
-#          set varInput(initial_focus) .wiring.initVar.entry$rowdict(Name)
-#      } else {
-#          wm deiconify .wiring.initVar
-#      }
-#  }
+proc deiconifyInitVar {} {
+    if {![winfo exists .wiring.initVar]} {
+        toplevel .wiring.initVar
+        wm resizable .wiring.initVar 0 0
+        wm title .wiring.initVar "Specify variable name"
+        wm transient .wiring.initVar .wiring
+
+        set row 0
+        grid [label .wiring.initVar.title -textvariable varInput(title)] -row $row -column 0 -columnspan 999 -pady 10
+        frame .wiring.initVar.buttonBar
+        button .wiring.initVar.buttonBar.ok -text OK -command "addVariablePostModal"
+        button .wiring.initVar.buttonBar.cancel -text Cancel -command {
+            closeEditWindow .wiring.initVar}
+        pack .wiring.initVar.buttonBar.ok [label .wiring.initVar.buttonBar.spacer -width 2] .wiring.initVar.buttonBar.cancel -side left -pady 10
+        grid .wiring.initVar.buttonBar -row 999 -column 0 -columnspan 1000
+        bind .wiring.initVar <Key-Return> {invokeOKorCancel .wiring.initVar.buttonBar}
+        bind .wiring.initVar <Key-Escape> {.wiring.initVar.buttonBar.cancel invoke}
+
+        global rowdict
+        global varInput initVar_name
+        set rowdict(Name) 10
+        set initVar_name entry10
+        grid [label .wiring.initVar.label10 -text Name] -row 10 -column 10 -sticky e
+        grid [ttk::combobox  .wiring.initVar.entry10 -textvariable varInput(Name)] -row 10 -column 20 -sticky ew -columnspan 2
+
+        set rowdict(Type) 20
+        grid [label .wiring.initVar.label20 -text "Type"] -row 20 -column 10 -sticky e
+        grid [ttk::combobox  .wiring.initVar.entry20 -textvariable varInput(Type) \
+                  -state readonly -values "constant parameter flow integral"] \
+            -row 20 -column 20 -sticky ew -columnspan 2
+        
+        # disable or enable the name field depending on type being selected
+        bind .wiring.initVar.entry20 <<ComboboxSelected>> {
+            if {[.wiring.initVar.entry20 get]=="constant"} {
+                .wiring.initVar.entry10 configure -state disabled
+            } else {
+                .wiring.initVar.entry10 configure -state enabled
+            }
+        }
+
+        # initialise variable type when selected from combobox
+        bind .wiring.initVar.entry10 <<ComboboxSelected>> {
+            value.get [.wiring.initVar.entry10 get]
+            .wiring.initVar.entry20 set [value.type]
+        }
+        
+        set row 30
+        foreach var {
+            "Value"
+            "Rotation"
+            "Short description"
+            "Detailed description"
+            "Slider Bounds: Max"
+            "Slider Bounds: Min"
+            "Slider Step Size"
+        } {
+            set rowdict($var) $row
+            grid [label .wiring.initVar.label$row -text $var] -row $row -column 10 -sticky e
+            grid [entry  .wiring.initVar.entry$row -textvariable varInput($var)] -row $row -column 20 -sticky ew -columnspan 2
+            incr row 10
+        }
+        set varInput(initial_focus) .wiring.initVar.entry$rowdict(Name)
+    } else {
+        wm deiconify .wiring.initVar
+    }
+}
 #  
 #  proc deiconifyEditConstant {} {
 #      if {![winfo exists .wiring.editConstant]} {

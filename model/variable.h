@@ -34,6 +34,7 @@
 #include <polyPackBase.h>
 #include "variableType.h"
 #include "item.h"
+#include <accessor.h>
 #include <cairo/cairo.h>
 
 namespace minsky
@@ -41,6 +42,11 @@ namespace minsky
   class VariablePtr;
   struct SchemaHelper;
 
+  template <class T, class G, class S>
+  ecolab::Accessor<T,G,S> makeAccessor(G g,S s) {
+    return ecolab::Accessor<T,G,S>(g,s);
+  }
+  
   class VariableBase: public classdesc::PolyBase<VariableType::Type>,
                       virtual public classdesc::PolyPackBase,
                       public Item, public Slider, 
@@ -67,10 +73,11 @@ namespace minsky
     std::string classType() const override {return "VariableBase";}
 
     /// @{ variable displayed name
-    virtual std::string name() const;
-    virtual std::string name(const std::string& nm);
-    // for the purposes of TCL drill downs
-    std::string Name() const {return m_name;}
+    virtual std::string _name() const;
+    virtual std::string _name(const std::string& nm);
+    ecolab::Accessor<std::string> name {
+      [this]() {return this->_name();},
+        [this](const std::string& s){return this->_name(s);}};
     /// @}
 
     virtual Type type() const override=0;
@@ -85,21 +92,25 @@ namespace minsky
     /// string used to link to the VariableValue associated with this
     virtual std::string valueId() const;
 
-    /// fully qualified name (marked up with namespace scope)
-    //virtual std::string fqName() const;
-
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
     //   void zoom(float xOrigin, float yOrigin,float factor);
     void setZoom(float factor) {zoomFactor=factor;}
 
-    /// the initial value of this variable
-    std::string init() const; /// < return initial value for this variable
-    std::string init(const std::string&); /// < set the initial value for this variable
-
+    /// @{ the initial value of this variable
+    std::string _init() const; /// < return initial value for this variable
+    std::string _init(const std::string&); /// < set the initial value for this variable
+    ecolab::Accessor<std::string> init {
+      [this]() {return this->_init();},
+        [this](const std::string& s){return this->_init(s);}};
+    /// @}
+    
     /// @{ current value associated with this variable
-    double value(double);
-    double value() const;  
+    double _value(double);
+    double _value() const;  
+    ecolab::Accessor<double> value {
+      [this]() {return this->_value();},
+        [this](double x){return this->_value(x);}};
     /// @}
 
     /// sets variable value (or init value)
@@ -116,6 +127,13 @@ namespace minsky
     bool isStock() const {return type()==stock || type()==integral;}
 
     VariableBase() {}
+    VariableBase(const VariableBase& x): Item(x), Slider(x), m_name(x.m_name) {}
+    VariableBase& operator=(const VariableBase& x) {
+      Item::operator=(x);
+      Slider::operator=(x);
+      m_name=x.m_name;
+      return *this;
+    }
     virtual ~VariableBase();
 
     /// adds inPort for integral case (not relevant elsewhere) if one
@@ -159,10 +177,8 @@ namespace minsky
     static int nextId;
     VarConstant(): id(nextId++) {ensureValueExists();}
     std::string valueId() const override {return "constant:"+str(id);}
-    std::string name() const override {return init();}
-    std::string name(const std::string& nm) override {ensureValueExists(); return name();}
-//    std::string fqName() const override {return name();}
-//    std::string uqName() const override {return name();}
+    std::string _name() const override {return init();}
+    std::string _name(const std::string& nm) override {ensureValueExists(); return _name();}
     VarConstant* clone() const override {return new VarConstant(*this);}
     std::string classType() const override {return "VarConstant";}
   

@@ -114,6 +114,18 @@ namespace minsky
       return canvas.item.get();
     }
 
+    void addVariable(std::string name, VariableType::Type type) {
+      canvas.itemFocus=model->addItem(VariablePtr(type,name));
+      if (canvas.itemFocus)
+        canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
+    }
+    void addOperation(OperationType::Type op) {
+      canvas.itemFocus=model->addItem(OperationBase::create(op));
+      if (canvas.itemFocus)
+        canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
+    }
+ 
+    
 //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {
 //      clearSelection();
