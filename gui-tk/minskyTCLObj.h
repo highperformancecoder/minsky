@@ -41,6 +41,7 @@ namespace minsky
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
     if (m.doPushHistory && argv0!="wiringGroup.adjustWires" && 
         argv0!="minsky.availableOperations" &&
+        argv0!="minsky.canvas.select" &&
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
         argv0!="minsky.itemsSelected" &&
@@ -55,6 +56,7 @@ namespace minsky
         argv0!="wiringGroup.newGroupTCL" &&
         argv0!="minsky.newGlobalGroupTCL" &&
         argv0.find(".get")==string::npos && 
+        argv0.find(".@elem")==string::npos && 
         argv0.find(".mouseFocus")==string::npos
         )
       {

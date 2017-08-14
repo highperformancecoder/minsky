@@ -111,9 +111,9 @@ namespace minsky
     /// write current state of all variables to the log file
     void logVariables() const;
 
-  protected:
-    /// contents of current selection
-    Selection currentSelection;
+//  protected:
+//    /// contents of current selection
+//    Selection currentSelection;
 
   public:
     
@@ -192,10 +192,10 @@ namespace minsky
 
     void initGodleys();
 
-    /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
-    void select(float x0, float y0, float x1, float y1);
-    ///// clear selection
-    void clearSelection() {currentSelection.clear();}
+//    /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
+//    void select(float x0, float y0, float x1, float y1);
+//    ///// clear selection
+//    void clearSelection() {currentSelection.clear();}
     /// erase items in current selection, put copy into clipboard
     void cut();
     /// copy items in current selection into clipboard
@@ -204,7 +204,7 @@ namespace minsky
     GroupPtr paste();
     void saveSelectionAsFile(const string& fileName) const;
     /// returns true if selection has any items in it
-    bool itemsSelected() const {return !currentSelection.empty();}
+    bool itemsSelected() const {return !canvas.selection.empty();}
 
     /// @{ override to provide clipboard handling functionality
     virtual void putClipboard(const string&) const {}

@@ -246,6 +246,27 @@ namespace minsky
       w->split();
   }
 
+  size_t GroupItems::numItems() const
+  {
+    size_t count=items.size();
+    for (auto& i: groups) count+=i->numItems();
+    return count;
+  }
+
+  size_t GroupItems::numWires() const
+  {
+    size_t count=wires.size();
+    for (auto& i: groups) count+=i->numWires();
+    return count;
+  }
+
+  size_t GroupItems::numGroups() const
+  {
+    size_t count=groups.size();
+    for (auto& i: groups) count+=i->numGroups();
+    return count;
+  }
+
 
   void Group::moveContents(Group& source) {
      if (&source!=this)

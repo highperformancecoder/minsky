@@ -52,6 +52,10 @@ namespace minsky
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);
 
+    /// select all items in a given region
+    void select(float x0, float y0, float x1, float y1);
+
+
     /// @{ item or wire obtained by get*At() calls
     ItemPtr item;
     WirePtr wire;

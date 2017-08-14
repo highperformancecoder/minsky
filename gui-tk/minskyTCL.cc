@@ -346,6 +346,13 @@ namespace minsky
       void blit() override {cairo_surface_flush(surface());}
     };
 
+    struct CD
+    {
+      Tk_Window tkWin;
+      Tk_ImageMaster master;
+      Canvas& canvas;
+    };
+    
     // Define a new image type that renders a minsky::Canvas
     int createCI(Tcl_Interp* interp, const char* name, int objc, Tcl_Obj *const objv[],
                  const Tk_ImageType* typePtr, Tk_ImageMaster master, ClientData *masterData)
@@ -358,8 +365,7 @@ namespace minsky
             ((member_entry_base*)(TCL_obj_properties()[canvas].get()));
           if (mb)
             {
-              mb->memberptr->surface.reset(new TkWinSurface(*mb->memberptr,master,0)); 
-              *masterData=mb->memberptr;
+              *masterData=new CD{0,master,*mb->memberptr};
               return TCL_OK;
             }
           else
@@ -375,15 +381,13 @@ namespace minsky
         }
     }
 
-    struct CD
-    {
-      Tk_Window tkWin;
-      Canvas& canvas;
-    };
-    
     ClientData getCI(Tk_Window win, ClientData masterData)
-    {return new CD{win,*(Canvas*)masterData};}
-  
+    {
+      auto r=new CD(*(CD*)masterData);
+      r->tkWin=win;
+      return r;
+    }
+    
     void displayCI(ClientData cd, Display* display, Drawable win,
                   int imageX, int imageY, int width, int height,
                   int drawableX, int drawableY)
@@ -391,17 +395,16 @@ namespace minsky
       CD& c=*(CD*)cd;
       int depth;
       Visual *visual = Tk_GetVisual(interp(), c.tkWin, "default", &depth, NULL);
-      auto imageMaster=dynamic_cast<TkWinSurface&>(*c.canvas.surface).imageMaster;
       c.canvas.surface.reset
         (new TkWinSurface
-         (c.canvas, imageMaster,
+         (c.canvas, c.master,
           cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
       c.canvas.redraw();
       cairo_surface_flush(c.canvas.surface->surface());
     }
 
     void freeCI(ClientData cd,Display*) {delete (CD*)cd;}
-    void deleteCI(ClientData) {}
+    void deleteCI(ClientData cd) {delete (CD*)cd;}
   
     Tk_ImageType canvasImage = {
       "canvasImage",

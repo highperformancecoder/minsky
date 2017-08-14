@@ -68,7 +68,7 @@ namespace
       // add a couple of time operators, to ensure the group has finite size
      model->addItem(OperationPtr(OperationType::time))->moveTo(100,75);
      model->addItem(OperationPtr(OperationType::time))->moveTo(200,125);
-     select(50,50,250,150);
+     canvas.select(50,50,250,150);
      save("TestGroupFixture.mky");
      CHECK(model->uniqueItems());
     }

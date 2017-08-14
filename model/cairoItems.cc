@@ -277,6 +277,7 @@ void OperationBase::draw(cairo_t* cairo) const
       }
 
   cairo_clip(cairo);
+  if (selected) drawSelected(cairo);
 
   // compute port coordinates relative to the icon's
   // point of reference
@@ -327,7 +328,6 @@ void OperationBase::draw(cairo_t* cairo) const
   cairo_restore(cairo); // undo rotation
   if (mouseFocus)
       drawPorts(cairo);
-  if (selected) drawSelected(cairo);
 
 }
 

@@ -29,7 +29,7 @@ extern "C" int TkMakeBezierCurve(Tk_Canvas,double*,int,int,void*,double*);
 
 namespace minsky
 {
-  vector<float> Wire::coords() const
+  vector<float> Wire::_coords() const
   {
     vector<float> c;
     assert(from() && to());
@@ -50,7 +50,7 @@ namespace minsky
     return c;
   }
 
-  vector<float> Wire::coords(const vector<float>& coords)
+  vector<float> Wire::_coords(const vector<float>& coords)
   {
     if (coords.size()<6) 
       m_coords.clear();

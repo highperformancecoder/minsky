@@ -91,7 +91,7 @@ namespace minsky
     
     if (lassoMode)
       {
-        minsky().select(lasso.x0,lasso.y0,x,y); //TODO move this into a method of selection
+        select(lasso.x0,lasso.y0,x,y); //TODO move this into a method of selection
         lassoMode=false;
         if (surface.get()) surface->requestRedraw();
       }
@@ -99,7 +99,6 @@ namespace minsky
     
     itemFocus.reset();
     wireFocus.reset();
-    selection.clear();
   }
   
   void Canvas::mouseMove(float x, float y)
@@ -153,6 +152,37 @@ namespace minsky
       }
     // TODO - wire editing and lasso
   }
+
+  void Canvas::select(float x0, float y0, float x1, float y1)
+  {
+    LassoBox lasso(x0,y0,x1,y1);
+    selection.clear();
+
+    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
+
+    if (!topLevel) topLevel=&*model;
+
+    for (auto& i: topLevel->items)
+      if (i->visible() && lasso.intersects(*i))
+        {
+          selection.items.push_back(i);
+          i->selected=true;
+        }
+
+    for (auto& i: topLevel->groups)
+      if (i->visible() && lasso.intersects(*i))
+        {
+          selection.groups.push_back(i);
+          i->selected=true;
+        }
+
+    for (auto& i: topLevel->wires)
+      if (i->visible() && lasso.contains(*i))
+        selection.wires.push_back(i);
+
+    minsky().copy();
+  }
+
   
   void Canvas::getItemAt(float x, float y)
   {

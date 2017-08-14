@@ -191,69 +191,69 @@ namespace minsky
   GroupPtr Minsky::createGroup()
   {
     GroupPtr r=model->addGroup(new Group);
-    for (auto& i: currentSelection.items)
+    for (auto& i: canvas.selection.items)
       r->addItem(i);
-    for (auto& i: currentSelection.groups)
+    for (auto& i: canvas.selection.groups)
       r->addItem(i);
     r->resizeOnContents();
     r->splitBoundaryCrossingWires();
     return r;
   }
 
-  void Minsky::select(float x0, float y0, float x1, float y1)
-  {
-    LassoBox lasso(x0,y0,x1,y1);
-    currentSelection.clear();
-
-    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
-
-    if (!topLevel) topLevel=&*model;
-
-    for (auto& i: topLevel->items)
-      if (i->visible() && lasso.intersects(*i))
-        {
-          currentSelection.items.push_back(i);
-          i->selected=true;
-        }
-
-    for (auto& i: topLevel->groups)
-      if (i->visible() && lasso.intersects(*i))
-        {
-          currentSelection.groups.push_back(i);
-          i->selected=true;
-        }
-
-    for (auto& i: topLevel->wires)
-      if (i->visible() && lasso.contains(*i))
-        currentSelection.wires.push_back(i);
-
-    copy();
-  }
+//  void Minsky::select(float x0, float y0, float x1, float y1)
+//  {
+//    LassoBox lasso(x0,y0,x1,y1);
+//    currentSelection.clear();
+//
+//    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
+//
+//    if (!topLevel) topLevel=&*model;
+//
+//    for (auto& i: topLevel->items)
+//      if (i->visible() && lasso.intersects(*i))
+//        {
+//          currentSelection.items.push_back(i);
+//          i->selected=true;
+//        }
+//
+//    for (auto& i: topLevel->groups)
+//      if (i->visible() && lasso.intersects(*i))
+//        {
+//          currentSelection.groups.push_back(i);
+//          i->selected=true;
+//        }
+//
+//    for (auto& i: topLevel->wires)
+//      if (i->visible() && lasso.contains(*i))
+//        currentSelection.wires.push_back(i);
+//
+//    copy();
+//  }
 
   void Minsky::cut()
   {
     copy();
-    for (auto& i: currentSelection.items)
+    for (auto& i: canvas.selection.items)
       model->removeItem(*i);
-    for (auto& i: currentSelection.groups)
+    for (auto& i: canvas.selection.groups)
       model->removeGroup(*i);
-    for (auto& i: currentSelection.wires)
+    for (auto& i: canvas.selection.wires)
       model->removeWire(*i);
     garbageCollect();
 #ifndef NDEBUG
-    for (auto& i: currentSelection.items)
+    for (auto& i: canvas.selection.items)
       assert(i.use_count()==1);
-    for (auto& i: currentSelection.groups)
+    for (auto& i: canvas.selection.groups)
       assert(i.use_count()==1);
-    for (auto& i: currentSelection.wires)
+    for (auto& i: canvas.selection.wires)
       assert(i.use_count()==1);
 #endif
-    currentSelection.clear();
+    canvas.selection.clear();
   }
 
   void Minsky::copy() const
   {
-    schema1::Minsky m(currentSelection);
+    schema1::Minsky m(canvas.selection);
     ostringstream os;
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -262,7 +262,7 @@ namespace minsky
 
   void Minsky::saveSelectionAsFile(const string& fileName) const
   {
-    schema1::Minsky m(currentSelection);
+    schema1::Minsky m(canvas.selection);
     ofstream os(fileName);
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -284,6 +284,7 @@ namespace minsky
     xml_unpack(unpacker, "Minsky", m);
     GroupPtr g(new Group);
     m.populateGroup(*model->addGroup(g));
+    canvas.itemFocus=g;
     return g;
   }
 

@@ -139,9 +139,9 @@ bind .wiring.canvas <<contextMenu>> {
 #  # mouse wheel bindings for pc and aqua
 #  bind .wiring.canvas <MouseWheel> { if {%D>=0} {zoom 1.1} {zoom [expr 1.0/(1.1)]} }
 #  
-#  bind .wiring.canvas <Alt-Button-1> {
-#      tk_messageBox -message "Mouse coordinates [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]"
-#  }
+bind .wiring.canvas <Alt-Button-1> {
+    tk_messageBox -message "Mouse coordinates [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]"
+}
 #  
 #  proc zoom {factor} {
 #      set x0 [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]

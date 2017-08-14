@@ -25,6 +25,7 @@
 #include <error.h>
 #include <arrays.h>
 #include <TCL_obj_base.h>
+#include <accessor.h>
 #include "classdesc_access.h"
 #include <cairo.h>
 
@@ -50,7 +51,8 @@ namespace minsky
     Wire() {}
     Wire(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to, 
          const std::vector<float>& a_coords=std::vector<float>()); 
-
+    Wire(const Wire& x): NoteBase(x), m_coords(x.m_coords), m_from(x.m_from), m_to(x.m_to) {}
+    
    ~Wire();
 
     std::shared_ptr<Port> from() const {return m_from.lock();}
@@ -65,9 +67,13 @@ namespace minsky
 
     
     /// display coordinates 
-    std::vector<float> coords() const;
-    std::vector<float> coords(const std::vector<float>& coords);
-
+    std::vector<float> _coords() const;
+    std::vector<float> _coords(const std::vector<float>& coords);
+    ecolab::Accessor<std::vector<float>> coords {
+      [this]() {return _coords();},
+        [this](const std::vector<float>& c) {return _coords(c);}
+    };
+    
     /// returns true if coordinates are near this wire
     bool near(float x, float y) const;
     /// returns the index into the coordinate list if x,y is close to

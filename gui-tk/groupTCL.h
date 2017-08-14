@@ -332,7 +332,7 @@ namespace minsky
           while (Tcl_DoOneEvent(TCL_DONT_WAIT));   // dump any pending events
           // remove extra shared references
           clearAll();
-          minsky().clearSelection();
+          minsky().canvas.selection.clear();
           if (auto parent=g->group.lock())
           {
             // remove created IO variables

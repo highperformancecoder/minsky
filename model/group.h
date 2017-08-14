@@ -180,6 +180,13 @@ namespace minsky
           return i->use_count()>1;
           });
     }
+
+    /// total number of items in this and child groups
+    size_t numItems() const; 
+    /// total number of wires in this and child groups
+    size_t numWires() const; 
+    /// total number of groups in this and child groups
+    size_t numGroups() const; 
   };
 
   template <class G, class M, class O>
