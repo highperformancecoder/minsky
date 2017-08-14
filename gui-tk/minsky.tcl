@@ -503,7 +503,7 @@ source $minskyHome/group.tcl
 source $minskyHome/switch.tcl
 
 # add the tabbed windows
-.tabs add .old_wiring -text wiring
+.tabs add .wiring -text "New Canvas"
 
 image create photo renderedEquations -width 500 -height 500 
 #-file $minskyHome/icons/plot.gif
@@ -513,7 +513,7 @@ canvas .equations.canvas -height $canvasHeight -width $canvasWidth -scrollregion
 .equations.canvas create equations 0 0 -tags eq
 pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations
-.tabs add .wiring -text "New Canvas"
+.tabs add .old_wiring -text wiring
 .tabs select 0
 
 ttk::sizegrip .sizegrip
