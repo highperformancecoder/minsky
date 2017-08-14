@@ -108,10 +108,20 @@ namespace minsky
 
     bool getItemAt(float x, float y)
     {
+      // deregister any old definitions, as item is polymorphic
+      TCL_obj_deregister("minsky.canvas.item");
       canvas.getItemAt(x,y);
       if (canvas.item)
         canvas.item->TCL_obj(minskyTCL_obj(),"minsky.canvas.item");
       return canvas.item.get();
+    }
+
+    bool getWireAt(float x, float y)
+    {
+      canvas.getWireAt(x,y);
+      if (canvas.wire)
+        TCL_obj(minskyTCL_obj(),"minsky.canvas.wire",*canvas.wire);
+      return canvas.wire.get();
     }
 
     void addVariable(std::string name, VariableType::Type type) {

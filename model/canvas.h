@@ -75,6 +75,9 @@ namespace minsky
     void deleteItem() {if (item) model->removeItem(*item);}
     /// delete wire referenced by wire
     void deleteWire() {if (wire) model->removeWire(*wire);}
+
+    /// create a copy of item, and leave it focused
+    void copyItem();
     
     /// redraw whole model
     void redraw();

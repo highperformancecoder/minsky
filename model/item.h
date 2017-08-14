@@ -85,7 +85,9 @@ namespace minsky
     
     /// indicates this is a group I/O variable
     virtual bool ioVar() const {return false;}
-    
+
+    /// rotate icon though 180∘
+    void flip() {rotation+=180;}
 
     virtual std::string classType() const {return "Item";}
     /// sets the cairo surface, allow redraws to be requested

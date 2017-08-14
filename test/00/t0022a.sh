@@ -32,7 +32,7 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source assert.tcl
 proc afterMinskyStarted {} {
-  set id [newVariable foo flow]
+  addVariable foo flow
   newItem \$id
   deiconifyNote
   .old_wiring.note.tooltip.entry insert 0 foobar

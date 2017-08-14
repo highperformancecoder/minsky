@@ -196,6 +196,17 @@ namespace minsky
                        [&](const WirePtr& i){return i->near(x,y);});
   }
 
+  void Canvas::copyItem()
+  {
+    if (item)
+      {
+        auto newItem=item->clone();
+        newItem->group.reset();
+        itemFocus=model->addItem(newItem);
+      }
+  }
+
+  
   void Canvas::redraw()
   {
     updateRegion.x0=updateRegion.y0=-numeric_limits<float>::max();

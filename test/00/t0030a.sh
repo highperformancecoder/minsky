@@ -55,10 +55,10 @@ proc afterMinskyStarted {} {
       "Variable*" break
     }
   }
-  editItem \$var
+  editItem
   assert {[winfo viewable .old_wiring.editVar]} {varclick}
-  .old_wiring.editVar.buttonBar.ok invoke
-  assert {![winfo exists .old_wiring.editVar]} {varclick}
+  .wiring.editVar.buttonBar.ok invoke
+  assert {![winfo exists .wiring.editVar]} {varclick}
 
 
   tcl_exit
