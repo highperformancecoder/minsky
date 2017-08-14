@@ -1022,7 +1022,7 @@ proc aboutMinsky {} {
 proc deleteSubsidiaryTopLevels {} {
     global globals
 
-    set globals(default_rotation) 0
+    canvas.defaultRotation 0
     set globals(godley_tables) {}
 
     foreach w [info commands .godley*] {destroy $w}

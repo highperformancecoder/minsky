@@ -325,16 +325,13 @@ namespace minsky
     wires.push_back(w);
     return wires.back();
   }
-  WirePtr GroupItems::addWire(const Item& from, const Item& to, unsigned toPortIdx, const std::vector<float>& coords) {
+  WirePtr GroupItems::addWire
+  (const shared_ptr<Port>& fromP, const shared_ptr<Port>& toP, const vector<float>& coords)
+  {
     // disallow self-wiring
-    if (&from==&to) 
+    if (&fromP->item==&toP->item) 
       return WirePtr();
 
-    if (toPortIdx>=to.ports.size()) 
-      return WirePtr();
-
-    auto& fromP=from.ports[0];
-    auto& toP=to.ports[toPortIdx];
     // wire must go from an output port to an input port
     if (fromP->input() || !toP->input())
       return WirePtr();

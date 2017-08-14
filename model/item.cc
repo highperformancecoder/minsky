@@ -179,6 +179,12 @@ namespace minsky
     cairo_clip(cairo);
   }
 
+  void Item::dummyDraw() const
+  {
+    ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+    draw(s.cairo());
+  }
+  
   namespace
   {
     inline float sqr(float x) {return x*x;}

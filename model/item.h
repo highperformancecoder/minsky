@@ -107,6 +107,10 @@ namespace minsky
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;
+    /// draw into a dummy cairo context, for purposes of calculating
+    /// port positions
+    void dummyDraw() const;
+
     /// update display after a step()
     virtual void updateIcon(double t) {}
     virtual ~Item() {}

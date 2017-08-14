@@ -153,8 +153,18 @@ namespace minsky
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
     WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
-                const std::vector<float>& coords = {}); 
+                const std::vector<float>& coords = {})
+    {
+      if (toPortIdx>=to.ports.size()) return WirePtr();
+      return addWire(from.ports[0], to.ports[toPortIdx], coords);
+    }
 
+    WirePtr addWire(const std::shared_ptr<Port>& from,
+                    const std::shared_ptr<Port>& to, 
+                    const std::vector<float>& coords = {}); 
+
+
+    
     /// splits any wires that cross group boundaries
     void splitBoundaryCrossingWires();
 

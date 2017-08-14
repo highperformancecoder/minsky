@@ -58,12 +58,19 @@ namespace minsky
     void getItemAt(float x, float y);
     void getWireAt(float x, float y);
 
-//    void addOperation(OperationType::Type op) {
-//      itemFocus=model->addItem(OperationBase::create(op));
-//    }
-//    void newVariable(const std::string& name, VariableType::Type type) {
-//      itemFocus=model->addItem(VariablePtr(type,name));
-//    }
+    double defaultRotation=0;
+    void addOperation(OperationType::Type op) {
+      itemFocus=model->addItem(OperationBase::create(op));
+      itemFocus->rotation=defaultRotation;
+    }
+    void addVariable(const std::string& name, VariableType::Type type) {
+      itemFocus=model->addItem(VariablePtr(type,name));
+      itemFocus->rotation=defaultRotation;
+    }
+    /// delete item referenced by item
+    void deleteItem() {if (item) model->removeItem(*item);}
+    /// delete wire referenced by wire
+    void deleteWire() {if (wire) model->removeWire(*wire);}
     
     /// redraw whole model
     void redraw();

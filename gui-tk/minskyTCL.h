@@ -115,12 +115,12 @@ namespace minsky
     }
 
     void addVariable(std::string name, VariableType::Type type) {
-      canvas.itemFocus=model->addItem(VariablePtr(type,name));
+      canvas.addVariable(name,type);
       if (canvas.itemFocus)
         canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
     }
     void addOperation(OperationType::Type op) {
-      canvas.itemFocus=model->addItem(OperationBase::create(op));
+      canvas.addOperation(op);
       if (canvas.itemFocus)
         canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
     }

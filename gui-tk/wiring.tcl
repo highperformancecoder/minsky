@@ -16,8 +16,6 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-set globals(default_rotation) 0
-
 ttk::frame  .wiring
 
 frame .wiring.menubar 
@@ -70,7 +68,7 @@ foreach op [availableOperations] {
         image create photo [set op]Img -width 24 -height 24
         operationIcon [set op]Img $op
     }
-    button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "canvas.addOperation $op" -height 24 -width 24
+    button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "minsky.addOperation $op" -height 24 -width 24
     tooltip .wiring.menubar.line$menubarLine.$op $opTrimmed
 
     pack .wiring.menubar.line$menubarLine.$op -side left 
@@ -225,7 +223,6 @@ proc addVariablePostModal {} {
     set name [string trim $varInput(Name)]
     set varExists [variableValues.count $name]
     minsky.addVariable $name $varInput(Type)
-    canvas.itemFocus.rotation $globals(default_rotation)
     canvas.itemFocus.init $varInput(Value)
     if {!$varExists} {
         value.get [canvas.itemFocus.valueId]
@@ -247,15 +244,15 @@ proc addVariable {} {
     .wiring.initVar.$initVar_name configure -state enabled
 }
 
-#  
-#  proc addConstant {} {
-#      global varInput varType initVar_name
-#      set varType constant
-#      set varInput(title) "Create Constant"
-#      addConstantOrVariable
-#      .wiring.initVar.$initVar_name configure -state disabled
-#  }
-#  
+
+proc addConstant {} {
+    global varInput varType initVar_name
+    set varType constant
+    set varInput(title) "Create Constant"
+    addConstantOrVariable
+    .wiring.initVar.$initVar_name configure -state disabled
+}
+
 proc addConstantOrVariable {} {
     global varInput varType
     set varInput(Name) ""
@@ -277,7 +274,6 @@ proc addConstantOrVariable {} {
 #      global globals constInput
 #      set id [wiringGroup.addOperation $op]
 #      op.get $id
-#      op.rotation $globals(default_rotation)
 #      op.set
 #      global moveOffs$id.x moveOffs$id.y 
 #      set moveOffs$id.x 0
@@ -313,7 +309,6 @@ proc addConstantOrVariable {} {
 #              # if no space in text, add a variable of that name
 #              set id [newVariable $textBuffer "flow"]
 #              var.get $id
-#              var.rotation $globals(default_rotation)
 #              var.moveTo $x $y
 #              initGroupList
 #              newItem $id
@@ -1324,10 +1319,9 @@ menu .wiring.context -tearoff 0
 #      }
 #  }
 #  
-#  proc flip_default {} {
-#     global globals
-#     set globals(default_rotation) [expr ($globals(default_rotation)+180)%360]
-#  }
+proc flip_default {} {
+    minsky.canvas.defaultRotation [expr ([minsky.canvas.defaultRotation]+180)%360]
+}
 #  
 #  proc deleteItem {id tag} {
 #      .wiring.canvas delete $tag
@@ -1341,7 +1335,6 @@ menu .wiring.context -tearoff 0
 #      global globals
 #      set newId [wiringGroup.copyItem]
 #      var.get $newId
-#      var.rotation $globals(default_rotation)
 #      newItem $newId
 #      placeNewVar $newId
 #  }
@@ -1351,7 +1344,6 @@ menu .wiring.context -tearoff 0
 #      item.get $id
 #      set newId [copyItem]
 #      op.get $newId
-#      op.rotation $globals(default_rotation)
 #      placeNewOp $newId 
 #  }
 #  

@@ -82,7 +82,7 @@ namespace minsky
         if (auto dest=model->findAny(&Group::items,
                                      [&](const ItemPtr& i){return i->contains(x,y);}))
           if (auto to=dest->closestInPort(x,y))
-            model->addWire(new Wire(fromPort,to));
+            model->addWire(fromPort,to);
         fromPort.reset();
       }
     
@@ -93,7 +93,7 @@ namespace minsky
       {
         minsky().select(lasso.x0,lasso.y0,x,y); //TODO move this into a method of selection
         lassoMode=false;
-        surface->requestRedraw();
+        if (surface.get()) surface->requestRedraw();
       }
 
     
@@ -108,24 +108,24 @@ namespace minsky
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
         itemFocus->moveTo(x,y);
-        surface->requestRedraw();
+        if (surface.get()) surface->requestRedraw();
       }
     else if (fromPort.get())
       {
         termX=x;
         termY=y;
-        surface->requestRedraw();
+        if (surface.get()) surface->requestRedraw();
       }
     else if (wireFocus)
       {
         wireFocus->editHandle(handleSelected,x,y);
-        surface->requestRedraw();
+        if (surface.get()) surface->requestRedraw();
       }
     else if (lassoMode)
       {
         lasso.x1=x;
         lasso.y1=y;
-        surface->requestRedraw();
+        if (surface.get()) surface->requestRedraw();
       }
     else
       {
