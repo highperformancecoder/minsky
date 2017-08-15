@@ -170,6 +170,8 @@ namespace minsky
 
     cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2));
     pango.show();
+
+    if (mouseFocus) displayTooltip(cairo);
     cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));
     cairo_line_to(cairo,r.x(w,-h), r.y(w,-h));
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));
@@ -184,7 +186,25 @@ namespace minsky
     ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     draw(s.cairo());
   }
-  
+
+  void Item::displayTooltip(cairo_t* cairo) const
+  {
+    if (!tooltip.empty())
+      {
+        cairo_save(cairo);
+        Pango pango(cairo);
+        pango.setMarkup(latexToPango(tooltip));
+        cairo_translate(cairo,10,20);
+        cairo_rectangle(cairo,0,0,pango.width(),pango.height());
+        cairo_set_source_rgb(cairo,1,1,1);
+        cairo_fill_preserve(cairo);
+        cairo_set_source_rgb(cairo,0,0,0);
+        pango.show();
+        cairo_stroke(cairo);
+        cairo_restore(cairo);
+      }
+  }
+
   namespace
   {
     inline float sqr(float x) {return x*x;}

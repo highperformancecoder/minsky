@@ -113,6 +113,9 @@ namespace minsky
     /// port positions
     void dummyDraw() const;
 
+    /// display tooltip text, eg on mouseover
+    void displayTooltip(cairo_t*) const;
+    
     /// update display after a step()
     virtual void updateIcon(double t) {}
     virtual ~Item() {}

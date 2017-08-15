@@ -185,7 +185,10 @@ void OperationBase::draw(cairo_t* cairo) const
           }
         cairo_restore(cairo); // undo rotation
         if (mouseFocus)
-          drawPorts(cairo);
+          {
+            drawPorts(cairo);
+            displayTooltip(cairo);
+          }
         if (selected) drawSelected(cairo);
         return;
     }
@@ -327,7 +330,10 @@ void OperationBase::draw(cairo_t* cairo) const
 
   cairo_restore(cairo); // undo rotation
   if (mouseFocus)
+    {
       drawPorts(cairo);
+      displayTooltip(cairo);
+    }
 
 }
 
@@ -442,7 +448,10 @@ void VariableBase::draw(cairo_t *cairo) const
 
   cairo_restore(cairo); // undo rotation
   if (mouseFocus)
-    drawPorts(cairo);
+    {
+      drawPorts(cairo);
+      displayTooltip(cairo);
+    }
   if (selected) drawSelected(cairo);
 }
 
