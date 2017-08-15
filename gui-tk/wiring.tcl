@@ -201,9 +201,9 @@ proc addVariablePostModal {} {
     canvas.itemFocus.init $varInput(Value)
     if {!$varExists} {
         value.get [canvas.itemFocus.valueId]
-        canvas.itemFocus.rotation {set varInput(Rotation)}
-        canvas.itemFocus.tooltip {set "varInput(Short description)"}
-        canvas.itemFocus.detailedText {set "varInput(Detailed description)"}
+        canvas.itemFocus.rotation [set varInput(Rotation)]
+        canvas.itemFocus.tooltip [set "varInput(Short description)"]
+        canvas.itemFocus.detailedText [set "varInput(Detailed description)"]
     }
     closeEditWindow .wiring.initVar
 }
@@ -1070,8 +1070,9 @@ proc findDefinition {} {
 #  
 # context menu
 proc contextMenu {x y X Y} {
+    set item minsky.canvas.item
     # find out what type of item we're referring to
-    switch -regex [canvas.item.classType] {
+    switch -regex [$item.classType] {
         "Variable*" {
 	    .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Variable}
@@ -1079,12 +1080,12 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Value [minsky.canvas.item.value]" 
             .wiring.context add command -label "Find definition" -command "findDefinition"
             .wiring.context add command -label "Edit" -command "editItem"
-            .wiring.context add checkbutton -label "Slider" \
-                -command "drawSlider $id $x $y" \
-                -variable "sliderCheck$id"
+#            .wiring.context add checkbutton -label "Slider" \
+#                -command "drawSlider $id $x $y" \
+#                -variable "sliderCheck$id"
             .wiring.context add command -label "Copy" -command "copyVar"
-            if {[var.type]=="flow" && ![inputWired [item.valueId]]} {
-                .wiring.context add command -label "Add integral" -command "addIntegral [item.name]"
+            if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
+                .wiring.context add command -label "Add integral" -command "addIntegral [$item.name]"
             }
             .wiring.context add command -label "Flip" -command "item.flip; flip_default"
 #            .wiring.context add command -label "Raise" -command "raiseItem var$id"
@@ -1092,23 +1093,22 @@ proc contextMenu {x y X Y} {
         }
         "Operation*|IntOp" {
             .wiring.context delete 0 end
-            set opType [minsky.canvas.item.name]
-            .wiring.context add command -label Help -command "help op:$opType"
+            .wiring.context add command -label Help -command "help op:[$item.name]"
             .wiring.context add command -label Description -command "postNote item"
-            .wiring.context add command -label "Port values [minsky.canvas.item.portValues]" 
+            .wiring.context add command -label "Port values [$item.portValues]" 
             .wiring.context add command -label "Edit" -command "editItem"             
-            if {$opType=="data"} {
+            if {[$item.name]=="data"} {
                .wiring.context add command -label "Import Data" \
                     -command "importData $id" 
             }
-            if {$opType=="integrate"} {
+            if {[$item.name]=="integrate"} {
                 integral.get $id
                 .wiring.context add command -label "Copy" -command "integral.getIntVar; copyVar"
             } else {
                 .wiring.context add command -label "Copy" -command "canvas.copyItem"
             }
             .wiring.context add command -label "Flip" -command "minsky.canvas.item.flip; flip_default"
-           if {$opType=="integrate"} {
+           if {[$item.name]=="integrate"} {
                 .wiring.context add command -label "Toggle var binding" -command "toggleCoupled $id"
             }
 #            .wiring.context add command -label "Raise" -command "raiseItem op$id"
@@ -1875,39 +1875,38 @@ proc editItem {} {
 #      }
 #  }
 #  
-#  proc deiconifyNote {} {
-#      if {![winfo exists .wiring.note]} {
-#          toplevel .wiring.note
-#          frame .wiring.note.tooltip
-#          label .wiring.note.tooltip.label -text "Short description"
-#          entry .wiring.note.tooltip.entry -width 40 -justify left
-#          pack .wiring.note.tooltip.label .wiring.note.tooltip.entry -side left
-#          text .wiring.note.text -wrap word
-#          frame .wiring.note.buttons
-#          button .wiring.note.buttons.cancel -text "Cancel" -command {closeEditWindow .wiring.note}
-#          button .wiring.note.buttons.ok -text "OK" -command OKnote
-#          bind .wiring.note <Key-Escape> {.wiring.note.buttons.cancel invoke}
-#          pack .wiring.note.buttons.cancel  .wiring.note.buttons.ok -side left
-#          pack .wiring.note.tooltip .wiring.note.text .wiring.note.buttons
-#      } else {
-#          wm deiconify .wiring.note
-#      }
-#  }
-#  
+proc deiconifyNote {} {
+    if {![winfo exists .wiring.note]} {
+        toplevel .wiring.note
+        frame .wiring.note.tooltip
+        label .wiring.note.tooltip.label -text "Short description"
+        entry .wiring.note.tooltip.entry -width 40 -justify left
+        pack .wiring.note.tooltip.label .wiring.note.tooltip.entry -side left
+        text .wiring.note.text -wrap word
+        frame .wiring.note.buttons
+        button .wiring.note.buttons.cancel -text "Cancel" -command {closeEditWindow .wiring.note}
+        button .wiring.note.buttons.ok -text "OK" -command OKnote
+        bind .wiring.note <Key-Escape> {.wiring.note.buttons.cancel invoke}
+        pack .wiring.note.buttons.cancel  .wiring.note.buttons.ok -side left
+        pack .wiring.note.tooltip .wiring.note.text .wiring.note.buttons
+    } else {
+        wm deiconify .wiring.note
+    }
+}
+
 proc postNote {item} {
     deiconifyNote
     .wiring.note.tooltip.entry delete 0 end
     .wiring.note.tooltip.entry insert 0 [minsky.canvas.$item.tooltip]
     .wiring.note.text delete 1.0 end
     .wiring.note.text insert 1.0 [minsky.canvas.$item.detailedText]
-    .wiring.note.buttons.ok configure -command "OKnote $item $id"
+    .wiring.note.buttons.ok configure -command "OKnote $item"
     tkwait visibility .wiring.note
     grab set .wiring.note
     wm transient .wiring.note
 }
 
-proc OKnote {item id} {
-    minsky.canvas.$item.get $id
+proc OKnote {item} {
     minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
     minsky.canvas.$item.detailedText  [.wiring.note.text get 1.0 end]
     closeEditWindow .wiring.note
