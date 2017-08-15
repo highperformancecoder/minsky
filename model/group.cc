@@ -178,8 +178,7 @@ namespace minsky
     if (auto v=dynamic_cast<VariableBase*>(it.get()))
       init=v->init();
     
-    if (auto _this=dynamic_cast<Group*>(this))
-      it->group=_this->self();
+    it->group=self();
     it->moveTo(x,y);
 
     // take into account new scope

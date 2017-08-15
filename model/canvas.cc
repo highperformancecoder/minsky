@@ -206,6 +206,32 @@ namespace minsky
       }
   }
 
+  bool Canvas::findVariableDefinition()
+  {
+    if (auto iv=dynamic_cast<VariableBase*>(item.get()))
+      {
+        if (iv->inputWired()) return true;
+        auto def=model->findAny
+          (&GroupItems::items, [&](const ItemPtr& i) {
+            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+              return v->inputWired() && v->valueId()==iv->valueId();
+            else if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+              for (auto& v: g->stockVars)
+                {
+                  if (v->valueId()==iv->valueId())
+                    return true;
+                }
+            else if (auto o=dynamic_cast<IntOp*>(i.get()))
+              return o->intVar->valueId()==iv->valueId();
+            return false;
+          });
+        if (def)
+          item=def;
+        return def.get();
+      }
+    return false;
+  }
+
   
   void Canvas::redraw()
   {

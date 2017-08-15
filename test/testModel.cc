@@ -158,6 +158,42 @@ SUITE(Canvas)
       canvas.getWireAt(x,y);
       CHECK(canvas.wire==ab);
     }
+  
+  TEST_FIXTURE(Canvas,findVariableDefinition)
+    {
+      model=cminsky().model;
+      VariablePtr var1(VariableType::flow,"foo");
+      VariablePtr var2(VariableType::flow,"foo");
+      OperationPtr op(OperationType::exp);      
+      item=model->addItem(var1);
+      model->addItem(var2);
+      model->addItem(op);
+      // initially, foo is undefined, so should return false
+      CHECK(!findVariableDefinition());
+      CHECK(item==var1);
+      model->addWire(new Wire(op->ports[0],var2->ports[1]));
+      CHECK(findVariableDefinition());
+      CHECK(item==var2);
+      model->removeItem(*var2);
+
+      shared_ptr<IntOp> integ(new IntOp);
+      integ->description("foo");
+      model->addItem(integ);
+      item=var1;
+      CHECK(findVariableDefinition());
+      CHECK(item==integ);
+      model->removeItem(*integ);
+      
+      shared_ptr<GodleyIcon> godley(new GodleyIcon);
+      model->addItem(godley);
+      godley->table.resize(3,2);
+      godley->table.cell(0,1)="foo";
+      godley->table.cell(0,2)="bar";
+      godley->update();
+      item=var1;
+      CHECK(findVariableDefinition());
+      CHECK(item==godley);
+    }
 }
 
 SUITE(Wire)
@@ -196,3 +232,4 @@ SUITE(Wire)
       CHECK_CLOSE(3.3, wire.coords()[3],0.01);
     }
 }
+

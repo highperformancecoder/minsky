@@ -1052,33 +1052,32 @@ proc wireContextMenu {id x y} {
     .wiring.context add command -label "Delete wire" -command "deleteWire; canvas.redraw"
     tk_popup .wiring.context $x $y
 }
-#  
-#  proc findDefinition id {
-#      var.get $id
-#      if {[var.type]=="constant" || [var.type]=="parameter"} {
-#          indicateCanvasItemInError [var.x] [var.y]
-#      } else {
-#          set v [wiringGroup.findVariableDefinition $id]
-#          if {$v==-1} {
-#              tk_messageBox -message "Definition not found"
-#          } else {
-#              item.get $v
-#              indicateCanvasItemInError [item.x] [item.y]
-#          }
-#      }
-#  }
+
+proc findDefinition {} {
+    set item minsky.canvas.item
+    if {[$item.type]=="constant" || [$item.type]=="parameter"} {
+        indicateCanvasItemInError [var.x] [var.y]
+    } else {
+        set v [wiringGroup.findVariableDefinition $id]
+        if {$v==-1} {
+            tk_messageBox -message "Definition not found"
+        } else {
+            item.get $v
+            indicateCanvasItemInError [item.x] [item.y]
+        }
+    }
+}
 #  
 # context menu
 proc contextMenu {x y X Y} {
     # find out what type of item we're referring to
     switch -regex [canvas.item.classType] {
         "Variable*" {
-            wiringGroup.var.get $id
 	    .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Variable}
-            .wiring.context add command -label Description -command "postNote item $id"
-            .wiring.context add command -label "Value [item.value]" 
-            .wiring.context add command -label "Find definition" -command "findDefinition $id"
+            .wiring.context add command -label Description -command "postNote item"
+            .wiring.context add command -label "Value [minsky.canvas.item.value]" 
+            .wiring.context add command -label "Find definition" -command "findDefinition"
             .wiring.context add command -label "Edit" -command "editItem"
             .wiring.context add checkbutton -label "Slider" \
                 -command "drawSlider $id $x $y" \

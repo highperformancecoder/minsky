@@ -78,6 +78,12 @@ namespace minsky
 
     /// create a copy of item, and leave it focused
     void copyItem();
+
+    /// populates item with the defining variable if there is
+    /// one. Leave item unchanged if it is not a variable, or variable
+    /// is undefined. NB may be a Godley table or integral
+    /// @return true if definition found.
+    bool findVariableDefinition();
     
     /// redraw whole model
     void redraw();

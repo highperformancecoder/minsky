@@ -59,6 +59,8 @@ namespace minsky
     GroupItems(const GroupItems& x) {*this=x;}
     virtual ~GroupItems() {}
     GroupItems& operator=(const GroupItems&);
+    virtual std::shared_ptr<Group> self() const=0;
+
     void clear() {
       items.clear();
       groups.clear();
@@ -80,22 +82,26 @@ namespace minsky
     
 
     /// sets the group pointer of \a it to this
-    virtual void setItemGroup(const ItemPtr&) const=0;
+    //virtual void setItemGroup(const ItemPtr&) const=0;
     /// tests that groups are arranged heirarchically without any recurrence
     virtual bool nocycles() const=0; 
 
-    /// Perform action heirarchically on elements of map \a map. If op returns true, the operation terminates.
+    /// @{ Perform action heirarchically on elements of map \a map. If op returns true, the operation terminates.
     /// returns true if operation terminates early, false if every element processed.
+    /// O has signature bool(M, M::const_iterator)
     template <class M, class O>
     bool recursiveDo(M GroupItems::*map, O op) const 
     {return GroupRecursiveDo(*this,map,op);}
+    /// O has signature bool(M&, M::iterator)
     template <class M, class O>
     bool recursiveDo(M GroupItems::*map, O op)
     {return GroupRecursiveDo(*this,map,op);}
-
+    /// @}
+    
     /// search for the first item in the heirarchy of \a map for which
     /// \a c is true. M::value_type must evaluate in a boolean
     /// environment to false if not valid
+    /// C is of signature bool(M::value_type)
     template <class M, class C>
     const typename M::value_type findAny(M GroupItems::*map, C c) const;
 
@@ -212,8 +218,8 @@ namespace minsky
     std::vector<VariablePtr> createdIOvariables;
 
     /// @returns a shared_ptr to this. NULL if this cannot be found in parent group
-    std::shared_ptr<Group> self() const;
-    void setItemGroup(const ItemPtr& it) const override {it->group=self();}
+    std::shared_ptr<Group> self() const override;
+    //void setItemGroup(const ItemPtr& it) const override {it->group=self();}
     bool nocycles() const override; 
 
     static SVGRenderer svgRenderer;

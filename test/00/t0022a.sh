@@ -33,14 +33,12 @@ cat >input.tcl <<EOF
 source assert.tcl
 proc afterMinskyStarted {} {
   addVariable foo flow
-  newItem \$id
   deiconifyNote
-  .old_wiring.note.tooltip.entry insert 0 foobar
-  .old_wiring.note.text insert 1.0 "some longer text"
+  .wiring.note.tooltip.entry insert 0 foobar
+  .wiring.note.text insert 1.0 "some longer text"
   OKnote var \$id
-  var.get \$id
-  assert {"foobar"==[var.tooltip]}
-  assert {"some longer text\n"==[var.detailedText]}
+  assert {"foobar"==[minsky.canvas.item.tooltip]}
+  assert {"some longer text\n"==[minsky.canvas.item.detailedText]}
   itemEnterLeave var \$id var\$id 1
   # check for existence of tooltip
   assert {[llength [.old_wiring.canvas find withtag tooltip]]==1}
