@@ -607,10 +607,6 @@ namespace minsky
     leftMargin*=zoomFactor; rightMargin*=zoomFactor;
 
     unsigned width=zoomFactor*this->width, height=zoomFactor*this->height;
-    // bitmap needs to be big enough to allow a rotated
-    // icon to fit on the bitmap.
-    float rotFactor=this->rotFactor();
-
 
    // draw default group icon
     cairo_save(cairo);

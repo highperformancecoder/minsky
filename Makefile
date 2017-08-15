@@ -275,3 +275,10 @@ lcov:
 	lcov -i -c -d . --no-external -o lcov.info
 	lcov -c -d . --no-external -o lcov.info
 	genhtml -o coverage lcov.info
+
+compile_commands.json: Makefile
+	$(MAKE) clean
+	bear $(MAKE)
+
+clang-tidy: compile_commands.json
+	run-clang-tidy

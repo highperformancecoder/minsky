@@ -308,18 +308,20 @@ namespace minsky
     n*=2;
     if (auto f=from())
       if (auto t=to())
-        if (n<m_coords.size())
-          {
-            m_coords.resize(m_coords.size()+2);
-            memmove(&m_coords[n+2], &m_coords[n], sizeof(m_coords[0])*(m_coords.size()-n-2));
-            m_coords[n] = (x - f->x()) / (t->x() - f->x());
-            m_coords[n+1] = (y - f->y()) / (t->y() - f->y());
-          }
-        else if (n==m_coords.size())
-          {
-            m_coords.push_back((x - f->x()) / (t->x() - f->x()));
-            m_coords.push_back((y - f->y()) / (t->y() - f->y()));
-          }
+        {
+          if (n<m_coords.size())
+            {
+              m_coords.resize(m_coords.size()+2);
+              memmove(&m_coords[n+2], &m_coords[n], sizeof(m_coords[0])*(m_coords.size()-n-2));
+              m_coords[n] = (x - f->x()) / (t->x() - f->x());
+              m_coords[n+1] = (y - f->y()) / (t->y() - f->y());
+            }
+          else if (n==m_coords.size())
+            {
+              m_coords.push_back((x - f->x()) / (t->x() - f->x()));
+              m_coords.push_back((y - f->y()) / (t->y() - f->y()));
+            }
+        }
   }
   
   void Wire::editHandle(unsigned position, float x, float y)

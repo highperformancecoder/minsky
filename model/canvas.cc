@@ -41,7 +41,7 @@ namespace minsky
           {
           case ClickType::onPort:
             // items all have their output port first, if they have an output port at all.
-            if (fromPort=itemFocus->closestOutPort(x,y))
+            if ((fromPort=itemFocus->closestOutPort(x,y)))
               {
                 termX=x;
                 termY=y;

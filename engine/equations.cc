@@ -1193,7 +1193,7 @@ namespace MathDAG
          g!=godleyVars.end(); ++g)
       {
         //        assert(g->second.godleyId>=0);
-        VariableDAG* v=integVarMap[VariableValue::valueId(g->first)]=
+        integVarMap[VariableValue::valueId(g->first)]=
           makeDAG(VariableValue::valueId(g->first), g->first, VariableValue::stock).get();
         VariableDAGPtr input(new IntegralInputVariableDAG);
         input->name=g->first;

@@ -86,8 +86,8 @@ namespace minsky
     grid=true;
 
     float w=width, h=height;
-    float x = -0.5*w, dx=w/(2*numLines+1); // x location of ports
-    float y=0.5*h, dy = h/(numLines);
+    float dx=w/(2*numLines+1); // x location of ports
+    float dy = h/(numLines);
 
     // xmin, xmax, ymin, ymax ports
     ports.emplace_back(new Port(*this, Port::inputPort)); //xmin
@@ -244,7 +244,6 @@ namespace minsky
   {
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff
     // store previous min/max values to determine if plot scale changes
-    double minmax[]={minx,maxx,miny,maxy,miny1,maxy1};
     scalePlot();
     if (cairoSurface.get())
       cairoSurface->requestRedraw();
