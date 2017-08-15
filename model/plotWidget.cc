@@ -212,7 +212,10 @@ namespace minsky
     
     cairo_restore(cairo);
     if (mouseFocus)
-      drawPorts(cairo);
+      {
+        drawPorts(cairo);
+        displayTooltip(cairo);
+      }
     if (selected) drawSelected(cairo);
   }
   

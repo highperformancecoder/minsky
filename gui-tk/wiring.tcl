@@ -354,63 +354,6 @@ proc deleteKey {} {
 #  
 #  set itemFocused 0
 #  
-#  proc deleteTooltipIfLeft {item id} {
-#      set x [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]] 
-#      set y [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
-#      wiringGroup.$item.get $id
-#      if {[wiringGroup.$item.clickType $x $y]=="outside"} {
-#          # throttle deletion
-#          after 100 {.wiring.canvas delete tooltip}
-#      }
-#  }
-#  
-#  
-#  set inItemEnterLeave 0
-#  proc itemEnterLeave {item id tag enter} {
-#      global itemFocused inItemEnterLeave
-#      if {$inItemEnterLeave} return
-#      set inItemEnterLeave 1
-#  
-#      wiringGroup.$item.get $id
-#      # preserve dirty flag
-#      wiringGroup.$item.mouseFocus $enter
-#      redraw $id
-#      set x [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]] 
-#      set y [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
-#      if {$enter} {
-#          if {!$itemFocused && [llength [.wiring.canvas find withtag tooltip]]==0} {
-#              .wiring.canvas create text [expr [wiringGroup.$item.x]+20] [expr [wiringGroup.$item.y]-20] -tags tooltip -text  [wiringGroup.$item.tooltip]
-#              .wiring.canvas bind tooltip <Enter> {}
-#              # delete ourself if we've left the icon
-#              .wiring.canvas bind tooltip <Leave> "deleteTooltipIfLeft $item $id"
-#          }
-#      } else {
-#          deleteTooltipIfLeft $item $id
-#      }
-#      set itemFocused $enter
-#      set inItemEnterLeave 0
-#  }
-#  
-#  #proc drawOperation {id} {
-#  #    op.get $id
-#  #
-#  #    .wiring.canvas delete op$id
-#  #    .wiring.canvas create operation [op.x] [op.y] -id $id -image opImage$id -tags "op$id operations" 
-#  ##    .wiring.canvas create rectangle [.wiring.canvas bbox op$id] -tags op$id
-#  #
-#  #    setM1Binding op $id op$id
-#  #    op.get $id
-#  #    .wiring.canvas bind op$id <<middleMouse>> \
-#  #        "wires::startConnect [lindex [op.ports] 0] op$id %x %y"
-#  #    .wiring.canvas bind op$id <<middleMouse-Motion>> \
-#  #        "wires::extendConnect [lindex [op.ports] 0] op$id %x %y"
-#  #    .wiring.canvas bind op$id <<middleMouse-ButtonRelease>> \
-#  #        "wires::finishConnect op$id %x %y"
-#  #    .wiring.canvas bind op$id  <Double-Button-1> "doubleClick op$id %X %Y"
-#  #    .wiring.canvas bind op$id <Enter> "itemEnterLeave op $id op$id 1"
-#  #    .wiring.canvas bind op$id <Leave> "itemEnterLeave op $id op$id 0"
-#  #}
-#  
 #  proc updateItemPos {id} {
 #      global globals
 #      # ignore errors that may occur if the object vanishes before now
