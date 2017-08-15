@@ -97,6 +97,7 @@ namespace minsky
       }
 
     
+    itemIndicator=false;
     itemFocus.reset();
     wireFocus.reset();
   }
@@ -210,7 +211,10 @@ namespace minsky
   {
     if (auto iv=dynamic_cast<VariableBase*>(item.get()))
       {
-        if (iv->inputWired()) return true;
+        if (iv->type()==VariableType::constant ||
+            iv->type()==VariableType::parameter || iv->inputWired())
+          return true;
+        
         auto def=model->findAny
           (&GroupItems::items, [&](const ItemPtr& i) {
             if (auto v=dynamic_cast<VariableBase*>(i.get()))
@@ -232,7 +236,6 @@ namespace minsky
     return false;
   }
 
-  
   void Canvas::redraw()
   {
     updateRegion.x0=updateRegion.y0=-numeric_limits<float>::max();
@@ -311,6 +314,16 @@ namespace minsky
         cairo_rectangle(cairo,lasso.x0,lasso.y0,lasso.x1-lasso.x0,lasso.y1-lasso.y0);
         cairo_stroke(cairo);
       }
+
+    if (itemIndicator) // draw a red circle to indicate an error or other marker
+      {
+        cairo_save(surface->cairo());
+        cairo_set_source_rgb(surface->cairo(),1,0,0);
+        cairo_arc(surface->cairo(),item->x(),item->y(),15,0,2*M_PI);
+        cairo_stroke(surface->cairo());
+        cairo_restore(surface->cairo());
+      }
+    
     surface->blit();
   }
 

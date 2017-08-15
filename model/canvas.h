@@ -29,6 +29,9 @@ namespace minsky
 {
   class Canvas
   {
+    // for drawing error indicators on the canvas
+    bool itemIndicator=false;
+    CLASSDESC_ACCESS(Canvas);
   public:
     GroupPtr model;
     Selection selection;
@@ -84,6 +87,9 @@ namespace minsky
     /// is undefined. NB may be a Godley table or integral
     /// @return true if definition found.
     bool findVariableDefinition();
+
+    /// draw a red circle around item
+    void indicateItem() {itemIndicator=true;}
     
     /// redraw whole model
     void redraw();

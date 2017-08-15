@@ -1054,17 +1054,10 @@ proc wireContextMenu {id x y} {
 }
 
 proc findDefinition {} {
-    set item minsky.canvas.item
-    if {[$item.type]=="constant" || [$item.type]=="parameter"} {
-        indicateCanvasItemInError [var.x] [var.y]
+    if [canvas.findVariableDefinition] {
+        canvas.indicateItem
     } else {
-        set v [wiringGroup.findVariableDefinition $id]
-        if {$v==-1} {
-            tk_messageBox -message "Definition not found"
-        } else {
-            item.get $v
-            indicateCanvasItemInError [item.x] [item.y]
-        }
+        tk_messageBox -message "Definition not found"
     }
 }
 #  
