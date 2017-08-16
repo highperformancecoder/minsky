@@ -21,6 +21,7 @@
 #define CANVAS_H
 
 #include "group.h"
+#include "godleyIcon.h"
 #include "operation.h"
 #include "selection.h"
 #include <cairo_base.h>
@@ -79,6 +80,10 @@ namespace minsky
       itemFocus=model->addItem(new Item);
       itemFocus->detailedText=text;
     }
+    void addPlot() {itemFocus=model->addItem(new PlotWidget);}
+    void addGodley() {itemFocus=model->addItem(new GodleyIcon);}
+    void addGroup() {itemFocus=model->addItem(new Group);}
+    
     /// delete item referenced by item
     void deleteItem() {if (item) model->removeItem(*item);}
     /// delete wire referenced by wire

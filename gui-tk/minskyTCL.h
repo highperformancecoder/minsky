@@ -141,6 +141,21 @@ namespace minsky
       if (canvas.itemFocus)
         canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
     }
+    void addPlot() {
+      canvas.addPlot();
+      if (canvas.itemFocus)
+        canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
+    }
+    void addGodley() {
+      canvas.addGodley();
+      if (canvas.itemFocus)
+        canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
+    }
+    void addGroup() {
+      canvas.addGroup();
+      if (canvas.itemFocus)
+        canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
+    }
 
     /// create a TCL controlled object that is a reference to item
     /// @return a unique TCL command lead in sequence, or empty if no

@@ -130,51 +130,47 @@ wm withdraw .pltWindowOptions
 set plotWindowOptions_grid
 set plotWindowOptions_subgrid
         
-proc setPlotOptions {id} {
+proc setPlotOptions {plot} {
     global plotWindowOptions_grid plotWindowOptions_subgrid
-# TODO this can lose data if sim is running. When plot becomes an actual reference, not a copy, this problem will be averted
-    plot.get $id
-    plot.grid $plotWindowOptions_grid
-    plot.subgrid $plotWindowOptions_subgrid
-    plot.nxTicks [.pltWindowOptions.xticks.val get]
-    plot.nyTicks [.pltWindowOptions.yticks.val get]
-    plot.title [.pltWindowOptions.title.val get]
-    plot.xlabel [.pltWindowOptions.xaxislabel.val get]
-    plot.ylabel [.pltWindowOptions.yaxislabel.val get]
-    plot.y1label [.pltWindowOptions.y1axislabel.val get]
-    plot.set
-    plot.redraw
+    $plot.grid $plotWindowOptions_grid
+    $plot.subgrid $plotWindowOptions_subgrid
+    $plot.nxTicks [.pltWindowOptions.xticks.val get]
+    $plot.nyTicks [.pltWindowOptions.yticks.val get]
+    $plot.title [.pltWindowOptions.title.val get]
+    $plot.xlabel [.pltWindowOptions.xaxislabel.val get]
+    $plot.ylabel [.pltWindowOptions.yaxislabel.val get]
+    $plot.y1label [.pltWindowOptions.y1axislabel.val get]
+    canvas.requestRedraw
     catch {wm title .plot$id [plot.title]}
     wm withdraw .pltWindowOptions 
     grab release .pltWindowOptions 
 }
 
-proc doPlotOptions {id} {
+proc doPlotOptions {plot} {
     global plotWindowOptions_grid plotWindowOptions_subgrid
     global plotWindowOptions_xlog plotWindowOptions_ylog
-    plot.get $id
-    set plotWindowOptions_grid [plot.grid]
-    set plotWindowOptions_subgrid [plot.subgrid]
-    set plotWindowOptions_xlog [plot.logx]
-    set plotWindowOptions_ylog [plot.logy]
+    set plotWindowOptions_grid [$plot.grid]
+    set plotWindowOptions_subgrid [$plot.subgrid]
+    set plotWindowOptions_xlog [$plot.logx]
+    set plotWindowOptions_ylog [$plot.logy]
     deiconifyPltWindowOptions
 
     .pltWindowOptions.xticks.val delete 0 end
-    .pltWindowOptions.xticks.val insert 0 [plot.nxTicks]
+    .pltWindowOptions.xticks.val insert 0 [$plot.nxTicks]
     .pltWindowOptions.yticks.val delete 0 end
-    .pltWindowOptions.yticks.val insert 0 [plot.nyTicks]
+    .pltWindowOptions.yticks.val insert 0 [$plot.nyTicks]
     .pltWindowOptions.title.val delete 0 end
-    .pltWindowOptions.title.val insert 0 [plot.title]
+    .pltWindowOptions.title.val insert 0 [$plot.title]
     .pltWindowOptions.xaxislabel.val delete 0 end
-    .pltWindowOptions.xaxislabel.val insert 0 [plot.xlabel]
+    .pltWindowOptions.xaxislabel.val insert 0 [$plot.xlabel]
     .pltWindowOptions.yaxislabel.val delete 0 end
-    .pltWindowOptions.yaxislabel.val insert 0 [plot.ylabel]
+    .pltWindowOptions.yaxislabel.val insert 0 [$plot.ylabel]
     .pltWindowOptions.y1axislabel.val delete 0 end
-    .pltWindowOptions.y1axislabel.val insert 0 [plot.y1label]
+    .pltWindowOptions.y1axislabel.val insert 0 [$plot.y1label]
 
-    .pltWindowOptions.buttonBar.ok configure -command "setPlotOptions $id"
+    .pltWindowOptions.buttonBar.ok configure -command "setPlotOptions $plot"
     global plotWindowOptions_legend
-    if [plot.legend] {
+    if [$plot.legend] {
         switch [plot.legendSide] {
             0 {set plotWindowOptions_legend left}
             1 {set plotWindowOptions_legend right}
@@ -190,14 +186,12 @@ proc resizePlot {id w h dw dh} {
     if {[winfo width .plot$id]!=[expr [.plot$id.image cget -width]+$dw] ||
         [winfo height .plot$id]!=[expr [.plot$id.image cget -height]+$dh]} {
         .plot$id.image configure -height [expr [winfo height .plot$id]-$dh] -width [expr [winfo width .plot$id]-$dw]
-        plot.get $id
-        plot.addImage .plot$id.image
+        $id.addImage .plot$id.image
     }
 }
 
 # double click handling for plot (creates new toplevel plot window)
-proc plotDoubleClick {} {
-    set plotId [TCLItem]
+proc plotDoubleClick {plotId} {
     toplevel .plot$plotId
     wm title .plot$plotId [$plotId.title]
     image create photo .plot$plotId.image -width 500 -height 500
@@ -210,7 +204,7 @@ proc plotDoubleClick {} {
     pack .plot$plotId.menubar  -side top -fill x
     pack .plot$plotId.label
     
-    item.addImage .plot$plotId.image
+    $plotId.addImage .plot$plotId.image
 
     # calculate the difference between the window and image sizes
     update
@@ -219,12 +213,6 @@ proc plotDoubleClick {} {
 
     bind .plot$plotId <Configure> "resizePlot $plotId  %w %h $dw $dh"
 }
-    
-#proc deletePlot {id} {
-#    .old_wiring.canvas delete item$id
-#    minsky.deleteItem $id
-#    updateCanvas
-#}
     
 namespace eval plot {
     proc resize {id} {

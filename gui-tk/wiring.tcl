@@ -999,10 +999,10 @@ proc contextMenu {x y X Y} {
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Plot}
             .wiring.context add command -label Description -command "postNote item"
-            .wiring.context add command -label "Expand" -command "plotDoubleClick"
+            .wiring.context add command -label "Expand" -command "plotDoubleClick [TCLItem]"
             .wiring.context add command -label "Make Group Plot" -command "plot.makeDisplayPlot"
             .wiring.context add command -label "Resize" -command "plot::resize"
-            .wiring.context add command -label "Options" -command "doPlotOptions"
+            .wiring.context add command -label "Options" -command "doPlotOptions $item"
 #            .wiring.context add command -label "Raise" -command "raiseItem plot$id"
 #            .wiring.context add command -label "Lower" -command "lowerItem plot$id"
         }
@@ -1644,7 +1644,7 @@ proc editItem {} {
         "GodleyIcon" {openGodley}
         # plot widgets are slightly different, in that double-click
         # expands the plot, rather than edits.
-        "PlotWidget" {plotDoubleClick}
+        "PlotWidget" {plotDoubleClick [TCLItem]}
     }
 }
 #  

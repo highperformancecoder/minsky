@@ -47,17 +47,13 @@ showPreferences
 deiconifyRKDataForm
 topLevelHelp
 
-set id [newPlot]
-update
-event generate .wiring.canvas <Button-1> 
-
-doPlotOptions \$id
+addPlot
+doPlotOptions minsky.canvas.itemFocus
 .pltWindowOptions.buttonBar.ok invoke
 
-plotDoubleClick \$id
-resizePlot \$id 100 100 2 2
-
-deletePlot \$id
+canvas.getItemAt [minsky.canvas.itemFocus.x] [minsky.canvas.itemFocus.y] 
+plotDoubleClick [TCLItem]
+resizePlot [TCLItem] 100 100 2 2
 
 tcl_exit
 }
