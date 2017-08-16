@@ -85,9 +85,9 @@ proc rightMouseSwitch {id x y X Y} {
 }
 
 
-proc incrCase {id delta} {
-    switchItem.get $id
-    switchItem.setNumCases [expr [switchItem.numCases]+$delta]
-    redraw $id
+proc incrCase {delta} {
+    set item minsky.canvas.item
+    $item.setNumCases [expr [$item.numCases]+$delta]
+    canvas.requestRedraw
 }
 

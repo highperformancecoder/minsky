@@ -952,10 +952,10 @@ proc findDefinition {} {
 # context menu
 proc contextMenu {x y X Y} {
     set item minsky.canvas.item
+    .wiring.context delete 0 end
     # find out what type of item we're referring to
     switch -regex [$item.classType] {
         "Variable*" {
-	    .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Variable}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Value [minsky.canvas.item.value]" 
@@ -1026,15 +1026,12 @@ proc contextMenu {x y X Y} {
 #            .wiring.context add command -label "Raise" -command "raiseItem note$id"
 #            .wiring.context add command -label "Lower" -command "lowerItem note$id"
         }
-        switchItem {
-            wiringGroup.switchItem.get $id
-            .wiring.context delete 0 end
+        SwitchIcon {
             .wiring.context add command -label Help -command {help Switches}
-            .wiring.context add command -label Description -command "postNote item $id"
-            .wiring.context add command -label "Add case" -command "incrCase $id 1" 
-            .wiring.context add command -label "Delete case" -command "incrCase $id -1" 
-            .wiring.context add command -label "Flip" -command {
-                canvas.item.flipped [expr ![canvas.item.flipped]]}
+            .wiring.context add command -label Description -command "postNote item"
+            .wiring.context add command -label "Add case" -command "incrCase 1" 
+            .wiring.context add command -label "Delete case" -command "incrCase -1" 
+            .wiring.context add command -label "Flip" -command "minsky.canvas.item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
 #            .wiring.context add command -label "Raise" -command "raiseItem $tag"
 #            .wiring.context add command -label "Lower" -command "lowerItem $tag"
         }
