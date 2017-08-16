@@ -260,6 +260,7 @@ namespace minsky
       (&GroupItems::items, [&](const Items&, Items::const_iterator i)
        {
          auto& it=**i;
+         it.setCairoSurface(surface);
          if (it.visible() && updateRegion.intersects(it))
            {
              cairo_save(cairo);

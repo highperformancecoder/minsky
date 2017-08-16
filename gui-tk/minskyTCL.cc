@@ -63,6 +63,18 @@ namespace minsky
       }
     return nullptr;
   }
+
+  int deleteTclItem(ClientData cd, Tcl_Interp *interp,
+                    int argc, const char **argv)
+  {
+    assert( strcmp(argv[0]+strlen(argv[0])-strlen(".delete"),
+                   ".delete")==0);
+    std::string s(argv[0]);
+    ecolab::TCL_obj_deregister(s.substr(0,s.length()-strlen(".delete")));
+    delete (Item*)cd;
+    return TCL_OK; 
+  }
+
   
 #if 0
   // useful structure for for figuring what commands are being called.

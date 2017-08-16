@@ -996,19 +996,17 @@ proc contextMenu {x y X Y} {
 #            .wiring.context add command -label "Lower" -command "lowerItem op$id"
         }
         "PlotWidget" {
-            wiringGroup.plot.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Plot}
-            .wiring.context add command -label Description -command "postNote item $id"
-            .wiring.context add command -label "Expand" -command "plotDoubleClick $id"
+            .wiring.context add command -label Description -command "postNote item"
+            .wiring.context add command -label "Expand" -command "plotDoubleClick"
             .wiring.context add command -label "Make Group Plot" -command "plot.makeDisplayPlot"
-            .wiring.context add command -label "Resize" -command "plot::resize $id"
-            .wiring.context add command -label "Options" -command "doPlotOptions $id"
+            .wiring.context add command -label "Resize" -command "plot::resize"
+            .wiring.context add command -label "Options" -command "doPlotOptions"
 #            .wiring.context add command -label "Raise" -command "raiseItem plot$id"
 #            .wiring.context add command -label "Lower" -command "lowerItem plot$id"
         }
         "GodleyIcon" {
-            wiringGroup.godley.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help GodleyTable}
             .wiring.context add command -label Description -command "postNote item $id"
@@ -1175,97 +1173,97 @@ proc flip_default {} {
 #      wiringGroup.adjustWires $id
 #  }
 #  
-#  proc deiconifyEditVar {} {
-#      if {![winfo exists .wiring.editVar]} {
-#          toplevel .wiring.editVar 
-#          wm resizable .wiring.editVar 0 0
-#          wm title .wiring.editVar "Edit Variable"
-#          wm transient .wiring.editVar .wiring
-#  
-#          set row 0
-#          grid [label .wiring.editVar.title -textvariable editVarInput(title)] -row $row -column 0 -columnspan 999 -pady 10
-#  
-#          global rowdict
-#          global editVarInput
-#          set rowdict(Name) 10
-#          grid [label .wiring.editVar.label10 -text "Name"] -row 10 -column 10 -sticky e
-#          grid [ttk::combobox  .wiring.editVar.entry10 -textvariable editVarInput(Name)] -row 10 -column 20 -sticky ew -columnspan 2
-#  
-#          set rowdict(Type) 20
-#          grid [label .wiring.editVar.label20 -text "Type"] -row 20 -column 10 -sticky e
-#          grid [ttk::combobox  .wiring.editVar.entry20 -textvariable editVarInput(Type) \
-#                    -state readonly -values "constant parameter flow integral stock"] \
-#              -row 20 -column 20 -sticky ew -columnspan 2
-#  
-#          # disable or enable the name field depending on type being selected
-#          bind .wiring.editVar.entry20 <<ComboboxSelected>> {
-#              if {[.wiring.editVar.entry20 get]=="constant"} {
-#                  .wiring.editVar.entry10 configure -state disabled
-#              } else {
-#                  .wiring.editVar.entry10 configure -state enabled
-#              }
-#          }
-#          
-#          # initialise variable type when selected from combobox
-#          bind .wiring.editVar.entry10 <<ComboboxSelected>> {
-#              value.get [valueId [.wiring.editVar.entry10 get]]
-#              .wiring.editVar.entry20 set [value.type]
-#          }
-#          
-#  
-#          set row 30
-#          foreach var {
-#              "Initial Value"
-#              "Rotation"
-#              "Short description"
-#              "Detailed description"
-#              "Slider Bounds: Max"
-#              "Slider Bounds: Min"
-#              "Slider Step Size"
-#          } {
-#              set rowdict($var) $row
-#              grid [label .wiring.editVar.label$row -text $var] -row $row -column 10 -sticky e
-#              grid [entry  .wiring.editVar.entry$row -textvariable editVarInput($var)] -row $row -column 20 -sticky ew -columnspan 2
-#              incr row 10
-#          }
-#          set editVarInput(initial_focus_value) ".wiring.editVar.entry$rowdict(Initial Value)"
-#          set editVarInput(initial_focus_rotation) .wiring.editVar.entry$rowdict(Rotation)
-#          
-#          frame .wiring.editVar.buttonBar
-#          button .wiring.editVar.buttonBar.ok -text OK -command {
-#              .wiring.canvas delete all
-#  
-#              convertVarType [var.valueId] $editVarInput(Type)
-#              if [info exists editVarInput(id)] {var.get $editVarInput(id)}
-#              setItem var name {set "editVarInput(Name)"}
-#              setItem var init {set "editVarInput(Initial Value)"}
-#              setItem var rotation  {set editVarInput(Rotation)}
-#              setItem var tooltip  {set "editVarInput(Short description)"}
-#              setItem var detailedText  {set "editVarInput(Detailed description)"}
-#              setItem var sliderMax  {set "editVarInput(Slider Bounds: Max)"}
-#              setItem var sliderMin  {set "editVarInput(Slider Bounds: Min)"}
-#              setItem var sliderStep  {set "editVarInput(Slider Step Size)"}
-#              setItem var sliderStepRel  {set editVarInput(relative)}
-#              makeVariablesConsistent
-#              setSliderProperties
-#              closeEditWindow .wiring.editVar
-#              updateCanvas
-#          }
-#          # adjust "Slider Step Size" row to include "relative" radiobutton
-#          set row "$rowdict(Slider Step Size)"
-#          grid configure .wiring.editVar.entry$row -columnspan 1
-#          grid [checkbutton .wiring.editVar.checkbox$row -text "relative" -variable "editVarInput(relative)"] -row $row -column 21 -sticky ew -columnspan 1
-#  
-#          button .wiring.editVar.buttonBar.cancel -text Cancel -command {
-#              closeEditWindow .wiring.editVar}
-#          pack .wiring.editVar.buttonBar.ok [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
-#          grid .wiring.editVar.buttonBar -row 999 -column 0 -columnspan 1000
-#          bind .wiring.editVar <Key-Return> {invokeOKorCancel .wiring.editVar.buttonBar}
-#          bind .wiring.editVar <Key-Escape> {.wiring.editVar.buttonBar.cancel invoke}
-#      } else {
-#          wm deiconify .wiring.editVar
-#      }
-#  }
+proc deiconifyEditVar {} {
+    if {![winfo exists .wiring.editVar]} {
+        toplevel .wiring.editVar 
+        wm resizable .wiring.editVar 0 0
+        wm title .wiring.editVar "Edit Variable"
+        wm transient .wiring.editVar .wiring
+
+        set row 0
+        grid [label .wiring.editVar.title -textvariable editVarInput(title)] -row $row -column 0 -columnspan 999 -pady 10
+
+        global rowdict
+        global editVarInput
+        set rowdict(Name) 10
+        grid [label .wiring.editVar.label10 -text "Name"] -row 10 -column 10 -sticky e
+        grid [ttk::combobox  .wiring.editVar.entry10 -textvariable editVarInput(Name)] -row 10 -column 20 -sticky ew -columnspan 2
+
+        set rowdict(Type) 20
+        grid [label .wiring.editVar.label20 -text "Type"] -row 20 -column 10 -sticky e
+        grid [ttk::combobox  .wiring.editVar.entry20 -textvariable editVarInput(Type) \
+                  -state readonly -values "constant parameter flow integral stock"] \
+            -row 20 -column 20 -sticky ew -columnspan 2
+
+        # disable or enable the name field depending on type being selected
+        bind .wiring.editVar.entry20 <<ComboboxSelected>> {
+            if {[.wiring.editVar.entry20 get]=="constant"} {
+                .wiring.editVar.entry10 configure -state disabled
+            } else {
+                .wiring.editVar.entry10 configure -state enabled
+            }
+        }
+        
+        # initialise variable type when selected from combobox
+        bind .wiring.editVar.entry10 <<ComboboxSelected>> {
+            value.get [valueId [.wiring.editVar.entry10 get]]
+            .wiring.editVar.entry20 set [value.type]
+        }
+        
+
+        set row 30
+        foreach var {
+            "Initial Value"
+            "Rotation"
+            "Short description"
+            "Detailed description"
+            "Slider Bounds: Max"
+            "Slider Bounds: Min"
+            "Slider Step Size"
+        } {
+            set rowdict($var) $row
+            grid [label .wiring.editVar.label$row -text $var] -row $row -column 10 -sticky e
+            grid [entry  .wiring.editVar.entry$row -textvariable editVarInput($var)] -row $row -column 20 -sticky ew -columnspan 2
+            incr row 10
+        }
+        set editVarInput(initial_focus_value) ".wiring.editVar.entry$rowdict(Initial Value)"
+        set editVarInput(initial_focus_rotation) .wiring.editVar.entry$rowdict(Rotation)
+        
+        frame .wiring.editVar.buttonBar
+        button .wiring.editVar.buttonBar.ok -text OK -command {
+            .wiring.canvas delete all
+
+            convertVarType [var.valueId] $editVarInput(Type)
+            if [info exists editVarInput(id)] {var.get $editVarInput(id)}
+            setItem var name {set "editVarInput(Name)"}
+            setItem var init {set "editVarInput(Initial Value)"}
+            setItem var rotation  {set editVarInput(Rotation)}
+            setItem var tooltip  {set "editVarInput(Short description)"}
+            setItem var detailedText  {set "editVarInput(Detailed description)"}
+            setItem var sliderMax  {set "editVarInput(Slider Bounds: Max)"}
+            setItem var sliderMin  {set "editVarInput(Slider Bounds: Min)"}
+            setItem var sliderStep  {set "editVarInput(Slider Step Size)"}
+            setItem var sliderStepRel  {set editVarInput(relative)}
+            makeVariablesConsistent
+            setSliderProperties
+            closeEditWindow .wiring.editVar
+            updateCanvas
+        }
+        # adjust "Slider Step Size" row to include "relative" radiobutton
+        set row "$rowdict(Slider Step Size)"
+        grid configure .wiring.editVar.entry$row -columnspan 1
+        grid [checkbutton .wiring.editVar.checkbox$row -text "relative" -variable "editVarInput(relative)"] -row $row -column 21 -sticky ew -columnspan 1
+
+        button .wiring.editVar.buttonBar.cancel -text Cancel -command {
+            closeEditWindow .wiring.editVar}
+        pack .wiring.editVar.buttonBar.ok [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
+        grid .wiring.editVar.buttonBar -row 999 -column 0 -columnspan 1000
+        bind .wiring.editVar <Key-Return> {invokeOKorCancel .wiring.editVar.buttonBar}
+        bind .wiring.editVar <Key-Escape> {.wiring.editVar.buttonBar.cancel invoke}
+    } else {
+        wm deiconify .wiring.editVar
+    }
+}
 #  
 #  proc syncVarType {} {
 #              values.get $varInput(Name)
@@ -1520,38 +1518,39 @@ proc deiconifyEditOperation {} {
 #      setItem value init {set constInput(Value)}
 #  }
 #  
-#  proc editVar {} {
-#      global editVarInput
-#              value.get [wiringGroup.var.valueId]
-#              deiconifyEditVar
-#              wm title .wiring.editVar "Edit [wiringGroup.var.name]"
-#              # populate combobox with existing variable names
-#              .wiring.editVar.entry10 configure -values [variableValues.#keys]
-#  
-#              set "editVarInput(Name)" [wiringGroup.var.name]
-#              set "editVarInput(Type)" [wiringGroup.var.type]
-#  
-#              set "editVarInput(Initial Value)" [value.init]
-#              set "editVarInput(Rotation)" [wiringGroup.var.rotation]
-#              set "editVarInput(Slider Bounds: Max)" [wiringGroup.var.sliderMax]
-#              set "editVarInput(Slider Bounds: Min)" [wiringGroup.var.sliderMin]
-#              set "editVarInput(Slider Step Size)" [wiringGroup.var.sliderStep]
-#              set "editVarInput(relative)" [wiringGroup.var.sliderStepRel]
-#              set "editVarInput(Short description)" [wiringGroup.var.tooltip]
-#              set "editVarInput(Detailed description)" [wiringGroup.var.detailedText]
-#              if {[minsky.value.godleyOverridden] || [inputWired [wiringGroup.var.valueId]]} {
-#                  $editVarInput(initial_focus_value) configure -state disabled  -foreground gray
-#  		::tk::TabToWindow $editVarInput(initial_focus_rotation)
-#              } else {
-#                  $editVarInput(initial_focus_value) configure -state normal  -foreground black
-#  		::tk::TabToWindow $editVarInput(initial_focus_value)
-#               }
-#              set editVarInput(title) "[wiringGroup.var.name]: Value=[value.value]"
-#  	    tkwait visibility .wiring.editVar
-#  	    grab set .wiring.editVar
-#  	    wm transient .wiring.editVar
-#  }
-#  
+proc editVar {} {
+    global editVarInput
+    set item minsky.canvas.item
+    value.get [$item.valueId]
+    deiconifyEditVar
+    wm title .wiring.editVar "Edit [$item.name]"
+    # populate combobox with existing variable names
+    .wiring.editVar.entry10 configure -values [variableValues.#keys]
+
+    set "editVarInput(Name)" [$item.name]
+    set "editVarInput(Type)" [$item.type]
+
+    set "editVarInput(Initial Value)" [$item.init]
+    set "editVarInput(Rotation)" [$item.rotation]
+    set "editVarInput(Slider Bounds: Max)" [$item.sliderMax]
+    set "editVarInput(Slider Bounds: Min)" [$item.sliderMin]
+    set "editVarInput(Slider Step Size)" [$item.sliderStep]
+    set "editVarInput(relative)" [$item.sliderStepRel]
+    set "editVarInput(Short description)" [$item.tooltip]
+    set "editVarInput(Detailed description)" [$item.detailedText]
+    if {[minsky.value.godleyOverridden] || [inputWired [$item.valueId]]} {
+        $editVarInput(initial_focus_value) configure -state disabled  -foreground gray
+        ::tk::TabToWindow $editVarInput(initial_focus_rotation)
+    } else {
+        $editVarInput(initial_focus_value) configure -state normal  -foreground black
+        ::tk::TabToWindow $editVarInput(initial_focus_value)
+    }
+    set editVarInput(title) "[$item.name]: Value=[value.value]"
+    tkwait visibility .wiring.editVar
+    grab set .wiring.editVar
+    wm transient .wiring.editVar
+}
+
 proc editItem {} {
     global constInput varInput editVarInput opInput
     switch -regexp [minsky.canvas.item.classType] {
@@ -1641,11 +1640,11 @@ proc editItem {} {
             grab set .wiring.editConstant
             wm transient .wiring.editConstant
         }
-        "Group" {groupEdit $id}
-        "GodleyIcon" {openGodley $id}
+        "Group" {groupEdit}
+        "GodleyIcon" {openGodley}
         # plot widgets are slightly different, in that double-click
         # expands the plot, rather than edits.
-        "PlotWidget" {plotDoubleClick $id}
+        "PlotWidget" {plotDoubleClick}
     }
 }
 #  

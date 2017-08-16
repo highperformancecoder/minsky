@@ -196,36 +196,35 @@ proc resizePlot {id w h dw dh} {
 }
 
 # double click handling for plot (creates new toplevel plot window)
-proc plotDoubleClick {id} {
+proc plotDoubleClick {} {
+    set plotId [TCLItem]
+    toplevel .plot$plotId
+    wm title .plot$plotId [$plotId.title]
+    image create photo .plot$plotId.image -width 500 -height 500
+    label .plot$plotId.label -image .plot$plotId.image
 
-    toplevel .plot$id
-    plot.get $id
-    wm title .plot$id [plot.title]
-    image create photo .plot$id.image -width 500 -height 500
-    label .plot$id.label -image .plot$id.image
+    labelframe .plot$plotId.menubar -relief raised
+    button .plot$plotId.menubar.options -text Options -command "doPlotOptions $plotId" -relief flat
+    pack .plot$plotId.menubar.options -side left
 
-    labelframe .plot$id.menubar -relief raised
-    button .plot$id.menubar.options -text Options -command "doPlotOptions $id" -relief flat
-    pack .plot$id.menubar.options -side left
-
-    pack .plot$id.menubar  -side top -fill x
-    pack .plot$id.label
+    pack .plot$plotId.menubar  -side top -fill x
+    pack .plot$plotId.label
     
-    plot.addImage .plot$id.image
+    item.addImage .plot$plotId.image
 
     # calculate the difference between the window and image sizes
     update
-    set dw [expr [winfo width .plot$id]-[.plot$id.image cget -width]]
-    set dh [expr [winfo height .plot$id]-[.plot$id.image cget -height]]
+    set dw [expr [winfo width .plot$plotId]-[.plot$plotId.image cget -width]]
+    set dh [expr [winfo height .plot$plotId]-[.plot$plotId.image cget -height]]
 
-    bind .plot$id <Configure> "resizePlot $id  %w %h $dw $dh"
+    bind .plot$plotId <Configure> "resizePlot $plotId  %w %h $dw $dh"
 }
     
-proc deletePlot {id} {
-    .old_wiring.canvas delete item$id
-    minsky.deleteItem $id
-    updateCanvas
-}
+#proc deletePlot {id} {
+#    .old_wiring.canvas delete item$id
+#    minsky.deleteItem $id
+#    updateCanvas
+#}
     
 namespace eval plot {
     proc resize {id} {

@@ -29,6 +29,8 @@ namespace minsky
 {
   cmd_data* getCommandData(const string& name);
 
+  int deleteTclItem(ClientData, Tcl_Interp*, int, const char **);
+  
   struct MinskyTCL: public GroupTCL<Minsky>
   {
     bool rebuildTCLcommands=false;
@@ -140,7 +142,21 @@ namespace minsky
         canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
     }
 
-    
+    /// create a TCL controlled object that is a reference to item
+    /// @return a unique TCL command lead in sequence, or empty if no
+    /// such object is created
+    std::string TCLItem() {
+      std::string name="item"+std::to_string(size_t(canvas.item.get()));
+      if (canvas.item && !TCL_obj_properties().count(name)) {
+        canvas.item->TCL_obj(minskyTCL_obj(),name);
+        // create a reference to manage object's lifetime
+        Tcl_CreateCommand
+          (ecolab::interp(), (name+".delete").c_str(),
+           (Tcl_CmdProc*)deleteTclItem,
+           (ClientData)(new ItemPtr(canvas.item)),NULL);
+      }
+      return canvas.item? name: "";
+    }
     
 //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {
