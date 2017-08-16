@@ -78,9 +78,9 @@ namespace minsky
     std::weak_ptr<Group> group;
     /// canvas bounding box.
     mutable BoundingBox bb;
-    bool contains(float x, float y) {
+    bool contains(float xx, float yy) {
       if (!bb.valid()) bb.update(*this);
-      return bb.contains((x-m_x)/zoomFactor, (y-m_y)/zoomFactor);
+      return bb.contains((xx-x())/zoomFactor, (yy-y())/zoomFactor);
     }
     
     /// indicates this is a group I/O variable
