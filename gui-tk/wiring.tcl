@@ -801,9 +801,9 @@ proc deleteKey {} {
 #  bind .wiring.canvas <B1-Motion> {if {!$itemFocused && !$clicked} {lasso %x %y}}
 #  bind .wiring.canvas <B1-ButtonRelease> {if {!$itemFocused && !$clicked} {lassoEnd %x %y}}
 #  
-#  # pan mode
-#  bind .wiring.canvas <Shift-Button-1> {.wiring.canvas scan mark %x %y}
-#  bind .wiring.canvas <Shift-B1-Motion> {.wiring.canvas scan dragto %x %y 1}
+# pan mode
+bind .wiring.canvas <Shift-Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}
+bind .wiring.canvas <Shift-B1-Motion> {model.moveTo [expr %x-$panOffsX] [expr %y-$panOffsY]; canvas.requestRedraw}
 #  
 #  proc recentreCanvas {} {
 #      .wiring.canvas xview moveto 0.5
