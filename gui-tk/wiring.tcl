@@ -885,7 +885,12 @@ proc canvasContext {x y} {
 #  
 
 
-
+bind .wiring.canvas <Double-Button-1> {
+    canvas.ignoreButtonEvent 1
+    if [getItemAt %x %y] {
+        editItem
+    }
+}
 
 bind .wiring.canvas <<contextMenu>> {
     if [getItemAt %x %y] {
@@ -895,7 +900,7 @@ bind .wiring.canvas <<contextMenu>> {
     } else {
         canvasContext  %x %y
     }
-    
+
 #    set items [.wiring.canvas find withtag current]
 #    if {[llength $items]==0} {
 #        canvasContext %X %Y
@@ -1550,11 +1555,7 @@ proc deiconifyEditOperation {} {
 proc editItem {} {
     global constInput varInput editVarInput opInput
     switch -regexp [minsky.canvas.item.classType] {
-        "Variable*" {
-            wiringGroup.var.get $id
-            set editVarInput(id) $id
-            editVar
-        }
+        "Variable*" {editVar}
         "Operation*" {
             set opType [minsky.canvas.item.name]
             if {$opType=="integrate" || $opType=="data"} {

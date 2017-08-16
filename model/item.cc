@@ -131,11 +131,6 @@ namespace minsky
             minsky::zoom(m_x,xOrigin-g->x(),factor);
             minsky::zoom(m_y,yOrigin-g->y(),factor);
           }
-//        else if (g->displayContents())
-//          {
-//            m_x*=factor;
-//            m_y*=factor;
-//          }
         zoomFactor*=factor;
       }
   }

@@ -32,6 +32,7 @@ namespace minsky
 {
   void Canvas::mouseDown(float x, float y)
   {
+    if (ignoreButtonEvent) return;
     // firstly, see if the user is selecting an item
     itemFocus=model->findAny(&Group::items,
                        [&](const ItemPtr& i){return i->contains(x,y);});
@@ -77,6 +78,11 @@ namespace minsky
   
   void Canvas::mouseUp(float x, float y)
   {
+    if (ignoreButtonEvent)
+      {
+        ignoreButtonEvent=false;
+        return;
+      }
     mouseMove(x,y);
     if (fromPort.get())
       {
@@ -105,6 +111,7 @@ namespace minsky
   
   void Canvas::mouseMove(float x, float y)
   {
+    if (ignoreButtonEvent) return;
     if (itemFocus)
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
