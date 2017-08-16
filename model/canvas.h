@@ -90,13 +90,16 @@ namespace minsky
 
     /// draw a red circle around item
     void indicateItem() {itemIndicator=true;}
-    
+
     /// redraw whole model
     void redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};
     /// update region given by updateRegion
     void redrawUpdateRegion();
+
+    /// request a redraw on the screen
+    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
 }
 

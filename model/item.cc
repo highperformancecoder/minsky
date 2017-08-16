@@ -126,16 +126,16 @@ namespace minsky
     if (visible())
       {
         auto g=group.lock();
-        if (!g)
+        if (g) // do not zoom toplevel group
           {
-            minsky::zoom(m_x,xOrigin,factor);
-            minsky::zoom(m_y,yOrigin,factor);
+            minsky::zoom(m_x,xOrigin-g->x(),factor);
+            minsky::zoom(m_y,yOrigin-g->y(),factor);
           }
-        else if (g->displayContents())
-          {
-            m_x*=factor;
-            m_y*=factor;
-          }
+//        else if (g->displayContents())
+//          {
+//            m_x*=factor;
+//            m_y*=factor;
+//          }
         zoomFactor*=factor;
       }
   }

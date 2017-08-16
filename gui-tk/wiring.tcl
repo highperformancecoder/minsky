@@ -115,61 +115,57 @@ bind .wiring.canvas <ButtonPress-1> {minsky.canvas.mouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {minsky.canvas.mouseUp %x %y}
 bind .wiring.canvas <Motion> {minsky.canvas.mouseMove %x %y}
 
-#  proc get_pointer_x {c} {
-#    return [expr {[winfo pointerx $c] - [winfo rootx $c]}]
-#  }
-#  
-#  proc get_pointer_y {c} {
-#    return [expr {[winfo pointery $c] - [winfo rooty $c]}]
-#  }
-#  
+proc get_pointer_x {c} {
+    #  return [expr {[winfo pointerx $c] - [winfo rootx $c]}]
+      return [winfo pointerx $c]
+}
+
+proc get_pointer_y {c} {
+    #  return [expr {[winfo pointery $c] - [winfo rooty $c]}]
+    return [winfo pointery $c]
+}
+
 bind . <Key-plus> {zoom 1.1}
 bind . <Key-equal> {zoom 1.1}
 bind . <Key-minus> {zoom [expr 1.0/1.1]}
 # mouse wheel bindings for X11
-bind .wiring.canvas <Button-4> {zoom 1.1}
-bind .wiring.canvas <Button-5> {zoom [expr 1.0/1.1]}
+bind .wiring.canvas <Button-4> {zoomAt %x %y 1.1}
+bind .wiring.canvas <Button-5> {zoomAt  %x %y [expr 1.0/1.1]}
 # mouse wheel bindings for pc and aqua
-bind .wiring.canvas <MouseWheel> { if {%D>=0} {zoom 1.1} {zoom [expr 1.0/(1.1)]} }
+bind .wiring.canvas <MouseWheel> { if {%D>=0} {zoomAt %x %y 1.1} {zoomAt  %x %y [expr 1.0/(1.1)]} }
 
 bind .wiring.canvas <Alt-Button-1> {
-    tk_messageBox -message "Mouse coordinates [.wiring.canvas canvasx %x] [.wiring.canvas canvasy %y]"
+    tk_messageBox -message "Mouse coordinates %x %y"
 }
 
-#  proc zoom {factor} {
-#      set x0 [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]
-#      set y0 [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
-#      zoomAt $x0 $y0 $factor
-#  }
-#  
-#  proc zoomAt {x0 y0 factor} {
-#      if {$factor>1} {
-#          wiringGroup.model.zoom $x0 $y0 $factor
-#          .wiring.canvas scale all $x0 $y0 $factor $factor
-#      } else {
-#          .wiring.canvas scale all $x0 $y0 $factor $factor
-#          wiringGroup.model.zoom $x0 $y0 $factor
-#      }
-#  
-#      if [wiringGroup.model.displayContentsChanged] {
-#          .wiring.canvas delete all
-#          updateCanvas
-#      }
-#         
-#      # sliders need to be readjusted, because zooming doesn't do the right thing
-#      foreach v [wiringGroup.items.#keys] {
-#          wiringGroup.item.get $v
-#          if {[wiringGroup.item.visible] && [string equal -length 8 "Variable" [wiringGroup.item.classType]]} {
-#              var.get $v
-#              foreach item [.wiring.canvas find withtag slider$v] {
-#                  set coords [.wiring.canvas coords $item]
-#                  # should be only one of these anyway...
-#                  .wiring.canvas coords $item [var.x] [sliderYCoord [var.y]]
-#              }
-#          }
-#      }
-#  }
-#  
+proc zoom {factor} {
+    set x0 [get_pointer_x .wiring.canvas]
+    set y0 [get_pointer_y .wiring.canvas]
+    zoomAt $x0 $y0 $factor
+}
+
+proc zoomAt {x0 y0 factor} {
+    if {$factor>1} {
+        model.zoom $x0 $y0 $factor
+    } else {
+        model.zoom $x0 $y0 $factor
+    }
+    canvas.requestRedraw
+       
+#    # sliders need to be readjusted, because zooming doesn't do the right thing
+#    foreach v [wiringGroup.items.#keys] {
+#        wiringGroup.item.get $v
+#        if {[wiringGroup.item.visible] && [string equal -length 8 "Variable" [wiringGroup.item.classType]]} {
+#            var.get $v
+#            foreach item [.wiring.canvas find withtag slider$v] {
+#                set coords [.wiring.canvas coords $item]
+#                # should be only one of these anyway...
+#                .wiring.canvas coords $item [var.x] [sliderYCoord [var.y]]
+#            }
+#        }
+#    }
+}
+
 .menubar.ops add command -label "Godley Table" -command addNewGodleyItem
 
 .menubar.ops add command -label "Variable" -command "addVariable" 
@@ -266,37 +262,37 @@ set textBuffer ""
 proc textInput {char} {
     global textBuffer globals
     #ignore anything unprintable!
-    set x [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]
-    set y [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
-    if [string is print $char] {
-        if {[llength [.wiring.canvas find withtag textBuffer]]==0} {
-            .wiring.canvas create text $x $y -tags textBuffer
-        }
-        append textBuffer $char
-        .wiring.canvas itemconfigure textBuffer -text $textBuffer
-    } elseif {$char=="\r"} {
-        .wiring.canvas delete textBuffer
-        if {[lsearch [availableOperations] $textBuffer]>-1} {
-            addOperationKey $textBuffer
-        } elseif {![string match "\[%#\]*" $textBuffer]} {
-            # if no space in text, add a variable of that name
-            set id [newVariable $textBuffer "flow"]
-            var.get $id
-            var.moveTo $x $y
-            initGroupList
-            newItem $id
-        } else {
-            set id [wiringGroup.newNote]
-            wiringGroup.item.get $id
-            # trim off leading comment character
-            wiringGroup.item.detailedText [string range $textBuffer 1 end]
-            wiringGroup.item.moveTo [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]\
-                [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
-            newItem $id
-        }
-        # TODO add arbitrary comment boxes
-        set textBuffer ""
-    }
+    set x [get_pointer_x .wiring.canvas]
+    set y [get_pointer_y .wiring.canvas]
+#    if [string is print $char] {
+#        if {[llength [.wiring.canvas find withtag textBuffer]]==0} {
+#            .wiring.canvas create text $x $y -tags textBuffer
+#        }
+#        append textBuffer $char
+#        .wiring.canvas itemconfigure textBuffer -text $textBuffer
+#    } elseif {$char=="\r"} {
+#        .wiring.canvas delete textBuffer
+#        if {[lsearch [availableOperations] $textBuffer]>-1} {
+#            addOperationKey $textBuffer
+#        } elseif {![string match "\[%#\]*" $textBuffer]} {
+#            # if no space in text, add a variable of that name
+#            set id [newVariable $textBuffer "flow"]
+#            var.get $id
+#            var.moveTo $x $y
+#            initGroupList
+#            newItem $id
+#        } else {
+#            set id [wiringGroup.newNote]
+#            wiringGroup.item.get $id
+#            # trim off leading comment character
+#            wiringGroup.item.detailedText [string range $textBuffer 1 end]
+#            wiringGroup.item.moveTo [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]\
+#                [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
+#            newItem $id
+#        }
+#        # TODO add arbitrary comment boxes
+#        set textBuffer ""
+#    }
 }
 
 # operation add shortcuts

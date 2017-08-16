@@ -22,6 +22,7 @@
 #include "init.h"
 #include <cairo_base.h>
 #include <cairo/cairo-xlib.h>
+#include <cairo/cairo-xlib.h>
 #include <ecolab_epilogue.h>
 using namespace std;
 using namespace ecolab::cairo;
@@ -93,7 +94,7 @@ namespace minsky
       {
         select(lasso.x0,lasso.y0,x,y); //TODO move this into a method of selection
         lassoMode=false;
-        if (surface.get()) surface->requestRedraw();
+        requestRedraw();
       }
 
     
@@ -108,24 +109,24 @@ namespace minsky
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
         itemFocus->moveTo(x,y);
-        if (surface.get()) surface->requestRedraw();
+        requestRedraw();
       }
     else if (fromPort.get())
       {
         termX=x;
         termY=y;
-        if (surface.get()) surface->requestRedraw();
+        requestRedraw();
       }
     else if (wireFocus)
       {
         wireFocus->editHandle(handleSelected,x,y);
-        if (surface.get()) surface->requestRedraw();
+        requestRedraw();
       }
     else if (lassoMode)
       {
         lasso.x1=x;
         lasso.y1=y;
-        if (surface.get()) surface->requestRedraw();
+        requestRedraw();
       }
     else
       {
@@ -136,7 +137,7 @@ namespace minsky
                              if (mf!=(*i)->mouseFocus)
                                {
                                  (*i)->mouseFocus=mf;
-                                 surface->requestRedraw();
+                                 requestRedraw();
                                }        
                              return false;
                            });
@@ -146,12 +147,11 @@ namespace minsky
                              if (mf!=(*i)->mouseFocus)
                                {
                                  (*i)->mouseFocus=mf;
-                                 surface->requestRedraw();
+                                 requestRedraw();
                                }        
                              return false;
                            });
       }
-    // TODO - wire editing and lasso
   }
 
   void Canvas::select(float x0, float y0, float x1, float y1)
@@ -194,7 +194,7 @@ namespace minsky
   void Canvas::getWireAt(float x, float y)
   {
     wire=model->findAny(&Group::wires,
-                       [&](const WirePtr& i){return i->near(x,y);});
+                        [&](const WirePtr& i){return i->near(x,y);});
   }
 
   void Canvas::copyItem()

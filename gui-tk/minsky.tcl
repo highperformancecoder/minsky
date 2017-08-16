@@ -518,9 +518,29 @@ pack .equations.canvas -fill both -expand 1
 
 ttk::sizegrip .sizegrip
 proc scrollCanvases {xyview args} {
-    eval .old_wiring.canvas $xyview $args;
+    switch [lindex $args 0] {
+        moveto {
+            set offs [expr 10000 - 20000 * [lindex $args 1]]
+            switch $xyview {
+                xview {model.moveTo $offs [model.y]}
+                yview {model.moveTo [model.x] $offs}
+            }
+        }
+        scroll {
+            switch [lindex $args 2] {
+                units {set incr [expr [lindex $args 1]*100]}
+                pages {set incr [expr [lindex $args 1]*800]}
+            }
+            switch $xyview {
+                xview {model.moveTo [expr [model.x]-$incr] [model.y]}
+                yview {model.moveTo [model.x] [expr [model.y]-$incr]}
+            }
+        }
+    }
+    canvas.requestRedraw
+            
+    eval .old_wiring.canvas $xyview $args
     eval .equations.canvas $xyview $args
-    eval .newCanvas.canvas $xyview $args
 }
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
