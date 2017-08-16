@@ -96,7 +96,7 @@ pack .wiring.menubar.line$menubarLine.plot -side left
 
 image create photo noteImg -file $minskyHome/icons/note.gif
 button .wiring.menubar.line$menubarLine.note -image noteImg \
-    -height 24 -width 37 -command {placeNewNote}
+    -height 24 -width 37 -command {addNote "Enter your note here"}
 tooltip .wiring.menubar.line$menubarLine.note "Note"
 pack .wiring.menubar.line$menubarLine.note -side left 
 
@@ -825,62 +825,6 @@ bind .wiring.canvas <Shift-B1-Motion> {model.moveTo [expr %x-$panOffsX] [expr %y
 #      if [accessed $items $item $id] {.wiring.canvas delete $item$id}
 #  }
 #  
-#  proc rebuildCanvas {} {
-#      .wiring.canvas delete all
-#      updateCanvas
-#  }
-#  
-#  proc updateCanvas {} {
-#      doPushHistory 0
-#      global fname showPorts
-#  #    .wiring.canvas delete all
-#      .wiring.canvas delete errorItems
-#      foreach var [info globals sliderCheck*] {global $var; unset $var}
-#  
-#      foreach i [wiringGroup.items.#keys] {
-#          delIfAccessed items item $i
-#          wiringGroup.item.get $i
-#          if [wiringGroup.item.visible] {
-#              if {[llength [.wiring.canvas find withtag item$i]]==0} {
-#                  if {[wiringGroup.item.classType]=="Group"} {
-#                      newGroupItem $i
-#                  } else {
-#                      newItem $i
-#                  }
-#              } else { #redraw without recreating
-#                  .wiring.canvas coords item$i [.wiring.canvas coords item$i]
-#              }
-#              # draw slider if variable
-#          } else {
-#              .wiring.canvas delete withtag item$i
-#          }
-#      }
-#      wiringGroup.items.clearAccessLog
-#  
-#      # update all wires
-#      foreach w [wiringGroup.wires.#keys] {
-#          wiringGroup.wire.get $w
-#          if [wiringGroup.wire.visible] {
-#              if {[llength [.wiring.canvas find withtag wire$w]]==0} {
-#                  newWire $w 
-#              } else {.wiring.canvas coords wire$w [wiringGroup.wire.coords]}
-#          } else {
-#              .wiring.canvas delete wire$w
-#          }
-#          
-#      }
-#  
-#      # refresh equations
-#      .equations.canvas itemconfigure eq -tag eq
-#      doPushHistory 1
-#  }
-#  
-#  # mark a canvas item as in error
-#  proc indicateCanvasItemInError {x y} {
-#      .wiring.canvas delete errorItems
-#      .wiring.canvas create oval [expr $x-15] [expr $y-15] [expr $x+15] [expr $y+15] -outline red -width 2 -tags errorItems
-#  }
-#  
 menu .wiring.context -tearoff 0
 #  
 #  proc toggleCoupled {id} {
@@ -1073,10 +1017,9 @@ proc contextMenu {x y X Y} {
             groupContext $id $x $y
         }
         "Item" {
-            wiringGroup.get $id
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Notes}
-            .wiring.context add command -label Edit -command "postNote item $id"
+            .wiring.context add command -label Edit -command "postNote item"
 #            .wiring.context add command -label "Raise" -command "raiseItem note$id"
 #            .wiring.context add command -label "Lower" -command "lowerItem note$id"
         }
@@ -1840,7 +1783,7 @@ proc postNote {item} {
 
 proc OKnote {item} {
     minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
-    minsky.canvas.$item.detailedText  [.wiring.note.text get 1.0 end]
+    minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
     closeEditWindow .wiring.note
 }
 #  
@@ -1861,25 +1804,6 @@ proc OKnote {item} {
 #  
 #  }
 #  
-#  proc openInCanvas id {
-#      group::zoomToDisplay $id
-#      # save deleter for disposing the old wiring group object later, since we need it to create the new one
-#      catch {rename wiringGroup.delete openInCanvas.tmp.delete}
-#      wiringGroup.newGroupTCL wiringGroup $id
-#      catch {openInCanvas.tmp.delete}
-#      .wiring.canvas delete all
-#      updateCanvas
-#      recentreCanvas
-#  }
-#  
-#  proc openGlobalInCanvas {} {
-#      catch {wiringGroup.delete}
-#      minsky.newGlobalGroupTCL wiringGroup
-#      .wiring.canvas delete all
-#      updateCanvas
-#      recentreCanvas
-#  }
-#      
 #  proc findItemWithDetailedText desc {
 #      foreach i [items.#keys] {
 #          item.get $i

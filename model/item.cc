@@ -154,6 +154,15 @@ namespace minsky
     cairo_restore(cairo);
   }
 
+  void Item::drawSelected(cairo_t* cairo) const
+  {
+    // implemented by filling the clip region with a transparent grey
+    cairo_save(cairo);
+    cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.4);
+    cairo_paint(cairo);
+    cairo_restore(cairo);
+  }
+
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
   {
@@ -163,12 +172,11 @@ namespace minsky
     pango.setFontSize(12*zoomFactor);
     pango.setMarkup(latexToPango(detailedText)); 
     // parameters of icon in userspace (unscaled) coordinates
-    float w, h, hoffs;
+    float w, h;
     w=0.5*pango.width()+2*zoomFactor; 
     h=0.5*pango.height()+4*zoomFactor;
-    hoffs=pango.top()/zoomFactor;
 
-    cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2));
+    cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
 
     if (mouseFocus) displayTooltip(cairo);
@@ -177,8 +185,9 @@ namespace minsky
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));
     cairo_line_to(cairo,r.x(-w,h), r.y(-w,h));
     cairo_close_path(cairo);
-    //    cairo_stroke_preserve(cairo);
+    //cairo_stroke_preserve(cairo);
     cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
   }
 
   void Item::dummyDraw() const

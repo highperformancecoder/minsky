@@ -74,8 +74,4 @@ namespace minsky
   };
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
-
-  /// mark icon as selected.
-  void drawSelected(cairo_t* cairo);
-
 }

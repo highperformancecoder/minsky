@@ -74,6 +74,10 @@ namespace minsky
       itemFocus=model->addItem(VariablePtr(type,name));
       itemFocus->rotation=defaultRotation;
     }
+    void addNote(const std::string& text) {
+      itemFocus=model->addItem(new Item);
+      itemFocus->detailedText=text;
+    }
     /// delete item referenced by item
     void deleteItem() {if (item) model->removeItem(*item);}
     /// delete wire referenced by wire

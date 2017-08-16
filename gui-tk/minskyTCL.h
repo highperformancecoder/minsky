@@ -124,7 +124,7 @@ namespace minsky
       return canvas.wire.get();
     }
 
-    void addVariable(std::string name, VariableType::Type type) {
+    void addVariable(const std::string& name, VariableType::Type type) {
       canvas.addVariable(name,type);
       if (canvas.itemFocus)
         canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
@@ -134,7 +134,13 @@ namespace minsky
       if (canvas.itemFocus)
         canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
     }
- 
+    void addNote(const std::string& text) {
+      canvas.addNote(text);
+      if (canvas.itemFocus)
+        canvas.itemFocus->TCL_obj(minskyTCL_obj(),"minsky.canvas.itemFocus");
+    }
+
+    
     
 //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {
