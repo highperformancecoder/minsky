@@ -964,7 +964,7 @@ proc contextMenu {x y X Y} {
 #            .wiring.context add checkbutton -label "Slider" \
 #                -command "drawSlider $id $x $y" \
 #                -variable "sliderCheck$id"
-            .wiring.context add command -label "Copy" -command "copyVar"
+            .wiring.context add command -label "Copy" -command "canvas.copyItem"
             if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral [$item.name]"
             }
