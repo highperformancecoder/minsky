@@ -85,7 +85,7 @@ namespace minsky
     void addGroup() {itemFocus=model->addItem(new Group);}
     
     /// delete item referenced by item
-    void deleteItem() {if (item) model->removeItem(*item);}
+    void deleteItem() {if (item) model->deleteItem(*item);}
     /// delete wire referenced by wire
     void deleteWire() {if (wire) model->removeWire(*wire);}
 

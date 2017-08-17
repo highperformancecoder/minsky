@@ -114,6 +114,15 @@ namespace minsky
     WirePtr removeWire(const Wire&);
     GroupPtr removeGroup(const Group&);
 
+    /// remove item from group, and also all attached wires.
+    void deleteItem(const Item& i) {
+      auto r=removeItem(i);
+      if (r)
+        for (auto& p: r->ports)
+          p->deleteWires();
+    }
+        
+    
     /// finds item within this group or subgroups. Returns null if not found
     ItemPtr findItem(const Item& it) const; 
 
