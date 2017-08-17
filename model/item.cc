@@ -23,6 +23,7 @@
 #include "variable.h"
 #include "latexMarkup.h"
 #include "geometry.h"
+#include "selection.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>

@@ -263,6 +263,12 @@ namespace minsky
       g->displayPlot=dynamic_pointer_cast<PlotWidget>(g->findItem(*this));
   }
 
+  void PlotWidget::resize(const LassoBox& x)
+  {
+    width=abs(x.x1-x.x0);
+    height=abs(x.y1-x.y0);
+  }
+
   
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;
 

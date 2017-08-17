@@ -215,8 +215,9 @@ proc plotDoubleClick {plotId} {
 }
     
 namespace eval plot {
-    proc resize {id} {
-        plot.get $id
+    proc resize {} {
+        
+        
         set bbox [.old_wiring.canvas bbox item$id]
         set item [eval .old_wiring.canvas create rectangle $bbox -tags plotBBox]
         # disable lasso mode

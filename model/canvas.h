@@ -45,7 +45,7 @@ namespace minsky
     bool ignoreButtonEvent=false; ///< ignore all button events until next button release received
     
     /// lasso mode support
-    bool lassoMode=false;
+    enum class LassoMode {none, lasso, itemResize} lassoMode;
     LassoBox lasso{0,0,0,0};
     
     Canvas() {}

@@ -54,7 +54,7 @@ namespace minsky
             break;
           case ClickType::outside:
             itemFocus.reset();
-            lassoMode=true;
+            lassoMode=LassoMode::lasso;
             break;
           }
       }
@@ -65,10 +65,10 @@ namespace minsky
         if (wireFocus)
           handleSelected=wireFocus->nearestHandle(x,y);
         else
-          lassoMode=true;
+          lassoMode=LassoMode::lasso;
       }
 
-    if (lassoMode)
+    if (lassoMode==LassoMode::lasso)
       {
         lasso.x0=x;
         lasso.y0=y;
@@ -96,12 +96,22 @@ namespace minsky
     if (wireFocus)
       wireFocus->editHandle(handleSelected,x,y);
     
-    if (lassoMode)
+    switch (lassoMode)
       {
+      case LassoMode::lasso:
         select(lasso.x0,lasso.y0,x,y); //TODO move this into a method of selection
-        lassoMode=false;
         requestRedraw();
+        break;
+      case LassoMode::itemResize:
+        if (item)
+          {
+            item->resize(lasso);
+            requestRedraw();
+          }
+        break;
+      default: break;
       }
+    lassoMode=LassoMode::none;
 
     
     itemIndicator=false;
@@ -129,10 +139,19 @@ namespace minsky
         wireFocus->editHandle(handleSelected,x,y);
         requestRedraw();
       }
-    else if (lassoMode)
+    else if (lassoMode==LassoMode::lasso)
       {
         lasso.x1=x;
         lasso.y1=y;
+        requestRedraw();
+      }
+    else if (lassoMode==LassoMode::itemResize && item.get())
+      {
+        lasso.x1=x;
+        lasso.y1=y;
+        // make lasso symmetric around item's (x,y)
+        lasso.x0=2*item->x() - x;
+        lasso.y0=2*item->y() - y;
         requestRedraw();
       }
     else
@@ -317,7 +336,7 @@ namespace minsky
         cairo_restore(cairo);
       }
 
-    if (lassoMode)
+    if (lassoMode!=LassoMode::none)
       {
         cairo_rectangle(cairo,lasso.x0,lasso.y0,lasso.x1-lasso.x0,lasso.y1-lasso.y0);
         cairo_stroke(cairo);

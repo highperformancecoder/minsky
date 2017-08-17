@@ -32,6 +32,7 @@
 namespace minsky 
 {
   class Group;
+  class LassoBox;
 
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
@@ -97,6 +98,8 @@ namespace minsky
     float x() const; 
     float y() const; 
 
+    virtual void resize(const LassoBox&) {}
+    
     virtual Item* clone() const {return new Item(*this);}
 
     /// whether this item is visible on the canvas. 
