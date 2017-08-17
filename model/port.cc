@@ -59,10 +59,8 @@ namespace minsky
         }
   }
 
-  Port::~Port()
+  void Port::deleteWires() 
   {
-    // destruction of this port must also destroy all attached wires
-
     /// wires could be anywhere, so we need to walk the whole heirachy
     if (auto g=item.group.lock())
       {
@@ -72,7 +70,7 @@ namespace minsky
       }
     wires.clear();
   }
-
+  
   /// sets the VariableValue associated with this port
   void Port::setVariableValue(const VariableValue& v) {
     if (!input())

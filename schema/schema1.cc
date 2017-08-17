@@ -37,8 +37,12 @@ namespace schema1
       set<int> items;
       template <class T> bool check(const T& x) {
         for (typename T::const_iterator i=x.begin(); i!=x.end(); ++i)
-          if (!items.insert(i->id).second) 
-            return false;
+          {
+            bool ok=items.insert(i->id).second;
+            assert(ok);
+            if (!ok) 
+              return false;
+          }
         return true;
       }
     };
@@ -274,8 +278,11 @@ namespace schema1
         portIds.insert(j);
 
     for (auto& w: wires)
-      if (portIds.find(w.from)==portIds.end() || portIds.find(w.to)==portIds.end())
-        return false;
+      {
+        assert(portIds.find(w.from)!=portIds.end() && portIds.find(w.to)!=portIds.end());
+        if (portIds.find(w.from)==portIds.end() || portIds.find(w.to)==portIds.end())
+          return false;
+      }
 
     // check that ids are unique
     Validate v;

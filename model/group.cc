@@ -103,6 +103,9 @@ namespace minsky
               remove(inVariables, r);
               remove(outVariables, r);
             }
+          // remove any attached wires
+          for (auto& p: r->ports)
+            p->deleteWires();
           return r;
         }
 
