@@ -42,7 +42,7 @@ namespace minsky
     unsigned handleSelected;
     Exclude<shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
-    float moveStartX, moveStartY;
+    float moveOffsX, moveOffsY;
     
     /// lasso mode support
     enum class LassoMode {none, lasso, itemResize};
@@ -109,6 +109,9 @@ namespace minsky
     /// update region given by updateRegion
     void redrawUpdateRegion();
 
+    /// adjust canvas so that -ve coordinates appear on canvas
+    void recentre();
+    
     /// request a redraw on the screen
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };

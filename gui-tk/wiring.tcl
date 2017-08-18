@@ -979,15 +979,10 @@ proc contextMenu {x y X Y} {
                .wiring.context add command -label "Import Data" \
                     -command "importData $id" 
             }
-            if {[$item.name]=="integrate"} {
-                integral.get $id
-                .wiring.context add command -label "Copy" -command "integral.getIntVar; copyVar"
-            } else {
-                .wiring.context add command -label "Copy" -command "canvas.copyItem"
-            }
+            .wiring.context add command -label "Copy" -command "canvas.copyItem"
             .wiring.context add command -label "Flip" -command "minsky.canvas.item.flip; flip_default"
-           if {[$item.name]=="integrate"} {
-                .wiring.context add command -label "Toggle var binding" -command "toggleCoupled $id"
+            if {[$item.name]=="integrate"} {
+                .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
             }
         }
         "PlotWidget" {
@@ -1153,23 +1148,20 @@ proc deiconifyEditVar {} {
         
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
-            .wiring.canvas delete all
-
-            convertVarType [var.valueId] $editVarInput(Type)
-            if [info exists editVarInput(id)] {var.get $editVarInput(id)}
-            setItem var name {set "editVarInput(Name)"}
-            setItem var init {set "editVarInput(Initial Value)"}
-            setItem var rotation  {set editVarInput(Rotation)}
-            setItem var tooltip  {set "editVarInput(Short description)"}
-            setItem var detailedText  {set "editVarInput(Detailed description)"}
-            setItem var sliderMax  {set "editVarInput(Slider Bounds: Max)"}
-            setItem var sliderMin  {set "editVarInput(Slider Bounds: Min)"}
-            setItem var sliderStep  {set "editVarInput(Slider Step Size)"}
-            setItem var sliderStepRel  {set editVarInput(relative)}
+            set item minsky.canvas.item
+            convertVarType [$item.valueId] $editVarInput(Type)
+            $item.name $editVarInput(Name)
+            $item.init $editVarInput(Initial Value)
+            $item.rotation  $editVarInput(Rotation)
+            $item.tooltip  $editVarInput(Short description)
+            $item.detailedText  $editVarInput(Detailed description)
+            $item.sliderMax  $editVarInput(Slider Bounds: Max)
+            $item.sliderMin  $editVarInput(Slider Bounds: Min)
+            $item.sliderStep  $editVarInput(Slider Step Size)
+            $item.sliderStepRel  $editVarInput(relative)
             makeVariablesConsistent
-            setSliderProperties
+# TODO            setSliderProperties
             closeEditWindow .wiring.editVar
-            updateCanvas
         }
         # adjust "Slider Step Size" row to include "relative" radiobutton
         set row "$rowdict(Slider Step Size)"
@@ -1410,11 +1402,10 @@ proc deiconifyEditOperation {} {
 #  #    value.set $var
 #  #}
 #  
-#  proc closeEditWindow {window} {
-#      grab release $window
-#      destroy $window
-#      updateCanvas
-#  }
+proc closeEditWindow {window} {
+    grab release $window
+    destroy $window
+}
 #  
 #  proc setConstantValue {} {
 #      global constInput

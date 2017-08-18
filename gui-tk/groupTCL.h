@@ -232,7 +232,6 @@ namespace minsky
            wires.emplace(getNewId(), *it);
            return false;
          });
-      tclcmd() << "rebuildCanvas\n";
     }
 
     /// adds any missing Godley variables to the maps

@@ -36,7 +36,6 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
   minsky.load $here/examples/GoodwinLinear02.mky
-#  updateCanvas
   model.groups.@elem 0
   canvas.select [expr [minsky.model.groups(0).x]-0.55*[minsky.model.groups(0).width]] [expr [minsky.model.groups(0).y]-0.55*[minsky.model.groups(0).height]] [expr [minsky.model.groups(0).x]+0.55*[minsky.model.groups(0).width]] [expr [minsky.model.groups(0).y]+0.55*[minsky.model.groups(0).height]] 
   newSystem

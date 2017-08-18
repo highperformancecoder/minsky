@@ -43,9 +43,10 @@ proc afterMinskyStarted {} {
     value.get :y
     assert {[value.value]==1}
 
-    var.get 1 # constant a
-    set a [var.value]
-    assert {[var.value]!=0}
+    set item "minsky.canvas.item"
+    getItemAt 83 15
+    set a [\$item.value]
+    assert {[minsky.canvas.item.value]!=0}
     minsky.reset
     step
     step  
@@ -59,8 +60,8 @@ proc afterMinskyStarted {} {
 
     set v [value.value]
 
-    integral.get 2 # integral
-    integral.toggleCoupled
+    getItemAt 12 72
+    \$item.toggleCoupled
 
     minsky.reset
     step

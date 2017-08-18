@@ -66,8 +66,8 @@ for {set i 0} {\$i<[model.wires.size]} {incr i} {
 assert "[llength [[set wire].coords]]==4" {llength wire.coords==4}
 
 # add another wire
-canvas.mouseDown 355 26
-canvas.mouseUp 470 156
+canvas.mouseDown 355 42
+canvas.mouseUp 464 171
 assert {[model.numWires]==26} {}
 
 tcl_exit

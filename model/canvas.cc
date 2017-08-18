@@ -50,8 +50,8 @@ namespace minsky
               }
             break;
           case ClickType::onItem:
-            moveStartX=x;
-            moveStartY=y;
+            moveOffsX=x-itemFocus->x();
+            moveOffsY=y-itemFocus->y();
             break;
           case ClickType::outside:
             itemFocus.reset();
@@ -123,7 +123,7 @@ namespace minsky
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
         // move item relatively to avoid accidental moves on double click
-        itemFocus->moveTo(itemFocus->x()+x-moveStartX, itemFocus->y()+y-moveStartY);
+        itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
         requestRedraw();
       }
     else if (fromPort.get())
@@ -225,7 +225,12 @@ namespace minsky
   {
     if (item)
       {
-        auto newItem=item->clone();
+        ItemPtr newItem;
+        // cannot duplicate an integral, just its variable
+        if (auto intop=dynamic_cast<IntOp*>(item.get()))
+          newItem.reset(intop->intVar->clone()); 
+        else
+          newItem.reset(item->clone());
         newItem->group.reset();
         itemFocus=model->addItem(newItem);
       }
@@ -352,6 +357,17 @@ namespace minsky
     surface->blit();
   }
 
+  void Canvas::recentre()
+  {
+    SurfacePtr tmp(surface);
+    surface.reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
+    redraw();
+    model->moveTo(model->x()-surface->left(), model->y()-surface->top());
+    surface=tmp;
+    requestRedraw();
+  }
+
+  
   void Canvas::resizeWindow(int width, int height)
   {
     if (surface.get() && cairo_surface_get_type
