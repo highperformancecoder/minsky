@@ -41,6 +41,8 @@ assert {[model.numItems]==26} {}
 assert {[model.numWires]==27} {}
 canvas.mouseDown 378 14
 canvas.mouseUp  450 106
+assert {[canvas.selection.numItems]==3} {}
+assert {[canvas.selection.numWires]==2} {}
 cut
 assert {[model.numItems]==23} {}
 assert {[model.numWires]==23} {}

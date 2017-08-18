@@ -234,12 +234,14 @@ namespace minsky
   {
     copy();
     for (auto& i: canvas.selection.items)
-      model->removeItem(*i);
+      model->deleteItem(*i);
     for (auto& i: canvas.selection.groups)
       model->removeGroup(*i);
     for (auto& i: canvas.selection.wires)
       model->removeWire(*i);
     garbageCollect();
+    canvas.item.reset();
+    canvas.itemFocus.reset();
 #ifndef NDEBUG
     for (auto& i: canvas.selection.items)
       assert(i.use_count()==1);

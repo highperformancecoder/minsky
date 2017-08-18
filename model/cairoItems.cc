@@ -424,6 +424,7 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_line_to(cairo,w,-h);
   cairo_close_path(cairo);
   cairo_stroke_preserve(cairo);
+  cairo_restore(cairo); // undo rotation
   cairo_clip(cairo);
   
   {
@@ -437,7 +438,6 @@ void VariableBase::draw(cairo_t *cairo) const
                        y()+(y1*ca+x1*sa));
   }
 
-  cairo_restore(cairo); // undo rotation
   if (mouseFocus)
     {
       drawPorts(cairo);
