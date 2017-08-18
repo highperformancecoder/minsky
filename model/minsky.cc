@@ -1216,5 +1216,12 @@ namespace minsky
     renderCanvas(s.cairo());
   }
 
+  void Minsky::setAllDEmode(bool mode) {
+    model->recursiveDo(&GroupItems::items, [mode](Items&,Items::iterator i) {
+        if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+          g->table.setDEmode(mode);
+        return false;
+      });
+  }
 }
 

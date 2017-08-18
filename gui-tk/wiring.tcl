@@ -969,8 +969,6 @@ proc contextMenu {x y X Y} {
                 .wiring.context add command -label "Add integral" -command "addIntegral [$item.name]"
             }
             .wiring.context add command -label "Flip" -command "item.flip; flip_default"
-#            .wiring.context add command -label "Raise" -command "raiseItem var$id"
-#            .wiring.context add command -label "Lower" -command "lowerItem var$id"
         }
         "Operation*|IntOp" {
             .wiring.context delete 0 end
@@ -992,8 +990,6 @@ proc contextMenu {x y X Y} {
            if {[$item.name]=="integrate"} {
                 .wiring.context add command -label "Toggle var binding" -command "toggleCoupled $id"
             }
-#            .wiring.context add command -label "Raise" -command "raiseItem op$id"
-#            .wiring.context add command -label "Lower" -command "lowerItem op$id"
         }
         "PlotWidget" {
             .wiring.context delete 0 end
@@ -1003,18 +999,14 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Make Group Plot" -command "canvas.item.makeDisplayPlot"
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
-#            .wiring.context add command -label "Raise" -command "raiseItem plot$id"
-#            .wiring.context add command -label "Lower" -command "lowerItem plot$id"
         }
         "GodleyIcon" {
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help GodleyTable}
-            .wiring.context add command -label Description -command "postNote item $id"
-            .wiring.context add command -label "Open Godley Table" -command "openGodley $id"
-            .wiring.context add command -label "Resize Godley" -command "godley::resize $id"
-            .wiring.context add command -label "Export to file" -command "godley::export $id"
-#            .wiring.context add command -label "Raise" -command "raiseItem godley$id"
-#            .wiring.context add command -label "Lower" -command "lowerItem godley$id"
+            .wiring.context add command -label Description -command "postNote item"
+            .wiring.context add command -label "Open Godley Table" -command "openGodley"
+            .wiring.context add command -label "Resize Godley" -command "canvas.lassoMode itemResize"
+            .wiring.context add command -label "Export to file" -command "godley::export"
         }
         "Group" {
             groupContext $id $x $y
@@ -1023,8 +1015,6 @@ proc contextMenu {x y X Y} {
             .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Notes}
             .wiring.context add command -label Edit -command "postNote item"
-#            .wiring.context add command -label "Raise" -command "raiseItem note$id"
-#            .wiring.context add command -label "Lower" -command "lowerItem note$id"
         }
         SwitchIcon {
             .wiring.context add command -label Help -command {help Switches}
@@ -1032,102 +1022,38 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Add case" -command "incrCase 1" 
             .wiring.context add command -label "Delete case" -command "incrCase -1" 
             .wiring.context add command -label "Flip" -command "minsky.canvas.item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
-#            .wiring.context add command -label "Raise" -command "raiseItem $tag"
-#            .wiring.context add command -label "Lower" -command "lowerItem $tag"
         }
     }
 
     # common trailer
+#            .wiring.context add command -label "Raise" -command "raiseItem $tag"
+#            .wiring.context add command -label "Lower" -command "lowerItem $tag"
     .wiring.context add command -label "Browse object" -command "obj_browser minsky.canvas.item.*"
     .wiring.context add command -label "Delete [minsky.canvas.item.classType]" -command "canvas.deleteItem"
     tk_popup .wiring.context $X $Y
 }
 #  
-#  namespace eval godley {
-#      proc resize {id} {
-#          wiringGroup.godley.get $id
-#          set bbox [.wiring.canvas bbox item$id]
-#          variable orig_width [expr [lindex $bbox 2]-[lindex $bbox 0]]
-#          variable orig_height [expr [lindex $bbox 3]-[lindex $bbox 1]]
-#          variable orig_x [wiringGroup.godley.x]
-#          variable orig_y [wiringGroup.godley.y]
-#          set item [eval .wiring.canvas create rectangle $bbox]
-#          # disable lasso mode
-#          bind .wiring.canvas <Button-1> ""
-#          bind .wiring.canvas <B1-Motion> ""
-#          bind .wiring.canvas <B1-ButtonRelease> ""
-#          bind .wiring.canvas <Motion> "godley::resizeRect $item %x %y"
-#          bind .wiring.canvas <ButtonRelease> "godley::resizeItem $item $id %x %y"
-#      }
-#  
-#          # resize the bounding box to indicate how big we want the icon to be
-#      proc resizeRect {item x y} {
-#          set x [.wiring.canvas canvasx $x]
-#          set y [.wiring.canvas canvasy $y]
-#          variable orig_x
-#          variable orig_y
-#          variable orig_width
-#          variable orig_height
-#          set w [expr abs($x-$orig_x)]
-#          set h [expr abs($y-$orig_y)]
-#          # preserve original aspect ratio
-#          if {$h/$orig_height>$w/$orig_width} {
-#              set w [expr $h*$orig_width/$orig_height]
-#          } else {
-#              set h [expr $w*$orig_height/$orig_width]
-#          }            
-#          .wiring.canvas coords $item  [expr $orig_x-$w] [expr $orig_y-$h] \
-#              [expr $orig_x+$w] [expr $orig_y+$h]
-#      }
-#  
-#          # compute width and height and redraw item
-#      proc resizeItem {item id x y} {
-#          wiringGroup.godley.get $id
-#          set x [.wiring.canvas canvasx $x]
-#          set y [.wiring.canvas canvasy $y]
-#  # delete guiding rectangle
-#          .wiring.canvas delete $item
-#          variable orig_width
-#          variable orig_height
-#          variable orig_x
-#          variable orig_y
-#          set w [expr 2*abs($x-$orig_x)]
-#          set h [expr 2*abs($y-$orig_y)]
-#          # preserve original aspect ratio
-#          if {$h/$orig_height>$w/$orig_width} {
-#              set z [expr $h/$orig_height]
-#          } else {
-#              set z [expr $w/$orig_width]
-#          }            
-#          wiringGroup.godley.zoom [wiringGroup.godley.x] [wiringGroup.godley.y] $z
-#  # not quite sure why this is needed
-#          wiringGroup.godley.moveTo $orig_x $orig_y
-#  
-#          redraw $id
-#          bind .wiring.canvas <Motion> {}
-#          bind .wiring.canvas <ButtonRelease> {}
-#     }
-#  
-#      proc export {item} {
-#          global workDir type
-#          wiringGroup.godley.get $item
-#  
-#          set fname [tk_getSaveFile -filetypes {{"CSV files" csv TEXT} {"LaTeX files" tex TEXT}} \
-#                         -initialdir $workDir -typevariable type]  
-#          if {$fname==""} return
-#          if [string match -nocase *.csv "$fname"] {
-#              wiringGroup.godley.table.exportToCSV $fname
-#          } elseif [string match -nocase *.tex "$fname"] {
-#              wiringGroup.godley.table.exportToLaTeX $fname
-#          } else {
-#              switch -glob $type {
-#                  "*(csv)" {wiringGroup.godley.table.exportToCSV $fname.csv}
-#                  "*(tex)" {wiringGroup.godley.table.exportToLaTeX $fname.tex}
-#              }
-#          }
-#      }
-#  }
-#  
+namespace eval godley {
+    proc export {} {
+        global workDir type
+        set item minsky.canvas.item
+        
+        set fname [tk_getSaveFile -filetypes {{"CSV files" csv TEXT} {"LaTeX files" tex TEXT}} \
+                       -initialdir $workDir -typevariable type]  
+        if {$fname==""} return
+        if [string match -nocase *.csv "$fname"] {
+            $item.table.exportToCSV $fname
+        } elseif [string match -nocase *.tex "$fname"] {
+            $item.table.exportToLaTeX $fname
+        } else {
+            switch -glob $type {
+                "*(csv)" {$item.table.exportToCSV $fname.csv}
+                "*(tex)" {$item.table.exportToLaTeX $fname.tex}
+            }
+        }
+    }
+}
+
 proc flip_default {} {
     minsky.canvas.defaultRotation [expr ([minsky.canvas.defaultRotation]+180)%360]
 }

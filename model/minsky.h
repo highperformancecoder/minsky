@@ -319,7 +319,8 @@ namespace minsky
     /// render canvas to an SVG file
     void renderCanvasToSVG(const char* filename) const;
 
-
+    /// set DE mode on all godley tables
+    void setAllDEmode(bool);
   };
 
   /// global minsky object

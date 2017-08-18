@@ -21,6 +21,7 @@
 #include "cairoItems.h"
 #include "minsky.h"
 #include "init.h"
+#include "selection.h"
 #include <flowCoef.h>
 #include <evalGodley.h>
 #include <arrays.h>
@@ -134,6 +135,11 @@ namespace minsky
              return false;
            });
     }
+
+  void GodleyIcon::resize(const LassoBox& b)
+  {
+    zoomFactor*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
+  }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
   {

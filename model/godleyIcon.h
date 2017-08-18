@@ -50,6 +50,8 @@ namespace minsky
     /// bottom margin of bank icon with Godley icon
     float bottomMargin() const {return stockMargin*zoomFactor;}
 
+    void resize(const LassoBox&) override;
+
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);
     /// delete row before \a row

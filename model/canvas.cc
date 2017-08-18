@@ -54,7 +54,8 @@ namespace minsky
             break;
           case ClickType::outside:
             itemFocus.reset();
-            lassoMode=LassoMode::lasso;
+            if (lassoMode==LassoMode::none)
+              lassoMode=LassoMode::lasso;
             break;
           }
       }
@@ -65,8 +66,9 @@ namespace minsky
         if (wireFocus)
           handleSelected=wireFocus->nearestHandle(x,y);
         else
-          lassoMode=LassoMode::lasso;
-      }
+          if (lassoMode==LassoMode::none)
+            lassoMode=LassoMode::lasso;
+     }
 
     if (lassoMode==LassoMode::lasso)
       {
