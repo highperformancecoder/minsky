@@ -43,6 +43,7 @@ namespace minsky
     Exclude<shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
     bool ignoreButtonEvent=false; ///< ignore all button events until next button release received
+    float moveStartX, moveStartY;
     
     /// lasso mode support
     enum class LassoMode {none, lasso, itemResize} lassoMode;

@@ -51,6 +51,8 @@ namespace minsky
               }
             break;
           case ClickType::onItem:
+            moveStartX=x;
+            moveStartY=y;
             break;
           case ClickType::outside:
             itemFocus.reset();
@@ -127,7 +129,8 @@ namespace minsky
     if (itemFocus)
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
-        itemFocus->moveTo(x,y);
+        // move item relatively to avoid accidental moves on double click
+        itemFocus->moveTo(itemFocus->x()+x-moveStartX, itemFocus->y()+y-moveStartY);
         requestRedraw();
       }
     else if (fromPort.get())
