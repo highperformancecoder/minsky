@@ -886,7 +886,6 @@ proc canvasContext {x y} {
 
 
 bind .wiring.canvas <Double-Button-1> {
-    canvas.ignoreButtonEvent 1
     if [getItemAt %x %y] {
         editItem
     }
