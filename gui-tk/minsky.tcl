@@ -780,9 +780,9 @@ proc newSystem {} {
         }
     }
     reset
+    model.clear
     deleteSubsidiaryTopLevels
     clearHistory
-    clearAll
     model.setZoom 1
     recentreCanvas
     global fname
@@ -1097,12 +1097,9 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     setFname $argv(1)
     # we have loaded a Minsky model, so must refresh the canvas
     recentreCanvas
-    foreach g [wiringGroup.items.#keys] {
-        wiringGroup.item.get $g
-        if {[wiringGroup.item.classType]=="GodleyIcon"} {
-            wiringGroup.godley.get $g
-            set preferences(godleyDE) [wiringGroup.godley.table.doubleEntryCompliant]
-        }
+    if [findObject GodleyIcon] {
+        # set the DE preference from one of the godley table, if present
+        set preferences(godleyDE) [minsky.canvas.item.table.doubleEntryCompliant]
     }
     set delay [simulationDelay]
     pushHistory

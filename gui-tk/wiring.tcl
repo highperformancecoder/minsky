@@ -100,8 +100,6 @@ button .wiring.menubar.line$menubarLine.note -image noteImg \
 tooltip .wiring.menubar.line$menubarLine.note "Note"
 pack .wiring.menubar.line$menubarLine.note -side left 
 
-clearAll
-
 # pack menubar lines
 for {set i 0} {$i<=$menubarLine} {incr i} {
     pack .wiring.menubar.line$i -side top -anchor w

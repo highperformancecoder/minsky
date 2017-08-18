@@ -56,7 +56,7 @@ minsky.canvas.mouseUp \$x0 \$y0
 assert {[minsky.model.wires.size]==1} "self wire allowed!"
 minsky.canvas.getWireAt \$x0 \$y0
 minsky.canvas.deleteWire
-assert {[minsky.wires.size]==0} ""
+assert {[minsky.model.numWires]==0} ""
 tcl_exit
 EOF
 

@@ -125,6 +125,15 @@ namespace minsky
      1
      );
 
+  void MinskyTCL::getValue(const std::string& valueId)
+  {
+    auto value=variableValues.find(valueId);
+    if (value!=variableValues.end())
+      TCL_obj(minskyTCL_obj(),"minsky.value",value->second);
+    else
+      TCL_obj_deregister("minsky.value");
+  }
+  
     void MinskyTCL::putClipboard(const string& s) const
     {
 #ifdef MAC_OSX_TK
@@ -264,83 +273,6 @@ namespace minsky
       IconBase<SwitchIcon>(imageName).draw();
     else
       IconBase<OperationIcon>(imageName, opName).draw();
-  }
-
-  int TclExtend<std::shared_ptr<minsky::IntOp>>::getIntVar() 
-  {
-    auto& m=dynamic_cast<MinskyTCL&>(minsky());
-    m.item.setRef(ref->intVar,"wiringGroup.item");
-    for (auto& i: m.items)
-      if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
-        return i.id();
-    return -1;
-  }
-
-  bool TclExtend<std::shared_ptr<minsky::IntOp>>::toggleCoupled()
-  {
-    auto& m=dynamic_cast<MinskyTCL&>(minsky());
-    int wireId=-1; // stash id to wire if uncoupled
-    if (!ref->coupled())
-      {
-        auto& wires=ref->ports[0]->wires;
-        if (!wires.empty())
-          for (auto& w: m.wires)
-            if (find(wires.begin(), wires.end(), w.get())!=wires.end())
-              {
-                wireId=w.id();
-                break;
-              }
-      }
-
-    bool coupled=ref->toggleCoupled();
-    for (auto& i: m.items)
-      if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
-        {
-          if (coupled)
-            tclcmd() | ".old_wiring.canvas delete item"|i.id()|"\n";
-          else
-            tclcmd() << "newItem"<< i.id()<<"\n";
-        }
-
-    if (wireId>=0)
-      {
-        tclcmd() | ".old_wiring.canvas delete wire"|wireId|"\n";
-        m.wires.erase(wireId);
-      }
-    else
-      {
-        assert(ref->ports.size() && ref->ports[0]->wires.size());
-        if (auto g=ref->group.lock())
-          {
-            int newWire=m.getNewId();
-            m.wires[newWire]=g->findWire(*ref->ports[0]->wires[0]);
-            tclcmd() << "newWire"<< newWire<<"\n";
-          }
-      }
-    return ref->coupled();
-  }
-
-  void MinskyTCL::makeVariableConsistentWithValue(int id) 
-  {
-    clearAllGetterSetters();
-    auto i=items.find(id);
-    if (i!=items.end())
-      if (auto v=dynamic_cast<VariableBase*>(i->get()))
-        {
-          auto& value=variableValues[v->valueId()];
-          if (value.type()!=v->type())
-            {
-              VariablePtr v(*i);
-              v.makeConsistentWithValue();
-              // now need to fix both the TCL items entry and minsky's
-              if (auto g=(*i)->group.lock())
-                {
-                  g->removeItem(**i);
-                  g->addItem(v);
-                  *i=v;
-                }
-            }
-        }
   }
 
   namespace

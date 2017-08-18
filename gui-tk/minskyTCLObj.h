@@ -42,6 +42,7 @@ namespace minsky
     if (m.doPushHistory && argv0!="wiringGroup.adjustWires" && 
         argv0!="minsky.availableOperations" &&
         argv0!="minsky.canvas.select" &&
+        argv0!="minsky.canvas.recentre" &&
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
         argv0!="minsky.itemsSelected" &&
@@ -80,7 +81,6 @@ namespace minsky
       {
         TCL_obj(minskyTCL_obj(), "minsky", m);
         m.rebuildTCLcommands=false;
-        m.buildMaps();
       }
   }
 

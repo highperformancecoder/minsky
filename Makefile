@@ -46,7 +46,7 @@ ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o e
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema1.o variableType.o operationType.o
 #schema0.o 
-GUI_TK_OBJS=tclmain.o groupTCL.o minskyTCL.o minskyCairoItem.o
+GUI_TK_OBJS=tclmain.o minskyTCL.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS)
 

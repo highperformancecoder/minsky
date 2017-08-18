@@ -40,7 +40,7 @@ proc afterMinskyStarted {} {
 
     minsky.load $here/examples/exponentialGrowth.mky
     
-    value.get :y
+    getValue :y
     assert {[value.value]==1}
 
     set item "minsky.canvas.item"
@@ -50,7 +50,7 @@ proc afterMinskyStarted {} {
     minsky.reset
     step
     step  
-    value.get :y
+    getValue :y
     assert {[value.value]>0}
     if {\$a<0} {
       assert {[value.value]>0 && [value.value]<1}
@@ -66,7 +66,7 @@ proc afterMinskyStarted {} {
     minsky.reset
     step
     step
-    value.get :y
+    getValue :y
     if {\$a<0} {
       assert {[value.value]>0 && [value.value]<1}
     } else {

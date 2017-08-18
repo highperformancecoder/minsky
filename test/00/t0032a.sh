@@ -36,14 +36,10 @@ source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
  minsky.load $here/examples/GoodwinLinear02.mky
  recentreCanvas
- updateCanvas
- foreach gid [items.#keys] {
-   item.get \$gid
-   if {[item.classType]=="Group"} break
- }
- group.get \$gid
- set x [expr [group.x]-[.old_wiring.canvas canvasx 0]]
- set y [expr [group.y]-[.old_wiring.canvas canvasy 0]]
+ set item minsky.canvas.item
+ getItemAt 246 300
+ set x [$item.x]
+ set y [$item.y]
  set w [group.width]
  set h [group.height]
  group::resize \$gid

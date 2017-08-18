@@ -35,7 +35,6 @@ source assert.tcl
 proc afterMinskyStarted {} {
 
 minsky.load $here/examples/GoodwinLinear02.mky
-canvas.redraw
 recentreCanvas
 assert {[model.numItems]==26} {}
 assert {[model.numWires]==27} {}
@@ -66,8 +65,8 @@ for {set i 0} {\$i<[model.wires.size]} {incr i} {
 assert "[llength [[set wire].coords]]==4" {llength wire.coords==4}
 
 # add another wire
-canvas.mouseDown 355 42
-canvas.mouseUp 464 171
+canvas.mouseDown 351 39
+canvas.mouseUp 463 169
 assert {[model.numWires]==26} {}
 
 tcl_exit
