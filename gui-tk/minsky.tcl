@@ -442,7 +442,7 @@ proc exportCanvas {} {
 .menubar.edit add command -label "Redo" -command "undo -1" -accelerator $meta_menu-Y
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
-.menubar.edit add command -label "Paste" -command {insertNewGroup [paste]} -accelerator $meta_menu-V
+.menubar.edit add command -label "Paste" -command {paste} -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 
 menu .menubar.file.itemTypes
@@ -477,7 +477,7 @@ bind . <$meta-y> "undo -1"
 bind . <$meta-z> "undo 1"
 bind . <$meta-x> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
-bind . <$meta-v> {insertNewGroup [paste]}
+bind . <$meta-v> {paste}
 bind . <$meta-g> {minsky.createGroup}
 
 # tabbed manager

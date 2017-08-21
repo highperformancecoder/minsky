@@ -332,8 +332,7 @@ namespace minsky
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
       origGroup->removeGroup(*g);
-    if (auto _this=dynamic_cast<Group*>(this))
-      g->group=_this->self();
+    g->group=self();
     groups.push_back(g);
     assert(nocycles());
     return groups.back();

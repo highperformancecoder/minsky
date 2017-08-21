@@ -843,8 +843,8 @@ proc canvasContext {x y} {
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy" -command minsky.copy
     .wiring.context add command -label "Save selection as" -command saveSelection
-    .wiring.context add command -label "Paste" -command {insertNewGroup [paste]}
-    .wiring.context add command -label "Group" -command "minsky.createGroup; updateCanvas"
+    .wiring.context add command -label "Paste" -command {paste}
+    .wiring.context add command -label "Group" -command "minsky.createGroup"
     tk_popup .wiring.context $x $y
 }
 #  
@@ -895,7 +895,7 @@ bind .wiring.canvas <<contextMenu>> {
     } elseif [getWireAt %x %y] {
         wireContextMenu %x %y
     } else {
-        canvasContext  %x %y
+        canvasContext  %X %Y
     }
 
 #    set items [.wiring.canvas find withtag current]

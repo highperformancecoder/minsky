@@ -130,6 +130,7 @@ namespace minsky
       canvas.addGroup();
       registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
     }
+    void createGroup() {Minsky::createGroup();}
 
     /// create a TCL controlled object that is a reference to item
     /// @return a unique TCL command lead in sequence, or empty if no
@@ -183,9 +184,6 @@ namespace minsky
       rebuildTCLcommands=true;
     }
 
-
-    void paste() {canvas.item=Minsky::paste();}
-    
     void exportSchema(TCL_args args) {
       const char* filename=args;
       int schemaLevel=1;

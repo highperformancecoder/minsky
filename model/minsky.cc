@@ -278,16 +278,16 @@ namespace minsky
     xml_pack(packer, "Minsky", m);
   }
 
-  GroupPtr Minsky::paste()
+  void Minsky::paste()
   {
     istringstream is(getClipboard());
     xml_unpack_t unpacker(is);
     schema1::Minsky m;
     xml_unpack(unpacker, "Minsky", m);
     GroupPtr g(new Group);
-    m.populateGroup(*model->addGroup(g));
-    canvas.itemFocus=g;
-    return g;
+    canvas.setItemFocus(model->addGroup(g));
+    m.populateGroup(*g);
+    g->resizeOnContents();
   }
 
   void Minsky::toggleSelected(ItemType itemType, int item)

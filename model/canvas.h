@@ -61,7 +61,13 @@ namespace minsky
     /// select all items in a given region
     void select(float x0, float y0, float x1, float y1);
 
+    /// sets itemFocus, and resets mouse offset for placement
+    void setItemFocus(const ItemPtr& x) {
+      itemFocus=x;
+      moveOffsX=moveOffsY=0;
+    }
 
+    
     /// @{ item or wire obtained by get*At() calls
     ItemPtr item;
     WirePtr wire;
@@ -70,20 +76,20 @@ namespace minsky
 
     double defaultRotation=0;
     void addOperation(OperationType::Type op) {
-      itemFocus=model->addItem(OperationBase::create(op));
+      setItemFocus(model->addItem(OperationBase::create(op)));
       itemFocus->rotation=defaultRotation;
     }
     void addVariable(const std::string& name, VariableType::Type type) {
-      itemFocus=model->addItem(VariablePtr(type,name));
+      setItemFocus(model->addItem(VariablePtr(type,name)));
       itemFocus->rotation=defaultRotation;
     }
     void addNote(const std::string& text) {
-      itemFocus=model->addItem(new Item);
+      setItemFocus(model->addItem(new Item));
       itemFocus->detailedText=text;
     }
-    void addPlot() {itemFocus=model->addItem(new PlotWidget);}
-    void addGodley() {itemFocus=model->addItem(new GodleyIcon);}
-    void addGroup() {itemFocus=model->addItem(new Group);}
+    void addPlot() {setItemFocus(model->addItem(new PlotWidget));}
+    void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
+    void addGroup() {setItemFocus(model->addItem(new Group));}
     
     /// delete item referenced by item
     void deleteItem() {if (item) model->deleteItem(*item);}
