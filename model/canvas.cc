@@ -124,6 +124,22 @@ namespace minsky
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
         // move item relatively to avoid accidental moves on double click
         itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+        // check if the move has moved outside or into a group
+        if (auto g=itemFocus->group.lock())
+          if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
+            {
+              if (auto toGroup=model->minimalEnclosingGroup
+                  (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y()))
+                {
+                  toGroup->addItem(itemFocus);
+                  toGroup->splitBoundaryCrossingWires();
+                }
+              else
+                {
+                  model->addItem(itemFocus);
+                  model->splitBoundaryCrossingWires();
+                }
+            }
         requestRedraw();
       }
     else if (fromPort.get())
