@@ -35,25 +35,26 @@ trap "fail" 1 2 3 15
 # exit 0 to indicate pass, and exit 1 to indicate failure
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
-set godley [minsky.addGodleyTable 0 0]
-minsky.godley.get \$godley
-minsky.godley.table.clear
-minsky.godley.table.resize 4 4
-minsky.godley.table.setDEmode 1
-minsky.godley.setCell 1 0 "Initial Conditions"
-minsky.godley.setCell 1 1 10
-minsky.godley.setCell 1 3 -10
-minsky.godley.setCell 2 1 a
-minsky.godley.setCell 2 2 b
-minsky.godley.setCell 2 3 -a
+minsky.addGodley
+set item minsky.canvas.itemFocus
+minsky.getItemAt [\$item.x] [\$item.y]
+\$item.table.clear
+\$item.table.resize 4 4
+\$item.table.setDEmode 1
+\$item.setCell 1 0 "Initial Conditions"
+\$item.setCell 1 1 10
+\$item.setCell 1 3 -10
+\$item.setCell 2 1 a
+\$item.setCell 2 2 b
+\$item.setCell 2 3 -a
 
 # TODO - this test will need to be modified when ticket #58 is dealt with
-minsky.godley.table.assetClass 1 asset
-minsky.godley.table.assetClass 2 liability
-minsky.godley.table.assetClass 3 liability
-assert {[minsky.godley.table.rowSum 1]==0} ""
-assert {[minsky.godley.table.rowSum 2]=="b"} ""
-assert {"[minsky.godley.table.getVariables]"=="a b"} ""
+\$item.table.assetClass 1 asset
+\$item.table.assetClass 2 liability
+\$item.table.assetClass 3 liability
+assert {[minsky.canvas.item.table.rowSum 1]==0} ""
+assert {[minsky.canvas.item.table.rowSum 2]=="b"} ""
+assert {"[minsky.canvas.item.table.getVariables]"=="a b"} ""
 tcl_exit
 EOF
 

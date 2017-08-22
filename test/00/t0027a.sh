@@ -48,11 +48,9 @@ reset
 assert {[t]==0}
 popFlags
 newSystem
-assert {[minsky.items.size]==0}
-assert {[minsky.wires.size]==0}
-assert {[minsky.model.items.size]==0}
-assert {[minsky.model.wires.size]==0}
-assert {[minsky.model.groups.size]==0}
+assert {[minsky.model.numItems]==0}
+assert {[minsky.model.numWires]==0}
+assert {[minsky.model.numGroups]==0}
 tcl_exit
 }}
 EOF

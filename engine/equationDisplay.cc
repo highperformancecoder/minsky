@@ -18,6 +18,7 @@
 */
 #include "equations.h"
 #include "latexMarkup.h"
+#include "selection.h"
 #include <pango.h>
 #include <ecolab_epilogue.h>
 using namespace ecolab;

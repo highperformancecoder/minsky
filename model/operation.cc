@@ -264,7 +264,7 @@ namespace minsky
           minsky().model->addWire(newWire);
         intVar->m_visible=true;
         intVar->rotation=rotation;
-        float angle=rotation*M_PI/180;
+        // TODO float angle=rotation*M_PI/180;
         //TODO       float xoffs=OperationBase::r+intVarOffset+RenderVariable(*intVar).width();
         //TODO intVar->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
       }

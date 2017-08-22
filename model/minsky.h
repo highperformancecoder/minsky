@@ -34,6 +34,7 @@
 #include "latexMarkup.h"
 #include "integral.h"
 #include "variableValue.h"
+#include "canvas.h"
 
 #include <vector>
 #include <string>
@@ -82,6 +83,7 @@ namespace minsky
      */
     std::deque<classdesc::pack_t> history;
     size_t historyPtr;
+    
   };
 
   /// convenience class for accessing matrix elements from a data array
@@ -109,12 +111,12 @@ namespace minsky
     /// write current state of all variables to the log file
     void logVariables() const;
 
-  protected:
-    /// contents of current selection
-    Selection currentSelection;
+//  protected:
+//    /// contents of current selection
+//    Selection currentSelection;
 
   public:
-
+    
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
     /// true if reset needs to be called prior to numerical integration
@@ -155,6 +157,7 @@ namespace minsky
     Minsky() {model->height=model->width=std::numeric_limits<float>::max();}
 
     GroupPtr model{new Group};
+    Canvas canvas{model};
 
     void clearAllMaps();
 
@@ -189,19 +192,20 @@ namespace minsky
 
     void initGodleys();
 
-    /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
-    void select(float x0, float y0, float x1, float y1);
-    ///// clear selection
-    void clearSelection() {currentSelection.clear();}
+//    /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
+//    void select(float x0, float y0, float x1, float y1);
+//    ///// clear selection
+//    void clearSelection() {currentSelection.clear();}
     /// erase items in current selection, put copy into clipboard
     void cut();
     /// copy items in current selection into clipboard
     void copy() const;
-    /// paste  clipboard as a new group. @return id of nre group
-    GroupPtr paste();
+    /// paste clipboard as a new group. canvas.itemFocus is set to
+    /// refer to the new group
+    void paste();
     void saveSelectionAsFile(const string& fileName) const;
     /// returns true if selection has any items in it
-    bool itemsSelected() const {return !currentSelection.empty();}
+    bool itemsSelected() const {return !canvas.selection.empty();}
 
     /// @{ override to provide clipboard handling functionality
     virtual void putClipboard(const string&) const {}
@@ -316,7 +320,8 @@ namespace minsky
     /// render canvas to an SVG file
     void renderCanvasToSVG(const char* filename) const;
 
-
+    /// set DE mode on all godley tables
+    void setAllDEmode(bool);
   };
 
   /// global minsky object

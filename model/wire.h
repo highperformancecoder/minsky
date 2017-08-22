@@ -25,7 +25,9 @@
 #include <error.h>
 #include <arrays.h>
 #include <TCL_obj_base.h>
+#include <accessor.h>
 #include "classdesc_access.h"
+#include <cairo.h>
 
 namespace minsky
 {
@@ -42,12 +44,15 @@ namespace minsky
     std::vector<float> m_coords;
     /// ports this wire connects
     std::weak_ptr<Port> m_from, m_to;
+
+    constexpr static float handleRadius=3;
   public:
 
     Wire() {}
     Wire(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to, 
          const std::vector<float>& a_coords=std::vector<float>()); 
-
+    Wire(const Wire& x): NoteBase(x), m_coords(x.m_coords), m_from(x.m_from), m_to(x.m_to) {}
+    
    ~Wire();
 
     std::shared_ptr<Port> from() const {return m_from.lock();}
@@ -55,11 +60,29 @@ namespace minsky
 
     /// switch ports this wire links to
     void moveToPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
+    /// draw this item into a cairo context
+    void draw(cairo_t* cairo) const;
+    float x() const {return 0;}
+    float y() const {return 0;}
 
+    
     /// display coordinates 
-    std::vector<float> coords() const;
-    std::vector<float> coords(const std::vector<float>& coords);
-
+    std::vector<float> _coords() const;
+    std::vector<float> _coords(const std::vector<float>& coords);
+    ecolab::Accessor<std::vector<float>> coords {
+      [this]() {return _coords();},
+        [this](const std::vector<float>& c) {return _coords(c);}
+    };
+    
+    /// returns true if coordinates are near this wire
+    bool near(float x, float y) const;
+    /// returns the index into the coordinate list if x,y is close to
+    /// it. Otherwise inserts midpoints and returns that. Wire
+    /// endpoints are not returned
+    unsigned nearestHandle(float x, float y);
+    void insertHandle(unsigned position, float x, float y);
+    void editHandle(unsigned position, float x, float y);
+    
     void straighten() {m_coords.clear();}
 
     /// whether this wire is visible or not

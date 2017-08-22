@@ -85,6 +85,8 @@ namespace minsky
     /// add this as a display plot to its group
     void makeDisplayPlot();
           
+    void resize(const LassoBox&) override;
+
     /// set autoscaling
     void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();}
     /// sets the plot scale and pen labels

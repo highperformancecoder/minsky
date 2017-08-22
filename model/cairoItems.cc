@@ -24,10 +24,10 @@
 
 
 #include <boost/geometry/geometry.hpp>
+#include "cairoItems.h"
 #include "operation.h"
 #include "minsky.h"
 #include "init.h"
-#include "cairoItems.h"
 #include "latexMarkup.h"
 #include <arrays.h>
 #include <pango.h>
@@ -37,15 +37,6 @@ using namespace ecolab;
 using namespace std;
 using namespace minsky;
 using namespace boost::geometry;
-
-void minsky::drawSelected(cairo_t* cairo)
-{
-  // implemented by filling the clip region with a transparent grey
-  cairo_save(cairo);
-  cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.4);
-  cairo_paint(cairo);
-  cairo_restore(cairo);
-}
 
 RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
   op(op), cairo(cairo), hoffs(0)
@@ -156,6 +147,7 @@ void OperationBase::draw(cairo_t* cairo) const
         cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*zoomFactor), r.y(-w+1,-h-hoffs+2*zoomFactor));
         pango.show();
         cairo_restore(cairo);
+        cairo_save(cairo);
         cairo_rotate(cairo, angle);
                
         cairo_set_source_rgb(cairo,0,0,1);
@@ -182,12 +174,11 @@ void OperationBase::draw(cairo_t* cairo) const
             cairo_user_to_device(cairo, &xx, &yy);
             ports[1]->moveTo(x()+xx, y()+yy);
           }
+        cairo_restore(cairo); // undo rotation
         if (mouseFocus)
           {
-            cairo_save(cairo);
-            cairo_identity_matrix(cairo);
             drawPorts(cairo);
-            cairo_restore(cairo);
+            displayTooltip(cairo);
           }
         if (selected) drawSelected(cairo);
         return;
@@ -221,6 +212,7 @@ void OperationBase::draw(cairo_t* cairo) const
   float l=OperationBase::l*zoomFactor, r=OperationBase::r*zoomFactor, 
     h=OperationBase::h*zoomFactor;
   int intVarWidth=0;
+  cairo_save(cairo);
   cairo_rotate(cairo, angle);
   cairo_move_to(cairo,l,h);
   cairo_line_to(cairo,l,-h);
@@ -279,6 +271,7 @@ void OperationBase::draw(cairo_t* cairo) const
       }
 
   cairo_clip(cairo);
+  if (selected) drawSelected(cairo);
 
   // compute port coordinates relative to the icon's
   // point of reference
@@ -325,15 +318,13 @@ void OperationBase::draw(cairo_t* cairo) const
     }
 
   cairo_translate(cairo,-coupledIntTranslation,0);
- 
+
+  cairo_restore(cairo); // undo rotation
   if (mouseFocus)
     {
-      cairo_save(cairo);
-      cairo_identity_matrix(cairo);
       drawPorts(cairo);
-      cairo_restore(cairo);
+      displayTooltip(cairo);
     }
-  if (selected) drawSelected(cairo);
 
 }
 
@@ -412,6 +403,7 @@ void VariableBase::draw(cairo_t *cairo) const
   pango.show();
   //  cairo_restore(cairo);
 
+  cairo_save(cairo);
   cairo_rotate(cairo, angle);
   // constants and parameters should be rendered in blue, all others in red
   switch (type())
@@ -432,6 +424,7 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_line_to(cairo,w,-h);
   cairo_close_path(cairo);
   cairo_stroke_preserve(cairo);
+  cairo_restore(cairo); // undo rotation
   cairo_clip(cairo);
   
   {
@@ -445,13 +438,10 @@ void VariableBase::draw(cairo_t *cairo) const
                        y()+(y1*ca+x1*sa));
   }
 
-  //  cairo_restore(cairo);
   if (mouseFocus)
     {
-      cairo_save(cairo);
-      cairo_identity_matrix(cairo);
       drawPorts(cairo);
-      cairo_restore(cairo);
+      displayTooltip(cairo);
     }
   if (selected) drawSelected(cairo);
 }

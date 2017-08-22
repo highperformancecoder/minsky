@@ -40,13 +40,13 @@ GUI_OBJS=minskyTCL.o minsky.o godley.o portManager.o wire.o \
 	operation.o plotWidget.o cairoItems.o SVGItem.o equationDisplayItem.o \
 	godleyIcon.o groupIcon.o inGroupTest.o opVarBaseAttributes.o \
 	switchIcon.o
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o equationDisplayItem.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o equationDisplayItem.o canvas.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o 
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema1.o variableType.o operationType.o
 #schema0.o 
-GUI_TK_OBJS=tclmain.o groupTCL.o minskyTCL.o minskyCairoItem.o
+GUI_TK_OBJS=tclmain.o minskyTCL.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS)
 
@@ -268,3 +268,17 @@ MINSKY_VERSION=$(shell git describe)
 
 dist:
 	git archive --format=tar.gz --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar.gz
+
+lcov:
+	$(MAKE) clean
+	-$(MAKE) GCOV=1 sure
+	lcov -i -c -d . --no-external -o lcov.info
+	lcov -c -d . --no-external -o lcov.info
+	genhtml -o coverage lcov.info
+
+compile_commands.json: Makefile
+	$(MAKE) clean
+	bear $(MAKE)
+
+clang-tidy: compile_commands.json
+	run-clang-tidy

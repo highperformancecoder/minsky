@@ -36,14 +36,10 @@ source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
  minsky.load $here/examples/GoodwinLinear02.mky
  recentreCanvas
- updateCanvas
- foreach gid [items.#keys] {
-   item.get \$gid
-   if {[item.classType]=="Group"} break
- }
- group.get \$gid
- set x [expr [group.x]-[.wiring.canvas canvasx 0]]
- set y [expr [group.y]-[.wiring.canvas canvasy 0]]
+ set item minsky.canvas.item
+ getItemAt 246 300
+ set x [$item.x]
+ set y [$item.y]
  set w [group.width]
  set h [group.height]
  group::resize \$gid
@@ -53,8 +49,8 @@ proc afterMinskyStarted {} {uplevel #0 {
 
  group::resizeRect resizeBBox [expr \$x+\$w]  [expr \$y+\$h]
  group::resizeItem resizeBBox \$gid  [expr \$x+151]  [expr \$y+151]
- assert "abs([.wiring.canvas canvasx \$x]-\[group.x\])<2"
- assert "abs([.wiring.canvas canvasy \$y]==\[group.y\])<2"
+ assert "abs([.old_wiring.canvas canvasx \$x]-\[group.x\])<2"
+ assert "abs([.old_wiring.canvas canvasy \$y]==\[group.y\])<2"
 # approximate here, because group is rotated by pi, which is  numerically approximate
  assert {abs(300-[group.width])<5}
  assert {abs(300-[group.height])<5}

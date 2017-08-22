@@ -42,7 +42,7 @@ for {set step 0} {$step<10} {incr step} {
     # variable names from being expanded
     foreach name [variableValues.#keys] {
         if [regexp "^constant:" $name] continue
-        value.get $name
+        getValue $name
 
         # local variables can have a rather arbitrary scope
         # name. Check against all other variables with same name but

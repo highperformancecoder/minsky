@@ -49,7 +49,7 @@ foreach gid [items.#keys] {
  item.get [addOperation time]
  item.detailedText "addedTimeOp"
 
- event generate .wiring.canvas <Button-1> -x [group.x]  -y [group.y]
+ event generate .old_wiring.canvas <Button-1> -x [group.x]  -y [group.y]
 
  # do the same thing with a variable
  
@@ -75,7 +75,7 @@ foreach gid [items.#keys] {
  }
  copyVar
  var.detailedText "copied var"
- event generate .wiring.canvas <Button-1> -x [group.x]  -y [group.y]
+ event generate .old_wiring.canvas <Button-1> -x [group.x]  -y [group.y]
  set varId [findItemWithDetailedText "copied var"]
  set gid [findItemWithDetailedText "the group"]
  assert "\[groupOf  \$varId]==\$gid" "var"
@@ -95,7 +95,7 @@ foreach gid [items.#keys] {
  group.get \$newGroupId
  group.detailedText "inserted group from file"
 
- event generate .wiring.canvas <Button-1> -x \$x  -y \$y
+ event generate .old_wiring.canvas <Button-1> -x \$x  -y \$y
  set newGroupId [findItemWithDetailedText "inserted group from file"]
  set gid [findItemWithDetailedText "the group"]
  assert "\[groupOf \$newGroupId\]==\$gid" "group"
@@ -109,7 +109,7 @@ foreach gid [items.#keys] {
  group.get \$gid
  set numGroups [group.groups.size]
  group::copy \$gid
- event generate .wiring.canvas <Button-1> -x \$x  -y \$y
+ event generate .old_wiring.canvas <Button-1> -x \$x  -y \$y
  set gid [findItemWithDetailedText "the group"]
  group.get \$gid
  assert "\$numGroups==[expr [group.groups.size]-1]"
@@ -118,9 +118,9 @@ foreach gid [items.#keys] {
 
  update
 
- assert {[winfo viewable .wiring.editGroup]}
- .wiring.editGroup.buttonBar.ok invoke
- assert {![winfo exists .wiring.editGroup]}
+ assert {[winfo viewable .old_wiring.editGroup]}
+ .old_wiring.editGroup.buttonBar.ok invoke
+ assert {![winfo exists .old_wiring.editGroup]}
 
  tcl_exit
 }}

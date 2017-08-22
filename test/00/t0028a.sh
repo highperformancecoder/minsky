@@ -38,34 +38,34 @@ addVariable
 set varInput(Name) "foo"
 .wiring.initVar.buttonBar.ok invoke
 event generate .wiring.canvas <Button-1>
-assert {[items.size]==1}
+assert {[model.items.size]==1}
 
 addConstant
 .wiring.initVar.buttonBar.ok invoke
 event generate .wiring.canvas <Button-1>
-assert {[items.size]==2}
+assert {[model.items.size]==2}
 
 addOperationKey add
-assert {[items.size]==3}
+assert {[model.items.size]==3}
 
 textInput a
 textInput \r
-assert {[items.size]==4}
+assert {[model.items.size]==4}
 textInput %
 textInput a
 deleteKey
 textInput b
 textInput \r
-assert {[items.size]==5}
+assert {[model.items.size]==5}
 assert {[item.detailedText]=="b"}
 
 addNewGodleyItem
 event generate .wiring.canvas <Button-1>
-assert {[items.size]==6}
+assert {[model.items.size]==6}
 
 newPlot
 event generate .wiring.canvas <Button-1>
-assert {[items.size]==7}
+assert {[model.items.size]==7}
 
 
 tcl_exit

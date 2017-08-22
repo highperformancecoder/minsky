@@ -32,6 +32,7 @@
 namespace minsky 
 {
   class Group;
+  class LassoBox;
 
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
@@ -55,6 +56,19 @@ namespace minsky
 
   class VariablePtr;
 
+  class Item;
+  /// bounding box information (at zoom=1 scale)
+  class BoundingBox
+  {
+    float left=0, right=0, top, bottom;
+  public:
+    void update(const Item& x);
+    bool contains(float x, float y) const {
+      return left<=x && right>=x && bottom>=y && top<=y;
+    }
+    bool valid() const {return left!=right;}
+  };
+  
   class Item: public NoteBase
   {
   public:
@@ -63,9 +77,18 @@ namespace minsky
     double rotation=0; ///< rotation of icon, in degrees
     bool m_visible=true; ///< if false, then this item is invisible
     std::weak_ptr<Group> group;
+    /// canvas bounding box.
+    mutable BoundingBox bb;
+    bool contains(float xx, float yy) {
+      if (!bb.valid()) bb.update(*this);
+      return bb.contains((xx-x())/zoomFactor, (yy-y())/zoomFactor);
+    }
+    
     /// indicates this is a group I/O variable
     virtual bool ioVar() const {return false;}
-    
+
+    /// rotate icon though 180∘
+    void flip() {rotation+=180;}
 
     virtual std::string classType() const {return "Item";}
     /// sets the cairo surface, allow redraws to be requested
@@ -75,6 +98,8 @@ namespace minsky
     float x() const; 
     float y() const; 
 
+    virtual void resize(const LassoBox&) {}
+    
     virtual Item* clone() const {return new Item(*this);}
 
     /// whether this item is visible on the canvas. 
@@ -87,12 +112,20 @@ namespace minsky
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;
+    /// draw into a dummy cairo context, for purposes of calculating
+    /// port positions
+    void dummyDraw() const;
+
+    /// display tooltip text, eg on mouseover
+    void displayTooltip(cairo_t*) const;
+    
     /// update display after a step()
     virtual void updateIcon(double t) {}
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
-
+    void drawSelected(cairo_t* cairo) const;
+    
     /// returns the clicktype given a mouse click at \a x, \a y.
     ClickType::Type clickType(float x, float y);
 

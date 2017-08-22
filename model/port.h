@@ -52,7 +52,9 @@ namespace minsky
 
     /// remove wire from wires. No ownership passed.
     void eraseWire(Wire*);
-
+    /// delete all attached wires
+    void deleteWires();
+    
     bool input() const {return flags&inputPort;}
 
     /// true if multiple wires are allowed to connect to an input
@@ -65,7 +67,8 @@ namespace minsky
     //Port() {}
     Port(Item& a_item, int f=noFlags): flags(f), item(a_item) {}
 
-    ~Port();
+    // destruction of this port must also destroy all attached wires
+    ~Port() {deleteWires();}
 
     /// sets the VariableValue associated with this port. Only for output ports
     void setVariableValue(const VariableValue& v);

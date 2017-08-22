@@ -16,10 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "cairoItems.h"
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
-#include "cairoItems.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -32,9 +32,6 @@
 #include <cairo/cairo-ps.h>
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
-
-// undocumented internal function in the Tk library
-extern "C" int TkMakeBezierCurve(Tk_Canvas,double*,int,int,void*,double*);
 
 using namespace minsky;
 using namespace classdesc;
@@ -194,69 +191,71 @@ namespace minsky
   GroupPtr Minsky::createGroup()
   {
     GroupPtr r=model->addGroup(new Group);
-    for (auto& i: currentSelection.items)
+    for (auto& i: canvas.selection.items)
       r->addItem(i);
-    for (auto& i: currentSelection.groups)
+    for (auto& i: canvas.selection.groups)
       r->addItem(i);
     r->resizeOnContents();
     r->splitBoundaryCrossingWires();
     return r;
   }
 
-  void Minsky::select(float x0, float y0, float x1, float y1)
-  {
-    LassoBox lasso(x0,y0,x1,y1);
-    currentSelection.clear();
-
-    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
-
-    if (!topLevel) topLevel=&*model;
-
-    for (auto& i: topLevel->items)
-      if (i->visible() && lasso.intersects(*i))
-        {
-          currentSelection.items.push_back(i);
-          i->selected=true;
-        }
-
-    for (auto& i: topLevel->groups)
-      if (i->visible() && lasso.intersects(*i))
-        {
-          currentSelection.groups.push_back(i);
-          i->selected=true;
-        }
-
-    for (auto& i: topLevel->wires)
-      if (i->visible() && lasso.contains(*i))
-        currentSelection.wires.push_back(i);
-
-    copy();
-  }
+//  void Minsky::select(float x0, float y0, float x1, float y1)
+//  {
+//    LassoBox lasso(x0,y0,x1,y1);
+//    currentSelection.clear();
+//
+//    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
+//
+//    if (!topLevel) topLevel=&*model;
+//
+//    for (auto& i: topLevel->items)
+//      if (i->visible() && lasso.intersects(*i))
+//        {
+//          currentSelection.items.push_back(i);
+//          i->selected=true;
+//        }
+//
+//    for (auto& i: topLevel->groups)
+//      if (i->visible() && lasso.intersects(*i))
+//        {
+//          currentSelection.groups.push_back(i);
+//          i->selected=true;
+//        }
+//
+//    for (auto& i: topLevel->wires)
+//      if (i->visible() && lasso.contains(*i))
+//        currentSelection.wires.push_back(i);
+//
+//    copy();
+//  }
 
   void Minsky::cut()
   {
     copy();
-    for (auto& i: currentSelection.items)
-      model->removeItem(*i);
-    for (auto& i: currentSelection.groups)
+    for (auto& i: canvas.selection.items)
+      model->deleteItem(*i);
+    for (auto& i: canvas.selection.groups)
       model->removeGroup(*i);
-    for (auto& i: currentSelection.wires)
+    for (auto& i: canvas.selection.wires)
       model->removeWire(*i);
     garbageCollect();
+    canvas.item.reset();
+    canvas.itemFocus.reset();
 #ifndef NDEBUG
-    for (auto& i: currentSelection.items)
+    for (auto& i: canvas.selection.items)
       assert(i.use_count()==1);
-    for (auto& i: currentSelection.groups)
+    for (auto& i: canvas.selection.groups)
       assert(i.use_count()==1);
-    for (auto& i: currentSelection.wires)
+    for (auto& i: canvas.selection.wires)
       assert(i.use_count()==1);
 #endif
-    currentSelection.clear();
+    canvas.selection.clear();
   }
 
   void Minsky::copy() const
   {
-    schema1::Minsky m(currentSelection);
+    schema1::Minsky m(canvas.selection);
     ostringstream os;
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -265,7 +264,7 @@ namespace minsky
 
   void Minsky::saveSelectionAsFile(const string& fileName) const
   {
-    schema1::Minsky m(currentSelection);
+    schema1::Minsky m(canvas.selection);
     ofstream os(fileName);
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -279,15 +278,16 @@ namespace minsky
     xml_pack(packer, "Minsky", m);
   }
 
-  GroupPtr Minsky::paste()
+  void Minsky::paste()
   {
     istringstream is(getClipboard());
     xml_unpack_t unpacker(is);
     schema1::Minsky m;
     xml_unpack(unpacker, "Minsky", m);
     GroupPtr g(new Group);
-    m.populateGroup(*model->addGroup(g));
-    return g;
+    canvas.setItemFocus(model->addGroup(g));
+    m.populateGroup(*g);
+    g->resizeOnContents();
   }
 
   void Minsky::toggleSelected(ItemType itemType, int item)
@@ -1181,53 +1181,7 @@ namespace minsky
     model->recursiveDo
       (&GroupItems::wires, [&](const Wires&, Wires::const_iterator i)
        {
-
-         auto coords=(*i)->coords();
-         if (coords.size()<4 || !(*i)->visible()) return false;
-
-         double angle, lastx, lasty;
-         if (coords.size()==4)
-           {
-             cairo_move_to(cairo,coords[0],coords[1]);
-             cairo_line_to(cairo, coords[2], coords[3]);
-             angle=atan2(coords[3]-coords[1], coords[2]-coords[0]);
-             lastx=coords[2]; lasty=coords[3];
-           }
-         else
-           {
-             // need to convert to double precision for Tk
-             vector<double> dcoords(coords.begin(), coords.end());
-             // Use Tk's smoothing algorithm for computing curves
-             const int numSteps=100;
-             // Tk's documentation doesn't say how big this buffer should
-             // be, hopefully this is ample.
-             vector<double> points(2*numSteps*(dcoords.size()+1));
-             int numPoints=
-               TkMakeBezierCurve(0,dcoords.data(),dcoords.size()/2,numSteps,
-                                 nullptr,points.data());
-             
-             cairo_move_to(cairo, points[0], points[1]);
-             for (int i=2; i<2*numPoints; i+=2)
-               cairo_line_to(cairo, points[i], points[i+1]);
-             cairo_stroke(cairo);
-             angle=atan2(points[2*numPoints-1]-points[2*numPoints-3], 
-                         points[2*numPoints-2]-points[2*numPoints-4]);
-             lastx=points[2*numPoints-2]; lasty=points[2*numPoints-1];
-           }
-         cairo_stroke(cairo);
-
-         // draw arrow
-         cairo_save(cairo);
-         cairo_translate(cairo, lastx, lasty);
-         cairo_rotate(cairo,angle);
-         cairo_move_to(cairo,0,0);
-         cairo_line_to(cairo,-5,-3); 
-         cairo_line_to(cairo,-3,0); 
-         cairo_line_to(cairo,-5,3);
-         cairo_close_path(cairo);
-         cairo_fill(cairo);
-         cairo_restore(cairo);
-         
+         (*i)->draw(cairo);
          return false;
        });
   }
@@ -1264,5 +1218,12 @@ namespace minsky
     renderCanvas(s.cairo());
   }
 
+  void Minsky::setAllDEmode(bool mode) {
+    model->recursiveDo(&GroupItems::items, [mode](Items&,Items::iterator i) {
+        if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+          g->table.setDEmode(mode);
+        return false;
+      });
+  }
 }
 

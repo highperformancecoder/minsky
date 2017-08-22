@@ -36,62 +36,38 @@ proc afterMinskyStarted {} {
 
 minsky.load $here/examples/GoodwinLinear02.mky
 recentreCanvas
-assert {[items.size]==27} {}
-assert {[wires.size]==27} {}
-lasso 378 27
-lassoEnd  450 106
+assert {[model.numItems]==26} {}
+assert {[model.numWires]==27} {}
+canvas.mouseDown 378 14
+canvas.mouseUp  450 106
+assert {[canvas.selection.numItems]==3} {}
+assert {[canvas.selection.numWires]==2} {}
 cut
-assert {[items.size]==24} {}
-assert {[wires.size]==23} {}
-set gid [paste]
-insertNewGroup \$gid
+assert {[model.numItems]==23} {}
+assert {[model.numWires]==23} {}
+paste
+
 event generate .wiring.canvas <Button-1>
 
-buildMaps
-assert {[items.size]==28} {}
-assert {[wires.size]==25} {}
+assert {[model.numItems]==26} {}
+assert {[model.numWires]==25} {}
 
 # find a wire with internal control points
-for {set i 0} {\$i<[wires.size]} {incr i} {
-  set w [lindex [wires.#keys] \$i]
-  wire.get \$w
-  if {[llength [wire.coords]]>4} break
-}
-decorateWire \$w
-assert {[llength [wire.coords]]>4}
-straightenWire \$w
-assert {[llength [wire.coords]]==4}
-
-# add another wire
-set item [lindex [items.#keys] 0]
-wires::startConnect \$item 405.5 170
-wires::extendConnect \$item 400 170
-wires::finishConnect \$item 183 173
-assert {[wires.size]==26} {}
-
-set w [lindex [wires.#keys] 0]
-wire.get \$w 
-decorateWire \$w
-set handle [lindex [.wiring.canvas find withtag handles] 0]
-insertCoords \$w \$handle 0 100 100
-deleteHandle \$w \$handle 0
-
-foreach it [items.#keys] {
-  item.get \$it
-  switch -glob [item.classType] { 
-    "Variable*" {
-      editItem \$it
-      .wiring.editVar.buttonBar.ok invoke
-     }
-    "Operation*" {
-      editItem \$it
-      .wiring.editOperation.buttonBar.ok invoke
-    }
+for {set i 0} {\$i<[model.wires.size]} {incr i} {
+  model.wires.@elem [set i]
+  if {[llength [minsky.model.wires(\$i).coords]]>4} {
+    set wire minsky.model.wires(\$i)
+    break
   }
 }
 
-placeNewNote
-event generate .wiring.canvas <Button-1>
+\$wire.straighten
+assert "[llength [[set wire].coords]]==4" {llength wire.coords==4}
+
+# add another wire
+canvas.mouseDown 351 39
+canvas.mouseUp 463 169
+assert {[model.numWires]==26} {}
 
 tcl_exit
 }

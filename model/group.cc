@@ -17,11 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairoItems.h"
 #include "group.h"
 #include "wire.h"
 #include "operation.h"
 #include "minsky.h"
-#include "cairoItems.h"
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
 using namespace std;
@@ -91,7 +91,7 @@ namespace minsky
     return shared_ptr<Group>();
   }
 
-  ItemPtr GroupItems::removeItem(const Item& it)
+  ItemPtr Group::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
@@ -102,6 +102,7 @@ namespace minsky
             {
               remove(inVariables, r);
               remove(outVariables, r);
+              remove(createdIOvariables, r);
             }
           return r;
         }
@@ -178,8 +179,7 @@ namespace minsky
     if (auto v=dynamic_cast<VariableBase*>(it.get()))
       init=v->init();
     
-    if (auto _this=dynamic_cast<Group*>(this))
-      it->group=_this->self();
+    it->group=self();
     it->moveTo(x,y);
 
     // take into account new scope
@@ -232,7 +232,7 @@ namespace minsky
     w.moveIntoGroup(*p1);
   }
   
-  void GroupItems::splitBoundaryCrossingWires()
+  void Group::splitBoundaryCrossingWires()
   {
     // Wire::split will invalidate the Items::iterator, so collect
     // wires to split first
@@ -244,6 +244,52 @@ namespace minsky
 
     for (auto w: wiresToSplit)
       w->split();
+
+    // check if any created I/O variables can be removed
+    auto varsToCheck=createdIOvariables;
+    for (auto& iv: varsToCheck)
+      {
+        assert(iv->ports[1]->input() && !iv->ports[1]->multiWireAllowed());
+        // firstly join wires that don't cross boundaries
+        // determine if this is input or output var
+        if (iv->ports[1]->wires.size()>0 &&
+            iv->ports[1]->wires[0]->from()->item.group.lock().get() == this)
+          {
+            // not an input var
+            for (auto& w: iv->ports[0]->wires)
+              if (w->to()->item.group.lock().get() == this)
+                // join wires, as not crossing boundary
+                {
+                  auto to=w->to();
+                  iv->ports[0]->eraseWire(w);
+                  removeWire(*w);
+                  addWire(iv->ports[1]->wires[0]->from(), to);
+                }
+          }
+        if (iv->ports[0]->wires.empty() || iv->ports[1]->wires.empty())
+          removeItem(*iv);
+      }
+  }
+
+  size_t GroupItems::numItems() const
+  {
+    size_t count=items.size();
+    for (auto& i: groups) count+=i->numItems();
+    return count;
+  }
+
+  size_t GroupItems::numWires() const
+  {
+    size_t count=wires.size();
+    for (auto& i: groups) count+=i->numWires();
+    return count;
+  }
+
+  size_t GroupItems::numGroups() const
+  {
+    size_t count=groups.size();
+    for (auto& i: groups) count+=i->numGroups();
+    return count;
   }
 
 
@@ -312,8 +358,7 @@ namespace minsky
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
       origGroup->removeGroup(*g);
-    if (auto _this=dynamic_cast<Group*>(this))
-      g->group=_this->self();
+    g->group=self();
     groups.push_back(g);
     assert(nocycles());
     return groups.back();
@@ -325,16 +370,13 @@ namespace minsky
     wires.push_back(w);
     return wires.back();
   }
-  WirePtr GroupItems::addWire(const Item& from, const Item& to, unsigned toPortIdx, const std::vector<float>& coords) {
+  WirePtr GroupItems::addWire
+  (const shared_ptr<Port>& fromP, const shared_ptr<Port>& toP, const vector<float>& coords)
+  {
     // disallow self-wiring
-    if (&from==&to) 
+    if (&fromP->item==&toP->item) 
       return WirePtr();
 
-    if (toPortIdx>=to.ports.size()) 
-      return WirePtr();
-
-    auto& fromP=from.ports[0];
-    auto& toP=to.ports[toPortIdx];
     // wire must go from an output port to an input port
     if (fromP->input() || !toP->input())
       return WirePtr();
@@ -590,10 +632,6 @@ namespace minsky
     leftMargin*=zoomFactor; rightMargin*=zoomFactor;
 
     unsigned width=zoomFactor*this->width, height=zoomFactor*this->height;
-    // bitmap needs to be big enough to allow a rotated
-    // icon to fit on the bitmap.
-    float rotFactor=this->rotFactor();
-
 
    // draw default group icon
     cairo_save(cairo);
@@ -674,7 +712,10 @@ namespace minsky
       }
 
     if (mouseFocus)
-      drawPorts(cairo);
+      {
+        drawPorts(cairo);
+        displayTooltip(cairo);
+      }
 
     if (selected) drawSelected(cairo);
   }

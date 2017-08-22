@@ -17,11 +17,13 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairoItems.h"
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"
-#include "cairoItems.h"
+#include "init.h"
 #include <ecolab.h>
 #include <ecolab_epilogue.h>
+#include <cairo/cairo-xlib.h>
 
 #include <unistd.h>
 
@@ -61,6 +63,18 @@ namespace minsky
       }
     return nullptr;
   }
+
+  int deleteTclItem(ClientData cd, Tcl_Interp *interp,
+                    int argc, const char **argv)
+  {
+    assert( strcmp(argv[0]+strlen(argv[0])-strlen(".delete"),
+                   ".delete")==0);
+    std::string s(argv[0]);
+    ecolab::TCL_obj_deregister(s.substr(0,s.length()-strlen(".delete")));
+    delete (Item*)cd;
+    return TCL_OK; 
+  }
+
   
 #if 0
   // useful structure for for figuring what commands are being called.
@@ -111,6 +125,15 @@ namespace minsky
      1
      );
 
+  void MinskyTCL::getValue(const std::string& valueId)
+  {
+    auto value=variableValues.find(valueId);
+    if (value!=variableValues.end())
+      TCL_obj(minskyTCL_obj(),"minsky.value",value->second);
+    else
+      TCL_obj_deregister("minsky.value");
+  }
+  
     void MinskyTCL::putClipboard(const string& s) const
     {
 #ifdef MAC_OSX_TK
@@ -252,82 +275,97 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
-  int TclExtend<std::shared_ptr<minsky::IntOp>>::getIntVar() 
+  namespace
   {
-    auto& m=dynamic_cast<MinskyTCL&>(minsky());
-    m.item.setRef(ref->intVar,"wiringGroup.item");
-    for (auto& i: m.items)
-      if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
-        return i.id();
-    return -1;
-  }
-
-  bool TclExtend<std::shared_ptr<minsky::IntOp>>::toggleCoupled()
-  {
-    auto& m=dynamic_cast<MinskyTCL&>(minsky());
-    int wireId=-1; // stash id to wire if uncoupled
-    if (!ref->coupled())
-      {
-        auto& wires=ref->ports[0]->wires;
-        if (!wires.empty())
-          for (auto& w: m.wires)
-            if (find(wires.begin(), wires.end(), w.get())!=wires.end())
-              {
-                wireId=w.id();
-                break;
-              }
+    // TODO refactor Canvas class to directly redraw surface whenever anything changes
+    struct TkWinSurface: public ecolab::cairo::Surface
+    {
+      Canvas& canvas;
+      Tk_ImageMaster imageMaster;
+      TkWinSurface(Canvas& canvas, Tk_ImageMaster imageMaster, cairo_surface_t* surf):
+        ecolab::cairo::Surface(surf), canvas(canvas),  imageMaster(imageMaster) {}
+      void requestRedraw() override {
+        Tk_ImageChanged(imageMaster,-1000000,-1000000,2000000,2000000,2000000,2000000);
       }
+      void blit() override {cairo_surface_flush(surface());}
+    };
 
-    bool coupled=ref->toggleCoupled();
-    for (auto& i: m.items)
-      if (dynamic_cast<VariableBase*>(i.get())==ref->intVar.get())
+    struct CD
+    {
+      Tk_Window tkWin;
+      Tk_ImageMaster master;
+      Canvas& canvas;
+    };
+    
+    // Define a new image type that renders a minsky::Canvas
+    int createCI(Tcl_Interp* interp, const char* name, int objc, Tcl_Obj *const objv[],
+                 const Tk_ImageType* typePtr, Tk_ImageMaster master, ClientData *masterData)
+    {
+      try
         {
-          if (coupled)
-            tclcmd() | ".wiring.canvas delete item"|i.id()|"\n";
-          else
-            tclcmd() << "newItem"<< i.id()<<"\n";
-        }
-
-    if (wireId>=0)
-      {
-        tclcmd() | ".wiring.canvas delete wire"|wireId|"\n";
-        m.wires.erase(wireId);
-      }
-    else
-      {
-        assert(ref->ports.size() && ref->ports[0]->wires.size());
-        if (auto g=ref->group.lock())
-          {
-            int newWire=m.getNewId();
-            m.wires[newWire]=g->findWire(*ref->ports[0]->wires[0]);
-            tclcmd() << "newWire"<< newWire<<"\n";
-          }
-      }
-    return ref->coupled();
-  }
-
-  void MinskyTCL::makeVariableConsistentWithValue(int id) 
-  {
-    clearAllGetterSetters();
-    auto i=items.find(id);
-    if (i!=items.end())
-      if (auto v=dynamic_cast<VariableBase*>(i->get()))
-        {
-          auto& value=variableValues[v->valueId()];
-          if (value.type()!=v->type())
+          TCL_args args(objc,objv);
+          string canvas=args; // arguments should be something like -canvas minsky.canvas
+          auto mb=dynamic_cast<member_entry<Canvas>*>
+            ((member_entry_base*)(TCL_obj_properties()[canvas].get()));
+          if (mb)
             {
-              VariablePtr v(*i);
-              v.makeConsistentWithValue();
-              // now need to fix both the TCL items entry and minsky's
-              if (auto g=(*i)->group.lock())
-                {
-                  g->removeItem(**i);
-                  g->addItem(v);
-                  *i=v;
-                }
+              *masterData=new CD{0,master,*mb->memberptr};
+              return TCL_OK;
+            }
+          else
+            {
+              Tcl_AppendResult(interp,"Not a Canvas",NULL);
+              return TCL_ERROR;
             }
         }
+      catch (const std::exception& e)
+        {
+          Tcl_AppendResult(interp,e.what(),NULL);
+          return TCL_ERROR;
+        }
+    }
+
+    ClientData getCI(Tk_Window win, ClientData masterData)
+    {
+      auto r=new CD(*(CD*)masterData);
+      r->tkWin=win;
+      return r;
+    }
+    
+    void displayCI(ClientData cd, Display* display, Drawable win,
+                  int imageX, int imageY, int width, int height,
+                  int drawableX, int drawableY)
+    {
+      CD& c=*(CD*)cd;
+      int depth;
+      Visual *visual = Tk_GetVisual(interp(), c.tkWin, "default", &depth, NULL);
+      c.canvas.surface.reset
+        (new TkWinSurface
+         (c.canvas, c.master,
+          cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
+      c.canvas.redraw();
+      cairo_surface_flush(c.canvas.surface->surface());
+    }
+
+    void freeCI(ClientData cd,Display*) {delete (CD*)cd;}
+    void deleteCI(ClientData cd) {delete (CD*)cd;}
+  
+    Tk_ImageType canvasImage = {
+      "canvasImage",
+      createCI,
+      getCI,
+      displayCI,
+      freeCI,
+      deleteCI
+    };
+
+    int registerCanvasImage() {
+      // ensure Tk_Init is called.
+      if (!Tk_MainWindow(interp())) Tk_Init(interp());
+      Tk_CreateImageType(&canvasImage);
+      return 0;
+    }
+  
+    int dum=(initVec().push_back(registerCanvasImage),0);
   }
-
-
 }

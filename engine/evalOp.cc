@@ -17,10 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #define OPNAMEDEF
+#include "cairoItems.h"
 #include "evalOp.h"
 #include "variable.h"
 #include "minsky.h"
-#include "cairoItems.h"
 #include "str.h"
 
 #include <ecolab_epilogue.h>

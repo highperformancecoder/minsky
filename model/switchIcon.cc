@@ -16,10 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "cairoItems.h"
 #include "switchIcon.h"
 #include "minsky.h"
 #include "init.h"
-#include "cairoItems.h"
 #include <ecolab_epilogue.h>
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -176,7 +176,10 @@ namespace minsky
     cairo_stroke(cairo);
 
     if (mouseFocus)
-      drawPorts(cairo);
+      {
+        drawPorts(cairo);
+        displayTooltip(cairo);
+      }
 
     // add 8 pt margin to allow for ports
     cairo_rectangle(cairo,-0.5*width-8,-0.5*width-8,width+16,width+8);

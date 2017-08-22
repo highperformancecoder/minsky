@@ -59,6 +59,8 @@ namespace minsky
     GroupItems(const GroupItems& x) {*this=x;}
     virtual ~GroupItems() {}
     GroupItems& operator=(const GroupItems&);
+    virtual std::shared_ptr<Group> self() const=0;
+
     void clear() {
       items.clear();
       groups.clear();
@@ -80,22 +82,26 @@ namespace minsky
     
 
     /// sets the group pointer of \a it to this
-    virtual void setItemGroup(const ItemPtr&) const=0;
+    //virtual void setItemGroup(const ItemPtr&) const=0;
     /// tests that groups are arranged heirarchically without any recurrence
     virtual bool nocycles() const=0; 
 
-    /// Perform action heirarchically on elements of map \a map. If op returns true, the operation terminates.
+    /// @{ Perform action heirarchically on elements of map \a map. If op returns true, the operation terminates.
     /// returns true if operation terminates early, false if every element processed.
+    /// O has signature bool(M, M::const_iterator)
     template <class M, class O>
     bool recursiveDo(M GroupItems::*map, O op) const 
     {return GroupRecursiveDo(*this,map,op);}
+    /// O has signature bool(M&, M::iterator)
     template <class M, class O>
     bool recursiveDo(M GroupItems::*map, O op)
     {return GroupRecursiveDo(*this,map,op);}
-
+    /// @}
+    
     /// search for the first item in the heirarchy of \a map for which
     /// \a c is true. M::value_type must evaluate in a boolean
     /// environment to false if not valid
+    /// C is of signature bool(M::value_type)
     template <class M, class C>
     const typename M::value_type findAny(M GroupItems::*map, C c) const;
 
@@ -104,10 +110,10 @@ namespace minsky
     template <class R, class M, class C, class X>
     std::vector<R> findAll(C c, M (GroupItems::*m), X xfm) const;
 
-    ItemPtr removeItem(const Item&);
     WirePtr removeWire(const Wire&);
     GroupPtr removeGroup(const Group&);
 
+    
     /// finds item within this group or subgroups. Returns null if not found
     ItemPtr findItem(const Item& it) const; 
 
@@ -153,11 +159,18 @@ namespace minsky
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
     WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx, 
-                const std::vector<float>& coords = {}); 
+                const std::vector<float>& coords = {})
+    {
+      if (toPortIdx>=to.ports.size()) return WirePtr();
+      return addWire(from.ports[0], to.ports[toPortIdx], coords);
+    }
 
-    /// splits any wires that cross group boundaries
-    void splitBoundaryCrossingWires();
+    WirePtr addWire(const std::shared_ptr<Port>& from,
+                    const std::shared_ptr<Port>& to, 
+                    const std::vector<float>& coords = {}); 
 
+
+    
     /// returns whether all items (which are shared_ptrs) are uniquely owned
     bool uniquely_owned() const {
       return !recursiveDo(&GroupItems::items,[](const Items&,Items::const_iterator i){
@@ -170,6 +183,13 @@ namespace minsky
           return i->use_count()>1;
           });
     }
+
+    /// total number of items in this and child groups
+    size_t numItems() const; 
+    /// total number of wires in this and child groups
+    size_t numWires() const; 
+    /// total number of groups in this and child groups
+    size_t numGroups() const; 
   };
 
   template <class G, class M, class O>
@@ -195,8 +215,8 @@ namespace minsky
     std::vector<VariablePtr> createdIOvariables;
 
     /// @returns a shared_ptr to this. NULL if this cannot be found in parent group
-    std::shared_ptr<Group> self() const;
-    void setItemGroup(const ItemPtr& it) const override {it->group=self();}
+    std::shared_ptr<Group> self() const override;
+    //void setItemGroup(const ItemPtr& it) const override {it->group=self();}
     bool nocycles() const override; 
 
     static SVGRenderer svgRenderer;
@@ -220,6 +240,15 @@ namespace minsky
     void addInputVar() {inVariables.push_back(addIOVar());}
     void addOutputVar() {outVariables.push_back(addIOVar());}
 
+    ItemPtr removeItem(const Item&);
+    /// remove item from group, and also all attached wires.
+    void deleteItem(const Item& i) {
+      auto r=removeItem(i);
+      if (r)
+        for (auto& p: r->ports)
+          p->deleteWires();
+    }
+        
     /// adjust position and size of icon to just cover contents
     void resizeOnContents();
 
@@ -296,6 +325,9 @@ namespace minsky
     /// I/O variable icon, null otherwise, indicating that the Group
     /// has been selected.
     VariablePtr select(float x, float y) const override;
+
+    /// splits any wires that cross group boundaries
+    void splitBoundaryCrossingWires();
 
   };
 

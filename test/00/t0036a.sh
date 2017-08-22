@@ -36,18 +36,20 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
   minsky.load $here/examples/GoodwinLinear02.mky
-  updateCanvas
-  select [expr [group.x]-0.55*[group.width]] [expr [group.y]-0.55*[group.height]] [expr [group.x]+0.55*[group.width]] [expr [group.y]+0.55*[group.height]] 
+  recentreCanvas
+  model.groups.@elem 0
+  canvas.select [expr [minsky.model.groups(0).x]-0.55*[minsky.model.groups(0).width]] [expr [minsky.model.groups(0).y]-0.55*[minsky.model.groups(0).height]] [expr [minsky.model.groups(0).x]+0.55*[minsky.model.groups(0).width]] [expr [minsky.model.groups(0).y]+0.55*[minsky.model.groups(0).height]] 
   newSystem
-  group.get [paste]
-  assert {[group.groups.size]==1}
-  buildMaps
-  assert {[items.size]==10}
-  assert {[wires.size]==8}
+  paste
+  assert {[model.numGroups]==2}
+  assert {[model.numItems]==8}
+  assert {[model.numWires]==8}
   # retrieve inner group
-  group.groups.@elem 0
-  assert {[group.groups(0).items.size]==8}
-  assert {[group.groups(0).wires.size]==8}
+  model.groups.@elem 0
+  minsky.model.groups(0).groups.@elem 0
+
+  assert {[minsky.model.groups(0).groups(0).items.size]==8}
+  assert {[minsky.model.groups(0).groups(0).wires.size]==8}
   tcl_exit
 }}
 EOF

@@ -23,9 +23,11 @@
 #include "variable.h"
 #include "latexMarkup.h"
 #include "geometry.h"
+#include "selection.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
+#include <exception>
 
 using ecolab::Pango;
 using namespace std;
@@ -33,6 +35,25 @@ using namespace std;
 namespace minsky
 {
 
+  void BoundingBox::update(const Item& x)
+  {
+    ecolab::cairo::Surface surf
+       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+    try {x.draw(surf.cairo());}
+    catch (const std::exception& e) 
+      {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
+    catch (...) {cerr<<"illegal exception caught in draw()";}
+    double l,t,w,h;
+    cairo_recording_surface_ink_extents(surf.surface(),
+                                        &l,&t,&w,&h);
+    // note (0,0) is relative to the (x,y) of icon.
+    double invZ=1/x.zoomFactor;
+    left=l*invZ;
+    right=(l+w)*invZ;
+    top=t*invZ;
+    bottom=(t+h)*invZ;
+  }
+  
   float Item::x() const 
   {
     if (auto g=group.lock())
@@ -106,15 +127,10 @@ namespace minsky
     if (visible())
       {
         auto g=group.lock();
-        if (!g)
+        if (g) // do not zoom toplevel group
           {
-            minsky::zoom(m_x,xOrigin,factor);
-            minsky::zoom(m_y,yOrigin,factor);
-          }
-        else if (g->displayContents())
-          {
-            m_x*=factor;
-            m_y*=factor;
+            minsky::zoom(m_x,xOrigin-g->x(),factor);
+            minsky::zoom(m_y,yOrigin-g->y(),factor);
           }
         zoomFactor*=factor;
       }
@@ -134,6 +150,15 @@ namespace minsky
     cairo_restore(cairo);
   }
 
+  void Item::drawSelected(cairo_t* cairo) const
+  {
+    // implemented by filling the clip region with a transparent grey
+    cairo_save(cairo);
+    cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.4);
+    cairo_paint(cairo);
+    cairo_restore(cairo);
+  }
+
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
   {
@@ -143,20 +168,46 @@ namespace minsky
     pango.setFontSize(12*zoomFactor);
     pango.setMarkup(latexToPango(detailedText)); 
     // parameters of icon in userspace (unscaled) coordinates
-    float w, h, hoffs;
+    float w, h;
     w=0.5*pango.width()+2*zoomFactor; 
     h=0.5*pango.height()+4*zoomFactor;
-    hoffs=pango.top()/zoomFactor;
 
-    cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2));
+    cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
+
+    if (mouseFocus) displayTooltip(cairo);
     cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));
     cairo_line_to(cairo,r.x(w,-h), r.y(w,-h));
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));
     cairo_line_to(cairo,r.x(-w,h), r.y(-w,h));
     cairo_close_path(cairo);
-    //    cairo_stroke_preserve(cairo);
+    //cairo_stroke_preserve(cairo);
     cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
+  }
+
+  void Item::dummyDraw() const
+  {
+    ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+    draw(s.cairo());
+  }
+
+  void Item::displayTooltip(cairo_t* cairo) const
+  {
+    if (!tooltip.empty())
+      {
+        cairo_save(cairo);
+        Pango pango(cairo);
+        pango.setMarkup(latexToPango(tooltip));
+        cairo_translate(cairo,10,20);
+        cairo_rectangle(cairo,0,0,pango.width(),pango.height());
+        cairo_set_source_rgb(cairo,1,1,1);
+        cairo_fill_preserve(cairo);
+        cairo_set_source_rgb(cairo,0,0,0);
+        pango.show();
+        cairo_stroke(cairo);
+        cairo_restore(cairo);
+      }
   }
 
   namespace

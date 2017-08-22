@@ -31,24 +31,32 @@ trap "fail" 1 2 3 15
 #check addWire business rules
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
-set op0 [minsky.addOperation exp]
-set op1 [minsky.addOperation exp]
-minsky.op.get \$op0
-set x0 [minsky.op.x]
-set y0 [minsky.op.y]
-minsky.op.get \$op1
-minsky.op.moveTo 100 100
-set x1 [minsky.op.x]
-set y1 [minsky.op.y]
-set wireAdded [minsky.addWire \$op0 \$x0 \$y0 \$x1 \$y1]
-assert {[minsky.wires.size]==1} ""
-assert "\$wireAdded!=-1" ""
-assert "[minsky.addWire \$op0 \$x0 \$y0 \$x1 \$y1 {0 0 0 0}]==-1" "duplicate wire added!"
-assert "[minsky.addWire \$op0 \$x0 \$y0 \$x0 \$y0 {0 0 0 0}]==-1" "self wire allowed!"
-minsky.wire.get \$wireAdded
-#assert "[minsky.wire.from]==[lindex \$ports0 0] && [minsky.wire.to]==[lindex \$ports1 1]" ""
-minsky.deleteWire \$wireAdded
-assert {[minsky.wires.size]==0} ""
+minsky.addOperation exp
+minsky.canvas.itemFocus.dummyDraw
+minsky.canvas.itemFocus.ports.@elem 0
+set x0 [minsky.canvas.itemFocus.ports(0).x]
+set y0 [minsky.canvas.itemFocus.ports(0).y]
+
+minsky.addOperation exp
+minsky.canvas.itemFocus.dummyDraw
+minsky.canvas.itemFocus.moveTo 100 100
+minsky.canvas.itemFocus.ports.@elem 1
+set x1 [minsky.canvas.itemFocus.ports(1).x]
+set y1 [minsky.canvas.itemFocus.ports(1).y]
+# add a wire
+minsky.canvas.mouseDown \$x0 \$y0
+minsky.canvas.mouseUp \$x1 \$y1
+assert {[minsky.model.wires.size]==1} ""
+minsky.canvas.mouseDown \$x0 \$y0
+minsky.canvas.mouseUp \$x1 \$y1
+
+assert {[minsky.model.wires.size]==1} "duplicate wire added!"
+minsky.canvas.mouseDown \$x0 \$y0
+minsky.canvas.mouseUp \$x0 \$y0
+assert {[minsky.model.wires.size]==1} "self wire allowed!"
+minsky.canvas.getWireAt \$x0 \$y0
+minsky.canvas.deleteWire
+assert {[minsky.model.numWires]==0} ""
 tcl_exit
 EOF
 

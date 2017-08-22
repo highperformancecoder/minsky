@@ -82,7 +82,7 @@ bool VariableBase::ioVar() const
   return false;
 }
 
-string VariableBase::name()  const
+string VariableBase::_name()  const
 {
   // hide any leading ':' in upper level
   if (m_name[0]==':')
@@ -94,7 +94,7 @@ string VariableBase::name()  const
   return m_name;
 }
 
-string VariableBase::name(const std::string& name) 
+string VariableBase::_name(const std::string& name) 
 {
   m_name=name;
   ensureValueExists();
@@ -123,7 +123,7 @@ void VariableBase::ensureValueExists() const
 //  ensureValueExists();
 //}
 
-string VariableBase::init() const
+string VariableBase::_init() const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
@@ -132,7 +132,7 @@ string VariableBase::init() const
     return "0";
 }
 
-string VariableBase::init(const string& x)
+string VariableBase::_init(const string& x)
 {
   ensureValueExists(); 
   if (VariableValue::isValueId(valueId()))
@@ -146,12 +146,12 @@ string VariableBase::init(const string& x)
   return x;
 }
 
-double VariableBase::value() const
+double VariableBase::_value() const
 {
   return minsky::cminsky().variableValues[valueId()].value();
 }
 
-double VariableBase::value(double x)
+double VariableBase::_value(double x)
 {
   if (!m_name.empty())
     {

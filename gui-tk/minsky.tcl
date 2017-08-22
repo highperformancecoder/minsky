@@ -81,13 +81,10 @@ rename exit tcl_exit
 #if argv(1) has .tcl extension, it is a script, otherwise it is data
 if {$argc>1} {
     if [string match "*.tcl" $argv(1)] {
-        # rebuildCanvas is needed for buildMaps(), which is called in various places
-        proc rebuildCanvas {} {} 
-	    source $argv(1)
-	}
+        source $argv(1)
+    }
 }
 
-GUI
 if {$tcl_platform(os)=="Darwin" && [catch {GUI}]} {
     # pop a message box about installing XQuartz
     exec osascript << "tell application \"System Events\"
@@ -353,7 +350,7 @@ set classicMode 0
 if {$classicMode} {
     button .controls.run -text run -command runstop
     button .controls.reset -text reset -command reset
-    button .controls.step -text step -command {step; updateCanvas}
+    button .controls.step -text step -command {step}
 } else {
     image create photo runButton -file "$minskyHome/icons/Play.gif" 
     image create photo stopButton -file "$minskyHome/icons/Pause.gif"
@@ -362,7 +359,7 @@ if {$classicMode} {
     # iconic mode
     button .controls.run -image runButton -height 25 -width 25 -command runstop
     button .controls.reset -image resetButton -height 25 -width 25 -command reset
-    button .controls.step -image stepButton -height 25 -width 25  -command {step; updateCanvas}
+    button .controls.step -image stepButton -height 25 -width 25  -command {step}
     tooltip .controls.run "Run/Stop"
     tooltip .controls.reset "Reset simulation"
     tooltip .controls.step "Step simulation"
@@ -436,7 +433,7 @@ proc exportCanvas {} {
 .menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
 .menubar.file add separator
 .menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
-.menubar.file add command -label "Redraw" -command rebuildCanvas
+.menubar.file add command -label "Redraw" -command canvas.requestRedraw
 .menubar.file add command -label "Object Browser" -command obj_browser
 .menubar.file add command -label "Select items" -command selectItems
 .menubar.file add command -label "Command" -command cli
@@ -445,8 +442,8 @@ proc exportCanvas {} {
 .menubar.edit add command -label "Redo" -command "undo -1" -accelerator $meta_menu-Y
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
-.menubar.edit add command -label "Paste" -command {insertNewGroup [paste]} -accelerator $meta_menu-V
-.menubar.edit add command -label "Group selection" -command "minsky.createGroup; updateCanvas" -accelerator $meta_menu-G
+.menubar.edit add command -label "Paste" -command {paste} -accelerator $meta_menu-V
+.menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 
 menu .menubar.file.itemTypes
 proc selectItems {} {
@@ -459,21 +456,15 @@ proc selectItems {} {
 }
 
 proc undo {delta} {
-    # clear canvas to remove reference holds
-    .wiring.canvas delete all
     # do not record changes to state from the undo command
     doPushHistory 0
     minsky.undo $delta
-    updateCanvas   
     doPushHistory 1
 }
 
 
 proc cut {} {
-    # need to remove canvas items to be deleted before calling cut
-    .wiring.canvas delete all
     minsky.cut
-    updateCanvas
 }
 
 wm protocol . WM_DELETE_WINDOW exit
@@ -484,10 +475,10 @@ bind . <$meta-n> newSystem
 bind . <$meta-q> exit
 bind . <$meta-y> "undo -1"
 bind . <$meta-z> "undo 1"
-bind . <$meta-x> {minsky.cut; updateCanvas}
+bind . <$meta-x> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
-bind . <$meta-v> {insertNewGroup [paste]}
-bind . <$meta-g> {minsky.createGroup; updateCanvas}
+bind . <$meta-v> {paste}
+bind . <$meta-g> {minsky.createGroup}
 
 # tabbed manager
 ttk::notebook .tabs
@@ -503,7 +494,7 @@ source $minskyHome/group.tcl
 source $minskyHome/switch.tcl
 
 # add the tabbed windows
-.tabs add .wiring -text wiring
+.tabs add .wiring -text "New Canvas"
 
 image create photo renderedEquations -width 500 -height 500 
 #-file $minskyHome/icons/plot.gif
@@ -513,11 +504,33 @@ canvas .equations.canvas -height $canvasHeight -width $canvasWidth -scrollregion
 .equations.canvas create equations 0 0 -tags eq
 pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations
-
 .tabs select 0
 
 ttk::sizegrip .sizegrip
-proc scrollCanvases {xyview args} {eval .wiring.canvas $xyview $args; eval .equations.canvas $xyview $args}
+proc scrollCanvases {xyview args} {
+    switch [lindex $args 0] {
+        moveto {
+            set offs [expr 10000 - 20000 * [lindex $args 1]]
+            switch $xyview {
+                xview {model.moveTo $offs [model.y]}
+                yview {model.moveTo [model.x] $offs}
+            }
+        }
+        scroll {
+            switch [lindex $args 2] {
+                units {set incr [expr [lindex $args 1]*100]}
+                pages {set incr [expr [lindex $args 1]*800]}
+            }
+            switch $xyview {
+                xview {model.moveTo [expr [model.x]-$incr] [model.y]}
+                yview {model.moveTo [model.x] [expr [model.y]-$incr]}
+            }
+        }
+    }
+    canvas.requestRedraw
+            
+    eval .equations.canvas $xyview $args
+}
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
 
@@ -550,7 +563,6 @@ tooltip .controls.zoomIn "Zoom In"
 image create photo zoomOrigImg -file $minskyHome/icons/zoomOrig.gif
 button .controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
     -command {
-        openGlobalInCanvas
         if {[model.zoomFactor]>0} {zoom [expr 1/[model.zoomFactor]]} else {model.setZoom 1}
         recentreCanvas
     }
@@ -569,7 +581,6 @@ proc runstop {} {
         } else {
             .controls.run configure -image runButton
         }
-      updateCanvas
   } else {
       set running 1
       doPushHistory 0
@@ -588,7 +599,6 @@ proc step {} {
     if {$recordingReplay} {
         if {[gets $eventRecordR cmd]>=0} {
             eval $cmd
-            updateCanvas
             update
         } else {
             runstop
@@ -646,7 +656,6 @@ proc reset {} {
 
         global oplist lastOp
         set oplist [opOrder]
-        updateCanvas
         updateGodleysDisplay
         set lastOp -1
         return -code $err $result
@@ -695,8 +704,6 @@ proc openNamedFile {ofname} {
     eval minsky.load $fname
     doPushHistory 0
     pushFlags
-    openGlobalInCanvas
-    updateCanvas
     recentreCanvas
     
 
@@ -725,14 +732,14 @@ proc insertNewGroup {gid} {
 
     group.get $gid
     moveSet $gid [group.x] [group.y] 
-    move $gid [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+    move $gid [get_pointer_x .old_wiring.canvas] [get_pointer_y .old_wiring.canvas]
 
-    bind .wiring.canvas <Enter> "move $gid %x %y"
-    bind .wiring.canvas <Motion> "move $gid %x %y"
-    bind .wiring.canvas <Button-1> \
-        "bind .wiring.canvas <Motion> {}
-         bind .wiring.canvas <Enter> {}
-         bind .wiring.canvas <Button-1>{}
+    bind .old_wiring.canvas <Enter> "move $gid %x %y"
+    bind .old_wiring.canvas <Motion> "move $gid %x %y"
+    bind .old_wiring.canvas <Button-1> \
+        "bind .old_wiring.canvas <Motion> {}
+         bind .old_wiring.canvas <Enter> {}
+         bind .old_wiring.canvas <Button-1>{}
          # redo this here, as binding on a group undoes it
 #         initGroupList $gid
          move $gid %x %y
@@ -742,14 +749,7 @@ proc insertNewGroup {gid} {
 
 # adjust canvas so that -ve coordinates appear on canvas
 proc recentreCanvas {} {
-    set bounds [.wiring.canvas bbox all]
-    set scrollRegion [.wiring.canvas cget -scrollregion]
-    set xfrac [expr double([lindex $bounds 0]-[lindex $scrollRegion 0])/\
-                   ([lindex $scrollRegion 2]-[lindex $scrollRegion 0])]
-    set yfrac [expr double([lindex $bounds 1]-[lindex $scrollRegion 1])/\
-                   ([lindex $scrollRegion 3]-[lindex $scrollRegion 1])]
-    .wiring.canvas xview moveto $xfrac
-    .wiring.canvas yview moveto $yfrac
+    canvas.recentre
     .equations.canvas xview moveto 0.5
     .equations.canvas yview moveto 0.5
 }
@@ -780,32 +780,15 @@ proc newSystem {} {
         }
     }
     reset
+    model.clear
     deleteSubsidiaryTopLevels
     clearHistory
-    clearAll
     model.setZoom 1
     recentreCanvas
-    .wiring.canvas delete all
-    updateCanvas 
     global fname
     set fname ""
     wm title . "Minsky: New System"
 }
-
-# for debugging purposes
-#button .nextOp -text "Next Operation" -command {
-#    global oplist lastOp
-#
-#    if {[llength $oplist]>0} {
-#        if {$lastOp>=0} {.wiring.canvas itemconfigure $lastOp -outline black}
-#        set lastOp [.wiring.canvas create rectangle \
-#                    [.wiring.canvas bbox op[lindex $oplist 0]] -outline red
-#                   ]
-#        set oplist [lrange $oplist 1 end]
-#        }
-#}
-#pack append .buttonbar .nextOp left
-
 
 proc toggleImplicitSolver {} {
     global implicitSolver
@@ -917,7 +900,7 @@ set helpTopics(.wiring.menubar.line0.godley)  GodleyTable
 set helpTopics(.wiring.menubar.line0.var) Variable
 set helpTopics(.wiring.menubar.line0.const) Constant 
 # TODO - the following association interferes with canvas item context menus
-#set helpTopics(.wiring.canvas) DesignCanvas
+# set helpTopics(.wiring.canvas) DesignCanvas
 
 
 menu .contextHelp -tearoff 0
@@ -941,7 +924,7 @@ proc helpContext {x y} {
 proc helpFor {x y} {
     global helpTopics
     set win [winfo containing $x $y]
-    if {$win==".wiring.canvas"} {
+    if {$win==".old_wiring.canvas"} {
         canvasHelp $x $y
     } elseif [info exists helpTopics($win)] {
         help $helpTopics($win)
@@ -976,7 +959,6 @@ proc help {topic} {
     if {$topic=="Introduction"} {
         set URL  "file://$minskyHome/library/help/minsky.html"
     } else {
-#        set URL  "file://$minskyHome/library/help/minsky$externalLabel($topic)#$topic"
         set URL  "file://$minskyHome/library/help/minsky.html?minsky$externalLabel($topic)#$topic"
     }
     openURL $URL
@@ -1018,12 +1000,11 @@ proc aboutMinsky {} {
 proc deleteSubsidiaryTopLevels {} {
     global globals
 
-    set globals(default_rotation) 0
+    canvas.defaultRotation 0
     set globals(godley_tables) {}
 
     foreach w [info commands .godley*] {destroy $w}
     foreach w [info commands .plot*] {destroy $w}
-    .wiring.canvas delete all
     foreach image [image names] {
         if [regexp ".plot.*|godleyImage.*|groupImage.*|varImage.*|opImage.*|plot_image.*" $image] {
                 image delete $image
@@ -1115,15 +1096,10 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     doPushHistory 0
     setFname $argv(1)
     # we have loaded a Minsky model, so must refresh the canvas
-    openGlobalInCanvas
-    updateCanvas
     recentreCanvas
-    foreach g [wiringGroup.items.#keys] {
-        wiringGroup.item.get $g
-        if {[wiringGroup.item.classType]=="GodleyIcon"} {
-            wiringGroup.godley.get $g
-            set preferences(godleyDE) [wiringGroup.godley.table.doubleEntryCompliant]
-        }
+    if [findObject GodleyIcon] {
+        # set the DE preference from one of the godley table, if present
+        set preferences(godleyDE) [minsky.canvas.item.table.doubleEntryCompliant]
     }
     set delay [simulationDelay]
     pushHistory
@@ -1156,8 +1132,6 @@ proc addEvent {event window button height state width x y delta keysym subwindow
 proc startRecording {filename} {
     if {[string length $filename]>0} {
         minsky.startRecording $filename
-        .wiring.canvas delete all
-        updateCanvas
         recentreCanvas
     }
 }
@@ -1230,8 +1204,6 @@ if [info exists env(MINSKY_COV)] {
 # attach trace execuation to all created procs
     attachTraceProc ::
 }
-
-openGlobalInCanvas
 
 # a hook to allow code to be run after Minsky has initialised itself
 if {[llength [info commands afterMinskyStarted]]>0} {
