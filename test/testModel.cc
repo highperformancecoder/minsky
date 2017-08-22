@@ -37,9 +37,9 @@ namespace
 
     TestFixture(): lm(*this)
     {
-     a=model->addItem(new Variable<VariableType::flow>);
-     b=model->addItem(new Variable<VariableType::flow>);
-     c=model->addItem(new Variable<VariableType::flow>);
+      a=model->addItem(new Variable<VariableType::flow>("a"));
+     b=model->addItem(new Variable<VariableType::flow>("b"));
+     c=model->addItem(new Variable<VariableType::flow>("c"));
      // create 3 variables, wire them and add first two to a group,
      // leaving 3rd external
      a->moveTo(100,100);
@@ -58,11 +58,13 @@ namespace
      group0->addItem(a);
      checkWiresConsistent();
      group0->addItem(b);
-
-     CHECK_EQUAL(2,group0->items.size());
-     CHECK_EQUAL(1,group0->wires.size());
+     group0->splitBoundaryCrossingWires();
+     
+     CHECK_EQUAL(3,group0->items.size());
+     CHECK_EQUAL(2,group0->wires.size());
      CHECK_EQUAL(1,model->items.size());
-     CHECK_EQUAL(1,group0->wires.size());
+     CHECK_EQUAL(4,model->numItems());
+     CHECK_EQUAL(3,model->numWires());
      checkWiresConsistent();
 
       // add a couple of time operators, to ensure the group has finite size
@@ -117,13 +119,13 @@ SUITE(Group)
     CHECK(model->uniqueItems());
   }
 
-  TEST_FIXTURE(TestFixture, AddVariable)
+  TEST_FIXTURE(TestFixture, addVariable)
   {
     group0->addItem(c);
     CHECK(model->uniqueItems());
-    CHECK_EQUAL(3,group0->items.size());
+    CHECK_EQUAL(4,group0->items.size());
     CHECK_EQUAL(2,model->items.size());
-    CHECK_EQUAL(2,group0->wires.size());
+    CHECK_EQUAL(3,group0->wires.size());
     CHECK_EQUAL(0,model->wires.size());
     
     checkWiresConsistent();
@@ -131,11 +133,33 @@ SUITE(Group)
     // now check removal
     group0->group.lock()->addItem(c);
 
-    CHECK_EQUAL(2,group0->items.size());
-    CHECK_EQUAL(1,group0->wires.size());
+    CHECK_EQUAL(3,group0->items.size());
+    CHECK_EQUAL(2,group0->wires.size());
     CHECK_EQUAL(3,model->items.size());
     CHECK_EQUAL(1,model->wires.size());
   }
+
+  // check that removing then adding an item leaves the group idempotent
+  TEST_FIXTURE(TestFixture, removeAddItem)
+  {
+    CHECK_EQUAL(1,group0->createdIOvariables.size());
+    CHECK_EQUAL(3,model->items.size());
+    model->addItem(a);
+    group0->splitBoundaryCrossingWires();
+    save("x1.mky");
+    CHECK_EQUAL(3,group0->items.size()); // extra io var created
+    CHECK_EQUAL(4,model->items.size());
+    CHECK_EQUAL(2,group0->createdIOvariables.size());
+    CHECK_EQUAL(4,model->numWires());
+    group0->addItem(a);
+    group0->splitBoundaryCrossingWires();
+    CHECK_EQUAL(3,group0->items.size());
+    CHECK_EQUAL(3,model->items.size());
+    CHECK_EQUAL(1,group0->createdIOvariables.size());
+    CHECK_EQUAL(3,model->numWires());
+    CHECK_EQUAL(3,group0->items.size());
+  }
+
 }
 
 SUITE(Canvas)
