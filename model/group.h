@@ -110,18 +110,9 @@ namespace minsky
     template <class R, class M, class C, class X>
     std::vector<R> findAll(C c, M (GroupItems::*m), X xfm) const;
 
-    ItemPtr removeItem(const Item&);
     WirePtr removeWire(const Wire&);
     GroupPtr removeGroup(const Group&);
 
-    /// remove item from group, and also all attached wires.
-    void deleteItem(const Item& i) {
-      auto r=removeItem(i);
-      if (r)
-        for (auto& p: r->ports)
-          p->deleteWires();
-    }
-        
     
     /// finds item within this group or subgroups. Returns null if not found
     ItemPtr findItem(const Item& it) const; 
@@ -180,9 +171,6 @@ namespace minsky
 
 
     
-    /// splits any wires that cross group boundaries
-    void splitBoundaryCrossingWires();
-
     /// returns whether all items (which are shared_ptrs) are uniquely owned
     bool uniquely_owned() const {
       return !recursiveDo(&GroupItems::items,[](const Items&,Items::const_iterator i){
@@ -252,6 +240,15 @@ namespace minsky
     void addInputVar() {inVariables.push_back(addIOVar());}
     void addOutputVar() {outVariables.push_back(addIOVar());}
 
+    ItemPtr removeItem(const Item&);
+    /// remove item from group, and also all attached wires.
+    void deleteItem(const Item& i) {
+      auto r=removeItem(i);
+      if (r)
+        for (auto& p: r->ports)
+          p->deleteWires();
+    }
+        
     /// adjust position and size of icon to just cover contents
     void resizeOnContents();
 
@@ -328,6 +325,9 @@ namespace minsky
     /// I/O variable icon, null otherwise, indicating that the Group
     /// has been selected.
     VariablePtr select(float x, float y) const override;
+
+    /// splits any wires that cross group boundaries
+    void splitBoundaryCrossingWires();
 
   };
 

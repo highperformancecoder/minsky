@@ -91,7 +91,7 @@ namespace minsky
     return shared_ptr<Group>();
   }
 
-  ItemPtr GroupItems::removeItem(const Item& it)
+  ItemPtr Group::removeItem(const Item& it)
   {
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
@@ -102,6 +102,7 @@ namespace minsky
             {
               remove(inVariables, r);
               remove(outVariables, r);
+              remove(createdIOvariables, r);
             }
           return r;
         }
@@ -231,7 +232,7 @@ namespace minsky
     w.moveIntoGroup(*p1);
   }
   
-  void GroupItems::splitBoundaryCrossingWires()
+  void Group::splitBoundaryCrossingWires()
   {
     // Wire::split will invalidate the Items::iterator, so collect
     // wires to split first
@@ -243,6 +244,31 @@ namespace minsky
 
     for (auto w: wiresToSplit)
       w->split();
+
+    // check if any created I/O variables can be removed
+    auto varsToCheck=createdIOvariables;
+    for (auto& iv: varsToCheck)
+      {
+        assert(iv->ports[1]->input() && !iv->ports[1]->multiWireAllowed());
+        // firstly join wires that don't cross boundaries
+        // determine if this is input or output var
+        if (iv->ports[1]->wires.size()>0 &&
+            iv->ports[1]->wires[0]->from()->item.group.lock().get() == this)
+          {
+            // not an input var
+            for (auto& w: iv->ports[0]->wires)
+              if (w->to()->item.group.lock().get() == this)
+                // join wires, as not crossing boundary
+                {
+                  auto to=w->to();
+                  iv->ports[0]->eraseWire(w);
+                  removeWire(*w);
+                  addWire(iv->ports[1]->wires[0]->from(), to);
+                }
+          }
+        if (iv->ports[0]->wires.empty() || iv->ports[1]->wires.empty())
+          removeItem(*iv);
+      }
   }
 
   size_t GroupItems::numItems() const
