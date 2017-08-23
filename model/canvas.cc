@@ -134,7 +134,7 @@ namespace minsky
           if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
             {
               if (auto toGroup=model->minimalEnclosingGroup
-                  (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y()))
+                  (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                 {
                   toGroup->addItem(itemFocus);
                   toGroup->splitBoundaryCrossingWires();
@@ -255,8 +255,8 @@ namespace minsky
           newItem.reset(intop->intVar->clone()); 
         else
           newItem.reset(item->clone());
-        newItem->group.reset();
-        itemFocus=model->addItem(newItem);
+        setItemFocus(model->addItem(newItem));
+        model->normaliseGroupRefs(model);
       }
   }
 

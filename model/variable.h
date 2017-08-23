@@ -47,8 +47,7 @@ namespace minsky
     return ecolab::Accessor<T,G,S>(g,s);
   }
   
-  class VariableBase: public classdesc::PolyBase<VariableType::Type>,
-                      virtual public classdesc::PolyPackBase,
+  class VariableBase: virtual public classdesc::PolyPackBase,
                       public Item, public Slider, 
                       public VariableType
   {
@@ -70,8 +69,10 @@ namespace minsky
     static VariableBase* create(Type type); 
 
     virtual size_t numPorts() const=0;
-    std::string classType() const override {return "VariableBase";}
+    //std::string classType() const override {return "VariableBase";}
+    virtual Type type() const=0;
 
+    
     /// @{ variable displayed name
     virtual std::string _name() const;
     virtual std::string _name(const std::string& nm);
@@ -80,7 +81,7 @@ namespace minsky
         [this](const std::string& s){return _name(s);}};
     /// @}
 
-    virtual Type type() const override=0;
+    //virtual Type type() const override=0;
     bool ioVar() const override;
 
     /// unqualified portion of name
@@ -149,7 +150,7 @@ namespace minsky
   };
 
   template <VariableType::Type T>
-  class Variable: public VariableBase,
+  class Variable: public ItemT<Variable<T>, VariableBase>,
                   public classdesc::PolyPack<Variable<T> >
   {
   public:
@@ -164,11 +165,12 @@ namespace minsky
       return *this;
     }
     Variable(const std::string& name="") {this->name(name); this->addPorts();}
-    Variable* clone() const override {return new Variable(*this);}
-    std::string classType() const override 
-    {return "Variable<"+typeName(T)+">";}
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-    {::TCL_obj(t,d,*this);}
+//    Variable* clone() const override {
+//      return new Variable(*this);}
+//    std::string classType() const override 
+//    {return "Variable<"+typeName(T)+">";}
+//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+//    {::TCL_obj(t,d,*this);}
   };
 
   struct VarConstant: public Variable<VariableType::constant>

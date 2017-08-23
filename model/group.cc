@@ -54,8 +54,13 @@ namespace minsky
     clear();
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
-    for (auto& i: x.items) cloneMap[i.get()]=addItem(i->clone());
-    for (auto& i: x.groups) cloneMap[i.get()]=addGroup(dynamic_cast<Group*>(i->clone()));
+    for (auto& i: x.items)
+      cloneMap[i.get()]=addItem(i->clone());
+    for (auto& i: x.groups)
+      {
+        ItemPtr newItem(i->clone());
+        cloneMap[i.get()]=addGroup(dynamic_pointer_cast<Group>(newItem));
+      }
     for (auto& w: x.wires) 
       {
         auto f=w->from(), t=w->to();
@@ -77,6 +82,18 @@ namespace minsky
     return *this;
   }
 
+//  shared_ptr<Group> GroupItems::self() const
+//  {
+//    // this is quite hacky, but self() needs to be callable from the
+//    // contructor before the vtable has been populated. This
+//    // implementation is guaranteed to work as the Item part of Group
+//    // has been initialised prior to this, and that is all that is
+//    // needed
+//    if (auto g=dynamic_cast<const Group*>(this))
+//      return g->self();
+//    else return nullptr;
+//  }
+  
   shared_ptr<Group> Group::self() const
   {
     if (auto parent=group.lock())
@@ -563,16 +580,16 @@ namespace minsky
     return displayZoom;
   }
 
-  const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1) const
+  const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item* ignore) const
   {
     if (x0<x()-0.5*zoomFactor*width || x1>x()+0.5*zoomFactor*width || 
         y0<y()-0.5*zoomFactor*height || y1>y()+0.5*zoomFactor*height)
       return nullptr;
     // at this point, this is a candidate. Check if any child groups are also
     for (auto& g: groups)
-      if (auto mg=g->minimalEnclosingGroup(x0,y0,x1,y1))
+      if (auto mg=g->minimalEnclosingGroup(x0,y0,x1,y1, ignore))
         return mg;
-    return this;
+    return this!=ignore? this: nullptr;
   }
 
   void Group::setZoom(float factor)
@@ -878,6 +895,8 @@ namespace minsky
 
   void Group::normaliseGroupRefs(const shared_ptr<Group>& self)
   {
+    for (auto& i: items)
+        i->group=self;
     for (auto& g: groups)
       {
         g->group=self;

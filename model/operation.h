@@ -48,8 +48,7 @@ namespace minsky
   using classdesc::shared_ptr;
   class OperationPtr;
 
-  class OperationBase: public classdesc::PolyBase<minsky::OperationType::Type>,
-                       virtual public classdesc::PolyPackBase,
+  class OperationBase: virtual public classdesc::PolyPackBase,
                        public Item, public OperationType
   {
     CLASSDESC_ACCESS(OperationBase);
@@ -61,9 +60,9 @@ namespace minsky
     ///factory method. \a ports is used for recreating an object read
     ///from a schema
     static OperationBase* create(Type type); 
-    virtual Type type() const override=0;
-    virtual OperationBase* clone() const override=0;
-    std::string classType() const override {return "OperationBase";}
+    virtual Type type() const=0;
+//    virtual OperationBase* clone() const override=0;
+//    std::string classType() const override {return "OperationBase";}
 
     virtual ~OperationBase() {}
 
@@ -100,7 +99,7 @@ namespace minsky
   };
 
   template <minsky::OperationType::Type T>
-  class Operation: public Poly<Operation<T>, OperationBase>,
+  class Operation: public ItemT<Operation<T>, OperationBase>,
                    public PolyPack<Operation<T> >
   {
     typedef OperationBase Super;
@@ -117,9 +116,9 @@ namespace minsky
       this->addPorts();
       return *this;
     }
-    std::string classType() const override {return "Operation<"+OperationType::typeName(T)+">";}
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-    {::TCL_obj(t,d,*this);}
+//    std::string classType() const override {return "Operation<"+OperationType::typeName(T)+">";}
+//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+//    {::TCL_obj(t,d,*this);}
   };
 
   struct NamedOp
@@ -128,18 +127,18 @@ namespace minsky
   };
 
   class Constant: public Slider, 
-                  public Operation<minsky::OperationType::constant>
+                  public ItemT<Constant, Operation<minsky::OperationType::constant>>
   {
     typedef Operation<OperationType::constant> Super;
   public:
     double value=0; ///< constant value
 
     string description() const {return str(value);}
-    std::string classType() const override {return "Constant";}
+    //    std::string classType() const override {return "Constant";}
 
-    // clone has to be overridden, as default impl return object of
-    // type Operation<T>
-    Constant* clone() const override {return new Constant(*this);}
+//    // clone has to be overridden, as default impl return object of
+//    // type Operation<T>
+//    Constant* clone() const override {return new Constant(*this);}
     /// ensure slider does not override value
     void adjustSliderBounds();
     /// initialises sliderbounds based on current value, if not set otherwise
@@ -149,7 +148,7 @@ namespace minsky
     void unpack(unpack_t& x, const string& d) override;
   };
 
-  class IntOp: public Operation<minsky::OperationType::integrate>
+  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>
   {
     typedef Operation<OperationType::integrate> Super;
     // integrals have named integration variables
@@ -160,18 +159,22 @@ namespace minsky
   public:
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
-    std::string classType() const override {return "IntOp";}
+    //    std::string classType() const override {return "IntOp";}
 
     IntOp() {description("");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {description("int");}
+      OperationBase(x), Super(x) {group.reset();intVar.reset(); description("int");}
     ~IntOp();
     const IntOp& operator=(const IntOp& x); 
 
     // clone has to be overridden, as default impl return object of
     // type Operation<T>
-    IntOp* clone() const override {return new IntOp(*this);}
+//    IntOp* clone() const override {
+//      auto r=new IntOp(*this);
+//      r->intVar->group.reset();
+//      return r;
+//    }
 
     /// @{ name of the associated integral variable
     void description(string desc);
@@ -200,11 +203,11 @@ namespace minsky
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-    {::TCL_obj(t,d,*this);}
+//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+//    {::TCL_obj(t,d,*this);}
   };
 
-  class DataOp: public NamedOp, public Operation<minsky::OperationType::data>
+  class DataOp: public NamedOp, public ItemT<DataOp, Operation<minsky::OperationType::data>>
   {
     CLASSDESC_ACCESS(DataOp);
   public:
@@ -219,9 +222,9 @@ namespace minsky
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override {
-      ::TCL_obj(t,d,*this);
-    }
+//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override {
+//      ::TCL_obj(t,d,*this);
+//    }
   };
 
   /// shared_ptr class for polymorphic operation objects. Note, you
@@ -235,7 +238,7 @@ namespace minsky
       PtrBase(OperationBase::create(type)) {}
     // reset pointer to a newly created operation
     OperationPtr(OperationBase* op): PtrBase(op) {assert(op);}
-    OperationPtr clone() const {return OperationPtr(get()->clone());}
+    OperationPtr clone() const {return OperationPtr(ItemPtr(get()->clone()));}
     size_t use_count() const {return  classdesc::shared_ptr<OperationBase>::use_count();}
     OperationPtr(const PtrBase& x): PtrBase(x) {}
     OperationPtr& operator=(const PtrBase& x) {PtrBase::operator=(x); return *this;}

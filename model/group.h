@@ -60,7 +60,7 @@ namespace minsky
     virtual ~GroupItems() {}
     GroupItems& operator=(const GroupItems&);
     virtual std::shared_ptr<Group> self() const=0;
-
+    
     void clear() {
       items.clear();
       groups.clear();
@@ -204,6 +204,8 @@ namespace minsky
       return false;
     }
 
+  // note ItemT<Group> must appear before GroupItems, so that self()
+  // works correctly during construction
   class Group: public ItemT<Group>, public GroupItems
   {
     friend class GroupPtr;
@@ -220,6 +222,13 @@ namespace minsky
     //void setItemGroup(const ItemPtr& it) const override {it->group=self();}
     bool nocycles() const override; 
 
+    Group* clone() const {
+      Group* r=new Group;
+      *r=*this;
+      r->group.reset();
+      return r;
+    }
+    
     static SVGRenderer svgRenderer;
 
     void draw(cairo_t*) const override;
@@ -319,9 +328,10 @@ namespace minsky
     /// returns the smallest group whose icon completely encloses the
     /// rectangle given by the argument. If no candidate group found,
     /// returns nullptr. Weak reference returned, no ownership.
-    const Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1) const;
-    Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1) 
-    {return const_cast<Group*>(const_cast<const Group*>(this)->minimalEnclosingGroup(x0,y0,x1,y1));}
+    /// @param ignore - do not return group \a ignore, even if it encloses the rectangle
+    const Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item*ignore=nullptr) const;
+    Group* minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item*ignore=nullptr) 
+    {return const_cast<Group*>(const_cast<const Group*>(this)->minimalEnclosingGroup(x0,y0,x1,y1,ignore));}
       
     /// scaling factor to allow a rotated icon to fit on the bitmap
     float rotFactor() const;

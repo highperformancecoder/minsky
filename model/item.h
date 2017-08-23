@@ -149,8 +149,8 @@ namespace minsky
   typedef std::vector<ItemPtr> Items;
 
   /** curiously recursive template pattern for generating overrides */
-  template <class T>
-  struct ItemT: virtual public Item
+  template <class T, class Base=Item>
+  struct ItemT: virtual public Base
   {
     std::string classType() const override {
       auto s=classdesc::typeName<T>();
@@ -161,7 +161,11 @@ namespace minsky
         s=s.substr(eop);
       return s;
     }
-    Item* clone() const override {return new T(*dynamic_cast<const T*>(this));}
+    ItemT* clone() const override {
+      auto r=new T(*dynamic_cast<const T*>(this));
+      r->group.reset();
+      return r;
+    }
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
   };
