@@ -63,32 +63,6 @@ proc ungroupGroupItem {id} {
     updateCanvas
 }
 
-proc lasso {x y} {
-    global lassoStart
-    set x [.old_wiring.canvas canvasx $x]
-    set y [.old_wiring.canvas canvasy $y]
-    if {![info exists lassoStart]} {
-        set lassoStart "$x $y"
-        .old_wiring.canvas create rectangle $x $y $x $y -tag lasso
-    }
-    eval .old_wiring.canvas coords lasso $lassoStart $x $y
-}
-
-proc lassoEnd {x y} {
-    global lassoStart
-    if [info exists lassoStart] {
-        set x [.old_wiring.canvas canvasx $x]
-        set y [.old_wiring.canvas canvasy $y]
-        eval select $x $y $lassoStart
-        foreach item [eval .old_wiring.canvas find all] {
-            .old_wiring.canvas coords $item [.old_wiring.canvas coords $item]
-        }
-        .old_wiring.canvas delete lasso
-        unset lassoStart
-        updateCanvas
-    }
-}
-
 proc deiconifyEditGroup {} {
     if {![winfo exists .wiring.editGroup]} {
         toplevel .wiring.editGroup
@@ -140,52 +114,6 @@ proc groupEdit {} {
 
 namespace eval group {
 
-    proc resize {id} {
-        wiringGroup.group.get $id
-        set bbox [.old_wiring.canvas bbox item$id]
-        set item [eval .old_wiring.canvas create rectangle $bbox -tags resizeBBox]
-        # disable lasso mode
-        bind .old_wiring.canvas <Button-1> ""
-        bind .old_wiring.canvas <B1-Motion> ""
-        bind .old_wiring.canvas <B1-ButtonRelease> ""
-        bind .old_wiring.canvas <Motion> "group::resizeRect $item %x %y"
-        bind .old_wiring.canvas <ButtonRelease> "group::resizeItem $item $id %x %y"
-    }
-
-    # resize the bounding box to indicate how big we want the icon to be
-    proc resizeRect {item x y} {
-        set x [.old_wiring.canvas canvasx $x]
-        set y [.old_wiring.canvas canvasy $y]
-        set w [expr abs($x-[group.x])]
-               set h [expr abs($y-[group.y])]
-        .old_wiring.canvas coords $item  [expr [group.x]-$w] [expr [group.y]-$h] \
-            [expr [group.x]+$w] [expr [group.y]+$h]
-    }
-
-    # compute width and height and redraw item
-    proc resizeItem {item id x y} {
-        set x [.old_wiring.canvas canvasx $x]
-        set y [.old_wiring.canvas canvasy $y]
-        .old_wiring.canvas delete $item
-        set scalex [expr 2*abs($x-[group.x])/double([group.width])]
-        set scaley [expr 2*abs($y-[group.y])/double([group.height])]
-        # compute rotated scale factors
-        set angle [radian [wiringGroup.group.rotation]]
-        set rx [expr $scalex*cos($angle)-$scaley*sin($angle)]
-        set ry [expr $scalex*sin($angle)+$scaley*cos($angle)]
-        wiringGroup.group.width [expr abs($rx*[wiringGroup.group.width])]
-        wiringGroup.group.height [expr abs($ry*[wiringGroup.group.height])]
-        wiringGroup.group.computeDisplayZoom
-        wiringGroup.group.set
-        .old_wiring.canvas delete group$id
-        newGroupItem $id
-        foreach p [wiringGroup.group.ports]  {
-            adjustWire $p
-        }
-        bind .old_wiring.canvas <Motion> {}
-        bind .old_wiring.canvas <ButtonRelease> {}
-    }
-
     proc copy {id} {
         wiringGroup.item.get $id
         insertNewGroup [copyItem $id]
@@ -218,37 +146,6 @@ namespace eval group {
         # a bit kludgy to do a full redraw here...
         .old_wiring.canvas delete all
         updateCanvas
-    }
-
-    proc zoomToDisplay {id} {
-        group.get $id
-        set factor [expr 1.1*[group.computeDisplayZoom]/[group.zoomFactor]]
-        zoomAt [group.x] [group.y] $factor
-    }
-
-    proc button1 {id x y} {
-        group.get $id
-        if [group.displayContents] {
-            # use lasso mode when zoomed in
-            lasso $x $y
-            .old_wiring.canvas bind group$id <B1-Motion> "lasso %x %y"
-           .old_wiring.canvas bind group$id <B1-ButtonRelease> "group::lassoEnd $id %x %y; unbindOnRelease group$id"
-        } else {
-            onClick $id item$id $x $y
-        }
-    }
-
-    proc lassoEnd {id x y} {
-        global lassoStart
-        if [info exists lassoStart] {
-            set x [.old_wiring.canvas canvasx $x]
-            set y [.old_wiring.canvas canvasy $y]
-            eval inGroupSelect $id $x $y $lassoStart
-#            .old_wiring.canvas delete lasso
-            .old_wiring.canvas delete all
-            updateCanvas
-            unset lassoStart
-        }
     }
 }
 
