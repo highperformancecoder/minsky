@@ -262,35 +262,41 @@ namespace minsky
 
   void Canvas::openGroupInCanvas(const ItemPtr& item)
   {
-    if (auto g=dynamic_cast<Group*>(item.get())) {
-      if (auto parent=model->group.lock())
-        model->setZoom(parent->zoomFactor);
-      model=item;
-      float zoomFactor=1.1*model->displayZoom;
-      if (!model->displayContents())
-        {
-          // we need to move the io variables
-          for (auto& v: model->inVariables)
-            {
-              float x=v->x(), y=v->y();
-              zoom(x,model->x(),zoomFactor);
-              zoom(y,model->y(),zoomFactor);
-              v->moveTo(x,y);
-            }
-          for (auto& v: model->outVariables)
-            {
-              float x=v->x(), y=v->y();
-              zoom(x,model->x(),zoomFactor);
-              zoom(y,model->y(),zoomFactor);
-              v->moveTo(x,y);
-            }
-        }
-      model->zoom(model->x(),model->y(),zoomFactor);
-      requestRedraw();
-    }
+    if (auto g=dynamic_cast<Group*>(item.get()))
+      {
+        if (auto parent=model->group.lock())
+          model->setZoom(parent->zoomFactor);
+        model=item;
+        float zoomFactor=1.1*model->displayZoom;
+        if (!model->displayContents())
+          {
+            // we need to move the io variables
+            for (auto& v: model->inVariables)
+              {
+                float x=v->x(), y=v->y();
+                zoom(x,model->x(),zoomFactor);
+                zoom(y,model->y(),zoomFactor);
+                v->moveTo(x,y);
+              }
+            for (auto& v: model->outVariables)
+              {
+                float x=v->x(), y=v->y();
+                zoom(x,model->x(),zoomFactor);
+                zoom(y,model->y(),zoomFactor);
+                v->moveTo(x,y);
+              }
+          }
+        model->zoom(model->x(),model->y(),zoomFactor);
+        requestRedraw();
+      }
   }
 
-  
+  void Canvas::zoomToDisplay()
+  {
+    if (auto g=dynamic_cast<Group*>(item.get()))
+      model->zoom(g->x(),g->y(),1.1*g->displayZoom);
+  }
+
   bool Canvas::findVariableDefinition()
   {
     if (auto iv=dynamic_cast<VariableBase*>(item.get()))
