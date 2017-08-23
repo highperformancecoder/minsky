@@ -166,6 +166,9 @@ SUITE(Canvas)
 {
   TEST_FIXTURE(TestFixture, getItemAt)
     {
+      // zoom to display group0 to make a & b visible
+      canvas.item=group0;
+      canvas.zoomToDisplay();
       canvas.getItemAt(a->x()+2,a->y()+2);
       CHECK(a==canvas.item);
       canvas.getItemAt(b->x()-2,b->y()-2);
