@@ -253,6 +253,8 @@ namespace minsky
     /// adjust position and size of icon to just cover contents
     void resizeOnContents();
 
+    void resize(const LassoBox& x) override;
+
     /// returns true if this is higher in the heirarchy than the argument
     bool higher(const Group&) const;
     /// return level in the heirarchy

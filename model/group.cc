@@ -342,6 +342,12 @@ namespace minsky
 
   }
 
+  void Group::resize(const LassoBox& b)
+  {
+    width=fabs(b.x0-b.x1)/zoomFactor;
+    height=fabs(b.y0-b.y1)/zoomFactor;
+  }
+  
   bool Group::nocycles() const
   {
     set<const Group*> sg;
