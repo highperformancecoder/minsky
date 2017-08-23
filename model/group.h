@@ -209,11 +209,12 @@ namespace minsky
     friend class GroupPtr;
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
+
   public:
     std::string title;
     float width{100}, height{100}; // size of icon
     std::vector<VariablePtr> createdIOvariables;
-
+    
     /// @returns a shared_ptr to this. NULL if this cannot be found in parent group
     std::shared_ptr<Group> self() const override;
     //void setItemGroup(const ItemPtr& it) const override {it->group=self();}
@@ -329,6 +330,9 @@ namespace minsky
     /// splits any wires that cross group boundaries
     void splitBoundaryCrossingWires();
 
+    /// fix up subgroup pointers
+    /// \a self is a shared pointer ref to this
+    void normaliseGroupRefs(const std::shared_ptr<Group>& self);
   };
 
   /// find the closest (in or out) port to \a x or \a y.

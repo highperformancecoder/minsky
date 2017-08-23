@@ -845,6 +845,7 @@ proc canvasContext {x y} {
     .wiring.context add command -label "Save selection as" -command saveSelection
     .wiring.context add command -label "Paste" -command {paste}
     .wiring.context add command -label "Group" -command "minsky.createGroup"
+    .wiring.context add command -label "Open master group" -command "openModelInCanvas"
     tk_popup .wiring.context $x $y
 }
 #  
@@ -968,7 +969,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "item.flip; flip_default"
         }
         "Operation*|IntOp" {
-            .wiring.context delete 0 end
             .wiring.context add command -label Help -command "help op:[$item.name]"
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Port values [$item.portValues]" 
@@ -984,7 +984,6 @@ proc contextMenu {x y X Y} {
             }
         }
         "PlotWidget" {
-            .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help Plot}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Expand" -command "plotDoubleClick [TCLItem]"
@@ -993,7 +992,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
         }
         "GodleyIcon" {
-            .wiring.context delete 0 end
             .wiring.context add command -label Help -command {help GodleyTable}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Open Godley Table" -command "openGodley"
@@ -1001,7 +999,18 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Export to file" -command "godley::export"
         }
         "Group" {
-            groupContext $id $x $y
+            .wiring.context add command -label Help -command {help Group}
+            .wiring.context add command -label Description -command "postNote item"
+            .wiring.context add command -label "Edit" -command "groupEdit"
+            .wiring.context add command -label "Open in canvas" -command "openGroupInCanvas"
+            .wiring.context add command -label "Zoom to display" -command "group::zoomToDisplay"
+            .wiring.context add command -label "Remove plot icon" -command "item.removeDisplayPlot"
+            .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
+            .wiring.context add command -label "Copy" -command "canvas.copyItem"
+            .wiring.context add command -label "Save group as" -command "group::save"
+            .wiring.context add command -label "Flip" -command "minsky.canvas.item.flip; flip_default"
+            .wiring.context add command -label "Flip Contents" -command "group::flipContents"
+            .wiring.context add command -label "Ungroup" -command "ungroupGroupItem"
         }
         "Item" {
             .wiring.context delete 0 end

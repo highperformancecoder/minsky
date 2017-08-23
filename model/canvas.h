@@ -99,6 +99,9 @@ namespace minsky
     /// create a copy of item, and leave it focused
     void copyItem();
 
+    /// reinitialises canvas to the group located in item
+    void openGroupInCanvas(const ItemPtr& item);
+    
     /// populates item with the defining variable if there is
     /// one. Leave item unchanged if it is not a variable, or variable
     /// is undefined. NB may be a Godley table or integral

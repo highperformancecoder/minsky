@@ -862,4 +862,13 @@ namespace minsky
     return VariablePtr();
   }
 
+  void Group::normaliseGroupRefs(const shared_ptr<Group>& self)
+  {
+    for (auto& g: groups)
+      {
+        g->group=self;
+        g->normaliseGroupRefs(g);
+      }
+  }
+  
 }
