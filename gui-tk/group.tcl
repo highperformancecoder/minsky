@@ -25,24 +25,6 @@ proc radian {deg} {
 
 setGroupIconResource $minskyHome/icons/group.svg
 
-proc newGroupItem {id} {
-    global minskyHome
-    wiringGroup.group.get $id
-    .old_wiring.canvas create item [wiringGroup.group.x] [wiringGroup.group.y] -id $id  -tags "item$id items"
-    .old_wiring.canvas lower item$id
-
-    .old_wiring.canvas bind item$id <Button-1> "group::button1 $id %x %y"
-    .old_wiring.canvas bind item$id <<middleMouse-Motion>> \
-        "wires::extendConnect \[closestOutPort %x %y \] group$id %x %y"
-    .old_wiring.canvas bind item$id <<middleMouse-ButtonRelease>> \
-        "wires::finishConnect item$id %x %y"
-    .old_wiring.canvas bind item$id  <Double-Button-1> "groupEdit $id"
-    .old_wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
-    .old_wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
-
-    
-}
-
 proc rightMouseGroup {id x y X Y} {
     set varId [selectVar $id [.old_wiring.canvas canvasx $x] [.old_wiring.canvas canvasy $y]]
     if {$varId>=0} {
@@ -107,77 +89,53 @@ proc lassoEnd {x y} {
     }
 }
 
-proc groupContext {id x y} {
-    .old_wiring.context delete 0 end
-    .old_wiring.context add command -label Help -command {help Group}
-    .old_wiring.context add command -label Description -command "postNote group $id"
-    .old_wiring.context add command -label "Edit" -command "groupEdit $id"
-    .old_wiring.context add command -label "Open in canvas" -command "openInCanvas $id"
-    .old_wiring.context add command -label "Zoom to display" -command "group::zoomToDisplay $id"
-    .old_wiring.context add command -label "Remove plot icon" -command "group.get $id; group.removeDisplayPlot"
-    .old_wiring.context add command -label "Resize" -command "group::resize $id"
-    .old_wiring.context add command -label "Copy" -command "group::copy $id"
-    .old_wiring.context add command -label "Save group as" -command "group::save $id"
-    .old_wiring.context add command -label "Flip" -command "group::flip $id"
-    .old_wiring.context add command -label "Flip Contents" -command "group::flipContents $id"
-    .old_wiring.context add command -label "Browse object" -command "group.get $id; obj_browser wiringGroup.group.*"
-    .old_wiring.context add command -label "Ungroup" -command "ungroupGroupItem $id"
-    .old_wiring.context add command -label "Raise" -command "raiseItem group$id"
-    .old_wiring.context add command -label "Lower" -command "lowerItem group$id"
-    .old_wiring.context add command -label "Delete" -command "deleteGroupItem $id"
-    .old_wiring.context add command -label "content bounds" -command "
-      wiringGroup.group.get $id
-      .old_wiring.canvas create rectangle \[wiringGroup.group.cBounds\]
-     "
-}
-
 proc deiconifyEditGroup {} {
-    if {![winfo exists .old_wiring.editGroup]} {
-        toplevel .old_wiring.editGroup
-        wm title .old_wiring.editGroup "Edit Group"
-        wm transient .old_wiring.editGroup .old_wiring
+    if {![winfo exists .wiring.editGroup]} {
+        toplevel .wiring.editGroup
+        wm title .wiring.editGroup "Edit Group"
+        wm transient .wiring.editGroup .wiring
 
-        frame .old_wiring.editGroup.name
-        label .old_wiring.editGroup.name.label -text "Name"
-        entry  .old_wiring.editGroup.name.val -width 20
-        pack .old_wiring.editGroup.name.label .old_wiring.editGroup.name.val -side left
+        frame .wiring.editGroup.name
+        label .wiring.editGroup.name.label -text "Name"
+        entry .wiring.editGroup.name.val -width 20
+        pack .wiring.editGroup.name.label .wiring.editGroup.name.val -side left
 
-        frame .old_wiring.editGroup.rot
-        label .old_wiring.editGroup.rot.label -text "     Rotation"
-        entry  .old_wiring.editGroup.rot.val -width 20
-        pack .old_wiring.editGroup.rot.label .old_wiring.editGroup.rot.val -side left
+        frame .wiring.editGroup.rot
+        label .wiring.editGroup.rot.label -text "     Rotation"
+        entry .wiring.editGroup.rot.val -width 20
+        pack .wiring.editGroup.rot.label .wiring.editGroup.rot.val -side left
 
-        pack .old_wiring.editGroup.name .old_wiring.editGroup.rot
+        pack .wiring.editGroup.name .wiring.editGroup.rot
         
-        frame .old_wiring.editGroup.buttonBar
-        button .old_wiring.editGroup.buttonBar.ok -text OK
-        button .old_wiring.editGroup.buttonBar.cancel -text Cancel -command {
-            closeEditWindow .old_wiring.editGroup}
-        pack .old_wiring.editGroup.buttonBar.ok .old_wiring.editGroup.buttonBar.cancel -side left
-        pack .old_wiring.editGroup.buttonBar -side bottom
+        frame .wiring.editGroup.buttonBar
+        button .wiring.editGroup.buttonBar.ok -text OK
+        button .wiring.editGroup.buttonBar.cancel -text Cancel -command {
+            closeEditWindow .wiring.editGroup}
+        pack .wiring.editGroup.buttonBar.ok .wiring.editGroup.buttonBar.cancel -side left
+        pack .wiring.editGroup.buttonBar -side bottom
         
-        bind .old_wiring.editGroup <Key-Return> {invokeOKorCancel .old_wiring.editGroup.buttonBar}
-        bind .old_wiring.editGroup <Key-Escape> {.old_wiring.editGroup.buttonBar.cancel invoke}
+        bind .wiring.editGroup <Key-Return> {invokeOKorCancel .wiring.editGroup.buttonBar}
+        bind .wiring.editGroup <Key-Escape> {.wiring.editGroup.buttonBar.cancel invoke}
     } else {
-        wm deiconify .old_wiring.editGroup
+        wm deiconify .wiring.editGroup
     }
     update
 }
 
-proc groupEdit {id} {
-    wiringGroup.group.get $id
+proc groupEdit {} {
     deiconifyEditGroup
-    .old_wiring.editGroup.name.val delete 0 end
-    .old_wiring.editGroup.name.val insert 0 [group.title]
-    .old_wiring.editGroup.rot.val delete 0 end
-    .old_wiring.editGroup.rot.val insert 0 [group.rotation]
-    .old_wiring.editGroup.buttonBar.ok configure \
+    .wiring.editGroup.name.val delete 0 end
+    .wiring.editGroup.name.val insert 0 [minsky.canvas.item.title]
+    .wiring.editGroup.rot.val delete 0 end
+    .wiring.editGroup.rot.val insert 0 [minsky.canvas.item.rotation]
+    .wiring.editGroup.buttonBar.ok configure \
         -command {
-            wiringGroup.group.rotation [.old_wiring.editGroup.rot.val get]
-            wiringGroup.group.title [.old_wiring.editGroup.name.val get]
-            closeEditWindow .old_wiring.editGroup
+            minsky.canvas.item.rotation [.wiring.editGroup.rot.val get]
+            minsky.canvas.item.title [.wiring.editGroup.name.val get]
+            minsky.canvas.requestRedraw
+            closeEditWindow .wiring.editGroup
         }
-    grab .old_wiring.editGroup
+    grab .wiring.editGroup
 }
 
 namespace eval group {
