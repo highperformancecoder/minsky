@@ -245,11 +245,13 @@ namespace minsky
     /// remove item from group, and also all attached wires.
     void deleteItem(const Item& i) {
       auto r=removeItem(i);
-      if (r)
-        for (auto& p: r->ports)
-          p->deleteWires();
+      if (r) r->deleteAttachedWires();
     }
-        
+    void deleteAttachedWires() override {
+      for (auto& i: inVariables) i->deleteAttachedWires();
+      for (auto& i: outVariables) i->deleteAttachedWires();
+    }
+    
     /// adjust position and size of icon to just cover contents
     void resizeOnContents();
 

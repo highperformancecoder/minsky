@@ -107,6 +107,14 @@ namespace minsky
           return r;
         }
 
+    for (auto i=groups.begin(); i!=groups.end(); ++i)
+      if (i->get()==&it)
+        {
+          ItemPtr r=*i;
+          groups.erase(i);
+          return r;
+        }
+    
     removeDisplayPlot();
     
     for (auto& g: groups)

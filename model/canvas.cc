@@ -34,7 +34,7 @@ namespace minsky
   {
     // firstly, see if the user is selecting an item
     itemFocus=model->findAny(&Group::items,
-                       [&](const ItemPtr& i){return i->contains(x,y);});
+                       [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
 //    if (!itemFocus)
 //      // check for groups
 //      itemFocus=model->findAny(&Group::groups,
@@ -233,10 +233,10 @@ namespace minsky
   void Canvas::getItemAt(float x, float y)
   {
     item=model->findAny(&Group::items,
-                       [&](const ItemPtr& i){return i->contains(x,y);});
+                        [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
       item=model->findAny(&Group::groups,
-                       [&](const ItemPtr& i){return i->contains(x,y);});
+                       [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
   }
   
   void Canvas::getWireAt(float x, float y)

@@ -70,6 +70,12 @@ namespace minsky
       return m_y;
   }
 
+  void Item::deleteAttachedWires()
+  {
+    for (auto& p: ports)
+      p->deleteWires();
+  }
+  
   bool Item::visible() const 
   {
     if (auto g=group.lock())

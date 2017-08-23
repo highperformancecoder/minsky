@@ -99,6 +99,9 @@ namespace minsky
     float y() const; 
 
     virtual void resize(const LassoBox&) {}
+
+    /// delete all attached wires
+    virtual void deleteAttachedWires();
     
     virtual Item* clone() const {return new Item(*this);}
 
