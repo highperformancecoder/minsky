@@ -168,6 +168,7 @@ proc zoomAt {x0 y0 factor} {
 
 .menubar.ops add command -label "Variable" -command "addVariable" 
 foreach var [availableOperations] {
+    if {$var=="constant"} continue
     if {$var=="numOps"} break
     .menubar.ops add command -label [regsub {(.*)_$} $var {\1}] -command "minsky.addOperation $var"
 }
@@ -610,7 +611,7 @@ proc wireContextMenu {x y} {
 #    .wiring.context add command -label "Raise" -command "raiseItem wire$id"
 #    .wiring.context add command -label "Lower" -command "lowerItem wire$id"
     .wiring.context add command -label "Browse object" -command "obj_browser canvas.wire.*"
-    .wiring.context add command -label "Delete wire" -command "deleteWire; canvas.redraw"
+    .wiring.context add command -label "Delete wire" -command "canvas.deleteWire"
     tk_popup .wiring.context $x $y
 }
 

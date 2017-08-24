@@ -132,19 +132,19 @@ namespace minsky
         // check if the move has moved outside or into a group
         if (auto g=itemFocus->group.lock())
           if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
-            {
-              if (auto toGroup=model->minimalEnclosingGroup
-                  (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
-                {
-                  toGroup->addItem(itemFocus);
-                  toGroup->splitBoundaryCrossingWires();
-                }
-              else
-                {
-                  model->addItem(itemFocus);
-                  model->splitBoundaryCrossingWires();
-                }
-            }
+            if (auto toGroup=model->minimalEnclosingGroup
+                (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+              {
+                toGroup->addItem(itemFocus);
+                toGroup->splitBoundaryCrossingWires();
+              }
+            else
+              {
+                model->addItem(itemFocus);
+                model->splitBoundaryCrossingWires();
+              }
+        if (auto g=itemFocus->group.lock())
+          g->checkAddIORegion(itemFocus);
         requestRedraw();
       }
     else if (fromPort.get())
@@ -249,7 +249,14 @@ namespace minsky
   {
     if (item)
       if (auto g=item->group.lock())
-        itemFocus=g->removeItem(*item);
+        {
+          if (auto parent=g->group.lock())
+            itemFocus=parent->addItem(item);
+          else
+            itemFocus=model->addItem(item);
+          itemFocus->m_visible=true;
+          g->splitBoundaryCrossingWires();
+        }
   }
   
   void Canvas::ungroupItem()

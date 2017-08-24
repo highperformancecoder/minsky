@@ -247,6 +247,12 @@ namespace minsky
     /// move all items from source to this
     void moveContents(Group& source); 
 
+    /// returns which I/O region (x,y) is in if any
+    enum class IORegion {none,input,output};
+    IORegion inIORegion(float x, float y) const;
+    /// check if item is a variable and located in an I/O region, and add it if it is
+    void checkAddIORegion(const ItemPtr& x);
+    
     void addInputVar() {inVariables.push_back(addIOVar());}
     void addOutputVar() {outVariables.push_back(addIOVar());}
 
@@ -349,13 +355,6 @@ namespace minsky
     void normaliseGroupRefs(const std::shared_ptr<Group>& self);
   };
 
-  /// find the closest (in or out) port to \a x or \a y.
-  struct ClosestPort: public std::shared_ptr<Port>
-  {
-    enum InOut {in, out};
-    ClosestPort(const Group&, InOut, float x, float y); 
-  };
-
   template <class M, class C>
   const typename M::value_type GroupItems::findAny(M GroupItems::*map, C c) const
   {
@@ -393,7 +392,6 @@ namespace minsky
 // not needed anyway
 #pragma omit pack minsky::Group
 #pragma omit unpack minsky::Group
-//#pragma omit TCL_obj minsky::GroupPtr
 #endif
 namespace classdesc_access
 {
@@ -401,15 +399,6 @@ namespace classdesc_access
     public classdesc::NullDescriptor<classdesc::pack_t> {};
   template <> struct access_unpack<minsky::Group>: 
     public classdesc::NullDescriptor<classdesc::unpack_t> {};
-//  template <> struct access_TCL_obj<minsky::GroupPtr>
-//  {
-//    template <class U>
-//    void operator()(classdesc::TCL_obj_t& t, const classdesc::string& d, U& a)
-//    {
-//      if (auto g=dynamic_cast<minsky::Group*>(a.get())) 
-//        TCL_obj(t,d,*g);
-//    }
-//  };
 }
 #include "group.cd"
 #endif

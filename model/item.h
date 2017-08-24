@@ -133,8 +133,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y);
 
     /// returns closest output port to \a x,y
-    virtual std::shared_ptr<Port> closestOutPort(float x, float y) const 
-    {return ports[0];}
+    virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 
     virtual std::shared_ptr<Port> closestInPort(float x, float y) const;
 
     /// returns the variable if point (x,y) is within a

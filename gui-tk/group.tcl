@@ -30,7 +30,7 @@ proc rightMouseGroup {x y X Y} {
         .wiring.context delete 0 end
         .wiring.context add command -label "Edit" -command "editItem"
         .wiring.context add command -label "Copy" -command "canvas.copyItem"
-#        .wiring.context add command -label "Remove" -command "canvas.removeItemFromItsGroup"
+        .wiring.context add command -label "Remove" -command "canvas.removeItemFromItsGroup"
         .wiring.context post $X $Y
     } else {
         contextMenu $x $y $X $Y

@@ -113,6 +113,10 @@ namespace minsky
 
   ClickType::Type Item::clickType(float x, float y)
   {
+    // if selecting a contained variable, the delegate to that
+    if (auto item=select(x,y))
+      return item->clickType(x,y);
+    
     // firstly, check whether a port has been selected
     for (auto& p: ports)
       {
@@ -221,8 +225,17 @@ namespace minsky
     inline float sqr(float x) {return x*x;}
   }
 
+  shared_ptr<Port> Item::closestOutPort(float x, float y) const 
+  {
+    if (auto v=select(x,y))
+      return v->closestOutPort(x,y);
+    return ports.size()>0? ports[0]: nullptr;
+  }
+  
   shared_ptr<Port> Item::closestInPort(float x, float y) const
   {
+    if (auto v=select(x,y))
+      return v->closestInPort(x,y);
     shared_ptr<Port> r;
     for (size_t i=1; i<ports.size(); ++i)
       if (!r || sqr(ports[i]->x()-x)+sqr(ports[i]->y()-y) <

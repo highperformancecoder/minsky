@@ -120,6 +120,7 @@ namespace minsky
               remove(inVariables, r);
               remove(outVariables, r);
               remove(createdIOvariables, r);
+              r->m_visible=true;
             }
           return r;
         }
@@ -349,6 +350,45 @@ namespace minsky
     v->rotation=rotation;
     return v;
   }
+  
+  Group::IORegion Group::inIORegion(float x, float y) const
+  {
+    float left, right;
+    margins(left,right);
+    float dx=(x-this->x())*cos(rotation*M_PI/180)-
+      (y-this->y())*sin(rotation*M_PI/180);
+    float w=0.5*width*zoomFactor;
+    if (w-right*zoomFactor<dx)
+      return IORegion::output;
+    else if (-w+left*zoomFactor>dx)
+      return IORegion::input;
+    else
+      return IORegion::none;
+  }
+
+  void Group::checkAddIORegion(const ItemPtr& x)
+  {
+    if (auto v=dynamic_pointer_cast<VariableBase>(x))
+      {
+        remove(inVariables, v);
+        remove(outVariables, v);
+        switch (inIORegion(v->x(),v->y()))
+          {
+          case IORegion::input:
+            inVariables.push_back(v);
+            v->m_visible=false;
+            break;
+          case IORegion::output:
+            outVariables.push_back(v);
+            v->m_visible=false;
+            break;
+          default:
+            v->m_visible=true;
+            break;
+          }
+      }
+  }
+
   
   void Group::resizeOnContents()
   {
@@ -634,25 +674,6 @@ namespace minsky
 
   namespace {
     inline float sqr(float x) {return x*x;}
-  }
-
-  ClosestPort::ClosestPort(const Group& g, InOut io, float x, float y)
-  {
-    float minr2=std::numeric_limits<float>::max();
-    g.recursiveDo(&Group::items, [&](const Items& m, Items::const_iterator i)
-                  {
-                    for (auto& p: (*i)->ports)
-                      if ((io!=out && p->input()) || (io!=in && !p->input()))
-                        {
-                          float r2=sqr(p->x()-x)+sqr(p->y()-y);
-                          if (r2<minr2)
-                            {
-                              shared_ptr<Port>::operator=(p);
-                              minr2=r2;
-                            }
-                        }
-                    return false;
-                  });
   }
 
   void Group::draw(cairo_t* cairo) const
