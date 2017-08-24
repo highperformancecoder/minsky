@@ -35,10 +35,10 @@ namespace minsky
     // firstly, see if the user is selecting an item
     itemFocus=model->findAny(&Group::items,
                        [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
-//    if (!itemFocus)
-//      // check for groups
-//      itemFocus=model->findAny(&Group::groups,
-//                               [&](const GroupPtr& i){return i->contains(x,y);});
+    if (!itemFocus)
+      // check for groups
+      itemFocus=model->findAny(&Group::groups,
+                               [&](const GroupPtr& i){return i->contains(x,y);});
 
     if (itemFocus)
       {
