@@ -25,7 +25,7 @@ ttk::frame .wiring.menubar.line0
 
 image create photo godleyImg -file $minskyHome/icons/bank.gif
 button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
-    -command addNewGodleyItem
+    -command addGodley
 tooltip .wiring.menubar.line0.godley "Godley table"
 
 image create photo varImg -file $minskyHome/icons/var.gif
@@ -82,7 +82,7 @@ if {[tk windowingsystem]=="aqua"} {
     operationIcon switchImg switch
 }
 button .wiring.menubar.line$menubarLine.switch -image switchImg \
-    -height 24 -width 37 -command {placeNewSwitch}
+    -height 24 -width 37 -command {addSwitch}
 tooltip .wiring.menubar.line$menubarLine.switch "Switch"
 pack .wiring.menubar.line$menubarLine.switch -side left 
 set helpTopics(.wiring.menubar.line$menubarLine.switch) "switch"
@@ -90,7 +90,7 @@ set helpTopics(.wiring.menubar.line$menubarLine.switch) "switch"
 
 image create photo plotImg -file $minskyHome/icons/plot.gif
 button .wiring.menubar.line$menubarLine.plot -image plotImg \
-    -height 24 -width 37 -command {newPlot}
+    -height 24 -width 37 -command {addPlot}
 tooltip .wiring.menubar.line$menubarLine.plot "Plot"
 pack .wiring.menubar.line$menubarLine.plot -side left 
 
@@ -194,7 +194,7 @@ proc addVariablePostModal {} {
     minsky.addVariable $name $varInput(Type)
     canvas.itemFocus.init $varInput(Value)
     if {!$varExists} {
-        value.get [canvas.itemFocus.valueId]
+        getValue [canvas.itemFocus.valueId]
         canvas.itemFocus.rotation [set varInput(Rotation)]
         canvas.itemFocus.tooltip [set "varInput(Short description)"]
         canvas.itemFocus.detailedText [set "varInput(Detailed description)"]
@@ -384,8 +384,8 @@ proc deleteKey {} {
 #      move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 #  }
 #  
-#  # global godley icon resource
-#  setGodleyIconResource $minskyHome/icons/bank.svg
+# global godley icon resource
+setGodleyIconResource $minskyHome/icons/bank.svg
 #  
 #  proc godleyToolTipText {id x y} {
 #      set varId [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
@@ -439,21 +439,16 @@ proc deleteKey {} {
 #  #    .wiring.canvas bind godley$id <Motion> "changeToolTip $id %x %y"
 #  #}
 #  
-#  proc rightMouseGodley {id x y X Y} {
-#      set varId [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-#      if {$varId>=0} {
-#          .wiring.context delete 0 end
-#          .wiring.context add command -label "Edit" -command "wiringGroup.var.get $varId; editVar"
-#          .wiring.context add command -label "Copy" -command "
-#             item.get $varId
-#             copyVar 
-#             item.rotation 0
-#          "
-#          .wiring.context post $X $Y
-#      } else {
-#          contextMenu $id $X $Y
-#      }
-#  }
+proc rightMouseGodley {x y X Y} {
+    if [selectVar $x $y] {
+        .wiring.context delete 0 end
+        .wiring.context add command -label "Edit" -command "editItem"
+        .wiring.context add command -label "Copy" -command "canvas.copyItem"
+        .wiring.context post $X $Y
+    } else {
+        contextMenu $id $X $Y
+    }
+}
 #  
 #  proc doubleMouseGodley {id x y} {
 #      set varId [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
@@ -568,7 +563,11 @@ bind .wiring.canvas <Double-Button-1> {
 
 bind .wiring.canvas <<contextMenu>> {
     if [getItemAt %x %y] {
-        contextMenu %x %y %X %Y
+        switch [minsky.canvas.item.classType] {
+            GodleyIcon {rightMouseGodley %x %y %X %Y}
+            Group {rightMouseGroup %x %y %X %Y}
+            default {contextMenu %x %y %X %Y}
+        }
     } elseif [getWireAt %x %y] {
         wireContextMenu %x %y
     } else {
@@ -806,7 +805,7 @@ proc deiconifyEditVar {} {
         
         # initialise variable type when selected from combobox
         bind .wiring.editVar.entry10 <<ComboboxSelected>> {
-            value.get [valueId [.wiring.editVar.entry10 get]]
+            getValue [valueId [.wiring.editVar.entry10 get]]
             .wiring.editVar.entry20 set [value.type]
         }
         
@@ -909,7 +908,7 @@ proc deiconifyInitVar {} {
 
         # initialise variable type when selected from combobox
         bind .wiring.initVar.entry10 <<ComboboxSelected>> {
-            value.get [.wiring.initVar.entry10 get]
+            getValue [.wiring.initVar.entry10 get]
             .wiring.initVar.entry20 set [value.type]
         }
         
@@ -1117,7 +1116,7 @@ proc closeEditWindow {window} {
 proc editVar {} {
     global editVarInput
     set item minsky.canvas.item
-    value.get [$item.valueId]
+    getValue [$item.valueId]
     deiconifyEditVar
     wm title .wiring.editVar "Edit [$item.name]"
     # populate combobox with existing variable names
@@ -1165,7 +1164,7 @@ proc editItem {} {
                         integral.get $id
                         set constInput(ValueLabel) "Initial Value"
                         var.get [integral.intVarID]
-                        value.get [var.valueId]
+                        getValue [var.valueId]
                         set constInput(Value) [value.init]
                         set setValue setIntegralIValue
                         set constInput(Name) [integral.description]
@@ -1214,7 +1213,7 @@ proc editItem {} {
             integral.get $id
             set constInput(ValueLabel) "Initial Value"
             integral.getIntVar
-            value.get [item.valueId]
+            getValue [item.valueId]
             set constInput(Value) [value.init]
             set setValue setIntegralIValue
             set constInput(Name) [integral.description]

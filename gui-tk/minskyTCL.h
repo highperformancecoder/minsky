@@ -130,8 +130,19 @@ namespace minsky
       canvas.addGroup();
       registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
     }
+    void addSwitch() {
+      canvas.addSwitch();
+      registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
+    }
     void createGroup() {Minsky::createGroup();}
 
+    bool selectVar(float x, float y) {
+      bool r=canvas.selectVar(x,y);
+      if (r)
+        registerRef(canvas.item,"minsky.canvas.item");
+      return r;
+    }
+    
     /// create a TCL controlled object that is a reference to item
     /// @return a unique TCL command lead in sequence, or empty if no
     /// such object is created

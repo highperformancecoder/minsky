@@ -24,6 +24,7 @@
 #include "godleyIcon.h"
 #include "operation.h"
 #include "selection.h"
+#include "switchIcon.h"
 #include <cairo_base.h>
 
 namespace minsky
@@ -90,6 +91,7 @@ namespace minsky
     void addPlot() {setItemFocus(model->addItem(new PlotWidget));}
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
+    void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
     
     /// delete item referenced by item
     void deleteItem() {if (item) model->deleteItem(*item);}
@@ -104,6 +106,10 @@ namespace minsky
 
     /// zooms canvas such that group indexed by item is displayed
     void zoomToDisplay();
+
+    /// populates item with a variable if (x,y) is over a variable part
+    /// @return true if item is updated
+    bool selectVar(float x, float y);
     
     /// populates item with the defining variable if there is
     /// one. Leave item unchanged if it is not a variable, or variable

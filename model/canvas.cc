@@ -257,6 +257,7 @@ namespace minsky
           newItem.reset(item->clone());
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
+        newItem->m_visible=true;
       }
   }
 
@@ -297,6 +298,20 @@ namespace minsky
       model->zoom(g->x(),g->y(),1.1*g->displayZoom);
   }
 
+  bool Canvas::selectVar(float x, float y) 
+  {
+    if (item)
+      {
+        if (auto v=item->select(x,y))
+          {
+            item=v;
+            return true;
+          }
+      }
+    else
+      return false;
+  }
+    
   bool Canvas::findVariableDefinition()
   {
     if (auto iv=dynamic_cast<VariableBase*>(item.get()))
