@@ -92,7 +92,7 @@ namespace schema1
           //          x.moveTo(l->second.x,l->second.y); 
           x.m_x=l->second.x;
           x.m_y=l->second.y;
-          x.m_visible=l->second.visible;
+          //x.m_visible=l->second.visible;
           x.rotation=l->second.rotation;
         }
     }
@@ -439,6 +439,7 @@ namespace schema1
                       gg->inVariables.push_back(v);
                     else
                       gg->outVariables.push_back(v);
+                    v->m_visible=false;
                   }
           }
       }

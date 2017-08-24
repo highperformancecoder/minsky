@@ -245,6 +245,26 @@ namespace minsky
                         [&](const WirePtr& i){return i->near(x,y);});
   }
 
+  void Canvas::removeItemFromItsGroup()
+  {
+    if (item)
+      if (auto g=item->group.lock())
+        itemFocus=g->removeItem(*item);
+  }
+  
+  void Canvas::ungroupItem()
+  {
+    if (auto g=dynamic_cast<Group*>(item.get()))
+      {
+        if (auto p=g->group.lock())
+          p->moveContents(*g);
+        else
+          model->moveContents(*g);
+          deleteItem();
+      }
+  }
+
+
   void Canvas::copyItem()
   {
     if (item)

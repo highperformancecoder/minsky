@@ -97,7 +97,12 @@ namespace minsky
     void deleteItem() {if (item) model->deleteItem(*item);}
     /// delete wire referenced by wire
     void deleteWire() {if (wire) model->removeWire(*wire);}
+    /// remove item from its group, leaving in itemFocus for later placement
+    void removeItemFromItsGroup();
 
+    /// if item is a Group, move its contents to its parent and delete the group
+    void ungroupItem();
+    
     /// create a copy of item, and leave it focused
     void copyItem();
 

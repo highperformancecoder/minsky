@@ -278,7 +278,7 @@ namespace minsky
       }
   }
 
-  VariablePtr GodleyIcon::select(float x, float y) const
+  ItemPtr GodleyIcon::select(float x, float y) const
   {
     for (auto& v: flowVars)
       if (RenderVariable(*v).inImage(x,y)) 
@@ -286,7 +286,7 @@ namespace minsky
     for (auto& v: stockVars)
       if (RenderVariable(*v).inImage(x,y)) 
         return v;
-    return VariablePtr();
+    return ItemPtr();
   }
 
   void GodleyIcon::draw(cairo_t* cairo) const

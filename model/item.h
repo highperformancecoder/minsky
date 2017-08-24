@@ -139,7 +139,7 @@ namespace minsky
 
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
-    virtual VariablePtr select(float x, float y) const;
+    virtual std::shared_ptr<Item> select(float x, float y) const;
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
     {::TCL_obj(t,d,*this);}
 

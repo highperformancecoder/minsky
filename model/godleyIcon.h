@@ -77,7 +77,7 @@ namespace minsky
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table
     /// has been selected.
-    VariablePtr select(float x, float y) const override;
+    ItemPtr select(float x, float y) const override;
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;

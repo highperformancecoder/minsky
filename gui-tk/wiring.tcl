@@ -446,7 +446,7 @@ proc rightMouseGodley {x y X Y} {
         .wiring.context add command -label "Copy" -command "canvas.copyItem"
         .wiring.context post $X $Y
     } else {
-        contextMenu $id $X $Y
+        contextMenu $x $y $X $Y
     }
 }
 #  
@@ -602,11 +602,11 @@ bind .wiring.canvas <<contextMenu>> {
 #      .wiring.canvas lower $item all
 #  }
 #  
-proc wireContextMenu {id x y} {
+proc wireContextMenu {x y} {
     .wiring.context delete 0 end
     .wiring.context add command -label Help -command {help Wires}
-    .wiring.context add command -label Description -command "postNote wire $id"
-    .wiring.context add command -label "Straighten" -command "wire.straighten; canvas.redraw"
+    .wiring.context add command -label Description -command "postNote wire"
+    .wiring.context add command -label "Straighten" -command "minsky.canvas.wire.straighten"
 #    .wiring.context add command -label "Raise" -command "raiseItem wire$id"
 #    .wiring.context add command -label "Lower" -command "lowerItem wire$id"
     .wiring.context add command -label "Browse object" -command "obj_browser canvas.wire.*"
@@ -685,7 +685,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Save group as" -command "group::save"
             .wiring.context add command -label "Flip" -command "minsky.canvas.item.flip; flip_default"
             .wiring.context add command -label "Flip Contents" -command "group::flipContents"
-            .wiring.context add command -label "Ungroup" -command "ungroupGroupItem"
+            .wiring.context add command -label "Ungroup" -command "canvas.ungroupItem"
         }
         "Item" {
             .wiring.context delete 0 end

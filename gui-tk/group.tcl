@@ -25,24 +25,15 @@ proc radian {deg} {
 
 setGroupIconResource $minskyHome/icons/group.svg
 
-proc rightMouseGroup {id x y X Y} {
-    set varId [selectVar $id [.old_wiring.canvas canvasx $x] [.old_wiring.canvas canvasy $y]]
-    if {$varId>=0} {
-        .old_wiring.context delete 0 end
-        .old_wiring.context add command -label "Edit" -command "item.get $varId; editVar"
-        .old_wiring.context add command -label "Copy" -command "
-           item.get $varId
-           copyVar 
-           var.rotation 0
-           var.set
-        "
-        .old_wiring.context add command -label "Remove" -command "
-           wiringGroup.group.removeVariableById 
-           wiringGroup.group.set
-        "
-        .old_wiring.context post $X $Y
+proc rightMouseGroup {x y X Y} {
+    if [selectVar $x $y] {
+        .wiring.context delete 0 end
+        .wiring.context add command -label "Edit" -command "editItem"
+        .wiring.context add command -label "Copy" -command "canvas.copyItem"
+#        .wiring.context add command -label "Remove" -command "canvas.removeItemFromItsGroup"
+        .wiring.context post $X $Y
     } else {
-        contextMenu $id $X $Y
+        contextMenu $x $y $X $Y
     }
 }
 

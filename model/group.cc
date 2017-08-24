@@ -328,7 +328,10 @@ namespace minsky
          // make temporary copies as addItem removes originals
          auto copyOfItems=source.items;
          for (auto& i: copyOfItems)
-           addItem(i);
+           {
+             addItem(i);
+             i->m_visible=true; // make I/O variables visible
+           }
          auto copyOfGroups=source.groups;
          for (auto& i: source.groups)
            addGroup(i);
@@ -615,13 +618,13 @@ namespace minsky
      m_displayContentsChanged = dpc!=displayContents();
      for (auto& i: items)
        {
-         i->m_visible=displayContents();
+         //         i->m_visible=displayContents();
          if (displayContents() && !m_displayContentsChanged)
            i->zoom(xOrigin, yOrigin, factor);
        }
      for (auto& i: groups)
        {
-         i->m_visible=displayContents();
+         //         i->m_visible=displayContents();
          if (displayContents() && !m_displayContentsChanged)
            i->zoom(xOrigin, yOrigin, factor);
          m_displayContentsChanged|=i->displayContentsChanged();
@@ -882,7 +885,7 @@ namespace minsky
     return rotFactor;
   }
 
-  VariablePtr Group::select(float x, float y) const
+  ItemPtr Group::select(float x, float y) const
   {
     for (auto& v: inVariables)
       if (RenderVariable(*v).inImage(x,y)) 
@@ -890,7 +893,7 @@ namespace minsky
     for (auto& v: outVariables)
       if (RenderVariable(*v).inImage(x,y)) 
         return v;
-    return VariablePtr();
+    return nullptr;
   }
 
   void Group::normaliseGroupRefs(const shared_ptr<Group>& self)

@@ -231,8 +231,8 @@ namespace minsky
     return r;
   }
 
-  VariablePtr Item::select(float x, float y) const
-  {return VariablePtr();}
+  ItemPtr Item::select(float x, float y) const
+  {return ItemPtr();}
 
 
 }

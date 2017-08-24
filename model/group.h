@@ -339,7 +339,7 @@ namespace minsky
     /// returns the variable if point (x,y) is within a
     /// I/O variable icon, null otherwise, indicating that the Group
     /// has been selected.
-    VariablePtr select(float x, float y) const override;
+    ItemPtr select(float x, float y) const override;
 
     /// splits any wires that cross group boundaries
     void splitBoundaryCrossingWires();
