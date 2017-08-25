@@ -52,7 +52,7 @@ namespace minsky
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
-    void resizeWindow(int width, int height);
+    //    void resizeWindow(int width, int height);
     
     /// event handling for the canvas
     void mouseDown(float x, float y);

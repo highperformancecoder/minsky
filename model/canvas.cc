@@ -21,8 +21,20 @@
 #include "minsky.h"
 #include "init.h"
 #include <cairo_base.h>
+
+#ifdef CAIRO_HAS_XLIB_SURFACE
 #include <cairo/cairo-xlib.h>
-#include <cairo/cairo-xlib.h>
+#endif
+// CYGWIN has problems with WIN32_SURFACE
+#define USEWIN32_SURFACE defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
+#if USEWIN32_SURFACE
+#undef Realloc
+#include <cairo/cairo-win32.h>
+// undocumented internal function for extracting the HDC from a Drawable
+extern "C" HDC TkWinGetDrawableDC(Display*, Drawable, void*);
+extern "C" HDC TkWinReleaseDrawableDC(Drawable, HDC, void*);
+#endif
+
 #include <ecolab_epilogue.h>
 using namespace std;
 using namespace ecolab::cairo;
@@ -471,51 +483,12 @@ namespace minsky
   }
 
   
-  void Canvas::resizeWindow(int width, int height)
-  {
-    if (surface.get() && cairo_surface_get_type
-        (surface->surface())==CAIRO_SURFACE_TYPE_QUARTZ)
-      cairo_xlib_surface_set_size(surface->surface(),width,height);
-  }
+//  void Canvas::resizeWindow(int width, int height)
+//  {
+//    if (surface.get() && cairo_surface_get_type
+//        (surface->surface())==CAIRO_SURFACE_TYPE_QUARTZ)
+//      cairo_xlib_surface_set_size(surface->surface(),width,height);
+//  }
 
 }
 
-namespace
-{
-  struct CanvasDisplayItem: public CairoImage
-  {
-    void draw()
-    {
-      if (cairoSurface)
-        {
-          minsky::minsky().canvas.surface=cairoSurface;
-          minsky::minsky().canvas.redraw();
-        }
-    }
-  };
-
-  int createCanvasImage(Tcl_Interp *interp,	Tk_Canvas canvas, Tk_Item *itemPtr, 
-                        int objc,Tcl_Obj *CONST objv[])
-  {
-    int rc=createImage<CanvasDisplayItem>(interp,canvas,itemPtr,objc,objv);
-    // adjust image bounding box to the entire canvas, not just what's there
-    itemPtr->x1=-10000;
-    itemPtr->x2=10000;
-    itemPtr->y1=-10000;
-    itemPtr->y2=10000;
-    return rc;
-  }
-    
-  // register OperatorItem with Tk for use in canvases.
-  int registerItems()
-  {
-    static Tk_ItemType canvasDisplayItemType = cairoItemType();
-    canvasDisplayItemType.name=const_cast<char*>("canvas");
-    canvasDisplayItemType.createProc=createCanvasImage;
-    Tk_CreateItemType(&canvasDisplayItemType);
-    return 0;
-  }
-
-}
-
-static int dum=(initVec().push_back(registerItems), 0);
