@@ -36,8 +36,9 @@ but any renamed attributes require bumping the schema number.
 #include <vector>
 #include <string>
 
-// see ticket #461. This potentially masks a serious bug
-#pragma GCC diagnostic ignored "-Wvirtual-move-assign"
+// Note the explicit declaration of default assignment operators is
+// required to disable warnings about virtual move assigns. See ticket
+// #461.
 
 namespace schema1
 {
@@ -61,6 +62,7 @@ namespace schema1
   template <class T, class B1, class B2=PolyBase<string> >
   struct SPoly: virtual public B1, virtual public B2
   {
+    SPoly& operator=(const SPoly&)=default;
     // clone() has to return an SPoly* to satsify covariance
     SPoly* clone() const {return new T(static_cast<const T&>(*this));}
     string type() const {return classdesc::typeName<T>();}
@@ -99,6 +101,7 @@ namespace schema1
   template <class T, class U>
   struct Join: virtual public T, virtual public U 
   {
+    Join& operator=(const Join&)=default;
     Join* clone() const {return new Join(*this);}
     string type() const {return "";}
     void pack(pack_t& x, const string& d) const {}
