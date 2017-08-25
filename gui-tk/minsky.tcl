@@ -146,9 +146,9 @@ if {[tk windowingsystem]=="win32"} {
             .wiring.canvas {
                 if {%D>=0} {
                     # on Winblows, min val of |%D| is 120, so just use sign
-                    zoom 1.1
+                    zoomAt %x %y 1.1
                 } {
-                    zoom [expr 1.0/1.1]
+                    zoom %x %y [expr 1.0/1.1]
                 } 
             }
         }
