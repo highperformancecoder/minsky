@@ -120,8 +120,6 @@ namespace minsky
               assert(*v);
             }
           vars.back()->zoomFactor=zoomFactor;
-//          ports.insert(ports.end(), vars.back()->ports.begin(),
-//                       vars.back()->ports.end());
         }
       // remove any previously existing variables
       set<ItemPtr> ov(oldVars.begin(), oldVars.end());
@@ -249,6 +247,7 @@ namespace minsky
     iconSize=max(100.0, 1.8*height);
 
     positionVariables();
+    bb.update(*this);
   }
 
   void GodleyIcon::positionVariables() const

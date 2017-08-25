@@ -164,7 +164,7 @@ proc zoomAt {x0 y0 factor} {
 #    }
 }
 
-.menubar.ops add command -label "Godley Table" -command addNewGodleyItem
+.menubar.ops add command -label "Godley Table" -command canvas.addGodley
 
 .menubar.ops add command -label "Variable" -command "addVariable" 
 foreach var [availableOperations] {
