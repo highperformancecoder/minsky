@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "geometry.h"
 #include "wire.h"
 #include "port.h"
 #include "group.h"

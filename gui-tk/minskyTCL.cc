@@ -23,7 +23,17 @@
 #include "init.h"
 #include <ecolab.h>
 #include <ecolab_epilogue.h>
+#ifdef CAIRO_HAS_XLIB_SURFACE
 #include <cairo/cairo-xlib.h>
+#endif
+// CYGWIN has problems with WIN32_SURFACE
+#define USE_WIN32_SURFACE defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
+#if USE_WIN32_SURFACE
+#include <cairo/cairo-win32.h>
+// undocumented internal function for extracting the HDC from a Drawable
+extern "C" HDC TkWinGetDrawableDC(Display*, Drawable, void*);
+extern "C" HDC TkWinReleaseDrawableDC(Drawable, HDC, void*);
+#endif
 
 #include <unistd.h>
 
@@ -339,12 +349,29 @@ namespace minsky
       CD& c=*(CD*)cd;
       int depth;
       Visual *visual = Tk_GetVisual(interp(), c.tkWin, "default", &depth, NULL);
-      c.canvas.surface.reset
+#if USE_WIN32_SURFACE
+        // TkWinGetDrawableDC is an internal (ie undocumented) routine
+        // for getting the DC. We need to declare something to take
+        // the state parameter - two long longs should be ample here
+        long long state[2];
+        HDC hdc=TkWinGetDrawableDC(display, win, state);
+        SaveDC(hdc);
+        c.canvas.surface.reset
+        (new TkWinSurface
+         (c.canvas, c.master,
+          cairo_win32_surface_create(hdc)));
+#else
+        c.canvas.surface.reset
         (new TkWinSurface
          (c.canvas, c.master,
           cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
+#endif
       c.canvas.redraw();
       cairo_surface_flush(c.canvas.surface->surface());
+#if USE_WIN32_SURFACE
+      RestoreDC(hdc,-1);
+      TkWinReleaseDrawableDC(win, hdc, state);
+#endif
     }
 
     void freeCI(ClientData cd,Display*) {delete (CD*)cd;}

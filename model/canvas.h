@@ -25,6 +25,7 @@
 #include "operation.h"
 #include "selection.h"
 #include "switchIcon.h"
+#include "wire.h"
 #include <cairo_base.h>
 
 namespace minsky

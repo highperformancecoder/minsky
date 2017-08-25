@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "geometry.h"
 #include "canvas.h"
 #include "minsky.h"
 #include "init.h"
@@ -34,6 +35,8 @@
 extern "C" HDC TkWinGetDrawableDC(Display*, Drawable, void*);
 extern "C" HDC TkWinReleaseDrawableDC(Drawable, HDC, void*);
 #endif
+
+#undef near
 
 #include <ecolab_epilogue.h>
 using namespace std;
