@@ -35,6 +35,11 @@ extern "C" HDC TkWinGetDrawableDC(Display*, Drawable, void*);
 extern "C" HDC TkWinReleaseDrawableDC(Drawable, HDC, void*);
 #endif
 
+#if defined(MAC_OSX_TK)
+#include <Carbon/Carbon.h>
+extern "C" CGContextRef getContext(Drawable win);
+#endif
+
 #include <unistd.h>
 
 #ifdef _WIN32

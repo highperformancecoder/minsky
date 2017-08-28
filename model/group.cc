@@ -351,7 +351,7 @@ namespace minsky
     return v;
   }
   
-  Group::IORegion Group::inIORegion(float x, float y) const
+  Group::IORegion::type Group::inIORegion(float x, float y) const
   {
     float left, right;
     margins(left,right);

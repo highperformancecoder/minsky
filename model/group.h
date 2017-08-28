@@ -222,7 +222,7 @@ namespace minsky
     //void setItemGroup(const ItemPtr& it) const override {it->group=self();}
     bool nocycles() const override; 
 
-    Group* clone() const {
+    Group* clone() const override {
       Group* r=new Group;
       *r=*this;
       r->group.reset();
@@ -248,8 +248,9 @@ namespace minsky
     void moveContents(Group& source); 
 
     /// returns which I/O region (x,y) is in if any
-    enum class IORegion {none,input,output};
-    IORegion inIORegion(float x, float y) const;
+    struct IORegion {enum type {none,input,output};};
+      
+    IORegion::type inIORegion(float x, float y) const;
     /// check if item is a variable and located in an I/O region, and add it if it is
     void checkAddIORegion(const ItemPtr& x);
     

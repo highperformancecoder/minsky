@@ -47,8 +47,8 @@ namespace minsky
     float moveOffsX, moveOffsY;
     
     /// lasso mode support
-    enum class LassoMode {none, lasso, itemResize};
-    LassoMode lassoMode=LassoMode::none;
+    struct LassoMode {enum type  {none, lasso, itemResize};};
+    LassoMode::type lassoMode=LassoMode::none;
     LassoBox lasso{0,0,0,0};
     
     Canvas() {}

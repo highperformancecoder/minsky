@@ -219,6 +219,9 @@ namespace minsky
     }
 
     string valueId(const string& x) {return VariableValue::valueId(x);}
+
+    void addPhotoSurfaceToCanvas(const char* photo) 
+    {canvas.surface.reset(new cairo::TkPhotoSurface(Tk_FindPhoto(interp(),photo)));}
   };
 }
 
