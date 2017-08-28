@@ -59,7 +59,7 @@ WTGUI_OBJS=canvasView.o mainMenu.o minskyApp.o propertiesDlg.o  \
 ALL_OBJS=tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(WTGUI_OBJS)
 
 # TODO - remove dependency on GUI directory here
-FLAGS+=-std=c++11 -Ischema -Iengine -IGUI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\"
+FLAGS+=-std=c++11 -Ischema -Iengine -IGUI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
 VPATH= schema GUI engine server gui-wt $(ECOLAB_HOME)/include
 
