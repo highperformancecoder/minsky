@@ -13,7 +13,7 @@ VPATH= .. ../schema ../model ../engine ../server $(ECOLAB_HOME)/include
 UNITTESTOBJS=main.o testModel.o testMinsky.o testGeometry.o testLatexToPango.o testVariable.o testDerivative.o testDatabase.o
 MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o,$(wildcard ../*.o))
 FLAGS:=-I.. $(FLAGS)
-FLAGS+=-std=c++11 -I../model -I../engine -I../schema
+FLAGS+=-std=c++11  -Wno-unused-local-typedefs -I../model -I../engine -I../schema
 LIBS+=-ljson_spirit -lsoci_core -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lboost_signals \
 	-lUnitTest++ -lgsl -lgslcblas  -lxml2 -ltiff
