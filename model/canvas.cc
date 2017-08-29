@@ -484,14 +484,5 @@ namespace minsky
     surface=tmp;
     requestRedraw();
   }
-
-  
-//  void Canvas::resizeWindow(int width, int height)
-//  {
-//    if (surface.get() && cairo_surface_get_type
-//        (surface->surface())==CAIRO_SURFACE_TYPE_QUARTZ)
-//      cairo_xlib_surface_set_size(surface->surface(),width,height);
-//  }
-
 }
 

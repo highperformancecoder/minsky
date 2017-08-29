@@ -860,6 +860,7 @@ proc setRKparms {} {
     foreach {var text} $rkVars { $var $rkVarInput($var) }
 }
 
+
 proc closePreferencesForm {} {
     grab release .preferencesForm
     wm withdraw .preferencesForm
@@ -1201,6 +1202,7 @@ if [info exists env(MINSKY_COV)] {
 # attach trace execuation to all created procs
     attachTraceProc ::
 }
+
 
 # a hook to allow code to be run after Minsky has initialised itself
 if {[llength [info commands afterMinskyStarted]]>0} {

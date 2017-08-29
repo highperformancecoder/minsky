@@ -107,13 +107,13 @@ for {set i 0} {$i<=$menubarLine} {incr i} {
 pack .wiring.menubar -fill x
 
 if {[tk windowingsystem] == "aqua"} {
-    image create photo minskyCanvas -height $canvasHeight -width $canvasWidth
-    minsky.addPhotoSurfaceToCanvas minskyCanvas
-    minsky.canvas.redraw
+   image create photo minskyCanvas -height $canvasHeight -width $canvasWidth
+   minsky.addPhotoSurfaceToCanvas minskyCanvas
 } else {    
     image create canvasImage minskyCanvas -canvas minsky.canvas
 }
 label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
+bind .wiring <Configure> {canvas.resize  %w %h}
 pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {minsky.canvas.mouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {minsky.canvas.mouseUp %x %y}

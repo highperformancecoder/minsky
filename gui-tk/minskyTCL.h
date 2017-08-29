@@ -220,8 +220,22 @@ namespace minsky
 
     string valueId(const string& x) {return VariableValue::valueId(x);}
 
+    struct TkPhotoCanvas: public cairo::TkPhotoSurface
+    {
+      Canvas& canvas;
+      TkPhotoCanvas(const char* photo, Canvas& canvas):
+        cairo::TkPhotoSurface(Tk_FindPhoto(interp(),photo)), canvas(canvas) {}
+      void requestRedraw() override {
+        clear();
+        canvas.redraw();
+        blit();
+      }
+    };
+    
     void addPhotoSurfaceToCanvas(const char* photo) 
-    {canvas.surface.reset(new cairo::TkPhotoSurface(Tk_FindPhoto(interp(),photo)));}
+    {canvas.surface.reset(new TkPhotoCanvas(photo, canvas));}
+
+    bool hasSurface() const {return canvas.surface.get();}
   };
 }
 

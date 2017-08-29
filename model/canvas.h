@@ -30,6 +30,16 @@
 
 namespace minsky
 {
+  template <class T>
+  struct NoAssign: public T
+  {
+    // disable assignment for objects wrapped in this class, but allow
+    // assignment otherwise
+    NoAssign& operator=(const NoAssign&) {}
+    template <class U>
+    NoAssign& operator=(const U& x) {T::operator=(x);}
+  };
+  
   class Canvas
   {
     // for drawing error indicators on the canvas
@@ -38,7 +48,8 @@ namespace minsky
   public:
     GroupPtr model;
     Selection selection;
-    Exclude<ecolab::cairo::SurfacePtr> surface;
+    // we don't want surface to be reassigned every time a new model is loaded.
+    NoAssign<Exclude<ecolab::cairo::SurfacePtr>> surface;
     ItemPtr itemFocus; ///< item selected by clicking
     WirePtr wireFocus; ///< wire that mouse is hovering over
     unsigned handleSelected;
@@ -53,7 +64,8 @@ namespace minsky
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
-    //    void resizeWindow(int width, int height);
+    void resize(int width, int height)
+    {if (surface.get()) {surface->resize(width,height); surface->requestRedraw();}}
     
     /// event handling for the canvas
     void mouseDown(float x, float y);
