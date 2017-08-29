@@ -107,8 +107,7 @@ for {set i 0} {$i<=$menubarLine} {incr i} {
 pack .wiring.menubar -fill x
 
 image create canvasImage minskyCanvas -canvas minsky.canvas
-label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
-bind .wiring <Configure> {canvas.resize  %w %h}
+ttk::label .wiring.canvas -image minskyCanvas
 pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {minsky.canvas.mouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {minsky.canvas.mouseUp %x %y}
@@ -133,9 +132,15 @@ bind .wiring.canvas <Button-5> {zoomAt  %x %y [expr 1.0/1.1]}
 # mouse wheel bindings for pc and aqua
 bind .wiring.canvas <MouseWheel> { if {%D>=0} {zoomAt %x %y 1.1} {zoomAt  %x %y [expr 1.0/(1.1)]} }
 
-bind .wiring.canvas <Alt-Button-1> {
-    tk_messageBox -message "Mouse coordinates %x %y"
-}
+if {[tk windowingsystem]=="aqua"} {
+    bind .wiring.canvas <Command-Button-1> {
+        tk_messageBox -message "Mouse coordinates %x %y"
+    }
+} else {
+     bind .wiring.canvas <Alt-Button-1> {
+        tk_messageBox -message "Mouse coordinates %x %y"
+    }
+}   
 
 proc zoom {factor} {
     set x0 [get_pointer_x .wiring.canvas]

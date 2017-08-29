@@ -376,7 +376,8 @@ namespace minsky
         (new TkWinSurface
          (c.canvas, c.master,
           cairo_quartz_surface_create_for_cg_context(nctx.context, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
-        cairo_surface_set_device_offset(c.canvas.surface->surface(),0,Tk_Height(c.tkWin));
+        // TODO: offsets here appear to be quite arbitrary!!!
+        cairo_surface_set_device_offset(c.canvas.surface->surface(),27,Tk_Height(c.tkWin)+37);
         cairo_surface_set_device_scale(c.canvas.surface->surface(),1,-1);
 #else
         c.canvas.surface.reset
