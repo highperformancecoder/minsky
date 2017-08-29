@@ -219,21 +219,6 @@ namespace minsky
     }
 
     string valueId(const string& x) {return VariableValue::valueId(x);}
-
-    struct TkWinPhotoSurface: public cairo::TkPhotoSurface
-    {
-      Canvas& canvas;
-      TkWinPhotoSurface(const char* photo, Canvas& canvas):
-        cairo::TkPhotoSurface(Tk_FindPhoto(interp(),photo)), canvas(canvas) {}
-      void requestRedraw() override {
-        canvas.redraw();
-        blit();
-      }
-    };
-
-    
-    void addPhotoSurfaceToCanvas(const char* photo) 
-    {canvas.surface.reset(new TkWinPhotoSurface(photo, canvas));}
   };
 }
 
