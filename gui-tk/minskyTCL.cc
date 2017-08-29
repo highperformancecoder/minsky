@@ -37,7 +37,8 @@ extern "C" HDC TkWinReleaseDrawableDC(Drawable, HDC, void*);
 
 #if defined(MAC_OSX_TK)
 #include <Carbon/Carbon.h>
-extern "C" CGContextRef getContext(Drawable win);
+#include <cairo/cairo-quartz.h>
+#include "getContext.h"
 #endif
 
 #include <unistd.h>
@@ -292,6 +293,10 @@ namespace minsky
 
   namespace
   {
+    struct TkWinPhotoSurface: public cairo::TkPhotoSurface
+    {
+    };
+    
     // TODO refactor Canvas class to directly redraw surface whenever anything changes
     struct TkWinSurface: public ecolab::cairo::Surface
     {
@@ -365,14 +370,25 @@ namespace minsky
         (new TkWinSurface
          (c.canvas, c.master,
           cairo_win32_surface_create(hdc)));
-#else
+#elif defined(MAC_OSX_TK)
+        NSContext nctx(win);
         c.canvas.surface.reset
         (new TkWinSurface
          (c.canvas, c.master,
-          cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
+          cairo_quartz_surface_create_for_cg_context(nctx.context, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
+        cairo_surface_set_device_offset(c.canvas.surface->surface(),0,Tk_Height(c.tkWin));
+        cairo_surface_set_device_scale(c.canvas.surface->surface(),1,-1);
+#else
+        c.canvas.surface.reset
+          (new TkWinSurface
+           (c.canvas, c.master,
+            cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
+        
 #endif
       c.canvas.redraw();
-      cairo_surface_flush(c.canvas.surface->surface());
+      //cairo_surface_flush(c.canvas.surface->surface());
+      // release surface prior to any context going out of scope
+      c.canvas.surface->surface(nullptr);
 #if USE_WIN32_SURFACE
       RestoreDC(hdc,-1);
       TkWinReleaseDrawableDC(win, hdc, state);

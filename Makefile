@@ -50,7 +50,7 @@ EXES=gui-tk/minsky $(SERVER_OBJS)
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
-#GUI_TK_OBJS+=getContext.o
+GUI_TK_OBJS+=getContext.o
 endif
 
 # TODO - remove dependency on GUI directory here
@@ -183,7 +183,7 @@ gui-tk/library/help: doc/minsky/labels.pl doc/minsky.html
 	linkchecker -f linkcheckerrc $@/minsky.html
 
 getContext.o:
-	g++ -ObjC -DMAC_OSX_TK -I/opt/local/include -c $<
+	g++ -ObjC++ --std=c++11 -DMAC_OSX_TK -I/opt/local/include -c $<
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
