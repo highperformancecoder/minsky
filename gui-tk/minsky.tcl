@@ -922,13 +922,17 @@ proc helpContext {x y} {
 proc helpFor {x y} {
     global helpTopics
     set win [winfo containing $x $y]
-    if {$win==".old_wiring.canvas"} {
+    if {$win==".wiring.canvas"} {
         canvasHelp $x $y
     } elseif [info exists helpTopics($win)] {
         help $helpTopics($win)
     } else {
         help Introduction
     }
+}
+
+proc canvasHelp {} {
+    # TODO - implement this
 }
 
 proc openURL {URL} {

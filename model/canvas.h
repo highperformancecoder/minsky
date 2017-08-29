@@ -35,9 +35,9 @@ namespace minsky
   {
     // disable assignment for objects wrapped in this class, but allow
     // assignment otherwise
-    NoAssign& operator=(const NoAssign&) {}
+    NoAssign& operator=(const NoAssign&) {return *this;}
     template <class U>
-    NoAssign& operator=(const U& x) {T::operator=(x);}
+    NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
   class Canvas
