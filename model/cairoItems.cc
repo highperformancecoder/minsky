@@ -384,6 +384,19 @@ void VariableBase::draw(cairo_t *cairo) const
 
   //cairo_scale(cairo,zoomFactor,zoomFactor);
 
+  double v=value();
+  int sciExp=(v!=0)? floor(log(fabs(v))/log(10)): 0;
+  int engExp=3*(sciExp/3);
+  const char* conv;
+  switch (sciExp%3)
+    {
+    case 0: case -2: conv="%5.2f"; break;
+    case 1: case -1: conv="%5.1f"; break;
+    case 2: conv="%5.0f"; break;
+    }
+  char val[6];
+  sprintf(val,conv,v*pow(10,-engExp));
+  
   Pango pango(cairo);
   pango.setFontSize(12*zoomFactor);
   pango.setMarkup(latexToPango(name()));
@@ -392,17 +405,52 @@ void VariableBase::draw(cairo_t *cairo) const
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
   Rotate r(rotation + (notflipped? 0: 180),0,0);
   pango.angle=angle+(notflipped? 0: M_PI);
-      
+
+  Pango pangoVal(cairo);
+  pangoVal.setFontSize(6*zoomFactor);
+  pangoVal.setMarkup(val);
+  pangoVal.angle=angle+(notflipped? 0: M_PI);
+
   // parameters of icon in userspace (unscaled) coordinates
   float w, h, hoffs;
-  w=0.5*pango.width()+2*zoomFactor; 
+  w=0.5*pango.width()+(8+4)*zoomFactor; 
   h=0.5*pango.height()+4*zoomFactor;
   hoffs=pango.top()/zoomFactor;
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   pango.show();
+  cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
+                r.y(w-pangoVal.width()-2,-h-hoffs+2));
+  pangoVal.show();
+//  cairo_move_to(cairo,r.x(pango.width()-w+1,0),r.y(pango.width()-w+1,0));
+//  cairo_line_to(cairo,r.x(w,0), r.y(w,r.y(w,0)));
+//  cairo_stroke(cairo);
+  if (engExp!=0)
+    {
+      pangoVal.setMarkup("×10<sup>"+to_string(engExp)+"</sup>");
+      cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
+      pangoVal.show();
+    }
   //  cairo_restore(cairo);
 
+  // draw slider
+  if (sliderVisible())
+    {
+      cairo_save(cairo);
+      cairo_translate(cairo,0,-1.5*h);
+      cairo_move_to(cairo,-w,0);
+      cairo_line_to(cairo,w,0);
+      cairo_move_to(cairo,w,-5*zoomFactor);
+      cairo_rel_line_to(cairo,0,10*zoomFactor);
+      cairo_move_to(cairo,-w,-5*zoomFactor);
+      cairo_rel_line_to(cairo,0,10*zoomFactor);
+      double handlePos=w*(value()-0.5*(sliderMin+sliderMax))/(sliderMax-sliderMin);
+      cairo_stroke(cairo);
+      cairo_arc(cairo,handlePos, 0, sliderHandleRadius, 0, 2*M_PI);
+      cairo_fill(cairo);
+      cairo_restore(cairo);
+    }
+  
   cairo_save(cairo);
   cairo_rotate(cairo, angle);
   // constants and parameters should be rendered in blue, all others in red

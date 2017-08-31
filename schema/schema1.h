@@ -306,7 +306,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     template <class T>
     SliderLayout(int id, const T& item):
       Layout(id), PositionLayout(id, item), VisibilityLayout(item), 
-      ItemLayout(id, item), sliderVisible(item.sliderVisible),
+      ItemLayout(id, item), sliderVisible(item.sliderVisible()),
       sliderBoundsSet(item.sliderBoundsSet), sliderStepRel(item.sliderStepRel),
       sliderMin(item.sliderMin), sliderMax(item.sliderMax), 
       sliderStep(item.sliderStep) {}

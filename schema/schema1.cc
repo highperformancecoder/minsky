@@ -127,7 +127,7 @@ namespace schema1
       auto l=layout.find(y.id);
       if (l!=layout.end())
         {
-          x.sliderVisible=l->second.sliderVisible;
+          x.sliderVisible(l->second.sliderVisible);
           x.sliderBoundsSet=l->second.sliderBoundsSet;
           x.sliderStepRel=l->second.sliderStepRel;
           x.sliderMin=l->second.sliderMin;

@@ -119,6 +119,12 @@ namespace minsky
     /// initialise slider bounds when slider first opened
     void initSliderBounds();
     void adjustSliderBounds();
+    ecolab::Accessor<bool> sliderVisible {
+      [this]() {return Slider::sliderVisible;},
+        [this](bool v) {
+          if (v) {initSliderBounds(); adjustSliderBounds();}
+          return Slider::sliderVisible=v;
+        }};
 
     /// variable is on left hand side of flow calculation
     bool lhs() const {return type()==flow || type()==tempFlow;} 

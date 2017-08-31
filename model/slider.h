@@ -21,11 +21,12 @@
 #define SLIDER_H
 namespace minsky
 {
+  constexpr float sliderHandleRadius=3;
+  
   /// data structure supporting sliders - shared between constant
   /// operations and variables
   struct Slider
   {
-    // constants have sliders
     bool sliderVisible, ///< slider is visible on canvas
       sliderBoundsSet, ///< slider bounds have been initialised at some point
       sliderStepRel;   /**< sliderStep is relative to the range
