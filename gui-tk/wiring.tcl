@@ -107,7 +107,7 @@ for {set i 0} {$i<=$menubarLine} {incr i} {
 pack .wiring.menubar -fill x
 
 image create canvasImage minskyCanvas -canvas minsky.canvas
-ttk::label .wiring.canvas -image minskyCanvas
+label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
 pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {minsky.canvas.mouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {minsky.canvas.mouseUp %x %y}
