@@ -441,9 +441,10 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_line_to(cairo,w,-h);
   cairo_close_path(cairo);
   cairo_stroke_preserve(cairo);
+  cairo_save(cairo);
   cairo_clip(cairo);
   if (selected) drawSelected(cairo);
-  cairo_reset_clip(cairo);
+  cairo_restore(cairo);
   
   // draw slider
   if (!isStock() && (type()!=VariableType::flow || !inputWired()))

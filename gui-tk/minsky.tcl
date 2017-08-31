@@ -931,7 +931,7 @@ proc helpFor {x y} {
     }
 }
 
-proc canvasHelp {} {
+proc canvasHelp {x y} {
     # TODO - implement this
 }
 

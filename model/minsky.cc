@@ -374,11 +374,11 @@ namespace minsky
 
   void Minsky::garbageCollect()
   {
+    makeVariablesConsistent();
     stockVars.clear();
     flowVars.clear();
     equations.clear();
     integrals.clear();
-    makeVariablesConsistent();
 
 //    // remove all temporaries
 //    for (auto v=variableValues.begin(); v!=variableValues.end();)

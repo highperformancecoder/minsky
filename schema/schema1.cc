@@ -364,8 +364,8 @@ namespace schema1
 #ifndef NDEBUG
         // check the output port connects to correct item
         if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-          assert(integ->coupled() && &integ->ports[0]->item==integ->intVar.get() ||
-                 !integ->coupled() && &integ->ports[0]->item==integ);
+          assert((integ->coupled() && &integ->ports[0]->item==integ->intVar.get()) ||
+                 (!integ->coupled() && &integ->ports[0]->item==integ));
         else
           assert(o == &o->ports[0]->item);
 #endif
