@@ -18,6 +18,7 @@
 */
 #include <geometry.h>
 #include <plot.h>
+#include <pango.h>
 #include <cairo_base.h>
 #include <cairo/cairo.h>
 #include "operation.h"
@@ -52,7 +53,7 @@ namespace minsky
   /** class that renders a variable into a cairo context. 
       A user can also query the size of the unrotated rendered image
   */
-  class RenderVariable
+  class RenderVariable: public Pango
   {
     const VariableBase& var;
     cairo_t *cairo;
@@ -71,6 +72,9 @@ namespace minsky
     /// return the boost geometry corresponding to this variable's shape
     Polygon geom() const;
     bool inImage(float x, float y); ///< true if (x,y) within rendered image
+    /// x coordinate of the slider handle in the unrotated/unscaled
+    /// frame of reference
+    double handlePos() const;
   };
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);

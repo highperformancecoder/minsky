@@ -22,6 +22,7 @@
 #include <sstream>
 #include <algorithm>
 #include <vector>
+#include <memory>
 #include <string.h>
 
 namespace minsky
@@ -84,5 +85,9 @@ namespace minsky
   template <class T, class V>
   void remove(std::vector<T>& x, const V& v)
   {x.erase(std::remove(x.begin(),x.end(),v),x.end());}
+
+  template <class T, class D>
+  std::unique_ptr<T,D> uniqueDeleter(T* x, D d)
+  {return std::unique_ptr<T,D>(x,d);}
 }
 #endif

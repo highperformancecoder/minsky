@@ -17,7 +17,9 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "geometry.h"
 #include "variable.h"
+#include "cairoItems.h"
 #include "minsky.h"
 #include <error.h>
 #include <ecolab_epilogue.h>
@@ -47,6 +49,20 @@ bool VariableBase::inputWired() const
   return ports.size()>1 && !ports[1]->wires.empty();
 }
 
+ClickType::Type VariableBase::clickType(float xx, float yy)
+{
+  double fm=std::fmod(rotation,360);
+  bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+  float xxx=xx-x(), yyy=yy-y();
+  Rotate r(rotation+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
+  RenderVariable rv(*this);
+  double hpx=zoomFactor*rv.handlePos();
+  double hpy=-zoomFactor*rv.height();
+  if (hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
+      return ClickType::onSlider;
+  else
+    return Item::clickType(xx,yy);
+}
 
 //Factory
 VariableBase* VariableBase::create(VariableType::Type type)
@@ -191,7 +207,7 @@ void VariablePtr::retype(VariableBase::Type type)
     }
 }
 
-void VariableBase::initSliderBounds()
+void VariableBase::initSliderBounds() const
 {
   if (!sliderBoundsSet) 
     {
@@ -212,7 +228,7 @@ void VariableBase::initSliderBounds()
     }
 }
 
-void VariableBase::adjustSliderBounds()
+void VariableBase::adjustSliderBounds() const
 {
   if (sliderMax<value()) sliderMax=value();
   if (sliderMin>value()) sliderMin=value();

@@ -39,7 +39,7 @@ namespace minsky
   /// a lasso is intended
   struct ClickType
   {
-    enum Type {onItem, onPort, outside};
+    enum Type {onItem, onPort, outside, onSlider};
   };
 
   /// radius of circle marking ports at zoom=1
@@ -130,7 +130,7 @@ namespace minsky
     void drawSelected(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
-    ClickType::Type clickType(float x, float y);
+    virtual ClickType::Type clickType(float x, float y);
 
     /// returns closest output port to \a x,y
     virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 

@@ -328,31 +328,19 @@ void OperationBase::draw(cairo_t* cairo) const
 
 }
 
+namespace
+{
+  cairo::Surface dummySurf(cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100));
+}
 
 RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
-  var(var), cairo(cairo)
+  Pango(cairo? cairo: dummySurf.cairo()), var(var), cairo(cairo)
 {
-  cairo_t *lcairo=cairo;
-  cairo_surface_t* surf=NULL;
-  if (!lcairo)
-    {
-      surf = cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100);
-      lcairo = cairo_create(surf);
-    }
-
-  Pango pango(lcairo);
-  pango.setFontSize(12);
-  pango.setMarkup(latexToPango(var.name()));
-  w=0.5*pango.width()+2; 
-  h=0.5*pango.height()+4;
-  hoffs=pango.top();
-
-
-  if (surf) //cleanup temporary surface
-    {
-      cairo_destroy(lcairo);
-      cairo_surface_destroy(surf);
-    }
+  setFontSize(12);
+  setMarkup(latexToPango(var.name()));
+  w=0.5*Pango::width()+12; // enough space for numerical display 
+  h=0.5*Pango::height()+4;
+  hoffs=Pango::top();
 }
 
 Polygon RenderVariable::geom() const
@@ -396,15 +384,14 @@ void VariableBase::draw(cairo_t *cairo) const
     }
   char val[6];
   sprintf(val,conv,v*pow(10,-engExp));
-  
-  Pango pango(cairo);
-  pango.setFontSize(12*zoomFactor);
-  pango.setMarkup(latexToPango(name()));
+
+  RenderVariable rv(*this,cairo);
+  rv.setFontSize(12*zoomFactor);
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
   Rotate r(rotation + (notflipped? 0: 180),0,0);
-  pango.angle=angle+(notflipped? 0: M_PI);
+  rv.angle=angle+(notflipped? 0: M_PI);
 
   Pango pangoVal(cairo);
   pangoVal.setFontSize(6*zoomFactor);
@@ -413,12 +400,12 @@ void VariableBase::draw(cairo_t *cairo) const
 
   // parameters of icon in userspace (unscaled) coordinates
   float w, h, hoffs;
-  w=0.5*pango.width()+(8+4)*zoomFactor; 
-  h=0.5*pango.height()+4*zoomFactor;
-  hoffs=pango.top()/zoomFactor;
+  w=rv.width()*zoomFactor; 
+  h=rv.height()*zoomFactor;
+  hoffs=rv.top()/zoomFactor;
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
-  pango.show();
+  rv.show();
   cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
                 r.y(w-pangoVal.width()-2,-h-hoffs+2));
   pangoVal.show();
@@ -433,24 +420,6 @@ void VariableBase::draw(cairo_t *cairo) const
     }
   //  cairo_restore(cairo);
 
-  // draw slider
-  if (sliderVisible())
-    {
-      cairo_save(cairo);
-      cairo_translate(cairo,0,-1.5*h);
-      cairo_move_to(cairo,-w,0);
-      cairo_line_to(cairo,w,0);
-      cairo_move_to(cairo,w,-5*zoomFactor);
-      cairo_rel_line_to(cairo,0,10*zoomFactor);
-      cairo_move_to(cairo,-w,-5*zoomFactor);
-      cairo_rel_line_to(cairo,0,10*zoomFactor);
-      double handlePos=w*(value()-0.5*(sliderMin+sliderMax))/(sliderMax-sliderMin);
-      cairo_stroke(cairo);
-      cairo_arc(cairo,handlePos, 0, sliderHandleRadius, 0, 2*M_PI);
-      cairo_fill(cairo);
-      cairo_restore(cairo);
-    }
-  
   cairo_save(cairo);
   cairo_rotate(cairo, angle);
   // constants and parameters should be rendered in blue, all others in red
@@ -472,10 +441,23 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_line_to(cairo,w,-h);
   cairo_close_path(cairo);
   cairo_stroke_preserve(cairo);
-  cairo_restore(cairo); // undo rotation
   cairo_clip(cairo);
+  if (selected) drawSelected(cairo);
+  cairo_reset_clip(cairo);
   
-  {
+  // draw slider
+  if (!isStock() && (type()!=VariableType::flow || !inputWired()))
+    {
+      cairo_save(cairo);
+      cairo_set_source_rgb(cairo,0,0,0);
+      cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+      cairo_fill(cairo);
+      cairo_restore(cairo);
+    }
+
+  cairo_restore(cairo); // undo rotation
+   
+ {
     double x0=w, y0=0, x1=-w+2, y1=0;
     double sa=sin(angle), ca=cos(angle);
     if (ports.size()>0)
@@ -491,7 +473,6 @@ void VariableBase::draw(cairo_t *cairo) const
       drawPorts(cairo);
       displayTooltip(cairo);
     }
-  if (selected) drawSelected(cairo);
 }
 
 void RenderVariable::updatePortLocs() const
@@ -511,6 +492,13 @@ bool RenderVariable::inImage(float x, float y)
   float rx=dx*cos(var.rotation*M_PI/180)-dy*sin(var.rotation*M_PI/180);
   float ry=dy*cos(var.rotation*M_PI/180)+dx*sin(var.rotation*M_PI/180);
   return rx>=-w && rx<=w && ry>=-h && ry <= h;
+}
+
+double RenderVariable::handlePos() const
+{
+  var.initSliderBounds();
+  var.adjustSliderBounds();
+  return w*(var.value()-0.5*(var.sliderMin+var.sliderMax))/(var.sliderMax-var.sliderMin);
 }
 
 void minsky::drawTriangle

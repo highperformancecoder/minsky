@@ -56,6 +56,7 @@ namespace minsky
     Exclude<shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
     float moveOffsX, moveOffsY;
+    ClickType::Type clickType;
     
     /// lasso mode support
     struct LassoMode {enum type  {none, lasso, itemResize};};

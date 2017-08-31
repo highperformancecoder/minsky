@@ -117,8 +117,8 @@ namespace minsky
     /// sets variable value (or init value)
     void sliderSet(double x) {init(str(x)); value(x);}
     /// initialise slider bounds when slider first opened
-    void initSliderBounds();
-    void adjustSliderBounds();
+    void initSliderBounds() const;
+    void adjustSliderBounds() const;
     ecolab::Accessor<bool> sliderVisible {
       [this]() {return Slider::sliderVisible;},
         [this](bool v) {
@@ -151,7 +151,8 @@ namespace minsky
         @return cairo path of icon outline
     */
     void draw(cairo_t*) const override;
-
+    ClickType::Type clickType(float x, float y) override;
+    
     bool inputWired() const;
   };
 

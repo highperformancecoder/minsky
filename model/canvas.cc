@@ -19,6 +19,7 @@
 
 #include "geometry.h"
 #include "canvas.h"
+#include "cairoItems.h"
 #include "minsky.h"
 #include "init.h"
 #include <cairo_base.h>
@@ -57,7 +58,7 @@ namespace minsky
 
     if (itemFocus)
       {
-        auto clickType=itemFocus->clickType(x,y);
+        clickType=itemFocus->clickType(x,y);
         switch (clickType)
           {
           case ClickType::onPort:
@@ -69,6 +70,7 @@ namespace minsky
                 itemFocus.reset();
               }
             break;
+          case ClickType::onSlider:
           case ClickType::onItem:
             moveOffsX=x-itemFocus->x();
             moveOffsY=y-itemFocus->y();
@@ -139,7 +141,7 @@ namespace minsky
   
   void Canvas::mouseMove(float x, float y)
   {
-    if (itemFocus)
+    if (itemFocus && clickType==ClickType::onItem)
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
         // move item relatively to avoid accidental moves on double click
@@ -163,6 +165,19 @@ namespace minsky
         if (auto g=itemFocus->group.lock())
           g->checkAddIORegion(itemFocus);
         requestRedraw();
+      }
+    else if (itemFocus && clickType==ClickType::onSlider)
+      {
+        if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+          {
+            RenderVariable rv(*v);
+            double rw=fabs(v->zoomFactor*rv.width()*cos(v->rotation*M_PI/180));
+            double newValue=(x-v->x()) * (v->sliderMax-v->sliderMin) / rw + 0.5*(v->sliderMin+v->sliderMax);
+            if (newValue<v->sliderMin) newValue=v->sliderMin;
+            if (newValue>v->sliderMax) newValue=v->sliderMax;
+            v->value(newValue);
+            requestRedraw();
+          }
       }
     else if (fromPort.get())
       {
