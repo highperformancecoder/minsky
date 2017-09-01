@@ -116,9 +116,7 @@ namespace minsky
       this->addPorts();
       return *this;
     }
-//    std::string classType() const override {return "Operation<"+OperationType::typeName(T)+">";}
-//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-//    {::TCL_obj(t,d,*this);}
+    std::string classType() const override {return "Operation:"+OperationType::typeName(T);}
   };
 
   struct NamedOp
@@ -134,11 +132,7 @@ namespace minsky
     double value=0; ///< constant value
 
     string description() const {return str(value);}
-    //    std::string classType() const override {return "Constant";}
 
-//    // clone has to be overridden, as default impl return object of
-//    // type Operation<T>
-//    Constant* clone() const override {return new Constant(*this);}
     /// ensure slider does not override value
     void adjustSliderBounds();
     /// initialises sliderbounds based on current value, if not set otherwise
@@ -159,7 +153,6 @@ namespace minsky
   public:
     // offset for coupled integration variable, tr
     static constexpr float intVarOffset=10;
-    //    std::string classType() const override {return "IntOp";}
 
     IntOp() {description("");}
     // ensure that copies create a new integral variable
@@ -167,14 +160,6 @@ namespace minsky
       OperationBase(x), Super(x) {group.reset();intVar.reset(); description("int");}
     ~IntOp();
     const IntOp& operator=(const IntOp& x); 
-
-    // clone has to be overridden, as default impl return object of
-    // type Operation<T>
-//    IntOp* clone() const override {
-//      auto r=new IntOp(*this);
-//      r->intVar->group.reset();
-//      return r;
-//    }
 
     /// @{ name of the associated integral variable
     void description(string desc);
@@ -203,8 +188,6 @@ namespace minsky
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
-//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-//    {::TCL_obj(t,d,*this);}
   };
 
   class DataOp: public NamedOp, public ItemT<DataOp, Operation<minsky::OperationType::data>>

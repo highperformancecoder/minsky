@@ -883,7 +883,6 @@ set helpTopics(.menubar.file) File
 set helpTopics(.menubar.edit) Edit
 set helpTopics(.menubar.ops) Insert
 set helpTopics(.menubar.options) Options
-#set helpTopics(.menubar.help) Gettinghelp
 set helpTopics(.controls.run) RunButtons
 set helpTopics(.controls.reset) RunButtons
 set helpTopics(.controls.step) RunButtons
@@ -892,11 +891,6 @@ set helpTopics(.controls.statusbar) SimTime
 set helpTopics(.controls.zoomOut) ZoomButtons
 set helpTopics(.controls.zoomIn) ZoomButtons
 set helpTopics(.controls.zoomOrig)  ZoomButtons
-set helpTopics(.wiring.menubar.line0.integrate) Integrate
-set helpTopics(.wiring.menubar.line1.plot) Plot
-set helpTopics(.wiring.menubar.line0.godley)  GodleyTable
-set helpTopics(.wiring.menubar.line0.var) Variable
-set helpTopics(.wiring.menubar.line0.const) Constant 
 # TODO - the following association interferes with canvas item context menus
 # set helpTopics(.wiring.canvas) DesignCanvas
 
@@ -923,7 +917,7 @@ proc helpFor {x y} {
     global helpTopics
     set win [winfo containing $x $y]
     if {$win==".wiring.canvas"} {
-        canvasHelp $x $y
+        canvasHelp
     } elseif [info exists helpTopics($win)] {
         help $helpTopics($win)
     } else {
@@ -931,8 +925,15 @@ proc helpFor {x y} {
     }
 }
 
-proc canvasHelp {x y} {
-    # TODO - implement this
+proc canvasHelp {} {
+    set x [get_pointer_x .wiring.canvas]
+    set y [get_pointer_y .wiring.canvas]
+    if [getItemAt $x $y] {
+        puts "getting help for item [minsky.canvas.item.classType]"
+        help [minsky.canvas.item.classType]
+    } elseif [getWireAt $x $y] {
+        help wire
+    } else {help DesignCanvas}
 }
 
 proc openURL {URL} {

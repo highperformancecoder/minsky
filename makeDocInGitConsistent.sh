@@ -9,6 +9,6 @@ mkdir -p $target/minsky
 find doc/minsky \( -name "*.html" -o -name "*.css" -o -name "*.png" \) -exec cp {} $target/minsky \;
 cp -r -f doc/minsky.html $target
 for i in $target/minsky/*; do git add $i; done
-perl makeRefDb.pl doc/minsky/labels.pl >gui-tk/helpRefDb.tcl
+perl makeRefDb.pl doc/minsky/node*.html >gui-tk/helpRefDb.tcl
 git add gui-tk/helpRefDb.tcl $target/minsky.html
 git commit -m "Making doc consistent in git"

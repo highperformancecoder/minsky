@@ -69,7 +69,6 @@ namespace minsky
     static VariableBase* create(Type type); 
 
     virtual size_t numPorts() const=0;
-    //std::string classType() const override {return "VariableBase";}
     virtual Type type() const=0;
 
     
@@ -172,12 +171,8 @@ namespace minsky
       return *this;
     }
     Variable(const std::string& name="") {this->name(name); this->addPorts();}
-//    Variable* clone() const override {
-//      return new Variable(*this);}
-//    std::string classType() const override 
-//    {return "Variable<"+typeName(T)+">";}
-//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
-//    {::TCL_obj(t,d,*this);}
+    std::string classType() const override 
+    {return "Variable:"+VariableType::typeName(type());}
   };
 
   struct VarConstant: public Variable<VariableType::constant>

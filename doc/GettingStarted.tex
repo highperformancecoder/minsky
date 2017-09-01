@@ -85,7 +85,7 @@ your previously opened Minsky files.
 \item[Save As] Save the current file under a new name.
 
 \item[Insert File as Group] Insert a Minsky file directly into the
-current model as a \htmlref{group}{group}
+current model as a \htmlref{group}{Group}
 
 \item[Output LaTeX] Produce the set of equations that define the
   current system for use in documenting the model, for use in LaTeX
@@ -133,7 +133,7 @@ automatically performs a copy, so the copy operation is strictly
 redundant, but provided for users familiar with systems where an
 explicit copy request is required. Cut deletes the selected
 items. Paste will paste the items in the clipboard as a
-\htmlref{group}{group} into the current model. At the time of writing,
+\htmlref{group}{Group} into the current model. At the time of writing,
 copy-pasting between different instances of Minsky, or into other
 applications, may not work on certain systems. Pasting the clipboard
 into a text-based application will be a Minsky schema XML document.
@@ -155,7 +155,7 @@ into a text-based application will be a Minsky schema XML document.
 </table>
 \end{rawhtml}
 
-\item\label{edit:group} Create a \htmlref{group}{group} using the
+\item\label{edit:group} Create a \htmlref{group}{Group} using the
 contents of the selection. Groups allow you to organise more
 complicated systems specification into higher level modules that make
 the overall system more comprehensible.
@@ -168,7 +168,7 @@ the overall system more comprehensible.
 This menu contains a set of \htmlref{mathematical operator
 blocks}{operations} for placement on the Canvas. You can get the same
 effect by clicking on the Design Icons. Also present are entries for
-\htmlref{Godley table items}{godley} and \htmlref{Plots}{Plot}.
+\htmlref{Godley table items}{godley} and \htmlref{Plots}{PlotWidget}.
 
 
 \subsubsection{Options}
@@ -575,13 +575,13 @@ logarithm.
 complement of mathematical functions.
 
 \item[Data block] \buttonIcon{data.eps} \htmlref{A data
-block}{op:data} interpolates a sequence of empirical values, which may
+block}{Operation:data} interpolates a sequence of empirical values, which may
 be generated outside of Minsky, and imported as a CSV file. This
 effectively defines a piecewise linear function.
 
-\item[Plot widget] \buttonIcon{plot.eps} Add \htmlref{plots}{Plot} to the canvas.
+\item[Plot widget] \buttonIcon{plot.eps} Add \htmlref{plots}{PlotWidget} to the canvas.
 
-\item[Switch] \buttonIcon{switchIcon.eps} Add \htmlref{a piecewise-defined function block}{switch} 
+\item[Switch] \buttonIcon{switchIcon.eps} Add \htmlref{a piecewise-defined function block}{SwitchIcon} 
 to the canvas. Also known as a hybrid function.
 
 \item[Notes] Add \htmlref{textual annotations}{Notes}
@@ -763,7 +763,7 @@ defined.
 \begin{center}
 \begin{tabular}{|c|cc|}
 \hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$$}&\multicolumn{1}{|c|}{$$}\\\cline{2-3}&\multicolumn{2}{|c|}{noAssetClass}\\\hline
+Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{}&\multicolumn{1}{|c|}{}\\\cline{2-3}&\multicolumn{2}{|c|}{noAssetClass}\\\hline
 Initial Conditions&$0$&$0$\\
 \hline
 \end{tabular}

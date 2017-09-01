@@ -27,20 +27,24 @@ image create photo godleyImg -file $minskyHome/icons/bank.gif
 button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
     -command addGodley
 tooltip .wiring.menubar.line0.godley "Godley table"
+set helpTopics(.wiring.menubar.line0.godley)  GodleyIcon
 
 image create photo varImg -file $minskyHome/icons/var.gif
 button .wiring.menubar.line0.var -image varImg -height 24 -width 37 \
     -command addVariable
 tooltip .wiring.menubar.line0.var "variable"
+set helpTopics(.wiring.menubar.line0.var) Variable
 
 image create photo constImg -file $minskyHome/icons/const.gif
 button .wiring.menubar.line0.const -height 24 -width 37 -image constImg -command {addConstant}
 tooltip .wiring.menubar.line0.const "constant"
+set helpTopics(.wiring.menubar.line0.const) Constant 
 
 image create photo integrateImg -file $minskyHome/icons/integrate.gif
 button .wiring.menubar.line0.integrate -image integrateImg -command {
     addOperation integrate}
 tooltip .wiring.menubar.line0.integrate integrate
+set helpTopics(.wiring.menubar.line0.integrate) Integrate
 
 pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.integrate -side left
 
@@ -72,7 +76,7 @@ foreach op [availableOperations] {
     tooltip .wiring.menubar.line$menubarLine.$op $opTrimmed
 
     pack .wiring.menubar.line$menubarLine.$op -side left 
-    set helpTopics(.wiring.menubar.line$menubarLine.$op) "op:$op"
+    set helpTopics(.wiring.menubar.line$menubarLine.$op) "Operation:$op"
 }
 
 if {[tk windowingsystem]=="aqua"} {
@@ -85,20 +89,22 @@ button .wiring.menubar.line$menubarLine.switch -image switchImg \
     -height 24 -width 37 -command {addSwitch}
 tooltip .wiring.menubar.line$menubarLine.switch "Switch"
 pack .wiring.menubar.line$menubarLine.switch -side left 
-set helpTopics(.wiring.menubar.line$menubarLine.switch) "switch"
+set helpTopics(.wiring.menubar.line$menubarLine.switch) "SwitchIcon"
 
 
 image create photo plotImg -file $minskyHome/icons/plot.gif
 button .wiring.menubar.line$menubarLine.plot -image plotImg \
     -height 24 -width 37 -command {addPlot}
-tooltip .wiring.menubar.line$menubarLine.plot "Plot"
+tooltip .wiring.menubar.line$menubarLine.plot "PlotWidget"
 pack .wiring.menubar.line$menubarLine.plot -side left 
+set helpTopics(.wiring.menubar.line$menubarLine.plot) "PlotWidget"
 
 image create photo noteImg -file $minskyHome/icons/note.gif
 button .wiring.menubar.line$menubarLine.note -image noteImg \
     -height 24 -width 37 -command {addNote "Enter your note here"}
 tooltip .wiring.menubar.line$menubarLine.note "Note"
 pack .wiring.menubar.line$menubarLine.note -side left 
+set helpTopics(.wiring.menubar.line$menubarLine.note) "Item"
 
 # pack menubar lines
 for {set i 0} {$i<=$menubarLine} {incr i} {
@@ -114,13 +120,13 @@ bind .wiring.canvas <ButtonRelease-1> {minsky.canvas.mouseUp %x %y}
 bind .wiring.canvas <Motion> {minsky.canvas.mouseMove %x %y}
 
 proc get_pointer_x {c} {
-    #  return [expr {[winfo pointerx $c] - [winfo rootx $c]}]
-      return [winfo pointerx $c]
+    return [expr {[winfo pointerx $c] - [winfo rootx $c]}]
+    #  return [winfo pointerx $c]
 }
 
 proc get_pointer_y {c} {
-    #  return [expr {[winfo pointery $c] - [winfo rooty $c]}]
-    return [winfo pointery $c]
+    return [expr {[winfo pointery $c] - [winfo rooty $c]}]
+  #  return [winfo pointery $c]
 }
 
 bind . <Key-plus> {zoom 1.1}
@@ -346,106 +352,10 @@ proc deleteKey {} {
         }
     }
 }
-#  proc newItem {id} {
-#      wiringGroup.item.get $id
-#      .wiring.canvas create item [wiringGroup.item.x] [wiringGroup.item.y] -id $id -tags "items item$id"
-#     if {[wiringGroup.item.classType]=="GodleyIcon"} {
-#         .wiring.canvas bind item$id <Double-Button-1> "doubleMouseGodley $id %x %y"
-#         .wiring.canvas bind item$id <Enter> "godleyToolTip $id %x %y; itemEnterLeave item $id item$id 1"
-#         .wiring.canvas bind item$id <Motion> "changeToolTip $id %x %y"
-#      } else {
-#          .wiring.canvas bind item$id <Double-Button-1> "editItem $id"
-#          .wiring.canvas bind item$id <Enter> "itemEnterLeave item $id item$id 1"
-#      }
-#      .wiring.canvas bind item$id <Leave> "itemEnterLeave item $id item$id 0"
-#      .wiring.canvas bind item$id <Button-1> "onClick $id item$id %x %y"
-#  }
-#  
-#  proc addNewGodleyItem {} {
-#      set id [addGodleyTable]
-#      global moveOffs$id.x moveOffs$id.y
-#      set moveOffs$id.x 0
-#      set moveOffs$id.y 0
-#      
-#      newItem $id
-#    
-#      # event bindings for initial placement
-#      bind .wiring.canvas <Enter> "move $id %x %y"
-#      bind .wiring.canvas <Motion> "move $id %x %y"
-#      bind .wiring.canvas <Button-1> clearTempBindings
-#      bind . <Key-Escape> "clearTempBindings
-#         deleteGodleyTable $id
-#         .wiring.canvas delete godley$id"
-#  
-#  }
-#  
-#  proc addNewGodleyItemKey {} {
-#      set id [addGodleyTable]
-#      global moveOffs$id.x moveOffs$id.y
-#      set moveOffs$id.x 0
-#      set moveOffs$id.y 0
-#  
-#      set id addGodleyItem
-#      newItem $id
-#    
-#      move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
-#  }
-#  
+
 # global godley icon resource
 setGodleyIconResource $minskyHome/icons/bank.svg
-#  
-#  proc godleyToolTipText {id x y} {
-#      set varId [selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-#      if {$varId>=0} {
-#          var.get $varId
-#          set text [var.name]
-#      } else {
-#          godley.get $id
-#          set text [godley.tooltip]
-#          if {$text==""} {
-#              set text [godley.table.title]
-#          }
-#      }
-#      return $text
-#  }
-#  
-#  proc godleyToolTip {id x y} {
-#      if {[llength [.wiring.canvas find withtag tooltip]]==0} {
-#          .wiring.canvas create text [.wiring.canvas canvasx [expr $x+20]] [.wiring.canvas canvasy [expr $y-20]] -tags "tooltip tooltiptext" -anchor w -text "[godleyToolTipText $id $x $y]"
-#          .wiring.canvas create rectangle [.wiring.canvas bbox tooltiptext] -fill white -tags "tooltip tooltipBG"
-#          .wiring.canvas raise tooltiptext
-#      }
-#  }
-#  
-#  proc changeToolTip {id x y} {
-#      .wiring.canvas itemconfigure tooltiptext -text "[godleyToolTipText $id $x $y]"
-#      .wiring.canvas coords tooltiptext [.wiring.canvas canvasx [expr $x+20]] [.wiring.canvas canvasy [expr $y-20]]
-#      .wiring.canvas coords tooltipBG [.wiring.canvas bbox tooltiptext]
-#  }
-#  
-#  
-#  
-#  #proc newGodleyItem {id} {
-#  #    global minskyHome
-#  #
-#  #    godley.get $id
-#  #
-#  #    .wiring.canvas create godley [godley.x] [godley.y] -id $id -tags "godleys godley$id"
-#  #    .wiring.canvas lower godley$id
-#  #
-#  #    setM1Binding godley $id godley$id
-#  #    .wiring.canvas bind godley$id <<middleMouse>> \
-#  #        "wires::startConnect \[closestOutPort %x %y \] godley$id %x %y"
-#  #    .wiring.canvas bind godley$id <<middleMouse-Motion>> \
-#  #        "wires::extendConnect \[closestOutPort %x %y \] godley$id %x %y"
-#  #    .wiring.canvas bind godley$id <<middleMouse-ButtonRelease>> \
-#  #        "wires::finishConnect godley$id %x %y"
-#  #    .wiring.canvas bind godley$id  <Double-Button-1> "doubleMouseGodley $id %x %y"
-#  #    .wiring.canvas bind godley$id <Enter> "godleyToolTip $id %x %y; itemEnterLeave godley $id godley$id 1"
-#  #    .wiring.canvas bind godley$id <Leave> "itemEnterLeave godley $id godley$id 0"
-#  #    .wiring.canvas bind godley$id <Motion> "changeToolTip $id %x %y"
-#  #}
-#  
+
 proc rightMouseGodley {x y X Y} {
     if [selectVar $x $y] {
         .wiring.context delete 0 end
@@ -456,64 +366,12 @@ proc rightMouseGodley {x y X Y} {
         contextMenu $x $y $X $Y
     }
 }
-#  
-#  proc doubleMouseGodley {id x y} {
-#      set varId [wiringGroup.selectVar $id [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-#      if {$varId>=0} {
-#          editItem $varId
-#      } else {
-#          openGodley $id
-#      }
-#  }
-#  
-#  #proc updateGodleyItem {id} {
-#  #    .wiring.canvas delete godley$id
-#  #    newItem $id
-#  #}
-#  
-#  # a closestOutPort that takes into account panning
-#  proc closestOutPort {x y} {
-#      return [wiringGroup.closestOutPort [.wiring.canvas canvasx $x] [.wiring.canvas canvasy $y]]
-#  }
-#  
-#  
 # pan mode
 bind .wiring.canvas <Shift-Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}
 bind .wiring.canvas <Shift-B1-Motion> {model.moveTo [expr %x-$panOffsX] [expr %y-$panOffsY]; canvas.requestRedraw}
-#  
-#  proc recentreCanvas {} {
-#      .wiring.canvas xview moveto 0.5
-#      .wiring.canvas yview moveto 0.5
-#      .equations.canvas xview moveto 0.5
-#      .equations.canvas yview moveto 0.5
-#  }
-#  
-#  proc anyItems {tag} {
-#      return [expr [llength [.wiring.canvas find withtag $tag]]>0]
-#  }
-#  
-#  proc accessed {items item id} {
-#      catch {if {$item.id==$id} {return 1}}
-#      return [wiringGroup.$items.hasBeenAccessed $id]
-#  }
-#  
-#  proc delIfAccessed {items item id} {
-#      if [accessed $items $item $id] {.wiring.canvas delete $item$id}
-#  }
-#  
+
 menu .wiring.context -tearoff 0
-#  
-#  proc toggleCoupled {id} {
-#      integral.get $id
-#      integral.toggleCoupled
-#  }
-#  
-#  proc addIntegral name {
-#      set id [addOperation integrate]
-#      integral.get $id
-#      integral.description $name
-#  }
-#  
+
 # context menu on background canvas
 proc canvasContext {x y} {
     .wiring.context delete 0 end
@@ -526,15 +384,6 @@ proc canvasContext {x y} {
     .wiring.context add command -label "Open master group" -command "openModelInCanvas"
     tk_popup .wiring.context $x $y
 }
-#  
-#  proc saveSelection {} {
-#      global workDir
-#      set fname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
-#      if [string length $fname] {
-#          saveSelectionAsFile $fname
-#      }
-#  }
-#  
 #  proc canvasHelp {x y} {
 #      set itemlist [.wiring.canvas find withtag current]
 #      if {[llength $itemlist]==0} {
@@ -633,17 +482,14 @@ proc findDefinition {} {
 proc contextMenu {x y X Y} {
     set item minsky.canvas.item
     .wiring.context delete 0 end
+    .wiring.context add command -label Help -command "help [$item.classType]"
     # find out what type of item we're referring to
     switch -regex [$item.classType] {
         "Variable*" {
-            .wiring.context add command -label Help -command {help Variable}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Value [minsky.canvas.item.value]" 
             .wiring.context add command -label "Find definition" -command "findDefinition"
             .wiring.context add command -label "Edit" -command "editItem"
-#            .wiring.context add checkbutton -label "Slider" \
-#                -command "drawSlider $id $x $y" \
-#                -variable "sliderCheck$id"
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral [$item.name]"
@@ -651,7 +497,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "item.flip; flip_default"
         }
         "Operation*|IntOp" {
-            .wiring.context add command -label Help -command "help op:[$item.name]"
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Port values [$item.portValues]" 
             .wiring.context add command -label "Edit" -command "editItem"             
@@ -666,7 +511,6 @@ proc contextMenu {x y X Y} {
             }
         }
         "PlotWidget" {
-            .wiring.context add command -label Help -command {help Plot}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Expand" -command "plotDoubleClick [TCLItem]"
             .wiring.context add command -label "Make Group Plot" -command "canvas.item.makeDisplayPlot"
@@ -674,14 +518,12 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
         }
         "GodleyIcon" {
-            .wiring.context add command -label Help -command {help GodleyTable}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Open Godley Table" -command "openGodley"
             .wiring.context add command -label "Resize Godley" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Export to file" -command "godley::export"
         }
         "Group" {
-            .wiring.context add command -label Help -command {help Group}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Edit" -command "groupEdit"
             .wiring.context add command -label "Open in canvas" -command "openGroupInCanvas"
@@ -696,11 +538,9 @@ proc contextMenu {x y X Y} {
         }
         "Item" {
             .wiring.context delete 0 end
-            .wiring.context add command -label Help -command {help Notes}
             .wiring.context add command -label Edit -command "postNote item"
         }
         SwitchIcon {
-            .wiring.context add command -label Help -command {help Switches}
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Add case" -command "incrCase 1" 
             .wiring.context add command -label "Delete case" -command "incrCase -1" 
@@ -849,7 +689,6 @@ proc deiconifyEditVar {} {
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
             makeVariablesConsistent
-# TODO            setSliderProperties
             closeEditWindow .wiring.editVar
         }
         # adjust "Slider Step Size" row to include "relative" radiobutton
@@ -1078,48 +917,12 @@ proc deiconifyEditOperation {} {
         wm deiconify .wiring.editOperation
     }
 }
-#          
-#  # set attribute, and commit to original item
-#  proc setItem {modelCmd attr dialogCmd} {
-#      global constInput varInput editVarInput opInput
-#      $modelCmd.$attr [string trim [eval $dialogCmd]]
-#  }
-#  
-#  #proc setInitVal {var dialogCmd} {
-#  #    value.get $var
-#  #    value.init [eval $dialogCmd]
-#  #    value.set $var
-#  #}
-#  
+
 proc closeEditWindow {window} {
     grab release $window
     destroy $window
 }
-#  
-#  proc setConstantValue {} {
-#      global constInput
-#      constant.value "$constInput(Value)"
-#      constant.description "$constInput(Name)"
-#      constant.sliderStepRel "$constInput(relative)"
-#      constant.sliderMin "$constInput(Slider Bounds: Min)"
-#      constant.sliderMax "$constInput(Slider Bounds: Max)"
-#      constant.sliderStep "$constInput(Slider Step Size)"
-#      constant.sliderBoundsSet 1
-#  }
-#  
-#  proc setDataValue {} {
-#      global constInput
-#      data.description "$constInput(Name)"
-#  }
-#  
-#  proc setIntegralIValue {} {
-#      global constInput
-#      integral.description "$constInput(Name)"
-#      integral.getIntVar
-#      value.get [item.valueId]
-#      setItem value init {set constInput(Value)}
-#  }
-#  
+
 proc editVar {} {
     global editVarInput
     set item minsky.canvas.item
@@ -1250,98 +1053,6 @@ proc editItem {} {
     }
 }
 #  
-#  proc setVarVal {v x} {
-#      var.get $v
-#      pushFlags
-#      var.sliderSet $x
-#      popFlags
-#  }
-#  
-#  proc setSliderProperties {} {
-#      if {[llength [info command wiringGroup.var.id]] && [winfo  exists .wiring.slider[wiringGroup.var.id]]} {
-#          wiringGroup.var.initSliderBounds
-#          if [var.sliderStepRel] {
-#              set res [expr [wiringGroup.var.sliderStep]*([wiringGroup.var.sliderMax]-[wiringGroup.var.sliderMin])]
-#          } else {
-#              set res [wiringGroup.var.sliderStep]
-#          }
-#          
-#          # ensure resolution is accurate enough to not mutate variable value
-#          set decPos [string first . [var.value]]
-#          if {$decPos==-1} {
-#              set newRes 1
-#          } else {
-#              set newRes [expr pow(10,1+$decPos-[string len [var.value]])]
-#          }
-#         if {$newRes<$res} {set res $newRes}
-#  
-#          # ensure slider does not override value
-#          wiringGroup.var.adjustSliderBounds
-#  
-#          .wiring.slider[wiringGroup.var.id] configure -to [wiringGroup.var.sliderMax] \
-#              -from [wiringGroup.var.sliderMin] -resolution $res
-#          if [catch .wiring.slider$id set [wiringGroup.var.init]] {
-#              .wiring.slider$id set [wiringGroup.var.value]
-#          }
-#      }
-#  }
-#  
-#  # if y is the y-coordinate of the constant, then return a y-coordinate
-#  # for an attached slider
-#  proc sliderYCoord {y} {
-#      return [expr $y-15-10*[zoomFactor]]
-#  }
-#  
-#  proc drawSlider {var x y} {
-#      global sliderCheck$var
-#      var.get $var
-#      if {![info exists sliderCheck$var]} {
-#          # sliderCheck$vae gets initialised to constant.sliderVisible,
-#          # otherwise sliderCheck$var is more up to date
-#          set sliderCheck$var [var.sliderVisible]
-#      }
-#      if {[var.sliderVisible]!=[set sliderCheck$var]} {
-#          var.sliderVisible [set sliderCheck$var]
-#      }
-#  
-#      if {[set sliderCheck$var]} {
-#          if {![winfo exists .wiring.slider$var]} {
-#              scale .wiring.slider$var -orient horizontal -width 7 -length 50 \
-#                  -showvalue 1 -sliderlength 30 
-#          }
-#  
-#          setSliderProperties
-#  
-#          # configure command after slider initially set to prevent
-#          # constant value being set to initial state of slider when
-#          # constructed.
-#  #        .wiring.slider$var configure -command "setVarVal $var"
-#          .wiring.slider$var configure -variable "sliderVal[var.fqName]" -command "setVarVal $var"
-#  
-#          #.wiring.canvas bind .wiring.slider$op Keypress-Right 
-#          bind .wiring.slider$var <Enter> "focus .wiring.slider$var"
-#          # add shift arrow presses as synonyms for control arrows, as
-#          # control arrows are interpreted by some window managers
-#          bind .wiring.slider$var <Shift-KeyPress-Left> \
-#              "event generate .wiring.slider$var <Control-KeyPress-Left>"
-#          bind .wiring.slider$var <Shift-KeyPress-Right> \
-#              "event generate .wiring.slider$var <Control-KeyPress-Right>"
-#          bind .wiring.slider$var <Shift-KeyPress-Up> \
-#              "event generate .wiring.slider$var <Control-KeyPress-Up>"
-#          bind .wiring.slider$var <Shift-KeyPress-Down> \
-#              "event generate .wiring.slider$var <Control-KeyPress-Down>"
-#          bind .wiring.slider$var <Leave> {focus .}
-#  
-#          .wiring.canvas create window [var.x] [sliderYCoord [var.y]] -window .wiring.slider$var -tag slider$var
-#          # this is needed to ensure the setVarVal is fired _before_
-#          # moving on to processing the next operation in updateCanvas
-#          update
-#      } else {
-#          #remove any slider
-#          .wiring.canvas delete slider$var
-#      }
-#  }
-#  
 #  proc importData {id} {
 #      global workDir
 #      data.get $id
@@ -1388,23 +1099,6 @@ proc OKnote {item} {
     minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
     closeEditWindow .wiring.note
 }
-#  
-#  proc placeNewNote {} {
-#      set id [wiringGroup.newNote]
-#      wiringGroup.item.get $id
-#      wiringGroup.item.detailedText "Enter your note here"
-#      newItem $id
-#      global moveOffs$id.x moveOffs$id.y
-#      set moveOffs$id.x 0
-#      set moveOffs$id.y 0
-#      bind .wiring.canvas <Enter> "move $id %x %y"
-#      bind .wiring.canvas <Motion> "move $id %x %y"
-#      bind .wiring.canvas <Button-1> clearTempBindings
-#      bind . <Key-Escape> "clearTempBindings
-#         deleteNote $id
-#         .wiring.canvas delete item$id"
-#  
-#  }
 #  
 #  proc findItemWithDetailedText desc {
 #      foreach i [items.#keys] {

@@ -4,74 +4,74 @@
 
 \begin{description}
 
-\item[add +]\label{op:add} Add multiple numbers together. The input
+\item[add +]\label{Operation:add} Add multiple numbers together. The input
   ports allow multiple wires, which are all summed. If an input port
   is unwired, it is equivalent to setting it to zero.
 
-\item[subtract $-$]\label{op:subtract} Subtract two numbers. The input
+\item[subtract $-$]\label{Operation:subtract} Subtract two numbers. The input
   ports allow multiple wires, which are summed prior to the
   subtraction being carried out. If an input port is unwired, it is
   equivalent to setting it to zero. Note the small `+' and `$-$' signs
   on the input ports indicating which terms are added or subtracted from
   the result.
 
-\item[multiply $\times$]\label{op:multiply} Multiply numbers with each
+\item[multiply $\times$]\label{Operation:multiply} Multiply numbers with each
   other. The input ports allow multiple wires, which are all
   multiplied together. If an input port is unwired, it is equivalent
   to setting it to one.
 
-\item[divide $\div$]\label{op:divide} Divide a number by another. The
+\item[divide $\div$]\label{Operation:divide} Divide a number by another. The
   input ports allow multiple wires, which are multiplied together
   prior to the division being carried out. If an input port is
   unwired, it is equivalent to setting it to one. Note the small
   `$\times$' and `$\div$' signs indicating which port refers to the
   numerator and which the denominator.
 
-\item[log]\label{op:log} Take the logarithm of the $x$ input port, to
+\item[log]\label{Operation:log} Take the logarithm of the $x$ input port, to
 base $b$. The base $b$ needs to be specified --- if the natural
-logarithm is desired ($b=e$), use the \htmlref{ln operator}{op:ln} instead.
+logarithm is desired ($b=e$), use the \htmlref{ln operator}{Operation:ln} instead.
 
-\item[pow $x^y$]\label{op:pow} Raise one number to the power of another. The
+\item[pow $x^y$]\label{Operation:pow} Raise one number to the power of another. The
 ports are labelled $x$ and $y$, referring the the formula $x^y$.
 
-\item[lt $<$]\label{op:lt} Returns 0 or 1, depending
+\item[lt $<$]\label{Operation:lt} Returns 0 or 1, depending
   on whether $x<y$ is true or false.
 
-\item[le $\le$]\label{op:le} Returns 0 or 1, depending
+\item[le $\le$]\label{Operation:le} Returns 0 or 1, depending
   on whether $x\le y$ is true or false.
 
-\item[eq $=$]\label{op:eq} Returns 0 or 1, depending
+\item[eq $=$]\label{Operation:eq} Returns 0 or 1, depending
   on whether $x=y$ is true or false.
 
-\item[min]\label{op:min} Returns the minimum of $x$ and $y$.
+\item[min]\label{Operation:min} Returns the minimum of $x$ and $y$.
 
-\item[max]\label{op:max} Returns the maximum of $x$ and $y$.
+\item[max]\label{Operation:max} Returns the maximum of $x$ and $y$.
 
-\item[and $\wedge$]\label{op:and_} Logical and of $x$ and $y$, where
+\item[and $\wedge$]\label{Operation:and_} Logical and of $x$ and $y$, where
   $x\le 0.5$
   means false, and $x>0.5$ means true. The output is 1 or 0, depending
   on the result being true or false respectively.
 
-\item[or $\vee$]\label{op:or_} Logical or of $x$ and $y$, where $x\le0.5$
+\item[or $\vee$]\label{Operation:or_} Logical or of $x$ and $y$, where $x\le0.5$
   means false, and $x>0.5$ means true. The output is 1 or 0, depending
   on the result being true or false respectively.
 
-\item[not $\neg$]\label{op:not_} The output is 1 or 0, depending
+\item[not $\neg$]\label{Operation:not_} The output is 1 or 0, depending
   on whether $x\le0.5$ is true or false respectively.
 
-\item[time \buttonIcon{time.eps}]\label{op:time} Returns the current value of system time.
+\item[time \buttonIcon{time.eps}]\label{Operation:time} Returns the current value of system time.
 
-\item[copy]\label{op:copy} This just copies its input to its output,
+\item[copy]\label{Operation:copy} This just copies its input to its output,
 which is redundant on wiring diagrams, but is needed for internal
 purposes.
 
-\item[integrate \buttonIcon{int.eps}]\label{op:integrate} Creates an integration (or stock)
+\item[integrate \buttonIcon{int.eps}]\label{Operation:integrate} Creates an integration (or stock)
 variable. Editable attributes include the variable's name and its
 initial value at $t=0$.
 
-\item[differentiate \buttonIcon{differentiate.eps}]\label{op:differentiate} Symbolically differentiates its input.
+\item[differentiate \buttonIcon{differentiate.eps}]\label{Operation:differentiate} Symbolically differentiates its input.
 
-\item[data \buttonIcon{data.eps}]\label{op:data} A data interpolation
+\item[data \buttonIcon{data.eps}]\label{Operation:data} A data interpolation
 widget. Currently, the data must be imported from a file containing
 two values on each line, eg:
 \begin{quote}
@@ -102,29 +102,29 @@ x_{i+1}\\
 \right.
 \end{displaymath}
 
-\item[sqrt $\surd$]\label{op:sqrt} Square root of the input
+\item[sqrt $\surd$]\label{Operation:sqrt} Square root of the input
 
-\item[exp]\label{op:exp} Exponential of the input
+\item[exp]\label{Operation:exp} Exponential of the input
 
-\item[ln]\label{op:ln} Natural logarithm
+\item[ln]\label{Operation:ln} Natural logarithm
 
-\item[sin]\label{op:sin} sine function
-\item[cos]\label{op:cos} cosine function
-\item[tan]\label{op:tan} tangent function
-\item[asin]\label{op:asin} Arc sine, inverse of sine
-\item[acos]\label{op:acos} Arc cosine, inverse of cosine
-\item[atan]\label{op:atan} Arc tangent, inverse of tangent
-\item[sinh]\label{op:sinh} hyperbolic sine function $\frac{e^x-e^{-x}}2$
-\item[cosh]\label{op:cosh} hyperbolic cosine function $\frac{e^x+e^{-x}}2$
-\item[tanh]\label{op:tanh} hyperbolic tangent function $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
-\item[abs $|x|$]\label{op:abs} absolute value function
-\item[floor $\lfloor x\rfloor$]\label{op:floor} The greatest integer
+\item[sin]\label{Operation:sin} sine function
+\item[cos]\label{Operation:cos} cosine function
+\item[tan]\label{Operation:tan} tangent function
+\item[asin]\label{Operation:asin} Arc sine, inverse of sine
+\item[acos]\label{Operation:acos} Arc cosine, inverse of cosine
+\item[atan]\label{Operation:atan} Arc tangent, inverse of tangent
+\item[sinh]\label{Operation:sinh} hyperbolic sine function $\frac{e^x-e^{-x}}2$
+\item[cosh]\label{Operation:cosh} hyperbolic cosine function $\frac{e^x+e^{-x}}2$
+\item[tanh]\label{Operation:tanh} hyperbolic tangent function $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
+\item[abs $|x|$]\label{Operation:abs} absolute value function
+\item[floor $\lfloor x\rfloor$]\label{Operation:floor} The greatest integer
   less than or equal to $x$.
-\item[frac]\label{op:frac} Fractional part of $x$, ie $x-\lfloor x\rfloor$. 
+\item[frac]\label{Operation:frac} Fractional part of $x$, ie $x-\lfloor x\rfloor$. 
 
 \end{description}
 
-\section{Switch}\label{switch}
+\section{Switch}\label{SwitchIcon}
 
  \buttonIcon{switchIcon.eps}
 A switch block (also known as a case block, or select in the Fortran
@@ -151,7 +151,8 @@ words, it looks like:
 
 You can add or remove cases through the context menu. 
 
-\section{Variables}
+\section{Variables}\label{Variable:constant}\label{Variable:parameter}
+\label{Variable:flow}\label{Variable:integral}\label{Variable:stock}
 
 Variables represent values in a calculation, and come in a number of
 varieties:
@@ -233,7 +234,7 @@ a handle is dragged out of a straight line with its neighbours, new
 handles appear on either side. Handles can be removed by
 double-clicking on them.
 
-\section{Groups}\label{group}
+\section{Groups}\label{Group}
 
 Grouping gives the capability to create reusable modules, or subroutines that
 can dramatically simplify more complicated systems. Groups may be
@@ -283,7 +284,7 @@ to integrate Minsky with this github repository, allowing even more
 seamless sharing of models.
 
 \section{Plot widget}
-\label{Plot}
+\label{PlotWidget}
 
 A plot widget embeds a dynamic plot into the canvas. Around the
 outside of the plot are a number of input ports that can be wired.
@@ -322,7 +323,7 @@ outside of the plot are a number of input ports that can be wired.
 \end{description}
 
 \section{Note Widget}
- \label{Notes} Notes allow arbitrary text to be
+ \label{Notes}\label{Item} Notes allow arbitrary text to be
 placed on the canvas for explanatory purposes. Anything that can be
 entered on the keyboard can be placed here, including unicode
 characters, but LaTeX formatting is not currently supported. A note
@@ -330,7 +331,7 @@ widget, like all canvas items, allow short additional tooltips to be
 specified. It is also possible to annotate an ordinary block with some text
 that is visible through the edit menu, or as a tooltip.
 
-\section{Godley Tables}\label{godley}
+\section{Godley Tables}\label{godley}\label{GodleyIcon}
 
 Godley tables describes sets of financial flows from the point of view
 of a particular economic agent, such as a bank. The columns of the
