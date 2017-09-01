@@ -929,7 +929,6 @@ proc canvasHelp {} {
     set x [get_pointer_x .wiring.canvas]
     set y [get_pointer_y .wiring.canvas]
     if [getItemAt $x $y] {
-        puts "getting help for item [minsky.canvas.item.classType]"
         help [minsky.canvas.item.classType]
     } elseif [getWireAt $x $y] {
         help wire
