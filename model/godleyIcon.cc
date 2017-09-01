@@ -298,6 +298,12 @@ namespace minsky
     cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
 
     svgRenderer.render(cairo);
+    if (selected)
+      {
+        cairo_rectangle(cairo,0,0,svgRenderer.width(),svgRenderer.height());
+        cairo_clip(cairo);
+        drawSelected(cairo);
+      }
 
     cairo_restore(cairo);
 
@@ -329,7 +335,6 @@ namespace minsky
         drawPorts(cairo);
         displayTooltip(cairo);
       }
-    if (selected) drawSelected(cairo);
   }
 
   SVGRenderer GodleyIcon::svgRenderer;
