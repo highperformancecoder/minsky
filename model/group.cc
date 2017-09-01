@@ -772,7 +772,12 @@ namespace minsky
         displayTooltip(cairo);
       }
 
-    if (selected) drawSelected(cairo);
+    if (selected)
+      {
+        cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
+        cairo_clip(cairo);
+        drawSelected(cairo);
+      }
   }
 
   namespace
