@@ -70,13 +70,13 @@ namespace minsky
     void putClipboard(const std::string& s) const override; 
     std::string getClipboard() const override; 
 
-//    std::set<string> matchingTableColumns(int currTable, GodleyAssetClass::AssetClass ac) {
-//      auto it=items.find(currTable);
-//      if (it!=items.end())
-//        if (auto g=dynamic_cast<GodleyIcon*>(it->get()))
-//          return Minsky::matchingTableColumns(g->table, ac);
-//      return std::set<string>();
-//    }
+    std::set<string> matchingTableColumns(const std::string& currTable, GodleyAssetClass::AssetClass ac) {
+      auto it=TCL_obj_properties().find(currTable);
+      if (it!=TCL_obj_properties().end())
+        if (auto g=it->second->memberPtrCasted<GodleyIcon>())
+          return Minsky::matchingTableColumns(g->table, ac);
+      return std::set<string>();
+    }
 
     /// register item as a TCL obj under name if it exists, otherwise deregister it
     void registerRef(ItemPtr& item, const std::string& name)
