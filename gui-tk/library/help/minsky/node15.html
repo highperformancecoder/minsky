@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>Run Buttons</TITLE>
+<META NAME="description" CONTENT="Run Buttons">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -19,60 +19,59 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node16.html">
-<LINK REL="previous" HREF="node11.html">
-<LINK REL="up" HREF="node8.html">
+<LINK REL="previous" HREF="node8.html">
+<LINK REL="up" HREF="node7.html">
 <LINK REL="next" HREF="node16.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html185"
+<A NAME="tex2html261"
   HREF="node16.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html183"
-  HREF="node8.html">
+<A NAME="tex2html259"
+  HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html177"
+<A NAME="tex2html253"
   HREF="node14.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html186"
-  HREF="node16.html">Groups</A>
-<B> Up:</B> <A NAME="tex2html184"
-  HREF="node8.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html178"
-  HREF="node14.html">Sliders</A>
+<B> Next:</B> <A NAME="tex2html262"
+  HREF="node16.html">Zoom buttons</A>
+<B> Up:</B> <A NAME="tex2html260"
+  HREF="node7.html">Components of the Program</A>
+<B> Previous:</B> <A NAME="tex2html254"
+  HREF="node14.html">Help</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00340000000000000000">
-Wires</A>
-</H1>
+<H2><A NAME="SECTION00232000000000000000"></A>
+<A NAME="RunButtons"></A>
+<BR>
+Run Buttons
+</H2>
 
 <P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire
-attached, with the exception of <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img134.png"
- ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img135.png"
- ALT="$\times/\div$"></SPAN>, where the
-multiple wires are summed or multiplied, respectively, and similarly max/min.
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem15.png"
+ ALT="358">
 
 <P>
-Wires can be bent by dragging the blue dots (``handles''). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+The Run buttons respectively:
+
+<OL>
+<LI>Start a simulation-when started the button changes to a pause icon,
+allowing you to pause the simulation <IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem23.png"
+ ALT="360">.
+</LI>
+<LI>Stop a simulation and reset the simulation time to zero
+</LI>
+<LI>Step through the simulation one iteration at a time.
+</LI>
+</OL>
 
 <P>
 <BR><HR>

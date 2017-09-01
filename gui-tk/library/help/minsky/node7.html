@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Loanable Funds</TITLE>
-<META NAME="description" CONTENT="Loanable Funds">
+<TITLE>Components of the Program</TITLE>
+<META NAME="description" CONTENT="Components of the Program">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,489 +18,156 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node23.html">
 <LINK REL="previous" HREF="node6.html">
-<LINK REL="up" HREF="node6.html">
+<LINK REL="up" HREF="node4.html">
 <LINK REL="next" HREF="node8.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html93"
+<A NAME="tex2html162"
   HREF="node8.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html91"
-  HREF="node6.html">
+<A NAME="tex2html160"
+  HREF="node4.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html87"
+<A NAME="tex2html154"
   HREF="node6.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html94"
-  HREF="node8.html">Reference</A>
-<B> Up:</B> <A NAME="tex2html92"
-  HREF="node6.html">Basic Banking model</A>
-<B> Previous:</B> <A NAME="tex2html88"
-  HREF="node6.html">Basic Banking model</A>
+<B> Next:</B> <A NAME="tex2html163"
+  HREF="node8.html">Menu</A>
+<B> Up:</B> <A NAME="tex2html161"
+  HREF="node4.html">Getting Started</A>
+<B> Previous:</B> <A NAME="tex2html155"
+  HREF="node6.html">Getting help</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00221000000000000000">
-Loanable Funds</A>
-</H2>
+<H1><A NAME="SECTION00230000000000000000">
+Components of the Program</A>
+</H1>
 
 <P>
-Our model begins with the single operation of Patient lending to
-Impatient at a rate that, if kept constant at its initial level of of
-$10 per annum, would empty the Patient account in 10 years. Because
-the rate of outflow declines as the Patient account declines, the
-money in the account decays towards zero but never quite reaches it.
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img80.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img82.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="28" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img83.png"
- ALT="$120$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img84.png"
- ALT="$-100$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="32" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img85.png"
- ALT="$-20$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Patient lends to Impatient</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img86.png"
- ALT="$Lend$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img87.png"
- ALT="$-Lend$"></SPAN></TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-<!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem169.eps}}$
- -->
-<IMG
- WIDTH="555" HEIGHT="488" ALIGN="BOTTOM" BORDER="0"
- SRC="img88.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem169.eps}}">
-</DIV>
-
-<P>
-Many more actions need to be added to this model to complete it. For a
-start, Impatient should be paying interest to Patient on the amount
-lent. Add an additional row to the Godley Table by clicking on the
-`+' key
-next to ``Patient lends to Impatient'' to create a blank row:
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img80.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img82.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="28" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img83.png"
- ALT="$120$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img84.png"
- ALT="$-100$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="32" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img85.png"
- ALT="$-20$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Patient lends to Impatient</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img86.png"
- ALT="$Lend$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img87.png"
- ALT="$-Lend$"></SPAN></TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-Then label this flow ``Impatient pays interest'' and make the entry
-``Interest'' into the cell for Impatient on that row. Make the matching
-entry ``-Interest'' in the cell for Patient. The flow ``Interest'' now
-appears on the input side of the Godley Table on the Canvas: 
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img80.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img82.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="28" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img83.png"
- ALT="$120$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img84.png"
- ALT="$-100$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="32" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img85.png"
- ALT="$-20$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Patient lends to Impatient</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img86.png"
- ALT="$Lend$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img87.png"
- ALT="$-Lend$"></SPAN></TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-<TR><TD ALIGN="CENTER">Impatient pays interest</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="76" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img89.png"
- ALT="$-Interest$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="63" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img90.png"
- ALT="$Interest$"></SPAN></TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-Interest now has to be defined. It will be the amount in Impatient's
-account (since this began at zero) multiplied by the rate of interest
-charged by Patient:
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="382" HEIGHT="122" ALIGN="BOTTOM" BORDER="0"
- SRC="img91.png"
- ALT="\includegraphics{images/NewItem173.eps}">
-
-</DIV>
-
-<P>
-With that definition, the dynamics of the model change: rather than
-the Patient account falling to zero and Impatient rising to 100, the
-two accounts stabilize once the outflow of new loans by Patient equals
-the inflow of interest payments by Impatient:
-
-<P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem174.eps}}$
- -->
-<IMG
- WIDTH="555" HEIGHT="479" ALIGN="BOTTOM" BORDER="0"
- SRC="img92.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem174.eps}}">
-</DIV>
-
-<P>
-Though it stabilizes, this is is still a very incomplete model:
-neither Patient nor Impatient are doing anything with the money apart
-from lending it and paying interest. I am now going to assume that
-Impatient is borrowing the money in order to hire workers to work at a
-factory and produce output for sale. So we now need another account
-called Workers, and a payment from Impatient to Workers called Wage:
+There are 6 components to the Minsky interface:
 
 <P>
 
-  
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER"><SMALL CLASS="SMALL">
-Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SMALL CLASS="SMALL"><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Reserves$"></SPAN></SPAN></SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SMALL CLASS="SMALL"><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img80.png"
- ALT="$Patient$"></SPAN></SPAN></SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SMALL CLASS="SMALL"><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Impatient$"></SPAN></SPAN></SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SMALL CLASS="SMALL"><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="68" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img93.png"
- ALT="$Workers$"></SPAN></SPAN></SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SMALL CLASS="SMALL"><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img82.png"
- ALT="$Safe$"></SPAN></SPAN></SMALL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><SMALL CLASS="SMALL"> </SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SMALL CLASS="SMALL"><SPAN>asset</SPAN></SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=3><SMALL CLASS="SMALL"><SPAN>liability</SPAN></SMALL></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SMALL CLASS="SMALL"><SPAN>equity</SPAN></SMALL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><SMALL CLASS="SMALL"> 
-Initial Conditions</SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="28" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img83.png"
- ALT="$120$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img84.png"
- ALT="$-100$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="24" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img94.png"
- ALT="$-0$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="32" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img85.png"
- ALT="$-20$"></SPAN></SMALL></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><SMALL CLASS="SMALL"> 
-Patient lends to Impatient</SMALL></TD>
-<TD></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img86.png"
- ALT="$Lend$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img87.png"
- ALT="$-Lend$"></SPAN></SMALL></TD>
-<TD></TD>
-<TD></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><SMALL CLASS="SMALL"> 
-Impatient pays interest</SMALL></TD>
-<TD></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="76" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img89.png"
- ALT="$-Interest$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="63" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img90.png"
- ALT="$Interest$"></SPAN></SMALL></TD>
-<TD></TD>
-<TD></TD>
-</TR>
-<TR><TD ALIGN="CENTER"><SMALL CLASS="SMALL"> 
-Impatient pays Workers</SMALL></TD>
-<TD></TD>
-<TD></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="45" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img95.png"
- ALT="$Wage$"></SPAN></SMALL></TD>
-<TD ALIGN="CENTER"><SMALL CLASS="SMALL"><SPAN CLASS="MATH"><IMG
- WIDTH="58" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img96.png"
- ALT="$-Wage$"></SPAN></SMALL></TD>
-<TD></TD>
+<OL>
+<LI>The menus.
+
+<P>
+<TABLE CELLPADDING=3>
+<TR><TD ALIGN="LEFT">File</TD>
+<TD ALIGN="LEFT">Edit</TD>
+<TD ALIGN="LEFT">Insert</TD>
+<TD ALIGN="LEFT">Options</TD>
+<TD ALIGN="LEFT">Runge Kutta</TD>
+<TD ALIGN="LEFT">Help</TD>
 </TR>
 </TABLE>
 
 <P>
-In a more complex model, the Wage bill could be related to the current
-rate times the number of workers in employment. In this simple model I
-will regard the wage as a function of the amount of money in
-Impatient's account turning over several times a year in the payment
-of wages. Using a time constant, I will assume that the amount in
-Impatient's account turns over 3 times a year paying wages, so that
-the time constant <SPAN CLASS="MATH"><IMG
- WIDTH="21" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img97.png"
- ALT="$\tau_T$"></SPAN> is 1/3rd of a year:
+</LI>
+<LI>The Run buttons
 
 <P>
-<DIV ALIGN="CENTER">
 <IMG
- WIDTH="247" HEIGHT="80" ALIGN="BOTTOM" BORDER="0"
- SRC="img98.png"
- ALT="\includegraphics{images/NewItem176.eps}">
-
-</DIV>
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem15.png"
+ ALT="294">
 
 <P>
-The dynamics of this incomplete model are very different again: very
-little money turns up in the Impatient account, and all of the money
-ends up in the Workers account. However economic activity also ceases
-as both lending and the flow of wages falls towards zero:
+</LI>
+<LI>The simulation speed slider
 
 <P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/NewItem177.eps}}$
- -->
 <IMG
- WIDTH="555" HEIGHT="482" ALIGN="BOTTOM" BORDER="0"
- SRC="img99.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem177.eps}}">
-</DIV>
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem16.png"
+ ALT="295">
 
 <P>
-This is because wages are being paid to workers, but they are doing
-nothing with it. So we need to include consumption by workers-and by
-Patient as well. Here the reason time constants are useful may be more
-obvious. The time constant for consumption by Workers is given the
-very low value of 0.05--or 1/20th of a year--which indicates that if
-their initial rate of consumption was maintained without any wage
-income, they would reduce their bank balances to zero in 1/20th of a
-year or about 2.5 weeks.
+</LI>
+<LI>The Zoom buttons
 
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html93"
-  HREF="node8.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html91"
-  HREF="node6.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html87"
-  HREF="node6.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem17.png"
+ ALT="296">
+
+<P>
+</LI>
+<LI>The Wiring and Equation tabs
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="WiringEquationsTab.png"
+ ALT="297">
+
+<P>
+</LI>
+<LI>The design icons
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem18.png"
+ ALT="846">
+
+<P>
+</LI>
+<LI>And finally the Design Canvas-the large drawing area beneath the buttons and icons.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="NewItem19.png"
+ ALT="847">
+</LI>
+</OL>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html164"
+  HREF="node8.html">Menu</A>
+<UL>
+<LI><A NAME="tex2html165"
+  HREF="node9.html">File</A>
+<LI><A NAME="tex2html166"
+  HREF="node10.html">Edit</A>
+<LI><A NAME="tex2html167"
+  HREF="node11.html">Insert</A>
+<LI><A NAME="tex2html168"
+  HREF="node12.html">Options</A>
+<LI><A NAME="tex2html169"
+  HREF="node13.html">Runge Kutta</A>
+<LI><A NAME="tex2html170"
+  HREF="node14.html">Help</A>
+</UL>
 <BR>
-<B> Next:</B> <A NAME="tex2html94"
-  HREF="node8.html">Reference</A>
-<B> Up:</B> <A NAME="tex2html92"
-  HREF="node6.html">Basic Banking model</A>
-<B> Previous:</B> <A NAME="tex2html88"
-  HREF="node6.html">Basic Banking model</A></DIV>
-<!--End of Navigation Panel-->
+<LI><A NAME="tex2html171"
+  HREF="node15.html">Run Buttons</A>
+<LI><A NAME="tex2html172"
+  HREF="node16.html">Zoom buttons</A>
+<LI><A NAME="tex2html173"
+  HREF="node17.html">Speed slider</A>
+<LI><A NAME="tex2html174"
+  HREF="node18.html">Simulation time</A>
+<LI><A NAME="tex2html175"
+  HREF="node19.html">Wiring and Equations Tabs</A>
+<LI><A NAME="tex2html176"
+  HREF="node20.html">Design Icons</A>
+<LI><A NAME="tex2html177"
+  HREF="node21.html">Design Canvas</A>
+<LI><A NAME="tex2html178"
+  HREF="node22.html">Wires</A>
+</UL>
+<!--End of Table of Child-Links-->
+<BR><HR>
 <ADDRESS>
 Russell Standish
 2017-09-01

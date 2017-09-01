@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Godley Tables</TITLE>
-<META NAME="description" CONTENT="Godley Tables">
+<TITLE>Wiring and Equations Tabs</TITLE>
+<META NAME="description" CONTENT="Wiring and Equations Tabs">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,94 +20,50 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node20.html">
 <LINK REL="previous" HREF="node18.html">
-<LINK REL="up" HREF="node8.html">
+<LINK REL="up" HREF="node7.html">
 <LINK REL="next" HREF="node20.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html225"
+<A NAME="tex2html301"
   HREF="node20.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html223"
-  HREF="node8.html">
+<A NAME="tex2html299"
+  HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html217"
+<A NAME="tex2html293"
   HREF="node18.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html226"
-  HREF="node20.html">Context Menu</A>
-<B> Up:</B> <A NAME="tex2html224"
-  HREF="node8.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html218"
-  HREF="node18.html">Note Widget</A>
+<B> Next:</B> <A NAME="tex2html302"
+  HREF="node20.html">Design Icons</A>
+<B> Up:</B> <A NAME="tex2html300"
+  HREF="node7.html">Components of the Program</A>
+<B> Previous:</B> <A NAME="tex2html294"
+  HREF="node18.html">Simulation time</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00380000000000000000"></A><A NAME="godley"></A><A NAME="GodleyIcon"></A>
+<H2><A NAME="SECTION00236000000000000000"></A>
+<A NAME="WiringEquationsTab"></A>
 <BR>
-Godley Tables
-</H1>
+Wiring and Equations Tabs
+</H2>
 
 <P>
-Godley tables describes sets of financial flows from the point of view
-of a particular economic agent, such as a bank. The columns of the
-table represent accounts (possibly aggregated), which are treated as
-integration variables by the system. In ``double entry'' mode,
-accounts may be assets, liabilities or equities. Assets may appear as
-liabilities in another agent's Godley table, and vice versa, with the
-sense of the financial flows treated oppositely (a positive flow increasing the
-asset of one entity will appear as a negative flow, increasing the
-value of a liability). Instead of positive or negative flows, one can
-optionally use CR and DR prefixes, as specified in the options panel.
+<IMG
+ ALIGN="BOTTOM" BORDER="0" SRC="WiringEquationsTab.png"
+ ALT="377">
 
 <P>
-The first row specifies the stock variables, after which follow the
-flow rows. Usually, the row marked ``Initial Conditions'' comes next,
-but may be placed in any position. These specify the initial
-conditions of the stock variables, and may refer to a multiple of
-another variable, just like the <A HREF="node13.html#var:init">initial condition
-field</A>, or just be a numerical value.
+This allows you to switch between the visual block diagram wiring view and the more 
+mathematical equations view.
 
 <P>
-Finally come the flows. The first column is a simple textual label
-(the phrase ``Initial Conditions'', regardless of capitalisation, is a
-reserved phrase for setting stock variable initial conditions)
-identifying the flow. The flows themselves are written as a numerical
-multipler times a flow variable. Unscoped variables are treated as
-global at present, however, in the future, Godley tables will be
-allowed to be part of groups, which will then define the context of
-the unqualified variable names.
-
-<P>
-The final column displays the row sum. A correctly functioning Godley
-table should have each row sum to zero -- this ensures everything is
-accounted for, with no hidden sinks or sources.
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html225"
-  HREF="node20.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html223"
-  HREF="node8.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html217"
-  HREF="node18.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html226"
-  HREF="node20.html">Context Menu</A>
-<B> Up:</B> <A NAME="tex2html224"
-  HREF="node8.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html218"
-  HREF="node18.html">Note Widget</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 <ADDRESS>
 Russell Standish
 2017-09-01

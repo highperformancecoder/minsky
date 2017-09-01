@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Switch</TITLE>
-<META NAME="description" CONTENT="Switch">
+<TITLE>Edit</TITLE>
+<META NAME="description" CONTENT="Edit">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -27,80 +27,96 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html134"
+<A NAME="tex2html213"
   HREF="node11.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html132"
+<A NAME="tex2html211"
   HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html126"
+<A NAME="tex2html205"
   HREF="node9.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html135"
-  HREF="node11.html">Variables</A>
-<B> Up:</B> <A NAME="tex2html133"
-  HREF="node8.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html127"
-  HREF="node9.html">Operations</A>
+<B> Next:</B> <A NAME="tex2html214"
+  HREF="node11.html">Insert</A>
+<B> Up:</B> <A NAME="tex2html212"
+  HREF="node8.html">Menu</A>
+<B> Previous:</B> <A NAME="tex2html206"
+  HREF="node9.html">File</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00320000000000000000"></A><A NAME="SwitchIcon"></A>
+<H3><A NAME="SECTION00231200000000000000"></A>
+<A NAME="Edit"></A>
 <BR>
-Switch
-</H1>
+Edit
+</H3>
 
 <P>
 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
- -->
-<IMG
- WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img131.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
-  
-A switch block (also known as a case block, or select in the Fortran
-world) is a way of selecting from a range of alternatives according
-to the value of the input, effectively defining a piecewise function.
+<UL>
+<LI><A NAME="edit:undo"></A> Undo and Redo allow you to step back and forward in your editing
+history. If you step back a few steps, and then edit the model, all
+subsequent model states will be erased from the history.
 
 <P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
- -->
-<IMG
- WIDTH="553" HEIGHT="269" ALIGN="BOTTOM" BORDER="0"
- SRC="img132.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}">
-<EM>An example switch block with 3 cases</EM>
-
-</DIV>
-
-<P>
-The default switch has two cases, and can be used to implement an
-if/then/else construct. However, because the two cases are 0 and 1,
-or false and true, a two case switch statement will naturally appear
-``upside down'' to how you might think of an if statement. In other
-words, it looks like:
+</LI>
+<LI><A NAME="edit:copy"></A> Cut/copy/paste. Selecting, or lassoing a region
+of the canvas will select a group of icons, which will be shaded to
+indicate the selected items. Wires joining two selected items will
+also be selected. Note that, compatible with X-windows, selecting
+automatically performs a copy, so the copy operation is strictly
+redundant, but provided for users familiar with systems where an
+explicit copy request is required. Cut deletes the selected
+items. Paste will paste the items in the clipboard as a
+<A HREF="node49.html#Group">group</A> into the current model. At the time of writing,
+copy-pasting between different instances of Minsky, or into other
+applications, may not work on certain systems. Pasting the clipboard
+into a text-based application will be a Minsky schema XML document.
 
 <P>
-<IMG
- WIDTH="163" HEIGHT="65" ALIGN="MIDDLE" BORDER="0"
- SRC="img133.png"
- ALT="$\textstyle \parbox{\textwidth}{
-{\tt if not }{\em condition} {\tt then}\\
-\ldots
-{\tt else}\\
-\ldots
-}$">
-<P>
-You can add or remove cases through the context menu. 
+
+<table>
+<tr>
+<td><img src="selectionExamplePrior.png"></td>
+<td><big>&#x21d2;</big></td>
+<td><img src="selectionExamplePost.png"></td>
+</tr>
+</table>
 
 <P>
-<BR><HR>
+</LI>
+<LI><A NAME="edit:group"></A> Create a <A HREF="node49.html#Group">group</A> using the
+contents of the selection. Groups allow you to organise more
+complicated systems specification into higher level modules that make
+the overall system more comprehensible.
+
+<P>
+</LI>
+</UL>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html213"
+  HREF="node11.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html211"
+  HREF="node8.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html205"
+  HREF="node9.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html214"
+  HREF="node11.html">Insert</A>
+<B> Up:</B> <A NAME="tex2html212"
+  HREF="node8.html">Menu</A>
+<B> Previous:</B> <A NAME="tex2html206"
+  HREF="node9.html">File</A></DIV>
+<!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
 2017-09-01

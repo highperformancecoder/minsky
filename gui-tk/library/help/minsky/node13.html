@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Initial conditions</TITLE>
-<META NAME="description" CONTENT="Initial conditions">
+<TITLE>Runge Kutta</TITLE>
+<META NAME="description" CONTENT="Runge Kutta">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,48 +20,64 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node14.html">
 <LINK REL="previous" HREF="node12.html">
-<LINK REL="up" HREF="node11.html">
+<LINK REL="up" HREF="node8.html">
 <LINK REL="next" HREF="node14.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html167"
+<A NAME="tex2html243"
   HREF="node14.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html165"
-  HREF="node11.html">
+<A NAME="tex2html241"
+  HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html159"
+<A NAME="tex2html235"
   HREF="node12.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html168"
-  HREF="node14.html">Sliders</A>
-<B> Up:</B> <A NAME="tex2html166"
-  HREF="node11.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html160"
-  HREF="node12.html">Variable names</A>
+<B> Next:</B> <A NAME="tex2html244"
+  HREF="node14.html">Help</A>
+<B> Up:</B> <A NAME="tex2html242"
+  HREF="node8.html">Menu</A>
+<B> Previous:</B> <A NAME="tex2html236"
+  HREF="node12.html">Options</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00332000000000000000"></A><A NAME="var:init"></A>
+<H3><A NAME="SECTION00231500000000000000"></A>
+<A NAME="RungeKutta"></A>
 <BR>
-Initial conditions
-</H2>
+Runge Kutta
+</H3>
 
 <P>
-Variable initial conditions can be defined through the ``init value''
-field of the variable edit menu, or in the case of Godley table stock
-variables, through the initial condition row of the Godley table. An
-initial value can be a simple number, or it can be a multiple of
-another named variable (or parameter). In case of symbolic
-definitions, it would be possible to set up a circular reference where
-the initial value of variable A is defined in terms of the initial
-value of variable B, which in turn depends on the intial value of
-A. Such a pathological situation is detected when the system is reset.
+
+<UL>
+<LI>Controls aspect of the adaptive Runge-Kutta equation solver, which
+trade off performance and accuracy of the model. 
+</LI>
+<LI>Note a first order explicit solver is the classic Jacobi method, which is the fastest,
+but least accurate solver. 
+</LI>
+<LI>The algorithm is adaptive, so the
+step size will vary according to how stiff the system of equations
+is. 
+</LI>
+<LI>Specifying a minimum step size prevents the system from stalling,
+at the expense of accuracy when the step size reaches that
+minimum. 
+</LI>
+<LI>Specifying a maximum step size is useful to ensure one has
+sufficient data points for smooth plots.
+</LI>
+<LI>An iteration is the time between updates of the screen, increasing the
+number of solver steps per iteration decreases the overhead involved
+in updating the display, at the expense of smoothness of the plots.
+</LI>
+</UL>
 
 <P>
 <BR><HR>
