@@ -129,9 +129,8 @@ proc get_pointer_y {c} {
   #  return [winfo pointery $c]
 }
 
-bind . <Key-plus> {zoom 1.1}
-bind . <Key-equal> {zoom 1.1}
-bind . <Key-minus> {zoom [expr 1.0/1.1]}
+bind . <Key-KP_Add> {zoom 1.1}
+bind . <Key-KP_Subtract> {zoom [expr 1.0/1.1]}
 # mouse wheel bindings for X11
 bind .wiring.canvas <Button-4> {zoomAt %x %y 1.1}
 bind .wiring.canvas <Button-5> {zoomAt  %x %y [expr 1.0/1.1]}
@@ -161,19 +160,6 @@ proc zoomAt {x0 y0 factor} {
         model.zoom $x0 $y0 $factor
     }
     canvas.requestRedraw
-       
-#    # sliders need to be readjusted, because zooming doesn't do the right thing
-#    foreach v [wiringGroup.items.#keys] {
-#        wiringGroup.item.get $v
-#        if {[wiringGroup.item.visible] && [string equal -length 8 "Variable" [wiringGroup.item.classType]]} {
-#            var.get $v
-#            foreach item [.wiring.canvas find withtag slider$v] {
-#                set coords [.wiring.canvas coords $item]
-#                # should be only one of these anyway...
-#                .wiring.canvas coords $item [var.x] [sliderYCoord [var.y]]
-#            }
-#        }
-#    }
 }
 
 .menubar.ops add command -label "Godley Table" -command canvas.addGodley
@@ -184,12 +170,6 @@ foreach var [availableOperations] {
     if {$var=="numOps"} break
     .menubar.ops add command -label [regsub {(.*)_$} $var {\1}] -command "minsky.addOperation $var"
 }
-#  
-#  proc clearTempBindings {} {
-#      bind .wiring.canvas <Motion> {}
-#      bind .wiring.canvas <Enter> {}
-#      bind . <Key-Escape> {handleEscapeKey}
-#  }
  
 # default command to execute when escape key is pressed
 proc handleEscapeKey {} {
@@ -251,66 +231,58 @@ proc addConstantOrVariable {} {
 
 # add operation from a keypress
 proc addOperationKey {op} {
-    global globals constInput
-    set id [wiringGroup.addOperation $op]
-    op.get $id
-    op.set
-    global moveOffs$id.x moveOffs$id.y 
-    set moveOffs$id.x 0
-    set moveOffs$id.y 0
-
-    newItem $id
-    move $id [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
-    if {$op=="constant"} {
-	editItem $id
-	set constInput(cancelCommand) "cancelPlaceNewOp $id;closeEditWindow .wiring.editConstant"
-    }
-    return $id
+    addOperation $op
+    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
 
 # handle arbitrary text typed into the canvas
-set textBuffer ""
 proc textInput {char} {
     global textBuffer globals
     #ignore anything unprintable!
     set x [get_pointer_x .wiring.canvas]
     set y [get_pointer_y .wiring.canvas]
-#    if [string is print $char] {
-#        if {[llength [.wiring.canvas find withtag textBuffer]]==0} {
-#            .wiring.canvas create text $x $y -tags textBuffer
-#        }
-#        append textBuffer $char
-#        .wiring.canvas itemconfigure textBuffer -text $textBuffer
-#    } elseif {$char=="\r"} {
-#        .wiring.canvas delete textBuffer
-#        if {[lsearch [availableOperations] $textBuffer]>-1} {
-#            addOperationKey $textBuffer
-#        } elseif {![string match "\[%#\]*" $textBuffer]} {
-#            # if no space in text, add a variable of that name
-#            set id [newVariable $textBuffer "flow"]
-#            var.get $id
-#            var.moveTo $x $y
-#            initGroupList
-#            newItem $id
-#        } else {
-#            set id [wiringGroup.newNote]
-#            wiringGroup.item.get $id
-#            # trim off leading comment character
-#            wiringGroup.item.detailedText [string range $textBuffer 1 end]
-#            wiringGroup.item.moveTo [.wiring.canvas canvasx [get_pointer_x .wiring.canvas]]\
-#                [.wiring.canvas canvasy [get_pointer_y .wiring.canvas]]
-#            newItem $id
-#        }
-#        # TODO add arbitrary comment boxes
-#        set textBuffer ""
-#    }
+
+    if {![winfo exists .textInput]} {
+        set textBuffer ""
+        toplevel .textInput
+        entry .textInput.entry -textvariable textBuffer -takefocus 1
+        .textInput.entry insert 0 $char
+        frame .textInput.buttonBar
+        button .textInput.buttonBar.ok -text "OK" -command {
+            canvas.moveOffsX 0
+            canvas.moveOffsY 0
+            if {[lsearch [availableOperations] $textBuffer]>-1} {
+                addOperationKey $textBuffer
+            } elseif [string match "\[%#\]*" $textBuffer] {
+                addNote $textBuffer
+            } else {
+                minsky.addVariable $textBuffer flow
+            }
+            canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+            grab release .textInput
+            destroy .textInput
+        }
+        button .textInput.buttonBar.cancel -text "Cancel" -command {
+            grab release .textInput
+            destroy .textInput
+        }
+        pack .textInput.buttonBar.cancel .textInput.buttonBar.ok
+        pack .textInput.entry .textInput.buttonBar -side top
+        bind .textInput <Key-Return> {.textInput.buttonBar.ok invoke}
+        bind .textInput <Key-Escape> {.textInput.buttonBar.cancel invoke}
+        wm geometry .textInput "+[winfo pointerx .]+[winfo pointery .]"
+        focus .textInput.entry
+        tkwait visibility .textInput
+        # reset cursor in the case a shifted key has been pressed
+        .wiring.canvas configure -cursor arrow
+        grab set .textInput
+        wm transient .textInput
+    }
 }
 
 # operation add shortcuts
 bind . <Key-plus> {addOperationKey add}
-bind . <Key-KP_Add> {addOperationKey add}
 bind . <Key-minus> {addOperationKey subtract}
-bind . <Key-KP_Subtract> {addOperationKey subtract}
 bind . <Key-asterisk> {addOperationKey multiply}
 bind . <Key-KP_Multiply> {addOperationKey multiply}
 bind . <Key-slash> {addOperationKey divide}
@@ -333,24 +305,15 @@ bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor arrow}
 
 # handle processing when delete or backspace is pressed
 proc deleteKey {} {
-    global textBuffer 
-    if {[string length $textBuffer]>0} {
-        set textBuffer [string range $textBuffer 0 end-1]
-        .wiring.canvas itemconfigure textBuffer -text $textBuffer
-    } elseif [itemsSelected] {
+#    tk_messageBox -message "hello"
+    if [itemsSelected] {
         cut
-    } else {
-        set tags [.wiring.canvas gettags  [.wiring.canvas find withtag current]]
-        set re {item([0-9]+)}
-        if [regexp $re [lsearch -regexp -inline $tags $re] tag id] {
-            deleteItem $id $tag
-        }
-        set re {wire([0-9]+)}
-        if [regexp $re [lsearch -regexp -inline $tags $re] tag  id] {
-            deleteWire $id
-            .wiring.canvas delete wire$id
-        }
+    } elseif [getItemAt [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]] {
+        canvas.deleteItem
+    } elseif [getWireAt [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]] {
+        canvas.deleteWire
     }
+    canvas.requestRedraw
 }
 
 # global godley icon resource
@@ -384,32 +347,6 @@ proc canvasContext {x y} {
     .wiring.context add command -label "Open master group" -command "openModelInCanvas"
     tk_popup .wiring.context $x $y
 }
-#  proc canvasHelp {x y} {
-#      set itemlist [.wiring.canvas find withtag current]
-#      if {[llength $itemlist]==0} {
-#          help DesignCanvas
-#      } else {
-#          # should only be one or zero current items?
-#          set canvId [lindex $itemlist 0]
-#          # assuming that the one true tag is of the form aaaNNN - a is lowercase letter, N a digit
-#          set tags [.wiring.canvas gettags $canvId]
-#          set tag [lindex $tags [lsearch -regexp $tags {[a-z]+[0-9]+}]]
-#          set item [regsub {[0-9]+} $tag ""]
-#          # extract the item id from its tag
-#          set id [regsub {[a-z]+} $tag ""]
-#          wiringGroup.$item.get $id
-#  
-#          switch $item {
-#              var {help Variable}
-#              op {help "op:[op.name]"}
-#              godley {help GodleyTable}
-#              group {help Group}
-#              plot {help Plot}
-#          }
-#      }
-#  }
-#  
-
 
 bind .wiring.canvas <Double-Button-1> {
     if [getItemAt %x %y] {
@@ -429,26 +366,6 @@ bind .wiring.canvas <<contextMenu>> {
     } else {
         canvasContext  %X %Y
     }
-
-#    set items [.wiring.canvas find withtag current]
-#    if {[llength $items]==0} {
-#        canvasContext %X %Y
-#    } else {
-#        foreach item $items {
-#            if {[.wiring.canvas type $item]=="item"} {
-#                # TODO - this is so kludgy
-#                set tags [.wiring.canvas gettags $item]
-#                set tag [lindex $tags [lsearch -regexp $tags {item[0-9]+}]]
-#                set id [string range $tag 4 end]
-#                wiringGroup.item.get $id
-#                switch [wiringGroup.item.classType] {
-#                    "GodleyIcon" "rightMouseGodley $id %x %y %X %Y"
-#                    "Group" "rightMouseGroup $id %x %y %X %Y"
-#                    default "contextMenu $id %X %Y"
-#                }
-#            }
-#        }
-#    }
 }
 
 #  proc raiseItem {item} {

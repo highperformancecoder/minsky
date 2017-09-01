@@ -134,6 +134,7 @@ wm deiconify .
 tk appname [file rootname [file tail $argv(0)]]
 wm title . "Minsky: $fname" 
 setBackgroundColour $backgroundColour
+tk_focusFollowsMouse
 
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
@@ -145,7 +146,7 @@ if {[tk windowingsystem]=="win32"} {
                     # on Winblows, min val of |%D| is 120, so just use sign
                     zoomAt %x %y 1.1
                 } {
-                    zoom %x %y [expr 1.0/1.1]
+                    zoomAt %x %y [expr 1.0/1.1]
                 } 
             }
         }
@@ -155,7 +156,7 @@ if {[tk windowingsystem]=="win32"} {
 source $minskyHome/library/tooltip.tcl
 namespace import tooltip::tooltip
 
-source $minskyHome/library/Xecolab/obj-browser.tcl
+source $minskyHome/library/obj-browser.tcl
 
 # Macs have a weird numbering of mouse buttons, so lets virtualise B2 & B3
 # see http://wiki.tcl.tk/14728
