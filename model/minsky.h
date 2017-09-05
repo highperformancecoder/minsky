@@ -111,9 +111,8 @@ namespace minsky
     /// write current state of all variables to the log file
     void logVariables() const;
 
-//  protected:
-//    /// contents of current selection
-//    Selection currentSelection;
+    classdesc::Exclude<boost::posix_time::ptime> lastRedraw;
+      
 
   public:
     
@@ -154,7 +153,10 @@ namespace minsky
     EvalGodley evalGodley;
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
-    Minsky() {model->height=model->width=std::numeric_limits<float>::max();}
+    Minsky() {
+      lastRedraw=boost::posix_time::microsec_clock::local_time();
+      model->height=model->width=std::numeric_limits<float>::max();
+    }
 
     GroupPtr model{new Group};
     Canvas canvas{model};

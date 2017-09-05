@@ -35,6 +35,7 @@
 
 using namespace minsky;
 using namespace classdesc;
+using namespace boost::posix_time;
 
 namespace
 {
@@ -669,6 +670,15 @@ namespace minsky
       (&Group::items, 
        [&](Items&, Items::iterator i) 
        {(*i)->updateIcon(t); return false;});
+
+    // throttle redraws
+    static const time_duration maxWait=milliseconds(100);
+    if ((microsec_clock::local_time()-(ptime&)lastRedraw) > maxWait)
+      {
+        canvas.requestRedraw();
+        lastRedraw=microsec_clock::local_time();
+      }
+
   }
 
   string Minsky::diagnoseNonFinite() const
