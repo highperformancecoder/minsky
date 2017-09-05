@@ -461,6 +461,20 @@ namespace schema1
 //        if (v->name()[0]==':')
 //          v->name(v->name().substr(1));
     
+    // In schema 1, the ratio of a GodleyIcon's zoomFactor to its
+    // group's zoomFactor is the iconScale we need to extract those
+    // values prior to setZoom
+    m.model->recursiveDo(&minsky::GroupItems::items,
+                         [&](minsky::Items&,minsky::Items::iterator i)
+                         {
+                           if (auto godley=dynamic_cast<minsky::GodleyIcon*>(i->get()))
+                             {
+                               SchemaHelper::scaleGodley(*godley,zoomFactor);
+                               godley->update();
+                             }
+                           return false;
+                         });
+
     m.model->setZoom(zoomFactor);
     
     m.stepMin=model.rungeKutta.stepMin; 

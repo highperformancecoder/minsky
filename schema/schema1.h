@@ -216,7 +216,7 @@ namespace schema1
       doubleEntryCompliant(g.table.doubleEntryCompliant),
       name(g.table.title), data(g.table.getData()), 
       assetClasses(g.table._assetClass()),
-      zoomFactor(g.zoomFactor) {}
+      zoomFactor(g.schema1ZoomFactor()) {}
   };
 
   struct Layout: public SPoly<Layout, SPolyBase>

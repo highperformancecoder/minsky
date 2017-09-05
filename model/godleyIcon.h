@@ -36,20 +36,25 @@ namespace minsky
   {
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0, iconSize=100;
+    /// icon scale is adjusted when Godley icon is resized
+    float iconScale=1;
     CLASSDESC_ACCESS(GodleyIcon);
     friend class SchemaHelper;
   public:
     static SVGRenderer svgRenderer;
     
     /// width of Godley icon in screen coordinates
-    float width() const {return (flowMargin+iconSize)*zoomFactor;}
+    float width() const {return (flowMargin+iconSize)*iconScale*zoomFactor;}
     /// height of Godley icon in screen coordinates
-    float height() const {return (stockMargin+iconSize)*zoomFactor;}
+    float height() const {return (stockMargin+iconSize)*iconScale*zoomFactor;}
     /// left margin of bank icon with Godley icon
-    float leftMargin() const {return flowMargin*zoomFactor;}
+    float leftMargin() const {return flowMargin*iconScale*zoomFactor;}
     /// bottom margin of bank icon with Godley icon
-    float bottomMargin() const {return stockMargin*zoomFactor;}
+    float bottomMargin() const {return stockMargin*iconScale*zoomFactor;}
 
+    /// helper for schema1
+    double schema1ZoomFactor() const; 
+    
     void resize(const LassoBox&) override;
 
     /// set cell(row,col) with contents val

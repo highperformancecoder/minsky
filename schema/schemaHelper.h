@@ -100,6 +100,10 @@ namespace minsky
       g.data=data;
       g.m_assetClass=assetClass;
     }
+
+    static void scaleGodley(minsky::GodleyIcon& g, double globalZoomFactor)
+    {g.iconScale*=g.zoomFactor/globalZoomFactor;
+    }
 //
 //    static void setPrivates
 //    (minsky::GroupIcon& g, const vector<int>& ops, const vector<int>& vars,

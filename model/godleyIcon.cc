@@ -46,9 +46,8 @@ namespace minsky
     {
       cairo_t* cairo;
       float x, y; // position of this icon
-      float zoomFactor;
-      DrawVars(cairo_t* cairo, float x, float y, float zoomFactor): 
-        cairo(cairo), x(x), y(y), zoomFactor(zoomFactor) {}
+      DrawVars(cairo_t* cairo, float x, float y): 
+        cairo(cairo), x(x), y(y) {}
       
       void operator()(const GodleyIcon::Variables& vars)
       {
@@ -119,7 +118,7 @@ namespace minsky
               oldVars.erase(v);
               assert(*v);
             }
-          vars.back()->zoomFactor=zoomFactor;
+          vars.back()->zoomFactor=iconScale*zoomFactor;
         }
       // remove any previously existing variables
       set<ItemPtr> ov(oldVars.begin(), oldVars.end());
@@ -134,9 +133,18 @@ namespace minsky
            });
     }
 
+  double GodleyIcon::schema1ZoomFactor() const
+  {
+    if (auto g=group.lock())
+      return iconScale*g->zoomFactor;
+    else
+      return iconScale;
+  }
+
   void GodleyIcon::resize(const LassoBox& b)
   {
-    zoomFactor*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
+    iconScale*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
+    update();
   }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
@@ -253,6 +261,7 @@ namespace minsky
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
+    float zoomFactor=iconScale*this->zoomFactor;
     float x= this->x() - 0.5*(0.9*iconSize-flowMargin)*zoomFactor;
     float y= this->y() - 0.2/*0.37*/*iconSize*zoomFactor;
     for (auto& v: flowVars)
@@ -326,7 +335,7 @@ namespace minsky
           
 
     // render the variables
-    DrawVars drawVars(cairo, x(), y(), zoomFactor);
+    DrawVars drawVars(cairo, x(), y());
     drawVars(flowVars); 
     drawVars(stockVars); 
 
