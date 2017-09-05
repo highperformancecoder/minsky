@@ -243,6 +243,13 @@ void VariableBase::adjustSliderBounds() const
   if (sliderMin>value()) sliderMin=value();
 }
 
+bool VariableBase::handleArrows(int dir)
+{
+  sliderSet(value()+dir*sliderStep);
+  return true;
+}
+
+
 void VariablePtr::makeConsistentWithValue()
 {
   retype(minsky::cminsky().variableValues[get()->valueId()].type());

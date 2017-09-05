@@ -173,6 +173,8 @@ namespace minsky
     /// return reference to integration variable
     VariablePtr intVar; 
 
+    bool handleArrows(int dir) override {return intVar->handleArrows(dir);}
+
     /// toggles coupled state of integration variable. Only valid for integrate
     /// @return coupled state
     bool toggleCoupled();

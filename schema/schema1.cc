@@ -361,6 +361,9 @@ namespace schema1
             integ->intVar=imap[i.intVar];
           }
         pmap.asgPorts(o->ports, i.ports);
+        // ensure variable has correct visibility status
+        if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+          {integ->toggleCoupled();integ->toggleCoupled();}
 #ifndef NDEBUG
         // check the output port connects to correct item
         if (auto integ=dynamic_cast<minsky::IntOp*>(o))

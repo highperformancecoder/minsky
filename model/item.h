@@ -136,6 +136,11 @@ namespace minsky
     virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 
     virtual std::shared_ptr<Port> closestInPort(float x, float y) const;
 
+    /// respond to arrow keys.
+    /// @param dir = -1/1 if left/down, right/up pressed
+    /// @return true if state changed, and item needs to be redrawn
+    virtual bool handleArrows(int dir) {return false;}
+    
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
     virtual std::shared_ptr<Item> select(float x, float y) const;

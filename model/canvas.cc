@@ -352,11 +352,8 @@ namespace minsky
 
   void Canvas::handleArrows(int dir, float x, float y)
   {
-    if (auto v=dynamic_cast<VariableBase*>(itemAt(x,y).get()))
-      {
-        v->sliderSet(v->value()+dir*v->sliderStep);
-        requestRedraw();
-      }
+    if (itemAt(x,y)->handleArrows(dir))
+      requestRedraw();
   }
   
   void Canvas::zoomToDisplay()

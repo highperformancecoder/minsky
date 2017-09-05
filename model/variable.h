@@ -125,6 +125,8 @@ namespace minsky
           return Slider::sliderVisible=v;
         }};
 
+    bool handleArrows(int dir) override;
+    
     /// variable is on left hand side of flow calculation
     bool lhs() const {return type()==flow || type()==tempFlow;} 
     /// variable is temporary
