@@ -175,13 +175,6 @@ namespace minsky
 //    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
 //        makeGodleyIt(godleyItems.end()), variables.values);
 
-//#ifdef NDEBUG
-//    nextId=0;
-//#else
-//    resetNextId();
-//    assert(nextId==0);
-//#endif
-
     flags=reset_needed;
   }
 
@@ -199,36 +192,6 @@ namespace minsky
     r->splitBoundaryCrossingWires();
     return r;
   }
-
-//  void Minsky::select(float x0, float y0, float x1, float y1)
-//  {
-//    LassoBox lasso(x0,y0,x1,y1);
-//    currentSelection.clear();
-//
-//    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
-//
-//    if (!topLevel) topLevel=&*model;
-//
-//    for (auto& i: topLevel->items)
-//      if (i->visible() && lasso.intersects(*i))
-//        {
-//          currentSelection.items.push_back(i);
-//          i->selected=true;
-//        }
-//
-//    for (auto& i: topLevel->groups)
-//      if (i->visible() && lasso.intersects(*i))
-//        {
-//          currentSelection.groups.push_back(i);
-//          i->selected=true;
-//        }
-//
-//    for (auto& i: topLevel->wires)
-//      if (i->visible() && lasso.contains(*i))
-//        currentSelection.wires.push_back(i);
-//
-//    copy();
-//  }
 
   void Minsky::cut()
   {
@@ -323,30 +286,6 @@ namespace minsky
 //      );
 //  }
 //
-//  int Minsky::newVariable(const string& name, VariableType::Type type) 
-//  {
-//    VariablePtr v(type, name);
-//    return model->addItem(getNewId(), v).id();
-//  }
-
-
-//  int Minsky::copyVariable(int id)
-//  {
-//    const auto& it=model->findItem(id);
-//    if (auto v=dynamic_cast<const VariableBase*>(it.get()))
-//      {
-//        int id=getNewId();
-//        VariableBase* v1=v->clone();
-//        assert(v1);
-//        model->addItem(id, v1);
-//        v1->m_visible=true; // a copied variable should always be visible!
-//        v1->sliderVisible=false; // sliders should start out invisible
-//        markEdited();
-//        return id;
-//      }
-//    return -1;
-//  }
-        
   void Minsky::makeVariablesConsistent()
   {
     // remove variableValues not in variables
@@ -380,12 +319,12 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
-//    // remove all temporaries
-//    for (auto v=variableValues.begin(); v!=variableValues.end();)
-//      if (v->second.temp())
-//        variableValues.erase(v++);
-//      else
-//        ++v;
+    // remove all temporaries
+    for (auto v=variableValues.begin(); v!=variableValues.end();)
+      if (v->second.temp())
+        variableValues.erase(v++);
+      else
+        ++v;
     
     variableValues.reset();
   }
