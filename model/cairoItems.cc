@@ -442,14 +442,11 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_restore(cairo);
   
   // draw slider
-  if (!isStock() && (type()!=VariableType::flow || !inputWired()))
-    {
-      cairo_save(cairo);
-      cairo_set_source_rgb(cairo,0,0,0);
-      cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
-      cairo_fill(cairo);
-      cairo_restore(cairo);
-    }
+  cairo_save(cairo);
+  cairo_set_source_rgb(cairo,0,0,0);
+  cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+  cairo_fill(cairo);
+  cairo_restore(cairo);
 
   cairo_restore(cairo); // undo rotation
    

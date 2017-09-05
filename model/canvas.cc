@@ -172,10 +172,8 @@ namespace minsky
           {
             RenderVariable rv(*v);
             double rw=fabs(v->zoomFactor*rv.width()*cos(v->rotation*M_PI/180));
-            double newValue=(x-v->x()) * (v->sliderMax-v->sliderMin) / rw + 0.5*(v->sliderMin+v->sliderMax);
-            if (newValue<v->sliderMin) newValue=v->sliderMin;
-            if (newValue>v->sliderMax) newValue=v->sliderMax;
-            v->value(newValue);
+            v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
+                         rw + 0.5*(v->sliderMin+v->sliderMax));
             requestRedraw();
           }
       }
@@ -262,13 +260,14 @@ namespace minsky
   }
 
   
-  void Canvas::getItemAt(float x, float y)
+  ItemPtr Canvas::itemAt(float x, float y)
   {
-    item=model->findAny(&Group::items,
+    auto item=model->findAny(&Group::items,
                         [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
       item=model->findAny(&Group::groups,
                        [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
+    return item;
   }
   
   void Canvas::getWireAt(float x, float y)
@@ -351,6 +350,15 @@ namespace minsky
       }
   }
 
+  void Canvas::handleArrows(int dir, float x, float y)
+  {
+    if (auto v=dynamic_cast<VariableBase*>(itemAt(x,y).get()))
+      {
+        v->sliderSet(v->value()+dir*v->sliderStep);
+        requestRedraw();
+      }
+  }
+  
   void Canvas::zoomToDisplay()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))

@@ -114,7 +114,7 @@ namespace minsky
     /// @}
 
     /// sets variable value (or init value)
-    void sliderSet(double x) {init(str(x)); value(x);}
+    void sliderSet(double x);
     /// initialise slider bounds when slider first opened
     void initSliderBounds() const;
     void adjustSliderBounds() const;

@@ -303,6 +303,12 @@ bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor arrow}
 bind . <KeyPress-Shift_R> {.wiring.canvas configure -cursor $panIcon}
 bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor arrow}
 
+# slider key bindings
+bind . <KeyPress-Left> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
+bind . <KeyPress-Right> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
+bind . <KeyPress-Up> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
+bind . <KeyPress-Down> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
+
 # handle processing when delete or backspace is pressed
 proc deleteKey {} {
 #    tk_messageBox -message "hello"
@@ -975,7 +981,6 @@ proc importData {} {
     set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
     if [string length $f] {
         minsky.canvas.item.readData $f
-#        updateCanvas
     }
 }
   

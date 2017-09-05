@@ -86,7 +86,8 @@ namespace minsky
     /// @{ item or wire obtained by get*At() calls
     ItemPtr item;
     WirePtr wire;
-    void getItemAt(float x, float y);
+    ItemPtr itemAt(float x, float y);
+    void getItemAt(float x, float y) {item=itemAt(x,y);}
     void getWireAt(float x, float y);
 
     double defaultRotation=0;
@@ -123,6 +124,11 @@ namespace minsky
     /// reinitialises canvas to the group located in item
     void openGroupInCanvas(const ItemPtr& item);
 
+    /// handle arrow keys
+    /// @param int - direction (-1=left/up, +1=right/down)
+    /// @param x, y coordinates of mouse in canvas coordinates
+    void handleArrows(int dir, float x, float y);
+    
     /// zooms canvas such that group indexed by item is displayed
     void zoomToDisplay();
 

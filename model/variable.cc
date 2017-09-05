@@ -207,6 +207,15 @@ void VariablePtr::retype(VariableBase::Type type)
     }
 }
 
+void VariableBase::sliderSet(double x)
+{
+  if (x<sliderMin) x=sliderMin;
+  if (x>sliderMax) x=sliderMax;
+  init(str(x));
+  value(x);
+}
+
+
 void VariableBase::initSliderBounds() const
 {
   if (!sliderBoundsSet) 
