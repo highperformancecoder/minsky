@@ -360,33 +360,35 @@ namespace minsky
       int depth;
       Visual *visual = Tk_GetVisual(interp(), c.tkWin, "default", &depth, NULL);
 #if USE_WIN32_SURFACE
-        // TkWinGetDrawableDC is an internal (ie undocumented) routine
-        // for getting the DC. We need to declare something to take
-        // the state parameter - two long longs should be ample here
-        long long state[2];
-        HDC hdc=TkWinGetDrawableDC(display, win, state);
-        SaveDC(hdc);
-        c.canvas.surface.reset
+      // TkWinGetDrawableDC is an internal (ie undocumented) routine
+      // for getting the DC. We need to declare something to take
+      // the state parameter - two long longs should be ample here
+      long long state[2];
+      HDC hdc=TkWinGetDrawableDC(display, win, state);
+      SaveDC(hdc);
+      c.canvas.surface.reset
         (new TkWinSurface
          (c.canvas, c.master,
           cairo_win32_surface_create(hdc)));
 #elif defined(MAC_OSX_TK)
-        NSContext nctx(win);
-        c.canvas.surface.reset
+      NSContext nctx(win);
+      c.canvas.surface.reset
         (new TkWinSurface
          (c.canvas, c.master,
           cairo_quartz_surface_create_for_cg_context(nctx.context, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
-        // TODO: offsets here appear to be quite arbitrary!!!
-        cairo_surface_set_device_offset(c.canvas.surface->surface(),27,Tk_Height(c.tkWin)+37);
-        cairo_surface_set_device_scale(c.canvas.surface->surface(),1,-1);
+      // TODO: offsets here appear to be quite arbitrary!!!
+      cairo_surface_set_device_offset(c.canvas.surface->surface(),27,Tk_Height(c.tkWin)+37);
+      cairo_surface_set_device_scale(c.canvas.surface->surface(),1,-1);
 #else
-        c.canvas.surface.reset
-          (new TkWinSurface
-           (c.canvas, c.master,
-            cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
+      c.canvas.surface.reset
+        (new TkWinSurface
+         (c.canvas, c.master,
+          cairo_xlib_surface_create(display, win, visual, Tk_Width(c.tkWin), Tk_Height(c.tkWin))));
         
 #endif
-      c.canvas.redraw();
+      c.canvas.updateRegion=
+        {float(imageX), float(imageY), float(imageX+width), float(imageY+height)};
+      c.canvas.redrawUpdateRegion();
       //cairo_surface_flush(c.canvas.surface->surface());
       // release surface prior to any context going out of scope
       c.canvas.surface->surface(nullptr);
