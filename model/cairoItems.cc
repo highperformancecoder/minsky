@@ -164,16 +164,11 @@ void OperationBase::draw(cairo_t* cairo) const
         // set the output ports coordinates
         // compute port coordinates relative to the icon's
         // point of reference
-        double xx=w+2, yy=0;
-        cairo_user_to_device(cairo, &xx, &yy);
+        Rotate rr(rotation,0,0);
 
-        ports[0]->moveTo(x()+xx, y()+yy);
+        ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
         if (numPorts()>1)
-          {
-            xx=-w, yy=0;
-            cairo_user_to_device(cairo, &xx, &yy);
-            ports[1]->moveTo(x()+xx, y()+yy);
-          }
+          ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
         cairo_restore(cairo); // undo rotation
         if (mouseFocus)
           {
