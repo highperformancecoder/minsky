@@ -187,30 +187,30 @@
     <id>31</id>
     <visible>true</visible>
     <coords>
-     <float>10</float>
-     <float>0</float>
-     <float>35</float>
-     <float>1</float>
+     <float>19</float>
+     <float>13</float>
+     <float>44</float>
+     <float>14</float>
     </coords>
    </Layout>
    <Layout>
     <id>32</id>
     <visible>true</visible>
     <coords>
-     <float>89</float>
-     <float>1</float>
-     <float>116.5</float>
-     <float>4.5</float>
+     <float>98</float>
+     <float>14</float>
+     <float>115</float>
+     <float>17.5</float>
     </coords>
    </Layout>
    <Layout>
     <id>33</id>
     <visible>true</visible>
     <coords>
-     <float>127.5</float>
-     <float>4.5</float>
-     <float>161</float>
-     <float>6.25</float>
+     <float>147</float>
+     <float>17.5</float>
+     <float>170</float>
+     <float>19.25</float>
     </coords>
    </Layout>
   </layout>

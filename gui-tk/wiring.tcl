@@ -413,13 +413,13 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Flip" -command "item.flip; flip_default"
         }
-        "Operation*|IntOp" {
+        "Operation*|IntOp|DataOp" {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Port values [$item.portValues]" 
             .wiring.context add command -label "Edit" -command "editItem"             
             if {[$item.name]=="data"} {
                .wiring.context add command -label "Import Data" \
-                    -command "importData $id" 
+                    -command "importData" 
             }
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             .wiring.context add command -label "Flip" -command "minsky.canvas.item.flip; flip_default"
@@ -969,17 +969,16 @@ proc editItem {} {
         "PlotWidget" {plotDoubleClick [TCLItem]}
     }
 }
-#  
-#  proc importData {id} {
-#      global workDir
-#      data.get $id
-#      set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
-#      if [string length $f] {
-#          data.readData $f
-#          updateCanvas
-#      }
-#  }
-#  
+  
+proc importData {} {
+    global workDir
+    set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
+    if [string length $f] {
+        minsky.canvas.item.readData $f
+#        updateCanvas
+    }
+}
+  
 proc deiconifyNote {} {
     if {![winfo exists .wiring.note]} {
         toplevel .wiring.note
