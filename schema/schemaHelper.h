@@ -60,39 +60,6 @@ namespace minsky
   struct SchemaHelper
   {
 
-//    // sets and gets the actual base stored values of coordinates
-//    template <class T> static float x(const T& o) {return o.m_x;}
-//    template <class T> static float y(const T& o) {return o.m_y;}
-//    template <class T> static array<float> coords(const T& o) {return o.m_coords;}
-//    template <class T> static void setXY(T& o, float x, float y)
-//    {o.m_x=x; o.m_y=y;}
-//
-//    static void setPrivates(VariablePorts& op, int outPort, int inPort) {
-//      op.m_ports[0]=outPort;
-//      if (inPort>=0) 
-//        {
-//          op.m_ports.resize(2);
-//          op.m_ports[1]=inPort;
-//        }
-//    }
-//
-//    /// move allocated ports from o to v. Used for converting old
-//    /// constants into new variables
-//    static void movePorts(VariablePorts& v, OperationBase& o)
-//    {
-//      v.m_ports=o.m_ports;
-//      o.m_ports[0]=o.m_ports[1]=-1;
-//    }
-//
-//    static void setPrivates(IntOp& op, const string& description, int intVar)
-//    {
-//      op.m_description=description;
-//      op.intVar=intVar;
-//    }
-//    static void setPrivates(ItemPorts& it, const std::vector<int>& ports)
-//    {
-//      it.m_ports=ports;
-//    }
     static void setPrivates
     (minsky::GodleyTable& g, const vector<vector<string> >& data, 
      const vector<GodleyTable::AssetClass>& assetClass)
@@ -104,55 +71,6 @@ namespace minsky
     static void scaleGodley(minsky::GodleyIcon& g, double globalZoomFactor)
     {g.iconScale*=g.zoomFactor/globalZoomFactor;
     }
-//
-//    static void setPrivates
-//    (minsky::GroupIcon& g, const vector<int>& ops, const vector<int>& vars,
-//     const vector<int>& wires, const vector<int>& groups, 
-//     const vector<int>& inVariables, const vector<int>& outVariables)
-//    {
-//      g.m_operations=ops;
-//      g.m_variables=vars;
-//      g.m_wires=wires;
-//      g.m_groups=groups;
-//      g.inVariables.clear();
-//      g.inVariables.insert(inVariables.begin(), inVariables.end());
-//      g.outVariables.clear();
-//      g.outVariables.insert(outVariables.begin(), outVariables.end());
-//      g.eliminateIOduplicates();
-//    }
-//
-//    static void setPrivates(minsky::VariableManager& vm, 
-//               const std::set<string>& w, const std::map<int, int>& p)
-//    {
-//      vm.wiredVariables=w;
-//      vm.portToVariable=p;
-//    }
-//
-//    template <class P>
-//    static void setPrivates(minsky::PlotWidget& plot, 
-//                            const P& ports)
-//    {
-//      plot.m_ports.resize(0);
-//      for (int p:ports)
-//        plot.m_ports<<=p;
-//    }
-//
-//    static void setParent(minsky::GroupIcon& g, int p)
-//    {
-//      g.m_parent=p;
-//    }
-//
-//    static void makePortMultiWired(minsky::Port& p)
-//    {p.m_multiWireAllowed=true;}
-//
-//    template <class T, class T1>
-//    static void asg(PMMap<T>& x, const std::map<int, T1>& y) {
-//     for (const typename std::map<int,T1>::value_type& i: y)
-//       x.insert(typename PMMap<T>::value_type(i.first, i.second));
-//    }
-//    template <class T>
-//    static void insert(PMMap<T>& x, const typename PMMap<T>::value_type& y)
-//    {x.insert(y);}
   };
 
 }
