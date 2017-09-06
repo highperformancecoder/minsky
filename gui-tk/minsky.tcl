@@ -1107,6 +1107,9 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     set delay [simulationDelay]
     pushHistory
     doPushHistory 1
+    # force update canvas size to ensure model is displayed correctly
+    update
+    canvas.requestRedraw
 }
 
 #return 
