@@ -121,12 +121,12 @@ bind .wiring.canvas <Motion> {minsky.canvas.mouseMove %x %y}
 
 proc get_pointer_x {c} {
     return [expr {[winfo pointerx $c] - [winfo rootx $c]}]
-    #  return [winfo pointerx $c]
+    #return [winfo pointerx $c]
 }
 
 proc get_pointer_y {c} {
     return [expr {[winfo pointery $c] - [winfo rooty $c]}]
-  #  return [winfo pointery $c]
+    #return [winfo pointery $c]
 }
 
 bind . <Key-KP_Add> {zoom 1.1}
@@ -237,6 +237,8 @@ proc addOperationKey {op} {
 
 # handle arbitrary text typed into the canvas
 proc textInput {char} {
+    if {$char==""} return
+
     global textBuffer globals
     #ignore anything unprintable!
     set x [get_pointer_x .wiring.canvas]

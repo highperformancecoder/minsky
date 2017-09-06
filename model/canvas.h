@@ -80,6 +80,7 @@ namespace minsky
     void setItemFocus(const ItemPtr& x) {
       itemFocus=x;
       moveOffsX=moveOffsY=0;
+      clickType=ClickType::onItem;
     }
 
     
