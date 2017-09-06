@@ -97,8 +97,34 @@ proc createGodleyWindow {id} {
     pack .godley$id.sy -side right -fill y
     pack .godley$id.table -fill both 
     pack .godley$id.sx -fill x
+
+    menu .godley$id.cellMenu
+    .godley$id.cellMenu add command -label Cut -command "cutCurrCell $id"
+    .godley$id.cellMenu add command -label Copy -command "copyCurrCell $id"
+    .godley$id.cellMenu add command -label Paste -command "pasteCurrCell $id"
+
+    bind .godley$id  <<contextMenu>> "postEditMenu $id %x %y %X %Y"
+    
 }
 
+proc postEditMenu {id x y X Y} {
+    .godley$id.table activate @$x,$y
+    tk_popup .godley$id.cellMenu $X $Y
+}
+
+proc cutCurrCell {id} {
+    copyCurrCell $id
+    .godley$id.table curvalue {}
+}
+
+proc copyCurrCell {id} {
+    clipboard clear
+    clipboard append [.godley$id.table curvalue]
+}
+
+proc pasteCurrCell {id} {
+    .godley$id.table curvalue [clipboard get]
+}
 
 trace add variable preferences(godleyDE) write {updateDEmode}
 
