@@ -891,54 +891,107 @@ proc editVar {} {
     wm transient .wiring.editVar
 }
 
+proc setDataValue {} {
+    global constInput
+    set item minsky.canvas.item
+    $item.description "$constInput(Name)"
+    $item.rotation $constInput(Rotation)
+}
+
+proc setIntegralIValue {} {
+    global constInput
+    set item minsky.canvas.item
+    $item.description $constInput(Name)
+    # description may have change intVar, so use value instead to set init
+    getValue :$constInput(Name)
+    value.init $constInput(Value)
+    $item.rotation $constInput(Rotation)
+}
+
+proc cleanEditConstantConfig {} {
+    global rowdict
+    foreach name [array names rowdict] {
+        set row $rowdict($name)
+        catch {grid remove .wiring.editConstant.label$row .wiring.editConstant.entry$row}
+    }
+}
+
+proc configEditConstantForIntegral {} {
+    global rowdict
+    cleanEditConstantConfig
+    set i 10
+    foreach var {
+        "Name"
+        "Value"
+        "Rotation"
+    } {
+        set row $rowdict($var)
+        grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
+        grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
+        incr i 10
+    }
+}
+
+proc configEditConstantForData {} {
+    global rowdict
+    cleanEditConstantConfig
+    set i 10
+    foreach var {
+        "Name"
+        "Rotation"
+    } {
+        set row $rowdict($var)
+        grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
+        grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
+        incr i 10
+    }
+}
+
 proc editItem {} {
     global constInput varInput editVarInput opInput
-    switch -regexp [minsky.canvas.item.classType] {
+    set item minsky.canvas.item
+    switch -regexp [$item.classType] {
         "Variable*" {editVar}
         "Operation*" {
             set opType [minsky.canvas.item.name]
-            if {$opType=="integrate" || $opType=="data"} {
-                set constInput(Value) ""
-                set "constInput(Slider Bounds: Min)" ""
-                set "constInput(Slider Bounds: Max)" ""
-                set "constInput(Slider Step Size)" ""
-                deiconifyEditConstant
-                switch $opType {
-                    integrate {
-                        wm title .wiring.editConstant "Edit Integral"
-                        integral.get $id
-                        set constInput(ValueLabel) "Initial Value"
-                        var.get [integral.intVarID]
-                        getValue [var.valueId]
-                        set constInput(Value) [value.init]
-                        set setValue setIntegralIValue
-                        set constInput(Name) [integral.description]
-                        configEditConstantForIntegral
-                    }
-                    data {
-                        wm title .wiring.editConstant "Edit Data Item"
-                        data.get $id
-                        set setValue setDataValue
-                        set constInput(Name) [data.description]
-                        configEditConstantForData
-                    }
-                    
-                }
-                set constInput(title) $constInput(Name)
-                set constInput(Rotation) [minsky.canvas.item.rotation]
-                set constInput(command) "
-                         $setValue
-                         minsky.canvas.item.rotation {set constInput(Rotation)}
-                         closeEditWindow .wiring.editConstant
-                     "
- 		set constInput(cancelCommand) "closeEditWindow .wiring.editConstant"
-                
- 		::tk::TabToWindow $constInput(initial_focus);
- 		tkwait visibility .wiring.editConstant
- 		grab set .wiring.editConstant
- 		wm transient .wiring.editConstant
-                
-            } else {
+#            if {$opType=="integrate" || $opType=="data"} {
+#                set constInput(Value) ""
+#                set "constInput(Slider Bounds: Min)" ""
+#                set "constInput(Slider Bounds: Max)" ""
+#                set "constInput(Slider Step Size)" ""
+#                deiconifyEditConstant
+##                switch $opType {
+##                    integrate {
+##                        wm title .wiring.editConstant "Edit Integral"
+##                        set constInput(ValueLabel) "Initial Value"
+##                        set constInput(Value) [$item.intVarinit]
+##                        set setValue setIntegralIValue
+##                        set constInput(Name) [$item.description]
+##                        configEditConstantForIntegral
+##                    }
+##                    data {
+##                        wm title .wiring.editConstant "Edit Data Item"
+##                        set setValue setDataValue
+##                        set constInput(Name) [$item.description]
+##                        configEditConstantForData
+##                    }
+##                    
+##                }
+#                set constInput(title) $constInput(Name)
+#                set constInput(Rotation) [minsky.canvas.item.rotation]
+#                set constInput(command) "
+#                         $setValue
+#                         minsky.canvas.item.rotation {set constInput(Rotation)}
+#                         closeEditWindow .wiring.editConstant
+#                     "
+# 		set constInput(cancelCommand) "closeEditWindow .wiring.editConstant"
+#                
+# 		::tk::TabToWindow $constInput(initial_focus);
+# 		tkwait visibility .wiring.editConstant
+# 		grab set .wiring.editConstant
+# 		wm transient .wiring.editConstant
+#                
+            #            } else {
                 set opInput(title) [minsky.canvas.item.name]
                 set opInput(Rotation) [minsky.canvas.item.rotation]
                 deiconifyEditOperation
@@ -946,31 +999,30 @@ proc editItem {} {
  		tkwait visibility .wiring.editOperation
  		grab set .wiring.editOperation
  		wm transient .wiring.editOperation
-            }
+#            }
         }
-        "IntOp" {
+        "IntOp|DataOp" {
             set constInput(Value) ""
             set "constInput(Slider Bounds: Min)" ""
             set "constInput(Slider Bounds: Max)" ""
             set "constInput(Slider Step Size)" ""
             deiconifyEditConstant
             wm title .wiring.editConstant "Edit Integral"
-            integral.get $id
             set constInput(ValueLabel) "Initial Value"
-            integral.getIntVar
-            getValue [item.valueId]
-            set constInput(Value) [value.init]
-            set setValue setIntegralIValue
-            set constInput(Name) [integral.description]
-            configEditConstantForIntegral
+            if {[$item.classType]=="IntOp"} {
+                set constInput(Value) [$item.intVar.init]
+                set setValue setIntegralIValue
+                configEditConstantForIntegral
+            } else {
+                set setValue setDataValue
+                configEditConstantForData
+            }
+            set constInput(Name) [$item.description]
             set constInput(title) $constInput(Name)
-            set constInput(Rotation) [integral.rotation]
+            set constInput(Rotation) [$item.rotation]
             # value needs to be regotten, as var name may have changed
             set constInput(command) "
                         $setValue
-                        integral.getIntVar
-                        setSliderProperties
-                        setItem integral rotation {set constInput(Rotation)}
                         closeEditWindow .wiring.editConstant
                     "
             set constInput(cancelCommand) "closeEditWindow .wiring.editConstant"

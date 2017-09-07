@@ -162,9 +162,12 @@ namespace minsky
     const IntOp& operator=(const IntOp& x); 
 
     /// @{ name of the associated integral variable
-    void description(string desc);
-    string description() const {
-      return intVar? intVar->name(): "";}
+    void description_(std::string desc);
+    Accessor<std::string> description {
+      [this]() {return intVar? intVar->name(): "";},
+        [this](const std::string& x) {
+          description_(x); return intVar? intVar->name(): "";
+        }};
     /// @}
 
     string valueId() const 

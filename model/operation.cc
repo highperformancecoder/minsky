@@ -147,7 +147,7 @@ namespace minsky
       g->removeItem(*intVar);
   }
 
-  void IntOp::description(string desc)
+  void IntOp::description_(string desc)
   {
 
     // set a default name if none given
