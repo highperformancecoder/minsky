@@ -429,7 +429,7 @@ proc contextMenu {x y X Y} {
             if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral [$item.name]"
             }
-            .wiring.context add command -label "Flip" -command "item.flip; flip_default"
+            .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
         }
         "Operation*|IntOp|DataOp" {
             .wiring.context add command -label Description -command "postNote item"
@@ -440,7 +440,7 @@ proc contextMenu {x y X Y} {
                     -command "importData" 
             }
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
-            .wiring.context add command -label "Flip" -command "minsky.canvas.item.flip; flip_default"
+            .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.name]=="integrate"} {
                 .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
             }
@@ -467,7 +467,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             .wiring.context add command -label "Save group as" -command "group::save"
-            .wiring.context add command -label "Flip" -command "minsky.canvas.item.flip; flip_default"
+            .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             .wiring.context add command -label "Flip Contents" -command "group::flipContents"
             .wiring.context add command -label "Ungroup" -command "canvas.ungroupItem"
         }
@@ -479,7 +479,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Add case" -command "incrCase 1" 
             .wiring.context add command -label "Delete case" -command "incrCase -1" 
-            .wiring.context add command -label "Flip" -command "minsky.canvas.item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
+            .wiring.context add command -label "Flip" -command "$item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
         }
     }
 

@@ -229,7 +229,7 @@ namespace minsky
   {
     if (auto v=select(x,y))
       return v->closestOutPort(x,y);
-    return ports.size()>0? ports[0]: nullptr;
+    return ports.size()>0 && !ports[0]->input()? ports[0]: nullptr;
   }
   
   shared_ptr<Port> Item::closestInPort(float x, float y) const
@@ -237,9 +237,10 @@ namespace minsky
     if (auto v=select(x,y))
       return v->closestInPort(x,y);
     shared_ptr<Port> r;
-    for (size_t i=1; i<ports.size(); ++i)
-      if (!r || sqr(ports[i]->x()-x)+sqr(ports[i]->y()-y) <
-          sqr(r->x()-x)+sqr(r->y()-y))
+    for (size_t i=0; i<ports.size(); ++i)
+      if (ports[i]->input() &&
+          (!r || sqr(ports[i]->x()-x)+sqr(ports[i]->y()-y) <
+           sqr(r->x()-x)+sqr(r->y()-y)))
         r=ports[i];
     return r;
   }
