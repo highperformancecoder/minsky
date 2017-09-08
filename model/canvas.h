@@ -116,6 +116,9 @@ namespace minsky
     /// remove item from its group, leaving in itemFocus for later placement
     void removeItemFromItsGroup();
 
+    /// select all variables referring to same variableValue as item
+    void selectAllVariables();
+    
     /// if item is a Group, move its contents to its parent and delete the group
     void ungroupItem();
     

@@ -424,6 +424,9 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Value [minsky.canvas.item.value]" 
             .wiring.context add command -label "Find definition" -command "findDefinition"
+            .wiring.context add command -label "Select all variables" -command {
+                canvas.selectAllVariables
+            }
             .wiring.context add command -label "Edit" -command "editItem"
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
@@ -443,6 +446,9 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.name]=="integrate"} {
                 .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
+            .wiring.context add command -label "Select all variables" -command {
+                canvas.selectAllVariables
+            }
             }
         }
         "PlotWidget" {

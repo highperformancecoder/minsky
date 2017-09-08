@@ -289,6 +289,29 @@ namespace minsky
           g->splitBoundaryCrossingWires();
         }
   }
+
+  void Canvas::selectAllVariables()
+  {
+    selection.clear();
+    auto var=dynamic_cast<VariableBase*>(item.get());
+    if (!var)
+      if (auto i=dynamic_cast<IntOp*>(item.get()))
+        var=i->intVar.get();
+    if (var)
+      {
+        model->recursiveDo
+          (&GroupItems::items, [&](const Items&,Items::const_iterator i)
+           {
+             if (auto v=dynamic_cast<VariableBase*>(i->get()))
+               if (v->valueId()==var->valueId())
+                 {
+                   selection.items.push_back(*i);
+                   v->selected=true;
+                 }
+             return false;
+           });
+       }
+  }
   
   void Canvas::ungroupItem()
   {
