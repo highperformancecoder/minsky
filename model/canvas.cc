@@ -312,6 +312,25 @@ namespace minsky
            });
        }
   }
+
+  void Canvas::renameAllInstances(const string newName)
+  {
+    auto var=dynamic_cast<VariableBase*>(item.get());
+    if (!var)
+      if (auto i=dynamic_cast<IntOp*>(item.get()))
+        var=i->intVar.get();
+    if (var)
+      {
+        model->recursiveDo
+          (&GroupItems::items, [&](Items&,Items::iterator i)
+           {
+             if (auto v=dynamic_cast<VariableBase*>(i->get()))
+               if (v->valueId()==var->valueId())
+                 v->name(newName);
+             return false;
+           });
+       }
+   }
   
   void Canvas::ungroupItem()
   {

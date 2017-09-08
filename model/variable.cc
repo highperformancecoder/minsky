@@ -112,6 +112,8 @@ string VariableBase::_name()  const
 
 string VariableBase::_name(const std::string& name) 
 {
+  // cowardly refuse to set a blank name
+  if (name.empty()) return name;
   m_name=name;
   ensureValueExists();
   return this->name();

@@ -118,7 +118,9 @@ namespace minsky
 
     /// select all variables referring to same variableValue as item
     void selectAllVariables();
-    
+    /// rename all instances of variable as item to \a newName
+    void renameAllInstances(const std::string newName);
+
     /// if item is a Group, move its contents to its parent and delete the group
     void ungroupItem();
     

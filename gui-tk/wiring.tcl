@@ -405,6 +405,38 @@ proc wireContextMenu {x y} {
     tk_popup .wiring.context $x $y
 }
 
+toplevel .renameDialog
+label .renameDialog.title
+entry .renameDialog.newName
+frame .renameDialog.buttonBar
+button .renameDialog.buttonBar.cancel -text cancel -command {
+    grab release .renameDialog
+    wm withdraw .renameDialog
+}
+button .renameDialog.buttonBar.ok -text OK -command {
+    canvas.renameAllInstances [.renameDialog.newName get]
+    canvas.requestRedraw
+    grab release .renameDialog
+    wm withdraw .renameDialog
+}
+pack .renameDialog.buttonBar.cancel .renameDialog.buttonBar.ok -side left
+pack .renameDialog.title .renameDialog.newName .renameDialog.buttonBar
+bind .renameDialog <Key-Return> {.renameDialog.buttonBar.ok invoke}
+bind .renameDialog <Key-Escape> {.renameDialog.buttonBar.cancel invoke}
+wm withdraw .renameDialog
+
+
+proc renameVariableInstances {} {
+    .renameDialog.title configure -text "Rename [minsky.canvas.item.name]"
+    .renameDialog.newName delete 0 end
+    wm deiconify .renameDialog
+    ::tk::TabToWindow .renameDialog.newName
+    tkwait visibility .renameDialog
+    grab set .renameDialog
+    wm transient .renameDialog
+}
+
+
 proc findDefinition {} {
     if [canvas.findVariableDefinition] {
         canvas.indicateItem
@@ -424,8 +456,11 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Value [minsky.canvas.item.value]" 
             .wiring.context add command -label "Find definition" -command "findDefinition"
-            .wiring.context add command -label "Select all variables" -command {
+            .wiring.context add command -label "Select all instances" -command {
                 canvas.selectAllVariables
+            }
+            .wiring.context add command -label "Rename all instances" -command {
+                renameVariableInstances
             }
             .wiring.context add command -label "Edit" -command "editItem"
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
@@ -446,8 +481,11 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.name]=="integrate"} {
                 .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
-            .wiring.context add command -label "Select all variables" -command {
+            .wiring.context add command -label "Select all instances" -command {
                 canvas.selectAllVariables
+            }
+            .wiring.context add command -label "Rename all instances" -command {
+                renameVariableInstances
             }
             }
         }
@@ -960,44 +998,6 @@ proc editItem {} {
         "Variable*" {editVar}
         "Operation*" {
             set opType [minsky.canvas.item.name]
-#            if {$opType=="integrate" || $opType=="data"} {
-#                set constInput(Value) ""
-#                set "constInput(Slider Bounds: Min)" ""
-#                set "constInput(Slider Bounds: Max)" ""
-#                set "constInput(Slider Step Size)" ""
-#                deiconifyEditConstant
-##                switch $opType {
-##                    integrate {
-##                        wm title .wiring.editConstant "Edit Integral"
-##                        set constInput(ValueLabel) "Initial Value"
-##                        set constInput(Value) [$item.intVarinit]
-##                        set setValue setIntegralIValue
-##                        set constInput(Name) [$item.description]
-##                        configEditConstantForIntegral
-##                    }
-##                    data {
-##                        wm title .wiring.editConstant "Edit Data Item"
-##                        set setValue setDataValue
-##                        set constInput(Name) [$item.description]
-##                        configEditConstantForData
-##                    }
-##                    
-##                }
-#                set constInput(title) $constInput(Name)
-#                set constInput(Rotation) [minsky.canvas.item.rotation]
-#                set constInput(command) "
-#                         $setValue
-#                         minsky.canvas.item.rotation {set constInput(Rotation)}
-#                         closeEditWindow .wiring.editConstant
-#                     "
-# 		set constInput(cancelCommand) "closeEditWindow .wiring.editConstant"
-#                
-# 		::tk::TabToWindow $constInput(initial_focus);
-# 		tkwait visibility .wiring.editConstant
-# 		grab set .wiring.editConstant
-# 		wm transient .wiring.editConstant
-#                
-            #            } else {
                 set opInput(title) [minsky.canvas.item.name]
                 set opInput(Rotation) [minsky.canvas.item.rotation]
                 deiconifyEditOperation
@@ -1005,7 +1005,6 @@ proc editItem {} {
  		tkwait visibility .wiring.editOperation
  		grab set .wiring.editOperation
  		wm transient .wiring.editOperation
-#            }
         }
         "IntOp|DataOp" {
             set constInput(Value) ""
