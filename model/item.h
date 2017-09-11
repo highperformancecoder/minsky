@@ -67,6 +67,8 @@ namespace minsky
       return left<=x && right>=x && bottom>=y && top<=y;
     }
     bool valid() const {return left!=right;}
+    float width() const {return right-left;}
+    float height() const {return top-bottom;}
   };
   
   class Item: public NoteBase

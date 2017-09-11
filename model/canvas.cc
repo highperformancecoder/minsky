@@ -392,6 +392,32 @@ namespace minsky
       }
   }
 
+  void Canvas::copyVars(const std::vector<VariablePtr>& v)
+  {
+    auto group=model->addGroup(new Group);
+    setItemFocus(group);
+    float maxWidth=0, totalHeight=0;
+    vector<float> widths, heights;
+    for (auto i: v)
+      {
+        RenderVariable rv(*i);
+        widths.push_back(rv.width());
+        heights.push_back(rv.height());
+        maxWidth=max(maxWidth, widths.back());
+        totalHeight+=heights.back();
+      }
+    float y=group->y() - totalHeight;
+    for (size_t i=0; i<v.size(); ++i)
+      {
+        auto ni=group->addItem(v[i]->clone());
+        ni->rotation=0;
+        ni->moveTo(maxWidth - widths[i],
+                   y+heights[i]);
+        y+=2*heights[i];
+      }
+  }
+  
+  
   void Canvas::handleArrows(int dir, float x, float y)
   {
     if (itemAt(x,y)->handleArrows(dir))
