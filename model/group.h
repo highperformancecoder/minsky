@@ -211,7 +211,6 @@ namespace minsky
     friend class GroupPtr;
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
-
   public:
     std::string title;
     float width{100}, height{100}; // size of icon

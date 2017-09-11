@@ -135,20 +135,16 @@ namespace minsky
             if (auto v=dynamic_cast<VariableBase*>(i.get()))
               {
                 auto n=stripActive(v->name());
-                if (n==name)
-                  {
-                    scope=g;
-                    break; // break inner loop, continue looking
-                  }
                 if (n==name.substr(1)) // without ':' qualifier
                   {
                     scope=g;
                     goto break_outerloop;
                   }
               }
+        scope.reset(); // global var
       break_outerloop: ;
       }
-    if (!scope || scope==cminsky().model)
+    if (!scope || !scope->group.lock())
       return VariableValue::valueId(-1,name); // retain previous global var id
     else
       return VariableValue::valueId(size_t(scope.get()), name);
