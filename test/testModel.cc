@@ -221,6 +221,10 @@ SUITE(Canvas)
       item=var1;
       CHECK(findVariableDefinition());
       CHECK(item==godley);
+
+      // on a non-variable, findVariableDefinition should returns false
+      CHECK(!findVariableDefinition());
+
     }
 
     TEST_FIXTURE(TestFixture,moveItem)
