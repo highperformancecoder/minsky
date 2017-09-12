@@ -143,7 +143,7 @@ namespace minsky
 
   IntOp::~IntOp() 
   {
-    if (auto g=group.lock())
+    if (auto g=parent())
       g->removeItem(*intVar);
   }
 
@@ -153,9 +153,9 @@ namespace minsky
     // set a default name if none given
     if (desc.empty())
       desc=minsky().variableValues.newName
-        (VariableValue::valueId(group.lock(),"int"));
+        (VariableValue::valueId(parent(),"int"));
     
-    if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
+    if (intVar && intVar->parent() == parent() && intVar->name()==desc)
       return; // nothing to do
 
     vector<Wire> savedWires;
@@ -171,7 +171,7 @@ namespace minsky
     // variable, so generate a new name that doesn't currently
     // exist
 
-    string vid=VariableValue::valueId(group.lock(),desc);
+    string vid=VariableValue::valueId(parent(),desc);
     auto i=minsky().variableValues.find(vid);      
     if (i!=minsky().variableValues.end())
       {
@@ -185,7 +185,7 @@ namespace minsky
               desc=minsky().variableValues.newName(vid);
               if (desc.find(':')!=string::npos)
                 // if not current scope, name takes on ':' prefix
-                if (size_t(VariableValue::scope(desc))!=size_t(group.lock().get()))
+                if (size_t(VariableValue::scope(desc))!=size_t(parent().get()))
                   desc=":"+desc;
             }
         else
@@ -205,7 +205,7 @@ namespace minsky
       minsky().model->addWire(new Wire(intVar->ports[0], w.to(), w.coords()));
 
     // this should also adjust the wire's group ownership appropriately
-    if (auto g=group.lock())
+    if (auto g=parent())
       g->addItem(intVar);
   }
 
@@ -258,7 +258,7 @@ namespace minsky
         intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
         ports[0].reset(new Port(*this,Port::noFlags));
         WirePtr newWire(new Wire(ports[0], intVar->ports[1]));
-        if (auto g=group.lock())
+        if (auto g=parent())
           g->addWire(newWire);
         else
           minsky().model->addWire(newWire);
@@ -273,7 +273,7 @@ namespace minsky
         // need to explicitly remove wire, as deleting the port is
         // not sufficient - wires hold a reference to the ports
         // they connect
-        if (auto g=group.lock())
+        if (auto g=parent())
           for (auto w: intVar->ports[1]->wires)
             g->removeWire(*w);
         intVar->ports.resize(1);

@@ -70,15 +70,27 @@ namespace minsky
     float width() const {return right-left;}
     float height() const {return top-bottom;}
   };
+
+  /// Implements the concept of a reference to the parent group containing an item
+  class Parent
+  {
+    std::weak_ptr<Group> group;
+    friend class Group;
+  public:
+    /// return group owning this item, or nullptr if this is the toplevel group
+    std::shared_ptr<Group> parent() const;
+    void resetParent(const std::shared_ptr<Group>& parent=nullptr)
+    {group=parent;}
+  };
+    
   
-  class Item: public NoteBase
+  class Item: public NoteBase, public Parent
   {
   public:
     float m_x=0, m_y=0; ///< position in canvas, or within group
     float zoomFactor=1;
     double rotation=0; ///< rotation of icon, in degrees
     bool m_visible=true; ///< if false, then this item is invisible
-    std::weak_ptr<Group> group;
     /// canvas bounding box.
     mutable BoundingBox bb;
     bool contains(float xx, float yy) {
@@ -169,7 +181,7 @@ namespace minsky
     }
     ItemT* clone() const override {
       auto r=new T(*dynamic_cast<const T*>(this));
-      r->group.reset();
+      r->resetParent();
       return r;
     }
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override

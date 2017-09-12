@@ -18,6 +18,7 @@
 */
 
 #include "cairoItems.h"
+#include "operation.h"
 #include "group.h"
 #include "minsky.h"
 #include <ecolab_epilogue.h>
@@ -108,11 +109,11 @@ SUITE(Group)
     g.addItem(b);
     CHECK_EQUAL(2, g.items.size());
     CHECK_EQUAL(1, g.wires.size());
-    CHECK(&g==a->group.lock().get());
+    CHECK(&g==a->parent().get());
     CHECK(!a->visible());
-    CHECK(&g==b->group.lock().get());
+    CHECK(&g==b->parent().get());
     CHECK(!b->visible()); 
-    CHECK(c->group.lock()==model);
+    CHECK(c->parent()==model);
     CHECK(c->visible());
     CHECK(!model->findWire(*ab)->visible());
     CHECK(model->findWire(*bc)->visible());
@@ -132,7 +133,7 @@ SUITE(Group)
     checkWiresConsistent();
 
     // now check removal
-    group0->group.lock()->addItem(c);
+    group0->parent()->addItem(c);
 
     CHECK_EQUAL(3,group0->items.size());
     CHECK_EQUAL(2,group0->wires.size());
@@ -329,6 +330,45 @@ SUITE(Canvas)
         CHECK_EQUAL(200,godley.width());
         CHECK_EQUAL(200,godley.height());
       }
+
+    TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
+      {
+        model.reset(new Group);
+        model->resetParent(model);
+        OperationPtr a(OperationType::exp);
+        model->addItem(a);
+        a->moveTo(100,100);
+        OperationPtr b(OperationType::exp);
+        model->addItem(b);
+        b->moveTo(200,200);
+        model->addWire(*a,*b,1);
+
+        auto g=model->addGroup(new Group);
+        
+        CHECK(b->parent()==model);
+        CHECK_EQUAL(1,model->numWires());
+        CHECK_EQUAL(2,model->numItems());
+        CHECK_EQUAL(0,g->inVariables.size());
+
+        // move b into group
+        mouseDown(b->x(),b->y());
+        mouseUp(g->x(),g->y());
+        CHECK(b->parent()==g);
+        CHECK_EQUAL(2,model->numWires());
+        CHECK_EQUAL(3,model->numItems());
+        CHECK_EQUAL(1,g->inVariables.size());
+
+        // move b out of group
+        item=g;
+        zoomToDisplay();
+        mouseDown(b->x(),b->y());
+        mouseUp(200,200);
+        CHECK(b->parent()==model);
+        CHECK_EQUAL(1,model->numWires());
+        CHECK_EQUAL(2,model->numItems());
+        CHECK_EQUAL(0,g->inVariables.size());
+      }
+    
 }
 
 SUITE(Wire)

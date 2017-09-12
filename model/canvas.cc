@@ -147,7 +147,7 @@ namespace minsky
         // move item relatively to avoid accidental moves on double click
         itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
         // check if the move has moved outside or into a group
-        if (auto g=itemFocus->group.lock())
+        if (auto g=itemFocus->parent())
           if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
             {
               if (auto toGroup=model->minimalEnclosingGroup
@@ -158,11 +158,13 @@ namespace minsky
                 }
               else
                 {
+                  auto fromGroup=itemFocus->parent();
                   model->addItem(itemFocus);
                   model->splitBoundaryCrossingWires();
+                  if (fromGroup) fromGroup->splitBoundaryCrossingWires();
                 }
             }
-        if (auto g=itemFocus->group.lock())
+        if (auto g=itemFocus->parent())
           g->checkAddIORegion(itemFocus);
         requestRedraw();
       }
@@ -279,9 +281,9 @@ namespace minsky
   void Canvas::removeItemFromItsGroup()
   {
     if (item)
-      if (auto g=item->group.lock())
+      if (auto g=item->parent())
         {
-          if (auto parent=g->group.lock())
+          if (auto parent=g->parent())
             itemFocus=parent->addItem(item);
           else
             itemFocus=model->addItem(item);
@@ -336,7 +338,7 @@ namespace minsky
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
       {
-        if (auto p=g->group.lock())
+        if (auto p=g->parent())
           p->moveContents(*g);
         else
           model->moveContents(*g);
@@ -365,7 +367,7 @@ namespace minsky
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
       {
-        if (auto parent=model->group.lock())
+        if (auto parent=model->parent())
           model->setZoom(parent->zoomFactor);
         model=item;
         float zoomFactor=1.1*model->displayZoom;

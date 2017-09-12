@@ -156,6 +156,7 @@ namespace minsky
     Minsky() {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
       model->height=model->width=std::numeric_limits<float>::max();
+      model->resetParent(model); // indicate this is toplevel
     }
 
     GroupPtr model{new Group};

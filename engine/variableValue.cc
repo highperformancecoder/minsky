@@ -130,7 +130,7 @@ namespace minsky
     if (name[0]==':')
       {
         // find maximum enclosing scope that has this same-named variable
-        for (auto g=scope; g; g=g->group.lock())
+        for (auto g=scope; g; g=g->parent())
           for (auto i: g->items)
             if (auto v=dynamic_cast<VariableBase*>(i.get()))
               {
@@ -144,7 +144,7 @@ namespace minsky
         scope.reset(); // global var
       break_outerloop: ;
       }
-    if (!scope || !scope->group.lock())
+    if (!scope || !scope->parent())
       return VariableValue::valueId(-1,name); // retain previous global var id
     else
       return VariableValue::valueId(size_t(scope.get()), name);

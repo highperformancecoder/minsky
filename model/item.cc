@@ -53,10 +53,20 @@ namespace minsky
     top=t*invZ;
     bottom=(t+h)*invZ;
   }
+
+  shared_ptr<Group> Parent::parent() const
+  {
+    // toplevel group indicated by setting group to this.
+    if (group.lock().get()==this)
+      return nullptr;
+    else
+      return group.lock();
+  }
+
   
   float Item::x() const 
   {
-    if (auto g=group.lock())
+    if (auto g=parent())
       return m_x+g->x();
     else
       return m_x;
@@ -64,7 +74,7 @@ namespace minsky
 
   float Item::y() const 
   {
-    if (auto g=group.lock())
+    if (auto g=parent())
       return m_y+g->y();
     else
       return m_y;
@@ -78,7 +88,7 @@ namespace minsky
   
   bool Item::visible() const 
   {
-    if (auto g=group.lock())
+    if (auto g=parent())
       return m_visible && g->displayContents();
     else
       return m_visible;
@@ -98,7 +108,7 @@ namespace minsky
   
   void Item::moveTo(float x, float y)
   {
-    if (auto g=group.lock())
+    if (auto g=parent())
       {
         m_x=x-g->x();
         m_y=y-g->y();
@@ -136,8 +146,8 @@ namespace minsky
   {
     if (visible())
       {
-        auto g=group.lock();
-        if (g) // do not zoom toplevel group
+        if (auto g=parent())
+          // do not zoom toplevel group
           {
             minsky::zoom(m_x,xOrigin-g->x(),factor);
             minsky::zoom(m_y,yOrigin-g->y(),factor);

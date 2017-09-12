@@ -83,12 +83,12 @@ VariableBase* VariableBase::create(VariableType::Type type)
 
 string VariableBase::valueId() const 
 {
-  return VariableValue::valueId(group.lock(), m_name);
+  return VariableValue::valueId(parent(), m_name);
 }
 
 bool VariableBase::ioVar() const 
 {
-  if (auto g=group.lock())
+  if (auto g=parent())
     {
       for (auto& i:g->inVariables)
         if (this==i.get()) return true;
@@ -103,7 +103,7 @@ string VariableBase::_name()  const
   // hide any leading ':' in upper level
   if (m_name[0]==':')
     {
-      auto g=group.lock();
+      auto g=parent();
       if (!g || g==cminsky().model)
         return m_name.substr(1);
     }

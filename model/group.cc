@@ -82,29 +82,16 @@ namespace minsky
     return *this;
   }
 
-//  shared_ptr<Group> GroupItems::self() const
-//  {
-//    // this is quite hacky, but self() needs to be callable from the
-//    // contructor before the vtable has been populated. This
-//    // implementation is guaranteed to work as the Item part of Group
-//    // has been initialised prior to this, and that is all that is
-//    // needed
-//    if (auto g=dynamic_cast<const Group*>(this))
-//      return g->self();
-//    else return nullptr;
-//  }
-  
   shared_ptr<Group> Group::self() const
   {
     if (auto parent=group.lock())
       {
+        if (parent.get()==this)
+          return parent; // indicate top level group by setting group to this.
         for (auto& g: parent->groups)
           if (g.get()==this)
             return g;
       }
-    else // check if we're the global group
-      if (cminsky().model.get()==this)
-        return cminsky().model;
     return shared_ptr<Group>();
   }
 
@@ -176,7 +163,7 @@ namespace minsky
   ItemPtr GroupItems::findItem(const Item& it) const 
   {
     // start by looking in the group it thnks it belongs to
-    if (auto g=it.group.lock())
+    if (auto g=it.parent())
       if (g.get()!=this) 
         {
           auto i=g->findItem(it);
@@ -194,7 +181,7 @@ namespace minsky
    
     // stash position
     float x=it->x(), y=it->y();
-    auto origGroup=it->group.lock();
+    auto origGroup=it->parent();
 
     if (origGroup.get()==this) return it; // nothing to do.
     if (origGroup)
@@ -205,7 +192,7 @@ namespace minsky
     if (auto v=dynamic_cast<VariableBase*>(it.get()))
       init=v->init();
     
-    it->group=self();
+    it->resetParent(self());
     it->moveTo(x,y);
 
     // take into account new scope
@@ -228,7 +215,7 @@ namespace minsky
     if (auto intOp=dynamic_cast<IntOp*>(it.get()))
       if (intOp->intVar)
         {
-          if (auto oldG=intOp->intVar->group.lock())
+          if (auto oldG=intOp->intVar->parent())
             {
               if (oldG.get()!=this)
                 addItem(oldG->removeItem(*intOp->intVar));
@@ -244,16 +231,16 @@ namespace minsky
   {
     // Find common ancestor group, and move wire to it
     assert(w.from() && w.to());
-    shared_ptr<Group> p1=w.from()->item.group.lock(), p2=w.to()->item.group.lock();
+    shared_ptr<Group> p1=w.from()->item.parent(), p2=w.to()->item.parent();
     assert(p1 && p2);
     unsigned l1=p1->level(), l2=p2->level();
-    for (; l1>l2; l1--) p1=p1->group.lock();
-    for (; l2>l1; l2--) p2=p2->group.lock();
+    for (; l1>l2; l1--) p1=p1->parent();
+    for (; l2>l1; l2--) p2=p2->parent();
     while (p1!=p2) 
       {
         assert(p1 && p2);
-        p1=p1->group.lock();
-        p2=p2->group.lock();
+        p1=p1->parent();
+        p2=p2->parent();
       }
     w.moveIntoGroup(*p1);
   }
@@ -278,20 +265,34 @@ namespace minsky
         assert(iv->ports[1]->input() && !iv->ports[1]->multiWireAllowed());
         // firstly join wires that don't cross boundaries
         // determine if this is input or output var
-        if (iv->ports[1]->wires.size()>0 &&
-            iv->ports[1]->wires[0]->from()->item.group.lock().get() == this)
+        if (iv->ports[1]->wires.size()>0)
           {
-            // not an input var
-            for (auto& w: iv->ports[0]->wires)
-              if (w->to()->item.group.lock().get() == this)
-                // join wires, as not crossing boundary
-                {
-                  auto to=w->to();
-                  iv->ports[0]->eraseWire(w);
-                  removeWire(*w);
-                  addWire(iv->ports[1]->wires[0]->from(), to);
-                }
+            auto fromGroup=iv->ports[1]->wires[0]->from()->item.parent();
+            if (fromGroup.get() == this)
+              {
+                // not an input var
+                for (auto& w: iv->ports[0]->wires)
+                  if (w->to()->item.group.lock().get() == this)
+                    // join wires, as not crossing boundary
+                    {
+                      auto to=w->to();
+                      iv->ports[0]->eraseWire(w);
+                      removeWire(*w);
+                      addWire(iv->ports[1]->wires[0]->from(), to);
+                    }
+              }
+            else
+              for (auto& w: iv->ports[0]->wires)
+                if (w->to()->item.parent() == fromGroup)
+                  // join wires, as not crossing boundary
+                  {
+                    auto to=w->to();
+                    iv->ports[0]->eraseWire(w);
+                    removeWire(*w);
+                    addWire(iv->ports[1]->wires[0]->from(), to);
+                  }
           }
+        
         if (iv->ports[0]->wires.empty() || iv->ports[1]->wires.empty())
           removeItem(*iv);
       }
@@ -420,7 +421,7 @@ namespace minsky
   {
     set<const Group*> sg;
     sg.insert(this);
-    for (auto i=group.lock(); i; i=i->group.lock())
+    for (auto i=parent(); i; i=i->parent())
       if (!sg.insert(i.get()).second)
         return false;
     return true;
@@ -428,11 +429,11 @@ namespace minsky
 
   GroupPtr GroupItems::addGroup(const std::shared_ptr<Group>& g)
   {
-    auto origGroup=g->group.lock();
+    auto origGroup=g->parent();
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
       origGroup->removeGroup(*g);
-    g->group=self();
+    g->resetParent(self());
     groups.push_back(g);
     assert(nocycles());
     return groups.back();
@@ -486,7 +487,7 @@ namespace minsky
   {
     assert(nocycles());
     unsigned l=0;
-    for (auto i=group.lock(); i; i=i->group.lock()) l++;
+    for (auto i=parent(); i; i=i->parent()) l++;
     return l;
   }
 
@@ -496,8 +497,8 @@ namespace minsky
     G& globalGroup(G& start)
     {
       auto g=&start;
-      while (auto g1=g->group.lock())
-        g=g1.get();
+      for (auto i=start.parent(); i; i=i->parent())
+        g=i.get();
       return *g;
     }
   }

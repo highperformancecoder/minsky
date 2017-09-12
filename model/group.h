@@ -42,6 +42,8 @@ namespace minsky
       assert(r);
       return r;
     }
+    operator std::weak_ptr<Group>() const 
+    {return std::shared_ptr<Group>(*this);}
     Group& operator*() const;
     Group* operator->() const;
     
@@ -291,7 +293,7 @@ namespace minsky
     }
     
     /// returns whether contents should be displayed. Top level group always displayed
-    bool displayContents() const {return !group.lock() || zoomFactor>displayZoom;}
+    bool displayContents() const {return !parent() || zoomFactor>displayZoom;}
     /// true if displayContents status changed on this or any
     /// contained group last zoom
     bool displayContentsChanged() const {return m_displayContentsChanged;}
