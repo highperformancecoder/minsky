@@ -285,6 +285,31 @@ SUITE(Canvas)
       CHECK_EQUAL(1,canvas.selection.items.size());
       CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),op) !=canvas.selection.items.end());
     }
+
+    TEST_FIXTURE(Canvas, wires)
+      {
+        model.reset(new Group);
+        OperationPtr a(OperationType::exp);
+        model->addItem(a);
+        a->moveTo(100,100);
+        OperationPtr b(OperationType::exp);
+        model->addItem(b);
+        b->moveTo(200,200);
+        WirePtr w(new Wire(a->ports[0],b->ports[1]));
+        model->addWire(w);
+        auto coords=w->coords();
+        CHECK_EQUAL(4, coords.size());
+
+        // drag up, should insert a handle
+        float x=0.5*(coords[0]+coords[2]), y=0.5*(coords[1]+coords[3]);
+        mouseDown(x,y);
+        x+=10;
+        mouseUp(x,y);
+        coords=w->coords();
+        CHECK_EQUAL(6, coords.size());
+        CHECK_EQUAL(x,coords[2]);
+        CHECK_EQUAL(y,coords[3]);
+      }
 }
 
 SUITE(Wire)
