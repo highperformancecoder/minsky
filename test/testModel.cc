@@ -243,7 +243,7 @@ SUITE(Canvas)
       // work out where slider is located
       RenderVariable rv(*cv);
       float xc=cv->x()+rv.handlePos(), yc=cv->y()-rv.height();
-      CHECK(cv->clickType(xc,yc) == ClickType::onSlider);
+      CHECK_EQUAL(ClickType::onSlider, cv->clickType(xc,yc));
       canvas.mouseDown(xc,yc);
       xc+=5;
       canvas.mouseUp(xc,yc);
@@ -270,7 +270,20 @@ SUITE(Canvas)
       canvas.mouseDown(250,50);
       canvas.mouseUp(350,150);
       CHECK_EQUAL(1,canvas.selection.items.size());
-      CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),c) !=canvas.selection.items.end()); 
+      CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),c) !=canvas.selection.items.end());
+
+      // now check when the first click is in the bounding box of an icon, but outside it
+      OperationPtr op(OperationType::time);
+      model->addItem(op);
+      op->moveTo(500,500);
+      float x=512, y=512;
+      CHECK(op->contains(x,y));
+      CHECK_EQUAL(ClickType::outside, op->clickType(x,y));
+      canvas.selection.clear();
+      canvas.mouseDown(x,y);
+      canvas.mouseUp(x-5,y-5);
+      CHECK_EQUAL(1,canvas.selection.items.size());
+      CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),op) !=canvas.selection.items.end());
     }
 }
 

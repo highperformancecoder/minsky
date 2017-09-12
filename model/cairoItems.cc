@@ -265,8 +265,7 @@ void OperationBase::draw(cairo_t* cairo) const
         cairo_close_path(cairo);
       }
 
-  cairo_clip(cairo);
-  if (selected) drawSelected(cairo);
+  cairo::Path clipPath(cairo);
 
   // compute port coordinates relative to the icon's
   // point of reference
@@ -321,6 +320,10 @@ void OperationBase::draw(cairo_t* cairo) const
       displayTooltip(cairo);
     }
 
+  cairo_new_path(cairo);
+  clipPath.appendToCurrent(cairo);
+  cairo_clip(cairo);
+  if (selected) drawSelected(cairo);
 }
 
 namespace
@@ -435,11 +438,9 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_line_to(cairo,w+2*zoomFactor,0);
   cairo_line_to(cairo,w,-h);
   cairo_close_path(cairo);
-  cairo_stroke_preserve(cairo);
+  cairo::Path clipPath(cairo);
+  cairo_stroke(cairo);
   cairo_save(cairo);
-  cairo_clip(cairo);
-  if (selected) drawSelected(cairo);
-  cairo_restore(cairo);
   
   // draw slider
   cairo_save(cairo);
@@ -466,6 +467,11 @@ void VariableBase::draw(cairo_t *cairo) const
       drawPorts(cairo);
       displayTooltip(cairo);
     }
+  cairo_restore(cairo);
+  cairo_new_path(cairo);
+  clipPath.appendToCurrent(cairo);
+  cairo_clip(cairo);
+  if (selected) drawSelected(cairo);
 }
 
 void RenderVariable::updatePortLocs() const
