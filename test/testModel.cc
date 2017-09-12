@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairoItems.h"
 #include "group.h"
 #include "minsky.h"
 #include <ecolab_epilogue.h>
@@ -220,6 +221,56 @@ SUITE(Canvas)
       item=var1;
       CHECK(findVariableDefinition());
       CHECK(item==godley);
+    }
+
+    TEST_FIXTURE(TestFixture,moveItem)
+    {
+      cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
+      c->draw(surf.cairo());// reposition ports
+      CHECK(c->clickType(c->x(),c->y()) == ClickType::onItem);
+      canvas.mouseDown(c->x(),c->y());
+      canvas.mouseUp(400,500);
+      CHECK_EQUAL(400,c->x());
+      CHECK_EQUAL(500,c->y());
+    }
+
+    TEST_FIXTURE(TestFixture,onSlider)
+    {
+      auto cv=dynamic_cast<VariableBase*>(c.get());
+      cv->value(1000);
+      cv->sliderMin=0;
+      cv->sliderMax=2000;
+      // work out where slider is located
+      RenderVariable rv(*cv);
+      float xc=cv->x()+rv.handlePos(), yc=cv->y()-rv.height();
+      CHECK(cv->clickType(xc,yc) == ClickType::onSlider);
+      canvas.mouseDown(xc,yc);
+      xc+=5;
+      canvas.mouseUp(xc,yc);
+      // check handle and value changed
+      CHECK_EQUAL(xc, c->x()+rv.handlePos());
+      CHECK(cv->value()>1000);
+      // check variable hasn't moved
+      CHECK_EQUAL(300,cv->x());
+      CHECK_EQUAL(100,cv->y());
+
+      // now check that value is clamped to max/min
+      canvas.mouseDown(xc,yc);
+      canvas.mouseUp(xc+100,yc);
+      CHECK_EQUAL(cv->sliderMax, cv->value());
+      xc=cv->x()+rv.handlePos();
+      canvas.mouseDown(xc,yc);
+      canvas.mouseUp(xc-100,yc);
+      CHECK_EQUAL(cv->sliderMin, cv->value());
+    }
+
+    TEST_FIXTURE(TestFixture,lasso)
+    {
+      canvas.selection.clear();
+      canvas.mouseDown(250,50);
+      canvas.mouseUp(350,150);
+      CHECK_EQUAL(1,canvas.selection.items.size());
+      CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),c) !=canvas.selection.items.end()); 
     }
 }
 
