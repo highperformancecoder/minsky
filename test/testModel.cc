@@ -310,6 +310,21 @@ SUITE(Canvas)
         CHECK_EQUAL(x,coords[2]);
         CHECK_EQUAL(y,coords[3]);
       }
+
+    TEST_FIXTURE(Canvas, godleyResize)
+      {
+        model.reset(new Group);
+        addGodley();
+        auto& godley=dynamic_cast<GodleyIcon&>(*itemFocus);
+        CHECK(godley.width()!=200);
+        CHECK(godley.height()!=200);
+        mouseUp(200,200);
+        getItemAt(200,200);
+        lassoMode=LassoMode::itemResize;
+        mouseUp(300,300);
+        CHECK_EQUAL(200,godley.width());
+        CHECK_EQUAL(200,godley.height());
+      }
 }
 
 SUITE(Wire)
