@@ -171,6 +171,19 @@ SUITE(Group)
     group0->removeDisplayPlot();
     CHECK(!group0->displayPlot);
   }
+
+  TEST_FIXTURE(Group, GroupRecursiveDo)
+    {
+      addItem(new Operation<OperationType::exp>);
+      auto g=addGroup(new Group);
+      g->addItem(new Operation<OperationType::ln>);
+      CHECK(recursiveDo(&GroupItems::items,[&](Items&,Items::iterator i)
+                        {return dynamic_cast<Operation<OperationType::exp>*>(i->get());}));
+      CHECK(recursiveDo(&GroupItems::items,[&](Items&,Items::iterator i)
+                        {return dynamic_cast<Operation<OperationType::ln>*>(i->get());}));
+      CHECK(!recursiveDo(&GroupItems::items,[&](Items&,Items::iterator i)
+                        {return dynamic_cast<Operation<OperationType::add>*>(i->get());}));
+    }
   
 }
 
