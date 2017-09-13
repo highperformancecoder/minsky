@@ -625,6 +625,18 @@ SUITE(Canvas)
         CHECK_EQUAL(0,cv->value());
       }
     
+     TEST_FIXTURE(TestFixture,selectVar)
+      {
+        CHECK(!group0->outVariables.empty());
+        auto v=group0->outVariables[0];
+        canvas.item=group0;
+        CHECK(canvas.selectVar(v->x(), v->y()));
+        CHECK(canvas.item==v);
+        canvas.item=group0;
+        CHECK(!canvas.selectVar(500,500));
+        canvas.item.reset();
+        CHECK(!canvas.selectVar(500,500));
+      }   
 }
 
 SUITE(Wire)
