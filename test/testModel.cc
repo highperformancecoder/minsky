@@ -476,16 +476,51 @@ SUITE(Canvas)
         canvas.item=b;
         canvas.selectAllVariables();
         CHECK_EQUAL(1,canvas.selection.items.size());
-        for (auto i: canvas.selection.items)
-          {
-            auto ii=dynamic_cast<VariableBase*>(i.get());
-            CHECK(ii);
-            if (ii) CHECK_EQUAL(dynamic_pointer_cast<VariableBase>(b)->valueId(), ii->valueId());
-          }
+        CHECK(canvas.selection.items[0]==b);
 
         canvas.item=group0;
         canvas.selectAllVariables();
         CHECK(canvas.selection.empty());
+
+        // check integrals are selected too
+        auto integ=new IntOp;
+        canvas.item=model->addItem(integ);
+        integ->description("foo");
+        canvas.selectAllVariables();
+        CHECK_EQUAL(1,canvas.selection.items.size());
+        CHECK(canvas.selection.items[0]==integ->intVar);
+      }
+    
+    TEST_FIXTURE(TestFixture,renameAllInstances)
+      {
+        model->moveContents(*group0);
+        canvas.item=a;
+        canvas.copyItem();
+        canvas.mouseUp(500,500);
+        canvas.renameAllInstances("foobar");
+        unsigned count=0;
+        for (auto i: model->items)
+          if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            {
+              CHECK(v->name()!="a");
+              if (v->name()=="foobar")
+                count++;
+            }
+        CHECK_EQUAL(2,count);
+
+        // check no renaming should happen when item is not a variable 
+        canvas.item=group0;
+        canvas.renameAllInstances("foobar1");
+        for (auto i: model->items)
+          if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            CHECK(v->name()!="foobar1");
+        
+        // check integrals are renamed too
+        auto integ=new IntOp;
+        canvas.item=model->addItem(integ);
+        integ->description("foo");
+        canvas.renameAllInstances("bar");
+        CHECK(integ->description()=="bar");
       }
 }
 

@@ -324,11 +324,12 @@ namespace minsky
         var=i->intVar.get();
     if (var)
       {
+        auto valueId=var->valueId();
         model->recursiveDo
           (&GroupItems::items, [&](Items&,Items::iterator i)
            {
              if (auto v=dynamic_cast<VariableBase*>(i->get()))
-               if (v->valueId()==var->valueId())
+               if (v->valueId()==valueId)
                  v->name(newName);
              return false;
            });
