@@ -77,8 +77,6 @@ namespace minsky
     std::shared_ptr<PlotWidget> displayPlot;
     /// remove the display plot
     void removeDisplayPlot() {
-      if (displayPlot)
-        displayPlot->groupPlot.reset();
       displayPlot.reset();
     }
     
@@ -233,8 +231,6 @@ namespace minsky
     static SVGRenderer svgRenderer;
 
     void draw(cairo_t*) const override;
-    void setCairoSurface(const ecolab::cairo::SurfacePtr& s) override 
-    {if (displayPlot) displayPlot->groupPlot=s;}
 
     /// draw representations of edge variables around group icon
     void drawEdgeVariables(cairo_t*) const;

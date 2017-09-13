@@ -253,9 +253,6 @@ namespace minsky
         Plot::draw(*expandedPlot);
         expandedPlot->blit();
       }
-    if (groupPlot.get())
-      groupPlot->requestRedraw();
-     
   }
 
   void PlotWidget::makeDisplayPlot() {

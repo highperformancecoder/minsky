@@ -492,7 +492,7 @@ proc contextMenu {x y X Y} {
         "PlotWidget" {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Expand" -command "plotDoubleClick [TCLItem]"
-            .wiring.context add command -label "Make Group Plot" -command "canvas.item.makeDisplayPlot"
+            .wiring.context add command -label "Make Group Plot" -command "$item.makeDisplayPlot"
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
         }
@@ -509,7 +509,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Edit" -command "groupEdit"
             .wiring.context add command -label "Open in canvas" -command "openGroupInCanvas"
             .wiring.context add command -label "Zoom to display" -command "canvas.zoomToDisplay"
-            .wiring.context add command -label "Remove plot icon" -command "item.removeDisplayPlot"
+            .wiring.context add command -label "Remove plot icon" -command "$item.removeDisplayPlot"
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             .wiring.context add command -label "Save group as" -command "group::save"
