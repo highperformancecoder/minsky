@@ -438,6 +438,25 @@ SUITE(Canvas)
         CHECK(w->mouseFocus);
         
       }
+
+    TEST_FIXTURE(Canvas, removeItemFromItsGroup)
+      {
+        model.reset(new Group);
+        model->resetParent(model);
+        auto g0=model->addGroup(new Group);
+        auto g1=g0->addGroup(new Group);
+        auto a=g1->addItem(new Operation<OperationType::exp>);
+        CHECK(a->parent()==g1);
+        CHECK(a->visible()==g1->displayContents());
+        item=a;
+        removeItemFromItsGroup();
+        CHECK(a->parent()==g0);
+        CHECK(a->visible()==g0->displayContents());
+        item=a;
+        removeItemFromItsGroup();
+        CHECK(a->parent()==model);
+        CHECK(a->visible());
+      }
 }
 
 SUITE(Wire)
