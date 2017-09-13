@@ -562,6 +562,50 @@ SUITE(Canvas)
         canvas.openGroupInCanvas(model);
         CHECK(canvas.model==model);
       }
+
+    TEST_FIXTURE(Canvas,copyVars)
+      {
+        model.reset(new Group);
+        model->resetParent(model);
+        auto godley=new GodleyIcon;
+        item=model->addItem(godley);
+
+        // simple Godley table with 2 stock and 2 flow vars
+        godley->table.resize(3,3);
+        godley->table.cell(0,1)="foo";
+        godley->table.cell(0,2)="bar";
+        godley->table.cell(2,1)="x";
+        godley->table.cell(2,2)="y";
+        godley->update();
+
+        
+        unsigned originalNumItems=model->numItems();
+        unsigned originalNumGroups=model->numGroups();
+        copyAllFlowVars();
+        CHECK_EQUAL(originalNumItems+godley->flowVars.size(),model->numItems());
+        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
+        auto newG=model->groups.back();
+        CHECK_EQUAL(godley->flowVars.size(), newG->items.size());
+        // assume the copied items are done in order
+        for (size_t i=0; i<godley->flowVars.size(); ++i)
+          CHECK_EQUAL(godley->flowVars[i]->valueId(),
+                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
+
+        originalNumItems=model->numItems();
+        originalNumGroups=model->numGroups();
+        
+        copyAllStockVars();
+        CHECK_EQUAL(originalNumItems+godley->stockVars.size(),model->numItems());
+        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
+        newG=model->groups.back();
+        CHECK_EQUAL(godley->stockVars.size(), newG->items.size());
+        // assume the copied items are done in order
+        for (size_t i=0; i<godley->stockVars.size(); ++i)
+          CHECK_EQUAL(godley->stockVars[i]->valueId(),
+                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
+
+      }
+    
 }
 
 SUITE(Wire)

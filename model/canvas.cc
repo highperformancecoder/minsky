@@ -413,10 +413,14 @@ namespace minsky
     float y=group->y() - totalHeight;
     for (size_t i=0; i<v.size(); ++i)
       {
-        auto ni=group->addItem(v[i]->clone());
+        auto ni=v[i]->clone();
+        group->addItem(ni);
         ni->rotation=0;
         ni->moveTo(maxWidth - widths[i],
                    y+heights[i]);
+        // variables need to refer to outer scope
+        if (ni->name()[0]!=':')
+          ni->name(':'+ni->name());
         y+=2*heights[i];
       }
   }
