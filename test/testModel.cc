@@ -162,6 +162,16 @@ SUITE(Group)
     CHECK_EQUAL(3,group0->items.size());
   }
 
+  TEST_FIXTURE(TestFixture, displayPlot)
+  {
+    auto plot=new PlotWidget;
+    group0->addItem(plot);
+    plot->makeDisplayPlot();
+    CHECK(group0->displayPlot.get()==plot);
+    group0->removeDisplayPlot();
+    CHECK(!group0->displayPlot);
+  }
+  
 }
 
 SUITE(Canvas)
