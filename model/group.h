@@ -168,22 +168,7 @@ namespace minsky
     WirePtr addWire(const std::shared_ptr<Port>& from,
                     const std::shared_ptr<Port>& to, 
                     const std::vector<float>& coords = {}); 
-
-
     
-    /// returns whether all items (which are shared_ptrs) are uniquely owned
-    bool uniquely_owned() const {
-      return !recursiveDo(&GroupItems::items,[](const Items&,Items::const_iterator i){
-          return i->use_count()>1;
-        }) &&
-        !recursiveDo(&GroupItems::groups,[](const Groups&,Groups::const_iterator i){
-          return i->use_count()>1;
-        }) &&
-        !recursiveDo(&GroupItems::wires,[](const Wires&,Wires::const_iterator i){
-          return i->use_count()>1;
-          });
-    }
-
     /// total number of items in this and child groups
     size_t numItems() const; 
     /// total number of wires in this and child groups
