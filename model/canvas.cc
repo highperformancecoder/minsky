@@ -153,8 +153,10 @@ namespace minsky
               if (auto toGroup=model->minimalEnclosingGroup
                   (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                 {
+                  auto fromGroup=itemFocus->parent();
                   toGroup->addItem(itemFocus);
                   toGroup->splitBoundaryCrossingWires();
+                  if (fromGroup) fromGroup->splitBoundaryCrossingWires();
                 }
               else
                 {

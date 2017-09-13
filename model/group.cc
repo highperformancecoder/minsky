@@ -288,8 +288,8 @@ namespace minsky
                   {
                     auto to=w->to();
                     iv->ports[0]->eraseWire(w);
-                    removeWire(*w);
-                    addWire(iv->ports[1]->wires[0]->from(), to);
+                    globalGroup().removeWire(*w);
+                    adjustWiresGroup(*addWire(iv->ports[1]->wires[0]->from(), to));
                   }
           }
         
@@ -509,6 +509,8 @@ namespace minsky
   {return minsky::globalGroup(*this);}
 
 
+
+  
   bool Group::uniqueItems(set<void*>& idset) const
   {
     for (auto& i: items)
