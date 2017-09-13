@@ -605,6 +605,25 @@ SUITE(Canvas)
                       dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
 
       }
+
+    TEST_FIXTURE(TestFixture,handleArrows)
+      {
+        auto cv=dynamic_cast<VariableBase*>(c.get());
+        cv->value(1000);
+        cv->sliderMin=0;
+        cv->sliderMax=2000;
+        cv->sliderStep=100;
+        canvas.handleArrows(1,c->x(),c->y());
+        CHECK_EQUAL(1100,cv->value());
+        canvas.handleArrows(-1,c->x(),c->y());
+        CHECK_EQUAL(1000,cv->value());
+        for (size_t i=0; i<20; ++i)
+          canvas.handleArrows(1,c->x(),c->y());
+        CHECK_EQUAL(2000,cv->value());
+        for (size_t i=0; i<30; ++i)
+          canvas.handleArrows(-1,c->x(),c->y());
+        CHECK_EQUAL(0,cv->value());
+      }
     
 }
 
