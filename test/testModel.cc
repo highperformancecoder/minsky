@@ -553,6 +553,15 @@ SUITE(Canvas)
         CHECK_EQUAL(integ->intVar->valueId(),
           dynamic_cast<VariableBase*>(model->items.back().get())->valueId());
       }
+
+    TEST_FIXTURE(TestFixture,openGroupInCanvas)
+      {
+        canvas.openGroupInCanvas(group0);
+        CHECK(canvas.model==group0);
+        CHECK(group0->displayContents());
+        canvas.openGroupInCanvas(model);
+        CHECK(canvas.model==model);
+      }
 }
 
 SUITE(Wire)
