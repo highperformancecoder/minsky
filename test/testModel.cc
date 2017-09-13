@@ -522,6 +522,37 @@ SUITE(Canvas)
         canvas.renameAllInstances("bar");
         CHECK(integ->description()=="bar");
       }
+
+    TEST_FIXTURE(TestFixture,ungroupItem)
+      {
+        unsigned originalNumItems=model->numItems();
+        unsigned originalNumGroups=model->numGroups();
+        canvas.item=group0;
+        canvas.ungroupItem();
+        CHECK_EQUAL(originalNumItems, model->numItems());
+        CHECK_EQUAL(originalNumGroups-1, model->numGroups());
+      }
+
+    TEST_FIXTURE(TestFixture,copyItem)
+      {
+        model->addItem(a);
+        unsigned originalNumItems=model->numItems();
+        unsigned originalNumGroups=model->numGroups();
+        canvas.item=a;
+        canvas.copyItem();
+        CHECK_EQUAL(originalNumItems+1, model->numItems());
+        CHECK_EQUAL(dynamic_cast<VariableBase*>(a.get())->valueId(),
+               dynamic_cast<VariableBase*>(model->items.back().get())->valueId());
+
+        auto integ=new IntOp;
+        canvas.item=model->addItem(integ);
+        integ->description("foo");
+        originalNumItems=model->numItems();
+        canvas.copyItem();
+        CHECK_EQUAL(originalNumItems+1, model->numItems());
+        CHECK_EQUAL(integ->intVar->valueId(),
+          dynamic_cast<VariableBase*>(model->items.back().get())->valueId());
+      }
 }
 
 SUITE(Wire)
