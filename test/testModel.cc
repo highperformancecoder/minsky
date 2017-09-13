@@ -457,6 +457,36 @@ SUITE(Canvas)
         CHECK(a->parent()==model);
         CHECK(a->visible());
       }
+
+    TEST_FIXTURE(TestFixture,selectAllVariables)
+      {
+        model->moveContents(*group0);
+        canvas.item=a;
+        canvas.copyItem();
+        canvas.mouseUp(500,500);
+        canvas.selectAllVariables();
+        CHECK_EQUAL(2,canvas.selection.items.size());
+        for (auto i: canvas.selection.items)
+          {
+            auto ii=dynamic_cast<VariableBase*>(i.get());
+            CHECK(ii);
+            if (ii) CHECK_EQUAL(dynamic_pointer_cast<VariableBase>(a)->valueId(), ii->valueId());
+          }
+
+        canvas.item=b;
+        canvas.selectAllVariables();
+        CHECK_EQUAL(1,canvas.selection.items.size());
+        for (auto i: canvas.selection.items)
+          {
+            auto ii=dynamic_cast<VariableBase*>(i.get());
+            CHECK(ii);
+            if (ii) CHECK_EQUAL(dynamic_pointer_cast<VariableBase>(b)->valueId(), ii->valueId());
+          }
+
+        canvas.item=group0;
+        canvas.selectAllVariables();
+        CHECK(canvas.selection.empty());
+      }
 }
 
 SUITE(Wire)
