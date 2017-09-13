@@ -641,7 +641,30 @@ SUITE(Canvas)
         CHECK(!canvas.selectVar(500,500));
         canvas.item.reset();
         CHECK(!canvas.selectVar(500,500));
-      }   
+      }
+
+     TEST_FIXTURE(Canvas, addStuff)
+       {
+         model.reset(new Group);
+         model->resetParent(model);
+         addVariable("foo",VariableType::flow);
+         auto v=dynamic_cast<VariableBase*>(itemFocus.get());
+         CHECK(v);
+         CHECK_EQUAL("foo",v->name());
+         CHECK(model==itemFocus->parent());
+
+         addNote("some text");
+         CHECK(itemFocus);
+         CHECK_EQUAL("some text", itemFocus->detailedText);
+
+         addGroup();
+         CHECK(dynamic_cast<Group*>(itemFocus.get()));
+         CHECK(model==itemFocus->parent());
+
+         addSwitch();
+         CHECK(dynamic_cast<SwitchIcon*>(itemFocus.get()));
+         CHECK(model==itemFocus->parent());
+       }
 }
 
 SUITE(Wire)
