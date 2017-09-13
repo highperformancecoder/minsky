@@ -556,6 +556,11 @@ SUITE(Canvas)
 
     TEST_FIXTURE(TestFixture,openGroupInCanvas)
       {
+        // remove a from group0, which should add an invariable
+        model->addItem(a);
+        group0->splitBoundaryCrossingWires();
+        CHECK(!group0->inVariables.empty());
+        CHECK(!group0->outVariables.empty());
         canvas.openGroupInCanvas(group0);
         CHECK(canvas.model==group0);
         CHECK(group0->displayContents());

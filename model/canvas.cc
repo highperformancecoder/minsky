@@ -285,11 +285,12 @@ namespace minsky
       if (auto g=item->parent())
         {
           if (auto parent=g->parent())
-            itemFocus=parent->addItem(item);
-          else
-            itemFocus=model->addItem(item);
-          itemFocus->m_visible=true;
-          g->splitBoundaryCrossingWires();
+            {
+              itemFocus=parent->addItem(item);
+              itemFocus->m_visible=true;
+              g->splitBoundaryCrossingWires();
+            }
+          // else item already at toplevel
         }
   }
 
@@ -341,10 +342,11 @@ namespace minsky
     if (auto g=dynamic_cast<Group*>(item.get()))
       {
         if (auto p=g->parent())
-          p->moveContents(*g);
-        else
-          model->moveContents(*g);
-        deleteItem();
+          {
+            p->moveContents(*g);
+            deleteItem();
+          }
+        // else item is toplevel which can't be ungrouped
       }
   }
 
