@@ -119,7 +119,7 @@ namespace minsky
     switch (lassoMode)
       {
       case LassoMode::lasso:
-        select(lasso.x0,lasso.y0,x,y); //TODO move this into a method of selection
+        select(lasso.x0,lasso.y0,x,y);
         requestRedraw();
         break;
       case LassoMode::itemResize:
@@ -233,12 +233,11 @@ namespace minsky
       }
   }
 
-  void Canvas::select(float x0, float y0, float x1, float y1)
+  void Canvas::select(const LassoBox& lasso)
   {
-    LassoBox lasso(x0,y0,x1,y1);
     selection.clear();
 
-    auto topLevel = model->minimalEnclosingGroup(x0,y0,x1,y1);
+    auto topLevel = model->minimalEnclosingGroup(lasso.x0,lasso.y0,lasso.x1,lasso.y1);
 
     if (!topLevel) topLevel=&*model;
 

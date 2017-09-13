@@ -177,6 +177,8 @@ SUITE(Canvas)
       CHECK(b==canvas.item);
       canvas.getItemAt(c->x()-2,c->y()+2);
       CHECK(c==canvas.item);
+      canvas.getItemAt(group0->x()-2,group0->y()+2);
+      CHECK(group0==canvas.item);
     }
   
   TEST_FIXTURE(TestFixture, getWireAt)
@@ -289,6 +291,41 @@ SUITE(Canvas)
       canvas.mouseUp(x-5,y-5);
       CHECK_EQUAL(1,canvas.selection.items.size());
       CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),op) !=canvas.selection.items.end());
+
+      // test that groups can be selected
+      CHECK(!group0->displayContents());
+      float w=0.5*group0->width+5, h=0.5*group0->height+5;
+      x=group0->x()-w; y=group0->y()-h;
+      // nw -> se selection
+      canvas.mouseDown(x,y);
+      canvas.mouseUp(x+2*w,y+2*h);
+      CHECK_EQUAL(0,canvas.selection.items.size());
+      CHECK_EQUAL(1,canvas.selection.groups.size());
+      CHECK(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
+
+      // ne -> sw selection
+      canvas.selection.clear();
+      canvas.mouseDown(x+2*w,y);
+      canvas.mouseUp(x-2*w,y+2*h);
+      CHECK_EQUAL(0,canvas.selection.items.size());
+      CHECK_EQUAL(1,canvas.selection.groups.size());
+      CHECK(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
+      
+      // se -> nw selection
+      canvas.selection.clear();
+      canvas.mouseDown(x+2*w,y+2*h);
+      canvas.mouseUp(x-2*w,y-2*h);
+      CHECK_EQUAL(0,canvas.selection.items.size());
+      CHECK_EQUAL(1,canvas.selection.groups.size());
+      CHECK(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
+      
+      // sw -> ne selection
+      canvas.selection.clear();
+      canvas.mouseDown(x,y+2*h);
+      canvas.mouseUp(x+2*w,y-2*h);
+      CHECK_EQUAL(0,canvas.selection.items.size());
+      CHECK_EQUAL(1,canvas.selection.groups.size());
+      CHECK(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
     }
 
     TEST_FIXTURE(Canvas, wires)
@@ -369,6 +406,38 @@ SUITE(Canvas)
         CHECK_EQUAL(0,g->inVariables.size());
       }
     
+    TEST_FIXTURE(Canvas, mouseFocus)
+      {
+        model.reset(new Group);
+        model->resetParent(model);
+        OperationPtr a(OperationType::exp);
+        model->addItem(a);
+        a->moveTo(100,100);
+        OperationPtr b(OperationType::exp);
+        model->addItem(b);
+        b->moveTo(200,200);
+        auto w=model->addWire(*a,*b,1);
+
+        CHECK(!a->mouseFocus);
+        CHECK(!b->mouseFocus);
+        CHECK(!w->mouseFocus);
+
+        mouseMove(a->x(),a->y());
+        CHECK(a->mouseFocus);
+        CHECK(!b->mouseFocus);
+        CHECK(!w->mouseFocus);
+
+        mouseMove(b->x(),b->y());
+        CHECK(!a->mouseFocus);
+        CHECK(b->mouseFocus);
+        CHECK(!w->mouseFocus);
+
+        mouseMove(0.5*(a->x()+b->x()),0.5*(a->y()+b->y()));
+        CHECK(!a->mouseFocus);
+        CHECK(!b->mouseFocus);
+        CHECK(w->mouseFocus);
+        
+      }
 }
 
 SUITE(Wire)

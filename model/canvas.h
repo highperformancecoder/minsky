@@ -75,8 +75,11 @@ namespace minsky
     void mouseMove(float x, float y);
 
     /// select all items in a given region
-    void select(float x0, float y0, float x1, float y1);
-
+    void select(float x0, float y0, float x1, float y1) {
+      select(LassoBox(x0,y0,x1,y1));
+    }
+    void select(const LassoBox&);
+    
     /// sets itemFocus, and resets mouse offset for placement
     void setItemFocus(const ItemPtr& x) {
       itemFocus=x;
