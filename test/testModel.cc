@@ -172,6 +172,11 @@ SUITE(Group)
     CHECK(!group0->displayPlot);
   }
 
+  TEST_FIXTURE(TestFixture, findGroup)
+    {
+      CHECK(model->findGroup(*group0)==group0);
+    }
+
   TEST_FIXTURE(Group, GroupRecursiveDo)
     {
       addItem(new Operation<OperationType::exp>);
