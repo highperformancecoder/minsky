@@ -124,7 +124,7 @@ namespace minsky
       throw error("scope requested for local variable");
   }
 
-  string VariableValue::valueId(GroupPtr scope, string a_name)
+  string VariableValue::valueId(shared_ptr<Group> scope, string a_name)
   {
     auto name=stripActive(a_name);
     if (name[0]==':')

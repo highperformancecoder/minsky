@@ -29,7 +29,7 @@ namespace minsky
 {
   class VariableValue;
   struct VariableValues;
-  class GroupPtr;
+  class Group;
   
   class VariableValue: public VariableType
   {
@@ -103,7 +103,7 @@ namespace minsky
     static std::string valueId(std::string name) {
       return valueId(scope(name), name);
     }
-    static std::string valueId(GroupPtr scope, std::string a_name);
+    static std::string valueId(std::shared_ptr<Group> scope, std::string a_name);
     
     /// extract scope from a qualified variable name
     /// @throw if name is unqualified
