@@ -248,6 +248,12 @@ SUITE(Group)
                         {return dynamic_cast<Operation<OperationType::add>*>(i->get());}));
     }
   
+   TEST_FIXTURE(TestFixture, removeGroup)
+    {
+      auto g=model->removeGroup(*group0);
+      CHECK(g==group0);
+      CHECK(find(model->groups.begin(),model->groups.end(),group0)==model->groups.end());
+    }
 }
 
 SUITE(Canvas)
