@@ -31,8 +31,6 @@
 
 namespace minsky 
 {
-//  class Group;
-//  typedef std::shared_ptr<Group> GroupPtr;
   class LassoBox;
 
   /// represents whether a mouse click is on the item, on an output

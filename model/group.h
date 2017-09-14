@@ -30,19 +30,6 @@
 
 namespace minsky
 {
-  class Group;
-//  class GroupPtr: public ItemPtr
-//  {
-//  public:
-//    template <class... A> GroupPtr(A... x):
-//      ItemPtr(std::forward<A>(x)...) {}
-//    std::shared_ptr<Group> asGroup() const {
-//      return std::dynamic_pointer_cast<Group>(*this);
-//    }
-//    Group& operator*() const;
-//    Group* operator->() const;
-//    
-//  };
   typedef std::vector<GroupPtr> Groups;
 
   // items broken out in a separate structure, as copying is non-default
@@ -77,8 +64,6 @@ namespace minsky
     }
     
 
-    /// sets the group pointer of \a it to this
-    //virtual void setItemGroup(const ItemPtr&) const=0;
     /// tests that groups are arranged heirarchically without any recurrence
     virtual bool nocycles() const=0; 
 

@@ -239,8 +239,8 @@ namespace minsky
     /// evaluate the equations (stockVars.size() of them)
     void evalEquations(double result[], double t, const double vars[]);
 
-    /// returns number of equations
-    size_t numEquations() const {return 0;}//equations.size();}
+//    /// returns number of equations
+//    size_t numEquations() const {return 0;}//equations.size();}
 
     /// consistency check of the equation order. Should return
     /// true. Outputs the operation number of the invalidly ordered
