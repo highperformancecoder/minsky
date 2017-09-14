@@ -308,9 +308,7 @@ namespace minsky
   void Group::moveContents(Group& source) {
      if (&source!=this)
        {
-
-         for (auto& i: source.groups)
-           if (i->higher(*this))
+         if (source.higher(*this))
              throw error("attempt to move a group into itself");
          // make temporary copies as addItem removes originals
          auto copyOfItems=source.items;
@@ -464,7 +462,7 @@ namespace minsky
     for (auto i: groups)
       if (i.get()==&x) return true;
     for (auto i: groups)
-      if (higher(*i))
+      if (i->higher(x))
         return true;
     return false;
   }

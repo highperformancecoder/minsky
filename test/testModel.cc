@@ -267,6 +267,22 @@ SUITE(Group)
       CHECK(g==group0);
       CHECK(find(model->groups.begin(),model->groups.end(),group0)==model->groups.end());
     }
+   
+    TEST_FIXTURE(TestFixture,moveContents)
+      {
+        group0->addItem(new Group);
+        unsigned numItems=model->numItems();
+        unsigned numGroups=model->numGroups();
+        unsigned numWires=model->numWires();
+        CHECK(!group0->empty());
+        model->moveContents(*group0);
+        CHECK(group0->empty());
+        CHECK_EQUAL(numItems, model->numItems());
+        CHECK_EQUAL(numGroups, model->numGroups());
+        CHECK_EQUAL(numWires, model->numWires());
+        CHECK_THROW(group0->moveContents(*model), error);
+      }
+    
 }
 
 SUITE(Canvas)

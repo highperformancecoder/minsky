@@ -159,7 +159,7 @@ namespace minsky
       model->self=model;
     }
 
-    GroupPtr model{new Group};
+    std::shared_ptr<Group> model{new Group};
     Canvas canvas{model};
 
     void clearAllMaps();
