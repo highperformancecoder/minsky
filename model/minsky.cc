@@ -579,7 +579,7 @@ namespace minsky
       string valueId(const std::string& x) const {
         Variable<VariableBase::flow> tmp;
         tmp.name(x);
-        tmp.resetParent(Super::operator*()->parent());
+        tmp.group=Super::operator*()->group;
         return tmp.valueId();
       }
     };
@@ -970,9 +970,9 @@ namespace minsky
   {
     if (op.visible())
       displayErrorItem(op.x(),op.y());
-    else if (auto g=op.parent())
+    else if (auto g=op.group.lock())
       {
-        while (g && !g->visible()) g=g->parent();
+        while (g && !g->visible()) g=g->group.lock();
         if (g && g->visible())
           displayErrorItem(g->x(), g->y());
       }

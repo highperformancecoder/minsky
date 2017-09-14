@@ -109,7 +109,7 @@ namespace minsky
             {
               // add new variable
               vars.push_back(newVar);
-              if (auto g=parent()) g->addItem(newVar);
+              if (auto g=group.lock()) g->addItem(newVar);
             }
           else
             {
@@ -135,7 +135,7 @@ namespace minsky
 
   double GodleyIcon::schema1ZoomFactor() const
   {
-    if (auto g=parent())
+    if (auto g=group.lock())
       return iconScale*g->zoomFactor;
     else
       return iconScale;

@@ -256,7 +256,7 @@ namespace minsky
   }
 
   void PlotWidget::makeDisplayPlot() {
-    if (auto g=parent())
+    if (auto g=group.lock())
       g->displayPlot=dynamic_pointer_cast<PlotWidget>(g->findItem(*this));
   }
 

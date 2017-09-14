@@ -46,7 +46,7 @@ namespace minsky
 
   GroupPtr Port::group() const
   {
-    return item.parent();
+    return item.group.lock();
   }
 
   void Port::eraseWire(Wire* w) 
@@ -62,7 +62,7 @@ namespace minsky
   void Port::deleteWires() 
   {
     /// wires could be anywhere, so we need to walk the whole heirachy
-    if (auto g=item.parent())
+    if (auto g=item.group.lock())
       {
         auto& gg=g->globalGroup();
         for (auto& w: wires)

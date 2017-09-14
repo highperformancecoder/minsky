@@ -200,8 +200,8 @@ namespace minsky
   void Wire::split()
   {
     // add I/O variables if this wire crosses a group boundary
-    if (auto fg=from()->item.parent())
-      if (auto tg=to()->item.parent())
+    if (auto fg=from()->item.group.lock())
+      if (auto tg=to()->item.group.lock())
         if (fg!=tg && !from()->item.ioVar() && !to()->item.ioVar()) // crosses boundary
           {
             // check if this wire is in from group

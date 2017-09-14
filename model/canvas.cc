@@ -147,26 +147,26 @@ namespace minsky
         // move item relatively to avoid accidental moves on double click
         itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
         // check if the move has moved outside or into a group
-        if (auto g=itemFocus->parent())
+        if (auto g=itemFocus->group.lock())
           if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
             {
               if (auto toGroup=model->minimalEnclosingGroup
                   (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                 {
-                  auto fromGroup=itemFocus->parent();
+                  auto fromGroup=itemFocus->group.lock();
                   toGroup->addItem(itemFocus);
                   toGroup->splitBoundaryCrossingWires();
                   if (fromGroup) fromGroup->splitBoundaryCrossingWires();
                 }
               else
                 {
-                  auto fromGroup=itemFocus->parent();
+                  auto fromGroup=itemFocus->group.lock();
                   model->addItem(itemFocus);
                   model->splitBoundaryCrossingWires();
                   if (fromGroup) fromGroup->splitBoundaryCrossingWires();
                 }
             }
-        if (auto g=itemFocus->parent())
+        if (auto g=itemFocus->group.lock())
           g->checkAddIORegion(itemFocus);
         requestRedraw();
       }
@@ -282,9 +282,9 @@ namespace minsky
   void Canvas::removeItemFromItsGroup()
   {
     if (item)
-      if (auto g=item->parent())
+      if (auto g=item->group.lock())
         {
-          if (auto parent=g->parent())
+          if (auto parent=g->group.lock())
             {
               itemFocus=parent->addItem(item);
               itemFocus->m_visible=true;
@@ -341,7 +341,7 @@ namespace minsky
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
       {
-        if (auto p=g->parent())
+        if (auto p=g->group.lock())
           {
             p->moveContents(*g);
             deleteItem();
@@ -373,7 +373,7 @@ namespace minsky
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
       {
-        if (auto parent=model->parent())
+        if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor);
         model=item;
         float zoomFactor=1.1*model->displayZoom;

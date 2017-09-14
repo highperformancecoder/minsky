@@ -109,11 +109,11 @@ SUITE(Group)
     g.addItem(b);
     CHECK_EQUAL(2, g.items.size());
     CHECK_EQUAL(1, g.wires.size());
-    CHECK(&g==a->parent().get());
+    CHECK(&g==a->group.lock().get());
     CHECK(!a->visible());
-    CHECK(&g==b->parent().get());
+    CHECK(&g==b->group.lock().get());
     CHECK(!b->visible()); 
-    CHECK(c->parent()==model);
+    CHECK(c->group.lock()==model);
     CHECK(c->visible());
     CHECK(!model->findWire(*ab)->visible());
     CHECK(model->findWire(*bc)->visible());
@@ -133,7 +133,7 @@ SUITE(Group)
     checkWiresConsistent();
 
     // now check removal
-    group0->parent()->addItem(c);
+    group0->group.lock()->addItem(c);
 
     CHECK_EQUAL(3,group0->items.size());
     CHECK_EQUAL(2,group0->wires.size());
@@ -217,10 +217,10 @@ SUITE(Group)
         {
           auto w1=group0->wires[i], w2=g->wires[i];
           CHECK(w1!=w2);
-          CHECK(w1->to()->item.parent()==group0);
-          CHECK(w1->from()->item.parent()==group0);
-          CHECK(w2->to()->item.parent()==g);
-          CHECK(w2->from()->item.parent()==g);
+          CHECK(w1->to()->item.group.lock()==group0);
+          CHECK(w1->from()->item.group.lock()==group0);
+          CHECK(w2->to()->item.group.lock()==g);
+          CHECK(w2->from()->item.group.lock()==g);
           auto c1=w1->coords(), c2=w2->coords();
           CHECK_EQUAL(c1.size(), c2.size());
           CHECK_ARRAY_CLOSE(&c1[0], &c2[0], c1.size(), 1e-2);
@@ -465,7 +465,7 @@ SUITE(Canvas)
 
         auto g=model->addGroup(new Group);
         
-        CHECK(b->parent()==model);
+        CHECK(b->group.lock()==model);
         CHECK_EQUAL(1,model->numWires());
         CHECK_EQUAL(2,model->numItems());
         CHECK_EQUAL(0,g->inVariables.size());
@@ -473,7 +473,7 @@ SUITE(Canvas)
         // move b into group
         mouseDown(b->x(),b->y());
         mouseUp(g->x(),g->y());
-        CHECK(b->parent()==g);
+        CHECK(b->group.lock()==g);
         CHECK_EQUAL(2,model->numWires());
         CHECK_EQUAL(3,model->numItems());
         CHECK_EQUAL(1,g->inVariables.size());
@@ -483,7 +483,7 @@ SUITE(Canvas)
         zoomToDisplay();
         mouseDown(b->x(),b->y());
         mouseUp(200,200);
-        CHECK(b->parent()==model);
+        CHECK(b->group.lock()==model);
         CHECK_EQUAL(1,model->numWires());
         CHECK_EQUAL(2,model->numItems());
         CHECK_EQUAL(0,g->inVariables.size());
@@ -529,15 +529,15 @@ SUITE(Canvas)
         auto g0=model->addGroup(new Group);
         auto g1=g0->addGroup(new Group);
         auto a=g1->addItem(new Operation<OperationType::exp>);
-        CHECK(a->parent()==g1);
+        CHECK(a->group.lock()==g1);
         CHECK(a->visible()==g1->displayContents());
         item=a;
         removeItemFromItsGroup();
-        CHECK(a->parent()==g0);
+        CHECK(a->group.lock()==g0);
         CHECK(a->visible()==g0->displayContents());
         item=a;
         removeItemFromItsGroup();
-        CHECK(a->parent()==model);
+        CHECK(a->group.lock()==model);
         CHECK(a->visible());
       }
 
@@ -734,7 +734,7 @@ SUITE(Canvas)
          auto v=dynamic_cast<VariableBase*>(itemFocus.get());
          CHECK(v);
          CHECK_EQUAL("foo",v->name());
-         CHECK(model==itemFocus->parent());
+         CHECK(model==itemFocus->group.lock());
 
          addNote("some text");
          CHECK(itemFocus);
@@ -742,11 +742,11 @@ SUITE(Canvas)
 
          addGroup();
          CHECK(dynamic_cast<Group*>(itemFocus.get()));
-         CHECK(model==itemFocus->parent());
+         CHECK(model==itemFocus->group.lock());
 
          addSwitch();
          CHECK(dynamic_cast<SwitchIcon*>(itemFocus.get()));
-         CHECK(model==itemFocus->parent());
+         CHECK(model==itemFocus->group.lock());
        }
 }
 

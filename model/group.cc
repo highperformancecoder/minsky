@@ -52,7 +52,7 @@ namespace minsky
   {
     GroupPtr r(new Group);
     r->self=r;
-    r->resetParent(parent());
+    r->group=group;
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
     for (auto& i: items)
@@ -79,19 +79,6 @@ namespace minsky
       }
     return r;
   }
-
-//  shared_ptr<Group> Group::self() const
-//  {
-//    if (auto parent=group.lock())
-//      {
-//        if (parent.get()==this)
-//          return parent; // indicate top level group by setting group to this.
-//        for (auto& g: parent->groups)
-//          if (g.get()==this)
-//            return g;
-//      }
-//    return shared_ptr<Group>();
-//  }
 
   ItemPtr Group::removeItem(const Item& it)
   {
@@ -161,7 +148,7 @@ namespace minsky
   ItemPtr GroupItems::findItem(const Item& it) const 
   {
     // start by looking in the group it thnks it belongs to
-    if (auto g=it.parent())
+    if (auto g=it.group.lock())
       if (g.get()!=this) 
         {
           auto i=g->findItem(it);
@@ -179,7 +166,7 @@ namespace minsky
    
     // stash position
     float x=it->x(), y=it->y();
-    auto origGroup=it->parent();
+    auto origGroup=it->group.lock();
 
     if (origGroup.get()==this) return it; // nothing to do.
     if (origGroup)
@@ -190,7 +177,7 @@ namespace minsky
     if (auto v=dynamic_cast<VariableBase*>(it.get()))
       init=v->init();
     
-    it->resetParent(self.lock());
+    it->group=self;
     it->moveTo(x,y);
 
     // take into account new scope
@@ -213,7 +200,7 @@ namespace minsky
     if (auto intOp=dynamic_cast<IntOp*>(it.get()))
       if (intOp->intVar)
         {
-          if (auto oldG=intOp->intVar->parent())
+          if (auto oldG=intOp->intVar->group.lock())
             {
               if (oldG.get()!=this)
                 addItem(oldG->removeItem(*intOp->intVar));
@@ -229,16 +216,16 @@ namespace minsky
   {
     // Find common ancestor group, and move wire to it
     assert(w.from() && w.to());
-    shared_ptr<Group> p1=w.from()->item.parent(), p2=w.to()->item.parent();
+    shared_ptr<Group> p1=w.from()->item.group.lock(), p2=w.to()->item.group.lock();
     assert(p1 && p2);
     unsigned l1=p1->level(), l2=p2->level();
-    for (; l1>l2; l1--) p1=p1->parent();
-    for (; l2>l1; l2--) p2=p2->parent();
+    for (; l1>l2; l1--) p1=p1->group.lock();
+    for (; l2>l1; l2--) p2=p2->group.lock();
     while (p1!=p2) 
       {
         assert(p1 && p2);
-        p1=p1->parent();
-        p2=p2->parent();
+        p1=p1->group.lock();
+        p2=p2->group.lock();
       }
     w.moveIntoGroup(*p1);
   }
@@ -265,7 +252,7 @@ namespace minsky
         // determine if this is input or output var
         if (iv->ports[1]->wires.size()>0)
           {
-            auto fromGroup=iv->ports[1]->wires[0]->from()->item.parent();
+            auto fromGroup=iv->ports[1]->wires[0]->from()->item.group.lock();
             if (fromGroup.get() == this)
               {
                 // not an input var
@@ -281,7 +268,7 @@ namespace minsky
               }
             else
               for (auto& w: iv->ports[0]->wires)
-                if (w->to()->item.parent() == fromGroup)
+                if (w->to()->item.group.lock() == fromGroup)
                   // join wires, as not crossing boundary
                   {
                     auto to=w->to();
@@ -419,7 +406,7 @@ namespace minsky
   {
     set<const Group*> sg;
     sg.insert(this);
-    for (auto i=parent(); i; i=i->parent())
+    for (auto i=group.lock(); i; i=i->group.lock())
       if (!sg.insert(i.get()).second)
         return false;
     return true;
@@ -427,12 +414,12 @@ namespace minsky
 
   GroupPtr GroupItems::addGroup(const std::shared_ptr<Group>& g)
   {
-    auto origGroup=g->parent();
+    auto origGroup=g->group.lock();
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
       origGroup->removeGroup(*g);
-    g->resetParent(self.lock());
     groups.push_back(g);
+    g->group=self;
     g->self=groups.back();
     assert(nocycles());
     return groups.back();
@@ -486,7 +473,7 @@ namespace minsky
   {
     assert(nocycles());
     unsigned l=0;
-    for (auto i=parent(); i; i=i->parent()) l++;
+    for (auto i=group.lock(); i; i=i->group.lock()) l++;
     return l;
   }
 
@@ -496,7 +483,7 @@ namespace minsky
     G& globalGroup(G& start)
     {
       auto g=&start;
-      for (auto i=start.parent(); i; i=i->parent())
+      for (auto i=start.group.lock(); i; i=i->group.lock())
         g=i.get();
       return *g;
     }

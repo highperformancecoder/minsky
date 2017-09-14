@@ -90,7 +90,7 @@ namespace minsky
     /// returns valueid for variable reference in table
     // TODO: this should be refactored to a more central location
     std::string valueId(const std::string& x) const {
-      return VariableValue::valueId(parent(), x);
+      return VariableValue::valueId(group.lock(), x);
     }
   private:
     void updateVars(Variables& vars, 
