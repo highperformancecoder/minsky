@@ -31,23 +31,18 @@
 namespace minsky
 {
   class Group;
-  class GroupPtr: public ItemPtr
-  {
-  public:
-    template <class... A> GroupPtr(A... x):
-      ItemPtr(std::forward<A>(x)...) {}
-
-    operator std::shared_ptr<Group>() const {
-      auto r=std::dynamic_pointer_cast<Group>(*this);
-      assert(r);
-      return r;
-    }
-    operator std::weak_ptr<Group>() const 
-    {return std::shared_ptr<Group>(*this);}
-    Group& operator*() const;
-    Group* operator->() const;
-    
-  };
+//  class GroupPtr: public ItemPtr
+//  {
+//  public:
+//    template <class... A> GroupPtr(A... x):
+//      ItemPtr(std::forward<A>(x)...) {}
+//    std::shared_ptr<Group> asGroup() const {
+//      return std::dynamic_pointer_cast<Group>(*this);
+//    }
+//    Group& operator*() const;
+//    Group* operator->() const;
+//    
+//  };
   typedef std::vector<GroupPtr> Groups;
 
   // items broken out in a separate structure, as copying is non-default
@@ -190,11 +185,8 @@ namespace minsky
       return false;
     }
 
-  // note ItemT<Group> must appear before GroupItems, so that self()
-  // works correctly during construction
   class Group: public ItemT<Group>, public GroupItems
   {
-    friend class GroupPtr;
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
   public:

@@ -324,7 +324,7 @@ bind . <KeyPress-Down> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [g
 # handle processing when delete or backspace is pressed
 proc deleteKey {} {
 #    tk_messageBox -message "hello"
-    if [itemsSelected] {
+    if {![canvas.selection.empty]} {
         cut
     } elseif [getItemAt [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]] {
         canvas.deleteItem

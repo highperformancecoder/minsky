@@ -29,9 +29,6 @@ using namespace ecolab::cairo;
 
 namespace minsky
 {
-  Group& GroupPtr::operator*() const {return dynamic_cast<Group&>(ItemPtr::operator*());}
-  Group* GroupPtr::operator->() const {return dynamic_cast<Group*>(ItemPtr::operator->());}
-
   SVGRenderer Group::svgRenderer;
 
   // assigned the cloned equivalent of a port

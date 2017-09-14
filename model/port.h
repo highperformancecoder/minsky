@@ -29,7 +29,7 @@ namespace minsky
   class Item;
   class Wire;
   class Group;
-  class GroupPtr;
+  typedef std::shared_ptr<Group> GroupPtr;
 
   class Port
   {

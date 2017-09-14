@@ -45,7 +45,6 @@ namespace minsky
         argv0!="minsky.canvas.recentre" &&
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
-        argv0!="minsky.itemsSelected" &&
         argv0!="minsky.popFlags" &&
         argv0!="minsky.pushFlags" &&
         argv0!="minsky.select" &&

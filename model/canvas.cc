@@ -371,11 +371,11 @@ namespace minsky
 
   void Canvas::openGroupInCanvas(const ItemPtr& item)
   {
-    if (auto g=dynamic_cast<Group*>(item.get()))
+    if (auto g=dynamic_pointer_cast<Group>(item))
       {
         if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor);
-        model=item;
+        model=g;
         float zoomFactor=1.1*model->displayZoom;
         if (!model->displayContents())
           {
