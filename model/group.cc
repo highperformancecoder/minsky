@@ -50,7 +50,7 @@ namespace minsky
 
   GroupPtr Group::copy() const
   {
-    GroupPtr r(new Group);
+    auto r=make_shared<Group>();
     r->self=r;
     r->group=group;
     // a map of original to cloned items (weak references)

@@ -282,6 +282,24 @@ SUITE(Group)
         CHECK_EQUAL(numWires, model->numWires());
         CHECK_THROW(group0->moveContents(*model), error);
       }
+
+    TEST_FIXTURE(Group, checkAddIORegion)
+      {
+        CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*width, y()));
+        CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*width, y()));
+        VariablePtr inp(VariableType::flow,"input");
+        VariablePtr outp(VariableType::flow,"output");
+        inp->moveTo(x()-0.5*width, y());
+        addItem(inp);
+        checkAddIORegion(inp);
+        outp->moveTo(x()+0.5*width, y());
+        addItem(outp);
+        checkAddIORegion(outp);
+        CHECK_EQUAL(1,inVariables.size());
+        CHECK_EQUAL(1,outVariables.size());
+        CHECK_EQUAL("input",inVariables[0]->name());
+        CHECK_EQUAL("output",outVariables[0]->name());
+      }
     
 }
 
@@ -487,6 +505,21 @@ SUITE(Canvas)
         mouseUp(300,300);
         CHECK_EQUAL(200,godley.width());
         CHECK_EQUAL(200,godley.height());
+      }
+
+    TEST_FIXTURE(Canvas, groupResize)
+      {
+        model.reset(new Group);
+        addGroup();
+        auto& group=dynamic_cast<Group&>(*itemFocus);
+        CHECK(group.width!=200);
+        CHECK(group.height!=200);
+        mouseUp(200,200);
+        getItemAt(200,200);
+        lassoMode=LassoMode::itemResize;
+        mouseUp(300,300);
+        CHECK_EQUAL(200,group.width);
+        CHECK_EQUAL(200,group.height);
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
