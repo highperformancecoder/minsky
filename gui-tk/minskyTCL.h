@@ -134,7 +134,10 @@ namespace minsky
       canvas.addSwitch();
       registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
     }
-    void createGroup() {Minsky::createGroup();}
+    void createGroup() {
+      canvas.groupSelection();
+      registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
+    }
 
     bool selectVar(float x, float y) {
       bool r=canvas.selectVar(x,y);

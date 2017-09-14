@@ -820,6 +820,27 @@ SUITE(Canvas)
          CHECK(dynamic_cast<SwitchIcon*>(itemFocus.get()));
          CHECK(model==itemFocus->group.lock());
        }
+
+     TEST_FIXTURE(Canvas, groupSelection)
+       {
+         model.reset(new Group);
+         model->self=model;
+         auto t=model->addItem(new Operation<OperationType::time>);
+         auto e=model->addItem(new Operation<OperationType::exp>);
+         model->addWire(new Wire(t->ports[0],e->ports[1]));
+         auto g=model->addGroup(new Group);
+         selection.items.push_back(t);
+         selection.items.push_back(e);
+         selection.groups.push_back(g);
+         groupSelection();
+         auto newG=dynamic_cast<Group*>(itemFocus.get());
+         CHECK(newG);
+         CHECK_EQUAL(2,newG->items.size());
+         CHECK_EQUAL(1,newG->groups.size());
+         CHECK_EQUAL(1,newG->wires.size());
+         CHECK(model->uniqueItems());
+         CHECK(model->nocycles());
+       }
 }
 
 SUITE(Wire)

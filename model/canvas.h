@@ -112,6 +112,9 @@ namespace minsky
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
+
+    /// create a group from items found in the current selection
+    void groupSelection();
     
     /// delete item referenced by item
     void deleteItem() {if (item) model->deleteItem(*item);}

@@ -189,16 +189,10 @@ namespace minsky
           }));
     }
 
-//    /// create a group from items found in the current selection
-    GroupPtr createGroup();
     void saveGroupAsFile(const Group&, const string& fileName) const;
 
     void initGodleys();
 
-//    /// select all items in rectangle bounded by \a x0, \a y0, \a x1, \a y1 
-//    void select(float x0, float y0, float x1, float y1);
-//    ///// clear selection
-//    void clearSelection() {currentSelection.clear();}
     /// erase items in current selection, put copy into clipboard
     void cut();
     /// copy items in current selection into clipboard
@@ -206,7 +200,7 @@ namespace minsky
     /// paste clipboard as a new group. canvas.itemFocus is set to
     /// refer to the new group
     void paste();
-    void saveSelectionAsFile(const string& fileName) const;
+    void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
 
     /// @{ override to provide clipboard handling functionality
     virtual void putClipboard(const string&) const {}
@@ -238,9 +232,6 @@ namespace minsky
     void constructEquations();
     /// evaluate the equations (stockVars.size() of them)
     void evalEquations(double result[], double t, const double vars[]);
-
-//    /// returns number of equations
-//    size_t numEquations() const {return 0;}//equations.size();}
 
     /// consistency check of the equation order. Should return
     /// true. Outputs the operation number of the invalidly ordered

@@ -279,6 +279,19 @@ namespace minsky
                         [&](const WirePtr& i){return i->near(x,y);});
   }
 
+  void Canvas::groupSelection()
+  {
+    GroupPtr r=model->addGroup(new Group);
+    for (auto& i: selection.items)
+      r->addItem(i);
+    for (auto& i: selection.groups)
+      r->addItem(i);
+    r->resizeOnContents();
+    r->splitBoundaryCrossingWires();
+    setItemFocus(r);
+  }
+
+  
   void Canvas::removeItemFromItsGroup()
   {
     if (item)

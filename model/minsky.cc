@@ -182,18 +182,6 @@ namespace minsky
 
   const char* Minsky::minskyVersion=MINSKY_VERSION;
 
-  GroupPtr Minsky::createGroup()
-  {
-    GroupPtr r=model->addGroup(new Group);
-    for (auto& i: canvas.selection.items)
-      r->addItem(i);
-    for (auto& i: canvas.selection.groups)
-      r->addItem(i);
-    r->resizeOnContents();
-    r->splitBoundaryCrossingWires();
-    return r;
-  }
-
   void Minsky::cut()
   {
     copy();
@@ -224,14 +212,6 @@ namespace minsky
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
     putClipboard(os.str());
-  }
-
-  void Minsky::saveSelectionAsFile(const string& fileName) const
-  {
-    schema1::Minsky m(canvas.selection);
-    ofstream os(fileName);
-    xml_pack_t packer(os, schemaURL);
-    xml_pack(packer, "Minsky", m);
   }
 
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
