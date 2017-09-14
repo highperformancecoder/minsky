@@ -141,6 +141,19 @@ SUITE(Group)
     CHECK_EQUAL(1,model->wires.size());
   }
 
+  TEST_FIXTURE(TestFixture, addIntegral)
+  {
+    unsigned numItems=model->numItems();
+    auto integ=make_shared<IntOp>();
+    model->addItem(integ);
+    CHECK_EQUAL(numItems+2,model->numItems());
+    CHECK(integ->group.lock()==model);
+    CHECK(integ->intVar->group.lock()==model);
+    group0->addItem(integ);
+    CHECK(integ->group.lock()==group0);
+    CHECK(integ->intVar->group.lock()==group0);
+  }
+  
   // check that removing then adding an item leaves the group idempotent
   TEST_FIXTURE(TestFixture, removeAddItem)
   {
