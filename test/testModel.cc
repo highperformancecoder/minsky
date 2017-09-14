@@ -179,6 +179,9 @@ SUITE(Group)
 
   TEST_FIXTURE(TestFixture, copy)
     {
+      auto t=model->addItem(new Operation<OperationBase::time>);
+      model->addWire(new Wire(t->ports[0],a->ports[1]));
+      group0->splitBoundaryCrossingWires();
       group0->addGroup(new Group);
       auto g=model->addGroup(group0->copy());
       CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 1e-2);
