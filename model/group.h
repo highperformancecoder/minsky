@@ -58,10 +58,11 @@ namespace minsky
     Wires wires;
     std::vector<VariablePtr> inVariables, outVariables;
     GroupItems() {}
-    GroupItems(const GroupItems& x) {*this=x;}
     virtual ~GroupItems() {}
-    GroupItems& operator=(const GroupItems&);
-    virtual std::shared_ptr<Group> self() const=0;
+    // copy operations not deleted to allow ItemT<Group> to compile
+    GroupItems(const GroupItems& x) {};
+    GroupItems& operator=(const GroupItems&) {return *this;}
+    std::weak_ptr<Group> self; ///< weak ref to this
     
     void clear() {
       items.clear();
@@ -197,22 +198,15 @@ namespace minsky
     bool m_displayContentsChanged=true;
     VariablePtr addIOVar();
   public:
+    
     std::string title;
     float width{100}, height{100}; // size of icon
     std::vector<VariablePtr> createdIOvariables;
     
-    /// @returns a shared_ptr to this. NULL if this cannot be found in parent group
-    std::shared_ptr<Group> self() const override;
-    //void setItemGroup(const ItemPtr& it) const override {it->group=self();}
     bool nocycles() const override; 
 
-    Group* clone() const override {
-      Group* r=new Group;
-      *r=*this;
-      r->group.reset();
-      return r;
-    }
-    
+    GroupPtr copy() const;
+    Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
     void draw(cairo_t*) const override;

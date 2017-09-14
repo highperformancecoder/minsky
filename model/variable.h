@@ -135,7 +135,7 @@ namespace minsky
     bool isStock() const {return type()==stock || type()==integral;}
 
     VariableBase() {}
-    VariableBase(const VariableBase& x): Item(x), Slider(x), m_name(x.m_name) {}
+    VariableBase(const VariableBase& x): Item(x), Slider(x), m_name(x.m_name) {ensureValueExists();}
     VariableBase& operator=(const VariableBase& x) {
       Item::operator=(x);
       Slider::operator=(x);

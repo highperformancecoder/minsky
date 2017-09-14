@@ -177,6 +177,61 @@ SUITE(Group)
       CHECK(model->findGroup(*group0)==group0);
     }
 
+  TEST_FIXTURE(TestFixture, copy)
+    {
+      group0->addGroup(new Group);
+      auto g=model->addGroup(group0->copy());
+      CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 1e-2);
+      
+      CHECK_EQUAL(group0->items.size(), g->items.size());
+      CHECK_EQUAL(group0->inVariables.size(), g->inVariables.size());
+      CHECK_EQUAL(group0->outVariables.size(), g->outVariables.size());
+      CHECK(g->createdIOvariables.empty());
+      CHECK_EQUAL(group0->wires.size(), g->wires.size());
+      CHECK_EQUAL(group0->groups.size(), g->groups.size());
+      CHECK_CLOSE(group0->x(),g->x(),1e-2);
+      CHECK_CLOSE(group0->y(),g->y(),1e-2);
+      
+      for (size_t i=0; i<group0->items.size(); i++)
+        {
+          CHECK(group0->items[i]!=g->items[i]);
+          CHECK_EQUAL(group0->items[i]->classType(),g->items[i]->classType());
+          CHECK_CLOSE(group0->items[i]->x(),g->items[i]->x(),1e-2);
+          CHECK_CLOSE(group0->items[i]->y(),g->items[i]->y(),1e-2);
+        }
+
+      for (size_t i=0; i<group0->inVariables.size(); i++)
+        {
+          CHECK(group0->inVariables[i]!=g->inVariables[i]);
+          CHECK_CLOSE(group0->inVariables[i]->x(), g->inVariables[i]->x(),1e-2);
+          CHECK_CLOSE(group0->inVariables[i]->y(), g->inVariables[i]->y(),1e-2);
+        }
+      for (size_t i=0; i<group0->outVariables.size(); i++)
+        {
+          CHECK(group0->outVariables[i]!=g->outVariables[i]);
+          CHECK_CLOSE(group0->outVariables[i]->x(), g->outVariables[i]->x(),1e-2);
+          CHECK_CLOSE(group0->outVariables[i]->y(), g->outVariables[i]->y(),1e-2);
+        }
+        
+      for (size_t i=0; i<group0->wires.size(); i++)
+        {
+          auto w1=group0->wires[i], w2=g->wires[i];
+          CHECK(w1!=w2);
+          CHECK(w1->to()->item.parent()==group0);
+          CHECK(w1->from()->item.parent()==group0);
+          CHECK(w2->to()->item.parent()==g);
+          CHECK(w2->from()->item.parent()==g);
+          auto c1=w1->coords(), c2=w2->coords();
+          CHECK_EQUAL(c1.size(), c2.size());
+          CHECK_ARRAY_CLOSE(&c1[0], &c2[0], c1.size(), 1e-2);
+        }
+      for (size_t i=0; i<group0->groups.size(); i++)
+        {
+          CHECK(group0->groups[i]!=g->groups[i]);
+        }
+    }
+
+  
   TEST_FIXTURE(Group, GroupRecursiveDo)
     {
       addItem(new Operation<OperationType::exp>);
@@ -399,7 +454,7 @@ SUITE(Canvas)
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
       {
         model.reset(new Group);
-        model->resetParent(model);
+        model->self=model;
         OperationPtr a(OperationType::exp);
         model->addItem(a);
         a->moveTo(100,100);
@@ -437,7 +492,7 @@ SUITE(Canvas)
     TEST_FIXTURE(Canvas, mouseFocus)
       {
         model.reset(new Group);
-        model->resetParent(model);
+        model->self=model;
         OperationPtr a(OperationType::exp);
         model->addItem(a);
         a->moveTo(100,100);
@@ -470,7 +525,7 @@ SUITE(Canvas)
     TEST_FIXTURE(Canvas, removeItemFromItsGroup)
       {
         model.reset(new Group);
-        model->resetParent(model);
+        model->self=model;
         auto g0=model->addGroup(new Group);
         auto g1=g0->addGroup(new Group);
         auto a=g1->addItem(new Operation<OperationType::exp>);
@@ -599,7 +654,7 @@ SUITE(Canvas)
     TEST_FIXTURE(Canvas,copyVars)
       {
         model.reset(new Group);
-        model->resetParent(model);
+        model->self=model;
         auto godley=new GodleyIcon;
         item=model->addItem(godley);
 
@@ -674,7 +729,7 @@ SUITE(Canvas)
      TEST_FIXTURE(Canvas, addStuff)
        {
          model.reset(new Group);
-         model->resetParent(model);
+         model->self=model;
          addVariable("foo",VariableType::flow);
          auto v=dynamic_cast<VariableBase*>(itemFocus.get());
          CHECK(v);

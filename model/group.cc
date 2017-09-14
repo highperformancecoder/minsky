@@ -48,52 +48,50 @@ namespace minsky
       }
   }
 
-  GroupItems& GroupItems::operator=(const GroupItems& x)
+  GroupPtr Group::copy() const
   {
-    if (&x==this) return *this;
-    clear();
+    GroupPtr r(new Group);
+    r->self=r;
+    r->resetParent(parent());
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
-    for (auto& i: x.items)
-      cloneMap[i.get()]=addItem(i->clone());
-    for (auto& i: x.groups)
-      {
-        ItemPtr newItem(i->clone());
-        cloneMap[i.get()]=addGroup(dynamic_pointer_cast<Group>(newItem));
-      }
-    for (auto& w: x.wires) 
+    for (auto& i: items)
+      cloneMap[i.get()]=r->addItem(i->clone());
+    for (auto& i: groups)
+      cloneMap[i.get()]=r->addGroup(i->copy());
+    for (auto& w: wires) 
       {
         auto f=w->from(), t=w->to();
         asgClonedPort(f,cloneMap);
         asgClonedPort(t,cloneMap);
-        addWire(new Wire(f,t,w->coords()));
+        r->addWire(new Wire(f,t,w->coords()));
       }
 
-    for (auto& v: x.inVariables)
+    for (auto& v: inVariables)
       {
         assert(cloneMap.count(v.get()));
-        inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+        r->inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
       }
-    for (auto& v: x.outVariables)
+    for (auto& v: outVariables)
       {
         assert(cloneMap.count(v.get()));
-        outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+        r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
       }
-    return *this;
+    return r;
   }
 
-  shared_ptr<Group> Group::self() const
-  {
-    if (auto parent=group.lock())
-      {
-        if (parent.get()==this)
-          return parent; // indicate top level group by setting group to this.
-        for (auto& g: parent->groups)
-          if (g.get()==this)
-            return g;
-      }
-    return shared_ptr<Group>();
-  }
+//  shared_ptr<Group> Group::self() const
+//  {
+//    if (auto parent=group.lock())
+//      {
+//        if (parent.get()==this)
+//          return parent; // indicate top level group by setting group to this.
+//        for (auto& g: parent->groups)
+//          if (g.get()==this)
+//            return g;
+//      }
+//    return shared_ptr<Group>();
+//  }
 
   ItemPtr Group::removeItem(const Item& it)
   {
@@ -192,7 +190,7 @@ namespace minsky
     if (auto v=dynamic_cast<VariableBase*>(it.get()))
       init=v->init();
     
-    it->resetParent(self());
+    it->resetParent(self.lock());
     it->moveTo(x,y);
 
     // take into account new scope
@@ -433,8 +431,9 @@ namespace minsky
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
       origGroup->removeGroup(*g);
-    g->resetParent(self());
+    g->resetParent(self.lock());
     groups.push_back(g);
+    g->self=groups.back();
     assert(nocycles());
     return groups.back();
   }

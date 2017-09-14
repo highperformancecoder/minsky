@@ -358,7 +358,9 @@ namespace minsky
         ItemPtr newItem;
         // cannot duplicate an integral, just its variable
         if (auto intop=dynamic_cast<IntOp*>(item.get()))
-          newItem.reset(intop->intVar->clone()); 
+          newItem.reset(intop->intVar->clone());
+        else if (auto group=dynamic_cast<Group*>(item.get()))
+          newItem=group->copy();
         else
           newItem.reset(item->clone());
         setItemFocus(model->addItem(newItem));
