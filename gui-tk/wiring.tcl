@@ -112,7 +112,7 @@ for {set i 0} {$i<=$menubarLine} {incr i} {
 }
 pack .wiring.menubar -fill x
 
-image create canvasImage minskyCanvas -canvas minsky.canvas
+image create cairoSurface minskyCanvas -surface minsky.canvas
 label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
 pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {minsky.canvas.mouseDown %x %y}
@@ -349,7 +349,7 @@ proc rightMouseGodley {x y X Y} {
 }
 # pan mode
 bind .wiring.canvas <Shift-Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}
-bind .wiring.canvas <Shift-B1-Motion> {model.moveTo [expr %x-$panOffsX] [expr %y-$panOffsY]; canvas.requestRedraw}
+bind .wiring.canvas <Shift-B1-Motion> {panCanvases [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 menu .wiring.context -tearoff 0
 

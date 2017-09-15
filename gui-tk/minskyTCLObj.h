@@ -39,12 +39,15 @@ namespace minsky
   {
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
-    if (m.doPushHistory && argv0!="wiringGroup.adjustWires" && 
+    if (m.doPushHistory &&
         argv0!="minsky.availableOperations" &&
         argv0!="minsky.canvas.select" &&
         argv0!="minsky.canvas.recentre" &&
+        argv0!="minsky.canvas.requestRedraw" &&
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
+        argv0!="minsky.model.moveTo" &&
+        argv0!="minsky.newGlobalGroupTCL" &&
         argv0!="minsky.popFlags" &&
         argv0!="minsky.pushFlags" &&
         argv0!="minsky.select" &&
@@ -52,9 +55,7 @@ namespace minsky
         argv0!="minsky.setGodleyIconResource" &&
         argv0!="minsky.setGroupIconResource" &&
         argv0!="minsky.step" &&
-        argv0!="wiringGroup.item.clickType" &&
-        argv0!="wiringGroup.newGroupTCL" &&
-        argv0!="minsky.newGlobalGroupTCL" &&
+        argv0.find("minsky.equationDisplay")==string::npos && 
         argv0.find(".get")==string::npos && 
         argv0.find(".@elem")==string::npos && 
         argv0.find(".mouseFocus")==string::npos

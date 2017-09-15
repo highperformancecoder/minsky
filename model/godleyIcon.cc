@@ -20,7 +20,6 @@
 #include "godleyIcon.h"
 #include "cairoItems.h"
 #include "minsky.h"
-#include "init.h"
 #include "selection.h"
 #include <flowCoef.h>
 #include <evalGodley.h>

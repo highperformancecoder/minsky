@@ -26,7 +26,7 @@
 #include "selection.h"
 #include "switchIcon.h"
 #include "wire.h"
-#include <cairo_base.h>
+#include <cairoSurfaceImage.h>
 
 namespace minsky
 {
@@ -40,7 +40,7 @@ namespace minsky
     NoAssign& operator=(const U& x) {T::operator=(x); return *this;}
   };
   
-  class Canvas
+  class Canvas: public ecolab::CairoSurface
   {
     // for drawing error indicators on the canvas
     bool itemIndicator=false;
@@ -50,7 +50,7 @@ namespace minsky
     GroupPtr model;
     Selection selection;
     // we don't want surface to be reassigned every time a new model is loaded.
-    NoAssign<Exclude<ecolab::cairo::SurfacePtr>> surface;
+    //NoAssign<Exclude<ecolab::cairo::SurfacePtr>> surface;
     ItemPtr itemFocus; ///< item selected by clicking
     WirePtr wireFocus; ///< wire that mouse is hovering over
     unsigned handleSelected;
@@ -171,6 +171,7 @@ namespace minsky
     void indicateItem() {itemIndicator=true;}
 
     /// redraw whole model
+    void redraw(int x0, int y0, int width, int height) override;
     void redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};

@@ -21,23 +21,7 @@
 #include "canvas.h"
 #include "cairoItems.h"
 #include "minsky.h"
-#include "init.h"
 #include <cairo_base.h>
-
-#ifdef CAIRO_HAS_XLIB_SURFACE
-#include <cairo/cairo-xlib.h>
-#endif
-// CYGWIN has problems with WIN32_SURFACE
-#define USEWIN32_SURFACE defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
-#if USEWIN32_SURFACE
-#undef Realloc
-#include <cairo/cairo-win32.h>
-// undocumented internal function for extracting the HDC from a Drawable
-extern "C" HDC TkWinGetDrawableDC(Display*, Drawable, void*);
-extern "C" HDC TkWinReleaseDrawableDC(Drawable, HDC, void*);
-#endif
-
-#undef near
 
 #include <ecolab_epilogue.h>
 using namespace std;
@@ -497,13 +481,24 @@ namespace minsky
     return false;
   }
 
+  void Canvas::redraw(int x0, int y0, int width, int height)
+  {
+    updateRegion.x0=x0;
+    updateRegion.y0=y0;
+    updateRegion.x1=x0+width;
+    updateRegion.y1=y0+height;
+    redrawUpdateRegion();
+  }
+  
   void Canvas::redraw()
   {
-    updateRegion.x0=updateRegion.y0=-numeric_limits<float>::max();
-    updateRegion.x1=updateRegion.y1=numeric_limits<float>::max();
+    updateRegion.x0=-numeric_limits<float>::max();
+    updateRegion.y0=-numeric_limits<float>::max();
+    updateRegion.x1=numeric_limits<float>::max();
+    updateRegion.y1=numeric_limits<float>::max();
     redrawUpdateRegion();
-    updateRegion.x0=updateRegion.y0=updateRegion.x1=updateRegion.y1=0;
   }
+
   void Canvas::redrawUpdateRegion()
   {
     if (!surface.get()) return;
@@ -593,7 +588,7 @@ namespace minsky
   {
     SurfacePtr tmp(surface);
     surface.reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
-    redraw();
+    requestRedraw();
     model->moveTo(model->x()-surface->left(), model->y()-surface->top());
     surface=tmp;
     requestRedraw();

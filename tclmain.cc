@@ -10,8 +10,7 @@
 #include "object.h"
 #include "eco_hashmap.h"
 #include "pack_stream.h"
-
-#include "init.h"
+#include <cairoSurfaceImage.h>
 
 #include <ecolab_epilogue.h>
 #include <fstream>
@@ -49,7 +48,7 @@ extern "C"
 using namespace std;
 using namespace ecolab;
 using namespace classdesc;
-using namespace minsky;
+//using namespace minsky;
 
 #include "version.h"
 NEWCMD(minsky_version,0)
@@ -158,12 +157,8 @@ NEWCMD(GUI,0)
          one. */
       //      return 1;
     }
-
-  // call initialisers
-  vector<Fun>& init=initVec();
-  for (vector<Fun>::iterator i=init.begin(); i!=init.end(); ++i)
-    (*i)();
-
+  CairoSurface::registerImage();
+  
   mainWin = Tk_MainWindow(interp());
   //XSetErrorHandler(minskyXErrorHandler);
 }

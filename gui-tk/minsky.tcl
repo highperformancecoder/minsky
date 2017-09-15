@@ -492,17 +492,27 @@ source $minskyHome/group.tcl
 source $minskyHome/switch.tcl
 
 # add the tabbed windows
-.tabs add .wiring -text "New Canvas"
+.tabs add .wiring -text "Wiring"
 
-image create photo renderedEquations -width 500 -height 500 
+image create cairoSurface renderedEquations -surface minsky.equationDisplay
 #-file $minskyHome/icons/plot.gif
 ttk::frame .equations 
-canvas .equations.canvas -height $canvasHeight -width $canvasWidth -scrollregion {-10000 -10000 10000 10000} \
-    -yscrollcommand ".vscroll set" -xscrollcommand ".hscroll set"
-.equations.canvas create equations 0 0 -tags eq
+label .equations.canvas -image renderedEquations -height $canvasHeight -width $canvasWidth
 pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations
 .tabs select 0
+
+proc panCanvases {offsx offsy} {
+    model.moveTo $offsx $offsy
+    equationDisplay.offsx $offsx
+    equationDisplay.offsy $offsy
+    set x0 [expr (10000-$offsx)/20000.0]
+    .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
+    set y0 [expr (10000-$offsy)/20000.0]
+    .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
+    canvas.requestRedraw
+    equationDisplay.requestRedraw
+}
 
 ttk::sizegrip .sizegrip
 proc scrollCanvases {xyview args} {
@@ -510,8 +520,8 @@ proc scrollCanvases {xyview args} {
         moveto {
             set offs [expr 10000 - 20000 * [lindex $args 1]]
             switch $xyview {
-                xview {model.moveTo $offs [model.y]}
-                yview {model.moveTo [model.x] $offs}
+                xview {panCanvases $offs [model.y]}
+                yview {panCanvases [model.x] $offs}
             }
         }
         scroll {
@@ -520,21 +530,15 @@ proc scrollCanvases {xyview args} {
                 pages {set incr [expr [lindex $args 1]*800]}
             }
             switch $xyview {
-                xview {model.moveTo [expr [model.x]-$incr] [model.y]}
-                yview {model.moveTo [model.x] [expr [model.y]-$incr]}
+                xview {panCanvases $offs [model.y]}
+                yview {panCanvases [model.x] $offs}
             }
         }
     }
-    canvas.requestRedraw
-            
-    eval .equations.canvas $xyview $args
 }
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
-
-grid .sizegrip -row 999 -column 999
-grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
-grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
+panCanvases 0 0
 
 # adjust cursor for pan mode
 if {[tk windowingsystem] == "aqua"} {
@@ -543,10 +547,14 @@ if {[tk windowingsystem] == "aqua"} {
     set panIcon fleur
 }
 
-# enable panning of equations canvas
+# equations pan mode
 .equations.canvas configure -cursor $panIcon
-bind .equations.canvas <Button-1> {.equations.canvas scan mark %x %y}
-bind .equations.canvas <B1-Motion> {.equations.canvas scan  dragto %x %y 1}
+bind .equations.canvas <Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}
+bind .equations.canvas <B1-Motion> {panCanvases [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+grid .sizegrip -row 999 -column 999
+grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
+grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
 
 image create photo zoomOutImg -file $minskyHome/icons/zoomOut.gif
 button .controls.zoomOut -image zoomOutImg -height 24 -width 37 \
@@ -748,8 +756,8 @@ proc insertNewGroup {gid} {
 # adjust canvas so that -ve coordinates appear on canvas
 proc recentreCanvas {} {
     canvas.recentre
-    .equations.canvas xview moveto 0.5
-    .equations.canvas yview moveto 0.5
+    equationDisplay.offsx 0
+    equationDisplay.offsy 0
 }
 
 proc save {} {

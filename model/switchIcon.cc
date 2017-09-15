@@ -19,7 +19,6 @@
 #include "cairoItems.h"
 #include "switchIcon.h"
 #include "minsky.h"
-#include "init.h"
 #include <ecolab_epilogue.h>
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -27,97 +26,6 @@ using namespace std;
 
 namespace minsky
 {
-  namespace
-  {
-
-    static Tk_CustomOption tagsOption = {
-      (Tk_OptionParseProc *) Tk_CanvasTagsParseProc,
-      Tk_CanvasTagsPrintProc, (ClientData) NULL
-    };
-
-    struct SwitchIconItem: public CairoImage
-    {
-      static Tk_ConfigSpec configSpecs[];
-      ItemPtr sw;
-      void draw()
-      {
-        if (cairoSurface && sw)
-          {
-            cairoSurface->clear();
-            sw->draw(cairoSurface->cairo());
-          }
-      }
-
-    };
-    
-    // we need some extra fields to handle the additional options
-    struct TkXGLItem: public ImageItem
-    {
-      int id; // C++ object identifier
-    };
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-#pragma GCC diagnostic ignored "-Winvalid-offsetof"
-    Tk_ConfigSpec SwitchIconItem::configSpecs[] =
-    {
-      {TK_CONFIG_INT, "-id", NULL, NULL,
-       NULL, Tk_Offset(TkXGLItem, id), 0},
-      {TK_CONFIG_CUSTOM, "-tags", NULL, NULL,
-       NULL, 0, TK_CONFIG_NULL_OK, &tagsOption},
-      {TK_CONFIG_END}
-    };
-#pragma GCC diagnostic pop
-
-    int creatProc(Tcl_Interp *interp, Tk_Canvas canvas, 
-                  Tk_Item *itemPtr, int objc,Tcl_Obj *CONST objv[])
-    {
-      TkXGLItem* tkXGLItem=(TkXGLItem*)(itemPtr);
-      tkXGLItem->id=-1;
-      int r=createImage<SwitchIconItem>(interp,canvas,itemPtr,objc,objv);
-      if (r==TCL_OK)
-        {
-          SwitchIconItem* xglItem=(SwitchIconItem*)(tkXGLItem->cairoItem);
-          if (xglItem) 
-            {
-              // TODO: xglItem->sw = minsky::minsky().model->findItem(tkXGLItem->id);
-              TkImageCode::ComputeImageBbox(canvas, tkXGLItem);
-            }
-        }
-      return r;
-    }
-
-  // overrride cairoItem's configureProc to process the extra config options
-  int configureProc(Tcl_Interp *interp,Tk_Canvas canvas,Tk_Item *itemPtr,
-                    int objc,Tcl_Obj *CONST objv[],int flags)
-  {
-    return TkImageCode::configureCairoItem
-      (interp,canvas,itemPtr,objc,objv,flags, SwitchIconItem::configSpecs);
-  }
-
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-#endif
-    // register GodleyItem with Tk for use in canvases.
-    int registerItem()
-    {
-      static Tk_ItemType switchIconType = cairoItemType();
-      switchIconType.name="switch";
-      switchIconType.itemSize=sizeof(TkXGLItem);
-      switchIconType.createProc=creatProc;
-      switchIconType.configProc=configureProc;
-      switchIconType.configSpecs=SwitchIconItem::configSpecs;
-      Tk_CreateItemType(&switchIconType);
-      return 0;
-    }
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-
-    int dum=(initVec().push_back(registerItem), 0);
-  }
- 
   SwitchIcon::SwitchIcon()
   {
     ports.emplace_back(new Port(*this,Port::noFlags));

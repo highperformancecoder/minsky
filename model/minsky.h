@@ -55,6 +55,25 @@ namespace minsky
 
   struct RKdata; // an internal structure for holding Runge-Kutta data
 
+  // handle the display of rendered equations on the screen
+  class EquationDisplay: public CairoSurface
+  {
+    Minsky& m;
+    void redraw(int x0, int y0, int width, int height) override {
+      if (surface.get()) {
+          MathDAG::SystemOfEquations system(m);
+          cairo_surface_set_device_offset(surface->surface(),offsx,offsy);
+          system.renderEquations(*surface);
+        }
+    }
+    CLASSDESC_ACCESS(EquationDisplay);
+  public:
+    float offsx=0, offsy=0; // pan controls
+    EquationDisplay(Minsky& m): m(m) {}
+    EquationDisplay& operator=(const EquationDisplay& x) {CairoSurface::operator=(x); return *this;}
+    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+  };
+  
   // a place to put working variables of the Minsky class that needn't
   // be serialised.
   struct MinskyExclude
@@ -69,6 +88,8 @@ namespace minsky
     
     std::vector<int> flagStack;
 
+    
+    
     // make copy operations just dummies, as assignment of Minsky's
     // doesn't need to change this
     MinskyExclude(): historyPtr(0) {}
@@ -111,10 +132,10 @@ namespace minsky
     /// write current state of all variables to the log file
     void logVariables() const;
 
-    classdesc::Exclude<boost::posix_time::ptime> lastRedraw;
-      
+    Exclude<boost::posix_time::ptime> lastRedraw;
 
   public:
+    EquationDisplay equationDisplay;
     
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
@@ -153,7 +174,7 @@ namespace minsky
     EvalGodley evalGodley;
 
     // reset m_edited as the GodleyIcon constructor calls markEdited
-    Minsky() {
+    Minsky(): equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
       model->height=model->width=std::numeric_limits<float>::max();
       model->self=model;
@@ -351,7 +372,21 @@ namespace minsky
 #pragma omit xml_pack minsky::MinskyMatrix
 #pragma omit xml_unpack minsky::MinskyMatrix
 #pragma omit xsd_generate minsky::MinskyMatrix
+
+//#pragma omit TCL_obj minsky::EquationDisplay
 #endif
+
+//// avoid recursive descending into the Minsky reference
+//namespace classdesc_access
+//{
+//  template <> struct access_TCL_obj<struct minsky::EquationDisplay > {
+//    template <class U>
+//    void operator()(classdesc::TCL_obj_t& targ, const classdesc::string& desc,U& arg)
+//    {
+//      ::TCL_obj_onbase(targ,desc+"",classdesc::base_cast<CairoSurface >::cast(arg));
+//    }
+//  };
+//}
 
 #include "minsky.cd"
 #endif

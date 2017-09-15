@@ -3,6 +3,7 @@
 t=0
 for j in 01 02 03 06 09 10 12 13 14 15 17 18 19 20 21 23 24 25 26 27 29 33 35 37; do
     i=test/00/t00${j}a.sh
+    echo $i
 #for i in test/00/*.sh; do
     if [ $i = "test/00/t0008a.sh" ]; then continue; fi # TODO schema 0 support
     # rendering to GIFs is too unstable, so disable on the Travis platform

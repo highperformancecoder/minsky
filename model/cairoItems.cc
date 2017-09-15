@@ -27,7 +27,6 @@
 #include "cairoItems.h"
 #include "operation.h"
 #include "minsky.h"
-#include "init.h"
 #include "latexMarkup.h"
 #include <arrays.h>
 #include <pango.h>

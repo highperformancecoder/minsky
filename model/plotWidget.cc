@@ -18,7 +18,6 @@
 */
 #include "plotWidget.h"
 #include "variable.h"
-#include "init.h"
 #include "cairoItems.h"
 #include "minsky.h"
 #include "latexMarkup.h"
