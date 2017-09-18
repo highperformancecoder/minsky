@@ -77,8 +77,8 @@ for {set item 0} {\$item<[model.items.size]} {incr item} {
 
 
 # add another wire
-canvas.mouseDown 352 43
-canvas.mouseUp 443 173
+canvas.mouseDown 353 43
+canvas.mouseUp 444 173
 assert {[model.numWires]==26} {}
 
 tcl_exit
