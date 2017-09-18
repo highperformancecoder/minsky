@@ -67,18 +67,20 @@ assert "[llength [[set wire].coords]]==4" {llength wire.coords==4}
 for {set item 0} {\$item<[model.items.size]} {incr item} {
   minsky.model.items.@elem \$item
   if {[minsky.model.items(\$item).classType]=="Operation:divide"} {
-    puts "div: [minsky.model.items(\$item).x] [minsky.model.items(\$item).y]"
+    minsky.model.items(\$item).ports.@elem 0
+    puts "div: [minsky.model.items(\$item).ports(0).x] [minsky.model.items(\$item).ports(0).y]"
   }
   if {[minsky.model.items(\$item).classType]=="Variable:flow" && [minsky.model.items(\$item).name]=="emprate"} {
-    puts "emprate: [minsky.model.items(\$item).x] [minsky.model.items(\$item).y]"
+    minsky.model.items(\$item).ports.@elem 1
+    puts "emprate: [minsky.model.items(\$item).ports(1).x] [minsky.model.items(\$item).ports(1).y]"
   }
 }
 
 
 
 # add another wire
-canvas.mouseDown 353 43
-canvas.mouseUp 444 173
+canvas.mouseDown 363 43
+canvas.mouseUp 486 173
 assert {[model.numWires]==26} {}
 
 tcl_exit
