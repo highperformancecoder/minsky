@@ -22,6 +22,10 @@
 #include "minskyTCLObj.h"
 #include <ecolab.h>
 #include <ecolab_epilogue.h>
+#ifdef _WIN32
+#undef Realloc
+#include <windows.h>
+#endif
 
 namespace minsky
 {
