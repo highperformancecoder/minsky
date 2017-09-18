@@ -588,7 +588,7 @@ namespace minsky
   {
     SurfacePtr tmp(surface);
     surface.reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
-    requestRedraw();
+    redraw();
     model->moveTo(model->x()-surface->left(), model->y()-surface->top());
     surface=tmp;
     requestRedraw();

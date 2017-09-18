@@ -50,7 +50,6 @@ EXES=gui-tk/minsky $(SERVER_OBJS)
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
-GUI_TK_OBJS+=getContext.o
 endif
 
 # TODO - remove dependency on GUI directory here
@@ -182,9 +181,6 @@ gui-tk/library/help: doc/minsky/labels.pl doc/minsky.html
 	cp -r -f doc/minsky.html $@
 	linkchecker -f linkcheckerrc $@/minsky.html
 
-getContext.o:
-	g++ -ObjC++ --std=c++11 -DMAC_OSX_TK -I/opt/local/include -c $<
-
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
 tests: $(EXES)
@@ -221,7 +217,6 @@ endif
 mac-dist: gui-tk/minsky
 # create executable in the app package directory. Make it 32 bit only
 	mkdir -p minsky.app/Contents/MacOS
-#	$(LINK) $(FLAGS) $(MODLINK) tclmain.o $(GUI_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) -L$(HOME)/usr/lib -L/opt/local/lib -L$(HOME)/usr/ecolab/lib -L/usr/X11/lib -lecolab /opt/local/lib/libpangocairo-1.0.a /opt/local/lib/libcairo.a /opt/local/lib/libpng16.a /opt/local/lib/libz.a /opt/local/lib/libpangoft2-1.0.a -lharfbuzz /opt/local/lib/libpango-1.0.a -Wl,-framework,Carbon -Wl,-framework,Foundation /opt/local/lib/librsvg-2.a /opt/local/lib/libgio-2.0.a -Wl,-framework,Foundation -Wl,-framework,Carbon -lgdk_pixbuf-2.0 /opt/local/lib/libgmodule-2.0.a /opt/local/lib/libgobject-2.0.a  /opt/local/lib/libcairo.a /opt/local/lib/libffi.a /opt/local/lib/libglib-2.0.a /opt/local/lib/libintl.a /opt/local/lib/libiconv.a -Wl,-framework,Carbon -Wl,-framework,Foundation /opt/local/lib/libpixman-1.a -lfontconfig /opt/local/lib/libxml2.a /opt/local/lib/liblzma.a -lcroco-0.6 /opt/local/lib/libexpat.a /opt/local/lib/libfreetype.a /opt/local/lib/libz.a /opt/local/lib/libbz2.a /opt/local/lib/libpng16.a /opt/local/lib/libX11-xcb.a /opt/local/lib/libxcb-render.a /opt/local/lib/libXrender.a /opt/local/lib/libXext.a /opt/local/lib/libX11.a /opt/local/lib/libxcb.a /opt/local/lib/libXau.a /opt/local/lib/libXdmcp.a -lboost_regex-mt -lboost_filesystem-mt /opt/local/lib/libboost_system-mt.a -lTkTable2.11 /opt/local/lib/libexpat.a -ljson_spirit -ltk -ltcl -L/usr/X11R6/lib -lX11 -Wl,-weak-lXss -lXext -L/usr/X11/lib -lXft -lX11 -L/usr/X11/lib -lfreetype -L/usr/X11/lib -lfontconfig -L/usr/X11/lib -lXrender -lX11  -framework CoreFoundation   -framework CoreFoundation -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-framework,CoreServices -Wl,-framework,ApplicationServices /opt/local/lib/libXrender.a  /opt/local/lib/libX11.a -lresolv -lm /opt/local/lib/libgsl.a  /opt/local/lib/libgslcblas.a /opt/local/lib/libz.a /opt/local/lib/libreadline.a /opt/local/lib/libncurses.a -lpcre -pthread -o $(MAC_DIST_DIR)/minsky
 	sh -v mkMacDist.sh
 
 minsky.xsd: gui-tk/minsky
