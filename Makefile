@@ -270,9 +270,10 @@ dist:
 
 lcov:
 	$(MAKE) clean
+	lcov -i -c -d . --no-external -o lcovi.info
 	-$(MAKE) GCOV=1 sure
-	lcov -i -c -d . --no-external -o lcov.info
-	lcov -c -d . --no-external -o lcov.info
+	lcov -c -d . --no-external -o lcovt.info
+	lcov -a lcovi.info -a lcovt.info -o lcov.info
 	genhtml -o coverage lcov.info
 
 compile_commands.json: Makefile
