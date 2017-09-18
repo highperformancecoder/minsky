@@ -530,8 +530,8 @@ proc scrollCanvases {xyview args} {
                 pages {set incr [expr [lindex $args 1]*800]}
             }
             switch $xyview {
-                xview {panCanvases $offs [model.y]}
-                yview {panCanvases [model.x] $offs}
+                xview {panCanvases [expr [model.x]+$incr] [model.y]}
+                yview {panCanvases [model.x] [expr [model.y]+$incr]}
             }
         }
     }
@@ -758,6 +758,7 @@ proc recentreCanvas {} {
     canvas.recentre
     equationDisplay.offsx 0
     equationDisplay.offsy 0
+    equationDisplay.requestRedraw
 }
 
 proc save {} {

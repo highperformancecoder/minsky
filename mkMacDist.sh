@@ -4,6 +4,12 @@
 
 # This script is intended to be called from make mac-dist target
 
+# check that EcoLab and Tk has been built for extract a quartz context
+if ! nm $HOME/usr/ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
+    echo "Rebuild EcoLab with MAC_OSX_TK=1"
+    exit 1
+fi
+
 MAC_DIST_DIR=minsky.app/Contents/MacOS
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
 if [ $version = '"unknown"' ]; then
