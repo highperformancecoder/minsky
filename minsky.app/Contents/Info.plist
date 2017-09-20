@@ -32,8 +32,6 @@
     </array>
    <key>LSEnvironment</key>
     <dict>
-      <key>DUMMY</key>
-      <string>dummy</string>
       <key>FONTCONFIG_FILE</key>
       <string>/Applications/Minsky.app/Contents/Resources/fontconfig/fonts.conf</string>
       <key>FONTCONFIG_PATH</key>
