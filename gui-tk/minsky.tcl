@@ -66,6 +66,15 @@ if {![file exists [file join $tk_library tk.tcl]]
     set tk_library $minskyHome/library/tk
 }
 
+# In a rather bizarre set of events, namely Aqua build, launched via
+# launch services, on a non-developer machine, Tk will instantiate a
+# second TCL interpreter to host a console. Unfortunately, it uses the
+# original heuristics to find the TCL and TK libraries, which fail,
+# causing the application to hang. Setting these environment variables
+# cuts through that problem. See ticket #675.
+set env(TCL_LIBRARY) $tcl_library
+set env(TK_LIBRARY) $tk_library
+
 proc setFname {name} {
     global fname workDir
     if [string length $name] {
