@@ -93,7 +93,6 @@ if {$argc>1} {
         source $argv(1)
     }
 }
-set ::tk::mac::useCGDrawing 1
 
 source $tcl_library/init.tcl
 
@@ -204,6 +203,7 @@ if {[tk windowingsystem] == "aqua"} {
         if {[llength $args]>0} {openNamedFile [lindex $args 0]}
     }
     proc ::tk::mac::ShowPreferences {} {showPreferences}
+    proc ::tk::mac::ShowHelp {} {help Introduction}
 }
 
 menu .menubar.file
@@ -336,7 +336,9 @@ menu .menubar.rungeKutta
 
 # special platform specific menus
 menu .menubar.help
-.menubar.help add command -label "Minsky Documentation" -command {help Introduction}
+if {[tk windowingsystem] != "aqua"} {
+    .menubar.help add command -label "Minsky Documentation" -command {help Introduction}
+}
 .menubar add cascade -label Help -menu .menubar.help
 
 bind . <F1> topLevelHelp
