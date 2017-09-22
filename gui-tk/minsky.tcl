@@ -244,7 +244,7 @@ foreach {var text default type} $preferencesVars {
             
 proc showPreferences {} {
     global preferences_input preferences preferencesVars
-    foreach var [array names preferences_input] {
+    foreach var [array names preferences] {
 	set preferences_input($var) $preferences($var)
     }
 
@@ -275,7 +275,7 @@ proc showPreferences {} {
                     grid [checkbutton .preferencesForm.cb$row -variable preferences_input($var)] -row $row -column 20 -sticky w
                 }
                 font {
-                    grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [listFonts] -state readonly] -row $row -column 20 -sticky w
+                    grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
                     bind .preferencesForm.font <<ComboboxSelected>> {
                         defaultFont [.preferencesForm.font get]
                     }
@@ -900,6 +900,7 @@ proc setPreferenceParms {} {
     foreach var [array names preferences_input] {
 	set preferences($var) $preferences_input($var)
     }
+    defaultFont $preferences(defaultFont)
 }
 
 
@@ -1073,7 +1074,7 @@ proc exit {} {
                 puts $rc "set preferences($p) $preferences($p)"
             }
         }
-        minsky.defaultFont $preferences(defaultFont)
+        puts $rc {minsky.defaultFont $preferences(defaultFont)}
         puts $rc "set recentFiles \{$recentFiles\}"
         close $rc
     }

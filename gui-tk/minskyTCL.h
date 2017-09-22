@@ -236,14 +236,15 @@ namespace minsky
     }
 
     ecolab::Accessor<std::string> defaultFont{
-      [this]() {return _defaultFont;},
+      [this]() {return _defaultFont? _defaultFont.get(): "";},
       [this](const std::string& x) {
-        _defaultFont=x;
-        ecolab::Pango::defaultFamily=x.c_str();
+        _defaultFont.reset(new char[x.length()+1]);
+        strcpy(_defaultFont.get(),x.c_str());
+        ecolab::Pango::defaultFamily=_defaultFont.get();
         return x;
       }};
   private:
-    std::string _defaultFont;
+    std::unique_ptr<char[]> _defaultFont;
 
   };
 }
