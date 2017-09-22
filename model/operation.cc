@@ -22,6 +22,7 @@
 #include "str.h"
 
 #include <cairo_base.h>
+#include <pango.h>
 #include <ecolab_epilogue.h>
 
 #include <math.h>
@@ -522,6 +523,7 @@ namespace minsky
     cairo_move_to(cairo,-4,3);
     cairo_line_to(cairo,-1,-3);
     cairo_line_to(cairo,2,3);
+    cairo_stroke(cairo);
     cairo_restore(cairo);
   }
 
@@ -532,12 +534,13 @@ namespace minsky
     cairo_move_to(cairo,-4,-3);
     cairo_line_to(cairo,-1,3);
     cairo_line_to(cairo,2,-3);
+    cairo_stroke(cairo);
     cairo_restore(cairo);
   }
 
   template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
   {
-    cairo_move_to(cairo,-9,3);
+    cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"¬");
   }
 
@@ -640,15 +643,18 @@ namespace minsky
 
   template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
   {
-    cairo_set_font_size(cairo,8);
+    cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"|x|");
   }
   template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
   {
-    cairo_set_font_size(cairo,8);
-    cairo_move_to(cairo,-6,3);
-    cairo_show_text(cairo,"⌊x⌋");
+//    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("⌊x⌋");
+    pango.show();
   }
   template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
   {

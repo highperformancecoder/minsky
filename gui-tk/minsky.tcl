@@ -232,6 +232,7 @@ set preferencesVars {
         "+/-" sign } 
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
+    defaultFont        "Font" 1 font
 }
 
 foreach {var text default type} $preferencesVars {
@@ -272,6 +273,12 @@ proc showPreferences {} {
                 }
                 bool {
                     grid [checkbutton .preferencesForm.cb$row -variable preferences_input($var)] -row $row -column 20 -sticky w
+                }
+                font {
+                    grid [ttk::combobox .preferencesForm.cb$row -textvariable preferences_input($var) -values [listFonts]] -row $row -column 20 -sticky w
+                    bind .preferencesForm.cb$row <<ComboboxSelected>> "
+                        defaultFont \$preferences_input($var)
+                    "
                 }
                 default {
                     if {[llength $type] > 1} {

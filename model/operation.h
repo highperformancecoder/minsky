@@ -61,8 +61,6 @@ namespace minsky
     ///from a schema
     static OperationBase* create(Type type); 
     virtual Type type() const=0;
-//    virtual OperationBase* clone() const override=0;
-//    std::string classType() const override {return "OperationBase";}
 
     virtual ~OperationBase() {}
 

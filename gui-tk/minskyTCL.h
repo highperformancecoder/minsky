@@ -234,6 +234,17 @@ namespace minsky
       g_free(families);
       return r;
     }
+
+    ecolab::Accessor<std::string> defaultFont{
+      [this]() {return _defaultFont;},
+      [this](const std::string& x) {
+        _defaultFont=x;
+        ecolab::Pango::defaultFamily=x.c_str();
+        return x;
+      }};
+  private:
+    std::string _defaultFont;
+
   };
 }
 

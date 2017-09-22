@@ -11,6 +11,7 @@
 #include "eco_hashmap.h"
 #include "pack_stream.h"
 #include <cairoSurfaceImage.h>
+#include <pango.h>
 
 #include <ecolab_epilogue.h>
 #include <fstream>
@@ -78,6 +79,12 @@ int main(int argc, char* argv[])
 {
   Timer timer("main");
   //  atexit(printTimersAtEnd);
+
+#ifdef _WIN32
+  ecolab::Pango::defaultFamily="Arial Unicode MS";
+#else
+  ecolab::Pango::defaultFamily="Adobe Courier Regular";
+#endif
 
 #if defined(NDEBUG) && defined(_WIN32)
   ShowWindow(GetConsoleWindow(),SW_HIDE);
