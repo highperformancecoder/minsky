@@ -34,7 +34,7 @@ if {$tcl_platform(os)=="Darwin" && [file exists $minskyHome/../Resources/fontcon
 set canvasWidth 600
 set canvasHeight 800
 set backgroundColour lightGray
-set preferences(nRecentFiles) 10
+#set preferences(nRecentFiles) 10
 set recentFiles {}
 
 # read in .rc file, which differs on Windows and unix
@@ -232,7 +232,7 @@ set preferencesVars {
         "+/-" sign } 
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
-    defaultFont        "Font" 1 font
+    defaultFont        "Font" "" font
 }
 
 foreach {var text default type} $preferencesVars {
@@ -275,10 +275,10 @@ proc showPreferences {} {
                     grid [checkbutton .preferencesForm.cb$row -variable preferences_input($var)] -row $row -column 20 -sticky w
                 }
                 font {
-                    grid [ttk::combobox .preferencesForm.cb$row -textvariable preferences_input($var) -values [listFonts]] -row $row -column 20 -sticky w
-                    bind .preferencesForm.cb$row <<ComboboxSelected>> "
-                        defaultFont \$preferences_input($var)
-                    "
+                    grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [listFonts] -state readonly] -row $row -column 20 -sticky w
+                    bind .preferencesForm.font <<ComboboxSelected>> {
+                        defaultFont [.preferencesForm.font get]
+                    }
                 }
                 default {
                     if {[llength $type] > 1} {
@@ -1067,8 +1067,13 @@ proc exit {} {
         puts $rc "set canvasHeight [winfo height .wiring.canvas]"
         puts $rc "set backgroundColour $backgroundColour"
         foreach p [array names preferences] {
-            puts $rc "set preferences($p) $preferences($p)"
+            if {$p=="defaultFont"} {
+                puts $rc "set preferences($p) \"$preferences($p)\""
+            } else {
+                puts $rc "set preferences($p) $preferences($p)"
+            }
         }
+        minsky.defaultFont $preferences(defaultFont)
         puts $rc "set recentFiles \{$recentFiles\}"
         close $rc
     }
