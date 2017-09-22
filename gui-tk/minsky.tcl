@@ -34,8 +34,14 @@ if {$tcl_platform(os)=="Darwin" && [file exists $minskyHome/../Resources/fontcon
 set canvasWidth 600
 set canvasHeight 800
 set backgroundColour lightGray
-#set preferences(nRecentFiles) 10
+set preferences(nRecentFiles) 10
 set recentFiles {}
+
+# select Arial Unicode MS by default, as this gives decent Unicode support
+switch $tcl_platform(os) {
+    "Darwin" -
+    "windows" {minsky.defaultFont "Arial Unicode MS"}
+}
 
 # read in .rc file, which differs on Windows and unix
 set rcfile ""
@@ -223,7 +229,6 @@ menu .menubar.options
 # add rows to this table to add new preferences
 # valid types are "text", "bool" and "{ enum label1 val1 label2 val2 ... }"
 #   varName              Label                    DefaultVal    type
-        
 set preferencesVars {
     godleyDE             "Godley Table Double Entry"     1      bool
     godleyDisplay        "Godley Table Show Values"      1      bool
@@ -232,8 +237,8 @@ set preferencesVars {
         "+/-" sign } 
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
-    defaultFont        "Font" "" font
 }
+lappend preferencesVars defaultFont "Font" [defaultFont] font
 
 foreach {var text default type} $preferencesVars {
     # don't override value set in the rc file
@@ -278,6 +283,7 @@ proc showPreferences {} {
                     grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
                     bind .preferencesForm.font <<ComboboxSelected>> {
                         defaultFont [.preferencesForm.font get]
+                        canvas.requestRedraw
                     }
                 }
                 default {
