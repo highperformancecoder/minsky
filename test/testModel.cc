@@ -880,3 +880,17 @@ SUITE(Wire)
     }
 }
 
+SUITE(Minsky)
+{
+    TEST_FIXTURE(TestFixture,saveGroupAndInsert)
+    {
+      unsigned origNumItems=model->numItems();
+      unsigned origNumGroups=model->numGroups();
+      unsigned numItemsInGroup=group0->numItems();
+      saveGroupAsFile(*group0,"/tmp/testGroup.mky");
+      auto group1=insertGroupFromFile("/tmp/testGroup.mky");
+      CHECK_EQUAL(origNumGroups+1, model->numGroups());
+      CHECK_EQUAL(origNumItems+numItemsInGroup, model->numItems());
+      CHECK_EQUAL(numItemsInGroup, group1->numItems());
+    }
+}

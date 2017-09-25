@@ -934,4 +934,5 @@ SUITE(Minsky)
       g1->setCell(1,1,"");
       CHECK_EQUAL("0",g1->table.cell(1,1));
     }
+
 }
