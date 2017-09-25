@@ -1074,11 +1074,7 @@ proc exit {} {
         puts $rc "set canvasHeight [winfo height .wiring.canvas]"
         puts $rc "set backgroundColour $backgroundColour"
         foreach p [array names preferences] {
-            if {$p=="defaultFont"} {
-                puts $rc "set preferences($p) \"$preferences($p)\""
-            } else {
-                puts $rc "set preferences($p) $preferences($p)"
-            }
+            puts $rc "set preferences($p) \{$preferences($p)\}"
         }
         puts $rc {minsky.defaultFont $preferences(defaultFont)}
         puts $rc "set recentFiles \{$recentFiles\}"

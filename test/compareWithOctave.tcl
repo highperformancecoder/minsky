@@ -4,8 +4,6 @@ minsky.matlab $argv(2).m
 
 if [file exists extraOpts.tcl] {source extraOpts.tcl}
 
-#puts "order=[minsky.order] implicit=[minsky.implicit]"
-
 # run the simulation for a while, and output the data values
 set dat [open $argv(2).dat w]
 puts $dat "d=\["
