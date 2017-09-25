@@ -1070,83 +1070,31 @@ namespace minsky
     return r;
   }
 
-  void Minsky::renderCanvas(cairo_t* cairo) const
+  void Minsky::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
   {
-    cairo_set_line_width(cairo, 1);
-    // items
-    model->recursiveDo
-      (&GroupItems::items, [&](const Items&, Items::const_iterator i)
-       {
-         auto& it=**i;
-         if (it.visible())
-           {
-             cairo_save(cairo);
-             cairo_identity_matrix(cairo);
-             cairo_translate(cairo,it.x(), it.y());
-             it.draw(cairo);
-             cairo_restore(cairo);
-           }
-         return false;
-       });
-
-    // groups
-    model->recursiveDo
-      (&GroupItems::groups, [&](const Groups&, Groups::const_iterator i)
-       {
-         auto& it=**i;
-         if (it.visible())
-           {
-             cairo_save(cairo);
-             cairo_identity_matrix(cairo);
-             cairo_translate(cairo,it.x(), it.y());
-             it.draw(cairo);
-             cairo_restore(cairo);
-           }
-         return false;
-       });
-
-    // draw all wires - wires will go over the top of any icons. TODO
-    // introduce an ordering concept if needed
-    model->recursiveDo
-      (&GroupItems::wires, [&](const Wires&, Wires::const_iterator i)
-       {
-         (*i)->draw(cairo);
-         return false;
-       });
+    cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
+                                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
+    canvas.surface.swap(tmp);
+    canvas.redraw();
+    double left=canvas.surface->left(), top=canvas.surface->top();
+    canvas.surface->surface
+      (s(filename, canvas.surface->width()-left+20, canvas.surface->height()-top+20));
+    if (s==cairo_ps_surface_create)
+      cairo_ps_surface_set_eps(canvas.surface->surface(),true);
+    cairo_surface_set_device_offset(canvas.surface->surface(), -left, -top);
+    canvas.redraw();
+    canvas.surface.swap(tmp);
   }
+  
+  void Minsky::renderCanvasToPS(const char* filename)
+  {vectorRender(filename,cairo_ps_surface_create);}
 
-  void Minsky::renderCanvasToPS(const char* filename) const 
-  {
-    cairo::Surface rs(cairo_recording_surface_create
-                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-    renderCanvas(rs.cairo());
-    cairo::Surface s(cairo_ps_surface_create(filename, rs.width()-rs.left()+20, rs.height()-rs.top()+20));
-    cairo_ps_surface_set_eps(s.surface(),true);
-    cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
-    renderCanvas(s.cairo());
-  }
+  void Minsky::renderCanvasToPDF(const char* filename)
+  {vectorRender(filename,cairo_pdf_surface_create);}
 
-  void Minsky::renderCanvasToPDF(const char* filename) const 
-  {
-    cairo::Surface rs(cairo_recording_surface_create
-                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-    renderCanvas(rs.cairo());
-    cairo::Surface s(cairo_pdf_surface_create(filename, rs.width()-rs.left()+20, rs.height()-rs.top()+20));
-    cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
-    renderCanvas(s.cairo());
-  }
-
-  void Minsky::renderCanvasToSVG(const char* filename) const 
-  {
-    cairo::Surface rs(cairo_recording_surface_create
-                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-    renderCanvas(rs.cairo());
-    // extra space required on right hand edge for some reason
-    cairo::Surface s(cairo_svg_surface_create(filename, rs.width()-rs.left()+20, rs.height()-rs.top()+20));
-    cairo_surface_set_device_offset(s.surface(), -rs.left(), -rs.top());
-    renderCanvas(s.cairo());
-  }
-
+  void Minsky::renderCanvasToSVG(const char* filename)
+  {vectorRender(filename,cairo_svg_surface_create);}
+  
   void Minsky::setAllDEmode(bool mode) {
     model->recursiveDo(&GroupItems::items, [mode](Items&,Items::iterator i) {
         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))

@@ -323,15 +323,16 @@ namespace minsky
     /// returns true if any variable of name \a name has a wired input
     bool inputWired(const std::string&) const;
 
-    /// render canvas to a cairo context
-    void renderCanvas(cairo_t*) const;
+    /// common part of following vector rendering methods
+    void vectorRender(const char*,
+                      cairo_surface_t* (*)(const char *,double,double));
 
     /// render canvas to a postscript file
-    void renderCanvasToPS(const char* filename) const;
+    void renderCanvasToPS(const char* filename);
     /// render canvas to a PDF file
-    void renderCanvasToPDF(const char* filename) const;
+    void renderCanvasToPDF(const char* filename);
     /// render canvas to an SVG file
-    void renderCanvasToSVG(const char* filename) const;
+    void renderCanvasToSVG(const char* filename);
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
