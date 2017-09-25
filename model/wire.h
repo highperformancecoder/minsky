@@ -62,9 +62,6 @@ namespace minsky
     void moveToPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
     /// draw this item into a cairo context
     void draw(cairo_t* cairo) const;
-    float x() const {return 0;}
-    float y() const {return 0;}
-
     
     /// display coordinates 
     std::vector<float> _coords() const;

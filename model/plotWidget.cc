@@ -244,8 +244,6 @@ namespace minsky
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff
     // store previous min/max values to determine if plot scale changes
     scalePlot();
-    if (cairoSurface.get())
-      cairoSurface->requestRedraw();
     if (expandedPlot.get())
       {
         expandedPlot->clear();

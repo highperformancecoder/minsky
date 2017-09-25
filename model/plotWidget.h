@@ -60,8 +60,6 @@ namespace minsky
     double displayFontSize{3};
 
 
-    //std::vector<std::string> images;
-
     std::string title;
  
     int width{150}, height{150};
@@ -77,9 +75,7 @@ namespace minsky
     void draw(cairo_t* cairo) const override;
     /// surfaces to draw into for redraw. expandedPlot refers to
     /// separate popup plot window
-    Exclude<cairo::SurfacePtr> cairoSurface, expandedPlot;
-    void setCairoSurface(const ecolab::cairo::SurfacePtr& s) override 
-    {cairoSurface=s;}
+    Exclude<cairo::SurfacePtr> expandedPlot;
     void redraw(); // redraw plot using current data to all open windows
 
     /// add this as a display plot to its group

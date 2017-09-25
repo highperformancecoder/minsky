@@ -522,7 +522,6 @@ namespace minsky
       (&GroupItems::items, [&](const Items&, Items::const_iterator i)
        {
          auto& it=**i;
-         it.setCairoSurface(surface);
          if (it.visible() && updateRegion.intersects(it))
            {
              cairo_save(cairo);
@@ -556,7 +555,7 @@ namespace minsky
       (&GroupItems::wires, [&](const Wires&, Wires::const_iterator i)
        {
          const Wire& w=**i;
-         if (w.visible() && updateRegion.intersects(w))
+         if (w.visible()/* && updateRegion.intersects(w)*/)
            w.draw(cairo);
          return false;
        });

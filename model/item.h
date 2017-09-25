@@ -92,8 +92,6 @@ namespace minsky
     void flip() {rotation+=180;}
 
     virtual std::string classType() const {return "Item";}
-    /// sets the cairo surface, allow redraws to be requested
-    virtual void setCairoSurface(const ecolab::cairo::SurfacePtr&) {}
 
     ItemPortVector ports;
     float x() const; 
