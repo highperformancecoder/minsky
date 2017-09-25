@@ -1,6 +1,7 @@
 #!minsky
 
 # a crummy little utility for dumping the rendered equations as a gif file
+minsky.defaultFont Times
 
 proc afterMinskyStarted {} {
     uplevel #0 {

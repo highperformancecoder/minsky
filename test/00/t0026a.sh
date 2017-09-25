@@ -65,23 +65,25 @@ for {set i 0} {\$i<[model.wires.size]} {incr i} {
 assert "[llength [[set wire].coords]]==4" {llength wire.coords==4}
 
 # some code that prints the values used in the next wiring op
-#for {set item 0} {\$item<[model.items.size]} {incr item} {
-#  minsky.model.items.@elem \$item
-#  if {[minsky.model.items(\$item).classType]=="Operation:divide"} {
-#    minsky.model.items(\$item).ports.@elem 0
-#    puts "div: [minsky.model.items(\$item).ports(0).x] [minsky.model.items(\$item).ports(0).y]"
-#  }
-#  if {[minsky.model.items(\$item).classType]=="Variable:flow" && [minsky.model.items(\$item).name]=="emprate"} {
-#    minsky.model.items(\$item).ports.@elem 1
-#    puts "emprate: [minsky.model.items(\$item).ports(1).x] [minsky.model.items(\$item).ports(1).y]"
-#  }
-#}
+for {set item 0} {\$item<[model.items.size]} {incr item} {
+  minsky.model.items.@elem \$item
+  if {[minsky.model.items(\$item).classType]=="Operation:divide"} {
+    minsky.model.items(\$item).ports.@elem 0
+    set x0 [minsky.model.items(\$item).ports(0).x]
+    set y0 [minsky.model.items(\$item).ports(0).y]
+  }
+  if {[minsky.model.items(\$item).classType]=="Variable:flow" && [minsky.model.items(\$item).name]=="emprate"} {
+    minsky.model.items(\$item).ports.@elem 1
+    set x1 [minsky.model.items(\$item).ports(1).x]
+    set y1 [minsky.model.items(\$item).ports(1).y]
+  }
+}
 
 
 
 # add another wire
-canvas.mouseDown 363 43
-canvas.mouseUp 486 173
+canvas.mouseDown \$x0 \$y0
+canvas.mouseUp \$x1 \$y1
 assert {[model.numWires]==26} {}
 
 tcl_exit
