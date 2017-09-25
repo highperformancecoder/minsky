@@ -473,13 +473,13 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Port values [$item.portValues]" 
             .wiring.context add command -label "Edit" -command "editItem"             
-            if {[$item.name]=="data"} {
+            if {[$item.type]=="data"} {
                .wiring.context add command -label "Import Data" \
                     -command "importData" 
             }
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
-            if {[$item.name]=="integrate"} {
+            if {[$item.type]=="integrate"} {
                 .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
             .wiring.context add command -label "Select all instances" -command {
                 canvas.selectAllVariables
@@ -999,8 +999,8 @@ proc editItem {} {
     switch -regexp [$item.classType] {
         "Variable*" {editVar}
         "Operation*" {
-            set opType [minsky.canvas.item.name]
-                set opInput(title) [minsky.canvas.item.name]
+            set opType [minsky.canvas.item.type]
+                set opInput(title) [minsky.canvas.item.type]
                 set opInput(Rotation) [minsky.canvas.item.rotation]
                 deiconifyEditOperation
  		::tk::TabToWindow $opInput(initial_focus);

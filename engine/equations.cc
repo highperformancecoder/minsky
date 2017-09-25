@@ -70,10 +70,15 @@ namespace MathDAG
       NoArgument(const OperationPtr& s, unsigned a1, unsigned a2): 
         state(s), argNum1(a1), argNum2(a2) {}
       const char* what() const noexcept override {
+        string r="missing argument "+to_string(argNum1)+","+to_string(argNum2)+
+          " on operation ";
         if (state)
-          minsky::minsky().displayErrorItem(state->x(),state->y());
-        return ("missing argument "+str(argNum1)+","+str(argNum2)+
-                " on operation "+(state? state->name():string(""))).c_str();
+          {
+            minsky::minsky().displayErrorItem(state->x(),state->y());
+            r+=OperationType::typeName(state->type());
+          }
+        
+        return r.c_str();
       }
     };
 
