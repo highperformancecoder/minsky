@@ -42,9 +42,21 @@ for i in examples/*.mky; do
         echo "Fix LoanableFunds.mky!!"
         continue; fi
     echo "doing: $i"
-    $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
-    if test $? -ne 0; then fail; fi
-    octave --silent $here/test/compareWithOctave.m $i
-    if test $? -ne 0; then fail; fi
+
+    for order in 1 2 4; do
+        for implicit in 0 1; do 
+            #not available
+            if [ $order -eq 1 -a $implicit -eq 0 ]; then continue; fi
+            cat >extraOpts.tcl <<EOF
+minsky.implicit $implicit
+minsky.order $order
+EOF
+               
+            $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
+            if test $? -ne 0; then fail; fi
+            octave --silent $here/test/compareWithOctave.m $i
+            if test $? -ne 0; then fail; fi
+        done
+    done
 done
 pass
