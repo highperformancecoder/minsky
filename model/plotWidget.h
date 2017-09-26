@@ -19,6 +19,7 @@
 #ifndef PLOTWIDGET_H
 #define PLOTWIDGET_H
 #include <cairo_base.h>
+#include <cairoSurfaceImage.h>
 #include <TCL_obj_base.h>
 #include "classdesc_access.h"
 #include "plot.h"
@@ -32,7 +33,8 @@ namespace minsky
 {
   using namespace ecolab;
   // a container item for a plot widget
-  class PlotWidget: public ItemT<PlotWidget>, public ecolab::Plot
+  class PlotWidget: public ItemT<PlotWidget>,
+                    public ecolab::Plot, public ecolab::CairoSurface
   {
     CLASSDESC_ACCESS(PlotWidget);
     friend class SchemaHelper;
@@ -43,11 +45,11 @@ namespace minsky
       lastAccumulatedBlitTime{boost::posix_time::microsec_clock::local_time()};
     // overrides placement of ports etc when just data has changed
     bool justDataChanged=false;
-    classdesc::Exclude<Tk_Canvas> canvas; // canvas this widget will be displayed on
     friend struct PlotItem;
   public:
     using Item::x;
     using Item::y;
+    using ecolab::CairoSurface::surface;
 
     /// variable port attached to (if any)
     std::vector<VariableValue> yvars;
@@ -70,14 +72,12 @@ namespace minsky
     void updateIcon(double t) override {addPlotPt(t);}
     /// connect variable \a var to port \a port. 
     void connectVar(const VariableValue& var, unsigned port);
-    // draw canvas widget
-    void draw(ecolab::cairo::Surface&) override;
     void draw(cairo_t* cairo) const override;
-    /// surfaces to draw into for redraw. expandedPlot refers to
-    /// separate popup plot window
-    Exclude<cairo::SurfacePtr> expandedPlot;
     void redraw(); // redraw plot using current data to all open windows
-
+    void redraw(int x0, int y0, int width, int height) override
+    {if (surface.get()) {Plot::draw(surface->cairo(),width,height); surface->blit();}}
+    //void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    
     /// add this as a display plot to its group
     void makeDisplayPlot();
           
@@ -87,11 +87,6 @@ namespace minsky
     void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();}
     /// sets the plot scale and pen labels
     void scalePlot();
-
-    /// add an additional image surface to a PlotWidget
-    /// @param image - image name for new surface to be added
-    /// TODO - move to minskyTCL?
-    void addImage(const std::string& args);
  };
 
 }

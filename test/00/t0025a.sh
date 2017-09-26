@@ -53,7 +53,6 @@ doPlotOptions minsky.canvas.itemFocus
 
 canvas.getItemAt [minsky.canvas.itemFocus.x] [minsky.canvas.itemFocus.y] 
 plotDoubleClick [TCLItem]
-resizePlot [TCLItem] 100 100 2 2
 
 tcl_exit
 }

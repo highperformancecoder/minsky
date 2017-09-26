@@ -112,19 +112,6 @@ namespace minsky
     xvars.resize(numLines);
    }
 
-  void PlotWidget::draw(cairo::Surface& cairoSurface)
-  {
-    displayNTicks = min(10.0f, 3*zoomFactor);
-    displayFontSize = 9.0/displayNTicks;
-    SetTicksAndFontSize stf
-      (*this, true, displayNTicks, displayFontSize, false);
-    if (!justDataChanged) scalePlot(); // already scaled in redraw
-
-    cairoSurface.clear();
-    draw(cairoSurface.cairo());
-    justDataChanged=false; // justDataChanged is a single shot
-  }
-
   void PlotWidget::draw(cairo_t* cairo) const
   {
     double w=width*zoomFactor, h=height*zoomFactor;
@@ -244,12 +231,8 @@ namespace minsky
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff
     // store previous min/max values to determine if plot scale changes
     scalePlot();
-    if (expandedPlot.get())
-      {
-        expandedPlot->clear();
-        Plot::draw(*expandedPlot);
-        expandedPlot->blit();
-      }
+    if (surface.get())
+      surface->requestRedraw();
   }
 
   void PlotWidget::makeDisplayPlot() {
@@ -334,15 +317,5 @@ namespace minsky
         xvars.resize(2*numLines);
         xvars[pen-2*numLines]=var;
       }
-  }
-
-  void PlotWidget::addImage(const string& image) 
-  {
-    expandedPlot.reset
-      (new TkPhotoSurface(Tk_FindPhoto(interp(), image.c_str()), false));
-    cairo_surface_set_device_offset
-      (expandedPlot->surface(),
-       expandedPlot->width()/2,expandedPlot->height()/2);
-    redraw();
   }
 }

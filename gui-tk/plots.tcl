@@ -18,17 +18,6 @@
 
 .menubar.ops add command -label Plot -command "newPlot"
 
-#proc newPlotItem {id x y} {
-#    plot.get $id
-#    .old_wiring.canvas create plot $x $y -id $id -tags "plots plot$id"
-#    .old_wiring.canvas lower plot$id
-#    setM1Binding plot $id plot$id
-#    .old_wiring.canvas bind plot$id <Double-Button-1> "plotDoubleClick $id"
-#    .old_wiring.canvas bind plot$id <Enter> "itemEnterLeave plot $id plot$id 1"
-#    .old_wiring.canvas bind plot$id <Leave> "itemEnterLeave plot $id plot$id 0"
-#
-#}
-
 proc newPlot {} {
     # place this at the mouse if in canvas, otherwise at 0 0
 
@@ -180,38 +169,21 @@ proc doPlotOptions {plot} {
     grab .pltWindowOptions
 }
 
-# w and h are requested window size, dw, dh are difference between
-# image and window dimensions
-proc resizePlot {id w h dw dh} {
-    if {[winfo width .plot$id]!=[expr [.plot$id.image cget -width]+$dw] ||
-        [winfo height .plot$id]!=[expr [.plot$id.image cget -height]+$dh]} {
-        .plot$id.image configure -height [expr [winfo height .plot$id]-$dh] -width [expr [winfo width .plot$id]-$dw]
-        $id.addImage .plot$id.image
-    }
-}
-
 # double click handling for plot (creates new toplevel plot window)
 proc plotDoubleClick {plotId} {
     toplevel .plot$plotId
     wm title .plot$plotId [$plotId.title]
-    image create photo .plot$plotId.image -width 500 -height 500
-    label .plot$plotId.label -image .plot$plotId.image
 
     labelframe .plot$plotId.menubar -relief raised
     button .plot$plotId.menubar.options -text Options -command "doPlotOptions $plotId" -relief flat
     pack .plot$plotId.menubar.options -side left
 
     pack .plot$plotId.menubar  -side top -fill x
-    pack .plot$plotId.label
-    
-    $plotId.addImage .plot$plotId.image
 
-    # calculate the difference between the window and image sizes
-    update
-    set dw [expr [winfo width .plot$plotId]-[.plot$plotId.image cget -width]]
-    set dh [expr [winfo height .plot$plotId]-[.plot$plotId.image cget -height]]
-
-    bind .plot$plotId <Configure> "resizePlot $plotId  %w %h $dw $dh"
+    #.plot$plotId.image
+    image create cairoSurface .plot$plotId.image -surface $plotId -width 400 -height 400
+    label .plot$plotId.label -image .plot$plotId.image -width 400 -height 400
+    pack .plot$plotId.label -fill both -expand 1
 }
     
 namespace eval plot {
