@@ -31,50 +31,30 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
 minsky.load $here/test/findDefinition.mky
-
-# overrride tk_messageBox to capture presence in a variable
 set msgBox 0
-proc tk_messageBox args {
-  global msgBox
-  set msgBox 1
-}
-set item.x 0
-set item.y 0
-proc indicateCanvasItemInError {x y} {
-  global item.x item.y
-  set item.x \$x
-  set item.y \$y
-}
 
-foreach item [minsky.items.#keys] {
-  if {![catch var.get \$item]} {
-#we have a variable
-    set defId [findVariableDefinition \$item]
-    findDefinition \$item
-    if {\$defId==-1} {
-      assert "\$msgBox" "tk_messageBox not posted"
-    }
-    switch [var.name] {
-       case "undef" -
-       case "param1" -
-       case "3" {assert "\$defId==-1" "undefined should return -1"}
-       case "foo" {
-          var.get \$defId
-          assert {[var.inputWired]}
-          assert "\$item.x==[var.x]" "var coordx fail"
-          assert "\$item.y==[var.y]" "var coordy fail"
+for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
+  minsky.model.items.@elem \$i
+  set item minsky.model.items(\$i)
+  if {[regexp "Variable:" [\$item.classType]]||[\$item.classType]=="VarConstant"} {
+    minsky.canvas.getItemAt [\$item.x] [\$item.y]
+    set searchItem [minsky.TCLItem]
+    set findResult [minsky.canvas.findVariableDefinition]
+    set foundItem [minsky.TCLItem]
+    switch [\$item.name] {
+       "undef" {assert "\$findResult==0" undef}
+       "param1" -
+       "3" {assert "\"\$searchItem\"==\"\$foundItem\"" paramConst}
+       "foo" {
+          assert "[\$foundItem.inputWired]"
+          assert "[\$item.x]==[\$foundItem.x]" "var coordx fail"
+          assert "[\$item.y]==[\$foundItem.y]" "var coordy fail"
        }
-       case "int" {
-          item.get \$defId
-          assert {[item.classType]=="IntOp"}
-          assert "\$item.x==[var.x]" "int coordx fail"
-          assert "\$item.y==[var.y]" "int coordy fail"
+       "int" {
+          assert "\"[\$foundItem.classType]\"==\"IntOp\"" "IntOp"
        }
-       case "bar" {
-          item.get \$defId
-          assert {[item.classType]=="GodleyIcon"}
-          assert "\$item.x==[var.x]" "godley coordx fail"
-          assert "\$item.y==[var.y]" "godley coordy fail"
+       "bar" {
+          assert "\"[\$foundItem.classType]\"==\"GodleyIcon\"" "GodleyIcon"
        }
      }
   }

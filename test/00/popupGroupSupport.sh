@@ -32,16 +32,15 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 minsky.load $here/examples/GoodwinLinear02.mky
 # find the group item
-foreach item [minsky.items.#keys] {
-  minsky.item.get \$item
-  if {[minsky.item.classType]=="Group"} {
-    minsky.newGroupTCL foo \$item
-    minsky.group.get \$item
-    assert {[foo.items.size]==[minsky.group.items.size]}
-    foo.delete
-    assert {[llength [info commands foo.*]]==0}
-   }
-}
+minsky.model.groups.@elem 0
+minsky.getItemAt [minsky.model.groups(0).x] [minsky.model.groups(0).y]
+assert {[minsky.canvas.item.classType]=="Group"}
+minsky.openGroupInCanvas 
+assert {[minsky.model.groups(0).numItems]==[minsky.canvas.model.numItems]}
+assert {[minsky.model.groups(0).numWires]==[minsky.canvas.model.numWires]}
+minsky.openModelInCanvas 
+assert {[minsky.model.numItems]==[minsky.canvas.model.numItems]}
+assert {[minsky.model.numWires]==[minsky.canvas.model.numWires]}
 tcl_exit
 EOF
 

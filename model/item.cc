@@ -182,6 +182,9 @@ namespace minsky
     w=0.5*pango.width()+2*zoomFactor; 
     h=0.5*pango.height()+4*zoomFactor;
 
+//    cairo_arc(cairo,0,0,2,0,M_PI);
+//    cairo_stroke(cairo);
+    
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
 

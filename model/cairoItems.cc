@@ -463,6 +463,7 @@ void VariableBase::draw(cairo_t *cairo) const
 
   if (mouseFocus)
     {
+      cairo_rotate(cairo, -angle);
       drawPorts(cairo);
       displayTooltip(cairo);
     }

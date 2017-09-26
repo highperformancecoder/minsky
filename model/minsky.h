@@ -337,9 +337,6 @@ namespace minsky
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
     
-    /// reinitialises canvas to the group located in item
-    void openGroupInCanvas() {canvas.openGroupInCanvas(canvas.item);}
-    void openModelInCanvas() {canvas.openGroupInCanvas(model);}
   };
 
   /// global minsky object

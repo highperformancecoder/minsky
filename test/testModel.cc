@@ -715,11 +715,10 @@ SUITE(Canvas)
         group0->splitBoundaryCrossingWires();
         CHECK(!group0->inVariables.empty());
         CHECK(!group0->outVariables.empty());
-        canvas.item=group0;
-        openGroupInCanvas();
+        canvas.openGroupInCanvas(group0);
         CHECK(canvas.model==group0);
         CHECK(group0->displayContents());
-        openModelInCanvas();
+        canvas.openGroupInCanvas(model);
         CHECK(canvas.model==model);
       }
 

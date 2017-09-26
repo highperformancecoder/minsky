@@ -452,7 +452,7 @@ proc contextMenu {x y X Y} {
     .wiring.context add command -label Help -command "help [$item.classType]"
     # find out what type of item we're referring to
     switch -regex [$item.classType] {
-        "Variable*" {
+        "Variable*|VarConstant" {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Value [minsky.canvas.item.value]" 
             .wiring.context add command -label "Find definition" -command "findDefinition"
@@ -520,6 +520,7 @@ proc contextMenu {x y X Y} {
         "Item" {
             .wiring.context delete 0 end
             .wiring.context add command -label Edit -command "postNote item"
+            .wiring.context add command -label "Copy" -command "canvas.copyItem"
         }
         SwitchIcon {
             .wiring.context add command -label Description -command "postNote item"

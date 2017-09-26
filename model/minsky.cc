@@ -1078,7 +1078,7 @@ namespace minsky
     canvas.redraw();
     double left=canvas.surface->left(), top=canvas.surface->top();
     canvas.surface->surface
-      (s(filename, canvas.surface->width()-left+20, canvas.surface->height()-top+20));
+      (s(filename, canvas.surface->width(), canvas.surface->height()));
     if (s==cairo_ps_surface_create)
       cairo_ps_surface_set_eps(canvas.surface->surface(),true);
     cairo_surface_set_device_offset(canvas.surface->surface(), -left, -top);

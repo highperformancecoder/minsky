@@ -70,7 +70,7 @@ namespace minsky
     float height() const {return top-bottom;}
   };
 
-  class Item: public NoteBase
+  class Item: virtual public NoteBase
   {
   public:
     float m_x=0, m_y=0; ///< position in canvas, or within group
@@ -102,7 +102,11 @@ namespace minsky
     /// delete all attached wires
     virtual void deleteAttachedWires();
     
-    virtual Item* clone() const {return new Item(*this);}
+    virtual Item* clone() const {
+      auto r=new Item(*this);
+      r->group.reset();
+      return r;
+    }
 
     /// whether this item is visible on the canvas. 
     bool visible() const;
@@ -150,7 +154,7 @@ namespace minsky
 
   typedef std::shared_ptr<Item> ItemPtr;
   typedef std::vector<ItemPtr> Items;
-
+  
   /** curiously recursive template pattern for generating overrides */
   template <class T, class Base=Item>
   struct ItemT: virtual public Base
@@ -169,10 +173,10 @@ namespace minsky
       r->group.reset();
       return r;
     }
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override
+    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
   };
-  
+
 }
 
 #ifdef CLASSDESC

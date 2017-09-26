@@ -15,4 +15,8 @@ for j in 01 02 03 06 09 10 12 13 14 15 17 18 19 20 21 23 24 25 26 27 29 33 35 37
       echo "$i exited with nonzero code $status"
   fi
 done
+for i in test/00/[a-s,u-z]*.sh test/00/t[a-z]*.sh; do
+    echo $i
+    sh $i;
+done
 exit $t

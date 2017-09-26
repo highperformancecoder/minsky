@@ -179,7 +179,17 @@ namespace minsky
       return canvas.item.get();
     }
     
-//   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
+    /// reinitialises canvas to the group located in item
+    void openGroupInCanvas() {
+      canvas.openGroupInCanvas(canvas.item);
+      TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
+    }
+    void openModelInCanvas() {
+      canvas.openGroupInCanvas(model);
+      TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
+    }
+
+    //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {
 //      clearSelection();
 //      if (groupItems.count(gid))

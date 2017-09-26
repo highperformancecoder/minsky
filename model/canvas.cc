@@ -505,17 +505,17 @@ namespace minsky
   
   void Canvas::redraw()
   {
-    updateRegion.x0=-numeric_limits<float>::max();
-    updateRegion.y0=-numeric_limits<float>::max();
-    updateRegion.x1=numeric_limits<float>::max();
-    updateRegion.y1=numeric_limits<float>::max();
-    redrawUpdateRegion();
+    // nb using maxint here doesn't seem to work
+    redraw(-1e9,-1e9,2e9,2e9);
   }
 
   void Canvas::redrawUpdateRegion()
   {
     if (!surface.get()) return;
     auto cairo=surface->cairo();
+    cairo_save(cairo);
+    cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
+    cairo_clip(cairo);
     cairo_set_line_width(cairo, 1);
     // items
     model->recursiveDo
@@ -592,7 +592,8 @@ namespace minsky
         cairo_stroke(surface->cairo());
         cairo_restore(surface->cairo());
       }
-    
+
+    cairo_restore(cairo);
     surface->blit();
   }
 

@@ -185,7 +185,7 @@ namespace minsky
     std::string valueId() const override {return "constant:"+str(id);}
     std::string _name() const override {return init();}
     std::string _name(const std::string& nm) override {ensureValueExists(); return _name();}
-    VarConstant* clone() const override {return new VarConstant(*this);}
+    VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
     std::string classType() const override {return "VarConstant";}
   
   };
