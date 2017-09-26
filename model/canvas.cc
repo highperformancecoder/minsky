@@ -427,6 +427,7 @@ namespace minsky
     for (size_t i=0; i<v.size(); ++i)
       {
         auto ni=v[i]->clone();
+        ni->m_visible=true;
         group->addItem(ni);
         ni->rotation=0;
         ni->moveTo(maxWidth - widths[i],
