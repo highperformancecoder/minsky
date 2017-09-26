@@ -295,18 +295,18 @@ namespace minsky
             }
           addPt(pen, x, y);
         }
-    scalePlot();
-//    // throttle plot redraws
-//    static time_duration maxWait=milliseconds(1000);
-//    if ((microsec_clock::local_time()-(ptime&)lastAdd) >
-//        min((accumulatedBlitTime-(ptime&)lastAccumulatedBlitTime) * 2, maxWait))
-//      {
-//        ptime timerStart=microsec_clock::local_time();
-//        redraw();
-//        lastAccumulatedBlitTime = accumulatedBlitTime;
-//        lastAdd=microsec_clock::local_time();
-//        accumulatedBlitTime += lastAdd - timerStart;
-//      }
+    
+    // throttle plot redraws
+    static time_duration maxWait=milliseconds(1000);
+    if ((microsec_clock::local_time()-(ptime&)lastAdd) >
+        min((accumulatedBlitTime-(ptime&)lastAccumulatedBlitTime) * 2, maxWait))
+      {
+        ptime timerStart=microsec_clock::local_time();
+        redraw();
+        lastAccumulatedBlitTime = accumulatedBlitTime;
+        lastAdd=microsec_clock::local_time();
+        accumulatedBlitTime += lastAdd - timerStart;
+      }
   }
 
   void PlotWidget::connectVar(const VariableValue& var, unsigned port)
