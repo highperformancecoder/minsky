@@ -879,6 +879,24 @@ SUITE(Wire)
     }
 }
 
+SUITE(GodleyIcon)
+{
+  TEST_FIXTURE(GodleyIcon, select)
+    {
+      table.resize(3,2);
+      table.cell(2,1)="flow1";
+      table.cell(0,1)="stock1";
+      update();
+      CHECK_EQUAL(1,flowVars.size());
+      CHECK_EQUAL(1,stockVars.size());
+      for (auto& i: flowVars)
+        CHECK(i==select(i->x(),i->y()));
+      for (auto& i: stockVars)
+        CHECK(i==select(i->x(),i->y()));
+      CHECK(!select(x(),y()));
+    }
+}
+
 SUITE(Minsky)
 {
     TEST_FIXTURE(TestFixture,saveGroupAndInsert)
