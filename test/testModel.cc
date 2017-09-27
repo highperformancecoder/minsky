@@ -895,6 +895,45 @@ SUITE(GodleyIcon)
         CHECK(i==select(i->x(),i->y()));
       CHECK(!select(x(),y()));
     }
+  
+  TEST_FIXTURE(TestFixture, update)
+    {
+      auto godley=new GodleyIcon;
+      model->addItem(godley);
+      auto& table=godley->table;
+      table.resize(3,3);
+      table.cell(2,1)="flow1";
+      table.cell(2,2)="flow2";
+      table.cell(0,1)="stock1";
+      table.cell(0,2)="stock2";
+      table.doubleEntryCompliant=true;
+      table._assetClass(1,GodleyAssetClass::asset);
+      table._assetClass(2,GodleyAssetClass::liability);
+
+      VariablePtr v(VariableType::stock,"stock1");
+      model->addItem(v);
+      v->init("x");
+      v=VariablePtr(VariableType::stock,"stock2");
+      model->addItem(v);
+      v->init("y");
+      godley->update();
+      CHECK(table.initialConditionRow(1));
+      CHECK_EQUAL("x",table.cell(1,1));
+      CHECK_EQUAL("-y",table.cell(1,2));
+
+      // now remove a column
+      table.deleteCol(3);
+      godley->update();
+      map<string,unsigned> varCount;
+      for (auto& i: model->items)
+        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+          varCount[v->name()]++;
+
+      CHECK_EQUAL(2,varCount["stock1"]);
+      CHECK_EQUAL(1,varCount["stock2"]);
+      CHECK_EQUAL(1,varCount["flow1"]);
+      CHECK_EQUAL(0,varCount["flow2"]);
+    }
 }
 
 SUITE(Minsky)

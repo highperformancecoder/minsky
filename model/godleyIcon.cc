@@ -120,16 +120,9 @@ namespace minsky
           vars.back()->zoomFactor=iconScale*zoomFactor;
         }
       // remove any previously existing variables
-      set<ItemPtr> ov(oldVars.begin(), oldVars.end());
-      if (!ov.empty())
-        minsky::minsky().model->recursiveDo
-          (&Group::items,
-           [&](Items& m, Items::iterator i) 
-           {
-             if (ov.count(*i))
-               m.erase(i);
-             return false;
-           });
+      if (auto g=group.lock())
+        for (auto& v: oldVars)
+          g->deleteItem(*v);
     }
 
   double GodleyIcon::schema1ZoomFactor() const
