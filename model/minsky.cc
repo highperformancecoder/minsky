@@ -1014,18 +1014,24 @@ namespace minsky
       throw error("variable %s doesn't exist",name.c_str());
     if (i->second.type()==type) return; // nothing to do!
 
-//    for (auto g: minsky().godleyItems)
-//      {
-//        if (type!=VariableType::flow)
-//          for (auto v: g.flowVars)
-//            if (v->valueId()==name)
-//              throw error("flow variables in Godley tables cannot be converted to a different type");
-//        if (type!=VariableType::stock)
-//          for (auto v: g.stockVars)
-//            if (v->valueId()==name)
-//              throw error("stock variables in Godley tables cannot be converted to a different type");
-//      }
-
+    model->recursiveDo
+      (&GroupItems::items,
+       [&](const Items&,Items::const_iterator i)
+       {
+         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+           {
+             if (type!=VariableType::flow)
+               for (auto v: g->flowVars)
+                 if (v->valueId()==name)
+                   throw error("flow variables in Godley tables cannot be converted to a different type");
+             if (type!=VariableType::stock)
+               for (auto v: g->stockVars)
+                 if (v->valueId()==name)
+                   throw error("stock variables in Godley tables cannot be converted to a different type");
+           }
+         return false;
+       });
+                       
     if (inputWired(name)) 
       throw error("cannot convert a variable whose input is wired");
 
