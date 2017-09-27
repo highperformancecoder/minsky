@@ -1,0 +1,8 @@
+"Flows V / Stock Variables ->","Vault","Loans","Firms","Safe"
+Initial Conditions,"99","","",""
+ Lend from Vault,"-Loan","","Loan",""
+ Record Loan,"","Loan","",""
+ Charge Interest,"","IntLoan","",""
+ Pay Interest,"","","-IntLoan","IntLoan"
+ Record Interest Payment,"","-IntLoan","",""
+ Pay Interest,"","","FirmInt","-FirmInt"
