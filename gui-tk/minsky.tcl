@@ -513,7 +513,6 @@ source $minskyHome/godley.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
-source $minskyHome/switch.tcl
 
 # add the tabbed windows
 .tabs add .wiring -text "Wiring"

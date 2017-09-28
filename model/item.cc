@@ -149,6 +149,7 @@ namespace minsky
   void Item::drawPorts(cairo_t* cairo) const
   {
     cairo_save(cairo);
+    cairo_new_path(cairo);
     for (auto& p: ports)
       {
         cairo_new_sub_path(cairo);

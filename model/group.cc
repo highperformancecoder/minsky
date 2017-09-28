@@ -710,6 +710,10 @@ namespace minsky
       }
     cairo_restore(cairo);
 
+//    for (auto& v: inVariables)
+//      v->mouseFocus=mouseFocus;
+//    for (auto& v: outVariables)
+//      v->mouseFocus=mouseFocus;
     drawEdgeVariables(cairo);
 
 
@@ -752,7 +756,6 @@ namespace minsky
 
     if (mouseFocus)
       {
-        drawPorts(cairo);
         displayTooltip(cairo);
       }
 

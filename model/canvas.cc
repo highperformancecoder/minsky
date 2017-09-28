@@ -214,6 +214,16 @@ namespace minsky
                                }        
                              return false;
                            });
+        model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
+                           {
+                             bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
+                             if (mf!=(*i)->mouseFocus)
+                               {
+                                 (*i)->mouseFocus=mf;
+                                 requestRedraw();
+                               }        
+                             return false;
+                           });
         model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
                            {
                              bool mf=(*i)->near(x,y);
