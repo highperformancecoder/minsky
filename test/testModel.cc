@@ -950,3 +950,19 @@ SUITE(Minsky)
       CHECK_EQUAL(numItemsInGroup, group1->numItems());
     }
 }
+
+SUITE(Integrate)
+{
+  TEST_FIXTURE(TestFixture, description)
+    {
+      auto intop=new IntOp;
+      model->addItem(intop);
+      model->addItem(a);
+      model->addWire(new Wire(intop->ports[0],a->ports[1]));
+      intop->description("a");
+      // should cowardly refuse, and give a different name
+      CHECK_EQUAL(":a1",intop->description());
+      CHECK_EQUAL(1,intop->ports[0]->wires.size());
+      CHECK(intop->ports[0]->wires[0]->to()==a->ports[1]);
+    }
+}

@@ -193,8 +193,9 @@ namespace minsky
           desc=minsky().variableValues.newName(vid);
       }
 
+    ItemPtr oldIvar;
     if (intVar)
-      minsky().model->removeItem(*intVar);
+      oldIvar=minsky().model->removeItem(*intVar);
 
     intVar.reset(new Variable<VariableType::integral>(desc));
     intVar->m_visible=false; // we're managing our own display
@@ -225,16 +226,6 @@ namespace minsky
       default: return operationFactory.create(type);
       }
   }
-
-  ecolab::array<int> Operations::visibleOperations() const
-  {
-    ecolab::array<int> ret;
-    for (const_iterator i=begin(); i!=end(); ++i)
-      if ((*i)->visible())
-        ret<<=i->id();
-    return ret;
-  }
-
 
   bool IntOp::toggleCoupled()
   {

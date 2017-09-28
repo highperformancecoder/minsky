@@ -220,13 +220,6 @@ namespace minsky
       PtrBase(std::dynamic_pointer_cast<OperationBase>(x)) {}
   };
 
-
-
-  struct Operations: public TrackedIntrusiveMap<int, OperationPtr>
-  {
-    ecolab::array<int> visibleOperations() const;
-  };
-
 }
 
   // for TCL interfacing
