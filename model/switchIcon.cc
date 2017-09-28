@@ -92,7 +92,7 @@ namespace minsky
     // add 8 pt margin to allow for ports
     cairo_rectangle(cairo,-0.5*width-8,-0.5*width-8,width+16,width+8);
     cairo_clip(cairo);
-   
+     if (selected) drawSelected(cairo);
   }
 
 
