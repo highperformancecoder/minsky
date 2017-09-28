@@ -964,5 +964,9 @@ SUITE(Integrate)
       CHECK_EQUAL(":a1",intop->description());
       CHECK_EQUAL(1,intop->ports[0]->wires.size());
       CHECK(intop->ports[0]->wires[0]->to()==a->ports[1]);
+      auto intop2=new IntOp;
+      model->addItem(intop2);
+      intop2->description(intop->description());
+      CHECK(intop2->description()!=intop->description());
     }
 }

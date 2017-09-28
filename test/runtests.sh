@@ -18,5 +18,9 @@ done
 for i in test/00/[a-s,u-z]*.sh test/00/t[a-z]*.sh; do
     echo $i
     sh $i;
+    if [ $status -ne 0 ]; then
+        let $[t++]
+        echo "$i exited with nonzero code $status"
+    fi
 done
 exit $t
