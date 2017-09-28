@@ -172,11 +172,6 @@ namespace minsky
       return ports.size()>0 && intVar->ports.size()>0 && ports[0]==intVar->ports[0];
     }
 
-    void setZoomOnAttachedVariable() {
-      assert(intVar);
-      intVar->setZoom(zoomFactor);
-    }
-
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
   };
