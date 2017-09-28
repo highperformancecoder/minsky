@@ -67,15 +67,6 @@ namespace minsky
     /// visual representation of operation on the canvas
     virtual void iconDraw(cairo_t *) const=0;
 
-    /// return the symbolic name of this operation's type
-    //string name() const {return typeName(type());}
-    /// return the symbolic name of \a type
-    //    static string opName(int i) {return typeName(i);}
-
-    /// returns true if from matches the out port, and to matches one of
-    /// the in ports
-    bool selfWire(const shared_ptr<Port>& from, const shared_ptr<Port>& to) const;
-
     /// returns a list of values the ports currently have
     string portValues() const;
 

@@ -210,15 +210,6 @@ namespace minsky
       g->addItem(intVar);
   }
 
-  bool OperationBase::selfWire(const shared_ptr<Port>& from, const shared_ptr<Port>& to) const
-  {
-    bool r=false;
-    if (numPorts()>1 && from==ports[0])
-      for (size_t i=1; !r && i<numPorts(); ++i) 
-        r|=to==ports[i];
-    return r;
-  }
-
   namespace
   {
     OperationFactory<OperationBase, Operation> operationFactory;
