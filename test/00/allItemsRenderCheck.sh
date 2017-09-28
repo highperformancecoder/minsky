@@ -30,6 +30,8 @@ trap "fail" 1 2 3 15
 
 cat >input.tcl <<EOF
 minsky.defaultFont Courier
+minsky.setGodleyIconResource $here/gui-tk/icons/bank.svg
+minsky.setGroupIconResource $here/gui-tk/icons/group.svg
 minsky.load $here/test/allItems.mky
 minsky.renderCanvasToSVG allItemsBare.svg
 

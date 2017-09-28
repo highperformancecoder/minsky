@@ -444,6 +444,16 @@ proc findDefinition {} {
         tk_messageBox -message "Definition not found"
     }
 }
+
+# increment switch cases by delta
+proc incrCase {delta} {
+    set item minsky.canvas.item
+    $item.setNumCases [expr [$item.numCases]+$delta]
+    canvas.requestRedraw
+}
+
+
+
 #  
 # context menu
 proc contextMenu {x y X Y} {

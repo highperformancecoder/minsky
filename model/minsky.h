@@ -324,7 +324,7 @@ namespace minsky
     bool inputWired(const std::string&) const;
 
     /// common part of following vector rendering methods
-    void vectorRender(const char*,
+    cairo::SurfacePtr vectorRender(const char*,
                       cairo_surface_t* (*)(const char *,double,double));
 
     /// render canvas to a postscript file
@@ -333,6 +333,8 @@ namespace minsky
     void renderCanvasToPDF(const char* filename);
     /// render canvas to an SVG file
     void renderCanvasToSVG(const char* filename);
+    /// render canvas to a PNG image file
+    void renderCanvasToPNG(const char* filename);
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);

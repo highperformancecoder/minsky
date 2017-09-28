@@ -1076,7 +1076,7 @@ namespace minsky
     return r;
   }
 
-  void Minsky::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
+  cairo::SurfacePtr Minsky::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
   {
     cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
                                       (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
@@ -1090,6 +1090,7 @@ namespace minsky
     cairo_surface_set_device_offset(canvas.surface->surface(), -left, -top);
     canvas.redraw();
     canvas.surface.swap(tmp);
+    return tmp;
   }
   
   void Minsky::renderCanvasToPS(const char* filename)
@@ -1100,7 +1101,19 @@ namespace minsky
 
   void Minsky::renderCanvasToSVG(const char* filename)
   {vectorRender(filename,cairo_svg_surface_create);}
+
+  namespace
+  {
+    cairo_surface_t* pngDummy(const char*,double width,double height)
+    {return cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);}
+  }
   
+  void Minsky::renderCanvasToPNG(const char* filename)
+  {
+    auto tmp=vectorRender(filename,pngDummy);
+    cairo_surface_write_to_png(tmp->surface(),filename);
+  }
+
   void Minsky::setAllDEmode(bool mode) {
     model->recursiveDo(&GroupItems::items, [mode](Items&,Items::iterator i) {
         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
