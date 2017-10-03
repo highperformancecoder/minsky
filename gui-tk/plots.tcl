@@ -160,7 +160,7 @@ proc doPlotOptions {plot} {
     .pltWindowOptions.buttonBar.ok configure -command "setPlotOptions $plot"
     global plotWindowOptions_legend
     if [$plot.legend] {
-        switch [plot.legendSide] {
+        switch [$plot.legendSide] {
             0 {set plotWindowOptions_legend left}
             1 {set plotWindowOptions_legend right}
         }
@@ -231,15 +231,15 @@ namespace eval plot {
         global plotWindowOptions_legend
         switch $plotWindowOptions_legend {
             none {
-                plot.legend 0
+                minsky.canvas.item.legend 0
             }
             left {
-                plot.legend 1
-                plot.legendSide left
+                minsky.canvas.item.legend 1
+                minsky.canvas.item.legendSide left
             }
             right {
-                plot.legend 1
-                plot.legendSide right
+                minsky.canvas.item.legend 1
+                minsky.canvas.item.legendSide right
             }
         }
     }
