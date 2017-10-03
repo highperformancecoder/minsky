@@ -203,6 +203,7 @@ namespace minsky
         displayTooltip(cairo);
       }
     if (selected) drawSelected(cairo);
+    justDataChanged=false;
   }
   
   void PlotWidget::scalePlot()

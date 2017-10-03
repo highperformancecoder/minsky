@@ -43,8 +43,10 @@ namespace minsky
     classdesc::Exclude<boost::posix_time::ptime> 
       lastAdd{boost::posix_time::microsec_clock::local_time()},
       lastAccumulatedBlitTime{boost::posix_time::microsec_clock::local_time()};
-    // overrides placement of ports etc when just data has changed
-    bool justDataChanged=false;
+    // overrides placement of ports etc when just data has
+    // changed. Single shot flag that is reset after the next call to
+    // draw(), which is const, so this attribute needs to be mutable.
+    mutable bool justDataChanged=false;
     friend struct PlotItem;
   public:
     using Item::x;
