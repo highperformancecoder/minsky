@@ -78,8 +78,7 @@ namespace minsky
     void redraw(); // redraw plot using current data to all open windows
     void redraw(int x0, int y0, int width, int height) override
     {if (surface.get()) {Plot::draw(surface->cairo(),width,height); surface->blit();}}
-    //void requestRedraw() {if (surface.get()) surface->requestRedraw();}
-    
+   
     /// add this as a display plot to its group
     void makeDisplayPlot();
           
