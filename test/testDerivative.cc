@@ -157,20 +157,64 @@ SUITE(Derivative)
   
   TEST_FIXTURE(BinOpFixture,comparisonOps)
   {
-//    model->addWire(new Wire(t->ports[0],minus->ports[1]));
-//    model->addWire(new Wire(tsq->ports[0],minus->ports[2]));
-//    model->addWire(new Wire(minus->ports[0], deriv->ports[1]));
-//    model->addWire(new Wire(minus->ports[0], f->ports[1]));
-//
-//    reset(); 
-//    nSteps=1;step(); // ensure f is evaluated
-//    // set the constant of integration to the value of f at t=0
-//    double f0=f->value();
-//    integ.intVar->value(f0);
-//    nSteps=800; step();
-//    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-//    CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+    auto ops={OperationType::lt,OperationType::le,OperationType::eq};
+    for (auto op: ops)
+      {
+        OperationPtr opp{op};
+        model->addItem(opp);
+        
+        model->addWire(new Wire(t->ports[0],opp->ports[1]));
+        model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
+        model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
+        model->addWire(new Wire(opp->ports[0], f->ports[1]));
+
+        CHECK_THROW(reset(),error);
+        model->deleteItem(*opp);
+      }
+
+    /// boolean operations have zero derivative
+    auto ops2={OperationType::and_,OperationType::or_,OperationType::not_};
+    
+    for (auto op: ops2)
+      {
+        OperationPtr opp{op};
+        model->addItem(opp);
+       
+        model->addWire(new Wire(t->ports[0],opp->ports[1]));
+        if (opp->ports.size()>2)
+          model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
+        model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
+        model->addWire(new Wire(opp->ports[0], f->ports[1]));
    
+        reset(); 
+        nSteps=1;step(); // ensure f is evaluated
+        CHECK_EQUAL(0, deriv->ports[0]->value());
+        model->deleteItem(*opp);
+      }
+
+    auto ops3={OperationType::min,OperationType::max};
+    for (auto op: ops3)
+      {
+        OperationPtr opp{op};
+        model->addItem(opp);
+       
+        model->addWire(new Wire(t->ports[0],opp->ports[1]));
+        model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
+        model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
+        model->addWire(new Wire(opp->ports[0], f->ports[1]));
+
+        save(OperationType::typeName(op)+".mky");
+        reset(); 
+        nSteps=1;step(); // ensure f is evaluated
+        // set the constant of integration to the value of f at t=0
+        double f0=f->value();
+        integ.intVar->value(f0);
+        nSteps=800; step();
+        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+        CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+        model->deleteItem(*opp);
+      }
+
   }
 
   TEST_FIXTURE(BinOpFixture,singleArgFuncs)
