@@ -595,7 +595,7 @@ namespace minsky
         cairo_stroke(cairo);
       }
 
-    if (itemIndicator) // draw a red circle to indicate an error or other marker
+    if (itemIndicator && item) // draw a red circle to indicate an error or other marker
       {
         cairo_save(surface->cairo());
         cairo_set_source_rgb(surface->cairo(),1,0,0);

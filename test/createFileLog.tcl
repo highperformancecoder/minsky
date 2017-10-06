@@ -8,12 +8,6 @@ source $minskyHome/library/init.tcl
 use_namespace minsky
 minsky.load $argv(2)
 
-# prepare element accessors for later use
-foreach name [variableValues.#keys] {
-    variableValues.@elem $name
-}
-use_namespace minsky
-
 set nsteps 10
 puts "nsteps 10"
 for {set step 0} {$step<$nsteps} {incr step} {
@@ -25,7 +19,7 @@ for {set step 0} {$step<$nsteps} {incr step} {
 
     foreach name [variableValues.#keys] {
         if [regexp "^constant:" $name] continue
-        value.get "$name"
+        getValue "$name"
         puts -nonewline "{$name} [value.value] "
     }
     puts ""

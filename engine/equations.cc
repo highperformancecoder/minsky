@@ -269,23 +269,8 @@ namespace MathDAG
   {
     if (result.idx()<0)
       {
-        if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-          {
-            if (VariablePtr iv=i->intVar)
-              {
-                assert(VariableValue::isValueId(iv->valueId()));
-                assert(minsky::minsky().variableValues.count(iv->valueId()));
-                result=minsky::minsky().variableValues[iv->valueId()];
-                // integral copies need to be done now, in case of cycles
-                if (r.isFlowVar() && r.idx()>=0)
-                  ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-                return result; // integration handled as part of RK algorithm
-              }
-            else
-              throw error("no integration variable for %s",i->description().c_str());
-
-          }
-        else if (r.isFlowVar() && r.idx()>=0)
+        assert(!dynamic_cast<IntOp*>(state.get()));
+        if (r.isFlowVar() && r.idx()>=0)
           result=r;
         else 
           result.allocValue();
@@ -540,8 +525,8 @@ namespace MathDAG
       else
         o<<"min("<<arguments[0][0]->matlab()<<",0)";
     else
-      if (arguments.size()>1 && !arguments[0].empty() && arguments[0][0])
-        o<<"min(0,"<<arguments[0][0]->matlab()<<")";
+      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+        o<<"min(0,"<<arguments[1][0]->matlab()<<")";
       else
         o<<"0";
     return o;
@@ -558,7 +543,7 @@ namespace MathDAG
         o<<"max("<<arguments[0][0]->matlab()<<",0)";
     else
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max(0,"<<arguments[0][0]->matlab()<<")";
+        o<<"max(0,"<<arguments[1][0]->matlab()<<")";
       else
         o<<"0";
     return o;
@@ -623,9 +608,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::integrate>::matlab(ostream& o) const
   {
-    if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      o << validMatlabIdentifier(i->description());
-    return o;
+    throw error("shouldn't be executed");
   }
         
   template <>
@@ -1294,8 +1277,6 @@ namespace MathDAG
         r->state=dynamic_pointer_cast<OperationBase>(minsky.model->findItem(op));
         assert(r->state);
         assert( r->state->type()!=OperationType::numOps);
-        if (const IntOp* i=dynamic_cast<const IntOp*>(&op))
-          r->name=i->description();
 
         r->arguments.resize(op.numPorts()-1);
         for (size_t i=1; i<op.ports.size(); ++i)

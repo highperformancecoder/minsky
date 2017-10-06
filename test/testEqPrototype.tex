@@ -12,8 +12,8 @@ c&=&\mathrm{}( t )\\
 d&=&\frac{ t }{1}\\
 \mathrm{Repay}&=&\frac{\mathrm{foo}+\tau_{{\mathrm{bar}}}}{\mathrm{Loans}+ t }\\
 \mathrm{catching}&=&\exp\left(\left(\mathrm{Loans}+ t -\left(\mathrm{foo}+\tau_{{\mathrm{bar}}}\right)\right)\times b\right)\\
-g&=&\left| t \right|\times \mathrm{frac}( t )\times \left\lfloor t \right\rfloor)\times \Theta\left(- t \right)\times \Theta\left( t \right)\times \Theta\left(\mathrm{Repay}- t \right)\times \Theta\left(- t \right)+\delta\left( t \right)\times \Theta\left(- t \right)+\delta\left( t \right)\times \Theta\left(\mathrm{Repay}- t \right)+\delta\left( t -\mathrm{Repay}\right)\\
-k&=&\Theta\left(\Theta\left( t \right)-0.5\right)\Theta\left(\Theta\left(- t \right)+\delta\left( t \right)-0.5\right)+0+0\\
+g&=&\left| t \right|\times \mathrm{frac}( t )\times \left\lfloor t \right\rfloor)\times \Theta\left(- t \right)\times \Theta\left( t \right)\times \Theta\left(\mathrm{Repay}- t \right)\times \Theta\left(- t \right)+\delta\left( t \right)\times \Theta\left( t \right)+\delta\left( t \right)\times \Theta\left(\mathrm{Repay}- t \right)+\delta\left( t -\mathrm{Repay}\right)\\
+k&=&\Theta\left(\Theta\left( t \right)-0.5\right)\Theta\left(\Theta\left( t \right)+\delta\left( t \right)-0.5\right)+0+0\\
 l&=&\left(1-\Theta(0.5-max\left(\Theta\left(\Theta\left(\mathrm{Repay}- t \right)+\delta\left( t -\mathrm{Repay}\right)-0.5\right),\Theta\left(\Theta\left( t \right)\right)\right)\right)ight)+\Theta\left(\Theta\left( t \right)-0.5\right)+\Theta\left(\Theta\left( t \right)-0.5\right)\\
 h&=&\delta\left( t \right)+\delta\left( t \right)+\delta\left(g- t \right)\\
 i&=&min\left(g, t \right)\\

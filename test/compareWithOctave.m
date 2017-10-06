@@ -15,7 +15,7 @@ t=d(:,1);
 xc=d(:,2:size(d,2));
 x=lsode(@f, x0, t);
 
-if (any(any(abs(x)>1e-30 & abs(x-xc) > 0.1*(abs(x)+abs(xc)) | abs(x)<=1e-30 & abs(xc)>1e-30)))
+if (any(any(abs(x)>1e-3 & abs(x-xc) > 0.1*(abs(x)+abs(xc)) | abs(x)<=1e-3 & abs(xc)>1e-3)))
   [i,j]=find(abs(x-xc) > 0.1*(abs(x)+abs(xc)));
   simulation_differs_at_t=t(unique(i))
   exit(1)
