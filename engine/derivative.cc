@@ -82,7 +82,7 @@ namespace MathDAG
     string name=differentiateName(expr.name);
     // ensure variable value exists, even if only temporary
     VariablePtr tmp(VariableType::tempFlow, name);
-    VariableDAGPtr r(makeDAG(tmp->valueId(),tmp->name(),tmp->type()));
+    VariableDAGPtr r(dynamic_pointer_cast<VariableDAG>(makeDAG(tmp->valueId(),tmp->name(),tmp->type())));
     if (expr.rhs)
       r->rhs=expr.rhs->derivative(*this);
     else if (expr.type==VariableType::integral || expr.type==VariableType::stock)
@@ -239,8 +239,9 @@ namespace MathDAG
       return zero;
     else if (expr.arguments[1].empty())
       {
-        Expr dx(expressionCache, expr.arguments[0][0]->derivative(*this));
-        return dx * expr.derivative(*this);
+        Expr x(expressionCache, expr.arguments[0][0]);
+        Expr dx(expressionCache, x->derivative(*this));
+        return dx * x;
       }
     else
       {

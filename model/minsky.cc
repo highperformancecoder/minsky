@@ -351,9 +351,6 @@ namespace minsky
            }
          return false;
        });
-
-    for (EvalOpVector::iterator e=equations.begin(); e!=equations.end(); ++e)
-      (*e)->reset();
   }
 
   std::set<string> Minsky::matchingTableColumns(GodleyTable& currTable, GodleyAssetClass::AssetClass ac)

@@ -39,12 +39,6 @@ namespace
 namespace minsky
 {
 
-  void EvalOpBase::reset()
-  {
-    if (Constant* c=dynamic_cast<Constant*>(state.get()))
-      ValueVector::flowVars[out]=c->value;
-  }
-
   void EvalOpBase::eval(double fv[], const double sv[])
   {
     switch (numArgs())
@@ -115,7 +109,7 @@ namespace minsky
   {return value;}
   template <>
   double EvalOp<OperationType::constant>::evaluate(double in1, double in2) const
-  {return dynamic_cast<Constant&>(*state).value;}
+  {return 0;}
   template <>
   double EvalOp<OperationType::constant>::d1(double x1, double x2) const
   {return 0;}

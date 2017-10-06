@@ -26,7 +26,7 @@ namespace minsky
 {
   struct OperationType
   {
-    enum Type {constant, 
+    enum Type {constant, // deprecated - left to support legacy schemas
                add, subtract, multiply, divide, // dual input port ops
                log, pow,
                lt, le, eq, min, max, 

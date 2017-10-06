@@ -150,9 +150,9 @@ SUITE(Minsky)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
             var[v->name()]=v;
 
-      auto op4=model->addItem(OperationBase::create(OperationType::constant));
+      auto op4=model->addItem(new VarConstant);
       CHECK_EQUAL(1, op4->ports.size());
-      auto op5=model->addItem(OperationBase::create(OperationType::constant));
+      auto op5=model->addItem(new VarConstant);
       CHECK_EQUAL(1, op5->ports.size());
       auto op6=model->addItem(OperationBase::create(OperationType::add));
       CHECK_EQUAL(3, op6->ports.size());
@@ -170,12 +170,12 @@ SUITE(Minsky)
           CHECK(w->to()->input());
         }
  
-      CHECK(dynamic_cast<Constant*>(op4.get()));
-      if (Constant* c=dynamic_cast<Constant*>(op4.get()))
-        c->value=0.1;
-      CHECK(dynamic_cast<Constant*>(op5.get()));
-      if (Constant* c=dynamic_cast<Constant*>(op5.get()))
-        c->value=0.2;
+      CHECK(dynamic_cast<VarConstant*>(op4.get()));
+      if (VarConstant* c=dynamic_cast<VarConstant*>(op4.get()))
+        c->init("0.1");
+      CHECK(dynamic_cast<VarConstant*>(op5.get()));
+      if (VarConstant* c=dynamic_cast<VarConstant*>(op5.get()))
+        c->init("0.2");
 
       constructEquations();
       step();
@@ -304,7 +304,7 @@ SUITE(Minsky)
   TEST_FIXTURE(TestFixture,integrals)
     {
       // First, integrate a constant
-      auto op1=model->addItem(OperationPtr(OperationBase::constant));
+      auto op1=model->addItem(new VarConstant);
       auto op2=model->addItem(OperationPtr(OperationBase::integrate));
       
       IntOp* intOp=dynamic_cast<IntOp*>(op2.get());
@@ -312,11 +312,11 @@ SUITE(Minsky)
       intOp->description("output");
       model->addWire(*op1,*op2,1,vector<float>());
 
-      //variables.makeConsistent();
       constructEquations();
       CHECK(variableValues.validEntries());
-      double& value = dynamic_cast<Constant*>(op1.get())->value;
-      value=10;
+      
+      double value = 10;
+      dynamic_cast<VariableBase*>(op1.get())->init(to_string(value));
       nSteps=1;
       step();
       // for now, constructEquations doesn work
@@ -547,6 +547,7 @@ SUITE(Minsky)
     using namespace MathDAG;
     for (int o=0; o<OperationType::numOps; ++o)
       {
+        if (OperationType::Type(o)==OperationType::constant) continue; // constant deprecated
         OperationType::Type op=OperationType::Type(o);
         OperationPtr po(op);
         CHECK_EQUAL(OperationType::typeName(op), OperationType::typeName(po->type()));

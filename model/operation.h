@@ -110,24 +110,6 @@ namespace minsky
     string description;
   };
 
-  class Constant: public Slider, 
-                  public ItemT<Constant, Operation<minsky::OperationType::constant>>
-  {
-    typedef Operation<OperationType::constant> Super;
-  public:
-    double value=0; ///< constant value
-
-    string description() const {return str(value);}
-
-    /// ensure slider does not override value
-    void adjustSliderBounds();
-    /// initialises sliderbounds based on current value, if not set otherwise
-    void initOpSliderBounds();
-
-    void pack(pack_t& x, const string& d) const override;
-    void unpack(unpack_t& x, const string& d) override;
-  };
-
   class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>
   {
     typedef Operation<OperationType::integrate> Super;

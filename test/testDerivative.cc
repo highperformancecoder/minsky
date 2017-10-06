@@ -28,12 +28,12 @@ using MathDAG::differentiateName;
 struct BinOpFixture: public Minsky
 {
   LocalMinsky lm{*this};
-  OperationPtr offs{OperationType::constant};
+  VariablePtr offs{VariableType::constant};
   OperationPtr t{OperationType::time};
   OperationPtr plus{OperationType::add};
   OperationPtr tsq{OperationType::multiply};
-  OperationPtr minus{OperationType::subtract};
-  OperationPtr pow{OperationType::pow};
+  //  OperationPtr minus{OperationType::subtract};
+  //  OperationPtr pow{OperationType::pow};
   OperationPtr deriv{OperationType::differentiate};
   VariablePtr f; // to receive results of function before differentiation
   IntOp& integ;
@@ -42,13 +42,13 @@ struct BinOpFixture: public Minsky
     integ(dynamic_cast<IntOp&>
           (*(model->addItem(OperationPtr(OperationType::integrate)))))
   {
-    dynamic_cast<Constant&>(*offs).value=0.1;
+    dynamic_cast<VarConstant&>(*offs).init("0.1");
     model->addItem(offs);
     model->addItem(t);
     model->addItem(plus);
     model->addItem(tsq);
-    model->addItem(minus);
-    model->addItem(pow);
+    //    model->addItem(minus);
+    //model->addItem(pow);
     model->addItem(deriv);
     model->addItem(f);
     model->addWire(new Wire(t->ports[0],plus->ports[1]));
@@ -84,6 +84,8 @@ SUITE(Derivative)
 
   TEST_FIXTURE(BinOpFixture,subtract)
   {
+    OperationPtr minus{OperationType::subtract};
+    model->addItem(minus);
     model->addWire(new Wire(t->ports[0],minus->ports[1]));
     model->addWire(new Wire(tsq->ports[0],minus->ports[2]));
     model->addWire(new Wire(minus->ports[0], deriv->ports[1]));
@@ -102,10 +104,15 @@ SUITE(Derivative)
 
   TEST_FIXTURE(BinOpFixture,pow)
   {
+    OperationPtr pow{OperationType::pow};
+    model->addItem(pow);
     model->addWire(new Wire(plus->ports[0],pow->ports[1]));
-    model->addWire(new Wire(tsq->ports[0],pow->ports[2]));
     model->addWire(new Wire(pow->ports[0], deriv->ports[1]));
     model->addWire(new Wire(pow->ports[0], f->ports[1]));
+
+    // firstly check when base port is unwired
+    CHECK_THROW(reset(),error);
+    model->addWire(new Wire(tsq->ports[0],pow->ports[2]));
 
     reset(); 
     nSteps=1;step(); // ensure f is evaluated
@@ -128,10 +135,15 @@ SUITE(Derivative)
 
     model->addWire(new Wire(plus->ports[0],exp->ports[1]));
     model->addWire(new Wire(exp->ports[0],log->ports[1]));
-    model->addWire(new Wire(tsq->ports[0],log->ports[2]));
     model->addWire(new Wire(log->ports[0], deriv->ports[1]));
     model->addWire(new Wire(log->ports[0], f->ports[1]));
 
+    // firstly check when base port is unwired 
+    CHECK_THROW(reset(),error);
+    
+    model->addWire(new Wire(tsq->ports[0],log->ports[2]));
+
+    
     reset(); 
     nSteps=1;step(); // ensure f is evaluated
     // set the constant of integration to the value of f at t=0
@@ -143,6 +155,24 @@ SUITE(Derivative)
    
   }
   
+  TEST_FIXTURE(BinOpFixture,comparisonOps)
+  {
+//    model->addWire(new Wire(t->ports[0],minus->ports[1]));
+//    model->addWire(new Wire(tsq->ports[0],minus->ports[2]));
+//    model->addWire(new Wire(minus->ports[0], deriv->ports[1]));
+//    model->addWire(new Wire(minus->ports[0], f->ports[1]));
+//
+//    reset(); 
+//    nSteps=1;step(); // ensure f is evaluated
+//    // set the constant of integration to the value of f at t=0
+//    double f0=f->value();
+//    integ.intVar->value(f0);
+//    nSteps=800; step();
+//    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+//    CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+   
+  }
+
   TEST_FIXTURE(BinOpFixture,singleArgFuncs)
     {
       // test functions

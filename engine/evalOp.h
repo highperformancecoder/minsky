@@ -72,8 +72,6 @@ namespace minsky
     (Type op=numOps, int out=0, int in1=0, int in2=0, 
      bool flow1=true, bool flow2=true);
 
-    /// reset state to initial values
-    void reset();
     /// number of arguments to this operation
     virtual int numArgs() const =0;
     /// evaluate expression on sv and current value of fv, storing result

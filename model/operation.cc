@@ -222,7 +222,7 @@ namespace minsky
       {
       case integrate: return new IntOp;
       case data: return new DataOp;
-      case constant: return new Constant;
+      case constant: throw error("Constant deprecated");
       default: return operationFactory.create(type);
       }
   }
@@ -277,33 +277,6 @@ namespace minsky
     if (ports.size()>2)
       r+=" [in2]="+ str(ports[2]->value());
     return r;
-  }
-
-  void Constant::adjustSliderBounds()
-  {
-    if (sliderMax<value) sliderMax=value;
-    if (sliderMin>value) sliderMin=value;
-  }
-
-  void Constant::initOpSliderBounds()
-  {
-    if (!sliderBoundsSet) 
-      {
-        if (value==0)
-          {
-            sliderMin=-1;
-            sliderMax=1;
-            sliderStep=0.1;
-          }
-        else
-          {
-            sliderMin=-value*10;
-            sliderMax=value*10;
-            sliderStep=std::abs(0.1*value);
-          }
-        sliderStepRel=false;
-        sliderBoundsSet=true;
-      }
   }
 
   void DataOp::readData(const string& fileName)
@@ -679,12 +652,6 @@ namespace minsky
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}
 
-  void Constant::pack(pack_t& x, const string& d) const
-  {::pack(x,d,*this);}
-      
-  void Constant::unpack(unpack_t& x, const string& d)
-  {::unpack(x,d,*this);}
- 
   void IntOp::pack(pack_t& x, const string& d) const
   {::pack(x,d,*this);}
       

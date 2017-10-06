@@ -318,10 +318,8 @@ namespace MathDAG
             cumulate(ev, result, argIdx, divide, multiply, 1);
             break;
           case constant:
-            ev.push_back(EvalOpPtr(type(), result));
-            dynamic_cast<ConstantEvalOp&>(*ev.back()).value=
-              dynamic_cast<Constant&>(*state).value;
-            break;
+            if (state) minsky::minsky().displayErrorItem(*state);
+            throw error("Constant deprecated");
           default:
             // sanity check that the correct number of arguments is provided 
             bool correctlyWired=true;
@@ -1169,13 +1167,6 @@ namespace MathDAG
                   }
               }
           }
-        else if (const Constant* c=dynamic_cast<const Constant*>(it->get()))
-          {
-            VariablePtr v(VariableType::parameter, c->description());
-            // note makeDAG caches a reference to the object, and manages lifetime
-            variables.push_back(makeDAG(*v).get());
-            variables.back()->rhs=expressionCache.insertAnonymous(NodePtr(new ConstantDAG(c->value)));
-          }
         return false;
       });
 
@@ -1199,7 +1190,8 @@ namespace MathDAG
       {
         //        assert(g->second.godleyId>=0);
         integVarMap[VariableValue::valueId(g->first)]=
-          makeDAG(VariableValue::valueId(g->first), g->first, VariableValue::stock).get();
+          dynamic_cast<VariableDAG*>(
+                                     makeDAG(VariableValue::valueId(g->first), g->first, VariableValue::stock).get());
         VariableDAGPtr input(new IntegralInputVariableDAG);
         input->name=g->first;
         variables.push_back(input.get());
@@ -1215,24 +1207,33 @@ namespace MathDAG
     // are defined
     for (VariableValues::value_type v: m.variableValues)
       if (v.second.isFlowVar())
-        variables.push_back
-          (makeDAG(v.first, v.second.name, v.second.type()).get());
+        if (auto vv=dynamic_cast<VariableDAG*>
+            (makeDAG(v.first, v.second.name, v.second.type()).get()))
+          variables.push_back(vv);
           
     // sort variables into their order of definition
     sort(variables.begin(), variables.end(), 
          VariableDefOrder(expressionCache.size()));
   }
 
-  shared_ptr<VariableDAG> SystemOfEquations::makeDAG(const string& valueId, const string& name, VariableType::Type type)
+  NodePtr SystemOfEquations::makeDAG(const string& valueId, const string& name, VariableType::Type type)
   {
     if (expressionCache.exists(valueId))
-      return dynamic_pointer_cast<VariableDAG>(expressionCache[valueId]);
+      return expressionCache[valueId];
 
-    shared_ptr<VariableDAG> r(new VariableDAG(valueId, name, type));
-    expressionCache.insert(valueId, r);
     assert(VariableValue::isValueId(valueId));
     assert(minsky.variableValues.count(valueId));
     VariableValue vv=minsky.variableValues[valueId];
+
+    if (type==VariableType::constant)
+      {
+        NodePtr r(new ConstantDAG(vv.initValue(minsky.variableValues)));
+        expressionCache.insert(valueId, r);
+        return r;
+      }
+    
+    shared_ptr<VariableDAG> r(new VariableDAG(valueId, name, type));
+    expressionCache.insert(valueId, r);
     r->init=vv.initValue(minsky.variableValues);
     if (vv.isFlowVar()) 
       {
@@ -1257,9 +1258,16 @@ namespace MathDAG
             minsky.displayErrorItem(op);          
             throw error("derivative not wired");
           }
-
-        return expressionCache.insert
-          (op, expr->derivative(*this));
+        try
+          {
+            return expressionCache.insert
+              (op, expr->derivative(*this));
+          }
+        catch (...)
+          {
+            minsky.displayErrorItem(op);          
+            throw;
+          }
       }
     else
       {
@@ -1268,12 +1276,7 @@ namespace MathDAG
         r->state=dynamic_pointer_cast<OperationBase>(minsky.model->findItem(op));
         assert(r->state);
         assert( r->state->type()!=OperationType::numOps);
-        if (const Constant* c=dynamic_cast<const Constant*>(&op))
-          {
-            r->name=c->description();
-            r->init=c->value;
-          }
-        else if (const IntOp* i=dynamic_cast<const IntOp*>(&op))
+        if (const IntOp* i=dynamic_cast<const IntOp*>(&op))
           r->name=i->description();
 
         r->arguments.resize(op.numPorts()-1);
@@ -1525,9 +1528,6 @@ namespace MathDAG
             if (godley.signConventionReversed(c)) fc.coef*=-1;
 
             VariablePtr v(VariableType::flow, fc.name);
-            // if local variable, set scope
-//            if (fc.name.find(':')==string::npos)
-//              v->setScope(-1);
 
             if (abs(fc.coef)==1)
               gd.arguments[fc.coef<0? 1: 0].push_back(WeakNodePtr(makeDAG(*v)));
