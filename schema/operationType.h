@@ -33,11 +33,11 @@ namespace minsky
                // underscores to avoid C++ keywords. Can be filtered at UI
                and_, or_, not_,
                time, // zero input port ops
-               copy, integrate,      // single input port ops
+               integrate, 
                differentiate, // with respect to time
                data, // an interpolated data item
                // functions
-               sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
+               copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
                floor, frac,
                numOps // last operation, for iteration purposes

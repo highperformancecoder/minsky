@@ -194,10 +194,15 @@ SUITE(Derivative)
       {
         OperationPtr opp{op};
         model->addItem(opp);
-       
-        auto opWire=model->addWire(new Wire(t->ports[0],opp->ports[1]));
         model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
         model->addWire(new Wire(opp->ports[0], f->ports[1]));
+
+        // no inputs should evaluate to zero
+        reset(); 
+        nSteps=1;step(); // ensure f is evaluated
+        CHECK_EQUAL(0, deriv->ports[0]->value());
+        
+        auto opWire=model->addWire(new Wire(t->ports[0],opp->ports[1]));
 
         
         // check first with single input wired
@@ -243,7 +248,7 @@ SUITE(Derivative)
     {
       // test functions
       OperationPtr funOp;
-      for (int op=OperationType::sqrt; op<OperationType::numOps; ++op)
+      for (int op=OperationType::copy; op<OperationType::numOps; ++op)
         {
           cout << OperationType::typeName(op) << endl;
           model->removeItem(*funOp);
