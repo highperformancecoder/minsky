@@ -32,6 +32,7 @@ struct BinOpFixture: public Minsky
   OperationPtr t{OperationType::time};
   OperationPtr plus{OperationType::add};
   OperationPtr tsq{OperationType::multiply};
+  OperationPtr tcube{OperationType::multiply};
   //  OperationPtr minus{OperationType::subtract};
   //  OperationPtr pow{OperationType::pow};
   OperationPtr deriv{OperationType::differentiate};
@@ -47,12 +48,15 @@ struct BinOpFixture: public Minsky
     model->addItem(t);
     model->addItem(plus);
     model->addItem(tsq);
+    model->addItem(tcube);
     model->addItem(deriv);
     model->addItem(f);
     model->addWire(new Wire(t->ports[0],plus->ports[1]));
     model->addWire(new Wire(offs->ports[0],plus->ports[2]));
     model->addWire(new Wire(plus->ports[0],tsq->ports[1]));
     model->addWire(new Wire(plus->ports[0],tsq->ports[2]));
+    model->addWire(new Wire(plus->ports[0],tcube->ports[1]));
+    model->addWire(new Wire(tsq->ports[0],tcube->ports[2]));
     model->addWire(new Wire(deriv->ports[0], integ.ports[1]));
 
     stepMin=1e-6;
@@ -248,19 +252,20 @@ SUITE(Derivative)
     {
       // test functions
       OperationPtr funOp;
-      for (int op=OperationType::copy; op<OperationType::numOps; ++op)
+      for (int op=OperationType::integrate; op<OperationType::numOps; ++op)
         {
           cout << OperationType::typeName(op) << endl;
           model->removeItem(*funOp);
           funOp.reset(OperationBase::create(OperationType::Type(op)));
           garbageCollect();
           model->addItem(funOp);
-          model->addWire(new Wire(plus->ports[0], funOp->ports[1]));
+          model->addWire(new Wire(tcube->ports[0], funOp->ports[1]));
           model->addWire(new Wire(funOp->ports[0], f->ports[1]));
           model->addWire(new Wire(funOp->ports[0], deriv->ports[1]));
           switch (OperationType::Type(op))
             {
             case OperationType::floor: case OperationType::frac:
+            case OperationType::data:
               CHECK_THROW(reset(), ecolab::error);
               continue;
             default:
