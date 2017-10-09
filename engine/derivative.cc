@@ -383,20 +383,14 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::integrate>& expr)
   {
-    if (!expr.arguments[0].empty() && expr.arguments[0][0])
-      return expressionCache.reverseLookup(*expr.arguments[0][0]);
-    else
-      return zero;
+    throw error("shouldn't be executed");
   }
 
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::differentiate>& expr)
   {
-    if (!expr.arguments[0].empty() && expr.arguments[0][0])
-      return expr.arguments[0][0]->derivative(*this)->derivative(*this);
-    else
-      return zero;
+    throw error("shouldn't be executed");
   }
  
   template <>
@@ -410,6 +404,8 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::sqrt>& expr)
   {
+    if (expr.arguments[0].empty())
+      return zero;
     Expr x(expressionCache, expr.arguments[0][0]);
     return chainRule(x, 0.5/sqrt(x));
   }
@@ -418,6 +414,8 @@ namespace MathDAG
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::exp>& expr)
   {
+    if (expr.arguments[0].empty())
+      return zero;
     Expr x(expressionCache, expr.arguments[0][0]);
     Expr expx(expressionCache, expressionCache.reverseLookup(expr));
     return chainRule(x, exp(x));

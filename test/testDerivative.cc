@@ -262,6 +262,7 @@ SUITE(Derivative)
           model->addWire(new Wire(tcube->ports[0], funOp->ports[1]));
           model->addWire(new Wire(funOp->ports[0], f->ports[1]));
           model->addWire(new Wire(funOp->ports[0], deriv->ports[1]));
+          save(OperationType::typeName(op)+".mky");
           switch (OperationType::Type(op))
             {
             case OperationType::floor: case OperationType::frac:
@@ -278,6 +279,30 @@ SUITE(Derivative)
           nSteps=800; step();
           CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
           CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+        }
+    }
+  
+  TEST_FIXTURE(Minsky,noInputs)
+    {
+      using namespace MathDAG;
+      SystemOfEquations se(*this);
+      for (auto op=0; op<OperationType::numOps; ++op)
+        {
+          NodePtr funOp{OperationDAGBase::create(OperationType::Type(op))};
+          try
+            {
+              auto derivative=funOp->derivative(se);
+              auto constant=dynamic_cast<ConstantDAG*>(derivative.get());
+          
+              if (constant)
+                {
+                  if (op==OperationType::time)
+                    CHECK_EQUAL(1, constant->value);
+                  else
+                    CHECK_EQUAL(0, constant->value);
+                }
+            }
+          catch (...) {} // ignore code that shouldn't be executed
         }
     }
 }
