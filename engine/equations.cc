@@ -74,7 +74,7 @@ namespace MathDAG
           " on operation ";
         if (state)
           {
-            minsky::minsky().displayErrorItem(state->x(),state->y());
+            minsky::minsky().displayErrorItem(*state);
             r+=OperationType::typeName(state->type());
           }
         
@@ -332,6 +332,12 @@ namespace MathDAG
           case constant:
             if (state) minsky::minsky().displayErrorItem(*state);
             throw error("Constant deprecated");
+          case lt: case le: case eq:
+            for (size_t i=0; i<arguments.size(); ++i)
+              if (arguments[i].empty())
+                argIdx[i].push_back(VariableValue());
+            ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
+            break;
           default:
             // sanity check that the correct number of arguments is provided 
             bool correctlyWired=true;
@@ -1267,7 +1273,7 @@ namespace MathDAG
         NodePtr expr;
         if (op.ports[1]->wires.size()==0 || !(expr=getNodeFromWire(*op.ports[1]->wires[0])))
           {
-            minsky.displayErrorItem(op);          
+            minsky::minsky().displayErrorItem(op);          
             throw error("derivative not wired");
           }
         try
@@ -1277,7 +1283,7 @@ namespace MathDAG
           }
         catch (...)
           {
-            minsky.displayErrorItem(op);          
+            minsky::minsky().displayErrorItem(op);          
             throw;
           }
       }

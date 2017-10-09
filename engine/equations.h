@@ -217,9 +217,11 @@ namespace MathDAG
         {
         case OperationType::multiply:
         case OperationType::divide:
+        case OperationType::and_:
           return 1;
         case OperationType::subtract:
         case OperationType::add:
+        case OperationType::or_:
           return 2;
         case OperationType::constant: // varies, depending on what's in it
           if (name.find_first_of("+-")!=string::npos)

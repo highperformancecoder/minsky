@@ -854,7 +854,7 @@ namespace minsky
           { //traverse finished, check for cycle along branch
             if (::find(stack.begin(), stack.end(), p) != stack.end())
               {
-                cminsky().displayErrorItem(p->x(), p->y());
+                cminsky().displayErrorItem(p->item);
                 return true;
               }
             else
@@ -945,13 +945,24 @@ namespace minsky
 
   void Minsky::displayErrorItem(const Item& op) const
   {
+    // this method is logically const, but because of the way
+    // canvas rendering is done, canvas state needs updating
+    auto& canvas=const_cast<Canvas&>(this->canvas);
     if (op.visible())
-      displayErrorItem(op.x(),op.y());
+      {
+        canvas.item=canvas.model->findItem(op);
+        canvas.indicateItem();
+        canvas.requestRedraw();
+      }
     else if (auto g=op.group.lock())
       {
         while (g && !g->visible()) g=g->group.lock();
         if (g && g->visible())
-          displayErrorItem(g->x(), g->y());
+          {
+            canvas.item=g;
+            canvas.indicateItem();
+            canvas.requestRedraw();
+          }
       }
   }
   
