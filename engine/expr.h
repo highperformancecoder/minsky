@@ -167,6 +167,9 @@ namespace MathDAG
   inline Expr operator<=(const Expr& x, double y) {
     return x <= Expr(x.cache, NodePtr(new ConstantDAG(y)));
   }
+  inline Expr operator<=(double x, const Expr& y) {
+    return Expr(y.cache, NodePtr(new ConstantDAG(x))) <= y;
+  }
 
   inline Expr operator<(const Expr& x, const NodePtr& y) {
     shared_ptr<OperationDAGBase> r(x.newNode(OperationType::lt));
@@ -177,6 +180,9 @@ namespace MathDAG
 
   inline Expr operator<(const Expr& x, double y) {
     return x < Expr(x.cache, NodePtr(new ConstantDAG(y)));
+  }
+  inline Expr operator<(double x, const Expr& y) {
+    return Expr(y.cache, NodePtr(new ConstantDAG(x))) < y;
   }
 
   template <OperationType::Type T>

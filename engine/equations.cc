@@ -317,6 +317,18 @@ namespace MathDAG
           case divide:
             cumulate(ev, result, argIdx, divide, multiply, 1);
             break;
+          case min:
+            cumulate(ev, result, argIdx, min, min, numeric_limits<double>::max());
+            break;
+          case max:
+            cumulate(ev, result, argIdx, max, max, numeric_limits<double>::min());
+            break;
+          case and_:
+            cumulate(ev, result, argIdx, and_, and_, 1);
+            break;
+          case or_:
+            cumulate(ev, result, argIdx, or_, or_, 0);
+            break;
           case constant:
             if (state) minsky::minsky().displayErrorItem(*state);
             throw error("Constant deprecated");

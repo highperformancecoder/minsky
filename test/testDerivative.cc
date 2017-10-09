@@ -47,8 +47,6 @@ struct BinOpFixture: public Minsky
     model->addItem(t);
     model->addItem(plus);
     model->addItem(tsq);
-    //    model->addItem(minus);
-    //model->addItem(pow);
     model->addItem(deriv);
     model->addItem(f);
     model->addWire(new Wire(t->ports[0],plus->ports[1]));
@@ -56,7 +54,6 @@ struct BinOpFixture: public Minsky
     model->addWire(new Wire(plus->ports[0],tsq->ports[1]));
     model->addWire(new Wire(plus->ports[0],tsq->ports[2]));
     model->addWire(new Wire(deriv->ports[0], integ.ports[1]));
-    //    variables.makeConsistent();
 
     stepMin=1e-6;
     stepMax=1e-3;
@@ -198,11 +195,12 @@ SUITE(Derivative)
         OperationPtr opp{op};
         model->addItem(opp);
        
-        model->addWire(new Wire(t->ports[0],opp->ports[1]));
-        model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
+        auto opWire=model->addWire(new Wire(t->ports[0],opp->ports[1]));
         model->addWire(new Wire(opp->ports[0], deriv->ports[1]));
         model->addWire(new Wire(opp->ports[0], f->ports[1]));
 
+        
+        // check first with single input wired
         save(OperationType::typeName(op)+".mky");
         reset(); 
         nSteps=1;step(); // ensure f is evaluated
@@ -212,6 +210,30 @@ SUITE(Derivative)
         nSteps=800; step();
         CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
         CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+
+        // check other single input wired
+        model->removeWire(*opWire);
+        model->addWire(new Wire(tsq->ports[0],opp->ports[2]));
+        reset(); 
+        nSteps=1;step(); // ensure f is evaluated
+        // set the constant of integration to the value of f at t=0
+        f0=f->value();
+        integ.intVar->value(f0);
+        nSteps=800; step();
+        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+        CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+       
+        // now check with two inputs wired
+        model->addWire(new Wire(t->ports[0],opp->ports[1]));
+        reset(); 
+        nSteps=1;step(); // ensure f is evaluated
+        // set the constant of integration to the value of f at t=0
+        f0=f->value();
+        integ.intVar->value(f0);
+        nSteps=800; step();
+        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+        CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+
         model->deleteItem(*opp);
       }
 

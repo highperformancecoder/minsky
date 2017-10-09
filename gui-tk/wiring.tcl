@@ -380,7 +380,7 @@ bind .wiring.canvas <<contextMenu>> {
             default {contextMenu %x %y %X %Y}
         }
     } elseif [getWireAt %x %y] {
-        wireContextMenu %x %y
+        wireContextMenu %X %Y
     } else {
         canvasContext  %X %Y
     }
