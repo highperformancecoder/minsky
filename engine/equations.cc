@@ -525,8 +525,8 @@ namespace MathDAG
       else
         o<<"min("<<arguments[0][0]->matlab()<<",0)";
     else
-      if (arguments.size()>1 && !arguments[0].empty() && arguments[0][0])
-        o<<"min(0,"<<arguments[0][0]->matlab()<<")";
+      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+        o<<"min(0,"<<arguments[1][0]->matlab()<<")";
       else
         o<<"0";
     return o;
@@ -1277,8 +1277,6 @@ namespace MathDAG
         r->state=dynamic_pointer_cast<OperationBase>(minsky.model->findItem(op));
         assert(r->state);
         assert( r->state->type()!=OperationType::numOps);
-        if (const IntOp* i=dynamic_cast<const IntOp*>(&op))
-          r->name=i->description();
 
         r->arguments.resize(op.numPorts()-1);
         for (size_t i=1; i<op.ports.size(); ++i)
