@@ -24,7 +24,7 @@ i=min(g,t);
 j=max(g,t)+max(t,0)+min(t,0)+min(0,t)+max(0,t);
 f(1)=(foo)*(t);
 f(2)=A+Repay-(catching);
-f(3)=catching-(Repay);
+f(3)=Repay-(catching);
 f(4)=(a+b)^(log(c)/log(d));
 f(5)=tanh(cosh(sinh(tan(cos(sin(log(sqrt(t))))))));
 f(6)=atan(acos(asin(t)));
@@ -32,7 +32,7 @@ endfunction;
 
 x0(1)=0;
 x0(2)=0;
-x0(3)=0;
+x0(3)=-0;
 x0(4)=0;
 x0(5)=0;
 x0(6)=0;
