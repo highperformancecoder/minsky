@@ -543,7 +543,7 @@ namespace MathDAG
         o<<"max("<<arguments[0][0]->matlab()<<",0)";
     else
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max(0,"<<arguments[0][0]->matlab()<<")";
+        o<<"max(0,"<<arguments[1][0]->matlab()<<")";
       else
         o<<"0";
     return o;
