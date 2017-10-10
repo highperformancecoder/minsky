@@ -34,6 +34,7 @@
 #include <ostream>
 #include <vector>
 #include <map>
+#include <string>
 #include "integral.h"
 
 namespace minsky
@@ -255,13 +256,13 @@ namespace MathDAG
     std::map<const Node*, NodePtr> reverseLookupCache;
   public:
     std::string key(const OperationBase& x) const {
-      return "op:"+str(x.ports[0]);
+      return "op:"+std::to_string(size_t(x.ports[0].get()));
     }
     std::string key(const VariableBase& x) const {
       return "var:"+x.valueId();
     }
     std::string key(const SwitchIcon& x) const {
-      return "switch:"+str(x.ports[0]);
+      return "switch:"+std::to_string(size_t(x.ports[0].get()));
     }
     /// strings refer to variable names
     std::string key(const string& x) const {

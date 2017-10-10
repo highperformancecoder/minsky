@@ -164,7 +164,7 @@ namespace minsky
     int i=1;
     string trialName;
     do
-      trialName=name+str(i++);
+      trialName=name+to_string(i++);
     while (count(VariableValue::valueId(trialName)));
     return trialName;
   }

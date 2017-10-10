@@ -59,9 +59,9 @@ namespace minsky
           minsky().displayErrorItem(*state);
         string msg="Invalid: "+OperationBase::typeName(type())+"(";
         if (numArgs()>0)
-          msg+=str(flow1? fv[in1]: sv[in1]);
+          msg+=to_string(flow1? fv[in1]: sv[in1]);
         if (numArgs()>1)
-          msg+=","+str(flow2? fv[in2]: sv[in2]);
+          msg+=","+to_string(flow2? fv[in2]: sv[in2]);
         msg+=")";
         throw error(msg.c_str());
       }

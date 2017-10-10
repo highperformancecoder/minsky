@@ -138,7 +138,11 @@ namespace minsky
       canvas.groupSelection();
       registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
     }
-
+    void convertVarType(const std::string& name, VariableType::Type type) {
+      Minsky::convertVarType(name,type);
+      registerRef(canvas.item,"minsky.canvas.item");
+    }
+    
     bool selectVar(float x, float y) {
       bool r=canvas.selectVar(x,y);
       if (r)

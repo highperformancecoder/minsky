@@ -475,7 +475,7 @@ namespace minsky
                          if (destTable.initialConditionRow(r))
                            {
                              FlowCoef fc(srcTable.cell(row,srcCol));
-                             destTable.cell(r,col)=str(-fc.coef)+fc.name;
+                             destTable.cell(r,col)=to_string(-fc.coef)+fc.name;
                              break;
                            }
                    for (size_t row=1; row!=destTable.rows(); ++row)
@@ -1060,6 +1060,8 @@ namespace minsky
                            if (v->valueId()==name)
                              {
                                v.retype(type);
+                               if (*i==canvas.item)
+                                 canvas.item=v;
                                *i=v;
                              }
                          return false;
