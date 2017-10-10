@@ -269,23 +269,8 @@ namespace MathDAG
   {
     if (result.idx()<0)
       {
-        if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-          {
-            if (VariablePtr iv=i->intVar)
-              {
-                assert(VariableValue::isValueId(iv->valueId()));
-                assert(minsky::minsky().variableValues.count(iv->valueId()));
-                result=minsky::minsky().variableValues[iv->valueId()];
-                // integral copies need to be done now, in case of cycles
-                if (r.isFlowVar() && r.idx()>=0)
-                  ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-                return result; // integration handled as part of RK algorithm
-              }
-            else
-              throw error("no integration variable for %s",i->description().c_str());
-
-          }
-        else if (r.isFlowVar() && r.idx()>=0)
+        assert(!dynamic_cast<IntOp*>(state.get()));
+        if (r.isFlowVar() && r.idx()>=0)
           result=r;
         else 
           result.allocValue();
@@ -623,9 +608,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::integrate>::matlab(ostream& o) const
   {
-    if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      o << validMatlabIdentifier(i->description());
-    return o;
+    throw error("shouldn't be executed");
   }
         
   template <>
