@@ -53,14 +53,14 @@ proc deiconifyPltWindowOptions {} {
         frame .pltWindowOptions.grid
         label .pltWindowOptions.grid.label -text "Grid"
         label .pltWindowOptions.grid.sublabel -text "Subgrid"
-        checkbutton .pltWindowOptions.grid.val -variable plotWindowOptions_grid -command {plot.grid $plotWindowOptions_grid}
-        checkbutton .pltWindowOptions.grid.subval -variable plotWindowOptions_subgrid -command {plot.subgrid $plotWindowOptions_subgrid}
+        checkbutton .pltWindowOptions.grid.val -variable plotWindowOptions_grid
+        checkbutton .pltWindowOptions.grid.subval -variable plotWindowOptions_subgrid
 
         frame .pltWindowOptions.logscale
         label .pltWindowOptions.logscale.x -text "x log scale"
         label .pltWindowOptions.logscale.y -text "y log scale"
-        checkbutton .pltWindowOptions.logscale.xv -variable plotWindowOptions_xlog -command {plot.logx $plotWindowOptions_xlog}
-        checkbutton .pltWindowOptions.logscale.yv -variable plotWindowOptions_ylog -command {plot.logy $plotWindowOptions_ylog}
+        checkbutton .pltWindowOptions.logscale.xv -variable plotWindowOptions_xlog
+        checkbutton .pltWindowOptions.logscale.yv -variable plotWindowOptions_ylog
 
         frame .pltWindowOptions.legend
         label .pltWindowOptions.legend.label -text "Legend:"
@@ -120,9 +120,11 @@ set plotWindowOptions_grid
 set plotWindowOptions_subgrid
         
 proc setPlotOptions {plot} {
-    global plotWindowOptions_grid plotWindowOptions_subgrid
+    global plotWindowOptions_grid plotWindowOptions_subgrid plotWindowOptions_xlog plotWindowOptions_ylog
     $plot.grid $plotWindowOptions_grid
     $plot.subgrid $plotWindowOptions_subgrid
+    $plot.logx $plotWindowOptions_xlog
+    $plot.logy $plotWindowOptions_ylog
     $plot.nxTicks [.pltWindowOptions.xticks.val get]
     $plot.nyTicks [.pltWindowOptions.yticks.val get]
     $plot.title [.pltWindowOptions.title.val get]
