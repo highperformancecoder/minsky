@@ -3,45 +3,45 @@
   <model>
    <wires>
     <Wire>
-     <id>42</id>
+     <id>44</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>1</from>
      <to>39</to>
     </Wire>
     <Wire>
-     <id>43</id>
+     <id>45</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>3</from>
      <to>40</to>
     </Wire>
     <Wire>
-     <id>44</id>
+     <id>46</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>5</from>
      <to>41</to>
     </Wire>
     <Wire>
-     <id>45</id>
+     <id>47</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>10</from>
      <to>38</to>
     </Wire>
     <Wire>
-     <id>46</id>
+     <id>48</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <from>37</from>
      <to>12</to>
     </Wire>
     <Wire>
-     <id>47</id>
+     <id>49</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <from>7</from>
+     <from>8</from>
      <to>20</to>
     </Wire>
    </wires>
@@ -69,13 +69,13 @@
      <type>integrate</type>
      <value>0</value>
      <ports>
-      <int>7</int>
+      <int>8</int>
       <int>12</int>
      </ports>
      <data>
      </data>
      <name>int1</name>
-     <intVar>6</intVar>
+     <intVar>7</intVar>
     </Operation>
    </operations>
    <variables>
@@ -105,24 +105,35 @@
      <id>4</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
-     <type>constant</type>
-     <init>2.5</init>
+     <type>flow</type>
+     <init>2:p1</init>
      <ports>
       <int>5</int>
+      <int>6</int>
      </ports>
-     <name>2.5</name>
+     <name>2p1</name>
     </Variable>
     <Variable>
-     <id>6</id>
+     <id>7</id>
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>integral</type>
      <init>0</init>
      <ports>
-      <int>7</int>
       <int>8</int>
      </ports>
      <name>int1</name>
+    </Variable>
+    <Variable>
+     <id>42</id>
+     <detailedText></detailedText>
+     <tooltip></tooltip>
+     <type>parameter</type>
+     <init>1.25</init>
+     <ports>
+      <int>43</int>
+     </ports>
+     <name>p1</name>
     </Variable>
    </variables>
    <plots>
@@ -200,11 +211,11 @@
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
+    <sliderBoundsSet>true</sliderBoundsSet>
     <sliderStepRel>false</sliderStepRel>
-    <sliderMin>0</sliderMin>
-    <sliderMax>0</sliderMax>
-    <sliderStep>0</sliderStep>
+    <sliderMin>-5</sliderMin>
+    <sliderMax>5</sliderMax>
+    <sliderStep>0.05</sliderStep>
    </Layout>
    <Layout>
     <id>2</id>
@@ -214,39 +225,39 @@
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
+    <sliderBoundsSet>true</sliderBoundsSet>
     <sliderStepRel>false</sliderStepRel>
-    <sliderMin>2.73076e-316</sliderMin>
-    <sliderMax>2.73075e-316</sliderMax>
-    <sliderStep>2.73076e-316</sliderStep>
+    <sliderMin>-15</sliderMin>
+    <sliderMax>15</sliderMax>
+    <sliderStep>0.15</sliderStep>
    </Layout>
    <Layout>
     <id>4</id>
     <id>4</id>
-    <x>5</x>
-    <y>87</y>
+    <x>4</x>
+    <y>90</y>
     <visible>true</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
+    <sliderBoundsSet>true</sliderBoundsSet>
     <sliderStepRel>false</sliderStepRel>
-    <sliderMin>3.15693e-316</sliderMin>
-    <sliderMax>3.16224e-316</sliderMax>
-    <sliderStep>3.15366e-316</sliderStep>
+    <sliderMin>-25</sliderMin>
+    <sliderMax>25</sliderMax>
+    <sliderStep>0.25</sliderStep>
    </Layout>
    <Layout>
-    <id>6</id>
-    <id>6</id>
-    <x>199</x>
+    <id>7</id>
+    <id>7</id>
+    <x>215</x>
     <y>60</y>
     <visible>false</visible>
     <rotation>0</rotation>
     <sliderVisible>false</sliderVisible>
-    <sliderBoundsSet>false</sliderBoundsSet>
+    <sliderBoundsSet>true</sliderBoundsSet>
     <sliderStepRel>false</sliderStepRel>
-    <sliderMin>1.39078e-309</sliderMin>
-    <sliderMax>1.39076e-309</sliderMax>
-    <sliderStep>1.39071e-309</sliderStep>
+    <sliderMin>-1</sliderMin>
+    <sliderMax>64.8023</sliderMax>
+    <sliderStep>0.1</sliderStep>
    </Layout>
    <Layout>
     <id>9</id>
@@ -281,62 +292,76 @@
    </Layout>
    <Layout>
     <id>42</id>
+    <id>42</id>
+    <x>2</x>
+    <y>127</y>
     <visible>true</visible>
-    <coords>
-     <float>13.5</float>
-     <float>21</float>
-     <float>61</float>
-     <float>54</float>
-    </coords>
-   </Layout>
-   <Layout>
-    <id>43</id>
-    <visible>true</visible>
-    <coords>
-     <float>11.5</float>
-     <float>50</float>
-     <float>61</float>
-     <float>62</float>
-    </coords>
+    <rotation>0</rotation>
+    <sliderVisible>false</sliderVisible>
+    <sliderBoundsSet>true</sliderBoundsSet>
+    <sliderStepRel>false</sliderStepRel>
+    <sliderMin>-12.5</sliderMin>
+    <sliderMax>12.5</sliderMax>
+    <sliderStep>0.125</sliderStep>
    </Layout>
    <Layout>
     <id>44</id>
     <visible>true</visible>
     <coords>
-     <float>17.5</float>
-     <float>87</float>
-     <float>61</float>
-     <float>70</float>
+     <float>72</float>
+     <float>34</float>
+     <float>105</float>
+     <float>67</float>
     </coords>
    </Layout>
    <Layout>
     <id>45</id>
     <visible>true</visible>
     <coords>
-     <float>81</float>
-     <float>0</float>
-     <float>81</float>
-     <float>42</float>
+     <float>71</float>
+     <float>63</float>
+     <float>105</float>
+     <float>75</float>
     </coords>
    </Layout>
    <Layout>
     <id>46</id>
     <visible>true</visible>
     <coords>
-     <float>93</float>
-     <float>62</float>
-     <float>153</float>
-     <float>60</float>
+     <float>75</float>
+     <float>103</float>
+     <float>105</float>
+     <float>83</float>
     </coords>
    </Layout>
    <Layout>
     <id>47</id>
     <visible>true</visible>
     <coords>
-     <float>215</float>
-     <float>60</float>
-     <float>265</float>
-     <float>55.75</float>
+     <float>125</float>
+     <float>13</float>
+     <float>125</float>
+     <float>55</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>48</id>
+    <visible>true</visible>
+    <coords>
+     <float>137</float>
+     <float>75</float>
+     <float>197</float>
+     <float>73</float>
+    </coords>
+   </Layout>
+   <Layout>
+    <id>49</id>
+    <visible>true</visible>
+    <coords>
+     <float>291</float>
+     <float>73</float>
+     <float>309</float>
+     <float>68.75</float>
     </coords>
    </Layout>
   </layout>

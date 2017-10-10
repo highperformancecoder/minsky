@@ -50,13 +50,17 @@ for {set step 0} {$step<10} {incr step} {
 
         if {[lsearch [array names values] $name]==-1} {
             #puts "$name ->[array names values *:[regsub "(.*:)" $name ""]]"
+            set status 1
             foreach n [array names values *:[regsub "(.*:)" $name ""]] {
                 #puts "[value.value] $values($n)"
-                if [fclose [value.value] $values($n)] break
+                if [fclose [value.value] $values($n)] {
+                    set status 0
+                    break
+                }
             }
-            if {![fclose [value.value] $values($n)]} {
+            if {$status} {
                 puts "unable to find matching var $name"
-                set status 1
+                break
             }
             continue
         }
