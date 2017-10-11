@@ -1888,7 +1888,7 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>stock</type>
-     <init>0.000000</init>
+     <init>-0.000000</init>
      <ports>
       <int>17</int>
      </ports>
@@ -1922,7 +1922,7 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>stock</type>
-     <init>0.000000</init>
+     <init>-0.000000</init>
      <ports>
       <int>24</int>
      </ports>
@@ -2037,7 +2037,7 @@
      <detailedText></detailedText>
      <tooltip></tooltip>
      <type>stock</type>
-     <init>0.000000</init>
+     <init>-0.000000</init>
      <ports>
       <int>49</int>
      </ports>
@@ -2203,7 +2203,8 @@
      </data>
      <assetClasses>
       <AssetClass>noAssetClass</AssetClass>
-      <AssetClass>noAssetClass</AssetClass>
+      <AssetClass>asset</AssetClass>
+      <AssetClass>liability</AssetClass>
      </assetClasses>
      <zoomFactor>1</zoomFactor>
     </Godley>

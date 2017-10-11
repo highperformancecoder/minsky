@@ -1007,9 +1007,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::integrate>::latex(ostream& o) const
   {
-    if (IntOp* i=dynamic_cast<IntOp*>(state.get()))
-      o << mathrm(i->description());
-    return o;
+    throw error("shouldn't be executed");
   }
         
   template <>

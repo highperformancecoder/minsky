@@ -690,6 +690,14 @@ SUITE(Minsky)
     gsl_integration_workspace_free(ws);
   }
 
+  TEST(evalOpEvaluate)
+  {
+    EvalOp<OperationType::floor> floor;
+    CHECK_EQUAL(3,floor.evaluate(3.2,0));
+    EvalOp<OperationType::frac> frac;
+    CHECK_CLOSE(0.2,frac.evaluate(3.2,0),1e-6);
+  }
+  
   TEST_FIXTURE(TestFixture,multiGodleyRules)
     {
       auto g1=new GodleyIcon; model->addItem(g1);

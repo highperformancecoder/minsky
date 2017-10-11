@@ -33,15 +33,22 @@ minsky.load $here/examples/1Free.mky
 minsky.findObject GodleyIcon
 minsky.canvas.item.table.exportToLaTeX 1FreeGodley.tex
 minsky.canvas.item.table.exportToCSV 1FreeGodley.csv
+
+minsky.load $here/test/testEq.mky
+minsky.findObject GodleyIcon
+minsky.canvas.item.table.exportToLaTeX testEqGodley.tex
+minsky.canvas.item.table.exportToCSV testEqGodley.csv
+
+
 tcl_exit
 EOF
 
 $here/gui-tk/minsky input.tcl
 if [ $? -ne 0 ]; then fail; fi
 
-diff 1FreeGodley.tex $here/test/1FreeGodley.tex
-if [ $? -ne 0 ]; then fail; fi
-diff 1FreeGodley.csv $here/test/1FreeGodley.csv
-if [ $? -ne 0 ]; then fail; fi
+for i in *.{tex,csv}; do
+    diff $i $here/test/$i
+    if [ $? -ne 0 ]; then fail; fi
+done
 
 pass
