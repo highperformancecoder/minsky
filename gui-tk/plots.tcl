@@ -16,25 +16,7 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-.menubar.ops add command -label Plot -command "newPlot"
-
-proc newPlot {} {
-    # place this at the mouse if in canvas, otherwise at 0 0
-
-    set id [wiringGroup.newPlot]
-    newItem $id
-
-    global moveOffs$id.x moveOffs$id.y
-    set moveOffs$id.x 0
-    set moveOffs$id.y 0
-
-    bind .old_wiring.canvas <Enter> "move $id %x %y"
-    bind .old_wiring.canvas <Motion> "move $id %x %y"
-    bind .old_wiring.canvas <Button-1> clearTempBindings
-    bind . <Key-Escape> "clearTempBindings; deletePlot plot$id $id"
-
-    return $id
-}
+.menubar.ops add command -label Plot -command "addPlot"
 
 proc deiconifyPltWindowOptions {} {
     if {![winfo exists .pltWindowOptions]} {
@@ -53,23 +35,23 @@ proc deiconifyPltWindowOptions {} {
         frame .pltWindowOptions.grid
         label .pltWindowOptions.grid.label -text "Grid"
         label .pltWindowOptions.grid.sublabel -text "Subgrid"
-        checkbutton .pltWindowOptions.grid.val -variable plotWindowOptions_grid
-        checkbutton .pltWindowOptions.grid.subval -variable plotWindowOptions_subgrid
+        checkbutton .pltWindowOptions.grid.val -variable plotWindowOptions(grid)
+        checkbutton .pltWindowOptions.grid.subval -variable plotWindowOptions(subgrid)
 
         frame .pltWindowOptions.logscale
         label .pltWindowOptions.logscale.x -text "x log scale"
         label .pltWindowOptions.logscale.y -text "y log scale"
-        checkbutton .pltWindowOptions.logscale.xv -variable plotWindowOptions_xlog
-        checkbutton .pltWindowOptions.logscale.yv -variable plotWindowOptions_ylog
+        checkbutton .pltWindowOptions.logscale.xv -variable plotWindowOptions(xlog)
+        checkbutton .pltWindowOptions.logscale.yv -variable plotWindowOptions(ylog)
 
         frame .pltWindowOptions.legend
         label .pltWindowOptions.legend.label -text "Legend:"
         label .pltWindowOptions.legend.noneLabel -text none
-        radiobutton .pltWindowOptions.legend.none -variable plotWindowOptions_legend -command plot::setLegend -value none
+        radiobutton .pltWindowOptions.legend.none -variable plotWindowOptions(legend) -value none
         label .pltWindowOptions.legend.leftLabel -text left
-        radiobutton .pltWindowOptions.legend.left -variable plotWindowOptions_legend -command plot::setLegend -value left
+        radiobutton .pltWindowOptions.legend.left -variable plotWindowOptions(legend) -value left
         label .pltWindowOptions.legend.rightLabel -text right
-        radiobutton .pltWindowOptions.legend.right -variable plotWindowOptions_legend -command plot::setLegend -value right
+        radiobutton .pltWindowOptions.legend.right -variable plotWindowOptions(legend) -value right
         pack .pltWindowOptions.legend.label .pltWindowOptions.legend.none .pltWindowOptions.legend.noneLabel .pltWindowOptions.legend.left .pltWindowOptions.legend.leftLabel .pltWindowOptions.legend.right .pltWindowOptions.legend.rightLabel -side left
 
         frame .pltWindowOptions.title
@@ -113,24 +95,27 @@ proc deiconifyPltWindowOptions {} {
     }
 }
 
-set plotWindowOptions_legend none
 deiconifyPltWindowOptions
 wm withdraw .pltWindowOptions
-set plotWindowOptions_grid
-set plotWindowOptions_subgrid
         
 proc setPlotOptions {plot} {
-    global plotWindowOptions_grid plotWindowOptions_subgrid plotWindowOptions_xlog plotWindowOptions_ylog
-    $plot.grid $plotWindowOptions_grid
-    $plot.subgrid $plotWindowOptions_subgrid
-    $plot.logx $plotWindowOptions_xlog
-    $plot.logy $plotWindowOptions_ylog
+    global plotWindowOptions
+    $plot.grid $plotWindowOptions(grid)
+    $plot.subgrid $plotWindowOptions(subgrid)
+    $plot.logx $plotWindowOptions(xlog)
+    $plot.logy $plotWindowOptions(ylog)
     $plot.nxTicks [.pltWindowOptions.xticks.val get]
     $plot.nyTicks [.pltWindowOptions.yticks.val get]
     $plot.title [.pltWindowOptions.title.val get]
     $plot.xlabel [.pltWindowOptions.xaxislabel.val get]
     $plot.ylabel [.pltWindowOptions.yaxislabel.val get]
     $plot.y1label [.pltWindowOptions.y1axislabel.val get]
+    if {$plotWindowOptions(legend)=="none"} {
+        $plot.legend 0
+    } else {
+        $plot.legend 1
+        $plot.legendSide $plotWindowOptions(legend)
+    }
     canvas.requestRedraw
     catch {wm title .plot$id [plot.title]}
     wm withdraw .pltWindowOptions 
@@ -138,12 +123,11 @@ proc setPlotOptions {plot} {
 }
 
 proc doPlotOptions {plot} {
-    global plotWindowOptions_grid plotWindowOptions_subgrid
-    global plotWindowOptions_xlog plotWindowOptions_ylog
-    set plotWindowOptions_grid [$plot.grid]
-    set plotWindowOptions_subgrid [$plot.subgrid]
-    set plotWindowOptions_xlog [$plot.logx]
-    set plotWindowOptions_ylog [$plot.logy]
+    global plotWindowOptions
+    set plotWindowOptions(grid) [$plot.grid]
+    set plotWindowOptions(subgrid) [$plot.subgrid]
+    set plotWindowOptions(xlog) [$plot.logx]
+    set plotWindowOptions(ylog) [$plot.logy]
     deiconifyPltWindowOptions
 
     .pltWindowOptions.xticks.val delete 0 end
@@ -163,10 +147,10 @@ proc doPlotOptions {plot} {
     global plotWindowOptions_legend
     if [$plot.legend] {
         switch [$plot.legendSide] {
-            0 {set plotWindowOptions_legend left}
-            1 {set plotWindowOptions_legend right}
+            0 {set plotWindowOptions(legend) left}
+            1 {set plotWindowOptions(legend) right}
         }
-    } else {set plotWindowOptions_legend none}
+    } else {set plotWindowOptions(legend) none}
         
     grab .pltWindowOptions
 }
@@ -182,67 +166,8 @@ proc plotDoubleClick {plotId} {
 
     pack .plot$plotId.menubar  -side top -fill x
 
-    #.plot$plotId.image
     image create cairoSurface .plot$plotId.image -surface $plotId -width 400 -height 400
     label .plot$plotId.label -image .plot$plotId.image -width 400 -height 400
     pack .plot$plotId.label -fill both -expand 1
 }
     
-namespace eval plot {
-    proc resize {} {
-        
-        
-        set bbox [.old_wiring.canvas bbox item$id]
-        set item [eval .old_wiring.canvas create rectangle $bbox -tags plotBBox]
-        # disable lasso mode
-        bind .old_wiring.canvas <Button-1> ""
-        bind .old_wiring.canvas <B1-Motion> ""
-        bind .old_wiring.canvas <B1-ButtonRelease> ""
-        bind .old_wiring.canvas <Motion> "plot::resizeRect $item %x %y"
-        bind .old_wiring.canvas <ButtonRelease> "plot::resizeItem $item $id %x %y"
-    }
-
-    # resize the bounding box to indicate how big we want the icon to be
-    proc resizeRect {item x y} {
-        set x [.old_wiring.canvas canvasx $x]
-        set y [.old_wiring.canvas canvasy $y]
-        set w [expr abs($x-[plot.x])]
-        set h [expr abs($y-[plot.y])]
-        .old_wiring.canvas coords $item  [expr [plot.x]-$w] [expr [plot.y]-$h] \
-            [expr [plot.x]+$w] [expr [plot.y]+$h]
-    }
-
-    # compute width and height and redraw item
-    proc resizeItem {item id x y} {
-        plot.get $id
-        set x [.old_wiring.canvas canvasx $x]
-        set y [.old_wiring.canvas canvasy $y]
-        .old_wiring.canvas delete $item
-        set scalex [expr 2*abs($x-[plot.x])/double([plot.width])]
-        set scaley [expr 2*abs($y-[plot.y])/double([plot.height])]
-        # compute rotated scale factors
-        plot.width [expr int(ceil(abs($scalex*[plot.width])))]
-        plot.height [expr int(ceil(abs($scaley*[plot.height])))]
-
-        redraw $id
-        bind .old_wiring.canvas <Motion> {}
-        bind .old_wiring.canvas <ButtonRelease> {}
-    }
-
-    proc setLegend {} {
-        global plotWindowOptions_legend
-        switch $plotWindowOptions_legend {
-            none {
-                minsky.canvas.item.legend 0
-            }
-            left {
-                minsky.canvas.item.legend 1
-                minsky.canvas.item.legendSide left
-            }
-            right {
-                minsky.canvas.item.legend 1
-                minsky.canvas.item.legendSide right
-            }
-        }
-    }
-}

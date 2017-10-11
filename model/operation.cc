@@ -594,8 +594,11 @@ namespace minsky
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
-    cairo_move_to(cairo,-4,2);
-    cairo_show_text(cairo,"=");
+    cairo_move_to(cairo,-4,-5);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("→");
+    pango.show();
   }
 
   template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
