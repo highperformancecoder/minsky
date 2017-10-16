@@ -119,7 +119,7 @@ namespace minsky
     /// delete item referenced by item
     void deleteItem() {if (item) model->deleteItem(*item);}
     /// delete wire referenced by wire
-    void deleteWire() {if (wire) model->removeWire(*wire); requestRedraw();}
+    void deleteWire();
     /// remove item from its group, leaving in itemFocus for later placement
     void removeItemFromItsGroup();
 

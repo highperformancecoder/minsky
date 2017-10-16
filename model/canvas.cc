@@ -297,7 +297,14 @@ namespace minsky
     setItemFocus(r);
   }
 
-  
+  void Canvas::deleteWire()
+  {
+    if (wire)
+      model->removeWire(*wire);
+    wire.reset();
+    requestRedraw();
+  }
+
   void Canvas::removeItemFromItsGroup()
   {
     if (item)

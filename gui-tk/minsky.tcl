@@ -623,6 +623,7 @@ proc runstop {} {
   global running classicMode
   if {$running} {
     set running 0
+    doPushHistory 1
     if {$classicMode} {
             .controls.run configure -text run
         } else {

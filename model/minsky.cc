@@ -338,8 +338,7 @@ namespace minsky
        {
          if (auto p=dynamic_cast<PlotWidget*>(i->get()))
            {
-             p->yvars.clear(); // clear any old associations
-             p->xvars.clear(); 
+             p->disconnectAllVars();// clear any old associations
              p->clearPenAttributes();
              p->autoScale();
              for (size_t i=0; i<p->ports.size(); ++i)

@@ -320,4 +320,11 @@ namespace minsky
       }
     scalePlot();
   }
+
+  void PlotWidget::disconnectAllVars()
+  {
+    xvars.clear();
+    yvars.clear();
+    xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();
+  }
 }

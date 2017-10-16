@@ -74,6 +74,7 @@ namespace minsky
     void updateIcon(double t) override {addPlotPt(t);}
     /// connect variable \a var to port \a port. 
     void connectVar(const VariableValue& var, unsigned port);
+    void disconnectAllVars();
     void draw(cairo_t* cairo) const override;
     void redraw(); // redraw plot using current data to all open windows
     void redraw(int x0, int y0, int width, int height) override
