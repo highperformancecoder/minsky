@@ -46,7 +46,7 @@ EOF
 $here/gui-tk/minsky input.tcl
 if [ $? -ne 0 ]; then fail; fi
 
-for i in *.{tex,csv}; do
+for i in *.tex *.csv; do
     diff $i $here/test/$i
     if [ $? -ne 0 ]; then fail; fi
 done
