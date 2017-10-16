@@ -40,47 +40,45 @@ proc afterMinskyStarted {} {
     bind . <Destroy> {}
 
     # create godley table with an input and output variable
-    set godleyId [addGodleyTable]
-    godley.get \$godleyId
-    godley.moveTo 100 100
-    godley.table.resize 3 2
-    godley.setCell 0 1 foobar
-    godley.setCell 2 1 bar
-    godley.update
-    wiringGroup.updateOnNewGodleyVars \$godleyId
+    addGodley
+    assert {[findObject "GodleyIcon"]} {}
+    minsky.canvas.item.moveTo 100 100
+    minsky.canvas.item.table.resize 3 2
+    minsky.canvas.item.setCell 0 1 foobar
+    minsky.canvas.item.setCell 2 1 bar
+    minsky.canvas.item.update
 
-    newItem \$godleyId
-    bind .old_wiring.canvas <Button-1> "puts {%x %y}"
+    bind .wiring.canvas <Button-1> "puts {%x %y}"
 
     # delivered to foobar
-    event generate .old_wiring.canvas <Button-3>  -x 75 -y 150 -rootx 100 -rooty 100
+    event generate .wiring.canvas <Button-3>  -x 75 -y 150 -rootx 100 -rooty 100
     # check context menu is posted
-    assert {[winfo viewable .old_wiring.context]} foobar
+    assert {[winfo viewable .wiring.context]} foobar
     # check the menu items are what is expected
-    assert {[string match "Edit" "[.old_wiring.context entrycget 0 -label]"]} foobar
-    assert {[.old_wiring.context entrycget 1 -label]=="Copy"} foobar
+    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} foobar
+    assert {[.wiring.context entrycget 1 -label]=="Copy"} foobar
 
 
-    .old_wiring.context unpost
+    .wiring.context unpost
 
     # delivered to bar
-    event generate .old_wiring.canvas <Button-3> -x 55 -y 80 -rootx 100 -rooty 100
-    assert [winfo viewable .old_wiring.context] bar
-    assert {[string match "Edit" "[.old_wiring.context entrycget 0 -label]"]} bar
-    assert {[.old_wiring.context entrycget 1 -label]=="Copy"} bar
+    event generate .wiring.canvas <Button-3> -x 55 -y 80 -rootx 100 -rooty 100
+    assert [winfo viewable .wiring.context] bar
+    assert {[string match "Edit" "[.wiring.context entrycget 0 -label]"]} bar
+    assert {[.wiring.context entrycget 1 -label]=="Copy"} bar
 
-    .old_wiring.context unpost
+    .wiring.context unpost
 
     # delivered to the Godley icon
-    event generate .old_wiring.canvas <Button-3> -x 113 -y 69 -rootx 100 -rooty 100
-    assert [winfo viewable .old_wiring.context] godley
-    assert "\[.old_wiring.context entrycget 2 -command\]==\"openGodley \$godleyId\"" godley
-    assert "\[.old_wiring.context entrycget 8 -command]\==\"deleteItem \$godleyId item\$godleyId\"" godley
+    event generate .wiring.canvas <Button-3> -x 113 -y 69 -rootx 100 -rooty 100
+    assert [winfo viewable .wiring.context] godley
+    assert "\[.wiring.context entrycget 2 -command\]==\"openGodley\"" godley
+    assert "\[.wiring.context entrycget 8 -command]\==\"canvas.deleteItem\"" godley
 
-    .old_wiring.context unpost
+    .wiring.context unpost
     # delivered to nowhere
-    event generate .old_wiring.canvas <Button-3> -x 200 -y 200 -rootx 100 -rooty 100
-    assert {![winfo viewable .old_wiring.context]} nowhere
+    event generate .wiring.canvas <Button-3> -x 200 -y 200 -rootx 100 -rooty 100
+    assert {![winfo viewable .wiring.context]} nowhere
     tcl_exit
 }
 
