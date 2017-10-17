@@ -31,7 +31,14 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {
   canvasContext 0 0
-  assert {[winfo exists .wiring.context]}
+  assert {[winfo ismapped .wiring.context]}
+  .wiring.context unpost
+
+  assert {![winfo ismapped .wiring.context]}
+  wireContextMenu 0 0
+  assert {[winfo ismapped .wiring.context]}
+   .wiring.context unpost
+ 
   tcl_exit
 }
 EOF
