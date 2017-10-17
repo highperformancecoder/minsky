@@ -176,11 +176,9 @@ namespace minsky
     /// find first object of given \a type
     bool findObject(const std::string& type)
     {
-      if (type=="Group")
-        if (!canvas.model->groups.empty())
-          canvas.item=canvas.model->groups.front();
-        else
-          canvas.item.reset();
+      canvas.item.reset();
+      if (type=="Group" && !canvas.model->groups.empty())
+        canvas.item=canvas.model->groups.front();
       else
         model->recursiveDo
           (&GroupItems::items, [&](const Items&, Items::const_iterator i)
@@ -198,6 +196,7 @@ namespace minsky
     
     bool findVariable(const std::string& name)
     {
+      canvas.item.reset();
       model->recursiveDo
         (&GroupItems::items, [&](const Items&, Items::const_iterator i)
                          {
