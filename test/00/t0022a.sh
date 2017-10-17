@@ -32,17 +32,13 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source assert.tcl
 proc afterMinskyStarted {} {
-  addVariable foo flow
+  minsky.addVariable foo flow
   deiconifyNote
   .wiring.note.tooltip.entry insert 0 foobar
   .wiring.note.text insert 1.0 "some longer text"
-  OKnote var \$id
-  assert {"foobar"==[minsky.canvas.item.tooltip]}
-  assert {"some longer text\n"==[minsky.canvas.item.detailedText]}
-  itemEnterLeave var \$id var\$id 1
-  # check for existence of tooltip
-  assert {[llength [.old_wiring.canvas find withtag tooltip]]==1}
-  assert {[.old_wiring.canvas itemcget tooltip -text]=="foobar"}
+  OKnote itemFocus
+  assert {"foobar"==[minsky.canvas.itemFocus.tooltip]}
+  assert {"some longer text"==[minsky.canvas.itemFocus.detailedText]}
   minsky.save saved.mky
   tcl_exit
 }
@@ -56,10 +52,9 @@ if test $? -ne 0; then fail; fi
 cat >reload.tcl <<EOF
 source assert.tcl
 minsky.load saved.mky
-set id [lindex [minsky.items.#keys] 0]
-minsky.var.get \$id
-assert {"foobar"==[minsky.var.tooltip]}
-assert {"some longer text\n"==[minsky.var.detailedText]}
+assert {[minsky.findObject "Variable:flow"]}
+assert {"foobar"==[minsky.canvas.item.tooltip]}
+assert {"some longer text"==[minsky.canvas.item.detailedText]}
 tcl_exit
 EOF
 
