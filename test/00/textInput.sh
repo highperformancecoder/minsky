@@ -71,13 +71,19 @@ assert {[model.items.size]==6}
 assert {[findObject Item]} {}
 assert {[minsky.canvas.item.detailedText]=="b"}
 
+textInput s
+.textInput.entry insert 1 "in"
+.textInput.buttonBar.ok invoke
+assert {[model.items.size]==7}
+assert {[findObject "Operation:sin"]}
+
 addGodley
 event generate .wiring.canvas <Button-1>
-assert {[model.items.size]==7}
+assert {[model.items.size]==8}
 
 addPlot
 event generate .wiring.canvas <Button-1>
-assert {[model.items.size]==8}
+assert {[model.items.size]==9}
 
 
 tcl_exit
