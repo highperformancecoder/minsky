@@ -250,30 +250,7 @@ proc textInput {char} {
         entry .textInput.entry -textvariable textBuffer -takefocus 1
         .textInput.entry insert 0 $char
         frame .textInput.buttonBar
-        button .textInput.buttonBar.ok -text "OK" -command {
-            grab release .textInput
-            destroy .textInput
-            canvas.moveOffsX 0
-            canvas.moveOffsY 0
-            if {[lsearch [availableOperations] $textBuffer]>-1} {
-                addOperationKey $textBuffer
-            } elseif [string match "\[%#\]*" $textBuffer] {
-                addNote [string range $textBuffer 1 end]
-            } else {
-                if [regexp "(.*)=(.*)" $textBuffer dummy name init] {
-                    minsky.addVariable $name flow
-                    minsky.canvas.itemFocus.init $init
-                    minsky.variableValues.reset
-                } else {
-                    minsky.addVariable $textBuffer flow
-                    
-                    getItemAt [minsky.canvas.itemFocus.x] \
-                        [minsky.canvas.itemFocus.y]
-                    editVar
-                }
-            }
-            canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
-        }
+        button .textInput.buttonBar.ok -text "OK" -command textOK
         button .textInput.buttonBar.cancel -text "Cancel" -command {
             grab release .textInput
             destroy .textInput
@@ -290,6 +267,33 @@ proc textInput {char} {
         grab set .textInput
         wm transient .textInput
     }
+}
+
+# executed whenever the OK button of textInput is invoked
+proc textOK {} {
+    global textBuffer
+    grab release .textInput
+    destroy .textInput
+    canvas.moveOffsX 0
+    canvas.moveOffsY 0
+    if {[lsearch [availableOperations] $textBuffer]>-1} {
+        addOperationKey $textBuffer
+    } elseif [string match "\[%#\]*" $textBuffer] {
+        addNote [string range $textBuffer 1 end]
+    } else {
+        if [regexp "(.*)=(.*)" $textBuffer dummy name init] {
+            minsky.addVariable $name flow
+            minsky.canvas.itemFocus.init $init
+            minsky.variableValues.reset
+        } else {
+            minsky.addVariable $textBuffer flow
+            
+            getItemAt [minsky.canvas.itemFocus.x] \
+                [minsky.canvas.itemFocus.y]
+            editVar
+        }
+    }
+    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
 
 # operation add shortcuts
