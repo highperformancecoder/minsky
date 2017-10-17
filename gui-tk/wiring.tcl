@@ -366,8 +366,10 @@ proc canvasContext {x y} {
     tk_popup .wiring.context $x $y
 }
 
-bind .wiring.canvas <Double-Button-1> {
-    if [getItemAt %x %y] {
+
+bind .wiring.canvas <Double-Button-1> {doubleButton %x %y}
+proc doubleButton {x y} {
+    if [getItemAt $x $y] {
         editItem
     }
 }

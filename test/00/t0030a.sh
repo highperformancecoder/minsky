@@ -36,27 +36,24 @@ source $here/test/assert.tcl
 proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
   recentreCanvas
-  updateCanvas
-  foreach godley [items.#keys] {
-    item.get \$godley
-    if {[item.classType]=="GodleyIcon"} break
-  }
-  doubleMouseGodley \$godley 38 118
+  assert {[findObject GodleyIcon]}
+  set item minsky.canvas.item
+  doubleButton [\$item.x] [\$item.y]
   update
-  # should open edit window
-  assert {[winfo viewable .old_wiring.editVar]}
-  .old_wiring.editVar.buttonBar.ok invoke
-  assert {![winfo exists .old_wiring.editVar]}
+  # should open Godley window
+  assert {[lsearch -glob [winfo children .] .godley*]>=0}
 
-  # double click on first variable
-  foreach var [items.#keys] {
-    item.get \$var
-    switch -glob [item.classType] {
-      "Variable*" break
-    }
-  }
+  # now double click on one of the flow variables
+  minsky.canvas.item.flowVars.@elem 0
+  set var minsky.canvas.item.flowVars(0)
+  doubleButton [\$var.x] [\$var.y]
+  assert {[winfo viewable .wiring.editVar]}
+  .wiring.editVar.buttonBar.ok invoke
+  assert {![winfo exists .wiring.editVar]}
+
+  assert {[findVariable Loan]}
   editItem
-  assert {[winfo viewable .old_wiring.editVar]} {varclick}
+  assert {[winfo viewable .wiring.editVar]} {varclick}
   .wiring.editVar.buttonBar.ok invoke
   assert {![winfo exists .wiring.editVar]} {varclick}
 
