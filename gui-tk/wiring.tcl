@@ -258,7 +258,7 @@ proc textInput {char} {
             if {[lsearch [availableOperations] $textBuffer]>-1} {
                 addOperationKey $textBuffer
             } elseif [string match "\[%#\]*" $textBuffer] {
-                addNote $textBuffer
+                addNote [string range $textBuffer 1 end]
             } else {
                 if [regexp "(.*)=(.*)" $textBuffer dummy name init] {
                     minsky.addVariable $name flow

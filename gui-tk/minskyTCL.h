@@ -183,6 +183,23 @@ namespace minsky
       return canvas.item.get();
     }
     
+    bool findVariable(const std::string& name)
+    {
+      model->recursiveDo
+        (&GroupItems::items, [&](const Items&, Items::const_iterator i)
+                         {
+                           if (auto v=dynamic_cast<VariableBase*>(i->get()))
+                             if (v->name()==name)
+                               {
+                                 canvas.item=*i;
+                                 return true;
+                               }
+                           return false;
+                         });
+      registerRef(canvas.item,"minsky.canvas.item");
+      return canvas.item.get();
+    }
+    
     /// reinitialises canvas to the group located in item
     void openGroupInCanvas() {
       canvas.openGroupInCanvas(canvas.item);

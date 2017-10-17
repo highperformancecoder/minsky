@@ -49,23 +49,35 @@ addOperationKey add
 assert {[model.items.size]==3}
 
 textInput a
-textInput \r
+assert {[winfo exists .textInput]}
+.textInput.buttonBar.ok invoke
+assert {[winfo exists .wiring.editVar]}
+.wiring.editVar.buttonBar.ok invoke
 assert {[model.items.size]==4}
-textInput %
-textInput a
-deleteKey
-textInput b
-textInput \r
+
+textInput f
+assert {[winfo exists .textInput]}
+.textInput.entry insert 1 "=0.2"
+.textInput.buttonBar.ok invoke
+assert {![winfo exists .wiring.editVar]}
 assert {[model.items.size]==5}
-assert {[item.detailedText]=="b"}
+assert {[findVariable f]} {}
+assert {[minsky.canvas.item.init]=="0.2"}
 
-addNewGodleyItem
-event generate .wiring.canvas <Button-1>
+textInput %
+.textInput.entry insert 1 "b"
+.textInput.buttonBar.ok invoke
 assert {[model.items.size]==6}
+assert {[findObject Item]} {}
+assert {[minsky.canvas.item.detailedText]=="b"}
 
-newPlot
+addGodley
 event generate .wiring.canvas <Button-1>
 assert {[model.items.size]==7}
+
+addPlot
+event generate .wiring.canvas <Button-1>
+assert {[model.items.size]==8}
 
 
 tcl_exit
