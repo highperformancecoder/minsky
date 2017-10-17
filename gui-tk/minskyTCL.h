@@ -143,6 +143,13 @@ namespace minsky
       registerRef(canvas.item,"minsky.canvas.item");
     }
     
+    void groupOfItem() {
+      if (canvas.item) {
+          canvas.item=canvas.item->group.lock();
+          registerRef(canvas.item,"minsky.canvas.item");
+        }
+    }
+
     bool selectVar(float x, float y) {
       bool r=canvas.selectVar(x,y);
       if (r)
@@ -169,16 +176,22 @@ namespace minsky
     /// find first object of given \a type
     bool findObject(const std::string& type)
     {
-      model->recursiveDo
-        (&GroupItems::items, [&](const Items&, Items::const_iterator i)
-                         {
-                           if ((*i)->classType()==type)
-                             {
-                               canvas.item=*i;
-                               return true;
-                             }
-                           return false;
-                         });
+      if (type=="Group")
+        if (!canvas.model->groups.empty())
+          canvas.item=canvas.model->groups.front();
+        else
+          canvas.item.reset();
+      else
+        model->recursiveDo
+          (&GroupItems::items, [&](const Items&, Items::const_iterator i)
+           {
+             if ((*i)->classType()==type)
+               {
+                 canvas.item=*i;
+                 return true;
+               }
+             return false;
+           });
       registerRef(canvas.item,"minsky.canvas.item");
       return canvas.item.get();
     }

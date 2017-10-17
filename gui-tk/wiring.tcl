@@ -1104,14 +1104,6 @@ proc OKnote {item} {
     minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
     closeEditWindow .wiring.note
 }
-#  
-#  proc findItemWithDetailedText desc {
-#      foreach i [items.#keys] {
-#          item.get $i
-#          if {[item.detailedText]==$desc} {return $i}
-#      }
-#  }
-#  
 
 proc tout {args} {
   puts "$args"

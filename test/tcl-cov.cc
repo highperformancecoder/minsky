@@ -113,7 +113,7 @@ int main(int argc, char** argv)
       //      cout << c << " " << cov.key(fname, linec) << endl;
       if (c || elemStack.isProc())
         {
-          if (c || (c=cov[cov.key(elemStack.fqName(), elemStack.back().lineCnt)]))
+          if (c || (c=cov[cov.key(elemStack.fqName(), linec)]))
             cout << c << "\t" << line << endl;
           else
             cout << "###\t" << line << endl;

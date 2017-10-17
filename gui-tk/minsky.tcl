@@ -93,12 +93,46 @@ proc setFname {name} {
 # needed for scripts/tests
 rename exit tcl_exit
 
-#if argv(1) has .tcl extension, it is a script, otherwise it is data
-if {$argc>1} {
-    if [string match "*.tcl" $argv(1)] {
-        source $argv(1)
+proc attachTraceProc {namesp} {
+    foreach p [info commands $namesp*] {
+        if {$p ne "::traceProc"} {
+            trace remove execution $p enterstep traceProc
+            trace add execution $p enterstep traceProc
+        }
+    }
+    # recursively process child namespaces
+    foreach n [namespace children $namesp] {
+        attachTraceProc ${n}::
     }
 }
+
+proc traceProc {args} {
+    array set frameInfo [info frame -2]
+    if  {[info exists frameInfo(proc)]&&[info exists frameInfo(line)]} {
+        cov.add $frameInfo(proc) $frameInfo(line)
+    }
+    if  {[info exists frameInfo(file)]&&[info exists frameInfo(line)]} {
+        cov.add $frameInfo(file) $frameInfo(line)
+    }
+}
+ 
+if [info exists env(MINSKY_COV)] {
+    # open coverage database, and set cache size
+    Coverage cov
+    cov.init $env(MINSKY_COV) w
+    cov.max_elem 10000
+    rename tcl_exit tcl_exit2
+    proc tcl_exit {args} {
+        # disable coverage testing
+        proc traceProc {args} {}
+        cov.close
+        eval tcl_exit2 $args
+    }
+#    attachTraceProc ::
+}
+
+#if argv(1) has .tcl extension, it is a script, otherwise it is data
+if {$argc>1 && [string match "*.tcl" $argv(1)]} {source $argv(1)}
 
 source $tcl_library/init.tcl
 
@@ -1077,10 +1111,6 @@ proc exit {} {
         }
     }
 
-    #persist coverage database to disk (if coverage testing performed)
-    if [llength [info commands cov.close]] cov.close
-    # disable coverage testing
-    proc traceProc {args} {}
 
     # if we have a valid rc file location, write out the directory of
     # the last file loaded
@@ -1100,7 +1130,7 @@ proc exit {} {
     }
     # why is this needed?
     proc bgerror x {} 
-    exit_ecolab
+    tcl_exit
 }
 
 proc setFname {name} {
@@ -1232,38 +1262,8 @@ proc replay {} {
 #}
 #after 1000 checkHistory
 
-proc attachTraceProc {namesp} {
-    foreach p [info commands $namesp*] {
-        if {$p ne "::traceProc"} {
-            trace add execution $p enterstep traceProc
-        }
-    }
-    # recursively process child namespaces
-    foreach n [namespace children $namesp] {
-        attachTraceProc ${n}::
-    }
-}
-
 # check whether coverage analysis is required
-if [info exists env(MINSKY_COV)] {
-#    trace add execution proc leave enableTraceProc
-    proc traceProc {args} {
-        array set frameInfo [info frame -2]
-        if  {$frameInfo(type)=="proc"} {
-            cov.add $frameInfo(proc) $frameInfo(line)
-        }
-        if  {$frameInfo(type)=="source"} {
-            cov.add $frameInfo(file) $frameInfo(line)
-        }
-    }
-# open coverage database, and set cache size
-    Coverage cov
-    cov.init $env(MINSKY_COV) w
-    cov.max_elem 10000
-# attach trace execuation to all created procs
-    attachTraceProc ::
-}
-
+if [info exists env(MINSKY_COV)] {attachTraceProc ::}
 
 # a hook to allow code to be run after Minsky has initialised itself
 if {[llength [info commands afterMinskyStarted]]>0} {

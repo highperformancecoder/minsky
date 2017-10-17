@@ -35,28 +35,23 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
  minsky.load $here/examples/GoodwinLinear02.mky
- openGlobalInCanvas
  recentreCanvas
- update
 
-foreach gid [items.#keys] {
-   item.get \$gid
-  if {[item.classType]=="GroupIcon"} break
- }
+ assert {[findObject "Group"]}
+ set group [TCLItem]
+ \$group.detailedText "the group"
  #create an op, and move it into the group
- group.get \$gid
- group.detailedText "the group"
- item.get [addOperation time]
- item.detailedText "addedTimeOp"
+ addOperation time
+ set itF "minsky.canvas.itemFocus"
+ set opFound [getItemAt [\$itF.x] [\$itF.y]]
+ assert "\$opFound" {}
+ set addedOp [TCLItem]
+ canvas.mouseUp [\$group.x] [\$group.y]
+ groupOfItem
+ assert {[minsky.canvas.item.detailedText]=="the group"}
 
- event generate .old_wiring.canvas <Button-1> -x [group.x]  -y [group.y]
-
- # do the same thing with a variable
+ # now move the added operation out
  
- set id [findItemWithDetailedText "addedTimeOp"]
- set gid [findItemWithDetailedText "the group"]
- op.get \$id
- assert "\[groupOf \$id\]==\$gid" "op"
 
  move \$id 1000 1000
  update
