@@ -311,8 +311,8 @@ bind . <Key-at> {newPlotItem [plots.nextPlotID] [get_pointer_x .wiring.canvas] [
 
 bind . <Key> {textInput %A}
 
-bind . <Key-Delete> {deleteKey}
-bind . <Key-BackSpace> {deleteKey}
+bind . <Key-Delete> {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
+bind . <Key-BackSpace> {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
 
 bind . <KeyPress-Shift_L> {.wiring.canvas configure -cursor $panIcon}
 bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor arrow}
@@ -326,13 +326,12 @@ bind . <KeyPress-Up> {canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_
 bind . <KeyPress-Down> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
 
 # handle processing when delete or backspace is pressed
-proc deleteKey {} {
-#    tk_messageBox -message "hello"
+proc deleteKey {x y} {
     if {![canvas.selection.empty]} {
         cut
-    } elseif [getItemAt [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]] {
+    } elseif [getItemAt $x $y] {
         canvas.deleteItem
-    } elseif [getWireAt [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]] {
+    } elseif [getWireAt $x $y] {
         canvas.deleteWire
     }
     canvas.requestRedraw
