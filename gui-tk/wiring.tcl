@@ -577,45 +577,7 @@ namespace eval godley {
 proc flip_default {} {
     minsky.canvas.defaultRotation [expr ([minsky.canvas.defaultRotation]+180)%360]
 }
-#  
-#  proc deleteItem {id tag} {
-#      .wiring.canvas delete $tag
-#      wiringGroup.deleteItem $id
-#      .wiring.canvas delete wires
-#      wiringGroup.buildMaps
-#      updateCanvas
-#  }
-#  
-#  proc copyVar {} {
-#      global globals
-#      set newId [wiringGroup.copyItem]
-#      var.get $newId
-#      newItem $newId
-#      placeNewVar $newId
-#  }
-#  
-#  proc copyOp  {id} {
-#      global globals
-#      item.get $id
-#      set newId [copyItem]
-#      op.get $newId
-#      placeNewOp $newId 
-#  }
-#  
-#  proc rotateOp {id angle} {
-#      op.get $id
-#      op.rotation [expr [op.rotation]+$angle]
-#      op.set
-#      drawOperation $id
-#      wiringGroup.adjustWires $id
-#  }
-#  
-#  proc rotateVar {id angle} {
-#      var.get $id
-#      var.rotation [expr [var.rotation]+$angle]
-#      wiringGroup.adjustWires $id
-#  }
-#  
+
 proc deiconifyEditVar {} {
     if {![winfo exists .wiring.editVar]} {
         toplevel .wiring.editVar 
@@ -1060,6 +1022,7 @@ proc editItem {} {
         # plot widgets are slightly different, in that double-click
         # expands the plot, rather than edits.
         "PlotWidget" {plotDoubleClick [TCLItem]}
+        "Item" {postNote item}
     }
 }
   

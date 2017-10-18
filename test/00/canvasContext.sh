@@ -53,6 +53,14 @@ proc afterMinskyStarted {} {
   assert {[winfo ismapped .wiring.context]} "operation"
   .wiring.context unpost
 
+  minsky.addOperation data
+  assert {[findObject DataOp]}
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "data operation"
+  .wiring.context unpost
+
+
+
   minsky.addPlot
   assert {[findObject PlotWidget]}
   contextMenu 0 0 0 0
