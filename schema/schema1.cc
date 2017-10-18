@@ -405,7 +405,16 @@ namespace schema1
                   // are group relative
                   auto it=imap[id];
                   it->moveTo(it->x()+gg->x(), it->y()+gg->y());
-                  gg->addItem(it);
+                  // addItem will adjust variable names by scoping
+                  // rules. Override that behavior here
+                  if (auto v=dynamic_cast<minsky::VariableBase*>(it.get()))
+                    {
+                      auto n=v->rawName();
+                      gg->addItem(it);
+                      v->name(n);
+                    }
+                  else
+                    gg->addItem(it);
                   assert(gg->uniqueItems());
                 }
             // process ports list to populate io variables

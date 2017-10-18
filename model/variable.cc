@@ -171,6 +171,29 @@ double VariableBase::_value(double x)
   return x;
 }
 
+vector<string> VariableBase::accessibleVars() const
+{
+  set<string> r;
+  if (auto g=group.lock())
+    {
+      // first add local variables
+      for (auto& i: g->items)
+        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+          r.insert(v->name());
+      // now add variables in outer scopes, ensuring they qualified
+      for (g=g->group.lock(); g;  g=g->group.lock())
+        for (auto& i: g->items)
+          if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            {
+              auto n=v->name();
+              if (n[0]=':')
+                r.insert(n);
+              else
+                r.insert(':'+n);
+            }
+    }
+  return vector<string>(r.begin(),r.end());
+}
 
 namespace minsky
 {

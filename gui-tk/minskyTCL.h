@@ -150,6 +150,11 @@ namespace minsky
         }
     }
 
+    void resetItem() {
+      canvas.item.reset();
+      registerRef(canvas.item,"minsky.canvas.item");
+    }
+    
     bool selectVar(float x, float y) {
       bool r=canvas.selectVar(x,y);
       if (r)

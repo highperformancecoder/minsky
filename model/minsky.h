@@ -292,6 +292,11 @@ namespace minsky
     /// return the order in which operations are applied (for debugging purposes)
     ecolab::array<int> opOrder() const;
 
+    /// return a list of existing variables a variable could be
+    /// connected to. This includes all global variables, plus any
+    /// accessible from item's group
+    std::vector<std::string> accessibleVars() const;
+
     /// return the AEGIS assigned version number
     static const char* minskyVersion;
     string ecolabVersion() {return VERSION;}

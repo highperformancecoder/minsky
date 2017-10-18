@@ -221,7 +221,8 @@ proc addConstantOrVariable {} {
     set "varInput(Short description)" ""
     set "varInput(Detailed description)" ""
     deiconifyInitVar
-    .wiring.initVar.entry10 configure -values [variableValues.#keys]
+    resetItem
+    .wiring.initVar.entry10 configure -values [accessibleVars]
     ::tk::TabToWindow $varInput(initial_focus);
     tkwait visibility .wiring.initVar
     grab set .wiring.initVar
@@ -889,7 +890,7 @@ proc editVar {} {
     deiconifyEditVar
     wm title .wiring.editVar "Edit [$item.name]"
     # populate combobox with existing variable names
-    .wiring.editVar.entry10 configure -values [variableValues.#keys]
+    .wiring.editVar.entry10 configure -values [accessibleVars]
 
     set "editVarInput(Name)" [$item.name]
     set "editVarInput(Type)" [$item.type]

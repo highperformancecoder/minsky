@@ -80,6 +80,10 @@ namespace minsky
         [this](const std::string& s){return _name(s);}};
     /// @}
 
+    /// accessor for the name member (may differ from name() with top
+    /// level variables)
+    const std::string& rawName() const {return m_name;}
+    
     bool ioVar() const override;
 
     /// ensure an associated variableValue exists
@@ -147,6 +151,9 @@ namespace minsky
     ClickType::Type clickType(float x, float y) override;
     
     bool inputWired() const;
+    /// return a list of existing variables a variable in this group
+    /// could be connected to
+    std::vector<std::string> accessibleVars() const;
   };
 
   template <VariableType::Type T>

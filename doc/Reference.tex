@@ -188,8 +188,10 @@ table, and so on.
 
 Variable names uniquely identify variables. Multiple icons on the
 canvas may have the same name --- they all refer to the same
-variable. Variable names have scope, which is either global (indicated
-by a leading `:', or the numerical id of a group. You may select a
+variable. Variable names have scope, which is either local (no initial
+`:'), belonging to an outer group (indicated by a leading `:' on the
+inner group variable, and the outer group variable having no such
+leading `:'), or completely global otherwise. You may select a
 variable name from a drop down list in the ``name'' combo box, which
 makes for an easier way of selecting exactly which variable you want.
 
