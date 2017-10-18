@@ -352,7 +352,7 @@ namespace minsky
        });
   }
 
-  std::set<string> Minsky::matchingTableColumns(GodleyTable& currTable, GodleyAssetClass::AssetClass ac)
+  std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
     // matching liability with assets and vice-versa
@@ -369,7 +369,10 @@ namespace minsky
       }
 
     std::set<string> duplicatedColumns;
-    vector<string> columns=currTable.getColumnVariables();
+    vector<string> columns=godley.table.getColumnVariables();
+    // convert to valueIds
+    for (auto& i: columns)
+      i=VariableValue::valueId(godley.group.lock(), i);
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator it)
@@ -377,15 +380,12 @@ namespace minsky
          if (auto gi=dynamic_cast<GodleyIcon*>(it->get()))
            {
              vector<string> columns=gi->table.getColumnVariables();
+             // convert to valueIds
+             for (auto& i: columns)
+               i=VariableValue::valueId(godley.group.lock(), i);
              for (size_t i=0; i<columns.size(); ++i)
               {
-                //                if (columns[i].find(':')==string::npos) 
-//                  // local variable, need to qualify
-//                  if (auto g=gi->group.lock())
-//                      columns[i]="["+str(g->id)+"]:"+columns[i];
-//                  else
-//                    columns[i]=':'+columns[i];
-                if (&gi->table==&currTable || r.count(columns[i]) || gi->table._assetClass(i+1)!=ac) 
+                if (&gi->table==&godley.table || r.count(columns[i]) || gi->table._assetClass(i+1)!=ac) 
                   {
                     r.erase(columns[i]); // column already duplicated, or in current, nothing to match
                     duplicatedColumns.insert(columns[i]);
@@ -398,10 +398,7 @@ namespace minsky
       });
     for (size_t i=0; i<columns.size(); ++i)
       {
-        //            if (columns[i].find(':')==string::npos) 
-        //              // local variable, need to qualify
-        //              columns[i]=gi->table.title.substr(0,5)+"["+str(gi->id())+"]:"+columns[i];
-        if (r.count(columns[i]) || currTable._assetClass(i+1)!=ac) 
+        if (r.count(columns[i]) || godley.table._assetClass(i+1)!=ac) 
           {
             r.erase(columns[i]); // column already duplicated, or in current, nothing to match
             duplicatedColumns.insert(columns[i]);
@@ -409,7 +406,25 @@ namespace minsky
         else if (!duplicatedColumns.count(columns[i]))
           r.insert(columns[i]);
       }
-    return r;
+
+    // rewrite valueIds in terms local to the Godley table
+    set<string> r1;
+    bool toplevel=false;
+    if (auto g=godley.group.lock())
+      toplevel=!g->group.lock();
+    for (auto& i: r)
+      {
+        auto p=i.find(':');
+        if (p==string::npos)
+          r1.insert(i);
+        else
+          {
+            auto s=i.substr(p); // strip off scope qualifier
+            if (VariableValue::valueId(godley.group.lock(), s)==i)
+              r1.insert(toplevel? s.substr(1): s); // variable is accessible from current table
+          }
+      }
+    return r1;
   }
 
   void Minsky::importDuplicateColumn(const GodleyTable& srcTable, int srcCol)

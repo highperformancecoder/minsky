@@ -164,7 +164,7 @@ namespace minsky
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
     //  @param ac type of column we wish matches for
-    std::set<string> matchingTableColumns(GodleyTable& currTable, GodleyAssetClass::AssetClass ac);
+    std::set<string> matchingTableColumns(const GodleyIcon& currTable, GodleyAssetClass::AssetClass ac);
 
     /// find any duplicate column, and use it as a source column for balanceDuplicateColumns
     void importDuplicateColumn(const GodleyTable& srcTable, int srcCol);

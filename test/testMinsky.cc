@@ -801,25 +801,25 @@ SUITE(Minsky)
       godley1.cell(0,1)="a1";  
       godley1.cell(0,2)="l1";
 
-      set<string> cols=matchingTableColumns(godley2,GodleyAssetClass::asset);
+      set<string> cols=matchingTableColumns(*g2,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l1", *cols.begin());
 
       godley2.cell(0,1)="l1";  
       godley2.cell(0,2)="l2";  
 
-      cols=matchingTableColumns(godley1,GodleyAssetClass::asset);
+      cols=matchingTableColumns(*g1,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
 
-      cols=matchingTableColumns(godley1,GodleyAssetClass::liability);
+      cols=matchingTableColumns(*g1,GodleyAssetClass::liability);
       CHECK_EQUAL(0, cols.size());
 
-      cols=matchingTableColumns(godley3,GodleyAssetClass::asset);
+      cols=matchingTableColumns(*g3,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
 
-      cols=matchingTableColumns(godley3,GodleyAssetClass::liability);
+      cols=matchingTableColumns(*g3,GodleyAssetClass::liability);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("a1", *cols.begin());
 

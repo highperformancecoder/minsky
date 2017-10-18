@@ -74,7 +74,7 @@ namespace minsky
       auto it=TCL_obj_properties().find(currTable);
       if (it!=TCL_obj_properties().end())
         if (auto g=it->second->memberPtrCasted<GodleyIcon>())
-          return Minsky::matchingTableColumns(g->table, ac);
+          return Minsky::matchingTableColumns(*g, ac);
       return std::set<string>();
     }
 
