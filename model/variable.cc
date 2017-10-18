@@ -133,14 +133,6 @@ void VariableBase::ensureValueExists() const
 }
 
 
-//void VariableBase::setScope(int s)
-//{
-////  if (s>=0 && cminsky().groupItems.count(s)==0)
-////    return; //invalid scope passed
-//  m_scope=s;
-//  ensureValueExists();
-//}
-
 string VariableBase::_init() const
 {
   auto value=minsky().variableValues.find(valueId());

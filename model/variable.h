@@ -80,11 +80,7 @@ namespace minsky
         [this](const std::string& s){return _name(s);}};
     /// @}
 
-    //virtual Type type() const override=0;
     bool ioVar() const override;
-
-    /// unqualified portion of name
-    //virtual std::string uqName() const {return m_name;}
 
     /// ensure an associated variableValue exists
     void ensureValueExists() const;
@@ -143,10 +139,6 @@ namespace minsky
       return *this;
     }
     virtual ~VariableBase();
-
-    /// adds inPort for integral case (not relevant elsewhere) if one
-    /// not allocated, removes it if one allocated
-    // virtual void toggleInPort();
 
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline

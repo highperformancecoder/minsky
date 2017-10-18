@@ -1006,5 +1006,19 @@ SUITE(Minsky)
       CHECK_EQUAL("b",b2->name());
       CHECK_EQUAL(":b",b3->name());
       CHECK_EQUAL(":c",c->name());
+
+      // now check move rules
+      g0->addItem(a1);
+      CHECK_EQUAL("a",a1->name());
+
+      g2->addItem(a1);
+      CHECK_EQUAL(":a",a1->name());
+
+      g1->addItem(a1);
+      CHECK_EQUAL("a",a1->name());
+
+      g1->addItem(c);
+      CHECK_EQUAL(":c",c->name());
+
    }
 }

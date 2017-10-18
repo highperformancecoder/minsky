@@ -179,10 +179,39 @@ namespace minsky
 
     // take into account new scope
     if (auto v=dynamic_cast<VariableBase*>(it.get()))
-      v->init(init); //NB calls ensureValueExists()
-      
+      {
+        if (origGroup)
+          if (auto destGroup=self.lock())
+            if (origGroup->higher(*destGroup))
+              {
+                // moving local var into an inner group, check if other variables of
+                // same name exist in old group, and retain linkage
+                if (v->name()[0]!=':')
+                  for (auto& i: origGroup->items)
+                    if (auto vv=dynamic_cast<VariableBase*>(i.get()))
+                      if (vv->name()==v->name())
+                        v->name(':'+v->name());
+              }
+            else if (destGroup->higher(*origGroup))
+              {
+                // moving global var into an outer group, link up with variable of same name (if existing)
+                if (v->name()[0]==':')
+                  for (auto& i: items)
+                    if (auto vv=dynamic_cast<VariableBase*>(i.get()))
+                      if (vv->name()==v->name().substr(1))
+                        v->name(v->name().substr(1));
+              }
+            else
+              // moving between unrelated groups
+              if (v->name()[0]==':' && VariableValue::valueId(destGroup,v->name()) !=
+                  VariableValue::valueId(origGroup,v->name()))
+                // maintain linkage if possible, otherwise make local
+                v->name(v->name().substr(1));
+        
+        v->init(init); //NB calls ensureValueExists()
+      }
+    
     // move wire to highest common group
-    // TODO add in I/O variables if needed
     for (auto& p: it->ports)
       {
         assert(p);
