@@ -74,16 +74,19 @@ proc afterMinskyStarted {} {
   .wiring.context unpost
 
   minsky.addGroup
+  assert {[findObject Group]}
   contextMenu 0 0 0 0
   assert {[winfo ismapped .wiring.context]} "group"
   .wiring.context unpost
   
   minsky.addNote "hello"
+  assert {[findObject Item]}
   contextMenu 0 0 0 0
   assert {[winfo ismapped .wiring.context]} "note"
   .wiring.context unpost
 
   minsky.addSwitch
+  assert {[findObject SwitchIcon]}
   contextMenu 0 0 0 0
   assert {[winfo ismapped .wiring.context]} "switch"
   .wiring.context unpost
