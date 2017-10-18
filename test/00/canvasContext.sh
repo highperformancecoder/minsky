@@ -38,7 +38,49 @@ proc afterMinskyStarted {} {
   wireContextMenu 0 0
   assert {[winfo ismapped .wiring.context]}
    .wiring.context unpost
- 
+
+  # need to check context on all types of items
+  minsky.addVariable foo flow
+  assert {[findObject Variable:flow]}
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "variable"
+  .wiring.context unpost
+  assert {![winfo ismapped .wiring.context]}
+
+  minsky.addOperation integrate
+  assert {[findObject IntOp]}
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "operation"
+  .wiring.context unpost
+
+  minsky.addPlot
+  assert {[findObject PlotWidget]}
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "plot"
+  .wiring.context unpost
+
+  minsky.addGodley
+  assert {[findObject GodleyIcon]}
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "godley"
+  .wiring.context unpost
+
+  minsky.addGroup
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "group"
+  .wiring.context unpost
+  
+  minsky.addNote "hello"
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "note"
+  .wiring.context unpost
+
+  minsky.addSwitch
+  contextMenu 0 0 0 0
+  assert {[winfo ismapped .wiring.context]} "switch"
+  .wiring.context unpost
+  
+
   tcl_exit
 }
 EOF
