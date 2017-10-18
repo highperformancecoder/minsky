@@ -944,4 +944,67 @@ SUITE(Minsky)
       CHECK_EQUAL("0",g1->table.cell(1,1));
     }
 
+    /*
+      /---------------------------------\
+      |                b  :b            |
+      | /-----------\       /--------\  |
+      | |/--\ a /--\|       |:a b :b |  |
+      | ||a |   |:b||       |        |  |
+      | ||:a|   |:c||       \--------/  |
+      | |\--/   \--/|                   |
+      | \-----------/                   |
+      \---------------------------------/
+    */
+    
+    TEST_FIXTURE(TestFixture,varNameScoping)
+    {
+      auto g0=model->addGroup(new Group);
+      auto g1=model->addGroup(new Group);
+      auto g2=g0->addGroup(new Group);
+      auto g3=g0->addGroup(new Group);
+      VariablePtr a0(VariableType::flow,"a");
+      VariablePtr a1(VariableType::flow,":a");
+      g2->addItem(a0);
+      g2->addItem(a1);
+      VariablePtr a2(VariableType::flow,"a");
+      g0->addItem(a2);
+      VariablePtr a3(VariableType::flow,":a");
+      g1->addItem(a3);
+
+      VariablePtr b0(VariableType::flow,"b");
+      model->addItem(b0);
+      VariablePtr b1(VariableType::flow,":b");
+      model->addItem(b1);
+      VariablePtr b2(VariableType::flow,"b");
+      VariablePtr b3(VariableType::flow,":b");
+      g1->addItem(b2);
+      g1->addItem(b3);
+      VariablePtr b4(VariableType::flow,":b");
+      g3->addItem(b4);
+
+      
+      VariablePtr c(VariableType::flow,":c");
+      g3->addItem(c);
+
+      // check valueIds correspond to the scoping rules
+      CHECK(a0->valueId()!=a1->valueId());
+      CHECK(a0->valueId()!=a3->valueId());
+      CHECK_EQUAL(a1->valueId(),a2->valueId());
+      CHECK(a1->valueId()!=a3->valueId());
+
+      CHECK_EQUAL(b0->valueId(),b1->valueId());
+      CHECK_EQUAL(b0->valueId(),b3->valueId());
+      CHECK(b2->valueId()!=b3->valueId());
+
+      // check display values:
+      CHECK_EQUAL("a",a0->name());
+      CHECK_EQUAL(":a",a1->name());
+      CHECK_EQUAL("a",a2->name());
+      CHECK_EQUAL(":a",a3->name());
+      CHECK_EQUAL("b",b0->name());
+      CHECK_EQUAL("b",b1->name());
+      CHECK_EQUAL("b",b2->name());
+      CHECK_EQUAL(":b",b3->name());
+      CHECK_EQUAL(":c",c->name());
+   }
 }

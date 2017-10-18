@@ -127,10 +127,10 @@ namespace minsky
   string VariableValue::valueId(shared_ptr<Group> scope, string a_name)
   {
     auto name=stripActive(a_name);
-    if (name[0]==':')
+    if (name[0]==':' && scope)
       {
         // find maximum enclosing scope that has this same-named variable
-        for (auto g=scope; g; g=g->group.lock())
+        for (auto g=scope->group.lock(); g; g=g->group.lock())
           for (auto i: g->items)
             if (auto v=dynamic_cast<VariableBase*>(i.get()))
               {
