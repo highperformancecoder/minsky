@@ -156,7 +156,7 @@ namespace minsky
     std::vector<std::string> accessibleVars() const;
   };
 
-  template <VariableType::Type T>
+  template <minsky::VariableType::Type T>
   class Variable: public ItemT<Variable<T>, VariableBase>,
                   public classdesc::PolyPack<Variable<T> >
   {

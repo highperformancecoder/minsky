@@ -26,6 +26,7 @@ but any renamed attributes require bumping the schema number.
 #define SCHEMA_1_H
 
 #include "model/minsky.h"
+#include "schema/schema0.h"
 #include "schemaHelper.h"
 #include "classdesc.h"
 #include "polyXMLBase.h"
@@ -140,6 +141,7 @@ namespace schema1
     int from, to;
     Wire(): from(-1), to(-1) {}
     Wire(int id, const minsky::Wire& w): Item(id,w) {}
+    Wire(int id, int from, int to): Item(id), from(from), to(to) {}
   };
 
   struct Operation: public SPoly<Operation,Item>
@@ -151,18 +153,26 @@ namespace schema1
     string name;
     int intVar;
     Operation(): type(minsky::OperationType::numOps), value(0) {}
-    Operation(int id, const minsky::OperationBase& op); 
+    Operation(int id, const minsky::OperationBase& op);
+    Operation(int id, const schema0::Operation& op):
+      Item(id), type(op.m_type), value(op.value),
+      ports(op.m_ports),
+      name(op.m_description.empty()? op.description: op.m_description),
+      intVar(op.intVar) {}
   };
 
   struct Variable: public SPoly<Variable,Item>
   {
-    VariableType::Type type;
+    minsky::VariableType::Type type;
     string init;
     vector<int> ports;
     string name;
-    Variable(): type(VariableType::undefined), init("0") {}
+    Variable(): type(minsky::VariableType::undefined), init("0") {}
     Variable(int id, const minsky::VariableBase& v): 
       Item(id,v), type(v.type()), init(v.init()), name(v.name()) {}
+    Variable(int id, const schema0::VariablePtr& v):
+      Item(id), type(v.m_type), init(v.init), ports{v.m_outPort,v.m_inPort},
+      name(v.name) {}
   };
 
   // why is the schema1 qualifier needed here?
@@ -178,6 +188,8 @@ namespace schema1
       Item(id,p), legend(p.legend? new Side(p.legendSide): NULL),
       logx(p.logx), logy(p.logy),
       title(p.title), xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label) {}
+    Plot(int id, const schema0::PlotWidget& p): 
+      Item(id), ports(p.ports.begin(),p.ports.end()), logx(p.logx), logy(p.logy) {}
   };
 
   struct Group: public SPoly<Group,Item>
@@ -192,6 +204,11 @@ namespace schema1
     Group() {}
     Group(int id, const minsky::Group& g): 
       Item(id,g), name(g.title) {}
+    /// note this assumes that ids have been uniquified prior to this call
+    Group(int id, const schema0::GroupIcon& g):
+      Item(id), items(g.operations), ports(g.m_ports.begin(),g.m_ports.end()) {
+      items.insert(items.end(), g.variables.begin(), g.variables.end());
+    }
   };
 
   struct Switch: public SPoly<Switch,Item>
@@ -205,18 +222,27 @@ namespace schema1
   struct Godley: public SPoly<Godley,Item>
   {
     vector<int> ports;
-    bool doubleEntryCompliant;
+    bool doubleEntryCompliant=true;
     string name;
     vector<vector<string> > data;
     vector<minsky::GodleyTable::AssetClass> assetClasses;
-    double zoomFactor;
-    Godley(): doubleEntryCompliant(true), zoomFactor(1) {}
+    double zoomFactor=1;
+    Godley() {}
     Godley(int id, const minsky::GodleyIcon& g):
       Item(id,g), 
       doubleEntryCompliant(g.table.doubleEntryCompliant),
       name(g.table.title), data(g.table.getData()), 
       assetClasses(g.table._assetClass()),
       zoomFactor(g.schema1ZoomFactor()) {}
+    Godley(int id, const schema0::GodleyIcon& g):
+      Item(id),
+      doubleEntryCompliant(g.table.doubleEntryCompliant),
+      name(g.table.title), data(g.table.data),
+      assetClasses(g.table.m_assetClass)
+    {
+      for (auto& i: g.flowVars) ports.push_back(i.m_inPort);
+      for (auto& i: g.stockVars) ports.push_back(i.m_outPort);
+    }
   };
 
   struct Layout: public SPoly<Layout, SPolyBase>
@@ -231,20 +257,35 @@ namespace schema1
   /// plots, godleyIcons)
   struct PositionLayout: public SPoly<PositionLayout, Layout>
   {
-    double x,y;
+    double x=0, y=0;
 
-    PositionLayout(): x(0), y(0) {}
+    PositionLayout() {}
+    PositionLayout(int id, double x, double y): Layout(id), x(x), y(y) {}
     template <class T> PositionLayout(int id, const T& item): 
       Layout(id), x(item.m_x), y(item.m_y) {}
+    PositionLayout(int id, const schema0::Operation& o):
+      Layout(id), x(o.x), y(o.y) {}
+    PositionLayout(int id, const schema0::Variable& v):
+      Layout(id), x(v.x), y(v.y) {}
+    PositionLayout(int id, const schema0::GroupIcon& g):
+      Layout(id), x(g.x), y(g.y) {}
+    PositionLayout(int id, const schema0::PlotWidget& p):
+      Layout(id), x(p.x), y(p.y) {}
   };
 
   /// represents items with a visibility attribute
   struct VisibilityLayout
   {
     bool visible;
-    VisibilityLayout(): visible(true) {}
+    VisibilityLayout(bool visible=true): visible(visible) {}
     template <class T> VisibilityLayout(const T& item):
       visible(item.visible()) {}
+    VisibilityLayout(const schema0::Operation& item):
+      visible(item.visible) {}
+    VisibilityLayout(const schema0::Variable& item):
+      visible(item.visible) {}
+    VisibilityLayout(const schema0::GroupIcon& item):
+      visible(true) {}
   };
 
   struct SizeLayout
@@ -253,6 +294,7 @@ namespace schema1
     SizeLayout() {}
     template <class T>
     SizeLayout(const T& x): width(x.width), height(x.height) {}
+    SizeLayout(const schema0::PlotWidget&): width(100), height(100) {}
   };
 
   /// represents layouts of wires
@@ -264,6 +306,9 @@ namespace schema1
     WireLayout(int id, const minsky::Wire& wire): 
       Layout(id), VisibilityLayout(wire), 
       coords(wire.coords()) {}
+    WireLayout(int id, const schema0::Wire& wire): 
+      Layout(id), VisibilityLayout(wire.visible), 
+      coords(wire.coords.begin(),wire.coords.end()) {}
   };
 
   /// represents layouts of objects like variables and operators
@@ -288,12 +333,16 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
       Layout(id), PositionLayout(id, g), VisibilityLayout(g),
       ItemLayout(id, g), SizeLayout(g), 
       displayZoom(g.displayZoom) {}
+    GroupLayout(int id, const schema0::GroupIcon& g):
+      Layout(id), PositionLayout(id, g.x, g.y), ItemLayout(id, g), SizeLayout(g) {}
   };
 
   struct PlotLayout: public SPoly<PlotLayout, PositionLayout, SizeLayout>
   {
     PlotLayout() {width=150; height=150;}
     PlotLayout(int id, const minsky::PlotWidget& p):
+      Layout(id), PositionLayout(id, p), SizeLayout(p) {}
+    PlotLayout(int id, const schema0::PlotWidget& p):
       Layout(id), PositionLayout(id, p), SizeLayout(p) {}
   };
 
@@ -369,7 +418,9 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
       zoomFactor=m.model->zoomFactor;
       assert(model.validate());
     }
-      
+
+    Minsky(const schema0::Minsky& m);
+    
     /// create a Minsky model from this
     operator minsky::Minsky() const;
     /// populate a group object from this. This mutates the ids in a

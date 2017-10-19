@@ -19,10 +19,13 @@
 #ifndef ASSETCLASS_H
 #define ASSETCLASS_H
 
-struct GodleyAssetClass
+namespace minsky
 {
-  enum AssetClass {noAssetClass, asset, liability, equity};
-};
+  struct GodleyAssetClass
+  {
+    enum AssetClass {noAssetClass, asset, liability, equity};
+  };
+}
 
 #include "assetClass.cd"
 #include "assetClass.xcd"

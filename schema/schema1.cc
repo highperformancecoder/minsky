@@ -316,8 +316,9 @@ namespace schema1
       if (i.type==minsky::OperationType::constant)
         {
           // handle legacy constant operations by converting them to variable constants
-          auto v=imap.addItem(minsky::VariableBase::create(VariableType::constant), i);
+          auto v=imap.addItem(minsky::VariableBase::create(minsky::VariableType::constant), i);
           v->init(to_string(i.value));
+          combine.combine(static_cast<minsky::Item&>(*v),i);
           pmap.asgPorts(v->ports, i.ports);
         }
       else
@@ -779,7 +780,7 @@ namespace schema1
     for (vector<Variable>::const_iterator v=model.variables.begin();
          v!=model.variables.end(); ++v)
       // an orphaned variable is an integral variable not attached to an integral and without
-      if (v->type==VariableType::integral && intNames.count(v->name)==0)
+      if (v->type==minsky::VariableType::integral && intNames.count(v->name)==0)
         isOrphan.insert(v->id);
 
     model.variables.erase
@@ -789,6 +790,89 @@ namespace schema1
       (remove_if(layout.begin(), layout.end(), isOrphan), layout.end());
   }
 
+  Minsky::Minsky(const schema0::Minsky& m)
+  {
+    // uniquify all IDs
+    int nextId=0;
+    map<int,int> newPortIds;
+    map<int,int> newOpIds;
+    map<int,int> newVarIds;
+
+    for (auto& i: m.ports)
+      newPortIds[i.first]=nextId++;
+    for (auto& i: m.wires)
+      {
+        model.wires.emplace_back(nextId, newPortIds[i.second.from], newPortIds[i.second.to]);
+        layout.emplace_back(new WireLayout(nextId++, i.second));
+      }
+    for (auto v: m.variables)
+      {
+        newVarIds[v.first]=nextId;
+        v.second.m_outPort=newPortIds[v.second.m_outPort];
+        v.second.m_inPort=newPortIds[v.second.m_inPort];
+        // values init field overrides that of the variable's
+        auto value=m.variables.values.find(v.second.name);
+        if (value!=m.variables.values.end())
+          v.second.init=value->second.init;
+        model.variables.emplace_back(nextId, v.second);
+        layout.emplace_back(new ItemLayout(nextId++, v.second));
+      }
+    for (auto i: m.operations)
+      {
+        newOpIds[i.first]=nextId;
+        for (auto& j: i.second.m_ports)
+          j=newPortIds[j];
+        if (i.second.intVar>-1) i.second.intVar=newVarIds[i.second.intVar];
+        model.operations.emplace_back(nextId, i.second);
+        layout.emplace_back(new ItemLayout(nextId++, i.second));
+      }
+
+    for (auto i: m.plots.plots)
+      {
+        for (auto& j: i.second.ports)
+          j=newPortIds[j];
+        // insert another 6 ports for axis ranges that weren't there in schema 0
+        // move first 4 ports (x ports) to end, and add anothe 4 x ports
+        i.second.ports=(pcoord(6)+nextId)<<
+          i.second.ports[pcoord(8)+4]<<
+          i.second.ports[pcoord(4)]<<
+          (pcoord(4)+nextId+6);
+        nextId+=10;
+        model.plots.emplace_back(nextId, i.second);
+        layout.emplace_back(new PlotLayout(nextId++, i.second));
+      }
+
+    for (auto g: m.groupItems)
+      {
+        for (auto& i: g.second.operations)
+          i=newOpIds[i];
+        for (auto& i: g.second.variables)
+          i=newVarIds[i];
+        for (auto& j: g.second.m_ports)
+          j=newPortIds[j];
+        // wires not used in new schema, no need to renumber
+        model.groups.emplace_back(nextId, g.second);
+        layout.emplace_back(new GroupLayout(nextId++, g.second));
+      }
+
+    for (auto g: m.godleyItems)
+      {
+        // need to renumber ports in variables
+        for (auto& v: g.second.flowVars)
+          v.m_inPort=newPortIds[v.m_inPort];
+        for (auto& v: g.second.stockVars)
+          v.m_outPort=newPortIds[v.m_outPort];
+        model.godleys.emplace_back(nextId, g.second);
+        layout.emplace_back(new PositionLayout(nextId++, g.second.x, g.second.y));
+      }
+    
+    model.rungeKutta.stepMin=m.stepMin;
+    model.rungeKutta.stepMax=m.stepMax;
+    model.rungeKutta.nSteps=m.nSteps;
+    model.rungeKutta.epsAbs=m.epsAbs;
+    model.rungeKutta.epsRel=m.epsRel;
+  }
+  
 }
 
 namespace classdesc

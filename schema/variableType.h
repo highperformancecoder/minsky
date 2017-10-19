@@ -22,14 +22,17 @@
 #include <string>
 #include <ostream>
 
-struct VariableType
+namespace minsky
 {
-  enum Type {undefined, constant, parameter, flow, integral, stock, tempFlow, numVarTypes};
-  static std::string typeName(int t);
-};
+  struct VariableType
+  {
+    enum Type {undefined, constant, parameter, flow, integral, stock, tempFlow, numVarTypes};
+    static std::string typeName(int t);
+  };
+  inline std::ostream& operator<<(std::ostream& o, VariableType::Type t)
+  {return o<<VariableType::typeName(t);}
+}
 
-inline std::ostream& operator<<(std::ostream& o, VariableType::Type t)
-{return o<<VariableType::typeName(t);}
 
 #include "variableType.cd"
 #include "variableType.xcd"

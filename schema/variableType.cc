@@ -20,5 +20,5 @@
 #include <ecolab_epilogue.h>
 using namespace classdesc;
 
-string VariableType::typeName(int t)
+string minsky::VariableType::typeName(int t)
 {return enumKey<Type>(t);}

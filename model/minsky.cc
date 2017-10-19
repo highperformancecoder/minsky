@@ -768,21 +768,24 @@ namespace minsky
     if (!inf)
       throw runtime_error("failed to open "+filename);
     xml_unpack_t saveFile(inf);
-    xml_unpack(saveFile, "Minsky", currentSchema);
+    if (saveFile.exists("root"))
+      {
+        // we're dealing with a schema 0 file
+        schema0::Minsky m;
+        m.load(filename);
+        currentSchema=schema1::Minsky(m);
+      }
+    else
+      xml_unpack(saveFile, "Minsky", currentSchema);
+    
     // fix corruption caused by ticket #329
     currentSchema.removeIntVarOrphans();
 
-    if (currentSchema.version == currentSchema.schemaVersion)
-      *this = currentSchema;
-    else
+    switch (currentSchema.version)
       {
-        throw error("Schema 0 not yet supported");
+      default:
+        *this = currentSchema;
       }
-//      { // fall back to the ill-defined schema '0'
-//        schema0::Minsky m;
-//        m.load(filename.c_str());
-//        *this=m;
-//      }
 //
 //    variables.makeConsistent();
 

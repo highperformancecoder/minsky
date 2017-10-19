@@ -30,11 +30,11 @@
 #ifndef SCHEMA_SCHEMA_0
 #define SCHEMA_SCHEMA_0
 
+#include "operationType.h"
+#include "variableType.h"
+#include "assetClass.h"
 #include <arrays.h>
 #include <plot.h>
-
-//TODO - remove this dependency
-#include "../GUI/minsky.h"
 
 namespace schema0
 {
@@ -43,7 +43,6 @@ namespace schema0
     bool input; //true if input port
     double x,y;
     Port(float x=0, float y=0, bool input=false): input(input), x(x), y(y) {}
-    operator minsky::Port () const {return minsky::Port(x,y,input);}
   };
 
   struct Wire
@@ -54,9 +53,6 @@ namespace schema0
     /// display coordinates
     ecolab::array<float> coords;
     Wire(int from=0, int to=0): from(from), to(to), visible(true) {}
-    operator minsky::Wire() const {
-      return minsky::Wire(from, to, coords, visible);
-    }
   };
 
 
@@ -77,16 +73,14 @@ namespace schema0
     std::vector<int> m_ports;
     ///integration variable associated with this op. -1 if not used
     int intVar{-1}; 
-
-    operator minsky::OperationPtr() const;
   };
 
   struct VariablePtr
   {
-    VariableType::Type m_type;
+    minsky::VariableType::Type m_type;
 
     double x{0}, y{0}; ///< position in canvas
-    string init{"0"}; ///< initial value of variable
+    std::string init{"0"}; ///< initial value of variable
     std::string name; ///< variable name
     double rotation{0}; ///< rotation if icon, in degrees
 
@@ -100,8 +94,6 @@ namespace schema0
 
     bool operator<(const VariablePtr& x) const
     {return name<x.name;}
-
-    operator minsky::VariablePtr() const;
   };
 
   // used to support an older schema
@@ -109,15 +101,14 @@ namespace schema0
 
   struct VariableValue
   {
-    VariableType::Type m_type;
+    minsky::VariableType::Type m_type;
     int m_idx{-1}; /// index into value vector
 
-    string init;
+    std::string init;
     bool godleyOverridden{false};
 
-    VariableValue(VariableType::Type type=VariableType::undefined, 
-                  const string& init="0"): m_type(type), init(init) {}
-    operator minsky::VariableValue() const;
+    VariableValue(minsky::VariableType::Type type=minsky::VariableType::undefined, 
+                  const std::string& init="0"): m_type(type), init(init) {}
   };
 
 
@@ -129,24 +120,18 @@ namespace schema0
     std::set<std::string> wiredVariables; /// variables whose input port is wired
     std::map<int, int> portToVariable; /// map of ports to variables
     VariableValues values; 
-
-    /// scans variable, wire & port definitions to correct any inconsistencies
-    /// - useful after a load to correct corrupt xml files
-    //    void makeConsistent();
-    operator minsky::VariableManager() const;
   };
 
   struct GodleyTable
   {
     std::vector<std::vector<std::string> > data;
     /// class of each column (used in DE compliant mode)
-    std::vector<minsky::GodleyTable::AssetClass> m_assetClass;
+    std::vector<minsky::GodleyAssetClass::AssetClass> m_assetClass;
     bool doubleEntryCompliant;
     std::string title;
   
     GodleyTable(): doubleEntryCompliant(false)  {}
     size_t rows() const {return data.size();}
-    operator minsky::GodleyTable() const;
   };
 
   struct GodleyIcon
@@ -156,7 +141,6 @@ namespace schema0
     double scale; ///< scale factor of the XGL image
     std::vector<VariablePtr> flowVars, stockVars;
     GodleyTable table;
-    operator minsky::GodleyIcon() const;
   };
 
   class GroupIcon
@@ -175,10 +159,7 @@ namespace schema0
     double rotation; // orientation of icon
 
     GroupIcon(): width(100), height(100), rotation(0) {}
-    operator minsky::GroupIcon() const;
-
     void updateEdgeVariables(const VariableManager& vm);
-
   };
 
 
@@ -192,7 +173,7 @@ namespace schema0
     };
   }
 
-  struct PlotWidget: public ecolab::Plot
+  struct PlotWidget //: public ecolab::Plot
   {
     int nxTicks, nyTicks; ///< number of x/y-axis ticks
     double fontScale; ///< scale tick labels
@@ -211,7 +192,6 @@ namespace schema0
     std::vector<std::string> images;
  
     double x,y;
-    operator minsky::PlotWidget() const;
   };
 
 
@@ -219,7 +199,6 @@ namespace schema0
   {
     typedef std::map<std::string, PlotWidget> Map;
     Map plots;
-    operator minsky::Plots() const; 
   };
 
   struct Minsky
@@ -242,19 +221,16 @@ namespace schema0
     
     Plots plots;
     
-    Minsky();
+    Minsky() {}
 
     /// Runge-Kutta parameters
-    double stepMin; ///< minimum step size
-    double stepMax; ///< maximum step size
-    int nSteps;     ///< number of steps per GUI update
-    double epsAbs;     ///< absolute error
-    double epsRel;     ///< relative error
-
-    /// load from a file
-    void load(const char* filename);
-
-    operator minsky::Minsky() const;
+    double stepMin=0; ///< minimum step size
+    double stepMax=1; ///< maximum step size
+    int nSteps=1;     ///< number of steps per GUI update
+    double epsAbs=1e-3;     ///< absolute error
+    double epsRel=1e-2;     ///< relative error
+     /// load from a file
+    void load(const std::string& filename);
 
     /** See ticket #329 and references within. At some stage, IntOp had
         no destructor, which leads to an orphaned, invisible integral
@@ -264,8 +240,7 @@ namespace schema0
         Apparently schema0 files suffered from this problem too!
     */
     void removeIntVarOrphans();
-
-  };
+};
 
 }
 
