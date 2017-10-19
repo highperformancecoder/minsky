@@ -128,7 +128,7 @@ void VariableBase::ensureValueExists() const
     {
       assert(VariableValue::isValueId(valueId));
       minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(), name())));
+        (make_pair(valueId,VariableValue(type(), name(), "", group.lock())));
     }
 }
 

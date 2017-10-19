@@ -30,6 +30,7 @@ namespace minsky
   class VariableValue;
   struct VariableValues;
   class Group;
+  typedef std::shared_ptr<Group> GroupPtr;
   
   class VariableValue: public VariableType
   {
@@ -61,15 +62,16 @@ namespace minsky
     std::string init;
 
     bool godleyOverridden;
-    std::string name; // full marked up name of this variable
+    std::string name; // name of this variable
+    classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
     double value() const {
       return const_cast<VariableValue*>(this)->valRef();
     }
     int idx() const {return m_idx;}
 
-    VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init=""): 
-      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name) {}
+    VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
+      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 
     const VariableValue& operator=(double x) {valRef()=x; return *this;}
     const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
@@ -78,6 +80,8 @@ namespace minsky
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
 
+    std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
+    
     /// evaluates the initial value, based on the set of variables
     /// contained in \a VariableManager. \a visited is used to check
     /// for circular definitions
@@ -103,7 +107,12 @@ namespace minsky
     static std::string valueId(std::string name) {
       return valueId(scope(name), name);
     }
-    static std::string valueId(std::shared_ptr<Group> scope, std::string a_name);
+    /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
+    /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
+    static GroupPtr scope(GroupPtr ref, const std::string& name);
+    static std::string valueId(const GroupPtr& ref, const std::string& name) 
+    {return valueIdFromScope(scope(ref,name), name);}
+    static std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);
     
     /// extract scope from a qualified variable name
     /// @throw if name is unqualified

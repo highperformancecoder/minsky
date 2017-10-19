@@ -85,16 +85,18 @@ namespace minsky
       return fc.coef;
     else
       {
-        if (visited.count(fc.name))
+        // resolve name
+        auto valueId=VariableValue::valueId(m_scope.lock(), fc.name);
+        if (visited.count(valueId))
           throw error("circular definition of initial value for %s",
                       fc.name.c_str());
         VariableValues::const_iterator vv=v.end();
-        if (isValueId(fc.name)) vv=v.find(valueId(fc.name));
+        vv=v.find(valueId);
         if (vv==v.end())
           throw error("Unknown variable %s in initialisation of %s",fc.name.c_str(), name.c_str());
         else
           {
-            visited.insert(fc.name);
+            visited.insert(valueId);
             return fc.coef*vv->second.initValue(v, visited);
           }
       }
@@ -124,7 +126,7 @@ namespace minsky
       throw error("scope requested for local variable");
   }
 
-  string VariableValue::valueId(shared_ptr<Group> scope, string a_name)
+  GroupPtr VariableValue::scope(GroupPtr scope, const std::string& a_name)
   {
     auto name=stripActive(a_name);
     if (name[0]==':' && scope)
@@ -144,12 +146,18 @@ namespace minsky
         scope.reset(); // global var
       break_outerloop: ;
       }
+    return scope;
+  }
+  
+  
+  string VariableValue::valueIdFromScope(const GroupPtr& scope, const std::string& name)
+  {
     if (!scope || !scope->group.lock())
       return VariableValue::valueId(-1,name); // retain previous global var id
     else
       return VariableValue::valueId(size_t(scope.get()), name);
-  }
-
+}
+  
   std::string VariableValue::uqName(const std::string& name)
   {
     string::size_type p=name.rfind(':');
