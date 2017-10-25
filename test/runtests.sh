@@ -5,7 +5,6 @@ t=0
 #    i=test/00/t00${j}a.sh
 for i in test/00/*.sh; do
     echo $i
-    if [ $i = "test/00/t0008a.sh" ]; then continue; fi # TODO schema 0 support
     if [ $i = "test/00/t0031a.sh" ]; then continue; fi 
     if [ $i = "test/00/t0032a.sh" ]; then continue; fi 
     if [ $i = "test/00/t0034a.sh" ]; then continue; fi 

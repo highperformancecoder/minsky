@@ -410,8 +410,8 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     int schemaVersion=Minsky::version;
     MinskyModel model;
     vector<shared_ptr<Layout> > layout;
-    double zoomFactor;
-    Minsky(): schemaVersion(-1), zoomFactor(1) {} // schemaVersion defined on read in
+    double zoomFactor=1;
+    Minsky(): schemaVersion(-1) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g);
     Minsky(const minsky::Minsky& m): Minsky(*m.model) {
       model.rungeKutta=RungeKutta(m);

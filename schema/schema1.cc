@@ -809,7 +809,8 @@ namespace schema1
       {
         newVarIds[v.first]=nextId;
         v.second.m_outPort=newPortIds[v.second.m_outPort];
-        v.second.m_inPort=newPortIds[v.second.m_inPort];
+        if (v.second.m_inPort>=0)
+          v.second.m_inPort=newPortIds[v.second.m_inPort];
         // values init field overrides that of the variable's
         auto value=m.variables.values.find(v.second.name);
         if (value!=m.variables.values.end())
