@@ -35,6 +35,7 @@
 #include "integral.h"
 #include "variableValue.h"
 #include "canvas.h"
+#include "panopticon.h"
 
 #include <vector>
 #include <string>
@@ -82,7 +83,7 @@ namespace minsky
     vector<Integral> integrals;
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
-
+    
     enum StateFlags {is_edited=1, reset_needed=2};
     int flags=reset_needed;
     
@@ -136,7 +137,8 @@ namespace minsky
 
   public:
     EquationDisplay equationDisplay;
-    
+    Panopticon panopticon{canvas};
+
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
     /// true if reset needs to be called prior to numerical integration

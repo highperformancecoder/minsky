@@ -577,6 +577,11 @@ pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations
 .tabs select 0
 
+image create cairoSurface panopticon -surface minsky.panopticon
+label .wiring.canvas.panopticon -image panopticon -width 100 -height 100 -borderwidth 3
+place .wiring.canvas.panopticon -relx 1 -rely 0 -anchor ne
+
+
 proc panCanvases {offsx offsy} {
     model.moveTo $offsx $offsy
     equationDisplay.offsx $offsx
