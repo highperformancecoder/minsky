@@ -164,7 +164,9 @@ namespace minsky
   public:
     std::map<double, double> data;
     void readData(const string& fileName);
-    // interpolates y data between x values bounding the argument
+    /// initialise with uniform random numbers 
+    void initRandom(double xmin, double xmax, unsigned numSamples);
+    /// interpolates y data between x values bounding the argument
     double interpolate(double) const;
     // derivative of the interpolate function. At the data points, the
     // derivative is defined as the weighted average of the left & right

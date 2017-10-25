@@ -521,6 +521,16 @@ namespace minsky
       ((p!=string::npos)? fileName.substr(p+1): fileName) + "/";
   }
 
+  void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
+  {
+    srand(::time(nullptr));
+    data.clear();
+    double dx=(xmax-xmin)/numSamples;
+    for (double x=xmin; x<xmax; x+=dx)
+      data[x]=double(rand())/RAND_MAX;
+  }
+
+  
   double DataOp::interpolate(double x) const
   {
     // not terribly sensible, but need to return something

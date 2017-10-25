@@ -492,6 +492,8 @@ proc contextMenu {x y X Y} {
             if {[$item.type]=="data"} {
                .wiring.context add command -label "Import Data" \
                     -command "importData" 
+               .wiring.context add command -label "Initialise Random" \
+                    -command "initRandom" 
             }
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
@@ -1034,7 +1036,45 @@ proc importData {} {
         minsky.canvas.item.readData $f
     }
 }
-  
+
+proc initRandom {} {
+    if {![winfo exists .wiring.initRandom]} {
+        toplevel .wiring.initRandom
+        frame .wiring.initRandom.xmin
+        label .wiring.initRandom.xmin.label -text "min x value"
+        entry .wiring.initRandom.xmin.entry -width 40 -justify left
+        pack .wiring.initRandom.xmin.label .wiring.initRandom.xmin.entry -side left
+        .wiring.initRandom.xmin.entry insert 0 "0"
+        frame .wiring.initRandom.xmax
+        label .wiring.initRandom.xmax.label -text "max x value"
+        entry .wiring.initRandom.xmax.entry -width 40 -justify left
+        pack .wiring.initRandom.xmax.label .wiring.initRandom.xmax.entry -side left
+        .wiring.initRandom.xmax.entry insert 0 "1"
+        frame .wiring.initRandom.numVals
+        label .wiring.initRandom.numVals.label -text "number of samples"
+        entry .wiring.initRandom.numVals.entry -width 40 -justify left
+        .wiring.initRandom.numVals.entry insert 0 "100"
+        pack .wiring.initRandom.numVals.label .wiring.initRandom.numVals.entry -side left
+        frame .wiring.initRandom.buttonBar
+        button .wiring.initRandom.buttonBar.cancel -text "Cancel" -command {closeEditWindow .wiring.initRandom}
+        button .wiring.initRandom.buttonBar.ok  -text "OK" -command doInitRandom
+        pack .wiring.initRandom.buttonBar.cancel  .wiring.initRandom.buttonBar.ok -side left
+        pack .wiring.initRandom.xmin .wiring.initRandom.xmax .wiring.initRandom.numVals .wiring.initRandom.buttonBar
+        bind .wiring.initRandom <Key-Escape> {.wiring.initRandom.buttonBar.cancel invoke}
+        bind .wiring.initRandom <Key-Return> {.wiring.initRandom.buttonBar.ok invoke}
+    } else {
+        deiconify .wiring.initRandom
+    }
+    tkwait visibility .wiring.initRandom
+    grab set .wiring.initRandom
+    wm transient .wiring.initRandom
+}
+
+proc doInitRandom {} {
+    minsky.canvas.item.initRandom [.wiring.initRandom.xmin.entry get] [.wiring.initRandom.xmax.entry get] [.wiring.initRandom.numVals.entry get]
+    closeEditWindow .wiring.initRandom
+}
+
 proc deiconifyNote {} {
     if {![winfo exists .wiring.note]} {
         toplevel .wiring.note

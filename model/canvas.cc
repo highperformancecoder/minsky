@@ -459,7 +459,8 @@ namespace minsky
   
   void Canvas::handleArrows(int dir, float x, float y)
   {
-    if (itemAt(x,y)->handleArrows(dir))
+    if (auto item=itemAt(x,y))
+      if (item->handleArrows(dir))
       requestRedraw();
   }
   

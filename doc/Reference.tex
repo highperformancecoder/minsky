@@ -72,7 +72,7 @@ initial value at $t=0$.
 \item[differentiate \buttonIcon{differentiate.eps}]\label{Operation:differentiate} Symbolically differentiates its input.
 
 \item[data \buttonIcon{data.eps}]\label{Operation:data} A data interpolation
-widget. Currently, the data must be imported from a file containing
+widget. The data can be imported from a file containing
 two values on each line, eg:
 \begin{quote}
 \begin{tabular}{rr}
@@ -86,6 +86,19 @@ operation outputs the corresponding value (0.3). Similarly if the
 input is greater than the maximum (0.9), the corresponding value (1)
 is output. If it lies in between two keys (eg 0.2), the the output is
 linearly interpolated (0.4).
+
+Alternatively, the data block can be initialised by a random number
+generator, which is a way of introducing random numbers\index{random
+  numbers} into the simulation. The parameters are required, the
+minimum and maximum values of the function's domain, and the number of
+random samples over that domain.
+
+\begin{center}
+  \begin{tabular}{cc}
+  \resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}} &
+  \resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}
+  \end{tabular}
+\end{center}
 
 More formally, a data block is an empirical function, based on a table
 of pairs of values ($x_i, y_i, i=1\ldots n, x_{i+1}>x_i$) read in from
