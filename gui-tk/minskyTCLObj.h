@@ -56,6 +56,7 @@ namespace minsky
         argv0!="minsky.setGodleyIconResource" &&
         argv0!="minsky.setGroupIconResource" &&
         argv0!="minsky.step" &&
+        argv0.find("minsky.panopticon")==string::npos &&
         argv0.find("minsky.equationDisplay")==string::npos && 
         argv0.find(".get")==string::npos && 
         argv0.find(".@elem")==string::npos && 

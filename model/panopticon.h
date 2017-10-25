@@ -26,7 +26,7 @@ namespace minsky
 {
   struct Panopticon: public ecolab::CairoSurface
   {
-    double left=0,top=0,width=0,height=0;
+    double width=0,height=0;
     Canvas& canvas;
     Panopticon(Canvas& canvas): canvas(canvas) {}
     void redraw(int, int, int width, int height) override;
