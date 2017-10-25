@@ -32,29 +32,26 @@ trap "fail" 1 2 3 15
 # use \$ in place of $ to refer to variable contents
 # exit 0 to indicate pass, and exit 1 to indicate failure
 cat >input.tcl <<EOF
+proc bgerror x {
+  puts \$x
+  exit 1
+}
+
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
- minsky.load $here/examples/GoodwinLinear02.mky
- recentreCanvas
+ addPlot
+ canvas.mouseUp 300 200
+ findObject PlotWidget
  set item minsky.canvas.item
- getItemAt 246 300
- set x [$item.x]
- set y [$item.y]
- set w [group.width]
- set h [group.height]
- group::resize \$gid
+ set x [\$item.x]
+ set y [\$item.y]
+ canvas.lassoMode itemResize
+ canvas.mouseUp [expr \$x+100]  [expr \$y+100]
+ assert {abs(200-[minsky.canvas.item.width])<2}
+ assert {abs(200-[minsky.canvas.item.height])<2}
 
-# variable group::orig_width
-# variable group::orig_height
+tcl_exit
 
- group::resizeRect resizeBBox [expr \$x+\$w]  [expr \$y+\$h]
- group::resizeItem resizeBBox \$gid  [expr \$x+151]  [expr \$y+151]
- assert "abs([.old_wiring.canvas canvasx \$x]-\[group.x\])<2"
- assert "abs([.old_wiring.canvas canvasy \$y]==\[group.y\])<2"
-# approximate here, because group is rotated by pi, which is  numerically approximate
- assert {abs(300-[group.width])<5}
- assert {abs(300-[group.height])<5}
- tcl_exit
 }}
 EOF
 

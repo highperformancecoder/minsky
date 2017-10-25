@@ -32,30 +32,23 @@ trap "fail" 1 2 3 15
 # use \$ in place of $ to refer to variable contents
 # exit 0 to indicate pass, and exit 1 to indicate failure
 cat >input.tcl <<EOF
-proc bgerror x {
-  puts \$x
-  exit 1
-}
-
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
- set id [newPlot]
- plot.get \$id
- foreach opt {none left right} {
-   set plotWindowOptions_legend \$opt
-   plot::setLegend 
- }
+ minsky.load $here/examples/GoodwinLinear02.mky
+ recentreCanvas
+ set item minsky.canvas.item
+ assert {[findObject Group]}
+ set x [\$item.x]
+ set y [\$item.y]
+ set w [\$item.width]
+ set h [\$item.height]
 
-plot::resize  \$id
-plot::resizeRect plotBBox [expr [plot.x]+100] [expr [plot.y]+100] 
-set x [expr [plot.x]-[.old_wiring.canvas canvasx 0]]
-set y [expr [plot.y]-[.old_wiring.canvas canvasy 0]]
-plot::resizeItem plotBBox \$id [expr \$x+100] [expr \$y+100] 
-assert {abs(200-[plot.width])<2}
-assert {abs(200-[plot.height])<2}
+ canvas.lassoMode itemResize
+ canvas.mouseUp [expr \$x+151]  [expr \$y+151]
 
-tcl_exit
-
+ assert {abs(300-[minsky.canvas.item.width])<5}
+ assert {abs(300-[minsky.canvas.item.height])<5}
+ tcl_exit
 }}
 EOF
 
