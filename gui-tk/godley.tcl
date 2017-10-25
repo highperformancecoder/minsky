@@ -236,6 +236,11 @@ proc setGetCell_ {id r c i s w} {
 		}
 	    }
             $id.setCell $row $col $varName
+            #check consistency
+            if [catch $id.update errormsg] {
+                bgerror $errormsg
+                $id.setCell $row $col ""
+            }
             whenIdleUpdateGodley $id
         } else {
             set s [$id.table.getCell $row $col]
@@ -430,8 +435,10 @@ proc columnVarTrace {id col varName args} {
     # putting a catch here allows us to present a cleaner error
     # message to the user, as this proc can be called by other
     # operations
-    if [catch {$id.setCell 0 $col [set $varName]} msg] {
+    $id.setCell 0 $col [set $varName]
+    if [catch {$id.update} msg] {
         bgerror $msg
+        $id.setCell 0 $col ""
     }
     updateGodleyDisplay $id
 }
