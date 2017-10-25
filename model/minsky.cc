@@ -825,7 +825,7 @@ namespace minsky
     // try resetting the system, but ignore any errors
     try {reset();}
     catch (...) {}
-    panopticon.surface->requestRedraw();
+    panopticon.requestRedraw();
     flags=reset_needed;
   }
 

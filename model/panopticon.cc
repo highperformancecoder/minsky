@@ -20,16 +20,25 @@
 #include "panopticon.h"
 #include "ecolab_epilogue.h"
 using namespace minsky;
-void Panopticon::redraw(int, int, int width, int height)
+void Panopticon::redraw(int, int, int w, int h)
 {
-  double x0, y0, x1, y1;
-  canvas.model->contentBounds(x0,y0,x1,y1);
-  double xscale=width/abs(x1-x0), yscale=height/abs(y1-y0);
+  cairo::SurfacePtr tmp(new cairo::Surface
+                        (cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
+  tmp.swap(canvas.surface);
+  canvas.redraw();
+
+  double xscale=w/canvas.surface->width(), yscale=h/canvas.surface->height();
   double scale=min(xscale,yscale);
   cairo_surface_set_device_scale(surface->surface(),scale,scale);
+  cairo_surface_set_device_offset(surface->surface(),-scale*canvas.model->x(),-scale*canvas.model->y());
  
-  cairo::SurfacePtr tmp(canvas.surface);
   canvas.surface=surface;
   canvas.redraw();
-  canvas.surface=tmp;
+  canvas.surface.swap(tmp);
+
+  // draw indicator rectangle
+  cairo_rectangle(surface->cairo(),0,0,width,height);
+  cairo_set_source_rgba(surface->cairo(),0,0,0,0.5);
+  cairo_fill(surface->cairo());
+  surface->blit();
 }
