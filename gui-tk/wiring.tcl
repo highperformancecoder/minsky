@@ -29,16 +29,17 @@ button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
 tooltip .wiring.menubar.line0.godley "Godley table"
 set helpTopics(.wiring.menubar.line0.godley)  GodleyIcon
 
-image create photo varImg -file $minskyHome/icons/var.gif
-button .wiring.menubar.line0.var -image varImg -height 24 -width 37 \
-    -command addVariable
+button .wiring.menubar.line0.var -text var -command addVariable -foreground #9f0000
 tooltip .wiring.menubar.line0.var "variable"
 set helpTopics(.wiring.menubar.line0.var) Variable
 
-image create photo constImg -file $minskyHome/icons/const.gif
-button .wiring.menubar.line0.const -height 24 -width 37 -image constImg -command {addConstant}
+button .wiring.menubar.line0.const -text const -command addConstant -foreground #00007f
 tooltip .wiring.menubar.line0.const "constant"
-set helpTopics(.wiring.menubar.line0.const) Constant 
+set helpTopics(.wiring.menubar.line0.const) Variable:constant
+
+button .wiring.menubar.line0.parameter -text param -command addParameter -foreground #00007f
+tooltip .wiring.menubar.line0.parameter "parameter"
+set helpTopics(.wiring.menubar.line0.const) Variable:parameter
 
 image create photo integrateImg -file $minskyHome/icons/integrate.gif
 button .wiring.menubar.line0.integrate -image integrateImg -command {
@@ -46,7 +47,7 @@ button .wiring.menubar.line0.integrate -image integrateImg -command {
 tooltip .wiring.menubar.line0.integrate integrate
 set helpTopics(.wiring.menubar.line0.integrate) Integrate
 
-pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.integrate -side left
+pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.parameter .wiring.menubar.line0.integrate -side left
 
 # create buttons for all available operations (aside from those
 # handled especially)
@@ -211,6 +212,14 @@ proc addConstant {} {
     set varInput(title) "Create Constant"
     addConstantOrVariable
     .wiring.initVar.$initVar_name configure -state disabled
+}
+
+proc addParameter {} {
+    global varInput varType initVar_name
+    set varType parameter
+    set varInput(title) "Create Parameter"
+    addConstantOrVariable
+    .wiring.initVar.$initVar_name configure -state enabled
 }
 
 proc addConstantOrVariable {} {
