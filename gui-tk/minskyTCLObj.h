@@ -44,7 +44,8 @@ namespace minsky
         argv0!="minsky.canvas.select" &&
         argv0!="minsky.canvas.recentre" &&
         argv0!="minsky.canvas.requestRedraw" &&
-        argv0!="minsky.canvas.mouseMove" &&
+        (argv0!="minsky.canvas.mouseMove"
+         || m.eventRecord.get()) && /* ensure we record mouse movements, but filter from history */
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
         argv0!="minsky.model.moveTo" &&
@@ -67,15 +68,14 @@ namespace minsky
         if (!t || (!t->is_const && (!t->is_setterGetter || argc>1)))
           {
             //            cmdHist[argv0]++;
-            if (m.pushHistoryIfDifferent())
+            bool modelChanged=m.pushHistoryIfDifferent();
+            if (modelChanged && argv0!="minsky.load") m.markEdited();
+            if (m.eventRecord.get() && argv0!="minsky.startRecording" &&
+                (modelChanged || argv0.find("minsky.canvas.mouse")!=string::npos))
               {
-                if (argv0!="minsky.load") m.markEdited();
-                if (m.eventRecord.get() && argv0=="minsky.startRecording")
-                  {
-                    for (int i=0; i<argc; ++i)
-                      (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
-                    (*m.eventRecord)<<endl;
-                  }
+                for (int i=0; i<argc; ++i)
+                  (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
+                (*m.eventRecord)<<endl;
               }
           }
       }

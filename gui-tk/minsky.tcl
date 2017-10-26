@@ -175,6 +175,7 @@ proc setBackgroundColour bgc {
     ttk::style configure TNotebook -background $backgroundColour
     ttk::style configure TNotebook.Tab -background $backgroundColour
     ttk::style map TNotebook.Tab -background "selected $bgc active $bgc"
+    if [winfo exists .controls.runmode] {.controls.runmode configure -selectcolor $bgc}
 }
 
 option add *Menu.tearOff 0
@@ -412,10 +413,18 @@ if {$classicMode} {
     image create photo stopButton -file "$minskyHome/icons/Pause.gif"
     image create photo resetButton -file "$minskyHome/icons/Rewind.gif"
     image create photo stepButton -file "$minskyHome/icons/Last.gif"
+    image create photo rec -file "$minskyHome/icons/rec.gif"
+    image create photo runmode -file "$minskyHome/icons/runmode.gif"
+    image create photo recplay -file "$minskyHome/icons/recplay.gif"
     # iconic mode
     button .controls.run -image runButton -height 25 -width 25 -command runstop
     button .controls.reset -image resetButton -height 25 -width 25 -command reset
     button .controls.step -image stepButton -height 25 -width 25  -command {step}
+    checkbutton .controls.rec -image rec -height 25 -width 25 -command toggleRecording -variable eventRecording -indicatoron 0
+    checkbutton .controls.runmode -image runmode -height 25 -width 25 -selectimage recplay -variable recordingReplay -command replay -indicatoron 0 -selectcolor $backgroundColour
+    
+    tooltip .controls.rec "Record"
+    tooltip .controls.runmode "Simulate/Recording Replay"
     tooltip .controls.run "Run/Stop"
     tooltip .controls.reset "Reset simulation"
     tooltip .controls.step "Step simulation"
@@ -449,7 +458,7 @@ set meta_menu Ctrl
 
 
 
-pack .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
+pack .controls.rec .controls.runmode .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
 pack .controls.statusbar -side right -fill x
 
 grid .controls -row 0 -column 0 -columnspan 1000 -sticky ew
@@ -692,8 +701,6 @@ proc step {} {
             update
         } else {
             runstop
-            close $eventRecordR
-            set recordingReplay 0
         }
     } else {
         # run simulation
@@ -711,21 +718,21 @@ proc step {} {
 proc simulate {} {
     uplevel #0 {
       if {$running} {
-          if {$recordingReplay} {
-              # don't slow down recording quite so much (lots of mouse
-              # movements)
-              after [expr $delay/25+0] {step; simulate}
-          } else {
+#          if {$recordingReplay} {
+#              # don't slow down recording quite so much (lots of mouse
+#              # movements)
+#              after [expr $delay/25+0] {step; simulate}
+#          } else {
               set d [expr int(pow(10,$delay/4.0))]
               after $d {
                   if {$running} {
-                      if [reset_flag] runstop else {
+                      if {!$running && [reset_flag]} runstop else {
                           step
                           simulate
                       }
                   }
               }
-          }
+#          }
         }
     }
 }
@@ -735,6 +742,8 @@ proc reset {} {
     set running 0
     if {$recordingReplay} {
         seek $eventRecordR 0 start
+        model.clear
+        canvas.requestRedraw
     } else {
         set tstep 0
         set simLogging 0
@@ -1241,7 +1250,8 @@ proc stopRecording {} {
 proc toggleRecording {} {
     global eventRecording workDir
     if $eventRecording {
-        startRecording [tk_getSaveFile -defaultextension .tcl -initialdir $workDir]
+        startRecording [tk_getSaveFile -filetypes {{"TCL scripts" .tcl TEXT} {"All Files" * }}\
+                            -defaultextension .tcl -initialdir $workDir]
     } else {
         stopRecording
     }
@@ -1251,13 +1261,15 @@ proc toggleRecording {} {
 set recordingReplay 0
 
 proc replay {} {
-    global recordingReplay eventRecordR workDir running
+    global recordingReplay eventRecordR workDir running eventRecording
+    if $eventRecording {stopRecording; set eventRecording 0}
     if {$recordingReplay} {
         # ensures consistent IDs are allocated
-        set fname [tk_getOpenFile -defaultextension .tcl -initialdir $workDir]
+        set fname [tk_getOpenFile -filetypes {{"TCL scripts" .tcl TEXT} {"All Files" * }} \
+                       -defaultextension .tcl -initialdir $workDir]
         if {[string length $fname]>0} {
-            newSystem
             set eventRecordR [open $fname r]
+            newSystem
             if {!$running} runstop
         } elseif {$running} {runstop}
     } 
