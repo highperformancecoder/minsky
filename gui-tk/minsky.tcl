@@ -578,8 +578,8 @@ pack .equations.canvas -fill both -expand 1
 .tabs select 0
 
 image create cairoSurface panopticon -surface minsky.panopticon
-label .wiring.canvas.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
-place .wiring.canvas.panopticon -relx 1 -rely 0 -anchor ne
+label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
+place .wiring.panopticon -relx 1 -rely 0 -anchor ne
 minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
