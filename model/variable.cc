@@ -282,8 +282,8 @@ void VariableBase::draw(cairo_t *cairo) const
   const char* conv;
   switch (sciExp%3)
     {
-    case 0: case -2: conv="%5.2f"; break;
-    case 1: case -1: conv="%5.1f"; break;
+    case 0: case -1: conv="%5.2f"; break;
+    case 1: case -2: conv="%5.1f"; break;
     case 2: conv="%5.0f"; break;
     }
   char val[6];
