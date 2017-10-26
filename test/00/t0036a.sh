@@ -35,21 +35,23 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
-  minsky.load $here/examples/GoodwinLinear02.mky
-  recentreCanvas
-  model.groups.@elem 0
-  canvas.select [expr [minsky.model.groups(0).x]-0.55*[minsky.model.groups(0).width]] [expr [minsky.model.groups(0).y]-0.55*[minsky.model.groups(0).height]] [expr [minsky.model.groups(0).x]+0.55*[minsky.model.groups(0).width]] [expr [minsky.model.groups(0).y]+0.55*[minsky.model.groups(0).height]] 
+  openNamedFile $here/examples/GoodwinLinear02.mky
+  assert {[findObject Group]}
+  set item minsky.canvas.item
+  canvas.mouseDown [expr [\$item.x]-0.55*[\$item.width]] [expr [\$item.y]+0.55*[\$item.height]]
+  canvas.mouseUp [expr [\$item.x]+0.55*[\$item.width]] [expr [\$item.y]-0.55*[\$item.height]] 
+  assert {[canvas.selection.groups.size]==1}
   newSystem
   paste
   assert {[model.numGroups]==2}
   assert {[model.numItems]==8}
   assert {[model.numWires]==8}
   # retrieve inner group
-  model.groups.@elem 0
-  minsky.model.groups(0).groups.@elem 0
+  findObject Group
+  \$item.groups.@elem 0
 
-  assert {[minsky.model.groups(0).groups(0).items.size]==8}
-  assert {[minsky.model.groups(0).groups(0).wires.size]==8}
+  assert {[minsky.canvas.item.groups(0).items.size]==8}
+  assert {[minsky.canvas.item.groups(0).wires.size]==8}
   tcl_exit
 }}
 EOF

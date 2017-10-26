@@ -1022,17 +1022,35 @@ namespace minsky
     schema1::Minsky m(*this);
     pack_t buf;
     buf<<m;
-    if (history.empty() || memcmp(buf.data(), history.back().data(), buf.size())!=0)
+    if (history.empty())
       {
-        // This bit of code outputs an XML representation that can be
-        //        used for debugging issues related to unnecessary
-        //        history pushes.
-        // xml_pack_t tb(cout);
-        // xml_pack(tb,"Minsky",m); 
-        // cout<<"------"<<endl;
-        history.resize(history.size()+1);
+        history.emplace_back();
         buf.swap(history.back());
         return true;
+      }
+    if (memcmp(buf.data(), history.back().data(), buf.size())!=0)
+      {
+        // check XML versions differ (slower)
+        ostringstream prev, curr;
+        xml_pack_t prevXbuf(prev), currXbuf(curr);
+        xml_pack(currXbuf,"Minsky",m);
+        history.back().reseto()>>m;
+        xml_pack(prevXbuf,"Minsky",m);
+
+        if (curr.str()!=prev.str())
+          {
+            // This bit of code outputs an XML representation that can be
+            //        used for debugging issues related to unnecessary
+            //        history pushes.
+            //  buf.reseto()>>m;
+            //  xml_pack_t tb(cout);
+            //  tb.prettyPrint=true;
+            //  xml_pack(tb,"Minsky",m); 
+            //  cout<<"------"<<endl;
+            history.emplace_back();
+            buf.swap(history.back());
+            return true;
+          }
       }
     return false;
   }

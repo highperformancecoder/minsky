@@ -804,8 +804,9 @@ proc openNamedFile {ofname} {
 
    .controls.simSpeed set [simulationDelay]
     # setting preferences(godleyDE) and simulationDelay causes the edited (dirty) flag to be set
-    popFlags
+    pushHistory
     doPushHistory 1
+    popFlags
 }
 
 proc insertFile {} {
@@ -1196,11 +1197,11 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
         set preferences(godleyDE) [minsky.canvas.item.table.doubleEntryCompliant]
     }
     set delay [simulationDelay]
-    pushHistory
-    doPushHistory 1
     # force update canvas size to ensure model is displayed correctly
     update
     canvas.requestRedraw
+    pushHistory
+    doPushHistory 1
 }
 
 #return 

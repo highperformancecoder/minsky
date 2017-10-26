@@ -6,7 +6,6 @@ t=0
 for i in test/00/*.sh; do
     echo $i
     if [ $i = "test/00/t0031a.sh" ]; then continue; fi 
-    if [ $i = "test/00/t0036a.sh" ]; then continue; fi 
     # rendering is too unstable, so disable on the Travis platform
     if [ "$TRAVIS" = 1 -a $i = test/00/t0035a.sh ]; then continue; fi
     if [ "$TRAVIS" = 1 -a $i = test/00/allItemsRenderCheck.sh ]; then continue; fi
