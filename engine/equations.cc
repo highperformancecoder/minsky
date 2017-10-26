@@ -367,7 +367,10 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::add>::matlab(ostream& o) const
   {
-    if (arguments.empty()) return o;
+    if (arguments.empty()||
+        arguments[0].empty() &&
+        (arguments.size()<2||arguments[1].empty()))
+      return o<<0;
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
         checkArg(0,i);
@@ -390,7 +393,10 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::subtract>::matlab(ostream& o) const
   {
-    if (arguments.empty()) return o;
+    if (arguments.empty()||
+        arguments[0].empty() &&
+        (arguments.size()<2||arguments[1].empty()))
+      return o<<0;
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
         checkArg(0,i);
@@ -414,7 +420,10 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::multiply>::matlab(ostream& o) const
   {
-    if (arguments.empty()) return o;
+    if (arguments.empty()||
+        arguments[0].empty() &&
+        (arguments.size()<2||arguments[1].empty()))
+      return o<<1;
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
         checkArg(0,i);
@@ -434,8 +443,10 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::divide>::matlab(ostream& o) const
   {
-    if (arguments.empty())
-      return o<<"1";
+    if (arguments.empty()||
+        arguments[0].empty() &&
+        (arguments.size()<2||arguments[1].empty()))
+      return o<<1;
     if (arguments[0].size()==0) 
       o<<"1";
     for (size_t i=0; i<arguments[0].size(); ++i)

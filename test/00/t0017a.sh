@@ -29,19 +29,13 @@ pass()
 trap "fail" 1 2 3 15
 
 # checks whether Runge-Kutta solver works correctly on example files
-# by comapring with Octave
+# by comparing with Octave
 cp -r $here/examples .
 for i in examples/*.mky; do
     # math-examples is not a runnable example
     if [ $i = "examples/math-examples.mky" ]; then continue; fi
+    # data object not suppported in Octave
     if [ $i = "examples/data-example.mky" ]; then continue; fi
-    if [ $i = "examples/EndogenousMoney.mky" ]; then 
-        echo "Fix EndogenousMoney.mky!!"
-        continue; fi
-    if [ $i = "examples/LoanableFunds.mky" ]; then 
-        echo "Fix LoanableFunds.mky!!"
-        continue; fi
-    echo "doing: $i"
 
     for order in 1 2 4; do
         for implicit in 0 1; do 
