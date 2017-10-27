@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Multiple banks</TITLE>
-<META NAME="description" CONTENT="Multiple banks">
+<TITLE>Using ``Time Constants''</TITLE>
+<META NAME="description" CONTENT="Using ``Time Constants''">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -18,58 +18,84 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node37.html">
 <LINK REL="previous" HREF="node35.html">
-<LINK REL="up" HREF="node31.html">
+<LINK REL="up" HREF="node32.html">
 <LINK REL="next" HREF="node37.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html482"
+<A NAME="tex2html487"
   HREF="node37.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html480"
-  HREF="node31.html">
+<A NAME="tex2html485"
+  HREF="node32.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html476"
+<A NAME="tex2html479"
   HREF="node35.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html483"
-  HREF="node37.html">Tutorial</A>
-<B> Up:</B> <A NAME="tex2html481"
-  HREF="node31.html">Defining account types</A>
-<B> Previous:</B> <A NAME="tex2html477"
-  HREF="node35.html">Using ``Time Constants''</A>
+<B> Next:</B> <A NAME="tex2html488"
+  HREF="node37.html">Multiple banks</A>
+<B> Up:</B> <A NAME="tex2html486"
+  HREF="node32.html">Defining account types</A>
+<B> Previous:</B> <A NAME="tex2html480"
+  HREF="node35.html">Copying Godley Table input</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00246500000000000000">
-Multiple banks</A>
+<H3><A NAME="SECTION00246400000000000000"></A>
+<A NAME="time-constants"></A>
+<BR>
+Using ``Time Constants''
 </H3>
 
 <P>
-There can be any number of Godley Tables--each representing a
-different financial institution or sector in an economy--in the one
-diagram. The name of the institution can be altered by clicking on the
-default name (``Godley0'' in the first one created) and altering
-it. Here is an example with 4 such institutions/sectors defined:
+The value of 0.1 means that the amount of money in the Patient account
+falls by one tenth every year (and therefore tapers towards zero). An
+equivalent way to express this is that the ``time constant'' for
+lending is the inverse of 1/10, or ten years. The next model uses a
+variable called <SPAN CLASS="MATH"><IMG
+ WIDTH="41" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img98.png"
+ ALT="$\tau_{Lend}$"></SPAN>, and gives it a value of 10: 
 
 <P>
 <DIV ALIGN="CENTER">
 <IMG
- WIDTH="410" HEIGHT="366" ALIGN="BOTTOM" BORDER="0"
- SRC="img101.png"
- ALT="\includegraphics{images/NewItem136.eps}">
+ WIDTH="332" HEIGHT="119" ALIGN="BOTTOM" BORDER="0"
+ SRC="img99.png"
+ ALT="\includegraphics{images/NewItem158.eps}">
 
 </DIV>
 
 <P>
-If there are interlocking accounts in these banks--if one lends to
-another for example--then what is an asset for one must be shown as a
-liability for the other. 
+As the simulation shows, the two models have precisely the same result
+numerically:
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{!}{0.9\textheight}{\includegraphics{images/NewItem157.eps}}$
+ -->
+<IMG
+ WIDTH="572" HEIGHT="899" ALIGN="BOTTOM" BORDER="0"
+ SRC="img100.png"
+ ALT="\resizebox{!}{0.9\textheight}{\includegraphics{images/NewItem157.eps}}">
+</DIV>
+
+<P>
+The advantage of the time constant approach is that it is defined in
+terms of the time that a process takes. A time constant of 10 says
+that, if this rate of lending was sustained (rather than declining as
+the account falls), then in <B><EM>precisely</EM></B> 10 years, the Patient account
+would be empty. The advantages of this formulation will be more
+obvious in the <A HREF="node38.html#tutorial">tutorial</A>.
+
+<P>
 <BR><HR>
 <ADDRESS>
 Russell Standish

@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Plot widget</TITLE>
-<META NAME="description" CONTENT="Plot widget">
+<TITLE>Groups</TITLE>
+<META NAME="description" CONTENT="Groups">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,136 +20,116 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node51.html">
 <LINK REL="previous" HREF="node49.html">
-<LINK REL="up" HREF="node41.html">
+<LINK REL="up" HREF="node42.html">
 <LINK REL="next" HREF="node51.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html634"
+<A NAME="tex2html637"
   HREF="node51.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html632"
-  HREF="node41.html">
+<A NAME="tex2html635"
+  HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html626"
+<A NAME="tex2html629"
   HREF="node49.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html635"
-  HREF="node51.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html633"
-  HREF="node41.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html627"
-  HREF="node49.html">Groups</A>
+<B> Next:</B> <A NAME="tex2html638"
+  HREF="node51.html">Plot widget</A>
+<B> Up:</B> <A NAME="tex2html636"
+  HREF="node42.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html630"
+  HREF="node49.html">Wires</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00460000000000000000"></A>
-<A NAME="PlotWidget"></A>
+<H1><A NAME="SECTION00450000000000000000"></A><A NAME="Group"></A>
 <BR>
-Plot widget
+Groups
 </H1>
 
 <P>
-A plot widget embeds a dynamic plot into the canvas. Around the
-outside of the plot are a number of input ports that can be wired.
+Grouping gives the capability to create reusable modules, or subroutines that
+can dramatically simplify more complicated systems. Groups may be
+created in the following ways:
+
+<UL>
+<LI>by lassoing a number of items to select them, then selecting
+``group'' from the canvas context menu, or the edit menu.
+</LI>
+<LI>by pasting the selection. You may ``ungroup'' the group from the
+context menu if you don't desire the result of the paste to be a group.
+</LI>
+<LI>by copying another group
+</LI>
+<LI>by inserting a Minsky file as a group
+</LI>
+</UL>
 
 <P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="240" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
- SRC="img190.png"
- ALT="\includegraphics{images/plotWidget.eps}">
-
-</DIV>
+Zooming in on a group allows you see and edit its contents. Groups may
+be nested heirarchically, which gives an excellent way of zooming in
+to see the detail of a model, or zooming out to get an overview of it.
 
 <P>
-<DL>
-<DT><STRONG>left hand edge</STRONG></DT>
-<DD>Up to 4 quantities can be plotted on the graph
-  simultaneously, with line colour given by the colour of the input
-  port
-</DD>
-<DT><STRONG>right hand edge</STRONG></DT>
-<DD>Another 4 quantities can be added to the
-  plot. These are shown on a different scale to the left hand inputs,
-  allowing very different magnitudes to be compared on the one plot.
-</DD>
-<DT><STRONG>bottom edge</STRONG></DT>
-<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img52.png"
- ALT="$x$"></SPAN>-coordinates of the
-  curves. The colours match up with the colour of the pen being
-  controlled.
+Around the edges of a group are input or output variables, which allow
+one to parameterise the group. One can drag a variable and dock it in
+the I/O area to create a new input or output for the group.
 
 <P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="528" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
- SRC="img191.png"
- ALT="\includegraphics{images/plotLissajous.eps}">
-
-</DIV>
+When creating a group, or dragging a variable or operation into or out
+of a group, if a wire ends up crossing the group boundary, a new
+temporary variable is added as an I/O variable.
 
 <P>
-If only one bottom port is connected, then that controls all pens
-  simultaneously, and if no ports are connected, then the simulation
-  time is used to provide the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img52.png"
- ALT="$x$"></SPAN> coordinates
-</DD>
-<DT><STRONG>corners</STRONG></DT>
-<DD>Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img52.png"
- ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img53.png"
- ALT="$y$"></SPAN> and right hand
-  <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img53.png"
- ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
-  from the data. This can be used, for example, to implement a sliding
-  window graph
+Variable names within groups are locally scoped to that group. That
+means that a variable of the same name outside the group refers to a
+different entity completely. One can refer to variables outside the
+current scope by qualifying the variable name. The simplest
+qualification to understand is global scope, which is specified by
+prepending a `:' to the variable name. To refer to a variable in
+another group, the notation is <code>&lt;group id&gt;:&lt;name&gt;</code>, where
+<code>&lt;group id&gt;</code> is the integer id of the group in question. An
+alternative equivalent notation is <code>&lt;description&gt;[&lt;group id&gt;]:&lt;name&gt;</code>, where <code>&lt;description&gt;</code> is the textual name given to
+the group. The description string is ignored by Minsky on input--only
+the group id is important, but this mechanism makes it easier to see
+what variable belongs to which group in the drop down lists in the
+name field. Please try to keep the group names distinctive in their
+first five characters, as Minsky will truncate the descriptive string
+to fit in the drop down menu. 
 
 <P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="479" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
- SRC="img192.png"
- ALT="\includegraphics{images/plotSlidingWindow.eps}">
-
-</DIV>
-</DD>
-</DL>
+A group can also be exported to a file from the context menu.
+This allows you to build up a library of building blocks. There is a
+github project ``minsky-models'' allowing people to publish their
+building blocks and models for others to use. In the future, we hope
+to integrate Minsky with this github repository, allowing even more
+seamless sharing of models.
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html634"
+<A NAME="tex2html637"
   HREF="node51.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html632"
-  HREF="node41.html">
+<A NAME="tex2html635"
+  HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html626"
+<A NAME="tex2html629"
   HREF="node49.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html635"
-  HREF="node51.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html633"
-  HREF="node41.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html627"
-  HREF="node49.html">Groups</A></DIV>
+<B> Next:</B> <A NAME="tex2html638"
+  HREF="node51.html">Plot widget</A>
+<B> Up:</B> <A NAME="tex2html636"
+  HREF="node42.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html630"
+  HREF="node49.html">Wires</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish

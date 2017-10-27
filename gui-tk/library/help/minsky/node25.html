@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Inserting a model component</TITLE>
-<META NAME="description" CONTENT="Inserting a model component">
+<TITLE>Components in Minsky</TITLE>
+<META NAME="description" CONTENT="Components in Minsky">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,78 +20,58 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node26.html">
 <LINK REL="previous" HREF="node24.html">
-<LINK REL="up" HREF="node23.html">
+<LINK REL="up" HREF="node24.html">
 <LINK REL="next" HREF="node26.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html371"
+<A NAME="tex2html374"
   HREF="node26.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html369"
-  HREF="node23.html">
+<A NAME="tex2html372"
+  HREF="node24.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html363"
+<A NAME="tex2html366"
   HREF="node24.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html372"
-  HREF="node26.html">Creating an equation</A>
-<B> Up:</B> <A NAME="tex2html370"
-  HREF="node23.html">Working with Minsky</A>
-<B> Previous:</B> <A NAME="tex2html364"
-  HREF="node24.html">Components in Minsky</A>
+<B> Next:</B> <A NAME="tex2html375"
+  HREF="node26.html">Inserting a model component</A>
+<B> Up:</B> <A NAME="tex2html373"
+  HREF="node24.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html367"
+  HREF="node24.html">Working with Minsky</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00242000000000000000">
-Inserting a model component</A>
+<H2><A NAME="SECTION00241000000000000000">
+Components in Minsky</A>
 </H2>
 
 <P>
-There are three ways to insert a component of a model onto the Canvas:
+There are a number of types of components in Minsky
 
 <OL>
-<LI>Click on the desired Icon on the Icon Palette, drag the block
-onto the Canvas and release the mouse where you want to insert it 
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem18.png"
- ALT="947">
-
-</DIV>
-
-<P>
+<LI>Mathematical operators such as plus (+), minus (-)
 </LI>
-<LI>Choose Insert from the menu and select the desired block there
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem159.png"
- ALT="510">
-  
-</DIV>
-
-<P>
+<LI>Constants (or parameters, which are named constants) which are
+given a value by the user 
 </LI>
-<LI>Right-click on an existing block and choose copy. Then place the
-copy where you want it on the palette. 
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem161.png"
- ALT="513">
-
-</DIV>
-
-<P>
+<LI>Variables whose values are calculated by the program during a simulation and depend on the values of constants and other variables; and
+</LI>
+<LI>Godley Tables, which define both financial accounts and the
+flows between them. In the language of stock and flow modelling, the
+columns of a Godley table are the stocks, which are computed by
+integrating over a linear combination of flow variables.
+</LI>
+<LI>Integrals -- represent a variable computed by integrating a
+function forward in time.
+</LI>
+<LI>Groups, which allow components to be grouped into modules that
+can be used to construct more complex models.
 </LI>
 </OL>
 

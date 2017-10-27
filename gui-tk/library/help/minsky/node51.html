@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Note Widget</TITLE>
-<META NAME="description" CONTENT="Note Widget">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -20,47 +20,137 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 
 <LINK REL="next" HREF="node52.html">
 <LINK REL="previous" HREF="node50.html">
-<LINK REL="up" HREF="node41.html">
+<LINK REL="up" HREF="node42.html">
 <LINK REL="next" HREF="node52.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html644"
+<A NAME="tex2html647"
   HREF="node52.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html642"
-  HREF="node41.html">
+<A NAME="tex2html645"
+  HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html636"
+<A NAME="tex2html639"
   HREF="node50.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html645"
-  HREF="node52.html">Godley Tables</A>
-<B> Up:</B> <A NAME="tex2html643"
-  HREF="node41.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html637"
-  HREF="node50.html">Plot widget</A>
+<B> Next:</B> <A NAME="tex2html648"
+  HREF="node52.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html646"
+  HREF="node42.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html640"
+  HREF="node50.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00470000000000000000"></A>
- <A NAME="Notes"></A><A NAME="Item"></A>
+<H1><A NAME="SECTION00460000000000000000"></A>
+<A NAME="PlotWidget"></A>
 <BR>
-Note Widget
-</H1> Notes allow arbitrary text to be
-placed on the canvas for explanatory purposes. Anything that can be
-entered on the keyboard can be placed here, including unicode
-characters, but LaTeX formatting is not currently supported. A note
-widget, like all canvas items, allow short additional tooltips to be
-specified. It is also possible to annotate an ordinary block with some text
-that is visible through the edit menu, or as a tooltip.
+Plot widget
+</H1>
 
 <P>
-<BR><HR>
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="240" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
+ SRC="img190.png"
+ ALT="\includegraphics{images/plotWidget.eps}">
+
+</DIV>
+
+<P>
+<DL>
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+</DD>
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+</DD>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img52.png"
+ ALT="$x$"></SPAN>-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="528" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
+ SRC="img191.png"
+ ALT="\includegraphics{images/plotLissajous.eps}">
+
+</DIV>
+
+<P>
+If only one bottom port is connected, then that controls all pens
+  simultaneously, and if no ports are connected, then the simulation
+  time is used to provide the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img52.png"
+ ALT="$x$"></SPAN> coordinates
+</DD>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img52.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img53.png"
+ ALT="$y$"></SPAN> and right hand
+  <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img53.png"
+ ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
+  from the data. This can be used, for example, to implement a sliding
+  window graph
+
+<P>
+<DIV ALIGN="CENTER">
+<IMG
+ WIDTH="479" HEIGHT="424" ALIGN="BOTTOM" BORDER="0"
+ SRC="img192.png"
+ ALT="\includegraphics{images/plotSlidingWindow.eps}">
+
+</DIV>
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html647"
+  HREF="node52.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html645"
+  HREF="node42.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html639"
+  HREF="node50.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html648"
+  HREF="node52.html">Note Widget</A>
+<B> Up:</B> <A NAME="tex2html646"
+  HREF="node42.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html640"
+  HREF="node50.html">Groups</A></DIV>
+<!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
 2017-10-27

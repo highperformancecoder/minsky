@@ -7,8 +7,8 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
   Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
 <HTML>
 <HEAD>
-<TITLE>Zoom buttons</TITLE>
-<META NAME="description" CONTENT="Zoom buttons">
+<TITLE>Record/Replay Buttons</TITLE>
+<META NAME="description" CONTENT="Record/Replay Buttons">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -27,53 +27,60 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html272"
+<A NAME="tex2html275"
   HREF="node17.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html270"
+<A NAME="tex2html273"
   HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html264"
+<A NAME="tex2html267"
   HREF="node15.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html273"
-  HREF="node17.html">Speed slider</A>
-<B> Up:</B> <A NAME="tex2html271"
+<B> Next:</B> <A NAME="tex2html276"
+  HREF="node17.html">Zoom buttons</A>
+<B> Up:</B> <A NAME="tex2html274"
   HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html265"
+<B> Previous:</B> <A NAME="tex2html268"
   HREF="node15.html">Run Buttons</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
 <H2><A NAME="SECTION00233000000000000000"></A>
-<A NAME="ZoomButtons"></A>
+<A NAME="RecReplayButtons"></A>
 <BR>
-Zoom buttons
+Record/Replay Buttons
 </H2>
 
 <P>
-<DIV ALIGN="CENTER">
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem17.png"
- ALT="365">
-
-</DIV>
+ ALIGN="BOTTOM" BORDER="0" SRC="recReplayButtons.png"
+ ALT="364">
 
 <P>
-The Zoom buttons zoom in and out on the wiring canvas. The same functionality
-is accessed via the mouse scroll wheel. The reset zoom button
+These buttons control the recording / replay mode of Minsky. You can
+record your interactions with Minsky, and replay those interactions
+for demonstration/presentation purposes. 
 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/zoomOrig.eps}}$
- -->
-<IMG
- WIDTH="13" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
- SRC="img23.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/zoomOrig.eps}}">
-   resets the zoom level to 1, and also
-recentres the canvas. It can also be used to recentre the equation view.
+<P>
+
+<OL>
+<LI>Record a session of building/modifying a model. Note that
+    replaying a recorded session always starts from a blank canvas, so
+    if you're recording the modification of a model, ensure that the
+    first thing recorded is to load the model being modified. This
+    button is a toggle button, so clicking it again finishes the
+    session, and closes the file.
+</LI>
+<LI>Simulate/Replay button. Pressing this button changes Minsky
+    into replay mode, and asks for a recording file. You may use the
+    run buttons (run/pause,stop and step), as well as the speed
+    slider, to control the replay. This button is a toggle button, so
+    clicking it again returns Minsky back to the default simulation
+    mode.
+</LI>
+</OL>
 
 <P>
 <BR><HR>
