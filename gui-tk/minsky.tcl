@@ -988,6 +988,8 @@ set helpTopics(.menubar.file) File
 set helpTopics(.menubar.edit) Edit
 set helpTopics(.menubar.ops) Insert
 set helpTopics(.menubar.options) Options
+set helpTopics(.controls.rec) RecReplayButtons
+set helpTopics(.controls.runmode) RecReplayButtons
 set helpTopics(.controls.run) RunButtons
 set helpTopics(.controls.reset) RunButtons
 set helpTopics(.controls.step) RunButtons
