@@ -63,7 +63,7 @@ cp -r /opt/local/etc/fonts/* $MAC_DIST_DIR/../Resources/fontconfig
     cp -r gui-tk/library $MAC_DIST_DIR
     cp -r gui-tk/icons $MAC_DIST_DIR
     cp gui-tk/accountingRules $MAC_DIST_DIR
-    pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky.$version-mac-dist.pkg
+    pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky-$version-mac-dist.pkg
     
 # determine location of tcl library from tclsh - make sure the correct
 # tclsh is in your path
