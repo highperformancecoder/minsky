@@ -27,21 +27,21 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html552"
+<A NAME="tex2html553"
   HREF="node43.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html550"
+<A NAME="tex2html551"
   HREF="node41.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html544"
+<A NAME="tex2html545"
   HREF="node41.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html553"
+<B> Next:</B> <A NAME="tex2html554"
   HREF="node43.html">Switch</A>
-<B> Up:</B> <A NAME="tex2html551"
+<B> Up:</B> <A NAME="tex2html552"
   HREF="node41.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html545"
+<B> Previous:</B> <A NAME="tex2html546"
   HREF="node41.html">Reference</A>
 <BR>
 <BR></DIV>
@@ -316,7 +316,7 @@ initial value at <SPAN CLASS="MATH"><IMG
  SRC="img66.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/data.eps}}"></STRONG></DT>
 <DD><A NAME="Operation:data"></A> A data interpolation
-widget. Currently, the data must be imported from a file containing
+widget. The data can be imported from a file containing
 two values on each line, eg:
 <BLOCKQUOTE>
 <TABLE CELLPADDING=3>
@@ -338,13 +338,40 @@ is output. If it lies in between two keys (eg 0.2), the the output is
 linearly interpolated (0.4).
 
 <P>
+Alternatively, the data block can be initialised by a random number
+generator, which is a way of introducing random numbers<A NAME="2763"></A> into the simulation. The parameters are required, the
+minimum and maximum values of the function's domain, and the number of
+random samples over that domain.
+
+<P>
+<DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3>
+<TR><TD ALIGN="CENTER"><!-- MATH
+ $\resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}}$
+ -->
+<IMG
+ WIDTH="235" HEIGHT="183" ALIGN="BOTTOM" BORDER="0"
+ SRC="img176.png"
+ ALT="\resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}}"></TD>
+<TD ALIGN="CENTER"><!-- MATH
+ $\resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}$
+ -->
+<IMG
+ WIDTH="278" HEIGHT="142" ALIGN="BOTTOM" BORDER="0"
+ SRC="img177.png"
+ ALT="\resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}"></TD>
+</TR>
+</TABLE>
+</DIV>
+
+<P>
 More formally, a data block is an empirical function, based on a table
 of pairs of values (<!-- MATH
  $x_i, y_i, i=1\ldots n, x_{i+1}>x_i$
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="187" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img176.png"
+ SRC="img178.png"
  ALT="$x_i, y_i, i=1\ldots n, x_{i+1}&gt;x_i$"></SPAN>) read in from
 a file. The function's output is linearly interpolated from the data,
 ie:
@@ -365,7 +392,7 @@ x_{i+1}\\
 
 <IMG
  WIDTH="328" HEIGHT="69" BORDER="0"
- SRC="img177.png"
+ SRC="img179.png"
  ALT="\begin{displaymath}
 f(x) = \left\{
 \begin{array}{cl}
@@ -383,7 +410,7 @@ x_{i+1}\\
 </DD>
 <DT><STRONG>sqrt <SPAN CLASS="MATH"><IMG
  WIDTH="18" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img178.png"
+ SRC="img180.png"
  ALT="$\surd$"></SPAN></STRONG></DT>
 <DD><A NAME="Operation:sqrt"></A> Square root of the input
 
@@ -423,7 +450,7 @@ x_{i+1}\\
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
- SRC="img179.png"
+ SRC="img181.png"
  ALT="$\frac{e^x-e^{-x}}2$"></SPAN>
 </DD>
 <DT><STRONG>cosh</STRONG></DT>
@@ -432,7 +459,7 @@ x_{i+1}\\
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
- SRC="img180.png"
+ SRC="img182.png"
  ALT="$\frac{e^x+e^{-x}}2$"></SPAN>
 </DD>
 <DT><STRONG>tanh</STRONG></DT>
@@ -441,12 +468,12 @@ x_{i+1}\\
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
- SRC="img181.png"
+ SRC="img183.png"
  ALT="$\frac{e^x-e^{-x}}{e^x+e^{-x}}$"></SPAN>
 </DD>
 <DT><STRONG>abs <SPAN CLASS="MATH"><IMG
  WIDTH="22" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img182.png"
+ SRC="img184.png"
  ALT="$\vert x\vert$"></SPAN></STRONG></DT>
 <DD><A NAME="Operation:abs"></A> absolute value function
 </DD>
@@ -455,7 +482,7 @@ x_{i+1}\\
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="27" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img183.png"
+ SRC="img185.png"
  ALT="$\lfloor x\rfloor$"></SPAN></STRONG></DT>
 <DD><A NAME="Operation:floor"></A> The greatest integer
   less than or equal to <SPAN CLASS="MATH"><IMG
@@ -472,7 +499,7 @@ x_{i+1}\\
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="56" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img184.png"
+ SRC="img186.png"
  ALT="$x-\lfloor x\rfloor$"></SPAN>. 
 
 <P>
@@ -483,26 +510,26 @@ x_{i+1}\\
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html552"
+<A NAME="tex2html553"
   HREF="node43.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html550"
+<A NAME="tex2html551"
   HREF="node41.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html544"
+<A NAME="tex2html545"
   HREF="node41.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html553"
+<B> Next:</B> <A NAME="tex2html554"
   HREF="node43.html">Switch</A>
-<B> Up:</B> <A NAME="tex2html551"
+<B> Up:</B> <A NAME="tex2html552"
   HREF="node41.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html545"
+<B> Previous:</B> <A NAME="tex2html546"
   HREF="node41.html">Reference</A></DIV>
 <!--End of Navigation Panel-->
 <ADDRESS>
 Russell Standish
-2017-09-01
+2017-10-27
 </ADDRESS>
 </BODY>
 </HTML>

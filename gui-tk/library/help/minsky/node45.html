@@ -27,21 +27,21 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html585"
+<A NAME="tex2html586"
   HREF="node46.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html583"
+<A NAME="tex2html584"
   HREF="node44.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html577"
+<A NAME="tex2html578"
   HREF="node44.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html586"
+<B> Next:</B> <A NAME="tex2html587"
   HREF="node46.html">Initial conditions</A>
-<B> Up:</B> <A NAME="tex2html584"
+<B> Up:</B> <A NAME="tex2html585"
   HREF="node44.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html578"
+<B> Previous:</B> <A NAME="tex2html579"
   HREF="node44.html">Variables</A>
 <BR>
 <BR></DIV>
@@ -54,8 +54,10 @@ Variable names</A>
 <P>
 Variable names uniquely identify variables. Multiple icons on the
 canvas may have the same name -- they all refer to the same
-variable. Variable names have scope, which is either global (indicated
-by a leading `:', or the numerical id of a group. You may select a
+variable. Variable names have scope, which is either local (no initial
+`:'), belonging to an outer group (indicated by a leading `:' on the
+inner group variable, and the outer group variable having no such
+leading `:'), or completely global otherwise. You may select a
 variable name from a drop down list in the ``name'' combo box, which
 makes for an easier way of selecting exactly which variable you want.
 
@@ -63,7 +65,7 @@ makes for an easier way of selecting exactly which variable you want.
 <BR><HR>
 <ADDRESS>
 Russell Standish
-2017-09-01
+2017-10-27
 </ADDRESS>
 </BODY>
 </HTML>
