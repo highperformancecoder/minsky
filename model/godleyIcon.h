@@ -47,6 +47,9 @@ namespace minsky
     float width() const {return (flowMargin+iconSize)*iconScale*zoomFactor;}
     /// height of Godley icon in screen coordinates
     float height() const {return (stockMargin+iconSize)*iconScale*zoomFactor;}
+    /// scale icon until it's height matches \a h 
+    void scaleIconForHeight(float h) {update(); iconScale*=h/height();}
+
     /// left margin of bank icon with Godley icon
     float leftMargin() const {return flowMargin*iconScale*zoomFactor;}
     /// bottom margin of bank icon with Godley icon
