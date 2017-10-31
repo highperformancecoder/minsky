@@ -157,7 +157,7 @@ namespace minsky
 
   ItemPtr GroupItems::addItem(const shared_ptr<Item>& it)
   {
-    assert(it);
+    if (!it) return it;
     if (auto x=dynamic_pointer_cast<Group>(it))
       return addGroup(x);
    

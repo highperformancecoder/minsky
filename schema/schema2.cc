@@ -62,7 +62,15 @@ namespace schema2
   struct MinskyItemFactory: public classdesc::Factory<minsky::Item,string>
   {
     template <class T>
-    void registerClassType() {registerType<T>(typeName<T>());}
+    void registerClassType() {
+      auto s=typeName<T>();
+      // remove minsky namespace
+      static const char* ns="minsky::";
+      static const int eop=strlen(ns);
+      if (s.substr(0,eop)==ns)
+        s=s.substr(eop);
+      registerType<T>(s);
+    }
     MinskyItemFactory()
     {
       registerClassType<minsky::Item>();
@@ -80,7 +88,7 @@ namespace schema2
         return minsky::OperationBase::create
           (enum_keys<minsky::OperationType::Type>()
            (t.substr(t.find(':')+1)));
-      if (matchesStart(t,"VariableBase:"))
+      if (matchesStart(t,"Variable:"))
         return minsky::VariableBase::create
           (enum_keys<minsky::VariableType::Type>()
            (t.substr(t.find(':')+1)));
@@ -134,7 +142,12 @@ namespace schema2
     for (auto& i: m.model.switches)
       layout.addItem(items,i);    
     for (auto& i: m.model.godleys)
-      layout.addItem(items,i);    
+      {
+        layout.addItem(items,i);
+        // override any height specifcation with a legacy iconScale parameter
+        items.back().height.reset();
+        items.back().iconScale=i.zoomFactor/m.zoomFactor;
+      }
     for (auto& i: m.model.groups)
       {
         layout.addItem(groups,i);
@@ -218,6 +231,7 @@ namespace schema2
   Minsky::operator minsky::Minsky() const
   {
     minsky::Minsky m;
+    minsky::LocalMinsky lm(m);
     populateGroup(*m.model);
     m.model->setZoom(zoomFactor);
     
@@ -265,8 +279,6 @@ namespace schema2
         if (y.data) data=*y.data;
         if (y.assetClasses) assetClasses=*y.assetClasses;
         SchemaHelper::setPrivates(x1->table,data,assetClasses);
-        if (y.height)
-          x1->scaleIconForHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
@@ -302,16 +314,70 @@ namespace schema2
     map<int, minsky::ItemPtr> itemMap;
     map<int, shared_ptr<minsky::Port>> portMap;
     map<int, minsky::GroupPtr> groupMap;
+    map<int, schema2::Item> schema2VarMap;
     MinskyItemFactory factory;
     
     for (auto& i: items)
+      if (auto newItem=itemMap[i.id]=g.addItem(factory.create(i.type)))
+        {
+          for (size_t j=0; j<min(newItem->ports.size(), i.ports.size()); ++j)
+            portMap[i.ports[j]]=newItem->ports[j];
+          populateItem(*newItem,i);
+          if (matchesStart(i.type,"Variable:"))
+            schema2VarMap[i.id]=i;
+        }
+    // second loop over items to wire up integrals, and populate Godley table variables
+    for (auto& i: items)
       {
-        auto newItem=itemMap[i.id]=g.addItem(factory.create(i.type));
-        for (size_t j=0; j<min(newItem->ports.size(), i.ports.size()); ++j)
-          portMap[i.ports[j]]=newItem->ports[j];
-        populateItem(*newItem,i);
+        if ((i.type=="IntOp" || i.type=="Operation:integrate") && i.intVar)
+          {
+            assert(itemMap.count(i.id));
+            assert(dynamic_pointer_cast<minsky::IntOp>(itemMap[i.id]));
+            if (auto integ=dynamic_cast<minsky::IntOp*>(itemMap[i.id].get()))
+              {
+                if (itemMap.count(*i.intVar))
+                  {
+                    g.removeItem(*integ->intVar);
+                    integ->intVar=itemMap[*i.intVar];
+                  }
+                auto iv=schema2VarMap.find(*i.intVar);
+                if (iv!=schema2VarMap.end())
+                  if ((!i.ports.empty() && i.ports[0]==iv->second.ports[0]) != integ->coupled())
+                    integ->toggleCoupled();
+              }
+          }
+        if (i.type=="GodleyIcon")
+          {
+            assert(itemMap.count(i.id));
+            if (auto godley=dynamic_cast<minsky::GodleyIcon*>(itemMap[i.id].get()))
+              {
+                for (auto p: i.ports)
+                  {
+                    auto newP=portMap.find(p);
+                    if (newP!=portMap.end())
+                      if (auto ip=g.findItem(newP->second->item))
+                        if (auto v=dynamic_pointer_cast<minsky::VariableBase>(ip))
+                          switch (v->type())
+                            {
+                            case minsky::VariableType::stock:
+                              godley->stockVars.push_back(v);
+                              break;
+                            case minsky::VariableType::flow:
+                              godley->flowVars.push_back(v);
+                              break;
+                            default:
+                              break;
+                            }
+                  }
+                godley->update();
+                if (i.height)
+                  godley->scaleIconForHeight(*i.height);
+                else if (i.iconScale) //legacy schema handling
+                  godley->scaleIconForHeight(*i.iconScale * godley->height());
+              }
+          }
       }
-
+        
     for (auto& w: wires)
       if (portMap.count(w.to) && portMap.count(w.from))
         populateWire

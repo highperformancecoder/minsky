@@ -97,7 +97,7 @@ namespace minsky
           VariablePtr newVar(varType, *nm);
 //          if (nm->find(':')==string::npos)
 //            newVar->setScope(-1); //unscoped variables are treated as local to containing scope
-          newVar->m_visible=false;
+//          newVar->m_visible=false;
           // ensure variable type is consistent
           auto vv=minsky::cminsky().variableValues.find(newVar->valueId());
           if (vv!=minsky::cminsky().variableValues.end() && 
@@ -117,6 +117,7 @@ namespace minsky
               oldVars.erase(v);
               assert(*v);
             }
+          vars.back()->m_visible=false;
           vars.back()->zoomFactor=iconScale*zoomFactor;
         }
       // remove any previously existing variables

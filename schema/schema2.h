@@ -107,6 +107,7 @@ namespace schema2
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
+    Optional<float> iconScale; // for handling legacy schemas
     // Plot specific fields
     Optional<bool> logx, logy;
     Optional<std::string> xlabel, ylabel, y1label;
@@ -223,13 +224,13 @@ namespace schema2
     double zoomFactor=1;
 
     /// checks that all items are uniquely identified.
-    bool validate() const;
+    //bool validate() const;
     Minsky(): schemaVersion(-1) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g);
     Minsky(const minsky::Minsky& m): Minsky(*m.model) {
       rungeKutta=RungeKutta(m);
       zoomFactor=m.model->zoomFactor;
-      assert(validate());
+      //assert(validate());
     }
 
     Minsky(const schema1::Minsky& m);
@@ -241,7 +242,7 @@ namespace schema2
     /// object
     void populateGroup(minsky::Group& g) const;
     /// move locations such that minx, miny lies at (0,0) on canvas
-    void relocateCanvas();
+    //    void relocateCanvas();
 
   };
 

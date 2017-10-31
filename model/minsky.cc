@@ -26,8 +26,7 @@
 #include <gsl/gsl_odeiv2.h>
 #include <cairo_base.h>
 
-//#include <schema/schema0.h>
-#include <schema/schema1.h>
+#include <schema/schema2.h>
 
 #include <cairo/cairo-ps.h>
 #include <cairo/cairo-pdf.h>
@@ -763,7 +762,7 @@ namespace minsky
     clearAllMaps();
 
     // current schema
-    schema1::Minsky currentSchema;
+    schema2::Minsky currentSchema;
     ifstream inf(filename);
     if (!inf)
       throw runtime_error("failed to open "+filename);
@@ -773,16 +772,25 @@ namespace minsky
         // we're dealing with a schema 0 file
         schema0::Minsky m;
         m.load(filename);
-        currentSchema=schema1::Minsky(m);
+        schema1::Minsky schema1(m);
+        schema1.removeIntVarOrphans();
+        *this=schema2::Minsky(schema1);
       }
     else
       xml_unpack(saveFile, "Minsky", currentSchema);
     
-    // fix corruption caused by ticket #329
-    currentSchema.removeIntVarOrphans();
 
-    switch (currentSchema.version)
+    switch (currentSchema.schemaVersion)
       {
+      case 1:
+        {
+          schema1::Minsky schema1;
+          xml_unpack(saveFile, "Minsky", schema1);
+          // fix corruption caused by ticket #329
+          schema1.removeIntVarOrphans();
+          *this=schema2::Minsky(schema1);
+          break;
+        }
       default:
         *this = currentSchema;
       }
