@@ -156,10 +156,12 @@ namespace schema2
           {
             auto v=portToVar.find(p);
             if (v!=portToVar.end())
-              if (v->second.second)
-                groups.back().inVariables.push_back(v->second.first);
-              else
-                groups.back().outVariables.push_back(v->second.first);
+              {
+                if (v->second.second)
+                  groups.back().inVariables.push_back(v->second.first);
+                else
+                  groups.back().outVariables.push_back(v->second.first);
+              }
           }
       }
     

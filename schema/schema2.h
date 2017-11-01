@@ -148,7 +148,7 @@ namespace schema2
     }
     Item(const schema1::Variable& it):
       ItemBase(it, "Variable:"+minsky::VariableType::typeName(it.type)),
-      init(it.init), name(it.name) {ports=it.ports;}
+      name(it.name), init(it.init)  {ports=it.ports;}
     Item(const schema1::Godley& it):
       ItemBase(it, "GodleyIcon"),
       name(it.name), data(it.data), assetClasses(it.assetClasses) {ports=it.ports;}

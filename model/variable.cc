@@ -186,7 +186,7 @@ vector<string> VariableBase::accessibleVars() const
           if (auto v=dynamic_cast<VariableBase*>(i.get()))
             {
               auto n=v->name();
-              if (n[0]=':')
+              if (n[0]==':')
                 r.insert(n);
               else
                 r.insert(':'+n);

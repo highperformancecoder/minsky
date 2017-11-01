@@ -368,8 +368,8 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::add>::matlab(ostream& o) const
   {
     if (arguments.empty()||
-        arguments[0].empty() &&
-        (arguments.size()<2||arguments[1].empty()))
+        (arguments[0].empty() &&
+         (arguments.size()<2||arguments[1].empty())))
       return o<<0;
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
@@ -394,8 +394,8 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::subtract>::matlab(ostream& o) const
   {
     if (arguments.empty()||
-        arguments[0].empty() &&
-        (arguments.size()<2||arguments[1].empty()))
+        (arguments[0].empty() &&
+         (arguments.size()<2||arguments[1].empty())))
       return o<<0;
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
@@ -421,8 +421,8 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::multiply>::matlab(ostream& o) const
   {
     if (arguments.empty()||
-        arguments[0].empty() &&
-        (arguments.size()<2||arguments[1].empty()))
+        (arguments[0].empty() &&
+         (arguments.size()<2||arguments[1].empty())))
       return o<<1;
     for (size_t i=0; i<arguments[0].size(); ++i)
       {
@@ -444,8 +444,8 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::divide>::matlab(ostream& o) const
   {
     if (arguments.empty()||
-        arguments[0].empty() &&
-        (arguments.size()<2||arguments[1].empty()))
+        (arguments[0].empty() &&
+         (arguments.size()<2||arguments[1].empty())))
       return o<<1;
     if (arguments[0].size()==0) 
       o<<"1";

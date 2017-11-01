@@ -849,10 +849,12 @@ namespace minsky
                 {
                   auto n=v->name();
                   if (!n.empty())
-                    if (n[0]==':')
-                      r.insert(n);
-                    else
-                      r.insert(':'+n);
+                    {
+                      if (n[0]==':')
+                        r.insert(n);
+                      else
+                        r.insert(':'+n);
+                    }
                 }
         }
     return vector<string>(r.begin(),r.end());
