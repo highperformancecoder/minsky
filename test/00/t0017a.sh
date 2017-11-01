@@ -47,9 +47,9 @@ minsky.order $order
 EOF
                
             $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
-            if test $? -ne 0; then fail; fi
+            if test $? -ne 0; then echo $i; fail; fi
             octave --silent $here/test/compareWithOctave.m $i
-            if test $? -ne 0; then fail; fi
+            if test $? -ne 0; then echo $i; fail; fi
         done
     done
 done

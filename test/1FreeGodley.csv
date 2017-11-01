@@ -1,4 +1,5 @@
 "Flows V / Stock Variables ->","Vault","Loans","Firms","Safe"
+Asset Class,asset,noAssetClass,noAssetClass,noAssetClass
 Initial Conditions,"99","","",""
  Lend from Vault,"-2Loan","","2Loan",""
  Record Loan,"","2Loan","",""

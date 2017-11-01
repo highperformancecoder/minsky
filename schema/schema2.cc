@@ -140,7 +140,8 @@ namespace schema2
     for (auto& i: m.model.plots)
       layout.addItem(items,i);    
     for (auto& i: m.model.switches)
-      layout.addItem(items,i);    
+      layout.addItem(items,i);
+    
     for (auto& i: m.model.godleys)
       {
         layout.addItem(items,i);
@@ -300,6 +301,8 @@ namespace schema2
       {
         auto r=fmod(y.rotation,360);
         x1->flipped=r>90 && r<270;
+        if (y.ports.size()>=2)
+          x1->setNumCases(y.ports.size()-2);
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
@@ -325,9 +328,9 @@ namespace schema2
     for (auto& i: items)
       if (auto newItem=itemMap[i.id]=g.addItem(factory.create(i.type)))
         {
+          populateItem(*newItem,i);
           for (size_t j=0; j<min(newItem->ports.size(), i.ports.size()); ++j)
             portMap[i.ports[j]]=newItem->ports[j];
-          populateItem(*newItem,i);
           if (matchesStart(i.type,"Variable:"))
             schema2VarMap[i.id]=i;
         }

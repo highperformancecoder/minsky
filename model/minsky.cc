@@ -788,8 +788,8 @@ namespace minsky
           xml_unpack(saveFile, "Minsky", schema1);
           // fix corruption caused by ticket #329
           schema1.removeIntVarOrphans();
-          //*this=schema2::Minsky(schema1);
-          *this=schema1;
+          *this=schema2::Minsky(schema1);
+          //*this=schema1;
           break;
         }
       default:

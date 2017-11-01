@@ -64,6 +64,7 @@ namespace minsky
     s<<'\n';
     if (g.doubleEntryCompliant)
       {
+        s<<"Asset Class";
         for (unsigned i=1; i<g.cols(); ++i)
           s<<","<<enum_keysData<GodleyAssetClass::AssetClass>::
             keysData[g._assetClass(i)].name;
@@ -92,7 +93,7 @@ namespace minsky
     // asset class descriptors
     if (g.doubleEntryCompliant)
       {
-        f<<"\\\\\\cline{2-"<<g.cols()<<"}";
+        f<<"\\\\\\cline{2-"<<g.cols()<<"}Asset Class";
         unsigned repeat=0;
         GodleyAssetClass::AssetClass asset=GodleyAssetClass::noAssetClass;
 

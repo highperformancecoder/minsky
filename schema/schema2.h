@@ -157,7 +157,7 @@ namespace schema2
       name(it.title), logx(it.logx), logy(it.logy), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
       legend(it.legend) {ports=it.ports;}
     Item(const schema1::Group& it): ItemBase(it,"Group") {} 
-    Item(const schema1::Switch& it): ItemBase(it,"SwitchIcon") {} 
+    Item(const schema1::Switch& it): ItemBase(it,"SwitchIcon") {ports=it.ports;} 
 
     void addLayout(const schema1::UnionLayout& layout) {
       x=layout.x;
