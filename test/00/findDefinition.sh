@@ -36,7 +36,7 @@ set msgBox 0
 for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
   minsky.model.items.@elem \$i
   set item minsky.model.items(\$i)
-  if {[regexp "Variable:" [\$item.classType]]||[\$item.classType]=="VarConstant"} {
+  if {[\$item.visible] && ([regexp "Variable:" [\$item.classType]]||[\$item.classType]=="VarConstant")} {
     minsky.canvas.getItemAt [\$item.x] [\$item.y]
     set searchItem [minsky.TCLItem]
     set findResult [minsky.canvas.findVariableDefinition]
@@ -54,6 +54,7 @@ for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
           assert "\"[\$foundItem.classType]\"==\"IntOp\"" "IntOp"
        }
        "bar" {
+          assert "\$findResult"
           assert "\"[\$foundItem.classType]\"==\"GodleyIcon\"" "GodleyIcon"
        }
      }

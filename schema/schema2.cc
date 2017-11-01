@@ -301,6 +301,12 @@ namespace schema2
         auto r=fmod(y.rotation,360);
         x1->flipped=r>90 && r<270;
       }
+    if (auto x1=dynamic_cast<minsky::Group*>(&x))
+      {
+        if (y.width) x1->width=*y.width;
+        if (y.height) x1->height=*y.height;
+        if (y.name) x1->title=*y.name;
+      }
   }
 
   void populateWire(minsky::Wire& x, const Wire& y)
@@ -313,7 +319,6 @@ namespace schema2
   void Minsky::populateGroup(minsky::Group& g) const {
     map<int, minsky::ItemPtr> itemMap;
     map<int, shared_ptr<minsky::Port>> portMap;
-    map<int, minsky::GroupPtr> groupMap;
     map<int, schema2::Item> schema2VarMap;
     MinskyItemFactory factory;
     
@@ -337,6 +342,7 @@ namespace schema2
               {
                 if (itemMap.count(*i.intVar))
                   {
+                    if (integ->coupled()) integ->toggleCoupled();
                     g.removeItem(*integ->intVar);
                     integ->intVar=itemMap[*i.intVar];
                   }
@@ -344,6 +350,9 @@ namespace schema2
                 if (iv!=schema2VarMap.end())
                   if ((!i.ports.empty() && i.ports[0]==iv->second.ports[0]) != integ->coupled())
                     integ->toggleCoupled();
+                // ensure that the correct port is inserted (may have been the deleted intVar)
+                if (!i.ports.empty())
+                  portMap[i.ports[0]]=integ->ports[0];
               }
           }
         if (i.type=="GodleyIcon")
@@ -351,6 +360,8 @@ namespace schema2
             assert(itemMap.count(i.id));
             if (auto godley=dynamic_cast<minsky::GodleyIcon*>(itemMap[i.id].get()))
               {
+                godley->stockVars.clear();
+                godley->flowVars.clear();
                 for (auto p: i.ports)
                   {
                     auto newP=portMap.find(p);
@@ -380,12 +391,14 @@ namespace schema2
         
     for (auto& w: wires)
       if (portMap.count(w.to) && portMap.count(w.from))
-        populateWire
-          (*g.addWire(new minsky::Wire(portMap[w.from],portMap[w.to],w.coords)),
-           w);
-
+        {
+          assert(portMap[w.from].use_count()>1 && portMap[w.to].use_count()>1);
+          populateWire
+            (*g.addWire(new minsky::Wire(portMap[w.from],portMap[w.to],w.coords)),w);
+        }
+          
     for (auto& i: groups)
-      itemMap[i.id]=g.addGroup(new minsky::Group);
+      populateItem(*(itemMap[i.id]=g.addGroup(new minsky::Group)),i);
 
     // second loop over groups, because groups can contain other groups
     for (auto& i: groups)
@@ -405,14 +418,20 @@ namespace schema2
                 auto it=itemMap.find(j);
                 if (it!=itemMap.end())
                   if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
-                    newG->inVariables.push_back(v);
+                    {
+                      newG->addItem(it->second);
+                      newG->inVariables.push_back(v);
+                    }
               }
             for (auto j: i.outVariables)
               {
                 auto it=itemMap.find(j);
                 if (it!=itemMap.end())
                   if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
-                    newG->outVariables.push_back(v);
+                    {
+                      newG->addItem(it->second);
+                      newG->outVariables.push_back(v);
+                    }
               }
           }
       }

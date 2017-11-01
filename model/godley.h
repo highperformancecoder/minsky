@@ -58,7 +58,7 @@ namespace minsky
     std::string title;
   
     static const char* initialConditions;
-    GodleyTable(): doubleEntryCompliant(false)
+    GodleyTable(): doubleEntryCompliant(true)
     {
       _resize(2,2);
       cell(0,0)="Flows ↓ / Stock Variables →";

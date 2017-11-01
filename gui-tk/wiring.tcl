@@ -384,6 +384,7 @@ proc canvasContext {x y} {
 bind .wiring.canvas <Double-Button-1> {doubleButton %x %y}
 proc doubleButton {x y} {
     if [getItemAt $x $y] {
+        selectVar $x $y
         editItem
     }
 }
