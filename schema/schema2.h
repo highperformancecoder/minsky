@@ -226,7 +226,7 @@ namespace schema2
 
     /// checks that all items are uniquely identified.
     //bool validate() const;
-    Minsky(): schemaVersion(-1) {} // schemaVersion defined on read in
+    Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g);
     Minsky(const minsky::Minsky& m): Minsky(*m.model) {
       rungeKutta=RungeKutta(m);

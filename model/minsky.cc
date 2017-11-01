@@ -767,21 +767,20 @@ namespace minsky
     if (!inf)
       throw runtime_error("failed to open "+filename);
     xml_unpack_t saveFile(inf);
-    if (saveFile.exists("root"))
-      {
-        // we're dealing with a schema 0 file
-        schema0::Minsky m;
-        m.load(filename);
-        schema1::Minsky schema1(m);
-        schema1.removeIntVarOrphans();
-        *this=schema2::Minsky(schema1);
-      }
-    else
-      xml_unpack(saveFile, "Minsky", currentSchema);
-    
+    xml_unpack(saveFile, "Minsky", currentSchema);
 
     switch (currentSchema.schemaVersion)
       {
+      case 0:
+        {
+          schema0::Minsky schema0;
+          xml_unpack(saveFile, "root", schema0);
+          schema1::Minsky schema1(schema0);
+          // fix corruption caused by ticket #329
+          schema1.removeIntVarOrphans();
+          *this=schema2::Minsky(schema1);
+          break;
+        }
       case 1:
         {
           schema1::Minsky schema1;
@@ -789,48 +788,11 @@ namespace minsky
           // fix corruption caused by ticket #329
           schema1.removeIntVarOrphans();
           *this=schema2::Minsky(schema1);
-          //*this=schema1;
           break;
         }
       default:
         *this = currentSchema;
       }
-//
-//    variables.makeConsistent();
-
-    
-
-//    for (GodleyItems::iterator g=godleyItems.begin(); g!=godleyItems.end(); ++g)
-//      g->update();
-//
-//    for (GroupIcons::iterator g=groupItems.begin(); g!=groupItems.end(); ++g)
-//      {
-//        // ensure group attributes correctly set
-//        const vector<int>& vars= g->variables();
-//        for (vector<int>::const_iterator i=vars.begin(); i!=vars.end(); ++i)
-//          {
-//            const VariablePtr& v=variables[*i];
-//            v->group=g->id();
-//            v->visible=g->displayContents();
-//          }
-//        const vector<int>& ops= g->operations();
-//        for (vector<int>::const_iterator i=ops.begin(); i!=ops.end(); ++i)
-//          {
-//            OperationPtr& o=operations[*i];
-//            o->group=g->id();
-//            o->visible=g->displayContents();
-//          }
-//        const vector<int>& gwires= g->wires();
-//        for (vector<int>::const_iterator i=gwires.begin(); i!=gwires.end(); ++i)
-//          {
-//            Wire& w=wires[*i];
-//            w.group=g->id();
-//            w.visible=g->displayContents();
-//          }
-//      }
-//
-//    removeDuplicateWires();
-//
     // try resetting the system, but ignore any errors
     try {reset();}
     catch (...) {}
