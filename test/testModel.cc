@@ -849,7 +849,7 @@ SUITE(Wire)
       Item item;
       item.ports.emplace_back(new Port(item));
       item.ports.back()->moveTo(0,0);
-      item.ports.emplace_back(new Port(item));
+      item.ports.emplace_back(new Port(item,Port::inputPort));
       item.ports.back()->moveTo(10,10);
       Wire wire(item.ports[0],item.ports[1],{0,0,3,4,6,7,10,10});
       CHECK_EQUAL(0, wire.nearestHandle(3.1, 3.9));

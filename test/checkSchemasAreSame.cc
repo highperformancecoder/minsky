@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "schema1.h"
+#include "schema2.h"
 #include "ecolab_epilogue.h"
 #include <iostream>
 #undef NDEBUG
@@ -38,9 +38,7 @@ int main(int argc, const char*argv[])
   Minsky m1, m2;
   xml_unpack(x1,"Minsky",m1);
   xml_unpack(x2,"Minsky",m2);
-  assert(m1.model.wires.size()==m2.model.wires.size());
-  assert(m1.model.notes.size()==m2.model.notes.size());
-  assert(m1.model.operations.size()==m2.model.operations.size());
+  assert(m1.items.size()==m2.items.size());
 
 //  map<string,int> v1cnt, v2cnt;
 //  for (auto i: m1.model.variables)
@@ -50,18 +48,14 @@ int main(int argc, const char*argv[])
 //
 //   for (auto& i: v1cnt) cout << i.first << " " << i.second << " " << v2cnt[i.first] << endl;
    
-  assert(m1.model.variables.size()==m2.model.variables.size());
-  assert(m1.model.plots.size()==m2.model.plots.size());
-  assert(m1.model.groups.size()==m2.model.groups.size());
-  assert(m1.model.switches.size()==m2.model.switches.size());
-  assert(m1.model.godleys.size()==m2.model.godleys.size());
-  assert(m1.model.validate());
+  assert(m1.groups.size()==m2.groups.size());
+  assert(m1.wires.size()==m2.wires.size());
+  //assert(m1.model.validate());
   pack_t b1, b2;
-  b1<<m1.model.rungeKutta;
-  b2<<m2.model.rungeKutta;
+  b1<<m1.rungeKutta;
+  b2<<m2.rungeKutta;
   assert(b1.size()==b2.size());
   assert(memcmp(b1.data(),b2.data(),b1.size())==0);
-  assert(m1.layout.size()==m2.layout.size());
   // TODO - renumber items in canonical network order.
   return 0;
 }

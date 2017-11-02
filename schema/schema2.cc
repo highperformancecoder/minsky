@@ -58,6 +58,11 @@ namespace schema2
               for (auto& v: g->stockVars)
                 items.back().ports.push_back(at(v->ports[0].get()));
             }
+          if (auto d=dynamic_cast<minsky::DataOp*>(i))
+            {
+              items.back().dataOpData=d->data;
+              items.back().name=d->description;
+            }
         }
       return j;
     }
@@ -241,17 +246,22 @@ namespace schema2
     g.recursiveDo(&minsky::GroupItems::groups,
                   [&](const minsky::Groups&,minsky::Groups::const_iterator i) {
                     groups.emplace_back(itemMap[i->get()], **i);
-                    // insert ports for I/O variables
-                    assert(groups.back().ports.empty());
-                    for (auto& v: (*i)->inVariables)
+                    for (auto& i: (*i)->items)
                       {
-                        assert(itemMap.count(v->ports[1].get()));
-                        groups.back().inVariables->push_back(itemMap[v->ports[1].get()]);
+                        assert(itemMap.count(i.get()));
+                        groups.back().items.push_back(itemMap[i.get()]);
+                      }
+                    for (auto& i: (*i)->groups)
+                      groups.back().items.push_back(itemMap[i.get()]);
+                   for (auto& v: (*i)->inVariables)
+                      {
+                        assert(itemMap.count(v.get()));
+                        groups.back().inVariables->push_back(itemMap[v.get()]);
                       }
                     for (auto& v: (*i)->outVariables)
                       {
-                        assert(itemMap.count(v->ports[0].get()));
-                        groups.back().outVariables->push_back(itemMap[v->ports[0].get()]);
+                        assert(itemMap.count(v.get()));
+                        groups.back().outVariables->push_back(itemMap[v.get()]);
                       }
                     return false;
                   });

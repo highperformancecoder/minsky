@@ -30,19 +30,20 @@ trap "fail" 1 2 3 15
 cd $here/test/oldSchema
 for i in */*.mky; do
     # this example has a constant and variable of the same name, so will fail this test
-    #echo $i
+#    echo $i
     if [ $i = schema0/4MonetaryMinskyModelLessUnstableStart.mky ]; then continue; fi
+    # data blocks not yet supported in matlab
+    if [ $i = schema?/data-example.mky ]; then continue; fi
     $here/gui-tk/minsky $here/test/rewriteMky.tcl $i $tmp/tmp.mky
     if test $? -ne 0; then fail; fi
     $here/gui-tk/minsky $here/test/rewriteMky.tcl $tmp/tmp.mky $tmp/tmp1.mky
     if test $? -ne 0; then fail; fi
-# need to do it again, as Minsky will usually readjust the position of
-# the canvas items
-    $here/gui-tk/minsky $here/test/rewriteMky.tcl $tmp/tmp1.mky $tmp/tmp2.mky
+    # rewrite as matlab files to compare, as we don't care too much about layout
+    
+    $here/gui-tk/minsky $here/test/rewriteMkyAsMatlab.tcl $tmp/tmp.mky
     if test $? -ne 0; then fail; fi
-    $here/gui-tk/minsky $here/test/rewriteMky.tcl $tmp/tmp2.mky $tmp/tmp3.mky
-    if test $? -ne 0; then fail; fi
-    $here/test/cmpFp  $tmp/tmp2.mky $tmp/tmp3.mky
+    $here/gui-tk/minsky $here/test/rewriteMkyAsMatlab.tcl $tmp/tmp1.mky
+    $here/test/cmpFp  $tmp/tmp.mky.m $tmp/tmp1.mky.m
     if test $? -ne 0; then 
         echo "old schema file $i failed to convert"
         fail
