@@ -116,10 +116,10 @@
     <from>82</from>
     <to>13</to>
     <coords>
-     <float>-85</float>
-     <float>2.69422e-15</float>
-     <float>9.23927</float>
-     <float>121.791</float>
+     <float>160.506</float>
+     <float>291.335</float>
+     <float>120.145</float>
+     <float>165</float>
      <float>86.8891</float>
      <float>143</float>
     </coords>
@@ -129,10 +129,10 @@
     <from>82</from>
     <to>58</to>
     <coords>
-     <float>-85</float>
-     <float>2.69422e-15</float>
-     <float>-1193.65</float>
-     <float>72.647</float>
+     <float>160.506</float>
+     <float>291.335</float>
+     <float>64.0961</float>
+     <float>185</float>
      <float>183.889</float>
      <float>118.25</float>
     </coords>
@@ -144,10 +144,10 @@
     <coords>
      <float>390.889</float>
      <float>155</float>
-     <float>451.751</float>
-     <float>18.5713</float>
-     <float>87</float>
-     <float>-2.44929e-15</float>
+     <float>402.582</float>
+     <float>275</float>
+     <float>332.506</float>
+     <float>291.335</float>
     </coords>
    </Wire>
    <Wire>
@@ -175,14 +175,14 @@
     <from>82</from>
     <to>90</to>
     <coords>
-     <float>-85</float>
-     <float>2.69422e-15</float>
-     <float>-93.3049</float>
-     <float>5.58618</float>
-     <float>-100.82</float>
-     <float>5.73819</float>
-     <float>-41.6693</float>
-     <float>7.48724</float>
+     <float>160.506</float>
+     <float>291.335</float>
+     <float>152.201</float>
+     <float>296.921</float>
+     <float>144.686</float>
+     <float>297.073</float>
+     <float>203.837</float>
+     <float>298.822</float>
     </coords>
    </Wire>
    <Wire>
@@ -469,8 +469,8 @@
    <Item>
     <id>77</id>
     <type>Operation:subtract</type>
-    <x>-186.256</x>
-    <y>-295.873</y>
+    <x>59.2501</x>
+    <y>-4.5383</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -482,8 +482,8 @@
    <Item>
     <id>81</id>
     <type>Operation:multiply</type>
-    <x>-240.716</x>
-    <y>-296.882</y>
+    <x>4.79044</x>
+    <y>-5.54681</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -495,8 +495,8 @@
    <Item>
     <id>84</id>
     <type>Variable:integral</type>
-    <x>-308.506</x>
-    <y>-291.335</y>
+    <x>-63</x>
+    <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -509,8 +509,8 @@
    <Item>
     <id>87</id>
     <type>IntOp</type>
-    <x>-358.711</x>
-    <y>-294.361</y>
+    <x>-113.205</x>
+    <y>-3.02554</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -522,8 +522,8 @@
    <Item>
     <id>91</id>
     <type>Operation:multiply</type>
-    <x>-295.175</x>
-    <y>-292.848</y>
+    <x>-49.6693</x>
+    <y>-1.51276</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -535,8 +535,8 @@
    <Item>
     <id>93</id>
     <type>Variable:parameter</type>
-    <x>-144.907</x>
-    <y>-322.095</y>
+    <x>100.599</x>
+    <y>-30.7596</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -548,8 +548,8 @@
    <Item>
     <id>95</id>
     <type>Variable:parameter</type>
-    <x>-173.145</x>
-    <y>-261.584</y>
+    <x>72.3608</x>
+    <y>29.7511</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -561,8 +561,8 @@
    <Item>
     <id>98</id>
     <type>Variable:flow</type>
-    <x>-178.506</x>
-    <y>-291.335</y>
+    <x>67</x>
+    <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>

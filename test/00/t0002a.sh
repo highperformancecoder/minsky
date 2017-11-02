@@ -11,13 +11,8 @@ for i in $here/examples/*.mky; do
     "$here/gui-tk/minsky" "$here/test/rewriteMky.tcl" tmp  tmp1;
     if test $? -ne 0; then EXIT=1; break; fi
     # check second rewrite doesn't mutate
-    # TODO work out why examples with groups mutate!!
-    if [ $i = "$here/examples/data-example.mky" ]; then continue; fi 
-    "$here/gui-tk/minsky" "$here/test/rewriteMkyAsMatlab.tcl" tmp
-    if test $? -ne 0; then EXIT=1; break; fi
-    "$here/gui-tk/minsky" "$here/test/rewriteMkyAsMatlab.tcl" tmp1
     
-    $here/test/cmpFp tmp.m tmp1.m
+    $here/test/cmpFp tmp tmp1
     if [ $? -ne 0 ]; then
         echo "$i mutates"
         EXIT=1

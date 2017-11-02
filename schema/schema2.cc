@@ -453,7 +453,12 @@ namespace schema2
               {
                 auto it=itemMap.find(j);
                 if (it!=itemMap.end())
-                  newG->addItem(it->second);
+                  {
+                    // stash position, as schemas refer to relative positions
+                    float x=it->second->x(), y=it->second->y();
+                    newG->addItem(it->second);
+                    it->second->m_x=x; it->second->m_y=y;
+                  }
               }
             if (i.inVariables)
               for (auto j: *i.inVariables)
