@@ -38,8 +38,8 @@ namespace minsky
   private:
     float m_x{0}, m_y{0};
     int flags{0};
-    bool m_multiWireAllowed;
-    bool m_input; ///<true if input port
+//    bool m_multiWireAllowed;
+//    bool m_input; ///<true if input port
     CLASSDESC_ACCESS(Port);
     friend class SchemaHelper;
     Port(const Port&)=delete;

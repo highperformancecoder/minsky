@@ -747,8 +747,8 @@ namespace minsky
     ofstream of(filename);
     xml_pack_t saveFile(of, schemaURL);
     saveFile.prettyPrint=true;
-    schema1::Minsky m(*this);
-    m.relocateCanvas();
+    schema2::Minsky m(*this);
+    //m.relocateCanvas();
     xml_pack(saveFile, "Minsky", m);
     if (!of)
       throw runtime_error("cannot save to "+filename);
@@ -790,8 +790,11 @@ namespace minsky
           *this=schema2::Minsky(schema1);
           break;
         }
-      default:
+      case 2:
         *this = currentSchema;
+        break;
+      default:
+        throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
       }
     // try resetting the system, but ignore any errors
     try {reset();}

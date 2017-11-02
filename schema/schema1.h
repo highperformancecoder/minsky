@@ -290,11 +290,11 @@ namespace schema1
 
   struct SizeLayout
   {
-    double width, height;
+    double width=100, height=100;
     SizeLayout() {}
     template <class T>
     SizeLayout(const T& x): width(x.width), height(x.height) {}
-    SizeLayout(const schema0::PlotWidget&): width(100), height(100) {}
+    SizeLayout(const schema0::PlotWidget&) {}
   };
 
   /// represents layouts of wires
@@ -315,7 +315,7 @@ namespace schema1
 struct ItemLayout: public SPoly<ItemLayout, Layout, 
                                 Join<PositionLayout, VisibilityLayout> >
   {
-    double rotation;
+    double rotation=0;
 
     ItemLayout() {}
     template <class T> ItemLayout(int id, const T& item): 
@@ -327,7 +327,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
   /// group layouts also have a width & height
   struct GroupLayout: public SPoly<GroupLayout, ItemLayout, SizeLayout>
   {
-    double displayZoom;
+    double displayZoom=1;
     GroupLayout(): displayZoom(1) {}
     GroupLayout(int id, const minsky::Group& g):
       Layout(id), PositionLayout(id, g), VisibilityLayout(g),

@@ -26,17 +26,18 @@ namespace schema2
   struct IdMap: public map<void*,int>
   {
     int nextId=0;
-    int operator[](void* o) {
+    int at(void* o) {
       auto i=find(o);
       if (i==end())
         return emplace(o,nextId++).first->second;
       else
         return i->second;
     }
-    vector<int> operator[](const minsky::ItemPortVector& v) {
+    int operator[](void* o) {return at(o);}
+    vector<int> at(const minsky::ItemPortVector& v) {
       vector<int> r;
       for (auto& i: v)
-        r.push_back(operator[](i.get()));
+        r.push_back(at(i.get()));
       return r;
     }
     
@@ -45,7 +46,18 @@ namespace schema2
     {
       auto j=dynamic_cast<T*>(i);
       if (j)
-        items.emplace_back(operator[](j), *j, operator[](j->ports));
+        {
+          items.emplace_back(at(j), *j, at(j->ports));
+          if (auto g=dynamic_cast<minsky::GodleyIcon*>(i))
+            {
+              // insert port references from flow/stock vars
+              items.back().ports.clear();
+              for (auto& v: g->flowVars)
+                items.back().ports.push_back(at(v->ports[1].get()));
+              for (auto& v: g->stockVars)
+                items.back().ports.push_back(at(v->ports[0].get()));
+            }
+        }
       return j;
     }
   };
@@ -76,6 +88,7 @@ namespace schema2
       registerClassType<minsky::Item>();
       registerClassType<minsky::IntOp>();
       registerClassType<minsky::DataOp>();
+      registerClassType<minsky::VarConstant>();
       registerClassType<minsky::GodleyIcon>();
       registerClassType<minsky::PlotWidget>();
       registerClassType<minsky::SwitchIcon>();
@@ -92,7 +105,15 @@ namespace schema2
         return minsky::VariableBase::create
           (enum_keys<minsky::VariableType::Type>()
            (t.substr(t.find(':')+1)));
-      return classdesc::Factory<minsky::Item,string>::create(t);
+      try
+        {
+          return classdesc::Factory<minsky::Item,string>::create(t);
+        }
+      catch (...)
+        {
+          assert(!"item type not registered");
+          return nullptr;
+        }
     }
   };
   
@@ -158,9 +179,9 @@ namespace schema2
             if (v!=portToVar.end())
               {
                 if (v->second.second)
-                  groups.back().inVariables.push_back(v->second.first);
+                  groups.back().inVariables->push_back(v->second.first);
                 else
-                  groups.back().outVariables.push_back(v->second.first);
+                  groups.back().outVariables->push_back(v->second.first);
               }
           }
       }
@@ -175,16 +196,16 @@ namespace schema2
     IdMap itemMap;
 
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
-        itemMap.emplaceIf<minsky::OperationBase>(items, i->get()) &&
-          itemMap.emplaceIf<minsky::VariableBase>(items, i->get()) &&
-          itemMap.emplaceIf<minsky::GodleyIcon>(items, i->get()) &&
-          itemMap.emplaceIf<minsky::PlotWidget>(items, i->get()) &&
-          itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) &&
+        itemMap.emplaceIf<minsky::OperationBase>(items, i->get()) ||
+          itemMap.emplaceIf<minsky::VariableBase>(items, i->get()) ||
+          itemMap.emplaceIf<minsky::GodleyIcon>(items, i->get()) ||
+          itemMap.emplaceIf<minsky::PlotWidget>(items, i->get()) ||
+          itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
         return false;
       });
     
-    // search for and link up integrals to their variables
+    // search for and link up integrals to their variables, and Godley table ports
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
         if (auto integ=dynamic_cast<minsky::IntOp*>(i->get()))
           {
@@ -199,6 +220,10 @@ namespace schema2
                   j.intVar.reset(new int(itemMap[static_cast<minsky::Item*>(integ->intVar.get())]));
                   break;
                 }
+          }
+        else if (auto godley=dynamic_cast<minsky::GodleyIcon*>(i->get()))
+          {
+            
           }
         return false;
       });
@@ -220,12 +245,12 @@ namespace schema2
                     for (auto& v: (*i)->inVariables)
                       {
                         assert(itemMap.count(v->ports[1].get()));
-                        groups.back().inVariables.push_back(itemMap[v->ports[1].get()]);
+                        groups.back().inVariables->push_back(itemMap[v->ports[1].get()]);
                       }
                     for (auto& v: (*i)->outVariables)
                       {
                         assert(itemMap.count(v->ports[0].get()));
-                        groups.back().outVariables.push_back(itemMap[v->ports[0].get()]);
+                        groups.back().outVariables->push_back(itemMap[v->ports[0].get()]);
                       }
                     return false;
                   });
@@ -251,8 +276,8 @@ namespace schema2
 
   void populateNote(minsky::NoteBase& x, const Note& y)
   {
-    x.detailedText=y.detailedText;
-    x.tooltip=y.tooltip;
+    if (y.detailedText) x.detailedText=*y.detailedText;
+    if (y.tooltip) x.tooltip=*y.tooltip;
   }
   
   void populateItem(minsky::Item& x, const Item& y)
@@ -317,7 +342,8 @@ namespace schema2
   void populateWire(minsky::Wire& x, const Wire& y)
   {
     populateNote(x,y);
-    x.coords(y.coords);
+    if (y.coords)
+      x.coords(*y.coords);
   }
   
   
@@ -399,7 +425,7 @@ namespace schema2
         {
           assert(portMap[w.from].use_count()>1 && portMap[w.to].use_count()>1);
           populateWire
-            (*g.addWire(new minsky::Wire(portMap[w.from],portMap[w.to],w.coords)),w);
+            (*g.addWire(new minsky::Wire(portMap[w.from],portMap[w.to])),w);
         }
           
     for (auto& i: groups)
@@ -418,26 +444,28 @@ namespace schema2
                 if (it!=itemMap.end())
                   newG->addItem(it->second);
               }
-            for (auto j: i.inVariables)
-              {
-                auto it=itemMap.find(j);
-                if (it!=itemMap.end())
-                  if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
-                    {
-                      newG->addItem(it->second);
-                      newG->inVariables.push_back(v);
-                    }
-              }
-            for (auto j: i.outVariables)
-              {
-                auto it=itemMap.find(j);
-                if (it!=itemMap.end())
-                  if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
-                    {
-                      newG->addItem(it->second);
-                      newG->outVariables.push_back(v);
-                    }
-              }
+            if (i.inVariables)
+              for (auto j: *i.inVariables)
+                {
+                  auto it=itemMap.find(j);
+                  if (it!=itemMap.end())
+                    if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
+                      {
+                        newG->addItem(it->second);
+                        newG->inVariables.push_back(v);
+                      }
+                }
+            if (i.outVariables)
+              for (auto j: *i.outVariables)
+                {
+                  auto it=itemMap.find(j);
+                  if (it!=itemMap.end())
+                    if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
+                      {
+                        newG->addItem(it->second);
+                        newG->outVariables.push_back(v);
+                      }
+                }
           }
       }
   }

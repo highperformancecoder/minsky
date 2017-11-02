@@ -57,7 +57,7 @@ namespace schema2
    
   /// convenience class to omit writing XML records when data absent or empty
   template <class T>
-  struct Optional: std::shared_ptr<T>
+  struct Optional: shared_ptr<T>
   {
     Optional() {}
     Optional(const T& x) {assign(x);}
@@ -69,11 +69,20 @@ namespace schema2
     template <class U>
     typename classdesc::enable_if<Not<has_empty<U>>,void>::T
     assign(const U& x, classdesc::dummy<1> d=0) {this->reset(new U(x));}
+
+    // if we access an optional, then create its target
+    T& operator*() {if (!this->get()) this->reset(new T); return *this->get();}
+    const T& operator*() const {return *this->get();}
+    T* operator->() {return &**this;}
+    const T* operator->() const {return &**this;}
+
+    template <class U> Optional& operator=(const U& x) {**this=x;}
   };
 
+ 
   struct Note
   {
-    std::string detailedText, tooltip;
+    Optional<std::string> detailedText, tooltip;
     Note() {}
     template <class T>
     Note(const T& x): detailedText(x.detailedText), tooltip(x.tooltip) {}
@@ -173,17 +182,23 @@ namespace schema2
   {
     int id=-1;
     int from=-1, to=-1;
-    vector<float> coords;
+    Optional<std::vector<float>> coords;
     Wire() {}
-    Wire(int id, const minsky::Wire& w): Note(w), id(id) {}
+    Wire(int id, const minsky::Wire& w): Note(w), id(id) {
+      if (w.coords().size()>4)
+        coords.reset(new std::vector<float>(w.coords()));
+     }
     Wire(const schema1::Wire& w): Note(w), id(w.id), from(w.from), to(w.to) {}
-    void addLayout(const schema1::UnionLayout& layout) {coords=layout.coords;}
+    void addLayout(const schema1::UnionLayout& layout) {
+      if (layout.coords.size()>4)
+        coords.reset(new std::vector<float>(layout.coords));
+    }
   };
 
   struct Group: public Item
   {
     vector<int> items;
-    vector<int> inVariables, outVariables;
+    Optional<vector<int>> inVariables, outVariables;
     Group() {}
     Group(int id, const minsky::Group& g): Item(id,g,std::vector<int>()) {}
 
@@ -220,7 +235,6 @@ namespace schema2
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
-    Group model;
     RungeKutta rungeKutta;
     double zoomFactor=1;
 
@@ -250,6 +264,40 @@ namespace schema2
 
 }
 
+  /*
+    This code ensure optional fields are not exported when empty This
+    is really clunky, as partial function specialisations are not
+    valid C++, so we need explicit specialisations for all types used
+    in this schema.
+
+    TODO: fix classdesc code to explicitly allow optional XML fields.
+  */
+
+namespace classdesc
+{
+  template <class T> void xpack(xml_pack_t& t,const string& d,T& a) 
+  {if (a) ::xml_pack(t,d,*a);}
+
+
+  inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<std::string>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<float>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<bool>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,std::shared_ptr<int>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,
+                       schema2::Optional<std::map<double,double>>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,
+                       schema2::Optional<std::vector<std::vector<std::string>>>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,
+                       schema2::Optional<std::vector<float>>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,
+                       schema2::Optional<std::vector<int>>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,
+                       schema2::Optional<std::vector<minsky::GodleyAssetClass::AssetClass>>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,
+                       std::shared_ptr<ecolab::Plot::Side>& a) {xpack(t,d,a);}
+}
+
+using classdesc::xml_pack;
 
 #include "schema2.cd"
 #include "schema2.xcd"

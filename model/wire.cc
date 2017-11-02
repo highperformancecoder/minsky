@@ -78,6 +78,7 @@ namespace minsky
       m_from(from), m_to(to) 
   {
     if (!from || !to) throw error("wiring defunct ports");
+    if (from->input() || !to->input()) throw error("invalid ports for wire");
     coords(a_coords);
     m_from.lock()->wires.push_back(this);
     m_to.lock()->wires.push_back(this);

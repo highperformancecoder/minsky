@@ -22,7 +22,7 @@
 #include <iostream>
 #undef NDEBUG
 #include <assert.h>
-using namespace schema1;
+using namespace schema2;
 using namespace std;
 
 int main(int argc, const char*argv[])
