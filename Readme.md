@@ -5,6 +5,7 @@ For a full overview, please see the [Manual](http://minsky.sf.net/manual/minsky.
 
 - [File Structure](File Structure.md) for an overview of folders and files
 - [Architecture](Architecture.md) for an overview of the app and DAG engine
+- [Minsky Schema](gihubdocs/schema.md) describes the schema of the Minsky .mky model files
 
 ## Getting Started
 
