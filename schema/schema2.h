@@ -310,10 +310,6 @@ namespace classdesc
                        std::shared_ptr<ecolab::Plot::Side>& a) {xpack(t,d,a);}
 }
 
-//template <class T>
-//void xml_pack(classdesc::xml_pack_t& t, const classdesc::string& d, const schema2::Optional<T>& a) 
-//{if (a) ::xml_pack(t,d,*a);}
-
 using classdesc::xsd_generate;
 using classdesc::xml_pack;
 

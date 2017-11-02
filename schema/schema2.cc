@@ -246,13 +246,13 @@ namespace schema2
     g.recursiveDo(&minsky::GroupItems::groups,
                   [&](const minsky::Groups&,minsky::Groups::const_iterator i) {
                     groups.emplace_back(itemMap[i->get()], **i);
-                    for (auto& i: (*i)->items)
+                    for (auto& j: (*i)->items)
                       {
-                        assert(itemMap.count(i.get()));
-                        groups.back().items.push_back(itemMap[i.get()]);
+                        assert(itemMap.count(j.get()));
+                        groups.back().items.push_back(itemMap[j.get()]);
                       }
-                    for (auto& i: (*i)->groups)
-                      groups.back().items.push_back(itemMap[i.get()]);
+                    for (auto& j: (*i)->groups)
+                      groups.back().items.push_back(itemMap[j.get()]);
                    for (auto& v: (*i)->inVariables)
                       {
                         assert(itemMap.count(v.get()));
