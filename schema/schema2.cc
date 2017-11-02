@@ -18,7 +18,8 @@
 */
 #include "schema2.h"
 #include <ecolab_epilogue.h>
-template <> classdesc::Factory<minsky::Item,string>::Factory() {}
+
+namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
 
 namespace schema2
 {
