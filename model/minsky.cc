@@ -807,7 +807,18 @@ namespace minsky
   {
     xsd_generate_t x;
     // currently, there is only 1 schema level, so ignore second arg
-    xsd_generate(x,"Minsky",schema1::Minsky());
+    switch (schemaLevel)
+      {
+      case 0:
+        xsd_generate(x,"Minsky",schema0::Minsky());
+        break;
+      case 1:
+        xsd_generate(x,"Minsky",schema1::Minsky());
+        break;
+      case 2:
+        xsd_generate(x,"Minsky",schema2::Minsky());
+        break;
+      }
     ofstream f(filename);
     x.output(f,schemaURL);
   }

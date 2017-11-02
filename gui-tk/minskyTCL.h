@@ -246,12 +246,6 @@ namespace minsky
       rebuildTCLcommands=true;
     }
 
-    void exportSchema(TCL_args args) {
-      const char* filename=args;
-      int schemaLevel=1;
-      if (args.count) schemaLevel=args;
-      Minsky::exportSchema(filename, schemaLevel);
-    }
     void latex(const char* filename, bool wrapLaTeXLines);
 
     void matlab(const char* filename) {

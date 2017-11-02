@@ -206,7 +206,7 @@ mac-dist: gui-tk/minsky
 	sh -v mkMacDist.sh
 
 minsky.xsd: gui-tk/minsky
-	gui-tk/minsky exportSchema.tcl
+	gui-tk/minsky exportSchema.tcl 2
 
 upload-schema: minsky.xsd
 	scp minsky.xsd $(SF_WEB)

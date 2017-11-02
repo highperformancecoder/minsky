@@ -275,6 +275,19 @@ namespace schema2
 
 namespace classdesc
 {
+
+#ifdef _CLASSDESC
+#pragma omit xsd_generate schema2::Optional
+#pragma omit xml_pack schema2::Optional
+#endif
+
+  template <class T>
+  void xsd_generate(xsd_generate_t& g, const string& d, const schema2::Optional<T>& a) 
+  {
+    xsd_generate_t::Optional o(g,true); 
+    xsd_generate(g,d,*a);
+  }
+
   template <class T> void xpack(xml_pack_t& t,const string& d,T& a) 
   {if (a) ::xml_pack(t,d,*a);}
 
@@ -297,6 +310,11 @@ namespace classdesc
                        std::shared_ptr<ecolab::Plot::Side>& a) {xpack(t,d,a);}
 }
 
+//template <class T>
+//void xml_pack(classdesc::xml_pack_t& t, const classdesc::string& d, const schema2::Optional<T>& a) 
+//{if (a) ::xml_pack(t,d,*a);}
+
+using classdesc::xsd_generate;
 using classdesc::xml_pack;
 
 #include "schema2.cd"
