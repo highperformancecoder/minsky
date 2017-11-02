@@ -76,7 +76,7 @@ namespace schema2
     T* operator->() {return &**this;}
     const T* operator->() const {return &**this;}
 
-    template <class U> Optional& operator=(const U& x) {**this=x;}
+    template <class U> Optional& operator=(const U& x) {**this=x; return *this;}
   };
 
  
