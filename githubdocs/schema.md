@@ -7,7 +7,7 @@ A UML representation of schema 2: ![schema UML](../MinskySchema2.svg).
 
 By following this schema, you can create other tools that can interact with Minsky.
 
-The definitive schema definition can be found in the header files in the [schema directory](schema).
+The definitive schema definition can be found in the header files in the [schema directory](../schema).
 
 Notes:
 
@@ -37,7 +37,7 @@ Notes:
 * The layout vector elements have entirely optional elements, except for the one mandatory element id, which refers to the id of the minskyModel element the layout element is describing. 
 
 # Schema Evolution
-Each schema is specified in a header file in the [schema subdirectory](schema), and has an attribute indicating the version number. On read in, this can be used to determine which schema version Minsky object to use to read in the data. Each schema version is responsible for being able to convert the previous schema object into it's own format, allowing ongoing migration. This is handled in the Minsky::load method.
+Each schema is specified in a header file in the [schema subdirectory](../schema), and has an attribute indicating the version number. On read in, this can be used to determine which schema version Minsky object to use to read in the data. Each schema version is responsible for being able to convert the previous schema object into it's own format, allowing ongoing migration. This is handled in the Minsky::load method.
 ~~~~~~~~~~~~~~~~~~
     schema2::Minsky currentSchema;
     xml_unpack_t saveFile(inf);
