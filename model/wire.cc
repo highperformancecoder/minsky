@@ -29,6 +29,11 @@ using namespace std;
 // undocumented internal function in the Tk library
 extern "C" int TkMakeBezierCurve(Tk_Canvas,double*,int,int,void*,double*);
 
+namespace
+{
+  inline float sqr(float x) {return x*x;}
+}
+
 namespace minsky
 {
   vector<float> Wire::_coords() const
@@ -41,10 +46,13 @@ namespace minsky
         {
           c.push_back(f->x());
           c.push_back(f->y());
+          float d=sqrt
+            (sqr(f->x()-t->x())+sqr(f->y()-t->y()));
+
           for (size_t i=0; m_coords.size()>1 && i<m_coords.size()-1; i+=2)
             {
-              c.push_back(f->x() + (t->x()-f->x())*m_coords[i]);
-              c.push_back(f->y() + (t->y()-f->y())*m_coords[i+1]);
+              c.push_back(f->x() + d*m_coords[i]);
+              c.push_back(f->y() + d*m_coords[i+1]);
             }
           c.push_back(t->x());
           c.push_back(t->y());
@@ -60,13 +68,13 @@ namespace minsky
       {
         assert(coords.size() % 2 == 0);
         
-        float dx=coords[coords.size()-2]-coords[0];
-        float dy=coords[coords.size()-1]-coords[1];
+        float d=1/sqrt
+          (sqr(coords[coords.size()-2]-coords[0])+sqr(coords[coords.size()-1]-coords[1]));
         m_coords.resize(coords.size()-4);
         for (size_t i=2; i<coords.size()-3; i+=2)
           {
-            m_coords[i-2] = (coords[i]-coords[0])/dx;
-            m_coords[i-1] = (coords[i+1]-coords[1])/dy;
+            m_coords[i-2] = (coords[i]-coords[0])*d;
+            m_coords[i-1] = (coords[i+1]-coords[1])*d;
           }
       }
     return this->coords();
@@ -306,39 +314,24 @@ namespace minsky
   
   void Wire::insertHandle(unsigned n, float x, float y)
   {
-    assert(n<=m_coords.size());
-    assert(from() && to());
+    n++;
     n*=2;
-    if (auto f=from())
-      if (auto t=to())
-        {
-          if (n<m_coords.size())
-            {
-              m_coords.resize(m_coords.size()+2);
-              memmove(&m_coords[n+2], &m_coords[n], sizeof(m_coords[0])*(m_coords.size()-n-2));
-              m_coords[n] = (x - f->x()) / (t->x() - f->x());
-              m_coords[n+1] = (y - f->y()) / (t->y() - f->y());
-            }
-          else if (n==m_coords.size())
-            {
-              m_coords.push_back((x - f->x()) / (t->x() - f->x()));
-              m_coords.push_back((y - f->y()) / (t->y() - f->y()));
-            }
-        }
+    auto c=coords();
+    assert(n<c.size()-1);
+    vector<float> h{x,y};
+    c.insert(c.begin()+n,h.begin(), h.end());
+    coords(c);
   }
   
   void Wire::editHandle(unsigned position, float x, float y)
   {
-    assert(position<m_coords.size()-1);
-    assert(from() && to());
+    position++;
     position*=2;
-    if (auto f=from())
-      if (auto t=to())
-        if (position<m_coords.size()-1)
-          {
-            m_coords[position]=(x - f->x()) / (t->x() - f->x());
-            m_coords[position+1]=(y - f->y()) / (t->y() - f->y());
-          }
+    auto c=coords();
+    assert(position<c.size()-2);
+    c[position]=x;
+    c[position+1]=y;
+    coords(c);
   }
 
   

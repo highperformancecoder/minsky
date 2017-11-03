@@ -30,14 +30,17 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
 minsky.load $here/examples/GoodwinLinear02.mky
+minsky.canvas.recentre
 proc afterMinskyStarted {} {
   puts "minsky started"
   set numItems [model.numItems]
   set numWires [model.numWires]
   focus .wiring.canvas
-  deleteKey 404 265
-  assert "[model.numWires]==[expr \$numWires-1]" {test wire deletion}
 
+#  puts "[minsky.canvas.item.x] [minsky.canvas.item.y]"
+#  puts "getWireAt 404 265=[getWireAt 380 245]"
+  deleteKey 380 245
+  assert "[model.numWires]==[expr \$numWires-1]" {test wire deletion}
   findVariable emprate
   deleteKey [minsky.canvas.item.x] [minsky.canvas.item.y]
   assert "[model.numItems]==[expr \$numItems-1]" {test emprate var deletion}
