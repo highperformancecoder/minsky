@@ -1,6 +1,6 @@
 The format for the Minksy file (.mky extension) is documented as an XML schema at <http://minsky.sf.net/minsky.xsd>. The schema version used by Minsky 1.x is 1, and Minsky 2.x is 2, thus the schema version is currently tracking the Minsky version. This will not always be the case, however, but if the schema version is bumped, then so will the Minsky version. 
 
-A UML representation of the schema can be found ![here](../MinskySchema1.svg).
+A UML representation of the schema: ![schema UML](../MinskySchema1.svg).
 
 
 By following this schema, you can create other tools that can interact with Minsky.
