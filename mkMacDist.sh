@@ -58,12 +58,11 @@ mkdir -p $MAC_DIST_DIR/../Resources/fontconfig
 cp -r /opt/local/etc/fonts/* $MAC_DIST_DIR/../Resources/fontconfig
 
 #copy toplevel tcl scripts
-    cp gui-tk/*.tcl $MAC_DIST_DIR
+cp gui-tk/*.tcl $MAC_DIST_DIR
 #copy library scripts 
-    cp -r gui-tk/library $MAC_DIST_DIR
-    cp -r gui-tk/icons $MAC_DIST_DIR
-    cp gui-tk/accountingRules $MAC_DIST_DIR
-    pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky-$version-mac-dist.pkg
+cp -r gui-tk/library $MAC_DIST_DIR
+cp -r gui-tk/icons $MAC_DIST_DIR
+cp gui-tk/accountingRules $MAC_DIST_DIR
     
 # determine location of tcl library from tclsh - make sure the correct
 # tclsh is in your path
@@ -75,3 +74,4 @@ rm -rf $MAC_DIST_DIR/library/{tcl,tk}
 cp -r $TCL_LIB $MAC_DIST_DIR/library/tcl
 cp -r $TK_LIB $MAC_DIST_DIR/library/tk
 
+pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky-$version-mac-dist.pkg
