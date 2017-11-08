@@ -594,15 +594,6 @@ namespace minsky
 
     initGodleys();
 
-    model->recursiveDo
-      (&Group::items,
-       [&](Items& m, Items::iterator i)
-       {
-         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
-           p->clear();
-         return false;
-       });
-
     if (stockVars.size()>0)
       {
         if (order==1 && !implicit)
@@ -615,6 +606,19 @@ namespace minsky
     // update flow variable
     for (size_t i=0; i<equations.size(); ++i)
       equations[i]->eval(&flowVars[0], &stockVars[0]);
+    
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+           {
+             p->clear();
+             p->redraw();
+           }
+         return false;
+       });
+
   }
 
   void Minsky::step()
