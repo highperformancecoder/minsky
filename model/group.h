@@ -258,7 +258,7 @@ namespace minsky
     float displayZoom{1}; ///< zoom at which contents are displayed
     float computeDisplayZoom();
     float localZoom() const {
-      return (displayZoom>0 && zoomFactor>displayZoom)
+      return (displayZoom>0 && displayContents())
         ? zoomFactor/displayZoom: 1;
     }
     /// sets the zoom factor to \a factor. Recursively set the
