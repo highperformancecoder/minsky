@@ -80,7 +80,7 @@ namespace minsky
   {
     // TODO assignPorts();
     nxTicks=nyTicks=10;
-    fontScale=1;
+    fontScale=2;
     leadingMarker=true;
     grid=true;
 
