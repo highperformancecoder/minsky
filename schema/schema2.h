@@ -131,7 +131,7 @@ namespace schema2
       name(v.rawName()), init(v.init()) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.width()), height(g.height()), name(g.table.title), data(g.table.getData()),
+      width(g.width()/g.zoomFactor), height(g.height()/g.zoomFactor), name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
