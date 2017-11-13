@@ -1517,7 +1517,7 @@ namespace MathDAG
     for (size_t c=1; c<godley.cols(); ++c)
       {
         string colName=stripActive(trimWS(godley.cell(0,c)));
-        if (VariableValue::uqName(colName).empty())
+        if (colName=="_" || VariableValue::uqName(colName).empty())
           throw error("unnamed Godley table column found");
         // if local, append scope
         if (colName.find(':')==string::npos)

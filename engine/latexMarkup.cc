@@ -35,6 +35,7 @@ namespace
     symbolData[]={
       {"{","{"},
       {"}","}"},
+      {"euro","€"},
       {"alpha","α"},
       {"beta","β"},
       {"gamma","γ"},
@@ -690,6 +691,19 @@ namespace
     return r;
   }
 
+  // return multibyte string corresponding to a single UTF8 character,
+  // and advance input buffer
+  string utf8char(const char*& input)
+  {
+    string r;
+    char lead=*input;
+    if ((lead&0xC0)==0xC0) r+=*input++; // multibyte byte sequence
+    if ((lead&0xE0)==0xE0) r+=*input++; // 3 or more
+    if ((lead&0xF8)==0xF0) r+=*input++; // 4 bytes
+    r+=*input++;
+    return r;
+  }
+  
   // stucture to represent the returned string as it is being built
   struct Result: public string
   {
@@ -718,12 +732,14 @@ namespace
           {
             *this+="<span style=\"normal\">";
             push_back("span");
+            input++;
           }
         else
           {
             if (!x.empty()) 
               *this+="<"+x+">";
             push_back(x);
+            input++;
           }
       else if (*input=='\\')
         {
@@ -735,10 +751,9 @@ namespace
           return;
         }
       else if (x=="rm") 
-        *this+=string("<span style=\"normal\">")+*input+"</span>";
+        *this+=string("<span style=\"normal\">")+utf8char(input)+"</span>";
       else if (!x.empty())
-        *this+=string("<")+x+">"+*input+"</"+x+">";
-      input++;
+        *this+=string("<")+x+">"+utf8char(input)+"</"+x+">";
     }
     
     void pop()
@@ -861,7 +876,7 @@ namespace minsky
           r.pop();
           break;
         default:
-          r+=*input++;
+          r+=utf8char(input);
           break;
         }
 
