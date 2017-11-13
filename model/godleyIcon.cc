@@ -38,7 +38,7 @@ namespace minsky
     struct OrderByName
     {
       bool operator()(const VariablePtr& x, const VariablePtr& y) const
-      {assert(x&&y); return x->name() < y->name();}
+      {assert(x&&y); return x->valueId() < y->valueId();}
     };
 
     struct DrawVars
@@ -95,20 +95,11 @@ namespace minsky
       for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
         {
           VariablePtr newVar(varType, *nm);
-//          if (nm->find(':')==string::npos)
-//            newVar->setScope(-1); //unscoped variables are treated as local to containing scope
-//          newVar->m_visible=false;
-          // ensure variable type is consistent
-          auto vv=minsky::cminsky().variableValues.find(newVar->valueId());
-          if (vv!=minsky::cminsky().variableValues.end() && 
-              vv->second.type()!=varType)
-            minsky::minsky().convertVarType(newVar->valueId(), varType);
           set<VariablePtr>::const_iterator v=oldVars.find(newVar);
           if (v==oldVars.end())
             {
               // add new variable
               vars.push_back(newVar);
-              if (auto g=group.lock()) g->addItem(newVar);
             }
           else
             {
@@ -117,6 +108,9 @@ namespace minsky
               oldVars.erase(v);
               assert(*v);
             }
+          if (auto g=group.lock()) g->addItem(vars.back(),true);
+          // ensure variable type is consistent
+          minsky::minsky().convertVarType(vars.back()->valueId(), varType);
           vars.back()->m_visible=false;
           vars.back()->zoomFactor=iconScale*zoomFactor;
         }

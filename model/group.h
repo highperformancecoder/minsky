@@ -124,9 +124,12 @@ namespace minsky
       return findAll<GroupPtr>(c,&GroupItems::groups,[](GroupPtr x){return x;});
     }
 
-    // add item, ownership is passed
+    /// add item, ownership is passed
     ItemPtr addItem(Item* it) {return addItem(std::shared_ptr<Item>(it));}
-    ItemPtr addItem(const std::shared_ptr<Item>&);
+    /** add item. 
+        @param inSchema - if building a group from schema processing, rather than generally
+    */
+    ItemPtr addItem(const std::shared_ptr<Item>&, bool inSchema=false);
 
     GroupPtr addGroup(const std::shared_ptr<Group>&);
     GroupPtr addGroup(Group* g) {return addGroup(std::shared_ptr<Group>(g));}

@@ -155,7 +155,7 @@ namespace minsky
   }
 
 
-  ItemPtr GroupItems::addItem(const shared_ptr<Item>& it)
+  ItemPtr GroupItems::addItem(const shared_ptr<Item>& it, bool inSchema)
   {
     if (!it) return it;
     if (auto x=dynamic_pointer_cast<Group>(it))
@@ -175,12 +175,12 @@ namespace minsky
       init=v->init();
     
     it->group=self;
-    it->moveTo(x,y);
+    if (!inSchema) it->moveTo(x,y);
 
     // take into account new scope
     if (auto v=dynamic_cast<VariableBase*>(it.get()))
       {
-        if (origGroup)
+        if (!inSchema && origGroup)
           if (auto destGroup=self.lock())
             {
               if (origGroup->higher(*destGroup))
@@ -211,7 +211,9 @@ namespace minsky
             }
         v->init(init); //NB calls ensureValueExists()
       }
-    
+     if (auto g=dynamic_cast<GodleyIcon*>(it.get()))
+       g->update(); // handle scoping of contained variables
+     
     // move wire to highest common group
     for (auto& p: it->ports)
       {
@@ -230,10 +232,10 @@ namespace minsky
           if (auto oldG=intOp->intVar->group.lock())
             {
               if (oldG.get()!=this)
-                addItem(oldG->removeItem(*intOp->intVar));
+                addItem(oldG->removeItem(*intOp->intVar),inSchema);
             }
           else
-            addItem(intOp->intVar);
+            addItem(intOp->intVar,inSchema);
         }
     items.push_back(it);
     return items.back();

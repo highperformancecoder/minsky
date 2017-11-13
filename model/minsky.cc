@@ -272,16 +272,19 @@ namespace minsky
     set<string> existingNames;
     existingNames.insert("constant:zero");
     existingNames.insert("constant:one");
+    vector<GodleyIcon*> godleysToUpdate;
     model->recursiveDo(&Group::items, 
                        [&](Items&,Items::iterator i) {
                          if (auto v=dynamic_cast<VariableBase*>(i->get()))
                            existingNames.insert(v->valueId());
                          // ensure Godley table variables are the correct types
                          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                           g->update();
+                           godleysToUpdate.push_back(g);
                          return false;
                        }
                        );
+
+    for (auto g: godleysToUpdate) g->update();
     for (auto i=variableValues.begin(); i!=variableValues.end(); )
       if (existingNames.count(i->first))
         ++i;

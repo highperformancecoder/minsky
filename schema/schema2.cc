@@ -48,7 +48,7 @@ namespace schema2
       auto j=dynamic_cast<T*>(i);
       if (j)
         {
-          items.emplace_back(at(j), *j, at(j->ports));
+          items.emplace_back(at(i), *j, at(j->ports));
           if (auto g=dynamic_cast<minsky::GodleyIcon*>(i))
             {
               // insert port references from flow/stock vars
@@ -226,10 +226,6 @@ namespace schema2
                   j.intVar.reset(new int(itemMap[static_cast<minsky::Item*>(integ->intVar.get())]));
                   break;
                 }
-          }
-        else if (auto godley=dynamic_cast<minsky::GodleyIcon*>(i->get()))
-          {
-            
           }
         return false;
       });
@@ -453,12 +449,7 @@ namespace schema2
               {
                 auto it=itemMap.find(j);
                 if (it!=itemMap.end())
-                  {
-                    // stash position, as schemas refer to relative positions
-                    float x=it->second->x(), y=it->second->y();
-                    newG->addItem(it->second);
-                    it->second->m_x=x; it->second->m_y=y;
-                  }
+                  newG->addItem(it->second, true/*inSchema*/);
               }
             if (i.inVariables)
               for (auto j: *i.inVariables)

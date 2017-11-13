@@ -25,7 +25,7 @@
 #define EQUATIONS_H
 
 #include "evalOp.h"
-#include "godley.h"
+#include "godleyIcon.h"
 #include "switchIcon.h"
 
 #include "operation.h"
@@ -335,11 +335,14 @@ namespace MathDAG
     NodePtr getNodeFromWire(const Wire& wire);
 
     void processGodleyTable
-    (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley/*, int godleyId*/);
+    (map<string, GodleyColumnDAG>& godleyVariables, const GodleyIcon&);
 
     /// applies the chain rule to expression x
     template <class Expr> NodePtr chainRule(const Expr& x, const Expr& deriv);
 
+    /// used to rename ambiguous variables in different scopes
+    std::set<std::string> varNames;
+    
   public:
     /// construct the system of equations 
     SystemOfEquations(const Minsky&);

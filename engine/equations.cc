@@ -1191,23 +1191,23 @@ namespace MathDAG
        [&](const Items&, Items::const_iterator i)
        {
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-           processGodleyTable(godleyVars, g->table/*, i->id()*/);
+           processGodleyTable(godleyVars, *g);
          return false;
        });
 
-    for (map<string, GodleyColumnDAG>::iterator g=godleyVars.begin(); 
-         g!=godleyVars.end(); ++g)
+    for (auto& g: godleyVars)
       {
         //        assert(g->second.godleyId>=0);
-        integVarMap[VariableValue::valueId(g->first)]=
-          dynamic_cast<VariableDAG*>(
-                                     makeDAG(VariableValue::valueId(g->first), g->first, VariableValue::stock).get());
+        integVarMap[VariableValue::valueId(g.first)]=
+          dynamic_cast<VariableDAG*>
+          (makeDAG(VariableValue::valueId(g.first),
+                   VariableValue::uqName(g.first), VariableValue::stock).get());
         VariableDAGPtr input(new IntegralInputVariableDAG);
-        input->name=g->first;
+        input->name=g.first;
         variables.push_back(input.get());
         // manage object's lifetime with expressionCache
-        expressionCache.insertIntegralInput(g->first, input);
-        input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g->second)));
+        expressionCache.insertIntegralInput(g.first, input);
+        input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
       }
 
     for (auto& v: integVarMap)
@@ -1241,8 +1241,14 @@ namespace MathDAG
         expressionCache.insert(valueId, r);
         return r;
       }
+
+    // ensure name is unique
+    string nm=name;
+    for (unsigned i=0; varNames.count(nm); ++i)
+      nm=name+"_"+to_string(i);
+    varNames.insert(nm);
     
-    shared_ptr<VariableDAG> r(new VariableDAG(valueId, name, type));
+    shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
     r->init=vv.initValue(minsky.variableValues);
     if (vv.isFlowVar()) 
@@ -1512,20 +1518,19 @@ namespace MathDAG
   }
 
   void SystemOfEquations::processGodleyTable
-  (map<string, GodleyColumnDAG>& godleyVariables, const GodleyTable& godley/*, int godleyId*/)
+  (map<string, GodleyColumnDAG>& godleyVariables, const GodleyIcon& gi)
   {
+    auto& godley=gi.table;
     for (size_t c=1; c<godley.cols(); ++c)
       {
         string colName=stripActive(trimWS(godley.cell(0,c)));
         if (colName=="_" || VariableValue::uqName(colName).empty())
           throw error("unnamed Godley table column found");
-        // if local, append scope
-        if (colName.find(':')==string::npos)
-          colName=VariableValue::valueId(-1, colName);
+        // resolve scope
+        colName=VariableValue::valueId(gi.group.lock(), colName);
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
-        //        gd.godleyId=godleyId;
         gd.arguments.resize(2);
         vector<WeakNodePtr>& arguments=gd.arguments[0];
         for (size_t r=1; r<godley.rows(); ++r)
@@ -1536,6 +1541,7 @@ namespace MathDAG
             if (godley.signConventionReversed(c)) fc.coef*=-1;
 
             VariablePtr v(VariableType::flow, fc.name);
+            v->group=gi.group;
 
             if (abs(fc.coef)==1)
               gd.arguments[fc.coef<0? 1: 0].push_back(WeakNodePtr(makeDAG(*v)));
