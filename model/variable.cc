@@ -278,9 +278,9 @@ void VariableBase::draw(cairo_t *cairo) const
 
   double v=value();
   int sciExp=(v!=0)? floor(log(fabs(v))/log(10)): 0;
-  int engExp=3*(sciExp/3);
+  int engExp=sciExp>=0? 3*(sciExp/3): 3*((sciExp+1)/3-1);
   const char* conv;
-  switch (sciExp%3)
+  switch ((sciExp-engExp)%3)
     {
     case 0: case -1: conv="%5.2f"; break;
     case 1: case -2: conv="%5.1f"; break;
