@@ -618,7 +618,7 @@ namespace minsky
            }
          return false;
        });
-
+    canvas.requestRedraw();
   }
 
   void Minsky::step()
