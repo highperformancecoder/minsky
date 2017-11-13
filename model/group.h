@@ -307,6 +307,12 @@ namespace minsky
     /// fix up subgroup pointers
     /// \a self is a shared pointer ref to this
     void normaliseGroupRefs(const std::shared_ptr<Group>& self);
+
+    ClickType::Type clickType(float x, float y) override {
+      if (displayContents()) return ClickType::outside;
+      else return Item::clickType(x,y);
+    }
+
   };
 
   template <class M, class C>
