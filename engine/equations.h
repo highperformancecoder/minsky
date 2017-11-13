@@ -325,7 +325,7 @@ namespace MathDAG
     /// create a variable DAG. returns cached value if previously called
     NodePtr makeDAG(const string& valueId, const string& name, VariableType::Type type);
     NodePtr makeDAG(VariableBase& v)
-    {v.ensureValueExists(); return makeDAG(v.valueId(),v.name(),v.type());}
+    {v.ensureValueExists(); return makeDAG(v.valueId(),VariableValue::uqName(v.name()),v.type());}
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationBase& op);
     NodePtr makeDAG(const SwitchIcon& op);
