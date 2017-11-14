@@ -294,7 +294,6 @@ namespace minsky
       r->addItem(i);
     r->resizeOnContents();
     r->splitBoundaryCrossingWires();
-    setItemFocus(r);
   }
 
   void Canvas::deleteWire()

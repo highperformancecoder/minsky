@@ -66,8 +66,6 @@ namespace minsky
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
-//    void resize(int width, int height)
-//    {if (surface.get()) {surface->resize(width,height); surface->requestRedraw();}}
     
     /// event handling for the canvas
     void mouseDown(float x, float y);
