@@ -18,11 +18,6 @@
 
 # Group (or block) functionality
 
-# convert degrees to radian
-proc radian {deg} {
-    return [expr $deg*3.1415927/180]
-}
-
 setGroupIconResource $minskyHome/icons/group.svg
 
 proc rightMouseGroup {x y X Y} {
@@ -128,15 +123,6 @@ namespace eval group {
         foreach p [group.ports] {
             adjustWire $p
         }
-    }
-
-    proc flipContents {id} {
-        group.get $id
-        group.flipContents
-        group.set
-        # a bit kludgy to do a full redraw here...
-        .old_wiring.canvas delete all
-        updateCanvas
     }
 }
 

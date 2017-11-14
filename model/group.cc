@@ -742,10 +742,6 @@ namespace minsky
       }
     cairo_restore(cairo);
 
-//    for (auto& v: inVariables)
-//      v->mouseFocus=mouseFocus;
-//    for (auto& v: outVariables)
-//      v->mouseFocus=mouseFocus;
     drawEdgeVariables(cairo);
 
 
@@ -819,6 +815,7 @@ namespace minsky
         auto& v=vars[i];
         v->m_visible=false;
         v->m_x=r.x(x,y); v->m_y=r.y(x,y);
+        v->rotation=rotation;
         v->zoomFactor=0.75*edgeScale();
         RenderVariable rv(*v,cairo);
         rv.draw();
@@ -861,7 +858,8 @@ namespace minsky
       }
     cairo_set_source_rgba(cairo,0,1,1,0.5);
     float w=0.5*zoomFactor*width, h=0.5*zoomFactor*height;
-
+    cairo_rotate(cairo,rotation*M_PI/180);
+    
     cairo_move_to(cairo,-w,-h);
     // create notch in input region
     cairo_line_to(cairo,-w,y-dy);
@@ -951,5 +949,19 @@ namespace minsky
         g->normaliseGroupRefs(g);
       }
   }
-  
+
+  void Group::flipContents()
+  {
+    for (auto& i: items)
+      {
+        i->moveTo(x()-i->m_x,i->y());
+        i->rotation+=180;
+      }
+    for (auto& i: groups)
+      {
+        i->moveTo(x()-i->m_x,i->y());
+        i->rotation+=180;
+      }
+  }
+
 }

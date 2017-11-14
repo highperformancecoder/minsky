@@ -316,6 +316,8 @@ namespace minsky
       else return Item::clickType(x,y);
     }
 
+    /// rotate all conatined items by 180 degrees
+    void flipContents();
   };
 
   template <class M, class C>
