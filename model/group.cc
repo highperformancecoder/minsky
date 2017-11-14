@@ -427,6 +427,7 @@ namespace minsky
   {
     width=fabs(b.x0-b.x1)/zoomFactor;
     height=fabs(b.y0-b.y1)/zoomFactor;
+    bb.update(*this);
   }
   
   bool Group::nocycles() const
@@ -704,6 +705,7 @@ namespace minsky
 
     unsigned width=zoomFactor*this->width, height=zoomFactor*this->height;
 
+    cairo_reset_clip(cairo);
    // draw default group icon
     cairo_save(cairo);
 
@@ -787,12 +789,10 @@ namespace minsky
         displayTooltip(cairo);
       }
 
+    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
+    cairo_clip(cairo);
     if (selected)
-      {
-        cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
-        cairo_clip(cairo);
-        drawSelected(cairo);
-      }
+      drawSelected(cairo);
   }
 
   namespace

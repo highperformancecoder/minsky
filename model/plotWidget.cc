@@ -245,6 +245,7 @@ namespace minsky
   {
     width=abs(x.x1-x.x0);
     height=abs(x.y1-x.y0);
+    bb.update(*this);
   }
 
   
