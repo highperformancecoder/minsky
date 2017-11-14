@@ -67,7 +67,7 @@ namespace minsky
     }
     bool valid() const {return left!=right;}
     float width() const {return right-left;}
-    float height() const {return top-bottom;}
+    float height() const {return bottom-top;}
   };
 
   class Item: virtual public NoteBase

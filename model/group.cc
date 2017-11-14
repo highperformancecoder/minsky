@@ -705,8 +705,7 @@ namespace minsky
 
     unsigned width=zoomFactor*this->width, height=zoomFactor*this->height;
 
-    cairo_reset_clip(cairo);
-   // draw default group icon
+    // draw default group icon
     cairo_save(cairo);
 
     // display I/O region in grey
