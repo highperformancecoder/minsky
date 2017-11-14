@@ -31,7 +31,7 @@ void Panopticon::redraw(int, int, int w, int h)
   double scale=min(xscale,yscale);
   cairo_surface_set_device_scale(surface->surface(),scale,scale);
   cairo_surface_set_device_offset(surface->surface(),-scale*canvas.model->x(),-scale*canvas.model->y());
- 
+  
   canvas.surface=surface;
   canvas.redraw();
   canvas.surface.swap(tmp);
