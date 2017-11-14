@@ -832,7 +832,7 @@ SUITE(Canvas)
          selection.items.push_back(e);
          selection.groups.push_back(g);
          groupSelection();
-         auto newG=dynamic_cast<Group*>(itemFocus.get());
+         auto newG=model->groups.back();
          CHECK(newG);
          CHECK_EQUAL(2,newG->items.size());
          CHECK_EQUAL(1,newG->groups.size());

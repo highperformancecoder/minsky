@@ -357,8 +357,8 @@ namespace minsky
   VariablePtr Group::addIOVar()
   {
     VariablePtr v(VariableType::flow,
-                  cminsky().variableValues.newName(VariableValue::valueId(group.lock(),"")));
-    addItem(v);
+                  VariableValue::uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
+    addItem(v,true);
     createdIOvariables.push_back(v);
     v->rotation=rotation;
     return v;

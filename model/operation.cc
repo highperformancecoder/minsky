@@ -470,10 +470,7 @@ namespace minsky
           minsky().model->addWire(newWire);
         intVar->m_visible=true;
         intVar->rotation=rotation;
-        // TODO float angle=rotation*M_PI/180;
-        //TODO       float xoffs=OperationBase::r+intVarOffset+RenderVariable(*intVar).width();
-        //TODO intVar->moveTo(x()+xoffs*::cos(angle), y()+xoffs*::sin(angle));
-      }
+     }
     else
       {
         // need to explicitly remove wire, as deleting the port is
@@ -486,7 +483,6 @@ namespace minsky
         ports[0]=intVar->ports[0];
         intVar->m_visible=false;
       }
-    //TODO minsky().variables.makeConsistent();
     return coupled();
   }
 

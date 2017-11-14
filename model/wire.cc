@@ -103,7 +103,10 @@ namespace minsky
   bool Wire::visible() const
   {
     auto f=from(), t=to();
-    return f && t && (f->item.visible() || (t->item.visible())); 
+    assert(f->item.group.lock() && t->item.group.lock());
+    return f && t &&
+      (f->item.group.lock()->displayContents() ||
+       t->item.group.lock()->displayContents());
   }
 
   void Wire::moveToPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
