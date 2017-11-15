@@ -115,9 +115,20 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
   Pango(cairo? cairo: dummySurf.cairo()), var(var), cairo(cairo)
 {
   setFontSize(12);
-  setMarkup(latexToPango(var.name()));
-  w=0.5*Pango::width()+12; // enough space for numerical display 
-  h=0.5*Pango::height()+4;
+  if (var.type()==VariableType::constant)
+    {
+      auto val=var.engExp();
+      if (val.engExp==-3) val.engExp=0; //0.001-1.0
+      setMarkup(var.mantissa(val)+var.expMultiplier(val.engExp));
+      w=0.5*Pango::width();
+      h=0.5*Pango::height();
+    }
+  else
+    {
+      setMarkup(latexToPango(var.name()));
+      w=0.5*Pango::width()+12; // enough space for numerical display 
+      h=0.5*Pango::height()+4;
+    }
   hoffs=Pango::top();
 }
 
