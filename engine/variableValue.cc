@@ -66,15 +66,15 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        assert(size_t(m_idx)<ValueVector::flowVars.size());
-        return ValueVector::flowVars[m_idx];
+        if (size_t(m_idx)<ValueVector::flowVars.size())
+          return ValueVector::flowVars[m_idx];
       case stock:
       case integral:
-        assert(size_t(m_idx)<ValueVector::stockVars.size());
-        return ValueVector::stockVars[m_idx];
+        if (size_t(m_idx)<ValueVector::stockVars.size())
+          return ValueVector::stockVars[m_idx];
       default: break;
       }
-    throw error("invalid access of variable value reference");
+    throw error("invalid access of variable value reference: %s",name.c_str());
   }
 
   double VariableValue::initValue

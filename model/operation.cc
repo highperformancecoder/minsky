@@ -455,10 +455,9 @@ namespace minsky
     assert(intVar);
     //        intVar->toggleInPort();
 
-    assert(ports.size()==2);
+    assert(ports.size()==3);
     if (coupled()) 
       {
-        intVar->ports.resize(2);
         intVar->ports[1].reset(new Port(*intVar,Port::inputPort));
         ports[0].reset(new Port(*this,Port::noFlags));
         WirePtr newWire(new Wire(ports[0], intVar->ports[1]));
@@ -477,7 +476,6 @@ namespace minsky
         if (auto g=group.lock())
           for (auto w: intVar->ports[1]->wires)
             g->removeWire(*w);
-        intVar->ports.resize(1);
         ports[0]=intVar->ports[0];
         intVar->m_visible=false;
       }

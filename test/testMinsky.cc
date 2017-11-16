@@ -78,7 +78,7 @@ SUITE(Minsky)
       auto addOp=model->addItem(OperationBase::create(OperationType::add)); 
       CHECK_EQUAL(3, addOp->ports.size());
       auto intOp=model->addItem(OperationBase::create(OperationType::integrate)); 
-      CHECK_EQUAL(2, intOp->ports.size());
+      CHECK_EQUAL(3, intOp->ports.size());
       auto mulOp=model->addItem(OperationBase::create(OperationType::multiply)); 
       CHECK_EQUAL(3, mulOp->ports.size());
  
@@ -674,11 +674,11 @@ SUITE(Minsky)
           }
         cout << "checking "<<OperationType::typeName(op)<<endl;
         EvalOpPtr evalOp=EvalOpPtr(OperationType::Type(op));
-        if (evalOp->numArgs()==1 && evalOp->type()!=OperationType::integrate)
+        if (evalOp->numArgs()==1)
           {
             testUnOp(evalOp, ws);
           }
-        else if (evalOp->numArgs()==2)
+        else if (evalOp->numArgs()==2 && evalOp->type()!=OperationType::integrate)
           {
             evalOp.reset(new FixedArg1(OperationType::Type(op), 2.0));
             testUnOp(evalOp, ws);
