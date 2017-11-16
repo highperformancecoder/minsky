@@ -1270,6 +1270,12 @@ proc toggleRecording {} {
     }
 }
 
+proc checkRecordingVersion ver {
+    if {$ver!=[minskyVersion]} {
+        tk_messageBox -icon warning -message "Recording version $ver differs from current Minsky version [minskyVersion]" -detail "Recording may not replay correctly"
+    }
+}
+
 # flag indicating we're in recording replay mode
 set recordingReplay 0
 
