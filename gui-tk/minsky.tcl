@@ -744,7 +744,12 @@ proc simulate {} {
 }
 
 proc reset {} {
-    global running recordingReplay eventRecordR simLogging
+    global running recordingReplay eventRecordR simLogging eventRecording
+    if {$eventRecording} {
+        set eventRecording 0
+        stopRecording
+        return
+    }
     set running 0
     if {$recordingReplay} {
         seek $eventRecordR 0 start
