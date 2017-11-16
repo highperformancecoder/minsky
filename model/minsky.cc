@@ -145,7 +145,8 @@ namespace minsky
     outputDataFile.reset(new ofstream(name));
     *outputDataFile<< "#time";
     for (auto& v: variableValues)
-      *outputDataFile<<" "<<v.first;
+      if (logVarList.count(v.first))
+        *outputDataFile<<" "<<v.second.name;
     *outputDataFile<<endl;
   }
 
@@ -156,7 +157,8 @@ namespace minsky
       {
         *outputDataFile<<t;
         for (auto& v: variableValues)
-          *outputDataFile<<" "<<v.second.value();
+          if (logVarList.count(v.first))
+            *outputDataFile<<" "<<v.second.value();
         *outputDataFile<<endl;
       }
   }        

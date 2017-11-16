@@ -35,12 +35,14 @@ cat >input.tcl <<EOF
 source $here/gui-tk/library/init.tcl
 use_namespace minsky
 minsky.load $here/examples/GoodwinLinear.mky
+logVarList [minsky.variableValues.#keys]
 openLogFile tmp1.dat
 set nsteps 10
 set out [open tmp2.dat w]
 puts -nonewline \$out "#time"
 foreach name [variableValues.#keys] {
-  puts -nonewline \$out " \$name"
+  getValue \$name
+  puts -nonewline \$out " [minsky.value.name]"
 }
 puts \$out ""
 
