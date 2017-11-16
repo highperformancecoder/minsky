@@ -689,10 +689,6 @@ namespace minsky
   }
 
 
-  namespace {
-    inline float sqr(float x) {return x*x;}
-  }
-
   void Group::draw(cairo_t* cairo) const
   {
     double angle=rotation * M_PI / 180.0;

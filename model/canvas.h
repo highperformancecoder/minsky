@@ -72,6 +72,9 @@ namespace minsky
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);
 
+    /// return closest visible port to (x,y). nullptr is nothing suitable
+    std::shared_ptr<Port> closestInPort(float x, float y) const;
+
     /// select all items in a given region
     void select(float x0, float y0, float x1, float y1) {
       select(LassoBox(x0,y0,x1,y1));

@@ -92,6 +92,27 @@ namespace minsky
       }
   }
 
+  shared_ptr<Port> Canvas::closestInPort(float x, float y) const
+  {
+    shared_ptr<Port> closestPort;
+    auto minD=numeric_limits<float>::max();
+    model->recursiveDo(&GroupItems::items,
+                       [&](const Items&, Items::const_iterator i)
+                       {
+                         if ((*i)->group.lock()->displayContents())
+                           for (auto& p: (*i)->ports)
+                             {
+                               float d=sqr(p->x()-x)+sqr(p->y()-y);
+                               if (d<minD)
+                                 {
+                                   minD=d;
+                                   closestPort=p;
+                                 }
+                             }
+                         return false;
+                       });
+    return closestPort;
+  }
   
   void Canvas::mouseUp(float x, float y)
   {
@@ -99,9 +120,7 @@ namespace minsky
     y+=yoffs;
     if (fromPort.get())
       {
-        if (auto dest=model->findAny(&Group::items,
-                                     [&](const ItemPtr& i){return i->contains(x,y);}))
-          if (auto to=dest->closestInPort(x,y))
+          if (auto to=closestInPort(x,y))
             model->addWire(fromPort,to);
         fromPort.reset();
       }

@@ -38,8 +38,6 @@ using namespace ecolab;
 
 namespace
 {
-  inline double sqr(double x) {return x*x;}
-
   struct DrawBinOp
   {
     cairo_t *cairo;

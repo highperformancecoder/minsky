@@ -37,6 +37,8 @@ namespace minsky
   typedef boost::geometry::model::ring<Point> Polygon;
   typedef boost::geometry::model::box<Point> Rectangle;
 
+  template <class T> inline T sqr(T x) {return x*x;}
+  
 #ifndef M_PI
   static const float M_PI = 3.1415926535f;
 #endif

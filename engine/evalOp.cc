@@ -31,11 +31,6 @@
 #define finite isfinite
 #endif
 
-namespace
-{
-  inline double sqr(double x) {return x*x;}
-}
-
 namespace minsky
 {
 
