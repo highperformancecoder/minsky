@@ -44,6 +44,7 @@ namespace minsky
     std::unique_ptr<ostream> eventRecord;
     void startRecording(const char* file) {
       eventRecord.reset(new std::ofstream(file));
+      *eventRecord<<"checkRecordingVersion "<<minskyVersion<<endl;
     }
     void stopRecording() {
       eventRecord.reset();

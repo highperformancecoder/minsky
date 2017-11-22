@@ -266,6 +266,29 @@ bool VariableBase::handleArrows(int dir)
   return true;
 }
 
+VariableBase::EngNotation VariableBase::engExp() const
+{
+  EngNotation r;
+  double v=value();
+  r.sciExp=(v!=0)? floor(log(fabs(v))/log(10)): 0;
+  r.engExp=r.sciExp>=0? 3*(r.sciExp/3): 3*((r.sciExp+1)/3-1);
+  return r;
+}
+
+string VariableBase::mantissa(const EngNotation& e) const
+{
+  const char* conv;
+  switch ((e.sciExp-e.engExp)%3)
+    {
+    case 0: case -1: conv="%5.2f"; break;
+    case 1: case -2: conv="%5.1f"; break;
+    case 2: conv="%5.0f"; break;
+    }
+  char val[6];
+  sprintf(val,conv,value()*pow(10,-e.engExp));
+  return val;
+}
+
 void VariableBase::draw(cairo_t *cairo) const
 {
   double angle=rotation * M_PI / 180.0;
@@ -276,18 +299,6 @@ void VariableBase::draw(cairo_t *cairo) const
 
   //cairo_scale(cairo,zoomFactor,zoomFactor);
 
-  double v=value();
-  int sciExp=(v!=0)? floor(log(fabs(v))/log(10)): 0;
-  int engExp=sciExp>=0? 3*(sciExp/3): 3*((sciExp+1)/3-1);
-  const char* conv;
-  switch ((sciExp-engExp)%3)
-    {
-    case 0: case -1: conv="%5.2f"; break;
-    case 1: case -2: conv="%5.1f"; break;
-    case 2: conv="%5.0f"; break;
-    }
-  char val[6];
-  sprintf(val,conv,v*pow(10,-engExp));
 
   RenderVariable rv(*this,cairo);
   rv.setFontSize(12*zoomFactor);
@@ -297,34 +308,30 @@ void VariableBase::draw(cairo_t *cairo) const
   Rotate r(rotation + (notflipped? 0: 180),0,0);
   rv.angle=angle+(notflipped? 0: M_PI);
 
-  Pango pangoVal(cairo);
-  pangoVal.setFontSize(6*zoomFactor);
-  pangoVal.setMarkup(val);
-  pangoVal.angle=angle+(notflipped? 0: M_PI);
-
   // parameters of icon in userspace (unscaled) coordinates
   float w, h, hoffs;
   w=rv.width()*zoomFactor; 
   h=rv.height()*zoomFactor;
   hoffs=rv.top()/zoomFactor;
 
-  if (type()==constant)
-    {
-      if (engExp!=0)
-        rv.setMarkup(string(val)+"×10<sup>"+to_string(engExp)+"</sup>");
-      else
-        rv.setMarkup(val);
-    }
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
-  cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
-                r.y(w-pangoVal.width()-2,-h-hoffs+2));
+  
   if (type()!=constant)
     {
+      auto val=engExp();
+  
+      Pango pangoVal(cairo);
+      pangoVal.setFontSize(6*zoomFactor);
+      pangoVal.setMarkup(mantissa(val));
+      pangoVal.angle=angle+(notflipped? 0: M_PI);
+
+      cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
+                    r.y(w-pangoVal.width()-2,-h-hoffs+2));
       pangoVal.show();
-      if (engExp!=0)
+      if (val.engExp!=0)
         {
-          pangoVal.setMarkup("×10<sup>"+to_string(engExp)+"</sup>");
+          pangoVal.setMarkup(expMultiplier(val.engExp));
           cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
           pangoVal.show();
         }

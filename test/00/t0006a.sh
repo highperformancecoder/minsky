@@ -44,7 +44,7 @@ proc afterMinskyStarted {} {
     assert {[value.value]==1}
 
     set item "minsky.canvas.item"
-    getItemAt 83 15
+    findObject VarConstant
     set a [\$item.value]
     assert {[minsky.canvas.item.value]!=0}
     minsky.reset
@@ -60,7 +60,7 @@ proc afterMinskyStarted {} {
 
     set v [value.value]
 
-    getItemAt 12 72
+    findObject IntOp
     \$item.toggleCoupled
 
     minsky.reset

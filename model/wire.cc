@@ -29,11 +29,6 @@ using namespace std;
 // undocumented internal function in the Tk library
 extern "C" int TkMakeBezierCurve(Tk_Canvas,double*,int,int,void*,double*);
 
-namespace
-{
-  inline float sqr(float x) {return x*x;}
-}
-
 namespace minsky
 {
   vector<float> Wire::_coords() const
@@ -240,7 +235,6 @@ namespace minsky
 
   namespace
   {
-    inline float sqr(float x) {return x*x;}
 
     // returns true if x,y lies close to the line segment (x0,y0)-(x1,y1)
     bool segNear(float x0, float y0, float x1, float y1, float x, float y)

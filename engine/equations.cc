@@ -1175,6 +1175,25 @@ namespace MathDAG
                         integralInputs.emplace_back(input,i->ports[1]->wires[0]);
                       }
                   }
+                
+                if (i->ports[2]->wires.size()>0)
+                  {
+                    // second port can be attached to a variable,
+                    // which supplies an init string
+                    NodePtr init;
+                    try
+                      {
+                        init=getNodeFromWire(*(i->ports[2]->wires[0]));
+                      }
+                    catch (...) {}
+                    if (auto v=dynamic_cast<VariableDAG*>(init.get()))
+                      iv->init(v->name);
+                    else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
+                      iv->sliderSet(c->value);
+                    else
+                      throw error("only constants, parameters and variables can be connected to the initial value port");
+                  }
+                
               }
           }
         return false;

@@ -224,11 +224,6 @@ namespace minsky
       }
   }
 
-  namespace
-  {
-    inline float sqr(float x) {return x*x;}
-  }
-
   shared_ptr<Port> Item::closestOutPort(float x, float y) const 
   {
     if (auto v=select(x,y))

@@ -506,10 +506,50 @@ proc exportCanvas {} {
     }
 }
 
-.menubar.file add checkbutton -label "Log simulation" -variable simLogging \
-    -command {
-        openLogFile [tk_getSaveFile -defaultextension .dat -initialdir $workDir]
+
+proc getLogVars {} {
+    global logvars
+    array unset logvars 
+    toplevel .logVars
+    set r 0
+    foreach v [variableValues.#keys] {
+        if {![regexp "^constant:" $v]} {
+            getValue $v
+            label .logVars.v$r -text [minsky.value.name]
+            checkbutton .logVars.check$r -variable .logVars.check$r -command "
+                set logvars($v) \[set .logVars.check$r\]
+            "
+            grid .logVars.v$r .logVars.check$r -row $r
+            incr r
+        }
     }
+    button .logVars.ok -text OK -command logVarsOK
+    button .logVars.all -text All -command {
+        for {set r 0} {[winfo exists .logVars.check$r]} {incr r} {
+            .logVars.check$r toggle
+        }
+    }
+    grid .logVars.ok .logVars.all -row $r
+    tkwait visibility .logVars
+    grab set .logVars
+    wm transient .logVars
+}
+
+proc logVarsOK {} {
+    global workDir logvars
+    foreach v [array names logvars] {
+        if {$logvars($v)} {
+            lappend vars $v
+        }
+    }
+    logVarList $vars
+    destroy .logVars
+    openLogFile [tk_getSaveFile -defaultextension .dat -initialdir $workDir]
+}
+
+
+.menubar.file add checkbutton -label "Log simulation" -variable simLogging \
+    -command getLogVars
 .menubar.file add checkbutton -label "Recording" -command toggleRecording -variable eventRecording
 .menubar.file add checkbutton -label "Replay recording" -command replay -variable recordingReplay 
     
@@ -744,7 +784,12 @@ proc simulate {} {
 }
 
 proc reset {} {
-    global running recordingReplay eventRecordR simLogging
+    global running recordingReplay eventRecordR simLogging eventRecording
+    if {$eventRecording} {
+        set eventRecording 0
+        stopRecording
+        return
+    }
     set running 0
     if {$recordingReplay} {
         seek $eventRecordR 0 start
@@ -1262,6 +1307,12 @@ proc toggleRecording {} {
                             -defaultextension .tcl -initialdir $workDir]
     } else {
         stopRecording
+    }
+}
+
+proc checkRecordingVersion ver {
+    if {$ver!=[minskyVersion]} {
+        tk_messageBox -icon warning -message "Recording version $ver differs from current Minsky version [minskyVersion]" -detail "Recording may not replay correctly"
     }
 }
 

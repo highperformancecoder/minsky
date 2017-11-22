@@ -48,7 +48,7 @@ namespace minsky
     template <> int numArguments<OperationType::not_>() {return 1;}
     template <> int numArguments<OperationType::time>() {return 0;}
     template <> int numArguments<OperationType::copy>() {return 1;}
-    template <> int numArguments<OperationType::integrate>() {return 1;}
+    template <> int numArguments<OperationType::integrate>() {return 2;}
     template <> int numArguments<OperationType::differentiate>() {return 1;}
     template <> int numArguments<OperationType::data>() {return 1;}
     template <> int numArguments<OperationType::sqrt>() {return 1;}
