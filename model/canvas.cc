@@ -28,18 +28,10 @@ using namespace std;
 using namespace ecolab::cairo;
 using namespace minsky;
 
-#ifdef MAC_OSX_TK
-// bizarrely, the Macintosh canvas is offset by 40 pixels (as in wasted space).
-static const float yoffs=-40;
-#else
-static const float yoffs=0;
-#endif
-
 namespace minsky
 {
   void Canvas::mouseDown(float x, float y)
   {
-    y+=yoffs;
     // firstly, see if the user is selecting an item
     itemFocus=model->findAny(&Group::items,
                        [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
@@ -96,7 +88,6 @@ namespace minsky
   void Canvas::mouseUp(float x, float y)
   {
     mouseMove(x,y);
-    y+=yoffs;
     if (fromPort.get())
       {
         if (auto dest=model->findAny(&Group::items,
@@ -134,7 +125,6 @@ namespace minsky
   
   void Canvas::mouseMove(float x, float y)
   {
-    y+=yoffs;
     if (itemFocus && clickType==ClickType::onItem)
       {
         updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
@@ -269,7 +259,6 @@ namespace minsky
   
   ItemPtr Canvas::itemAt(float x, float y)
   {
-    y+=yoffs;
     auto item=model->findAny(&Group::items,
                         [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
@@ -280,7 +269,6 @@ namespace minsky
   
   void Canvas::getWireAt(float x, float y)
   {
-    y+=yoffs;
     wire=model->findAny(&Group::wires,
                         [&](const WirePtr& i){return i->near(x,y);});
   }
@@ -471,7 +459,6 @@ namespace minsky
 
   bool Canvas::selectVar(float x, float y) 
   {
-    y+=yoffs;
     if (item)
       {
         if (auto v=item->select(x,y))

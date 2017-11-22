@@ -564,7 +564,7 @@ bind . <$meta-v> {paste}
 bind . <$meta-g> {minsky.createGroup}
 
 # tabbed manager
-ttk::notebook .tabs
+ttk::notebook .tabs -padding 0
 ttk::notebook::enableTraversal .tabs
 grid .tabs -column 0 -row 10 -sticky news
 grid columnconfigure . 0 -weight 1
@@ -576,28 +576,28 @@ source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
 
 # add the tabbed windows
-.tabs add .wiring -text "Wiring"
+.tabs add .wiring -text "Wiring" -padding 0
 
 image create cairoSurface renderedEquations -surface minsky.equationDisplay
 #-file $minskyHome/icons/plot.gif
 ttk::frame .equations 
 label .equations.canvas -image renderedEquations -height $canvasHeight -width $canvasWidth
 pack .equations.canvas -fill both -expand 1
-.tabs add .equations -text equations
+.tabs add .equations -text equations -padding 0
 .tabs select 0
 
 # the panopticon code fails spectacularly on MacOSX Aqua, so just
 # disable that feature - see ticket #694
-if {[tk windowingsystem] != "aqua"} {
+#if {[tk windowingsystem] != "aqua"} {
     image create cairoSurface panopticon -surface minsky.panopticon
     label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
     place .wiring.panopticon -relx 1 -rely 0 -anchor ne
     minsky.panopticon.width $canvasWidth
     minsky.panopticon.height $canvasHeight
     bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
-} else {
-    proc panopticon.requestRedraw {} {}
-}
+#} else {
+#    proc panopticon.requestRedraw {} {}
+#}
 
 proc panCanvases {offsx offsy} {
     model.moveTo $offsx $offsy
