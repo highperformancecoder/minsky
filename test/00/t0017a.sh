@@ -48,7 +48,7 @@ EOF
                
             $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
             if test $? -ne 0; then echo $i; fail; fi
-            octave --silent $here/test/compareWithOctave.m $i
+            octave --no-window-system --silent $here/test/compareWithOctave.m $i
             if test $? -ne 0; then echo $i; fail; fi
         done
     done

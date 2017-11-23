@@ -105,12 +105,22 @@ namespace schema2
     ItemBase(const schema1::Item& it, const std::string& type="Item"):
       Note(it), id(it.id), type(type) {}
   };
-  
+
+  struct Slider
+  {
+    bool visible=true, stepRel=false;
+    double min, max, step;
+    Slider() {}
+    Slider(bool v, bool stepRel, double min, double max, double step):
+      visible(v), stepRel(stepRel), min(min), max(max), step(step) {}
+  };
+    
   struct Item: public ItemBase
   {
     Optional<float> width, height;
     Optional<std::string> name; //name, description or title
     Optional<std::string> init;
+    Optional<Slider> slider;
     std::shared_ptr<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     // Godley Icon specific fields
@@ -128,7 +138,10 @@ namespace schema2
     Item(const schema1::Item& it): ItemBase(it) {}
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      name(v.rawName()), init(v.init()) {}
+      name(v.rawName()), init(v.init()) {
+      if (v.sliderBoundsSet)
+        slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+    }
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
       width(g.width()/g.zoomFactor), height(g.height()/g.zoomFactor), name(g.table.title), data(g.table.getData()),
@@ -174,6 +187,9 @@ namespace schema2
       rotation=layout.rotation;
       width.reset(new float(layout.width));
       height.reset(new float(layout.height));
+      if (layout.sliderBoundsSet)
+        slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
+                                layout.sliderMin,layout.sliderMax,layout.sliderStep));
     }
   };
 
@@ -306,6 +322,8 @@ namespace classdesc
                        schema2::Optional<std::vector<int>>& a) {xpack(t,d,a);}
   inline void xml_pack(xml_pack_t& t,const string& d,
                        schema2::Optional<std::vector<minsky::GodleyAssetClass::AssetClass>>& a) {xpack(t,d,a);}
+  inline void xml_pack(xml_pack_t& t,const string& d,
+                       schema2::Optional<schema2::Slider>& a) {xpack(t,d,a);}
   inline void xml_pack(xml_pack_t& t,const string& d,
                        std::shared_ptr<ecolab::Plot::Side>& a) {xpack(t,d,a);}
 }
