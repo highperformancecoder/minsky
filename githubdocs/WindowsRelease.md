@@ -2,7 +2,7 @@
 
 - The Windows distributable is built using the MXE cross-compiler environment on Linux. 
 
-- Its best to pull from [my fork of MXE](https://github.com/highperformancecoder/mxe), as this is where I push any packages/changes I need. 
+- Its best to pull from the develop branch of [my fork of MXE](https://github.com/highperformancecoder/mxe), as this is where I push any packages/changes I need. 
 
 - make boost cairo tcl tk TkTable json_spirit gsl pango librsvg
 
