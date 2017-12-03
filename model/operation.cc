@@ -480,6 +480,7 @@ namespace minsky
             g->removeWire(*w);
         ports[0]=intVar->ports[0];
         intVar->m_visible=false;
+        intVar->mouseFocus=false; // prevent drawing of variable ports when coupled
       }
     return coupled();
   }

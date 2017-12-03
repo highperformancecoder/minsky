@@ -215,12 +215,22 @@ namespace minsky
         // set mouse focus to display ports etc.
         model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
                            {
-                             bool mf=(*i)->contains(x,y);
-                             if (mf!=(*i)->mouseFocus)
+                             // with coupled integration variables, we
+                             // do not want to set mousefocus, as this
+                             // draws unnecessary port circles on the
+                             // variable
+                             if (!(*i)->visible() &&
+                                 dynamic_cast<Variable<VariableBase::integral>*>(i->get()))
+                               (*i)->mouseFocus=false;
+                             else
                                {
-                                 (*i)->mouseFocus=mf;
-                                 requestRedraw();
-                               }        
+                                 bool mf=(*i)->contains(x,y);
+                                 if (mf!=(*i)->mouseFocus)
+                                   {
+                                     (*i)->mouseFocus=mf;
+                                     requestRedraw();
+                                   }
+                               }
                              return false;
                            });
         model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
