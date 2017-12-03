@@ -193,6 +193,10 @@ proc addVariablePostModal {} {
         canvas.itemFocus.rotation [set varInput(Rotation)]
         canvas.itemFocus.tooltip [set "varInput(Short description)"]
         canvas.itemFocus.detailedText [set "varInput(Detailed description)"]
+        canvas.itemFocus.sliderMax  [set "varInput(Slider Bounds: Max)"]
+        canvas.itemFocus.sliderMin  [set "varInput(Slider Bounds: Min)"]
+        canvas.itemFocus.sliderStep  [set "varInput(Slider Step Size)"]
+        canvas.itemFocus.sliderBoundsSet 1
     }
     closeEditWindow .wiring.initVar
 }
