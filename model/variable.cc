@@ -116,6 +116,7 @@ string VariableBase::_name(const std::string& name)
   if (name.empty()) return name;
   m_name=name;
   ensureValueExists();
+  bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
 

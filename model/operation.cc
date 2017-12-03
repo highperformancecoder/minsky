@@ -427,6 +427,8 @@ namespace minsky
     for (auto& w: savedWires)
       minsky().model->addWire(new Wire(intVar->ports[0], w.to(), w.coords()));
 
+    bb.update(*this); // adjust icon bounding box - see ticket #704
+    
     // this should also adjust the wire's group ownership appropriately
     if (auto g=group.lock())
       g->addItem(intVar);
