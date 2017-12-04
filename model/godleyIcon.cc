@@ -216,8 +216,8 @@ namespace minsky
             if (start!=string::npos)
               {
                 FlowCoef fc(table.cell(r,c).substr(start));
-                if (table.signConventionReversed(c))
-                  fc.coef*=-1;
+//                if (table.signConventionReversed(c))
+//                  fc.coef*=-1;
                 v.init=fc.str();
               
                 v.godleyOverridden=true;
@@ -226,8 +226,8 @@ namespace minsky
               {
                 // populate cell with current variable's initial value
                 FlowCoef fc(v.init);
-                if (table.signConventionReversed(c))
-                  fc.coef*=-1;
+//                if (table.signConventionReversed(c))
+//                  fc.coef*=-1;
                 table.cell(r,c)=fc.str();
                 v.godleyOverridden=true;
               }

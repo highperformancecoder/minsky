@@ -354,13 +354,23 @@ that is visible through the edit menu, or as a tooltip.
 Godley tables describes sets of financial flows from the point of view
 of a particular economic agent, such as a bank. The columns of the
 table represent accounts (possibly aggregated), which are treated as
-integration variables by the system. In ``double entry'' mode,
-accounts may be assets, liabilities or equities. Assets may appear as
-liabilities in another agent's Godley table, and vice versa, with the
-sense of the financial flows treated oppositely (a positive flow increasing the
-asset of one entity will appear as a negative flow, increasing the
-value of a liability). Instead of positive or negative flows, one can
-optionally use CR and DR prefixes, as specified in the options panel.
+integration variables by the system. Accounts may be assets,
+liabilities or equities. Assets may appear as liabilities in another
+agent's Godley table, and vice versa, with the sense of the financial
+flows treated oppositely (a credit flow increasing the asset of one
+entity will appear as a debit flow, increasing the value of a
+liability). Transfers between accounts should satisfy the {\em
+  accounting equation}\index{accounting equation}
+(Assets-Liabilities-Equities = 0). So if the transfer is between an
+asset and a liability, then it should appear with the same sign (both
+positive or both negative), otherwise between two accounts of the same
+type, or between a liability and an equity, the terms should have
+opposite signs.
+
+Instead of signed flows, one can optionally use CR and DR prefixes, as
+specified in the options panel. Each row of the table should have have
+one CR entry, and one DR entry. The row sum column should be zero if
+it is done correctly.
 
 The first row specifies the stock variables, after which follow the
 flow rows. Usually, the row marked ``Initial Conditions'' comes next,
@@ -373,14 +383,7 @@ Finally come the flows. The first column is a simple textual label
 (the phrase ``Initial Conditions'', regardless of capitalisation, is a
 reserved phrase for setting stock variable initial conditions)
 identifying the flow. The flows themselves are written as a numerical
-multipler times a flow variable. Unscoped variables are treated as
-global at present, however, in the future, Godley tables will be
-allowed to be part of groups, which will then define the context of
-the unqualified variable names.
-
-The final column displays the row sum. A correctly functioning Godley
-table should have each row sum to zero --- this ensures everything is
-accounted for, with no hidden sinks or sources.
+multipler times a flow variable. 
 
 \section{Context Menu}
 

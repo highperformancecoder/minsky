@@ -888,51 +888,40 @@ underneath the columns. Here we will start with putting the label
 \hline
 Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
 Initial Conditions&$0$&$0$&$0$&$0$\\
-Patient lends to Impatient&&$Lend$&&\\
+Patient lends to Impatient&&$-Lend$&&\\
 \hline
 \end{tabular}
 \end{center}
 
 Notice that the program shows that the Row Sum for this transaction is
-currently ``Lend'', when it should be zero to obey the double-entry
-bookkeeping rule that all rows must sum to zero. This is because a
-destination for ``Lend'' has not yet been specified. The destination
+currently ``-Lend'', when it should be zero to obey the double-entry
+bookkeeping rule that all rows must balance. This is because a
+destination for ``-Lend'' has not yet been specified. The destination
 is Impatient's account, and to balance the row to zero this part of
-the transaction must be entered as ``-Lend'': 
+the transaction must be entered as ``Lend'': 
 
 \begin{center}
 \begin{tabular}{|c|cccc|}
 \hline
 Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
 Initial Conditions&$0$&$0$&$0$&$0$\\
-Patient lends to Impatient&&$Lend$&$-Lend$&\\
+Patient lends to Impatient&&$-Lend$&$Lend$&\\
 \hline
 \end{tabular}
 \end{center}
 
-This might appear strange if you are not used to accounting
-standards---``shouldn't the Patient account fall because of the loan,
-while the Impatient account should rise?''---but what is shown in the
-table makes sense, because all accounts are perceived from the Bank's
-point of view. Deposits at a bank are liabilities for the bank, and
-are shown as a negative amount, while assets are recorded as a
-positive amount. So a loan from Patient to Impatient decreases the
-Bank's liabilities to Patient, and increases the Bank's liabilities to
-Impatient. 
-
-The same rule applies to the Initial Conditions (the amount of money
+The accounting equation also applies to the Initial Conditions (the amount of money
 in each of the accounts prior to the flows between accounts): the
-Initial Conditions must sum to zero. This requires that there are
+Initial Conditions must balance. This requires that there are
 entries on the Asset side of the Banking ledger that exactly match the
-sum of Liabilities and Equity (Equity is also shown as a negative in
-double-entry bookkeeping): 
+sum of Liabilities and Equity: 
 
 \begin{center}
 \begin{tabular}{|c|cccc|}
 \hline
 Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$-100$&$0$&$-20$\\
-Patient lends to Impatient&&$Lend$&$-Lend$&\\
+Initial Conditions&$120$&$100$&$0$&$20$\\
+Patient lends to Impatient&&$-Lend$&$Lend$&\\
 \hline
 \end{tabular}
 \end{center}
@@ -985,7 +974,7 @@ from the point of view of the bank:
 If you attach a graph to the accounts at the bottom of the bank block,
 you will see the impact of this flow over time on the balances of the
 two accounts. Patient's account begins at \$100 and falls at \$10 per
-year, while Patient's account begins at \$0 and rises by \$10 per
+year, while Impatient's account begins at \$0 and rises by \$10 per
 year.
 
 \begin{center}
@@ -1098,3 +1087,7 @@ it. Here is an example with 4 such institutions/sectors defined:
 If there are interlocking accounts in these banks---if one lends to
 another for example---then what is an asset for one must be shown as a
 liability for the other. 
+
+Godley tables may be further placed in {\em groups}, which allows
+scoping of the flow variables and their defining equations, whilst
+still allowing the tables to be coupled via global variables.

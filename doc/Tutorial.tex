@@ -449,8 +449,8 @@ money in the account decays towards zero but never quite reaches it.
 \begin{tabular}{|c|cccc|}
 \hline
 Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$-100$&$0$&$-20$\\
-Patient lends to Impatient&&$Lend$&$-Lend$&\\
+Initial Conditions&$120$&$100$&$0$&$20$\\
+Patient lends to Impatient&&$-Lend$&$Lend$&\\
 \hline
 \end{tabular}
 \resizebox{\textwidth}{!}{\includegraphics{images/NewItem169.eps}}
@@ -466,8 +466,8 @@ next to ``Patient lends to Impatient'' to create a blank row:
 \begin{tabular}{|c|cccc|}
 \hline
 Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$-100$&$0$&$-20$\\
-Patient lends to Impatient&&$Lend$&$-Lend$&\\
+Initial Conditions&$120$&$100$&$0$&$20$\\
+Patient lends to Impatient&&$-Lend$&$Lend$&\\
 &&&&\\
 \hline
 \end{tabular}
@@ -482,9 +482,9 @@ appears on the input side of the Godley Table on the Canvas:
 \begin{tabular}{|c|cccc|}
 \hline
 Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$-100$&$0$&$-20$\\
-Patient lends to Impatient&&$Lend$&$-Lend$&\\
-Impatient pays interest&&$-Interest$&$Interest$&\\
+Initial Conditions&$120$&$100$&$0$&$20$\\
+Patient lends to Impatient&&$-Lend$&$Lend$&\\
+Impatient pays interest&&$Interest$&$-Interest$&\\
 \hline
 \end{tabular}
 \end{center}
@@ -519,10 +519,10 @@ called Workers, and a payment from Impatient to Workers called Wage:
 \begin{tabular}{|c|ccccc|}
 \hline
 Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Workers$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-6}&\multicolumn{1}{|c|}{asset}&\multicolumn{3}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$-100$&$0$&$-0$&$-20$\\
-Patient lends to Impatient&&$Lend$&$-Lend$&&\\
-Impatient pays interest&&$-Interest$&$Interest$&&\\
-Impatient pays Workers&&&$Wage$&$-Wage$&\\
+Initial Conditions&$120$&$100$&$0$&$0$&$20$\\
+Patient lends to Impatient&&$-Lend$&$Lend$&&\\
+Impatient pays interest&&$Interest$&$-Interest$&&\\
+Impatient pays Workers&&&$-Wage$&$Wage$&\\
 \hline
 \end{tabular}
 }

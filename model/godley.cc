@@ -171,11 +171,16 @@ string GodleyTable::rowSum(int row) const
 {
   // accumulate the total for each variable
   map<string,double> sum;
+
   for (size_t c=1; c<cols(); ++c)
     {
       FlowCoef fc(cell(row,c));
       if (!fc.name.empty()||initialConditionRow(row))
-        sum[fc.name]+=fc.coef;
+        // apply accounting relation to the initial condition row
+        if (signConventionReversed(c))
+          sum[fc.name]-=fc.coef;
+        else
+          sum[fc.name]+=fc.coef;
     }
 
   // create symbolic representation of each term

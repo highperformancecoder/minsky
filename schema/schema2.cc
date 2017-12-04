@@ -23,6 +23,7 @@ namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
 
 namespace schema2
 {
+
   // map of object to ID, that allocates a new ID on objects not seen before
   struct IdMap: public map<void*,int>
   {
@@ -142,6 +143,49 @@ namespace schema2
         vec.back().addLayout(layout[item.id]);
     }
   };
+
+  Item::Item(const schema1::Godley& it):
+    ItemBase(it, "GodleyIcon"),
+    name(it.name), data(it.data), assetClasses(it.assetClasses)
+  {
+    typedef minsky::GodleyAssetClass::AssetClass AssetClass;
+    ports=it.ports;
+    // strip off leading :, since in schema 1, all godley tables are global
+    for (auto& i: *data)
+      for (auto& j: i)
+        {
+          minsky::FlowCoef fc(j);
+          if (fc.coef==0)
+            j="";
+          else
+            {
+              if (fc.name.length()>0 && fc.name[0]==':')
+                fc.name=fc.name.substr(1);
+              j=fc.str();
+            }
+        }
+
+    // in doubleEntry mode, schema1 got the accounting equation wrong.
+    if (it.doubleEntryCompliant)
+      {
+        for (size_t r=1; r<data->size(); ++r)
+          for (size_t c=1; c<(*data)[r].size(); ++c)
+            if (!(*data)[r][c].empty() &&
+                (*assetClasses)[c]==AssetClass::liability || (*assetClasses)[c]==AssetClass::equity)
+              {
+                minsky::FlowCoef fc((*data)[r][c]);
+                fc.coef*=-1;
+                (*data)[r][c]=fc.str();
+              }
+      }
+    else
+      {
+        // make all columns assets
+        assetClasses->resize((*data)[0].size());
+        for (auto& i: *assetClasses) i=AssetClass::asset;
+      }
+  }
+
   
   Minsky::Minsky(const schema1::Minsky& m)
   {

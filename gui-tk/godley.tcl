@@ -90,8 +90,8 @@ proc createGodleyWindow {id} {
     scrollbar .godley$id.sy -command [list $t yview]
     scrollbar .godley$id.sx -command [list $t xview] -orient horizontal
 
-    checkbutton .godley$id.doubleEntryMode -text "Double Entry" -variable preferences(godleyDE)
-    updateDEmode
+#    checkbutton .godley$id.doubleEntryMode -text "Double Entry" -variable preferences(godleyDE)
+#    updateDEmode
 
     pack .godley$id.topbar -fill x
     pack .godley$id.sy -side right -fill y
@@ -126,13 +126,13 @@ proc pasteCurrCell {id} {
     .godley$id.table curvalue [clipboard get]
 }
 
-trace add variable preferences(godleyDE) write {updateDEmode}
+#trace add variable preferences(godleyDE) write {updateDEmode}
 
-proc updateDEmode args {
-    global globals preferences
-    setAllDEmode $preferences(godleyDE)
-    updateGodleys
-}
+#proc updateDEmode args {
+#    global globals preferences
+#    setAllDEmode $preferences(godleyDE)
+#    updateGodleys
+#}
   
 proc parse_input {input p v} {
     upvar $p prefix
@@ -191,8 +191,8 @@ proc setGetCell_ {id r c i s w} {
     if {$r>0 && $c>0} {
         set row [expr $r-1]
         set col [expr $c-1]
-	set doubleEntryMode [$id.table.doubleEntryCompliant]
-        if $doubleEntryMode {
+#	set doubleEntryMode [$id.table.doubleEntryCompliant]
+#        if $doubleEntryMode {
             # allow for asset class row
             incr row -1
             if {$row==-1} return "";
@@ -205,16 +205,16 @@ proc setGetCell_ {id r c i s w} {
                     return "Row Sum"
                 }
             }
-        }
+#        }
         if {$i && $id>=0} {
 	    set varName $s
 	    if {$row>0 && $col>0} {
-		if {$doubleEntryMode} {
+#		if {$doubleEntryMode} {
 		    set account_type [$id.table.assetClass $col]
 		    if {$account_type == "noAssetClass"} return
-		} else {
-		    set account_type "SingleEntry"
-		}
+#		} else {
+#		    set account_type "SingleEntry"
+#		}
 
 	# parse_input accepts input of the form "?DR|CR|-? VarName"
 	# where VarName cannot begin with DR or CR
@@ -245,14 +245,14 @@ proc setGetCell_ {id r c i s w} {
         } else {
             set s [$id.table.getCell $row $col]
 	    if {$row>0 && $col>0} {
-		if $doubleEntryMode {
+#		if $doubleEntryMode {
 		    set account_type [$id.table.assetClass $col]
 		    if {$account_type == "noAssetClass"} {
 			return "Asset Class Not Set"
 		    }
-		} else {
-		    set account_type "SingleEntry"
-		}
+#		} else {
+#		    set account_type "SingleEntry"
+#		}
 		if [string length $s] {
 			set account_type [$id.table.assetClass $col]
 			set show $s
@@ -461,7 +461,7 @@ proc whenIdleUpdateGodley {id} {
     bind .godley$id.table <B1-Motion> "moveCell $id"
 
     # put the double entry book keeping mode button in top left corner
-    .godley$id.table window configure 0,0 -window .godley$id.doubleEntryMode
+#    .godley$id.table window configure 0,0 -window .godley$id.doubleEntryMode
 
     global minskyHome tcl_platform
     image create photo leftArrow -file $minskyHome/icons/leftArrow.gif 

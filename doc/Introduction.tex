@@ -168,7 +168,7 @@ double-entry bookkeeping. Here is the same model in Minsky:
 Flows $\downarrow$ / Stock Variables
 $\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
 Initial Conditions&$0$&$0$&0\\
-Buyer Accesses Credit&$Card$&$-Card$&0\\
+Buyer Accesses Credit&$Card$&$Card$&0\\
 \hline
 \end{tabular}
 \end{center}
@@ -179,9 +179,10 @@ This is an inherently better way to generate a dynamic model of financial flows,
   tabular layout captures this in a very natural way: each row shows
   where a flow originates, and where it ends up
 \item The program adopts the accounting practice of double-entry
-  bookkeeping, in which entries on each row sum to zero. The source is
-  shown as a ``$+$'', the sink is shown as a ``$-$'', and assets are shown
-  as a positive sum while liabilities are shown as a negative. If you
+  bookkeeping, in which entries on each row balance to zero according
+  to the {\em accounting equation} (Assets=Liabilities+Equities). The source is
+  shown as a positive value increasing the value of assets, the sink
+  is a positive value increasing a corresponding liability. If you
   don't ensure that each flow starts somewhere and ends
   somewhere---say you make the same mistake as in the block diagram
   examples above, then the program will identify your mistake.
@@ -210,7 +211,7 @@ And it also identifies if you give the wrong sign to one entry:
 Flows $\downarrow$ / Stock Variables
 $\rightarrow$&\multicolumn{1}{|c|}{$BuyerCredit$}&\multicolumn{1}{|c|}{$SellerDeposit$}&Row Sum\\\cline{2-3}&\multicolumn{1}{|c|}{asset}&\multicolumn{1}{|c|}{liability}&\\\hline
 Initial Conditions&$0$&$0$&0\\
-Buyer Accesses Credit&$Card$&$Card$&$2Card$\\
+Buyer Accesses Credit&$Card$&$-Card$&$2Card$\\
 \hline
 \end{tabular}
 \end{center}

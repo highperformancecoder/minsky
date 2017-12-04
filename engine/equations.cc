@@ -1557,7 +1557,7 @@ namespace MathDAG
             if (godley.initialConditionRow(r)) continue;
             FlowCoef fc(godley.cell(r,c));
             if (fc.name.empty()) continue;
-            if (godley.signConventionReversed(c)) fc.coef*=-1;
+            //            if (godley.signConventionReversed(c)) fc.coef*=-1;
 
             VariablePtr v(VariableType::flow, fc.name);
             v->group=gi.group;
