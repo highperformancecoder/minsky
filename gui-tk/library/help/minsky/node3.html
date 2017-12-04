@@ -1,10 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2008 (1.71)
-original version by:  Nikos Drakos, CBLU, University of Leeds
-* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
-* with significant contributions from:
-  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
 <TITLE>Experienced in system dynamics?</TITLE>
@@ -13,7 +9,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
@@ -26,21 +22,21 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html92"
+<A NAME="tex2html93"
   HREF="node4.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html90"
+<A NAME="tex2html91"
   HREF="node1.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html86"
+<A NAME="tex2html87"
   HREF="node2.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html93"
+<B> Next:</B> <A NAME="tex2html94"
   HREF="node4.html">Getting Started</A>
-<B> Up:</B> <A NAME="tex2html91"
+<B> Up:</B> <A NAME="tex2html92"
   HREF="node1.html">Introduction</A>
-<B> Previous:</B> <A NAME="tex2html87"
+<B> Previous:</B> <A NAME="tex2html88"
   HREF="node2.html">New to system dynamics?</A>
 <BR>
 <BR></DIV>
@@ -53,8 +49,8 @@ Experienced in system dynamics?
 </H1>
 
 <P>
-As an experienced system dynamics user (or if you've just read <A HREF="node2.html#intro:new">``New to
-system dynamics?''</A>), what you need to know is what Minsky
+As an experienced system dynamics user (or if you've just read <A HREF="node2.html#intro:new">&ldquo;New to
+system dynamics?&rdquo;</A>), what you need to know is what Minsky
 provides that other system dynamics programs don't. That boils down to
 one feature: The Godley Table. It enables a dynamic model of
 financial flows to be derived from a table that is very similar to the
@@ -72,9 +68,9 @@ For example, if you go shopping and buy a new computer with your
 credit card, you increase your debt to a bank and simultaneously
 increase the deposit account of the retailer from whom you buy the
 computer. The two system states in this model--your credit card
-(``BuyerCredit'') and the retailer's deposit account
-(``SellerDeposit'')--therefore have to have the same entry (let's call
-this ``Card'') made into them. Such a transaction would look
+(&ldquo;BuyerCredit&rdquo;) and the retailer's deposit account
+(&ldquo;SellerDeposit&rdquo;)--therefore have to have the same entry (let's call
+this &ldquo;Card&rdquo;) made into them. Such a transaction would look
 like this:
 
 <P>
@@ -163,9 +159,9 @@ double-entry bookkeeping. Here is the same model in Minsky:
  SRC="img17.png"
  ALT="$Card$"></SPAN></TD>
 <TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img18.png"
- ALT="$-Card$"></SPAN></TD>
+ WIDTH="41" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img17.png"
+ ALT="$Card$"></SPAN></TD>
 <TD ALIGN="CENTER">0</TD>
 </TR>
 </TABLE>
@@ -180,15 +176,10 @@ This is an inherently better way to generate a dynamic model of financial flows,
   where a flow originates, and where it ends up
 </LI>
 <LI>The program adopts the accounting practice of double-entry
-  bookkeeping, in which entries on each row sum to zero. The source is
-  shown as a ``<SPAN CLASS="MATH"><IMG
- WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img19.png"
- ALT="$+$"></SPAN>'', the sink is shown as a ``<SPAN CLASS="MATH"><IMG
- WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img20.png"
- ALT="$-$"></SPAN>'', and assets are shown
-  as a positive sum while liabilities are shown as a negative. If you
+  bookkeeping, in which entries on each row balance to zero according
+  to the <EM>accounting equation</EM> (Assets=Liabilities+Equities). The source is
+  shown as a positive value increasing the value of assets, the sink
+  is a positive value increasing a corresponding liability. If you
   don't ensure that each flow starts somewhere and ends
   somewhere--say you make the same mistake as in the block diagram
   examples above, then the program will identify your mistake.
@@ -197,7 +188,7 @@ This is an inherently better way to generate a dynamic model of financial flows,
 
 <P>
 If you forget to enter the recipient in this transaction, then the Row
-Sum identifies your mistake by showing that the row sums to ``Card''
+Sum identifies your mistake by showing that the row sums to &ldquo;Card&rdquo;
 rather than zero:
 
 <P>
@@ -297,12 +288,12 @@ And it also identifies if you give the wrong sign to one entry:
  SRC="img17.png"
  ALT="$Card$"></SPAN></TD>
 <TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="41" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img17.png"
- ALT="$Card$"></SPAN></TD>
+ WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img18.png"
+ ALT="$-Card$"></SPAN></TD>
 <TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
  WIDTH="49" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img21.png"
+ SRC="img19.png"
  ALT="$2Card$"></SPAN></TD>
 </TR>
 </TABLE>
@@ -316,26 +307,23 @@ this capability.
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html92"
+<A NAME="tex2html93"
   HREF="node4.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html90"
+<A NAME="tex2html91"
   HREF="node1.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html86"
+<A NAME="tex2html87"
   HREF="node2.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html93"
+<B> Next:</B> <A NAME="tex2html94"
   HREF="node4.html">Getting Started</A>
-<B> Up:</B> <A NAME="tex2html91"
+<B> Up:</B> <A NAME="tex2html92"
   HREF="node1.html">Introduction</A>
-<B> Previous:</B> <A NAME="tex2html87"
+<B> Previous:</B> <A NAME="tex2html88"
   HREF="node2.html">New to system dynamics?</A></DIV>
 <!--End of Navigation Panel-->
-<ADDRESS>
-Russell Standish
-2017-11-16
-</ADDRESS>
+
 </BODY>
 </HTML>

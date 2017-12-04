@@ -1,10 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2008 (1.71)
-original version by:  Nikos Drakos, CBLU, University of Leeds
-* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
-* with significant contributions from:
-  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
 <TITLE>Godley Tables</TITLE>
@@ -13,7 +9,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
@@ -27,21 +23,21 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html667"
+<A NAME="tex2html668"
   HREF="node54.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html665"
+<A NAME="tex2html666"
   HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html659"
+<A NAME="tex2html660"
   HREF="node52.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html668"
+<B> Next:</B> <A NAME="tex2html669"
   HREF="node54.html">Context Menu</A>
-<B> Up:</B> <A NAME="tex2html666"
+<B> Up:</B> <A NAME="tex2html667"
   HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html660"
+<B> Previous:</B> <A NAME="tex2html661"
   HREF="node52.html">Note Widget</A>
 <BR>
 <BR></DIV>
@@ -56,17 +52,27 @@ Godley Tables
 Godley tables describes sets of financial flows from the point of view
 of a particular economic agent, such as a bank. The columns of the
 table represent accounts (possibly aggregated), which are treated as
-integration variables by the system. In ``double entry'' mode,
-accounts may be assets, liabilities or equities. Assets may appear as
-liabilities in another agent's Godley table, and vice versa, with the
-sense of the financial flows treated oppositely (a positive flow increasing the
-asset of one entity will appear as a negative flow, increasing the
-value of a liability). Instead of positive or negative flows, one can
-optionally use CR and DR prefixes, as specified in the options panel.
+integration variables by the system. Accounts may be assets,
+liabilities or equities. Assets may appear as liabilities in another
+agent's Godley table, and vice versa, with the sense of the financial
+flows treated oppositely (a credit flow increasing the asset of one
+entity will appear as a debit flow, increasing the value of a
+liability). Transfers between accounts should satisfy the <EM>  accounting equation</EM><A NAME="2871"></A>
+(Assets-Liabilities-Equities = 0). So if the transfer is between an
+asset and a liability, then it should appear with the same sign (both
+positive or both negative), otherwise between two accounts of the same
+type, or between a liability and an equity, the terms should have
+opposite signs.
+
+<P>
+Instead of signed flows, one can optionally use CR and DR prefixes, as
+specified in the options panel. Each row of the table should have have
+one CR entry, and one DR entry. The row sum column should be zero if
+it is done correctly.
 
 <P>
 The first row specifies the stock variables, after which follow the
-flow rows. Usually, the row marked ``Initial Conditions'' comes next,
+flow rows. Usually, the row marked &ldquo;Initial Conditions&rdquo; comes next,
 but may be placed in any position. These specify the initial
 conditions of the stock variables, and may refer to a multiple of
 another variable, just like the <A HREF="node47.html#var:init">initial condition
@@ -74,43 +80,32 @@ field</A>, or just be a numerical value.
 
 <P>
 Finally come the flows. The first column is a simple textual label
-(the phrase ``Initial Conditions'', regardless of capitalisation, is a
+(the phrase &ldquo;Initial Conditions&rdquo;, regardless of capitalisation, is a
 reserved phrase for setting stock variable initial conditions)
 identifying the flow. The flows themselves are written as a numerical
-multipler times a flow variable. Unscoped variables are treated as
-global at present, however, in the future, Godley tables will be
-allowed to be part of groups, which will then define the context of
-the unqualified variable names.
-
-<P>
-The final column displays the row sum. A correctly functioning Godley
-table should have each row sum to zero -- this ensures everything is
-accounted for, with no hidden sinks or sources.
+multipler times a flow variable. 
 
 <P>
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html667"
+<A NAME="tex2html668"
   HREF="node54.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html665"
+<A NAME="tex2html666"
   HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html659"
+<A NAME="tex2html660"
   HREF="node52.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html668"
+<B> Next:</B> <A NAME="tex2html669"
   HREF="node54.html">Context Menu</A>
-<B> Up:</B> <A NAME="tex2html666"
+<B> Up:</B> <A NAME="tex2html667"
   HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html660"
+<B> Previous:</B> <A NAME="tex2html661"
   HREF="node52.html">Note Widget</A></DIV>
 <!--End of Navigation Panel-->
-<ADDRESS>
-Russell Standish
-2017-11-16
-</ADDRESS>
+
 </BODY>
 </HTML>

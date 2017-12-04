@@ -1,10 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2008 (1.71)
-original version by:  Nikos Drakos, CBLU, University of Leeds
-* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
-* with significant contributions from:
-  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
 <TITLE>Defining flows</TITLE>
@@ -13,7 +9,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
@@ -27,21 +23,21 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html467"
+<A NAME="tex2html468"
   HREF="node35.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html465"
+<A NAME="tex2html466"
   HREF="node32.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html459"
+<A NAME="tex2html460"
   HREF="node33.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html468"
+<B> Next:</B> <A NAME="tex2html469"
   HREF="node35.html">Copying Godley Table input</A>
-<B> Up:</B> <A NAME="tex2html466"
+<B> Up:</B> <A NAME="tex2html467"
   HREF="node32.html">Defining account types</A>
-<B> Previous:</B> <A NAME="tex2html460"
+<B> Previous:</B> <A NAME="tex2html461"
   HREF="node33.html">Entering flows between accounts</A>
 <BR>
 <BR></DIV>
@@ -75,7 +71,7 @@ side of Lend:
  -->
 <IMG
  WIDTH="240" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
- SRC="img91.png"
+ SRC="img89.png"
  ALT="\scalebox{0.5}{\includegraphics{images/NewItem149.eps}}">
 </DIV>
 
@@ -100,7 +96,7 @@ from the point of view of the bank:
  -->
 <IMG
  WIDTH="170" HEIGHT="180" BORDER="0"
- SRC="img92.png"
+ SRC="img90.png"
  ALT="\begin{eqnarray*}
 \mathrm{Lend}&amp;=&amp;10\\
 \frac{d\mathrm{Impatient}}{dt}&amp;=&amp;\mathrm...
@@ -114,7 +110,7 @@ from the point of view of the bank:
 If you attach a graph to the accounts at the bottom of the bank block,
 you will see the impact of this flow over time on the balances of the
 two accounts. Patient's account begins at $100 and falls at $10 per
-year, while Patient's account begins at $0 and rises by $10 per
+year, while Impatient's account begins at $0 and rises by $10 per
 year.
 
 <P>
@@ -124,7 +120,7 @@ year.
  -->
 <IMG
  WIDTH="398" HEIGHT="486" ALIGN="BOTTOM" BORDER="0"
- SRC="img93.png"
+ SRC="img91.png"
  ALT="\scalebox{0.7}{\includegraphics{images/NewItem151.eps}}">
 </DIV>
 
@@ -133,7 +129,7 @@ Obviously this will result in a negative total worth for Patient after
 10 years, so it is not a realistic model. A more sensible simple model
 would relate lending to the amount left in Patient's account (and a
 more complex model would relate this to many other variables in the
-model). That is done in the next example, where a constant ``lendrate''
+model). That is done in the next example, where a constant &ldquo;lendrate&rdquo;
 has been defined and given the value of 0.1, and Lend is now defined
 as 0.1 times the balance in Patient's account. This now results in a
 smooth exponential decay of the amount in the Patient account, matched
@@ -146,7 +142,7 @@ by a rise in the amount in Impatient account.
  -->
 <IMG
  WIDTH="458" HEIGHT="513" ALIGN="BOTTOM" BORDER="0"
- SRC="img94.png"
+ SRC="img92.png"
  ALT="\scalebox{0.7}{\includegraphics{images/NewItem152.eps}}">
 </DIV>
 
@@ -167,7 +163,7 @@ falling at 10 percent per year:
  -->
 <IMG
  WIDTH="249" HEIGHT="117" BORDER="0"
- SRC="img95.png"
+ SRC="img93.png"
  ALT="\begin{eqnarray*}
 \mathrm{Lend}&amp;=&amp;\mathrm{lendrate}\times\mathrm{Patient}\\
 \fr...
@@ -185,26 +181,23 @@ is a neater way to define flows.
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html467"
+<A NAME="tex2html468"
   HREF="node35.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html465"
+<A NAME="tex2html466"
   HREF="node32.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html459"
+<A NAME="tex2html460"
   HREF="node33.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html468"
+<B> Next:</B> <A NAME="tex2html469"
   HREF="node35.html">Copying Godley Table input</A>
-<B> Up:</B> <A NAME="tex2html466"
+<B> Up:</B> <A NAME="tex2html467"
   HREF="node32.html">Defining account types</A>
-<B> Previous:</B> <A NAME="tex2html460"
+<B> Previous:</B> <A NAME="tex2html461"
   HREF="node33.html">Entering flows between accounts</A></DIV>
 <!--End of Navigation Panel-->
-<ADDRESS>
-Russell Standish
-2017-11-16
-</ADDRESS>
+
 </BODY>
 </HTML>
