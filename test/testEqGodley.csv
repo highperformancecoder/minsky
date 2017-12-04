@@ -1,6 +1,6 @@
-"Flows V / Stock Variables ->"," Loans"," b"
+"Flows V / Stock Variables ->","Loans","b"
 Asset Class,asset,liability
 Initial Conditions,"",""
 ,"A",""
-,"Repay","-Repay"
-,"-catching","catching"
+,"Repay","Repay"
+,"-catching","-catching"
