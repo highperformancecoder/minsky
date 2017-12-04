@@ -95,8 +95,8 @@ proc createGodleyWindow {id} {
 
     pack .godley$id.topbar -fill x
     pack .godley$id.sy -side right -fill y
+    pack .godley$id.sx -side bottom -fill x
     pack .godley$id.table -fill both 
-    pack .godley$id.sx -fill x
 
     menu .godley$id.cellMenu
     .godley$id.cellMenu add command -label Cut -command "cutCurrCell $id"
