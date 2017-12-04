@@ -49,7 +49,7 @@ namespace minsky
     {
       if (x.substr(0,3)=="<i>")
         x=x.substr(3);
-      if (x.substr(x.length()-4)=="</i>")
+      if (x.length()>=4 && x.substr(x.length()-4)=="</i>")
         return x.substr(0,x.length()-4);
       else
         return x;

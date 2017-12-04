@@ -100,6 +100,7 @@ bool VariableBase::ioVar() const
 
 string VariableBase::_name()  const
 {
+  if (m_name==":_") return "";
   // hide any leading ':' in upper level
   if (m_name[0]==':')
     {
@@ -159,16 +160,16 @@ string VariableBase::_init(const string& x)
 
 double VariableBase::_value() const
 {
-  return minsky::cminsky().variableValues[valueId()].value();
+  if (VariableValue::isValueId(valueId()))
+    return minsky::cminsky().variableValues[valueId()].value();
+  else
+    return 0;
 }
 
 double VariableBase::_value(double x)
 {
-  if (!m_name.empty())
-    {
-      assert(VariableValue::isValueId(valueId()));
-      minsky().variableValues[valueId()]=x;
-    }
+  if (!m_name.empty() && VariableValue::isValueId(valueId()))
+    minsky().variableValues[valueId()]=x;
   return x;
 }
 

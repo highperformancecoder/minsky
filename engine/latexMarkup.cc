@@ -855,6 +855,8 @@ namespace minsky
 {
   string latexToPango(const char* input)
   {
+    if (input[0]=='\0')
+      return ""; // do not wrap with italic environment
     Result r("<i>");
     while (*input!='\0')
       switch (*input)
