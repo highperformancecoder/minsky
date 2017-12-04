@@ -171,7 +171,7 @@ namespace schema2
         for (size_t r=1; r<data->size(); ++r)
           for (size_t c=1; c<(*data)[r].size(); ++c)
             if (!(*data)[r][c].empty() &&
-                (*assetClasses)[c]==AssetClass::liability || (*assetClasses)[c]==AssetClass::equity)
+                ((*assetClasses)[c]==AssetClass::liability || (*assetClasses)[c]==AssetClass::equity))
               {
                 minsky::FlowCoef fc((*data)[r][c]);
                 fc.coef*=-1;

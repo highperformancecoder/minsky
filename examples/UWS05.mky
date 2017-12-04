@@ -93,8 +93,8 @@
     <coords>
      <float>37</float>
      <float>99</float>
-     <float>151.293</float>
-     <float>0</float>
+     <float>155.145</float>
+     <float>3.51959</float>
      <float>225</float>
      <float>285.25</float>
     </coords>
@@ -106,8 +106,8 @@
     <coords>
      <float>39</float>
      <float>150</float>
-     <float>150.98</float>
-     <float>88</float>
+     <float>153.651</float>
+     <float>89.7599</float>
      <float>225</float>
      <float>322.75</float>
     </coords>
@@ -119,8 +119,8 @@
     <coords>
      <float>39</float>
      <float>205</float>
-     <float>157.021</float>
-     <float>138</float>
+     <float>159.742</float>
+     <float>140.282</float>
      <float>225</float>
      <float>360.25</float>
     </coords>
@@ -202,8 +202,15 @@
     <ports>
      <int>20</int>
     </ports>
-    <name>Firms</name>
+    <name>:Firms</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>23</id>
@@ -215,8 +222,15 @@
     <ports>
      <int>22</int>
     </ports>
-    <name>Loans</name>
+    <name>:Loans</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>25</id>
@@ -228,8 +242,15 @@
     <ports>
      <int>24</int>
     </ports>
-    <name>Safe</name>
+    <name>:Safe</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>27</id>
@@ -241,8 +262,15 @@
     <ports>
      <int>26</int>
     </ports>
-    <name>Vault</name>
+    <name>:Vault</name>
     <init>100</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>29</id>
@@ -254,8 +282,15 @@
     <ports>
      <int>28</int>
     </ports>
-    <name>Workers</name>
+    <name>:Workers</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>32</id>
@@ -268,8 +303,15 @@
      <int>30</int>
      <int>31</int>
     </ports>
-    <name>A</name>
+    <name>:A</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>35</id>
@@ -282,8 +324,15 @@
      <int>33</int>
      <int>34</int>
     </ports>
-    <name>B</name>
+    <name>:B</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>38</id>
@@ -296,8 +345,15 @@
      <int>36</int>
      <int>37</int>
     </ports>
-    <name>C</name>
+    <name>:C</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>41</id>
@@ -310,8 +366,15 @@
      <int>39</int>
      <int>40</int>
     </ports>
-    <name>D</name>
+    <name>:D</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>44</id>
@@ -324,8 +387,15 @@
      <int>42</int>
      <int>43</int>
     </ports>
-    <name>E</name>
+    <name>:E</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>46</id>
@@ -337,8 +407,15 @@
     <ports>
      <int>45</int>
     </ports>
-    <name>Firms</name>
+    <name>:Firms</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>48</id>
@@ -350,8 +427,15 @@
     <ports>
      <int>47</int>
     </ports>
-    <name>Loans</name>
+    <name>:Loans</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>50</id>
@@ -363,8 +447,15 @@
     <ports>
      <int>49</int>
     </ports>
-    <name>Safe</name>
+    <name>:Safe</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>52</id>
@@ -376,8 +467,15 @@
     <ports>
      <int>51</int>
     </ports>
-    <name>Vault</name>
+    <name>:Vault</name>
     <init>100</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>100</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>54</id>
@@ -389,8 +487,15 @@
     <ports>
      <int>53</int>
     </ports>
-    <name>Workers</name>
+    <name>:Workers</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>57</id>
@@ -403,8 +508,15 @@
      <int>55</int>
      <int>56</int>
     </ports>
-    <name>A</name>
+    <name>:A</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>50</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>60</id>
@@ -417,8 +529,15 @@
      <int>58</int>
      <int>59</int>
     </ports>
-    <name>B</name>
+    <name>:B</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>63</id>
@@ -431,8 +550,15 @@
      <int>61</int>
      <int>62</int>
     </ports>
-    <name>C</name>
+    <name>:C</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>66</id>
@@ -445,8 +571,15 @@
      <int>64</int>
      <int>65</int>
     </ports>
-    <name>D</name>
+    <name>:D</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>69</id>
@@ -459,8 +592,15 @@
      <int>67</int>
      <int>68</int>
     </ports>
-    <name>E</name>
+    <name>:E</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>71</id>
@@ -472,8 +612,15 @@
     <ports>
      <int>70</int>
     </ports>
-    <name>v</name>
+    <name>:v</name>
     <init>0.5</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>73</id>
@@ -485,8 +632,15 @@
     <ports>
      <int>72</int>
     </ports>
-    <name>rL</name>
+    <name>:rL</name>
     <init>0.05</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>75</id>
@@ -498,8 +652,15 @@
     <ports>
      <int>74</int>
     </ports>
-    <name>w</name>
+    <name>:w</name>
     <init>3</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>3</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>77</id>
@@ -511,8 +672,15 @@
     <ports>
      <int>76</int>
     </ports>
-    <name>wc</name>
+    <name>:wc</name>
     <init>26</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>26</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>79</id>
@@ -524,8 +692,15 @@
     <ports>
      <int>78</int>
     </ports>
-    <name>bc</name>
+    <name>:bc</name>
     <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>102</id>
@@ -623,77 +798,85 @@
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
-      <string>:Firms</string>
-      <string>:Loans</string>
-      <string>:Safe</string>
-      <string>:Vault</string>
-      <string>:Workers</string>
+      <string>Firms</string>
+      <string>Loans</string>
+      <string>Safe</string>
+      <string>Vault</string>
+      <string>Workers</string>
      </vector>
      <vector>
-      <string>&#32;Lend</string>
-      <string>:A</string>
+      <string>Lend</string>
+      <string>A</string>
       <string></string>
       <string></string>
-      <string>-:A</string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Loan</string>
-      <string></string>
-      <string>:A</string>
-      <string></string>
-      <string></string>
+      <string>-A</string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Compound&#32;Debt</string>
+      <string>Record&#32;Loan</string>
       <string></string>
-      <string>:B</string>
+      <string>A</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Servicing&#32;Debt</string>
-      <string>-:B</string>
+      <string>Compound&#32;Debt</string>
       <string></string>
-      <string>:B</string>
-      <string></string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Servicing</string>
-      <string></string>
-      <string>-:B</string>
+      <string>B</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Wage</string>
-      <string>-:C</string>
+      <string>Servicing&#32;Debt</string>
+      <string>-B</string>
+      <string></string>
+      <string>B</string>
       <string></string>
       <string></string>
-      <string></string>
-      <string>:C</string>
      </vector>
      <vector>
-      <string>&#32;Consumption</string>
-      <string>:D</string>
+      <string>Record&#32;Servicing</string>
+      <string></string>
+      <string>-B</string>
       <string></string>
       <string></string>
       <string></string>
-      <string>-:D</string>
      </vector>
      <vector>
-      <string>&#32;Consumption</string>
-      <string>:E</string>
+      <string>Wage</string>
+      <string>-C</string>
       <string></string>
-      <string>-:E</string>
+      <string></string>
+      <string></string>
+      <string>C</string>
+     </vector>
+     <vector>
+      <string>Consumption</string>
+      <string>D</string>
+      <string></string>
+      <string></string>
+      <string></string>
+      <string>-D</string>
+     </vector>
+     <vector>
+      <string>Consumption</string>
+      <string>E</string>
+      <string></string>
+      <string>-E</string>
       <string></string>
       <string></string>
      </vector>
     </data>
+    <assetClasses>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+    </assetClasses>
    </Item>
   </items>
   <groups>

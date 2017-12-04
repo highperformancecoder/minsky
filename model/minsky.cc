@@ -491,11 +491,12 @@ namespace minsky
                        // reversing sign
                        for (size_t r=1; r<destTable.rows(); ++r)
                          if (destTable.initialConditionRow(r))
-                           {
-                             FlowCoef fc(srcTable.cell(row,srcCol));
-                             destTable.cell(r,col)=to_string(-fc.coef)+fc.name;
-                             break;
-                           }
+                           destTable.cell(r,col)=srcTable.cell(row,srcCol);
+//                   {
+//                             FlowCoef fc(srcTable.cell(row,srcCol));
+//                             destTable.cell(r,col)=to_string(-fc.coef)+fc.name;
+//                             break;
+//                           }
                    for (size_t row=1; row!=destTable.rows(); ++row)
                      if (!destTable.initialConditionRow(row) && !destTable.cell(row,0).empty())
                   destRowLabels[trimWS(destTable.cell(row,0))]=row;
@@ -516,7 +517,8 @@ namespace minsky
                            df.name=VariableValue::uqName(i->first);
                          else
                            df.name=variableValues[i->first].name;
-                         df.coef=-i->second-destFlows[i->first];
+                         df.coef=i->second-destFlows[i->first];
+                         if (df.coef==0) continue;
                          string flowEntry=df.str();
                          string rowLabel=srcRowLabels[srcGodley.valueId(i->first)];
                          map<string,int>::iterator dr=destRowLabels.find(rowLabel);

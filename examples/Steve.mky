@@ -127,11 +127,11 @@
     <to>159</to>
     <coords>
      <float>76</float>
-     <float>419.08</float>
-     <float>171.475</float>
-     <float>347.08</float>
+     <float>414.04</float>
+     <float>171.835</float>
+     <float>345.722</float>
      <float>387</float>
-     <float>333.33</float>
+     <float>328.29</float>
     </coords>
    </Wire>
    <Wire>
@@ -145,7 +145,7 @@
     <id>3</id>
     <type>Operation:multiply</type>
     <x>58</x>
-    <y>45.0793</y>
+    <y>40.0393</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -158,7 +158,7 @@
     <id>7</id>
     <type>Operation:multiply</type>
     <x>55</x>
-    <y>121.08</y>
+    <y>116.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -171,7 +171,7 @@
     <id>11</id>
     <type>Operation:multiply</type>
     <x>100</x>
-    <y>286.08</y>
+    <y>281.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -184,7 +184,7 @@
     <id>15</id>
     <type>Operation:multiply</type>
     <x>103</x>
-    <y>336.08</y>
+    <y>331.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -197,7 +197,7 @@
     <id>19</id>
     <type>Operation:multiply</type>
     <x>103</x>
-    <y>410.08</y>
+    <y>405.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -210,7 +210,7 @@
     <id>23</id>
     <type>Operation:multiply</type>
     <x>132</x>
-    <y>468.08</y>
+    <y>463.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -223,7 +223,7 @@
     <id>27</id>
     <type>Operation:multiply</type>
     <x>59</x>
-    <y>177.08</y>
+    <y>172.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -236,424 +236,641 @@
     <id>29</id>
     <type>Variable:stock</type>
     <x>46</x>
-    <y>314.08</y>
+    <y>309.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>28</int>
     </ports>
-    <name>Firm</name>
+    <name>:Firm</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>31</id>
     <type>Variable:stock</type>
     <x>0</x>
-    <y>154.08</y>
+    <y>149.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>30</int>
     </ports>
-    <name>Loan</name>
+    <name>:Loan</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>33</id>
     <type>Variable:stock</type>
     <x>64</x>
-    <y>486.08</y>
+    <y>481.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>32</int>
     </ports>
-    <name>Safe</name>
+    <name>:Safe</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>35</id>
     <type>Variable:stock</type>
     <x>3</x>
-    <y>59.0793</y>
+    <y>54.0393</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>34</int>
     </ports>
-    <name>Vault</name>
+    <name>:Vault</name>
     <init>100</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>37</id>
     <type>Variable:stock</type>
     <x>34</x>
-    <y>419.08</y>
+    <y>414.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>36</int>
     </ports>
-    <name>Worker</name>
+    <name>:Worker</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>40</id>
     <type>Variable:flow</type>
     <x>110</x>
-    <y>32.0793</y>
+    <y>27.0393</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>38</int>
      <int>39</int>
     </ports>
-    <name>A</name>
+    <name>:A</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>43</id>
     <type>Variable:flow</type>
     <x>99</x>
-    <y>119.08</y>
+    <y>114.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>41</int>
      <int>42</int>
     </ports>
-    <name>B</name>
+    <name>:B</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>46</id>
     <type>Variable:flow</type>
     <x>149</x>
-    <y>285.08</y>
+    <y>280.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>44</int>
      <int>45</int>
     </ports>
-    <name>C</name>
+    <name>:C</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>49</id>
     <type>Variable:flow</type>
     <x>146</x>
-    <y>338.08</y>
+    <y>333.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>47</int>
      <int>48</int>
     </ports>
-    <name>D</name>
+    <name>:D</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>52</id>
     <type>Variable:flow</type>
     <x>153</x>
-    <y>414.08</y>
+    <y>409.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>50</int>
      <int>51</int>
     </ports>
-    <name>E</name>
+    <name>:E</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>55</id>
     <type>Variable:flow</type>
     <x>169</x>
-    <y>468.08</y>
+    <y>463.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>53</int>
      <int>54</int>
     </ports>
-    <name>F</name>
+    <name>:F</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>58</id>
     <type>Variable:flow</type>
     <x>100</x>
-    <y>178.08</y>
+    <y>173.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>56</int>
      <int>57</int>
     </ports>
-    <name>G</name>
+    <name>:G</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>60</id>
     <type>Variable:stock</type>
     <x>429.415</x>
-    <y>237.18</y>
+    <y>232.14</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>59</int>
     </ports>
-    <name>Vault</name>
+    <name>:Vault</name>
     <init>100</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>100</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>62</id>
     <type>Variable:stock</type>
     <x>456.415</x>
-    <y>232.18</y>
+    <y>227.14</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>61</int>
     </ports>
-    <name>Loan</name>
+    <name>:Loan</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>64</id>
     <type>Variable:stock</type>
     <x>483.415</x>
-    <y>232.18</y>
+    <y>227.14</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>63</int>
     </ports>
-    <name>Firm</name>
+    <name>:Firm</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>66</id>
     <type>Variable:stock</type>
     <x>510.415</x>
-    <y>242.18</y>
+    <y>237.14</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>65</int>
     </ports>
-    <name>Worker</name>
+    <name>:Worker</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>68</id>
     <type>Variable:stock</type>
     <x>537.415</x>
-    <y>232.18</y>
+    <y>227.14</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>67</int>
     </ports>
-    <name>Safe</name>
+    <name>:Safe</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>71</id>
     <type>Variable:flow</type>
     <x>403.91</x>
-    <y>5.04</y>
+    <y>-1.52588e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>69</int>
      <int>70</int>
     </ports>
-    <name>A</name>
+    <name>:A</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>50</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>74</id>
     <type>Variable:flow</type>
     <x>403.91</x>
-    <y>32.04</y>
+    <y>27</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>72</int>
      <int>73</int>
     </ports>
-    <name>B</name>
+    <name>:B</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>77</id>
     <type>Variable:flow</type>
     <x>403.91</x>
-    <y>59.04</y>
+    <y>54</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>75</int>
      <int>76</int>
     </ports>
-    <name>C</name>
+    <name>:C</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>80</id>
     <type>Variable:flow</type>
     <x>403.91</x>
-    <y>86.04</y>
+    <y>81</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>78</int>
      <int>79</int>
     </ports>
-    <name>D</name>
+    <name>:D</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>83</id>
     <type>Variable:flow</type>
     <x>403.91</x>
-    <y>113.04</y>
+    <y>108</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>81</int>
      <int>82</int>
     </ports>
-    <name>E</name>
+    <name>:E</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>86</id>
     <type>Variable:flow</type>
     <x>403.91</x>
-    <y>140.04</y>
+    <y>135</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>84</int>
      <int>85</int>
     </ports>
-    <name>F</name>
+    <name>:F</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>89</id>
     <type>Variable:flow</type>
     <x>403.91</x>
-    <y>167.04</y>
+    <y>162</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>87</int>
      <int>88</int>
     </ports>
-    <name>G</name>
+    <name>:G</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>91</id>
     <type>Variable:parameter</type>
     <x>0</x>
-    <y>29.0793</y>
+    <y>24.0393</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>90</int>
     </ports>
-    <name>v</name>
+    <name>:v</name>
     <init>0.5</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>93</id>
     <type>Variable:parameter</type>
     <x>2</x>
-    <y>104.08</y>
+    <y>99.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>92</int>
     </ports>
-    <name>rL</name>
+    <name>:rL</name>
     <init>0.05</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>95</id>
     <type>Variable:parameter</type>
     <x>53</x>
-    <y>276.08</y>
+    <y>271.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>94</int>
     </ports>
-    <name>rD</name>
+    <name>:rD</name>
     <init>0.02</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>97</id>
     <type>Variable:parameter</type>
     <x>60</x>
-    <y>346.08</y>
+    <y>341.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>96</int>
     </ports>
-    <name>w</name>
+    <name>:w</name>
     <init>3</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>3</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>99</id>
     <type>Variable:parameter</type>
     <x>52</x>
-    <y>387.08</y>
+    <y>382.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>98</int>
     </ports>
-    <name>cw</name>
+    <name>:cw</name>
     <init>26</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>26</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>101</id>
     <type>Variable:parameter</type>
     <x>70</x>
-    <y>462.08</y>
+    <y>457.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>100</int>
     </ports>
-    <name>cb</name>
+    <name>:cb</name>
     <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>103</id>
     <type>Variable:parameter</type>
     <x>13</x>
-    <y>193.08</y>
+    <y>188.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>102</int>
     </ports>
-    <name>repay</name>
+    <name>:repay</name>
     <init>0.2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>126</id>
     <type>PlotWidget</type>
     <x>307</x>
-    <y>70.08</y>
+    <y>65.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -689,7 +906,7 @@
     <id>149</id>
     <type>PlotWidget</type>
     <x>267</x>
-    <y>259.08</y>
+    <y>254.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -725,7 +942,7 @@
     <id>172</id>
     <type>PlotWidget</type>
     <x>462</x>
-    <y>277.08</y>
+    <y>272.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -761,7 +978,7 @@
     <id>195</id>
     <type>PlotWidget</type>
     <x>366</x>
-    <y>477.08</y>
+    <y>472.04</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -797,9 +1014,9 @@
     <id>196</id>
     <type>GodleyIcon</type>
     <x>556</x>
-    <y>73.08</y>
+    <y>68.04</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>5.53354e-322</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>70</int>
      <int>73</int>
@@ -819,101 +1036,109 @@
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
-      <string>:Vault</string>
-      <string>:Loan</string>
-      <string>:Firm</string>
-      <string>:Worker</string>
-      <string>:Safe</string>
+      <string>Vault</string>
+      <string>Loan</string>
+      <string>Firm</string>
+      <string>Worker</string>
+      <string>Safe</string>
      </vector>
      <vector>
-      <string>&#32;Lend</string>
-      <string>-:A</string>
+      <string>Lend</string>
+      <string>-A</string>
       <string></string>
-      <string>:A</string>
-      <string></string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Loan</string>
-      <string></string>
-      <string>:A</string>
-      <string></string>
+      <string>A</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Compound</string>
+      <string>Record&#32;Loan</string>
       <string></string>
-      <string>:B</string>
+      <string>A</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Pay&#32;Interest</string>
+      <string>Compound</string>
       <string></string>
-      <string></string>
-      <string>-:B</string>
-      <string></string>
-      <string>:B</string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Payment</string>
-      <string></string>
-      <string>-:B</string>
+      <string>B</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Deposit&#32;Interest</string>
+      <string>Pay&#32;Interest</string>
       <string></string>
       <string></string>
-      <string>:C</string>
+      <string>-B</string>
       <string></string>
-      <string>-:C</string>
+      <string>B</string>
      </vector>
      <vector>
-      <string>&#32;Wages</string>
+      <string>Record&#32;Payment</string>
       <string></string>
+      <string>-B</string>
       <string></string>
-      <string>-:D</string>
-      <string>:D</string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Consume</string>
-      <string></string>
-      <string></string>
-      <string>:E</string>
-      <string>-:E</string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Consume</string>
-      <string></string>
-      <string></string>
-      <string>:F</string>
-      <string></string>
-      <string>-:F</string>
-     </vector>
-     <vector>
-      <string>&#32;Repay</string>
-      <string>:G</string>
-      <string></string>
-      <string>-:G</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Record&#32;Repay</string>
+      <string>Deposit&#32;Interest</string>
       <string></string>
-      <string>-:G</string>
+      <string></string>
+      <string>C</string>
+      <string></string>
+      <string>-C</string>
+     </vector>
+     <vector>
+      <string>Wages</string>
+      <string></string>
+      <string></string>
+      <string>-D</string>
+      <string>D</string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Consume</string>
+      <string></string>
+      <string></string>
+      <string>E</string>
+      <string>-E</string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Consume</string>
+      <string></string>
+      <string></string>
+      <string>F</string>
+      <string></string>
+      <string>-F</string>
+     </vector>
+     <vector>
+      <string>Repay</string>
+      <string>G</string>
+      <string></string>
+      <string>-G</string>
+      <string></string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Record&#32;Repay</string>
+      <string></string>
+      <string>-G</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
     </data>
+    <assetClasses>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+    </assetClasses>
    </Item>
   </items>
   <groups>

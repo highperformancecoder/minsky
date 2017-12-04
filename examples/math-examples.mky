@@ -14,8 +14,15 @@
      <int>0</int>
      <int>1</int>
     </ports>
-    <name>\sqrt[3]2</name>
+    <name>:\sqrt[3]2</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>5</id>
@@ -28,8 +35,15 @@
      <int>3</int>
      <int>4</int>
     </ports>
-    <name>\int_0^\infty&#32;e^{-x^2/2}</name>
+    <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>8</id>
@@ -42,8 +56,15 @@
      <int>6</int>
      <int>7</int>
     </ports>
-    <name>\aleph_0</name>
+    <name>:\aleph_0</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>11</id>
@@ -56,8 +77,15 @@
      <int>9</int>
      <int>10</int>
     </ports>
-    <name>\partial&#32;f(x)/\partial&#32;x|_0</name>
+    <name>:\partial&#32;f(x)/\partial&#32;x|_0</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>14</id>
@@ -70,8 +98,15 @@
      <int>12</int>
      <int>13</int>
     </ports>
-    <name>\tau_\mathrm{RD}</name>
+    <name>:\tau_\mathrm{RD}</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>17</id>
@@ -84,8 +119,15 @@
      <int>15</int>
      <int>16</int>
     </ports>
-    <name>\mathrm{universit\&quot;at}</name>
+    <name>:\mathrm{universit\&quot;at}</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>20</id>
@@ -98,8 +140,15 @@
      <int>18</int>
      <int>19</int>
     </ports>
-    <name>\mathrm{fran\c{c}ais</name>
+    <name>:\mathrm{fran\c{c}ais</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>23</id>
@@ -112,8 +161,15 @@
      <int>21</int>
      <int>22</int>
     </ports>
-    <name>\mathrm{universit\&quot;{a}t}</name>
+    <name>:\mathrm{universit\&quot;{a}t}</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
   </items>
   <groups>

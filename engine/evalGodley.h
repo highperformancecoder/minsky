@@ -140,7 +140,7 @@ namespace minsky
               {
                 FlowCoef fvc(g.data()[row][col]);
                 fvc.name=g.valueId(fvc.name);
-                if (g.signConventionReversed(col)) fvc.coef*=-1;
+                //if (g.signConventionReversed(col)) fvc.coef*=-1;
                 string svName(g.valueId(trimWS(g.data()[0][col])));
 
                 if (!fvc.name.empty() && !svName.empty())

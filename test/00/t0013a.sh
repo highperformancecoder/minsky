@@ -43,17 +43,16 @@ minsky.getItemAt [\$item.x] [\$item.y]
 \$item.table.setDEmode 1
 \$item.setCell 1 0 "Initial Conditions"
 \$item.setCell 1 1 10
-\$item.setCell 1 3 -10
+\$item.setCell 1 3 10
 \$item.setCell 2 1 a
 \$item.setCell 2 2 b
-\$item.setCell 2 3 -a
+\$item.setCell 2 3 a
 
-# TODO - this test will need to be modified when ticket #58 is dealt with
 \$item.table.assetClass 1 asset
 \$item.table.assetClass 2 liability
 \$item.table.assetClass 3 liability
 assert {[minsky.canvas.item.table.rowSum 1]==0} ""
-assert {[minsky.canvas.item.table.rowSum 2]=="b"} ""
+assert {[minsky.canvas.item.table.rowSum 2]=="-b"} ""
 assert {"[minsky.canvas.item.table.getVariables]"=="a b"} ""
 tcl_exit
 EOF

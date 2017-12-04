@@ -59,7 +59,7 @@ namespace minsky
     else if (coef==-1)
       return "-"+name;
     else
-      return to_string(coef)+name;
+      return minsky::str(coef)+name;
   }
 
 }

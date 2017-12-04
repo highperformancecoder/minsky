@@ -6,14 +6,14 @@
     <from>8</from>
     <to>21</to>
     <coords>
-     <float>95.48</float>
-     <float>274.951</float>
-     <float>80.917</float>
-     <float>307.045</float>
-     <float>58.8214</float>
-     <float>105.565</float>
-     <float>40</float>
-     <float>2.28882e-06</float>
+     <float>106.48</float>
+     <float>296.831</float>
+     <float>82.4518</float>
+     <float>326.659</float>
+     <float>45.9953</float>
+     <float>139.405</float>
+     <float>45</float>
+     <float>42.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -21,14 +21,14 @@
     <from>4</from>
     <to>24</to>
     <coords>
-     <float>140.48</float>
-     <float>274.951</float>
-     <float>77.5395</float>
-     <float>338.464</float>
-     <float>29.7046</float>
-     <float>151.945</float>
-     <float>10</float>
-     <float>27</float>
+     <float>151.48</float>
+     <float>296.831</float>
+     <float>91.8787</float>
+     <float>359.611</float>
+     <float>46.5818</float>
+     <float>175.244</float>
+     <float>15</float>
+     <float>69.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -36,12 +36,12 @@
     <from>0</from>
     <to>27</to>
     <coords>
-     <float>178.48</float>
-     <float>275.951</float>
-     <float>19.1259</float>
-     <float>389.29</float>
-     <float>10</float>
-     <float>54</float>
+     <float>189.48</float>
+     <float>297.831</float>
+     <float>51.5135</float>
+     <float>416.95</float>
+     <float>15</float>
+     <float>96.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -89,8 +89,8 @@
    <Item>
     <id>3</id>
     <type>Operation:multiply</type>
-    <x>178.48</x>
-    <y>265.951</y>
+    <x>189.48</x>
+    <y>287.831</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
@@ -102,8 +102,8 @@
    <Item>
     <id>7</id>
     <type>Operation:multiply</type>
-    <x>140.48</x>
-    <y>264.951</y>
+    <x>151.48</x>
+    <y>286.831</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
@@ -115,8 +115,8 @@
    <Item>
     <id>11</id>
     <type>Operation:multiply</type>
-    <x>95.48</x>
-    <y>264.951</y>
+    <x>106.48</x>
+    <y>286.831</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
@@ -128,168 +128,252 @@
    <Item>
     <id>13</id>
     <type>Variable:stock</type>
-    <x>106.86</x>
-    <y>135.08</y>
+    <x>111.86</x>
+    <y>177.96</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>12</int>
     </ports>
-    <name>Vault</name>
-    <init>99.000000</init>
+    <name>:Vault</name>
+    <init>99</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>99</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>15</id>
     <type>Variable:stock</type>
-    <x>133.86</x>
-    <y>135.08</y>
+    <x>138.86</x>
+    <y>177.96</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>14</int>
     </ports>
-    <name>Loans</name>
-    <init>0.000000</init>
+    <name>:Loans</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>17</id>
     <type>Variable:stock</type>
-    <x>160.86</x>
-    <y>135.08</y>
+    <x>165.86</x>
+    <y>177.96</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>16</int>
     </ports>
-    <name>Firms</name>
-    <init>0.000000</init>
+    <name>:Firms</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>19</id>
     <type>Variable:stock</type>
-    <x>187.86</x>
-    <y>130.08</y>
+    <x>192.86</x>
+    <y>172.96</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>18</int>
     </ports>
-    <name>Safe</name>
-    <init>0.000000</init>
+    <name>:Safe</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>22</id>
     <type>Variable:flow</type>
-    <x>70</x>
-    <y>2.28882e-06</y>
+    <x>75</x>
+    <y>42.88</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>20</int>
      <int>21</int>
     </ports>
-    <name>Loan</name>
+    <name>:Loan</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>49.5</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>25</id>
     <type>Variable:flow</type>
-    <x>55</x>
-    <y>27</y>
+    <x>60</x>
+    <y>69.88</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>23</int>
      <int>24</int>
     </ports>
-    <name>IntLoan</name>
+    <name>:IntLoan</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>28</id>
     <type>Variable:flow</type>
-    <x>55</x>
-    <y>54</y>
+    <x>60</x>
+    <y>96.88</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>26</int>
      <int>27</int>
     </ports>
-    <name>FirmInt</name>
+    <name>:FirmInt</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>30</id>
     <type>Variable:stock</type>
-    <x>394.48</x>
-    <y>11</y>
+    <x>405.48</x>
+    <y>32.88</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>29</int>
     </ports>
-    <name>Vault</name>
-    <init>99.000000</init>
+    <name>:Vault</name>
+    <init>99</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>33</id>
     <type>Variable:flow</type>
-    <x>391.48</x>
-    <y>71</y>
+    <x>402.48</x>
+    <y>92.88</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>31</int>
      <int>32</int>
     </ports>
-    <name>Loan</name>
+    <name>:Loan</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>35</id>
     <type>Variable:parameter</type>
-    <x>182.48</x>
-    <y>212.951</y>
+    <x>193.48</x>
+    <y>234.831</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>34</int>
     </ports>
-    <name>rD</name>
+    <name>:rD</name>
     <init>0.01</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>37</id>
     <type>Variable:parameter</type>
-    <x>131.48</x>
-    <y>222.951</y>
+    <x>142.48</x>
+    <y>244.831</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>36</int>
     </ports>
-    <name>rL</name>
+    <name>:rL</name>
     <init>0.05</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>39</id>
     <type>Variable:parameter</type>
-    <x>89.48</x>
-    <y>216.951</y>
+    <x>100.48</x>
+    <y>238.831</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>38</int>
     </ports>
-    <name>\tau_\mathrm{vault}</name>
+    <name>:\tau_\mathrm{vault}</name>
     <init>0.5</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-5</min>
+     <max>5</max>
+     <step>0.05</step>
+    </slider>
    </Item>
    <Item>
     <id>62</id>
     <type>PlotWidget</type>
-    <x>587.48</x>
-    <y>83</y>
+    <x>598.48</x>
+    <y>104.88</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -324,8 +408,8 @@
    <Item>
     <id>63</id>
     <type>GodleyIcon</type>
-    <x>141.48</x>
-    <y>38.88</y>
+    <x>146.48</x>
+    <y>81.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -349,60 +433,60 @@
      </vector>
      <vector>
       <string>Initial&#32;Conditions</string>
-      <string>&#32;99</string>
-      <string>&#32;0</string>
-      <string>&#32;0</string>
-      <string>&#32;0</string>
+      <string>99</string>
+      <string>0</string>
+      <string>0</string>
+      <string>0</string>
      </vector>
      <vector>
-      <string>&#32;Lend&#32;from&#32;Vault</string>
-      <string>-2Loan</string>
+      <string>Lend&#32;from&#32;Vault</string>
+      <string>-Loan</string>
       <string></string>
-      <string>2Loan</string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Loan</string>
-      <string></string>
-      <string>2Loan</string>
-      <string></string>
+      <string>Loan</string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Charge&#32;Interest</string>
+      <string>Record&#32;Loan</string>
       <string></string>
-      <string>:IntLoan</string>
+      <string>Loan</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Pay&#32;Interest</string>
+      <string>Charge&#32;Interest</string>
       <string></string>
-      <string></string>
-      <string>-:IntLoan</string>
-      <string>:IntLoan</string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Interest&#32;Payment</string>
-      <string></string>
-      <string>-:IntLoan</string>
+      <string>IntLoan</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Pay&#32;Interest</string>
+      <string>Pay&#32;Interest</string>
       <string></string>
       <string></string>
-      <string>:FirmInt</string>
-      <string>-:FirmInt</string>
+      <string>-IntLoan</string>
+      <string>IntLoan</string>
+     </vector>
+     <vector>
+      <string>Record&#32;Interest&#32;Payment</string>
+      <string></string>
+      <string>-IntLoan</string>
+      <string></string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Pay&#32;Interest</string>
+      <string></string>
+      <string></string>
+      <string>FirmInt</string>
+      <string>-FirmInt</string>
      </vector>
     </data>
     <assetClasses>
-     <AssetClass>noAssetClass</AssetClass>
      <AssetClass>asset</AssetClass>
-     <AssetClass>noAssetClass</AssetClass>
-     <AssetClass>noAssetClass</AssetClass>
-     <AssetClass>noAssetClass</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
     </assetClasses>
    </Item>
   </items>

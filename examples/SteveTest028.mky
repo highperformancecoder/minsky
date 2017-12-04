@@ -113,8 +113,8 @@
     <coords>
      <float>37</float>
      <float>33</float>
-     <float>55.3981</float>
-     <float>0</float>
+     <float>55.4174</float>
+     <float>1.01197</float>
      <float>251</float>
      <float>72.75</float>
     </coords>
@@ -131,8 +131,8 @@
     <coords>
      <float>38</float>
      <float>164</float>
-     <float>123.49</float>
-     <float>242</float>
+     <float>123.506</float>
+     <float>239.362</float>
      <float>251</float>
      <float>147.75</float>
     </coords>
@@ -253,8 +253,15 @@
     <ports>
      <int>32</int>
     </ports>
-    <name>BS</name>
+    <name>:BS</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>35</id>
@@ -266,8 +273,15 @@
     <ports>
      <int>34</int>
     </ports>
-    <name>BV</name>
+    <name>:BV</name>
     <init>100</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>37</id>
@@ -279,8 +293,15 @@
     <ports>
      <int>36</int>
     </ports>
-    <name>FD</name>
+    <name>:FD</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>39</id>
@@ -292,8 +313,15 @@
     <ports>
      <int>38</int>
     </ports>
-    <name>FL</name>
+    <name>:FL</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>41</id>
@@ -305,8 +333,15 @@
     <ports>
      <int>40</int>
     </ports>
-    <name>WD</name>
+    <name>:WD</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>44</id>
@@ -319,8 +354,15 @@
      <int>42</int>
      <int>43</int>
     </ports>
-    <name>A</name>
+    <name>:A</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>47</id>
@@ -333,8 +375,15 @@
      <int>45</int>
      <int>46</int>
     </ports>
-    <name>B</name>
+    <name>:B</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>50</id>
@@ -347,8 +396,15 @@
      <int>48</int>
      <int>49</int>
     </ports>
-    <name>C</name>
+    <name>:C</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>53</id>
@@ -361,8 +417,15 @@
      <int>51</int>
      <int>52</int>
     </ports>
-    <name>D</name>
+    <name>:D</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>56</id>
@@ -375,8 +438,15 @@
      <int>54</int>
      <int>55</int>
     </ports>
-    <name>E</name>
+    <name>:E</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>59</id>
@@ -389,8 +459,15 @@
      <int>57</int>
      <int>58</int>
     </ports>
-    <name>F</name>
+    <name>:F</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>61</id>
@@ -402,8 +479,15 @@
     <ports>
      <int>60</int>
     </ports>
-    <name>BV</name>
+    <name>:BV</name>
     <init>100</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>100</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>63</id>
@@ -415,8 +499,15 @@
     <ports>
      <int>62</int>
     </ports>
-    <name>FL</name>
+    <name>:FL</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>65</id>
@@ -428,8 +519,15 @@
     <ports>
      <int>64</int>
     </ports>
-    <name>FD</name>
+    <name>:FD</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>67</id>
@@ -441,8 +539,15 @@
     <ports>
      <int>66</int>
     </ports>
-    <name>WD</name>
+    <name>:WD</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>69</id>
@@ -454,8 +559,15 @@
     <ports>
      <int>68</int>
     </ports>
-    <name>BS</name>
+    <name>:BS</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>72</id>
@@ -468,8 +580,15 @@
      <int>70</int>
      <int>71</int>
     </ports>
-    <name>A</name>
+    <name>:A</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>200</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>75</id>
@@ -482,8 +601,15 @@
      <int>73</int>
      <int>74</int>
     </ports>
-    <name>B</name>
+    <name>:B</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>78</id>
@@ -496,8 +622,15 @@
      <int>76</int>
      <int>77</int>
     </ports>
-    <name>C</name>
+    <name>:C</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>81</id>
@@ -510,8 +643,15 @@
      <int>79</int>
      <int>80</int>
     </ports>
-    <name>D</name>
+    <name>:D</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>84</id>
@@ -524,8 +664,15 @@
      <int>82</int>
      <int>83</int>
     </ports>
-    <name>E</name>
+    <name>:E</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>87</id>
@@ -538,8 +685,15 @@
      <int>85</int>
      <int>86</int>
     </ports>
-    <name>F</name>
+    <name>:F</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>89</id>
@@ -551,8 +705,15 @@
     <ports>
      <int>88</int>
     </ports>
-    <name>\tau_W</name>
+    <name>:\tau_W</name>
     <init>0.1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.01</step>
+    </slider>
    </Item>
    <Item>
     <id>91</id>
@@ -564,8 +725,15 @@
     <ports>
      <int>90</int>
     </ports>
-    <name>\tau_V</name>
+    <name>:\tau_V</name>
     <init>0.5</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-5</min>
+     <max>5</max>
+     <step>0.05</step>
+    </slider>
    </Item>
    <Item>
     <id>93</id>
@@ -577,8 +745,15 @@
     <ports>
      <int>92</int>
     </ports>
-    <name>rL</name>
+    <name>:rL</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>95</id>
@@ -590,8 +765,15 @@
     <ports>
      <int>94</int>
     </ports>
-    <name>\tau_S</name>
+    <name>:\tau_S</name>
     <init>0.25</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-2.5</min>
+     <max>2.5</max>
+     <step>0.025</step>
+    </slider>
    </Item>
    <Item>
     <id>97</id>
@@ -603,8 +785,15 @@
     <ports>
      <int>96</int>
     </ports>
-    <name>s</name>
+    <name>:s</name>
     <init>0.3</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>99</id>
@@ -616,8 +805,15 @@
     <ports>
      <int>98</int>
     </ports>
-    <name>1</name>
+    <name>:1</name>
     <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>101</id>
@@ -629,8 +825,15 @@
     <ports>
      <int>100</int>
     </ports>
-    <name>\tau_B</name>
+    <name>:\tau_B</name>
     <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-10</min>
+     <max>10</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>103</id>
@@ -642,8 +845,15 @@
     <ports>
      <int>102</int>
     </ports>
-    <name>\tau_L</name>
+    <name>:\tau_L</name>
     <init>7</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-70</min>
+     <max>70</max>
+     <step>0.7</step>
+    </slider>
    </Item>
    <Item>
     <id>126</id>
@@ -687,7 +897,7 @@
     <x>513</x>
     <y>119</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>5.53354e-322</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>71</int>
      <int>74</int>
@@ -706,93 +916,101 @@
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
-      <string>:BV</string>
-      <string>:FL</string>
-      <string>:FD</string>
-      <string>:WD</string>
-      <string>:BS</string>
+      <string>BV</string>
+      <string>FL</string>
+      <string>FD</string>
+      <string>WD</string>
+      <string>BS</string>
      </vector>
      <vector>
-      <string>&#32;Lend&#32;from&#32;Vault</string>
-      <string>-:A</string>
+      <string>Lend&#32;from&#32;Vault</string>
+      <string>-A</string>
       <string></string>
-      <string>:A</string>
-      <string></string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Loan</string>
-      <string></string>
-      <string>:A</string>
-      <string></string>
+      <string>A</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Compound&#32;Debt</string>
+      <string>Record&#32;Loan</string>
       <string></string>
-      <string>:B</string>
+      <string>A</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Service&#32;Debt</string>
+      <string>Compound&#32;Debt</string>
       <string></string>
-      <string></string>
-      <string>-:B</string>
-      <string></string>
-      <string>:B</string>
-     </vector>
-     <vector>
-      <string>&#32;Record&#32;Payment</string>
-      <string></string>
-      <string>-:B</string>
+      <string>B</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Pay&#32;Wages</string>
+      <string>Service&#32;Debt</string>
       <string></string>
       <string></string>
-      <string>-:C</string>
-      <string>:C</string>
+      <string>-B</string>
       <string></string>
+      <string>B</string>
      </vector>
      <vector>
-      <string>&#32;Consume</string>
+      <string>Record&#32;Payment</string>
       <string></string>
+      <string>-B</string>
       <string></string>
-      <string>:D</string>
-      <string>-:D</string>
-      <string></string>
-     </vector>
-     <vector>
-      <string>&#32;Consume</string>
-      <string></string>
-      <string></string>
-      <string>:E</string>
-      <string></string>
-      <string>-:E</string>
-     </vector>
-     <vector>
-      <string>&#32;Repay&#32;Debt</string>
-      <string>:F</string>
-      <string></string>
-      <string>-:F</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>&#32;Record&#32;Repayment</string>
+      <string>Pay&#32;Wages</string>
       <string></string>
-      <string>-:F</string>
+      <string></string>
+      <string>-C</string>
+      <string>C</string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Consume</string>
+      <string></string>
+      <string></string>
+      <string>D</string>
+      <string>-D</string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Consume</string>
+      <string></string>
+      <string></string>
+      <string>E</string>
+      <string></string>
+      <string>-E</string>
+     </vector>
+     <vector>
+      <string>Repay&#32;Debt</string>
+      <string>F</string>
+      <string></string>
+      <string>-F</string>
+      <string></string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Record&#32;Repayment</string>
+      <string></string>
+      <string>-F</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
     </data>
+    <assetClasses>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>asset</AssetClass>
+    </assetClasses>
    </Item>
   </items>
   <groups>

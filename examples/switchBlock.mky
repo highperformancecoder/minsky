@@ -2,34 +2,34 @@
   <schemaVersion>2</schemaVersion>
   <wires>
    <Wire>
+    <id>43</id>
+    <from>6</from>
+    <to>39</to>
+   </Wire>
+   <Wire>
     <id>44</id>
-    <from>5</from>
+    <from>8</from>
     <to>40</to>
    </Wire>
    <Wire>
     <id>45</id>
-    <from>7</from>
+    <from>10</from>
     <to>41</to>
    </Wire>
    <Wire>
     <id>46</id>
-    <from>9</from>
-    <to>42</to>
+    <from>0</from>
+    <to>38</to>
    </Wire>
    <Wire>
     <id>47</id>
-    <from>0</from>
-    <to>39</to>
-   </Wire>
-   <Wire>
-    <id>48</id>
-    <from>38</from>
+    <from>37</from>
     <to>3</to>
    </Wire>
    <Wire>
-    <id>49</id>
+    <id>48</id>
     <from>2</from>
-    <to>21</to>
+    <to>20</to>
    </Wire>
   </wires>
   <items>
@@ -45,7 +45,7 @@
     </ports>
    </Item>
    <Item>
-    <id>4</id>
+    <id>5</id>
     <type>IntOp</type>
     <x>161</x>
     <y>60</y>
@@ -54,49 +54,69 @@
     <ports>
      <int>2</int>
      <int>3</int>
+     <int>4</int>
     </ports>
-    <intVar>12</intVar>
+    <intVar>13</intVar>
    </Item>
    <Item>
-    <id>6</id>
+    <id>7</id>
     <type>VarConstant</type>
     <x>1</x>
     <y>21</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>5</int>
+     <int>6</int>
     </ports>
     <init>0.5</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-5</min>
+     <max>5</max>
+     <step>0.05</step>
+    </slider>
    </Item>
    <Item>
-    <id>8</id>
+    <id>9</id>
     <type>VarConstant</type>
     <x>0</x>
     <y>50</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>7</int>
+     <int>8</int>
     </ports>
     <init>1.5</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-15</min>
+     <max>15</max>
+     <step>0.15</step>
+    </slider>
    </Item>
    <Item>
     <id>11</id>
-    <type>Variable:flow</type>
-    <x>4</x>
-    <y>90</y>
+    <type>VarConstant</type>
+    <x>5</x>
+    <y>87</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>9</int>
      <int>10</int>
     </ports>
-    <name>2p1</name>
-    <init>2:p1</init>
+    <init>2.5</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-25</min>
+     <max>25</max>
+     <step>0.25</step>
+    </slider>
    </Item>
    <Item>
-    <id>12</id>
+    <id>13</id>
     <type>Variable:integral</type>
     <x>215</x>
     <y>60</y>
@@ -104,31 +124,27 @@
     <rotation>0</rotation>
     <ports>
      <int>2</int>
+     <int>12</int>
     </ports>
-    <name>int1</name>
+    <name>:int1</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>14</id>
-    <type>Variable:parameter</type>
-    <x>2</x>
-    <y>127</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>13</int>
-    </ports>
-    <name>p1</name>
-    <init>1.25</init>
-   </Item>
-   <Item>
-    <id>37</id>
+    <id>36</id>
     <type>PlotWidget</type>
     <x>340</x>
     <y>112</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>14</int>
      <int>15</int>
      <int>16</int>
      <int>17</int>
@@ -150,7 +166,6 @@
      <int>33</int>
      <int>34</int>
      <int>35</int>
-     <int>36</int>
     </ports>
     <width>150</width>
     <height>150</height>
@@ -159,18 +174,18 @@
    </Item>
    <Item>
     <detailedText>Enter&#32;your&#32;note&#32;here</detailedText>
-    <id>43</id>
+    <id>42</id>
     <type>SwitchIcon</type>
     <x>81</x>
     <y>62</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>37</int>
      <int>38</int>
      <int>39</int>
      <int>40</int>
      <int>41</int>
-     <int>42</int>
     </ports>
    </Item>
   </items>

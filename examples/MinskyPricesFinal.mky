@@ -2,1064 +2,1054 @@
   <schemaVersion>2</schemaVersion>
   <wires>
    <Wire>
-    <id>709</id>
-    <from>343</from>
-    <to>4</to>
-   </Wire>
-   <Wire>
-    <id>710</id>
-    <from>181</from>
+    <id>659</id>
+    <from>353</from>
     <to>5</to>
    </Wire>
    <Wire>
-    <id>711</id>
-    <from>3</from>
+    <id>660</id>
+    <from>187</from>
+    <to>6</to>
+   </Wire>
+   <Wire>
+    <id>661</id>
+    <from>4</from>
     <to>1</to>
    </Wire>
    <Wire>
-    <id>712</id>
-    <from>184</from>
-    <to>8</to>
-   </Wire>
-   <Wire>
-    <id>713</id>
-    <from>7</from>
-    <to>188</to>
-   </Wire>
-   <Wire>
-    <id>714</id>
-    <from>0</from>
+    <id>662</id>
+    <from>190</from>
     <to>9</to>
    </Wire>
    <Wire>
-    <id>715</id>
-    <from>345</from>
-    <to>15</to>
+    <id>663</id>
+    <from>8</from>
+    <to>194</to>
    </Wire>
    <Wire>
-    <id>716</id>
-    <from>191</from>
-    <to>16</to>
+    <id>664</id>
+    <from>0</from>
+    <to>10</to>
    </Wire>
    <Wire>
-    <id>717</id>
-    <from>14</from>
-    <to>12</to>
-   </Wire>
-   <Wire>
-    <id>718</id>
-    <from>11</from>
-    <to>20</to>
-   </Wire>
-   <Wire>
-    <id>719</id>
-    <from>187</from>
-    <to>19</to>
-   </Wire>
-   <Wire>
-    <id>720</id>
-    <from>195</from>
-    <to>26</to>
-   </Wire>
-   <Wire>
-    <id>721</id>
-    <from>25</from>
-    <to>23</to>
-   </Wire>
-   <Wire>
-    <id>722</id>
-    <from>29</from>
-    <to>27</to>
-   </Wire>
-   <Wire>
-    <id>723</id>
-    <from>22</from>
-    <to>34</to>
-   </Wire>
-   <Wire>
-    <id>724</id>
-    <from>222</from>
-    <to>35</to>
-   </Wire>
-   <Wire>
-    <id>725</id>
-    <from>33</from>
-    <to>226</to>
-   </Wire>
-   <Wire>
-    <id>726</id>
-    <from>347</from>
-    <to>38</to>
-   </Wire>
-   <Wire>
-    <id>727</id>
-    <from>228</from>
-    <to>39</to>
-   </Wire>
-   <Wire>
-    <id>728</id>
-    <from>37</from>
-    <to>202</to>
-   </Wire>
-   <Wire>
-    <id>729</id>
-    <from>349</from>
-    <to>42</to>
-   </Wire>
-   <Wire>
-    <id>730</id>
-    <from>233</from>
-    <to>43</to>
-   </Wire>
-   <Wire>
-    <id>731</id>
-    <from>41</from>
-    <to>205</to>
-   </Wire>
-   <Wire>
-    <id>732</id>
-    <from>351</from>
-    <to>46</to>
-   </Wire>
-   <Wire>
-    <id>733</id>
-    <from>235</from>
-    <to>47</to>
-   </Wire>
-   <Wire>
-    <id>734</id>
-    <from>45</from>
-    <to>211</to>
-   </Wire>
-   <Wire>
-    <id>735</id>
-    <from>237</from>
-    <to>50</to>
-   </Wire>
-   <Wire>
-    <id>736</id>
-    <from>353</from>
-    <to>51</to>
-   </Wire>
-   <Wire>
-    <id>737</id>
-    <from>49</from>
-    <to>217</to>
-   </Wire>
-   <Wire>
-    <id>738</id>
-    <from>239</from>
-    <to>54</to>
-   </Wire>
-   <Wire>
-    <id>739</id>
+    <id>665</id>
     <from>355</from>
-    <to>55</to>
+    <to>17</to>
    </Wire>
    <Wire>
-    <id>740</id>
-    <from>53</from>
-    <to>214</to>
-   </Wire>
-   <Wire>
-    <id>741</id>
-    <from>244</from>
-    <to>58</to>
-   </Wire>
-   <Wire>
-    <id>742</id>
-    <from>241</from>
-    <to>58</to>
-   </Wire>
-   <Wire>
-    <id>743</id>
-    <from>225</from>
-    <to>59</to>
-   </Wire>
-   <Wire>
-    <id>744</id>
-    <from>230</from>
-    <to>59</to>
-   </Wire>
-   <Wire>
-    <id>745</id>
-    <from>57</from>
-    <to>248</to>
-   </Wire>
-   <Wire>
-    <id>746</id>
-    <from>61</from>
-    <to>65</to>
-   </Wire>
-   <Wire>
-    <id>747</id>
-    <from>357</from>
-    <to>66</to>
-   </Wire>
-   <Wire>
-    <id>748</id>
-    <from>64</from>
-    <to>185</to>
-   </Wire>
-   <Wire>
-    <id>749</id>
-    <from>68</from>
-    <to>62</to>
-   </Wire>
-   <Wire>
-    <id>750</id>
-    <from>251</from>
-    <to>73</to>
-   </Wire>
-   <Wire>
-    <id>751</id>
-    <from>359</from>
-    <to>74</to>
-   </Wire>
-   <Wire>
-    <id>752</id>
-    <from>72</from>
-    <to>70</to>
-   </Wire>
-   <Wire>
-    <id>753</id>
-    <from>247</from>
-    <to>77</to>
-   </Wire>
-   <Wire>
-    <id>754</id>
-    <from>254</from>
-    <to>78</to>
-   </Wire>
-   <Wire>
-    <id>755</id>
-    <from>257</from>
-    <to>82</to>
-   </Wire>
-   <Wire>
-    <id>756</id>
-    <from>80</from>
-    <to>199</to>
-   </Wire>
-   <Wire>
-    <id>757</id>
-    <from>84</from>
-    <to>220</to>
-   </Wire>
-   <Wire>
-    <id>758</id>
-    <from>260</from>
-    <to>85</to>
-   </Wire>
-   <Wire>
-    <id>759</id>
+    <id>666</id>
     <from>198</from>
-    <to>89</to>
+    <to>18</to>
    </Wire>
    <Wire>
-    <id>760</id>
-    <from>262</from>
-    <to>90</to>
+    <id>667</id>
+    <from>16</from>
+    <to>13</to>
    </Wire>
    <Wire>
-    <id>761</id>
-    <from>88</from>
-    <to>266</to>
+    <id>668</id>
+    <from>12</from>
+    <to>22</to>
    </Wire>
    <Wire>
-    <id>762</id>
-    <from>265</from>
-    <to>69</to>
-    <coords>
-     <float>274.267</float>
-     <float>389.22</float>
-     <float>-3.2103</float>
-     <float>261.277</float>
-     <float>57.6814</float>
-     <float>158.938</float>
-    </coords>
+    <id>669</id>
+    <from>193</from>
+    <to>21</to>
    </Wire>
    <Wire>
-    <id>763</id>
-    <from>268</from>
-    <to>441</to>
+    <id>670</id>
+    <from>203</from>
+    <to>29</to>
    </Wire>
    <Wire>
-    <id>764</id>
-    <from>272</from>
-    <to>96</to>
+    <id>671</id>
+    <from>28</from>
+    <to>25</to>
    </Wire>
    <Wire>
-    <id>765</id>
-    <from>278</from>
-    <to>104</to>
-   </Wire>
-   <Wire>
-    <id>766</id>
-    <from>363</from>
-    <to>105</to>
-   </Wire>
-   <Wire>
-    <id>767</id>
-    <from>103</from>
-    <to>101</to>
-   </Wire>
-   <Wire>
-    <id>768</id>
-    <from>275</from>
-    <to>100</to>
-   </Wire>
-   <Wire>
-    <id>769</id>
-    <from>99</from>
-    <to>97</to>
-   </Wire>
-   <Wire>
-    <id>770</id>
-    <from>361</from>
-    <to>109</to>
-   </Wire>
-   <Wire>
-    <id>771</id>
-    <from>107</from>
-    <to>113</to>
-   </Wire>
-   <Wire>
-    <id>772</id>
-    <from>111</from>
-    <to>116</to>
-   </Wire>
-   <Wire>
-    <id>773</id>
-    <from>95</from>
-    <to>117</to>
-   </Wire>
-   <Wire>
-    <id>774</id>
-    <from>115</from>
-    <to>93</to>
-   </Wire>
-   <Wire>
-    <id>775</id>
-    <from>92</from>
-    <to>282</to>
-   </Wire>
-   <Wire>
-    <id>776</id>
-    <from>284</from>
-    <to>120</to>
-   </Wire>
-   <Wire>
-    <id>777</id>
-    <from>61</from>
-    <to>121</to>
-   </Wire>
-   <Wire>
-    <id>778</id>
-    <from>119</from>
-    <to>288</to>
-   </Wire>
-   <Wire>
-    <id>779</id>
-    <from>290</from>
-    <to>464</to>
-   </Wire>
-   <Wire>
-    <id>780</id>
-    <from>184</from>
-    <to>125</to>
-   </Wire>
-   <Wire>
-    <id>781</id>
-    <from>293</from>
-    <to>124</to>
-   </Wire>
-   <Wire>
-    <id>782</id>
-    <from>123</from>
-    <to>297</to>
-   </Wire>
-   <Wire>
-    <id>783</id>
-    <from>299</from>
-    <to>128</to>
-   </Wire>
-   <Wire>
-    <id>784</id>
-    <from>244</from>
-    <to>129</to>
-   </Wire>
-   <Wire>
-    <id>785</id>
-    <from>127</from>
-    <to>303</to>
-   </Wire>
-   <Wire>
-    <id>786</id>
-    <from>268</from>
-    <to>510</to>
-   </Wire>
-   <Wire>
-    <id>787</id>
-    <from>305</from>
-    <to>518</to>
-   </Wire>
-   <Wire>
-    <id>788</id>
-    <from>308</from>
-    <to>442</to>
-   </Wire>
-   <Wire>
-    <id>789</id>
-    <from>115</from>
-    <to>132</to>
-   </Wire>
-   <Wire>
-    <id>790</id>
-    <from>311</from>
-    <to>133</to>
-   </Wire>
-   <Wire>
-    <id>791</id>
-    <from>131</from>
-    <to>315</to>
-   </Wire>
-   <Wire>
-    <id>792</id>
-    <from>317</from>
-    <to>465</to>
-   </Wire>
-   <Wire>
-    <id>793</id>
-    <from>320</from>
-    <to>31</to>
-   </Wire>
-   <Wire>
-    <id>794</id>
-    <from>323</from>
-    <to>136</to>
-   </Wire>
-   <Wire>
-    <id>795</id>
-    <from>325</from>
-    <to>137</to>
-   </Wire>
-   <Wire>
-    <id>796</id>
-    <from>135</from>
-    <to>329</to>
-   </Wire>
-   <Wire>
-    <id>797</id>
-    <from>328</from>
-    <to>533</to>
-   </Wire>
-   <Wire>
-    <id>798</id>
-    <from>331</from>
-    <to>556</to>
-   </Wire>
-   <Wire>
-    <id>799</id>
-    <from>334</from>
-    <to>564</to>
-   </Wire>
-   <Wire>
-    <id>800</id>
-    <from>367</from>
-    <to>141</to>
-   </Wire>
-   <Wire>
-    <id>801</id>
-    <from>139</from>
-    <to>144</to>
-   </Wire>
-   <Wire>
-    <id>802</id>
-    <from>369</from>
-    <to>145</to>
-   </Wire>
-   <Wire>
-    <id>803</id>
-    <from>371</from>
-    <to>145</to>
-   </Wire>
-   <Wire>
-    <id>804</id>
-    <from>373</from>
-    <to>145</to>
-   </Wire>
-   <Wire>
-    <id>805</id>
-    <from>143</from>
-    <to>338</to>
-   </Wire>
-   <Wire>
-    <id>806</id>
-    <from>365</from>
-    <to>148</to>
-   </Wire>
-   <Wire>
-    <id>807</id>
-    <from>337</from>
-    <to>149</to>
-   </Wire>
-   <Wire>
-    <id>808</id>
-    <from>147</from>
-    <to>31</to>
-   </Wire>
-   <Wire>
-    <id>809</id>
-    <from>340</from>
-    <to>140</to>
-   </Wire>
-   <Wire>
-    <id>810</id>
-    <from>18</from>
-    <to>614</to>
-   </Wire>
-   <Wire>
-    <id>811</id>
-    <from>616</from>
+    <id>672</id>
+    <from>32</from>
     <to>30</to>
    </Wire>
    <Wire>
-    <id>812</id>
-    <from>76</from>
-    <to>659</to>
+    <id>673</id>
+    <from>24</from>
+    <to>37</to>
    </Wire>
    <Wire>
-    <id>813</id>
-    <from>661</from>
+    <id>674</id>
+    <from>230</from>
+    <to>38</to>
+   </Wire>
+   <Wire>
+    <id>675</id>
+    <from>36</from>
+    <to>234</to>
+   </Wire>
+   <Wire>
+    <id>676</id>
+    <from>357</from>
+    <to>41</to>
+   </Wire>
+   <Wire>
+    <id>677</id>
+    <from>236</from>
+    <to>42</to>
+   </Wire>
+   <Wire>
+    <id>678</id>
+    <from>40</from>
+    <to>210</to>
+   </Wire>
+   <Wire>
+    <id>679</id>
+    <from>359</from>
+    <to>45</to>
+   </Wire>
+   <Wire>
+    <id>680</id>
+    <from>241</from>
+    <to>46</to>
+   </Wire>
+   <Wire>
+    <id>681</id>
+    <from>44</from>
+    <to>213</to>
+   </Wire>
+   <Wire>
+    <id>682</id>
+    <from>361</from>
+    <to>49</to>
+   </Wire>
+   <Wire>
+    <id>683</id>
+    <from>243</from>
+    <to>50</to>
+   </Wire>
+   <Wire>
+    <id>684</id>
+    <from>48</from>
+    <to>219</to>
+   </Wire>
+   <Wire>
+    <id>685</id>
+    <from>245</from>
+    <to>53</to>
+   </Wire>
+   <Wire>
+    <id>686</id>
+    <from>363</from>
+    <to>54</to>
+   </Wire>
+   <Wire>
+    <id>687</id>
+    <from>52</from>
+    <to>225</to>
+   </Wire>
+   <Wire>
+    <id>688</id>
+    <from>247</from>
+    <to>57</to>
+   </Wire>
+   <Wire>
+    <id>689</id>
+    <from>365</from>
+    <to>58</to>
+   </Wire>
+   <Wire>
+    <id>690</id>
+    <from>56</from>
+    <to>222</to>
+   </Wire>
+   <Wire>
+    <id>691</id>
+    <from>252</from>
+    <to>61</to>
+   </Wire>
+   <Wire>
+    <id>692</id>
+    <from>249</from>
+    <to>61</to>
+   </Wire>
+   <Wire>
+    <id>693</id>
+    <from>233</from>
+    <to>62</to>
+   </Wire>
+   <Wire>
+    <id>694</id>
+    <from>238</from>
+    <to>62</to>
+   </Wire>
+   <Wire>
+    <id>695</id>
+    <from>60</from>
+    <to>256</to>
+   </Wire>
+   <Wire>
+    <id>696</id>
+    <from>64</from>
+    <to>69</to>
+   </Wire>
+   <Wire>
+    <id>697</id>
+    <from>367</from>
+    <to>70</to>
+   </Wire>
+   <Wire>
+    <id>698</id>
+    <from>68</from>
+    <to>191</to>
+   </Wire>
+   <Wire>
+    <id>699</id>
+    <from>72</from>
+    <to>65</to>
+   </Wire>
+   <Wire>
+    <id>700</id>
+    <from>260</from>
+    <to>77</to>
+   </Wire>
+   <Wire>
+    <id>701</id>
+    <from>369</from>
+    <to>78</to>
+   </Wire>
+   <Wire>
+    <id>702</id>
+    <from>76</from>
+    <to>74</to>
+   </Wire>
+   <Wire>
+    <id>703</id>
+    <from>255</from>
     <to>81</to>
    </Wire>
    <Wire>
-    <id>814</id>
-    <from>661</from>
-    <to>487</to>
+    <id>704</id>
+    <from>263</from>
+    <to>82</to>
    </Wire>
    <Wire>
-    <id>815</id>
-    <from>703</from>
+    <id>705</id>
+    <from>266</from>
     <to>86</to>
    </Wire>
    <Wire>
-    <id>816</id>
-    <from>574</from>
-    <to>580</to>
+    <id>706</id>
+    <from>84</from>
+    <to>207</to>
    </Wire>
    <Wire>
-    <id>817</id>
-    <from>578</from>
-    <to>584</to>
+    <id>707</id>
+    <from>88</from>
+    <to>228</to>
    </Wire>
    <Wire>
-    <id>818</id>
-    <from>586</from>
-    <to>583</to>
+    <id>708</id>
+    <from>269</from>
+    <to>89</to>
    </Wire>
    <Wire>
-    <id>819</id>
-    <from>582</from>
-    <to>591</to>
+    <id>709</id>
+    <from>206</from>
+    <to>93</to>
    </Wire>
    <Wire>
-    <id>820</id>
-    <from>590</from>
-    <to>595</to>
+    <id>710</id>
+    <from>271</from>
+    <to>94</to>
    </Wire>
    <Wire>
-    <id>821</id>
-    <from>597</from>
-    <to>594</to>
+    <id>711</id>
+    <from>92</from>
+    <to>275</to>
    </Wire>
    <Wire>
-    <id>822</id>
-    <from>593</from>
-    <to>602</to>
+    <id>712</id>
+    <from>274</from>
+    <to>73</to>
+    <coords>
+     <float>460</float>
+     <float>626.842</float>
+     <float>-3.78836</float>
+     <float>426.737</float>
+     <float>103.25</float>
+     <float>261.466</float>
+    </coords>
    </Wire>
    <Wire>
-    <id>823</id>
-    <from>605</from>
+    <id>713</id>
+    <from>277</from>
+    <to>391</to>
+   </Wire>
+   <Wire>
+    <id>714</id>
+    <from>282</from>
+    <to>101</to>
+   </Wire>
+   <Wire>
+    <id>715</id>
+    <from>288</from>
+    <to>109</to>
+   </Wire>
+   <Wire>
+    <id>716</id>
+    <from>373</from>
+    <to>110</to>
+   </Wire>
+   <Wire>
+    <id>717</id>
+    <from>108</from>
+    <to>106</to>
+   </Wire>
+   <Wire>
+    <id>718</id>
+    <from>285</from>
+    <to>105</to>
+   </Wire>
+   <Wire>
+    <id>719</id>
+    <from>104</from>
+    <to>102</to>
+   </Wire>
+   <Wire>
+    <id>720</id>
+    <from>371</from>
+    <to>114</to>
+   </Wire>
+   <Wire>
+    <id>721</id>
+    <from>112</from>
+    <to>118</to>
+   </Wire>
+   <Wire>
+    <id>722</id>
+    <from>116</from>
+    <to>121</to>
+   </Wire>
+   <Wire>
+    <id>723</id>
+    <from>100</from>
+    <to>122</to>
+   </Wire>
+   <Wire>
+    <id>724</id>
+    <from>120</from>
+    <to>97</to>
+   </Wire>
+   <Wire>
+    <id>725</id>
+    <from>96</from>
+    <to>292</to>
+   </Wire>
+   <Wire>
+    <id>726</id>
+    <from>294</from>
+    <to>125</to>
+   </Wire>
+   <Wire>
+    <id>727</id>
+    <from>64</from>
+    <to>126</to>
+   </Wire>
+   <Wire>
+    <id>728</id>
+    <from>124</from>
+    <to>298</to>
+   </Wire>
+   <Wire>
+    <id>729</id>
+    <from>300</from>
+    <to>414</to>
+   </Wire>
+   <Wire>
+    <id>730</id>
+    <from>190</from>
+    <to>130</to>
+   </Wire>
+   <Wire>
+    <id>731</id>
+    <from>303</from>
+    <to>129</to>
+   </Wire>
+   <Wire>
+    <id>732</id>
+    <from>128</from>
+    <to>307</to>
+   </Wire>
+   <Wire>
+    <id>733</id>
+    <from>309</from>
+    <to>133</to>
+   </Wire>
+   <Wire>
+    <id>734</id>
+    <from>252</from>
+    <to>134</to>
+   </Wire>
+   <Wire>
+    <id>735</id>
+    <from>132</from>
+    <to>313</to>
+   </Wire>
+   <Wire>
+    <id>736</id>
+    <from>277</from>
+    <to>460</to>
+   </Wire>
+   <Wire>
+    <id>737</id>
+    <from>315</from>
+    <to>468</to>
+   </Wire>
+   <Wire>
+    <id>738</id>
+    <from>318</from>
+    <to>392</to>
+   </Wire>
+   <Wire>
+    <id>739</id>
+    <from>120</from>
+    <to>137</to>
+   </Wire>
+   <Wire>
+    <id>740</id>
+    <from>321</from>
+    <to>138</to>
+   </Wire>
+   <Wire>
+    <id>741</id>
+    <from>136</from>
+    <to>325</to>
+   </Wire>
+   <Wire>
+    <id>742</id>
+    <from>327</from>
+    <to>415</to>
+   </Wire>
+   <Wire>
+    <id>743</id>
+    <from>330</from>
+    <to>34</to>
+   </Wire>
+   <Wire>
+    <id>744</id>
+    <from>333</from>
+    <to>141</to>
+   </Wire>
+   <Wire>
+    <id>745</id>
+    <from>335</from>
+    <to>142</to>
+   </Wire>
+   <Wire>
+    <id>746</id>
+    <from>140</from>
+    <to>339</to>
+   </Wire>
+   <Wire>
+    <id>747</id>
+    <from>338</from>
+    <to>483</to>
+   </Wire>
+   <Wire>
+    <id>748</id>
+    <from>341</from>
+    <to>506</to>
+   </Wire>
+   <Wire>
+    <id>749</id>
+    <from>344</from>
+    <to>514</to>
+   </Wire>
+   <Wire>
+    <id>750</id>
+    <from>377</from>
+    <to>146</to>
+   </Wire>
+   <Wire>
+    <id>751</id>
+    <from>144</from>
+    <to>149</to>
+   </Wire>
+   <Wire>
+    <id>752</id>
+    <from>379</from>
+    <to>150</to>
+   </Wire>
+   <Wire>
+    <id>753</id>
+    <from>381</from>
+    <to>150</to>
+   </Wire>
+   <Wire>
+    <id>754</id>
+    <from>383</from>
+    <to>150</to>
+   </Wire>
+   <Wire>
+    <id>755</id>
+    <from>148</from>
+    <to>348</to>
+   </Wire>
+   <Wire>
+    <id>756</id>
+    <from>375</from>
+    <to>153</to>
+   </Wire>
+   <Wire>
+    <id>757</id>
+    <from>347</from>
+    <to>154</to>
+   </Wire>
+   <Wire>
+    <id>758</id>
+    <from>152</from>
+    <to>34</to>
+   </Wire>
+   <Wire>
+    <id>759</id>
+    <from>350</from>
+    <to>145</to>
+   </Wire>
+   <Wire>
+    <id>760</id>
+    <from>20</from>
+    <to>564</to>
+   </Wire>
+   <Wire>
+    <id>761</id>
+    <from>566</from>
+    <to>33</to>
+   </Wire>
+   <Wire>
+    <id>762</id>
+    <from>80</from>
+    <to>609</to>
+   </Wire>
+   <Wire>
+    <id>763</id>
+    <from>611</from>
+    <to>85</to>
+   </Wire>
+   <Wire>
+    <id>764</id>
+    <from>611</from>
+    <to>437</to>
+   </Wire>
+   <Wire>
+    <id>765</id>
+    <from>653</from>
+    <to>90</to>
+   </Wire>
+   <Wire>
+    <id>766</id>
+    <from>524</from>
+    <to>530</to>
+   </Wire>
+   <Wire>
+    <id>767</id>
+    <from>528</from>
+    <to>534</to>
+   </Wire>
+   <Wire>
+    <id>768</id>
+    <from>536</from>
+    <to>533</to>
+   </Wire>
+   <Wire>
+    <id>769</id>
+    <from>532</from>
+    <to>541</to>
+   </Wire>
+   <Wire>
+    <id>770</id>
+    <from>540</from>
+    <to>545</to>
+   </Wire>
+   <Wire>
+    <id>771</id>
+    <from>547</from>
+    <to>544</to>
+   </Wire>
+   <Wire>
+    <id>772</id>
+    <from>543</from>
+    <to>552</to>
+   </Wire>
+   <Wire>
+    <id>773</id>
+    <from>555</from>
+    <to>525</to>
+   </Wire>
+   <Wire>
+    <id>774</id>
+    <from>555</from>
+    <to>548</to>
+   </Wire>
+   <Wire>
+    <id>775</id>
+    <from>557</from>
+    <to>526</to>
+   </Wire>
+   <Wire>
+    <id>776</id>
+    <from>557</from>
+    <to>553</to>
+    <coords>
+     <float>521.869</float>
+     <float>319.57</float>
+     <float>701.502</float>
+     <float>-205.285</float>
+     <float>725.609</float>
+     <float>261.04</float>
+    </coords>
+   </Wire>
+   <Wire>
+    <id>777</id>
+    <from>557</from>
+    <to>549</to>
+   </Wire>
+   <Wire>
+    <id>778</id>
+    <from>559</from>
+    <to>529</to>
+   </Wire>
+   <Wire>
+    <id>779</id>
+    <from>561</from>
+    <to>538</to>
+   </Wire>
+   <Wire>
+    <id>780</id>
+    <from>563</from>
+    <to>537</to>
+   </Wire>
+   <Wire>
+    <id>781</id>
+    <from>551</from>
+    <to>567</to>
+   </Wire>
+   <Wire>
+    <id>782</id>
+    <from>569</from>
     <to>575</to>
    </Wire>
    <Wire>
-    <id>824</id>
-    <from>605</from>
-    <to>598</to>
-   </Wire>
-   <Wire>
-    <id>825</id>
-    <from>607</from>
-    <to>576</to>
-   </Wire>
-   <Wire>
-    <id>826</id>
-    <from>607</from>
-    <to>603</to>
-    <coords>
-     <float>286.197</float>
-     <float>221.859</float>
-     <float>465.233</float>
-     <float>-325.651</float>
-     <float>489.937</float>
-     <float>163.329</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>827</id>
-    <from>607</from>
-    <to>599</to>
-   </Wire>
-   <Wire>
-    <id>828</id>
-    <from>609</from>
+    <id>783</id>
+    <from>573</from>
     <to>579</to>
    </Wire>
    <Wire>
-    <id>829</id>
-    <from>611</from>
-    <to>588</to>
+    <id>784</id>
+    <from>581</from>
+    <to>578</to>
    </Wire>
    <Wire>
-    <id>830</id>
-    <from>613</from>
-    <to>587</to>
+    <id>785</id>
+    <from>577</from>
+    <to>586</to>
    </Wire>
    <Wire>
-    <id>831</id>
-    <from>601</from>
-    <to>617</to>
+    <id>786</id>
+    <from>585</from>
+    <to>590</to>
    </Wire>
    <Wire>
-    <id>832</id>
-    <from>619</from>
-    <to>625</to>
+    <id>787</id>
+    <from>592</from>
+    <to>589</to>
    </Wire>
    <Wire>
-    <id>833</id>
-    <from>623</from>
-    <to>629</to>
+    <id>788</id>
+    <from>588</from>
+    <to>597</to>
    </Wire>
    <Wire>
-    <id>834</id>
-    <from>631</from>
-    <to>628</to>
+    <id>789</id>
+    <from>600</from>
+    <to>570</to>
    </Wire>
    <Wire>
-    <id>835</id>
-    <from>627</from>
-    <to>636</to>
+    <id>790</id>
+    <from>600</from>
+    <to>593</to>
+    <coords>
+     <float>1078.49</float>
+     <float>612.01</float>
+     <float>215.776</float>
+     <float>-2169.24</float>
+     <float>874.489</float>
+     <float>549.01</float>
+    </coords>
    </Wire>
    <Wire>
-    <id>836</id>
-    <from>635</from>
-    <to>640</to>
+    <id>791</id>
+    <from>602</from>
+    <to>571</to>
    </Wire>
    <Wire>
-    <id>837</id>
-    <from>642</from>
-    <to>639</to>
+    <id>792</id>
+    <from>602</from>
+    <to>594</to>
    </Wire>
    <Wire>
-    <id>838</id>
-    <from>638</from>
-    <to>647</to>
+    <id>793</id>
+    <from>602</from>
+    <to>598</to>
+    <coords>
+     <float>1063.49</float>
+     <float>669.01</float>
+     <float>196.374</float>
+     <float>-2233.92</float>
+     <float>770.989</float>
+     <float>592.76</float>
+    </coords>
    </Wire>
    <Wire>
-    <id>839</id>
-    <from>650</from>
+    <id>794</id>
+    <from>604</from>
+    <to>574</to>
+   </Wire>
+   <Wire>
+    <id>795</id>
+    <from>606</from>
+    <to>583</to>
+   </Wire>
+   <Wire>
+    <id>796</id>
+    <from>608</from>
+    <to>582</to>
+   </Wire>
+   <Wire>
+    <id>797</id>
+    <from>596</from>
+    <to>612</to>
+   </Wire>
+   <Wire>
+    <id>798</id>
+    <from>614</from>
     <to>620</to>
    </Wire>
    <Wire>
-    <id>840</id>
-    <from>650</from>
-    <to>643</to>
-    <coords>
-     <float>721.132</float>
-     <float>380.484</float>
-     <float>-136.754</float>
-     <float>-2581.73</float>
-     <float>517.132</float>
-     <float>317.484</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>841</id>
-    <from>652</from>
-    <to>621</to>
-   </Wire>
-   <Wire>
-    <id>842</id>
-    <from>652</from>
-    <to>644</to>
-   </Wire>
-   <Wire>
-    <id>843</id>
-    <from>652</from>
-    <to>648</to>
-    <coords>
-     <float>706.132</float>
-     <float>437.484</float>
-     <float>-158.766</float>
-     <float>-2581.87</float>
-     <float>413.632</float>
-     <float>361.234</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>844</id>
-    <from>654</from>
+    <id>799</id>
+    <from>618</from>
     <to>624</to>
    </Wire>
    <Wire>
-    <id>845</id>
+    <id>800</id>
+    <from>626</from>
+    <to>623</to>
+   </Wire>
+   <Wire>
+    <id>801</id>
+    <from>622</from>
+    <to>631</to>
+   </Wire>
+   <Wire>
+    <id>802</id>
+    <from>630</from>
+    <to>635</to>
+   </Wire>
+   <Wire>
+    <id>803</id>
+    <from>637</from>
+    <to>634</to>
+   </Wire>
+   <Wire>
+    <id>804</id>
+    <from>633</from>
+    <to>642</to>
+   </Wire>
+   <Wire>
+    <id>805</id>
+    <from>645</from>
+    <to>615</to>
+   </Wire>
+   <Wire>
+    <id>806</id>
+    <from>645</from>
+    <to>638</to>
+    <coords>
+     <float>774.447</float>
+     <float>99.1551</float>
+     <float>429.642</float>
+     <float>-152.977</float>
+     <float>1037.62</float>
+     <float>-26.9716</float>
+    </coords>
+   </Wire>
+   <Wire>
+    <id>807</id>
+    <from>647</from>
+    <to>616</to>
+   </Wire>
+   <Wire>
+    <id>808</id>
+    <from>647</from>
+    <to>639</to>
+    <coords>
+     <float>718.993</float>
+     <float>122.791</float>
+     <float>422.499</float>
+     <float>-154.938</float>
+     <float>1037.62</float>
+     <float>-8.9716</float>
+    </coords>
+   </Wire>
+   <Wire>
+    <id>809</id>
+    <from>647</from>
+    <to>643</to>
+    <coords>
+     <float>718.993</float>
+     <float>122.791</float>
+     <float>421.749</float>
+     <float>-155.64</float>
+     <float>1120.75</float>
+     <float>69.6535</float>
+    </coords>
+   </Wire>
+   <Wire>
+    <id>810</id>
+    <from>649</from>
+    <to>619</to>
+   </Wire>
+   <Wire>
+    <id>811</id>
+    <from>651</from>
+    <to>628</to>
+   </Wire>
+   <Wire>
+    <id>812</id>
+    <from>641</from>
+    <to>654</to>
+   </Wire>
+   <Wire>
+    <id>813</id>
     <from>656</from>
-    <to>633</to>
-   </Wire>
-   <Wire>
-    <id>846</id>
-    <from>658</from>
-    <to>632</to>
-   </Wire>
-   <Wire>
-    <id>847</id>
-    <from>646</from>
-    <to>662</to>
-   </Wire>
-   <Wire>
-    <id>848</id>
-    <from>664</from>
-    <to>670</to>
-   </Wire>
-   <Wire>
-    <id>849</id>
-    <from>668</from>
-    <to>674</to>
-   </Wire>
-   <Wire>
-    <id>850</id>
-    <from>676</from>
-    <to>673</to>
-   </Wire>
-   <Wire>
-    <id>851</id>
-    <from>672</from>
-    <to>681</to>
-   </Wire>
-   <Wire>
-    <id>852</id>
-    <from>680</from>
-    <to>685</to>
-   </Wire>
-   <Wire>
-    <id>853</id>
-    <from>687</from>
-    <to>684</to>
-   </Wire>
-   <Wire>
-    <id>854</id>
-    <from>683</from>
-    <to>692</to>
-   </Wire>
-   <Wire>
-    <id>855</id>
-    <from>695</from>
-    <to>665</to>
-   </Wire>
-   <Wire>
-    <id>856</id>
-    <from>695</from>
-    <to>688</to>
-    <coords>
-     <float>438.789</float>
-     <float>81.5882</float>
-     <float>96.959</float>
-     <float>-180.719</float>
-     <float>701.967</float>
-     <float>-44.5385</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>857</id>
-    <from>697</from>
-    <to>666</to>
-   </Wire>
-   <Wire>
-    <id>858</id>
-    <from>697</from>
-    <to>689</to>
-    <coords>
-     <float>383.335</float>
-     <float>105.225</float>
-     <float>88.2659</float>
-     <float>-180.71</float>
-     <float>701.967</float>
-     <float>-26.5385</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>859</id>
-    <from>697</from>
-    <to>693</to>
-    <coords>
-     <float>383.335</float>
-     <float>105.225</float>
-     <float>86.2229</float>
-     <float>-180.713</float>
-     <float>785.092</float>
-     <float>52.0866</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>860</id>
-    <from>699</from>
-    <to>669</to>
-   </Wire>
-   <Wire>
-    <id>861</id>
-    <from>701</from>
-    <to>678</to>
-   </Wire>
-   <Wire>
-    <id>862</id>
-    <from>691</from>
-    <to>704</to>
-   </Wire>
-   <Wire>
-    <id>863</id>
-    <from>706</from>
-    <to>677</to>
+    <to>627</to>
    </Wire>
   </wires>
   <items>
    <Item>
-    <id>2</id>
+    <id>3</id>
     <type>IntOp</type>
-    <x>210.822</x>
-    <y>196.854</y>
+    <x>345</x>
+    <y>317.036</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
      <int>1</int>
+     <int>2</int>
     </ports>
-    <intVar>180</intVar>
+    <intVar>186</intVar>
    </Item>
    <Item>
-    <id>6</id>
+    <id>7</id>
     <type>Operation:multiply</type>
-    <x>183.501</x>
-    <y>198.096</y>
+    <x>301</x>
+    <y>319.036</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>3</int>
      <int>4</int>
      <int>5</int>
+     <int>6</int>
     </ports>
    </Item>
    <Item>
-    <id>10</id>
+    <id>11</id>
     <type>Operation:divide</type>
-    <x>236.9</x>
-    <y>180.71</y>
+    <x>387</x>
+    <y>291.035</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>7</int>
      <int>8</int>
      <int>9</int>
+     <int>10</int>
     </ports>
    </Item>
    <Item>
-    <id>13</id>
+    <id>15</id>
     <type>IntOp</type>
-    <x>242.023</x>
-    <y>219.475</y>
+    <x>395.25</x>
+    <y>353.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>11</int>
      <int>12</int>
-    </ports>
-    <intVar>190</intVar>
-   </Item>
-   <Item>
-    <id>17</id>
-    <type>Operation:multiply</type>
-    <x>212.219</x>
-    <y>223.821</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>13</int>
      <int>14</int>
-     <int>15</int>
-     <int>16</int>
     </ports>
+    <intVar>197</intVar>
    </Item>
    <Item>
-    <id>21</id>
-    <type>Operation:divide</type>
-    <x>283.47</x>
-    <y>191.887</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>18</int>
-     <int>19</int>
-     <int>20</int>
-    </ports>
-   </Item>
-   <Item>
-    <id>24</id>
-    <type>IntOp</type>
-    <x>618.921</x>
-    <y>161.109</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>22</int>
-     <int>23</int>
-    </ports>
-    <intVar>194</intVar>
-   </Item>
-   <Item>
-    <id>28</id>
+    <id>19</id>
     <type>Operation:multiply</type>
-    <x>581.666</x>
-    <y>154.278</y>
+    <x>347.25</x>
+    <y>360.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>16</int>
+     <int>17</int>
+     <int>18</int>
+    </ports>
+   </Item>
+   <Item>
+    <id>23</id>
+    <type>Operation:divide</type>
+    <x>462</x>
+    <y>309.036</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>20</int>
+     <int>21</int>
+     <int>22</int>
+    </ports>
+   </Item>
+   <Item>
+    <id>27</id>
+    <type>IntOp</type>
+    <x>1002.25</x>
+    <y>259.467</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>24</int>
      <int>25</int>
      <int>26</int>
-     <int>27</int>
     </ports>
+    <intVar>202</intVar>
    </Item>
    <Item>
-    <id>32</id>
-    <type>Operation:add</type>
-    <x>548.435</x>
-    <y>160.049</y>
+    <id>31</id>
+    <type>Operation:multiply</type>
+    <x>942.249</x>
+    <y>248.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>28</int>
      <int>29</int>
      <int>30</int>
-     <int>31</int>
     </ports>
    </Item>
    <Item>
-    <id>36</id>
-    <type>Operation:multiply</type>
-    <x>653.072</x>
-    <y>169.181</y>
+    <id>35</id>
+    <type>Operation:add</type>
+    <x>888.729</x>
+    <y>257.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>32</int>
      <int>33</int>
      <int>34</int>
-     <int>35</int>
     </ports>
    </Item>
    <Item>
-    <id>40</id>
+    <id>39</id>
     <type>Operation:multiply</type>
-    <x>30.1331</x>
-    <y>12.9406</y>
+    <x>1057.25</x>
+    <y>272.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>36</int>
      <int>37</int>
      <int>38</int>
-     <int>39</int>
     </ports>
    </Item>
    <Item>
-    <id>44</id>
+    <id>43</id>
     <type>Operation:multiply</type>
-    <x>35.7214</x>
-    <y>44.6076</y>
+    <x>53.9995</x>
+    <y>20.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>40</int>
      <int>41</int>
      <int>42</int>
-     <int>43</int>
     </ports>
    </Item>
    <Item>
-    <id>48</id>
+    <id>47</id>
     <type>Operation:multiply</type>
-    <x>30.1331</x>
-    <y>70.7646</y>
+    <x>62.9995</x>
+    <y>71.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>44</int>
      <int>45</int>
      <int>46</int>
-     <int>47</int>
     </ports>
    </Item>
    <Item>
-    <id>52</id>
-    <type>Operation:divide</type>
-    <x>29.5125</x>
-    <y>99.9479</y>
+    <id>51</id>
+    <type>Operation:multiply</type>
+    <x>53.9995</x>
+    <y>113.967</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>48</int>
      <int>49</int>
      <int>50</int>
-     <int>51</int>
     </ports>
    </Item>
    <Item>
-    <id>56</id>
+    <id>55</id>
     <type>Operation:divide</type>
-    <x>27.6497</x>
-    <y>130.373</y>
+    <x>53</x>
+    <y>160.967</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>52</int>
      <int>53</int>
      <int>54</int>
-     <int>55</int>
     </ports>
    </Item>
    <Item>
-    <id>60</id>
-    <type>Operation:subtract</type>
-    <x>725.72</x>
-    <y>161.73</y>
+    <id>59</id>
+    <type>Operation:divide</type>
+    <x>50</x>
+    <y>209.967</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>56</int>
      <int>57</int>
      <int>58</int>
-     <int>59</int>
     </ports>
    </Item>
    <Item>
     <id>63</id>
-    <type>IntOp</type>
-    <x>112.871</x>
-    <y>162.971</y>
+    <type>Operation:subtract</type>
+    <x>1174.25</x>
+    <y>260.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>60</int>
      <int>61</int>
      <int>62</int>
     </ports>
-    <intVar>250</intVar>
    </Item>
    <Item>
     <id>67</id>
-    <type>Operation:divide</type>
-    <x>161.924</x>
-    <y>168.559</y>
+    <type>IntOp</type>
+    <x>187.25</x>
+    <y>262.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -1067,12 +1057,13 @@
      <int>65</int>
      <int>66</int>
     </ports>
+    <intVar>259</intVar>
    </Item>
    <Item>
     <id>71</id>
-    <type>Operation:subtract</type>
-    <x>65.6814</x>
-    <y>167.938</y>
+    <type>Operation:divide</type>
+    <x>266.249</x>
+    <y>271.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -1083,11 +1074,11 @@
    </Item>
    <Item>
     <id>75</id>
-    <type>Operation:multiply</type>
-    <x>71.1145</x>
-    <y>214.119</y>
+    <type>Operation:subtract</type>
+    <x>111.25</x>
+    <y>270.466</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>72</int>
      <int>73</int>
@@ -1096,9 +1087,9 @@
    </Item>
    <Item>
     <id>79</id>
-    <type>Operation:divide</type>
-    <x>724.323</x>
-    <y>358.794</y>
+    <type>Operation:multiply</type>
+    <x>120</x>
+    <y>344.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -1109,9 +1100,9 @@
    </Item>
    <Item>
     <id>83</id>
-    <type>Operation:multiply</type>
-    <x>382.816</x>
-    <y>377.422</y>
+    <type>Operation:divide</type>
+    <x>1172</x>
+    <y>577.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -1122,11 +1113,11 @@
    </Item>
    <Item>
     <id>87</id>
-    <type>Operation:divide</type>
-    <x>613.011</x>
-    <y>17.2368</y>
+    <type>Operation:multiply</type>
+    <x>621.999</x>
+    <y>607.842</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>360</rotation>
+    <rotation>180</rotation>
     <ports>
      <int>84</int>
      <int>85</int>
@@ -1136,10 +1127,10 @@
    <Item>
     <id>91</id>
     <type>Operation:divide</type>
-    <x>325.071</x>
-    <y>387.357</y>
+    <x>992.729</x>
+    <y>27.76</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
+    <rotation>360</rotation>
     <ports>
      <int>88</int>
      <int>89</int>
@@ -1147,1674 +1138,2098 @@
     </ports>
    </Item>
    <Item>
-    <id>94</id>
-    <type>IntOp</type>
-    <x>141.279</x>
-    <y>369.35</y>
+    <id>95</id>
+    <type>Operation:divide</type>
+    <x>528.999</x>
+    <y>623.842</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>180</rotation>
     <ports>
      <int>92</int>
      <int>93</int>
+     <int>94</int>
     </ports>
-    <intVar>271</intVar>
    </Item>
    <Item>
-    <id>98</id>
-    <type>Operation:subtract</type>
-    <x>77.9446</x>
-    <y>379.906</y>
+    <id>99</id>
+    <type>IntOp</type>
+    <x>233</x>
+    <y>594.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>95</int>
      <int>96</int>
      <int>97</int>
+     <int>98</int>
     </ports>
+    <intVar>281</intVar>
    </Item>
    <Item>
-    <id>102</id>
-    <type>Operation:divide</type>
-    <x>56.2118</x>
-    <y>409.088</y>
+    <id>103</id>
+    <type>Operation:subtract</type>
+    <x>131</x>
+    <y>611.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>99</int>
      <int>100</int>
      <int>101</int>
+     <int>102</int>
     </ports>
    </Item>
    <Item>
-    <id>106</id>
-    <type>Operation:multiply</type>
-    <x>35.1008</x>
-    <y>433.304</y>
+    <id>107</id>
+    <type>Operation:divide</type>
+    <x>95.9995</x>
+    <y>658.84</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>103</int>
      <int>104</int>
      <int>105</int>
+     <int>106</int>
     </ports>
    </Item>
    <Item>
-    <id>110</id>
-    <type>Operation:subtract</type>
-    <x>58.6954</x>
-    <y>342.03</y>
+    <id>111</id>
+    <type>Operation:multiply</type>
+    <x>62</x>
+    <y>697.84</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>107</int>
      <int>108</int>
      <int>109</int>
+     <int>110</int>
     </ports>
    </Item>
    <Item>
-    <id>114</id>
-    <type>Operation:divide</type>
-    <x>83.5328</x>
-    <y>337.062</y>
+    <id>115</id>
+    <type>Operation:subtract</type>
+    <x>99.9995</x>
+    <y>550.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>111</int>
      <int>112</int>
      <int>113</int>
+     <int>114</int>
     </ports>
    </Item>
    <Item>
-    <id>118</id>
-    <type>Operation:multiply</type>
-    <x>108.37</x>
-    <y>362.52</y>
+    <id>119</id>
+    <type>Operation:divide</type>
+    <x>140</x>
+    <y>542.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>115</int>
      <int>116</int>
      <int>117</int>
+     <int>118</int>
     </ports>
    </Item>
    <Item>
-    <id>122</id>
+    <id>123</id>
     <type>Operation:multiply</type>
-    <x>157.423</x>
-    <y>145.818</y>
+    <x>180</x>
+    <y>583.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>119</int>
      <int>120</int>
      <int>121</int>
+     <int>122</int>
     </ports>
    </Item>
    <Item>
-    <id>126</id>
+    <id>127</id>
     <type>Operation:multiply</type>
-    <x>233.175</x>
-    <y>155.753</y>
+    <x>259</x>
+    <y>234.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>123</int>
      <int>124</int>
      <int>125</int>
+     <int>126</int>
     </ports>
    </Item>
    <Item>
-    <id>130</id>
-    <type>Operation:divide</type>
-    <x>715.63</x>
-    <y>123.465</y>
+    <id>131</id>
+    <type>Operation:multiply</type>
+    <x>381</x>
+    <y>250.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>127</int>
      <int>128</int>
      <int>129</int>
+     <int>130</int>
     </ports>
    </Item>
    <Item>
-    <id>134</id>
+    <id>135</id>
     <type>Operation:divide</type>
-    <x>125.594</x>
-    <y>392.894</y>
+    <x>1158</x>
+    <y>198.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>131</int>
      <int>132</int>
      <int>133</int>
+     <int>134</int>
     </ports>
    </Item>
    <Item>
-    <id>138</id>
+    <id>139</id>
     <type>Operation:divide</type>
-    <x>296.968</x>
-    <y>48.9038</y>
+    <x>207.74</x>
+    <y>632.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>135</int>
      <int>136</int>
      <int>137</int>
+     <int>138</int>
     </ports>
    </Item>
    <Item>
-    <id>142</id>
+    <id>143</id>
     <type>Operation:divide</type>
-    <x>439.159</x>
-    <y>191.716</y>
+    <x>483.74</x>
+    <y>78.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>139</int>
      <int>140</int>
      <int>141</int>
+     <int>142</int>
     </ports>
    </Item>
    <Item>
-    <id>146</id>
-    <type>Operation:subtract</type>
-    <x>466.479</x>
-    <y>204.134</y>
+    <id>147</id>
+    <type>Operation:divide</type>
+    <x>712.739</x>
+    <y>308.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>143</int>
      <int>144</int>
      <int>145</int>
+     <int>146</int>
     </ports>
    </Item>
    <Item>
-    <id>150</id>
-    <type>Operation:multiply</type>
-    <x>532.297</x>
-    <y>197.304</y>
+    <id>151</id>
+    <type>Operation:subtract</type>
+    <x>756.739</x>
+    <y>328.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>147</int>
      <int>148</int>
      <int>149</int>
+     <int>150</int>
     </ports>
    </Item>
    <Item>
-    <id>153</id>
-    <type>Variable:flow</type>
-    <x>-15.004</x>
-    <y>-29.4771</y>
+    <id>155</id>
+    <type>Operation:multiply</type>
+    <x>862.739</x>
+    <y>317.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>151</int>
      <int>152</int>
-    </ports>
-    <name>Invest</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>156</id>
-    <type>Variable:flow</type>
-    <x>-5.004</x>
-    <y>-2.4771</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>153</int>
      <int>154</int>
-     <int>155</int>
     </ports>
-    <name>IntL</name>
-    <init>0</init>
    </Item>
    <Item>
-    <id>159</id>
+    <id>158</id>
     <type>Variable:flow</type>
-    <x>-10.004</x>
-    <y>24.5229</y>
+    <x>87.509</x>
+    <y>4.57764e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>156</int>
      <int>157</int>
-     <int>158</int>
     </ports>
-    <name>IntDF</name>
+    <name>:Invest</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>162</id>
+    <id>161</id>
     <type>Variable:flow</type>
-    <x>-10.004</x>
-    <y>78.5229</y>
+    <x>97.509</x>
+    <y>27</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>159</int>
      <int>160</int>
-     <int>161</int>
     </ports>
-    <name>Wages</name>
+    <name>:IntL</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>165</id>
+    <id>164</id>
     <type>Variable:flow</type>
-    <x>-10.004</x>
-    <y>105.523</y>
+    <x>92.509</x>
+    <y>54</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>162</int>
      <int>163</int>
-     <int>164</int>
     </ports>
-    <name>ConsB</name>
+    <name>:IntDF</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>168</id>
+    <id>167</id>
     <type>Variable:flow</type>
-    <x>-10.004</x>
-    <y>132.523</y>
+    <x>92.509</x>
+    <y>108</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>165</int>
      <int>166</int>
-     <int>167</int>
     </ports>
-    <name>ConsW</name>
+    <name>:Wages</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>100</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>171</id>
+    <id>170</id>
     <type>Variable:flow</type>
-    <x>-10.004</x>
-    <y>159.523</y>
+    <x>92.509</x>
+    <y>135</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>168</int>
      <int>169</int>
-     <int>170</int>
     </ports>
-    <name>Repay</name>
+    <name>:ConsB</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>173</id>
-    <type>Variable:stock</type>
-    <x>36.716</x>
-    <y>241.683</y>
+    <type>Variable:flow</type>
+    <x>92.509</x>
+    <y>162</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>90</rotation>
+    <rotation>0</rotation>
     <ports>
+     <int>171</int>
      <int>172</int>
     </ports>
-    <name>LF</name>
-    <init>0.000000</init>
+    <name>:ConsW</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>175</id>
-    <type>Variable:stock</type>
-    <x>63.716</x>
-    <y>241.683</y>
+    <id>176</id>
+    <type>Variable:flow</type>
+    <x>92.509</x>
+    <y>189</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>90</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>174</int>
+     <int>175</int>
     </ports>
-    <name>DF</name>
-    <init>-0.000000</init>
+    <name>:Repay</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>177</id>
+    <id>178</id>
     <type>Variable:stock</type>
-    <x>90.716</x>
-    <y>241.683</y>
+    <x>139.229</x>
+    <y>271.16</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
-     <int>176</int>
+     <int>177</int>
     </ports>
-    <name>DW</name>
-    <init>0.000000</init>
-   </Item>
-   <Item>
-    <id>179</id>
-    <type>Variable:stock</type>
-    <x>117.716</x>
-    <y>241.683</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>90</rotation>
-    <ports>
-     <int>178</int>
-    </ports>
-    <name>EB</name>
-    <init>-0.000000</init>
+    <name>:LF</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>180</id>
+    <type>Variable:stock</type>
+    <x>166.229</x>
+    <y>271.16</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>90</rotation>
+    <ports>
+     <int>179</int>
+    </ports>
+    <name>:DF</name>
+    <init>-0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>182</id>
+    <type>Variable:stock</type>
+    <x>193.229</x>
+    <y>271.16</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>90</rotation>
+    <ports>
+     <int>181</int>
+    </ports>
+    <name>:DW</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>184</id>
+    <type>Variable:stock</type>
+    <x>220.229</x>
+    <y>271.16</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>90</rotation>
+    <ports>
+     <int>183</int>
+    </ports>
+    <name>:EB</name>
+    <init>-0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>186</id>
     <type>Variable:integral</type>
-    <x>249.822</x>
-    <y>196.854</y>
+    <x>384</x>
+    <y>317.036</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
-    </ports>
-    <name>a</name>
-    <init>1</init>
-   </Item>
-   <Item>
-    <id>183</id>
-    <type>Variable:integral</type>
-    <x>167.978</x>
-    <y>204.926</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>181</int>
-     <int>182</int>
-    </ports>
-    <name>a</name>
-    <init>1</init>
-   </Item>
-   <Item>
-    <id>186</id>
-    <type>Variable:flow</type>
-    <x>206.01</x>
-    <y>175.39</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>184</int>
      <int>185</int>
     </ports>
-    <name>Y_R</name>
-    <init>0</init>
+    <name>:a</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>189</id>
-    <type>Variable:flow</type>
-    <x>257.546</x>
-    <y>182.219</y>
+    <type>Variable:integral</type>
+    <x>276</x>
+    <y>330.035</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>187</int>
      <int>188</int>
     </ports>
-    <name>L</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>190</id>
-    <type>Variable:integral</type>
-    <x>281.023</x>
-    <y>219.475</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>11</int>
-    </ports>
-    <name>N</name>
-    <init>120</init>
-   </Item>
-   <Item>
-    <id>193</id>
-    <type>Variable:integral</type>
-    <x>190.487</x>
-    <y>231.893</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>191</int>
-     <int>192</int>
-    </ports>
-    <name>N</name>
-    <init>120</init>
-   </Item>
-   <Item>
-    <id>194</id>
-    <type>Variable:integral</type>
-    <x>657.921</x>
-    <y>161.109</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>22</int>
-    </ports>
-    <name>W</name>
+    <name>:a</name>
     <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>192</id>
+    <type>Variable:flow</type>
+    <x>337.25</x>
+    <y>282.467</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>190</int>
+     <int>191</int>
+    </ports>
+    <name>:Y_R</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>195</id>
+    <type>Variable:flow</type>
+    <x>420.25</x>
+    <y>293.466</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>193</int>
+     <int>194</int>
+    </ports>
+    <name>:L</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>197</id>
     <type>Variable:integral</type>
-    <x>547.516</x>
-    <y>141.239</y>
+    <x>434.25</x>
+    <y>353.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>195</int>
+     <int>12</int>
      <int>196</int>
     </ports>
-    <name>W</name>
-    <init>1</init>
+    <name>:N</name>
+    <init>120</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>200</id>
-    <type>Variable:flow</type>
-    <x>353.633</x>
-    <y>376.801</y>
+    <type>Variable:integral</type>
+    <x>312.25</x>
+    <y>373.466</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>198</int>
      <int>199</int>
     </ports>
-    <name>Invest</name>
-    <init>0</init>
+    <name>:N</name>
+    <init>120</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>203</id>
-    <type>Variable:flow</type>
-    <x>59.317</x>
-    <y>9.83603</y>
+    <id>202</id>
+    <type>Variable:integral</type>
+    <x>1041.25</x>
+    <y>259.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>24</int>
      <int>201</int>
-     <int>202</int>
     </ports>
-    <name>IntL</name>
-    <init>0</init>
+    <name>:W</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>206</id>
-    <type>Variable:flow</type>
-    <x>58.6954</x>
-    <y>40.8821</y>
+    <id>205</id>
+    <type>Variable:integral</type>
+    <x>887.249</x>
+    <y>227.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>203</int>
      <int>204</int>
-     <int>205</int>
     </ports>
-    <name>IntDF</name>
-    <init>0</init>
+    <name>:W</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>209</id>
+    <id>208</id>
     <type>Variable:flow</type>
-    <x>-10.004</x>
-    <y>51.5229</y>
+    <x>574.999</x>
+    <y>606.842</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>180</rotation>
     <ports>
+     <int>206</int>
      <int>207</int>
-     <int>208</int>
     </ports>
-    <name>IntDW</name>
+    <name>:Invest</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>212</id>
+    <id>211</id>
     <type>Variable:flow</type>
-    <x>58.6954</x>
-    <y>69.5227</y>
+    <x>101</x>
+    <y>15.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>209</int>
      <int>210</int>
-     <int>211</int>
     </ports>
-    <name>IntDW</name>
+    <name>:IntL</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>215</id>
+    <id>214</id>
     <type>Variable:flow</type>
-    <x>56.833</x>
-    <y>124.785</y>
+    <x>99.9995</x>
+    <y>65.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>212</int>
      <int>213</int>
-     <int>214</int>
     </ports>
-    <name>ConsW</name>
+    <name>:IntDF</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>218</id>
+    <id>217</id>
     <type>Variable:flow</type>
-    <x>55.5909</x>
-    <y>97.4642</y>
+    <x>92.509</x>
+    <y>81</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>215</int>
      <int>216</int>
-     <int>217</int>
     </ports>
-    <name>ConsB</name>
+    <name>:IntDW</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>221</id>
+    <id>220</id>
     <type>Variable:flow</type>
-    <x>641.572</x>
-    <y>16.6159</y>
+    <x>99.9995</x>
+    <y>111.967</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>218</int>
      <int>219</int>
-     <int>220</int>
     </ports>
-    <name>Repay</name>
+    <name>:IntDW</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>224</id>
+    <id>223</id>
     <type>Variable:flow</type>
-    <x>629.477</x>
-    <y>174.769</y>
+    <x>97</x>
+    <y>200.967</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>221</int>
      <int>222</int>
-     <int>223</int>
     </ports>
-    <name>L</name>
+    <name>:ConsW</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>227</id>
+    <id>226</id>
     <type>Variable:flow</type>
-    <x>687.222</x>
-    <y>169.181</y>
+    <x>94.9995</x>
+    <y>156.967</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>224</int>
      <int>225</int>
-     <int>226</int>
     </ports>
-    <name>Wages</name>
+    <name>:ConsB</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>229</id>
-    <type>Variable:stock</type>
-    <x>7.15921</x>
-    <y>19.1498</y>
+    <type>Variable:flow</type>
+    <x>1038.73</x>
+    <y>26.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>227</int>
      <int>228</int>
     </ports>
-    <name>LF</name>
-    <init>0.000000</init>
+    <name>:Repay</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>232</id>
     <type>Variable:flow</type>
-    <x>693.432</x>
-    <y>184.082</y>
+    <x>1019.25</x>
+    <y>281.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>230</int>
      <int>231</int>
     </ports>
-    <name>IntL</name>
+    <name>:L</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>234</id>
-    <type>Variable:stock</type>
-    <x>13.9893</x>
-    <y>50.8168</y>
+    <id>235</id>
+    <type>Variable:flow</type>
+    <x>1112.25</x>
+    <y>272.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>233</int>
+     <int>234</int>
     </ports>
-    <name>DF</name>
-    <init>-0.000000</init>
+    <name>:Wages</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>236</id>
+    <id>237</id>
     <type>Variable:stock</type>
-    <x>7.15921</x>
-    <y>77.5941</y>
+    <x>16.9998</x>
+    <y>30.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>235</int>
+     <int>236</int>
     </ports>
-    <name>DW</name>
-    <init>0.000000</init>
-   </Item>
-   <Item>
-    <id>238</id>
-    <type>Variable:stock</type>
-    <x>2.81281</x>
-    <y>94.9805</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>237</int>
-    </ports>
-    <name>EB</name>
-    <init>-0.000000</init>
+    <name>:LF</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>240</id>
-    <type>Variable:stock</type>
-    <x>2.19199</x>
-    <y>127.268</y>
+    <type>Variable:flow</type>
+    <x>1122.25</x>
+    <y>296.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>238</int>
      <int>239</int>
     </ports>
-    <name>DW</name>
-    <init>0.000000</init>
+    <name>:IntL</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>243</id>
-    <type>Variable:flow</type>
-    <x>690.327</x>
-    <y>151.794</y>
+    <id>242</id>
+    <type>Variable:stock</type>
+    <x>27.9998</x>
+    <y>81.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>241</int>
-     <int>242</int>
     </ports>
-    <name>IntDF</name>
-    <init>0</init>
+    <name>:DF</name>
+    <init>-0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>246</id>
-    <type>Variable:flow</type>
-    <x>695.295</x>
-    <y>134.409</y>
+    <id>244</id>
+    <type>Variable:stock</type>
+    <x>16.9998</x>
+    <y>124.966</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>244</int>
-     <int>245</int>
+     <int>243</int>
     </ports>
-    <name>Y</name>
+    <name>:DW</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>249</id>
-    <type>Variable:flow</type>
-    <x>749.936</x>
-    <y>161.109</y>
+    <id>246</id>
+    <type>Variable:stock</type>
+    <x>9.99976</x>
+    <y>152.967</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>245</int>
+    </ports>
+    <name>:EB</name>
+    <init>-0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>248</id>
+    <type>Variable:stock</type>
+    <x>9</x>
+    <y>204.967</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>247</int>
-     <int>248</int>
     </ports>
-    <name>\Pi</name>
+    <name>:DW</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>250</id>
-    <type>Variable:integral</type>
-    <x>155.871</x>
-    <y>162.971</y>
+    <id>251</id>
+    <type>Variable:flow</type>
+    <x>1117.25</x>
+    <y>244.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>61</int>
+     <int>249</int>
+     <int>250</int>
     </ports>
-    <name>K_R</name>
-    <init>300</init>
-   </Item>
-   <Item>
-    <id>253</id>
-    <type>Variable:integral</type>
-    <x>98.435</x>
-    <y>209.773</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
-    <ports>
-     <int>251</int>
-     <int>252</int>
-    </ports>
-    <name>K_R</name>
-    <init>300</init>
-   </Item>
-   <Item>
-    <id>256</id>
-    <type>Variable:flow</type>
-    <x>751.022</x>
-    <y>369.35</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
-    <ports>
-     <int>254</int>
-     <int>255</int>
-    </ports>
-    <name>K</name>
+    <name>:IntDF</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>254</id>
+    <type>Variable:flow</type>
+    <x>1125.25</x>
+    <y>216.467</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>252</int>
+     <int>253</int>
+    </ports>
+    <name>:Y</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>257</id>
+    <type>Variable:flow</type>
+    <x>1213.25</x>
+    <y>259.467</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>255</int>
+     <int>256</int>
+    </ports>
+    <name>:\Pi</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>259</id>
-    <type>Variable:flow</type>
-    <x>400.202</x>
-    <y>396.049</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
-    <ports>
-     <int>257</int>
-     <int>258</int>
-    </ports>
-    <name>Y</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>261</id>
-    <type>Variable:stock</type>
-    <x>579.481</x>
-    <y>2.33469</y>
+    <type>Variable:integral</type>
+    <x>230.25</x>
+    <y>262.467</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>64</int>
+     <int>258</int>
+    </ports>
+    <name>:K_R</name>
+    <init>300</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>262</id>
+    <type>Variable:integral</type>
+    <x>164</x>
+    <y>337.842</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>180</rotation>
+    <ports>
      <int>260</int>
+     <int>261</int>
     </ports>
-    <name>LF</name>
-    <init>0.000000</init>
+    <name>:K_R</name>
+    <init>300</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>264</id>
+    <id>265</id>
     <type>Variable:flow</type>
-    <x>352.392</x>
-    <y>396.049</y>
+    <x>1215</x>
+    <y>594.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>262</int>
      <int>263</int>
+     <int>264</int>
     </ports>
-    <name>P_K</name>
+    <name>:K</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>267</id>
+    <id>268</id>
     <type>Variable:flow</type>
-    <x>295.267</x>
-    <y>389.22</y>
+    <x>649.999</x>
+    <y>637.84</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>265</int>
      <int>266</int>
+     <int>267</int>
     </ports>
-    <name>I_R</name>
+    <name>:Y</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>270</id>
-    <type>Variable:flow</type>
-    <x>413.08</x>
-    <y>259.396</y>
+    <type>Variable:stock</type>
+    <x>938.729</x>
+    <y>3.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>268</int>
      <int>269</int>
     </ports>
-    <name>\lambda</name>
+    <name>:LF</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>271</id>
-    <type>Variable:integral</type>
-    <x>180.279</x>
-    <y>369.35</y>
+    <id>273</id>
+    <type>Variable:flow</type>
+    <x>573</x>
+    <y>637.84</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>180</rotation>
     <ports>
-     <int>92</int>
-    </ports>
-    <name>P</name>
-    <init>1</init>
-   </Item>
-   <Item>
-    <id>274</id>
-    <type>Variable:integral</type>
-    <x>58.6954</x>
-    <y>371.834</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>271</int>
      <int>272</int>
-     <int>273</int>
     </ports>
-    <name>P</name>
-    <init>1</init>
+    <name>:P_K</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>277</id>
-    <type>Variable:integral</type>
-    <x>32.6172</x>
-    <y>399.153</y>
+    <id>276</id>
+    <type>Variable:flow</type>
+    <x>481</x>
+    <y>626.842</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>180</rotation>
     <ports>
+     <int>274</int>
      <int>275</int>
-     <int>276</int>
     </ports>
-    <name>W</name>
-    <init>1</init>
+    <name>:I_R</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>280</id>
-    <type>Variable:integral</type>
-    <x>12.7477</x>
-    <y>423.99</y>
+    <id>279</id>
+    <type>Variable:flow</type>
+    <x>670.739</x>
+    <y>417.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>277</int>
      <int>278</int>
-     <int>279</int>
     </ports>
-    <name>a</name>
-    <init>1</init>
+    <name>:\lambda</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>283</id>
-    <type>Variable:flow</type>
-    <x>184.122</x>
-    <y>370.592</y>
+    <id>281</id>
+    <type>Variable:integral</type>
+    <x>272</x>
+    <y>594.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>281</int>
+     <int>96</int>
+     <int>280</int>
+    </ports>
+    <name>:P</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>284</id>
+    <type>Variable:integral</type>
+    <x>99.9995</x>
+    <y>598.842</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
      <int>282</int>
+     <int>283</int>
     </ports>
-    <name>P_K</name>
-    <init>0</init>
+    <name>:P</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>286</id>
-    <type>Variable:flow</type>
-    <x>122.651</x>
-    <y>142.093</y>
+    <id>287</id>
+    <type>Variable:integral</type>
+    <x>58</x>
+    <y>642.84</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>284</int>
      <int>285</int>
+     <int>286</int>
     </ports>
-    <name>P_K</name>
-    <init>0</init>
+    <name>:W</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>289</id>
-    <type>Variable:flow</type>
-    <x>183.501</x>
-    <y>145.197</y>
+    <id>290</id>
+    <type>Variable:integral</type>
+    <x>26</x>
+    <y>682.84</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>287</int>
      <int>288</int>
+     <int>289</int>
     </ports>
-    <name>K</name>
-    <init>0</init>
+    <name>:a</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>292</id>
+    <id>293</id>
     <type>Variable:flow</type>
-    <x>242.948</x>
-    <y>242.01</y>
+    <x>302</x>
+    <y>596.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>290</int>
      <int>291</int>
+     <int>292</int>
     </ports>
-    <name>\pi_r</name>
+    <name>:P_K</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>295</id>
-    <type>Variable:integral</type>
-    <x>207.717</x>
-    <y>145.197</y>
+    <id>296</id>
+    <type>Variable:flow</type>
+    <x>203</x>
+    <y>228.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>293</int>
      <int>294</int>
+     <int>295</int>
     </ports>
-    <name>P</name>
-    <init>1</init>
+    <name>:P_K</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>298</id>
+    <id>299</id>
     <type>Variable:flow</type>
-    <x>256.149</x>
-    <y>154.511</y>
+    <x>301</x>
+    <y>233.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>296</int>
      <int>297</int>
+     <int>298</int>
     </ports>
-    <name>Y</name>
+    <name>:K</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>301</id>
+    <id>302</id>
     <type>Variable:flow</type>
-    <x>685.204</x>
-    <y>116.014</y>
+    <x>396.74</x>
+    <y>389.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>299</int>
      <int>300</int>
+     <int>301</int>
     </ports>
-    <name>Wages</name>
+    <name>:\pi_r</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>304</id>
-    <type>Variable:flow</type>
-    <x>746.676</x>
-    <y>122.844</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>302</int>
-     <int>303</int>
-    </ports>
-    <name>\omega</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>307</id>
-    <type>Variable:flow</type>
-    <x>604.486</x>
-    <y>318.435</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
-    <ports>
-     <int>305</int>
-     <int>306</int>
-    </ports>
-    <name>\omega</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>310</id>
-    <type>Variable:flow</type>
-    <x>404.387</x>
-    <y>288.58</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>360</rotation>
-    <ports>
-     <int>308</int>
-     <int>309</int>
-    </ports>
-    <name>\omega</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>313</id>
+    <id>305</id>
     <type>Variable:integral</type>
-    <x>101.378</x>
-    <y>404.692</y>
+    <x>340</x>
+    <y>233.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>311</int>
-     <int>312</int>
+     <int>303</int>
+     <int>304</int>
     </ports>
-    <name>P</name>
+    <name>:P</name>
     <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>316</id>
+    <id>308</id>
     <type>Variable:flow</type>
-    <x>153.536</x>
-    <y>392.894</y>
+    <x>418</x>
+    <y>248.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>314</int>
-     <int>315</int>
+     <int>306</int>
+     <int>307</int>
     </ports>
-    <name>inf_r</name>
+    <name>:Y</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>319</id>
+    <id>311</id>
     <type>Variable:flow</type>
-    <x>241.706</x>
-    <y>265.605</y>
+    <x>1109</x>
+    <y>186.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>317</int>
-     <int>318</int>
+     <int>309</int>
+     <int>310</int>
     </ports>
-    <name>inf_r</name>
+    <name>:Wages</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>322</id>
+    <id>314</id>
     <type>Variable:flow</type>
-    <x>491.938</x>
-    <y>171.846</y>
+    <x>1208</x>
+    <y>197.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>320</int>
-     <int>321</int>
+     <int>312</int>
+     <int>313</int>
     </ports>
-    <name>inf_r</name>
+    <name>:\omega</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>324</id>
-    <type>Variable:stock</type>
-    <x>271.485</x>
-    <y>42.0736</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>323</int>
-    </ports>
-    <name>LF</name>
-    <init>0.000000</init>
-   </Item>
-   <Item>
-    <id>327</id>
+    <id>317</id>
     <type>Variable:flow</type>
-    <x>274.615</x>
-    <y>57.5967</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>325</int>
-     <int>326</int>
-    </ports>
-    <name>Y</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>330</id>
-    <type>Variable:flow</type>
-    <x>318.701</x>
-    <y>48.9038</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>328</int>
-     <int>329</int>
-    </ports>
-    <name>d_r</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>333</id>
-    <type>Variable:flow</type>
-    <x>190.17</x>
-    <y>409.038</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>331</int>
-     <int>332</int>
-    </ports>
-    <name>inf_r</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>336</id>
-    <type>Variable:flow</type>
-    <x>259.092</x>
-    <y>504.042</y>
+    <x>979</x>
+    <y>512.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>334</int>
-     <int>335</int>
+     <int>315</int>
+     <int>316</int>
     </ports>
-    <name>\lambda</name>
+    <name>:\omega</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>339</id>
+    <id>320</id>
     <type>Variable:flow</type>
-    <x>497.526</x>
-    <y>203.513</y>
+    <x>656.739</x>
+    <y>464.761</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>337</int>
-     <int>338</int>
+     <int>318</int>
+     <int>319</int>
     </ports>
-    <name>\d\lambda</name>
+    <name>:\omega</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>342</id>
+    <id>323</id>
+    <type>Variable:integral</type>
+    <x>168.74</x>
+    <y>651.76</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>321</int>
+     <int>322</int>
+    </ports>
+    <name>:P</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>326</id>
     <type>Variable:flow</type>
-    <x>414.821</x>
-    <y>189.265</y>
+    <x>252.74</x>
+    <y>632.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>340</int>
-     <int>341</int>
+     <int>324</int>
+     <int>325</int>
     </ports>
-    <name>I_fn</name>
+    <name>:inf_r</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>344</id>
-    <type>Variable:parameter</type>
-    <x>159.285</x>
-    <y>193.75</y>
+    <id>329</id>
+    <type>Variable:flow</type>
+    <x>394.74</x>
+    <y>427.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>343</int>
+     <int>327</int>
+     <int>328</int>
     </ports>
-    <name>\alpha</name>
-    <init>0.02</init>
+    <name>:inf_r</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>332</id>
+    <type>Variable:flow</type>
+    <x>797.74</x>
+    <y>276.76</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>330</int>
+     <int>331</int>
+    </ports>
+    <name>:inf_r</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>334</id>
+    <type>Variable:stock</type>
+    <x>442.699</x>
+    <y>67.76</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>333</int>
+    </ports>
+    <name>:LF</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>337</id>
+    <type>Variable:flow</type>
+    <x>447.739</x>
+    <y>92.76</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>335</int>
+     <int>336</int>
+    </ports>
+    <name>:Y</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>340</id>
+    <type>Variable:flow</type>
+    <x>518.74</x>
+    <y>78.76</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>338</int>
+     <int>339</int>
+    </ports>
+    <name>:d_r</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>343</id>
+    <type>Variable:flow</type>
+    <x>311.74</x>
+    <y>658.76</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>341</int>
+     <int>342</int>
+    </ports>
+    <name>:inf_r</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>346</id>
-    <type>Variable:parameter</type>
-    <x>185.519</x>
-    <y>221.337</y>
+    <type>Variable:flow</type>
+    <x>422.74</x>
+    <y>811.764</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>180</rotation>
     <ports>
+     <int>344</int>
      <int>345</int>
     </ports>
-    <name>\beta</name>
-    <init>0.015</init>
+    <name>:\lambda</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>348</id>
-    <type>Variable:parameter</type>
-    <x>5.5881</x>
-    <y>4.19743</y>
+    <id>349</id>
+    <type>Variable:flow</type>
+    <x>806.74</x>
+    <y>327.76</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>360</rotation>
     <ports>
      <int>347</int>
+     <int>348</int>
     </ports>
-    <name>r_L</name>
-    <init>0.05</init>
-   </Item>
-   <Item>
-    <id>350</id>
-    <type>Variable:parameter</type>
-    <x>10.2639</x>
-    <y>39.0193</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>349</int>
-    </ports>
-    <name>r_D</name>
-    <init>0.01</init>
+    <name>:\d\lambda</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>352</id>
-    <type>Variable:parameter</type>
-    <x>7.15921</x>
-    <y>66.4175</y>
+    <type>Variable:flow</type>
+    <x>673.542</x>
+    <y>304.813</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>350</int>
      <int>351</int>
     </ports>
-    <name>r_D</name>
-    <init>0.01</init>
+    <name>:I_fn</name>
+    <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>354</id>
     <type>Variable:parameter</type>
-    <x>0</x>
-    <y>109.133</y>
+    <x>262</x>
+    <y>312.036</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>353</int>
     </ports>
-    <name>\tau_\mathrm{CB}</name>
-    <init>1</init>
+    <name>:\alpha</name>
+    <init>0.02</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>356</id>
     <type>Variable:parameter</type>
-    <x>1.86258</x>
-    <y>142.663</y>
+    <x>304.25</x>
+    <y>356.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>355</int>
     </ports>
-    <name>\tau_\mathrm{CW}</name>
-    <init>0.02</init>
+    <name>:\beta</name>
+    <init>0.015</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>358</id>
     <type>Variable:parameter</type>
-    <x>126.532</x>
-    <y>176.01</y>
+    <x>14.4695</x>
+    <y>6.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>357</int>
     </ports>
-    <name>v</name>
-    <init>3</init>
+    <name>:r_L</name>
+    <init>0.05</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>360</id>
     <type>Variable:parameter</type>
-    <x>104.085</x>
-    <y>229.04</y>
+    <x>21.9998</x>
+    <y>62.841</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>180</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>359</int>
     </ports>
-    <name>\delta</name>
-    <init>0.02</init>
+    <name>:r_D</name>
+    <init>0.01</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>362</id>
     <type>Variable:parameter</type>
-    <x>16.4731</x>
-    <y>345.134</y>
+    <x>16.9998</x>
+    <y>106.966</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>361</int>
     </ports>
-    <name>\tau_P</name>
-    <init>1</init>
+    <name>:r_D</name>
+    <init>0.01</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>364</id>
     <type>Variable:parameter</type>
-    <x>10.2639</x>
-    <y>443.241</y>
+    <x>5.46973</x>
+    <y>175.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>363</int>
     </ports>
-    <name>1-s</name>
-    <init>0.7</init>
+    <name>:\tau_\mathrm{CB}</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>366</id>
     <type>Variable:parameter</type>
-    <x>495.663</x>
-    <y>192.957</y>
+    <x>8.46948</x>
+    <y>229.76</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>360</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>365</int>
     </ports>
-    <name>\lambda_w</name>
-    <init>0.01</init>
+    <name>:\tau_\mathrm{CW}</name>
+    <init>0.02</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>368</id>
     <type>Variable:parameter</type>
-    <x>417.925</x>
-    <y>200.442</y>
+    <x>209.25</x>
+    <y>283.466</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>367</int>
     </ports>
-    <name>v</name>
+    <name>:v</name>
     <init>3</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>3</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>370</id>
     <type>Variable:parameter</type>
-    <x>412.459</x>
-    <y>210.964</y>
+    <x>173.099</x>
+    <y>368.871</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>180</rotation>
     <ports>
      <int>369</int>
     </ports>
-    <name>\alpha</name>
+    <name>:\delta</name>
     <init>0.02</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>372</id>
     <type>Variable:parameter</type>
-    <x>416.806</x>
-    <y>220.899</y>
+    <x>32</x>
+    <y>555.842</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>371</int>
     </ports>
-    <name>\beta</name>
-    <init>0.015</init>
+    <name>:\tau_P</name>
+    <init>1</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>374</id>
     <type>Variable:parameter</type>
-    <x>416.806</x>
-    <y>229.592</y>
+    <x>21.9998</x>
+    <y>713.844</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>360</rotation>
+    <rotation>0</rotation>
     <ports>
      <int>373</int>
     </ports>
-    <name>\delta</name>
-    <init>0.02</init>
+    <name>:1-s</name>
+    <init>0.7</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>377</id>
-    <type>Variable:flow</type>
-    <x>37.3605</x>
-    <y>10.7295</y>
+    <id>376</id>
+    <type>Variable:parameter</type>
+    <x>803.74</x>
+    <y>310.76</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>360</rotation>
+    <ports>
+     <int>375</int>
+    </ports>
+    <name>:\lambda_w</name>
+    <init>0.01</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>378</id>
+    <type>Variable:parameter</type>
+    <x>678.542</x>
+    <y>322.813</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>375</int>
-     <int>376</int>
+     <int>377</int>
     </ports>
-    <name>Invest</name>
-    <init>0</init>
+    <name>:v</name>
+    <init>3</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>3</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>380</id>
-    <type>Variable:flow</type>
-    <x>43.5697</x>
-    <y>27.4944</y>
+    <type>Variable:parameter</type>
+    <x>669.739</x>
+    <y>339.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>378</int>
      <int>379</int>
     </ports>
-    <name>IntL</name>
-    <init>0</init>
+    <name>:\alpha</name>
+    <init>0.02</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>383</id>
-    <type>Variable:flow</type>
-    <x>29.9902</x>
-    <y>21.459</y>
+    <id>382</id>
+    <type>Variable:parameter</type>
+    <x>676.739</x>
+    <y>355.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>381</int>
-     <int>382</int>
     </ports>
-    <name>IntL</name>
-    <init>0</init>
+    <name>:\beta</name>
+    <init>0.015</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>386</id>
-    <type>Variable:flow</type>
-    <x>26.8856</x>
-    <y>54.9888</y>
+    <id>384</id>
+    <type>Variable:parameter</type>
+    <x>676.739</x>
+    <y>369.76</y>
     <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
+    <rotation>360</rotation>
     <ports>
-     <int>384</int>
-     <int>385</int>
+     <int>383</int>
     </ports>
-    <name>IntDF</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>389</id>
-    <type>Variable:flow</type>
-    <x>16.4107</x>
-    <y>15.4237</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>387</int>
-     <int>388</int>
-    </ports>
-    <name>IntL</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>392</id>
-    <type>Variable:flow</type>
-    <x>13.3061</x>
-    <y>48.9534</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>390</int>
-     <int>391</int>
-    </ports>
-    <name>IntDF</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>395</id>
-    <type>Variable:flow</type>
-    <x>13.3061</x>
-    <y>82.4832</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>393</int>
-     <int>394</int>
-    </ports>
-    <name>IntDW</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>398</id>
-    <type>Variable:flow</type>
-    <x>26.8856</x>
-    <y>38.2239</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>396</int>
-     <int>397</int>
-    </ports>
-    <name>IntDF</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>401</id>
-    <type>Variable:flow</type>
-    <x>26.8856</x>
-    <y>71.7537</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>399</int>
-     <int>400</int>
-    </ports>
-    <name>IntDW</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>404</id>
-    <type>Variable:flow</type>
-    <x>40.4651</x>
-    <y>61.0242</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>402</int>
-     <int>403</int>
-    </ports>
-    <name>IntDW</name>
-    <init>0</init>
+    <name>:\delta</name>
+    <init>0.02</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>407</id>
-    <type>Variable:flow</type>
-    <x>40.4651</x>
-    <y>77.7891</y>
+    <type>PlotWidget</type>
+    <x>798.74</x>
+    <y>493.761</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>385</int>
+     <int>386</int>
+     <int>387</int>
+     <int>388</int>
+     <int>389</int>
+     <int>390</int>
+     <int>391</int>
+     <int>392</int>
+     <int>393</int>
+     <int>394</int>
+     <int>395</int>
+     <int>396</int>
+     <int>397</int>
+     <int>398</int>
+     <int>399</int>
+     <int>400</int>
+     <int>401</int>
+     <int>402</int>
+     <int>403</int>
+     <int>404</int>
      <int>405</int>
      <int>406</int>
     </ports>
-    <name>Wages</name>
-    <init>0</init>
+    <width>150</width>
+    <height>150</height>
+    <logx>false</logx>
+    <logy>false</logy>
    </Item>
    <Item>
-    <id>410</id>
-    <type>Variable:flow</type>
-    <x>40.4651</x>
-    <y>94.554</y>
+    <id>430</id>
+    <type>PlotWidget</type>
+    <x>510.999</x>
+    <y>446.843</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>408</int>
      <int>409</int>
-    </ports>
-    <name>ConsB</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>413</id>
-    <type>Variable:flow</type>
-    <x>26.8856</x>
-    <y>88.5186</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>410</int>
      <int>411</int>
      <int>412</int>
-    </ports>
-    <name>ConsB</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>416</id>
-    <type>Variable:flow</type>
-    <x>26.8856</x>
-    <y>122.048</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>413</int>
      <int>414</int>
      <int>415</int>
-    </ports>
-    <name>ConsW</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>419</id>
-    <type>Variable:flow</type>
-    <x>13.3061</x>
-    <y>82.4832</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>416</int>
      <int>417</int>
      <int>418</int>
-    </ports>
-    <name>ConsB</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>422</id>
-    <type>Variable:flow</type>
-    <x>13.3061</x>
-    <y>116.013</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>419</int>
      <int>420</int>
      <int>421</int>
-    </ports>
-    <name>ConsW</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>425</id>
-    <type>Variable:flow</type>
-    <x>13.3061</x>
-    <y>149.543</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>422</int>
      <int>423</int>
      <int>424</int>
-    </ports>
-    <name>Repay</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>428</id>
-    <type>Variable:flow</type>
-    <x>26.8856</x>
-    <y>88.5186</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>425</int>
      <int>426</int>
      <int>427</int>
-    </ports>
-    <name>ConsB</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>431</id>
-    <type>Variable:flow</type>
-    <x>26.8856</x>
-    <y>122.048</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>428</int>
      <int>429</int>
-     <int>430</int>
     </ports>
-    <name>ConsW</name>
-    <init>0</init>
+    <width>150</width>
+    <height>150</height>
+    <logx>false</logx>
+    <logy>false</logy>
    </Item>
    <Item>
-    <id>434</id>
-    <type>Variable:flow</type>
-    <x>40.4651</x>
-    <y>94.554</y>
+    <id>453</id>
+    <type>PlotWidget</type>
+    <x>926.939</x>
+    <y>724.914</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>431</int>
      <int>432</int>
      <int>433</int>
-    </ports>
-    <name>ConsB</name>
-    <init>0</init>
-   </Item>
-   <Item>
-    <id>457</id>
-    <type>PlotWidget</type>
-    <x>492.559</x>
-    <y>306.587</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
+     <int>434</int>
      <int>435</int>
      <int>436</int>
      <int>437</int>
@@ -2833,10 +3248,6 @@
      <int>450</int>
      <int>451</int>
      <int>452</int>
-     <int>453</int>
-     <int>454</int>
-     <int>455</int>
-     <int>456</int>
     </ports>
     <width>150</width>
     <height>150</height>
@@ -2844,13 +3255,17 @@
     <logy>false</logy>
    </Item>
    <Item>
-    <id>480</id>
+    <id>476</id>
     <type>PlotWidget</type>
-    <x>313.894</x>
-    <y>277.454</y>
+    <x>1005</x>
+    <y>414.841</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>454</int>
+     <int>455</int>
+     <int>456</int>
+     <int>457</int>
      <int>458</int>
      <int>459</int>
      <int>460</int>
@@ -2869,10 +3284,6 @@
      <int>473</int>
      <int>474</int>
      <int>475</int>
-     <int>476</int>
-     <int>477</int>
-     <int>478</int>
-     <int>479</int>
     </ports>
     <width>150</width>
     <height>150</height>
@@ -2880,13 +3291,17 @@
     <logy>false</logy>
    </Item>
    <Item>
-    <id>503</id>
+    <id>499</id>
     <type>PlotWidget</type>
-    <x>572.16</x>
-    <y>450.115</y>
+    <x>629.739</x>
+    <y>125.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>477</int>
+     <int>478</int>
+     <int>479</int>
+     <int>480</int>
      <int>481</int>
      <int>482</int>
      <int>483</int>
@@ -2905,10 +3320,6 @@
      <int>496</int>
      <int>497</int>
      <int>498</int>
-     <int>499</int>
-     <int>500</int>
-     <int>501</int>
-     <int>502</int>
     </ports>
     <width>150</width>
     <height>150</height>
@@ -2916,13 +3327,17 @@
     <logy>false</logy>
    </Item>
    <Item>
-    <id>526</id>
+    <id>522</id>
     <type>PlotWidget</type>
-    <x>620.629</x>
-    <y>257.584</y>
+    <x>415.74</x>
+    <y>712.764</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>500</int>
+     <int>501</int>
+     <int>502</int>
+     <int>503</int>
      <int>504</int>
      <int>505</int>
      <int>506</int>
@@ -2941,10 +3356,6 @@
      <int>519</int>
      <int>520</int>
      <int>521</int>
-     <int>522</int>
-     <int>523</int>
-     <int>524</int>
-     <int>525</int>
     </ports>
     <width>150</width>
     <height>150</height>
@@ -2952,97 +3363,25 @@
     <logy>false</logy>
    </Item>
    <Item>
-    <id>549</id>
-    <type>PlotWidget</type>
-    <x>387.622</x>
-    <y>78.0871</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>527</int>
-     <int>528</int>
-     <int>529</int>
-     <int>530</int>
-     <int>531</int>
-     <int>532</int>
-     <int>533</int>
-     <int>534</int>
-     <int>535</int>
-     <int>536</int>
-     <int>537</int>
-     <int>538</int>
-     <int>539</int>
-     <int>540</int>
-     <int>541</int>
-     <int>542</int>
-     <int>543</int>
-     <int>544</int>
-     <int>545</int>
-     <int>546</int>
-     <int>547</int>
-     <int>548</int>
-    </ports>
-    <width>150</width>
-    <height>150</height>
-    <logx>false</logx>
-    <logy>false</logy>
-   </Item>
-   <Item>
-    <id>572</id>
-    <type>PlotWidget</type>
-    <x>254.746</x>
-    <y>442.57</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>550</int>
-     <int>551</int>
-     <int>552</int>
-     <int>553</int>
-     <int>554</int>
-     <int>555</int>
-     <int>556</int>
-     <int>557</int>
-     <int>558</int>
-     <int>559</int>
-     <int>560</int>
-     <int>561</int>
-     <int>562</int>
-     <int>563</int>
-     <int>564</int>
-     <int>565</int>
-     <int>566</int>
-     <int>567</int>
-     <int>568</int>
-     <int>569</int>
-     <int>570</int>
-     <int>571</int>
-    </ports>
-    <width>150</width>
-    <height>150</height>
-    <logx>false</logx>
-    <logy>false</logy>
-   </Item>
-   <Item>
-    <id>573</id>
+    <id>523</id>
     <type>GodleyIcon</type>
-    <x>158.956</x>
-    <y>48.2829</y>
+    <x>261.469</x>
+    <y>77.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>152</int>
-     <int>155</int>
-     <int>158</int>
-     <int>208</int>
-     <int>161</int>
-     <int>164</int>
-     <int>167</int>
-     <int>170</int>
+     <int>157</int>
+     <int>160</int>
+     <int>163</int>
+     <int>216</int>
+     <int>166</int>
+     <int>169</int>
      <int>172</int>
-     <int>174</int>
-     <int>176</int>
-     <int>178</int>
+     <int>175</int>
+     <int>177</int>
+     <int>179</int>
+     <int>181</int>
+     <int>183</int>
     </ports>
     <width>474.8</width>
     <height>434.8</height>
@@ -3057,63 +3396,63 @@
      <vector>
       <string>Initial&#32;Conditions</string>
       <string>0</string>
-      <string>0</string>
       <string>-0</string>
       <string>0</string>
+      <string>-0</string>
      </vector>
      <vector>
       <string>Lend&#32;for&#32;Investment</string>
       <string>Invest</string>
-      <string>-Invest</string>
+      <string>Invest</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
       <string>Service&#32;Debt</string>
       <string></string>
-      <string>IntL</string>
-      <string></string>
       <string>-IntL</string>
+      <string></string>
+      <string>IntL</string>
      </vector>
      <vector>
       <string>Deposit&#32;Interest</string>
-      <string></string>
-      <string>-IntDF</string>
       <string></string>
       <string>IntDF</string>
+      <string></string>
+      <string>-IntDF</string>
      </vector>
      <vector>
       <string>Deposit&#32;Interest</string>
       <string></string>
       <string></string>
-      <string>-IntDW</string>
       <string>IntDW</string>
+      <string>-IntDW</string>
      </vector>
      <vector>
       <string>Hire&#32;Workers</string>
       <string></string>
-      <string>Wages</string>
       <string>-Wages</string>
+      <string>Wages</string>
       <string></string>
      </vector>
      <vector>
       <string>Consumption</string>
-      <string></string>
-      <string>-ConsB</string>
       <string></string>
       <string>ConsB</string>
+      <string></string>
+      <string>-ConsB</string>
      </vector>
      <vector>
       <string>Consumption</string>
       <string></string>
-      <string>-ConsW</string>
       <string>ConsW</string>
+      <string>-ConsW</string>
       <string></string>
      </vector>
      <vector>
       <string>Repay&#32;Debt</string>
       <string>-Repay</string>
-      <string>Repay</string>
+      <string>-Repay</string>
       <string></string>
       <string></string>
      </vector>
@@ -3127,650 +3466,776 @@
     </assetClasses>
    </Item>
    <Item>
-    <id>577</id>
+    <id>527</id>
     <type>Operation:subtract</type>
     <x>-44.8191</x>
     <y>45.6201</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>574</int>
-     <int>575</int>
-     <int>576</int>
+     <int>524</int>
+     <int>525</int>
+     <int>526</int>
     </ports>
    </Item>
    <Item>
-    <id>581</id>
+    <id>531</id>
     <type>Operation:divide</type>
     <x>-15.0651</x>
     <y>30.451</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>578</int>
-     <int>579</int>
-     <int>580</int>
+     <int>528</int>
+     <int>529</int>
+     <int>530</int>
     </ports>
    </Item>
    <Item>
-    <id>585</id>
+    <id>535</id>
     <type>Operation:multiply</type>
     <x>21.69</x>
-    <y>-1.63602</y>
+    <y>-1.63601</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>582</int>
-     <int>583</int>
-     <int>584</int>
+     <int>532</int>
+     <int>533</int>
+     <int>534</int>
     </ports>
    </Item>
    <Item>
-    <id>589</id>
+    <id>539</id>
     <type>Operation:subtract</type>
-    <x>-9.81403</x>
+    <x>-9.81402</x>
     <y>-26.1401</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>586</int>
-     <int>587</int>
-     <int>588</int>
+     <int>536</int>
+     <int>537</int>
+     <int>538</int>
     </ports>
    </Item>
    <Item>
-    <id>592</id>
+    <id>542</id>
     <type>Operation:exp</type>
     <x>56.6951</x>
     <y>-3.97003</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>590</int>
-     <int>591</int>
+     <int>540</int>
+     <int>541</int>
     </ports>
    </Item>
    <Item>
-    <id>596</id>
+    <id>546</id>
     <type>Operation:multiply</type>
     <x>87.0322</x>
     <y>-21.472</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>593</int>
-     <int>594</int>
-     <int>595</int>
+     <int>543</int>
+     <int>544</int>
+     <int>545</int>
     </ports>
    </Item>
    <Item>
-    <id>600</id>
+    <id>550</id>
     <type>Operation:subtract</type>
     <x>63.6961</x>
     <y>-55.3101</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>597</int>
-     <int>598</int>
-     <int>599</int>
+     <int>547</int>
+     <int>548</int>
+     <int>549</int>
     </ports>
    </Item>
    <Item>
-    <id>604</id>
+    <id>554</id>
     <type>Operation:add</type>
     <x>120.87</x>
     <y>-5.72003</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>601</int>
-     <int>602</int>
-     <int>603</int>
+     <int>551</int>
+     <int>552</int>
+     <int>553</int>
     </ports>
    </Item>
    <Item>
-    <id>606</id>
+    <id>556</id>
     <type>Variable:parameter</type>
     <x>-114.545</x>
     <y>17.2727</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>605</int>
+     <int>555</int>
     </ports>
     <name>:y_w</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>608</id>
+    <id>558</id>
     <type>Variable:parameter</type>
     <x>-116.87</x>
     <y>61.8101</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>607</int>
+     <int>557</int>
     </ports>
     <name>:m_w</name>
     <init>-0.04</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>610</id>
+    <id>560</id>
     <type>Variable:parameter</type>
     <x>-50.0691</x>
     <y>19.95</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>609</int>
+     <int>559</int>
     </ports>
     <name>:s_w</name>
     <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>2</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>612</id>
+    <id>562</id>
     <type>Variable:parameter</type>
     <x>-49.4861</x>
     <y>-10.387</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>611</int>
+     <int>561</int>
     </ports>
     <name>:x_w</name>
     <init>0.96</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>615</id>
+    <id>565</id>
     <type>Variable:flow</type>
-    <x>-28.5624</x>
+    <x>-59.5</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>613</int>
-     <int>614</int>
+     <int>563</int>
+     <int>564</int>
     </ports>
     <name>:\lambda</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>618</id>
+    <id>568</id>
     <type>Variable:flow</type>
-    <x>23.595</x>
+    <x>48</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>616</int>
-     <int>617</int>
+     <int>566</int>
+     <int>567</int>
     </ports>
     <name>:W_{fn}</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>622</id>
+    <id>572</id>
     <type>Operation:subtract</type>
     <x>101.75</x>
     <y>17.25</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>619</int>
-     <int>620</int>
-     <int>621</int>
+     <int>569</int>
+     <int>570</int>
+     <int>571</int>
     </ports>
    </Item>
    <Item>
-    <id>626</id>
+    <id>576</id>
     <type>Operation:divide</type>
     <x>45.7501</x>
-    <y>-3.75</y>
+    <y>-3.75001</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>623</int>
-     <int>624</int>
-     <int>625</int>
+     <int>573</int>
+     <int>574</int>
+     <int>575</int>
     </ports>
    </Item>
    <Item>
-    <id>630</id>
+    <id>580</id>
     <type>Operation:multiply</type>
-    <x>0.75</x>
+    <x>0.750002</x>
     <y>-31.7501</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>627</int>
-     <int>628</int>
-     <int>629</int>
+     <int>577</int>
+     <int>578</int>
+     <int>579</int>
     </ports>
    </Item>
    <Item>
-    <id>634</id>
+    <id>584</id>
     <type>Operation:subtract</type>
     <x>58.7501</x>
     <y>-40.7501</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>631</int>
-     <int>632</int>
-     <int>633</int>
+     <int>581</int>
+     <int>582</int>
+     <int>583</int>
     </ports>
    </Item>
    <Item>
-    <id>637</id>
+    <id>587</id>
     <type>Operation:exp</type>
     <x>-60.2501</x>
     <y>-11.75</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>635</int>
-     <int>636</int>
+     <int>585</int>
+     <int>586</int>
     </ports>
    </Item>
    <Item>
-    <id>641</id>
+    <id>591</id>
     <type>Operation:multiply</type>
     <x>-111.25</x>
     <y>-34.7501</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>638</int>
-     <int>639</int>
-     <int>640</int>
+     <int>588</int>
+     <int>589</int>
+     <int>590</int>
     </ports>
    </Item>
    <Item>
-    <id>645</id>
+    <id>595</id>
     <type>Operation:subtract</type>
     <x>-67.2501</x>
     <y>-52.7501</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>642</int>
-     <int>643</int>
-     <int>644</int>
+     <int>592</int>
+     <int>593</int>
+     <int>594</int>
     </ports>
    </Item>
    <Item>
-    <id>649</id>
+    <id>599</id>
     <type>Operation:add</type>
     <x>-170.75</x>
     <y>-27.0001</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>646</int>
-     <int>647</int>
-     <int>648</int>
+     <int>596</int>
+     <int>597</int>
+     <int>598</int>
     </ports>
    </Item>
    <Item>
-    <id>651</id>
+    <id>601</id>
     <type>Variable:parameter</type>
     <x>170.75</x>
     <y>1.25</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>650</int>
+     <int>600</int>
     </ports>
     <name>:y_i</name>
     <init>0.05</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>653</id>
+    <id>603</id>
     <type>Variable:parameter</type>
     <x>155.75</x>
     <y>58.2501</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>652</int>
+     <int>602</int>
     </ports>
     <name>:m_i</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>655</id>
+    <id>605</id>
     <type>Variable:parameter</type>
     <x>93.7502</x>
-    <y>-8.75</y>
+    <y>-8.75002</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>654</int>
+     <int>604</int>
     </ports>
     <name>:s_i</name>
     <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>2</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>657</id>
+    <id>607</id>
     <type>Variable:parameter</type>
     <x>117.75</x>
     <y>-30.7501</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>656</int>
+     <int>606</int>
     </ports>
     <name>:x_i</name>
     <init>0.05</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>660</id>
+    <id>610</id>
     <type>Variable:flow</type>
-    <x>31.0461</x>
-    <y>2.71413e-06</y>
+    <x>64</x>
+    <y>2.43187e-05</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>658</int>
-     <int>659</int>
+     <int>608</int>
+     <int>609</int>
     </ports>
     <name>:\pi_r</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>663</id>
+    <id>613</id>
     <type>Variable:flow</type>
-    <x>-28.5624</x>
-    <y>-2.497e-06</y>
+    <x>-61</x>
+    <y>-2.43187e-05</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
-     <int>661</int>
-     <int>662</int>
+     <int>611</int>
+     <int>612</int>
     </ports>
     <name>:I_{fn}</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>667</id>
+    <id>617</id>
     <type>Operation:subtract</type>
     <x>-41.7501</x>
     <y>64.3126</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>664</int>
-     <int>665</int>
-     <int>666</int>
+     <int>614</int>
+     <int>615</int>
+     <int>616</int>
     </ports>
    </Item>
    <Item>
-    <id>671</id>
+    <id>621</id>
     <type>Operation:divide</type>
     <x>33.2501</x>
     <y>53.3126</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>668</int>
-     <int>669</int>
-     <int>670</int>
+     <int>618</int>
+     <int>619</int>
+     <int>620</int>
     </ports>
    </Item>
    <Item>
-    <id>675</id>
+    <id>625</id>
     <type>Operation:multiply</type>
     <x>97.1252</x>
     <y>27.6876</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>672</int>
-     <int>673</int>
-     <int>674</int>
+     <int>622</int>
+     <int>623</int>
+     <int>624</int>
     </ports>
    </Item>
    <Item>
-    <id>679</id>
+    <id>629</id>
     <type>Operation:subtract</type>
     <x>43.1251</x>
     <y>-14.3125</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>676</int>
-     <int>677</int>
-     <int>678</int>
+     <int>626</int>
+     <int>627</int>
+     <int>628</int>
     </ports>
    </Item>
    <Item>
-    <id>682</id>
+    <id>632</id>
     <type>Operation:exp</type>
     <x>157.125</x>
     <y>23.6876</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>680</int>
-     <int>681</int>
+     <int>630</int>
+     <int>631</int>
     </ports>
    </Item>
    <Item>
-    <id>686</id>
+    <id>636</id>
     <type>Operation:multiply</type>
     <x>209.125</x>
     <y>-6.3125</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>683</int>
-     <int>684</int>
-     <int>685</int>
+     <int>633</int>
+     <int>634</int>
+     <int>635</int>
     </ports>
    </Item>
    <Item>
-    <id>690</id>
+    <id>640</id>
     <type>Operation:subtract</type>
     <x>169.125</x>
     <y>-64.3126</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>687</int>
-     <int>688</int>
-     <int>689</int>
+     <int>637</int>
+     <int>638</int>
+     <int>639</int>
     </ports>
    </Item>
    <Item>
-    <id>694</id>
+    <id>644</id>
     <type>Operation:add</type>
     <x>252.25</x>
     <y>14.3125</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>691</int>
-     <int>692</int>
-     <int>693</int>
+     <int>641</int>
+     <int>642</int>
+     <int>643</int>
     </ports>
    </Item>
    <Item>
-    <id>696</id>
+    <id>646</id>
     <type>Variable:parameter</type>
     <x>-128.053</x>
     <y>52.8141</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>695</int>
+     <int>645</int>
     </ports>
     <name>:y_r</name>
     <init>10</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>10</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>698</id>
+    <id>648</id>
     <type>Variable:parameter</type>
     <x>-183.507</x>
     <y>76.4504</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>697</int>
+     <int>647</int>
     </ports>
     <name>:m_r</name>
     <init>3</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>3</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>700</id>
+    <id>650</id>
     <type>Variable:parameter</type>
     <x>-20.75</x>
     <y>35.3126</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>699</int>
+     <int>649</int>
     </ports>
     <name>:s_r</name>
     <init>100</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>100</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>702</id>
+    <id>652</id>
     <type>Variable:parameter</type>
-    <x>-8.75</x>
+    <x>-8.75002</x>
     <y>-6.68752</y>
     <zoomFactor>1</zoomFactor>
     <rotation>360</rotation>
     <ports>
-     <int>701</int>
+     <int>651</int>
     </ports>
     <name>:x_r</name>
     <init>0.03</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>705</id>
+    <id>655</id>
     <type>Variable:flow</type>
-    <x>27.0101</x>
+    <x>54.5</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>703</int>
-     <int>704</int>
+     <int>653</int>
+     <int>654</int>
     </ports>
     <name>:\tau_R</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>708</id>
+    <id>658</id>
     <type>Variable:flow</type>
-    <x>-27.0101</x>
+    <x>-57.5</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>706</int>
-     <int>707</int>
+     <int>656</int>
+     <int>657</int>
     </ports>
     <name>:\pi_r</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
   </items>
   <groups>
    <Group>
-    <id>864</id>
+    <id>814</id>
     <type>Group</type>
-    <x>377.067</x>
-    <y>160.049</y>
+    <x>612.739</x>
+    <y>257.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
     </ports>
     <items>
-     <int>577</int>
-     <int>581</int>
-     <int>585</int>
-     <int>589</int>
-     <int>592</int>
-     <int>596</int>
-     <int>600</int>
-     <int>604</int>
-     <int>606</int>
-     <int>608</int>
-     <int>610</int>
-     <int>612</int>
-     <int>615</int>
-     <int>618</int>
+     <int>527</int>
+     <int>531</int>
+     <int>535</int>
+     <int>539</int>
+     <int>542</int>
+     <int>546</int>
+     <int>550</int>
+     <int>554</int>
+     <int>556</int>
+     <int>558</int>
+     <int>560</int>
+     <int>562</int>
+     <int>565</int>
+     <int>568</int>
     </items>
     <inVariables>
-     <int>615</int>
+     <int>565</int>
     </inVariables>
     <outVariables>
-     <int>618</int>
+     <int>568</int>
     </outVariables>
    </Group>
    <Group>
-    <id>865</id>
+    <id>815</id>
     <type>Group</type>
-    <x>576.382</x>
-    <y>379.234</y>
+    <x>933.739</x>
+    <y>610.76</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
     </ports>
     <items>
-     <int>622</int>
-     <int>626</int>
-     <int>630</int>
-     <int>634</int>
-     <int>637</int>
-     <int>641</int>
-     <int>645</int>
-     <int>649</int>
-     <int>651</int>
-     <int>653</int>
-     <int>655</int>
-     <int>657</int>
-     <int>660</int>
-     <int>663</int>
+     <int>572</int>
+     <int>576</int>
+     <int>580</int>
+     <int>584</int>
+     <int>587</int>
+     <int>591</int>
+     <int>595</int>
+     <int>599</int>
+     <int>601</int>
+     <int>603</int>
+     <int>605</int>
+     <int>607</int>
+     <int>610</int>
+     <int>613</int>
     </items>
     <inVariables>
-     <int>660</int>
+     <int>610</int>
     </inVariables>
     <outVariables>
-     <int>663</int>
+     <int>613</int>
     </outVariables>
    </Group>
    <Group>
-    <id>866</id>
+    <id>816</id>
     <type>Group</type>
-    <x>540.842</x>
-    <y>28.7741</y>
+    <x>876.5</x>
+    <y>46.341</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
     </ports>
     <items>
-     <int>667</int>
-     <int>671</int>
-     <int>675</int>
-     <int>679</int>
-     <int>682</int>
-     <int>686</int>
-     <int>690</int>
-     <int>694</int>
-     <int>696</int>
-     <int>698</int>
-     <int>700</int>
-     <int>702</int>
-     <int>705</int>
-     <int>708</int>
+     <int>617</int>
+     <int>621</int>
+     <int>625</int>
+     <int>629</int>
+     <int>632</int>
+     <int>636</int>
+     <int>640</int>
+     <int>644</int>
+     <int>646</int>
+     <int>648</int>
+     <int>650</int>
+     <int>652</int>
+     <int>655</int>
+     <int>658</int>
     </items>
     <inVariables>
-     <int>708</int>
+     <int>658</int>
     </inVariables>
     <outVariables>
-     <int>705</int>
+     <int>655</int>
     </outVariables>
    </Group>
   </groups>
@@ -3784,5 +4249,5 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
-  <zoomFactor>0.620921</zoomFactor>
+  <zoomFactor>1</zoomFactor>
  </Minsky>

@@ -75,8 +75,15 @@
      <int>5</int>
      <int>6</int>
     </ports>
-    <name>x</name>
+    <name>:x</name>
     <init>0</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>30</id>
