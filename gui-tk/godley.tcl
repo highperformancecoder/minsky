@@ -90,9 +90,6 @@ proc createGodleyWindow {id} {
     scrollbar .godley$id.sy -command [list $t yview]
     scrollbar .godley$id.sx -command [list $t xview] -orient horizontal
 
-#    checkbutton .godley$id.doubleEntryMode -text "Double Entry" -variable preferences(godleyDE)
-#    updateDEmode
-
     pack .godley$id.topbar -fill x
     pack .godley$id.sy -side right -fill y
     pack .godley$id.sx -side bottom -fill x
@@ -126,14 +123,6 @@ proc pasteCurrCell {id} {
     .godley$id.table curvalue [clipboard get]
 }
 
-#trace add variable preferences(godleyDE) write {updateDEmode}
-
-#proc updateDEmode args {
-#    global globals preferences
-#    setAllDEmode $preferences(godleyDE)
-#    updateGodleys
-#}
-  
 proc parse_input {input p v} {
     upvar $p prefix
     upvar $v varName
@@ -191,8 +180,6 @@ proc setGetCell_ {id r c i s w} {
     if {$r>0 && $c>0} {
         set row [expr $r-1]
         set col [expr $c-1]
-#	set doubleEntryMode [$id.table.doubleEntryCompliant]
-#        if $doubleEntryMode {
             # allow for asset class row
             incr row -1
             if {$row==-1} return "";
@@ -205,16 +192,11 @@ proc setGetCell_ {id r c i s w} {
                     return "Row Sum"
                 }
             }
-#        }
         if {$i && $id>=0} {
 	    set varName $s
 	    if {$row>0 && $col>0} {
-#		if {$doubleEntryMode} {
-		    set account_type [$id.table.assetClass $col]
-		    if {$account_type == "noAssetClass"} return
-#		} else {
-#		    set account_type "SingleEntry"
-#		}
+                set account_type [$id.table.assetClass $col]
+                if {$account_type == "noAssetClass"} return
 
 	# parse_input accepts input of the form "?DR|CR|-? VarName"
 	# where VarName cannot begin with DR or CR
@@ -245,14 +227,10 @@ proc setGetCell_ {id r c i s w} {
         } else {
             set s [$id.table.getCell $row $col]
 	    if {$row>0 && $col>0} {
-#		if $doubleEntryMode {
-		    set account_type [$id.table.assetClass $col]
-		    if {$account_type == "noAssetClass"} {
-			return "Asset Class Not Set"
-		    }
-#		} else {
-#		    set account_type "SingleEntry"
-#		}
+                set account_type [$id.table.assetClass $col]
+                if {$account_type == "noAssetClass"} {
+                    return "Asset Class Not Set"
+                }
 		if [string length $s] {
 			set account_type [$id.table.assetClass $col]
 			set show $s
@@ -488,13 +466,11 @@ proc whenIdleUpdateGodley {id} {
                 -command "delRow $id $r"
             pack .godley$id.rowButtons{$r}.del -side left
             if {$r>2} {
-#                button .godley$id.rowButtons{$r}.up -text "▲"  
                 button .godley$id.rowButtons{$r}.up -image upArrow \
                     -width $bw -height $bh \
                     -command "moveRow $id $r -1"
                 pack .godley$id.rowButtons{$r}.up -side left
             }
-#            button .godley$id.rowButtons{$r}.down -text "▼" -command 
             button .godley$id.rowButtons{$r}.down -image downArrow \
                 -width $bw -height $bh \
                 -command "moveRow $id $r 1"
@@ -515,13 +491,11 @@ proc whenIdleUpdateGodley {id} {
                 -command "delCol $id $c"
             pack .godley$id.colButtons{$c}.del  -side left
             if {$c>2} {
-#                button .godley$id.colButtons{$c}.left -text "◄" 
                 button .godley$id.colButtons{$c}.left -image leftArrow \
                     -width $bw -height $bh \
                     -command "moveCol $id $c -1"
                 pack .godley$id.colButtons{$c}.left -side left
             }
-#            button .godley$id.colButtons{$c}.right -text "►" -command 
             button .godley$id.colButtons{$c}.right -image rightArrow \
                 -width $bw -height $bh \
                 -command "moveCol $id $c 1"
