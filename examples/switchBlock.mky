@@ -2,34 +2,34 @@
   <schemaVersion>2</schemaVersion>
   <wires>
    <Wire>
-    <id>43</id>
-    <from>6</from>
-    <to>39</to>
-   </Wire>
-   <Wire>
-    <id>44</id>
-    <from>8</from>
-    <to>40</to>
-   </Wire>
-   <Wire>
-    <id>45</id>
-    <from>10</from>
-    <to>41</to>
-   </Wire>
-   <Wire>
     <id>46</id>
-    <from>0</from>
-    <to>38</to>
+    <from>6</from>
+    <to>42</to>
    </Wire>
    <Wire>
     <id>47</id>
-    <from>37</from>
-    <to>3</to>
+    <from>8</from>
+    <to>43</to>
    </Wire>
    <Wire>
     <id>48</id>
+    <from>10</from>
+    <to>44</to>
+   </Wire>
+   <Wire>
+    <id>49</id>
+    <from>0</from>
+    <to>41</to>
+   </Wire>
+   <Wire>
+    <id>50</id>
+    <from>40</from>
+    <to>3</to>
+   </Wire>
+   <Wire>
+    <id>51</id>
     <from>2</from>
-    <to>20</to>
+    <to>23</to>
    </Wire>
   </wires>
   <items>
@@ -56,7 +56,7 @@
      <int>3</int>
      <int>4</int>
     </ports>
-    <intVar>13</intVar>
+    <intVar>14</intVar>
    </Item>
    <Item>
     <id>7</id>
@@ -97,16 +97,18 @@
     </slider>
    </Item>
    <Item>
-    <id>11</id>
-    <type>VarConstant</type>
-    <x>5</x>
-    <y>87</y>
+    <id>12</id>
+    <type>Variable:flow</type>
+    <x>4</x>
+    <y>90</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>10</int>
+     <int>11</int>
     </ports>
-    <init>2.5</init>
+    <name>2p1</name>
+    <init>2:p1</init>
     <slider>
      <visible>false</visible>
      <stepRel>false</stepRel>
@@ -116,7 +118,7 @@
     </slider>
    </Item>
    <Item>
-    <id>13</id>
+    <id>14</id>
     <type>Variable:integral</type>
     <x>215</x>
     <y>60</y>
@@ -124,29 +126,46 @@
     <rotation>0</rotation>
     <ports>
      <int>2</int>
-     <int>12</int>
+     <int>13</int>
     </ports>
-    <name>:int1</name>
+    <name>int1</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>64.8023</max>
      <step>0.1</step>
     </slider>
    </Item>
    <Item>
-    <id>36</id>
+    <id>16</id>
+    <type>Variable:parameter</type>
+    <x>2</x>
+    <y>127</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>15</int>
+    </ports>
+    <name>p1</name>
+    <init>1.25</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-12.5</min>
+     <max>12.5</max>
+     <step>0.125</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>39</id>
     <type>PlotWidget</type>
     <x>340</x>
     <y>112</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>14</int>
-     <int>15</int>
-     <int>16</int>
      <int>17</int>
      <int>18</int>
      <int>19</int>
@@ -166,6 +185,9 @@
      <int>33</int>
      <int>34</int>
      <int>35</int>
+     <int>36</int>
+     <int>37</int>
+     <int>38</int>
     </ports>
     <width>150</width>
     <height>150</height>
@@ -174,18 +196,18 @@
    </Item>
    <Item>
     <detailedText>Enter&#32;your&#32;note&#32;here</detailedText>
-    <id>42</id>
+    <id>45</id>
     <type>SwitchIcon</type>
     <x>81</x>
     <y>62</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>37</int>
-     <int>38</int>
-     <int>39</int>
      <int>40</int>
      <int>41</int>
+     <int>42</int>
+     <int>43</int>
+     <int>44</int>
     </ports>
    </Item>
   </items>

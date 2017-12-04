@@ -6,14 +6,14 @@
     <from>8</from>
     <to>21</to>
     <coords>
-     <float>106.48</float>
-     <float>296.831</float>
-     <float>82.4518</float>
-     <float>326.659</float>
-     <float>45.9953</float>
-     <float>139.405</float>
-     <float>45</float>
-     <float>42.88</float>
+     <float>94.48</float>
+     <float>348.831</float>
+     <float>70.4518</float>
+     <float>378.659</float>
+     <float>33.9953</float>
+     <float>191.405</float>
+     <float>33</float>
+     <float>94.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -21,14 +21,14 @@
     <from>4</from>
     <to>24</to>
     <coords>
-     <float>151.48</float>
-     <float>296.831</float>
-     <float>91.8787</float>
-     <float>359.611</float>
-     <float>46.5818</float>
-     <float>175.244</float>
-     <float>15</float>
-     <float>69.88</float>
+     <float>139.48</float>
+     <float>348.831</float>
+     <float>79.8787</float>
+     <float>411.611</float>
+     <float>34.5818</float>
+     <float>227.244</float>
+     <float>3</float>
+     <float>121.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -36,12 +36,12 @@
     <from>0</from>
     <to>27</to>
     <coords>
-     <float>189.48</float>
-     <float>297.831</float>
-     <float>51.5135</float>
-     <float>416.95</float>
-     <float>15</float>
-     <float>96.88</float>
+     <float>177.48</float>
+     <float>349.831</float>
+     <float>39.5135</float>
+     <float>468.95</float>
+     <float>3</float>
+     <float>148.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -284,7 +284,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>99</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -305,7 +305,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>49.5</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -423,6 +423,7 @@
     </ports>
     <width>290.4</width>
     <height>270.4</height>
+    <name>Godleyitem44746400</name>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -440,15 +441,15 @@
      </vector>
      <vector>
       <string>Lend&#32;from&#32;Vault</string>
-      <string>-Loan</string>
+      <string>-2Loan</string>
       <string></string>
-      <string>Loan</string>
+      <string>2Loan</string>
       <string></string>
      </vector>
      <vector>
       <string>Record&#32;Loan</string>
       <string></string>
-      <string>Loan</string>
+      <string>2Loan</string>
       <string></string>
       <string></string>
      </vector>

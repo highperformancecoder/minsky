@@ -6,12 +6,12 @@
     <from>4</from>
     <to>1</to>
     <coords>
-     <float>66</float>
-     <float>13</float>
-     <float>15.8898</float>
-     <float>29.7034</float>
-     <float>64</float>
-     <float>48</float>
+     <float>27</float>
+     <float>27</float>
+     <float>-23.1102</float>
+     <float>43.7034</float>
+     <float>25</float>
+     <float>62</float>
     </coords>
    </Wire>
    <Wire>
@@ -19,12 +19,12 @@
     <from>0</from>
     <to>6</to>
     <coords>
-     <float>128</float>
-     <float>57</float>
-     <float>199.247</float>
-     <float>19.0015</float>
-     <float>84</float>
-     <float>22</float>
+     <float>89</float>
+     <float>71</float>
+     <float>160.247</float>
+     <float>33.0015</float>
+     <float>45</float>
+     <float>36</float>
     </coords>
    </Wire>
    <Wire>
@@ -89,7 +89,7 @@
    </Item>
    <Item>
     <id>11</id>
-    <type>Variable:parameter</type>
+    <type>VarConstant</type>
     <x>143</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>

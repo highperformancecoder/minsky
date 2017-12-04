@@ -919,7 +919,7 @@ SUITE(GodleyIcon)
       godley->update();
       CHECK(table.initialConditionRow(1));
       CHECK_EQUAL("x",table.cell(1,1));
-      CHECK_EQUAL("-y",table.cell(1,2));
+      CHECK_EQUAL("y",table.cell(1,2));
 
       // now remove a column
       table.deleteCol(3);

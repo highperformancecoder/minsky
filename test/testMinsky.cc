@@ -766,8 +766,8 @@ SUITE(Minsky)
   
       // now add some flow variables and check those
       godley2.cell(2,1)="2:a";
-      godley3.cell(2,1)="-:a";
-      godley3.cell(3,1)="-:a";
+      godley3.cell(2,1)=":a";
+      godley3.cell(3,1)=":a";
       variableValues[":a"]=VariableValue(VariableType::flow).allocValue();
       variableValues[":hello2"]=VariableValue(VariableType::stock).allocValue();
 
@@ -843,10 +843,10 @@ SUITE(Minsky)
       balanceDuplicateColumns(*g1, 2);
       // two rows should have been added
       CHECK_EQUAL(5,godley2.rows());
-      CHECK_EQUAL("-a",trimWS(godley2.cell(1,1)));
+      CHECK_EQUAL("a",trimWS(godley2.cell(1,1)));
       CHECK(trimWS(godley2.cell(2,1)).empty()); // "d" is deleted
-      CHECK_EQUAL("-b",godley2.cell(3,1));
-      CHECK_EQUAL("-c",godley2.cell(4,1));
+      CHECK_EQUAL("b",godley2.cell(3,1));
+      CHECK_EQUAL("c",godley2.cell(4,1));
       CHECK_EQUAL("row3",godley2.cell(4,0)); // check label transferred
     }
 
@@ -871,9 +871,9 @@ SUITE(Minsky)
       godley2.cell(0,1)="a1";
       importDuplicateColumn(godley2, 1);
       CHECK_EQUAL("row1",godley2.cell(2,0));
-      CHECK_EQUAL("-a",godley2.cell(2,1));
+      CHECK_EQUAL("a",godley2.cell(2,1));
       CHECK_EQUAL("row2",godley2.cell(3,0));
-      CHECK_EQUAL("-b",godley2.cell(3,1));
+      CHECK_EQUAL("b",godley2.cell(3,1));
 
       // move cell between columns
       g1->moveCell(2,1,2,2);
