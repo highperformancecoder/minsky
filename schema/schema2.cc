@@ -366,6 +366,7 @@ namespace schema2
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
         if (y.data) data=*y.data;
         if (y.assetClasses) assetClasses=*y.assetClasses;
+        if (y.name) x1->table.title=*y.name;
         SchemaHelper::setPrivates(x1->table,data,assetClasses);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
