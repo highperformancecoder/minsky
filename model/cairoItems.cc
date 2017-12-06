@@ -117,9 +117,16 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
   setFontSize(12);
   if (var.type()==VariableType::constant)
     {
-      auto val=var.engExp();
-      if (val.engExp==-3) val.engExp=0; //0.001-1.0
-      setMarkup(var.mantissa(val)+var.expMultiplier(val.engExp));
+      try
+        {
+          auto val=var.engExp();
+          if (val.engExp==-3) val.engExp=0; //0.001-1.0
+          setMarkup(var.mantissa(val)+var.expMultiplier(val.engExp));
+        }
+      catch (error)
+        {
+          setMarkup("0");
+        }
       w=0.5*Pango::width();
       h=0.5*Pango::height();
     }

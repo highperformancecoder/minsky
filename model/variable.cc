@@ -366,7 +366,11 @@ void VariableBase::draw(cairo_t *cairo) const
   // draw slider
   cairo_save(cairo);
   cairo_set_source_rgb(cairo,0,0,0);
+  try
+    {
   cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+    }
+  catch (error) {} // handlePos() may throw.
   cairo_fill(cairo);
   cairo_restore(cairo);
 

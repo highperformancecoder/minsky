@@ -485,7 +485,7 @@ proc contextMenu {x y X Y} {
     switch -regex [$item.classType] {
         "Variable*|VarConstant" {
             .wiring.context add command -label Description -command "postNote item"
-            .wiring.context add command -label "Value [minsky.canvas.item.value]" 
+            catch {.wiring.context add command -label "Value [minsky.canvas.item.value]"} 
             .wiring.context add command -label "Find definition" -command "findDefinition"
             .wiring.context add command -label "Select all instances" -command {
                 canvas.selectAllVariables
