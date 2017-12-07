@@ -1,4 +1,3 @@
-#!minsky
 source library/init.tcl
 use_namespace minsky
 GUI
