@@ -211,11 +211,11 @@ minsky.xsd: gui-tk/minsky
 upload-schema: minsky.xsd
 	scp minsky.xsd $(SF_WEB)
 
-install: GUI/minsky$(EXE)
+install: gui-tk/minsky$(EXE)
 	mkdir -p $(PREFIX)/bin
-	cp GUI/minsky$(EXE) $(PREFIX)/bin
+	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
 	mkdir -p $(PREFIX)/lib/minsky
-	cp -r GUI/*.tcl GUI/accountingRules GUI/icons GUI/library $(PREFIX)/lib/minsky
+	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
 
 
 
