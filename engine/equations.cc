@@ -1189,7 +1189,12 @@ namespace MathDAG
                     if (auto v=dynamic_cast<VariableDAG*>(init.get()))
                       iv->init(v->name);
                     else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
-                      iv->sliderSet(c->value);
+                      {
+                        // slightly convoluted to prevent sliderSet from overriding c->value
+                        iv->value(c->value);
+                        iv->adjustSliderBounds();
+                        iv->sliderSet(c->value);
+                      }
                     else
                       throw error("only constants, parameters and variables can be connected to the initial value port");
                   }

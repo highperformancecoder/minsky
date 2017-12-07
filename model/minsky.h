@@ -155,6 +155,13 @@ namespace minsky
       }
     }
     /// @}
+
+    /// evaluate the flow equations without stepping.
+    /// @throw ecolab::error if equations are illdefined
+    void evalEquations() {
+      for (auto& eq: equations)
+        eq->eval(&flowVars[0], &stockVars[0]);
+    }
     
     VariableValues variableValues;
 

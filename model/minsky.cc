@@ -611,8 +611,7 @@ namespace minsky
 
     flags &= ~reset_needed;
     // update flow variable
-    for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flowVars[0], &stockVars[0]);
+    evalEquations();
     
     model->recursiveDo
       (&Group::items,
@@ -662,8 +661,7 @@ namespace minsky
       }
 
     // update flow variables
-    for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flowVars[0], &stockVars[0]);
+    evalEquations();
 
     logVariables();
 

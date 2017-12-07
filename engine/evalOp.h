@@ -159,7 +159,7 @@ namespace minsky
 //         cout << OperationType::typeName(x->type())<<"("<<x->in1<<(x->flow1?",":"s,")
 //              <<x->in2<<(x->flow2?")->":"s)->")<<x->out<<endl;
 //       }
-    };
+  };
 
 
 }
