@@ -182,13 +182,13 @@ namespace minsky
             v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
                          rw + 0.5*(v->sliderMin+v->sliderMax));
             // propagate values for ticket #707
-            try {
-              if (minsky().reset_flag() || minsky().equations.empty())
-                minsky().reset();
-              else
-                minsky().evalEquations();
-            }
-            catch (...) {}
+//            try {
+//              if (minsky().reset_flag() || minsky().equations.empty())
+//                minsky().reset();
+//              else
+//                minsky().evalEquations();
+//            }
+//            catch (...) {}
             requestRedraw();
           }
       }
