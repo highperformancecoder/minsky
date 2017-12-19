@@ -176,11 +176,13 @@ string GodleyTable::rowSum(int row) const
     {
       FlowCoef fc(cell(row,c));
       if (!fc.name.empty()||initialConditionRow(row))
-        // apply accounting relation to the initial condition row
-        if (signConventionReversed(c))
-          sum[fc.name]-=fc.coef;
-        else
-          sum[fc.name]+=fc.coef;
+        {
+          // apply accounting relation to the initial condition row
+          if (signConventionReversed(c))
+            sum[fc.name]-=fc.coef;
+          else
+            sum[fc.name]+=fc.coef;
+        }
     }
 
   // create symbolic representation of each term
