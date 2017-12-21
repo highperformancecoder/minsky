@@ -508,41 +508,42 @@ proc exportCanvas {} {
 
 
 proc getLogVars {} {
-    global logvars
-    array unset logvars 
+    global varNames allLogVars varIds
+    set varNames {}
+    set varIds {}
+    set allLogVars 0
     toplevel .logVars
-    button .logVars.ok -text OK -command logVarsOK
-    button .logVars.all -text All -command {
-        for {set r 1} {[winfo exists .logVars.check$r]} {incr r} {
-            .logVars.check$r toggle
-        }
-    }
-    grid .logVars.ok .logVars.all -row 0
-    set r 1
+    frame .logVars.buttons
+    button .logVars.buttons.ok -text OK -command logVarsOK
+    checkbutton .logVars.buttons.all -text All -variable allLogVars -command {
+        .logVars.selection.selection selection [expr $allLogVars?"set":"clear"] 0 end
+    }            
+    pack .logVars.buttons.ok .logVars.buttons.all -side left
+
     foreach v [variableValues.#keys] {
         if {![regexp "^constant:" $v]} {
             getValue $v
-            label .logVars.v$r -text [minsky.value.name]
-            checkbutton .logVars.check$r -variable .logVars.check$r -command "
-                set logvars($v) \[set .logVars.check$r\]
-            "
-            grid .logVars.v$r .logVars.check$r -row $r
-            incr r
+            lappend varNames [minsky.value.name]
+            lappend varIds $v
         }
     }
-#    grid .logVars.ok .logVars.all -row $r
+    frame .logVars.selection
+    listbox .logVars.selection.selection -listvariable varNames -selectmode extended -height 30 -yscrollcommand ".logVars.selection.vscroll set"
+    scrollbar .logVars.selection.vscroll -orient vertical -command ".logVars.selection.selection yview"
+    pack .logVars.selection.selection -fill both -side left -expand y
+    pack .logVars.selection.vscroll -fill y -side left -expand y
+    pack .logVars.buttons .logVars.selection
+    
     tkwait visibility .logVars
     grab set .logVars
     wm transient .logVars
 }
 
 proc logVarsOK {} {
-    global workDir logvars
-    foreach v [array names logvars] {
-        if {$logvars($v)} {
-            lappend vars $v
-        }
-    }
+    global workDir varIds
+    set indices [.logVars.selection.selection curselection]
+    
+    foreach i $indices {lappend vars [lindex $varIds $i]}
     logVarList $vars
     destroy .logVars
     openLogFile [tk_getSaveFile -defaultextension .dat -initialdir $workDir]
