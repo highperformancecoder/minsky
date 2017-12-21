@@ -548,7 +548,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Save group as" -command "group::save"
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             .wiring.context add command -label "Flip Contents" -command "$item.flipContents; canvas.requestRedraw"
-            .wiring.context add command -label "Ungroup" -command "canvas.ungroupItem"
+            .wiring.context add command -label "Ungroup" -command "canvas.ungroupItem; canvas.requestRedraw"
         }
         "Item" {
             .wiring.context delete 0 end
