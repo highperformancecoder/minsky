@@ -471,7 +471,8 @@ namespace minsky
         ni->m_visible=true;
         group->addItem(ni);
         ni->rotation=0;
-        ni->moveTo(maxWidth - widths[i],
+        ni->zoomFactor=group->zoomFactor;
+        ni->moveTo(group->x()+maxWidth - widths[i],
                    y+heights[i]);
         // variables need to refer to outer scope
         if (ni->name()[0]!=':')
