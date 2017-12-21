@@ -333,6 +333,10 @@ namespace minsky
     /// @throw if conversion is disallowed
     void convertVarType(const std::string& name, VariableType::Type type);
 
+    /// add integral to current canvas item (which must be variable
+    /// convertible to an integral variable
+    void addIntegral();
+    
     /// returns true if any variable of name \a name has a wired input
     bool inputWired(const std::string&) const;
 

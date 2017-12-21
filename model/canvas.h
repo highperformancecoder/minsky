@@ -149,7 +149,6 @@ namespace minsky
         copyVars(g->stockVars);
     }
 
-    
     /// handle arrow keys
     /// @param int - direction (-1=left/up, +1=right/down)
     /// @param x, y coordinates of mouse in canvas coordinates

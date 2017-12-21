@@ -135,6 +135,11 @@ namespace minsky
       canvas.addSwitch();
       registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");
     }
+    void addIntegral() {
+      Minsky::addIntegral();
+      registerRef(canvas.item,"minsky.canvas.item");
+    }
+
     void createGroup() {
       canvas.groupSelection();
       registerRef(canvas.itemFocus,"minsky.canvas.itemFocus");

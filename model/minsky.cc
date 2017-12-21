@@ -1132,6 +1132,24 @@ namespace minsky
     i->second=VariableValue(type,i->second.name,i->second.init);
   }
 
+  void Minsky::addIntegral()
+  {
+    if (auto v=dynamic_cast<VariableBase*>(canvas.item.get()))
+      if (auto g=v->group.lock())
+        {
+          // nb throws if conversion cannot be performed
+          convertVarType(v->valueId(),VariableType::integral);
+          auto integ=new IntOp;
+          g->addItem(integ);
+          integ->moveTo(canvas.item->x(), canvas.item->y());
+          integ->intVar=dynamic_pointer_cast<VariableBase>(canvas.item);
+          integ->toggleCoupled();
+          
+          canvas.requestRedraw();
+        }
+  }
+
+  
   bool Minsky::inputWired(const std::string& name) const
   {
     bool r=false;

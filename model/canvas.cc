@@ -479,8 +479,7 @@ namespace minsky
         y+=2*heights[i];
       }
   }
-  
-  
+
   void Canvas::handleArrows(int dir, float x, float y)
   {
     if (auto item=itemAt(x,y))
