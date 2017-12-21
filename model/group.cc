@@ -218,7 +218,7 @@ namespace minsky
     for (auto& p: it->ports)
       {
         assert(p);
-        for (auto& w: p->wires)
+        for (auto& w: p->wires())
           {
             assert(w);
             adjustWiresGroup(*w);
@@ -266,7 +266,7 @@ namespace minsky
     set<Wire*> wiresToSplit;
     for (auto& i: items)
       for (auto& p: i->ports)
-        for (auto w: p->wires)
+        for (auto w: p->wires())
           wiresToSplit.insert(w);
 
     for (auto w: wiresToSplit)
@@ -279,35 +279,35 @@ namespace minsky
         assert(iv->ports[1]->input() && !iv->ports[1]->multiWireAllowed());
         // firstly join wires that don't cross boundaries
         // determine if this is input or output var
-        if (iv->ports[1]->wires.size()>0)
+        if (iv->ports[1]->wires().size()>0)
           {
-            auto fromGroup=iv->ports[1]->wires[0]->from()->item.group.lock();
+            auto fromGroup=iv->ports[1]->wires()[0]->from()->item.group.lock();
             if (fromGroup.get() == this)
               {
                 // not an input var
-                for (auto& w: iv->ports[0]->wires)
+                for (auto& w: iv->ports[0]->wires())
                   if (w->to()->item.group.lock().get() == this)
                     // join wires, as not crossing boundary
                     {
                       auto to=w->to();
                       iv->ports[0]->eraseWire(w);
                       removeWire(*w);
-                      addWire(iv->ports[1]->wires[0]->from(), to);
+                      addWire(iv->ports[1]->wires()[0]->from(), to);
                     }
               }
             else
-              for (auto& w: iv->ports[0]->wires)
+              for (auto& w: iv->ports[0]->wires())
                 if (w->to()->item.group.lock() == fromGroup)
                   // join wires, as not crossing boundary
                   {
                     auto to=w->to();
                     iv->ports[0]->eraseWire(w);
                     globalGroup().removeWire(*w);
-                    adjustWiresGroup(*addWire(iv->ports[1]->wires[0]->from(), to));
+                    adjustWiresGroup(*addWire(iv->ports[1]->wires()[0]->from(), to));
                   }
           }
         
-        if (iv->ports[0]->wires.empty() || iv->ports[1]->wires.empty())
+        if (iv->ports[0]->wires().empty() || iv->ports[1]->wires().empty())
           removeItem(*iv);
       }
   }
@@ -471,11 +471,11 @@ namespace minsky
       return WirePtr();
 
     // check that multiple input wires are only to binary ops.
-    if (toP->wires.size()>=1 && !toP->multiWireAllowed())
+    if (toP->wires().size()>=1 && !toP->multiWireAllowed())
       return WirePtr();
 
     // check that a wire doesn't already exist connecting these two ports
-    for (auto& w: toP->wires)
+    for (auto& w: toP->wires())
       if (w->from()==fromP)
         return WirePtr();
 

@@ -46,7 +46,7 @@ void VariableBase::addPorts()
 
 bool VariableBase::inputWired() const
 {
-  return ports.size()>1 && !ports[1]->wires.empty();
+  return ports.size()>1 && !ports[1]->wires().empty();
 }
 
 ClickType::Type VariableBase::clickType(float xx, float yy)
@@ -217,7 +217,7 @@ void VariablePtr::retype(VariableBase::Type type)
       reset(VariableBase::create(type));
       static_cast<VariableBase&>(*get()) = *tmp;
       for (size_t i=0; i<get()->ports.size() && i< tmp->ports.size(); ++i)
-        for (auto w: tmp->ports[i]->wires)
+        for (auto w: tmp->ports[i]->wires())
           {
             assert(!tmp->ports[i]->input());
             w->moveToPorts(get()->ports[i], w->to());

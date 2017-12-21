@@ -51,10 +51,10 @@ namespace minsky
 
   void Port::eraseWire(Wire* w) 
   {
-    for (auto i=wires.begin(); i!=wires.end(); ++i)
+    for (auto i=m_wires.begin(); i!=m_wires.end(); ++i)
       if (*i==w) 
         {
-          wires.erase(i);
+          m_wires.erase(i);
           break;
         }
   }
@@ -65,10 +65,11 @@ namespace minsky
     if (auto g=item.group.lock())
       {
         auto& gg=g->globalGroup();
+        auto wires=m_wires; // save copy, as Group::removeWire mutates it
         for (auto& w: wires)
           gg.removeWire(*w);
       }
-    wires.clear();
+    m_wires.clear();
   }
   
   /// sets the VariableValue associated with this port
@@ -86,8 +87,8 @@ namespace minsky
   }
 
   const VariableValue& Port::getVariableValue() const {
-    if (input() && !wires.empty())
-      return wires[0]->from()->getVariableValue();
+    if (input() && !m_wires.empty())
+      return m_wires[0]->from()->getVariableValue();
     return variableValue;
   }
 

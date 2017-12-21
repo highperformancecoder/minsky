@@ -83,8 +83,8 @@ namespace minsky
     if (!from || !to) throw error("wiring defunct ports");
     if (from->input() || !to->input()) throw error("invalid ports for wire");
     coords(a_coords);
-    m_from.lock()->wires.push_back(this);
-    m_to.lock()->wires.push_back(this);
+    m_from.lock()->m_wires.push_back(this);
+    m_to.lock()->m_wires.push_back(this);
   }
 
   Wire::~Wire()
@@ -107,13 +107,13 @@ namespace minsky
   void Wire::moveToPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
   {
     if (auto f=this->from())
-      f->wires.erase(remove(f->wires.begin(), f->wires.end(), this), f->wires.end());
+      f->m_wires.erase(remove(f->m_wires.begin(), f->m_wires.end(), this), f->m_wires.end());
     if (auto t=this->to())
-      t->wires.erase(remove(t->wires.begin(), t->wires.end(), this), t->wires.end());
+      t->m_wires.erase(remove(t->m_wires.begin(), t->m_wires.end(), this), t->m_wires.end());
     m_from=from;
     m_to=to;
-    from->wires.push_back(this);
-    to->wires.push_back(this);
+    from->m_wires.push_back(this);
+    to->m_wires.push_back(this);
   }
 
   

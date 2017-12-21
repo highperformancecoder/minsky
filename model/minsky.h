@@ -215,7 +215,7 @@ namespace minsky
       return dynamic_pointer_cast<VariableBase>
         (model->findAny(&Group::items, [&](ItemPtr x) {
             auto v=dynamic_cast<VariableBase*>(x.get());
-            return v && v->ports.size()>1 && v->ports[1]->wires.size()>0 && v->valueId()==valueId;
+            return v && v->ports.size()>1 && !v->ports[1]->wires().empty() && v->valueId()==valueId;
           }));
     }
 

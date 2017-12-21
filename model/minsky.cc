@@ -348,7 +348,7 @@ namespace minsky
              for (size_t i=0; i<p->ports.size(); ++i)
                {
                  auto& pp=p->ports[i];
-                 if (pp->wires.size()>0 && pp->getVariableValue().idx()>=0)
+                 if (pp->wires().size()>0 && pp->getVariableValue().idx()>=0)
                    p->connectVar(pp->getVariableValue(), i);
                }
            }
@@ -969,8 +969,8 @@ namespace minsky
                 {
                 case OperationType::add: case OperationType::subtract:
                 case OperationType::multiply: case OperationType::divide:
-                  fvInit[eo.in1] |= op->ports[1]->wires.empty();
-                  fvInit[eo.in2] |= op->ports[3]->wires.empty();
+                  fvInit[eo.in1] |= op->ports[1]->wires().empty();
+                  fvInit[eo.in2] |= op->ports[3]->wires().empty();
                   break;
                 default: break;
                 }
@@ -1141,7 +1141,7 @@ namespace minsky
         if (auto v=dynamic_cast<VariableBase*>(i->get()))
           if (v->valueId()==name)
             {
-              r=v->ports.size()>1 && !v->ports[1]->wires.empty();
+              r=v->ports.size()>1 && !v->ports[1]->wires().empty();
               return true;
             }
         return false;

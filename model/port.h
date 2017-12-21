@@ -45,11 +45,15 @@ namespace minsky
     Port(const Port&)=delete;
     void operator=(const Port&)=delete;
     VariableValue variableValue; //refers to variable value representing this port
+    std::vector<Wire*> m_wires;
+    friend class Wire;
   public:
     Item& item; // owner of this port
-    std::vector<Wire*> wires;
     GroupPtr group() const;
 
+    /// returns a vector of weak references to the wires attached to this port
+    const std::vector<Wire*>& wires() const {return m_wires;}
+    
     /// remove wire from wires. No ownership passed.
     void eraseWire(Wire*);
     /// delete all attached wires

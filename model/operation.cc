@@ -384,7 +384,7 @@ namespace minsky
     if (numPorts()>0)
       {
         // save any attached wires for later use
-        for (auto w: ports[0]->wires)
+        for (auto w: ports[0]->wires())
           savedWires.push_back(*w);
       }
 
@@ -476,7 +476,7 @@ namespace minsky
         // not sufficient - wires hold a reference to the ports
         // they connect
         if (auto g=group.lock())
-          for (auto w: intVar->ports[1]->wires)
+          for (auto w: intVar->ports[1]->wires())
             g->removeWire(*w);
         ports[0]=intVar->ports[0];
         intVar->m_visible=false;
