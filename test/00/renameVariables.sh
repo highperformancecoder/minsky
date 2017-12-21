@@ -47,7 +47,7 @@ proc afterMinskyStarted {} {
   assert {[minsky.canvas.item.name]=="R"}
   # check that the selected variable has its input wired
   minsky.canvas.item.ports.@elem 1
-  assert {[minsky.canvas.item.ports(1).wires.size]==1}
+  assert {[minsky.canvas.item.ports(1).numWires]==1}
   tcl_exit
 }
 EOF

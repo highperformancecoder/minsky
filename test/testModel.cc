@@ -80,7 +80,7 @@ namespace
     void checkWiresConsistent() {
       for (auto& i: model->items)
         for (auto& p: i->ports)
-          for (auto& w: p->wires)
+          for (auto& w: p->wires())
             {
               CHECK(w);
               CHECK(p->input() || p==w->from());
@@ -89,7 +89,7 @@ namespace
       for (auto& g: model->groups)
         for (auto& i: g->items)
           for (auto& p: i->ports)
-            for (auto& w: p->wires)
+            for (auto& w: p->wires())
               {
                 assert(w);
                 assert(p->input() || p==w->from());
@@ -962,8 +962,8 @@ SUITE(Integrate)
       intop->description("a");
       // should cowardly refuse, and give a different name
       CHECK_EQUAL(":a1",intop->description());
-      CHECK_EQUAL(1,intop->ports[0]->wires.size());
-      CHECK(intop->ports[0]->wires[0]->to()==a->ports[1]);
+      CHECK_EQUAL(1,intop->ports[0]->wires().size());
+      CHECK(intop->ports[0]->wires()[0]->to()==a->ports[1]);
       auto intop2=new IntOp;
       model->addItem(intop2);
       intop2->description(intop->description());
