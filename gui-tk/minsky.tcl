@@ -511,7 +511,14 @@ proc getLogVars {} {
     global logvars
     array unset logvars 
     toplevel .logVars
-    set r 0
+    button .logVars.ok -text OK -command logVarsOK
+    button .logVars.all -text All -command {
+        for {set r 1} {[winfo exists .logVars.check$r]} {incr r} {
+            .logVars.check$r toggle
+        }
+    }
+    grid .logVars.ok .logVars.all -row 0
+    set r 1
     foreach v [variableValues.#keys] {
         if {![regexp "^constant:" $v]} {
             getValue $v
@@ -523,13 +530,7 @@ proc getLogVars {} {
             incr r
         }
     }
-    button .logVars.ok -text OK -command logVarsOK
-    button .logVars.all -text All -command {
-        for {set r 0} {[winfo exists .logVars.check$r]} {incr r} {
-            .logVars.check$r toggle
-        }
-    }
-    grid .logVars.ok .logVars.all -row $r
+#    grid .logVars.ok .logVars.all -row $r
     tkwait visibility .logVars
     grab set .logVars
     wm transient .logVars
