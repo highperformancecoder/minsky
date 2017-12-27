@@ -208,7 +208,7 @@ namespace minsky
 
   void Minsky::copy() const
   {
-    schema1::Minsky m(canvas.selection);
+    schema2::Minsky m(canvas.selection);
     ostringstream os;
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -227,7 +227,7 @@ namespace minsky
   {
     istringstream is(getClipboard());
     xml_unpack_t unpacker(is);
-    schema1::Minsky m;
+    schema2::Minsky m;
     xml_unpack(unpacker, "Minsky", m);
     GroupPtr g(new Group);
     canvas.setItemFocus(model->addGroup(g));

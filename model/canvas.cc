@@ -277,6 +277,12 @@ namespace minsky
         {
           selection.items.push_back(i);
           i->selected=true;
+          if (auto integ=dynamic_cast<IntOp*>(i.get()))
+            {
+              // ensure integral variable is selected too
+              selection.items.push_back(integ->intVar);
+              integ->intVar->selected=true;
+            }
         }
 
     for (auto& i: topLevel->groups)
