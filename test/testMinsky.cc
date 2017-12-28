@@ -800,14 +800,16 @@ SUITE(Minsky)
 
       godley1.cell(0,1)="a1";  
       godley1.cell(0,2)="l1";
-
+      g1->update();
+      
       set<string> cols=matchingTableColumns(*g2,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l1", *cols.begin());
 
       godley2.cell(0,1)="l1";  
       godley2.cell(0,2)="l2";  
-
+      g2->update();
+      
       cols=matchingTableColumns(*g1,GodleyAssetClass::asset);
       CHECK_EQUAL(1, cols.size());
       CHECK_EQUAL("l2", *cols.begin());
@@ -840,6 +842,9 @@ SUITE(Minsky)
       godley1.cell(5,2)="-e";
       godley2.cell(1,0)="row1";
       godley2.cell(2,1)="d";
+      g1->update();
+      g2->update();
+
       balanceDuplicateColumns(*g1, 2);
       // two rows should have been added
       CHECK_EQUAL(5,godley2.rows());

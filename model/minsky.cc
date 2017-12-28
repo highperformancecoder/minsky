@@ -422,7 +422,7 @@ namespace minsky
         auto vi=variableValues.find(i);
         if (vi!=variableValues.end())
           {
-            if (scope==-1 && toplevel || scope==size_t(godley.group.lock().get()))
+            if ((scope==-1 && toplevel) || size_t(scope)==size_t(godley.group.lock().get()))
               r1.insert(VariableValue::uqName(vi->second.name));
             else
               r1.insert(':'+VariableValue::uqName(vi->second.name));
@@ -493,7 +493,7 @@ namespace minsky
                            destTable.cell(r,col)=srcTable.cell(row,srcCol);
                    for (size_t row=1; row!=destTable.rows(); ++row)
                      if (!destTable.initialConditionRow(row) && !destTable.cell(row,0).empty())
-                  destRowLabels[trimWS(destTable.cell(row,0))]=row;
+                       destRowLabels[trimWS(destTable.cell(row,0))]=row;
 
 
                    // compute column signature for both src and destination columns
@@ -517,7 +517,7 @@ namespace minsky
                          string rowLabel=srcRowLabels[srcGodley.valueId(i->first)];
                          map<string,int>::iterator dr=destRowLabels.find(rowLabel);
                          if (dr!=destRowLabels.end())
-                           if (destTable.cell(dr->second, col).empty())
+                           if (FlowCoef(destTable.cell(dr->second, col)).coef==0)
                              destTable.cell(dr->second, col) = flowEntry;
                            else
                              // add a new blank labelled flow line
