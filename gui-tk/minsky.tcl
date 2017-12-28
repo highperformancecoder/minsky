@@ -755,7 +755,7 @@ proc step {} {
         global running
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
-        .controls.statusbar configure -text "t: [t] Δt: [format %g [expr [t]-$lastt]]"
+        .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
         updateGodleysDisplay
         update
         return -options $options $errMsg
