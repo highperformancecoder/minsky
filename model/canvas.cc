@@ -156,6 +156,10 @@ namespace minsky
               if (auto toGroup=model->minimalEnclosingGroup
                   (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
                 {
+                  // prevent moving a group inside itself
+                  if (auto g=dynamic_cast<Group*>(itemFocus.get()))
+                    if (g->higher(*toGroup))
+                      return;
                   auto fromGroup=itemFocus->group.lock();
                   toGroup->addItem(itemFocus);
                   toGroup->splitBoundaryCrossingWires();

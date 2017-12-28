@@ -648,7 +648,8 @@ namespace minsky
     // at this point, this is a candidate. Check if any child groups are also
     for (auto& g: groups)
       if (auto mg=g->minimalEnclosingGroup(x0,y0,x1,y1, ignore))
-        return mg;
+        if (mg->visible())
+          return mg;
     return this!=ignore? this: nullptr;
   }
 
