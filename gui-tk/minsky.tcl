@@ -926,15 +926,17 @@ proc saveAs {} {
 }
 
 proc newSystem {} {
+    doPushHistory 0
     if [edited] {
         switch [tk_messageBox -message "Save?" -type yesnocancel] {
             yes save
             no {}
             cancel {return -level [info level]}
         }
-    }
-    reset
-    model.clear
+    }    
+    catch {reset}
+    clearAllMaps
+    pushFlags
     deleteSubsidiaryTopLevels
     clearHistory
     model.setZoom 1
@@ -942,6 +944,8 @@ proc newSystem {} {
     global fname
     set fname ""
     wm title . "Minsky: New System"
+    popFlags
+    doPushHistory 1
 }
 
 proc toggleImplicitSolver {} {
