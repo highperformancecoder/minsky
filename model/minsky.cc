@@ -418,14 +418,14 @@ namespace minsky
       toplevel=!g->group.lock();
     for (auto& i: r)
       {
-        auto p=i.find(':');
-        if (p==string::npos)
-          r1.insert(i);
-        else
+        int scope=VariableValue::scope(i);
+        auto vi=variableValues.find(i);
+        if (vi!=variableValues.end())
           {
-            auto s=i.substr(p); // strip off scope qualifier
-            if (VariableValue::valueId(godley.group.lock(), s)==i)
-              r1.insert(toplevel? s.substr(1): s); // variable is accessible from current table
+            if (scope==-1 && toplevel || scope==size_t(godley.group.lock().get()))
+              r1.insert(VariableValue::uqName(vi->second.name));
+            else
+              r1.insert(':'+VariableValue::uqName(vi->second.name));
           }
       }
     return r1;
@@ -488,15 +488,9 @@ namespace minsky
                        }
                      else if (srcTable.initialConditionRow(row))
                        // copy directly into destination initial condition,
-                       // reversing sign
                        for (size_t r=1; r<destTable.rows(); ++r)
                          if (destTable.initialConditionRow(r))
                            destTable.cell(r,col)=srcTable.cell(row,srcCol);
-//                   {
-//                             FlowCoef fc(srcTable.cell(row,srcCol));
-//                             destTable.cell(r,col)=to_string(-fc.coef)+fc.name;
-//                             break;
-//                           }
                    for (size_t row=1; row!=destTable.rows(); ++row)
                      if (!destTable.initialConditionRow(row) && !destTable.cell(row,0).empty())
                   destRowLabels[trimWS(destTable.cell(row,0))]=row;

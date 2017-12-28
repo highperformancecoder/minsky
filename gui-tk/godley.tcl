@@ -408,7 +408,7 @@ proc updateGodley {id} {
     }
 }
 
-proc columnVarTrace {id col varName args} {
+proc updateStockVarName {id col varName} {
     global $varName
     # putting a catch here allows us to present a cleaner error
     # message to the user, as this proc can be called by other
@@ -525,7 +525,8 @@ proc whenIdleUpdateGodley {id} {
             set godley$id.stockVarName{$c} [setGetCell $id 2 $c 0 {} .godley$id.table]
             ttk::combobox .godley$id.stockVarName{$c} -textvariable godley$id.stockVarName{$c} \
                 -values [matchingTableColumns $id [$id.table.assetClass $col] ]
-            trace add variable godley$id.stockVarName{$c} write "columnVarTrace $id $col"
+            bind .godley$id.stockVarName{$c} <Leave> "updateStockVarName $id $col godley$id.stockVarName{$c}"
+            bind .godley$id.stockVarName{$c} <<ComboboxSelected>> "updateStockVarName $id $col godley$id.stockVarName{$c}"
             .godley$id.table window configure 2,$c -window .godley$id.stockVarName{$c}
         }
     }
