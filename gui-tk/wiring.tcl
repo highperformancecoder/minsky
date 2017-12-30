@@ -945,7 +945,7 @@ proc setIntegralIValue {} {
     set item minsky.canvas.item
     $item.description $constInput(Name)
     # description may have change intVar, so use value instead to set init
-    getValue :$constInput(Name)
+    getValue [$item.valueId]
     value.init $constInput(Value)
     $item.rotation $constInput(Rotation)
 }
