@@ -19,6 +19,7 @@
 
 #include "godleyTable.h"
 #include "selection.h"
+#include "latexMarkup.h"
 #include <pango.h>
 #include <ecolab_epilogue.h>
 
@@ -43,7 +44,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
           if (row==0 && col==0)
             pango.setMarkup("Flows ↓ / Stock Vars →");
           else
-            pango.setMarkup(godleyIcon->table.cell(row,col));
+            pango.setMarkup(latexToPango(godleyIcon->table.cell(row,col)));
           colWidth=max(colWidth,pango.width());
           cairo_move_to(surface->cairo(),x+3,y);
           pango.show();
