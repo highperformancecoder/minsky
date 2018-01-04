@@ -32,7 +32,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   double leftTableOffset=50, topTableOffset=30;
   Pango pango(surface->cairo());
   pango.setMarkup(godleyIcon->table.cell(0,0));
-  double rowHeight=pango.height();
+  double rowHeight=pango.height()+2;
   double x=leftTableOffset;
   for (unsigned col=0; col<godleyIcon->table.cols(); ++col)
     {
@@ -45,10 +45,36 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
           else
             pango.setMarkup(godleyIcon->table.cell(row,col));
           colWidth=max(colWidth,pango.width());
-          cairo_move_to(surface->cairo(),x,y);
+          cairo_move_to(surface->cairo(),x+3,y);
           pango.show();
         }
+      y=topTableOffset;
+      colWidth+=5;
+      for (unsigned row=0; row<=godleyIcon->table.rows(); ++row, y+=rowHeight)
+        {
+          // horizontal lines
+          cairo_move_to(surface->cairo(),x,y);
+          cairo_rel_line_to(surface->cairo(),colWidth,0);
+          cairo_set_line_width(surface->cairo(),0.5);
+          cairo_stroke(surface->cairo());
+        }
+      // vertical lines
+      cairo_move_to(surface->cairo(),x,topTableOffset);
+      cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+      if (col==1)
+        {
+          cairo_move_to(surface->cairo(),x+3,topTableOffset);
+          cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+        }
+      cairo_set_line_width(surface->cairo(),0.5);
+      cairo_stroke(surface->cairo());
+
       x+=colWidth;
     }
+  // final vertical line
+  cairo_move_to(surface->cairo(),x,topTableOffset);
+  cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+  cairo_set_line_width(surface->cairo(),0.5);
+  cairo_stroke(surface->cairo());
 }
 
