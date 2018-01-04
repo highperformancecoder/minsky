@@ -35,6 +35,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   pango.setMarkup(godleyIcon->table.cell(0,0));
   double rowHeight=pango.height()+2;
   double x=leftTableOffset;
+  auto assetClass=GodleyAssetClass::noAssetClass;
   for (unsigned col=0; col<godleyIcon->table.cols(); ++col)
     {
       double colWidth=0;
@@ -62,8 +63,9 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       // vertical lines
       cairo_move_to(surface->cairo(),x,topTableOffset);
       cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
-      if (col==1)
+      if (assetClass!=godleyIcon->table._assetClass(col))
         {
+          assetClass=godleyIcon->table._assetClass(col);
           cairo_move_to(surface->cairo(),x+3,topTableOffset);
           cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
         }
