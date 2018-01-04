@@ -34,15 +34,20 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   Pango pango(surface->cairo());
   pango.setMarkup(godleyIcon->table.cell(0,0));
   double rowHeight=pango.height()+2;
+  double tableHeight=(godleyIcon->table.rows()-scrollRowStart+1)*rowHeight;
   double x=leftTableOffset;
   double lastAssetBoundary=x;
   auto assetClass=GodleyAssetClass::noAssetClass;
+  
   for (unsigned col=0; col<godleyIcon->table.cols(); ++col)
     {
+      // omit stock columns less than scrollColStart
+      if (col>0 && col<scrollColStart) continue;
       double y=topTableOffset;
       double colWidth=0;
-      for (unsigned row=0; row<godleyIcon->table.rows(); ++row, y+=rowHeight)
+      for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
         {
+          if (row>0 && row<scrollRowStart) continue;
           if (row==0 && col==0)
             pango.setMarkup("Flows ↓ / Stock Vars →");
           else
@@ -50,12 +55,13 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
           colWidth=max(colWidth,pango.width());
           cairo_move_to(surface->cairo(),x+3,y);
           pango.show();
+          y+=rowHeight;
         }
       y=topTableOffset;
       colWidth+=5;
       // vertical lines
       cairo_move_to(surface->cairo(),x,topTableOffset);
-      cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+      cairo_rel_line_to(surface->cairo(),0,tableHeight);
       if (assetClass!=godleyIcon->table._assetClass(col))
         {
           if (assetClass!=GodleyAssetClass::noAssetClass)
@@ -68,7 +74,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
           
           assetClass=godleyIcon->table._assetClass(col);
           cairo_move_to(surface->cairo(),x+3,topTableOffset);
-          cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+          cairo_rel_line_to(surface->cairo(),0,tableHeight);
         }
       cairo_set_line_width(surface->cairo(),0.5);
       cairo_stroke(surface->cairo());
@@ -82,9 +88,9 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   
   // final column vertical line
   cairo_move_to(surface->cairo(),x,topTableOffset);
-  cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+  cairo_rel_line_to(surface->cairo(),0,tableHeight);
   cairo_move_to(surface->cairo(),x+3,topTableOffset);
-  cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+  cairo_rel_line_to(surface->cairo(),0,tableHeight);
   cairo_set_line_width(surface->cairo(),0.5);
   cairo_stroke(surface->cairo());
 
@@ -97,28 +103,32 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   double colWidth=pango.width();
   y+=rowHeight;
   
-  for (unsigned row=1; row<godleyIcon->table.rows(); ++row, y+=rowHeight)
+  for (unsigned row=1; row<godleyIcon->table.rows(); ++row)
     {
+      if (row>0 && row<scrollRowStart) continue;
       pango.setMarkup(godleyIcon->table.rowSum(row));
       colWidth=max(colWidth,pango.width());
       cairo_move_to(surface->cairo(),x,y);
       pango.show();
+      y+=rowHeight;
     }
 
   x+=colWidth;
   y=topTableOffset;
-  for (unsigned row=0; row<=godleyIcon->table.rows(); ++row, y+=rowHeight)
+  for (unsigned row=0; row<=godleyIcon->table.rows(); ++row)
     {
       // horizontal lines
+      if (row>0 && row<scrollRowStart) continue;
       cairo_move_to(surface->cairo(),leftTableOffset,y);
       cairo_line_to(surface->cairo(),x,y);
       cairo_set_line_width(surface->cairo(),0.5);
       cairo_stroke(surface->cairo());
+      y+=rowHeight;
     }
 
   // final vertical line
   cairo_move_to(surface->cairo(),x,topTableOffset);
-  cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+  cairo_rel_line_to(surface->cairo(),0,tableHeight);
   cairo_set_line_width(surface->cairo(),0.5);
   cairo_stroke(surface->cairo());
 
