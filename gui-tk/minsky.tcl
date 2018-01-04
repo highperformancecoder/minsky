@@ -613,6 +613,7 @@ grid columnconfigure . 0 -weight 1
 grid rowconfigure . 10 -weight 1
 
 source $minskyHome/godley.tcl
+source $minskyHome/newGodley.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/plots.tcl
 source $minskyHome/group.tcl

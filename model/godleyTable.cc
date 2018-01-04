@@ -40,7 +40,10 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       double y=topTableOffset;
       for (unsigned row=0; row<godleyIcon->table.rows(); ++row, y+=rowHeight)
         {
-          pango.setMarkup(godleyIcon->table.cell(row,col));
+          if (row==0 && col==0)
+            pango.setMarkup("Flows ↓ / Stock Vars →");
+          else
+            pango.setMarkup(godleyIcon->table.cell(row,col));
           colWidth=max(colWidth,pango.width());
           cairo_move_to(surface->cairo(),x,y);
           pango.show();

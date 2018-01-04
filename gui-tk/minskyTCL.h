@@ -20,6 +20,7 @@
 #ifndef MINSKYTCL_H
 #define MINSKYTCL_H
 #include "minsky.h"
+#include "godleyTable.h"
 #include <fstream>
 
 // TCL specific definitions for global minsky object
@@ -28,7 +29,8 @@ namespace minsky
 {
   cmd_data* getCommandData(const string& name);
 
-  int deleteTclItem(ClientData, Tcl_Interp*, int, const char **);
+  template <class O>
+  int deleteTclObject(ClientData, Tcl_Interp*, int, const char **);
 
   /// a TCL_obj_t that provides a hook for detecting model edits
   ecolab::TCL_obj_t& minskyTCL_obj();
@@ -178,7 +180,7 @@ namespace minsky
         // create a reference to manage object's lifetime
         Tcl_CreateCommand
           (ecolab::interp(), (name+".delete").c_str(),
-           (Tcl_CmdProc*)deleteTclItem,
+           (Tcl_CmdProc*)deleteTclObject<Item>,
            (ClientData)(new ItemPtr(canvas.item)),NULL);
       }
       return canvas.item? name: "";
@@ -233,6 +235,23 @@ namespace minsky
       TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
     }
 
+    std::string openGodley() {
+      if (auto gi=dynamic_pointer_cast<GodleyIcon>(canvas.item))
+        {
+          auto godley=new GodleyTableWindow;
+          std::string name="godleyWindow"+to_string(size_t(canvas.item.get())); 
+          // pass ownership of object to TCL interpreter
+          Tcl_CreateCommand
+            (ecolab::interp(), (name+".delete").c_str(),
+             (Tcl_CmdProc*)deleteTclObject<GodleyTableWindow>,
+             (ClientData)godley,NULL);
+          godley->godleyIcon=gi;
+          TCL_obj(minskyTCL_obj(),name,*godley);
+          return name;
+        }
+      return "";
+    }
+    
     //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {
 //      clearSelection();

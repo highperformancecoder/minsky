@@ -532,6 +532,7 @@ proc contextMenu {x y X Y} {
         "GodleyIcon" {
             .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Open Godley Table" -command "openGodley"
+            .wiring.context add command -label "new Open Godley Table" -command "newOpenGodley [minsky.openGodley]"
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Resize Godley" -command "canvas.lassoMode itemResize"
