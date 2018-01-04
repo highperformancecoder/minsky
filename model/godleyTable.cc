@@ -35,6 +35,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   pango.setMarkup(godleyIcon->table.cell(0,0));
   double rowHeight=pango.height()+2;
   double x=leftTableOffset;
+  double lastAssetBoundary=x;
   auto assetClass=GodleyAssetClass::noAssetClass;
   for (unsigned col=0; col<godleyIcon->table.cols(); ++col)
     {
@@ -65,6 +66,14 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
       if (assetClass!=godleyIcon->table._assetClass(col))
         {
+          if (assetClass!=GodleyAssetClass::noAssetClass)
+            {
+              pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
+              cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
+              pango.show();
+            }
+          lastAssetBoundary=x;
+          
           assetClass=godleyIcon->table._assetClass(col);
           cairo_move_to(surface->cairo(),x+3,topTableOffset);
           cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
@@ -74,6 +83,11 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
 
       x+=colWidth;
     }
+  
+  pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
+  cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
+  pango.show();
+  
   // final vertical line
   cairo_move_to(surface->cairo(),x,topTableOffset);
   cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
