@@ -39,8 +39,8 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   auto assetClass=GodleyAssetClass::noAssetClass;
   for (unsigned col=0; col<godleyIcon->table.cols(); ++col)
     {
-      double colWidth=0;
       double y=topTableOffset;
+      double colWidth=0;
       for (unsigned row=0; row<godleyIcon->table.rows(); ++row, y+=rowHeight)
         {
           if (row==0 && col==0)
@@ -53,14 +53,6 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
         }
       y=topTableOffset;
       colWidth+=5;
-      for (unsigned row=0; row<=godleyIcon->table.rows(); ++row, y+=rowHeight)
-        {
-          // horizontal lines
-          cairo_move_to(surface->cairo(),x,y);
-          cairo_rel_line_to(surface->cairo(),colWidth,0);
-          cairo_set_line_width(surface->cairo(),0.5);
-          cairo_stroke(surface->cairo());
-        }
       // vertical lines
       cairo_move_to(surface->cairo(),x,topTableOffset);
       cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
@@ -88,10 +80,47 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
   pango.show();
   
+  // final column vertical line
+  cairo_move_to(surface->cairo(),x,topTableOffset);
+  cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+  cairo_move_to(surface->cairo(),x+3,topTableOffset);
+  cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
+  cairo_set_line_width(surface->cairo(),0.5);
+  cairo_stroke(surface->cairo());
+
+  // now row sum column
+  x+=3;
+  double y=topTableOffset;
+  cairo_move_to(surface->cairo(),x,y);
+  pango.setMarkup("Row Sum");
+  pango.show();
+  double colWidth=pango.width();
+  y+=rowHeight;
+  
+  for (unsigned row=1; row<godleyIcon->table.rows(); ++row, y+=rowHeight)
+    {
+      pango.setMarkup(godleyIcon->table.rowSum(row));
+      colWidth=max(colWidth,pango.width());
+      cairo_move_to(surface->cairo(),x,y);
+      pango.show();
+    }
+
+  x+=colWidth;
+  y=topTableOffset;
+  for (unsigned row=0; row<=godleyIcon->table.rows(); ++row, y+=rowHeight)
+    {
+      // horizontal lines
+      cairo_move_to(surface->cairo(),leftTableOffset,y);
+      cairo_line_to(surface->cairo(),x,y);
+      cairo_set_line_width(surface->cairo(),0.5);
+      cairo_stroke(surface->cairo());
+    }
+
   // final vertical line
   cairo_move_to(surface->cairo(),x,topTableOffset);
   cairo_rel_line_to(surface->cairo(),0,godleyIcon->table.rows()*rowHeight);
   cairo_set_line_width(surface->cairo(),0.5);
   cairo_stroke(surface->cairo());
+
 }
 
