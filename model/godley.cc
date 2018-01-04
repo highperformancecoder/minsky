@@ -141,12 +141,14 @@ vector<string> GodleyTable::getVariables() const
 
 GodleyTable::AssetClass GodleyTable::_assetClass(size_t col) const 
 {
+  if (col==0) return noAssetClass;
   return col<m_assetClass.size()? m_assetClass[col]: noAssetClass;
 }
 
 GodleyTable::AssetClass GodleyTable::_assetClass
 (size_t col, GodleyTable::AssetClass cls) 
 {
+  if (col==0) return noAssetClass; // don't set column 0 asset class
   if (col>=m_assetClass.size())
     m_assetClass.resize(cols(), noAssetClass);
   assert(cols()>col);
