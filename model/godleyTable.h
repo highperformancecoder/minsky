@@ -32,12 +32,24 @@ namespace minsky
 {
   struct GodleyTableWindow: public ecolab::CairoSurface
   {
+    /// offset of the table within the window
+    static constexpr double leftTableOffset=50, topTableOffset=30;
     std::shared_ptr<GodleyIcon> godleyIcon;
+    /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;
+    /// which cell is active
     int selectedRow=-1, selectedCol=-1;
+    /// computed positions of the table columns
     std::vector<double> colLeftMargin;
+    /// computed height of each row
+    double rowHeight=0;
+    
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    /// event handling 
+    void mouseDown(float x, float y);
+    void mouseUp(float x, float y);
+    void mouseMove(float x, float y);
 
   };
 }

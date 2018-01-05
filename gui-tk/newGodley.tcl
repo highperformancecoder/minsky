@@ -2,9 +2,13 @@ proc newOpenGodley {id} {
     if {![ winfo exists ".$id"]} {
         image create cairoSurface $id -surface $id
         toplevel .$id
-        label .$id.table -image $id -width 500 -height 100
+        label .$id.table -image $id -width 800 -height 200
         bind .$id.table <Configure> "$id.requestRedraw"
         bind .$id.table <Destroy> "$id.delete"
+
+        bind .$id.table <ButtonPress-1> "$id.mouseDown %x %y"
+        bind .$id.table <ButtonRelease-1> "$id.mouseUp %x %y"
+        bind .$id.table <B1-Motion> "$id.mouseMove %x %y"
 
         scrollbar .$id.vscroll -orient vertical -command "scrollGodley $id row"
         .$id.vscroll set 0 0.25

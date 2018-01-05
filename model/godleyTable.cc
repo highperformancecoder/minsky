@@ -27,18 +27,18 @@ using namespace std;
 using namespace minsky;
 using ecolab::Pango;
 
+constexpr double GodleyTableWindow::leftTableOffset, GodleyTableWindow::topTableOffset;
+
 void GodleyTableWindow::redraw(int, int, int width, int height)
 {
   if (!godleyIcon) return;
-  double leftTableOffset=50, topTableOffset=30;
   Pango pango(surface->cairo());
   pango.setMarkup(godleyIcon->table.cell(0,0));
-  double rowHeight=pango.height()+2;
+  rowHeight=pango.height()+2;
   double tableHeight=(godleyIcon->table.rows()-scrollRowStart+1)*rowHeight;
   double x=leftTableOffset;
   double lastAssetBoundary=x;
   auto assetClass=GodleyAssetClass::noAssetClass;
-  auto oldColLeftMargin=colLeftMargin;
   colLeftMargin.clear();
   
   for (unsigned col=0; col<godleyIcon->table.cols(); ++col)
@@ -53,6 +53,9 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
           if (row>0 && row<scrollRowStart) continue;
           if (row==0 && col==0)
             pango.setMarkup("Flows ↓ / Stock Vars →");
+          else if (int(row)==selectedRow && int(col)==selectedCol)
+            // the active cell renders as bare LaTeX code for editing
+            pango.setMarkup(godleyIcon->table.cell(row,col));
           else
             pango.setMarkup(latexToPango(godleyIcon->table.cell(row,col)));
           colWidth=max(colWidth,pango.width());
@@ -177,3 +180,21 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   cairo_restore(surface->cairo());
 }
 
+void GodleyTableWindow::mouseDown(float x, float y)
+{
+  auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), x);
+  if (p>colLeftMargin.begin())
+    selectedCol=p-colLeftMargin.begin()-1;
+  if (selectedCol>0) selectedCol+=scrollColStart-1;
+
+  selectedRow=(y-topTableOffset)/rowHeight;
+  requestRedraw();
+}
+
+void GodleyTableWindow::mouseUp(float x, float y)
+{
+}
+
+void GodleyTableWindow::mouseMove(float x, float y)
+{
+}
