@@ -65,7 +65,7 @@ proc motionCursor {w} {
     }
 }
 
-proc defaultCursor {w} {$w configure -cursor arrow}
+proc defaultCursor {w} {$w configure -cursor {}}
 
 proc godleyContext {id x y X Y} {
     .$id.context delete 0 end

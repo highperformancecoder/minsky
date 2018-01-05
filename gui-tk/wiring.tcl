@@ -278,7 +278,7 @@ proc textInput {char} {
         focus .textInput.entry
         tkwait visibility .textInput
         # reset cursor in the case a shifted key has been pressed
-        .wiring.canvas configure -cursor arrow
+        .wiring.canvas configure -cursor {}
         grab set .textInput
         wm transient .textInput
     }
@@ -330,9 +330,9 @@ bind . <Key-Delete> {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wi
 bind . <Key-BackSpace> {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
 
 bind . <KeyPress-Shift_L> {.wiring.canvas configure -cursor $panIcon}
-bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor arrow}
+bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor {}}
 bind . <KeyPress-Shift_R> {.wiring.canvas configure -cursor $panIcon}
-bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor arrow}
+bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor {}}
 
 # slider key bindings
 bind . <KeyPress-Left> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
