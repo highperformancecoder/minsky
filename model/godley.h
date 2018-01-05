@@ -41,7 +41,7 @@ namespace minsky
   private:
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
-    vector<AssetClass> m_assetClass;
+    vector<AssetClass> m_assetClass{noAssetClass, asset, liability, equity};
     vector<vector<string> > data;
 
     void markEdited(); ///< mark model as having changed
@@ -60,9 +60,9 @@ namespace minsky
     static const char* initialConditions;
     GodleyTable(): doubleEntryCompliant(true)
     {
-      _resize(2,2);
-      cell(0,0)="Flows ↓ / Stock Variables →";
+      _resize(2,4);
       cell(1,0)=initialConditions;
+      
     }
 
     GodleyTable(const GodleyTable& other)

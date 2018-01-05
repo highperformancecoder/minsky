@@ -65,14 +65,15 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
         }
       y=topTableOffset;
       colWidth+=5;
-      // vertical lines
-      cairo_move_to(surface->cairo(),x,topTableOffset);
-      cairo_rel_line_to(surface->cairo(),0,tableHeight);
+      // vertical lines & asset type tag
       if (assetClass!=godleyIcon->table._assetClass(col))
         {
           if (assetClass!=GodleyAssetClass::noAssetClass)
             {
               pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
+              // increase column by enough to fit asset class label
+              if (x < pango.width()+lastAssetBoundary+3)
+                x=pango.width()+lastAssetBoundary+3;
               cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
               pango.show();
             }
@@ -82,6 +83,8 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
           cairo_move_to(surface->cairo(),x+3,topTableOffset);
           cairo_rel_line_to(surface->cairo(),0,tableHeight);
         }
+      cairo_move_to(surface->cairo(),x,topTableOffset);
+      cairo_rel_line_to(surface->cairo(),0,tableHeight);
       cairo_set_line_width(surface->cairo(),0.5);
       cairo_stroke(surface->cairo());
 
@@ -89,6 +92,9 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
     }
   
   pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
+  // increase column by enough to fit asset class label
+  if (x < pango.width()+lastAssetBoundary+3)
+    x=pango.width()+lastAssetBoundary+3;
   cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
   pango.show();
   
