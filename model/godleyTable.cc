@@ -237,3 +237,50 @@ void GodleyTableWindow::mouseMove(double x, double y)
   int c=colX(x), r=rowY(y);
   motion=true;
 }
+
+GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) const
+{
+  int c=colX(x), r=rowY(y);
+  if (r==0)
+    return row0;
+  if (c==0)
+    return col0;
+
+  if (c>0 && c<godleyIcon->table.cols())
+    if (r>0 && r<godleyIcon->table.rows())
+      return internal;
+
+  return background;
+}
+
+void GodleyTableWindow::addStockVar(double x)
+{
+  int c=colX(x);
+  if (c>0)
+    godleyIcon->table.insertCol(c+1);
+  requestRedraw();
+}
+
+void GodleyTableWindow::deleteStockVar(double x)
+{
+  int c=colX(x);
+  if (c>0)
+    godleyIcon->table.deleteCol(c);
+  requestRedraw();
+}
+
+void GodleyTableWindow::addFlow(double y)
+{
+  int r=rowY(y);
+  if (r>0)
+    godleyIcon->table.insertRow(r+1);
+  requestRedraw();
+}
+
+void GodleyTableWindow::deleteFlow(double y)
+{
+  int r=rowY(y);
+  if (r>0)
+    godleyIcon->deleteRow(r+1);
+   requestRedraw();
+}

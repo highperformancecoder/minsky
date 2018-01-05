@@ -34,7 +34,7 @@ namespace minsky
   {
   public:
     /// offset of the table within the window
-    static constexpr double leftTableOffset=50, topTableOffset=30;
+    static constexpr double leftTableOffset=0, topTableOffset=20;
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;
@@ -52,10 +52,20 @@ namespace minsky
     void mouseUp(double x, double y);
     void mouseMove(double x, double y);
 
-  private:
-    bool motion=false;
+    enum ClickType {background, row0, col0, internal};
+    ClickType clickType(double x, double y) const;
+
+    /// add/delete rows/columns at x,y
+    void addStockVar(double x);
+    void deleteStockVar(double x);
+    void addFlow(double y);
+    void deleteFlow(double y);
+    
     int colX(double x) const;
     int rowY(double y) const;
+
+  private:
+    bool motion=false;
   };
 }
 
