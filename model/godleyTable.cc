@@ -38,11 +38,14 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   double x=leftTableOffset;
   double lastAssetBoundary=x;
   auto assetClass=GodleyAssetClass::noAssetClass;
+  auto oldColLeftMargin=colLeftMargin;
+  colLeftMargin.clear();
   
   for (unsigned col=0; col<godleyIcon->table.cols(); ++col)
     {
       // omit stock columns less than scrollColStart
       if (col>0 && col<scrollColStart) continue;
+      colLeftMargin.push_back(x);
       double y=topTableOffset;
       double colWidth=0;
       for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
@@ -87,6 +90,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   pango.show();
   
   // final column vertical line
+  colLeftMargin.push_back(x);
   cairo_move_to(surface->cairo(),x,topTableOffset);
   cairo_rel_line_to(surface->cairo(),0,tableHeight);
   cairo_move_to(surface->cairo(),x+3,topTableOffset);
@@ -98,7 +102,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   x+=3;
   double y=topTableOffset;
   cairo_move_to(surface->cairo(),x,y);
-  pango.setMarkup("Row Sum");
+  pango.setMarkup("A-L-E");
   pango.show();
   double colWidth=pango.width();
   y+=rowHeight;
@@ -127,10 +131,49 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
     }
 
   // final vertical line
+  colLeftMargin.push_back(x);
   cairo_move_to(surface->cairo(),x,topTableOffset);
   cairo_rel_line_to(surface->cairo(),0,tableHeight);
   cairo_set_line_width(surface->cairo(),0.5);
   cairo_stroke(surface->cairo());
-
+  
+  // indicate selected cells
+  cairo_save(surface->cairo());
+  if (selectedRow==0 || (selectedRow>=scrollRowStart && selectedRow<godleyIcon->table.rows()))
+    {
+      size_t i=0, j=0;
+      if (selectedRow>=scrollRowStart) j=selectedRow-scrollRowStart+1;
+      double y=j*rowHeight+topTableOffset;
+      if (selectedCol==0 || (selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()))
+        {
+          if (selectedRow!=0 || selectedCol!=0) // can't select flows/stockVars label
+            {
+              if (selectedCol>=scrollColStart) i=selectedCol-scrollColStart+1;
+              double x=colLeftMargin[i];
+              cairo_set_source_rgba(surface->cairo(),1,1,1,1);
+              cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
+              cairo_fill(surface->cairo());
+              pango.setMarkup(godleyIcon->table.cell(selectedRow,selectedCol));
+              cairo_set_source_rgba(surface->cairo(),0,0,0,1);
+              cairo_move_to(surface->cairo(),x,y);
+              pango.show();
+          }
+        }
+      else if (selectedCol<0) // whole row selected
+        {
+          cairo_rectangle(surface->cairo(),leftTableOffset,y,colLeftMargin.back()-leftTableOffset,rowHeight);
+          cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
+          cairo_fill(surface->cairo());
+        }
+    }
+  else if (selectedRow<0 && selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()) // whole column selected
+    {
+      double x=colLeftMargin[selectedCol-scrollColStart+1];
+      double width=colLeftMargin[selectedCol-scrollColStart+2]-x;
+      cairo_rectangle(surface->cairo(),x,topTableOffset,width,tableHeight);
+      cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
+      cairo_fill(surface->cairo());
+    }
+  cairo_restore(surface->cairo());
 }
 

@@ -26,6 +26,7 @@
 #include "godleyIcon.h"
 #include <cairoSurfaceImage.h>
 #include <memory>
+#include <vector>
 
 namespace minsky
 {
@@ -33,22 +34,11 @@ namespace minsky
   {
     std::shared_ptr<GodleyIcon> godleyIcon;
     unsigned scrollRowStart=1, scrollColStart=1;
+    int selectedRow=-1, selectedCol=-1;
+    std::vector<double> colLeftMargin;
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
 
-    /// @{ move scrollable region such that \a fraction of the
-    /// spreadsheet is at top or left. For supporting TCL scrollbar
-    /// widget
-    void moveToRows(float fraction) {}
-    void moveToCols(float fraction) {}
-    /// @}
-
-    enum UnitsOrPages {units, pages};
-    /// @{ move scrollable region num units or pages. Here units means
-    /// rows or columns... Pages TBD. For supporting TCL scrollbar widget
-    void scrollRows(int num, UnitsOrPages) {} 
-    void scrollCols(int num, UnitsOrPages) {}
-    /// @}
   };
 }
 
