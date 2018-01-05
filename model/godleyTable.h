@@ -44,7 +44,7 @@ namespace minsky
     std::vector<double> colLeftMargin;
     /// computed height of each row
     double rowHeight=0;
-    
+
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// event handling 
@@ -53,6 +53,7 @@ namespace minsky
     void mouseMove(double x, double y);
 
   private:
+    bool motion=false;
     int colX(double x) const;
     int rowY(double y) const;
   };

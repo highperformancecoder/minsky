@@ -147,7 +147,22 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       size_t i=0, j=0;
       if (selectedRow>=scrollRowStart) j=selectedRow-scrollRowStart+1;
       double y=j*rowHeight+topTableOffset;
-      if (selectedCol==0 || (selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()))
+      if (motion && selectedRow==0 && selectedCol>0) // whole col being moved
+        {
+          double x=colLeftMargin[selectedCol-scrollColStart+1];
+          double width=colLeftMargin[selectedCol-scrollColStart+2]-x;
+          cairo_rectangle(surface->cairo(),x,topTableOffset,width,tableHeight);
+          cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
+          cairo_fill(surface->cairo());
+        }
+      else if (motion && selectedCol==0 && selectedRow>0) // whole col being moved
+        {
+          cairo_rectangle(surface->cairo(),leftTableOffset,y,colLeftMargin.back()-leftTableOffset,rowHeight);
+          cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
+          cairo_fill(surface->cairo());
+        }
+      else if (selectedCol==0 || /* selecting individual cell */
+               (selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()))
         {
           if (selectedRow!=0 || selectedCol!=0) // can't select flows/stockVars label
             {
@@ -160,22 +175,8 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
               cairo_set_source_rgba(surface->cairo(),0,0,0,1);
               cairo_move_to(surface->cairo(),x,y);
               pango.show();
-          }
+            }
         }
-      else if (selectedCol<0) // whole row selected
-        {
-          cairo_rectangle(surface->cairo(),leftTableOffset,y,colLeftMargin.back()-leftTableOffset,rowHeight);
-          cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
-          cairo_fill(surface->cairo());
-        }
-    }
-  else if (selectedRow<0 && selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()) // whole column selected
-    {
-      double x=colLeftMargin[selectedCol-scrollColStart+1];
-      double width=colLeftMargin[selectedCol-scrollColStart+2]-x;
-      cairo_rectangle(surface->cairo(),x,topTableOffset,width,tableHeight);
-      cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
-      cairo_fill(surface->cairo());
     }
   cairo_restore(surface->cairo());
 }
@@ -203,11 +204,18 @@ void GodleyTableWindow::mouseDown(double x, double y)
 
 void GodleyTableWindow::mouseUp(double x, double y)
 {
+  motion=false;
   int c=colX(x), r=rowY(y);
   if (selectedRow==0)
-    { /* TODO - move column */}
+    {
+      if (c!=selectedCol)
+        godleyIcon->table.moveCol(selectedCol,c-selectedCol);
+    }
   else if (selectedCol==0)
-    { /* TODO - move row */ }
+    {
+      if (r!=selectedRow)
+        godleyIcon->table.moveRow(selectedRow,r-selectedRow);
+    }
   else
     if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
       {
@@ -220,4 +228,6 @@ void GodleyTableWindow::mouseUp(double x, double y)
 
 void GodleyTableWindow::mouseMove(double x, double y)
 {
+  int c=colX(x), r=rowY(y);
+  motion=true;
 }
