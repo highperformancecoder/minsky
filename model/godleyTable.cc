@@ -180,21 +180,44 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   cairo_restore(surface->cairo());
 }
 
-void GodleyTableWindow::mouseDown(float x, float y)
+int GodleyTableWindow::colX(double x) const
 {
   auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), x);
-  if (p>colLeftMargin.begin())
-    selectedCol=p-colLeftMargin.begin()-1;
-  if (selectedCol>0) selectedCol+=scrollColStart-1;
+  int r=p-colLeftMargin.begin()-1;
+  if (r>0) r+=scrollColStart-1;
+  return r;
+}
 
-  selectedRow=(y-topTableOffset)/rowHeight;
+int GodleyTableWindow::rowY(double y) const
+{
+  return (y-topTableOffset)/rowHeight;
+}
+
+
+void GodleyTableWindow::mouseDown(double x, double y)
+{
+  selectedCol=colX(x);
+  selectedRow=rowY(y);
   requestRedraw();
 }
 
-void GodleyTableWindow::mouseUp(float x, float y)
+void GodleyTableWindow::mouseUp(double x, double y)
 {
+  int c=colX(x), r=rowY(y);
+  if (selectedRow==0)
+    { /* TODO - move column */}
+  else if (selectedCol==0)
+    { /* TODO - move row */ }
+  else
+    if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
+      {
+        swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
+        selectedCol=c;
+        selectedRow=r;
+        requestRedraw();
+      }
 }
 
-void GodleyTableWindow::mouseMove(float x, float y)
+void GodleyTableWindow::mouseMove(double x, double y)
 {
 }

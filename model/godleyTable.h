@@ -30,8 +30,9 @@
 
 namespace minsky
 {
-  struct GodleyTableWindow: public ecolab::CairoSurface
+  class GodleyTableWindow: public ecolab::CairoSurface
   {
+  public:
     /// offset of the table within the window
     static constexpr double leftTableOffset=50, topTableOffset=30;
     std::shared_ptr<GodleyIcon> godleyIcon;
@@ -47,10 +48,13 @@ namespace minsky
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// event handling 
-    void mouseDown(float x, float y);
-    void mouseUp(float x, float y);
-    void mouseMove(float x, float y);
+    void mouseDown(double x, double y);
+    void mouseUp(double x, double y);
+    void mouseMove(double x, double y);
 
+  private:
+    int colX(double x) const;
+    int rowY(double y) const;
   };
 }
 

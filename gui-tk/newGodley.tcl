@@ -7,8 +7,8 @@ proc newOpenGodley {id} {
         bind .$id.table <Destroy> "$id.delete"
 
         bind .$id.table <ButtonPress-1> "$id.mouseDown %x %y"
-        bind .$id.table <ButtonRelease-1> "$id.mouseUp %x %y"
-        bind .$id.table <B1-Motion> "$id.mouseMove %x %y"
+        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; $id.mouseUp %x %y"
+        bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMove %x %y"
 
         scrollbar .$id.vscroll -orient vertical -command "scrollGodley $id row"
         .$id.vscroll set 0 0.25
@@ -50,3 +50,14 @@ proc scrollGodley {id rowCol cmd num args} {
     }
     $id.requestRedraw
 }
+
+proc motionCursor {w} {
+    if {[tk windowingsystem]=="aqua"} {
+        $w configure -cursor copyarrow
+    } else {
+        $w configure -cursor exchange
+    }
+}
+
+proc defaultCursor {w} {$w configure -cursor arrow}
+
