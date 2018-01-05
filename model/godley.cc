@@ -96,6 +96,7 @@ void GodleyTable::moveCol(int col, int n)
 {
   if (n==0 || col<0 || col>=int(cols()) || col+n<0 || col+n>=int(cols())) 
     return;
+  auto targetAssetClass=_assetClass(col+n);
   for (size_t row=0; row<rows(); ++row)
     {
       string cellToMove;
@@ -104,6 +105,12 @@ void GodleyTable::moveCol(int col, int n)
         cellToMove.swap(data[row][col+i]);
       cellToMove.swap(data[row][col]);
     }
+  auto ac=_assetClass(col);
+  for (int i=n; abs(i)>0; i=i>0? i-1:i+1)
+    swap(ac, m_assetClass[col+i]);
+  swap(ac, m_assetClass[col]);
+    
+  _assetClass(col+n, targetAssetClass);
 }
 
 
