@@ -153,19 +153,15 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       size_t i=0, j=0;
       if (selectedRow>=scrollRowStart) j=selectedRow-scrollRowStart+1;
       double y=j*rowHeight+topTableOffset;
-      if (motion && selectedRow==0 && selectedCol>0) // whole col being moved
+      if (motionCol>=0 && selectedRow==0 && selectedCol>0) // whole col being moved
         {
-          double x=colLeftMargin[selectedCol-scrollColStart+1];
-          double width=colLeftMargin[selectedCol-scrollColStart+2]-x;
-          cairo_rectangle(surface->cairo(),x,topTableOffset,width,tableHeight);
-          cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
-          cairo_fill(surface->cairo());
+          highlightColumn(surface->cairo(),selectedCol);
+          highlightColumn(surface->cairo(),motionCol);
         }
-      else if (motion && selectedCol==0 && selectedRow>0) // whole col being moved
+      else if (motionRow>=0 && selectedCol==0 && selectedRow>0) // whole col being moved
         {
-          cairo_rectangle(surface->cairo(),leftTableOffset,y,colLeftMargin.back()-leftTableOffset,rowHeight);
-          cairo_set_source_rgba(surface->cairo(),1,1,1,0.5);
-          cairo_fill(surface->cairo());
+          highlightRow(surface->cairo(),selectedRow);
+          highlightRow(surface->cairo(),motionRow);
         }
       else if (selectedCol==0 || /* selecting individual cell */
                (selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()))
@@ -181,6 +177,8 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
               cairo_set_source_rgba(surface->cairo(),0,0,0,1);
               cairo_move_to(surface->cairo(),x,y);
               pango.show();
+              if (motionRow>0 && motionCol>0)
+                highlightCell(surface->cairo(),motionRow,motionCol);
             }
         }
     }
@@ -210,8 +208,8 @@ void GodleyTableWindow::mouseDown(double x, double y)
 
 void GodleyTableWindow::mouseUp(double x, double y)
 {
-  motion=false;
   int c=colX(x), r=rowY(y);
+  motionRow=motionCol=-1;
   if (selectedRow==0)
     {
       if (c!=selectedCol)
@@ -234,8 +232,7 @@ void GodleyTableWindow::mouseUp(double x, double y)
 
 void GodleyTableWindow::mouseMove(double x, double y)
 {
-  int c=colX(x), r=rowY(y);
-  motion=true;
+  motionCol=colX(x), motionRow=rowY(y);
 }
 
 GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) const
@@ -283,4 +280,35 @@ void GodleyTableWindow::deleteFlow(double y)
   if (r>0)
     godleyIcon->deleteRow(r+1);
    requestRedraw();
+}
+
+void GodleyTableWindow::highlightColumn(cairo_t* cairo, unsigned col)
+{
+  if (col<scrollColStart) return;
+  double x=colLeftMargin[col-scrollColStart+1];
+  double width=colLeftMargin[col-scrollColStart+2]-x;
+  double tableHeight=(godleyIcon->table.rows()-scrollRowStart+1)*rowHeight;
+  cairo_rectangle(cairo,x,topTableOffset,width,tableHeight);
+  cairo_set_source_rgba(cairo,1,1,1,0.5);
+  cairo_fill(cairo);
+}
+
+void GodleyTableWindow::highlightRow(cairo_t* cairo, unsigned row)
+{
+  if (row<scrollRowStart) return;
+  double y=(row-scrollRowStart+1)*rowHeight+topTableOffset;
+  cairo_rectangle(cairo,leftTableOffset,y,colLeftMargin.back()-leftTableOffset,rowHeight);
+  cairo_set_source_rgba(cairo,1,1,1,0.5);
+  cairo_fill(cairo);
+}
+
+void GodleyTableWindow::highlightCell(cairo_t* cairo, unsigned row, unsigned col)
+{
+  if (row<scrollRowStart || col<scrollColStart) return;
+  double x=colLeftMargin[col-scrollColStart+1];
+  double width=colLeftMargin[col-scrollColStart+2]-x;
+  double y=(row-scrollRowStart+1)*rowHeight+topTableOffset;
+  cairo_rectangle(cairo,x,y,width,rowHeight);
+  cairo_set_source_rgba(cairo,1,1,1,0.5);
+  cairo_fill(cairo);
 }

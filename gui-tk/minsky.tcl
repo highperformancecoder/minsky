@@ -688,6 +688,8 @@ if {[tk windowingsystem] == "aqua"} {
     set panIcon fleur
 }
 
+
+
 # equations pan mode
 .equations.canvas configure -cursor $panIcon
 bind .equations.canvas <Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}

@@ -64,8 +64,12 @@ namespace minsky
     int colX(double x) const;
     int rowY(double y) const;
 
+    void highlightColumn(cairo_t* cairo,unsigned col);
+    void highlightRow(cairo_t* cairo,unsigned row);
+    void highlightCell(cairo_t* cairo,unsigned row, unsigned col);
+    
   private:
-    bool motion=false;
+    int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
   };
 }
 
