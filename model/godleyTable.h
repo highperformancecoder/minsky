@@ -44,7 +44,9 @@ namespace minsky
     std::vector<double> colLeftMargin;
     /// computed height of each row
     double rowHeight=0;
-    unsigned insertIdx=0; // location of insertion pointer in selected cell
+    /// location of insertion pointer in selected cell, as well as
+    /// other end of selection (if mouse-swiped)
+    unsigned insertIdx=0, selectIdx=0; 
 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
@@ -69,7 +71,9 @@ namespace minsky
     void highlightColumn(cairo_t* cairo,unsigned col);
     void highlightRow(cairo_t* cairo,unsigned row);
     void highlightCell(cairo_t* cairo,unsigned row, unsigned col);
-    
+
+    int textIdx(double x) const;
+
   private:
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
   };

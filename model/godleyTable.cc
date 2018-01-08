@@ -185,6 +185,14 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
               cairo_stroke(surface->cairo());
               if (motionRow>0 && motionCol>0)
                 highlightCell(surface->cairo(),motionRow,motionCol);
+              if (selectIdx!=insertIdx)
+                {
+                  // indicate some text has been selected
+                  cairo_rectangle(surface->cairo(),x+pango.idxToPos(insertIdx),y,
+                                  pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
+                  cairo_set_source_rgba(surface->cairo(),0.5,0.5,0.5,0.5);
+                  cairo_fill(surface->cairo());
+                }
             }
         }
     }
@@ -204,6 +212,18 @@ int GodleyTableWindow::rowY(double y) const
   return (y-topTableOffset)/rowHeight;
 }
 
+int GodleyTableWindow::textIdx(double x) const
+{
+  cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
+  Pango pango(surf.cairo());
+  auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+  pango.setMarkup(str);
+  int j=0;
+  if (selectedCol>=scrollColStart) j=selectedCol-scrollColStart+1;
+  x-=colLeftMargin[j]+2;
+  return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
+
+}
 
 void GodleyTableWindow::mouseDown(double x, double y)
 {
@@ -211,18 +231,9 @@ void GodleyTableWindow::mouseDown(double x, double y)
   selectedRow=rowY(y);
   if (selectedRow>=0 && selectedRow<godleyIcon->table.rows() &&
       selectedCol>=0 && selectedCol<godleyIcon->table.cols())
-    {
-      cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
-      Pango pango(surf.cairo());
-      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-      pango.setMarkup(str);
-      int j=0;
-      if (selectedCol>=scrollColStart) j=selectedCol-scrollColStart+1;
-      x-=colLeftMargin[j]+2;
-      insertIdx = x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
-    }
+    selectIdx=insertIdx = textIdx(x);
   else
-    insertIdx=0;
+    selectIdx=insertIdx=0;
   requestRedraw();
 }
 
@@ -253,6 +264,8 @@ void GodleyTableWindow::mouseUp(double x, double y)
 void GodleyTableWindow::mouseMove(double x, double y)
 {
   motionCol=colX(x), motionRow=rowY(y);
+  if (motionCol==selectedCol && motionRow==selectedRow)
+    selectIdx=textIdx(x);
 }
 
 void GodleyTableWindow::keyPress(int keySym)
@@ -264,7 +277,12 @@ void GodleyTableWindow::keyPress(int keySym)
       switch (keySym)
         {
         case 0xff08: case 0xffff:  //backspace/delete
-          if (insertIdx>0 && insertIdx<=str.length())
+          if (insertIdx!=selectIdx)
+            {
+              str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));
+              insertIdx=min(insertIdx,selectIdx);
+            }
+          else if (insertIdx>0 && insertIdx<=str.length())
             str.erase(--insertIdx,1);
           break;
         case 0xff1b: // escape - TODO
@@ -283,12 +301,18 @@ void GodleyTableWindow::keyPress(int keySym)
         default:
           if (keySym>=' ' && keySym<0xff)
             {
+              if (insertIdx!=selectIdx)
+                {
+                  str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));
+                  insertIdx=min(insertIdx,selectIdx);
+                }
               if (insertIdx<0) insertIdx=0;
               if (insertIdx>=str.length()) insertIdx=str.length();
               str.insert(str.begin()+insertIdx++,keySym);
             }
           break;
         }
+      selectIdx=insertIdx;
       requestRedraw();
     }
 }
