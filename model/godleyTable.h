@@ -62,6 +62,7 @@ namespace minsky
 
     /// add/delete rows/columns at x,y
     void addStockVar(double x);
+    void importStockVar(const string& name, double x);
     void deleteStockVar(double x);
     void addFlow(double y);
     void deleteFlow(double y);

@@ -34,7 +34,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
 {
   if (!godleyIcon) return;
   Pango pango(surface->cairo());
-  pango.setMarkup(godleyIcon->table.cell(0,0));
+  pango.setMarkup("Flows ↓ / Stock Vars →");
   rowHeight=pango.height()+2;
   double tableHeight=(godleyIcon->table.rows()-scrollRowStart+1)*rowHeight;
   double x=leftTableOffset;
@@ -46,25 +46,6 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
     {
       // omit stock columns less than scrollColStart
       if (col>0 && col<scrollColStart) continue;
-      double y=topTableOffset;
-      double colWidth=0;
-      for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
-        {
-          if (row>0 && row<scrollRowStart) continue;
-          if (row==0 && col==0)
-            pango.setMarkup("Flows ↓ / Stock Vars →");
-          else if (int(row)==selectedRow && int(col)==selectedCol)
-            // the active cell renders as bare LaTeX code for editing
-            pango.setMarkup(godleyIcon->table.cell(row,col));
-          else
-            pango.setMarkup(latexToPango(godleyIcon->table.cell(row,col)));
-          colWidth=max(colWidth,pango.width());
-          cairo_move_to(surface->cairo(),x+3,y);
-          pango.show();
-          y+=rowHeight;
-        }
-      y=topTableOffset;
-      colWidth+=5;
       // vertical lines & asset type tag
       if (assetClass!=godleyIcon->table._assetClass(col))
         {
@@ -88,11 +69,30 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       cairo_set_line_width(surface->cairo(),0.5);
       cairo_stroke(surface->cairo());
 
+      double y=topTableOffset;
+      double colWidth=0;
+      for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
+        {
+          if (row>0 && row<scrollRowStart) continue;
+          if (row!=0 || col!=0)
+            if (int(row)==selectedRow && int(col)==selectedCol)
+            // the active cell renders as bare LaTeX code for editing
+            pango.setMarkup(godleyIcon->table.cell(row,col));
+          else
+            pango.setMarkup(latexToPango(godleyIcon->table.cell(row,col)));
+          colWidth=max(colWidth,pango.width());
+          cairo_move_to(surface->cairo(),x+3,y);
+          pango.show();
+          y+=rowHeight;
+        }
+      y=topTableOffset;
+      colWidth+=5;
+
       colLeftMargin.push_back(x);
       x+=colWidth;
     }
   
-  pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
+      pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
   // increase column by enough to fit asset class label
   if (x < pango.width()+lastAssetBoundary+3)
     x=pango.width()+lastAssetBoundary+3;
@@ -397,6 +397,17 @@ void GodleyTableWindow::addStockVar(double x)
   int c=colX(x);
   if (c>0)
     godleyIcon->table.insertCol(c+1);
+  requestRedraw();
+}
+void GodleyTableWindow::importStockVar(const string& name, double x)
+{
+  int c=colX(x);
+  if (c++>0)
+    {
+      godleyIcon->table.insertCol(c);
+      godleyIcon->table.cell(0,c)=name;
+      minsky().importDuplicateColumn(godleyIcon->table, c);
+    }
   requestRedraw();
 }
 

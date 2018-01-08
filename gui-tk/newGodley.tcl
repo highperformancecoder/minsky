@@ -82,7 +82,7 @@ proc godleyContext {id x y X Y} {
             .$id.context add command -label "Delete stock variable" -command "$id.deleteStockVar $x"
             .$id.context.import delete 0 end
             foreach var [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colX $x] ]] {
-                .$id.context.import add command -label $var -command "importVar $id $var $x"
+                .$id.context.import add command -label $var -command "$id.importStockVar $var $x"
             }
         }
         col0 {
@@ -133,11 +133,13 @@ proc godleyCopy {id row col} {
 proc godleyCut {id row col} {
     godleyCopy $id $row $col
     $id.godleyIcon.setCell $row $col {}
+    $id.requestRedraw
 }
 
 proc godleyPaste {id row col} {
     if {![catch {set data [clipboard get -type UTF8_STRING]}]} {
         $id.godleyIcon.setCell $row $col $data
+        $id.requestRedraw
     }
 }
 
