@@ -88,3 +88,35 @@ proc godleyContext {id x y X Y} {
     }
     tk_popup .$id.context $X $Y
 }
+
+proc setGodleyTitle id {
+    if {![winfo exists .godleyTitle]} {
+        toplevel .godleyTitle
+        entry .godleyTitle.entry
+        frame .godleyTitle.buttonBar
+        button .godleyTitle.buttonBar.ok -text "OK" -command "setGodleyTitleOK $id"
+        button .godleyTitle.buttonBar.cancel -text "Cancel" -command setGodleyTitleCancel
+        pack .godleyTitle.buttonBar.cancel .godleyTitle.buttonBar.ok -side left
+        pack .godleyTitle.entry .godleyTitle.buttonBar -side top
+        wm transient .godleyTitle
+    } else {
+        wm diconify .godleyTitle
+    }
+    .godleyTitle.entry delete 0 end
+    .godleyTitle.entry insert 0 [$id.godleyIcon.table.title]
+    focus .godleyTitle.entry
+    tkwait visibility .godleyTitle
+    grab set .godleyTitle
+}
+
+proc setGodleyTitleOK id {
+    $id.godleyIcon.table.title [.godleyTitle.entry get]
+    wm title .$id "Godley Table:[$id.godleyIcon.table.title]"
+    setGodleyTitleCancel
+}
+
+proc setGodleyTitleCancel {} {
+    grab release .godleyTitle
+    destroy .godleyTitle
+}
+   
