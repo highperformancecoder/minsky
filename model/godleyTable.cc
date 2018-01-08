@@ -20,6 +20,7 @@
 #include "godleyTable.h"
 #include "selection.h"
 #include "latexMarkup.h"
+#include "minsky.h"
 #include <pango.h>
 #include <ecolab_epilogue.h>
 
@@ -251,14 +252,19 @@ void GodleyTableWindow::mouseUp(double x, double y)
       if (r!=selectedRow)
         godleyIcon->table.moveRow(selectedRow,r-selectedRow);
     }
-  else
-    if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
+  else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
       {
         swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
         selectedCol=c;
         selectedRow=r;
-        requestRedraw();
       }
+  else if (selectIdx!=insertIdx)
+    {
+      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+      minsky().putClipboard
+        (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
+    }
+  requestRedraw();
 }
 
 void GodleyTableWindow::mouseMove(double x, double y)
