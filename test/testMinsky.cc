@@ -895,11 +895,11 @@ SUITE(Minsky)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
-      godley1.resize(6,3);
+      godley1.resize(6,4);
       godley1.cell(1,1)="a";
       godley1.cell(1,2)="2b";
       godley1.cell(1,3)="-c";
-      CHECK_EQUAL("a+2b-c",godley1.rowSum(1));
+      CHECK_EQUAL("a-2b+c",godley1.rowSum(1));
     }
 
   TEST_FIXTURE(TestFixture,godleyMoveRowCol)
