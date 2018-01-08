@@ -46,7 +46,6 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
     {
       // omit stock columns less than scrollColStart
       if (col>0 && col<scrollColStart) continue;
-      colLeftMargin.push_back(x);
       double y=topTableOffset;
       double colWidth=0;
       for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
@@ -89,6 +88,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       cairo_set_line_width(surface->cairo(),0.5);
       cairo_stroke(surface->cairo());
 
+      colLeftMargin.push_back(x);
       x+=colWidth;
     }
   
@@ -210,7 +210,9 @@ int GodleyTableWindow::colX(double x) const
 
 int GodleyTableWindow::rowY(double y) const
 {
-  return (y-topTableOffset)/rowHeight;
+  int c=(y-topTableOffset)/rowHeight;
+  if (c>0) c+=scrollRowStart-1;
+  return c;
 }
 
 int GodleyTableWindow::textIdx(double x) const
@@ -365,9 +367,14 @@ void GodleyTableWindow::paste()
       delSelection();
       auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
       auto stringToInsert=cminsky().getClipboard();
+      // only insert first line
+      auto p=stringToInsert.find('\n');
+      if (p!=string::npos)
+        stringToInsert=stringToInsert.substr(0,p-1);
       str.insert(insertIdx,stringToInsert);
       selectIdx=insertIdx+=stringToInsert.length();
     }
+  requestRedraw();
 }
 
 GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) const

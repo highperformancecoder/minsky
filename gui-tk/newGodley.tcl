@@ -13,11 +13,12 @@ proc newOpenGodley {id} {
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMove %x %y"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-        bind .$id.table <KeyPress> "puts %N; $id.keyPress %N"
+        bind .$id.table <KeyPress> "$id.keyPress %N"
         bind .$id.table <KeyRelease> "$id.keyRelease %N"
         
         menu .$id.context -tearoff 0
-        
+        menu .$id.context.import -tearoff 0
+
         scrollbar .$id.vscroll -orient vertical -command "scrollGodley $id row"
         .$id.vscroll set 0 0.25
         pack .$id.vscroll -side right -fill y
@@ -77,14 +78,27 @@ proc godleyContext {id x y X Y} {
         background {}
         row0 {
             .$id.context add command -label "Add new stock variable" -command "$id.addStockVar $x"
-            .$id.context add command -label "Import variable" -command "importStockVar $id $x"
+            .$id.context add cascade -label "Import variable" -menu .$id.context.import
             .$id.context add command -label "Delete stock variable" -command "$id.deleteStockVar $x"
+            .$id.context.import delete 0 end
+            foreach var [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colX $x] ]] {
+                .$id.context.import add command -label $var -command "importVar $id $var $x"
+            }
         }
         col0 {
             .$id.context add command -label "Add flow" -command "$id.addFlow $y"
             .$id.context add command -label "Delete flow" -command "$id.deleteFlow $y"
         }
         internal {}
+    }
+    set r [$id.rowY $y]
+    set c [$id.colX $x]
+    if [string length [$id.godleyIcon.table.getCell $r $c]] {
+        .$id.context add command -label "Cut" -command "godleyCut $id $r $c"
+        .$id.context add command -label "Copy" -command "godleyCopy $id $r $c"
+    }
+    if {![catch {clipboard get -type UTF8_STRING}]} {
+        .$id.context add command -label "Paste" -command "godleyPaste $id $r $c"
     }
     tk_popup .$id.context $X $Y
 }
@@ -93,17 +107,14 @@ proc setGodleyTitle id {
     if {![winfo exists .godleyTitle]} {
         toplevel .godleyTitle
         entry .godleyTitle.entry
-        frame .godleyTitle.buttonBar
-        button .godleyTitle.buttonBar.ok -text "OK" -command "setGodleyTitleOK $id"
-        button .godleyTitle.buttonBar.cancel -text "Cancel" -command setGodleyTitleCancel
-        pack .godleyTitle.buttonBar.cancel .godleyTitle.buttonBar.ok -side left
-        pack .godleyTitle.entry .godleyTitle.buttonBar -side top
-        wm transient .godleyTitle
+        pack .godleyTitle.entry -side top
+        buttonBar .godleyTitle "setGodleyTitleOK $id"
     } else {
-        wm diconify .godleyTitle
+        wm deiconify .godleyTitle
     }
     .godleyTitle.entry delete 0 end
     .godleyTitle.entry insert 0 [$id.godleyIcon.table.title]
+    wm transient .godleyTitle
     focus .godleyTitle.entry
     tkwait visibility .godleyTitle
     grab set .godleyTitle
@@ -112,11 +123,21 @@ proc setGodleyTitle id {
 proc setGodleyTitleOK id {
     $id.godleyIcon.table.title [.godleyTitle.entry get]
     wm title .$id "Godley Table:[$id.godleyIcon.table.title]"
-    setGodleyTitleCancel
+}
+    
+proc godleyCopy {id row col} {
+    clipboard clear
+    clipboard append -type UTF8_STRING [$id.godleyIcon.table.getCell $row $col]
 }
 
-proc setGodleyTitleCancel {} {
-    grab release .godleyTitle
-    destroy .godleyTitle
+proc godleyCut {id row col} {
+    godleyCopy $id $row $col
+    $id.godleyIcon.setCell $row $col {}
 }
-   
+
+proc godleyPaste {id row col} {
+    if {![catch {set data [clipboard get -type UTF8_STRING]}]} {
+        $id.godleyIcon.setCell $row $col $data
+    }
+}
+

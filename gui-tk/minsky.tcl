@@ -612,6 +612,21 @@ grid .tabs -column 0 -row 10 -sticky news
 grid columnconfigure . 0 -weight 1
 grid rowconfigure . 10 -weight 1
 
+# utility for creating OK/Cancel button bar
+proc buttonBar {window okProc} {
+    frame $window.buttonBar
+    button $window.buttonBar.ok -text "OK" -command "$okProc; cancelWin $window"
+    button $window.buttonBar.cancel -text "Cancel" -command "cancelWin $window"
+    pack $window.buttonBar.cancel .godleyTitle.buttonBar.ok -side left
+    pack $window.buttonBar -side top
+}
+
+proc cancelWin window {
+    grab release $window
+    destroy $window
+}
+    
+
 source $minskyHome/godley.tcl
 source $minskyHome/newGodley.tcl
 source $minskyHome/wiring.tcl

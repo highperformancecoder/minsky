@@ -75,7 +75,7 @@ namespace minsky
 
     // support cut/copy/paste operations
     void delSelection();
-    void cut() {copy(); delSelection();}
+    void cut() {copy(); delSelection();requestRedraw();}
     void copy();
     void paste();
 
