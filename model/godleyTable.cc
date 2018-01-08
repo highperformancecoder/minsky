@@ -214,11 +214,12 @@ void GodleyTableWindow::mouseDown(double x, double y)
     {
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
       Pango pango(surf.cairo());
-      pango.setMarkup(godleyIcon->table.cell(selectedRow,selectedCol));
+      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+      pango.setMarkup(str);
       int j=0;
       if (selectedCol>=scrollColStart) j=selectedCol-scrollColStart+1;
       x-=colLeftMargin[j]+2;
-      insertIdx = x>0?pango.posToIdx(x)+1: 0;
+      insertIdx = x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
     }
   else
     insertIdx=0;
@@ -252,6 +253,44 @@ void GodleyTableWindow::mouseUp(double x, double y)
 void GodleyTableWindow::mouseMove(double x, double y)
 {
   motionCol=colX(x), motionRow=rowY(y);
+}
+
+void GodleyTableWindow::keyPress(int keySym)
+{
+  if (selectedCol>=0 && selectedRow>=0 && selectedCol<godleyIcon->table.cols() &&
+      selectedRow<godleyIcon->table.rows())
+    {
+      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+      switch (keySym)
+        {
+        case 0xff08: case 0xffff:  //backspace/delete
+          if (insertIdx>0 && insertIdx<=str.length())
+            str.erase(--insertIdx,1);
+          break;
+        case 0xff1b: // escape - TODO
+          selectedRow=selectedCol=-1;
+          break;
+        case 0xff0d:
+          godleyIcon->update();
+          selectedRow=selectedCol=-1;
+          break;
+        case 0xff51: //left arrow
+          if (insertIdx>0) insertIdx--;
+          break;
+        case 0xff53: //right arrow
+          if (insertIdx<str.length()) insertIdx++;
+          break;
+        default:
+          if (keySym>=' ' && keySym<0xff)
+            {
+              if (insertIdx<0) insertIdx=0;
+              if (insertIdx>=str.length()) insertIdx=str.length();
+              str.insert(str.begin()+insertIdx++,keySym);
+            }
+          break;
+        }
+      requestRedraw();
+    }
 }
 
 GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) const
@@ -331,3 +370,4 @@ void GodleyTableWindow::highlightCell(cairo_t* cairo, unsigned row, unsigned col
   cairo_set_source_rgba(cairo,1,1,1,0.5);
   cairo_fill(cairo);
 }
+

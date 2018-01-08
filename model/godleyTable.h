@@ -44,6 +44,7 @@ namespace minsky
     std::vector<double> colLeftMargin;
     /// computed height of each row
     double rowHeight=0;
+    unsigned insertIdx=0; // location of insertion pointer in selected cell
 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
@@ -51,6 +52,7 @@ namespace minsky
     void mouseDown(double x, double y);
     void mouseUp(double x, double y);
     void mouseMove(double x, double y);
+    void keyPress(int keySym);
 
     enum ClickType {background, row0, col0, internal};
     ClickType clickType(double x, double y) const;
@@ -70,7 +72,6 @@ namespace minsky
     
   private:
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
-    unsigned insertIdx=0; // location of insertion pointer in selected cell
   };
 }
 

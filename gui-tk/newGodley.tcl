@@ -8,12 +8,13 @@ proc newOpenGodley {id} {
         bind .$id.table <Configure> "$id.requestRedraw"
         bind .$id.table <Destroy> "$id.delete"
 
-        bind .$id.table <ButtonPress-1> "$id.mouseDown %x %y"
+        bind .$id.table <ButtonPress-1> "$id.mouseDown %x %y; focus .$id.table"
         bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; $id.mouseUp %x %y"
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMove %x %y"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-
+        bind .$id.table <KeyPress> "$id.keyPress %N"
+       
         menu .$id.context -tearoff 0
         
         scrollbar .$id.vscroll -orient vertical -command "scrollGodley $id row"
