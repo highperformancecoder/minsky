@@ -70,6 +70,7 @@ namespace minsky
     
   private:
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
+    unsigned insertIdx=0; // location of insertion pointer in selected cell
   };
 }
 

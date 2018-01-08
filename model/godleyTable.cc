@@ -177,6 +177,12 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
               cairo_set_source_rgba(surface->cairo(),0,0,0,1);
               cairo_move_to(surface->cairo(),x,y);
               pango.show();
+
+              // show insertion cursor
+              cairo_move_to(surface->cairo(),x+pango.idxToPos(insertIdx),y);
+              cairo_rel_line_to(surface->cairo(),0,rowHeight);
+              cairo_set_line_width(surface->cairo(),1);
+              cairo_stroke(surface->cairo());
               if (motionRow>0 && motionCol>0)
                 highlightCell(surface->cairo(),motionRow,motionCol);
             }
@@ -203,6 +209,19 @@ void GodleyTableWindow::mouseDown(double x, double y)
 {
   selectedCol=colX(x);
   selectedRow=rowY(y);
+  if (selectedRow>=0 && selectedRow<godleyIcon->table.rows() &&
+      selectedCol>=0 && selectedCol<godleyIcon->table.cols())
+    {
+      cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
+      Pango pango(surf.cairo());
+      pango.setMarkup(godleyIcon->table.cell(selectedRow,selectedCol));
+      int j=0;
+      if (selectedCol>=scrollColStart) j=selectedCol-scrollColStart+1;
+      x-=colLeftMargin[j]+2;
+      insertIdx = x>0?pango.posToIdx(x)+1: 0;
+    }
+  else
+    insertIdx=0;
   requestRedraw();
 }
 
