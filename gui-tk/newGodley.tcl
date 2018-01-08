@@ -13,8 +13,9 @@ proc newOpenGodley {id} {
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMove %x %y"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-        bind .$id.table <KeyPress> "$id.keyPress %N"
-       
+        bind .$id.table <KeyPress> "puts %N; $id.keyPress %N"
+        bind .$id.table <KeyRelease> "$id.keyRelease %N"
+        
         menu .$id.context -tearoff 0
         
         scrollbar .$id.vscroll -orient vertical -command "scrollGodley $id row"

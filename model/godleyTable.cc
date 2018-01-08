@@ -259,11 +259,8 @@ void GodleyTableWindow::mouseUp(double x, double y)
         selectedRow=r;
       }
   else if (selectIdx!=insertIdx)
-    {
-      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-      minsky().putClipboard
-        (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
-    }
+    copy();
+
   requestRedraw();
 }
 
@@ -278,40 +275,50 @@ void GodleyTableWindow::keyPress(int keySym)
 {
   if (selectedCol>=0 && selectedRow>=0 && selectedCol<godleyIcon->table.cols() &&
       selectedRow<godleyIcon->table.rows())
-    {
-      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+    if (controlChar)
       switch (keySym)
         {
-        case 0xff08: case 0xffff:  //backspace/delete
-          if (insertIdx!=selectIdx)
-            {
-              str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));
-              insertIdx=min(insertIdx,selectIdx);
-            }
-          else if (insertIdx>0 && insertIdx<=str.length())
-            str.erase(--insertIdx,1);
+        case 'x': case 'X':
+          cut();
           break;
-        case 0xff1b: // escape - TODO
-          selectedRow=selectedCol=-1;
+        case 'c': case 'C':
+          copy();
           break;
-        case 0xff0d:
-          godleyIcon->update();
-          selectedRow=selectedCol=-1;
+        case 'v': case 'V':
+          paste();
           break;
-        case 0xff51: //left arrow
-          if (insertIdx>0) insertIdx--;
-          break;
-        case 0xff53: //right arrow
-          if (insertIdx<str.length()) insertIdx++;
-          break;
-        default:
+        }
+    else
+      {
+        auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+        switch (keySym)
+          {
+          case 0xff08: case 0xffff:  //backspace/delete
+            if (insertIdx!=selectIdx)
+              delSelection();
+            else if (insertIdx>0 && insertIdx<=str.length())
+              str.erase(--insertIdx,1);
+            break;
+          case 0xff1b: // escape - TODO
+            selectedRow=selectedCol=-1;
+            break;
+          case 0xff0d:
+            godleyIcon->update();
+            selectedRow=selectedCol=-1;
+            break;
+          case 0xff51: //left arrow
+            if (insertIdx>0) insertIdx--;
+            break;
+          case 0xff53: //right arrow
+            if (insertIdx<str.length()) insertIdx++;
+            break;
+          case 0xffe3: case 0xffe4:
+            controlChar=true;
+            return; // no need to redraw + don't reset selection
+          default:
           if (keySym>=' ' && keySym<0xff)
             {
-              if (insertIdx!=selectIdx)
-                {
-                  str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));
-                  insertIdx=min(insertIdx,selectIdx);
-                }
+              delSelection();
               if (insertIdx<0) insertIdx=0;
               if (insertIdx>=str.length()) insertIdx=str.length();
               str.insert(str.begin()+insertIdx++,keySym);
@@ -319,7 +326,47 @@ void GodleyTableWindow::keyPress(int keySym)
           break;
         }
       selectIdx=insertIdx;
-      requestRedraw();
+    }
+  requestRedraw();
+}
+
+void GodleyTableWindow::keyRelease(int keySym)
+{
+  switch (keySym)
+    {
+    case 0xffe3: case 0xffe4:
+      controlChar=false;
+      break;
+    }
+}
+
+void GodleyTableWindow::delSelection()
+{
+  if (insertIdx!=selectIdx)
+    {
+      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+      str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));
+      selectIdx=insertIdx=min(insertIdx,selectIdx);
+    }
+}
+
+void GodleyTableWindow::copy()
+{
+  auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+  cminsky().putClipboard
+    (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
+}
+
+void GodleyTableWindow::paste()
+{
+  if (selectedCol>=0 && selectedRow>=0 && selectedCol<godleyIcon->table.cols() &&
+      selectedRow<godleyIcon->table.rows())
+    {
+      delSelection();
+      auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+      auto stringToInsert=cminsky().getClipboard();
+      str.insert(insertIdx,stringToInsert);
+      selectIdx=insertIdx+=stringToInsert.length();
     }
 }
 

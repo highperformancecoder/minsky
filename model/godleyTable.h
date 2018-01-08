@@ -55,6 +55,7 @@ namespace minsky
     void mouseUp(double x, double y);
     void mouseMove(double x, double y);
     void keyPress(int keySym);
+    void keyRelease(int keySym);
 
     enum ClickType {background, row0, col0, internal};
     ClickType clickType(double x, double y) const;
@@ -72,10 +73,18 @@ namespace minsky
     void highlightRow(cairo_t* cairo,unsigned row);
     void highlightCell(cairo_t* cairo,unsigned row, unsigned col);
 
+    // support cut/copy/paste operations
+    void delSelection();
+    void cut() {copy(); delSelection();}
+    void copy();
+    void paste();
+
+    
     int textIdx(double x) const;
 
   private:
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
+    bool controlChar=false; ///< control pressed
   };
 }
 
