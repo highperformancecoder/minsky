@@ -129,18 +129,10 @@ default: gui-tk/minsky$(EXE)
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
 
-# for some reason, linkchecker on TRAVIS ignores the proscription on
-# checking certificates
-ifdef TRAVIS
-LINKCHECKER=linkchecker --no-warnings
-else
-LINKCHECKER=linkchecker
-endif
-
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
 # only perform link checking if online
-	if ping -c 1 www.google.com; then $(LINKCHECKER) -f linkcheckerrc gui-tk/library/help/minsky.html; fi
+	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
@@ -187,7 +179,7 @@ gui-tk/library/help: doc/minsky/labels.pl doc/minsky.html
 	mkdir -p $@/minsky
 	find doc/minsky \( -name "*.html" -o -name "*.css" -o -name "*.png" \) -exec cp {} $@/minsky \;
 	cp -r -f doc/minsky.html $@
-	$(LINKCHECKER) -f linkcheckerrc $@/minsky.html
+	linkchecker -f linkcheckerrc $@/minsky.html
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
