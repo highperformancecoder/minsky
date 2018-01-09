@@ -1,2 +1,4 @@
+[checking]
+sslverify=0
 [filtering]
 ignorewarnings=https-certificate-error
