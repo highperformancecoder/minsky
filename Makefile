@@ -167,9 +167,9 @@ server/server: tclmain.o $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SERVER_OBJS) $(GUI_OBJS
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS)  $(SERVER_LIBS) -o $@
 	-ln -sf `pwd`/GUI/library server
 
-gui-tk/helpRefDb.tcl: doc/minsky/labels.pl
+gui-tk/helpRefDb.tcl: doc/minsky/*.html
 	rm -f $@
-	perl makeRefDb.pl $< >$@
+	perl makeRefDb.pl doc/minsky/*.html >$@
 
 doc/minsky/labels.pl: $(wildcard doc/*.tex)
 	cd doc; sh makedoc.sh
