@@ -48,4 +48,4 @@ before_install:
 #addons:
 #  postgresql: "9.3"
 script:
-  sh travisRun.sh
+  bash travisRun.sh
