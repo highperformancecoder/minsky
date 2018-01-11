@@ -31,7 +31,7 @@ set helpTopics(.wiring.menubar.line0.godley)  GodleyIcon
 
 button .wiring.menubar.line0.var -text var -command addVariable -foreground #9f0000
 tooltip .wiring.menubar.line0.var "variable"
-set helpTopics(.wiring.menubar.line0.var) Variable
+set helpTopics(.wiring.menubar.line0.var) Variable:flow
 
 button .wiring.menubar.line0.const -text const -command addConstant -foreground #00007f
 tooltip .wiring.menubar.line0.const "constant"
@@ -39,13 +39,13 @@ set helpTopics(.wiring.menubar.line0.const) Variable:constant
 
 button .wiring.menubar.line0.parameter -text param -command addParameter -foreground #00007f
 tooltip .wiring.menubar.line0.parameter "parameter"
-set helpTopics(.wiring.menubar.line0.const) Variable:parameter
+set helpTopics(.wiring.menubar.line0.parameter) Variable:parameter
 
 image create photo integrateImg -file $minskyHome/icons/integrate.gif
 button .wiring.menubar.line0.integrate -image integrateImg -command {
     addOperation integrate}
 tooltip .wiring.menubar.line0.integrate integrate
-set helpTopics(.wiring.menubar.line0.integrate) Integrate
+set helpTopics(.wiring.menubar.line0.integrate) IntOp
 
 pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.parameter .wiring.menubar.line0.integrate -side left
 

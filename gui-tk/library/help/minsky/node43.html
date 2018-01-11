@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Operations</TITLE>
-<META NAME="description" CONTENT="Operations">
+<TITLE>Reference</TITLE>
+<META NAME="description" CONTENT="Reference">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,518 +14,198 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node44.html">
-<LINK REL="previous" HREF="node42.html">
-<LINK REL="up" HREF="node42.html">
+<LINK REL="previous" HREF="node39.html">
+<LINK REL="up" HREF="minsky.html">
 <LINK REL="next" HREF="node44.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html567"
+<A NAME="tex2html591"
   HREF="node44.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html565"
-  HREF="node42.html">
+<A NAME="tex2html589"
+  HREF="minsky.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html559"
+<A NAME="tex2html585"
   HREF="node42.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html568"
-  HREF="node44.html">Switch</A>
-<B> Up:</B> <A NAME="tex2html566"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html560"
-  HREF="node42.html">Reference</A>
+<B> Next:</B> <A NAME="tex2html592"
+  HREF="node44.html">Operations</A>
+<B> Up:</B> <A NAME="tex2html590"
+  HREF="minsky.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html586"
+  HREF="node42.html">Loanable Funds</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00410000000000000000"></A><A NAME="operations"></A>
-<BR>
-Operations
+<H1><A NAME="SECTION00400000000000000000">
+Reference</A>
 </H1>
 
 <P>
-<DL>
-<DT><STRONG>add +</STRONG></DT>
-<DD><A NAME="Operation:add"></A> Add multiple numbers together. The input
-  ports allow multiple wires, which are all summed. If an input port
-  is unwired, it is equivalent to setting it to zero.
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
 
-<P>
-</DD>
-<DT><STRONG>subtract <SPAN CLASS="MATH"><IMG
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html593"
+  HREF="node44.html">Operations</A>
+<UL>
+<LI><A NAME="tex2html594"
+  HREF="node45.html">add +</A>
+<LI><A NAME="tex2html595"
+  HREF="node46.html">subtract <SPAN CLASS="MATH"><IMG
  WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img163.png"
- ALT="$-$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:subtract"></A> Subtract two numbers. The input
-  ports allow multiple wires, which are summed prior to the
-  subtraction being carried out. If an input port is unwired, it is
-  equivalent to setting it to zero. Note the small `+' and `<SPAN CLASS="MATH"><IMG
+ SRC="img1.png"
+ ALT="$-$"></SPAN></A>
+<LI><A NAME="tex2html596"
+  HREF="node47.html">multiply <SPAN CLASS="MATH"><IMG
  WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img163.png"
- ALT="$-$"></SPAN>' signs
-  on the input ports indicating which terms are added or subtracted from
-  the result.
-
-<P>
-</DD>
-<DT><STRONG>multiply <SPAN CLASS="MATH"><IMG
+ SRC="img2.png"
+ ALT="$\times $"></SPAN></A>
+<LI><A NAME="tex2html597"
+  HREF="node48.html">divide <SPAN CLASS="MATH"><IMG
  WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img70.png"
- ALT="$\times$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:multiply"></A> Multiply numbers with each
-  other. The input ports allow multiple wires, which are all
-  multiplied together. If an input port is unwired, it is equivalent
-  to setting it to one.
-
-<P>
-</DD>
-<DT><STRONG>divide <SPAN CLASS="MATH"><IMG
- WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img164.png"
- ALT="$\div$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:divide"></A> Divide a number by another. The
-  input ports allow multiple wires, which are multiplied together
-  prior to the division being carried out. If an input port is
-  unwired, it is equivalent to setting it to one. Note the small
-  `<SPAN CLASS="MATH"><IMG
- WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img70.png"
- ALT="$\times$"></SPAN>' and `<SPAN CLASS="MATH"><IMG
- WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img164.png"
- ALT="$\div$"></SPAN>' signs indicating which port refers to the
-  numerator and which the denominator.
-
-<P>
-</DD>
-<DT><STRONG>log</STRONG></DT>
-<DD><A NAME="Operation:log"></A> Take the logarithm of the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN> input port, to
-base <SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img52.png"
- ALT="$b$"></SPAN>. The base <SPAN CLASS="MATH"><IMG
- WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img52.png"
- ALT="$b$"></SPAN> needs to be specified -- if the natural
-logarithm is desired (<SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img165.png"
- ALT="$b=e$"></SPAN>), use the <A HREF="#Operation:ln">ln operator</A> instead.
-
-<P>
-</DD>
-<DT><STRONG>pow <SPAN CLASS="MATH"><IMG
+ SRC="img3.png"
+ ALT="$\div $"></SPAN></A>
+<LI><A NAME="tex2html598"
+  HREF="node49.html">log</A>
+<LI><A NAME="tex2html599"
+  HREF="node50.html">pow <SPAN CLASS="MATH"><IMG
  WIDTH="21" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img166.png"
- ALT="$x^y$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:pow"></A> Raise one number to the power of another. The
-ports are labelled <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img51.png"
- ALT="$y$"></SPAN>, referring the the formula <SPAN CLASS="MATH"><IMG
- WIDTH="21" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img166.png"
- ALT="$x^y$"></SPAN>.
-
-<P>
-</DD>
-<DT><STRONG>lt <SPAN CLASS="MATH"><IMG
+ SRC="img4.png"
+ ALT="$x^y$"></SPAN></A>
+<LI><A NAME="tex2html600"
+  HREF="node51.html">lt <SPAN CLASS="MATH"><IMG
  WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img53.png"
- ALT="$&lt;$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:lt"></A> Returns 0 or 1, depending
-  on whether <SPAN CLASS="MATH"><IMG
- WIDTH="43" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img167.png"
- ALT="$x&lt;y$"></SPAN> is true or false.
-
-<P>
-</DD>
-<DT><STRONG>le <SPAN CLASS="MATH"><IMG
+ SRC="img5.png"
+ ALT="$&lt;$"></SPAN></A>
+<LI><A NAME="tex2html601"
+  HREF="node52.html">le <SPAN CLASS="MATH"><IMG
  WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img54.png"
- ALT="$\le$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:le"></A> Returns 0 or 1, depending
-  on whether <SPAN CLASS="MATH"><IMG
- WIDTH="43" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img168.png"
- ALT="$x\le y$"></SPAN> is true or false.
-
-<P>
-</DD>
-<DT><STRONG>eq <SPAN CLASS="MATH"><IMG
+ SRC="img6.png"
+ ALT="$\le $"></SPAN></A>
+<LI><A NAME="tex2html602"
+  HREF="node53.html">eq <SPAN CLASS="MATH"><IMG
  WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img169.png"
- ALT="$=$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:eq"></A> Returns 0 or 1, depending
-  on whether <SPAN CLASS="MATH"><IMG
- WIDTH="43" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img170.png"
- ALT="$x=y$"></SPAN> is true or false.
-
-<P>
-</DD>
-<DT><STRONG>min</STRONG></DT>
-<DD><A NAME="Operation:min"></A> Returns the minimum of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img51.png"
- ALT="$y$"></SPAN>.
-
-<P>
-</DD>
-<DT><STRONG>max</STRONG></DT>
-<DD><A NAME="Operation:max"></A> Returns the maximum of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img51.png"
- ALT="$y$"></SPAN>.
-
-<P>
-</DD>
-<DT><STRONG>and <SPAN CLASS="MATH"><IMG
+ SRC="img7.png"
+ ALT="$=$"></SPAN></A>
+<LI><A NAME="tex2html603"
+  HREF="node54.html">min</A>
+<LI><A NAME="tex2html604"
+  HREF="node55.html">max</A>
+<LI><A NAME="tex2html605"
+  HREF="node56.html">and <SPAN CLASS="MATH"><IMG
  WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img55.png"
- ALT="$\wedge$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:and_"></A> Logical and of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img51.png"
- ALT="$y$"></SPAN>, where
-  <SPAN CLASS="MATH"><IMG
- WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img171.png"
- ALT="$x\le 0.5$"></SPAN>
-  means false, and <SPAN CLASS="MATH"><IMG
- WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img172.png"
- ALT="$x&gt;0.5$"></SPAN> means true. The output is 1 or 0, depending
-  on the result being true or false respectively.
-
-<P>
-</DD>
-<DT><STRONG>or <SPAN CLASS="MATH"><IMG
+ SRC="img8.png"
+ ALT="$\wedge $"></SPAN></A>
+<LI><A NAME="tex2html606"
+  HREF="node57.html">or <SPAN CLASS="MATH"><IMG
  WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img56.png"
- ALT="$\vee$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:or_"></A> Logical or of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img51.png"
- ALT="$y$"></SPAN>, where <SPAN CLASS="MATH"><IMG
- WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img171.png"
- ALT="$x\le 0.5$"></SPAN>
-  means false, and <SPAN CLASS="MATH"><IMG
- WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img172.png"
- ALT="$x&gt;0.5$"></SPAN> means true. The output is 1 or 0, depending
-  on the result being true or false respectively.
-
-<P>
-</DD>
-<DT><STRONG>not <SPAN CLASS="MATH"><IMG
+ SRC="img9.png"
+ ALT="$\vee $"></SPAN></A>
+<LI><A NAME="tex2html607"
+  HREF="node58.html">not <SPAN CLASS="MATH"><IMG
  WIDTH="15" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
- SRC="img57.png"
- ALT="$\neg$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:not_"></A> The output is 1 or 0, depending
-  on whether <SPAN CLASS="MATH"><IMG
- WIDTH="55" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img171.png"
- ALT="$x\le 0.5$"></SPAN> is true or false respectively.
-
-<P>
-</DD>
-<DT><STRONG>time 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/time.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img29.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/time.eps}}"></STRONG></DT>
-<DD><A NAME="Operation:time"></A> Returns the current value of system time.
-
-<P>
-</DD>
-<DT><STRONG>copy</STRONG></DT>
-<DD><A NAME="Operation:copy"></A> This just copies its input to its output,
-which is redundant on wiring diagrams, but is needed for internal
-purposes.
-
-<P>
-</DD>
-<DT><STRONG>integrate 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/int.eps}}$
- -->
-<IMG
- WIDTH="30" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
- SRC="img32.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}"></STRONG></DT>
-<DD><A NAME="IntOp"></A> Creates an integration (or stock)
-variable. Editable attributes include the variable's name and its
-initial value at <SPAN CLASS="MATH"><IMG
- WIDTH="39" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img173.png"
- ALT="$t=0$"></SPAN>. The function to be integrated needs to be
-connected to the top port. The bottom port can optionally be connected
-to a constant, parameter or variable, which is used to specify the
-initial value of the integral.
-
-<P>
-</DD>
-<DT><STRONG>differentiate 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}$
- -->
-<IMG
- WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img43.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}"></STRONG></DT>
-<DD><A NAME="Operation:differentiate"></A> Symbolically differentiates its input.
-
-<P>
-</DD>
-<DT><STRONG>data 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/data.eps}}$
- -->
-<IMG
- WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img64.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/data.eps}}"></STRONG></DT>
-<DD><A NAME="Operation:data"></A> A data interpolation
-widget. The data can be imported from a file containing
-two values on each line, eg:
-<BLOCKQUOTE>
-<TABLE CELLPADDING=3>
-<TR><TD ALIGN="RIGHT">0.1</TD>
-<TD ALIGN="RIGHT">0.3</TD>
-</TR>
-<TR><TD ALIGN="RIGHT">0.5</TD>
-<TD ALIGN="RIGHT">0.7</TD>
-</TR>
-<TR><TD ALIGN="RIGHT">0.9</TD>
-<TD ALIGN="RIGHT">1</TD>
-</TR>
-</TABLE>
-</BLOCKQUOTE>
-If the input is less than the minimum key value (0.1 here), then the
-operation outputs the corresponding value (0.3). Similarly if the
-input is greater than the maximum (0.9), the corresponding value (1)
-is output. If it lies in between two keys (eg 0.2), the the output is
-linearly interpolated (0.4).
-
-<P>
-Alternatively, the data block can be initialised by a random number
-generator, which is a way of introducing random numbers<A NAME="2778"></A> into the simulation. The parameters are required, the
-minimum and maximum values of the function's domain, and the number of
-random samples over that domain.
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3>
-<TR><TD ALIGN="CENTER"><!-- MATH
- $\resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}}$
- -->
-<IMG
- WIDTH="235" HEIGHT="183" ALIGN="BOTTOM" BORDER="0"
- SRC="img174.png"
- ALT="\resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}}"></TD>
-<TD ALIGN="CENTER"><!-- MATH
- $\resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}$
- -->
-<IMG
- WIDTH="278" HEIGHT="142" ALIGN="BOTTOM" BORDER="0"
- SRC="img175.png"
- ALT="\resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}"></TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-More formally, a data block is an empirical function, based on a table
-of pairs of values (<!-- MATH
- $x_i, y_i, i=1\ldots n, x_{i+1}>x_i$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="187" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img176.png"
- ALT="$x_i, y_i, i=1\ldots n, x_{i+1}&gt;x_i$"></SPAN>) read in from
-a file. The function's output is linearly interpolated from the data,
-ie:
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-f(x) = \left\{
-\begin{array}{cl}
-y_1 & x < x_1\\
-y_n & x\geq x_n\\
-\frac{y_i(x_{i+1}-x)+y_{i+1}(x-x_i)}{x_{i+1}-x_i} & x_i \leq x <
-x_{i+1}\\
-\end{array}
-\right.
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="328" HEIGHT="69" BORDER="0"
- SRC="img177.png"
- ALT="\begin{displaymath}
-f(x) = \left\{
-\begin{array}{cl}
-y_1 &amp; x &lt; x_1\\
-y_n &amp; x\ge...
-..._i)}{x_{i+1}-x_i} &amp; x_i \leq x &lt;
-x_{i+1}\\
-\end{array}\right.
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-
-<P>
-</DD>
-<DT><STRONG>sqrt <SPAN CLASS="MATH"><IMG
- WIDTH="18" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img10.png"
+ ALT="$\neg $"></SPAN></A>
+<LI><A NAME="tex2html608"
+  HREF="node59.html">time <SPAN CLASS="MATH"><IMG
+ WIDTH="10" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.png"
+ ALT="$t$"></SPAN></A>
+<LI><A NAME="tex2html609"
+  HREF="node60.html">copy</A>
+<LI><A NAME="tex2html610"
+  HREF="node61.html">integrate <SPAN CLASS="MATH"><IMG
+ WIDTH="31" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
  SRC="img178.png"
- ALT="$\surd$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:sqrt"></A> Square root of the input
-
-<P>
-</DD>
-<DT><STRONG>exp</STRONG></DT>
-<DD><A NAME="Operation:exp"></A> Exponential of the input
-
-<P>
-</DD>
-<DT><STRONG>ln</STRONG></DT>
-<DD><A NAME="Operation:ln"></A> Natural logarithm
-
-<P>
-</DD>
-<DT><STRONG>sin</STRONG></DT>
-<DD><A NAME="Operation:sin"></A> sine function
-</DD>
-<DT><STRONG>cos</STRONG></DT>
-<DD><A NAME="Operation:cos"></A> cosine function
-</DD>
-<DT><STRONG>tan</STRONG></DT>
-<DD><A NAME="Operation:tan"></A> tangent function
-</DD>
-<DT><STRONG>asin</STRONG></DT>
-<DD><A NAME="Operation:asin"></A> Arc sine, inverse of sine
-</DD>
-<DT><STRONG>acos</STRONG></DT>
-<DD><A NAME="Operation:acos"></A> Arc cosine, inverse of cosine
-</DD>
-<DT><STRONG>atan</STRONG></DT>
-<DD><A NAME="Operation:atan"></A> Arc tangent, inverse of tangent
-</DD>
-<DT><STRONG>sinh</STRONG></DT>
-<DD><A NAME="Operation:sinh"></A> hyperbolic sine function <!-- MATH
- $\frac{e^x-e^{-x}}2$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
- SRC="img179.png"
- ALT="$\frac{e^x-e^{-x}}2$"></SPAN>
-</DD>
-<DT><STRONG>cosh</STRONG></DT>
-<DD><A NAME="Operation:cosh"></A> hyperbolic cosine function <!-- MATH
- $\frac{e^x+e^{-x}}2$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
- SRC="img180.png"
- ALT="$\frac{e^x+e^{-x}}2$"></SPAN>
-</DD>
-<DT><STRONG>tanh</STRONG></DT>
-<DD><A NAME="Operation:tanh"></A> hyperbolic tangent function <!-- MATH
- $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
- SRC="img181.png"
- ALT="$\frac{e^x-e^{-x}}{e^x+e^{-x}}$"></SPAN>
-</DD>
-<DT><STRONG>abs <SPAN CLASS="MATH"><IMG
+ ALT="$\int dt$"></SPAN></A>
+<LI><A NAME="tex2html611"
+  HREF="node62.html">differentiate <SPAN CLASS="MATH"><IMG
+ WIDTH="34" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$d/dt$"></SPAN></A>
+<LI><A NAME="tex2html612"
+  HREF="node63.html">data </A>
+<LI><A NAME="tex2html613"
+  HREF="node64.html">sqrt <SPAN CLASS="MATH"><IMG
+ WIDTH="18" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img184.png"
+ ALT="$\surd$"></SPAN></A>
+<LI><A NAME="tex2html614"
+  HREF="node65.html">exp</A>
+<LI><A NAME="tex2html615"
+  HREF="node66.html">ln</A>
+<LI><A NAME="tex2html616"
+  HREF="node67.html">sin</A>
+<LI><A NAME="tex2html617"
+  HREF="node68.html">cos</A>
+<LI><A NAME="tex2html618"
+  HREF="node69.html">tan</A>
+<LI><A NAME="tex2html619"
+  HREF="node70.html">asin</A>
+<LI><A NAME="tex2html620"
+  HREF="node71.html">acos</A>
+<LI><A NAME="tex2html621"
+  HREF="node72.html">atan</A>
+<LI><A NAME="tex2html622"
+  HREF="node73.html">sinh</A>
+<LI><A NAME="tex2html623"
+  HREF="node74.html">cosh</A>
+<LI><A NAME="tex2html624"
+  HREF="node75.html">tanh</A>
+<LI><A NAME="tex2html625"
+  HREF="node76.html">abs <SPAN CLASS="MATH"><IMG
  WIDTH="22" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img182.png"
- ALT="$\vert x\vert$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:abs"></A> absolute value function
-</DD>
-<DT><STRONG>floor <!-- MATH
+ SRC="img15.png"
+ ALT="$\vert x\vert$"></SPAN></A>
+<LI><A NAME="tex2html626"
+  HREF="node77.html">floor <!-- MATH
  $\lfloor x\rfloor$
  -->
 <SPAN CLASS="MATH"><IMG
  WIDTH="27" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img183.png"
- ALT="$\lfloor x\rfloor$"></SPAN></STRONG></DT>
-<DD><A NAME="Operation:floor"></A> The greatest integer
-  less than or equal to <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN>.
-</DD>
-<DT><STRONG>frac</STRONG></DT>
-<DD><A NAME="Operation:frac"></A> Fractional part of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img50.png"
- ALT="$x$"></SPAN>, ie <!-- MATH
- $x-\lfloor x\rfloor$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="56" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img184.png"
- ALT="$x-\lfloor x\rfloor$"></SPAN>. 
-
-<P>
-</DD>
-</DL>
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html567"
-  HREF="node44.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html565"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html559"
-  HREF="node42.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+ SRC="img188.png"
+ ALT="$\lfloor x\rfloor$"></SPAN></A>
+<LI><A NAME="tex2html627"
+  HREF="node78.html">frac</A>
+</UL>
 <BR>
-<B> Next:</B> <A NAME="tex2html568"
-  HREF="node44.html">Switch</A>
-<B> Up:</B> <A NAME="tex2html566"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html560"
-  HREF="node42.html">Reference</A></DIV>
-<!--End of Navigation Panel-->
+<LI><A NAME="tex2html628"
+  HREF="node79.html">Switch</A>
+<LI><A NAME="tex2html629"
+  HREF="node80.html">Variables</A>
+<UL>
+<LI><A NAME="tex2html630"
+  HREF="node81.html">Variable names</A>
+<LI><A NAME="tex2html631"
+  HREF="node82.html">Initial conditions</A>
+<LI><A NAME="tex2html632"
+  HREF="node83.html">Sliders</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html633"
+  HREF="node84.html">Wires</A>
+<LI><A NAME="tex2html634"
+  HREF="node85.html">Groups</A>
+<LI><A NAME="tex2html635"
+  HREF="node86.html">Plot widget</A>
+<LI><A NAME="tex2html636"
+  HREF="node87.html">Note Widget</A>
+<LI><A NAME="tex2html637"
+  HREF="node88.html">Godley Tables</A>
+<LI><A NAME="tex2html638"
+  HREF="node89.html">Context Menu</A>
+<LI><A NAME="tex2html639"
+  HREF="node90.html">Canvas background</A>
+</UL>
+<!--End of Table of Child-Links-->
+<BR><HR>
 
 </BODY>
 </HTML>

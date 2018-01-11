@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Entering flows between accounts</TITLE>
-<META NAME="description" CONTENT="Entering flows between accounts">
+<TITLE>Defining account types</TITLE>
+<META NAME="description" CONTENT="Defining account types">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,418 +14,132 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node34.html">
-<LINK REL="previous" HREF="node32.html">
-<LINK REL="up" HREF="node32.html">
+<LINK REL="previous" HREF="node30.html">
+<LINK REL="up" HREF="node25.html">
 <LINK REL="next" HREF="node34.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html458"
+<A NAME="tex2html490"
   HREF="node34.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html456"
-  HREF="node32.html">
+<A NAME="tex2html488"
+  HREF="node25.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html450"
+<A NAME="tex2html484"
   HREF="node32.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html459"
-  HREF="node34.html">Defining flows</A>
-<B> Up:</B> <A NAME="tex2html457"
-  HREF="node32.html">Defining account types</A>
-<B> Previous:</B> <A NAME="tex2html451"
-  HREF="node32.html">Defining account types</A>
+<B> Next:</B> <A NAME="tex2html491"
+  HREF="node34.html">Entering flows between accounts</A>
+<B> Up:</B> <A NAME="tex2html489"
+  HREF="node25.html">Working with Minsky</A>
+<B> Previous:</B> <A NAME="tex2html485"
+  HREF="node32.html">Entering accounts</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION00246100000000000000">
-Entering flows between accounts</A>
-</H3>
+<H2><A NAME="SECTION00246000000000000000">
+Defining account types</A>
+</H2>
 
 <P>
-Flows between accounts are entered by typing text labels in the
-accounts involved. The source label is entered as a simple name--for
-example, if Patient is lending money to Impatient, the word &ldquo;Lend&rdquo;
-could be used to describe this action. Firstly you need to create a
-row beneath the &ldquo;Initial Conditions&rdquo; row (which records the amount of
-money in each account when the simulation begins). You do this by
-clicking on the `+' key on the Initial Conditions row. This creates a
-blank row for recording a flow between accounts.
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img78.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img80.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-The cell below &ldquo;Initial Conditions&rdquo; is used to give a verbal
-description of what the flow is: 
+Bank accounts must be classified as either an Asset, a Liability, or
+the Equity of the relevant Bank, using the drop-down menu currently
+labeled <TT>noAssetClass</TT> at the top of each account. In
+this model, Reserves are an asset of the banking sector, the accounts
+of &ldquo;Patient&rdquo; and &ldquo;Impatient&rdquo; are liabilities, and the &ldquo;Safe&rdquo; is
+the equity of the banking system. Click on the
+<TT>noAssetClass</TT> button and this drop-down menu will
+appear:
 
 <P>
 <DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img78.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img80.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Patient lends to Impatient</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-The flows between accounts are then recorded in the relevant cells
-underneath the columns. Here we will start with putting the label
-&ldquo;Lend&rdquo; into the Patient column. 
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img78.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img80.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Patient lends to Impatient</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img83.png"
- ALT="$-Lend$"></SPAN></TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-Notice that the program shows that the Row Sum for this transaction is
-currently &ldquo;-Lend&rdquo;, when it should be zero to obey the double-entry
-bookkeeping rule that all rows must balance. This is because a
-destination for &ldquo;-Lend&rdquo; has not yet been specified. The destination
-is Impatient's account, and to balance the row to zero this part of
-the transaction must be entered as &ldquo;Lend&rdquo;: 
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img78.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img80.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Patient lends to Impatient</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img83.png"
- ALT="$-Lend$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img84.png"
- ALT="$Lend$"></SPAN></TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-The accounting equation also applies to the Initial Conditions (the amount of money
-in each of the accounts prior to the flows between accounts): the
-Initial Conditions must balance. This requires that there are
-entries on the Asset side of the Banking ledger that exactly match the
-sum of Liabilities and Equity: 
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img12.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img13.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img78.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img79.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img80.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img81.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="28" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img85.png"
- ALT="$120$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="28" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img86.png"
- ALT="$100$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img16.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img87.png"
- ALT="$20$"></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Patient lends to Impatient</TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="53" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img83.png"
- ALT="$-Lend$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img84.png"
- ALT="$Lend$"></SPAN></TD>
-<TD ALIGN="CENTER">&nbsp;</TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-As you enter flows, these appear on the left hand side of the bank block:
-
-<P>
-<DIV ALIGN="CENTER">
-<!-- MATH
- $\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}$
- -->
 <IMG
- WIDTH="195" HEIGHT="231" ALIGN="BOTTOM" BORDER="0"
- SRC="img88.png"
- ALT="\scalebox{0.5}{\includegraphics{images/NewItem147.eps}}">
+ WIDTH="116" HEIGHT="100" ALIGN="BOTTOM" BORDER="0"
+ SRC="NewItem140.png"
+ ALT="589"> 
+
 </DIV>
 
 <P>
+Choose the relevant entry for each column, and the accounts will be properly classified when the model is simulated:
 
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html458"
-  HREF="node34.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html456"
-  HREF="node32.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html450"
-  HREF="node32.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html459"
-  HREF="node34.html">Defining flows</A>
-<B> Up:</B> <A NAME="tex2html457"
-  HREF="node32.html">Defining account types</A>
-<B> Previous:</B> <A NAME="tex2html451"
-  HREF="node32.html">Defining account types</A></DIV>
-<!--End of Navigation Panel-->
+<P>
+<DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1">
+<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img27.png"
+ ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
+ WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$\rightarrow$"></SPAN></TD>
+<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
+ WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img87.png"
+ ALT="$Reserves$"></SPAN></SPAN></TD>
+<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
+ WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img88.png"
+ ALT="$Patient$"></SPAN></SPAN></TD>
+<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
+ WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img89.png"
+ ALT="$Impatient$"></SPAN></SPAN></TD>
+<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
+ WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img90.png"
+ ALT="$Safe$"></SPAN></SPAN></TD>
+</TR>
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=1><SPAN>asset</SPAN></TD>
+<TD ALIGN="CENTER" COLSPAN=2><SPAN>liability</SPAN></TD>
+<TD ALIGN="CENTER" COLSPAN=1><SPAN>equity</SPAN></TD>
+</TR>
+<TR><TD ALIGN="CENTER">Initial Conditions</TD>
+<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img31.png"
+ ALT="$0$"></SPAN></TD>
+<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img31.png"
+ ALT="$0$"></SPAN></TD>
+<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img31.png"
+ ALT="$0$"></SPAN></TD>
+<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img31.png"
+ ALT="$0$"></SPAN></TD>
+</TR>
+</TABLE>
+</DIV>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><A NAME="tex2html492"
+  HREF="node34.html">Entering flows between accounts</A>
+<LI><A NAME="tex2html493"
+  HREF="node35.html">Defining flows</A>
+<LI><A NAME="tex2html494"
+  HREF="node36.html">Copying Godley Table input &amp; outputs</A>
+<LI><A NAME="tex2html495"
+  HREF="node37.html">Using &ldquo;Time Constants&rdquo;</A>
+<LI><A NAME="tex2html496"
+  HREF="node38.html">Multiple banks</A>
+</UL>
+<!--End of Table of Child-Links-->
+<BR><HR>
 
 </BODY>
 </HTML>

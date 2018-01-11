@@ -2,79 +2,79 @@
 
 \section{Operations}\label{operations}
 
-\begin{description}
 
-\item[add +]\label{Operation:add} Add multiple numbers together. The input
+\subsection{add +}\label{Operation:add} Add multiple numbers together. The input
   ports allow multiple wires, which are all summed. If an input port
   is unwired, it is equivalent to setting it to zero.
 
-\item[subtract $-$]\label{Operation:subtract} Subtract two numbers. The input
+\subsection{subtract $-$}\label{Operation:subtract} Subtract two numbers. The input
   ports allow multiple wires, which are summed prior to the
   subtraction being carried out. If an input port is unwired, it is
   equivalent to setting it to zero. Note the small `+' and `$-$' signs
   on the input ports indicating which terms are added or subtracted from
   the result.
 
-\item[multiply $\times$]\label{Operation:multiply} Multiply numbers with each
+\subsection{multiply $\times$}\label{Operation:multiply} Multiply numbers with each
   other. The input ports allow multiple wires, which are all
   multiplied together. If an input port is unwired, it is equivalent
   to setting it to one.
 
-\item[divide $\div$]\label{Operation:divide} Divide a number by another. The
+\subsection{divide $\div$}\label{Operation:divide} Divide a number by another. The
   input ports allow multiple wires, which are multiplied together
   prior to the division being carried out. If an input port is
   unwired, it is equivalent to setting it to one. Note the small
   `$\times$' and `$\div$' signs indicating which port refers to the
   numerator and which the denominator.
 
-\item[log]\label{Operation:log} Take the logarithm of the $x$ input port, to
+\subsection{log}\label{Operation:log} Take the logarithm of the $x$ input port, to
 base $b$. The base $b$ needs to be specified --- if the natural
 logarithm is desired ($b=e$), use the \htmlref{ln operator}{Operation:ln} instead.
 
-\item[pow $x^y$]\label{Operation:pow} Raise one number to the power of another. The
+\subsection{pow $x^y$}\label{Operation:pow} Raise one number to the power of another. The
 ports are labelled $x$ and $y$, referring the the formula $x^y$.
 
-\item[lt $<$]\label{Operation:lt} Returns 0 or 1, depending
+\subsection{lt $<$}\label{Operation:lt} Returns 0 or 1, depending
   on whether $x<y$ is true or false.
 
-\item[le $\le$]\label{Operation:le} Returns 0 or 1, depending
+\subsection{le $\le$}\label{Operation:le} Returns 0 or 1, depending
   on whether $x\le y$ is true or false.
 
-\item[eq $=$]\label{Operation:eq} Returns 0 or 1, depending
+\subsection{eq $=$}\label{Operation:eq} Returns 0 or 1, depending
   on whether $x=y$ is true or false.
 
-\item[min]\label{Operation:min} Returns the minimum of $x$ and $y$.
+\subsection{min}\label{Operation:min} Returns the minimum of $x$ and $y$.
 
-\item[max]\label{Operation:max} Returns the maximum of $x$ and $y$.
+\subsection{max}\label{Operation:max} Returns the maximum of $x$ and $y$.
 
-\item[and $\wedge$]\label{Operation:and_} Logical and of $x$ and $y$, where
+\subsection{and $\wedge$}\label{Operation:and_} Logical and of $x$ and $y$, where
   $x\le 0.5$
   means false, and $x>0.5$ means true. The output is 1 or 0, depending
   on the result being true or false respectively.
 
-\item[or $\vee$]\label{Operation:or_} Logical or of $x$ and $y$, where $x\le0.5$
+\subsection{or $\vee$}\label{Operation:or_} Logical or of $x$ and $y$, where $x\le0.5$
   means false, and $x>0.5$ means true. The output is 1 or 0, depending
   on the result being true or false respectively.
 
-\item[not $\neg$]\label{Operation:not_} The output is 1 or 0, depending
+\subsection{not $\neg$}\label{Operation:not_} The output is 1 or 0, depending
   on whether $x\le0.5$ is true or false respectively.
 
-\item[time \buttonIcon{time.eps}]\label{Operation:time} Returns the current value of system time.
+\subsection{time $t$}\label{Operation:time}  Returns the current value of system time.
 
-\item[copy]\label{Operation:copy} This just copies its input to its output,
+\subsection{copy}\label{Operation:copy} This just copies its input to its output,
 which is redundant on wiring diagrams, but is needed for internal
 purposes.
 
-\item[integrate \buttonIcon{int.eps}]\label{IntOp} Creates an integration (or stock)
+\subsection{integrate $\int dt$}\label{IntOp}  Creates an integration (or stock)
 variable. Editable attributes include the variable's name and its
 initial value at $t=0$. The function to be integrated needs to be
 connected to the top port. The bottom port can optionally be connected
 to a constant, parameter or variable, which is used to specify the
 initial value of the integral.
 
-\item[differentiate \buttonIcon{differentiate.eps}]\label{Operation:differentiate} Symbolically differentiates its input.
+\subsection{differentiate $d/dt$}\label{Operation:differentiate}
+Symbolically differentiates its input.
 
-\item[data \buttonIcon{data.eps}]\label{Operation:data} A data interpolation
+\subsection{data }\label{Operation:data} \buttonIcon{data.eps} A data interpolation
 widget. The data can be imported from a file containing
 two values on each line, eg:
 \begin{quote}
@@ -118,27 +118,26 @@ x_{i+1}\\
 \right.
 \end{displaymath}
 
-\item[sqrt $\surd$]\label{Operation:sqrt} Square root of the input
+\subsection{sqrt $\surd$}\label{Operation:sqrt} Square root of the input
 
-\item[exp]\label{Operation:exp} Exponential of the input
+\subsection{exp}\label{Operation:exp} Exponential of the input
 
-\item[ln]\label{Operation:ln} Natural logarithm
+\subsection{ln}\label{Operation:ln} Natural logarithm
 
-\item[sin]\label{Operation:sin} sine function
-\item[cos]\label{Operation:cos} cosine function
-\item[tan]\label{Operation:tan} tangent function
-\item[asin]\label{Operation:asin} Arc sine, inverse of sine
-\item[acos]\label{Operation:acos} Arc cosine, inverse of cosine
-\item[atan]\label{Operation:atan} Arc tangent, inverse of tangent
-\item[sinh]\label{Operation:sinh} hyperbolic sine function $\frac{e^x-e^{-x}}2$
-\item[cosh]\label{Operation:cosh} hyperbolic cosine function $\frac{e^x+e^{-x}}2$
-\item[tanh]\label{Operation:tanh} hyperbolic tangent function $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
-\item[abs $|x|$]\label{Operation:abs} absolute value function
-\item[floor $\lfloor x\rfloor$]\label{Operation:floor} The greatest integer
+\subsection{sin}\label{Operation:sin} sine function
+\subsection{cos}\label{Operation:cos} cosine function
+\subsection{tan}\label{Operation:tan} tangent function
+\subsection{asin}\label{Operation:asin} Arc sine, inverse of sine
+\subsection{acos}\label{Operation:acos} Arc cosine, inverse of cosine
+\subsection{atan}\label{Operation:atan} Arc tangent, inverse of tangent
+\subsection{sinh}\label{Operation:sinh} hyperbolic sine function $\frac{e^x-e^{-x}}2$
+\subsection{cosh}\label{Operation:cosh} hyperbolic cosine function $\frac{e^x+e^{-x}}2$
+\subsection{tanh}\label{Operation:tanh} hyperbolic tangent function $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
+\subsection{abs $|x|$}\label{Operation:abs} absolute value function
+\subsection{floor $\lfloor x\rfloor$}\label{Operation:floor} The greatest integer
   less than or equal to $x$.
-\item[frac]\label{Operation:frac} Fractional part of $x$, ie $x-\lfloor x\rfloor$. 
+\subsection{frac}\label{Operation:frac} Fractional part of $x$, ie $x-\lfloor x\rfloor$. 
 
-\end{description}
 
 \section{Switch}\label{SwitchIcon}
 
@@ -344,10 +343,10 @@ outside of the plot are a number of input ports that can be wired.
  \label{Notes}\label{Item} Notes allow arbitrary text to be
 placed on the canvas for explanatory purposes. Anything that can be
 entered on the keyboard can be placed here, including unicode
-characters, but LaTeX formatting is not currently supported. A note
+characters, and LaTeX formatting is supported. A note
 widget, like all canvas items, allow short additional tooltips to be
 specified. It is also possible to annotate an ordinary block with some text
-that is visible through the edit menu, or as a tooltip.
+that is accessed through the edit menu, or as a tooltip.
 
 \section{Godley Tables}\label{godley}\label{GodleyIcon}
 
