@@ -187,7 +187,12 @@ namespace minsky
   {
     copy();
     for (auto& i: canvas.selection.items)
-      model->deleteItem(*i);
+      {
+        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+          if (v->godley.lock())
+            continue; // do not delete a variable owned by a Godley Table
+        model->deleteItem(*i);
+      }
     for (auto& i: canvas.selection.groups)
       model->removeGroup(*i);
     for (auto& i: canvas.selection.wires)
@@ -197,7 +202,12 @@ namespace minsky
     canvas.itemFocus.reset();
 #ifndef NDEBUG
     for (auto& i: canvas.selection.items)
-      assert(i.use_count()==1);
+      {
+        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+          if (v->godley.lock())
+            continue; // variable owned by a Godley Table is not being destroyed
+        assert(i.use_count()==1);
+      }
     for (auto& i: canvas.selection.groups)
       assert(i.use_count()==1);
     for (auto& i: canvas.selection.wires)

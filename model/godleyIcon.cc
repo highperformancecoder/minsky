@@ -92,6 +92,10 @@ namespace minsky
       set<VariablePtr, OrderByName> oldVars(vars.begin(), vars.end());
 
       vars.clear();
+      shared_ptr<GodleyIcon> self;
+      if (auto g=group.lock())
+        self=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this));
+      
       for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
         {
           VariablePtr newVar(varType, *nm);
@@ -113,6 +117,7 @@ namespace minsky
           minsky::minsky().convertVarType(vars.back()->valueId(), varType);
           vars.back()->m_visible=false;
           vars.back()->zoomFactor=iconScale*zoomFactor;
+          vars.back()->godley=self;
         }
       // remove any previously existing variables
       if (auto g=group.lock())
