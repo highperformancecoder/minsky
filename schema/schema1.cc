@@ -293,182 +293,182 @@ namespace schema1
     };
   }
 
-    // TODO combine in layout information
-  void Minsky::populateGroup(minsky::Group& g) const
-  {
-    Portmap pmap;
-    ItemMap imap(g);
-    Combine combine(layout);
-    for (auto& i: model.notes)
-      {
-        auto it=imap.addItem(new minsky::Item, i);
-        combine.combine(*it,i);
-      }
-    for (auto& i: model.variables)
-      {
-        auto v=imap.addItem(minsky::VariableBase::create(i.type), i);
-        combine.combine(*v,i);
-        pmap.asgPorts(v->ports, i.ports);
-      }
-    // operations need to be after variables to allow integration
-    // variables to be attached
-    for (auto& i: model.operations)
-      if (i.type==minsky::OperationType::constant)
-        {
-          // handle legacy constant operations by converting them to variable constants
-          auto v=imap.addItem(minsky::VariableBase::create(minsky::VariableType::constant), i);
-          v->init(to_string(i.value));
-          combine.combine(static_cast<minsky::Item&>(*v),i);
-          pmap.asgPorts(v->ports, i.ports);
-        }
-      else
-        {
-          auto o=imap.addItem(minsky::OperationBase::create(i.type), i);
-          combine.combine(*o,i);
-          if (auto d=dynamic_cast<minsky::DataOp*>(o))
-            d->data=i.data;
-          else if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-            {
-              // this ensures that the output port refers to this item,
-              // and not the variable that is deleted in the following
-              // statement
-              if (integ->coupled()) integ->toggleCoupled();
-              g.removeItem(*integ->intVar);
-              integ->intVar=imap[i.intVar];
-            }
-          pmap.asgPorts(o->ports, i.ports);
-          // ensure variable has correct visibility status
-          if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-            {integ->toggleCoupled();integ->toggleCoupled();}
-#ifndef NDEBUG
-          // check the output port connects to correct item
-          if (auto integ=dynamic_cast<minsky::IntOp*>(o))
-            assert((integ->coupled() && &integ->ports[0]->item==integ->intVar.get()) ||
-                   (!integ->coupled() && &integ->ports[0]->item==integ));
-          else
-            assert(o == &o->ports[0]->item);
-#endif
-        }
-    for (auto& i: model.plots)
-      {
-        auto p=imap.addItem(new minsky::PlotWidget, i);
-        combine.combine(*p,i);
-        pmap.asgPorts(p->ports, i.ports);
-      }
-    for (auto& i: model.switches)
-      {
-        auto s=imap.addItem(new minsky::SwitchIcon, i);
-        combine.combine(*s,i);
-        s->setNumCases(i.ports.size()-2);
-        pmap.asgPorts(s->ports, i.ports);
-      }
-    for (auto& i: model.godleys)
-      {
-        auto s=imap.addItem(new minsky::GodleyIcon, i);
-        combine.combine(*s,i);
+//    // TODO combine in layout information
+//  void Minsky::populateGroup(minsky::Group& g) const
+//  {
+//    Portmap pmap;
+//    ItemMap imap(g);
+//    Combine combine(layout);
+//    for (auto& i: model.notes)
+//      {
+//        auto it=imap.addItem(new minsky::Item, i);
+//        combine.combine(*it,i);
+//      }
+//    for (auto& i: model.variables)
+//      {
+//        auto v=imap.addItem(minsky::VariableBase::create(i.type), i);
+//        combine.combine(*v,i);
+//        pmap.asgPorts(v->ports, i.ports);
+//      }
+//    // operations need to be after variables to allow integration
+//    // variables to be attached
+//    for (auto& i: model.operations)
+//      if (i.type==minsky::OperationType::constant)
+//        {
+//          // handle legacy constant operations by converting them to variable constants
+//          auto v=imap.addItem(minsky::VariableBase::create(minsky::VariableType::constant), i);
+//          v->init(to_string(i.value));
+//          combine.combine(static_cast<minsky::Item&>(*v),i);
+//          pmap.asgPorts(v->ports, i.ports);
+//        }
+//      else
+//        {
+//          auto o=imap.addItem(minsky::OperationBase::create(i.type), i);
+//          combine.combine(*o,i);
+//          if (auto d=dynamic_cast<minsky::DataOp*>(o))
+//            d->data=i.data;
+//          else if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+//            {
+//              // this ensures that the output port refers to this item,
+//              // and not the variable that is deleted in the following
+//              // statement
+//              if (integ->coupled()) integ->toggleCoupled();
+//              g.removeItem(*integ->intVar);
+//              integ->intVar=imap[i.intVar];
+//            }
+//          pmap.asgPorts(o->ports, i.ports);
+//          // ensure variable has correct visibility status
+//          if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+//            {integ->toggleCoupled();integ->toggleCoupled();}
+//#ifndef NDEBUG
+//          // check the output port connects to correct item
+//          if (auto integ=dynamic_cast<minsky::IntOp*>(o))
+//            assert((integ->coupled() && &integ->ports[0]->item==integ->intVar.get()) ||
+//                   (!integ->coupled() && &integ->ports[0]->item==integ));
+//          else
+//            assert(o == &o->ports[0]->item);
+//#endif
+//        }
+//    for (auto& i: model.plots)
+//      {
+//        auto p=imap.addItem(new minsky::PlotWidget, i);
+//        combine.combine(*p,i);
+//        pmap.asgPorts(p->ports, i.ports);
+//      }
+//    for (auto& i: model.switches)
+//      {
+//        auto s=imap.addItem(new minsky::SwitchIcon, i);
+//        combine.combine(*s,i);
+//        s->setNumCases(i.ports.size()-2);
+//        pmap.asgPorts(s->ports, i.ports);
+//      }
+//    for (auto& i: model.godleys)
+//      {
+//        auto s=imap.addItem(new minsky::GodleyIcon, i);
+//        combine.combine(*s,i);
+//
+//        // need to load variables into the Godley table initially so
+//        // as to capture them, and any attached wires
+//        for (auto p: i.ports)
+//          {
+//            if (auto v=dynamic_pointer_cast<minsky::VariableBase>
+//                (g.findItem(pmap[p]->item)))
+//              {
+//                if (v->isStock())
+//                  s->stockVars.push_back(v);
+//                else
+//                  s->flowVars.push_back(v);
+//              }
+//          }
+//        s->update();
+//      }
+//    for (auto& i: model.groups)
+//        {
+//          auto g=imap.addItem(new minsky::Group, i);
+//          combine.combine(*g, i);
+//        }
+//
+//    /// process wires after all the items have been defined
+//    for (auto& i: model.wires)
+//      combine.combine(*g.addWire(new minsky::Wire(pmap[i.from],pmap[i.to])), i);
+//
+//    /// groups needs to be processed last so that all references are defined
+//    for (auto& i: model.groups)
+//      {
+//        if (auto gg=dynamic_cast<minsky::Group*>(imap[i.id].get()))
+//          {
+//            for (auto id: i.items)
+//              if (imap.count(id))
+//                {
+//                  // item will be moved to new group, and wires
+//                  // adjusted. Position needs to be adjusted by group
+//                  // origin, though, because the schema saved values
+//                  // are group relative
+//                  auto it=imap[id];
+//                  it->moveTo(it->x()+gg->x(), it->y()+gg->y());
+//                  // addItem will adjust variable names by scoping
+//                  // rules. Override that behavior here
+//                  if (auto v=dynamic_cast<minsky::VariableBase*>(it.get()))
+//                    {
+//                      auto n=v->rawName();
+//                      gg->addItem(it);
+//                      v->name(n);
+//                    }
+//                  else
+//                    gg->addItem(it);
+//                  assert(gg->uniqueItems());
+//                }
+//            // process ports list to populate io variables
+//            for (int p: i.ports)
+//              if (pmap[p])
+//                if (minsky::VariablePtr v=gg->findItem(pmap[p]->item))
+//                  {
+//                    if (pmap[p]->input())
+//                      gg->inVariables.push_back(v);
+//                    else
+//                      gg->outVariables.push_back(v);
+//                    v->m_visible=false;
+//                  }
+//          }
+//      }
+//  }
 
-        // need to load variables into the Godley table initially so
-        // as to capture them, and any attached wires
-        for (auto p: i.ports)
-          {
-            if (auto v=dynamic_pointer_cast<minsky::VariableBase>
-                (g.findItem(pmap[p]->item)))
-              {
-                if (v->isStock())
-                  s->stockVars.push_back(v);
-                else
-                  s->flowVars.push_back(v);
-              }
-          }
-        s->update();
-      }
-    for (auto& i: model.groups)
-        {
-          auto g=imap.addItem(new minsky::Group, i);
-          combine.combine(*g, i);
-        }
 
-    /// process wires after all the items have been defined
-    for (auto& i: model.wires)
-      combine.combine(*g.addWire(new minsky::Wire(pmap[i.from],pmap[i.to])), i);
-
-    /// groups needs to be processed last so that all references are defined
-    for (auto& i: model.groups)
-      {
-        if (auto gg=dynamic_cast<minsky::Group*>(imap[i.id].get()))
-          {
-            for (auto id: i.items)
-              if (imap.count(id))
-                {
-                  // item will be moved to new group, and wires
-                  // adjusted. Position needs to be adjusted by group
-                  // origin, though, because the schema saved values
-                  // are group relative
-                  auto it=imap[id];
-                  it->moveTo(it->x()+gg->x(), it->y()+gg->y());
-                  // addItem will adjust variable names by scoping
-                  // rules. Override that behavior here
-                  if (auto v=dynamic_cast<minsky::VariableBase*>(it.get()))
-                    {
-                      auto n=v->rawName();
-                      gg->addItem(it);
-                      v->name(n);
-                    }
-                  else
-                    gg->addItem(it);
-                  assert(gg->uniqueItems());
-                }
-            // process ports list to populate io variables
-            for (int p: i.ports)
-              if (pmap[p])
-                if (minsky::VariablePtr v=gg->findItem(pmap[p]->item))
-                  {
-                    if (pmap[p]->input())
-                      gg->inVariables.push_back(v);
-                    else
-                      gg->outVariables.push_back(v);
-                    v->m_visible=false;
-                  }
-          }
-      }
-  }
-
-
-  Minsky::operator minsky::Minsky() const
-  {
-    if (!model.validate())
-      throw ecolab::error("inconsistent Minsky model");
-
-    minsky::Minsky m;
-    minsky::LocalMinsky lm(m);
-    populateGroup(*m.model);
-
-    // In schema 1, the ratio of a GodleyIcon's zoomFactor to its
-    // group's zoomFactor is the iconScale we need to extract those
-    // values prior to setZoom
-    m.model->recursiveDo(&minsky::GroupItems::items,
-                         [&](minsky::Items&,minsky::Items::iterator i)
-                         {
-                           if (auto godley=dynamic_cast<minsky::GodleyIcon*>(i->get()))
-                             {
-                               SchemaHelper::scaleGodley(*godley,zoomFactor);
-                               godley->update();
-                             }
-                           return false;
-                         });
-
-    m.model->setZoom(zoomFactor);
-    
-    m.stepMin=model.rungeKutta.stepMin; 
-    m.stepMax=model.rungeKutta.stepMax; 
-    m.nSteps=model.rungeKutta.nSteps;   
-    m.epsAbs=model.rungeKutta.epsAbs;   
-    m.epsRel=model.rungeKutta.epsRel;   
-    m.order=model.rungeKutta.order;
-    m.simulationDelay=model.rungeKutta.simulationDelay;
-    m.implicit=model.rungeKutta.implicit;
-   return m;
-  }
+//  Minsky::operator minsky::Minsky() const
+//  {
+//    if (!model.validate())
+//      throw ecolab::error("inconsistent Minsky model");
+//
+//    minsky::Minsky m;
+//    minsky::LocalMinsky lm(m);
+//    populateGroup(*m.model);
+//
+//    // In schema 1, the ratio of a GodleyIcon's zoomFactor to its
+//    // group's zoomFactor is the iconScale we need to extract those
+//    // values prior to setZoom
+//    m.model->recursiveDo(&minsky::GroupItems::items,
+//                         [&](minsky::Items&,minsky::Items::iterator i)
+//                         {
+//                           if (auto godley=dynamic_cast<minsky::GodleyIcon*>(i->get()))
+//                             {
+//                               SchemaHelper::scaleGodley(*godley,zoomFactor);
+//                               godley->update();
+//                             }
+//                           return false;
+//                         });
+//
+//    m.model->setZoom(zoomFactor);
+//    
+//    m.stepMin=model.rungeKutta.stepMin; 
+//    m.stepMax=model.rungeKutta.stepMax; 
+//    m.nSteps=model.rungeKutta.nSteps;   
+//    m.epsAbs=model.rungeKutta.epsAbs;   
+//    m.epsRel=model.rungeKutta.epsRel;   
+//    m.order=model.rungeKutta.order;
+//    m.simulationDelay=model.rungeKutta.simulationDelay;
+//    m.implicit=model.rungeKutta.implicit;
+//   return m;
+//  }
 
   namespace
   {
@@ -554,204 +554,204 @@ namespace schema1
 
   namespace
   {
-    struct PopulateMinsky
-    {
-      map<const minsky::Item*,int> itemMap;
-      map<const minsky::Port*,int> portMap;
-      map<const minsky::Group*,int> groupMap;
-      map<const minsky::Wire*,int> wireMap;
-      Combine combine;
-      int nextId=0;
-      vector<shared_ptr<Layout> >& l;
-      MinskyModel& m;
-      PopulateMinsky(Minsky& m): combine(m.layout), l(m.layout), m(m.model) {}
-      
-      int portId(const minsky::Port* p) {
-        auto pmi=portMap.find(p);
-        if (pmi==portMap.end())
-          return portMap.emplace(p, nextId++).first->second;
-        else
-          return pmi->second;
-      }
-
-      vector<int> ports(const minsky::Item& it) {
-        vector<int> r;
-        for (auto& p: it.ports)
-          r.push_back(portId(p.get()));
-        return r;
-      }
-
-      vector<int> ports(const minsky::GodleyIcon& g) {
-        vector<int> r;
-        for (auto& v: g.flowVars)
-          for (auto& p: v->ports)
-            r.push_back(portId(p.get()));
-        for (auto& v: g.stockVars)
-          for (auto& p: v->ports)
-            r.push_back(portId(p.get()));
-        return r;
-      }
-
-     struct DuplicateError: public std::exception
-      {
-        const char* what() const noexcept override 
-        {return "duplicate item processed";}
-      };
-
-      void processGroup(Group& s1g, const minsky::Group& g)
-      {
-        vector<pair<size_t,minsky::Item*>> integralItemsToAssociate;
-        for (auto& i: g.items)
-          {
-            if (itemMap.count(i.get()))
-              throw DuplicateError();
-            int id=nextId++;
-            itemMap[i.get()]=id;
-            if (auto x=dynamic_cast<minsky::OperationBase*>(i.get()))
-              {
-                m.operations.emplace_back(id, *x);
-                m.operations.back().ports=ports(*x);
-                l.emplace_back(new ItemLayout(id,*x));
-                if (auto i=dynamic_cast<minsky::IntOp*>(x))
-                  integralItemsToAssociate.emplace_back(m.operations.size()-1, i->intVar.get());
-              }
-            else if (auto x=dynamic_cast<minsky::VariableBase*>(i.get()))
-              {
-                m.variables.emplace_back(id, *x);
-                m.variables.back().ports=ports(*x);
-                l.emplace_back(new SliderLayout(id,*x));
-              }
-            else if (auto x=dynamic_cast<minsky::PlotWidget*>(i.get()))
-              {
-                m.plots.emplace_back(id, *x);
-                m.plots.back().ports=ports(*x);
-                l.emplace_back(new PlotLayout(id,*x));
-              }
-            else if (auto x=dynamic_cast<minsky::SwitchIcon*>(i.get()))
-              {
-                m.switches.emplace_back(id, *x);
-                m.switches.back().ports=ports(*x);
-                l.emplace_back(new ItemLayout(id,*x));
-              }
-            else if (auto x=dynamic_cast<minsky::GodleyIcon*>(i.get()))
-              {
-                m.godleys.emplace_back(id, *x);
-                m.godleys.back().ports=ports(*x);
-                l.emplace_back(new ItemLayout(id,*x));
-              }
-            else
-              m.notes.emplace_back(id, *i);
-            s1g.items.push_back(id);
-          }
-
-        // fix up integral variable associations
-        for (auto& i: integralItemsToAssociate)
-          {
-            assert(m.operations[i.first].type==minsky::OperationType::integrate);
-            m.operations[i.first].intVar=itemMap[i.second];
-          }
-
-        for (auto& i: g.groups)
-          {
-            if (groupMap.count(&*i))
-              throw DuplicateError();
-            int id=nextId++;
-            groupMap[&*i]=id;
-            m.groups.emplace_back(id, *i);
-            processGroup(m.groups.back(), *i);
-            s1g.items.push_back(id);
-            l.emplace_back(new GroupLayout(id,*i));
-          }
-        for (auto& i: g.wires)
-          {
-            if (wireMap.count(i.get()))
-              throw DuplicateError();
-            int id=nextId++;
-            wireMap[i.get()]=id;
-            m.wires.emplace_back(id, *i);
-            m.wires.back().from=portId(i->from().get());
-            m.wires.back().to=portId(i->to().get());
-            s1g.items.push_back(id);
-            l.emplace_back(new WireLayout(id,*i));
-          }
-
-        // I/O variable information is stashed as "ports" in the schema
-        for (auto& v: g.inVariables)
-          for (auto& p: v->ports)
-            if (p->input())
-              s1g.ports.push_back(portId(p.get()));
-        for (auto& v: g.outVariables)
-          for (auto& p: v->ports)
-            if (!p->input())
-              s1g.ports.push_back(portId(p.get()));
-        // TODO - created variables??
-//        for (auto& v: g.createdVariables)
-//          s1g.createdVariables.push_back(itemMap[v.get()]);
-        s1g.name=g.title;
-       }
-    };
+//    struct PopulateMinsky
+//    {
+//      map<const minsky::Item*,int> itemMap;
+//      map<const minsky::Port*,int> portMap;
+//      map<const minsky::Group*,int> groupMap;
+//      map<const minsky::Wire*,int> wireMap;
+//      Combine combine;
+//      int nextId=0;
+//      vector<shared_ptr<Layout> >& l;
+//      MinskyModel& m;
+//      PopulateMinsky(Minsky& m): combine(m.layout), l(m.layout), m(m.model) {}
+//      
+//      int portId(const minsky::Port* p) {
+//        auto pmi=portMap.find(p);
+//        if (pmi==portMap.end())
+//          return portMap.emplace(p, nextId++).first->second;
+//        else
+//          return pmi->second;
+//      }
+//
+//      vector<int> ports(const minsky::Item& it) {
+//        vector<int> r;
+//        for (auto& p: it.ports)
+//          r.push_back(portId(p.get()));
+//        return r;
+//      }
+//
+//      vector<int> ports(const minsky::GodleyIcon& g) {
+//        vector<int> r;
+//        for (auto& v: g.flowVars)
+//          for (auto& p: v->ports)
+//            r.push_back(portId(p.get()));
+//        for (auto& v: g.stockVars)
+//          for (auto& p: v->ports)
+//            r.push_back(portId(p.get()));
+//        return r;
+//      }
+//
+//     struct DuplicateError: public std::exception
+//      {
+//        const char* what() const noexcept override 
+//        {return "duplicate item processed";}
+//      };
+//
+//      void processGroup(Group& s1g, const minsky::Group& g)
+//      {
+//        vector<pair<size_t,minsky::Item*>> integralItemsToAssociate;
+//        for (auto& i: g.items)
+//          {
+//            if (itemMap.count(i.get()))
+//              throw DuplicateError();
+//            int id=nextId++;
+//            itemMap[i.get()]=id;
+//            if (auto x=dynamic_cast<minsky::OperationBase*>(i.get()))
+//              {
+//                m.operations.emplace_back(id, *x);
+//                m.operations.back().ports=ports(*x);
+//                l.emplace_back(new ItemLayout(id,*x));
+//                if (auto i=dynamic_cast<minsky::IntOp*>(x))
+//                  integralItemsToAssociate.emplace_back(m.operations.size()-1, i->intVar.get());
+//              }
+//            else if (auto x=dynamic_cast<minsky::VariableBase*>(i.get()))
+//              {
+//                m.variables.emplace_back(id, *x);
+//                m.variables.back().ports=ports(*x);
+//                l.emplace_back(new SliderLayout(id,*x));
+//              }
+//            else if (auto x=dynamic_cast<minsky::PlotWidget*>(i.get()))
+//              {
+//                m.plots.emplace_back(id, *x);
+//                m.plots.back().ports=ports(*x);
+//                l.emplace_back(new PlotLayout(id,*x));
+//              }
+//            else if (auto x=dynamic_cast<minsky::SwitchIcon*>(i.get()))
+//              {
+//                m.switches.emplace_back(id, *x);
+//                m.switches.back().ports=ports(*x);
+//                l.emplace_back(new ItemLayout(id,*x));
+//              }
+//            else if (auto x=dynamic_cast<minsky::GodleyIcon*>(i.get()))
+//              {
+//                m.godleys.emplace_back(id, *x);
+//                m.godleys.back().ports=ports(*x);
+//                l.emplace_back(new ItemLayout(id,*x));
+//              }
+//            else
+//              m.notes.emplace_back(id, *i);
+//            s1g.items.push_back(id);
+//          }
+//
+//        // fix up integral variable associations
+//        for (auto& i: integralItemsToAssociate)
+//          {
+//            assert(m.operations[i.first].type==minsky::OperationType::integrate);
+//            m.operations[i.first].intVar=itemMap[i.second];
+//          }
+//
+//        for (auto& i: g.groups)
+//          {
+//            if (groupMap.count(&*i))
+//              throw DuplicateError();
+//            int id=nextId++;
+//            groupMap[&*i]=id;
+//            m.groups.emplace_back(id, *i);
+//            processGroup(m.groups.back(), *i);
+//            s1g.items.push_back(id);
+//            l.emplace_back(new GroupLayout(id,*i));
+//          }
+//        for (auto& i: g.wires)
+//          {
+//            if (wireMap.count(i.get()))
+//              throw DuplicateError();
+//            int id=nextId++;
+//            wireMap[i.get()]=id;
+//            m.wires.emplace_back(id, *i);
+//            m.wires.back().from=portId(i->from().get());
+//            m.wires.back().to=portId(i->to().get());
+//            s1g.items.push_back(id);
+//            l.emplace_back(new WireLayout(id,*i));
+//          }
+//
+//        // I/O variable information is stashed as "ports" in the schema
+//        for (auto& v: g.inVariables)
+//          for (auto& p: v->ports)
+//            if (p->input())
+//              s1g.ports.push_back(portId(p.get()));
+//        for (auto& v: g.outVariables)
+//          for (auto& p: v->ports)
+//            if (!p->input())
+//              s1g.ports.push_back(portId(p.get()));
+//        // TODO - created variables??
+////        for (auto& v: g.createdVariables)
+////          s1g.createdVariables.push_back(itemMap[v.get()]);
+//        s1g.name=g.title;
+//       }
+//    };
   }
 
-  Minsky::Minsky(const minsky::Group& g)
-  {
-    Group topLevel;
-    // need to reserve enough memory on the group vector to prevent groups being moved
-    size_t cnt=0;
-    g.recursiveDo(&minsky::GroupItems::groups, 
-                  [&](const minsky::Groups&,minsky::Groups::const_iterator) {
-                    cnt++; return false;
-                  });
-    model.groups.reserve(cnt);
+//  Minsky::Minsky(const minsky::Group& g)
+//  {
+//    Group topLevel;
+//    // need to reserve enough memory on the group vector to prevent groups being moved
+//    size_t cnt=0;
+//    g.recursiveDo(&minsky::GroupItems::groups, 
+//                  [&](const minsky::Groups&,minsky::Groups::const_iterator) {
+//                    cnt++; return false;
+//                  });
+//    model.groups.reserve(cnt);
+//
+//    PopulateMinsky(*this).processGroup(topLevel,g);
+//  }    
 
-    PopulateMinsky(*this).processGroup(topLevel,g);
-  }    
 
-
-  void Minsky::relocateCanvas()
-  {
-    // ignore group items, as these coordinates are relative to group centre
-    set<int> groupItems;
-    for (vector<Group>::iterator i=model.groups.begin(); 
-         i<model.groups.end(); ++i)
-      groupItems.insert(i->items.begin(), i->items.end());
-
-    // compute min values of coordinates
-    float xmin=numeric_limits<float>::max(), 
-      ymin=numeric_limits<float>::max();
-    for (size_t i=0; i<layout.size(); ++i)
-      {
-        if (groupItems.count(layout[i]->id)) continue;
-        if (PositionLayout* p=dynamic_cast<PositionLayout*>(layout[i].get()))
-          {
-            if (p->x<xmin) xmin=p->x;
-            if (p->y<ymin) ymin=p->y;
-          }
-        else if (WireLayout* w=dynamic_cast<WireLayout*>(layout[i].get()))
-          {
-            for (size_t i=0; i<w->coords.size(); i+=2)
-              if (w->coords[i]<xmin) xmin=w->coords[i];
-            for (size_t i=1; i<w->coords.size(); i+=2)
-              if (w->coords[i]<ymin) ymin=w->coords[i];
-          }
-      }
-    // move all items be (-xmin, -ymin)
-    for (size_t i=0; i<layout.size(); ++i)
-      {
-        if (groupItems.count(layout[i]->id)) continue;
-        if (PositionLayout* p=dynamic_cast<PositionLayout*>(layout[i].get()))
-          {
-            p->x-=xmin;
-            p->y-=ymin;
-          }
-        else if (WireLayout* w=dynamic_cast<WireLayout*>(layout[i].get()))
-          {
-            for (size_t i=0; i<w->coords.size(); i+=2)
-              w->coords[i]-=xmin;
-            for (size_t i=1; i<w->coords.size(); i+=2)
-              w->coords[i]-=ymin;
-          }
-      }
-  }
+//  void Minsky::relocateCanvas()
+//  {
+//    // ignore group items, as these coordinates are relative to group centre
+//    set<int> groupItems;
+//    for (vector<Group>::iterator i=model.groups.begin(); 
+//         i<model.groups.end(); ++i)
+//      groupItems.insert(i->items.begin(), i->items.end());
+//
+//    // compute min values of coordinates
+//    float xmin=numeric_limits<float>::max(), 
+//      ymin=numeric_limits<float>::max();
+//    for (size_t i=0; i<layout.size(); ++i)
+//      {
+//        if (groupItems.count(layout[i]->id)) continue;
+//        if (PositionLayout* p=dynamic_cast<PositionLayout*>(layout[i].get()))
+//          {
+//            if (p->x<xmin) xmin=p->x;
+//            if (p->y<ymin) ymin=p->y;
+//          }
+//        else if (WireLayout* w=dynamic_cast<WireLayout*>(layout[i].get()))
+//          {
+//            for (size_t i=0; i<w->coords.size(); i+=2)
+//              if (w->coords[i]<xmin) xmin=w->coords[i];
+//            for (size_t i=1; i<w->coords.size(); i+=2)
+//              if (w->coords[i]<ymin) ymin=w->coords[i];
+//          }
+//      }
+//    // move all items be (-xmin, -ymin)
+//    for (size_t i=0; i<layout.size(); ++i)
+//      {
+//        if (groupItems.count(layout[i]->id)) continue;
+//        if (PositionLayout* p=dynamic_cast<PositionLayout*>(layout[i].get()))
+//          {
+//            p->x-=xmin;
+//            p->y-=ymin;
+//          }
+//        else if (WireLayout* w=dynamic_cast<WireLayout*>(layout[i].get()))
+//          {
+//            for (size_t i=0; i<w->coords.size(); i+=2)
+//              w->coords[i]-=xmin;
+//            for (size_t i=1; i<w->coords.size(); i+=2)
+//              w->coords[i]-=ymin;
+//          }
+//      }
+//  }
 
   namespace
   {

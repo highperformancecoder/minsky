@@ -741,26 +741,26 @@ SUITE(Canvas)
         unsigned originalNumItems=model->numItems();
         unsigned originalNumGroups=model->numGroups();
         copyAllFlowVars();
-        CHECK_EQUAL(originalNumItems+godley->flowVars.size(),model->numItems());
+        CHECK_EQUAL(originalNumItems+godley->flowVars().size(),model->numItems());
         CHECK_EQUAL(originalNumGroups+1,model->numGroups());
         auto newG=model->groups.back();
-        CHECK_EQUAL(godley->flowVars.size(), newG->items.size());
+        CHECK_EQUAL(godley->flowVars().size(), newG->items.size());
         // assume the copied items are done in order
-        for (size_t i=0; i<godley->flowVars.size(); ++i)
-          CHECK_EQUAL(godley->flowVars[i]->valueId(),
+        for (size_t i=0; i<godley->flowVars().size(); ++i)
+          CHECK_EQUAL(godley->flowVars()[i]->valueId(),
                       dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
 
         originalNumItems=model->numItems();
         originalNumGroups=model->numGroups();
         
         copyAllStockVars();
-        CHECK_EQUAL(originalNumItems+godley->stockVars.size(),model->numItems());
+        CHECK_EQUAL(originalNumItems+godley->stockVars().size(),model->numItems());
         CHECK_EQUAL(originalNumGroups+1,model->numGroups());
         newG=model->groups.back();
-        CHECK_EQUAL(godley->stockVars.size(), newG->items.size());
+        CHECK_EQUAL(godley->stockVars().size(), newG->items.size());
         // assume the copied items are done in order
-        for (size_t i=0; i<godley->stockVars.size(); ++i)
-          CHECK_EQUAL(godley->stockVars[i]->valueId(),
+        for (size_t i=0; i<godley->stockVars().size(); ++i)
+          CHECK_EQUAL(godley->stockVars()[i]->valueId(),
                       dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
 
       }
@@ -887,11 +887,11 @@ SUITE(GodleyIcon)
       table.cell(2,1)="flow1";
       table.cell(0,1)="stock1";
       update();
-      CHECK_EQUAL(1,flowVars.size());
-      CHECK_EQUAL(1,stockVars.size());
-      for (auto& i: flowVars)
+      CHECK_EQUAL(1,flowVars().size());
+      CHECK_EQUAL(1,stockVars().size());
+      for (auto& i: flowVars())
         CHECK(i==select(i->x(),i->y()));
-      for (auto& i: stockVars)
+      for (auto& i: stockVars())
         CHECK(i==select(i->x(),i->y()));
       CHECK(!select(x(),y()));
     }

@@ -217,7 +217,7 @@ namespace minsky
 
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
-    schema1::Minsky m(g);
+    schema2::Minsky m(g);
     ofstream os(fileName);
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -243,7 +243,7 @@ namespace minsky
 
   GroupPtr Minsky::insertGroupFromFile(const char* file)
   {
-    schema1::Minsky currentSchema;
+    schema2::Minsky currentSchema;
     ifstream inf(file);
     xml_unpack_t saveFile(inf);
     xml_unpack(saveFile, "Minsky", currentSchema);
@@ -1009,7 +1009,7 @@ namespace minsky
   {
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
-    schema1::Minsky m(*this);
+    schema2::Minsky m(*this);
     pack_t buf;
     buf<<m;
     if (history.empty())
@@ -1062,7 +1062,7 @@ namespace minsky
     historyPtr-=changes;
     if (historyPtr > 0 && historyPtr <= history.size())
       {
-        schema1::Minsky m;
+        schema2::Minsky m;
         history[historyPtr-1].reseto()>>m;
         clearAllMaps();
         *this=m;
@@ -1086,11 +1086,11 @@ namespace minsky
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
            {
              if (type!=VariableType::flow)
-               for (auto v: g->flowVars)
+               for (auto v: g->flowVars())
                  if (v->valueId()==name)
                    throw error("flow variables in Godley tables cannot be converted to a different type");
              if (type!=VariableType::stock)
-               for (auto v: g->stockVars)
+               for (auto v: g->stockVars())
                  if (v->valueId()==name)
                    throw error("stock variables in Godley tables cannot be converted to a different type");
            }
