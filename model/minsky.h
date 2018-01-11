@@ -62,9 +62,15 @@ namespace minsky
     Minsky& m;
     void redraw(int x0, int y0, int width, int height) override {
       if (surface.get()) {
+        try {
           MathDAG::SystemOfEquations system(m);
           cairo_move_to(surface->cairo(),offsx,offsy);
           system.renderEquations(*surface);
+        }
+        catch (...)
+          {
+            // not much you can do about exceptions at this point
+          }
         }
     }
     CLASSDESC_ACCESS(EquationDisplay);
