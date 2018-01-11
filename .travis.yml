@@ -1,6 +1,7 @@
 sudo: true
 dist: trusty
 language: cpp
+cache: ccache
 env:
   - TEST_SUITE=sure
   - TEST_SUITE=docs

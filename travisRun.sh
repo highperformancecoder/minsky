@@ -1,10 +1,10 @@
 #!/bin/bash
-if [ $TEST_SUITE=sure ]; then 
+if [ $TEST_SUITE = sure ]; then 
     git clone https://github.com/highperformancecoder/ecolab.git
     pushd ecolab
     git submodule init
     git submodule update
-    make install
+    make CCACHE=1 install
     popd
     make DEBUG=1
     Xvfb :0 &>/dev/null &
@@ -16,7 +16,7 @@ if [ $TEST_SUITE=sure ]; then
     export TRAVIS=1
 # This step generates reference image files on the CI server 
 #  - sh createRenderedEquations
-    make AEGIS=1 sure
-elif [ $TEST_SUITE=docs ]; then
+    make CCACHE=1 AEGIS=1 sure
+elif [ $TEST_SUITE = docs ]; then
     make doc
 fi
