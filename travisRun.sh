@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $TEST_SUITE=sure]; then 
+if [ $TEST_SUITE=sure ]; then 
     git clone https://github.com/highperformancecoder/ecolab.git
     pushd ecolab
     git submodule init
@@ -17,6 +17,6 @@ if [ $TEST_SUITE=sure]; then
 # This step generates reference image files on the CI server 
 #  - sh createRenderedEquations
     make AEGIS=1 sure
-else if [ $TEST_SUITE=docs]; then
+elif [ $TEST_SUITE=docs ]; then
     make doc
 fi
