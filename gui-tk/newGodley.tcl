@@ -16,9 +16,12 @@ proc newOpenGodley {id} {
         bind .$id.table <KeyPress> "$id.keyPress %N"
         bind .$id.table <KeyRelease> "$id.keyRelease %N"
 
-        global meta
+        global meta meta_menu
         bind .$id.table <$meta-y> "$id.undo -1"
         bind .$id.table <$meta-z> "$id.undo 1"
+        bind .$id.table <$meta-x> "cutCopyPaste $id Cut"
+        bind .$id.table <$meta-c> "cutCopyPaste $id Copy"
+        bind .$id.table <$meta-v> "cutCopyPaste $id Paste"
         
         menu .$id.context -tearoff 0
         menu .$id.context.import -tearoff 0
@@ -30,6 +33,20 @@ proc newOpenGodley {id} {
         pack .$id.hscroll -side bottom -fill x 
         .$id.hscroll set 0 0.25
         pack .$id.table -fill both -expand 1
+
+        menu .$id.menubar
+        menu .$id.menubar.edit
+        .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
+        .$id configure -menu .$id.menubar
+        .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
+        .$id.menubar.edit add command -label Redo -command "$id.undo -1" -accelerator $meta_menu-Y
+        .$id.menubar.edit add command -label Title -command "textEntryPopup .godleyTitle {[$id.godleyIcon.table.title]} {setGodleyTitleOK $id}"
+        .$id.menubar.edit add command -label Cut -command "cutCopyPaste $id Cut" -accelerator $meta_menu-X
+        .$id.menubar.edit add command -label Copy -command "cutCopyPaste $id Copy" -accelerator $meta_menu-C
+        .$id.menubar.edit add command -label Paste -command "cutCopyPaste $id Paste" -accelerator $meta_menu-V
+
+        .$id.menubar add command -label Help -command {help GodleyTable} -underline 0 
+
     }
     wm deiconify .$id
 }
@@ -132,3 +149,9 @@ proc godleyPaste {id row col} {
     }
 }
 
+proc cutCopyPaste {id cmd} {
+    if {[$id.selectedRow]>=0 && [$id.selectedCol]>=0 &&
+        ([$id.selectedRow]>0 || [$id.selectedCol]>0)} {
+        godley$cmd $id [$id.selectedRow] [$id.selectedCol]
+    }
+}
