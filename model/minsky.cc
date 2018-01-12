@@ -217,7 +217,7 @@ namespace minsky
 
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
-    schema1::Minsky m(g);
+    schema2::Minsky m(g);
     ofstream os(fileName);
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -243,7 +243,7 @@ namespace minsky
 
   GroupPtr Minsky::insertGroupFromFile(const char* file)
   {
-    schema1::Minsky currentSchema;
+    schema2::Minsky currentSchema;
     ifstream inf(file);
     xml_unpack_t saveFile(inf);
     xml_unpack(saveFile, "Minsky", currentSchema);
@@ -1005,19 +1005,22 @@ namespace minsky
       }
   }
   
-  bool Minsky::pushHistoryIfDifferent()
+  bool Minsky::pushHistory()
   {
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
-    schema1::Minsky m(*this);
+    schema2::Minsky m(*this);
     pack_t buf;
     buf<<m;
     if (history.empty())
       {
         history.emplace_back();
         buf.swap(history.back());
+        historyPtr=history.size();
         return true;
       }
+    while (history.size()>maxHistory)
+      history.pop_front();
     if (memcmp(buf.data(), history.back().data(), buf.size())!=0)
       {
         // check XML versions differ (slower)
@@ -1039,33 +1042,27 @@ namespace minsky
             //  cout<<"------"<<endl;
             history.emplace_back();
             buf.swap(history.back());
+            historyPtr=history.size();
             return true;
           }
       }
+    historyPtr=history.size();
     return false;
   }
 
-  void Minsky::pushHistory()
-  {
-    history.resize(historyPtr);
-    pushHistoryIfDifferent();
-    while (history.size()>maxHistory)
-      history.pop_front();
-    historyPtr=history.size();
-  }
-  
   void Minsky::undo(int changes)
   {
     // save current state for later restoration if needed
     if (historyPtr==history.size())
-      pushHistoryIfDifferent();
+      pushHistory();
     historyPtr-=changes;
     if (historyPtr > 0 && historyPtr <= history.size())
       {
-        schema1::Minsky m;
+        schema2::Minsky m;
         history[historyPtr-1].reseto()>>m;
         clearAllMaps();
-        *this=m;
+        model->clear();
+        m.populateGroup(*model);
       }
     else
       historyPtr+=changes; // revert

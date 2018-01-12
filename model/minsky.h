@@ -315,13 +315,11 @@ namespace minsky
 
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}
-    /// push state onto history
-    void pushHistory();
     /// called periodically to ensure history up to date
     void checkPushHistory() {if (historyPtr==history.size()) pushHistory();}
 
     /// push current model state onto history if it differs from previous
-    bool pushHistoryIfDifferent();
+    bool pushHistory();
 
     /// restore model to state \a changes ago 
     void undo(int changes=1);
