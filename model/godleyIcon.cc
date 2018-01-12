@@ -239,7 +239,6 @@ namespace minsky
 
     positionVariables();
     bb.update(*this);
-    minsky().pushHistory();
   }
 
   void GodleyIcon::positionVariables() const
