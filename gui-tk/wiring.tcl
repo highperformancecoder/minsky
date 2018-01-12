@@ -259,29 +259,10 @@ proc textInput {char} {
     set x [get_pointer_x .wiring.canvas]
     set y [get_pointer_y .wiring.canvas]
 
-    if {![winfo exists .textInput]} {
-        set textBuffer ""
-        toplevel .textInput
-        entry .textInput.entry -textvariable textBuffer -takefocus 1
-        .textInput.entry insert 0 $char
-        frame .textInput.buttonBar
-        button .textInput.buttonBar.ok -text "OK" -command textOK
-        button .textInput.buttonBar.cancel -text "Cancel" -command {
-            grab release .textInput
-            destroy .textInput
-        }
-        pack .textInput.buttonBar.cancel .textInput.buttonBar.ok
-        pack .textInput.entry .textInput.buttonBar -side top
-        bind .textInput <Key-Return> {.textInput.buttonBar.ok invoke}
-        bind .textInput <Key-Escape> {.textInput.buttonBar.cancel invoke}
-        wm geometry .textInput "+[winfo pointerx .]+[winfo pointery .]"
-        focus .textInput.entry
-        tkwait visibility .textInput
-        # reset cursor in the case a shifted key has been pressed
-        .wiring.canvas configure -cursor {}
-        grab set .textInput
-        wm transient .textInput
-    }
+    set textBuffer "$char"
+    textEntryPopup .textInput $char textOK
+    .textInput.entry configure -textvariable textBuffer -takefocus 1
+    wm geometry .textInput "+[winfo pointerx .]+[winfo pointery .]"
 }
 
 # executed whenever the OK button of textInput is invoked
@@ -426,35 +407,12 @@ proc wireContextMenu {x y} {
     tk_popup .wiring.context $x $y
 }
 
-toplevel .renameDialog
-label .renameDialog.title
-entry .renameDialog.newName
-frame .renameDialog.buttonBar
-button .renameDialog.buttonBar.cancel -text cancel -command {
-    grab release .renameDialog
-    wm withdraw .renameDialog
-}
-button .renameDialog.buttonBar.ok -text OK -command {
-    canvas.renameAllInstances [.renameDialog.newName get]
-    canvas.requestRedraw
-    grab release .renameDialog
-    wm withdraw .renameDialog
-}
-pack .renameDialog.buttonBar.cancel .renameDialog.buttonBar.ok -side left
-pack .renameDialog.title .renameDialog.newName .renameDialog.buttonBar
-bind .renameDialog <Key-Return> {.renameDialog.buttonBar.ok invoke}
-bind .renameDialog <Key-Escape> {.renameDialog.buttonBar.cancel invoke}
-wm withdraw .renameDialog
-
-
 proc renameVariableInstances {} {
-    .renameDialog.title configure -text "Rename [minsky.canvas.item.name]"
-    .renameDialog.newName delete 0 end
-    wm deiconify .renameDialog
-    ::tk::TabToWindow .renameDialog.newName
-    tkwait visibility .renameDialog
-    grab set .renameDialog
-    wm transient .renameDialog
+    textEntryPopup .renameDialog [minsky.canvas.item.name] {
+        canvas.renameAllInstances [.renameDialog.entry get]
+        canvas.requestRedraw
+    }
+    wm title .renameDialog "Rename [minsky.canvas.item.name]"
 }
 
 
