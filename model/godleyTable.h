@@ -83,9 +83,17 @@ namespace minsky
     
     int textIdx(double x) const;
 
+    size_t maxHistory{100}; ///< maximum no. of history states to save
+    size_t historyPtr=0;
+    // push state onto history if different
+    void pushHistory();
+    /// restore to state \a changes ago 
+    void undo(int changes);
+    
   private:
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
     bool controlChar=false; ///< control pressed
+    std::deque<GodleyTable::Data> history;
   };
 }
 

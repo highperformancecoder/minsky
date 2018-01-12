@@ -466,3 +466,28 @@ void GodleyTableWindow::highlightCell(cairo_t* cairo, unsigned row, unsigned col
   cairo_fill(cairo);
 }
 
+void GodleyTableWindow::pushHistory()
+{
+  while (history.size()>maxHistory) history.pop_front();
+  if (history.empty() || history.back()!=godleyIcon->table.getData())
+    history.push_back(godleyIcon->table.getData());
+  historyPtr=history.size();
+}
+      
+void GodleyTableWindow::undo(int changes)
+{
+  if (historyPtr==history.size())
+    pushHistory();
+  historyPtr-=changes;
+  if (historyPtr > 0 && historyPtr <= history.size())
+    {
+      auto& d=history[historyPtr-1];
+      if (d.empty()) return; // should not happen
+      godleyIcon->table.resize(d.size(), d[0].size());
+      for (size_t r=0; r<godleyIcon->table.rows(); ++r)
+        for (size_t c=0; c<godleyIcon->table.cols(); ++c)
+          godleyIcon->table.cell(r,c)=d[r][c];
+      //      godleyIcon->update();
+      requestRedraw();
+    }
+}

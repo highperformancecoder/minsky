@@ -15,6 +15,10 @@ proc newOpenGodley {id} {
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
         bind .$id.table <KeyPress> "$id.keyPress %N"
         bind .$id.table <KeyRelease> "$id.keyRelease %N"
+
+        global meta
+        bind .$id.table <$meta-y> "$id.undo -1"
+        bind .$id.table <$meta-z> "$id.undo 1"
         
         menu .$id.context -tearoff 0
         menu .$id.context.import -tearoff 0

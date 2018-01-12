@@ -38,11 +38,12 @@ namespace minsky
 
     friend struct SchemaHelper;
     friend class GodleyIcon;
+    typedef std::vector<std::vector<string>> Data;
   private:
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
     vector<AssetClass> m_assetClass{noAssetClass, asset, liability, equity};
-    vector<vector<string> > data;
+    Data data;
 
     void markEdited(); ///< mark model as having changed
     void _resize(unsigned rows, unsigned cols) {
@@ -156,7 +157,7 @@ namespace minsky
     string rowSum(int row) const;
 
     /// accessor for schema access
-    const vector<vector<string> >& getData() const {return data;}
+    const Data& getData() const {return data;}
 
     void exportToLaTeX(const char* filename);
     void exportToCSV(const char* filename);
