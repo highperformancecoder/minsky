@@ -645,12 +645,7 @@ proc deiconifyEditVar {} {
         wm deiconify .wiring.editVar
     }
 }
-#  
-#  proc syncVarType {} {
-#              values.get $varInput(Name)
-#              set varInput(Type) [value.type]
-#          }
-#  
+
 proc deiconifyInitVar {} {
     if {![winfo exists .wiring.initVar]} {
         toplevel .wiring.initVar
@@ -763,66 +758,6 @@ proc deiconifyEditConstant {} {
         wm deiconify .wiring.editConstant
     }
 }
-#  
-#  proc cleanEditConstantConfig {} {
-#      global rowdict
-#      foreach name [array names rowdict] {
-#          set row $rowdict($name)
-#          catch {grid remove .wiring.editConstant.label$row .wiring.editConstant.entry$row}
-#      }
-#  }
-#  
-#  proc configEditConstantForConstant {} {
-#      global rowdict
-#      cleanEditConstantConfig
-#      set i 10
-#      foreach var {
-#          "Name"
-#          "Value"
-#          "Rotation"
-#          "Slider Bounds: Max"
-#          "Slider Bounds: Min"
-#          "Slider Step Size"
-#      } {
-#          set row $rowdict($var)
-#          grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
-#          grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
-#          incr i 10
-#      }
-#  }
-#  
-#  proc configEditConstantForIntegral {} {
-#      global rowdict
-#      cleanEditConstantConfig
-#      set i 10
-#      foreach var {
-#          "Name"
-#          "Value"
-#          "Rotation"
-#      } {
-#          set row $rowdict($var)
-#          grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
-#          grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
-#          incr i 10
-#      }
-#  }
-#  
-#  proc configEditConstantForData {} {
-#      global rowdict
-#      cleanEditConstantConfig
-#      set i 10
-#      foreach var {
-#          "Name"
-#          "Rotation"
-#      } {
-#          set row $rowdict($var)
-#          grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
-#          grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
-#          incr i 10
-#      }
-#  }
-#  
-#  
 proc deiconifyEditOperation {} {
     if {![winfo exists .wiring.editOperation]} {
         global opInput
