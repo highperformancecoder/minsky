@@ -400,11 +400,11 @@ SUITE(Minsky)
       g.table.cell(2,3)="h2";
       g.update();
   
-      assert(g.stockVars.size()==g.table.cols()-1 && g.flowVars.size()==g.table.cols()-1);
+      assert(g.stockVars().size()==g.table.cols()-1 && g.flowVars().size()==g.table.cols()-1);
       for (size_t i=1; i<g.table.cols(); ++i)
         {
-          CHECK_EQUAL(g.table.cell(0,i), g.stockVars[i-1]->name());
-          CHECK_EQUAL(g.table.cell(2,i), g.flowVars[i-1]->name());
+          CHECK_EQUAL(g.table.cell(0,i), g.stockVars()[i-1]->name());
+          CHECK_EQUAL(g.table.cell(2,i), g.flowVars()[i-1]->name());
         }
     }
 

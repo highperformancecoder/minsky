@@ -1,6 +1,11 @@
 sudo: true
 dist: trusty
 language: cpp
+cache: ccache
+env:
+  - TEST_SUITE=sure
+  - TEST_SUITE=docs
+  
 before_install:
   - wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_14.04/Release.key
   - sudo apt-key add - < Release.key
@@ -43,22 +48,5 @@ before_install:
   - ls /usr/lib/libsoci*
 #addons:
 #  postgresql: "9.3"
-script: 
-  - git clone https://github.com/highperformancecoder/ecolab.git
-  - pushd ecolab
-  - git submodule init
-  - git submodule update
-  - make install
-  - popd
-  - make DEBUG=1
-  - Xvfb :0 &>/dev/null &
-  - export DISPLAY=:0
-  - export MINSKY_TEST_DATABASE_PARAMS=$HOME/.testDatabase
-  - echo "testEq.mky" >$MINSKY_TEST_DATABASE_PARAMS
-  - psql -U postgres <server/minskyPG.sql
-  - echo "postgresql://dbname=postgres user=postgres password=">>$MINSKY_TEST_DATABASE_PARAMS
-  - export TRAVIS=1
-# This step generates reference image files on the CI server 
-#  - sh createRenderedEquations
-  - make AEGIS=1 sure
-  - make doc
+script:
+  bash travisRun.sh

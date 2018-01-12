@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Wires</TITLE>
-<META NAME="description" CONTENT="Wires">
+<TITLE>log</TITLE>
+<META NAME="description" CONTENT="log">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,60 +15,52 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node50.html">
-<LINK REL="previous" HREF="node45.html">
-<LINK REL="up" HREF="node42.html">
+<LINK REL="previous" HREF="node48.html">
+<LINK REL="up" HREF="node44.html">
 <LINK REL="next" HREF="node50.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html628"
+<A NAME="tex2html732"
   HREF="node50.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html626"
-  HREF="node42.html">
+<A NAME="tex2html730"
+  HREF="node44.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html620"
+<A NAME="tex2html724"
   HREF="node48.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html629"
-  HREF="node50.html">Groups</A>
-<B> Up:</B> <A NAME="tex2html627"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html621"
-  HREF="node48.html">Sliders</A>
+<B> Next:</B> <A NAME="tex2html733"
+  HREF="node50.html">pow</A>
+<B> Up:</B> <A NAME="tex2html731"
+  HREF="node44.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html725"
+  HREF="node48.html">divide</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00440000000000000000">
-Wires</A>
-</H1>
-
-<P>
-Wire represent the flow of values from one operation to the next. To
-add a wire to the canvas, click on the output port of an operation or
-variable (right hand side of the icon in its initial unrotated
-orientation), and then drag it towards an input port (on the left hand
-side of an unrotated icon). You can't connect an operator to itself
-(that would be a loop, which is not allowed, unless passing through an
-integral), nor can an input port have more than one wire
-attached, with the exception of <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img20.png"
- ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
- WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img187.png"
- ALT="$\times/\div$"></SPAN>, where the
-multiple wires are summed or multiplied, respectively, and similarly max/min.
-
-<P>
-Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
-a handle is dragged out of a straight line with its neighbours, new
-handles appear on either side. Handles can be removed by
-double-clicking on them.
+<H2><A NAME="SECTION00415000000000000000"></A><A NAME="Operation:log"></A>
+<BR>
+log
+</H2> Take the logarithm of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img65.png"
+ ALT="$x$"></SPAN> input port, to
+base <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img67.png"
+ ALT="$b$"></SPAN>. The base <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img67.png"
+ ALT="$b$"></SPAN> needs to be specified -- if the natural
+logarithm is desired (<SPAN CLASS="MATH"><IMG
+ WIDTH="40" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img172.png"
+ ALT="$b=e$"></SPAN>), use the <A HREF="node66.html#Operation:ln">ln operator</A> instead.
 
 <P>
 <BR><HR>

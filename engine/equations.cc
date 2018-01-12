@@ -1549,7 +1549,7 @@ namespace MathDAG
       {
         string colName=stripActive(trimWS(godley.cell(0,c)));
         if (colName=="_" || VariableValue::uqName(colName).empty())
-          throw error("unnamed Godley table column found");
+          continue; // ignore empty Godley columns
         // resolve scope
         colName=VariableValue::valueId(gi.group.lock(), colName);
         if (processedColumns.count(colName)) continue; //skip shared columns
