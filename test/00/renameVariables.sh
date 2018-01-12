@@ -35,7 +35,8 @@ proc afterMinskyStarted {} {
   assert {[findVariable L]}
   renameVariableInstances
   assert {[winfo ismapped .renameDialog]}
-  .renameDialog.newName insert 0 R
+  .renameDialog.entry delete 0 end
+  .renameDialog.entry insert 0 R
   .renameDialog.buttonBar.ok invoke
   assert {![findVariable L]}
   assert {[findVariable R]}
