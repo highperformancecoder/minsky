@@ -1100,7 +1100,7 @@ proc openURL {URL} {
         shellOpen $URL
     } elseif {$tcl_platform(os)=="Darwin"} {
         exec open $URL
-    } else {
+    } elseif [catch {exec xdg-open $URL &}] {
         # try a few likely suspects
         foreach browser {firefox konqueror seamonkey opera} {
             set browserNotFound [catch {exec firefox $URL &}]
