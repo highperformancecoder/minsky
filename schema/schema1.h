@@ -412,24 +412,8 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     vector<shared_ptr<Layout> > layout;
     double zoomFactor=1;
     Minsky(): schemaVersion(-1) {} // schemaVersion defined on read in
-    Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m): Minsky(*m.model) {
-      model.rungeKutta=RungeKutta(m);
-      zoomFactor=m.model->zoomFactor;
-      assert(model.validate());
-    }
-
     Minsky(const schema0::Minsky& m);
     
-    /// create a Minsky model from this
-    operator minsky::Minsky() const;
-    /// populate a group object from this. This mutates the ids in a
-    /// consistent way into the free id space of the global minsky
-    /// object
-    void populateGroup(minsky::Group& g) const;
-    /// move locations such that minx, miny lies at (0,0) on canvas
-    void relocateCanvas();
-
     /** See ticket #329 and references within. At some stage, IntOp had
         no destructor, which leads to an orphaned, invisible integral
         variable, with invalid output port. This bit of code deals with

@@ -141,12 +141,12 @@ namespace minsky
     /// copy all flowVars of a GodleyIcon in \a item and leave them in a group
     void copyAllFlowVars() {
       if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
-        copyVars(g->flowVars);
+        copyVars(g->flowVars());
     }
     /// copy all stockVars of a GodleyIcon in \a item and leave them in a group
     void copyAllStockVars(){
       if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
-        copyVars(g->stockVars);
+        copyVars(g->stockVars());
     }
 
     /// handle arrow keys

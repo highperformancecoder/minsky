@@ -92,6 +92,10 @@ namespace minsky
       set<VariablePtr, OrderByName> oldVars(vars.begin(), vars.end());
 
       vars.clear();
+      shared_ptr<GodleyIcon> self;
+      if (auto g=group.lock())
+        self=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this));
+      
       for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
         {
           VariablePtr newVar(varType, *nm);
@@ -113,6 +117,7 @@ namespace minsky
           minsky::minsky().convertVarType(vars.back()->valueId(), varType);
           vars.back()->m_visible=false;
           vars.back()->zoomFactor=iconScale*zoomFactor;
+          vars.back()->godley=self;
         }
       // remove any previously existing variables
       if (auto g=group.lock())
@@ -196,8 +201,8 @@ namespace minsky
 
   void GodleyIcon::update()
   {
-    updateVars(stockVars, table.getColumnVariables(), VariableType::stock);
-    updateVars(flowVars, table.getVariables(), VariableType::flow);
+    updateVars(m_stockVars, table.getColumnVariables(), VariableType::stock);
+    updateVars(m_flowVars, table.getVariables(), VariableType::flow);
 
     // retrieve initial conditions, if any
     for (size_t r=1; r<table.rows(); ++r)
@@ -233,8 +238,8 @@ namespace minsky
     float height=0;
     stockMargin=0;
     flowMargin=0;
-    accumulateWidthHeight(stockVars, height, stockMargin);
-    accumulateWidthHeight(flowVars, height, flowMargin);
+    accumulateWidthHeight(m_stockVars, height, stockMargin);
+    accumulateWidthHeight(m_flowVars, height, flowMargin);
     iconSize=max(100.0, 1.8*height);
 
     positionVariables();
@@ -248,7 +253,7 @@ namespace minsky
     float zoomFactor=iconScale*this->zoomFactor;
     float x= this->x() - 0.5*(0.9*iconSize-flowMargin)*zoomFactor;
     float y= this->y() - 0.2/*0.37*/*iconSize*zoomFactor;
-    for (auto& v: flowVars)
+    for (auto& v: m_flowVars)
       {
         // right justification
         RenderVariable rv(*v);
@@ -258,7 +263,7 @@ namespace minsky
     x=this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
     y=this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
 
-    for (auto& v: stockVars)
+    for (auto& v: m_stockVars)
       {
         // top justification at bottom of icon
         RenderVariable rv(*v);
@@ -272,10 +277,10 @@ namespace minsky
 
   ItemPtr GodleyIcon::select(float x, float y) const
   {
-    for (auto& v: flowVars)
+    for (auto& v: m_flowVars)
       if (RenderVariable(*v).inImage(x,y)) 
         return v;
-    for (auto& v: stockVars)
+    for (auto& v: m_stockVars)
       if (RenderVariable(*v).inImage(x,y)) 
         return v;
     return ItemPtr();
@@ -320,8 +325,8 @@ namespace minsky
 
     // render the variables
     DrawVars drawVars(cairo, x(), y());
-    drawVars(flowVars); 
-    drawVars(stockVars); 
+    drawVars(m_flowVars); 
+    drawVars(m_stockVars); 
 
     if (mouseFocus)
       {
