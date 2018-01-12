@@ -73,7 +73,7 @@ proc defaultCursor {w} {$w configure -cursor {}}
 proc godleyContext {id x y X Y} {
     .$id.context delete 0 end
     .$id.context add command -label Help -command {help GodleyTable}
-    .$id.context add command -label Title -command "setGodleyTitle $id"
+    .$id.context add command -label Title -command "textEntryPopup .godleyTitle {[$id.godleyIcon.table.title]} {setGodleyTitleOK $id}"
     switch [$id.clickType $x $y] {
         background {}
         row0 {
@@ -93,31 +93,16 @@ proc godleyContext {id x y X Y} {
     }
     set r [$id.rowY $y]
     set c [$id.colX $x]
-    if [string length [$id.godleyIcon.table.getCell $r $c]] {
-        .$id.context add command -label "Cut" -command "godleyCut $id $r $c"
-        .$id.context add command -label "Copy" -command "godleyCopy $id $r $c"
+    if {$r>=0 && $c>=0} {
+        if [string length [$id.godleyIcon.table.getCell $r $c]] {
+            .$id.context add command -label "Cut" -command "godleyCut $id $r $c"
+            .$id.context add command -label "Copy" -command "godleyCopy $id $r $c"
+        }
     }
     if {![catch {clipboard get -type UTF8_STRING}]} {
         .$id.context add command -label "Paste" -command "godleyPaste $id $r $c"
     }
     tk_popup .$id.context $X $Y
-}
-
-proc setGodleyTitle id {
-    if {![winfo exists .godleyTitle]} {
-        toplevel .godleyTitle
-        entry .godleyTitle.entry
-        pack .godleyTitle.entry -side top
-        buttonBar .godleyTitle "setGodleyTitleOK $id"
-    } else {
-        wm deiconify .godleyTitle
-    }
-    .godleyTitle.entry delete 0 end
-    .godleyTitle.entry insert 0 [$id.godleyIcon.table.title]
-    wm transient .godleyTitle
-    focus .godleyTitle.entry
-    tkwait visibility .godleyTitle
-    grab set .godleyTitle
 }
 
 proc setGodleyTitleOK id {

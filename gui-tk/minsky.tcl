@@ -628,7 +628,28 @@ proc cancelWin window {
     grab release $window
     destroy $window
 }
+
+# pop up a text entry widget to capture some user input
+# @param win is top level window name
+# @param init initialises the entry widget
+# @param okproc gets executed when OK pressed. Use [$win.entry get] to return user value
+proc textEntryPopup {win init okproc} {
+    if {![winfo exists $win]} {
+        toplevel $win
+        entry $win.entry
+        pack $win.entry -side top
+        buttonBar $win $okproc
+    } else {
+        wm deiconify $win
+    }
+    $win.entry delete 0 end
+    $win.entry insert 0 $init
+    wm transient $win
+    focus $win.entry
+    tkwait visibility $win
+    grab set $win
     
+}
 
 source $minskyHome/godley.tcl
 source $minskyHome/newGodley.tcl
