@@ -618,8 +618,10 @@ proc buttonBar {window okProc} {
     frame $window.buttonBar
     button $window.buttonBar.ok -text "OK" -command "$okProc; cancelWin $window"
     button $window.buttonBar.cancel -text "Cancel" -command "cancelWin $window"
-    pack $window.buttonBar.cancel .godleyTitle.buttonBar.ok -side left
+    pack $window.buttonBar.cancel $window.buttonBar.ok -side left
     pack $window.buttonBar -side top
+    bind $window <Key-Return> "$window.buttonBar.ok invoke"
+    bind $window <Key-Escape> "$window.buttonBar.cancel invoke"
 }
 
 proc cancelWin window {

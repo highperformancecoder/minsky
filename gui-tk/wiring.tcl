@@ -533,6 +533,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label Description -command "postNote item"
 #            .wiring.context add command -label "Open Godley Table" -command "openGodley"
             .wiring.context add command -label "Open Godley Table" -command "newOpenGodley [minsky.openGodley]"
+            .wiring.context add command -label "Title" -command "editGodleyTitle"
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Resize Godley" -command "canvas.lassoMode itemResize"
@@ -1044,7 +1045,25 @@ proc editItem {} {
         "Item" {postNote item}
     }
 }
-  
+
+proc editGodleyTitle {} {
+    set item minsky.canvas.item
+    if {![winfo exists .editGodleyTitle]} {
+        toplevel .editGodleyTitle
+        entry .editGodleyTitle.entry
+        pack .editGodleyTitle.entry -side top
+        buttonBar .editGodleyTitle {minsky.canvas.item.table.title [.editGodleyTitle.entry get]; canvas.requestRedraw}
+    } else {
+        wm deiconify .godleyTitle
+    }
+    .editGodleyTitle.entry delete 0 end
+    .editGodleyTitle.entry insert 0 [$item.table.title]
+    wm transient .editGodleyTitle
+    focus .editGodleyTitle.entry
+    tkwait visibility .editGodleyTitle
+    grab set .editGodleyTitle
+}
+
 proc importData {} {
     global workDir
     set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
