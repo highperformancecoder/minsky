@@ -584,6 +584,7 @@ proc undo {delta} {
     # do not record changes to state from the undo command
     doPushHistory 0
     minsky.undo $delta
+    minsky.canvas.requestRedraw
     doPushHistory 1
 }
 
@@ -1376,3 +1377,4 @@ if {[llength [info commands afterMinskyStarted]]>0} {
 
 disableEventProcessing
 popFlags
+pushHistory
