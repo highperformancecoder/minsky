@@ -30,6 +30,35 @@ using ecolab::Pango;
 
 constexpr double GodleyTableWindow::leftTableOffset, GodleyTableWindow::topTableOffset;
 
+namespace
+{
+  string capitalise(string x)
+  {
+    if (!x.empty()) x[0]=toupper(x[0]);
+    return x;
+  }
+
+  struct Colour
+  {
+    double r,g,b;
+  } assetColour[] = {
+    {0,0,0},
+    {0,0,0},
+    {1,0,0},
+    {.6,.5,0}
+  };
+
+  void showAsset(Pango& pango, cairo_t* cairo, GodleyAssetClass::AssetClass assetClass)
+  {
+    cairo_save(cairo);
+    auto& colour=assetColour[assetClass];
+    cairo_set_source_rgb(cairo,colour.r,colour.g,colour.b);
+    pango.show();
+    cairo_restore(cairo);
+  }
+
+}
+
 void GodleyTableWindow::redraw(int, int, int width, int height)
 {
   if (!godleyIcon) return;
@@ -51,12 +80,12 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
         {
           if (assetClass!=GodleyAssetClass::noAssetClass)
             {
-              pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
+              pango.setMarkup(capitalise(enumKey<GodleyAssetClass::AssetClass>(assetClass)));
               // increase column by enough to fit asset class label
               if (x < pango.width()+lastAssetBoundary+3)
                 x=pango.width()+lastAssetBoundary+3;
               cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
-              pango.show();
+              showAsset(pango, surface->cairo(), assetClass);
             }
           lastAssetBoundary=x;
           
@@ -115,13 +144,13 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       x+=colWidth;
     }
   
-      pango.setMarkup(enumKey<GodleyAssetClass::AssetClass>(assetClass));
+  pango.setMarkup
+    (capitalise(enumKey<GodleyAssetClass::AssetClass>(assetClass)));
   // increase column by enough to fit asset class label
   if (x < pango.width()+lastAssetBoundary+3)
     x=pango.width()+lastAssetBoundary+3;
   cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
-  pango.show();
-  
+  showAsset(pango, surface->cairo(), assetClass);
   // final column vertical line
   colLeftMargin.push_back(x);
   cairo_move_to(surface->cairo(),x,topTableOffset);
