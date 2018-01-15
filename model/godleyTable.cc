@@ -300,59 +300,60 @@ void GodleyTableWindow::keyPress(int keySym)
 {
   if (selectedCol>=0 && selectedRow>=0 && selectedCol<godleyIcon->table.cols() &&
       selectedRow<godleyIcon->table.rows())
-    if (controlChar)
-      switch (keySym)
-        {
-        case 'x': case 'X':
-          cut();
-          break;
-        case 'c': case 'C':
-          copy();
-          break;
-        case 'v': case 'V':
-          paste();
-          break;
-        }
-    else
-      {
-        auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+    {
+      if (controlChar)
         switch (keySym)
           {
-          case 0xff08: case 0xffff:  //backspace/delete
-            if (insertIdx!=selectIdx)
-              delSelection();
-            else if (insertIdx>0 && insertIdx<=str.length())
-              str.erase(--insertIdx,1);
+          case 'x': case 'X':
+            cut();
             break;
-          case 0xff1b: // escape - TODO
-            selectedRow=selectedCol=-1;
+          case 'c': case 'C':
+            copy();
             break;
-          case 0xff0d:
-            godleyIcon->update();
-            selectedRow=selectedCol=-1;
+          case 'v': case 'V':
+            paste();
             break;
-          case 0xff51: //left arrow
-            if (insertIdx>0) insertIdx--;
-            break;
-          case 0xff53: //right arrow
-            if (insertIdx<str.length()) insertIdx++;
-            break;
-          case 0xffe3: case 0xffe4:
-            controlChar=true;
-            return; // no need to redraw + don't reset selection
-          default:
-          if (keySym>=' ' && keySym<0xff)
+          }
+      else
+        {
+          auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+          switch (keySym)
             {
-              delSelection();
-              if (insertIdx<0) insertIdx=0;
-              if (insertIdx>=str.length()) insertIdx=str.length();
-              str.insert(str.begin()+insertIdx++,keySym);
+            case 0xff08: case 0xffff:  //backspace/delete
+              if (insertIdx!=selectIdx)
+                delSelection();
+              else if (insertIdx>0 && insertIdx<=str.length())
+                str.erase(--insertIdx,1);
+              break;
+            case 0xff1b: // escape - TODO
+              selectedRow=selectedCol=-1;
+              break;
+            case 0xff0d:
+              godleyIcon->update();
+              selectedRow=selectedCol=-1;
+              break;
+            case 0xff51: //left arrow
+              if (insertIdx>0) insertIdx--;
+              break;
+            case 0xff53: //right arrow
+              if (insertIdx<str.length()) insertIdx++;
+              break;
+            case 0xffe3: case 0xffe4:
+              controlChar=true;
+              return; // no need to redraw + don't reset selection
+            default:
+              if (keySym>=' ' && keySym<0xff)
+                {
+                  delSelection();
+                  if (insertIdx>=str.length()) insertIdx=str.length();
+                  str.insert(str.begin()+insertIdx++,keySym);
+                }
+              break;
             }
-          break;
+          selectIdx=insertIdx;
         }
-      selectIdx=insertIdx;
+      requestRedraw();
     }
-  requestRedraw();
 }
 
 void GodleyTableWindow::keyRelease(int keySym)
