@@ -54,9 +54,9 @@ namespace schema2
             {
               // insert port references from flow/stock vars
               items.back().ports.clear();
-              for (auto& v: g->flowVars)
+              for (auto& v: g->flowVars())
                 items.back().ports.push_back(at(v->ports[1].get()));
-              for (auto& v: g->stockVars)
+              for (auto& v: g->stockVars())
                 items.back().ports.push_back(at(v->ports[0].get()));
             }
           if (auto d=dynamic_cast<minsky::DataOp*>(i))
@@ -452,8 +452,7 @@ namespace schema2
             assert(itemMap.count(i.id));
             if (auto godley=dynamic_cast<minsky::GodleyIcon*>(itemMap[i.id].get()))
               {
-                godley->stockVars.clear();
-                godley->flowVars.clear();
+                minsky::GodleyIcon::Variables flowVars, stockVars;
                 for (auto p: i.ports)
                   {
                     auto newP=portMap.find(p);
@@ -463,15 +462,16 @@ namespace schema2
                           switch (v->type())
                             {
                             case minsky::VariableType::stock:
-                              godley->stockVars.push_back(v);
+                              stockVars.push_back(v);
                               break;
                             case minsky::VariableType::flow:
-                              godley->flowVars.push_back(v);
+                              flowVars.push_back(v);
                               break;
                             default:
                               break;
                             }
                   }
+                SchemaHelper::setStockAndFlow(*godley, flowVars, stockVars);
                 godley->update();
                 if (i.height)
                   godley->scaleIconForHeight(*i.height);

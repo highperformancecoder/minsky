@@ -71,7 +71,8 @@ namespace minsky
 
     //float scale; ///< scale factor of the XGL image
     typedef std::vector<VariablePtr> Variables;
-    Variables flowVars, stockVars;
+    const Variables& flowVars() const {return m_flowVars;}
+    const Variables& stockVars() const {return m_stockVars;}
     GodleyTable table;
     /// updates the variable lists with the Godley table
     void update();
@@ -101,6 +102,7 @@ namespace minsky
                     VariableBase::Type varType);
     /// move contained variables to correct locations within icon
     void positionVariables() const;
+    Variables m_flowVars, m_stockVars;
   };
 }
 

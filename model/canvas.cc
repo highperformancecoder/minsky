@@ -530,7 +530,7 @@ namespace minsky
             if (auto v=dynamic_cast<VariableBase*>(i.get()))
               return v->inputWired() && v->valueId()==iv->valueId();
             else if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
-              for (auto& v: g->stockVars)
+              for (auto& v: g->stockVars())
                 {
                   if (v->valueId()==iv->valueId())
                     return true;

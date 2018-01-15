@@ -668,18 +668,13 @@ pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations -padding 0
 .tabs select 0
 
-# the panopticon code fails spectacularly on MacOSX Aqua, so just
-# disable that feature - see ticket #694
-#if {[tk windowingsystem] != "aqua"} {
-    image create cairoSurface panopticon -surface minsky.panopticon
-    label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
-    place .wiring.panopticon -relx 1 -rely 0 -anchor ne
-    minsky.panopticon.width $canvasWidth
-    minsky.panopticon.height $canvasHeight
-    bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
-#} else {
-#    proc panopticon.requestRedraw {} {}
-#}
+image create cairoSurface panopticon -surface minsky.panopticon
+label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
+place .wiring.panopticon -relx 1 -rely 0 -anchor ne
+minsky.panopticon.width $canvasWidth
+minsky.panopticon.height $canvasHeight
+bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
+set helpTopics(.wiring.panopticon) Panopticon
 
 proc panCanvases {offsx offsy} {
     model.moveTo $offsx $offsy
@@ -1147,7 +1142,7 @@ proc openURL {URL} {
         shellOpen $URL
     } elseif {$tcl_platform(os)=="Darwin"} {
         exec open $URL
-    } else {
+    } elseif [catch {exec xdg-open $URL &}] {
         # try a few likely suspects
         foreach browser {firefox konqueror seamonkey opera} {
             set browserNotFound [catch {exec firefox $URL &}]
@@ -1167,7 +1162,7 @@ proc help {topic} {
     if {$topic=="Introduction"} {
         set URL  "file://$minskyHome/library/help/minsky.html"
     } else {
-        set URL  "file://$minskyHome/library/help/minsky.html?minsky$externalLabel($topic)#$topic"
+        set URL  "file://$minskyHome/library/help/minsky$externalLabel($topic)"
     }
     openURL $URL
 }

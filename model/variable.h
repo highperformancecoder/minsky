@@ -41,6 +41,7 @@ namespace minsky
 {
   class VariablePtr;
   struct SchemaHelper;
+  class GodleyIcon;
 
   template <class T, class G, class S>
   ecolab::Accessor<T,G,S> makeAccessor(G g,S s) {
@@ -71,6 +72,8 @@ namespace minsky
     virtual size_t numPorts() const=0;
     virtual Type type() const=0;
 
+    /// reference to Godley icon if part of the icon.
+    classdesc::Exclude<std::weak_ptr<GodleyIcon>> godley;
     
     /// @{ variable displayed name
     virtual std::string _name() const;

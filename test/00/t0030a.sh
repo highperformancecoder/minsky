@@ -44,8 +44,8 @@ proc afterMinskyStarted {} {
   assert {[lsearch -glob [winfo children .] .godley*]>=0}
 
   # now double click on one of the flow variables
-  minsky.canvas.item.flowVars.@elem 0
-  set var minsky.canvas.item.flowVars(0)
+  findVariable IntLoan
+  set var minsky.canvas.item
   doubleButton [\$var.x] [\$var.y]
   assert {[winfo viewable .wiring.editVar]}
   .wiring.editVar.buttonBar.ok invoke
