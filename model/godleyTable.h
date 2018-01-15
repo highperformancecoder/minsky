@@ -46,7 +46,10 @@ namespace minsky
     double rowHeight=0;
     /// location of insertion pointer in selected cell, as well as
     /// other end of selection (if mouse-swiped)
-    unsigned insertIdx=0, selectIdx=0; 
+    unsigned insertIdx=0, selectIdx=0;
+    bool displayValues=false;
+    enum DisplayStyle {DRCR, sign};
+    DisplayStyle displayStyle=sign;
 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}

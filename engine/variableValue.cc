@@ -194,4 +194,33 @@ namespace minsky
     return true;
   }
 
+
+  EngNotation engExp(double v) 
+  {
+    EngNotation r;
+    r.sciExp=(v!=0)? floor(log(fabs(v))/log(10)): 0;
+    r.engExp=r.sciExp>=0? 3*(r.sciExp/3): 3*((r.sciExp+1)/3-1);
+    return r;
+  }
+
+  string mantissa(double value, const EngNotation& e)
+  {
+    const char* conv;
+    switch (e.sciExp-e.engExp)
+      {
+      case -3: conv="%7.4f"; break;
+      case -2: conv="%6.3f"; break;
+      case 0: case -1: conv="%5.2f"; break;
+      case 1: conv="%5.1f"; break;
+      case 2: conv="%5.0f"; break;
+      default: return ""; // shouldn't be here...
+      }
+    char val[10];
+    sprintf(val,conv,value*pow(10,-e.engExp));
+    return val;
+  }
+  
+  string expMultiplier(int exp)
+  {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
+
 }

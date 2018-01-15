@@ -45,7 +45,11 @@ proc newOpenGodley {id} {
         .$id.menubar.edit add command -label Copy -command "cutCopyPaste $id Copy" -accelerator $meta_menu-C
         .$id.menubar.edit add command -label Paste -command "cutCopyPaste $id Paste" -accelerator $meta_menu-V
 
-        .$id.menubar add command -label Help -command {help GodleyTable} -underline 0 
+        .$id.menubar add command -label Help -command {help GodleyTable} -underline 0
+
+        global preferences
+        $id.displayValues $preferences(godleyDisplay)
+        $id.displayStyle $preferences(godleyDisplayStyle)
 
     }
     wm deiconify .$id
@@ -154,4 +158,16 @@ proc cutCopyPaste {id cmd} {
         ([$id.selectedRow]>0 || [$id.selectedCol]>0)} {
         godley$cmd $id [$id.selectedRow] [$id.selectedCol]
     }
+}
+
+proc redrawAllGodleyTables {} {
+    foreach c [info commands godleyWindow*.requestRedraw] {$c}
+}
+
+# sets each individual Godley table displayValue preference
+proc setGodleyDisplay {display} {
+    foreach c [info commands godleyWindow*.displayValues] {
+        $c $display
+    }
+    redrawAllGodleyTables
 }

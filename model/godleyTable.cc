@@ -75,11 +75,34 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
         {
           if (row>0 && row<scrollRowStart) continue;
           if (row!=0 || col!=0)
-            if (int(row)==selectedRow && int(col)==selectedCol)
-            // the active cell renders as bare LaTeX code for editing
-            pango.setMarkup(godleyIcon->table.cell(row,col));
-          else
-            pango.setMarkup(latexToPango(godleyIcon->table.cell(row,col)));
+            {
+              string text=godleyIcon->table.cell(row,col);
+              if (!text.empty())
+                {
+                  string value;
+                  if (displayValues)
+                    {
+                      FlowCoef fc(text);
+                      auto vv=cminsky().variableValues
+                        [VariableValue::valueIdFromScope
+                         (godleyIcon->group.lock(),fc.name)];
+                      if (vv.idx()>=0)
+                        {
+                          double val=fc.coef*vv.value();
+                          auto ee=engExp(val);
+                          if (ee.engExp==-3) ee.engExp=0;
+                          value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);
+                        }
+                    }
+                  // the active cell renders as bare LaTeX code for
+                  // editing, all other cells rendered as LaTeX
+                  if (int(row)!=selectedRow || int(col)!=selectedCol)
+                    text = latexToPango(text);
+                  pango.setMarkup(text+value);
+               }
+              else
+                pango.setMarkup("");
+            }
           colWidth=max(colWidth,pango.width());
           cairo_move_to(surface->cairo(),x+3,y);
           pango.show();

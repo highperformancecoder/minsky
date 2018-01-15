@@ -268,28 +268,6 @@ bool VariableBase::handleArrows(int dir)
   return true;
 }
 
-VariableBase::EngNotation VariableBase::engExp() const
-{
-  EngNotation r;
-  double v=value();
-  r.sciExp=(v!=0)? floor(log(fabs(v))/log(10)): 0;
-  r.engExp=r.sciExp>=0? 3*(r.sciExp/3): 3*((r.sciExp+1)/3-1);
-  return r;
-}
-
-string VariableBase::mantissa(const EngNotation& e) const
-{
-  const char* conv;
-  switch ((e.sciExp-e.engExp)%3)
-    {
-    case 0: case -1: conv="%5.2f"; break;
-    case 1: case -2: conv="%5.1f"; break;
-    case 2: conv="%5.0f"; break;
-    }
-  char val[6];
-  sprintf(val,conv,value()*pow(10,-e.engExp));
-  return val;
-}
 
 void VariableBase::draw(cairo_t *cairo) const
 {

@@ -342,7 +342,7 @@ proc showPreferences {} {
         set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Double Entry)"
         
         frame .preferencesForm.buttonBar
-        button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm;updateGodleysDisplay}
+        button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm; redrawAllGodleyTables}
         button .preferencesForm.buttonBar.cancel -text cancel -command {closePreferencesForm}
         pack .preferencesForm.buttonBar.ok [label .preferencesForm.buttonBar.spacer -width 2] .preferencesForm.buttonBar.cancel -side left -pady 10
         grid .preferencesForm.buttonBar -column 1 -row 999 -columnspan 999
@@ -789,11 +789,11 @@ proc step {} {
         }
     } else {
         # run simulation
-        global running
+        global running preferences
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
-        updateGodleysDisplay
+        if $preferences(godleyDisplay) redrawAllGodleyTables
         update
         return -options $options $errMsg
     }
@@ -845,7 +845,7 @@ proc reset {} {
 
         global oplist lastOp
         set oplist [opOrder]
-        updateGodleysDisplay
+        redrawAllGodleyTables
         set lastOp -1
         return -code $err $result
     }
@@ -1071,6 +1071,7 @@ proc setPreferenceParms {} {
 	set preferences($var) $preferences_input($var)
     }
     defaultFont $preferences(defaultFont)
+    setGodleyDisplay $preferences(godleyDisplay)
 }
 
 
