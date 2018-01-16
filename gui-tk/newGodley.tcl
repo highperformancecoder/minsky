@@ -36,7 +36,6 @@ proc newOpenGodley {id} {
 
         menu .$id.menubar
         menu .$id.menubar.edit
-        .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
         .$id configure -menu .$id.menubar
         .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
         .$id.menubar.edit add command -label Redo -command "$id.undo -1" -accelerator $meta_menu-Y
@@ -45,6 +44,12 @@ proc newOpenGodley {id} {
         .$id.menubar.edit add command -label Copy -command "cutCopyPaste $id Copy" -accelerator $meta_menu-C
         .$id.menubar.edit add command -label Paste -command "cutCopyPaste $id Paste" -accelerator $meta_menu-V
 
+        menu .$id.menubar.options
+        .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
+        .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
+        
+        .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
+        .$id.menubar add cascade -label Options -menu .$id.menubar.options -underline 0
         .$id.menubar add command -label Help -command {help GodleyTable} -underline 0
 
         global preferences
@@ -165,9 +170,13 @@ proc redrawAllGodleyTables {} {
 }
 
 # sets each individual Godley table displayValue preference
-proc setGodleyDisplay {display} {
+proc setGodleyDisplay {} {
+    global preferences
     foreach c [info commands godleyWindow*.displayValues] {
-        $c $display
+        $c $preferences(godleyDisplay)
+    }
+    foreach c [info commands godleyWindow*.displayStyle] {
+        $c $preferences(godleyDisplayStyle)
     }
     redrawAllGodleyTables
 }

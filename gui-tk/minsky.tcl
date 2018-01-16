@@ -896,11 +896,6 @@ proc openNamedFile {ofname} {
     recentreCanvas
     
 
-#    foreach g [godleyItems.#keys] {
-#        godley.get $g
-#        set preferences(godleyDE) [godley.table.doubleEntryCompliant]
-#    }
-
    .controls.simSpeed set [simulationDelay]
     # setting preferences(godleyDE) and simulationDelay causes the edited (dirty) flag to be set
     pushHistory
@@ -1071,7 +1066,7 @@ proc setPreferenceParms {} {
 	set preferences($var) $preferences_input($var)
     }
     defaultFont $preferences(defaultFont)
-    setGodleyDisplay $preferences(godleyDisplay)
+    setGodleyDisplay
 }
 
 

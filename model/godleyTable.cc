@@ -27,6 +27,7 @@
 using namespace std;
 using namespace minsky;
 using ecolab::Pango;
+using namespace ecolab::cairo;
 
 constexpr double GodleyTableWindow::leftTableOffset, GodleyTableWindow::topTableOffset;
 
@@ -50,11 +51,10 @@ namespace
 
   void showAsset(Pango& pango, cairo_t* cairo, GodleyAssetClass::AssetClass assetClass)
   {
-    cairo_save(cairo);
+    CairoSave cs(cairo);
     auto& colour=assetColour[assetClass];
     cairo_set_source_rgb(cairo,colour.r,colour.g,colour.b);
     pango.show();
-    cairo_restore(cairo);
   }
 
 }
@@ -102,6 +102,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       double colWidth=0;
       for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
         {
+          CairoSave cs(surface->cairo());
           if (row>0 && row<scrollRowStart) continue;
           if (row!=0 || col!=0)
             {
@@ -109,10 +110,10 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
               if (!text.empty())
                 {
                   string value;
+                  FlowCoef fc(text);
                   if (displayValues)
                     {
-                      FlowCoef fc(text);
-                      auto vv=cminsky().variableValues
+                     auto vv=cminsky().variableValues
                         [VariableValue::valueIdFromScope
                          (godleyIcon->group.lock(),fc.name)];
                       if (vv.idx()>=0)
@@ -126,7 +127,26 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
                   // the active cell renders as bare LaTeX code for
                   // editing, all other cells rendered as LaTeX
                   if (int(row)!=selectedRow || int(col)!=selectedCol)
-                    text = latexToPango(text);
+                    {
+                      if (row>0 && col>0 && !godleyIcon->table.initialConditionRow(row))
+                        { // handle DR/CR mode and colouring of text
+                          if (fc.coef<0)
+                            cairo_set_source_rgb(surface->cairo(),1,0,0);
+                          if (displayStyle==DRCR)
+                            {
+                              if (assetClass==GodleyAssetClass::asset ||
+                                  assetClass==GodleyAssetClass::noAssetClass)
+                                text = (fc.coef<0)?"CR ":"DR ";
+                              else
+                                text = (fc.coef<0)?"DR ":"CR ";
+                              fc.coef=abs(fc.coef);
+                              text+=latexToPango(fc.str());
+                            }
+                        }
+                      else // is flow tag, stock var or initial condition
+                        text = latexToPango(text);
+                    }
+                  
                   pango.setMarkup(text+value);
                }
               else
@@ -200,56 +220,57 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   cairo_stroke(surface->cairo());
   
   // indicate selected cells
-  cairo_save(surface->cairo());
-  if (selectedRow==0 || (selectedRow>=scrollRowStart && selectedRow<godleyIcon->table.rows()))
-    {
-      size_t i=0, j=0;
-      if (selectedRow>=scrollRowStart) j=selectedRow-scrollRowStart+1;
-      double y=j*rowHeight+topTableOffset;
-      if (motionCol>=0 && selectedRow==0 && selectedCol>0) // whole col being moved
-        {
-          highlightColumn(surface->cairo(),selectedCol);
-          highlightColumn(surface->cairo(),motionCol);
-        }
-      else if (motionRow>=0 && selectedCol==0 && selectedRow>0) // whole col being moved
-        {
-          highlightRow(surface->cairo(),selectedRow);
-          highlightRow(surface->cairo(),motionRow);
-        }
-      else if (selectedCol==0 || /* selecting individual cell */
-               (selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()))
-        {
-          if (selectedRow!=0 || selectedCol!=0) // can't select flows/stockVars label
-            {
-              if (selectedCol>=scrollColStart) i=selectedCol-scrollColStart+1;
-              double x=colLeftMargin[i];
-              cairo_set_source_rgba(surface->cairo(),1,1,1,1);
-              cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
-              cairo_fill(surface->cairo());
-              pango.setMarkup(godleyIcon->table.cell(selectedRow,selectedCol));
-              cairo_set_source_rgba(surface->cairo(),0,0,0,1);
-              cairo_move_to(surface->cairo(),x,y);
-              pango.show();
+  {
+    CairoSave cs(surface->cairo());
+    if (selectedRow==0 || (selectedRow>=scrollRowStart && selectedRow<godleyIcon->table.rows()))
+      {
+        size_t i=0, j=0;
+        if (selectedRow>=scrollRowStart) j=selectedRow-scrollRowStart+1;
+        double y=j*rowHeight+topTableOffset;
+        if (motionCol>=0 && selectedRow==0 && selectedCol>0) // whole col being moved
+          {
+            highlightColumn(surface->cairo(),selectedCol);
+            highlightColumn(surface->cairo(),motionCol);
+          }
+        else if (motionRow>=0 && selectedCol==0 && selectedRow>0) // whole col being moved
+          {
+            highlightRow(surface->cairo(),selectedRow);
+            highlightRow(surface->cairo(),motionRow);
+          }
+        else if (selectedCol==0 || /* selecting individual cell */
+                 (selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()))
+          {
+            if (selectedRow!=0 || selectedCol!=0) // can't select flows/stockVars label
+              {
+                if (selectedCol>=scrollColStart) i=selectedCol-scrollColStart+1;
+                double x=colLeftMargin[i];
+                cairo_set_source_rgba(surface->cairo(),1,1,1,1);
+                cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
+                cairo_fill(surface->cairo());
+                pango.setMarkup(godleyIcon->table.cell(selectedRow,selectedCol));
+                cairo_set_source_rgba(surface->cairo(),0,0,0,1);
+                cairo_move_to(surface->cairo(),x,y);
+                pango.show();
 
-              // show insertion cursor
-              cairo_move_to(surface->cairo(),x+pango.idxToPos(insertIdx),y);
-              cairo_rel_line_to(surface->cairo(),0,rowHeight);
-              cairo_set_line_width(surface->cairo(),1);
-              cairo_stroke(surface->cairo());
-              if (motionRow>0 && motionCol>0)
-                highlightCell(surface->cairo(),motionRow,motionCol);
-              if (selectIdx!=insertIdx)
-                {
-                  // indicate some text has been selected
-                  cairo_rectangle(surface->cairo(),x+pango.idxToPos(insertIdx),y,
-                                  pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
-                  cairo_set_source_rgba(surface->cairo(),0.5,0.5,0.5,0.5);
-                  cairo_fill(surface->cairo());
-                }
-            }
-        }
-    }
-  cairo_restore(surface->cairo());
+                // show insertion cursor
+                cairo_move_to(surface->cairo(),x+pango.idxToPos(insertIdx),y);
+                cairo_rel_line_to(surface->cairo(),0,rowHeight);
+                cairo_set_line_width(surface->cairo(),1);
+                cairo_stroke(surface->cairo());
+                if (motionRow>0 && motionCol>0)
+                  highlightCell(surface->cairo(),motionRow,motionCol);
+                if (selectIdx!=insertIdx)
+                  {
+                    // indicate some text has been selected
+                    cairo_rectangle(surface->cairo(),x+pango.idxToPos(insertIdx),y,
+                                    pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
+                    cairo_set_source_rgba(surface->cairo(),0.5,0.5,0.5,0.5);
+                    cairo_fill(surface->cairo());
+                  }
+              }
+          }
+      }
+  }
 }
 
 int GodleyTableWindow::colX(double x) const
