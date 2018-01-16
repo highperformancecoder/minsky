@@ -222,10 +222,10 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   // indicate selected cells
   {
     CairoSave cs(surface->cairo());
-    if (selectedRow==0 || (selectedRow>=scrollRowStart && selectedRow<godleyIcon->table.rows()))
+    if (selectedRow==0 || (selectedRow>=int(scrollRowStart) && selectedRow<int(godleyIcon->table.rows())))
       {
         size_t i=0, j=0;
-        if (selectedRow>=scrollRowStart) j=selectedRow-scrollRowStart+1;
+        if (selectedRow>=int(scrollRowStart)) j=selectedRow-scrollRowStart+1;
         double y=j*rowHeight+topTableOffset;
         if (motionCol>=0 && selectedRow==0 && selectedCol>0) // whole col being moved
           {
@@ -238,11 +238,11 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
             highlightRow(surface->cairo(),motionRow);
           }
         else if (selectedCol==0 || /* selecting individual cell */
-                 (selectedCol>=scrollColStart && selectedCol<godleyIcon->table.cols()))
+                 (selectedCol>=int(scrollColStart) && selectedCol<int(godleyIcon->table.cols())))
           {
             if (selectedRow!=0 || selectedCol!=0) // can't select flows/stockVars label
               {
-                if (selectedCol>=scrollColStart) i=selectedCol-scrollColStart+1;
+                if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
                 double x=colLeftMargin[i];
                 cairo_set_source_rgba(surface->cairo(),1,1,1,1);
                 cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
@@ -295,7 +295,7 @@ int GodleyTableWindow::textIdx(double x) const
   auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
   pango.setMarkup(str);
   int j=0;
-  if (selectedCol>=scrollColStart) j=selectedCol-scrollColStart+1;
+  if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
   x-=colLeftMargin[j]+2;
   return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
 
@@ -305,8 +305,8 @@ void GodleyTableWindow::mouseDown(double x, double y)
 {
   selectedCol=colX(x);
   selectedRow=rowY(y);
-  if (selectedRow>=0 && selectedRow<godleyIcon->table.rows() &&
-      selectedCol>=0 && selectedCol<godleyIcon->table.cols())
+  if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
+      selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
     selectIdx=insertIdx = textIdx(x);
   else
     selectIdx=insertIdx=0;
@@ -348,8 +348,8 @@ void GodleyTableWindow::mouseMove(double x, double y)
 
 void GodleyTableWindow::keyPress(int keySym)
 {
-  if (selectedCol>=0 && selectedRow>=0 && selectedCol<godleyIcon->table.cols() &&
-      selectedRow<godleyIcon->table.rows())
+  if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
+      selectedRow<int(godleyIcon->table.rows()))
     {
       if (controlChar)
         switch (keySym)
@@ -435,8 +435,8 @@ void GodleyTableWindow::copy()
 
 void GodleyTableWindow::paste()
 {
-  if (selectedCol>=0 && selectedRow>=0 && selectedCol<godleyIcon->table.cols() &&
-      selectedRow<godleyIcon->table.rows())
+  if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
+      selectedRow<int(godleyIcon->table.rows()))
     {
       delSelection();
       auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
@@ -459,8 +459,8 @@ GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) co
   if (c==0)
     return col0;
 
-  if (c>0 && c<godleyIcon->table.cols())
-    if (r>0 && r<godleyIcon->table.rows())
+  if (c>0 && c<int(godleyIcon->table.cols()))
+    if (r>0 && r<int(godleyIcon->table.rows()))
       return internal;
 
   return background;
