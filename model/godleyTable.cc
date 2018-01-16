@@ -29,7 +29,7 @@ using namespace minsky;
 using ecolab::Pango;
 using namespace ecolab::cairo;
 
-constexpr double GodleyTableWindow::leftTableOffset, GodleyTableWindow::topTableOffset;
+constexpr double GodleyTableWindow::leftTableOffset, GodleyTableWindow::topTableOffset, GodleyTableWindow::pulldownHot;
 
 namespace
 {
@@ -98,6 +98,13 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       cairo_set_line_width(surface->cairo(),0.5);
       cairo_stroke(surface->cairo());
 
+      if (col>1)
+        {
+          cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
+          pango.setMarkup("▼");
+          pango.show();
+        }
+      
       double y=topTableOffset;
       double colWidth=0;
       for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
@@ -146,13 +153,13 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
                       else // is flow tag, stock var or initial condition
                         text = latexToPango(text);
                     }
-                  
+                  text+=value;
                   pango.setMarkup(text+value);
                }
-              else
-                pango.setMarkup("");
+              pango.setMarkup(text);
             }
-          colWidth=max(colWidth,pango.width());
+          // allow extra space for the ▼ in row 0
+          colWidth=max(colWidth,pango.width() + (row==0? pulldownHot:0));
           cairo_move_to(surface->cairo(),x+3,y);
           pango.show();
           y+=rowHeight;
@@ -179,6 +186,10 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
   cairo_rel_line_to(surface->cairo(),0,tableHeight);
   cairo_set_line_width(surface->cairo(),0.5);
   cairo_stroke(surface->cairo());
+
+  cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
+  pango.setMarkup("▼");
+  pango.show();
 
   // now row sum column
   x+=3;
@@ -455,7 +466,11 @@ GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) co
 {
   int c=colX(x), r=rowY(y);
   if (r==0)
-    return row0;
+    {
+      if (colLeftMargin[c+1]-x < pulldownHot)
+        return importStock;
+      return row0;
+    }
   if (c==0)
     return col0;
 
@@ -476,9 +491,8 @@ void GodleyTableWindow::addStockVar(double x)
 void GodleyTableWindow::importStockVar(const string& name, double x)
 {
   int c=colX(x);
-  if (c++>0)
+  if (c>0)
     {
-      godleyIcon->table.insertCol(c);
       godleyIcon->table.cell(0,c)=name;
       minsky().importDuplicateColumn(godleyIcon->table, c);
     }

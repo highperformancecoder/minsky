@@ -34,7 +34,9 @@ namespace minsky
   {
   public:
     /// offset of the table within the window
-    static constexpr double leftTableOffset=0, topTableOffset=20;
+    static constexpr double leftTableOffset=0, topTableOffset=20,
+      pulldownHot=10; // space for ▼ in stackVar cells
+    
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;
@@ -60,7 +62,7 @@ namespace minsky
     void keyPress(int keySym);
     void keyRelease(int keySym);
 
-    enum ClickType {background, row0, col0, internal};
+    enum ClickType {background, row0, col0, internal, importStock};
     ClickType clickType(double x, double y) const;
 
     /// add/delete rows/columns at x,y

@@ -8,7 +8,7 @@ proc newOpenGodley {id} {
         bind .$id.table <Configure> "$id.requestRedraw"
         bind .$id.table <Destroy> "$id.delete"
 
-        bind .$id.table <ButtonPress-1> "$id.mouseDown %x %y; focus .$id.table"
+        bind .$id.table <ButtonPress-1> "mouseDown $id %x %y %X %Y"
         bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; $id.mouseUp %x %y"
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMove %x %y"
 
@@ -58,6 +58,33 @@ proc newOpenGodley {id} {
 
     }
     wm deiconify .$id
+}
+
+proc mouseDown {id x y X Y} {
+    if {[$id.clickType $x $y]=="importStock"} {
+        set importOptions [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colX $x] ]]
+        if {[llength $importOptions]>0} {
+            if {![llength [info commands .$id.import]]} {menu .$id.import}
+            .$id.import delete 0 end
+            foreach var $importOptions {
+                .$id.import add command -label $var -command "importStockVar $id $var $x"
+            }
+            tk_popup .$id.import $X $Y
+        }
+    } else {
+        $id.mouseDown $x $y
+        focus .$id.table
+    }
+}
+
+proc importStockVar {id var x} {
+    set oldVar [$id.godleyIcon.table.getCell 0 [$id.colX $x]]
+    if {$oldVar!=""} {
+        switch [tk_messageBox -message "Do you wish to overwrite $oldVar?" -type okcancel] {
+            ok {$id.importStockVar $var $x}
+            cancel {}
+        }
+    } else {$id.importStockVar $var $x}
 }
 
 proc setStartVar {cmd x var max} {
