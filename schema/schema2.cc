@@ -368,6 +368,7 @@ namespace schema2
         if (y.assetClasses) assetClasses=*y.assetClasses;
         if (y.name) x1->table.title=*y.name;
         SchemaHelper::setPrivates(x1->table,data,assetClasses);
+        x1->table.orderAssetClasses();
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {

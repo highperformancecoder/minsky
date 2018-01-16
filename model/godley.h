@@ -145,11 +145,14 @@ namespace minsky
     }
 
     /// get the set of column labels, in column order
-    vector<string> getColumnVariables() const;
+    std::vector<std::string> getColumnVariables() const;
     /// get the vector of unique variable names from the interior of the
     /// table, in row, then column order
-    vector<string> getVariables() const;
+    std::vector<std::string> getVariables() const;
 
+    /// get column data
+    std::vector<std::string> getColumn(unsigned col) const;
+    
     /// toggle flow signs according to double entry compliant mode
     void setDEmode(bool doubleEntryCompliant);
 
@@ -161,6 +164,9 @@ namespace minsky
 
     void exportToLaTeX(const char* filename);
     void exportToCSV(const char* filename);
+
+    /// reorders columns into assets/liabilities and equities. Adds empty columns if an asset class is not present.
+    void orderAssetClasses();
   };
 
 }

@@ -216,6 +216,14 @@ string GodleyTable::rowSum(int row) const
 
 }
 
+std::vector<std::string> GodleyTable::getColumn(unsigned col) const
+{
+  std::vector<std::string> r;
+  for (unsigned row=0; row<rows(); ++row)
+    r.push_back(cell(row,col));
+  return r;
+}
+
 void GodleyTable::setDEmode(bool mode)
 {
   if (mode==doubleEntryCompliant) return;
@@ -269,3 +277,32 @@ void GodleyTable::exportToCSV(const char* filename)
   minsky::exportToCSV(f, *this);
 }
 
+void GodleyTable::orderAssetClasses()
+{
+  map<AssetClass,Data> tmpCols;
+  for (unsigned c=1; c<cols(); ++c)
+    if (_assetClass(c)==noAssetClass)
+      tmpCols[asset].push_back(getColumn(c));
+    else
+      tmpCols[_assetClass(c)].push_back(getColumn(c));
+
+  // add empty column if asset class not present, and count number of cols
+  unsigned numCols=1;
+  for (int ac=asset; ac<=equity; ++ac)
+    {
+      if (tmpCols[AssetClass(ac)].empty())
+        tmpCols[AssetClass(ac)].emplace_back(rows());
+      numCols+=tmpCols[AssetClass(ac)].size();
+    }
+
+  resize(rows(), numCols);
+  unsigned col=1;
+  for (int ac=asset; ac<=equity; ++ac)
+    for (auto& colData: tmpCols[AssetClass(ac)])
+      {
+        for (unsigned row=0; row<rows(); ++row)
+          cell(row,col)=colData[row];
+        _assetClass(col,AssetClass(ac));
+        col++;
+      }
+}
