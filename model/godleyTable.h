@@ -30,35 +30,44 @@
 
 namespace minsky
 {
-  /// supports +/-/←/→/↓/↑ widget
-  class ButtonWidget
+  struct ButtonWidgetEnums
   {
+    enum RowCol {row, col};
+    enum Pos {first, middle, last, firstAndLast};
+  };
+  
+  /// supports +/-/←/→/↓/↑ widget
+  template <minsky::ButtonWidgetEnums::RowCol rowCol>
+  class ButtonWidget: public ButtonWidgetEnums
+  {
+  protected:
     GodleyIcon& godleyIcon;
   public:
     static constexpr double buttonSpacing=10;
     
-    enum RowCol {row, col};
-    RowCol rowCol=row;
-    enum Pos {first, middle, last};
     Pos pos=middle;
     unsigned idx=0; ///< row or column this widget is located in
     
     void draw(cairo_t*);
     /// invoke action associated with button at x
     void invoke(double x);
-
-    ButtonWidget(GodleyIcon& godleyIcon, RowCol rowCol=row, unsigned idx=0):
-      godleyIcon(godleyIcon), rowCol(rowCol), idx(idx) {}
+    
+    ButtonWidget(GodleyIcon& godleyIcon, unsigned idx=0):
+      godleyIcon(godleyIcon), idx(idx) {}
   };
 
-  class GodleyTableWindow: public ecolab::CairoSurface
+  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums
   {
-    std::vector<ButtonWidget> rowWidgets, colWidgets;
+    std::vector<ButtonWidget<row>> rowWidgets;
+    std::vector<ButtonWidget<col>> colWidgets;
+    /// ensure button widgets are synced with current table data
+    void adjustWidgets();
     
   public:
     /// offset of the table within the window
     static constexpr double leftTableOffset=40, topTableOffset=30,
-      pulldownHot=10; // space for ▼ in stackVar cells
+      pulldownHot=10; ///< space for ▼ in stackVar cells
+    static constexpr double columnButtonsOffset=12;
     
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region
@@ -76,7 +85,8 @@ namespace minsky
     enum DisplayStyle {DRCR, sign};
     DisplayStyle displayStyle=sign;
 
-    GodleyTableWindow(const std::shared_ptr<GodleyIcon>&);
+    GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
+    {adjustWidgets();}
     
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
@@ -87,7 +97,7 @@ namespace minsky
     void keyPress(int keySym);
     void keyRelease(int keySym);
 
-    enum ClickType {background, row0, col0, internal, importStock};
+    enum ClickType {background, row0, col0, internal, importStock, rowWidget, colWidget};
     ClickType clickType(double x, double y) const;
 
     /// add/delete rows/columns at x,y

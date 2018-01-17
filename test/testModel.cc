@@ -21,6 +21,7 @@
 #include "operation.h"
 #include "group.h"
 #include "minsky.h"
+#include "godleyTable.h"
 #include <ecolab_epilogue.h>
 
 #include <UnitTest++/UnitTest++.h>
@@ -969,4 +970,177 @@ SUITE(Integrate)
       intop2->description(intop->description());
       CHECK(intop2->description()!=intop->description());
     }
+}
+
+SUITE(GodleyTableWindow)
+{
+  template <ButtonWidgetEnums::RowCol RC>
+    struct ButtonWidgetFixture: public GodleyIcon, public ButtonWidget<RC>
+  {
+    using ButtonWidget<RC>::first;
+    using ButtonWidget<RC>::middle;
+    using ButtonWidget<RC>::last;
+    using ButtonWidget<RC>::idx;
+    using ButtonWidget<RC>::pos;
+    using ButtonWidget<RC>::invoke;
+    using ButtonWidget<RC>::buttonSpacing;
+    ButtonWidgetFixture(): ButtonWidget<RC>(static_cast<GodleyIcon&>(*this))
+    {
+      table.resize(4,4);
+      for (size_t r=0; r<4; ++r)
+        for (size_t c=0; c<4; ++c)
+          table.cell(r,c)="c"+str(r)+str(c);
+      table._assetClass(1,GodleyAssetClass::asset);
+      table._assetClass(2,GodleyAssetClass::liability);
+      table._assetClass(3,GodleyAssetClass::equity);
+    }
+  };
+
+  typedef ButtonWidgetFixture<ButtonWidgetEnums::row> RowButtonWidgetFixture;
+  typedef ButtonWidgetFixture<ButtonWidgetEnums::col> ColButtonWidgetFixture;
+  
+  TEST_FIXTURE(RowButtonWidgetFixture, RowButtonWidget)
+    {
+      auto origData=table.getData();
+      idx=2;
+      invoke(0);
+      CHECK_EQUAL(5,table.rows());
+      // check row inserted
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("",table.cell(3,i));
+    
+      idx=3;
+      invoke(buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      // check row deleted
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(3,i));
+      CHECK(table.getData()==origData);
+    
+      // now check arrow functionality
+      idx=2; pos=first;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      // check row swapped with next
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(1,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(2,i));
+    
+      pos=middle;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(2,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(1,i));
+      invoke(3*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(2,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(1,i));
+    
+      pos=last;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(1,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(2,i));
+
+    
+      // should be no 4th button on first & last
+      pos=first;
+      auto saveData=table.getData();
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+      pos=last;
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+}
+  
+  TEST_FIXTURE(ColButtonWidgetFixture, ColButtonWidget)
+    {
+      auto origData=table.getData();
+      idx=2;
+      invoke(0);
+      CHECK_EQUAL(5,table.cols());
+      // check row inserted
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("",table.cell(i,3));
+    
+      idx=3;
+      invoke(buttonSpacing);
+      CHECK_EQUAL(4,table.cols());
+      // check col deleted
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
+      CHECK(table.getData()==origData);
+    
+      // now check arrow functionality
+      idx=2; pos=first;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(5,table.cols());
+      // check row swapped with next
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,4));
+      // extra column inserted for liability class
+      for (size_t i=0; i<table.rows(); ++i) 
+        CHECK_EQUAL("",table.cell(i,2));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
+    
+      pos=middle; idx=3;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.cols());
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,3));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,2));
+      idx=2;
+      invoke(3*buttonSpacing);
+      CHECK_EQUAL(5,table.cols());
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,3));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,4));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("",table.cell(i,2));
+    
+      pos=last; idx=3;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.cols());
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,2));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
+
+    
+      // should be no 4th button on first & last
+      pos=first;
+      auto saveData=table.getData();
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+      pos=last;
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+    }    
+
 }

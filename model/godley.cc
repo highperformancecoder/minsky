@@ -79,6 +79,8 @@ void GodleyTable::deleteCol(unsigned col)
         data[row].erase(data[row].begin()+col-1);
       markEdited();
     }
+  // insert extra empty column if an asset class gets emptied out of this
+  orderAssetClasses();
 }
 
 void GodleyTable::moveRow(int row, int n)
@@ -111,6 +113,8 @@ void GodleyTable::moveCol(int col, int n)
   swap(ac, m_assetClass[col]);
     
   _assetClass(col+n, targetAssetClass);
+  // insert extra empty column if an asset class gets emptied out of this
+  orderAssetClasses();
 }
 
 
@@ -290,9 +294,15 @@ void GodleyTable::orderAssetClasses()
   unsigned numCols=1;
   for (int ac=asset; ac<=equity; ++ac)
     {
-      if (tmpCols[AssetClass(ac)].empty())
-        tmpCols[AssetClass(ac)].emplace_back(rows());
-      numCols+=tmpCols[AssetClass(ac)].size();
+      auto& tc=tmpCols[AssetClass(ac)];
+      // strip out any blank columns
+      tc.erase(remove_if(tc.begin(), tc.end(), [](const vector<string>& x)
+                         {return x.empty() || x[0].empty();}), tc.end());
+      // ensure at least one column is present in an asset class
+      if (tc.empty())
+        tc.emplace_back(rows());
+      
+      numCols+=tc.size();
     }
 
   resize(rows(), numCols);

@@ -106,7 +106,7 @@ namespace minsky
     size_t rows() const {return data.size();}
     size_t cols() const {return data.empty()? 0: data[0].size();}
 
-    void clear() {data.clear(); markEdited();}
+    void clear() {data.clear(); m_assetClass.clear(); markEdited();}
     void resize(unsigned rows, unsigned cols){_resize(rows,cols); markEdited();}
 
     /** @{ In the following, C++ data structure is off by one with

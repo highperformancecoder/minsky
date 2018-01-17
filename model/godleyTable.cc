@@ -29,7 +29,9 @@ using namespace minsky;
 using ecolab::Pango;
 using namespace ecolab::cairo;
 
-constexpr double GodleyTableWindow::leftTableOffset, GodleyTableWindow::topTableOffset, GodleyTableWindow::pulldownHot;
+constexpr double GodleyTableWindow::leftTableOffset,
+  GodleyTableWindow::topTableOffset, GodleyTableWindow::pulldownHot,
+  GodleyTableWindow::columnButtonsOffset;
 
 namespace
 {
@@ -59,20 +61,54 @@ namespace
 
 }
 
-GodleyTableWindow::GodleyTableWindow
-(const std::shared_ptr<GodleyIcon>& godleyIcon): godleyIcon(godleyIcon)
+template <>
+void ButtonWidget<ButtonWidgetEnums::row>::invoke(double x)
 {
-  assert(godleyIcon);
-  for (size_t i=0; i<godleyIcon->table.rows(); ++i)
-    rowWidgets.emplace_back(*godleyIcon, ButtonWidget::row, i);
-  for (size_t i=0; i<godleyIcon->table.cols(); ++i)
-    colWidgets.emplace_back(*godleyIcon, ButtonWidget::col, i);
-  // nb first column/row is actually 1 - 0th element actually
-  // just ignored
-  rowWidgets[1].pos=ButtonWidget::first;
-  rowWidgets.back().pos=ButtonWidget::last;
-  colWidgets[1].pos=ButtonWidget::first;
-  colWidgets.back().pos=ButtonWidget::last;
+  int button=x/buttonSpacing;
+  switch (button)
+    {
+    case 0:
+      godleyIcon.table.insertRow(idx+1);
+      break;
+    case 1:
+      godleyIcon.deleteRow(idx+1);
+      break;
+    case 2:
+      if (pos==first)
+        godleyIcon.table.moveRow(idx,1);
+      else
+        godleyIcon.table.moveRow(idx,-1);
+      break;
+    case 3:
+      if (pos==middle)
+        godleyIcon.table.moveRow(idx,1);
+      break;
+    }
+}
+
+template <>
+void ButtonWidget<ButtonWidgetEnums::col>::invoke(double x)
+{
+  int button=x/buttonSpacing;
+  switch (button)
+    {
+    case 0:
+      godleyIcon.table.insertCol(idx+1);
+      break;
+    case 1:
+      godleyIcon.table.deleteCol(idx+1);
+      break;
+    case 2:
+      if (pos==first)
+        godleyIcon.table.moveCol(idx,1);
+      else
+        godleyIcon.table.moveCol(idx,-1);
+      break;
+    case 3:
+      if (pos==middle)
+        godleyIcon.table.moveCol(idx,1);
+      break;
+    }
 }
 
 
@@ -118,7 +154,7 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       if (col>0 && col<colWidgets.size())
         {
           CairoSave cs(surface->cairo());
-          cairo_move_to(surface->cairo(), x, 12);
+          cairo_move_to(surface->cairo(), x, columnButtonsOffset);
           colWidgets[col].draw(surface->cairo());
         }
       
@@ -346,14 +382,43 @@ int GodleyTableWindow::textIdx(double x) const
 
 void GodleyTableWindow::mouseDown(double x, double y)
 {
-  selectedCol=colX(x);
-  selectedRow=rowY(y);
-  if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
-      selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
-    selectIdx=insertIdx = textIdx(x);
-  else
-    selectIdx=insertIdx=0;
-  requestRedraw();
+  switch (clickType(x,y))
+    {
+    case rowWidget:
+      {
+        unsigned r=rowY(y);
+        if (r<rowWidgets.size())
+          {
+            rowWidgets[r].invoke(x);
+            adjustWidgets();
+            selectedCol=selectedRow=-1;
+            requestRedraw();
+          }
+        return;
+      }
+    case colWidget:
+      {
+        unsigned c=colX(x);
+        if (c<colWidgets.size() && c<colLeftMargin.size())
+          {
+            colWidgets[c].invoke(x-colLeftMargin[c]);
+            adjustWidgets();
+            selectedCol=selectedRow=-1;
+            requestRedraw();
+          }
+        return;
+      }
+    default:
+      selectedCol=colX(x);
+      selectedRow=rowY(y);
+      if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
+          selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
+        selectIdx=insertIdx = textIdx(x);
+      else
+        selectIdx=insertIdx=0;
+      requestRedraw();
+      break;
+    }
 }
 
 void GodleyTableWindow::mouseUp(double x, double y)
@@ -497,6 +562,11 @@ void GodleyTableWindow::paste()
 GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) const
 {
   int c=colX(x), r=rowY(y);
+  if (x<leftTableOffset && r>0)
+    return rowWidget;
+  if (y<topTableOffset && y>columnButtonsOffset && c>0)
+    return colWidget;
+  
   if (r==0)
     {
       if (colLeftMargin[c+1]-x < pulldownHot)
@@ -612,7 +682,35 @@ void GodleyTableWindow::undo(int changes)
     }
 }
 
-void ButtonWidget::draw(cairo_t* cairo)
+void GodleyTableWindow::adjustWidgets()
+{
+  assert(godleyIcon);
+  rowWidgets.clear();
+  for (size_t i=0; i<godleyIcon->table.rows(); ++i)
+    rowWidgets.emplace_back(*godleyIcon, i);
+  colWidgets.clear();
+  for (size_t i=0; i<godleyIcon->table.cols(); ++i)
+    colWidgets.emplace_back(*godleyIcon, i);
+  // nb first column/row is actually 1 - 0th element actually
+  // just ignored
+  if (rowWidgets.size()==2)
+    rowWidgets[1].pos=firstAndLast;
+  else if (rowWidgets.size()>2)
+    {
+      rowWidgets[1].pos=first;
+      rowWidgets.back().pos=last;
+    }
+  if (colWidgets.size()==2)
+    colWidgets[1].pos=firstAndLast;
+  else if (colWidgets.size()>2)
+    {
+      colWidgets[1].pos=first;
+      colWidgets.back().pos=last;
+    }
+}
+
+template <ButtonWidgetEnums::RowCol rowCol>
+void ButtonWidget<rowCol>::draw(cairo_t* cairo)
 {
   CairoSave cs(cairo);
   Pango pango(cairo);
@@ -624,14 +722,14 @@ void ButtonWidget::draw(cairo_t* cairo)
   cairo_set_source_rgb(cairo,1,0,0);
   pango.show();
   cairo_rel_move_to(cairo,buttonSpacing,0);
-  if (pos!=first)
+  if (pos!=first && pos!=firstAndLast)
     {
       pango.setMarkup(rowCol==row? "↑": "←");
       cairo_set_source_rgb(cairo,0,0,0);
       pango.show();
       cairo_rel_move_to(cairo,buttonSpacing,0);
     }
-  if (pos!=last)
+  if (pos!=last && pos!=firstAndLast)
     {
       pango.setMarkup(rowCol==row? "↓": "→");
       cairo_set_source_rgb(cairo,0,0,0);
@@ -640,5 +738,6 @@ void ButtonWidget::draw(cairo_t* cairo)
     }
 }
 
-void ButtonWidget::invoke(double x) {}
 
+template class ButtonWidget<ButtonWidgetEnums::row>;
+template class ButtonWidget<ButtonWidgetEnums::col>;
