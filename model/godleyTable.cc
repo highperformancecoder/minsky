@@ -59,6 +59,23 @@ namespace
 
 }
 
+GodleyTableWindow::GodleyTableWindow
+(const std::shared_ptr<GodleyIcon>& godleyIcon): godleyIcon(godleyIcon)
+{
+  assert(godleyIcon);
+  for (size_t i=0; i<godleyIcon->table.rows(); ++i)
+    rowWidgets.emplace_back(*godleyIcon, ButtonWidget::row, i);
+  for (size_t i=0; i<godleyIcon->table.cols(); ++i)
+    colWidgets.emplace_back(*godleyIcon, ButtonWidget::col, i);
+  // nb first column/row is actually 1 - 0th element actually
+  // just ignored
+  rowWidgets[1].pos=ButtonWidget::first;
+  rowWidgets.back().pos=ButtonWidget::last;
+  colWidgets[1].pos=ButtonWidget::first;
+  colWidgets.back().pos=ButtonWidget::last;
+}
+
+
 void GodleyTableWindow::redraw(int, int, int width, int height)
 {
   if (!godleyIcon) return;
@@ -97,7 +114,14 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       cairo_rel_line_to(surface->cairo(),0,tableHeight);
       cairo_set_line_width(surface->cairo(),0.5);
       cairo_stroke(surface->cairo());
-
+      
+      if (col>0 && col<colWidgets.size())
+        {
+          CairoSave cs(surface->cairo());
+          cairo_move_to(surface->cairo(), x, 12);
+          colWidgets[col].draw(surface->cairo());
+        }
+      
       if (col>1)
         {
           cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
@@ -109,8 +133,16 @@ void GodleyTableWindow::redraw(int, int, int width, int height)
       double colWidth=0;
       for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
         {
-          CairoSave cs(surface->cairo());
           if (row>0 && row<scrollRowStart) continue;
+
+          if (col==0 && row>0 && col<rowWidgets.size())
+            {
+              CairoSave cs(surface->cairo());
+              cairo_move_to(surface->cairo(), 0, y);
+              rowWidgets[row].draw(surface->cairo());
+            }
+            
+          CairoSave cs(surface->cairo());
           if (row!=0 || col!=0)
             {
               string text=godleyIcon->table.cell(row,col);
@@ -579,3 +611,34 @@ void GodleyTableWindow::undo(int changes)
       requestRedraw();
     }
 }
+
+void ButtonWidget::draw(cairo_t* cairo)
+{
+  CairoSave cs(cairo);
+  Pango pango(cairo);
+  pango.setMarkup("+");
+  cairo_set_source_rgb(cairo,0,1,0);
+  pango.show();
+  cairo_rel_move_to(cairo,buttonSpacing,0);
+  pango.setMarkup("–");
+  cairo_set_source_rgb(cairo,1,0,0);
+  pango.show();
+  cairo_rel_move_to(cairo,buttonSpacing,0);
+  if (pos!=first)
+    {
+      pango.setMarkup(rowCol==row? "↑": "←");
+      cairo_set_source_rgb(cairo,0,0,0);
+      pango.show();
+      cairo_rel_move_to(cairo,buttonSpacing,0);
+    }
+  if (pos!=last)
+    {
+      pango.setMarkup(rowCol==row? "↓": "→");
+      cairo_set_source_rgb(cairo,0,0,0);
+      pango.show();
+      cairo_rel_move_to(cairo,buttonSpacing,0);
+    }
+}
+
+void ButtonWidget::invoke(double x) {}
+

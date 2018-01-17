@@ -30,11 +30,34 @@
 
 namespace minsky
 {
+  /// supports +/-/←/→/↓/↑ widget
+  class ButtonWidget
+  {
+    GodleyIcon& godleyIcon;
+  public:
+    static constexpr double buttonSpacing=10;
+    
+    enum RowCol {row, col};
+    RowCol rowCol=row;
+    enum Pos {first, middle, last};
+    Pos pos=middle;
+    unsigned idx=0; ///< row or column this widget is located in
+    
+    void draw(cairo_t*);
+    /// invoke action associated with button at x
+    void invoke(double x);
+
+    ButtonWidget(GodleyIcon& godleyIcon, RowCol rowCol=row, unsigned idx=0):
+      godleyIcon(godleyIcon), rowCol(rowCol), idx(idx) {}
+  };
+
   class GodleyTableWindow: public ecolab::CairoSurface
   {
+    std::vector<ButtonWidget> rowWidgets, colWidgets;
+    
   public:
     /// offset of the table within the window
-    static constexpr double leftTableOffset=0, topTableOffset=20,
+    static constexpr double leftTableOffset=40, topTableOffset=30,
       pulldownHot=10; // space for ▼ in stackVar cells
     
     std::shared_ptr<GodleyIcon> godleyIcon;
@@ -53,6 +76,8 @@ namespace minsky
     enum DisplayStyle {DRCR, sign};
     DisplayStyle displayStyle=sign;
 
+    GodleyTableWindow(const std::shared_ptr<GodleyIcon>&);
+    
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// event handling 
