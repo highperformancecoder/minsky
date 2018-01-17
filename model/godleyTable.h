@@ -40,6 +40,7 @@ namespace minsky
   template <minsky::ButtonWidgetEnums::RowCol rowCol>
   class ButtonWidget: public ButtonWidgetEnums
   {
+    CLASSDESC_ACCESS(ButtonWidget);
   protected:
     GodleyIcon& godleyIcon;
   public:
@@ -63,6 +64,7 @@ namespace minsky
     /// ensure button widgets are synced with current table data
     void adjustWidgets();
     
+    CLASSDESC_ACCESS(GodleyTableWindow);
   public:
     /// offset of the table within the window
     static constexpr double leftTableOffset=40, topTableOffset=30,

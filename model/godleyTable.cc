@@ -738,6 +738,8 @@ void ButtonWidget<rowCol>::draw(cairo_t* cairo)
     }
 }
 
-
-template class ButtonWidget<ButtonWidgetEnums::row>;
-template class ButtonWidget<ButtonWidgetEnums::col>;
+namespace minsky
+{
+  template class ButtonWidget<ButtonWidgetEnums::row>;
+  template class ButtonWidget<ButtonWidgetEnums::col>;
+}
