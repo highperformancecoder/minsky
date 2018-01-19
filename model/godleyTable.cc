@@ -430,7 +430,10 @@ namespace minsky
         if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
             selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
           {
-            godleyIcon->update();
+            // catch exception, as the intention here is to allow the user to fix a problem
+            try
+              {godleyIcon->update();}
+            catch (...) {}
             minsky().canvas.requestRedraw();
             selectIdx=insertIdx = textIdx(x);
             savedText=godleyIcon->table.cell(selectedRow, selectedCol);
@@ -800,7 +803,7 @@ namespace minsky
          || (mouseOver==3 && pos==middle)))
       {
         cairo_rectangle(cairo, x0+mouseOver*buttonSpacing, y0+0.5*buttonSpacing, buttonSpacing, buttonSpacing);
-        //cairo_set_source_rgba(cairo,0,0,0,1);
+        cairo_set_source_rgb(cairo,0,0,0);
         cairo_set_line_width(cairo,1);
         cairo_stroke(cairo);
       }
