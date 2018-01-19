@@ -429,7 +429,10 @@ namespace minsky
         selectedRow=rowY(y);
         if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
             selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
-          selectIdx=insertIdx = textIdx(x);
+          {
+            selectIdx=insertIdx = textIdx(x);
+            savedText=godleyIcon->table.cell(selectedRow, selectedCol);
+          }
         else
           selectIdx=insertIdx=0;
         requestRedraw();
@@ -531,7 +534,10 @@ namespace minsky
                 else if (insertIdx>0 && insertIdx<=str.length())
                   str.erase(--insertIdx,1);
                 break;
-              case 0xff1b: // escape - TODO
+              case 0xff1b: // escape
+                if (selectedRow>=0 && selectedRow<=godleyIcon->table.rows() &&
+                    selectedCol>=0 && selectedCol<=godleyIcon->table.cols())
+                  godleyIcon->table.cell(selectedRow, selectedCol)=savedText;
                 selectedRow=selectedCol=-1;
                 break;
               case 0xff0d:
