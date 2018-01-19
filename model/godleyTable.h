@@ -43,6 +43,7 @@ namespace minsky
     CLASSDESC_ACCESS(ButtonWidget);
   protected:
     GodleyIcon& godleyIcon;
+    int mouseOver=-1;
   public:
     static constexpr double buttonSpacing=10;
     
@@ -52,6 +53,11 @@ namespace minsky
     void draw(cairo_t*);
     /// invoke action associated with button at x
     void invoke(double x);
+    /// indicate which button mouse is hovering over. x<0 means not hovering
+    void hover(int button) {mouseOver=button;}
+    void hover(double x) {mouseOver=button(x);}
+    /// convert x coordinate into a button
+    int button(double x) const {return x/buttonSpacing;}
     
     ButtonWidget(GodleyIcon& godleyIcon, unsigned idx=0):
       godleyIcon(godleyIcon), idx(idx) {}
@@ -76,6 +82,7 @@ namespace minsky
     unsigned scrollRowStart=1, scrollColStart=1;
     /// which cell is active
     int selectedRow=-1, selectedCol=-1;
+    int hoverRow=-1, hoverCol=-1;
     /// computed positions of the table columns
     std::vector<double> colLeftMargin;
     /// computed height of each row
@@ -95,6 +102,8 @@ namespace minsky
     /// event handling 
     void mouseDown(double x, double y);
     void mouseUp(double x, double y);
+    /// mouse motion with button 1 pressed
+    void mouseMoveB1(double x, double y);
     void mouseMove(double x, double y);
     void keyPress(int keySym);
     void keyRelease(int keySym);

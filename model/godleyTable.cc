@@ -299,7 +299,20 @@ namespace minsky
     cairo_rel_line_to(surface->cairo(),0,tableHeight);
     cairo_set_line_width(surface->cairo(),0.5);
     cairo_stroke(surface->cairo());
-  
+
+    // indicate cell mouse is hovering over
+    if ((hoverRow>0 || hoverCol>0) &&
+        hoverRow<godleyIcon->table.rows() &&
+        hoverCol<godleyIcon->table.cols())
+      {
+        CairoSave cs(surface->cairo());
+        cairo_rectangle(surface->cairo(),
+                        colLeftMargin[hoverCol],hoverRow*rowHeight+topTableOffset,
+                        colLeftMargin[hoverCol+1]-colLeftMargin[hoverCol],rowHeight);
+        cairo_set_line_width(surface->cairo(),1);
+        cairo_stroke(surface->cairo());
+      }
+          
     // indicate selected cells
     {
       CairoSave cs(surface->cairo());
@@ -308,6 +321,7 @@ namespace minsky
           size_t i=0, j=0;
           if (selectedRow>=int(scrollRowStart)) j=selectedRow-scrollRowStart+1;
           double y=j*rowHeight+topTableOffset;
+
           if (motionCol>=0 && selectedRow==0 && selectedCol>0) // whole col being moved
             {
               highlightColumn(surface->cairo(),selectedCol);
@@ -449,11 +463,43 @@ namespace minsky
     requestRedraw();
   }
 
-  void GodleyTableWindow::mouseMove(double x, double y)
+  void GodleyTableWindow::mouseMoveB1(double x, double y)
   {
     motionCol=colX(x), motionRow=rowY(y);
     if (motionCol==selectedCol && motionRow==selectedRow)
       selectIdx=textIdx(x);
+  }
+
+  void GodleyTableWindow::mouseMove(double x, double y)
+  {
+    // clear any existing marks
+    for (auto& i: rowWidgets) i.hover(-1);
+    for (auto& i: colWidgets) i.hover(-1);
+    hoverRow=hoverCol=-1;
+    switch (clickType(x,y))
+      {
+      case rowWidget:
+        {
+          unsigned r=rowY(y);
+          if (r<rowWidgets.size())
+            rowWidgets[r].hover(x);
+          break;
+        }
+      case colWidget:
+        {
+          unsigned c=colX(x);
+          if (c<colWidgets.size())
+            colWidgets[c].hover(x-colLeftMargin[c]);
+          break;
+        }
+      case background:
+        break;
+      default:
+        hoverRow=rowY(y);
+        hoverCol=colX(x);
+        break;
+      }
+    requestRedraw();
   }
 
   void GodleyTableWindow::keyPress(int keySym)
@@ -716,6 +762,8 @@ namespace minsky
   {
     CairoSave cs(cairo);
     Pango pango(cairo);
+    double x0, y0;
+    cairo_get_current_point(cairo,&x0, &y0);
     pango.setMarkup("+");
     cairo_set_source_rgb(cairo,0,1,0);
     pango.show();
@@ -738,6 +786,16 @@ namespace minsky
         pango.show();
         cairo_rel_move_to(cairo,buttonSpacing,0);
       }
+    if (mouseOver>=0 &&
+        (mouseOver<2 || (mouseOver==2 && pos!=firstAndLast)
+         || (mouseOver==3 && pos==middle)))
+      {
+        cairo_rectangle(cairo, x0+mouseOver*buttonSpacing, y0+0.5*buttonSpacing, buttonSpacing, buttonSpacing);
+        //cairo_set_source_rgba(cairo,0,0,0,1);
+        cairo_set_line_width(cairo,1);
+        cairo_stroke(cairo);
+      }
+    
   }
 
   template class ButtonWidget<ButtonWidgetEnums::row>;

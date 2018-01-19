@@ -10,7 +10,8 @@ proc newOpenGodley {id} {
 
         bind .$id.table <ButtonPress-1> "mouseDown $id %x %y %X %Y"
         bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; $id.mouseUp %x %y"
-        bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMove %x %y"
+        bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMoveB1 %x %y"
+        bind .$id.table <Motion> "$id.mouseMove %x %y"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
         bind .$id.table <KeyPress> "$id.keyPress %N"
