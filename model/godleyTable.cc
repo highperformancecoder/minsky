@@ -430,6 +430,8 @@ namespace minsky
         if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
             selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
           {
+            godleyIcon->update();
+            minsky().canvas.requestRedraw();
             selectIdx=insertIdx = textIdx(x);
             savedText=godleyIcon->table.cell(selectedRow, selectedCol);
           }
@@ -542,6 +544,7 @@ namespace minsky
                 break;
               case 0xff0d:
                 godleyIcon->update();
+                minsky().canvas.requestRedraw();
                 selectedRow=selectedCol=-1;
                 break;
               case 0xff51: //left arrow
