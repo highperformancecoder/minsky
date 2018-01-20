@@ -238,14 +238,17 @@ namespace minsky
     std::string openGodley() {
       if (auto gi=dynamic_pointer_cast<GodleyIcon>(canvas.item))
         {
-          auto godley=new GodleyTableWindow(gi);
-          std::string name="godleyWindow"+to_string(size_t(canvas.item.get())); 
-          // pass ownership of object to TCL interpreter
-          Tcl_CreateCommand
-            (ecolab::interp(), (name+".delete").c_str(),
-             (Tcl_CmdProc*)deleteTclObject<GodleyTableWindow>,
-             (ClientData)godley,NULL);
-          TCL_obj(minskyTCL_obj(),name,*godley);
+          std::string name="godleyWindow"+to_string(size_t(canvas.item.get()));
+          if (TCL_obj_properties().count(name)==0)
+            {
+              auto godley=new GodleyTableWindow(gi);
+              // pass ownership of object to TCL interpreter
+              Tcl_CreateCommand
+                (ecolab::interp(), (name+".delete").c_str(),
+                 (Tcl_CmdProc*)deleteTclObject<GodleyTableWindow>,
+                 (ClientData)godley,NULL);
+              TCL_obj(minskyTCL_obj(),name,*godley);
+            }
           return name;
         }
       return "";

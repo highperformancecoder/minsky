@@ -387,13 +387,17 @@ namespace minsky
   {
     cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
     Pango pango(surf.cairo());
-    auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-    pango.setMarkup(str);
-    int j=0;
-    if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
-    x-=colLeftMargin[j]+2;
-    return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
-
+    if (selectedRow>=0 && selectedRow<godleyIcon->table.rows() &&
+        selectedCol>=0 && selectedCol<godleyIcon->table.cols())
+      {
+        auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+        pango.setMarkup(str);
+        int j=0;
+        if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
+        x-=colLeftMargin[j]+2;
+        return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
+      }
+    return 0;
   }
 
   void GodleyTableWindow::mouseDown(double x, double y)
