@@ -211,9 +211,9 @@ namespace minsky
           {
             string name=trimWS(table.cell(0,c));
             // if local reference, then append namespace
-            if (name.find(':')==string::npos)
-              name=":"+name;
-            auto vi=minsky().variableValues.find(VariableValue::valueId(name));
+//            if (name.find(':')==string::npos)
+//              name=":"+name;
+            auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
             VariableValue& v=vi->second;
             v.godleyOverridden=false;

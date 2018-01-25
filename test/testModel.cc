@@ -647,7 +647,23 @@ SUITE(Canvas)
     
     TEST_FIXTURE(TestFixture,renameAllInstances)
       {
+        
         model->moveContents(*group0);
+
+        // add a top level Godley table
+        GodleyIcon* gi=new GodleyIcon;
+        model->addItem(gi);
+        gi->table.resize(3,3);
+        gi->table.cell(2,1)="a";
+        gi->table.cell(2,2)=":a";
+        gi->update();
+
+        // add a copy of the above into the group
+        auto gi2=new GodleyIcon;
+        gi2->table=gi->table;
+        group0->addItem(gi2);
+        gi2->update();
+        
         canvas.item=a;
         canvas.copyItem();
         canvas.mouseUp(500,500);
@@ -660,8 +676,15 @@ SUITE(Canvas)
               if (v->name()=="foobar")
                 count++;
             }
-        CHECK_EQUAL(2,count);
+        CHECK_EQUAL(4,count);
 
+        // check that the Godley table got updated
+        CHECK_EQUAL("foobar",gi->table.cell(2,1));
+        CHECK_EQUAL("foobar",gi->table.cell(2,2));
+        CHECK_EQUAL("a",gi2->table.cell(2,1)); // local var, not target of rename
+        CHECK_EQUAL(":foobar",gi2->table.cell(2,2));
+
+        
         // check no renaming should happen when item is not a variable 
         canvas.item=group0;
         canvas.renameAllInstances("foobar1");

@@ -260,3 +260,16 @@ void GodleyTable::exportToCSV(const char* filename)
   minsky::exportToCSV(f, *this);
 }
 
+void GodleyTable::rename(const std::string& from, const std::string& to)
+{
+  for (size_t r=0; r<rows(); ++r)
+    for (size_t c=1; c<cols(); ++c)
+      {
+        FlowCoef fc(cell(r,c));
+        if (!fc.name.empty() && fc.name==from)
+          {
+            fc.name=to;
+            cell(r,c)=fc.str();
+          }
+      }
+}

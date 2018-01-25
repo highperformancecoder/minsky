@@ -160,6 +160,10 @@ namespace minsky
 
     void exportToLaTeX(const char* filename);
     void exportToCSV(const char* filename);
+
+    /// rename all instances of a variable
+    void rename(const std::string& from, const std::string& to);
+
   };
 
 }
