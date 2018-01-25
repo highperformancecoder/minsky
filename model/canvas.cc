@@ -377,17 +377,6 @@ namespace minsky
        }
   }
 
-  namespace
-  {
-    bool varIn(const GodleyIcon::Variables& vars, const std::string& valueId)
-    {
-      for (auto& i: vars)
-        if (i->valueId()==valueId)
-          return true;
-      return false;
-    }
-  }
-  
   void Canvas::renameAllInstances(const string newName)
   {
     auto var=dynamic_cast<VariableBase*>(item.get());
