@@ -31,6 +31,7 @@ using namespace ecolab;
 
 using namespace minsky;
 using ecolab::array;
+using namespace ecolab::cairo;
 
 VariableBase::~VariableBase() {}
 
@@ -58,7 +59,7 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
   RenderVariable rv(*this);
   double hpx=zoomFactor*rv.handlePos();
   double hpy=-zoomFactor*rv.height();
-  if (hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
+  if (type()!=constant && hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
       return ClickType::onSlider;
   else
     return Item::clickType(xx,yy);
@@ -340,18 +341,20 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo::Path clipPath(cairo);
   cairo_stroke(cairo);
   cairo_save(cairo);
-  
-  // draw slider
-  cairo_save(cairo);
-  cairo_set_source_rgb(cairo,0,0,0);
-  try
-    {
-  cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
-    }
-  catch (error) {} // handlePos() may throw.
-  cairo_fill(cairo);
-  cairo_restore(cairo);
 
+  if (type()!=constant)
+    {
+      // draw slider
+      CairoSave cs(cairo);
+      cairo_set_source_rgb(cairo,0,0,0);
+      try
+        {
+          cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+        }
+      catch (error) {} // handlePos() may throw.
+      cairo_fill(cairo);
+    }
+  
   cairo_restore(cairo); // undo rotation
    
  {
