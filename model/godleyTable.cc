@@ -229,6 +229,8 @@ namespace minsky
                                 fc.coef=abs(fc.coef);
                                 text+=latexToPango(fc.str());
                               }
+                            else
+                              text = latexToPango(text);
                           }
                         else // is flow tag, stock var or initial condition
                           text = latexToPango(text);
@@ -283,7 +285,7 @@ namespace minsky
     for (unsigned row=1; row<godleyIcon->table.rows(); ++row)
       {
         if (row>0 && row<scrollRowStart) continue;
-        pango.setMarkup(godleyIcon->table.rowSum(row));
+        pango.setMarkup(latexToPango(godleyIcon->table.rowSum(row)));
         colWidth=max(colWidth,pango.width());
         cairo_move_to(surface->cairo(),x,y);
         pango.show();
