@@ -391,7 +391,11 @@ namespace minsky
            {
              if (auto v=dynamic_cast<VariableBase*>(i->get()))
                if (v->valueId()==valueId)
-                 v->name(newName);
+                 {
+                   if (auto g=v->godley.lock()) // fix up internal references in Godley table
+                     g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
+                   v->name(newName);
+                 }
              return false;
            });
        }

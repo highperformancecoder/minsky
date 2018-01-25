@@ -167,6 +167,9 @@ namespace minsky
 
     /// reorders columns into assets/liabilities and equities. Adds empty columns if an asset class is not present.
     void orderAssetClasses();
+
+    /// rename all instances of a variable
+    void rename(const std::string& from, const std::string& to);
   };
 
 }

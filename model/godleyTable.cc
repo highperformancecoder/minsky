@@ -302,8 +302,8 @@ namespace minsky
 
     // indicate cell mouse is hovering over
     if ((hoverRow>0 || hoverCol>0) &&
-        hoverRow<godleyIcon->table.rows() &&
-        hoverCol<godleyIcon->table.cols())
+        size_t(hoverRow)<godleyIcon->table.rows() &&
+        size_t(hoverCol)<godleyIcon->table.cols())
       {
         CairoSave cs(surface->cairo());
         cairo_rectangle(surface->cairo(),
@@ -387,8 +387,8 @@ namespace minsky
   {
     cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
     Pango pango(surf.cairo());
-    if (selectedRow>=0 && selectedRow<godleyIcon->table.rows() &&
-        selectedCol>=0 && selectedCol<godleyIcon->table.cols())
+    if (selectedRow>=0 && size_t(selectedRow)<godleyIcon->table.rows() &&
+        selectedCol>=0 && size_t(selectedCol)<godleyIcon->table.cols())
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
         pango.setMarkup(str);
@@ -544,8 +544,8 @@ namespace minsky
                   str.erase(--insertIdx,1);
                 break;
               case 0xff1b: // escape
-                if (selectedRow>=0 && selectedRow<=godleyIcon->table.rows() &&
-                    selectedCol>=0 && selectedCol<=godleyIcon->table.cols())
+                if (selectedRow>=0 && size_t(selectedRow)<=godleyIcon->table.rows() &&
+                    selectedCol>=0 && size_t(selectedCol)<=godleyIcon->table.cols())
                   godleyIcon->table.cell(selectedRow, selectedCol)=savedText;
                 selectedRow=selectedCol=-1;
                 break;
