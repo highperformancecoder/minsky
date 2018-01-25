@@ -45,6 +45,13 @@ proc newOpenGodley {id} {
         pack .$id.table -fill both -expand 1
 
         menu .$id.menubar
+
+        if {[tk windowingsystem] == "aqua"} {
+            menu .$id.menubar.apple
+            .$id.menubar.apple add command -label "About Minsky" -command aboutMinsky
+            .$id.menubar add cascade -menu .menubar.apple
+        }
+        
         menu .$id.menubar.edit
         .$id configure -menu .$id.menubar
         .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
