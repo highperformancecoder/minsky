@@ -59,6 +59,13 @@ namespace
     pango.show();
   }
 
+  struct ZoomablePango: public Pango
+  {
+    static double zoomFactor;
+    ZoomablePango(cairo_t* c): Pango(c) {setFontSize(10*zoomFactor);}
+  };
+
+  double ZoomablePango::zoomFactor=1;
 }
 
 namespace minsky
@@ -114,10 +121,13 @@ namespace minsky
   }
 
 
-  void GodleyTableWindow::redraw(int, int, int width, int height)
+  void GodleyTableWindow::redraw(int, int, int, int)
   {
     if (!godleyIcon) return;
-    Pango pango(surface->cairo());
+    CairoSave cs(surface->cairo());
+    cairo_scale(surface->cairo(),zoomFactor,zoomFactor);
+    ZoomablePango::zoomFactor=zoomFactor;
+    ZoomablePango pango(surface->cairo());
     pango.setMarkup("Flows ↓ / Stock Vars →");
     rowHeight=pango.height()+2;
     double tableHeight=(godleyIcon->table.rows()-scrollRowStart+1)*rowHeight;
@@ -386,7 +396,7 @@ namespace minsky
   int GodleyTableWindow::textIdx(double x) const
   {
     cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
-    Pango pango(surf.cairo());
+    ZoomablePango pango(surf.cairo());
     if (selectedRow>=0 && size_t(selectedRow)<godleyIcon->table.rows() &&
         selectedCol>=0 && size_t(selectedCol)<godleyIcon->table.cols())
       {
@@ -777,7 +787,7 @@ namespace minsky
   void ButtonWidget<rowCol>::draw(cairo_t* cairo)
   {
     CairoSave cs(cairo);
-    Pango pango(cairo);
+    ZoomablePango pango(cairo);
     double x0, y0;
     cairo_get_current_point(cairo,&x0, &y0);
     pango.setMarkup("+");

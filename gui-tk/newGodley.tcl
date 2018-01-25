@@ -25,6 +25,14 @@ proc newOpenGodley {id} {
         bind .$id.table <$meta-c> "cutCopyPaste $id Copy"
         bind .$id.table <$meta-v> "cutCopyPaste $id Paste"
         
+        bind .$id.table <Key-KP_Add> "zoomIn $id"
+        bind .$id.table <Key-KP_Subtract> "zoomOut $id"
+        # mouse wheel bindings for X11
+        bind .$id.table <Button-4> "zoomIn $id"
+        bind .$id.table <Button-5> "zoomOut $id"
+        # mouse wheel bindings for pc and aqua
+        bind .$id.table <MouseWheel> "if {%D>=0} {zoomIn $id} {zoomOut $id}"
+     
         menu .$id.context -tearoff 0
         menu .$id.context.import -tearoff 0
 
@@ -53,13 +61,25 @@ proc newOpenGodley {id} {
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
         .$id.menubar add cascade -label Options -menu .$id.menubar.options -underline 0
         .$id.menubar add command -label Help -command {help GodleyTable} -underline 0
-
+        .$id.menubar add command -image zoomOutImg -command "zoomOut $id"
+        .$id.menubar add command -image zoomInImg -command "zoomIn $id"
+        .$id.menubar add command -image zoomOrigImg -command "$id.zoomFactor 1; $id.requestRedraw"
+       
         global preferences
         $id.displayValues $preferences(godleyDisplay)
         $id.displayStyle $preferences(godleyDisplayStyle)
 
     }
     wm deiconify .$id
+}
+
+proc zoomOut id {
+    $id.zoomFactor [expr [$id.zoomFactor]/1.1]
+    $id.requestRedraw
+}
+proc zoomIn id {
+    $id.zoomFactor [expr [$id.zoomFactor]*1.1]
+    $id.requestRedraw
 }
 
 proc mouseDown {id x y X Y} {

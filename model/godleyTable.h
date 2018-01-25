@@ -94,6 +94,7 @@ namespace minsky
     bool displayValues=false;
     enum DisplayStyle {DRCR, sign};
     DisplayStyle displayStyle=sign;
+    double zoomFactor=1; ///< zoom the display
 
     GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
     {adjustWidgets();}
