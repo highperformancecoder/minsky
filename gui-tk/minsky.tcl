@@ -1164,35 +1164,15 @@ proc help {topic} {
 }
 
 proc aboutMinsky {} {
-    if {![winfo exists .aboutMinsky]} {
-        toplevel .aboutMinsky
-        wm resizable .aboutMinsky 0 0
-        label .aboutMinsky.text
-
-        button .aboutMinsky.ok -text OK -command {
-            grab release .aboutMinsky
-            wm withdraw .aboutMinsky
-        }
-        pack .aboutMinsky.text .aboutMinsky.ok
-    }
-    .aboutMinsky.text configure -text "
-   Minsky [minskyVersion]\n
+  tk_messageBox -message "
+    Minsky [minskyVersion]\n
    EcoLab [ecolabVersion]\n
    Tcl/Tk [info tclversion]
-
+" -detail "
    Minsky is FREE software, distributed under the 
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
    " 
-    deiconify .aboutMinsky 
-
-    # wierd trick to resize toplevel windows:
-    update idletasks
-    wm geometry .aboutMinsky
-
-    tkwait visibility .aboutMinsky
-    grab set .aboutMinsky
-    wm transient .aboutMinsky .
 }
 
 # delete subsidiary toplevel such as godleys and plots

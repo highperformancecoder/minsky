@@ -24,9 +24,18 @@ proc newOpenGodley {id} {
         bind .$id.table <$meta-x> "cutCopyPaste $id Cut"
         bind .$id.table <$meta-c> "cutCopyPaste $id Copy"
         bind .$id.table <$meta-v> "cutCopyPaste $id Paste"
+        bind .$id <$meta-y> "$id.undo -1"
+        bind .$id <$meta-z> "$id.undo 1"
+        bind .$id <$meta-x> "cutCopyPaste $id Cut"
+        bind .$id <$meta-c> "cutCopyPaste $id Copy"
+        bind .$id <$meta-v> "cutCopyPaste $id Paste"
         
+        bind .$id <$meta-plus> "zoomIn $id"
+        bind .$id <$meta-minus> "zoomOut $id"
         bind .$id.table <Key-KP_Add> "zoomIn $id"
         bind .$id.table <Key-KP_Subtract> "zoomOut $id"
+        bind .$id <Key-KP_Add> "zoomIn $id"
+        bind .$id <Key-KP_Subtract> "zoomOut $id"
         # mouse wheel bindings for X11
         bind .$id.table <Button-4> "zoomIn $id"
         bind .$id.table <Button-5> "zoomOut $id"
@@ -44,12 +53,12 @@ proc newOpenGodley {id} {
         .$id.hscroll set 0 0.25
         pack .$id.table -fill both -expand 1
 
-        menu .$id.menubar
+        menu .$id.menubar -type menubar
 
         if {[tk windowingsystem] == "aqua"} {
             menu .$id.menubar.apple
             .$id.menubar.apple add command -label "About Minsky" -command aboutMinsky
-            .$id.menubar add cascade -menu .menubar.apple
+            .$id.menubar add cascade -menu .$id.menubar.apple
         }
         
         menu .$id.menubar.edit
@@ -61,11 +70,18 @@ proc newOpenGodley {id} {
         .$id.menubar.edit add command -label Copy -command "cutCopyPaste $id Copy" -accelerator $meta_menu-C
         .$id.menubar.edit add command -label Paste -command "cutCopyPaste $id Paste" -accelerator $meta_menu-V
 
+        menu .$id.menubar.view
+        .$id.menubar.view add command -label "Zoom in" -command "zoomIn $id" -accelerator $meta_menu-+
+        .$id.menubar.view add command -label "Zoom out" -command "zoomOut $id" -accelerator $meta_menu--
+        .$id.menubar.view add command -label "Reset zoom" -command "$id.zoomFactor 1; $id.requestRedraw"
+        
+        
         menu .$id.menubar.options
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
         
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
+        .$id.menubar add cascade -label View -menu .$id.menubar.view -underline 0
         .$id.menubar add cascade -label Options -menu .$id.menubar.options -underline 0
         .$id.menubar add command -label Help -command {help GodleyTable} -underline 0
         .$id.menubar add command -image zoomOutImg -command "zoomOut $id"
@@ -78,6 +94,7 @@ proc newOpenGodley {id} {
 
     }
     wm deiconify .$id
+    raise .$id .
 }
 
 proc zoomOut id {
