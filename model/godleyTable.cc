@@ -63,6 +63,9 @@ namespace
   {
     static double zoomFactor;
     ZoomablePango(cairo_t* c): Pango(c) {setFontSize(10*zoomFactor);}
+    double idxToPos(size_t i) const {return Pango::idxToPos(i)/zoomFactor;}
+    double width() const {return Pango::width()/zoomFactor;}
+    double height() const {return Pango::height()/zoomFactor;}
   };
 
   double ZoomablePango::zoomFactor=1;
@@ -407,6 +410,7 @@ namespace minsky
         int j=0;
         if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
         x-=colLeftMargin[j]+2;
+        x*=zoomFactor;
         return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
       }
     return 0;
@@ -414,6 +418,8 @@ namespace minsky
 
   void GodleyTableWindow::mouseDown(double x, double y)
   {
+    x/=zoomFactor;
+    y/=zoomFactor;
     switch (clickType(x,y))
       {
       case rowWidget:
@@ -463,6 +469,8 @@ namespace minsky
 
   void GodleyTableWindow::mouseUp(double x, double y)
   {
+    x/=zoomFactor;
+    y/=zoomFactor;
     int c=colX(x), r=rowY(y);
     motionRow=motionCol=-1;
     if (selectedRow==0)
@@ -489,6 +497,8 @@ namespace minsky
 
   void GodleyTableWindow::mouseMoveB1(double x, double y)
   {
+    x/=zoomFactor;
+    y/=zoomFactor;
     motionCol=colX(x), motionRow=rowY(y);
     if (motionCol==selectedCol && motionRow==selectedRow)
       selectIdx=textIdx(x);
@@ -496,6 +506,8 @@ namespace minsky
 
   void GodleyTableWindow::mouseMove(double x, double y)
   {
+    x/=zoomFactor;
+    y/=zoomFactor;
     // clear any existing marks
     for (auto& i: rowWidgets) i.hover(-1);
     for (auto& i: colWidgets) i.hover(-1);
