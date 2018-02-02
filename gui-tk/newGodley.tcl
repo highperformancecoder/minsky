@@ -3,6 +3,31 @@ proc newOpenGodley {id} {
         image create cairoSurface $id -surface $id
         toplevel .$id
         wm title .$id "Godley Table:[$id.godleyIcon.table.title]"
+
+        frame .$id.controls
+        button .$id.controls.run -image runButton -height 25 -width 25 -command runstop
+        button .$id.controls.reset -image resetButton -height 25 -width 25 -command reset
+        button .$id.controls.step -image stepButton -height 25 -width 25  -command {step}
+        bind .$id.controls.step <ButtonPress-1> "set buttonPressed 1; autoRepeatButton .$id.controls.step"
+        bind .$id <ButtonRelease-1> {set buttonPressed 0}
+        tooltip .$id.controls.run "Run/Stop"
+        tooltip .$id.controls.reset "Reset simulation"
+        tooltip .$id.controls.step "Step simulation"
+        
+        label .$id.controls.slowSpeed -text "slow"
+        label .$id.controls.fastSpeed -text "fast"
+        scale .$id.controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
+
+        button .$id.controls.zoomOut -image zoomOutImg -height 24 -width 37  -command "zoomOut $id"
+        tooltip .$id.controls.zoomOut "Zoom Out"
+        button .$id.controls.zoomIn -image zoomInImg -height 24 -width 37   -command "zoomIn $id"
+        tooltip .$id.controls.zoomIn "Zoom In"
+        button .$id.controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
+            -command "$id.zoomFactor 1; $id.requestRedraw"
+        tooltip .$id.controls.zoomOrig "Reset Zoom"
+        pack .$id.controls.run .$id.controls.reset .$id.controls.step .$id.controls.slowSpeed .$id.controls.simSpeed .$id.controls.fastSpeed .$id.controls.zoomOut .$id.controls.zoomIn .$id.controls.zoomOrig -side left
+        pack .$id.controls
+        
         
         label .$id.table -image $id -width 800 -height 200
         bind .$id.table <Configure> "$id.requestRedraw"
@@ -84,9 +109,6 @@ proc newOpenGodley {id} {
         .$id.menubar add cascade -label View -menu .$id.menubar.view -underline 0
         .$id.menubar add cascade -label Options -menu .$id.menubar.options -underline 0
         .$id.menubar add command -label Help -command {help GodleyTable} -underline 0
-        .$id.menubar add command -image zoomOutImg -command "zoomOut $id"
-        .$id.menubar add command -image zoomInImg -command "zoomIn $id"
-        .$id.menubar add command -image zoomOrigImg -command "$id.zoomFactor 1; $id.requestRedraw"
        
         global preferences
         $id.displayValues $preferences(godleyDisplay)
