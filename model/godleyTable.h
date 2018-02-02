@@ -76,7 +76,9 @@ namespace minsky
     static constexpr double leftTableOffset=40, topTableOffset=30,
       pulldownHot=10; ///< space for ▼ in stackVar cells
     static constexpr double columnButtonsOffset=12;
-    
+    // minimum column width (for eg empty columns)
+    static constexpr double minColumnWidth=30;
+
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;

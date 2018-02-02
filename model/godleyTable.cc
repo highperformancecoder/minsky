@@ -31,7 +31,7 @@ using namespace ecolab::cairo;
 
 constexpr double GodleyTableWindow::leftTableOffset,
   GodleyTableWindow::topTableOffset, GodleyTableWindow::pulldownHot,
-  GodleyTableWindow::columnButtonsOffset;
+  GodleyTableWindow::columnButtonsOffset, GodleyTableWindow::minColumnWidth;
 
 namespace
 {
@@ -178,7 +178,7 @@ namespace minsky
           }
       
         double y=topTableOffset;
-        double colWidth=0;
+        double colWidth=minColumnWidth;
         for (unsigned row=0; row<godleyIcon->table.rows(); ++row)
           {
             if (row>0 && row<scrollRowStart) continue;
