@@ -60,17 +60,6 @@ ports are labelled $x$ and $y$, referring the the formula $x^y$.
 
 \subsection{time $t$}\label{Operation:time}  Returns the current value of system time.
 
-\subsection{copy}\label{Operation:copy} This just copies its input to its output,
-which is redundant on wiring diagrams, but is needed for internal
-purposes.
-
-\subsection{integrate $\int dt$}\label{IntOp}  Creates an integration (or stock)
-variable. Editable attributes include the variable's name and its
-initial value at $t=0$. The function to be integrated needs to be
-connected to the top port. The bottom port can optionally be connected
-to a constant, parameter or variable, which is used to specify the
-initial value of the integral.
-
 \subsection{differentiate $d/dt$}\label{Operation:differentiate}
 Symbolically differentiates its input.
 
@@ -84,6 +73,7 @@ two values on each line, eg:
 0.9 &1\\
 \end{tabular}
 \end{quote}
+
 If the input is less than the minimum key value (0.1 here), then the
 operation outputs the corresponding value (0.3). Similarly if the
 input is greater than the maximum (0.9), the corresponding value (1)
@@ -117,6 +107,17 @@ x_{i+1}\\
 \end{array}
 \right.
 \end{displaymath}
+
+\subsection{copy}\label{Operation:copy} This just copies its input to its output,
+which is redundant on wiring diagrams, but is needed for internal
+purposes.
+
+\subsection{integrate $\int dt$}\label{IntOp}  Creates an integration (or stock)
+variable. Editable attributes include the variable's name and its
+initial value at $t=0$. The function to be integrated needs to be
+connected to the top port. The bottom port can optionally be connected
+to a constant, parameter or variable, which is used to specify the
+initial value of the integral.
 
 \subsection{sqrt $\surd$}\label{Operation:sqrt} Square root of the input
 
