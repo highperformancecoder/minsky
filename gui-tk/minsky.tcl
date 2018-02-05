@@ -677,16 +677,22 @@ bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.h
 set helpTopics(.wiring.panopticon) Panopticon
 
 proc panCanvases {offsx offsy} {
-    model.moveTo $offsx $offsy
-    equationDisplay.offsx $offsx
-    equationDisplay.offsy $offsy
     set x0 [expr (10000-$offsx)/20000.0]
     .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
     set y0 [expr (10000-$offsy)/20000.0]
     .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
-    canvas.requestRedraw
-    equationDisplay.requestRedraw
-    panopticon.requestRedraw
+    switch [lindex [.tabs tabs] [.tabs index current]] {
+        .wiring {
+            model.moveTo $offsx $offsy
+            canvas.requestRedraw
+            panopticon.requestRedraw
+        }
+        .equations {
+            equationDisplay.offsx $offsx
+            equationDisplay.offsy $offsy
+            equationDisplay.requestRedraw
+        }
+    }
 }
 
 ttk::sizegrip .sizegrip
@@ -934,10 +940,14 @@ proc insertNewGroup {gid} {
 
 # adjust canvas so that -ve coordinates appear on canvas
 proc recentreCanvas {} {
-    canvas.recentre
-    equationDisplay.offsx 0
-    equationDisplay.offsy 0
-    equationDisplay.requestRedraw
+    switch [lindex [.tabs tabs] [.tabs index current]] {
+        .wiring {canvas.recentre}
+        .equations {
+            equationDisplay.offsx 0
+            equationDisplay.offsy 0
+            equationDisplay.requestRedraw
+        }
+    }
 }
 
 proc save {} {
