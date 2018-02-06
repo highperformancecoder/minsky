@@ -830,7 +830,7 @@ namespace minsky
         (mouseOver<2 || (mouseOver==2 && pos!=firstAndLast)
          || (mouseOver==3 && pos==middle)))
       {
-        cairo_rectangle(cairo, x0+mouseOver*buttonSpacing, y0+0.5*buttonSpacing, buttonSpacing, buttonSpacing);
+        cairo_rectangle(cairo, x0+mouseOver*buttonSpacing, y0+0.1*pango.height(), buttonSpacing, buttonSpacing);
         cairo_set_source_rgb(cairo,0,0,0);
         cairo_set_line_width(cairo,1);
         cairo_stroke(cairo);

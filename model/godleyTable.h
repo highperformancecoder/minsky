@@ -72,11 +72,12 @@ namespace minsky
     
     CLASSDESC_ACCESS(GodleyTableWindow);
   public:
-    /// offset of the table within the window
-    static constexpr double leftTableOffset=40, topTableOffset=30,
-      pulldownHot=10; ///< space for ▼ in stackVar cells
     static constexpr double columnButtonsOffset=12;
-    // minimum column width (for eg empty columns)
+    /// offset of the table within the window
+    static constexpr double leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
+    static constexpr double topTableOffset=30;
+    static constexpr double pulldownHot=10; ///< space for ▼ in stackVar cells
+    /// minimum column width (for eg empty columns)
     static constexpr double minColumnWidth=4*ButtonWidget<col>::buttonSpacing;
 
     std::shared_ptr<GodleyIcon> godleyIcon;

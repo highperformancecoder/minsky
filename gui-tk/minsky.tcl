@@ -673,7 +673,9 @@ label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3
 place .wiring.panopticon -relx 1 -rely 0 -anchor ne
 minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
-bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
+bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
+bind .equations.canvas <Configure> {setScrollBars}
+
 set helpTopics(.wiring.panopticon) Panopticon
 
 proc setScrollBars {} {
@@ -1336,6 +1338,8 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     # force update canvas size to ensure model is displayed correctly
     update
     canvas.requestRedraw
+    # not sure why this is needed, but initial draw doesn't happen without it
+    event generate .wiring.canvas <Expose>
     pushHistory
     doPushHistory 1
 }
@@ -1407,14 +1411,6 @@ proc replay {} {
         } elseif {$running} {runstop}
     } 
 }
-
-## checks that the latest state has been pushed to history every second or so
-#proc checkHistory {} {
-#    global running
-#    if {!$running} checkPushHistory
-#    after 1000 checkHistory
-#}
-#after 1000 checkHistory
 
 # check whether coverage analysis is required
 if [info exists env(MINSKY_COV)] {attachTraceProc ::}
