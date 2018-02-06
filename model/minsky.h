@@ -60,16 +60,24 @@ namespace minsky
   class EquationDisplay: public CairoSurface
   {
     Minsky& m;
+    double m_width=0, m_height=0;
     void redraw(int x0, int y0, int width, int height) override {
       if (surface.get()) {
         MathDAG::SystemOfEquations system(m);
         cairo_move_to(surface->cairo(),offsx,offsy);
         system.renderEquations(*surface);
+        ecolab::cairo::Surface surf
+          (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+        system.renderEquations(surf);
+        m_width=surf.width();
+        m_height=surf.height();
       }
     }
     CLASSDESC_ACCESS(EquationDisplay);
   public:
     float offsx=0, offsy=0; // pan controls
+    double width() const {return m_width;}
+    double height() const {return m_height;}
     EquationDisplay(Minsky& m): m(m) {}
     EquationDisplay& operator=(const EquationDisplay& x) {CairoSurface::operator=(x); return *this;}
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}

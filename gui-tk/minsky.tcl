@@ -676,11 +676,30 @@ minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
 set helpTopics(.wiring.panopticon) Panopticon
 
-proc panCanvases {offsx offsy} {
-    set x0 [expr (10000-$offsx)/20000.0]
-    .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
-    set y0 [expr (10000-$offsy)/20000.0]
-    .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
+proc setScrollBars {} {
+    switch [lindex [.tabs tabs] [.tabs index current]] {
+        .wiring {
+            set x0 [expr (10000-[model.x])/20000.0]
+            set y0 [expr (10000-[model.y])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
+        }
+        .equations {
+            if {[equationDisplay.width]>0} {
+                set x0 [expr [equationDisplay.offsx]/[equationDisplay.width]]
+                .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/[equationDisplay.width]]
+            } else {.hscroll set 0 1}
+            if {[equationDisplay.height]>0} {
+                set y0 [expr [equationDisplay.offsx]/[equationDisplay.height]]
+                .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/[equationDisplay.height]]
+            } else {.vscroll set  0 1}
+        }
+    }
+}
+
+bind .tabs <<NotebookTabChanged>> {setScrollBars}
+
+proc panCanvas {offsx offsy} {
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
             model.moveTo $offsx $offsy
@@ -693,33 +712,56 @@ proc panCanvases {offsx offsy} {
             equationDisplay.requestRedraw
         }
     }
+    setScrollBars
 }
+
 
 ttk::sizegrip .sizegrip
 proc scrollCanvases {xyview args} {
+    set win [lindex [.tabs tabs] [.tabs index current]]
+    set ww [winfo width $win]
+    set wh [winfo height $win]
+    switch $win {
+        .wiring {
+            set x [model.x]
+            set y [model.y]
+            set x1 10000
+            set y1 10000
+            set w 20000
+            set h 20000
+        }
+        .equations {
+            set x [equationDisplay.offsx]
+            set y [equationDisplay.offsy]
+            set x1 0
+            set y1 0
+            set w [equationDisplay.width]
+            set h [equationDisplay.height]
+        }
+    }
     switch [lindex $args 0] {
         moveto {
-            set offs [expr 10000 - 20000 * [lindex $args 1]]
             switch $xyview {
-                xview {panCanvases $offs [model.y]}
-                yview {panCanvases [model.x] $offs}
+                xview {panCanvas [expr $x1-$w*[lindex $args 1]] $y}
+                yview {panCanvas $x [expr $y1-$h*[lindex $args 1]]}
             }
         }
         scroll {
             switch [lindex $args 2] {
-                units {set incr [expr [lindex $args 1]*100]}
-                pages {set incr [expr [lindex $args 1]*800]}
+                units {set incr [expr [lindex $args 1]*0.01]}
+                pages {set incr [expr [lindex $args 1]*0.1]}
             }
             switch $xyview {
-                xview {panCanvases [expr [model.x]+$incr] [model.y]}
-                yview {panCanvases [model.x] [expr [model.y]+$incr]}
+                xview {panCanvas [expr $x-$incr*$w] $y}
+                yview {panCanvas $x [expr $y-$incr*$h]}
             }
         }
     }
 }
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
-panCanvases 0 0
+update
+setScrollBars
 
 # adjust cursor for pan mode
 if {[tk windowingsystem] == "aqua"} {
@@ -732,8 +774,11 @@ if {[tk windowingsystem] == "aqua"} {
 
 # equations pan mode
 .equations.canvas configure -cursor $panIcon
-bind .equations.canvas <Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}
-bind .equations.canvas <B1-Motion> {panCanvases [expr %x-$panOffsX] [expr %y-$panOffsY]}
+bind .equations.canvas <Button-1> {
+    set panOffsX [expr %x-[equationDisplay.offsx]]
+    set panOffsY [expr %y-[equationDisplay.offsy]]
+}
+bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
