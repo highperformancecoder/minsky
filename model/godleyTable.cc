@@ -762,7 +762,6 @@ namespace minsky
         for (size_t r=0; r<godleyIcon->table.rows(); ++r)
           for (size_t c=0; c<godleyIcon->table.cols(); ++c)
             godleyIcon->table.cell(r,c)=d[r][c];
-        //      godleyIcon->update();
         requestRedraw();
       }
   }
@@ -796,9 +795,18 @@ namespace minsky
 
   void GodleyTableWindow::update()
   {
-    godleyIcon->update();
-    if (selectedCol>0 && selectedCol<godleyIcon->table.cols())
-      minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+    if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()))
+      {
+        minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+        minsky().model->recursiveDo
+          (&Group::items,
+           [&](Items&, Items::iterator i)
+           {
+             if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+               g->update();
+             return false;
+           });
+      }
     minsky().canvas.requestRedraw();
   }
   

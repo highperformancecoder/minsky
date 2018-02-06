@@ -555,7 +555,6 @@ namespace minsky
                            if (fc.name==gi->valueId(i->first))
                              destTable.cell(row, col).clear();
                          }
-                   gi->update();
                  }   
          return false;
        });  // TODO - this lambda is FAR too long!
@@ -817,7 +816,7 @@ namespace minsky
         model->recursiveDo(&Group::items, 
                            [&](Items&,Items::iterator i) {
                              if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                               for (int i=1; i<g->table.cols(); ++i)
+                               for (unsigned i=1; i<g->table.cols(); ++i)
                                  balanceDuplicateColumns(*g,i);
                              return false;
                            });
