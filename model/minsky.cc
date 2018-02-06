@@ -555,6 +555,7 @@ namespace minsky
                            if (fc.name==gi->valueId(i->first))
                              destTable.cell(row, col).clear();
                          }
+                   gi->update();
                  }   
          return false;
        });  // TODO - this lambda is FAR too long!
@@ -809,8 +810,21 @@ namespace minsky
       default:
         throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
       }
-    // try resetting the system, but ignore any errors
-    try {reset();}
+
+    // try balancing all Godley tables
+    try
+      {
+        model->recursiveDo(&Group::items, 
+                           [&](Items&,Items::iterator i) {
+                             if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                               for (int i=1; i<g->table.cols(); ++i)
+                                 balanceDuplicateColumns(*g,i);
+                             return false;
+                           });
+    
+        // try resetting the system, but ignore any errors
+        reset();
+      }
     catch (...) {}
     panopticon.requestRedraw();
     flags=reset_needed;

@@ -67,8 +67,6 @@ namespace minsky
   {
     std::vector<ButtonWidget<row>> rowWidgets;
     std::vector<ButtonWidget<col>> colWidgets;
-    /// ensure button widgets are synced with current table data
-    void adjustWidgets();
     
     CLASSDESC_ACCESS(GodleyTableWindow);
   public:
@@ -146,6 +144,11 @@ namespace minsky
     /// restore to state \a changes ago 
     void undo(int changes);
     
+    /// ensure button widgets are synced with current table data
+    void adjustWidgets();
+
+    /// update canvas godleyIcon, and any related godley icons. Can throw
+    void update(); 
   private:
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
     bool controlChar=false; ///< control pressed

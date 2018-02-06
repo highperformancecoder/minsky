@@ -447,16 +447,14 @@ namespace minsky
           return;
         }
       default:
+        // catch exception, as the intention here is to allow the user to fix a problem
+        try {update();}
+        catch (...) {}
         selectedCol=colX(x);
         selectedRow=rowY(y);
         if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
             selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
           {
-            // catch exception, as the intention here is to allow the user to fix a problem
-            try
-              {godleyIcon->update();}
-            catch (...) {}
-            minsky().canvas.requestRedraw();
             selectIdx=insertIdx = textIdx(x);
             savedText=godleyIcon->table.cell(selectedRow, selectedCol);
           }
@@ -573,9 +571,8 @@ namespace minsky
                   godleyIcon->table.cell(selectedRow, selectedCol)=savedText;
                 selectedRow=selectedCol=-1;
                 break;
-              case 0xff0d:
-                godleyIcon->update();
-                minsky().canvas.requestRedraw();
+              case 0xff0d: //return
+                update();
                 selectedRow=selectedCol=-1;
                 break;
               case 0xff51: //left arrow
@@ -584,7 +581,7 @@ namespace minsky
               case 0xff53: //right arrow
                 if (insertIdx<str.length()) insertIdx++;
                 break;
-              case 0xffe3: case 0xffe4:
+              case 0xffe3: case 0xffe4: // control
                 controlChar=true;
                 return; // no need to redraw + don't reset selection
               default:
@@ -797,6 +794,14 @@ namespace minsky
       }
   }
 
+  void GodleyTableWindow::update()
+  {
+    godleyIcon->update();
+    if (selectedCol>0 && selectedCol<godleyIcon->table.cols())
+      minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+    minsky().canvas.requestRedraw();
+  }
+  
   template <ButtonWidgetEnums::RowCol rowCol>
   void ButtonWidget<rowCol>::draw(cairo_t* cairo)
   {
