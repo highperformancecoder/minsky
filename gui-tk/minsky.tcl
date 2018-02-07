@@ -448,6 +448,17 @@ proc autoRepeatButton button {
     after 500 invokeButton $button
 }
 
+proc setSimulationDelay {delay} {
+    # on loading a model, slider is adjusted, which causes
+    # simulationDelay to be set unnecessarily, marking the model
+    # dirty
+    if {$delay != [simulationDelay]} {
+        pushFlags
+        simulationDelay $delay
+        popFlags
+    }
+}
+
 label .controls.slowSpeed -text "slow"
 label .controls.fastSpeed -text "fast"
 scale .controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
@@ -904,16 +915,6 @@ proc reset {} {
     }
 }
 
-proc setSimulationDelay {delay} {
-    # on loading a model, slider is adjusted, which causes
-    # simulationDelay to be set unnecessarily, marking the model
-    # dirty
-    if {$delay != [simulationDelay]} {
-        pushFlags
-        simulationDelay $delay
-        popFlags
-    }
-}
 
 
 proc populateRecentFiles {} {
