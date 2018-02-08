@@ -241,9 +241,10 @@ namespace minsky
                           }
                         else // is flow tag, stock var or initial condition
                           text = latexToPango(text);
+                        text+=value;
                       }
-                    text+=value;
-                    pango.setMarkup(text+value);
+                    else
+                      text=defang(text);
                   }
                 pango.setMarkup(text);
               }
@@ -361,7 +362,7 @@ namespace minsky
                   cairo_set_source_rgba(surface->cairo(),1,1,1,1);
                   cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
                   cairo_fill(surface->cairo());
-                  pango.setMarkup(godleyIcon->table.cell(selectedRow,selectedCol));
+                  pango.setMarkup(defang(godleyIcon->table.cell(selectedRow,selectedCol)));
                   cairo_set_source_rgba(surface->cairo(),0,0,0,1);
                   cairo_move_to(surface->cairo(),x,y);
                   pango.show();
@@ -410,7 +411,7 @@ namespace minsky
         selectedCol>=0 && size_t(selectedCol)<godleyIcon->table.cols())
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-        pango.setMarkup(str);
+        pango.setMarkup(defang(str));
         int j=0;
         if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
         x-=colLeftMargin[j]+2;
