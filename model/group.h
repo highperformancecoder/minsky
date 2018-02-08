@@ -189,6 +189,15 @@ namespace minsky
     Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
+    // TODO fix up the need for this override - see ticket #786
+    ItemPtr addItem(const shared_ptr<Item>& it, bool inSchema=false)
+    {
+      auto r=GroupItems::addItem(it,inSchema);
+      if (r) r->zoomFactor=localZoom();
+      return r;
+    }
+    ItemPtr addItem(Item* it) {return addItem(std::shared_ptr<Item>(it));}
+
     void draw(cairo_t*) const override;
 
     /// draw representations of edge variables around group icon
