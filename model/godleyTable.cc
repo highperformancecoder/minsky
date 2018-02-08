@@ -820,13 +820,13 @@ namespace minsky
     CairoSave cs(cairo);
     ZoomablePango pango(cairo);
     // increase text size a bit for the buttons
-    pango.setFontSize(buttonSpacing*ZoomablePango::zoomFactor);
+    pango.setFontSize(0.8*buttonSpacing*ZoomablePango::zoomFactor);
     pango.setMarkup(label);
     cairo_set_source_rgb(cairo,r,g,b);
     pango.show();
     
     // draw box around button
-    cairo_rectangle(cairo, x0, y0+0.1*pango.height(), buttonSpacing, buttonSpacing);
+    cairo_rectangle(cairo, x0, y0+0.2*pango.height(), buttonSpacing, buttonSpacing);
     if (idx==mouseOver)
       cairo_set_source_rgb(cairo,0,0,0); // draw in black if mouse over button
     else
