@@ -877,6 +877,26 @@ namespace minsky
           input++;
           r.pop();
           break;
+        case '<':
+          r+="&lt;";
+          input++;
+          break;
+        case '>':
+          r+="&gt;";
+          input++;
+          break;
+        case '&':
+          r+="&amp;";
+          input++;
+          break;
+        case '\'':
+          r+="&apos;";
+          input++;
+          break;
+        case '\"':
+          r+="&quot;";
+          input++;
+          break;
         default:
           r+=utf8char(input);
           break;
