@@ -198,6 +198,9 @@ SUITE(Group)
       group0->splitBoundaryCrossingWires();
       group0->addGroup(new Group);
       auto g=model->addGroup(group0->copy());
+      // set same zoom factors to ensure copied items have same zooms
+      group0->setZoom(1);
+      g->setZoom(1);
       CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 1e-2);
       
       CHECK_EQUAL(group0->items.size(), g->items.size());
