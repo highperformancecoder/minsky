@@ -809,46 +809,44 @@ namespace minsky
       }
     minsky().canvas.requestRedraw();
   }
+
+  template <ButtonWidgetEnums::RowCol rowCol>
+  void ButtonWidget<rowCol>::drawButton(cairo_t* cairo, const std::string& label, double r, double g, double b, int idx)
+  {
+    // stash current point for drawing a box
+    double x0, y0;
+    cairo_get_current_point(cairo,&x0, &y0);
+    
+    CairoSave cs(cairo);
+    ZoomablePango pango(cairo);
+    // increase text size a bit for the buttons
+    pango.setFontSize(buttonSpacing*ZoomablePango::zoomFactor);
+    pango.setMarkup(label);
+    cairo_set_source_rgb(cairo,r,g,b);
+    pango.show();
+    
+    // draw box around button
+    cairo_rectangle(cairo, x0, y0+0.1*pango.height(), buttonSpacing, buttonSpacing);
+    if (idx==mouseOver)
+      cairo_set_source_rgb(cairo,0,0,0); // draw in black if mouse over button
+    else
+      cairo_set_source_rgb(cairo,0.5,0.5,0.5); // draw in grey
+    cairo_set_line_width(cairo,1);
+    cairo_stroke(cairo);
+    cairo_move_to(cairo,x0+buttonSpacing,y0);
+  }
   
   template <ButtonWidgetEnums::RowCol rowCol>
   void ButtonWidget<rowCol>::draw(cairo_t* cairo)
   {
     CairoSave cs(cairo);
-    ZoomablePango pango(cairo);
-    double x0, y0;
-    cairo_get_current_point(cairo,&x0, &y0);
-    pango.setMarkup("+");
-    cairo_set_source_rgb(cairo,0,1,0);
-    pango.show();
-    cairo_rel_move_to(cairo,buttonSpacing,0);
-    pango.setMarkup("–");
-    cairo_set_source_rgb(cairo,1,0,0);
-    pango.show();
-    cairo_rel_move_to(cairo,buttonSpacing,0);
+    int idx=0;
+    drawButton(cairo,"+",0,1,0,idx++);
+    drawButton(cairo,"—",1,0,0,idx++);
     if (pos!=first && pos!=firstAndLast)
-      {
-        pango.setMarkup(rowCol==row? "↑": "←");
-        cairo_set_source_rgb(cairo,0,0,0);
-        pango.show();
-        cairo_rel_move_to(cairo,buttonSpacing,0);
-      }
+      drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
     if (pos!=last && pos!=firstAndLast)
-      {
-        pango.setMarkup(rowCol==row? "↓": "→");
-        cairo_set_source_rgb(cairo,0,0,0);
-        pango.show();
-        cairo_rel_move_to(cairo,buttonSpacing,0);
-      }
-    if (mouseOver>=0 &&
-        (mouseOver<2 || (mouseOver==2 && pos!=firstAndLast)
-         || (mouseOver==3 && pos==middle)))
-      {
-        cairo_rectangle(cairo, x0+mouseOver*buttonSpacing, y0+0.1*pango.height(), buttonSpacing, buttonSpacing);
-        cairo_set_source_rgb(cairo,0,0,0);
-        cairo_set_line_width(cairo,1);
-        cairo_stroke(cairo);
-      }
-    
+      drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
   }
 
   template class ButtonWidget<ButtonWidgetEnums::row>;

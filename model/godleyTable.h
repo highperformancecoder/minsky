@@ -45,12 +45,15 @@ namespace minsky
     GodleyIcon& godleyIcon;
     int mouseOver=-1;
   public:
-    static constexpr double buttonSpacing=12;
+    static constexpr double buttonSpacing=15;
     
     Pos pos=middle;
     unsigned idx=0; ///< row or column this widget is located in
     
     void draw(cairo_t*);
+    /// draw button \a idx, with label \a label and colour \a r, \a b, \a g
+    void drawButton(cairo_t*, const std::string& label,
+                    double r, double g, double b, int idx);
     /// invoke action associated with button at x
     void invoke(double x);
     /// indicate which button mouse is hovering over. x<0 means not hovering
