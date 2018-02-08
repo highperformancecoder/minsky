@@ -806,14 +806,12 @@ namespace minsky
     if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()))
       {
         minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
-        minsky().model->recursiveDo
-          (&Group::items,
-           [&](Items&, Items::iterator i)
-           {
-             if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-               g->update();
-             return false;
-           });
+        // get list of GodleyIcons first, rather than doing recursiveDo, as update munges the items vectors
+        auto godleyTables=minsky().model->findItems
+          ([](const ItemPtr& i){return dynamic_cast<GodleyIcon*>(i.get());});
+        for (auto& i: godleyTables)
+          if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+            g->update();
       }
     minsky().canvas.requestRedraw();
   }
