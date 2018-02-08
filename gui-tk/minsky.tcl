@@ -507,12 +507,12 @@ proc exportCanvas {} {
     } elseif {[string match -nocase *.m "$f"]} {
         matlab "$f"
     } else {
-        switch -glob $type {
-            "*(svg)" {minsky.renderCanvasToSVG  "$f.svg"}
-            "*(pdf)" {minsky.renderCanvasToPDF "$f.pdf"}
-            "*(eps)" {minsky.renderCanvasToPS "$f.eps"}
-            "*(tex)" {latex "$f.tex" $preferences(wrapLaTeXLines)}
-            "*(m)" {matlab "$f.m"}
+        switch $type {
+            "SVG" {minsky.renderCanvasToSVG  "$f.svg"}
+            "PDF" {minsky.renderCanvasToPDF "$f.pdf"}
+            "Postscript" {minsky.renderCanvasToPS "$f.eps"}
+            "LaTeX" {latex "$f.tex" $preferences(wrapLaTeXLines)}
+            "Matlab" {matlab "$f.m"}
         }
     }
 }

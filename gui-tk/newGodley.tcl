@@ -87,6 +87,9 @@ proc newOpenGodley {id} {
             .$id.menubar add cascade -menu .$id.menubar.apple
         }
         
+        menu .$id.menubar.file
+        .$id.menubar.file add command -label "Export" -command "exportGodley $id"
+        
         menu .$id.menubar.edit
         .$id configure -menu .$id.menubar
         .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
@@ -102,10 +105,12 @@ proc newOpenGodley {id} {
         .$id.menubar.view add command -label "Reset zoom" -command "$id.zoomFactor 1; $id.requestRedraw"
         
         
+        
         menu .$id.menubar.options
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
         
+        .$id.menubar add cascade -label File -menu .$id.menubar.file -underline 0
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
         .$id.menubar add cascade -label View -menu .$id.menubar.view -underline 0
         .$id.menubar add cascade -label Options -menu .$id.menubar.options -underline 0
@@ -275,4 +280,32 @@ proc setGodleyDisplay {} {
         $c $preferences(godleyDisplayStyle)
     }
     redrawAllGodleyTables
+}
+
+proc exportGodley {id} {
+    global workDir type
+
+    set f [tk_getSaveFile -filetypes {
+        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"LaTeX" tex TEXT} {"CSV" csv TEXT}} \
+               -initialdir $workDir -typevariable type]  
+    if {$f==""} return
+    if [string match -nocase *.svg "$f"] {
+        $id.renderCanvasToSVG "$f"
+    } elseif [string match -nocase *.pdf "$f"] {
+        $id.renderCanvasToPDF "$f"
+    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
+        $id.renderCanvasToPS "$f"
+    } elseif {[string match -nocase *.tex "$f"]} {
+        $id.godleyIcon.table.exportToLaTeX "$f"
+    } elseif {[string match -nocase *.csv "$f"]} {
+        $id.godleyIcon.table.exportToCSV "$f"
+    } else {
+        switch $type {
+            "SVG" {$id.renderCanvasToSVG  "$f.svg"}
+            "PDF" {$id.renderCanvasToPDF "$f.pdf"}
+            "Postscript" {$id.renderCanvasToPS "$f.eps"}
+            "LaTeX" {$id.godleyIcon.table.exportToLaTeX "$f.tex"}
+            "CSV" {$id.godleyIcon.table.exportToCSV "$f.csv"}
+        }
+    }
 }

@@ -549,9 +549,9 @@ namespace eval godley {
         } elseif [string match -nocase *.tex "$fname"] {
             $item.table.exportToLaTeX $fname
         } else {
-            switch -glob $type {
-                "*(csv)" {$item.table.exportToCSV $fname.csv}
-                "*(tex)" {$item.table.exportToLaTeX $fname.tex}
+            switch $type {
+                "CSV files" {$item.table.exportToCSV $fname.csv}
+                "LaTeX files" {$item.table.exportToLaTeX $fname.tex}
             }
         }
     }
