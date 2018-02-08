@@ -677,6 +677,7 @@ namespace minsky
   }
   void GodleyTableWindow::importStockVar(const string& name, double x)
   {
+    x/=zoomFactor;
     int c=colX(x);
     if (c>0)
       {
@@ -688,14 +689,16 @@ namespace minsky
 
   void GodleyTableWindow::deleteStockVar(double x)
   {
+    x/=zoomFactor;
     int c=colX(x);
-    if (c>0)
-      godleyIcon->table.deleteCol(c);
+    if (c>=0)
+      godleyIcon->table.deleteCol(c+1);
     requestRedraw();
   }
 
   void GodleyTableWindow::addFlow(double y)
   {
+    y/=zoomFactor;
     int r=rowY(y);
     if (r>0)
       godleyIcon->table.insertRow(r+1);
@@ -704,6 +707,7 @@ namespace minsky
 
   void GodleyTableWindow::deleteFlow(double y)
   {
+    y/=zoomFactor;
     int r=rowY(y);
     if (r>0)
       godleyIcon->deleteRow(r+1);

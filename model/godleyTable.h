@@ -115,8 +115,10 @@ namespace minsky
     void keyRelease(int keySym);
 
     enum ClickType {background, row0, col0, internal, importStock, rowWidget, colWidget};
-    ClickType clickType(double x, double y) const;
+    /// returns the clickType in zoomed coordinates
+    ClickType clickTypeZoomed(double x, double y) const {return clickType(x/zoomFactor, y/zoomFactor);}
 
+    
     /// add/delete rows/columns at x,y
     void addStockVar(double x);
     void importStockVar(const string& name, double x);
@@ -124,8 +126,8 @@ namespace minsky
     void addFlow(double y);
     void deleteFlow(double y);
     
-    int colX(double x) const;
-    int rowY(double y) const;
+    int colXZoomed(double x) const {return colX(x/zoomFactor);}
+    int rowYZoomed(double y) const {return rowY(y/zoomFactor);}
 
     void highlightColumn(cairo_t* cairo,unsigned col);
     void highlightRow(cairo_t* cairo,unsigned row);
@@ -153,9 +155,14 @@ namespace minsky
     /// update canvas godleyIcon, and any related godley icons. Can throw
     void update(); 
   private:
+    /// column at \a x in unzoomed coordinates
+    int colX(double x) const;
+    /// row at \a y in unzoomed coordinates
+    int rowY(double y) const;
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
     bool controlChar=false; ///< control pressed
     std::deque<GodleyTable::Data> history;
+    ClickType clickType(double x, double y) const;
   };
 }
 

@@ -130,8 +130,8 @@ proc zoomIn id {
 }
 
 proc mouseDown {id x y X Y} {
-    if {[$id.clickType $x $y]=="importStock"} {
-        set importOptions [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colX $x] ]]
+    if {[$id.clickTypeZoomed $x $y]=="importStock"} {
+        set importOptions [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colXZoomed $x] ]]
         if {[llength $importOptions]>0} {
             if {![llength [info commands .$id.import]]} {menu .$id.import}
             .$id.import delete 0 end
@@ -147,7 +147,7 @@ proc mouseDown {id x y X Y} {
 }
 
 proc importStockVar {id var x} {
-    set oldVar [$id.godleyIcon.table.getCell 0 [$id.colX $x]]
+    set oldVar [$id.godleyIcon.table.getCell 0 [$id.colXZoomed $x]]
     if {$oldVar!=""} {
         switch [tk_messageBox -message "Do you wish to overwrite $oldVar?" -type okcancel] {
             ok {$id.importStockVar $var $x}
@@ -200,14 +200,14 @@ proc godleyContext {id x y X Y} {
     .$id.context delete 0 end
     .$id.context add command -label Help -command {help GodleyTable}
     .$id.context add command -label Title -command "textEntryPopup .godleyTitle {[$id.godleyIcon.table.title]} {setGodleyTitleOK $id}"
-    switch [$id.clickType $x $y] {
+    switch [$id.clickTypeZoomed $x $y] {
         background {}
         row0 {
             .$id.context add command -label "Add new stock variable" -command "$id.addStockVar $x"
             .$id.context add cascade -label "Import variable" -menu .$id.context.import
             .$id.context add command -label "Delete stock variable" -command "$id.deleteStockVar $x"
             .$id.context.import delete 0 end
-            foreach var [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colX $x] ]] {
+            foreach var [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colXZoomed $x] ]] {
                 .$id.context.import add command -label $var -command "$id.importStockVar $var $x"
             }
         }
@@ -217,8 +217,8 @@ proc godleyContext {id x y X Y} {
         }
         internal {}
     }
-    set r [$id.rowY $y]
-    set c [$id.colX $x]
+    set r [$id.rowYZoomed $y]
+    set c [$id.colXZoomed $x]
     if {$r>=0 && $c>=0} {
         if [string length [$id.godleyIcon.table.getCell $r $c]] {
             .$id.context add command -label "Cut" -command "godleyCut $id $r $c"
