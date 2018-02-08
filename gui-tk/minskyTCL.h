@@ -99,6 +99,15 @@ namespace minsky
       return canvas.item.get();
     }
 
+    bool getItemAtFocus()
+    {
+      // deregister any old definitions, as item is polymorphic
+      TCL_obj_deregister("minsky.canvas.item");
+      canvas.item=canvas.itemFocus;
+      registerRef(canvas.item,"minsky.canvas.item");
+      return canvas.item.get();
+    }
+    
     bool getWireAt(float x, float y)
     {
       canvas.getWireAt(x,y);

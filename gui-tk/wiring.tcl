@@ -284,8 +284,7 @@ proc textOK {} {
         } else {
             minsky.addVariable $textBuffer flow
             
-            getItemAt [minsky.canvas.itemFocus.x] \
-                [minsky.canvas.itemFocus.y]
+            getItemAtFocus
             editVar
         }
     }
