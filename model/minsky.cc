@@ -251,7 +251,7 @@ namespace minsky
   }
 
 
-  GroupPtr Minsky::insertGroupFromFile(const char* file)
+  void Minsky::insertGroupFromFile(const char* file)
   {
     schema2::Minsky currentSchema;
     ifstream inf(file);
@@ -263,7 +263,8 @@ namespace minsky
 
     GroupPtr g(new Group);
     currentSchema.populateGroup(*model->addGroup(g));
-    return g;
+    g->resizeOnContents();
+    canvas.itemFocus=g;
   }
 
 //  vector<int> Minsky::unwiredOperations() const

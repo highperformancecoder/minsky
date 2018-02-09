@@ -125,7 +125,7 @@ namespace minsky
     IntOp() {description("");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {group.reset();intVar.reset(); description("int");}
+      OperationBase(x), Super(x) {group.reset();intVar.reset(); description(x.description());}
     ~IntOp();
     const IntOp& operator=(const IntOp& x); 
 

@@ -115,8 +115,9 @@ string VariableBase::_name()  const
 string VariableBase::_name(const std::string& name) 
 {
   // cowardly refuse to set a blank name
-  if (name.empty()) return name;
-  m_name=name;
+  if (name.empty() || name==":") return name;
+  // ensure integral variables are not global
+  m_name=(type()==integral && name[0]==':')? name.substr(1): name;
   ensureValueExists();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
@@ -299,6 +300,7 @@ void VariableBase::draw(cairo_t *cairo) const
   rv.show();
   
   if (type()!=constant)
+    try
     {
       auto val=engExp();
   
@@ -317,7 +319,7 @@ void VariableBase::draw(cairo_t *cairo) const
           pangoVal.show();
         }
     }
-  
+    catch (...) {} // ignore errors in obtaining values
   cairo_save(cairo);
   cairo_rotate(cairo, angle);
   // constants and parameters should be rendered in blue, all others in red

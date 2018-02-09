@@ -320,6 +320,7 @@ SUITE(Canvas)
       CHECK(b==canvas.item);
       canvas.getItemAt(c->x()-2,c->y()+2);
       CHECK(c==canvas.item);
+      model->setZoom(1);
       canvas.getItemAt(group0->x()-2,group0->y()+2);
       CHECK(group0==canvas.item);
     }
@@ -514,8 +515,10 @@ SUITE(Canvas)
     TEST_FIXTURE(Canvas, groupResize)
       {
         model.reset(new Group);
+        model->self=model;
         addGroup();
         auto& group=dynamic_cast<Group&>(*itemFocus);
+        group.displayZoom=2; // ensure displayContents is false
         CHECK(group.width!=200);
         CHECK(group.height!=200);
         mouseUp(200,200);
@@ -971,7 +974,8 @@ SUITE(Minsky)
       unsigned origNumGroups=model->numGroups();
       unsigned numItemsInGroup=group0->numItems();
       saveGroupAsFile(*group0,"/tmp/testGroup.mky");
-      auto group1=insertGroupFromFile("/tmp/testGroup.mky");
+      insertGroupFromFile("/tmp/testGroup.mky");
+      auto group1=dynamic_pointer_cast<Group>(canvas.itemFocus);
       CHECK_EQUAL(origNumGroups+1, model->numGroups());
       CHECK_EQUAL(origNumItems+numItemsInGroup, model->numItems());
       CHECK_EQUAL(numItemsInGroup, group1->numItems());
@@ -988,7 +992,7 @@ SUITE(Integrate)
       model->addWire(new Wire(intop->ports[0],a->ports[1]));
       intop->description("a");
       // should cowardly refuse, and give a different name
-      CHECK_EQUAL(":a1",intop->description());
+      CHECK_EQUAL("a1",intop->description());
       CHECK_EQUAL(1,intop->ports[0]->wires().size());
       CHECK(intop->ports[0]->wires()[0]->to()==a->ports[1]);
       auto intop2=new IntOp;
