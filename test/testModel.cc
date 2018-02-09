@@ -967,7 +967,8 @@ SUITE(Minsky)
       unsigned origNumGroups=model->numGroups();
       unsigned numItemsInGroup=group0->numItems();
       saveGroupAsFile(*group0,"/tmp/testGroup.mky");
-      auto group1=insertGroupFromFile("/tmp/testGroup.mky");
+      insertGroupFromFile("/tmp/testGroup.mky");
+      auto group1=dynamic_pointer_cast<Group>(canvas.itemFocus);
       CHECK_EQUAL(origNumGroups+1, model->numGroups());
       CHECK_EQUAL(origNumItems+numItemsInGroup, model->numItems());
       CHECK_EQUAL(numItemsInGroup, group1->numItems());
