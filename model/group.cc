@@ -49,8 +49,18 @@ namespace minsky
   {
     auto r=make_shared<Group>();
     r->self=r;
+    // make new group a sibling of this if possible
+    if (auto g=group.lock())
+      g->addGroup(r);
+    else
+      return GroupPtr(); // do nothing if we attempt to clone the entire model
+    
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
+    map<IntOp*,bool> integrals;
+    for (auto& i: items)
+      if (auto integ=dynamic_cast<IntOp*>(i.get()))
+        integrals.emplace(integ, integ->coupled());
     for (auto& i: items)
       cloneMap[i.get()]=r->addItem(i->clone());
     for (auto& i: groups)
@@ -72,6 +82,21 @@ namespace minsky
       {
         assert(cloneMap.count(v.get()));
         r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+      }
+    // reattach integral variables to their cloned counterparts
+    for (auto i: integrals)
+      {
+        if (auto newIntegral=dynamic_cast<IntOp*>(cloneMap[i.first].get()))
+          {
+            auto newIntVar=dynamic_pointer_cast<VariableBase>(cloneMap[i.first->intVar.get()]);
+            if (newIntVar && newIntegral->intVar != newIntVar)
+              {
+                r->removeItem(*newIntegral->intVar);
+                newIntegral->intVar=newIntVar;
+              }
+            if (i.second != newIntegral->coupled())
+              newIntegral->toggleCoupled();
+          }
       }
     r->computeDisplayZoom();
     return r;
