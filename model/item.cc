@@ -85,17 +85,6 @@ namespace minsky
   }
   
 
-#ifndef NDEBUG
-  namespace
-  {
-    bool near(float x, float y)
-    {
-      return ((x==0||y==0) && (x-y)<1e-3) ||
-        (x-y)/(abs(x)+abs(y)) < 1e-3;
-    }
-  }
-#endif
-  
   void Item::moveTo(float x, float y)
   {
     if (auto g=group.lock())

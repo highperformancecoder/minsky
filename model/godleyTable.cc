@@ -868,7 +868,7 @@ namespace minsky
         {
           selectedCol++;
           insertIdx=0;
-          if (selectedCol>=godleyIcon->table.cols())
+          if (selectedCol>=int(godleyIcon->table.cols()))
             {
               selectedCol=0;
               navigateDown();
