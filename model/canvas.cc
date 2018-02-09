@@ -160,17 +160,15 @@ namespace minsky
                   if (auto g=dynamic_cast<Group*>(itemFocus.get()))
                     if (g->higher(*toGroup))
                       return;
-                  auto fromGroup=itemFocus->group.lock();
                   toGroup->addItem(itemFocus);
                   toGroup->splitBoundaryCrossingWires();
-                  if (fromGroup) fromGroup->splitBoundaryCrossingWires();
+                  g->splitBoundaryCrossingWires();
                 }
               else
                 {
-                  auto fromGroup=itemFocus->group.lock();
                   model->addItem(itemFocus);
                   model->splitBoundaryCrossingWires();
-                  if (fromGroup) fromGroup->splitBoundaryCrossingWires();
+                  g->splitBoundaryCrossingWires();
                 }
             }
         if (auto g=itemFocus->group.lock())

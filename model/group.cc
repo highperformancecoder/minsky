@@ -49,7 +49,6 @@ namespace minsky
   {
     auto r=make_shared<Group>();
     r->self=r;
-    r->group=group;
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
     for (auto& i: items)

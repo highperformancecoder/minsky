@@ -108,7 +108,7 @@ namespace minsky
         m_x=x;
         m_y=y;
       }
-    assert(near(x,this->x()) && near(y, this->y()));
+    assert(abs(x-this->x())<1 && abs(y-this->y())<1);
   }
 
   ClickType::Type Item::clickType(float x, float y)
