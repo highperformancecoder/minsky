@@ -33,13 +33,15 @@ namespace minsky
   void Canvas::mouseDown(float x, float y)
   {
     // firstly, see if the user is selecting an item
-    itemFocus=model->findAny(&Group::items,
-                       [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
-    if (!itemFocus)
-      // check for groups
-      itemFocus=model->findAny(&Group::groups,
-                               [&](const GroupPtr& i){return i->contains(x,y);});
+//    itemFocus=model->findAny(&Group::items,
+//                       [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
+//    if (!itemFocus)
+//      // check for groups
+//      itemFocus=model->findAny(&Group::groups,
+//                               [&](const GroupPtr& i){return !i->displayContents() && i->contains(x,y);});
 
+    itemFocus=itemAt(x,y);
+    
     if (itemFocus)
       {
         clickType=itemFocus->clickType(x,y);
@@ -308,7 +310,7 @@ namespace minsky
                         [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
       item=model->findAny(&Group::groups,
-                       [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
+                       [&](const GroupPtr& i){return !i->displayContents() && i->contains(x,y);});
     return item;
   }
   

@@ -73,6 +73,7 @@ namespace minsky
         assert(cloneMap.count(v.get()));
         r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
       }
+    r->computeDisplayZoom();
     return r;
   }
 
