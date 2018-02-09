@@ -310,7 +310,7 @@ namespace minsky
                         [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
       item=model->findAny(&Group::groups,
-                       [&](const GroupPtr& i){return !i->displayContents() && i->contains(x,y);});
+                       [&](const GroupPtr& i){return i->visible() && !i->displayContents() && i->contains(x,y);});
     return item;
   }
   
