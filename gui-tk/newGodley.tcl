@@ -5,31 +5,31 @@ proc newOpenGodley {id} {
         wm title .$id "Godley Table:[$id.godleyIcon.table.title]"
 
         frame .$id.controls
-        button .$id.controls.run -image runButton -height 25 -width 25 -command runstop
-        button .$id.controls.reset -image resetButton -height 25 -width 25 -command reset
-        button .$id.controls.step -image stepButton -height 25 -width 25  -command {step}
+        button .$id.controls.run -image runButton -height 25 -width 25 -command runstop -takefocus 0
+        button .$id.controls.reset -image resetButton -height 25 -width 25 -command reset -takefocus 0
+        button .$id.controls.step -image stepButton -height 25 -width 25  -command {step} -takefocus 0
         bind .$id.controls.step <ButtonPress-1> "set buttonPressed 1; autoRepeatButton .$id.controls.step"
         bind .$id <ButtonRelease-1> {set buttonPressed 0}
         tooltip .$id.controls.run "Run/Stop"
         tooltip .$id.controls.reset "Reset simulation"
         tooltip .$id.controls.step "Step simulation"
         
-        label .$id.controls.slowSpeed -text "slow"
-        label .$id.controls.fastSpeed -text "fast"
-        scale .$id.controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
+        label .$id.controls.slowSpeed -text "slow" -takefocus 0
+        label .$id.controls.fastSpeed -text "fast" -takefocus 0
+        scale .$id.controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0 -takefocus 0
 
-        button .$id.controls.zoomOut -image zoomOutImg -height 24 -width 37  -command "zoomOut $id"
+        button .$id.controls.zoomOut -image zoomOutImg -height 24 -width 37  -command "zoomOut $id" -takefocus 0
         tooltip .$id.controls.zoomOut "Zoom Out"
-        button .$id.controls.zoomIn -image zoomInImg -height 24 -width 37   -command "zoomIn $id"
+        button .$id.controls.zoomIn -image zoomInImg -height 24 -width 37   -command "zoomIn $id" -takefocus 0
         tooltip .$id.controls.zoomIn "Zoom In"
         button .$id.controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
-            -command "$id.zoomFactor 1; $id.requestRedraw"
+            -command "$id.zoomFactor 1; $id.requestRedraw" -takefocus 0
         tooltip .$id.controls.zoomOrig "Reset Zoom"
         pack .$id.controls.run .$id.controls.reset .$id.controls.step .$id.controls.slowSpeed .$id.controls.simSpeed .$id.controls.fastSpeed .$id.controls.zoomOut .$id.controls.zoomIn .$id.controls.zoomOrig -side left
         pack .$id.controls
         
         
-        label .$id.table -image $id -width 800 -height 200
+        label .$id.table -image $id -width 800 -height 200 -takefocus 1
         bind .$id.table <Configure> "$id.requestRedraw"
         bind .$id.table <Destroy> "$id.delete"
 
@@ -43,6 +43,9 @@ proc newOpenGodley {id} {
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
         bind .$id.table <KeyPress> "$id.keyPress %N"
         bind .$id.table <KeyRelease> "$id.keyRelease %N"
+        # act as a black hole for tab focus
+#        bind .$id <Tab> "focus .$id.table; $id.keyPress %N"
+#        bind .$id <Shift-Tab> "focus .$id.table; $id.keyPress %N; puts {{st} %N}"
 
         global meta meta_menu
         bind .$id.table <$meta-y> "$id.undo -1"
@@ -67,7 +70,7 @@ proc newOpenGodley {id} {
         bind .$id.table <Button-5> "zoomOut $id"
         # mouse wheel bindings for pc and aqua
         bind .$id.table <MouseWheel> "if {%D>=0} {zoomIn $id} {zoomOut $id}"
-     
+
         menu .$id.context -tearoff 0
         menu .$id.context.import -tearoff 0
 
@@ -308,4 +311,16 @@ proc exportGodley {id} {
             "CSV" {$id.godleyIcon.table.exportToCSV "$f.csv"}
         }
     }
+}
+
+# make the table window a black hole for tab traversal
+rename tk_focusPrev tk_focusPrevOrig
+rename tk_focusNext tk_focusNextOrig
+proc tk_focusPrev {w} {
+    if [regexp "^\.godleyWindow\[0-9\]*\.table" $w] {return $w}
+    else return [tk_focusPrevOrig $w]
+}
+proc tk_focusNext {w} {
+    if [regexp "^\.godleyWindow\[0-9\]*\.table" $w] {return $w}
+    else return [tk_focusNextOrig $w]
 }

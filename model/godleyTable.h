@@ -168,6 +168,13 @@ namespace minsky
     /// render canvas to a PNG image file
     void renderCanvasToPNG(const char* filename);
 
+    /// @{ move selected cell right, left, up or down, moving to next
+    /// line and wrapping if at end of row or col
+    void navigateRight();
+    void navigateLeft();
+    void navigateUp();
+    void navigateDown();
+    /// @}
     
   private:
     /// column at \a x in unzoomed coordinates
@@ -178,6 +185,7 @@ namespace minsky
     bool controlChar=false; ///< control pressed
     std::deque<GodleyTable::Data> history;
     ClickType clickType(double x, double y) const;
+    void checkCell00(); ///<check is cell (0,0) is selected, and deselect if so
   };
 }
 

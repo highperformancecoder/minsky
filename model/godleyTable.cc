@@ -543,8 +543,9 @@ namespace minsky
 
   void GodleyTableWindow::keyPress(int keySym)
   {
-    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
-        selectedRow<int(godleyIcon->table.rows()))
+    auto& table=godleyIcon->table;
+    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(table.cols()) &&
+        selectedRow<int(table.rows()))
       {
         if (controlChar)
           switch (keySym)
@@ -561,7 +562,7 @@ namespace minsky
             }
         else
           {
-            auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+            auto& str=table.cell(selectedRow,selectedCol);
             switch (keySym)
               {
               case 0xff08: case 0xffff:  //backspace/delete
@@ -571,9 +572,9 @@ namespace minsky
                   str.erase(--insertIdx,1);
                 break;
               case 0xff1b: // escape
-                if (selectedRow>=0 && size_t(selectedRow)<=godleyIcon->table.rows() &&
-                    selectedCol>=0 && size_t(selectedCol)<=godleyIcon->table.cols())
-                  godleyIcon->table.cell(selectedRow, selectedCol)=savedText;
+                if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
+                    selectedCol>=0 && size_t(selectedCol)<=table.cols())
+                  table.cell(selectedRow, selectedCol)=savedText;
                 selectedRow=selectedCol=-1;
                 break;
               case 0xff0d: //return
@@ -582,13 +583,27 @@ namespace minsky
                 break;
               case 0xff51: //left arrow
                 if (insertIdx>0) insertIdx--;
+                else navigateLeft();
                 break;
               case 0xff53: //right arrow
                 if (insertIdx<str.length()) insertIdx++;
+                else navigateRight();
                 break;
               case 0xffe3: case 0xffe4: // control
                 controlChar=true;
                 return; // no need to redraw + don't reset selection
+              case 0xff09: // tab
+                navigateRight();
+                break;
+              case 0xfe20: // back tab
+                navigateLeft();
+                break;
+              case 0xff54: // down
+                navigateDown();
+                break;
+              case 0xff52: // up
+                navigateUp();
+                break;
               default:
                 if (keySym>=' ' && keySym<0xff)
                   {
@@ -600,8 +615,27 @@ namespace minsky
               }
             selectIdx=insertIdx;
           }
-        requestRedraw();
       }
+    else // nothing selected
+      {
+        // if one of the navigation keys pressed, move to the first/last etc cell
+        switch (keySym)
+          {
+          case 0xff09: case 0xff53: // tab, right
+            selectedRow=0; selectedCol=1; break;
+          case 0xfe20: // back tab
+            selectedRow=table.rows()-1; selectedCol=table.cols()-1; break;
+          case 0xff51: //left arrow
+            selectedRow=0; selectedCol=table.cols()-1; break;
+          case 0xff54: // down
+            selectedRow=1; selectedCol=0; break;
+          case 0xff52: // up
+            selectedRow=table.rows()-1; selectedCol=0; break;
+          default:
+            return; // early return, no need to redraw
+          }
+      }
+    requestRedraw();
   }
 
   void GodleyTableWindow::keyRelease(int keySym)
@@ -816,6 +850,61 @@ namespace minsky
       }
     minsky().canvas.requestRedraw();
   }
+
+  void GodleyTableWindow::checkCell00()
+  {
+    if (selectedCol==0 && selectedRow==0)
+      // (0,0) cell not editable
+      {
+        selectedCol=-1;
+        selectedRow=-1;
+      }
+  }
+
+  
+    void GodleyTableWindow::navigateRight()
+    {
+      if (selectedCol>=0)
+        {
+          selectedCol++;
+          insertIdx=0;
+          if (selectedCol>=godleyIcon->table.cols())
+            {
+              selectedCol=0;
+              navigateDown();
+            }
+          checkCell00();
+        }
+    }
+  
+    void GodleyTableWindow::navigateLeft()
+    {
+      if (selectedCol>=0)
+        {
+          selectedCol--;
+          insertIdx=0;
+          if (selectedCol<0)
+            {
+              selectedCol=godleyIcon->table.cols()-1;
+              navigateUp();
+            }
+          checkCell00();
+        }
+    }
+
+    void GodleyTableWindow::navigateUp()
+    {
+      if (selectedRow>=0)
+        selectedRow=(selectedRow-1)%godleyIcon->table.rows();
+      checkCell00();
+    }
+  
+    void GodleyTableWindow::navigateDown()
+    {
+      if (selectedRow>=0)
+        selectedRow=(selectedRow+1)%godleyIcon->table.rows();
+      checkCell00();
+    }
 
   template <ButtonWidgetEnums::RowCol rowCol>
   void ButtonWidget<rowCol>::drawButton(cairo_t* cairo, const std::string& label, double r, double g, double b, int idx)
