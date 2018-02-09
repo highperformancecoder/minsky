@@ -220,6 +220,8 @@ namespace minsky
     }
 
     void saveGroupAsFile(const Group&, const string& fileName) const;
+    void saveCanvasItemAsFile(const string& fileName) const
+    {if (auto g=dynamic_cast<Group*>(canvas.item.get())) saveGroupAsFile(*g,fileName);}
 
     void initGodleys();
 
@@ -240,7 +242,7 @@ namespace minsky
     /// toggle selected status of given item
     void toggleSelected(ItemType itemType, int item);
 
-    GroupPtr insertGroupFromFile(const char* file);
+    void insertGroupFromFile(const char* file);
 
     void makeVariablesConsistent();
 

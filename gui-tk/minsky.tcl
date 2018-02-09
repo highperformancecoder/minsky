@@ -871,30 +871,30 @@ proc insertFile {} {
     global workDir
     set fname [tk_getOpenFile -multiple 1 -filetypes {
 	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
-    insertNewGroup [insertGroupFromFile $fname]
+    insertGroupFromFile $fname
 }
 
-proc insertNewGroup {gid} {
-    newGroupItem $gid
-
-    global moveOffsgroup$gid.x moveOffsgroup$gid.y
-
-    group.get $gid
-    moveSet $gid [group.x] [group.y] 
-    move $gid [get_pointer_x .old_wiring.canvas] [get_pointer_y .old_wiring.canvas]
-
-    bind .old_wiring.canvas <Enter> "move $gid %x %y"
-    bind .old_wiring.canvas <Motion> "move $gid %x %y"
-    bind .old_wiring.canvas <Button-1> \
-        "bind .old_wiring.canvas <Motion> {}
-         bind .old_wiring.canvas <Enter> {}
-         bind .old_wiring.canvas <Button-1>{}
-         # redo this here, as binding on a group undoes it
-#         initGroupList $gid
-         move $gid %x %y
-         checkAddGroup $gid %x %y
-#         setInteractionMode"
-}
+#proc insertNewGroup {gid} {
+#    newGroupItem $gid
+#
+#    global moveOffsgroup$gid.x moveOffsgroup$gid.y
+#
+#    group.get $gid
+#    moveSet $gid [group.x] [group.y] 
+#    move $gid [get_pointer_x .old_wiring.canvas] [get_pointer_y .old_wiring.canvas]
+#
+#    bind .old_wiring.canvas <Enter> "move $gid %x %y"
+#    bind .old_wiring.canvas <Motion> "move $gid %x %y"
+#    bind .old_wiring.canvas <Button-1> \
+#        "bind .old_wiring.canvas <Motion> {}
+#         bind .old_wiring.canvas <Enter> {}
+#         bind .old_wiring.canvas <Button-1>{}
+#         # redo this here, as binding on a group undoes it
+##         initGroupList $gid
+#         move $gid %x %y
+#         checkAddGroup $gid %x %y
+##         setInteractionMode"
+#}
 
 # adjust canvas so that -ve coordinates appear on canvas
 proc recentreCanvas {} {

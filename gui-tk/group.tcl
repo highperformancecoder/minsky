@@ -100,30 +100,30 @@ proc groupEdit {} {
 
 namespace eval group {
 
-    proc copy {id} {
-        wiringGroup.item.get $id
-        insertNewGroup [copyItem $id]
-    }
+#    proc copy {id} {
+#        wiringGroup.item.get $id
+#        insertNewGroup [copyItem $id]
+#    }
 
-    proc save {id} {
+    proc save {} {
         global workDir
         set fname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
         if [string length $fname] {
-            saveGroupAsFile $id $fname
+            saveCanvasItemAsFile $fname
         }
     }
 
-    proc flip {id} {
-        group.get $id
-        group.rotation [expr [group.rotation]+180]
-        group.updatePortLocation
-        group.set
-        .old_wiring.canvas delete group$id
-        newGroupItem $id
-        foreach p [group.ports] {
-            adjustWire $p
-        }
-    }
+#    proc flip {id} {
+#        group.get $id
+#        group.rotation [expr [group.rotation]+180]
+#        group.updatePortLocation
+#        group.set
+#        .old_wiring.canvas delete group$id
+#        newGroupItem $id
+#        foreach p [group.ports] {
+#            adjustWire $p
+#        }
+#    }
 }
 
 #trace add execution checkAddGroup enterstep tout
