@@ -607,34 +607,28 @@ namespace minsky
 
     if (x0==numeric_limits<float>::max())
       {
-        // TODO!
-//        float cx=0, cy=0;
-//        for (int i: inVariables)
-//          {
-//            cx+=cminsky().variables[i]->x();
-//            cy+=cminsky().variables[i]->y();
-//          }
-//        for (int i: outVariables)
-//          {
-//            cx+=cminsky().variables[i]->x();
-//            cy+=cminsky().variables[i]->y();
-//          }
-//        int n=inVariables.size()+outVariables.size();
-//        cx/=n;
-//        cy/=n;
-//        x0=cx-10;
-//        x1=cx+10;
-//        y0=cy-10;
-//        y1=cy+10;
+        float cx=0, cy=0;
+        for (auto& i: inVariables)
+          {
+            cx+=i->x();
+            cy+=i->y();
+          }
+        for (auto& i: outVariables)
+          {
+            cx+=i->x();
+            cy+=i->y();
+          }
+        int n=inVariables.size()+outVariables.size();
+        if (n>0)
+          {
+            cx/=n;
+            cy/=n;
+          }
+        x0=cx-10;
+        x1=cx+10;
+        y0=cy-10;
+        y1=cy+10;
       }
-//    else
-//      {
-//        // extend width by 2 pixels to allow for the slightly oversized variable icons
-//        x0-=2*this->localZoom();
-//        y0-=2*this->localZoom();
-//        x1+=2*this->localZoom();
-//        y1+=2*this->localZoom();
-//      }
 
     return localZoom;
   }
