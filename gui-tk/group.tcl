@@ -93,4 +93,3 @@ namespace eval group {
 
 }
 
-#trace add execution checkAddGroup enterstep tout
