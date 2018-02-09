@@ -283,6 +283,7 @@ void GodleyTable::exportToCSV(const char* filename)
 
 void GodleyTable::orderAssetClasses()
 {
+  unsigned numRows=rows()>1? rows(): 1;
   map<AssetClass,Data> tmpCols;
   for (unsigned c=1; c<cols(); ++c)
     if (_assetClass(c)==noAssetClass)
@@ -300,12 +301,12 @@ void GodleyTable::orderAssetClasses()
                          {return x.empty() || x[0].empty();}), tc.end());
       // ensure at least one column is present in an asset class
       if (tc.empty())
-        tc.emplace_back(rows());
+        tc.emplace_back(numRows);
       
       numCols+=tc.size();
     }
 
-  resize(rows(), numCols);
+  resize(numRows, numCols);
   unsigned col=1;
   for (int ac=asset; ac<=equity; ++ac)
     for (auto& colData: tmpCols[AssetClass(ac)])
