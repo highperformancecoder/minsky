@@ -317,10 +317,16 @@ proc exportGodley {id} {
 rename tk_focusPrev tk_focusPrevOrig
 rename tk_focusNext tk_focusNextOrig
 proc tk_focusPrev {w} {
-    if [regexp "^\.godleyWindow\[0-9\]*\.table" $w] {return $w}
-    else return [tk_focusPrevOrig $w]
+    if [regexp "^\.godleyWindow\[0-9\]*\.table" $w] {
+        return $w
+    } else {
+        return [tk_focusPrevOrig $w]
+    }
 }
 proc tk_focusNext {w} {
-    if [regexp "^\.godleyWindow\[0-9\]*\.table" $w] {return $w}
-    else return [tk_focusNextOrig $w]
+    if [regexp "^\.godleyWindow\[0-9\]*\.table" $w] {
+        return $w
+    } else {
+        return [tk_focusNextOrig $w]
+    }
 }
