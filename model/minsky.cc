@@ -466,7 +466,7 @@ namespace minsky
     const GodleyTable& srcTable=srcGodley.table;
     // find if there is a matching column
     const string& colName=srcGodley.valueId(trimWS(srcTable.cell(0,srcCol)));
-    if (colName.empty()) return; //ignore blank columns
+    if (colName.empty() || colName==":_") return; //ignore blank columns
 
     bool matchFound=false;
     model->recursiveDo
