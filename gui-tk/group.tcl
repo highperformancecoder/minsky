@@ -32,23 +32,6 @@ proc rightMouseGroup {x y X Y} {
     }
 }
 
-
-proc deleteGroupItem {id} {
-    deleteGroup $id
-    .old_wiring.canvas delete all
-    clearAllGetterSetters
-    .old_wiring.canvas delete all
-    updateCanvas
-}
-
-proc ungroupGroupItem {id} {
-    ungroup $id
-    .old_wiring.canvas delete all
-    clearAllGetterSetters
-    .old_wiring.canvas delete all
-    updateCanvas
-}
-
 proc deiconifyEditGroup {} {
     if {![winfo exists .wiring.editGroup]} {
         toplevel .wiring.editGroup
@@ -100,30 +83,13 @@ proc groupEdit {} {
 
 namespace eval group {
 
-    proc copy {id} {
-        wiringGroup.item.get $id
-        insertNewGroup [copyItem $id]
-    }
-
-    proc save {id} {
+    proc save {} {
         global workDir
         set fname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
         if [string length $fname] {
-            saveGroupAsFile $id $fname
+            saveCanvasItemAsFile $fname
         }
     }
 
-    proc flip {id} {
-        group.get $id
-        group.rotation [expr [group.rotation]+180]
-        group.updatePortLocation
-        group.set
-        .old_wiring.canvas delete group$id
-        newGroupItem $id
-        foreach p [group.ports] {
-            adjustWire $p
-        }
-    }
 }
 
-#trace add execution checkAddGroup enterstep tout

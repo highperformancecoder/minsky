@@ -49,9 +49,18 @@ namespace minsky
   {
     auto r=make_shared<Group>();
     r->self=r;
-    r->group=group;
+    // make new group a sibling of this if possible
+    if (auto g=group.lock())
+      g->addGroup(r);
+    else
+      return GroupPtr(); // do nothing if we attempt to clone the entire model
+    
     // a map of original to cloned items (weak references)
     map<Item*,ItemPtr> cloneMap;
+    map<IntOp*,bool> integrals;
+    for (auto& i: items)
+      if (auto integ=dynamic_cast<IntOp*>(i.get()))
+        integrals.emplace(integ, integ->coupled());
     for (auto& i: items)
       cloneMap[i.get()]=r->addItem(i->clone());
     for (auto& i: groups)
@@ -74,6 +83,22 @@ namespace minsky
         assert(cloneMap.count(v.get()));
         r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
       }
+    // reattach integral variables to their cloned counterparts
+    for (auto i: integrals)
+      {
+        if (auto newIntegral=dynamic_cast<IntOp*>(cloneMap[i.first].get()))
+          {
+            auto newIntVar=dynamic_pointer_cast<VariableBase>(cloneMap[i.first->intVar.get()]);
+            if (newIntVar && newIntegral->intVar != newIntVar)
+              {
+                r->removeItem(*newIntegral->intVar);
+                newIntegral->intVar=newIntVar;
+              }
+            if (i.second != newIntegral->coupled())
+              newIntegral->toggleCoupled();
+          }
+      }
+    r->computeDisplayZoom();
     return r;
   }
 
@@ -582,34 +607,28 @@ namespace minsky
 
     if (x0==numeric_limits<float>::max())
       {
-        // TODO!
-//        float cx=0, cy=0;
-//        for (int i: inVariables)
-//          {
-//            cx+=cminsky().variables[i]->x();
-//            cy+=cminsky().variables[i]->y();
-//          }
-//        for (int i: outVariables)
-//          {
-//            cx+=cminsky().variables[i]->x();
-//            cy+=cminsky().variables[i]->y();
-//          }
-//        int n=inVariables.size()+outVariables.size();
-//        cx/=n;
-//        cy/=n;
-//        x0=cx-10;
-//        x1=cx+10;
-//        y0=cy-10;
-//        y1=cy+10;
+        float cx=0, cy=0;
+        for (auto& i: inVariables)
+          {
+            cx+=i->x();
+            cy+=i->y();
+          }
+        for (auto& i: outVariables)
+          {
+            cx+=i->x();
+            cy+=i->y();
+          }
+        int n=inVariables.size()+outVariables.size();
+        if (n>0)
+          {
+            cx/=n;
+            cy/=n;
+          }
+        x0=cx-10;
+        x1=cx+10;
+        y0=cy-10;
+        y1=cy+10;
       }
-//    else
-//      {
-//        // extend width by 2 pixels to allow for the slightly oversized variable icons
-//        x0-=2*this->localZoom();
-//        y0-=2*this->localZoom();
-//        x1+=2*this->localZoom();
-//        y1+=2*this->localZoom();
-//      }
 
     return localZoom;
   }

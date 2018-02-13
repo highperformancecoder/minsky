@@ -376,6 +376,9 @@ namespace minsky
     if (desc.empty())
       desc=minsky().variableValues.newName
         (VariableValue::valueId(group.lock(),"int"));
+
+    // disallow global integration variables
+    if (desc[0]==':') desc=desc.substr(1);
     
     if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
       return; // nothing to do
