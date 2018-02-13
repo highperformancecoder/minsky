@@ -1,4 +1,4 @@
-proc newOpenGodley {id} {
+proc openGodley {id} {
     if {![ winfo exists ".$id"]} {
         image create cairoSurface $id -surface $id
         toplevel .$id

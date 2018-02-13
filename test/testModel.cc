@@ -1172,5 +1172,4 @@ SUITE(GodleyTableWindow)
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
     }    
-
 }

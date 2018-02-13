@@ -491,8 +491,7 @@ proc contextMenu {x y X Y} {
         }
         "GodleyIcon" {
             .wiring.context add command -label Description -command "postNote item"
-#            .wiring.context add command -label "Open Godley Table" -command "openGodley"
-            .wiring.context add command -label "Open Godley Table" -command "newOpenGodley [minsky.openGodley]"
+            .wiring.context add command -label "Open Godley Table" -command "openGodley [minsky.openGodley]"
             .wiring.context add command -label "Title" -command {
                 textEntryPopup .editGodleyTitle [minsky.canvas.item.table.title] {minsky.canvas.item.table.title [.editGodleyTitle.entry get]; canvas.requestRedraw}
             }
@@ -935,7 +934,7 @@ proc editItem {} {
             wm transient .wiring.editConstant
         }
         "Group" {groupEdit}
-        "GodleyIcon" {newOpenGodley [minsky.openGodley]}
+        "GodleyIcon" {openGodley [minsky.openGodley]}
         # plot widgets are slightly different, in that double-click
         # expands the plot, rather than edits.
         "PlotWidget" {plotDoubleClick [TCLItem]}
