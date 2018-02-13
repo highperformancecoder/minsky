@@ -38,10 +38,20 @@ proc afterMinskyStarted {} {
   \$id.renderCanvasToSVG 1FreeBase.svg
   \$id.selectedCol 1
   \$id.selectedRow 2
+  \$id.insertIdx 0
+  \$id.selectIdx 3
   \$id.hoverRow 2
   \$id.hoverCol 2
+  \$id.mouseMoveB1 [expr [lindex [\$id.colLeftMargin] 2]+10] [expr 4*[\$id.rowHeight]+[\$id.topTableOffset]]
   \$id.displayStyle DRCR
   \$id.renderCanvasToSVG 1Free11Selected.svg
+  \$id.selectedCol 0
+  \$id.renderCanvasToSVG 1FreeSelectedRow.svg
+  \$id.selectedCol 1
+  \$id.selectedRow 0
+  \$id.mouseMoveB1 [expr [lindex [\$id.colLeftMargin] 2]+10] [expr 3*[\$id.rowHeight]+[\$id.topTableOffset]]
+  \$id.renderCanvasToSVG 1FreeSelectedCol.svg
+  
   tcl_exit
 }
 EOF
@@ -49,10 +59,9 @@ EOF
 $here/gui-tk/minsky input.tcl
 if [ $? -ne 0 ]; then fail; fi
 
-diff 1FreeBase.svg $here/test/renderedImages/1FreeBase.svg
-if [ $? -ne 0 ]; then fail; fi
-
-diff 1Free11Selected.svg $here/test/renderedImages/1Free11Selected.svg
-if [ $? -ne 0 ]; then fail; fi
+for i in *.svg; do
+  diff $i $here/test/renderedImages/$i
+  if [ $? -ne 0 ]; then fail; fi
+  done
 
 pass
