@@ -16,8 +16,8 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef GODLEY_H
-#define GODLEY_H
+#ifndef GODLEYTABLE_H
+#define GODLEYTABLE_H
 
 #include <set>
 #include <vector>
@@ -174,5 +174,5 @@ namespace minsky
 
 }
 
-#include "godley.cd"
+#include "godleyTable.cd"
 #endif
