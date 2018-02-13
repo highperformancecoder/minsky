@@ -21,8 +21,8 @@
    Provide support for the Godley Table spreadsheet window
  */
 
-#ifndef GODLEYTABLE_H
-#define GODLEYTABLE_H
+#ifndef GODLEYTABLEWINDOW_H
+#define GODLEYTABLEWINDOW_H
 #include "godleyIcon.h"
 #include <cairoSurfaceImage.h>
 #include <memory>
@@ -189,5 +189,5 @@ namespace minsky
   };
 }
 
-#include "godleyTable.cd"
+#include "godleyTableWindow.cd"
 #endif

@@ -35,7 +35,7 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTable.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o 
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o

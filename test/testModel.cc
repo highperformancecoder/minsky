@@ -21,7 +21,7 @@
 #include "operation.h"
 #include "group.h"
 #include "minsky.h"
-#include "godleyTable.h"
+#include "godleyTableWindow.h"
 #include <ecolab_epilogue.h>
 
 #include <UnitTest++/UnitTest++.h>

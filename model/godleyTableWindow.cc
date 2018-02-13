@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "godleyTable.h"
+#include "godleyTableWindow.h"
 #include "selection.h"
 #include "latexMarkup.h"
 #include "minsky.h"

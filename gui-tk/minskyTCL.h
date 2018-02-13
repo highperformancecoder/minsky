@@ -20,7 +20,7 @@
 #ifndef MINSKYTCL_H
 #define MINSKYTCL_H
 #include "minsky.h"
-#include "godleyTable.h"
+#include "godleyTableWindow.h"
 #include <fstream>
 
 // TCL specific definitions for global minsky object
