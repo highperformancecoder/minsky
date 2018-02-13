@@ -663,7 +663,6 @@ proc textEntryPopup {win init okproc} {
 }
 
 source $minskyHome/godley.tcl
-source $minskyHome/newGodley.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
