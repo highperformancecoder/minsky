@@ -1214,7 +1214,7 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(1, colX(x));
       CHECK_EQUAL(1, rowY(y));
       mouseDown(x,y);
-      mouseMove(x,y+10);
+      mouseMoveB1(x,y+10);
       mouseUp(x,y+10);
       CHECK_EQUAL(1, hoverRow);
       CHECK_EQUAL(1, hoverCol);
