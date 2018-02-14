@@ -1257,7 +1257,7 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL("r1c1",godleyIcon->table.cell(2,3));
     }
   
-  TEST_FIXTURE(GodleyTableWindowFixture, moveRowCol)
+  TEST_FIXTURE(GodleyTableWindowFixture, moveRowColCell)
     {
       Tk_Init(interp()); // required for clipboard operations
       godleyIcon->table.resize(3,4);
@@ -1293,5 +1293,18 @@ SUITE(GodleyTableWindow)
       mouseUp(x,y);
       CHECK_EQUAL("row1",godleyIcon->table.cell(2,0));
       CHECK_EQUAL("row2",godleyIcon->table.cell(1,0));
+
+      // check moving a cell
+      x=colLeftMargin[1]+10;
+      y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(1,colX(x));
+      CHECK_EQUAL(1,rowY(y));
+      godleyIcon->table.cell(1,1)="cell11";
+      mouseDown(x,y);
+      x=colLeftMargin[2]+10;
+      y+=rowHeight;
+      mouseMoveB1(x,y);
+      mouseUp(x,y);
+      CHECK_EQUAL("cell11",godleyIcon->table.cell(2,2));
     }
 }
