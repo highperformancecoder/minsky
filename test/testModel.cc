@@ -1206,6 +1206,7 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseSelect)
     {
+      Tk_Init(interp()); // required for clipboard operations
       godleyIcon->table.cell(1,1)="hello";
       surface.reset(new ecolab::cairo::Surface
                     (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
@@ -1214,14 +1215,14 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(1, colX(x));
       CHECK_EQUAL(1, rowY(y));
       mouseDown(x,y);
-      mouseMoveB1(x,y+10);
-      mouseUp(x,y+10);
-      CHECK_EQUAL(1, hoverRow);
-      CHECK_EQUAL(1, hoverCol);
+      mouseMoveB1(x+10,y);
+      mouseUp(x+10,y);
       CHECK_EQUAL(1, selectedRow);
       CHECK_EQUAL(1, selectedCol);
       CHECK_EQUAL(0,insertIdx);
       CHECK(selectIdx>insertIdx);
       CHECK(!cminsky().getClipboard().empty());
+
+      
     }
 }
