@@ -1225,4 +1225,35 @@ SUITE(GodleyTableWindow)
 
       
     }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, mouseButtons)
+    {
+      Tk_Init(interp()); // required for clipboard operations
+      godleyIcon->table.resize(3,4);
+      godleyIcon->table.cell(0,1)="col1";
+      godleyIcon->table.cell(0,2)="col2";
+      godleyIcon->table.cell(1,1)="r1c1";
+      godleyIcon->table.cell(1,2)="r1c2";
+      godleyIcon->table.cell(2,1)="r2c1";
+      godleyIcon->table.cell(2,2)="r2c2";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+2*ButtonWidget<row>::buttonSpacing+1, y=5+columnButtonsOffset;
+      CHECK_EQUAL(colWidget, clickType(x,y));
+      mouseDown(x,y);
+      // should have invoked moving column 1 left
+      CHECK_EQUAL("r1c2",godleyIcon->table.cell(1,2));
+      CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
+      CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,3));
+      CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,3));
+      x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
+      CHECK_EQUAL(rowWidget, clickType(x,y));
+      mouseDown(x,y);
+      // should have invoked moving row 1 down
+      CHECK_EQUAL("r2c2",godleyIcon->table.cell(1,2));
+      CHECK_EQUAL("r1c2",godleyIcon->table.cell(2,2));
+      CHECK_EQUAL("r2c1",godleyIcon->table.cell(1,3));
+      CHECK_EQUAL("r1c1",godleyIcon->table.cell(2,3));
+    }
 }
