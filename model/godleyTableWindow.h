@@ -43,7 +43,7 @@ namespace minsky
     CLASSDESC_ACCESS(ButtonWidget);
   protected:
     GodleyIcon& godleyIcon;
-    int mouseOver=-1;
+    int m_mouseOver=-1;
   public:
     static constexpr double buttonSpacing=15;
     
@@ -57,10 +57,11 @@ namespace minsky
     /// invoke action associated with button at x
     void invoke(double x);
     /// indicate which button mouse is hovering over. x<0 means not hovering
-    void hover(int button) {mouseOver=button;}
-    void hover(double x) {mouseOver=button(x);}
+    void hover(int button) {m_mouseOver=button;}
+    void hover(double x) {m_mouseOver=button(x);}
     /// convert x coordinate into a button
     int button(double x) const {return x/buttonSpacing;}
+    int mouseOver() const {return m_mouseOver;}
     
     ButtonWidget(GodleyIcon& godleyIcon, unsigned idx=0):
       godleyIcon(godleyIcon), idx(idx) {}
@@ -68,8 +69,6 @@ namespace minsky
 
   class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums
   {
-    std::vector<ButtonWidget<row>> rowWidgets;
-    std::vector<ButtonWidget<col>> colWidgets;
     
     CLASSDESC_ACCESS(GodleyTableWindow);
   public:
@@ -176,7 +175,9 @@ namespace minsky
     void navigateDown();
     /// @}
     
-  private:
+  protected:
+    std::vector<ButtonWidget<row>> rowWidgets;
+    std::vector<ButtonWidget<col>> colWidgets;
     /// column at \a x in unzoomed coordinates
     int colX(double x) const;
     /// row at \a y in unzoomed coordinates

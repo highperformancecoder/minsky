@@ -923,7 +923,7 @@ namespace minsky
     
     // draw box around button
     cairo_rectangle(cairo, x0, y0+0.2*pango.height(), buttonSpacing, buttonSpacing);
-    if (idx==mouseOver)
+    if (idx==m_mouseOver)
       cairo_set_source_rgb(cairo,0,0,0); // draw in black if mouse over button
     else
       cairo_set_source_rgb(cairo,0.5,0.5,0.5); // draw in grey

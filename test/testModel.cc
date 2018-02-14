@@ -1171,5 +1171,57 @@ SUITE(GodleyTableWindow)
       pos=last;
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
-    }    
+    }
+
+  struct GodleyTableWindowFixture: public GodleyTableWindow
+  {
+    GodleyTableWindowFixture(): GodleyTableWindow(make_shared<GodleyIcon>())
+    {}
+  };
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, mouseMove)
+    {
+      godleyIcon->table.cell(1,1)="hello";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+10, y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(1, colX(x));
+      CHECK_EQUAL(1, rowY(y));
+      mouseMove(x,y);
+      CHECK_EQUAL(1, hoverRow);
+      CHECK_EQUAL(1, hoverCol);
+      x=2*ButtonWidget<row>::buttonSpacing+1;
+      CHECK_EQUAL(rowWidget, clickType(x,y));
+      mouseMove(x,y);
+      CHECK_EQUAL(2,rowWidgets[1].mouseOver());
+      x=colLeftMargin[1]+ButtonWidget<row>::buttonSpacing+1;
+      y=5+columnButtonsOffset;
+      mouseMove(x,y);
+      CHECK_EQUAL(1,colWidgets[1].mouseOver());
+      mouseMove(0,0);
+      for (auto& i: rowWidgets) CHECK_EQUAL(-1, i.mouseOver());
+      for (auto& i: colWidgets) CHECK_EQUAL(-1, i.mouseOver());
+    }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, mouseSelect)
+    {
+      godleyIcon->table.cell(1,1)="hello";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1], y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(1, colX(x));
+      CHECK_EQUAL(1, rowY(y));
+      mouseDown(x,y);
+      mouseMove(x,y+10);
+      mouseUp(x,y+10);
+      CHECK_EQUAL(1, hoverRow);
+      CHECK_EQUAL(1, hoverCol);
+      CHECK_EQUAL(1, selectedRow);
+      CHECK_EQUAL(1, selectedCol);
+      CHECK_EQUAL(0,insertIdx);
+      CHECK(selectIdx>insertIdx);
+      CHECK(!cminsky().getClipboard().empty());
+    }
 }
