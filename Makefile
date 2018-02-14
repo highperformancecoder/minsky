@@ -255,6 +255,7 @@ dist:
 
 lcov:
 	$(MAKE) clean
+	-$(MAKE) GCOV=1 tests
 	lcov -i -c -d . --no-external -o lcovi.info
 	-$(MAKE) GCOV=1 sure
 	lcov -c -d . --no-external -o lcovt.info
