@@ -35,6 +35,7 @@ proc afterMinskyStarted {} {
   set id [minsky.openGodley]
   openGodley \$id
   \$id.displayStyle sign
+  \$id.displayValues 1
   \$id.renderCanvasToSVG 1FreeBase.svg
   \$id.selectedCol 1
   \$id.selectedRow 2
@@ -52,6 +53,14 @@ proc afterMinskyStarted {} {
   \$id.mouseMoveB1 [expr [lindex [\$id.colLeftMargin] 2]+10] [expr 3*[\$id.rowHeight]+[\$id.topTableOffset]]
   \$id.renderCanvasToSVG 1FreeSelectedCol.svg
   
+
+  minsky.load $here/examples/LoanableFunds.mky
+  findObject GodleyIcon
+  set id [minsky.openGodley]
+  \$id.displayStyle DRCR
+  \$id.displayValues 0
+  \$id.renderCanvasToSVG LoanableFundsBase.svg
+
   tcl_exit
 }
 EOF
