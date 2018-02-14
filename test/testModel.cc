@@ -1256,4 +1256,42 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL("r2c1",godleyIcon->table.cell(1,3));
       CHECK_EQUAL("r1c1",godleyIcon->table.cell(2,3));
     }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, moveRowCol)
+    {
+      Tk_Init(interp()); // required for clipboard operations
+      godleyIcon->table.resize(3,4);
+      godleyIcon->table.cell(0,1)="col1";
+      godleyIcon->table.cell(0,2)="col2";
+      godleyIcon->table.cell(1,0)="row1";
+      godleyIcon->table.cell(2,0)="row2";
+      godleyIcon->table.cell(1,1)="r1c1";
+      godleyIcon->table.cell(1,2)="r1c2";
+      godleyIcon->table.cell(2,1)="r2c1";
+      godleyIcon->table.cell(2,2)="r2c2";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+10, y=topTableOffset+5;
+      CHECK_EQUAL(1,colX(x));
+      CHECK_EQUAL(0,rowY(y));
+      mouseDown(x,y);
+      x=colLeftMargin[2]+10;
+      CHECK_EQUAL(2,colX(x));
+      mouseMoveB1(x,y);
+      mouseUp(x,y);
+      CHECK_EQUAL("col1",godleyIcon->table.cell(0,3));
+
+      x=leftTableOffset+10;
+      y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(0,colX(x));
+      CHECK_EQUAL(1,rowY(y));
+      mouseDown(x,y);
+      y+=rowHeight;
+      CHECK_EQUAL(2,rowY(y));
+      mouseMoveB1(x,y);
+      mouseUp(x,y);
+      CHECK_EQUAL("row1",godleyIcon->table.cell(2,0));
+      CHECK_EQUAL("row2",godleyIcon->table.cell(1,0));
+    }
 }
