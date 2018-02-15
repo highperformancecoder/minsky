@@ -1260,7 +1260,6 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, moveRowColCell)
     {
-      Tk_Init(interp()); // required for clipboard operations
       godleyIcon->table.resize(3,4);
       godleyIcon->table.cell(0,1)="col1";
       godleyIcon->table.cell(0,2)="col2";
@@ -1423,5 +1422,36 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(0,selectedCol);
       CHECK_EQUAL(2,selectedRow);
       
+    }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, addDelVars)
+    {
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+10, y=topTableOffset+5+rowHeight;
+      CHECK_EQUAL(1,colX(x));
+      CHECK_EQUAL(1,rowY(y));
+      auto& t=godleyIcon->table;
+      t.cell(1,0)="row1";
+      t.cell(0,1)="col1";
+      t.cell(0,2)="col2";
+      t.cell(0,3)="col3";
+      addFlow(y);
+      CHECK_EQUAL(3,t.rows());
+      CHECK_EQUAL("",t.cell(2,0));
+      t.cell(2,0)="row2";
+      deleteFlow(y);
+      CHECK_EQUAL(2,t.rows());
+      CHECK_EQUAL("row2",t.cell(1,0));
+
+      addStockVar(x);
+      CHECK_EQUAL(5,t.cols());
+      CHECK_EQUAL("",t.cell(0,2));
+      t.cell(0,2)="newCol";
+
+      deleteStockVar(x);
+      CHECK_EQUAL(4,t.cols());
+      CHECK_EQUAL("newCol",t.cell(0,1));
     }
 }
