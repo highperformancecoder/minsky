@@ -1315,6 +1315,7 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, keyPress)
     {
+      godleyIcon->table.resize(3,4);
       selectedCol=1;
       selectedRow=1;
       selectIdx=insertIdx=0;
@@ -1332,8 +1333,13 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(-1,selectedRow);
 
       
+      selectedCol=1;
+      selectedRow=1;
+      savedText="abc";
       keyPress('d'); keyPress(XK_Escape); // should revert to previous
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+      CHECK_EQUAL(-1,selectedCol);
+      CHECK_EQUAL(-1,selectedRow);
 
       // tab, arrow movement
       selectedCol=1;
@@ -1347,20 +1353,29 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(0,selectedCol);
       keyPress(XK_Tab);
       CHECK_EQUAL(1,selectedCol);
+      keyPress(XK_Tab);
+      CHECK_EQUAL(2,selectedCol);
+      keyPress(XK_Right);
+      CHECK_EQUAL(3,selectedCol);
+      keyPress(XK_Right);
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(2,selectedRow);
+      keyPress(XK_Tab);
+      CHECK_EQUAL(1,selectedCol);
       keyPress(XK_Up);
       CHECK_EQUAL(1,selectedCol);
-      CHECK_EQUAL(0,selectedRow);
+      CHECK_EQUAL(1,selectedRow);
       keyPress(XK_Down);
       CHECK_EQUAL(1,selectedCol);
-      CHECK_EQUAL(1,selectedRow);
+      CHECK_EQUAL(2,selectedRow);
       keyPress(XK_ISO_Left_Tab);
       CHECK_EQUAL(0,selectedCol);
       keyPress(XK_ISO_Left_Tab);
       CHECK_EQUAL(3,selectedCol);
-      CHECK_EQUAL(0,selectedRow);
+      CHECK_EQUAL(1,selectedRow);
       keyPress(XK_Tab); // check wrap around
       CHECK_EQUAL(0,selectedCol);
-      CHECK_EQUAL(1,selectedRow);
+      CHECK_EQUAL(2,selectedRow);
 
       // cut, copy paste
       selectedCol=1;
@@ -1368,13 +1383,13 @@ SUITE(GodleyTableWindow)
       selectIdx=0;
       insertIdx=1;
       cminsky().putClipboard("");
-      keyPress(XK_Control_L); keyPress('c'); //copy
+      keyPress(XK_Control_L); keyPress('c'); keyRelease(XK_Control_L);//copy
       CHECK_EQUAL("a",cminsky().getClipboard());
       cminsky().putClipboard("");
-      keyPress(XK_Control_L); keyPress('x'); //cut
+      keyPress(XK_Control_L); keyPress('x');  keyRelease(XK_Control_L);//cut
       CHECK_EQUAL("a",cminsky().getClipboard());
       CHECK_EQUAL("bc",godleyIcon->table.cell(1,1));
-      keyPress(XK_Control_L); keyPress('v'); //cut
+      keyPress(XK_Control_L); keyPress('v');  keyRelease(XK_Control_L);//paste
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
 
       // initial cell movement when nothing selected
@@ -1386,7 +1401,7 @@ SUITE(GodleyTableWindow)
       selectedCol=-1; selectedRow=-1;
       keyPress(XK_ISO_Left_Tab);
       CHECK_EQUAL(3,selectedCol);
-      CHECK_EQUAL(1,selectedRow);
+      CHECK_EQUAL(2,selectedRow);
       
       selectedCol=-1; selectedRow=-1;
       keyPress(XK_Left);
@@ -1406,7 +1421,7 @@ SUITE(GodleyTableWindow)
       selectedCol=-1; selectedRow=-1;
       keyPress(XK_Up);
       CHECK_EQUAL(0,selectedCol);
-      CHECK_EQUAL(1,selectedRow);
+      CHECK_EQUAL(2,selectedRow);
       
     }
 }
