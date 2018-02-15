@@ -1176,7 +1176,9 @@ SUITE(GodleyTableWindow)
   struct GodleyTableWindowFixture: public GodleyTableWindow
   {
     GodleyTableWindowFixture(): GodleyTableWindow(make_shared<GodleyIcon>())
-    {}
+    {
+      Tk_Init(interp()); // required for clipboard operations
+    }
   };
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseMove)
@@ -1228,7 +1230,6 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseButtons)
     {
-      Tk_Init(interp()); // required for clipboard operations
       godleyIcon->table.resize(3,4);
       godleyIcon->table.cell(0,1)="col1";
       godleyIcon->table.cell(0,2)="col2";
@@ -1306,5 +1307,106 @@ SUITE(GodleyTableWindow)
       mouseMoveB1(x,y);
       mouseUp(x,y);
       CHECK_EQUAL("cell11",godleyIcon->table.cell(2,2));
+    }
+
+#define XK_MISCELLANY
+#define XK_XKB_KEYS
+#include <X11/keysymdef.h>
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, keyPress)
+    {
+      selectedCol=1;
+      selectedRow=1;
+      selectIdx=insertIdx=0;
+      keyPress('a'); keyPress('b'); keyPress('b'); keyPress(XK_Delete);
+      keyPress('c'); keyPress('c'); keyPress(XK_BackSpace);
+      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+
+      godleyIcon->table.cell(0,0)="stock1";
+      CHECK_EQUAL(0,godleyIcon->stockVars().size());
+      keyPress(XK_Return); // should cause update to be called
+      // unfortunately, this is a freestanding GodleyIcon, so update has no effect
+//      CHECK_EQUAL(1,godleyIcon->stockVars().size());
+//      CHECK_EQUAL("stock1",godleyIcon->stockVars()[0]->name());
+      CHECK_EQUAL(-1,selectedCol);
+      CHECK_EQUAL(-1,selectedRow);
+
+      
+      keyPress('d'); keyPress(XK_Escape); // should revert to previous
+      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+
+      // tab, arrow movement
+      selectedCol=1;
+      selectedRow=1;
+      selectIdx=insertIdx=0;
+      keyPress(XK_Right);
+      CHECK_EQUAL(1,insertIdx);
+      keyPress(XK_Left);
+      CHECK_EQUAL(0,insertIdx);
+      keyPress(XK_Left);
+      CHECK_EQUAL(0,selectedCol);
+      keyPress(XK_Tab);
+      CHECK_EQUAL(1,selectedCol);
+      keyPress(XK_Up);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+      keyPress(XK_Down);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+      keyPress(XK_ISO_Left_Tab);
+      CHECK_EQUAL(0,selectedCol);
+      keyPress(XK_ISO_Left_Tab);
+      CHECK_EQUAL(3,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+      keyPress(XK_Tab); // check wrap around
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+
+      // cut, copy paste
+      selectedCol=1;
+      selectedRow=1;
+      selectIdx=0;
+      insertIdx=1;
+      cminsky().putClipboard("");
+      keyPress(XK_Control_L); keyPress('c'); //copy
+      CHECK_EQUAL("a",cminsky().getClipboard());
+      cminsky().putClipboard("");
+      keyPress(XK_Control_L); keyPress('x'); //cut
+      CHECK_EQUAL("a",cminsky().getClipboard());
+      CHECK_EQUAL("bc",godleyIcon->table.cell(1,1));
+      keyPress(XK_Control_L); keyPress('v'); //cut
+      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+
+      // initial cell movement when nothing selected
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Tab);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_ISO_Left_Tab);
+      CHECK_EQUAL(3,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Left);
+      CHECK_EQUAL(3,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Right);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Down);
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Up);
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+      
     }
 }
