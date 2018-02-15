@@ -1454,4 +1454,17 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(4,t.cols());
       CHECK_EQUAL("newCol",t.cell(0,1));
     }
+
+   TEST_FIXTURE(GodleyTableWindowFixture, undoRedo)
+     {
+       auto& t=godleyIcon->table;
+       t.cell(1,0)="row1";
+       pushHistory();
+       t.cell(1,0)="xxx";
+       undo(1);
+       CHECK_EQUAL("row1",t.cell(1,0));
+       undo(-1);
+       CHECK_EQUAL("xxx",t.cell(1,0));
+     }
+  
 }
