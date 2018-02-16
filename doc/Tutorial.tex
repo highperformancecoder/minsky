@@ -445,15 +445,18 @@ Impatient at a rate that, if kept constant at its initial level of of
 the rate of outflow declines as the Patient account declines, the
 money in the account decays towards zero but never quite reaches it.
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$120$&$100$&$0$&$20$\\
+%Patient lends to Impatient&&$-Lend$&$Lend$&\\
+%\hline
+%\end{tabular}
+%\resizebox{\textwidth}{!}{\includegraphics{images/NewItem169.eps}}
+%\end{center}
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$100$&$0$&$20$\\
-Patient lends to Impatient&&$-Lend$&$Lend$&\\
-\hline
-\end{tabular}
-\resizebox{\textwidth}{!}{\includegraphics{images/NewItem169.eps}}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}
 \end{center}
 
 Many more actions need to be added to this model to complete it. For a
@@ -462,31 +465,37 @@ lent. Add an additional row to the Godley Table by clicking on the
 `+' key
 next to ``Patient lends to Impatient'' to create a blank row:
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$120$&$100$&$0$&$20$\\
+%Patient lends to Impatient&&$-Lend$&$Lend$&\\
+%&&&&\\
+%\hline
+%\end{tabular}
+%\end{center}
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$100$&$0$&$20$\\
-Patient lends to Impatient&&$-Lend$&$Lend$&\\
-&&&&\\
-\hline
-\end{tabular}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts6.eps}}
 \end{center}
 
 Then label this flow ``Impatient pays interest'' and make the entry
-``Interest'' into the cell for Impatient on that row. Make the matching
-entry ``-Interest'' in the cell for Patient. The flow ``Interest'' now
+``Interest'' into the cell for Patient on that row. Make the matching
+entry ``-Interest'' in the cell for Impatient. The flow ``Interest'' now
 appears on the input side of the Godley Table on the Canvas: 
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$120$&$100$&$0$&$20$\\
+%Patient lends to Impatient&&$-Lend$&$Lend$&\\
+%Impatient pays interest&&$Interest$&$-Interest$&\\
+%\hline
+%\end{tabular}
+%\end{center}
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$100$&$0$&$20$\\
-Patient lends to Impatient&&$-Lend$&$Lend$&\\
-Impatient pays interest&&$Interest$&$-Interest$&\\
-\hline
-\end{tabular}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts7.eps}}
 \end{center}
 
 Interest now has to be defined. It will be the amount in Impatient's
@@ -513,19 +522,22 @@ Impatient is borrowing the money in order to hire workers to work at a
 factory and produce output for sale. So we now need another account
 called Workers, and a payment from Impatient to Workers called Wage:
 
-{
-  \noindent
-\small
-\begin{tabular}{|c|ccccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Workers$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-6}&\multicolumn{1}{|c|}{asset}&\multicolumn{3}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$100$&$0$&$0$&$20$\\
-Patient lends to Impatient&&$-Lend$&$Lend$&&\\
-Impatient pays interest&&$Interest$&$-Interest$&&\\
-Impatient pays Workers&&&$-Wage$&$Wage$&\\
-\hline
-\end{tabular}
-}
+%{
+%  \noindent
+%\small
+%\begin{tabular}{|c|ccccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Workers$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-6}&\multicolumn{1}{|c|}{asset}&\multicolumn{3}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$120$&$100$&$0$&$0$&$20$\\
+%Patient lends to Impatient&&$-Lend$&$Lend$&&\\
+%Impatient pays interest&&$Interest$&$-Interest$&&\\
+%Impatient pays Workers&&&$-Wage$&$Wage$&\\
+%\hline
+%\end{tabular}
+%}
+\begin{center}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts8.eps}}
+\end{center}
 
 In a more complex model, the Wage bill could be related to the current
 rate times the number of workers in employment. In this simple model I
