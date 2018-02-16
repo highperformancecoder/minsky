@@ -204,7 +204,7 @@ table, and so on.
 Variable names uniquely identify variables. Multiple icons on the
 canvas may have the same name --- they all refer to the same
 variable. Variable names have scope, which is either local (no initial
-`:'), belonging to an outer group (indicated by a leading `:' on the
+`:'), belonging to an outer \htmlref{group}{Group} (indicated by a leading `:' on the
 inner group variable, and the outer group variable having no such
 leading `:'), or completely global otherwise. You may select a
 variable name from a drop down list in the ``name'' combo box, which
@@ -280,18 +280,12 @@ temporary variable is added as an I/O variable.
 Variable names within groups are locally scoped to that group. That
 means that a variable of the same name outside the group refers to a
 different entity completely. One can refer to variables outside the
-current scope by qualifying the variable name. The simplest
-qualification to understand is global scope, which is specified by
-prepending a `:' to the variable name. To refer to a variable in
-another group, the notation is \verb+<group id>:<name>+, where
-\verb+<group id>+ is the integer id of the group in question. An
-alternative equivalent notation is \verb+<description>[<group id>]:<name>+, where \verb+<description>+ is the textual name given to
-the group. The description string is ignored by Minsky on input---only
-the group id is important, but this mechanism makes it easier to see
-what variable belongs to which group in the drop down lists in the
-name field. Please try to keep the group names distinctive in their
-first five characters, as Minsky will truncate the descriptive string
-to fit in the drop down menu. 
+current scope by prepending the variable name with a `:'. This refers
+to a local variable within an outer scope, going all the way to global
+scope if no such variable exists. In this way, two groups can share
+a variable reference to a variable by using the `:' prefix, and you
+can limit the scope of the shared variable by placing a local variable
+of the same name in an outer group that both groups are contain within.
 
 A group can also be exported to a file from the context menu.
 This allows you to build up a library of building blocks. There is a
