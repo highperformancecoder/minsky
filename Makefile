@@ -6,8 +6,6 @@ MAC_DIST_DIR=minsky.app/Contents/MacOS
 SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
 
 
-# Use the TCL stub libraries to be consistent with TkTable
-
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
 TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
@@ -79,8 +77,6 @@ TESTS=tests
 # enable TCL coverage testing
 FLAGS+=-DTCL_COV
 endif
-
-LIBS:=-L$(HOME)/usr/lib $(DIRS:%=-L%/lib/Tktable2.11) -lTktable2.11 $(LIBS)
 
 ifdef MXE
 BOOST_EXT=-mt
