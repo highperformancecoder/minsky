@@ -342,7 +342,7 @@ proc showPreferences {} {
         set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Double Entry)"
         
         frame .preferencesForm.buttonBar
-        button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm;updateGodleysDisplay}
+        button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm; redrawAllGodleyTables}
         button .preferencesForm.buttonBar.cancel -text cancel -command {closePreferencesForm}
         pack .preferencesForm.buttonBar.ok [label .preferencesForm.buttonBar.spacer -width 2] .preferencesForm.buttonBar.cancel -side left -pady 10
         grid .preferencesForm.buttonBar -column 1 -row 999 -columnspan 999
@@ -448,6 +448,17 @@ proc autoRepeatButton button {
     after 500 invokeButton $button
 }
 
+proc setSimulationDelay {delay} {
+    # on loading a model, slider is adjusted, which causes
+    # simulationDelay to be set unnecessarily, marking the model
+    # dirty
+    if {$delay != [simulationDelay]} {
+        pushFlags
+        simulationDelay $delay
+        popFlags
+    }
+}
+
 label .controls.slowSpeed -text "slow"
 label .controls.fastSpeed -text "fast"
 scale .controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
@@ -496,12 +507,12 @@ proc exportCanvas {} {
     } elseif {[string match -nocase *.m "$f"]} {
         matlab "$f"
     } else {
-        switch -glob $type {
-            "*(svg)" {minsky.renderCanvasToSVG  "$f.svg"}
-            "*(pdf)" {minsky.renderCanvasToPDF "$f.pdf"}
-            "*(eps)" {minsky.renderCanvasToPS "$f.eps"}
-            "*(tex)" {latex "$f.tex" $preferences(wrapLaTeXLines)}
-            "*(m)" {matlab "$f.m"}
+        switch $type {
+            "SVG" {minsky.renderCanvasToSVG  "$f.svg"}
+            "PDF" {minsky.renderCanvasToPDF "$f.pdf"}
+            "Postscript" {minsky.renderCanvasToPS "$f.eps"}
+            "LaTeX" {latex "$f.tex" $preferences(wrapLaTeXLines)}
+            "Matlab" {matlab "$f.m"}
         }
     }
 }
@@ -613,6 +624,44 @@ grid .tabs -column 0 -row 10 -sticky news
 grid columnconfigure . 0 -weight 1
 grid rowconfigure . 10 -weight 1
 
+# utility for creating OK/Cancel button bar
+proc buttonBar {window okProc} {
+    frame $window.buttonBar
+    button $window.buttonBar.ok -text "OK" -command "$okProc; cancelWin $window"
+    button $window.buttonBar.cancel -text "Cancel" -command "cancelWin $window"
+    pack $window.buttonBar.cancel $window.buttonBar.ok -side left
+    pack $window.buttonBar -side top
+    bind $window <Key-Return> "$window.buttonBar.ok invoke"
+    bind $window <Key-Escape> "$window.buttonBar.cancel invoke"
+}
+
+proc cancelWin window {
+    grab release $window
+    destroy $window
+}
+
+# pop up a text entry widget to capture some user input
+# @param win is top level window name
+# @param init initialises the entry widget
+# @param okproc gets executed when OK pressed. Use [$win.entry get] to return user value
+proc textEntryPopup {win init okproc} {
+    if {![winfo exists $win]} {
+        toplevel $win
+        entry $win.entry
+        pack $win.entry -side top
+        buttonBar $win $okproc
+    } else {
+        wm deiconify $win
+    }
+    $win.entry delete 0 end
+    $win.entry insert 0 $init
+    wm transient $win
+    focus $win.entry
+    tkwait visibility $win
+    grab set $win
+    
+}
+
 source $minskyHome/godley.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/plots.tcl
@@ -634,47 +683,97 @@ label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3
 place .wiring.panopticon -relx 1 -rely 0 -anchor ne
 minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
-bind .wiring.canvas <Configure> {minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
+bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
+bind .equations.canvas <Configure> {setScrollBars}
+
 set helpTopics(.wiring.panopticon) Panopticon
 
-proc panCanvases {offsx offsy} {
-    model.moveTo $offsx $offsy
-    equationDisplay.offsx $offsx
-    equationDisplay.offsy $offsy
-    set x0 [expr (10000-$offsx)/20000.0]
-    .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
-    set y0 [expr (10000-$offsy)/20000.0]
-    .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
-    canvas.requestRedraw
-    equationDisplay.requestRedraw
-    panopticon.requestRedraw
+proc setScrollBars {} {
+    switch [lindex [.tabs tabs] [.tabs index current]] {
+        .wiring {
+            set x0 [expr (10000-[model.x])/20000.0]
+            set y0 [expr (10000-[model.y])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
+        }
+        .equations {
+            if {[equationDisplay.width]>0} {
+                set x0 [expr [equationDisplay.offsx]/[equationDisplay.width]]
+                .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/[equationDisplay.width]]
+            } else {.hscroll set 0 1}
+            if {[equationDisplay.height]>0} {
+                set y0 [expr [equationDisplay.offsx]/[equationDisplay.height]]
+                .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/[equationDisplay.height]]
+            } else {.vscroll set  0 1}
+        }
+    }
 }
+
+bind .tabs <<NotebookTabChanged>> {setScrollBars}
+
+proc panCanvas {offsx offsy} {
+    switch [lindex [.tabs tabs] [.tabs index current]] {
+        .wiring {
+            model.moveTo $offsx $offsy
+            canvas.requestRedraw
+            panopticon.requestRedraw
+        }
+        .equations {
+            equationDisplay.offsx $offsx
+            equationDisplay.offsy $offsy
+            equationDisplay.requestRedraw
+        }
+    }
+    setScrollBars
+}
+
 
 ttk::sizegrip .sizegrip
 proc scrollCanvases {xyview args} {
+    set win [lindex [.tabs tabs] [.tabs index current]]
+    set ww [winfo width $win]
+    set wh [winfo height $win]
+    switch $win {
+        .wiring {
+            set x [model.x]
+            set y [model.y]
+            set x1 10000
+            set y1 10000
+            set w 20000
+            set h 20000
+        }
+        .equations {
+            set x [equationDisplay.offsx]
+            set y [equationDisplay.offsy]
+            set x1 0
+            set y1 0
+            set w [equationDisplay.width]
+            set h [equationDisplay.height]
+        }
+    }
     switch [lindex $args 0] {
         moveto {
-            set offs [expr 10000 - 20000 * [lindex $args 1]]
             switch $xyview {
-                xview {panCanvases $offs [model.y]}
-                yview {panCanvases [model.x] $offs}
+                xview {panCanvas [expr $x1-$w*[lindex $args 1]] $y}
+                yview {panCanvas $x [expr $y1-$h*[lindex $args 1]]}
             }
         }
         scroll {
             switch [lindex $args 2] {
-                units {set incr [expr [lindex $args 1]*100]}
-                pages {set incr [expr [lindex $args 1]*800]}
+                units {set incr [expr [lindex $args 1]*0.01]}
+                pages {set incr [expr [lindex $args 1]*0.1]}
             }
             switch $xyview {
-                xview {panCanvases [expr [model.x]+$incr] [model.y]}
-                yview {panCanvases [model.x] [expr [model.y]+$incr]}
+                xview {panCanvas [expr $x-$incr*$w] $y}
+                yview {panCanvas $x [expr $y-$incr*$h]}
             }
         }
     }
 }
 scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
-panCanvases 0 0
+update
+setScrollBars
 
 # adjust cursor for pan mode
 if {[tk windowingsystem] == "aqua"} {
@@ -683,10 +782,15 @@ if {[tk windowingsystem] == "aqua"} {
     set panIcon fleur
 }
 
+
+
 # equations pan mode
 .equations.canvas configure -cursor $panIcon
-bind .equations.canvas <Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}
-bind .equations.canvas <B1-Motion> {panCanvases [expr %x-$panOffsX] [expr %y-$panOffsY]}
+bind .equations.canvas <Button-1> {
+    set panOffsX [expr %x-[equationDisplay.offsx]]
+    set panOffsY [expr %y-[equationDisplay.offsy]]
+}
+bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
@@ -748,11 +852,11 @@ proc step {} {
         }
     } else {
         # run simulation
-        global running
+        global running preferences
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
-        updateGodleysDisplay
+        if $preferences(godleyDisplay) redrawAllGodleyTables
         update
         return -options $options $errMsg
     }
@@ -804,22 +908,12 @@ proc reset {} {
 
         global oplist lastOp
         set oplist [opOrder]
-        updateGodleysDisplay
+        redrawAllGodleyTables
         set lastOp -1
         return -code $err $result
     }
 }
 
-proc setSimulationDelay {delay} {
-    # on loading a model, slider is adjusted, which causes
-    # simulationDelay to be set unnecessarily, marking the model
-    # dirty
-    if {$delay != [simulationDelay]} {
-        pushFlags
-        simulationDelay $delay
-        popFlags
-    }
-}
 
 
 proc populateRecentFiles {} {
@@ -855,11 +949,6 @@ proc openNamedFile {ofname} {
     recentreCanvas
     
 
-#    foreach g [godleyItems.#keys] {
-#        godley.get $g
-#        set preferences(godleyDE) [godley.table.doubleEntryCompliant]
-#    }
-
    .controls.simSpeed set [simulationDelay]
     # setting preferences(godleyDE) and simulationDelay causes the edited (dirty) flag to be set
     pushHistory
@@ -876,10 +965,14 @@ proc insertFile {} {
 
 # adjust canvas so that -ve coordinates appear on canvas
 proc recentreCanvas {} {
-    canvas.recentre
-    equationDisplay.offsx 0
-    equationDisplay.offsy 0
-    equationDisplay.requestRedraw
+    switch [lindex [.tabs tabs] [.tabs index current]] {
+        .wiring {canvas.recentre}
+        .equations {
+            equationDisplay.offsx 0
+            equationDisplay.offsy 0
+            equationDisplay.requestRedraw
+        }
+    }
 }
 
 proc save {} {
@@ -1008,6 +1101,7 @@ proc setPreferenceParms {} {
 	set preferences($var) $preferences_input($var)
     }
     defaultFont $preferences(defaultFont)
+    setGodleyDisplay
 }
 
 
@@ -1105,35 +1199,15 @@ proc help {topic} {
 }
 
 proc aboutMinsky {} {
-    if {![winfo exists .aboutMinsky]} {
-        toplevel .aboutMinsky
-        wm resizable .aboutMinsky 0 0
-        label .aboutMinsky.text
-
-        button .aboutMinsky.ok -text OK -command {
-            grab release .aboutMinsky
-            wm withdraw .aboutMinsky
-        }
-        pack .aboutMinsky.text .aboutMinsky.ok
-    }
-    .aboutMinsky.text configure -text "
-   Minsky [minskyVersion]\n
+  tk_messageBox -message "
+    Minsky [minskyVersion]\n
    EcoLab [ecolabVersion]\n
    Tcl/Tk [info tclversion]
-
+" -detail "
    Minsky is FREE software, distributed under the 
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
    " 
-    deiconify .aboutMinsky 
-
-    # wierd trick to resize toplevel windows:
-    update idletasks
-    wm geometry .aboutMinsky
-
-    tkwait visibility .aboutMinsky
-    grab set .aboutMinsky
-    wm transient .aboutMinsky .
 }
 
 # delete subsidiary toplevel such as godleys and plots
@@ -1242,6 +1316,8 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     # force update canvas size to ensure model is displayed correctly
     update
     canvas.requestRedraw
+    # not sure why this is needed, but initial draw doesn't happen without it
+    event generate .wiring.canvas <Expose>
     pushHistory
     doPushHistory 1
 }
@@ -1313,14 +1389,6 @@ proc replay {} {
         } elseif {$running} {runstop}
     } 
 }
-
-## checks that the latest state has been pushed to history every second or so
-#proc checkHistory {} {
-#    global running
-#    if {!$running} checkPushHistory
-#    after 1000 checkHistory
-#}
-#after 1000 checkHistory
 
 # check whether coverage analysis is required
 if [info exists env(MINSKY_COV)] {attachTraceProc ::}

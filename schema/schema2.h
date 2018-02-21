@@ -154,6 +154,9 @@ namespace schema2
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}
+    Item(int id, const minsky::Group& g, const std::vector<int>& ports):
+      ItemBase(id, static_cast<const minsky::Item&>(g),ports),
+      width(g.width), height(g.height), name(g.title) {} 
 
     // schema1 importers
     Item(const schema1::Operation& it):
@@ -176,7 +179,7 @@ namespace schema2
       ItemBase(it, "PlotWidget"),
       name(it.title), logx(it.logx), logy(it.logy), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
       legend(it.legend) {ports=it.ports;}
-    Item(const schema1::Group& it): ItemBase(it,"Group") {} 
+    Item(const schema1::Group& it): ItemBase(it,"Group"), name(it.name) {} 
     Item(const schema1::Switch& it): ItemBase(it,"SwitchIcon") {ports=it.ports;} 
 
     void addLayout(const schema1::UnionLayout& layout) {

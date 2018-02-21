@@ -20,7 +20,7 @@
 #define GODLEYICON_H
 
 #include "variable.h"
-#include "godley.h"
+#include "godleyTable.h"
 #include "zoom.h"
 #include "intrusiveMap.h"
 #include "classdesc_access.h"

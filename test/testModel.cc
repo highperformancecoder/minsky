@@ -21,6 +21,7 @@
 #include "operation.h"
 #include "group.h"
 #include "minsky.h"
+#include "godleyTableWindow.h"
 #include <ecolab_epilogue.h>
 
 #include <UnitTest++/UnitTest++.h>
@@ -999,4 +1000,471 @@ SUITE(Integrate)
       intop2->description(intop->description());
       CHECK(intop2->description()!=intop->description());
     }
+}
+
+SUITE(GodleyTableWindow)
+{
+  template <ButtonWidgetEnums::RowCol RC>
+    struct ButtonWidgetFixture: public GodleyIcon, public ButtonWidget<RC>
+  {
+    using ButtonWidget<RC>::first;
+    using ButtonWidget<RC>::middle;
+    using ButtonWidget<RC>::last;
+    using ButtonWidget<RC>::idx;
+    using ButtonWidget<RC>::pos;
+    using ButtonWidget<RC>::invoke;
+    using ButtonWidget<RC>::buttonSpacing;
+    ButtonWidgetFixture(): ButtonWidget<RC>(static_cast<GodleyIcon&>(*this))
+    {
+      table.resize(4,4);
+      for (size_t r=0; r<4; ++r)
+        for (size_t c=0; c<4; ++c)
+          table.cell(r,c)="c"+str(r)+str(c);
+      table._assetClass(1,GodleyAssetClass::asset);
+      table._assetClass(2,GodleyAssetClass::liability);
+      table._assetClass(3,GodleyAssetClass::equity);
+    }
+  };
+
+  typedef ButtonWidgetFixture<ButtonWidgetEnums::row> RowButtonWidgetFixture;
+  typedef ButtonWidgetFixture<ButtonWidgetEnums::col> ColButtonWidgetFixture;
+  
+  TEST_FIXTURE(RowButtonWidgetFixture, RowButtonWidget)
+    {
+      auto origData=table.getData();
+      idx=2;
+      invoke(0);
+      CHECK_EQUAL(5,table.rows());
+      // check row inserted
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("",table.cell(3,i));
+    
+      idx=3;
+      invoke(buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      // check row deleted
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(3,i));
+      CHECK(table.getData()==origData);
+    
+      // now check arrow functionality
+      idx=2; pos=first;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      // check row swapped with next
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(1,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(2,i));
+    
+      pos=middle;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(2,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(1,i));
+      invoke(3*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(2,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(1,i));
+    
+      pos=last;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.rows());
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c1"+str(i),table.cell(3,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c2"+str(i),table.cell(1,i));
+      for (size_t i=0; i<table.cols(); ++i)
+        CHECK_EQUAL("c3"+str(i),table.cell(2,i));
+
+    
+      // should be no 4th button on first & last
+      pos=first;
+      auto saveData=table.getData();
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+      pos=last;
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+}
+  
+  TEST_FIXTURE(ColButtonWidgetFixture, ColButtonWidget)
+    {
+      auto origData=table.getData();
+      idx=2;
+      invoke(0);
+      CHECK_EQUAL(5,table.cols());
+      // check row inserted
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("",table.cell(i,3));
+    
+      idx=3;
+      invoke(buttonSpacing);
+      CHECK_EQUAL(4,table.cols());
+      // check col deleted
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
+      CHECK(table.getData()==origData);
+    
+      // now check arrow functionality
+      idx=2; pos=first;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(5,table.cols());
+      // check row swapped with next
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,4));
+      // extra column inserted for liability class
+      for (size_t i=0; i<table.rows(); ++i) 
+        CHECK_EQUAL("",table.cell(i,2));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
+    
+      pos=middle; idx=3;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.cols());
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,3));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,2));
+      idx=2;
+      invoke(3*buttonSpacing);
+      CHECK_EQUAL(5,table.cols());
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,3));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,4));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("",table.cell(i,2));
+    
+      pos=last; idx=3;
+      invoke(2*buttonSpacing);
+      CHECK_EQUAL(4,table.cols());
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,2));
+      for (size_t i=0; i<table.rows(); ++i)
+        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
+
+    
+      // should be no 4th button on first & last
+      pos=first;
+      auto saveData=table.getData();
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+      pos=last;
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);
+    }
+
+  struct GodleyTableWindowFixture: public GodleyTableWindow
+  {
+    GodleyTableWindowFixture(): GodleyTableWindow(make_shared<GodleyIcon>())
+    {
+      Tk_Init(interp()); // required for clipboard operations
+    }
+  };
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, mouseMove)
+    {
+      godleyIcon->table.cell(1,1)="hello";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+10, y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(1, colX(x));
+      CHECK_EQUAL(1, rowY(y));
+      mouseMove(x,y);
+      CHECK_EQUAL(1, hoverRow);
+      CHECK_EQUAL(1, hoverCol);
+      x=2*ButtonWidget<row>::buttonSpacing+1;
+      CHECK_EQUAL(rowWidget, clickType(x,y));
+      mouseMove(x,y);
+      CHECK_EQUAL(2,rowWidgets[1].mouseOver());
+      x=colLeftMargin[1]+ButtonWidget<row>::buttonSpacing+1;
+      y=5+columnButtonsOffset;
+      mouseMove(x,y);
+      CHECK_EQUAL(1,colWidgets[1].mouseOver());
+      mouseMove(0,0);
+      for (auto& i: rowWidgets) CHECK_EQUAL(-1, i.mouseOver());
+      for (auto& i: colWidgets) CHECK_EQUAL(-1, i.mouseOver());
+    }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, mouseSelect)
+    {
+      Tk_Init(interp()); // required for clipboard operations
+      godleyIcon->table.cell(1,1)="hello";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1], y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(1, colX(x));
+      CHECK_EQUAL(1, rowY(y));
+      mouseDown(x,y);
+      mouseMoveB1(x+10,y);
+      mouseUp(x+10,y);
+      CHECK_EQUAL(1, selectedRow);
+      CHECK_EQUAL(1, selectedCol);
+      CHECK_EQUAL(0,insertIdx);
+      CHECK(selectIdx>insertIdx);
+      CHECK(!cminsky().getClipboard().empty());
+
+      
+    }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, mouseButtons)
+    {
+      godleyIcon->table.resize(3,4);
+      godleyIcon->table.cell(0,1)="col1";
+      godleyIcon->table.cell(0,2)="col2";
+      godleyIcon->table.cell(1,1)="r1c1";
+      godleyIcon->table.cell(1,2)="r1c2";
+      godleyIcon->table.cell(2,1)="r2c1";
+      godleyIcon->table.cell(2,2)="r2c2";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+2*ButtonWidget<row>::buttonSpacing+1, y=5+columnButtonsOffset;
+      CHECK_EQUAL(colWidget, clickType(x,y));
+      mouseDown(x,y);
+      // should have invoked moving column 1 left
+      CHECK_EQUAL("r1c2",godleyIcon->table.cell(1,2));
+      CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
+      CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,3));
+      CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,3));
+      x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
+      CHECK_EQUAL(rowWidget, clickType(x,y));
+      mouseDown(x,y);
+      // should have invoked moving row 1 down
+      CHECK_EQUAL("r2c2",godleyIcon->table.cell(1,2));
+      CHECK_EQUAL("r1c2",godleyIcon->table.cell(2,2));
+      CHECK_EQUAL("r2c1",godleyIcon->table.cell(1,3));
+      CHECK_EQUAL("r1c1",godleyIcon->table.cell(2,3));
+    }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, moveRowColCell)
+    {
+      godleyIcon->table.resize(3,4);
+      godleyIcon->table.cell(0,1)="col1";
+      godleyIcon->table.cell(0,2)="col2";
+      godleyIcon->table.cell(1,0)="row1";
+      godleyIcon->table.cell(2,0)="row2";
+      godleyIcon->table.cell(1,1)="r1c1";
+      godleyIcon->table.cell(1,2)="r1c2";
+      godleyIcon->table.cell(2,1)="r2c1";
+      godleyIcon->table.cell(2,2)="r2c2";
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+10, y=topTableOffset+5;
+      CHECK_EQUAL(1,colX(x));
+      CHECK_EQUAL(0,rowY(y));
+      mouseDown(x,y);
+      x=colLeftMargin[2]+10;
+      CHECK_EQUAL(2,colX(x));
+      mouseMoveB1(x,y);
+      mouseUp(x,y);
+      CHECK_EQUAL("col1",godleyIcon->table.cell(0,3));
+
+      x=leftTableOffset+10;
+      y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(0,colX(x));
+      CHECK_EQUAL(1,rowY(y));
+      mouseDown(x,y);
+      y+=rowHeight;
+      CHECK_EQUAL(2,rowY(y));
+      mouseMoveB1(x,y);
+      mouseUp(x,y);
+      CHECK_EQUAL("row1",godleyIcon->table.cell(2,0));
+      CHECK_EQUAL("row2",godleyIcon->table.cell(1,0));
+
+      // check moving a cell
+      x=colLeftMargin[1]+10;
+      y=topTableOffset+rowHeight+5;
+      CHECK_EQUAL(1,colX(x));
+      CHECK_EQUAL(1,rowY(y));
+      godleyIcon->table.cell(1,1)="cell11";
+      mouseDown(x,y);
+      x=colLeftMargin[2]+10;
+      y+=rowHeight;
+      mouseMoveB1(x,y);
+      mouseUp(x,y);
+      CHECK_EQUAL("cell11",godleyIcon->table.cell(2,2));
+    }
+
+#define XK_MISCELLANY
+#define XK_XKB_KEYS
+#include <X11/keysymdef.h>
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, keyPress)
+    {
+      godleyIcon->table.resize(3,4);
+      selectedCol=1;
+      selectedRow=1;
+      selectIdx=insertIdx=0;
+      keyPress('a'); keyPress('b'); keyPress('b'); keyPress(XK_Delete);
+      keyPress('c'); keyPress('c'); keyPress(XK_BackSpace);
+      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+
+      godleyIcon->table.cell(0,0)="stock1";
+      CHECK_EQUAL(0,godleyIcon->stockVars().size());
+      keyPress(XK_Return); // should cause update to be called
+      // unfortunately, this is a freestanding GodleyIcon, so update has no effect
+//      CHECK_EQUAL(1,godleyIcon->stockVars().size());
+//      CHECK_EQUAL("stock1",godleyIcon->stockVars()[0]->name());
+      CHECK_EQUAL(-1,selectedCol);
+      CHECK_EQUAL(-1,selectedRow);
+
+      
+      selectedCol=1;
+      selectedRow=1;
+      savedText="abc";
+      keyPress('d'); keyPress(XK_Escape); // should revert to previous
+      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+      CHECK_EQUAL(-1,selectedCol);
+      CHECK_EQUAL(-1,selectedRow);
+
+      // tab, arrow movement
+      selectedCol=1;
+      selectedRow=1;
+      selectIdx=insertIdx=0;
+      keyPress(XK_Right);
+      CHECK_EQUAL(1,insertIdx);
+      keyPress(XK_Left);
+      CHECK_EQUAL(0,insertIdx);
+      keyPress(XK_Left);
+      CHECK_EQUAL(0,selectedCol);
+      keyPress(XK_Tab);
+      CHECK_EQUAL(1,selectedCol);
+      keyPress(XK_Tab);
+      CHECK_EQUAL(2,selectedCol);
+      keyPress(XK_Right);
+      CHECK_EQUAL(3,selectedCol);
+      keyPress(XK_Right);
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(2,selectedRow);
+      keyPress(XK_Tab);
+      CHECK_EQUAL(1,selectedCol);
+      keyPress(XK_Up);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+      keyPress(XK_Down);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(2,selectedRow);
+      keyPress(XK_ISO_Left_Tab);
+      CHECK_EQUAL(0,selectedCol);
+      keyPress(XK_ISO_Left_Tab);
+      CHECK_EQUAL(3,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+      keyPress(XK_Tab); // check wrap around
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(2,selectedRow);
+
+      // cut, copy paste
+      selectedCol=1;
+      selectedRow=1;
+      selectIdx=0;
+      insertIdx=1;
+      cminsky().putClipboard("");
+      keyPress(XK_Control_L); keyPress('c'); keyRelease(XK_Control_L);//copy
+      CHECK_EQUAL("a",cminsky().getClipboard());
+      cminsky().putClipboard("");
+      keyPress(XK_Control_L); keyPress('x');  keyRelease(XK_Control_L);//cut
+      CHECK_EQUAL("a",cminsky().getClipboard());
+      CHECK_EQUAL("bc",godleyIcon->table.cell(1,1));
+      keyPress(XK_Control_L); keyPress('v');  keyRelease(XK_Control_L);//paste
+      CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
+
+      // initial cell movement when nothing selected
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Tab);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_ISO_Left_Tab);
+      CHECK_EQUAL(3,selectedCol);
+      CHECK_EQUAL(2,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Left);
+      CHECK_EQUAL(3,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Right);
+      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(0,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Down);
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(1,selectedRow);
+      
+      selectedCol=-1; selectedRow=-1;
+      keyPress(XK_Up);
+      CHECK_EQUAL(0,selectedCol);
+      CHECK_EQUAL(2,selectedRow);
+      
+    }
+  
+  TEST_FIXTURE(GodleyTableWindowFixture, addDelVars)
+    {
+      surface.reset(new ecolab::cairo::Surface
+                    (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
+      redraw(0,0,0,0);
+      double x=colLeftMargin[1]+10, y=topTableOffset+5+rowHeight;
+      CHECK_EQUAL(1,colX(x));
+      CHECK_EQUAL(1,rowY(y));
+      auto& t=godleyIcon->table;
+      t.cell(1,0)="row1";
+      t.cell(0,1)="col1";
+      t.cell(0,2)="col2";
+      t.cell(0,3)="col3";
+      addFlow(y);
+      CHECK_EQUAL(3,t.rows());
+      CHECK_EQUAL("",t.cell(2,0));
+      t.cell(2,0)="row2";
+      deleteFlow(y);
+      CHECK_EQUAL(2,t.rows());
+      CHECK_EQUAL("row2",t.cell(1,0));
+
+      addStockVar(x);
+      CHECK_EQUAL(5,t.cols());
+      CHECK_EQUAL("",t.cell(0,2));
+      t.cell(0,2)="newCol";
+
+      deleteStockVar(x);
+      CHECK_EQUAL(4,t.cols());
+      CHECK_EQUAL("newCol",t.cell(0,1));
+    }
+
+   TEST_FIXTURE(GodleyTableWindowFixture, undoRedo)
+     {
+       auto& t=godleyIcon->table;
+       t.cell(1,0)="row1";
+       pushHistory();
+       t.cell(1,0)="xxx";
+       undo(1);
+       CHECK_EQUAL("row1",t.cell(1,0));
+       undo(-1);
+       CHECK_EQUAL("xxx",t.cell(1,0));
+     }
+  
 }

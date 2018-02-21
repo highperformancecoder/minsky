@@ -28,6 +28,15 @@ namespace minsky
   /// containing Pango markup. Only a small subset of LaTeX is implemented.
   inline std::string latexToPango(const std::string& x) 
   {return latexToPango(x.c_str());}
+
+  // replace pango special chars with coded equivalents
+  std::string defang(char c);
+  inline std::string defang(const std::string& s) {
+    std::string r;
+    for (auto& c: s) r+=defang(c);
+    return r;
+  }
+  
 }
 
 #endif

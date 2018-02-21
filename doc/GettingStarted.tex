@@ -95,7 +95,7 @@ current model as a \htmlref{group}{Group}
   option}{wrap-equations}, which can be found in the preferences panel under the options menu.
   If using a MatLab function this can be used to simulate the system in a MatLab compatible system,
   such as \htmladdnormallinkfoot{MatLab}{https://en.wikipedia.org/wiki/MATLAB} or 
-  \htmladdnormallinkfoot{Octave {http://www.gnu.org/software/octave/}.
+  \htmladdnormallinkfoot{Octave}{http://www.gnu.org/software/octave/}.
 
 \item[Log simulation] Outputs the results of the integration variables
 into a CSV data file for later use in spreadsheets or plotting
@@ -416,7 +416,10 @@ Double-click on the Bank Icon (or right-click and choose ``Open Godley
 Table'' from the context menu) and you get a double-entry bookkeeping
 table we call a Godley Table, which looks like the following onscreen:
 
-\fwhtmladdimg{NewItem30.png}
+%\fwhtmladdimg{NewItem30.png}
+\begin{center}
+  \scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}
+\end{center}
 
  
 Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the \htmlref{Tutorial (Monetary)}{tut:basicBankModel}.
@@ -781,32 +784,63 @@ The first step in creating a model with a banking sector is to click on the Godl
 
 \subsubsection{Entering accounts}
 
-Double click or right click on the Godley table block
-to bring up the Godley Table.
+Double click or right click on the Godley table block to bring up the
+Godley Table. The table is divided up into sections representing the
+different accounting asset classes: Asset, Liability and
+Equity. Assets represent what you have to hand at any point in time,
+and should always be the sum of liabilities and equity. Liabilities
+represent amounts that are owed to other parties, and equity the
+amount of capital owned. The column \verb+A-L-E+ represents the {\em
+  accounting equation} (Assets$-$Liabilities$-$Equity), and a properly
+formatted Godley table adhering to {\em double entry accounting
+  conventions} will have this column zero for all rows.
 
-When a Godley Table is first loaded, it has room for one account to be
-defined. To create an additional accounts, click on the
-`+' button above the first account. One
-click then adds another column in which an additional account can be
-defined.
+When a Godley Table is first loaded, each accounting class has room
+for one account (also known as a {\em stock}) to be defined. To create
+an additional accounts, click on the `+' button above the first
+account. One click then adds another column in which an additional
+account can be defined. Note that the table will delete excess blank
+accounts, so you should name them as you go. You can chancge the asset
+class of an account by moving it into the appropriate sector using the
+$\leftarrow$ and $\rightarrow$ buttons, or by clicking and dragging
+the column variable name (the first row of the column).
+
+%\begin{center}
+%\begin{tabular}{|c|cc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{}&\multicolumn{1}{|c|}{}\\\cline{2-3}&\multicolumn{2}{|c|}{noAssetClass}\\\hline
+%Initial Conditions&$0$&$0$\\
+%\hline
+%\end{tabular}
+%\end{center}
 
 \begin{center}
-\htmladdimg{Entering Accounts Godley1.png} 
+  \scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}
 \end{center}
 
 
 A column can be deleted by clicking on the `--' button above the column.
 
 To define bank accounts in the system you enter a name into the row
-labeled ``\verb+Flows V / Stock Variables ->+''. For example, if you were
+labeled ``Flows $\downarrow$ / Stock Variables $\rightarrow$''. For example, if you were
 going to define a banking sector that operated simply as an
 intermediary between ``Patient'' people and ``Impatient'' people---as
 in the Neoclassical ``Loanable Funds'' model--you might define the
 following accounts: 
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{4}{|c|}{noAssetClass}\\\hline
+%Initial Conditions&$0$&$0$&$0$&$0$\\
+%\hline
+%\end{tabular}
+%\end{center}
+
 \begin{center}
-\htmladdimg{Entering Accounts Godley2.png} 
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts.eps}}
 \end{center}
+
 
 As you enter the accounts, they appear at the bottom of the Bank block on the canvas:
 
@@ -814,26 +848,31 @@ As you enter the accounts, they appear at the bottom of the Bank block on the ca
   \scalebox{0.5}{\includegraphics{images/NewItem145.eps}}
 \end{center}
 
-\subsection{Defining account types}
-
-Bank accounts must be classified as either an Asset, a Liability, or
-the Equity of the relevant Bank, using the drop-down menu currently
-labeled {\tt noAssetClass} at the top of each account. In
-this model, Reserves are an asset of the banking sector, the accounts
-of ``Patient'' and ``Impatient'' are liabilities, and the ``Safe'' is
-the equity of the banking system. Click on the
-{\tt noAssetClass} button and this drop-down menu will
-appear:
-
-\begin{center}
-\htmladdimg{NewItem140.png} 
-\end{center}
-
-Choose the relevant entry for each column, and the accounts will be properly classified when the model is simulated:
-
-\begin{center}
-\htmladdimg{Entering Accounts Godley2.png} 
-\end{center}
+%\subsection{Defining account types}
+%
+%Bank accounts must be classified as either an Asset, a Liability, or
+%the Equity of the relevant Bank, using the drop-down menu currently
+%labeled {\tt noAssetClass} at the top of each account. In
+%this model, Reserves are an asset of the banking sector, the accounts
+%of ``Patient'' and ``Impatient'' are liabilities, and the ``Safe'' is
+%the equity of the banking system. Click on the
+%{\tt noAssetClass} button and this drop-down menu will
+%appear:
+%
+%\begin{center}
+%\htmladdimg{NewItem140.png} 
+%\end{center}
+%
+%Choose the relevant entry for each column, and the accounts will be properly classified when the model is simulated:
+%
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$0$&$0$&$0$&$0$\\
+%\hline
+%\end{tabular}
+%\end{center}
 
 \subsubsection{Entering flows between accounts}
 
@@ -847,58 +886,72 @@ money in each account when the simulation begins). You do this by
 clicking on the `+' key on the Initial Conditions row. This creates a
 blank row for recording a flow between accounts.
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$0$&$0$&$0$&$0$\\
+%&&&&\\
+%\hline
+%\end{tabular}
+%\end{center}
+
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$0$&$0$&$0$&$0$\\
-&&&&\\
-\hline
-\end{tabular}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts1.eps}}
 \end{center}
 
 The cell below ``Initial Conditions'' is used to give a verbal
 description of what the flow is: 
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$0$&$0$&$0$&$0$\\
+%Patient lends to Impatient&&&&\\
+%\hline
+%\end{tabular}
+%\end{center}
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$0$&$0$&$0$&$0$\\
-Patient lends to Impatient&&&&\\
-\hline
-\end{tabular}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts2.eps}}
 \end{center}
 
 The flows between accounts are then recorded in the relevant cells
 underneath the columns. Here we will start with putting the label
-``Lend'' into the Patient column. 
+``-Lend'' into the Patient column. It is negative, because Patient is
+lending to Impatient.
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$0$&$0$&$0$&$0$\\
+%Patient lends to Impatient&&$-Lend$&&\\
+%\hline
+%\end{tabular}
+%\end{center}
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$0$&$0$&$0$&$0$\\
-Patient lends to Impatient&&$-Lend$&&\\
-\hline
-\end{tabular}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts3.eps}}
 \end{center}
 
 Notice that the program shows that the Row Sum for this transaction is
-currently ``-Lend'', when it should be zero to obey the double-entry
+currently ``Lend'', when it should be zero to obey the double-entry
 bookkeeping rule that all rows must balance. This is because a
-destination for ``-Lend'' has not yet been specified. The destination
+destination for ``Lend'' has not yet been specified. The destination
 is Impatient's account, and to balance the row to zero this part of
 the transaction must be entered as ``Lend'': 
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$0$&$0$&$0$&$0$\\
+%Patient lends to Impatient&&$-Lend$&$Lend$&\\
+%\hline
+%\end{tabular}
+%\end{center}
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$0$&$0$&$0$&$0$\\
-Patient lends to Impatient&&$-Lend$&$Lend$&\\
-\hline
-\end{tabular}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts4.eps}}
 \end{center}
 
 The accounting equation also applies to the Initial Conditions (the amount of money
@@ -907,14 +960,17 @@ Initial Conditions must balance. This requires that there are
 entries on the Asset side of the Banking ledger that exactly match the
 sum of Liabilities and Equity: 
 
+%\begin{center}
+%\begin{tabular}{|c|cccc|}
+%\hline
+%Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
+%Initial Conditions&$120$&$100$&$0$&$20$\\
+%Patient lends to Impatient&&$-Lend$&$Lend$&\\
+%\hline
+%\end{tabular}
+%\end{center}
 \begin{center}
-\begin{tabular}{|c|cccc|}
-\hline
-Flows $\downarrow$ / Stock Variables $\rightarrow$&\multicolumn{1}{|c|}{$Reserves$}&\multicolumn{1}{|c|}{$Patient$}&\multicolumn{1}{|c|}{$Impatient$}&\multicolumn{1}{|c|}{$Safe$}\\\cline{2-5}&\multicolumn{1}{|c|}{asset}&\multicolumn{2}{|c|}{liability}&\multicolumn{1}{|c|}{equity}\\\hline
-Initial Conditions&$120$&$100$&$0$&$20$\\
-Patient lends to Impatient&&$-Lend$&$Lend$&\\
-\hline
-\end{tabular}
+  \scalebox{.5}{\includegraphics{images/godleyTableWithAccounts5.eps}}
 \end{center}
 
 As you enter flows, these appear on the left hand side of the bank block:

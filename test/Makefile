@@ -56,7 +56,7 @@ tcl-cov: tcl-cov.o $(MINSKYOBJS)
 include $(UNITTESTOBJS:.o=.d) $(EXES:=.d)
 
 clean:
-	$(BASIC_CLEAN) unittests $(EXES)
+	$(BASIC_CLEAN) unittests $(EXES)  *.gcda *.gcno
 	cd 00; $(BASIC_CLEAN)
 	cd exampleLogs; $(BASIC_CLEAN)
 	cd oldSchema; $(BASIC_CLEAN)

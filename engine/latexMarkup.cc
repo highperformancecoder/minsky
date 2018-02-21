@@ -700,7 +700,10 @@ namespace
     if ((lead&0xC0)==0xC0) r+=*input++; // multibyte byte sequence
     if ((lead&0xE0)==0xE0) r+=*input++; // 3 or more
     if ((lead&0xF8)==0xF0) r+=*input++; // 4 bytes
-    r+=*input++;
+    if ((lead&0xC0)!=0xC0) // defang any single byte chars
+      r+=minsky::defang(*input++);
+    else
+      r+=*input++;
     return r;
   }
   
@@ -820,27 +823,7 @@ namespace
           *this+="<tt>";
           char delim=*input++;
           for (; *input!='\0' && *input!=delim; ++input)
-            switch (*input)
-              {
-              case '<':
-                *this+="&lt;";
-                break;
-              case '>':
-                *this+="&gt;";
-                break;
-              case '&':
-                *this+="&amp;";
-                break;
-              case '\'':
-                *this+="&apos;";
-                break;
-              case '\"':
-                *this+="&quot;";
-                break;
-              default:
-                *this+=*input;
-                break;
-              }
+            *this+=minsky::defang(*input);
           *this+="</tt>";
           ++input;
         }
@@ -853,6 +836,19 @@ namespace
 
 namespace minsky
 {
+    string defang(char c)
+    {
+      switch (c)
+        {
+        case '<': return "&lt;";
+        case '>': return "&gt;";
+        case '&': return "&amp;";
+        case '\'': return "&apos;";
+        case '\"': return "&quot;";
+        default: return string{&c,1};
+        }
+    }
+    
   string latexToPango(const char* input)
   {
     if (input[0]=='\0')

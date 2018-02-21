@@ -39,6 +39,19 @@ namespace minsky
   {
     string argv0=to_string(argv[0]);
     MinskyTCL& m=static_cast<MinskyTCL&>(minsky());
+    if (argv0.find("godleyWindow")==0)
+      {
+        if (argv0.find(".undo")!=std::string::npos) return; // do not record undo in history
+        if (argv0.find(".keyRelease")!=std::string::npos) return; 
+        // support undo/redo in a Godley edit window
+        auto i=argv0.find('.');
+        if (i==std::string::npos) i=argv0.length();
+        auto t=dynamic_cast<member_entry_base*>(getCommandData(argv0.substr(0,i)));
+        if (!t || (!t->is_const && (!t->is_setterGetter || argc>1)))
+            if (auto gtw=t->memberPtrCasted<GodleyTableWindow>())
+              gtw->pushHistory();
+        return;
+      }
     if (m.doPushHistory &&
         argv0!="minsky.availableOperations" &&
         argv0!="minsky.canvas.select" &&

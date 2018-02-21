@@ -259,29 +259,10 @@ proc textInput {char} {
     set x [get_pointer_x .wiring.canvas]
     set y [get_pointer_y .wiring.canvas]
 
-    if {![winfo exists .textInput]} {
-        set textBuffer ""
-        toplevel .textInput
-        entry .textInput.entry -textvariable textBuffer -takefocus 1
-        .textInput.entry insert 0 $char
-        frame .textInput.buttonBar
-        button .textInput.buttonBar.ok -text "OK" -command textOK
-        button .textInput.buttonBar.cancel -text "Cancel" -command {
-            grab release .textInput
-            destroy .textInput
-        }
-        pack .textInput.buttonBar.cancel .textInput.buttonBar.ok
-        pack .textInput.entry .textInput.buttonBar -side top
-        bind .textInput <Key-Return> {.textInput.buttonBar.ok invoke}
-        bind .textInput <Key-Escape> {.textInput.buttonBar.cancel invoke}
-        wm geometry .textInput "+[winfo pointerx .]+[winfo pointery .]"
-        focus .textInput.entry
-        tkwait visibility .textInput
-        # reset cursor in the case a shifted key has been pressed
-        .wiring.canvas configure -cursor arrow
-        grab set .textInput
-        wm transient .textInput
-    }
+    set textBuffer "$char"
+    textEntryPopup .textInput $char textOK
+    .textInput.entry configure -textvariable textBuffer -takefocus 1
+    wm geometry .textInput "+[winfo pointerx .]+[winfo pointery .]"
 }
 
 # executed whenever the OK button of textInput is invoked
@@ -303,8 +284,7 @@ proc textOK {} {
         } else {
             minsky.addVariable $textBuffer flow
             
-            getItemAt [minsky.canvas.itemFocus.x] \
-                [minsky.canvas.itemFocus.y]
+            getItemAtFocus
             editVar
         }
     }
@@ -330,9 +310,9 @@ bind . <Key-Delete> {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wi
 bind . <Key-BackSpace> {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
 
 bind . <KeyPress-Shift_L> {.wiring.canvas configure -cursor $panIcon}
-bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor arrow}
+bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor {}}
 bind . <KeyPress-Shift_R> {.wiring.canvas configure -cursor $panIcon}
-bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor arrow}
+bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor {}}
 
 # slider key bindings
 bind . <KeyPress-Left> {canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
@@ -366,8 +346,11 @@ proc rightMouseGodley {x y X Y} {
     }
 }
 # pan mode
-bind .wiring.canvas <Shift-Button-1> {set panOffsX [expr %x-[model.x]]; set panOffsY [expr %y-[model.y]]}
-bind .wiring.canvas <Shift-B1-Motion> {panCanvases [expr %x-$panOffsX] [expr %y-$panOffsY]}
+bind .wiring.canvas <Shift-Button-1> {
+    set panOffsX [expr %x-[model.x]]
+    set panOffsY [expr %y-[model.y]]
+}
+bind .wiring.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 menu .wiring.context -tearoff 0
 
@@ -426,35 +409,12 @@ proc wireContextMenu {x y} {
     tk_popup .wiring.context $x $y
 }
 
-toplevel .renameDialog
-label .renameDialog.title
-entry .renameDialog.newName
-frame .renameDialog.buttonBar
-button .renameDialog.buttonBar.cancel -text cancel -command {
-    grab release .renameDialog
-    wm withdraw .renameDialog
-}
-button .renameDialog.buttonBar.ok -text OK -command {
-    canvas.renameAllInstances [.renameDialog.newName get]
-    canvas.requestRedraw
-    grab release .renameDialog
-    wm withdraw .renameDialog
-}
-pack .renameDialog.buttonBar.cancel .renameDialog.buttonBar.ok -side left
-pack .renameDialog.title .renameDialog.newName .renameDialog.buttonBar
-bind .renameDialog <Key-Return> {.renameDialog.buttonBar.ok invoke}
-bind .renameDialog <Key-Escape> {.renameDialog.buttonBar.cancel invoke}
-wm withdraw .renameDialog
-
-
 proc renameVariableInstances {} {
-    .renameDialog.title configure -text "Rename [minsky.canvas.item.name]"
-    .renameDialog.newName delete 0 end
-    wm deiconify .renameDialog
-    ::tk::TabToWindow .renameDialog.newName
-    tkwait visibility .renameDialog
-    grab set .renameDialog
-    wm transient .renameDialog
+    textEntryPopup .renameDialog [minsky.canvas.item.name] {
+        canvas.renameAllInstances [.renameDialog.entry get]
+        canvas.requestRedraw
+    }
+    wm title .renameDialog "Rename [minsky.canvas.item.name]"
 }
 
 
@@ -531,7 +491,10 @@ proc contextMenu {x y X Y} {
         }
         "GodleyIcon" {
             .wiring.context add command -label Description -command "postNote item"
-            .wiring.context add command -label "Open Godley Table" -command "openGodley"
+            .wiring.context add command -label "Open Godley Table" -command "openGodley [minsky.openGodley]"
+            .wiring.context add command -label "Title" -command {
+                textEntryPopup .editGodleyTitle [minsky.canvas.item.table.title] {minsky.canvas.item.table.title [.editGodleyTitle.entry get]; canvas.requestRedraw}
+            }
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Resize Godley" -command "canvas.lassoMode itemResize"
@@ -584,9 +547,9 @@ namespace eval godley {
         } elseif [string match -nocase *.tex "$fname"] {
             $item.table.exportToLaTeX $fname
         } else {
-            switch -glob $type {
-                "*(csv)" {$item.table.exportToCSV $fname.csv}
-                "*(tex)" {$item.table.exportToLaTeX $fname.tex}
+            switch $type {
+                "CSV files" {$item.table.exportToCSV $fname.csv}
+                "LaTeX files" {$item.table.exportToLaTeX $fname.tex}
             }
         }
     }
@@ -683,12 +646,7 @@ proc deiconifyEditVar {} {
         wm deiconify .wiring.editVar
     }
 }
-#  
-#  proc syncVarType {} {
-#              values.get $varInput(Name)
-#              set varInput(Type) [value.type]
-#          }
-#  
+
 proc deiconifyInitVar {} {
     if {![winfo exists .wiring.initVar]} {
         toplevel .wiring.initVar
@@ -801,66 +759,6 @@ proc deiconifyEditConstant {} {
         wm deiconify .wiring.editConstant
     }
 }
-#  
-#  proc cleanEditConstantConfig {} {
-#      global rowdict
-#      foreach name [array names rowdict] {
-#          set row $rowdict($name)
-#          catch {grid remove .wiring.editConstant.label$row .wiring.editConstant.entry$row}
-#      }
-#  }
-#  
-#  proc configEditConstantForConstant {} {
-#      global rowdict
-#      cleanEditConstantConfig
-#      set i 10
-#      foreach var {
-#          "Name"
-#          "Value"
-#          "Rotation"
-#          "Slider Bounds: Max"
-#          "Slider Bounds: Min"
-#          "Slider Step Size"
-#      } {
-#          set row $rowdict($var)
-#          grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
-#          grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
-#          incr i 10
-#      }
-#  }
-#  
-#  proc configEditConstantForIntegral {} {
-#      global rowdict
-#      cleanEditConstantConfig
-#      set i 10
-#      foreach var {
-#          "Name"
-#          "Value"
-#          "Rotation"
-#      } {
-#          set row $rowdict($var)
-#          grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
-#          grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
-#          incr i 10
-#      }
-#  }
-#  
-#  proc configEditConstantForData {} {
-#      global rowdict
-#      cleanEditConstantConfig
-#      set i 10
-#      foreach var {
-#          "Name"
-#          "Rotation"
-#      } {
-#          set row $rowdict($var)
-#          grid .wiring.editConstant.label$row -row $i -column 10 -sticky e
-#          grid .wiring.editConstant.entry$row -row $i -column 20 -sticky ew -columnspan 2
-#          incr i 10
-#      }
-#  }
-#  
-#  
 proc deiconifyEditOperation {} {
     if {![winfo exists .wiring.editOperation]} {
         global opInput
@@ -1036,14 +934,14 @@ proc editItem {} {
             wm transient .wiring.editConstant
         }
         "Group" {groupEdit}
-        "GodleyIcon" {openGodley}
+        "GodleyIcon" {openGodley [minsky.openGodley]}
         # plot widgets are slightly different, in that double-click
         # expands the plot, rather than edits.
         "PlotWidget" {plotDoubleClick [TCLItem]}
         "Item" {postNote item}
     }
 }
-  
+
 proc importData {} {
     global workDir
     set f [tk_getOpenFile -multiple 1 -initialdir $workDir]

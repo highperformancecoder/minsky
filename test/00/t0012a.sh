@@ -79,7 +79,8 @@ assert {"[minsky.canvas.item.table.getColumnVariables]"=="f02"} ""
 assert {"[minsky.canvas.item.table.getVariables]"=="f22"} ""
 assert {[minsky.canvas.item.table.getCell 1 1]=="f22"} ""
 assert {[minsky.canvas.item.table.rows]==2} ""
-assert {[minsky.canvas.item.table.cols]==2} ""
+# minsky inserted 2 extra blank colums for liabilities and equitites 
+assert {[minsky.canvas.item.table.cols]==4} "1"
 
 assert {"[minsky.canvas.item.table.getVariables]"=="f22"} ""
 
@@ -88,6 +89,7 @@ assert {"[minsky.canvas.item.table.getVariables]"=="f22"} ""
 \$item.table.resize 4 4
 assert {[minsky.canvas.item.table.rows]==4} ""
 assert {[minsky.canvas.item.table.cols]==4} ""
+# reset all columsn to "asset"
 \$item.setCell 1 0 "Initial Conditions"
 \$item.setCell 1 1 10
 \$item.setCell 1 3 -10

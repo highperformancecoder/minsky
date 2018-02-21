@@ -90,5 +90,6 @@ namespace minsky
   template <class T, class D>
   std::unique_ptr<T,D> uniqueDeleter(T* x, D d)
   {return std::unique_ptr<T,D>(x,d);}
+
 }
 #endif

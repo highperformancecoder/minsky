@@ -18,7 +18,7 @@
 */
 
 #ifndef GODLEYEXPORT_H
-#include "godley.h"
+#include "godleyTable.h"
 #include <iostream>
 
 namespace minsky

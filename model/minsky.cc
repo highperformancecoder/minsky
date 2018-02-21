@@ -466,7 +466,7 @@ namespace minsky
     const GodleyTable& srcTable=srcGodley.table;
     // find if there is a matching column
     const string& colName=srcGodley.valueId(trimWS(srcTable.cell(0,srcCol)));
-    if (colName.empty()) return; //ignore blank columns
+    if (colName.empty() || colName==":_") return; //ignore blank columns
 
     bool matchFound=false;
     model->recursiveDo
@@ -810,8 +810,21 @@ namespace minsky
       default:
         throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
       }
-    // try resetting the system, but ignore any errors
-    try {reset();}
+
+    // try balancing all Godley tables
+    try
+      {
+        model->recursiveDo(&Group::items, 
+                           [&](Items&,Items::iterator i) {
+                             if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+                               for (unsigned i=1; i<g->table.cols(); ++i)
+                                 balanceDuplicateColumns(*g,i);
+                             return false;
+                           });
+    
+        // try resetting the system, but ignore any errors
+        reset();
+      }
     catch (...) {}
     panopticon.requestRedraw();
     flags=reset_needed;

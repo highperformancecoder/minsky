@@ -16,8 +16,8 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef GODLEY_H
-#define GODLEY_H
+#ifndef GODLEYTABLE_H
+#define GODLEYTABLE_H
 
 #include <set>
 #include <vector>
@@ -38,11 +38,12 @@ namespace minsky
 
     friend struct SchemaHelper;
     friend class GodleyIcon;
+    typedef std::vector<std::vector<string>> Data;
   private:
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
-    vector<AssetClass> m_assetClass;
-    vector<vector<string> > data;
+    vector<AssetClass> m_assetClass{noAssetClass, asset, liability, equity};
+    Data data;
 
     void markEdited(); ///< mark model as having changed
     void _resize(unsigned rows, unsigned cols) {
@@ -60,9 +61,9 @@ namespace minsky
     static const char* initialConditions;
     GodleyTable(): doubleEntryCompliant(true)
     {
-      _resize(2,2);
-      cell(0,0)="Flows ↓ / Stock Variables →";
+      _resize(2,4);
       cell(1,0)=initialConditions;
+      
     }
 
     GodleyTable(const GodleyTable& other)
@@ -105,7 +106,7 @@ namespace minsky
     size_t rows() const {return data.size();}
     size_t cols() const {return data.empty()? 0: data[0].size();}
 
-    void clear() {data.clear(); markEdited();}
+    void clear() {data.clear(); m_assetClass.clear(); markEdited();}
     void resize(unsigned rows, unsigned cols){_resize(rows,cols); markEdited();}
 
     /** @{ In the following, C++ data structure is off by one with
@@ -144,11 +145,14 @@ namespace minsky
     }
 
     /// get the set of column labels, in column order
-    vector<string> getColumnVariables() const;
+    std::vector<std::string> getColumnVariables() const;
     /// get the vector of unique variable names from the interior of the
     /// table, in row, then column order
-    vector<string> getVariables() const;
+    std::vector<std::string> getVariables() const;
 
+    /// get column data
+    std::vector<std::string> getColumn(unsigned col) const;
+    
     /// toggle flow signs according to double entry compliant mode
     void setDEmode(bool doubleEntryCompliant);
 
@@ -156,17 +160,19 @@ namespace minsky
     string rowSum(int row) const;
 
     /// accessor for schema access
-    const vector<vector<string> >& getData() const {return data;}
+    const Data& getData() const {return data;}
 
     void exportToLaTeX(const char* filename);
     void exportToCSV(const char* filename);
 
+    /// reorders columns into assets/liabilities and equities. Adds empty columns if an asset class is not present.
+    void orderAssetClasses();
+
     /// rename all instances of a variable
     void rename(const std::string& from, const std::string& to);
-
   };
 
 }
 
-#include "godley.cd"
+#include "godleyTable.cd"
 #endif

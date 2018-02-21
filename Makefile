@@ -35,7 +35,7 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godley.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o 
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
@@ -132,7 +132,9 @@ endif
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
 # only perform link checking if online
+ifndef TRAVIS
 	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
+endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
@@ -179,7 +181,9 @@ gui-tk/library/help: doc/minsky/labels.pl doc/minsky.html
 	mkdir -p $@/minsky
 	find doc/minsky \( -name "*.html" -o -name "*.css" -o -name "*.png" \) -exec cp {} $@/minsky \;
 	cp -r -f doc/minsky.html $@
+ifndef TRAVIS
 	linkchecker -f linkcheckerrc $@/minsky.html
+endif
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
@@ -251,6 +255,7 @@ dist:
 
 lcov:
 	$(MAKE) clean
+	-$(MAKE) GCOV=1 tests
 	lcov -i -c -d . --no-external -o lcovi.info
 	-$(MAKE) GCOV=1 sure
 	lcov -c -d . --no-external -o lcovt.info

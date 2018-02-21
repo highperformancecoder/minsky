@@ -158,12 +158,11 @@ namespace minsky
     /// could be connected to
     std::vector<std::string> accessibleVars() const;
 
-    struct EngNotation {int sciExp, engExp;};
     /// return formatted mantissa and exponent in engineering format
-    EngNotation engExp() const;
-    std::string mantissa(const EngNotation& value) const;
-    static std::string expMultiplier(int exp)
-    {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
+    EngNotation engExp() const
+    {return minsky::engExp(value());}
+    std::string mantissa(const EngNotation& e) const
+    {return minsky::mantissa(value(),e);}
   };
 
   template <minsky::VariableType::Type T>

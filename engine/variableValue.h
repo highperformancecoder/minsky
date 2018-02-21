@@ -152,6 +152,13 @@ namespace minsky
     /// checks that all entry names are valid
     bool validEntries() const;
   };
+  
+  struct EngNotation {int sciExp, engExp;};
+  /// return formatted mantissa and exponent in engineering format
+  EngNotation engExp(double value);
+  std::string mantissa(double value, const EngNotation&);
+  std::string expMultiplier(int exp);
+
 
 }
 #include "variableValue.cd"

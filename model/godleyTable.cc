@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "godley.h"
+#include "godleyTable.h"
 #include "port.h"
 #include "minsky.h"
 #include "flowCoef.h"
@@ -79,6 +79,8 @@ void GodleyTable::deleteCol(unsigned col)
         data[row].erase(data[row].begin()+col-1);
       markEdited();
     }
+  // insert extra empty column if an asset class gets emptied out of this
+  orderAssetClasses();
 }
 
 void GodleyTable::moveRow(int row, int n)
@@ -96,6 +98,7 @@ void GodleyTable::moveCol(int col, int n)
 {
   if (n==0 || col<0 || col>=int(cols()) || col+n<0 || col+n>=int(cols())) 
     return;
+  auto targetAssetClass=_assetClass(col+n);
   for (size_t row=0; row<rows(); ++row)
     {
       string cellToMove;
@@ -104,6 +107,14 @@ void GodleyTable::moveCol(int col, int n)
         cellToMove.swap(data[row][col+i]);
       cellToMove.swap(data[row][col]);
     }
+  auto ac=_assetClass(col);
+  for (int i=n; abs(i)>0; i=i>0? i-1:i+1)
+    swap(ac, m_assetClass[col+i]);
+  swap(ac, m_assetClass[col]);
+    
+  _assetClass(col+n, targetAssetClass);
+  // insert extra empty column if an asset class gets emptied out of this
+  orderAssetClasses();
 }
 
 
@@ -141,12 +152,14 @@ vector<string> GodleyTable::getVariables() const
 
 GodleyTable::AssetClass GodleyTable::_assetClass(size_t col) const 
 {
+  if (col==0) return noAssetClass;
   return col<m_assetClass.size()? m_assetClass[col]: noAssetClass;
 }
 
 GodleyTable::AssetClass GodleyTable::_assetClass
 (size_t col, GodleyTable::AssetClass cls) 
 {
+  if (col==0) return noAssetClass; // don't set column 0 asset class
   if (col>=m_assetClass.size())
     m_assetClass.resize(cols(), noAssetClass);
   assert(cols()>col);
@@ -207,6 +220,14 @@ string GodleyTable::rowSum(int row) const
 
 }
 
+std::vector<std::string> GodleyTable::getColumn(unsigned col) const
+{
+  std::vector<std::string> r;
+  for (unsigned row=0; row<rows(); ++row)
+    r.push_back(cell(row,col));
+  return r;
+}
+
 void GodleyTable::setDEmode(bool mode)
 {
   if (mode==doubleEntryCompliant) return;
@@ -258,6 +279,43 @@ void GodleyTable::exportToCSV(const char* filename)
 {
   ofstream f(filename);
   minsky::exportToCSV(f, *this);
+}
+
+void GodleyTable::orderAssetClasses()
+{
+  unsigned numRows=rows()>1? rows(): 1;
+  map<AssetClass,Data> tmpCols;
+  for (unsigned c=1; c<cols(); ++c)
+    if (_assetClass(c)==noAssetClass)
+      tmpCols[asset].push_back(getColumn(c));
+    else
+      tmpCols[_assetClass(c)].push_back(getColumn(c));
+
+  // add empty column if asset class not present, and count number of cols
+  unsigned numCols=1;
+  for (int ac=asset; ac<=equity; ++ac)
+    {
+      auto& tc=tmpCols[AssetClass(ac)];
+      // strip out any blank columns
+      tc.erase(remove_if(tc.begin(), tc.end(), [](const vector<string>& x)
+                         {return x.empty() || x[0].empty();}), tc.end());
+      // ensure at least one column is present in an asset class
+      if (tc.empty())
+        tc.emplace_back(numRows);
+      
+      numCols+=tc.size();
+    }
+
+  resize(numRows, numCols);
+  unsigned col=1;
+  for (int ac=asset; ac<=equity; ++ac)
+    for (auto& colData: tmpCols[AssetClass(ac)])
+      {
+        for (unsigned row=0; row<rows(); ++row)
+          cell(row,col)=colData[row];
+        _assetClass(col,AssetClass(ac));
+        col++;
+      }
 }
 
 void GodleyTable::rename(const std::string& from, const std::string& to)
