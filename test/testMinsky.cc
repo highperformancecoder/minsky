@@ -786,20 +786,20 @@ SUITE(Minsky)
       auto g3=new GodleyIcon; model->addItem(g3);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
-      GodleyTable& godley3=g3->table;
-      godley1.resize(6,3);
-      godley2.resize(3,3);
-      godley3.resize(2,3);
+      godley1.resize(6,4);
+      godley2.resize(3,5);
 
       godley1._assetClass(1,GodleyAssetClass::asset);  
       godley1._assetClass(2,GodleyAssetClass::liability);  
+      godley1._assetClass(3,GodleyAssetClass::equity);  
       godley2._assetClass(1,GodleyAssetClass::asset);  
       godley2._assetClass(2,GodleyAssetClass::liability);
-      godley3._assetClass(1,GodleyAssetClass::asset);  
-      godley3._assetClass(2,GodleyAssetClass::liability);
+      godley2._assetClass(3,GodleyAssetClass::liability);
+      godley2._assetClass(4,GodleyAssetClass::equity);
 
       godley1.cell(0,1)="a1";  
       godley1.cell(0,2)="l1";
+      godley1.cell(0,3)="e1";
       g1->update();
       
       set<string> cols=matchingTableColumns(*g2,GodleyAssetClass::asset);
@@ -808,6 +808,7 @@ SUITE(Minsky)
 
       godley2.cell(0,1)="l1";  
       godley2.cell(0,2)="l2";  
+      godley2.cell(0,4)="e2";
       g2->update();
       
       cols=matchingTableColumns(*g1,GodleyAssetClass::asset);

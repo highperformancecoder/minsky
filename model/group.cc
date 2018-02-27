@@ -513,7 +513,6 @@ namespace minsky
 
   bool Group::higher(const Group& x) const
   {
-    //if (!x) return false; // global group x is always higher
     for (auto i: groups)
       if (i.get()==&x) return true;
     for (auto i: groups)

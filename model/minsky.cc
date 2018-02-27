@@ -384,62 +384,33 @@ namespace minsky
       }
 
     std::set<string> duplicatedColumns;
-    vector<string> columns=godley.table.getColumnVariables();
-    // convert to valueIds
-    for (auto& i: columns)
-      i=VariableValue::valueId(godley.group.lock(), i);
     model->recursiveDo
       (&Group::items,
        [&](Items& m, Items::iterator it)
        {
          if (auto gi=dynamic_cast<GodleyIcon*>(it->get()))
            {
-             vector<string> columns=gi->table.getColumnVariables();
-             // convert to valueIds
-             for (auto& i: columns)
-               i=VariableValue::valueId(godley.group.lock(), i);
-             for (size_t i=0; i<columns.size(); ++i)
-              {
-                if (&gi->table==&godley.table || r.count(columns[i]) || gi->table._assetClass(i+1)!=ac) 
-                  {
-                    r.erase(columns[i]); // column already duplicated, or in current, nothing to match
-                    duplicatedColumns.insert(columns[i]);
-                  }
-                else if (!duplicatedColumns.count(columns[i]))
-                  r.insert(columns[i]);
-              }
-          }
+             for (size_t i=1; i<gi->table.cols(); ++i)
+               if (!gi->table.cell(0,i).empty())
+                 {
+                   auto v=gi->table.cell(0,i);
+                   auto scope=VariableValue::scope(gi->group.lock(),v);
+                   if (scope->higher(*godley.group.lock()))
+                     v=':'+v;
+                   else if (scope!=godley.group.lock())
+                     continue; // variable is inaccessible
+                   if (gi==&godley || r.count(v) || gi->table._assetClass(i)!=ac) 
+                     {
+                       r.erase(v); // column already duplicated, or in current, nothing to match
+                       duplicatedColumns.insert(v);
+                     }
+                   else if (!duplicatedColumns.count(v))
+                     r.insert(v);
+                 }
+           }
         return false;
       });
-    for (size_t i=0; i<columns.size(); ++i)
-      {
-        if (r.count(columns[i]) || godley.table._assetClass(i+1)!=ac) 
-          {
-            r.erase(columns[i]); // column already duplicated, or in current, nothing to match
-            duplicatedColumns.insert(columns[i]);
-          }
-        else if (!duplicatedColumns.count(columns[i]))
-          r.insert(columns[i]);
-      }
-
-    // rewrite valueIds in terms local to the Godley table
-    set<string> r1;
-    bool toplevel=false;
-    if (auto g=godley.group.lock())
-      toplevel=!g->group.lock();
-    for (auto& i: r)
-      {
-        int scope=VariableValue::scope(i);
-        auto vi=variableValues.find(i);
-        if (vi!=variableValues.end())
-          {
-            if ((scope==-1 && toplevel) || size_t(scope)==size_t(godley.group.lock().get()))
-              r1.insert(VariableValue::uqName(vi->second.name));
-            else
-              r1.insert(':'+VariableValue::uqName(vi->second.name));
-          }
-      }
-    return r1;
+    return r;
   }
 
   void Minsky::importDuplicateColumn(const GodleyTable& srcTable, int srcCol)
