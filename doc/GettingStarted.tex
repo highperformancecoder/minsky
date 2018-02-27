@@ -445,16 +445,14 @@ and it will be placed in that location.
 
 \item[Constant] \buttonIcon{const.eps} \label{Constant} creates an entity whose
 value is unaffected by the simulation or other entities in the
-model---but it can be varied during a simulation run by the
-user. Click on it and a constant definition window will appear:
+model. Click on it and a constant definition window will appear:
 
 \begin{center}
 \scalebox{0.5}{\htmladdimg{NewItem34.png}}
 \end{center}
 
 The only essential element here is its
-value. You can also specify its rotation on the Canvas in degrees, and
-its slider parameters if you make the slider active. This lets you vary a
+value. You can also specify its rotation on the Canvas in degrees. This lets you vary a
 parameter while a simulation is running---which is useful if you wish
 to explore a range of policy options while a model is running.
 
@@ -463,6 +461,12 @@ A constant is just a type of variable, which also include parameters
 variables. In fact there is no real conceptual difference between
 creating a constant or creating a variable, as you can switch the type
 using the type field.
+
+\item[Parameter] \buttonIcon{param.eps} \label{Parameter} Like the
+  variable and constant button, this creates a variable defaulting to
+  the parameter type. Parameters differ from flow variables in not
+  having an input port, and differ from constants in having a name and
+  being controllable by a slider during simulation.
 
 \item[Time] \buttonIcon{time.eps} embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
