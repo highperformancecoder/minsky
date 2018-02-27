@@ -139,8 +139,6 @@ int main(int argc, char* argv[])
   Tcl_Finalize();
 }
 
-extern "C" int Tktable_Init(Tcl_Interp *interp);
-
 // useful for debugging X11 errors
 //int minskyXErrorHandler(Display *d, XErrorEvent* ev)
 //{
@@ -154,7 +152,7 @@ extern "C" int Tktable_Init(Tcl_Interp *interp);
 
 NEWCMD(GUI,0)
 {
-  if (Tk_Init(interp())==TCL_ERROR || Tktable_Init(interp())==TCL_ERROR)
+  if (Tk_Init(interp())==TCL_ERROR)
     {
       fprintf(stderr,"Error initialising Tk: %s",Tcl_GetStringResult(interp()));
       fprintf(stderr,"%s\n",Tcl_GetVar(interp(),"errorInfo",0));
