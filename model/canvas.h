@@ -26,6 +26,7 @@
 #include "selection.h"
 #include "switchIcon.h"
 #include "wire.h"
+#include "ravelWrap.h"
 #include <cairoSurfaceImage.h>
 
 namespace minsky
@@ -113,7 +114,8 @@ namespace minsky
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
-
+    void addRavel() {setItemFocus(model->addItem(new RavelWrap));}
+    
     /// create a group from items found in the current selection
     void groupSelection();
     

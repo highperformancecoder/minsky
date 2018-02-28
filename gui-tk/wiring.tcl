@@ -172,6 +172,9 @@ foreach var [availableOperations] {
     if {$var=="numOps"} break
     .menubar.ops add command -label [regsub {(.*)_$} $var {\1}] -command "minsky.addOperation $var"
 }
+
+.menubar.ops add command -label "Ravel" -command addRavel
+
  
 # default command to execute when escape key is pressed
 proc handleEscapeKey {} {

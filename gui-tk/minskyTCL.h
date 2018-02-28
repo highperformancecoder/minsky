@@ -150,6 +150,10 @@ namespace minsky
       Minsky::addIntegral();
       registerRef(canvas.item,"minsky.canvas.item");
     }
+    void addRavel() {
+      canvas.addRavel();
+      registerRef(canvas.item,"minsky.canvas.item");
+    }
 
     void createGroup() {
       canvas.groupSelection();
