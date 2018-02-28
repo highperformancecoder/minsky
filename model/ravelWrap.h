@@ -29,10 +29,13 @@ namespace minsky
     void* ravel=nullptr;
     void* dataCube=nullptr;
     void noRavelSetup();
+    /// position of the "move" handle, as a proportion of radius
+    const double moveX=0.5, moveY=0.5, moveSz=0.1;
   public:
     RavelWrap();
     ~RavelWrap();
     void draw(cairo_t* cairo) const override;
+    ClickType::Type clickType(float x, float y) override;
   };
 }
 

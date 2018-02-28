@@ -73,16 +73,20 @@ namespace
   bool (*ravel_onMouseOver)(void* ravel, double x, double y)=nullptr;
   void (*ravel_onMouseLeave)(void* ravel)=nullptr;
   void (*ravel_rescale)(void* ravel, double radius);
+  double (*ravel_radius)(void* ravel);
 
   struct RavelLib
   {
     libHandle lib;
-    RavelLib(): lib(loadLibrary("libRavel"))
+    RavelLib(): lib(loadLibrary("libravel"))
     {
-#ifndef NDEBUG
       if (!lib)
-        cerr << dlerror() << endl;
+        {
+#ifndef NDEBUG
+          cerr << dlerror() << endl;
 #endif
+          return;
+        }
       
     auto version=(int (*)())dlsym(lib,"ravel_version");
     if (!version || ravelVersion!=version())
@@ -102,6 +106,7 @@ namespace
             ASG_FN_PTR(ravel_onMouseOver,lib);
             ASG_FN_PTR(ravel_onMouseLeave,lib);
             ASG_FN_PTR(ravel_rescale,lib);
+            ASG_FN_PTR(ravel_radius,lib);
           }
         catch (InvalidSym)
           {
@@ -113,16 +118,23 @@ namespace
   };
 
   RavelLib ravelLib;
+
+  inline double sqr(double x) {return x*x;} 
 }
 
 namespace minsky
 {
-  bool ravelAvailable() {return !ravelLib.lib;}
+  bool ravelAvailable() {return ravelLib.lib;}
   
   RavelWrap::RavelWrap()
   {
-    ravel=ravel_new(1); // rank 1 for now
-    ravel_rescale(ravel,100);
+    if (ravelAvailable())
+      {
+        ravel=ravel_new(1); // rank 1 for now
+        ravel_rescale(ravel,100);
+      }
+    else
+      noRavelSetup();
   }
 
   RavelWrap::~RavelWrap()
@@ -138,9 +150,30 @@ namespace minsky
   void RavelWrap::draw(cairo_t* cairo) const
   {
     if (ravel)
-      ravel_render(ravel,cairo);
+      {
+        ravel_render(ravel,cairo);
+        double r=ravel_radius(ravel);
+        cairo_rectangle(cairo,(moveX-moveSz)*r,(moveY-moveSz)*r,
+                        2*moveSz*r,2*moveSz*r);
+        cairo_stroke(cairo);
+      }
     else
       DataOp::draw(cairo);
+  }
+
+  ClickType::Type RavelWrap::clickType(float xx, float yy)
+  {
+    if (ravel)
+      {
+        double r=ravel_radius(ravel);
+        if (sqr(xx-x())+sqr(yy-y())>sqr(r))
+          return ClickType::outside;
+        if (sqr(xx-x()-moveX*r)+sqr(yy-y()-moveY*r) < sqr(moveSz*r))
+          return ClickType::onItem;
+        return ClickType::onRavel;
+      }
+    else
+      return DataOp::clickType(xx,yy);
   }
 }
 
