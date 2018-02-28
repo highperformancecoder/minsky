@@ -27,9 +27,9 @@
 
 #include <math.h>
 
-#ifdef __MINGW32_VERSION
-#define finite isfinite
-#endif
+//#ifdef __MINGW32_VERSION
+//#define finite isfinite
+//#endif
 
 namespace minsky
 {

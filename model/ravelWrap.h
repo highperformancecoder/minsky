@@ -28,14 +28,6 @@ namespace minsky
   {
     void* ravel=nullptr;
     void* dataCube=nullptr;
-    void (*ravel_delete)(void* ravel)=nullptr;
-    void (*ravel_render)(void* ravel, cairo_t* cairo)=nullptr;
-    void (*ravel_onMouseDown)(void* ravel, double x, double y)=nullptr;
-    void (*ravel_onMouseUp)(void* ravel, double x, double y)=nullptr;
-    bool (*ravel_onMouseMotion)(void* ravel, double x, double y)=nullptr;
-    bool (*ravel_onMouseOver)(void* ravel, double x, double y)=nullptr;
-    void (*ravel_onMouseLeave)(void* ravel)=nullptr;
-    void (*ravel_rescale)(void* ravel, double radius);
     void noRavelSetup();
   public:
     RavelWrap();

@@ -22,58 +22,107 @@
 #include <ecolab_epilogue.h>
 static const int ravelVersion=1;
 
+#include <string>
+using namespace std;
+
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <dlfcn.h>
+#endif
 
 namespace
 {
   struct InvalidSym {};
   
+#ifdef WIN32
+  typedef HINSTANCE libHandle;
+  libHandle loadLibrary(const string& lib)
+  {return LoadLibraryA((lib+".dll").c_str());}
+
+  FARPROC WINAPI dlsym(HMODULE lib, const char* name)
+  {return GetProcAddress(lib,name);}
+
+  void dlclose(HINSTANCE) {}
+
+  const string dlerror() {
+    char msg[1024];
+    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,nullptr,GetLastError(),0,msg,sizeof(msg),nullptr);
+    return msg;
+  }
+#else
+  typedef void* libHandle;
+  libHandle loadLibrary(const string& lib)
+  {return dlopen((lib+".so").c_str(),RTLD_NOW);}
+#endif
+  
   template <class F>
-  void asgFnPointer(F& f, void* lib, const char* name)
+  void asgFnPointer(F& f, libHandle lib, const char* name)
   {
     f=(F)dlsym(lib,name);
     if (!f) throw InvalidSym();
   }
 #define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
+
+  void* (*ravel_new)(size_t rank)=nullptr;
+  void (*ravel_delete)(void* ravel)=nullptr;
+  void (*ravel_render)(void* ravel, cairo_t* cairo)=nullptr;
+  void (*ravel_onMouseDown)(void* ravel, double x, double y)=nullptr;
+  void (*ravel_onMouseUp)(void* ravel, double x, double y)=nullptr;
+  bool (*ravel_onMouseMotion)(void* ravel, double x, double y)=nullptr;
+  bool (*ravel_onMouseOver)(void* ravel, double x, double y)=nullptr;
+  void (*ravel_onMouseLeave)(void* ravel)=nullptr;
+  void (*ravel_rescale)(void* ravel, double radius);
+
+  struct RavelLib
+  {
+    libHandle lib;
+    RavelLib(): lib(loadLibrary("libRavel"))
+    {
+#ifndef NDEBUG
+      if (!lib)
+        cerr << dlerror() << endl;
+#endif
+      
+    auto version=(int (*)())dlsym(lib,"ravel_version");
+    if (!version || ravelVersion!=version())
+      { // incompatible API
+        dlclose(lib);
+        lib=nullptr;
+      }
+
+    if (lib)
+        try
+          {
+            ASG_FN_PTR(ravel_new,lib);
+            ASG_FN_PTR(ravel_delete,lib);
+            ASG_FN_PTR(ravel_render,lib);
+            ASG_FN_PTR(ravel_onMouseDown,lib);
+            ASG_FN_PTR(ravel_onMouseMotion,lib);
+            ASG_FN_PTR(ravel_onMouseOver,lib);
+            ASG_FN_PTR(ravel_onMouseLeave,lib);
+            ASG_FN_PTR(ravel_rescale,lib);
+          }
+        catch (InvalidSym)
+          {
+            dlclose(lib);
+            lib=nullptr;
+          }
+    }
+    ~RavelLib() {if (lib) dlclose(lib);}
+  };
+
+  RavelLib ravelLib;
 }
 
 namespace minsky
 {
+  bool ravelAvailable() {return !ravelLib.lib;}
+  
   RavelWrap::RavelWrap()
   {
-    auto lib=dlopen("libravel.so",RTLD_LAZY);
-    if (!lib)
-      {
-#ifndef NDEBUG
-        cerr << dlerror() << endl;
-#endif
-        noRavelSetup();
-        return;
-      }
-    
-    auto version=(int (*)())dlsym(lib,"ravel_version");
-    if (!version || ravelVersion!=version())
-      noRavelSetup(); // incompatible API
-    else
-      try
-        {
-          void* (*ravel_new)(size_t);
-          ASG_FN_PTR(ravel_new,lib);
-          ASG_FN_PTR(ravel_delete,lib);
-          ASG_FN_PTR(ravel_render,lib);
-          ASG_FN_PTR(ravel_onMouseDown,lib);
-          ASG_FN_PTR(ravel_onMouseMotion,lib);
-          ASG_FN_PTR(ravel_onMouseOver,lib);
-          ASG_FN_PTR(ravel_onMouseLeave,lib);
-          ASG_FN_PTR(ravel_rescale,lib);
-          ravel=ravel_new(1); // rank 1 for now
-          ravel_rescale(ravel,100);
-        }
-      catch (InvalidSym)
-        {
-          noRavelSetup();
-        }
-    dlclose(lib);
+    ravel=ravel_new(1); // rank 1 for now
+    ravel_rescale(ravel,100);
   }
 
   RavelWrap::~RavelWrap()
