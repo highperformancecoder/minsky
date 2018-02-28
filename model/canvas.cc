@@ -236,11 +236,26 @@ namespace minsky
                                (*i)->mouseFocus=false;
                              else
                                {
-                                 bool mf=(*i)->contains(x,y);
-                                 if (mf!=(*i)->mouseFocus)
+                                 auto ct=(*i)->clickType(x,y);
+                                 if (ct==ClickType::onRavel)
                                    {
-                                     (*i)->mouseFocus=mf;
-                                     requestRedraw();
+                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                       if (r->onMouseOver(x,y))
+                                         requestRedraw();
+                                   }
+                                 else
+                                   {
+                                     auto mf = ct!=ClickType::outside;
+                                     if ((*i)->mouseFocus!=mf)
+                                       {
+                                         requestRedraw();
+                                         (*i)->mouseFocus=mf;
+                                       }
+                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                       {
+                                         r->onMouseLeave();
+                                         requestRedraw();
+                                       }
                                    }
                                }
                              return false;

@@ -175,6 +175,19 @@ namespace minsky
     else
       return DataOp::clickType(xx,yy);
   }
+
+  bool RavelWrap::onMouseOver(float xx, float yy)
+  {
+    if (ravel)
+      return ravel_onMouseOver(ravel,xx-x(),yy-y());
+    return false;
+  }
+  void RavelWrap::onMouseLeave()
+  {
+    if (ravel)
+      ravel_onMouseLeave(ravel);
+  }
+
 }
 
   

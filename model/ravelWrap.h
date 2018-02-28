@@ -36,6 +36,8 @@ namespace minsky
     ~RavelWrap();
     void draw(cairo_t* cairo) const override;
     ClickType::Type clickType(float x, float y) override;
+    bool onMouseOver(float x, float y);
+    void onMouseLeave();
   };
 }
 
