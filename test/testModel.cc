@@ -574,9 +574,11 @@ SUITE(Canvas)
         OperationPtr a(OperationType::exp);
         model->addItem(a);
         a->moveTo(100,100);
+        a->ports[0]->moveTo(110,100); // normally this is done inside draw()
         OperationPtr b(OperationType::exp);
         model->addItem(b);
         b->moveTo(200,200);
+        b->ports[1]->moveTo(190,200); // normally this is done inside draw()
         auto w=model->addWire(*a,*b,1);
 
         CHECK(!a->mouseFocus);
