@@ -27,7 +27,7 @@ namespace minsky
   struct Ravel;
   struct DataCube;
 
-  class RavelWrap: public DataOp
+  class RavelWrap: public ItemT<RavelWrap, DataOp>
   {
     Ravel* ravel=nullptr;
     DataCube* dataCube=nullptr;
@@ -44,6 +44,7 @@ namespace minsky
     bool onMouseMotion(float x, float y);
     bool onMouseOver(float x, float y);
     void onMouseLeave();
+    void loadFile(const char*);
   };
 }
 

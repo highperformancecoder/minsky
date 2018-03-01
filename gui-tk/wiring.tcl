@@ -527,6 +527,9 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Delete case" -command "incrCase -1" 
             .wiring.context add command -label "Flip" -command "$item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
         }
+        RavelWrap {
+            .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
+        }
     }
 
     # common trailer
@@ -536,7 +539,12 @@ proc contextMenu {x y X Y} {
     .wiring.context add command -label "Delete [minsky.canvas.item.classType]" -command "canvas.deleteItem"
     tk_popup .wiring.context $X $Y
 }
-#  
+
+proc loadCSVIntoRavel {} {
+    global workDir
+    canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
+}
+
 namespace eval godley {
     proc export {} {
         global workDir type

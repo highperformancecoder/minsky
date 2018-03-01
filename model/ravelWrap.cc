@@ -38,7 +38,15 @@ namespace minsky
   namespace
   {
     struct InvalidSym {};
-  
+
+    struct DataSpec
+    {
+      int nRowAxes=-1; ///< No. rows describing axes
+      int nColAxes=-1; ///< No. cols describing axes
+      int nCommentLines=-1; ///< No. comment header lines
+      char separator=','; ///< field separator character
+    };
+
 #ifdef WIN32
     typedef HINSTANCE libHandle;
     libHandle loadLibrary(const string& lib)
@@ -79,6 +87,12 @@ namespace minsky
     void (*ravel_rescale)(Ravel* ravel, double radius);
     double (*ravel_radius)(Ravel* ravel);
 
+    DataCube* (*ravelDC_new)();
+    void (*ravelDC_delete)(DataCube*);
+    void (*ravelDC_initRavel)(DataCube* dc,Ravel* ravel);
+    void (*ravelDC_openFile)(DataCube* dc, const char* fileName, DataSpec spec);
+
+
     struct RavelLib
     {
       libHandle lib;
@@ -112,9 +126,16 @@ namespace minsky
               ASG_FN_PTR(ravel_onMouseLeave,lib);
               ASG_FN_PTR(ravel_rescale,lib);
               ASG_FN_PTR(ravel_radius,lib);
+              ASG_FN_PTR(ravelDC_new,lib);
+              ASG_FN_PTR(ravelDC_delete,lib);
+              ASG_FN_PTR(ravelDC_initRavel,lib);
+              ASG_FN_PTR(ravelDC_openFile,lib);
             }
           catch (InvalidSym)
             {
+#ifndef NDEBUG
+              cerr << dlerror() << endl;
+#endif
               dlclose(lib);
               lib=nullptr;
             }
@@ -135,6 +156,7 @@ namespace minsky
       {
         ravel=ravel_new(1); // rank 1 for now
         ravel_rescale(ravel,100);
+        dataCube=ravelDC_new();
       }
     else
       noRavelSetup();
@@ -142,7 +164,8 @@ namespace minsky
 
   RavelWrap::~RavelWrap()
   {
-    if (ravel && ravel_delete) ravel_delete(ravel);
+    if (ravel) ravel_delete(ravel);
+    if (dataCube) ravelDC_delete(dataCube);
   }
 
   void RavelWrap::noRavelSetup()
@@ -202,6 +225,13 @@ namespace minsky
   void RavelWrap::onMouseLeave()
   {ravel_onMouseLeave(ravel);}
 
+  void RavelWrap::loadFile(const char* fileName)
+  {
+    ravelDC_openFile(dataCube, fileName, DataSpec());
+    ravelDC_initRavel(dataCube,ravel);
+  }
+
+  
 }
 
   
