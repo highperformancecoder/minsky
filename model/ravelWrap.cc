@@ -23,6 +23,7 @@
 static const int ravelVersion=1;
 
 #include <string>
+#include <cmath>
 using namespace std;
 
 #ifdef WIN32
@@ -154,10 +155,19 @@ namespace minsky
     if (ravel)
       {
         ravel_render(ravel,cairo);
-        double r=ravel_radius(ravel);
-        cairo_rectangle(cairo,(moveX-moveSz)*r,(moveY-moveSz)*r,
-                        2*moveSz*r,2*moveSz*r);
-        cairo_stroke(cairo);
+        double r=1.1*ravel_radius(ravel);
+        ports[0]->moveTo(x()+1.1*r, y());
+        ports[1]->moveTo(x()-1.1*r, y());
+        if (mouseFocus)
+          {
+            drawPorts(cairo);
+            displayTooltip(cairo);
+          }
+        cairo_rectangle(cairo,-r,-r,2*r,2*r);
+        cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
+        cairo_stroke_preserve(cairo);
+        cairo_clip(cairo);
+        if (selected) drawSelected(cairo);
       }
     else
       DataOp::draw(cairo);
@@ -167,12 +177,15 @@ namespace minsky
   {
     if (ravel)
       {
-        double r=ravel_radius(ravel);
-        if (sqr(xx-x())+sqr(yy-y())>sqr(r))
+        if (Item::clickType(xx,yy)==ClickType::onPort)
+          return ClickType::onPort;
+        double r=1.1*ravel_radius(ravel);
+        if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
           return ClickType::outside;
-        if (sqr(xx-x()-moveX*r)+sqr(yy-y()-moveY*r) < sqr(moveSz*r))
+        else if (std::abs(xx-x())<=r && std::abs(yy-y())<=r)
+          return ClickType::onRavel;
+        else
           return ClickType::onItem;
-        return ClickType::onRavel;
       }
     else
       return DataOp::clickType(xx,yy);
