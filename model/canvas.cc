@@ -66,6 +66,10 @@ namespace minsky
             if (lassoMode==LassoMode::none)
               lassoMode=LassoMode::lasso;
             break;
+          case ClickType::onRavel:
+            if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+              r->onMouseDown(x,y);
+            break;
           }
       }
     else
@@ -111,6 +115,11 @@ namespace minsky
   void Canvas::mouseUp(float x, float y)
   {
     mouseMove(x,y);
+    
+    if (clickType==ClickType::onRavel)
+      if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+        r->onMouseUp(x,y);
+    
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
@@ -195,6 +204,12 @@ namespace minsky
 //            catch (...) {}
             requestRedraw();
           }
+      }
+    else if (itemFocus && clickType==ClickType::onRavel)
+      {
+        if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+          if (r->onMouseMotion(x,y))
+            requestRedraw();
       }
     else if (fromPort.get())
       {

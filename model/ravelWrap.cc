@@ -31,99 +31,101 @@ using namespace std;
 #include <dlfcn.h>
 #endif
 
-namespace
-{
-  struct InvalidSym {};
-  
-#ifdef WIN32
-  typedef HINSTANCE libHandle;
-  libHandle loadLibrary(const string& lib)
-  {return LoadLibraryA((lib+".dll").c_str());}
-
-  FARPROC WINAPI dlsym(HMODULE lib, const char* name)
-  {return GetProcAddress(lib,name);}
-
-  void dlclose(HINSTANCE) {}
-
-  const string dlerror() {
-    char msg[1024];
-    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,nullptr,GetLastError(),0,msg,sizeof(msg),nullptr);
-    return msg;
-  }
-#else
-  typedef void* libHandle;
-  libHandle loadLibrary(const string& lib)
-  {return dlopen((lib+".so").c_str(),RTLD_NOW);}
-#endif
-  
-  template <class F>
-  void asgFnPointer(F& f, libHandle lib, const char* name)
-  {
-    f=(F)dlsym(lib,name);
-    if (!f) throw InvalidSym();
-  }
-#define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
-
-  void* (*ravel_new)(size_t rank)=nullptr;
-  void (*ravel_delete)(void* ravel)=nullptr;
-  void (*ravel_render)(void* ravel, cairo_t* cairo)=nullptr;
-  void (*ravel_onMouseDown)(void* ravel, double x, double y)=nullptr;
-  void (*ravel_onMouseUp)(void* ravel, double x, double y)=nullptr;
-  bool (*ravel_onMouseMotion)(void* ravel, double x, double y)=nullptr;
-  bool (*ravel_onMouseOver)(void* ravel, double x, double y)=nullptr;
-  void (*ravel_onMouseLeave)(void* ravel)=nullptr;
-  void (*ravel_rescale)(void* ravel, double radius);
-  double (*ravel_radius)(void* ravel);
-
-  struct RavelLib
-  {
-    libHandle lib;
-    RavelLib(): lib(loadLibrary("libravel"))
-    {
-      if (!lib)
-        {
-#ifndef NDEBUG
-          cerr << dlerror() << endl;
-#endif
-          return;
-        }
-      
-    auto version=(int (*)())dlsym(lib,"ravel_version");
-    if (!version || ravelVersion!=version())
-      { // incompatible API
-        dlclose(lib);
-        lib=nullptr;
-      }
-
-    if (lib)
-        try
-          {
-            ASG_FN_PTR(ravel_new,lib);
-            ASG_FN_PTR(ravel_delete,lib);
-            ASG_FN_PTR(ravel_render,lib);
-            ASG_FN_PTR(ravel_onMouseDown,lib);
-            ASG_FN_PTR(ravel_onMouseMotion,lib);
-            ASG_FN_PTR(ravel_onMouseOver,lib);
-            ASG_FN_PTR(ravel_onMouseLeave,lib);
-            ASG_FN_PTR(ravel_rescale,lib);
-            ASG_FN_PTR(ravel_radius,lib);
-          }
-        catch (InvalidSym)
-          {
-            dlclose(lib);
-            lib=nullptr;
-          }
-    }
-    ~RavelLib() {if (lib) dlclose(lib);}
-  };
-
-  RavelLib ravelLib;
-
-  inline double sqr(double x) {return x*x;} 
-}
 
 namespace minsky
 {
+  namespace
+  {
+    struct InvalidSym {};
+  
+#ifdef WIN32
+    typedef HINSTANCE libHandle;
+    libHandle loadLibrary(const string& lib)
+    {return LoadLibraryA((lib+".dll").c_str());}
+
+    FARPROC WINAPI dlsym(HMODULE lib, const char* name)
+    {return GetProcAddress(lib,name);}
+
+    void dlclose(HINSTANCE) {}
+
+    const string dlerror() {
+      char msg[1024];
+      FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,nullptr,GetLastError(),0,msg,sizeof(msg),nullptr);
+      return msg;
+    }
+#else
+    typedef void* libHandle;
+    libHandle loadLibrary(const string& lib)
+    {return dlopen((lib+".so").c_str(),RTLD_NOW);}
+#endif
+  
+    template <class F>
+    void asgFnPointer(F& f, libHandle lib, const char* name)
+    {
+      f=(F)dlsym(lib,name);
+      if (!f) throw InvalidSym();
+    }
+#define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
+
+    Ravel* (*ravel_new)(size_t rank)=nullptr;
+    void (*ravel_delete)(Ravel* ravel)=nullptr;
+    void (*ravel_render)(Ravel* ravel, cairo_t* cairo)=nullptr;
+    void (*ravel_onMouseDown)(Ravel* ravel, double x, double y)=nullptr;
+    void (*ravel_onMouseUp)(Ravel* ravel, double x, double y)=nullptr;
+    bool (*ravel_onMouseMotion)(Ravel* ravel, double x, double y)=nullptr;
+    bool (*ravel_onMouseOver)(Ravel* ravel, double x, double y)=nullptr;
+    void (*ravel_onMouseLeave)(Ravel* ravel)=nullptr;
+    void (*ravel_rescale)(Ravel* ravel, double radius);
+    double (*ravel_radius)(Ravel* ravel);
+
+    struct RavelLib
+    {
+      libHandle lib;
+      RavelLib(): lib(loadLibrary("libravel"))
+      {
+        if (!lib)
+          {
+#ifndef NDEBUG
+            cerr << dlerror() << endl;
+#endif
+            return;
+          }
+      
+        auto version=(int (*)())dlsym(lib,"ravel_version");
+        if (!version || ravelVersion!=version())
+          { // incompatible API
+            dlclose(lib);
+            lib=nullptr;
+          }
+
+        if (lib)
+          try
+            {
+              ASG_FN_PTR(ravel_new,lib);
+              ASG_FN_PTR(ravel_delete,lib);
+              ASG_FN_PTR(ravel_render,lib);
+              ASG_FN_PTR(ravel_onMouseDown,lib);
+              ASG_FN_PTR(ravel_onMouseUp,lib);
+              ASG_FN_PTR(ravel_onMouseMotion,lib);
+              ASG_FN_PTR(ravel_onMouseOver,lib);
+              ASG_FN_PTR(ravel_onMouseLeave,lib);
+              ASG_FN_PTR(ravel_rescale,lib);
+              ASG_FN_PTR(ravel_radius,lib);
+            }
+          catch (InvalidSym)
+            {
+              dlclose(lib);
+              lib=nullptr;
+            }
+      }
+      ~RavelLib() {if (lib) dlclose(lib);}
+    };
+
+    RavelLib ravelLib;
+
+    inline double sqr(double x) {return x*x;} 
+  }
+
   bool ravelAvailable() {return ravelLib.lib;}
   
   RavelWrap::RavelWrap()
@@ -176,17 +178,16 @@ namespace minsky
       return DataOp::clickType(xx,yy);
   }
 
+  void RavelWrap::onMouseDown(float xx, float yy)
+  {ravel_onMouseDown(ravel,xx-x(),yy-y());}
+  void RavelWrap::onMouseUp(float xx, float yy)
+  {ravel_onMouseUp(ravel,xx-x(),yy-y());}
+  bool RavelWrap::onMouseMotion(float xx, float yy)
+  {return ravel_onMouseMotion(ravel,xx-x(),yy-y());}
   bool RavelWrap::onMouseOver(float xx, float yy)
-  {
-    if (ravel)
-      return ravel_onMouseOver(ravel,xx-x(),yy-y());
-    return false;
-  }
+  {return ravel_onMouseOver(ravel,xx-x(),yy-y());}
   void RavelWrap::onMouseLeave()
-  {
-    if (ravel)
-      ravel_onMouseLeave(ravel);
-  }
+  {ravel_onMouseLeave(ravel);}
 
 }
 

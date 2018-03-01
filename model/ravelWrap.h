@@ -24,10 +24,13 @@
 
 namespace minsky 
 {
+  struct Ravel;
+  struct DataCube;
+
   class RavelWrap: public DataOp
   {
-    void* ravel=nullptr;
-    void* dataCube=nullptr;
+    Ravel* ravel=nullptr;
+    DataCube* dataCube=nullptr;
     void noRavelSetup();
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
@@ -36,6 +39,9 @@ namespace minsky
     ~RavelWrap();
     void draw(cairo_t* cairo) const override;
     ClickType::Type clickType(float x, float y) override;
+    void onMouseDown(float x, float y);
+    void onMouseUp(float x, float y);
+    bool onMouseMotion(float x, float y);
     bool onMouseOver(float x, float y);
     void onMouseLeave();
   };
