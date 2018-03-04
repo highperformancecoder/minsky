@@ -64,7 +64,7 @@ pushd gui-tk
 id=0
 fid=0
 # add in plain files
-for i in *.tcl accountingRules; do
+for i in *.tcl *.dll accountingRules; do
 	if [ ! -d $i -a $i != "minsky.exe" ]; then
 	    let fid++
 	    cat >>$minskyWxs <<EOF

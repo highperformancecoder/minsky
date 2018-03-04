@@ -37,7 +37,10 @@ namespace minsky
 {
   namespace
   {
-    struct InvalidSym {};
+    struct InvalidSym {
+      const string symbol;
+      InvalidSym(const string& s): symbol(s) {}
+    };
 
     struct DataSpec
     {
@@ -72,7 +75,7 @@ namespace minsky
     void asgFnPointer(F& f, libHandle lib, const char* name)
     {
       f=(F)dlsym(lib,name);
-      if (!f) throw InvalidSym();
+      if (!f) throw InvalidSym(name);
     }
 #define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
 
@@ -131,10 +134,11 @@ namespace minsky
               ASG_FN_PTR(ravelDC_initRavel,lib);
               ASG_FN_PTR(ravelDC_openFile,lib);
             }
-          catch (InvalidSym)
+          catch (const InvalidSym& err)
             {
               errorMsg=dlerror();
-              errorMsg+="\n Probably libravel dynamic library is too old";
+              errorMsg+="\nLooking for "+err.symbol;
+              errorMsg+="\nProbably libravel dynamic library is too old";
               dlclose(lib);
               lib=nullptr;
             }
