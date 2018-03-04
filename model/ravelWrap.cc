@@ -96,19 +96,19 @@ namespace minsky
     struct RavelLib
     {
       libHandle lib;
+      string errorMsg;
       RavelLib(): lib(loadLibrary("libravel"))
       {
         if (!lib)
           {
-#ifndef NDEBUG
-            cerr << dlerror() << endl;
-#endif
+            errorMsg=dlerror();
             return;
           }
       
         auto version=(int (*)())dlsym(lib,"ravel_version");
         if (!version || ravelVersion!=version())
           { // incompatible API
+            errorMsg="Incompatible libravel dynamic library found";
             dlclose(lib);
             lib=nullptr;
           }
@@ -133,9 +133,8 @@ namespace minsky
             }
           catch (InvalidSym)
             {
-#ifndef NDEBUG
-              cerr << dlerror() << endl;
-#endif
+              errorMsg=dlerror();
+              errorMsg+="\n Probably libravel dynamic library is too old";
               dlclose(lib);
               lib=nullptr;
             }
@@ -171,6 +170,7 @@ namespace minsky
   void RavelWrap::noRavelSetup()
   {
     tooltip="https://ravelation.hpcoders.com.au";
+    detailedText=ravelLib.errorMsg;
   }
 
   void RavelWrap::draw(cairo_t* cairo) const
@@ -215,20 +215,23 @@ namespace minsky
   }
 
   void RavelWrap::onMouseDown(float xx, float yy)
-  {ravel_onMouseDown(ravel,xx-x(),yy-y());}
+  {if (ravel) ravel_onMouseDown(ravel,xx-x(),yy-y());}
   void RavelWrap::onMouseUp(float xx, float yy)
-  {ravel_onMouseUp(ravel,xx-x(),yy-y());}
+  {if (ravel) ravel_onMouseUp(ravel,xx-x(),yy-y());}
   bool RavelWrap::onMouseMotion(float xx, float yy)
-  {return ravel_onMouseMotion(ravel,xx-x(),yy-y());}
+  {if (ravel) return ravel_onMouseMotion(ravel,xx-x(),yy-y());}
   bool RavelWrap::onMouseOver(float xx, float yy)
-  {return ravel_onMouseOver(ravel,xx-x(),yy-y());}
+  {if (ravel) return ravel_onMouseOver(ravel,xx-x(),yy-y());}
   void RavelWrap::onMouseLeave()
-  {ravel_onMouseLeave(ravel);}
+  {if (ravel) ravel_onMouseLeave(ravel);}
 
   void RavelWrap::loadFile(const char* fileName)
   {
-    ravelDC_openFile(dataCube, fileName, DataSpec());
-    ravelDC_initRavel(dataCube,ravel);
+    if (dataCube)
+      {
+        ravelDC_openFile(dataCube, fileName, DataSpec());
+        ravelDC_initRavel(dataCube,ravel);
+      }
   }
 
   
