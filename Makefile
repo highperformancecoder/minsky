@@ -140,9 +140,14 @@ ifdef MXE
 ifndef DEBUG
 # This option removes the black window, but this also prevents being
 # able to    type TCL commands on the command line, so only use it for
-# release builds. Doesn't seemm to work on MXE, though - see ticket #456
+# release builds. Doesn't seem to work on MXE, though - see ticket #456
 FLAGS+=-DCONSOLE
 FLAGS+=-mwindows
+else
+# do not include symbols, as obscure Windows bug causes link-time
+# large text section failure. In any case, we do not have a usable
+# symbolic debugger available for this build
+OPT=-O0
 endif
 GUI_TK_OBJS+=MinskyLogo.o
 WINDRES=$(MXE_PREFIX)-windres

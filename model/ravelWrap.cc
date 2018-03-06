@@ -79,6 +79,8 @@ namespace minsky
     }
 #define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
 
+    const char* (*ravel_lastErr)()=nullptr;
+    const char* (*ravel_version)()=nullptr;
     Ravel* (*ravel_new)(size_t rank)=nullptr;
     void (*ravel_delete)(Ravel* ravel)=nullptr;
     void (*ravel_render)(Ravel* ravel, cairo_t* cairo)=nullptr;
@@ -87,13 +89,13 @@ namespace minsky
     bool (*ravel_onMouseMotion)(Ravel* ravel, double x, double y)=nullptr;
     bool (*ravel_onMouseOver)(Ravel* ravel, double x, double y)=nullptr;
     void (*ravel_onMouseLeave)(Ravel* ravel)=nullptr;
-    void (*ravel_rescale)(Ravel* ravel, double radius);
-    double (*ravel_radius)(Ravel* ravel);
+    void (*ravel_rescale)(Ravel* ravel, double radius)=nullptr;
+    double (*ravel_radius)(Ravel* ravel)=nullptr;
 
-    DataCube* (*ravelDC_new)();
-    void (*ravelDC_delete)(DataCube*);
-    void (*ravelDC_initRavel)(DataCube* dc,Ravel* ravel);
-    void (*ravelDC_openFile)(DataCube* dc, const char* fileName, DataSpec spec);
+    DataCube* (*ravelDC_new)()=nullptr;
+    void (*ravelDC_delete)(DataCube*)=nullptr;
+    bool (*ravelDC_initRavel)(DataCube* dc,Ravel* ravel)=nullptr;
+    bool (*ravelDC_openFile)(DataCube* dc, const char* fileName, DataSpec spec)=nullptr;
 
 
     struct RavelLib
@@ -108,7 +110,7 @@ namespace minsky
             return;
           }
       
-        auto version=(int (*)())dlsym(lib,"ravel_version");
+        auto version=(int (*)())dlsym(lib,"ravel_capi_version");
         if (!version || ravelVersion!=version())
           { // incompatible API
             errorMsg="Incompatible libravel dynamic library found";
@@ -119,6 +121,8 @@ namespace minsky
         if (lib)
           try
             {
+              ASG_FN_PTR(ravel_version,lib);
+              ASG_FN_PTR(ravel_lastErr,lib);
               ASG_FN_PTR(ravel_new,lib);
               ASG_FN_PTR(ravel_delete,lib);
               ASG_FN_PTR(ravel_render,lib);
@@ -152,6 +156,15 @@ namespace minsky
   }
 
   bool ravelAvailable() {return ravelLib.lib;}
+
+  const char* RavelWrap::ravelVersion() const
+  {return ravel_version? ravel_version(): "Ravel unavailable";}
+
+  const char* RavelWrap::lastErr() const {
+    if (ravelAvailable())
+      return ravel_lastErr();
+    return ravelLib.errorMsg.c_str();
+  }
   
   RavelWrap::RavelWrap()
   {
@@ -204,8 +217,9 @@ namespace minsky
   {
     if (ravel)
       {
-        if (Item::clickType(xx,yy)==ClickType::onPort)
-          return ClickType::onPort;
+        for (auto& p: ports)
+          if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
+            return ClickType::onPort;
         double r=1.1*ravel_radius(ravel);
         if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
           return ClickType::outside;
@@ -233,8 +247,10 @@ namespace minsky
   {
     if (dataCube)
       {
-        ravelDC_openFile(dataCube, fileName, DataSpec());
-        ravelDC_initRavel(dataCube,ravel);
+        if (!ravelDC_openFile(dataCube, fileName, DataSpec()))
+          detailedText+=string("\n")+ravel_lastErr();
+        else if (!ravelDC_initRavel(dataCube,ravel))
+          detailedText+=string("\n")+ravel_lastErr();
       }
   }
 
