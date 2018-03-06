@@ -537,7 +537,6 @@ proc contextMenu {x y X Y} {
 proc loadCSVIntoRavel {} {
     global workDir
     canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
-    puts "exiting loadCSVIntoRavel"
 }
 
 namespace eval godley {

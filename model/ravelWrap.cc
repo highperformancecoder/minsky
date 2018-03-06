@@ -32,6 +32,7 @@ using namespace std;
 #include <dlfcn.h>
 #endif
 
+#include "cairoRenderer.h"
 
 namespace minsky
 {
@@ -83,7 +84,7 @@ namespace minsky
     const char* (*ravel_version)()=nullptr;
     Ravel* (*ravel_new)(size_t rank)=nullptr;
     void (*ravel_delete)(Ravel* ravel)=nullptr;
-    void (*ravel_render)(Ravel* ravel, cairo_t* cairo)=nullptr;
+    void (*ravel_render)(Ravel* ravel, CAPIRenderer*)=nullptr;
     void (*ravel_onMouseDown)(Ravel* ravel, double x, double y)=nullptr;
     void (*ravel_onMouseUp)(Ravel* ravel, double x, double y)=nullptr;
     bool (*ravel_onMouseMotion)(Ravel* ravel, double x, double y)=nullptr;
@@ -194,7 +195,8 @@ namespace minsky
   {
     if (ravel)
       {
-        ravel_render(ravel,cairo);
+        ravel::CairoRenderer cr(cairo);
+        ravel_render(ravel,&cr);
         double r=1.1*ravel_radius(ravel);
         ports[0]->moveTo(x()+1.1*r, y());
         ports[1]->moveTo(x()-1.1*r, y());
