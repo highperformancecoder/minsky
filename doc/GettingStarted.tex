@@ -939,7 +939,9 @@ lending to Impatient.
 Notice that the program shows that the Row Sum for this transaction is
 currently ``Lend'', when it should be zero to obey the double-entry
 bookkeeping rule that all rows must balance. This is because a
-destination for ``Lend'' has not yet been specified. The destination
+destination for ``Lend'' has not yet been specified. Please note that different
+asset class collumns follow different +ve and -ve rules, so an asset and a liability
+with the same value might need to both be +ve or both -ve to sum to zero. The destination
 is Impatient's account, and to balance the row to zero this part of
 the transaction must be entered as ``Lend'': 
 
@@ -1089,7 +1091,10 @@ rather than using a constant ``lendrate'' as in this example---see the
 Tutorial on a \htmlref{Basic Banking Model}{tut:basicBankModel} for an
 example. This example uses the engineering concept of a
 \htmlref{``time constant''}{time-constants}, which is explained in the
-next section. 
+next section. Please note that right-clicking godley table variables and
+selecting "copy flow variables" creates a new group, which, when clicked and
+selecting "open in canvas", changes the canvas to show just that group. The normal
+canvas can be brought back by right-clicking and selecting "open master group".
 
 \subsubsection{Using ``Time Constants''}
 \label{time-constants}
