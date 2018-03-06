@@ -65,7 +65,7 @@ id=0
 fid=0
 # add in plain files
 for i in *.tcl *.dll accountingRules; do
-	if [ ! -d $i -a $i != "minsky.exe" ]; then
+	if [ -f $i -a ! -d $i -a $i != "minsky.exe" ]; then
 	    let fid++
 	    cat >>$minskyWxs <<EOF
 	<File Id='fid$fid' Source='gui-tk/$i' Name='$i' KeyPath='no' />
