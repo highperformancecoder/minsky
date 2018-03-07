@@ -529,6 +529,7 @@ proc contextMenu {x y X Y} {
         }
         RavelWrap {
             .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
+            .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
         }
     }
 

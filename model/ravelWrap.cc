@@ -152,7 +152,11 @@ namespace minsky
               lib=nullptr;
             }
       }
-      ~RavelLib() {if (lib) dlclose(lib);}
+      ~RavelLib() {
+        if (lib)
+          dlclose(lib);
+        lib=nullptr;
+      }
     };
 
     RavelLib ravelLib;
@@ -176,7 +180,7 @@ namespace minsky
     if (ravelAvailable())
       {
         ravel=ravel_new(1); // rank 1 for now
-        ravel_rescale(ravel,100);
+        ravel_rescale(ravel,20);
         dataCube=ravelDC_new();
       }
     else
@@ -185,8 +189,11 @@ namespace minsky
 
   RavelWrap::~RavelWrap()
   {
-    if (ravel) ravel_delete(ravel);
-    if (dataCube) ravelDC_delete(dataCube);
+    if (ravelAvailable()) // NB during shutdown, ravel may be unloaded before getting here
+      {
+        if (ravel) ravel_delete(ravel);
+        if (dataCube) ravelDC_delete(dataCube);
+      }
   }
 
   void RavelWrap::noRavelSetup()
@@ -219,6 +226,12 @@ namespace minsky
       DataOp::draw(cairo);
   }
 
+  void RavelWrap::resize(const LassoBox& b)
+  {
+    if (ravel)
+      ravel_rescale(ravel, 0.5*hypot(b.x0-b.x1,b.y0-b.y1));
+  }
+  
   ClickType::Type RavelWrap::clickType(float xx, float yy)
   {
     if (ravel)

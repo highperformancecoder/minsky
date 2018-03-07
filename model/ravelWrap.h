@@ -40,6 +40,7 @@ namespace minsky
     const char* ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
+    void resize(const LassoBox&) override;
     ClickType::Type clickType(float x, float y) override;
     void onMouseDown(float x, float y);
     void onMouseUp(float x, float y);
