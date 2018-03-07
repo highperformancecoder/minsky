@@ -92,11 +92,13 @@ namespace minsky
     void (*ravel_onMouseLeave)(Ravel* ravel)=nullptr;
     void (*ravel_rescale)(Ravel* ravel, double radius)=nullptr;
     double (*ravel_radius)(Ravel* ravel)=nullptr;
+    size_t (*ravel_rank)(Ravel* ravel)=nullptr;
 
     DataCube* (*ravelDC_new)()=nullptr;
     void (*ravelDC_delete)(DataCube*)=nullptr;
     bool (*ravelDC_initRavel)(DataCube* dc,Ravel* ravel)=nullptr;
     bool (*ravelDC_openFile)(DataCube* dc, const char* fileName, DataSpec spec)=nullptr;
+    int (*ravelDC_hyperSlice)(DataCube*, Ravel*, size_t dims[], double**)=nullptr;
 
 
     struct RavelLib
@@ -134,10 +136,12 @@ namespace minsky
               ASG_FN_PTR(ravel_onMouseLeave,lib);
               ASG_FN_PTR(ravel_rescale,lib);
               ASG_FN_PTR(ravel_radius,lib);
+              ASG_FN_PTR(ravel_rank,lib);
               ASG_FN_PTR(ravelDC_new,lib);
               ASG_FN_PTR(ravelDC_delete,lib);
               ASG_FN_PTR(ravelDC_initRavel,lib);
               ASG_FN_PTR(ravelDC_openFile,lib);
+              ASG_FN_PTR(ravelDC_hyperSlice,lib);
             }
           catch (const InvalidSym& err)
             {
@@ -237,7 +241,13 @@ namespace minsky
   void RavelWrap::onMouseDown(float xx, float yy)
   {if (ravel) ravel_onMouseDown(ravel,xx-x(),yy-y());}
   void RavelWrap::onMouseUp(float xx, float yy)
-  {if (ravel) ravel_onMouseUp(ravel,xx-x(),yy-y());}
+  {
+    if (ravel)
+      {
+        ravel_onMouseUp(ravel,xx-x(),yy-y());
+        loadDataFromSlice();
+      }
+  }
   bool RavelWrap::onMouseMotion(float xx, float yy)
   {if (ravel) return ravel_onMouseMotion(ravel,xx-x(),yy-y());}
   bool RavelWrap::onMouseOver(float xx, float yy)
@@ -253,10 +263,26 @@ namespace minsky
           detailedText+=string("\n")+ravel_lastErr();
         else if (!ravelDC_initRavel(dataCube,ravel))
           detailedText+=string("\n")+ravel_lastErr();
+        loadDataFromSlice();
       }
   }
 
-  
+  void RavelWrap::loadDataFromSlice()
+  {
+    if (ravel && dataCube)
+      {
+        assert(ravel_rank(ravel)==1);
+        vector<size_t> dims(ravel_rank(ravel));
+        double* tmp;
+        ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
+        if (tmp)
+          for (size_t i=0; i<dims[0]; ++i)
+            data[i]=tmp[i];
+        else
+          detailedText+=string("\n")+ravel_lastErr();
+      }
+  }
+
 }
 
   

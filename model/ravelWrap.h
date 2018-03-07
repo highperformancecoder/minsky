@@ -47,6 +47,7 @@ namespace minsky
     bool onMouseOver(float x, float y);
     void onMouseLeave();
     void loadFile(const char*);
+    void loadDataFromSlice();
   };
 }
 
