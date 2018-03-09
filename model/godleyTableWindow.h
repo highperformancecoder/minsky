@@ -110,8 +110,7 @@ namespace minsky
     /// mouse motion with button 1 pressed
     void mouseMoveB1(double x, double y);
     void mouseMove(double x, double y);
-    void keyPress(int keySym);
-    void keyRelease(int keySym);
+    void keyPress(int keySym, const std::string& utf8);
 
     enum ClickType {background, row0, col0, internal, importStock, rowWidget, colWidget};
     /// returns the clickType in zoomed coordinates
@@ -134,7 +133,7 @@ namespace minsky
 
     // support cut/copy/paste operations
     void delSelection();
-    void cut() {copy(); delSelection();requestRedraw();}
+    void cut();
     void copy();
     void paste();
 
@@ -183,10 +182,11 @@ namespace minsky
     /// row at \a y in unzoomed coordinates
     int rowY(double y) const;
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
-    bool controlChar=false; ///< control pressed
     std::deque<GodleyTable::Data> history;
     ClickType clickType(double x, double y) const;
     void checkCell00(); ///<check is cell (0,0) is selected, and deselect if so
+    /// handle delete or backspace. Cell assumed selected
+    void handleDelete();
   };
 }
 

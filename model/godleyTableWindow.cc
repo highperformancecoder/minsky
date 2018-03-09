@@ -541,78 +541,82 @@ namespace minsky
     requestRedraw();
   }
 
-  void GodleyTableWindow::keyPress(int keySym)
+  inline constexpr char control(char x) {return x-'`';}
+  
+  void GodleyTableWindow::keyPress(int keySym, const std::string& utf8)
   {
+    
     auto& table=godleyIcon->table;
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(table.cols()) &&
         selectedRow<int(table.rows()))
       {
-        if (controlChar)
-          switch (keySym)
+        auto& str=table.cell(selectedRow,selectedCol);
+        if (utf8.length())
+          if (unsigned(utf8[0])>=' ' && utf8[0]!=0x7f)
             {
-            case 'x': case 'X':
-              cut();
-              break;
-            case 'c': case 'C':
-              copy();
-              break;
-            case 'v': case 'V':
-              paste();
-              break;
+              delSelection();
+              if (insertIdx>=str.length()) insertIdx=str.length();
+              str.insert(insertIdx,utf8);
+              selectIdx=insertIdx+=utf8.length();
+            }
+          else
+            {
+              switch (utf8[0]) // process control characters
+                {
+                case control('x'):
+                  cut();
+                  break;
+                case control('c'):
+                  copy();
+                  break;
+                case control('v'):
+                  paste();
+                  break;
+                case control('h'): case 0x7f:
+                  handleDelete();
+                  break;                  
+                }
             }
         else
           {
-            auto& str=table.cell(selectedRow,selectedCol);
-            switch (keySym)
-              {
-              case 0xff08: case 0xffff:  //backspace/delete
-                if (insertIdx!=selectIdx)
-                  delSelection();
-                else if (insertIdx>0 && insertIdx<=str.length())
-                  str.erase(--insertIdx,1);
-                break;
-              case 0xff1b: // escape
-                if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
-                    selectedCol>=0 && size_t(selectedCol)<=table.cols())
-                  table.cell(selectedRow, selectedCol)=savedText;
-                selectedRow=selectedCol=-1;
-                break;
-              case 0xff0d: //return
-                update();
-                selectedRow=selectedCol=-1;
-                break;
-              case 0xff51: //left arrow
-                if (insertIdx>0) insertIdx--;
-                else navigateLeft();
-                break;
-              case 0xff53: //right arrow
-                if (insertIdx<str.length()) insertIdx++;
-                else navigateRight();
-                break;
-              case 0xffe3: case 0xffe4: // control
-                controlChar=true;
-                return; // no need to redraw + don't reset selection
-              case 0xff09: // tab
-                navigateRight();
-                break;
-              case 0xfe20: // back tab
-                navigateLeft();
-                break;
-              case 0xff54: // down
-                navigateDown();
-                break;
-              case 0xff52: // up
-                navigateUp();
-                break;
-              default:
-                if (keySym>=' ' && keySym<0xff)
-                  {
-                    delSelection();
-                    if (insertIdx>=str.length()) insertIdx=str.length();
-                    str.insert(str.begin()+insertIdx++,keySym);
-                  }
-                break;
-              }
+          switch (keySym)
+            {
+            case 0xff08: case 0xffff:  //backspace/delete
+              handleDelete();
+              break;
+            case 0xff1b: // escape
+              if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
+                  selectedCol>=0 && size_t(selectedCol)<=table.cols())
+                table.cell(selectedRow, selectedCol)=savedText;
+              selectedRow=selectedCol=-1;
+              break;
+            case 0xff0d: //return
+              update();
+              selectedRow=selectedCol=-1;
+              break;
+            case 0xff51: //left arrow
+              if (insertIdx>0) insertIdx--;
+              else navigateLeft();
+              break;
+            case 0xff53: //right arrow
+              if (insertIdx<str.length()) insertIdx++;
+              else navigateRight();
+              break;
+            case 0xff09: // tab
+              navigateRight();
+              break;
+            case 0xfe20: // back tab
+              navigateLeft();
+              break;
+            case 0xff54: // down
+              navigateDown();
+              break;
+            case 0xff52: // up
+              navigateUp();
+              break;
+            default:
+              return; // key not handled, just return without resetting selection
+            }
             selectIdx=insertIdx;
           }
       }
@@ -638,16 +642,6 @@ namespace minsky
     requestRedraw();
   }
 
-  void GodleyTableWindow::keyRelease(int keySym)
-  {
-    switch (keySym)
-      {
-      case 0xffe3: case 0xffe4:
-        controlChar=false;
-        break;
-      }
-  }
-
   void GodleyTableWindow::delSelection()
   {
     if (insertIdx!=selectIdx)
@@ -658,11 +652,47 @@ namespace minsky
       }
   }
 
+    void GodleyTableWindow::handleDelete()
+    {
+      auto& table=godleyIcon->table;
+      assert(selectedRow>=0 && selectedCol>=0);
+      assert(selectedRow<table.rows());
+      assert(selectedCol<table.cols());
+      auto& str=table.cell(selectedRow,selectedCol);
+      if (insertIdx!=selectIdx)
+        delSelection();
+      else if (insertIdx>0 && insertIdx<=str.length())
+        str.erase(--insertIdx,1);
+      selectIdx=insertIdx;
+    }
+
+  void GodleyTableWindow::cut()
+  {
+    copy();
+    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
+        selectedRow<int(godleyIcon->table.rows()))
+      {
+        if (selectIdx==insertIdx)
+          // delete entire cell
+          godleyIcon->table.cell(selectedRow,selectedCol).clear();
+        else
+          delSelection();
+        requestRedraw();
+      }
+  }
+  
   void GodleyTableWindow::copy()
   {
-    auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-    cminsky().putClipboard
-      (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
+    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
+        selectedRow<int(godleyIcon->table.rows()))
+      {
+        auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+        if (selectIdx!=insertIdx)
+          cminsky().putClipboard
+            (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
+        else
+          cminsky().putClipboard(str);
+      }
   }
 
   void GodleyTableWindow::paste()

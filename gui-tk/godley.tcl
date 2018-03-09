@@ -41,23 +41,13 @@ proc openGodley {id} {
         bind .$id.table <Enter> "$id.adjustWidgets; $id.requestRedraw"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-        bind .$id.table <KeyPress> "$id.keyPress %N"
-        bind .$id.table <KeyRelease> "$id.keyRelease %N"
-        # act as a black hole for tab focus
-#        bind .$id <Tab> "focus .$id.table; $id.keyPress %N"
-#        bind .$id <Shift-Tab> "focus .$id.table; $id.keyPress %N; puts {{st} %N}"
+        bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]"
 
         global meta meta_menu
         bind .$id.table <$meta-y> "$id.undo -1"
         bind .$id.table <$meta-z> "$id.undo 1"
-        bind .$id.table <$meta-x> "cutCopyPaste $id Cut"
-        bind .$id.table <$meta-c> "cutCopyPaste $id Copy"
-        bind .$id.table <$meta-v> "cutCopyPaste $id Paste"
         bind .$id <$meta-y> "$id.undo -1"
         bind .$id <$meta-z> "$id.undo 1"
-        bind .$id <$meta-x> "cutCopyPaste $id Cut"
-        bind .$id <$meta-c> "cutCopyPaste $id Copy"
-        bind .$id <$meta-v> "cutCopyPaste $id Paste"
         
         bind .$id <$meta-plus> "zoomIn $id"
         bind .$id <$meta-minus> "zoomOut $id"
@@ -244,31 +234,6 @@ proc setGodleyTitleOK id {
     wm title .$id "Godley Table:[$id.godleyIcon.table.title]"
 }
     
-proc godleyCopy {id row col} {
-    clipboard clear
-    clipboard append -type UTF8_STRING [$id.godleyIcon.table.getCell $row $col]
-}
-
-proc godleyCut {id row col} {
-    godleyCopy $id $row $col
-    $id.godleyIcon.setCell $row $col {}
-    $id.requestRedraw
-}
-
-proc godleyPaste {id row col} {
-    if {![catch {set data [clipboard get -type UTF8_STRING]}]} {
-        $id.godleyIcon.setCell $row $col $data
-        $id.requestRedraw
-    }
-}
-
-proc cutCopyPaste {id cmd} {
-    if {[$id.selectedRow]>=0 && [$id.selectedCol]>=0 &&
-        ([$id.selectedRow]>0 || [$id.selectedCol]>0)} {
-        godley$cmd $id [$id.selectedRow] [$id.selectedCol]
-    }
-}
-
 proc redrawAllGodleyTables {} {
     foreach c [info commands godleyWindow*.requestRedraw] {$c}
 }
