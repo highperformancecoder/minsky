@@ -70,6 +70,10 @@ namespace minsky
     }
     int idx() const {return m_idx;}
 
+    ///< dimensions of this variable value. dims.size() is the rank, a
+    ///scalar variable has dims[0]=1, etc.
+    std::vector<unsigned> dims{1};
+    
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 
