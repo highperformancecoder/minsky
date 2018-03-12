@@ -1320,13 +1320,13 @@ SUITE(GodleyTableWindow)
       selectedCol=1;
       selectedRow=1;
       selectIdx=insertIdx=0;
-      keyPress('a'); keyPress('b'); keyPress('b'); keyPress(XK_Delete);
-      keyPress('c'); keyPress('c'); keyPress(XK_BackSpace);
+      keyPress('a',"a"); keyPress('b',"b"); keyPress('b',"b"); keyPress(XK_Delete,"");
+      keyPress('c',"c"); keyPress('c',"c"); keyPress(XK_BackSpace,"");
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
 
       godleyIcon->table.cell(0,0)="stock1";
       CHECK_EQUAL(0,godleyIcon->stockVars().size());
-      keyPress(XK_Return); // should cause update to be called
+      keyPress(XK_Return,""); // should cause update to be called
       // unfortunately, this is a freestanding GodleyIcon, so update has no effect
 //      CHECK_EQUAL(1,godleyIcon->stockVars().size());
 //      CHECK_EQUAL("stock1",godleyIcon->stockVars()[0]->name());
@@ -1337,7 +1337,7 @@ SUITE(GodleyTableWindow)
       selectedCol=1;
       selectedRow=1;
       savedText="abc";
-      keyPress('d'); keyPress(XK_Escape); // should revert to previous
+      keyPress('d',"d"); keyPress(XK_Escape,""); // should revert to previous
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
       CHECK_EQUAL(-1,selectedCol);
       CHECK_EQUAL(-1,selectedRow);
@@ -1346,35 +1346,35 @@ SUITE(GodleyTableWindow)
       selectedCol=1;
       selectedRow=1;
       selectIdx=insertIdx=0;
-      keyPress(XK_Right);
+      keyPress(XK_Right,"");
       CHECK_EQUAL(1,insertIdx);
-      keyPress(XK_Left);
+      keyPress(XK_Left,"");
       CHECK_EQUAL(0,insertIdx);
-      keyPress(XK_Left);
+      keyPress(XK_Left,"");
       CHECK_EQUAL(0,selectedCol);
-      keyPress(XK_Tab);
+      keyPress(XK_Tab,"");
       CHECK_EQUAL(1,selectedCol);
-      keyPress(XK_Tab);
+      keyPress(XK_Tab,"");
       CHECK_EQUAL(2,selectedCol);
-      keyPress(XK_Right);
+      keyPress(XK_Right,"");
       CHECK_EQUAL(3,selectedCol);
-      keyPress(XK_Right);
+      keyPress(XK_Right,"");
       CHECK_EQUAL(0,selectedCol);
       CHECK_EQUAL(2,selectedRow);
-      keyPress(XK_Tab);
+      keyPress(XK_Tab,"");
       CHECK_EQUAL(1,selectedCol);
-      keyPress(XK_Up);
+      keyPress(XK_Up,"");
       CHECK_EQUAL(1,selectedCol);
       CHECK_EQUAL(1,selectedRow);
-      keyPress(XK_Down);
+      keyPress(XK_Down,"");
       CHECK_EQUAL(1,selectedCol);
       CHECK_EQUAL(2,selectedRow);
-      keyPress(XK_ISO_Left_Tab);
+      keyPress(XK_ISO_Left_Tab,"");
       CHECK_EQUAL(0,selectedCol);
-      keyPress(XK_ISO_Left_Tab);
+      keyPress(XK_ISO_Left_Tab,"");
       CHECK_EQUAL(3,selectedCol);
       CHECK_EQUAL(1,selectedRow);
-      keyPress(XK_Tab); // check wrap around
+      keyPress(XK_Tab,""); // check wrap around
       CHECK_EQUAL(0,selectedCol);
       CHECK_EQUAL(2,selectedRow);
 
@@ -1384,43 +1384,43 @@ SUITE(GodleyTableWindow)
       selectIdx=0;
       insertIdx=1;
       cminsky().putClipboard("");
-      keyPress(XK_Control_L); keyPress('c'); keyRelease(XK_Control_L);//copy
+      keyPress(XK_Control_L,""); keyPress('c',"\x3"); //copy
       CHECK_EQUAL("a",cminsky().getClipboard());
       cminsky().putClipboard("");
-      keyPress(XK_Control_L); keyPress('x');  keyRelease(XK_Control_L);//cut
+      keyPress(XK_Control_L,""); keyPress('x',"\x18");  //cut
       CHECK_EQUAL("a",cminsky().getClipboard());
       CHECK_EQUAL("bc",godleyIcon->table.cell(1,1));
-      keyPress(XK_Control_L); keyPress('v');  keyRelease(XK_Control_L);//paste
+      keyPress(XK_Control_L,""); keyPress('v',"\x16");  //paste
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
 
       // initial cell movement when nothing selected
       selectedCol=-1; selectedRow=-1;
-      keyPress(XK_Tab);
+      keyPress(XK_Tab,"");
       CHECK_EQUAL(1,selectedCol);
       CHECK_EQUAL(0,selectedRow);
 
       selectedCol=-1; selectedRow=-1;
-      keyPress(XK_ISO_Left_Tab);
+      keyPress(XK_ISO_Left_Tab,"");
       CHECK_EQUAL(3,selectedCol);
       CHECK_EQUAL(2,selectedRow);
       
       selectedCol=-1; selectedRow=-1;
-      keyPress(XK_Left);
+      keyPress(XK_Left,"");
       CHECK_EQUAL(3,selectedCol);
       CHECK_EQUAL(0,selectedRow);
       
       selectedCol=-1; selectedRow=-1;
-      keyPress(XK_Right);
+      keyPress(XK_Right,"");
       CHECK_EQUAL(1,selectedCol);
       CHECK_EQUAL(0,selectedRow);
       
       selectedCol=-1; selectedRow=-1;
-      keyPress(XK_Down);
+      keyPress(XK_Down,"");
       CHECK_EQUAL(0,selectedCol);
       CHECK_EQUAL(1,selectedRow);
       
       selectedCol=-1; selectedRow=-1;
-      keyPress(XK_Up);
+      keyPress(XK_Up,"");
       CHECK_EQUAL(0,selectedCol);
       CHECK_EQUAL(2,selectedRow);
       
