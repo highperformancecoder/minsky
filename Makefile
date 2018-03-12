@@ -16,7 +16,7 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 ifdef MXE
 ECOLAB_HOME=$(HOME)/usr/mxe/ecolab
 else
-ifeq ($(shell ls $(HOME)/usr/ecolab/include/ecolab.h),$(HOME)/usr/ecolab/include/ecolab.h)
+ifneq ("$(wildcard  $(HOME)/usr/ecolab/include/ecolab.h)","")
 ECOLAB_HOME=$(HOME)/usr/ecolab
 else
 ECOLAB_HOME=/usr/local/ecolab
