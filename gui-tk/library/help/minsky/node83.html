@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sliders</TITLE>
-<META NAME="description" CONTENT="Sliders">
+<TITLE>Wires</TITLE>
+<META NAME="description" CONTENT="Wires">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,49 +14,61 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node82.html">
-<LINK REL="up" HREF="node80.html">
+<LINK REL="next" HREF="node84.html">
+<LINK REL="previous" HREF="node79.html">
+<LINK REL="up" HREF="node42.html">
 <LINK REL="next" HREF="node84.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1071"
+<A NAME="tex2html1070"
   HREF="node84.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1069"
-  HREF="node80.html">
+<A NAME="tex2html1068"
+  HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1065"
+<A NAME="tex2html1062"
   HREF="node82.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1072"
-  HREF="node84.html">Wires</A>
-<B> Up:</B> <A NAME="tex2html1070"
-  HREF="node80.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1066"
-  HREF="node82.html">Initial conditions</A>
+<B> Next:</B> <A NAME="tex2html1071"
+  HREF="node84.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html1069"
+  HREF="node42.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1063"
+  HREF="node82.html">Sliders</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00433000000000000000">
-Sliders</A>
-</H2>
+<H1><A NAME="SECTION00440000000000000000">
+Wires</A>
+</H1>
 
 <P>
-From the context menu, one can select a slider to be attached to a
-variable, which is a GUI &ldquo;knob&rdquo; allowing one to control a variable's
-initial value, or the value of a parameter or constant. Adjusting the
-slider of an integral (or stock) variable while the system is running
-actually adjusts the present value of the variable.
+Wire represent the flow of values from one operation to the next. To
+add a wire to the canvas, click on the output port of an operation or
+variable (right hand side of the icon in its initial unrotated
+orientation), and then drag it towards an input port (on the left hand
+side of an unrotated icon). You can't connect an operator to itself
+(that would be a loop, which is not allowed, unless passing through an
+integral), nor can an input port have more than one wire
+attached, with the exception of <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img35.png"
+ ALT="$+/-$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img189.png"
+ ALT="$\times/\div$"></SPAN>, where the
+multiple wires are summed or multiplied, respectively, and similarly max/min.
 
 <P>
-Slider parameters are specified in the edit menu: max, min and step
-size. A relative slider means that the step size is expressed as a
-fraction of max-min.
+Wires can be bent by dragging the blue dots (&ldquo;handles&rdquo;). Every time
+a handle is dragged out of a straight line with its neighbours, new
+handles appear on either side. Handles can be removed by
+double-clicking on them.
 
 <P>
 <BR><HR>
