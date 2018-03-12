@@ -19,7 +19,12 @@ else
 ifneq ("$(wildcard  $(HOME)/usr/ecolab/include/ecolab.h)","")
 ECOLAB_HOME=$(HOME)/usr/ecolab
 else
+# This exists when the debian package is installed
+ifneq ("$(wildcard /usr/lib/ecolab/include/ecolab.h)","")
+ECOLAB_HOME=/usr/lib/ecolab
+else
 ECOLAB_HOME=/usr/local/ecolab
+endif
 endif
 endif
 
