@@ -312,7 +312,7 @@ namespace minsky
         yvars.resize(2*numLines);
         yvars[pen]=var;
         if (pen>=numLines)
-          AssignSide(pen,right);
+          assignSide(pen,right);
       }
     else if (pen<4*numLines)
       {

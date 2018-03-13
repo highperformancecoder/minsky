@@ -596,6 +596,7 @@ namespace minsky
          if (auto p=dynamic_cast<PlotWidget*>(i->get()))
            {
              p->clear();
+             p->updateIcon(t);
              p->redraw();
            }
          return false;
