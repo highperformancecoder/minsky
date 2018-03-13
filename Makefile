@@ -13,13 +13,20 @@ TCL_LIB=$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSIO
 TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
 
 # root directory for ecolab include files and libraries
+ifndef ECOLAB_HOME
 ifdef MXE
 ECOLAB_HOME=$(HOME)/usr/mxe/ecolab
 else
-ifeq ($(shell ls $(HOME)/usr/ecolab/include/ecolab.h),$(HOME)/usr/ecolab/include/ecolab.h)
+ifneq ("$(wildcard  $(HOME)/usr/ecolab/include/ecolab.h)","")
 ECOLAB_HOME=$(HOME)/usr/ecolab
 else
+# This exists when the debian package is installed
+ifneq ("$(wildcard /usr/lib/ecolab/include/ecolab.h)","")
+ECOLAB_HOME=/usr/lib/ecolab
+else
 ECOLAB_HOME=/usr/local/ecolab
+endif
+endif
 endif
 endif
 
