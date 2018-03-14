@@ -212,7 +212,7 @@ namespace minsky
                            (godleyIcon->group.lock(),fc.name)];
                         if (vv.idx()>=0)
                           {
-                            double val=fc.coef*vv.value();
+                            double val=fc.coef*vv.value()[0];
                             auto ee=engExp(val);
                             if (ee.engExp==-3) ee.engExp=0;
                             value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);
@@ -656,8 +656,8 @@ namespace minsky
     {
       auto& table=godleyIcon->table;
       assert(selectedRow>=0 && selectedCol>=0);
-      assert(selectedRow<table.rows());
-      assert(selectedCol<table.cols());
+      assert(unsigned(selectedRow)<table.rows());
+      assert(unsigned(selectedCol)<table.cols());
       auto& str=table.cell(selectedRow,selectedCol);
       if (insertIdx!=selectIdx)
         delSelection();

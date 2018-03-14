@@ -39,7 +39,7 @@ namespace minsky
     Type m_type;
     int m_idx; /// index into value vector
     double& valRef(); 
-
+    std::vector<unsigned> m_dims{1};
 
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -65,14 +65,25 @@ namespace minsky
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
-    double value() const {
-      return const_cast<VariableValue*>(this)->valRef();
+    std::vector<double> value() const {
+      auto begin=&const_cast<VariableValue*>(this)->valRef();
+      return std::vector<double>(begin,begin+numElements());
     }
     int idx() const {return m_idx;}
 
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
-    std::vector<unsigned> dims{1};
+    const std::vector<unsigned>& dims() const {return m_dims;}
+    const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
+      m_dims=d;
+      allocValue();
+      return m_dims;
+    }
+    size_t numElements() const {
+      size_t s=1;
+      for (auto i: m_dims) s*=i;
+      return s;
+    }
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}

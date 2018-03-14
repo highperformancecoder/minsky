@@ -267,9 +267,9 @@ namespace minsky
       }
   }
   bool RavelWrap::onMouseMotion(float xx, float yy)
-  {if (ravel) return ravel_onMouseMotion(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);}
+  {if (ravel) return ravel_onMouseMotion(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
   bool RavelWrap::onMouseOver(float xx, float yy)
-  {if (ravel) return ravel_onMouseOver(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);}
+  {if (ravel) return ravel_onMouseOver(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
   void RavelWrap::onMouseLeave()
   {if (ravel) ravel_onMouseLeave(ravel);}
 

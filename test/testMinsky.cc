@@ -122,9 +122,9 @@ SUITE(Minsky)
       implicit=false;
       step();
 
-      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value(), var["a"]->value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock.value()*var["e"]->value(), var["b"]->value(), 1e-4);
+      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input.value()[0], 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock.value()[0], var["a"]->value(), 1e-4);
+      CHECK_CLOSE(integrals[nakedIntegral].stock.value()[0]*var["e"]->value(), var["b"]->value(), 1e-4);
       CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
       ode.reset();
     }
@@ -206,18 +206,18 @@ SUITE(Minsky)
  
       garbageCollect();
       reset();
-      CHECK_EQUAL(10,variableValues[":c"].value());
-      CHECK_EQUAL(20,variableValues[":d"].value());
-      CHECK_EQUAL(30,variableValues[":e"].value());
-      CHECK_EQUAL(5,variableValues[":a"].value());
+      CHECK_EQUAL(10,variableValues[":c"].value()[0]);
+      CHECK_EQUAL(20,variableValues[":d"].value()[0]);
+      CHECK_EQUAL(30,variableValues[":e"].value()[0]);
+      CHECK_EQUAL(5,variableValues[":a"].value()[0]);
       for (size_t i=0; i<stockVars.size(); ++i)
         stockVars[i]=0;
      
       evalGodley.eval(&stockVars[0], &flowVars[0]);
-      CHECK_EQUAL(5,variableValues[":c"].value());
-      CHECK_EQUAL(-5,variableValues[":d"].value());
-      CHECK_EQUAL(0,variableValues[":e"].value());
-      CHECK_EQUAL(5,variableValues[":a"].value());
+      CHECK_EQUAL(5,variableValues[":c"].value()[0]);
+      CHECK_EQUAL(-5,variableValues[":d"].value()[0]);
+      CHECK_EQUAL(0,variableValues[":e"].value()[0]);
+      CHECK_EQUAL(5,variableValues[":a"].value()[0]);
     
     }
 
@@ -290,7 +290,7 @@ SUITE(Minsky)
       CHECK_EQUAL(0, jac(1,0));
       CHECK_EQUAL(0, jac(1,1));
       CHECK_EQUAL(x, jac(1,2));
-      CHECK_EQUAL(e.value(), jac(1,3));
+      CHECK_EQUAL(e.value()[0], jac(1,3));
       CHECK_EQUAL(0,jac(2,0));
       CHECK_EQUAL(0,jac(2,1));
       CHECK_EQUAL(1,jac(2,2));
@@ -320,8 +320,8 @@ SUITE(Minsky)
       nSteps=1;
       step();
       // for now, constructEquations doesn work
-      CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"].value(), 1e-5);
+      CHECK_CLOSE(value*t, integrals[0].stock.value()[0], 1e-5);
+      CHECK_CLOSE(integrals[0].stock.value()[0], variableValues[":output"].value()[0], 1e-5);
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
@@ -444,7 +444,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.3, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.3, variableValues[":c"].value()[0], 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsSubtract)
@@ -475,7 +475,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(-0.3, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(-0.3, variableValues[":c"].value()[0], 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsMultiply)
@@ -506,7 +506,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.02, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.02, variableValues[":c"].value()[0], 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsDivide)
@@ -537,7 +537,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(50, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(50, variableValues[":c"].value()[0], 1e-5);
     }
 
   // instantiate all operations and variables to ensure that definitions

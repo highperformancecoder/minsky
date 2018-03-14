@@ -210,12 +210,12 @@ namespace minsky
   {
     // set any scale overrides
     setMinMax();
-    if (xminVar.idx()>-1) {minx=xminVar.value();}
-    if (xmaxVar.idx()>-1) {maxx=xmaxVar.value();}
-    if (yminVar.idx()>-1) {miny=yminVar.value();}
-    if (ymaxVar.idx()>-1) {maxy=ymaxVar.value();}
-    if (y1minVar.idx()>-1) {miny1=y1minVar.value();}
-    if (y1maxVar.idx()>-1) {maxy1=y1maxVar.value();}
+    if (xminVar.idx()>-1) {minx=xminVar.value()[0];}
+    if (xmaxVar.idx()>-1) {maxx=xmaxVar.value()[0];}
+    if (yminVar.idx()>-1) {miny=yminVar.value()[0];}
+    if (ymaxVar.idx()>-1) {maxy=ymaxVar.value()[0];}
+    if (y1minVar.idx()>-1) {miny1=y1minVar.value()[0];}
+    if (y1maxVar.idx()>-1) {maxy1=y1maxVar.value()[0];}
     autoscale=false;
 
     if (!justDataChanged)
@@ -254,25 +254,25 @@ namespace minsky
   void PlotWidget::addPlotPt(double t)
   {
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (yvars[pen].idx()>=0)
+      if (yvars[pen].dims().size()==1 && yvars[pen].dims()[0]==1 && yvars[pen].idx()>=0)
         {
           double x,y;
           switch (xvars.size())
             {
             case 0: // use t, when x variable not attached
               x=t;
-              y=yvars[pen].value();
+              y=yvars[pen].value()[0];
               break;
             case 1: // use the value of attached variable
               assert(xvars[0].idx()>=0);
-              x=xvars[0].value();
-              y=yvars[pen].value();
+              x=xvars[0].value()[0];
+              y=yvars[pen].value()[0];
               break;
             default:
               if (pen < xvars.size() && xvars[pen].idx()>=0)
                 {
-                  x=xvars[pen].value();
-                  y=yvars[pen].value();
+                  x=xvars[pen].value()[0];
+                  y=yvars[pen].value()[0];
                 }
               else
                 throw error("x input not wired for pen %d",(int)pen+1);
@@ -294,6 +294,25 @@ namespace minsky
       }
   }
 
+  void PlotWidget::addConstantCurves()
+  {
+    for (size_t pen=0; pen<2*numLines; ++pen)
+      if (yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
+        {
+          auto& d=yvars[pen].dims();
+          if (pen<xvars.size() && xvars[pen].numElements()==yvars[pen].numElements())
+            setPen(pen, xvars[pen].value(), yvars[pen].value());
+          else if (d.size()>1 && d[0]==d[1])
+            {
+              // yvar carries the x data
+              auto y=yvars[pen].value();
+              setPen(pen, vector<double>(y.begin(),y.begin()+d[0]),
+                     vector<double>(y.begin()+d[0],y.begin()+2*d[0]));
+            }
+        }
+  }
+
+  
   void PlotWidget::connectVar(const VariableValue& var, unsigned port)
   {
     if (port<nBoundsPorts)
