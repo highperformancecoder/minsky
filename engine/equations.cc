@@ -323,6 +323,14 @@ namespace MathDAG
                 argIdx[i].push_back(VariableValue());
             ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
             break;
+          case data:
+            if (argIdx.size()>1 && argIdx[1].size()==1)
+              ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
+            else if (auto d=dynamic_cast<DataOp*>(state.get()))
+              d->initOutputVariableValue(result); // input not wired,
+            else
+              throw error("inputs for highlighted operations incorrectly wired");
+            break;
           default:
             // sanity check that the correct number of arguments is provided 
             bool correctlyWired=true;
@@ -349,7 +357,7 @@ namespace MathDAG
                 throw error("Too many arguments");
               }
           }
-        if ((!ev.back()->state || ev.back()->state->type()==numOps) 
+        if (!ev.empty() && (!ev.back()->state || ev.back()->state->type()==numOps) 
             && state && ev.back()->type()==state->type())
           ev.back()->state=state;
       }

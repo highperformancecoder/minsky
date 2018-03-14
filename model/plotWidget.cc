@@ -301,13 +301,12 @@ namespace minsky
         {
           auto& d=yvars[pen].dims();
           if (pen<xvars.size() && xvars[pen].numElements()==yvars[pen].numElements())
-            setPen(pen, xvars[pen].value(), yvars[pen].value());
-          else if (d.size()>1 && d[0]==d[1])
+            setPen(pen, xvars[pen].begin(), yvars[pen].begin(), d[0]);
+          else if (d.size()>1 && d[1]>1)
             {
               // yvar carries the x data
-              auto y=yvars[pen].value();
-              setPen(pen, vector<double>(y.begin(),y.begin()+d[0]),
-                     vector<double>(y.begin()+d[0],y.begin()+2*d[0]));
+              auto y=yvars[pen];
+              setPen(pen, y.begin(),y.begin()+d[0], d[0]);
             }
         }
   }

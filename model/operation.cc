@@ -570,6 +570,20 @@ namespace minsky
       return (v->second-v1->second)/(v->first-v1->first);
   }
 
+  void DataOp::initOutputVariableValue(VariableValue& v) const
+  {
+    v.dims({unsigned(data.size()),2});
+    assert(v.numElements()==2*data.size());
+    v.allocValue();
+    auto i=v.begin();
+    for (auto& j: data)
+      {
+        *i=j.first;
+        *(i+data.size())=j.second;
+        ++i;
+      }
+  }
+
   // virtual draw methods for operations - defined here rather than
   // operations.cc because it is more related to the functionality in
   // this file.

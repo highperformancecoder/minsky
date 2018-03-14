@@ -39,6 +39,8 @@ namespace minsky
     Type m_type;
     int m_idx; /// index into value vector
     double& valRef(); 
+    const double& valRef() const
+    {return const_cast<VariableValue*>(this)->valRef();} 
     std::vector<unsigned> m_dims{1};
 
     friend class VariableManager;
@@ -66,11 +68,17 @@ namespace minsky
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
     std::vector<double> value() const {
-      auto begin=&const_cast<VariableValue*>(this)->valRef();
-      return std::vector<double>(begin,begin+numElements());
+      return std::vector<double>(begin(),end());
     }
     int idx() const {return m_idx;}
 
+    typedef double* iterator;
+    typedef const double* const_iterator;
+    iterator begin() {return &valRef();}
+    const_iterator begin() const {return &valRef();}
+    iterator end() {return &valRef()+numElements();}
+    const_iterator end() const {return &valRef()+numElements();}
+    
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
     const std::vector<unsigned>& dims() const {return m_dims;}

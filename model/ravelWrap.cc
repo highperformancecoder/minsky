@@ -19,6 +19,7 @@
 
 #include "ravelWrap.h"
 #include "selection.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 static const int ravelVersion=1;
 
@@ -180,7 +181,7 @@ namespace minsky
     if (ravelAvailable())
       {
         ravel=ravel_new(1); // rank 1 for now
-        ravel_rescale(ravel,20);
+        ravel_rescale(ravel,50);
         dataCube=ravelDC_new();
       }
     else
@@ -294,8 +295,11 @@ namespace minsky
         double* tmp;
         ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
         if (tmp)
-          for (size_t i=0; i<dims[0]; ++i)
-            data[i]=tmp[i];
+          {
+            for (size_t i=0; i<dims[0]; ++i)
+              data[i]=tmp[i];
+            minsky().reset();
+          }
         else
           detailedText+=string("\n")+ravel_lastErr();
       }
