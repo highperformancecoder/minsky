@@ -56,6 +56,8 @@ namespace minsky
 
     /// indexes into the Godley variables vector
     int out, in1, in2;
+    ///  size of vector inputs (1=scalar)
+    unsigned count1=1, count2=1;
     ///indicate whether in1/in2 are flow variables (out is always a flow variable)
     bool flow1, flow2; 
 
