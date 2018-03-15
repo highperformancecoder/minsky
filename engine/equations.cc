@@ -324,8 +324,8 @@ namespace MathDAG
             ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
             break;
           case data:
-            if (argIdx.size()>1 && argIdx[1].size()==1)
-              ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
+            if (argIdx.size()>0 && argIdx[0].size()==1)
+              ev.push_back(EvalOpPtr(type(), result, argIdx[0][0])); 
             else if (auto d=dynamic_cast<DataOp*>(state.get()))
               d->initOutputVariableValue(result); // input not wired,
             else
