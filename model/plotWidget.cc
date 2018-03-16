@@ -296,18 +296,35 @@ namespace minsky
 
   void PlotWidget::addConstantCurves()
   {
+    size_t extraPen=2*numLines;
     for (size_t pen=0; pen<2*numLines; ++pen)
       if (yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
         {
-          auto& d=yvars[pen].dims();
-          if (pen<xvars.size() && xvars[pen].numElements()==yvars[pen].numElements())
-            setPen(pen, xvars[pen].begin(), yvars[pen].begin(), d[0]);
-          else if (d.size()>1 && d[1]>1)
+          auto& yv=yvars[pen];
+          auto& d=yv.dims();
+
+          // work out a reference to the x data
+          vector<double> xdefault;
+          double* x;
+          if (pen<xvars.size() && xvars[pen].idx()>=0)
             {
-              // yvar carries the x data
-              auto y=yvars[pen];
-              setPen(pen, y.begin(),y.begin()+d[0], d[0]);
+              if (xvars[pen].dims()[0]!=d[0])
+                throw error("x vector not same length as y vectors");
+              x=xvars[pen].begin();
             }
+          else if (yv.xend()-yv.xbegin()==d[0]) // yv carries its own x-vector
+            x=yv.xbegin();
+          else // by default, set x to 0..d[0]-1
+            {
+              xdefault.reserve(d[0]);
+              for (size_t i=0; i<d[0]; ++i) xdefault.push_back(i);
+              x=&xdefault[0];
+            }
+          
+          setPen(pen, x, yv.begin(), d[0]);
+          // higher rank y objects treated as multiple y vectors to plot
+          for (auto j=d[0]; j<yv.numElements(); j+=d[0])
+            setPen(extraPen++, x, yv.begin()+j, d[0]);
         }
   }
 
