@@ -82,7 +82,7 @@ namespace minsky
   double Port::value() const {
     auto& vv=getVariableValue();
     if (vv.type()!=VariableType::undefined)
-      return vv.value()[0];
+      return vv.value();
     return 0;
   }
 

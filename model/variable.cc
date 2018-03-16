@@ -163,7 +163,7 @@ string VariableBase::_init(const string& x)
 double VariableBase::_value() const
 {
   if (VariableValue::isValueId(valueId()))
-    return minsky::cminsky().variableValues[valueId()].value()[0];
+    return minsky::cminsky().variableValues[valueId()].value();
   else
     return 0;
 }

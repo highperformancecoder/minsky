@@ -42,6 +42,7 @@ namespace minsky
     const double& valRef() const
     {return const_cast<VariableValue*>(this)->valRef();} 
     std::vector<unsigned> m_dims{1};
+    bool xVector=false; ///< whether an x-vector is present
 
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -67,9 +68,9 @@ namespace minsky
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
-    std::vector<double> value() const {
-      return std::vector<double>(begin(),end());
-    }
+    ///< value at the \a ith location of the vector/tensor. Deefault,
+    ///(i=0) is right for scalar quantities
+    double value(size_t i=0) const {return *(begin()+i);}
     int idx() const {return m_idx;}
 
     typedef double* iterator;
@@ -82,17 +83,31 @@ namespace minsky
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
     const std::vector<unsigned>& dims() const {return m_dims;}
+    ///< set the dimensions. \a d cannot be empty, by may consist of
+    ///the single element {1} to refer to a scalar
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
-      m_dims=d;
-      allocValue();
-      return m_dims;
+      if (!d.empty()) {
+          m_dims=d;
+          allocValue();
+        }
+        return m_dims;
     }
     size_t numElements() const {
       size_t s=1;
       for (auto i: m_dims) s*=i;
       return s;
     }
-    
+
+    /// set whether an x-vector is present or not. x-vectors have
+    /// length dims()[0], and are used by plots to plot vector or
+    /// tensor valued data. x-vectors are not transformed by
+    /// operations
+    void setX(bool x) {xVector=x; allocValue();}
+    iterator xbegin() {return &valRef()+numElements();}
+    const_iterator xbegin() const {return &valRef()+numElements();}
+    iterator xend() {return &valRef()+numElements()+(xVector? m_dims[0]:0);}
+    const_iterator xend() const {return &valRef()+numElements()+(xVector? m_dims[0]:0);}
+   
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 

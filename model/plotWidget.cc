@@ -210,12 +210,12 @@ namespace minsky
   {
     // set any scale overrides
     setMinMax();
-    if (xminVar.idx()>-1) {minx=xminVar.value()[0];}
-    if (xmaxVar.idx()>-1) {maxx=xmaxVar.value()[0];}
-    if (yminVar.idx()>-1) {miny=yminVar.value()[0];}
-    if (ymaxVar.idx()>-1) {maxy=ymaxVar.value()[0];}
-    if (y1minVar.idx()>-1) {miny1=y1minVar.value()[0];}
-    if (y1maxVar.idx()>-1) {maxy1=y1maxVar.value()[0];}
+    if (xminVar.idx()>-1) {minx=xminVar.value();}
+    if (xmaxVar.idx()>-1) {maxx=xmaxVar.value();}
+    if (yminVar.idx()>-1) {miny=yminVar.value();}
+    if (ymaxVar.idx()>-1) {maxy=ymaxVar.value();}
+    if (y1minVar.idx()>-1) {miny1=y1minVar.value();}
+    if (y1maxVar.idx()>-1) {maxy1=y1maxVar.value();}
     autoscale=false;
 
     if (!justDataChanged)
@@ -261,18 +261,18 @@ namespace minsky
             {
             case 0: // use t, when x variable not attached
               x=t;
-              y=yvars[pen].value()[0];
+              y=yvars[pen].value();
               break;
             case 1: // use the value of attached variable
               assert(xvars[0].idx()>=0);
-              x=xvars[0].value()[0];
-              y=yvars[pen].value()[0];
+              x=xvars[0].value();
+              y=yvars[pen].value();
               break;
             default:
               if (pen < xvars.size() && xvars[pen].idx()>=0)
                 {
-                  x=xvars[pen].value()[0];
-                  y=yvars[pen].value()[0];
+                  x=xvars[pen].value();
+                  y=yvars[pen].value();
                 }
               else
                 throw error("x input not wired for pen %d",(int)pen+1);

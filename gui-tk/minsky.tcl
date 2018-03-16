@@ -93,6 +93,14 @@ proc setFname {name} {
 # needed for scripts/tests
 rename exit tcl_exit
 
+# emulate minsky.value.value's default argument
+proc value.value {args} {
+    if [llength $args] {
+        return [minsky.value.value [lindex $args 0]]
+    } else {
+        return [minsky.value.value 0]
+    }
+}
 proc attachTraceProc {namesp} {
     foreach p [info commands $namesp*] {
         if {$p ne "::traceProc"} {
@@ -1401,3 +1409,4 @@ if {[llength [info commands afterMinskyStarted]]>0} {
 disableEventProcessing
 popFlags
 pushHistory
+

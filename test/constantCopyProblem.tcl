@@ -5,6 +5,6 @@ proc afterMinskyStarted {} {
  minsky.load constantCopyProblem.mky
  step
  set bVal [variableValues.@elem :b]
- assert \[$bVal.value\]==12
+ assert "\[$bVal.value 0 \]==12"
  tcl_exit
 }

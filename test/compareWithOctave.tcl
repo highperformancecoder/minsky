@@ -13,7 +13,7 @@ for {set i 0} {$i<7} {incr i} {
     foreach var [minsky.variableValues.#keys] {
         minsky.getValue "$var"
         if {![minsky.value.isFlowVar]} {
-            puts -nonewline $dat "[minsky.value.value] "
+            puts -nonewline $dat "[value.value] "
         }
     }
     puts $dat "\];"

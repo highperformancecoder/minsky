@@ -158,7 +158,7 @@ namespace minsky
         *outputDataFile<<t;
         for (auto& v: variableValues)
           if (logVarList.count(v.first))
-            *outputDataFile<<" "<<v.second.value()[0];
+            *outputDataFile<<" "<<v.second.value();
         *outputDataFile<<endl;
       }
   }        
@@ -663,7 +663,7 @@ namespace minsky
     // firstly check if any variables are not finite
     for (VariableValues::const_iterator v=variableValues.begin();
          v!=variableValues.end(); ++v)
-      if (!isfinite(v->second.value()[0]))
+      if (!isfinite(v->second.value()))
         return v->first;
 
     // now check operator equations

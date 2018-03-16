@@ -212,7 +212,7 @@ namespace minsky
                            (godleyIcon->group.lock(),fc.name)];
                         if (vv.idx()>=0)
                           {
-                            double val=fc.coef*vv.value()[0];
+                            double val=fc.coef*vv.value();
                             auto ee=engExp(val);
                             if (ee.engExp==-3) ee.engExp=0;
                             value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);

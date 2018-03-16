@@ -42,13 +42,14 @@ namespace minsky
       case constant:
       case parameter:
         m_idx=ValueVector::flowVars.size();
-        ValueVector::flowVars.resize(ValueVector::flowVars.size()+numElements(),0);
+        ValueVector::flowVars.resize
+          (ValueVector::flowVars.size()+numElements()+(xVector? m_dims[0]:0));
         //      *this=init;
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
-        ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements());
+        ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements()+(xVector? m_dims[0]:0));
         //     *this=init;
         break;
       default: break;
