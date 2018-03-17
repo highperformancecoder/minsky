@@ -517,7 +517,7 @@ namespace minsky
       t->count1=from1.numElements();
       t->count2=from2.numElements();
       t->flow1=from1.isFlowVar();
-      t->flow2=from1.isFlowVar();
+      t->flow2=from2.isFlowVar();
 
     }
 
