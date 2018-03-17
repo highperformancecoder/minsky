@@ -23,21 +23,21 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html363"
+<A NAME="tex2html361"
   HREF="node22.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html361"
+<A NAME="tex2html359"
   HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html355"
+<A NAME="tex2html353"
   HREF="node20.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html364"
+<B> Next:</B> <A NAME="tex2html362"
   HREF="node22.html">Design Canvas</A>
-<B> Up:</B> <A NAME="tex2html362"
+<B> Up:</B> <A NAME="tex2html360"
   HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html356"
+<B> Previous:</B> <A NAME="tex2html354"
   HREF="node20.html">Wiring and Equations Tabs</A>
 <BR>
 <BR></DIV>
@@ -50,7 +50,7 @@ Design Icons</A>
 <P>
 <IMG
  ALIGN="BOTTOM" BORDER="0" SRC="NewItem18.png"
- ALT="859">
+ ALT="699">
 
 <P>
 These are the &ldquo;nuts and bolts&rdquo; of any system dynamics program. The
@@ -90,12 +90,18 @@ Table&rdquo; from the context menu) and you get a double-entry bookkeeping
 table we call a Godley Table, which looks like the following onscreen:
 
 <P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}$
+ -->
 <IMG
- ALIGN="BOTTOM" BORDER="0" SRC="NewItem30.png"
- ALT="864">
+ WIDTH="401" HEIGHT="51" ALIGN="BOTTOM" BORDER="0"
+ SRC="img40.png"
+ ALT="\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}">
+</DIV>
 
 <P>
-Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the <A HREF="node41.html#tut:basicBankModel">Tutorial (Monetary)</A>.
+Use this table to enter the bank accounts and financial flows in your model. We discuss this later in the <A HREF="node40.html#tut:basicBankModel">Tutorial (Monetary)</A>.
 
 <P>
 </DD>
@@ -105,7 +111,7 @@ Use this table to enter the bank accounts and financial flows in your model. We 
  -->
 <IMG
  WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img40.png"
+ SRC="img41.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/var.eps}}">
   . <A NAME="Variable"></A> This creates an entity
 whose value changes as a function of time and its relationship with
@@ -139,12 +145,11 @@ and it will be placed in that location.
  -->
 <IMG
  WIDTH="21" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img42.png"
+ SRC="img43.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/const.eps}}">
    <A NAME="Constant"></A> creates an entity whose
 value is unaffected by the simulation or other entities in the
-model--but it can be varied during a simulation run by the
-user. Click on it and a constant definition window will appear:
+model. Click on it and a constant definition window will appear:
 
 <P>
 <DIV ALIGN="CENTER">
@@ -155,8 +160,7 @@ user. Click on it and a constant definition window will appear:
 
 <P>
 The only essential element here is its
-value. You can also specify its rotation on the Canvas in degrees, and
-its slider parameters if you make the slider active. This lets you vary a
+value. You can also specify its rotation on the Canvas in degrees. This lets you vary a
 parameter while a simulation is running--which is useful if you wish
 to explore a range of policy options while a model is running.
 
@@ -169,13 +173,29 @@ using the type field.
 
 <P>
 </DD>
+<DT><STRONG>Parameter</STRONG></DT>
+<DD><!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/param.eps}}$
+ -->
+<IMG
+ WIDTH="33" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img45.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/param.eps}}">
+   <A NAME="Parameter"></A> Like the
+  variable and constant button, this creates a variable defaulting to
+  the parameter type. Parameters differ from flow variables in not
+  having an input port, and differ from constants in having a name and
+  being controllable by a slider during simulation.
+
+<P>
+</DD>
 <DT><STRONG>Time</STRONG></DT>
 <DD><!-- MATH
  $\resizebox{!}{2ex}{\includegraphics{images/time.eps}}$
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img44.png"
+ SRC="img46.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/time.eps}}">
    embeds a reference to the
 simulation time on the Canvas. This is not necessary in most
@@ -194,7 +214,7 @@ for a substantial period:
  -->
 <IMG
  WIDTH="549" HEIGHT="265" ALIGN="BOTTOM" BORDER="0"
- SRC="img45.png"
+ SRC="img47.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem36.eps}}">
 </DIV>
 
@@ -210,7 +230,7 @@ to show a ten year range of the model only:
  -->
 <IMG
  WIDTH="512" HEIGHT="339" ALIGN="BOTTOM" BORDER="0"
- SRC="img46.png"
+ SRC="img48.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem37.eps}}">
 </DIV>
 
@@ -222,7 +242,7 @@ to show a ten year range of the model only:
  -->
 <IMG
  WIDTH="29" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
- SRC="img47.png"
+ SRC="img49.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}">
   .<A NAME="Integrate"></A>  This inserts a variable whose value depends on the integral of other
   variables in the system. This is the essential element for defining
@@ -234,7 +254,7 @@ to show a ten year range of the model only:
 <DIV ALIGN="CENTER">
 <IMG
  WIDTH="105" HEIGHT="48" ALIGN="BOTTOM" BORDER="0"
- SRC="img48.png"
+ SRC="img50.png"
  ALT="\includegraphics{images/NewItem39.eps}">
 
 </DIV>
@@ -271,7 +291,7 @@ The integrated variable block would now look like this:
 <DIV ALIGN="CENTER">
 <IMG
  WIDTH="191" HEIGHT="48" ALIGN="BOTTOM" BORDER="0"
- SRC="img51.png"
+ SRC="img53.png"
  ALT="\includegraphics{images/NewItem42.eps}">
 
 </DIV>
@@ -293,7 +313,7 @@ population, divided by its current level, equals 0.0097:
 
 <IMG
  WIDTH="308" HEIGHT="45" BORDER="0"
- SRC="img52.png"
+ SRC="img54.png"
  ALT="\begin{displaymath}
 \frac{1}{\mathrm{Population}(t)}\cdot\left(\frac{d}{dt}\mathrm{Population}(t)\right)=0.0097
 \end{displaymath}">
@@ -316,7 +336,7 @@ sides of this equation by Population to get:
 
 <IMG
  WIDTH="280" HEIGHT="39" BORDER="0"
- SRC="img53.png"
+ SRC="img55.png"
  ALT="\begin{displaymath}
 \frac{d}{dt}\mathrm{Population}(t)=0.0097\cdot\mathrm{Population}(t)
 \end{displaymath}">
@@ -340,7 +360,7 @@ dt
 
 <IMG
  WIDTH="356" HEIGHT="46" BORDER="0"
- SRC="img54.png"
+ SRC="img56.png"
  ALT="\begin{displaymath}
 \mathrm{Population}(T)=315+\int_0^T 0.0097\cdot\mathrm{Population}(t)
 dt
@@ -353,7 +373,7 @@ dt
 Here, 315 (million) equals the current population of the USA, the year
 zero is today, and <SPAN CLASS="MATH"><IMG
  WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img55.png"
+ SRC="img57.png"
  ALT="$T$"></SPAN> is some number of years from today. The same
 equation done as a block diagram looks like this: 
 
@@ -364,7 +384,7 @@ equation done as a block diagram looks like this:
  -->
 <IMG
  WIDTH="554" HEIGHT="142" ALIGN="BOTTOM" BORDER="0"
- SRC="img56.png"
+ SRC="img58.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem46.eps}}">
 </DIV>
 
@@ -381,7 +401,7 @@ equation this way:
  -->
 <IMG
  WIDTH="555" HEIGHT="125" ALIGN="BOTTOM" BORDER="0"
- SRC="img57.png"
+ SRC="img59.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem47.eps}}">
 </DIV>
 
@@ -398,7 +418,7 @@ rate of change and a differential equation.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img58.png"
+ SRC="img60.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}">
    This operator symbolically differentiates its input,
 provided the input is differentiable. An error is generated if the input
@@ -412,7 +432,7 @@ is not differentiable.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img59.png"
+ SRC="img61.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/add.eps}}">
   
   <!-- MATH
@@ -420,7 +440,7 @@ is not differentiable.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img60.png"
+ SRC="img62.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/subtract.eps}}">
   
   <!-- MATH
@@ -428,7 +448,7 @@ is not differentiable.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img61.png"
+ SRC="img63.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/multiply.eps}}">
   
   <!-- MATH
@@ -436,7 +456,7 @@ is not differentiable.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img62.png"
+ SRC="img64.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/divide.eps}}">
   . These execute the stated binary
     mathematical operations. Each input can take multiple wires as
@@ -458,7 +478,7 @@ These also allow multiple wires per input.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img63.png"
+ SRC="img65.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/pow.eps}}">
    and
 
@@ -467,21 +487,21 @@ These also allow multiple wires per input.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img64.png"
+ SRC="img66.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/log.eps}}">
    These are binary operations (taking two
 arguments). In the case of the power operation, the exponent is the
 top port, and the argument to be raised to that exponent is the bottom
 port. This is indicated by the <SPAN CLASS="MATH"><IMG
  WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img65.png"
+ SRC="img67.png"
  ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG
  WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img66.png"
+ SRC="img68.png"
  ALT="$y$"></SPAN> labels on the ports. In the
 case of logarithm, the bottom port (labelled <SPAN CLASS="MATH"><IMG
  WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img67.png"
+ SRC="img69.png"
  ALT="$b$"></SPAN>) is the base of the
 logarithm.
 
@@ -509,7 +529,7 @@ logarithm.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img68.png"
+ SRC="img70.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/lt.eps}}">
   , 
   <!-- MATH
@@ -517,7 +537,7 @@ logarithm.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img69.png"
+ SRC="img71.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/le.eps}}">
   ,
   
@@ -526,7 +546,7 @@ logarithm.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img70.png"
+ SRC="img72.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/eq.eps}}">
   , 
   <!-- MATH
@@ -534,7 +554,7 @@ logarithm.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img71.png"
+ SRC="img73.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/and_.eps}}">
   , 
   <!-- MATH
@@ -542,7 +562,7 @@ logarithm.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img72.png"
+ SRC="img74.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/or_.eps}}">
    and
   
@@ -551,7 +571,7 @@ logarithm.
  -->
 <IMG
  WIDTH="11" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img73.png"
+ SRC="img75.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/not_.eps}}">
   . These return 0 for false and 1 for true.
 
@@ -569,9 +589,9 @@ complement of mathematical functions.
  -->
 <IMG
  WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
+ SRC="img76.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/data.eps}}">
-   <A HREF="node63.html#Operation:data">A data
+   <A HREF="node60.html#Operation:data">A data
 block</A> interpolates a sequence of empirical values, which may
 be generated outside of Minsky, and imported as a CSV file. This
 effectively defines a piecewise linear function.
@@ -584,9 +604,9 @@ effectively defines a piecewise linear function.
  -->
 <IMG
  WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img75.png"
+ SRC="img77.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/plot.eps}}">
-   Add <A HREF="node86.html#PlotWidget">plots</A> to the canvas.
+   Add <A HREF="node85.html#PlotWidget">plots</A> to the canvas.
 
 <P>
 </DD>
@@ -596,15 +616,15 @@ effectively defines a piecewise linear function.
  -->
 <IMG
  WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img76.png"
+ SRC="img78.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
-   Add <A HREF="node79.html#SwitchIcon">a piecewise-defined function block</A> 
+   Add <A HREF="node78.html#SwitchIcon">a piecewise-defined function block</A> 
 to the canvas. Also known as a hybrid function.
 
 <P>
 </DD>
 <DT><STRONG>Notes</STRONG></DT>
-<DD>Add <A HREF="node87.html#Notes">textual annotations</A>
+<DD>Add <A HREF="node86.html#Notes">textual annotations</A>
 
 <P>
 </DD>
@@ -614,21 +634,21 @@ to the canvas. Also known as a hybrid function.
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html363"
+<A NAME="tex2html361"
   HREF="node22.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html361"
+<A NAME="tex2html359"
   HREF="node7.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html355"
+<A NAME="tex2html353"
   HREF="node20.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html364"
+<B> Next:</B> <A NAME="tex2html362"
   HREF="node22.html">Design Canvas</A>
-<B> Up:</B> <A NAME="tex2html362"
+<B> Up:</B> <A NAME="tex2html360"
   HREF="node7.html">Components of the Program</A>
-<B> Previous:</B> <A NAME="tex2html356"
+<B> Previous:</B> <A NAME="tex2html354"
   HREF="node20.html">Wiring and Equations Tabs</A></DIV>
 <!--End of Navigation Panel-->
 

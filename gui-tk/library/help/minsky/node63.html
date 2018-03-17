@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>data </TITLE>
-<META NAME="description" CONTENT="data ">
+<TITLE>sqrt </TITLE>
+<META NAME="description" CONTENT="sqrt ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,134 +16,40 @@
 
 <LINK REL="next" HREF="node64.html">
 <LINK REL="previous" HREF="node62.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="up" HREF="node43.html">
 <LINK REL="next" HREF="node64.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html872"
+<A NAME="tex2html871"
   HREF="node64.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html870"
-  HREF="node44.html">
+<A NAME="tex2html869"
+  HREF="node43.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html864"
+<A NAME="tex2html863"
   HREF="node62.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html873"
-  HREF="node64.html">sqrt</A>
-<B> Up:</B> <A NAME="tex2html871"
-  HREF="node44.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html865"
-  HREF="node62.html">differentiate</A>
+<B> Next:</B> <A NAME="tex2html872"
+  HREF="node64.html">exp</A>
+<B> Up:</B> <A NAME="tex2html870"
+  HREF="node43.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html864"
+  HREF="node62.html">integrate</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004119000000000000000"></A><A NAME="Operation:data"></A>
+<H2><A NAME="SECTION004120000000000000000"></A><A NAME="Operation:sqrt"></A>
 <BR>
-data 
-</H2> 
-  <!-- MATH
- $\resizebox{!}{2ex}{\includegraphics{images/data.eps}}$
- -->
-<IMG
- WIDTH="12" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/data.eps}}">
-   A data interpolation
-widget. The data can be imported from a file containing
-two values on each line, eg:
-<BLOCKQUOTE>
-<TABLE CELLPADDING=3>
-<TR><TD ALIGN="RIGHT">0.1</TD>
-<TD ALIGN="RIGHT">0.3</TD>
-</TR>
-<TR><TD ALIGN="RIGHT">0.5</TD>
-<TD ALIGN="RIGHT">0.7</TD>
-</TR>
-<TR><TD ALIGN="RIGHT">0.9</TD>
-<TD ALIGN="RIGHT">1</TD>
-</TR>
-</TABLE>
-</BLOCKQUOTE>
-If the input is less than the minimum key value (0.1 here), then the
-operation outputs the corresponding value (0.3). Similarly if the
-input is greater than the maximum (0.9), the corresponding value (1)
-is output. If it lies in between two keys (eg 0.2), the the output is
-linearly interpolated (0.4).
-
-<P>
-Alternatively, the data block can be initialised by a random number
-generator, which is a way of introducing random numbers<A NAME="2799"></A> into the simulation. The parameters are required, the
-minimum and maximum values of the function's domain, and the number of
-random samples over that domain.
-
-<P>
-<DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3>
-<TR><TD ALIGN="CENTER"><!-- MATH
- $\resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}}$
- -->
-<IMG
- WIDTH="235" HEIGHT="183" ALIGN="BOTTOM" BORDER="0"
- SRC="img180.png"
- ALT="\resizebox{5.17cm}{!}{\includegraphics{images/initRandom.eps}}"></TD>
-<TD ALIGN="CENTER"><!-- MATH
- $\resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}$
- -->
-<IMG
- WIDTH="278" HEIGHT="142" ALIGN="BOTTOM" BORDER="0"
+sqrt <SPAN CLASS="MATH"><IMG
+ WIDTH="18" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
  SRC="img181.png"
- ALT="\resizebox{0.5\textwidth}{!}{\includegraphics{images/randomExample.eps}}"></TD>
-</TR>
-</TABLE>
-</DIV>
-
-<P>
-More formally, a data block is an empirical function, based on a table
-of pairs of values (<!-- MATH
- $x_i, y_i, i=1\ldots n, x_{i+1}>x_i$
- -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="187" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img182.png"
- ALT="$x_i, y_i, i=1\ldots n, x_{i+1}&gt;x_i$"></SPAN>) read in from
-a file. The function's output is linearly interpolated from the data,
-ie:
-<BR><P></P>
-<DIV ALIGN="CENTER" CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-f(x) = \left\{
-\begin{array}{cl}
-y_1 & x < x_1\\
-y_n & x\geq x_n\\
-\frac{y_i(x_{i+1}-x)+y_{i+1}(x-x_i)}{x_{i+1}-x_i} & x_i \leq x <
-x_{i+1}\\
-\end{array}
-\right.
-\end{displaymath}
- -->
-
-<IMG
- WIDTH="328" HEIGHT="69" BORDER="0"
- SRC="img183.png"
- ALT="\begin{displaymath}
-f(x) = \left\{
-\begin{array}{cl}
-y_1 &amp; x &lt; x_1\\
-y_n &amp; x\ge...
-..._i)}{x_{i+1}-x_i} &amp; x_i \leq x &lt;
-x_{i+1}\\
-\end{array}\right.
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
+ ALT="$\surd$"></SPAN>
+</H2> Square root of the input
 
 <P>
 <BR><HR>

@@ -14,6 +14,7 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node33.html">
 <LINK REL="previous" HREF="node31.html">
 <LINK REL="up" HREF="node30.html">
 <LINK REL="next" HREF="node33.html">
@@ -22,19 +23,19 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html482"
+<A NAME="tex2html484"
   HREF="node33.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html480"
+<A NAME="tex2html482"
   HREF="node30.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html476"
   HREF="node31.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html483"
-  HREF="node33.html">Defining account types</A>
-<B> Up:</B> <A NAME="tex2html481"
+<B> Next:</B> <A NAME="tex2html485"
+  HREF="node33.html">Entering flows between accounts</A>
+<B> Up:</B> <A NAME="tex2html483"
   HREF="node30.html">Creating a banking model</A>
 <B> Previous:</B> <A NAME="tex2html477"
   HREF="node31.html">Creating a bank</A>
@@ -47,43 +48,48 @@ Entering accounts</A>
 </H3>
 
 <P>
-Double click or right click on the Godley table block
-to bring up the Godley Table.
+Double click or right click on the Godley table block to bring up the
+Godley Table. The table is divided up into sections representing the
+different accounting asset classes: Asset, Liability and
+Equity. Assets represent what you have to hand at any point in time,
+and should always be the sum of liabilities and equity. Liabilities
+represent amounts that are owed to other parties, and equity the
+amount of capital owned. The column <code>A-L-E</code> represents the <EM>  accounting equation</EM> (Assets<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$-$"></SPAN>Liabilities<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$-$"></SPAN>Equity), and a properly
+formatted Godley table adhering to <EM>double entry accounting
+  conventions</EM> will have this column zero for all rows.
 
 <P>
-When a Godley Table is first loaded, it has room for one account to be
-defined. To create an additional accounts, click on the
-`+' button above the first account. One
-click then adds another column in which an additional account can be
-defined.
+When a Godley Table is first loaded, each accounting class has room
+for one account (also known as a <EM>stock</EM>) to be defined. To create
+an additional accounts, click on the `+' button above the first
+account. One click then adds another column in which an additional
+account can be defined. Note that the table will delete excess blank
+accounts, so you should name them as you go. You can chancge the asset
+class of an account by moving it into the appropriate sector using the
+<SPAN CLASS="MATH"><IMG
+ WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img89.png"
+ ALT="$\leftarrow$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$\rightarrow$"></SPAN> buttons, or by clicking and dragging
+the column variable name (the first row of the column).
 
 <P>
 <DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img27.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img28.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD></TD>
-<TD></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=2><SPAN>noAssetClass</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img31.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img31.png"
- ALT="$0$"></SPAN></TD>
-</TR>
-</TABLE>
+<!-- MATH
+ $\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}$
+ -->
+<IMG
+ WIDTH="401" HEIGHT="51" ALIGN="BOTTOM" BORDER="0"
+ SRC="img40.png"
+ ALT="\scalebox{0.5}{\includegraphics{images/emptyGodley.eps}}">
 </DIV>
 
 <P>
@@ -91,7 +97,13 @@ A column can be deleted by clicking on the `-' button above the column.
 
 <P>
 To define bank accounts in the system you enter a name into the row
-labeled &ldquo;<code>Flows V / Stock Variables -&gt;</code>&rdquo;. For example, if you were
+labeled &ldquo;Flows <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+ SRC="img27.png"
+ ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
+ WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$\rightarrow$"></SPAN>&rdquo;. For example, if you were
 going to define a banking sector that operated simply as an
 intermediary between &ldquo;Patient&rdquo; people and &ldquo;Impatient&rdquo; people--as
 in the Neoclassical &ldquo;Loanable Funds&rdquo; model-you might define the
@@ -99,53 +111,13 @@ following accounts:
 
 <P>
 <DIV ALIGN="CENTER">
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Flows <SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img27.png"
- ALT="$\downarrow$"></SPAN> / Stock Variables <SPAN CLASS="MATH"><IMG
- WIDTH="20" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img28.png"
- ALT="$\rightarrow$"></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="69" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img87.png"
- ALT="$Reserves$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="59" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img88.png"
- ALT="$Patient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="77" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
- SRC="img89.png"
- ALT="$Impatient$"></SPAN></SPAN></TD>
-<TD ALIGN="CENTER" COLSPAN=1><SPAN><SPAN CLASS="MATH"><IMG
- WIDTH="40" HEIGHT="29" ALIGN="MIDDLE" BORDER="0"
+<!-- MATH
+ $\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts.eps}}$
+ -->
+<IMG
+ WIDTH="483" HEIGHT="51" ALIGN="BOTTOM" BORDER="0"
  SRC="img90.png"
- ALT="$Safe$"></SPAN></SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER" COLSPAN=4><SPAN>noAssetClass</SPAN></TD>
-</TR>
-<TR><TD ALIGN="CENTER">Initial Conditions</TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img31.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img31.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img31.png"
- ALT="$0$"></SPAN></TD>
-<TD ALIGN="CENTER"><SPAN CLASS="MATH"><IMG
- WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img31.png"
- ALT="$0$"></SPAN></TD>
-</TR>
-</TABLE>
+ ALT="\scalebox{.5}{\includegraphics{images/godleyTableWithAccounts.eps}}">
 </DIV>
 
 <P>
@@ -166,19 +138,19 @@ As you enter the accounts, they appear at the bottom of the Bank block on the ca
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html482"
+<A NAME="tex2html484"
   HREF="node33.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html480"
+<A NAME="tex2html482"
   HREF="node30.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
 <A NAME="tex2html476"
   HREF="node31.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html483"
-  HREF="node33.html">Defining account types</A>
-<B> Up:</B> <A NAME="tex2html481"
+<B> Next:</B> <A NAME="tex2html485"
+  HREF="node33.html">Entering flows between accounts</A>
+<B> Up:</B> <A NAME="tex2html483"
   HREF="node30.html">Creating a banking model</A>
 <B> Previous:</B> <A NAME="tex2html477"
   HREF="node31.html">Creating a bank</A></DIV>

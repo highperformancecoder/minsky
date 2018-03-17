@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>frac</TITLE>
-<META NAME="description" CONTENT="frac">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,47 +14,86 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="previous" HREF="node77.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="next" HREF="node79.html">
+<LINK REL="previous" HREF="node43.html">
+<LINK REL="up" HREF="node42.html">
 <LINK REL="next" HREF="node79.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1020"
+<A NAME="tex2html1019"
   HREF="node79.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1018"
-  HREF="node44.html">
+<A NAME="tex2html1017"
+  HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1014"
+<A NAME="tex2html1011"
   HREF="node77.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1021"
-  HREF="node79.html">Switch</A>
-<B> Up:</B> <A NAME="tex2html1019"
-  HREF="node44.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1015"
-  HREF="node77.html">floor</A>
+<B> Next:</B> <A NAME="tex2html1020"
+  HREF="node79.html">Variables</A>
+<B> Up:</B> <A NAME="tex2html1018"
+  HREF="node42.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html1012"
+  HREF="node77.html">frac</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004134000000000000000"></A><A NAME="Operation:frac"></A>
+<H1><A NAME="SECTION00420000000000000000"></A><A NAME="SwitchIcon"></A>
 <BR>
-frac
-</H2> Fractional part of <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img65.png"
- ALT="$x$"></SPAN>, ie <!-- MATH
- $x-\lfloor x\rfloor$
+Switch
+</H1>
+
+<P>
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
  -->
-<SPAN CLASS="MATH"><IMG
- WIDTH="56" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
- SRC="img189.png"
- ALT="$x-\lfloor x\rfloor$"></SPAN>. 
+<IMG
+ WIDTH="19" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img78.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
+  
+A switch block (also known as a case block, or select in the Fortran
+world) is a way of selecting from a range of alternatives according
+to the value of the input, effectively defining a piecewise function.
+
+<P>
+<DIV ALIGN="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+ -->
+<IMG
+ WIDTH="554" HEIGHT="269" ALIGN="BOTTOM" BORDER="0"
+ SRC="img187.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}">
+<EM>An example switch block with 3 cases</EM>
+
+</DIV>
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1,
+or false and true, a two case switch statement will naturally appear
+&ldquo;upside down&rdquo; to how you might think of an if statement. In other
+words, it looks like:
+
+<P>
+<IMG
+ WIDTH="163" HEIGHT="65" ALIGN="MIDDLE" BORDER="0"
+ SRC="img188.png"
+ ALT="$\textstyle \parbox{\textwidth}{
+{\tt if not }{\em condition} {\tt then}\\
+\ldots
+{\tt else}\\
+\ldots
+}$">
+<P>
+You can add or remove cases through the context menu. 
 
 <P>
 <BR><HR>
