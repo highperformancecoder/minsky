@@ -107,7 +107,8 @@ namespace minsky
     const_iterator xbegin() const {return &valRef()+numElements();}
     iterator xend() {return &valRef()+numElements()+(xVector? m_dims[0]:0);}
     const_iterator xend() const {return &valRef()+numElements()+(xVector? m_dims[0]:0);}
-   
+    bool hasX() const {return xVector;}
+    
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 

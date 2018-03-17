@@ -55,24 +55,18 @@ namespace minsky
     static double t;
 
     /// indexes into the Godley variables vector
-    int out, in1, in2;
+    int out=-1, in1=-1, in2=-1, outX=-1, inX=-1;
     ///  size of vector inputs (1=scalar)
-    unsigned count1=1, count2=1;
+    unsigned count1=1, count2=1, countX=0;
     ///indicate whether in1/in2 are flow variables (out is always a flow variable)
-    bool flow1, flow2; 
+    bool flow1=true, flow2=true, xflow=true; 
 
     /// state data (for those ops that need it)
     std::shared_ptr<OperationBase> state;
-    EvalOpBase(int out=0, int in1=0, int in2=0, 
-               bool flow1=true, bool flow2=true): 
-      out(out), in1(in1), in2(in2), flow1(flow1), flow2(flow2) 
-    {}
     virtual ~EvalOpBase() {}
 
     /// factory method
-    static EvalOpBase* create
-    (Type op=numOps, int out=0, int in1=0, int in2=0, 
-     bool flow1=true, bool flow2=true);
+    static EvalOpBase* create(Type op/*=numOps*/);
 
     /// number of arguments to this operation
     virtual int numArgs() const =0;
@@ -110,15 +104,6 @@ namespace minsky
   struct EvalOp: public classdesc::Poly<EvalOp<T>, EvalOpBase>,
                  public classdesc::PolyPack<EvalOp<T> >
   {
-    EvalOp(int out=0, int in1=0, int in2=0, 
-           bool flow1=true, bool flow2=true) 
-    {
-      // Cannot directly initialise base class, as PolyBaseT intervenes
-      this->out=out;
-      this->in1=in1; this->in2=in2;
-      this->flow1=flow1; this->flow2=flow2;
-    }
-
     OperationType::Type type() const  override {return T;}
     int numArgs() const override {
       return OperationTypeInfo::numArguments<T>();
@@ -132,25 +117,20 @@ namespace minsky
   struct ConstantEvalOp: public EvalOp<minsky::OperationType::constant>
   {
     double value;
-    ConstantEvalOp(int out=0, int in1=0, int in2=0, 
-                   bool flow1=true, bool flow2=true): 
-      EvalOp<OperationType::constant>(out,in1,in2,flow1,flow2) {}
     double evaluate(double in1=0, double in2=0) const override;
    };
 
   struct EvalOpPtr: public classdesc::shared_ptr<EvalOpBase>, 
                     public OperationType
   {
-    /// factory method
-    EvalOpPtr(OperationType::Type op=OperationType::numOps, 
-              int out=0, int in1=0, int in2=0, 
-              bool flow1=true, bool flow2=true);
+    EvalOpPtr() {}
+    EvalOpPtr(OperationType::Type op):
+      classdesc::shared_ptr<EvalOpBase>(EvalOpBase::create(op)) {}
     EvalOpPtr(OperationType::Type op, const VariableValue& to,
               const VariableValue& from1=VariableValue(), 
-              const VariableValue& from2=VariableValue()) {
-      *this=EvalOpPtr(op, to.idx(), from1.idx(), from2.idx(), from1.isFlowVar(),
-                      from2.isFlowVar());
-    }
+              const VariableValue& from2=VariableValue());
+    /// sets the x parameters \a input. Assume out parameter has already been set
+    void setX(const VariableValue& input);
   };
 
   struct EvalOpVector: public vector<EvalOpPtr>

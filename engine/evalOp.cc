@@ -42,24 +42,42 @@ namespace minsky
         fv[out]=evaluate(0,0);
         break;
       case 1:
-        fv[out]=evaluate(flow1? fv[in1]: sv[in1], 0);
+        for (unsigned i=0; i<count1; ++i)
+          fv[out+i]=evaluate(flow1? fv[in1+i]: sv[in1+i], 0);
         break;
       case 2:
-        fv[out]=evaluate(flow1? fv[in1]: sv[in1], flow2? fv[in2]: sv[in2]);
+        if (count1==count2) // elementwise
+          for (unsigned i=0; i<count1; ++i)
+            fv[out+i]=evaluate(flow1? fv[in1+i]: sv[in1+i],
+                             flow2? fv[in2+i]: sv[in2+i]);
+        else if (count1==1) //broadcast 1st arg
+          for (unsigned i=0; i<count2; ++i)
+            fv[out+i]=evaluate(flow1? fv[in1]: sv[in1],
+                             flow2? fv[in2+i]: sv[in2+i]);
+        else if (count2==1) //broadcast 2nd arg
+          for (unsigned i=0; i<count1; ++i)
+            fv[out+i]=evaluate(flow1? fv[in1+i]: sv[in1+i],
+                             flow2? fv[in2]: sv[in2]);
+        else
+          throw error("mismatch of vector element counts");
         break;
       }
-    if (!isfinite(fv[out]))
-      {
-        if (state)
-          minsky().displayErrorItem(*state);
-        string msg="Invalid: "+OperationBase::typeName(type())+"(";
-        if (numArgs()>0)
-          msg+=to_string(flow1? fv[in1]: sv[in1]);
-        if (numArgs()>1)
-          msg+=","+to_string(flow2? fv[in2]: sv[in2]);
-        msg+=")";
-        throw error(msg.c_str());
-      }
+    for (size_t i=0; i<countX; ++i)
+      fv[outX+i]=xflow? fv[inX+i]: sv[inX+i];
+    
+    for (unsigned i=0; i<std::max(count1,count2); ++i)
+      if (!isfinite(fv[out+i]))
+        {
+          if (state)
+            minsky().displayErrorItem(*state);
+          string msg="Invalid: "+OperationBase::typeName(type())+"(";
+          if (numArgs()>0)
+            msg+=to_string(flow1? fv[in1+i]: sv[in1+i]);
+          if (numArgs()>1)
+            msg+=","+to_string(flow2? fv[in2+i]: sv[in2+i]);
+          msg+=")";
+          throw error(msg.c_str());
+        }
   };
 
   void EvalOpBase::deriv(double df[], const double ds[],
@@ -469,28 +487,49 @@ namespace minsky
 
   namespace {OperationFactory<EvalOpBase, EvalOp, OperationType::numOps-1> evalOpFactory;}
 
-  EvalOpBase* EvalOpBase::create
-  (Type op, int out, int in1, int in2, bool flow1, bool flow2)
+  EvalOpBase* EvalOpBase::create(Type op)
   {
     switch (op)
       {
       case constant:
-        return new ConstantEvalOp(out,in1,in2,flow1,flow2);
+        return new ConstantEvalOp;
       case numOps:
         return NULL;
       default:
-        auto r=evalOpFactory.create(op);
-        r->out=out;
-        r->in1=in1;
-        r->in2=in2;
-        r->flow1=flow1;
-        r->flow2=flow2;
-        return r;
+        return evalOpFactory.create(op);
       }
   }
 
-  EvalOpPtr::EvalOpPtr(OperationType::Type op,
-              int out, int in1, int in2, bool flow1, bool flow2)
-  {reset(EvalOpBase::create(op, out, in1, in2, flow1, flow2));}
+  EvalOpPtr::EvalOpPtr(OperationType::Type op, const VariableValue& to,
+              const VariableValue& from1, const VariableValue& from2)
+  {
 
+      reset(EvalOpBase::create(op));
+      auto t=get();
+      t->out=to.idx();
+      t->in1=from1.idx();
+      t->in2=from2.idx();
+      int xoffs=0;
+      if (from1.hasX())
+        setX(from1);
+      else if (from2.hasX())
+        setX(from2);
+      t->count1=from1.numElements();
+      t->count2=from2.numElements();
+      t->flow1=from1.isFlowVar();
+      t->flow2=from1.isFlowVar();
+
+    }
+
+  void EvalOpPtr::setX(const VariableValue& v)
+  {
+    int xoffs=v.xbegin()-v.begin();
+    auto t=get();
+    t->inX=v.idx()+xoffs;
+    t->outX=t->out+xoffs;
+    t->countX=v.xend()-v.xbegin();
+    t->xflow=v.isFlowVar();
+  }
+
+  
 }

@@ -287,6 +287,38 @@ namespace MathDAG
             else
               argIdx[i].push_back(VariableValue());
         
+        if (type()!=data && arguments.size()>0)
+          {
+            // check argument vector compatibility: arguments can be
+            // scalars or tensors, but tensors must match for rank and
+            // dimensions
+            if (arguments.size()>1 && (argIdx[0].size() || argIdx[1].size() ))
+              {
+                auto d=argIdx[0].size()? argIdx[0][0].dims(): argIdx[1][0].dims();
+                bool hasX=false;
+                // find first vector
+                for (auto& i: argIdx)
+                  for (auto& j: i)
+                    if (j.numElements()>1)
+                      {
+                        d=j.dims();
+                        break;
+                      }
+                if (d.size()>1 || d[0]>1)
+                  {
+                    for (auto& i: argIdx)
+                      for (auto& j: i)
+                        {
+                          if (j.numElements()>1 && j.dims()!=d)
+                            throw error("Incompatible vector dimensions");
+                          hasX|=j.hasX();
+                        }
+                    result.dims(d);
+                    result.setX(hasX);
+                  }
+              }
+          }
+
         // basic arithmetic is handled in a cumulative fashion
         switch (type())
           {
@@ -348,15 +380,16 @@ namespace MathDAG
                 ev.push_back(EvalOpPtr(type(), result));
                 break;
               case 1:
-                ev.push_back(EvalOpPtr(type(), result, argIdx[0][0])); 
+                ev.push_back(EvalOpPtr(type(), result, argIdx[0][0]));
                 break;
               case 2:
-                ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
+                ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0]));
                 break;
               default:
                 throw error("Too many arguments");
               }
           }
+        
         if (!ev.empty() && (!ev.back()->state || ev.back()->state->type()==numOps) 
             && state && ev.back()->type()==state->type())
           ev.back()->state=state;
