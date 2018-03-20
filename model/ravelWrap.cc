@@ -94,6 +94,8 @@ namespace minsky
     void (*ravel_rescale)(Ravel* ravel, double radius)=nullptr;
     double (*ravel_radius)(Ravel* ravel)=nullptr;
     size_t (*ravel_rank)(Ravel* ravel)=nullptr;
+    void (*ravel_outputHandleIds)(Ravel* ravel, size_t ids[])=nullptr;
+    void (*ravel_sliceLabels)(Ravel* ravel, size_t axis, const char* labels[])=nullptr;
 
     DataCube* (*ravelDC_new)()=nullptr;
     void (*ravelDC_delete)(DataCube*)=nullptr;
@@ -138,6 +140,8 @@ namespace minsky
               ASG_FN_PTR(ravel_rescale,lib);
               ASG_FN_PTR(ravel_radius,lib);
               ASG_FN_PTR(ravel_rank,lib);
+              ASG_FN_PTR(ravel_outputHandleIds,lib);
+              ASG_FN_PTR(ravel_sliceLabels,lib);
               ASG_FN_PTR(ravelDC_new,lib);
               ASG_FN_PTR(ravelDC_delete,lib);
               ASG_FN_PTR(ravelDC_initRavel,lib);
@@ -296,8 +300,24 @@ namespace minsky
         ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
         if (tmp)
           {
+            vector<size_t> outHandles(dims.size());
+            vector<const char*> labels(dims[0]); 
+            vector<double> xValues(dims[0]);
+            ravel_outputHandleIds(ravel, &outHandles[0]);
+            ravel_sliceLabels(ravel,outHandles[0],&labels[0]);
+            try
+              {
+                for (size_t i=0; i<dims[0]; ++i)
+                  xValues[i]=stod(labels[i]);
+              }
+            catch (std::exception)
+              {
+                // not convertible to double, just use index
+                for (size_t i=0; i<dims[0]; ++i)
+                  xValues[i]=i;
+              }
             for (size_t i=0; i<dims[0]; ++i)
-              data[i]=tmp[i];
+              data[xValues[i]]=tmp[i];
             minsky().reset();
           }
         else
