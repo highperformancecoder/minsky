@@ -64,6 +64,11 @@ namespace schema2
               items.back().dataOpData=d->data;
               items.back().name=d->description;
             }
+          if (auto r=dynamic_cast<minsky::RavelWrap*>(i))
+            {
+              items.back().filename=r->filename();
+              items.back().ravelDef=r->toXML();
+            }
         }
       return j;
     }
@@ -95,6 +100,7 @@ namespace schema2
       registerClassType<minsky::Item>();
       registerClassType<minsky::IntOp>();
       registerClassType<minsky::DataOp>();
+      registerClassType<minsky::RavelWrap>();
       registerClassType<minsky::VarConstant>();
       registerClassType<minsky::GodleyIcon>();
       registerClassType<minsky::PlotWidget>();
@@ -246,6 +252,7 @@ namespace schema2
     IdMap itemMap;
 
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
+        itemMap.emplaceIf<minsky::RavelWrap>(items, i->get()) ||
         itemMap.emplaceIf<minsky::OperationBase>(items, i->get()) ||
           itemMap.emplaceIf<minsky::VariableBase>(items, i->get()) ||
           itemMap.emplaceIf<minsky::GodleyIcon>(items, i->get()) ||
@@ -343,6 +350,12 @@ namespace schema2
           x1->description=*y.name;
         if (y.dataOpData)
           x1->data=*y.dataOpData;
+      }
+    if (auto x1=dynamic_cast<minsky::RavelWrap*>(&x))
+      {
+        x1->loadFile(*y.filename);
+        x1->fromXML(*y.ravelDef);
+        x1->loadDataFromSlice();
       }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
       {

@@ -96,6 +96,8 @@ namespace minsky
     size_t (*ravel_rank)(Ravel* ravel)=nullptr;
     void (*ravel_outputHandleIds)(Ravel* ravel, size_t ids[])=nullptr;
     void (*ravel_sliceLabels)(Ravel* ravel, size_t axis, const char* labels[])=nullptr;
+    const char* (*ravel_toXML)(Ravel* ravel)=nullptr;
+    int (*ravel_fromXML)(Ravel* ravel, const char*)=nullptr;
 
     DataCube* (*ravelDC_new)()=nullptr;
     void (*ravelDC_delete)(DataCube*)=nullptr;
@@ -142,6 +144,8 @@ namespace minsky
               ASG_FN_PTR(ravel_rank,lib);
               ASG_FN_PTR(ravel_outputHandleIds,lib);
               ASG_FN_PTR(ravel_sliceLabels,lib);
+              ASG_FN_PTR(ravel_toXML,lib);
+              ASG_FN_PTR(ravel_fromXML,lib);
               ASG_FN_PTR(ravelDC_new,lib);
               ASG_FN_PTR(ravelDC_delete,lib);
               ASG_FN_PTR(ravelDC_initRavel,lib);
@@ -278,11 +282,12 @@ namespace minsky
   void RavelWrap::onMouseLeave()
   {if (ravel) ravel_onMouseLeave(ravel);}
 
-  void RavelWrap::loadFile(const char* fileName)
+  void RavelWrap::loadFile(const string& fileName)
   {
+    m_filename=fileName;
     if (dataCube)
       {
-        if (!ravelDC_openFile(dataCube, fileName, DataSpec()))
+        if (!ravelDC_openFile(dataCube, fileName.c_str(), DataSpec()))
           detailedText+=string("\n")+ravel_lastErr();
         else if (!ravelDC_initRavel(dataCube,ravel))
           detailedText+=string("\n")+ravel_lastErr();
@@ -325,6 +330,19 @@ namespace minsky
       }
   }
 
+  const char* RavelWrap::toXML() const
+  {
+    if (ravel)
+      return ravel_toXML(ravel);
+  }
+
+  void RavelWrap::fromXML(const std::string& xml)
+  {
+    if (ravel)
+      ravel_fromXML(ravel, xml.c_str());
+  }
+
+ 
 }
 
   

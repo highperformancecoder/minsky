@@ -123,6 +123,8 @@ namespace schema2
     Optional<Slider> slider;
     std::shared_ptr<int> intVar;
     Optional<std::map<double,double>> dataOpData;
+    Optional<std::string> filename;
+    Optional<std::string> ravelDef;
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;

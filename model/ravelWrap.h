@@ -34,6 +34,7 @@ namespace minsky
     void noRavelSetup();
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
+    std::string m_filename;
   public:
     RavelWrap();
     ~RavelWrap();
@@ -47,8 +48,11 @@ namespace minsky
     bool onMouseMotion(float x, float y);
     bool onMouseOver(float x, float y);
     void onMouseLeave();
-    void loadFile(const char*);
+    void loadFile(const std::string&);
+    const string& filename() const {return m_filename;}
     void loadDataFromSlice();
+    const char* toXML() const;
+    void fromXML(const std::string&);
   };
 }
 
