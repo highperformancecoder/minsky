@@ -21,6 +21,7 @@
 #define RAVELWRAP_H
 
 #include "operation.h"
+#include "cairoRenderer.h"
 
 namespace minsky 
 {
