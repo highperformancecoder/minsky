@@ -110,6 +110,7 @@ namespace minsky
     {
       libHandle lib;
       string errorMsg;
+      string versionFound;
       RavelLib(): lib(loadLibrary("libravel"))
       {
         if (!lib)
@@ -122,6 +123,12 @@ namespace minsky
         if (!version || ravelVersion!=version())
           { // incompatible API
             errorMsg="Incompatible libravel dynamic library found";
+            try
+              {
+                ASG_FN_PTR(ravel_version,lib);
+                versionFound=ravel_version();
+              }
+            catch (...) {}
             dlclose(lib);
             lib=nullptr;
           }
@@ -130,6 +137,7 @@ namespace minsky
           try
             {
               ASG_FN_PTR(ravel_version,lib);
+              versionFound=ravel_version();
               ASG_FN_PTR(ravel_lastErr,lib);
               ASG_FN_PTR(ravel_new,lib);
               ASG_FN_PTR(ravel_delete,lib);
@@ -342,6 +350,15 @@ namespace minsky
       ravel_fromXML(ravel, xml.c_str());
   }
 
+  string Minsky::ravelVersion() const
+  {
+    if (ravel_version)
+      return ravel_version();
+    else if (ravelLib.versionFound.length())
+      return ravelLib.versionFound+" but incompatible";
+    else
+      return "Ravel unavailable";
+  }
  
 }
 

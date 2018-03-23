@@ -1210,7 +1210,8 @@ proc aboutMinsky {} {
   tk_messageBox -message "
     Minsky [minskyVersion]\n
    EcoLab [ecolabVersion]\n
-   Tcl/Tk [info tclversion]
+   Tcl/Tk [info tclversion]\n
+   Ravel [ravelVersion]
 " -detail "
    Minsky is FREE software, distributed under the 
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 

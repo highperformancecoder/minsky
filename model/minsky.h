@@ -41,7 +41,6 @@
 #include <string>
 #include <set>
 #include <deque>
-using namespace std;
 
 #include <ecolab.h>
 #include <xml_pack_base.h>
@@ -319,7 +318,8 @@ namespace minsky
 
     /// return the AEGIS assigned version number
     static const char* minskyVersion;
-    string ecolabVersion() {return VERSION;}
+    std::string ecolabVersion() const {return VERSION;}
+    std::string ravelVersion() const;
 
     unsigned maxHistory{100}; ///< maximum no. of history states to save
 
