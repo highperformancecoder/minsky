@@ -361,6 +361,15 @@ namespace minsky
     r->splitBoundaryCrossingWires();
   }
 
+  void Canvas::deleteItem()
+  {
+    if (item)
+      {
+        model->deleteItem(*item);
+        requestRedraw();
+      }
+  }
+  
   void Canvas::deleteWire()
   {
     if (wire)

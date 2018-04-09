@@ -120,7 +120,7 @@ namespace minsky
     void groupSelection();
     
     /// delete item referenced by item
-    void deleteItem() {if (item) model->deleteItem(*item);}
+    void deleteItem();
     /// delete wire referenced by wire
     void deleteWire();
     /// remove item from its group, leaving in itemFocus for later placement

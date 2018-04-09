@@ -214,6 +214,7 @@ namespace minsky
       assert(i.use_count()==1);
 #endif
     canvas.selection.clear();
+    canvas.requestRedraw();
   }
 
   void Minsky::copy() const
