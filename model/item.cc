@@ -39,10 +39,13 @@ namespace minsky
   {
     ecolab::cairo::Surface surf
        (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+    auto savedMouseFocus=x.mouseFocus;
+    x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     try {x.draw(surf.cairo());}
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
     catch (...) {cerr<<"illegal exception caught in draw()";}
+    x.mouseFocus=savedMouseFocus;
     double l,t,w,h;
     cairo_recording_surface_ink_extents(surf.surface(),
                                         &l,&t,&w,&h);
@@ -202,7 +205,8 @@ namespace minsky
         cairo_save(cairo);
         Pango pango(cairo);
         pango.setMarkup(latexToPango(tooltip));
-        cairo_translate(cairo,10,20);
+        cairo_translate(cairo,zoomFactor*(0.5*bb.width())+10,
+                        zoomFactor*(-0.5*bb.height())-20);
         cairo_rectangle(cairo,0,0,pango.width(),pango.height());
         cairo_set_source_rgb(cairo,1,1,1);
         cairo_fill_preserve(cairo);
