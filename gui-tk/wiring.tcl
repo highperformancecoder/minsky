@@ -329,7 +329,6 @@ proc deleteKey {x y} {
     } elseif [getWireAt $x $y] {
         canvas.deleteWire
     }
-    canvas.requestRedraw
 }
 
 # global godley icon resource
