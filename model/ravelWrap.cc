@@ -300,9 +300,9 @@ namespace minsky
     if (dataCube && ravel)
       {
         if (!ravelDC_openFile(dataCube, fileName.c_str(), DataSpec()))
-          detailedText+=string("\n")+ravel_lastErr();
+          throw error(ravel_lastErr());
         else if (!ravelDC_initRavel(dataCube,ravel))
-          detailedText+=string("\n")+ravel_lastErr();
+          throw error(ravel_lastErr());
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           ravel_displayFilterCaliper(ravel,i,true);
         loadDataFromSlice();
@@ -315,6 +315,7 @@ namespace minsky
       {
         assert(ravel_rank(ravel)==1);
         vector<size_t> dims(ravel_rank(ravel));
+        if (dims[0]==0) return; // do nothing if ravel data is empty
         double* tmp;
         ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
         if (tmp)
@@ -341,7 +342,7 @@ namespace minsky
             minsky().reset();
           }
         else
-          detailedText+=string("\n")+ravel_lastErr();
+          throw error(ravel_lastErr());
       }
   }
 
