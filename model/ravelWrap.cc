@@ -95,6 +95,7 @@ namespace minsky
     double (*ravel_radius)(Ravel* ravel)=nullptr;
     size_t (*ravel_rank)(Ravel* ravel)=nullptr;
     void (*ravel_outputHandleIds)(Ravel* ravel, size_t ids[])=nullptr;
+    unsigned (*ravel_numHandles)(Ravel* ravel)=nullptr;
     void (*ravel_sliceLabels)(Ravel* ravel, size_t axis, const char* labels[])=nullptr;
     void (*ravel_displayFilterCaliper)(Ravel* ravel, size_t axis, bool display)=nullptr;
     const char* (*ravel_toXML)(Ravel* ravel)=nullptr;
@@ -152,6 +153,7 @@ namespace minsky
               ASG_FN_PTR(ravel_radius,lib);
               ASG_FN_PTR(ravel_rank,lib);
               ASG_FN_PTR(ravel_outputHandleIds,lib);
+              ASG_FN_PTR(ravel_numHandles,lib);
               ASG_FN_PTR(ravel_sliceLabels,lib);
               ASG_FN_PTR(ravel_displayFilterCaliper,lib);
               ASG_FN_PTR(ravel_toXML,lib);
@@ -199,7 +201,7 @@ namespace minsky
     if (ravelAvailable())
       {
         ravel=ravel_new(1); // rank 1 for now
-        ravel_rescale(ravel,50);
+        ravel_rescale(ravel,100);
         dataCube=ravelDC_new();
       }
     else
@@ -301,9 +303,8 @@ namespace minsky
           detailedText+=string("\n")+ravel_lastErr();
         else if (!ravelDC_initRavel(dataCube,ravel))
           detailedText+=string("\n")+ravel_lastErr();
-        // TODO need to stash bounding boxes of caliper labels before enabling this     
-//        for (size_t i=0; i<ravel_rank(ravel); ++i)
-//          ravel_displayFilterCaliper(ravel,i,true);
+        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
+          ravel_displayFilterCaliper(ravel,i,true);
         loadDataFromSlice();
       }
   }
@@ -334,6 +335,7 @@ namespace minsky
                 for (size_t i=0; i<dims[0]; ++i)
                   xValues[i]=i;
               }
+            data.clear();
             for (size_t i=0; i<dims[0]; ++i)
               data[xValues[i]]=tmp[i];
             minsky().reset();
