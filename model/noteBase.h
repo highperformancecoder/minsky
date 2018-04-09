@@ -26,7 +26,7 @@ namespace minsky
 {
   struct NoteBase
   {
-    bool mouseFocus=false; ///<true if target of a mouseover
+    mutable bool mouseFocus=false; ///<true if target of a mouseover
     bool selected=false; ///<true if selected for cut, copy or group operation
     std::string detailedText, tooltip;
   };
