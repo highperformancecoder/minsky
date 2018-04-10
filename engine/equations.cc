@@ -310,7 +310,14 @@ namespace MathDAG
                       for (auto& j: i)
                         {
                           if (j.numElements()>1 && j.dims()!=d)
-                            throw error("Incompatible vector dimensions");
+                            {
+                              string err="Incompatible vector dimensions: (";
+                              for (auto i:d) err+=to_string(i)+",";
+                              err+=")≠(";
+                              for (auto i:j.dims()) err+=to_string(i)+",";
+                              err+=")";
+                              throw runtime_error(err);
+                            }
                           hasX|=j.hasX();
                         }
                     result.dims(d);

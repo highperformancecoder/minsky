@@ -315,9 +315,9 @@ namespace minsky
       {
         assert(ravel_rank(ravel)==1);
         vector<size_t> dims(ravel_rank(ravel));
-        if (dims[0]==0) return; // do nothing if ravel data is empty
         double* tmp;
         ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
+        if (dims[0]==0) return; // do nothing if ravel data is empty
         if (tmp)
           {
             vector<size_t> outHandles(dims.size());
