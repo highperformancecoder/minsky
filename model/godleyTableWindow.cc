@@ -870,7 +870,10 @@ namespace minsky
   {
     if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()))
       {
-        minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+        if (selectedRow==0)
+          minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
+        else
+          minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
         // get list of GodleyIcons first, rather than doing recursiveDo, as update munges the items vectors
         auto godleyTables=minsky().model->findItems
           ([](const ItemPtr& i){return dynamic_cast<GodleyIcon*>(i.get());});
