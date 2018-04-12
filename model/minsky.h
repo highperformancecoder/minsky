@@ -183,7 +183,7 @@ namespace minsky
     std::set<string> matchingTableColumns(const GodleyIcon& currTable, GodleyAssetClass::AssetClass ac);
 
     /// find any duplicate column, and use it as a source column for balanceDuplicateColumns
-    void importDuplicateColumn(const GodleyTable& srcTable, int srcCol);
+    void importDuplicateColumn(GodleyTable& srcTable, int srcCol);
     /// makes all duplicated columns consistent with \a srcTable, \a srcCol
     void balanceDuplicateColumns(const GodleyIcon& srcTable, int srcCol);
 
