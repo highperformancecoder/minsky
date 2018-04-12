@@ -1252,7 +1252,22 @@ namespace MathDAG
         return false;
       });
 
-    // wire up integral inputs, now that all integrals are defined, do that derivative works. See #511
+    // add input variables for all stock variables to the expression cache
+    minsky.model->recursiveDo
+      (&Group::items,
+       [&](const Items&, Items::const_iterator it){
+        if (auto i=dynamic_cast<Variable<VariableType::stock>*>(it->get()))
+          {
+            VariableDAGPtr input(new IntegralInputVariableDAG);
+            input->name=i->name();
+            variables.push_back(input.get());
+            // manage object's lifetime with expressionCache
+            expressionCache.insertIntegralInput(i->valueId(), input);
+          }
+        return false;
+      });
+    
+    // wire up integral inputs, now that all integrals are defined, so that derivative works. See #511
     for (auto& i: integralInputs)
       i.first->rhs=getNodeFromWire(*i.second);
 
@@ -1274,12 +1289,8 @@ namespace MathDAG
           dynamic_cast<VariableDAG*>
           (makeDAG(VariableValue::valueId(g.first),
                    VariableValue::uqName(g.first), VariableValue::stock).get());
-        VariableDAGPtr input(new IntegralInputVariableDAG);
-        input->name=g.first;
-        variables.push_back(input.get());
-        // manage object's lifetime with expressionCache
-        expressionCache.insertIntegralInput(g.first, input);
-        input->rhs=expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
+        expressionCache.getIntegralInput(g.first)->rhs=
+          expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
       }
 
     for (auto& v: integVarMap)
