@@ -153,10 +153,15 @@ string VariableBase::_init(const string& x)
     {
       VariableValue& val=minsky().variableValues[valueId()];
       val.init=x;
-      // for constant types, we may as well set the current value. See ticket #433
-      if (type()==constant || type()==parameter ||
-          type()==flow && !cminsky().definingVar(valueId())) 
-        val.reset(minsky().variableValues);
+      // for constant types, we may as well set the current value. See ticket #433. Also ignore errors (for now), as they will reappear at reset time.
+      try
+        {
+          if (type()==constant || type()==parameter ||
+              type()==flow && !cminsky().definingVar(valueId())) 
+            val.reset(minsky().variableValues);
+        }
+      catch (...)
+        {}
     }
   return x;
 }
