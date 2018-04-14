@@ -113,24 +113,26 @@ namespace MathDAG
   }
 
   VariableValue ConstantDAG::addEvalOps
-  (EvalOpVector& ev, const VariableValue& r) const 
+  (EvalOpVector& ev, VariableValue* r)
   {
-    if (result.idx()<0)
+    if (!result || result->idx()<0)
       {
-        if (r.idx()>=0 && r.isFlowVar())
-          result=r;
-        else
-          result.allocValue();
-        result=value;
-        // set the initial value of the actual variableValue (if it exists)
         VariableValues& values=minsky::minsky().variableValues;
-        auto v=values.find(result.name);
-        if (v!=values.end())
-          v->second.init=str(value);
+        if (r && r->isFlowVar())
+          {
+            result=r;
+            // set the initial value of the actual variableValue (if it exists)
+            auto v=values.find(result->name);
+            if (v!=values.end())
+              v->second.init=str(value);
+          }
+        else
+          result=&tmpResult;
+        *result=value;
       }
-    if (r.isFlowVar() && r.idx()>=0 && r.idx()!=result.idx())
-      ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-    return result;
+    if (r && r->isFlowVar() && r!=result)
+      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+    return *result;
   }
 
   ostream& VariableDAG::latex(ostream& o) const
@@ -148,44 +150,43 @@ namespace MathDAG
   }
 
   VariableValue VariableDAG::addEvalOps
-  (EvalOpVector& ev, const VariableValue& r) const
+  (EvalOpVector& ev, VariableValue* r)
   {
-    if (result.idx()<0)
+    if (!result || result->idx()<0)
       {
         assert(VariableValue::isValueId(valueId));
         auto ri=minsky::minsky().variableValues.find(valueId);
-        if (ri!=minsky::minsky().variableValues.end())
-          result=ri->second;
-        else
-          result=VariableValue(VariableType::tempFlow);
-        if (result.idx()==-1)
-          result.allocValue();
+        if (ri==minsky::minsky().variableValues.end())
+          ri=minsky::minsky().variableValues.emplace(valueId,VariableValue(VariableType::tempFlow)).first;
+        result=&ri->second;
         if (rhs)
           rhs->addEvalOps(ev, result);
       }
-    if (r.isFlowVar() && r.idx()>=0 && (r.idx()!=result.idx() || !result.isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-    return result;
+    if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
+      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+    return *result;
   }
 
   VariableValue IntegralInputVariableDAG::addEvalOps
-  (EvalOpVector& ev, const VariableValue& r) const
+  (EvalOpVector& ev, VariableValue* r)
   {
-    if (result.idx()<0)
+    if (!result)
       {
-        if (r.idx()>=0 && r.isFlowVar())
+        if (r && r->isFlowVar())
           result=r;
         else
           {
-            result=VariableValue(VariableType::tempFlow);
-            result.allocValue();
+            result=&tmpResult;
+            //            result.allocValue();
           }
         if (rhs)
           rhs->addEvalOps(ev, result);
+        else
+          throw error("integral not defined");
       }
-    if (r.isFlowVar() && r.idx()>=0 && (r.idx()!=result.idx() || !result.isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, r, result));
-    return result;
+    if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
+      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+    return *result;
   }
 
   namespace {OperationFactory<OperationDAGBase, OperationDAG, 
@@ -265,18 +266,19 @@ namespace MathDAG
   }
 
   VariableValue OperationDAGBase::addEvalOps
-  (EvalOpVector& ev, const VariableValue& r) const
+  (EvalOpVector& ev, VariableValue* r)
   {
-    if (result.idx()<0)
+    if (!result)
       {
         assert(!dynamic_cast<IntOp*>(state.get()));
-        if (r.isFlowVar() && r.idx()>=0)
+        if (r && r->isFlowVar())
           result=r;
-        else 
-          result.allocValue();
+        else
+          result=&tmpResult;
+        //          result.allocValue();
 
         if (state && !state->ports.empty() && state->ports[0]) 
-          state->ports[0]->setVariableValue(result);
+          state->ports[0]->setVariableValue(*result);
 
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
@@ -309,19 +311,19 @@ namespace MathDAG
                     for (auto& i: argIdx)
                       for (auto& j: i)
                         {
-                          if (j.numElements()>1 && j.dims()!=d)
-                            {
-                              string err="Incompatible vector dimensions: (";
-                              for (auto i:d) err+=to_string(i)+",";
-                              err+=")≠(";
-                              for (auto i:j.dims()) err+=to_string(i)+",";
-                              err+=")";
-                              throw runtime_error(err);
-                            }
+//                          if (j.numElements()>1 && j.dims()!=d)
+//                            {
+//                              string err="Incompatible vector dimensions: (";
+//                              for (auto i:d) err+=to_string(i)+",";
+//                              err+=")≠(";
+//                              for (auto i:j.dims()) err+=to_string(i)+",";
+//                              err+=")";
+//                              throw runtime_error(err);
+//                            }
                           hasX|=j.hasX();
                         }
-                    result.dims(d);
-                    result.setX(hasX);
+                    result->dims(d);
+                    result->setX(hasX);
                   }
               }
           }
@@ -330,28 +332,28 @@ namespace MathDAG
         switch (type())
           {
           case add:
-            cumulate(ev, result, argIdx, add, add, 0);
+            cumulate(ev, *result, argIdx, add, add, 0);
             break;
           case subtract:
-            cumulate(ev, result, argIdx, subtract, add, 0);
+            cumulate(ev, *result, argIdx, subtract, add, 0);
             break;
           case multiply:
-            cumulate(ev, result, argIdx, multiply, multiply, 1);
+            cumulate(ev, *result, argIdx, multiply, multiply, 1);
             break;
           case divide:
-            cumulate(ev, result, argIdx, divide, multiply, 1);
+            cumulate(ev, *result, argIdx, divide, multiply, 1);
             break;
           case min:
-            cumulate(ev, result, argIdx, min, min, numeric_limits<double>::max());
+            cumulate(ev, *result, argIdx, min, min, numeric_limits<double>::max());
             break;
           case max:
-            cumulate(ev, result, argIdx, max, max, numeric_limits<double>::min());
+            cumulate(ev, *result, argIdx, max, max, numeric_limits<double>::min());
             break;
           case and_:
-            cumulate(ev, result, argIdx, and_, and_, 1);
+            cumulate(ev, *result, argIdx, and_, and_, 1);
             break;
           case or_:
-            cumulate(ev, result, argIdx, or_, or_, 0);
+            cumulate(ev, *result, argIdx, or_, or_, 0);
             break;
           case constant:
             if (state) minsky::minsky().displayErrorItem(*state);
@@ -360,13 +362,13 @@ namespace MathDAG
             for (size_t i=0; i<arguments.size(); ++i)
               if (arguments[i].empty())
                 argIdx[i].push_back(VariableValue());
-            ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
+            ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0])); 
             break;
           case data:
             if (argIdx.size()>0 && argIdx[0].size()==1)
-              ev.push_back(EvalOpPtr(type(), result, argIdx[0][0])); 
+              ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 
             else if (auto d=dynamic_cast<DataOp*>(state.get()))
-              d->initOutputVariableValue(result); // input not wired,
+              d->initOutputVariableValue(*result); // input not wired,
             else
               throw error("inputs for highlighted operations incorrectly wired");
             break;
@@ -384,13 +386,13 @@ namespace MathDAG
             switch (arguments.size())
               {
               case 0:
-                ev.push_back(EvalOpPtr(type(), result));
+                ev.push_back(EvalOpPtr(type(), *result));
                 break;
               case 1:
-                ev.push_back(EvalOpPtr(type(), result, argIdx[0][0]));
+                ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
                 break;
               case 2:
-                ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0]));
+                ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0]));
                 break;
               default:
                 throw error("Too many arguments");
@@ -401,9 +403,9 @@ namespace MathDAG
             && state && ev.back()->type()==state->type())
           ev.back()->state=state;
       }
-    if (type()!=integrate && r.isFlowVar() && r.idx()>=0 && result.idx()!=r.idx())
-      ev.push_back(EvalOpPtr(copy, r, result));
-    return result;
+    if (type()!=integrate && r && r->isFlowVar() && result!=r)
+      ev.push_back(EvalOpPtr(copy, *r, *result));
+    return *result;
   }
 
   template <>
@@ -1185,8 +1187,8 @@ namespace MathDAG
   {
     expressionCache.insertAnonymous(zero);
     expressionCache.insertAnonymous(one);
-    zero->result=m.variableValues["constant:zero"];
-    one->result=m.variableValues["constant:one"];
+    zero->result=&const_cast<Minsky&>(m).variableValues.find("constant:zero")->second;
+    one->result=&const_cast<Minsky&>(m).variableValues.find("constant:one")->second;
 
     // store stock & integral variables for later reordering
     map<string, VariableDAG*> integVarMap;
@@ -1257,6 +1259,7 @@ namespace MathDAG
       (&Group::items,
        [&](const Items&, Items::const_iterator it){
         if (auto i=dynamic_cast<Variable<VariableType::stock>*>(it->get()))
+          if (!expressionCache.getIntegralInput(i->valueId()))
           {
             VariableDAGPtr input(new IntegralInputVariableDAG);
             input->name=i->name();
@@ -1561,9 +1564,9 @@ namespace MathDAG
     equations.clear();
     integrals.clear();
 
-    for (const VariableDAG* i: variables)
+    for (VariableDAG* i: variables)
       {
-        i->addEvalOps(equations);
+        i->addEvalOps(equations,i->result);
         assert(minsky.variableValues.validEntries());
       }
 

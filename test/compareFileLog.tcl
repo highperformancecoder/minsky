@@ -25,7 +25,7 @@ foreach name [variableValues.#keys] {
         variableValues.@elem $name
 }
 use_namespace minsky
-set status 0
+set ret 0
 
 for {set step 0} {$step<10} {incr step} {
     step
@@ -33,7 +33,7 @@ for {set step 0} {$step<10} {incr step} {
 
     if {![fclose [t] [lindex $logbuf 0]]} {
         puts "t=[t], logged [lindex $logbuf 0]"
-        set status 1
+        set ret 1
     }
 
     array set values [lrange $logbuf 1 end]
@@ -59,6 +59,7 @@ for {set step 0} {$step<10} {incr step} {
                 }
             }
             if {$status} {
+                ret=1
                 puts "unable to find matching var $name"
                 break
             }
@@ -67,9 +68,9 @@ for {set step 0} {$step<10} {incr step} {
         
         if {![fclose [value.value] $values($name)]} {
             puts "$argv(2) t=[t], $name=[value.value], logged  $values($name)"
-            set status 1
+            set ret 1
         }
     }
 }
 
-tcl_exit $status
+tcl_exit $ret

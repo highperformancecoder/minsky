@@ -42,44 +42,34 @@ namespace minsky
         fv[out]=evaluate(0,0);
         break;
       case 1:
-        for (unsigned i=0; i<count1; ++i)
-          fv[out+i]=evaluate(flow1? fv[in1+i]: sv[in1+i], 0);
+        for (unsigned i=0; i<in1.size(); ++i)
+          fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], 0);
         break;
       case 2:
-        if (count1==count2) // elementwise
-          for (unsigned i=0; i<count1; ++i)
-            fv[out+i]=evaluate(flow1? fv[in1+i]: sv[in1+i],
-                             flow2? fv[in2+i]: sv[in2+i]);
-        else if (count1==1) //broadcast 1st arg
-          for (unsigned i=0; i<count2; ++i)
-            fv[out+i]=evaluate(flow1? fv[in1]: sv[in1],
-                             flow2? fv[in2+i]: sv[in2+i]);
-        else if (count2==1) //broadcast 2nd arg
-          for (unsigned i=0; i<count1; ++i)
-            fv[out+i]=evaluate(flow1? fv[in1+i]: sv[in1+i],
-                             flow2? fv[in2]: sv[in2]);
-        else
-          throw error("mismatch of vector element counts");
+        for (unsigned i=0; i<in1.size(); ++i)
+          fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]],
+                             flow2? fv[in2[i]]: sv[in2[i]]);
         break;
       }
     for (size_t i=0; i<countX; ++i)
       fv[outX+i]=xflow? fv[inX+i]: sv[inX+i];
     
-    for (unsigned i=0; i<std::max(count1,count2); ++i)
+    for (unsigned i=0; i<in1.size(); ++i)
       if (!isfinite(fv[out+i]))
         {
           if (state)
             minsky().displayErrorItem(*state);
           string msg="Invalid: "+OperationBase::typeName(type())+"(";
           if (numArgs()>0)
-            msg+=to_string(flow1? fv[in1+i]: sv[in1+i]);
+            msg+=to_string(flow1? fv[in1[i]]: sv[in1[i]]);
           if (numArgs()>1)
-            msg+=","+to_string(flow2? fv[in2+i]: sv[in2+i]);
+            msg+=","+to_string(flow2? fv[in2[i]]: sv[in2[i]]);
           msg+=")";
           throw error(msg.c_str());
         }
   };
 
+  /// TODO: handle tensors for implicit methods
   void EvalOpBase::deriv(double df[], const double ds[],
                      const double sv[], const double fv[])
   {
@@ -91,23 +81,23 @@ namespace minsky
         return;
       case 1:
         {
-          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
-                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
-          double x1=flow1? fv[in1]: sv[in1];
-          double dx1=flow1? df[in1]: ds[in1];
+          assert((flow1 && in1[0]<ValueVector::flowVars.size()) || 
+                 (!flow1 && in1[0]<ValueVector::stockVars.size()));
+          double x1=flow1? fv[in1[0]]: sv[in1[0]];
+          double dx1=flow1? df[in1[0]]: ds[in1[0]];
           df[out] = dx1!=0? dx1 * d1(x1,0): 0;
           break;
         }
       case 2:
         {
-          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
-                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
-          assert((flow2 && size_t(in2)<ValueVector::flowVars.size()) || 
-                 (!flow2 && size_t(in2)<ValueVector::stockVars.size()));
-          double x1=flow1? fv[in1]: sv[in1];
-          double x2=flow2? fv[in2]: sv[in2];
-          double dx1=flow1? df[in1]: ds[in1];
-          double dx2=flow2? df[in2]: ds[in2];
+          assert((flow1 && in1[0]<ValueVector::flowVars.size()) || 
+                 (!flow1 && in1[0]<ValueVector::stockVars.size()));
+          assert((flow2 && in2[0]<ValueVector::flowVars.size()) || 
+                 (!flow2 && in2[0]<ValueVector::stockVars.size()));
+          double x1=flow1? fv[in1[0]]: sv[in1[0]];
+          double x2=flow2? fv[in2[0]]: sv[in2[0]];
+          double dx1=flow1? df[in1[0]]: ds[in1[0]];
+          double dx2=flow2? df[in2[0]]: ds[in2[0]];
           df[out] = (dx1!=0? dx1 * d1(x1,x2): 0) +
             (dx2!=0? dx2 * d2(x1,x2): 0);
           break;
@@ -500,22 +490,55 @@ namespace minsky
       }
   }
 
-  EvalOpPtr::EvalOpPtr(OperationType::Type op, const VariableValue& to,
+  EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
               const VariableValue& from1, const VariableValue& from2)
   {
 
       reset(EvalOpBase::create(op));
       auto t=get();
+      if (from1.hasX() && from2.hasX())
+        {
+          // find the common set of indexes shared by x1 and x2
+          map<double, unsigned> xIdx2;
+          unsigned i=from2.idx();
+          for (auto j=from2.xbegin(); j!=from2.xend(); ++i, ++j)
+            xIdx2[*j]=i;
+          
+          i=from1.idx();
+          for (auto j=from1.xbegin(); j!=from1.xend(); ++i, ++j)
+            {
+              auto k=xIdx2.find(*j);
+              if (k!=xIdx2.end())
+                {
+                  t->in1.push_back(i);
+                  t->in2.push_back(k->second);
+                }
+            }
+        }
+      else
+        {
+          unsigned maxIdx=from1.dims()[0];
+          if (maxIdx==1)
+            maxIdx=from2.dims()[0];
+          else
+            maxIdx=std::min(maxIdx, from2.dims()[0]);
+
+          for (unsigned i=0; i<maxIdx; ++i)
+            {
+              if (from1.dims()[0]==1)
+                t->in1.push_back(from1.idx());
+              else
+                t->in1.push_back(from1.idx()+i);
+              if (from2.dims()[0]==1)
+                t->in2.push_back(from2.idx());
+              else
+                t->in2.push_back(from2.idx()+i);
+            }
+        }
+      // todo handle tensors
+      to.dims({unsigned(t->in1.size())});
       t->out=to.idx();
-      t->in1=from1.idx();
-      t->in2=from2.idx();
-      int xoffs=0;
-      if (from1.hasX())
-        setX(from1);
-      else if (from2.hasX())
-        setX(from2);
-      t->count1=from1.numElements();
-      t->count2=from2.numElements();
+      
       t->flow1=from1.isFlowVar();
       t->flow2=from2.isFlowVar();
 

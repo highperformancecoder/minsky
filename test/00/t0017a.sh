@@ -41,15 +41,17 @@ for i in examples/*.mky; do
         for implicit in 0 1; do 
             #not available
             if [ $order -eq 1 -a $implicit -eq 0 ]; then continue; fi
+            # This example needs higher order solvers
+            if [ $i = "examples/4MonetaryMinskyModelLessUnstableStart.mky" -a \
+                    $order -eq 1 ]; then continue; fi
             cat >extraOpts.tcl <<EOF
 minsky.implicit $implicit
 minsky.order $order
 EOF
-               
             $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
             if test $? -ne 0; then echo $i; fail; fi
             octave --no-window-system --silent $here/test/compareWithOctave.m $i
-            if test $? -ne 0; then echo $i; fail; fi
+            if test $? -ne 0; then echo "$i failed"; fail; fi
         done
     done
 done

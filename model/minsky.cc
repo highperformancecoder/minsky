@@ -961,8 +961,8 @@ namespace minsky
     for (auto& e: equations)
       {
         const EvalOpBase& eo=*e;
-        if (eo.out < 0|| (eo.numArgs()>0 && eo.in1<0) ||
-            (eo.numArgs() > 1 && eo.in2<0))
+        if (eo.out < 0|| (eo.numArgs()>0 && eo.in1.empty()) ||
+            (eo.numArgs() > 1 && eo.in2.empty()))
           {
             //cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
             return false;
@@ -973,7 +973,7 @@ namespace minsky
             fvInit[eo.out]=true;
             break;
           case 1:
-            fvInit[eo.out]=!eo.flow1 || fvInit[eo.in1];
+            fvInit[eo.out]=!eo.flow1 || fvInit[eo.in1[0]];
             break;
           case 2:
             // we need to check if an associated binary operator has
@@ -985,14 +985,14 @@ namespace minsky
                 {
                 case OperationType::add: case OperationType::subtract:
                 case OperationType::multiply: case OperationType::divide:
-                  fvInit[eo.in1] |= op->ports[1]->wires().empty();
-                  fvInit[eo.in2] |= op->ports[3]->wires().empty();
+                  fvInit[eo.in1[0]] |= op->ports[1]->wires().empty();
+                  fvInit[eo.in2[0]] |= op->ports[3]->wires().empty();
                   break;
                 default: break;
                 }
             
             fvInit[eo.out]=
-              (!eo.flow1 ||  fvInit[eo.in1]) && (!eo.flow2 ||  fvInit[eo.in2]);
+              (!eo.flow1 ||  fvInit[eo.in1[0]]) && (!eo.flow2 ||  fvInit[eo.in2[0]]);
             break;
           default: break;
           }

@@ -54,8 +54,9 @@ namespace minsky
     // value used for the time operator
     static double t;
 
-    /// indexes into the Godley variables vector
-    int out=-1, in1=-1, in2=-1, outX=-1, inX=-1;
+    /// indexes into the flow/stock variables vector
+    int out=-1, outX=-1, inX=-1;
+    std::vector<unsigned> in1, in2;
     ///  size of vector inputs (1=scalar)
     unsigned count1=1, count2=1, countX=0;
     ///indicate whether in1/in2 are flow variables (out is always a flow variable)
@@ -126,7 +127,7 @@ namespace minsky
     EvalOpPtr() {}
     EvalOpPtr(OperationType::Type op):
       classdesc::shared_ptr<EvalOpBase>(EvalOpBase::create(op)) {}
-    EvalOpPtr(OperationType::Type op, const VariableValue& to,
+    EvalOpPtr(OperationType::Type op, VariableValue& to,
               const VariableValue& from1=VariableValue(), 
               const VariableValue& from2=VariableValue());
     /// sets the x parameters \a input. Assume out parameter has already been set
@@ -138,8 +139,15 @@ namespace minsky
       // override push_back for diagnostic purposes
 //       void push_back(const EvalOpPtr& x) {
 //         vector<EvalOpPtr>::push_back(x);
-//         cout << OperationType::typeName(x->type())<<"("<<x->in1<<(x->flow1?",":"s,")
-//              <<x->in2<<(x->flow2?")->":"s)->")<<x->out<<endl;
+//         for (size_t i=0; i<x->in1.size(); ++i)
+//           {
+//             cout << OperationType::typeName(x->type())<<"(";
+//             if (x->numArgs()>0)
+//               cout << x->in1[i]<<(x->flow1?"":"s");
+//             if (x->numArgs()>1)
+//               cout<<","<<x->in2[i]<<(x->flow2?"":"s");
+//             cout <<")->"<<x->out+i<<endl;
+//           }
 //       }
   };
 
