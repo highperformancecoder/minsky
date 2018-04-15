@@ -88,9 +88,9 @@ proc openGodley {id} {
         .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
         .$id.menubar.edit add command -label Redo -command "$id.undo -1" -accelerator $meta_menu-Y
         .$id.menubar.edit add command -label Title -command "textEntryPopup .godleyTitle {[$id.godleyIcon.table.title]} {setGodleyTitleOK $id}"
-        .$id.menubar.edit add command -label Cut -command "cutCopyPaste $id Cut" -accelerator $meta_menu-X
-        .$id.menubar.edit add command -label Copy -command "cutCopyPaste $id Copy" -accelerator $meta_menu-C
-        .$id.menubar.edit add command -label Paste -command "cutCopyPaste $id Paste" -accelerator $meta_menu-V
+        .$id.menubar.edit add command -label Cut -command "$id.cut" -accelerator $meta_menu-X
+        .$id.menubar.edit add command -label Copy -command "$id.copy" -accelerator $meta_menu-C
+        .$id.menubar.edit add command -label Paste -command "$id.paste" -accelerator $meta_menu-V
 
         menu .$id.menubar.view
         .$id.menubar.view add command -label "Zoom in" -command "zoomIn $id" -accelerator $meta_menu-+
@@ -218,13 +218,20 @@ proc godleyContext {id x y X Y} {
     set r [$id.rowYZoomed $y]
     set c [$id.colXZoomed $x]
     if {$r>=0 && $c>=0} {
+        # if cell $r,$c not already selected, select it
+        if {$r!=[$id.selectedRow] || $c!=[$id.selectedCol]} {
+            $id.selectedRow $r
+            $id.selectedCol $c
+            $id.insertIdx 0
+            $id.selectIdx 0
+        }
         if [string length [$id.godleyIcon.table.getCell $r $c]] {
-            .$id.context add command -label "Cut" -command "godleyCut $id $r $c"
-            .$id.context add command -label "Copy" -command "godleyCopy $id $r $c"
+            .$id.context add command -label "Cut" -command "$id.cut"
+            .$id.context add command -label "Copy" -command "$id.copy"
         }
     }
     if {![catch {clipboard get -type UTF8_STRING}]} {
-        .$id.context add command -label "Paste" -command "godleyPaste $id $r $c"
+        .$id.context add command -label "Paste" -command "$id.paste"
     }
     tk_popup .$id.context $X $Y
 }
