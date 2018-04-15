@@ -520,7 +520,7 @@ namespace minsky
           unsigned maxIdx=from1.dims()[0];
           if (maxIdx==1)
             maxIdx=from2.dims()[0];
-          else
+          else if (from2.dims()[0]>1)
             maxIdx=std::min(maxIdx, from2.dims()[0]);
 
           for (unsigned i=0; i<maxIdx; ++i)
@@ -537,8 +537,17 @@ namespace minsky
         }
       // todo handle tensors
       to.dims({unsigned(t->in1.size())});
-      t->out=to.idx();
+      // set up resultant x-vector
+      to.setX(from1.hasX() || from2.hasX());
+      if (to.hasX())
+        if (from1.dims()[0]==1)
+          for (size_t i=0; i<t->in2.size(); ++i)
+            *(to.xbegin()+i)=*(from2.xbegin()+t->in2[i]-from2.idx());
+        else
+          for (size_t i=0; i<t->in1.size(); ++i)
+            *(to.xbegin()+i)=*(from1.xbegin()+t->in1[i]-from1.idx());
       
+      t->out=to.idx();
       t->flow1=from1.isFlowVar();
       t->flow2=from2.isFlowVar();
 

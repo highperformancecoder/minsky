@@ -338,7 +338,8 @@ namespace minsky
               }
             data.clear();
             for (size_t i=0; i<dims[0]; ++i)
-              data[xValues[i]]=tmp[i];
+              if (isfinite(tmp[i]))
+                data[xValues[i]]=tmp[i];
             minsky().reset();
           }
         else
