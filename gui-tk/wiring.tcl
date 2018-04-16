@@ -640,6 +640,7 @@ proc deiconifyEditVar {} {
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
             makeVariablesConsistent
+            catch reset
             closeEditWindow .wiring.editVar
         }
         # adjust "Slider Step Size" row to include "relative" radiobutton
