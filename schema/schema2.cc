@@ -353,8 +353,10 @@ namespace schema2
       }
     if (auto x1=dynamic_cast<minsky::RavelWrap*>(&x))
       {
-        x1->loadFile(*y.filename);
-        x1->fromXML(*y.ravelDef);
+        if (y.filename)
+          x1->loadFile(*y.filename);
+        if (y.ravelDef)
+          x1->fromXML(*y.ravelDef);
         x1->loadDataFromSlice();
       }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
