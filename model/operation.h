@@ -163,6 +163,7 @@ namespace minsky
     CLASSDESC_ACCESS(DataOp);
   public:
     std::map<double, double> data;
+    std::vector<std::string> xVector;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 
     void initRandom(double xmin, double xmax, unsigned numSamples);

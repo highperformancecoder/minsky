@@ -233,8 +233,16 @@ namespace MathDAG
     void cumulate(EvalOpVector& ev, VariableValue& r, const vector<vector<VariableValue> >& argIdx,
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
+      // ensure dimensions are correct
+      for (auto& i: argIdx)
+        for (auto& j: i)
+          r.makeXConformant(j); 
+      r.dims({unsigned(r.xVector.size())});
+      
       if (argIdx.size()>0 && !argIdx[0].empty())
         {
+          for (auto& i: argIdx[0])
+          
           ev.push_back(EvalOpPtr(OperationType::copy, r, argIdx[0][0]));
           for (size_t i=1; i<argIdx[0].size(); ++i)
             ev.push_back(EvalOpPtr(accum, r, r, argIdx[0][i]));
@@ -255,7 +263,8 @@ namespace MathDAG
             {
               // multiple wires to second input port
               VariableValue tmp(VariableType::tempFlow);
-              tmp.allocValue();
+              tmp.xVector=r.xVector;
+              tmp.dims(r.dims());
               ev.push_back(EvalOpPtr(OperationType::copy, tmp, argIdx[1][0]));
               for (size_t i=1; i<argIdx[1].size(); ++i)
                 ev.push_back(EvalOpPtr(accum, tmp, tmp, argIdx[1][i]));
@@ -289,44 +298,29 @@ namespace MathDAG
             else
               argIdx[i].push_back(VariableValue());
         
-        if (type()!=data && arguments.size()>0)
-          {
-            // check argument vector compatibility: arguments can be
-            // scalars or tensors, but tensors must match for rank and
-            // dimensions
-            if (arguments.size()>1 && (argIdx[0].size() || argIdx[1].size() ))
-              {
-                auto d=argIdx[0].size()? argIdx[0][0].dims(): argIdx[1][0].dims();
-                bool hasX=false;
-                // find first vector
-                for (auto& i: argIdx)
-                  for (auto& j: i)
-                    if (j.numElements()>1)
-                      {
-                        d=j.dims();
-                        break;
-                      }
-                if (d.size()>1 || d[0]>1)
-                  {
-                    for (auto& i: argIdx)
-                      for (auto& j: i)
-                        {
-//                          if (j.numElements()>1 && j.dims()!=d)
-//                            {
-//                              string err="Incompatible vector dimensions: (";
-//                              for (auto i:d) err+=to_string(i)+",";
-//                              err+=")≠(";
-//                              for (auto i:j.dims()) err+=to_string(i)+",";
-//                              err+=")";
-//                              throw runtime_error(err);
-//                            }
-                          hasX|=j.hasX();
-                        }
-                    result->dims(d);
-                    result->setX(hasX);
-                  }
-              }
-          }
+//        if (type()!=data && arguments.size()>0)
+//          {
+//            // check argument vector compatibility: arguments can be
+//            // scalars or tensors, but tensors must match for rank and
+//            // dimensions
+//            if (arguments.size()>1 && (argIdx[0].size() || argIdx[1].size() ))
+//              {
+//                auto d=argIdx[0].size()? argIdx[0][0].dims(): argIdx[1][0].dims();
+//                bool hasX=false;
+//                // find first vector
+//                for (auto& i: argIdx)
+//                  for (auto& j: i)
+//                    if (j.numElements()>1)
+//                      {
+//                        d=j.dims();
+//                        break;
+//                      }
+//                if (d.size()>1 || d[0]>1)
+//                  {
+//                    result->dims(d);
+//                  }
+//              }
+//          }
 
         // basic arithmetic is handled in a cumulative fashion
         switch (type())

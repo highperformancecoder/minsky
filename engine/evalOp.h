@@ -130,8 +130,6 @@ namespace minsky
     EvalOpPtr(OperationType::Type op, VariableValue& to,
               const VariableValue& from1=VariableValue(), 
               const VariableValue& from2=VariableValue());
-    /// sets the x parameters \a input. Assume out parameter has already been set
-    void setX(const VariableValue& input);
   };
 
   struct EvalOpVector: public vector<EvalOpPtr>

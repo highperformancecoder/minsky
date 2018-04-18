@@ -573,11 +573,13 @@ namespace minsky
   void DataOp::initOutputVariableValue(VariableValue& v) const
   {
     v.dims({unsigned(data.size())});
-    v.setX(true);
-    auto iy=v.begin(), ix=v.xbegin();
+    if (xVector.size())
+      v.xVector=xVector;
+    auto iy=v.begin();
     for (auto& j: data)
       {
-        *ix++=j.first;
+        if (xVector.empty())
+          v.xVector.push_back(to_string(j.first));
         *iy++=j.second;
       }
   }

@@ -312,8 +312,13 @@ namespace minsky
                 throw error("x vector not same length as y vectors");
               x=xvars[pen].begin();
             }
-          else if (yv.xend()-yv.xbegin()==d[0]) // yv carries its own x-vector
-            x=yv.xbegin();
+          else if (yv.xVector.size()) // yv carries its own x-vector
+            {
+              xdefault.reserve(d[0]);
+              for (auto& i: yv.xVector) xdefault.push_back(stod(i));
+              if (xdefault.size()<d[0]) xdefault.resize(d[0]);
+              x=&xdefault[0];
+            }
           else // by default, set x to 0..d[0]-1
             {
               xdefault.reserve(d[0]);

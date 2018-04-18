@@ -42,7 +42,6 @@ namespace minsky
     const double& valRef() const
     {return const_cast<VariableValue*>(this)->valRef();} 
     std::vector<unsigned> m_dims{1};
-    bool xVector=false; ///< whether an x-vector is present
 
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -98,16 +97,12 @@ namespace minsky
       return s;
     }
 
-    /// set whether an x-vector is present or not. x-vectors have
-    /// length dims()[0], and are used by plots to plot vector or
-    /// tensor valued data. x-vectors are not transformed by
-    /// operations
-    void setX(bool x) {xVector=x; allocValue();}
-    iterator xbegin() {return &valRef()+numElements();}
-    const_iterator xbegin() const {return &valRef()+numElements();}
-    iterator xend() {return &valRef()+numElements()+(xVector? m_dims[0]:0);}
-    const_iterator xend() const {return &valRef()+numElements()+(xVector? m_dims[0]:0);}
-    bool hasX() const {return xVector;}
+    /// labels describing the points along dimension 0
+    std::vector<std::string> xVector;
+
+    /// removes elements of xVector not found in \a
+    /// You should adjust dims()[0] to xVector.size() afterwards
+    void makeXConformant(const VariableValue& a);
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}

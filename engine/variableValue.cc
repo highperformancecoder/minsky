@@ -43,13 +43,13 @@ namespace minsky
       case parameter:
         m_idx=ValueVector::flowVars.size();
         ValueVector::flowVars.resize
-          (ValueVector::flowVars.size()+numElements()+(xVector? m_dims[0]:0));
+          (ValueVector::flowVars.size()+numElements());
         //      *this=init;
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
-        ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements()+(xVector? m_dims[0]:0));
+        ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements());
         //     *this=init;
         break;
       default: break;
@@ -224,4 +224,19 @@ namespace minsky
   string expMultiplier(int exp)
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
+  void VariableValue::makeXConformant(const VariableValue& a)
+  {
+    if (xVector.empty())
+      xVector=a.xVector;
+    else
+      {
+        set<string> alabels(a.xVector.begin(), a.xVector.end());
+        vector<string> newLabels;
+        for (auto i: xVector)
+          if (alabels.count(i))
+            newLabels.push_back(i);
+        xVector.swap(newLabels);
+      }
+  }
+  
 }

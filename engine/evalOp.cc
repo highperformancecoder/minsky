@@ -496,16 +496,16 @@ namespace minsky
 
       reset(EvalOpBase::create(op));
       auto t=get();
-      if (from1.hasX() && from2.hasX())
+      if (from1.xVector.size() && from2.xVector.size())
         {
           // find the common set of indexes shared by x1 and x2
-          map<double, unsigned> xIdx2;
+          map<string, unsigned> xIdx2;
           unsigned i=from2.idx();
-          for (auto j=from2.xbegin(); j!=from2.xend(); ++i, ++j)
+          for (auto j=from2.xVector.begin(); j!=from2.xVector.end(); ++i, ++j)
             xIdx2[*j]=i;
           
           i=from1.idx();
-          for (auto j=from1.xbegin(); j!=from1.xend(); ++i, ++j)
+          for (auto j=from1.xVector.begin(); j!=from1.xVector.end(); ++i, ++j)
             {
               auto k=xIdx2.find(*j);
               if (k!=xIdx2.end())
@@ -536,32 +536,22 @@ namespace minsky
             }
         }
       // todo handle tensors
-      to.dims({unsigned(t->in1.size())});
-      // set up resultant x-vector
-      to.setX(from1.hasX() || from2.hasX());
-      if (to.hasX())
-        if (from1.dims()[0]==1)
-          for (size_t i=0; i<t->in2.size(); ++i)
-            *(to.xbegin()+i)=*(from2.xbegin()+t->in2[i]-from2.idx());
-        else
-          for (size_t i=0; i<t->in1.size(); ++i)
-            *(to.xbegin()+i)=*(from1.xbegin()+t->in1[i]-from1.idx());
-      
+      if (to.dims().size()!=1 || to.dims()[0]!=t->in1.size())
+        {
+          assert(&to!=&from1 || &to!=&from2);
+          to.dims({unsigned(t->in1.size())});
+          if (from1.xVector.size())
+            for (auto i: t->in1)
+              to.xVector.push_back(from1.xVector[i-from1.idx()]);
+          else if (from2.xVector.size())
+            for (auto i: t->in2)
+              to.xVector.push_back(from2.xVector[i-from2.idx()]);
+        }
+       
       t->out=to.idx();
       t->flow1=from1.isFlowVar();
       t->flow2=from2.isFlowVar();
 
     }
 
-  void EvalOpPtr::setX(const VariableValue& v)
-  {
-    int xoffs=v.xbegin()-v.begin();
-    auto t=get();
-    t->inX=v.idx()+xoffs;
-    t->outX=t->out+xoffs;
-    t->countX=v.xend()-v.xbegin();
-    t->xflow=v.isFlowVar();
-  }
-
-  
 }
