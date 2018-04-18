@@ -227,13 +227,6 @@ namespace minsky
   {
     if (ravel)
       {
-        {
-          cairo::CairoSave cs(cairo);
-          cairo_scale(cairo,zoomFactor,zoomFactor);
-          ravel::CairoRenderer cr(cairo);
-          ravel_render(ravel,&cr);
-        }
-        
         double r=1.1*zoomFactor*ravel_radius(ravel);
         ports[0]->moveTo(x()+1.1*r, y());
         ports[1]->moveTo(x()-1.1*r, y());
@@ -246,6 +239,14 @@ namespace minsky
         cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
         cairo_stroke_preserve(cairo);
         cairo_clip(cairo);
+        {
+          cairo::CairoSave cs(cairo);
+          cairo_rectangle(cairo,-r,-r,2*r,2*r);
+          cairo_clip(cairo);
+          cairo_scale(cairo,zoomFactor,zoomFactor);
+          ravel::CairoRenderer cr(cairo);
+          ravel_render(ravel,&cr);
+        }        
         if (selected) drawSelected(cairo);
       }
     else
