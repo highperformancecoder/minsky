@@ -214,6 +214,7 @@ namespace minsky
       assert(i.use_count()==1);
 #endif
     canvas.selection.clear();
+    canvas.requestRedraw();
   }
 
   void Minsky::copy() const
@@ -413,23 +414,31 @@ namespace minsky
     return r;
   }
 
-  void Minsky::importDuplicateColumn(const GodleyTable& srcTable, int srcCol)
+  void Minsky::importDuplicateColumn(GodleyTable& srcTable, int srcCol)
   {
     // find any duplicate column, and use it to do balanceDuplicateColumns
     const string& colName=trimWS(srcTable.cell(0,srcCol));
     if (colName.empty()) return; //ignore blank columns
 
-    model->recursiveDo
-      (&Group::items,
-       [&](Items& m, Items::iterator i)
-       {
-         if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
-           if (&gi->table!=&srcTable) // skip source table
-             for (size_t col=1; col<gi->table.cols(); col++)
-               if (trimWS(gi->table.cell(0,col))==colName) // we have a match
-                 balanceDuplicateColumns(*gi, col);
-         return false;
-       });
+    try
+      {
+        model->recursiveDo
+          (&Group::items,
+           [&](Items& m, Items::iterator i)
+           {
+             if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
+               if (&gi->table!=&srcTable) // skip source table
+                 for (size_t col=1; col<gi->table.cols(); col++)
+                   if (trimWS(gi->table.cell(0,col))==colName) // we have a match
+                     balanceDuplicateColumns(*gi, col);
+             return false;
+           });
+      }
+    catch (...) // in the event of business rules being violated, delete column name
+      {
+        srcTable.cell(0,srcCol).clear();
+        throw;
+      }
   }
 
   void Minsky::balanceDuplicateColumns(const GodleyIcon& srcGodley, int srcCol)
@@ -449,6 +458,22 @@ namespace minsky
              for (size_t col=1; col<gi->table.cols(); col++)
                if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
                  {
+                   // checks asset class rules
+                   switch (srcGodley.table._assetClass(srcCol))
+                     {
+                     case GodleyAssetClass::asset:
+                       if (gi->table._assetClass(col)!=GodleyAssetClass::liability)
+                         throw error("asset column %s matches a non-liability column",colName.c_str());
+                       break;
+                     case GodleyAssetClass::liability:
+                       if (gi->table._assetClass(col)!=GodleyAssetClass::asset)
+                         throw error("liability column %s matches a non-asset column",colName.c_str());
+                       break;
+                     default:
+                       throw error("invalid asset class for duplicate column %s",colName.c_str());
+                     }
+
+                   // checks that nom more than two duplicated columns exist
                    if (matchFound)
                      throw error("more than one duplicated column detected for %s",colName.c_str());
                    matchFound=true;

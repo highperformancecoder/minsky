@@ -329,7 +329,6 @@ proc deleteKey {x y} {
     } elseif [getWireAt $x $y] {
         canvas.deleteWire
     }
-    canvas.requestRedraw
 }
 
 # global godley icon resource
@@ -629,6 +628,7 @@ proc deiconifyEditVar {} {
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
             makeVariablesConsistent
+            catch reset
             closeEditWindow .wiring.editVar
         }
         # adjust "Slider Step Size" row to include "relative" radiobutton
