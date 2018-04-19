@@ -36,15 +36,18 @@ namespace minsky
 
   void EvalOpBase::eval(double fv[], const double sv[])
   {
+    assert(out>=0);
     switch (numArgs())
       {
       case 0:
         fv[out]=evaluate(0,0);
         break;
       case 1:
+        assert(in1>=0);
         fv[out]=evaluate(flow1? fv[in1]: sv[in1], 0);
         break;
       case 2:
+        assert(in1>=0 && in2>=0);
         fv[out]=evaluate(flow1? fv[in1]: sv[in1], flow2? fv[in2]: sv[in2]);
         break;
       }

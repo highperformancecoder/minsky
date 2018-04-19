@@ -285,7 +285,10 @@ namespace MathDAG
             if (arguments[i][j])
               argIdx[i].push_back(arguments[i][j]->addEvalOps(ev));
             else
-              argIdx[i].push_back(VariableValue());
+              {
+                argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
+                argIdx[i].back().allocValue();
+              }
         
         // basic arithmetic is handled in a cumulative fashion
         switch (type())
@@ -320,7 +323,10 @@ namespace MathDAG
           case lt: case le: case eq:
             for (size_t i=0; i<arguments.size(); ++i)
               if (arguments[i].empty())
-                argIdx[i].push_back(VariableValue());
+                {
+                  argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
+                  argIdx[i].back().allocValue();
+                }
             ev.push_back(EvalOpPtr(type(), result, argIdx[0][0], argIdx[1][0])); 
             break;
           default:
