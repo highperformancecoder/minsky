@@ -538,7 +538,7 @@ namespace minsky
       // todo handle tensors
       if (to.dims().size()!=1 || to.dims()[0]!=t->in1.size())
         {
-          assert(&to!=&from1 || &to!=&from2);
+          assert(&to!=&from1 && &to!=&from2);
           to.dims({unsigned(t->in1.size())});
           if (from1.xVector.size())
             for (auto i: t->in1)

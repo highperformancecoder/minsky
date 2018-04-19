@@ -226,17 +226,12 @@ namespace minsky
 
   void VariableValue::makeXConformant(const VariableValue& a)
   {
-    if (xVector.empty())
-      xVector=a.xVector;
-    else
-      {
-        set<string> alabels(a.xVector.begin(), a.xVector.end());
-        vector<string> newLabels;
-        for (auto i: xVector)
-          if (alabels.count(i))
-            newLabels.push_back(i);
-        xVector.swap(newLabels);
-      }
+    set<string> alabels(a.xVector.begin(), a.xVector.end());
+    vector<string> newLabels;
+    for (auto i: xVector)
+      if (alabels.count(i))
+        newLabels.push_back(i);
+    xVector.swap(newLabels);
   }
   
 }

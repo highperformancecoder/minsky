@@ -323,24 +323,21 @@ namespace minsky
           {
             vector<size_t> outHandles(dims.size());
             vector<const char*> labels(dims[0]); 
-            vector<double> xValues(dims[0]);
             ravel_outputHandleIds(ravel, &outHandles[0]);
             ravel_sliceLabels(ravel,outHandles[0],&labels[0]);
-            try
-              {
-                for (size_t i=0; i<dims[0]; ++i)
-                  xValues[i]=stod(labels[i]);
-              }
-            catch (std::exception)
-              {
-                // not convertible to double, just use index
-                for (size_t i=0; i<dims[0]; ++i)
-                  xValues[i]=i;
-              }
-            data.clear();
+            assert(all_of(labels.begin(), labels.end(),
+                          [](const char* i){return bool(i);}));
+            bool numerical=
+              all_of(labels.begin(), labels.end(),
+                     [](const char* i){return isdigit(*i)||*i=='.';});
+            data.clear(); xVector.clear();
             for (size_t i=0; i<dims[0]; ++i)
               if (isfinite(tmp[i]))
-                data[xValues[i]]=tmp[i];
+                {
+                  data[numerical? stod(xVector[i]): double(i)]=tmp[i];
+                  xVector.push_back(labels[i]);
+                }
+            assert(data.size()==xVector.size());
             minsky().reset();
           }
         else

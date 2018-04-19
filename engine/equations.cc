@@ -233,16 +233,28 @@ namespace MathDAG
     void cumulate(EvalOpVector& ev, VariableValue& r, const vector<vector<VariableValue> >& argIdx,
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
-      // ensure dimensions are correct
+      // check if any arguments have x-vectors, and if so, initialise r.xVector
       for (auto& i: argIdx)
-        for (auto& j: i)
-          r.makeXConformant(j); 
-      r.dims({unsigned(r.xVector.size())});
+        if (i.size() && !i[0].xVector.empty())
+          {
+            // initialise r's xVector
+            r.xVector=i[0].xVector;
+            break;
+          }
+      if (!r.xVector.empty())
+        {
+          // ensure dimensions are correct
+          for (auto& i: argIdx)
+            for (auto& j: i)
+              r.makeXConformant(j);
+          if (r.xVector.empty())
+            return; // no common intersection amongst arguments
+          r.dims({unsigned(r.xVector.size())});
+        }
+
       
       if (argIdx.size()>0 && !argIdx[0].empty())
         {
-          for (auto& i: argIdx[0])
-          
           ev.push_back(EvalOpPtr(OperationType::copy, r, argIdx[0][0]));
           for (size_t i=1; i<argIdx[0].size(); ++i)
             ev.push_back(EvalOpPtr(accum, r, r, argIdx[0][i]));

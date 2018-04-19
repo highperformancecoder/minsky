@@ -298,7 +298,7 @@ namespace minsky
   {
     size_t extraPen=2*numLines;
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
+      if (pen<yvars.size() && yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
         {
           auto& yv=yvars[pen];
           auto& d=yv.dims();
@@ -315,8 +315,23 @@ namespace minsky
           else if (yv.xVector.size()) // yv carries its own x-vector
             {
               xdefault.reserve(d[0]);
-              for (auto& i: yv.xVector) xdefault.push_back(stod(i));
-              if (xdefault.size()<d[0]) xdefault.resize(d[0]);
+              try
+                {
+                  for (auto& i: yv.xVector)
+                    xdefault.push_back(stod(i));
+                  if (xdefault.size()<d[0])
+                    xdefault.resize(d[0]);
+                  setXticks(pen, [](const string& i)
+                            {return stod(i);},
+                            yv.xVector);
+                }
+              catch (std::exception) // unconvertible to numbers, use indices instead
+                {
+                  for (size_t i=0; i<d[0]; ++i) xdefault.push_back(i);
+                  setXticks(pen, [&](const string& i)
+                            {return &i-&yv.xVector[0];},
+                            yv.xVector);
+                }
               x=&xdefault[0];
             }
           else // by default, set x to 0..d[0]-1
