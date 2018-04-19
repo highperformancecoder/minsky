@@ -251,7 +251,7 @@ namespace MathDAG
             return; // no common intersection amongst arguments
           r.dims({unsigned(r.xVector.size())});
         }
-
+      if (r.idx()==-1) r.allocValue();
       
       if (argIdx.size()>0 && !argIdx[0].empty())
         {
@@ -298,8 +298,6 @@ namespace MathDAG
           result=&tmpResult;
         //          result.allocValue();
 
-        if (state && !state->ports.empty() && state->ports[0]) 
-          state->ports[0]->setVariableValue(*result);
 
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
@@ -411,6 +409,8 @@ namespace MathDAG
       }
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
       ev.push_back(EvalOpPtr(copy, *r, *result));
+    if (state && !state->ports.empty() && state->ports[0]) 
+      state->ports[0]->setVariableValue(*result);
     return *result;
   }
 
