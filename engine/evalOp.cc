@@ -492,10 +492,11 @@ namespace minsky
   EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
               const VariableValue& from1, const VariableValue& from2)
   {
-
+    
       reset(EvalOpBase::create(op));
       auto t=get();
-      if (from1.xVector.size() && from2.xVector.size())
+      assert(t->numArgs()==0 || from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0));
+      if (t->numArgs()>=2 && from1.xVector.size() && from2.xVector.size())
         {
           // find the common set of indexes shared by x1 and x2
           map<string, unsigned> xIdx2;
@@ -514,7 +515,7 @@ namespace minsky
                 }
             }
         }
-      else
+      else if (t->numArgs()>0)
         {
           unsigned maxIdx=from1.dims()[0];
           if (maxIdx==1)
@@ -535,7 +536,7 @@ namespace minsky
             }
         }
       // todo handle tensors
-      if (to.dims().size()!=1 || to.dims()[0]!=t->in1.size())
+      if (to.dims().size()!=1 || (t->numArgs()>0) && to.dims()[0]!=t->in1.size())
         {
           assert(&to!=&from1 && &to!=&from2);
           to.dims({unsigned(t->in1.size())});
@@ -547,6 +548,7 @@ namespace minsky
               to.xVector.push_back(from2.xVector[i-from2.idx()]);
         }
        
+      if (to.idx()==-1) to.allocValue();
       t->out=to.idx();
       t->flow1=from1.isFlowVar();
       t->flow2=from2.isFlowVar();
