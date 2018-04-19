@@ -36,6 +36,7 @@ namespace minsky
 
   void EvalOpBase::eval(double fv[], const double sv[])
   {
+    assert(out>=0);
     switch (numArgs())
       {
       case 0:
