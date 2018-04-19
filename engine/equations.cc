@@ -306,7 +306,7 @@ namespace MathDAG
             cumulate(ev, result, argIdx, min, min, numeric_limits<double>::max());
             break;
           case max:
-            cumulate(ev, result, argIdx, max, max, numeric_limits<double>::min());
+            cumulate(ev, result, argIdx, max, max, -numeric_limits<double>::max());
             break;
           case and_:
             cumulate(ev, result, argIdx, and_, and_, 1);
