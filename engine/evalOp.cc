@@ -52,8 +52,6 @@ namespace minsky
                              flow2? fv[in2[i]]: sv[in2[i]]);
         break;
       }
-    for (size_t i=0; i<countX; ++i)
-      fv[outX+i]=xflow? fv[inX+i]: sv[inX+i];
     
     for (unsigned i=0; i<in1.size(); ++i)
       if (!isfinite(fv[out+i]))
