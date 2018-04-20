@@ -580,7 +580,7 @@ namespace minsky
     for (auto& j: data)
       {
         if (xVector.empty())
-          v.xVector.push_back(to_string(j.first));
+          v.xVector.emplace_back(j.first,to_string(j.first));
         *iy++=j.second;
       }
   }

@@ -334,8 +334,10 @@ namespace minsky
             for (size_t i=0; i<dims[0]; ++i)
               if (isfinite(tmp[i]))
                 {
-                  data[numerical? stod(xVector[i]): double(i)]=tmp[i];
-                  xVector.push_back(labels[i]);
+                  // i+1 allows logarithmic scales to be used
+                  double v=numerical? stod(labels[i]): double(i+1);
+                  data[v]=tmp[i];
+                  xVector.emplace_back(v,labels[i]);
                 }
             assert(data.size()==xVector.size());
             minsky().reset();

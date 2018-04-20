@@ -98,7 +98,9 @@ namespace minsky
     }
 
     /// labels describing the points along dimension 0
-    std::vector<std::string> xVector;
+    /// consists of a value and a textual representation
+    typedef std::vector<std::pair<double, std::string>> XVector;
+    XVector xVector;
 
     /// removes elements of xVector not found in \a
     /// You should adjust dims()[0] to xVector.size() afterwards

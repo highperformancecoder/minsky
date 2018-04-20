@@ -502,12 +502,12 @@ namespace minsky
           map<string, unsigned> xIdx2;
           unsigned i=from2.idx();
           for (auto j=from2.xVector.begin(); j!=from2.xVector.end(); ++i, ++j)
-            xIdx2[*j]=i;
+            xIdx2[j->second]=i;
           
           i=from1.idx();
           for (auto j=from1.xVector.begin(); j!=from1.xVector.end(); ++i, ++j)
             {
-              auto k=xIdx2.find(*j);
+              auto k=xIdx2.find(j->second);
               if (k!=xIdx2.end())
                 {
                   t->in1.push_back(i);

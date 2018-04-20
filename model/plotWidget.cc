@@ -312,32 +312,19 @@ namespace minsky
                 throw error("x vector not same length as y vectors");
               x=xvars[pen].begin();
             }
-          else if (yv.xVector.size()) // yv carries its own x-vector
+          else
             {
               xdefault.reserve(d[0]);
-              try
+              if (yv.xVector.size()) // yv carries its own x-vector
                 {
-                  for (auto& i: yv.xVector)
-                    xdefault.push_back(stod(i));
-                  if (xdefault.size()<d[0])
-                    xdefault.resize(d[0]);
-                  setXticks(pen, [](const string& i)
-                            {return stod(i);},
-                            yv.xVector);
+                  xticks=yv.xVector;
+                  assert(xticks.size()==d[0]);
+                  for (auto& i: xticks)
+                    xdefault.push_back(i.first);
                 }
-              catch (std::exception) // unconvertible to numbers, use indices instead
-                {
-                  for (size_t i=0; i<d[0]; ++i) xdefault.push_back(i);
-                  setXticks(pen, [&](const string& i)
-                            {return &i-&yv.xVector[0];},
-                            yv.xVector);
-                }
-              x=&xdefault[0];
-            }
-          else // by default, set x to 0..d[0]-1
-            {
-              xdefault.reserve(d[0]);
-              for (size_t i=0; i<d[0]; ++i) xdefault.push_back(i);
+              else // by default, set x to 0..d[0]-1
+                for (size_t i=0; i<d[0]; ++i)
+                  xdefault.push_back(i);
               x=&xdefault[0];
             }
           

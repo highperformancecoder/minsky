@@ -224,10 +224,21 @@ namespace minsky
   string expMultiplier(int exp)
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
+  namespace
+  {
+    // wrapper storing just the string part of an XVector element
+    struct XName: public string
+    {
+      XName() {}
+      XName(const VariableValue::XVector::value_type& x):
+        string(x.second) {}
+    };
+  }
+  
   void VariableValue::makeXConformant(const VariableValue& a)
   {
-    set<string> alabels(a.xVector.begin(), a.xVector.end());
-    vector<string> newLabels;
+    set<XName> alabels(a.xVector.begin(), a.xVector.end());
+    XVector newLabels;
     for (auto i: xVector)
       if (alabels.count(i))
         newLabels.push_back(i);
