@@ -54,6 +54,27 @@ namespace minsky
     void loadDataFromSlice();
     const char* toXML() const;
     void fromXML(const std::string&);
+
+    // representing the state of the handles
+    struct HandleState
+    {
+      double x,y; ///< handle tip coordinates (only angle important, not length)
+      size_t sliceIndex, sliceMin, sliceMax;
+      bool collapsed, displayFilterCaliper;
+      enum ReductionOp {sum, prod, av, stddev, min, max};
+      ReductionOp reductionOp;
+    };
+
+    struct State
+    {
+      std::map<std::string, HandleState> handleStates;
+      std::vector<std::string> outputHandles;
+    };
+
+    /// get the current state of the Ravel
+    State getState() const;
+    /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
+    void applyState(const State&);
   };
 }
 
@@ -70,6 +91,7 @@ namespace classdesc_access
     public access_unpack<minsky::DataOp> {};
 }
 #include "ravelWrap.cd"
+#include "ravelWrap.xcd"
 
 #endif
 

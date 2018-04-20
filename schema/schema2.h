@@ -26,6 +26,7 @@ but any renamed attributes require bumping the schema number.
 #define SCHEMA_2_H
 
 #include "model/minsky.h"
+#include "model/ravelWrap.h"
 #include "schema/schema1.h"
 #include "schemaHelper.h"
 #include "classdesc.h"
@@ -124,7 +125,7 @@ namespace schema2
     std::shared_ptr<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
-    Optional<std::string> ravelDef;
+    Optional<minsky::RavelWrap::State> ravelState;
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
@@ -307,28 +308,8 @@ namespace classdesc
     xsd_generate(g,d,*a);
   }
 
-  template <class T> void xpack(xml_pack_t& t,const string& d,T& a) 
+  template <class T> inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<T>& a)
   {if (a) ::xml_pack(t,d,*a);}
-
-
-  inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<std::string>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<float>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<bool>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,std::shared_ptr<int>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,
-                       schema2::Optional<std::map<double,double>>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,
-                       schema2::Optional<std::vector<std::vector<std::string>>>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,
-                       schema2::Optional<std::vector<float>>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,
-                       schema2::Optional<std::vector<int>>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,
-                       schema2::Optional<std::vector<minsky::GodleyAssetClass::AssetClass>>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,
-                       schema2::Optional<schema2::Slider>& a) {xpack(t,d,a);}
-  inline void xml_pack(xml_pack_t& t,const string& d,
-                       std::shared_ptr<ecolab::Plot::Side>& a) {xpack(t,d,a);}
 }
 
 using classdesc::xsd_generate;

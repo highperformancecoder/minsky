@@ -67,7 +67,9 @@ namespace schema2
           if (auto r=dynamic_cast<minsky::RavelWrap*>(i))
             {
               items.back().filename=r->filename();
-              items.back().ravelDef=r->toXML();
+              auto s=r->getState();
+              if (!s.handleStates.empty())
+                items.back().ravelState=s;
             }
         }
       return j;
@@ -355,8 +357,8 @@ namespace schema2
       {
         if (y.filename)
           x1->loadFile(*y.filename);
-        if (y.ravelDef)
-          x1->fromXML(*y.ravelDef);
+        if (y.ravelState)
+          x1->applyState(*y.ravelState);
         x1->loadDataFromSlice();
       }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))

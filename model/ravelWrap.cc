@@ -95,11 +95,15 @@ namespace minsky
     double (*ravel_radius)(Ravel* ravel)=nullptr;
     size_t (*ravel_rank)(Ravel* ravel)=nullptr;
     void (*ravel_outputHandleIds)(Ravel* ravel, size_t ids[])=nullptr;
+    void (*ravel_setOutputHandleIds)(Ravel* ravel, size_t rank, size_t ids[])=nullptr;
     unsigned (*ravel_numHandles)(Ravel* ravel)=nullptr;
+    const char* (*ravel_handleDescription)(Ravel* ravel, size_t handle)=nullptr;
     void (*ravel_sliceLabels)(Ravel* ravel, size_t axis, const char* labels[])=nullptr;
     void (*ravel_displayFilterCaliper)(Ravel* ravel, size_t axis, bool display)=nullptr;
     const char* (*ravel_toXML)(Ravel* ravel)=nullptr;
     int (*ravel_fromXML)(Ravel* ravel, const char*)=nullptr;
+    void (*ravel_getHandleState)(const Ravel* ravel, size_t handle, RavelWrap::HandleState* handleState)=nullptr;
+    void (*ravel_setHandleState)(Ravel* ravel, size_t handle, const RavelWrap::HandleState* handleState)=nullptr;
 
     DataCube* (*ravelDC_new)()=nullptr;
     void (*ravelDC_delete)(DataCube*)=nullptr;
@@ -153,11 +157,15 @@ namespace minsky
               ASG_FN_PTR(ravel_radius,lib);
               ASG_FN_PTR(ravel_rank,lib);
               ASG_FN_PTR(ravel_outputHandleIds,lib);
+              ASG_FN_PTR(ravel_setOutputHandleIds,lib);
               ASG_FN_PTR(ravel_numHandles,lib);
+              ASG_FN_PTR(ravel_handleDescription,lib);
               ASG_FN_PTR(ravel_sliceLabels,lib);
               ASG_FN_PTR(ravel_displayFilterCaliper,lib);
               ASG_FN_PTR(ravel_toXML,lib);
               ASG_FN_PTR(ravel_fromXML,lib);
+              ASG_FN_PTR(ravel_getHandleState,lib);
+              ASG_FN_PTR(ravel_setHandleState,lib);
               ASG_FN_PTR(ravelDC_new,lib);
               ASG_FN_PTR(ravelDC_delete,lib);
               ASG_FN_PTR(ravelDC_initRavel,lib);
@@ -360,6 +368,43 @@ namespace minsky
       ravel_fromXML(ravel, xml.c_str());
   }
 
+  RavelWrap::State RavelWrap::getState() const
+  {
+    State state;
+    if (ravel)
+      {
+        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
+          ravel_getHandleState
+            (ravel, i, &state.handleStates[ravel_handleDescription(ravel,i)]);
+        vector<size_t> ids(ravel_rank(ravel));
+        for (size_t i=0; i<ids.size(); ++i)
+          state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
+      }
+    return state;
+  }
+
+  /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
+  void RavelWrap::applyState(const State& state)
+  {
+    if (ravel)
+      {
+        map<string,size_t> nameToIdx;
+        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
+          {
+            string name=ravel_handleDescription(ravel,i);
+            auto hs=state.handleStates.find(name);
+            if (hs!=state.handleStates.end())
+              ravel_setHandleState(ravel,i,&hs->second);
+            nameToIdx[name]=i;
+          }
+        vector<size_t> ids;
+        for (auto& i: state.outputHandles)
+          ids.push_back(nameToIdx[i]);
+        ravel_setOutputHandleIds(ravel,ids.size(),&ids[0]);
+      }
+  }
+
+  
   string Minsky::ravelVersion() const
   {
     if (ravel_version)
