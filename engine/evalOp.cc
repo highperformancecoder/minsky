@@ -120,6 +120,7 @@ namespace minsky
   {return 0;}
 
   double EvalOpBase::t;
+  string EvalOpBase::timeUnit;
 
   template <>
   double EvalOp<OperationType::time>::evaluate(double in1, double in2) const
@@ -496,6 +497,70 @@ namespace minsky
       reset(EvalOpBase::create(op));
       auto t=get();
       assert(t->numArgs()==0 || from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0));
+
+      // check dimensionality is correct
+      switch (op)
+        {
+        case OperationType::time:
+          to.units.clear();
+          if (!EvalOpBase::timeUnit.empty())
+            to.units.emplace(EvalOpBase::timeUnit,1);
+          break;
+        case OperationType::multiply:
+        case OperationType::divide:
+          to.units=from1.units;
+          for (auto& i: from2.units)
+            {
+              to.units[i.first]+=
+                (op==OperationType::multiply? 1: -1)*i.second;
+              if (to.units[i.first]==0)
+                to.units.erase(i.first);
+            }
+          break;
+        case OperationType::pow:
+          if (!from1.units.empty())
+            if (from2.type()==VariableType::constant)
+              {
+                char* ep;
+                int e=strtol(from2.init.c_str(),&ep,10);
+                if (*ep!='\0')
+                  throw runtime_error("non integral power of dimensioned quantity requested");
+                to.units=from1.units;
+                for (auto& i: to.units)
+                  i.second*=e;
+              }
+            else
+              throw runtime_error("non constant power of dimensioned quantity requested");
+          break;
+        case OperationType::le: case OperationType::lt: case OperationType::eq:
+          if (from1.units!=from2.units)
+            throw runtime_error("incompatible units: "+from1.units.str()+"≠"+from2.units.str());
+          to.units.clear(); // result of comparison ops is dimensionless
+          break;
+        case OperationType::and_: case OperationType::or_: case OperationType::not_:
+          if (!from1.units.empty() || !from2.units.empty())
+            throw runtime_error("logical ops must be applied to dimensionless quantities");
+          to.units.clear(); // result of comparison ops is dimensionless
+          break;
+        case OperationType::integrate: case OperationType::differentiate:
+          assert(false); // shouldn't be here
+          break;
+        case OperationType::copy:
+          to.units=from1.units;
+          break;
+        default:
+          if (t->numArgs()>=2)
+            {
+              if (from1.units!=from2.units)
+                throw runtime_error("incompatible units: "+from1.units.str()+"≠"+from2.units.str());
+            }
+          else if (t->numArgs()==1 && !from1.units.empty())
+            throw runtime_error("function argument not dimensionless, but "+from1.units.str());
+          if (t->numArgs()>0)
+            to.units=from1.units;
+          break;
+        }
+
       if (t->numArgs()>=2 && from1.xVector.size() && from2.xVector.size())
         {
           // find the common set of indexes shared by x1 and x2

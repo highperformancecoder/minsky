@@ -56,13 +56,18 @@ namespace minsky
     bool isFlowVar() const {
       return m_type!=stock && m_type!=integral;
     }
-
+    bool isZero() const {
+      return m_type==constant && (init.empty() || init=="0");
+    }
 
     Type type() const {return m_type;}
 
     /// the initial value of this variable
     std::string init;
 
+    /// dimension units of this value
+    Units units;
+    
     bool godleyOverridden;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;

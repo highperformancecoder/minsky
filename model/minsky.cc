@@ -347,6 +347,20 @@ namespace minsky
     system.populateEvalOpVector(equations, integrals);
     assert(variableValues.validEntries());
 
+    // perform dimensional analysis on the integral variables
+    for (auto& i: integrals)
+      {
+        auto& stockUnits=variableValues[i.stock.valueId()].units;
+        stockUnits=i.input.units;
+        if (!EvalOpBase::timeUnit.empty())
+          {
+            auto& tu=stockUnits[EvalOpBase::timeUnit];
+            tu++;
+            if (tu==0)
+              stockUnits.erase(EvalOpBase::timeUnit);
+          }
+      }
+    
     // attach the plots
     model->recursiveDo
       (&Group::items,

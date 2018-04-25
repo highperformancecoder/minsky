@@ -53,6 +53,7 @@ namespace minsky
 
     // value used for the time operator
     static double t;
+    static std::string timeUnit;
 
     /// indexes into the flow/stock variables vector
     int out=-1;//, outX=-1, inX=-1;

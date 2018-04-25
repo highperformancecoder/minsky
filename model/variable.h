@@ -128,6 +128,14 @@ namespace minsky
           return Slider::sliderVisible=v;
         }};
 
+    /// sets/gets the units associated with this type
+    Units _units() const;
+    Units _units(const Units&);
+    ecolab::Accessor<std::string> units {
+      [this]() {return _units().str();},
+        [this](const std::string& s) {return _units(Units(s)).str();}
+    };
+    
     bool handleArrows(int dir) override;
     
     /// variable is on left hand side of flow calculation
