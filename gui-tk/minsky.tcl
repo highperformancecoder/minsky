@@ -849,8 +849,10 @@ proc runstop {} {
   }
 }
 
+set simTMax Inf
+
 proc step {} {
-    global recordingReplay eventRecordR
+    global recordingReplay eventRecordR simTMax
     if {$recordingReplay} {
         if {[gets $eventRecordR cmd]>=0} {
             eval $cmd
@@ -863,6 +865,7 @@ proc step {} {
         global running preferences
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
+        if {$simTMax<[t]} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
         update
@@ -1038,12 +1041,28 @@ proc invokeOKorCancel {window} {
 }
 
 set rkVars {
+    timeUnit  "Time unit"
     stepMin   "Min Step Size"
     stepMax   "Max Step Size"
     nSteps     "no. steps per iteration"
+    t0         "Start time"
+    tmax      "Run until time"
     epsAbs     "Absolute error"
     epsRel     "Relative error"
     order      "Solver order (1,2 or 4)"
+}
+
+proc tmax {args} {
+    global simTMax
+    if [llength $args] {
+        if {[lindex $args 0]==""} {
+            set simTMax Inf
+        } else {
+            return [set simTMax [lindex $args 0]]
+        }
+    } else {
+        return [set simTMax]
+    }
 }
 
 proc deiconifyRKDataForm {} {

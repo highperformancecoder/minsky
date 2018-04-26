@@ -197,6 +197,7 @@ proc addVariablePostModal {} {
     set varExists [variableValues.count $name]
     minsky.addVariable $name $varInput(Type)
     canvas.itemFocus.init $varInput(Value)
+    canvas.itemFocus.units $varInput(Units)
     if {!$varExists} {
         getValue [canvas.itemFocus.valueId]
         canvas.itemFocus.rotation [set varInput(Rotation)]
@@ -611,6 +612,7 @@ proc deiconifyEditVar {} {
         set row 30
         foreach var {
             "Initial Value"
+            "Units"
             "Rotation"
             "Short description"
             "Detailed description"
@@ -632,6 +634,7 @@ proc deiconifyEditVar {} {
             convertVarType [$item.valueId] $editVarInput(Type)
             $item.name $editVarInput(Name)
             $item.init $editVarInput(Initial Value)
+            $item.units $editVarInput(Units)
             $item.rotation  $editVarInput(Rotation)
             $item.tooltip  $editVarInput(Short description)
             $item.detailedText  $editVarInput(Detailed description)
@@ -708,6 +711,7 @@ proc deiconifyInitVar {} {
         set row 30
         foreach var {
             "Value"
+            "Units"
             "Rotation"
             "Short description"
             "Detailed description"
@@ -823,6 +827,7 @@ proc editVar {} {
     set "editVarInput(Type)" [$item.type]
 
     set "editVarInput(Initial Value)" [$item.init]
+    set "editVarInput(Units)" [$item.units]
     set "editVarInput(Rotation)" [$item.rotation]
     set "editVarInput(Slider Bounds: Max)" [$item.sliderMax]
     set "editVarInput(Slider Bounds: Min)" [$item.sliderMin]

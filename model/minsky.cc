@@ -342,6 +342,8 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
+    EvalOpBase::timeUnit=timeUnit;
+
     MathDAG::SystemOfEquations system(*this);
     assert(variableValues.validEntries());
     system.populateEvalOpVector(equations, integrals);
@@ -354,10 +356,10 @@ namespace minsky
         stockUnits=i.input.units;
         if (!EvalOpBase::timeUnit.empty())
           {
-            auto& tu=stockUnits[EvalOpBase::timeUnit];
+            auto& tu=stockUnits[timeUnit];
             tu++;
             if (tu==0)
-              stockUnits.erase(EvalOpBase::timeUnit);
+              stockUnits.erase(timeUnit);
           }
       }
     
@@ -608,7 +610,7 @@ namespace minsky
 
   void Minsky::reset()
   {
-    EvalOpBase::t=t=0;
+    EvalOpBase::t=t=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
     // make the simulation proceed

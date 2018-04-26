@@ -224,7 +224,7 @@ SUITE(Units)
   
   TEST_FIXTURE(TestMinsky,constructEquations)
   {
-    EvalOpBase::timeUnit="s";
+    timeUnit="s";
     auto t=model->addItem(OperationBase::create(OperationType::time));
     VariablePtr m(VariableType::parameter,"d");
     model->addItem(m);
