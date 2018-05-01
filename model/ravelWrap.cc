@@ -348,7 +348,6 @@ namespace minsky
                   data[v]=tmp[i];
                   xVector.back().emplace_back(v,labels[i]);
                 }
-            assert(data.size()==xVector.size());
             minsky().reset();
           }
         else
