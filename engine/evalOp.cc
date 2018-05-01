@@ -490,6 +490,82 @@ namespace minsky
       }
   }
 
+  namespace
+  {
+    /// struct to recursively compute in1, in2 index vectors
+    struct RecursiveIndices
+    {
+      typedef vector<unsigned> V;
+      V &in1, &in2;
+      typedef map<string,vector<unsigned>> M;
+      M in1idx, in2idx;
+      typedef map<string,size_t> StrideMap;
+      StrideMap in1strides, in2strides;
+      RecursiveIndices(V& in1, V& in2): in1(in1), in2(in2) {}
+
+      // compute strides of from1/from2 respectively
+      static void loadStrides(StrideMap& m, const vector<VariableValue::XVector>& xv)
+      {
+        m[xv[0].name]=1;
+        for (size_t i=1; i<xv.size(); ++i)
+          m[xv[i].name]=m[xv[i-1].name]*xv[i-1].size();
+      }
+      
+      void computeBothIdxes(size_t in1Offs, size_t in1Stride, size_t in2Offs, size_t in2Stride,
+                       const vector<unsigned>& in1Idx, const vector<unsigned>& in2Idx)
+      {
+        assert(in1Idx.size()==in2Idx.size());
+        for (size_t k=0; k<in1Idx.size(); ++k)
+          {
+            in1.push_back(in1Offs+in1Idx[k]*in1Stride);
+            in2.push_back(in2Offs+in2Idx[k]*in2Stride);
+          }
+      }
+
+      void computeOneIdx(size_t iniOffs, size_t iniStride, size_t injOffs,
+                         size_t numIdxi, V& idxi, V& idxj)
+      {
+        for (size_t k=0; k<numIdxi; ++k)
+          {
+            idxi.push_back(iniOffs+k*iniStride);
+            idxj.push_back(injOffs);
+          }
+      }
+      
+          
+      void compute(size_t in1Offs, size_t in2Offs, vector<string> dims)
+      {
+        auto i=in1idx.find(dims.back());
+        auto j=in2idx.find(dims.back());
+        if (dims.size()==1)
+          if (i!=in1idx.end())
+            if (j!=in2idx.end())
+              computeBothIdxes(in1Offs,in1strides[dims.back()],in2Offs,in2strides[dims.back()],
+                               i->second,j->second);
+            else
+              computeOneIdx(in1Offs,in1strides[dims.back()],in2Offs,i->second[0], in1, in2);
+          else
+            computeOneIdx(in2Offs,in2strides[dims.back()],in1Offs,j->second[0], in2, in1);
+        else
+          {
+            string d=dims.back();
+            dims.pop_back();
+            if (i!=in1idx.end())
+              if (j!=in2idx.end())
+                for (size_t k=0; k<j->second.size(); ++k)
+                  compute(in1Offs+i->second[k]*in1strides[d], 
+                          in2Offs+j->second[k]*in2strides[d], dims);
+              else
+                for (size_t k=0; k<i->second[0]; ++k) // indices are contiguous, so only dimension size passed
+                  compute(in1Offs+k*in1strides[d], in2Offs, dims);
+            else
+              for (size_t k=0; k<j->second[0]; ++k) // indices are contiguous, so only dimension size passed
+                compute(in1Offs, in2Offs+k*in2strides[d], dims);
+          }
+      }
+    };
+  }
+  
   EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
               const VariableValue& from1, const VariableValue& from2)
   {
@@ -561,58 +637,89 @@ namespace minsky
           break;
         }
 
-      if (t->numArgs()>=2 && from1.xVector.size() && from2.xVector.size())
+      switch (t->numArgs())
         {
-          // find the common set of indexes shared by x1 and x2
-          map<string, unsigned> xIdx2;
-          unsigned i=from2.idx();
-          for (auto j=from2.xVector.begin(); j!=from2.xVector.end(); ++i, ++j)
-            xIdx2[j->second]=i;
-          
-          i=from1.idx();
-          for (auto j=from1.xVector.begin(); j!=from1.xVector.end(); ++i, ++j)
-            {
-              auto k=xIdx2.find(j->second);
-              if (k!=xIdx2.end())
-                {
-                  t->in1.push_back(i);
-                  t->in2.push_back(k->second);
-                }
-            }
-        }
-      else if (t->numArgs()>0)
-        {
-          unsigned maxIdx=from1.dims()[0];
-          if (maxIdx==1)
-            maxIdx=from2.dims()[0];
-          else if (from2.dims()[0]>1)
-            maxIdx=std::min(maxIdx, from2.dims()[0]);
-
-          for (unsigned i=0; i<maxIdx; ++i)
-            {
-              if (from1.dims()[0]==1)
+        case 2:
+          {
+            if (&to!=&from1 && &to!=&from2)
+              to.xVector.clear();
+            if (from1.xVector.empty() && from2.xVector.empty())
+              {
                 t->in1.push_back(from1.idx());
-              else
-                t->in1.push_back(from1.idx()+i);
-              if (from2.dims()[0]==1)
                 t->in2.push_back(from2.idx());
-              else
-                t->in2.push_back(from2.idx()+i);
-            }
+                break;
+              }
+            
+            // find the common set of indices shared by x1 and x2
+            map<string, map<string,unsigned>> xIdx2;
+            for (auto& k: from2.xVector)
+              {
+                unsigned i=0;
+                for (auto j=k.begin(); j!=k.end(); ++i, ++j)
+                  xIdx2[k.name][j->second]=i;
+              }
+
+            RecursiveIndices ri(t->in1, t->in2);
+            vector<string> dims;
+
+            for (auto& i: from1.xVector)
+              {
+                auto j=xIdx2.find(i.name);
+                if (j!=xIdx2.end()) // common dimensions, find the intersection
+                  {
+                    size_t k=0;
+                    auto& in1IdxName=ri.in1idx[i.name];
+                    auto& in2IdxName=ri.in2idx[i.name];
+                    to.xVector.emplace_back(i.name);
+                    for (auto l=i.begin(); l!=i.end(); ++l, ++k)
+                      {
+                        auto m=j->second.find(l->second);
+                        if (m!=j->second.end())
+                          {
+                            in1IdxName.push_back(k);
+                            in2IdxName.push_back(m->second);
+                            to.xVector.back().push_back(*l);
+                          }
+                      }
+                  }
+                else
+                  {
+                    ri.in1idx[i.name].push_back(i.size());  // just store the vectors size, since indices are contiguous
+                    if (&to!=&from1 && &to!=&from2)
+                      to.xVector.push_back(i);
+                  }
+                dims.push_back(i.name);
+              }
+
+            // load up dimensions only present in from2
+            for (auto i: from2.xVector)
+              if (!ri.in2idx.count(i.name))
+                {
+                  ri.in2idx[i.name].push_back(i.size()); // just store the vectors size, since indices are contiguous
+                  if (&to!=&from1 && &to!=&from2)
+                    to.xVector.push_back(i);
+                  dims.push_back(i.name);
+                }
+
+            ri.loadStrides(ri.in1strides,from1.xVector);
+            ri.loadStrides(ri.in2strides,from2.xVector);
+            // flatten the indices - recursive algorithm to handle arbitrary dimensionality
+            ri.compute(from1.idx(),from2.idx(),dims);
+            break;
+          }
+        case 1:
+          {
+            if (&to!=&from1)
+              to.xVector=from1.xVector;
+            size_t maxi=from1.idx()+from1.numElements();
+            for (size_t i=from1.idx(); i<maxi; ++i)
+              t->in1.push_back(i);
+            break;
+          }
         }
-      // todo handle tensors
-      if (to.dims().size()!=1 || (t->numArgs()>0) && to.dims()[0]!=t->in1.size())
-        {
-          assert(&to!=&from1 && &to!=&from2);
-          to.dims({unsigned(t->in1.size())});
-          if (from1.xVector.size())
-            for (auto i: t->in1)
-              to.xVector.push_back(from1.xVector[i-from1.idx()]);
-          else if (from2.xVector.size())
-            for (auto i: t->in2)
-              to.xVector.push_back(from2.xVector[i-from2.idx()]);
-        }
-       
+      assert(t->numArgs()<1 || to.numElements()==t->in1.size());
+      assert(t->numArgs()<2 || to.numElements()==t->in2.size());
+      
       if (to.idx()==-1) to.allocValue();
       t->out=to.idx();
       t->flow1=from1.isFlowVar();

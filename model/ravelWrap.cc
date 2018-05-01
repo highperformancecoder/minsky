@@ -339,13 +339,14 @@ namespace minsky
               all_of(labels.begin(), labels.end(),
                      [](const char* i){return isdigit(*i)||*i=='.';});
             data.clear(); xVector.clear();
+            xVector.emplace_back(ravel_handleDescription(ravel,outHandles[0]));
             for (size_t i=0; i<dims[0]; ++i)
               if (isfinite(tmp[i]))
                 {
                   // i+1 allows logarithmic scales to be used
                   double v=numerical? stod(labels[i]): double(i+1);
                   data[v]=tmp[i];
-                  xVector.emplace_back(v,labels[i]);
+                  xVector.back().emplace_back(v,labels[i]);
                 }
             assert(data.size()==xVector.size());
             minsky().reset();

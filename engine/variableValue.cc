@@ -237,12 +237,23 @@ namespace minsky
   
   void VariableValue::makeXConformant(const VariableValue& a)
   {
-    set<XName> alabels(a.xVector.begin(), a.xVector.end());
-    XVector newLabels;
-    for (auto i: xVector)
-      if (alabels.count(i))
-        newLabels.push_back(i);
-    xVector.swap(newLabels);
+    for (auto& i: a.xVector)
+      {
+        size_t j=0;
+        for (j=0; j<xVector.size(); ++j)
+          if (xVector[j].name==i.name)
+            {
+              set<XName> alabels(i.begin(), i.end());
+              XVector newLabels;
+              for (auto i: xVector[j])
+                if (alabels.count(i))
+                  newLabels.push_back(i);
+              xVector[j].swap(newLabels);
+              break;
+            }
+        if (j==xVector.size()) // axis not present on LHS, so increase rank
+          xVector.push_back(i);
+      }
   }
   
 }

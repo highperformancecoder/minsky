@@ -41,7 +41,6 @@ namespace minsky
     double& valRef(); 
     const double& valRef() const
     {return const_cast<VariableValue*>(this)->valRef();} 
-    std::vector<unsigned> m_dims{1};
 
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -86,26 +85,41 @@ namespace minsky
     
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
-    const std::vector<unsigned>& dims() const {return m_dims;}
+    std::vector<unsigned> dims() const {
+      std::vector<unsigned> d;
+      for (auto& i: xVector) d.push_back(i.size());
+      return d;
+    }
     ///< set the dimensions. \a d cannot be empty, by may consist of
     ///the single element {1} to refer to a scalar
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
-      if (!d.empty()) {
-          m_dims=d;
-          allocValue();
+      xVector.clear();
+      for (size_t i=0; i<d.size(); ++i)
+        {
+          xVector.emplace_back(std::to_string(i));
+          for (size_t j=0; j<i; ++j)
+            xVector.back().emplace_back(j,std::to_string(j));
         }
-        return m_dims;
+      return d;
     }
     size_t numElements() const {
       size_t s=1;
-      for (auto i: m_dims) s*=i;
+      for (auto i: xVector) s*=i.size();
       return s;
     }
 
-    /// labels describing the points along dimension 0
+    /// labels describing the points along dimensions
     /// consists of a value and a textual representation
-    typedef std::vector<std::pair<double, std::string>> XVector;
-    XVector xVector;
+    struct XVector: public std::vector<std::pair<double, std::string>>
+    {
+      typedef std::vector<std::pair<double, std::string>> V;
+      std::string name;
+      XVector() {}
+      XVector(const std::string& name, const V& v=V()): V(v), name(name) {}
+      bool operator==(const XVector& x) const {return name==x.name && V(*this)==(x);}
+    };
+
+    std::vector<XVector> xVector;
 
     /// removes elements of xVector not found in \a
     /// You should adjust dims()[0] to xVector.size() afterwards

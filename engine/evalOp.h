@@ -42,8 +42,6 @@ namespace minsky
   using namespace ecolab;
   using namespace classdesc;
   using namespace std;
-  //using ecolab::array_ns::array;
-
 
   struct EvalOpBase: public classdesc::PolyBase<minsky::OperationType::Type>,
                      virtual public classdesc::PolyPackBase,

@@ -576,11 +576,16 @@ namespace minsky
     v.dims({unsigned(data.size())});
     if (xVector.size())
       v.xVector=xVector;
+    else
+      {
+        v.xVector.resize(1);
+        v.xVector.clear();
+      }
     auto iy=v.begin();
     for (auto& j: data)
       {
         if (xVector.empty())
-          v.xVector.emplace_back(j.first,to_string(j.first));
+          v.xVector[0].emplace_back(j.first,to_string(j.first));
         *iy++=j.second;
       }
   }

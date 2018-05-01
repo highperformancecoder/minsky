@@ -301,7 +301,7 @@ namespace minsky
       if (pen<yvars.size() && yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
         {
           auto& yv=yvars[pen];
-          auto& d=yv.dims();
+          auto d=yv.dims();
 
           // work out a reference to the x data
           vector<double> xdefault;
@@ -317,7 +317,7 @@ namespace minsky
               xdefault.reserve(d[0]);
               if (yv.xVector.size()) // yv carries its own x-vector
                 {
-                  xticks=yv.xVector;
+                  xticks=yv.xVector[0];
                   assert(xticks.size()==d[0]);
                   for (auto& i: xticks)
                     xdefault.push_back(i.first);
