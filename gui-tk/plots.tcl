@@ -31,6 +31,13 @@ proc deiconifyPltWindowOptions {} {
         label .pltWindowOptions.yticks.label -text "Number of y ticks"
         entry  .pltWindowOptions.yticks.val -width 20
         pack .pltWindowOptions.yticks.label .pltWindowOptions.yticks.val  -side left
+
+        frame .pltWindowOptions.plotType
+        label .pltWindowOptions.plotType.label -text "Plot type"
+        ttk::combobox  .pltWindowOptions.plotType.val -width 20 -state readonly -textvariable plotWindowOptions(plotType) -value {line bar}
+        pack .pltWindowOptions.plotType.label .pltWindowOptions.plotType.val  -side left
+        
+        
         
         frame .pltWindowOptions.grid
         label .pltWindowOptions.grid.label -text "Grid"
@@ -74,7 +81,7 @@ proc deiconifyPltWindowOptions {} {
         entry .pltWindowOptions.y1axislabel.val -width 20
         pack .pltWindowOptions.y1axislabel.label .pltWindowOptions.y1axislabel.val -side left
 
-        pack .pltWindowOptions.title .pltWindowOptions.xaxislabel .pltWindowOptions.yaxislabel .pltWindowOptions.y1axislabel
+        pack .pltWindowOptions.title .pltWindowOptions.xaxislabel .pltWindowOptions.yaxislabel .pltWindowOptions.y1axislabel .pltWindowOptions.plotType
 
         pack .pltWindowOptions.grid.label  .pltWindowOptions.grid.val  .pltWindowOptions.grid.sublabel  .pltWindowOptions.grid.subval  -side left
 
@@ -104,6 +111,7 @@ proc setPlotOptions {plot} {
     $plot.subgrid $plotWindowOptions(subgrid)
     $plot.logx $plotWindowOptions(xlog)
     $plot.logy $plotWindowOptions(ylog)
+    $plot.plotType $plotWindowOptions(plotType)
     $plot.nxTicks [.pltWindowOptions.xticks.val get]
     $plot.nyTicks [.pltWindowOptions.yticks.val get]
     $plot.title [.pltWindowOptions.title.val get]
@@ -128,6 +136,7 @@ proc doPlotOptions {plot} {
     set plotWindowOptions(subgrid) [$plot.subgrid]
     set plotWindowOptions(xlog) [$plot.logx]
     set plotWindowOptions(ylog) [$plot.logy]
+    set plotWindowOptions(plotType) [$plot.plotType]
     deiconifyPltWindowOptions
 
     .pltWindowOptions.xticks.val delete 0 end

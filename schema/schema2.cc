@@ -394,6 +394,7 @@ namespace schema2
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;
         if (y.logy) x1->logy=*y.logy;
+        if (y.plotType) x1->plotType=*y.plotType;
         if (y.xlabel) x1->xlabel=*y.xlabel;
         if (y.ylabel) x1->ylabel=*y.ylabel;
         if (y.y1label) x1->y1label=*y.y1label;
