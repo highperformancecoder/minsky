@@ -335,9 +335,11 @@ namespace minsky
             ravel_sliceLabels(ravel,outHandles[0],&labels[0]);
             assert(all_of(labels.begin(), labels.end(),
                           [](const char* i){return bool(i);}));
-            bool numerical=
-              all_of(labels.begin(), labels.end(),
-                     [](const char* i){return isdigit(*i)||*i=='.';});
+            set<double> testNum;
+            for (auto& i: labels)
+              testNum.insert(atof(i));
+            //numerically converted labels are all distinct
+            bool numerical=testNum.size()==labels.size(); 
             data.clear(); xVector.clear();
             xVector.emplace_back(ravel_handleDescription(ravel,outHandles[0]));
             for (size_t i=0; i<dims[0]; ++i)
