@@ -252,7 +252,6 @@ namespace MathDAG
               r.makeXConformant(j);
           if (r.xVector.empty())
             return; // no common intersection amongst arguments
-          r.dims({unsigned(r.xVector.size())});
         }
       if (r.idx()==-1) r.allocValue();
 

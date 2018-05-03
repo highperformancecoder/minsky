@@ -650,6 +650,8 @@ namespace minsky
           break;
         }
 
+      RecursiveIndices ri(t->in1, t->in2);
+      vector<string> dims;
       switch (t->numArgs())
         {
         case 2:
@@ -672,8 +674,6 @@ namespace minsky
                   xIdx2[k.name][j->second]=i;
               }
 
-            RecursiveIndices ri(t->in1, t->in2);
-            vector<string> dims;
 
             for (auto& i: from1.xVector)
               {
@@ -683,7 +683,8 @@ namespace minsky
                     size_t k=0;
                     auto& in1IdxName=ri.in1idx[i.name];
                     auto& in2IdxName=ri.in2idx[i.name];
-                    to.xVector.emplace_back(i.name);
+                    if (&to!=&from1 && &to!=&from2)
+                      to.xVector.emplace_back(i.name);
                     for (auto l=i.begin(); l!=i.end(); ++l, ++k)
                       {
                         auto m=j->second.find(l->second);
@@ -691,7 +692,8 @@ namespace minsky
                           {
                             in1IdxName.push_back(k);
                             in2IdxName.push_back(m->second);
-                            to.xVector.back().push_back(*l);
+                            if (&to!=&from1 && &to!=&from2)
+                              to.xVector.back().push_back(*l);
                           }
                       }
                   }
@@ -722,11 +724,41 @@ namespace minsky
           }
         case 1:
           {
-            if (&to!=&from1)
-              to.xVector=from1.xVector;
-            size_t maxi=from1.idx()+from1.numElements();
-            for (size_t i=from1.idx(); i<maxi; ++i)
-              t->in1.push_back(i);
+            // broadcast from1 along all to's dimension not present in from1
+            for (auto& i: to.xVector)
+              {
+                dims.push_back(i.name);
+                ri.in2idx[i.name].push_back(i.size());
+              }
+            for (auto& i: from1.xVector)
+              {
+                if (find(dims.begin(), dims.end(),i.name)==dims.end())
+                  {
+                    if (&to!=&from1)
+                      to.xVector.push_back(i);
+                    dims.push_back(i.name);
+                    ri.in1idx[i.name].push_back(i.size());
+                  }
+                else
+                  {
+                    auto& v1=ri.in1idx[i.name];
+                    auto& v2=ri.in2idx[i.name];
+                    v1.clear(); v2.clear();
+                    for (size_t j=0; j<i.size(); ++j)
+                      {
+                        v1.push_back(j);
+                        v2.push_back(0);
+                      }
+                  }
+              }
+            if (!from1.xVector.empty())
+              {
+                ri.loadStrides(ri.in1strides,from1.xVector);
+                ri.compute(from1.idx(),0,dims);
+              }
+            else
+              for (size_t j=from1.idx(); j<from1.idx()+to.numElements(); ++j)
+                t->in1.push_back(j);
             break;
           }
         }
