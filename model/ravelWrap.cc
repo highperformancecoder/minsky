@@ -83,33 +83,33 @@ namespace minsky
 
     const char* (*ravel_lastErr)()=nullptr;
     const char* (*ravel_version)()=nullptr;
-    Ravel* (*ravel_new)(size_t rank)=nullptr;
-    void (*ravel_delete)(Ravel* ravel)=nullptr;
-    void (*ravel_render)(Ravel* ravel, CAPIRenderer*)=nullptr;
-    void (*ravel_onMouseDown)(Ravel* ravel, double x, double y)=nullptr;
-    void (*ravel_onMouseUp)(Ravel* ravel, double x, double y)=nullptr;
-    bool (*ravel_onMouseMotion)(Ravel* ravel, double x, double y)=nullptr;
-    bool (*ravel_onMouseOver)(Ravel* ravel, double x, double y)=nullptr;
-    void (*ravel_onMouseLeave)(Ravel* ravel)=nullptr;
-    void (*ravel_rescale)(Ravel* ravel, double radius)=nullptr;
-    double (*ravel_radius)(Ravel* ravel)=nullptr;
-    size_t (*ravel_rank)(Ravel* ravel)=nullptr;
-    void (*ravel_outputHandleIds)(Ravel* ravel, size_t ids[])=nullptr;
-    void (*ravel_setOutputHandleIds)(Ravel* ravel, size_t rank, size_t ids[])=nullptr;
-    unsigned (*ravel_numHandles)(Ravel* ravel)=nullptr;
-    const char* (*ravel_handleDescription)(Ravel* ravel, size_t handle)=nullptr;
-    void (*ravel_sliceLabels)(Ravel* ravel, size_t axis, const char* labels[])=nullptr;
-    void (*ravel_displayFilterCaliper)(Ravel* ravel, size_t axis, bool display)=nullptr;
-    const char* (*ravel_toXML)(Ravel* ravel)=nullptr;
-    int (*ravel_fromXML)(Ravel* ravel, const char*)=nullptr;
-    void (*ravel_getHandleState)(const Ravel* ravel, size_t handle, RavelWrap::HandleState* handleState)=nullptr;
-    void (*ravel_setHandleState)(Ravel* ravel, size_t handle, const RavelWrap::HandleState* handleState)=nullptr;
+    Ravel::RavelImpl* (*ravel_new)(size_t rank)=nullptr;
+    void (*ravel_delete)(Ravel::RavelImpl* ravel)=nullptr;
+    void (*ravel_render)(Ravel::RavelImpl* ravel, CAPIRenderer*)=nullptr;
+    void (*ravel_onMouseDown)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
+    void (*ravel_onMouseUp)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
+    bool (*ravel_onMouseMotion)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
+    bool (*ravel_onMouseOver)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
+    void (*ravel_onMouseLeave)(Ravel::RavelImpl* ravel)=nullptr;
+    void (*ravel_rescale)(Ravel::RavelImpl* ravel, double radius)=nullptr;
+    double (*ravel_radius)(Ravel::RavelImpl* ravel)=nullptr;
+    size_t (*ravel_rank)(Ravel::RavelImpl* ravel)=nullptr;
+    void (*ravel_outputHandleIds)(Ravel::RavelImpl* ravel, size_t ids[])=nullptr;
+    void (*ravel_setOutputHandleIds)(Ravel::RavelImpl* ravel, size_t rank, size_t ids[])=nullptr;
+    unsigned (*ravel_numHandles)(Ravel::RavelImpl* ravel)=nullptr;
+    const char* (*ravel_handleDescription)(Ravel::RavelImpl* ravel, size_t handle)=nullptr;
+    void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
+    void (*ravel_displayFilterCaliper)(Ravel::RavelImpl* ravel, size_t axis, bool display)=nullptr;
+    const char* (*ravel_toXML)(Ravel::RavelImpl* ravel)=nullptr;
+    int (*ravel_fromXML)(Ravel::RavelImpl* ravel, const char*)=nullptr;
+    void (*ravel_getHandleState)(const Ravel::RavelImpl* ravel, size_t handle, Ravel::HandleState* handleState)=nullptr;
+    void (*ravel_setHandleState)(Ravel::RavelImpl* ravel, size_t handle, const Ravel::HandleState* handleState)=nullptr;
 
-    DataCube* (*ravelDC_new)()=nullptr;
-    void (*ravelDC_delete)(DataCube*)=nullptr;
-    bool (*ravelDC_initRavel)(DataCube* dc,Ravel* ravel)=nullptr;
-    bool (*ravelDC_openFile)(DataCube* dc, const char* fileName, DataSpec spec)=nullptr;
-    int (*ravelDC_hyperSlice)(DataCube*, Ravel*, size_t dims[], double**)=nullptr;
+    Ravel::Ravel::DataCube* (*ravelDC_new)()=nullptr;
+    void (*ravelDC_delete)(Ravel::DataCube*)=nullptr;
+    bool (*ravelDC_initRavel)(Ravel::DataCube* dc,Ravel::RavelImpl* ravel)=nullptr;
+    bool (*ravelDC_openFile)(Ravel::DataCube* dc, const char* fileName, DataSpec spec)=nullptr;
+    int (*ravelDC_hyperSlice)(Ravel::DataCube*, Ravel::RavelImpl*, size_t dims[], double**)=nullptr;
 
 
     struct RavelLib
@@ -195,16 +195,16 @@ namespace minsky
 
   bool ravelAvailable() {return ravelLib.lib;}
 
-  const char* RavelWrap::ravelVersion() const
+  const char* Ravel::ravelVersion() const
   {return ravel_version? ravel_version(): "Ravel unavailable";}
 
-  const char* RavelWrap::lastErr() const {
+  const char* Ravel::lastErr() const {
     if (ravelAvailable())
       return ravel_lastErr();
     return ravelLib.errorMsg.c_str();
   }
   
-  RavelWrap::RavelWrap()
+  Ravel::Ravel()
   {
     if (ravelAvailable())
       {
@@ -216,7 +216,7 @@ namespace minsky
       noRavelSetup();
   }
 
-  RavelWrap::~RavelWrap()
+  Ravel::~Ravel()
   {
     if (ravelAvailable()) // NB during shutdown, ravel may be unloaded before getting here
       {
@@ -225,85 +225,74 @@ namespace minsky
       }
   }
 
-  void RavelWrap::noRavelSetup()
+  void Ravel::noRavelSetup()
   {
     tooltip="https://ravelation.hpcoders.com.au";
     detailedText=ravelLib.errorMsg;
   }
 
-  void RavelWrap::draw(cairo_t* cairo) const
+  void Ravel::draw(cairo_t* cairo) const
   {
-    if (ravel)
+    double r=1.1*zoomFactor*ravel_radius(ravel);
+    ports[0]->moveTo(x()+1.1*r, y());
+    ports[1]->moveTo(x()-1.1*r, y());
+    if (mouseFocus)
       {
-        double r=1.1*zoomFactor*ravel_radius(ravel);
-        ports[0]->moveTo(x()+1.1*r, y());
-        ports[1]->moveTo(x()-1.1*r, y());
-        if (mouseFocus)
-          {
-            drawPorts(cairo);
-            displayTooltip(cairo);
-          }
-        cairo_rectangle(cairo,-r,-r,2*r,2*r);
-        cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
-        cairo_stroke_preserve(cairo);
-        cairo_clip(cairo);
-        {
-          cairo::CairoSave cs(cairo);
-          cairo_rectangle(cairo,-r,-r,2*r,2*r);
-          cairo_clip(cairo);
-          cairo_scale(cairo,zoomFactor,zoomFactor);
-          ravel::CairoRenderer cr(cairo);
-          ravel_render(ravel,&cr);
-        }        
-        if (selected) drawSelected(cairo);
+        drawPorts(cairo);
+        displayTooltip(cairo);
       }
-    else
-      DataOp::draw(cairo);
+    cairo_rectangle(cairo,-r,-r,2*r,2*r);
+    cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
+    cairo_stroke_preserve(cairo);
+    cairo_clip(cairo);
+    {
+      cairo::CairoSave cs(cairo);
+      cairo_rectangle(cairo,-r,-r,2*r,2*r);
+      cairo_clip(cairo);
+      cairo_scale(cairo,zoomFactor,zoomFactor);
+      ravel::CairoRenderer cr(cairo);
+      if (ravel)
+        ravel_render(ravel,&cr);
+    }        
+    if (selected) drawSelected(cairo);
   }
 
-  void RavelWrap::resize(const LassoBox& b)
+  void Ravel::resize(const LassoBox& b)
   {
     if (ravel)
       ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor));
   }
   
-  ClickType::Type RavelWrap::clickType(float xx, float yy)
+  ClickType::Type Ravel::clickType(float xx, float yy)
   {
-    if (ravel)
-      {
-        for (auto& p: ports)
-          if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
-            return ClickType::onPort;
-        double r=1.1*zoomFactor*ravel_radius(ravel);
-        if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
-          return ClickType::outside;
-        else if (std::abs(xx-x())<=r && std::abs(yy-y())<=r)
-          return ClickType::onRavel;
-        else
-          return ClickType::onItem;
-      }
+    for (auto& p: ports)
+      if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
+        return ClickType::onPort;
+    double r=1.1*zoomFactor*ravel_radius(ravel);
+    if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
+      return ClickType::outside;
+    else if (std::abs(xx-x())<=r && std::abs(yy-y())<=r)
+      return ClickType::onRavel;
     else
-      return DataOp::clickType(xx,yy);
+      return ClickType::onItem;
   }
 
-  void RavelWrap::onMouseDown(float xx, float yy)
+
+  void Ravel::onMouseDown(float xx, float yy)
   {if (ravel) ravel_onMouseDown(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);}
-  void RavelWrap::onMouseUp(float xx, float yy)
+  void Ravel::onMouseUp(float xx, float yy)
   {
     if (ravel)
-      {
-        ravel_onMouseUp(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
-        loadDataFromSlice();
-      }
+      ravel_onMouseUp(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
   }
-  bool RavelWrap::onMouseMotion(float xx, float yy)
+  bool Ravel::onMouseMotion(float xx, float yy)
   {if (ravel) return ravel_onMouseMotion(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
-  bool RavelWrap::onMouseOver(float xx, float yy)
+  bool Ravel::onMouseOver(float xx, float yy)
   {if (ravel) return ravel_onMouseOver(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
-  void RavelWrap::onMouseLeave()
+  void Ravel::onMouseLeave()
   {if (ravel) ravel_onMouseLeave(ravel);}
 
-  void RavelWrap::loadFile(const string& fileName)
+  void Ravel::loadFile(const string& fileName)
   {
     m_filename=fileName;
     if (dataCube && ravel)
@@ -314,11 +303,10 @@ namespace minsky
           throw error(ravel_lastErr());
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           ravel_displayFilterCaliper(ravel,i,true);
-        loadDataFromSlice();
       }
   }
 
-  void RavelWrap::loadDataFromSlice()
+  void Ravel::loadDataFromSlice(VariableValue& v)
   {
     if (ravel && dataCube)
       {
@@ -326,51 +314,61 @@ namespace minsky
         vector<size_t> dims(ravel_rank(ravel));
         double* tmp;
         ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
-        if (dims[0]==0) return; // do nothing if ravel data is empty
+        if (dims[0]==0)
+          {
+            if (v.idx()==-1) v.allocValue();
+            return; // do nothing if ravel data is empty
+          }
         if (tmp)
           {
             vector<size_t> outHandles(dims.size());
-            vector<const char*> labels(dims[0]); 
             ravel_outputHandleIds(ravel, &outHandles[0]);
-            ravel_sliceLabels(ravel,outHandles[0],&labels[0]);
-            assert(all_of(labels.begin(), labels.end(),
-                          [](const char* i){return bool(i);}));
-            set<double> testNum;
-            for (auto& i: labels)
-              testNum.insert(atof(i));
-            //numerically converted labels are all distinct
-            bool numerical=testNum.size()==labels.size(); 
-            data.clear(); xVector.clear();
-            xVector.emplace_back(ravel_handleDescription(ravel,outHandles[0]));
-            for (size_t i=0; i<dims[0]; ++i)
-              if (isfinite(tmp[i]))
-                {
-                  // i+1 allows logarithmic scales to be used
-                  double v=numerical? stod(labels[i]): double(i+1);
-                  data[v]=tmp[i];
-                  xVector.back().emplace_back(v,labels[i]);
-                }
-            minsky().reset();
+            size_t prevNumElem=v.numElements();
+            v.xVector.clear();
+            for (auto h: outHandles)
+              {
+                vector<const char*> labels(dims[0]); 
+                ravel_sliceLabels(ravel,h,&labels[0]);
+                assert(all_of(labels.begin(), labels.end(),
+                              [](const char* i){return bool(i);}));
+                set<double> testNum;
+                for (auto& i: labels)
+                  testNum.insert(atof(i));
+                //numerically converted labels are all distinct
+                bool numerical=testNum.size()==labels.size(); 
+                v.xVector.emplace_back
+                  (ravel_handleDescription(ravel,h));
+                for (size_t i=0; i<labels.size(); ++i)
+
+                  v.xVector.back().emplace_back
+                    (numerical? stod(labels[i]): double(i+1),labels[i]);
+              }
+            if (v.idx()==-1 || prevNumElem!=v.numElements())
+              v.allocValue();
+            //assert(v.numElements()==sizeof(*tmp))
+            for (size_t i=0; i<v.numElements(); ++i)
+              *(v.begin()+i)=tmp[i];
           }
         else
           throw error(ravel_lastErr());
       }
+    if (v.idx()==-1) v.allocValue();
   }
 
-  const char* RavelWrap::toXML() const
-  {
-    if (ravel)
-      return ravel_toXML(ravel);
-    return "";
-  }
+//  const char* Ravel::toXML() const
+//  {
+//    if (ravel)
+//      return ravel_toXML(ravel);
+//    return "";
+//  }
+//
+//  void Ravel::fromXML(const std::string& xml)
+//  {
+//    if (ravel)
+//      ravel_fromXML(ravel, xml.c_str());
+//  }
 
-  void RavelWrap::fromXML(const std::string& xml)
-  {
-    if (ravel)
-      ravel_fromXML(ravel, xml.c_str());
-  }
-
-  RavelWrap::State RavelWrap::getState() const
+  Ravel::State Ravel::getState() const
   {
     State state;
     if (ravel)
@@ -386,7 +384,7 @@ namespace minsky
   }
 
   /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-  void RavelWrap::applyState(const State& state)
+  void Ravel::applyState(const State& state)
   {
     if (ravel)
       {

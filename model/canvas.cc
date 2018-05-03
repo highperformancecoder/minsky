@@ -67,7 +67,7 @@ namespace minsky
               lassoMode=LassoMode::lasso;
             break;
           case ClickType::onRavel:
-            if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+            if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
               r->onMouseDown(x,y);
             break;
           }
@@ -117,9 +117,11 @@ namespace minsky
     mouseMove(x,y);
     
     if (clickType==ClickType::onRavel)
-      if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
-        r->onMouseUp(x,y);
-    
+      if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
+        {
+          r->onMouseUp(x,y);
+          minsky().reset();
+        }
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
@@ -207,7 +209,7 @@ namespace minsky
       }
     else if (itemFocus && clickType==ClickType::onRavel)
       {
-        if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+        if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
           if (r->onMouseMotion(x,y))
             requestRedraw();
       }
@@ -254,7 +256,7 @@ namespace minsky
                                  auto ct=(*i)->clickType(x,y);
                                  if (ct==ClickType::onRavel)
                                    {
-                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                     if (auto r=dynamic_cast<Ravel*>(i->get()))
                                        if (r->onMouseOver(x,y))
                                          requestRedraw();
                                    }
@@ -266,7 +268,7 @@ namespace minsky
                                          requestRedraw();
                                          (*i)->mouseFocus=mf;
                                        }
-                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                     if (auto r=dynamic_cast<Ravel*>(i->get()))
                                        {
                                          r->onMouseLeave();
                                          requestRedraw();

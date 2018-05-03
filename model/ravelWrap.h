@@ -25,20 +25,21 @@
 
 namespace minsky 
 {
-  struct Ravel;
-  struct DataCube;
-
-  class RavelWrap: public ItemT<RavelWrap, DataOp>
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
   {
-    Ravel* ravel=nullptr;
-    DataCube* dataCube=nullptr;
+  public:
+    struct RavelImpl;
+    struct DataCube;
+  private:
+    Exclude<RavelImpl*> ravel=nullptr;
+    Exclude<DataCube*> dataCube=nullptr;
     void noRavelSetup();
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     std::string m_filename;
   public:
-    RavelWrap();
-    ~RavelWrap();
+    Ravel();
+    ~Ravel();
     const char* ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
@@ -51,9 +52,9 @@ namespace minsky
     void onMouseLeave();
     void loadFile(const std::string&);
     const string& filename() const {return m_filename;}
-    void loadDataFromSlice();
-    const char* toXML() const;
-    void fromXML(const std::string&);
+    void loadDataFromSlice(VariableValue&);
+//    const char* toXML() const;
+//    void fromXML(const std::string&);
 
     // representing the state of the handles
     struct HandleState
@@ -78,18 +79,18 @@ namespace minsky
   };
 }
 
-#ifdef CLASSDESC
-#pragma omit pack minsky::RavelWrap
-#pragma omit unpack minsky::RavelWrap
-#endif
-
-namespace classdesc_access
-{
-  template <> struct access_pack<minsky::RavelWrap>: 
-    public access_pack<minsky::DataOp> {};
-  template <> struct access_unpack<minsky::RavelWrap>: 
-    public access_unpack<minsky::DataOp> {};
-}
+//#ifdef CLASSDESC
+//#pragma omit pack minsky::Ravel
+//#pragma omit unpack minsky::Ravel
+//#endif
+//
+//namespace classdesc_access
+//{
+//  template <> struct access_pack<minsky::Ravel>: 
+//    public access_pack<minsky::Operation<minsky::OperationType::ravel>> {};
+//  template <> struct access_unpack<minsky::Ravel>: 
+//    public access_unpack<minsky::Operation<minsky::OperationType::ravel>> {};
+//}
 #include "ravelWrap.cd"
 #include "ravelWrap.xcd"
 

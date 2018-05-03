@@ -36,6 +36,7 @@ namespace minsky
                integrate, 
                differentiate, // with respect to time
                data, // an interpolated data item
+               ravel, // Ravel™
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,

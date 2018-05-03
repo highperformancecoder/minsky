@@ -114,7 +114,7 @@ namespace minsky
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
-    void addRavel() {setItemFocus(model->addItem(new RavelWrap));}
+    void addRavel() {setItemFocus(model->addItem(new Ravel));}
     
     /// create a group from items found in the current selection
     void groupSelection();

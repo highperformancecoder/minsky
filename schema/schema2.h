@@ -125,7 +125,7 @@ namespace schema2
     std::shared_ptr<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
-    Optional<minsky::RavelWrap::State> ravelState;
+    Optional<minsky::Ravel::State> ravelState;
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;

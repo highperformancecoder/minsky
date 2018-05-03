@@ -57,6 +57,7 @@ foreach op [availableOperations] {
     switch $op {
         "constant" -
         "copy" -
+        "ravel" -
         "integrate"  continue 
     }
 
@@ -179,9 +180,6 @@ foreach var [availableOperations] {
     .menubar.ops add command -label [regsub {(.*)_$} $var {\1}] -command "minsky.addOperation $var"
 }
 
-.menubar.ops add command -label "Ravel" -command addRavel
-
- 
 # default command to execute when escape key is pressed
 proc handleEscapeKey {} {
     .wiring.context unpost
@@ -527,7 +525,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Delete case" -command "incrCase -1" 
             .wiring.context add command -label "Flip" -command "$item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
         }
-        RavelWrap {
+        Ravel {
             .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
         }
@@ -544,6 +542,7 @@ proc contextMenu {x y X Y} {
 proc loadCSVIntoRavel {} {
     global workDir
     canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
+    reset
 }
 
 namespace eval godley {

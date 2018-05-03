@@ -267,6 +267,7 @@ SUITE(Derivative)
             {
             case OperationType::floor: case OperationType::frac:
             case OperationType::data:
+            case OperationType::ravel:
               CHECK_THROW(reset(), ecolab::error);
               continue;
             default:

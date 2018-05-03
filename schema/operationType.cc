@@ -51,6 +51,7 @@ namespace minsky
     template <> int numArguments<OperationType::integrate>() {return 2;}
     template <> int numArguments<OperationType::differentiate>() {return 1;}
     template <> int numArguments<OperationType::data>() {return 1;}
+    template <> int numArguments<OperationType::ravel>() {return 1;}
     template <> int numArguments<OperationType::sqrt>() {return 1;}
     template <> int numArguments<OperationType::exp>() {return 1;}
     template <> int numArguments<OperationType::ln>() {return 1;}

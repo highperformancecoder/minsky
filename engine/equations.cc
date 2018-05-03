@@ -399,6 +399,15 @@ namespace MathDAG
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
                 break;
+              case ravel:
+                if (argIdx.size()>0 && argIdx[0].size()==1)
+                  // TODO handle RavelOps
+                  ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 
+                else if (auto d=dynamic_cast<Ravel*>(state.get()))
+                  d->loadDataFromSlice(*result); // input not wired,
+                else
+                  throw error("inputs for highlighted operations incorrectly wired");
+                break;
               default:
                 // sanity check that the correct number of arguments is provided 
                 bool correctlyWired=true;
@@ -718,6 +727,13 @@ namespace MathDAG
   }
         
   template <>
+  ostream& OperationDAG<OperationType::ravel>::matlab(ostream& o) const
+  {
+    throw error("data blocks not yet supported in Matlab mode");
+    return o;
+  }
+        
+  template <>
   ostream& OperationDAG<OperationType::sqrt>::matlab(ostream& o) const
   {
     checkArg(0,0);
@@ -833,6 +849,16 @@ namespace MathDAG
   {
     checkArg(0,0);
     return o<<mathrm(name)<<"("<<arguments[0][0]->latex()<<")";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::ravel>::latex(ostream& o) const
+  {
+    o<<mathrm(name);
+    if (arguments.size() && arguments[0].size())
+      return o<<"("<<arguments[0][0]->latex()<<")";
+    else
+      return o;
   }
 
   template <>

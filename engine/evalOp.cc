@@ -52,20 +52,23 @@ namespace minsky
                              flow2? fv[in2[i]]: sv[in2[i]]);
         break;
       }
-    
-    for (unsigned i=0; i<in1.size(); ++i)
-      if (!isfinite(fv[out+i]))
-        {
-          if (state)
-            minsky().displayErrorItem(*state);
-          string msg="Invalid: "+OperationBase::typeName(type())+"(";
-          if (numArgs()>0)
-            msg+=to_string(flow1? fv[in1[i]]: sv[in1[i]]);
-          if (numArgs()>1)
-            msg+=","+to_string(flow2? fv[in2[i]]: sv[in2[i]]);
-          msg+=")";
-          throw error(msg.c_str());
-        }
+
+    // check for NaNs only on scalars. For tensors, NaNs just means
+    // element not present
+    if (in1.size()==1)
+      for (unsigned i=0; i<in1.size(); ++i)
+        if (!isfinite(fv[out+i]))
+          {
+            if (state)
+              minsky().displayErrorItem(*state);
+            string msg="Invalid: "+OperationBase::typeName(type())+"(";
+            if (numArgs()>0)
+              msg+=to_string(flow1? fv[in1[i]]: sv[in1[i]]);
+            if (numArgs()>1)
+              msg+=","+to_string(flow2? fv[in2[i]]: sv[in2[i]]);
+            msg+=")";
+            throw error(msg.c_str());
+          }
   };
 
   /// TODO: handle tensors for implicit methods
@@ -173,6 +176,16 @@ namespace minsky
   template <> 
   double EvalOp<OperationType::data>::d2(double x1, double x2) const
   {return 0;}
+
+  template <> double 
+  EvalOp<OperationType::ravel>::evaluate(double in1, double in2) const
+  {throw error("ravel evaluation not supported");}
+  template <> 
+  double EvalOp<OperationType::ravel>::d1(double x1, double x2) const
+  {throw error("ravel evaluation not supported");}
+  template <> 
+  double EvalOp<OperationType::ravel>::d2(double x1, double x2) const
+  {throw error("ravel evaluation not supported");}
 
   template <> 
   double EvalOp<OperationType::sqrt>::evaluate(double in1, double in2) const

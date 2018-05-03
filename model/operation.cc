@@ -19,6 +19,7 @@
 #include "geometry.h"
 #define OPNAMEDEF
 #include "operation.h"
+#include "ravelWrap.h"
 #include "minsky.h"
 #include "str.h"
 #include "cairoItems.h"
@@ -448,6 +449,7 @@ namespace minsky
       {
       case integrate: return new IntOp;
       case data: return new DataOp;
+      case ravel: return new Ravel;
       case constant: throw error("Constant deprecated");
       default: return operationFactory.create(type);
       }
@@ -592,6 +594,11 @@ namespace minsky
   // this file.
 
   template <> void Operation<OperationType::constant>::iconDraw(cairo_t* cairo) const
+  {
+    assert(false); //shouldn't be here
+  }
+
+  template <> void Operation<OperationType::ravel>::iconDraw(cairo_t* cairo) const
   {
     assert(false); //shouldn't be here
   }

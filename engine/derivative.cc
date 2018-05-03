@@ -405,6 +405,13 @@ namespace MathDAG
  
   template <>
   NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::ravel>& expr)
+  {
+    throw error("cannot differentiate an empirical curve");
+  }
+ 
+  template <>
+  NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::sqrt>& expr)
   {
     if (expr.arguments[0].empty())
