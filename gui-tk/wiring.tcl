@@ -527,6 +527,7 @@ proc contextMenu {x y X Y} {
         }
         Ravel {
             .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
+            .wiring.context add command -label "Adjust ravel rank" -command ravelRankDlg
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
         }
     }
@@ -543,6 +544,33 @@ proc loadCSVIntoRavel {} {
     global workDir
     canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
     reset
+}
+
+proc ravelRankDlg {} {
+    if {![winfo exists .ravelRank]} {
+        toplevel .ravelRank
+        wm title .ravelRank "Set Rank"
+        wm transient .ravelRank
+        spinbox .ravelRank.rank
+        pack .ravelRank.rank
+        buttonBar .ravelRank ravelRankOK
+    } else {
+        deiconify .ravelRank
+    }
+    # TODO allow support of ranks higher than 2
+    #    .ravelRank.rank configure -from 0 -to [minsky.canvas.item.maxRank]
+        .ravelRank.rank configure -from 0 -to 2
+    .ravelRank.rank set [minsky.canvas.item.rank]
+    
+    ::tk::TabToWindow .ravelRank.rank
+    tkwait visibility .ravelRank
+    grab set .ravelRank
+}
+
+proc ravelRankOK {} {
+    minsky.canvas.item.setRank [.ravelRank.rank get]
+    minsky.reset
+    canvas.requestRedraw
 }
 
 namespace eval godley {

@@ -53,9 +53,10 @@ namespace minsky
     void loadFile(const std::string&);
     const string& filename() const {return m_filename;}
     void loadDataFromSlice(VariableValue&);
-//    const char* toXML() const;
-//    void fromXML(const std::string&);
-
+    unsigned maxRank() const;
+    unsigned rank() const;
+    void setRank(unsigned);
+    
     // representing the state of the handles
     struct HandleState
     {
@@ -77,20 +78,9 @@ namespace minsky
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
     void applyState(const State&);
   };
+
 }
 
-//#ifdef CLASSDESC
-//#pragma omit pack minsky::Ravel
-//#pragma omit unpack minsky::Ravel
-//#endif
-//
-//namespace classdesc_access
-//{
-//  template <> struct access_pack<minsky::Ravel>: 
-//    public access_pack<minsky::Operation<minsky::OperationType::ravel>> {};
-//  template <> struct access_unpack<minsky::Ravel>: 
-//    public access_unpack<minsky::Operation<minsky::OperationType::ravel>> {};
-//}
 #include "ravelWrap.cd"
 #include "ravelWrap.xcd"
 

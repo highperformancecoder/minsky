@@ -310,11 +310,11 @@ namespace minsky
   {
     if (ravel && dataCube)
       {
-        assert(ravel_rank(ravel)==1);
+        //        assert(ravel_rank(ravel)==1);
         vector<size_t> dims(ravel_rank(ravel));
         double* tmp;
         ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
-        if (dims[0]==0)
+        if (dims.empty() || dims[0]==0)
           {
             if (v.idx()==-1) v.allocValue();
             return; // do nothing if ravel data is empty
@@ -325,9 +325,10 @@ namespace minsky
             ravel_outputHandleIds(ravel, &outHandles[0]);
             size_t prevNumElem=v.numElements();
             v.xVector.clear();
-            for (auto h: outHandles)
+            for (size_t j=0; j<outHandles.size(); ++j)
               {
-                vector<const char*> labels(dims[0]); 
+                auto h=outHandles[j];
+                vector<const char*> labels(dims[j]); 
                 ravel_sliceLabels(ravel,h,&labels[0]);
                 assert(all_of(labels.begin(), labels.end(),
                               [](const char* i){return bool(i);}));
@@ -355,19 +356,27 @@ namespace minsky
     if (v.idx()==-1) v.allocValue();
   }
 
-//  const char* Ravel::toXML() const
-//  {
-//    if (ravel)
-//      return ravel_toXML(ravel);
-//    return "";
-//  }
-//
-//  void Ravel::fromXML(const std::string& xml)
-//  {
-//    if (ravel)
-//      ravel_fromXML(ravel, xml.c_str());
-//  }
-
+  unsigned Ravel::maxRank() const
+  {
+    if (ravel) return ravel_numHandles(ravel);
+    return 0;
+  }
+  unsigned Ravel::rank() const
+  {
+    if (ravel) return ravel_rank(ravel);
+    return 0;
+  }
+  
+  void Ravel::setRank(unsigned rank)
+  {
+    if (ravel)
+      {
+        vector<size_t> ids;
+        for (size_t i=0; i<rank; ++i) ids.push_back(i);
+        ravel_setOutputHandleIds(ravel,rank,&ids[0]);
+      }
+  }
+  
   Ravel::State Ravel::getState() const
   {
     State state;
