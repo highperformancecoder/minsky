@@ -72,6 +72,8 @@ namespace minsky
 
     void addPlotPt(double t); ///< add another plot point
     void updateIcon(double t) override {addPlotPt(t);}
+    /// add vector/tensor curves to plot
+    void addConstantCurves();
     /// connect variable \a var to port \a port. 
     void connectVar(const VariableValue& var, unsigned port);
     void disconnectAllVars();

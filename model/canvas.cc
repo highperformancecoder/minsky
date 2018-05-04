@@ -66,6 +66,10 @@ namespace minsky
             if (lassoMode==LassoMode::none)
               lassoMode=LassoMode::lasso;
             break;
+          case ClickType::onRavel:
+            if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+              r->onMouseDown(x,y);
+            break;
           }
       }
     else
@@ -111,6 +115,11 @@ namespace minsky
   void Canvas::mouseUp(float x, float y)
   {
     mouseMove(x,y);
+    
+    if (clickType==ClickType::onRavel)
+      if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+        r->onMouseUp(x,y);
+    
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
@@ -196,6 +205,12 @@ namespace minsky
             requestRedraw();
           }
       }
+    else if (itemFocus && clickType==ClickType::onRavel)
+      {
+        if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+          if (r->onMouseMotion(x,y))
+            requestRedraw();
+      }
     else if (fromPort.get())
       {
         termX=x;
@@ -236,11 +251,26 @@ namespace minsky
                                (*i)->mouseFocus=false;
                              else
                                {
-                                 bool mf=(*i)->contains(x,y);
-                                 if (mf!=(*i)->mouseFocus)
+                                 auto ct=(*i)->clickType(x,y);
+                                 if (ct==ClickType::onRavel)
                                    {
-                                     (*i)->mouseFocus=mf;
-                                     requestRedraw();
+                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                       if (r->onMouseOver(x,y))
+                                         requestRedraw();
+                                   }
+                                 else
+                                   {
+                                     auto mf = ct!=ClickType::outside;
+                                     if ((*i)->mouseFocus!=mf)
+                                       {
+                                         requestRedraw();
+                                         (*i)->mouseFocus=mf;
+                                       }
+                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                       {
+                                         r->onMouseLeave();
+                                         requestRedraw();
+                                       }
                                    }
                                }
                              return false;

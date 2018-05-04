@@ -41,7 +41,6 @@
 #include <string>
 #include <set>
 #include <deque>
-using namespace std;
 
 #include <ecolab.h>
 #include <xml_pack_base.h>
@@ -293,6 +292,8 @@ namespace minsky
     int simulationDelay{0}; /// delay in milliseconds inserted between iteration steps
 
     double t{0}; ///< time
+    double t0{0}; ///< simulation start time
+    string timeUnit;
     void reset(); ///<resets the variables back to their initial values
     void step();  ///< step the equations (by n steps, default 1)
 
@@ -319,7 +320,8 @@ namespace minsky
 
     /// return the AEGIS assigned version number
     static const char* minskyVersion;
-    string ecolabVersion() {return VERSION;}
+    std::string ecolabVersion() const {return VERSION;}
+    std::string ravelVersion() const;
 
     unsigned maxHistory{100}; ///< maximum no. of history states to save
 
@@ -397,21 +399,7 @@ namespace minsky
 #pragma omit xml_pack minsky::MinskyMatrix
 #pragma omit xml_unpack minsky::MinskyMatrix
 #pragma omit xsd_generate minsky::MinskyMatrix
-
-//#pragma omit TCL_obj minsky::EquationDisplay
 #endif
-
-//// avoid recursive descending into the Minsky reference
-//namespace classdesc_access
-//{
-//  template <> struct access_TCL_obj<struct minsky::EquationDisplay > {
-//    template <class U>
-//    void operator()(classdesc::TCL_obj_t& targ, const classdesc::string& desc,U& arg)
-//    {
-//      ::TCL_obj_onbase(targ,desc+"",classdesc::base_cast<CairoSurface >::cast(arg));
-//    }
-//  };
-//}
 
 #include "minsky.cd"
 #endif

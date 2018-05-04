@@ -56,7 +56,7 @@ for {set step 0} {\$step<\$nsteps} {incr step} {
   step
   puts -nonewline \$out "[t]"
   foreach name [variableValues.#keys] {
-    puts -nonewline \$out " [variableValues(\$name).value]"
+    puts -nonewline \$out " [variableValues(\$name).value 0]"
   }
   puts \$out ""
 }

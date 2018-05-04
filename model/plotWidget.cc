@@ -254,7 +254,7 @@ namespace minsky
   void PlotWidget::addPlotPt(double t)
   {
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (yvars[pen].idx()>=0)
+      if (yvars[pen].dims().size()==1 && yvars[pen].dims()[0]==1 && yvars[pen].idx()>=0)
         {
           double x,y;
           switch (xvars.size())
@@ -294,6 +294,48 @@ namespace minsky
       }
   }
 
+  void PlotWidget::addConstantCurves()
+  {
+    size_t extraPen=2*numLines;
+    for (size_t pen=0; pen<2*numLines; ++pen)
+      if (pen<yvars.size() && yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
+        {
+          auto& yv=yvars[pen];
+          auto& d=yv.dims();
+
+          // work out a reference to the x data
+          vector<double> xdefault;
+          double* x;
+          if (pen<xvars.size() && xvars[pen].idx()>=0)
+            {
+              if (xvars[pen].dims()[0]!=d[0])
+                throw error("x vector not same length as y vectors");
+              x=xvars[pen].begin();
+            }
+          else
+            {
+              xdefault.reserve(d[0]);
+              if (yv.xVector.size()) // yv carries its own x-vector
+                {
+                  xticks=yv.xVector;
+                  assert(xticks.size()==d[0]);
+                  for (auto& i: xticks)
+                    xdefault.push_back(i.first);
+                }
+              else // by default, set x to 0..d[0]-1
+                for (size_t i=0; i<d[0]; ++i)
+                  xdefault.push_back(i);
+              x=&xdefault[0];
+            }
+          
+          setPen(pen, x, yv.begin(), d[0]);
+          // higher rank y objects treated as multiple y vectors to plot
+          for (auto j=d[0]; j<yv.numElements(); j+=d[0])
+            setPen(extraPen++, x, yv.begin()+j, d[0]);
+        }
+  }
+
+  
   void PlotWidget::connectVar(const VariableValue& var, unsigned port)
   {
     if (port<nBoundsPorts)

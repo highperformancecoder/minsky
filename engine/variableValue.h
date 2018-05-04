@@ -39,7 +39,9 @@ namespace minsky
     Type m_type;
     int m_idx; /// index into value vector
     double& valRef(); 
-
+    const double& valRef() const
+    {return const_cast<VariableValue*>(this)->valRef();} 
+    std::vector<unsigned> m_dims{1};
 
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -54,22 +56,61 @@ namespace minsky
     bool isFlowVar() const {
       return m_type!=stock && m_type!=integral;
     }
-
+    bool isZero() const {
+      return m_type==constant && (init.empty() || init=="0");
+    }
 
     Type type() const {return m_type;}
 
     /// the initial value of this variable
     std::string init;
 
+    /// dimension units of this value
+    Units units;
+    
     bool godleyOverridden;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
-    double value() const {
-      return const_cast<VariableValue*>(this)->valRef();
-    }
+    ///< value at the \a ith location of the vector/tensor. Deefault,
+    ///(i=0) is right for scalar quantities
+    double value(size_t i=0) const {return *(begin()+i);}
     int idx() const {return m_idx;}
 
+    typedef double* iterator;
+    typedef const double* const_iterator;
+    iterator begin() {return &valRef();}
+    const_iterator begin() const {return &valRef();}
+    iterator end() {return &valRef()+numElements();}
+    const_iterator end() const {return &valRef()+numElements();}
+    
+    ///< dimensions of this variable value. dims.size() is the rank, a
+    ///scalar variable has dims[0]=1, etc.
+    const std::vector<unsigned>& dims() const {return m_dims;}
+    ///< set the dimensions. \a d cannot be empty, by may consist of
+    ///the single element {1} to refer to a scalar
+    const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
+      if (!d.empty()) {
+          m_dims=d;
+          allocValue();
+        }
+        return m_dims;
+    }
+    size_t numElements() const {
+      size_t s=1;
+      for (auto i: m_dims) s*=i;
+      return s;
+    }
+
+    /// labels describing the points along dimension 0
+    /// consists of a value and a textual representation
+    typedef std::vector<std::pair<double, std::string>> XVector;
+    XVector xVector;
+
+    /// removes elements of xVector not found in \a
+    /// You should adjust dims()[0] to xVector.size() afterwards
+    void makeXConformant(const VariableValue& a);
+    
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 

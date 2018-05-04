@@ -181,6 +181,23 @@ double VariableBase::_value(double x)
   return x;
 }
 
+Units VariableBase::_units() const
+{
+  if (VariableValue::isValueId(valueId()))
+    return minsky::cminsky().variableValues[valueId()].units;
+  else
+    return Units();
+}
+
+Units VariableBase::_units(const Units& x)
+{
+  if (!m_name.empty() && VariableValue::isValueId(valueId()))
+    minsky().variableValues[valueId()].units=x;
+  return x;
+}
+
+
+
 vector<string> VariableBase::accessibleVars() const
 {
   set<string> r;

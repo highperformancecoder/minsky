@@ -107,6 +107,12 @@ tooltip .wiring.menubar.line$menubarLine.note "Note"
 pack .wiring.menubar.line$menubarLine.note -side left 
 set helpTopics(.wiring.menubar.line$menubarLine.note) "Item"
 
+#image create photo ravelImg -file $minskyHome/icons/ravel.gif
+#button .wiring.menubar.line$menubarLine.ravel -image ravelImg \
+#    -height 24 -width 37 -command {addRavel}
+#tooltip .wiring.menubar.line$menubarLine.ravel "Ravel"
+#pack .wiring.menubar.line$menubarLine.ravel -side left 
+
 # pack menubar lines
 for {set i 0} {$i<=$menubarLine} {incr i} {
     pack .wiring.menubar.line$i -side top -anchor w
@@ -172,6 +178,9 @@ foreach var [availableOperations] {
     if {$var=="numOps"} break
     .menubar.ops add command -label [regsub {(.*)_$} $var {\1}] -command "minsky.addOperation $var"
 }
+
+#.menubar.ops add command -label "Ravel" -command addRavel
+
  
 # default command to execute when escape key is pressed
 proc handleEscapeKey {} {
@@ -188,6 +197,7 @@ proc addVariablePostModal {} {
     set varExists [variableValues.count $name]
     minsky.addVariable $name $varInput(Type)
     canvas.itemFocus.init $varInput(Value)
+    canvas.itemFocus.units $varInput(Units)
     if {!$varExists} {
         getValue [canvas.itemFocus.valueId]
         canvas.itemFocus.rotation [set varInput(Rotation)]
@@ -440,10 +450,10 @@ proc contextMenu {x y X Y} {
     set item minsky.canvas.item
     .wiring.context delete 0 end
     .wiring.context add command -label Help -command "help [$item.classType]"
+    .wiring.context add command -label Description -command "postNote item"
     # find out what type of item we're referring to
     switch -regex [$item.classType] {
         "Variable*|VarConstant" {
-            .wiring.context add command -label Description -command "postNote item"
             catch {.wiring.context add command -label "Value [minsky.canvas.item.value]"} 
             .wiring.context add command -label "Find definition" -command "findDefinition"
             .wiring.context add command -label "Select all instances" -command {
@@ -460,7 +470,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
         }
         "Operation*|IntOp|DataOp" {
-            .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Port values [$item.portValues]" 
             .wiring.context add command -label "Edit" -command "editItem"             
             if {[$item.type]=="data"} {
@@ -482,14 +491,12 @@ proc contextMenu {x y X Y} {
             }
         }
         "PlotWidget" {
-            .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Expand" -command "plotDoubleClick [TCLItem]"
             .wiring.context add command -label "Make Group Plot" -command "$item.makeDisplayPlot"
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
         }
         "GodleyIcon" {
-            .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Open Godley Table" -command "openGodley [minsky.openGodley]"
             .wiring.context add command -label "Title" -command {
                 textEntryPopup .editGodleyTitle [minsky.canvas.item.table.title] {minsky.canvas.item.table.title [.editGodleyTitle.entry get]; canvas.requestRedraw}
@@ -500,7 +507,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Export to file" -command "godley::export"
         }
         "Group" {
-            .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Edit" -command "groupEdit"
             .wiring.context add command -label "Open in canvas" -command "openGroupInCanvas"
             .wiring.context add command -label "Zoom to display" -command "canvas.zoomToDisplay"
@@ -514,14 +520,16 @@ proc contextMenu {x y X Y} {
         }
         "Item" {
             .wiring.context delete 0 end
-            .wiring.context add command -label Edit -command "postNote item"
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
         }
         SwitchIcon {
-            .wiring.context add command -label Description -command "postNote item"
             .wiring.context add command -label "Add case" -command "incrCase 1" 
             .wiring.context add command -label "Delete case" -command "incrCase -1" 
             .wiring.context add command -label "Flip" -command "$item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
+        }
+        RavelWrap {
+            .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
+            .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
         }
     }
 
@@ -532,7 +540,12 @@ proc contextMenu {x y X Y} {
     .wiring.context add command -label "Delete [minsky.canvas.item.classType]" -command "canvas.deleteItem"
     tk_popup .wiring.context $X $Y
 }
-#  
+
+proc loadCSVIntoRavel {} {
+    global workDir
+    canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
+}
+
 namespace eval godley {
     proc export {} {
         global workDir type
@@ -599,6 +612,7 @@ proc deiconifyEditVar {} {
         set row 30
         foreach var {
             "Initial Value"
+            "Units"
             "Rotation"
             "Short description"
             "Detailed description"
@@ -620,6 +634,7 @@ proc deiconifyEditVar {} {
             convertVarType [$item.valueId] $editVarInput(Type)
             $item.name $editVarInput(Name)
             $item.init $editVarInput(Initial Value)
+            $item.units $editVarInput(Units)
             $item.rotation  $editVarInput(Rotation)
             $item.tooltip  $editVarInput(Short description)
             $item.detailedText  $editVarInput(Detailed description)
@@ -696,6 +711,7 @@ proc deiconifyInitVar {} {
         set row 30
         foreach var {
             "Value"
+            "Units"
             "Rotation"
             "Short description"
             "Detailed description"
@@ -811,6 +827,7 @@ proc editVar {} {
     set "editVarInput(Type)" [$item.type]
 
     set "editVarInput(Initial Value)" [$item.init]
+    set "editVarInput(Units)" [$item.units]
     set "editVarInput(Rotation)" [$item.rotation]
     set "editVarInput(Slider Bounds: Max)" [$item.sliderMax]
     set "editVarInput(Slider Bounds: Min)" [$item.sliderMin]

@@ -656,8 +656,8 @@ namespace minsky
     {
       auto& table=godleyIcon->table;
       assert(selectedRow>=0 && selectedCol>=0);
-      assert(selectedRow<table.rows());
-      assert(selectedCol<table.cols());
+      assert(unsigned(selectedRow)<table.rows());
+      assert(unsigned(selectedCol)<table.cols());
       auto& str=table.cell(selectedRow,selectedCol);
       if (insertIdx!=selectIdx)
         delSelection();

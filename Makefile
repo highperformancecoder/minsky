@@ -40,7 +40,7 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o 
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
@@ -147,9 +147,14 @@ ifdef MXE
 ifndef DEBUG
 # This option removes the black window, but this also prevents being
 # able to    type TCL commands on the command line, so only use it for
-# release builds. Doesn't seemm to work on MXE, though - see ticket #456
+# release builds. Doesn't seem to work on MXE, though - see ticket #456
 FLAGS+=-DCONSOLE
 FLAGS+=-mwindows
+else
+# do not include symbols, as obscure Windows bug causes link-time
+# large text section failure. In any case, we do not have a usable
+# symbolic debugger available for this build
+OPT=-O0
 endif
 GUI_TK_OBJS+=MinskyLogo.o
 WINDRES=$(MXE_PREFIX)-windres

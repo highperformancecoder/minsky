@@ -27,9 +27,9 @@
 
 #include <math.h>
 
-#ifdef __MINGW32_VERSION
-#define finite isfinite
-#endif
+//#ifdef __MINGW32_VERSION
+//#define finite isfinite
+//#endif
 
 namespace minsky
 {
@@ -43,28 +43,32 @@ namespace minsky
         fv[out]=evaluate(0,0);
         break;
       case 1:
-        assert(in1>=0);
-        fv[out]=evaluate(flow1? fv[in1]: sv[in1], 0);
+        for (unsigned i=0; i<in1.size(); ++i)
+          fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], 0);
         break;
       case 2:
-        assert(in1>=0 && in2>=0);
-        fv[out]=evaluate(flow1? fv[in1]: sv[in1], flow2? fv[in2]: sv[in2]);
+        for (unsigned i=0; i<in1.size(); ++i)
+          fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]],
+                             flow2? fv[in2[i]]: sv[in2[i]]);
         break;
       }
-    if (!isfinite(fv[out]))
-      {
-        if (state)
-          minsky().displayErrorItem(*state);
-        string msg="Invalid: "+OperationBase::typeName(type())+"(";
-        if (numArgs()>0)
-          msg+=to_string(flow1? fv[in1]: sv[in1]);
-        if (numArgs()>1)
-          msg+=","+to_string(flow2? fv[in2]: sv[in2]);
-        msg+=")";
-        throw error(msg.c_str());
-      }
+    
+    for (unsigned i=0; i<in1.size(); ++i)
+      if (!isfinite(fv[out+i]))
+        {
+          if (state)
+            minsky().displayErrorItem(*state);
+          string msg="Invalid: "+OperationBase::typeName(type())+"(";
+          if (numArgs()>0)
+            msg+=to_string(flow1? fv[in1[i]]: sv[in1[i]]);
+          if (numArgs()>1)
+            msg+=","+to_string(flow2? fv[in2[i]]: sv[in2[i]]);
+          msg+=")";
+          throw error(msg.c_str());
+        }
   };
 
+  /// TODO: handle tensors for implicit methods
   void EvalOpBase::deriv(double df[], const double ds[],
                      const double sv[], const double fv[])
   {
@@ -76,23 +80,23 @@ namespace minsky
         return;
       case 1:
         {
-          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
-                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
-          double x1=flow1? fv[in1]: sv[in1];
-          double dx1=flow1? df[in1]: ds[in1];
+          assert((flow1 && in1[0]<ValueVector::flowVars.size()) || 
+                 (!flow1 && in1[0]<ValueVector::stockVars.size()));
+          double x1=flow1? fv[in1[0]]: sv[in1[0]];
+          double dx1=flow1? df[in1[0]]: ds[in1[0]];
           df[out] = dx1!=0? dx1 * d1(x1,0): 0;
           break;
         }
       case 2:
         {
-          assert((flow1 && size_t(in1)<ValueVector::flowVars.size()) || 
-                 (!flow1 && size_t(in1)<ValueVector::stockVars.size()));
-          assert((flow2 && size_t(in2)<ValueVector::flowVars.size()) || 
-                 (!flow2 && size_t(in2)<ValueVector::stockVars.size()));
-          double x1=flow1? fv[in1]: sv[in1];
-          double x2=flow2? fv[in2]: sv[in2];
-          double dx1=flow1? df[in1]: ds[in1];
-          double dx2=flow2? df[in2]: ds[in2];
+          assert((flow1 && in1[0]<ValueVector::flowVars.size()) || 
+                 (!flow1 && in1[0]<ValueVector::stockVars.size()));
+          assert((flow2 && in2[0]<ValueVector::flowVars.size()) || 
+                 (!flow2 && in2[0]<ValueVector::stockVars.size()));
+          double x1=flow1? fv[in1[0]]: sv[in1[0]];
+          double x2=flow2? fv[in2[0]]: sv[in2[0]];
+          double dx1=flow1? df[in1[0]]: ds[in1[0]];
+          double dx2=flow2? df[in2[0]]: ds[in2[0]];
           df[out] = (dx1!=0? dx1 * d1(x1,x2): 0) +
             (dx2!=0? dx2 * d2(x1,x2): 0);
           break;
@@ -116,6 +120,7 @@ namespace minsky
   {return 0;}
 
   double EvalOpBase::t;
+  string EvalOpBase::timeUnit;
 
   template <>
   double EvalOp<OperationType::time>::evaluate(double in1, double in2) const
@@ -472,28 +477,147 @@ namespace minsky
 
   namespace {OperationFactory<EvalOpBase, EvalOp, OperationType::numOps-1> evalOpFactory;}
 
-  EvalOpBase* EvalOpBase::create
-  (Type op, int out, int in1, int in2, bool flow1, bool flow2)
+  EvalOpBase* EvalOpBase::create(Type op)
   {
     switch (op)
       {
       case constant:
-        return new ConstantEvalOp(out,in1,in2,flow1,flow2);
+        return new ConstantEvalOp;
       case numOps:
         return NULL;
       default:
-        auto r=evalOpFactory.create(op);
-        r->out=out;
-        r->in1=in1;
-        r->in2=in2;
-        r->flow1=flow1;
-        r->flow2=flow2;
-        return r;
+        return evalOpFactory.create(op);
       }
   }
 
-  EvalOpPtr::EvalOpPtr(OperationType::Type op,
-              int out, int in1, int in2, bool flow1, bool flow2)
-  {reset(EvalOpBase::create(op, out, in1, in2, flow1, flow2));}
+  EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
+              const VariableValue& from1, const VariableValue& from2)
+  {
+    
+      reset(EvalOpBase::create(op));
+      auto t=get();
+      assert(t->numArgs()==0 || from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0));
+
+      // check dimensionality is correct
+      switch (op)
+        {
+        case OperationType::time:
+          to.units.clear();
+          if (!EvalOpBase::timeUnit.empty())
+            to.units.emplace(EvalOpBase::timeUnit,1);
+          break;
+        case OperationType::multiply:
+        case OperationType::divide:
+          to.units=from1.units;
+          for (auto& i: from2.units)
+            {
+              to.units[i.first]+=
+                (op==OperationType::multiply? 1: -1)*i.second;
+              if (to.units[i.first]==0)
+                to.units.erase(i.first);
+            }
+          break;
+        case OperationType::pow:
+          if (!from1.units.empty())
+            if (from2.type()==VariableType::constant)
+              {
+                char* ep;
+                int e=strtol(from2.init.c_str(),&ep,10);
+                if (*ep!='\0')
+                  throw runtime_error("non integral power of dimensioned quantity requested");
+                to.units=from1.units;
+                for (auto& i: to.units)
+                  i.second*=e;
+              }
+            else
+              throw runtime_error("non constant power of dimensioned quantity requested");
+          break;
+        case OperationType::le: case OperationType::lt: case OperationType::eq:
+          if (from1.units!=from2.units)
+            throw runtime_error("incompatible units: "+from1.units.str()+"≠"+from2.units.str());
+          to.units.clear(); // result of comparison ops is dimensionless
+          break;
+        case OperationType::and_: case OperationType::or_: case OperationType::not_:
+          if (!from1.units.empty() || !from2.units.empty())
+            throw runtime_error("logical ops must be applied to dimensionless quantities");
+          to.units.clear(); // result of comparison ops is dimensionless
+          break;
+        case OperationType::integrate: case OperationType::differentiate:
+          assert(false); // shouldn't be here
+          break;
+        case OperationType::copy:
+          to.units=from1.units;
+          break;
+        default:
+          if (t->numArgs()>=2)
+            {
+              if (from1.units!=from2.units)
+                throw runtime_error("incompatible units: "+from1.units.str()+"≠"+from2.units.str());
+            }
+          else if (t->numArgs()==1 && !from1.units.empty())
+            throw runtime_error("function argument not dimensionless, but "+from1.units.str());
+          if (t->numArgs()>0)
+            to.units=from1.units;
+          break;
+        }
+
+      if (t->numArgs()>=2 && from1.xVector.size() && from2.xVector.size())
+        {
+          // find the common set of indexes shared by x1 and x2
+          map<string, unsigned> xIdx2;
+          unsigned i=from2.idx();
+          for (auto j=from2.xVector.begin(); j!=from2.xVector.end(); ++i, ++j)
+            xIdx2[j->second]=i;
+          
+          i=from1.idx();
+          for (auto j=from1.xVector.begin(); j!=from1.xVector.end(); ++i, ++j)
+            {
+              auto k=xIdx2.find(j->second);
+              if (k!=xIdx2.end())
+                {
+                  t->in1.push_back(i);
+                  t->in2.push_back(k->second);
+                }
+            }
+        }
+      else if (t->numArgs()>0)
+        {
+          unsigned maxIdx=from1.dims()[0];
+          if (maxIdx==1)
+            maxIdx=from2.dims()[0];
+          else if (from2.dims()[0]>1)
+            maxIdx=std::min(maxIdx, from2.dims()[0]);
+
+          for (unsigned i=0; i<maxIdx; ++i)
+            {
+              if (from1.dims()[0]==1)
+                t->in1.push_back(from1.idx());
+              else
+                t->in1.push_back(from1.idx()+i);
+              if (from2.dims()[0]==1)
+                t->in2.push_back(from2.idx());
+              else
+                t->in2.push_back(from2.idx()+i);
+            }
+        }
+      // todo handle tensors
+      if (to.dims().size()!=1 || (t->numArgs()>0) && to.dims()[0]!=t->in1.size())
+        {
+          assert(&to!=&from1 && &to!=&from2);
+          to.dims({unsigned(t->in1.size())});
+          if (from1.xVector.size())
+            for (auto i: t->in1)
+              to.xVector.push_back(from1.xVector[i-from1.idx()]);
+          else if (from2.xVector.size())
+            for (auto i: t->in2)
+              to.xVector.push_back(from2.xVector[i-from2.idx()]);
+        }
+       
+      if (to.idx()==-1) to.allocValue();
+      t->out=to.idx();
+      t->flow1=from1.isFlowVar();
+      t->flow2=from2.isFlowVar();
+
+    }
 
 }

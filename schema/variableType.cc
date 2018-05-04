@@ -20,5 +20,73 @@
 #include <ecolab_epilogue.h>
 using namespace classdesc;
 
-string minsky::VariableType::typeName(int t)
-{return enumKey<Type>(t);}
+#include <string>
+#include <sstream>
+#include <regex>
+using namespace std;
+
+namespace minsky
+{
+  string VariableType::typeName(int t)
+  {return enumKey<Type>(t);}
+
+  string Units::str() const
+  {
+    ostringstream s;
+    s<<*this;
+    return s.str();
+  }
+
+  Units::Units(const string& x)
+  {
+    if (x.empty()) return;
+    // split into numerator and denominator components if / found
+    auto divPos=x.find('/');
+    vector<string> components;
+    components.push_back(x.substr(0,divPos));
+    if (divPos!=string::npos)
+      components.push_back(x.substr(divPos+1));
+    
+    if (components.back().find('/')!=string::npos)
+      throw runtime_error("too many division signs: "+x);
+    
+    int coef=1;
+    for (auto& i: components)
+      {
+        if (i.empty())
+          throw runtime_error("empty numerator or denominator: "+x);
+        const char* b=i.c_str();
+        for (const char* j=b; *j!='\0';)
+          {
+            if (*j=='^'||isspace(*j))
+              {
+                string name(b,j); // stash end of unit name
+                if (name.empty())
+                  throw runtime_error("empty unit name: "+x);
+                while (isspace(*j)) ++j;
+                if (*j=='^')
+                  {
+                    auto k=j+1;
+                    int v=strtol(k,const_cast<char**>(&j),10);
+                    if (j==k)
+                      throw runtime_error("invalid exponent: "+x);
+                    (*this)[name]+=coef*v;
+                  }
+                else
+                  (*this)[name]+=coef;
+                if ((*this)[name]==0)
+                  erase(name);
+                while (isspace(*j)) ++j;
+                b=j; // update to next unit name
+              }
+            else
+              ++j;
+          }
+        if (b==i.c_str()) // we haven't found any exponents
+          emplace(i,coef);
+        coef*=-1;
+      }
+  }
+
+
+}

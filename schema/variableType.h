@@ -21,6 +21,7 @@
 #define VARIABLETYPE_H
 #include <string>
 #include <ostream>
+#include <map>
 
 namespace minsky
 {
@@ -31,6 +32,35 @@ namespace minsky
   };
   inline std::ostream& operator<<(std::ostream& o, VariableType::Type t)
   {return o<<VariableType::typeName(t);}
+
+  /// represents the units (in sense of dimensional analysis) of a
+  /// variable.
+  /**
+  first argument is the base unit (eg metre, second), and the second
+   is it's power (eg {{"m",1},{"s",-1}} => m/s)
+  **/
+  struct Units: public std::map<std::string,int>
+  {
+    Units() {}
+    Units(const std::string&);
+    std::string str() const;
+  };
+
+  inline std::ostream& operator<<(std::ostream& o, const Units& u)
+  {
+    bool first=true;
+    for (auto& i: u)
+      {
+        if (!first) o<<" ";
+        first=false;
+        o<<i.first;
+        if (i.second!=1)
+          o<<"^"<<i.second;
+      }
+    return o;
+  }
+  
+
 }
 
 

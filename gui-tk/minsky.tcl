@@ -93,6 +93,14 @@ proc setFname {name} {
 # needed for scripts/tests
 rename exit tcl_exit
 
+# emulate minsky.value.value's default argument
+proc value.value {args} {
+    if [llength $args] {
+        return [minsky.value.value [lindex $args 0]]
+    } else {
+        return [minsky.value.value 0]
+    }
+}
 proc attachTraceProc {namesp} {
     foreach p [info commands $namesp*] {
         if {$p ne "::traceProc"} {
@@ -841,8 +849,10 @@ proc runstop {} {
   }
 }
 
+set simTMax Inf
+
 proc step {} {
-    global recordingReplay eventRecordR
+    global recordingReplay eventRecordR simTMax
     if {$recordingReplay} {
         if {[gets $eventRecordR cmd]>=0} {
             eval $cmd
@@ -855,6 +865,7 @@ proc step {} {
         global running preferences
         set lastt [t]
         if {[catch minsky.step errMsg options] && $running} {runstop}
+        if {$simTMax<[t]} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
         update
@@ -1030,12 +1041,28 @@ proc invokeOKorCancel {window} {
 }
 
 set rkVars {
+    timeUnit  "Time unit"
     stepMin   "Min Step Size"
     stepMax   "Max Step Size"
     nSteps     "no. steps per iteration"
+    t0         "Start time"
+    tmax      "Run until time"
     epsAbs     "Absolute error"
     epsRel     "Relative error"
     order      "Solver order (1,2 or 4)"
+}
+
+proc tmax {args} {
+    global simTMax
+    if [llength $args] {
+        if {[lindex $args 0]==""} {
+            set simTMax Inf
+        } else {
+            return [set simTMax [lindex $args 0]]
+        }
+    } else {
+        return [set simTMax]
+    }
 }
 
 proc deiconifyRKDataForm {} {
@@ -1202,7 +1229,8 @@ proc aboutMinsky {} {
   tk_messageBox -message "
     Minsky [minskyVersion]\n
    EcoLab [ecolabVersion]\n
-   Tcl/Tk [info tclversion]
+   Tcl/Tk [info tclversion]\n
+   Ravel [ravelVersion]
 " -detail "
    Minsky is FREE software, distributed under the 
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
@@ -1401,3 +1429,4 @@ if {[llength [info commands afterMinskyStarted]]>0} {
 disableEventProcessing
 popFlags
 pushHistory
+

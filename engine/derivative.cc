@@ -96,7 +96,10 @@ namespace MathDAG
           r->rhs=ii.get();
       }
     else
-      r->rhs=zero;
+      {
+        r->rhs=zero;
+        return zero;
+      }
     assert(expressionCache.reverseLookup(*r));
     return r;
   }

@@ -112,7 +112,7 @@ SUITE(Derivative)
     model->addWire(new Wire(pow->ports[0], f->ports[1]));
 
     // firstly check when base port is unwired
-    CHECK_THROW(reset(),error);
+    CHECK_THROW(reset(),std::exception);
     model->addWire(new Wire(tsq->ports[0],pow->ports[2]));
 
     reset(); 
@@ -140,7 +140,7 @@ SUITE(Derivative)
     model->addWire(new Wire(log->ports[0], f->ports[1]));
 
     // firstly check when base port is unwired 
-    CHECK_THROW(reset(),error);
+    CHECK_THROW(reset(),std::exception);
     
     model->addWire(new Wire(tsq->ports[0],log->ports[2]));
 
