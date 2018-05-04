@@ -23,7 +23,6 @@ before_install:
   - sudo apt-get install -y exuberant-ctags
   - sudo apt-get install -y libdb-dev
   - sudo apt-get install -y libncurses5-dev
-  - sudo apt-get install -y tktable
   - sudo apt-get install -y librsvg2-dev
   - sudo apt-get install -y json-spirit
   - sudo apt-get install -y libboost-dev
