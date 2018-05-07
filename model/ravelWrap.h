@@ -37,6 +37,7 @@ namespace minsky
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     std::string m_filename;
+    const double defaultRadius=100; ///< initial size of a Ravel widget
   public:
     Ravel();
     ~Ravel();
@@ -53,6 +54,7 @@ namespace minsky
     void loadFile(const std::string&);
     const string& filename() const {return m_filename;}
     void loadDataFromSlice(VariableValue&);
+    void loadDataCubeFromVariable(const VariableValue&);
     unsigned maxRank() const;
     unsigned rank() const;
     void setRank(unsigned);

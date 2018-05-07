@@ -488,6 +488,15 @@ namespace minsky
   double EvalOp<OperationType::numOps>::d2(double x1, double x2) const
   {throw error("calling d2() on EvalOp<numOps> invalid");}
 
+  void RavelEvalOp::eval(double fv[], const double sv[]) 
+  {
+    if (auto r=dynamic_cast<Ravel*>(state.get()))
+      {
+        r->loadDataCubeFromVariable(in);
+        r->loadDataFromSlice(out);
+      }
+  }
+  
   namespace {OperationFactory<EvalOpBase, EvalOp, OperationType::numOps-1> evalOpFactory;}
 
   EvalOpBase* EvalOpBase::create(Type op)
@@ -496,6 +505,8 @@ namespace minsky
       {
       case constant:
         return new ConstantEvalOp;
+      case ravel:
+        return new RavelEvalOp;
       case numOps:
         return NULL;
       default:

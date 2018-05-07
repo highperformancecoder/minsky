@@ -399,13 +399,15 @@ namespace MathDAG
                   throw error("inputs for highlighted operations incorrectly wired");
                 break;
               case ravel:
-                if (argIdx.size()>0 && argIdx[0].size()==1)
-                  // TODO handle RavelOps
-                  ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 
-                else if (auto d=dynamic_cast<Ravel*>(state.get()))
-                  d->loadDataFromSlice(*result); // input not wired,
-                else
-                  throw error("inputs for highlighted operations incorrectly wired");
+                if (auto r=dynamic_cast<Ravel*>(state.get()))
+                  if (argIdx.size()>0 && argIdx[0].size()==1)
+                    {
+                      r->loadDataCubeFromVariable(argIdx[0][0]);
+                      r->loadDataFromSlice(*result);
+                      ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
+                    }
+                  else
+                    r->loadDataFromSlice(*result);
                 break;
               default:
                 // sanity check that the correct number of arguments is provided 

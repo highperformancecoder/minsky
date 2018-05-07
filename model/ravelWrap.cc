@@ -85,6 +85,7 @@ namespace minsky
     const char* (*ravel_version)()=nullptr;
     Ravel::RavelImpl* (*ravel_new)(size_t rank)=nullptr;
     void (*ravel_delete)(Ravel::RavelImpl* ravel)=nullptr;
+    void (*ravel_clear)(Ravel::RavelImpl* ravel)=nullptr;
     void (*ravel_render)(Ravel::RavelImpl* ravel, CAPIRenderer*)=nullptr;
     void (*ravel_onMouseDown)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
     void (*ravel_onMouseUp)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
@@ -96,6 +97,7 @@ namespace minsky
     size_t (*ravel_rank)(Ravel::RavelImpl* ravel)=nullptr;
     void (*ravel_outputHandleIds)(Ravel::RavelImpl* ravel, size_t ids[])=nullptr;
     void (*ravel_setOutputHandleIds)(Ravel::RavelImpl* ravel, size_t rank, size_t ids[])=nullptr;
+    void (*ravel_addHandle)(Ravel::RavelImpl* ravel, const char*, size_t, const char* labels[])=nullptr;
     unsigned (*ravel_numHandles)(Ravel::RavelImpl* ravel)=nullptr;
     const char* (*ravel_handleDescription)(Ravel::RavelImpl* ravel, size_t handle)=nullptr;
     void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
@@ -109,6 +111,7 @@ namespace minsky
     void (*ravelDC_delete)(Ravel::DataCube*)=nullptr;
     bool (*ravelDC_initRavel)(Ravel::DataCube* dc,Ravel::RavelImpl* ravel)=nullptr;
     bool (*ravelDC_openFile)(Ravel::DataCube* dc, const char* fileName, DataSpec spec)=nullptr;
+    void (*ravelDC_loadData)(Ravel::DataCube*, const Ravel::RavelImpl*, const double*)=nullptr;
     int (*ravelDC_hyperSlice)(Ravel::DataCube*, Ravel::RavelImpl*, size_t dims[], double**)=nullptr;
 
 
@@ -147,6 +150,7 @@ namespace minsky
               ASG_FN_PTR(ravel_lastErr,lib);
               ASG_FN_PTR(ravel_new,lib);
               ASG_FN_PTR(ravel_delete,lib);
+              ASG_FN_PTR(ravel_clear,lib);
               ASG_FN_PTR(ravel_render,lib);
               ASG_FN_PTR(ravel_onMouseDown,lib);
               ASG_FN_PTR(ravel_onMouseUp,lib);
@@ -158,6 +162,7 @@ namespace minsky
               ASG_FN_PTR(ravel_rank,lib);
               ASG_FN_PTR(ravel_outputHandleIds,lib);
               ASG_FN_PTR(ravel_setOutputHandleIds,lib);
+              ASG_FN_PTR(ravel_addHandle,lib);
               ASG_FN_PTR(ravel_numHandles,lib);
               ASG_FN_PTR(ravel_handleDescription,lib);
               ASG_FN_PTR(ravel_sliceLabels,lib);
@@ -170,6 +175,7 @@ namespace minsky
               ASG_FN_PTR(ravelDC_delete,lib);
               ASG_FN_PTR(ravelDC_initRavel,lib);
               ASG_FN_PTR(ravelDC_openFile,lib);
+              ASG_FN_PTR(ravelDC_loadData,lib);
               ASG_FN_PTR(ravelDC_hyperSlice,lib);
             }
           catch (const InvalidSym& err)
@@ -209,7 +215,7 @@ namespace minsky
     if (ravelAvailable())
       {
         ravel=ravel_new(1); // rank 1 for now
-        ravel_rescale(ravel,100);
+        ravel_rescale(ravel,defaultRadius);
         dataCube=ravelDC_new();
       }
     else
@@ -233,7 +239,8 @@ namespace minsky
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double r=1.1*zoomFactor*ravel_radius(ravel);
+    double r=defaultRadius;
+    if (ravel) r=1.1*zoomFactor*ravel_radius(ravel);
     ports[0]->moveTo(x()+1.1*r, y());
     ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
@@ -356,6 +363,26 @@ namespace minsky
     if (v.idx()==-1) v.allocValue();
   }
 
+  void Ravel::loadDataCubeFromVariable(const VariableValue& v)
+  {
+    if (ravel && dataCube)
+      {
+        State state=getState();
+        ravel_clear(ravel);
+        for (auto& i: v.xVector)
+          {
+            vector<const char*> sl;
+            for (auto& j: i)
+              sl.push_back(j.second.c_str());
+            ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
+          }
+        setRank(v.xVector.size());
+        ravelDC_loadData(dataCube, ravel, v.begin());
+        applyState(state);
+      }
+  }
+
+  
   unsigned Ravel::maxRank() const
   {
     if (ravel) return ravel_numHandles(ravel);
@@ -386,6 +413,7 @@ namespace minsky
           ravel_getHandleState
             (ravel, i, &state.handleStates[ravel_handleDescription(ravel,i)]);
         vector<size_t> ids(ravel_rank(ravel));
+        ravel_outputHandleIds(ravel,&ids[0]);
         for (size_t i=0; i<ids.size(); ++i)
           state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
       }
