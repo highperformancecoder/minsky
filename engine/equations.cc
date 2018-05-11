@@ -402,6 +402,8 @@ namespace MathDAG
                 if (auto r=dynamic_cast<Ravel*>(state.get()))
                   if (argIdx.size()>0 && argIdx[0].size()==1)
                     {
+                      if (r->rank()==0) // initialise rank to that of input
+                        r->setRank(argIdx[0][0].dims().size());
                       r->loadDataCubeFromVariable(argIdx[0][0]);
                       r->loadDataFromSlice(*result);
                       ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));

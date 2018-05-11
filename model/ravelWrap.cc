@@ -216,7 +216,7 @@ namespace minsky
   {
     if (ravelAvailable())
       {
-        ravel=ravel_new(1); // rank 1 for now
+        ravel=ravel_new(0); // rank 1 for now
         ravel_rescale(ravel,defaultRadius);
         dataCube=ravelDC_new();
       }
@@ -312,6 +312,7 @@ namespace minsky
           throw error(ravel_lastErr());
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           ravel_displayFilterCaliper(ravel,i,true);
+        setRank(ravel_numHandles(ravel));
       }
   }
 
