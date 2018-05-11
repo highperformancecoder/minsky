@@ -516,80 +516,65 @@ namespace minsky
 
   namespace
   {
-    /// struct to recursively compute in1, in2 index vectors
-    struct RecursiveIndices
+    struct OffsetMap: public map<string,map<string,size_t>>
     {
-      typedef vector<unsigned> V;
-      V &in1, &in2;
-      typedef map<string,vector<unsigned>> M;
-      M in1idx, in2idx;
-      typedef map<string,size_t> StrideMap;
-      StrideMap in1strides, in2strides;
-      RecursiveIndices(V& in1, V& in2): in1(in1), in2(in2) {}
-
-      // compute strides of from1/from2 respectively
-      static void loadStrides(StrideMap& m, const vector<VariableValue::XVector>& xv)
-      {
-        m[xv[0].name]=1;
-        for (size_t i=1; i<xv.size(); ++i)
-          m[xv[i].name]=m[xv[i-1].name]*xv[i-1].size();
-      }
-      
-      void computeBothIdxes(size_t in1Offs, size_t in1Stride, size_t in2Offs, size_t in2Stride,
-                       const vector<unsigned>& in1Idx, const vector<unsigned>& in2Idx)
-      {
-        assert(in1Idx.size()==in2Idx.size());
-        for (size_t k=0; k<in1Idx.size(); ++k)
+      OffsetMap(const VariableValue& v) {
+        size_t stride=1;
+        for (auto& i: v.xVector)
           {
-            in1.push_back(in1Offs+in1Idx[k]*in1Stride);
-            in2.push_back(in2Offs+in2Idx[k]*in2Stride);
-          }
-      }
-
-      void computeOneIdx(size_t iniOffs, size_t iniStride, size_t injOffs,
-                         size_t numIdxi, V& idxi, V& idxj)
-      {
-        for (size_t k=0; k<numIdxi; ++k)
-          {
-            idxi.push_back(iniOffs+k*iniStride);
-            idxj.push_back(injOffs);
-          }
-      }
-      
-          
-      void compute(size_t in1Offs, size_t in2Offs, vector<string> dims)
-      {
-        auto i=in1idx.find(dims.back());
-        auto j=in2idx.find(dims.back());
-        if (dims.size()==1)
-          if (i!=in1idx.end())
-            if (j!=in2idx.end())
-              computeBothIdxes(in1Offs,in1strides[dims.back()],in2Offs,in2strides[dims.back()],
-                               i->second,j->second);
-            else
-              computeOneIdx(in1Offs,in1strides[dims.back()],in2Offs,i->second[0], in1, in2);
-          else
-            computeOneIdx(in2Offs,in2strides[dims.back()],in1Offs,j->second[0], in2, in1);
-        else
-          {
-            string d=dims.back();
-            dims.pop_back();
-            if (i!=in1idx.end())
-              if (j!=in2idx.end())
-                for (size_t k=0; k<j->second.size(); ++k)
-                  compute(in1Offs+i->second[k]*in1strides[d], 
-                          in2Offs+j->second[k]*in2strides[d], dims);
-              else
-                for (size_t k=0; k<i->second[0]; ++k) // indices are contiguous, so only dimension size passed
-                  compute(in1Offs+k*in1strides[d], in2Offs, dims);
-            else
-              for (size_t k=0; k<j->second[0]; ++k) // indices are contiguous, so only dimension size passed
-                compute(in1Offs, in2Offs+k*in2strides[d], dims);
+            size_t offs=0;
+            for (auto& j: i)
+              {
+                (*this)[i.name][j.second]=offs;
+                offs+=stride;
+              }
+            stride*=i.size();
           }
       }
     };
+
+    template <class F>
+    void apply(const OffsetMap& targetOffs, vector<string> axes, vector<pair<string,string>> index, F f)
+    {
+      if (axes.empty())
+        f(index);
+      else
+        {
+          auto j=axes.back();
+          auto k=targetOffs.find(j);
+          axes.pop_back();
+          if (k!=targetOffs.end())
+            for (auto& i: k->second)
+              {
+                index.emplace_back(j,i.first);
+                apply(targetOffs, axes, index, f);
+                index.pop_back();
+              }
+        }
+    }
+
+    // recursively apply f() to the indices of targetOffs
+    template <class F>
+    void apply(const OffsetMap& targetOffs, F f)
+    {
+      vector<string> axes;
+      for (auto& i: targetOffs)
+        axes.push_back(i.first);
+      apply(targetOffs,axes,{},f);
+    }
+
+    typedef vector<VariableValue::XVector> VVV;
+    void checkAllEntriesPresent(const VVV& x, const VVV& y)
+    {
+      for (auto& i: y)
+        if (none_of(x.begin(), x.end(),
+                    [&](const VariableValue::XVector& z)
+                    {return z.name==i.name;}))
+          throw error("invalidly initialised to variable"); 
+    }
+    
   }
-  
+ 
   EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
               const VariableValue& from1, const VariableValue& from2)
   {
@@ -661,122 +646,115 @@ namespace minsky
           break;
         }
 
-      RecursiveIndices ri(t->in1, t->in2);
-      vector<string> dims;
       switch (t->numArgs())
         {
         case 2:
           {
-            if (&to!=&from1 && &to!=&from2)
-              to.xVector.clear();
-            if (from1.xVector.empty() && from2.xVector.empty())
+            // check that all from2's xvector entries are present in to, and vice versa
+            if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
+            if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
+
+            if (from1.numElements()==1 && from2.numElements()==1)
               {
                 t->in1.push_back(from1.idx());
                 t->in2.push_back(from2.idx());
+                if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
+                  to.xVector.clear();
                 break;
               }
-            
-            // find the common set of indices shared by x1 and x2
-            map<string, map<string,unsigned>> xIdx2;
-            for (auto& k: from2.xVector)
+
+            OffsetMap from1Offsets(from1), from2Offsets(from2);
+
+            if (to.xVector.empty())
+              // compute the common intersection of shared dimensions,
+              // otherwise broadcast along the others
               {
-                unsigned i=0;
-                for (auto j=k.begin(); j!=k.end(); ++i, ++j)
-                  xIdx2[k.name][j->second]=i;
-              }
-
-
-            for (auto& i: from1.xVector)
-              {
-                auto j=xIdx2.find(i.name);
-                if (j!=xIdx2.end()) // common dimensions, find the intersection
+                for (auto& i: from1.xVector)
                   {
-                    size_t k=0;
-                    auto& in1IdxName=ri.in1idx[i.name];
-                    auto& in2IdxName=ri.in2idx[i.name];
-                    if (&to!=&from1 && &to!=&from2)
-                      to.xVector.emplace_back(i.name);
-                    for (auto l=i.begin(); l!=i.end(); ++l, ++k)
-                      {
-                        auto m=j->second.find(l->second);
-                        if (m!=j->second.end())
-                          {
-                            in1IdxName.push_back(k);
-                            in2IdxName.push_back(m->second);
-                            if (&to!=&from1 && &to!=&from2)
-                              to.xVector.back().push_back(*l);
-                          }
-                      }
+                    to.xVector.emplace_back(i.name);
+                    auto j=from2Offsets.find(i.name);
+                    if (j!=from2Offsets.end())
+                      for (auto& k: i)
+                        {
+                          auto l=j->second.find(k.second);
+                          if (l!=j->second.end())
+                            to.xVector.back().push_back(k);
+                        }
+                    else
+                      to.xVector.back()=i;
                   }
-                else
-                  {
-                    ri.in1idx[i.name].push_back(i.size());  // just store the vectors size, since indices are contiguous
-                    if (&to!=&from1 && &to!=&from2)
-                      to.xVector.push_back(i);
-                  }
-                dims.push_back(i.name);
-              }
-
-            // load up dimensions only present in from2
-            for (auto i: from2.xVector)
-              if (!ri.in2idx.count(i.name))
-                {
-                  ri.in2idx[i.name].push_back(i.size()); // just store the vectors size, since indices are contiguous
-                  if (&to!=&from1 && &to!=&from2)
+                for (auto& i: from2.xVector)
+                  if (!from1Offsets.count(i.name))
                     to.xVector.push_back(i);
-                  dims.push_back(i.name);
-                }
+              }
 
-            ri.loadStrides(ri.in1strides,from1.xVector);
-            ri.loadStrides(ri.in2strides,from2.xVector);
-            // flatten the indices - recursive algorithm to handle arbitrary dimensionality
-            ri.compute(from1.idx(),from2.idx(),dims);
+            apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                  {
+                    size_t offs1=from1.idx(), offs2=from2.idx();
+                    for (auto& i: x)
+                      {
+                        auto j=from1Offsets.find(i.first);
+                        if (j!=from1Offsets.end())
+                          {
+                            auto k=j->second.find(i.second);
+                            if (k!=j->second.end())
+                              offs1+=k->second;
+                            else
+                              throw error("invalid key");
+                          }
+                        // else allowed a missing dimension - add zero offset
+                        j=from2Offsets.find(i.first);
+                        if (j!=from2Offsets.end())
+                          {
+                            auto k=j->second.find(i.second);
+                            if (k!=j->second.end())
+                              offs2+=k->second;
+                            else
+                              throw error("invalid key");
+                          }
+                        // else allowed a missing dimension - add zero offset
+                      }
+                    t->in1.push_back(offs1);
+                    t->in2.push_back(offs2);
+                  });
+
             break;
           }
         case 1:
-          {
-            // broadcast from1 along all to's dimension not present in from1
-            for (auto& i: to.xVector)
-              {
-                dims.push_back(i.name);
-                ri.in2idx[i.name].push_back(i.size());
-              }
-            for (auto& i: from1.xVector)
-              {
-                if (find(dims.begin(), dims.end(),i.name)==dims.end())
-                  {
-                    if (&to!=&from1)
-                      to.xVector.push_back(i);
-                    dims.push_back(i.name);
-                    ri.in1idx[i.name].push_back(i.size());
-                  }
-                else
-                  {
-                    auto& v1=ri.in1idx[i.name];
-                    auto& v2=ri.in2idx[i.name];
-                    v1.clear(); v2.clear();
-                    for (size_t j=0; j<i.size(); ++j)
-                      {
-                        v1.push_back(j);
-                        v2.push_back(0);
-                      }
-                  }
-              }
-            if (!from1.xVector.empty())
-              {
-                ri.loadStrides(ri.in1strides,from1.xVector);
-                ri.compute(from1.idx(),0,dims);
-              }
-            else
-              for (size_t j=from1.idx(); j<from1.idx()+to.numElements(); ++j)
-                t->in1.push_back(j);
-            break;
-          }
+          if (to.idx()==-1 || to.xVector.empty())
+            to.xVector=from1.xVector;
+          if (to.xVector==from1.xVector)
+            for (size_t i=0; i<from1.numElements(); ++i)
+              t->in1.push_back(i+from1.idx());
+          else
+            {
+              OffsetMap from1Offsets(from1);
+              apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                    {
+                      size_t offs1=from1.idx();
+                      for (auto& i: x)
+                        {
+                          auto j=from1Offsets.find(i.first);
+                          if (j!=from1Offsets.end())
+                            {
+                              auto k=j->second.find(i.second);
+                              if (k!=j->second.end())
+                                offs1+=k->second;
+                            else
+                              throw error("invalid key");
+                            }
+                        // else allowed a missing dimension - add zero offset
+                        }
+                      t->in1.push_back(offs1);
+                    });
+            }
+          break;
         }
+
+      if (to.idx()==-1) to.allocValue();
       assert(t->numArgs()<1 || to.numElements()==t->in1.size());
       assert(t->numArgs()<2 || to.numElements()==t->in2.size());
       
-      if (to.idx()==-1) to.allocValue();
       t->out=to.idx();
       t->flow1=from1.isFlowVar();
       t->flow2=from2.isFlowVar();

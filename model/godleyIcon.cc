@@ -99,7 +99,7 @@ namespace minsky
       for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
         {
           VariablePtr newVar(varType, *nm);
-          set<VariablePtr>::const_iterator v=oldVars.find(newVar);
+          auto v=oldVars.find(newVar);
           if (v==oldVars.end())
             {
               // add new variable

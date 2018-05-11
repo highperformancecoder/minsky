@@ -100,6 +100,7 @@ namespace minsky
     void (*ravel_addHandle)(Ravel::RavelImpl* ravel, const char*, size_t, const char* labels[])=nullptr;
     unsigned (*ravel_numHandles)(Ravel::RavelImpl* ravel)=nullptr;
     const char* (*ravel_handleDescription)(Ravel::RavelImpl* ravel, size_t handle)=nullptr;
+    size_t (*ravel_numSliceLabels)(Ravel::RavelImpl* ravel, size_t axis)=nullptr;
     void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
     void (*ravel_displayFilterCaliper)(Ravel::RavelImpl* ravel, size_t axis, bool display)=nullptr;
     const char* (*ravel_toXML)(Ravel::RavelImpl* ravel)=nullptr;
@@ -165,6 +166,7 @@ namespace minsky
               ASG_FN_PTR(ravel_addHandle,lib);
               ASG_FN_PTR(ravel_numHandles,lib);
               ASG_FN_PTR(ravel_handleDescription,lib);
+              ASG_FN_PTR(ravel_numSliceLabels,lib);
               ASG_FN_PTR(ravel_sliceLabels,lib);
               ASG_FN_PTR(ravel_displayFilterCaliper,lib);
               ASG_FN_PTR(ravel_toXML,lib);
@@ -334,14 +336,21 @@ namespace minsky
             v.xVector.clear();
             for (size_t j=0; j<outHandles.size(); ++j)
               {
+                if (dims[j]==1) continue; //reduction of dimensions has taken place
                 auto h=outHandles[j];
-                vector<const char*> labels(dims[j]); 
+                vector<const char*> labels(ravel_numSliceLabels(ravel,h));
+                assert(ravel_numSliceLabels(ravel,h)==dims[j]);
                 ravel_sliceLabels(ravel,h,&labels[0]);
                 assert(all_of(labels.begin(), labels.end(),
                               [](const char* i){return bool(i);}));
                 set<double> testNum;
-                for (auto& i: labels)
-                  testNum.insert(atof(i));
+                try
+                  {
+                    for (auto& i: labels)
+                      testNum.insert(stod(i));
+                  }
+                catch (...) {} // throw means not convertible to float
+                
                 //numerically converted labels are all distinct
                 bool numerical=testNum.size()==labels.size(); 
                 v.xVector.emplace_back
@@ -353,6 +362,17 @@ namespace minsky
               }
             if (v.idx()==-1 || prevNumElem!=v.numElements())
               v.allocValue();
+#ifndef NDEBUG
+            if (dims.size()==v.dims().size())
+              for (size_t i=0; i<dims.size(); ++i)
+                assert(dims[i]==v.dims()[i]);
+            else // must be scalar
+              {
+                assert(v.numElements()==1);
+                for (auto i: dims)
+                  assert(i==1);
+              }
+#endif
             //assert(v.numElements()==sizeof(*tmp))
             for (size_t i=0; i<v.numElements(); ++i)
               *(v.begin()+i)=tmp[i];
@@ -377,6 +397,16 @@ namespace minsky
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
           }
         setRank(v.xVector.size());
+#ifndef NDEBUG
+        {
+          auto d=v.dims();
+          assert(d.size()==ravel_rank(ravel));
+          vector<size_t> outputHandles(d.size());
+          ravel_outputHandleIds(ravel,&outputHandles[0]);
+          for (size_t i=0; i<d.size(); ++i)
+            assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
+        }
+#endif
         ravelDC_loadData(dataCube, ravel, v.begin());
         applyState(state);
       }
