@@ -557,9 +557,7 @@ proc ravelRankDlg {} {
     } else {
         deiconify .ravelRank
     }
-    # TODO allow support of ranks higher than 2
-    #    .ravelRank.rank configure -from 0 -to [minsky.canvas.item.maxRank]
-        .ravelRank.rank configure -from 0 -to 2
+    .ravelRank.rank configure -from 0 -to [minsky.canvas.item.maxRank]
     .ravelRank.rank set [minsky.canvas.item.rank]
     
     ::tk::TabToWindow .ravelRank.rank
