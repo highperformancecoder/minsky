@@ -336,7 +336,6 @@ namespace minsky
             v.xVector.clear();
             for (size_t j=0; j<outHandles.size(); ++j)
               {
-                if (dims[j]==1) continue; //reduction of dimensions has taken place
                 auto h=outHandles[j];
                 vector<const char*> labels(ravel_numSliceLabels(ravel,h));
                 assert(ravel_numSliceLabels(ravel,h)==dims[j]);
@@ -366,14 +365,7 @@ namespace minsky
             if (dims.size()==v.dims().size())
               for (size_t i=0; i<dims.size(); ++i)
                 assert(dims[i]==v.dims()[i]);
-            else // must be scalar
-              {
-                assert(v.numElements()==1);
-                for (auto i: dims)
-                  assert(i==1);
-              }
 #endif
-            //assert(v.numElements()==sizeof(*tmp))
             for (size_t i=0; i<v.numElements(); ++i)
               *(v.begin()+i)=tmp[i];
           }

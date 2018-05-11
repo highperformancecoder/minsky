@@ -254,6 +254,8 @@ namespace minsky
         if (j==xVector.size()) // axis not present on LHS, so increase rank
           xVector.push_back(i);
       }
+    if (numElements()==0)
+      throw error("tensors nonconformant");
   }
   
 }
