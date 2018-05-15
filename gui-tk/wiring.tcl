@@ -963,7 +963,7 @@ proc importData {} {
     global workDir
     set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
     if [string length $f] {
-        minsky.canvas.item.readData $f
+        eval minsky.canvas.item.readData $f
     }
 }
 
