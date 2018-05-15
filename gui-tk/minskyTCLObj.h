@@ -56,6 +56,7 @@ namespace minsky
         argv0!="minsky.availableOperations" &&
         argv0!="minsky.canvas.select" &&
         argv0!="minsky.canvas.recentre" &&
+        argv0!="minsky.canvas.mouseDown" &&
         argv0!="minsky.canvas.requestRedraw" &&
         (argv0!="minsky.canvas.mouseMove"
          || m.eventRecord.get()) && /* ensure we record mouse movements, but filter from history */

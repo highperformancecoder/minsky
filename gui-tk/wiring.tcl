@@ -108,11 +108,11 @@ tooltip .wiring.menubar.line$menubarLine.note "Note"
 pack .wiring.menubar.line$menubarLine.note -side left 
 set helpTopics(.wiring.menubar.line$menubarLine.note) "Item"
 
-image create photo ravelImg -file $minskyHome/icons/ravel.gif
-button .wiring.menubar.line$menubarLine.ravel -image ravelImg \
-    -height 24 -width 37 -command {addRavel}
-tooltip .wiring.menubar.line$menubarLine.ravel "Ravel"
-pack .wiring.menubar.line$menubarLine.ravel -side left 
+#image create photo ravelImg -file $minskyHome/icons/ravel.gif
+#button .wiring.menubar.line$menubarLine.ravel -image ravelImg \
+#    -height 24 -width 37 -command {addRavel}
+#tooltip .wiring.menubar.line$menubarLine.ravel "Ravel"
+#pack .wiring.menubar.line$menubarLine.ravel -side left 
 
 # pack menubar lines
 for {set i 0} {$i<=$menubarLine} {incr i} {
@@ -988,7 +988,7 @@ proc importData {} {
     global workDir
     set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
     if [string length $f] {
-        minsky.canvas.item.readData $f
+        eval minsky.canvas.item.readData $f
     }
 }
 
