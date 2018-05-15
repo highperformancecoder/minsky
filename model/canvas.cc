@@ -33,16 +33,7 @@ namespace minsky
   void Canvas::mouseDown(float x, float y)
   {
     // firstly, see if the user is selecting an item
-//    itemFocus=model->findAny(&Group::items,
-//                       [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
-//    if (!itemFocus)
-//      // check for groups
-//      itemFocus=model->findAny(&Group::groups,
-//                               [&](const GroupPtr& i){return !i->displayContents() && i->contains(x,y);});
-
-    itemFocus=itemAt(x,y);
-    
-    if (itemFocus)
+    if (itemFocus=itemAt(x,y))
       {
         clickType=itemFocus->clickType(x,y);
         switch (clickType)
@@ -194,14 +185,9 @@ namespace minsky
             double rw=fabs(v->zoomFactor*rv.width()*cos(v->rotation*M_PI/180));
             v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
                          rw + 0.5*(v->sliderMin+v->sliderMax));
-            // propagate values for ticket #707
-//            try {
-//              if (minsky().reset_flag() || minsky().equations.empty())
-//                minsky().reset();
-//              else
-//                minsky().evalEquations();
-//            }
-//            catch (...) {}
+            // push History to prevent an unnecessary reset when
+            // adjusting the slider whilst paused. See ticket #812
+            minsky().pushHistory();
             requestRedraw();
           }
       }
@@ -538,7 +524,11 @@ namespace minsky
   {
     if (auto item=itemAt(x,y))
       if (item->handleArrows(dir))
-      requestRedraw();
+        {
+          requestRedraw();
+          minsky().pushHistory(); //for ticket #812
+        }
+    
   }
   
   void Canvas::zoomToDisplay()
