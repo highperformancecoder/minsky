@@ -254,7 +254,7 @@ namespace minsky
   void PlotWidget::addPlotPt(double t)
   {
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (yvars[pen].dims().size()==1 && yvars[pen].dims()[0]==1 && yvars[pen].idx()>=0)
+      if (yvars[pen].numElements()==1 && yvars[pen].idx()>=0)
         {
           double x,y;
           switch (xvars.size())
