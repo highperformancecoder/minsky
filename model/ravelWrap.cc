@@ -107,6 +107,7 @@ namespace minsky
     int (*ravel_fromXML)(Ravel::RavelImpl* ravel, const char*)=nullptr;
     void (*ravel_getHandleState)(const Ravel::RavelImpl* ravel, size_t handle, Ravel::HandleState* handleState)=nullptr;
     void (*ravel_setHandleState)(Ravel::RavelImpl* ravel, size_t handle, const Ravel::HandleState* handleState)=nullptr;
+    void (*ravel_adjustSlicer)(Ravel::RavelImpl* ravel, int)=nullptr;
 
     Ravel::Ravel::DataCube* (*ravelDC_new)()=nullptr;
     void (*ravelDC_delete)(Ravel::DataCube*)=nullptr;
@@ -173,6 +174,7 @@ namespace minsky
               ASG_FN_PTR(ravel_fromXML,lib);
               ASG_FN_PTR(ravel_getHandleState,lib);
               ASG_FN_PTR(ravel_setHandleState,lib);
+              ASG_FN_PTR(ravel_adjustSlicer,lib);
               ASG_FN_PTR(ravelDC_new,lib);
               ASG_FN_PTR(ravelDC_delete,lib);
               ASG_FN_PTR(ravelDC_initRavel,lib);
@@ -427,6 +429,11 @@ namespace minsky
       }
   }
   
+  void Ravel::adjustSlicer(int n)
+  {
+    ravel_adjustSlicer(ravel,n);
+  }
+
   Ravel::State Ravel::getState() const
   {
     State state;

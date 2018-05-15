@@ -58,6 +58,8 @@ namespace minsky
     unsigned maxRank() const;
     unsigned rank() const;
     void setRank(unsigned);
+    void adjustSlicer(int); ///< adjust currently sleected handle's slicer
+    bool handleArrows(int dir) override {adjustSlicer(dir); return true;}
     
     // representing the state of the handles
     struct HandleState
