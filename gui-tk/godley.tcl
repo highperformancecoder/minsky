@@ -64,14 +64,19 @@ proc openGodley {id} {
         menu .$id.context -tearoff 0
         menu .$id.context.import -tearoff 0
 
+        frame .$id.vscrollFrame
         scrollbar .$id.vscroll -orient vertical -command "scrollGodley $id row"
         .$id.vscroll set 0 0.25
-        pack .$id.vscroll -side right -fill y
+        pack .$id.vscroll -in .$id.vscrollFrame -anchor n -fill y -side top -expand 1
+        ttk::sizegrip .$id.sizegrip
+        pack .$id.sizegrip -in .$id.vscrollFrame -anchor s -side bottom
+        pack .$id.vscrollFrame -side right -anchor s -fill y 
+
         scrollbar .$id.hscroll -orient horiz -command "scrollGodley $id col"
         pack .$id.hscroll -side bottom -fill x 
         .$id.hscroll set 0 0.25
         pack .$id.table -fill both -expand 1
-
+        
         menu .$id.menubar -type menubar
 
         if {[tk windowingsystem] == "aqua"} {
