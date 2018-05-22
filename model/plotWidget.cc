@@ -330,7 +330,7 @@ namespace minsky
           
           setPen(pen, x, yv.begin(), d[0]);
           // higher rank y objects treated as multiple y vectors to plot
-          for (auto j=d[0]; j<yv.numElements(); j+=d[0])
+          for (auto j=d[0]; j<std::min(size_t(5)*d[0], yv.numElements()); j+=d[0])
             setPen(extraPen++, x, yv.begin()+j, d[0]);
         }
   }

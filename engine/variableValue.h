@@ -104,7 +104,7 @@ namespace minsky
     }
     size_t numElements() const {
       size_t s=1;
-      for (auto i: xVector) s*=i.size();
+      for (auto& i: xVector) s*=i.size();
       return s;
     }
 
