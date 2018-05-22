@@ -103,6 +103,8 @@ namespace minsky
     size_t (*ravel_numSliceLabels)(Ravel::RavelImpl* ravel, size_t axis)=nullptr;
     void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
     void (*ravel_displayFilterCaliper)(Ravel::RavelImpl* ravel, size_t axis, bool display)=nullptr;
+    void (*ravel_orderLabels)(Ravel::RavelImpl* ravel, size_t axis,
+                              Ravel::HandleState::HandleSort order)=nullptr;
     const char* (*ravel_toXML)(Ravel::RavelImpl* ravel)=nullptr;
     int (*ravel_fromXML)(Ravel::RavelImpl* ravel, const char*)=nullptr;
     void (*ravel_getHandleState)(const Ravel::RavelImpl* ravel, size_t handle, Ravel::HandleState* handleState)=nullptr;
@@ -170,6 +172,7 @@ namespace minsky
               ASG_FN_PTR(ravel_numSliceLabels,lib);
               ASG_FN_PTR(ravel_sliceLabels,lib);
               ASG_FN_PTR(ravel_displayFilterCaliper,lib);
+              ASG_FN_PTR(ravel_orderLabels,lib);
               ASG_FN_PTR(ravel_toXML,lib);
               ASG_FN_PTR(ravel_fromXML,lib);
               ASG_FN_PTR(ravel_getHandleState,lib);
@@ -313,7 +316,10 @@ namespace minsky
         else if (!ravelDC_initRavel(dataCube,ravel))
           throw error(ravel_lastErr());
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
-          ravel_displayFilterCaliper(ravel,i,true);
+          {
+            ravel_displayFilterCaliper(ravel,i,true);
+            ravel_orderLabels(ravel,i,HandleState::forward);
+          }
         setRank(ravel_numHandles(ravel));
       }
   }
@@ -390,6 +396,8 @@ namespace minsky
             for (auto& j: i)
               sl.push_back(j.second.c_str());
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
+            // set forward sort order
+            ravel_orderLabels(ravel,ravel_numHandles(ravel)-1,HandleState::forward);
           }
         setRank(v.xVector.size());
 #ifndef NDEBUG

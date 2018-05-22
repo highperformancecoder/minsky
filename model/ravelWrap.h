@@ -69,6 +69,8 @@ namespace minsky
       bool collapsed, displayFilterCaliper;
       enum ReductionOp {sum, prod, av, stddev, min, max};
       ReductionOp reductionOp;
+      enum HandleSort {none, forward, reverse, numForward, numReverse, custom};
+      HandleSort order;
     };
 
     struct State
