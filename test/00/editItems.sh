@@ -35,26 +35,26 @@ proc afterMinskyStarted {} {
   assert {[findObject Variable:flow]}
   editItem
   assert {[winfo ismapped .wiring.editVar]} "variable"
-  wm withdraw .wiring.editVar
+  destroy .wiring.editVar
   assert {![winfo ismapped .wiring.context]}
 
   minsky.addOperation integrate
   assert {[findObject IntOp]}
   editItem
   assert {[winfo ismapped .wiring.editConstant]} "integral"
-  wm withdraw .wiring.editConstant
+  destroy .wiring.editConstant
 
   minsky.addOperation data
   assert {[findObject DataOp]}
   editItem
   assert {[winfo ismapped .wiring.editConstant]} "data operation"
-  wm withdraw .wiring.editConstant
+  destroy .wiring.editConstant
 
   minsky.addOperation exp
   assert {[findObject Operation:exp]}
   editItem
   assert {[winfo ismapped .wiring.editOperation]} "data operation"
-  wm withdraw .wiring.editOperation
+  destroy .wiring.editOperation
 
   minsky.addPlot
   assert {[findObject PlotWidget]}
@@ -72,13 +72,13 @@ proc afterMinskyStarted {} {
   assert {[findObject Group]}
   editItem
   assert {[winfo ismapped .wiring.editGroup]} "group"
-  wm withdraw .wiring.editGroup
-  
+  destroy .wiring.editGroup
+
   minsky.addNote "hello"
   assert {[findObject Item]}
   editItem
   assert {[winfo ismapped .wiring.note]} "note"
-  wm withdraw .wiring.note
+  destroy .wiring.note
   grab release .wiring.note
 
   minsky.addSwitch

@@ -219,14 +219,14 @@
 <path style="stroke:none;" d="M 3.453125 -4.21875 L 3.453125 -3.484375 L 6.28125 -3.484375 L 6.28125 -4.21875 Z M 3.453125 -4.21875 "/>
 </symbol>
 <symbol overflow="visible" id="glyph3-0">
-<path style="stroke:none;" d="M 0.4375 0 L 0.4375 -8.671875 L 3.890625 -8.671875 L 3.890625 0 Z M 0.859375 -0.4375 L 3.453125 -0.4375 L 3.453125 -8.234375 L 0.859375 -8.234375 Z M 0.859375 -0.4375 "/>
+<path style="stroke:none;" d="M 0.4375 0 L 0.4375 -8.890625 L 3.984375 -8.890625 L 3.984375 0 Z M 0.890625 -0.4375 L 3.546875 -0.4375 L 3.546875 -8.4375 L 0.890625 -8.4375 Z M 0.890625 -0.4375 "/>
 </symbol>
 <symbol overflow="visible" id="glyph3-1">
-<path style="stroke:none;" d="M 7.703125 -7.109375 L 3.90625 0.171875 L 0.09375 -7.109375 Z M 7.703125 -7.109375 "/>
+<path style="stroke:none;" d="M 7.890625 -7.296875 L 4 0.171875 L 0.09375 -7.296875 Z M 7.890625 -7.296875 "/>
 </symbol>
 </g>
 </defs>
-<g id="surface691">
+<g id="surface694">
 <path style="fill:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 60 30 L 60 166.421875 " transform="matrix(1,0,0,1,1,-3)"/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-1" x="64" y="38.212891"/>
