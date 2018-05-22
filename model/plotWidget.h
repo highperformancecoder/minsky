@@ -86,6 +86,7 @@ namespace minsky
     void makeDisplayPlot();
           
     void resize(const LassoBox&) override;
+    ClickType::Type clickType(float x, float y) override;
 
     /// set autoscaling
     void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();}

@@ -248,6 +248,20 @@ namespace minsky
     bb.update(*this);
   }
 
+  // specialisation to avoid rerendering plots (potentially expensive)
+  ClickType::Type PlotWidget::clickType(float x, float y)
+  {
+    // firstly, check whether a port has been selected
+    for (auto& p: ports)
+      {
+        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor)
+          return ClickType::onPort;
+      }
+
+    return (abs(x-this->x())<0.5*width*zoomFactor &&
+            abs(y-this->y())<0.5*height*zoomFactor)?
+      ClickType::onItem: ClickType::outside;
+  }
   
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;
 
@@ -330,7 +344,7 @@ namespace minsky
           
           setPen(pen, x, yv.begin(), d[0]);
           // higher rank y objects treated as multiple y vectors to plot
-          for (auto j=d[0]; j<std::min(size_t(5)*d[0], yv.numElements()); j+=d[0])
+          for (auto j=d[0]; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
             setPen(extraPen++, x, yv.begin()+j, d[0]);
         }
   }
