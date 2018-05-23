@@ -21,7 +21,7 @@
 #include "selection.h"
 #include "minsky.h"
 #include <ecolab_epilogue.h>
-static const int ravelVersion=1;
+static const int ravelVersion=2;
 
 #include <string>
 #include <cmath>
