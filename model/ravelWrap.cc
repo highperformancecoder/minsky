@@ -282,7 +282,7 @@ namespace minsky
     for (auto& p: ports)
       if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
         return ClickType::onPort;
-    double r=1.1*zoomFactor*ravel_radius(ravel);
+    double r=1.1*zoomFactor*(ravel? ravel_radius(ravel): defaultRadius);
     if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
       return ClickType::outside;
     else if (std::abs(xx-x())<=r && std::abs(yy-y())<=r)
