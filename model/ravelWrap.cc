@@ -474,7 +474,11 @@ namespace minsky
           }
         vector<size_t> ids;
         for (auto& i: state.outputHandles)
-          ids.push_back(nameToIdx[i]);
+          {
+            auto j=nameToIdx.find(i);
+            if (j!=nameToIdx.end())
+              ids.push_back(j->second);
+          }
         ravel_setOutputHandleIds(ravel,ids.size(),&ids[0]);
       }
   }
