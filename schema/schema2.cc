@@ -362,7 +362,10 @@ namespace schema2
             }
           catch (...) {}
         if (y.ravelState)
-          x1->applyState(*y.ravelState);
+          {
+            x1->applyState(*y.ravelState);
+            SchemaHelper::initHandleState(*x1,*y.ravelState);
+          }
       }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
       {

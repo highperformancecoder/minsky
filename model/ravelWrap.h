@@ -30,6 +30,27 @@ namespace minsky
   public:
     struct RavelImpl;
     struct DataCube;
+
+    // representing the state of the handles
+    struct HandleState
+    {
+      double x,y; ///< handle tip coordinates (only angle important, not length)
+      size_t sliceIndex, sliceMin, sliceMax;
+      bool collapsed, displayFilterCaliper;
+      enum ReductionOp {sum, prod, av, stddev, min, max};
+      ReductionOp reductionOp;
+      enum HandleSort {none, forward, reverse, numForward, numReverse, custom};
+      HandleSort order;
+    };
+
+    struct State
+    {
+      std::map<std::string, HandleState> handleStates;
+      std::vector<std::string> outputHandles;
+      bool empty() const {return handleStates.empty();}
+      void clear() {handleStates.clear(); outputHandles.clear();}
+    };
+
   private:
     Exclude<RavelImpl*> ravel=nullptr;
     Exclude<DataCube*> dataCube=nullptr;
@@ -38,6 +59,13 @@ namespace minsky
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     std::string m_filename;
     const double defaultRadius=100; ///< initial size of a Ravel widget
+    
+    /// used entirely to defer persisted state data until after first
+    /// load from a variable
+    State initState;
+
+    friend struct SchemaHelper;
+    
   public:
     Ravel();
     ~Ravel();
@@ -61,24 +89,6 @@ namespace minsky
     void adjustSlicer(int); ///< adjust currently sleected handle's slicer
     bool handleArrows(int dir) override {adjustSlicer(dir); return true;}
     
-    // representing the state of the handles
-    struct HandleState
-    {
-      double x,y; ///< handle tip coordinates (only angle important, not length)
-      size_t sliceIndex, sliceMin, sliceMax;
-      bool collapsed, displayFilterCaliper;
-      enum ReductionOp {sum, prod, av, stddev, min, max};
-      ReductionOp reductionOp;
-      enum HandleSort {none, forward, reverse, numForward, numReverse, custom};
-      HandleSort order;
-    };
-
-    struct State
-    {
-      std::map<std::string, HandleState> handleStates;
-      std::vector<std::string> outputHandles;
-    };
-
     /// get the current state of the Ravel
     State getState() const;
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged

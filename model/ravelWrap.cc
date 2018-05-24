@@ -388,7 +388,9 @@ namespace minsky
   {
     if (ravel && dataCube)
       {
-        State state=getState();
+        // this ensure that handles are restored correctly after loading a .mky file. 
+        State state=initState.empty()? getState(): initState;
+        initState.clear();
         ravel_clear(ravel);
         for (auto& i: v.xVector)
           {
