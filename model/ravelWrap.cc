@@ -396,8 +396,10 @@ namespace minsky
             for (auto& j: i)
               sl.push_back(j.second.c_str());
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
+            size_t h=ravel_numHandles(ravel)-1;
+            ravel_displayFilterCaliper(ravel,h,true);
             // set forward sort order
-            ravel_orderLabels(ravel,ravel_numHandles(ravel)-1,HandleState::forward);
+            ravel_orderLabels(ravel,h,HandleState::forward);
           }
         setRank(v.xVector.size());
 #ifndef NDEBUG
