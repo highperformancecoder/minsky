@@ -322,6 +322,7 @@ namespace schema2
     minsky::LocalMinsky lm(m);
     populateGroup(*m.model);
     m.model->setZoom(zoomFactor);
+    m.model->bookmarks=bookmarks;
     
     m.stepMin=rungeKutta.stepMin; 
     m.stepMax=rungeKutta.stepMax; 
@@ -415,6 +416,7 @@ namespace schema2
         if (y.width) x1->width=*y.width;
         if (y.height) x1->height=*y.height;
         if (y.name) x1->title=*y.name;
+        if (y.bookmarks) x1->bookmarks=*y.bookmarks;
       }
   }
 
