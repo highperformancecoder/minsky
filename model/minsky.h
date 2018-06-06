@@ -21,6 +21,7 @@
 #define MINSKY_H
 
 #include "intrusiveMap.h"
+#include "bookmark.h"
 #include "selection.h"
 #include "godleyIcon.h"
 #include "operation.h"

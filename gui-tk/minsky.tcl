@@ -261,6 +261,9 @@ menu .menubar.file
 menu .menubar.edit
 .menubar add cascade -menu .menubar.edit -label Edit -underline 0
 
+menu .menubar.bookmarks -postcommand generateBookmarkMenu
+.menubar add cascade -menu .menubar.bookmarks -label Bookmarks -underline 0
+menu .menubar.bookmarks.deleteMenu
 
 menu .menubar.ops
 .menubar add cascade -menu .menubar.ops -label Insert -underline 0
@@ -442,6 +445,36 @@ if {$classicMode} {
 bind .controls.step <ButtonPress-1> {set buttonPressed 1; autoRepeatButton .controls.step}
 bind . <ButtonRelease-1> {set buttonPressed 0}
 
+proc generateBookmarkMenu {} {
+    .menubar.bookmarks delete 0 end
+    .menubar.bookmarks add command -label "Bookmark this position" -command addBookMark
+    .menubar.bookmarks.deleteMenu delete 0 end
+    .menubar.bookmarks add cascade -label "Delete ..." -menu .menubar.bookmarks.deleteMenu
+    .menubar.bookmarks add separator
+    set p 0
+    foreach i [minsky.canvas.model.bookmarkList] {
+        .menubar.bookmarks add command -label $i -command "canvas.model.gotoBookmark $p; canvas.requestRedraw"
+        .menubar.bookmarks.deleteMenu add command -label $i -command "canvas.model.deleteBookmark $p"
+        incr p
+    }
+}
+
+proc addBookMark {} {
+    toplevel .bookMarkDialog
+    frame .bookMarkDialog.name
+    label .bookMarkDialog.name.text -text "Bookmark name"
+    entry .bookMarkDialog.name.val
+    pack .bookMarkDialog.name.text .bookMarkDialog.name.val -side left
+    pack .bookMarkDialog.name
+    buttonBar .bookMarkDialog {
+        minsky.canvas.model.addBookmark [.bookMarkDialog.name.val get]
+    }
+    tkwait visibility .bookMarkDialog
+    grab set .bookMarkDialog
+    wm transient .bookMarkDialog
+   
+}
+    
 # self submitting script that continues while a button is pressed
 proc invokeButton button {
     global buttonPressed

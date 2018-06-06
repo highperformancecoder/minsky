@@ -20,6 +20,7 @@
 #ifndef GROUP_H
 #define GROUP_H
 #include "intrusiveMap.h"
+#include "bookmark.h"
 #include "item.h"
 #include "plotWidget.h"
 #include "wire.h"
@@ -327,6 +328,31 @@ namespace minsky
 
     /// rotate all conatined items by 180 degrees
     void flipContents();
+
+    std::vector<Bookmark> bookmarks;
+    /// returns list of bookmark names for populating menu 
+    std::vector<std::string> bookmarkList() {
+      std::vector<std::string> r;
+      for (auto& b: bookmarks) r.push_back(b.name);
+      return r;
+    }
+    void addBookmark(const std::string& name) {
+      bookmarks.emplace_back(x(), y(), zoomFactor, name);
+    }
+    void deleteBookmark(size_t i) {
+      if (i<bookmarks.size())
+        bookmarks.erase(bookmarks.begin()+i);
+    }
+    void gotoBookmark(size_t i) {
+      if (i<bookmarks.size())
+        {
+          auto& b=bookmarks[i];
+          moveTo(b.x, b.y);
+          setZoom(b.zoom);
+        }
+    }
+    
+
   };
 
   template <class M, class C>

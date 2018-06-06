@@ -134,6 +134,7 @@ namespace schema2
     Optional<bool> logx, logy;
     Optional<Plot::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
+    Optional<std::vector<minsky::Bookmark>> bookmarks;
     std::shared_ptr<ecolab::Plot::Side> legend;
 
     Item() {}
@@ -161,7 +162,7 @@ namespace schema2
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.width), height(g.height), name(g.title) {} 
+      width(g.width), height(g.height), name(g.title), bookmarks(g.bookmarks) {} 
 
     // schema1 importers
     Item(const schema1::Operation& it):
@@ -259,7 +260,8 @@ namespace schema2
     vector<Group> groups;
     RungeKutta rungeKutta;
     double zoomFactor=1;
-
+    vector<minsky::Bookmark> bookmarks;
+    
     /// checks that all items are uniquely identified.
     //bool validate() const;
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
@@ -267,6 +269,7 @@ namespace schema2
     Minsky(const minsky::Minsky& m): Minsky(*m.model) {
       rungeKutta=RungeKutta(m);
       zoomFactor=m.model->zoomFactor;
+      bookmarks=m.model->bookmarks;
       //assert(validate());
     }
 
