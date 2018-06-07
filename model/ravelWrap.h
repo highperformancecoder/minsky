@@ -69,6 +69,11 @@ namespace minsky
   public:
     Ravel();
     ~Ravel();
+    // copy operations needed for clone, but not really used for now
+    // define them as empty operations to prevent double frees if accidentally used
+    void operator=(const Ravel&) {}
+    Ravel(const Ravel&) {}
+    
     const char* ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
@@ -86,8 +91,21 @@ namespace minsky
     unsigned maxRank() const;
     unsigned rank() const;
     void setRank(unsigned);
-    void adjustSlicer(int); ///< adjust currently sleected handle's slicer
+    void adjustSlicer(int); ///< adjust currently selected handle's slicer
     bool handleArrows(int dir) override {adjustSlicer(dir); return true;}
+
+    /// enable/disable calipers on currently selected handle
+    bool displayFilterCaliper() const;
+    bool setDisplayFilterCaliper(bool);
+    bool toggleDisplayFilterCaliper()
+    {setDisplayFilterCaliper(!displayFilterCaliper());}
+    /// @}
+
+    /// @{
+    /// the handle sorting order for currently selected handle
+    HandleState::HandleSort sortOrder() const;
+    HandleState::HandleSort setSortOrder(HandleState::HandleSort);
+    /// @}
     
     /// get the current state of the Ravel
     State getState() const;

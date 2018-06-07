@@ -527,6 +527,9 @@ proc contextMenu {x y X Y} {
         }
         Ravel {
             .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
+            global sortOrder
+            set sortOrder [minsky.canvas.item.sortOrder]
+            .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
             .wiring.context add command -label "Adjust ravel rank" -command ravelRankDlg
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
         }
@@ -538,6 +541,16 @@ proc contextMenu {x y X Y} {
     .wiring.context add command -label "Browse object" -command "obj_browser minsky.canvas.item.*"
     .wiring.context add command -label "Delete [minsky.canvas.item.classType]" -command "canvas.deleteItem"
     tk_popup .wiring.context $X $Y
+}
+
+menu .wiring.context.axisMenu
+.wiring.context.axisMenu add command -label "Toggle Calipers" -command minsky.canvas.item.toggleDisplayFilterCaliper
+menu .wiring.context.axisMenu.sort 
+.wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort 
+set sortOrder none
+foreach order {none forward reverse numForward numReverse} {
+    .wiring.context.axisMenu.sort add radiobutton -label $order -command "minsky.canvas.item.setSortOrder $order" \
+        -value $order -variable sortOrder
 }
 
 proc loadCSVIntoRavel {} {

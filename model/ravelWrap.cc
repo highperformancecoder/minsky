@@ -99,6 +99,7 @@ namespace minsky
     void (*ravel_setOutputHandleIds)(Ravel::RavelImpl* ravel, size_t rank, size_t ids[])=nullptr;
     void (*ravel_addHandle)(Ravel::RavelImpl* ravel, const char*, size_t, const char* labels[])=nullptr;
     unsigned (*ravel_numHandles)(Ravel::RavelImpl* ravel)=nullptr;
+    int (*ravel_selectedHandle)(Ravel::RavelImpl* ravel)=nullptr;
     const char* (*ravel_handleDescription)(Ravel::RavelImpl* ravel, size_t handle)=nullptr;
     size_t (*ravel_numSliceLabels)(Ravel::RavelImpl* ravel, size_t axis)=nullptr;
     void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
@@ -164,6 +165,7 @@ namespace minsky
               ASG_FN_PTR(ravel_rescale,lib);
               ASG_FN_PTR(ravel_radius,lib);
               ASG_FN_PTR(ravel_rank,lib);
+              ASG_FN_PTR(ravel_selectedHandle,lib);
               ASG_FN_PTR(ravel_outputHandleIds,lib);
               ASG_FN_PTR(ravel_setOutputHandleIds,lib);
               ASG_FN_PTR(ravel_addHandle,lib);
@@ -446,6 +448,49 @@ namespace minsky
     ravel_adjustSlicer(ravel,n);
   }
 
+  bool Ravel::displayFilterCaliper() const
+  {
+    int h=ravel_selectedHandle(ravel);
+    if (h>=0)
+      {
+        HandleState state;
+        ravel_getHandleState(ravel,h,&state);
+        return state.displayFilterCaliper;
+      }
+    else
+      return false;
+  }
+    
+  bool Ravel::setDisplayFilterCaliper(bool x)
+  {
+    int h=ravel_selectedHandle(ravel);
+    if (h>=0)
+      ravel_displayFilterCaliper(ravel,h,x);
+    return x;
+  }
+
+  Ravel::HandleState::HandleSort Ravel::sortOrder() const
+  {
+    int h=ravel_selectedHandle(ravel);
+    if (h>=0)
+      {
+        HandleState state;
+        ravel_getHandleState(ravel,h,&state);
+        return state.order;
+      }
+    else
+      return HandleState::none;
+  }
+ 
+  Ravel::HandleState::HandleSort Ravel::setSortOrder(Ravel::HandleState::HandleSort x)
+  {
+    int h=ravel_selectedHandle(ravel);
+    if (h>=0)
+      ravel_orderLabels(ravel,h,x);
+    return x;
+  }
+
+  
   Ravel::State Ravel::getState() const
   {
     State state;
