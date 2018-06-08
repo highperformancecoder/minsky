@@ -1041,6 +1041,8 @@
       <string>Firm</string>
       <string>Worker</string>
       <string>Safe</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Lend</string>
@@ -1049,11 +1051,15 @@
       <string>A</string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Loan</string>
       <string></string>
       <string>A</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -1065,6 +1071,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Pay&#32;Interest</string>
@@ -1073,11 +1081,15 @@
       <string>-B</string>
       <string></string>
       <string>B</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Payment</string>
       <string></string>
       <string>-B</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -1089,6 +1101,8 @@
       <string>C</string>
       <string></string>
       <string>-C</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Wages</string>
@@ -1096,6 +1110,8 @@
       <string></string>
       <string>-D</string>
       <string>D</string>
+      <string></string>
+      <string></string>
       <string></string>
      </vector>
      <vector>
@@ -1105,6 +1121,8 @@
       <string>E</string>
       <string>-E</string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Consume</string>
@@ -1113,6 +1131,8 @@
       <string>F</string>
       <string></string>
       <string>-F</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Repay</string>
@@ -1121,11 +1141,15 @@
       <string>-G</string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Repay</string>
       <string></string>
       <string>-G</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -1138,6 +1162,8 @@
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
   </items>
@@ -1154,4 +1180,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

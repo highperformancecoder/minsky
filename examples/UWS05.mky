@@ -94,7 +94,7 @@
      <float>37</float>
      <float>99</float>
      <float>155.145</float>
-     <float>3.51959</float>
+     <float>3.5196</float>
      <float>225</float>
      <float>285.25</float>
     </coords>
@@ -803,6 +803,8 @@
       <string>Safe</string>
       <string>Vault</string>
       <string>Workers</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Lend</string>
@@ -811,11 +813,15 @@
       <string></string>
       <string>-A</string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Loan</string>
       <string></string>
       <string>A</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -827,6 +833,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Servicing&#32;Debt</string>
@@ -835,11 +843,15 @@
       <string>B</string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Servicing</string>
       <string></string>
       <string>-B</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -851,6 +863,8 @@
       <string></string>
       <string></string>
       <string>C</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Consumption</string>
@@ -859,12 +873,16 @@
       <string></string>
       <string></string>
       <string>-D</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Consumption</string>
       <string>E</string>
       <string></string>
       <string>-E</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
      </vector>
@@ -876,6 +894,8 @@
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
   </items>
@@ -892,4 +912,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

@@ -336,7 +336,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>110</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -456,7 +456,7 @@
      <int>28</int>
      <int>56</int>
     </ports>
-    <name>:K</name>
+    <name>K</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -477,7 +477,7 @@
      <int>16</int>
      <int>58</int>
     </ports>
-    <name>:WageRate</name>
+    <name>WageRate</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -597,4 +597,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1.21</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

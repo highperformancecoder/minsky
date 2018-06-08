@@ -921,6 +921,8 @@
       <string>FD</string>
       <string>WD</string>
       <string>BS</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Lend&#32;from&#32;Vault</string>
@@ -929,11 +931,15 @@
       <string>A</string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Loan</string>
       <string></string>
       <string>A</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -945,6 +951,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Service&#32;Debt</string>
@@ -953,11 +961,15 @@
       <string>-B</string>
       <string></string>
       <string>B</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Payment</string>
       <string></string>
       <string>-B</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -969,6 +981,8 @@
       <string>-C</string>
       <string>C</string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Consume</string>
@@ -976,6 +990,8 @@
       <string></string>
       <string>D</string>
       <string>-D</string>
+      <string></string>
+      <string></string>
       <string></string>
      </vector>
      <vector>
@@ -985,6 +1001,8 @@
       <string>E</string>
       <string></string>
       <string>-E</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Repay&#32;Debt</string>
@@ -993,11 +1011,15 @@
       <string>-F</string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Repayment</string>
       <string></string>
       <string>-F</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -1010,6 +1032,8 @@
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
   </items>
@@ -1026,4 +1050,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

@@ -725,7 +725,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>1.42857</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -767,7 +767,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>1.11111</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -788,7 +788,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>210</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -809,7 +809,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>23.3333</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -830,7 +830,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>13.3333</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -851,7 +851,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>45</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -976,7 +976,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>13.3333</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -997,7 +997,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>45</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -1060,7 +1060,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>210</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -1121,7 +1121,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>13.3333</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -1142,7 +1142,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>45</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -1226,7 +1226,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>1.42857</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -1247,7 +1247,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>1.11111</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -1268,7 +1268,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>23.3333</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2610,7 +2610,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>23.3333</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2631,7 +2631,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>210</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -3071,35 +3071,42 @@
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>Patient</string>
+      <string></string>
       <string>NW_P</string>
      </vector>
      <vector>
       <string>Initial&#32;Conditions</string>
       <string>90</string>
+      <string></string>
       <string>90</string>
      </vector>
      <vector>
       <string>Consumption</string>
       <string>Cons_I</string>
+      <string></string>
       <string>Cons_I</string>
      </vector>
      <vector>
       <string>Consumption</string>
       <string>-Cons_P</string>
+      <string></string>
       <string>-Cons_P</string>
      </vector>
      <vector>
       <string>Cons&#32;bankers</string>
       <string>Cons_{BP}</string>
+      <string></string>
       <string>Cons_{BP}</string>
      </vector>
      <vector>
       <string>Consumption&#32;by&#32;workers</string>
       <string>Cons_{WP}</string>
+      <string></string>
       <string>Cons_{WP}</string>
      </vector>
      <vector>
       <string>Lend&#32;money</string>
+      <string></string>
       <string></string>
       <string></string>
      </vector>
@@ -3107,13 +3114,16 @@
       <string>Repay&#32;loans</string>
       <string></string>
       <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Hire&#32;workers</string>
       <string>-Wages_P</string>
+      <string></string>
       <string>-Wages_P</string>
      </vector>
      <vector>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -3122,6 +3132,7 @@
     <assetClasses>
      <AssetClass>noAssetClass</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
      <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
@@ -3237,37 +3248,44 @@
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>Workers</string>
+      <string></string>
       <string>NW_{Workers}</string>
      </vector>
      <vector>
       <string>Initial&#32;Conditions</string>
       <string>0</string>
+      <string></string>
       <string>-0</string>
      </vector>
      <vector>
       <string>Consumption&#32;by&#32;workers</string>
       <string>-Cons_{WI}</string>
+      <string></string>
       <string>-Cons_{WI}</string>
      </vector>
      <vector>
       <string></string>
       <string>-Cons_{WP}</string>
+      <string></string>
       <string>-Cons_{WP}</string>
      </vector>
      <vector>
       <string>Hire&#32;workers</string>
       <string>Wages_I</string>
+      <string></string>
       <string>Wages_I</string>
      </vector>
      <vector>
       <string></string>
       <string>Wages_P</string>
+      <string></string>
       <string>Wages_P</string>
      </vector>
     </data>
     <assetClasses>
      <AssetClass>noAssetClass</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
      <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
@@ -3285,4 +3303,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>
