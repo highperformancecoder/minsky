@@ -778,10 +778,10 @@ proc scrollCanvases {xyview args} {
         .wiring {
             set x [model.x]
             set y [model.y]
-            set x1 10000
-            set y1 10000
-            set w 20000
-            set h 20000
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
         }
         .equations {
             set x [equationDisplay.offsx]
@@ -802,6 +802,7 @@ proc scrollCanvases {xyview args} {
         scroll {
             switch [lindex $args 2] {
                 units {set incr [expr [lindex $args 1]*0.01]}
+                # page corresponds to one full screens worth
                 pages {set incr [expr [lindex $args 1]*0.1]}
             }
             switch $xyview {
@@ -815,6 +816,11 @@ scrollbar .vscroll -orient vertical -command "scrollCanvases yview"
 scrollbar .hscroll -orient horiz -command "scrollCanvases xview"
 update
 setScrollBars
+
+bind . <Key-Prior> {scrollCanvases yview scroll -1 pages}
+bind . <Key-Next> {scrollCanvases yview scroll 1 pages}
+bind . <Key-Home> {scrollCanvases xview scroll -1 pages}
+bind . <Key-End> {scrollCanvases xview scroll 1 pages}
 
 # adjust cursor for pan mode
 if {[tk windowingsystem] == "aqua"} {
