@@ -407,10 +407,8 @@ namespace minsky
   
   string Minsky::ravelVersion() const
   {
-    if (ravel_version)
-      return string(ravel_version())+(ravelLib.lib?"":" but incompatible");
-    else if (ravelLib.versionFound.length())
-      return ravelLib.versionFound+" but incompatible";
+    if (ravelLib.versionFound.length())
+      return ravelLib.versionFound+(ravelLib.lib?"":" but incompatible");
     else
       return "unavailable";
   }
