@@ -679,8 +679,8 @@
     <coords>
      <float>1078.49</float>
      <float>612.01</float>
-     <float>215.776</float>
-     <float>-2169.24</float>
+     <float>215.778</float>
+     <float>-2169.23</float>
      <float>874.489</float>
      <float>549.01</float>
     </coords>
@@ -702,8 +702,8 @@
     <coords>
      <float>1063.49</float>
      <float>669.01</float>
-     <float>196.374</float>
-     <float>-2233.92</float>
+     <float>196.376</float>
+     <float>-2233.91</float>
      <float>770.989</float>
      <float>592.76</float>
     </coords>
@@ -775,8 +775,8 @@
     <coords>
      <float>774.447</float>
      <float>99.1551</float>
-     <float>429.642</float>
-     <float>-152.977</float>
+     <float>429.637</float>
+     <float>-152.981</float>
      <float>1037.62</float>
      <float>-26.9716</float>
     </coords>
@@ -793,8 +793,8 @@
     <coords>
      <float>718.993</float>
      <float>122.791</float>
-     <float>422.499</float>
-     <float>-154.938</float>
+     <float>422.495</float>
+     <float>-154.941</float>
      <float>1037.62</float>
      <float>-8.9716</float>
     </coords>
@@ -1584,7 +1584,7 @@
      <int>0</int>
      <int>185</int>
     </ports>
-    <name>:a</name>
+    <name>a</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1605,7 +1605,7 @@
      <int>187</int>
      <int>188</int>
     </ports>
-    <name>:a</name>
+    <name>a</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1668,7 +1668,7 @@
      <int>12</int>
      <int>196</int>
     </ports>
-    <name>:N</name>
+    <name>N</name>
     <init>120</init>
     <slider>
      <visible>false</visible>
@@ -1689,7 +1689,7 @@
      <int>198</int>
      <int>199</int>
     </ports>
-    <name>:N</name>
+    <name>N</name>
     <init>120</init>
     <slider>
      <visible>false</visible>
@@ -1710,7 +1710,7 @@
      <int>24</int>
      <int>201</int>
     </ports>
-    <name>:W</name>
+    <name>W</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1731,7 +1731,7 @@
      <int>203</int>
      <int>204</int>
     </ports>
-    <name>:W</name>
+    <name>W</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -2146,7 +2146,7 @@
      <int>64</int>
      <int>258</int>
     </ports>
-    <name>:K_R</name>
+    <name>K_R</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -2167,7 +2167,7 @@
      <int>260</int>
      <int>261</int>
     </ports>
-    <name>:K_R</name>
+    <name>K_R</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -2313,7 +2313,7 @@
      <int>96</int>
      <int>280</int>
     </ports>
-    <name>:P</name>
+    <name>P</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -2334,7 +2334,7 @@
      <int>282</int>
      <int>283</int>
     </ports>
-    <name>:P</name>
+    <name>P</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -2355,7 +2355,7 @@
      <int>285</int>
      <int>286</int>
     </ports>
-    <name>:W</name>
+    <name>W</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -2376,7 +2376,7 @@
      <int>288</int>
      <int>289</int>
     </ports>
-    <name>:a</name>
+    <name>a</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -2481,7 +2481,7 @@
      <int>303</int>
      <int>304</int>
     </ports>
-    <name>:P</name>
+    <name>P</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -2607,7 +2607,7 @@
      <int>321</int>
      <int>322</int>
     </ports>
-    <name>:P</name>
+    <name>P</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -4151,6 +4151,8 @@
     <rotation>0</rotation>
     <ports>
     </ports>
+    <width>100</width>
+    <height>100</height>
     <items>
      <int>527</int>
      <int>531</int>
@@ -4183,6 +4185,8 @@
     <rotation>180</rotation>
     <ports>
     </ports>
+    <width>100</width>
+    <height>100</height>
     <items>
      <int>572</int>
      <int>576</int>
@@ -4215,6 +4219,8 @@
     <rotation>0</rotation>
     <ports>
     </ports>
+    <width>100</width>
+    <height>100</height>
     <items>
      <int>617</int>
      <int>621</int>
@@ -4250,4 +4256,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

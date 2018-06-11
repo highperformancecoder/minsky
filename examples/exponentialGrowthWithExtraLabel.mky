@@ -82,7 +82,7 @@
      <int>0</int>
      <int>8</int>
     </ports>
-    <name>:y</name>
+    <name>y</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -183,4 +183,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

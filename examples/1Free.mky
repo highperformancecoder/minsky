@@ -6,14 +6,14 @@
     <from>8</from>
     <to>21</to>
     <coords>
-     <float>94.48</float>
-     <float>348.831</float>
-     <float>70.4518</float>
-     <float>378.659</float>
-     <float>33.9953</float>
-     <float>191.405</float>
-     <float>33</float>
-     <float>94.88</float>
+     <float>106.48</float>
+     <float>296.831</float>
+     <float>82.4518</float>
+     <float>326.659</float>
+     <float>45.9953</float>
+     <float>139.405</float>
+     <float>45</float>
+     <float>42.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -21,14 +21,14 @@
     <from>4</from>
     <to>24</to>
     <coords>
-     <float>139.48</float>
-     <float>348.831</float>
-     <float>79.8787</float>
-     <float>411.611</float>
-     <float>34.5818</float>
-     <float>227.244</float>
-     <float>3</float>
-     <float>121.88</float>
+     <float>151.48</float>
+     <float>296.831</float>
+     <float>91.8787</float>
+     <float>359.611</float>
+     <float>46.5818</float>
+     <float>175.244</float>
+     <float>15</float>
+     <float>69.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -36,12 +36,12 @@
     <from>0</from>
     <to>27</to>
     <coords>
-     <float>177.48</float>
-     <float>349.831</float>
-     <float>39.5135</float>
-     <float>468.95</float>
-     <float>3</float>
-     <float>148.88</float>
+     <float>189.48</float>
+     <float>297.831</float>
+     <float>51.5135</float>
+     <float>416.95</float>
+     <float>15</float>
+     <float>96.88</float>
     </coords>
    </Wire>
    <Wire>
@@ -431,6 +431,8 @@
       <string>Loans</string>
       <string>Firms</string>
       <string>Safe</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Initial&#32;Conditions</string>
@@ -438,6 +440,8 @@
       <string>0</string>
       <string>0</string>
       <string>0</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Lend&#32;from&#32;Vault</string>
@@ -445,11 +449,15 @@
       <string></string>
       <string>2Loan</string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Loan</string>
       <string></string>
       <string>2Loan</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
      </vector>
@@ -459,6 +467,8 @@
       <string>IntLoan</string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Pay&#32;Interest</string>
@@ -466,11 +476,15 @@
       <string></string>
       <string>-IntLoan</string>
       <string>IntLoan</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Interest&#32;Payment</string>
       <string></string>
       <string>-IntLoan</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
      </vector>
@@ -480,6 +494,8 @@
       <string></string>
       <string>FirmInt</string>
       <string>-FirmInt</string>
+      <string></string>
+      <string></string>
      </vector>
     </data>
     <assetClasses>
@@ -488,6 +504,8 @@
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
   </items>
@@ -504,4 +522,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

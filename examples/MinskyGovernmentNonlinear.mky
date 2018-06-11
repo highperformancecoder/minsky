@@ -216,7 +216,7 @@
      <float>802.073</float>
      <float>420.298</float>
      <float>853.114</float>
-     <float>497.342</float>
+     <float>497.341</float>
      <float>1037.67</float>
      <float>480</float>
     </coords>
@@ -1282,7 +1282,7 @@
      <int>0</int>
      <int>197</int>
     </ports>
-    <name>:Capital</name>
+    <name>Capital</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -1324,7 +1324,7 @@
      <int>8</int>
      <int>202</int>
     </ports>
-    <name>:Productivity</name>
+    <name>Productivity</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1345,7 +1345,7 @@
      <int>204</int>
      <int>205</int>
     </ports>
-    <name>:Productivity</name>
+    <name>Productivity</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1387,7 +1387,7 @@
      <int>20</int>
      <int>210</int>
     </ports>
-    <name>:Population</name>
+    <name>Population</name>
     <init>100</init>
     <slider>
      <visible>false</visible>
@@ -1408,7 +1408,7 @@
      <int>212</int>
      <int>213</int>
     </ports>
-    <name>:Population</name>
+    <name>Population</name>
     <init>100</init>
     <slider>
      <visible>false</visible>
@@ -1471,7 +1471,7 @@
      <int>63</int>
      <int>221</int>
     </ports>
-    <name>:Wage</name>
+    <name>Wage</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1492,7 +1492,7 @@
      <int>223</int>
      <int>224</int>
     </ports>
-    <name>:Wage</name>
+    <name>Wage</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1723,7 +1723,7 @@
      <int>256</int>
      <int>257</int>
     </ports>
-    <name>:Capital</name>
+    <name>Capital</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -1807,7 +1807,7 @@
      <int>130</int>
      <int>268</int>
     </ports>
-    <name>:Debt</name>
+    <name>Debt</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -1912,7 +1912,7 @@
      <int>282</int>
      <int>283</int>
     </ports>
-    <name>:Capital</name>
+    <name>Capital</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -1954,7 +1954,7 @@
      <int>193</int>
      <int>288</int>
     </ports>
-    <name>:GovSpend</name>
+    <name>GovSpend</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -2606,4 +2606,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

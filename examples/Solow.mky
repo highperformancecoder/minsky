@@ -333,7 +333,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>100</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -348,7 +348,7 @@
      <int>4</int>
      <int>45</int>
     </ports>
-    <name>:K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
+    <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
      <visible>false</visible>
@@ -369,7 +369,7 @@
      <int>47</int>
      <int>48</int>
     </ports>
-    <name>:K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
+    <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
      <visible>false</visible>
@@ -390,7 +390,7 @@
      <int>50</int>
      <int>51</int>
     </ports>
-    <name>:K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
+    <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
      <visible>false</visible>
@@ -417,7 +417,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>2</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -607,4 +607,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>0.909091</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

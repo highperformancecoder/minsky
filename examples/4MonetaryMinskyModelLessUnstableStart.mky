@@ -2557,7 +2557,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>3</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2578,7 +2578,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>300</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2599,7 +2599,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>3</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2701,7 +2701,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>300</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2865,7 +2865,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>300</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2907,7 +2907,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>3</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -2991,7 +2991,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>300</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -4201,12 +4201,16 @@
       <string>PC</string>
       <string>W</string>
       <string>\lambda</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Compound&#32;Debt</string>
       <string></string>
       <string></string>
       <string>A</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4229,6 +4233,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Servicing</string>
@@ -4243,6 +4249,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Debt-financed&#32;investment</string>
@@ -4257,6 +4265,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Debt-financed&#32;investment</string>
@@ -4264,6 +4274,8 @@
       <string></string>
       <string></string>
       <string>C</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4285,6 +4297,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Interest&#32;Firms</string>
@@ -4292,6 +4306,8 @@
       <string>-E</string>
       <string></string>
       <string>E</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4313,6 +4329,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Consumption&#32;Banks</string>
@@ -4320,6 +4338,8 @@
       <string>-G</string>
       <string></string>
       <string>G</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4341,6 +4361,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Debt&#32;repayment</string>
@@ -4355,12 +4377,16 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;repayment</string>
       <string></string>
       <string></string>
       <string>-I</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4383,12 +4409,16 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Record&#32;Loan</string>
       <string></string>
       <string></string>
       <string>J</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4411,6 +4441,8 @@
       <string></string>
       <string></string>
       <string>ode_\lambda</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Wage&#32;ODE</string>
@@ -4424,6 +4456,8 @@
       <string></string>
       <string></string>
       <string>ode_W</string>
+      <string></string>
+      <string></string>
       <string></string>
      </vector>
      <vector>
@@ -4439,6 +4473,8 @@
       <string>ode_{PC}</string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Real&#32;Capital&#32;ODE</string>
@@ -4450,6 +4486,8 @@
       <string></string>
       <string></string>
       <string>ode_{Kr}</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4467,6 +4505,8 @@
       <string></string>
       <string></string>
       <string></string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Population&#32;ODE</string>
@@ -4476,6 +4516,8 @@
       <string></string>
       <string></string>
       <string>ode_N</string>
+      <string></string>
+      <string></string>
       <string></string>
       <string></string>
       <string></string>
@@ -4496,6 +4538,8 @@
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
   </items>
@@ -4512,4 +4556,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

@@ -1009,7 +1009,7 @@
      <int>0</int>
      <int>98</int>
     </ports>
-    <name>:a</name>
+    <name>a</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1030,7 +1030,7 @@
      <int>100</int>
      <int>101</int>
     </ports>
-    <name>:a</name>
+    <name>a</name>
     <init>1</init>
     <slider>
      <visible>false</visible>
@@ -1092,7 +1092,7 @@
      <int>12</int>
      <int>108</int>
     </ports>
-    <name>:N</name>
+    <name>N</name>
     <init>105</init>
     <slider>
      <visible>false</visible>
@@ -1113,7 +1113,7 @@
      <int>110</int>
      <int>111</int>
     </ports>
-    <name>:N</name>
+    <name>N</name>
     <init>105</init>
     <slider>
      <visible>false</visible>
@@ -1279,7 +1279,7 @@
      <int>36</int>
      <int>132</int>
     </ports>
-    <name>:K</name>
+    <name>K</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -1300,7 +1300,7 @@
      <int>134</int>
      <int>135</int>
     </ports>
-    <name>:K</name>
+    <name>K</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -1363,7 +1363,7 @@
      <int>56</int>
      <int>143</int>
     </ports>
-    <name>:w_r</name>
+    <name>w_r</name>
     <init>.9</init>
     <slider>
      <visible>false</visible>
@@ -1384,7 +1384,7 @@
      <int>145</int>
      <int>146</int>
     </ports>
-    <name>:w_r</name>
+    <name>w_r</name>
     <init>.9</init>
     <slider>
      <visible>false</visible>
@@ -1531,7 +1531,7 @@
      <int>68</int>
      <int>166</int>
     </ports>
-    <name>:Debt</name>
+    <name>Debt</name>
     <init>25</init>
     <slider>
      <visible>false</visible>
@@ -1614,7 +1614,7 @@
      <int>176</int>
      <int>177</int>
     </ports>
-    <name>:Debt</name>
+    <name>Debt</name>
     <init>25</init>
     <slider>
      <visible>false</visible>
@@ -1697,7 +1697,7 @@
      <int>187</int>
      <int>188</int>
     </ports>
-    <name>:K</name>
+    <name>K</name>
     <init>300</init>
     <slider>
      <visible>false</visible>
@@ -3193,6 +3193,8 @@
     <rotation>180</rotation>
     <ports>
     </ports>
+    <width>100</width>
+    <height>100</height>
     <items>
      <int>370</int>
      <int>374</int>
@@ -3234,6 +3236,8 @@
     <rotation>0</rotation>
     <ports>
     </ports>
+    <width>100</width>
+    <height>100</height>
     <items>
      <int>440</int>
      <int>444</int>
@@ -3279,4 +3283,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

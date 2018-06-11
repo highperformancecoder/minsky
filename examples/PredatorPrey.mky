@@ -297,7 +297,7 @@
      <int>0</int>
      <int>43</int>
     </ports>
-    <name>:Predator</name>
+    <name>Predator</name>
     <init>111.9</init>
     <slider>
      <visible>false</visible>
@@ -318,7 +318,7 @@
      <int>4</int>
      <int>45</int>
     </ports>
-    <name>:Prey</name>
+    <name>Prey</name>
     <init>164.2</init>
     <slider>
      <visible>false</visible>
@@ -339,7 +339,7 @@
      <int>47</int>
      <int>48</int>
     </ports>
-    <name>:Prey</name>
+    <name>Prey</name>
     <init>164.2</init>
     <slider>
      <visible>false</visible>
@@ -402,7 +402,7 @@
      <int>56</int>
      <int>57</int>
     </ports>
-    <name>:Prey</name>
+    <name>Prey</name>
     <init>164.2</init>
     <slider>
      <visible>false</visible>
@@ -444,7 +444,7 @@
      <int>62</int>
      <int>63</int>
     </ports>
-    <name>:Predator</name>
+    <name>Predator</name>
     <init>111.9</init>
     <slider>
      <visible>false</visible>
@@ -507,7 +507,7 @@
      <int>71</int>
      <int>72</int>
     </ports>
-    <name>:Prey</name>
+    <name>Prey</name>
     <init>164.2</init>
     <slider>
      <visible>false</visible>
@@ -528,7 +528,7 @@
      <int>74</int>
      <int>75</int>
     </ports>
-    <name>:Predator</name>
+    <name>Predator</name>
     <init>111.9</init>
     <slider>
      <visible>false</visible>
@@ -675,7 +675,7 @@
      <int>95</int>
      <int>96</int>
     </ports>
-    <name>:Predator</name>
+    <name>Predator</name>
     <init>111.9</init>
     <slider>
      <visible>false</visible>
@@ -775,4 +775,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>0.909091</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>

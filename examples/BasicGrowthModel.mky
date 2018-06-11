@@ -234,7 +234,7 @@
      <int>4</int>
      <int>36</int>
     </ports>
-    <name>:M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
+    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
      <visible>false</visible>
@@ -255,7 +255,7 @@
      <int>38</int>
      <int>39</int>
     </ports>
-    <name>:M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
+    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
      <visible>false</visible>
@@ -282,7 +282,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1</max>
+     <max>100</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -297,7 +297,7 @@
      <int>44</int>
      <int>45</int>
     </ports>
-    <name>:M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
+    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
      <visible>false</visible>
@@ -397,4 +397,6 @@
    <simulationDelay>0</simulationDelay>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
  </Minsky>
