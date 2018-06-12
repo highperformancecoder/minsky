@@ -155,17 +155,13 @@ if {[tk windowingsystem]=="aqua"} {
 }   
 
 proc zoom {factor} {
-    set x0 [get_pointer_x .wiring.canvas]
-    set y0 [get_pointer_y .wiring.canvas]
+    set x0 [minsky.model.x]
+    set y0 [minsky.model.y]
     zoomAt $x0 $y0 $factor
 }
 
 proc zoomAt {x0 y0 factor} {
-    if {$factor>1} {
-        model.zoom $x0 $y0 $factor
-    } else {
-        model.zoom $x0 $y0 $factor
-    }
+    model.zoom $x0 $y0 $factor
     canvas.requestRedraw
     panopticon.requestRedraw
 }
