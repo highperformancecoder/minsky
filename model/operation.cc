@@ -573,7 +573,7 @@ namespace minsky
   void DataOp::initOutputVariableValue(VariableValue& v) const
   {
     assert(data.size()==xVector.size());
-    v.dims({unsigned(data.size())});
+    v.dims({std::max(1U,unsigned(data.size()))});
     if (xVector.size())
       v.xVector=xVector;
     auto iy=v.begin();
