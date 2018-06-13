@@ -26,9 +26,12 @@ namespace minsky
 {
   struct Panopticon: public ecolab::CairoSurface
   {
+    double cleft=0, ctop=0, cwidth=0, cheight=0;
+    Exclude<Canvas::Timestamp> lastBoundsCheck{Canvas::Timestamp::clock::from_time_t(0)};
     double width=0,height=0;
     Canvas& canvas;
-    Panopticon(Canvas& canvas): canvas(canvas) {}
+    Exclude<cairo::SurfacePtr> cachedImage;
+    Panopticon(Canvas& canvas): canvas(canvas)  {}
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
 

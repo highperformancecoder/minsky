@@ -161,7 +161,7 @@ proc zoom {factor} {
 }
 
 proc zoomAt {x0 y0 factor} {
-    model.zoom $x0 $y0 $factor
+    canvas.model.zoom $x0 $y0 $factor
     canvas.requestRedraw
     panopticon.requestRedraw
 }
