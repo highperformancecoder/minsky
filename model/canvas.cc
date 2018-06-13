@@ -33,7 +33,7 @@ namespace minsky
   void Canvas::mouseDown(float x, float y)
   {
     // firstly, see if the user is selecting an item
-    if (itemFocus=itemAt(x,y))
+    if ((itemFocus=itemAt(x,y)))
       {
         clickType=itemFocus->clickType(x,y);
         switch (clickType)
