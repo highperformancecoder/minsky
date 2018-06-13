@@ -29,6 +29,8 @@
 #include "ravelWrap.h"
 #include <cairoSurfaceImage.h>
 
+#include <chrono>
+
 namespace minsky
 {
   template <class T>
@@ -48,7 +50,27 @@ namespace minsky
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
   public:
-    GroupPtr model;
+    typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
+    struct Model: public GroupPtr
+    {
+      Exclude<Timestamp> timestamp{Timestamp::clock::now()};
+      void updateTimestamp() {timestamp=Timestamp::clock::now();}
+      Model() {}
+      Model(const GroupPtr& g): GroupPtr(g) {}
+      Model& operator=(const GroupPtr& model) {
+        updateTimestamp();
+        GroupPtr::operator=(model);
+        return *this;
+      }
+      void zoom(double x, double y, double z) {
+        if (fabs(x-(*this)->x())>1e-5 || fabs(y-(*this)->y())>1e-5)
+          updateTimestamp(); // Why is this needed??
+        (*this)->zoom(x,y,z);
+      }
+    };
+
+    Model model;
+    
     Selection selection;
     // we don't want surface to be reassigned every time a new model is loaded.
     //NoAssign<Exclude<ecolab::cairo::SurfacePtr>> surface;

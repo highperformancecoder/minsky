@@ -63,6 +63,9 @@ namespace minsky
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
         argv0!="minsky.model.moveTo" &&
+        argv0!="minsky.canvas.model.moveTo" &&
+        argv0!="minsky.canvas.model.zoom" &&
+        argv0!="minsky.model.zoom" &&
         argv0!="minsky.newGlobalGroupTCL" &&
         argv0!="minsky.popFlags" &&
         argv0!="minsky.pushFlags" &&

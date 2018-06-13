@@ -152,7 +152,10 @@ namespace minsky
     /// true if reset needs to be called prior to numerical integration
     bool reset_flag() const {return flags & reset_needed;}
     /// indicate model has been changed since last saved
-    void markEdited() {flags |= is_edited | reset_needed;}
+    void markEdited() {
+      flags |= is_edited | reset_needed;
+      canvas.model.updateTimestamp();
+    }
 
     /// @{ push and pop state of the flags
     void pushFlags() {flagStack.push_back(flags);}

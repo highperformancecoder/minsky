@@ -348,7 +348,7 @@ namespace minsky
         {
           auto& b=bookmarks[i];
           moveTo(b.x, b.y);
-          setZoom(b.zoom);
+          zoom(x(),y(),b.zoom/zoomFactor);
         }
     }
     
