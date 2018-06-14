@@ -65,6 +65,9 @@ namespace minsky
     State initState;
 
     friend struct SchemaHelper;
+
+    std::vector<string> allSliceLabelsImpl(HandleState::HandleSort) const;
+
     
   public:
     Ravel();
@@ -101,6 +104,13 @@ namespace minsky
     {setDisplayFilterCaliper(!displayFilterCaliper());}
     /// @}
 
+    /// returns all slice labels along the selected handle, in specified order
+    std::vector<string> allSliceLabels() const {return allSliceLabelsImpl(HandleState::forward);}
+    /// returns just the picked slice labels along the handle
+    std::vector<string> pickedSliceLabels() const;
+    /// pick (selected) \a pick labels
+    void pickSliceLabels(const std::vector<string>& pick);
+    
     /// @{
     /// the handle sorting order for currently selected handle
     HandleState::HandleSort sortOrder() const;

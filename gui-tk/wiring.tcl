@@ -548,6 +548,48 @@ foreach order {none forward reverse numForward numReverse} {
     .wiring.context.axisMenu.sort add radiobutton -label $order -command "minsky.canvas.item.setSortOrder $order" \
         -value $order -variable sortOrder
 }
+.wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu
+
+
+proc setupPickMenu {} {
+    global labelPicked
+    if {![winfo exists .wiring.context.axisMenu.pick]} {
+        toplevel .wiring.context.axisMenu.pick
+        frame .wiring.context.axisMenu.pick.select
+        scrollbar .wiring.context.axisMenu.pick.select.vscroll -orient vertical -command {
+            .wiring.context.axisMenu.pick.select.lb yview}
+        listbox .wiring.context.axisMenu.pick.select.lb -listvariable labelPicked \
+            -selectmode extended -selectforeground blue \
+            -yscrollcommand {.wiring.context.axisMenu.pick.select.vscroll set} 
+        pack .wiring.context.axisMenu.pick.select.lb -fill both  -expand y -side left
+        pack .wiring.context.axisMenu.pick.select.vscroll -fill y -expand y -side left
+        pack .wiring.context.axisMenu.pick.select
+        buttonBar .wiring.context.axisMenu.pick {
+            foreach i [.wiring.context.axisMenu.pick.select.lb curselection] {
+                lappend pick [lindex $labelPicked $i]
+            }
+            minsky.canvas.item.pickSliceLabels $pick
+        }
+        button .wiring.context.axisMenu.pick.buttonBar.all -text "All" -command {
+            .wiring.context.axisMenu.pick.select.lb selection set 0 end}
+        button .wiring.context.axisMenu.pick.buttonBar.clear -text "Clear" -command {
+            .wiring.context.axisMenu.pick.select.lb selection clear 0 end}
+        pack .wiring.context.axisMenu.pick.buttonBar.all .wiring.context.axisMenu.pick.buttonBar.clear -side left
+    } else {
+        deiconify .wiring.context.axisMenu.pick
+    }
+        
+    set labelPicked [minsky.canvas.item.allSliceLabels]
+    for {set i 0} {$i<[llength $labelPicked]} {incr i} {
+        set idx([lindex $labelPicked $i]) $i
+    }
+    foreach i [minsky.canvas.item.pickedSliceLabels] {
+        .wiring.context.axisMenu.pick.select.lb selection set $idx($i)
+    }
+    wm transient .wiring.context.axisMenu.pick
+    tkwait visibility .wiring.context.axisMenu.pick
+    grab set .wiring.context.axisMenu.pick
+}
 
 proc loadCSVIntoRavel {} {
     global workDir

@@ -580,7 +580,7 @@ proc getLogVars {} {
         }
     }
     frame .logVars.selection
-    listbox .logVars.selection.selection -listvariable varNames -selectmode extended -height 30 -yscrollcommand ".logVars.selection.vscroll set"
+    listbox .logVars.selection.selection -listvariable varNames -selectmode extended -height 30 -yscrollcommand ".logVars.selection.vscroll set" -selectforeground blue
     scrollbar .logVars.selection.vscroll -orient vertical -command ".logVars.selection.selection yview"
     pack .logVars.selection.selection -fill both -side left -expand y
     pack .logVars.selection.vscroll -fill y -side left -expand y

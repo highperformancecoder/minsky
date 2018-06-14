@@ -106,7 +106,9 @@ namespace minsky
     void (*ravel_displayFilterCaliper)(Ravel::RavelImpl* ravel, size_t axis, bool display)=nullptr;
     void (*ravel_orderLabels)(Ravel::RavelImpl* ravel, size_t axis,
                               Ravel::HandleState::HandleSort order)=nullptr;
-    const char* (*ravel_toXML)(Ravel::RavelImpl* ravel)=nullptr;
+    void (*ravel_applyCustomPermutation)(Ravel::RavelImpl* ravel, size_t axis, size_t numIndices, const size_t* indices)=nullptr;
+    void (*ravel_currentPermutation)(Ravel::RavelImpl* ravel, size_t axis, size_t numIndices, size_t* indices)=nullptr;
+     const char* (*ravel_toXML)(Ravel::RavelImpl* ravel)=nullptr;
     int (*ravel_fromXML)(Ravel::RavelImpl* ravel, const char*)=nullptr;
     void (*ravel_getHandleState)(const Ravel::RavelImpl* ravel, size_t handle, Ravel::HandleState* handleState)=nullptr;
     void (*ravel_setHandleState)(Ravel::RavelImpl* ravel, size_t handle, const Ravel::HandleState* handleState)=nullptr;
@@ -175,6 +177,8 @@ namespace minsky
               ASG_FN_PTR(ravel_sliceLabels,lib);
               ASG_FN_PTR(ravel_displayFilterCaliper,lib);
               ASG_FN_PTR(ravel_orderLabels,lib);
+              ASG_FN_PTR(ravel_applyCustomPermutation,lib);
+              ASG_FN_PTR(ravel_currentPermutation,lib);
               ASG_FN_PTR(ravel_toXML,lib);
               ASG_FN_PTR(ravel_fromXML,lib);
               ASG_FN_PTR(ravel_getHandleState,lib);
@@ -469,6 +473,62 @@ namespace minsky
     return x;
   }
 
+  vector<string> Ravel::allSliceLabelsImpl(HandleState::HandleSort order) const
+  {
+    assert(order!=HandleState::custom); //custom makes no sense here
+    int axis=ravel_selectedHandle(ravel);
+    if (axis>=0)
+      {
+        // grab the labels in sorted order, or forward order if a custom order is applied
+        auto prevOrder=sortOrder();
+        // grab the ordering in case its custom
+        vector<size_t> customOrdering(ravel_numSliceLabels(ravel,axis));
+        ravel_currentPermutation(ravel,axis,customOrdering.size(),&customOrdering[0]);
+        ravel_orderLabels(ravel,axis,order);
+        vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,axis));
+        ravel_sliceLabels(ravel,axis,&sliceLabels[0]);
+        if (prevOrder==HandleState::custom)
+          ravel_applyCustomPermutation(ravel,axis,customOrdering.size(),&customOrdering[0]);
+        else
+          ravel_orderLabels(ravel,axis,prevOrder);
+        return {sliceLabels.begin(), sliceLabels.end()};
+      }
+    return {};
+  }
+
+  vector<string> Ravel::pickedSliceLabels() const
+  {
+   int axis=ravel_selectedHandle(ravel);
+   if (axis>=0)
+     {
+       vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,axis));
+       ravel_sliceLabels(ravel,axis,&sliceLabels[0]);
+       return {sliceLabels.begin(), sliceLabels.end()};
+     }
+   return {};
+  }
+  
+  /// pick (selected) \a pick labels
+  void Ravel::pickSliceLabels(const vector<string>& pick)
+  {
+    int axis=ravel_selectedHandle(ravel);
+    if (axis>=0)
+      {
+        auto allLabels=allSliceLabelsImpl(HandleState::none);
+        map<string,size_t> idxMap; // map index positions
+        for (size_t i=0; i<allLabels.size(); ++i)
+          idxMap[allLabels[i]]=i;
+        vector<size_t> customOrder;
+        for (auto& i: pick)
+          {
+            auto j=idxMap.find(i);
+            if (j!=idxMap.end())
+              customOrder.push_back(j->second);
+          }
+        ravel_applyCustomPermutation(ravel,axis,customOrder.size(),&customOrder[0]);
+      }
+  }
+  
   Ravel::HandleState::HandleSort Ravel::sortOrder() const
   {
     int h=ravel_selectedHandle(ravel);
