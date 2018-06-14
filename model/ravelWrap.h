@@ -101,7 +101,7 @@ namespace minsky
     bool displayFilterCaliper() const;
     bool setDisplayFilterCaliper(bool);
     bool toggleDisplayFilterCaliper()
-    {setDisplayFilterCaliper(!displayFilterCaliper());}
+    {return setDisplayFilterCaliper(!displayFilterCaliper());}
     /// @}
 
     /// returns all slice labels along the selected handle, in specified order
