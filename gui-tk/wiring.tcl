@@ -565,10 +565,12 @@ proc setupPickMenu {} {
         pack .wiring.context.axisMenu.pick.select.vscroll -fill y -expand y -side left
         pack .wiring.context.axisMenu.pick.select
         buttonBar .wiring.context.axisMenu.pick {
+            set pick {}
             foreach i [.wiring.context.axisMenu.pick.select.lb curselection] {
                 lappend pick [lindex $labelPicked $i]
             }
             minsky.canvas.item.pickSliceLabels $pick
+            reset
         }
         button .wiring.context.axisMenu.pick.buttonBar.all -text "All" -command {
             .wiring.context.axisMenu.pick.select.lb selection set 0 end}

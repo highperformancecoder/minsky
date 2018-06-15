@@ -41,6 +41,9 @@ namespace minsky
       ReductionOp reductionOp;
       enum HandleSort {none, forward, reverse, numForward, numReverse, custom};
       HandleSort order;
+      // note this member must appear after all members of
+      // CAPIHandleState from the Ravel CAPI
+      vector<string> customOrder; // used if order==custom
     };
 
     struct State
@@ -66,8 +69,9 @@ namespace minsky
 
     friend struct SchemaHelper;
 
-    std::vector<string> allSliceLabelsImpl(HandleState::HandleSort) const;
-
+    std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
+    void pickSliceLabelsImpl(int axis, const std::vector<string>& pick);
+ 
     
   public:
     Ravel();
@@ -105,7 +109,7 @@ namespace minsky
     /// @}
 
     /// returns all slice labels along the selected handle, in specified order
-    std::vector<string> allSliceLabels() const {return allSliceLabelsImpl(HandleState::forward);}
+    std::vector<string> allSliceLabels() const;
     /// returns just the picked slice labels along the handle
     std::vector<string> pickedSliceLabels() const;
     /// pick (selected) \a pick labels
