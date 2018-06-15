@@ -540,12 +540,17 @@ proc contextMenu {x y X Y} {
 }
 
 menu .wiring.context.axisMenu
+.wiring.context.axisMenu add command -label "Description" -command {
+    textEntryPopup .wiring.context.axisMenu.desc [minsky.canvas.item.description] {
+        minsky.canvas.item.setDescription [.wiring.context.axisMenu.desc.entry get]
+    }
+}
 .wiring.context.axisMenu add command -label "Toggle Calipers" -command minsky.canvas.item.toggleDisplayFilterCaliper
 menu .wiring.context.axisMenu.sort 
 .wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort 
 set sortOrder none
 foreach order {none forward reverse numForward numReverse} {
-    .wiring.context.axisMenu.sort add radiobutton -label $order -command "minsky.canvas.item.setSortOrder $order" \
+    .wiring.context.axisMenu.sort add radiobutton -label $order -command "minsky.canvas.item.setSortOrder $order; reset" \
         -value $order -variable sortOrder
 }
 .wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu
@@ -555,6 +560,7 @@ proc setupPickMenu {} {
     global labelPicked
     if {![winfo exists .wiring.context.axisMenu.pick]} {
         toplevel .wiring.context.axisMenu.pick
+        wm title .wiring.context.axisMenu.pick "Pick slices"
         frame .wiring.context.axisMenu.pick.select
         scrollbar .wiring.context.axisMenu.pick.select.vscroll -orient vertical -command {
             .wiring.context.axisMenu.pick.select.lb yview}

@@ -120,6 +120,11 @@ namespace minsky
     HandleState::HandleSort sortOrder() const;
     HandleState::HandleSort setSortOrder(HandleState::HandleSort);
     /// @}
+
+    /// @} get/set description of selected handle
+    string description() const;
+    void setDescription(const string&);
+    /// @}
     
     /// get the current state of the Ravel
     State getState() const;

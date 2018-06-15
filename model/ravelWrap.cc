@@ -100,7 +100,8 @@ namespace minsky
     void (*ravel_addHandle)(Ravel::RavelImpl* ravel, const char*, size_t, const char* labels[])=nullptr;
     unsigned (*ravel_numHandles)(Ravel::RavelImpl* ravel)=nullptr;
     int (*ravel_selectedHandle)(Ravel::RavelImpl* ravel)=nullptr;
-    const char* (*ravel_handleDescription)(Ravel::RavelImpl* ravel, size_t handle)=nullptr;
+    const char* (*ravel_handleDescription)(Ravel::RavelImpl* ravel, int handle)=nullptr;
+    void (*ravel_setHandleDescription)(Ravel::RavelImpl* ravel, int handle, const char* description)=nullptr;
     size_t (*ravel_numSliceLabels)(Ravel::RavelImpl* ravel, size_t axis)=nullptr;
     void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
     void (*ravel_displayFilterCaliper)(Ravel::RavelImpl* ravel, size_t axis, bool display)=nullptr;
@@ -173,6 +174,7 @@ namespace minsky
               ASG_FN_PTR(ravel_addHandle,lib);
               ASG_FN_PTR(ravel_numHandles,lib);
               ASG_FN_PTR(ravel_handleDescription,lib);
+              ASG_FN_PTR(ravel_setHandleDescription,lib);
               ASG_FN_PTR(ravel_numSliceLabels,lib);
               ASG_FN_PTR(ravel_sliceLabels,lib);
               ASG_FN_PTR(ravel_displayFilterCaliper,lib);
@@ -556,6 +558,16 @@ namespace minsky
     if (h>=0)
       ravel_orderLabels(ravel,h,x);
     return x;
+  }
+
+  string Ravel::description() const
+  {
+    return ravel_handleDescription(ravel,ravel_selectedHandle(ravel));
+  }
+  
+  void Ravel::setDescription(const string& description)
+  {
+    ravel_setHandleDescription(ravel,ravel_selectedHandle(ravel),description.c_str());
   }
 
   
