@@ -27,7 +27,7 @@ namespace minsky
   struct Panopticon: public ecolab::CairoSurface
   {
     double cleft=0, ctop=0, cwidth=0, cheight=0;
-    Exclude<Canvas::Timestamp> lastBoundsCheck{Canvas::Timestamp::clock::from_time_t(0)};
+    Exclude<Canvas::Timestamp> lastBoundsCheck;
     double width=0,height=0;
     Canvas& canvas;
     Exclude<cairo::SurfacePtr> cachedImage;

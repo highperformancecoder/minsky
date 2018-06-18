@@ -157,7 +157,7 @@ string VariableBase::_init(const string& x)
       try
         {
           if (type()==constant || type()==parameter ||
-              type()==flow && !cminsky().definingVar(valueId())) 
+              (type()==flow && !cminsky().definingVar(valueId()))) 
             val.reset(minsky().variableValues);
         }
       catch (...)
