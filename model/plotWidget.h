@@ -91,6 +91,10 @@ namespace minsky
     void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();}
     /// sets the plot scale and pen labels
     void scalePlot();
+
+    /// export the plotted data as a CSV file
+    // implemented as a single argument function here for exposure to TCL
+    void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
  };
 
 }
