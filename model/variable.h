@@ -171,6 +171,9 @@ namespace minsky
     {return minsky::engExp(value());}
     std::string mantissa(const EngNotation& e) const
     {return minsky::mantissa(value(),e);}
+
+    /// export this variable as a CSV file
+    void exportAsCSV(const std::string& filename) const;
   };
 
   template <minsky::VariableType::Type T>

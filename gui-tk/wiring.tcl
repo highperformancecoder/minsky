@@ -462,6 +462,7 @@ proc contextMenu {x y X Y} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
+            .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
         "Operation*|IntOp|DataOp" {
             .wiring.context add command -label "Port values [$item.portValues]" 
@@ -523,14 +524,7 @@ proc contextMenu {x y X Y} {
         }
         Ravel {
             .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
-            .wiring.context add command -label "Export as CSV" -command {
-                set f [tk_getSaveFile -filetypes {
-                    {"CSV" .csv TEXT} {"All" {.*} TEXT}
-                } -initialdir $workDir ]
-                if {$f!=""} {
-                    minsky.canvas.item.exportAsCSV $f
-                }
-            }
+            .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             global sortOrder
             set sortOrder [minsky.canvas.item.sortOrder]
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
@@ -611,6 +605,16 @@ proc loadCSVIntoRavel {} {
     global workDir
     canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
     reset
+}
+
+proc exportItemAsCSV {} {
+    global workDir
+    set f [tk_getSaveFile -filetypes {
+        {"CSV" .csv TEXT} {"All" {.*} TEXT}
+    } -initialdir $workDir ]
+    if {$f!=""} {
+        minsky.canvas.item.exportAsCSV $f
+    }
 }
 
 proc ravelRankDlg {} {

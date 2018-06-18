@@ -518,6 +518,7 @@ namespace minsky
   {
     struct OffsetMap: public map<string,map<string,size_t>>
     {
+      vector<string> axes;
       OffsetMap(const VariableValue& v) {
         size_t stride=1;
         for (auto& i: v.xVector)
@@ -529,6 +530,7 @@ namespace minsky
                 offs+=stride;
               }
             stride*=i.size();
+            axes.push_back(i.name);
           }
       }
     };
@@ -557,10 +559,7 @@ namespace minsky
     template <class F>
     void apply(const OffsetMap& targetOffs, F f)
     {
-      vector<string> axes;
-      for (auto& i: targetOffs)
-        axes.push_back(i.first);
-      apply(targetOffs,axes,{},f);
+      apply(targetOffs,targetOffs.axes,{},f);
     }
 
     typedef vector<VariableValue::XVector> VVV;

@@ -237,6 +237,7 @@ namespace MathDAG
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
+      size_t oldNumElems=r.numElements();
       for (auto& i: argIdx)
         if (i.size() && !i[0].xVector.empty())
           {
@@ -253,7 +254,7 @@ namespace MathDAG
           if (r.xVector.empty())
             return; // no common intersection amongst arguments
         }
-      if (r.idx()==-1) r.allocValue();
+      if (r.idx()==-1 || r.numElements()>oldNumElems) r.allocValue();
 
       // short circuit multiplications if any of the terms are constant zero
       if (accum==OperationType::multiply)

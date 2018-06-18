@@ -222,6 +222,14 @@ vector<string> VariableBase::accessibleVars() const
   return vector<string>(r.begin(),r.end());
 }
 
+void VariableBase::exportAsCSV(const std::string& filename) const
+{
+  auto value=minsky().variableValues.find(valueId());
+  if (value!=minsky().variableValues.end())
+    value->second.exportAsCSV(filename, name());
+}
+
+
 namespace minsky
 {
   template <> size_t Variable<VariableBase::undefined>::numPorts() const {return 0;}
