@@ -490,6 +490,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Make Group Plot" -command "$item.makeDisplayPlot"
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
+            .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
         "GodleyIcon" {
             .wiring.context add command -label "Open Godley Table" -command "openGodley [minsky.openGodley]"
