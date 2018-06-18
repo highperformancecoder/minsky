@@ -130,6 +130,8 @@ namespace minsky
     State getState() const;
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
     void applyState(const State&);
+
+    void exportAsCSV(const string& filename) const;
   };
 
 }

@@ -174,6 +174,8 @@ namespace minsky
     static int scope(const std::string& name);
     /// extract unqualified portion of name
     static std::string uqName(const std::string& name);
+
+    void exportAsCSV(const std::string& filename, const std::string& comment="") const;
   };
 
   struct ValueVector

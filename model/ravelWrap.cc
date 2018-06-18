@@ -95,6 +95,7 @@ namespace minsky
     void (*ravel_rescale)(Ravel::RavelImpl* ravel, double radius)=nullptr;
     double (*ravel_radius)(Ravel::RavelImpl* ravel)=nullptr;
     size_t (*ravel_rank)(Ravel::RavelImpl* ravel)=nullptr;
+    const char* (*ravel_description)(Ravel::RavelImpl* ravel)=nullptr;
     void (*ravel_outputHandleIds)(Ravel::RavelImpl* ravel, size_t ids[])=nullptr;
     void (*ravel_setOutputHandleIds)(Ravel::RavelImpl* ravel, size_t rank, size_t ids[])=nullptr;
     void (*ravel_addHandle)(Ravel::RavelImpl* ravel, const char*, size_t, const char* labels[])=nullptr;
@@ -168,6 +169,7 @@ namespace minsky
               ASG_FN_PTR(ravel_rescale,lib);
               ASG_FN_PTR(ravel_radius,lib);
               ASG_FN_PTR(ravel_rank,lib);
+              ASG_FN_PTR(ravel_description,lib);
               ASG_FN_PTR(ravel_selectedHandle,lib);
               ASG_FN_PTR(ravel_outputHandleIds,lib);
               ASG_FN_PTR(ravel_setOutputHandleIds,lib);
@@ -624,7 +626,12 @@ namespace minsky
       }
   }
 
-  
+  void Ravel::exportAsCSV(const string& filename) const
+  {
+    // TODO: add some comment lines
+    ports[0]->getVariableValue().exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
+  }
+
   string Minsky::ravelVersion() const
   {
     if (ravelLib.versionFound.length())

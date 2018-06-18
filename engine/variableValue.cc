@@ -67,11 +67,11 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        if (size_t(m_idx)<ValueVector::flowVars.size())
+        if (size_t(m_idx+numElements())<=ValueVector::flowVars.size())
           return ValueVector::flowVars[m_idx];
       case stock:
       case integral:
-        if (size_t(m_idx)<ValueVector::stockVars.size())
+        if (size_t(m_idx+numElements())<=ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx];
       default: break;
       }
@@ -257,5 +257,27 @@ namespace minsky
     if (numElements()==0)
       throw error("tensors nonconformant");
   }
-  
+
+
+  void VariableValue::exportAsCSV(const string& filename, const string& comment) const
+  {
+    ofstream of(filename);
+    if (!comment.empty())
+      of<<"\""<<comment<<"\"\n";
+    size_t i=0;
+    for (auto& i: xVector)
+      of<<"\""<<i.name<<"\",";
+    of<<"value$\n";
+    for (auto d=begin(); d!=end(); ++i, ++d)
+      if (isfinite(*d))
+        {
+          size_t stride=1;
+          for (size_t j=0; j<xVector.size(); ++j)
+            {
+              of << "\""<<xVector[j][(i/stride) % xVector[j].size()].second << "\",";
+              stride*=xVector[j].size();
+            }
+          of << *d << endl;
+        }
+  }
 }

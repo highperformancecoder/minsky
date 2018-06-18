@@ -523,6 +523,14 @@ proc contextMenu {x y X Y} {
         }
         Ravel {
             .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
+            .wiring.context add command -label "Export as CSV" -command {
+                set f [tk_getSaveFile -filetypes {
+                    {"CSV" .csv TEXT} {"All" {.*} TEXT}
+                } -initialdir $workDir ]
+                if {$f!=""} {
+                    minsky.canvas.item.exportAsCSV $f
+                }
+            }
             global sortOrder
             set sortOrder [minsky.canvas.item.sortOrder]
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
