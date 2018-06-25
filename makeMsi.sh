@@ -45,6 +45,7 @@ cat >$minskyWxs <<EOF
         <Directory Id='Minsky' Name='$productName'>
           <Directory Id='INSTALLDIR'>
             <Component Id='MinskyFiles' Guid='$componentId'>
+              <RemoveFile Id="removePreviousFiles" Name="*" On="install"/>
               <File Id='MinskyEXE' Name='minsky.exe' Source='gui-tk/minsky.exe' KeyPath='yes'>
                 <Shortcut Id="startmenuMinsky" Directory="ProgramMenuDir" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes">
                  </Shortcut>
