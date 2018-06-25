@@ -864,7 +864,21 @@ button .controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
         recentreCanvas
     }
 tooltip .controls.zoomOrig "Reset Zoom/Origin"
-pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig -side left
+
+image create photo zoomFitImg -file $minskyHome/icons/zoomFit.gif
+button .controls.zoomFit -image zoomFitImg -height 24 -width 37 \
+    -command {
+        set cb [minsky.canvas.model.cBounds]
+        set z1 [expr double([winfo width .wiring.canvas])/([lindex $cb 2]-[lindex $cb 0])]
+        set z2 [expr double([winfo height .wiring.canvas])/([lindex $cb 3]-[lindex $cb 1])]
+        if {$z2<$z1} {set z1 $z2}
+        set x [expr -0.5*([lindex $cb 2]+[lindex $cb 0])]
+        set y [expr -0.5*([lindex $cb 3]+[lindex $cb 1])]
+        zoomAt $x $y $z1
+        recentreCanvas
+    }
+tooltip .controls.zoomFit "Zoom to fit"
+pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig .controls.zoomFit -side left
 
 set delay [simulationDelay]
 set running 0

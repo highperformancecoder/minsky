@@ -575,31 +575,34 @@ namespace minsky
     SurfacePtr surf
       (new Surface
        (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-    for (auto& i: items)
-      try 
-        {
-          i->draw(surf->cairo());  
-          x0=min(double(i->x())-0.5*surf->width(), x0);
-          x1=max(double(i->x())+0.5*surf->width(), x1);
-          y0=min(double(i->y())-0.5*surf->height(), y0);
-          y1=max(double(i->y())+0.5*surf->height(), y1);
-          localZoom=i->zoomFactor;
-        }
-      catch (const std::exception& e) 
-        {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
-      catch (...) {cerr<<"illegal exception caught in draw()";}
-
-
-    for (auto& i: groups)
+    try
       {
-        float w=0.5f*i->width*i->zoomFactor,
-          h=0.5f*i->height*i->zoomFactor;
-        x0=min(i->x()-0.5*w, x0);
-        x1=max(i->x()+0.5*w, x1);
-        y0=min(i->y()-0.5*h, y0);
-        y1=max(i->y()+0.5*h, y1);
+        for (auto& i: items)
+          {
+            CairoSave cs(surf->cairo());
+            cairo_identity_matrix(surf->cairo());
+            cairo_translate(surf->cairo(),i->x(), i->y());
+            i->draw(surf->cairo());
+            localZoom=i->zoomFactor;
+          }
+        for (auto& i: groups)
+          {
+            CairoSave cs(surf->cairo());
+            cairo_identity_matrix(surf->cairo());
+            cairo_translate(surf->cairo(),i->x(), i->y());
+            i->draw(surf->cairo());
+          }
+        if (items.size() || groups.size())
+          {
+            x0=surf->left();
+            x1=x0+surf->width();
+            y0=surf->top();
+            y1=y0+surf->height();
+          }
       }
-
+    catch (const std::exception& e) 
+      {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
+    catch (...) {cerr<<"illegal exception caught in draw()";}
 
     // if there are no contents, result is not finite. In this case,
     // set the content bounds to a 10x10 sized box around the centroid of the I/O variables.
