@@ -35,6 +35,7 @@ set canvasWidth 600
 set canvasHeight 800
 set backgroundColour lightGray
 set preferences(nRecentFiles) 10
+set preferences(panopticon) 1
 set recentFiles {}
 
 # select Arial Unicode MS by default, as this gives decent Unicode support
@@ -283,6 +284,7 @@ set preferencesVars {
         "+/-" sign } 
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
+    panopticon        "Enable panopticon" 1 bool
 }
 lappend preferencesVars defaultFont "Font" [defaultFont] font
 
@@ -721,7 +723,7 @@ pack .equations.canvas -fill both -expand 1
 
 image create cairoSurface panopticon -surface minsky.panopticon
 label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
-place .wiring.panopticon -relx 1 -rely 0 -anchor ne
+#place .wiring.panopticon -relx 1 -rely 0 -anchor ne
 minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
@@ -1186,10 +1188,14 @@ proc setPreferenceParms {} {
     }
     defaultFont $preferences(defaultFont)
     setGodleyDisplay
+    if {$preferences(panopticon)} {
+        place .wiring.panopticon -relx 1 -rely 0 -anchor ne
+    } else {
+        place forget .wiring.panopticon
+    }
 }
 
-
-
+setPreferenceParms
 
 # context sensitive help topics associations
 set helpTopics(.#menubar) Menu
