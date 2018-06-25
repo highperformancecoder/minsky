@@ -90,6 +90,7 @@ namespace minsky
     {
       // update the map of variables from the Godley table
       set<VariablePtr, OrderByName> oldVars(vars.begin(), vars.end());
+      set<string> alreadyAdded;
 
       vars.clear();
       shared_ptr<GodleyIcon> self;
@@ -102,13 +103,16 @@ namespace minsky
           set<VariablePtr>::const_iterator v=oldVars.find(newVar);
           if (v==oldVars.end())
             {
-              // add new variable
-              vars.push_back(newVar);
+              // allow for the possibility that multiple names map to the same valueId
+              if (!alreadyAdded.count(newVar->valueId()))
+                  // add new variable
+                  vars.push_back(newVar);
             }
           else
             {
               // move existing variable
               vars.push_back(*v);
+              alreadyAdded.insert(newVar->valueId());
               oldVars.erase(v);
               assert(*v);
             }
