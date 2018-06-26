@@ -290,7 +290,7 @@ namespace minsky
     /// etc in this group. Returns the zoom scale (aka local zoom) of
     /// the contained items, or 1 if the group is empty.
     float contentBounds(double& x0, double& y0, double& x1, double& y1) const;
-
+    
     /// for TCL debugging
     ecolab::array<double> cBounds() const {
       ecolab::array<double> r(4);

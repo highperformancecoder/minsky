@@ -64,7 +64,10 @@ $here/gui-tk/minsky input.tcl
 if [ $? -ne 0 ]; then fail; fi
 
 for i in *.svg; do
-    diff -q $i $here/test/renderedImages/$i
+    # ids are assigned randomly, so strip out those tags
+    sed -e 's/id="[^"]*"/id=""/' <$i >tmp1
+    sed -e 's/id="[^"]*"/id=""/' <$here/test/renderedImages/$i >tmp2
+    diff -1 tmp1 tmp2
     if [ $? -ne 0 ]; then fail; fi
 done
 

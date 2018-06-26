@@ -35,6 +35,7 @@ set canvasWidth 600
 set canvasHeight 800
 set backgroundColour lightGray
 set preferences(nRecentFiles) 10
+set preferences(panopticon) 1
 set recentFiles {}
 
 # select Arial Unicode MS by default, as this gives decent Unicode support
@@ -283,6 +284,7 @@ set preferencesVars {
         "+/-" sign } 
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
+    panopticon        "Enable panopticon" 1 bool
 }
 lappend preferencesVars defaultFont "Font" [defaultFont] font
 
@@ -721,7 +723,7 @@ pack .equations.canvas -fill both -expand 1
 
 image create cairoSurface panopticon -surface minsky.panopticon
 label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
-place .wiring.panopticon -relx 1 -rely 0 -anchor ne
+#place .wiring.panopticon -relx 1 -rely 0 -anchor ne
 minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
@@ -864,7 +866,21 @@ button .controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
         recentreCanvas
     }
 tooltip .controls.zoomOrig "Reset Zoom/Origin"
-pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig -side left
+
+image create photo zoomFitImg -file $minskyHome/icons/zoomFit.gif
+button .controls.zoomFit -image zoomFitImg -height 24 -width 37 \
+    -command {
+        set cb [minsky.canvas.model.cBounds]
+        set z1 [expr double([winfo width .wiring.canvas])/([lindex $cb 2]-[lindex $cb 0])]
+        set z2 [expr double([winfo height .wiring.canvas])/([lindex $cb 3]-[lindex $cb 1])]
+        if {$z2<$z1} {set z1 $z2}
+        set x [expr -0.5*([lindex $cb 2]+[lindex $cb 0])]
+        set y [expr -0.5*([lindex $cb 3]+[lindex $cb 1])]
+        zoomAt $x $y $z1
+        recentreCanvas
+    }
+tooltip .controls.zoomFit "Zoom to fit"
+pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig .controls.zoomFit -side left
 
 set delay [simulationDelay]
 set running 0
@@ -1172,10 +1188,14 @@ proc setPreferenceParms {} {
     }
     defaultFont $preferences(defaultFont)
     setGodleyDisplay
+    if {$preferences(panopticon)} {
+        place .wiring.panopticon -relx 1 -rely 0 -anchor ne
+    } else {
+        place forget .wiring.panopticon
+    }
 }
 
-
-
+setPreferenceParms
 
 # context sensitive help topics associations
 set helpTopics(.#menubar) Menu

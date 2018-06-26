@@ -156,8 +156,9 @@ if {[tk windowingsystem]=="aqua"} {
 }   
 
 proc zoom {factor} {
-    set x0 [minsky.model.x]
-    set y0 [minsky.model.y]
+    set cbounds [minsky.model.cBounds]
+    set x0 [expr 0.5*([lindex $cbounds 0]+[lindex $cbounds 2])]
+    set y0 [expr 0.5*([lindex $cbounds 1]+[lindex $cbounds 3])]
     zoomAt $x0 $y0 $factor
 }
 
