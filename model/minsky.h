@@ -37,6 +37,7 @@
 #include "variableValue.h"
 #include "canvas.h"
 #include "panopticon.h"
+#include "dimension.h"
 
 #include <vector>
 #include <string>
@@ -175,6 +176,8 @@ namespace minsky
     }
     
     VariableValues variableValues;
+    Dimensions dimensions;
+    Conversions conversions;
 
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}

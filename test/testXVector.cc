@@ -20,10 +20,18 @@
 #include "variableType.h"
 #include "evalOp.h"
 #include "selection.h"
+#include "xvector.h"
 #include <ecolab_epilogue.h>
 #include <UnitTest++/UnitTest++.h>
-#include <exception>
 using namespace minsky;
+
+#include <exception>
+using namespace std;
+
+#include <boost/date_time.hpp>
+using namespace boost;
+using namespace boost::posix_time;
+using namespace boost::gregorian;
 
 SUITE(XVector)
 {
@@ -91,5 +99,48 @@ SUITE(XVector)
       CHECK_EQUAL(18,to.numElements());
       CHECK_EQUAL(i2.size(),e->in1.size());
       CHECK_ARRAY_EQUAL(i2,e->in1,i1.size());
+    }
+
+  TEST_FIXTURE(XVector, push_back)
+    {
+      // firstly check the simple string case
+      push_back("foo");
+      CHECK(front().type()==typeid(std::string));
+      CHECK_EQUAL("foo",str(front()));
+      clear();
+      // now check values
+      dimension.type=Dimension::value;
+      push_back("0.5");
+      CHECK(front().type()==typeid(double));
+      CHECK_EQUAL(0.5,stod(str(front())));
+      CHECK_THROW(push_back("foo"),std::exception);
+      clear();
+      // now check dates and times
+
+      dimension.type=Dimension::time;
+      dimension.units="%Y-Q%Q";
+      push_back("2018-Q2");
+      
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("2-2018"),std::exception);
+      
+      dimension.units="Q%Q-%Y";
+      push_back("Q2-2018");
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("2-2018"),std::exception);
+      
+      dimension.units="Q%Q";
+      CHECK_THROW(push_back("Q1"),std::exception);
+
+      dimension.units="%Y-%m-%d";
+      push_back("2018-04-01");
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("2-2018"),std::exception);
+
+      dimension.units.clear();
+      push_back("2018-04-01");
+      CHECK_EQUAL(ptime(date(2018,Apr,1)), any_cast<ptime>(back()));
+      CHECK_THROW(push_back("foo"),std::exception);
+
     }
 }
