@@ -22,6 +22,7 @@
 #include "dimension.h"
 #include <boost/any.hpp>
 #include <vector>
+#include <initializer_list>
 
 namespace minsky
 {
@@ -37,11 +38,12 @@ namespace minsky
     Dimension dimension;
     XVector() {}
     XVector(const std::string& name, const V& v=V()): V(v), name(name) {}
+    XVector(const std::string& name, const std::initializer_list<const char*>& v): name(name)
+    {for (auto i: v) push_back(i);}
     bool operator==(const XVector& x) const;
     void push_back(const std::string&);
     void push_back(const char* x) {push_back(std::string(x));}
     using V::push_back;
-    /// convert a value (from this xvector into a string representation
   };
 
 }

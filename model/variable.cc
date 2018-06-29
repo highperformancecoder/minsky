@@ -384,7 +384,7 @@ void VariableBase::draw(cairo_t *cairo) const
         {
           cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
         }
-      catch (error) {} // handlePos() may throw.
+      catch (const error&) {} // handlePos() may throw.
       cairo_fill(cairo);
     }
   

@@ -39,6 +39,9 @@ namespace minsky
     KeyAssertion(int id) {assert(id>=0);}
   };
   
+#pragma GCC diagnostic push
+  // gcc gets this one wrong
+#pragma GCC diagnostic ignored "-Wparentheses"
 
   template <class Key, class Val>
   struct IntrusiveWrap: public Val
@@ -67,6 +70,7 @@ namespace minsky
     }
   };
 
+#pragma GCC diagnostic pop
 
   /**
      An intrusive map is like a std::map, except that the value type

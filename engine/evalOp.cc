@@ -603,18 +603,20 @@ namespace minsky
           break;
         case OperationType::pow:
           if (!from1.units.empty())
-            if (from2.type()==VariableType::constant)
-              {
-                char* ep;
-                int e=strtol(from2.init.c_str(),&ep,10);
-                if (*ep!='\0')
-                  throw runtime_error("non integral power of dimensioned quantity requested");
-                to.units=from1.units;
-                for (auto& i: to.units)
-                  i.second*=e;
-              }
-            else
-              throw runtime_error("non constant power of dimensioned quantity requested");
+            {
+              if (from2.type()==VariableType::constant)
+                {
+                  char* ep;
+                  int e=strtol(from2.init.c_str(),&ep,10);
+                  if (*ep!='\0')
+                    throw runtime_error("non integral power of dimensioned quantity requested");
+                  to.units=from1.units;
+                  for (auto& i: to.units)
+                    i.second*=e;
+                }
+              else
+                throw runtime_error("non constant power of dimensioned quantity requested");
+            }
           break;
         case OperationType::le: case OperationType::lt: case OperationType::eq:
           if (from1.units!=from2.units)

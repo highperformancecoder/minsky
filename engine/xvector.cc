@@ -63,7 +63,7 @@ namespace minsky
               if (any_cast<string>(*i)!=any_cast<string>(*j))
                 return false;
             }
-          catch (bad_any_cast)
+          catch (const bad_any_cast&)
             {
               if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
                 return false;
@@ -95,7 +95,7 @@ namespace minsky
         break;
       case Dimension::time:
         {
-          int pq;
+          string::size_type pq;
           if ((pq=dimension.units.find("%Q"))!=string::npos)
             {
               // year quarter format expected. Takes the first %Y (or
@@ -105,7 +105,7 @@ namespace minsky
               string pattern;
               greg_month quarterMonth[]={Jan,Apr,Jul,Oct};
               int year, quarter;
-              int pY=dimension.units.find("%Y");
+              auto pY=dimension.units.find("%Y");
               if (pY>=0)
                 if (pq<pY)
                   extract(dimension.units,s,pq,"(\\d)",quarter,pY,"(\\d{4})",year);

@@ -484,7 +484,7 @@ namespace minsky
 
   vector<string> Ravel::allSliceLabelsImpl(int axis, HandleState::HandleSort order) const
   {
-    if (axis>=0 && axis<ravel_numHandles(ravel))
+    if (axis>=0 && axis<int(ravel_numHandles(ravel)))
       {
         assert(order!=HandleState::custom); //custom makes no sense here
         // grab the labels in sorted order, or forward order if a custom order is applied
@@ -524,7 +524,7 @@ namespace minsky
   
   void Ravel::pickSliceLabelsImpl(int axis, const vector<string>& pick) 
   {
-    if (axis>=0 && axis<ravel_numHandles(ravel))
+    if (axis>=0 && axis<int(ravel_numHandles(ravel)))
       {
         auto allLabels=allSliceLabelsImpl(axis, HandleState::none);
         map<string,size_t> idxMap; // map index positions

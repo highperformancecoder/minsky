@@ -401,16 +401,18 @@ namespace MathDAG
                 break;
               case ravel:
                 if (auto r=dynamic_cast<Ravel*>(state.get()))
-                  if (argIdx.size()>0 && argIdx[0].size()==1)
-                    {
-                      if (r->rank()==0) // initialise rank to that of input
-                        r->setRank(argIdx[0][0].dims().size());
-                      r->loadDataCubeFromVariable(argIdx[0][0]);
+                  {
+                    if (argIdx.size()>0 && argIdx[0].size()==1)
+                      {
+                        if (r->rank()==0) // initialise rank to that of input
+                          r->setRank(argIdx[0][0].dims().size());
+                        r->loadDataCubeFromVariable(argIdx[0][0]);
+                        r->loadDataFromSlice(*result);
+                        ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
+                      }
+                    else
                       r->loadDataFromSlice(*result);
-                      ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
-                    }
-                  else
-                    r->loadDataFromSlice(*result);
+                  }
                 break;
               default:
                 // sanity check that the correct number of arguments is provided 
@@ -436,7 +438,7 @@ namespace MathDAG
                   }
               }
           }
-        catch (std::exception)
+        catch (const std::exception&)
           {
             if (state) minsky::minsky().displayErrorItem(*state);
             throw;
