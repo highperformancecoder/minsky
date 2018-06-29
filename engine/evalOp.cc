@@ -526,7 +526,7 @@ namespace minsky
             size_t offs=0;
             for (auto& j: i)
               {
-                (*this)[i.name][j.second]=offs;
+                (*this)[i.name][str(j)]=offs;
                 offs+=stride;
               }
             stride*=i.size();
@@ -562,12 +562,12 @@ namespace minsky
       apply(targetOffs,targetOffs.axes,{},f);
     }
 
-    typedef vector<VariableValue::XVector> VVV;
+    typedef vector<XVector> VVV;
     void checkAllEntriesPresent(const VVV& x, const VVV& y)
     {
       for (auto& i: y)
         if (none_of(x.begin(), x.end(),
-                    [&](const VariableValue::XVector& z)
+                    [&](const XVector& z)
                     {return z.name==i.name;}))
           throw error("invalidly initialised to variable"); 
     }
@@ -675,7 +675,7 @@ namespace minsky
                     if (j!=from2Offsets.end())
                       for (auto& k: i)
                         {
-                          auto l=j->second.find(k.second);
+                          auto l=j->second.find(str(k));
                           if (l!=j->second.end())
                             to.xVector.back().push_back(k);
                         }

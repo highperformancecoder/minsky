@@ -519,7 +519,7 @@ namespace minsky
     // a delimiter
     description = "\\verb/"+
       ((p!=string::npos)? fileName.substr(p+1): fileName) + "/";
-    initXVector();
+    //initXVector();
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
@@ -529,16 +529,16 @@ namespace minsky
     double dx=(xmax-xmin)/numSamples;
     for (double x=xmin; x<xmax; x+=dx)
       data[x]=double(rand())/RAND_MAX;
-    initXVector();
+    //initXVector();
   }
 
-  void DataOp::initXVector()
-  {
-    xVector.clear();
-    xVector.emplace_back("x");
-    for (auto& i: data)
-      xVector[0].emplace_back(i.first,to_string(i.first));
-  }
+//  void DataOp::initXVector()
+//  {
+//    xVector.clear();
+//    xVector.emplace_back("x");
+//    for (auto& i: data)
+//      xVector[0].emplace_back(i.first,to_string(i.first));
+//  }
   
   double DataOp::interpolate(double x) const
   {
@@ -581,13 +581,13 @@ namespace minsky
       return (v->second-v1->second)/(v->first-v1->first);
   }
 
-  void DataOp::initOutputVariableValue(VariableValue& v) const
-  {
-    v.xVector=xVector;
-    auto iy=v.begin();
-    for (auto& j: xVector[0])
-      *iy++=interpolate(j.first);
-  }
+//  void DataOp::initOutputVariableValue(VariableValue& v) const
+//  {
+//    v.xVector=xVector;
+//    auto iy=v.begin();
+//    for (auto& j: xVector[0])
+//      *iy++=interpolate(j.first);
+//  }
 
   // virtual draw methods for operations - defined here rather than
   // operations.cc because it is more related to the functionality in

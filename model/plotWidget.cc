@@ -28,7 +28,9 @@
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
+using namespace boost;
 using namespace boost::posix_time;
+using namespace boost::gregorian;
 
 namespace minsky
 {
@@ -316,7 +318,8 @@ namespace minsky
         {
           auto& yv=yvars[pen];
           auto d=yv.dims();
-
+          if (d.empty()) return;
+          
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
@@ -331,10 +334,52 @@ namespace minsky
               xdefault.reserve(d[0]);
               if (yv.xVector.size()) // yv carries its own x-vector
                 {
-                  xticks=yv.xVector[0];
-                  assert(xticks.size()==d[0]);
-                  for (auto& i: xticks)
-                    xdefault.push_back(i.first);
+                  auto& xv=yv.xVector[0];
+                  assert(xv.size()==d[0]);
+                  switch (xv.dimension.type)
+                    {
+                    case Dimension::string:
+                      for (size_t i=0; i<xv.size(); ++i)
+                        {
+                          xticks.emplace_back(i, str(xv[i]));
+                          xdefault.push_back(i);
+                        }
+                      break;
+                    case Dimension::value:
+                      for (auto& i: xv)
+                        xdefault.push_back(any_cast<double>(i));
+                      break;
+                    case Dimension::time:
+                      // choose a sensible format string, dependent on the data
+                      string format;
+                      static const auto day=hours(24);
+                      static const auto month=day*30;
+                      static const auto year=day*365;
+                      auto dt=any_cast<ptime>(xv.back())-any_cast<ptime>(xv.front());
+                      if (dt > year*5)
+                        format="%Y";
+                      else if (dt > year)
+                        format="%b %Y";
+                      else if (dt > month*6)
+                        format="%b";
+                      else if (dt > month)
+                        format="%d %b";
+                      else if (dt > day)
+                        format="%d %H:%M";
+                      else if (dt > hours(1))
+                        format="%H:%M";
+                      else if (dt > minutes(1))
+                        format="%M:%S";
+                      else
+                        format="%s";
+                        
+                      for (auto& i: xv)
+                        {
+                          double tv=(any_cast<ptime>(i)-ptime()).total_nanoseconds()*1E-9;
+                          xticks.emplace_back(tv,str(i,format));
+                          xdefault.push_back(tv);
+                        }
+                    }
                 }
               else // by default, set x to 0..d[0]-1
                 for (size_t i=0; i<d[0]; ++i)
@@ -347,6 +392,7 @@ namespace minsky
           for (auto j=d[0]; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
             setPen(extraPen++, x, yv.begin()+j, d[0]);
         }
+    setMinMax();
   }
 
   

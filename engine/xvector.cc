@@ -48,6 +48,40 @@ namespace minsky
       var2=stoi(match[2]);
     }
   }
+
+  bool XVector::operator==(const XVector& x) const
+  {
+    if (dimension.type!=x.dimension.type || name!=x.name ||
+        size()!=x.size())
+      return false;
+    for (auto i=begin(), j=x.begin(); i!=end(); ++i, ++j)
+      switch (dimension.type)
+        {
+        case Dimension::string:
+          try
+            {
+              if (any_cast<string>(*i)!=any_cast<string>(*j))
+                return false;
+            }
+          catch (bad_any_cast)
+            {
+              if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
+                return false;
+            }
+          break;
+        case Dimension::value:
+          if (any_cast<double>(*i)!=any_cast<double>(*j))
+            return false;
+          break;
+        case Dimension::time:
+          if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
+            return false;
+          break;
+        default:
+          throw error("unknown dimension type");
+        }
+    return true;
+  }
   
   void XVector::push_back(const std::string& s)
   {
@@ -109,7 +143,7 @@ namespace minsky
                   while (*lp && !isdigit(*lp)) lp++;
                 }
               if (i==0)
-                throw error("invalid date/time",s.c_str());
+                throw error("invalid date/time: %s",s.c_str());
               V::push_back(ptime(date(d[0],d[1],d[2]), time_duration(d[3],d[4],d[5])));
             }
           break;
@@ -117,14 +151,25 @@ namespace minsky
       }
   }
 
-  std::string str(const boost::any& v)
+  string str(const boost::any& v, const string& format)
   {
     if (auto s=any_cast<std::string>(&v))
+      return *s;
+    else if (auto s=any_cast<const char*>(&v))
       return *s;
     else if (auto s=any_cast<double>(&v))
       return to_string(*s);
     else if (auto s=any_cast<ptime>(&v))
-      return to_simple_string(*s);
+      if (format.empty())
+        return to_simple_string(*s);
+      else
+        {
+          unique_ptr<time_facet> facet(new time_facet(format.c_str()));
+          ostringstream os;
+          os.imbue(locale(os.getloc(), facet.release()));
+          os<<s;
+          return os.str();
+        }
     else
       return "";
   }

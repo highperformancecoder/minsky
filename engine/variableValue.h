@@ -19,6 +19,7 @@
 #ifndef VARIABLE_VALUE
 #define VARIABLE_VALUE
 #include "variableType.h"
+#include "xvector.h"
 #include "ecolab.h"
 #include "classdesc_access.h"
 #include "constMap.h"
@@ -98,7 +99,7 @@ namespace minsky
         {
           xVector.emplace_back(std::to_string(i));
           for (size_t j=0; j<i; ++j)
-            xVector.back().emplace_back(j,std::to_string(j));
+            xVector.back().emplace_back(j);
         }
       return d;
     }
@@ -107,17 +108,6 @@ namespace minsky
       for (auto& i: xVector) s*=i.size();
       return s;
     }
-
-    /// labels describing the points along dimensions
-    /// consists of a value and a textual representation
-    struct XVector: public std::vector<std::pair<double, std::string>>
-    {
-      typedef std::vector<std::pair<double, std::string>> V;
-      std::string name;
-      XVector() {}
-      XVector(const std::string& name, const V& v=V()): V(v), name(name) {}
-      bool operator==(const XVector& x) const {return name==x.name && V(*this)==(x);}
-    };
 
     std::vector<XVector> xVector;
 

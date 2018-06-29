@@ -25,7 +25,9 @@
 
 namespace minsky
 {
-  std::string str(const boost::any&);
+  /// \a format - can be any format string suitable for a
+  /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
+  std::string str(const boost::any&, const std::string& format="");
 
   /// labels describing the points along dimensions. These can be strings (text type), time values (boost::posix_time type) or numerical values (double)
   struct XVector: public std::vector<boost::any>
@@ -35,12 +37,27 @@ namespace minsky
     Dimension dimension;
     XVector() {}
     XVector(const std::string& name, const V& v=V()): V(v), name(name) {}
-    //bool operator==(const XVector& x) const {return name==x.name && V(*this)==(x);}
+    bool operator==(const XVector& x) const;
     void push_back(const std::string&);
+    void push_back(const char* x) {push_back(std::string(x));}
+    using V::push_back;
     /// convert a value (from this xvector into a string representation
   };
 
 }
 
+// nobble these, as they're not needed, and boost::any has rather nontrivial serialisers
+#ifdef _CLASSDESC
+#pragma omit pack minsky::XVector
+#pragma omit unpack minsky::XVector
+#endif
+#include <classdesc.h>
+namespace classdesc_access
+{
+  template<> struct access_pack<minsky::XVector>:
+    public classdesc::NullDescriptor<classdesc::pack_t> {};
+  template<> struct access_unpack<minsky::XVector>:
+    public classdesc::NullDescriptor<classdesc::unpack_t> {};
+}
 #include "xvector.cd"
 #endif

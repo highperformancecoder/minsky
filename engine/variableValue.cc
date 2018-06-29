@@ -224,29 +224,31 @@ namespace minsky
   string expMultiplier(int exp)
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
-  namespace
-  {
-    // wrapper storing just the string part of an XVector element
-    struct XName: public string
-    {
-      XName() {}
-      XName(const VariableValue::XVector::value_type& x):
-        string(x.second) {}
-    };
-  }
+//  namespace
+//  {
+//    // wrapper storing just the string part of an XVector element
+//    struct XName: public string
+//    {
+//      XName() {}
+//      XName(const XVector::value_type& x):
+//        string(x.second) {}
+//    };
+//  }
   
   void VariableValue::makeXConformant(const VariableValue& a)
   {
     for (auto& i: a.xVector)
       {
+        set<string> alabels;
+        for (auto& j: i)
+          alabels.insert(str(j));
         size_t j=0;
         for (j=0; j<xVector.size(); ++j)
           if (xVector[j].name==i.name)
             {
-              set<XName> alabels(i.begin(), i.end());
               XVector newLabels;
               for (auto i: xVector[j])
-                if (alabels.count(i))
+                if (alabels.count(str(i)))
                   newLabels.push_back(i);
               xVector[j].swap(newLabels);
               break;
@@ -274,7 +276,7 @@ namespace minsky
           size_t stride=1;
           for (size_t j=0; j<xVector.size(); ++j)
             {
-              of << "\""<<xVector[j][(i/stride) % xVector[j].size()].second << "\",";
+              of << "\""<<str(xVector[j][(i/stride) % xVector[j].size()]) << "\",";
               stride*=xVector[j].size();
             }
           of << *d << endl;

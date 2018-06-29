@@ -361,22 +361,20 @@ namespace minsky
                 ravel_sliceLabels(ravel,h,&labels[0]);
                 assert(all_of(labels.begin(), labels.end(),
                               [](const char* i){return bool(i);}));
-                set<double> testNum;
-                try
-                  {
-                    for (auto& i: labels)
-                      testNum.insert(stod(i));
-                  }
-                catch (...) {} // throw means not convertible to float
-                
-                //numerically converted labels are all distinct
-                bool numerical=testNum.size()==labels.size(); 
+//                set<double> testNum;
+//                try
+//                  {
+//                    for (auto& i: labels)
+//                      testNum.insert(stod(i));
+//                  }
+//                catch (...) {} // throw means not convertible to float
+//                
+//                //numerically converted labels are all distinct
+//                bool numerical=testNum.size()==labels.size(); 
                 v.xVector.emplace_back
                   (ravel_handleDescription(ravel,h));
                 for (size_t i=0; i<labels.size(); ++i)
-
-                  v.xVector.back().emplace_back
-                    (numerical? stod(labels[i]): double(i+1),labels[i]);
+                  v.xVector.back().push_back(labels[i]);
               }
             if (v.idx()==-1 || prevNumElem!=v.numElements())
               v.allocValue();
@@ -404,9 +402,11 @@ namespace minsky
         ravel_clear(ravel);
         for (auto& i: v.xVector)
           {
+            vector<string> ss;
+            for (auto& j: i) ss.push_back(str(j));
             vector<const char*> sl;
-            for (auto& j: i)
-              sl.push_back(j.second.c_str());
+            for (auto& j: ss)
+              sl.push_back(j.c_str());
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
             size_t h=ravel_numHandles(ravel)-1;
             ravel_displayFilterCaliper(ravel,h,true);

@@ -39,19 +39,19 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      from1.xVector={{"a",{{0,"a1"},{1,"a2"},{2,"a3"}}},{"b",{{0,"b1"},{1,"b3"},{2,"b4"}}}};
-      from2.xVector={{"c",{{0,"c1"},{1,"c2"},{2,"c3"}}},{"b",{{0,"b2"},{1,"b3"},{2,"b4"},{3,"b5"}}}};
+      from1.xVector={{"a",{"a1","a2","a3"}},{"b",{"b1","b3","b4"}}};
+      from2.xVector={{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}};
       from1.allocValue();
       from2.allocValue();
       EvalOpPtr e(OperationType::add, to, from1, from2);
       CHECK_EQUAL(3,to.xVector.size());
-      map<string, VariableValue::XVector> m;
+      map<string, XVector> m;
       for (auto& i: to.xVector)
         m[i.name]=i;
       CHECK_EQUAL(3,m["a"].size());
       CHECK(m["a"]==from1.xVector[0]);
       CHECK(m["c"]==from2.xVector[0]);
-      VariableValue::XVector t1{"b",{{1,"b3"},{2,"b4"}}};
+      XVector t1{"b",{"b3","b4"}};
       CHECK(m["b"]==t1);
 
       CHECK_EQUAL(3, to.dims().size());

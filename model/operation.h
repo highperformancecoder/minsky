@@ -163,11 +163,10 @@ namespace minsky
     CLASSDESC_ACCESS(DataOp);
   public:
     std::map<double, double> data;
-    std::vector<VariableValue::XVector> xVector;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 
     void initRandom(double xmin, double xmax, unsigned numSamples);
-    void initXVector();
+    //    void initXVector();
     /// interpolates y data between x values bounding the argument
     double interpolate(double) const;
     /// derivative of the interpolate function. At the data points, the
@@ -176,7 +175,7 @@ namespace minsky
     double deriv(double) const;
 
     /// called to initialise a variable value when no input wire is connected
-    void initOutputVariableValue(VariableValue&) const;
+    //    void initOutputVariableValue(VariableValue&) const;
     
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
