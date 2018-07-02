@@ -157,4 +157,5 @@ EOF
 candle minsky.wxs
 echo "light minsky.wixobj"
 light -ext WixUIExtension -dWixUILicenseRtf=license.rtf minsky.wixobj
+signtool sign -t http://timestamp.comodoca.com/rfc3161 minsky.msi
 mv minsky.msi Minsky-$version-win-dist.msi
