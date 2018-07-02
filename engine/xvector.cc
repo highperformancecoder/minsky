@@ -22,9 +22,9 @@
 #include <ecolab_epilogue.h>
 using namespace ecolab;
 
-#include <regex>
 using namespace std;
 
+#include <boost/regex.hpp>
 #include <boost/date_time.hpp>
 using namespace boost;
 using namespace boost::posix_time;
