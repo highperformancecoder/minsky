@@ -22,6 +22,7 @@
 
 #include "operation.h"
 #include "cairoRenderer.h"
+#include "ravelState.h"
 
 namespace minsky 
 {
@@ -31,28 +32,6 @@ namespace minsky
     struct RavelImpl;
     struct DataCube;
 
-    // representing the state of the handles
-    struct HandleState
-    {
-      double x,y; ///< handle tip coordinates (only angle important, not length)
-      size_t sliceIndex, sliceMin, sliceMax;
-      bool collapsed, displayFilterCaliper;
-      enum ReductionOp {sum, prod, av, stddev, min, max};
-      ReductionOp reductionOp;
-      enum HandleSort {none, forward, reverse, numForward, numReverse, custom};
-      HandleSort order;
-      // note this member must appear after all members of
-      // CAPIHandleState from the Ravel CAPI
-      vector<string> customOrder; // used if order==custom
-    };
-
-    struct State
-    {
-      std::map<std::string, HandleState> handleStates;
-      std::vector<std::string> outputHandles;
-      bool empty() const {return handleStates.empty();}
-      void clear() {handleStates.clear(); outputHandles.clear();}
-    };
 
   private:
     Exclude<RavelImpl*> ravel=nullptr;
@@ -65,8 +44,9 @@ namespace minsky
     
     /// used entirely to defer persisted state data until after first
     /// load from a variable
-    State initState;
-
+    RavelState initState;
+    typedef RavelState::HandleState HandleState;
+    
     friend struct SchemaHelper;
 
     std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
@@ -130,9 +110,9 @@ namespace minsky
     /// @}
     
     /// get the current state of the Ravel
-    State getState() const;
+    RavelState getState() const;
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-    void applyState(const State&);
+    void applyState(const RavelState&);
 
     void exportAsCSV(const string& filename) const;
   };

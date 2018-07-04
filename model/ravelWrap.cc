@@ -107,13 +107,13 @@ namespace minsky
     void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
     void (*ravel_displayFilterCaliper)(Ravel::RavelImpl* ravel, size_t axis, bool display)=nullptr;
     void (*ravel_orderLabels)(Ravel::RavelImpl* ravel, size_t axis,
-                              Ravel::HandleState::HandleSort order)=nullptr;
+                              RavelState::HandleState::HandleSort order)=nullptr;
     void (*ravel_applyCustomPermutation)(Ravel::RavelImpl* ravel, size_t axis, size_t numIndices, const size_t* indices)=nullptr;
     void (*ravel_currentPermutation)(Ravel::RavelImpl* ravel, size_t axis, size_t numIndices, size_t* indices)=nullptr;
      const char* (*ravel_toXML)(Ravel::RavelImpl* ravel)=nullptr;
     int (*ravel_fromXML)(Ravel::RavelImpl* ravel, const char*)=nullptr;
-    void (*ravel_getHandleState)(const Ravel::RavelImpl* ravel, size_t handle, Ravel::HandleState* handleState)=nullptr;
-    void (*ravel_setHandleState)(Ravel::RavelImpl* ravel, size_t handle, const Ravel::HandleState* handleState)=nullptr;
+    void (*ravel_getHandleState)(const Ravel::RavelImpl* ravel, size_t handle, RavelState::HandleState* handleState)=nullptr;
+    void (*ravel_setHandleState)(Ravel::RavelImpl* ravel, size_t handle, const RavelState::HandleState* handleState)=nullptr;
     void (*ravel_adjustSlicer)(Ravel::RavelImpl* ravel, int)=nullptr;
 
     Ravel::Ravel::DataCube* (*ravelDC_new)()=nullptr;
@@ -397,7 +397,7 @@ namespace minsky
     if (ravel && dataCube)
       {
         // this ensure that handles are restored correctly after loading a .mky file. 
-        State state=initState.empty()? getState(): initState;
+        RavelState state=initState.empty()? getState(): initState;
         initState.clear();
         ravel_clear(ravel);
         for (auto& i: v.xVector)
@@ -573,9 +573,9 @@ namespace minsky
   }
 
   
-  Ravel::State Ravel::getState() const
+  RavelState Ravel::getState() const
   {
-    State state;
+    RavelState state;
     if (ravel)
       {
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
@@ -598,7 +598,7 @@ namespace minsky
   }
 
   /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-  void Ravel::applyState(const State& state)
+  void Ravel::applyState(const RavelState& state)
   {
     if (ravel)
       {

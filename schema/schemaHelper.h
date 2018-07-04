@@ -80,7 +80,7 @@ namespace minsky
     static void scaleGodley(minsky::GodleyIcon& g, double globalZoomFactor)
     {g.iconScale*=g.zoomFactor/globalZoomFactor;}
 
-    static void initHandleState(minsky::Ravel& r, const Ravel::State& s)
+    static void initHandleState(minsky::Ravel& r, const RavelState& s)
     {r.initState=s;}
   };
 
