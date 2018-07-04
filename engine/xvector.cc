@@ -20,7 +20,7 @@
 #include "xvector.h"
 #include <error.h>
 #include <ecolab_epilogue.h>
-using namespace ecolab;
+using ecolab::error;
 
 using namespace std;
 
@@ -167,7 +167,7 @@ namespace minsky
           unique_ptr<time_facet> facet(new time_facet(format.c_str()));
           ostringstream os;
           os.imbue(locale(os.getloc(), facet.release()));
-          os<<s;
+          os<<*s;
           return os.str();
         }
     else

@@ -332,6 +332,7 @@ namespace minsky
           else
             {
               xdefault.reserve(d[0]);
+              xticks.clear();
               if (yv.xVector.size()) // yv carries its own x-vector
                 {
                   auto& xv=yv.xVector[0];
@@ -375,7 +376,7 @@ namespace minsky
                         
                       for (auto& i: xv)
                         {
-                          double tv=(any_cast<ptime>(i)-ptime()).total_nanoseconds()*1E-9;
+                          double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
                           xticks.emplace_back(tv,str(i,format));
                           xdefault.push_back(tv);
                         }

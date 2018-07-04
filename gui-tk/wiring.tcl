@@ -549,6 +549,7 @@ menu .wiring.context.axisMenu
         minsky.canvas.item.setDescription [.wiring.context.axisMenu.desc.entry get]
     }
 }
+.wiring.context.axisMenu add command -label "Dimension" -command setDimension
 .wiring.context.axisMenu add command -label "Toggle Calipers" -command minsky.canvas.item.toggleDisplayFilterCaliper
 menu .wiring.context.axisMenu.sort 
 .wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort 
@@ -559,6 +560,39 @@ foreach order {none forward reverse numForward numReverse} {
 }
 .wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu
 
+
+proc setDimension {} {
+    set dim [minsky.canvas.item.axisDimensions.@elem [minsky.canvas.item.description]]
+    if {![winfo exists .wiring.context.axisMenu.dim]} {
+        toplevel .wiring.context.axisMenu.dim
+        wm title .wiring.context.axisMenu.dim "Dimension axis"
+        frame .wiring.context.axisMenu.dim.type
+        label .wiring.context.axisMenu.dim.type.label -text "type"
+        ttk::combobox .wiring.context.axisMenu.dim.type.value -values {string value time} -state readonly -textvariable axisType
+        pack .wiring.context.axisMenu.dim.type.label .wiring.context.axisMenu.dim.type.value -side left
+        frame .wiring.context.axisMenu.dim.units
+        label .wiring.context.axisMenu.dim.units.label -text "units/format"
+        tooltip .wiring.context.axisMenu.dim.units.label \
+     "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
+        entry .wiring.context.axisMenu.dim.units.value
+        pack .wiring.context.axisMenu.dim.units.label .wiring.context.axisMenu.dim.units.value -side left
+        pack .wiring.context.axisMenu.dim.type .wiring.context.axisMenu.dim.units
+        buttonBar .wiring.context.axisMenu.dim "setAxisDimension $dim"
+    } else {
+        deiconify .wiring.context.axisMenu.dim
+    }
+    .wiring.context.axisMenu.dim.type.value set [$dim.type]
+    .wiring.context.axisMenu.dim.units.value delete 0 end
+    .wiring.context.axisMenu.dim.units.value insert 0 [$dim.units]
+    tkwait visibility .wiring.context.axisMenu.dim
+    grab set .wiring.context.axisMenu.dim
+    wm transient .wiring.context.axisMenu.dim
+}
+
+proc setAxisDimension dim {
+    $dim.type [.wiring.context.axisMenu.dim.type.value get]
+    $dim.units [.wiring.context.axisMenu.dim.units.value get]
+}
 
 proc setupPickMenu {} {
     global labelPicked

@@ -80,6 +80,9 @@ namespace minsky
     // define them as empty operations to prevent double frees if accidentally used
     void operator=(const Ravel&) {}
     Ravel(const Ravel&) {}
+
+    /// local override of axis dimensionality
+    Dimensions axisDimensions;
     
     const char* ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;

@@ -361,18 +361,18 @@ namespace minsky
                 ravel_sliceLabels(ravel,h,&labels[0]);
                 assert(all_of(labels.begin(), labels.end(),
                               [](const char* i){return bool(i);}));
-//                set<double> testNum;
-//                try
-//                  {
-//                    for (auto& i: labels)
-//                      testNum.insert(stod(i));
-//                  }
-//                catch (...) {} // throw means not convertible to float
-//                
-//                //numerically converted labels are all distinct
-//                bool numerical=testNum.size()==labels.size(); 
                 v.xVector.emplace_back
                   (ravel_handleDescription(ravel,h));
+                auto dim=axisDimensions.find(v.xVector.back().name);
+                if (dim!=axisDimensions.end())
+                  v.xVector.back().dimension=dim->second;
+                else
+                  {
+                    auto dim=cminsky().dimensions.find(v.xVector.back().name);
+                    if (dim!=cminsky().dimensions.end())
+                      v.xVector.back().dimension=dim->second;
+                  }
+                // else otherwise dimension is a string (default type)
                 for (size_t i=0; i<labels.size(); ++i)
                   v.xVector.back().push_back(labels[i]);
               }
