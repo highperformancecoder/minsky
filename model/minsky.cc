@@ -177,6 +177,7 @@ namespace minsky
 //    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
 //        makeGodleyIt(godleyItems.end()), variables.values);
 
+    dimensions.clear();
     flags=reset_needed;
   }
 
@@ -384,6 +385,21 @@ namespace minsky
        });
   }
 
+  void Minsky::populateMissingDimensions() {
+    model->recursiveDo
+      (&Group::items,[&](Items& m, Items::iterator it)
+       {
+         if (auto ri=dynamic_cast<Ravel*>(it->get()))
+           {
+             auto state=ri->getState();
+             for (auto& j: state.handleStates)
+               dimensions.emplace(j.first,Dimension());
+           }
+         return false;
+       });
+  }
+
+  
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;

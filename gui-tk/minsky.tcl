@@ -531,6 +531,20 @@ menu .menubar.file.recent
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
 .menubar.file add command -label "Export Canvas" -command exportCanvas
+.menubar.file add checkbutton -label "Log simulation" -variable simLogging \
+    -command getLogVars
+.menubar.file add checkbutton -label "Recording" -command toggleRecording -variable eventRecording
+.menubar.file add checkbutton -label "Replay recording" -command replay -variable recordingReplay 
+    
+.menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
+.menubar.file add separator
+.menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
+.menubar.file add command -label "Redraw" -command canvas.requestRedraw
+.menubar.file add command -label "Object Browser" -command obj_browser
+.menubar.file add command -label "Select items" -command selectItems
+.menubar.file add command -label "Command" -command cli
+
+
 
 proc exportCanvas {} {
     global workDir type fname preferences
@@ -604,18 +618,7 @@ proc logVarsOK {} {
 }
 
 
-.menubar.file add checkbutton -label "Log simulation" -variable simLogging \
-    -command getLogVars
-.menubar.file add checkbutton -label "Recording" -command toggleRecording -variable eventRecording
-.menubar.file add checkbutton -label "Replay recording" -command replay -variable recordingReplay 
-    
-.menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
-.menubar.file add separator
-.menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
-.menubar.file add command -label "Redraw" -command canvas.requestRedraw
-.menubar.file add command -label "Object Browser" -command obj_browser
-.menubar.file add command -label "Select items" -command selectItems
-.menubar.file add command -label "Command" -command cli
+
 
 .menubar.edit add command -label "Undo" -command "undo 1" -accelerator $meta_menu-Z
 .menubar.edit add command -label "Redo" -command "undo -1" -accelerator $meta_menu-Y
@@ -623,16 +626,7 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
 .menubar.edit add command -label "Paste" -command {paste} -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
-
-menu .menubar.file.itemTypes
-proc selectItems {} {
-    .menubar.file.itemTypes delete 0 end
-    foreach i [wiringGroup.types] {
-        .menubar.file.itemTypes add command -label $i \
-            -command "filterOnType $i; obj_browser wiringGroup.filteredItems.*"
-    }
-    .menubar.file.itemTypes post [winfo pointerx .] [winfo pointery .]
-}
+.menubar.edit add command -label "Dimensions" -command dimensionsDialog
 
 proc undo {delta} {
     # do not record changes to state from the undo command
@@ -645,6 +639,48 @@ proc undo {delta} {
 
 proc cut {} {
     minsky.cut
+}
+
+proc dimensionsDialog {} {
+    populateMissingDimensions
+    if {![winfo exists .dimensions]} {
+        toplevel .dimensions
+        grid [button .dimensions.cancel -text Cancel -command "wm withdraw .dimensions"] \
+            [button .dimensions.ok -text OK -command {
+                    set colRows [grid size .dimensions]
+                    for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
+                        set dim [.dimensions.g${i}_dim get]
+                        if {$dim!=""} {
+                            set d [dimensions.@elem $dim]
+                            $d.type [.dimensions.g${i}_type get]
+                            $d.units [.dimensions.g${i}_units get]
+                        }
+                    }
+                    wm withdraw .dimensions
+            }]
+        grid [label .dimensions.g1_dim -text Dimension] \
+            [label .dimensions.g1_type -text Type]\
+            [label .dimensions.g1_units -text "Units/Format"]
+    } else {
+        wm deiconfy .dimensions
+    }
+    set colRows [grid size .dimensions]
+    for {set i [lindex $colRows 1]} {$i<[dimensions.size]+3} {incr i} {
+        grid [entry .dimensions.g${i}_dim] \
+            [ttk::combobox .dimensions.g${i}_type -state readonly \
+             -values {string value time}] \
+            [entry  .dimensions.g${i}_units]
+    }
+    set i 2
+    foreach dim [dimensions.#keys] {
+        set d [dimensions.@elem $dim]
+        .dimensions.g${i}_dim delete 0 end
+        .dimensions.g${i}_dim insert 0 $dim
+        .dimensions.g${i}_type set [$d.type]
+        .dimensions.g${i}_units delete 0 end
+        .dimensions.g${i}_units insert 0 [$d.units]
+        incr i
+    }
 }
 
 wm protocol . WM_DELETE_WINDOW exit

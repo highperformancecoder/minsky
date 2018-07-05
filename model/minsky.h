@@ -178,6 +178,8 @@ namespace minsky
     VariableValues variableValues;
     Dimensions dimensions;
     Conversions conversions;
+    /// fills in dimensions table with all loaded ravel axes
+    void populateMissingDimensions();
 
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
