@@ -28,6 +28,8 @@ namespace minsky
     enum Type {string, time, value};
     Type type=string;
     std::string units; // for values, or parser string for time conversion
+    Dimension() {}
+    Dimension(Type t,const std::string& s): type(t), units(s) {}
   };
 
   typedef std::map<std::string, Dimension> Dimensions;

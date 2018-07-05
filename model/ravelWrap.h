@@ -52,7 +52,6 @@ namespace minsky
     std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
     void pickSliceLabelsImpl(int axis, const std::vector<string>& pick);
  
-    
   public:
     Ravel();
     ~Ravel();
@@ -107,6 +106,13 @@ namespace minsky
     /// @} get/set description of selected handle
     string description() const;
     void setDescription(const string&);
+    /// @}
+
+    /// @{ get/set selected handle dimension attributes
+    Dimension::Type dimensionType() const;
+    std::string dimensionUnitsFormat() const;
+    /// @throw if type does not match global dimension type
+    void setDimension(Dimension::Type type,const std::string& units);
     /// @}
     
     /// get the current state of the Ravel

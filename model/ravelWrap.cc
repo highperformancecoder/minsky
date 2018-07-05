@@ -572,6 +572,52 @@ namespace minsky
     ravel_setHandleDescription(ravel,ravel_selectedHandle(ravel),description.c_str());
   }
 
+  Dimension::Type Ravel::dimensionType() const
+  {
+    auto descr=description();
+    auto i=axisDimensions.find(descr);
+    if (i!=axisDimensions.end())
+      return i->second.type;
+    else
+      {
+        auto i=cminsky().dimensions.find(descr);
+        if (i!=cminsky().dimensions.end())
+          return i->second.type;
+        else
+          return Dimension::string;
+      }
+  }
+  
+  std::string Ravel::dimensionUnitsFormat() const
+  {
+    auto descr=description();
+    if (descr.empty()) return "";
+    auto i=axisDimensions.find(descr);
+    if (i!=axisDimensions.end())
+      return i->second.units;
+    i=cminsky().dimensions.find(descr);
+    if (i!=cminsky().dimensions.end())
+      return i->second.units;
+    return "";
+  }
+      
+  /// @throw if type does not match global dimension type
+  void Ravel::setDimension(Dimension::Type type,const std::string& units)
+  {
+    auto descr=description();
+    if (descr.empty()) return;
+    auto i=cminsky().dimensions.find(descr);
+    Dimension d{type,units};
+    if (i!=cminsky().dimensions.end())
+      {
+        if (type!=i->second.type)
+          throw error("type mismatch with global dimension");
+      }
+    else
+      minsky().dimensions[descr]=d;
+    axisDimensions[descr]=d;
+  }
+
   
   RavelState Ravel::getState() const
   {

@@ -562,7 +562,6 @@ foreach order {none forward reverse numForward numReverse} {
 
 
 proc setDimension {} {
-    set dim [minsky.canvas.item.axisDimensions.@elem [minsky.canvas.item.description]]
     if {![winfo exists .wiring.context.axisMenu.dim]} {
         toplevel .wiring.context.axisMenu.dim
         wm title .wiring.context.axisMenu.dim "Dimension axis"
@@ -577,21 +576,18 @@ proc setDimension {} {
         entry .wiring.context.axisMenu.dim.units.value
         pack .wiring.context.axisMenu.dim.units.label .wiring.context.axisMenu.dim.units.value -side left
         pack .wiring.context.axisMenu.dim.type .wiring.context.axisMenu.dim.units
-        buttonBar .wiring.context.axisMenu.dim "setAxisDimension $dim"
+        buttonBar .wiring.context.axisMenu.dim {
+            minsky.canvas.item.setDimension [.wiring.context.axisMenu.dim.type.value get] [.wiring.context.axisMenu.dim.units.value get]
+        }
     } else {
         deiconify .wiring.context.axisMenu.dim
     }
-    .wiring.context.axisMenu.dim.type.value set [$dim.type]
+    .wiring.context.axisMenu.dim.type.value set [minsky.canvas.item.dimensionType]
     .wiring.context.axisMenu.dim.units.value delete 0 end
-    .wiring.context.axisMenu.dim.units.value insert 0 [$dim.units]
+    .wiring.context.axisMenu.dim.units.value insert 0 [minsky.canvas.item.dimensionUnitsFormat]
     tkwait visibility .wiring.context.axisMenu.dim
     grab set .wiring.context.axisMenu.dim
     wm transient .wiring.context.axisMenu.dim
-}
-
-proc setAxisDimension dim {
-    $dim.type [.wiring.context.axisMenu.dim.type.value get]
-    $dim.units [.wiring.context.axisMenu.dim.units.value get]
 }
 
 proc setupPickMenu {} {
