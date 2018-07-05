@@ -74,11 +74,10 @@ rm -rf $MINSKYHOME/library/{tcl,tk}
 cp -r $TCL_LIB $MINSKYHOME/library/tcl
 cp -r $TK_LIB $MINSKYHOME/library/tk
 
-codesign -s "Developer ID Application" --deep minsky.app
+codesign -s "Developer ID Application" --deep --force minsky.app
 if [ $? -ne 0 ]; then
     echo "try running this script on the Mac GUI desktop, not ssh shell"
 fi
-#pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky-$version-mac-dist.pkg
 productbuild --root minsky.app /Applications/Minsky.app minsky.pkg
 productsign --sign "Developer ID Installer" minsky.pkg Minsky-$version-mac-dist.pkg
 if [ $? -ne 0 ]; then
