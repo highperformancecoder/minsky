@@ -556,6 +556,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>111</id>
@@ -592,6 +593,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
   </items>
   <groups>
@@ -609,4 +611,8 @@
   <zoomFactor>0.909091</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

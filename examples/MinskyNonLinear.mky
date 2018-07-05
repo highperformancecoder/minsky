@@ -406,10 +406,10 @@
     <from>411</from>
     <to>54</to>
     <coords>
-     <float>387.459</float>
+     <float>493.459</float>
      <float>646.994</float>
-     <float>118.957</float>
-     <float>601.405</float>
+     <float>162.873</float>
+     <float>590.864</float>
      <float>28.3957</float>
      <float>446</float>
     </coords>
@@ -2259,6 +2259,7 @@
     <name>Employment&#32;Rate</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Ratio</ylabel>
    </Item>
@@ -2298,6 +2299,7 @@
     <name>Employment&#32;vs&#32;Wages&#32;Share</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Wages&#32;Share</xlabel>
     <ylabel>Employment&#32;Rate</ylabel>
    </Item>
@@ -2337,6 +2339,7 @@
     <name>Debt&#32;to&#32;GDP&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Ratio</ylabel>
    </Item>
@@ -2376,6 +2379,7 @@
     <name>Income&#32;Shares</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Ratios&#32;to&#32;GDP</ylabel>
    </Item>
@@ -2415,6 +2419,7 @@
     <name>Growth&#32;Rate</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>370</id>
@@ -2562,8 +2567,8 @@
    <Item>
     <id>413</id>
     <type>Variable:flow</type>
-    <x>-117.5</x>
-    <y>0</y>
+    <x>-19</x>
+    <y>-1.66103e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -2583,8 +2588,8 @@
    <Item>
     <id>416</id>
     <type>Variable:flow</type>
-    <x>121</x>
-    <y>0</y>
+    <x>23</x>
+    <y>2.01072e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -2945,7 +2950,7 @@
    <Item>
     <id>483</id>
     <type>Variable:flow</type>
-    <x>-65.0735</x>
+    <x>-19</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -3065,7 +3070,7 @@
    <Item>
     <id>496</id>
     <type>Variable:flow</type>
-    <x>71.5735</x>
+    <x>19</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -3285,4 +3290,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

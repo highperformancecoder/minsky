@@ -2733,6 +2733,7 @@
     <name>Capitalist&#32;Bank&#32;Accounts</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$</ylabel>
    </Item>
@@ -2772,6 +2773,7 @@
     <name>GDP&#32;and&#32;Loans</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$&#32;and&#32;$/Year</ylabel>
    </Item>
@@ -2811,6 +2813,7 @@
     <name>Money&#32;and&#32;Loans</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$</ylabel>
    </Item>
@@ -2850,6 +2853,7 @@
     <name>Worker&#32;and&#32;Bank</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$</ylabel>
    </Item>
@@ -2889,6 +2893,7 @@
     <name>Debt&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Loans/GDP</ylabel>
    </Item>
@@ -3305,4 +3310,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

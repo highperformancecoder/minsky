@@ -901,6 +901,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>149</id>
@@ -937,6 +938,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>172</id>
@@ -973,6 +975,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>195</id>
@@ -1009,6 +1012,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>196</id>
@@ -1182,4 +1186,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

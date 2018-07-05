@@ -94,7 +94,7 @@
      <float>37</float>
      <float>99</float>
      <float>155.145</float>
-     <float>3.5196</float>
+     <float>3.51962</float>
      <float>225</float>
      <float>285.25</float>
     </coords>
@@ -737,6 +737,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>125</id>
@@ -773,6 +774,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>126</id>
@@ -914,4 +916,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

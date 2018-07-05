@@ -193,6 +193,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <detailedText>Enter&#32;your&#32;note&#32;here</detailedText>
@@ -226,4 +227,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

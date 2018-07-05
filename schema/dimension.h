@@ -32,19 +32,22 @@ namespace minsky
 
   typedef std::map<std::string, Dimension> Dimensions;
 
-  struct Conversions: public std::map<std::pair<std::string,std::string>, double>
+  typedef std::map<std::string, double> ConversionsMap;
+  struct Conversions: public ConversionsMap
   {
     double convert(double val, const std::string& from, const std::string& to)
     {
       if (from==to) return val;
-      auto i=find(make_pair(from,to));
+      auto i=find(from+":"+to);
       if (i!=end())
         return i->second*val;
-      i=find(make_pair(to,from));
+      i=find(to+":"+from);
       if (i!=end())
         return val/i->second;
       throw std::runtime_error("inconvertible types "+from+" and "+to);
     }
+    Conversions& operator=(const ConversionsMap& x)
+    {ConversionsMap::operator=(x); return *this;}
   };
 }
 

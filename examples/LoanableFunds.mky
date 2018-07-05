@@ -3275,6 +3275,7 @@
     <name>Money&#32;and&#32;Bank&#32;Accounts</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$</ylabel>
    </Item>
@@ -3314,6 +3315,7 @@
     <name>Incomes</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$/Year</ylabel>
    </Item>
@@ -3353,6 +3355,7 @@
     <name>GDP</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$/Year</ylabel>
    </Item>
@@ -3392,6 +3395,7 @@
     <name>Velocity&#32;of&#32;Money</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Times/Year</ylabel>
    </Item>
@@ -3431,6 +3435,7 @@
     <name>D&#32;and&#32;Money&#32;Stock</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$</ylabel>
    </Item>
@@ -3470,6 +3475,7 @@
     <name>Debt&#32;to&#32;GDP&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Ratio</ylabel>
    </Item>
@@ -3880,4 +3886,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

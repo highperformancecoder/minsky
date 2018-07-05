@@ -263,7 +263,7 @@ namespace schema2
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
     minsky::Dimensions dimensions;
-    minsky::Conversions conversions;
+    minsky::ConversionsMap conversions;
     
     /// checks that all items are uniquely identified.
     //bool validate() const;

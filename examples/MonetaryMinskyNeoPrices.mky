@@ -864,7 +864,7 @@
     <coords>
      <float>1076.75</float>
      <float>635.25</float>
-     <float>194.205</float>
+     <float>194.202</float>
      <float>-1850.49</float>
      <float>872.75</float>
      <float>572.25</float>
@@ -960,8 +960,8 @@
     <coords>
      <float>736.947</float>
      <float>290.814</float>
-     <float>162.982</float>
-     <float>-219.092</float>
+     <float>162.955</float>
+     <float>-219.116</float>
      <float>1000.12</float>
      <float>164.687</float>
     </coords>
@@ -978,8 +978,8 @@
     <coords>
      <float>681.493</float>
      <float>314.45</float>
-     <float>154.789</float>
-     <float>-222.984</float>
+     <float>154.768</float>
+     <float>-223.005</float>
      <float>1000.12</float>
      <float>182.687</float>
     </coords>
@@ -4013,6 +4013,7 @@
     <name>Employment&#32;Rate</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>552</id>
@@ -4050,6 +4051,7 @@
     <name>I/Y</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>575</id>
@@ -4087,6 +4089,7 @@
     <name>\lambda&#32;v&#32;\omega</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>598</id>
@@ -4124,6 +4127,7 @@
     <name>Debt&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Percent&#32;of&#32;GDP</ylabel>
    </Item>
@@ -4163,6 +4167,7 @@
     <name>Wages&#32;share</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>644</id>
@@ -4200,6 +4205,7 @@
     <name>Inflation</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>667</id>
@@ -4237,6 +4243,7 @@
     <name>Inf.&#32;v&#32;Emp.</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>690</id>
@@ -4274,6 +4281,7 @@
     <name>Inflation--from&#32;two&#32;theories&#32;of&#32;prices</name>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>691</id>
@@ -4564,7 +4572,7 @@
    <Item>
     <id>733</id>
     <type>Variable:flow</type>
-    <x>-58.5</x>
+    <x>-27</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -4585,7 +4593,7 @@
    <Item>
     <id>736</id>
     <type>Variable:flow</type>
-    <x>68.5</x>
+    <x>19</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -4789,8 +4797,8 @@
    <Item>
     <id>778</id>
     <type>Variable:flow</type>
-    <x>63.5</x>
-    <y>0</y>
+    <x>23</x>
+    <y>2.01072e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -4810,8 +4818,8 @@
    <Item>
     <id>781</id>
     <type>Variable:flow</type>
-    <x>-58.5</x>
-    <y>0</y>
+    <x>-19</x>
+    <y>-1.66103e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -5014,7 +5022,7 @@
    <Item>
     <id>823</id>
     <type>Variable:flow</type>
-    <x>54</x>
+    <x>23</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -5035,7 +5043,7 @@
    <Item>
     <id>826</id>
     <type>Variable:flow</type>
-    <x>-56</x>
+    <x>-23</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -5171,4 +5179,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

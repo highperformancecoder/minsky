@@ -116,10 +116,10 @@
     <from>84</from>
     <to>13</to>
     <coords>
-     <float>166.234</float>
+     <float>165.484</float>
      <float>291.335</float>
-     <float>121.131</float>
-     <float>167.776</float>
+     <float>120.473</float>
+     <float>168.029</float>
      <float>90.0002</float>
      <float>143</float>
     </coords>
@@ -129,10 +129,10 @@
     <from>84</from>
     <to>60</to>
     <coords>
-     <float>166.234</float>
+     <float>165.484</float>
      <float>291.335</float>
-     <float>112.883</float>
-     <float>184.533</float>
+     <float>112.105</float>
+     <float>184.477</float>
      <float>187</float>
      <float>118.25</float>
     </coords>
@@ -144,9 +144,9 @@
     <coords>
      <float>394</float>
      <float>155</float>
-     <float>409.428</float>
-     <float>267.211</float>
-     <float>334</float>
+     <float>409.666</float>
+     <float>268.943</float>
+     <float>328.5</float>
      <float>291.335</float>
     </coords>
    </Wire>
@@ -175,12 +175,12 @@
     <from>84</from>
     <to>93</to>
     <coords>
-     <float>166.234</float>
+     <float>165.484</float>
      <float>291.335</float>
-     <float>167.995</float>
-     <float>261.222</float>
-     <float>169.591</float>
-     <float>260.4</float>
+     <float>167.276</float>
+     <float>260.685</float>
+     <float>168.901</float>
+     <float>259.849</float>
      <float>206.948</float>
      <float>298.822</float>
     </coords>
@@ -544,6 +544,7 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <plotType>line</plotType>
    </Item>
    <Item>
     <id>79</id>
@@ -574,8 +575,8 @@
    <Item>
     <id>86</id>
     <type>Variable:integral</type>
-    <x>-65.383</x>
-    <y>-5.71596e-06</y>
+    <x>-70.383</x>
+    <y>-6.15308e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -725,4 +726,8 @@
   <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>
