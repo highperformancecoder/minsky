@@ -50,16 +50,10 @@ namespace minsky
     /// returns whether item's icon overlaps the lasso
     template <class Item>
     bool intersects(const Item& item) const {
-      ecolab::cairo::Surface dummySurf
-        (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-      float xx=item.x(), yy=item.y();
-      if (xx>=x0 && xx<=x1 && yy>=y0 && yy<=y1) return true; // short circuit, that also deals with maxfloat
-      cairo_rectangle(dummySurf.cairo(), x0-xx, y0-yy, x1-x0, y1-y0);
-      cairo_clip(dummySurf.cairo());
-      item.draw(dummySurf.cairo());
-      double x,y,w,h;
-      cairo_recording_surface_ink_extents(dummySurf.surface(), &x, &y, &w, &h);
-      return w>0 && h>0;
+      return item.x()+0.5*item.zoomFactor*item.bb.width() >= x0 &&
+        item.x()-0.5*item.zoomFactor*item.bb.width() <= x1 &&
+        item.y()+0.5*item.zoomFactor*item.bb.height() >= y0 &&
+        item.y()-0.5*item.zoomFactor*item.bb.height() <= y1;
     }
 
     /// return true if both endpoints of the wire lie
