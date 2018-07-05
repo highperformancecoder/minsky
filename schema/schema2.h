@@ -126,6 +126,7 @@ namespace schema2
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
     Optional<minsky::RavelState> ravelState;
+    Optional<minsky::Dimensions> dimensions;
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
@@ -261,6 +262,8 @@ namespace schema2
     RungeKutta rungeKutta;
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
+    minsky::Dimensions dimensions;
+    minsky::Conversions conversions;
     
     /// checks that all items are uniquely identified.
     //bool validate() const;
@@ -270,6 +273,8 @@ namespace schema2
       rungeKutta=RungeKutta(m);
       zoomFactor=m.model->zoomFactor;
       bookmarks=m.model->bookmarks;
+      dimensions=m.dimensions;
+      conversions=m.conversions;
       //assert(validate());
     }
 

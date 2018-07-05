@@ -49,4 +49,5 @@ namespace minsky
 }
 
 #include "dimension.cd"
+#include "dimension.xcd"
 #endif

@@ -69,7 +69,10 @@ namespace schema2
               items.back().filename=r->filename();
               auto s=r->getState();
               if (!s.handleStates.empty())
-                items.back().ravelState=s;
+                {
+                  items.back().ravelState=s;
+                  items.back().dimensions=r->axisDimensions;
+                }
             }
         }
       return j;
@@ -323,6 +326,8 @@ namespace schema2
     populateGroup(*m.model);
     m.model->setZoom(zoomFactor);
     m.model->bookmarks=bookmarks;
+    m.dimensions=dimensions;
+    m.conversions=conversions;
     
     m.stepMin=rungeKutta.stepMin; 
     m.stepMax=rungeKutta.stepMax; 
@@ -367,6 +372,8 @@ namespace schema2
             x1->applyState(*y.ravelState);
             SchemaHelper::initHandleState(*x1,*y.ravelState);
           }
+        if (y.dimensions)
+          x1->axisDimensions=*y.dimensions;
       }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
       {
