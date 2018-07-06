@@ -54,7 +54,7 @@ cp -r /opt/local/etc/fonts/* $MAC_DIST_DIR/../Resources/fontconfig
 
 # TCL files etc in the executable directory causes grief with code signing, so move these to the lib directory
 # minskyHome is automatically set to that directory
-MINSKYHOME=$MAC_DIST_DIR/../lib
+MINSKYHOME=$MAC_DIST_DIR/../lib/minsky
 mkdir -p $MINSKYHOME
 
 #copy toplevel tcl scripts
