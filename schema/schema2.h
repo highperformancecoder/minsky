@@ -32,6 +32,7 @@ but any renamed attributes require bumping the schema number.
 #include "classdesc.h"
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
+#include "rungeKutta.h"
 
 #include <xsd_generate_base.h>
 #include <vector>
@@ -229,26 +230,6 @@ namespace schema2
   };
 
 
-  struct RungeKutta
-  {
-    double stepMin{0}, stepMax{0.01};
-    int nSteps{1};
-    double epsRel{1e-2}, epsAbs{1e-3};
-    int order{4};
-    bool implicit{false};
-    int simulationDelay{0};
-    RungeKutta() {}
-    RungeKutta(const minsky::Minsky& m):
-      stepMin(m.stepMin), stepMax(m.stepMax), nSteps(m.nSteps),
-      epsRel(m.epsRel), epsAbs(m.epsAbs), order(m.order), 
-      implicit(m.implicit), simulationDelay(m.simulationDelay) {}
-    RungeKutta(const schema1::RungeKutta& m):
-      stepMin(m.stepMin), stepMax(m.stepMax), nSteps(m.nSteps),
-      epsRel(m.epsRel), epsAbs(m.epsAbs), order(m.order), 
-      implicit(m.implicit), simulationDelay(m.simulationDelay) {}
-    
-  };
-
   struct Minsky
   {
     static const int version=2;
@@ -256,7 +237,7 @@ namespace schema2
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
-    RungeKutta rungeKutta;
+    minsky::RungeKutta rungeKutta;
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
     
@@ -265,7 +246,7 @@ namespace schema2
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g);
     Minsky(const minsky::Minsky& m): Minsky(*m.model) {
-      rungeKutta=RungeKutta(m);
+      rungeKutta=m;
       zoomFactor=m.model->zoomFactor;
       bookmarks=m.model->bookmarks;
       //assert(validate());
@@ -279,21 +260,13 @@ namespace schema2
     /// consistent way into the free id space of the global minsky
     /// object
     void populateGroup(minsky::Group& g) const;
-    /// move locations such that minx, miny lies at (0,0) on canvas
-    //    void relocateCanvas();
-
   };
 
 
 }
 
   /*
-    This code ensure optional fields are not exported when empty This
-    is really clunky, as partial function specialisations are not
-    valid C++, so we need explicit specialisations for all types used
-    in this schema.
-
-    TODO: fix classdesc code to explicitly allow optional XML fields.
+    This code ensure optional fields are not exported when empty 
   */
 
 namespace classdesc

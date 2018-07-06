@@ -862,10 +862,10 @@
     <from>768</from>
     <to>761</to>
     <coords>
-     <float>1076.75</float>
+     <float>1081.75</float>
      <float>635.25</float>
-     <float>194.205</float>
-     <float>-1850.49</float>
+     <float>179.436</float>
+     <float>-1906.17</float>
      <float>872.75</float>
      <float>572.25</float>
     </coords>
@@ -885,10 +885,10 @@
     <from>770</from>
     <to>766</to>
     <coords>
-     <float>1061.75</float>
+     <float>1066.75</float>
      <float>692.25</float>
-     <float>177.615</float>
-     <float>-1899.72</float>
+     <float>168.456</float>
+     <float>-1941.23</float>
      <float>769.25</float>
      <float>616</float>
     </coords>
@@ -958,10 +958,10 @@
     <from>813</from>
     <to>806</to>
     <coords>
-     <float>736.947</float>
+     <float>731.947</float>
      <float>290.814</float>
-     <float>162.982</float>
-     <float>-219.092</float>
+     <float>149.09</float>
+     <float>-226.992</float>
      <float>1000.12</float>
      <float>164.687</float>
     </coords>
@@ -976,10 +976,10 @@
     <from>815</from>
     <to>807</to>
     <coords>
-     <float>681.493</float>
+     <float>676.493</float>
      <float>314.45</float>
-     <float>154.789</float>
-     <float>-222.984</float>
+     <float>142.716</float>
+     <float>-230.201</float>
      <float>1000.12</float>
      <float>182.687</float>
     </coords>
@@ -989,10 +989,10 @@
     <from>815</from>
     <to>811</to>
     <coords>
-     <float>681.493</float>
+     <float>676.493</float>
      <float>314.45</float>
-     <float>153.443</float>
-     <float>-224.358</float>
+     <float>141.984</float>
+     <float>-230.949</float>
      <float>1083.25</float>
      <float>261.312</float>
     </coords>
@@ -4564,7 +4564,7 @@
    <Item>
     <id>733</id>
     <type>Variable:flow</type>
-    <x>-58.5</x>
+    <x>-27</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -4585,7 +4585,7 @@
    <Item>
     <id>736</id>
     <type>Variable:flow</type>
-    <x>68.5</x>
+    <x>19</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -4789,8 +4789,8 @@
    <Item>
     <id>778</id>
     <type>Variable:flow</type>
-    <x>63.5</x>
-    <y>0</y>
+    <x>23</x>
+    <y>2.01072e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -4810,8 +4810,8 @@
    <Item>
     <id>781</id>
     <type>Variable:flow</type>
-    <x>-58.5</x>
-    <y>0</y>
+    <x>-19</x>
+    <y>-1.66103e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -5014,7 +5014,7 @@
    <Item>
     <id>823</id>
     <type>Variable:flow</type>
-    <x>54</x>
+    <x>23</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -5035,7 +5035,7 @@
    <Item>
     <id>826</id>
     <type>Variable:flow</type>
-    <x>-56</x>
+    <x>-23</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -5167,6 +5167,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
