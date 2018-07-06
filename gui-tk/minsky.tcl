@@ -277,7 +277,6 @@ menu .menubar.options
 # valid types are "text", "bool" and "{ enum label1 val1 label2 val2 ... }"
 #   varName              Label                    DefaultVal    type
 set preferencesVars {
-    godleyDE             "Godley Table Double Entry"     1      bool
     godleyDisplay        "Godley Table Show Values"      1      bool
     godleyDisplayStyle       "Godley Table Output Style"    sign  { enum
         "DR/CR" DRCR
@@ -352,7 +351,7 @@ proc showPreferences {} {
             incr row 10
         }
         
-        set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Double Entry)"
+        set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Show Values)"
         
         frame .preferencesForm.buttonBar
         button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm; redrawAllGodleyTables}
@@ -755,11 +754,12 @@ proc setScrollBars {} {
 bind .tabs <<NotebookTabChanged>> {setScrollBars}
 
 proc panCanvas {offsx offsy} {
+    global preferences
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
             model.moveTo $offsx $offsy
             canvas.requestRedraw
-            panopticon.requestRedraw
+            if $preferences(panopticon) {panopticon.requestRedraw}
         }
         .equations {
             equationDisplay.offsx $offsx
@@ -1020,7 +1020,7 @@ proc openNamedFile {ofname} {
     
 
    .controls.simSpeed set [simulationDelay]
-    # setting preferences(godleyDE) and simulationDelay causes the edited (dirty) flag to be set
+    # setting simulationDelay causes the edited (dirty) flag to be set
     pushHistory
     doPushHistory 1
     popFlags
@@ -1103,7 +1103,8 @@ set rkVars {
     timeUnit  "Time unit"
     stepMin   "Min Step Size"
     stepMax   "Max Step Size"
-    nSteps     "no. steps per iteration"
+    nSteps     "No. steps per iteration"
+    maxWaitMS "Screen refresh every (in ms)"
     t0         "Start time"
     tmax      "Run until time"
     epsAbs     "Absolute error"
@@ -1399,10 +1400,6 @@ if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
     setFname $argv(1)
     # we have loaded a Minsky model, so must refresh the canvas
     recentreCanvas
-    if [findObject GodleyIcon] {
-        # set the DE preference from one of the godley table, if present
-        set preferences(godleyDE) [minsky.canvas.item.table.doubleEntryCompliant]
-    }
     set delay [simulationDelay]
     # force update canvas size to ensure model is displayed correctly
     update

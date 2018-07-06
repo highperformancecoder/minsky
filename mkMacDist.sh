@@ -42,36 +42,44 @@ rewrite_dylibs()
         rewrite_dylibs $MAC_DIST_DIR/${dylib##*/}
         install_name_tool -change $dylib @executable_path/${dylib##*/} $target
     done
+    install_name_tool -id @executable_path/${target##*/} $target
 }
 
 cp gui-tk/minsky $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/minsky
 
-# we're now linking to TkTable statically
-# TkTable.dylib seems to be its own little snowflake :)
-#cp /usr/local/lib/libTktable2.11.dylib $MAC_DIST_DIR
-#rewrite_dylibs $MAC_DIST_DIR/libTktable2.11.dylib
-#install_name_tool -change libTktable2.11.dylib @executable_path/libTktable2.11.dylib $MAC_DIST_DIR/minsky
-
 # copy the fontconfig info
 mkdir -p $MAC_DIST_DIR/../Resources/fontconfig
 cp -r /opt/local/etc/fonts/* $MAC_DIST_DIR/../Resources/fontconfig
 
+# TCL files etc in the executable directory causes grief with code signing, so move these to the lib directory
+# minskyHome is automatically set to that directory
+MINSKYHOME=$MAC_DIST_DIR/../lib/minsky
+mkdir -p $MINSKYHOME
+
 #copy toplevel tcl scripts
-cp gui-tk/*.tcl $MAC_DIST_DIR
+cp gui-tk/*.tcl $MINSKYHOME
 #copy library scripts 
-cp -r gui-tk/library $MAC_DIST_DIR
-cp -r gui-tk/icons $MAC_DIST_DIR
-cp gui-tk/accountingRules $MAC_DIST_DIR
+cp -r gui-tk/library $MINSKYHOME
+cp -r gui-tk/icons $MINSKYHOME
+cp gui-tk/accountingRules $MINSKYHOME
     
 # determine location of tcl library from tclsh - make sure the correct
 # tclsh is in your path
 eval `tclsh echo_tcl_lib.tcl`
 
 echo "$TCL_LIB $TK_LIB"
-mkdir -p $MAC_DIST_DIR/library
-rm -rf $MAC_DIST_DIR/library/{tcl,tk}
-cp -r $TCL_LIB $MAC_DIST_DIR/library/tcl
-cp -r $TK_LIB $MAC_DIST_DIR/library/tk
+mkdir -p $MINSKYHOME/library
+rm -rf $MINSKYHOME/library/{tcl,tk}
+cp -r $TCL_LIB $MINSKYHOME/library/tcl
+cp -r $TK_LIB $MINSKYHOME/library/tk
 
-pkgbuild --root minsky.app --install-location /Applications/Minsky.app --identifier Minsky Minsky-$version-mac-dist.pkg
+codesign -s "Developer ID Application" --deep --force minsky.app
+if [ $? -ne 0 ]; then
+    echo "try running this script on the Mac GUI desktop, not ssh shell"
+fi
+productbuild --root minsky.app /Applications/Minsky.app minsky.pkg
+productsign --sign "Developer ID Installer" minsky.pkg Minsky-$version-mac-dist.pkg
+if [ $? -ne 0 ]; then
+    echo "try running this script on the Mac GUI desktop, not ssh shell"
+fi

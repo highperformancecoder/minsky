@@ -406,10 +406,10 @@
     <from>411</from>
     <to>54</to>
     <coords>
-     <float>387.459</float>
+     <float>493.459</float>
      <float>646.994</float>
-     <float>118.957</float>
-     <float>601.405</float>
+     <float>162.873</float>
+     <float>590.864</float>
      <float>28.3957</float>
      <float>446</float>
     </coords>
@@ -2562,8 +2562,8 @@
    <Item>
     <id>413</id>
     <type>Variable:flow</type>
-    <x>-117.5</x>
-    <y>0</y>
+    <x>-19</x>
+    <y>-1.66103e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -2583,8 +2583,8 @@
    <Item>
     <id>416</id>
     <type>Variable:flow</type>
-    <x>121</x>
-    <y>0</y>
+    <x>23</x>
+    <y>2.01072e-06</y>
     <zoomFactor>1</zoomFactor>
     <rotation>180</rotation>
     <ports>
@@ -2945,7 +2945,7 @@
    <Item>
     <id>483</id>
     <type>Variable:flow</type>
-    <x>-65.0735</x>
+    <x>-19</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -3065,7 +3065,7 @@
    <Item>
     <id>496</id>
     <type>Variable:flow</type>
-    <x>71.5735</x>
+    <x>19</x>
     <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -3281,6 +3281,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

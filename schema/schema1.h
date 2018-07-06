@@ -32,6 +32,7 @@ but any renamed attributes require bumping the schema number.
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
 #include "plot.xcd"
+#include "rungeKutta.h"
 
 #include <xsd_generate_base.h>
 #include <vector>
@@ -371,22 +372,6 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     UnionLayout(const Layout&);
   };
 
-  struct RungeKutta
-  {
-    double stepMin{0}, stepMax{0.01};
-    int nSteps{1};
-    double epsRel{1e-2}, epsAbs{1e-3};
-    int order{4};
-    bool implicit{false};
-    int simulationDelay{0};
-    RungeKutta() {}
-    RungeKutta(const minsky::Minsky& m):
-      stepMin(m.stepMin), stepMax(m.stepMax), nSteps(m.nSteps),
-      epsRel(m.epsRel), epsAbs(m.epsAbs), order(m.order), 
-
-      implicit(m.implicit), simulationDelay(m.simulationDelay) {}
-  };
-
   struct MinskyModel
   {
     //    vector<Port> ports;
@@ -398,7 +383,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     vector<Group> groups;
     vector<Switch> switches;
     vector<Godley> godleys;
-    RungeKutta rungeKutta;
+    minsky::RungeKutta rungeKutta;
 
     /// checks that all items are uniquely identified.
     bool validate() const;

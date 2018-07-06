@@ -163,9 +163,10 @@ proc zoom {factor} {
 }
 
 proc zoomAt {x0 y0 factor} {
+    global preferences
     canvas.model.zoom $x0 $y0 $factor
     canvas.requestRedraw
-    panopticon.requestRedraw
+    if $preferences(panopticon) panopticon.requestRedraw
 }
 
 .menubar.ops add command -label "Godley Table" -command canvas.addGodley

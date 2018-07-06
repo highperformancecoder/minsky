@@ -773,6 +773,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>0.909091</zoomFactor>
   <bookmarks>

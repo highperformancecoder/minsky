@@ -86,6 +86,8 @@ namespace minsky
     struct LassoMode {enum type  {none, lasso, itemResize};};
     LassoMode::type lassoMode=LassoMode::none;
     LassoBox lasso{0,0,0,0};
+
+    bool redrawAll=true; ///< if false, then only redraw graphs
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}

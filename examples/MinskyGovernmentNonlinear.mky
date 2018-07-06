@@ -216,7 +216,7 @@
      <float>802.073</float>
      <float>420.298</float>
      <float>853.114</float>
-     <float>497.341</float>
+     <float>497.34</float>
      <float>1037.67</float>
      <float>480</float>
     </coords>
@@ -2604,6 +2604,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
