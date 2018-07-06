@@ -95,7 +95,11 @@ namespace minsky
 
     ItemPortVector ports;
     float x() const; 
-    float y() const; 
+    float y() const;
+    float left() const {if (!bb.valid()) bb.update(*this); return x()-0.5*zoomFactor*bb.width();}
+    float right() const {if (!bb.valid()) bb.update(*this); return x()+0.5*zoomFactor*bb.width();}
+    float top() const {if (!bb.valid()) bb.update(*this); return y()+0.5*zoomFactor*bb.height();}
+    float bottom() const {if (!bb.valid()) bb.update(*this); return y()-0.5*zoomFactor*bb.height();}
 
     virtual void resize(const LassoBox&) {}
 

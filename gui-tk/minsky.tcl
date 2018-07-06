@@ -755,11 +755,12 @@ proc setScrollBars {} {
 bind .tabs <<NotebookTabChanged>> {setScrollBars}
 
 proc panCanvas {offsx offsy} {
+    global preferences
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
             model.moveTo $offsx $offsy
             canvas.requestRedraw
-            panopticon.requestRedraw
+            if $preferences(panopticon) {panopticon.requestRedraw}
         }
         .equations {
             equationDisplay.offsx $offsx

@@ -50,10 +50,8 @@ namespace minsky
     /// returns whether item's icon overlaps the lasso
     template <class Item>
     bool intersects(const Item& item) const {
-      return item.x()+0.5*item.zoomFactor*item.bb.width() >= x0 &&
-        item.x()-0.5*item.zoomFactor*item.bb.width() <= x1 &&
-        item.y()+0.5*item.zoomFactor*item.bb.height() >= y0 &&
-        item.y()-0.5*item.zoomFactor*item.bb.height() <= y1;
+      return item.right() >= x0 && item.left() <= x1 &&
+        item.top() >= y0 && item.bottom() <= y1;
     }
 
     /// return true if both endpoints of the wire lie

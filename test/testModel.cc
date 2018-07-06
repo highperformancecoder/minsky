@@ -201,7 +201,14 @@ SUITE(Group)
       // set same zoom factors to ensure copied items have same zooms
       group0->setZoom(1);
       g->setZoom(1);
+      // force rendering to ensure everything is placed the same
+      group0->bb.update(*group0);
+      g->bb.update(*g);
+      CHECK_CLOSE(group0->bb.width(), g->bb.width(), 1e-2);
+      CHECK_CLOSE(group0->bb.height(), g->bb.height(), 1e-2);
       CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 1e-2);
+
+      save("copy.mky");
       
       CHECK_EQUAL(group0->items.size(), g->items.size());
       CHECK_EQUAL(group0->inVariables.size(), g->inVariables.size());

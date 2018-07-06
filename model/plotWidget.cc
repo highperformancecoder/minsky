@@ -354,7 +354,7 @@ namespace minsky
         yvars.resize(2*numLines);
         yvars[pen]=var;
         if (pen>=numLines)
-          assignSide(pen,right);
+          assignSide(pen,Side::right);
       }
     else if (pen<4*numLines)
       {

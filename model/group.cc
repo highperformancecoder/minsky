@@ -569,41 +569,21 @@ namespace minsky
     y0=numeric_limits<float>::max();
     y1=-numeric_limits<float>::max();
 
-#ifndef CAIRO_HAS_RECORDING_SURFACE
-#error "Please upgrade your cairo to a version implementing recording surfaces"
-#endif
-    SurfacePtr surf
-      (new Surface
-       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-    try
+    for (auto& i: items)
       {
-        for (auto& i: items)
-          {
-            CairoSave cs(surf->cairo());
-            cairo_identity_matrix(surf->cairo());
-            cairo_translate(surf->cairo(),i->x(), i->y());
-            i->draw(surf->cairo());
-            localZoom=i->zoomFactor;
-          }
-        for (auto& i: groups)
-          {
-            CairoSave cs(surf->cairo());
-            cairo_identity_matrix(surf->cairo());
-            cairo_translate(surf->cairo(),i->x(), i->y());
-            i->draw(surf->cairo());
-          }
-        if (items.size() || groups.size())
-          {
-            x0=surf->left();
-            x1=x0+surf->width();
-            y0=surf->top();
-            y1=y0+surf->height();
-          }
+        if (i->left()<x0) x0=i->left();
+        if (i->right()>x1) x1=i->right();
+        if (i->bottom()<y0) y0=i->bottom();
+        if (i->top()>y1) y1=i->top();
       }
-    catch (const std::exception& e) 
-      {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
-    catch (...) {cerr<<"illegal exception caught in draw()";}
-
+    for (auto& i: groups)
+      {
+        if (i->left()<x0) x0=i->left();
+        if (i->right()>x1) x1=i->right();
+        if (i->bottom()<y0) y0=i->bottom();
+        if (i->top()>y1) y1=i->top();
+      }
+   
     // if there are no contents, result is not finite. In this case,
     // set the content bounds to a 10x10 sized box around the centroid of the I/O variables.
 
