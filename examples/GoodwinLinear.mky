@@ -58,9 +58,9 @@
     <coords>
      <float>623.47</float>
      <float>296.45</float>
-     <float>723.285</float>
-     <float>209.654</float>
-     <float>424.24</float>
+     <float>728.37</float>
+     <float>205.232</float>
+     <float>408.24</float>
      <float>142.25</float>
     </coords>
    </Wire>
@@ -109,9 +109,9 @@
     <coords>
      <float>708</float>
      <float>420.7</float>
-     <float>751.993</float>
-     <float>502.153</float>
-     <float>470.22</float>
+     <float>754.342</float>
+     <float>506.502</float>
+     <float>454.22</float>
      <float>543.97</float>
     </coords>
    </Wire>
@@ -596,6 +596,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>1.21</zoomFactor>
   <bookmarks>

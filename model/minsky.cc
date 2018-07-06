@@ -706,7 +706,7 @@ namespace minsky
        {(*i)->updateIcon(t); return false;});
 
     // throttle redraws
-    static const time_duration maxWait=milliseconds(100);
+    time_duration maxWait=milliseconds(maxWaitMS);
     if ((microsec_clock::local_time()-(ptime&)lastRedraw) > maxWait)
       {
         canvas.requestRedraw();

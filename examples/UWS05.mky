@@ -94,7 +94,7 @@
      <float>37</float>
      <float>99</float>
      <float>155.145</float>
-     <float>3.51962</float>
+     <float>3.51961</float>
      <float>225</float>
      <float>285.25</float>
     </coords>
@@ -912,6 +912,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

@@ -177,12 +177,6 @@ The options menu allows you to customise aspects of Minsky.
 \item[Preferences]\mbox{}
 
 \begin{itemize}
-\item Godley table double entry. Applies double entry book keeping
-semantics to the Godley table, where assets and liabilites have
-opposite mathematical meaning. See the \htmlref{Godley table
-section}{godley} for more details. Unchecking this option reverts to a
-simpler mode where each stock (Godley table column) is treated the
-same.
 \item Godley table show values. When ticked, the values of flow
 variables are displayed in the Godley table whilst a simulation is
 running. This will tend to slow down the simulation somewhat.
@@ -194,6 +188,7 @@ files}{recentfiles} menu.
 package to produce nicer looking automatically line-wrapped
 formulae. Because not all LaTeX implementations are guaranteed to
 support breqn, untick this option if you find difficulty.
+\item\index{Panopticon} enable/disable the \htmlref{panopticon}{Panopticon}.
 \end{itemize}
 
 \item[Background colour] --- select a colour from which a colour scheme
@@ -217,9 +212,21 @@ at the expense of accuracy when the step size reaches that
 minimum. 
 \item Specifying a maximum step size is useful to ensure one has
 sufficient data points for smooth plots.
-\item An iteration is the time between updates of the screen, increasing the
+\item An iteration is the time between updates to plots, increasing the
 number of solver steps per iteration decreases the overhead involved
-in updating the display, at the expense of smoothness of the plots.
+in updating the display, at the expense of smoothness of the
+plots. Screen refresh is the period between screen updates, in ms. If
+an iteration takes less than this time, the screen refresh is postponed
+until the time has expired. 100ms is fast enough for a smooth
+animation of the simulation - increasing this value will improve
+simulation performance at the cost of a jerky animation of the
+simulation.
+\item Start time is the value of the system $t$ variable when the
+  system is reset.
+\item Run until time can be used to pause the simulation ince t
+  reaches a certain value. Setting this to ``Inf'' causes the
+  simulation to run indefinitely, or until some arithmetic error
+  occurs.
 \end{itemize}
 
 \subsubsection{Help}
@@ -630,7 +637,8 @@ operators---connected by wires.
 On the top right hand corner of the design canvas is a small recessed
 panel showing a miniature version of the entire model, with the
 current view port shown. This feature aids navigation around more
-complex models.
+complex models. This feature may optionally be disabled through the
+preferences panel, as it may cause unacceptable overheads for bigger models.
 
 \subsection{Wires}
 \label{Wires}

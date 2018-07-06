@@ -599,10 +599,10 @@
     <from>557</from>
     <to>553</to>
     <coords>
-     <float>521.869</float>
+     <float>516.869</float>
      <float>319.57</float>
-     <float>701.502</float>
-     <float>-205.285</float>
+     <float>700.578</float>
+     <float>-217.194</float>
      <float>725.609</float>
      <float>261.04</float>
     </coords>
@@ -677,10 +677,10 @@
     <from>600</from>
     <to>593</to>
     <coords>
-     <float>1078.49</float>
+     <float>1083.49</float>
      <float>612.01</float>
-     <float>215.784</float>
-     <float>-2169.2</float>
+     <float>201.456</float>
+     <float>-2231.52</float>
      <float>874.489</float>
      <float>549.01</float>
     </coords>
@@ -700,10 +700,10 @@
     <from>602</from>
     <to>598</to>
     <coords>
-     <float>1063.49</float>
+     <float>1068.49</float>
      <float>669.01</float>
-     <float>196.382</float>
-     <float>-2233.88</float>
+     <float>187.491</float>
+     <float>-2280.39</float>
      <float>770.989</float>
      <float>592.76</float>
     </coords>
@@ -773,10 +773,10 @@
     <from>645</from>
     <to>638</to>
     <coords>
-     <float>774.447</float>
+     <float>769.447</float>
      <float>99.1551</float>
-     <float>429.622</float>
-     <float>-152.993</float>
+     <float>419.295</float>
+     <float>-156.887</float>
      <float>1037.62</float>
      <float>-26.9716</float>
     </coords>
@@ -791,10 +791,10 @@
     <from>647</from>
     <to>639</to>
     <coords>
-     <float>718.993</float>
+     <float>713.993</float>
      <float>122.791</float>
-     <float>422.483</float>
-     <float>-154.95</float>
+     <float>413.513</float>
+     <float>-158.67</float>
      <float>1037.62</float>
      <float>-8.9716</float>
     </coords>
@@ -804,10 +804,10 @@
     <from>647</from>
     <to>643</to>
     <coords>
-     <float>718.993</float>
+     <float>713.993</float>
      <float>122.791</float>
-     <float>421.749</float>
-     <float>-155.64</float>
+     <float>413.113</float>
+     <float>-159.046</float>
      <float>1120.75</float>
      <float>69.6535</float>
     </coords>
@@ -4260,6 +4260,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

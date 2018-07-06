@@ -23,21 +23,21 @@
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html283"
+<A NAME="tex2html284"
   HREF="node14.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html281"
+<A NAME="tex2html282"
   HREF="node8.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html275"
+<A NAME="tex2html276"
   HREF="node12.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html284"
+<B> Next:</B> <A NAME="tex2html285"
   HREF="node14.html">Help</A>
-<B> Up:</B> <A NAME="tex2html282"
+<B> Up:</B> <A NAME="tex2html283"
   HREF="node8.html">Menu</A>
-<B> Previous:</B> <A NAME="tex2html276"
+<B> Previous:</B> <A NAME="tex2html277"
   HREF="node12.html">Options</A>
 <BR>
 <BR></DIV>
@@ -69,14 +69,50 @@ minimum.
 <LI>Specifying a maximum step size is useful to ensure one has
 sufficient data points for smooth plots.
 </LI>
-<LI>An iteration is the time between updates of the screen, increasing the
+<LI>An iteration is the time between updates to plots, increasing the
 number of solver steps per iteration decreases the overhead involved
-in updating the display, at the expense of smoothness of the plots.
+in updating the display, at the expense of smoothness of the
+plots. Screen refresh is the period between screen updates, in ms. If
+an iteration takes less than this time, the screen refresh is postponed
+until the time has expired. 100ms is fast enough for a smooth
+animation of the simulation - increasing this value will improve
+simulation performance at the cost of a jerky animation of the
+simulation.
+</LI>
+<LI>Start time is the value of the system <SPAN CLASS="MATH"><IMG
+ WIDTH="10" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.png"
+ ALT="$t$"></SPAN> variable when the
+  system is reset.
+</LI>
+<LI>Run until time can be used to pause the simulation ince t
+  reaches a certain value. Setting this to &ldquo;Inf&rdquo; causes the
+  simulation to run indefinitely, or until some arithmetic error
+  occurs.
 </LI>
 </UL>
 
 <P>
-<BR><HR>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html284"
+  HREF="node14.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html282"
+  HREF="node8.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html276"
+  HREF="node12.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html285"
+  HREF="node14.html">Help</A>
+<B> Up:</B> <A NAME="tex2html283"
+  HREF="node8.html">Menu</A>
+<B> Previous:</B> <A NAME="tex2html277"
+  HREF="node12.html">Options</A></DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

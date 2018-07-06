@@ -38,6 +38,7 @@
 #include "canvas.h"
 #include "panopticon.h"
 #include "dimension.h"
+#include "rungeKutta.h"
 
 #include <vector>
 #include <string>
@@ -131,7 +132,7 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: public ValueVector, public Exclude<MinskyExclude>
+  class Minsky: public ValueVector, public Exclude<MinskyExclude>, public RungeKutta
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -290,16 +291,6 @@ namespace minsky
     typedef MinskyMatrix Matrix; 
     void jacobian(Matrix& jac, double t, const double vars[]);
     
-    // Runge-Kutta parameters
-    double stepMin{0}; ///< minimum step size
-    double stepMax{0.01}; ///< maximum step size
-    int nSteps{1};     ///< number of steps per GUI update
-    double epsAbs{1e-3};     ///< absolute error
-    double epsRel{1e-2};     ///< relative error
-    int order{4};     /// solver order: 1,2 or 4
-    bool implicit{false}; /// true is implicit method used, false if explicit
-    int simulationDelay{0}; /// delay in milliseconds inserted between iteration steps
-
     double t{0}; ///< time
     double t0{0}; ///< simulation start time
     string timeUnit;

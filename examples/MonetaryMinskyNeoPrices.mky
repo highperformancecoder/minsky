@@ -862,10 +862,10 @@
     <from>768</from>
     <to>761</to>
     <coords>
-     <float>1076.75</float>
+     <float>1081.75</float>
      <float>635.25</float>
-     <float>194.202</float>
-     <float>-1850.49</float>
+     <float>179.436</float>
+     <float>-1906.17</float>
      <float>872.75</float>
      <float>572.25</float>
     </coords>
@@ -885,10 +885,10 @@
     <from>770</from>
     <to>766</to>
     <coords>
-     <float>1061.75</float>
+     <float>1066.75</float>
      <float>692.25</float>
-     <float>177.615</float>
-     <float>-1899.72</float>
+     <float>168.456</float>
+     <float>-1941.23</float>
      <float>769.25</float>
      <float>616</float>
     </coords>
@@ -958,10 +958,10 @@
     <from>813</from>
     <to>806</to>
     <coords>
-     <float>736.947</float>
+     <float>731.947</float>
      <float>290.814</float>
-     <float>162.955</float>
-     <float>-219.116</float>
+     <float>149.09</float>
+     <float>-226.992</float>
      <float>1000.12</float>
      <float>164.687</float>
     </coords>
@@ -976,10 +976,10 @@
     <from>815</from>
     <to>807</to>
     <coords>
-     <float>681.493</float>
+     <float>676.493</float>
      <float>314.45</float>
-     <float>154.768</float>
-     <float>-223.005</float>
+     <float>142.716</float>
+     <float>-230.201</float>
      <float>1000.12</float>
      <float>182.687</float>
     </coords>
@@ -989,10 +989,10 @@
     <from>815</from>
     <to>811</to>
     <coords>
-     <float>681.493</float>
+     <float>676.493</float>
      <float>314.45</float>
-     <float>153.443</float>
-     <float>-224.358</float>
+     <float>141.984</float>
+     <float>-230.949</float>
      <float>1083.25</float>
      <float>261.312</float>
     </coords>
@@ -5175,6 +5175,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <maxWaitMS>100</maxWaitMS>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
