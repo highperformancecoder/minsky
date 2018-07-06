@@ -208,10 +208,12 @@ namespace MathDAG
   {
     if (type()==integrate)
       return 0; //integrals have already been evaluated
+    if (cachedOrder>=0) return cachedOrder;
 
     if (maxOrder==0)
       throw error("maximum order recursion reached");
 
+    
     // constants have order one, as they must be ordered after the
     // "fake" variables have been initialised
     int order=type()==constant? 1: 0;
@@ -221,7 +223,7 @@ namespace MathDAG
           checkArg(i,j);
           order=std::max(order, arguments[i][j]->order(maxOrder-1));
         }
-    return order;
+    return cachedOrder=order;
   }
 
   void OperationDAGBase::checkArg(unsigned i, unsigned j) const

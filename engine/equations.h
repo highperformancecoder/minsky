@@ -94,6 +94,7 @@ namespace MathDAG
     /// returns evaluation order in sequence of variable defintions
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
+    mutable int cachedOrder=-1;
     /// used within io streaming
     LaTeXManip latex() const {return LaTeXManip(*this);}
     MatlabManip matlab() const {return MatlabManip(*this);}
@@ -168,8 +169,9 @@ namespace MathDAG
     int BODMASlevel() const  override {return 0;}
     int order(unsigned maxOrder) const override {
       if (rhs) {
+        if (cachedOrder>=0) return cachedOrder;
         if (maxOrder==0) throw error("maximum order recursion reached");
-        return rhs->order(maxOrder-1)+1;
+        return cachedOrder=rhs->order(maxOrder-1)+1;
       }
       else
         return 0;
