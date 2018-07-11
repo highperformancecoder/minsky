@@ -27,9 +27,7 @@
 
 #include <math.h>
 
-//#ifdef __MINGW32_VERSION
-//#define finite isfinite
-//#endif
+using boost::any;
 
 namespace minsky
 {
@@ -47,9 +45,14 @@ namespace minsky
           fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], 0);
         break;
       case 2:
-        for (unsigned i=0; i<in1.size(); ++i)
-          fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]],
-                             flow2? fv[in2[i]]: sv[in2[i]]);
+          for (unsigned i=0; i<in1.size(); ++i)
+            {
+              double x2=0;
+              const double* v=flow2? fv: sv;
+              for (auto& j: in2[i])
+                  x2+=j.weight*v[j.idx];
+              fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], x2);
+            }
         break;
       }
 
@@ -65,7 +68,7 @@ namespace minsky
             if (numArgs()>0)
               msg+=to_string(flow1? fv[in1[i]]: sv[in1[i]]);
             if (numArgs()>1)
-              msg+=","+to_string(flow2? fv[in2[i]]: sv[in2[i]]);
+              msg+=","+to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
             msg+=")";
             throw error(msg.c_str());
           }
@@ -94,12 +97,12 @@ namespace minsky
         {
           assert((flow1 && in1[0]<ValueVector::flowVars.size()) || 
                  (!flow1 && in1[0]<ValueVector::stockVars.size()));
-          assert((flow2 && in2[0]<ValueVector::flowVars.size()) || 
-                 (!flow2 && in2[0]<ValueVector::stockVars.size()));
+          assert((flow2 && in2[0][0].idx<ValueVector::flowVars.size()) || 
+                 (!flow2 && in2[0][0].idx<ValueVector::stockVars.size()));
           double x1=flow1? fv[in1[0]]: sv[in1[0]];
-          double x2=flow2? fv[in2[0]]: sv[in2[0]];
+          double x2=flow2? fv[in2[0][0].idx]: sv[in2[0][0].idx];
           double dx1=flow1? df[in1[0]]: ds[in1[0]];
-          double dx2=flow2? df[in2[0]]: ds[in2[0]];
+          double dx2=flow2? df[in2[0][0].idx]: ds[in2[0][0].idx];
           df[out] = (dx1!=0? dx1 * d1(x1,x2): 0) +
             (dx2!=0? dx2 * d2(x1,x2): 0);
           break;
@@ -533,6 +536,20 @@ namespace minsky
             axes.push_back(i.name);
           }
       }
+      size_t offset(const vector<pair<string,string>>& x) {
+        size_t offs=0;
+        for (auto& i: x) {
+          auto j=find(i.first);
+          if (j!=end()) {
+            auto k=j->second.find(i.second);
+            if (k!=j->second.end())
+              offs+=k->second;
+            else
+              throw error("invalid key");
+          }
+        }
+        return offs;
+      }
     };
 
     template <class F>
@@ -571,7 +588,52 @@ namespace minsky
                     {return z.name==i.name;}))
           throw error("invalidly initialised to variable"); 
     }
+
+    struct Bounds
+    {
+      string dimName;
+      any lesser, greater;
+    };
+
+    Bounds getBounds(const XVector& xv, const string& x)
+    {
+      // note - we want to use the default format for ptime types
+      any v=anyVal(Dimension(xv.dimension.type,""), x);
+      double lesserDiff=numeric_limits<double>::max();
+      double greaterDiff=numeric_limits<double>::max();
+      Bounds r;
+      r.dimName=xv.name;
+      for (auto& i: xv)
+        {
+          double d;
+          if ((d=diff(i,v))<lesserDiff)
+            {
+              lesserDiff=d;
+              r.lesser=i;
+            }
+          if ((d=diff(i,v))<greaterDiff)
+            {
+              greaterDiff=d;
+              r.greater=i;
+            }
+        }
+      return r;
+    }
     
+    // returns the closest values <= and >= to the value given by x
+    vector<Bounds> getBounds(const vector<XVector>& xv, const vector<pair<string,string>>& x)
+    {
+      map<string,const XVector&> xvMap;
+      for (auto& i: xv) xvMap.emplace(i.name,i);
+      vector<Bounds> r;
+      for (auto& i: x)
+        {
+          auto j=xvMap.find(i.first);
+          if (j!=xvMap.end())
+            r.push_back(getBounds(j->second, i.second));
+        }
+      return r;
+    }
   }
  
   EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
@@ -651,14 +713,24 @@ namespace minsky
         {
         case 2:
           {
+            map<string,const XVector&> from2XVectorMap;
+            for (auto& i: from2.xVector)
+              from2XVectorMap.emplace(i.name, i);
+            for (auto& i: from1.xVector)
+              {
+                auto j=from2XVectorMap.find(i.name);
+                if (j!=from2XVectorMap.end() && j->second.dimension.type!=i.dimension.type)
+                  throw error("incompatible dimension type");
+              }
+            
             // check that all from2's xvector entries are present in to, and vice versa
             if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
             if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
-
+            
             if (from1.numElements()==1 && from2.numElements()==1)
               {
                 t->in1.push_back(from1.idx());
-                t->in2.push_back(from2.idx());
+                t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
                 if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
                   to.xVector.clear();
                 break;
@@ -667,56 +739,79 @@ namespace minsky
             OffsetMap from1Offsets(from1), from2Offsets(from2);
 
             if (to.xVector.empty())
-              // compute the common intersection of shared dimensions,
-              // otherwise broadcast along the others
-              {
-                for (auto& i: from1.xVector)
-                  {
-                    to.xVector.emplace_back(i.name);
-                    auto j=from2Offsets.find(i.name);
-                    if (j!=from2Offsets.end())
-                      for (auto& k: i)
-                        {
-                          auto l=j->second.find(str(k));
-                          if (l!=j->second.end())
-                            to.xVector.back().push_back(k);
-                        }
+                {
+                  for (auto& i: from1.xVector)
+                    if (i.dimension.type==Dimension::string)
+                      {
+                        // compute the common intersection of shared dimensions,
+                        // otherwise broadcast along the others
+                        auto j=from2Offsets.find(i.name);
+                        if (j!=from2Offsets.end())
+                          {
+                            to.xVector.emplace_back(i.name);
+                            to.xVector.back().dimension=i.dimension;
+                            for (auto& k: i)
+                              {
+                                auto l=j->second.find(str(k));
+                                if (l!=j->second.end())
+                                  to.xVector.back().push_back(k);
+                              }
+                          }
+                        else
+                          to.xVector.push_back(i);
+                      }
                     else
-                      to.xVector.back()=i;
-                  }
-                for (auto& i: from2.xVector)
-                  if (!from1Offsets.count(i.name))
-                    to.xVector.push_back(i);
-              }
+                      to.xVector.push_back(i);
+                     
+                  for (auto& i: from2.xVector)
+                    if (!from1Offsets.count(i.name))
+                      to.xVector.push_back(i);
+                }
+              else
+                to.xVector=from1.xVector;
 
             apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
                   {
-                    size_t offs1=from1.idx(), offs2=from2.idx();
-                    for (auto& i: x)
+                    t->in1.push_back(from1Offsets.offset(x)+from1.idx());
+                    t->in2.emplace_back();
+                    auto from1Bounds=getBounds(from1.xVector, x);
+                    auto from2Bounds=getBounds(from2.xVector, x);
+                    double sumD=0;
+                    
+                    for (size_t i=0; i<(1ULL<<from2Bounds.size()); ++i)
                       {
-                        auto j=from1Offsets.find(i.first);
-                        if (j!=from1Offsets.end())
+                        vector<pair<string,string>> key;
+                        double d=0;
+                        for (size_t j=0; j<from2Bounds.size(); ++j)
                           {
-                            auto k=j->second.find(i.second);
-                            if (k!=j->second.end())
-                              offs1+=k->second;
+                            auto& b=from2Bounds[j];
+                            assert(diff(from1Bounds[j].lesser, from1Bounds[j].greater)==0);
+                            auto& refVal=from1Bounds[j].lesser;
+                            if (i&(1ULL<<j))
+                              if (diff(b.lesser,b.greater)==0)
+                                // if lesser==greater, then needn't add key, as already contained
+                                goto dontAddKey;
+                              else
+                                {
+                                  key.emplace_back(b.dimName, str(b.greater));
+                                  d+=sqr(diff(refVal, b.greater));
+                                }
                             else
-                              throw error("invalid key");
+                              {
+                                key.emplace_back(b.dimName, str(b.lesser));
+                                d+=sqr(diff(refVal, b.lesser));
+                              }
                           }
-                        // else allowed a missing dimension - add zero offset
-                        j=from2Offsets.find(i.first);
-                        if (j!=from2Offsets.end())
-                          {
-                            auto k=j->second.find(i.second);
-                            if (k!=j->second.end())
-                              offs2+=k->second;
-                            else
-                              throw error("invalid key");
-                          }
-                        // else allowed a missing dimension - add zero offset
+                        {
+                          double weight=1/std::sqrt(d);
+                          sumD+=weight;
+                          t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
+                        }
+                      dontAddKey:;
                       }
-                    t->in1.push_back(offs1);
-                    t->in2.push_back(offs2);
+                    for (auto& i: t->in2.back())
+                      i.weight/=sumD; // normalise weights;
+
                   });
 
             break;

@@ -29,6 +29,14 @@ namespace minsky
   /// \a format - can be any format string suitable for a
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
   std::string str(const boost::any&, const std::string& format="");
+  /// convert string rep to an any rep
+  boost::any anyVal(const Dimension&, const std::string&);
+
+  /// return absolute difference between any elements
+  /// for strings, returns hamming distance
+  /// for time, returns seconds
+  /// @throw if any is an incompatible type with dimension
+  double diff(const boost::any& x, const boost::any& y);
 
   /// labels describing the points along dimensions. These can be strings (text type), time values (boost::posix_time type) or numerical values (double)
   struct XVector: public std::vector<boost::any>
@@ -44,6 +52,7 @@ namespace minsky
     void push_back(const std::string&);
     void push_back(const char* x) {push_back(std::string(x));}
     using V::push_back;
+
   };
 
 }

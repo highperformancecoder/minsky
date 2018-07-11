@@ -71,12 +71,14 @@ SUITE(XVector)
       CHECK_EQUAL(i1.size(),e->in1.size());
       CHECK_EQUAL(i2.size(),e->in2.size());
       CHECK_ARRAY_EQUAL(i1,e->in1,i1.size());
-      CHECK_ARRAY_EQUAL(i2,e->in2,i2.size());
+      for (size_t i=0; i<i2.size(); ++i)
+        CHECK_EQUAL(i2[i],e->in2[i][0].idx);
 
       e=EvalOpPtr(OperationType::add, to, to, from1);
       CHECK_EQUAL(e->in1.size(),e->in2.size());
       CHECK_EQUAL(i1.size(),e->in2.size());
-      CHECK_ARRAY_EQUAL(i1,e->in2,e->in2.size());
+      for (size_t i=0; i<i2.size(); ++i)
+        CHECK_EQUAL(i1[i],e->in2[i][0].idx);
 
       // target incompatible dimension with source
       CHECK_THROW(EvalOpPtr(OperationType::add, from1, from1, from2), std::exception);

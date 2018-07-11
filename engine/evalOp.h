@@ -54,10 +54,22 @@ namespace minsky
     static std::string timeUnit;
 
     /// indexes into the flow/stock variables vector
-    int out=-1;//, outX=-1, inX=-1;
-    std::vector<unsigned> in1, in2;
-    ///  size of vector inputs (1=scalar)
-    unsigned count1=1, count2=1;//, countX=0;
+    int out=-1;
+    /** @{
+        in1 - indices describing input 1's vector
+        in2 - indices describing input 2's vector (if double op)
+        in2b/interp - interpolation support:
+           out[i]=op(inp[in1[i]], interp*inp[in2[i]]+(1-interp)*inp[in2b[i]])
+    **/
+    std::vector<unsigned> in1;
+    struct Support
+    {
+      double weight;
+      unsigned idx;
+      Support() {}
+      Support(double weight, unsigned idx): weight(weight), idx(idx) {}
+    };
+    std::vector<std::vector<Support>> in2;
     ///indicate whether in1/in2 are flow variables (out is always a flow variable)
     bool flow1=true, flow2=true, xflow=true; 
 

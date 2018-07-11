@@ -1018,13 +1018,13 @@ namespace minsky
                 case OperationType::add: case OperationType::subtract:
                 case OperationType::multiply: case OperationType::divide:
                   fvInit[eo.in1[0]] |= op->ports[1]->wires().empty();
-                  fvInit[eo.in2[0]] |= op->ports[3]->wires().empty();
+                  fvInit[eo.in2[0][0].idx] |= op->ports[3]->wires().empty();
                   break;
                 default: break;
                 }
             
             fvInit[eo.out]=
-              (!eo.flow1 ||  fvInit[eo.in1[0]]) && (!eo.flow2 ||  fvInit[eo.in2[0]]);
+              (!eo.flow1 ||  fvInit[eo.in1[0]]) && (!eo.flow2 ||  fvInit[eo.in2[0][0].idx]);
             break;
           default: break;
           }

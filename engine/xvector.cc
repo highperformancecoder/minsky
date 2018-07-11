@@ -85,18 +85,23 @@ namespace minsky
   
   void XVector::push_back(const std::string& s)
   {
-    switch (dimension.type)
+    V::push_back(anyVal(dimension, s));
+  }
+
+  boost::any anyVal(const Dimension& dim, const std::string& s)
+  {
+    switch (dim.type)
       {
       case Dimension::string:
-        V::push_back(s);
+        return s;
         break;
       case Dimension::value:
-        V::push_back(stod(s));
+        return stod(s);
         break;
       case Dimension::time:
         {
           string::size_type pq;
-          if ((pq=dimension.units.find("%Q"))!=string::npos)
+          if ((pq=dim.units.find("%Q"))!=string::npos)
             {
               // year quarter format expected. Takes the first %Y (or
               // %y) and first %Q for year and quarter
@@ -105,29 +110,29 @@ namespace minsky
               string pattern;
               greg_month quarterMonth[]={Jan,Apr,Jul,Oct};
               int year, quarter;
-              auto pY=dimension.units.find("%Y");
+              auto pY=dim.units.find("%Y");
               if (pY>=0)
                 if (pq<pY)
-                  extract(dimension.units,s,pq,"(\\d)",quarter,pY,"(\\d{4})",year);
+                  extract(dim.units,s,pq,"(\\d)",quarter,pY,"(\\d{4})",year);
                 else
-                  extract(dimension.units,s,pY,"(\\d{4})",year,pq,"(\\d)",quarter);
+                  extract(dim.units,s,pY,"(\\d{4})",year,pq,"(\\d)",quarter);
               else
                 throw error("year not specified in format string");
               if (quarter<1 || quarter>4)
                 throw error("invalid quarter %d",quarter);
-              V::push_back(ptime(date(year, quarterMonth[quarter-1], 1)));
+              return ptime(date(year, quarterMonth[quarter-1], 1));
             }
-          else if (!dimension.units.empty())
+          else if (!dim.units.empty())
             {
               unique_ptr<time_input_facet> facet
-                (new time_input_facet(dimension.units.c_str()));
+                (new time_input_facet(dim.units.c_str()));
               istringstream is(s);
               is.imbue(locale(is.getloc(), facet.release()));
               ptime pt;
               is>>pt;
               if (pt.is_special())
                 throw error("invalid date/time: %s",s.c_str());
-              V::push_back(pt);
+              return pt;
             }
           else
             {
@@ -144,13 +149,35 @@ namespace minsky
                 }
               if (i==0)
                 throw error("invalid date/time: %s",s.c_str());
-              V::push_back(ptime(date(d[0],d[1],d[2]), time_duration(d[3],d[4],d[5])));
+              return ptime(date(d[0],d[1],d[2]), time_duration(d[3],d[4],d[5]));
             }
           break;
         }
       }
+    assert(false);
+    return any(); // shut up compiler warning
   }
 
+  double diff(const boost::any& x, const boost::any& y)
+  {
+    if (x.type()!=y.type())
+      throw error("incompatible types in diff");
+    if (auto vx=any_cast<string>(&x))
+      {
+        // Hamming distance
+        auto vy=any_cast<string>(y);
+        double r=abs(double(vx->length())-double(vy.length()));
+        for (size_t i=0; i<vx->length() && i<vy.length(); ++i)
+          r += (*vx)[i]!=vy[i];
+        return r;
+      }
+    if (auto vx=any_cast<double>(&x))
+      return abs(*vx-any_cast<double>(y));
+    if (auto vx=any_cast<ptime>(&x))
+      return abs(1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds());
+    throw error("unsupported type");
+  }
+  
   string str(const boost::any& v, const string& format)
   {
     if (auto s=any_cast<std::string>(&v))
