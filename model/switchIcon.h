@@ -40,8 +40,9 @@ namespace minsky
     /// @}
 
     /// value of switch according to current inputs
-    unsigned value() const;
-
+    unsigned switchValue() const;
+    double value() const override {return ports[switchValue()+2]->value();}
+    
     bool flipped=false;
 
     /// draw icon to \a context

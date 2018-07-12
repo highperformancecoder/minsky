@@ -87,7 +87,9 @@ namespace minsky
     
     /// indicates this is a group I/O variable
     virtual bool ioVar() const {return false;}
-
+    /// current value of output port
+    virtual double value() const {return 0;}
+    
     /// rotate icon though 180∘
     void flip() {rotation+=180;}
 
