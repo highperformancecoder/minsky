@@ -49,6 +49,7 @@ namespace minsky
     bool itemIndicator=false;
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
+    void reportDrawTime(double) override;
   public:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
     struct Model: public GroupPtr
