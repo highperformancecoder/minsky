@@ -40,6 +40,8 @@
 namespace minsky
 {
   class Minsky;
+  /// checks if any GUI events are waiting, and proces an event if so
+  void doOneEvent();
 }
 
 namespace MathDAG
