@@ -60,7 +60,7 @@ namespace minsky
   float Item::x() const 
   {
     if (auto g=group.lock())
-      return m_x+g->x();
+      return g->zoomFactor*m_x+g->x();
     else
       return m_x;
   }
@@ -68,7 +68,7 @@ namespace minsky
   float Item::y() const 
   {
     if (auto g=group.lock())
-      return m_y+g->y();
+      return g->zoomFactor*m_y+g->y();
     else
       return m_y;
   }
@@ -92,8 +92,8 @@ namespace minsky
   {
     if (auto g=group.lock())
       {
-        m_x=x-g->x();
-        m_y=y-g->y();
+        m_x=(x-g->x())/g->zoomFactor;
+        m_y=(y-g->y())/g->zoomFactor;
       }
     else
       {
@@ -128,12 +128,12 @@ namespace minsky
   {
     if (visible())
       {
-        if (auto g=group.lock())
-          // do not zoom toplevel group
-          {
-            minsky::zoom(m_x,xOrigin-g->x(),factor);
-            minsky::zoom(m_y,yOrigin-g->y(),factor);
-          }
+//        if (auto g=group.lock())
+//          // do not zoom toplevel group
+//          {
+//            minsky::zoom(m_x,xOrigin-g->x(),factor);
+//            minsky::zoom(m_y,yOrigin-g->y(),factor);
+//          }
         zoomFactor*=factor;
       }
   }
