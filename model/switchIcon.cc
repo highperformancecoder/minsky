@@ -41,7 +41,7 @@ namespace minsky
     ports.resize(n+2); // in case ports was larger than n+2
   }
 
-  unsigned SwitchIcon::value() const
+  unsigned SwitchIcon::switchValue() const
   {
     double x=ports[1]->value();
     if (x<1)
@@ -79,7 +79,7 @@ namespace minsky
       }
     // draw indicating arrow
     cairo_move_to(cairo,0.5*w, 0);
-    y1=-0.5*width+0.5*dy+value()*dy;
+    y1=-0.5*width+0.5*dy+switchValue()*dy;
     cairo_line_to(cairo,-0.45*w,0.9*y1);
     cairo_stroke(cairo);
 

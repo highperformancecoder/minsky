@@ -107,7 +107,9 @@ LIBS+=	-ljson_spirit \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lgsl -lgslcblas  
 
-ifndef MXE
+ifdef MXE
+LIBS+=-lboost_thread_win32$(BOOST_EXT)
+else
 LIBS+=-lboost_thread$(BOOST_EXT) 
 endif
 

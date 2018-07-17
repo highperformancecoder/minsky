@@ -448,10 +448,33 @@ namespace minsky
 
   }
 
+  namespace
+  {
+    template <class T>
+    void resizeItems(T& items, double sx, double sy)
+    {
+      for (auto& i: items)
+        {
+          i->m_x*=sx;
+          i->m_y*=sy;
+          i->zoomFactor*=std::max(sx,sy);
+        }
+    }
+  }
+  
   void Group::resize(const LassoBox& b)
   {
     width=fabs(b.x0-b.x1)/zoomFactor;
     height=fabs(b.y0-b.y1)/zoomFactor;
+    // account for margins
+    float l, r;
+    margins(l,r);
+    // rescale contents to fit
+    double x0, x1, y0, y1;
+    contentBounds(x0,y0,x1,y1);
+    double sx=(fabs(b.x0-b.x1)-zoomFactor*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1=y0);
+    resizeItems(items,sx,sy);
+    resizeItems(groups,sx,sy);
     bb.update(*this);
   }
   
@@ -570,12 +593,13 @@ namespace minsky
     y1=-numeric_limits<float>::max();
 
     for (auto& i: items)
-      {
-        if (i->left()<x0) x0=i->left();
-        if (i->right()>x1) x1=i->right();
-        if (i->bottom()<y0) y0=i->bottom();
-        if (i->top()>y1) y1=i->top();
-      }
+      if (!i->ioVar())
+        {
+          if (i->left()<x0) x0=i->left();
+          if (i->right()>x1) x1=i->right();
+          if (i->bottom()<y0) y0=i->bottom();
+          if (i->top()>y1) y1=i->top();
+        }
     for (auto& i: groups)
       {
         if (i->left()<x0) x0=i->left();
@@ -673,7 +697,10 @@ namespace minsky
   void Group::zoom(float xOrigin, float yOrigin,float factor)
   {
     bool dpc=displayContents();
-    Item::zoom(xOrigin, yOrigin, factor);
+    //    Item::zoom(xOrigin, yOrigin, factor);
+    minsky::zoom(m_x,xOrigin+m_x-x(),factor);
+    minsky::zoom(m_y,yOrigin+m_y-y(),factor);
+    zoomFactor*=factor;
     m_displayContentsChanged = dpc!=displayContents();
     for (auto& i: items)
       {
@@ -685,7 +712,7 @@ namespace minsky
       {
         //         i->m_visible=displayContents();
         if (displayContents() && !m_displayContentsChanged)
-          i->zoom(xOrigin, yOrigin, factor);
+          i->zoom(i->x(), i->y(), factor);
         m_displayContentsChanged|=i->displayContentsChanged();
       }
   }
@@ -806,26 +833,25 @@ namespace minsky
       {
         float y=i%2? top:bottom;
         Rotate r(rotation,0,0);
-        cairo_save(cairo);
-        cairo_translate(cairo,x,y);
-        cairo_rotate(cairo,M_PI*rotation/180);
         auto& v=vars[i];
         v->m_visible=false;
         v->m_x=r.x(x,y); v->m_y=r.y(x,y);
         v->rotation=rotation;
         v->zoomFactor=0.75*edgeScale();
+        cairo::CairoSave cs(cairo);
+        cairo_translate(cairo,zoomFactor*x,zoomFactor*y);
+        cairo_rotate(cairo,M_PI*rotation/180);
         RenderVariable rv(*v,cairo);
         rv.draw();
         if (i==0)
           {
-            top=varToTextRatio*rv.height(); //??? should be 0.5*varToTextRatio
+            top=varToTextRatio*rv.height()/zoomFactor; //??? should be 0.5*varToTextRatio
             bottom=-top;
           }
         else if (i%2)
-          top+=varToTextRatio*rv.height();
+          top+=varToTextRatio*rv.height()/zoomFactor;
         else
-          bottom-=varToTextRatio*rv.height();
-        cairo_restore(cairo);
+          bottom-=varToTextRatio*rv.height()/zoomFactor;
       }
   }
 
@@ -834,8 +860,8 @@ namespace minsky
     float left, right; margins(left,right);
     cairo_save(cairo);
     cairo_rotate(cairo,-M_PI*rotation/180);
-    draw1edge(inVariables, cairo, -zoomFactor*0.5*(width-left));
-    draw1edge(outVariables, cairo, zoomFactor*0.5*(width-right));
+    draw1edge(inVariables, cairo, -/*zoomFactor**/0.5*(width-left));
+    draw1edge(outVariables, cairo, /*zoomFactor**/0.5*(width-right));
     cairo_restore(cairo);
   }
 

@@ -78,6 +78,9 @@ namespace minsky
 
     void draw(cairo_t*) const override;
 
+    /// current value of output port
+    double value() const override;
+    
   protected:
 
     friend struct EvalOpBase;

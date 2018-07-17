@@ -22,6 +22,8 @@
 #include "wire.h"
 #include "group.h"
 #include "selection.h"
+#include "operation.h"
+#include "switchIcon.h"
 #include <ecolab_epilogue.h>
 using namespace std;
 
@@ -83,7 +85,14 @@ namespace minsky
     auto& vv=getVariableValue();
     if (vv.type()!=VariableType::undefined)
       return vv.value();
-    return 0;
+    if (input())
+      {
+        if (!m_wires.empty())
+          return m_wires[0]->from()->value();
+        return 0;
+      }
+    else
+      return item.value();
   }
 
   const VariableValue& Port::getVariableValue() const {

@@ -50,6 +50,8 @@ namespace
 #include "minsky.h"
 #include <ecolab_epilogue.h>
 
+namespace minsky {void doOneEvent() {}}
+
 int main(int argc, const char** argv)
 {
   if (argc>1)
