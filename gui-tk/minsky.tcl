@@ -661,7 +661,7 @@ proc dimensionsDialog {} {
             [label .dimensions.g1_type -text Type]\
             [label .dimensions.g1_units -text "Units/Format"]
     } else {
-        wm deiconfy .dimensions
+        wm deiconify .dimensions
     }
     set colRows [grid size .dimensions]
     for {set i [lindex $colRows 1]} {$i<[dimensions.size]+3} {incr i} {
