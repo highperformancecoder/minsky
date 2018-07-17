@@ -355,6 +355,22 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
+  double OperationBase::value() const
+  {
+    try
+      {
+        unique_ptr<EvalOpBase> e(EvalOpBase::create(type()));
+        switch (e->numArgs())
+          {
+          case 0: return e->evaluate(0,0);
+          case 1: return e->evaluate(ports[1]->value());
+          case 2: return e->evaluate(ports[1]->value(),ports[2]->value());
+          }
+      }
+    catch (...)
+      {/* absorb exception here - some operators cannot be evaluated this way*/}
+    return 0;
+  }
 
   
   const IntOp& IntOp::operator=(const IntOp& x)

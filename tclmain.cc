@@ -139,6 +139,15 @@ int main(int argc, char* argv[])
   Tcl_Finalize();
 }
 
+namespace minsky
+{
+  // check and perform a GUI event
+  void doOneEvent()
+  {
+    Tcl_DoOneEvent(TCL_DONT_WAIT);
+  }
+}
+
 // useful for debugging X11 errors
 //int minskyXErrorHandler(Display *d, XErrorEvent* ev)
 //{

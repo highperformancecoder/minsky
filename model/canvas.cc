@@ -695,5 +695,12 @@ namespace minsky
     surface=tmp;
     requestRedraw();
   }
+
+  void Canvas::reportDrawTime(double t) 
+  {
+    // ensure screen refresh time is less than a third
+    minsky().maxWaitMS=(t>0.03)? 3000*t: 100.0;
+  }
+  
 }
 
