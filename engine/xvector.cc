@@ -188,7 +188,7 @@ namespace minsky
       return to_string(*s);
     else if (auto s=any_cast<ptime>(&v))
       if (format.empty())
-        return to_simple_string(*s);
+        return to_iso_extended_string(*s);
       else
         {
           unique_ptr<time_facet> facet(new time_facet(format.c_str()));

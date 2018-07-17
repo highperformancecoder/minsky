@@ -404,6 +404,9 @@ namespace minsky
           {
             vector<string> ss;
             for (auto& j: i) ss.push_back(str(j));
+            // clear the format if time so that data will reload correctly
+            if (i.dimension.type==Dimension::time)
+              axisDimensions[i.name]=Dimension(Dimension::time,"");
             vector<const char*> sl;
             for (auto& j: ss)
               sl.push_back(j.c_str());
