@@ -32,7 +32,9 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
-#include <thread>
+//#include <thread>
+// std::thread apparently not supported on MXE for now...
+#include <boost/thread.hpp>
 using namespace std;
 
 using namespace minsky;
@@ -659,7 +661,7 @@ namespace minsky
     volatile bool threadFinished=false;
     int err=GSL_SUCCESS;
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
-    thread rkThread([&](){
+    boost::thread rkThread([&](){
         if (ode)
           {
             gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
