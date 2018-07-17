@@ -803,7 +803,7 @@ namespace minsky
                               }
                           }
                         {
-                          double weight=1/std::sqrt(d);
+                          double weight=d>0? 1/std::sqrt(d): 1;
                           sumD+=weight;
                           t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
                         }
