@@ -103,6 +103,36 @@ SUITE(XVector)
       CHECK_ARRAY_EQUAL(i2,e->in1,i1.size());
     }
 
+  TEST(evalOpVectorInterpolation)
+    {
+      VariableValue from1(VariableType::flow), from2(VariableType::flow),
+        to(VariableType::flow);
+      from1.xVector={{"a",{1.0,2.0,3.0}},{"b",{1.0,3.0,4.0,6.0}}};
+      from1.xVector[0].dimension.type=Dimension::value;
+      from1.xVector[1].dimension.type=Dimension::value;
+      from2.xVector={{"c",{"c1","c2","c3"}},{"b",{2.0,3.0,3.5,4.2,5.0}}};
+      from2.xVector[1].dimension.type=Dimension::value;
+      from1.allocValue();
+      from2.allocValue();
+      EvalOpPtr e(OperationType::add, to, from1, from2);
+      // extrapolation at lower edge
+      CHECK_EQUAL(2,e->in2[0].size());
+      CHECK_EQUAL(2,e->in2[0][0].weight);
+      CHECK_EQUAL(-1,e->in2[0][1].weight);
+      // interior exact
+      CHECK_EQUAL(1,e->in2[3].size());
+      CHECK_EQUAL(1,e->in2[3][0].weight);
+      // interior interpolation
+      CHECK_EQUAL(2,e->in2[6].size());
+      CHECK_CLOSE(0.7142857,e->in2[6][0].weight,1e-5);
+      CHECK_CLOSE(0.2857142,e->in2[6][1].weight,1e-5);
+      // upper edge extrapolation
+      CHECK_EQUAL(2,e->in2[6].size());
+      CHECK_CLOSE(2.25,e->in2[9][0].weight,1e-5);
+      CHECK_CLOSE(-1.25,e->in2[9][1].weight,1e-5);
+     
+    }
+
   TEST_FIXTURE(XVector, push_back)
     {
       // firstly check the simple string case

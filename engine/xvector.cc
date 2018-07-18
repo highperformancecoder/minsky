@@ -169,12 +169,12 @@ namespace minsky
         double r=abs(double(vx->length())-double(vy.length()));
         for (size_t i=0; i<vx->length() && i<vy.length(); ++i)
           r += (*vx)[i]!=vy[i];
-        return r;
+        return (*vx<vy)? -r: r;
       }
     if (auto vx=any_cast<double>(&x))
-      return abs(*vx-any_cast<double>(y));
+      return *vx-any_cast<double>(y);
     if (auto vx=any_cast<ptime>(&x))
-      return abs(1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds());
+      return 1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds();
     throw error("unsupported type");
   }
   

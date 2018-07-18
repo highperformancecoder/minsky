@@ -597,26 +597,34 @@ namespace minsky
 
     Bounds getBounds(const XVector& xv, const string& x)
     {
-      // note - we want to use the default format for ptime types
       any v=anyVal(Dimension(xv.dimension.type,""), x);
+      double leastDiff=numeric_limits<double>::max();
       double lesserDiff=numeric_limits<double>::max();
-      double greaterDiff=numeric_limits<double>::max();
+      // pick the two closest elements to x. If straddling x, then these will be either side
+      // otherwise they will be the two closest one side or the other
       Bounds r;
       r.dimName=xv.name;
       for (auto& i: xv)
         {
-          double d;
-          if ((d=diff(i,v))<lesserDiff)
+          double d=abs(diff(i,v));
+          if (d<leastDiff)
             {
-              lesserDiff=d;
+              if (leastDiff<lesserDiff)
+                {
+                  lesserDiff=leastDiff;
+                  r.greater=r.lesser;
+                }                  
+              leastDiff=d;
               r.lesser=i;
             }
-          if ((d=diff(i,v))<greaterDiff)
-            {
-              greaterDiff=d;
-              r.greater=i;
-            }
+          else
+            if (d<lesserDiff && d>leastDiff)
+              {
+                lesserDiff=d;
+                r.greater=i;
+              }
         }
+      assert(r.lesser.type()==r.greater.type());
       return r;
     }
     
@@ -777,41 +785,47 @@ namespace minsky
                     auto from1Bounds=getBounds(from1.xVector, x);
                     auto from2Bounds=getBounds(from2.xVector, x);
                     double sumD=0;
-                    
+
+                    // loop over edges of a binary hypercube
                     for (size_t i=0; i<(1ULL<<from2Bounds.size()); ++i)
                       {
                         vector<pair<string,string>> key;
-                        double d=0;
-                        for (size_t j=0; j<from2Bounds.size(); ++j)
+                        // add verbatim key entries along axes only present in from1
+                        for (auto& j: x)
+                          if (!from2XVectorMap.count(j.first))
+                            key.push_back(j);
+                        
+                        double weight=1;
+                        for (auto& b: from2Bounds)
                           {
-                            auto& b=from2Bounds[j];
-                            assert(diff(from1Bounds[j].lesser, from1Bounds[j].greater)==0);
-                            auto& refVal=from1Bounds[j].lesser;
-                            if (i&(1ULL<<j))
-                              if (diff(b.lesser,b.greater)==0)
-                                // if lesser==greater, then needn't add key, as already contained
+                            auto ref=find_if(from1Bounds.begin(), from1Bounds.end(),
+                                            [&](const Bounds& x) {return x.dimName==b.dimName;});
+                            // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
+                            if (i&(1ULL<<(&b-&from2Bounds[0]))) // on greater edge
+                              if (diff(b.lesser,b.greater)==0 || ref==from1Bounds.end())
+                                // if lesser==greater, then needn't add greater key, as already sharply contained in bounds
                                 goto dontAddKey;
                               else
                                 {
                                   key.emplace_back(b.dimName, str(b.greater));
-                                  d+=sqr(diff(refVal, b.greater));
+                                  weight*=diff(ref->lesser, b.lesser) / diff(b.greater,b.lesser);
                                 }
                             else
                               {
                                 key.emplace_back(b.dimName, str(b.lesser));
-                                d+=sqr(diff(refVal, b.lesser));
+                                if (ref!=from1Bounds.end())
+                                  weight*=1-diff(ref->lesser, b.lesser)/diff(b.greater,b.lesser);
                               }
                           }
-                        {
-                          double weight=d>0? 1/std::sqrt(d): 1;
-                          sumD+=weight;
+                        if (weight!=0)
                           t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
-                        }
                       dontAddKey:;
                       }
-                    for (auto& i: t->in2.back())
-                      i.weight/=sumD; // normalise weights;
-
+#ifndef NDEBUG
+                    double sumWeight=0;
+                    for (auto& i: t->in2.back()) sumWeight+=i.weight;
+                    assert(sumWeight-1 < 1e-5);
+#endif
                   });
 
             break;
