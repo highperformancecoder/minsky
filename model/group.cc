@@ -697,20 +697,17 @@ namespace minsky
   void Group::zoom(float xOrigin, float yOrigin,float factor)
   {
     bool dpc=displayContents();
-    //    Item::zoom(xOrigin, yOrigin, factor);
     minsky::zoom(m_x,xOrigin+m_x-x(),factor);
     minsky::zoom(m_y,yOrigin+m_y-y(),factor);
     zoomFactor*=factor;
     m_displayContentsChanged = dpc!=displayContents();
     for (auto& i: items)
       {
-        //         i->m_visible=displayContents();
         if (displayContents() && !m_displayContentsChanged)
           i->zoom(xOrigin, yOrigin, factor);
       }
     for (auto& i: groups)
       {
-        //         i->m_visible=displayContents();
         if (displayContents() && !m_displayContentsChanged)
           i->zoom(i->x(), i->y(), factor);
         m_displayContentsChanged|=i->displayContentsChanged();
@@ -734,7 +731,6 @@ namespace minsky
     cairo_save(cairo);
 
     // display I/O region in grey
-    //updatePortLocation();
     drawIORegion(cairo);
 
     cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
