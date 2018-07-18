@@ -194,9 +194,9 @@ namespace minsky
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%paletteSz], -0.5*M_PI);
       }
 
-    cairo_translate(cairo, 10*zoomFactor,yoffs);
+    cairo_translate(cairo, 10,yoffs);
     cairo_set_line_width(cairo,1);
-    Plot::draw(cairo,w-20*zoomFactor,h-10); // allow space for ports
+    Plot::draw(cairo,w-20,h-10); // allow space for ports
     
     cairo_restore(cairo);
     if (mouseFocus)

@@ -1086,7 +1086,7 @@ proc save {} {
     if {![string length $fname]} {
 	    setFname [tk_getSaveFile -defaultextension .mky]}            
     if [string length $fname] {
-        minsky.save $fname
+        eval minsky.save $fname
     }
 }
 
@@ -1094,7 +1094,7 @@ proc saveAs {} {
     global fname workDir
     setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
     if [string length $fname] {
-        minsky.save $fname
+        eval minsky.save $fname
     }
 }
 
