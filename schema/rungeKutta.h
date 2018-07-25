@@ -29,7 +29,6 @@ namespace minsky
     int order{4};
     bool implicit{false};
     int simulationDelay{0};
-    int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvaas during simulation
   };
 }
 
