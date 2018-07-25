@@ -1140,7 +1140,6 @@ set rkVars {
     stepMin   "Min Step Size"
     stepMax   "Max Step Size"
     nSteps     "No. steps per iteration"
-    maxWaitMS "Screen refresh every (in ms)"
     t0         "Start time"
     tmax      "Run until time"
     epsAbs     "Absolute error"

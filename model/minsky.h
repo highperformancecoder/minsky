@@ -324,6 +324,7 @@ namespace minsky
     std::string ravelVersion() const;
 
     unsigned maxHistory{100}; ///< maximum no. of history states to save
+    int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvaas during simulation
 
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}
