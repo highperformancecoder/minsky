@@ -140,6 +140,9 @@ if [info exists env(MINSKY_COV)] {
 #    attachTraceProc ::
 }
 
+#Needs to be present to allow callbacks to change the cursor for busy operations
+proc setCursor {cur} {}
+
 #if argv(1) has .tcl extension, it is a script, otherwise it is data
 if {$argc>1 && [string match "*.tcl" $argv(1)]} {source $argv(1)}
 
@@ -193,6 +196,7 @@ tk appname [file rootname [file tail $argv(0)]]
 wm title . "Minsky: $fname" 
 setBackgroundColour $backgroundColour
 tk_focusFollowsMouse
+proc setCursor {cur} {. configure -cursor $cur}
 
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should

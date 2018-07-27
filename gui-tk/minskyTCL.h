@@ -327,9 +327,9 @@ namespace minsky
       }};
 
     void setBusyCursor() override
-    {tclcmd()<<". configure -cursor watch\n";}
+    {tclcmd()<<"setCursor watch\n";}
     void clearBusyCursor() override
-    {tclcmd()<<". configure -cursor {}\n";}
+    {tclcmd()<<"setCursor {}\n";}
      
   private:
     std::unique_ptr<char[]> _defaultFont;
