@@ -196,7 +196,7 @@ tk appname [file rootname [file tail $argv(0)]]
 wm title . "Minsky: $fname" 
 setBackgroundColour $backgroundColour
 tk_focusFollowsMouse
-proc setCursor {cur} {. configure -cursor $cur}
+proc setCursor {cur} {. configure -cursor $cur; update}
 
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
