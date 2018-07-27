@@ -133,6 +133,13 @@ namespace minsky
     }
     ~RKdata() {gsl_odeiv2_driver_free(driver);}
   };
+
+  struct BusyCursor
+  {
+    Minsky& minsky;
+    BusyCursor(Minsky& m): minsky(m) {minsky.setBusyCursor();}
+    ~BusyCursor() {minsky.clearBusyCursor();}
+  };
 }
 
 #include "minskyVersion.h"
@@ -631,7 +638,7 @@ namespace minsky
 
   void Minsky::reset()
   {
-    setBusyCursor();
+    BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
@@ -666,7 +673,6 @@ namespace minsky
          return false;
        });
     canvas.requestRedraw();
-    clearBusyCursor();
   }
 
   void Minsky::step()
@@ -830,7 +836,7 @@ namespace minsky
 
   void Minsky::load(const std::string& filename) 
   {
-  
+    BusyCursor busy(*this);
     clearAllMaps();
 
     // current schema

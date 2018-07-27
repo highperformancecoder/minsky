@@ -826,8 +826,9 @@ namespace minsky
                             else
                               {
                                 key.emplace_back(b.dimName, str(b.lesser));
-                                if (ref!=from1Bounds.end())
-                                  weight*=1-diff(ref->lesser, b.lesser)/diff(b.greater,b.lesser);
+                                double d=diff(b.greater,b.lesser);
+                                if (ref!=from1Bounds.end() && d!=0)
+                                  weight*=1-diff(ref->lesser, b.lesser)/d;
                               }
                           }
                         if (weight!=0)
