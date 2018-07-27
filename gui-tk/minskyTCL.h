@@ -325,6 +325,12 @@ namespace minsky
         ecolab::Pango::defaultFamily=_defaultFont.get();
         return x;
       }};
+
+    void setBusyCursor() override
+    {tclcmd()<<". configure -cursor watch\n";}
+    void clearBusyCursor() override
+    {tclcmd()<<". configure -cursor {}\n";}
+     
   private:
     std::unique_ptr<char[]> _defaultFont;
 

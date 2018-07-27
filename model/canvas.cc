@@ -111,6 +111,7 @@ namespace minsky
       if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
         {
           r->onMouseUp(x,y);
+          itemFocus.reset(); // prevent spurious mousemove events being processed
           minsky().reset();
         }
     if (fromPort.get())

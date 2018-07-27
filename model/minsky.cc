@@ -631,6 +631,7 @@ namespace minsky
 
   void Minsky::reset()
   {
+    setBusyCursor();
     EvalOpBase::t=t=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
@@ -665,6 +666,7 @@ namespace minsky
          return false;
        });
     canvas.requestRedraw();
+    clearBusyCursor();
   }
 
   void Minsky::step()

@@ -28,6 +28,7 @@
 #include <math.h>
 
 using boost::any;
+using boost::any_cast;
 
 namespace minsky
 {
@@ -597,32 +598,43 @@ namespace minsky
 
     Bounds getBounds(const XVector& xv, const string& x)
     {
-      any v=anyVal(Dimension(xv.dimension.type,""), x);
-      double leastDiff=numeric_limits<double>::max();
-      double lesserDiff=numeric_limits<double>::max();
       // pick the two closest elements to x. If straddling x, then these will be either side
       // otherwise they will be the two closest one side or the other
       Bounds r;
       r.dimName=xv.name;
-      for (auto& i: xv)
+      if (xv.dimension.type==Dimension::string)
         {
-          double d=abs(diff(i,v));
-          if (d<leastDiff)
+          // look for presence of x in vector
+          for (auto& i: xv)
+            if (auto j=any_cast<string>(&i))
+              if (*j==x)
+                r.lesser=r.greater=x;
+        }
+      else
+        {
+          any v=anyVal(Dimension(xv.dimension.type,""), x);
+          double leastDiff=numeric_limits<double>::max();
+          double lesserDiff=numeric_limits<double>::max();
+          for (auto& i: xv)
             {
-              if (leastDiff<lesserDiff)
+              double d=abs(diff(i,v));
+              if (d<leastDiff)
                 {
-                  lesserDiff=leastDiff;
-                  r.greater=r.lesser;
-                }                  
-              leastDiff=d;
-              r.lesser=i;
+                  if (leastDiff<lesserDiff)
+                    {
+                      lesserDiff=leastDiff;
+                      r.greater=r.lesser;
+                    }                  
+                  leastDiff=d;
+                  r.lesser=i;
+                }
+              else
+                if (d<lesserDiff && d>leastDiff)
+                  {
+                    lesserDiff=d;
+                    r.greater=i;
+                  }
             }
-          else
-            if (d<lesserDiff && d>leastDiff)
-              {
-                lesserDiff=d;
-                r.greater=i;
-              }
         }
       assert(r.lesser.type()==r.greater.type());
       return r;
@@ -798,6 +810,7 @@ namespace minsky
                         double weight=1;
                         for (auto& b: from2Bounds)
                           {
+                            if (b.lesser.empty()) goto dontAddKey; // string mismatch
                             auto ref=find_if(from1Bounds.begin(), from1Bounds.end(),
                                             [&](const Bounds& x) {return x.dimName==b.dimName;});
                             // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66

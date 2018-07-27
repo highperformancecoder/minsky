@@ -366,7 +366,10 @@ namespace minsky
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
-    
+
+    /// set/clear busy cursor in GUI
+    virtual void setBusyCursor() {}
+    virtual void clearBusyCursor() {}
   };
 
   /// global minsky object
