@@ -29,6 +29,7 @@
 
 using boost::any;
 using boost::any_cast;
+using namespace boost::posix_time;
 
 namespace minsky
 {
@@ -590,71 +591,181 @@ namespace minsky
           throw error("invalidly initialised to variable"); 
     }
 
+    struct ComparableBase: any
+    {
+      ComparableBase(const any& x): any(x) {}
+      virtual bool operator<(const ComparableBase& x) const=0;
+      virtual bool operator<(const string&) const=0;
+      bool operator<(const any& x) const {return operator<(*create(x));}
+      static ComparableBase* create(const any&);
+      // converts a string var to an any, using this any type.
+      virtual any toAny(const string&) const=0;
+    };
+
+    bool stringCmp(const string& x, const string& y) {return x<y;}
+    bool stringCmp(const char*& x, const string& y) {return x<y;}
+    template <class T>
+    bool stringCmp(const T& x, const string& y) {throw error("invalid string comparison");}
+    
+    template <class T>
+    class ComparableAny: public ComparableBase
+    {
+      const T* data;
+    public:
+      ComparableAny(const any& x): ComparableBase(x) {data=any_cast<T>(this);}
+      bool operator<(const ComparableBase& x) const override
+      {
+        if (auto y=dynamic_cast<const ComparableAny<T>*>(&x))
+          return *data<*y->data;
+        return false;
+      }
+      bool operator<(const string& y) const override {return stringCmp(*data,y);}
+      any toAny(const string&) const override;
+    };
+
+    ComparableBase* ComparableBase::create(const any& x) {
+      if (any_cast<string>(&x)) return new ComparableAny<string>(x);
+      if (any_cast<const char*>(&x)) return new ComparableAny<const char*>(x);
+      if (any_cast<double>(&x)) return new ComparableAny<double>(x);
+      if (any_cast<ptime>(&x)) return new ComparableAny<ptime>(x);
+      assert(false); // shouldn't be here...
+      return nullptr;
+    }
+
+    template <> any ComparableAny<string>::toAny(const string& x) const {return x;}
+    template <> any ComparableAny<const char*>::toAny(const string& x) const {throw error("invalid toAny");} // impossible to define...
+    template <> any ComparableAny<double>::toAny(const string& x) const {return stod(x);}
+    template <> any ComparableAny<ptime>::toAny(const string& x) const {return sToPtime(x);}
+    
+    
+    struct OrderedPtr: public unique_ptr<ComparableBase>
+    {
+      OrderedPtr() {}
+      OrderedPtr(const any& x): unique_ptr<ComparableBase>(ComparableBase::create(x)) {}
+      bool operator<(const OrderedPtr& x) const {return **this<*x;}
+    };
+
     struct Bounds
     {
       string dimName;
       any lesser, greater;
+      Bounds() {}
+      Bounds(const string& d, const any& l, const any& g):
+        dimName(d), lesser(l), greater(g) {}
     };
 
-    Bounds getBounds(const XVector& xv, const string& x)
+//   Bounds getBounds(const set<OrderedPtr>& xv, const string& x)
+//    {
+//      // pick the two closest elements to x. If straddling x, then these will be either side
+//      // otherwise they will be the two closest one side or the other
+//      Bounds r;
+//      r.dimName=xv.name;
+//      if (xv.dimension.type==Dimension::string)
+//        {
+//          // look for presence of x in vector
+//          for (auto& i: xv)
+//            if (auto j=any_cast<string>(&i))
+//              if (*j==x)
+//                r.lesser=r.greater=x;
+//        }
+//      else
+//        {
+//          any v=anyVal(Dimension(xv.dimension.type,""), x);
+//          double leastDiff=numeric_limits<double>::max();
+//          double lesserDiff=numeric_limits<double>::max();
+//          for (auto& i: xv)
+//            {
+//              double d=abs(diff(i,v));
+//              if (d<leastDiff)
+//                {
+//                  if (leastDiff<lesserDiff)
+//                    {
+//                      lesserDiff=leastDiff;
+//                      r.greater=r.lesser;
+//                    }                  
+//                  leastDiff=d;
+//                  r.lesser=i;
+//                }
+//              else
+//                if (d<lesserDiff && d>leastDiff)
+//                  {
+//                    lesserDiff=d;
+//                    r.greater=i;
+//                  }
+//            }
+//        }
+//      assert(r.lesser.type()==r.greater.type());
+//      return r;
+//    }
+    
+    struct GetBounds
     {
-      // pick the two closest elements to x. If straddling x, then these will be either side
-      // otherwise they will be the two closest one side or the other
-      Bounds r;
-      r.dimName=xv.name;
-      if (xv.dimension.type==Dimension::string)
-        {
-          // look for presence of x in vector
-          for (auto& i: xv)
-            if (auto j=any_cast<string>(&i))
-              if (*j==x)
-                r.lesser=r.greater=x;
-        }
-      else
-        {
-          any v=anyVal(Dimension(xv.dimension.type,""), x);
-          double leastDiff=numeric_limits<double>::max();
-          double lesserDiff=numeric_limits<double>::max();
-          for (auto& i: xv)
-            {
-              double d=abs(diff(i,v));
-              if (d<leastDiff)
+      // like an xvector, but sorted so that labels can be quickly found
+      map<string, set<OrderedPtr> > xvector;
+      GetBounds(const vector<XVector>& xv) {
+        for (auto& i: xv)
+          xvector.emplace(i.name, set<OrderedPtr>{i.begin(),i.end()});
+      }
+      
+      // returns the closest values <= and >= to the value given by x
+      vector<Bounds> getBounds(const vector<pair<string,string>>& x)
+      {
+        vector<Bounds> r;
+        for (auto& i: x)
+          {
+            auto j=xvector.find(i.first);
+            if (j!=xvector.end())
+              if (j->second.empty())
+                return {};
+              else if (dynamic_cast<ComparableAny<string>*>(j->second.begin()->get()) ||
+                       dynamic_cast<ComparableAny<const char*>*>(j->second.begin()->get()))
                 {
-                  if (leastDiff<lesserDiff)
-                    {
-                      lesserDiff=leastDiff;
-                      r.greater=r.lesser;
-                    }                  
-                  leastDiff=d;
-                  r.lesser=i;
+                  any label(i.second);
+                  auto k=j->second.find(label);
+                  if (k==j->second.end()) return {};
+                  r.emplace_back(i.first,label,label);
                 }
               else
-                if (d<lesserDiff && d>leastDiff)
-                  {
-                    lesserDiff=d;
-                    r.greater=i;
-                  }
-            }
-        }
-      assert(r.lesser.type()==r.greater.type());
-      return r;
+                {
+                  OrderedPtr val((*j->second.begin())->toAny(i.second));
+                  auto k=j->second.lower_bound(val); // first k >= val
+                  if (k==j->second.end() && j->second.size()>1)
+                    {
+                      auto l=--k;
+                      --l;
+                      r.emplace_back(i.first,**k,**l); // extrapolate from above
+                    }
+                  else if (val<*k)
+                    {
+                      if (j->second.size()>1)
+                        {
+                          if (k==j->second.begin())
+                            {
+                              auto l=k;
+                              ++l;
+                              r.emplace_back(i.first,**l,**k); // extrapolate from below
+                            }
+                          else
+                            {
+                              auto l=k;
+                              --l;
+                              r.emplace_back(i.first,**l,**k); // interpolate
+                            }
+                        }
+                      else
+                        return {};  // cannot interpolate with one point
+                    }
+                  else // exact match
+                    r.emplace_back(i.first,*val,*val);
+                }
+          }
+        return r;
+      }
+    };
+      
+
+
     }
-    
-    // returns the closest values <= and >= to the value given by x
-    vector<Bounds> getBounds(const vector<XVector>& xv, const vector<pair<string,string>>& x)
-    {
-      map<string,const XVector&> xvMap;
-      for (auto& i: xv) xvMap.emplace(i.name,i);
-      vector<Bounds> r;
-      for (auto& i: x)
-        {
-          auto j=xvMap.find(i.first);
-          if (j!=xvMap.end())
-            r.push_back(getBounds(j->second, i.second));
-        }
-      return r;
-    }
-  }
  
   EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
               const VariableValue& from1, const VariableValue& from2)
@@ -790,12 +901,13 @@ namespace minsky
               else
                 to.xVector=from1.xVector;
 
+            GetBounds from1GetBounds(from1.xVector), from2GetBounds(from2.xVector);
             apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
                   {
                     t->in1.push_back(from1Offsets.offset(x)+from1.idx());
                     t->in2.emplace_back();
-                    auto from1Bounds=getBounds(from1.xVector, x);
-                    auto from2Bounds=getBounds(from2.xVector, x);
+                    auto from1Bounds=from1GetBounds.getBounds(x);
+                    auto from2Bounds=from2GetBounds.getBounds(x);
                     double sumD=0;
 
                     // loop over edges of a binary hypercube

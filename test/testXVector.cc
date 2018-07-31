@@ -117,15 +117,15 @@ SUITE(XVector)
       EvalOpPtr e(OperationType::add, to, from1, from2);
       // extrapolation at lower edge
       CHECK_EQUAL(2,e->in2[0].size());
-      CHECK_EQUAL(2,e->in2[0][0].weight);
-      CHECK_EQUAL(-1,e->in2[0][1].weight);
+      CHECK_EQUAL(-1,e->in2[0][0].weight);
+      CHECK_EQUAL(2,e->in2[0][1].weight);
       // interior exact
       CHECK_EQUAL(1,e->in2[3].size());
       CHECK_EQUAL(1,e->in2[3][0].weight);
       // interior interpolation
       CHECK_EQUAL(2,e->in2[6].size());
-      CHECK_CLOSE(0.7142857,e->in2[6][0].weight,1e-5);
-      CHECK_CLOSE(0.2857142,e->in2[6][1].weight,1e-5);
+      CHECK_CLOSE(0.2857142,e->in2[6][0].weight,1e-5);
+      CHECK_CLOSE(0.7142857,e->in2[6][1].weight,1e-5);
       // upper edge extrapolation
       CHECK_EQUAL(2,e->in2[6].size());
       CHECK_CLOSE(2.25,e->in2[9][0].weight,1e-5);

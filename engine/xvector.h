@@ -21,6 +21,7 @@
 #define XVECTOR_H
 #include "dimension.h"
 #include <boost/any.hpp>
+#include <boost/date_time.hpp>
 #include <vector>
 #include <initializer_list>
 
@@ -37,6 +38,9 @@ namespace minsky
   /// for time, returns seconds
   /// @throw if any is an incompatible type with dimension
   double diff(const boost::any& x, const boost::any& y);
+
+  /// default parsing of a time string
+  boost::posix_time::ptime sToPtime(const std::string& s);
 
   /// labels describing the points along dimensions. These can be strings (text type), time values (boost::posix_time type) or numerical values (double)
   struct XVector: public std::vector<boost::any>

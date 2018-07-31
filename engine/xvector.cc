@@ -135,22 +135,7 @@ namespace minsky
               return pt;
             }
           else
-            {
-              const char* p=s.c_str();
-              char *lp;
-              unsigned long d[]={1,1,1,0,0,0}; // Y,M,D,h,m,s
-              size_t i=0;
-              for (; i<6 && *p; p=lp, ++i)
-                {
-                  d[i]=strtoul(p,&lp,10);
-                  if (lp==p)
-                    break;
-                  while (*lp && !isdigit(*lp)) lp++;
-                }
-              if (i==0)
-                throw error("invalid date/time: %s",s.c_str());
-              return ptime(date(d[0],d[1],d[2]), time_duration(d[3],d[4],d[5]));
-            }
+            return sToPtime(s);
           break;
         }
       }
@@ -158,6 +143,24 @@ namespace minsky
     return any(); // shut up compiler warning
   }
 
+  ptime sToPtime(const string& s)
+  {
+    const char* p=s.c_str();
+    char *lp;
+    unsigned long d[]={1,1,1,0,0,0}; // Y,M,D,h,m,s
+    size_t i=0;
+    for (; i<6 && *p; p=lp, ++i)
+      {
+        d[i]=strtoul(p,&lp,10);
+        if (lp==p)
+          break;
+        while (*lp && !isdigit(*lp)) lp++;
+      }
+    if (i==0)
+      throw error("invalid date/time: %s",s.c_str());
+    return ptime(date(d[0],d[1],d[2]), time_duration(d[3],d[4],d[5]));
+  }
+  
   double diff(const boost::any& x, const boost::any& y)
   {
     if (x.type()!=y.type())
