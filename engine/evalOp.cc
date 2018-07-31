@@ -595,8 +595,6 @@ namespace minsky
     {
       ComparableBase(const any& x): any(x) {}
       virtual bool operator<(const ComparableBase& x) const=0;
-      virtual bool operator<(const string&) const=0;
-      bool operator<(const any& x) const {return operator<(*create(x));}
       static ComparableBase* create(const any&);
       // converts a string var to an any, using this any type.
       virtual any toAny(const string&) const=0;
@@ -619,7 +617,6 @@ namespace minsky
           return *data<*y->data;
         return false;
       }
-      bool operator<(const string& y) const override {return stringCmp(*data,y);}
       any toAny(const string&) const override;
     };
 
@@ -654,50 +651,6 @@ namespace minsky
         dimName(d), lesser(l), greater(g) {}
     };
 
-//   Bounds getBounds(const set<OrderedPtr>& xv, const string& x)
-//    {
-//      // pick the two closest elements to x. If straddling x, then these will be either side
-//      // otherwise they will be the two closest one side or the other
-//      Bounds r;
-//      r.dimName=xv.name;
-//      if (xv.dimension.type==Dimension::string)
-//        {
-//          // look for presence of x in vector
-//          for (auto& i: xv)
-//            if (auto j=any_cast<string>(&i))
-//              if (*j==x)
-//                r.lesser=r.greater=x;
-//        }
-//      else
-//        {
-//          any v=anyVal(Dimension(xv.dimension.type,""), x);
-//          double leastDiff=numeric_limits<double>::max();
-//          double lesserDiff=numeric_limits<double>::max();
-//          for (auto& i: xv)
-//            {
-//              double d=abs(diff(i,v));
-//              if (d<leastDiff)
-//                {
-//                  if (leastDiff<lesserDiff)
-//                    {
-//                      lesserDiff=leastDiff;
-//                      r.greater=r.lesser;
-//                    }                  
-//                  leastDiff=d;
-//                  r.lesser=i;
-//                }
-//              else
-//                if (d<lesserDiff && d>leastDiff)
-//                  {
-//                    lesserDiff=d;
-//                    r.greater=i;
-//                  }
-//            }
-//        }
-//      assert(r.lesser.type()==r.greater.type());
-//      return r;
-//    }
-    
     struct GetBounds
     {
       // like an xvector, but sorted so that labels can be quickly found
@@ -707,8 +660,9 @@ namespace minsky
           xvector.emplace(i.name, set<OrderedPtr>{i.begin(),i.end()});
       }
       
-      // returns the closest values <= and >= to the value given by x
-      vector<Bounds> getBounds(const vector<pair<string,string>>& x)
+      // returns the two closest values in xvector to the value given by x
+      // if x is found exactly, then return x in both the lesser and greater field
+      vector<Bounds> operator()(const vector<pair<string,string>>& x) const
       {
         vector<Bounds> r;
         for (auto& i: x)
@@ -906,8 +860,8 @@ namespace minsky
                   {
                     t->in1.push_back(from1Offsets.offset(x)+from1.idx());
                     t->in2.emplace_back();
-                    auto from1Bounds=from1GetBounds.getBounds(x);
-                    auto from2Bounds=from2GetBounds.getBounds(x);
+                    auto from1Bounds=from1GetBounds(x);
+                    auto from2Bounds=from2GetBounds(x);
                     double sumD=0;
 
                     // loop over edges of a binary hypercube
