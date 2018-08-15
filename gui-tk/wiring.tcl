@@ -120,12 +120,25 @@ for {set i 0} {$i<=$menubarLine} {incr i} {
 }
 pack .wiring.menubar -fill x
 
+# support tooltips
+proc hoverMouse {} {
+    minsky.canvas.displayDelayedTooltip [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+
+# reset hoverMouse timer
+proc wrapHoverMouse {op x y} {
+    after cancel hoverMouse
+    minsky.canvas.$op $x $y
+    after 3000 hoverMouse
+}
+    
 image create cairoSurface minskyCanvas -surface minsky.canvas
 label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
 pack .wiring.canvas -fill both -expand 1
-bind .wiring.canvas <ButtonPress-1> {minsky.canvas.mouseDown %x %y}
-bind .wiring.canvas <ButtonRelease-1> {minsky.canvas.mouseUp %x %y}
-bind .wiring.canvas <Motion> {minsky.canvas.mouseMove %x %y}
+bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
+bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
+bind .wiring.canvas <Motion> {wrapHoverMouse mouseMove %x %y}
+bind .wiring.canvas <Leave> {after cancel hoverMouse}
 
 proc get_pointer_x {c} {
     return [expr {[winfo pointerx $c] - [winfo rootx $c]}]

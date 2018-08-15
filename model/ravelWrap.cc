@@ -96,6 +96,7 @@ namespace minsky
     double (*ravel_radius)(Ravel::RavelImpl* ravel)=nullptr;
     size_t (*ravel_rank)(Ravel::RavelImpl* ravel)=nullptr;
     const char* (*ravel_description)(Ravel::RavelImpl* ravel)=nullptr;
+    const char* (*ravel_explain)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
     void (*ravel_outputHandleIds)(Ravel::RavelImpl* ravel, size_t ids[])=nullptr;
     void (*ravel_setOutputHandleIds)(Ravel::RavelImpl* ravel, size_t rank, size_t ids[])=nullptr;
     void (*ravel_addHandle)(Ravel::RavelImpl* ravel, const char*, size_t, const char* labels[])=nullptr;
@@ -122,7 +123,6 @@ namespace minsky
     bool (*ravelDC_openFile)(Ravel::DataCube* dc, const char* fileName, DataSpec spec)=nullptr;
     void (*ravelDC_loadData)(Ravel::DataCube*, const Ravel::RavelImpl*, const double*)=nullptr;
     int (*ravelDC_hyperSlice)(Ravel::DataCube*, Ravel::RavelImpl*, size_t dims[], double**)=nullptr;
-
 
     struct RavelLib
     {
@@ -170,6 +170,7 @@ namespace minsky
               ASG_FN_PTR(ravel_radius,lib);
               ASG_FN_PTR(ravel_rank,lib);
               ASG_FN_PTR(ravel_description,lib);
+              ASG_FN_PTR(ravel_explain,lib);
               ASG_FN_PTR(ravel_selectedHandle,lib);
               ASG_FN_PTR(ravel_outputHandleIds,lib);
               ASG_FN_PTR(ravel_setOutputHandleIds,lib);
@@ -263,7 +264,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
       }
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
@@ -681,6 +682,21 @@ namespace minsky
     ports[0]->getVariableValue().exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
   }
 
+  void Ravel::displayDelayedTooltip(float xx, float yy)
+  {
+    if (ravel_rank(ravel)==0)
+      explanation="load CSV data from\ncontext menu";
+    else
+      {
+        explanation=ravel_explain(ravel,xx-x(),yy-y());
+        // line break every 5 words
+        int spCnt=0;
+        for (auto& c: explanation)
+          if (isspace(c) && ++spCnt % 5 == 0)
+            c='\n';
+      }
+  }
+    
   string Minsky::ravelVersion() const
   {
     if (ravelLib.versionFound.length())

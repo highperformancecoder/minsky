@@ -231,6 +231,7 @@ namespace minsky
         // set mouse focus to display ports etc.
         model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
                            {
+                             (*i)->disableDelayedTooltip();
                              // with coupled integration variables, we
                              // do not want to set mousefocus, as this
                              // draws unnecessary port circles on the
@@ -244,8 +245,11 @@ namespace minsky
                                  if (ct==ClickType::onRavel)
                                    {
                                      if (auto r=dynamic_cast<Ravel*>(i->get()))
-                                       if (r->onMouseOver(x,y))
-                                         requestRedraw();
+                                       {
+                                         r->mouseFocus=true;
+                                         if (r->onMouseOver(x,y))
+                                           requestRedraw();
+                                       }
                                    }
                                  else
                                    {
@@ -287,6 +291,15 @@ namespace minsky
       }
   }
 
+  void Canvas::displayDelayedTooltip(float x, float y)
+  {
+    if (auto item=itemAt(x,y))
+      {
+        item->displayDelayedTooltip(x,y);
+        requestRedraw();
+      }
+  }
+  
   void Canvas::select(const LassoBox& lasso)
   {
     selection.clear();

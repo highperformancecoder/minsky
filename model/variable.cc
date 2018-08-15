@@ -405,7 +405,7 @@ void VariableBase::draw(cairo_t *cairo) const
     {
       cairo_rotate(cairo, -angle);
       drawPorts(cairo);
-      displayTooltip(cairo);
+      displayTooltip(cairo,tooltip);
     }
   cairo_restore(cairo);
   cairo_new_path(cairo);

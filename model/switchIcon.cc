@@ -86,7 +86,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
       }
 
     // add 8 pt margin to allow for ports

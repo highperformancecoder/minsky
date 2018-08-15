@@ -131,7 +131,7 @@ namespace minsky
     void dummyDraw() const;
 
     /// display tooltip text, eg on mouseover
-    void displayTooltip(cairo_t*) const;
+    void displayTooltip(cairo_t*, const std::string&) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
@@ -158,6 +158,9 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
     {::TCL_obj(t,d,*this);}
 
+    /// enable extended tooltip help message appropriate for mouse at (x,y)
+    virtual void displayDelayedTooltip(float x, float y) {}
+    virtual void disableDelayedTooltip() {}
   };
 
   typedef std::shared_ptr<Item> ItemPtr;

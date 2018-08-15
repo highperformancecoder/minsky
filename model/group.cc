@@ -806,7 +806,7 @@ namespace minsky
 
     if (mouseFocus)
       {
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
       }
 
     cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);

@@ -112,7 +112,8 @@ namespace minsky
     void mouseDown(float x, float y);
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);
-
+    void displayDelayedTooltip(float x, float y);
+    
     /// return closest visible port to (x,y). nullptr is nothing suitable
     std::shared_ptr<Port> closestInPort(float x, float y) const;
 

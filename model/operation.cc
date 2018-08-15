@@ -202,7 +202,7 @@ namespace minsky
           if (mouseFocus)
             {
               drawPorts(cairo);
-              displayTooltip(cairo);
+              displayTooltip(cairo,tooltip);
             }
           if (selected) drawSelected(cairo);
           return;
@@ -346,7 +346,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
       }
 
     cairo_new_path(cairo);

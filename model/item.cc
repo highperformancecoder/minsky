@@ -170,7 +170,7 @@ namespace minsky
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
 
-    if (mouseFocus) displayTooltip(cairo);
+    if (mouseFocus) displayTooltip(cairo,tooltip);
     cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));
     cairo_line_to(cairo,r.x(w,-h), r.y(w,-h));
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));
@@ -186,7 +186,7 @@ namespace minsky
     draw(s.cairo());
   }
 
-  void Item::displayTooltip(cairo_t* cairo) const
+  void Item::displayTooltip(cairo_t* cairo, const std::string& tooltip) const
   {
     if (!tooltip.empty())
       {

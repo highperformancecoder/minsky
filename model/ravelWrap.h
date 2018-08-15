@@ -41,7 +41,8 @@ namespace minsky
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     std::string m_filename;
     const double defaultRadius=100; ///< initial size of a Ravel widget
-    
+    std::string explanation; // explanation of Ravel bits displayed as tooltip
+
     /// used entirely to defer persisted state data until after first
     /// load from a variable
     RavelState initState;
@@ -119,10 +120,10 @@ namespace minsky
     RavelState getState() const;
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
     void applyState(const RavelState&);
+    void displayDelayedTooltip(float x, float y) override;
+    void exportAsCSV(const std::string& filename) const;
 
-    void exportAsCSV(const string& filename) const;
   };
-
 }
 
 #include "ravelWrap.cd"

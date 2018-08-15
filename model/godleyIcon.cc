@@ -334,7 +334,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
       }
   }
 
