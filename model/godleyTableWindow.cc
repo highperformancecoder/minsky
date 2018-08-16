@@ -393,7 +393,7 @@ namespace minsky
     auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), x);
     int r=p-colLeftMargin.begin()-1;
     if (r>0) r+=scrollColStart-1;
-    if (r>godleyIcon->table.cols()) r=-1; // out of bounds, invalidate
+    if (r>int(godleyIcon->table.cols())) r=-1; // out of bounds, invalidate
     return r;
   }
 
@@ -401,7 +401,7 @@ namespace minsky
   {
     int c=(y-topTableOffset)/rowHeight;
     if (c>0) c+=scrollRowStart-1;
-    if (c>godleyIcon->table.rows()) c=-1; // out of bounds, invalidate
+    if (c>int(godleyIcon->table.rows())) c=-1; // out of bounds, invalidate
     return c;
   }
 

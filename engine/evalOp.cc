@@ -600,8 +600,8 @@ namespace minsky
       virtual any toAny(const string&) const=0;
     };
 
-    bool stringCmp(const string& x, const string& y) {return x<y;}
-    bool stringCmp(const char*& x, const string& y) {return x<y;}
+    //bool stringCmp(const string& x, const string& y) {return x<y;}
+    //bool stringCmp(const char*& x, const string& y) {return x<y;}
     template <class T>
     bool stringCmp(const T& x, const string& y) {throw error("invalid string comparison");}
     
@@ -669,49 +669,51 @@ namespace minsky
           {
             auto j=xvector.find(i.first);
             if (j!=xvector.end())
-              if (j->second.empty())
-                return {};
-              else if (dynamic_cast<ComparableAny<string>*>(j->second.begin()->get()) ||
-                       dynamic_cast<ComparableAny<const char*>*>(j->second.begin()->get()))
-                {
-                  any label(i.second);
-                  auto k=j->second.find(label);
-                  if (k==j->second.end()) return {};
-                  r.emplace_back(i.first,label,label);
-                }
-              else
-                {
-                  OrderedPtr val((*j->second.begin())->toAny(i.second));
-                  auto k=j->second.lower_bound(val); // first k >= val
-                  if (k==j->second.end() && j->second.size()>1)
-                    {
-                      auto l=--k;
-                      --l;
-                      r.emplace_back(i.first,**k,**l); // extrapolate from above
-                    }
-                  else if (val<*k)
-                    {
-                      if (j->second.size()>1)
-                        {
-                          if (k==j->second.begin())
-                            {
-                              auto l=k;
-                              ++l;
-                              r.emplace_back(i.first,**l,**k); // extrapolate from below
-                            }
-                          else
-                            {
-                              auto l=k;
-                              --l;
-                              r.emplace_back(i.first,**l,**k); // interpolate
-                            }
-                        }
-                      else
-                        return {};  // cannot interpolate with one point
-                    }
-                  else // exact match
-                    r.emplace_back(i.first,*val,*val);
-                }
+              {
+                if (j->second.empty())
+                  return {};
+                else if (dynamic_cast<ComparableAny<string>*>(j->second.begin()->get()) ||
+                         dynamic_cast<ComparableAny<const char*>*>(j->second.begin()->get()))
+                  {
+                    any label(i.second);
+                    auto k=j->second.find(label);
+                    if (k==j->second.end()) return {};
+                    r.emplace_back(i.first,label,label);
+                  }
+                else
+                  {
+                    OrderedPtr val((*j->second.begin())->toAny(i.second));
+                    auto k=j->second.lower_bound(val); // first k >= val
+                    if (k==j->second.end() && j->second.size()>1)
+                      {
+                        auto l=--k;
+                        --l;
+                        r.emplace_back(i.first,**k,**l); // extrapolate from above
+                      }
+                    else if (val<*k)
+                      {
+                        if (j->second.size()>1)
+                          {
+                            if (k==j->second.begin())
+                              {
+                                auto l=k;
+                                ++l;
+                                r.emplace_back(i.first,**l,**k); // extrapolate from below
+                              }
+                            else
+                              {
+                                auto l=k;
+                                --l;
+                                r.emplace_back(i.first,**l,**k); // interpolate
+                              }
+                          }
+                        else
+                          return {};  // cannot interpolate with one point
+                      }
+                    else // exact match
+                      r.emplace_back(i.first,*val,*val);
+                  }
+              }
           }
         return r;
       }
