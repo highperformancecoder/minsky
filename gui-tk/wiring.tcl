@@ -30,13 +30,7 @@ foreach op [availableOperations] {
         "ravel" -
         "integrate"  continue 
     }
-#    if {[tk windowingsystem]=="aqua"} {
-        # ticket #187
-        image create photo [set op]Img -file $minskyHome/icons/$op.gif
-#    } else {
-#        image create photo [set op]Img -width 24 -height 24
-#        operationIcon [set op]Img $op
-#    }
+    image create photo [set op]Img -file $minskyHome/icons/$op.gif
 }
 
 
@@ -47,12 +41,18 @@ tooltip .wiring.menubar.godley "Godley table"
 set helpTopics(.wiring.menubar.godley)  GodleyIcon
 
 image create photo integrateImg -file $minskyHome/icons/integrate.gif
-button .wiring.menubar.integrate -image integrateImg -command {
+button .wiring.menubar.integrate -image integrateImg -width 37 -height 24 -command {
     addOperation integrate}
 tooltip .wiring.menubar.integrate integrate
 set helpTopics(.wiring.menubar.integrate) IntOp
 
-button .wiring.menubar.time -image timeImg -command {
+image create photo differentiateImg -file $minskyHome/icons/differentiate.gif
+button .wiring.menubar.differentiate -image differentiateImg -width 37 -height 24 -command {
+    addOperation differentiate}
+tooltip .wiring.menubar.differentiate differantiate
+set helpTopics(.wiring.menubar.differentiate) Operation:differentiate
+
+button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
     addOperation time}
 tooltip .wiring.menubar.time time
 set helpTopics(.wiring.menubar.integrate) Operation:time
@@ -67,20 +67,19 @@ menu .wiring.menubar.var.menu
 .wiring.menubar.var.menu add command -label "constant" -command addConstant
 .wiring.menubar.var.menu add command -label "parameter" -command addParameter
 
-button .wiring.menubar.binops -image addImg -command {
+button .wiring.menubar.binops -image addImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.binops "binary operations"
 set helpTopics(.wiring.menubar.binops) Operations
 menu .wiring.menubar.binops.menu
 
-button .wiring.menubar.fnops -image sqrtImg -command {
+button .wiring.menubar.fnops -image sqrtImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.fnops "functions"
 set helpTopics(.wiring.menubar.fnops) Operations
 menu .wiring.menubar.fnops.menu
 
-
-pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate -side left
+pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left
 pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops -side left
 
 # create buttons for all available operations (aside from those
@@ -93,6 +92,7 @@ foreach op [availableOperations] {
         "copy" -
         "ravel" -
         "integrate"  -
+        "differentiate" -
         "time" -
         "data" continue 
     }
@@ -112,12 +112,8 @@ tooltip .wiring.menubar.data "data"
 pack .wiring.menubar.data -side left 
 set helpTopics(.wiring.menubar.data) "Operation:data"
 
-if {[tk windowingsystem]=="aqua"} {
-    image create photo switchImg -file $minskyHome/icons/switch.gif
-} else {
-    image create photo switchImg -width 24 -height 24
-    operationIcon switchImg switch
-}
+image create photo switchImg -file $minskyHome/icons/switch.gif
+
 
 button .wiring.menubar.switch -image switchImg \
     -height 24 -width 37 -command {addSwitch}
@@ -212,11 +208,29 @@ proc zoomAt {x0 y0 factor} {
 
 .menubar.ops add command -label "Godley Table" -command canvas.addGodley
 
-.menubar.ops add command -label "Variable" -command "addVariable" 
-foreach var [availableOperations] {
-    if {$var=="constant"} continue
-    if {$var=="numOps"} break
-    .menubar.ops add command -label [regsub {(.*)_$} $var {\1}] -command "minsky.addOperation $var"
+.menubar.ops add cascade -label "Variable" -menu .wiring.menubar.var.menu
+.menubar.ops add cascade -label "Binary Ops" -menu .menubar.ops.binops
+.menubar.ops add cascade -label "Functions" -menu .menubar.ops.functions
+
+menu .menubar.ops.binops
+menu .menubar.ops.functions
+foreach op [availableOperations] {
+    if {$op=="constant"} continue
+    if {$op=="numOps"} break
+    set label [regsub {(.*)_$} $op {\1}]
+    switch $op {
+        "ravel" -
+        "integrate"  -
+        "differentiate"  -
+        "time" -
+        "data"  {.menubar.ops add command -label $label -command "minsky.addOperation $op"}
+        default {
+            switch [numOpArgs $op] {
+                1 {.menubar.ops.functions add command -label $label  -command "minsky.addOperation $op"}
+                2 {.menubar.ops.binops add command -label $label  -command "minsky.addOperation $op"}
+            }
+        }
+    }
 }
 
 # default command to execute when escape key is pressed
