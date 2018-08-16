@@ -276,7 +276,7 @@ namespace minsky
       IconBase<OperationIcon>(imageName, opName).draw();
   }
 
-  int MinskyTCL::numOpArgs(OperationType::Type o)
+  int MinskyTCL::numOpArgs(OperationType::Type o) const
   {
     OperationPtr op(o);
     return op->numPorts()-1;

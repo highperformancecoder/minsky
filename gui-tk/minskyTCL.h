@@ -331,7 +331,7 @@ namespace minsky
     void clearBusyCursor() override
     {tclcmd()<<"setCursor {}\n";}
 
-    int numOpArgs(OperationType::Type o);
+    int numOpArgs(OperationType::Type o) const;
     
   private:
     std::unique_ptr<char[]> _defaultFont;
