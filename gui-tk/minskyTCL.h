@@ -330,7 +330,9 @@ namespace minsky
     {tclcmd()<<"setCursor watch\n";}
     void clearBusyCursor() override
     {tclcmd()<<"setCursor {}\n";}
-     
+
+    int numOpArgs(OperationType::Type o);
+    
   private:
     std::unique_ptr<char[]> _defaultFont;
 

@@ -23,23 +23,47 @@ frame .wiring.menubar
 set menubarLine 0
 ttk::frame .wiring.menubar.line0
 
+# create icons for all operations
+foreach op [availableOperations] {
+    if {$op=="numOps"} break
+    # ignore some operations
+    switch $op {
+        "constant" -
+        "copy" -
+        "ravel" -
+        "integrate"  continue 
+    }
+    if {[tk windowingsystem]=="aqua"} {
+        # ticket #187
+        image create photo [set op]Img -file $minskyHome/icons/$op.gif
+    } else {
+        image create photo [set op]Img -width 24 -height 24
+        operationIcon [set op]Img $op
+    }
+}
+
+
 image create photo godleyImg -file $minskyHome/icons/bank.gif
 button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
     -command addGodley
 tooltip .wiring.menubar.line0.godley "Godley table"
 set helpTopics(.wiring.menubar.line0.godley)  GodleyIcon
 
-button .wiring.menubar.line0.var -text var -command addVariable -foreground #9f0000
-tooltip .wiring.menubar.line0.var "variable"
-set helpTopics(.wiring.menubar.line0.var) Variable:flow
+#ttk::style configure button -width 37 -height 24
+#ttk::style configure menubutton -width 37 -height 24
+#ttk::style configure redmenubutton -foreground #00007f -width 37 -height 24
 
-button .wiring.menubar.line0.const -text const -command addConstant -foreground #00007f
-tooltip .wiring.menubar.line0.const "constant"
-set helpTopics(.wiring.menubar.line0.const) Variable:constant
-
-button .wiring.menubar.line0.parameter -text param -command addParameter -foreground #00007f
-tooltip .wiring.menubar.line0.parameter "parameter"
-set helpTopics(.wiring.menubar.line0.parameter) Variable:parameter
+#button .wiring.menubar.line0.var -text var -command addVariable -foreground #9f0000
+#tooltip .wiring.menubar.line0.var "variable"
+#set helpTopics(.wiring.menubar.line0.var) Variable:flow
+#
+#button .wiring.menubar.line0.const -text const -command addConstant -foreground #00007f
+#tooltip .wiring.menubar.line0.const "constant"
+#set helpTopics(.wiring.menubar.line0.const) Variable:constant
+#
+#button .wiring.menubar.line0.parameter -text param -command addParameter -foreground #00007f
+#tooltip .wiring.menubar.line0.parameter "parameter"
+#set helpTopics(.wiring.menubar.line0.parameter) Variable:parameter
 
 image create photo integrateImg -file $minskyHome/icons/integrate.gif
 button .wiring.menubar.line0.integrate -image integrateImg -command {
@@ -47,7 +71,36 @@ button .wiring.menubar.line0.integrate -image integrateImg -command {
 tooltip .wiring.menubar.line0.integrate integrate
 set helpTopics(.wiring.menubar.line0.integrate) IntOp
 
-pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.const .wiring.menubar.line0.parameter .wiring.menubar.line0.integrate -side left
+button .wiring.menubar.line0.time -image timeImg -command {
+    addOperation time}
+tooltip .wiring.menubar.line0.time time
+set helpTopics(.wiring.menubar.line0.integrate) Operation:time
+
+button .wiring.menubar.line0.var -text var -foreground #9f0000 -command {
+    tk_popup .wiring.menubar.line0.var.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]} 
+tooltip .wiring.menubar.line0.var "variable"
+set helpTopics(.wiring.menubar.line0.var) Variable
+
+menu .wiring.menubar.line0.var.menu
+.wiring.menubar.line0.var.menu add command -label "variable" -command addVariable
+.wiring.menubar.line0.var.menu add command -label "constant" -command addConstant
+.wiring.menubar.line0.var.menu add command -label "parameter" -command addParameter
+
+button .wiring.menubar.line0.binops -image addImg -command {
+    tk_popup .wiring.menubar.line0.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.line0.binops "binary operations"
+set helpTopics(.wiring.menubar.line0.binops) Operations
+menu .wiring.menubar.line0.binops.menu
+
+button .wiring.menubar.line0.fnops -image sqrtImg -command {
+    tk_popup  .wiring.menubar.line0.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.line0.fnops "functions"
+set helpTopics(.wiring.menubar.line0.fnops) Operations
+menu .wiring.menubar.line0.fnops.menu
+
+
+pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.integrate -side left
+pack .wiring.menubar.line0.time .wiring.menubar.line0.binops .wiring.menubar.line0.fnops -side left
 
 # create buttons for all available operations (aside from those
 # handled especially)
@@ -58,28 +111,25 @@ foreach op [availableOperations] {
         "constant" -
         "copy" -
         "ravel" -
-        "integrate"  continue 
+        "integrate"  -
+        "time" -
+        "data" continue 
     }
 
-    set opTrimmed [regsub {(.*)_$} $op {\1}] 
-    # advance to next line in menubar
-    if {$op=="data"} {
-        incr menubarLine
-        ttk::frame .wiring.menubar.line$menubarLine
+    switch [numOpArgs $op] {
+        1 {.wiring.menubar.line0.fnops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        2 {.wiring.menubar.line0.binops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        default {
+            # shouldn't be here!
+        }
     }
-    if {[tk windowingsystem]=="aqua"} {
-        # ticket #187
-        image create photo [set op]Img -file $minskyHome/icons/$op.gif
-    } else {
-        image create photo [set op]Img -width 24 -height 24
-        operationIcon [set op]Img $op
-    }
-    button .wiring.menubar.line$menubarLine.$op -image [set op]Img -command "minsky.addOperation $op" -height 24 -width 24
-    tooltip .wiring.menubar.line$menubarLine.$op $opTrimmed
-
-    pack .wiring.menubar.line$menubarLine.$op -side left 
-    set helpTopics(.wiring.menubar.line$menubarLine.$op) "Operation:$op"
 }
+
+button .wiring.menubar.line$menubarLine.data -image dataImg \
+    -height 24 -width 37 -command {addOperation data}
+tooltip .wiring.menubar.line$menubarLine.data "data"
+pack .wiring.menubar.line$menubarLine.data -side left 
+set helpTopics(.wiring.menubar.line$menubarLine.data) "Operation:data"
 
 if {[tk windowingsystem]=="aqua"} {
     image create photo switchImg -file $minskyHome/icons/switch.gif
@@ -87,6 +137,7 @@ if {[tk windowingsystem]=="aqua"} {
     image create photo switchImg -width 24 -height 24
     operationIcon switchImg switch
 }
+
 button .wiring.menubar.line$menubarLine.switch -image switchImg \
     -height 24 -width 37 -command {addSwitch}
 tooltip .wiring.menubar.line$menubarLine.switch "Switch"
