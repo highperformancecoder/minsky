@@ -20,9 +20,6 @@ ttk::frame  .wiring
 
 frame .wiring.menubar 
 
-set menubarLine 0
-ttk::frame .wiring.menubar.line0
-
 # create icons for all operations
 foreach op [availableOperations] {
     if {$op=="numOps"} break
@@ -33,74 +30,58 @@ foreach op [availableOperations] {
         "ravel" -
         "integrate"  continue 
     }
-    if {[tk windowingsystem]=="aqua"} {
+#    if {[tk windowingsystem]=="aqua"} {
         # ticket #187
         image create photo [set op]Img -file $minskyHome/icons/$op.gif
-    } else {
-        image create photo [set op]Img -width 24 -height 24
-        operationIcon [set op]Img $op
-    }
+#    } else {
+#        image create photo [set op]Img -width 24 -height 24
+#        operationIcon [set op]Img $op
+#    }
 }
 
 
 image create photo godleyImg -file $minskyHome/icons/bank.gif
-button .wiring.menubar.line0.godley -image godleyImg -height 24 -width 37 \
+button .wiring.menubar.godley -image godleyImg -height 24 -width 37 \
     -command addGodley
-tooltip .wiring.menubar.line0.godley "Godley table"
-set helpTopics(.wiring.menubar.line0.godley)  GodleyIcon
-
-#ttk::style configure button -width 37 -height 24
-#ttk::style configure menubutton -width 37 -height 24
-#ttk::style configure redmenubutton -foreground #00007f -width 37 -height 24
-
-#button .wiring.menubar.line0.var -text var -command addVariable -foreground #9f0000
-#tooltip .wiring.menubar.line0.var "variable"
-#set helpTopics(.wiring.menubar.line0.var) Variable:flow
-#
-#button .wiring.menubar.line0.const -text const -command addConstant -foreground #00007f
-#tooltip .wiring.menubar.line0.const "constant"
-#set helpTopics(.wiring.menubar.line0.const) Variable:constant
-#
-#button .wiring.menubar.line0.parameter -text param -command addParameter -foreground #00007f
-#tooltip .wiring.menubar.line0.parameter "parameter"
-#set helpTopics(.wiring.menubar.line0.parameter) Variable:parameter
+tooltip .wiring.menubar.godley "Godley table"
+set helpTopics(.wiring.menubar.godley)  GodleyIcon
 
 image create photo integrateImg -file $minskyHome/icons/integrate.gif
-button .wiring.menubar.line0.integrate -image integrateImg -command {
+button .wiring.menubar.integrate -image integrateImg -command {
     addOperation integrate}
-tooltip .wiring.menubar.line0.integrate integrate
-set helpTopics(.wiring.menubar.line0.integrate) IntOp
+tooltip .wiring.menubar.integrate integrate
+set helpTopics(.wiring.menubar.integrate) IntOp
 
-button .wiring.menubar.line0.time -image timeImg -command {
+button .wiring.menubar.time -image timeImg -command {
     addOperation time}
-tooltip .wiring.menubar.line0.time time
-set helpTopics(.wiring.menubar.line0.integrate) Operation:time
+tooltip .wiring.menubar.time time
+set helpTopics(.wiring.menubar.integrate) Operation:time
 
-button .wiring.menubar.line0.var -text var -foreground #9f0000 -command {
-    tk_popup .wiring.menubar.line0.var.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]} 
-tooltip .wiring.menubar.line0.var "variable"
-set helpTopics(.wiring.menubar.line0.var) Variable
+button .wiring.menubar.var -text var -foreground #9f0000 -command {
+    tk_popup .wiring.menubar.var.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]} 
+tooltip .wiring.menubar.var "variable"
+set helpTopics(.wiring.menubar.var) Variable
 
-menu .wiring.menubar.line0.var.menu
-.wiring.menubar.line0.var.menu add command -label "variable" -command addVariable
-.wiring.menubar.line0.var.menu add command -label "constant" -command addConstant
-.wiring.menubar.line0.var.menu add command -label "parameter" -command addParameter
+menu .wiring.menubar.var.menu
+.wiring.menubar.var.menu add command -label "variable" -command addVariable
+.wiring.menubar.var.menu add command -label "constant" -command addConstant
+.wiring.menubar.var.menu add command -label "parameter" -command addParameter
 
-button .wiring.menubar.line0.binops -image addImg -command {
-    tk_popup .wiring.menubar.line0.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.line0.binops "binary operations"
-set helpTopics(.wiring.menubar.line0.binops) Operations
-menu .wiring.menubar.line0.binops.menu
+button .wiring.menubar.binops -image addImg -command {
+    tk_popup .wiring.menubar.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.binops "binary operations"
+set helpTopics(.wiring.menubar.binops) Operations
+menu .wiring.menubar.binops.menu
 
-button .wiring.menubar.line0.fnops -image sqrtImg -command {
-    tk_popup  .wiring.menubar.line0.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.line0.fnops "functions"
-set helpTopics(.wiring.menubar.line0.fnops) Operations
-menu .wiring.menubar.line0.fnops.menu
+button .wiring.menubar.fnops -image sqrtImg -command {
+    tk_popup  .wiring.menubar.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.fnops "functions"
+set helpTopics(.wiring.menubar.fnops) Operations
+menu .wiring.menubar.fnops.menu
 
 
-pack .wiring.menubar.line0.godley .wiring.menubar.line0.var .wiring.menubar.line0.integrate -side left
-pack .wiring.menubar.line0.time .wiring.menubar.line0.binops .wiring.menubar.line0.fnops -side left
+pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate -side left
+pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops -side left
 
 # create buttons for all available operations (aside from those
 # handled especially)
@@ -117,19 +98,19 @@ foreach op [availableOperations] {
     }
 
     switch [numOpArgs $op] {
-        1 {.wiring.menubar.line0.fnops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
-        2 {.wiring.menubar.line0.binops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        1 {.wiring.menubar.fnops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        2 {.wiring.menubar.binops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
         default {
             # shouldn't be here!
         }
     }
 }
 
-button .wiring.menubar.line$menubarLine.data -image dataImg \
+button .wiring.menubar.data -image dataImg \
     -height 24 -width 37 -command {addOperation data}
-tooltip .wiring.menubar.line$menubarLine.data "data"
-pack .wiring.menubar.line$menubarLine.data -side left 
-set helpTopics(.wiring.menubar.line$menubarLine.data) "Operation:data"
+tooltip .wiring.menubar.data "data"
+pack .wiring.menubar.data -side left 
+set helpTopics(.wiring.menubar.data) "Operation:data"
 
 if {[tk windowingsystem]=="aqua"} {
     image create photo switchImg -file $minskyHome/icons/switch.gif
@@ -138,37 +119,33 @@ if {[tk windowingsystem]=="aqua"} {
     operationIcon switchImg switch
 }
 
-button .wiring.menubar.line$menubarLine.switch -image switchImg \
+button .wiring.menubar.switch -image switchImg \
     -height 24 -width 37 -command {addSwitch}
-tooltip .wiring.menubar.line$menubarLine.switch "Switch"
-pack .wiring.menubar.line$menubarLine.switch -side left 
-set helpTopics(.wiring.menubar.line$menubarLine.switch) "SwitchIcon"
+tooltip .wiring.menubar.switch "Switch"
+pack .wiring.menubar.switch -side left 
+set helpTopics(.wiring.menubar.switch) "SwitchIcon"
 
 
 image create photo plotImg -file $minskyHome/icons/plot.gif
-button .wiring.menubar.line$menubarLine.plot -image plotImg \
+button .wiring.menubar.plot -image plotImg \
     -height 24 -width 37 -command {addPlot}
-tooltip .wiring.menubar.line$menubarLine.plot "PlotWidget"
-pack .wiring.menubar.line$menubarLine.plot -side left 
-set helpTopics(.wiring.menubar.line$menubarLine.plot) "PlotWidget"
+tooltip .wiring.menubar.plot "PlotWidget"
+pack .wiring.menubar.plot -side left 
+set helpTopics(.wiring.menubar.plot) "PlotWidget"
 
 image create photo noteImg -file $minskyHome/icons/note.gif
-button .wiring.menubar.line$menubarLine.note -image noteImg \
+button .wiring.menubar.note -image noteImg \
     -height 24 -width 37 -command {addNote "Enter your note here"}
-tooltip .wiring.menubar.line$menubarLine.note "Note"
-pack .wiring.menubar.line$menubarLine.note -side left 
-set helpTopics(.wiring.menubar.line$menubarLine.note) "Item"
+tooltip .wiring.menubar.note "Note"
+pack .wiring.menubar.note -side left 
+set helpTopics(.wiring.menubar.note) "Item"
 
 image create photo ravelImg -file $minskyHome/icons/ravel.gif
-button .wiring.menubar.line$menubarLine.ravel -image ravelImg \
+button .wiring.menubar.ravel -image ravelImg \
     -height 24 -width 37 -command {addRavel}
-tooltip .wiring.menubar.line$menubarLine.ravel "Ravel"
-pack .wiring.menubar.line$menubarLine.ravel -side left 
+tooltip .wiring.menubar.ravel "Ravel"
+pack .wiring.menubar.ravel -side left 
 
-# pack menubar lines
-for {set i 0} {$i<=$menubarLine} {incr i} {
-    pack .wiring.menubar.line$i -side top -anchor w
-}
 pack .wiring.menubar -fill x
 
 # support tooltips
