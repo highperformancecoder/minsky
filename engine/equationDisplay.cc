@@ -560,7 +560,7 @@ namespace MathDAG
   }
 
   template <>
-  void OperationDAG<OperationType::minVal>::render(Surface& surf) const
+  void OperationDAG<OperationType::infimum>::render(Surface& surf) const
   {
     print(surf.cairo(),"min<sub>i</sub>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
@@ -571,7 +571,7 @@ namespace MathDAG
   }
 
   template <>
-  void OperationDAG<OperationType::maxVal>::render(Surface& surf) const
+  void OperationDAG<OperationType::supremum>::render(Surface& surf) const
   {
     print(surf.cairo(),"min<sub>i</sub>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])

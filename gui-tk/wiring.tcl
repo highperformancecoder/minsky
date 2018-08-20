@@ -101,6 +101,11 @@ pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wirin
 pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
 pack .wiring.menubar.scanops .wiring.menubar.tensorops -side left
 
+proc addOpMenu {menu op} {
+    $menu add command -label $op -image [set op]Img -command "minsky.addOperation $op"
+    tooltip $menu -index [$menu index last] $op
+}
+
 # create buttons for all available operations (aside from those
 # handled especially)
 foreach op [availableOperations] {
@@ -117,11 +122,11 @@ foreach op [availableOperations] {
     }
 
     switch [classifyOp $op] {
-        function {.wiring.menubar.fnops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
-        binop {.wiring.menubar.binops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
-        reduction {.wiring.menubar.reductionops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
-        "scan" {.wiring.menubar.scanops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
-        tensor {.wiring.menubar.tensorops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        function {addOpMenu .wiring.menubar.fnops.menu $op}
+        binop {addOpMenu .wiring.menubar.binops.menu $op}
+        reduction {addOpMenu .wiring.menubar.reductionops.menu $op}
+        "scan" {addOpMenu .wiring.menubar.scanops.menu $op}
+        tensor {addOpMenu .wiring.menubar.tensorops.menu $op}
         default {
             # shouldn't be here!
         }

@@ -80,8 +80,8 @@ namespace minsky
     template <> int numArguments<OperationType::frac>() {return 1;}
     template <> int numArguments<OperationType::sum>() {return 1;}
     template <> int numArguments<OperationType::product>() {return 1;}
-    template <> int numArguments<OperationType::minVal>() {return 1;}
-    template <> int numArguments<OperationType::maxVal>() {return 1;}
+    template <> int numArguments<OperationType::infimum>() {return 1;}
+    template <> int numArguments<OperationType::supremum>() {return 1;}
     template <> int numArguments<OperationType::any>() {return 1;}
     template <> int numArguments<OperationType::all>() {return 1;}
     template <> int numArguments<OperationType::runningSum>() {return 1;}

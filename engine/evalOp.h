@@ -150,8 +150,8 @@ namespace minsky
 
   template <> struct EvalOp<minsky::OperationType::sum>: public ReductionEvalOp<OperationType::sum> {};
   template <> struct EvalOp<minsky::OperationType::product>: public ReductionEvalOp<OperationType::product> {};
-  template <> struct EvalOp<minsky::OperationType::minVal>: public ReductionEvalOp<OperationType::minVal> {};
-  template <> struct EvalOp<minsky::OperationType::maxVal>: public ReductionEvalOp<OperationType::maxVal> {};
+  template <> struct EvalOp<minsky::OperationType::infimum>: public ReductionEvalOp<OperationType::infimum> {};
+  template <> struct EvalOp<minsky::OperationType::supremum>: public ReductionEvalOp<OperationType::supremum> {};
   template <> struct EvalOp<minsky::OperationType::any>: public ReductionEvalOp<OperationType::any> {};
   template <> struct EvalOp<minsky::OperationType::all>: public ReductionEvalOp<OperationType::all> {};
   
