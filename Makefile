@@ -42,7 +42,7 @@ PREFIX=/usr/local
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
-	latexMarkup.o variableValue.o xvector.o
+	latexMarkup.o variableValue.o xvector.o node_latex.o node_matlab.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema2.o schema1.o schema0.o variableType.o operationType.o
 #schema0.o 

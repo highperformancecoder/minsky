@@ -112,6 +112,28 @@ namespace minsky
     /// @}
   };
 
+  template <minsky::OperationType::Type T>
+  struct TensorEvalOp: public classdesc::Poly<TensorEvalOp<T>, EvalOpBase>,
+                       public classdesc::PolyPack<TensorEvalOp<T> >
+  {
+    OperationType::Type type() const  override {return T;}
+    int numArgs() const override {
+      return OperationTypeInfo::numArguments<T>();
+    }
+    double evaluate(double in1=0, double in2=0) const override {return 0;}
+    double d1(double x1=0, double x2=0) const override {return 0;}
+    double d2(double x1=0, double x2=0) const override {return 0;}
+  };
+
+  template <minsky::OperationType::Type T>
+  struct ReductionEvalOp: public TensorEvalOp<T>
+  {};
+
+  template <minsky::OperationType::Type T>
+  struct ScanEvalOp: public TensorEvalOp<T>
+  {};
+
+  
   /// represents the operation when evaluating the equations
   template <minsky::OperationType::Type T>
   struct EvalOp: public classdesc::Poly<EvalOp<T>, EvalOpBase>,
@@ -124,10 +146,24 @@ namespace minsky
     double evaluate(double in1=0, double in2=0) const override;
     double d1(double x1=0, double x2=0) const override;
     double d2(double x1=0, double x2=0) const override;
-   
   };
 
-  struct ConstantEvalOp: public EvalOp<minsky::OperationType::constant>
+  template <> struct EvalOp<minsky::OperationType::sum>: public ReductionEvalOp<OperationType::sum> {};
+  template <> struct EvalOp<minsky::OperationType::product>: public ReductionEvalOp<OperationType::product> {};
+  template <> struct EvalOp<minsky::OperationType::minVal>: public ReductionEvalOp<OperationType::minVal> {};
+  template <> struct EvalOp<minsky::OperationType::maxVal>: public ReductionEvalOp<OperationType::maxVal> {};
+  template <> struct EvalOp<minsky::OperationType::any>: public ReductionEvalOp<OperationType::any> {};
+  template <> struct EvalOp<minsky::OperationType::all>: public ReductionEvalOp<OperationType::all> {};
+  
+  template <> struct EvalOp<minsky::OperationType::runningSum>: public ScanEvalOp<OperationType::runningSum> {};
+  template <> struct EvalOp<minsky::OperationType::runningProduct>: public ScanEvalOp<OperationType::runningProduct> {};
+  template <> struct EvalOp<minsky::OperationType::difference>: public ScanEvalOp<OperationType::difference> {};
+  template <> struct EvalOp<minsky::OperationType::innerProduct>: public TensorEvalOp<OperationType::innerProduct> {};
+  template <> struct EvalOp<minsky::OperationType::outerProduct>: public TensorEvalOp<OperationType::outerProduct> {};
+  template <> struct EvalOp<minsky::OperationType::index>: public TensorEvalOp<OperationType::index> {};
+  template <> struct EvalOp<minsky::OperationType::gather>: public TensorEvalOp<OperationType::gather> {};
+  
+ struct ConstantEvalOp: public EvalOp<minsky::OperationType::constant>
   {
     double value;
     double evaluate(double in1=0, double in2=0) const override;

@@ -603,4 +603,27 @@ namespace MathDAG
     else
        throw error("frac is not differentiable");
   }
+  
+#define VECTOR_DERIVATIVE_NOT_IMPLEMENTED(op)           \
+  template <>                                           \
+  NodePtr SystemOfEquations::derivative<>               \
+  (const OperationDAG<OperationType::op>& expr)         \
+  {                                                     \
+    throw error("vector derivatives not implemented");  \
+  }                                                     
+
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(sum)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(product)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(minVal)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(maxVal)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(any)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(all)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(runningSum)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(runningProduct)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(difference)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(innerProduct)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(outerProduct)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(index)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(gather)
+
 }

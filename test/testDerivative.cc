@@ -254,6 +254,17 @@ SUITE(Derivative)
       OperationPtr funOp;
       for (int op=OperationType::integrate; op<OperationType::numOps; ++op)
         {
+          //TODO for now, ignore tensor operations
+          switch (OperationType::classify(OperationType::Type(op)))
+            {
+            case OperationType::reduction:
+            case OperationType::scan:
+            case OperationType::tensor:
+            case OperationType::binop:
+              continue;
+            default:
+              break;
+            }
           cout << OperationType::typeName(op) << endl;
           model->removeItem(*funOp);
           funOp.reset(OperationBase::create(OperationType::Type(op)));

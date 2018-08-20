@@ -332,7 +332,7 @@ namespace minsky
     {tclcmd()<<"setCursor {}\n";}
 
     int numOpArgs(OperationType::Type o) const;
-    
+    OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
   private:
     std::unique_ptr<char[]> _defaultFont;
 

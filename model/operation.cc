@@ -923,6 +923,128 @@ namespace minsky
     d.drawPort(&DrawBinOp::drawDivide, l, h, rotation);
   }
 
+  template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("∑");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("∏");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::minVal>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("minV");
+    pango.show();
+  }
+
+ template <> void Operation<OperationType::maxVal>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("maxV");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::any>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("any");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::all>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("all");
+    pango.show();
+  }
+
+ template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("∑+");
+    pango.show();
+  }
+
+ template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("∏×");
+    pango.show();
+  }
+
+ template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("Δ");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("·");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("⊗");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor);
+    pango.setMarkup("idx");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::gather>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"x[i]");
+    cairo_set_font_size(cairo,5);
+    cairo_move_to(cairo, l+1, -h+6);
+    cairo_show_text(cairo,"x");
+    cairo_move_to(cairo, l+1, h-3);
+    cairo_show_text(cairo,"i");
+  }
+
+ 
+
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}
 

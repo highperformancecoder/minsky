@@ -79,8 +79,27 @@ tooltip .wiring.menubar.fnops "functions"
 set helpTopics(.wiring.menubar.fnops) Operations
 menu .wiring.menubar.fnops.menu
 
+button .wiring.menubar.reductionops -image sumImg -width 37 -height 24 -command {
+    tk_popup  .wiring.menubar.reductionops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.reductionops "reductions"
+set helpTopics(.wiring.menubar.reductionops) Operations
+menu .wiring.menubar.reductionops.menu
+
+button .wiring.menubar.scanops -image runningSumImg -width 37 -height 24 -command {
+    tk_popup  .wiring.menubar.scanops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.reductionops "scans"
+set helpTopics(.wiring.menubar.scanops) Operations
+menu .wiring.menubar.scanops.menu
+
+button .wiring.menubar.tensorops -image outerProductImg -width 37 -height 24 -command {
+    tk_popup  .wiring.menubar.tensorops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.tensorops "tensor operations"
+set helpTopics(.wiring.menubar.tensorops) Operations
+menu .wiring.menubar.tensorops.menu
+
 pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left
-pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops -side left
+pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
+pack .wiring.menubar.scanops .wiring.menubar.tensorops -side left
 
 # create buttons for all available operations (aside from those
 # handled especially)
@@ -97,9 +116,12 @@ foreach op [availableOperations] {
         "data" continue 
     }
 
-    switch [numOpArgs $op] {
-        1 {.wiring.menubar.fnops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
-        2 {.wiring.menubar.binops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+    switch [classifyOp $op] {
+        function {.wiring.menubar.fnops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        binop {.wiring.menubar.binops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        reduction {.wiring.menubar.reductionops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        "scan" {.wiring.menubar.scanops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
+        tensor {.wiring.menubar.tensorops.menu add command -image [set op]Img -command "minsky.addOperation $op"}
         default {
             # shouldn't be here!
         }
@@ -211,9 +233,16 @@ proc zoomAt {x0 y0 factor} {
 .menubar.ops add cascade -label "Variable" -menu .wiring.menubar.var.menu
 .menubar.ops add cascade -label "Binary Ops" -menu .menubar.ops.binops
 .menubar.ops add cascade -label "Functions" -menu .menubar.ops.functions
+.menubar.ops add cascade -label "Reductions" -menu .menubar.ops.reductions
+.menubar.ops add cascade -label "Scans" -menu .menubar.ops.scans
+.menubar.ops add cascade -label "Tensor operations" -menu .menubar.ops.tensors
 
 menu .menubar.ops.binops
 menu .menubar.ops.functions
+menu .menubar.ops.reductions
+menu .menubar.ops.scans
+menu .menubar.ops.tensors
+
 foreach op [availableOperations] {
     if {$op=="constant"} continue
     if {$op=="numOps"} break
@@ -225,9 +254,12 @@ foreach op [availableOperations] {
         "time" -
         "data"  {.menubar.ops add command -label $label -command "minsky.addOperation $op"}
         default {
-            switch [numOpArgs $op] {
-                1 {.menubar.ops.functions add command -label $label  -command "minsky.addOperation $op"}
-                2 {.menubar.ops.binops add command -label $label  -command "minsky.addOperation $op"}
+            switch [classifyOp $op] {
+                function {.menubar.ops.functions add command -label $label  -command "minsky.addOperation $op"}
+                binop {.menubar.ops.binops add command -label $label  -command "minsky.addOperation $op"}
+                reduction {.menubar.ops.reductions add command -label $label  -command "minsky.addOperation $op"}
+                "scan" {.menubar.ops.scans add command -label $label  -command "minsky.addOperation $op"}
+                tensor {.menubar.ops.tensors add command -label $label  -command "minsky.addOperation $op"}
             }
         }
     }
