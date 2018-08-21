@@ -233,7 +233,7 @@ namespace minsky
     if (ravelAvailable())
       {
         ravel=ravel_new(0); // rank 1 for now
-        ravel_rescale(ravel,defaultRadius);
+        ravel_rescale(ravel,ravelDefaultRadius);
         dataCube=ravelDC_new();
       }
     else
@@ -257,7 +257,7 @@ namespace minsky
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double r=defaultRadius;
+    double r=ravelDefaultRadius;
     if (ravel) r=1.1*zoomFactor*ravel_radius(ravel);
     ports[0]->moveTo(x()+1.1*r, y());
     ports[1]->moveTo(x()-1.1*r, y());
@@ -293,7 +293,7 @@ namespace minsky
     for (auto& p: ports)
       if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
         return ClickType::onPort;
-    double r=1.1*zoomFactor*(ravel? ravel_radius(ravel): defaultRadius);
+    double r=1.1*zoomFactor*(ravel? ravel_radius(ravel): ravelDefaultRadius);
     if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
       return ClickType::outside;
     else if (std::abs(xx-x())<=r && std::abs(yy-y())<=r)
@@ -547,6 +547,7 @@ namespace minsky
   
   Ravel::HandleState::HandleSort Ravel::sortOrder() const
   {
+    if (!ravel) return HandleState::none;
     int h=ravel_selectedHandle(ravel);
     if (h>=0)
       {
@@ -628,6 +629,7 @@ namespace minsky
     RavelState state;
     if (ravel)
       {
+        state.radius=ravel_radius(ravel);
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           {
             auto& s=state.handleStates[ravel_handleDescription(ravel,i)];
@@ -652,6 +654,7 @@ namespace minsky
   {
     if (ravel)
       {
+        ravel_rescale(ravel,state.radius);
         map<string,size_t> nameToIdx;
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           {

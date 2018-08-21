@@ -40,7 +40,6 @@ namespace minsky
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     std::string m_filename;
-    const double defaultRadius=100; ///< initial size of a Ravel widget
     std::string explanation; // explanation of Ravel bits displayed as tooltip
 
     /// used entirely to defer persisted state data until after first

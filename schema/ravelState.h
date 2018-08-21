@@ -22,10 +22,11 @@
 
 namespace minsky
 {
+  static const double ravelDefaultRadius=100; ///< initial size of a Ravel widget
 
   struct RavelState
   {
-    // representing the state of the handles
+   // representing the state of the handles
     struct HandleState
     {
       double x,y; ///< handle tip coordinates (only angle important, not length)
@@ -40,6 +41,7 @@ namespace minsky
       vector<string> customOrder; // used if order==custom
     };
 
+    double radius=ravelDefaultRadius;
     std::map<std::string, HandleState> handleStates;
     std::vector<std::string> outputHandles;
     bool empty() const {return handleStates.empty();}
