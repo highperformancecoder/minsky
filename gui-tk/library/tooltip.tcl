@@ -349,7 +349,7 @@ proc ::tooltip::show {w msg {i {}}} {
 
 proc ::tooltip::menuMotion {w} {
     variable G
-
+    
     if {$G(enabled)} {
 	variable tooltip
 
@@ -364,11 +364,11 @@ proc ::tooltip::menuMotion {w} {
 	# a little inlining - this is :hide
 	after cancel $G(AFTERID)
 	catch {wm withdraw $G(TOPLEVEL)}
-	if {[info exists tooltip($m,$cur)] || \
+	if {[info exists tooltip($w,$cur)] || \
 		(![catch {$w entrycget $cur -label} cur] && \
-		[info exists tooltip($m,$cur)])} {
+		[info exists tooltip($w,$cur)])} {
 	    set G(AFTERID) [after $G(DELAY) \
-		    [namespace code [list show $w $tooltip($m,$cur) cursor]]]
+		    [namespace code [list show $w $tooltip($w,$cur) cursor]]]
 	}
     }
 }
