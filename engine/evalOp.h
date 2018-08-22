@@ -127,11 +127,52 @@ namespace minsky
 
   template <minsky::OperationType::Type T>
   struct ReductionEvalOp: public TensorEvalOp<T>
-  {};
+  {
+    /// x op= y
+    inline void accum(double& x, double y) const;
+    inline double init() const;
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override;
+    void deriv(double df[], const double ds[], 
+               const double sv[], const double fv[]) override {}
+  };
 
+  template<> inline
+  double ReductionEvalOp<OperationType::sum>::init() const {return 0;}
+  template<> inline
+  void ReductionEvalOp<OperationType::sum>::accum(double& x, double y) const
+  {x+=y;}
+  template<> inline
+  double ReductionEvalOp<OperationType::product>::init() const {return 1;}
+  template<> inline
+  void ReductionEvalOp<OperationType::product>::accum(double& x, double y) const
+  {x*=y;}
+  template<> inline
+  double ReductionEvalOp<OperationType::infimum>::init() const {return std::numeric_limits<double>::max();}
+  template<> inline
+  void ReductionEvalOp<OperationType::infimum>::accum(double& x, double y) const
+  {if (y<x) x=y;}
+  template<> inline
+  double ReductionEvalOp<OperationType::supremum>::init() const {return -std::numeric_limits<double>::max();}
+  template<> inline
+  void ReductionEvalOp<OperationType::supremum>::accum(double& x, double y) const
+  {if (y>x) x=y;}
+  template<> inline
+  double ReductionEvalOp<OperationType::any>::init() const {return 0;}
+  template<> inline
+  void ReductionEvalOp<OperationType::any>::accum(double& x, double y) const
+  {if (y>0.5) x=1;}
+  template<> inline
+  double ReductionEvalOp<OperationType::all>::init() const {return 1;}
+  template<> inline
+  void ReductionEvalOp<OperationType::all>::accum(double& x, double y) const
+  {x*=(y>0.5);}
+
+  
   template <minsky::OperationType::Type T>
   struct ScanEvalOp: public TensorEvalOp<T>
-  {};
+  {
+  };
 
   
   /// represents the operation when evaluating the equations

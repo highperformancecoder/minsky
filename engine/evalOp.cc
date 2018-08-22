@@ -913,44 +913,74 @@ namespace minsky
             break;
           }
         case 1:
-          if (to.idx()==-1 || to.xVector.empty())
-            to.xVector=from1.xVector;
-          if (to.xVector==from1.xVector)
-            for (size_t i=0; i<from1.numElements(); ++i)
-              t->in1.push_back(i+from1.idx());
-          else
+          switch (OperationType::classify(op))
             {
-              OffsetMap from1Offsets(from1);
-              apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
-                    {
-                      size_t offs1=from1.idx();
-                      for (auto& i: x)
-                        {
-                          auto j=from1Offsets.find(i.first);
-                          if (j!=from1Offsets.end())
-                            {
-                              auto k=j->second.find(i.second);
-                              if (k!=j->second.end())
-                                offs1+=k->second;
-                            else
-                              throw error("invalid key");
-                            }
-                        // else allowed a missing dimension - add zero offset
-                        }
-                      t->in1.push_back(offs1);
-                    });
+            case general: case function:
+              {
+                if (to.idx()==-1 || to.xVector.empty())
+                  to.xVector=from1.xVector;
+                if (to.xVector==from1.xVector)
+                  for (size_t i=0; i<from1.numElements(); ++i)
+                    t->in1.push_back(i+from1.idx());
+                else
+                  {
+                    OffsetMap from1Offsets(from1);
+                    apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                                         {
+                                           size_t offs1=from1.idx();
+                                           for (auto& i: x)
+                                             {
+                                               auto j=from1Offsets.find(i.first);
+                                               if (j!=from1Offsets.end())
+                                                 {
+                                                   auto k=j->second.find(i.second);
+                                                   if (k!=j->second.end())
+                                                     offs1+=k->second;
+                                                   else
+                                                     throw error("invalid key");
+                                                 }
+                                               // else allowed a missing dimension - add zero offset
+                                             }
+                                           t->in1.push_back(offs1);
+                                         });
+                  }
+              }
+              break;
+            case reduction:
+              for (size_t i=0; i<from1.numElements(); ++i)
+                t->in1.push_back(i+from1.idx());
+              break;
             }
           break;
         }
 
       if (to.idx()==-1) to.allocValue();
-      assert(t->numArgs()<1 || to.numElements()==t->in1.size());
-      assert(t->numArgs()<2 || to.numElements()==t->in2.size());
-      
+#ifndef NDEBUG
+      switch (OperationType::classify(op))
+        {
+        case general: case binop: case function: case scan:
+          assert(t->numArgs()<1 || to.numElements()==t->in1.size());
+          assert(t->numArgs()<2 || to.numElements()==t->in2.size());
+          break;
+        case reduction:
+          assert(t->numArgs()==1 && to.numElements()==1);
+          break;
+        }
+#endif
       t->out=to.idx();
       t->flow1=from1.isFlowVar();
       t->flow2=from2.isFlowVar();
 
     }
+
+  template<OperationType::Type T>
+  void ReductionEvalOp<T>::eval(double fv[], const double sv[])
+  {
+    fv[this->out]=init();
+    if (this->flow1)
+      for (auto i: this->in1) accum(fv[this->out], fv[i]);
+    else
+      for (auto i: this->in1) accum(fv[this->out], sv[i]);
+  }
 
 }

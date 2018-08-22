@@ -281,6 +281,8 @@ SUITE(Derivative)
             case OperationType::ravel:
               CHECK_THROW(reset(), ecolab::error);
               continue;
+            case OperationType::not_:
+              continue; // test not meaningful for a step function
             default:
               reset(); 
             }

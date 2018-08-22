@@ -98,7 +98,7 @@ namespace minsky
       for (size_t i=0; i<d.size(); ++i)
         {
           xVector.emplace_back(std::to_string(i));
-          for (size_t j=0; j<i; ++j)
+          for (size_t j=0; j<d[i]; ++j)
             xVector.back().emplace_back(j);
         }
       return d;

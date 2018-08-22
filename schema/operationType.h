@@ -37,11 +37,11 @@ namespace minsky
                log, pow,
                lt, le, eq, min, max, 
                // underscores to avoid C++ keywords. Can be filtered at UI
-               and_, or_, not_,
+               and_, or_,
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
-               floor, frac,
+               floor, frac, not_,
                // reductions
                sum, product, infimum, supremum, any, all,
                // scans
