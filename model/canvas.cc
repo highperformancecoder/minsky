@@ -629,7 +629,6 @@ namespace minsky
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             it.bb.update(it);
              cairo_restore(cairo);
            }
          return false;
@@ -646,7 +645,6 @@ namespace minsky
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             it.bb.update(it);
              cairo_restore(cairo);
            }
          return false;

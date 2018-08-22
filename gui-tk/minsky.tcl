@@ -923,12 +923,11 @@ tooltip .controls.zoomFit "Zoom to fit"
 pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig .controls.zoomFit -side left
 
 set delay [simulationDelay]
-set running 0
 
 proc runstop {} {
-  global running classicMode
-  if {$running} {
-    set running 0
+  global classicMode
+    if [running] {
+    running 0
     doPushHistory 1
     if {$classicMode} {
             .controls.run configure -text run
@@ -936,7 +935,7 @@ proc runstop {} {
             .controls.run configure -image runButton
         }
   } else {
-      set running 1
+      running 1
       doPushHistory 0
       if {$classicMode} {
           .controls.run configure -text stop
@@ -961,9 +960,9 @@ proc step {} {
         }
     } else {
         # run simulation
-        global running preferences
+        global preferences
         set lastt [t]
-        if {[catch minsky.step errMsg options] && $running} {runstop}
+        if {[catch minsky.step errMsg options] && [running]} {runstop}
         if {$simTMax<[t]} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
@@ -975,34 +974,28 @@ proc step {} {
 
 proc simulate {} {
     uplevel #0 {
-      if {$running} {
-#          if {$recordingReplay} {
-#              # don't slow down recording quite so much (lots of mouse
-#              # movements)
-#              after [expr $delay/25+0] {step; simulate}
-#          } else {
+        if [running] {
               set d [expr int(pow(10,$delay/4.0))]
               after $d {
-                  if {$running} {
-                      if {!$running && [reset_flag]} runstop else {
+                  if [running] {
+                      if {![running] && [reset_flag]} runstop else {
                           step
                           simulate
                       }
                   }
               }
-#          }
         }
     }
 }
 
 proc reset {} {
-    global running recordingReplay eventRecordR simLogging eventRecording
+    global recordingReplay eventRecordR simLogging eventRecording
     if {$eventRecording} {
         set eventRecording 0
         stopRecording
         return
     }
-    set running 0
+    running 0
     if {$recordingReplay} {
         seek $eventRecordR 0 start
         model.clear
@@ -1503,7 +1496,7 @@ proc checkRecordingVersion ver {
 set recordingReplay 0
 
 proc replay {} {
-    global recordingReplay eventRecordR workDir running eventRecording
+    global recordingReplay eventRecordR workDir eventRecording
     if $eventRecording {stopRecording; set eventRecording 0}
     if {$recordingReplay} {
         # ensures consistent IDs are allocated
@@ -1512,8 +1505,8 @@ proc replay {} {
         if {[string length $fname]>0} {
             set eventRecordR [open $fname r]
             newSystem
-            if {!$running} runstop
-        } elseif {$running} {runstop}
+            if {![running]} runstop
+        } elseif [running] {runstop}
     } 
 }
 

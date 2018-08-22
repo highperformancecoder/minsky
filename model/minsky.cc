@@ -638,6 +638,13 @@ namespace minsky
 
   void Minsky::reset()
   {
+    // do not reset while simulation is running
+    if (RKThreadRunning)
+      {
+        flags |= reset_needed;
+        if (RKThreadRunning) return;
+      }
+    running=false;
     BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     constructEquations();
@@ -682,7 +689,7 @@ namespace minsky
 
     // create a private copy for worker thread use
     vector<double> stockVarsCopy(stockVars);
-    volatile bool threadFinished=false;
+    RKThreadRunning=true;
     int err=GSL_SUCCESS;
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
     boost::thread rkThread([&](){
@@ -690,7 +697,7 @@ namespace minsky
           {
             gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
             // we need to update Minsky's t synchronously to support the t operator
-            // potentially means t and stcokVars out of sync on GUI, but should still be thread safe
+            // potentially means t and stockVars out of sync on GUI, but should still be thread safe
             err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
                                         &stockVarsCopy[0]);
           }
@@ -704,17 +711,22 @@ namespace minsky
                   stockVarsCopy[j]+=d[j];
               }
           }
-        threadFinished=true;
+        RKThreadRunning=false;
       });
 
-    while (!threadFinished)
+    while (RKThreadRunning)
       {
         // while waiting for thread to finish, check and process any UI events
         usleep(1000);
         doOneEvent();
       }
     rkThread.join();
-    
+    if (reset_flag()) // in case reset() was called during the step evaluation
+      {
+        reset();
+        return;
+      }
+
     switch (err)
       {
       case GSL_SUCCESS: case GSL_EMAXITER: break;

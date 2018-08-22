@@ -106,6 +106,7 @@ namespace minsky
     MinskyExclude(): historyPtr(0) {}
     MinskyExclude(const MinskyExclude&): historyPtr(0) {}
     MinskyExclude& operator=(const MinskyExclude&) {return *this;}
+    
   protected:
     /// save history of model for undo
     /* 
@@ -115,7 +116,9 @@ namespace minsky
      */
     std::deque<classdesc::pack_t> history;
     size_t historyPtr;
-    
+
+    /// flag indicates that RK engine is computing a step
+    volatile bool RKThreadRunning=false;
   };
 
   /// convenience class for accessing matrix elements from a data array
@@ -293,6 +296,7 @@ namespace minsky
     
     double t{0}; ///< time
     double t0{0}; ///< simulation start time
+    bool running=false; ///< controls whether simulation is running
     string timeUnit;
     void reset(); ///<resets the variables back to their initial values
     void step();  ///< step the equations (by n steps, default 1)

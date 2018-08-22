@@ -304,10 +304,13 @@ namespace minsky
 
 
   void Ravel::onMouseDown(float xx, float yy)
-  {if (ravel) ravel_onMouseDown(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);}
-  void Ravel::onMouseUp(float xx, float yy)
   {
     if (ravel)
+      ravel_onMouseDown(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
+  }
+  void Ravel::onMouseUp(float xx, float yy)
+  {
+     if (ravel)
       ravel_onMouseUp(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
   }
   bool Ravel::onMouseMotion(float xx, float yy)
@@ -433,6 +436,11 @@ namespace minsky
       }
   }
 
+  
+  void Ravel::loadDataCubeFromVariableNoStateChange(const VariableValue& v) const
+  {
+    if (ravel) ravelDC_loadData(dataCube, ravel, v.begin());
+  }
   
   unsigned Ravel::maxRank() const
   {
