@@ -925,26 +925,26 @@ pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig .controls.zoomFit -si
 set delay [simulationDelay]
 
 proc runstop {} {
-  global classicMode
+    global classicMode
     if [running] {
-    running 0
-    doPushHistory 1
-    if {$classicMode} {
+        running 0
+        doPushHistory 1
+        if {$classicMode} {
             .controls.run configure -text run
         } else {
             .controls.run configure -image runButton
         }
-  } else {
-      running 1
-      doPushHistory 0
-      if {$classicMode} {
-          .controls.run configure -text stop
-      } else {
-          .controls.run configure -image stopButton
-      }
-      step
-      simulate
-  }
+    } else {
+        running 1
+        doPushHistory 0
+        if {$classicMode} {
+            .controls.run configure -text stop
+        } else {
+            .controls.run configure -image stopButton
+        }
+        step
+        simulate
+    }
 }
 
 set simTMax Inf

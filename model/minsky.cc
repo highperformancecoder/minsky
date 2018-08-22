@@ -686,7 +686,8 @@ namespace minsky
   {
     if (reset_flag())
       reset();
-
+    running=true;
+    
     // create a private copy for worker thread use
     vector<double> stockVarsCopy(stockVars);
     RKThreadRunning=true;
