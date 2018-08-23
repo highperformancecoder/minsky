@@ -20,6 +20,7 @@
 #define VARIABLE_VALUE
 #include "variableType.h"
 #include "xvector.h"
+#include "tensorVal.h"
 #include "ecolab.h"
 #include "classdesc_access.h"
 #include "constMap.h"
@@ -98,8 +99,9 @@ namespace minsky
       for (size_t i=0; i<d.size(); ++i)
         {
           xVector.emplace_back(std::to_string(i));
+          xVector.back().dimension.type=Dimension::value;
           for (size_t j=0; j<d[i]; ++j)
-            xVector.back().emplace_back(j);
+            xVector.back().emplace_back(double(j));
         }
       return d;
     }
@@ -121,6 +123,9 @@ namespace minsky
     const VariableValue& operator=(double x) {valRef()=x; return *this;}
     const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
     const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
+    const VariableValue& operator=(const TensorVal& x);
+    //    const VariableValue& operator+=(const TensorVal& x);
+    //    const VariableValue& operator-=(const TensorVal& x);
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
@@ -130,9 +135,9 @@ namespace minsky
     /// evaluates the initial value, based on the set of variables
     /// contained in \a VariableManager. \a visited is used to check
     /// for circular definitions
-    double initValue
+    TensorVal initValue
     (const VariableValues&, std::set<std::string>& visited) const;
-    double initValue(const VariableValues& v) const {
+    TensorVal initValue(const VariableValues& v) const {
       std::set<std::string> visited;
       return initValue(v, visited);
     }

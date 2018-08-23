@@ -30,6 +30,15 @@ namespace minsky
   std::vector<double> ValueVector::stockVars(1);
   std::vector<double> ValueVector::flowVars(1);
 
+  const VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
+  {
+    bool realloc=numElements()!=x.data.size();
+    if (dims()!=x.dims) dims(x.dims);
+    if (realloc) allocValue();
+    memcpy(&valRef(), &x.data[0], x.data.size()*sizeof(x.data[0]));
+    return *this;
+  }
+  
   VariableValue& VariableValue::allocValue()
   {
     switch (m_type)
@@ -78,7 +87,7 @@ namespace minsky
     throw error("invalid access of variable value reference: %s",name.c_str());
   }
 
-  double VariableValue::initValue
+  TensorVal VariableValue::initValue
   (const VariableValues& v, set<string>& visited) const
   {
     FlowCoef fc(init);
@@ -86,6 +95,45 @@ namespace minsky
       return fc.coef;
     else
       {
+        // special generator functions handled here
+        auto p=fc.name.find('(');
+        if (p!=string::npos)
+          {
+            string fn=fc.name.substr(0,p);
+            // unpack args
+            const char* x=fc.name.c_str()+p+1;
+            TensorVal r;
+            char* e;
+            for (;;)
+              {
+                auto tmp=strtol(x,&e,10);
+                if (tmp>0 && e>x && *e)
+                  {
+                    x=e+1;
+                    r.dims.push_back(tmp);
+                  }
+                else
+                  break;
+              }
+
+            if (r.dims.empty())
+              throw runtime_error("invalid dimension arguments in "+fc.name);
+            size_t n=1;
+            for (auto i: r.dims) n*=i;
+            r.data.resize(n);
+
+            if (fn=="iota")
+              for (size_t i=0; i<n; ++i)
+                r.data[i]=i;
+            else if (fn=="rand")
+              {
+                srand(time(nullptr));
+                for (size_t i=0; i<n; ++i)
+                  r.data[i]=double(rand())/RAND_MAX;
+              }
+            return r;
+          }
+        
         // resolve name
         auto valueId=VariableValue::valueId(m_scope.lock(), fc.name);
         if (visited.count(valueId))

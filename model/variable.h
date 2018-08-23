@@ -94,7 +94,9 @@ namespace minsky
 
     /// string used to link to the VariableValue associated with this
     virtual std::string valueId() const;
-
+    /// variableValue associated with this. nullptr if not associated with a variableValue
+    VariableValue* vValue() const;
+    
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
     //   void zoom(float xOrigin, float yOrigin,float factor);
@@ -115,7 +117,10 @@ namespace minsky
       [this]() {return _value();},
         [this](double x){return _value(x);}};
     /// @}
+    
+    //    void setValue(const TensorVal&);
 
+    
     /// sets variable value (or init value)
     void sliderSet(double x);
     /// initialise slider bounds when slider first opened
@@ -205,7 +210,6 @@ namespace minsky
     std::string _name() const override {return init();}
     std::string _name(const std::string& nm) override {ensureValueExists(); return _name();}
     double _value(double x) override {init(str(x)); return x;}
-    //    double _value() const override {return std::stod(init());}  
     VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
     std::string classType() const override {return "VarConstant";}
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 

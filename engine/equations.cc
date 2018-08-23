@@ -73,11 +73,12 @@ namespace MathDAG
             // set the initial value of the actual variableValue (if it exists)
             auto v=values.find(result->name);
             if (v!=values.end())
-              v->second.init=str(value);
+              v->second.init=value;
           }
         else
           result=&tmpResult;
-        *result=value;
+        result->init=value;
+        *result=result->initValue(values);
       }
     if (r && r->isFlowVar() && r!=result)
       ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
@@ -454,9 +455,8 @@ namespace MathDAG
                     else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                       {
                         // slightly convoluted to prevent sliderSet from overriding c->value
-                        iv->value(c->value);
+                        iv->init(c->value);
                         iv->adjustSliderBounds();
-                        iv->sliderSet(c->value);
                       }
                     else
                       throw error("only constants, parameters and variables can be connected to the initial value port");
@@ -536,7 +536,7 @@ namespace MathDAG
 
     if (type==VariableType::constant)
       {
-        NodePtr r(new ConstantDAG(vv.initValue(minsky.variableValues)));
+        NodePtr r(new ConstantDAG(vv.init));
         expressionCache.insert(valueId, r);
         return r;
       }
@@ -549,7 +549,7 @@ namespace MathDAG
     
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
-    r->init=vv.initValue(minsky.variableValues);
+    r->init=vv.init;
     if (vv.isFlowVar()) 
       {
         auto v=minsky.definingVar(valueId);
@@ -683,13 +683,13 @@ namespace MathDAG
         if (i->rhs) 
           i->rhs->latex(o);
         else
-          o<<i->init;
+          o<<latexInit(i->init);
         o << "\\\\\n";
       }
 
     for (const VariableDAG* i: integrationVariables)
       {
-        o << mathrm(i->name)<<"(0)&=&"<<MathDAG::latex(i->init)<<"\\\\\n";
+        o << mathrm(i->name)<<"(0)&=&"<<latexInit(i->init)<<"\\\\\n";
         o << "\\frac{ d " << mathrm(i->name) << 
           "}{dt} &=&";
         VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
@@ -712,14 +712,14 @@ namespace MathDAG
         if (i->rhs) 
           i->rhs->latex(o);
         else
-          o<<i->init;
+          o<<latexInit(i->init);
         o << "\n\\end{dmath*}\n";
       }
 
     for (const VariableDAG* i: integrationVariables)
       {
         o<<"\\begin{dmath*}\n";
-        o << mathrm(i->name)<<"(0)="<<MathDAG::latex(i->init)<<"\n\\end{dmath*}\n";
+        o << mathrm(i->name)<<"(0)="<<latexInit(i->init)<<"\n\\end{dmath*}\n";
         o << "\\begin{dmath*}\n\\frac{ d " << mathrm(i->name) << 
           "}{dt} =";
         VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
@@ -746,7 +746,7 @@ namespace MathDAG
         if (i->rhs)
           o << i->rhs->matlab();
         else
-          o << i->init;
+          o << matlabInit(i->init);
         o<<";\n";
       }
 
@@ -766,7 +766,7 @@ namespace MathDAG
     // now write out the initial conditions
     j=1;
     for (const VariableDAG* i: integrationVariables)
-      o << "x0("<<j++<<")="<<i->init<<";\n";
+      o << "x0("<<j++<<")="<<matlabInit(i->init)<<";\n";
    
     return o;
   }

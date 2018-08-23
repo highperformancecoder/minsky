@@ -128,7 +128,7 @@ namespace MathDAG
       if (v.rhs) 
         v.rhs->render(surf);
       else
-        print(surf.cairo(), latexToPango(MathDAG::latex(v.init)), Anchor::nw);
+        print(surf.cairo(), latexToPango(latexInit(v.init)), Anchor::nw);
     }
 
   }
@@ -156,7 +156,7 @@ namespace MathDAG
       {
         // initial conditions
         y+=print(dest.cairo(), latexToPango(mathrm(i->name))+"(0) = "+
-                 latexToPango(MathDAG::latex(i->init)),Anchor::nw);
+                 latexToPango(latexInit(i->init)),Anchor::nw);
         
         // differential equation
         Pango num(dest.cairo());
@@ -199,7 +199,7 @@ namespace MathDAG
 
   void ConstantDAG::render(ecolab::cairo::Surface& surf) const
   {
-    print(surf.cairo(), latexToPango(MathDAG::latex(value)),Anchor::nw);
+    print(surf.cairo(), latexToPango(value),Anchor::nw);
   }
 
   void VariableDAG::render(ecolab::cairo::Surface& surf) const
@@ -543,8 +543,10 @@ namespace MathDAG
     print(surf.cairo(),"∑<sub>i</sub>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
-        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        double h=parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        cairo_rel_move_to(surf.cairo(), 0, 0.5*h);
         print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        cairo_rel_move_to(surf.cairo(), 0, -0.5*h);
       }
   }
 

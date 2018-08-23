@@ -18,7 +18,7 @@
 */
 
 #include "equations.h"
-#include "selection.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 using namespace minsky;
 
@@ -41,6 +41,33 @@ namespace MathDAG
 
   }
 
+  string matlabInit(const string& init)
+  {
+    if (init.empty()) return "0";
+    VariableValue v;
+    v.init=init;
+    auto t=v.initValue(cminsky().variableValues);
+    string r;
+    switch (t.dims.size())
+      {
+      case 0: return str(t.data[0]);
+      case 1: r="[";
+        for (auto i: t.data) r+=str(i)+",";
+        return r+"]";
+      case 2:
+        r="[";
+        for (size_t i=0; i<t.dims[1]; ++i)
+          {
+            for (size_t j=0; j<t.dims[0]; ++j)
+              r+=str(t.data[i*t.dims[0]+j])+",";
+            r+=";";
+          }
+        return r+"]";
+      default:
+        throw error("high rank tensors not supported in Matlab");
+      }
+  }
+      
   ostream& VariableDAG::matlab(ostream& o) const
   {
     if (type==constant)

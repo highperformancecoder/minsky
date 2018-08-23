@@ -87,6 +87,15 @@ string VariableBase::valueId() const
   return VariableValue::valueId(group.lock(), m_name);
 }
 
+VariableValue* VariableBase::vValue() const
+{
+  auto vv=minsky().variableValues.find(valueId());
+  if (vv!=minsky().variableValues.end())
+    return &vv->second;
+  else
+    return nullptr;
+}
+
 bool VariableBase::ioVar() const 
 {
   if (auto g=group.lock())
@@ -291,8 +300,12 @@ void VariableBase::initSliderBounds() const
 
 void VariableBase::adjustSliderBounds() const
 {
-  if (sliderMax<value()) sliderMax=value();
-  if (sliderMin>value()) sliderMin=value();
+  if (auto vv=vValue())
+    if (vv->numElements()==1)
+      {
+        if (sliderMax<vv->value()) sliderMax=vv->value();
+        if (sliderMin>vv->value()) sliderMin=vv->value();
+      }
 }
 
 bool VariableBase::handleArrows(int dir)
@@ -329,8 +342,12 @@ void VariableBase::draw(cairo_t *cairo) const
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
+
+  VariableValue vv;
+  if (VariableValue::isValueId(valueId()))
+    vv=minsky::cminsky().variableValues[valueId()];
   
-  if (type()!=constant)
+  if (type()!=constant && vv.numElements()==1)
     try
     {
       auto val=engExp();
@@ -375,7 +392,7 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_stroke(cairo);
   cairo_save(cairo);
 
-  if (type()!=constant)
+  if (type()!=constant && vv.numElements()==1)
     {
       // draw slider
       CairoSave cs(cairo);

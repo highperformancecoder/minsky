@@ -18,7 +18,7 @@
 */
 
 #include "equations.h"
-#include "selection.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 using namespace minsky;
 
@@ -65,7 +65,31 @@ namespace MathDAG
     };
   }
  
-    
+  string latexInit(const string& init)
+  {
+    if (init.empty()) return "0";
+    VariableValue v;
+    v.init=init;
+    auto t=v.initValue(cminsky().variableValues);
+    string r;
+    switch (t.dims.size())
+      {
+      case 0: return str(t.data[0]);
+      case 1: r="(";
+        for (size_t i=0; i<5 && i<t.data.size(); ++i)
+          {
+            if (i>0) r+=' ';
+            r+=str(t.data[i]);
+          }
+        if (t.data.size()>5)
+          r+="\\ldots";
+        return r+")";
+      default:
+        return "\\ldots"; //TODO can we represent this stuff reasonably?
+      }
+  }
+      
+
   ostream& VariableDAG::latex(ostream& o) const
   {
     if (type==constant)

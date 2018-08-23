@@ -311,9 +311,9 @@ SUITE(Derivative)
               if (constant)
                 {
                   if (op==OperationType::time)
-                    CHECK_EQUAL(1, constant->value);
+                    CHECK_EQUAL("1", constant->value);
                   else
-                    CHECK_EQUAL(0, constant->value);
+                    CHECK_EQUAL("0", constant->value);
                 }
             }
           catch (...) {} // ignore code that shouldn't be executed

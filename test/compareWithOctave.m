@@ -10,6 +10,10 @@ function h=heaviside(x)
   endif
 endfunction
 
+function i=iota(n)
+    i=[0:n-1];
+endfunction
+  
 # split input data into timestep vector and data to compare
 t=d(:,1);
 xc=d(:,2:size(d,2));

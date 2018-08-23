@@ -67,10 +67,17 @@ namespace MathDAG
 
   /// convert double to a LaTeX string representing that value
   string latex(double);
+  //  string latex(const TensorVal&);
+  /// convert an initialisation string into a matlab expression
+  string latexInit(const string&);
   /// wraps in \mathrm if nm has more than one letter - and also takes
   /// into account LaTeX subscript/superscripts
   string mathrm(const string& nm);
 
+  //  string matlab(const TensorVal&);
+  /// convert an initialisation string into a matlab expression
+  string matlabInit(const string&);
+  
   struct Node
   {
     /// algebraic heirarchy level, used for working out whether
@@ -144,11 +151,12 @@ namespace MathDAG
   // the presence of the result member in the base class means a ConstantDAG cannot be declared static
   struct ConstantDAG: public Node
   {
-    double value;
-    ConstantDAG(double value=0): value(value) {}
+    string value;
+    ConstantDAG(const string& value="0"): value(value.length()? value: "0") {}
+    ConstantDAG(double value): value(str(value)) {}
     int BODMASlevel() const  override {return 0;}
     int order(unsigned maxOrder) const  override {return 0;}
-    ostream& latex(ostream& o) const  override {return o<<MathDAG::latex(value);}
+    ostream& latex(ostream& o) const  override {return o<<value;}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
     VariableValue addEvalOps(EvalOpVector&, VariableValue*) override;
@@ -161,7 +169,7 @@ namespace MathDAG
     string valueId;
     Type type=undefined;
     string name;
-    double init=0;
+    string init="0";
     WeakNodePtr rhs;
     IntOp* intOp=0; /// reference to operation if this is
                                  /// an integral variable
@@ -201,7 +209,7 @@ namespace MathDAG
   {
     vector<vector<WeakNodePtr> > arguments;
     string name;
-    double init;
+    string init="0";
     OperationPtr state;
     OperationDAGBase(const string& name=""): 
       name(name) {}
@@ -369,7 +377,7 @@ namespace MathDAG
     template <class Expr> NodePtr derivative(const Expr& expr);
 
     /// useful constants to share
-    NodePtr zero{new ConstantDAG(0)}, one{new ConstantDAG(1)};
+    NodePtr zero{new ConstantDAG("0")}, one{new ConstantDAG("1")};
 
     /// render equations into a cairo context
     void renderEquations(ecolab::cairo::Surface&) const;
