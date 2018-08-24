@@ -332,6 +332,16 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0])); 
                 break;
+              case runningSum: case runningProduct:
+                {
+                  if (argIdx.empty() || argIdx[0].empty())
+                    throw error("input not wired");
+                  bool realloc=result->numElements() != argIdx[0][0].numElements();
+                  result->xVector=argIdx[0][0].xVector;
+                  if (realloc) result->allocValue();
+                  ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
+                }
+                break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 

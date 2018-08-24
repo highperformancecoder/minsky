@@ -946,7 +946,7 @@ namespace minsky
                   }
               }
               break;
-            case reduction:
+            case reduction: case scan:
               for (size_t i=0; i<from1.numElements(); ++i)
                 t->in1.push_back(i+from1.idx());
               break;
@@ -977,10 +977,22 @@ namespace minsky
   void ReductionEvalOp<T>::eval(double fv[], const double sv[])
   {
     fv[this->out]=init();
-    if (this->flow1)
-      for (auto i: this->in1) accum(fv[this->out], fv[i]);
-    else
-      for (auto i: this->in1) accum(fv[this->out], sv[i]);
+    const double* src=this->flow1? fv: sv;
+    for (auto i: this->in1)
+      accum(fv[this->out], src[i]);
+  }
+
+  template<OperationType::Type T>
+  void ScanEvalOp<T>::eval(double fv[], const double sv[])
+  {
+    size_t j=this->out;
+    double s=init();
+    const double* src=this->flow1? fv: sv;
+    for (auto i: this->in1)
+      {
+        accum(s, src[i]);
+        fv[j++]=s;
+      }
   }
 
 }

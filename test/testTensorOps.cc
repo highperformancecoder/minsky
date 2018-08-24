@@ -72,5 +72,24 @@ SUITE(TensorOps)
       all->eval();
       CHECK_EQUAL(0,to.value());
     }
+  
+  TEST(scan)
+    {
+      VariableValue from(VariableType::flow), to(VariableType::flow);
+      from.dims({5}); to.dims({5});
+      from.allocValue();
+      EvalOpPtr sum(OperationType::runningSum, to, from);
+      EvalOpPtr prod(OperationType::runningProduct, to, from);
+      for (auto i=from.begin(); i!=from.end(); ++i)
+        *i=2;
+      sum->eval();
+      CHECK_EQUAL(5,to.numElements());
+      for (size_t i=0; i<to.numElements(); ++i)
+        CHECK_EQUAL(2*(i+1),to.value(i));
+      prod->eval();
+      CHECK_EQUAL(5,to.numElements());
+      for (size_t i=0; i<to.numElements(); ++i)        
+        CHECK_EQUAL(pow(2,i+1),to.value(i));
+    }
 
 }

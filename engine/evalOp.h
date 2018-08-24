@@ -123,6 +123,10 @@ namespace minsky
     double evaluate(double in1=0, double in2=0) const override {return 0;}
     double d1(double x1=0, double x2=0) const override {return 0;}
     double d2(double x1=0, double x2=0) const override {return 0;}
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override {}
+    void deriv(double df[], const double ds[], 
+               const double sv[], const double fv[]) override {}
   };
 
   template <minsky::OperationType::Type T>
@@ -172,7 +176,27 @@ namespace minsky
   template <minsky::OperationType::Type T>
   struct ScanEvalOp: public TensorEvalOp<T>
   {
+    inline double init() const;
+    /// x op= y
+    inline void accum(double& x, double y) const;
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override;
+    void deriv(double df[], const double ds[], 
+               const double sv[], const double fv[]) override {}
   };
+
+  template<> inline
+  double ScanEvalOp<OperationType::runningSum>::init() const {return 0;}
+  template<> inline
+  void ScanEvalOp<OperationType::runningSum>::accum(double& x, double y) const
+  {x+=y;}
+
+  template<> inline
+  double ScanEvalOp<OperationType::runningProduct>::init() const {return 1;}
+  template<> inline
+  void ScanEvalOp<OperationType::runningProduct>::accum(double& x, double y) const
+  {x*=y;}
+
 
   
   /// represents the operation when evaluating the equations
@@ -198,7 +222,7 @@ namespace minsky
   
   template <> struct EvalOp<minsky::OperationType::runningSum>: public ScanEvalOp<OperationType::runningSum> {};
   template <> struct EvalOp<minsky::OperationType::runningProduct>: public ScanEvalOp<OperationType::runningProduct> {};
-  template <> struct EvalOp<minsky::OperationType::difference>: public ScanEvalOp<OperationType::difference> {};
+  template <> struct EvalOp<minsky::OperationType::difference>: public TensorEvalOp<OperationType::difference> {};
   template <> struct EvalOp<minsky::OperationType::innerProduct>: public TensorEvalOp<OperationType::innerProduct> {};
   template <> struct EvalOp<minsky::OperationType::outerProduct>: public TensorEvalOp<OperationType::outerProduct> {};
   template <> struct EvalOp<minsky::OperationType::index>: public TensorEvalOp<OperationType::index> {};
