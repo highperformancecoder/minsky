@@ -116,8 +116,6 @@ namespace minsky
                   break;
               }
 
-            if (r.dims.empty())
-              throw runtime_error("invalid dimension arguments in "+fc.name);
             size_t n=1;
             for (auto i: r.dims) n*=i;
             r.data.resize(n);
@@ -125,6 +123,26 @@ namespace minsky
             if (fn=="iota")
               for (size_t i=0; i<n; ++i)
                 r.data[i]=i;
+            else if (fn=="one")
+              for (size_t i=0; i<n; ++i)
+                r.data[i]=1;
+            else if (fn=="zero" || fn=="eye")
+              {
+                for (size_t i=0; i<n; ++i)
+                  r.data[i]=0;
+                if (fn=="eye")
+                  {
+                    // diagonal elements set to 1
+                    // find minimum dimension, and stride of diagonal elements
+                    size_t mind=n, stride=1;
+                    for (auto i: r.dims)
+                      mind=min(mind, size_t(i));
+                    for (size_t i=0; i<r.dims.size()-1; ++i)
+                      stride*=(r.dims[i]+1);
+                    for (size_t i=0; i<mind; ++i)
+                      r.data[stride*i]=1;
+                  }
+              }
             else if (fn=="rand")
               {
                 srand(time(nullptr));
