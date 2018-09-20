@@ -292,25 +292,27 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
     positionVariables();
-    cairo_save(cairo);
-    cairo_translate(cairo,-0.5*width(),-0.5*height());
+    {
+      CairoSave cs(cairo);
+      cairo_translate(cairo,-0.5*width()+leftMargin(),-0.5*height());
+      cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
 
-    cairo_translate(cairo, leftMargin(),0);
-    cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
-
-    svgRenderer.render(cairo);
-    if (selected)
       {
-        cairo_rectangle(cairo,0,0,svgRenderer.width(),svgRenderer.height());
-        cairo_clip(cairo);
-        drawSelected(cairo);
+        CairoSave cs(cairo); //following call mutates transformation matrix
+        svgRenderer.render(cairo); 
       }
 
-    cairo_restore(cairo);
+      if (selected)
+        {
+          cairo_rectangle(cairo,0,0,svgRenderer.width(),svgRenderer.height());
+          cairo_clip(cairo);
+          drawSelected(cairo);
+        }
+    }
 
     if (!table.title.empty())
       {
-        cairo_save(cairo);
+        CairoSave cs(cairo);
         cairo_move_to(cairo,0.5*leftMargin(),-0.5*bottomMargin()-0.25*height());
         cairo_select_font_face
           (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_NORMAL);
@@ -322,7 +324,6 @@ namespace minsky
               
         cairo_rel_move_to(cairo,-0.5*bbox.width,0.5*bbox.height);
         cairo_show_text(cairo,table.title.c_str());
-        cairo_restore(cairo);
       }
           
 
