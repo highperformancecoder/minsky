@@ -77,9 +77,6 @@ namespace minsky
     const string& filename() const {return m_filename;}
     void loadDataFromSlice(VariableValue&);
     void loadDataCubeFromVariable(const VariableValue&);
-    /// load the datacube, assuming that the Ravel is correctly
-    /// dimensioned for the variable
-    void loadDataCubeFromVariableNoStateChange(const VariableValue&) const;
     unsigned maxRank() const;
     unsigned rank() const;
     void setRank(unsigned);

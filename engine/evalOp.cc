@@ -497,7 +497,7 @@ namespace minsky
   {
     if (auto r=dynamic_cast<Ravel*>(state.get()))
       {
-        r->loadDataCubeFromVariableNoStateChange(in);
+        r->loadDataCubeFromVariable(in);
         r->loadDataFromSlice(out);
       }
   }

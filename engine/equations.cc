@@ -357,6 +357,9 @@ namespace MathDAG
                       {
                         if (r->rank()==0) // initialise rank to that of input
                           r->setRank(argIdx[0][0].dims().size());
+                        // process ravel to dimension the result
+                        // variable correctly (data may be bogus at
+                        // this time)
                         r->loadDataCubeFromVariable(argIdx[0][0]);
                         r->loadDataFromSlice(*result);
                         ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));

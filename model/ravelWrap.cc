@@ -436,12 +436,6 @@ namespace minsky
       }
   }
 
-  
-  void Ravel::loadDataCubeFromVariableNoStateChange(const VariableValue& v) const
-  {
-    if (ravel) ravelDC_loadData(dataCube, ravel, v.begin());
-  }
-  
   unsigned Ravel::maxRank() const
   {
     if (ravel) return ravel_numHandles(ravel);
