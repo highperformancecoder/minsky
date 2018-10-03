@@ -286,6 +286,7 @@ namespace minsky
   {
     if (ravel)
       ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor));
+    bb.update(*this);
   }
   
   ClickType::Type Ravel::clickType(float xx, float yy)
