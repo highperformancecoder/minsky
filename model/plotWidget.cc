@@ -388,11 +388,10 @@ namespace minsky
               x=&xdefault[0];
             }
           
-          //          setPen(pen, x, yv.begin(), d[0]);
           // higher rank y objects treated as multiple y vectors to plot
           for (auto j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
             {
-              setPen(extraPen++, x, yv.begin()+j, d[0]);
+              setPen(extraPen, x, yv.begin()+j, d[0]);
               string label;
               size_t stride=d[0];
               for (size_t i=1; i<yv.xVector.size(); ++i)
@@ -401,6 +400,7 @@ namespace minsky
                   stride*=d[i];
                 }
               labelPen(extraPen,label);
+              extraPen++;
             }
         }
     setMinMax();
