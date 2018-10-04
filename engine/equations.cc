@@ -332,7 +332,7 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0])); 
                 break;
-              case runningSum: case runningProduct:
+              case runningSum: case runningProduct: case difference:
                 {
                   if (argIdx.empty() || argIdx[0].empty())
                     throw error("input not wired");
