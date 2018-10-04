@@ -32,6 +32,11 @@ proc deiconifyPltWindowOptions {} {
         entry  .pltWindowOptions.yticks.val -width 20
         pack .pltWindowOptions.yticks.label .pltWindowOptions.yticks.val  -side left
 
+        frame .pltWindowOptions.xtickAngle
+        label .pltWindowOptions.xtickAngle.label -text "x ticks angle"
+        entry  .pltWindowOptions.xtickAngle.val -width 20
+        pack .pltWindowOptions.xtickAngle.label .pltWindowOptions.xtickAngle.val  -side left
+
         frame .pltWindowOptions.plotType
         label .pltWindowOptions.plotType.label -text "Plot type"
         ttk::combobox  .pltWindowOptions.plotType.val -width 20 -state readonly -textvariable plotWindowOptions(plotType) -value {line bar}
@@ -96,7 +101,7 @@ proc deiconifyPltWindowOptions {} {
         pack .pltWindowOptions.buttonBar.ok .pltWindowOptions.buttonBar.cancel -side left
         pack .pltWindowOptions.buttonBar -side bottom
 
-        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.grid .pltWindowOptions.legend .pltWindowOptions.logscale
+        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.xtickAngle .pltWindowOptions.grid .pltWindowOptions.legend .pltWindowOptions.logscale
     } else {
         wm deiconify .pltWindowOptions
     }
@@ -114,6 +119,7 @@ proc setPlotOptions {plot} {
     $plot.plotType $plotWindowOptions(plotType)
     $plot.nxTicks [.pltWindowOptions.xticks.val get]
     $plot.nyTicks [.pltWindowOptions.yticks.val get]
+    $plot.xtickAngle [.pltWindowOptions.xtickAngle.val get]
     $plot.title [.pltWindowOptions.title.val get]
     $plot.xlabel [.pltWindowOptions.xaxislabel.val get]
     $plot.ylabel [.pltWindowOptions.yaxislabel.val get]
@@ -143,6 +149,8 @@ proc doPlotOptions {plot} {
     .pltWindowOptions.xticks.val insert 0 [$plot.nxTicks]
     .pltWindowOptions.yticks.val delete 0 end
     .pltWindowOptions.yticks.val insert 0 [$plot.nyTicks]
+    .pltWindowOptions.xtickAngle.val delete 0 end
+    .pltWindowOptions.xtickAngle.val insert 0 [$plot.xtickAngle]
     .pltWindowOptions.title.val delete 0 end
     .pltWindowOptions.title.val insert 0 [$plot.title]
     .pltWindowOptions.xaxislabel.val delete 0 end

@@ -412,6 +412,9 @@ namespace schema2
         if (y.xlabel) x1->xlabel=*y.xlabel;
         if (y.ylabel) x1->ylabel=*y.ylabel;
         if (y.y1label) x1->y1label=*y.y1label;
+        if (y.nxTicks) x1->nxTicks=*y.nxTicks;
+        if (y.nyTicks) x1->nyTicks=*y.nyTicks;
+        if (y.xtickAngle) x1->xtickAngle=*y.xtickAngle;
         if (y.legend)
           {
             x1->legend=true;
