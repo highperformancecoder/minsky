@@ -222,7 +222,13 @@ namespace minsky
   
   template <> struct EvalOp<minsky::OperationType::runningSum>: public ScanEvalOp<OperationType::runningSum> {};
   template <> struct EvalOp<minsky::OperationType::runningProduct>: public ScanEvalOp<OperationType::runningProduct> {};
-  template <> struct EvalOp<minsky::OperationType::difference>: public TensorEvalOp<OperationType::difference> {};
+
+  template <> struct EvalOp<minsky::OperationType::difference>: public TensorEvalOp<OperationType::difference>
+  {
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override;
+  };
+
   template <> struct EvalOp<minsky::OperationType::innerProduct>: public TensorEvalOp<OperationType::innerProduct> {};
   template <> struct EvalOp<minsky::OperationType::outerProduct>: public TensorEvalOp<OperationType::outerProduct> {};
   template <> struct EvalOp<minsky::OperationType::index>: public TensorEvalOp<OperationType::index> {};

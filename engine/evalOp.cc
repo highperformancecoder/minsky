@@ -995,4 +995,13 @@ namespace minsky
       }
   }
 
+  void EvalOp<minsky::OperationType::difference>::eval
+  (double fv[], const double sv[])
+  {
+    const double* src=flow1? fv: sv;
+    for (size_t i=1; i<in1.size(); ++i)
+      fv[out+i-1]=src[in1[i]]-src[in1[i-1]];
+  }
+  
+  
 }
