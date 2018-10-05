@@ -137,7 +137,7 @@ namespace schema2
     Optional<Plot::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
-    Optional<double> xtickAngle;
+    Optional<double> xtickAngle, exp_threshold;
     std::shared_ptr<ecolab::Plot::Side> legend;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
@@ -162,6 +162,7 @@ namespace schema2
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
       nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
+      exp_threshold(p.exp_threshold),
       legend(p.legend? new ecolab::Plot::Side(p.legendSide): nullptr) {}
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 

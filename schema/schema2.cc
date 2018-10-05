@@ -415,6 +415,7 @@ namespace schema2
         if (y.nxTicks) x1->nxTicks=*y.nxTicks;
         if (y.nyTicks) x1->nyTicks=*y.nyTicks;
         if (y.xtickAngle) x1->xtickAngle=*y.xtickAngle;
+        if (y.exp_threshold) x1->exp_threshold=*y.exp_threshold;
         if (y.legend)
           {
             x1->legend=true;

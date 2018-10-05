@@ -37,6 +37,11 @@ proc deiconifyPltWindowOptions {} {
         entry  .pltWindowOptions.xtickAngle.val -width 20
         pack .pltWindowOptions.xtickAngle.label .pltWindowOptions.xtickAngle.val  -side left
 
+        frame .pltWindowOptions.exp_threshold
+        label .pltWindowOptions.exp_threshold.label -text "exp threshold"
+        entry  .pltWindowOptions.exp_threshold.val -width 20
+        pack .pltWindowOptions.exp_threshold.label .pltWindowOptions.exp_threshold.val  -side left
+
         frame .pltWindowOptions.plotType
         label .pltWindowOptions.plotType.label -text "Plot type"
         ttk::combobox  .pltWindowOptions.plotType.val -width 20 -state readonly -textvariable plotWindowOptions(plotType) -value {line bar}
@@ -101,7 +106,7 @@ proc deiconifyPltWindowOptions {} {
         pack .pltWindowOptions.buttonBar.ok .pltWindowOptions.buttonBar.cancel -side left
         pack .pltWindowOptions.buttonBar -side bottom
 
-        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.xtickAngle .pltWindowOptions.grid .pltWindowOptions.legend .pltWindowOptions.logscale
+        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.xtickAngle .pltWindowOptions.exp_threshold .pltWindowOptions.grid .pltWindowOptions.legend .pltWindowOptions.logscale
     } else {
         wm deiconify .pltWindowOptions
     }
@@ -120,6 +125,7 @@ proc setPlotOptions {plot} {
     $plot.nxTicks [.pltWindowOptions.xticks.val get]
     $plot.nyTicks [.pltWindowOptions.yticks.val get]
     $plot.xtickAngle [.pltWindowOptions.xtickAngle.val get]
+    $plot.exp_threshold [.pltWindowOptions.exp_threshold.val get]
     $plot.title [.pltWindowOptions.title.val get]
     $plot.xlabel [.pltWindowOptions.xaxislabel.val get]
     $plot.ylabel [.pltWindowOptions.yaxislabel.val get]
@@ -151,6 +157,8 @@ proc doPlotOptions {plot} {
     .pltWindowOptions.yticks.val insert 0 [$plot.nyTicks]
     .pltWindowOptions.xtickAngle.val delete 0 end
     .pltWindowOptions.xtickAngle.val insert 0 [$plot.xtickAngle]
+    .pltWindowOptions.exp_threshold.val delete 0 end
+    .pltWindowOptions.exp_threshold.val insert 0 [$plot.exp_threshold]
     .pltWindowOptions.title.val delete 0 end
     .pltWindowOptions.title.val insert 0 [$plot.title]
     .pltWindowOptions.xaxislabel.val delete 0 end
