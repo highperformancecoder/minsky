@@ -73,62 +73,13 @@ namespace minsky
     {return dlopen((lib+".so").c_str(),RTLD_NOW);}
 #endif
   
-    template <class F>
-    void asgFnPointer(F& f, libHandle lib, const char* name)
-    {
-      f=(F)dlsym(lib,name);
-      if (!f) throw InvalidSym(name);
-    }
-#define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
-
-    const char* (*ravel_lastErr)()=nullptr;
-    const char* (*ravel_version)()=nullptr;
-    Ravel::RavelImpl* (*ravel_new)(size_t rank)=nullptr;
-    void (*ravel_delete)(Ravel::RavelImpl* ravel)=nullptr;
-    void (*ravel_clear)(Ravel::RavelImpl* ravel)=nullptr;
-    void (*ravel_render)(Ravel::RavelImpl* ravel, CAPIRenderer*)=nullptr;
-    void (*ravel_onMouseDown)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
-    void (*ravel_onMouseUp)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
-    bool (*ravel_onMouseMotion)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
-    bool (*ravel_onMouseOver)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
-    void (*ravel_onMouseLeave)(Ravel::RavelImpl* ravel)=nullptr;
-    void (*ravel_rescale)(Ravel::RavelImpl* ravel, double radius)=nullptr;
-    double (*ravel_radius)(Ravel::RavelImpl* ravel)=nullptr;
-    size_t (*ravel_rank)(Ravel::RavelImpl* ravel)=nullptr;
-    const char* (*ravel_description)(Ravel::RavelImpl* ravel)=nullptr;
-    const char* (*ravel_explain)(Ravel::RavelImpl* ravel, double x, double y)=nullptr;
-    void (*ravel_outputHandleIds)(Ravel::RavelImpl* ravel, size_t ids[])=nullptr;
-    void (*ravel_setOutputHandleIds)(Ravel::RavelImpl* ravel, size_t rank, size_t ids[])=nullptr;
-    void (*ravel_addHandle)(Ravel::RavelImpl* ravel, const char*, size_t, const char* labels[])=nullptr;
-    unsigned (*ravel_numHandles)(Ravel::RavelImpl* ravel)=nullptr;
-    int (*ravel_selectedHandle)(Ravel::RavelImpl* ravel)=nullptr;
-    const char* (*ravel_handleDescription)(Ravel::RavelImpl* ravel, int handle)=nullptr;
-    void (*ravel_setHandleDescription)(Ravel::RavelImpl* ravel, int handle, const char* description)=nullptr;
-    size_t (*ravel_numSliceLabels)(Ravel::RavelImpl* ravel, size_t axis)=nullptr;
-    void (*ravel_sliceLabels)(Ravel::RavelImpl* ravel, size_t axis, const char* labels[])=nullptr;
-    void (*ravel_displayFilterCaliper)(Ravel::RavelImpl* ravel, size_t axis, bool display)=nullptr;
-    void (*ravel_orderLabels)(Ravel::RavelImpl* ravel, size_t axis,
-                              RavelState::HandleState::HandleSort order)=nullptr;
-    void (*ravel_applyCustomPermutation)(Ravel::RavelImpl* ravel, size_t axis, size_t numIndices, const size_t* indices)=nullptr;
-    void (*ravel_currentPermutation)(Ravel::RavelImpl* ravel, size_t axis, size_t numIndices, size_t* indices)=nullptr;
-     const char* (*ravel_toXML)(Ravel::RavelImpl* ravel)=nullptr;
-    int (*ravel_fromXML)(Ravel::RavelImpl* ravel, const char*)=nullptr;
-    void (*ravel_getHandleState)(const Ravel::RavelImpl* ravel, size_t handle, RavelState::HandleState* handleState)=nullptr;
-    void (*ravel_setHandleState)(Ravel::RavelImpl* ravel, size_t handle, const RavelState::HandleState* handleState)=nullptr;
-    void (*ravel_adjustSlicer)(Ravel::RavelImpl* ravel, int)=nullptr;
-
-    Ravel::Ravel::DataCube* (*ravelDC_new)()=nullptr;
-    void (*ravelDC_delete)(Ravel::DataCube*)=nullptr;
-    bool (*ravelDC_initRavel)(Ravel::DataCube* dc,Ravel::RavelImpl* ravel)=nullptr;
-    bool (*ravelDC_openFile)(Ravel::DataCube* dc, const char* fileName, DataSpec spec)=nullptr;
-    void (*ravelDC_loadData)(Ravel::DataCube*, const Ravel::RavelImpl*, const double*)=nullptr;
-    int (*ravelDC_hyperSlice)(Ravel::DataCube*, Ravel::RavelImpl*, size_t dims[], double**)=nullptr;
+    //#define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
 
     struct RavelLib
     {
       libHandle lib;
       string errorMsg;
-      string versionFound;
+      string versionFound="unavailable";
       RavelLib(): lib(loadLibrary("libravel"))
       {
         if (!lib)
@@ -137,90 +88,168 @@ namespace minsky
             return;
           }
       
-        auto version=(int (*)())dlsym(lib,"ravel_capi_version");
-        if (!version || ravelVersion!=version())
+        auto version=(const char* (*)())dlsym(lib,"ravel_version");
+        auto capi_version=(int (*)())dlsym(lib,"ravel_capi_version");
+        if (!version || !capi_version || ravelVersion!=capi_version())
           { // incompatible API
             errorMsg="Incompatible libravel dynamic library found";
-            try
-              {
-                ASG_FN_PTR(ravel_version,lib);
-                versionFound=ravel_version();
-              }
-            catch (...) {}
+            if (version) versionFound=version();
             dlclose(lib);
             lib=nullptr;
           }
-
-        if (lib)
-          try
-            {
-              ASG_FN_PTR(ravel_version,lib);
-              versionFound=ravel_version();
-              ASG_FN_PTR(ravel_lastErr,lib);
-              ASG_FN_PTR(ravel_new,lib);
-              ASG_FN_PTR(ravel_delete,lib);
-              ASG_FN_PTR(ravel_clear,lib);
-              ASG_FN_PTR(ravel_render,lib);
-              ASG_FN_PTR(ravel_onMouseDown,lib);
-              ASG_FN_PTR(ravel_onMouseUp,lib);
-              ASG_FN_PTR(ravel_onMouseMotion,lib);
-              ASG_FN_PTR(ravel_onMouseOver,lib);
-              ASG_FN_PTR(ravel_onMouseLeave,lib);
-              ASG_FN_PTR(ravel_rescale,lib);
-              ASG_FN_PTR(ravel_radius,lib);
-              ASG_FN_PTR(ravel_rank,lib);
-              ASG_FN_PTR(ravel_description,lib);
-              ASG_FN_PTR(ravel_explain,lib);
-              ASG_FN_PTR(ravel_selectedHandle,lib);
-              ASG_FN_PTR(ravel_outputHandleIds,lib);
-              ASG_FN_PTR(ravel_setOutputHandleIds,lib);
-              ASG_FN_PTR(ravel_addHandle,lib);
-              ASG_FN_PTR(ravel_numHandles,lib);
-              ASG_FN_PTR(ravel_handleDescription,lib);
-              ASG_FN_PTR(ravel_setHandleDescription,lib);
-              ASG_FN_PTR(ravel_numSliceLabels,lib);
-              ASG_FN_PTR(ravel_sliceLabels,lib);
-              ASG_FN_PTR(ravel_displayFilterCaliper,lib);
-              ASG_FN_PTR(ravel_orderLabels,lib);
-              ASG_FN_PTR(ravel_applyCustomPermutation,lib);
-              ASG_FN_PTR(ravel_currentPermutation,lib);
-              ASG_FN_PTR(ravel_toXML,lib);
-              ASG_FN_PTR(ravel_fromXML,lib);
-              ASG_FN_PTR(ravel_getHandleState,lib);
-              ASG_FN_PTR(ravel_setHandleState,lib);
-              ASG_FN_PTR(ravel_adjustSlicer,lib);
-              ASG_FN_PTR(ravelDC_new,lib);
-              ASG_FN_PTR(ravelDC_delete,lib);
-              ASG_FN_PTR(ravelDC_initRavel,lib);
-              ASG_FN_PTR(ravelDC_openFile,lib);
-              ASG_FN_PTR(ravelDC_loadData,lib);
-              ASG_FN_PTR(ravelDC_hyperSlice,lib);
-            }
-          catch (const InvalidSym& err)
-            {
-              errorMsg=dlerror();
-              errorMsg+="\nLooking for "+err.symbol;
-              errorMsg+="\nProbably libravel dynamic library is too old";
-              dlclose(lib);
-              lib=nullptr;
-            }
+        versionFound=version();
       }
       ~RavelLib() {
         if (lib)
           dlclose(lib);
         lib=nullptr;
       }
+      template <class F>
+      void asgFnPointer(F& f, const char* name)
+      {
+        if (lib)
+          {
+            f=(F)dlsym(lib,name);
+            if (!f)
+              {
+                errorMsg=dlerror();
+                errorMsg+="\nLooking for ";
+                errorMsg+=name;
+                errorMsg+="\nProbably libravel dynamic library is too old";
+                dlclose(lib);
+                lib=nullptr;
+              }
+          }
+      }
     };
 
     RavelLib ravelLib;
+
+    template <class... T> struct RavelFn;
+    
+    template <class R>
+    struct RavelFn<R>
+    {
+      R (*f)()=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      R operator()() {return f();}
+    };
+    template <>
+    struct RavelFn<void>
+    {
+      void (*f)()=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      void operator()() {f();}
+    };
+    template <class R, class A>
+    struct RavelFn<R,A>
+    {
+      R (*f)(A)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      R operator()(A a) {return f(a);}
+    };
+    template <class A>
+    struct RavelFn<void,A>
+    {
+      void (*f)(A)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      void operator()(A a) {f(a);}
+    };
+    template <class R, class A0, class A1>
+    struct RavelFn<R,A0,A1>
+    {
+      R (*f)(A0,A1)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      R operator()(A0 a0, A1 a1) {return f(a0,a1);}
+    };
+    template <class A0, class A1>
+    struct RavelFn<void,A0,A1>
+    {
+      void (*f)(A0,A1)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      void operator()(A0 a0, A1 a1) {f(a0,a1);}
+    };
+    template <class R, class A0, class A1, class A2>
+    struct RavelFn<R,A0,A1,A2>
+    {
+      R (*f)(A0,A1,A2)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      R operator()(A0 a0, A1 a1,A2 a2) {return f(a0,a1,a2);}
+    };
+    template <class A0, class A1, class A2>
+    struct RavelFn<void,A0,A1,A2>
+    {
+      void (*f)(A0,A1,A2)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      void operator()(A0 a0, A1 a1, A2 a2) {f(a0,a1,a2);}
+    };
+    template <class R, class A0, class A1, class A2, class A3>
+    struct RavelFn<R,A0,A1,A2,A3>
+    {
+      R (*f)(A0,A1,A2,A3)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      R operator()(A0 a0, A1 a1,A2 a2,A3 a3) {return f(a0,a1,a2,a3);}
+    };
+    template <class A0, class A1, class A2,class A3>
+    struct RavelFn<void,A0,A1,A2,A3>
+    {
+      void (*f)(A0,A1,A2,A3)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      void operator()(A0 a0, A1 a1, A2 a2,A3 a3) {f(a0,a1,a2,a3);}
+    };
+    
+#define DEFFN(f,...) RavelFn<__VA_ARGS__> f(#f,ravelLib.lib);
+    
+    DEFFN(ravel_lastErr, const char*);
+    DEFFN(ravel_version, const char*);
+    DEFFN(ravel_new, Ravel::RavelImpl*,size_t);
+    DEFFN(ravel_delete, void, Ravel::RavelImpl*);
+    DEFFN(ravel_clear, void, Ravel::RavelImpl*);
+    DEFFN(ravel_render, void, Ravel::RavelImpl*, CAPIRenderer*);
+    DEFFN(ravel_onMouseDown, void, Ravel::RavelImpl*, double, double);
+    DEFFN(ravel_onMouseUp,void, Ravel::RavelImpl*, double, double);
+    DEFFN(ravel_onMouseMotion, bool, Ravel::RavelImpl*, double, double);
+    DEFFN(ravel_onMouseOver, bool, Ravel::RavelImpl*, double, double);
+    DEFFN(ravel_onMouseLeave, void, Ravel::RavelImpl*);
+    DEFFN(ravel_rescale, void, Ravel::RavelImpl*, double);
+    DEFFN(ravel_radius, double, Ravel::RavelImpl*);
+    DEFFN(ravel_rank, size_t, Ravel::RavelImpl*);
+    DEFFN(ravel_description, const char*, Ravel::RavelImpl*);
+    DEFFN(ravel_explain, const char*, Ravel::RavelImpl*, double, double);
+    DEFFN(ravel_outputHandleIds, void, Ravel::RavelImpl*, size_t*);
+    DEFFN(ravel_setOutputHandleIds, void, Ravel::RavelImpl*, size_t, size_t*);
+    DEFFN(ravel_addHandle, void, Ravel::RavelImpl*, const char*, size_t, const char**);
+    DEFFN(ravel_numHandles, unsigned, Ravel::RavelImpl*);
+    DEFFN(ravel_selectedHandle, int, Ravel::RavelImpl*);
+    DEFFN(ravel_handleDescription, const char*, Ravel::RavelImpl*, int);
+    DEFFN(ravel_setHandleDescription, void, Ravel::RavelImpl*, int, const char*);
+    DEFFN(ravel_numSliceLabels, size_t, Ravel::RavelImpl*, size_t);
+    DEFFN(ravel_sliceLabels, void, Ravel::RavelImpl*, size_t, const char**);
+    DEFFN(ravel_displayFilterCaliper, void, Ravel::RavelImpl*, size_t, bool);
+    DEFFN(ravel_orderLabels, void, Ravel::RavelImpl*, size_t,
+                              RavelState::HandleState::HandleSort);
+    DEFFN(ravel_applyCustomPermutation, void, Ravel::RavelImpl*, size_t, size_t, const size_t*);
+    DEFFN(ravel_currentPermutation, void, Ravel::RavelImpl*, size_t, size_t, size_t*);
+    DEFFN(ravel_toXML, const char*, Ravel::RavelImpl*);
+    DEFFN(ravel_fromXML, int, Ravel::RavelImpl*, const char*);
+    DEFFN(ravel_getHandleState, void, const Ravel::RavelImpl*, size_t, RavelState::HandleState*);
+    DEFFN(ravel_setHandleState, void, Ravel::RavelImpl*, size_t, const RavelState::HandleState*);
+    DEFFN(ravel_adjustSlicer, void, Ravel::RavelImpl*, int);
+
+    DEFFN(ravelDC_new, Ravel::Ravel::DataCube*);
+    DEFFN(ravelDC_delete, void, Ravel::DataCube*);
+    DEFFN(ravelDC_initRavel, bool, Ravel::DataCube*, Ravel::RavelImpl*);
+    DEFFN(ravelDC_openFile, bool, Ravel::DataCube*, const char*, DataSpec);
+    DEFFN(ravelDC_loadData, void, Ravel::DataCube*, const Ravel::RavelImpl*, const double*);
+    DEFFN(ravelDC_hyperSlice, int, Ravel::DataCube*, Ravel::RavelImpl*, size_t*, double**);
 
     inline double sqr(double x) {return x*x;} 
   }
 
   bool ravelAvailable() {return ravelLib.lib;}
 
-  const char* Ravel::ravelVersion() const
-  {return ravel_version? ravel_version(): "Ravel unavailable";}
+  string Ravel::ravelVersion() const
+  {return ravelLib.versionFound;}
 
   const char* Ravel::lastErr() const {
     if (ravelAvailable())
@@ -705,10 +734,9 @@ namespace minsky
     
   string Minsky::ravelVersion() const
   {
-    if (ravelLib.versionFound.length())
-      return ravelLib.versionFound+(ravelLib.lib?"":" but incompatible");
-    else
-      return "unavailable";
+    return ravelLib.versionFound+
+      ((ravelLib.lib || ravelLib.versionFound=="unavailable")?
+        "":" but incompatible");
   }
  
 }

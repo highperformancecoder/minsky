@@ -63,7 +63,7 @@ namespace minsky
     /// local override of axis dimensionality
     Dimensions axisDimensions;
     
-    const char* ravelVersion() const; ///< Ravel version string
+    string ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
     void resize(const LassoBox&) override;
