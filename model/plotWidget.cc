@@ -243,8 +243,8 @@ namespace minsky
 
   void PlotWidget::resize(const LassoBox& x)
   {
-    width=abs(x.x1-x.x0);
-    height=abs(x.y1-x.y0);
+    width=abs(x.x1-x.x0)/zoomFactor;
+    height=abs(x.y1-x.y0)/zoomFactor;
     bb.update(*this);
   }
 
