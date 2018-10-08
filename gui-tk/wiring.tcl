@@ -693,6 +693,7 @@ proc setupPickMenu {} {
             .wiring.context.axisMenu.pick.select.lb yview}
         listbox .wiring.context.axisMenu.pick.select.lb -listvariable labelPicked \
             -selectmode extended -selectforeground blue \
+            -width 35 \
             -yscrollcommand {.wiring.context.axisMenu.pick.select.vscroll set} 
         pack .wiring.context.axisMenu.pick.select.lb -fill both  -expand y -side left
         pack .wiring.context.axisMenu.pick.select.vscroll -fill y -expand y -side left
@@ -722,6 +723,7 @@ proc setupPickMenu {} {
         .wiring.context.axisMenu.pick.select.lb selection set $idx($i)
     }
     wm transient .wiring.context.axisMenu.pick
+    wm geometry .wiring.context.axisMenu.pick +[winfo pointerx .]+[winfo pointery .]
     tkwait visibility .wiring.context.axisMenu.pick
     grab set .wiring.context.axisMenu.pick
 }
