@@ -196,7 +196,7 @@ tk appname [file rootname [file tail $argv(0)]]
 wm title . "Minsky: $fname" 
 setBackgroundColour $backgroundColour
 tk_focusFollowsMouse
-proc setCursor {cur} {. configure -cursor $cur; update}
+proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
@@ -1050,7 +1050,6 @@ proc openNamedFile {ofname} {
     doPushHistory 0
     pushFlags
     recentreCanvas
-    
 
    .controls.simSpeed set [simulationDelay]
     # setting simulationDelay causes the edited (dirty) flag to be set
