@@ -950,6 +950,8 @@ namespace minsky
               for (size_t i=0; i<from1.numElements(); ++i)
                 t->in1.push_back(i+from1.idx());
               break;
+            case binop: assert(false); break; // shouldn't be here
+            case tensor: break; // TODO
             }
           break;
         }

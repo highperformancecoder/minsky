@@ -389,7 +389,7 @@ namespace minsky
             }
           
           // higher rank y objects treated as multiple y vectors to plot
-          for (auto j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
+          for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
             {
               setPen(extraPen, x, yv.begin()+j, d[0]);
               string label;
