@@ -517,7 +517,7 @@ proc renameVariableInstances {} {
 
 proc findDefinition {} {
     if [canvas.findVariableDefinition] {
-        canvas.indicateItem
+        canvas.itemIndicator 1
     } else {
         tk_messageBox -message "Definition not found"
     }
