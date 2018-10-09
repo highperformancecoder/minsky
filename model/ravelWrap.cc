@@ -298,7 +298,15 @@ namespace minsky
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
     cairo_stroke_preserve(cairo);
+    if (onBorder)
+      { // shadow the border when mouse is over it
+        cairo::CairoSave cs(cairo);
+        cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
+        cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
+        cairo_fill_preserve(cairo);
+      }
     cairo_clip(cairo);
+
     {
       cairo::CairoSave cs(cairo);
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
@@ -346,7 +354,11 @@ namespace minsky
   bool Ravel::onMouseMotion(float xx, float yy)
   {if (ravel) return ravel_onMouseMotion(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
   bool Ravel::onMouseOver(float xx, float yy)
-  {if (ravel) return ravel_onMouseOver(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
+  {
+    if (ravel)
+      return ravel_onMouseOver(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
+    return false;
+  }
   void Ravel::onMouseLeave()
   {if (ravel) ravel_onMouseLeave(ravel);}
 

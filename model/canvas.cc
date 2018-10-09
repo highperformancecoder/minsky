@@ -247,6 +247,7 @@ namespace minsky
                                      if (auto r=dynamic_cast<Ravel*>(i->get()))
                                        {
                                          r->mouseFocus=true;
+                                         r->onBorder = false;
                                          if (r->onMouseOver(x,y))
                                            requestRedraw();
                                        }
@@ -261,6 +262,7 @@ namespace minsky
                                        }
                                      if (auto r=dynamic_cast<Ravel*>(i->get()))
                                        {
+                                         r->onBorder = ct==ClickType::onItem;
                                          r->onMouseLeave();
                                          requestRedraw();
                                        }

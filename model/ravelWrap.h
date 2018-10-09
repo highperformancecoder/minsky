@@ -51,7 +51,7 @@ namespace minsky
 
     std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
     void pickSliceLabelsImpl(int axis, const std::vector<string>& pick);
- 
+
   public:
     Ravel();
     ~Ravel();
@@ -62,6 +62,9 @@ namespace minsky
 
     /// local override of axis dimensionality
     Dimensions axisDimensions;
+    
+    /// true to indicate mouse hovering over border
+    bool onBorder=false; 
     
     string ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;
