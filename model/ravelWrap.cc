@@ -361,7 +361,7 @@ namespace minsky
           throw error(ravel_lastErr());
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           {
-            ravel_displayFilterCaliper(ravel,i,true);
+            ravel_displayFilterCaliper(ravel,i,false);
             ravel_orderLabels(ravel,i,HandleState::forward);
           }
         setRank(ravel_numHandles(ravel));
@@ -446,20 +446,22 @@ namespace minsky
               sl.push_back(j.c_str());
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
             size_t h=ravel_numHandles(ravel)-1;
-            ravel_displayFilterCaliper(ravel,h,true);
+            ravel_displayFilterCaliper(ravel,h,false);
             // set forward sort order
             ravel_orderLabels(ravel,h,HandleState::forward);
           }
-        setRank(v.xVector.size());
+        if (state.empty())
+          setRank(v.xVector.size());
 #ifndef NDEBUG
-        {
-          auto d=v.dims();
-          assert(d.size()==ravel_rank(ravel));
-          vector<size_t> outputHandles(d.size());
-          ravel_outputHandleIds(ravel,&outputHandles[0]);
-          for (size_t i=0; i<d.size(); ++i)
-            assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
-        }
+        if (state.empty())
+          {
+            auto d=v.dims();
+            assert(d.size()==ravel_rank(ravel));
+            vector<size_t> outputHandles(d.size());
+            ravel_outputHandleIds(ravel,&outputHandles[0]);
+            for (size_t i=0; i<d.size(); ++i)
+              assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
+          }
 #endif
         ravelDC_loadData(dataCube, ravel, v.begin());
         applyState(state);

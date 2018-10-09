@@ -45,8 +45,6 @@ namespace minsky
   
   class Canvas: public ecolab::CairoSurface
   {
-    // for drawing error indicators on the canvas
-    bool itemIndicator=false;
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
     void reportDrawTime(double) override;
@@ -97,6 +95,8 @@ namespace minsky
     double termX,termY; ///< terminal of wire when extending
     float moveOffsX, moveOffsY;
     ClickType::Type clickType;
+    /// for drawing error indicators on the canvas
+    bool itemIndicator=false;
     
     /// lasso mode support
     struct LassoMode {enum type  {none, lasso, itemResize};};
@@ -211,7 +211,7 @@ namespace minsky
     bool findVariableDefinition();
 
     /// draw a red circle around item
-    void indicateItem() {itemIndicator=true;}
+    //    void indicateItem() {itemIndicator=true;}
 
     /// redraw whole model
     void redraw(int x0, int y0, int width, int height) override;

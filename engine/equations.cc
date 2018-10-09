@@ -271,8 +271,6 @@ namespace MathDAG
           result=r;
         else
           result=&tmpResult;
-        //          result.allocValue();
-
 
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
@@ -345,8 +343,6 @@ namespace MathDAG
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 
-//                else if (auto d=dynamic_cast<DataOp*>(state.get()))
-//                  d->initOutputVariableValue(*result); // input not wired,
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
                 break;
@@ -355,8 +351,6 @@ namespace MathDAG
                   {
                     if (argIdx.size()>0 && argIdx[0].size()==1)
                       {
-                        if (r->rank()==0) // initialise rank to that of input
-                          r->setRank(argIdx[0][0].dims().size());
                         // process ravel to dimension the result
                         // variable correctly (data may be bogus at
                         // this time)

@@ -645,6 +645,7 @@ namespace minsky
         if (RKThreadRunning) return;
       }
     running=false;
+    canvas.itemIndicator=false;
     BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     constructEquations();
@@ -1091,7 +1092,7 @@ namespace minsky
     if (op.visible())
       {
         canvas.item=canvas.model->findItem(op);
-        canvas.indicateItem();
+        canvas.itemIndicator=true;
         canvas.requestRedraw();
       }
     else if (auto g=op.group.lock())
@@ -1100,7 +1101,7 @@ namespace minsky
         if (g && g->visible())
           {
             canvas.item=g;
-            canvas.indicateItem();
+            canvas.itemIndicator=true;
             canvas.requestRedraw();
           }
       }
