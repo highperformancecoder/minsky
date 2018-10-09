@@ -58,8 +58,10 @@ proc deiconifyPltWindowOptions {} {
         frame .pltWindowOptions.logscale
         label .pltWindowOptions.logscale.x -text "x log scale"
         label .pltWindowOptions.logscale.y -text "y log scale"
+        label .pltWindowOptions.logscale.ypercent -text "y% scale"
         checkbutton .pltWindowOptions.logscale.xv -variable plotWindowOptions(xlog)
         checkbutton .pltWindowOptions.logscale.yv -variable plotWindowOptions(ylog)
+        checkbutton .pltWindowOptions.logscale.ypv -variable plotWindowOptions(ypercent)
 
         frame .pltWindowOptions.legend
         label .pltWindowOptions.legend.label -text "Legend:"
@@ -95,7 +97,7 @@ proc deiconifyPltWindowOptions {} {
 
         pack .pltWindowOptions.grid.label  .pltWindowOptions.grid.val  .pltWindowOptions.grid.sublabel  .pltWindowOptions.grid.subval  -side left
 
-        pack .pltWindowOptions.logscale.x  .pltWindowOptions.logscale.xv  .pltWindowOptions.logscale.y  .pltWindowOptions.logscale.yv  -side left
+        pack .pltWindowOptions.logscale.x  .pltWindowOptions.logscale.xv  .pltWindowOptions.logscale.y  .pltWindowOptions.logscale.yv  .pltWindowOptions.logscale.ypercent  .pltWindowOptions.logscale.ypv  -side left
 
         frame .pltWindowOptions.buttonBar
         button .pltWindowOptions.buttonBar.ok -text OK
@@ -121,6 +123,7 @@ proc setPlotOptions {plot} {
     $plot.subgrid $plotWindowOptions(subgrid)
     $plot.logx $plotWindowOptions(xlog)
     $plot.logy $plotWindowOptions(ylog)
+    $plot.percent $plotWindowOptions(ypercent)
     $plot.plotType $plotWindowOptions(plotType)
     $plot.nxTicks [.pltWindowOptions.xticks.val get]
     $plot.nyTicks [.pltWindowOptions.yticks.val get]
@@ -148,6 +151,7 @@ proc doPlotOptions {plot} {
     set plotWindowOptions(subgrid) [$plot.subgrid]
     set plotWindowOptions(xlog) [$plot.logx]
     set plotWindowOptions(ylog) [$plot.logy]
+    set plotWindowOptions(ypercent) [$plot.percent]
     set plotWindowOptions(plotType) [$plot.plotType]
     deiconifyPltWindowOptions
 
