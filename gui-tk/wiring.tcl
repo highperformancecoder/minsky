@@ -1011,6 +1011,8 @@ proc deiconifyEditOperation {} {
         pack .wiring.editOperation.title -pady 10
         button .wiring.editOperation.buttonBar.ok -text OK -command {
             minsky.canvas.item.rotation [set opInput(Rotation)]
+            minsky.canvas.item.axis [set opInput(Axis)]
+            minsky.canvas.item.arg [set opInput(Argument)]
             closeEditWindow .wiring.editOperation
         }
         button .wiring.editOperation.buttonBar.cancel -text Cancel -command {
@@ -1022,14 +1024,32 @@ proc deiconifyEditOperation {} {
         
         
         frame .wiring.editOperation.rotation
-        label .wiring.editOperation.rotation.label -text "Rotation"
+        label .wiring.editOperation.rotation.label -text "Rotation" -width 10
         entry  .wiring.editOperation.rotation.value -width 20 -textvariable opInput(Rotation)
-        pack .wiring.editOperation.rotation.label .wiring.editOperation.rotation.value -side left
+        pack .wiring.editOperation.rotation.value .wiring.editOperation.rotation.label -side right
         pack .wiring.editOperation.rotation
         set opInput(initial_focus) .wiring.editOperation.rotation.value
+
+        frame .wiring.editOperation.axis
+        label .wiring.editOperation.axis.label -text "Axis" -width 10
+        ttk::combobox  .wiring.editOperation.axis.value  -width 20 -textvariable opInput(Axis)
+        pack .wiring.editOperation.axis.value .wiring.editOperation.axis.label -side right
+        pack .wiring.editOperation.axis
+        tooltip .wiring.editOperation.axis.label "Some tensor operations operate along a particular axis"
+        
+        frame .wiring.editOperation.arg
+        label .wiring.editOperation.arg.label -text "Argument" -width 10
+        ttk::combobox  .wiring.editOperation.arg.value  -width 20 -textvariable opInput(Argument)
+        pack .wiring.editOperation.arg.value .wiring.editOperation.arg.label -side right
+        pack .wiring.editOperation.arg
+
+        tooltip .wiring.editOperation.arg.label "Some operations have an argument, such as the difference operation"
     } else {
         wm deiconify .wiring.editOperation
     }
+    .wiring.editOperation.axis.value configure -values [minsky.canvas.item.dimensions]
+    set opInput(Axis) [minsky.canvas.item.axis]
+    set opInput(Argument) [minsky.canvas.item.arg]
 }
 
 proc closeEditWindow {window} {

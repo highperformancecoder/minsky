@@ -372,7 +372,19 @@ namespace minsky
     return 0;
   }
 
-  
+
+  vector<string> OperationBase::dimensions() const
+  {
+    set<string> names;
+    for (size_t i=1; i<ports.size(); ++i)
+      {
+        auto& vv=ports[i]->getVariableValue();
+        for (auto& i: vv.xVector)
+          names.insert(i.name);
+      }
+    return {names.begin(), names.end()};
+  }
+
   const IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 

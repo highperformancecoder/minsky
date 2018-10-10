@@ -80,6 +80,17 @@ namespace minsky
 
     /// current value of output port
     double value() const override;
+
+    /// operation argument. For example, the offset used in a
+    /// difference operator, or binsize in a binning op
+    double arg=1;
+
+    /// axis selector in tensor operations
+    string axis;
+
+    /// return dimension names of tensor object attached to input
+    /// if binary op, then the union of dimension names is returned
+    std::vector<string> dimensions() const;
     
   protected:
 
