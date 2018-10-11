@@ -116,6 +116,11 @@ namespace minsky
     /// removes elements of xVector not found in \a
     /// You should adjust dims()[0] to xVector.size() afterwards
     void makeXConformant(const VariableValue& a);
+
+    /// compute stride and dimension size of dimension \a dim
+    /// @throw if dimension \a dim doesn't exist
+    /// if \a dim is empty, defaults to first dimension
+    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}

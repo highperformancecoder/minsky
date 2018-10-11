@@ -110,6 +110,9 @@ namespace minsky
     virtual double d1(double x1=0, double x2=0) const=0;
     virtual double d2(double x1=0, double x2=0) const=0;
     /// @}
+
+    /// set additional tensor operation related parameters
+    virtual void setTensorParams(const VariableValue&,const OperationBase&) {}
   };
 
   template <minsky::OperationType::Type T>
@@ -124,9 +127,9 @@ namespace minsky
     double d1(double x1=0, double x2=0) const override {return 0;}
     double d2(double x1=0, double x2=0) const override {return 0;}
     void eval(double fv[]=&ValueVector::flowVars[0], 
-              const double sv[]=&ValueVector::stockVars[0]) override {}
+              const double sv[]=&ValueVector::stockVars[0]) override {throw error("not yet implemented");}
     void deriv(double df[], const double ds[], 
-               const double sv[], const double fv[]) override {}
+               const double sv[], const double fv[]) override {throw error("derivative not yet implemented");}
   };
 
   template <minsky::OperationType::Type T>
@@ -137,8 +140,6 @@ namespace minsky
     inline double init() const;
     void eval(double fv[]=&ValueVector::flowVars[0], 
               const double sv[]=&ValueVector::stockVars[0]) override;
-    void deriv(double df[], const double ds[], 
-               const double sv[], const double fv[]) override {}
   };
 
   template<> inline
@@ -176,13 +177,18 @@ namespace minsky
   template <minsky::OperationType::Type T>
   struct ScanEvalOp: public TensorEvalOp<T>
   {
+    /// parameters describing the axis along which the scan is performed, and the window size of the scan
+    size_t stride=1, dimSz=1,  window=1;
     inline double init() const;
     /// x op= y
     inline void accum(double& x, double y) const;
     void eval(double fv[]=&ValueVector::flowVars[0], 
               const double sv[]=&ValueVector::stockVars[0]) override;
-    void deriv(double df[], const double ds[], 
-               const double sv[], const double fv[]) override {}
+    void setTensorParams(const VariableValue& v,const OperationBase& op) override
+    {
+      v.computeStrideAndSize(op.axis,stride,dimSz);
+      window=op.arg<0? dimSz: op.arg;
+    }
   };
 
   template<> inline
@@ -223,11 +229,8 @@ namespace minsky
   template <> struct EvalOp<minsky::OperationType::runningSum>: public ScanEvalOp<OperationType::runningSum> {};
   template <> struct EvalOp<minsky::OperationType::runningProduct>: public ScanEvalOp<OperationType::runningProduct> {};
 
-  template <> struct EvalOp<minsky::OperationType::difference>: public TensorEvalOp<OperationType::difference>
-  {
-    void eval(double fv[]=&ValueVector::flowVars[0], 
-              const double sv[]=&ValueVector::stockVars[0]) override;
-  };
+  // not used, but needed for the linker
+  template <> struct EvalOp<minsky::OperationType::difference>: public TensorEvalOp<OperationType::difference> {};
 
   template <> struct EvalOp<minsky::OperationType::innerProduct>: public TensorEvalOp<OperationType::innerProduct> {};
   template <> struct EvalOp<minsky::OperationType::outerProduct>: public TensorEvalOp<OperationType::outerProduct> {};

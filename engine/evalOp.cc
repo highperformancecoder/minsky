@@ -987,28 +987,17 @@ namespace minsky
   template<OperationType::Type T>
   void ScanEvalOp<T>::eval(double fv[], const double sv[])
   {
-    size_t j=this->out;
-    double s=init();
-    const double* src=this->flow1? fv: sv;
-    for (auto i: this->in1)
-      {
-        accum(s, src[i]);
-        fv[j++]=s;
-      }
+    // input vector assumed to be consecutive locations starting at in1[0]
+    const double* src=this->flow1? &fv[this->in1[0]]: &sv[this->in1[0]];
+    for (size_t i0=0; i0<this->in1.size(); i0+=dimSz*stride) // loop over outer dimensions
+      for (size_t i=i0; i<i0+stride; ++i) // loop over inner dimensions
+        for (size_t j=0; j<dimSz; j++) // loop over dimension being scanned
+          {
+            double s=src[i+j*stride];
+            size_t k0= j>window? j-window: 0;
+            for (size_t k=k0; k<j; k++) 
+              accum(s, src[i+k*stride]);
+            fv[this->out+i+j*stride]=s;
+          }
   }
-
-  void EvalOp<minsky::OperationType::difference>::eval
-  (double fv[], const double sv[])
-  {
-    size_t j=this->out;
-    double s=0;
-    const double* src=this->flow1? fv: sv;
-    for (auto i: this->in1)
-      {
-        fv[j++]=src[i]-s;
-        s=src[i];
-      }
-  }
-  
-  
 }

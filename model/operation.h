@@ -109,7 +109,17 @@ namespace minsky
     void iconDraw(cairo_t *) const override;
     size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
-    Operation() {this->addPorts();}
+    Operation() {
+      this->addPorts();
+      // custom arg defaults
+      switch (T)  {
+        case OperationType::runningSum: case OperationType::runningProduct:
+          this->arg=-1;
+          break;
+        default:
+          break;
+        }
+    }
     Operation(const Operation& x): Super(x) {this->addPorts();}
     Operation& operator=(const Operation& x) {
       Super::operator=(x);

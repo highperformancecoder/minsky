@@ -36,7 +36,8 @@ for i in examples/*.mky; do
     if [ $i = "examples/math-examples.mky" ]; then continue; fi
     # data object not suppported in Octave
     if [ $i = "examples/data-example.mky" ]; then continue; fi
-
+    echo $i
+    
     for order in 1 2 4; do
         for implicit in 0 1; do 
             #not available
@@ -44,6 +45,8 @@ for i in examples/*.mky; do
             # This example needs higher order solvers
             if [ $i = "examples/4MonetaryMinskyModelLessUnstableStart.mky" -a \
                     $order -eq 1 ]; then continue; fi
+            # derivative for tensor operations not yet implemented
+            if [ $i = "examples/reductionExample.mky" -a $implicit -eq 1 ]; then continue; fi
             cat >extraOpts.tcl <<EOF
 minsky.implicit $implicit
 minsky.order $order

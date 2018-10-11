@@ -326,6 +326,24 @@ namespace minsky
       throw error("tensors nonconformant");
   }
 
+  void VariableValue::computeStrideAndSize(const string& dim, size_t& stride, size_t& size) const
+  {
+    stride=1;
+    if (dim.empty())
+      // default to first axis if empty
+      size=xVector.empty()? 1:xVector[0].size();
+    else
+      {
+        for (auto& i: xVector)
+          {
+            size=i.size();
+            if (i.name==dim) return;
+            stride*=i.size();
+          }
+        throw runtime_error("axis "+dim+" not found");
+      }
+  }
+
 
   void VariableValue::exportAsCSV(const string& filename, const string& comment) const
   {

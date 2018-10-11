@@ -330,7 +330,7 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0])); 
                 break;
-              case runningSum: case runningProduct: case difference:
+              case runningSum: case runningProduct:
                 {
                   if (argIdx.empty() || argIdx[0].empty())
                     throw error("input not wired");
@@ -338,8 +338,33 @@ namespace MathDAG
                   result->xVector=argIdx[0][0].xVector;
                   if (realloc) result->allocValue();
                   ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
+                  assert(state);
+                  ev.back()->setTensorParams(argIdx[0][0],*state);
                 }
                 break;
+              case difference:
+                {
+                  // implement the difference operator as a
+                  // subtraction, by fiddling with the offsets of the
+                  // second variableValue
+                  EvalOpPtr op(subtract, *result, argIdx[0][0], argIdx[0][0]);
+                  ev.push_back(op);
+                  size_t stride, dimSz;
+                  argIdx[0][0].computeStrideAndSize(state->axis, stride,dimSz);
+                  for (auto& i: op->in2)
+                    {
+                      assert(state);
+                      assert(i.size()==1);
+                      assert(i[0].weight==1);
+                      auto j=(i[0].idx/stride)%dimSz;
+                      if (j < state->arg || j >= dimSz+state->arg) 
+                        // remove out of bound references
+                        i.clear();
+                      else
+                        i[0].idx-=stride*state->arg;
+                    }
+                  break;
+                }
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 
