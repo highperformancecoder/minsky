@@ -380,7 +380,7 @@ namespace minsky
       }
   }
 
-  void Ravel::loadDataFromSlice(VariableValue& v)
+  void Ravel::loadDataFromSlice(VariableValue& v) const
   {
     if (ravel && dataCube)
       {
@@ -727,7 +727,9 @@ namespace minsky
   void Ravel::exportAsCSV(const string& filename) const
   {
     // TODO: add some comment lines
-    ports[0]->getVariableValue().exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
+    VariableValue v(VariableType::flow);
+    loadDataFromSlice(v);
+    v.exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
   }
 
   void Ravel::displayDelayedTooltip(float xx, float yy)

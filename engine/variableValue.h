@@ -137,12 +137,15 @@ namespace minsky
     }
 
     template <class T>
-    void setXVector(T x) {
+    void setXVector_(T x) {
       size_t prevNumElems=numElements();
       m_xVector=x;
       if (idx()==-1 || prevNumElems<numElements())
         allocValue();
     }
+    void setXVector(XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
+    void setXVector(const XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
+
     
     /// removes elements of xVector not found in \a
     /// You should adjust dims()[0] to xVector.size() afterwards

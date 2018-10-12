@@ -78,7 +78,7 @@ namespace minsky
     void onMouseLeave();
     void loadFile(const std::string&);
     const string& filename() const {return m_filename;}
-    void loadDataFromSlice(VariableValue&);
+    void loadDataFromSlice(VariableValue&) const;
     void loadDataCubeFromVariable(const VariableValue&);
     unsigned maxRank() const;
     unsigned rank() const;
