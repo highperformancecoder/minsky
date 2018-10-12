@@ -60,7 +60,7 @@ namespace minsky
   float Item::x() const 
   {
     if (auto g=group.lock())
-      return m_x+g->x();
+      return g->zoomFactor*m_x+g->x();
     else
       return m_x;
   }
@@ -68,7 +68,7 @@ namespace minsky
   float Item::y() const 
   {
     if (auto g=group.lock())
-      return m_y+g->y();
+      return g->zoomFactor*m_y+g->y();
     else
       return m_y;
   }
@@ -92,8 +92,8 @@ namespace minsky
   {
     if (auto g=group.lock())
       {
-        m_x=x-g->x();
-        m_y=y-g->y();
+        m_x=(x-g->x())/g->zoomFactor;
+        m_y=(y-g->y())/g->zoomFactor;
       }
     else
       {
@@ -127,15 +127,7 @@ namespace minsky
   void Item::zoom(float xOrigin, float yOrigin,float factor)
   {
     if (visible())
-      {
-        if (auto g=group.lock())
-          // do not zoom toplevel group
-          {
-            minsky::zoom(m_x,xOrigin-g->x(),factor);
-            minsky::zoom(m_y,yOrigin-g->y(),factor);
-          }
-        zoomFactor*=factor;
-      }
+      zoomFactor*=factor;
   }
 
   void Item::drawPorts(cairo_t* cairo) const
@@ -175,9 +167,6 @@ namespace minsky
     w=0.5*pango.width()+2*zoomFactor; 
     h=0.5*pango.height()+4*zoomFactor;
 
-//    cairo_arc(cairo,0,0,2,0,M_PI);
-//    cairo_stroke(cairo);
-    
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
 
@@ -187,7 +176,6 @@ namespace minsky
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));
     cairo_line_to(cairo,r.x(-w,h), r.y(-w,h));
     cairo_close_path(cairo);
-    //cairo_stroke_preserve(cairo);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }

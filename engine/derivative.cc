@@ -84,7 +84,13 @@ namespace MathDAG
     VariablePtr tmp(VariableType::tempFlow, name);
     VariableDAGPtr r(dynamic_pointer_cast<VariableDAG>(makeDAG(tmp->valueId(),tmp->name(),tmp->type())));
     if (expr.rhs)
-      r->rhs=expr.rhs->derivative(*this);
+      {
+        if (processingDerivative.count(expr.name))
+          throw error("definition loop detected in processing derivative of %s",expr.name.c_str());
+        processingDerivative.insert(expr.name);
+        r->rhs=expr.rhs->derivative(*this);
+        processingDerivative.erase(expr.name);
+      }
     else if (expr.type==VariableType::integral || expr.type==VariableType::stock)
       {
         auto ii=expressionCache.getIntegralInput(expr.valueId);

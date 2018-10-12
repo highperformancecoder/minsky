@@ -40,6 +40,8 @@
 namespace minsky
 {
   class Minsky;
+  /// checks if any GUI events are waiting, and proces an event if so
+  void doOneEvent();
 }
 
 namespace MathDAG
@@ -346,6 +348,8 @@ namespace MathDAG
 
     /// used to rename ambiguous variables in different scopes
     std::set<std::string> varNames;
+    /// keep track of derivatives of variables, to trap definition loops
+    std::set<std::string> processingDerivative;
     
   public:
     /// construct the system of equations 

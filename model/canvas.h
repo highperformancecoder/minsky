@@ -49,16 +49,32 @@ namespace minsky
     bool itemIndicator=false;
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
+    void reportDrawTime(double) override;
   public:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
     struct Model: public GroupPtr
     {
       Exclude<Timestamp> timestamp{Timestamp::clock::now()};
       void updateTimestamp() {timestamp=Timestamp::clock::now();}
+      GroupPtr parent; // stash a ref to this groups parent for later restore
+      float px=0,py=0,pz=1;
       Model() {}
-      Model(const GroupPtr& g): GroupPtr(g) {}
+      Model(const GroupPtr& g) {operator=(g);}
       Model& operator=(const GroupPtr& model) {
         updateTimestamp();
+        if (this->get())
+          {
+            // restore previous stuff
+            (*this)->group=parent;
+            (*this)->m_x=px;
+            (*this)->m_y=py;
+            (*this)->zoomFactor=pz;
+          }
+        parent=model->group.lock();
+        model->group.reset();
+        px=model->m_x;
+        py=model->m_y;
+        pz=model->zoomFactor;
         GroupPtr::operator=(model);
         return *this;
       }

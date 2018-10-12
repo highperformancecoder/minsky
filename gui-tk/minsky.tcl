@@ -1050,7 +1050,7 @@ proc save {} {
     if {![string length $fname]} {
 	    setFname [tk_getSaveFile -defaultextension .mky]}            
     if [string length $fname] {
-        minsky.save $fname
+        eval minsky.save $fname
     }
 }
 
@@ -1058,7 +1058,7 @@ proc saveAs {} {
     global fname workDir
     setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
     if [string length $fname] {
-        minsky.save $fname
+        eval minsky.save $fname
     }
 }
 
@@ -1104,7 +1104,6 @@ set rkVars {
     stepMin   "Min Step Size"
     stepMax   "Max Step Size"
     nSteps     "No. steps per iteration"
-    maxWaitMS "Screen refresh every (in ms)"
     t0         "Start time"
     tmax      "Run until time"
     epsAbs     "Absolute error"

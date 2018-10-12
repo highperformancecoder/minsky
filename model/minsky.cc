@@ -32,6 +32,11 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
+//#include <thread>
+// std::thread apparently not supported on MXE for now...
+#include <boost/thread.hpp>
+using namespace std;
+
 using namespace minsky;
 using namespace classdesc;
 using namespace boost::posix_time;
@@ -651,33 +656,54 @@ namespace minsky
     if (reset_flag())
       reset();
 
-    if (ode)
-      {
-        gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
-        int err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
-                                        &stockVars[0]);
-        switch (err)
+    // create a private copy for worker thread use
+    vector<double> stockVarsCopy(stockVars);
+    volatile bool threadFinished=false;
+    int err=GSL_SUCCESS;
+    // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
+    boost::thread rkThread([&](){
+        if (ode)
           {
-          case GSL_SUCCESS: case GSL_EMAXITER: break;
-          case GSL_FAILURE:
-            throw error("unspecified error GSL_FAILURE returned");
-          case GSL_EBADFUNC: 
-            gsl_odeiv2_driver_reset(ode->driver);
-            throw error("Invalid arithmetic operation detected");
-          default:
-            throw error("gsl error: %s",gsl_strerror(err));
+            gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
+            // we need to update Minsky's t synchronously to support the t operator
+            // potentially means t and stcokVars out of sync on GUI, but should still be thread safe
+            err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
+                                        &stockVarsCopy[0]);
           }
-      }
-    else // do explicit Euler method
-      {
-        vector<double> d(stockVars.size());
-        for (int i=0; i<nSteps; ++i, t+=stepMax)
+        else // do explicit Euler method
           {
-            evalEquations(&d[0], t, &stockVars[0]);
-            for (size_t j=0; j<d.size(); ++j)
-              stockVars[j]+=d[j];
+            vector<double> d(stockVarsCopy.size());
+            for (int i=0; i<nSteps; ++i, t+=stepMax)
+              {
+                evalEquations(&d[0], t, &stockVarsCopy[0]);
+                for (size_t j=0; j<d.size(); ++j)
+                  stockVarsCopy[j]+=d[j];
+              }
           }
+        threadFinished=true;
+      });
+
+    while (!threadFinished)
+      {
+        // while waiting for thread to finish, check and process any UI events
+        usleep(1000);
+        doOneEvent();
       }
+    rkThread.join();
+    
+    switch (err)
+      {
+      case GSL_SUCCESS: case GSL_EMAXITER: break;
+      case GSL_FAILURE:
+        throw error("unspecified error GSL_FAILURE returned");
+      case GSL_EBADFUNC: 
+        gsl_odeiv2_driver_reset(ode->driver);
+        throw error("Invalid arithmetic operation detected");
+      default:
+        throw error("gsl error: %s",gsl_strerror(err));
+      }
+
+    stockVars.swap(stockVarsCopy);
 
     // update flow variables
     evalEquations();
