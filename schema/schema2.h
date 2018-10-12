@@ -128,6 +128,9 @@ namespace schema2
     Optional<std::string> filename;
     Optional<minsky::RavelState> ravelState;
     Optional<minsky::Dimensions> dimensions;
+    // Operation tensor parameters
+    Optional<std::string> axis;
+    Optional<double> arg;
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
@@ -152,6 +155,9 @@ namespace schema2
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
     }
+    Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
+      ItemBase(id,static_cast<const minsky::Item&>(o),ports),
+      axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
       width(g.width()/g.zoomFactor), height(g.height()/g.zoomFactor), name(g.table.title), data(g.table.getData()),

@@ -391,7 +391,12 @@ namespace schema2
             x1->sliderStep=y.slider->step;
           }
       }
-    if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
+    if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
+      {
+        if (y.axis) x1->axis=*y.axis;
+        if (y.arg) x1->arg=*y.arg;
+      }
+   if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
       {
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
