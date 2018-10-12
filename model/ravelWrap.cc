@@ -398,7 +398,7 @@ namespace minsky
             vector<size_t> outHandles(dims.size());
             ravel_outputHandleIds(ravel, &outHandles[0]);
             size_t prevNumElem=v.numElements();
-            v.xVector.clear();
+            vector<XVector> xv;
             for (size_t j=0; j<outHandles.size(); ++j)
               {
                 auto h=outHandles[j];
@@ -407,23 +407,22 @@ namespace minsky
                 ravel_sliceLabels(ravel,h,&labels[0]);
                 assert(all_of(labels.begin(), labels.end(),
                               [](const char* i){return bool(i);}));
-                v.xVector.emplace_back
+                xv.emplace_back
                   (ravel_handleDescription(ravel,h));
-                auto dim=axisDimensions.find(v.xVector.back().name);
+                auto dim=axisDimensions.find(xv.back().name);
                 if (dim!=axisDimensions.end())
-                  v.xVector.back().dimension=dim->second;
+                  xv.back().dimension=dim->second;
                 else
                   {
-                    auto dim=cminsky().dimensions.find(v.xVector.back().name);
+                    auto dim=cminsky().dimensions.find(xv.back().name);
                     if (dim!=cminsky().dimensions.end())
-                      v.xVector.back().dimension=dim->second;
+                      xv.back().dimension=dim->second;
                   }
                 // else otherwise dimension is a string (default type)
                 for (size_t i=0; i<labels.size(); ++i)
-                  v.xVector.back().push_back(labels[i]);
+                  xv.back().push_back(labels[i]);
               }
-            if (v.idx()==-1 || prevNumElem!=v.numElements())
-              v.allocValue();
+            v.setXVector(move(xv));
 #ifndef NDEBUG
             if (dims.size()==v.dims().size())
               for (size_t i=0; i<dims.size(); ++i)

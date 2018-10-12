@@ -303,25 +303,27 @@ namespace minsky
   
   void VariableValue::makeXConformant(const VariableValue& a)
   {
+    auto xv=xVector;
     for (auto& i: a.xVector)
       {
         set<string> alabels;
         for (auto& j: i)
           alabels.insert(str(j));
         size_t j=0;
-        for (j=0; j<xVector.size(); ++j)
-          if (xVector[j].name==i.name)
+        for (j=0; j<xv.size(); ++j)
+          if (xv[j].name==i.name)
             {
               XVector newLabels;
               for (auto i: xVector[j])
                 if (alabels.count(str(i)))
                   newLabels.push_back(i);
-              xVector[j].swap(newLabels);
+              xv[j].swap(newLabels);
               break;
             }
         if (j==xVector.size()) // axis not present on LHS, so increase rank
-          xVector.push_back(i);
+          xv.push_back(i);
       }
+    setXVector(move(xv));
     if (numElements()==0)
       throw error("tensors nonconformant");
   }

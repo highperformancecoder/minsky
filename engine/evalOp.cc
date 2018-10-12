@@ -819,7 +819,7 @@ namespace minsky
                 t->in1.push_back(from1.idx());
                 t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
                 if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
-                  to.xVector.clear();
+                  to.setXVector(vector<XVector>());
                 break;
               }
 
@@ -827,6 +827,7 @@ namespace minsky
 
             if (to.xVector.empty())
                 {
+                  vector<XVector> xv;
                   for (auto& i: from1.xVector)
                     if (i.dimension.type==Dimension::string)
                       {
@@ -835,27 +836,28 @@ namespace minsky
                         auto j=from2Offsets.find(i.name);
                         if (j!=from2Offsets.end())
                           {
-                            to.xVector.emplace_back(i.name);
-                            to.xVector.back().dimension=i.dimension;
+                            xv.emplace_back(i.name);
+                            xv.back().dimension=i.dimension;
                             for (auto& k: i)
                               {
                                 auto l=j->second.find(str(k));
                                 if (l!=j->second.end())
-                                  to.xVector.back().push_back(k);
+                                  xv.back().push_back(k);
                               }
                           }
                         else
-                          to.xVector.push_back(i);
+                          xv.push_back(i);
                       }
                     else
-                      to.xVector.push_back(i);
+                      xv.push_back(i);
                      
                   for (auto& i: from2.xVector)
                     if (!from1Offsets.count(i.name))
-                      to.xVector.push_back(i);
+                      xv.push_back(i);
+                  to.setXVector(move(xv));
                 }
               else
-                to.xVector=from1.xVector;
+                to.setXVector(from1.xVector);
 
             GetBounds from1GetBounds(from1.xVector), from2GetBounds(from2.xVector);
             apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
@@ -918,7 +920,7 @@ namespace minsky
             case general: case function:
               {
                 if (to.idx()==-1 || to.xVector.empty())
-                  to.xVector=from1.xVector;
+                  to.setXVector(from1.xVector);
                 if (to.xVector==from1.xVector)
                   for (size_t i=0; i<from1.numElements(); ++i)
                     t->in1.push_back(i+from1.idx());

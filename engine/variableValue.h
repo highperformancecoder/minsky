@@ -33,8 +33,32 @@ namespace minsky
   struct VariableValues;
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
+
+  // why are we doing this complicated mixin to constify the xVector
+  // attribute instead of a simple const std::vector<XVector>&
+  // VariableValue::xVector() const getter method?
+
+  //ans: because we want TCL to be able to inspect the xVector
+  // attribute, which is not possible with the getter method
+  class XVectorMixin
+  {
+  public:
+    typedef std::vector<XVector> XVectorVector;
+    CLASSDESC_ACCESS(XVectorMixin);
+  protected:
+    XVectorVector m_xVector;
+  public:
+    const XVectorVector& xVector{m_xVector};
+    XVectorMixin() {}
+    XVectorMixin(const XVectorMixin& x): m_xVector(x.m_xVector) {}
+    XVectorMixin(XVectorMixin&& x): m_xVector(x.m_xVector) {}
+    XVectorMixin& operator=(const XVectorMixin& x)
+    {m_xVector=x.m_xVector; return *this;}
+    XVectorMixin& operator=(XVectorMixin&& x)
+    {m_xVector=x.m_xVector; return *this;}
+  };
   
-  class VariableValue: public VariableType
+  class VariableValue: public VariableType, public XVectorMixin
   {
     CLASSDESC_ACCESS(VariableValue);
   private:
@@ -95,14 +119,15 @@ namespace minsky
     ///< set the dimensions. \a d cannot be empty, by may consist of
     ///the single element {1} to refer to a scalar
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
-      xVector.clear();
+      XVectorVector xv;
       for (size_t i=0; i<d.size(); ++i)
         {
-          xVector.emplace_back(std::to_string(i));
-          xVector.back().dimension.type=Dimension::value;
+          xv.emplace_back(std::to_string(i));
+          xv.back().dimension.type=Dimension::value;
           for (size_t j=0; j<d[i]; ++j)
-            xVector.back().emplace_back(double(j));
+            xv.back().emplace_back(double(j));
         }
+      setXVector(std::move(xv));
       return d;
     }
     size_t numElements() const {
@@ -111,8 +136,14 @@ namespace minsky
       return s;
     }
 
-    std::vector<XVector> xVector;
-
+    template <class T>
+    void setXVector(T x) {
+      size_t prevNumElems=numElements();
+      m_xVector=x;
+      if (idx()==-1 || prevNumElems<numElements())
+        allocValue();
+    }
+    
     /// removes elements of xVector not found in \a
     /// You should adjust dims()[0] to xVector.size() afterwards
     void makeXConformant(const VariableValue& a);

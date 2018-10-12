@@ -183,7 +183,7 @@ namespace MathDAG
         if (i.size() && !i[0].xVector.empty())
           {
             // initialise r's xVector
-            r.xVector=i[0].xVector;
+            r.setXVector(i[0].xVector);
             break;
           }
       if (!r.xVector.empty())
@@ -195,7 +195,7 @@ namespace MathDAG
           if (r.xVector.empty())
             return; // no common intersection amongst arguments
         }
-      if (r.idx()==-1 || r.numElements()>oldNumElems) r.allocValue();
+      if (r.idx()==-1) r.allocValue();
 
       // short circuit multiplications if any of the terms are constant zero
       if (accum==OperationType::multiply)
@@ -243,7 +243,7 @@ namespace MathDAG
             {
               // multiple wires to second input port
               VariableValue tmp(VariableType::tempFlow);
-              tmp.xVector=r.xVector;
+              tmp.setXVector(r.xVector);
               tmp.dims(r.dims());
               size_t i=0;
               if (accum==OperationType::add)
@@ -334,9 +334,7 @@ namespace MathDAG
                 {
                   if (argIdx.empty() || argIdx[0].empty())
                     throw error("input not wired");
-                  bool realloc=result->numElements() != argIdx[0][0].numElements();
-                  result->xVector=argIdx[0][0].xVector;
-                  if (realloc) result->allocValue();
+                  result->setXVector(argIdx[0][0].xVector);
                   ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
                   assert(state);
                   ev.back()->setTensorParams(argIdx[0][0],*state);

@@ -32,6 +32,7 @@ using namespace std;
 using namespace boost;
 using namespace boost::posix_time;
 using namespace boost::gregorian;
+typedef vector<XVector> XV;
 
 SUITE(XVector)
 {
@@ -39,8 +40,8 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      from1.xVector={{"a",{"a1","a2","a3"}},{"b",{"b1","b3","b4"}}};
-      from2.xVector={{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}};
+      from1.setXVector(XV{{"a",{"a1","a2","a3"}},{"b",{"b1","b3","b4"}}});
+      from2.setXVector(XV{{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}});
       from1.allocValue();
       from2.allocValue();
       EvalOpPtr e(OperationType::add, to, from1, from2);
@@ -83,7 +84,7 @@ SUITE(XVector)
       // target incompatible dimension with source
       CHECK_THROW(EvalOpPtr(OperationType::add, from1, from1, from2), std::exception);
 
-      to.xVector.clear();
+      to.setXVector(XV());
       e=EvalOpPtr(OperationType::copy, to, from1, from2);
       CHECK(to.xVector==from1.xVector);
       CHECK_EQUAL(from1.numElements(), e->in1.size());
@@ -107,11 +108,13 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      from1.xVector={{"a",{1.0,2.0,3.0}},{"b",{1.0,3.0,4.0,6.0}}};
-      from1.xVector[0].dimension.type=Dimension::value;
-      from1.xVector[1].dimension.type=Dimension::value;
-      from2.xVector={{"c",{"c1","c2","c3"}},{"b",{2.0,3.0,3.5,4.2,5.0}}};
-      from2.xVector[1].dimension.type=Dimension::value;
+      XV xv1{{"a",{1.0,2.0,3.0}},{"b",{1.0,3.0,4.0,6.0}}};
+      xv1[0].dimension.type=Dimension::value;
+      xv1[1].dimension.type=Dimension::value;
+      from1.setXVector(xv1);
+      XV xv2{{"c",{"c1","c2","c3"}},{"b",{2.0,3.0,3.5,4.2,5.0}}};
+      xv2[1].dimension.type=Dimension::value;
+      from2.setXVector(xv2);
       from1.allocValue();
       from2.allocValue();
       EvalOpPtr e(OperationType::add, to, from1, from2);
