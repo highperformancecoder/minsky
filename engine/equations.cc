@@ -349,18 +349,38 @@ namespace MathDAG
                   ev.push_back(op);
                   size_t stride, dimSz;
                   argIdx[0][0].computeStrideAndSize(state->axis, stride,dimSz);
+
+                  // trim off leading or trailing components
+                  auto xVector=result->xVector;
+                  for (auto& i: xVector)
+                    if (state->axis.empty() || i.name==state->axis)
+                      {
+                        if (state->arg>0)
+                          i.erase(i.begin(), i.begin()+state->arg);
+                        else
+                          i.erase(i.end()+state->arg, i.end());
+                        break;
+                      }
+                  result->setXVector(xVector);
+                  
+                  decltype(op->in1) in1;
+                  decltype(op->in2) in2;
                   for (auto& i: op->in2)
                     {
                       assert(state);
                       assert(i.size()==1);
                       assert(i[0].weight==1);
-                      auto j=(i[0].idx/stride)%dimSz;
-                      if (j < state->arg || j >= dimSz+state->arg) 
-                        // remove out of bound references
-                        i.clear();
-                      else
-                        i[0].idx-=stride*state->arg;
+                      auto j=((i[0].idx-argIdx[0][0].idx())/stride)%dimSz;
+                      if (j>=state->arg && j<dimSz+state->arg)
+                        {
+                          // only transfer in bound references
+                          in1.push_back(op->in1[&i-&op->in2[0]]);
+                          i[0].idx-=stride*state->arg;
+                          in2.push_back(i);
+                        }
                     }
+                  op->in1.swap(in1);
+                  op->in2.swap(in2);
                   break;
                 }
               case data:
