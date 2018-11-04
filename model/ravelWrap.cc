@@ -340,6 +340,12 @@ namespace minsky
       return ClickType::onItem;
   }
 
+  int Ravel::selectedHandle() const {
+    if (ravel)
+      return ravel_selectedHandle(ravel);
+    else
+      return -1;
+  }
 
   void Ravel::onMouseDown(float xx, float yy)
   {
@@ -537,17 +543,23 @@ namespace minsky
       {
         assert(order!=HandleState::custom); //custom makes no sense here
         // grab the labels in sorted order, or forward order if a custom order is applied
-        auto prevOrder=sortOrder();
+        RavelState::HandleState state;
+        ravel_getHandleState(ravel, axis, &state);
         // grab the ordering in case its custom
         vector<size_t> customOrdering(ravel_numSliceLabels(ravel,axis));
         ravel_currentPermutation(ravel,axis,customOrdering.size(),&customOrdering[0]);
-        ravel_orderLabels(ravel,axis,order);
+
+        // set the order and reset calipers to full range
+        auto modifiedState=state;
+        modifiedState.order=order;
+        modifiedState.sliceMin=0;
+        modifiedState.sliceMax=~0UL;
+        ravel_setHandleState(ravel,axis,&modifiedState);
         vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,axis));
         ravel_sliceLabels(ravel,axis,&sliceLabels[0]);
-        if (prevOrder==HandleState::custom)
+        ravel_setHandleState(ravel,axis,&state); // return things to how they were
+        if (state.order==HandleState::custom)
           ravel_applyCustomPermutation(ravel,axis,customOrdering.size(),&customOrdering[0]);
-        else
-          ravel_orderLabels(ravel,axis,prevOrder);
         return {sliceLabels.begin(), sliceLabels.end()};
       }
     return {};
@@ -565,16 +577,24 @@ namespace minsky
    return {};
   }
 
-  void Ravel::pickSliceLabels(const vector<string>& pick)
-  {
-    pickSliceLabelsImpl(ravel_selectedHandle(ravel), pick);
-  }
-
-  
-  void Ravel::pickSliceLabelsImpl(int axis, const vector<string>& pick) 
+  void Ravel::pickSliceLabels(int axis, const vector<string>& pick) 
   {
     if (axis>=0 && axis<int(ravel_numHandles(ravel)))
       {
+        // stash previous handle sort order
+        HandleState state;
+        ravel_getHandleState(ravel,axis,&state);
+        if (state.order!=HandleState::custom)
+          previousOrder=state.order;
+
+        size_t numSliceLabels=ravel_numSliceLabels(ravel,axis);
+        if (pick.size()>=numSliceLabels)
+          {
+            // if all labels are selected, revert ordering to previous
+            ravel_orderLabels(ravel,axis,previousOrder);
+            return;
+          }
+        
         auto allLabels=allSliceLabelsImpl(axis, HandleState::none);
         map<string,size_t> idxMap; // map index positions
         for (size_t i=0; i<allLabels.size(); ++i)
@@ -586,6 +606,7 @@ namespace minsky
             if (j!=idxMap.end())
               customOrder.push_back(j->second);
           }
+        assert(!customOrder.empty());
         ravel_applyCustomPermutation(ravel,axis,customOrder.size(),&customOrder[0]);
       }
   }
@@ -709,7 +730,7 @@ namespace minsky
               {
                 ravel_setHandleState(ravel,i,&hs->second);
                 if (hs->second.order==HandleState::custom)
-                  pickSliceLabelsImpl(i,hs->second.customOrder);
+                  pickSliceLabels(i,hs->second.customOrder);
               }
             nameToIdx[name]=i;
           }

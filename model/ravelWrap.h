@@ -34,6 +34,7 @@ namespace minsky
 
 
   private:
+    typedef RavelState::HandleState HandleState;
     Exclude<RavelImpl*> ravel=nullptr;
     Exclude<DataCube*> dataCube=nullptr;
     void noRavelSetup();
@@ -41,16 +42,15 @@ namespace minsky
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     std::string m_filename;
     std::string explanation; // explanation of Ravel bits displayed as tooltip
-
+    HandleState::HandleSort previousOrder=HandleState::forward;
+    
     /// used entirely to defer persisted state data until after first
     /// load from a variable
     RavelState initState;
-    typedef RavelState::HandleState HandleState;
     
     friend struct SchemaHelper;
 
     std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
-    void pickSliceLabelsImpl(int axis, const std::vector<string>& pick);
 
   public:
     Ravel();
@@ -86,6 +86,9 @@ namespace minsky
     void adjustSlicer(int); ///< adjust currently selected handle's slicer
     bool handleArrows(int dir) override {adjustSlicer(dir); return true;}
 
+    // return selected handle, or -1 if none
+    int selectedHandle() const;
+    
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;
     bool setDisplayFilterCaliper(bool);
@@ -98,7 +101,7 @@ namespace minsky
     /// returns just the picked slice labels along the handle
     std::vector<string> pickedSliceLabels() const;
     /// pick (selected) \a pick labels
-    void pickSliceLabels(const std::vector<string>& pick);
+    void pickSliceLabels(int axis, const std::vector<string>& pick);
     
     /// @{
     /// the handle sorting order for currently selected handle

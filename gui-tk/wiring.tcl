@@ -684,7 +684,7 @@ proc setDimension {} {
 }
 
 proc setupPickMenu {} {
-    global labelPicked
+    global labelPicked pickHandle
     if {![winfo exists .wiring.context.axisMenu.pick]} {
         toplevel .wiring.context.axisMenu.pick
         wm title .wiring.context.axisMenu.pick "Pick slices"
@@ -703,7 +703,7 @@ proc setupPickMenu {} {
             foreach i [.wiring.context.axisMenu.pick.select.lb curselection] {
                 lappend pick [lindex $labelPicked $i]
             }
-            minsky.canvas.item.pickSliceLabels $pick
+            minsky.canvas.item.pickSliceLabels $pickHandle $pick
             reset
         }
         button .wiring.context.axisMenu.pick.buttonBar.all -text "All" -command {
@@ -722,6 +722,7 @@ proc setupPickMenu {} {
     foreach i [minsky.canvas.item.pickedSliceLabels] {
         .wiring.context.axisMenu.pick.select.lb selection set $idx($i)
     }
+    set pickHandle [minsky.canvas.item.selectedHandle]
     wm transient .wiring.context.axisMenu.pick
     wm geometry .wiring.context.axisMenu.pick +[winfo pointerx .]+[winfo pointery .]
     tkwait visibility .wiring.context.axisMenu.pick
