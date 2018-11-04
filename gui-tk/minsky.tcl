@@ -664,6 +664,7 @@ proc dimensionsDialog {} {
         grid [label .dimensions.g1_dim -text Dimension] \
             [label .dimensions.g1_type -text Type]\
             [label .dimensions.g1_units -text "Units/Format"]
+        tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
     } else {
         wm deiconify .dimensions
     }
