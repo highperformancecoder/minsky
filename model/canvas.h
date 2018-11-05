@@ -163,6 +163,7 @@ namespace minsky
     /// belong to more than one group, then a completely new group is
     /// set up.
     void lockRavelsInSelection();
+    void unlockRavelsInSelection();
 
     /// delete item referenced by item
     void deleteItem();

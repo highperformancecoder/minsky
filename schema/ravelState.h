@@ -39,6 +39,7 @@ namespace minsky
       // note this member must appear after all members of
       // CAPIHandleState from the Ravel CAPI
       vector<string> customOrder; // used if order==custom
+      string minLabel, maxLabel;
     };
 
     double radius=ravelDefaultRadius;

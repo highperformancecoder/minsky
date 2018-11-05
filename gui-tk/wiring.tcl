@@ -460,7 +460,9 @@ proc canvasContext {x y} {
     .wiring.context add command -label "Save selection as" -command saveSelection
     .wiring.context add command -label "Paste" -command {paste}
     .wiring.context add command -label "Group" -command "minsky.createGroup"
-    .wiring.context add command -label "Open master group" -command "openModelInCanvas"
+    .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
+     .wiring.context add command -label "Unlock selected Ravels" -command "minsky.canvas.unlockRavelsInSelection"
+   .wiring.context add command -label "Open master group" -command "openModelInCanvas"
     tk_popup .wiring.context $x $y
 }
 
@@ -623,7 +625,9 @@ proc contextMenu {x y X Y} {
             global sortOrder
             set sortOrder [minsky.canvas.item.sortOrder]
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
-            .wiring.context add command -label "Adjust ravel rank" -command ravelRankDlg
+            .wiring.context add command -label "Unlock" -command {
+                minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
+            }
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
         }
     }
@@ -643,13 +647,20 @@ menu .wiring.context.axisMenu
     }
 }
 .wiring.context.axisMenu add command -label "Dimension" -command setDimension
-.wiring.context.axisMenu add command -label "Toggle Calipers" -command minsky.canvas.item.toggleDisplayFilterCaliper
+.wiring.context.axisMenu add command -label "Toggle Calipers" -command {
+    minsky.canvas.item.toggleDisplayFilterCaliper
+    minsky.canvas.item.broadcastStateToLockGroup
+    reset
+}
 menu .wiring.context.axisMenu.sort 
 .wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort 
 set sortOrder none
 foreach order {none forward reverse numForward numReverse} {
-    .wiring.context.axisMenu.sort add radiobutton -label $order -command "minsky.canvas.item.setSortOrder $order; reset" \
-        -value $order -variable sortOrder
+    .wiring.context.axisMenu.sort add radiobutton -label $order -command {
+        minsky.canvas.item.setSortOrder $order
+        minsky.canvas.item.broadcastStateToLockGroup
+        reset
+    } -value $order -variable sortOrder
 }
 .wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu
 
@@ -704,6 +715,7 @@ proc setupPickMenu {} {
                 lappend pick [lindex $labelPicked $i]
             }
             minsky.canvas.item.pickSliceLabels $pickHandle $pick
+            minsky.canvas.item.broadcastStateToLockGroup
             reset
         }
         button .wiring.context.axisMenu.pick.buttonBar.all -text "All" -command {
@@ -743,31 +755,6 @@ proc exportItemAsCSV {} {
     if {$f!=""} {
         minsky.canvas.item.exportAsCSV $f
     }
-}
-
-proc ravelRankDlg {} {
-    if {![winfo exists .ravelRank]} {
-        toplevel .ravelRank
-        wm title .ravelRank "Set Rank"
-        wm transient .ravelRank
-        spinbox .ravelRank.rank
-        pack .ravelRank.rank
-        buttonBar .ravelRank ravelRankOK
-    } else {
-        deiconify .ravelRank
-    }
-    .ravelRank.rank configure -from 0 -to [minsky.canvas.item.maxRank]
-    .ravelRank.rank set [minsky.canvas.item.rank]
-    
-    ::tk::TabToWindow .ravelRank.rank
-    tkwait visibility .ravelRank
-    grab set .ravelRank
-}
-
-proc ravelRankOK {} {
-    minsky.canvas.item.setRank [.ravelRank.rank get]
-    minsky.reset
-    canvas.requestRedraw
 }
 
 namespace eval godley {

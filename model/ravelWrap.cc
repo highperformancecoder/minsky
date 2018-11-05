@@ -37,6 +37,8 @@ using namespace std;
 
 namespace minsky
 {
+  unsigned RavelLockGroup::nextColour=1;
+
   namespace
   {
     struct InvalidSym {
@@ -226,6 +228,7 @@ namespace minsky
     DEFFN(ravel_numSliceLabels, size_t, Ravel::RavelImpl*, size_t);
     DEFFN(ravel_sliceLabels, void, Ravel::RavelImpl*, size_t, const char**);
     DEFFN(ravel_displayFilterCaliper, void, Ravel::RavelImpl*, size_t, bool);
+    DEFFN(ravel_setCalipers,void,Ravel::RavelImpl*,size_t,const char*,const char*);
     DEFFN(ravel_orderLabels, void, Ravel::RavelImpl*, size_t,
                               RavelState::HandleState::HandleSort);
     DEFFN(ravel_applyCustomPermutation, void, Ravel::RavelImpl*, size_t, size_t, const size_t*);
@@ -298,13 +301,19 @@ namespace minsky
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
     cairo_stroke_preserve(cairo);
-    if (onBorder)
+    if (onBorder || lockGroup)
       { // shadow the border when mouse is over it
         cairo::CairoSave cs(cairo);
-        cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
+        cairo::Colour c{1,1,1,0};
+        if (lockGroup)
+          c=palette[ lockGroup->colour() % paletteSz ];
+        c.r*=0.5; c.g*=0.5; c.b*=0.5;
+        c.a=onBorder? 0.5:0.3;
+        cairo_set_source_rgba(cairo,c.r,c.g,c.b,c.a);
         cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
         cairo_fill_preserve(cairo);
       }
+    
     cairo_clip(cairo);
 
     {
@@ -509,6 +518,7 @@ namespace minsky
   void Ravel::adjustSlicer(int n)
   {
     ravel_adjustSlicer(ravel,n);
+    broadcastStateToLockGroup();
   }
 
   bool Ravel::displayFilterCaliper() const
@@ -700,11 +710,16 @@ namespace minsky
           {
             auto& s=state.handleStates[ravel_handleDescription(ravel,i)];
             ravel_getHandleState(ravel, i, &s);
+            vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,i));
+            ravel_sliceLabels(ravel,i,&sliceLabels[0]);
             if (s.order==HandleState::custom)
               {
-                vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,i));
-                ravel_sliceLabels(ravel,i,&sliceLabels[0]);
                 s.customOrder={sliceLabels.begin(),sliceLabels.end()};
+              }
+            if (!sliceLabels.empty())
+              {
+                s.minLabel=sliceLabels.front();
+                s.maxLabel=sliceLabels.back();
               }
           }
         vector<size_t> ids(ravel_rank(ravel));
@@ -731,6 +746,9 @@ namespace minsky
                 ravel_setHandleState(ravel,i,&hs->second);
                 if (hs->second.order==HandleState::custom)
                   pickSliceLabels(i,hs->second.customOrder);
+                else
+                  ravel_setCalipers(ravel,i,hs->second.minLabel.c_str(),
+                                    hs->second.maxLabel.c_str());
               }
             nameToIdx[name]=i;
           }
@@ -782,6 +800,12 @@ namespace minsky
     lockGroup.reset();
   }
 
+  void Ravel::broadcastStateToLockGroup() const
+  {
+    if (lockGroup)
+      lockGroup->applyState(getState());
+  }
+ 
   
   void RavelLockGroup::applyState(const RavelState& state) const
   {

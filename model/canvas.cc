@@ -393,6 +393,13 @@ namespace minsky
       }
   }
 
+  void Canvas::unlockRavelsInSelection()
+  {
+    for (auto& i: selection.items)
+      if (auto r=dynamic_cast<Ravel*>(i.get()))
+        r->leaveLockGroup();
+  }
+  
   void Canvas::deleteItem()
   {
     if (item)
