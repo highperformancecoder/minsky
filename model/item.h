@@ -151,7 +151,7 @@ namespace minsky
     /// @param dir = -1/1 if left/down, right/up pressed
     /// @param modifier = true if modifier (eg shift/control) pressed
     /// @return true if state changed, and item needs to be redrawn
-    virtual bool handleArrows(int dir, bool modifier) {return false;}
+    virtual bool handleArrows(int dir, bool modifier=false) {return false;}
     
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
