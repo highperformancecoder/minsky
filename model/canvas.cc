@@ -112,6 +112,8 @@ namespace minsky
         {
           r->onMouseUp(x,y);
           itemFocus.reset(); // prevent spurious mousemove events being processed
+          if (r->lockGroup)
+            r->lockGroup->applyState(r->getState());
           minsky().reset();
         }
     if (fromPort.get())
@@ -363,6 +365,32 @@ namespace minsky
       r->addItem(i);
     r->resizeOnContents();
     r->splitBoundaryCrossingWires();
+  }
+
+  void Canvas::lockRavelsInSelection()
+  {
+    vector<shared_ptr<Ravel> > ravelsToLock;
+    shared_ptr<RavelLockGroup> lockGroup;
+    bool conflictingLockGroups=false;
+    for (auto& i: selection.items)
+      if (auto r=dynamic_pointer_cast<Ravel>(i))
+        {
+          ravelsToLock.push_back(r);
+          if (!lockGroup)
+            lockGroup=r->lockGroup;
+          if (lockGroup!=r->lockGroup)
+            conflictingLockGroups=true;
+        }
+    if (ravelsToLock.size()<2)
+      return;
+    if (!lockGroup || conflictingLockGroups)
+      lockGroup.reset(new RavelLockGroup);
+    for (auto& r: ravelsToLock)
+      {
+        lockGroup->ravels.push_back(r);
+        r->leaveLockGroup();
+        r->lockGroup=lockGroup;
+      }
   }
 
   void Canvas::deleteItem()

@@ -26,6 +26,8 @@
 
 namespace minsky 
 {
+  class RavelLockGroup;
+  
   class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
   {
   public:
@@ -62,6 +64,10 @@ namespace minsky
 
     /// local override of axis dimensionality
     Dimensions axisDimensions;
+
+    /// group of ravels that move syncronously
+    std::shared_ptr<RavelLockGroup> lockGroup;
+    void leaveLockGroup();
     
     /// true to indicate mouse hovering over border
     bool onBorder=false; 
@@ -128,6 +134,15 @@ namespace minsky
     void displayDelayedTooltip(float x, float y) override;
     void exportAsCSV(const std::string& filename) const;
 
+  };
+
+  class RavelLockGroup
+  {
+  public:
+    std::vector<std::weak_ptr<Ravel>> ravels;
+    /// apply ravel state to all still existing ravels in the group
+    void applyState(const RavelState&) const;
+    void removeFromGroup(const Ravel&);
   };
 }
 

@@ -253,7 +253,7 @@ namespace minsky
     /// refer to the new group
     void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
-
+    
     /// @{ override to provide clipboard handling functionality
     virtual void putClipboard(const string&) const {}
     virtual std::string getClipboard() const {return "";}

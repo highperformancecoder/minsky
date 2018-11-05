@@ -774,6 +774,36 @@ namespace minsky
       ((ravelLib.lib || ravelLib.versionFound=="unavailable")?
         "":" but incompatible");
   }
+
+  void Ravel::leaveLockGroup()
+  {
+    if (lockGroup)
+      lockGroup->removeFromGroup(*this);
+    lockGroup.reset();
+  }
+
+  
+  void RavelLockGroup::applyState(const RavelState& state) const
+  {
+    for (auto& rr: ravels)
+      if (auto r=rr.lock())
+        r->applyState(state);
+  }
+
+  void RavelLockGroup::removeFromGroup(const Ravel& ravel)
+  {
+    vector<weak_ptr<Ravel>> newRavelList;
+    for (auto& i: ravels)
+      {
+        auto r=i.lock();
+        if (r && r.get()!=&ravel)
+          newRavelList.push_back(move(i));
+      }
+    ravels.swap(newRavelList);
+    if (ravels.size()==1)
+      if (auto r=ravels[0].lock())
+        r->lockGroup.reset(); // this may delete this, so should be last
+  }
  
 }
 

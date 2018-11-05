@@ -264,7 +264,6 @@ namespace minsky
     //TODO: individually add or remove item from selection
   }
 
-
   void Minsky::insertGroupFromFile(const char* file)
   {
     schema2::Minsky currentSchema;

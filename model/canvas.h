@@ -159,7 +159,11 @@ namespace minsky
     
     /// create a group from items found in the current selection
     void groupSelection();
-    
+    /// lock all ravels in the selection together. If ravels already
+    /// belong to more than one group, then a completely new group is
+    /// set up.
+    void lockRavelsInSelection();
+
     /// delete item referenced by item
     void deleteItem();
     /// delete wire referenced by wire
