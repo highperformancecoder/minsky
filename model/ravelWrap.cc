@@ -521,6 +521,15 @@ namespace minsky
     broadcastStateToLockGroup();
   }
 
+  bool Ravel::handleArrows(int dir, bool modifier)
+  {
+    adjustSlicer(dir);
+    if (modifier)
+      minsky().reset();
+    return true;
+  }
+
+  
   bool Ravel::displayFilterCaliper() const
   {
     int h=ravel_selectedHandle(ravel);

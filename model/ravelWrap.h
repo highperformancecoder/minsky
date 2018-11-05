@@ -91,7 +91,7 @@ namespace minsky
     unsigned rank() const;
     void setRank(unsigned);
     void adjustSlicer(int); ///< adjust currently selected handle's slicer
-    bool handleArrows(int dir) override {adjustSlicer(dir); return true;}
+    bool handleArrows(int dir, bool modifier) override;
 
     // return selected handle, or -1 if none
     int selectedHandle() const;

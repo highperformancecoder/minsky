@@ -200,7 +200,8 @@ namespace minsky
     /// handle arrow keys
     /// @param int - direction (-1=left/up, +1=right/down)
     /// @param x, y coordinates of mouse in canvas coordinates
-    void handleArrows(int dir, float x, float y);
+    /// @param reset - if true, then call Minsky::reset()
+    void handleArrows(int dir, float x, float y, bool reset);
     
     /// zooms canvas such that group indexed by item is displayed
     void zoomToDisplay();

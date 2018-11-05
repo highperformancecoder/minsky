@@ -573,10 +573,10 @@ namespace minsky
       }
   }
 
-  void Canvas::handleArrows(int dir, float x, float y)
+  void Canvas::handleArrows(int dir, float x, float y, bool modifier)
   {
     if (auto item=itemAt(x,y))
-      if (item->handleArrows(dir))
+      if (item->handleArrows(dir,modifier))
         {
           requestRedraw();
           minsky().pushHistory(); //for ticket #812

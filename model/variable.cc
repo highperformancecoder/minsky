@@ -308,7 +308,7 @@ void VariableBase::adjustSliderBounds() const
       }
 }
 
-bool VariableBase::handleArrows(int dir)
+bool VariableBase::handleArrows(int dir,bool)
 {
   sliderSet(value()+dir*sliderStep);
   return true;

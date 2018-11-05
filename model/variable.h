@@ -141,7 +141,7 @@ namespace minsky
         [this](const std::string& s) {return _units(Units(s)).str();}
     };
     
-    bool handleArrows(int dir) override;
+    bool handleArrows(int dir,bool) override;
     
     /// variable is on left hand side of flow calculation
     bool lhs() const {return type()==flow || type()==tempFlow;} 
