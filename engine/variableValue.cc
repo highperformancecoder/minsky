@@ -266,7 +266,10 @@ namespace minsky
   {
     EngNotation r;
     r.sciExp=(v!=0)? floor(log(fabs(v))/log(10)): 0;
-    r.engExp=r.sciExp>=0? 3*(r.sciExp/3): 3*((r.sciExp+1)/3-1);
+    if (r.sciExp==3) // special case for dates
+      r.engExp=0;
+    else
+      r.engExp=r.sciExp>=0? 3*(r.sciExp/3): 3*((r.sciExp+1)/3-1);
     return r;
   }
 
@@ -279,7 +282,7 @@ namespace minsky
       case -2: conv="%6.3f"; break;
       case 0: case -1: conv="%5.2f"; break;
       case 1: conv="%5.1f"; break;
-      case 2: conv="%5.0f"; break;
+      case 2: case 3: conv="%5.0f"; break;
       default: return ""; // shouldn't be here...
       }
     char val[10];
