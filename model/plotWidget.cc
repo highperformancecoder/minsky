@@ -212,8 +212,18 @@ namespace minsky
   {
     // set any scale overrides
     setMinMax();
-    if (xminVar.idx()>-1) {minx=xminVar.value();}
-    if (xmaxVar.idx()>-1) {maxx=xmaxVar.value();}
+    if (xminVar.idx()>-1)
+      if (xIsSecsSinceEpoch && xminVar.units==Units("year"))
+        minx=yearToPTime(xminVar.value());
+      else
+        minx=xminVar.value();
+
+    if (xmaxVar.idx()>-1)
+      if (xIsSecsSinceEpoch && xmaxVar.units==Units("year"))
+        maxx=yearToPTime(xmaxVar.value());
+      else
+        maxx=xmaxVar.value();
+
     if (yminVar.idx()>-1) {miny=yminVar.value();}
     if (ymaxVar.idx()>-1) {maxy=ymaxVar.value();}
     if (y1minVar.idx()>-1) {miny1=y1minVar.value();}
@@ -313,12 +323,23 @@ namespace minsky
   void PlotWidget::addConstantCurves()
   {
     size_t extraPen=2*numLines;
+
+    // determine if any of the incoming vectors has a ptime-based xVector
+    xIsSecsSinceEpoch=false;
+    for (auto& i: yvars)
+      if (i.idx()>=0 && xvars[&i-&yvars[0]].idx()==-1 && i.xVector.size())
+        {
+          auto& xv=i.xVector[0];
+          if (xv.dimension.type==Dimension::time)
+            xIsSecsSinceEpoch=true;
+        }
+    
     for (size_t pen=0; pen<2*numLines; ++pen)
       if (pen<yvars.size() && yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
         {
           auto& yv=yvars[pen];
           auto d=yv.dims();
-          if (d.empty()) return;
+          if (d.empty()) continue;
           
           // work out a reference to the x data
           vector<double> xdefault;
@@ -347,8 +368,13 @@ namespace minsky
                         }
                       break;
                     case Dimension::value:
-                      for (auto& i: xv)
-                        xdefault.push_back(any_cast<double>(i));
+                      if (xIsSecsSinceEpoch && xv.dimension.units=="year")
+                        // interpret "year" as years since epoch (1/1/1970)
+                        for (auto& i: xv)
+                          xdefault.push_back(yearToPTime(any_cast<double>(i)));
+                      else
+                        for (auto& i: xv)
+                          xdefault.push_back(any_cast<double>(i));
                       break;
                     case Dimension::time:
                       // choose a sensible format string, dependent on the data

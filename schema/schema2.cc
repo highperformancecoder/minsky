@@ -381,6 +381,8 @@ namespace schema2
           x1->name(*y.name);
         if (y.init)
           x1->init(*y.init);
+        if (y.units)
+          x1->units(*y.units);
         if (y.slider)
           {
             x1->sliderBoundsSet=true;

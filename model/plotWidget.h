@@ -31,6 +31,10 @@
 
 namespace minsky
 {
+  // seconds in a year. Gregorian year chosen.
+  const double yearLength = 3600*24*365.2525;
+  inline double yearToPTime(double x) {return (x-1970)*yearLength;}
+  
   using namespace ecolab;
   // a container item for a plot widget
   class PlotWidget: public ItemT<PlotWidget>,
@@ -48,6 +52,8 @@ namespace minsky
     // draw(), which is const, so this attribute needs to be mutable.
     mutable bool justDataChanged=false;
     friend struct PlotItem;
+
+    bool xIsSecsSinceEpoch=false;
   public:
     using Item::x;
     using Item::y;

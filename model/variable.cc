@@ -308,9 +308,10 @@ void VariableBase::adjustSliderBounds() const
       }
 }
 
-bool VariableBase::handleArrows(int dir,bool)
+bool VariableBase::handleArrows(int dir,bool reset)
 {
   sliderSet(value()+dir*sliderStep);
+  if (reset) minsky().reset();
   return true;
 }
 

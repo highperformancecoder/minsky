@@ -122,6 +122,7 @@ namespace schema2
     Optional<float> width, height;
     Optional<std::string> name; //name, description or title
     Optional<std::string> init;
+    Optional<std::string> units;
     Optional<Slider> slider;
     std::shared_ptr<int> intVar;
     Optional<std::map<double,double>> dataOpData;
@@ -151,7 +152,7 @@ namespace schema2
     Item(const schema1::Item& it): ItemBase(it) {}
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      name(v.rawName()), init(v.init()) {
+      name(v.rawName()), init(v.init()), units(v.units()) {
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
     }
