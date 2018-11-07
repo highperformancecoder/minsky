@@ -67,6 +67,8 @@ namespace schema2
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
               items.back().filename=r->filename();
+              if (r->lockGroup)
+                items.back().lockGroup=at(r->lockGroup.get());
               auto s=r->getState();
               if (!s.handleStates.empty())
                 {
@@ -345,7 +347,7 @@ namespace schema2
     if (y.detailedText) x.detailedText=*y.detailedText;
     if (y.tooltip) x.tooltip=*y.tooltip;
   }
-  
+
   void populateItem(minsky::Item& x, const Item& y)
   {
     populateNote(x,y);
@@ -372,6 +374,7 @@ namespace schema2
             x1->applyState(*y.ravelState);
             SchemaHelper::initHandleState(*x1,*y.ravelState);
           }
+        
         if (y.dimensions)
           x1->axisDimensions=*y.dimensions;
       }
@@ -452,13 +455,18 @@ namespace schema2
     if (y.coords)
       x.coords(*y.coords);
   }
-  
+
+  struct LockGroupFactory: public shared_ptr<minsky::RavelLockGroup>
+  {
+    LockGroupFactory(): shared_ptr<minsky::RavelLockGroup>(new minsky::RavelLockGroup) {}
+  };
   
   void Minsky::populateGroup(minsky::Group& g) const {
     map<int, minsky::ItemPtr> itemMap;
     map<int, shared_ptr<minsky::Port>> portMap;
     map<int, schema2::Item> schema2VarMap;
     MinskyItemFactory factory;
+    map<int,LockGroupFactory> lockGroups;
     
     for (auto& i: items)
       if (auto newItem=itemMap[i.id]=g.addItem(factory.create(i.type)))
@@ -525,6 +533,12 @@ namespace schema2
                   godley->scaleIconForHeight(*i.iconScale * godley->height());
               }
           }
+        if (i.type=="Ravel" && i.lockGroup)
+          if (auto r=dynamic_pointer_cast<minsky::Ravel>(itemMap[i.id]))
+            {
+              r->lockGroup=lockGroups[*i.lockGroup];
+              r->lockGroup->ravels.push_back(r);
+            }
       }
         
     for (auto& w: wires)

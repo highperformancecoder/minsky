@@ -128,6 +128,7 @@ namespace schema2
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
     Optional<minsky::RavelState> ravelState;
+    Optional<int> lockGroup;
     Optional<minsky::Dimensions> dimensions;
     // Operation tensor parameters
     Optional<std::string> axis;
