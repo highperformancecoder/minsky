@@ -131,7 +131,8 @@ namespace minsky
     /// get the current state of the Ravel
     RavelState getState() const;
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-    void applyState(const RavelState&);
+    /// @param preservePositions if true, do not rotate handles
+    void applyState(const RavelState&, bool preservePositions=false);
     void displayDelayedTooltip(float x, float y) override;
     void exportAsCSV(const std::string& filename) const;
 

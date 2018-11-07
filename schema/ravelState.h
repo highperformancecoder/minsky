@@ -30,7 +30,6 @@ namespace minsky
     struct HandleState
     {
       double x,y; ///< handle tip coordinates (only angle important, not length)
-      size_t sliceIndex, sliceMin, sliceMax;
       bool collapsed, displayFilterCaliper;
       enum ReductionOp {sum, prod, av, stddev, min, max};
       ReductionOp reductionOp;
@@ -39,7 +38,7 @@ namespace minsky
       // note this member must appear after all members of
       // CAPIHandleState from the Ravel CAPI
       vector<string> customOrder; // used if order==custom
-      string minLabel, maxLabel;
+      string minLabel, maxLabel, sliceLabel;
     };
 
     double radius=ravelDefaultRadius;
