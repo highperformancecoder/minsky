@@ -355,6 +355,8 @@ namespace MathDAG
                   for (auto& i: xVector)
                     if (state->axis.empty() || i.name==state->axis)
                       {
+                        if (state->arg>=i.size())
+                          throw error("difference argument %g greater than vector length %ul",state->arg,(long)i.size());
                         if (state->arg>0)
                           i.erase(i.begin(), i.begin()+state->arg);
                         else
