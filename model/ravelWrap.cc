@@ -769,7 +769,7 @@ namespace minsky
   }
 
   /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-  void Ravel::applyState(const RavelState& state, bool preservePositions)
+  void Ravel::applyState(const RavelState& state)
   {
     if (ravel)
       {
@@ -790,13 +790,7 @@ namespace minsky
             auto hs=state.handleStates.find(name);
             if (hs!=state.handleStates.end())
               {
-                RavelHandleState state(hs->second), prevState;
-                if (preservePositions)
-                  {
-                    ravel_getHandleState(ravel,i,&prevState);
-                    state.x=prevState.x;
-                    state.y=prevState.y;
-                  }
+                RavelHandleState state(hs->second);
                 ravel_setHandleState(ravel,i,&state);
                 if (hs->second.order==HandleState::custom)
                   pickSliceLabels(i,hs->second.customOrder);
