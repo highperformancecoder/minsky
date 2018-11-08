@@ -859,14 +859,6 @@ namespace minsky
       }
   }
  
-  
-//  void RavelLockGroup::applyState(const RavelState& state) const
-//  {
-//    for (auto& rr: ravels)
-//      if (auto r=rr.lock())
-//        r->applyState(state,true);
-//  }
-
   void RavelLockGroup::removeFromGroup(const Ravel& ravel)
   {
     vector<weak_ptr<Ravel>> newRavelList;
