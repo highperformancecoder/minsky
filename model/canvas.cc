@@ -111,9 +111,8 @@ namespace minsky
       if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
         {
           r->onMouseUp(x,y);
+          r->broadcastStateToLockGroup();
           itemFocus.reset(); // prevent spurious mousemove events being processed
-          if (r->lockGroup)
-            r->lockGroup->applyState(r->getState());
           minsky().reset();
         }
     if (fromPort.get())
@@ -391,6 +390,9 @@ namespace minsky
         r->leaveLockGroup();
         r->lockGroup=lockGroup;
       }
+    if (lockGroup && !lockGroup->ravels.empty())
+      if (auto r=lockGroup->ravels.front().lock())
+        r->broadcastStateToLockGroup();
   }
 
   void Canvas::unlockRavelsInSelection()

@@ -148,7 +148,7 @@ namespace minsky
     unsigned colour() const {return m_colour;}
     std::vector<std::weak_ptr<Ravel>> ravels;
     /// apply ravel state to all still existing ravels in the group
-    void applyState(const RavelState&) const;
+    //void applyState(const RavelState&) const;
     void removeFromGroup(const Ravel&);
   };
 }

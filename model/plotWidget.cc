@@ -431,7 +431,7 @@ namespace minsky
               extraPen++;
             }
         }
-    setMinMax();
+    scalePlot();
   }
 
   

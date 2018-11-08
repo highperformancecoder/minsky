@@ -262,7 +262,8 @@ namespace minsky
     DEFFN(ravel_getHandleState, void, const Ravel::RavelImpl*, size_t, RavelHandleState*);
     DEFFN(ravel_setHandleState, void, Ravel::RavelImpl*, size_t, const RavelHandleState*);
     DEFFN(ravel_adjustSlicer, void, Ravel::RavelImpl*, int);
-
+    DEFFN(ravel_redistributeHandles,void, Ravel::RavelImpl*);
+    
     DEFFN(ravelDC_new, Ravel::Ravel::DataCube*);
     DEFFN(ravelDC_delete, void, Ravel::DataCube*);
     DEFFN(ravelDC_initRavel, bool, Ravel::DataCube*, Ravel::RavelImpl*);
@@ -805,6 +806,7 @@ namespace minsky
                 ravel_setSlicer(ravel,i,hs->second.sliceLabel.c_str());
               }
           }
+        ravel_redistributeHandles(ravel);
       }
   }
 
@@ -848,16 +850,22 @@ namespace minsky
   void Ravel::broadcastStateToLockGroup() const
   {
     if (lockGroup)
-      lockGroup->applyState(getState());
+      {
+        auto state=getState();
+        for (auto& rr: lockGroup->ravels)
+          if (auto r=rr.lock())
+            if (r.get()!=this)
+              r->applyState(state/*,true*/);
+      }
   }
  
   
-  void RavelLockGroup::applyState(const RavelState& state) const
-  {
-    for (auto& rr: ravels)
-      if (auto r=rr.lock())
-        r->applyState(state,true);
-  }
+//  void RavelLockGroup::applyState(const RavelState& state) const
+//  {
+//    for (auto& rr: ravels)
+//      if (auto r=rr.lock())
+//        r->applyState(state,true);
+//  }
 
   void RavelLockGroup::removeFromGroup(const Ravel& ravel)
   {
