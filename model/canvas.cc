@@ -585,7 +585,16 @@ namespace minsky
     updateRegion.y0=y0;
     updateRegion.x1=x0+width;
     updateRegion.y1=y0+height;
-    redrawUpdateRegion();
+    // redraw of canvas may throw if called during a reset operation
+    try
+      {
+        redrawUpdateRegion();
+      }
+    catch (...)
+      {
+        // consume exception and try redrawing
+        requestRedraw();
+      }
   }
   
   void Canvas::redraw()
