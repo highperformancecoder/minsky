@@ -83,7 +83,7 @@ namespace MathDAG
     if (r && r->isFlowVar() && r!=result)
       ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
     assert(result->idx()>=0);
-    doOneEvent();
+    doOneEvent(true);
     return *result;
   }
 
@@ -103,7 +103,7 @@ namespace MathDAG
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
     assert(result->idx()>=0);
-    doOneEvent();
+    doOneEvent(true);
     return *result;
   }
 
@@ -127,7 +127,7 @@ namespace MathDAG
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
     assert(result->idx()>=0);
-    doOneEvent();
+    doOneEvent(true);
     return *result;
   }
 
@@ -445,7 +445,7 @@ namespace MathDAG
     if (state && !state->ports.empty() && state->ports[0]) 
       state->ports[0]->setVariableValue(*result);
     assert(result->idx()>=0);
-    doOneEvent();
+    doOneEvent(true);
     return *result;
   }
 

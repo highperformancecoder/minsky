@@ -142,9 +142,9 @@ int main(int argc, char* argv[])
 namespace minsky
 {
   // check and perform a GUI event
-  void doOneEvent()
+  void doOneEvent(bool idletasksOnly)
   {
-    Tcl_DoOneEvent(TCL_DONT_WAIT);
+    Tcl_DoOneEvent(TCL_DONT_WAIT | (idletasksOnly? TCL_IDLE_EVENTS: 0));
   }
 }
 

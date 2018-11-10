@@ -468,6 +468,8 @@ namespace minsky
               for (size_t i=0; i<dims.size(); ++i)
                 assert(dims[i]==v.dims()[i]);
 #endif
+            if (v.idx()==-1 || v.numElements()>prevNumElem)
+              v.allocValue();
             for (size_t i=0; i<v.numElements(); ++i)
               *(v.begin()+i)=tmp[i];
           }

@@ -719,7 +719,7 @@ namespace minsky
       {
         // while waiting for thread to finish, check and process any UI events
         usleep(1000);
-        doOneEvent();
+        doOneEvent(false);
       }
     rkThread.join();
     if (reset_flag()) // in case reset() was called during the step evaluation
