@@ -25,7 +25,7 @@
 using namespace schema2;
 using namespace std;
 
-namespace minsky {void doOneEvent() {}}
+namespace minsky {void doOneEvent(bool) {}}
 
 int main(int argc, const char*argv[])
 {
