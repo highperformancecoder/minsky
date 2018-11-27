@@ -17,10 +17,6 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
 - if you already have ports installed, you can recompile for the new deployment target with
   port upgrade --force installed
 
-# compile TkTable
-  - configure
-  - make
-  - cp libTktable2.11.dylib /usr/local/lib
   
 # compile EcoLab
   - make install
