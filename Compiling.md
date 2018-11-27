@@ -23,7 +23,7 @@ Dependencies
 * Berkeley DB (libdb) (Minsky doesn't use BDB, but it helps for installing EcoLab from source code)
 * Most recent ecolab.5 release
 
-The server component is and experimental implementation for supporting a web-based Minsky client. It is not needed for building and using the standard desktop application.
+The server component is an experimental implementation for supporting a web-based Minsky client. It is not needed for building and using the standard desktop application.
 
 For building server (experimental)
 
@@ -36,10 +36,10 @@ It is recommended that you use your package manager wherever possible to install
 
 * Cygwin setup.exe for Cygwin, which is a nice GUI interface
 * MXE: type make <package-name> in the top level directory. See the [Windows Release build notes](WindowsRelease.md) for more details.
-* MacPorts: use the ports command: eg ports install <package-name>. see the [MacOSX Release build notes][MacRelease.md] for more details.
-* Debian/Ubuntu: use apt: eg apt install <package-name>-dev. Note the trailing -dev, which installs the header files and static library stubs.
-* Redhat/Fedora/CentOS: use yum: eg yum install <package-name>-devel.
-* SUSE/OpenSUSE: use zypper, or the yast2 GUI interface: eg zypper install <package-name>-devel.
+* MacPorts: use the ports command: eg ports install _package-name_. see the [MacOSX Release build notes](MacRelease.md) for more details.
+* Debian/Ubuntu: use apt: eg apt install _package-name_-dev. Note the trailing -dev, which installs the header files and static library stubs.
+* Redhat/Fedora/CentOS: use yum: eg yum install _package-name_-devel.
+* SUSE/OpenSUSE: use zypper, or the yast2 GUI interface: eg zypper install _package-name_-devel.
 
 * In all of the above command line package managers, you can use the search subcommand to find the exact name of a package to install:
 ~~~~
