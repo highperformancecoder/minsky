@@ -38,7 +38,7 @@ namespace minsky
   /// a lasso is intended
   struct ClickType
   {
-    enum Type {onItem, onPort, outside, onSlider, onRavel};
+    enum Type {onItem, onPort, outside, onSlider, onRavel, onResize};
   };
 
   /// radius of circle marking ports at zoom=1
@@ -63,7 +63,8 @@ namespace minsky
   public:
     void update(const Item& x);
     bool contains(float x, float y) const {
-      return left<=x && right>=x && bottom>=y && top<=y;
+      // extend each item by a portradius to solve ticket #903
+      return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
     }
     bool valid() const {return left!=right;}
     float width() const {return right-left;}
@@ -77,6 +78,7 @@ namespace minsky
     float zoomFactor=1;
     double rotation=0; ///< rotation of icon, in degrees
     bool m_visible=true; ///< if false, then this item is invisible
+    mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     std::weak_ptr<Group> group; ///< owning group of this item.
     /// canvas bounding box.
     mutable BoundingBox bb;
@@ -139,6 +141,7 @@ namespace minsky
 
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
+    void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);

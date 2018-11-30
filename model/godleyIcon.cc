@@ -302,12 +302,6 @@ namespace minsky
         svgRenderer.render(cairo); 
       }
 
-      if (selected)
-        {
-          cairo_rectangle(cairo,0,0,svgRenderer.width(),svgRenderer.height());
-          cairo_clip(cairo);
-          drawSelected(cairo);
-        }
     }
 
     if (!table.title.empty())
@@ -336,8 +330,30 @@ namespace minsky
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip);
+        drawResizeHandles(cairo);
       }
+      
+    cairo_rectangle(cairo,-0.5*width()+leftMargin(),-0.5*height(),
+                    width()-leftMargin(),height()-bottomMargin());
+    cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
   }
 
+  ClickType::Type GodleyIcon::clickType(float x, float y)
+  {
+    double dx=fabs(x-this->x()), dy=fabs(y-this->y());
+    double w=0.5*Item::width()*zoomFactor, h=0.5*Item::height()*zoomFactor;
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(dx-w) < portRadius*zoomFactor &&
+        fabs(dy-h) < portRadius*zoomFactor &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*zoomFactor)
+      return ClickType::onResize;
+    if (dx < w && dy < h)
+      return ClickType::onItem;
+    else
+      return ClickType::outside;
+  }
+
+  
   SVGRenderer GodleyIcon::svgRenderer;
 }

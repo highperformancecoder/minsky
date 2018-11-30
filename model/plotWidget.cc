@@ -118,11 +118,6 @@ namespace minsky
   {
     double w=width*zoomFactor, h=height*zoomFactor;
 
-    cairo_new_path(cairo);
-    cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
-
-    cairo_clip(cairo);
-
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel.empty()||!ylabel.empty()||!y1label.empty())
       {
@@ -204,8 +199,14 @@ namespace minsky
         drawPorts(cairo);
         displayTooltip(cairo,tooltip);
       }
+    if (onResizeHandles) drawResizeHandles(cairo);
     if (selected) drawSelected(cairo);
     justDataChanged=false;
+    
+    cairo_new_path(cairo);
+    cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
+    cairo_clip(cairo);
+
   }
   
   void PlotWidget::scalePlot()
@@ -270,8 +271,14 @@ namespace minsky
           return ClickType::onPort;
       }
 
-    return (abs(x-this->x())<0.5*width*zoomFactor &&
-            abs(y-this->y())<0.5*height*zoomFactor)?
+    double dx=x-this->x(), dy=y-this->y();
+    double w=0.5*width*zoomFactor, h=0.5*height*zoomFactor;
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(fabs(dx)-w) < portRadius*zoomFactor &&
+        fabs(fabs(dy)-h) < portRadius*zoomFactor &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*zoomFactor)
+      return ClickType::onResize;
+    return (abs(dx)<w && abs(dy)<h)?
       ClickType::onItem: ClickType::outside;
   }
   

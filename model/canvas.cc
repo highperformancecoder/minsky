@@ -61,6 +61,10 @@ namespace minsky
             if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
               r->onMouseDown(x,y);
             break;
+          case ClickType::onResize:
+            lassoMode=LassoMode::itemResize;
+            item=itemFocus;
+            break;
           }
       }
     else
@@ -261,6 +265,7 @@ namespace minsky
                                          requestRedraw();
                                          (*i)->mouseFocus=mf;
                                        }
+                                     (*i)->onResizeHandles=ct==ClickType::onResize;
                                      if (auto r=dynamic_cast<Ravel*>(i->get()))
                                        {
                                          r->onBorder = ct==ClickType::onItem;

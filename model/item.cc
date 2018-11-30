@@ -41,6 +41,7 @@ namespace minsky
        (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
+    x.onResizeHandles=false;
     try {x.draw(surf.cairo());}
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
@@ -115,6 +116,9 @@ namespace minsky
         if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor)
           return ClickType::onPort;
       }
+
+    double dx=x-this->x(), dy=y-this->y();
+
     ecolab::cairo::Surface dummySurf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
@@ -154,6 +158,42 @@ namespace minsky
     cairo_restore(cairo);
   }
 
+  namespace
+  {
+    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf)
+    {
+      cairo::CairoSave cs(cairo);
+      cairo_translate(cairo,x,y);
+      cairo_scale(cairo,sf,sf);
+      cairo_move_to(cairo,-1,-.2);
+      cairo_line_to(cairo,-1,-1);
+      cairo_line_to(cairo,1,1);
+      cairo_line_to(cairo,1,0.2);
+      cairo_move_to(cairo,-1,-1);
+      cairo_line_to(cairo,-.2,-1);
+      cairo_move_to(cairo,.2,1);
+      cairo_line_to(cairo,1,1);
+    }
+  }
+  
+  void Item::drawResizeHandles(cairo_t* cairo) const
+  {
+    {
+      cairo::CairoSave cs(cairo);
+      double x=0.5*width()*zoomFactor, y=0.5*height()*zoomFactor,
+        sf=portRadius*zoomFactor;
+      drawResizeHandle(cairo,x,y,sf);
+      cairo_rotate(cairo,0.5*M_PI);
+      drawResizeHandle(cairo,y,x,sf);
+      cairo_rotate(cairo,0.5*M_PI);
+      drawResizeHandle(cairo,x,y,sf);
+      cairo_rotate(cairo,0.5*M_PI);
+      drawResizeHandle(cairo,y,x,sf);
+    }
+    cairo_stroke(cairo);
+  }
+
+  
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
   {

@@ -77,6 +77,7 @@ namespace minsky
     const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
     void resize(const LassoBox&) override;
+    double radius() const;
     ClickType::Type clickType(float x, float y) override;
     void onMouseDown(float x, float y);
     void onMouseUp(float x, float y);

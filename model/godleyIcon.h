@@ -87,6 +87,7 @@ namespace minsky
     /// variable icon, null otherwise, indicating that the Godley table
     /// has been selected.
     ItemPtr select(float x, float y) const override;
+    ClickType::Type clickType(float x, float y) override;
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
