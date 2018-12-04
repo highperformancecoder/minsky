@@ -1,0 +1,51 @@
+sudo: true
+dist: trusty
+language: cpp
+cache: ccache
+env:
+  - TEST_SUITE=sure
+  - TEST_SUITE=docs
+  
+before_install:
+  - wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_14.04/Release.key
+  - sudo apt-key add - < Release.key
+  - echo 'deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_14.04/ /' >/tmp/hpcoders.list 
+  - sudo mv /tmp/hpcoders.list /etc/apt/sources.list.d/
+  - sudo apt-get update -qq
+  - sudo apt-get install -y tcl-dev
+  - sudo apt-get install -y tk-dev
+  - sudo apt-get install -y libcairo2-dev
+  - sudo apt-get install -y zlib1g-dev
+  - sudo apt-get install -y libreadline-dev
+  - sudo apt-get install -y libgsl0-dev
+  - sudo apt-get install -y libblas-dev
+  - sudo apt-get install -y libpango1.0-dev
+  - sudo apt-get install -y exuberant-ctags
+  - sudo apt-get install -y libdb-dev
+  - sudo apt-get install -y libncurses5-dev
+  - sudo apt-get install -y librsvg2-dev
+  - sudo apt-get install -y json-spirit
+  - sudo apt-get install -y libboost-dev
+  - sudo apt-get install -y libboost-system-dev
+  - sudo apt-get install -y libboost-regex-dev
+  - sudo apt-get install -y libboost-date-time-dev
+  - sudo apt-get install -y libboost-program-options-dev
+  - sudo apt-get install -y libboost-filesystem-dev
+  - sudo apt-get install -y libboost-thread-dev
+  - sudo apt-get install -y libboost-signals-dev
+  - sudo apt-get install -y libsoci
+  - sudo apt-get install -y libsoci-dev
+  - sudo apt-get install -y libunittest++-dev
+  - sudo apt-get install -y linkchecker
+  - sudo apt-get install -y csvprintf
+  - sudo apt-get install -y libxml2-utils
+  - sudo apt-get install -y octave
+  - sudo apt-get install -y texlive
+  - sudo apt-get install -y latex2html
+  - sudo apt-get install -y perl
+#  - psql -c 'create database minsky;' -U postgres
+  - ls /usr/lib/libsoci*
+#addons:
+#  postgresql: "9.3"
+script:
+  bash travisRun.sh
