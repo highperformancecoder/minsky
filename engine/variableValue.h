@@ -48,10 +48,14 @@ namespace minsky
   protected:
     XVectorVector m_xVector;
   public:
-    const XVectorVector& xVector{m_xVector};
-    XVectorMixin() {}
-    XVectorMixin(const XVectorMixin& x): m_xVector(x.m_xVector) {}
-    XVectorMixin(XVectorMixin&& x): m_xVector(x.m_xVector) {}
+    // need to use C++98 style initialiser here to get around compiler
+    // bug on Ubuntu 14.04
+    const XVectorVector& xVector; //{m_xVector};
+    XVectorMixin(): xVector(m_xVector) {}
+    XVectorMixin(const XVectorMixin& x):
+      m_xVector(x.m_xVector), xVector(m_xVector) {}
+    XVectorMixin(XVectorMixin&& x):
+      m_xVector(x.m_xVector), xVector(m_xVector) {}
     XVectorMixin& operator=(const XVectorMixin& x)
     {m_xVector=x.m_xVector; return *this;}
     XVectorMixin& operator=(XVectorMixin&& x)
