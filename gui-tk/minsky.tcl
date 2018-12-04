@@ -1047,12 +1047,17 @@ proc openNamedFile {ofname} {
     newSystem
     setFname $ofname
 
-    eval minsky.load $fname
+    catch {eval minsky.load $fname}
     doPushHistory 0
     pushFlags
     recentreCanvas
 
    .controls.simSpeed set [simulationDelay]
+    # force update canvas size to ensure model is displayed correctly
+    update
+    canvas.requestRedraw
+    # not sure why this is needed, but initial draw doesn't happen without it
+    event generate .wiring.canvas <Expose>
     # setting simulationDelay causes the edited (dirty) flag to be set
     pushHistory
     doPushHistory 1
@@ -1425,22 +1430,22 @@ proc unknown {procname args} {
 }
 
 pushFlags
-if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
-    # ignore any exceptions thrown during load, in case it can be repaired later
-    catch {minsky.load $argv(1)}
-    doPushHistory 0
-    setFname $argv(1)
-    # we have loaded a Minsky model, so must refresh the canvas
-    recentreCanvas
-    set delay [simulationDelay]
-    # force update canvas size to ensure model is displayed correctly
-    update
-    canvas.requestRedraw
-    # not sure why this is needed, but initial draw doesn't happen without it
-    event generate .wiring.canvas <Expose>
-    pushHistory
-    doPushHistory 1
-}
+if {$argc>1 && ![string match "*.tcl" $argv(1)]} {openNamedFile $argv(1)}
+#    # ignore any exceptions thrown during load, in case it can be repaired later
+#    catch {minsky.load $argv(1)}
+#    doPushHistory 0
+#    setFname $argv(1)
+#    # we have loaded a Minsky model, so must refresh the canvas
+#    recentreCanvas
+#    set delay [simulationDelay]
+#    # force update canvas size to ensure model is displayed correctly
+#    update
+#    canvas.requestRedraw
+#    # not sure why this is needed, but initial draw doesn't happen without it
+#    event generate .wiring.canvas <Expose>
+#    pushHistory
+#    doPushHistory 1
+#}
 
 #return 
 proc ifDef {var} {

@@ -323,6 +323,7 @@ namespace minsky
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
       }
+    if (onResizeHandles) drawResizeHandles(cairo);
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
     cairo_stroke_preserve(cairo);
@@ -359,6 +360,10 @@ namespace minsky
       ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor));
     bb.update(*this);
   }
+
+  double Ravel::radius() const {
+    return ravel? ravel_radius(ravel): 0;
+  }
   
   ClickType::Type Ravel::clickType(float xx, float yy)
   {
@@ -366,9 +371,16 @@ namespace minsky
       if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
         return ClickType::onPort;
     double r=1.1*zoomFactor*(ravel? ravel_radius(ravel): ravelDefaultRadius);
-    if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
-      return ClickType::outside;
-    else if (std::abs(xx-x())<=r && std::abs(yy-y())<=r)
+    double R=1.1*r;
+    double dx=xx-x(), dy=yy-y();
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(fabs(dx)-R) < portRadius*zoomFactor &&
+        fabs(fabs(dy)-R) < portRadius*zoomFactor &&
+        fabs(hypot(dx,dy)-std::sqrt(2)*R) < portRadius*zoomFactor)
+      return ClickType::onResize;
+    else if (std::abs(xx-x())>R || std::abs(yy-y())>R)
+      return ClickType::outside;    
+    else if (std::abs(dx)<=r && std::abs(dy)<=r)
       return ClickType::onRavel;
     else
       return ClickType::onItem;
