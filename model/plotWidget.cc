@@ -200,12 +200,12 @@ namespace minsky
         displayTooltip(cairo,tooltip);
       }
     if (onResizeHandles) drawResizeHandles(cairo);
-    if (selected) drawSelected(cairo);
     justDataChanged=false;
     
     cairo_new_path(cairo);
     cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
     cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
 
   }
   
