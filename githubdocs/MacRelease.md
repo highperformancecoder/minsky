@@ -10,8 +10,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - macosx_deployment_target 10.9
   - buildfromsource         always
 - Now install port prerequisistes for Minsky. 
-  - gcc8 
-  - tcl/tk needs to be install from source code. See below If using X11, then you can use the MacPorts build of tk.
+  - tcl/tk needs to be installed from source code if using AQUA. See below. If using X11, then you can use the MacPorts build of tk.
   - cairo
   - pango
   - gsl
@@ -19,12 +18,11 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - boost
   - cmake (for building json_spirit)
   - json_spirit needs to be installed from source code
-  - db48
 - if you already have ports installed, you can recompile for the new deployment target with
   port upgrade --force installed
-- db48 is not used by Minsky, strictly speaking, but because MacOSX has an antique version of db installed, it needs to be upgraded for EcoLab to build.
 
-# compile TCL/Tk from sources
+
+# compile TCL/Tk from source code
 
 Because we need to use an internal function with tk when compiling Minsky for Aqua, we have to staticly link to the library. 
 
@@ -48,6 +46,7 @@ Because we need to use an internal function with tk when compiling Minsky for Aq
 
 # compile EcoLab
   - make -j MAC_OSX_TK=1 BDB= install 
+  - note disabling BDB is required, as MacOSX has a positively ancient version of Berkeley DB installed.
   
 # compile Minsky
   - make mac-dist
