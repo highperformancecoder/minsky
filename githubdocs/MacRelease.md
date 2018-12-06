@@ -45,6 +45,7 @@ Because we need to use an internal function with tk when compiling Minsky for Aq
 - sudo make install
 
 # compile EcoLab
+Enable MAC_OSC_TK=1 to enable the Aqua build.
   - make -j MAC_OSX_TK=1 BDB= install 
   - note disabling BDB is required, as MacOSX has a positively ancient version of Berkeley DB installed.
   
