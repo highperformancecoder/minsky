@@ -10,7 +10,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - macosx_deployment_target 10.9
   - buildfromsource         always
 - Now install port prerequisistes for Minsky. 
-  - tcl/tk needs to be installed from source code if using AQUA. See below. If using X11, then you can use the MacPorts build of tk.
+  - tcl/tk needs to be installed from source code if using Aqua. See below. If using X11, then you can use the MacPorts build of tk.
   - cairo
   - pango
   - gsl
@@ -50,6 +50,7 @@ MAC_OSC_TK=1 enables the Aqua build.
   - note disabling BDB is required, as MacOSX has a positively ancient version of Berkeley DB installed.
   
 # compile Minsky
+By default, Minsky builds in Aqua mode. This may cause build errors if the prerequisites are built for X11. To disable Aqua, specify MAC_OSX_TK= on the make command line.
   - make mac-dist
   
 This should leave a .pkg file suitable for distribution in the top level directory.
