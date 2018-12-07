@@ -64,9 +64,8 @@ cp -r gui-tk/library $MINSKYHOME
 cp -r gui-tk/icons $MINSKYHOME
 cp gui-tk/accountingRules $MINSKYHOME
     
-# determine location of tcl library from tclsh - make sure the correct
-# tclsh is in your path
-eval `tclsh echo_tcl_lib.tcl`
+# determine location of tcl library 
+eval `gui-tk/minsky echo_tcl_lib.tcl`
 
 echo "$TCL_LIB $TK_LIB"
 mkdir -p $MINSKYHOME/library

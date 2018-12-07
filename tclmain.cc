@@ -93,19 +93,29 @@ int main(int argc, char* argv[])
   Tcl_FindExecutable(argv[0]);
 #ifndef MXE
   // For MXE builds, override tcl_library and tk_library to the self-contained versions
-  if (Tcl_Init(interp())!=TCL_OK)
+  int r=Tcl_Init(interp());
+  if (r!=TCL_OK)
 #endif
     // one possible reason is that it failed to locate the TCL library, we we set tcl_library and try again
     {
       path exeDir=path(Tcl_GetNameOfExecutable()).parent_path();
       tclvar tcl_library("tcl_library", (exeDir/"library"/"tcl").string().c_str());
       tclvar tk_library("tk_library", (exeDir/"library"/"tk").string().c_str());
-      if (Tcl_Init(interp())!=TCL_OK)
+      if ((r=Tcl_Init(interp()))!=TCL_OK)
         {
-          fprintf(stderr,"%s\n",Tcl_GetStringResult(interp()));
-          fprintf(stderr,"%s\n",Tcl_GetVar(interp(),"errorInfo",0)); /* print out trace */
-          return 1;  /* not a clean execution */
+          // on Macs, the TCL library may be located in
+          // ../lib/minsky/library to get around codesign's
+          // pernicketyness
+          tcl_library=(exeDir/".."/"lib"/"minsky"/"library"/"tcl").string();
+          tk_library=(exeDir/".."/"lib"/"minsky"/"library"/"tcl").string();
+          r=Tcl_Init(interp());
         }
+    }
+  if (r!=TCL_OK)
+    {
+      fprintf(stderr,"%s\n",Tcl_GetStringResult(interp()));
+      fprintf(stderr,"%s\n",Tcl_GetVar(interp(),"errorInfo",0)); /* print out trace */
+      return 1;  /* not a clean execution */
     }
 
   /* set the TCL variables argc and argv to contain the
