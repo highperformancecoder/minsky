@@ -56,7 +56,8 @@ namespace minsky
     void push_back(const std::string&);
     void push_back(const char* x) {push_back(std::string(x));}
     using V::push_back;
-
+    /// best time format given range of data for plot xticks and spreadsheet labels
+    std::string timeFormat() const;
   };
 
 }

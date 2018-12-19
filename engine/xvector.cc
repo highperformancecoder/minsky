@@ -203,4 +203,31 @@ namespace minsky
     else
       return "";
   }
+
+  string XVector::timeFormat() const
+  {
+    if (dimension.type!=Dimension::time || empty()) return "";
+    static const auto day=hours(24);
+    static const auto month=day*30;
+    static const auto year=day*365;
+    auto dt=any_cast<ptime>(back())-any_cast<ptime>(front());
+    if (dt > year*5)
+      return "%Y";
+    else if (dt > year)
+      return "%b %Y";
+    else if (dt > month*6)
+      return "%b";
+    else if (dt > month)
+      return "%d %b";
+    else if (dt > day)
+      return "%d %H:%M";
+    else if (dt > hours(1))
+      return "%H:%M";
+    else if (dt > minutes(1))
+      return "%M:%S";
+    else
+      return "%s";
+  }
+  
+
 }

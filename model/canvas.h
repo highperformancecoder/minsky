@@ -27,6 +27,7 @@
 #include "switchIcon.h"
 #include "wire.h"
 #include "ravelWrap.h"
+#include "sheet.h"
 #include <cairoSurfaceImage.h>
 
 #include <chrono>
@@ -156,6 +157,7 @@ namespace minsky
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
     void addRavel() {setItemFocus(model->addItem(new Ravel));}
+    void addSheet() {setItemFocus(model->addItem(new Sheet));}
     
     /// create a group from items found in the current selection
     void groupSelection();

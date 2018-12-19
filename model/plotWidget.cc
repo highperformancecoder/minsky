@@ -384,35 +384,16 @@ namespace minsky
                           xdefault.push_back(any_cast<double>(i));
                       break;
                     case Dimension::time:
-                      // choose a sensible format string, dependent on the data
-                      string format;
-                      static const auto day=hours(24);
-                      static const auto month=day*30;
-                      static const auto year=day*365;
-                      auto dt=any_cast<ptime>(xv.back())-any_cast<ptime>(xv.front());
-                      if (dt > year*5)
-                        format="%Y";
-                      else if (dt > year)
-                        format="%b %Y";
-                      else if (dt > month*6)
-                        format="%b";
-                      else if (dt > month)
-                        format="%d %b";
-                      else if (dt > day)
-                        format="%d %H:%M";
-                      else if (dt > hours(1))
-                        format="%H:%M";
-                      else if (dt > minutes(1))
-                        format="%M:%S";
-                      else
-                        format="%s";
-                        
-                      for (auto& i: xv)
-                        {
-                          double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
-                          xticks.emplace_back(tv,str(i,format));
-                          xdefault.push_back(tv);
-                        }
+                      {
+                        string format=xv.timeFormat();
+                        for (auto& i: xv)
+                          {
+                            double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
+                            xticks.emplace_back(tv,str(i,format));
+                            xdefault.push_back(tv);
+                          }
+                      }
+                      break;
                     }
                 }
               else // by default, set x to 0..d[0]-1

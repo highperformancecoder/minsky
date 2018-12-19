@@ -154,6 +154,10 @@ namespace minsky
       canvas.addRavel();
       registerRef(canvas.item,"minsky.canvas.item");
     }
+    void addSheet() {
+      canvas.addSheet();
+      registerRef(canvas.item,"minsky.canvas.item");
+    }
 
     void createGroup() {
       canvas.groupSelection();
