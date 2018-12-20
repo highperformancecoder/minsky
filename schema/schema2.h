@@ -27,6 +27,7 @@ but any renamed attributes require bumping the schema number.
 
 #include "model/minsky.h"
 #include "model/ravelWrap.h"
+#include "model/sheet.h"
 #include "schema/schema1.h"
 #include "schemaHelper.h"
 #include "classdesc.h"
@@ -173,6 +174,9 @@ namespace schema2
       nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
       exp_threshold(p.exp_threshold),
       legend(p.legend? new ecolab::Plot::Side(p.legendSide): nullptr) {}
+    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
+      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
+      width(s.m_width), height(s.m_height) {}
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}

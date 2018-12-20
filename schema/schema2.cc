@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "schema2.h"
+#include "sheet.h"
 #include <ecolab_epilogue.h>
 
 namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
@@ -108,6 +109,7 @@ namespace schema2
       registerClassType<minsky::IntOp>();
       registerClassType<minsky::DataOp>();
       registerClassType<minsky::Ravel>();
+      registerClassType<minsky::Sheet>();
       registerClassType<minsky::VarConstant>();
       registerClassType<minsky::GodleyIcon>();
       registerClassType<minsky::PlotWidget>();
@@ -265,6 +267,7 @@ namespace schema2
           itemMap.emplaceIf<minsky::GodleyIcon>(items, i->get()) ||
           itemMap.emplaceIf<minsky::PlotWidget>(items, i->get()) ||
           itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) ||
+          itemMap.emplaceIf<minsky::Sheet>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
         return false;
       });
@@ -439,6 +442,11 @@ namespace schema2
         x1->flipped=r>90 && r<270;
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
+      }
+    if (auto x1=dynamic_cast<minsky::Sheet*>(&x))
+      {
+        if (y.width) x1->m_width=*y.width;
+        if (y.height) x1->m_height=*y.height;
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {

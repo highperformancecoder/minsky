@@ -156,7 +156,7 @@ tooltip .wiring.menubar.plot "PlotWidget"
 pack .wiring.menubar.plot -side left 
 set helpTopics(.wiring.menubar.plot) "PlotWidget"
 
-image create photo sheetImg -file $minskyHome/icons/note.gif
+image create photo sheetImg -file $minskyHome/icons/sheet.gif
 button .wiring.menubar.sheet -image sheetImg \
     -height 24 -width 37 -command {addSheet}
 tooltip .wiring.menubar.sheet "Sheet"

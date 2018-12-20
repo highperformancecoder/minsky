@@ -392,6 +392,7 @@ namespace minsky
                    p->connectVar(pp->getVariableValue(), i);
                }
            }
+         
          return false;
        });
   }

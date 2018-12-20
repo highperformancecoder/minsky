@@ -31,15 +31,29 @@ Sheet::Sheet()
   ports.emplace_back(new Port(*this, Port::inputPort));
 }
 
+ClickType::Type Sheet::clickType(float x, float y)
+{
+  double dx=x-this->x(), dy=y-this->y();
+  double w=0.5*m_width*zoomFactor, h=0.5*m_height*zoomFactor;
+  // check if (x,y) is within portradius of the 4 corners
+  if (fabs(fabs(dx)-w) < portRadius*zoomFactor &&
+      fabs(fabs(dy)-h) < portRadius*zoomFactor &&
+      fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*zoomFactor)
+    return ClickType::onResize;
+  return Item::clickType(x,y);
+}
+
 void Sheet::draw(cairo_t* cairo) const
 {
+  ports[0]->moveTo(x()-0.5*m_width*zoomFactor,y());
   if (mouseFocus)
     {
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
     }
+  if (onResizeHandles) drawResizeHandles(cairo);
 
-  cairo::CairoSave cs(cairo);
+  //cairo::CairoSave cs(cairo);
   cairo_scale(cairo,zoomFactor,zoomFactor);
     
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
@@ -59,7 +73,7 @@ void Sheet::draw(cairo_t* cairo) const
         }
       else
         {
-          float x0=-0.5*m_width, y0=-0.5*m_height+pango.height();
+          float x0=-0.5*m_width, y0=-0.5*m_height;//+pango.height();
           float x=x0, y=y0;
           double colWidth=0;
           pango.setMarkup("9999");
@@ -80,10 +94,10 @@ void Sheet::draw(cairo_t* cairo) const
               for (auto& i: value.xVector[0])
                 {
                   cairo_move_to(cairo,x,y);
-                  pango.setMarkup(str(i,format));
+                  pango.setMarkup(trimWS(str(i,format)));
                   pango.show();
                   y+=rowHeight;
-                  colWidth=std::max(colWidth,pango.width());
+                  colWidth=std::max(colWidth,5+pango.width()/zoomFactor);
                 }
               y=y0;
               x+=colWidth;
@@ -104,15 +118,22 @@ void Sheet::draw(cairo_t* cairo) const
                       colWidth=0;
                       y=y0;
                       cairo_move_to(cairo,x,y);
-                      pango.setMarkup(str(value.xVector[1][i],format));
+                      pango.setMarkup(trimWS(str(value.xVector[1][i],format)));
                       pango.show();
-                      colWidth=std::max(colWidth, pango.width());
+                      { // draw vertical grid line
+                        cairo::CairoSave cs(cairo);
+                        cairo_set_source_rgba(cairo,0,0,0,0.5);
+                        cairo_move_to(cairo,x-2.5,-0.5*m_height);
+                        cairo_line_to(cairo,x-2.5,0.5*m_height);
+                        cairo_stroke(cairo);
+                      }
+                      colWidth=std::max(colWidth, 5+pango.width()/zoomFactor);
                       for (size_t j=0; j<dims[0]; ++j)
                         {
                           y+=rowHeight;
                           if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
-                          pango.setMarkup(str(value.xVector[1][i],format));
+                          pango.setMarkup(str(value.value(j+i*dims[0])));
                           pango.show();
                           colWidth=std::max(colWidth, pango.width());
                         }
@@ -120,8 +141,26 @@ void Sheet::draw(cairo_t* cairo) const
                       if (x>0.5*m_width) break;
                     }
                 }
+              // draw grid
+              {
+                cairo::CairoSave cs(cairo);
+                cairo_set_source_rgba(cairo,0,0,0,0.2);
+                for (y=y0+0.8*rowHeight; y<0.5*m_height; y+=2*rowHeight)
+                  {
+                    cairo_rectangle(cairo,-0.5*m_width,y,m_width,rowHeight);
+                    cairo_fill(cairo);
+                 }
+              }
+                
             }
         }
     }
   catch (...) {/* exception most like invalid variable value */}
+}
+
+void Sheet::resize(const LassoBox& b)
+{
+  m_width=abs(b.x1-b.x0)/zoomFactor;
+  m_height=abs(b.y1-b.y0)/zoomFactor;
+  bb.update(*this);
 }

@@ -864,6 +864,11 @@ namespace MathDAG
              for (auto w: port->wires())
                // ensure plot inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+         else if (auto s=dynamic_cast<Sheet*>(i->get()))
+           for (auto w: s->ports[0]->wires())
+               // ensure sheet inputs are evaluated
+               w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+
          return false;
        });
   }
