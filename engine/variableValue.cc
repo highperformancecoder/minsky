@@ -90,6 +90,9 @@ namespace minsky
   TensorVal VariableValue::initValue
   (const VariableValues& v, set<string>& visited) const
   {
+    if (!tensorInit.data.empty())
+      return tensorInit;
+    
     FlowCoef fc(init);
     if (trimWS(fc.name).empty())
       return fc.coef;

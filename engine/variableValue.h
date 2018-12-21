@@ -93,6 +93,8 @@ namespace minsky
 
     /// the initial value of this variable
     std::string init;
+    /// when init is a tensor of values, this overrides the init string
+    TensorVal tensorInit;
 
     /// dimension units of this value
     Units units;

@@ -42,4 +42,5 @@ namespace minsky
   }
 }
 
+#include "tensorVal.cd"
 #endif

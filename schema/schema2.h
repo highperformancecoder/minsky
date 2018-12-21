@@ -147,6 +147,7 @@ namespace schema2
     std::shared_ptr<ecolab::Plot::Side> legend;
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
+    Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
     
     Item() {}
     Item(int id, const minsky::Item& it, const std::vector<int>& ports): ItemBase(id,it,ports) {}
