@@ -36,6 +36,7 @@ but any renamed attributes require bumping the schema number.
 #include "rungeKutta.h"
 
 #include <xsd_generate_base.h>
+#include "xml_common.xcd"
 #include <vector>
 #include <string>
 
