@@ -159,6 +159,7 @@ namespace schema2
       name(v.rawName()), init(v.init()), units(v.units()) {
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+      packTensorInit(v);
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(o),ports),
@@ -220,6 +221,8 @@ namespace schema2
         slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
                                 layout.sliderMin,layout.sliderMax,layout.sliderStep));
     }
+
+    void packTensorInit(const minsky::VariableBase&);
   };
 
 

@@ -20,6 +20,8 @@
 #include "sheet.h"
 #include <ecolab_epilogue.h>
 
+#include "a85.h"
+
 namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
 
 namespace schema2
@@ -199,6 +201,21 @@ namespace schema2
         assetClasses->resize((*data)[0].size());
         for (auto& i: *assetClasses) i=AssetClass::asset;
       }
+  }
+
+  
+  void Item::packTensorInit(const minsky::VariableBase& v)
+  {
+    if (auto val=v.vValue())
+      if (!val->tensorInit.data.empty())
+        {
+          pack_t buf;
+          buf<<val->tensorInit<<val->xVector;
+          vector<char> cbuf(a85::size_for_a85(buf.size(),true));
+          a85::to_a85(reinterpret_cast<const unsigned char*>(buf.data()),
+                      buf.size(), &cbuf[0], true);
+          tensorData.reset(new CDATA(cbuf.begin(),cbuf.end()));
+        }
   }
 
   
@@ -398,6 +415,16 @@ namespace schema2
             x1->sliderMax=y.slider->max;
             x1->sliderStep=y.slider->step;
           }
+//        if (y.tensorData)
+//          if (auto val=x1->vValue())
+//            {
+//              pack_t buf(a85::size_for_bin(y.tensorData->size()));
+//              a85::from_a85(y.tensorData->c_str(), y.tensorData->size(),
+//                            reinterpret_cast<unsigned char*>(buf.data()));
+//              vector<minsky::XVector> xv;
+//              buf>>val->tensorInit>>xv;
+//              val->setXVector(xv);
+//            }
       }
     if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
       {
