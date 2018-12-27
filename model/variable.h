@@ -21,6 +21,7 @@
 
 #include "slider.h"
 #include "str.h"
+#include "CSVParser.h"
 
 #include <ecolab.h>
 #include <arrays.h>
@@ -179,6 +180,13 @@ namespace minsky
 
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
+    /// import CSV file, using \a spec
+    void importFromCSV(const std::string& filename, const DataSpec& spec) {
+      if (auto v=vValue()) {
+        std::ifstream is(filename);
+        loadValueFromCSVFile(*v, is, spec);
+      }
+    }
   };
 
   template <minsky::VariableType::Type T>

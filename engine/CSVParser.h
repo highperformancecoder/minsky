@@ -64,4 +64,5 @@ namespace minsky
   void loadValueFromCSVFile(VariableValue&,std::istream&,const DataSpec&);
 }
 
+#include "CSVParser.cd"
 #endif

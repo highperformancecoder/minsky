@@ -171,97 +171,101 @@ void DataSpec::guessFromStream(std::istream& input)
 }
 
 
-
-
-void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+namespace minsky
 {
-  Parser csvParser(spec.escape,spec.separator,spec.quote);
-  string buf;
-  typedef vector<string> Key;
-  map<Key,double> tmpData;
-  // stash label and order in which it appears in input file
-  vector<map<string,size_t>> dimLabels(spec.nColAxes);
-  bool tabularFormat=false;
-  vector<XVector> xVector;
-  vector<string> horizontalLabels;
-                                  
-  for (size_t row=0; getline(input, buf); ++row)
-    {
-      if (spec.commentRows.count(row)) continue;
-      Tokenizer tok(buf.begin(), buf.end(), csvParser);
-      
-      if (row<spec.nRowAxes) // in header section
-        {
-          vector<string> parsedRow(tok.begin(), tok.end());
-          if (parsedRow.size()<spec.nColAxes+spec.commentCols.size()+1) continue; // not a header row
-          for (size_t i=0; i<spec.nColAxes; ++i)
-            if (!spec.commentCols.count(i))
-              xVector.emplace_back(parsedRow[i]);
 
-          if (parsedRow.size()>spec.nColAxes+spec.commentCols.size()+1)
-            {
-              tabularFormat=true;
-              horizontalLabels.assign(parsedRow.begin()+spec.nColAxes, parsedRow.end());
-              xVector.emplace_back(spec.horizontalDimName);
-              for (auto& i: horizontalLabels) xVector.back().push_back(i);
-              dimLabels.emplace_back();
-              for (size_t i=0; i<horizontalLabels.size(); ++i)
-                dimLabels.back()[horizontalLabels[i]]=i;
-            }
-        }
-      else // in data section
-        {
-          Key key;
-          auto field=tok.begin();
-          for (size_t i=0, dim=0; i<spec.nColAxes && field!=tok.end(); ++i, ++field)
-            if (!spec.commentCols.count(i))
+  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  {
+    Parser csvParser(spec.escape,spec.separator,spec.quote);
+    string buf;
+    typedef vector<string> Key;
+    map<Key,double> tmpData;
+    // stash label and order in which it appears in input file
+    vector<map<string,size_t>> dimLabels(spec.nColAxes);
+    bool tabularFormat=false;
+    vector<XVector> xVector;
+    vector<string> horizontalLabels;
+                                  
+    for (size_t row=0; getline(input, buf); ++row)
+      {
+        if (spec.commentRows.count(row)) continue;
+        Tokenizer tok(buf.begin(), buf.end(), csvParser);
+      
+        if (row<spec.nRowAxes) // in header section
+          {
+            vector<string> parsedRow(tok.begin(), tok.end());
+            if (parsedRow.size()<spec.nColAxes+1) continue; // not a header row
+            if (!xVector.empty()) continue; // already parsed header row
+            for (size_t i=0; i<spec.nColAxes; ++i)
+              if (!spec.commentCols.count(i))
+                xVector.emplace_back(parsedRow[i]);
+
+            if (parsedRow.size()>spec.nColAxes+spec.commentCols.size()+1)
               {
-                if (dim<xVector.size())
-                  xVector.emplace_back("?"); // no header present
-                key.push_back(*field);
-                if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
-                  xVector[dim].push_back(*field);
-                dim++;
+                tabularFormat=true;
+                horizontalLabels.assign(parsedRow.begin()+spec.nColAxes, parsedRow.end());
+                xVector.emplace_back(spec.horizontalDimName);
+                for (auto& i: horizontalLabels) xVector.back().push_back(i);
+                dimLabels.emplace_back();
+                for (size_t i=0; i<horizontalLabels.size(); ++i)
+                  dimLabels.back()[horizontalLabels[i]]=i;
               }
+          }
+        else // in data section
+          {
+            Key key;
+            auto field=tok.begin();
+            for (size_t i=0, dim=0; i<spec.nColAxes && field!=tok.end(); ++i, ++field)
+              if (!spec.commentCols.count(i))
+                {
+                  if (dim>=xVector.size())
+                    xVector.emplace_back("?"); // no header present
+                  key.push_back(*field);
+                  if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
+                    xVector[dim].push_back(*field);
+                  dim++;
+                }
                     
-          if (field==tok.end())
-            throw NoDataColumns();
+            if (field==tok.end())
+              throw NoDataColumns();
           
-          for (size_t col=0; field != tok.end(); ++field, ++col)
-            {
-              if (tabularFormat)
-                key.push_back(horizontalLabels[col]);
-              if (tmpData.count(key))
-                throw DuplicateKey();
-              try
-                {
-                  tmpData[key]=stod(*field);
-                }
-              catch (...)
-                {
-                  tmpData[key]=spec.missingValue;
-                }
-              if (tabularFormat)
-                key.pop_back();
-            }
-        }
-    }
+            for (size_t col=0; field != tok.end(); ++field, ++col)
+              {
+                if (tabularFormat)
+                  key.push_back(horizontalLabels[col]);
+                if (tmpData.count(key))
+                  throw DuplicateKey();
+                try
+                  {
+                    tmpData[key]=stod(*field);
+                  }
+                catch (...)
+                  {
+                    tmpData[key]=spec.missingValue;
+                  }
+                if (tabularFormat)
+                  key.pop_back();
+              }
+          }
+      }
   
-  v.setXVector(xVector);
-  // stash the data into vv tensorInit field
-  v.tensorInit.data.clear();
-  v.tensorInit.data.resize(v.numElements(), spec.missingValue);
-  auto dims=v.dims();
-  for (auto& i: tmpData)
-    {
-      size_t idx=0;
-      assert (dims.size()==i.first.size());
-      assert(dimLabels.size()==dims.size());
-      for (size_t j=0; j<dims.size(); ++j)
-        {
-          assert(dimLabels[j].count(i.first[j]));
-          idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-        }
-      v.tensorInit.data[idx]=i.second;
-    }
+    v.setXVector(xVector);
+    // stash the data into vv tensorInit field
+    v.tensorInit.data.clear();
+    v.tensorInit.data.resize(v.numElements(), spec.missingValue);
+    auto dims=v.tensorInit.dims=v.dims();    
+    for (auto& i: tmpData)
+      {
+        size_t idx=0;
+        assert (dims.size()==i.first.size());
+        assert(dimLabels.size()==dims.size());
+        for (int j=dims.size()-1; j>=0; --j)
+          {
+            assert(dimLabels[j].count(i.first[j]));
+            idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+          }
+        v.tensorInit.data[idx]=i.second;
+      }
+  }
+
 }

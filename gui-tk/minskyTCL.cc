@@ -20,6 +20,7 @@
 #include "cairoItems.h"
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"
+#include "CSVDialog.h"
 #include <ecolab.h>
 #include <ecolab_epilogue.h>
 #ifdef _WIN32
@@ -281,5 +282,7 @@ namespace minsky
     OperationPtr op(o);
     return op->numPorts()-1;
   }
+
+  TCLTYPE(CSVDialog);
   
 }

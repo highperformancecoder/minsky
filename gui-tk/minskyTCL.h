@@ -270,6 +270,15 @@ namespace minsky
         }
       return "";
     }
+
+    void loadVariableFromCSV(const std::string& specVar, const std::string& filename)
+    {
+      auto i=TCL_obj_properties().find(specVar);
+      if (i!=TCL_obj_properties().end())
+        if (auto spec=dynamic_cast<member_entry<DataSpec>*>(i->second.get()))
+          if (auto v=dynamic_cast<VariableBase*>(canvas.item.get()))
+            v->importFromCSV(filename, *spec->memberptr);
+    }
     
     //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
 //    {

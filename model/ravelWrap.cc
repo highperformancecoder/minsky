@@ -46,7 +46,7 @@ namespace minsky
       InvalidSym(const string& s): symbol(s) {}
     };
 
-    struct DataSpec
+    struct RavelDataSpec
     {
       int nRowAxes=-1; ///< No. rows describing axes
       int nColAxes=-1; ///< No. cols describing axes
@@ -267,7 +267,7 @@ namespace minsky
     DEFFN(ravelDC_new, Ravel::Ravel::DataCube*);
     DEFFN(ravelDC_delete, void, Ravel::DataCube*);
     DEFFN(ravelDC_initRavel, bool, Ravel::DataCube*, Ravel::RavelImpl*);
-    DEFFN(ravelDC_openFile, bool, Ravel::DataCube*, const char*, DataSpec);
+    DEFFN(ravelDC_openFile, bool, Ravel::DataCube*, const char*, RavelDataSpec);
     DEFFN(ravelDC_loadData, void, Ravel::DataCube*, const Ravel::RavelImpl*, const double*);
     DEFFN(ravelDC_hyperSlice, int, Ravel::DataCube*, Ravel::RavelImpl*, size_t*, double**);
 
@@ -419,7 +419,7 @@ namespace minsky
     m_filename=fileName;
     if (dataCube && ravel)
       {
-        if (!ravelDC_openFile(dataCube, fileName.c_str(), DataSpec()))
+        if (!ravelDC_openFile(dataCube, fileName.c_str(), RavelDataSpec()))
           throw error(ravel_lastErr());
         else if (!ravelDC_initRavel(dataCube,ravel))
           throw error(ravel_lastErr());
