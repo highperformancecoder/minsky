@@ -70,10 +70,28 @@ namespace minsky
 #include <classdesc.h>
 namespace classdesc_access
 {
-  template<> struct access_pack<minsky::XVector>:
-    public classdesc::NullDescriptor<classdesc::pack_t> {};
-  template<> struct access_unpack<minsky::XVector>:
-    public classdesc::NullDescriptor<classdesc::unpack_t> {};
+  template<> struct access_pack<minsky::XVector> {
+    void operator()(classdesc::pack_t& b, const std::string&, const minsky::XVector& a)
+    {
+      b<<a.name<<a.dimension<<a.size();
+      for (auto& i: a)
+        b<<minsky::str(i);
+    }
+  };
+  template<> struct access_unpack<minsky::XVector> {
+    void operator()(classdesc::pack_t& b, const std::string&, minsky::XVector& a)
+    {
+      size_t size;
+      std::string x;
+      a.clear();
+      b>>a.name>>a.dimension>>size;
+      for (size_t i=0; i<size; ++i)
+        {
+          b>>x;
+          a.push_back(x);
+        }
+    }
+  };
 }
 #include "xvector.cd"
 #endif

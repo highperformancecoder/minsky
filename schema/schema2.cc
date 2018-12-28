@@ -211,10 +211,19 @@ namespace schema2
         {
           pack_t buf;
           buf<<val->tensorInit<<val->xVector;
-          vector<char> cbuf(a85::size_for_a85(buf.size(),true));
+          vector<char> cbuf(a85::size_for_a85(buf.size(),false));
           a85::to_a85(reinterpret_cast<const unsigned char*>(buf.data()),
-                      buf.size(), &cbuf[0], true);
+                      buf.size(), &cbuf[0], false);
           tensorData.reset(new CDATA(cbuf.begin(),cbuf.end()));
+#ifndef NDEBUG
+          assert(buf.size()==a85::size_for_bin(cbuf.size()));
+          assert(cbuf.size()==tensorData->size());
+          assert(memcmp(&(*tensorData)[0],&cbuf[0],cbuf.size())==0);
+          pack_t buf1(buf.size());
+          a85::from_a85(tensorData->c_str(), tensorData->size(),
+                        reinterpret_cast<unsigned char*>(buf1.data()));
+          assert(memcmp(buf.data(),buf1.data(),buf.size())==0);
+#endif
         }
   }
 
@@ -415,16 +424,19 @@ namespace schema2
             x1->sliderMax=y.slider->max;
             x1->sliderStep=y.slider->step;
           }
-//        if (y.tensorData)
-//          if (auto val=x1->vValue())
-//            {
-//              pack_t buf(a85::size_for_bin(y.tensorData->size()));
-//              a85::from_a85(y.tensorData->c_str(), y.tensorData->size(),
-//                            reinterpret_cast<unsigned char*>(buf.data()));
-//              vector<minsky::XVector> xv;
-//              buf>>val->tensorInit>>xv;
-//              val->setXVector(xv);
-//            }
+        if (y.tensorData)
+          if (auto val=x1->vValue())
+            {
+              string trimmed; //trim whitespace
+              for (auto c: *y.tensorData)
+                if (!isspace(c)) trimmed+=c;
+              pack_t buf(a85::size_for_bin(trimmed.size()));
+              a85::from_a85(trimmed.data(), trimmed.size(),
+                            reinterpret_cast<unsigned char*>(buf.data()));
+              vector<minsky::XVector> xv;
+              buf>>val->tensorInit>>xv;
+              val->setXVector(xv);
+            }
       }
     if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
       {
