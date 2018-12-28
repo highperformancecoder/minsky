@@ -37,13 +37,23 @@ proc CSVImportDialog {} {
             .wiring.csvImport.delimiters.missingLabel .wiring.csvImport.delimiters.missingValue -side left
 
         pack .wiring.csvImport.delimiters
+
+        frame .wiring.csvImport.horizontalName
+        label .wiring.csvImport.horizontalName.text -text "Horizontal dimension"
+        entry .wiring.csvImport.horizontalName.value -textvariable csvParms(horizontalDimension)
+        pack .wiring.csvImport.horizontalName.text .wiring.csvImport.horizontalName.value -side left
+        pack .wiring.csvImport.horizontalName
         
         image create cairoSurface csvDialogTable -surface csvDialog
         label .wiring.csvImport.table -image csvDialogTable -width 800 -height 300
         pack .wiring.csvImport.table -fill both -expand 1
         bind .wiring.csvImport.table <<contextMenu>> {csvImportMenu %x %y %X %Y}
 
-        buttonBar .wiring.csvImport {loadVariableFromCSV csvDialog.spec $csvParms(filename)}
+        buttonBar .wiring.csvImport {
+            csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
+            loadVariableFromCSV csvDialog.spec $csvParms(filename)
+            reset
+        }
         menu .wiring.csvImport.context
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
         bind .wiring.csvImport.table <Button-1> {set csvImportPanX [expr [csvDialog.xoffs]-%x]};
@@ -59,6 +69,7 @@ proc CSVImportDialog {} {
         set csvParms(quote) [csvDialog.spec.quote]
         set csvParms(mergeDelimiters) [csvDialog.spec.mergeDelimiters]
         set csvParms(missingValue) [csvDialog.spec.missingValue]
+        set csvParms(horizontalDimension) [csvDialog.spec.horizontalDimName]
         wm deiconify .wiring.csvImport
         raise .wiring.csvImport
         csvDialog.requestRedraw
