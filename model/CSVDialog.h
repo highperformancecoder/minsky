@@ -34,12 +34,19 @@ namespace minsky
   class CSVDialog: public ecolab::CairoSurface
   {
     std::vector<std::string> initialLines; ///< initial lines of file
+    std::vector<double> colOffsets;
+    double rowHeight=0;
   public:
     const unsigned numInitialLines=30;
+    double xoffs=0;
     DataSpec spec;
     void redraw(int, int, int width, int height) override;
     void loadFile(const std::string& fname);
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    /// return column mouse is over
+    size_t columnOver(double x);
+    /// return row mouse is over
+    size_t rowOver(double x);
   };
 }
 

@@ -40,7 +40,11 @@ namespace minsky
 
     /// rows and columns that are comment lines to be ignored
     std::set<unsigned> commentRows, commentCols;
-    
+    void commentRow(size_t r) {commentRows.insert(r);}
+    void commentCol(size_t c) {commentCols.insert(c);}
+    void uncommentRow(size_t r) {commentRows.erase(r);}
+    void uncommentCol(size_t c) {commentCols.erase(c);}
+   
     /// initial stab at dataspec from examining stream
     void guessFromStream(std::istream& file);
 

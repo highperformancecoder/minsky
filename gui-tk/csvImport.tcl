@@ -40,9 +40,15 @@ proc CSVImportDialog {} {
         
         image create cairoSurface csvDialogTable -surface csvDialog
         label .wiring.csvImport.table -image csvDialogTable -width 800 -height 300
-        pack .wiring.csvImport.table
+        pack .wiring.csvImport.table -fill both -expand 1
+        bind .wiring.csvImport.table <<contextMenu>> {csvImportMenu %x %y %X %Y}
 
         buttonBar .wiring.csvImport {loadVariableFromCSV csvDialog.spec $csvParms(filename)}
+        menu .wiring.csvImport.context
+        bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
+        bind .wiring.csvImport.table <Button-1> {set csvImportPanX [expr [csvDialog.xoffs]-%x]};
+        bind .wiring.csvImport.table <B1-Motion> {csvDialog.xoffs [expr $csvImportPanX+%x]; csvDialog.requestRedraw}
+
     }
     set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
     if [string length $filename] {
@@ -59,3 +65,18 @@ proc CSVImportDialog {} {
     }
 }
 
+proc csvImportMenu {x y X Y} {
+    .wiring.csvImport.context delete 0 end
+    set col [csvDialog.columnOver $x]
+    set row [csvDialog.rowOver $y]
+    .wiring.csvImport.context add command -label "Data start row/col" -command "
+        csvDialog.spec.nRowAxes $row
+        csvDialog.spec.nColAxes $col"
+    .wiring.csvImport.context add separator
+    .wiring.csvImport.context add command -label "Comment row" -command "csvDialog.spec.commentRow $row"
+    .wiring.csvImport.context add command -label "Uncomment row" -command "csvDialog.spec.uncommentRow $row"
+    .wiring.csvImport.context add separator
+    .wiring.csvImport.context add command -label "Comment column" -command "csvDialog.spec.commentCol $col"
+    .wiring.csvImport.context add command -label "Uncomment column" -command "csvDialog.spec.uncommentCol $col"
+    tk_popup  .wiring.csvImport.context $X $Y
+}

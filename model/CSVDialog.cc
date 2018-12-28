@@ -53,7 +53,6 @@ vector<vector<string>> parseLines(const Parser& parser, const vector<string>& li
 
 void CSVDialog::redraw(int, int, int width, int height)
 {
-  double rowHeight=0;
   Pango pango(surface->cairo());
   for (auto& line: initialLines)
     {
@@ -77,7 +76,7 @@ void CSVDialog::redraw(int, int, int width, int height)
        initialLines);
 
   set<size_t> done;
-  double x=0, y=0;
+  double x=xoffs, y=0;
   for (size_t col=0; done.size()<parsedLines.size(); ++col)
     {
       double colWidth=0;
@@ -108,6 +107,20 @@ void CSVDialog::redraw(int, int, int width, int height)
         }
       x+=colWidth+5;
       y=0;
+      colOffsets.push_back(x);
     }
   
+}
+
+size_t CSVDialog::columnOver(double x)
+{
+  for (size_t i=0; i<colOffsets.size(); ++i)
+    if (x-xoffs<colOffsets[i])
+      return i;
+  return colOffsets.size();
+}
+
+size_t CSVDialog::rowOver(double y)
+{
+  return size_t(y/rowHeight);
 }
