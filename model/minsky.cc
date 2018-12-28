@@ -678,6 +678,9 @@ namespace minsky
              p->addConstantCurves();
              p->redraw();
            }
+         else if (auto r=dynamic_cast<Ravel*>(i->get()))
+           if (r->ports[1]->numWires()>0)
+             r->loadDataCubeFromVariable(r->ports[1]->getVariableValue());
          return false;
        });
     canvas.requestRedraw();
