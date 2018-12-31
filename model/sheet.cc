@@ -94,7 +94,7 @@ void Sheet::draw(cairo_t* cairo) const
               for (auto& i: value.xVector[0])
                 {
                   cairo_move_to(cairo,x,y);
-                  pango.setMarkup(trimWS(str(i,format)));
+                  pango.setText(trimWS(str(i,format)));
                   pango.show();
                   y+=rowHeight;
                   colWidth=std::max(colWidth,5+pango.width()/zoomFactor);
@@ -118,7 +118,7 @@ void Sheet::draw(cairo_t* cairo) const
                       colWidth=0;
                       y=y0;
                       cairo_move_to(cairo,x,y);
-                      pango.setMarkup(trimWS(str(value.xVector[1][i],format)));
+                      pango.setText(trimWS(str(value.xVector[1][i],format)));
                       pango.show();
                       { // draw vertical grid line
                         cairo::CairoSave cs(cairo);
@@ -133,7 +133,7 @@ void Sheet::draw(cairo_t* cairo) const
                           y+=rowHeight;
                           if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
-                          pango.setMarkup(str(value.value(j+i*dims[0])));
+                          pango.setText(str(value.value(j+i*dims[0])));
                           pango.show();
                           colWidth=std::max(colWidth, pango.width());
                         }
