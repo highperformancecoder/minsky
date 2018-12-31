@@ -673,7 +673,9 @@ proc dimensionsDialog {} {
         grid [entry .dimensions.g${i}_dim] \
             [ttk::combobox .dimensions.g${i}_type -state readonly \
              -values {string value time}] \
-            [entry  .dimensions.g${i}_units]
+            [ttk::combobox .dimensions.g${i}_units \
+         -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\]"
+            ]
     }
     set i 2
     foreach dim [dimensions.#keys] {
@@ -687,6 +689,23 @@ proc dimensionsDialog {} {
     }
 }
 
+proc dimFormatPopdown {comboBox type} {
+    switch $type {
+        string {
+            $comboBox configure -values {}
+            $comboBox set {}
+        }
+        value {
+            $comboBox configure -values {}
+        }
+        time {
+            $comboBox configure -values {
+                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q"
+            }
+        }
+    }
+}
+    
 wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
