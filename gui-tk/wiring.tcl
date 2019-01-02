@@ -186,7 +186,8 @@ proc hoverMouse {} {
 # reset hoverMouse timer
 proc wrapHoverMouse {op x y} {
     after cancel hoverMouse
-    minsky.canvas.$op $x $y
+    # ignore any exceptions
+    catch {minsky.canvas.$op $x $y}
     after 3000 hoverMouse
 }
     

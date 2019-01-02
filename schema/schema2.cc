@@ -281,7 +281,6 @@ namespace schema2
         {
           pack_t buf;
           buf<<val->tensorInit<<val->xVector;
-          cout << buf.size() << endl;
           
           vector<unsigned char> zbuf(buf.size());
           DeflateZStream zs(buf, zbuf);
@@ -290,15 +289,6 @@ namespace schema2
           vector<char> cbuf(a85::size_for_a85(zs.total_out,false));
           a85::to_a85(&zbuf[0],zs.total_out, &cbuf[0], false);
           tensorData.reset(new CDATA(cbuf.begin(),cbuf.end()));
-//#ifndef NDEBUG
-//          assert(buf.size()==a85::size_for_bin(cbuf.size()));
-//          assert(cbuf.size()==tensorData->size());
-//          assert(memcmp(&(*tensorData)[0],&cbuf[0],cbuf.size())==0);
-//          pack_t buf1(buf.size());
-//          a85::from_a85(tensorData->c_str(), tensorData->size(),
-//                        reinterpret_cast<unsigned char*>(buf1.data()));
-//          assert(memcmp(buf.data(),buf1.data(),buf.size())==0);
-//#endif
         }
   }
 
@@ -511,7 +501,6 @@ namespace schema2
               
               InflateZStream zs(zbuf);
               zs.inflate();
-              cout << zs.total_out << endl;
               
               vector<minsky::XVector> xv;
               zs.output>>val->tensorInit>>xv;

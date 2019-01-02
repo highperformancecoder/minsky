@@ -181,7 +181,12 @@ namespace minsky
     typedef vector<string> Key;
     map<Key,double> tmpData;
     // stash label and order in which it appears in input file
-    vector<map<string,size_t>> dimLabels(spec.nColAxes);
+    size_t numColAxesComments=0;
+    for (auto i: spec.commentCols)
+      if (i<spec.nColAxes)
+        numColAxesComments++;
+    assert(numColAxesComments<=spec.nColAxes);
+    vector<map<string,size_t>> dimLabels(spec.nColAxes-numColAxesComments);
     bool tabularFormat=false;
     vector<XVector> xVector;
     vector<string> horizontalLabels;
@@ -200,7 +205,7 @@ namespace minsky
               if (!spec.commentCols.count(i))
                 xVector.emplace_back(parsedRow[i]);
 
-            if (parsedRow.size()>spec.nColAxes+spec.commentCols.size()+1)
+            if (parsedRow.size()>spec.nColAxes+1)
               {
                 tabularFormat=true;
                 horizontalLabels.assign(parsedRow.begin()+spec.nColAxes, parsedRow.end());

@@ -678,7 +678,9 @@ proc dimensionsDialog {} {
             ]
     }
     set i 2
+    puts "+[dimensions.#keys]+"
     foreach dim [dimensions.#keys] {
+        puts $dim
         set d [dimensions.@elem $dim]
         .dimensions.g${i}_dim delete 0 end
         .dimensions.g${i}_dim insert 0 $dim
