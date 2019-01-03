@@ -38,6 +38,11 @@ namespace minsky
   /// for time, returns seconds
   /// @throw if any is an incompatible type with dimension
   double diff(const boost::any& x, const boost::any& y);
+  struct AnyLess
+  {
+    bool operator()(const boost::any& x, const boost::any& y) const
+    {return diff(x,y)<0;}
+  };
 
   /// default parsing of a time string
   boost::posix_time::ptime sToPtime(const std::string& s);

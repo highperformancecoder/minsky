@@ -154,7 +154,6 @@ namespace minsky
 
     
     /// removes elements of xVector not found in \a
-    /// You should adjust dims()[0] to xVector.size() afterwards
     void makeXConformant(const VariableValue& a);
 
     /// compute stride and dimension size of dimension \a dim

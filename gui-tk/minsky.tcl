@@ -659,7 +659,8 @@ proc dimensionsDialog {} {
                             $d.units [.dimensions.g${i}_units get]
                         }
                     }
-                    wm withdraw .dimensions
+                wm withdraw .dimensions
+                reset
             }]
         grid [label .dimensions.g1_dim -text Dimension] \
             [label .dimensions.g1_type -text Type]\

@@ -312,17 +312,36 @@ namespace minsky
     auto xv=xVector;
     for (auto& i: a.xVector)
       {
-        set<string> alabels;
-        for (auto& j: i)
-          alabels.insert(str(j));
         size_t j=0;
         for (j=0; j<xv.size(); ++j)
           if (xv[j].name==i.name)
             {
+              if (xv[j].dimension.type!=i.dimension.type)
+                throw error("dimension %s has inconsistent type",i.name.c_str());
+              // only match labels for string dimensions. Other types are interpolated.
               XVector newLabels;
-              for (auto i: xVector[j])
-                if (alabels.count(str(i)))
-                  newLabels.push_back(i);
+              switch (i.dimension.type)
+                {
+                case Dimension::string:
+                  {
+                    set<string> alabels;
+                    for (auto& k: i)
+                      alabels.insert(str(k));
+                    for (auto k: xVector[j])
+                      if (alabels.count(str(k)))
+                        newLabels.push_back(k);
+                    break;
+                  }
+                default:
+                  {
+                    // set overlapping value ranges
+                    set<boost::any, AnyLess> vals(i.begin(), i.end());
+                    for (auto k: xVector[j])
+                      if (diff(k, *vals.begin())>=0 && diff(k, *vals.rbegin())<=0)
+                        newLabels.push_back(k);
+                    break;
+                  }
+                }
               xv[j].swap(newLabels);
               break;
             }
