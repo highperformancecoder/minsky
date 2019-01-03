@@ -82,12 +82,17 @@ proc csvImportMenu {x y X Y} {
     set row [csvDialog.rowOver $y]
     .wiring.csvImport.context add command -label "Data start row/col" -command "
         csvDialog.spec.nRowAxes $row
-        csvDialog.spec.nColAxes $col"
+        csvDialog.spec.nColAxes $col
+        csvDialog.requestRedraw"       
     .wiring.csvImport.context add separator
-    .wiring.csvImport.context add command -label "Comment row" -command "csvDialog.spec.commentRow $row"
-    .wiring.csvImport.context add command -label "Uncomment row" -command "csvDialog.spec.uncommentRow $row"
+    .wiring.csvImport.context add command -label "Comment row" -command "csvDialog.spec.commentRow $row
+        csvDialog.requestRedraw"
+    .wiring.csvImport.context add command -label "Uncomment row" -command "csvDialog.spec.uncommentRow $row
+        csvDialog.requestRedraw"
     .wiring.csvImport.context add separator
-    .wiring.csvImport.context add command -label "Comment column" -command "csvDialog.spec.commentCol $col"
-    .wiring.csvImport.context add command -label "Uncomment column" -command "csvDialog.spec.uncommentCol $col"
+    .wiring.csvImport.context add command -label "Comment column" -command "csvDialog.spec.commentCol $col
+        csvDialog.requestRedraw"
+    .wiring.csvImport.context add command -label "Uncomment column" -command "csvDialog.spec.uncommentCol $col
+        csvDialog.requestRedraw"
     tk_popup  .wiring.csvImport.context $X $Y
 }
