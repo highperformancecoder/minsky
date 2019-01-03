@@ -28,6 +28,11 @@ if {$tcl_platform(os)=="Darwin" && [file exists $minskyHome/../Resources/fontcon
         set env(FONTCONFIG_FILE) $minskyHome/../Resources/fontconfig/fonts.conf
 }
 
+if {[minsky.ravelVersion]=="unavailable"} {
+    set progName Minsky
+} else {
+    set progName Ravel
+}
 
 # default canvas size. Overridden by previously resized window size
 # saved in .minskyrc
@@ -87,7 +92,7 @@ proc setFname {name} {
     if [string length $name] {
         set fname $name
         set workDir [file dirname $name]
-        catch {wm title . "Minsky: $fname"}
+        catch {wm title . "$progName: $fname"}
     }
 }
 
@@ -193,7 +198,7 @@ proc setBackgroundColour bgc {
 option add *Menu.tearOff 0
 wm deiconify .
 tk appname [file rootname [file tail $argv(0)]]
-wm title . "Minsky: $fname" 
+wm title . "$progName: $fname" 
 setBackgroundColour $backgroundColour
 tk_focusFollowsMouse
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
@@ -1139,7 +1144,7 @@ proc newSystem {} {
     recentreCanvas
     global fname
     set fname ""
-    wm title . "Minsky: New System"
+    wm title . "$progName: New System"
     popFlags
     doPushHistory 1
 }
@@ -1426,7 +1431,7 @@ proc setFname {name} {
         if {[regexp "\}$" $fname] && ![regexp "\}$" $workDir]} {
             set workDir "$workDir\}"
         }
-        catch {wm title . "Minsky: $fname"}
+        catch {wm title . "$progName: $fname"}
     }
 }
 
