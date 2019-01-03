@@ -87,6 +87,8 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     string buf;
     size_t row=0;
     size_t firstEmpty=numeric_limits<size_t>::max();
+    commentRows.clear();
+    commentCols.clear();
     for (; getline(input, buf) && row<maxRowsToAnalyse; ++row)
       {
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
@@ -112,6 +114,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
          commentRows.count(nRowAxes) ||
            (starts.size()>nRowAxes && starts[nRowAxes]>av); 
          ++nRowAxes);
+    nColAxes=0;
     for (size_t i=nRowAxes; i<starts.size(); ++i)
       nColAxes=max(nColAxes,starts[i]);
     // if more than 1 data column, treat the first row as an axis row

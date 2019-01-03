@@ -1362,8 +1362,10 @@ proc aboutMinsky {} {
    Minsky is FREE software, distributed under the 
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
-   " 
-}
+
+   Ravel is copyright Ravelation Pty Ltd. A separate license needs to
+   be purchased to use Ravel. See https://ravelation.hpcoders.com.au
+  "  }
 
 # delete subsidiary toplevel such as godleys and plots
 proc deleteSubsidiaryTopLevels {} {
