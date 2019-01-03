@@ -88,7 +88,7 @@ set env(TCL_LIBRARY) $tcl_library
 set env(TK_LIBRARY) $tk_library
 
 proc setFname {name} {
-    global fname workDir
+    global fname workDir progName
     if [string length $name] {
         set fname $name
         set workDir [file dirname $name]
@@ -1142,7 +1142,7 @@ proc newSystem {} {
     clearHistory
     model.setZoom 1
     recentreCanvas
-    global fname
+    global fname progName
     set fname ""
     wm title . "$progName: New System"
     popFlags
@@ -1416,7 +1416,7 @@ proc exit {} {
 }
 
 proc setFname {name} {
-    global fname workDir recentFiles preferences
+    global fname workDir recentFiles preferences progName
     if [string length $name] {
         set fname $name
         set workDir [file dirname $name]
