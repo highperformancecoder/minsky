@@ -162,5 +162,6 @@ void Sheet::resize(const LassoBox& b)
 {
   m_width=abs(b.x1-b.x0)/zoomFactor;
   m_height=abs(b.y1-b.y0)/zoomFactor;
+  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
   bb.update(*this);
 }

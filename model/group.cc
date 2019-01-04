@@ -475,6 +475,7 @@ namespace minsky
     double sx=(fabs(b.x0-b.x1)-zoomFactor*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1=y0);
     resizeItems(items,sx,sy);
     resizeItems(groups,sx,sy);
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
   
@@ -714,7 +715,21 @@ namespace minsky
       }
   }
 
+  ClickType::Type Group::clickType(float x, float y)
+  {
+    double dx=x-this->x(), dy=y-this->y();
+    double w=0.5*width*zoomFactor, h=0.5*height*zoomFactor;
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(fabs(dx)-w) < portRadius*zoomFactor &&
+        fabs(fabs(dy)-h) < portRadius*zoomFactor &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*zoomFactor)
+      return ClickType::onResize;
+    if (displayContents()) return ClickType::outside;
+    return Item::clickType(x,y);
+  }
 
+
+  
   void Group::draw(cairo_t* cairo) const
   {
     double angle=rotation * M_PI / 180.0;
@@ -808,6 +823,7 @@ namespace minsky
       {
         displayTooltip(cairo,tooltip);
       }
+    if (onResizeHandles) drawResizeHandles(cairo);
 
     cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
     cairo_clip(cairo);

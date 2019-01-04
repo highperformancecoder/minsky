@@ -258,6 +258,7 @@ namespace minsky
   {
     width=abs(x.x1-x.x0)/zoomFactor;
     height=abs(x.y1-x.y0)/zoomFactor;
+    moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
 

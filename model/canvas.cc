@@ -63,6 +63,13 @@ namespace minsky
             break;
           case ClickType::onResize:
             lassoMode=LassoMode::itemResize;
+            // set x0,y0 to the opposite corner of (x,y)
+            lasso.x0 = itemFocus->x() +
+              0.5*itemFocus->width()*itemFocus->zoomFactor * (x>itemFocus->x()? -1:1);
+            lasso.y0 = itemFocus->y() +
+              0.5*itemFocus->height()*itemFocus->zoomFactor * (y>itemFocus->y()? -1:1);
+            lasso.x1=x;
+            lasso.y1=y;
             item=itemFocus;
             break;
           }
@@ -227,8 +234,8 @@ namespace minsky
         lasso.x1=x;
         lasso.y1=y;
         // make lasso symmetric around item's (x,y)
-        lasso.x0=2*item->x() - x;
-        lasso.y0=2*item->y() - y;
+//        lasso.x0=2*item->x() - x;
+//        lasso.y0=2*item->y() - y;
         requestRedraw();
       }
     else
@@ -283,7 +290,13 @@ namespace minsky
                                {
                                  (*i)->mouseFocus=mf;
                                  requestRedraw();
-                               }        
+                               }
+                             bool onResize = (*i)->clickType(x,y)==ClickType::onResize;
+                             if (onResize!=(*i)->onResizeHandles)
+                               {
+                                 (*i)->onResizeHandles=onResize;
+                                 requestRedraw();
+                               }
                              return false;
                            });
         model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)

@@ -508,15 +508,14 @@ SUITE(Canvas)
       {
         model.reset(new Group);
         addGodley();
-        auto& godley=dynamic_cast<GodleyIcon&>(*itemFocus);
-        CHECK(godley.width()!=200);
-        CHECK(godley.height()!=200);
-        mouseUp(200,200);
-        getItemAt(200,200);
-        lassoMode=LassoMode::itemResize;
-        mouseUp(300,300);
-        CHECK_EQUAL(200,godley.width());
-        CHECK_EQUAL(200,godley.height());
+        auto i=itemFocus;
+        double w=i->width(), h=i->height();
+        double x=i->x(), y=i->y();
+
+        mouseDown(x+0.5*w, y+0.5*h);
+        mouseUp(x+w, y+h);
+        CHECK_CLOSE(1.5*w,i->width(),0.1);
+        CHECK_CLOSE(1.5*h,i->height(),0.1);
       }
 
     TEST_FIXTURE(Canvas, groupResize)
@@ -524,16 +523,15 @@ SUITE(Canvas)
         model.reset(new Group);
         model->self=model;
         addGroup();
-        auto& group=dynamic_cast<Group&>(*itemFocus);
-        group.displayZoom=2; // ensure displayContents is false
-        CHECK(group.width!=200);
-        CHECK(group.height!=200);
-        mouseUp(200,200);
-        getItemAt(200,200);
-        lassoMode=LassoMode::itemResize;
-        mouseUp(300,300);
-        CHECK_EQUAL(200,group.width);
-        CHECK_EQUAL(200,group.height);
+        auto i=itemFocus;
+        dynamic_cast<Group&>(*i).displayZoom=2; // ensure displayContents is false
+        double w=i->width(), h=i->height();
+        double x=i->x(), y=i->y();
+
+        mouseDown(x+0.5*w, y+0.5*h);
+        mouseUp(x+w, y+h);
+        CHECK_CLOSE(1.5*w,i->width(),1);
+        CHECK_CLOSE(1.5*h,i->height(),1);
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)

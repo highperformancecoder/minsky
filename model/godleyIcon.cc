@@ -141,6 +141,7 @@ namespace minsky
   {
     iconScale*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
     update();
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
 

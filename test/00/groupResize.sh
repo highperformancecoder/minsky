@@ -43,11 +43,11 @@ proc afterMinskyStarted {} {uplevel #0 {
  set w [\$item.width]
  set h [\$item.height]
 
- canvas.lassoMode itemResize
- canvas.mouseUp [expr \$x+151]  [expr \$y+151]
+ canvas.mouseDown [expr \$x+0.5*\$w] [expr \$y+0.5*\$h]
+ canvas.mouseUp [expr \$x+\$w]  [expr \$y+\$h]
 
- assert {abs(300-[minsky.canvas.item.width])<5}
- assert {abs(300-[minsky.canvas.item.height])<5}
+ assert "abs([expr 1.5*\$w]-[minsky.canvas.item.width])<5"
+ assert "abs([expr 1.5*\$h]-[minsky.canvas.item.height])<5"
  tcl_exit
 }}
 EOF
