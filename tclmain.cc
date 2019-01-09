@@ -91,9 +91,10 @@ int main(int argc, char* argv[])
 #endif
 
   Tcl_FindExecutable(argv[0]);
+  int r;
 #ifndef MXE
   // For MXE builds, override tcl_library and tk_library to the self-contained versions
-  int r=Tcl_Init(interp());
+  r=Tcl_Init(interp());
   if (r!=TCL_OK)
 #endif
     // one possible reason is that it failed to locate the TCL library, we we set tcl_library and try again
