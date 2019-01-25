@@ -33,17 +33,14 @@ namespace minsky
     char separator=',', quote='"', escape='\\';
     bool mergeDelimiters=false;
     double missingValue=nan("");
-    /// size of the header area in rows and columns (alternatively,
     /// start row/col of data area
-    size_t nRowAxes=0, nColAxes=0;
+    size_t nRowAxes=0, nColAxes=0, headerRow=0;
     std::string horizontalDimName="?";
 
     /// rows and columns that are comment lines to be ignored
-    std::set<unsigned> commentRows, commentCols;
-    void commentRow(size_t r) {commentRows.insert(r);}
-    void commentCol(size_t c) {commentCols.insert(c);}
-    void uncommentRow(size_t r) {commentRows.erase(r);}
-    void uncommentCol(size_t c) {commentCols.erase(c);}
+    std::set<unsigned> dimensionCols;
+    void setDimension(size_t c) {dimensionCols.insert(c);}
+    void unsetDimension(size_t c) {dimensionCols.erase(c);}
    
     /// initial stab at dataspec from examining stream
     void guessFromStream(std::istream& file);

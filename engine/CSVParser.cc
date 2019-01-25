@@ -87,32 +87,23 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     string buf;
     size_t row=0;
     size_t firstEmpty=numeric_limits<size_t>::max();
-    commentRows.clear();
-    commentCols.clear();
+    dimensionCols.clear();
+    
     for (; getline(input, buf) && row<maxRowsToAnalyse; ++row)
       {
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
         starts.push_back(firstNumerical(line));
         nCols=max(nCols, line.size());
-        // this is to detect if an empty header line is used to carry colAxes labels
-
-        // treat a single item on its own as a comment
-        if (numEntries(line)==1)
-          commentRows.insert(unsigned(starts.size()-1));
-        else
-          if (starts.size()-1 < firstEmpty && starts.back()<nCols && emptyTail(line, starts.back()))
-            firstEmpty=starts.size()-1;
+        if (starts.size()-1 < firstEmpty && starts.back()<nCols && emptyTail(line, starts.back()))
+          firstEmpty=starts.size()-1;
       }
     // compute average of starts, then look for first row that drops below average
     double sum=0;
     for (unsigned long i=0; i<starts.size(); ++i) 
-      if (commentRows.count(i)==0)
-        sum+=starts[i];
-    double av=sum/(starts.size()-commentRows.size());
-    for (nRowAxes=0; 
-         commentRows.count(nRowAxes) ||
-           (starts.size()>nRowAxes && starts[nRowAxes]>av); 
+      sum+=starts[i];
+    double av=sum/(starts.size());
+    for (nRowAxes=0; (starts.size()>nRowAxes && starts[nRowAxes]>av); 
          ++nRowAxes);
     nColAxes=0;
     for (size_t i=nRowAxes; i<starts.size(); ++i)
@@ -121,15 +112,10 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     if (nRowAxes==0 && nCols-nColAxes>1)
       nRowAxes=1;
     
-    // treat single entry rows as comments
-    if (!commentRows.empty() && 
-        nColAxes == 1 && starts[*commentRows.rbegin()] == 1)
-      {
-        firstEmpty = *commentRows.rbegin();
-        commentRows.erase(firstEmpty);
-      }
     if (firstEmpty==nRowAxes) ++nRowAxes; // allow for possible colAxes header line
-  }
+    headerRow=nRowAxes>0? nRowAxes-1: 0;
+    for (size_t i=0; i<nColAxes; ++i) dimensionCols.insert(i);
+}
 
 void DataSpec::guessRemainder(std::istream& input, char sep)
 {
@@ -183,29 +169,23 @@ namespace minsky
     string buf;
     typedef vector<string> Key;
     map<Key,double> tmpData;
-    // stash label and order in which it appears in input file
-    size_t numColAxesComments=0;
-    for (auto i: spec.commentCols)
-      if (i<spec.nColAxes)
-        numColAxesComments++;
-    assert(numColAxesComments<=spec.nColAxes);
-    vector<map<string,size_t>> dimLabels(spec.nColAxes-numColAxesComments);
+    vector<map<string,size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     vector<XVector> xVector;
     vector<string> horizontalLabels;
                                   
     for (size_t row=0; getline(input, buf); ++row)
       {
-        if (spec.commentRows.count(row)) continue;
         Tokenizer tok(buf.begin(), buf.end(), csvParser);
-      
-        if (row<spec.nRowAxes) // in header section
+
+        assert(spec.headerRow<=spec.nRowAxes);
+        if (row==spec.headerRow) // in header section
           {
             vector<string> parsedRow(tok.begin(), tok.end());
             if (parsedRow.size()<spec.nColAxes+1) continue; // not a header row
             if (!xVector.empty()) continue; // already parsed header row
             for (size_t i=0; i<spec.nColAxes; ++i)
-              if (!spec.commentCols.count(i))
+              if (spec.dimensionCols.count(i))
                 xVector.emplace_back(parsedRow[i]);
 
             if (parsedRow.size()>spec.nColAxes+1)
@@ -219,12 +199,12 @@ namespace minsky
                   dimLabels.back()[horizontalLabels[i]]=i;
               }
           }
-        else // in data section
+        else if (row>=spec.nRowAxes)// in data section
           {
             Key key;
             auto field=tok.begin();
             for (size_t i=0, dim=0; i<spec.nColAxes && field!=tok.end(); ++i, ++field)
-              if (!spec.commentCols.count(i))
+              if (spec.dimensionCols.count(i))
                 {
                   if (dim>=xVector.size())
                     xVector.emplace_back("?"); // no header present

@@ -5,6 +5,10 @@ proc CSVImportDialog {} {
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
         frame .wiring.csvImport.delimiters
+        label .wiring.csvImport.delimiters.columnarLabel -text "Columnar"
+        ttk::checkbutton .wiring.csvImport.delimiters.columnar -variable csvParms(columnar) -command {
+            csvDialog.spec.columnar $csvParms(columnar)
+        }
         label .wiring.csvImport.delimiters.separatorLabel -text Separator
         ttk::combobox .wiring.csvImport.delimiters.separatorValue -values {
             "," ";" "<tab>" "<space>"} -textvariable csvParms(separator) -width 5
@@ -30,14 +34,15 @@ proc CSVImportDialog {} {
         bind .wiring.csvImport.delimiters.missingValue <<ComboboxSelected>> {
             csvDialog.spec.missingValue $csvParms(missingValue)}
 
-        pack .wiring.csvImport.delimiters.separatorLabel .wiring.csvImport.delimiters.separatorValue \
+        pack .wiring.csvImport.delimiters.columnarLabel .wiring.csvImport.delimiters.columnar \
+            .wiring.csvImport.delimiters.separatorLabel .wiring.csvImport.delimiters.separatorValue \
             .wiring.csvImport.delimiters.escapeLabel .wiring.csvImport.delimiters.escapeValue \
             .wiring.csvImport.delimiters.quoteLabel .wiring.csvImport.delimiters.quoteValue \
             .wiring.csvImport.delimiters.mergeLabel .wiring.csvImport.delimiters.mergeValue \
             .wiring.csvImport.delimiters.missingLabel .wiring.csvImport.delimiters.missingValue -side left
 
         pack .wiring.csvImport.delimiters
-
+        
         frame .wiring.csvImport.horizontalName
         label .wiring.csvImport.horizontalName.text -text "Horizontal dimension"
         entry .wiring.csvImport.horizontalName.value -textvariable csvParms(horizontalDimension)

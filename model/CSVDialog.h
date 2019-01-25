@@ -34,8 +34,8 @@ namespace minsky
   class CSVDialog: public ecolab::CairoSurface
   {
     std::vector<std::string> initialLines; ///< initial lines of file
-    std::vector<double> colOffsets;
     double rowHeight=0;
+    double colWidth=50;
   public:
     const unsigned numInitialLines=30;
     double xoffs=0;
