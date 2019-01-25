@@ -101,6 +101,43 @@ void CSVDialog::redraw(int, int, int width, int height)
   size_t col=0;
   for (; done.size()<parsedLines.size(); ++col)
     {
+      {// dimension check boxes
+        CairoSave cs(cairo);
+        double cbsz=5;
+        cairo_translate(cairo,x+0.5*colWidth,y+0.5*rowHeight);
+        cairo_rectangle(cairo,-cbsz,-cbsz,2*cbsz,2*cbsz);
+        if (spec.dimensionCols.count(col))
+          {
+            cairo_move_to(cairo,-cbsz,-cbsz);
+            cairo_line_to(cairo,cbsz,cbsz);
+            cairo_move_to(cairo,cbsz,-cbsz);
+            cairo_line_to(cairo,-cbsz,cbsz);
+          }
+        cairo_stroke(cairo);
+      }
+      y+=rowHeight;
+      // type
+      if (spec.dimensionCols.count(col) && col<spec.dimensions.size())
+        {
+          pango.setText(classdesc::enumKey<Dimension::Type>(spec.dimensions[col].type));
+          pango.setxy(x,y);
+          pango.show();
+        }
+      y+=rowHeight;
+      if (spec.dimensionCols.count(col) && col<spec.dimensions.size())
+        {
+          pango.setText(spec.dimensions[col].units);
+          pango.setxy(x,y);
+          pango.show();
+        }
+      y+=rowHeight;
+      if (spec.dimensionCols.count(col) && col<spec.dimensionNames.size())
+        {
+          pango.setText(spec.dimensionNames[col]);
+          pango.setxy(x,y);
+          pango.show();
+        }
+      y+=rowHeight;
       for (size_t row=0; row<parsedLines.size(); ++row)
         {
           auto& line=parsedLines[row];

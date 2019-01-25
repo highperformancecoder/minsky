@@ -41,7 +41,10 @@ namespace minsky
     std::set<unsigned> dimensionCols;
     void setDimension(size_t c) {dimensionCols.insert(c);}
     void unsetDimension(size_t c) {dimensionCols.erase(c);}
-   
+
+    std::vector<Dimension> dimensions;
+    std::vector<std::string> dimensionNames;
+    
     /// initial stab at dataspec from examining stream
     void guessFromStream(std::istream& file);
 
@@ -51,12 +54,18 @@ namespace minsky
       guessFromStream(is);
     }
 
+    
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf
     /// eg boost::escaped_list_separator<char> tf(escape,separator,quote)
     template <class T>
     void givenTFguessRemainder(std::istream&, const T& tf);
 
+    template <class T>
+    void guessDimensionsFromStream(std::istream&, const T& tf);
+
+    void guessDimensionsFromStream(std::istream&);
+        
     /// figure out the tokenizer function and call givenTFguessRemainder
     void guessRemainder(std::istream&, char separator);
   };

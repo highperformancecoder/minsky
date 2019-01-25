@@ -148,16 +148,75 @@ void DataSpec::guessFromStream(std::istream& input)
           break;
         }
 
-  istringstream inputCopy(streamBuf.str());
-  if (numCommas>0.9*row && numCommas>numSemicolons && numCommas>numTabs)
-    guessRemainder(inputCopy,',');
-  else if (numSemicolons>0.9*row && numSemicolons>numTabs)
-    guessRemainder(inputCopy,';');
-  else if (numTabs>0.9*row)
-    guessRemainder(inputCopy,'\t');
-  else
-    guessRemainder(inputCopy,' ');
+  {
+    istringstream inputCopy(streamBuf.str());
+    if (numCommas>0.9*row && numCommas>numSemicolons && numCommas>numTabs)
+      guessRemainder(inputCopy,',');
+    else if (numSemicolons>0.9*row && numSemicolons>numTabs)
+      guessRemainder(inputCopy,';');
+    else if (numTabs>0.9*row)
+      guessRemainder(inputCopy,'\t');
+    else
+      guessRemainder(inputCopy,' ');
+  }
+
+  {
+    //fill in guessed dimension names
+    istringstream inputCopy(streamBuf.str());
+    guessDimensionsFromStream(inputCopy);
+  }
 }
+
+void DataSpec::guessDimensionsFromStream(std::istream& i)
+{
+  if (separator==' ')
+    guessDimensionsFromStream(i,boost::char_separator<char>());
+  else
+    guessDimensionsFromStream(i,Parser(escape,separator,quote));
+}
+    
+template <class T>
+void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
+{
+  string buf;
+  size_t row=0;
+  for (; row<=headerRow; ++row) getline(input, buf);
+  boost::tokenizer<T> tok(buf.begin(),buf.end(), tf);
+  dimensionNames.assign(tok.begin(), tok.end());
+  for (;row<=nRowAxes; ++row) getline(input, buf);
+  vector<string> data(tok.begin(),tok.end());
+  for (size_t col=0; col<nColAxes; ++col)
+    try
+      {
+        Dimension dim(Dimension::value,"");
+        anyVal(dim, data[col]);
+        dimensions.push_back(dim);
+      }
+    catch (...)
+      {
+        try
+          {
+            Dimension dim(Dimension::time,"");
+            anyVal(dim, data[col]);
+            dimensions.push_back(dim);
+          }
+        catch (...)
+          {
+            try
+              {
+                Dimension dim(Dimension::time,"%Y-Q%Q");
+                anyVal(dim, data[col]);
+                dimensions.push_back(dim);
+              }
+            catch (...)
+              {
+                dimensions.emplace_back(Dimension::string,"");
+              }
+          }
+      }
+}
+
+
 
 
 namespace minsky
