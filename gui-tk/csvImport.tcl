@@ -62,7 +62,11 @@ proc CSVImportDialog {} {
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
         bind .wiring.csvImport.table <Button-1> {csvImportButton1 %x %y};
         bind .wiring.csvImport.table <ButtonRelease-1> {csvImportButton1Up %x %y %X %Y};
-        bind .wiring.csvImport.table <B1-Motion> {csvDialog.xoffs [expr $csvImportPanX+%x]; csvDialog.requestRedraw}
+        bind .wiring.csvImport.table <B1-Motion> {
+            csvDialog.xoffs [expr $csvImportPanX+%x];
+            if $movingHeader {csvDialog.spec.headerRow [expr [csvDialog.rowOver %y]-4]}
+            csvDialog.requestRedraw
+        }
     }
     set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
     if [string length $filename] {
@@ -81,8 +85,9 @@ proc CSVImportDialog {} {
 }
 
 proc csvImportButton1 {x y} {
-    global csvImportPanX mouseSave
+    global csvImportPanX mouseSave movingHeader
     set csvImportPanX [expr [csvDialog.xoffs]-$x]
+    set movingHeader [expr [csvDialog.rowOver $y]-4 == [csvDialog.spec.headerRow]]
     set mouseSave "$x $y"
 }
 
