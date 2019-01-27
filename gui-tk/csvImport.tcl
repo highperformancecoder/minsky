@@ -49,18 +49,16 @@ proc CSVImportDialog {} {
         entry .wiring.csvImport.horizontalName.value -textvariable csvParms(horizontalDimension)
         pack .wiring.csvImport.horizontalName.text .wiring.csvImport.horizontalName.value -side left
         pack .wiring.csvImport.horizontalName
-        
+
         image create cairoSurface csvDialogTable -surface csvDialog
         label .wiring.csvImport.table -image csvDialogTable -width 800 -height 300
-        pack .wiring.csvImport.table -fill both -expand 1
-        bind .wiring.csvImport.table <<contextMenu>> {csvImportMenu %x %y %X %Y}
+        pack .wiring.csvImport.table -fill both -expand 1 -side top
 
         buttonBar .wiring.csvImport {
             csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
             loadVariableFromCSV csvDialog.spec $csvParms(filename)
             reset
         }
-        menu .wiring.csvImport.context
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
         bind .wiring.csvImport.table <Button-1> {csvImportButton1 %x %y};
         bind .wiring.csvImport.table <ButtonRelease-1> {csvImportButton1Up %x %y %X %Y};
@@ -150,26 +148,4 @@ proc csvImportButton1Up {x y X Y} {
             }
         }
     }
-}
-
-
-proc csvImportMenu {x y X Y} {
-    .wiring.csvImport.context delete 0 end
-    set col [csvDialog.columnOver $x]
-    set row [csvDialog.rowOver $y]
-    .wiring.csvImport.context add command -label "Data start row/col" -command "
-        csvDialog.spec.nRowAxes $row
-        csvDialog.spec.nColAxes $col
-        csvDialog.requestRedraw"       
-    .wiring.csvImport.context add separator
-    .wiring.csvImport.context add command -label "Comment row" -command "csvDialog.spec.commentRow $row
-        csvDialog.requestRedraw"
-    .wiring.csvImport.context add command -label "Uncomment row" -command "csvDialog.spec.uncommentRow $row
-        csvDialog.requestRedraw"
-    .wiring.csvImport.context add separator
-    .wiring.csvImport.context add command -label "Comment column" -command "csvDialog.spec.commentCol $col
-        csvDialog.requestRedraw"
-    .wiring.csvImport.context add command -label "Uncomment column" -command "csvDialog.spec.uncommentCol $col
-        csvDialog.requestRedraw"
-    tk_popup  .wiring.csvImport.context $X $Y
 }

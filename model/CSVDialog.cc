@@ -90,7 +90,28 @@ void CSVDialog::redraw(int, int, int width, int height)
     parsedLines=parseLines
       (boost::escaped_list_separator<char>(spec.escape,spec.separator,spec.quote),
        initialLines);
-
+  
+  // LHS row labels
+  {
+    Pango pango(cairo);
+    pango.setText("Dimension");
+    cairo_move_to(cairo,xoffs-pango.width()-5,0);
+    pango.show();
+    pango.setText("Type");
+    cairo_move_to(cairo,xoffs-pango.width()-5,rowHeight);
+    pango.show();
+    pango.setText("Format");
+    cairo_move_to(cairo,xoffs-pango.width()-5,2*rowHeight);
+    pango.show();
+    pango.setText("Name");
+    cairo_move_to(cairo,xoffs-pango.width()-5,3*rowHeight);
+    pango.show();
+    pango.setText("Header");
+    cairo_move_to(cairo,xoffs-pango.width()-5,(4+spec.headerRow)*rowHeight);
+    pango.show();
+    
+  }
+  
   set<size_t> done;
   double x=xoffs, y=0;
   size_t col=0;
@@ -163,13 +184,13 @@ void CSVDialog::redraw(int, int, int width, int height)
         CairoSave cs(cairo);
         cairo_set_source_rgb(cairo,.5,.5,.5);
         cairo_move_to(cairo,x-2.5,0);
-        cairo_rel_line_to(cairo,0,parsedLines.size()*rowHeight);
+        cairo_rel_line_to(cairo,0,(parsedLines.size()+4)*rowHeight);
         cairo_stroke(cairo);
       }
       x+=colWidth+5;
       y=0;
     }
-  for (size_t row=0; row<parsedLines.size(); ++row)
+  for (size_t row=0; row<parsedLines.size()+5; ++row)
     {
       CairoSave cs(cairo);
       cairo_set_source_rgb(cairo,.5,.5,.5);

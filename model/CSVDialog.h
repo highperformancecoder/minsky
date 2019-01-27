@@ -38,7 +38,7 @@ namespace minsky
     double colWidth=50;
   public:
     const unsigned numInitialLines=30;
-    double xoffs=0;
+    double xoffs=80;
     DataSpec spec;
     void redraw(int, int, int width, int height) override;
     void loadFile(const std::string& fname);
