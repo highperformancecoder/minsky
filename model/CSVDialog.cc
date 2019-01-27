@@ -75,11 +75,6 @@ void CSVDialog::redraw(int, int, int width, int height)
   CroppedPango pango(cairo, colWidth);
   rowHeight=15;
   pango.setFontSize(0.8*rowHeight);
-//  for (auto& line: initialLines)
-//    {
-//      pango.setText(line);
-//      rowHeight=max(rowHeight, pango.height());
-//    }
   
   vector<vector<string>> parsedLines;
   if (spec.mergeDelimiters)
@@ -101,37 +96,39 @@ void CSVDialog::redraw(int, int, int width, int height)
   size_t col=0;
   for (; done.size()<parsedLines.size(); ++col)
     {
-      {// dimension check boxes
-        CairoSave cs(cairo);
-        double cbsz=5;
-        cairo_translate(cairo,x+0.5*colWidth,y+0.5*rowHeight);
-        cairo_rectangle(cairo,-cbsz,-cbsz,2*cbsz,2*cbsz);
-        if (spec.dimensionCols.count(col))
-          {
-            cairo_move_to(cairo,-cbsz,-cbsz);
-            cairo_line_to(cairo,cbsz,cbsz);
-            cairo_move_to(cairo,cbsz,-cbsz);
-            cairo_line_to(cairo,-cbsz,cbsz);
-          }
-        cairo_stroke(cairo);
-      }
+      if (col<spec.nColAxes)
+        {// dimension check boxes
+          CairoSave cs(cairo);
+          double cbsz=5;
+          cairo_set_line_width(cairo,1);
+          cairo_translate(cairo,x+0.5*colWidth,y+0.5*rowHeight);
+          cairo_rectangle(cairo,-cbsz,-cbsz,2*cbsz,2*cbsz);
+          if (spec.dimensionCols.count(col))
+            {
+              cairo_move_to(cairo,-cbsz,-cbsz);
+              cairo_line_to(cairo,cbsz,cbsz);
+              cairo_move_to(cairo,cbsz,-cbsz);
+              cairo_line_to(cairo,-cbsz,cbsz);
+            }
+          cairo_stroke(cairo);
+        }
       y+=rowHeight;
       // type
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size())
+      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes)
         {
           pango.setText(classdesc::enumKey<Dimension::Type>(spec.dimensions[col].type));
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size())
+      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes)
         {
           pango.setText(spec.dimensions[col].units);
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensionNames.size())
+      if (spec.dimensionCols.count(col) && col<spec.dimensionNames.size() && col<spec.nColAxes)
         {
           pango.setText(spec.dimensionNames[col]);
           pango.setxy(x,y);
@@ -146,12 +143,13 @@ void CSVDialog::redraw(int, int, int width, int height)
               CairoSave cs(cairo);
               pango.setText(line[col]);
               pango.setxy(x, y);
-              if (row==spec.headerRow)
+              if (row==spec.headerRow && !(spec.columnar && col>spec.nColAxes))
                 if (col<spec.nColAxes)
                   cairo_set_source_rgb(surface->cairo(),0,0.7,0);
                 else
                   cairo_set_source_rgb(surface->cairo(),0,0,1);
-              else if (row<spec.nRowAxes || col<spec.nColAxes && !spec.dimensionCols.count(col))
+              else if (row<spec.nRowAxes || col<spec.nColAxes && !spec.dimensionCols.count(col) ||
+                       spec.columnar && col>spec.nColAxes)
                 cairo_set_source_rgb(surface->cairo(),1,0,0);
               else if (col<spec.nColAxes)
                 cairo_set_source_rgb(surface->cairo(),0,0,1);

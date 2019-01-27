@@ -247,7 +247,7 @@ namespace minsky
               if (spec.dimensionCols.count(i))
                 xVector.emplace_back(parsedRow[i]);
 
-            if (parsedRow.size()>spec.nColAxes+1)
+            if (parsedRow.size()>spec.nColAxes+1 && !spec.columnar)
               {
                 tabularFormat=true;
                 horizontalLabels.assign(parsedRow.begin()+spec.nColAxes, parsedRow.end());

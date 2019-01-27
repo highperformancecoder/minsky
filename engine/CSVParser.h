@@ -32,6 +32,7 @@ namespace minsky
   public:
     char separator=',', quote='"', escape='\\';
     bool mergeDelimiters=false;
+    bool columnar=false;
     double missingValue=nan("");
     /// start row/col of data area
     size_t nRowAxes=0, nColAxes=0, headerRow=0;
@@ -39,8 +40,15 @@ namespace minsky
 
     /// rows and columns that are comment lines to be ignored
     std::set<unsigned> dimensionCols;
-    void setDimension(size_t c) {dimensionCols.insert(c);}
-    void unsetDimension(size_t c) {dimensionCols.erase(c);}
+//    void setDimension(size_t c) {dimensionCols.insert(c);}
+//    void unsetDimension(size_t c) {dimensionCols.erase(c);}
+    void toggleDimension(size_t c) {
+      auto i=dimensionCols.find(c);
+      if (i==dimensionCols.end())
+        dimensionCols.insert(c);
+      else
+        dimensionCols.erase(i);
+    }
 
     std::vector<Dimension> dimensions;
     std::vector<std::string> dimensionNames;

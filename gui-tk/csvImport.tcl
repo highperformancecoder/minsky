@@ -8,6 +8,7 @@ proc CSVImportDialog {} {
         label .wiring.csvImport.delimiters.columnarLabel -text "Columnar"
         ttk::checkbutton .wiring.csvImport.delimiters.columnar -variable csvParms(columnar) -command {
             csvDialog.spec.columnar $csvParms(columnar)
+            csvDialog.requestRedraw
         }
         label .wiring.csvImport.delimiters.separatorLabel -text Separator
         ttk::combobox .wiring.csvImport.delimiters.separatorValue -values {
@@ -61,9 +62,9 @@ proc CSVImportDialog {} {
         }
         menu .wiring.csvImport.context
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
-        bind .wiring.csvImport.table <Button-1> {set csvImportPanX [expr [csvDialog.xoffs]-%x]};
+        bind .wiring.csvImport.table <Button-1> {csvImportButton1 %x %y};
+        bind .wiring.csvImport.table <ButtonRelease-1> {csvImportButton1Up %x %y %X %Y};
         bind .wiring.csvImport.table <B1-Motion> {csvDialog.xoffs [expr $csvImportPanX+%x]; csvDialog.requestRedraw}
-
     }
     set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
     if [string length $filename] {
@@ -80,6 +81,77 @@ proc CSVImportDialog {} {
         csvDialog.requestRedraw
     }
 }
+
+proc csvImportButton1 {x y} {
+    global csvImportPanX mouseSave
+    set csvImportPanX [expr [csvDialog.xoffs]-$x]
+    set mouseSave "$x $y"
+}
+
+proc closeCombo setter {
+    puts $setter
+    eval $setter \[.wiring.csvImport.text.combo get\]
+    wm withdraw .wiring.csvImport.text
+    csvDialog.requestRedraw
+}
+
+proc setupCombo {getter setter title configure X Y} {
+    wm title .wiring.csvImport.text $title
+    eval .wiring.csvImport.text.combo configure $configure
+    .wiring.csvImport.text.combo set $getter
+    bind .wiring.csvImport.text.combo <<ComboboxSelected>> "closeCombo $setter"
+    bind .wiring.csvImport.text.combo <Return> "closeCombo $setter"
+    wm deiconify .wiring.csvImport.text
+    wm geometry .wiring.csvImport.text +$X+$Y
+    raise .wiring.csvImport.text 
+}
+
+proc csvImportButton1Up {x y X Y} {
+    global mouseSave csvParms
+    # combobox used for setting dimension type
+    if {![winfo exists .wiring.csvImport.text.combo]} {
+        toplevel .wiring.csvImport.text
+        ttk::combobox .wiring.csvImport.text.combo -values {"string" "value" "time"} -state readonly
+        pack .wiring.csvImport.text.combo
+        wm withdraw .wiring.csvImport.text
+    }
+
+    set col [csvDialog.columnOver $x]
+    set row [csvDialog.rowOver $y]
+    if {abs([lindex $mouseSave 0]-$x)==0 && abs([lindex $mouseSave 1]-$y)==0} {
+        # mouse click - implement dialog interaction logic
+        switch [csvDialog.rowOver $y] {
+            0 {csvDialog.spec.toggleDimension $col
+                csvDialog.requestRedraw
+            }
+            1 {if {$col<[csvDialog.spec.dimensions.size]} {
+                setupCombo [[csvDialog.spec.dimensions.@elem $col].type] \
+                    "csvDialog.spec.dimensions($col).type" \
+                    "Dimension type" {-values {"string" "value" "time"} -state readonly} $X $Y
+            }}
+            2 {if {$col<[csvDialog.spec.dimensions.size]} {
+                set units ""
+                if {[[csvDialog.spec.dimensions.@elem $col].type]=="time"} {
+                    set units "{%Y-%m-%D %Y-%m-%d %H:%M:%S %Y-Q%Q}"
+                }
+                setupCombo [[csvDialog.spec.dimensions.@elem $col].units] \
+                    "csvDialog.spec.dimensions($col).units" \
+                    "Dimension units/format" "-values $units -state normal" $X $Y
+            }}
+            3 {if {$col<[csvDialog.spec.dimensions.size]} {
+                setupCombo [[csvDialog.spec.dimensionNames.@elem $col]] \
+                    "csvDialog.spec.dimensionNames($col)" \
+                    "Dimension name" {-values {} -state normal} $X $Y
+            }}
+            default {
+                csvDialog.spec.nRowAxes [expr $row-4]
+                csvDialog.spec.nColAxes $col
+                csvDialog.requestRedraw
+            }
+        }
+    }
+}
+
 
 proc csvImportMenu {x y X Y} {
     .wiring.csvImport.context delete 0 end
