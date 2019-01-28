@@ -79,6 +79,17 @@ namespace
   }
 }
 
+void DataSpec::setDataArea(size_t row, size_t col)
+{
+  m_nRowAxes=row;
+  m_nColAxes=col;
+  if (dimensions.size()<nColAxes()) dimensions.resize(nColAxes());
+  if (dimensionNames.size()<nColAxes()) dimensionNames.resize(nColAxes());
+  // remove any dimensionCols > nColAxes
+  dimensionCols.erase(dimensionCols.lower_bound(nColAxes()), dimensionCols.end());
+}
+
+
 template <class TokenizerFunction>
 void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunction& tf)
 {
@@ -103,18 +114,18 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     for (unsigned long i=0; i<starts.size(); ++i) 
       sum+=starts[i];
     double av=sum/(starts.size());
-    for (nRowAxes=0; (starts.size()>nRowAxes && starts[nRowAxes]>av); 
-         ++nRowAxes);
-    nColAxes=0;
-    for (size_t i=nRowAxes; i<starts.size(); ++i)
-      nColAxes=max(nColAxes,starts[i]);
+    for (m_nRowAxes=0; (starts.size()>m_nRowAxes && starts[m_nRowAxes]>av); 
+         ++m_nRowAxes);
+    m_nColAxes=0;
+    for (size_t i=nRowAxes(); i<starts.size(); ++i)
+      m_nColAxes=max(m_nColAxes,starts[i]);
     // if more than 1 data column, treat the first row as an axis row
-    if (nRowAxes==0 && nCols-nColAxes>1)
-      nRowAxes=1;
+    if (m_nRowAxes==0 && nCols-m_nColAxes>1)
+      m_nRowAxes=1;
     
-    if (firstEmpty==nRowAxes) ++nRowAxes; // allow for possible colAxes header line
-    headerRow=nRowAxes>0? nRowAxes-1: 0;
-    for (size_t i=0; i<nColAxes; ++i) dimensionCols.insert(i);
+    if (firstEmpty==m_nRowAxes) ++m_nRowAxes; // allow for possible colAxes header line
+    headerRow=nRowAxes()>0? nRowAxes()-1: 0;
+    for (size_t i=0; i<nColAxes(); ++i) dimensionCols.insert(i);
 }
 
 void DataSpec::guessRemainder(std::istream& input, char sep)
@@ -183,9 +194,9 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
   for (; row<=headerRow; ++row) getline(input, buf);
   boost::tokenizer<T> tok(buf.begin(),buf.end(), tf);
   dimensionNames.assign(tok.begin(), tok.end());
-  for (;row<=nRowAxes; ++row) getline(input, buf);
+  for (;row<=nRowAxes(); ++row) getline(input, buf);
   vector<string> data(tok.begin(),tok.end());
-  for (size_t col=0; col<nColAxes; ++col)
+  for (size_t col=0; col<data.size() && col<nColAxes(); ++col)
     try
       {
         Dimension dim(Dimension::value,"");
@@ -237,20 +248,20 @@ namespace minsky
       {
         Tokenizer tok(buf.begin(), buf.end(), csvParser);
 
-        assert(spec.headerRow<=spec.nRowAxes);
+        assert(spec.headerRow<=spec.nRowAxes());
         if (row==spec.headerRow) // in header section
           {
             vector<string> parsedRow(tok.begin(), tok.end());
-            if (parsedRow.size()<spec.nColAxes+1) continue; // not a header row
+            if (parsedRow.size()<spec.nColAxes()+1) continue; // not a header row
             if (!xVector.empty()) continue; // already parsed header row
-            for (size_t i=0; i<spec.nColAxes; ++i)
+            for (size_t i=0; i<spec.nColAxes(); ++i)
               if (spec.dimensionCols.count(i))
                 xVector.emplace_back(parsedRow[i]);
 
-            if (parsedRow.size()>spec.nColAxes+1 && !spec.columnar)
+            if (parsedRow.size()>spec.nColAxes()+1 && !spec.columnar)
               {
                 tabularFormat=true;
-                horizontalLabels.assign(parsedRow.begin()+spec.nColAxes, parsedRow.end());
+                horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
                 xVector.emplace_back(spec.horizontalDimName);
                 for (auto& i: horizontalLabels) xVector.back().push_back(i);
                 dimLabels.emplace_back();
@@ -258,11 +269,11 @@ namespace minsky
                   dimLabels.back()[horizontalLabels[i]]=i;
               }
           }
-        else if (row>=spec.nRowAxes)// in data section
+        else if (row>=spec.nRowAxes())// in data section
           {
             Key key;
             auto field=tok.begin();
-            for (size_t i=0, dim=0; i<spec.nColAxes && field!=tok.end(); ++i, ++field)
+            for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
               if (spec.dimensionCols.count(i))
                 {
                   if (dim>=xVector.size())

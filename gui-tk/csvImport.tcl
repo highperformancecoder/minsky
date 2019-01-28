@@ -170,8 +170,7 @@ proc csvImportButton1Up {x y X Y} {
                     "Dimension name" {-values {} -state normal} $X $Y
             }}
             default {
-                csvDialog.spec.nRowAxes [expr $row-4]
-                csvDialog.spec.nColAxes $col
+                csvDialog.spec.setDataArea [expr $row-4] $col
                 csvDialog.requestRedraw
             }
         }

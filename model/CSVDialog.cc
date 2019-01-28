@@ -117,7 +117,7 @@ void CSVDialog::redraw(int, int, int width, int height)
   size_t col=0;
   for (; done.size()<parsedLines.size(); ++col)
     {
-      if (col<spec.nColAxes)
+      if (col<spec.nColAxes())
         {// dimension check boxes
           CairoSave cs(cairo);
           double cbsz=5;
@@ -135,21 +135,21 @@ void CSVDialog::redraw(int, int, int width, int height)
         }
       y+=rowHeight;
       // type
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes)
+      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes())
         {
           pango.setText(classdesc::enumKey<Dimension::Type>(spec.dimensions[col].type));
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes)
+      if (spec.dimensionCols.count(col) && col<spec.dimensions.size() && col<spec.nColAxes())
         {
           pango.setText(spec.dimensions[col].units);
           pango.setxy(x,y);
           pango.show();
         }
       y+=rowHeight;
-      if (spec.dimensionCols.count(col) && col<spec.dimensionNames.size() && col<spec.nColAxes)
+      if (spec.dimensionCols.count(col) && col<spec.dimensionNames.size() && col<spec.nColAxes())
         {
           pango.setText(spec.dimensionNames[col]);
           pango.setxy(x,y);
@@ -164,15 +164,15 @@ void CSVDialog::redraw(int, int, int width, int height)
               CairoSave cs(cairo);
               pango.setText(line[col]);
               pango.setxy(x, y);
-              if (row==spec.headerRow && !(spec.columnar && col>spec.nColAxes))
-                if (col<spec.nColAxes)
+              if (row==spec.headerRow && !(spec.columnar && col>spec.nColAxes()))
+                if (col<spec.nColAxes())
                   cairo_set_source_rgb(surface->cairo(),0,0.7,0);
                 else
                   cairo_set_source_rgb(surface->cairo(),0,0,1);
-              else if (row<spec.nRowAxes || col<spec.nColAxes && !spec.dimensionCols.count(col) ||
-                       spec.columnar && col>spec.nColAxes)
+              else if (row<spec.nRowAxes() || col<spec.nColAxes() && !spec.dimensionCols.count(col) ||
+                       spec.columnar && col>spec.nColAxes())
                 cairo_set_source_rgb(surface->cairo(),1,0,0);
-              else if (col<spec.nColAxes)
+              else if (col<spec.nColAxes())
                 cairo_set_source_rgb(surface->cairo(),0,0,1);
               pango.show();
             }

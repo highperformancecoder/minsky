@@ -29,13 +29,18 @@ namespace minsky
 {
   class DataSpec
   {
+    size_t m_nRowAxes=0, m_nColAxes=0;
   public:
     char separator=',', quote='"', escape='\\';
     bool mergeDelimiters=false;
     bool columnar=false;
     double missingValue=nan("");
     /// start row/col of data area
-    size_t nRowAxes=0, nColAxes=0, headerRow=0;
+    size_t headerRow=0;
+    /// start row of the data area
+    size_t nRowAxes() const {return m_nRowAxes;}
+    /// start column of the data area
+    size_t nColAxes() const {return m_nColAxes;}
     std::string horizontalDimName="?";
 
     /// rows and columns that are comment lines to be ignored
@@ -50,6 +55,8 @@ namespace minsky
         dimensionCols.erase(i);
     }
 
+    void setDataArea(size_t row, size_t col);
+    
     std::vector<Dimension> dimensions;
     std::vector<std::string> dimensionNames;
     
