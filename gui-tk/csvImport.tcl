@@ -35,12 +35,18 @@ proc CSVImportDialog {} {
         bind .wiring.csvImport.delimiters.missingValue <<ComboboxSelected>> {
             csvDialog.spec.missingValue $csvParms(missingValue)}
 
+        label .wiring.csvImport.delimiters.colWidthLabel -text "Col Width"
+        spinbox .wiring.csvImport.delimiters.colWidth -from 10 -to 500 -increment 10 \
+            -width 5 -command {adjustColWidth %s} -validate key -validatecommand {adjustColWidth %P}
+        .wiring.csvImport.delimiters.colWidth set 50
+        
         pack .wiring.csvImport.delimiters.columnarLabel .wiring.csvImport.delimiters.columnar \
             .wiring.csvImport.delimiters.separatorLabel .wiring.csvImport.delimiters.separatorValue \
             .wiring.csvImport.delimiters.escapeLabel .wiring.csvImport.delimiters.escapeValue \
             .wiring.csvImport.delimiters.quoteLabel .wiring.csvImport.delimiters.quoteValue \
             .wiring.csvImport.delimiters.mergeLabel .wiring.csvImport.delimiters.mergeValue \
-            .wiring.csvImport.delimiters.missingLabel .wiring.csvImport.delimiters.missingValue -side left
+            .wiring.csvImport.delimiters.missingLabel .wiring.csvImport.delimiters.missingValue \
+            .wiring.csvImport.delimiters.colWidthLabel .wiring.csvImport.delimiters.colWidth -side left
 
         pack .wiring.csvImport.delimiters
         
@@ -54,7 +60,12 @@ proc CSVImportDialog {} {
         label .wiring.csvImport.table -image csvDialogTable -width 800 -height 300
         pack .wiring.csvImport.table -fill both -expand 1 -side top
 
+        scale .wiring.csvImport.hscroll -orient horiz -from -100 -to 1000 -showvalue 0 -command scrollTable
+        pack .wiring.csvImport.hscroll -fill x -expand 1 -side top
+        
         buttonBar .wiring.csvImport {
+            global csvParms
+            puts [array names csvParms]
             csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
             loadVariableFromCSV csvDialog.spec $csvParms(filename)
             reset
@@ -78,10 +89,22 @@ proc CSVImportDialog {} {
         set csvParms(mergeDelimiters) [csvDialog.spec.mergeDelimiters]
         set csvParms(missingValue) [csvDialog.spec.missingValue]
         set csvParms(horizontalDimension) [csvDialog.spec.horizontalDimName]
+        .wiring.csvImport.delimiters.colWidth set [csvDialog.colWidth]
         wm deiconify .wiring.csvImport
         raise .wiring.csvImport
         csvDialog.requestRedraw
     }
+}
+
+proc scrollTable v {
+    csvDialog.xoffs [expr -$v]
+    csvDialog.requestRedraw
+}
+
+proc adjustColWidth {w} {
+    csvDialog.colWidth $w
+    csvDialog.requestRedraw
+    return 1
 }
 
 proc csvImportButton1 {x y} {

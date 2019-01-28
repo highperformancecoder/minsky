@@ -35,10 +35,10 @@ namespace minsky
   {
     std::vector<std::string> initialLines; ///< initial lines of file
     double rowHeight=0;
-    double colWidth=50;
   public:
     const unsigned numInitialLines=30;
     double xoffs=80;
+    double colWidth=50;
     DataSpec spec;
     void redraw(int, int, int width, int height) override;
     void loadFile(const std::string& fname);
