@@ -243,22 +243,20 @@ namespace minsky
     bool tabularFormat=false;
     vector<XVector> xVector;
     vector<string> horizontalLabels;
-                                  
+
+    for (size_t i=0; i<spec.nColAxes(); ++i)
+      if (spec.dimensionCols.count(i))
+        xVector.emplace_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+
     for (size_t row=0; getline(input, buf); ++row)
       {
         Tokenizer tok(buf.begin(), buf.end(), csvParser);
 
         assert(spec.headerRow<=spec.nRowAxes());
-        if (row==spec.headerRow) // in header section
+        if (row==spec.headerRow && !spec.columnar) // in header section
           {
             vector<string> parsedRow(tok.begin(), tok.end());
-            if (parsedRow.size()<spec.nColAxes()+1) continue; // not a header row
-            if (!xVector.empty()) continue; // already parsed header row
-            for (size_t i=0; i<spec.nColAxes(); ++i)
-              if (spec.dimensionCols.count(i))
-                xVector.emplace_back(parsedRow[i]);
-
-            if (parsedRow.size()>spec.nColAxes()+1 && !spec.columnar)
+            if (parsedRow.size()>spec.nColAxes()+1)
               {
                 tabularFormat=true;
                 horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());

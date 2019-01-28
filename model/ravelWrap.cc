@@ -444,7 +444,7 @@ namespace minsky
         if (dims.empty() || dims[0]==0)
           {
             if (v.idx()==-1) v.allocValue();
-            if (dims.empty()) v=tmp[0];
+            if (dims.empty() && tmp) v=tmp[0];
             return; // do nothing if ravel data is empty
           }
         if (tmp)
