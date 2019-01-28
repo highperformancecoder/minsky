@@ -39,6 +39,7 @@ namespace minsky
     const unsigned numInitialLines=30;
     double xoffs=80;
     double colWidth=50;
+    bool flashNameRow=false;
     DataSpec spec;
     void redraw(int, int, int width, int height) override;
     void loadFile(const std::string& fname);
@@ -47,6 +48,8 @@ namespace minsky
     size_t columnOver(double x);
     /// return row mouse is over
     size_t rowOver(double x);
+    void copyHeaderRowToDimNames(size_t row);
+    std::vector<std::vector<std::string>> parseLines() const;
   };
 }
 

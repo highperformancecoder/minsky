@@ -45,8 +45,6 @@ namespace minsky
 
     /// rows and columns that are comment lines to be ignored
     std::set<unsigned> dimensionCols;
-//    void setDimension(size_t c) {dimensionCols.insert(c);}
-//    void unsetDimension(size_t c) {dimensionCols.erase(c);}
     void toggleDimension(size_t c) {
       auto i=dimensionCols.find(c);
       if (i==dimensionCols.end())

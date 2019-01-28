@@ -83,6 +83,8 @@ void DataSpec::setDataArea(size_t row, size_t col)
 {
   m_nRowAxes=row;
   m_nColAxes=col;
+  if (headerRow>=row)
+    headerRow=row>0? row-1: 0;
   if (dimensions.size()<nColAxes()) dimensions.resize(nColAxes());
   if (dimensionNames.size()<nColAxes()) dimensionNames.resize(nColAxes());
   // remove any dimensionCols > nColAxes
@@ -114,7 +116,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     for (unsigned long i=0; i<starts.size(); ++i) 
       sum+=starts[i];
     double av=sum/(starts.size());
-    for (m_nRowAxes=0; (starts.size()>m_nRowAxes && starts[m_nRowAxes]>av); 
+    for (m_nRowAxes=0; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av || starts[m_nRowAxes]==1); 
          ++m_nRowAxes);
     m_nColAxes=0;
     for (size_t i=nRowAxes(); i<starts.size(); ++i)

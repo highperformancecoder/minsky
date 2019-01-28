@@ -64,8 +64,6 @@ proc CSVImportDialog {} {
         pack .wiring.csvImport.hscroll -fill x -expand 1 -side top
         
         buttonBar .wiring.csvImport {
-            global csvParms
-            puts [array names csvParms]
             csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
             loadVariableFromCSV csvDialog.spec $csvParms(filename)
             reset
@@ -75,7 +73,11 @@ proc CSVImportDialog {} {
         bind .wiring.csvImport.table <ButtonRelease-1> {csvImportButton1Up %x %y %X %Y};
         bind .wiring.csvImport.table <B1-Motion> {
             csvDialog.xoffs [expr $csvImportPanX+%x];
-            if $movingHeader {csvDialog.spec.headerRow [expr [csvDialog.rowOver %y]-4]}
+            if $movingHeader {
+                set row [csvDialog.rowOver %y]
+                if {$row>=4} {csvDialog.spec.headerRow [expr $row-4]}
+                csvDialog.flashNameRow [expr $row==3]
+            }
             csvDialog.requestRedraw
         }
     }
@@ -115,7 +117,6 @@ proc csvImportButton1 {x y} {
 }
 
 proc closeCombo setter {
-    puts $setter
     eval $setter \[.wiring.csvImport.text.combo get\]
     wm withdraw .wiring.csvImport.text
     csvDialog.requestRedraw
@@ -133,7 +134,7 @@ proc setupCombo {getter setter title configure X Y} {
 }
 
 proc csvImportButton1Up {x y X Y} {
-    global mouseSave csvParms
+    global mouseSave csvParms movingHeader
     # combobox used for setting dimension type
     if {![winfo exists .wiring.csvImport.text.combo]} {
         toplevel .wiring.csvImport.text
@@ -175,4 +176,13 @@ proc csvImportButton1Up {x y X Y} {
             }
         }
     }
+    if {$movingHeader && $row==3} {
+        # copy columns headers to dimension names
+        set oldHeaderRow [expr [csvDialog.rowOver [lindex $mouseSave 1]]-4]
+        csvDialog.copyHeaderRowToDimNames $oldHeaderRow
+        csvDialog.spec.headerRow $oldHeaderRow
+        csvDialog.flashNameRow 0
+        csvDialog.requestRedraw
+    }
+    set movingHeader 0
 }

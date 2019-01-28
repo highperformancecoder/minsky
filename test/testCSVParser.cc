@@ -37,10 +37,10 @@ SUITE(CSVParser)
       guessFromStream(is);
 
       CHECK_EQUAL(';',separator);
-      CHECK_EQUAL(3,nRowAxes);
-      CHECK_EQUAL(2,nColAxes);
-      CHECK(set<unsigned>({0,1})==commentRows);
-      CHECK(set<unsigned>{}==commentCols);
+      CHECK_EQUAL(3,nRowAxes());
+      CHECK_EQUAL(2,nColAxes());
+      CHECK_EQUAL(2,headerRow);
+      CHECK((set<unsigned>{0,1}==dimensionCols));
     }
   
   TEST_FIXTURE(DataSpec,loadVar)
@@ -54,11 +54,11 @@ SUITE(CSVParser)
       istringstream is(input);
       
       separator=';';
-      commentRows.insert(0);
-      commentRows.insert(1);
-      nRowAxes=3;
-      nColAxes=2;
+      setDataArea(3,2);
       missingValue=-1;
+      headerRow=2;
+      dimensionNames={"foo","bar"};
+      dimensionCols={0,1};
       horizontalDimName="foobar";
       
       VariableValue v;

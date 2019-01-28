@@ -27,6 +27,7 @@ using ecolab::cairo::CairoSave;
 
 void CSVDialog::loadFile(const string& fname)
 {
+  spec=DataSpec();
   spec.guessFromFile(fname);
   ifstream is(fname);
   initialLines.clear();
@@ -76,20 +77,7 @@ void CSVDialog::redraw(int, int, int width, int height)
   rowHeight=15;
   pango.setFontSize(0.8*rowHeight);
   
-  vector<vector<string>> parsedLines;
-  if (spec.mergeDelimiters)
-    if (spec.separator==' ')
-      parsedLines=parseLines(boost::char_separator<char>(), initialLines);
-    else
-      {
-        char separators[]={spec.separator,'\0'};
-        parsedLines=parseLines
-          (boost::char_separator<char>(separators,""),initialLines);
-      }
-  else
-    parsedLines=parseLines
-      (boost::escaped_list_separator<char>(spec.escape,spec.separator,spec.quote),
-       initialLines);
+  vector<vector<string>> parsedLines=parseLines();
   
   // LHS row labels
   {
@@ -103,7 +91,10 @@ void CSVDialog::redraw(int, int, int width, int height)
     pango.setText("Format");
     cairo_move_to(cairo,xoffs-pango.width()-5,2*rowHeight);
     pango.show();
-    pango.setText("Name");
+    if (flashNameRow)
+      pango.setMarkup("<b>Name</b>");
+    else
+      pango.setText("Name");
     cairo_move_to(cairo,xoffs-pango.width()-5,3*rowHeight);
     pango.show();
     pango.setText("Header");
@@ -209,3 +200,31 @@ size_t CSVDialog::rowOver(double y)
 {
   return size_t(y/rowHeight);
 }
+
+void CSVDialog::copyHeaderRowToDimNames(size_t row)
+{
+  auto parsedLines=parseLines();
+  if (row>=parseLines().size()) return;
+  for (size_t c=0; c<spec.dimensionNames.size() && c<parsedLines[row].size(); ++c)
+    spec.dimensionNames[c]=parsedLines[row][c];
+}
+
+std::vector<std::vector<std::string>> CSVDialog::parseLines() const
+{
+  vector<vector<string>> parsedLines;
+  if (spec.mergeDelimiters)
+    if (spec.separator==' ')
+      parsedLines=::parseLines(boost::char_separator<char>(), initialLines);
+    else
+      {
+        char separators[]={spec.separator,'\0'};
+        parsedLines=::parseLines
+          (boost::char_separator<char>(separators,""),initialLines);
+      }
+  else
+    parsedLines=::parseLines
+      (boost::escaped_list_separator<char>(spec.escape,spec.separator,spec.quote),
+       initialLines);
+  return parsedLines;
+}
+
