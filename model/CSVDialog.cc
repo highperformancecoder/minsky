@@ -209,6 +209,14 @@ void CSVDialog::copyHeaderRowToDimNames(size_t row)
     spec.dimensionNames[c]=parsedLines[row][c];
 }
 
+std::string CSVDialog::headerForCol(size_t col) const
+{
+  auto parsedLines=parseLines();
+  if (spec.headerRow<parsedLines.size() && col<parsedLines[spec.headerRow].size())
+    return parsedLines[spec.headerRow][col];
+  return "";
+}
+
 std::vector<std::vector<std::string>> CSVDialog::parseLines() const
 {
   vector<vector<string>> parsedLines;
