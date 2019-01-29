@@ -51,7 +51,13 @@ namespace
       try
         {
           if (!v[i].empty())
-            stod(v[i]);
+            {
+              size_t c;
+              auto s=trimWS(v[i]);
+              stod(s,&c);
+              if (c!=s.size())
+                r=i+1;
+            }
         }
       catch (...)
         {
@@ -101,13 +107,16 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     size_t row=0;
     size_t firstEmpty=numeric_limits<size_t>::max();
     dimensionCols.clear();
-    
+
+    m_nRowAxes=0;
     for (; getline(input, buf) && row<maxRowsToAnalyse; ++row)
       {
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
         starts.push_back(firstNumerical(line));
         nCols=max(nCols, line.size());
+        if (starts.back()==line.size())
+          m_nRowAxes=row;
         if (starts.size()-1 < firstEmpty && starts.back()<nCols && emptyTail(line, starts.back()))
           firstEmpty=starts.size()-1;
       }
@@ -116,7 +125,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     for (unsigned long i=0; i<starts.size(); ++i) 
       sum+=starts[i];
     double av=sum/(starts.size());
-    for (m_nRowAxes=0; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av || starts[m_nRowAxes]==1); 
+    for (; starts.size()>m_nRowAxes && (starts[m_nRowAxes]>av); 
          ++m_nRowAxes);
     m_nColAxes=0;
     for (size_t i=nRowAxes(); i<starts.size(); ++i)
@@ -201,15 +210,18 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
   for (size_t col=0; col<data.size() && col<nColAxes(); ++col)
     try
       {
-        Dimension dim(Dimension::value,"");
-        anyVal(dim, data[col]);
-        dimensions.push_back(dim);
+        // only select value type if the datafield is a pure double
+        size_t c;
+        string s=trimWS(data[col]);
+        double v=stod(s, &c);
+        if (c!=s.size()) throw 0; // try parsing as time
+        dimensions.emplace_back(Dimension::value,"");
       }
     catch (...)
       {
         try
           {
-            Dimension dim(Dimension::time,"");
+            Dimension dim(Dimension::time,"%Y-Q%Q");
             anyVal(dim, data[col]);
             dimensions.push_back(dim);
           }
@@ -217,7 +229,7 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
           {
             try
               {
-                Dimension dim(Dimension::time,"%Y-Q%Q");
+                Dimension dim(Dimension::time,"");
                 anyVal(dim, data[col]);
                 dimensions.push_back(dim);
               }

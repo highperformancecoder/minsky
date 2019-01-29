@@ -43,6 +43,25 @@ SUITE(CSVParser)
       CHECK((set<unsigned>{0,1}==dimensionCols));
     }
   
+  TEST_FIXTURE(DataSpec,guessColumnar)
+    {
+      string input="Country,Time_Period,value$\n"
+        "Australia,1967-Q4,1.8\n"
+        "Australia,1968-Q1,1.9\n";
+
+      istringstream is(input);
+      guessFromStream(is);
+
+      CHECK_EQUAL(',',separator);
+      CHECK_EQUAL(1,nRowAxes());
+      CHECK_EQUAL(2,nColAxes());
+      CHECK_EQUAL(0,headerRow);
+      CHECK_EQUAL(Dimension::string,dimensions[0].type);
+      CHECK_EQUAL(Dimension::time,dimensions[1].type);
+      CHECK_EQUAL("%Y-Q%Q",dimensions[1].units);
+      CHECK((set<unsigned>{0,1}==dimensionCols));
+    }
+  
   TEST_FIXTURE(DataSpec,loadVar)
     {
       string input="A comment\n"
