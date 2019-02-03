@@ -873,7 +873,18 @@ namespace minsky
     if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()))
       {
         if (selectedRow==0)
-          minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
+          {
+            // rename all instances of the stock variable if updated. For ticket #956
+            if (selectedCol<godleyIcon->stockVars().size()+1)
+              {
+                auto savedItem=minsky().canvas.item;
+                minsky().canvas.item=godleyIcon->stockVars()[selectedCol-1];
+                minsky().canvas.renameAllInstances(godleyIcon->table.cell(selectedRow,selectedCol));
+                savedItem.swap(minsky().canvas.item);
+              }
+            
+            minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
+          }
         else
           minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
         // get list of GodleyIcons first, rather than doing recursiveDo, as update munges the items vectors
