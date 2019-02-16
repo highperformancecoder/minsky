@@ -68,11 +68,11 @@ namespace minsky
               minsky().displayErrorItem(*state);
             string msg="Invalid: "+OperationBase::typeName(type())+"(";
             if (numArgs()>0)
-              msg+=to_string(flow1? fv[in1[i]]: sv[in1[i]]);
+              msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);
             if (numArgs()>1)
-              msg+=","+to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
+              msg+=","+std::to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
             msg+=")";
-            throw error(msg.c_str());
+            throw runtime_error(msg.c_str());
           }
   };
 

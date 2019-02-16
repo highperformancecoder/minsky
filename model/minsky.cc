@@ -696,28 +696,41 @@ namespace minsky
     vector<double> stockVarsCopy(stockVars);
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
+    string errorMsg;
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
-    boost::thread rkThread([&](){
-        if (ode)
-          {
-            gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
-            // we need to update Minsky's t synchronously to support the t operator
-            // potentially means t and stockVars out of sync on GUI, but should still be thread safe
-            err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
-                                        &stockVarsCopy[0]);
-          }
-        else // do explicit Euler method
-          {
-            vector<double> d(stockVarsCopy.size());
-            for (int i=0; i<nSteps; ++i, t+=stepMax)
-              {
-                evalEquations(&d[0], t, &stockVarsCopy[0]);
-                for (size_t j=0; j<d.size(); ++j)
-                  stockVarsCopy[j]+=d[j];
-              }
-          }
-        RKThreadRunning=false;
-      });
+    boost::thread rkThread([&]() {
+      try
+        { 
+          if (ode)
+            {
+              gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
+              // we need to update Minsky's t synchronously to support the t operator
+              // potentially means t and stockVars out of sync on GUI, but should still be thread safe
+              err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
+                                          &stockVarsCopy[0]);
+            }
+          else // do explicit Euler method
+            {
+              vector<double> d(stockVarsCopy.size());
+              for (int i=0; i<nSteps; ++i, t+=stepMax)
+                {
+                  evalEquations(&d[0], t, &stockVarsCopy[0]);
+                  for (size_t j=0; j<d.size(); ++j)
+                    stockVarsCopy[j]+=d[j];
+                }
+            }
+        }
+      catch (const std::exception& ex)
+        {
+          // catch any thrown exception, and report back to GUI thread
+          errorMsg=ex.what();
+        }
+      catch (...)
+        {
+          errorMsg="Unknown exception thrown on ODE solver thread";
+        }
+      RKThreadRunning=false;
+    });
 
     while (RKThreadRunning)
       {
@@ -726,6 +739,11 @@ namespace minsky
         doOneEvent(false);
       }
     rkThread.join();
+
+    if (!errorMsg.empty())
+      // rethrow exception so message gets displayed to user
+      throw runtime_error(errorMsg);
+    
     if (reset_flag()) // in case reset() was called during the step evaluation
       {
         reset();
