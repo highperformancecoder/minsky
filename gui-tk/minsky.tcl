@@ -194,6 +194,25 @@ wm title . "Minsky: $fname"
 setBackgroundColour $backgroundColour
 tk_focusFollowsMouse
 
+source $minskyHome/library/htmllib.tcl
+toplevel .splash
+text .splash.text
+button .splash.ok -text OK -command {destroy .splash}
+pack .splash.text .splash.ok
+
+HMinit_win .splash.text
+proc HMlink_callback {win url} {
+    openURL $url
+}
+
+set splashTextFile [open $minskyHome/library/splash.html]
+set splashText ""
+while {! [eof $splashTextFile]} {
+    append splashText [gets $splashTextFile]
+}
+puts "splashtext=$splashText"
+HMparse_html $splashText "HMrender .splash.text"
+
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
     # receive the event - see ticket #114 
@@ -520,6 +539,7 @@ menu .menubar.file.recent
 
 # File menu
 .menubar.file add command -label "About Minsky" -command aboutMinsky
+.menubar.file add command -label "Upgrade" -command {openURL http://www.patreon.com/hpcoder}
 .menubar.file add command -label "New System" -command newSystem  -underline 0 -accelerator $meta_menu-N
 .menubar.file add command -label "Open" -command openFile -underline 0 -accelerator $meta_menu-O
 .menubar.file add cascade -label "Recent Files"  -menu .menubar.file.recent
