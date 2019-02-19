@@ -210,7 +210,6 @@ set splashText ""
 while {! [eof $splashTextFile]} {
     append splashText [gets $splashTextFile]
 }
-puts "splashtext=$splashText"
 HMparse_html $splashText "HMrender .splash.text"
 
 if {[tk windowingsystem]=="win32"} {
