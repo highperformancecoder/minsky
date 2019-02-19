@@ -64,7 +64,7 @@ namespace minsky
           if (numArgs()>1)
             msg+=","+to_string(flow2? fv[in2[i]]: sv[in2[i]]);
           msg+=")";
-          throw error(msg.c_str());
+          throw runtime_error(msg.c_str());
         }
   };
 
