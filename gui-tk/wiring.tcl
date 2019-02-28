@@ -361,17 +361,35 @@ bind .wiring.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$p
 
 menu .wiring.context -tearoff 0
 
+proc bookmarkAt {x y X Y} {
+    set delx [expr 0.5*[.wiring.canvas cget -width]-$x + [minsky.canvas.model.x]]
+    set dely [expr 0.5*[.wiring.canvas cget -height]-$y+[minsky.canvas.model.y]]
+    minsky.canvas.model.moveTo $delx $dely
+
+    toplevel .getBookmarkName
+    wm title .getBookmarkName "Enter bookmark label"
+    entry .getBookmarkName.text -width 30
+    pack .getBookmarkName.text
+    buttonBar .getBookmarkName {
+        minsky.canvas.model.addBookmark [.getBookmarkName.text get]
+    }
+    grab set .getBookmarkName
+    wm transient .getBookmarkName
+    wm geometry .getBookmarkName +$X+$Y
+}
+
 # context menu on background canvas
-proc canvasContext {x y} {
+proc canvasContext {x y X Y} {
     .wiring.context delete 0 end
     .wiring.context add command -label Help -command {help DesignCanvas}
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy" -command minsky.copy
     .wiring.context add command -label "Save selection as" -command saveSelection
     .wiring.context add command -label "Paste" -command {paste}
+    .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Open master group" -command "openModelInCanvas"
-    tk_popup .wiring.context $x $y
+    tk_popup .wiring.context $X $Y
 }
 
 
@@ -393,7 +411,7 @@ bind .wiring.canvas <<contextMenu>> {
     } elseif [getWireAt %x %y] {
         wireContextMenu %X %Y
     } else {
-        canvasContext  %X %Y
+        canvasContext %x %y %X %Y
     }
 }
 
