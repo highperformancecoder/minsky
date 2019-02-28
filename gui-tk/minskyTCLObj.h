@@ -86,7 +86,7 @@ namespace minsky
           {
             //            cmdHist[argv0]++;
             bool modelChanged=m.pushHistory();
-            if (modelChanged && argv0!="minsky.load") m.markEdited();
+            if (modelChanged && argv0!="minsky.load" && argv0!="minsky.reverse") m.markEdited();
             if (m.eventRecord.get() && argv0!="minsky.startRecording" &&
                 (modelChanged || argv0.find("minsky.canvas.mouse")!=string::npos))
               {

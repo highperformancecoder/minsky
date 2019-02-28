@@ -362,6 +362,7 @@ bind .wiring.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$p
 menu .wiring.context -tearoff 0
 
 proc bookmarkAt {x y X Y} {
+    # centre x,y in the visible canvas
     set delx [expr 0.5*[.wiring.canvas cget -width]-$x + [minsky.canvas.model.x]]
     set dely [expr 0.5*[.wiring.canvas cget -height]-$y+[minsky.canvas.model.y]]
     minsky.canvas.model.moveTo $delx $dely

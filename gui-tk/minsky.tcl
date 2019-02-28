@@ -452,9 +452,12 @@ if {$classicMode} {
     button .controls.step -image stepButton -height 25 -width 25  -command {step}
     checkbutton .controls.rec -image rec -height 25 -width 25 -command toggleRecording -variable eventRecording -indicatoron 0
     checkbutton .controls.runmode -image runmode -height 25 -width 25 -selectimage recplay -variable recordingReplay -command replay -indicatoron 0 -selectcolor $backgroundColour
+    checkbutton .controls.reverse -text "Rev" -command {
+        minsky.reverse $reverse} -variable reverse
     
     tooltip .controls.rec "Record"
     tooltip .controls.runmode "Simulate/Recording Replay"
+    tooltip .controls.reverse "Reverse simulation"
     tooltip .controls.run "Run/Stop"
     tooltip .controls.reset "Reset simulation"
     tooltip .controls.step "Step simulation"
@@ -529,7 +532,7 @@ set meta_menu Ctrl
 
 
 
-pack .controls.rec .controls.runmode .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
+pack .controls.rec .controls.runmode .controls.reverse .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
 pack .controls.statusbar -side right -fill x
 
 grid .controls -row 0 -column 0 -columnspan 1000 -sticky ew

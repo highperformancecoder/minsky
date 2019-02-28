@@ -289,6 +289,7 @@ namespace minsky
     double t{0}; ///< time
     double t0{0}; ///< simulation start time
     string timeUnit;
+    bool reverse; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
     void step();  ///< step the equations (by n steps, default 1)
 
