@@ -73,6 +73,8 @@ namespace MathDAG
 
   struct Node
   {
+    virtual ~Node() {}
+    
     /// algebraic heirarchy level, used for working out whether
     /// brackets are necessary.
     virtual int BODMASlevel() const=0; 
