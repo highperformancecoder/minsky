@@ -519,18 +519,20 @@ namespace minsky
           break;
         case OperationType::pow:
           if (!from1.units.empty())
-            if (from2.type()==VariableType::constant)
-              {
-                char* ep;
-                int e=strtol(from2.init.c_str(),&ep,10);
-                if (*ep!='\0')
-                  throw runtime_error("non integral power of dimensioned quantity requested");
-                to.units=from1.units;
-                for (auto& i: to.units)
-                  i.second*=e;
-              }
-            else
-              throw runtime_error("non constant power of dimensioned quantity requested");
+            {
+              if (from2.type()==VariableType::constant)
+                {
+                  char* ep;
+                  int e=strtol(from2.init.c_str(),&ep,10);
+                  if (*ep!='\0')
+                    throw runtime_error("non integral power of dimensioned quantity requested");
+                  to.units=from1.units;
+                  for (auto& i: to.units)
+                    i.second*=e;
+                }
+              else
+                throw runtime_error("non constant power of dimensioned quantity requested");
+            }
           break;
         case OperationType::le: case OperationType::lt: case OperationType::eq:
           if (from1.units!=from2.units)
@@ -601,7 +603,7 @@ namespace minsky
             }
         }
       // todo handle tensors
-      if (to.dims().size()!=1 || (t->numArgs()>0) && to.dims()[0]!=t->in1.size())
+      if (to.dims().size()!=1 || (t->numArgs()>0 && to.dims()[0]!=t->in1.size()))
         {
           assert(&to!=&from1 && &to!=&from2);
           to.dims({unsigned(t->in1.size())});
