@@ -116,6 +116,7 @@ proc setPlotOptions {plot} {
         $plot.legend 1
         $plot.legendSide $plotWindowOptions(legend)
     }
+    $plot.legendSide boundingBox
     canvas.requestRedraw
     catch {wm title .plot$id [plot.title]}
     wm withdraw .pltWindowOptions 

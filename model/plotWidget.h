@@ -92,6 +92,13 @@ namespace minsky
     /// sets the plot scale and pen labels
     void scalePlot();
 
+    /// @{ handle mouse events
+    void mouseDown(double,double);
+    /// @return true if widget needs to be redrawn
+    bool mouseMove(double,double);
+    void mouseUp(double,double);
+    /// @}
+    
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}

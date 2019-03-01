@@ -83,6 +83,7 @@ namespace minsky
     fontScale=2;
     leadingMarker=true;
     grid=true;
+    legendLeft=0.1; // override ecolab's default value
 
     float w=width, h=height;
     float dx=w/(2*numLines+1); // x location of ports
@@ -192,15 +193,44 @@ namespace minsky
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%paletteSz], -0.5*M_PI);
       }
 
-    cairo_translate(cairo, 10,yoffs);
+    double portSpace=10; // allow space for ports
+    cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
-    Plot::draw(cairo,w-20,h-10); // allow space for ports
+    double gw=w-2*portSpace, gh=h-portSpace;
+    Plot::draw(cairo,gw,gh); 
     
     cairo_restore(cairo);
     if (mouseFocus)
       {
         drawPorts(cairo);
         displayTooltip(cairo);
+        // draw legend tags for move/resize
+        if (legend)
+          {
+            double width,height;
+            legendSize(width,height,legendFontSz*fontScale*gh,cairo);
+            width+=legendOffset*gw;
+
+            double x=legendLeft*gw-0.5*(w-width)+portSpace;
+            double y=-legendTop*gh+0.5*(h+height)-portSpace;
+            double arrowLength=6;
+            cairo_move_to(cairo,x-arrowLength,y);
+            cairo_rel_line_to(cairo,2*arrowLength,0);
+            cairo_move_to(cairo,x,y-arrowLength);
+            cairo_rel_line_to(cairo,0,2*arrowLength);
+
+            cairo_move_to(cairo,x,y+0.5*height);
+            cairo_rel_line_to(cairo,0,arrowLength);
+            cairo_stroke(cairo);
+            drawTriangle(cairo,x-arrowLength,y,{0,0,0,1},M_PI);
+            drawTriangle(cairo,x+arrowLength,y,{0,0,0,1},0);
+            drawTriangle(cairo,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
+            drawTriangle(cairo,x,y+arrowLength,{0,0,0,1},M_PI/2);
+            drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
+
+            cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
+            cairo_stroke(cairo);
+          }
       }
     if (selected) drawSelected(cairo);
     justDataChanged=false;
@@ -225,6 +255,11 @@ namespace minsky
           labelPen(i, latexToPango(yvars[i].name));
   }
 
+  void PlotWidget::mouseDown(double,double) {}
+  bool PlotWidget::mouseMove(double,double) {return false;}
+  void PlotWidget::mouseUp(double,double) {}
+
+  
   extern Tk_Window mainWin;
 
   void PlotWidget::redraw()
