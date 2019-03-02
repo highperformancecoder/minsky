@@ -1320,6 +1320,9 @@ proc aboutMinsky {} {
    Minsky is FREE software, distributed under the 
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
+
+   Thanks to following Minsky Unicorn Patreon sponsors:
+     Colin Green
    " 
 }
 
