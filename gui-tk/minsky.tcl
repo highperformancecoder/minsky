@@ -1312,7 +1312,7 @@ proc help {topic} {
 
 proc aboutMinsky {} {
   tk_messageBox -message "
-    Minsky [minskyVersion]\n
+   Minsky [minskyVersion]\n
    EcoLab [ecolabVersion]\n
    Tcl/Tk [info tclversion]\n
    Ravel [ravelVersion]
@@ -1321,7 +1321,7 @@ proc aboutMinsky {} {
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
 
-   Thanks to following Minsky Unicorn Patreon sponsors:
+Thanks to following Minsky Unicorn sponsors:
      Colin Green
    " 
 }
