@@ -566,6 +566,16 @@ proc loadCSVIntoRavel {} {
     canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
 }
 
+proc exportItemAsCSV {} {
+    global workDir
+    set f [tk_getSaveFile -filetypes {
+        {"CSV" .csv TEXT} {"All" {.*} TEXT}
+    } -initialdir $workDir ]
+    if {$f!=""} {
+        minsky.canvas.item.exportAsCSV $f
+    }
+}
+
 namespace eval godley {
     proc export {} {
         global workDir type
