@@ -106,7 +106,22 @@ namespace minsky
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
- };
+
+    /// common part of following vector rendering methods
+    ecolab::cairo::SurfacePtr vectorRender(const char*,
+                      cairo_surface_t* (*)(const char *,double,double));
+
+    /// render to a postscript file
+    void renderToPS(const char* filename);
+    /// render to a PDF file
+    void renderToPDF(const char* filename);
+    /// render to an SVG file
+    void renderToSVG(const char* filename);
+    /// render to a PNG image file
+    void renderToPNG(const char* filename);
+
+
+  };
 
 }
 

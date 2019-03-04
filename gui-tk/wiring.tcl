@@ -515,6 +515,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Resize" -command "canvas.lassoMode itemResize"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
+            .wiring.context add command -label "Export as Image" -command exportItemAsImg
         }
         "GodleyIcon" {
             .wiring.context add command -label "Open Godley Table" -command "openGodley [minsky.openGodley]"
@@ -573,6 +574,30 @@ proc exportItemAsCSV {} {
     } -initialdir $workDir ]
     if {$f!=""} {
         minsky.canvas.item.exportAsCSV $f
+    }
+}
+
+proc exportItemAsImg {} {
+    global workDir type
+    set f [tk_getSaveFile -filetypes {
+        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"PNG" png PNGG}
+    } -initialdir $workDir -typevariable type ]
+    if {$f==""} return
+    if [string match -nocase *.svg "$f"] {
+        minsky.canvas.item.renderToSVG "$f"
+    } elseif [string match -nocase *.pdf "$f"] {
+        minsky.canvas.item.renderToPDF "$f"
+    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
+        minsky.canvas.item.renderToPS "$f"
+    } elseif {[string match -nocase *.png "$f"]} {
+        minsky.canvas.item.renderToPNG "$f"
+    } else {
+        switch $type {
+            "SVG" {minsky.canvas.item.renderToSVG  "$f.svg"}
+            "PDF" {minsky.canvas.item.renderToPDF "$f.pdf"}
+            "Postscript" {minsky.canvas.item.renderToPS "$f.eps"}
+            "PNG" {minsky.canvas.item.renderToPNG "$f.png"}
+        }
     }
 }
 

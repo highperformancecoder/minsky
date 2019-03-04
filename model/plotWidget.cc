@@ -23,6 +23,9 @@
 #include "latexMarkup.h"
 #include "pango.h"
 #include <timer.h>
+#include <cairo/cairo-ps.h>
+#include <cairo/cairo-pdf.h>
+#include <cairo/cairo-svg.h>
 
 #include <ecolab_epilogue.h>
 using namespace ecolab::cairo;
@@ -445,4 +448,43 @@ namespace minsky
     yvars.clear();
     xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();
   }
+
+    cairo::SurfacePtr PlotWidget::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
+  {
+    cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
+                                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
+    surface.swap(tmp);
+    redraw(0,0,500,500);
+    double left=surface->left(), top=surface->top();
+    surface->surface
+      (s(filename, surface->width(), surface->height()));
+    if (s==cairo_ps_surface_create)
+      cairo_ps_surface_set_eps(surface->surface(),true);
+    cairo_surface_set_device_offset(surface->surface(), -left, -top);
+    redraw(0,0,500,500);
+    surface.swap(tmp);
+    return tmp;
+  }
+  
+  void PlotWidget::renderToPS(const char* filename)
+  {vectorRender(filename,cairo_ps_surface_create);}
+
+  void PlotWidget::renderToPDF(const char* filename)
+  {vectorRender(filename,cairo_pdf_surface_create);}
+
+  void PlotWidget::renderToSVG(const char* filename)
+  {vectorRender(filename,cairo_svg_surface_create);}
+  
+  namespace
+  {
+    cairo_surface_t* pngDummy(const char*,double width,double height)
+    {return cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);}
+  }
+  
+  void PlotWidget::renderToPNG(const char* filename)
+  {
+    auto tmp=vectorRender(filename,pngDummy);
+    cairo_surface_write_to_png(tmp->surface(),filename);
+  }
+
 }
