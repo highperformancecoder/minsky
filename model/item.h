@@ -38,7 +38,7 @@ namespace minsky
   /// a lasso is intended
   struct ClickType
   {
-    enum Type {onItem, onPort, outside, onSlider, onRavel};
+    enum Type {onItem, onPort, outside, onSlider, onRavel, legendMove, legendResize};
   };
 
   /// radius of circle marking ports at zoom=1

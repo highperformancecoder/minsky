@@ -36,6 +36,9 @@ namespace minsky
   class PlotWidget: public ItemT<PlotWidget>,
                     public ecolab::Plot, public ecolab::CairoSurface
   {
+    static constexpr double portSpace=10; // allow space for ports
+    double clickX, clickY, oldLegendLeft, oldLegendTop, oldLegendFontSz;
+    ClickType::Type ct;
     CLASSDESC_ACCESS(PlotWidget);
     friend class SchemaHelper;
     // timestamp of last time this widget was blitted and also the
@@ -94,10 +97,11 @@ namespace minsky
 
     /// @{ handle mouse events
     void mouseDown(double,double);
-    /// @return true if widget needs to be redrawn
-    bool mouseMove(double,double);
-    void mouseUp(double,double);
+    void mouseMove(double,double);
     /// @}
+
+    ClickType::Type clickType(float x, float y) override;
+
     
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL

@@ -193,7 +193,6 @@ namespace minsky
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%paletteSz], -0.5*M_PI);
       }
 
-    double portSpace=10; // allow space for ports
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;
@@ -208,7 +207,7 @@ namespace minsky
         if (legend)
           {
             double width,height;
-            legendSize(width,height,legendFontSz*fontScale*gh,cairo);
+            legendSize(width,height,gh);
             width+=legendOffset*gw;
 
             double x=legendLeft*gw-0.5*(w-width)+portSpace;
@@ -255,9 +254,50 @@ namespace minsky
           labelPen(i, latexToPango(yvars[i].name));
   }
 
-  void PlotWidget::mouseDown(double,double) {}
-  bool PlotWidget::mouseMove(double,double) {return false;}
-  void PlotWidget::mouseUp(double,double) {}
+  void PlotWidget::mouseDown(double x,double y)
+  {
+    clickX=x;
+    clickY=y;
+    ct=clickType(x,y);
+    double gw=width*zoomFactor-2*portSpace;
+    double gh=height*zoomFactor-portSpace;
+    oldLegendLeft=legendLeft*gw+portSpace;
+    oldLegendTop=legendTop*gh;
+    oldLegendFontSz=legendFontSz;
+  }
+  
+  void PlotWidget::mouseMove(double x,double y)
+  {
+    double gw=width*zoomFactor-2*portSpace;
+    double gh=height*zoomFactor-portSpace;
+    double yoffs=this->y()-(legendTop-0.5)*height*zoomFactor;
+    switch (ct)
+      {
+      case ClickType::legendMove:
+        legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
+        legendTop = (oldLegendTop + clickY - y)/gh;
+        break;
+      case ClickType::legendResize:
+        legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
+        break;
+      default:
+        break;
+      }
+  }
+
+  ClickType::Type PlotWidget::clickType(float x, float y)
+  {
+    double legendWidth, legendHeight;
+    legendSize(legendWidth, legendHeight, height*zoomFactor-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*zoomFactor;
+    double yy= y-this->y() + (legendTop-0.5)*height*zoomFactor;
+    if (xx>0 && xx<legendWidth)
+      if (yy>0 && yy<0.8*legendHeight)
+        return ClickType::legendMove;
+      else if (yy>=0.8*legendHeight && yy<legendHeight)
+        return ClickType::legendResize;
+    return Item::clickType(x,y);
+  }
 
   
   extern Tk_Window mainWin;
