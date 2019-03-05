@@ -161,6 +161,7 @@ namespace MathDAG
         if (ri==minsky::minsky().variableValues.end())
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValue(VariableType::tempFlow)).first;
         result=&ri->second;
+        if (result->idx()<0) result->allocValue();
         if (rhs)
           rhs->addEvalOps(ev, result);
       }
