@@ -360,6 +360,11 @@ namespace minsky
     /// render canvas to a PNG image file
     void renderCanvasToPNG(const char* filename);
 
+    /// render all plots 
+    void renderAllPlotsAsSVG(const string& prefix) const;
+    /// export all plots
+    void exportAllPlotsAsCSV(const string& prefix) const;
+
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
     

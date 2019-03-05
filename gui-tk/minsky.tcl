@@ -539,6 +539,10 @@ grid .controls -row 0 -column 0 -columnspan 1000 -sticky ew
 
 menu .menubar.file.recent
 
+menu .exportPlots
+.exportPlots add command -label "as SVG" -command {minsky.renderAllPlotsAsSVG [file rootname $fname]}
+.exportPlots add command -label "as CSV" -command {minsky.exportAllPlotsAsCSV [file rootname $fname]}
+
 # File menu
 .menubar.file add command -label "About Minsky" -command aboutMinsky
 .menubar.file add command -label "Upgrade" -command {openURL http://www.patreon.com/hpcoder}
@@ -552,6 +556,7 @@ menu .menubar.file.recent
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
 .menubar.file add command -label "Export Canvas" -command exportCanvas
+.menubar.file add cascade -label "Export Plots" -menu .exportPlots
 
 proc exportCanvas {} {
     global workDir type fname preferences

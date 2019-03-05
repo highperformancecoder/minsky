@@ -1289,6 +1289,33 @@ namespace minsky
     cairo_surface_write_to_png(tmp->surface(),filename);
   }
 
+  void Minsky::renderAllPlotsAsSVG(const string& prefix) const
+  {
+    unsigned plotNum=0;
+    model->recursiveDo(&Group::items,
+                       [&](Items&, Items::iterator i) {
+                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                           if (!p->title.empty())
+                             p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
+                           else
+                             p->renderToSVG((prefix+"-"+str(plotNum++)+".svg").c_str());
+                         return false;
+                       });
+  }
+  void Minsky::exportAllPlotsAsCSV(const string& prefix) const
+  {
+    unsigned plotNum=0;
+    model->recursiveDo(&Group::items,
+                       [&](Items&, Items::iterator i) {
+                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                           if (!p->title.empty())
+                             p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());
+                           else
+                             p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv").c_str());
+                         return false;
+                       });
+  }
+
   void Minsky::setAllDEmode(bool mode) {
     model->recursiveDo(&GroupItems::items, [mode](Items&,Items::iterator i) {
         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
