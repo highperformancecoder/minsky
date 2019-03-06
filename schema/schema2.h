@@ -123,7 +123,7 @@ namespace schema2
     Optional<std::string> name; //name, description or title
     Optional<std::string> init;
     Optional<Slider> slider;
-    std::shared_ptr<int> intVar;
+    Optional<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
     Optional<minsky::RavelWrap::State> ravelState;
@@ -135,7 +135,7 @@ namespace schema2
     Optional<bool> logx, logy;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<std::vector<minsky::Bookmark>> bookmarks;
-    std::shared_ptr<ecolab::Plot::Side> legend;
+    Optional<ecolab::Plot::Side> legend;
 
     Item() {}
     Item(int id, const minsky::Item& it, const std::vector<int>& ports): ItemBase(id,it,ports) {}
@@ -154,8 +154,10 @@ namespace schema2
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
       width(p.width), height(p.height), name(p.title), logx(p.logx), logy(p.logy),
-      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
-      legend(p.legend? new ecolab::Plot::Side(p.legendSide): nullptr) {}
+      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label)
+    {
+      if (p.legend) legend=p.legendSide;
+    }
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}
@@ -166,8 +168,8 @@ namespace schema2
     // schema1 importers
     Item(const schema1::Operation& it):
       ItemBase(it, "Operation:"+minsky::OperationType::typeName(it.type)),
-      name(it.name), intVar(it.intVar>-1? new int(it.intVar): nullptr),
-      dataOpData(it.data) {
+      name(it.name), dataOpData(it.data) {
+      if (it.intVar>-1) intVar=it.intVar;
       ports=it.ports;
       // rewrite deprecated constants as variables
       if (it.type==minsky::OperationType::constant)
@@ -182,8 +184,11 @@ namespace schema2
     Item(const schema1::Godley& it);
     Item(const schema1::Plot& it):
       ItemBase(it, "PlotWidget"),
-      name(it.title), logx(it.logx), logy(it.logy), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
-      legend(it.legend) {ports=it.ports;}
+      name(it.title), logx(it.logx), logy(it.logy), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label)
+    {
+      if (it.legend) legend=*it.legend;
+      ports=it.ports;
+    }
     Item(const schema1::Group& it): ItemBase(it,"Group"), name(it.name) {} 
     Item(const schema1::Switch& it): ItemBase(it,"SwitchIcon") {ports=it.ports;} 
 
