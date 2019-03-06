@@ -165,7 +165,7 @@ namespace minsky
         float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%paletteSz], orient[i]);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
         
@@ -175,7 +175,7 @@ namespace minsky
         float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%paletteSz], 0);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
@@ -184,7 +184,7 @@ namespace minsky
         float y=0.5*(dy-h) + (i-numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%paletteSz], M_PI);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
     // draw x data ports
@@ -193,7 +193,7 @@ namespace minsky
         float x=dx-0.5*w + (i-2*numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%paletteSz], -0.5*M_PI);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
     cairo_translate(cairo, portSpace, yoffs);
