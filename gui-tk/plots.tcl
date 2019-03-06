@@ -144,4 +144,61 @@ proc plotDoubleClick {plotId} {
     label .plot$plotId.label -image .plot$plotId.image -width 400 -height 400
     pack .plot$plotId.label -fill both -expand 1
 }
+
+proc hex x {
+    return [format "%02x" [expr int(256*($x-1e-3))]]
+}
     
+# convert an ecolab::cairo::Colour object to a Tk_Colour name
+proc colourName {x} {
+    return "#[hex [$x.r]][hex [$x.g]][hex [$x.b]]"
+}
+
+proc configColourButton b {
+    $b configure -background [tk_chooseColor -initialcolor [$b cget -background]]
+}
+
+proc makeRow {i p} {
+    frame .penStyles.row$i
+    label .penStyles.row$i.no -text $i
+    button .penStyles.row$i.colour -background [colourName $p.colour] -command "configColourButton .penStyles.row$i.colour"
+    entry .penStyles.row$i.width -width 10
+    .penStyles.row$i.width insert 0 [$p.width]
+    ttk::combobox .penStyles.row$i.style -width 10 -state readonly -values {"————" "- - -" "· · ·" "- · -"}
+    pack .penStyles.row$i.no .penStyles.row$i.colour .penStyles.row$i.width .penStyles.row$i.style -side left
+}
+
+proc penStyles {plot} {
+    toplevel .penStyles
+    for {set i 0} {$i<[$plot.palette.size]} {incr i} {
+        makeRow $i [$plot.palette.@elem $i]
+        pack .penStyles.row$i
+    }
+    buttonBar .penStyles "penStyleOK $plot"
+    button .penStyles.buttonBar.add -text "+" -command "addRow $plot"
+    pack .penStyles.buttonBar.add -before .penStyles.buttonBar.cancel -side left
+    grab set .penStyles
+    wm transient .penStyles
+}
+
+proc penStyleOK plot {
+    for {set i 0} {$i<[$plot.palette.size]} {incr i} {
+        set p [$plot.palette.@elem $i]
+        minsky.setColour $i  [.penStyles.row$i.colour cget -background]
+        $p.width [.penStyles.row$i.width get]
+        switch [.penStyles.row$i.style get] {
+            "————" {$p.dashStyle solid}
+            "- - -" {$p.dashStyle dash}
+            "· · ·" {$p.dashStyle dot}
+            "- · -" {$p.dashStyle dashDot}
+        }
+    }
+    $plot.redraw
+}
+
+proc addRow plot {
+    set i [$plot.palette.size]
+    $plot.extendPalette
+    makeRow $i [$plot.palette.@elem $i]
+    pack .penStyles.row$i -before .penStyles.buttonBar
+}
