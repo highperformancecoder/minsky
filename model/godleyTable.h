@@ -136,7 +136,11 @@ namespace minsky
         _resize(row+1, col+1);
       return data[row][col];
     }
-    const string& cell(unsigned row, unsigned col) const {return data[row][col];}
+    const string& cell(unsigned row, unsigned col) const {
+      if (row>=data.size() || col>=data[row].size())
+        throw std::out_of_range("Godley table index error");
+      return data[row][col];
+    }
     string getCell(unsigned row, unsigned col) const {
       if (row<rows() && col<cols())
         return cell(row,col);
