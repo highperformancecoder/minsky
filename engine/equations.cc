@@ -1630,8 +1630,11 @@ namespace MathDAG
        {
          if (auto v=dynamic_cast<VariableBase*>(i->get()))
            {
+             if (v->type()==VariableType::undefined)
+               throw error("variable %s has undefined type",v->name());
              assert(minsky.variableValues.count(v->valueId()));
-             v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
+             if (!v->ports.empty())
+               v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
            }
          else if (auto pw=dynamic_cast<PlotWidget*>(i->get()))
            for (auto& port: pw->ports) 
