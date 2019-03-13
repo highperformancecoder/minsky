@@ -1631,7 +1631,7 @@ namespace MathDAG
          if (auto v=dynamic_cast<VariableBase*>(i->get()))
            {
              if (v->type()==VariableType::undefined)
-               throw error("variable %s has undefined type",v->name());
+               throw error("variable %s has undefined type",v->name().c_str());
              assert(minsky.variableValues.count(v->valueId()));
              if (!v->ports.empty())
                v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
