@@ -1295,10 +1295,12 @@ namespace minsky
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
                          if (auto p=dynamic_cast<PlotWidget*>(i->get()))
-                           if (!p->title.empty())
-                             p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
-                           else
-                             p->renderToSVG((prefix+"-"+str(plotNum++)+".svg").c_str());
+                           {
+                             if (!p->title.empty())
+                               p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
+                             else
+                               p->renderToSVG((prefix+"-"+str(plotNum++)+".svg").c_str());
+                           }
                          return false;
                        });
   }
@@ -1308,10 +1310,12 @@ namespace minsky
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
                          if (auto p=dynamic_cast<PlotWidget*>(i->get()))
-                           if (!p->title.empty())
-                             p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());
-                           else
-                             p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv").c_str());
+                           {
+                             if (!p->title.empty())
+                               p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());
+                             else
+                               p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv").c_str());
+                           }
                          return false;
                        });
   }

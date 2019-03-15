@@ -429,7 +429,7 @@ namespace MathDAG
                   }
               }
           }
-        catch (std::exception)
+        catch (const std::exception&)
           {
             if (state) minsky::minsky().displayErrorItem(*state);
             throw;

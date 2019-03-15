@@ -295,10 +295,12 @@ namespace minsky
     double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*zoomFactor;
     double yy= y-this->y() + (legendTop-0.5)*height*zoomFactor;
     if (xx>0 && xx<legendWidth)
-      if (yy>0 && yy<0.8*legendHeight)
-        return ClickType::legendMove;
-      else if (yy>=0.8*legendHeight && yy<legendHeight)
-        return ClickType::legendResize;
+      {
+        if (yy>0 && yy<0.8*legendHeight)
+          return ClickType::legendMove;
+        else if (yy>=0.8*legendHeight && yy<legendHeight)
+          return ClickType::legendResize;
+      }
     return Item::clickType(x,y);
   }
 
