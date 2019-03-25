@@ -10,22 +10,47 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - macosx_deployment_target 10.9
   - buildfromsource         always
 - Now install port prerequisistes for Minsky. 
-  - tk +quartz (or x11)
+  - tcl/tk needs to be installed from source code if using Aqua. See below. If using X11, then you can use the MacPorts build of tk.
   - cairo
   - pango
   - gsl
+  - librsvg
+  - boost
+  - cmake (for building json_spirit)
+  - json_spirit needs to be installed from source code
 - if you already have ports installed, you can recompile for the new deployment target with
   port upgrade --force installed
 
-# compile TkTable
-  - configure
-  - make
-  - cp libTktable2.11.dylib /usr/local/lib
-  
+
+# compile TCL/Tk from source code
+
+Because we need to use an internal function with tk when compiling Minsky for Aqua, we have to staticly link to the library. 
+
+- tar zxvf tcl-core8.6.9-src.tar.gz
+- pushd tcl8.6.9/unix/
+- ./configure --prefix=$HOME/usr --disable-shared --enable-aqua
+- make -j install
+- popd
+- tar zxvf tk8.6.9.1-src.tar.gz
+- cd tk8.6.9/unix 
+- ./configure --prefix=$HOME/usr --disable-shared --enable-aqua
+- make -j install
+- tar zxvf tk8.6.9.1-src.tar.gz
+
+# compile json_spirit from source code (install boost and cmake first)
+- tar xvf json_spirit_v4.08.tar.gz
+- cd json_spirit_v4.08
+- cmake .
+- make -j
+- sudo make install
+
 # compile EcoLab
-  - make install
+MAC_OSC_TK=1 enables the Aqua build.
+  - make -j MAC_OSX_TK=1 BDB= install 
+  - note disabling BDB is required, as MacOSX has a positively ancient version of Berkeley DB installed.
   
 # compile Minsky
+By default, Minsky builds in Aqua mode. This may cause build errors if the prerequisites are built for X11. To disable Aqua, specify MAC_OSX_TK= on the make command line.
   - make mac-dist
   
 This should leave a .pkg file suitable for distribution in the top level directory.

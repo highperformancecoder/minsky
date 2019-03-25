@@ -203,6 +203,24 @@ setBackgroundColour $backgroundColour
 tk_focusFollowsMouse
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
+#source $minskyHome/library/htmllib.tcl
+#toplevel .splash
+#text .splash.text
+#button .splash.ok -text OK -command {destroy .splash}
+#pack .splash.text .splash.ok
+#
+#HMinit_win .splash.text
+#proc HMlink_callback {win url} {
+#    openURL $url
+#}
+#
+#set splashTextFile [open $minskyHome/library/splash.html]
+#set splashText ""
+#while {! [eof $splashTextFile]} {
+#    append splashText [gets $splashTextFile]
+#}
+#HMparse_html $splashText "HMrender .splash.text"
+
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
     # receive the event - see ticket #114 
@@ -443,9 +461,12 @@ if {$classicMode} {
     button .controls.step -image stepButton -height 25 -width 25  -command {step}
     checkbutton .controls.rec -image rec -height 25 -width 25 -command toggleRecording -variable eventRecording -indicatoron 0
     checkbutton .controls.runmode -image runmode -height 25 -width 25 -selectimage recplay -variable recordingReplay -command replay -indicatoron 0 -selectcolor $backgroundColour
+    checkbutton .controls.reverse -text "Rev" -command {
+        minsky.reverse $reverse} -variable reverse
     
     tooltip .controls.rec "Record"
     tooltip .controls.runmode "Simulate/Recording Replay"
+    tooltip .controls.reverse "Reverse simulation"
     tooltip .controls.run "Run/Stop"
     tooltip .controls.reset "Reset simulation"
     tooltip .controls.step "Step simulation"
@@ -520,15 +541,20 @@ set meta_menu Ctrl
 
 
 
-pack .controls.rec .controls.runmode .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
+pack .controls.rec .controls.runmode .controls.reverse .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
 pack .controls.statusbar -side right -fill x
 
 grid .controls -row 0 -column 0 -columnspan 1000 -sticky ew
 
 menu .menubar.file.recent
 
+menu .exportPlots
+.exportPlots add command -label "as SVG" -command {minsky.renderAllPlotsAsSVG [file rootname $fname]}
+.exportPlots add command -label "as CSV" -command {minsky.exportAllPlotsAsCSV [file rootname $fname]}
+
 # File menu
 .menubar.file add command -label "About Minsky" -command aboutMinsky
+.menubar.file add command -label "Upgrade" -command {openURL http://www.patreon.com/hpcoder}
 .menubar.file add command -label "New System" -command newSystem  -underline 0 -accelerator $meta_menu-N
 .menubar.file add command -label "Open" -command openFile -underline 0 -accelerator $meta_menu-O
 .menubar.file add cascade -label "Recent Files"  -menu .menubar.file.recent
@@ -539,6 +565,7 @@ menu .menubar.file.recent
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
 .menubar.file add command -label "Export Canvas" -command exportCanvas
+.menubar.file add cascade -label "Export Plots" -menu .exportPlots
 .menubar.file add checkbutton -label "Log simulation" -variable simLogging \
     -command getLogVars
 .menubar.file add checkbutton -label "Recording" -command toggleRecording -variable eventRecording
@@ -551,7 +578,6 @@ menu .menubar.file.recent
 .menubar.file add command -label "Object Browser" -command obj_browser
 .menubar.file add command -label "Select items" -command selectItems
 .menubar.file add command -label "Command" -command cli
-
 
 
 proc exportCanvas {} {
@@ -1354,7 +1380,7 @@ proc help {topic} {
 
 proc aboutMinsky {} {
   tk_messageBox -message "
-    Minsky [minskyVersion]\n
+   Minsky [minskyVersion]\n
    EcoLab [ecolabVersion]\n
    Tcl/Tk [info tclversion]\n
    Ravel [ravelVersion]
@@ -1365,7 +1391,11 @@ proc aboutMinsky {} {
 
    Ravel is copyright Ravelation Pty Ltd. A separate license needs to
    be purchased to use Ravel. See https://ravelation.hpcoders.com.au
-  "  }
+
+Thanks to following Minsky Unicorn sponsors:
+     Colin Green
+   " 
+}
 
 # delete subsidiary toplevel such as godleys and plots
 proc deleteSubsidiaryTopLevels {} {

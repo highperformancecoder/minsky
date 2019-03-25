@@ -9,6 +9,10 @@
     <string>minsky</string>   
     <key>CFBundleIconFile</key>
     <string>MinskyLogo</string>
+    <key>CFBundleShortVersionString</key>
+    <!--version--><string>2.12</string>
+    <key>CFBundleVersion</key>
+    <string>2.8</string>
     <key>CFBundleDocumentTypes</key>
     <array>
       <dict>

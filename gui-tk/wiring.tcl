@@ -467,19 +467,38 @@ bind .wiring.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$p
 
 menu .wiring.context -tearoff 0
 
+proc bookmarkAt {x y X Y} {
+    # centre x,y in the visible canvas
+    set delx [expr 0.5*[.wiring.canvas cget -width]-$x + [minsky.canvas.model.x]]
+    set dely [expr 0.5*[.wiring.canvas cget -height]-$y+[minsky.canvas.model.y]]
+    minsky.canvas.model.moveTo $delx $dely
+
+    toplevel .getBookmarkName
+    wm title .getBookmarkName "Enter bookmark label"
+    entry .getBookmarkName.text -width 30
+    pack .getBookmarkName.text
+    buttonBar .getBookmarkName {
+        minsky.canvas.model.addBookmark [.getBookmarkName.text get]
+    }
+    grab set .getBookmarkName
+    wm transient .getBookmarkName
+    wm geometry .getBookmarkName +$X+$Y
+}
+
 # context menu on background canvas
-proc canvasContext {x y} {
+proc canvasContext {x y X Y} {
     .wiring.context delete 0 end
     .wiring.context add command -label Help -command {help DesignCanvas}
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy" -command minsky.copy
     .wiring.context add command -label "Save selection as" -command saveSelection
     .wiring.context add command -label "Paste" -command {paste}
+    .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
-     .wiring.context add command -label "Unlock selected Ravels" -command "minsky.canvas.unlockRavelsInSelection"
-   .wiring.context add command -label "Open master group" -command "openModelInCanvas"
-    tk_popup .wiring.context $x $y
+    .wiring.context add command -label "Unlock selected Ravels" -command "minsky.canvas.unlockRavelsInSelection"
+    .wiring.context add command -label "Open master group" -command "openModelInCanvas"
+    tk_popup .wiring.context $X $Y
 }
 
 
@@ -501,7 +520,7 @@ bind .wiring.canvas <<contextMenu>> {
     } elseif [getWireAt %x %y] {
         wireContextMenu %X %Y
     } else {
-        canvasContext  %X %Y
+        canvasContext %x %y %X %Y
     }
 }
 
@@ -606,7 +625,9 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Expand" -command "plotDoubleClick [TCLItem]"
             .wiring.context add command -label "Make Group Plot" -command "$item.makeDisplayPlot"
             .wiring.context add command -label "Options" -command "doPlotOptions $item"
+            .wiring.context add command -label "Pen Styles" -command "penStyles $item"
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
+            .wiring.context add command -label "Export as Image" -command exportItemAsImg
         }
         "GodleyIcon" {
             .wiring.context add command -label "Open Godley Table" -command "openGodley [minsky.openGodley]"
@@ -771,6 +792,40 @@ proc exportItemAsCSV {} {
     } -initialdir $workDir ]
     if {$f!=""} {
         minsky.canvas.item.exportAsCSV $f
+    }
+}
+
+proc exportItemAsCSV {} {
+    global workDir
+    set f [tk_getSaveFile -filetypes {
+        {"CSV" .csv TEXT} {"All" {.*} TEXT}
+    } -initialdir $workDir ]
+    if {$f!=""} {
+        minsky.canvas.item.exportAsCSV $f
+    }
+}
+
+proc exportItemAsImg {} {
+    global workDir type
+    set f [tk_getSaveFile -filetypes {
+        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"PNG" png PNGG}
+    } -initialdir $workDir -typevariable type ]
+    if {$f==""} return
+    if [string match -nocase *.svg "$f"] {
+        minsky.canvas.item.renderToSVG "$f"
+    } elseif [string match -nocase *.pdf "$f"] {
+        minsky.canvas.item.renderToPDF "$f"
+    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
+        minsky.canvas.item.renderToPS "$f"
+    } elseif {[string match -nocase *.png "$f"]} {
+        minsky.canvas.item.renderToPNG "$f"
+    } else {
+        switch $type {
+            "SVG" {minsky.canvas.item.renderToSVG  "$f.svg"}
+            "PDF" {minsky.canvas.item.renderToPDF "$f.pdf"}
+            "Postscript" {minsky.canvas.item.renderToPS "$f.eps"}
+            "PNG" {minsky.canvas.item.renderToPNG "$f.png"}
+        }
     }
 }
 

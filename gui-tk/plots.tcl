@@ -49,29 +49,16 @@ proc deiconifyPltWindowOptions {} {
         
         
         
-        frame .pltWindowOptions.grid
-        label .pltWindowOptions.grid.label -text "Grid"
-        label .pltWindowOptions.grid.sublabel -text "Subgrid"
-        checkbutton .pltWindowOptions.grid.val -variable plotWindowOptions(grid)
-        checkbutton .pltWindowOptions.grid.subval -variable plotWindowOptions(subgrid)
-
+        frame .pltWindowOptions.options
+        checkbutton .pltWindowOptions.options.grid -text "Grid" -variable plotWindowOptions(grid)
+        checkbutton .pltWindowOptions.options.subgrid -text "Subgrid" -variable plotWindowOptions(subgrid)
+        checkbutton .pltWindowOptions.options.legend -text "Legend:" -variable plotWindowOptions(legend)
+        pack .pltWindowOptions.options.grid .pltWindowOptions.options.subgrid .pltWindowOptions.options.legend -side left
+        
         frame .pltWindowOptions.logscale
-        label .pltWindowOptions.logscale.x -text "x log scale"
-        label .pltWindowOptions.logscale.y -text "y log scale"
-        label .pltWindowOptions.logscale.ypercent -text "y% scale"
-        checkbutton .pltWindowOptions.logscale.xv -variable plotWindowOptions(xlog)
-        checkbutton .pltWindowOptions.logscale.yv -variable plotWindowOptions(ylog)
-        checkbutton .pltWindowOptions.logscale.ypv -variable plotWindowOptions(ypercent)
-
-        frame .pltWindowOptions.legend
-        label .pltWindowOptions.legend.label -text "Legend:"
-        label .pltWindowOptions.legend.noneLabel -text none
-        radiobutton .pltWindowOptions.legend.none -variable plotWindowOptions(legend) -value none
-        label .pltWindowOptions.legend.leftLabel -text left
-        radiobutton .pltWindowOptions.legend.left -variable plotWindowOptions(legend) -value left
-        label .pltWindowOptions.legend.rightLabel -text right
-        radiobutton .pltWindowOptions.legend.right -variable plotWindowOptions(legend) -value right
-        pack .pltWindowOptions.legend.label .pltWindowOptions.legend.none .pltWindowOptions.legend.noneLabel .pltWindowOptions.legend.left .pltWindowOptions.legend.leftLabel .pltWindowOptions.legend.right .pltWindowOptions.legend.rightLabel -side left
+        checkbutton .pltWindowOptions.logscale.xv -text "x log scale" -variable plotWindowOptions(xlog)
+        checkbutton .pltWindowOptions.logscale.yv -text "y log scale" -variable plotWindowOptions(ylog)
+        pack .pltWindowOptions.logscale.xv  .pltWindowOptions.logscale.yv  -side left
 
         frame .pltWindowOptions.title
         label .pltWindowOptions.title.label -text Title
@@ -95,10 +82,6 @@ proc deiconifyPltWindowOptions {} {
 
         pack .pltWindowOptions.title .pltWindowOptions.xaxislabel .pltWindowOptions.yaxislabel .pltWindowOptions.y1axislabel .pltWindowOptions.plotType
 
-        pack .pltWindowOptions.grid.label  .pltWindowOptions.grid.val  .pltWindowOptions.grid.sublabel  .pltWindowOptions.grid.subval  -side left
-
-        pack .pltWindowOptions.logscale.x  .pltWindowOptions.logscale.xv  .pltWindowOptions.logscale.y  .pltWindowOptions.logscale.yv  .pltWindowOptions.logscale.ypercent  .pltWindowOptions.logscale.ypv  -side left
-
         frame .pltWindowOptions.buttonBar
         button .pltWindowOptions.buttonBar.ok -text OK
         button .pltWindowOptions.buttonBar.cancel -text Cancel -command {
@@ -108,7 +91,7 @@ proc deiconifyPltWindowOptions {} {
         pack .pltWindowOptions.buttonBar.ok .pltWindowOptions.buttonBar.cancel -side left
         pack .pltWindowOptions.buttonBar -side bottom
 
-        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.xtickAngle .pltWindowOptions.exp_threshold .pltWindowOptions.grid .pltWindowOptions.legend .pltWindowOptions.logscale
+        pack .pltWindowOptions.xticks .pltWindowOptions.yticks .pltWindowOptions.options .pltWindowOptions.logscale
     } else {
         wm deiconify .pltWindowOptions
     }
@@ -133,12 +116,8 @@ proc setPlotOptions {plot} {
     $plot.xlabel [.pltWindowOptions.xaxislabel.val get]
     $plot.ylabel [.pltWindowOptions.yaxislabel.val get]
     $plot.y1label [.pltWindowOptions.y1axislabel.val get]
-    if {$plotWindowOptions(legend)=="none"} {
-        $plot.legend 0
-    } else {
-        $plot.legend 1
-        $plot.legendSide $plotWindowOptions(legend)
-    }
+    $plot.legend $plotWindowOptions(legend)
+    $plot.legendSide boundingBox
     canvas.requestRedraw
     catch {wm title .plot$id [plot.title]}
     wm withdraw .pltWindowOptions 
@@ -173,14 +152,7 @@ proc doPlotOptions {plot} {
     .pltWindowOptions.y1axislabel.val insert 0 [$plot.y1label]
 
     .pltWindowOptions.buttonBar.ok configure -command "setPlotOptions $plot"
-    global plotWindowOptions_legend
-    if [$plot.legend] {
-        switch [$plot.legendSide] {
-            0 {set plotWindowOptions(legend) left}
-            1 {set plotWindowOptions(legend) right}
-        }
-    } else {set plotWindowOptions(legend) none}
-        
+    set plotWindowOptions(legend) [$plot.legend]
     grab .pltWindowOptions
 }
 
@@ -199,4 +171,61 @@ proc plotDoubleClick {plotId} {
     label .plot$plotId.label -image .plot$plotId.image -width 400 -height 400
     pack .plot$plotId.label -fill both -expand 1
 }
+
+proc hex x {
+    return [format "%02x" [expr int(256*($x-1e-3))]]
+}
     
+# convert an ecolab::cairo::Colour object to a Tk_Colour name
+proc colourName {x} {
+    return "#[hex [$x.r]][hex [$x.g]][hex [$x.b]]"
+}
+
+proc configColourButton b {
+    $b configure -background [tk_chooseColor -initialcolor [$b cget -background]]
+}
+
+proc makeRow {i p} {
+    frame .penStyles.row$i
+    label .penStyles.row$i.no -text $i
+    button .penStyles.row$i.colour -background [colourName $p.colour] -command "configColourButton .penStyles.row$i.colour"
+    entry .penStyles.row$i.width -width 10
+    .penStyles.row$i.width insert 0 [$p.width]
+    ttk::combobox .penStyles.row$i.style -width 10 -state readonly -values {"————" "- - -" "· · ·" "- · -"}
+    pack .penStyles.row$i.no .penStyles.row$i.colour .penStyles.row$i.width .penStyles.row$i.style -side left
+}
+
+proc penStyles {plot} {
+    toplevel .penStyles
+    for {set i 0} {$i<[$plot.palette.size]} {incr i} {
+        makeRow $i [$plot.palette.@elem $i]
+        pack .penStyles.row$i
+    }
+    buttonBar .penStyles "penStyleOK $plot"
+    button .penStyles.buttonBar.add -text "+" -command "addRow $plot"
+    pack .penStyles.buttonBar.add -before .penStyles.buttonBar.cancel -side left
+    grab set .penStyles
+    wm transient .penStyles
+}
+
+proc penStyleOK plot {
+    for {set i 0} {$i<[$plot.palette.size]} {incr i} {
+        set p [$plot.palette.@elem $i]
+        minsky.setColour $i  [.penStyles.row$i.colour cget -background]
+        $p.width [.penStyles.row$i.width get]
+        switch [.penStyles.row$i.style get] {
+            "————" {$p.dashStyle solid}
+            "- - -" {$p.dashStyle dash}
+            "· · ·" {$p.dashStyle dot}
+            "- · -" {$p.dashStyle dashDot}
+        }
+    }
+    $plot.redraw
+}
+
+proc addRow plot {
+    set i [$plot.palette.size]
+    $plot.extendPalette
+    makeRow $i [$plot.palette.@elem $i]
+    pack .penStyles.row$i -before .penStyles.buttonBar
+}

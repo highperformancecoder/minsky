@@ -79,7 +79,14 @@ namespace minsky
       }
     // draw indicating arrow
     cairo_move_to(cairo,0.5*w, 0);
-    y1=-0.5*width+0.5*dy+switchValue()*dy;
+    try
+      {
+        y1=-0.5*width+0.5*dy+switchValue()*dy;
+      }
+    catch (const std::exception&)
+      {
+        y1=-0.5*width+0.5*dy;
+      }
     cairo_line_to(cairo,-0.45*w,0.9*y1);
     cairo_stroke(cairo);
 

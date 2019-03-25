@@ -298,6 +298,7 @@ namespace minsky
     double t0{0}; ///< simulation start time
     bool running=false; ///< controls whether simulation is running
     string timeUnit;
+    bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
     void step();  ///< step the equations (by n steps, default 1)
 
@@ -367,6 +368,11 @@ namespace minsky
     void renderCanvasToSVG(const char* filename);
     /// render canvas to a PNG image file
     void renderCanvasToPNG(const char* filename);
+
+    /// render all plots 
+    void renderAllPlotsAsSVG(const string& prefix) const;
+    /// export all plots
+    void exportAllPlotsAsCSV(const string& prefix) const;
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);

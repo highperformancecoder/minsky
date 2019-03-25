@@ -701,24 +701,26 @@ namespace minsky
     boost::thread rkThread([&]() {
       try
         { 
+          double tp=reverse? -t: t;
           if (ode)
             {
               gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
               // we need to update Minsky's t synchronously to support the t operator
               // potentially means t and stockVars out of sync on GUI, but should still be thread safe
-              err=gsl_odeiv2_driver_apply(ode->driver, &t, numeric_limits<double>::max(), 
+              err=gsl_odeiv2_driver_apply(ode->driver, &tp, numeric_limits<double>::max(), 
                                           &stockVarsCopy[0]);
             }
           else // do explicit Euler method
             {
               vector<double> d(stockVarsCopy.size());
-              for (int i=0; i<nSteps; ++i, t+=stepMax)
+              for (int i=0; i<nSteps; ++i, tp+=stepMax)
                 {
-                  evalEquations(&d[0], t, &stockVarsCopy[0]);
+                  evalEquations(&d[0], tp, &stockVarsCopy[0]);
                   for (size_t j=0; j<d.size(); ++j)
                     stockVarsCopy[j]+=d[j];
                 }
             }
+          t=reverse? -tp:tp;
         }
       catch (const std::exception& ex)
         {
@@ -801,7 +803,8 @@ namespace minsky
 
   void Minsky::evalEquations(double result[], double t, const double vars[])
   {
-    EvalOpBase::t=t;
+    EvalOpBase::t=reverse? -t: t;
+    double reverseFactor=reverse? -1: 1;
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
     vector<double> flow(flowVars);
@@ -811,6 +814,7 @@ namespace minsky
     // then create the result using the Godley table
     for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
     evalGodley.eval(result, &flow[0]);
+
     // integrations are kind of a copy
     for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
       {
@@ -820,13 +824,15 @@ namespace minsky
               displayErrorItem(*i->operation);
             throw error("integral not wired");
           }
-        result[i->stock.idx()] = i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()];
+        result[i->stock.idx()] = reverseFactor *
+          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
       }
   }
 
   void Minsky::jacobian(Matrix& jac, double t, const double sv[])
   {
-    EvalOpBase::t=t;
+    EvalOpBase::t=reverse? -t: t;
+    double reverseFactor=reverse? -1: 1;
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
     vector<double> flow=flowVars;
@@ -850,7 +856,7 @@ namespace minsky
               i->input.isFlowVar()? df[i->input.idx()]: ds[i->input.idx()];
           }
         for (size_t i=0; i<stockVars.size(); i++)
-          jac(i,j)=d[i];
+          jac(i,j)=reverseFactor*d[i];
       }
   
   }
@@ -1317,6 +1323,37 @@ namespace minsky
   {
     auto tmp=vectorRender(filename,pngDummy);
     cairo_surface_write_to_png(tmp->surface(),filename);
+  }
+
+  void Minsky::renderAllPlotsAsSVG(const string& prefix) const
+  {
+    unsigned plotNum=0;
+    model->recursiveDo(&Group::items,
+                       [&](Items&, Items::iterator i) {
+                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                           {
+                             if (!p->title.empty())
+                               p->renderToSVG((prefix+"-"+p->title+".svg").c_str());
+                             else
+                               p->renderToSVG((prefix+"-"+str(plotNum++)+".svg").c_str());
+                           }
+                         return false;
+                       });
+  }
+  void Minsky::exportAllPlotsAsCSV(const string& prefix) const
+  {
+    unsigned plotNum=0;
+    model->recursiveDo(&Group::items,
+                       [&](Items&, Items::iterator i) {
+                         if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+                           {
+                             if (!p->title.empty())
+                               p->exportAsCSV((prefix+"-"+p->title+".csv").c_str());
+                             else
+                               p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv").c_str());
+                           }
+                         return false;
+                       });
   }
 
   void Minsky::setAllDEmode(bool mode) {

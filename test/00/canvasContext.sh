@@ -30,7 +30,7 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {
-  canvasContext 0 0
+  canvasContext 0 0 0 0
   assert {[winfo ismapped .wiring.context]}
   .wiring.context unpost
 

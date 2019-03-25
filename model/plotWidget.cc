@@ -23,6 +23,9 @@
 #include "latexMarkup.h"
 #include "pango.h"
 #include <timer.h>
+#include <cairo/cairo-ps.h>
+#include <cairo/cairo-pdf.h>
+#include <cairo/cairo-svg.h>
 
 #include <ecolab_epilogue.h>
 using namespace ecolab::cairo;
@@ -85,6 +88,7 @@ namespace minsky
     fontScale=2;
     leadingMarker=true;
     grid=true;
+    legendLeft=0.1; // override ecolab's default value
 
     float w=width, h=height;
     float dx=w/(2*numLines+1); // x location of ports
@@ -158,7 +162,7 @@ namespace minsky
         float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%paletteSz], orient[i]);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
         
@@ -168,7 +172,7 @@ namespace minsky
         float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%paletteSz], 0);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
@@ -177,7 +181,7 @@ namespace minsky
         float y=0.5*(dy-h) + (i-numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%paletteSz], M_PI);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
     // draw x data ports
@@ -186,18 +190,46 @@ namespace minsky
         float x=dx-0.5*w + (i-2*numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
           ports[i]->moveTo(x + this->x(), y + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%paletteSz], -0.5*M_PI);
+        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
-    cairo_translate(cairo, 10,yoffs);
+    cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
-    Plot::draw(cairo,w-20,h-10); // allow space for ports
+    double gw=w-2*portSpace, gh=h-portSpace;
+    Plot::draw(cairo,gw,gh); 
     
     cairo_restore(cairo);
     if (mouseFocus)
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip);
+        // draw legend tags for move/resize
+        if (legend)
+          {
+            double width,height;
+            legendSize(width,height,gh);
+            width+=legendOffset*gw;
+
+            double x=legendLeft*gw-0.5*(w-width)+portSpace;
+            double y=-legendTop*gh+0.5*(h+height)-portSpace;
+            double arrowLength=6;
+            cairo_move_to(cairo,x-arrowLength,y);
+            cairo_rel_line_to(cairo,2*arrowLength,0);
+            cairo_move_to(cairo,x,y-arrowLength);
+            cairo_rel_line_to(cairo,0,2*arrowLength);
+
+            cairo_move_to(cairo,x,y+0.5*height);
+            cairo_rel_line_to(cairo,0,arrowLength);
+            cairo_stroke(cairo);
+            drawTriangle(cairo,x-arrowLength,y,{0,0,0,1},M_PI);
+            drawTriangle(cairo,x+arrowLength,y,{0,0,0,1},0);
+            drawTriangle(cairo,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
+            drawTriangle(cairo,x,y+arrowLength,{0,0,0,1},M_PI/2);
+            drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
+
+            cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
+            cairo_stroke(cairo);
+          }
       }
     if (onResizeHandles) drawResizeHandles(cairo);
     justDataChanged=false;
@@ -238,6 +270,37 @@ namespace minsky
           labelPen(i, latexToPango(yvars[i].name));
   }
 
+  void PlotWidget::mouseDown(double x,double y)
+  {
+    clickX=x;
+    clickY=y;
+    ct=clickType(x,y);
+    double gw=width*zoomFactor-2*portSpace;
+    double gh=height*zoomFactor-portSpace;
+    oldLegendLeft=legendLeft*gw+portSpace;
+    oldLegendTop=legendTop*gh;
+    oldLegendFontSz=legendFontSz;
+  }
+  
+  void PlotWidget::mouseMove(double x,double y)
+  {
+    double gw=width*zoomFactor-2*portSpace;
+    double gh=height*zoomFactor-portSpace;
+    double yoffs=this->y()-(legendTop-0.5)*height*zoomFactor;
+    switch (ct)
+      {
+      case ClickType::legendMove:
+        legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
+        legendTop = (oldLegendTop + clickY - y)/gh;
+        break;
+      case ClickType::legendResize:
+        legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
+        break;
+      default:
+        break;
+      }
+  }
+
   extern Tk_Window mainWin;
 
   void PlotWidget::redraw()
@@ -272,6 +335,18 @@ namespace minsky
           return ClickType::onPort;
       }
 
+    double legendWidth, legendHeight;
+    legendSize(legendWidth, legendHeight, height*zoomFactor-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*zoomFactor;
+    double yy= y-this->y() + (legendTop-0.5)*height*zoomFactor;
+    if (xx>0 && xx<legendWidth)
+      {
+        if (yy>0 && yy<0.8*legendHeight)
+          return ClickType::legendMove;
+        else if (yy>=0.8*legendHeight && yy<legendHeight)
+          return ClickType::legendResize;
+      }
+    
     double dx=x-this->x(), dy=y-this->y();
     double w=0.5*width*zoomFactor, h=0.5*height*zoomFactor;
     // check if (x,y) is within portradius of the 4 corners
@@ -458,4 +533,43 @@ namespace minsky
     yvars.clear();
     xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();
   }
+
+    cairo::SurfacePtr PlotWidget::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
+  {
+    cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
+                                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
+    surface.swap(tmp);
+    redraw(0,0,500,500);
+    double left=surface->left(), top=surface->top();
+    surface->surface
+      (s(filename, surface->width(), surface->height()));
+    if (s==cairo_ps_surface_create)
+      cairo_ps_surface_set_eps(surface->surface(),true);
+    cairo_surface_set_device_offset(surface->surface(), -left, -top);
+    redraw(0,0,500,500);
+    surface.swap(tmp);
+    return tmp;
+  }
+  
+  void PlotWidget::renderToPS(const char* filename)
+  {vectorRender(filename,cairo_ps_surface_create);}
+
+  void PlotWidget::renderToPDF(const char* filename)
+  {vectorRender(filename,cairo_pdf_surface_create);}
+
+  void PlotWidget::renderToSVG(const char* filename)
+  {vectorRender(filename,cairo_svg_surface_create);}
+  
+  namespace
+  {
+    cairo_surface_t* pngDummy(const char*,double width,double height)
+    {return cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);}
+  }
+  
+  void PlotWidget::renderToPNG(const char* filename)
+  {
+    auto tmp=vectorRender(filename,pngDummy);
+    cairo_surface_write_to_png(tmp->surface(),filename);
+  }
+
 }

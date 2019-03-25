@@ -28,6 +28,9 @@
 #include <windows.h>
 #endif
 
+#include <stdexcept>
+using namespace std;
+
 namespace minsky
 {
   namespace
@@ -285,4 +288,31 @@ namespace minsky
 
   TCLTYPE(CSVDialog);
   
+  namespace
+  {
+    // type independent scaling to [0..1]
+    template <class T> double scale(T x) {
+      return double(x)/numeric_limits<T>::max();
+    }
+  }
+  
+  void MinskyTCL::setColour(size_t i, const char* name)
+  {
+    if (auto p=dynamic_cast<PlotWidget*>(canvas.item.get()))
+      if (i<p->palette.size())
+        if (auto c=Tk_GetColor(interp(),Tk_MainWindow(interp()),name))
+          {
+            auto& pi=p->palette[i];
+            pi.colour.r=scale(c->red);
+            pi.colour.g=scale(c->green);
+            pi.colour.b=scale(c->blue);
+            pi.colour.a=1;
+          }
+        else
+          throw runtime_error(string("Colour ")+name+" not understood");
+      else
+        throw runtime_error("invalid palette index");
+    else
+      throw runtime_error("Not a plot");
+  }
 }

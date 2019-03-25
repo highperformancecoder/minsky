@@ -40,6 +40,9 @@ namespace minsky
   class PlotWidget: public ItemT<PlotWidget>,
                     public ecolab::Plot, public ecolab::CairoSurface
   {
+    static constexpr double portSpace=10; // allow space for ports
+    double clickX, clickY, oldLegendLeft, oldLegendTop, oldLegendFontSz;
+    ClickType::Type ct;
     CLASSDESC_ACCESS(PlotWidget);
     friend class SchemaHelper;
     // timestamp of last time this widget was blitted and also the
@@ -99,10 +102,30 @@ namespace minsky
     /// sets the plot scale and pen labels
     void scalePlot();
 
+    /// @{ handle mouse events
+    void mouseDown(double,double);
+    void mouseMove(double,double);
+    /// @}
+
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
- };
+
+    /// common part of following vector rendering methods
+    ecolab::cairo::SurfacePtr vectorRender(const char*,
+                      cairo_surface_t* (*)(const char *,double,double));
+
+    /// render to a postscript file
+    void renderToPS(const char* filename);
+    /// render to a PDF file
+    void renderToPDF(const char* filename);
+    /// render to an SVG file
+    void renderToSVG(const char* filename);
+    /// render to a PNG image file
+    void renderToPNG(const char* filename);
+
+
+  };
 
 }
 

@@ -21,6 +21,7 @@
 #include "canvas.h"
 #include "cairoItems.h"
 #include "minsky.h"
+#include "ravelWrap.h"
 #include <cairo_base.h>
 
 #include <ecolab_epilogue.h>
@@ -71,6 +72,10 @@ namespace minsky
             lasso.x1=x;
             lasso.y1=y;
             item=itemFocus;
+            break;
+          case ClickType::legendMove: case ClickType::legendResize:
+            if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+              p->mouseDown(x,y);
             break;
           }
       }
@@ -161,49 +166,71 @@ namespace minsky
   
   void Canvas::mouseMove(float x, float y)
   {
-    if (itemFocus && clickType==ClickType::onItem)
+    if (itemFocus)
       {
-        updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
-        // move item relatively to avoid accidental moves on double click
-        itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
-        // check if the move has moved outside or into a group
-        if (auto g=itemFocus->group.lock())
-          if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
-            {
-              if (auto toGroup=model->minimalEnclosingGroup
-                  (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
-                {
-                  // prevent moving a group inside itself
-                  if (auto g=dynamic_cast<Group*>(itemFocus.get()))
-                    if (g->higher(*toGroup))
-                      return;
-                  toGroup->addItem(itemFocus);
-                  toGroup->splitBoundaryCrossingWires();
-                  g->splitBoundaryCrossingWires();
-                }
-              else
-                {
-                  model->addItem(itemFocus);
-                  model->splitBoundaryCrossingWires();
-                  g->splitBoundaryCrossingWires();
-                }
-            }
-        if (auto g=itemFocus->group.lock())
-          g->checkAddIORegion(itemFocus);
-        requestRedraw();
-      }
-    else if (itemFocus && clickType==ClickType::onSlider)
-      {
-        if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+        switch (clickType)
           {
-            RenderVariable rv(*v);
-            double rw=fabs(v->zoomFactor*rv.width()*cos(v->rotation*M_PI/180));
-            v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
-                         rw + 0.5*(v->sliderMin+v->sliderMax));
-            // push History to prevent an unnecessary reset when
-            // adjusting the slider whilst paused. See ticket #812
-            minsky().pushHistory();
+          case ClickType::onItem:
+            updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
+            // move item relatively to avoid accidental moves on double click
+            itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+            // check if the move has moved outside or into a group
+            if (auto g=itemFocus->group.lock())
+              if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
+                {
+                  if (auto toGroup=model->minimalEnclosingGroup
+                      (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+                    {
+                      // prevent moving a group inside itself
+                      if (auto g=dynamic_cast<Group*>(itemFocus.get()))
+                        if (g->higher(*toGroup))
+                          return;
+                      toGroup->addItem(itemFocus);
+                      toGroup->splitBoundaryCrossingWires();
+                      g->splitBoundaryCrossingWires();
+                    }
+                  else
+                    {
+                      model->addItem(itemFocus);
+                      model->splitBoundaryCrossingWires();
+                      g->splitBoundaryCrossingWires();
+                    }
+                }
+            if (auto g=itemFocus->group.lock())
+              g->checkAddIORegion(itemFocus);
             requestRedraw();
+            return;
+          case ClickType::onSlider:
+            if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+              {
+                RenderVariable rv(*v);
+                double rw=fabs(v->zoomFactor*rv.width()*cos(v->rotation*M_PI/180));
+                v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
+                             rw + 0.5*(v->sliderMin+v->sliderMax));
+                // push History to prevent an unnecessary reset when
+                // adjusting the slider whilst paused. See ticket #812
+                minsky().pushHistory();
+                requestRedraw();
+              }
+            return;
+          case ClickType::onRavel:
+            if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
+              if (r->onMouseMotion(x,y))
+                requestRedraw();
+            return;
+          case ClickType::legendMove: case ClickType::legendResize:
+            if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+              {
+                p->mouseMove(x,y);
+                requestRedraw();
+              }
+            return;
+          case ClickType::onResize:
+            lasso.x1=x;
+            lasso.y1=y;
+            requestRedraw();
+          default:
+            break;
           }
       }
     else if (itemFocus && clickType==ClickType::onRavel)

@@ -53,7 +53,7 @@ namespace minsky
     // Val can access id by declaring a virtual method of this name
     Key id() const {return first;};
     IntrusiveWrap(const Key& id, const Val& v=Val()): Val(v), first(id)
-    {KeyAssertion<Key>(first);}
+    {KeyAssertion<Key>{first};}
     template <class K, class V>
     IntrusiveWrap(const std::pair<K,V> x):
       IntrusiveWrap(x.first,x.second) {}

@@ -18,13 +18,13 @@ Minsky is an open source program with prebuilt binaries available for:
 
 Official releases are available from [SourceForge](https://sourceforge.net/projects/minsky/files/Sources/). You may also obtain later releases from this Github project, as release are tagged within git.
 
-To compile Minsky, you will need a suitable posix compliant system, with a number of prerequisites installed. More information can be found on the [SourceForge wiki](https://sourceforge.net/p/minsky/wiki/Building%20Minsky/).
+To compile Minsky, you will need a suitable posix compliant system, [with a number of prerequisites installed](Compiling.md).
 
 ## Compiling release versions of Minsky
 
 - [Windows](githubdocs/WindowsRelease.md)
 - [MacOSX](githubdocs/MacRelease.md)
-- Linux: Linux distributions are managed through the [OpenSUSE build service](https://build.opensuse.org/package/show/home:hpcoder1/minsky) which won't be documented here
+- Linux: Linux distributions are managed through the [OpenSUSE build service](https://build.opensuse.org/package/show/home:hpcoder1/minsky) which won't be documented here.
 
 ## Roadmap
 

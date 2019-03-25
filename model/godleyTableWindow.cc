@@ -390,10 +390,11 @@ namespace minsky
 
   int GodleyTableWindow::colX(double x) const
   {
+    if (x<colLeftMargin[0]) return -1;
+    if (x<colLeftMargin[1]) return 0;
     auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), x);
-    int r=p-colLeftMargin.begin()-1;
-    if (r>0) r+=scrollColStart-1;
-    if (r>int(godleyIcon->table.cols())) r=-1; // out of bounds, invalidate
+    size_t r=p-colLeftMargin.begin()-2+scrollColStart;
+    if (r>godleyIcon->table.cols()) r=-1; // out of bounds, invalidate
     return r;
   }
 
@@ -401,7 +402,7 @@ namespace minsky
   {
     int c=(y-topTableOffset)/rowHeight;
     if (c>0) c+=scrollRowStart-1;
-    if (c>int(godleyIcon->table.rows())) c=-1; // out of bounds, invalidate
+    if (c<0 || size_t(c)>godleyIcon->table.rows()) c=-1; // out of bounds, invalidate
     return c;
   }
 
@@ -444,9 +445,10 @@ namespace minsky
       case colWidget:
         {
           unsigned c=colX(x);
-          if (c<colWidgets.size() && c<colLeftMargin.size())
+          unsigned visibleCol=c-scrollColStart+1;
+          if (c<colWidgets.size() && visibleCol < colLeftMargin.size())
             {
-              colWidgets[c].invoke(x-colLeftMargin[c]);
+              colWidgets[c].invoke(x-colLeftMargin[visibleCol]);
               adjustWidgets();
               selectedCol=selectedRow=-1;
               requestRedraw();

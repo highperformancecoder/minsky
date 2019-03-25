@@ -97,6 +97,7 @@ namespace MathDAG
         if (ri==minsky::minsky().variableValues.end())
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValue(VariableType::tempFlow)).first;
         result=&ri->second;
+        if (result->idx()<0) result->allocValue();
         if (rhs)
           rhs->addEvalOps(ev, result);
       }
@@ -856,8 +857,11 @@ namespace MathDAG
        {
          if (auto v=dynamic_cast<VariableBase*>(i->get()))
            {
+             if (v->type()==VariableType::undefined)
+               throw error("variable %s has undefined type",v->name().c_str());
              assert(minsky.variableValues.count(v->valueId()));
-             v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
+             if (!v->ports.empty())
+               v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
            }
          else if (auto pw=dynamic_cast<PlotWidget*>(i->get()))
            for (auto& port: pw->ports) 

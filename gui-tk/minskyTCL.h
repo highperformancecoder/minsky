@@ -202,7 +202,10 @@ namespace minsky
       }
       return canvas.item? name: "";
     }
-
+  
+    /// sets the colour of palette item i to Tk acceptable colour name
+    void setColour(size_t i, const char* name);
+    
     /// find first object of given \a type
     bool findObject(const std::string& type)
     {

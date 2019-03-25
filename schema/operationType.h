@@ -72,6 +72,7 @@ namespace minsky
   {
     struct CreatorBase
     {
+      virtual ~CreatorBase() {}
       virtual Base* create() const=0;
     };
 

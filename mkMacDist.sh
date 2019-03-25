@@ -64,9 +64,8 @@ cp -r gui-tk/library $MINSKYHOME
 cp -r gui-tk/icons $MINSKYHOME
 cp gui-tk/accountingRules $MINSKYHOME
     
-# determine location of tcl library from tclsh - make sure the correct
-# tclsh is in your path
-eval `tclsh echo_tcl_lib.tcl`
+# determine location of tcl library 
+eval `gui-tk/minsky echo_tcl_lib.tcl`
 
 echo "$TCL_LIB $TK_LIB"
 mkdir -p $MINSKYHOME/library
@@ -78,8 +77,16 @@ codesign -s "Developer ID Application" --deep --force minsky.app
 if [ $? -ne 0 ]; then
     echo "try running this script on the Mac GUI desktop, not ssh shell"
 fi
-productbuild --root minsky.app /Applications/Minsky.app minsky.pkg
-productsign --sign "Developer ID Installer" minsky.pkg Minsky-$version-mac-dist.pkg
-if [ $? -ne 0 ]; then
-    echo "try running this script on the Mac GUI desktop, not ssh shell"
-fi
+
+# how to build and sign a .pkg file left for historical interest
+#productbuild --root minsky.app /Applications/Minsky.app minsky.pkg
+#productsign --sign "Developer ID Installer" minsky.pkg Minsky-$version-mac-dist.pkg
+#if [ $? -ne 0 ]; then
+#    echo "try running this script on the Mac GUI desktop, not ssh shell"
+#fi
+
+rm -f Minsky-$version-mac-dist.dmg
+hdiutil create -srcfolder minsky.app -volname Minsky -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 150M temp.dmg
+hdiutil convert -format UDZO -imagekey zlib-level=9 -o Minsky-$version-mac-dist.dmg temp.dmg 
+rm -f temp.dmg
+codesign -s "Developer ID Application" Minsky-$version-mac-dist.dmg
