@@ -489,6 +489,18 @@ namespace MathDAG
     return o<<"min("<<arguments[0][0]->matlab()<<")";
   }
   template <>
+  ostream& OperationDAG<OperationType::supIndex>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"find(("<<arguments[0][0]->matlab()<<")==max("<<arguments[0][0]->matlab()<<"))";
+  }
+  template <>
+  ostream& OperationDAG<OperationType::infIndex>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"find(("<<arguments[0][0]->matlab()<<")==min("<<arguments[0][0]->matlab()<<"))";
+  }
+  template <>
   ostream& OperationDAG<OperationType::any>::matlab(ostream& o) const
   {
     checkArg(0,0);
@@ -534,7 +546,7 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::index>::matlab(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"min((find("<<arguments[0][0]->matlab()<<")>0.5))";
+    return o<<"find(("<<arguments[0][0]->matlab()<<")>0.5)";
   }
   template <>
   ostream& OperationDAG<OperationType::gather>::matlab(ostream& o) const

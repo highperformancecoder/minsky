@@ -1002,4 +1002,38 @@ namespace minsky
             fv[this->out+i+j*stride]=s;
           }
   }
+
+  void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    int o=out;
+    for (auto i: in1)
+      if (src[i]>0.5)
+        {
+          fv[o]=&i-&in1[0];
+          o++;
+        }
+  }
+  void EvalOp<minsky::OperationType::infIndex>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    double m=numeric_limits<double>::max();
+    for (auto i: in1)
+      if (src[i]<m)
+        {
+          m=src[i];
+          fv[out]=&i-&in1[0];
+        }
+  }
+  void EvalOp<minsky::OperationType::supIndex>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    double m=-numeric_limits<double>::max();
+    for (auto i: in1)
+      if (src[i]>m)
+        {
+          m=src[i];
+          fv[out]=&i-&in1[0];
+        }
+  }
 }

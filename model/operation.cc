@@ -966,6 +966,20 @@ namespace minsky
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"sup");
   }
+  
+  template <> void Operation<OperationType::infIndex>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"infi");
+  }
+
+ template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"supi");
+  }
 
   template <> void Operation<OperationType::any>::iconDraw(cairo_t* cairo) const
   {
@@ -1030,7 +1044,7 @@ namespace minsky
   {
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
-    cairo_show_text(cairo,"any");
+    cairo_show_text(cairo,"idx");
   }
 
   template <> void Operation<OperationType::gather>::iconDraw(cairo_t* cairo) const

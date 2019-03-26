@@ -82,6 +82,8 @@ namespace minsky
     template <> int numArguments<OperationType::product>() {return 1;}
     template <> int numArguments<OperationType::infimum>() {return 1;}
     template <> int numArguments<OperationType::supremum>() {return 1;}
+    template <> int numArguments<OperationType::infIndex>() {return 1;}
+    template <> int numArguments<OperationType::supIndex>() {return 1;}
     template <> int numArguments<OperationType::any>() {return 1;}
     template <> int numArguments<OperationType::all>() {return 1;}
     template <> int numArguments<OperationType::runningSum>() {return 1;}

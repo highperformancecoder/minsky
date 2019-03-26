@@ -43,7 +43,7 @@ namespace minsky
                sinh, cosh, tanh, abs,
                floor, frac, not_,
                // reductions
-               sum, product, infimum, supremum, any, all,
+               sum, product, infimum, supremum, any, all, infIndex, supIndex,
                // scans
                runningSum, runningProduct, difference,
                // other tensor ops

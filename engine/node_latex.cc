@@ -527,6 +527,20 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"\\max_i("<<arguments[0][0]->latex()<<")_i";
   }
+  
+  template <>
+  ostream& OperationDAG<OperationType::infIndex>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\mathrm{indexOf}(\\min_i("<<arguments[0][0]->latex()<<")_i)";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::supIndex>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\mathrm{indexOf}(\\max_i("<<arguments[0][0]->latex()<<")_i)";
+  }
 
   template <>
   ostream& OperationDAG<OperationType::any>::latex(ostream& o) const
@@ -581,7 +595,7 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::index>::latex(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"\\min\\left\\{i: \\left("<<arguments[0][0]->latex()<<"\\right)_i>0.5\\right\\}";
+    return o<<"\\left\\{i: \\left("<<arguments[0][0]->latex()<<"\\right)_i>0.5\\right\\}";
   }
 
   template <>

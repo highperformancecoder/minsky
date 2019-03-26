@@ -87,7 +87,7 @@ menu .wiring.menubar.reductionops.menu
 
 button .wiring.menubar.scanops -image runningSumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.scanops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
-tooltip .wiring.menubar.reductionops "scans"
+tooltip .wiring.menubar.scanops "scans"
 set helpTopics(.wiring.menubar.scanops) Operations
 menu .wiring.menubar.scanops.menu
 

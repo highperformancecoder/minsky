@@ -234,7 +234,24 @@ namespace minsky
 
   template <> struct EvalOp<minsky::OperationType::innerProduct>: public TensorEvalOp<OperationType::innerProduct> {};
   template <> struct EvalOp<minsky::OperationType::outerProduct>: public TensorEvalOp<OperationType::outerProduct> {};
-  template <> struct EvalOp<minsky::OperationType::index>: public TensorEvalOp<OperationType::index> {};
+  template <> struct EvalOp<minsky::OperationType::index>: public TensorEvalOp<OperationType::index>
+  {
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override;
+
+  };
+  template <> struct EvalOp<minsky::OperationType::infIndex>: public TensorEvalOp<OperationType::infIndex>
+  {
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override;
+
+  };
+  template <> struct EvalOp<minsky::OperationType::supIndex>: public TensorEvalOp<OperationType::supIndex>
+  {
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override;
+
+  };
   template <> struct EvalOp<minsky::OperationType::gather>: public TensorEvalOp<OperationType::gather> {};
   
  struct ConstantEvalOp: public EvalOp<minsky::OperationType::constant>

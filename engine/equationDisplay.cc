@@ -584,6 +584,20 @@ namespace MathDAG
   }
 
   template <>
+  void OperationDAG<OperationType::infIndex>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"indexOf",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){OperationDAG<OperationType::infimum>().render(surf);});
+  }
+
+  template <>
+  void OperationDAG<OperationType::supIndex>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"indexOf",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){OperationDAG<OperationType::supremum>().render(surf);});
+  }
+
+  template <>
   void OperationDAG<OperationType::any>::render(Surface& surf) const
   {
     print(surf.cairo(),"Θ(max<sub>i</sub>",Anchor::nw);
