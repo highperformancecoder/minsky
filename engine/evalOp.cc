@@ -734,13 +734,13 @@ namespace minsky
       // check dimensionality is correct
       switch (op)
         {
-        case OperationType::time:
+        case time:
           to.units.clear();
           if (!EvalOpBase::timeUnit.empty())
             to.units.emplace(EvalOpBase::timeUnit,1);
           break;
-        case OperationType::multiply:
-        case OperationType::divide:
+        case multiply:
+        case divide:
           to.units=from1.units;
           for (auto& i: from2.units)
             {
@@ -750,7 +750,7 @@ namespace minsky
                 to.units.erase(i.first);
             }
           break;
-        case OperationType::pow:
+        case pow:
           if (!from1.units.empty())
             {
               if (from2.type()==VariableType::constant)
@@ -767,20 +767,20 @@ namespace minsky
                 throw runtime_error("non constant power of dimensioned quantity requested");
             }
           break;
-        case OperationType::le: case OperationType::lt: case OperationType::eq:
+        case le: case lt: case eq:
           if (from1.units!=from2.units)
             throw runtime_error("incompatible units: "+from1.units.str()+"≠"+from2.units.str());
           to.units.clear(); // result of comparison ops is dimensionless
           break;
-        case OperationType::and_: case OperationType::or_: case OperationType::not_:
+        case and_: case or_: case not_:
           if (!from1.units.empty() || !from2.units.empty())
             throw runtime_error("logical ops must be applied to dimensionless quantities");
           to.units.clear(); // result of comparison ops is dimensionless
           break;
-        case OperationType::integrate: case OperationType::differentiate:
+        case integrate: case differentiate:
           assert(false); // shouldn't be here
           break;
-        case OperationType::copy:
+        case copy:
           to.units=from1.units;
           break;
         default:
@@ -917,43 +917,54 @@ namespace minsky
         case 1:
           switch (OperationType::classify(op))
             {
-            case general: case function:
-              {
+            case general: case function: 
                 if (to.idx()==-1 || to.xVector.empty())
                   to.setXVector(from1.xVector);
                 if (to.xVector==from1.xVector)
-                  for (size_t i=0; i<from1.numElements(); ++i)
-                    t->in1.push_back(i+from1.idx());
-                else
                   {
-                    OffsetMap from1Offsets(from1);
-                    apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
-                                         {
-                                           size_t offs1=from1.idx();
-                                           for (auto& i: x)
-                                             {
-                                               auto j=from1Offsets.find(i.first);
-                                               if (j!=from1Offsets.end())
-                                                 {
-                                                   auto k=j->second.find(i.second);
-                                                   if (k!=j->second.end())
-                                                     offs1+=k->second;
-                                                   else
-                                                     throw error("invalid key");
-                                                 }
-                                               // else allowed a missing dimension - add zero offset
-                                             }
-                                           t->in1.push_back(offs1);
-                                         });
+                    for (size_t i=0; i<from1.numElements(); ++i)
+                      t->in1.push_back(i+from1.idx());
+                    break;
                   }
+                //fallthrough
+            case reduction: case scan:
+              {
+                OffsetMap from1Offsets(from1);
+                apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                                     {
+                                       size_t offs1=from1.idx();
+                                       for (auto& i: x)
+                                         {
+                                           auto j=from1Offsets.find(i.first);
+                                           if (j!=from1Offsets.end())
+                                             {
+                                               auto k=j->second.find(i.second);
+                                               if (k!=j->second.end())
+                                                 offs1+=k->second;
+                                               else
+                                                 throw error("invalid key");
+                                             }
+                                           // else allowed a missing dimension - add zero offset
+                                         }
+                                       t->in1.push_back(offs1);
+                                     });
               }
               break;
-            case reduction: case scan:
-              for (size_t i=0; i<from1.numElements(); ++i)
-                t->in1.push_back(i+from1.idx());
-              break;
+//            case reduction: case scan:
+//              for (size_t i=0; i<from1.numElements(); ++i)
+//                t->in1.push_back(i+from1.idx());
+//              break;
             case binop: assert(false); break; // shouldn't be here
-            case tensor: break; // TODO
+            case tensor:
+//              switch (op)
+//                {
+//                case index:
+//                  for (size_t i=0; i<from1.numElements(); ++i)
+//                    t->in1.push_back(i+from1.idx());
+//                  break;
+//                default: break; // TODO
+//                }
+              break;  // TODO
             }
           break;
         }
@@ -1006,13 +1017,15 @@ namespace minsky
   void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
   {
     const double* src=this->flow1? fv: sv;
-    int o=out;
-    for (auto i: in1)
-      if (src[i]>0.5)
+    int o=out, i=0;
+    for (; i<in1.size(); ++i)
+      if (src[in1[i]]>0.5)
         {
-          fv[o]=&i-&in1[0];
+          fv[o]=i;
           o++;
         }
+    //fill remaining spaces with NaN to indicate invalid data
+    for (; o<out+in1.size(); ++o) fv[o]=nan("");
   }
   void EvalOp<minsky::OperationType::infIndex>::eval(double fv[], const double sv[])
   {
@@ -1022,7 +1035,7 @@ namespace minsky
       if (src[i]<m)
         {
           m=src[i];
-          fv[out]=&i-&in1[0];
+          fv[out]=i;
         }
   }
   void EvalOp<minsky::OperationType::supIndex>::eval(double fv[], const double sv[])
@@ -1033,7 +1046,7 @@ namespace minsky
       if (src[i]>m)
         {
           m=src[i];
-          fv[out]=&i-&in1[0];
+          fv[out]=i;
         }
   }
 }
