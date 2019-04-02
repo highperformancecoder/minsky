@@ -81,7 +81,7 @@ namespace MathDAG
         *result=result->initValue(values);
       }
     if (r && r->isFlowVar() && r!=result)
-      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
@@ -102,7 +102,7 @@ namespace MathDAG
           rhs->addEvalOps(ev, result);
       }
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
@@ -126,7 +126,7 @@ namespace MathDAG
           throw error("integral not defined");
       }
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
@@ -175,7 +175,8 @@ namespace MathDAG
 
   namespace
   {
-    void cumulate(EvalOpVector& ev, VariableValue& r, const vector<vector<VariableValue> >& argIdx,
+    void cumulate(EvalOpVector& ev, const std::shared_ptr<OperationBase>& state, VariableValue& r,
+                  const vector<vector<VariableValue> >& argIdx,
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
@@ -222,16 +223,16 @@ namespace MathDAG
               i++;
           if (i<argIdx[0].size())
             {
-              ev.push_back(EvalOpPtr(OperationType::copy, r, argIdx[0][i]));
+              ev.push_back(EvalOpPtr(OperationType::copy, state, r, argIdx[0][i]));
               for (++i; i<argIdx[0].size(); ++i)
                 if (accum!=OperationType::add || !argIdx[0][i].isZero())
-                  ev.push_back(EvalOpPtr(accum, r, r, argIdx[0][i]));
+                  ev.push_back(EvalOpPtr(accum, state, r, r, argIdx[0][i]));
             }
         }
       else
         {
           //TODO: could be cleaned up if we don't need to support constant operators
-          ev.push_back(EvalOpPtr(OperationType::constant, r));
+          ev.push_back(EvalOpPtr(OperationType::constant, state, r));
           dynamic_cast<ConstantEvalOp&>(*ev.back()).value=groupIdentity;
         }
 
@@ -239,7 +240,7 @@ namespace MathDAG
         {
           if (argIdx[1].size()==1)
             // eliminate redundant copy operation when only one wire
-            ev.push_back(EvalOpPtr(op, r, r, argIdx[1][0]));
+            ev.push_back(EvalOpPtr(op, state, r, r, argIdx[1][0]));
           else if (argIdx[1].size()>1)
             {
               // multiple wires to second input port
@@ -251,11 +252,11 @@ namespace MathDAG
                 while (i<argIdx[1].size() && argIdx[1][i].isZero()) i++;
               if (i<argIdx[1].size())
                 {
-                  ev.push_back(EvalOpPtr(OperationType::copy, tmp, argIdx[1][i]));
+                  ev.push_back(EvalOpPtr(OperationType::copy, state, tmp, argIdx[1][i]));
                   for (++i; i<argIdx[1].size(); ++i)
                     if (accum!=OperationType::add || !argIdx[1][i].isZero())
-                      ev.push_back(EvalOpPtr(accum, tmp, tmp, argIdx[1][i]));
-                  ev.push_back(EvalOpPtr(op, r, r, tmp));
+                      ev.push_back(EvalOpPtr(accum, state, tmp, tmp, argIdx[1][i]));
+                  ev.push_back(EvalOpPtr(op, state, r, r, tmp));
                 }
             }
         }
@@ -291,28 +292,28 @@ namespace MathDAG
             switch (type())
               {
               case add:
-                cumulate(ev, *result, argIdx, add, add, 0);
+                cumulate(ev, state, *result, argIdx, add, add, 0);
                 break;
               case subtract:
-                cumulate(ev, *result, argIdx, subtract, add, 0);
+                cumulate(ev, state, *result, argIdx, subtract, add, 0);
                 break;
               case multiply:
-                cumulate(ev, *result, argIdx, multiply, multiply, 1);
+                cumulate(ev, state, *result, argIdx, multiply, multiply, 1);
                 break;
               case divide:
-                cumulate(ev, *result, argIdx, divide, multiply, 1);
+                cumulate(ev, state, *result, argIdx, divide, multiply, 1);
                 break;
               case min:
-                cumulate(ev, *result, argIdx, min, min, numeric_limits<double>::max());
+                cumulate(ev, state, *result, argIdx, min, min, numeric_limits<double>::max());
                 break;
               case max:
-                cumulate(ev, *result, argIdx, max, max, -numeric_limits<double>::max());
+                cumulate(ev, state, *result, argIdx, max, max, -numeric_limits<double>::max());
                 break;
               case and_:
-                cumulate(ev, *result, argIdx, and_, and_, 1);
+                cumulate(ev, state, *result, argIdx, and_, and_, 1);
                 break;
               case or_:
-                cumulate(ev, *result, argIdx, or_, or_, 0);
+                cumulate(ev, state, *result, argIdx, or_, or_, 0);
                 break;
               case constant:
                 if (state) minsky::minsky().displayErrorItem(*state);
@@ -329,14 +330,14 @@ namespace MathDAG
                       else if (arguments.size()>1 && !argIdx[1].empty())
                         argIdx[0][0].units=argIdx[1][0].units;
                     }
-                ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0])); 
+                ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
                 break;
               case runningSum: case runningProduct:
                 {
                   if (argIdx.empty() || argIdx[0].empty())
                     throw error("input not wired");
                   result->setXVector(argIdx[0][0].xVector);
-                  ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
                   assert(state);
                   ev.back()->setTensorParams(argIdx[0][0],*state);
                 }
@@ -346,7 +347,7 @@ namespace MathDAG
                   // implement the difference operator as a
                   // subtraction, by fiddling with the offsets of the
                   // second variableValue
-                  EvalOpPtr op(subtract, *result, argIdx[0][0], argIdx[0][0]);
+                  EvalOpPtr op(subtract, state, *result, argIdx[0][0], argIdx[0][0]);
                   ev.push_back(op);
                   size_t stride, dimSz;
                   argIdx[0][0].computeStrideAndSize(state->axis, stride,dimSz);
@@ -399,12 +400,12 @@ namespace MathDAG
                         break;
                       }
                   result->setXVector(xVector);
-                  ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
                 }                
                 break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
-                  ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
                 break;
@@ -419,6 +420,7 @@ namespace MathDAG
                         r->loadDataCubeFromVariable(argIdx[0][0]);
                         r->loadDataFromSlice(*result);
                         ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
+                        ev.back()->state=state;
                       }
                     else
                       r->loadDataFromSlice(*result);
@@ -435,13 +437,13 @@ namespace MathDAG
                 switch (arguments.size())
                   {
                   case 0:
-                    ev.push_back(EvalOpPtr(type(), *result));
+                    ev.push_back(EvalOpPtr(type(), state, *result));
                     break;
                   case 1:
-                    ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
+                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
                     break;
                   case 2:
-                    ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0]));
+                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
                     break;
                   default:
                     throw error("Too many arguments");
@@ -453,12 +455,9 @@ namespace MathDAG
             if (state) minsky::minsky().displayErrorItem(*state);
             throw;
           }
-        if (!ev.empty() && (!ev.back()->state || ev.back()->state->type()==numOps) 
-            && state && ev.back()->type()==state->type())
-          ev.back()->state=state;
       }
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
-      ev.push_back(EvalOpPtr(copy, *r, *result));
+      ev.push_back(EvalOpPtr(copy, state, *r, *result));
     if (state && !state->ports.empty() && state->ports[0]) 
       state->ports[0]->setVariableValue(*result);
     assert(result->idx()>=0);

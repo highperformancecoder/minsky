@@ -723,14 +723,15 @@ namespace minsky
 
     }
  
-  EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
-              const VariableValue& from1, const VariableValue& from2)
+  EvalOpPtr::EvalOpPtr(OperationType::Type op, const std::shared_ptr<OperationBase>& state,
+                       VariableValue& to, const VariableValue& from1, const VariableValue& from2)
   {
     
       reset(EvalOpBase::create(op));
       auto t=get();
       assert(t->numArgs()==0 || from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0));
-
+      t->state=state;
+      
       // check dimensionality is correct
       switch (op)
         {
@@ -921,49 +922,48 @@ namespace minsky
                 if (to.idx()==-1 || to.xVector.empty())
                   to.setXVector(from1.xVector);
                 if (to.xVector==from1.xVector)
-                  {
                     for (size_t i=0; i<from1.numElements(); ++i)
                       t->in1.push_back(i+from1.idx());
-                    break;
+                else
+                  {
+                    OffsetMap from1Offsets(from1);
+                    apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                                         {
+                                           size_t offs1=from1.idx();
+                                           for (auto& i: x)
+                                             {
+                                               auto j=from1Offsets.find(i.first);
+                                               if (j!=from1Offsets.end())
+                                                 {
+                                                   auto k=j->second.find(i.second);
+                                                   if (k!=j->second.end())
+                                                     offs1+=k->second;
+                                                   else
+                                                     throw error("invalid key");
+                                                 }
+                                               // else allowed a missing dimension - add zero offset
+                                             }
+                                           t->in1.push_back(offs1);
+                                         });
                   }
-                //fallthrough
+              break;
             case reduction: case scan:
               {
-                OffsetMap from1Offsets(from1);
-                apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
-                                     {
-                                       size_t offs1=from1.idx();
-                                       for (auto& i: x)
-                                         {
-                                           auto j=from1Offsets.find(i.first);
-                                           if (j!=from1Offsets.end())
-                                             {
-                                               auto k=j->second.find(i.second);
-                                               if (k!=j->second.end())
-                                                 offs1+=k->second;
-                                               else
-                                                 throw error("invalid key");
-                                             }
-                                           // else allowed a missing dimension - add zero offset
-                                         }
-                                       t->in1.push_back(offs1);
-                                     });
+                // determine stride based on state of the operation argument
+                size_t stride=1;
+                if (state && !state->axis.empty())
+                  for (auto& j: from1.xVector)
+                    {
+                      if (j.name==state->axis)
+                        break;
+                      stride*=j.size();
+                    }
+                for (size_t i=0; i<from1.numElements(); ++i)
+                  t->in1.push_back(i*stride+from1.idx());
               }
               break;
-//            case reduction: case scan:
-//              for (size_t i=0; i<from1.numElements(); ++i)
-//                t->in1.push_back(i+from1.idx());
-//              break;
             case binop: assert(false); break; // shouldn't be here
             case tensor:
-//              switch (op)
-//                {
-//                case index:
-//                  for (size_t i=0; i<from1.numElements(); ++i)
-//                    t->in1.push_back(i+from1.idx());
-//                  break;
-//                default: break; // TODO
-//                }
               break;  // TODO
             }
           break;
@@ -1031,10 +1031,10 @@ namespace minsky
   {
     const double* src=this->flow1? fv: sv;
     double m=numeric_limits<double>::max();
-    for (auto i: in1)
-      if (src[i]<m)
+    for (size_t i=0; i<in1.size(); ++i)
+      if (src[in1[i]]<m)
         {
-          m=src[i];
+          m=src[in1[i]];
           fv[out]=i;
         }
   }
@@ -1042,10 +1042,10 @@ namespace minsky
   {
     const double* src=this->flow1? fv: sv;
     double m=-numeric_limits<double>::max();
-    for (auto i: in1)
-      if (src[i]>m)
+    for (size_t i=0; i<in1.size(); ++i)
+      if (src[in1[i]]>m)
         {
-          m=src[i];
+          m=src[in1[i]];
           fv[out]=i;
         }
   }

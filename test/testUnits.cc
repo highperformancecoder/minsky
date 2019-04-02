@@ -84,14 +84,14 @@ SUITE(Units)
     void TestOp::impl() {
     // most single arg functions are dimensionless, and args must match for two args
     if (OperationTypeInfo::numArguments<op>()>0)
-      CHECK_THROW(EvalOpPtr(op,to,from1,from2), std::exception);
+      CHECK_THROW(EvalOpPtr(op,nullptr,to,from1,from2), std::exception);
 
     from2.units=from1.units;
     if (OperationTypeInfo::numArguments<op>()==1)
-      CHECK_THROW(EvalOpPtr(op,to,from1,from2), std::exception);
+      CHECK_THROW(EvalOpPtr(op,nullptr,to,from1,from2), std::exception);
     else
       {
-        EvalOpPtr(op,to,from1,from2);
+        EvalOpPtr(op,nullptr,to,from1,from2);
         CHECK(to.units==from1.units);
       }
   }
@@ -104,9 +104,9 @@ SUITE(Units)
 
   template <OperationType::Type op> void TestOp::testCmp()
   {
-    CHECK_THROW(EvalOpPtr(op,to,from1,from2),std::exception);
+    CHECK_THROW(EvalOpPtr(op,nullptr, to,from1,from2),std::exception);
     from2.units=from1.units;
-    EvalOpPtr(op,to,from1,from2);
+    EvalOpPtr(op,nullptr, to,from1,from2);
     CHECK(to.units.empty());
   }
 
@@ -116,12 +116,12 @@ SUITE(Units)
   
   template <OperationType::Type op> void TestOp::testLogical()
   {
-    CHECK_THROW(EvalOpPtr(op,to,from1,from2),std::exception);
+    CHECK_THROW(EvalOpPtr(op,nullptr, to,from1,from2),std::exception);
     from2.units=from1.units;
-    CHECK_THROW(EvalOpPtr(op,to,from1,from2),std::exception);
+    CHECK_THROW(EvalOpPtr(op,nullptr, to,from1,from2),std::exception);
     from1.units.clear();
     from2.units.clear();
-    EvalOpPtr(op,to,from1,from2);
+    EvalOpPtr(op,nullptr, to,from1,from2);
     CHECK(to.units.empty());
   }
   
@@ -132,27 +132,27 @@ SUITE(Units)
   template <> void TestOp::impl<OperationType::pow>()
   {
     // pow's arguments must be dimensionless
-    CHECK_THROW(EvalOpPtr(OperationType::pow,to,from1,from2),std::exception);
+    CHECK_THROW(EvalOpPtr(OperationType::pow,nullptr, to,from1,from2),std::exception);
     // but if second argument is an integer
     from2=VariableValue(VariableType::constant,"","2");
     from2.allocValue();
-    EvalOpPtr(OperationType::pow,to,from1,from2);
+    EvalOpPtr(OperationType::pow,nullptr, to,from1,from2);
     CHECK_EQUAL(1,to.units.size());
     CHECK_EQUAL(2,to.units["m"]);
     // check that it throws with a nonintegral exponent
     from2.init=2.5;
-    CHECK_THROW(EvalOpPtr(OperationType::pow,to,from1,from2),std::exception);
+    CHECK_THROW(EvalOpPtr(OperationType::pow,nullptr, to,from1,from2),std::exception);
   }
 
   template <> void TestOp::impl<OperationType::log>()
   {
     // log's arguments must be dimensionless
-    CHECK_THROW(EvalOpPtr(OperationType::log,to,from1,from2),std::exception);
+    CHECK_THROW(EvalOpPtr(OperationType::log,nullptr, to,from1,from2),std::exception);
   }
   
   template <> void TestOp::impl<OperationType::copy>()
   {
-    EvalOpPtr(OperationType::copy,to,from1,from2);
+    EvalOpPtr(OperationType::copy,nullptr, to,from1,from2);
     CHECK(to.units==from1.units);
   }
   
@@ -160,28 +160,28 @@ SUITE(Units)
 
   template <> void TestOp::impl<OperationType::divide>()
   {
-    EvalOpPtr(OperationType::divide,to,from1,from2);
+    EvalOpPtr(OperationType::divide,nullptr, to,from1,from2);
     CHECK_EQUAL(1,to.units["m"]);
     CHECK_EQUAL(-1,to.units["s"]);
     from2.units=from1.units;
-    EvalOpPtr(OperationType::divide,to,from1,from2);
+    EvalOpPtr(OperationType::divide,nullptr, to,from1,from2);
     CHECK(to.units.empty());
   }
 
   template <> void TestOp::impl<OperationType::multiply>()
   {
-    EvalOpPtr(OperationType::multiply,to,from1,from2);
+    EvalOpPtr(OperationType::multiply,nullptr, to,from1,from2);
     CHECK_EQUAL(1,to.units["m"]);
     CHECK_EQUAL(1,to.units["s"]);
     from2.units=from1.units;
-    EvalOpPtr(OperationType::multiply,to,from1,from2);
+    EvalOpPtr(OperationType::multiply,nullptr, to,from1,from2);
     CHECK_EQUAL(2,to.units["m"]);
     CHECK_EQUAL(0,to.units["s"]);
   }
 
   template <> void TestOp::impl<OperationType::time>()
   {
-    EvalOpPtr(OperationType::time,to,from1,from2);
+    EvalOpPtr(OperationType::time,nullptr, to,from1,from2);
     CHECK_EQUAL(1,to.units[EvalOpBase::timeUnit]);
   }
 

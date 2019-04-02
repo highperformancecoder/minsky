@@ -40,12 +40,14 @@ SUITE(TensorOps)
       VariableValue from(VariableType::flow), to(VariableType::flow);
       from.dims({5});
       from.allocValue();
-      EvalOpPtr sum(OperationType::sum, to, from);
-      EvalOpPtr prod(OperationType::product, to, from);
-      EvalOpPtr inf(OperationType::infimum, to, from);
-      EvalOpPtr sup(OperationType::supremum, to, from);
-      EvalOpPtr any(OperationType::any, to, from);
-      EvalOpPtr all(OperationType::all, to, from);
+      EvalOpPtr sum(OperationType::sum, nullptr, to, from);
+      EvalOpPtr prod(OperationType::product, nullptr, to, from);
+      EvalOpPtr inf(OperationType::infimum, nullptr, to, from);
+      EvalOpPtr sup(OperationType::supremum, nullptr, to, from);
+      EvalOpPtr any(OperationType::any, nullptr, to, from);
+      EvalOpPtr all(OperationType::all, nullptr, to, from);
+      EvalOpPtr infIndex(OperationType::infIndex, nullptr, to, from);
+      EvalOpPtr supIndex(OperationType::supIndex, nullptr, to, from);
       for (auto i=from.begin(); i!=from.end(); ++i)
         *i=i-from.begin()+1;
       sum->eval();
@@ -71,6 +73,13 @@ SUITE(TensorOps)
       CHECK_EQUAL(0,to.value());
       all->eval();
       CHECK_EQUAL(0,to.value());
+
+      from.begin()[1]=-1;
+      from.begin()[3]=10;
+      infIndex->eval();
+      CHECK_EQUAL(1,to.value());
+      supIndex->eval();
+      CHECK_EQUAL(3,to.value());
     }
   
   TEST(scan)
@@ -79,11 +88,11 @@ SUITE(TensorOps)
       from.dims({5}); to.dims({5});
       from.allocValue();
       
-      EvalOpPtr sum(OperationType::runningSum, to, from);
+      EvalOpPtr sum(OperationType::runningSum, nullptr, to, from);
       Operation<OperationType::runningSum> opSum;
       sum->setTensorParams(from,opSum);
       
-      EvalOpPtr prod(OperationType::runningProduct, to, from);
+      EvalOpPtr prod(OperationType::runningProduct, nullptr, to, from);
       Operation<OperationType::runningProduct> opProduct;
       prod->setTensorParams(from,opProduct);
       
@@ -100,4 +109,18 @@ SUITE(TensorOps)
         CHECK_EQUAL(pow(2,i+1),to.value(i));
     }
 
+  TEST(index)
+    {
+      VariableValue from(VariableType::flow), to(VariableType::flow);
+      from.dims({5}); to.dims({5});
+      from.allocValue();
+      for (auto i=from.begin(); i!=from.end(); ++i)
+        *i=(i-from.begin())%2;
+      EvalOpPtr index(OperationType::index, nullptr, to, from);
+      index->eval();
+      vector<double> expected{1,3};
+      CHECK_ARRAY_EQUAL(expected,to.begin(),2);
+      for (size_t i=3; i<to.numElements(); ++i)
+        CHECK(isnan(to.begin()[i]));
+    }
 }

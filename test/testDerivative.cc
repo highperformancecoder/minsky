@@ -277,6 +277,7 @@ SUITE(Derivative)
           switch (OperationType::Type(op))
             {
             case OperationType::floor: case OperationType::frac:
+            case OperationType::index:
             case OperationType::data:
             case OperationType::ravel:
               CHECK_THROW(reset(), ecolab::error);

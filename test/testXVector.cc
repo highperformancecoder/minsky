@@ -44,7 +44,7 @@ SUITE(XVector)
       from2.setXVector(XV{{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}});
       from1.allocValue();
       from2.allocValue();
-      EvalOpPtr e(OperationType::add, to, from1, from2);
+      EvalOpPtr e(OperationType::add, nullptr, to, from1, from2);
       CHECK_EQUAL(3,to.xVector.size());
       map<string, XVector> m;
       for (auto& i: to.xVector)
@@ -75,17 +75,17 @@ SUITE(XVector)
       for (size_t i=0; i<i2.size(); ++i)
         CHECK_EQUAL(i2[i],e->in2[i][0].idx);
 
-      e=EvalOpPtr(OperationType::add, to, to, from1);
+      e=EvalOpPtr(OperationType::add, nullptr, to, to, from1);
       CHECK_EQUAL(e->in1.size(),e->in2.size());
       CHECK_EQUAL(i1.size(),e->in2.size());
       for (size_t i=0; i<i2.size(); ++i)
         CHECK_EQUAL(i1[i],e->in2[i][0].idx);
 
       // target incompatible dimension with source
-      CHECK_THROW(EvalOpPtr(OperationType::add, from1, from1, from2), std::exception);
+      CHECK_THROW(EvalOpPtr(OperationType::add, nullptr, from1, from1, from2), std::exception);
 
       to.setXVector(XV());
-      e=EvalOpPtr(OperationType::copy, to, from1, from2);
+      e=EvalOpPtr(OperationType::copy, nullptr, to, from1, from2);
       CHECK(to.xVector==from1.xVector);
       CHECK_EQUAL(from1.numElements(), e->in1.size());
       for (size_t i=0; i<e->in1.size(); ++i)
@@ -93,7 +93,7 @@ SUITE(XVector)
 
       to.makeXConformant(from1);
       to.makeXConformant(from2);
-      e=EvalOpPtr(OperationType::copy, to, from2);
+      e=EvalOpPtr(OperationType::copy, nullptr, to, from2);
       CHECK_EQUAL(3, to.dims().size());
       {
         vector<size_t> d{to.xVector[0].size(),to.xVector[1].size(),to.xVector[2].size()};
@@ -117,7 +117,7 @@ SUITE(XVector)
       from2.setXVector(xv2);
       from1.allocValue();
       from2.allocValue();
-      EvalOpPtr e(OperationType::add, to, from1, from2);
+      EvalOpPtr e(OperationType::add, nullptr, to, from1, from2);
       // extrapolation at lower edge
       CHECK_EQUAL(2,e->in2[0].size());
       CHECK_EQUAL(-1,e->in2[0][0].weight);
