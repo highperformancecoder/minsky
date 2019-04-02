@@ -121,6 +121,6 @@ SUITE(TensorOps)
       vector<double> expected{1,3};
       CHECK_ARRAY_EQUAL(expected,to.begin(),2);
       for (size_t i=3; i<to.numElements(); ++i)
-        CHECK(isnan(to.begin()[i]));
+        CHECK(isnan(double(to.begin()[i])));
     }
 }
