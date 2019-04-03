@@ -131,5 +131,22 @@ SUITE(TensorOps)
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),2);
       for (size_t i=3; i<gathered.numElements(); ++i)
         CHECK(std::isnan(gathered.begin()[i]));
+
+      // another example - check form corner cases
+      vector<double> data{0.36,0.412,0.877,0.437,0.751};
+      memcpy(from.begin(),&data[0],data.size()*sizeof(data[0]));
+      
+      index->eval();
+      expected={2,4};
+      CHECK_ARRAY_EQUAL(expected,to.begin(),2);
+      for (size_t i=3; i<to.numElements(); ++i)
+        CHECK(std::isnan(to.begin()[i]));
+
+      // apply gather to the orignal vector and the index results.
+      gather->eval();
+      expected={0.877,0.751};
+      CHECK_ARRAY_EQUAL(expected,gathered.begin(),2);
+      for (size_t i=3; i<gathered.numElements(); ++i)
+        CHECK(std::isnan(gathered.begin()[i]));
     }
 }

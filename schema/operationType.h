@@ -41,13 +41,13 @@ namespace minsky
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
-               floor, frac, not_, index,
+               floor, frac, not_,
                // reductions
                sum, product, infimum, supremum, any, all, infIndex, supIndex,
                // scans
                runningSum, runningProduct, difference,
                // other tensor ops
-               innerProduct, outerProduct, gather,
+               innerProduct, outerProduct, index, gather,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type

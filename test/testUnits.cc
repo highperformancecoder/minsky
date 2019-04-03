@@ -100,6 +100,7 @@ SUITE(Units)
   template <> void TestOp::impl<OperationType::data>() {}
   template <> void TestOp::impl<OperationType::differentiate>(){}
   template <> void TestOp::impl<OperationType::integrate>() {}
+  template <> void TestOp::impl<OperationType::gather>() {/* nothing to check, arg2 should be dimensionless*/}
 
 
   template <OperationType::Type op> void TestOp::testCmp()

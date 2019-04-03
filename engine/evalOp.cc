@@ -718,10 +718,33 @@ namespace minsky
         return r;
       }
     };
-      
 
-
+    // generate the in1 offset vector for the generic single argument case
+    void generic1ArgIndices(EvalOpBase& t, const VariableValue& to, const VariableValue& from)
+    {
+      OffsetMap from1Offsets(from);
+      apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                           {
+                             size_t offs1=from.idx();
+                             for (auto& i: x)
+                               {
+                                 auto j=from1Offsets.find(i.first);
+                                 if (j!=from1Offsets.end())
+                                   {
+                                     auto k=j->second.find(i.second);
+                                     if (k!=j->second.end())
+                                       offs1+=k->second;
+                                     else
+                                       throw error("invalid key");
+                                   }
+                                 // else allowed a missing dimension - add zero offset
+                               }
+                             t.in1.push_back(offs1);
+                           });
     }
+
+
+  }
  
   EvalOpPtr::EvalOpPtr(OperationType::Type op, const std::shared_ptr<OperationBase>& state,
                        VariableValue& to, const VariableValue& from1, const VariableValue& from2)
@@ -800,121 +823,146 @@ namespace minsky
       switch (t->numArgs())
         {
         case 2:
-          {
-            map<string,const XVector&> from2XVectorMap;
-            for (auto& i: from2.xVector)
-              from2XVectorMap.emplace(i.name, i);
-            for (auto& i: from1.xVector)
+          switch (op)
+            {
+            case gather:
               {
-                auto j=from2XVectorMap.find(i.name);
-                if (j!=from2XVectorMap.end() && j->second.dimension.type!=i.dimension.type)
-                  throw error("incompatible dimension type");
+                // determine stride based on state of the operation argument
+                size_t stride=1;
+                if (state && !state->axis.empty())
+                  for (auto& j: from1.xVector)
+                    {
+                      if (j.name==state->axis)
+                        break;
+                      stride*=j.size();
+                    }
+                for (size_t i=0; i<from1.numElements(); ++i)
+                  t->in1.push_back(i*stride+from1.idx());
+                if (from2.xVector.size()!=1)
+                  throw error("index argument should have rank 1");
+                else
+                  for (unsigned i=0; i<from2.xVector[0].size(); ++i)
+                    t->in2.emplace_back(1,EvalOpBase::Support{1,i+from2.idx()});
               }
-            
-            // check that all from2's xvector entries are present in to, and vice versa
-            if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
-            if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
-            
-            if (from1.numElements()==1 && from2.numElements()==1)
+              break;
+            default:
               {
-                t->in1.push_back(from1.idx());
-                t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
-                if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
-                  to.setXVector(vector<XVector>());
+                map<string,const XVector&> from2XVectorMap;
+                for (auto& i: from2.xVector)
+                  from2XVectorMap.emplace(i.name, i);
+                for (auto& i: from1.xVector)
+                  {
+                    auto j=from2XVectorMap.find(i.name);
+                    if (j!=from2XVectorMap.end() && j->second.dimension.type!=i.dimension.type)
+                      throw error("incompatible dimension type");
+                  }
+            
+                // check that all from2's xvector entries are present in to, and vice versa
+                if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
+                if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
+            
+                if (from1.numElements()==1 && from2.numElements()==1)
+                  {
+                    t->in1.push_back(from1.idx());
+                    t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
+                    if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
+                      to.setXVector(vector<XVector>());
+                    break;
+                  }
+
+                OffsetMap from1Offsets(from1), from2Offsets(from2);
+
+                if (to.xVector.empty())
+                  {
+                    vector<XVector> xv;
+                    for (auto& i: from1.xVector)
+                      if (i.dimension.type==Dimension::string)
+                        {
+                          // compute the common intersection of shared dimensions,
+                          // otherwise broadcast along the others
+                          auto j=from2Offsets.find(i.name);
+                          if (j!=from2Offsets.end())
+                            {
+                              xv.emplace_back(i.name);
+                              xv.back().dimension=i.dimension;
+                              for (auto& k: i)
+                                {
+                                  auto l=j->second.find(str(k));
+                                  if (l!=j->second.end())
+                                    xv.back().push_back(k);
+                                }
+                            }
+                          else
+                            xv.push_back(i);
+                        }
+                      else
+                        xv.push_back(i);
+                     
+                    for (auto& i: from2.xVector)
+                      if (!from1Offsets.count(i.name))
+                        xv.push_back(i);
+                    to.setXVector(move(xv));
+                  }
+                else
+                  to.setXVector(from1.xVector);
+
+                GetBounds from1GetBounds(from1.xVector), from2GetBounds(from2.xVector);
+                apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                                     {
+                                       t->in1.push_back(from1Offsets.offset(x)+from1.idx());
+                                       t->in2.emplace_back();
+                                       auto from1Bounds=from1GetBounds(x);
+                                       auto from2Bounds=from2GetBounds(x);
+                                       double sumD=0;
+
+                                       // loop over edges of a binary hypercube
+                                       for (size_t i=0; i<(1ULL<<from2Bounds.size()); ++i)
+                                         {
+                                           vector<pair<string,string>> key;
+                                           // add verbatim key entries along axes only present in from1
+                                           for (auto& j: x)
+                                             if (!from2XVectorMap.count(j.first))
+                                               key.push_back(j);
+                        
+                                           double weight=1;
+                                           for (auto& b: from2Bounds)
+                                             {
+                                               if (b.lesser.empty()) goto dontAddKey; // string mismatch
+                                               auto ref=find_if(from1Bounds.begin(), from1Bounds.end(),
+                                                                [&](const Bounds& x) {return x.dimName==b.dimName;});
+                                               // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
+                                               if (i&(1ULL<<(&b-&from2Bounds[0]))) // on greater edge
+                                                 if (diff(b.lesser,b.greater)==0 || ref==from1Bounds.end())
+                                                   // if lesser==greater, then needn't add greater key, as already sharply contained in bounds
+                                                   goto dontAddKey;
+                                                 else
+                                                   {
+                                                     key.emplace_back(b.dimName, str(b.greater));
+                                                     weight*=diff(ref->lesser, b.lesser) / diff(b.greater,b.lesser);
+                                                   }
+                                               else
+                                                 {
+                                                   key.emplace_back(b.dimName, str(b.lesser));
+                                                   double d=diff(b.greater,b.lesser);
+                                                   if (ref!=from1Bounds.end() && d!=0)
+                                                     weight*=1-diff(ref->lesser, b.lesser)/d;
+                                                 }
+                                             }
+                                           if (weight!=0)
+                                             t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
+                                         dontAddKey:;
+                                         }
+#ifndef NDEBUG
+                                       double sumWeight=0;
+                                       for (auto& i: t->in2.back()) sumWeight+=i.weight;
+                                       assert(sumWeight-1 < 1e-5);
+#endif
+                                     });
+
                 break;
               }
-
-            OffsetMap from1Offsets(from1), from2Offsets(from2);
-
-            if (to.xVector.empty())
-                {
-                  vector<XVector> xv;
-                  for (auto& i: from1.xVector)
-                    if (i.dimension.type==Dimension::string)
-                      {
-                        // compute the common intersection of shared dimensions,
-                        // otherwise broadcast along the others
-                        auto j=from2Offsets.find(i.name);
-                        if (j!=from2Offsets.end())
-                          {
-                            xv.emplace_back(i.name);
-                            xv.back().dimension=i.dimension;
-                            for (auto& k: i)
-                              {
-                                auto l=j->second.find(str(k));
-                                if (l!=j->second.end())
-                                  xv.back().push_back(k);
-                              }
-                          }
-                        else
-                          xv.push_back(i);
-                      }
-                    else
-                      xv.push_back(i);
-                     
-                  for (auto& i: from2.xVector)
-                    if (!from1Offsets.count(i.name))
-                      xv.push_back(i);
-                  to.setXVector(move(xv));
-                }
-              else
-                to.setXVector(from1.xVector);
-
-            GetBounds from1GetBounds(from1.xVector), from2GetBounds(from2.xVector);
-            apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
-                  {
-                    t->in1.push_back(from1Offsets.offset(x)+from1.idx());
-                    t->in2.emplace_back();
-                    auto from1Bounds=from1GetBounds(x);
-                    auto from2Bounds=from2GetBounds(x);
-                    double sumD=0;
-
-                    // loop over edges of a binary hypercube
-                    for (size_t i=0; i<(1ULL<<from2Bounds.size()); ++i)
-                      {
-                        vector<pair<string,string>> key;
-                        // add verbatim key entries along axes only present in from1
-                        for (auto& j: x)
-                          if (!from2XVectorMap.count(j.first))
-                            key.push_back(j);
-                        
-                        double weight=1;
-                        for (auto& b: from2Bounds)
-                          {
-                            if (b.lesser.empty()) goto dontAddKey; // string mismatch
-                            auto ref=find_if(from1Bounds.begin(), from1Bounds.end(),
-                                            [&](const Bounds& x) {return x.dimName==b.dimName;});
-                            // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
-                            if (i&(1ULL<<(&b-&from2Bounds[0]))) // on greater edge
-                              if (diff(b.lesser,b.greater)==0 || ref==from1Bounds.end())
-                                // if lesser==greater, then needn't add greater key, as already sharply contained in bounds
-                                goto dontAddKey;
-                              else
-                                {
-                                  key.emplace_back(b.dimName, str(b.greater));
-                                  weight*=diff(ref->lesser, b.lesser) / diff(b.greater,b.lesser);
-                                }
-                            else
-                              {
-                                key.emplace_back(b.dimName, str(b.lesser));
-                                double d=diff(b.greater,b.lesser);
-                                if (ref!=from1Bounds.end() && d!=0)
-                                  weight*=1-diff(ref->lesser, b.lesser)/d;
-                              }
-                          }
-                        if (weight!=0)
-                          t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
-                      dontAddKey:;
-                      }
-#ifndef NDEBUG
-                    double sumWeight=0;
-                    for (auto& i: t->in2.back()) sumWeight+=i.weight;
-                    assert(sumWeight-1 < 1e-5);
-#endif
-                  });
-
-            break;
-          }
+            }
+          break;
         case 1:
           switch (OperationType::classify(op))
             {
@@ -925,27 +973,7 @@ namespace minsky
                     for (size_t i=0; i<from1.numElements(); ++i)
                       t->in1.push_back(i+from1.idx());
                 else
-                  {
-                    OffsetMap from1Offsets(from1);
-                    apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
-                                         {
-                                           size_t offs1=from1.idx();
-                                           for (auto& i: x)
-                                             {
-                                               auto j=from1Offsets.find(i.first);
-                                               if (j!=from1Offsets.end())
-                                                 {
-                                                   auto k=j->second.find(i.second);
-                                                   if (k!=j->second.end())
-                                                     offs1+=k->second;
-                                                   else
-                                                     throw error("invalid key");
-                                                 }
-                                               // else allowed a missing dimension - add zero offset
-                                             }
-                                           t->in1.push_back(offs1);
-                                         });
-                  }
+                  generic1ArgIndices(*t, to, from1);
               break;
             case reduction: case scan:
               {
@@ -966,28 +994,13 @@ namespace minsky
             case tensor:
               switch (op)
                 {
-                case gather:
-                  {
-                    // determine stride based on state of the operation argument
-                    size_t stride=1;
-                    if (state && !state->axis.empty())
-                      for (auto& j: from1.xVector)
-                        {
-                          if (j.name==state->axis)
-                            break;
-                          stride*=j.size();
-                        }
-                    for (size_t i=0; i<from1.numElements(); ++i)
-                      t->in1.push_back(i*stride+from1.idx());
-                    if (from2.xVector.size()!=1)
-                      throw error("index argument should have rank 1");
-                    else
-                      for (unsigned i=0; i<from2.xVector[0].size(); ++i)
-                        t->in2.emplace_back(1,EvalOpBase::Support{1,i+from2.idx()});
-                  }
+                case index:
+                  generic1ArgIndices(*t, to, from1);
+                  break;
+                default: // TODO
                   break;
                 }
-              break;  // TODO
+              break;  
             }
           break;
         }

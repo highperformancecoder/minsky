@@ -387,7 +387,7 @@ namespace MathDAG
                   op->in2.swap(in2);
                   break;
                 }
-              case index:
+              case index: 
                 {
                   auto xVector=argIdx[0][0].xVector;
                   for (auto& i: xVector)
@@ -401,6 +401,22 @@ namespace MathDAG
                       }
                   result->setXVector(xVector);
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+                }                
+                break;
+              case gather:
+                {
+                  auto xVector=argIdx[0][0].xVector;
+                  for (auto& i: xVector)
+                    if (state->axis.empty() || i.name==state->axis || xVector.size()==1)
+                      {
+                        i.dimension.type=Dimension::value;
+                        i.dimension.units.clear();
+                        for (size_t j=0; j<i.size(); ++j)
+                          i[j]=double(j);
+                        break;
+                      }
+                  result->setXVector(xVector);
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
                 }                
                 break;
               case data:
