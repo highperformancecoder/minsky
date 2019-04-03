@@ -252,7 +252,11 @@ namespace minsky
               const double sv[]=&ValueVector::stockVars[0]) override;
 
   };
-  template <> struct EvalOp<minsky::OperationType::gather>: public TensorEvalOp<OperationType::gather> {};
+  template <> struct EvalOp<minsky::OperationType::gather>: public TensorEvalOp<OperationType::gather>
+  {
+    void eval(double fv[]=&ValueVector::flowVars[0], 
+              const double sv[]=&ValueVector::stockVars[0]) override;
+  };
   
  struct ConstantEvalOp: public EvalOp<minsky::OperationType::constant>
   {

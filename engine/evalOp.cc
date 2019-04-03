@@ -964,6 +964,29 @@ namespace minsky
               break;
             case binop: assert(false); break; // shouldn't be here
             case tensor:
+              switch (op)
+                {
+                case gather:
+                  {
+                    // determine stride based on state of the operation argument
+                    size_t stride=1;
+                    if (state && !state->axis.empty())
+                      for (auto& j: from1.xVector)
+                        {
+                          if (j.name==state->axis)
+                            break;
+                          stride*=j.size();
+                        }
+                    for (size_t i=0; i<from1.numElements(); ++i)
+                      t->in1.push_back(i*stride+from1.idx());
+                    if (from2.xVector.size()!=1)
+                      throw error("index argument should have rank 1");
+                    else
+                      for (unsigned i=0; i<from2.xVector[0].size(); ++i)
+                        t->in2.emplace_back(1,EvalOpBase::Support{1,i+from2.idx()});
+                  }
+                  break;
+                }
               break;  // TODO
             }
           break;
@@ -1018,11 +1041,13 @@ namespace minsky
   {
     const double* src=this->flow1? fv: sv;
     int o=out, i=0;
+    size_t stride=1;
+    if (in1.size()>1) stride=in1[1]-in1[0];
     for (; i<in1.size(); ++i)
       if (src[in1[i]]>0.5)
         {
           fv[o]=i;
-          o++;
+          o+=stride;
         }
     //fill remaining spaces with NaN to indicate invalid data
     for (; o<out+in1.size(); ++o) fv[o]=nan("");
@@ -1049,4 +1074,21 @@ namespace minsky
           fv[out]=i;
         }
   }
+
+  void EvalOp<minsky::OperationType::gather>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    const double* idx=this->flow2? fv: sv;
+    size_t stride=1;
+    if (in1.size()>1) stride=in1[1]-in1[0];
+    for (size_t i=0; i<in1.size(); ++i)
+      {
+        if (i<in2.size() && idx[in2[i][0].idx]<in1.size())
+          fv[out+stride*i]=src[in1[idx[in2[i][0].idx]]];
+        else
+          fv[out+stride*i]=nan("");
+      }
+  }
+
+
 }

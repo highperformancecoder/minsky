@@ -109,7 +109,7 @@ SUITE(TensorOps)
         CHECK_EQUAL(pow(2,i+1),to.value(i));
     }
 
-  TEST(index)
+  TEST(indexGather)
     {
       VariableValue from(VariableType::flow), to(VariableType::flow);
       from.dims({5}); to.dims({5});
@@ -122,5 +122,14 @@ SUITE(TensorOps)
       CHECK_ARRAY_EQUAL(expected,to.begin(),2);
       for (size_t i=3; i<to.numElements(); ++i)
         CHECK(std::isnan(to.begin()[i]));
+
+      // apply gather to the orignal vector and the index results.
+      VariableValue gathered(VariableType::flow); gathered.dims({5});
+      EvalOpPtr gather(OperationType::gather, nullptr, gathered, from, to);
+      gather->eval();
+      expected={1,1};
+      CHECK_ARRAY_EQUAL(expected,gathered.begin(),2);
+      for (size_t i=3; i<gathered.numElements(); ++i)
+        CHECK(std::isnan(gathered.begin()[i]));
     }
 }
