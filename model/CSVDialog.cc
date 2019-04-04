@@ -160,8 +160,8 @@ void CSVDialog::redraw(int, int, int width, int height)
                   cairo_set_source_rgb(surface->cairo(),0,0.7,0);
                 else
                   cairo_set_source_rgb(surface->cairo(),0,0,1);
-              else if (row<spec.nRowAxes() || col<spec.nColAxes() && !spec.dimensionCols.count(col) ||
-                       spec.columnar && col>spec.nColAxes())
+              else if (row<spec.nRowAxes() || (col<spec.nColAxes() && !spec.dimensionCols.count(col)) ||
+                       (spec.columnar && col>spec.nColAxes()))
                 cairo_set_source_rgb(surface->cairo(),1,0,0);
               else if (col<spec.nColAxes())
                 cairo_set_source_rgb(surface->cairo(),0,0,1);

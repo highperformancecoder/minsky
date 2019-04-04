@@ -246,16 +246,20 @@ namespace minsky
     // set any scale overrides
     setMinMax();
     if (xminVar.idx()>-1)
-      if (xIsSecsSinceEpoch && xminVar.units==Units("year"))
-        minx=yearToPTime(xminVar.value());
-      else
-        minx=xminVar.value();
+      {
+        if (xIsSecsSinceEpoch && xminVar.units==Units("year"))
+          minx=yearToPTime(xminVar.value());
+        else
+          minx=xminVar.value();
+      }
 
     if (xmaxVar.idx()>-1)
-      if (xIsSecsSinceEpoch && xmaxVar.units==Units("year"))
-        maxx=yearToPTime(xmaxVar.value());
-      else
-        maxx=xmaxVar.value();
+      {
+        if (xIsSecsSinceEpoch && xmaxVar.units==Units("year"))
+          maxx=yearToPTime(xmaxVar.value());
+        else
+          maxx=xmaxVar.value();
+      }
 
     if (yminVar.idx()>-1) {miny=yminVar.value();}
     if (ymaxVar.idx()>-1) {maxy=ymaxVar.value();}

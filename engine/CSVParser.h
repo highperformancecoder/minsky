@@ -30,6 +30,7 @@ namespace minsky
   class DataSpec
   {
     size_t m_nRowAxes=0, m_nColAxes=0;
+    CLASSDESC_ACCESS(DataSpec);
   public:
     char separator=',', quote='"', escape='\\';
     bool mergeDelimiters=false;
