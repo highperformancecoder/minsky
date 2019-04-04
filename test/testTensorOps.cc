@@ -127,10 +127,11 @@ SUITE(TensorOps)
       VariableValue gathered(VariableType::flow); gathered.dims({5});
       EvalOpPtr gather(OperationType::gather, nullptr, gathered, from, to);
       gather->eval();
-      expected={1,1};
-      CHECK_ARRAY_EQUAL(expected,gathered.begin(),2);
-      for (size_t i=3; i<gathered.numElements(); ++i)
-        CHECK(std::isnan(gathered.begin()[i]));
+      // replace nans with -1 to make comparison test simpler
+      for (auto g=gathered.begin(); g!=gathered.end(); ++g)
+        if (!finite(*g)) *g=-1;
+      expected={-1,1,-1,1,-1};
+      CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
 
       // another example - check form corner cases
       vector<double> data{0.36,0.412,0.877,0.437,0.751};
@@ -144,9 +145,10 @@ SUITE(TensorOps)
 
       // apply gather to the orignal vector and the index results.
       gather->eval();
-      expected={0.877,0.751};
-      CHECK_ARRAY_EQUAL(expected,gathered.begin(),2);
-      for (size_t i=3; i<gathered.numElements(); ++i)
-        CHECK(std::isnan(gathered.begin()[i]));
+      // replace nans with -1 to make comparison test simpler
+      for (auto g=gathered.begin(); g!=gathered.end(); ++g)
+        if (!finite(*g)) *g=-1;
+      expected={-1,-1,0.877,-1,0.751};
+      CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
     }
 }

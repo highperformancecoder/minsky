@@ -122,6 +122,7 @@ namespace minsky
       for (auto& i: xVector) d.push_back(i.size());
       return d;
     }
+    size_t rank() const {return xVector.size();}
     ///< set the dimensions. \a d cannot be empty, by may consist of
     ///the single element {1} to refer to a scalar
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {

@@ -807,6 +807,11 @@ namespace minsky
         case copy:
           to.units=from1.units;
           break;
+        case gather:
+          to.units=from1.units;
+          if (!from2.units.empty())
+            throw runtime_error("index argument should be dimensionless");
+          break;
         default:
           if (t->numArgs()>=2)
             {
@@ -827,23 +832,57 @@ namespace minsky
             {
             case gather:
               {
-                // determine stride based on state of the operation argument
-                size_t stride=1;
-                if (state && !state->axis.empty())
-                  for (auto& j: from1.xVector)
-                    {
-                      if (j.name==state->axis)
-                        break;
-                      stride*=j.size();
-                    }
+                auto& e=dynamic_cast<EvalOp<gather>&>(*t);
+                e.shape=from1.dims();
+                if (to.xVector!=from1.xVector)
+                  to.setXVector(from1.xVector);
                 for (size_t i=0; i<from1.numElements(); ++i)
-                  t->in1.push_back(i*stride+from1.idx());
-                if (from2.xVector.size()!=1)
-                  throw error("index argument should have rank 1");
+                  t->in1.push_back(i+from1.idx());
+                auto from2Dims=from2.dims();
+                if (from2Dims.size()>0)
+                  for (size_t i=0; i<from2.numElements(); i+=from2Dims[0])
+                    {
+                      t->in2.emplace_back();
+                      for (size_t j=0; j<from2Dims[0]; ++j)
+                        t->in2.back().emplace_back(1,i+j+from2.idx());
+                    }
                 else
-                  for (unsigned i=0; i<from2.xVector[0].size(); ++i)
-                    t->in2.emplace_back(1,EvalOpBase::Support{1,i+from2.idx()});
+                  t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
               }
+//                switch (from1.rank())
+//                  {
+//                  case 0: break;
+//                  case 1:
+//                    if (from2.rank()>2)
+//                      throw error("index argument needs to be rank 2 or less");
+//                    if (from2.rank()==2 && from2.dims()[0]!=from1.rank())
+//                      throw error("leading dimension of index argument needs to match input argument rank");
+//                    break;
+//                  default:
+//                    if (from2.rank()!=2)
+//                      throw error("index argument needs to be rank 2");
+//                    if (from2.dims()[0]!=from1.rank())
+//                      throw error("leading dimension of index argument needs to match input argument rank");
+//                    break;
+//                  
+//                
+//                // determine stride based on state of the operation argument
+//                size_t stride=1;
+//                if (state && !state->axis.empty())
+//                  for (auto& j: from1.xVector)
+//                    {
+//                      if (j.name==state->axis)
+//                        break;
+//                      stride*=j.size();
+//                    }
+//                for (size_t i=0; i<from1.numElements(); ++i)
+//                  t->in1.push_back(i*stride+from1.idx());
+//                if (from2.xVector.size()!=1)
+//                  throw error("index argument should have rank 1");
+//                else
+//                  for (unsigned i=0; i<from2.xVector[0].size(); ++i)
+//                    t->in2.emplace_back(1,EvalOpBase::Support{1,i+from2.idx()});
+//              }
               break;
             default:
               {
@@ -962,6 +1001,25 @@ namespace minsky
                 break;
               }
             }
+//          if (op==gather) // we need to compute the offsets of each slice and place them in the Support::weight attribute
+//            {
+//              if (t->in1.size()!=t->in2.size())
+//                throw error("gather arguments not conformant");
+//              size_t stride=1;
+//              if (state && !state->axis.empty())
+//                for (auto& j: from1.xVector)
+//                  {
+//                    stride*=j.size();
+//                    if (j.name==state->axis)
+//                      break;
+//                  }
+//              for (size_t i=0; i<t->in1.size(); ++i)
+//                {
+//                  if (t->in2[i].size()!=1)
+//                    throw error("gather's arguments must have compatible x-vectors");
+//                  t->in2[i][0].weight = (t->in1[i] / stride) * stride;
+//                }
+//            }
           break;
         case 1:
           switch (OperationType::classify(op))
@@ -995,7 +1053,15 @@ namespace minsky
               switch (op)
                 {
                 case index:
-                  generic1ArgIndices(*t, to, from1);
+                  {
+                    vector<unsigned> targetDims{unsigned(from1.rank()),unsigned(from1.numElements())};
+                    if (to.dims()!=targetDims)
+                      to.dims(targetDims);
+                    for (size_t i=0; i < targetDims[1]; ++i)
+                      t->in1.push_back(i+from1.idx());                 
+                    auto& e=dynamic_cast<EvalOp<index>&>(*t);
+                    e.shape=from1.dims();
+                  }
                   break;
                 default: // TODO
                   break;
@@ -1050,21 +1116,34 @@ namespace minsky
           }
   }
 
+  namespace {
+    inline vector<unsigned> unravelIndex(const vector<unsigned>& shape, size_t i) 
+    {
+      vector<unsigned> r;
+      size_t stride=1;
+      for (auto d: shape)
+        {
+          r.push_back(i%d);
+          i/=d;
+        }
+      return r;
+    }
+  }
+  
   void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
   {
     const double* src=this->flow1? fv: sv;
-    int o=out, i=0;
-    size_t stride=1;
-    if (in1.size()>1) stride=in1[1]-in1[0];
-    for (; i<in1.size(); ++i)
+    size_t o=out;
+    for (size_t i=0; i<in1.size(); ++i)
       if (src[in1[i]]>0.5)
-        {
-          fv[o]=i;
-          o+=stride;
-        }
-    //fill remaining spaces with NaN to indicate invalid data
-    for (; o<out+in1.size(); ++o) fv[o]=nan("");
+        for (auto j: unravelIndex(shape,i))
+          fv[o++]=j;
+
+    //pad with NaNs to indicate invalid data
+    for (; o<out+in1.size()*shape.size(); ++o)
+      fv[o]=nan("");
   }
+
   void EvalOp<minsky::OperationType::infIndex>::eval(double fv[], const double sv[])
   {
     const double* src=this->flow1? fv: sv;
@@ -1092,14 +1171,25 @@ namespace minsky
   {
     const double* src=this->flow1? fv: sv;
     const double* idx=this->flow2? fv: sv;
-    size_t stride=1;
-    if (in1.size()>1) stride=in1[1]-in1[0];
+    // prefill with NaNs to indicate invalid data
     for (size_t i=0; i<in1.size(); ++i)
+      fv[out+i]=nan("");
+    
+    for (auto& i: in2)
       {
-        if (i<in2.size() && idx[in2[i][0].idx]<in1.size())
-          fv[out+stride*i]=src[in1[idx[in2[i][0].idx]]];
-        else
-          fv[out+stride*i]=nan("");
+        double idx1=0;
+        size_t stride=1;
+        assert(i.size()==shape.size());
+        for (auto j=0; j<i.size(); ++j)
+          {
+            idx1+=idx[i[j].idx]*stride;
+            stride*=shape[j];
+          }
+        if (isfinite(idx1))
+          {
+            size_t idx2=idx1;
+            fv[out+idx2]=src[in1[idx2]];
+          }
       }
   }
 

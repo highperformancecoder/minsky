@@ -97,7 +97,12 @@ namespace minsky
     virtual std::string valueId() const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
     VariableValue* vValue() const;
-    
+    std::vector<unsigned> dims() const {
+      if (auto v=vValue()) return v->dims();
+      else return {};
+    }
+      
+
     /// zoom by \a factor, scaling all widget's coordinates, using (\a
     /// xOrigin, \a yOrigin) as the origin of the zoom transformation
     //   void zoom(float xOrigin, float yOrigin,float factor);
@@ -187,6 +192,7 @@ namespace minsky
         loadValueFromCSVFile(*v, is, spec);
       }
     }
+
   };
 
   template <minsky::VariableType::Type T>

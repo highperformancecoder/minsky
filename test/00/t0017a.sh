@@ -47,6 +47,7 @@ for i in examples/*.mky; do
                     $order -eq 1 ]; then continue; fi
             # derivative for tensor operations not yet implemented
             if [ $i = "examples/reductionExample.mky" -a $implicit -eq 1 ]; then continue; fi
+            if [ $i = "examples/indexing.mky" ]; then continue; fi
             cat >extraOpts.tcl <<EOF
 minsky.implicit $implicit
 minsky.order $order

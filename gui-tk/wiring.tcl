@@ -579,7 +579,13 @@ proc contextMenu {x y X Y} {
     # find out what type of item we're referring to
     switch -regex [$item.classType] {
         "Variable*|VarConstant" {
-            catch {.wiring.context add command -label "Value [minsky.canvas.item.value]"} 
+            catch {
+                if {[llength [minsky.canvas.item.dims]]==0} {
+                    .wiring.context add command -label "Value [minsky.canvas.item.value]"
+                } else {
+                    .wiring.context add command -label "Dims [minsky.canvas.item.dims]"
+                }
+            } 
             .wiring.context add command -label "Find definition" -command "findDefinition"
             .wiring.context add command -label "Select all instances" -command {
                 canvas.selectAllVariables

@@ -236,6 +236,7 @@ namespace minsky
   template <> struct EvalOp<minsky::OperationType::outerProduct>: public TensorEvalOp<OperationType::outerProduct> {};
   template <> struct EvalOp<minsky::OperationType::index>: public TensorEvalOp<OperationType::index>
   {
+    vector<unsigned> shape;  ///< input argument's shape
     void eval(double fv[]=&ValueVector::flowVars[0], 
               const double sv[]=&ValueVector::stockVars[0]) override;
 
@@ -254,6 +255,7 @@ namespace minsky
   };
   template <> struct EvalOp<minsky::OperationType::gather>: public TensorEvalOp<OperationType::gather>
   {
+    vector<unsigned> shape; ///< input argument's shape
     void eval(double fv[]=&ValueVector::flowVars[0], 
               const double sv[]=&ValueVector::stockVars[0]) override;
   };
@@ -262,7 +264,7 @@ namespace minsky
   {
     double value;
     double evaluate(double in1=0, double in2=0) const override;
-   };
+ };
 
   struct RavelEvalOp: public EvalOp<minsky::OperationType::ravel>
   {
