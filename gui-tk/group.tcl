@@ -87,7 +87,7 @@ namespace eval group {
         global workDir
         set fname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
         if [string length $fname] {
-            saveCanvasItemAsFile $fname
+            eval saveCanvasItemAsFile {$fname}
         }
     }
 
