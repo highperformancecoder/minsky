@@ -465,6 +465,9 @@ namespace minsky
     cairo_surface_set_device_offset(surface->surface(), -left, -top);
     redraw(0,0,500,500);
     surface.swap(tmp);
+    auto status=cairo_surface_status(tmp->surface());
+    if (status!=CAIRO_STATUS_SUCCESS)
+      throw error("cairo rendering error: %s",cairo_status_to_string(status));
     return tmp;
   }
   

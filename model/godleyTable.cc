@@ -273,12 +273,14 @@ void GodleyTable::exportToLaTeX(const char* filename)
 {
   ofstream f(filename);
   minsky::exportToLaTeX(f, *this);
+  if (!f) throw error("cannot save to %s",filename);
 }
 
 void GodleyTable::exportToCSV(const char* filename)
 {
   ofstream f(filename);
   minsky::exportToCSV(f, *this);
+  if (!f) throw error("cannot save to %s",filename);
 }
 
 void GodleyTable::orderAssetClasses()

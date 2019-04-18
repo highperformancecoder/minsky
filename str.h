@@ -91,5 +91,8 @@ namespace minsky
   std::unique_ptr<T,D> uniqueDeleter(T* x, D d)
   {return std::unique_ptr<T,D>(x,d);}
 
+  /// a wrapper around std::ofstream that checks the write succeeded,
+  /// throwing an exception if not
+  
 }
 #endif
