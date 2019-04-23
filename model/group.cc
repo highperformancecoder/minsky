@@ -828,28 +828,28 @@ namespace minsky
   void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
                         float x) const
   {
-    float top=0, bottom=0, z=zoomFactor();
+    float top=0, bottom=0;
     for (size_t i=0; i<vars.size(); ++i)
       {
         float y=i%2? top:bottom;
         Rotate r(rotation,0,0);
         auto& v=vars[i];
         v->m_visible=false;
-        v->moveTo(r.x(z*x,z*y)+this->x(), r.y(z*x,z*y)+this->y());
+        v->moveTo(r.x(x,y)+this->x(), r.y(x,y)+this->y());
         v->rotation=rotation;
         cairo::CairoSave cs(cairo);
-        cairo_translate(cairo,z*x,z*y);
+        cairo_translate(cairo,x,y);
         cairo_rotate(cairo,M_PI*rotation/180);
         v->draw(cairo);
         if (i==0)
           {
-            top=varToTextRatio*0.5*v->height()/z; //??? should be 0.5*varToTextRatio
+            top=varToTextRatio*0.5*v->height(); //??? should be 0.5*varToTextRatio
             bottom=-top;
           }
         else if (i%2)
-          top+=varToTextRatio*0.5*v->height()/z;
+          top+=varToTextRatio*0.5*v->height();
         else
-          bottom-=varToTextRatio*0.5*v->height()/z;
+          bottom-=varToTextRatio*0.5*v->height();
       }
   }
 
@@ -858,8 +858,9 @@ namespace minsky
     float left, right; margins(left,right);
     cairo::CairoSave cs(cairo);
     cairo_rotate(cairo,-M_PI*rotation/180);
-    draw1edge(inVariables, cairo, -/*zoomFactor**/0.5*(width-left));
-    draw1edge(outVariables, cairo, /*zoomFactor**/0.5*(width-right));
+    float z=zoomFactor();
+    draw1edge(inVariables, cairo, -z*0.5*(width-left));
+    draw1edge(outVariables, cairo, z*0.5*(width-right));
   }
 
   // draw notches in the I/O region to indicate docking capability
