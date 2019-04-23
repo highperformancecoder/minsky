@@ -235,7 +235,8 @@ namespace minsky
   {
     if (ravel)
       {
-        double r=1.1*zoomFactor*ravel_radius(ravel);
+        double z=zoomFactor();
+        double r=1.1*z*ravel_radius(ravel);
         ports[0]->moveTo(x()+1.1*r, y());
         ports[1]->moveTo(x()-1.1*r, y());
         if (mouseFocus)
@@ -251,7 +252,7 @@ namespace minsky
           cairo::CairoSave cs(cairo);
           cairo_rectangle(cairo,-r,-r,2*r,2*r);
           cairo_clip(cairo);
-          cairo_scale(cairo,zoomFactor,zoomFactor);
+          cairo_scale(cairo,z,z);
           ravel::CairoRenderer cr(cairo);
           ravel_render(ravel,&cr);
         }        
@@ -264,17 +265,18 @@ namespace minsky
   void RavelWrap::resize(const LassoBox& b)
   {
     if (ravel)
-      ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor));
+      ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor()));
   }
   
   ClickType::Type RavelWrap::clickType(float xx, float yy)
   {
     if (ravel)
       {
+        double z=zoomFactor();
         for (auto& p: ports)
-          if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
+          if (hypot(xx-p->x(), yy-p->y()) < portRadius*z)
             return ClickType::onPort;
-        double r=1.1*zoomFactor*ravel_radius(ravel);
+        double r=1.1*z*ravel_radius(ravel);
         if (std::abs(xx-x())>1.1*r || std::abs(yy-y())>1.1*r)
           return ClickType::outside;
         else if (std::abs(xx-x())<=r && std::abs(yy-y())<=r)
@@ -287,19 +289,33 @@ namespace minsky
   }
 
   void RavelWrap::onMouseDown(float xx, float yy)
-  {if (ravel) ravel_onMouseDown(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);}
+  {
+    double invZ=1/zoomFactor();
+    if (ravel) ravel_onMouseDown(ravel,(xx-x())*invZ,(yy-y())*invZ);
+  }
+  
   void RavelWrap::onMouseUp(float xx, float yy)
   {
     if (ravel)
       {
-        ravel_onMouseUp(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
+        double invZ=1/zoomFactor();
+        ravel_onMouseUp(ravel,(xx-x())*invZ,(yy-y())*invZ);
         loadDataFromSlice();
       }
   }
   bool RavelWrap::onMouseMotion(float xx, float yy)
-  {if (ravel) return ravel_onMouseMotion(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
+  {
+    double invZ=1/zoomFactor();
+    if (ravel) return ravel_onMouseMotion(ravel,(xx-x())*invZ,(yy-y())*invZ);
+    return false;
+  }
+  
   bool RavelWrap::onMouseOver(float xx, float yy)
-  {if (ravel) return ravel_onMouseOver(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
+  {
+    double invZ=1/zoomFactor();
+    if (ravel) return ravel_onMouseOver(ravel,(xx-x())*invZ,(yy-y())*invZ);
+    return false;
+  }
   void RavelWrap::onMouseLeave()
   {if (ravel) ravel_onMouseLeave(ravel);}
 

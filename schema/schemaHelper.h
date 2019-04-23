@@ -78,7 +78,7 @@ namespace minsky
                          
     
     static void scaleGodley(minsky::GodleyIcon& g, double globalZoomFactor)
-    {g.iconScale*=g.zoomFactor/globalZoomFactor;
+    {g.m_iconScale*=g.zoomFactor()/globalZoomFactor;
     }
   };
 

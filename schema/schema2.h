@@ -102,7 +102,7 @@ namespace schema2
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor), rotation(it.rotation),
+      x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation),
       ports(ports) {}
     ItemBase(const schema1::Item& it, const std::string& type="Item"):
       Note(it), id(it.id), type(type) {}
@@ -149,7 +149,7 @@ namespace schema2
     }
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.width()/g.zoomFactor), height(g.height()/g.zoomFactor), name(g.table.title), data(g.table.getData()),
+      width(g.width()/g.zoomFactor()), height(g.height()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
@@ -252,7 +252,7 @@ namespace schema2
     Minsky(const minsky::Group& g);
     Minsky(const minsky::Minsky& m): Minsky(*m.model) {
       rungeKutta=m;
-      zoomFactor=m.model->zoomFactor;
+      zoomFactor=m.model->zoomFactor();
       bookmarks=m.model->bookmarks;
       //assert(validate());
     }

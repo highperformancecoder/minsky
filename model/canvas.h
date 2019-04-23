@@ -68,13 +68,13 @@ namespace minsky
             (*this)->group=parent;
             (*this)->m_x=px;
             (*this)->m_y=py;
-            (*this)->zoomFactor=pz;
+            (*this)->relZoom=pz;
           }
         parent=model->group.lock();
         model->group.reset();
         px=model->m_x;
         py=model->m_y;
-        pz=model->zoomFactor;
+        pz=model->relZoom;
         GroupPtr::operator=(model);
         return *this;
       }

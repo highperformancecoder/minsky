@@ -118,7 +118,8 @@ namespace minsky
 
   void PlotWidget::draw(cairo_t* cairo) const
   {
-    double w=width*zoomFactor, h=height*zoomFactor;
+    double z=zoomFactor();
+    double w=width*z, h=height*z;
 
     cairo_new_path(cairo);
     cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
@@ -262,8 +263,9 @@ namespace minsky
     clickX=x;
     clickY=y;
     ct=clickType(x,y);
-    double gw=width*zoomFactor-2*portSpace;
-    double gh=height*zoomFactor-portSpace;
+    double z=zoomFactor();
+    double gw=width*z-2*portSpace;
+    double gh=height*z-portSpace;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -271,9 +273,10 @@ namespace minsky
   
   void PlotWidget::mouseMove(double x,double y)
   {
-    double gw=width*zoomFactor-2*portSpace;
-    double gh=height*zoomFactor-portSpace;
-    double yoffs=this->y()-(legendTop-0.5)*height*zoomFactor;
+    double z=zoomFactor();
+    double gw=width*z-2*portSpace;
+    double gh=height*z-portSpace;
+    double yoffs=this->y()-(legendTop-0.5)*height*z;
     switch (ct)
       {
       case ClickType::legendMove:
@@ -290,10 +293,10 @@ namespace minsky
 
   ClickType::Type PlotWidget::clickType(float x, float y)
   {
-    double legendWidth, legendHeight;
-    legendSize(legendWidth, legendHeight, height*zoomFactor-portSpace);
-    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*zoomFactor;
-    double yy= y-this->y() + (legendTop-0.5)*height*zoomFactor;
+    double legendWidth, legendHeight, z=zoomFactor();
+    legendSize(legendWidth, legendHeight, height*z-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*z;
+    double yy= y-this->y() + (legendTop-0.5)*height*z;
     if (xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
@@ -323,8 +326,9 @@ namespace minsky
 
   void PlotWidget::resize(const LassoBox& x)
   {
-    width=abs(x.x1-x.x0)/zoomFactor;
-    height=abs(x.y1-x.y0)/zoomFactor;
+    float invZ=1/zoomFactor();
+    width=abs(x.x1-x.x0)*invZ;
+    height=abs(x.y1-x.y0)*invZ;
     bb.update(*this);
   }
 

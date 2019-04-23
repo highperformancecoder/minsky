@@ -50,7 +50,7 @@ namespace minsky
     cairo_recording_surface_ink_extents(surf.surface(),
                                         &l,&t,&w,&h);
     // note (0,0) is relative to the (x,y) of icon.
-    double invZ=1/x.zoomFactor;
+    double invZ=1/x.zoomFactor();
     left=l*invZ;
     right=(l+w)*invZ;
     top=t*invZ;
@@ -60,7 +60,7 @@ namespace minsky
   float Item::x() const 
   {
     if (auto g=group.lock())
-      return g->zoomFactor*m_x+g->x();
+      return zoomFactor()*m_x+g->x();
     else
       return m_x;
   }
@@ -68,11 +68,19 @@ namespace minsky
   float Item::y() const 
   {
     if (auto g=group.lock())
-      return g->zoomFactor*m_y+g->y();
+      return zoomFactor()*m_y+g->y();
     else
       return m_y;
   }
 
+  float Item::zoomFactor() const
+  {
+    if (auto g=group.lock())
+      return g->zoomFactor()*g->relZoom;
+    else
+      return 1;
+  }
+  
   void Item::deleteAttachedWires()
   {
     for (auto& p: ports)
@@ -92,8 +100,9 @@ namespace minsky
   {
     if (auto g=group.lock())
       {
-        m_x=(x-g->x())/g->zoomFactor;
-        m_y=(y-g->y())/g->zoomFactor;
+        float invZ=1/zoomFactor();
+        m_x=(x-g->x())*invZ;
+        m_y=(y-g->y())*invZ;
       }
     else
       {
@@ -112,7 +121,7 @@ namespace minsky
     // firstly, check whether a port has been selected
     for (auto& p: ports)
       {
-        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor)
+        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
           return ClickType::onPort;
       }
     ecolab::cairo::Surface dummySurf
@@ -124,12 +133,6 @@ namespace minsky
       return ClickType::outside;
   }
 
-  void Item::zoom(float xOrigin, float yOrigin,float factor)
-  {
-    if (visible())
-      zoomFactor*=factor;
-  }
-
   void Item::drawPorts(cairo_t* cairo) const
   {
     cairo_save(cairo);
@@ -137,7 +140,13 @@ namespace minsky
     for (auto& p: ports)
       {
         cairo_new_sub_path(cairo);
-        cairo_arc(cairo, p->x()-x(), p->y()-y(), portRadius*zoomFactor, 0, 2*M_PI);
+        if (auto v=dynamic_cast<const VariableBase*>(this))
+          if (p->input() && v->name()=="0")
+            {
+              double px=p->x();
+              cout << "dp:"<<px<<" "<<x()<<" "<<px-x()<<endl;
+            }
+        cairo_arc(cairo, p->x()-x(), p->y()-y(), portRadius*zoomFactor(), 0, 2*M_PI);
       }
     cairo_set_source_rgb(cairo, 0,0,0);
     cairo_set_line_width(cairo,1);
@@ -159,13 +168,13 @@ namespace minsky
   {
     Rotate r(rotation,0,0);
     Pango pango(cairo);
+    float w, h, z=zoomFactor();
     pango.angle=rotation * M_PI / 180.0;
-    pango.setFontSize(12*zoomFactor);
+    pango.setFontSize(12*z);
     pango.setMarkup(latexToPango(detailedText)); 
     // parameters of icon in userspace (unscaled) coordinates
-    float w, h;
-    w=0.5*pango.width()+2*zoomFactor; 
-    h=0.5*pango.height()+4*zoomFactor;
+    w=0.5*pango.width()+2*z; 
+    h=0.5*pango.height()+4*z;
 
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
@@ -193,8 +202,9 @@ namespace minsky
         cairo_save(cairo);
         Pango pango(cairo);
         pango.setMarkup(latexToPango(tooltip));
-        cairo_translate(cairo,zoomFactor*(0.5*bb.width())+10,
-                        zoomFactor*(-0.5*bb.height())-20);
+        float z=zoomFactor();
+        cairo_translate(cairo,z*(0.5*bb.width())+10,
+                        z*(-0.5*bb.height())-20);
         cairo_rectangle(cairo,0,0,pango.width(),pango.height());
         cairo_set_source_rgb(cairo,1,1,1);
         cairo_fill_preserve(cairo);

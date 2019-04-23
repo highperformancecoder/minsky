@@ -391,14 +391,14 @@ namespace minsky
   
   Group::IORegion::type Group::inIORegion(float x, float y) const
   {
-    float left, right;
+    float left, right, z=zoomFactor();
     margins(left,right);
     float dx=(x-this->x())*cos(rotation*M_PI/180)-
       (y-this->y())*sin(rotation*M_PI/180);
-    float w=0.5*width*zoomFactor;
-    if (w-right*zoomFactor<dx)
+    float w=0.5*width*z;
+    if (w-right*z<dx)
       return IORegion::output;
-    else if (-w+left*zoomFactor>dx)
+    else if (-w+left*z>dx)
       return IORegion::input;
     else
       return IORegion::none;
@@ -457,22 +457,23 @@ namespace minsky
         {
           i->m_x*=sx;
           i->m_y*=sy;
-          i->zoomFactor*=std::max(sx,sy);
+          //i->zoomFactor*=std::max(sx,sy);
         }
     }
   }
   
   void Group::resize(const LassoBox& b)
   {
-    width=fabs(b.x0-b.x1)/zoomFactor;
-    height=fabs(b.y0-b.y1)/zoomFactor;
+    float z=zoomFactor();
+    width=fabs(b.x0-b.x1)/z;
+    height=fabs(b.y0-b.y1)/z;
     // account for margins
     float l, r;
     margins(l,r);
     // rescale contents to fit
     double x0, x1, y0, y1;
     contentBounds(x0,y0,x1,y1);
-    double sx=(fabs(b.x0-b.x1)-zoomFactor*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1=y0);
+    double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1=y0);
     resizeItems(items,sx,sy);
     resizeItems(groups,sx,sy);
     bb.update(*this);
@@ -652,7 +653,7 @@ namespace minsky
     displayZoom = 2*max( max(x1-x(), x()-x0)/width, max(y1-y(), y()-y0)/height );
 
     // account for shrinking margins
-    float readjust=zoomFactor/edgeScale() / (displayZoom>1? displayZoom:1);
+    float readjust=zoomFactor()/edgeScale() / (displayZoom>1? displayZoom:1);
     margins(l,r);
     l*=readjust; r*=readjust;
     displayZoom = max(displayZoom, 
@@ -667,8 +668,9 @@ namespace minsky
 
   const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item* ignore) const
   {
-    if (x0<x()-0.5*zoomFactor*width || x1>x()+0.5*zoomFactor*width || 
-        y0<y()-0.5*zoomFactor*height || y1>y()+0.5*zoomFactor*height)
+    float z=zoomFactor();
+    if (x0<x()-0.5*z*width || x1>x()+0.5*z*width || 
+        y0<y()-0.5*z*height || y1>y()+0.5*z*height)
       return nullptr;
     // at this point, this is a candidate. Check if any child groups are also
     for (auto& g: groups)
@@ -681,11 +683,11 @@ namespace minsky
   void Group::setZoom(float factor)
   {
     bool dpc=displayContents();
-    zoomFactor=factor;
+    //    zoomFactor=factor;
     computeDisplayZoom();
     float lzoom=localZoom();
-    for (auto& i: items)
-      i->zoomFactor=lzoom;
+//    for (auto& i: items)
+//      i->zoomFactor=lzoom;
     m_displayContentsChanged = dpc!=displayContents();
     for (auto& i: groups)
       {
@@ -699,13 +701,13 @@ namespace minsky
     bool dpc=displayContents();
     minsky::zoom(m_x,xOrigin+m_x-x(),factor);
     minsky::zoom(m_y,yOrigin+m_y-y(),factor);
-    zoomFactor*=factor;
+    relZoom*=factor;
     m_displayContentsChanged = dpc!=displayContents();
-    for (auto& i: items)
-      {
-        if (displayContents() && !m_displayContentsChanged)
-          i->zoom(xOrigin, yOrigin, factor);
-      }
+//    for (auto& i: items)
+//      {
+//        if (displayContents() && !m_displayContentsChanged)
+//          i->zoom(xOrigin, yOrigin, factor);
+//      }
     for (auto& i: groups)
       {
         if (displayContents() && !m_displayContentsChanged)
@@ -723,46 +725,49 @@ namespace minsky
     // sufficient space around the side for the edge variables
     float leftMargin, rightMargin;
     margins(leftMargin, rightMargin);
-    leftMargin*=zoomFactor; rightMargin*=zoomFactor;
+    float z=zoomFactor();
+    leftMargin*=z; rightMargin*=z;
 
-    unsigned width=zoomFactor*this->width, height=zoomFactor*this->height;
+    unsigned width=z*this->width, height=z*this->height;
 
-    // draw default group icon
-    cairo_save(cairo);
+    {
+      // draw default group icon
+      cairo::CairoSave cs(cairo);
 
-    // display I/O region in grey
-    drawIORegion(cairo);
+      // display I/O region in grey
+      drawIORegion(cairo);
 
-    cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
+      cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
 
 
               
-    double scalex=double(width-leftMargin-rightMargin)/width;
-    cairo_scale(cairo, scalex, 1);
+      double scalex=double(width-leftMargin-rightMargin)/width;
+      cairo_scale(cairo, scalex, 1);
 
-    // draw a simple frame 
-    cairo_rectangle(cairo,0,0,width,height);
-    cairo_save(cairo);
-    cairo_identity_matrix(cairo);
-    cairo_set_line_width(cairo,1);
-    cairo_stroke(cairo);
-    cairo_restore(cairo);
-
-    if (!displayContents())
+      // draw a simple frame 
+      cairo_rectangle(cairo,0,0,width,height);
       {
-      if (displayPlot)
-        {
-        displayPlot->Plot::draw(cairo, width, height);
-        }
-      else
-        {
-          cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
-          cairo_rectangle(cairo,0, 0,svgRenderer.width(), svgRenderer.height());
-          cairo_clip(cairo);
-          svgRenderer.render(cairo);
-        }
+        cairo::CairoSave cs(cairo);
+        cairo_identity_matrix(cairo);
+        cairo_set_line_width(cairo,1);
+        cairo_stroke(cairo);
       }
-    cairo_restore(cairo);
+
+      if (!displayContents())
+        {
+          if (displayPlot)
+            {
+              displayPlot->Plot::draw(cairo, width, height);
+            }
+          else
+            {
+              cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
+              cairo_rectangle(cairo,0, 0,svgRenderer.width(), svgRenderer.height());
+              cairo_clip(cairo);
+              svgRenderer.render(cairo);
+            }
+        }
+    }
 
     drawEdgeVariables(cairo);
 
@@ -770,8 +775,8 @@ namespace minsky
     // display text label
     if (!title.empty())
       {
-        cairo_save(cairo);
-        cairo_scale(cairo, zoomFactor, zoomFactor);
+        cairo::CairoSave cs(cairo);
+        cairo_scale(cairo, z, z);
         cairo_select_font_face
           (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, 
            CAIRO_FONT_WEIGHT_NORMAL);
@@ -801,7 +806,6 @@ namespace minsky
         cairo_move_to(cairo, -w+1, h-4 - displayContents()*0.45*this->height);
         cairo_set_source_rgba(cairo,0,0,0,transparency);
         cairo_show_text(cairo,title.c_str());
-        cairo_restore(cairo);
       }
 
     if (mouseFocus)
@@ -824,51 +828,48 @@ namespace minsky
   void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
                         float x) const
   {
-    float top=0, bottom=0;
+    float top=0, bottom=0, z=zoomFactor();
     for (size_t i=0; i<vars.size(); ++i)
       {
         float y=i%2? top:bottom;
         Rotate r(rotation,0,0);
         auto& v=vars[i];
         v->m_visible=false;
-        v->m_x=r.x(x,y); v->m_y=r.y(x,y);
+        v->moveTo(r.x(z*x,z*y)+this->x(), r.y(z*x,z*y)+this->y());
         v->rotation=rotation;
-        v->zoomFactor=0.75*edgeScale();
         cairo::CairoSave cs(cairo);
-        cairo_translate(cairo,zoomFactor*x,zoomFactor*y);
+        cairo_translate(cairo,z*x,z*y);
         cairo_rotate(cairo,M_PI*rotation/180);
-        RenderVariable rv(*v,cairo);
-        rv.draw();
+        v->draw(cairo);
         if (i==0)
           {
-            top=varToTextRatio*rv.height()/zoomFactor; //??? should be 0.5*varToTextRatio
+            top=varToTextRatio*0.5*v->height()/z; //??? should be 0.5*varToTextRatio
             bottom=-top;
           }
         else if (i%2)
-          top+=varToTextRatio*rv.height()/zoomFactor;
+          top+=varToTextRatio*0.5*v->height()/z;
         else
-          bottom-=varToTextRatio*rv.height()/zoomFactor;
+          bottom-=varToTextRatio*0.5*v->height()/z;
       }
   }
 
   void Group::drawEdgeVariables(cairo_t* cairo) const
   {
     float left, right; margins(left,right);
-    cairo_save(cairo);
+    cairo::CairoSave cs(cairo);
     cairo_rotate(cairo,-M_PI*rotation/180);
     draw1edge(inVariables, cairo, -/*zoomFactor**/0.5*(width-left));
     draw1edge(outVariables, cairo, /*zoomFactor**/0.5*(width-right));
-    cairo_restore(cairo);
   }
 
   // draw notches in the I/O region to indicate docking capability
   void Group::drawIORegion(cairo_t* cairo) const
   {
     cairo_save(cairo);
-    float left, right;
+    float left, right, z=zoomFactor();
     margins(left,right);
-    left*=zoomFactor;
-    right*=zoomFactor;
+    left*=z;
+    right*=z;
     float y=0, dy=10*edgeScale();
     for (auto& i: inVariables)
       {
@@ -876,7 +877,7 @@ namespace minsky
         y=max(y, fabs(i->y()-this->y())+varToTextRatio*rv.height()*edgeScale());
       }
     cairo_set_source_rgba(cairo,0,1,1,0.5);
-    float w=0.5*zoomFactor*width, h=0.5*zoomFactor*height;
+    float w=0.5*z*width, h=0.5*z*height;
     cairo_rotate(cairo,rotation*M_PI/180);
     
     cairo_move_to(cairo,-w,-h);
@@ -917,18 +918,18 @@ namespace minsky
 
   void Group::margins(float& left, float& right) const
   {
-    float scale=edgeScale()/zoomFactor;
+    float scale=edgeScale()/zoomFactor();
     left=right=10*scale;
     for (auto& i: inVariables)
       {
-        i->zoomFactor=edgeScale();
+        //i->zoomFactor=edgeScale();
         float w= scale*(2*RenderVariable(*i).width()+2);
         assert(i->type()!=VariableType::undefined);
         if (w>left) left=w;
       }
     for (auto& i: outVariables)
       {
-        i->zoomFactor=edgeScale();
+        //i->zoomFactor=edgeScale();
         float w= scale*(2*RenderVariable(*i).width()+2);
         assert(i->type()!=VariableType::undefined);
         if (w>right) right=w;

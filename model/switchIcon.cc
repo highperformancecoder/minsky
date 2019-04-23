@@ -56,7 +56,7 @@ namespace minsky
   {
     cairo_set_line_width(cairo,1);
     // square icon
-    float width=8*zoomFactor*numCases();
+    float width=8*zoomFactor()*numCases();
     cairo_rectangle(cairo,-0.5*width,-0.5*width,width,width);
     cairo_stroke(cairo);
 

@@ -430,7 +430,7 @@ proc wireContextMenu {x y} {
     .wiring.context add command -label "Straighten" -command "minsky.canvas.wire.straighten"
 #    .wiring.context add command -label "Raise" -command "raiseItem wire$id"
 #    .wiring.context add command -label "Lower" -command "lowerItem wire$id"
-    .wiring.context add command -label "Browse object" -command "obj_browser canvas.wire.*"
+    .wiring.context add command -label "Browse object" -command "obj_browser minsky.canvas.wire.*"
     .wiring.context add command -label "Delete wire" -command "canvas.deleteWire"
     tk_popup .wiring.context $x $y
 }

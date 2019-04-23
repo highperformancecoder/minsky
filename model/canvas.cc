@@ -189,7 +189,7 @@ namespace minsky
             if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
               {
                 RenderVariable rv(*v);
-                double rw=fabs(v->zoomFactor*rv.width()*cos(v->rotation*M_PI/180));
+                double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
                 v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
                              rw + 0.5*(v->sliderMin+v->sliderMax));
                 // push History to prevent an unnecessary reset when
@@ -480,7 +480,7 @@ namespace minsky
     if (auto g=dynamic_pointer_cast<Group>(item))
       {
         if (auto parent=model->group.lock())
-          model->setZoom(parent->zoomFactor);
+          model->setZoom(parent->zoomFactor());
         model=g;
         float zoomFactor=1.1*model->displayZoom;
         if (!model->displayContents())
@@ -527,7 +527,7 @@ namespace minsky
         ni->m_visible=true;
         group->addItem(ni);
         ni->rotation=0;
-        ni->zoomFactor=group->zoomFactor;
+        //ni->zoomFactor=group->zoomFactor;
         ni->moveTo(group->x()+maxWidth - widths[i],
                    y+heights[i]);
         // variables need to refer to outer scope

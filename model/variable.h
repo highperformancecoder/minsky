@@ -95,11 +95,6 @@ namespace minsky
     /// string used to link to the VariableValue associated with this
     virtual std::string valueId() const;
 
-    /// zoom by \a factor, scaling all widget's coordinates, using (\a
-    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-    //   void zoom(float xOrigin, float yOrigin,float factor);
-    void setZoom(float factor) {zoomFactor=factor;}
-
     /// @{ the initial value of this variable
     std::string _init() const; /// < return initial value for this variable
     std::string _init(const std::string&); /// < set the initial value for this variable

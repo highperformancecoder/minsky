@@ -194,7 +194,6 @@ namespace minsky
     ItemPtr addItem(const shared_ptr<Item>& it, bool inSchema=false)
     {
       auto r=GroupItems::addItem(it,inSchema);
-      if (r) r->zoomFactor=localZoom();
       return r;
     }
     ItemPtr addItem(Item* it) {return addItem(std::shared_ptr<Item>(it));}
@@ -258,7 +257,7 @@ namespace minsky
     }
     
     /// returns whether contents should be displayed. Top level group always displayed
-    bool displayContents() const {return !group.lock() || zoomFactor>displayZoom;}
+    bool displayContents() const {return !group.lock() || zoomFactor()>displayZoom;}
     /// true if displayContents status changed on this or any
     /// contained group last zoom
     bool displayContentsChanged() const {return m_displayContentsChanged;}
@@ -269,21 +268,22 @@ namespace minsky
     /// computes the zoom at which to show contents, given current
     /// contentBounds and width
     float displayZoom{1}; ///< zoom at which contents are displayed
+    float relZoom{1}; ///< relative zoom contents of this group are displayed at
     float computeDisplayZoom();
     float localZoom() const {
       return (displayZoom>0 && displayContents())
-        ? zoomFactor/displayZoom: 1;
+        ? zoomFactor()/displayZoom: 1;
     }
     /// sets the zoom factor to \a factor. Recursively set the
     /// zoomfactor on contained objects to the computed localzoom
     void setZoom(float factor);
-    void zoom(float xOrigin, float yOrigin,float factor) override;
+    void zoom(float xOrigin, float yOrigin,float factor);
 
     /// scale used to render io variables. Smoothly interpolates
     /// between the scale at which internal items are displayed, and
     /// the outside zoom factor
     float edgeScale() const {
-      return zoomFactor>1? localZoom(): zoomFactor;
+      return zoomFactor()>1? localZoom(): zoomFactor();
     }
 
     /// return bounding box coordinates for all variables, operators
@@ -337,7 +337,7 @@ namespace minsky
       return r;
     }
     void addBookmark(const std::string& name) {
-      bookmarks.emplace_back(x(), y(), zoomFactor, name);
+      bookmarks.emplace_back(x(), y(), zoomFactor(), name);
     }
     void deleteBookmark(size_t i) {
       if (i<bookmarks.size())
@@ -348,7 +348,7 @@ namespace minsky
         {
           auto& b=bookmarks[i];
           moveTo(b.x, b.y);
-          zoom(x(),y(),b.zoom/zoomFactor);
+          zoom(x(),y(),b.zoom/zoomFactor());
         }
     }
     

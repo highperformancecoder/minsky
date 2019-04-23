@@ -53,12 +53,11 @@ namespace minsky
         for (GodleyIcon::Variables::const_iterator v=vars.begin(); 
              v!=vars.end(); ++v)
           {
-            cairo_save(cairo);
+            ecolab::cairo::CairoSave cs(cairo);
             const VariableBase& vv=**v;
             // coordinates of variable within the cairo context
-            cairo_translate(cairo, (vv.x()-x), (vv.y()-y));
+            cairo_translate(cairo, vv.x()-x, vv.y()-y);
             vv.draw(cairo);
-            cairo_restore(cairo);
           }
       }
     };
@@ -120,7 +119,7 @@ namespace minsky
           // ensure variable type is consistent
           minsky::minsky().convertVarType(vars.back()->valueId(), varType);
           vars.back()->m_visible=false;
-          vars.back()->zoomFactor=iconScale*zoomFactor;
+          //vars.back()->zoomFactor=iconScale*zoomFactor();
           vars.back()->godley=self;
         }
       // remove any previously existing variables
@@ -132,14 +131,14 @@ namespace minsky
   double GodleyIcon::schema1ZoomFactor() const
   {
     if (auto g=group.lock())
-      return iconScale*g->zoomFactor;
+      return iconScale()*g->zoomFactor();
     else
-      return iconScale;
+      return iconScale();
   }
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-    iconScale*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
+    m_iconScale*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
     update();
     bb.update(*this);
   }
@@ -253,28 +252,24 @@ namespace minsky
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
-    float zoomFactor=iconScale*this->zoomFactor;
+    float zoomFactor=iconScale()*this->zoomFactor();
     float x= this->x() - 0.5*(0.9*iconSize-flowMargin)*zoomFactor;
-    float y= this->y() - 0.2/*0.37*/*iconSize*zoomFactor;
+    float y= this->y() - 0.2*iconSize*zoomFactor;
     for (auto& v: m_flowVars)
       {
         // right justification
-        RenderVariable rv(*v);
-        const_cast<VariablePtr&>(v)->moveTo(x-rv.width()*zoomFactor,y);
-        y+=2*RenderVariable(*v).height()*zoomFactor;
+        v->moveTo(x-0.5*v->width()*zoomFactor,y);
+        y+=v->height()*zoomFactor;
       }
-    x=this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
-    y=this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
+    x= this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
+    y= this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
 
     for (auto& v: m_stockVars)
       {
         // top justification at bottom of icon
-        RenderVariable rv(*v);
-        //OK because we're not changing variable name
-        VariableBase& vv=const_cast<VariableBase&>(*v); 
-        vv.moveTo(x,y+rv.width()*zoomFactor);
-        vv.rotation=90;
-        x+=2*rv.height()*zoomFactor;
+        v->moveTo(x,y+0.5*v->height()*zoomFactor);
+        v->rotation=90;
+        x+=v->width()*zoomFactor;
       }
   }
 
@@ -327,7 +322,7 @@ namespace minsky
           
 
     // render the variables
-    DrawVars drawVars(cairo, x(), y());
+    DrawVars drawVars(cairo,x(),y());
     drawVars(m_flowVars); 
     drawVars(m_stockVars); 
 

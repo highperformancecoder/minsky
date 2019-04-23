@@ -31,7 +31,7 @@ void Panopticon::redraw(int, int, int w, int h)
                             (cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
       cachedImage.swap(canvas.surface);
       // render at zoom=1, 0,0
-      double zf=canvas.model->zoomFactor, x=canvas.model->x(), y=canvas.model->y();
+      double zf=canvas.model->zoomFactor(), x=canvas.model->x(), y=canvas.model->y();
       canvas.model->zoom(x,y,1/zf);
       canvas.model->moveTo(0,0);
       canvas.redraw();
@@ -54,7 +54,7 @@ void Panopticon::redraw(int, int, int w, int h)
     }
   
   // draw indicator rectangle
-  double zf=1/canvas.model->zoomFactor;
+  double zf=1/canvas.model->zoomFactor();
   cairo_rectangle(surface->cairo(),-cachedImage->left()-canvas.model->x(),-cachedImage->top()-canvas.model->y(),zf*width,zf*height);
   cairo_set_source_rgba(surface->cairo(),0,0,0,0.5);
   cairo_fill(surface->cairo());
