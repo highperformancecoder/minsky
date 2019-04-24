@@ -61,6 +61,8 @@ namespace minsky
   private:
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name; 
+    /// reference to the Group if this is an I/O variable
+    classdesc::Exclude<std::weak_ptr<Group>> m_ioGroup;
 
   protected:
     void addPorts();
@@ -74,8 +76,6 @@ namespace minsky
 
     /// reference to Godley icon if part of the icon.
     classdesc::Exclude<std::weak_ptr<GodleyIcon>> godley;
-    /// reference to the Group if this is an I/O variable
-    classdesc::Exclude<std::weak_ptr<Group>> ioGroup;
 
     float zoomFactor() const override;
     
@@ -91,8 +91,17 @@ namespace minsky
     /// level variables)
     const std::string& rawName() const {return m_name;}
     
-    bool ioVar() const override;
-
+    /// reference to the Group if this is an I/O variable
+    GroupPtr ioGroup() const {return m_ioGroup.lock();}
+    void setIOGroup(const std::weak_ptr<Group>& g={}) {
+      m_ioGroup=g;
+      bb.update(*this);
+    }
+    bool ioVar() const override {
+      assert(!m_ioGroup.lock()||m_ioGroup.lock()==group.lock());
+      return ioGroup().get();
+    }
+    
     /// ensure an associated variableValue exists
     void ensureValueExists() const;
 

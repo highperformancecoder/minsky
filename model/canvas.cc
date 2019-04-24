@@ -551,7 +551,7 @@ namespace minsky
   void Canvas::zoomToDisplay()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
-      model->zoom(g->x(),g->y(),1.1*g->displayZoom);
+      model->zoom(g->x(),g->y(),1.1/(g->relZoom*g->zoomFactor()));
   }
 
   bool Canvas::selectVar(float x, float y) 

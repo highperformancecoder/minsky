@@ -77,13 +77,13 @@ namespace minsky
       {
         assert(cloneMap.count(v.get()));
         r->inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->inVariables.back()->ioGroup=self;
+        r->inVariables.back()->setIOGroup(self);
       }
     for (auto& v: outVariables)
       {
         assert(cloneMap.count(v.get()));
         r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->outVariables.back()->ioGroup=self;
+        r->outVariables.back()->setIOGroup(self);
       }
     // reattach integral variables to their cloned counterparts
     for (auto i: integrals)
@@ -100,7 +100,7 @@ namespace minsky
               newIntegral->toggleCoupled();
           }
       }
-    r->computeDisplayZoom();
+    r->computeRelZoom();
     return r;
   }
 
@@ -112,13 +112,13 @@ namespace minsky
           ItemPtr r=*i;
           items.erase(i);
           if (auto v=dynamic_cast<VariableBase*>(r.get()))
-              if (v->ioGroup.lock())
+              if (v->ioVar())
                 {
                  remove(inVariables, r);
                  remove(outVariables, r);
                  remove(createdIOvariables, r);
                  v->m_visible=true;
-                 v->ioGroup.reset();
+                 v->setIOGroup();
                 }
           return r;
         }
@@ -400,9 +400,9 @@ namespace minsky
     float dx=(x-this->x())*cos(rotation*M_PI/180)-
       (y-this->y())*sin(rotation*M_PI/180);
     float w=0.5*width*z;
-    if (w-right*z<dx)
+    if (w-right*edgeScale()<dx)
       return IORegion::output;
-    else if (-w+left*z>dx)
+    else if (-w+left*edgeScale()>dx)
       return IORegion::input;
     else
       return IORegion::none;
@@ -419,16 +419,16 @@ namespace minsky
           case IORegion::input:
             inVariables.push_back(v);
             v->m_visible=false;
-            v->ioGroup=self;
+            v->setIOGroup(self);
             break;
           case IORegion::output:
             outVariables.push_back(v);
             v->m_visible=false;
-            v->ioGroup=self;
+            v->setIOGroup(self);
             break;
           default:
             v->m_visible=true;
-            v->ioGroup.reset();
+            v->setIOGroup();
             break;
           }
       }
@@ -673,6 +673,17 @@ namespace minsky
     return displayZoom;
   }
 
+  void Group::computeRelZoom()
+  {
+    double x0, x1, y0, y1;
+    contentBounds(x0,y0,x1,y1);
+    float l, r;
+    margins(l,r);
+    double dx=x1-x0, dy=y1-y0;
+    if (width-l-r>0 && dx>0 && dy>0)
+      relZoom=std::min(1.0, std::min((width-l-r)/dx, height/dy));
+  }
+  
   const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item* ignore) const
   {
     float z=zoomFactor();
@@ -691,7 +702,10 @@ namespace minsky
   {
     bool dpc=displayContents();
     //    zoomFactor=factor;
-    computeDisplayZoom();
+    if (!group.lock())
+      relZoom=factor;
+    else
+      computeRelZoom();
     float lzoom=localZoom();
 //    for (auto& i: items)
 //      i->zoomFactor=lzoom;
@@ -708,8 +722,9 @@ namespace minsky
     bool dpc=displayContents();
     minsky::zoom(m_x,xOrigin+m_x-x(),factor);
     minsky::zoom(m_y,yOrigin+m_y-y(),factor);
-    relZoom*=factor;
     m_displayContentsChanged = dpc!=displayContents();
+    if (!group.lock())
+      relZoom*=factor;
 //    for (auto& i: items)
 //      {
 //        if (displayContents() && !m_displayContentsChanged)
@@ -733,7 +748,7 @@ namespace minsky
     float leftMargin, rightMargin;
     margins(leftMargin, rightMargin);
     float z=zoomFactor();
-    leftMargin*=z; rightMargin*=z;
+    leftMargin*=edgeScale(); rightMargin*=edgeScale();
 
     unsigned width=z*this->width, height=z*this->height;
 
@@ -863,11 +878,13 @@ namespace minsky
   void Group::drawEdgeVariables(cairo_t* cairo) const
   {
     float left, right; margins(left,right);
+    left*=edgeScale();
+    right*=edgeScale();
     cairo::CairoSave cs(cairo);
     cairo_rotate(cairo,-M_PI*rotation/180);
     float z=zoomFactor();
-    draw1edge(inVariables, cairo, -z*0.5*(width-left));
-    draw1edge(outVariables, cairo, z*0.5*(width-right));
+    draw1edge(inVariables, cairo, -0.5*(z*width-left));
+    draw1edge(outVariables, cairo, 0.5*(z*width-right));
   }
 
   // draw notches in the I/O region to indicate docking capability
@@ -876,8 +893,8 @@ namespace minsky
     cairo_save(cairo);
     float left, right, z=zoomFactor();
     margins(left,right);
-    left*=z;
-    right*=z;
+    left*=edgeScale();
+    right*=edgeScale();
     float y=0, dy=10*edgeScale();
     for (auto& i: inVariables)
       {
@@ -926,21 +943,16 @@ namespace minsky
 
   void Group::margins(float& left, float& right) const
   {
-    float scale=edgeScale()/zoomFactor();
-    left=right=10*scale;
+    left=right=10;
     for (auto& i: inVariables)
       {
-        //i->zoomFactor=edgeScale();
-        float w= scale*(2*RenderVariable(*i).width()+2);
         assert(i->type()!=VariableType::undefined);
-        if (w>left) left=w;
+        if (i->width()>left) left=i->width();
       }
     for (auto& i: outVariables)
       {
-        //i->zoomFactor=edgeScale();
-        float w= scale*(2*RenderVariable(*i).width()+2);
         assert(i->type()!=VariableType::undefined);
-        if (w>right) right=w;
+        if (i->width()>right) right=i->width();
       }
   }
 

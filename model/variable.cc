@@ -89,7 +89,7 @@ VariableBase* VariableBase::create(VariableType::Type type)
 
 float VariableBase::zoomFactor() const
 {
-  if (auto g=ioGroup.lock())
+  if (auto g=ioGroup())
     return g->edgeScale();
   else
     return Item::zoomFactor();
@@ -99,18 +99,6 @@ float VariableBase::zoomFactor() const
 string VariableBase::valueId() const 
 {
   return VariableValue::valueId(group.lock(), m_name);
-}
-
-bool VariableBase::ioVar() const 
-{
-  if (auto g=group.lock())
-    {
-      for (auto& i:g->inVariables)
-        if (this==i.get()) return true;
-      for (auto& i:g->outVariables)
-        if (this==i.get()) return true;
-    }
-  return false;
 }
 
 string VariableBase::_name()  const
@@ -335,7 +323,7 @@ void VariableBase::draw(cairo_t *cairo) const
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
   
-  if (type()!=constant)
+  if (type()!=constant && !ioVar())
     try
     {
       auto val=engExp();
@@ -380,7 +368,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (type()!=constant)
+    if (type()!=constant && !ioVar())
       {
         // draw slider
         CairoSave cs(cairo);
@@ -403,7 +391,7 @@ void VariableBase::draw(cairo_t *cairo) const
     ports[1]->moveTo(x()+(x1*ca-y1*sa), 
                      y()+(y1*ca+x1*sa));
 
-  auto ig=ioGroup.lock();
+  auto ig=ioGroup();
   if (mouseFocus || (ig && ig->mouseFocus))
     {
       cairo::CairoSave cs(cairo);
