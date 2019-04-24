@@ -45,7 +45,7 @@ namespace minsky
     /// half height of unrotated image
     float height() const {return h;}
 
-    Polygon geom() const;
+    //Polygon geom() const;
     bool inImage(float x, float y); ///< true if (x,y) within rendered image
   };
 
@@ -70,7 +70,7 @@ namespace minsky
     /// half height of unrotated image
     float height() const {return h;}
     /// return the boost geometry corresponding to this variable's shape
-    Polygon geom() const;
+    //Polygon geom() const;
     bool inImage(float x, float y); ///< true if (x,y) within rendered image
     /// x coordinate of the slider handle in the unrotated/unscaled
     /// frame of reference

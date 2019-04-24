@@ -212,7 +212,7 @@ namespace minsky
         model->recursiveDo
           (&GroupItems::items, [&](const Items&, Items::const_iterator i)
            {
-             if ((*i)->classType()==type)
+             if ((*i)->classType()=="::minsky::"+type)
                {
                  canvas.item=*i;
                  return true;

@@ -10,7 +10,7 @@ for {set i 0} {$i<$numItems} {incr i} {
         minsky.canvas.copyItem
         minsky.canvas.mouseUp -500 -500
         assert {[minsky.getItemAt -500 -500]}
-        if {$origClassType=="IntOp"} {
+        if {$origClassType=="::minsky::IntOp"} {
             assert {"Variable:integral"==[minsky.canvas.item.classType]} "$argv(2)"
         } else {
             assert "\"$origClassType\"==\[minsky.canvas.item.classType\]" "$argv(2)"

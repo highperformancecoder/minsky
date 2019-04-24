@@ -21,11 +21,9 @@
 
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
+#include <cmath>
 
 #include <boost/geometry/geometries/point_xy.hpp>
-#include <boost/geometry/geometries/polygon.hpp>
-#include <boost/geometry/geometries/box.hpp>
-#include <boost/assign.hpp>
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
@@ -34,24 +32,12 @@
 namespace minsky
 {
   typedef boost::geometry::model::d2::point_xy<float> Point;
-  typedef boost::geometry::model::ring<Point> Polygon;
-  typedef boost::geometry::model::box<Point> Rectangle;
 
   template <class T> inline T sqr(T x) {return x*x;}
   
 #ifndef M_PI
   static const float M_PI = 3.1415926535f;
 #endif
-
-  /// convenience method for using += and , to assign multiple points
-  /// to a Polygon
-  inline boost::assign::list_inserter
-  < boost::assign_detail::call_push_back< Polygon >, Point >
-  operator+=( Polygon& c, Point v )
-  {
-    return boost::assign::make_list_inserter
-      (boost::assign_detail::call_push_back<Polygon>(c))(v);
-  }
 
   /// rotate (x,y) by \a rot (in degrees) around the origin \a (x0, y0)
   /// can be used for rotating multiple points once constructed
@@ -62,7 +48,7 @@ namespace minsky
     float x0, y0;
   public:
     Rotate(float rot, float x0, float y0):
-      angle(rot*M_PI/180.0), ca(cos(angle)), sa(sin(angle)), x0(x0), y0(y0) {}
+      angle(rot*M_PI/180.0), ca(std::cos(angle)), sa(std::sin(angle)), x0(x0), y0(y0) {}
     /// rotate (x1,y1)
     Point operator()(float x1, float y1) const {
       return Point(x(x1,y1),y(x1,y1));}

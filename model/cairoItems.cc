@@ -91,20 +91,6 @@ RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
     }
 }
 
-Polygon RenderOperation::geom() const
-{
-  Rotate rotate(op.rotation, op.x(), op.y());
-  float z=op.zoomFactor();
-  float zl=op.l*z, zh=op.h*z, 
-    zr=op.r*z;
-  Polygon r;
-  // TODO: handle bound integration variables, and constants
-  r+= rotate(op.x()+zl, op.y()-zh), rotate(op.x()+zl, op.y()+zh), 
-    rotate(op.x()+zr, op.y());
-  correct(r);
-  return r;
-}
-
 void RenderOperation::draw()
 {
   op.draw(cairo);
@@ -146,19 +132,6 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
         }
     }
   hoffs=Pango::top();
-}
-
-Polygon RenderVariable::geom() const
-{
-  float x=var.x(), y=var.y(), z=var.zoomFactor();
-  float wz=w*z, hz=h*z;
-  Rotate rotate(var.rotation, x, y);
-
-  Polygon r;
-  r+= rotate(x-wz, y-hz), rotate(x-wz, y+hz), 
-    rotate(x+wz, y+hz), rotate(x+wz, y-hz);
-  correct(r);
-  return r;
 }
 
 void RenderVariable::draw()
