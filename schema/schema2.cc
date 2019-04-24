@@ -122,7 +122,7 @@ namespace schema2
            (t.substr(t.find(':')+1)));
       try
         {
-          return classdesc::Factory<minsky::Item,string>::create(t);
+          return classdesc::Factory<minsky::Item,string>::create("::minsky::"+t);
         }
       catch (...)
         {
@@ -520,7 +520,7 @@ namespace schema2
     for (auto& i: groups)
       {
         assert(itemMap.count(i.id));
-        auto newG=dynamic_cast<minsky::Group*>(itemMap[i.id].get());
+        auto newG=dynamic_pointer_cast<minsky::Group>(itemMap[i.id]);
         if (newG)
           {
             for (auto j: i.items)
@@ -538,6 +538,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->inVariables.push_back(v);
+                        v->ioGroup=newG;
                       }
                 }
             if (i.outVariables)
@@ -549,6 +550,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->outVariables.push_back(v);
+                        v->ioGroup=newG;
                       }
                 }
           }

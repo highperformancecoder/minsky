@@ -140,12 +140,6 @@ namespace minsky
     for (auto& p: ports)
       {
         cairo_new_sub_path(cairo);
-        if (auto v=dynamic_cast<const VariableBase*>(this))
-          if (p->input() && v->name()=="0")
-            {
-              double px=p->x();
-              cout << "dp:"<<px<<" "<<x()<<" "<<px-x()<<endl;
-            }
         cairo_arc(cairo, p->x()-x(), p->y()-y(), portRadius*zoomFactor(), 0, 2*M_PI);
       }
     cairo_set_source_rgb(cairo, 0,0,0);

@@ -77,11 +77,13 @@ namespace minsky
       {
         assert(cloneMap.count(v.get()));
         r->inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+        r->inVariables.back()->ioGroup=self;
       }
     for (auto& v: outVariables)
       {
         assert(cloneMap.count(v.get()));
         r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+        r->outVariables.back()->ioGroup=self;
       }
     // reattach integral variables to their cloned counterparts
     for (auto i: integrals)
@@ -109,13 +111,15 @@ namespace minsky
         {
           ItemPtr r=*i;
           items.erase(i);
-          if (r->ioVar())
-            {
-              remove(inVariables, r);
-              remove(outVariables, r);
-              remove(createdIOvariables, r);
-              r->m_visible=true;
-            }
+          if (auto v=dynamic_cast<VariableBase*>(r.get()))
+              if (v->ioGroup.lock())
+                {
+                 remove(inVariables, r);
+                 remove(outVariables, r);
+                 remove(createdIOvariables, r);
+                 v->m_visible=true;
+                 v->ioGroup.reset();
+                }
           return r;
         }
 
@@ -415,13 +419,16 @@ namespace minsky
           case IORegion::input:
             inVariables.push_back(v);
             v->m_visible=false;
+            v->ioGroup=self;
             break;
           case IORegion::output:
             outVariables.push_back(v);
             v->m_visible=false;
+            v->ioGroup=self;
             break;
           default:
             v->m_visible=true;
+            v->ioGroup.reset();
             break;
           }
       }

@@ -98,7 +98,7 @@ namespace minsky
     ItemPortVector ports;
     float x() const; 
     float y() const;
-    float zoomFactor() const;
+    virtual float zoomFactor() const;
     float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
     float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
     float left() const {return x()-0.5*zoomFactor()*width();}

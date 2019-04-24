@@ -74,6 +74,10 @@ namespace minsky
 
     /// reference to Godley icon if part of the icon.
     classdesc::Exclude<std::weak_ptr<GodleyIcon>> godley;
+    /// reference to the Group if this is an I/O variable
+    classdesc::Exclude<std::weak_ptr<Group>> ioGroup;
+
+    float zoomFactor() const override;
     
     /// @{ variable displayed name
     virtual std::string _name() const;

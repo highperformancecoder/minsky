@@ -32,14 +32,6 @@ namespace minsky
 
   float Port::x() const 
   {
-    if (auto v=dynamic_cast<VariableBase*>(&item))
-      if (input()&& v->name()=="0")
-        cout << v->name() << " @ "<<m_x+item.x()<<"this="<<this<<" item="<<&item<<" ports={"<<
-          item.ports[0].get()<<","<<item.ports[1].get()<<"}"<<endl;
-    // check this is in items list of ports
-    assert(find_if(item.ports.begin(),item.ports.end(),
-                   [this](const shared_ptr<Port>& i)
-                   {return i.get()==this;}) != item.ports.end());
     return m_x+item.x();
   }
 
@@ -52,9 +44,6 @@ namespace minsky
   {
     m_x=x-item.x();
     m_y=y-item.y();
-    if (auto v=dynamic_cast<VariableBase*>(&item))
-      if (input()&& v->name()=="0")
-        cout << v->name() << "= "<<x<<endl;
   }
 
   GroupPtr Port::group() const

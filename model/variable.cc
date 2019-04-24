@@ -87,6 +87,15 @@ VariableBase* VariableBase::create(VariableType::Type type)
     }
 }
 
+float VariableBase::zoomFactor() const
+{
+  if (auto g=ioGroup.lock())
+    return g->edgeScale();
+  else
+    return Item::zoomFactor();
+}
+
+
 string VariableBase::valueId() const 
 {
   return VariableValue::valueId(group.lock(), m_name);
@@ -309,10 +318,6 @@ void VariableBase::draw(cairo_t *cairo) const
   if (auto g=godley.lock())
     z*=g->iconScale();
 
-  auto parent=group.lock();
-  if (parent && ioVar())
-    z=parent->edgeScale();
-  
   RenderVariable rv(*this,cairo);
   rv.setFontSize(12*z);
   // if rotation is in 1st or 3rd quadrant, rotate as
@@ -398,7 +403,8 @@ void VariableBase::draw(cairo_t *cairo) const
     ports[1]->moveTo(x()+(x1*ca-y1*sa), 
                      y()+(y1*ca+x1*sa));
 
- if (mouseFocus || (parent && parent->mouseFocus && ioVar()))
+  auto ig=ioGroup.lock();
+  if (mouseFocus || (ig && ig->mouseFocus))
     {
       cairo::CairoSave cs(cairo);
       cairo_rotate(cairo, -angle);
@@ -406,10 +412,10 @@ void VariableBase::draw(cairo_t *cairo) const
       displayTooltip(cairo);
     }
 
- cairo_new_path(cairo);
- clipPath->appendToCurrent(cairo);
- cairo_clip(cairo);
- if (selected) drawSelected(cairo);
+  cairo_new_path(cairo);
+  clipPath->appendToCurrent(cairo);
+  cairo_clip(cairo);
+  if (selected) drawSelected(cairo);
 }
 
 void VariablePtr::makeConsistentWithValue()
