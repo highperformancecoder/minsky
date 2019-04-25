@@ -89,10 +89,10 @@ VariableBase* VariableBase::create(VariableType::Type type)
 
 float VariableBase::zoomFactor() const
 {
-  if (auto g=ioGroup())
-    return g->edgeScale();
-  else
-    return Item::zoomFactor();
+  if (ioVar())
+    if (auto g=group.lock())
+      return g->edgeScale();
+  return Item::zoomFactor();
 }
 
 
@@ -391,11 +391,10 @@ void VariableBase::draw(cairo_t *cairo) const
     ports[1]->moveTo(x()+(x1*ca-y1*sa), 
                      y()+(y1*ca+x1*sa));
 
-  auto ig=ioGroup();
-  if (mouseFocus || (ig && ig->mouseFocus))
+  auto g=group.lock();
+  if (mouseFocus || (ioVar() && g && g->mouseFocus))
     {
       cairo::CairoSave cs(cairo);
-      cairo_rotate(cairo, -angle);
       drawPorts(cairo);
       displayTooltip(cairo);
     }

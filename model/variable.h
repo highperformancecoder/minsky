@@ -61,8 +61,6 @@ namespace minsky
   private:
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name; 
-    /// reference to the Group if this is an I/O variable
-    classdesc::Exclude<std::weak_ptr<Group>> m_ioGroup;
 
   protected:
     void addPorts();
@@ -91,16 +89,8 @@ namespace minsky
     /// level variables)
     const std::string& rawName() const {return m_name;}
     
-    /// reference to the Group if this is an I/O variable
-    GroupPtr ioGroup() const {return m_ioGroup.lock();}
-    void setIOGroup(const std::weak_ptr<Group>& g={}) {
-      m_ioGroup=g;
-      bb.update(*this);
-    }
-    bool ioVar() const override {
-      assert(!m_ioGroup.lock()||m_ioGroup.lock()==group.lock());
-      return ioGroup().get();
-    }
+    bool isIOVar=false;
+    bool ioVar() const override {return isIOVar;}
     
     /// ensure an associated variableValue exists
     void ensureValueExists() const;

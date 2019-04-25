@@ -206,6 +206,8 @@ SUITE(Group)
       g->bb.update(*g);
       CHECK_CLOSE(group0->bb.width(), g->bb.width(), 1e-2);
       CHECK_CLOSE(group0->bb.height(), g->bb.height(), 1e-2);
+      CHECK_CLOSE(group0->x(),g->x(), 1e-2);
+      CHECK_CLOSE(group0->y(),g->y(), 1e-2);
       CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 1e-2);
 
       save("copy.mky");

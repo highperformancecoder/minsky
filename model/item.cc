@@ -193,7 +193,7 @@ namespace minsky
   {
     if (!tooltip.empty())
       {
-        cairo_save(cairo);
+        cairo::CairoSave cs(cairo);
         Pango pango(cairo);
         pango.setMarkup(latexToPango(tooltip));
         float z=zoomFactor();
@@ -205,7 +205,6 @@ namespace minsky
         cairo_set_source_rgb(cairo,0,0,0);
         pango.show();
         cairo_stroke(cairo);
-        cairo_restore(cairo);
       }
   }
 

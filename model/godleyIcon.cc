@@ -119,7 +119,6 @@ namespace minsky
           // ensure variable type is consistent
           minsky::minsky().convertVarType(vars.back()->valueId(), varType);
           vars.back()->m_visible=false;
-          //vars.back()->zoomFactor=iconScale*zoomFactor();
           vars.back()->godley=self;
         }
       // remove any previously existing variables
@@ -258,6 +257,8 @@ namespace minsky
     for (auto& v: m_flowVars)
       {
         // right justification
+        v->rotation=0;
+        v->bb.update(*v);
         v->moveTo(x-0.5*v->width()*zoomFactor,y);
         y+=v->height()*zoomFactor;
       }
@@ -267,8 +268,9 @@ namespace minsky
     for (auto& v: m_stockVars)
       {
         // top justification at bottom of icon
-        v->moveTo(x,y+0.5*v->height()*zoomFactor);
         v->rotation=90;
+        v->bb.update(*v);
+        v->moveTo(x,y+0.5*v->height()*zoomFactor);
         x+=v->width()*zoomFactor;
       }
   }

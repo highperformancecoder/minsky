@@ -538,7 +538,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->inVariables.push_back(v);
-                        v->setIOGroup(newG);
+                        v->isIOVar=true;
                       }
                 }
             if (i.outVariables)
@@ -550,7 +550,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->outVariables.push_back(v);
-                        v->setIOGroup(newG);
+                        v->isIOVar=true;
                       }
                 }
           }

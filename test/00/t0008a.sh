@@ -36,12 +36,20 @@ for i in */*.mky; do
     if test $? -ne 0; then fail; fi
     $here/gui-tk/minsky $here/test/rewriteMky.tcl $tmp/tmp.mky $tmp/tmp1.mky
     if test $? -ne 0; then fail; fi
+    $here/gui-tk/minsky $here/test/rewriteMky.tcl $tmp/tmp1.mky $tmp/tmp2.mky
+    if test $? -ne 0; then fail; fi
 
-    $here/test/cmpFp  $tmp/tmp.mky $tmp/tmp1.mky
-    if test $? -ne 0; then 
+    $here/test/cmpFp  $tmp/tmp1.mky $tmp/tmp2.mky
+    if test $? -ne 0; then
         echo "old schema file $i failed to convert"
         fail
     fi
-done
+    # check that the converted file is not an empty model
+    if [ `wc -l $tmp/tmp2.mky|cut -f1 -d' '` -lt 50 ]; then
+        echo "old schema file $i failed to convert"
+        fail
+    fi        
+done 
+
 
 pass

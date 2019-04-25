@@ -77,13 +77,13 @@ namespace minsky
       {
         assert(cloneMap.count(v.get()));
         r->inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->inVariables.back()->setIOGroup(self);
+        r->inVariables.back()->isIOVar=true;
       }
     for (auto& v: outVariables)
       {
         assert(cloneMap.count(v.get()));
         r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->outVariables.back()->setIOGroup(self);
+        r->outVariables.back()->isIOVar=true;
       }
     // reattach integral variables to their cloned counterparts
     for (auto i: integrals)
@@ -118,7 +118,7 @@ namespace minsky
                  remove(outVariables, r);
                  remove(createdIOvariables, r);
                  v->m_visible=true;
-                 v->setIOGroup();
+                 v->isIOVar=false;
                 }
           return r;
         }
@@ -390,6 +390,7 @@ namespace minsky
     addItem(v,true);
     createdIOvariables.push_back(v);
     v->rotation=rotation;
+    v->isIOVar=true;
     return v;
   }
   
@@ -419,16 +420,16 @@ namespace minsky
           case IORegion::input:
             inVariables.push_back(v);
             v->m_visible=false;
-            v->setIOGroup(self);
+            v->isIOVar=true;
             break;
           case IORegion::output:
             outVariables.push_back(v);
             v->m_visible=false;
-            v->setIOGroup(self);
+            v->isIOVar=true;
             break;
           default:
             v->m_visible=true;
-            v->setIOGroup();
+            v->isIOVar=false;
             break;
           }
       }
@@ -675,13 +676,14 @@ namespace minsky
 
   void Group::computeRelZoom()
   {
-    double x0, x1, y0, y1;
+    double x0, x1, y0, y1, z=zoomFactor();
+    relZoom=1;
     contentBounds(x0,y0,x1,y1);
     float l, r;
     margins(l,r);
     double dx=x1-x0, dy=y1-y0;
     if (width-l-r>0 && dx>0 && dy>0)
-      relZoom=std::min(1.0, std::min((width-l-r)/dx, height/dy));
+      relZoom=std::min(1.0, std::min((width-l-r)/(z*dx), height/(z*dy)));
   }
   
   const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item* ignore) const
