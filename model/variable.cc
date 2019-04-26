@@ -118,8 +118,8 @@ string VariableBase::_name(const std::string& name)
 {
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
-  // ensure integral variables are not global
-  m_name=(type()==integral && name[0]==':')? name.substr(1): name;
+  // ensure integral variables are not global when wired to an integral operation
+  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
   ensureValueExists();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
