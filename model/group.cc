@@ -946,16 +946,21 @@ namespace minsky
   void Group::margins(float& left, float& right) const
   {
     left=right=10;
+    auto tmpMouseFocus=mouseFocus;
+    mouseFocus=false; // disable mouseFocus for this calculation
     for (auto& i: inVariables)
       {
         assert(i->type()!=VariableType::undefined);
+        i->bb.update(*i);
         if (i->width()>left) left=i->width();
       }
     for (auto& i: outVariables)
       {
         assert(i->type()!=VariableType::undefined);
+        i->bb.update(*i);
         if (i->width()>right) right=i->width();
       }
+    mouseFocus=tmpMouseFocus;
   }
 
   float Group::rotFactor() const
