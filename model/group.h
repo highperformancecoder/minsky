@@ -329,12 +329,7 @@ namespace minsky
     /// \a self is a shared pointer ref to this
     void normaliseGroupRefs(const std::shared_ptr<Group>& self);
 
-    ClickType::Type clickType(float x, float y) override {
-      if (displayContents() && inIORegion(x,y)==IORegion::none)
-        return ClickType::outside;
-      else
-        return Item::clickType(x,y);
-    }
+    ClickType::Type clickType(float x, float y) override;
 
     /// rotate all conatined items by 180 degrees
     void flipContents();

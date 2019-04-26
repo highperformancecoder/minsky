@@ -998,6 +998,23 @@ namespace minsky
       }
   }
 
+  ClickType::Type Group::clickType(float x, float y)
+  {
+      if (displayContents() && inIORegion(x,y)==IORegion::none)
+        return ClickType::outside;
+      else if (auto item=select(x,y))
+        return item->clickType(x,y);
+      else
+        {
+          auto z=0.5*zoomFactor();
+          if (abs(x-this->x())<z*width && abs(y-this->y())<z*height)
+            return ClickType::onItem;
+          else
+            return ClickType::outside;
+        }
+  }
+
+  
   void Group::flipContents()
   {
     for (auto& i: items)

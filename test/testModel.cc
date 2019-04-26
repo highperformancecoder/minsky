@@ -527,7 +527,7 @@ SUITE(Canvas)
         model->self=model;
         addGroup();
         auto& group=dynamic_cast<Group&>(*itemFocus);
-        group.displayZoom=2; // ensure displayContents is false
+        group.relZoom=0.5; // ensure displayContents is false
         CHECK(group.width!=200);
         CHECK(group.height!=200);
         mouseUp(200,200);
