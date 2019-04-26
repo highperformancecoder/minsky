@@ -820,14 +820,15 @@ namespace minsky
         else
           cairo_rotate(cairo, angle+M_PI);
 
+        double offset = - displayContents()*0.45*this->height;
         // prepare a background for the text, partially obscuring graphic
         double transparency=displayContents()? 0.25: 1;
         cairo_set_source_rgba(cairo,0,1,1,0.5*transparency);
-        cairo_rectangle(cairo,-w,-h,2*w,2*h);
+        cairo_rectangle(cairo,-w,-h+offset,2*w,2*h);
         cairo_fill(cairo);
 
         // display text
-        cairo_move_to(cairo, -w+1, h-4 - displayContents()*0.45*this->height);
+        cairo_move_to(cairo, -w+1, h-4 +offset);
         cairo_set_source_rgba(cairo,0,0,0,transparency);
         cairo_show_text(cairo,title.c_str());
       }
