@@ -342,8 +342,9 @@ namespace minsky
     auto item=model->findAny(&Group::items,
                         [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
-      item=model->findAny(&Group::groups,
-                       [&](const GroupPtr& i){return i->visible() && !i->displayContents() && i->contains(x,y);});
+      item=model->findAny
+        (&Group::groups, [&](const GroupPtr& i)
+                         {return i->visible() && i->clickType(x,y)==ClickType::onItem;});
     return item;
   }
   
