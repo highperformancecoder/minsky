@@ -424,15 +424,13 @@ namespace minsky
           catch (...)
             {
               desc=minsky().variableValues.newName(vid);
-              if (desc.find(':')!=string::npos)
-                // if not current scope, name takes on ':' prefix
-                if (size_t(VariableValue::scope(desc))!=size_t(group.lock().get()))
-                  desc=":"+desc;
             }
         else
           desc=minsky().variableValues.newName(vid);
+        if (desc[0]==':') desc=desc.substr(1);// disallow global integration variables
       }
-
+    
+    
     ItemPtr oldIvar;
     if (intVar)
       oldIvar=minsky().model->removeItem(*intVar);
