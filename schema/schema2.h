@@ -136,6 +136,7 @@ namespace schema2
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<ecolab::Plot::Side> legend;
+    Optional<std::vector<ecolab::Plot::LineStyle>> palette;
 
     Item() {}
     Item(int id, const minsky::Item& it, const std::vector<int>& ports): ItemBase(id,it,ports) {}
@@ -154,7 +155,7 @@ namespace schema2
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
       width(p.width), height(p.height), name(p.title), logx(p.logx), logy(p.logy),
-      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label)
+      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label), palette(p.palette)
     {
       if (p.legend) legend=p.legendSide;
     }
