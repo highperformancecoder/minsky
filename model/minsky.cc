@@ -211,7 +211,8 @@ namespace minsky
         if (auto v=dynamic_cast<VariableBase*>(i.get()))
           if (v->godley.lock())
             continue; // variable owned by a Godley Table is not being destroyed
-        assert(i.use_count()==1);
+        // intOps own a reference to their integral variable, so use_count may be 2.
+        assert(i.use_count()==1 || dynamic_cast<Variable<VariableType::integral>*>(i.get()));
       }
     for (auto& i: canvas.selection.groups)
       assert(i.use_count()==1);

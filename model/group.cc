@@ -373,7 +373,7 @@ namespace minsky
          for (auto& i: copyOfItems)
            {
              addItem(i);
-             i->m_visible=true; // make I/O variables visible
+             assert(!i->ioVar());
            }
          auto copyOfGroups=source.groups;
          for (auto& i: source.groups)

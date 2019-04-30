@@ -150,156 +150,158 @@ namespace minsky
   }
   
   void Canvas::mouseMove(float x, float y)
-  {
-    if (itemFocus)
+    try
       {
-        switch (clickType)
+        if (itemFocus)
           {
-          case ClickType::onItem:
-            updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
-            // move item relatively to avoid accidental moves on double click
-            itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
-            // check if the move has moved outside or into a group
-            if (auto g=itemFocus->group.lock())
-              if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
-                {
-                  if (auto toGroup=model->minimalEnclosingGroup
-                      (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+            switch (clickType)
+              {
+              case ClickType::onItem:
+                updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
+                // move item relatively to avoid accidental moves on double click
+                itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+                // check if the move has moved outside or into a group
+                if (auto g=itemFocus->group.lock())
+                  if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
                     {
-                      // prevent moving a group inside itself
-                      if (auto g=dynamic_cast<Group*>(itemFocus.get()))
-                        if (g->higher(*toGroup))
-                          return;
-                      toGroup->addItem(itemFocus);
-                      toGroup->splitBoundaryCrossingWires();
-                      g->splitBoundaryCrossingWires();
+                      if (auto toGroup=model->minimalEnclosingGroup
+                          (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+                        {
+                          // prevent moving a group inside itself
+                          if (auto g=dynamic_cast<Group*>(itemFocus.get()))
+                            if (g->higher(*toGroup))
+                              return;
+                          toGroup->addItem(itemFocus);
+                          toGroup->splitBoundaryCrossingWires();
+                          g->splitBoundaryCrossingWires();
+                        }
+                      else
+                        {
+                          model->addItem(itemFocus);
+                          model->splitBoundaryCrossingWires();
+                          g->splitBoundaryCrossingWires();
+                        }
                     }
-                  else
-                    {
-                      model->addItem(itemFocus);
-                      model->splitBoundaryCrossingWires();
-                      g->splitBoundaryCrossingWires();
-                    }
-                }
-            if (auto g=itemFocus->group.lock())
-              g->checkAddIORegion(itemFocus);
+                if (auto g=itemFocus->group.lock())
+                  g->checkAddIORegion(itemFocus);
+                requestRedraw();
+                return;
+              case ClickType::onSlider:
+                if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+                  {
+                    RenderVariable rv(*v);
+                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
+                    v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
+                                 rw + 0.5*(v->sliderMin+v->sliderMax));
+                    // push History to prevent an unnecessary reset when
+                    // adjusting the slider whilst paused. See ticket #812
+                    minsky().pushHistory();
+                    requestRedraw();
+                  }
+                return;
+              case ClickType::onRavel:
+                if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+                  if (r->onMouseMotion(x,y))
+                    requestRedraw();
+                return;
+              case ClickType::legendMove: case ClickType::legendResize:
+                if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+                  {
+                    p->mouseMove(x,y);
+                    requestRedraw();
+                  }
+                return;
+              default:
+                break;
+              }
+          }
+        if (fromPort.get())
+          {
+            termX=x;
+            termY=y;
             requestRedraw();
-            return;
-          case ClickType::onSlider:
-            if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
-              {
-                RenderVariable rv(*v);
-                double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
-                v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
-                             rw + 0.5*(v->sliderMin+v->sliderMax));
-                // push History to prevent an unnecessary reset when
-                // adjusting the slider whilst paused. See ticket #812
-                minsky().pushHistory();
-                requestRedraw();
-              }
-            return;
-          case ClickType::onRavel:
-            if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
-              if (r->onMouseMotion(x,y))
-                requestRedraw();
-            return;
-          case ClickType::legendMove: case ClickType::legendResize:
-            if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
-              {
-                p->mouseMove(x,y);
-                requestRedraw();
-              }
-            return;
-          default:
-            break;
+          }
+        else if (wireFocus)
+          {
+            wireFocus->editHandle(handleSelected,x,y);
+            requestRedraw();
+          }
+        else if (lassoMode==LassoMode::lasso)
+          {
+            lasso.x1=x;
+            lasso.y1=y;
+            requestRedraw();
+          }
+        else if (lassoMode==LassoMode::itemResize && item.get())
+          {
+            lasso.x1=x;
+            lasso.y1=y;
+            // make lasso symmetric around item's (x,y)
+            lasso.x0=2*item->x() - x;
+            lasso.y0=2*item->y() - y;
+            requestRedraw();
+          }
+        else
+          {
+            // set mouse focus to display ports etc.
+            model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
+                                              {
+                                                // with coupled integration variables, we
+                                                // do not want to set mousefocus, as this
+                                                // draws unnecessary port circles on the
+                                                // variable
+                                                if (!(*i)->visible() &&
+                                                    dynamic_cast<Variable<VariableBase::integral>*>(i->get()))
+                                                  (*i)->mouseFocus=false;
+                                                else
+                                                  {
+                                                    auto ct=(*i)->clickType(x,y);
+                                                    if (ct==ClickType::onRavel)
+                                                      {
+                                                        if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                                          if (r->onMouseOver(x,y))
+                                                            requestRedraw();
+                                                      }
+                                                    else
+                                                      {
+                                                        auto mf = ct!=ClickType::outside;
+                                                        if ((*i)->mouseFocus!=mf)
+                                                          {
+                                                            requestRedraw();
+                                                            (*i)->mouseFocus=mf;
+                                                          }
+                                                        if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                                          {
+                                                            r->onMouseLeave();
+                                                            requestRedraw();
+                                                          }
+                                                      }
+                                                  }
+                                                return false;
+                                              });
+            model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
+                                               {
+                                                 bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
+                                                 if (mf!=(*i)->mouseFocus)
+                                                   {
+                                                     (*i)->mouseFocus=mf;
+                                                     requestRedraw();
+                                                   }        
+                                                 return false;
+                                               });
+            model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
+                                              {
+                                                bool mf=(*i)->near(x,y);
+                                                if (mf!=(*i)->mouseFocus)
+                                                  {
+                                                    (*i)->mouseFocus=mf;
+                                                    requestRedraw();
+                                                  }        
+                                                return false;
+                                              });
           }
       }
-    if (fromPort.get())
-      {
-        termX=x;
-        termY=y;
-        requestRedraw();
-      }
-    else if (wireFocus)
-      {
-        wireFocus->editHandle(handleSelected,x,y);
-        requestRedraw();
-      }
-    else if (lassoMode==LassoMode::lasso)
-      {
-        lasso.x1=x;
-        lasso.y1=y;
-        requestRedraw();
-      }
-    else if (lassoMode==LassoMode::itemResize && item.get())
-      {
-        lasso.x1=x;
-        lasso.y1=y;
-        // make lasso symmetric around item's (x,y)
-        lasso.x0=2*item->x() - x;
-        lasso.y0=2*item->y() - y;
-        requestRedraw();
-      }
-    else
-      {
-        // set mouse focus to display ports etc.
-        model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
-                           {
-                             // with coupled integration variables, we
-                             // do not want to set mousefocus, as this
-                             // draws unnecessary port circles on the
-                             // variable
-                             if (!(*i)->visible() &&
-                                 dynamic_cast<Variable<VariableBase::integral>*>(i->get()))
-                               (*i)->mouseFocus=false;
-                             else
-                               {
-                                 auto ct=(*i)->clickType(x,y);
-                                 if (ct==ClickType::onRavel)
-                                   {
-                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
-                                       if (r->onMouseOver(x,y))
-                                         requestRedraw();
-                                   }
-                                 else
-                                   {
-                                     auto mf = ct!=ClickType::outside;
-                                     if ((*i)->mouseFocus!=mf)
-                                       {
-                                         requestRedraw();
-                                         (*i)->mouseFocus=mf;
-                                       }
-                                     if (auto r=dynamic_cast<RavelWrap*>(i->get()))
-                                       {
-                                         r->onMouseLeave();
-                                         requestRedraw();
-                                       }
-                                   }
-                               }
-                             return false;
-                           });
-        model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
-                           {
-                             bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
-                             if (mf!=(*i)->mouseFocus)
-                               {
-                                 (*i)->mouseFocus=mf;
-                                 requestRedraw();
-                               }        
-                             return false;
-                           });
-        model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
-                           {
-                             bool mf=(*i)->near(x,y);
-                             if (mf!=(*i)->mouseFocus)
-                               {
-                                 (*i)->mouseFocus=mf;
-                                 requestRedraw();
-                               }        
-                             return false;
-                           });
-      }
-  }
+    catch (...) {/* absorb any exceptions, as they're not useful here */}
 
   void Canvas::select(const LassoBox& lasso)
   {

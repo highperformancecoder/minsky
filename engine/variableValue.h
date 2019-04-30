@@ -39,8 +39,7 @@ namespace minsky
     Type m_type;
     int m_idx; /// index into value vector
     double& valRef(); 
-    const double& valRef() const
-    {return const_cast<VariableValue*>(this)->valRef();} 
+    double valRef() const;
     std::vector<unsigned> m_dims{1};
 
     friend class VariableManager;
@@ -72,7 +71,7 @@ namespace minsky
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
-    ///< value at the \a ith location of the vector/tensor. Deefault,
+    ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
     double value(size_t i=0) const {return *(begin()+i);}
     int idx() const {return m_idx;}
@@ -80,9 +79,9 @@ namespace minsky
     typedef double* iterator;
     typedef const double* const_iterator;
     iterator begin() {return &valRef();}
-    const_iterator begin() const {return &valRef();}
-    iterator end() {return &valRef()+numElements();}
-    const_iterator end() const {return &valRef()+numElements();}
+    const_iterator begin() const {return &const_cast<VariableValue*>(this)->valRef();}
+    iterator end() {return begin()+numElements();}
+    const_iterator end() const {return begin()+numElements();}
     
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
