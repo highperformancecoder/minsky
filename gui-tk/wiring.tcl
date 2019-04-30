@@ -393,6 +393,13 @@ proc canvasContext {x y X Y} {
     tk_popup .wiring.context $X $Y
 }
 
+proc saveSelection {} {
+    set f [tk_getSaveFile -defaultextension .mky]
+    if [string length $f] {
+        eval minsky.saveSelectionAsFile {$f}
+    }
+}
+
 
 bind .wiring.canvas <Double-Button-1> {doubleButton %x %y}
 proc doubleButton {x y} {
