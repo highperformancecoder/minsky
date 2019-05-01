@@ -122,7 +122,7 @@ namespace schema2
            (t.substr(t.find(':')+1)));
       try
         {
-          return classdesc::Factory<minsky::Item,string>::create(t);
+          return classdesc::Factory<minsky::Item,string>::create("::minsky::"+t);
         }
       catch (...)
         {
