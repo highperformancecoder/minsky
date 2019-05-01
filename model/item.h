@@ -75,7 +75,6 @@ namespace minsky
   public:
     float m_x=0, m_y=0; ///< position in canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
-    bool m_visible=true; ///< if false, then this item is invisible
     std::weak_ptr<Group> group; ///< owning group of this item.
     /// canvas bounding box.
     mutable BoundingBox bb;
@@ -118,13 +117,9 @@ namespace minsky
     }
 
     /// whether this item is visible on the canvas. 
-    bool visible() const;
+    virtual bool visible() const;
 
     void moveTo(float x, float y);
-//    /// zoom by \a factor, scaling all widget's coordinates, using (\a
-//    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-//    virtual void zoom(float xOrigin, float yOrigin,float factor)
-//    {} /// nothing to be done by default, as group handles zooming internally
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;

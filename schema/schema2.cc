@@ -539,7 +539,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->inVariables.push_back(v);
-                        v->isIOVar=true;
+                        v->controller=newG;
                       }
                 }
             if (i.outVariables)
@@ -551,7 +551,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->outVariables.push_back(v);
-                        v->isIOVar=true;
+                        v->controller=newG;
                       }
                 }
           }

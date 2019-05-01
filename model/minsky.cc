@@ -194,8 +194,8 @@ namespace minsky
     for (auto& i: canvas.selection.items)
       {
         if (auto v=dynamic_cast<VariableBase*>(i.get()))
-          if (v->godley.lock())
-            continue; // do not delete a variable owned by a Godley Table
+          if (v->controller.lock())
+            continue; // do not delete a variable controlled by another item
         model->deleteItem(*i);
       }
     for (auto& i: canvas.selection.groups)
@@ -209,10 +209,9 @@ namespace minsky
     for (auto& i: canvas.selection.items)
       {
         if (auto v=dynamic_cast<VariableBase*>(i.get()))
-          if (v->godley.lock())
-            continue; // variable owned by a Godley Table is not being destroyed
-        // intOps own a reference to their integral variable, so use_count may be 2.
-        assert(i.use_count()==1 || dynamic_cast<Variable<VariableType::integral>*>(i.get()));
+          if (v->controller.lock())
+            continue; // variable controlled by another item is not being destroyed
+        assert(i.use_count()==1);
       }
     for (auto& i: canvas.selection.groups)
       assert(i.use_count()==1);

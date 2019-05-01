@@ -72,18 +72,18 @@ namespace minsky
         asgClonedPort(t,cloneMap);
         r->addWire(new Wire(f,t,w->coords()));
       }
-
+  
     for (auto& v: inVariables)
       {
         assert(cloneMap.count(v.get()));
         r->inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->inVariables.back()->isIOVar=true;
+        r->inVariables.back()->controller=self;
       }
     for (auto& v: outVariables)
       {
         assert(cloneMap.count(v.get()));
         r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->outVariables.back()->isIOVar=true;
+        r->outVariables.back()->controller=self;
       }
     // reattach integral variables to their cloned counterparts
     for (auto i: integrals)
@@ -117,8 +117,7 @@ namespace minsky
                  remove(inVariables, r);
                  remove(outVariables, r);
                  remove(createdIOvariables, r);
-                 v->m_visible=true;
-                 v->isIOVar=false;
+                 v->controller.reset();
                 }
           return r;
         }
@@ -390,7 +389,7 @@ namespace minsky
     addItem(v,true);
     createdIOvariables.push_back(v);
     v->rotation=rotation;
-    v->isIOVar=true;
+    v->controller=self;
     return v;
   }
   
@@ -419,17 +418,14 @@ namespace minsky
           {
           case IORegion::input:
             inVariables.push_back(v);
-            v->m_visible=false;
-            v->isIOVar=true;
+            v->controller=self;
             break;
           case IORegion::output:
             outVariables.push_back(v);
-            v->m_visible=false;
-            v->isIOVar=true;
+            v->controller=self;
             break;
           default:
-            v->m_visible=true;
-            v->isIOVar=false;
+            v->controller.reset();
             break;
           }
       }
@@ -859,7 +855,6 @@ namespace minsky
         float y=i%2? top:bottom;
         Rotate r(rotation,0,0);
         auto& v=vars[i];
-        v->m_visible=false;
         v->moveTo(r.x(x,y)+this->x(), r.y(x,y)+this->y());
         v->rotation=rotation;
         cairo::CairoSave cs(cairo);

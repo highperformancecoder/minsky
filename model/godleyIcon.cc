@@ -118,8 +118,7 @@ namespace minsky
           if (auto g=group.lock()) g->addItem(vars.back(),true);
           // ensure variable type is consistent
           minsky::minsky().convertVarType(vars.back()->valueId(), varType);
-          vars.back()->m_visible=false;
-          vars.back()->godley=self;
+          vars.back()->controller=self;
         }
       // remove any previously existing variables
       if (auto g=group.lock())

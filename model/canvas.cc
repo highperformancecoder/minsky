@@ -392,7 +392,8 @@ namespace minsky
           if (auto parent=g->group.lock())
             {
               itemFocus=parent->addItem(item);
-              itemFocus->m_visible=true;
+              if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+                v->controller.reset();
               g->splitBoundaryCrossingWires();
             }
           // else item already at toplevel
@@ -437,8 +438,9 @@ namespace minsky
              if (auto v=dynamic_cast<VariableBase*>(i->get()))
                if (v->valueId()==valueId)
                  {
-                   if (auto g=v->godley.lock()) // fix up internal references in Godley table
-                     g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
+                   if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
+                       // fix up internal references in Godley table
+                       g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
                    v->name(newName);
                  }
              return false;
@@ -474,7 +476,6 @@ namespace minsky
           newItem.reset(item->clone());
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
-        newItem->m_visible=true;
       }
   }
 
@@ -527,7 +528,6 @@ namespace minsky
     for (size_t i=0; i<v.size(); ++i)
       {
         auto ni=v[i]->clone();
-        ni->m_visible=true;
         group->addItem(ni);
         ni->rotation=0;
         //ni->zoomFactor=group->zoomFactor;

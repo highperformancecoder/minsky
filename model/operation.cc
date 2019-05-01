@@ -436,7 +436,8 @@ namespace minsky
       oldIvar=minsky().model->removeItem(*intVar);
 
     intVar.reset(new Variable<VariableType::integral>(desc));
-    intVar->m_visible=false; // we're managing our own display
+    if (auto g=group.lock())
+      intVar->controller=g->findItem(*this); // we're managing our own display
     // initialise in toggled state
     ports[0]=intVar->ports[0];
 
@@ -484,7 +485,7 @@ namespace minsky
           g->addWire(newWire);
         else
           minsky().model->addWire(newWire);
-        intVar->m_visible=true;
+        intVar->controller.reset();
         intVar->rotation=rotation;
      }
     else
@@ -493,10 +494,12 @@ namespace minsky
         // not sufficient - wires hold a reference to the ports
         // they connect
         if (auto g=group.lock())
-          for (auto w: intVar->ports[1]->wires())
-            g->removeWire(*w);
+          {
+            for (auto w: intVar->ports[1]->wires())
+              g->removeWire(*w);
+            intVar->controller=g->findItem(*this);
+          }
         ports[0]=intVar->ports[0];
-        intVar->m_visible=false;
         intVar->mouseFocus=false; // prevent drawing of variable ports when coupled
       }
     return coupled();

@@ -89,10 +89,8 @@ namespace minsky
   
   bool Item::visible() const 
   {
-    if (auto g=group.lock())
-      return m_visible && g->displayContents();
-    else
-      return m_visible;
+    auto g=group.lock();
+    return !g || g->displayContents();
   }
   
 

@@ -92,6 +92,9 @@ float VariableBase::zoomFactor() const
   if (ioVar())
     if (auto g=group.lock())
       return g->edgeScale();
+  // scale by GodleyIcon::iconScale if part of an Godley icon
+  if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+    return g->iconScale() * Item::zoomFactor();
   return Item::zoomFactor();
 }
 
@@ -124,6 +127,10 @@ string VariableBase::_name(const std::string& name)
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
+
+bool VariableBase::ioVar() const
+{return dynamic_cast<Group*>(controller.lock().get());}
+
 
 void VariableBase::ensureValueExists() const
 {
@@ -301,10 +308,6 @@ void VariableBase::draw(cairo_t *cairo) const
   double angle=rotation * M_PI / 180.0;
   double fm=std::fmod(rotation,360);
   float z=zoomFactor();
-
-  // scale by GodleyIcon::iconScale if part of an Godley icon
-  if (auto g=godley.lock())
-    z*=g->iconScale();
 
   RenderVariable rv(*this,cairo);
   rv.setFontSize(12*z);
