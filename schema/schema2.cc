@@ -499,7 +499,7 @@ namespace schema2
                 SchemaHelper::setStockAndFlow(*godley, flowVars, stockVars);
                 godley->update();
                 if (i.height)
-                  godley->scaleIconForHeight(*i.height);
+                  godley->scaleIconForHeight(*i.height*godley->zoomFactor());
                 else if (i.iconScale) //legacy schema handling
                   godley->scaleIconForHeight(*i.iconScale * godley->height());
               }
