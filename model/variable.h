@@ -73,8 +73,11 @@ namespace minsky
     virtual size_t numPorts() const=0;
     virtual Type type() const=0;
 
-    /// reference to Godley icon if part of the icon.
-    classdesc::Exclude<std::weak_ptr<GodleyIcon>> godley;
+    /// reference to a controlling item - eg GodleyIcon, IntOp or a Group if an IOVar.
+    classdesc::Exclude<std::weak_ptr<Item>> controller;
+    bool visible() const override {return !controller.lock() && Item::visible();}
+
+    float zoomFactor() const override;
     
     /// @{ variable displayed name
     virtual std::string _name() const;
@@ -89,7 +92,7 @@ namespace minsky
     const std::string& rawName() const {return m_name;}
     
     bool ioVar() const override;
-
+    
     /// ensure an associated variableValue exists
     void ensureValueExists() const;
 
@@ -102,11 +105,6 @@ namespace minsky
       else return {};
     }
       
-
-    /// zoom by \a factor, scaling all widget's coordinates, using (\a
-    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-    //   void zoom(float xOrigin, float yOrigin,float factor);
-    void setZoom(float factor) {zoomFactor=factor;}
 
     /// @{ the initial value of this variable
     std::string _init() const; /// < return initial value for this variable
@@ -213,6 +211,13 @@ namespace minsky
     Variable(const std::string& name="") {this->name(name); this->addPorts();}
     std::string classType() const override 
     {return "Variable:"+VariableType::typeName(type());}
+    Variable* clone() const override {
+      auto v=ItemT<Variable<T>, VariableBase>::clone();
+      v->controller.reset(); // cloned variables are not controlled by this's controller
+      // v is a Variable*, but C++ covariant return types rule prevent it being declared as such
+      assert(dynamic_cast<Variable*>(v));
+      return static_cast<Variable*>(v); 
+    }
   };
 
   struct VarConstant: public Variable<VariableType::constant>

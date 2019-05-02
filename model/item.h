@@ -75,16 +75,15 @@ namespace minsky
   {
   public:
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    float zoomFactor=1;
     double rotation=0; ///< rotation of icon, in degrees
-    bool m_visible=true; ///< if false, then this item is invisible
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     std::weak_ptr<Group> group; ///< owning group of this item.
     /// canvas bounding box.
     mutable BoundingBox bb;
     bool contains(float xx, float yy) {
       if (!bb.valid()) bb.update(*this);
-      return bb.contains((xx-x())/zoomFactor, (yy-y())/zoomFactor);
+      float invZ=1/zoomFactor();
+      return bb.contains((xx-x())*invZ, (yy-y())*invZ);
     }
     
     /// indicates this is a group I/O variable
@@ -100,12 +99,13 @@ namespace minsky
     ItemPortVector ports;
     float x() const; 
     float y() const;
+    virtual float zoomFactor() const;
     float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
     float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
-    float left() const {return x()-0.5*zoomFactor*width();}
-    float right() const {return x()+0.5*zoomFactor*width();}
-    float top() const {return y()+0.5*zoomFactor*height();}
-    float bottom() const {return y()-0.5*zoomFactor*height();}
+    float left() const {return x()-0.5*zoomFactor()*width();}
+    float right() const {return x()+0.5*zoomFactor()*width();}
+    float top() const {return y()+0.5*zoomFactor()*height();}
+    float bottom() const {return y()-0.5*zoomFactor()*height();}
 
     virtual void resize(const LassoBox&) {}
 
@@ -119,12 +119,9 @@ namespace minsky
     }
 
     /// whether this item is visible on the canvas. 
-    bool visible() const;
+    virtual bool visible() const;
 
     void moveTo(float x, float y);
-    /// zoom by \a factor, scaling all widget's coordinates, using (\a
-    /// xOrigin, \a yOrigin) as the origin of the zoom transformation
-    virtual void zoom(float xOrigin, float yOrigin,float factor);
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;
@@ -177,7 +174,7 @@ namespace minsky
     std::string classType() const override {
       auto s=classdesc::typeName<T>();
       // remove minsky namespace
-      static const char* ns="minsky::";
+      static const char* ns="::minsky::";
       static const int eop=strlen(ns);
       if (s.substr(0,eop)==ns)
         s=s.substr(eop);

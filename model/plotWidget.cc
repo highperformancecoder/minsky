@@ -120,7 +120,8 @@ namespace minsky
 
   void PlotWidget::draw(cairo_t* cairo) const
   {
-    double w=width*zoomFactor, h=height*zoomFactor;
+    double z=zoomFactor();
+    double w=width*z, h=height*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel.empty()||!ylabel.empty()||!y1label.empty())
@@ -279,8 +280,9 @@ namespace minsky
     clickX=x;
     clickY=y;
     ct=clickType(x,y);
-    double gw=width*zoomFactor-2*portSpace;
-    double gh=height*zoomFactor-portSpace;
+    double z=zoomFactor();
+    double gw=width*z-2*portSpace;
+    double gh=height*z-portSpace;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -288,9 +290,10 @@ namespace minsky
   
   void PlotWidget::mouseMove(double x,double y)
   {
-    double gw=width*zoomFactor-2*portSpace;
-    double gh=height*zoomFactor-portSpace;
-    double yoffs=this->y()-(legendTop-0.5)*height*zoomFactor;
+    double z=zoomFactor();
+    double gw=width*z-2*portSpace;
+    double gh=height*z-portSpace;
+    double yoffs=this->y()-(legendTop-0.5)*height*z;
     switch (ct)
       {
       case ClickType::legendMove:
@@ -323,8 +326,9 @@ namespace minsky
 
   void PlotWidget::resize(const LassoBox& x)
   {
-    width=abs(x.x1-x.x0)/zoomFactor;
-    height=abs(x.y1-x.y0)/zoomFactor;
+    float invZ=1/zoomFactor();
+    width=abs(x.x1-x.x0)*invZ;
+    height=abs(x.y1-x.y0)*invZ;
     moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
@@ -333,16 +337,17 @@ namespace minsky
   ClickType::Type PlotWidget::clickType(float x, float y)
   {
     // firstly, check whether a port has been selected
+    double z=zoomFactor();
     for (auto& p: ports)
       {
-        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor)
+        if (hypot(x-p->x(), y-p->y()) < portRadius*z)
           return ClickType::onPort;
       }
 
     double legendWidth, legendHeight;
-    legendSize(legendWidth, legendHeight, height*zoomFactor-portSpace);
-    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*zoomFactor;
-    double yy= y-this->y() + (legendTop-0.5)*height*zoomFactor;
+    legendSize(legendWidth, legendHeight, height*z-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*z;
+    double yy= y-this->y() + (legendTop-0.5)*height*z;
     if (xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
@@ -352,11 +357,11 @@ namespace minsky
       }
     
     double dx=x-this->x(), dy=y-this->y();
-    double w=0.5*width*zoomFactor, h=0.5*height*zoomFactor;
+    double w=0.5*width*z, h=0.5*height*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadius*zoomFactor &&
-        fabs(fabs(dy)-h) < portRadius*zoomFactor &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*zoomFactor)
+    if (fabs(fabs(dx)-w) < portRadius*z &&
+        fabs(fabs(dy)-h) < portRadius*z &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
       return ClickType::onResize;
     return (abs(dx)<w && abs(dy)<h)?
       ClickType::onItem: ClickType::outside;
@@ -552,6 +557,9 @@ namespace minsky
     cairo_surface_set_device_offset(surface->surface(), -left, -top);
     redraw(0,0,500,500);
     surface.swap(tmp);
+    auto status=cairo_surface_status(tmp->surface());
+    if (status!=CAIRO_STATUS_SUCCESS)
+      throw error("cairo rendering error: %s",cairo_status_to_string(status));
     return tmp;
   }
   

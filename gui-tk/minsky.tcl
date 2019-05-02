@@ -1091,7 +1091,7 @@ proc openFile {} {
     global fname workDir preferences
     set ofname [tk_getOpenFile -multiple 1 -filetypes {
 	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
-    if [string length $ofname] {openNamedFile $ofname}
+    if [string length $ofname] {eval openNamedFile {$ofname}}
 }
 
 proc openNamedFile {ofname} {
@@ -1120,7 +1120,7 @@ proc insertFile {} {
     global workDir
     set fname [tk_getOpenFile -multiple 1 -filetypes {
 	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
-    insertGroupFromFile $fname
+    eval insertGroupFromFile {$fname}
 }
 
 # adjust canvas so that -ve coordinates appear on canvas
@@ -1140,7 +1140,7 @@ proc save {} {
     if {![string length $fname]} {
 	    setFname [tk_getSaveFile -defaultextension .mky]}            
     if [string length $fname] {
-        eval minsky.save $fname
+        eval minsky.save {$fname}
     }
 }
 
@@ -1148,7 +1148,7 @@ proc saveAs {} {
     global fname workDir
     setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
     if [string length $fname] {
-        eval minsky.save $fname
+        eval minsky.save {$fname}
     }
 }
 
@@ -1566,7 +1566,7 @@ proc replay {} {
         set fname [tk_getOpenFile -filetypes {{"TCL scripts" .tcl TEXT} {"All Files" * }} \
                        -defaultextension .tcl -initialdir $workDir]
         if {[string length $fname]>0} {
-            set eventRecordR [open $fname r]
+            set eventRecordR [eval open {$fname} r]
             newSystem
             if {![running]} runstop
         } elseif [running] {runstop}

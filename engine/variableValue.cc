@@ -66,6 +66,27 @@ namespace minsky
     return *this;
   }
 
+  double VariableValue::valRef() const
+  {
+    switch (m_type)
+      {
+      case flow:
+      case tempFlow:
+      case constant:
+      case parameter:
+         if (size_t(m_idx)<ValueVector::flowVars.size())
+           return ValueVector::flowVars[m_idx];
+         break;
+      case stock:
+      case integral:
+        if (size_t(m_idx)<ValueVector::stockVars.size())
+          return ValueVector::stockVars[m_idx];
+        break;
+      default: break;
+      }
+    return 0;
+  }
+  
   double& VariableValue::valRef()
   {
     if (m_idx==-1)
@@ -82,6 +103,7 @@ namespace minsky
       case integral:
         if (size_t(m_idx+numElements())<=ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx];
+        break;
       default: break;
       }
     throw error("invalid access of variable value reference: %s",name.c_str());

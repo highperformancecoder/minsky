@@ -32,6 +32,9 @@
 #include <pango.h>
 #include <ecolab_epilogue.h>
 
+#include <boost/locale.hpp>
+using boost::locale::conv::utf_to_utf;
+
 using namespace ecolab;
 using namespace std;
 using namespace minsky;
@@ -88,19 +91,6 @@ RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
     }
 }
 
-Polygon RenderOperation::geom() const
-{
-  Rotate rotate(op.rotation, op.x(), op.y());
-  float zl=op.l*op.zoomFactor, zh=op.h*op.zoomFactor, 
-    zr=op.r*op.zoomFactor;
-  Polygon r;
-  // TODO: handle bound integration variables, and constants
-  r+= rotate(op.x()+zl, op.y()-zh), rotate(op.x()+zl, op.y()+zh), 
-    rotate(op.x()+zr, op.y());
-  correct(r);
-  return r;
-}
-
 void RenderOperation::draw()
 {
   op.draw(cairo);
@@ -133,23 +123,15 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
   else
     {
       setMarkup(latexToPango(var.name()));
-      w=0.5*Pango::width()+12; // enough space for numerical display 
-      h=0.5*Pango::height()+4;
+      w=0.5*Pango::width(); 
+      h=0.5*Pango::height();
+      if (!var.ioVar())
+        { // add additional space for numerical display 
+          w+=12; 
+          h+=4;
+        }
     }
   hoffs=Pango::top();
-}
-
-Polygon RenderVariable::geom() const
-{
-  float x=var.x(), y=var.y();
-  float wz=w*var.zoomFactor, hz=h*var.zoomFactor;
-  Rotate rotate(var.rotation, x, y);
-
-  Polygon r;
-  r+= rotate(x-wz, y-hz), rotate(x-wz, y+hz), 
-    rotate(x+wz, y+hz), rotate(x+wz, y-hz);
-  correct(r);
-  return r;
 }
 
 void RenderVariable::draw()
@@ -161,12 +143,12 @@ void RenderVariable::draw()
 void RenderVariable::updatePortLocs() const
 {
   double angle=var.rotation * M_PI / 180.0;
-  double x0=w, y0=0, x1=-w+2, y1=0;
+  double x0=w, y0=0, x1=-w+2, y1=0, z=var.zoomFactor();
   double sa=sin(angle), ca=cos(angle);
-  var.ports[0]->moveTo(var.x()+var.zoomFactor*(x0*ca-y0*sa), 
-                           var.y()+var.zoomFactor*(y0*ca+x0*sa));
-  var.ports[1]->moveTo(var.x()+var.zoomFactor*(x1*ca-y1*sa), 
-                           var.y()+var.zoomFactor*(y1*ca+x1*sa));
+  var.ports[0]->moveTo(var.x()+z*(x0*ca-y0*sa), 
+                           var.y()+z*(y0*ca+x0*sa));
+  var.ports[1]->moveTo(var.x()+z*(x1*ca-y1*sa), 
+                           var.y()+z*(y1*ca+x1*sa));
 }
 
 bool RenderVariable::inImage(float x, float y)

@@ -37,24 +37,27 @@ namespace minsky
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0, iconSize=100;
     /// icon scale is adjusted when Godley icon is resized
-    float iconScale=1;
+    float m_iconScale=1;
     CLASSDESC_ACCESS(GodleyIcon);
     friend class SchemaHelper;
   public:
     static SVGRenderer svgRenderer;
     
     /// width of Godley icon in screen coordinates
-    float width() const {return (flowMargin+iconSize)*iconScale*zoomFactor;}
+    float width() const {return (flowMargin+iconSize)*iconScale()*zoomFactor();}
     /// height of Godley icon in screen coordinates
-    float height() const {return (stockMargin+iconSize)*iconScale*zoomFactor;}
+    float height() const {return (stockMargin+iconSize)*iconScale()*zoomFactor();}
     /// scale icon until it's height matches \a h 
-    void scaleIconForHeight(float h) {update(); iconScale*=h/height();}
+    void scaleIconForHeight(float h) {update(); m_iconScale*=h/height();}
 
     /// left margin of bank icon with Godley icon
-    float leftMargin() const {return flowMargin*iconScale*zoomFactor;}
+    float leftMargin() const {return flowMargin*iconScale()*zoomFactor();}
     /// bottom margin of bank icon with Godley icon
-    float bottomMargin() const {return stockMargin*iconScale*zoomFactor;}
+    float bottomMargin() const {return stockMargin*iconScale()*zoomFactor();}
 
+    /// icon scale is adjusted when Godley icon is resized
+    float iconScale() const {return m_iconScale;}
+    
     /// helper for schema1
     double schema1ZoomFactor() const; 
     
@@ -77,11 +80,8 @@ namespace minsky
     /// updates the variable lists with the Godley table
     void update();
 
-    void zoom(float xOrigin, float yOrigin,float factor) override {
-      Item::zoom(xOrigin,yOrigin,factor);
-      update();
-    }
-
+//    void zoom(float xOrigin, float yOrigin,float factor) override
+//    {update();}
 
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table

@@ -132,7 +132,7 @@ namespace schema2
            (t.substr(t.find(':')+1)));
       try
         {
-          return classdesc::Factory<minsky::Item,string>::create(t);
+          return classdesc::Factory<minsky::Item,string>::create("::minsky::"+t);
         }
       catch (...)
         {
@@ -551,6 +551,7 @@ namespace schema2
             x1->legend=true;
             x1->legendSide=*y.legend;
           }
+        if (y.palette) x1->palette=*y.palette;
       }
     if (auto x1=dynamic_cast<minsky::SwitchIcon*>(&x))
       {
@@ -652,7 +653,7 @@ namespace schema2
                 SchemaHelper::setStockAndFlow(*godley, flowVars, stockVars);
                 godley->update();
                 if (i.height)
-                  godley->scaleIconForHeight(*i.height);
+                  godley->scaleIconForHeight(*i.height*godley->zoomFactor());
                 else if (i.iconScale) //legacy schema handling
                   godley->scaleIconForHeight(*i.iconScale * godley->height());
               }
@@ -680,7 +681,7 @@ namespace schema2
     for (auto& i: groups)
       {
         assert(itemMap.count(i.id));
-        auto newG=dynamic_cast<minsky::Group*>(itemMap[i.id].get());
+        auto newG=dynamic_pointer_cast<minsky::Group>(itemMap[i.id]);
         if (newG)
           {
             for (auto j: i.items)
@@ -698,6 +699,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->inVariables.push_back(v);
+                        v->controller=newG;
                       }
                 }
             if (i.outVariables)
@@ -709,6 +711,7 @@ namespace schema2
                       {
                         newG->addItem(it->second);
                         newG->outVariables.push_back(v);
+                        v->controller=newG;
                       }
                 }
           }

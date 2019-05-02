@@ -37,6 +37,10 @@ VariableBase::~VariableBase() {}
 
 void VariableBase::addPorts()
 {
+#ifndef NDEBUG
+  for (auto& i: ports)
+    assert(i.use_count()==1);
+#endif
   ports.clear();
   if (numPorts()>0)
     ports.emplace_back(new Port(*this,Port::noFlags));
@@ -57,8 +61,9 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
   float xxx=xx-x(), yyy=yy-y();
   Rotate r(rotation+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
   RenderVariable rv(*this);
-  double hpx=zoomFactor*rv.handlePos();
-  double hpy=-zoomFactor*rv.height();
+  double z=zoomFactor();
+  double hpx=z*rv.handlePos();
+  double hpy=-z*rv.height();
   if (type()!=constant && hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
       return ClickType::onSlider;
   else
@@ -82,9 +87,15 @@ VariableBase* VariableBase::create(VariableType::Type type)
     }
 }
 
-string VariableBase::valueId() const 
+float VariableBase::zoomFactor() const
 {
-  return VariableValue::valueId(group.lock(), m_name);
+  if (ioVar())
+    if (auto g=group.lock())
+      return g->edgeScale();
+  // scale by GodleyIcon::iconScale if part of an Godley icon
+  if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+    return g->iconScale() * Item::zoomFactor();
+  return Item::zoomFactor();
 }
 
 VariableValue* VariableBase::vValue() const
@@ -96,16 +107,9 @@ VariableValue* VariableBase::vValue() const
     return nullptr;
 }
 
-bool VariableBase::ioVar() const 
+string VariableBase::valueId() const 
 {
-  if (auto g=group.lock())
-    {
-      for (auto& i:g->inVariables)
-        if (this==i.get()) return true;
-      for (auto& i:g->outVariables)
-        if (this==i.get()) return true;
-    }
-  return false;
+  return VariableValue::valueId(group.lock(), m_name);
 }
 
 string VariableBase::_name()  const
@@ -125,12 +129,16 @@ string VariableBase::_name(const std::string& name)
 {
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
-  // ensure integral variables are not global
-  m_name=(type()==integral && name[0]==':')? name.substr(1): name;
+  // ensure integral variables are not global when wired to an integral operation
+  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
   ensureValueExists();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
+
+bool VariableBase::ioVar() const
+{return dynamic_cast<Group*>(controller.lock().get());}
+
 
 void VariableBase::ensureValueExists() const
 {
@@ -320,15 +328,10 @@ void VariableBase::draw(cairo_t *cairo) const
 {
   double angle=rotation * M_PI / 180.0;
   double fm=std::fmod(rotation,360);
-
-  //  cairo_save(cairo);
-  //  cairo_save(cairo);
-
-  //cairo_scale(cairo,zoomFactor,zoomFactor);
-
+  float z=zoomFactor();
 
   RenderVariable rv(*this,cairo);
-  rv.setFontSize(12*zoomFactor);
+  rv.setFontSize(12*z);
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
@@ -337,9 +340,9 @@ void VariableBase::draw(cairo_t *cairo) const
 
   // parameters of icon in userspace (unscaled) coordinates
   float w, h, hoffs;
-  w=rv.width()*zoomFactor; 
-  h=rv.height()*zoomFactor;
-  hoffs=rv.top()/zoomFactor;
+  w=rv.width()*z; 
+  h=rv.height()*z;
+  hoffs=rv.top()*z;
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
@@ -348,13 +351,13 @@ void VariableBase::draw(cairo_t *cairo) const
   if (VariableValue::isValueId(valueId()))
     vv=minsky::cminsky().variableValues[valueId()];
   
-  if (type()!=constant && vv.numElements()==1)
+  if (type()!=constant && !ioVar() && vv.numElements()==1 )
     try
     {
       auto val=engExp();
   
       Pango pangoVal(cairo);
-      pangoVal.setFontSize(6*zoomFactor);
+      pangoVal.setFontSize(6*z);
       pangoVal.setMarkup(mantissa(val));
       pangoVal.angle=angle+(notflipped? 0: M_PI);
 
@@ -369,65 +372,64 @@ void VariableBase::draw(cairo_t *cairo) const
         }
     }
     catch (...) {} // ignore errors in obtaining values
-  cairo_save(cairo);
-  cairo_rotate(cairo, angle);
-  // constants and parameters should be rendered in blue, all others in red
-  switch (type())
-    {
-    case constant: case parameter:
-      cairo_set_source_rgb(cairo,0,0,1);
-      break;
-    default:
-      cairo_set_source_rgb(cairo,1,0,0);
-      break;
-    }
-  cairo_move_to(cairo,-w,-h);
-  if (lhs())
-    cairo_line_to(cairo,-w+2*zoomFactor,0);
-  cairo_line_to(cairo,-w,h);
-  cairo_line_to(cairo,w,h);
-  cairo_line_to(cairo,w+2*zoomFactor,0);
-  cairo_line_to(cairo,w,-h);
-  cairo_close_path(cairo);
-  cairo::Path clipPath(cairo);
-  cairo_stroke(cairo);
-  cairo_save(cairo);
 
-  if (type()!=constant && vv.numElements()==1)
-    {
-      // draw slider
-      CairoSave cs(cairo);
-      cairo_set_source_rgb(cairo,0,0,0);
-      try
-        {
-          cairo_arc(cairo,(notflipped?1:-1)*zoomFactor*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
-        }
-      catch (const error&) {} // handlePos() may throw.
-      cairo_fill(cairo);
-    }
-  
-  cairo_restore(cairo); // undo rotation
-   
- {
-    double x0=w, y0=0, x1=-w+2, y1=0;
-    double sa=sin(angle), ca=cos(angle);
-    if (ports.size()>0)
-      ports[0]->moveTo(x()+(x0*ca-y0*sa), 
-                       y()+(y0*ca+x0*sa));
-    if (ports.size()>1)
-      ports[1]->moveTo(x()+(x1*ca-y1*sa), 
-                       y()+(y1*ca+x1*sa));
-  }
+  unique_ptr<cairo::Path> clipPath;
+  {
+    cairo::CairoSave cs(cairo);
+    cairo_rotate(cairo, angle);
+    // constants and parameters should be rendered in blue, all others in red
+    switch (type())
+      {
+      case constant: case parameter:
+        cairo_set_source_rgb(cairo,0,0,1);
+        break;
+      default:
+        cairo_set_source_rgb(cairo,1,0,0);
+        break;
+      }
+    cairo_move_to(cairo,-w,-h);
+    if (lhs())
+      cairo_line_to(cairo,-w+2*z,0);
+    cairo_line_to(cairo,-w,h);
+    cairo_line_to(cairo,w,h);
+    cairo_line_to(cairo,w+2*z,0);
+    cairo_line_to(cairo,w,-h);
+    cairo_close_path(cairo);
+    clipPath.reset(new cairo::Path(cairo));
+    cairo_stroke(cairo);
+    if (type()!=constant && !ioVar())
+      {
+        // draw slider
+        CairoSave cs(cairo);
+        cairo_set_source_rgb(cairo,0,0,0);
+        try
+          {
+            cairo_arc(cairo,(notflipped?1:-1)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+          }
+        catch (const error&) {} // handlePos() may throw.
+        cairo_fill(cairo);
+      }
+  }// undo rotation
 
-  if (mouseFocus)
+  double x0=w, y0=0, x1=-w+2, y1=0;
+  double sa=sin(angle), ca=cos(angle);
+  if (ports.size()>0)
+    ports[0]->moveTo(x()+(x0*ca-y0*sa), 
+                     y()+(y0*ca+x0*sa));
+  if (ports.size()>1)
+    ports[1]->moveTo(x()+(x1*ca-y1*sa), 
+                     y()+(y1*ca+x1*sa));
+
+  auto g=group.lock();
+  if (mouseFocus || (ioVar() && g && g->mouseFocus))
     {
-      cairo_rotate(cairo, -angle);
+      cairo::CairoSave cs(cairo);
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
     }
-  cairo_restore(cairo);
+
   cairo_new_path(cairo);
-  clipPath.appendToCurrent(cairo);
+  clipPath->appendToCurrent(cairo);
   cairo_clip(cairo);
   if (selected) drawSelected(cairo);
 }

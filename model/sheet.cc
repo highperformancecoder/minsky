@@ -34,18 +34,20 @@ Sheet::Sheet()
 ClickType::Type Sheet::clickType(float x, float y)
 {
   double dx=x-this->x(), dy=y-this->y();
-  double w=0.5*m_width*zoomFactor, h=0.5*m_height*zoomFactor;
+  auto z=zoomFactor();
+  double w=0.5*m_width*z, h=0.5*m_height*z;
   // check if (x,y) is within portradius of the 4 corners
-  if (fabs(fabs(dx)-w) < portRadius*zoomFactor &&
-      fabs(fabs(dy)-h) < portRadius*zoomFactor &&
-      fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*zoomFactor)
+  if (fabs(fabs(dx)-w) < portRadius*z &&
+      fabs(fabs(dy)-h) < portRadius*z &&
+      fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
     return ClickType::onResize;
   return Item::clickType(x,y);
 }
 
 void Sheet::draw(cairo_t* cairo) const
 {
-  ports[0]->moveTo(x()-0.5*m_width*zoomFactor,y());
+  auto z=zoomFactor();
+  ports[0]->moveTo(x()-0.5*m_width*z,y());
   if (mouseFocus)
     {
       drawPorts(cairo);
@@ -53,8 +55,7 @@ void Sheet::draw(cairo_t* cairo) const
     }
   if (onResizeHandles) drawResizeHandles(cairo);
 
-  //cairo::CairoSave cs(cairo);
-  cairo_scale(cairo,zoomFactor,zoomFactor);
+  cairo_scale(cairo,z,z);
     
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
   cairo_stroke_preserve(cairo);
@@ -97,7 +98,7 @@ void Sheet::draw(cairo_t* cairo) const
                   pango.setText(trimWS(str(i,format)));
                   pango.show();
                   y+=rowHeight;
-                  colWidth=std::max(colWidth,5+pango.width()/zoomFactor);
+                  colWidth=std::max(colWidth,5+pango.width()/z);
                 }
               y=y0;
               x+=colWidth;
@@ -127,7 +128,7 @@ void Sheet::draw(cairo_t* cairo) const
                         cairo_line_to(cairo,x-2.5,0.5*m_height);
                         cairo_stroke(cairo);
                       }
-                      colWidth=std::max(colWidth, 5+pango.width()/zoomFactor);
+                      colWidth=std::max(colWidth, 5+pango.width()/z);
                       for (size_t j=0; j<dims[0]; ++j)
                         {
                           y+=rowHeight;
@@ -155,13 +156,14 @@ void Sheet::draw(cairo_t* cairo) const
             }
         }
     }
-  catch (...) {/* exception most like invalid variable value */}
+  catch (...) {/* exception most likely invalid variable value */}
 }
 
 void Sheet::resize(const LassoBox& b)
 {
-  m_width=abs(b.x1-b.x0)/zoomFactor;
-  m_height=abs(b.y1-b.y0)/zoomFactor;
+  auto invZ=1/zoomFactor();
+  m_width=abs(b.x1-b.x0)*invZ;
+  m_height=abs(b.y1-b.y0)*invZ;
   moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
   bb.update(*this);
 }

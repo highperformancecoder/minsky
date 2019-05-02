@@ -202,8 +202,8 @@ namespace minsky
     for (auto& i: canvas.selection.items)
       {
         if (auto v=dynamic_cast<VariableBase*>(i.get()))
-          if (v->godley.lock())
-            continue; // do not delete a variable owned by a Godley Table
+          if (v->controller.lock())
+            continue; // do not delete a variable controlled by another item
         model->deleteItem(*i);
       }
     for (auto& i: canvas.selection.groups)
@@ -217,8 +217,8 @@ namespace minsky
     for (auto& i: canvas.selection.items)
       {
         if (auto v=dynamic_cast<VariableBase*>(i.get()))
-          if (v->godley.lock())
-            continue; // variable owned by a Godley Table is not being destroyed
+          if (v->controller.lock())
+            continue; // variable controlled by another item is not being destroyed
         assert(i.use_count()==1);
       }
     for (auto& i: canvas.selection.groups)
@@ -245,6 +245,8 @@ namespace minsky
     ofstream os(fileName);
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
+//    if (!of)
+//      throw runtime_error("cannot save to "+fileName);
   }
 
   void Minsky::paste()
@@ -867,10 +869,16 @@ namespace minsky
     xml_pack_t saveFile(of, schemaURL);
     saveFile.prettyPrint=true;
     schema2::Minsky m(*this);
-    //m.relocateCanvas();
-    xml_pack(saveFile, "Minsky", m);
-    if (!of)
-      throw runtime_error("cannot save to "+filename);
+    try
+      {
+        xml_pack(saveFile, "Minsky", m);
+      }
+    catch (...) {
+      // if exception is due to file error, provide a more useful message
+      if (!of)
+        throw runtime_error("cannot save to "+filename);
+      throw;
+    }
     flags &= ~is_edited;
   }
 
@@ -1301,6 +1309,9 @@ namespace minsky
     cairo_surface_set_device_offset(canvas.surface->surface(), -left, -top);
     canvas.redraw();
     canvas.surface.swap(tmp);
+    auto status=cairo_surface_status(tmp->surface());
+    if (status!=CAIRO_STATUS_SUCCESS)
+      throw error("cairo rendering error: %s",cairo_status_to_string(status));
     return tmp;
   }
   

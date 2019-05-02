@@ -36,6 +36,7 @@ namespace minsky
     // firstly, see if the user is selecting an item
     if ((itemFocus=itemAt(x,y)))
       {
+        auto z=itemFocus->zoomFactor();
         clickType=itemFocus->clickType(x,y);
         switch (clickType)
           {
@@ -66,9 +67,9 @@ namespace minsky
             lassoMode=LassoMode::itemResize;
             // set x0,y0 to the opposite corner of (x,y)
             lasso.x0 = itemFocus->x() +
-              0.5*itemFocus->width()*itemFocus->zoomFactor * (x>itemFocus->x()? -1:1);
+              0.5*itemFocus->width()*z * (x>itemFocus->x()? -1:1);
             lasso.y0 = itemFocus->y() +
-              0.5*itemFocus->height()*itemFocus->zoomFactor * (y>itemFocus->y()? -1:1);
+              0.5*itemFocus->height()*z * (y>itemFocus->y()? -1:1);
             lasso.x1=x;
             lasso.y1=y;
             item=itemFocus;
@@ -165,179 +166,173 @@ namespace minsky
   }
   
   void Canvas::mouseMove(float x, float y)
-  {
-    if (itemFocus)
+    try
       {
-        switch (clickType)
+        if (itemFocus)
           {
-          case ClickType::onItem:
-            updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
-            // move item relatively to avoid accidental moves on double click
-            itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
-            // check if the move has moved outside or into a group
-            if (auto g=itemFocus->group.lock())
-              if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
-                {
-                  if (auto toGroup=model->minimalEnclosingGroup
-                      (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+            switch (clickType)
+              {
+              case ClickType::onItem:
+                updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
+                // move item relatively to avoid accidental moves on double click
+                itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+                // check if the move has moved outside or into a group
+                if (auto g=itemFocus->group.lock())
+                  if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
                     {
-                      // prevent moving a group inside itself
-                      if (auto g=dynamic_cast<Group*>(itemFocus.get()))
-                        if (g->higher(*toGroup))
-                          return;
-                      toGroup->addItem(itemFocus);
-                      toGroup->splitBoundaryCrossingWires();
-                      g->splitBoundaryCrossingWires();
+                      if (auto toGroup=model->minimalEnclosingGroup
+                          (itemFocus->x(),itemFocus->y(),itemFocus->x(),itemFocus->y(),itemFocus.get()))
+                        {
+                          // prevent moving a group inside itself
+                          if (auto g=dynamic_cast<Group*>(itemFocus.get()))
+                            if (g->higher(*toGroup))
+                              return;
+                          toGroup->addItem(itemFocus);
+                          toGroup->splitBoundaryCrossingWires();
+                          g->splitBoundaryCrossingWires();
+                        }
+                      else
+                        {
+                          model->addItem(itemFocus);
+                          model->splitBoundaryCrossingWires();
+                          g->splitBoundaryCrossingWires();
+                        }
                     }
-                  else
-                    {
-                      model->addItem(itemFocus);
-                      model->splitBoundaryCrossingWires();
-                      g->splitBoundaryCrossingWires();
-                    }
-                }
-            if (auto g=itemFocus->group.lock())
-              g->checkAddIORegion(itemFocus);
+                if (auto g=itemFocus->group.lock())
+                  g->checkAddIORegion(itemFocus);
+                requestRedraw();
+                return;
+              case ClickType::onSlider:
+                if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+                  {
+                    RenderVariable rv(*v);
+                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
+                    v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
+                                 rw + 0.5*(v->sliderMin+v->sliderMax));
+                    // push History to prevent an unnecessary reset when
+                    // adjusting the slider whilst paused. See ticket #812
+                    minsky().pushHistory();
+                    requestRedraw();
+                  }
+                return;
+              case ClickType::onRavel:
+                if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
+                  if (r->onMouseMotion(x,y))
+                    requestRedraw();
+                return;
+              case ClickType::legendMove: case ClickType::legendResize:
+                if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
+                  {
+                    p->mouseMove(x,y);
+                    requestRedraw();
+                  }
+                return;
+              case ClickType::onResize:
+                lasso.x1=x;
+                lasso.y1=y;
+                requestRedraw();
+                break;
+              default:
+                break;
+              }
+          }
+        else if (fromPort.get())
+          {
+            termX=x;
+            termY=y;
             requestRedraw();
-            return;
-          case ClickType::onSlider:
-            if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
-              {
-                RenderVariable rv(*v);
-                double rw=fabs(v->zoomFactor*rv.width()*cos(v->rotation*M_PI/180));
-                v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
-                             rw + 0.5*(v->sliderMin+v->sliderMax));
-                // push History to prevent an unnecessary reset when
-                // adjusting the slider whilst paused. See ticket #812
-                minsky().pushHistory();
-                requestRedraw();
-              }
-            return;
-          case ClickType::onRavel:
-            if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-              if (r->onMouseMotion(x,y))
-                requestRedraw();
-            return;
-          case ClickType::legendMove: case ClickType::legendResize:
-            if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
-              {
-                p->mouseMove(x,y);
-                requestRedraw();
-              }
-            return;
-          case ClickType::onResize:
+          }
+        else if (wireFocus)
+          {
+            wireFocus->editHandle(handleSelected,x,y);
+            requestRedraw();
+          }
+        else if (lassoMode==LassoMode::lasso)
+          {
             lasso.x1=x;
             lasso.y1=y;
             requestRedraw();
-          default:
-            break;
+          }
+        else if (lassoMode==LassoMode::itemResize && item.get())
+          {
+            lasso.x1=x;
+            lasso.y1=y;
+            requestRedraw();
+          }
+        else
+          {
+            // set mouse focus to display ports etc.
+            model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
+                                              {
+                                                (*i)->disableDelayedTooltip();
+                                                // with coupled integration variables, we
+                                                // do not want to set mousefocus, as this
+                                                // draws unnecessary port circles on the
+                                                // variable
+                                                if (!(*i)->visible() &&
+                                                    dynamic_cast<Variable<VariableBase::integral>*>(i->get()))
+                                                  (*i)->mouseFocus=false;
+                                                else
+                                                  {
+                                                    auto ct=(*i)->clickType(x,y);
+                                                    if (ct==ClickType::onRavel)
+                                                      {
+                                                        if (auto r=dynamic_cast<Ravel*>(i->get()))
+                                                          {
+                                                            r->mouseFocus=true;
+                                                            r->onBorder = false;
+                                                            if (r->onMouseOver(x,y))
+                                                              requestRedraw();
+                                                          }
+                                                      }
+                                                    else
+                                                      {
+                                                        auto mf = ct!=ClickType::outside;
+                                                        if ((*i)->mouseFocus!=mf)
+                                                          {
+                                                            requestRedraw();
+                                                            (*i)->mouseFocus=mf;
+                                                          }
+                                                        (*i)->onResizeHandles=ct==ClickType::onResize;
+                                                        if (auto r=dynamic_cast<Ravel*>(i->get()))
+                                                          {
+                                                            r->onBorder = ct==ClickType::onItem;
+                                                            r->onMouseLeave();
+                                                            requestRedraw();
+                                                          }
+                                                      }
+                                                  }
+                                                return false;
+                                              });
+            model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
+                                               {
+                                                 bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
+                                                 if (mf!=(*i)->mouseFocus)
+                                                   {
+                                                     (*i)->mouseFocus=mf;
+                                                     requestRedraw();
+                                                   }
+                                                 bool onResize = (*i)->clickType(x,y)==ClickType::onResize;
+                                                 if (onResize!=(*i)->onResizeHandles)
+                                                   {
+                                                     (*i)->onResizeHandles=onResize;
+                                                     requestRedraw();
+                                                   }
+                                                 return false;
+                                               });
+            model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
+                                              {
+                                                bool mf=(*i)->near(x,y);
+                                                if (mf!=(*i)->mouseFocus)
+                                                  {
+                                                    (*i)->mouseFocus=mf;
+                                                    requestRedraw();
+                                                  }        
+                                                return false;
+                                              });
           }
       }
-    else if (itemFocus && clickType==ClickType::onRavel)
-      {
-        if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-          if (r->onMouseMotion(x,y))
-            requestRedraw();
-      }
-    else if (fromPort.get())
-      {
-        termX=x;
-        termY=y;
-        requestRedraw();
-      }
-    else if (wireFocus)
-      {
-        wireFocus->editHandle(handleSelected,x,y);
-        requestRedraw();
-      }
-    else if (lassoMode==LassoMode::lasso)
-      {
-        lasso.x1=x;
-        lasso.y1=y;
-        requestRedraw();
-      }
-    else if (lassoMode==LassoMode::itemResize && item.get())
-      {
-        lasso.x1=x;
-        lasso.y1=y;
-        // make lasso symmetric around item's (x,y)
-//        lasso.x0=2*item->x() - x;
-//        lasso.y0=2*item->y() - y;
-        requestRedraw();
-      }
-    else
-      {
-        // set mouse focus to display ports etc.
-        model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
-                           {
-                             (*i)->disableDelayedTooltip();
-                             // with coupled integration variables, we
-                             // do not want to set mousefocus, as this
-                             // draws unnecessary port circles on the
-                             // variable
-                             if (!(*i)->visible() &&
-                                 dynamic_cast<Variable<VariableBase::integral>*>(i->get()))
-                               (*i)->mouseFocus=false;
-                             else
-                               {
-                                 auto ct=(*i)->clickType(x,y);
-                                 if (ct==ClickType::onRavel)
-                                   {
-                                     if (auto r=dynamic_cast<Ravel*>(i->get()))
-                                       {
-                                         r->mouseFocus=true;
-                                         r->onBorder = false;
-                                         if (r->onMouseOver(x,y))
-                                           requestRedraw();
-                                       }
-                                   }
-                                 else
-                                   {
-                                     auto mf = ct!=ClickType::outside;
-                                     if ((*i)->mouseFocus!=mf)
-                                       {
-                                         requestRedraw();
-                                         (*i)->mouseFocus=mf;
-                                       }
-                                     (*i)->onResizeHandles=ct==ClickType::onResize;
-                                     if (auto r=dynamic_cast<Ravel*>(i->get()))
-                                       {
-                                         r->onBorder = ct==ClickType::onItem;
-                                         r->onMouseLeave();
-                                         requestRedraw();
-                                       }
-                                   }
-                               }
-                             return false;
-                           });
-        model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
-                           {
-                             bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
-                             if (mf!=(*i)->mouseFocus)
-                               {
-                                 (*i)->mouseFocus=mf;
-                                 requestRedraw();
-                               }
-                             bool onResize = (*i)->clickType(x,y)==ClickType::onResize;
-                             if (onResize!=(*i)->onResizeHandles)
-                               {
-                                 (*i)->onResizeHandles=onResize;
-                                 requestRedraw();
-                               }
-                             return false;
-                           });
-        model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
-                           {
-                             bool mf=(*i)->near(x,y);
-                             if (mf!=(*i)->mouseFocus)
-                               {
-                                 (*i)->mouseFocus=mf;
-                                 requestRedraw();
-                               }        
-                             return false;
-                           });
-      }
-  }
+    catch (...) {/* absorb any exceptions, as they're not useful here */}
 
   void Canvas::displayDelayedTooltip(float x, float y)
   {
@@ -389,8 +384,9 @@ namespace minsky
     auto item=model->findAny(&Group::items,
                         [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
-      item=model->findAny(&Group::groups,
-                       [&](const GroupPtr& i){return i->visible() && !i->displayContents() && i->contains(x,y);});
+      item=model->findAny
+        (&Group::groups, [&](const GroupPtr& i)
+                         {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
     return item;
   }
   
@@ -472,7 +468,8 @@ namespace minsky
           if (auto parent=g->group.lock())
             {
               itemFocus=parent->addItem(item);
-              itemFocus->m_visible=true;
+              if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+                v->controller.reset();
               g->splitBoundaryCrossingWires();
             }
           // else item already at toplevel
@@ -517,8 +514,9 @@ namespace minsky
              if (auto v=dynamic_cast<VariableBase*>(i->get()))
                if (v->valueId()==valueId)
                  {
-                   if (auto g=v->godley.lock()) // fix up internal references in Godley table
-                     g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
+                   if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
+                       // fix up internal references in Godley table
+                       g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
                    v->name(newName);
                  }
              return false;
@@ -554,7 +552,6 @@ namespace minsky
           newItem.reset(item->clone());
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
-        newItem->m_visible=true;
       }
   }
 
@@ -563,7 +560,7 @@ namespace minsky
     if (auto g=dynamic_pointer_cast<Group>(item))
       {
         if (auto parent=model->group.lock())
-          model->setZoom(parent->zoomFactor);
+          model->setZoom(parent->zoomFactor());
         model=g;
         float zoomFactor=1.1*model->displayZoom;
         if (!model->displayContents())
@@ -607,10 +604,9 @@ namespace minsky
     for (size_t i=0; i<v.size(); ++i)
       {
         auto ni=v[i]->clone();
-        ni->m_visible=true;
         group->addItem(ni);
         ni->rotation=0;
-        ni->zoomFactor=group->zoomFactor;
+        //ni->zoomFactor=group->zoomFactor;
         ni->moveTo(group->x()+maxWidth - widths[i],
                    y+heights[i]);
         // variables need to refer to outer scope
@@ -634,7 +630,7 @@ namespace minsky
   void Canvas::zoomToDisplay()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))
-      model->zoom(g->x(),g->y(),1.1*g->displayZoom);
+      model->zoom(g->x(),g->y(),1.1/(g->relZoom*g->zoomFactor()));
   }
 
   bool Canvas::selectVar(float x, float y) 

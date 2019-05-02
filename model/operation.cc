@@ -144,6 +144,7 @@ namespace minsky
     double fm=std::fmod(rotation,360);
     bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
     double coupledIntTranslation=0;
+    float z=zoomFactor();
 
     auto t=type();
     // call the iconDraw method if data description is empty
@@ -160,20 +161,20 @@ namespace minsky
         
           const NamedOp& c=dynamic_cast<const NamedOp&>(*this);
           cairo_save(cairo);
-        
+          
           Pango pango(cairo);
-          pango.setFontSize(10*zoomFactor);
+          pango.setFontSize(10*z);
           pango.setMarkup(latexToPango(c.description));
           pango.angle=angle + (textFlipped? M_PI: 0);
           Rotate r(rotation+ (textFlipped? 180: 0),0,0);
 
           // parameters of icon in userspace (unscaled) coordinates
           float w, h, hoffs;
-          w=0.5*pango.width()+2*zoomFactor; 
-          h=0.5*pango.height()+4*zoomFactor;
-          hoffs=pango.top()/zoomFactor;
+          w=0.5*pango.width()+2*z; 
+          h=0.5*pango.height()+4*z;
+          hoffs=pango.top()/z;
     
-          cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*zoomFactor), r.y(-w+1,-h-hoffs+2*zoomFactor));
+          cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
           pango.show();
           cairo_restore(cairo);
           cairo_save(cairo);
@@ -184,7 +185,7 @@ namespace minsky
           cairo_line_to(cairo,-w,h);
           cairo_line_to(cairo,w,h);
 
-          cairo_line_to(cairo,w+2*zoomFactor,0);
+          cairo_line_to(cairo,w+2*z,0);
           cairo_line_to(cairo,w,-h);
           cairo_close_path(cairo);
           cairo_clip_preserve(cairo);
@@ -216,25 +217,25 @@ namespace minsky
               RenderVariable rv(iv,cairo);
               // we need to add some translation if the variable is bound
               cairo_rotate(cairo,rotation*M_PI/180.0);
-              coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*zoomFactor;
+              coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*z;
               //            cairo_translate(cairo, coupledIntTranslation, 0);
               cairo_rotate(cairo,-rotation*M_PI/180.0);
             }
         cairo_save(cairo);
-        cairo_scale(cairo,zoomFactor,zoomFactor);
+        cairo_scale(cairo,z,z);
         iconDraw(cairo);
         cairo_restore(cairo);
         break;
       default:
         cairo_save(cairo);
-        cairo_scale(cairo,zoomFactor,zoomFactor);
+        cairo_scale(cairo,z,z);
         iconDraw(cairo);
         cairo_restore(cairo);
         break;
       }
 
-    float l=OperationBase::l*zoomFactor, r=OperationBase::r*zoomFactor, 
-      h=OperationBase::h*zoomFactor;
+    float l=OperationBase::l*z, r=OperationBase::r*z, 
+      h=OperationBase::h*z;
     int intVarWidth=0;
     cairo_save(cairo);
     cairo_rotate(cairo, angle);
@@ -252,7 +253,7 @@ namespace minsky
     if (const IntOp* i=dynamic_cast<const IntOp*>(this))
       if (i->coupled())
         {
-          float ivo=i->intVarOffset*zoomFactor;
+          float ivo=i->intVarOffset*z;
           cairo_new_path(cairo);
           cairo_move_to(cairo,r,0);
           cairo_line_to(cairo,r+ivo,0);
@@ -260,11 +261,10 @@ namespace minsky
           cairo_stroke(cairo);
         
           VariablePtr intVar=i->intVar;
-          intVar->zoomFactor=zoomFactor;
           // display an integration variable next to it
           RenderVariable rv(*intVar, cairo);
           // save the render width for later use in setting the clip
-          intVarWidth=rv.width()*zoomFactor; 
+          intVarWidth=rv.width()*z; 
           // set the port location...
           intVar->moveTo(i->x()+r+ivo+intVarWidth, i->y());
             
@@ -283,10 +283,10 @@ namespace minsky
           cairo_line_to(cairo,l,-h);
           cairo_line_to(cairo,r,0);
           cairo_line_to(cairo,r+ivo,0);
-          float rvw=rv.width()*zoomFactor, rvh=rv.height()*zoomFactor;
+          float rvw=rv.width()*z, rvh=rv.height()*z;
           cairo_line_to(cairo,r+ivo,-rvh);
           cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
-          cairo_line_to(cairo,r+ivo+2*rvw+2*zoomFactor,0);
+          cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
           cairo_line_to(cairo,r+ivo+2*rvw,rvh);
           cairo_line_to(cairo,r+ivo,rvh);
           cairo_line_to(cairo,r+ivo,0);
@@ -437,21 +437,20 @@ namespace minsky
           catch (...)
             {
               desc=minsky().variableValues.newName(vid);
-              if (desc.find(':')!=string::npos)
-                // if not current scope, name takes on ':' prefix
-                if (size_t(VariableValue::scope(desc))!=size_t(group.lock().get()))
-                  desc=":"+desc;
             }
         else
           desc=minsky().variableValues.newName(vid);
+        if (desc[0]==':') desc=desc.substr(1);// disallow global integration variables
       }
-
+    
+    
     ItemPtr oldIvar;
     if (intVar)
       oldIvar=minsky().model->removeItem(*intVar);
 
     intVar.reset(new Variable<VariableType::integral>(desc));
-    intVar->m_visible=false; // we're managing our own display
+    if (auto g=group.lock())
+      intVar->controller=g->findItem(*this); // we're managing our own display
     // initialise in toggled state
     ports[0]=intVar->ports[0];
 
@@ -500,7 +499,7 @@ namespace minsky
           g->addWire(newWire);
         else
           minsky().model->addWire(newWire);
-        intVar->m_visible=true;
+        intVar->controller.reset();
         intVar->rotation=rotation;
      }
     else
@@ -509,10 +508,12 @@ namespace minsky
         // not sufficient - wires hold a reference to the ports
         // they connect
         if (auto g=group.lock())
-          for (auto w: intVar->ports[1]->wires())
-            g->removeWire(*w);
+          {
+            for (auto w: intVar->ports[1]->wires())
+              g->removeWire(*w);
+            intVar->controller=g->findItem(*this);
+          }
         ports[0]=intVar->ports[0];
-        intVar->m_visible=false;
         intVar->mouseFocus=false; // prevent drawing of variable ports when coupled
       }
     return coupled();
@@ -656,7 +657,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,-5);
     Pango pango(cairo);
-    pango.setFontSize(7*zoomFactor);
+    pango.setFontSize(7*zoomFactor());
     pango.setMarkup("→");
     pango.show();
   }
@@ -893,7 +894,7 @@ namespace minsky
 //    cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-7,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*zoomFactor);
+    pango.setFontSize(7*zoomFactor());
     pango.setMarkup("⌊x⌋");
     pango.show();
   }
@@ -939,7 +940,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*zoomFactor);
+    pango.setFontSize(7*zoomFactor());
     pango.setMarkup("∑");
     pango.show();
   }
@@ -948,7 +949,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*zoomFactor);
+    pango.setFontSize(7*zoomFactor());
     pango.setMarkup("∏");
     pango.show();
   }
@@ -999,7 +1000,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-7,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*zoomFactor);
+    pango.setFontSize(7*zoomFactor());
     pango.setMarkup("∑+");
     pango.show();
   }
@@ -1008,7 +1009,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-6,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*zoomFactor);
+    pango.setFontSize(7*zoomFactor());
     pango.setMarkup("∏×");
     pango.show();
   }
@@ -1017,7 +1018,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(7*zoomFactor);
+    pango.setFontSize(7*zoomFactor());
     pango.setMarkup("Δ");
     pango.show();
   }
@@ -1026,7 +1027,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
-    pango.setFontSize(14*zoomFactor);
+    pango.setFontSize(14*zoomFactor());
     pango.setMarkup("·");
     pango.show();
   }
@@ -1035,7 +1036,7 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
-    pango.setFontSize(10*zoomFactor);
+    pango.setFontSize(10*zoomFactor());
     pango.setMarkup("⊗");
     pango.show();
   }

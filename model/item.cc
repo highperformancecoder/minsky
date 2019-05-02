@@ -51,7 +51,7 @@ namespace minsky
     cairo_recording_surface_ink_extents(surf.surface(),
                                         &l,&t,&w,&h);
     // note (0,0) is relative to the (x,y) of icon.
-    double invZ=1/x.zoomFactor;
+    double invZ=1/x.zoomFactor();
     left=l*invZ;
     right=(l+w)*invZ;
     top=t*invZ;
@@ -61,7 +61,7 @@ namespace minsky
   float Item::x() const 
   {
     if (auto g=group.lock())
-      return g->zoomFactor*m_x+g->x();
+      return zoomFactor()*m_x+g->x();
     else
       return m_x;
   }
@@ -69,11 +69,19 @@ namespace minsky
   float Item::y() const 
   {
     if (auto g=group.lock())
-      return g->zoomFactor*m_y+g->y();
+      return zoomFactor()*m_y+g->y();
     else
       return m_y;
   }
 
+  float Item::zoomFactor() const
+  {
+    if (auto g=group.lock())
+      return g->zoomFactor()*g->relZoom;
+    else
+      return 1;
+  }
+  
   void Item::deleteAttachedWires()
   {
     for (auto& p: ports)
@@ -82,10 +90,8 @@ namespace minsky
   
   bool Item::visible() const 
   {
-    if (auto g=group.lock())
-      return m_visible && g->displayContents();
-    else
-      return m_visible;
+    auto g=group.lock();
+    return !g || g->displayContents();
   }
   
 
@@ -93,8 +99,9 @@ namespace minsky
   {
     if (auto g=group.lock())
       {
-        m_x=(x-g->x())/g->zoomFactor;
-        m_y=(y-g->y())/g->zoomFactor;
+        float invZ=1/zoomFactor();
+        m_x=(x-g->x())*invZ;
+        m_y=(y-g->y())*invZ;
       }
     else
       {
@@ -113,7 +120,7 @@ namespace minsky
     // firstly, check whether a port has been selected
     for (auto& p: ports)
       {
-        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor)
+        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
           return ClickType::onPort;
       }
 
@@ -128,12 +135,6 @@ namespace minsky
       return ClickType::outside;
   }
 
-  void Item::zoom(float xOrigin, float yOrigin,float factor)
-  {
-    if (visible())
-      zoomFactor*=factor;
-  }
-
   void Item::drawPorts(cairo_t* cairo) const
   {
     cairo_save(cairo);
@@ -141,7 +142,7 @@ namespace minsky
     for (auto& p: ports)
       {
         cairo_new_sub_path(cairo);
-        cairo_arc(cairo, p->x()-x(), p->y()-y(), portRadius*zoomFactor, 0, 2*M_PI);
+        cairo_arc(cairo, p->x()-x(), p->y()-y(), portRadius*zoomFactor(), 0, 2*M_PI);
       }
     cairo_set_source_rgb(cairo, 0,0,0);
     cairo_set_line_width(cairo,1);
@@ -180,8 +181,8 @@ namespace minsky
   {
     {
       cairo::CairoSave cs(cairo);
-      double x=0.5*width()*zoomFactor, y=0.5*height()*zoomFactor,
-        sf=portRadius*zoomFactor;
+      auto z=zoomFactor();
+      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadius*z;
       drawResizeHandle(cairo,x,y,sf);
       cairo_rotate(cairo,0.5*M_PI);
       drawResizeHandle(cairo,y,x,sf);
@@ -199,13 +200,13 @@ namespace minsky
   {
     Rotate r(rotation,0,0);
     Pango pango(cairo);
+    float w, h, z=zoomFactor();
     pango.angle=rotation * M_PI / 180.0;
-    pango.setFontSize(12*zoomFactor);
+    pango.setFontSize(12*z);
     pango.setMarkup(latexToPango(detailedText)); 
     // parameters of icon in userspace (unscaled) coordinates
-    float w, h;
-    w=0.5*pango.width()+2*zoomFactor; 
-    h=0.5*pango.height()+4*zoomFactor;
+    w=0.5*pango.width()+2*z; 
+    h=0.5*pango.height()+4*z;
 
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
@@ -230,18 +231,18 @@ namespace minsky
   {
     if (!tooltip.empty())
       {
-        cairo_save(cairo);
+        cairo::CairoSave cs(cairo);
         Pango pango(cairo);
         pango.setMarkup(latexToPango(tooltip));
-        cairo_translate(cairo,zoomFactor*(0.5*bb.width())+10,
-                        zoomFactor*(-0.5*bb.height())-20);
+        float z=zoomFactor();
+        cairo_translate(cairo,z*(0.5*bb.width())+10,
+                        z*(-0.5*bb.height())-20);
         cairo_rectangle(cairo,0,0,pango.width(),pango.height());
         cairo_set_source_rgb(cairo,1,1,1);
         cairo_fill_preserve(cairo);
         cairo_set_source_rgb(cairo,0,0,0);
         pango.show();
         cairo_stroke(cairo);
-        cairo_restore(cairo);
       }
   }
 

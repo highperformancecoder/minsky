@@ -9,10 +9,11 @@ for i in $here/examples/*.mky; do
     if [ $i = "$here/examples/EndogenousMoney.mky" ]; then continue; fi 
     "$here/gui-tk/minsky" "$here/test/rewriteMky.tcl" "$i"  tmp;
     "$here/gui-tk/minsky" "$here/test/rewriteMky.tcl" tmp  tmp1;
+    "$here/gui-tk/minsky" "$here/test/rewriteMky.tcl" tmp1  tmp2;
     if test $? -ne 0; then EXIT=1; break; fi
     # check second rewrite doesn't mutate
     
-    $here/test/cmpFp tmp tmp1
+    $here/test/cmpFp tmp1 tmp2
     if [ $? -ne 0 ]; then
         echo "$i mutates"
         EXIT=1

@@ -501,6 +501,13 @@ proc canvasContext {x y X Y} {
     tk_popup .wiring.context $X $Y
 }
 
+proc saveSelection {} {
+    set f [tk_getSaveFile -defaultextension .mky]
+    if [string length $f] {
+        eval minsky.saveSelectionAsFile {$f}
+    }
+}
+
 
 bind .wiring.canvas <Double-Button-1> {doubleButton %x %y}
 proc doubleButton {x y} {
@@ -538,7 +545,7 @@ proc wireContextMenu {x y} {
     .wiring.context add command -label "Straighten" -command "minsky.canvas.wire.straighten"
 #    .wiring.context add command -label "Raise" -command "raiseItem wire$id"
 #    .wiring.context add command -label "Lower" -command "lowerItem wire$id"
-    .wiring.context add command -label "Browse object" -command "obj_browser canvas.wire.*"
+    .wiring.context add command -label "Browse object" -command "obj_browser minsky.canvas.wire.*"
     .wiring.context add command -label "Delete wire" -command "canvas.deleteWire"
     tk_popup .wiring.context $x $y
 }
@@ -787,7 +794,7 @@ proc setupPickMenu {} {
 
 proc loadCSVIntoRavel {} {
     global workDir
-    canvas.item.loadFile [tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
+    eval canvas.item.loadFile {[tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]}
     reset
 }
 
@@ -797,17 +804,7 @@ proc exportItemAsCSV {} {
         {"CSV" .csv TEXT} {"All" {.*} TEXT}
     } -initialdir $workDir ]
     if {$f!=""} {
-        minsky.canvas.item.exportAsCSV $f
-    }
-}
-
-proc exportItemAsCSV {} {
-    global workDir
-    set f [tk_getSaveFile -filetypes {
-        {"CSV" .csv TEXT} {"All" {.*} TEXT}
-    } -initialdir $workDir ]
-    if {$f!=""} {
-        minsky.canvas.item.exportAsCSV $f
+        eval minsky.canvas.item.exportAsCSV {$f}
     }
 }
 
@@ -818,19 +815,19 @@ proc exportItemAsImg {} {
     } -initialdir $workDir -typevariable type ]
     if {$f==""} return
     if [string match -nocase *.svg "$f"] {
-        minsky.canvas.item.renderToSVG "$f"
+        eval minsky.canvas.item.renderToSVG {$f}
     } elseif [string match -nocase *.pdf "$f"] {
-        minsky.canvas.item.renderToPDF "$f"
+        eval minsky.canvas.item.renderToPDF {$f}
     } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
-        minsky.canvas.item.renderToPS "$f"
+        eval minsky.canvas.item.renderToPS {$f}
     } elseif {[string match -nocase *.png "$f"]} {
-        minsky.canvas.item.renderToPNG "$f"
+        eval minsky.canvas.item.renderToPNG {$f}
     } else {
         switch $type {
-            "SVG" {minsky.canvas.item.renderToSVG  "$f.svg"}
-            "PDF" {minsky.canvas.item.renderToPDF "$f.pdf"}
-            "Postscript" {minsky.canvas.item.renderToPS "$f.eps"}
-            "PNG" {minsky.canvas.item.renderToPNG "$f.png"}
+            "SVG" {eval minsky.canvas.item.renderToSVG  {$f.svg}}
+            "PDF" {eval minsky.canvas.item.renderToPDF {$f.pdf}}
+            "Postscript" {eval minsky.canvas.item.renderToPS {$f.eps}}
+            "PNG" {eval minsky.canvas.item.renderToPNG {$f.png}}
         }
     }
 }
@@ -844,13 +841,13 @@ namespace eval godley {
                        -initialdir $workDir -typevariable type]  
         if {$fname==""} return
         if [string match -nocase *.csv "$fname"] {
-            $item.table.exportToCSV $fname
+            eval $item.table.exportToCSV {$fname}
         } elseif [string match -nocase *.tex "$fname"] {
-            $item.table.exportToLaTeX $fname
+            eval $item.table.exportToLaTeX {$fname}
         } else {
             switch $type {
-                "CSV files" {$item.table.exportToCSV $fname.csv}
-                "LaTeX files" {$item.table.exportToLaTeX $fname.tex}
+                "CSV files" {eval $item.table.exportToCSV {$fname.csv}}
+                "LaTeX files" {eval $item.table.exportToLaTeX {$fname.tex}}
             }
         }
     }
@@ -1272,7 +1269,7 @@ proc importData {} {
     global workDir
     set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
     if [string length $f] {
-        eval minsky.canvas.item.readData $f
+        eval minsky.canvas.item.readData {$f}
     }
 }
 

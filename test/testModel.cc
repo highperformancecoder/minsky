@@ -206,6 +206,8 @@ SUITE(Group)
       g->bb.update(*g);
       CHECK_CLOSE(group0->bb.width(), g->bb.width(), 1e-2);
       CHECK_CLOSE(group0->bb.height(), g->bb.height(), 1e-2);
+      CHECK_CLOSE(group0->x(),g->x(), 1e-2);
+      CHECK_CLOSE(group0->y(),g->y(), 1e-2);
       CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 1e-2);
 
       save("copy.mky");
@@ -445,7 +447,7 @@ SUITE(Canvas)
 
       // test that groups can be selected
       CHECK(!group0->displayContents());
-      float w=0.5*group0->width+5, h=0.5*group0->height+5;
+      float w=0.5*group0->width+10, h=0.5*group0->height+10;
       x=group0->x()-w; y=group0->y()-h;
       // nw -> se selection
       canvas.mouseDown(x,y);
@@ -523,15 +525,15 @@ SUITE(Canvas)
         model.reset(new Group);
         model->self=model;
         addGroup();
-        auto i=itemFocus;
-        dynamic_cast<Group&>(*i).displayZoom=2; // ensure displayContents is false
-        double w=i->width(), h=i->height();
-        double x=i->x(), y=i->y();
+        auto& group=dynamic_cast<Group&>(*itemFocus);
+        group.relZoom=0.5; // ensure displayContents is false
+        double w=group.width, h=group.height;
+        double x=group.x(), y=group.y();
 
         mouseDown(x+0.5*w, y+0.5*h);
         mouseUp(x+w, y+h);
-        CHECK_CLOSE(1.5*w,i->width(),1);
-        CHECK_CLOSE(1.5*h,i->height(),1);
+        CHECK_CLOSE(1.5*w,group.width,1);
+        CHECK_CLOSE(1.5*h,group.height,1);
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)

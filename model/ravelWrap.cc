@@ -314,8 +314,8 @@ namespace minsky
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double r=ravelDefaultRadius;
-    if (ravel) r=1.1*zoomFactor*ravel_radius(ravel);
+    double r=ravelDefaultRadius, z=zoomFactor();
+    if (ravel) r=1.1*z*ravel_radius(ravel);
     ports[0]->moveTo(x()+1.1*r, y());
     ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
@@ -346,7 +346,7 @@ namespace minsky
       cairo::CairoSave cs(cairo);
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
       cairo_clip(cairo);
-      cairo_scale(cairo,zoomFactor,zoomFactor);
+      cairo_scale(cairo,z,z);
       ravel::CairoRenderer cr(cairo);
       if (ravel)
         ravel_render(ravel,&cr);
@@ -357,7 +357,7 @@ namespace minsky
   void Ravel::resize(const LassoBox& b)
   {
     if (ravel)
-      ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor));
+      ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor()));
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
@@ -368,16 +368,17 @@ namespace minsky
   
   ClickType::Type Ravel::clickType(float xx, float yy)
   {
+    double z=zoomFactor();
     for (auto& p: ports)
-      if (hypot(xx-p->x(), yy-p->y()) < portRadius*zoomFactor)
+      if (hypot(xx-p->x(), yy-p->y()) < portRadius*z)
         return ClickType::onPort;
-    double r=1.1*zoomFactor*(ravel? ravel_radius(ravel): ravelDefaultRadius);
+    double r=1.1*z*(ravel? ravel_radius(ravel): ravelDefaultRadius);
     double R=1.1*r;
     double dx=xx-x(), dy=yy-y();
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-R) < portRadius*zoomFactor &&
-        fabs(fabs(dy)-R) < portRadius*zoomFactor &&
-        fabs(hypot(dx,dy)-std::sqrt(2)*R) < portRadius*zoomFactor)
+    if (fabs(fabs(dx)-R) < portRadius*z &&
+        fabs(fabs(dy)-R) < portRadius*z &&
+        fabs(hypot(dx,dy)-std::sqrt(2)*R) < portRadius*z)
       return ClickType::onResize;
     else if (std::abs(xx-x())>R || std::abs(yy-y())>R)
       return ClickType::outside;    
@@ -394,22 +395,32 @@ namespace minsky
       return -1;
   }
 
+
   void Ravel::onMouseDown(float xx, float yy)
   {
-    if (ravel)
-      ravel_onMouseDown(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
+    double invZ=1/zoomFactor();
+    if (ravel) ravel_onMouseDown(ravel,(xx-x())*invZ,(yy-y())*invZ);
   }
+  
   void Ravel::onMouseUp(float xx, float yy)
   {
-     if (ravel)
-      ravel_onMouseUp(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
+    if (ravel)
+      {
+        double invZ=1/zoomFactor();
+        ravel_onMouseUp(ravel,(xx-x())*invZ,(yy-y())*invZ);
+      }
   }
   bool Ravel::onMouseMotion(float xx, float yy)
-  {if (ravel) return ravel_onMouseMotion(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor); return false;}
+  {
+    double invZ=1/zoomFactor();
+    if (ravel) return ravel_onMouseMotion(ravel,(xx-x())*invZ,(yy-y())*invZ);
+    return false;
+  }
+  
   bool Ravel::onMouseOver(float xx, float yy)
   {
-    if (ravel)
-      return ravel_onMouseOver(ravel,(xx-x())/zoomFactor,(yy-y())/zoomFactor);
+    double invZ=1/zoomFactor();
+    if (ravel) return ravel_onMouseOver(ravel,(xx-x())*invZ,(yy-y())*invZ);
     return false;
   }
   void Ravel::onMouseLeave()

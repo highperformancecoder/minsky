@@ -270,22 +270,22 @@ proc exportGodley {id} {
                -initialdir $workDir -typevariable type]  
     if {$f==""} return
     if [string match -nocase *.svg "$f"] {
-        $id.renderCanvasToSVG "$f"
+        eval $id.renderCanvasToSVG {$f}
     } elseif [string match -nocase *.pdf "$f"] {
-        $id.renderCanvasToPDF "$f"
+        eval $id.renderCanvasToPDF {$f}
     } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
-        $id.renderCanvasToPS "$f"
+        eval $id.renderCanvasToPS {$f}
     } elseif {[string match -nocase *.tex "$f"]} {
-        $id.godleyIcon.table.exportToLaTeX "$f"
+        eval $id.godleyIcon.table.exportToLaTeX {$f}
     } elseif {[string match -nocase *.csv "$f"]} {
-        $id.godleyIcon.table.exportToCSV "$f"
+        eval $id.godleyIcon.table.exportToCSV {$f}
     } else {
         switch $type {
-            "SVG" {$id.renderCanvasToSVG  "$f.svg"}
-            "PDF" {$id.renderCanvasToPDF "$f.pdf"}
-            "Postscript" {$id.renderCanvasToPS "$f.eps"}
-            "LaTeX" {$id.godleyIcon.table.exportToLaTeX "$f.tex"}
-            "CSV" {$id.godleyIcon.table.exportToCSV "$f.csv"}
+            "SVG" {eval $id.renderCanvasToSVG  {$f.svg}}
+            "PDF" {eval $id.renderCanvasToPDF {$f.pdf}}
+            "Postscript" {eval $id.renderCanvasToPS {$f.eps}}
+            "LaTeX" {eval $id.godleyIcon.table.exportToLaTeX {$f.tex}}
+            "CSV" {eval $id.godleyIcon.table.exportToCSV {$f.csv}}
         }
     }
 }
