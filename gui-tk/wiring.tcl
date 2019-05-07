@@ -337,6 +337,7 @@ proc addConstantOrVariable {} {
     global varInput varType
     set varInput(Name) ""
     set varInput(Value) ""
+    set varInput(Units) ""
     set varInput(Type) $varType
     set "varInput(Short description)" ""
     set "varInput(Detailed description)" ""
