@@ -322,75 +322,73 @@ foreach {var text default type} $preferencesVars {
 }
             
 proc showPreferences {} {
+    if [winfo exists .preferencesForm] return
     global preferences_input preferences preferencesVars
     foreach var [array names preferences] {
 	set preferences_input($var) $preferences($var)
     }
 
-    if {![winfo exists .preferencesForm]} {
-        toplevel .preferencesForm
-        wm resizable .preferencesForm 0 0
+    toplevel .preferencesForm
+    wm resizable .preferencesForm 0 0
+    
+    set row 0
+    
+    grid [label .preferencesForm.label$row -text "Preferences"] -column 1 -columnspan 999 -pady 10
+    incr row 10
 
-        set row 0
+    # pad the left and right
+    grid [frame .preferencesForm.f1] -column 1 -row 1 -rowspan 999 -padx 10
+    grid [frame .preferencesForm.f2] -column 999 -row 1 -rowspan 999 -padx 10
+    
+
+    foreach {var text default type} $preferencesVars {
+        set rowdict($text) $row
+
+        grid [label .preferencesForm.label$row -text $text] -column 10 -row $row -sticky e -pady 5
         
-        grid [label .preferencesForm.label$row -text "Preferences"] -column 1 -columnspan 999 -pady 10
-        incr row 10
-
-        # pad the left and right
-        grid [frame .preferencesForm.f1] -column 1 -row 1 -rowspan 999 -padx 10
-        grid [frame .preferencesForm.f2] -column 999 -row 1 -rowspan 999 -padx 10
-        
-
-        foreach {var text default type} $preferencesVars {
-            set rowdict($text) $row
-
-            grid [label .preferencesForm.label$row -text $text] -column 10 -row $row -sticky e -pady 5
-            
-            switch $type {
-                text {
-                    grid [entry  .preferencesForm.text$row -width 20 -textvariable preferences_input($var)] -column 20 -row $row -sticky ew -columnspan 999
-                }
-                bool {
-                    grid [checkbutton .preferencesForm.cb$row -variable preferences_input($var)] -row $row -column 20 -sticky w
-                }
-                font {
-                    grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
-                    bind .preferencesForm.font <<ComboboxSelected>> {
-                        defaultFont [.preferencesForm.font get]
-                        canvas.requestRedraw
-                    }
-                }
-                default {
-                    if {[llength $type] > 1} {
-                        switch [lindex $type 0] {
-                            enum {
-                                set column 20
-                                foreach {valtext val} [lrange $type 1 end] {
-                                    grid [radiobutton .preferencesForm.rb${row}v$column  -text $valtext -variable preferences_input($var) -value $val] -row $row -column $column
-                                    incr column 
-                                }
-                            }
-                        }
-                    } else { error "unknown preferences widget $type" }
+        switch $type {
+            text {
+                grid [entry  .preferencesForm.text$row -width 20 -textvariable preferences_input($var)] -column 20 -row $row -sticky ew -columnspan 999
+            }
+            bool {
+                grid [checkbutton .preferencesForm.cb$row -variable preferences_input($var)] -row $row -column 20 -sticky w
+            }
+            font {
+                grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
+                bind .preferencesForm.font <<ComboboxSelected>> {
+                    defaultFont [.preferencesForm.font get]
+                    canvas.requestRedraw
                 }
             }
-            
-            incr row 10
+            default {
+                if {[llength $type] > 1} {
+                    switch [lindex $type 0] {
+                        enum {
+                            set column 20
+                            foreach {valtext val} [lrange $type 1 end] {
+                                grid [radiobutton .preferencesForm.rb${row}v$column  -text $valtext -variable preferences_input($var) -value $val] -row $row -column $column
+                                incr column 
+                            }
+                        }
+                    }
+                } else { error "unknown preferences widget $type" }
+            }
         }
         
-        set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Show Values)"
-        
-        frame .preferencesForm.buttonBar
-        button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm; redrawAllGodleyTables}
-        button .preferencesForm.buttonBar.cancel -text cancel -command {closePreferencesForm}
-        pack .preferencesForm.buttonBar.ok [label .preferencesForm.buttonBar.spacer -width 2] .preferencesForm.buttonBar.cancel -side left -pady 10
-        grid .preferencesForm.buttonBar -column 1 -row 999 -columnspan 999
-        
-        bind .preferencesForm <Key-Return> {invokeOKorCancel .preferencesForm.buttonBar}
-
-        wm title .preferencesForm "Preferences"
-
+        incr row 10
     }
+    
+    set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Show Values)"
+    
+    frame .preferencesForm.buttonBar
+    button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm; redrawAllGodleyTables}
+    button .preferencesForm.buttonBar.cancel -text cancel -command {closePreferencesForm}
+    pack .preferencesForm.buttonBar.ok [label .preferencesForm.buttonBar.spacer -width 2] .preferencesForm.buttonBar.cancel -side left -pady 10
+    grid .preferencesForm.buttonBar -column 1 -row 999 -columnspan 999
+    
+    bind .preferencesForm <Key-Return> {invokeOKorCancel .preferencesForm.buttonBar}
+
+    wm title .preferencesForm "Preferences"
 
     deiconify .preferencesForm
     update idletasks
@@ -1266,8 +1264,7 @@ proc setRKparms {} {
 
 
 proc closePreferencesForm {} {
-    grab release .preferencesForm
-    wm withdraw .preferencesForm
+    destroy .preferencesForm
 }
 
 proc setPreferenceParms {} {
