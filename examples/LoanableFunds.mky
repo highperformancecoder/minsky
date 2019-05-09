@@ -441,6 +441,7 @@
      <int>2</int>
      <int>3</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>8</id>
@@ -454,6 +455,7 @@
      <int>6</int>
      <int>7</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>12</id>
@@ -467,6 +469,7 @@
      <int>10</int>
      <int>11</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>16</id>
@@ -480,6 +483,7 @@
      <int>14</int>
      <int>15</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>20</id>
@@ -493,6 +497,7 @@
      <int>18</int>
      <int>19</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>24</id>
@@ -506,6 +511,7 @@
      <int>22</int>
      <int>23</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>28</id>
@@ -519,6 +525,7 @@
      <int>26</int>
      <int>27</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>32</id>
@@ -532,6 +539,7 @@
      <int>30</int>
      <int>31</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>36</id>
@@ -545,6 +553,7 @@
      <int>34</int>
      <int>35</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>40</id>
@@ -558,6 +567,7 @@
      <int>38</int>
      <int>39</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>44</id>
@@ -571,6 +581,7 @@
      <int>42</int>
      <int>43</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>48</id>
@@ -584,6 +595,7 @@
      <int>46</int>
      <int>47</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>52</id>
@@ -597,6 +609,7 @@
      <int>50</int>
      <int>51</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>56</id>
@@ -610,6 +623,7 @@
      <int>54</int>
      <int>55</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>60</id>
@@ -623,6 +637,7 @@
      <int>58</int>
      <int>59</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>64</id>
@@ -636,6 +651,7 @@
      <int>62</int>
      <int>63</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>68</id>
@@ -649,6 +665,7 @@
      <int>66</int>
      <int>67</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>72</id>
@@ -662,6 +679,7 @@
      <int>70</int>
      <int>71</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>76</id>
@@ -675,6 +693,7 @@
      <int>74</int>
      <int>75</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>80</id>
@@ -688,6 +707,7 @@
      <int>78</int>
      <int>79</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>84</id>
@@ -701,13 +721,14 @@
      <int>82</int>
      <int>83</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>86</id>
     <type>Variable:stock</type>
-    <x>432.003</x>
-    <y>407.467</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>384.616</x>
+    <y>379.567</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>85</int>
@@ -809,9 +830,9 @@
    <Item>
     <id>101</id>
     <type>Variable:flow</type>
-    <x>396.415</x>
-    <y>231.532</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>345.601</x>
+    <y>244.067</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>99</int>
@@ -830,9 +851,9 @@
    <Item>
     <id>104</id>
     <type>Variable:flow</type>
-    <x>396.415</x>
-    <y>262.414</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>347.416</x>
+    <y>276.747</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>102</int>
@@ -851,9 +872,9 @@
    <Item>
     <id>107</id>
     <type>Variable:flow</type>
-    <x>396.415</x>
-    <y>169.766</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>348.324</x>
+    <y>178.708</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>105</int>
@@ -872,9 +893,9 @@
    <Item>
     <id>110</id>
     <type>Variable:flow</type>
-    <x>396.415</x>
-    <y>293.297</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>349.232</x>
+    <y>309.426</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>108</int>
@@ -893,9 +914,9 @@
    <Item>
     <id>113</id>
     <type>Variable:flow</type>
-    <x>396.415</x>
-    <y>200.649</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>349.232</x>
+    <y>211.388</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>111</int>
@@ -914,9 +935,9 @@
    <Item>
     <id>116</id>
     <type>Variable:flow</type>
-    <x>396.415</x>
-    <y>108</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>344.693</x>
+    <y>113.349</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>114</int>
@@ -935,9 +956,9 @@
    <Item>
     <id>119</id>
     <type>Variable:flow</type>
-    <x>396.415</x>
-    <y>138.883</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>347.416</x>
+    <y>146.029</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>117</int>
@@ -956,9 +977,9 @@
    <Item>
     <id>122</id>
     <type>Variable:flow</type>
-    <x>385.415</x>
-    <y>0.000383892</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>340.154</x>
+    <y>-2.84421</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>120</int>
@@ -977,9 +998,9 @@
    <Item>
     <id>125</id>
     <type>Variable:flow</type>
-    <x>390.415</x>
-    <y>81.0003</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>344.693</x>
+    <y>84.301</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>123</int>
@@ -998,9 +1019,9 @@
    <Item>
     <id>128</id>
     <type>Variable:flow</type>
-    <x>380.415</x>
-    <y>27.0004</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>336.523</x>
+    <y>26.2042</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>126</int>
@@ -1019,9 +1040,9 @@
    <Item>
     <id>131</id>
     <type>Variable:flow</type>
-    <x>390.415</x>
-    <y>54.0004</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>347.416</x>
+    <y>55.2526</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>129</int>
@@ -1040,9 +1061,9 @@
    <Item>
     <id>134</id>
     <type>Variable:flow</type>
-    <x>750.445</x>
-    <y>172.119</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>711.411</x>
+    <y>189.586</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>132</int>
@@ -1061,9 +1082,9 @@
    <Item>
     <id>137</id>
     <type>Variable:flow</type>
-    <x>750.445</x>
-    <y>203.001</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>712.362</x>
+    <y>223.842</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>135</int>
@@ -1082,9 +1103,9 @@
    <Item>
     <id>140</id>
     <type>Variable:flow</type>
-    <x>750.445</x>
-    <y>233.884</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>709.508</x>
+    <y>258.098</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>138</int>
@@ -1103,9 +1124,9 @@
    <Item>
     <id>143</id>
     <type>Variable:flow</type>
-    <x>744.445</x>
-    <y>114.236</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>708.556</x>
+    <y>124.88</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>141</int>
@@ -1124,9 +1145,9 @@
    <Item>
     <id>146</id>
     <type>Variable:flow</type>
-    <x>750.445</x>
-    <y>264.767</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>713.314</x>
+    <y>292.354</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>144</int>
@@ -1145,9 +1166,9 @@
    <Item>
     <id>149</id>
     <type>Variable:flow</type>
-    <x>739.445</x>
-    <y>33.236</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>704.75</x>
+    <y>33.5298</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>147</int>
@@ -1166,9 +1187,9 @@
    <Item>
     <id>152</id>
     <type>Variable:flow</type>
-    <x>734.445</x>
-    <y>60.236</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>700.944</x>
+    <y>63.9797</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>150</int>
@@ -1187,9 +1208,9 @@
    <Item>
     <id>155</id>
     <type>Variable:flow</type>
-    <x>750.445</x>
-    <y>141.236</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>709.508</x>
+    <y>155.329</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>153</int>
@@ -1208,9 +1229,9 @@
    <Item>
     <id>158</id>
     <type>Variable:flow</type>
-    <x>744.445</x>
-    <y>87.236</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>711.411</x>
+    <y>94.4296</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>156</int>
@@ -1229,9 +1250,9 @@
    <Item>
     <id>160</id>
     <type>Variable:stock</type>
-    <x>814.136</x>
-    <y>354.878</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>780.454</x>
+    <y>332.45</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>159</int>
@@ -1249,9 +1270,9 @@
    <Item>
     <id>162</id>
     <type>Variable:stock</type>
-    <x>841.136</x>
-    <y>362.877</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>810.904</x>
+    <y>342.917</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>161</int>
@@ -1269,9 +1290,9 @@
    <Item>
     <id>165</id>
     <type>Variable:flow</type>
-    <x>504.33</x>
-    <y>394.956</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>472.938</x>
+    <y>393.128</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>163</int>
@@ -1290,9 +1311,9 @@
    <Item>
     <id>168</id>
     <type>Variable:flow</type>
-    <x>504.33</x>
-    <y>425.838</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>473.883</x>
+    <y>427.14</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>166</int>
@@ -1311,9 +1332,9 @@
    <Item>
     <id>171</id>
     <type>Variable:flow</type>
-    <x>504.33</x>
-    <y>456.721</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>473.883</x>
+    <y>461.152</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>169</int>
@@ -1332,9 +1353,9 @@
    <Item>
     <id>174</id>
     <type>Variable:flow</type>
-    <x>493.33</x>
-    <y>283.073</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>465.38</x>
+    <y>268.417</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>172</int>
@@ -1353,9 +1374,9 @@
    <Item>
     <id>177</id>
     <type>Variable:flow</type>
-    <x>488.33</x>
-    <y>310.073</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>461.128</x>
+    <y>298.65</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>175</int>
@@ -1374,9 +1395,9 @@
    <Item>
     <id>180</id>
     <type>Variable:flow</type>
-    <x>504.33</x>
-    <y>364.073</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>471.993</x>
+    <y>359.116</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>178</int>
@@ -1395,9 +1416,9 @@
    <Item>
     <id>183</id>
     <type>Variable:flow</type>
-    <x>498.33</x>
-    <y>337.073</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>471.993</x>
+    <y>328.883</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>181</int>
@@ -1416,9 +1437,9 @@
    <Item>
     <id>185</id>
     <type>Variable:stock</type>
-    <x>592.417</x>
-    <y>539.782</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>568.432</x>
+    <y>509.829</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>184</int>
@@ -1436,9 +1457,9 @@
    <Item>
     <id>188</id>
     <type>Variable:flow</type>
-    <x>848.955</x>
-    <y>385.116</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>848.035</x>
+    <y>391.958</y>
+    <zoomFactor>1.00367</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>186</int>
@@ -1457,9 +1478,9 @@
    <Item>
     <id>191</id>
     <type>Variable:flow</type>
-    <x>848.955</x>
-    <y>323.351</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>848.035</x>
+    <y>324.206</y>
+    <zoomFactor>1.00367</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>189</int>
@@ -1478,9 +1499,9 @@
    <Item>
     <id>194</id>
     <type>Variable:flow</type>
-    <x>848.955</x>
-    <y>354.233</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>850.028</x>
+    <y>358.082</y>
+    <zoomFactor>1.00367</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>192</int>
@@ -1499,9 +1520,9 @@
    <Item>
     <id>196</id>
     <type>Variable:stock</type>
-    <x>905.007</x>
-    <y>439.088</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>911.715</x>
+    <y>435.263</y>
+    <zoomFactor>1.00367</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>195</int>
@@ -2727,9 +2748,9 @@
    <Item>
     <id>344</id>
     <type>Variable:stock</type>
-    <x>565.417</x>
-    <y>531.782</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>538.199</x>
+    <y>502.271</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>343</int>
@@ -3102,9 +3123,9 @@
    <Item>
     <id>395</id>
     <type>Variable:stock</type>
-    <x>459.003</x>
-    <y>376.467</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>413.665</x>
+    <y>361.412</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>394</int>
@@ -3122,9 +3143,9 @@
    <Item>
     <id>397</id>
     <type>Variable:stock</type>
-    <x>489.885</x>
-    <y>376.467</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>446.344</x>
+    <y>359.596</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>396</int>
@@ -3142,9 +3163,9 @@
    <Item>
     <id>399</id>
     <type>Variable:stock</type>
-    <x>520.768</x>
-    <y>376.467</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>479.024</x>
+    <y>363.227</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>398</int>
@@ -3162,9 +3183,9 @@
    <Item>
     <id>401</id>
     <type>Variable:stock</type>
-    <x>551.651</x>
-    <y>376.467</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>511.703</x>
+    <y>360.504</y>
+    <zoomFactor>1.10161</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>400</int>
@@ -3182,9 +3203,9 @@
    <Item>
     <id>403</id>
     <type>Variable:stock</type>
-    <x>783.253</x>
-    <y>358.878</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>746.198</x>
+    <y>336.732</y>
+    <zoomFactor>1.05091</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>402</int>
@@ -3202,9 +3223,9 @@
    <Item>
     <id>405</id>
     <type>Variable:stock</type>
-    <x>534.534</x>
-    <y>535.782</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>504.187</x>
+    <y>504.161</y>
+    <zoomFactor>1.05844</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>404</int>
@@ -3222,9 +3243,9 @@
    <Item>
     <id>407</id>
     <type>Variable:stock</type>
-    <x>874.124</x>
-    <y>435.088</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>877.839</x>
+    <y>429.285</y>
+    <zoomFactor>1.00367</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>406</int>
@@ -3275,9 +3296,104 @@
     <name>Money&#32;and&#32;Bank&#32;Accounts</name>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$</ylabel>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>453</id>
@@ -3315,9 +3431,104 @@
     <name>Incomes</name>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$/Year</ylabel>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>476</id>
@@ -3355,9 +3566,104 @@
     <name>GDP</name>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$/Year</ylabel>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>499</id>
@@ -3395,9 +3701,104 @@
     <name>Velocity&#32;of&#32;Money</name>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Times/Year</ylabel>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>522</id>
@@ -3435,9 +3836,104 @@
     <name>D&#32;and&#32;Money&#32;Stock</name>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>$</ylabel>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>545</id>
@@ -3475,9 +3971,104 @@
     <name>Debt&#32;to&#32;GDP&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
     <ylabel>Ratio</ylabel>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>546</id>
@@ -3504,7 +4095,7 @@
      <int>398</int>
      <int>400</int>
     </ports>
-    <width>659.523</width>
+    <width>671.897</width>
     <height>689.523</height>
     <data>
      <vector>
@@ -3642,7 +4233,7 @@
      <int>159</int>
      <int>161</int>
     </ports>
-    <width>548.345</width>
+    <width>531.701</width>
     <height>524.345</height>
     <data>
      <vector>
@@ -3750,7 +4341,7 @@
      <int>343</int>
      <int>184</int>
     </ports>
-    <width>444.156</width>
+    <width>432.857</width>
     <height>420.156</height>
     <data>
      <vector>
@@ -3829,7 +4420,7 @@
      <int>406</int>
      <int>195</int>
     </ports>
-    <width>210.767</width>
+    <width>205.719</width>
     <height>218.767</height>
     <data>
      <vector>
@@ -3882,7 +4473,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
-   <maxWaitMS>100</maxWaitMS>
+   <timeUnit></timeUnit>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

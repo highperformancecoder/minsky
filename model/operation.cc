@@ -148,18 +148,17 @@ namespace minsky
 
     auto t=type();
     // call the iconDraw method if data description is empty
-    if (t==OperationType::data && dynamic_cast<const NamedOp&>(*this).description.empty())
+    if (t==OperationType::data && dynamic_cast<const DataOp&>(*this).description.empty())
       t=OperationType::numOps;
 
     switch (t)
       {
         // at the moment its too tricky to get all the information
         // together for rendering constants
-      case OperationType::constant:
       case OperationType::data:
         {
         
-          const NamedOp& c=dynamic_cast<const NamedOp&>(*this);
+          auto& c=dynamic_cast<const DataOp&>(*this);
           cairo_save(cairo);
           
           Pango pango(cairo);
@@ -385,6 +384,125 @@ namespace minsky
     return {names.begin(), names.end()};
   }
 
+  namespace {
+    // return fractional part of x
+    inline double fracPart(double x) {
+      double dummy;
+      return modf(x,&dummy);
+    }
+
+    // extract units from inputs, checking they're all consistent
+    struct CheckConsistent: public Units
+    {
+      CheckConsistent(const Item& item)
+      {
+        bool inputFound=false;
+        for (size_t i=1; i<item.ports.size(); ++i)
+          for (auto w: item.ports[i]->wires())
+            if (inputFound)
+              {
+                auto tmp=w->units();
+                if (tmp!=*this)
+                  item.throw_error("incompatible units: "+tmp.str()+"≠"+str());
+              }
+            else
+              {
+                inputFound=true;
+                Units::operator=(w->units());
+              }
+      }
+    };
+  }
+
+  Units OperationBase::units() const
+  {
+    // default operations are dimensionless, but check that inputs are also
+    switch (classify(type()))
+      {
+      case function: case reduction: case scan: case tensor:
+        if (!ports[1]->units().empty())
+          throw_error("function input not dimensionless");
+        return {};
+      case binop:
+        switch (type())
+          {
+            // these binops need to have dimensionless units
+          case log: case and_: case or_:
+
+            if (!ports[1]->units().empty())
+              throw_error("function inputs not dimensionless");
+            return {};
+          case pow:
+            {
+              auto r=ports[1]->units();
+
+              if (!r.empty())
+                {
+                  if (!ports[2]->wires().empty())
+                    if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item))
+                      if (fracPart(v->value())==0)
+                        {
+                          for (auto& i: r) i.second*=v->value();
+                          return r;
+                        }
+                  throw_error("dimensioned pow only possible if exponent is a constant integer");
+                }
+              return {};
+            }
+            // these binops must have compatible units
+          case le: case lt: case eq:
+            {
+              CheckConsistent units(*this);
+              return {};
+            }
+          case add: case subtract: case max: case min:
+            {
+              CheckConsistent units(*this);
+              return units;
+            }
+            // multiply and divide are especially computed
+          case multiply: case divide:
+            {
+              Units units;
+              for (auto w: ports[1]->wires())
+                {
+                  auto tmp=w->units();
+                  for (auto& i: tmp)
+                    units[i.first]+=i.second;
+                }
+              int f=(type()==multiply)? 1: -1; //indices are negated for division
+              for (auto w: ports[2]->wires())
+                {
+                  auto tmp=w->units();
+                  for (auto& i: tmp)
+                    units[i.first]+=f*i.second;
+                }
+              return units;
+            }
+          default:
+            throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+          }
+      default:
+        throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+      }
+  }
+
+  Units Time::units() const {return cminsky().timeUnit;}
+  Units Derivative::units() const {
+    Units r=ports[1]->units();
+    if (!cminsky().timeUnit.empty())
+      r[cminsky().timeUnit]--;
+    return r;
+  }
+
+  
+  Units IntOp::units() const {
+    Units r=ports[1]->units();
+    if (!cminsky().timeUnit.empty())
+      r[cminsky().timeUnit]++;
+    return r;
+  }
+   
   const IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 
@@ -474,7 +592,10 @@ namespace minsky
   {
     switch (type)
       {
+      case time: return new Time;
+      case copy: return new Copy;
       case integrate: return new IntOp;
+      case differentiate: return new Derivative;
       case data: return new DataOp;
       case ravel: return new Ravel;
       case constant: throw error("Constant deprecated");

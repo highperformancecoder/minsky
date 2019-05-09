@@ -86,6 +86,9 @@ namespace minsky
       return bb.contains((xx-x())*invZ, (yy-y())*invZ);
     }
     
+    /// mark item on canvas, then throw
+    [[noreturn]] void throw_error(const std::string&) const;
+
     /// indicates this is a group I/O variable
     virtual bool ioVar() const {return false;}
     /// current value of output port
@@ -162,6 +165,9 @@ namespace minsky
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
     virtual void disableDelayedTooltip() {}
+    /// compute the dimensional units
+    // all items feeding into other items must implement this
+    virtual Units units() const {throw_error("units not implemented");}
   };
 
   typedef std::shared_ptr<Item> ItemPtr;

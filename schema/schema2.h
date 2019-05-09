@@ -68,11 +68,11 @@ namespace schema2
     template <class U>
     typename classdesc::enable_if<has_empty<U>,void>::T
     assign(const U& x, classdesc::dummy<0> d=0) {
-      if (!x.empty()) this->reset(new U(x));
+      if (!x.empty()) this->reset(new T(x));
     }
     template <class U>
     typename classdesc::enable_if<Not<has_empty<U>>,void>::T
-    assign(const U& x, classdesc::dummy<1> d=0) {this->reset(new U(x));}
+    assign(const U& x, classdesc::dummy<1> d=0) {this->reset(new T(x));}
 
     // if we access an optional, then create its target
     T& operator*() {if (!this->get()) this->reset(new T); return *this->get();}
@@ -80,7 +80,7 @@ namespace schema2
     T* operator->() {return &**this;}
     const T* operator->() const {return &**this;}
 
-    template <class U> Optional& operator=(const U& x) {**this=x; return *this;}
+    template <class U> Optional& operator=(const U& x) {assign(x); return *this;}
   };
 
  
@@ -157,9 +157,10 @@ namespace schema2
     Item(const schema1::Item& it): ItemBase(it) {}
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      name(v.rawName()), init(v.init()), units(v.units()) {
+      name(v.rawName()), init(v.init()) {
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+      try {units=v.units().str();} catch (...) {} //we only need to save raw user supplied data anyway
       packTensorInit(v);
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):

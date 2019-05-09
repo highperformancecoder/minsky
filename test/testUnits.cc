@@ -60,18 +60,28 @@ SUITE(Units)
 
     }
 
-  struct TestOp
+  struct TestOp: public Minsky
   {
-    VariableValue from1{VariableType::tempFlow},
-      from2{VariableType::tempFlow}, to{VariableType::tempFlow};
+    VariablePtr from1{VariableType::flow, "a"}, from2{VariableType::flow, "b"};
+    OperationPtr opp;
     static bool finished; // check that all cases are implemented
+    LocalMinsky lm{*this};
     TestOp() {
-      from1.units=Units("m");
-      from2.units=Units("s");
-      from1.allocValue();
-      from2.allocValue();
+      timeUnit="s";
+      model->addItem(from1);
+      model->addItem(from2);
+      from1->setUnits("m");
+      from2->setUnits("s");
     }
-
+    void init(OperationType::Type op) {
+      opp.reset(OperationBase::create(op));
+      model->addItem(opp);
+      if (opp->ports.size()>1)
+        model->addWire(from1->ports[0], opp->ports[1]);
+      if (opp->ports.size()>2)
+        model->addWire(from2->ports[0], opp->ports[2]);
+    }
+    
     template <OperationType::Type op> void impl();
     template <OperationType::Type op> void test();
     template <OperationType::Type op> void testCmp();
@@ -82,18 +92,18 @@ SUITE(Units)
   
   template <OperationType::Type op>
     void TestOp::impl() {
+    // not sure what tensor ops should do yet
+    if (OperationType::classify(op)==OperationType::tensor) return;
+    init(op);
     // most single arg functions are dimensionless, and args must match for two args
     if (OperationTypeInfo::numArguments<op>()>0)
-      CHECK_THROW(EvalOpPtr(op,nullptr,to,from1,from2), std::exception);
+      CHECK_THROW(opp->units(), std::exception);
 
-    from2.units=from1.units;
+    from2->setUnits(from1->unitsStr());
     if (OperationTypeInfo::numArguments<op>()==1)
-      CHECK_THROW(EvalOpPtr(op,nullptr,to,from1,from2), std::exception);
+      CHECK_THROW(opp->units(), std::exception);
     else
-      {
-        EvalOpPtr(op,nullptr,to,from1,from2);
-        CHECK(to.units==from1.units);
-      }
+      CHECK(opp->units()==from1->units());
   }
 
   // TODO - not sure what to do here
@@ -105,10 +115,10 @@ SUITE(Units)
 
   template <OperationType::Type op> void TestOp::testCmp()
   {
-    CHECK_THROW(EvalOpPtr(op,nullptr, to,from1,from2),std::exception);
-    from2.units=from1.units;
-    EvalOpPtr(op,nullptr, to,from1,from2);
-    CHECK(to.units.empty());
+    init(op);
+    CHECK_THROW(opp->units(),std::exception);
+    from2->setUnits(from1->unitsStr());
+    CHECK(opp->units().empty());
   }
 
   template <> void TestOp::impl<OperationType::lt>() {testCmp<OperationType::lt>();}
@@ -117,13 +127,13 @@ SUITE(Units)
   
   template <OperationType::Type op> void TestOp::testLogical()
   {
-    CHECK_THROW(EvalOpPtr(op,nullptr, to,from1,from2),std::exception);
-    from2.units=from1.units;
-    CHECK_THROW(EvalOpPtr(op,nullptr, to,from1,from2),std::exception);
-    from1.units.clear();
-    from2.units.clear();
-    EvalOpPtr(op,nullptr, to,from1,from2);
-    CHECK(to.units.empty());
+    init(op);
+    CHECK_THROW(opp->units(),std::exception);
+    from2->setUnits(from1->unitsStr());
+    CHECK_THROW(opp->units(),std::exception);
+    from1->setUnits("");
+    from2->setUnits("");
+    CHECK(opp->units().empty());
   }
   
   template <> void TestOp::impl<OperationType::and_>() {testLogical<OperationType::and_>();}
@@ -132,58 +142,63 @@ SUITE(Units)
 
   template <> void TestOp::impl<OperationType::pow>()
   {
+    init(OperationType::pow);
     // pow's arguments must be dimensionless
-    CHECK_THROW(EvalOpPtr(OperationType::pow,nullptr, to,from1,from2),std::exception);
+    CHECK_THROW(opp->units(),std::exception);
     // but if second argument is an integer
-    from2=VariableValue(VariableType::constant,"","2");
-    from2.allocValue();
-    EvalOpPtr(OperationType::pow,nullptr, to,from1,from2);
-    CHECK_EQUAL(1,to.units.size());
-    CHECK_EQUAL(2,to.units["m"]);
+    model->removeItem(*from2);
+    from2=VariablePtr(VariableType::constant);
+    model->addItem(from2);
+    model->addWire(from2->ports[0],opp->ports[2]);
+    from2->init("2");
+    CHECK_EQUAL(1,opp->units().size());
+    CHECK_EQUAL(2,opp->units()["m"]);
     // check that it throws with a nonintegral exponent
-    from2.init=2.5;
-    CHECK_THROW(EvalOpPtr(OperationType::pow,nullptr, to,from1,from2),std::exception);
+    from2->init("2.5");
+    CHECK_THROW(opp->units(),std::exception);
   }
 
   template <> void TestOp::impl<OperationType::log>()
   {
+    init(OperationType::log);
     // log's arguments must be dimensionless
-    CHECK_THROW(EvalOpPtr(OperationType::log,nullptr, to,from1,from2),std::exception);
+    CHECK_THROW(opp->units(),std::exception);
+    from2->setUnits(from1->unitsStr());
+    CHECK_THROW(opp->units(),std::exception);
   }
   
   template <> void TestOp::impl<OperationType::copy>()
   {
-    EvalOpPtr(OperationType::copy,nullptr, to,from1,from2);
-    CHECK(to.units==from1.units);
+    init(OperationType::copy);
+    CHECK(opp->units()==from1->units());
   }
   
 
 
   template <> void TestOp::impl<OperationType::divide>()
   {
-    EvalOpPtr(OperationType::divide,nullptr, to,from1,from2);
-    CHECK_EQUAL(1,to.units["m"]);
-    CHECK_EQUAL(-1,to.units["s"]);
-    from2.units=from1.units;
-    EvalOpPtr(OperationType::divide,nullptr, to,from1,from2);
-    CHECK(to.units.empty());
+    init(OperationType::divide);
+    CHECK_EQUAL(1,opp->units()["m"]);
+    CHECK_EQUAL(-1,opp->units()["s"]);
+    from2->setUnits(from1->unitsStr());
+    CHECK_EQUAL(0,opp->units()["m"]);
   }
 
   template <> void TestOp::impl<OperationType::multiply>()
   {
-    EvalOpPtr(OperationType::multiply,nullptr, to,from1,from2);
-    CHECK_EQUAL(1,to.units["m"]);
-    CHECK_EQUAL(1,to.units["s"]);
-    from2.units=from1.units;
-    EvalOpPtr(OperationType::multiply,nullptr, to,from1,from2);
-    CHECK_EQUAL(2,to.units["m"]);
-    CHECK_EQUAL(0,to.units["s"]);
+    init(OperationType::multiply);
+    CHECK_EQUAL(1,opp->units()["m"]);
+    CHECK_EQUAL(1,opp->units()["s"]);
+    from2->setUnits(from1->unitsStr());
+    CHECK_EQUAL(2,opp->units()["m"]);
+    CHECK_EQUAL(0,opp->units()["s"]);
   }
 
   template <> void TestOp::impl<OperationType::time>()
   {
-    EvalOpPtr(OperationType::time,nullptr, to,from1,from2);
-    CHECK_EQUAL(1,to.units[EvalOpBase::timeUnit]);
+    init(OperationType::time);
+    CHECK_EQUAL(1,opp->units().size());
+    CHECK_EQUAL(1,opp->units()[timeUnit]);
   }
 
   // specialising, terminating the static recursion
@@ -198,9 +213,8 @@ SUITE(Units)
     TestOp().test<OperationType::Type(op+1)>();
   }
   
-  TEST(evalOpPtr)
+  TEST(opUnits)
   {
-    EvalOpBase::timeUnit="s";
     TestOp().test<OperationType::add>();
     CHECK(TestOp::finished);
   }
@@ -229,7 +243,7 @@ SUITE(Units)
     auto t=model->addItem(OperationBase::create(OperationType::time));
     VariablePtr m(VariableType::parameter,"d");
     model->addItem(m);
-    m->units("m");
+    m->setUnits("m");
     auto mult=model->addItem(OperationBase::create(OperationType::multiply));
     auto integ=make_shared<IntOp>();
     model->addItem(integ);
@@ -248,11 +262,11 @@ SUITE(Units)
     model->addWire(*diff,*vd,1);
 
     constructEquations();
-    CHECK_EQUAL(1,tm->_units()["m"]);
-    CHECK_EQUAL(1,tm->_units()["s"]);
-    CHECK_EQUAL(1,integ->intVar->_units()["m"]);
-    CHECK_EQUAL(2,integ->intVar->_units()["s"]);
-    CHECK_EQUAL(1,vd->_units()["m"]);
-    CHECK_EQUAL(0,vd->_units()["s"]);
+    CHECK_EQUAL(1,tm->units()["m"]);
+    CHECK_EQUAL(1,tm->units()["s"]);
+    CHECK_EQUAL(1,integ->intVar->units()["m"]);
+    CHECK_EQUAL(2,integ->intVar->units()["s"]);
+    CHECK_EQUAL(1,vd->units()["m"]);
+    CHECK_EQUAL(0,vd->units()["s"]);
   }
 }

@@ -91,7 +91,8 @@ namespace minsky
     /// return dimension names of tensor object attached to input
     /// if binary op, then the union of dimension names is returned
     std::vector<string> dimensions() const;
-    
+    Units units() const override;
+
   protected:
 
     friend struct EvalOpBase;
@@ -129,11 +130,25 @@ namespace minsky
     std::string classType() const override {return "Operation:"+OperationType::typeName(T);}
   };
 
-  struct NamedOp
+  class Time: public Operation<OperationType::time>
   {
-    string description;
+  public:
+    Units units() const override;
+  };
+  
+  class Derivative: public Operation<OperationType::differentiate>
+  {
+  public:
+    Units units() const override;
   };
 
+  class Copy: public Operation<OperationType::copy>
+  {
+  public:
+    Units units() const override {return ports[1]->units();}
+  };
+
+  
   class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>
   {
     typedef Operation<OperationType::integrate> Super;
@@ -177,35 +192,34 @@ namespace minsky
       assert(intVar);
       return ports.size()>0 && intVar->ports.size()>0 && ports[0]==intVar->ports[0];
     }
+    Units units() const override;
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
   };
 
-  class DataOp: public NamedOp, public ItemT<DataOp, Operation<minsky::OperationType::data>>
+  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>
   {
     CLASSDESC_ACCESS(DataOp);
   public:
+    string description;
     std::map<double, double> data;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 
     void initRandom(double xmin, double xmax, unsigned numSamples);
-    //    void initXVector();
     /// interpolates y data between x values bounding the argument
     double interpolate(double) const;
     /// derivative of the interpolate function. At the data points, the
     /// derivative is defined as the weighted average of the left & right
     /// derivatives, weighted by the respective intervals
     double deriv(double) const;
+    Units units() const override {return ports[1]->units();}
 
     /// called to initialise a variable value when no input wire is connected
     //    void initOutputVariableValue(VariableValue&) const;
     
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
-//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override {
-//      ::TCL_obj(t,d,*this);
-//    }
   };
 
   /// shared_ptr class for polymorphic operation objects. Note, you
@@ -226,6 +240,7 @@ namespace minsky
     OperationPtr(const ItemPtr& x): 
       PtrBase(std::dynamic_pointer_cast<OperationBase>(x)) {}
   };
+
 
 }
 

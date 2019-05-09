@@ -53,13 +53,11 @@ namespace minsky
         m_idx=ValueVector::flowVars.size();
         ValueVector::flowVars.resize
           (ValueVector::flowVars.size()+numElements());
-        //      *this=init;
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
         ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements());
-        //     *this=init;
         break;
       default: break;
       }
@@ -108,7 +106,7 @@ namespace minsky
       }
     throw error("invalid access of variable value reference: %s",name.c_str());
   }
-
+  
   TensorVal VariableValue::initValue
   (const VariableValues& v, set<string>& visited) const
   {
@@ -225,7 +223,7 @@ namespace minsky
       {
         // find maximum enclosing scope that has this same-named variable
         for (auto g=scope->group.lock(); g; g=g->group.lock())
-          for (auto i: g->items)
+          for (auto& i: g->items)
             if (auto v=dynamic_cast<VariableBase*>(i.get()))
               {
                 auto n=stripActive(v->name());
@@ -318,17 +316,6 @@ namespace minsky
   string expMultiplier(int exp)
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
-//  namespace
-//  {
-//    // wrapper storing just the string part of an XVector element
-//    struct XName: public string
-//    {
-//      XName() {}
-//      XName(const XVector::value_type& x):
-//        string(x.second) {}
-//    };
-//  }
-  
   void VariableValue::makeXConformant(const VariableValue& a)
   {
     auto xv=xVector;

@@ -562,6 +562,11 @@ menu .exportPlots
 .menubar.file add command -label "SaveAs" -command saveAs 
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
+.menubar.file add command -label "Dimensional Analysis" -command {
+    dimensionalAnalysis
+    tk_messageBox -type ok -icon info -message "Dimension Analysis passed"
+}
+
 .menubar.file add command -label "Export Canvas" -command exportCanvas
 .menubar.file add cascade -label "Export Plots" -menu .exportPlots
 .menubar.file add checkbutton -label "Log simulation" -variable simLogging \

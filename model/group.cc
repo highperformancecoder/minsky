@@ -264,6 +264,10 @@ namespace minsky
             }
           else
             addItem(intOp->intVar,inSchema);
+          if (intOp->coupled())
+            intOp->intVar->controller=it;
+          else
+            intOp->intVar->controller.reset();
         }
     items.push_back(it);
     return items.back();

@@ -93,7 +93,102 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>26</id>
@@ -105,6 +200,7 @@
     <ports>
      <int>25</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>30</id>
@@ -118,6 +214,7 @@
      <int>28</int>
      <int>29</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>33</id>
@@ -130,6 +227,7 @@
      <int>31</int>
      <int>32</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>36</id>
@@ -142,6 +240,7 @@
      <int>34</int>
      <int>35</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>40</id>
@@ -156,6 +255,7 @@
      <int>39</int>
     </ports>
     <intVar>42</intVar>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>42</id>
@@ -189,6 +289,7 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <timeUnit></timeUnit>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

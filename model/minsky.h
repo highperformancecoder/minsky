@@ -285,7 +285,9 @@ namespace minsky
     void constructEquations();
     /// evaluate the equations (stockVars.size() of them)
     void evalEquations(double result[], double t, const double vars[]);
-
+    /// performs dimension analysis, throws if there is a problem
+    void dimensionalAnalysis() const;
+    
     /// consistency check of the equation order. Should return
     /// true. Outputs the operation number of the invalidly ordered
     /// operation.
@@ -297,7 +299,6 @@ namespace minsky
     double t{0}; ///< time
     double t0{0}; ///< simulation start time
     bool running=false; ///< controls whether simulation is running
-    string timeUnit;
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
     void step();  ///< step the equations (by n steps, default 1)

@@ -279,9 +279,9 @@ SUITE(Derivative)
             case OperationType::floor: case OperationType::frac:
             case OperationType::index:
             case OperationType::data:
-            case OperationType::ravel:
               CHECK_THROW(reset(), ecolab::error);
               continue;
+            case OperationType::ravel:
             case OperationType::not_:
               continue; // test not meaningful for a step function
             default:

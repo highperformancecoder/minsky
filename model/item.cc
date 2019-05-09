@@ -24,6 +24,7 @@
 #include "latexMarkup.h"
 #include "geometry.h"
 #include "selection.h"
+#include "minsky.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include <ecolab_epilogue.h>
@@ -58,6 +59,12 @@ namespace minsky
     bottom=(t+h)*invZ;
   }
 
+  void Item::throw_error(const std::string& msg) const
+  {
+    cminsky().displayErrorItem(*this);
+    throw runtime_error(msg);
+  }
+  
   float Item::x() const 
   {
     if (auto g=group.lock())

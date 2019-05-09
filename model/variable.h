@@ -49,6 +49,14 @@ namespace minsky
     return ecolab::Accessor<T,G,S>(g,s);
   }
   
+  /// exception-safe increment/decrement of a counter in a block
+  struct IncrDecrCounter
+  {
+    int& ctr;
+    IncrDecrCounter(int& ctr): ctr(ctr) {++ctr;}
+    ~IncrDecrCounter() {--ctr;}
+  };
+
   class VariableBase: virtual public classdesc::PolyPackBase,
                       public Item, public Slider, 
                       public VariableType
@@ -58,15 +66,18 @@ namespace minsky
   protected:
  
     friend struct minsky::SchemaHelper;
-
+    
   private:
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name; 
+    mutable int unitsCtr=0; ///< for detecting reentrancy in units()
+    static int stockVarsPassed; ///< for detecting reentrancy in units()
 
   protected:
     void addPorts();
     
   public:
+    static int varsPassed; ///< for caching units calculation
     ///factory method
     static VariableBase* create(Type type); 
 
@@ -138,12 +149,9 @@ namespace minsky
         }};
 
     /// sets/gets the units associated with this type
-    Units _units() const;
-    Units _units(const Units&);
-    ecolab::Accessor<std::string> units {
-      [this]() {return _units().str();},
-        [this](const std::string& s) {return _units(Units(s)).str();}
-    };
+    Units units() const override;
+    void setUnits(const std::string&);
+    std::string unitsStr() const {return units().str();}
     
     bool handleArrows(int dir,bool) override;
     

@@ -98,6 +98,7 @@ namespace minsky
 
     /// dimension units of this value
     Units units;
+    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
     
     bool godleyOverridden;
     std::string name; // name of this variable
@@ -248,6 +249,10 @@ namespace minsky
     void reset();
     /// checks that all entry names are valid
     bool validEntries() const;
+    void resetUnitsCache() {
+      for (auto& i: *this)
+        i.second.unitsCached=false;
+    }
   };
   
   struct EngNotation {int sciExp, engExp;};

@@ -426,15 +426,8 @@ namespace schema2
     m.model->bookmarks=bookmarks;
     m.dimensions=dimensions;
     m.conversions=conversions;
-    
-    m.stepMin=rungeKutta.stepMin; 
-    m.stepMax=rungeKutta.stepMax; 
-    m.nSteps=rungeKutta.nSteps;   
-    m.epsAbs=rungeKutta.epsAbs;   
-    m.epsRel=rungeKutta.epsRel;   
-    m.order=rungeKutta.order;
-    m.simulationDelay=rungeKutta.simulationDelay;
-    m.implicit=rungeKutta.implicit;
+
+    static_cast<minsky::RungeKutta&>(m)=rungeKutta;
     return m;
   }
 
@@ -481,7 +474,7 @@ namespace schema2
         if (y.init)
           x1->init(*y.init);
         if (y.units)
-          x1->units(*y.units);
+          x1->setUnits(*y.units);
         if (y.slider)
           {
             x1->sliderBoundsSet=true;

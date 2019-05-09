@@ -198,19 +198,51 @@ double VariableBase::_value(double x)
   return x;
 }
 
-Units VariableBase::_units() const
+int VariableBase::stockVarsPassed=0;
+int VariableBase::varsPassed=0;
+
+Units VariableBase::units() const
 {
   if (VariableValue::isValueId(valueId()))
-    return minsky::cminsky().variableValues[valueId()].units;
+    {
+      if (varsPassed==0) minsky().variableValues.resetUnitsCache(); 
+      // we allow possible traversing twice, to allow
+      // stock variable to break the cycle
+      if (unitsCtr-stockVarsPassed>=1)
+        throw_error("Cycle detected on wiring network");
+      if (isStock() && unitsCtr)
+        return {}; // stock var cycles back on itself, normalise to dimensionless
+      auto& vv=minsky().variableValues[valueId()];
+      if (vv.unitsCached) return vv.units;
+      
+      IncrDecrCounter ucIdc(unitsCtr);
+      IncrDecrCounter vpIdc(varsPassed);
+      // use a unique ptr here to only increment counter inside a stockVar
+      unique_ptr<IncrDecrCounter> svp;
+      if (isStock()) svp.reset(new IncrDecrCounter(stockVarsPassed));
+
+      // updates units in the process
+      if (ports.size()>1 && !ports[1]->wires().empty())
+        vv.units=ports[1]->wires()[0]->from()->item.units();
+      else if (auto v=cminsky().definingVar(valueId()))
+        vv.units=v->units();
+      else if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
+        vv.units=i->units();
+      else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+        ; //TODO evaluate Godley stock variable
+      vv.unitsCached=true;
+      return vv.units;
+    }
   else
     return Units();
 }
 
-Units VariableBase::_units(const Units& x)
+void VariableBase::setUnits(const string& x)
 {
-  if (!m_name.empty() && VariableValue::isValueId(valueId()))
-    minsky().variableValues[valueId()].units=x;
-  return x;
+  if (VariableValue::isValueId(valueId()))
+    minsky().variableValues[valueId()].units=Units(x);
+  // reset minsky model to propagate units
+  try {minsky().reset();} catch (...) {}
 }
 
 

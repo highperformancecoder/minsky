@@ -233,6 +233,15 @@ namespace minsky
           }
   }
 
+  Units Wire::units() const
+  {
+    // we allow possible traversing twice over a wire, to allow an
+    // integral to break the cycle
+    if (auto f=from())
+      return f->item.units();
+    else return {};
+  }
+
   namespace
   {
 

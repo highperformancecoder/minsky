@@ -6,12 +6,12 @@
     <from>36</from>
     <to>1</to>
     <coords>
-     <float>394</float>
-     <float>147.363</float>
-     <float>411.181</float>
-     <float>187.53</float>
-     <float>352</float>
-     <float>255.363</float>
+     <float>328.227</float>
+     <float>133.966</float>
+     <float>343.998</float>
+     <float>170.836</float>
+     <float>327.273</float>
+     <float>240.33</float>
     </coords>
    </Wire>
    <Wire>
@@ -39,12 +39,12 @@
     <from>8</from>
     <to>17</to>
     <coords>
-     <float>426.727</float>
-     <float>61.9998</float>
-     <float>553.212</float>
-     <float>57.3708</float>
-     <float>591.5</float>
-     <float>173.363</float>
+     <float>378.843</float>
+     <float>56.3635</float>
+     <float>505.375</float>
+     <float>51.7327</float>
+     <float>545</float>
+     <float>165.785</float>
     </coords>
    </Wire>
    <Wire>
@@ -72,12 +72,12 @@
     <from>60</from>
     <to>26</to>
     <coords>
-     <float>67.5</float>
-     <float>165.363</float>
-     <float>85.454</float>
-     <float>163.239</float>
-     <float>102.5</float>
-     <float>155.363</float>
+     <float>59.2727</float>
+     <float>150.33</float>
+     <float>81.2993</float>
+     <float>147.724</float>
+     <float>100.455</float>
+     <float>133.057</float>
     </coords>
    </Wire>
    <Wire>
@@ -95,12 +95,12 @@
     <from>47</from>
     <to>25</to>
     <coords>
-     <float>136</float>
-     <float>121.999</float>
-     <float>153.08</float>
-     <float>118.996</float>
-     <float>102.5</float>
-     <float>137.363</float>
+     <float>90.6364</float>
+     <float>110.908</float>
+     <float>101.864</float>
+     <float>108.934</float>
+     <float>100.455</float>
+     <float>133.057</float>
     </coords>
    </Wire>
    <Wire>
@@ -133,12 +133,12 @@
     <from>53</from>
     <to>22</to>
     <coords>
-     <float>161.5</float>
-     <float>230.363</float>
-     <float>190.385</float>
-     <float>216.151</float>
-     <float>159.636</float>
-     <float>159.181</float>
+     <float>112.182</float>
+     <float>209.421</float>
+     <float>145.952</float>
+     <float>192.805</float>
+     <float>152.396</float>
+     <float>136.528</float>
     </coords>
    </Wire>
    <Wire>
@@ -146,12 +146,12 @@
     <from>36</from>
     <to>97</to>
     <coords>
-     <float>394</float>
-     <float>147.363</float>
-     <float>413.196</float>
-     <float>150.053</float>
-     <float>381.5</float>
-     <float>186.113</float>
+     <float>328.227</float>
+     <float>133.966</float>
+     <float>370.025</float>
+     <float>139.824</float>
+     <float>415</float>
+     <float>152.148</float>
     </coords>
    </Wire>
   </wires>
@@ -168,6 +168,7 @@
      <int>1</int>
      <int>2</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>7</id>
@@ -182,6 +183,7 @@
      <int>6</int>
     </ports>
     <intVar>46</intVar>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>11</id>
@@ -195,6 +197,7 @@
      <int>9</int>
      <int>10</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>15</id>
@@ -208,6 +211,7 @@
      <int>13</int>
      <int>14</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>19</id>
@@ -221,6 +225,7 @@
      <int>17</int>
      <int>18</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>23</id>
@@ -234,6 +239,7 @@
      <int>21</int>
      <int>22</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>27</id>
@@ -247,6 +253,7 @@
      <int>25</int>
      <int>26</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>31</id>
@@ -260,6 +267,7 @@
      <int>29</int>
      <int>30</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>35</id>
@@ -273,6 +281,7 @@
      <int>33</int>
      <int>34</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>38</id>
@@ -556,7 +565,102 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>111</id>
@@ -593,7 +697,102 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
     <plotType>line</plotType>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+     </LineStyle>
+    </palette>
    </Item>
   </items>
   <groups>
@@ -607,9 +806,9 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
-   <maxWaitMS>100</maxWaitMS>
+   <timeUnit></timeUnit>
   </rungeKutta>
-  <zoomFactor>0.909091</zoomFactor>
+  <zoomFactor>1</zoomFactor>
   <bookmarks>
   </bookmarks>
   <dimensions>

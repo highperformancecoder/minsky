@@ -33,6 +33,7 @@ namespace minsky
 {
   class Port;
   class Group;
+  class Units;
   using ecolab::error;
 
   class Wire: public NoteBase
@@ -88,6 +89,8 @@ namespace minsky
     void moveIntoGroup(Group& dest);
     /// splits wires crossing group boundaries
     void split();
+    /// units (dimensional analysis) of data flowing across wire
+    Units units() const;
   };
 
   typedef std::shared_ptr<Wire> WirePtr;

@@ -352,6 +352,7 @@ namespace minsky
   void Minsky::constructEquations()
   {
     if (cycleCheck()) throw error("cyclic network detected");
+
     garbageCollect();
     equations.clear();
     integrals.clear();
@@ -362,20 +363,6 @@ namespace minsky
     assert(variableValues.validEntries());
     system.populateEvalOpVector(equations, integrals);
     assert(variableValues.validEntries());
-
-    // perform dimensional analysis on the integral variables
-    for (auto& i: integrals)
-      {
-        auto& stockUnits=variableValues[i.stock.valueId()].units;
-        stockUnits=i.input.units;
-        if (!EvalOpBase::timeUnit.empty())
-          {
-            auto& tu=stockUnits[timeUnit];
-            tu++;
-            if (tu==0)
-              stockUnits.erase(timeUnit);
-          }
-      }
     
     // attach the plots
     model->recursiveDo
@@ -399,6 +386,30 @@ namespace minsky
        });
   }
 
+  void Minsky::dimensionalAnalysis() const
+  {
+    // increment varsPassed by one to prevent resettting the cache on each check
+    IncrDecrCounter vpIdc(VariableBase::varsPassed);
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+           {
+             // check only the defining variables
+             if (v->isStock() && (v->inputWired() || v->controller.lock().get()))
+               v->units();
+           }
+         else if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+           for (auto& i: p->ports)
+             i->units();
+         else if (auto p=dynamic_cast<Sheet*>(i->get()))
+           for (auto& i: p->ports)
+             i->units();
+         return false;
+       });
+  }
+  
   void Minsky::populateMissingDimensions() {
     model->recursiveDo
       (&Group::items,[&](Items& m, Items::iterator it)
