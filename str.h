@@ -58,14 +58,18 @@ namespace minsky
   // are eliminated, and spaces are replaced by underscores, as they
   // cause problems
   inline std::string stripActive(const std::string& s) {
-    std::string r;
+    std::string r; r.reserve(s.length());
     for (size_t i=0; i<s.length(); ++i)
-      if (strchr("\\{}",s[i])==nullptr)
+      switch (s[i])        
         {
+        case '\\': case '{': case '}':
+          break;
+        default:
           if (isspace(s[i]))
             r+='_';
           else
             r+=s[i];
+          break;
         }
     if (r.empty()) return "_";
     return r;

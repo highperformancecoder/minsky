@@ -54,6 +54,7 @@ namespace minsky
   };
 
   class VariablePtr;
+  class VariableBase;
 
   class Item;
   /// bounding box information (at zoom=1 scale)
@@ -98,6 +99,11 @@ namespace minsky
     void flip() {rotation+=180;}
 
     virtual std::string classType() const {return "Item";}
+
+    /// @{ replacement for dynamic_cast<VariableBase*>(this)
+    virtual const VariableBase* variableCast() const {return nullptr;}
+    virtual VariableBase* variableCast() {return nullptr;}
+    /// @}
 
     ItemPortVector ports;
     float x() const; 

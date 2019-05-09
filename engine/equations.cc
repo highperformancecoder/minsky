@@ -742,7 +742,7 @@ namespace MathDAG
             else
               r=makeDAG(*s);
           }
-        else if (auto v=dynamic_cast<VariableBase*>(&item))
+        else if (auto v=item.variableCast())
           {
             if (expressionCache.exists(*v))
               return expressionCache[*v];
@@ -886,7 +886,7 @@ namespace MathDAG
       (&Group::items,
        [&](Items&, Items::iterator i)
        {
-         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+         if (auto v=(*i)->variableCast())
            {
              if (v->type()==VariableType::undefined)
                throw error("variable %s has undefined type",v->name().c_str());

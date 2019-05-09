@@ -233,8 +233,8 @@ namespace minsky
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const {
       return dynamic_pointer_cast<VariableBase>
-        (model->findAny(&Group::items, [&](ItemPtr x) {
-            auto v=dynamic_cast<VariableBase*>(x.get());
+        (model->findAny(&Group::items, [&](const ItemPtr& x) {
+            auto v=x->variableCast();
             return v && v->ports.size()>1 && !v->ports[1]->wires().empty() && v->valueId()==valueId;
           }));
     }

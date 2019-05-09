@@ -203,7 +203,7 @@ namespace minsky
                 requestRedraw();
                 return;
               case ClickType::onSlider:
-                if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+                if (auto v=itemFocus->variableCast())
                   {
                     RenderVariable rv(*v);
                     double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
@@ -269,7 +269,7 @@ namespace minsky
                                                 // do not want to set mousefocus, as this
                                                 // draws unnecessary port circles on the
                                                 // variable
-                                                if (!(*i)->visible() &&
+                                                if (!(*i)->visible() && 
                                                     dynamic_cast<Variable<VariableBase::integral>*>(i->get()))
                                                   (*i)->mouseFocus=false;
                                                 else
@@ -468,7 +468,7 @@ namespace minsky
           if (auto parent=g->group.lock())
             {
               itemFocus=parent->addItem(item);
-              if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+              if (auto v=itemFocus->variableCast())
                 v->controller.reset();
               g->splitBoundaryCrossingWires();
             }
@@ -479,7 +479,7 @@ namespace minsky
   void Canvas::selectAllVariables()
   {
     selection.clear();
-    auto var=dynamic_cast<VariableBase*>(item.get());
+    auto var=item->variableCast();
     if (!var)
       if (auto i=dynamic_cast<IntOp*>(item.get()))
         var=i->intVar.get();
@@ -488,7 +488,7 @@ namespace minsky
         model->recursiveDo
           (&GroupItems::items, [&](const Items&,Items::const_iterator i)
            {
-             if (auto v=dynamic_cast<VariableBase*>(i->get()))
+             if (auto v=(*i)->variableCast())
                if (v->valueId()==var->valueId())
                  {
                    selection.items.push_back(*i);
@@ -501,7 +501,7 @@ namespace minsky
 
   void Canvas::renameAllInstances(const string newName)
   {
-    auto var=dynamic_cast<VariableBase*>(item.get());
+    auto var=item->variableCast();
     if (!var)
       if (auto i=dynamic_cast<IntOp*>(item.get()))
         var=i->intVar.get();
@@ -511,7 +511,7 @@ namespace minsky
         model->recursiveDo
           (&GroupItems::items, [&](Items&,Items::iterator i)
            {
-             if (auto v=dynamic_cast<VariableBase*>(i->get()))
+             if (auto v=(*i)->variableCast())
                if (v->valueId()==valueId)
                  {
                    if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
@@ -648,7 +648,7 @@ namespace minsky
     
   bool Canvas::findVariableDefinition()
   {
-    if (auto iv=dynamic_cast<VariableBase*>(item.get()))
+    if (auto iv=item->variableCast())
       {
         if (iv->type()==VariableType::constant ||
             iv->type()==VariableType::parameter || iv->inputWired())
@@ -656,7 +656,7 @@ namespace minsky
         
         auto def=model->findAny
           (&GroupItems::items, [&](const ItemPtr& i) {
-            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            if (auto v=i->variableCast())
               return v->inputWired() && v->valueId()==iv->valueId();
             else if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
               for (auto& v: g->stockVars())

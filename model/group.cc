@@ -111,7 +111,7 @@ namespace minsky
         {
           ItemPtr r=*i;
           items.erase(i);
-          if (auto v=dynamic_cast<VariableBase*>(r.get()))
+          if (auto v=r->variableCast())
               if (v->ioVar())
                 {
                  remove(inVariables, r);
@@ -199,14 +199,14 @@ namespace minsky
 
     // stash init value to initialise new variableValue
     string init;
-    if (auto v=dynamic_cast<VariableBase*>(it.get()))
+    if (auto v=it->variableCast())
       init=v->init();
     
     it->group=self;
     if (!inSchema) it->moveTo(x,y);
 
     // take into account new scope
-    if (auto v=dynamic_cast<VariableBase*>(it.get()))
+    if (auto v=it->variableCast())
       {
         if (!inSchema && origGroup)
           if (auto destGroup=self.lock())
@@ -217,7 +217,7 @@ namespace minsky
                   // same name exist in old group, and retain linkage
                   if (v->name()[0]!=':')
                     for (auto& i: origGroup->items)
-                      if (auto vv=dynamic_cast<VariableBase*>(i.get()))
+                      if (auto vv=i->variableCast())
                         if (vv->name()==v->name())
                           v->name(':'+v->name());
                 }
@@ -226,7 +226,7 @@ namespace minsky
                   // moving global var into an outer group, link up with variable of same name (if existing)
                   if (v->name()[0]==':')
                     for (auto& i: items)
-                      if (auto vv=dynamic_cast<VariableBase*>(i.get()))
+                      if (auto vv=i->variableCast())
                         if (vv->name()==v->name().substr(1))
                           v->name(v->name().substr(1));
                 }

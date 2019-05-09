@@ -88,6 +88,10 @@ namespace minsky
     classdesc::Exclude<std::weak_ptr<Item>> controller;
     bool visible() const override {return !controller.lock() && Item::visible();}
 
+    const VariableBase* variableCast() const override {return this;}
+    VariableBase* variableCast() override {return this;}
+
+    
     float zoomFactor() const override;
     
     /// @{ variable displayed name

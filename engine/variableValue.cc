@@ -224,7 +224,7 @@ namespace minsky
         // find maximum enclosing scope that has this same-named variable
         for (auto g=scope->group.lock(); g; g=g->group.lock())
           for (auto& i: g->items)
-            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            if (auto v=i->variableCast())
               {
                 auto n=stripActive(v->name());
                 if (n==name.substr(1)) // without ':' qualifier

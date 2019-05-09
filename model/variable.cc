@@ -203,16 +203,18 @@ int VariableBase::varsPassed=0;
 
 Units VariableBase::units() const
 {
-  if (VariableValue::isValueId(valueId()))
+  if (varsPassed==0) minsky().variableValues.resetUnitsCache(); 
+  // we allow possible traversing twice, to allow
+  // stock variable to break the cycle
+  if (unitsCtr-stockVarsPassed>=1)
+    throw_error("Cycle detected on wiring network");
+  if (isStock() && unitsCtr)
+    return {}; // stock var cycles back on itself, normalise to dimensionless
+
+  auto it=minsky().variableValues.find(valueId());
+  if (it!=minsky().variableValues.end())
     {
-      if (varsPassed==0) minsky().variableValues.resetUnitsCache(); 
-      // we allow possible traversing twice, to allow
-      // stock variable to break the cycle
-      if (unitsCtr-stockVarsPassed>=1)
-        throw_error("Cycle detected on wiring network");
-      if (isStock() && unitsCtr)
-        return {}; // stock var cycles back on itself, normalise to dimensionless
-      auto& vv=minsky().variableValues[valueId()];
+      auto& vv=it->second;
       if (vv.unitsCached) return vv.units;
       
       IncrDecrCounter ucIdc(unitsCtr);
@@ -254,12 +256,12 @@ vector<string> VariableBase::accessibleVars() const
     {
       // first add local variables
       for (auto& i: g->items)
-        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+        if (auto v=i->variableCast())
           r.insert(v->name());
       // now add variables in outer scopes, ensuring they qualified
       for (g=g->group.lock(); g;  g=g->group.lock())
         for (auto& i: g->items)
-          if (auto v=dynamic_cast<VariableBase*>(i.get()))
+          if (auto v=i->variableCast())
             {
               auto n=v->name();
               if (n[0]==':')

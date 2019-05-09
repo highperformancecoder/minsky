@@ -201,7 +201,7 @@ namespace minsky
     copy();
     for (auto& i: canvas.selection.items)
       {
-        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+        if (auto v=i->variableCast())
           if (v->controller.lock())
             continue; // do not delete a variable controlled by another item
         model->deleteItem(*i);
@@ -216,7 +216,7 @@ namespace minsky
 #ifndef NDEBUG
     for (auto& i: canvas.selection.items)
       {
-        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+        if (auto v=i->variableCast())
           if (v->controller.lock())
             continue; // variable controlled by another item is not being destroyed
         assert(i.use_count()==1);
@@ -303,7 +303,7 @@ namespace minsky
     vector<GodleyIcon*> godleysToUpdate;
     model->recursiveDo(&Group::items, 
                        [&](Items&,Items::iterator i) {
-                         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+                         if (auto v=(*i)->variableCast())
                            existingNames.insert(v->valueId());
                          // ensure Godley table variables are the correct types
                          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
@@ -357,6 +357,8 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
+    dimensionalAnalysis();
+    
     EvalOpBase::timeUnit=timeUnit;
 
     MathDAG::SystemOfEquations system(*this);
@@ -394,7 +396,7 @@ namespace minsky
       (&Group::items,
        [&](Items& m, Items::iterator i)
        {
-         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+         if (auto v=(*i)->variableCast())
            {
              // check only the defining variables
              if (v->isStock() && (v->inputWired() || v->controller.lock().get()))
@@ -1005,12 +1007,12 @@ namespace minsky
         {
           // first add local variables
           for (auto& i: g->items)
-            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            if (auto v=i->variableCast())
               r.insert(v->name());
           // now add variables in outer scopes, ensuring they qualified
           for (g=g->group.lock(); g;  g=g->group.lock())
             for (auto& i: g->items)
-              if (auto v=dynamic_cast<VariableBase*>(i.get()))
+              if (auto v=i->variableCast())
                 {
                   auto n=v->name();
                   if (!n.empty())
@@ -1273,7 +1275,7 @@ namespace minsky
 
   void Minsky::addIntegral()
   {
-    if (auto v=dynamic_cast<VariableBase*>(canvas.item.get()))
+    if (auto v=canvas.item->variableCast())
       if (auto g=v->group.lock())
         {
           // nb throws if conversion cannot be performed
@@ -1295,7 +1297,7 @@ namespace minsky
     model->recursiveDo
       (&Group::items,
        [&](Items&,Items::const_iterator i) {
-        if (auto v=dynamic_cast<VariableBase*>(i->get()))
+         if (auto v=(*i)->variableCast())
           if (v->valueId()==name)
             {
               r=v->ports.size()>1 && !v->ports[1]->wires().empty();
