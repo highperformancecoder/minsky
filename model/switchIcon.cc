@@ -52,6 +52,26 @@ namespace minsky
       return unsigned(x);
   }
 
+  Units SwitchIcon::units() const 
+  {
+    bool inputFound=false;
+    Units r;
+    for (size_t i=1; i<ports.size(); ++i)
+      for (auto w: ports[i]->wires())
+        if (inputFound)
+          {
+            auto tmp=w->units();
+            if (tmp!=r)
+              throw_error("incompatible units: "+tmp.str()+"≠"+r.str());
+          }
+        else
+          {
+            inputFound=true;
+            r=w->units();
+          }
+    return r;
+  }
+
   void SwitchIcon::draw(cairo_t* cairo) const
   {
     cairo_set_line_width(cairo,1);
