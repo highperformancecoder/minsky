@@ -170,7 +170,7 @@ namespace minsky
     std::string classType() const override {
       auto s=classdesc::typeName<T>();
       // remove minsky namespace
-      static const char* ns="minsky::";
+      static const char* ns="::minsky::";
       static const int eop=strlen(ns);
       if (s.substr(0,eop)==ns)
         s=s.substr(eop);

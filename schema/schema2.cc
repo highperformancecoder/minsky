@@ -91,7 +91,7 @@ namespace schema2
     void registerClassType() {
       auto s=typeName<T>();
       // remove minsky namespace
-      static const char* ns="minsky::";
+      static const char* ns="::minsky::";
       static const int eop=strlen(ns);
       if (s.substr(0,eop)==ns)
         s=s.substr(eop);
