@@ -56,9 +56,9 @@ namespace minsky
         if (i.empty())
           throw runtime_error("empty numerator or denominator: "+x);
         const char* b=i.c_str();
-        for (const char* j=b; *j!='\0';)
+        for (const char*j=b;;)
           {
-            if (*j=='^'||isspace(*j))
+            if (*j=='^'||*j=='\0'||isspace(*j))
               {
                 string name(b,j); // stash end of unit name
                 if (name.empty())
@@ -78,6 +78,7 @@ namespace minsky
                   erase(name);
                 while (isspace(*j)) ++j;
                 b=j; // update to next unit name
+                if (*j=='\0') break; //loop exits here
               }
             else
               ++j;

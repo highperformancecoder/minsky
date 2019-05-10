@@ -58,6 +58,14 @@ SUITE(Units)
       CHECK_THROW(Units("a^b"),std::exception);
       CHECK_THROW(Units("a^^1"),std::exception);
 
+      a=Units("m/s s");
+      CHECK_EQUAL(1,a["m"]);
+      CHECK_EQUAL(-2,a["s"]);
+      CHECK(Units(a.str())==a);
+      
+      a=Units("m m");
+      CHECK_EQUAL(2,a["m"]);
+      CHECK(Units(a.str())==a);
     }
 
   struct TestOp: public Minsky
