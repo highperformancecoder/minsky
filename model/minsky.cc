@@ -239,6 +239,17 @@ namespace minsky
     putClipboard(os.str());
   }
 
+  VariablePtr Minsky::definingVar(const string& valueId) const 
+  {
+    return dynamic_pointer_cast<VariableBase>
+      (model->findAny(&Group::items, [&](const ItemPtr& x) {
+            auto v=x->variableCast();
+            return v && v->valueId()==valueId &&
+              ((v->ports.size()>1 && !v->ports[1]->wires().empty()) ||
+               (v->type()==VariableValue::stock && v->controller.lock())) ;
+          }));
+  }
+    
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
     schema2::Minsky m(g);

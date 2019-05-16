@@ -97,6 +97,8 @@ namespace minsky
     std::string valueId(const std::string& x) const {
       return VariableValue::valueId(group.lock(), x);
     }
+    /// performs dimensional analysis on stock var column \a stockName
+    Units stockVarUnits(const std::string stockName) const;
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 

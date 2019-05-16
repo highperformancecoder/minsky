@@ -208,13 +208,13 @@ Units VariableBase::units() const
   // stock variable to break the cycle
   if (unitsCtr-stockVarsPassed>=1)
     throw_error("Cycle detected on wiring network");
-  if (isStock() && unitsCtr)
-    return {}; // stock var cycles back on itself, normalise to dimensionless
 
   auto it=minsky().variableValues.find(valueId());
   if (it!=minsky().variableValues.end())
     {
       auto& vv=it->second;
+      if (isStock() && unitsCtr)
+        return vv.units; // stock var cycles back on itself, normalise to dimensionless
       if (vv.unitsCached) return vv.units;
       
       IncrDecrCounter ucIdc(unitsCtr);
@@ -226,12 +226,16 @@ Units VariableBase::units() const
       // updates units in the process
       if (ports.size()>1 && !ports[1]->wires().empty())
         vv.units=ports[1]->wires()[0]->from()->item.units();
-      else if (auto v=cminsky().definingVar(valueId()))
-        vv.units=v->units();
       else if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
         vv.units=i->units();
       else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-        ; //TODO evaluate Godley stock variable
+        {
+          if (isStock())
+            vv.units=g->stockVarUnits(name());
+        }
+      else if (auto v=cminsky().definingVar(valueId()))
+        vv.units=v->units();
+      
       vv.unitsCached=true;
       return vv.units;
     }

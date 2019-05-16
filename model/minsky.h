@@ -231,13 +231,7 @@ namespace minsky
     void assetClasses() {enumVals<GodleyTable::AssetClass>();}
 
     /// returns reference to variable defining (ie input wired) for valueId
-    VariablePtr definingVar(const std::string& valueId) const {
-      return dynamic_pointer_cast<VariableBase>
-        (model->findAny(&Group::items, [&](const ItemPtr& x) {
-            auto v=x->variableCast();
-            return v && v->ports.size()>1 && !v->ports[1]->wires().empty() && v->valueId()==valueId;
-          }));
-    }
+    VariablePtr definingVar(const std::string& valueId) const;
 
     void saveGroupAsFile(const Group&, const string& fileName) const;
     void saveCanvasItemAsFile(const string& fileName) const

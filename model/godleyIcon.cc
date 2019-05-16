@@ -336,6 +336,42 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
+  Units GodleyIcon::stockVarUnits(const string stockName) const
+  {
+    unsigned stockCol=1;
+    auto vid=valueId(stockName);
+    for (; stockCol<table.cols(); ++stockCol)
+      if (valueId(table.cell(0,stockCol))==vid)
+        break;
+
+    if (stockCol>=table.cols()) return {};
+
+    bool foundFlow=false;
+    Units units;
+    for (unsigned row=1; row<table.rows(); ++row)
+      {
+        if (table.initialConditionRow(row)) continue;
+        FlowCoef fc(table.cell(row,stockCol));
+        if (fc.coef!=0)
+          {
+            auto vid=valueId(fc.name);
+            // find variable assciated with this flow
+            for (auto& v: flowVars())
+              if (v->valueId()==vid)
+                {
+                  auto flowUnits=v->units();
+                  if (foundFlow && units!=flowUnits)
+                    throw_error("incompatible units: "+flowUnits.str()+"≠"+units.str()+" on stock "+stockName);
+                  foundFlow=true;
+                  units=flowUnits;
+                }
+          }
+      }
+    units[minsky().timeUnit]++;
+    return units;
+  }
+
+  
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
