@@ -33,15 +33,18 @@ SUITE(Units)
   TEST(set)
     {
       Units a("m");
+      CHECK_EQUAL(1,a.size());
       CHECK_EQUAL(1,a["m"]);
       CHECK(Units(a.str())==a);
 
       a=Units("m/s");
+      CHECK_EQUAL(2,a.size());
       CHECK_EQUAL(1,a["m"]);
       CHECK_EQUAL(-1,a["s"]);
       CHECK(Units(a.str())==a);
 
       a=Units("ma^2so^-1/Fd^2g^-3");
+      CHECK_EQUAL(4,a.size());
       CHECK_EQUAL(2,a["ma"]);
       CHECK_EQUAL(-1,a["so"]);
       CHECK_EQUAL(-2,a["Fd"]);
@@ -59,12 +62,19 @@ SUITE(Units)
       CHECK_THROW(Units("a^^1"),std::exception);
 
       a=Units("m/s s");
+      CHECK_EQUAL(2,a.size());
       CHECK_EQUAL(1,a["m"]);
       CHECK_EQUAL(-2,a["s"]);
       CHECK(Units(a.str())==a);
       
       a=Units("m m");
+      CHECK_EQUAL(1,a.size());
       CHECK_EQUAL(2,a["m"]);
+      CHECK(Units(a.str())==a);
+
+      a=Units("1/s");
+      CHECK_EQUAL(1,a.size());
+      CHECK_EQUAL(-1,a["s"]);
       CHECK(Units(a.str())==a);
     }
 

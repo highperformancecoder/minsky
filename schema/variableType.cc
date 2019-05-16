@@ -70,9 +70,10 @@ namespace minsky
                     int v=strtol(k,const_cast<char**>(&j),10);
                     if (j==k)
                       throw runtime_error("invalid exponent: "+x);
-                    (*this)[name]+=coef*v;
+                    if (name!="1")
+                      (*this)[name]+=coef*v;
                   }
-                else
+                else if (name!="1")
                   (*this)[name]+=coef;
                 if ((*this)[name]==0)
                   erase(name);

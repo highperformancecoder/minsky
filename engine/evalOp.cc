@@ -1110,7 +1110,7 @@ namespace minsky
         double idx1=0;
         size_t stride=1;
         assert(i.size()==shape.size());
-        for (auto j=0; j<i.size(); ++j)
+        for (size_t j=0; j<i.size(); ++j)
           {
             idx1+=idx[i[j].idx]*stride;
             stride*=shape[j];

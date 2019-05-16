@@ -82,7 +82,7 @@ ifdef AEGIS
 # ensure all exes get built in AEGIS mode
 TESTS=tests 
 # enable TCL coverage testing
-FLAGS+=-DTCL_COV
+FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor
 endif
 
 ifdef MXE

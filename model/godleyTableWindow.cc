@@ -877,7 +877,7 @@ namespace minsky
         if (selectedRow==0)
           {
             // rename all instances of the stock variable if updated. For ticket #956
-            if (selectedCol<godleyIcon->stockVars().size()+1)
+            if (selectedCol<int(godleyIcon->stockVars().size()+1))
               {
                 auto savedItem=minsky().canvas.item;
                 minsky().canvas.item=godleyIcon->stockVars()[selectedCol-1];

@@ -66,15 +66,15 @@ namespace
     return r;
   }
 
-  // counts number of non empty entries on a line
-  size_t numEntries(const vector<string>& v)
-  {
-    size_t c=0;
-    for (auto& x: v)
-      if (!x.empty())
-        c++;
-    return c;
-  }
+//  // counts number of non empty entries on a line
+//  size_t numEntries(const vector<string>& v)
+//  {
+//    size_t c=0;
+//    for (auto& x: v)
+//      if (!x.empty())
+//        c++;
+//    return c;
+//  }
   
   // returns true if all elements of v after start are empty
   bool emptyTail(const vector<string>& v, size_t start)
