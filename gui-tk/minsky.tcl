@@ -955,7 +955,7 @@ image create photo zoomOrigImg -file $minskyHome/icons/zoomOrig.gif
 button .controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
     -command {
         if {[minsky.model.zoomFactor]>0} {
-            zoom [expr 1/[minsky.model.zoomFactor]]
+            zoom [expr 1/[minsky.model.relZoom]]
         } else {
             minsky.model.setZoom 1
         }
