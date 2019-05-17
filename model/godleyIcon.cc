@@ -72,7 +72,7 @@ namespace minsky
           RenderVariable rv(*v);
           h+=2*rv.height();
           if (h>height) height=h;
-          float w=2*rv.width()+2;
+          float w=2*rv.width();
           if (w>width) width=w;
         }
     }
@@ -242,7 +242,7 @@ namespace minsky
     flowMargin=0;
     accumulateWidthHeight(m_stockVars, height, stockMargin);
     accumulateWidthHeight(m_flowVars, height, flowMargin);
-    iconSize=max(100.0, 1.8*height);
+    iconSize=1.8*height;
 
     positionVariables();
     bb.update(*this);
@@ -257,10 +257,11 @@ namespace minsky
     for (auto& v: m_flowVars)
       {
         // right justification
+        RenderVariable rv(*v);
         v->rotation=0;
         v->bb.update(*v);
         v->moveTo(x-0.5*v->width()*zoomFactor,y);
-        y+=v->height()*zoomFactor;
+        y+=2*rv.height()*zoomFactor;
       }
     x= this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
     y= this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
@@ -268,10 +269,11 @@ namespace minsky
     for (auto& v: m_stockVars)
       {
         // top justification at bottom of icon
+        RenderVariable rv(*v);
         v->rotation=90;
         v->bb.update(*v);
         v->moveTo(x,y+0.5*v->height()*zoomFactor);
-        x+=v->width()*zoomFactor;
+        x+=2*rv.height()*zoomFactor;
       }
   }
 
