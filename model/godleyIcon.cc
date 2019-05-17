@@ -367,7 +367,8 @@ namespace minsky
                 }
           }
       }
-    units[minsky().timeUnit]++;
+    if (!cminsky().timeUnit.empty())
+      units[cminsky().timeUnit]++;
     return units;
   }
 

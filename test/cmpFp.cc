@@ -56,9 +56,9 @@ int main(int argc, const char** argv)
             tag.clear();
           else
             tag+=c1;
-          if (tag=="layout>")
+          if (tag=="coords>" || tag=="x>" || tag=="y>")
             inLayout=true;
-          else if (tag=="/layout>")
+          else if (tag=="/coords>" || tag=="/x>" || tag=="/y>")
             inLayout=false;
         }
     }
