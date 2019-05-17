@@ -341,7 +341,7 @@ namespace minsky
       return r;
     }
     void addBookmark(const std::string& name) {
-      bookmarks.emplace_back(x(), y(), zoomFactor(), name);
+      bookmarks.emplace_back(x(), y(), relZoom*zoomFactor(), name);
     }
     void deleteBookmark(size_t i) {
       if (i<bookmarks.size())
@@ -352,7 +352,7 @@ namespace minsky
         {
           auto& b=bookmarks[i];
           moveTo(b.x, b.y);
-          zoom(x(),y(),b.zoom/zoomFactor());
+          zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
         }
     }
     
