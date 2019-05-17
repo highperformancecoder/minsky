@@ -51,7 +51,8 @@ proc afterMinskyStarted {} {
     bind .wiring.canvas <Button-1> "puts {%x %y}"
 
     # delivered to foobar
-    event generate .wiring.canvas <Button-3>  -x 75 -y 150 -rootx 100 -rooty 100
+    findVariable foobar
+    event generate .wiring.canvas <Button-3>  -x [minsky.canvas.item.x] -y [minsky.canvas.item.y] -rootx 100 -rooty 100
     # check context menu is posted
     assert {[winfo viewable .wiring.context]} foobar
     # check the menu items are what is expected

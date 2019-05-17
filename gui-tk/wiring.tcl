@@ -812,7 +812,7 @@ proc exportItemAsCSV {} {
 proc exportItemAsImg {} {
     global workDir type
     set f [tk_getSaveFile -filetypes {
-        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"PNG" png PNGG}
+        {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"PNG" .png PNGG}
     } -initialdir $workDir -typevariable type ]
     if {$f==""} return
     if [string match -nocase *.svg "$f"] {
@@ -838,7 +838,7 @@ namespace eval godley {
         global workDir type
         set item minsky.canvas.item
         
-        set fname [tk_getSaveFile -filetypes {{"CSV files" csv TEXT} {"LaTeX files" tex TEXT}} \
+        set fname [tk_getSaveFile -filetypes {{"CSV files" .csv TEXT} {"LaTeX files" .tex TEXT}} \
                        -initialdir $workDir -typevariable type]  
         if {$fname==""} return
         if [string match -nocase *.csv "$fname"] {

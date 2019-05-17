@@ -242,7 +242,7 @@ namespace minsky
     flowMargin=0;
     accumulateWidthHeight(m_stockVars, height, stockMargin);
     accumulateWidthHeight(m_flowVars, height, flowMargin);
-    iconSize=1.8*height;
+    iconSize=max(100.0, 1.8*height);
 
     positionVariables();
     bb.update(*this);

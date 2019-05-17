@@ -587,7 +587,7 @@ proc exportCanvas {} {
     global workDir type fname preferences
 
     set f [tk_getSaveFile -filetypes {
-        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"LaTeX" tex TEXT} {"Matlab" m TEXT}} \
+        {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}} \
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
     if [string match -nocase *.svg "$f"] {
@@ -1139,9 +1139,10 @@ proc recentreCanvas {} {
 }
 
 proc save {} {
-    global fname
+    global fname workDir
     if {![string length $fname]} {
-	    setFname [tk_getSaveFile -defaultextension .mky]}            
+        setFname [tk_getSaveFile -defaultextension .mky  -initialdir $workDir \
+                  -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]}            
     if [string length $fname] {
         eval minsky.save {$fname}
     }
@@ -1149,7 +1150,8 @@ proc save {} {
 
 proc saveAs {} {
     global fname workDir
-    setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+    setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir \
+              -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]
     if [string length $fname] {
         eval minsky.save {$fname}
     }
