@@ -330,7 +330,7 @@ namespace minsky
                 for (auto c: *field)
                   if (c==spec.decSeparator)
                     s+='.';
-                  else if (!isspace(c) && !c=='.' && !c==',')
+                  else if (!isspace(c) && c!='.' && c!=',')
                     s+=c;
 
                 try
