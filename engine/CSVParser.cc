@@ -35,13 +35,40 @@ struct NoDataColumns: public exception
 };
 struct DuplicateKey: public exception
 {
-  const char* what() const noexcept override {return "Duplicate key";}
+  std::string msg="Duplicate key";
+  DuplicateKey(const vector<string>& x) {
+    for (auto& i: x)
+      msg+=":"+i;
+  }
+  const char* what() const noexcept override {return msg.c_str();}
 };
 
 namespace
 {
   const size_t maxRowsToAnalyse=100;
   
+  double quotedStoD(const string& s,size_t& charsProcd)
+  {
+    double r=stod(s,&charsProcd);
+    if (charsProcd==s.size()) return r;
+    //strip possible quote characters
+    if (!s.empty() && s[0]==s[s.size()-1])
+      {
+        r=stod(s.substr(1),&charsProcd);
+        charsProcd+=2;
+      }
+    return r;
+  }
+
+  string stripWSAndDecimalSep(const string& s)
+  {
+    string r;
+    for (auto c: s)
+      if (!isspace(c) && c!=',' && c!='.')
+        r+=c;
+    return r;
+  }
+    
   // returns first position of v such that all elements in that or later
   // positions are numerical or null
   size_t firstNumerical(const vector<string>& v)
@@ -53,8 +80,8 @@ namespace
           if (!v[i].empty())
             {
               size_t c;
-              auto s=trimWS(v[i]);
-              stod(s,&c);
+              auto s=stripWSAndDecimalSep(v[i]);
+              quotedStoD(s,c);
               if (c!=s.size())
                 r=i+1;
             }
@@ -66,16 +93,6 @@ namespace
     return r;
   }
 
-//  // counts number of non empty entries on a line
-//  size_t numEntries(const vector<string>& v)
-//  {
-//    size_t c=0;
-//    for (auto& x: v)
-//      if (!x.empty())
-//        c++;
-//    return c;
-//  }
-  
   // returns true if all elements of v after start are empty
   bool emptyTail(const vector<string>& v, size_t start)
   {
@@ -111,6 +128,8 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
     m_nRowAxes=0;
     for (; getline(input, buf) && row<maxRowsToAnalyse; ++row)
       {
+        // remove trailing carriage returns
+        if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
         starts.push_back(firstNumerical(line));
@@ -212,8 +231,8 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
       {
         // only select value type if the datafield is a pure double
         size_t c;
-        string s=trimWS(data[col]);
-        double v=stod(s, &c);
+        string s=stripWSAndDecimalSep(data[col]);
+        double v=quotedStoD(s, c);
         if (c!=s.size()) throw 0; // try parsing as time
         dimensions.emplace_back(Dimension::value,"");
       }
@@ -304,10 +323,19 @@ namespace minsky
                 if (tabularFormat)
                   key.push_back(horizontalLabels[col]);
                 if (tmpData.count(key))
-                  throw DuplicateKey();
+                  throw DuplicateKey(key);
+
+                // remove thousands separators, and set decimal separator to '.' ("C" locale)
+                string s;
+                for (auto c: *field)
+                  if (c==spec.decSeparator)
+                    s+='.';
+                  else if (!isspace(c) && !c=='.' && !c==',')
+                    s+=c;
+
                 try
                   {
-                    tmpData[key]=stod(*field);
+                    tmpData[key]=stod(s);
                   }
                 catch (...)
                   {

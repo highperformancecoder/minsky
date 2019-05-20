@@ -15,6 +15,11 @@ proc CSVImportDialog {} {
             "," ";" "<tab>" "<space>"} -textvariable csvParms(separator) -width 5
         bind .wiring.csvImport.delimiters.separatorValue <<ComboboxSelected>> {
             csvDialog.spec.separator $csvParms(separator)}
+        label .wiring.csvImport.delimiters.decSeparatorLabel -text "Decimal Separator"
+        ttk::combobox .wiring.csvImport.delimiters.decSeparatorValue -values {
+            "." ","} -textvariable csvParms(decSeparator) -width 5
+        bind .wiring.csvImport.delimiters.decSeparatorValue <<ComboboxSelected>> {
+            csvDialog.spec.decSeparator $csvParms(decSeparator)}
         label .wiring.csvImport.delimiters.escapeLabel -text Escape
         ttk::combobox .wiring.csvImport.delimiters.escapeValue -values {
             "\\"} -textvariable csvParms(escape) -width 5
@@ -42,6 +47,7 @@ proc CSVImportDialog {} {
         
         pack .wiring.csvImport.delimiters.columnarLabel .wiring.csvImport.delimiters.columnar \
             .wiring.csvImport.delimiters.separatorLabel .wiring.csvImport.delimiters.separatorValue \
+            .wiring.csvImport.delimiters.decSeparatorLabel .wiring.csvImport.delimiters.decSeparatorValue \
             .wiring.csvImport.delimiters.escapeLabel .wiring.csvImport.delimiters.escapeValue \
             .wiring.csvImport.delimiters.quoteLabel .wiring.csvImport.delimiters.quoteValue \
             .wiring.csvImport.delimiters.mergeLabel .wiring.csvImport.delimiters.mergeValue \
@@ -86,6 +92,7 @@ proc CSVImportDialog {} {
         csvDialog.loadFile $filename
         set csvParms(filename) $filename
         set csvParms(separator) [csvDialog.spec.separator]
+        set csvParms(decSeparator) [csvDialog.spec.decSeparator]
         set csvParms(escape) [csvDialog.spec.escape]
         set csvParms(quote) [csvDialog.spec.quote]
         set csvParms(mergeDelimiters) [csvDialog.spec.mergeDelimiters]

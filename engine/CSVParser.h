@@ -32,7 +32,7 @@ namespace minsky
     size_t m_nRowAxes=0, m_nColAxes=0;
     CLASSDESC_ACCESS(DataSpec);
   public:
-    char separator=',', quote='"', escape='\\';
+    char separator=',', quote='"', escape='\\', decSeparator='.';
     bool mergeDelimiters=false;
     bool columnar=false;
     double missingValue=nan("");
