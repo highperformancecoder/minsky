@@ -839,6 +839,26 @@ namespace minsky
     v.exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
   }
 
+  Units Ravel::units() const
+  {
+    Units inputUnits=ports[1]->units();
+    if (inputUnits.empty() || !ravel) return inputUnits;
+    size_t multiplier=1;
+    // at this stage, gross up exponents by the handle size of each
+    // reduced by product handles
+    for (size_t h=0; h<ravel_numHandles(ravel); ++h)
+      {
+        RavelHandleState state;
+        ravel_getHandleState(ravel,h,&state);
+        if (state.collapsed && state.reductionOp==HandleState::prod)
+          multiplier*=ravel_numSliceLabels(ravel,h);
+      }
+    if (multiplier>1)
+      for (auto& u: inputUnits)
+        u.second*=multiplier;
+    return inputUnits;
+  }
+  
   void Ravel::displayDelayedTooltip(float xx, float yy)
   {
     if (ravel_rank(ravel)==0)

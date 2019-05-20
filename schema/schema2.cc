@@ -500,8 +500,12 @@ namespace schema2
               zs.inflate();
               
               vector<minsky::XVector> xv;
-              zs.output>>val->tensorInit>>xv;
-              val->setXVector(xv);
+              try
+                {
+                  zs.output>>val->tensorInit>>xv;
+                  val->setXVector(xv);
+                }
+              catch (...) {} // absorb for now - maybe log later
             }
       }
     if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))

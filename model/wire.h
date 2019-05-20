@@ -47,6 +47,7 @@ namespace minsky
     std::weak_ptr<Port> m_from, m_to;
 
     constexpr static float handleRadius=3;
+    mutable int unitsCtr=0; ///< for detecting wiring loops in units()
   public:
 
     Wire() {}

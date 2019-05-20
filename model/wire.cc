@@ -235,10 +235,16 @@ namespace minsky
 
   Units Wire::units() const
   {
-    // we allow possible traversing twice over a wire, to allow an
-    // integral to break the cycle
+      
     if (auto f=from())
-      return f->item.units();
+      {
+        // we allow possible traversing twice over a wire, to allow an
+        // integral to break the cycle
+        if (unitsCtr>2)
+          f->item.throw_error("wiring loop detected");
+        IncrDecrCounter idc(unitsCtr);
+        return f->item.units();
+      }
     else return {};
   }
 

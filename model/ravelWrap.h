@@ -137,6 +137,8 @@ namespace minsky
     void displayDelayedTooltip(float x, float y) override;
     void exportAsCSV(const std::string& filename) const;
 
+    Units units() const override;
+    
   };
 
   class RavelLockGroup
