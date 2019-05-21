@@ -37,6 +37,7 @@
 #include "variableValue.h"
 #include "canvas.h"
 #include "panopticon.h"
+#include "dimension.h"
 #include "rungeKutta.h"
 
 #include <vector>
@@ -105,6 +106,7 @@ namespace minsky
     MinskyExclude(): historyPtr(0) {}
     MinskyExclude(const MinskyExclude&): historyPtr(0) {}
     MinskyExclude& operator=(const MinskyExclude&) {return *this;}
+    
   protected:
     /// save history of model for undo
     /* 
@@ -114,7 +116,9 @@ namespace minsky
      */
     std::deque<classdesc::pack_t> history;
     size_t historyPtr;
-    
+
+    /// flag indicates that RK engine is computing a step
+    volatile bool RKThreadRunning=false;
   };
 
   /// convenience class for accessing matrix elements from a data array
@@ -176,6 +180,10 @@ namespace minsky
     }
     
     VariableValues variableValues;
+    Dimensions dimensions;
+    Conversions conversions;
+    /// fills in dimensions table with all loaded ravel axes
+    void populateMissingDimensions();
 
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
@@ -223,13 +231,7 @@ namespace minsky
     void assetClasses() {enumVals<GodleyTable::AssetClass>();}
 
     /// returns reference to variable defining (ie input wired) for valueId
-    VariablePtr definingVar(const std::string& valueId) const {
-      return dynamic_pointer_cast<VariableBase>
-        (model->findAny(&Group::items, [&](ItemPtr x) {
-            auto v=dynamic_cast<VariableBase*>(x.get());
-            return v && v->ports.size()>1 && !v->ports[1]->wires().empty() && v->valueId()==valueId;
-          }));
-    }
+    VariablePtr definingVar(const std::string& valueId) const;
 
     void saveGroupAsFile(const Group&, const string& fileName) const;
     void saveCanvasItemAsFile(const string& fileName) const
@@ -245,7 +247,7 @@ namespace minsky
     /// refer to the new group
     void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
-
+    
     /// @{ override to provide clipboard handling functionality
     virtual void putClipboard(const string&) const {}
     virtual std::string getClipboard() const {return "";}
@@ -277,7 +279,9 @@ namespace minsky
     void constructEquations();
     /// evaluate the equations (stockVars.size() of them)
     void evalEquations(double result[], double t, const double vars[]);
-
+    /// performs dimension analysis, throws if there is a problem
+    void dimensionalAnalysis() const;
+    
     /// consistency check of the equation order. Should return
     /// true. Outputs the operation number of the invalidly ordered
     /// operation.
@@ -288,7 +292,7 @@ namespace minsky
     
     double t{0}; ///< time
     double t0{0}; ///< simulation start time
-    string timeUnit;
+    bool running=false; ///< controls whether simulation is running
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
     void step();  ///< step the equations (by n steps, default 1)
@@ -367,7 +371,10 @@ namespace minsky
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
-    
+
+    /// set/clear busy cursor in GUI
+    virtual void setBusyCursor() {}
+    virtual void clearBusyCursor() {}
   };
 
   /// global minsky object

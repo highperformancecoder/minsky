@@ -27,6 +27,7 @@
 #include "switchIcon.h"
 #include "wire.h"
 #include "ravelWrap.h"
+#include "sheet.h"
 #include <cairoSurfaceImage.h>
 
 #include <chrono>
@@ -45,8 +46,6 @@ namespace minsky
   
   class Canvas: public ecolab::CairoSurface
   {
-    // for drawing error indicators on the canvas
-    bool itemIndicator=false;
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
     void reportDrawTime(double) override;
@@ -97,6 +96,8 @@ namespace minsky
     double termX,termY; ///< terminal of wire when extending
     float moveOffsX, moveOffsY;
     ClickType::Type clickType;
+    /// for drawing error indicators on the canvas
+    bool itemIndicator=false;
     
     /// lasso mode support
     struct LassoMode {enum type  {none, lasso, itemResize};};
@@ -112,7 +113,8 @@ namespace minsky
     void mouseDown(float x, float y);
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);
-
+    void displayDelayedTooltip(float x, float y);
+    
     /// return closest visible port to (x,y). nullptr is nothing suitable
     std::shared_ptr<Port> closestInPort(float x, float y) const;
 
@@ -154,11 +156,17 @@ namespace minsky
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
-    void addRavel() {setItemFocus(model->addItem(new RavelWrap));}
+    void addRavel() {setItemFocus(model->addItem(new Ravel));}
+    void addSheet() {setItemFocus(model->addItem(new Sheet));}
     
     /// create a group from items found in the current selection
     void groupSelection();
-    
+    /// lock all ravels in the selection together. If ravels already
+    /// belong to more than one group, then a completely new group is
+    /// set up.
+    void lockRavelsInSelection();
+    void unlockRavelsInSelection();
+
     /// delete item referenced by item
     void deleteItem();
     /// delete wire referenced by wire
@@ -194,7 +202,8 @@ namespace minsky
     /// handle arrow keys
     /// @param int - direction (-1=left/up, +1=right/down)
     /// @param x, y coordinates of mouse in canvas coordinates
-    void handleArrows(int dir, float x, float y);
+    /// @param reset - if true, then call Minsky::reset()
+    void handleArrows(int dir, float x, float y, bool reset);
     
     /// zooms canvas such that group indexed by item is displayed
     void zoomToDisplay();
@@ -210,7 +219,7 @@ namespace minsky
     bool findVariableDefinition();
 
     /// draw a red circle around item
-    void indicateItem() {itemIndicator=true;}
+    //    void indicateItem() {itemIndicator=true;}
 
     /// redraw whole model
     void redraw(int x0, int y0, int width, int height) override;

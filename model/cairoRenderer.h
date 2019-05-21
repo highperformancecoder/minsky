@@ -29,6 +29,7 @@ namespace ravel
       newPath=s_newPath;
       closePath=s_closePath;
       fill=s_fill;
+      clip=s_clip;
       stroke=s_stroke;
       strokePreserve=s_strokePreserve;
       setSourceRGB=s_setSourceRGB;
@@ -59,6 +60,7 @@ namespace ravel
     static void s_newPath(CAPIRenderer* c) {cairo_new_path(cairo(c));}
     static void s_closePath(CAPIRenderer* c) {cairo_close_path(cairo(c));}
     static void s_fill(CAPIRenderer* c)  {cairo_fill(cairo(c));}
+    static void s_clip(CAPIRenderer* c)  {cairo_clip(cairo(c));}
     static void s_stroke(CAPIRenderer* c) {cairo_stroke(cairo(c));}
     static void s_strokePreserve(CAPIRenderer* c) {cairo_stroke_preserve(cairo(c));}
     static void s_setSourceRGB(CAPIRenderer* c, double r, double g, double b)

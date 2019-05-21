@@ -98,6 +98,14 @@ float VariableBase::zoomFactor() const
   return Item::zoomFactor();
 }
 
+VariableValue* VariableBase::vValue() const
+{
+  auto vv=minsky().variableValues.find(valueId());
+  if (vv!=minsky().variableValues.end())
+    return &vv->second;
+  else
+    return nullptr;
+}
 
 string VariableBase::valueId() const 
 {
@@ -190,19 +198,57 @@ double VariableBase::_value(double x)
   return x;
 }
 
-Units VariableBase::_units() const
+int VariableBase::stockVarsPassed=0;
+int VariableBase::varsPassed=0;
+
+Units VariableBase::units() const
 {
-  if (VariableValue::isValueId(valueId()))
-    return minsky::cminsky().variableValues[valueId()].units;
+  if (varsPassed==0) minsky().variableValues.resetUnitsCache(); 
+  // we allow possible traversing twice, to allow
+  // stock variable to break the cycle
+  if (unitsCtr-stockVarsPassed>=1)
+    throw_error("Cycle detected on wiring network");
+
+  auto it=minsky().variableValues.find(valueId());
+  if (it!=minsky().variableValues.end())
+    {
+      auto& vv=it->second;
+      if (isStock() && unitsCtr)
+        return vv.units; // stock var cycles back on itself, normalise to dimensionless
+      if (vv.unitsCached) return vv.units;
+      
+      IncrDecrCounter ucIdc(unitsCtr);
+      IncrDecrCounter vpIdc(varsPassed);
+      // use a unique ptr here to only increment counter inside a stockVar
+      unique_ptr<IncrDecrCounter> svp;
+      if (isStock()) svp.reset(new IncrDecrCounter(stockVarsPassed));
+
+      // updates units in the process
+      if (ports.size()>1 && !ports[1]->wires().empty())
+        vv.units=ports[1]->wires()[0]->from()->item.units();
+      else if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
+        vv.units=i->units();
+      else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+        {
+          if (isStock())
+            vv.units=g->stockVarUnits(name());
+        }
+      else if (auto v=cminsky().definingVar(valueId()))
+        vv.units=v->units();
+      
+      vv.unitsCached=true;
+      return vv.units;
+    }
   else
     return Units();
 }
 
-Units VariableBase::_units(const Units& x)
+void VariableBase::setUnits(const string& x)
 {
-  if (!m_name.empty() && VariableValue::isValueId(valueId()))
-    minsky().variableValues[valueId()].units=x;
-  return x;
+  if (VariableValue::isValueId(valueId()))
+    minsky().variableValues[valueId()].units=Units(x);
+  // reset minsky model to propagate units
+  try {minsky().reset();} catch (...) {}
 }
 
 
@@ -214,12 +260,12 @@ vector<string> VariableBase::accessibleVars() const
     {
       // first add local variables
       for (auto& i: g->items)
-        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+        if (auto v=i->variableCast())
           r.insert(v->name());
       // now add variables in outer scopes, ensuring they qualified
       for (g=g->group.lock(); g;  g=g->group.lock())
         for (auto& i: g->items)
-          if (auto v=dynamic_cast<VariableBase*>(i.get()))
+          if (auto v=i->variableCast())
             {
               auto n=v->name();
               if (n[0]==':')
@@ -230,6 +276,14 @@ vector<string> VariableBase::accessibleVars() const
     }
   return vector<string>(r.begin(),r.end());
 }
+
+void VariableBase::exportAsCSV(const std::string& filename) const
+{
+  auto value=minsky().variableValues.find(valueId());
+  if (value!=minsky().variableValues.end())
+    value->second.exportAsCSV(filename, name());
+}
+
 
 namespace minsky
 {
@@ -292,13 +346,18 @@ void VariableBase::initSliderBounds() const
 
 void VariableBase::adjustSliderBounds() const
 {
-  if (sliderMax<value()) sliderMax=value();
-  if (sliderMin>value()) sliderMin=value();
+  if (auto vv=vValue())
+    if (vv->numElements()==1)
+      {
+        if (sliderMax<vv->value()) sliderMax=vv->value();
+        if (sliderMin>vv->value()) sliderMin=vv->value();
+      }
 }
 
-bool VariableBase::handleArrows(int dir)
+bool VariableBase::handleArrows(int dir,bool reset)
 {
   sliderSet(value()+dir*sliderStep);
+  if (reset) minsky().reset();
   return true;
 }
 
@@ -325,8 +384,12 @@ void VariableBase::draw(cairo_t *cairo) const
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
+
+  VariableValue vv;
+  if (VariableValue::isValueId(valueId()))
+    vv=minsky::cminsky().variableValues[valueId()];
   
-  if (type()!=constant && !ioVar())
+  if (type()!=constant && !ioVar() && vv.numElements()==1 )
     try
     {
       auto val=engExp();
@@ -347,6 +410,7 @@ void VariableBase::draw(cairo_t *cairo) const
         }
     }
     catch (...) {} // ignore errors in obtaining values
+
   unique_ptr<cairo::Path> clipPath;
   {
     cairo::CairoSave cs(cairo);
@@ -399,7 +463,7 @@ void VariableBase::draw(cairo_t *cairo) const
     {
       cairo::CairoSave cs(cairo);
       drawPorts(cairo);
-      displayTooltip(cairo);
+      displayTooltip(cairo,tooltip);
     }
 
   cairo_new_path(cairo);

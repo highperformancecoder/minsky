@@ -95,6 +95,15 @@ namespace minsky
       return item.value();
   }
 
+  
+  Units Port::units() const
+  {
+    if (!wires().empty())
+      return wires()[0]->units();
+    else
+      return {};
+  }
+
   const VariableValue& Port::getVariableValue() const {
     if (input() && !m_wires.empty())
       return m_wires[0]->from()->getVariableValue();

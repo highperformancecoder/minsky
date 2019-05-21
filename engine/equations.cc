@@ -30,29 +30,6 @@ namespace MathDAG
 
   namespace
   {
-    // RAII class that conditionally writes a left parenthesis on
-    // construction, and right parenthesis on destruction
-    struct ParenIf
-    {
-      ostream& o;
-      bool c;
-      ParenIf(ostream& o, bool c): o(o), c(c)  {if (c) o<<"\\left(";}
-      ~ParenIf() {if (c) o<<"\\right)";}
-    };
-
-    struct InvalidChar
-    {
-      bool operator()(char c) const {return !isalnum(c) && c!='_';}
-    };
-
-    string validMatlabIdentifier(string name)
-    {
-      name.erase(remove_if(name.begin(), name.end(), InvalidChar()), name.end());
-      if (name.empty() || isdigit(name[0]))
-        name="_"+name;
-      return name;
-    }
-
     // comparison function for sorting variables into their definition order
     struct VariableDefOrder
     {
@@ -84,34 +61,6 @@ namespace MathDAG
 
   }
 
-  // named constants for group identities
-
-  string mathrm(const string& nm)
-  {
-    // process super/sub scripts
-    string::size_type ss;
-    if ((ss=nm.find_first_of("_^"))!=string::npos)
-      return mathrm(nm.substr(0, ss)) + nm[ss] + "{"+mathrm(nm.substr(ss+1))+"}";
-
-    // if its a single letter variable, or contains LaTeX codes, process as is
-    if (nm.length()==1 || nm.find('\\')!=string::npos)
-      return nm;
-    else
-      return "\\mathrm{"+nm+"}";
-  }
-
-  string latex(double x)
-  {
-    if (abs(x)>0 && (abs(x)>=1e5 || abs(x)<=1e-4))
-      {
-        int exponent=log10(abs(x));
-        if (exponent<0) exponent++;
-        return str(x/pow(10.0,exponent))+"\\times10^{"+str(exponent)+"}";
-      }
-    else
-      return str(x);
-  }
-
   VariableValue ConstantDAG::addEvalOps
   (EvalOpVector& ev, VariableValue* r)
   {
@@ -124,31 +73,18 @@ namespace MathDAG
             // set the initial value of the actual variableValue (if it exists)
             auto v=values.find(result->name);
             if (v!=values.end())
-              v->second.init=str(value);
+              v->second.init=value;
           }
         else
           result=&tmpResult;
-        *result=value;
+        result->init=value;
+        *result=result->initValue(values);
       }
     if (r && r->isFlowVar() && r!=result)
-      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
-  }
-
-  ostream& VariableDAG::latex(ostream& o) const
-  {
-    if (type==constant)
-      return o<<init;
-    return o<<mathrm(name);
-  }
-
-  ostream& VariableDAG::matlab(ostream& o) const
-  {
-    if (type==constant)
-      return o<<init;
-    return o<<validMatlabIdentifier(name);
   }
 
   VariableValue VariableDAG::addEvalOps
@@ -166,7 +102,7 @@ namespace MathDAG
           rhs->addEvalOps(ev, result);
       }
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
@@ -190,7 +126,7 @@ namespace MathDAG
           throw error("integral not defined");
       }
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, *r, *result));
+      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
@@ -239,15 +175,17 @@ namespace MathDAG
 
   namespace
   {
-    void cumulate(EvalOpVector& ev, VariableValue& r, const vector<vector<VariableValue> >& argIdx,
+    void cumulate(EvalOpVector& ev, const std::shared_ptr<OperationBase>& state, VariableValue& r,
+                  const vector<vector<VariableValue> >& argIdx,
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
+      size_t oldNumElems=r.numElements();
       for (auto& i: argIdx)
         if (i.size() && !i[0].xVector.empty())
           {
             // initialise r's xVector
-            r.xVector=i[0].xVector;
+            r.setXVector(i[0].xVector);
             break;
           }
       if (!r.xVector.empty())
@@ -258,7 +196,6 @@ namespace MathDAG
               r.makeXConformant(j);
           if (r.xVector.empty())
             return; // no common intersection amongst arguments
-          r.dims({unsigned(r.xVector.size())});
         }
       if (r.idx()==-1) r.allocValue();
 
@@ -286,16 +223,16 @@ namespace MathDAG
               i++;
           if (i<argIdx[0].size())
             {
-              ev.push_back(EvalOpPtr(OperationType::copy, r, argIdx[0][i]));
+              ev.push_back(EvalOpPtr(OperationType::copy, state, r, argIdx[0][i]));
               for (++i; i<argIdx[0].size(); ++i)
                 if (accum!=OperationType::add || !argIdx[0][i].isZero())
-                  ev.push_back(EvalOpPtr(accum, r, r, argIdx[0][i]));
+                  ev.push_back(EvalOpPtr(accum, state, r, r, argIdx[0][i]));
             }
         }
       else
         {
           //TODO: could be cleaned up if we don't need to support constant operators
-          ev.push_back(EvalOpPtr(OperationType::constant, r));
+          ev.push_back(EvalOpPtr(OperationType::constant, state, r));
           dynamic_cast<ConstantEvalOp&>(*ev.back()).value=groupIdentity;
         }
 
@@ -303,23 +240,23 @@ namespace MathDAG
         {
           if (argIdx[1].size()==1)
             // eliminate redundant copy operation when only one wire
-            ev.push_back(EvalOpPtr(op, r, r, argIdx[1][0]));
+            ev.push_back(EvalOpPtr(op, state, r, r, argIdx[1][0]));
           else if (argIdx[1].size()>1)
             {
               // multiple wires to second input port
               VariableValue tmp(VariableType::tempFlow);
-              tmp.xVector=r.xVector;
+              tmp.setXVector(r.xVector);
               tmp.dims(r.dims());
               size_t i=0;
               if (accum==OperationType::add)
                 while (i<argIdx[1].size() && argIdx[1][i].isZero()) i++;
               if (i<argIdx[1].size())
                 {
-                  ev.push_back(EvalOpPtr(OperationType::copy, tmp, argIdx[1][i]));
+                  ev.push_back(EvalOpPtr(OperationType::copy, state, tmp, argIdx[1][i]));
                   for (++i; i<argIdx[1].size(); ++i)
                     if (accum!=OperationType::add || !argIdx[1][i].isZero())
-                      ev.push_back(EvalOpPtr(accum, tmp, tmp, argIdx[1][i]));
-                  ev.push_back(EvalOpPtr(op, r, r, tmp));
+                      ev.push_back(EvalOpPtr(accum, state, tmp, tmp, argIdx[1][i]));
+                  ev.push_back(EvalOpPtr(op, state, r, r, tmp));
                 }
             }
         }
@@ -336,8 +273,6 @@ namespace MathDAG
           result=r;
         else
           result=&tmpResult;
-        //          result.allocValue();
-
 
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
@@ -357,28 +292,28 @@ namespace MathDAG
             switch (type())
               {
               case add:
-                cumulate(ev, *result, argIdx, add, add, 0);
+                cumulate(ev, state, *result, argIdx, add, add, 0);
                 break;
               case subtract:
-                cumulate(ev, *result, argIdx, subtract, add, 0);
+                cumulate(ev, state, *result, argIdx, subtract, add, 0);
                 break;
               case multiply:
-                cumulate(ev, *result, argIdx, multiply, multiply, 1);
+                cumulate(ev, state, *result, argIdx, multiply, multiply, 1);
                 break;
               case divide:
-                cumulate(ev, *result, argIdx, divide, multiply, 1);
+                cumulate(ev, state, *result, argIdx, divide, multiply, 1);
                 break;
               case min:
-                cumulate(ev, *result, argIdx, min, min, numeric_limits<double>::max());
+                cumulate(ev, state, *result, argIdx, min, min, numeric_limits<double>::max());
                 break;
               case max:
-                cumulate(ev, *result, argIdx, max, max, -numeric_limits<double>::max());
+                cumulate(ev, state, *result, argIdx, max, max, -numeric_limits<double>::max());
                 break;
               case and_:
-                cumulate(ev, *result, argIdx, and_, and_, 1);
+                cumulate(ev, state, *result, argIdx, and_, and_, 1);
                 break;
               case or_:
-                cumulate(ev, *result, argIdx, or_, or_, 0);
+                cumulate(ev, state, *result, argIdx, or_, or_, 0);
                 break;
               case constant:
                 if (state) minsky::minsky().displayErrorItem(*state);
@@ -395,15 +330,117 @@ namespace MathDAG
                       else if (arguments.size()>1 && !argIdx[1].empty())
                         argIdx[0][0].units=argIdx[1][0].units;
                     }
-                ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0])); 
+                ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
+                break;
+              case runningSum: case runningProduct:
+                {
+                  if (argIdx.empty() || argIdx[0].empty())
+                    throw error("input not wired");
+                  result->setXVector(argIdx[0][0].xVector);
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+                  assert(state);
+                  ev.back()->setTensorParams(argIdx[0][0],*state);
+                }
+                break;
+              case difference:
+                {
+                  // implement the difference operator as a
+                  // subtraction, by fiddling with the offsets of the
+                  // second variableValue
+                  EvalOpPtr op(subtract, state, *result, argIdx[0][0], argIdx[0][0]);
+                  ev.push_back(op);
+                  size_t stride, dimSz;
+                  argIdx[0][0].computeStrideAndSize(state->axis, stride,dimSz);
+
+                  // trim off leading or trailing components
+                  auto xVector=result->xVector;
+                  for (auto& i: xVector)
+                    if (state->axis.empty() || i.name==state->axis)
+                      {
+                        if (state->arg>=i.size())
+                          throw error("difference argument %g greater than vector length %ul",state->arg,(long)i.size());
+                        if (state->arg>0)
+                          i.erase(i.begin(), i.begin()+state->arg);
+                        else
+                          i.erase(i.end()+state->arg, i.end());
+                        break;
+                      }
+                  result->setXVector(xVector);
+                  
+                  decltype(op->in1) in1;
+                  decltype(op->in2) in2;
+                  for (auto& i: op->in2)
+                    {
+                      assert(state);
+                      assert(i.size()==1);
+                      assert(i[0].weight==1);
+                      auto j=((i[0].idx-argIdx[0][0].idx())/stride)%dimSz;
+                      if (j>=state->arg && j<dimSz+state->arg)
+                        {
+                          // only transfer in bound references
+                          in1.push_back(op->in1[&i-&op->in2[0]]);
+                          i[0].idx-=stride*state->arg;
+                          in2.push_back(i);
+                        }
+                    }
+                  op->in1.swap(in1);
+                  op->in2.swap(in2);
+                  break;
+                }
+              case index: 
+                {
+                  auto xVector=argIdx[0][0].xVector;
+                  for (auto& i: xVector)
+                    if (state->axis.empty() || i.name==state->axis || xVector.size()==1)
+                      {
+                        i.dimension.type=Dimension::value;
+                        i.dimension.units.clear();
+                        for (size_t j=0; j<i.size(); ++j)
+                          i[j]=double(j);
+                        break;
+                      }
+                  result->setXVector(xVector);
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+                }                
+                break;
+              case gather:
+                {
+                  auto xVector=argIdx[0][0].xVector;
+                  for (auto& i: xVector)
+                    if (state->axis.empty() || i.name==state->axis || xVector.size()==1)
+                      {
+                        i.dimension.type=Dimension::value;
+                        i.dimension.units.clear();
+                        for (size_t j=0; j<i.size(); ++j)
+                          i[j]=double(j);
+                        break;
+                      }
+                  result->setXVector(xVector);
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
+                }                
                 break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
-                  ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0])); 
-                else if (auto d=dynamic_cast<DataOp*>(state.get()))
-                  d->initOutputVariableValue(*result); // input not wired,
+                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
+                break;
+              case ravel:
+                if (auto r=dynamic_cast<Ravel*>(state.get()))
+                  {
+                    if (argIdx.size()>0 && argIdx[0].size()==1)
+                      {
+                        // process ravel to dimension the result
+                        // variable correctly (data may be bogus at
+                        // this time)
+                        r->loadDataCubeFromVariable(argIdx[0][0]);
+                        r->loadDataFromSlice(*result);
+                        ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
+                        ev.back()->state=state;
+                      }
+                    else
+                      r->loadDataFromSlice(*result);
+                  }
                 break;
               default:
                 // sanity check that the correct number of arguments is provided 
@@ -416,13 +453,13 @@ namespace MathDAG
                 switch (arguments.size())
                   {
                   case 0:
-                    ev.push_back(EvalOpPtr(type(), *result));
+                    ev.push_back(EvalOpPtr(type(), state, *result));
                     break;
                   case 1:
-                    ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0]));
+                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
                     break;
                   case 2:
-                    ev.push_back(EvalOpPtr(type(), *result, argIdx[0][0], argIdx[1][0]));
+                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
                     break;
                   default:
                     throw error("Too many arguments");
@@ -434,792 +471,14 @@ namespace MathDAG
             if (state) minsky::minsky().displayErrorItem(*state);
             throw;
           }
-        if (!ev.empty() && (!ev.back()->state || ev.back()->state->type()==numOps) 
-            && state && ev.back()->type()==state->type())
-          ev.back()->state=state;
       }
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
-      ev.push_back(EvalOpPtr(copy, *r, *result));
+      ev.push_back(EvalOpPtr(copy, state, *r, *result));
     if (state && !state->ports.empty() && state->ports[0]) 
       state->ports[0]->setVariableValue(*result);
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::constant>::matlab(ostream& o) const
-  {
-    return o<<init;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::add>::matlab(ostream& o) const
-  {
-    if (arguments.empty()||
-        (arguments[0].empty() &&
-         (arguments.size()<2||arguments[1].empty())))
-      return o<<0;
-    for (size_t i=0; i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"+";
-        o<<arguments[0][i]->matlab();
-      }
-    if (arguments.size()>1)
-      {
-        if (arguments[0].size()>0 && arguments[1].size()) o<<"+";
-        for (size_t i=0; i<arguments[1].size(); ++i)
-          {
-            checkArg(1,i);
-            if (i>0) o<<"+";
-            o<<arguments[1][i]->matlab();
-          }
-      }
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::subtract>::matlab(ostream& o) const
-  {
-    if (arguments.empty()||
-        (arguments[0].empty() &&
-         (arguments.size()<2||arguments[1].empty())))
-      return o<<0;
-    for (size_t i=0; i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"+";
-        o<<arguments[0][i]->matlab();
-      }
-    if (arguments.size()>1 && arguments[1].size()>0) 
-      {
-        o<<"-(";
-        for (size_t i=0; i<arguments[1].size(); ++i)
-          {
-            checkArg(1,i);
-            if (i>0) o<<"+";
-            o<<arguments[1][i]->matlab();
-          }
-        o<<")";
-      }
-    return o;
-  }
-        
-  template <>
-  ostream& OperationDAG<OperationType::multiply>::matlab(ostream& o) const
-  {
-    if (arguments.empty()||
-        (arguments[0].empty() &&
-         (arguments.size()<2||arguments[1].empty())))
-      return o<<1;
-    for (size_t i=0; i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"*";
-        o<<"("<<arguments[0][i]->matlab()<<")";
-      }
-    if (arguments[0].size()>0 && arguments[1].size()>0) o<<"*";
-    for (size_t i=0; i<arguments[1].size(); ++i)
-      {
-        checkArg(1,i);
-        if (i>0) o<<"*";
-        o<<"("<<arguments[1][i]->matlab()<<")";
-      }
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::divide>::matlab(ostream& o) const
-  {
-    if (arguments.empty()||
-        (arguments[0].empty() &&
-         (arguments.size()<2||arguments[1].empty())))
-      return o<<1;
-    if (arguments[0].size()==0) 
-      o<<"1";
-    for (size_t i=0; i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"*";
-        o<<"("<<arguments[0][i]->matlab()<<")";
-      }
-    if (arguments.size()>1 && arguments[1].size()>0) 
-      {
-        o<<"/(";
-        for (size_t i=0; i<arguments[1].size(); ++i)
-          {
-            checkArg(1,i);
-            if (i>0) o<<"*";
-            o<<"("<<arguments[1][i]->matlab()<<")";
-          }
-        o<<")";
-      }
-    return o;
-  }
-  
-  template <>
-  ostream& OperationDAG<OperationType::log>::matlab(ostream& o) const
-  {
-    checkArg(0,0); checkArg(1,0);
-    return o<<"log("<<arguments[0][0]->matlab()<<")/log("<<
-      arguments[1][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::pow>::matlab(ostream& o) const
-  {
-    checkArg(0,0); checkArg(1,0);
-    return  o<<"("<<arguments[0][0]->matlab()<<")^("<<arguments[1][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::lt>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      o<<"(("<<arguments[0][0]->matlab()<<")";
-    else
-      o<<"(0";
-    if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-      o<<"<("<<arguments[1][0]->matlab()<<")";
-    else
-      o<<"<0";
-    return o<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::le>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      o<<"(("<<arguments[0][0]->matlab()<<")";
-    else
-      o<<"(0";
-    if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-      o<<"<=("<<arguments[1][0]->matlab()<<")";
-    else
-      o<<"<=0";
-    return o<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::eq>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      o<<"(("<<arguments[0][0]->matlab()<<")";
-    else
-      o<<"(0";
-    if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-      o<<"==("<<arguments[1][0]->matlab()<<")";
-    else
-      o<<"==0";
-    return o<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::min>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0  && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"min("<<arguments[0][0]->matlab()<<"," <<
-          arguments[1][0]->matlab()<<")";
-      else
-        o<<"min("<<arguments[0][0]->matlab()<<",0)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"min(0,"<<arguments[1][0]->matlab()<<")";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::max>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max("<<arguments[0][0]->matlab()<<"," <<
-          arguments[1][0]->matlab()<<")";
-      else
-        o<<"max("<<arguments[0][0]->matlab()<<",0)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max(0,"<<arguments[1][0]->matlab()<<")";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::and_>::matlab(ostream& o) const
-  {
-    if (arguments.size()>1 && !arguments[0].empty() && arguments[0][0] &&
-        !arguments[1].empty() && arguments[1][0])
-        o<<"(("<<arguments[0][0]->matlab()<<")>=0.5 && (" <<
-          arguments[1][0]->matlab()<<")>=0.5)";
-    else
-      o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::or_>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"(("<<arguments[0][0]->matlab()<<")>=0.5 || (" <<
-          arguments[1][0]->matlab()<<")>=0.5)";
-      else
-        o<<"(("<<arguments[0][0]->matlab()<<")>=0.5)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"(("<<arguments[1][0]->matlab()<<")>=0.5)";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::not_>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      o<<"(("<<arguments[0][0]->matlab()<<")<0.5)";
-    else
-      o<<"1";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::time>::matlab(ostream& o) const
-  {
-    return o<<"t";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const
-  {
-    if (arguments.size()>0 && arguments[0].size()>=1)
-      {
-        assert(arguments[0][0]);
-        o<<arguments[0][0]->matlab();
-      }
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::integrate>::matlab(ostream& o) const
-  {
-    throw error("shouldn't be executed");
-  }
-        
-  template <>
-  ostream& OperationDAG<OperationType::differentiate>::matlab(ostream& o) const
-  {
-    throw error("derivative operator should not appear in matlab output");
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::data>::matlab(ostream& o) const
-  {
-    throw error("data blocks not yet supported in Matlab mode");
-    return o;
-  }
-        
-  template <>
-  ostream& OperationDAG<OperationType::sqrt>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"sqrt("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::exp>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"exp("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::ln>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"log("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::sin>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"sin("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::cos>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"cos("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::tan>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"tan("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::asin>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"asin("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::acos>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"acos("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::atan>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"atan("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::sinh>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"sinh("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::cosh>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"cosh("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::tanh>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"tanh("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::abs>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"abs("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::floor>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"floor("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::frac>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"frac("<<arguments[0][0]->matlab()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::constant>::latex(ostream& o) const
-  {
-    return o<<mathrm(name);
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::data>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<mathrm(name)<<"("<<arguments[0][0]->latex()<<")";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::add>::latex(ostream& o) const
-  {
-    for (size_t i=0; arguments.size()>0 && i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"+";
-        o<<arguments[0][i]->latex();
-      }
-    if (arguments.size()>1 && arguments[0].size()>0 && arguments[1].size()) o<<"+";
-    for (size_t i=0; arguments.size()>1 && i<arguments[1].size(); ++i)
-      {
-        checkArg(1,i);
-        if (i>0) o<<"+";
-        o<<arguments[1][i]->latex();
-      }
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::subtract>::latex(ostream& o) const
-  {
-    for (size_t i=0; arguments.size()>0 && i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"+";
-        o<<arguments[0][i]->latex();
-      }
-    if (arguments.size()>1 && arguments[1].size()>0) 
-      {
-        checkArg(1,0);
-        o<<"-";
-        ParenIf p(o, (arguments[1].size()>1 || 
-                      BODMASlevel() == arguments[1][0]->BODMASlevel()));
-        for (size_t i=0; i<arguments[1].size(); ++i)
-          {
-            checkArg(1,i);
-            if (i>0) o<<"+";
-            o<<arguments[1][i]->latex();
-          }
-      }
-    return o;
-  }
-        
-  template <>
-  ostream& OperationDAG<OperationType::multiply>::latex(ostream& o) const
-  {
-    for (size_t i=0; arguments.size()>0 && i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"\\times ";
-        ParenIf p(o, arguments[0][i]->BODMASlevel()>BODMASlevel());
-        o<<arguments[0][i]->latex();
-      }
-    if (arguments.size()>1 && arguments[0].size()>0 && arguments[1].size()>0) o<<"\\times ";
-    for (size_t i=0; arguments.size()>1 && i<arguments[1].size(); ++i)
-      {
-        checkArg(1,i);
-        if (i>0) o<<"\\times ";
-        ParenIf p(o, arguments[1][i]->BODMASlevel()>BODMASlevel());
-        o<<arguments[1][i]->latex();
-      }
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::divide>::latex(ostream& o) const
-  {
-    if (arguments.empty()) return o;
-    if (arguments.size()>1) o<< "\\frac{";
-    if (arguments[0].size()==0) o<<"1";
-    for (size_t i=0; i<arguments[0].size(); ++i)
-      {
-        checkArg(0,i);
-        if (i>0) o<<"\\times ";
-        ParenIf p(o, i>0 && arguments[0][i]->BODMASlevel()>BODMASlevel());
-        o<<arguments[0][i]->latex();
-      }
-    if (arguments.size()>1) 
-      {
-        o<<"}{";
-        if (arguments[1].size()==0) o<<"1";
-        for (size_t i=0; i<arguments[1].size(); ++i)
-          {
-            checkArg(1,i);
-            if (i>0) o<<"\\times ";
-            ParenIf p(o, i>0 && arguments[0][i]->BODMASlevel()>BODMASlevel());
-            o<<arguments[1][i]->latex();
-          }
-        o<<"}";
-      }
-    return o;
-  }
-  
-  template <>
-  ostream& OperationDAG<OperationType::log>::latex(ostream& o) const
-  {
-    checkArg(0,0); checkArg(1,0);
-    return o<<"\\log_{"<<arguments[1][0]->latex()<<"}\\left("<<
-      arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::pow>::latex(ostream& o) const
-  {
-    checkArg(0,0); checkArg(1,0);
-    {
-      ParenIf p(o, arguments[0][0]->BODMASlevel()>BODMASlevel());
-      o<<arguments[0][0]->latex();
-    }
-    return o<<"^{"<<arguments[1][0]->latex()<<"}";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::lt>::latex(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      {
-        o<<"\\Theta\\left(";
-        if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-          o<<arguments[1][0]->latex()<<"-";
-        else
-          o<<"-";
-        {
-          ParenIf p(o, arguments[0][0]->BODMASlevel()>1);
-          o<<arguments[0][0]->latex();
-        }
-        o<<"\\right)";
-      }
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::eq>::latex(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        {
-          o<<"\\delta\\left("<<arguments[0][0]->latex()<<"-";
-          {
-            ParenIf p(o, arguments[1][0]->BODMASlevel()>BODMASlevel());
-            o<<arguments[1][0]->latex();
-          }
-          o <<"\\right)";
-        }
-      else
-        o<<"\\delta\\left("<<arguments[0][0]->latex()<<"\\right)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\delta\\left("<<arguments[1][0]->latex()<<"\\right)";
-      else
-        o<<"1";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::le>::latex(ostream& o) const
-  {
-    if ((arguments.size()>0 && !arguments[0].empty() && arguments[0][0]) ||
-        (arguments.size()>1 && !arguments[1].empty() && arguments[1][0]))
-      {
-        OperationDAG<OperationType::lt> lt; lt.arguments=arguments;
-        OperationDAG<OperationType::eq> eq; eq.arguments=arguments;
-        lt.latex(o);
-        o<<"+";
-        return eq.latex(o);
-      }
-    else return o<<"1"<<endl;
-  }
-
-
-  template <>
-  ostream& OperationDAG<OperationType::min>::latex(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"min\\left("<<arguments[0][0]->latex()<<"," <<
-          arguments[1][0]->latex()<<"\\right)";
-      else
-        o<<"min\\left("<<arguments[0][0]->latex()<<",0\\right)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"min\\left("<<arguments[1][0]->latex()<<",0\\right)";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::max>::latex(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max\\left("<<arguments[0][0]->latex()<<"," <<
-          arguments[1][0]->latex()<<"\\right)";
-      else
-        o<<"max\\left("<<arguments[0][0]->latex()<<",0\\right)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max\\left("<<arguments[1][0]->latex()<<",0\\right)";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::and_>::latex(ostream& o) const
-  {
-    if (arguments.size()>1 && !arguments[0].empty() && arguments[0][0] && 
-        !arguments[1].empty() && arguments[1][0])
-      o<<"\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)\\Theta\\left(" <<
-          arguments[1][0]->latex()<<"-0.5\\right)";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::or_>::latex(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"max\\left(\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)," <<
-          "\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)\\right)";
-      else
-        o<<"\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)";
-    else
-      if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"-0.5\\right)";
-      else
-        o<<"0";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::not_>::latex(ostream& o) const
-  {
-    if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      o<<"\\left(1-\\Theta(0.5-"<<arguments[0][0]->latex()<<"\\right)\right)";
-    else
-      o<<"1";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::time>::latex(ostream& o) const
-  {
-    return o<<" t ";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::copy>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::integrate>::latex(ostream& o) const
-  {
-    throw error("shouldn't be executed");
-  }
-        
-  template <>
-  ostream& OperationDAG<OperationType::differentiate>::latex(ostream& o) const
-  {
-    throw error("derivative operator should not appear in LaTeX output");
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::sqrt>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\sqrt{"<<arguments[0][0]->latex()<<"}";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::exp>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    o<<"\\exp\\left("<<arguments[0][0]->latex()<<"\\right)";
-    return o;
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::ln>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\ln\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::sin>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\sin\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::cos>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\cos\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::tan>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\tan\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::asin>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\arcsin\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::acos>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\arccos\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::atan>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\arctan\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::sinh>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\sinh\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::cosh>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\cosh\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::tanh>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\tanh\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::abs>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\left|"<<arguments[0][0]->latex()<<"\\right|";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::floor>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\left\\lfloor"<<arguments[0][0]->latex()<<"\\right\\rfloor)";
-  }
-
-  template <>
-  ostream& OperationDAG<OperationType::frac>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\mathrm{frac}("<<arguments[0][0]->latex()<<")";
   }
 
   SystemOfEquations::SystemOfEquations(const Minsky& m): minsky(m)
@@ -1280,9 +539,8 @@ namespace MathDAG
                     else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                       {
                         // slightly convoluted to prevent sliderSet from overriding c->value
-                        iv->value(c->value);
+                        iv->init(c->value);
                         iv->adjustSliderBounds();
-                        iv->sliderSet(c->value);
                       }
                     else
                       throw error("only constants, parameters and variables can be connected to the initial value port");
@@ -1362,7 +620,7 @@ namespace MathDAG
 
     if (type==VariableType::constant)
       {
-        NodePtr r(new ConstantDAG(vv.initValue(minsky.variableValues)));
+        NodePtr r(new ConstantDAG(vv.init));
         expressionCache.insert(valueId, r);
         return r;
       }
@@ -1375,7 +633,7 @@ namespace MathDAG
     
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
-    r->init=vv.initValue(minsky.variableValues);
+    r->init=vv.init;
     if (vv.isFlowVar()) 
       {
         auto v=minsky.definingVar(valueId);
@@ -1484,7 +742,7 @@ namespace MathDAG
             else
               r=makeDAG(*s);
           }
-        else if (auto v=dynamic_cast<VariableBase*>(&item))
+        else if (auto v=item.variableCast())
           {
             if (expressionCache.exists(*v))
               return expressionCache[*v];
@@ -1509,13 +767,13 @@ namespace MathDAG
         if (i->rhs) 
           i->rhs->latex(o);
         else
-          o<<i->init;
+          o<<latexInit(i->init);
         o << "\\\\\n";
       }
 
     for (const VariableDAG* i: integrationVariables)
       {
-        o << mathrm(i->name)<<"(0)&=&"<<MathDAG::latex(i->init)<<"\\\\\n";
+        o << mathrm(i->name)<<"(0)&=&"<<latexInit(i->init)<<"\\\\\n";
         o << "\\frac{ d " << mathrm(i->name) << 
           "}{dt} &=&";
         VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
@@ -1538,14 +796,14 @@ namespace MathDAG
         if (i->rhs) 
           i->rhs->latex(o);
         else
-          o<<i->init;
+          o<<latexInit(i->init);
         o << "\n\\end{dmath*}\n";
       }
 
     for (const VariableDAG* i: integrationVariables)
       {
         o<<"\\begin{dmath*}\n";
-        o << mathrm(i->name)<<"(0)="<<MathDAG::latex(i->init)<<"\n\\end{dmath*}\n";
+        o << mathrm(i->name)<<"(0)="<<latexInit(i->init)<<"\n\\end{dmath*}\n";
         o << "\\begin{dmath*}\n\\frac{ d " << mathrm(i->name) << 
           "}{dt} =";
         VariableDAGPtr input=expressionCache.getIntegralInput(i->valueId);
@@ -1572,7 +830,7 @@ namespace MathDAG
         if (i->rhs)
           o << i->rhs->matlab();
         else
-          o << i->init;
+          o << matlabInit(i->init);
         o<<";\n";
       }
 
@@ -1592,7 +850,7 @@ namespace MathDAG
     // now write out the initial conditions
     j=1;
     for (const VariableDAG* i: integrationVariables)
-      o << "x0("<<j++<<")="<<i->init<<";\n";
+      o << "x0("<<j++<<")="<<matlabInit(i->init)<<";\n";
    
     return o;
   }
@@ -1628,7 +886,7 @@ namespace MathDAG
       (&Group::items,
        [&](Items&, Items::iterator i)
        {
-         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+         if (auto v=(*i)->variableCast())
            {
              if (v->type()==VariableType::undefined)
                throw error("variable %s has undefined type",v->name().c_str());
@@ -1641,6 +899,11 @@ namespace MathDAG
              for (auto w: port->wires())
                // ensure plot inputs are evaluated
                w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+         else if (auto s=dynamic_cast<Sheet*>(i->get()))
+           for (auto w: s->ports[0]->wires())
+               // ensure sheet inputs are evaluated
+               w->from()->setVariableValue(getNodeFromWire(*w)->addEvalOps(equations));
+
          return false;
        });
   }

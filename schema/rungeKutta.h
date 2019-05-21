@@ -29,6 +29,7 @@ namespace minsky
     int order{4};
     bool implicit{false};
     int simulationDelay{0};
+    std::string timeUnit;
   };
 }
 

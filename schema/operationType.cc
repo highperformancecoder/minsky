@@ -29,6 +29,17 @@ namespace minsky
   string OperationType::typeName(int op) 
   {return enumKey<Type>(op);}
 
+  OperationType::Group OperationType::classify(Type t)
+  {
+      if (t<add) return general;
+      if (t<copy) return binop;
+      if (t<sum) return function;
+      if (t<runningSum) return reduction;
+      if (t<innerProduct) return scan;
+      return tensor;
+  }
+
+  
   namespace OperationTypeInfo
   {
     template <> int numArguments<OperationType::constant>() {return 0;}
@@ -51,6 +62,7 @@ namespace minsky
     template <> int numArguments<OperationType::integrate>() {return 2;}
     template <> int numArguments<OperationType::differentiate>() {return 1;}
     template <> int numArguments<OperationType::data>() {return 1;}
+    template <> int numArguments<OperationType::ravel>() {return 1;}
     template <> int numArguments<OperationType::sqrt>() {return 1;}
     template <> int numArguments<OperationType::exp>() {return 1;}
     template <> int numArguments<OperationType::ln>() {return 1;}
@@ -66,6 +78,21 @@ namespace minsky
     template <> int numArguments<OperationType::abs>() {return 1;}
     template <> int numArguments<OperationType::floor>() {return 1;}
     template <> int numArguments<OperationType::frac>() {return 1;}
+    template <> int numArguments<OperationType::sum>() {return 1;}
+    template <> int numArguments<OperationType::product>() {return 1;}
+    template <> int numArguments<OperationType::infimum>() {return 1;}
+    template <> int numArguments<OperationType::supremum>() {return 1;}
+    template <> int numArguments<OperationType::infIndex>() {return 1;}
+    template <> int numArguments<OperationType::supIndex>() {return 1;}
+    template <> int numArguments<OperationType::any>() {return 1;}
+    template <> int numArguments<OperationType::all>() {return 1;}
+    template <> int numArguments<OperationType::runningSum>() {return 1;}
+    template <> int numArguments<OperationType::runningProduct>() {return 1;}
+    template <> int numArguments<OperationType::difference>() {return 1;}
+    template <> int numArguments<OperationType::innerProduct>() {return 2;}
+    template <> int numArguments<OperationType::outerProduct>() {return 2;}
+    template <> int numArguments<OperationType::index>() {return 1;}
+    template <> int numArguments<OperationType::gather>() {return 2;}
     template <> int numArguments<OperationType::numOps>() {return -1;} //no output port as well
   }
 }

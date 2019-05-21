@@ -17,7 +17,11 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "schema2.h"
+#include "sheet.h"
 #include <ecolab_epilogue.h>
+
+#include "a85.h"
+#include <zlib.h>
 
 namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
 
@@ -64,12 +68,17 @@ namespace schema2
               items.back().dataOpData=d->data;
               items.back().name=d->description;
             }
-          if (auto r=dynamic_cast<minsky::RavelWrap*>(i))
+          if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
               items.back().filename=r->filename();
+              if (r->lockGroup)
+                items.back().lockGroup=at(r->lockGroup.get());
               auto s=r->getState();
               if (!s.handleStates.empty())
-                items.back().ravelState=s;
+                {
+                  items.back().ravelState=s;
+                  items.back().dimensions=r->axisDimensions;
+                }
             }
         }
       return j;
@@ -102,7 +111,8 @@ namespace schema2
       registerClassType<minsky::Item>();
       registerClassType<minsky::IntOp>();
       registerClassType<minsky::DataOp>();
-      registerClassType<minsky::RavelWrap>();
+      registerClassType<minsky::Ravel>();
+      registerClassType<minsky::Sheet>();
       registerClassType<minsky::VarConstant>();
       registerClassType<minsky::GodleyIcon>();
       registerClassType<minsky::PlotWidget>();
@@ -194,6 +204,96 @@ namespace schema2
       }
   }
 
+  namespace
+  {
+    // nice RAII wrappers around zlib's data structures
+    struct ZStream: public z_stream
+    {
+      ZStream(Bytef* input, size_t inputSize, Bytef* output, size_t outputSize)
+      {
+        next_in=input;
+        avail_in=inputSize;
+        next_out=output;
+        avail_out=outputSize;
+        zfree=Z_NULL;
+        zalloc=Z_NULL;
+      }
+      void throwError() const {
+        throw runtime_error(string("compression failure: ")+(msg? msg:""));
+      }
+    };
+    
+    struct DeflateZStream: public ZStream
+    {
+      template <class I, class O>
+      DeflateZStream(const I& input, O& output):
+        ZStream((Bytef*)input.data(), input.size(),
+                (Bytef*)output.data(), output.size())
+      {
+        if (deflateInit(this,9)!=Z_OK) throwError();
+      }
+      ~DeflateZStream() {deflateEnd(this);}
+      void deflate() {
+        if (::deflate(this,Z_FINISH)!=Z_STREAM_END) throwError();
+      }
+     };
+    
+    struct InflateZStream: public ZStream
+    {
+      classdesc::pack_t output{256};
+      Bytef* inputData;
+      size_t inputSize;
+      
+      template <class I>
+      InflateZStream(const I& input):
+        ZStream((Bytef*)input.data(), input.size(), 0,0),
+        inputData((Bytef*)input.data()),inputSize(input.size())
+      {
+        next_out=(Bytef*)output.data();
+        avail_out=output.size();
+        if (inflateInit(this)!=Z_OK) throwError();
+      }
+      ~InflateZStream() {inflateEnd(this);}
+
+      void inflate() {
+        int err;
+        while ((err=::inflate(this,Z_SYNC_FLUSH))==Z_OK)
+          {
+            // try doubling size
+            output.resize(2*output.size());
+            next_out=(Bytef*)(output.data())+total_out;
+            avail_out=output.size()-total_out;
+            next_in=inputData+total_in;
+            avail_in=inputSize-total_in;
+          }
+        if (err!=Z_STREAM_END) throwError();
+      }
+      void throwError() {
+        throw runtime_error(string("compression failure: ")+(msg? msg:""));
+      }
+    };
+ }
+  
+  void Item::packTensorInit(const minsky::VariableBase& v)
+  {
+    if (auto val=v.vValue())
+      if (!val->tensorInit.data.empty())
+        {
+          pack_t buf;
+          buf<<val->tensorInit<<val->xVector;
+          
+          vector<unsigned char> zbuf(buf.size());
+          DeflateZStream zs(buf, zbuf);
+          zs.deflate();
+          
+          vector<char> cbuf(a85::size_for_a85(zs.total_out,false));
+          a85::to_a85(&zbuf[0],zs.total_out, &cbuf[0], false);
+          // this ensures that the escape sequence ']]>' never appears in the data
+          replace(cbuf.begin(),cbuf.end(),']','~');
+          tensorData.reset(new CDATA(cbuf.begin(),cbuf.end()));
+        }
+  }
+
   
   Minsky::Minsky(const schema1::Minsky& m)
   {
@@ -254,12 +354,13 @@ namespace schema2
     IdMap itemMap;
 
     g.recursiveDo(&minsky::GroupItems::items,[&](const minsky::Items&,minsky::Items::const_iterator i) {
-        itemMap.emplaceIf<minsky::RavelWrap>(items, i->get()) ||
+        itemMap.emplaceIf<minsky::Ravel>(items, i->get()) ||
         itemMap.emplaceIf<minsky::OperationBase>(items, i->get()) ||
           itemMap.emplaceIf<minsky::VariableBase>(items, i->get()) ||
           itemMap.emplaceIf<minsky::GodleyIcon>(items, i->get()) ||
           itemMap.emplaceIf<minsky::PlotWidget>(items, i->get()) ||
           itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) ||
+          itemMap.emplaceIf<minsky::Sheet>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
         return false;
       });
@@ -323,15 +424,10 @@ namespace schema2
     populateGroup(*m.model);
     m.model->setZoom(zoomFactor);
     m.model->bookmarks=bookmarks;
-    
-    m.stepMin=rungeKutta.stepMin; 
-    m.stepMax=rungeKutta.stepMax; 
-    m.nSteps=rungeKutta.nSteps;   
-    m.epsAbs=rungeKutta.epsAbs;   
-    m.epsRel=rungeKutta.epsRel;   
-    m.order=rungeKutta.order;
-    m.simulationDelay=rungeKutta.simulationDelay;
-    m.implicit=rungeKutta.implicit;
+    m.dimensions=dimensions;
+    m.conversions=conversions;
+
+    static_cast<minsky::RungeKutta&>(m)=rungeKutta;
     return m;
   }
 
@@ -340,7 +436,7 @@ namespace schema2
     if (y.detailedText) x.detailedText=*y.detailedText;
     if (y.tooltip) x.tooltip=*y.tooltip;
   }
-  
+
   void populateItem(minsky::Item& x, const Item& y)
   {
     populateNote(x,y);
@@ -354,13 +450,22 @@ namespace schema2
         if (y.dataOpData)
           x1->data=*y.dataOpData;
       }
-    if (auto x1=dynamic_cast<minsky::RavelWrap*>(&x))
+    if (auto x1=dynamic_cast<minsky::Ravel*>(&x))
       {
         if (y.filename)
-          x1->loadFile(*y.filename);
+          try
+            {
+              x1->loadFile(*y.filename);
+            }
+          catch (...) {}
         if (y.ravelState)
-          x1->applyState(*y.ravelState);
-        x1->loadDataFromSlice();
+          {
+            x1->applyState(*y.ravelState);
+            SchemaHelper::initHandleState(*x1,*y.ravelState);
+          }
+        
+        if (y.dimensions)
+          x1->axisDimensions=*y.dimensions;
       }
     if (auto x1=dynamic_cast<minsky::VariableBase*>(&x))
       {
@@ -368,6 +473,8 @@ namespace schema2
           x1->name(*y.name);
         if (y.init)
           x1->init(*y.init);
+        if (y.units)
+          x1->setUnits(*y.units);
         if (y.slider)
           {
             x1->sliderBoundsSet=true;
@@ -377,8 +484,36 @@ namespace schema2
             x1->sliderMax=y.slider->max;
             x1->sliderStep=y.slider->step;
           }
+        if (y.tensorData)
+          if (auto val=x1->vValue())
+            {
+              string trimmed; //trim whitespace
+              for (auto c: *y.tensorData)
+                if (!isspace(c)) trimmed+=c;
+
+              vector<unsigned char> zbuf(a85::size_for_bin(trimmed.size()));
+              // reverse transformation required to avoid the escape sequence ']]>'
+              replace(trimmed.begin(),trimmed.end(),'~',']'); 
+              a85::from_a85(trimmed.data(), trimmed.size(),zbuf.data());
+              
+              InflateZStream zs(zbuf);
+              zs.inflate();
+              
+              vector<minsky::XVector> xv;
+              try
+                {
+                  zs.output>>val->tensorInit>>xv;
+                  val->setXVector(xv);
+                }
+              catch (...) {} // absorb for now - maybe log later
+            }
       }
-    if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
+    if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
+      {
+        if (y.axis) x1->axis=*y.axis;
+        if (y.arg) x1->arg=*y.arg;
+      }
+   if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
       {
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
@@ -399,9 +534,15 @@ namespace schema2
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;
         if (y.logy) x1->logy=*y.logy;
+        if (y.ypercent) x1->percent=*y.ypercent;
+        if (y.plotType) x1->plotType=*y.plotType;
         if (y.xlabel) x1->xlabel=*y.xlabel;
         if (y.ylabel) x1->ylabel=*y.ylabel;
         if (y.y1label) x1->y1label=*y.y1label;
+        if (y.nxTicks) x1->nxTicks=*y.nxTicks;
+        if (y.nyTicks) x1->nyTicks=*y.nyTicks;
+        if (y.xtickAngle) x1->xtickAngle=*y.xtickAngle;
+        if (y.exp_threshold) x1->exp_threshold=*y.exp_threshold;
         if (y.legend)
           {
             x1->legend=true;
@@ -415,6 +556,11 @@ namespace schema2
         x1->flipped=r>90 && r<270;
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
+      }
+    if (auto x1=dynamic_cast<minsky::Sheet*>(&x))
+      {
+        if (y.width) x1->m_width=*y.width;
+        if (y.height) x1->m_height=*y.height;
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
@@ -431,13 +577,18 @@ namespace schema2
     if (y.coords)
       x.coords(*y.coords);
   }
-  
+
+  struct LockGroupFactory: public shared_ptr<minsky::RavelLockGroup>
+  {
+    LockGroupFactory(): shared_ptr<minsky::RavelLockGroup>(new minsky::RavelLockGroup) {}
+  };
   
   void Minsky::populateGroup(minsky::Group& g) const {
     map<int, minsky::ItemPtr> itemMap;
     map<int, shared_ptr<minsky::Port>> portMap;
     map<int, schema2::Item> schema2VarMap;
     MinskyItemFactory factory;
+    map<int,LockGroupFactory> lockGroups;
     
     for (auto& i: items)
       if (auto newItem=itemMap[i.id]=g.addItem(factory.create(i.type)))
@@ -504,6 +655,12 @@ namespace schema2
                   godley->scaleIconForHeight(*i.iconScale * godley->height());
               }
           }
+        if (i.type=="Ravel" && i.lockGroup)
+          if (auto r=dynamic_pointer_cast<minsky::Ravel>(itemMap[i.id]))
+            {
+              r->lockGroup=lockGroups[*i.lockGroup];
+              r->lockGroup->ravels.push_back(r);
+            }
       }
         
     for (auto& w: wires)

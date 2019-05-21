@@ -233,6 +233,21 @@ namespace minsky
           }
   }
 
+  Units Wire::units() const
+  {
+      
+    if (auto f=from())
+      {
+        // we allow possible traversing twice over a wire, to allow an
+        // integral to break the cycle
+        if (unitsCtr>2)
+          f->item.throw_error("wiring loop detected");
+        IncrDecrCounter idc(unitsCtr);
+        return f->item.units();
+      }
+    else return {};
+  }
+
   namespace
   {
 

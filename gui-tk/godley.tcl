@@ -266,7 +266,7 @@ proc exportGodley {id} {
     global workDir type
 
     set f [tk_getSaveFile -filetypes {
-        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"LaTeX" tex TEXT} {"CSV" csv TEXT}} \
+        {"SVG" .svg TEXT} {"PDF" pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"CSV" .csv TEXT}} \
                -initialdir $workDir -typevariable type]  
     if {$f==""} return
     if [string match -nocase *.svg "$f"] {

@@ -59,7 +59,7 @@ for {set step 0} {$step<10} {incr step} {
                 }
             }
             if {$status} {
-                ret=1
+                set ret 1
                 puts "unable to find matching var $name"
                 break
             }

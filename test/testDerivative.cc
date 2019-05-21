@@ -254,6 +254,17 @@ SUITE(Derivative)
       OperationPtr funOp;
       for (int op=OperationType::integrate; op<OperationType::numOps; ++op)
         {
+          //TODO for now, ignore tensor operations
+          switch (OperationType::classify(OperationType::Type(op)))
+            {
+            case OperationType::reduction:
+            case OperationType::scan:
+            case OperationType::tensor:
+            case OperationType::binop:
+              continue;
+            default:
+              break;
+            }
           cout << OperationType::typeName(op) << endl;
           model->removeItem(*funOp);
           funOp.reset(OperationBase::create(OperationType::Type(op)));
@@ -266,9 +277,13 @@ SUITE(Derivative)
           switch (OperationType::Type(op))
             {
             case OperationType::floor: case OperationType::frac:
+            case OperationType::index:
             case OperationType::data:
               CHECK_THROW(reset(), ecolab::error);
               continue;
+            case OperationType::ravel:
+            case OperationType::not_:
+              continue; // test not meaningful for a step function
             default:
               reset(); 
             }
@@ -297,9 +312,9 @@ SUITE(Derivative)
               if (constant)
                 {
                   if (op==OperationType::time)
-                    CHECK_EQUAL(1, constant->value);
+                    CHECK_EQUAL("1", constant->value);
                   else
-                    CHECK_EQUAL(0, constant->value);
+                    CHECK_EQUAL("0", constant->value);
                 }
             }
           catch (...) {} // ignore code that shouldn't be executed

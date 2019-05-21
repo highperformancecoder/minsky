@@ -28,6 +28,11 @@ if {$tcl_platform(os)=="Darwin" && [file exists $minskyHome/../Resources/fontcon
         set env(FONTCONFIG_FILE) $minskyHome/../Resources/fontconfig/fonts.conf
 }
 
+if {[minsky.ravelVersion]=="unavailable"} {
+    set progName Minsky
+} else {
+    set progName Ravel
+}
 
 # default canvas size. Overridden by previously resized window size
 # saved in .minskyrc
@@ -83,11 +88,11 @@ set env(TCL_LIBRARY) $tcl_library
 set env(TK_LIBRARY) $tk_library
 
 proc setFname {name} {
-    global fname workDir
+    global fname workDir progName
     if [string length $name] {
         set fname $name
         set workDir [file dirname $name]
-        catch {wm title . "Minsky: $fname"}
+        catch {wm title . "$progName: $fname"}
     }
 }
 
@@ -140,6 +145,9 @@ if [info exists env(MINSKY_COV)] {
 #    attachTraceProc ::
 }
 
+#Needs to be present to allow callbacks to change the cursor for busy operations
+proc setCursor {cur} {}
+
 #if argv(1) has .tcl extension, it is a script, otherwise it is data
 if {$argc>1 && [string match "*.tcl" $argv(1)]} {source $argv(1)}
 
@@ -190,9 +198,10 @@ proc setBackgroundColour bgc {
 option add *Menu.tearOff 0
 wm deiconify .
 tk appname [file rootname [file tail $argv(0)]]
-wm title . "Minsky: $fname" 
+wm title . "$progName: $fname" 
 setBackgroundColour $backgroundColour
 tk_focusFollowsMouse
+proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
 #source $minskyHome/library/htmllib.tcl
 #toplevel .splash
@@ -313,75 +322,73 @@ foreach {var text default type} $preferencesVars {
 }
             
 proc showPreferences {} {
+    if [winfo exists .preferencesForm] return
     global preferences_input preferences preferencesVars
     foreach var [array names preferences] {
 	set preferences_input($var) $preferences($var)
     }
 
-    if {![winfo exists .preferencesForm]} {
-        toplevel .preferencesForm
-        wm resizable .preferencesForm 0 0
+    toplevel .preferencesForm
+    wm resizable .preferencesForm 0 0
+    
+    set row 0
+    
+    grid [label .preferencesForm.label$row -text "Preferences"] -column 1 -columnspan 999 -pady 10
+    incr row 10
 
-        set row 0
+    # pad the left and right
+    grid [frame .preferencesForm.f1] -column 1 -row 1 -rowspan 999 -padx 10
+    grid [frame .preferencesForm.f2] -column 999 -row 1 -rowspan 999 -padx 10
+    
+
+    foreach {var text default type} $preferencesVars {
+        set rowdict($text) $row
+
+        grid [label .preferencesForm.label$row -text $text] -column 10 -row $row -sticky e -pady 5
         
-        grid [label .preferencesForm.label$row -text "Preferences"] -column 1 -columnspan 999 -pady 10
-        incr row 10
-
-        # pad the left and right
-        grid [frame .preferencesForm.f1] -column 1 -row 1 -rowspan 999 -padx 10
-        grid [frame .preferencesForm.f2] -column 999 -row 1 -rowspan 999 -padx 10
-        
-
-        foreach {var text default type} $preferencesVars {
-            set rowdict($text) $row
-
-            grid [label .preferencesForm.label$row -text $text] -column 10 -row $row -sticky e -pady 5
-            
-            switch $type {
-                text {
-                    grid [entry  .preferencesForm.text$row -width 20 -textvariable preferences_input($var)] -column 20 -row $row -sticky ew -columnspan 999
-                }
-                bool {
-                    grid [checkbutton .preferencesForm.cb$row -variable preferences_input($var)] -row $row -column 20 -sticky w
-                }
-                font {
-                    grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
-                    bind .preferencesForm.font <<ComboboxSelected>> {
-                        defaultFont [.preferencesForm.font get]
-                        canvas.requestRedraw
-                    }
-                }
-                default {
-                    if {[llength $type] > 1} {
-                        switch [lindex $type 0] {
-                            enum {
-                                set column 20
-                                foreach {valtext val} [lrange $type 1 end] {
-                                    grid [radiobutton .preferencesForm.rb${row}v$column  -text $valtext -variable preferences_input($var) -value $val] -row $row -column $column
-                                    incr column 
-                                }
-                            }
-                        }
-                    } else { error "unknown preferences widget $type" }
+        switch $type {
+            text {
+                grid [entry  .preferencesForm.text$row -width 20 -textvariable preferences_input($var)] -column 20 -row $row -sticky ew -columnspan 999
+            }
+            bool {
+                grid [checkbutton .preferencesForm.cb$row -variable preferences_input($var)] -row $row -column 20 -sticky w
+            }
+            font {
+                grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
+                bind .preferencesForm.font <<ComboboxSelected>> {
+                    defaultFont [.preferencesForm.font get]
+                    canvas.requestRedraw
                 }
             }
-            
-            incr row 10
+            default {
+                if {[llength $type] > 1} {
+                    switch [lindex $type 0] {
+                        enum {
+                            set column 20
+                            foreach {valtext val} [lrange $type 1 end] {
+                                grid [radiobutton .preferencesForm.rb${row}v$column  -text $valtext -variable preferences_input($var) -value $val] -row $row -column $column
+                                incr column 
+                            }
+                        }
+                    }
+                } else { error "unknown preferences widget $type" }
+            }
         }
         
-        set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Show Values)"
-        
-        frame .preferencesForm.buttonBar
-        button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm; redrawAllGodleyTables}
-        button .preferencesForm.buttonBar.cancel -text cancel -command {closePreferencesForm}
-        pack .preferencesForm.buttonBar.ok [label .preferencesForm.buttonBar.spacer -width 2] .preferencesForm.buttonBar.cancel -side left -pady 10
-        grid .preferencesForm.buttonBar -column 1 -row 999 -columnspan 999
-        
-        bind .preferencesForm <Key-Return> {invokeOKorCancel .preferencesForm.buttonBar}
-
-        wm title .preferencesForm "Preferences"
-
+        incr row 10
     }
+    
+    set preferences(initial_focus) ".preferencesForm.cb$rowdict(Godley Table Show Values)"
+    
+    frame .preferencesForm.buttonBar
+    button .preferencesForm.buttonBar.ok -text OK -command {setPreferenceParms; closePreferencesForm; redrawAllGodleyTables}
+    button .preferencesForm.buttonBar.cancel -text cancel -command {closePreferencesForm}
+    pack .preferencesForm.buttonBar.ok [label .preferencesForm.buttonBar.spacer -width 2] .preferencesForm.buttonBar.cancel -side left -pady 10
+    grid .preferencesForm.buttonBar -column 1 -row 999 -columnspan 999
+    
+    bind .preferencesForm <Key-Return> {invokeOKorCancel .preferencesForm.buttonBar}
+
+    wm title .preferencesForm "Preferences"
 
     deiconify .preferencesForm
     update idletasks
@@ -555,14 +562,32 @@ menu .exportPlots
 .menubar.file add command -label "SaveAs" -command saveAs 
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
+.menubar.file add command -label "Dimensional Analysis" -command {
+    dimensionalAnalysis
+    tk_messageBox -type ok -icon info -message "Dimension Analysis passed"
+}
+
 .menubar.file add command -label "Export Canvas" -command exportCanvas
 .menubar.file add cascade -label "Export Plots" -menu .exportPlots
+.menubar.file add checkbutton -label "Log simulation" -variable simLogging \
+    -command getLogVars
+.menubar.file add checkbutton -label "Recording" -command toggleRecording -variable eventRecording
+.menubar.file add checkbutton -label "Replay recording" -command replay -variable recordingReplay 
+    
+.menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
+.menubar.file add separator
+.menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
+.menubar.file add command -label "Redraw" -command canvas.requestRedraw
+.menubar.file add command -label "Object Browser" -command obj_browser
+.menubar.file add command -label "Select items" -command selectItems
+.menubar.file add command -label "Command" -command cli
+
 
 proc exportCanvas {} {
     global workDir type fname preferences
 
     set f [tk_getSaveFile -filetypes {
-        {"SVG" svg TEXT} {"PDF" pdf TEXT} {"Postscript" eps TEXT} {"LaTeX" tex TEXT} {"Matlab" m TEXT}} \
+        {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}} \
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
     if [string match -nocase *.svg "$f"] {
@@ -608,7 +633,7 @@ proc getLogVars {} {
         }
     }
     frame .logVars.selection
-    listbox .logVars.selection.selection -listvariable varNames -selectmode extended -height 30 -yscrollcommand ".logVars.selection.vscroll set"
+    listbox .logVars.selection.selection -listvariable varNames -selectmode extended -height 30 -yscrollcommand ".logVars.selection.vscroll set" -selectforeground blue
     scrollbar .logVars.selection.vscroll -orient vertical -command ".logVars.selection.selection yview"
     pack .logVars.selection.selection -fill both -side left -expand y
     pack .logVars.selection.vscroll -fill y -side left -expand y
@@ -630,18 +655,7 @@ proc logVarsOK {} {
 }
 
 
-.menubar.file add checkbutton -label "Log simulation" -variable simLogging \
-    -command getLogVars
-.menubar.file add checkbutton -label "Recording" -command toggleRecording -variable eventRecording
-.menubar.file add checkbutton -label "Replay recording" -command replay -variable recordingReplay 
-    
-.menubar.file add command -label "Quit" -command exit -underline 0 -accelerator $meta_menu-Q
-.menubar.file add separator
-.menubar.file add command  -foreground #5f5f5f -label "Debugging Use"
-.menubar.file add command -label "Redraw" -command canvas.requestRedraw
-.menubar.file add command -label "Object Browser" -command obj_browser
-.menubar.file add command -label "Select items" -command selectItems
-.menubar.file add command -label "Command" -command cli
+
 
 .menubar.edit add command -label "Undo" -command "undo 1" -accelerator $meta_menu-Z
 .menubar.edit add command -label "Redo" -command "undo -1" -accelerator $meta_menu-Y
@@ -649,16 +663,7 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
 .menubar.edit add command -label "Paste" -command {paste} -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
-
-menu .menubar.file.itemTypes
-proc selectItems {} {
-    .menubar.file.itemTypes delete 0 end
-    foreach i [wiringGroup.types] {
-        .menubar.file.itemTypes add command -label $i \
-            -command "filterOnType $i; obj_browser wiringGroup.filteredItems.*"
-    }
-    .menubar.file.itemTypes post [winfo pointerx .] [winfo pointery .]
-}
+.menubar.edit add command -label "Dimensions" -command dimensionsDialog
 
 proc undo {delta} {
     # do not record changes to state from the undo command
@@ -673,6 +678,69 @@ proc cut {} {
     minsky.cut
 }
 
+proc dimensionsDialog {} {
+    populateMissingDimensions
+    if {![winfo exists .dimensions]} {
+        toplevel .dimensions
+        grid [button .dimensions.cancel -text Cancel -command "wm withdraw .dimensions"] \
+            [button .dimensions.ok -text OK -command {
+                    set colRows [grid size .dimensions]
+                    for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
+                        set dim [.dimensions.g${i}_dim get]
+                        if {$dim!=""} {
+                            set d [dimensions.@elem $dim]
+                            $d.type [.dimensions.g${i}_type get]
+                            $d.units [.dimensions.g${i}_units get]
+                        }
+                    }
+                wm withdraw .dimensions
+                reset
+            }]
+        grid [label .dimensions.g1_dim -text Dimension] \
+            [label .dimensions.g1_type -text Type]\
+            [label .dimensions.g1_units -text "Units/Format"]
+        tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
+    } else {
+        wm deiconify .dimensions
+    }
+    set colRows [grid size .dimensions]
+    for {set i [lindex $colRows 1]} {$i<[dimensions.size]+3} {incr i} {
+        grid [entry .dimensions.g${i}_dim] \
+            [ttk::combobox .dimensions.g${i}_type -state readonly \
+             -values {string value time}] \
+            [ttk::combobox .dimensions.g${i}_units \
+         -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\]"
+            ]
+    }
+    set i 2
+    foreach dim [dimensions.#keys] {
+        set d [dimensions.@elem $dim]
+        .dimensions.g${i}_dim delete 0 end
+        .dimensions.g${i}_dim insert 0 $dim
+        .dimensions.g${i}_type set [$d.type]
+        .dimensions.g${i}_units delete 0 end
+        .dimensions.g${i}_units insert 0 [$d.units]
+        incr i
+    }
+}
+
+proc dimFormatPopdown {comboBox type} {
+    switch $type {
+        string {
+            $comboBox configure -values {}
+            $comboBox set {}
+        }
+        value {
+            $comboBox configure -values {}
+        }
+        time {
+            $comboBox configure -values {
+                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q"
+            }
+        }
+    }
+}
+    
 wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
@@ -735,6 +803,7 @@ source $minskyHome/godley.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
+source $minskyHome/csvImport.tcl
 
 # add the tabbed windows
 .tabs add .wiring -text "Wiring" -padding 0
@@ -886,7 +955,7 @@ image create photo zoomOrigImg -file $minskyHome/icons/zoomOrig.gif
 button .controls.zoomOrig -image zoomOrigImg -height 24 -width 37 \
     -command {
         if {[minsky.model.zoomFactor]>0} {
-            zoom [expr 1/[minsky.model.zoomFactor]]
+            zoom [expr 1/[minsky.model.relZoom]]
         } else {
             minsky.model.setZoom 1
         }
@@ -910,29 +979,28 @@ tooltip .controls.zoomFit "Zoom to fit"
 pack .controls.zoomOut .controls.zoomIn .controls.zoomOrig .controls.zoomFit -side left
 
 set delay [simulationDelay]
-set running 0
 
 proc runstop {} {
-  global running classicMode
-  if {$running} {
-    set running 0
-    doPushHistory 1
-    if {$classicMode} {
+    global classicMode
+    if [running] {
+        running 0
+        doPushHistory 1
+        if {$classicMode} {
             .controls.run configure -text run
         } else {
             .controls.run configure -image runButton
         }
-  } else {
-      set running 1
-      doPushHistory 0
-      if {$classicMode} {
-          .controls.run configure -text stop
-      } else {
-          .controls.run configure -image stopButton
-      }
-      step
-      simulate
-  }
+    } else {
+        running 1
+        doPushHistory 0
+        if {$classicMode} {
+            .controls.run configure -text stop
+        } else {
+            .controls.run configure -image stopButton
+        }
+        step
+        simulate
+    }
 }
 
 set simTMax Inf
@@ -948,9 +1016,9 @@ proc step {} {
         }
     } else {
         # run simulation
-        global running preferences
+        global preferences
         set lastt [t]
-        if {[catch minsky.step errMsg options] && $running} {runstop}
+        if {[catch minsky.step errMsg options] && [running]} {runstop}
         if {$simTMax<[t]} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
@@ -962,34 +1030,28 @@ proc step {} {
 
 proc simulate {} {
     uplevel #0 {
-      if {$running} {
-#          if {$recordingReplay} {
-#              # don't slow down recording quite so much (lots of mouse
-#              # movements)
-#              after [expr $delay/25+0] {step; simulate}
-#          } else {
+        if [running] {
               set d [expr int(pow(10,$delay/4.0))]
               after $d {
-                  if {$running} {
-                      if {!$running && [reset_flag]} runstop else {
+                  if [running] {
+                      if {![running] && [reset_flag]} runstop else {
                           step
                           simulate
                       }
                   }
               }
-#          }
         }
     }
 }
 
 proc reset {} {
-    global running recordingReplay eventRecordR simLogging eventRecording
+    global recordingReplay eventRecordR simLogging eventRecording
     if {$eventRecording} {
         set eventRecording 0
         stopRecording
         return
     }
-    set running 0
+    running 0
     if {$recordingReplay} {
         seek $eventRecordR 0 start
         model.clear
@@ -1044,9 +1106,13 @@ proc openNamedFile {ofname} {
     doPushHistory 0
     pushFlags
     recentreCanvas
-    
 
    .controls.simSpeed set [simulationDelay]
+    # force update canvas size to ensure model is displayed correctly
+    update
+    canvas.requestRedraw
+    # not sure why this is needed, but initial draw doesn't happen without it
+    event generate .wiring.canvas <Expose>
     # setting simulationDelay causes the edited (dirty) flag to be set
     pushHistory
     doPushHistory 1
@@ -1073,9 +1139,10 @@ proc recentreCanvas {} {
 }
 
 proc save {} {
-    global fname
+    global fname workDir
     if {![string length $fname]} {
-	    setFname [tk_getSaveFile -defaultextension .mky]}            
+        setFname [tk_getSaveFile -defaultextension .mky  -initialdir $workDir \
+                  -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]}            
     if [string length $fname] {
         eval minsky.save {$fname}
     }
@@ -1083,7 +1150,8 @@ proc save {} {
 
 proc saveAs {} {
     global fname workDir
-    setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+    setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir \
+              -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]
     if [string length $fname] {
         eval minsky.save {$fname}
     }
@@ -1105,9 +1173,9 @@ proc newSystem {} {
     clearHistory
     model.setZoom 1
     recentreCanvas
-    global fname
+    global fname progName
     set fname ""
-    wm title . "Minsky: New System"
+    wm title . "$progName: New System"
     popFlags
     doPushHistory 1
 }
@@ -1203,8 +1271,7 @@ proc setRKparms {} {
 
 
 proc closePreferencesForm {} {
-    grab release .preferencesForm
-    wm withdraw .preferencesForm
+    destroy .preferencesForm
 }
 
 proc setPreferenceParms {} {
@@ -1326,6 +1393,9 @@ proc aboutMinsky {} {
    GNU General Public License. It comes with ABSOLUTELY NO WARRANTY. 
    See http://www.gnu.org/licenses/ for details
 
+   Ravel is copyright Ravelation Pty Ltd. A separate license needs to
+   be purchased to use Ravel. See https://ravelation.hpcoders.com.au
+
 Thanks to following Minsky Unicorn sponsors:
      Colin Green
    " 
@@ -1380,7 +1450,7 @@ proc exit {} {
 }
 
 proc setFname {name} {
-    global fname workDir recentFiles preferences
+    global fname workDir recentFiles preferences progName
     if [string length $name] {
         set fname $name
         set workDir [file dirname $name]
@@ -1397,7 +1467,7 @@ proc setFname {name} {
         if {[regexp "\}$" $fname] && ![regexp "\}$" $workDir]} {
             set workDir "$workDir\}"
         }
-        catch {wm title . "Minsky: $fname"}
+        catch {wm title . "$progName: $fname"}
     }
 }
 
@@ -1422,24 +1492,8 @@ proc unknown {procname args} {
 }
 
 pushFlags
-if {$argc>1 && ![string match "*.tcl" $argv(1)]} {
-    # ignore any exceptions thrown during load, in case it can be repaired later
-    catch {minsky.load $argv(1)}
-    doPushHistory 0
-    setFname $argv(1)
-    # we have loaded a Minsky model, so must refresh the canvas
-    recentreCanvas
-    set delay [simulationDelay]
-    # force update canvas size to ensure model is displayed correctly
-    update
-    canvas.requestRedraw
-    # not sure why this is needed, but initial draw doesn't happen without it
-    event generate .wiring.canvas <Expose>
-    pushHistory
-    doPushHistory 1
-}
+if {$argc>1 && ![string match "*.tcl" $argv(1)]} {catch {openNamedFile $argv(1)}}
 
-#return 
 proc ifDef {var} {
     upvar $var v
     if {$v!="??"} {
@@ -1493,7 +1547,7 @@ proc checkRecordingVersion ver {
 set recordingReplay 0
 
 proc replay {} {
-    global recordingReplay eventRecordR workDir running eventRecording
+    global recordingReplay eventRecordR workDir eventRecording
     if $eventRecording {stopRecording; set eventRecording 0}
     if {$recordingReplay} {
         # ensures consistent IDs are allocated
@@ -1502,8 +1556,8 @@ proc replay {} {
         if {[string length $fname]>0} {
             set eventRecordR [eval open {$fname} r]
             newSystem
-            if {!$running} runstop
-        } elseif {$running} {runstop}
+            if {![running]} runstop
+        } elseif [running] {runstop}
     } 
 }
 

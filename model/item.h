@@ -38,7 +38,7 @@ namespace minsky
   /// a lasso is intended
   struct ClickType
   {
-    enum Type {onItem, onPort, outside, onSlider, onRavel, legendMove, legendResize};
+    enum Type {onItem, onPort, outside, onSlider, onRavel, onResize, legendMove, legendResize};
   };
 
   /// radius of circle marking ports at zoom=1
@@ -54,6 +54,7 @@ namespace minsky
   };
 
   class VariablePtr;
+  class VariableBase;
 
   class Item;
   /// bounding box information (at zoom=1 scale)
@@ -63,7 +64,8 @@ namespace minsky
   public:
     void update(const Item& x);
     bool contains(float x, float y) const {
-      return left<=x && right>=x && bottom>=y && top<=y;
+      // extend each item by a portradius to solve ticket #903
+      return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
     }
     bool valid() const {return left!=right;}
     float width() const {return right-left;}
@@ -75,6 +77,7 @@ namespace minsky
   public:
     float m_x=0, m_y=0; ///< position in canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
+    mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     std::weak_ptr<Group> group; ///< owning group of this item.
     /// canvas bounding box.
     mutable BoundingBox bb;
@@ -84,6 +87,9 @@ namespace minsky
       return bb.contains((xx-x())*invZ, (yy-y())*invZ);
     }
     
+    /// mark item on canvas, then throw
+    [[noreturn]] void throw_error(const std::string&) const;
+
     /// indicates this is a group I/O variable
     virtual bool ioVar() const {return false;}
     /// current value of output port
@@ -93,6 +99,11 @@ namespace minsky
     void flip() {rotation+=180;}
 
     virtual std::string classType() const {return "Item";}
+
+    /// @{ replacement for dynamic_cast<VariableBase*>(this)
+    virtual const VariableBase* variableCast() const {return nullptr;}
+    virtual VariableBase* variableCast() {return nullptr;}
+    /// @}
 
     ItemPortVector ports;
     float x() const; 
@@ -128,7 +139,7 @@ namespace minsky
     void dummyDraw() const;
 
     /// display tooltip text, eg on mouseover
-    void displayTooltip(cairo_t*) const;
+    void displayTooltip(cairo_t*, const std::string&) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
@@ -136,6 +147,7 @@ namespace minsky
 
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
+    void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);
@@ -146,8 +158,9 @@ namespace minsky
 
     /// respond to arrow keys.
     /// @param dir = -1/1 if left/down, right/up pressed
+    /// @param modifier = true if modifier (eg shift/control) pressed
     /// @return true if state changed, and item needs to be redrawn
-    virtual bool handleArrows(int dir) {return false;}
+    virtual bool handleArrows(int dir, bool modifier=false) {return false;}
     
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
@@ -155,6 +168,12 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
     {::TCL_obj(t,d,*this);}
 
+    /// enable extended tooltip help message appropriate for mouse at (x,y)
+    virtual void displayDelayedTooltip(float x, float y) {}
+    virtual void disableDelayedTooltip() {}
+    /// compute the dimensional units
+    // all items feeding into other items must implement this
+    virtual Units units() const {throw_error("units not implemented");}
   };
 
   typedef std::shared_ptr<Item> ItemPtr;

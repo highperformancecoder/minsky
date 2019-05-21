@@ -72,7 +72,7 @@ namespace minsky
           RenderVariable rv(*v);
           h+=2*rv.height();
           if (h>height) height=h;
-          float w=2*rv.width()+2;
+          float w=2*rv.width();
           if (w>width) width=w;
         }
     }
@@ -99,7 +99,7 @@ namespace minsky
       for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
         {
           VariablePtr newVar(varType, *nm);
-          set<VariablePtr>::const_iterator v=oldVars.find(newVar);
+          auto v=oldVars.find(newVar);
           if (v==oldVars.end())
             {
               // allow for the possibility that multiple names map to the same valueId
@@ -138,6 +138,7 @@ namespace minsky
   {
     m_iconScale*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
     update();
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
 
@@ -256,10 +257,11 @@ namespace minsky
     for (auto& v: m_flowVars)
       {
         // right justification
+        RenderVariable rv(*v);
         v->rotation=0;
         v->bb.update(*v);
         v->moveTo(x-0.5*v->width()*zoomFactor,y);
-        y+=v->height()*zoomFactor;
+        y+=2*rv.height()*zoomFactor;
       }
     x= this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
     y= this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
@@ -267,10 +269,11 @@ namespace minsky
     for (auto& v: m_stockVars)
       {
         // top justification at bottom of icon
+        RenderVariable rv(*v);
         v->rotation=90;
         v->bb.update(*v);
         v->moveTo(x,y+0.5*v->height()*zoomFactor);
-        x+=v->width()*zoomFactor;
+        x+=2*rv.height()*zoomFactor;
       }
   }
 
@@ -288,25 +291,21 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
     positionVariables();
-    cairo_save(cairo);
-    cairo_translate(cairo,-0.5*width(),-0.5*height());
+    {
+      CairoSave cs(cairo);
+      cairo_translate(cairo,-0.5*width()+leftMargin(),-0.5*height());
+      cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
 
-    cairo_translate(cairo, leftMargin(),0);
-    cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
-
-    svgRenderer.render(cairo);
-    if (selected)
       {
-        cairo_rectangle(cairo,0,0,svgRenderer.width(),svgRenderer.height());
-        cairo_clip(cairo);
-        drawSelected(cairo);
+        CairoSave cs(cairo); //following call mutates transformation matrix
+        svgRenderer.render(cairo); 
       }
 
-    cairo_restore(cairo);
+    }
 
     if (!table.title.empty())
       {
-        cairo_save(cairo);
+        CairoSave cs(cairo);
         cairo_move_to(cairo,0.5*leftMargin(),-0.5*bottomMargin()-0.25*height());
         cairo_select_font_face
           (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_NORMAL);
@@ -318,7 +317,6 @@ namespace minsky
               
         cairo_rel_move_to(cairo,-0.5*bbox.width,0.5*bbox.height);
         cairo_show_text(cairo,table.title.c_str());
-        cairo_restore(cairo);
       }
           
 
@@ -330,9 +328,69 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
+        drawResizeHandles(cairo);
       }
+      
+    cairo_rectangle(cairo,-0.5*width()+leftMargin(),-0.5*height(),
+                    width()-leftMargin(),height()-bottomMargin());
+    cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
   }
 
+  Units GodleyIcon::stockVarUnits(const string stockName) const
+  {
+    unsigned stockCol=1;
+    auto vid=valueId(stockName);
+    for (; stockCol<table.cols(); ++stockCol)
+      if (valueId(table.cell(0,stockCol))==vid)
+        break;
+
+    if (stockCol>=table.cols()) return {};
+
+    bool foundFlow=false;
+    Units units;
+    for (unsigned row=1; row<table.rows(); ++row)
+      {
+        if (table.initialConditionRow(row)) continue;
+        FlowCoef fc(table.cell(row,stockCol));
+        if (fc.coef!=0)
+          {
+            auto vid=valueId(fc.name);
+            // find variable assciated with this flow
+            for (auto& v: flowVars())
+              if (v->valueId()==vid)
+                {
+                  auto flowUnits=v->units();
+                  if (foundFlow && units!=flowUnits)
+                    throw_error("incompatible units: "+flowUnits.str()+"≠"+units.str()+" on stock "+stockName);
+                  foundFlow=true;
+                  units=flowUnits;
+                }
+          }
+      }
+    if (!cminsky().timeUnit.empty())
+      units[cminsky().timeUnit]++;
+    return units;
+  }
+
+  
+  ClickType::Type GodleyIcon::clickType(float x, float y)
+  {
+    double dx=fabs(x-this->x()), dy=fabs(y-this->y());
+    auto z=zoomFactor();
+    double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(dx-w) < portRadius*z &&
+        fabs(dy-h) < portRadius*z &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
+      return ClickType::onResize;
+    if (dx < w && dy < h)
+      return ClickType::onItem;
+    else
+      return ClickType::outside;
+  }
+
+  
   SVGRenderer GodleyIcon::svgRenderer;
 }

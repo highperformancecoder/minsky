@@ -111,7 +111,7 @@ namespace minsky
         {
           ItemPtr r=*i;
           items.erase(i);
-          if (auto v=dynamic_cast<VariableBase*>(r.get()))
+          if (auto v=r->variableCast())
               if (v->ioVar())
                 {
                  remove(inVariables, r);
@@ -199,14 +199,14 @@ namespace minsky
 
     // stash init value to initialise new variableValue
     string init;
-    if (auto v=dynamic_cast<VariableBase*>(it.get()))
+    if (auto v=it->variableCast())
       init=v->init();
     
     it->group=self;
     if (!inSchema) it->moveTo(x,y);
 
     // take into account new scope
-    if (auto v=dynamic_cast<VariableBase*>(it.get()))
+    if (auto v=it->variableCast())
       {
         if (!inSchema && origGroup)
           if (auto destGroup=self.lock())
@@ -217,7 +217,7 @@ namespace minsky
                   // same name exist in old group, and retain linkage
                   if (v->name()[0]!=':')
                     for (auto& i: origGroup->items)
-                      if (auto vv=dynamic_cast<VariableBase*>(i.get()))
+                      if (auto vv=i->variableCast())
                         if (vv->name()==v->name())
                           v->name(':'+v->name());
                 }
@@ -226,7 +226,7 @@ namespace minsky
                   // moving global var into an outer group, link up with variable of same name (if existing)
                   if (v->name()[0]==':')
                     for (auto& i: items)
-                      if (auto vv=dynamic_cast<VariableBase*>(i.get()))
+                      if (auto vv=i->variableCast())
                         if (vv->name()==v->name().substr(1))
                           v->name(v->name().substr(1));
                 }
@@ -264,6 +264,10 @@ namespace minsky
             }
           else
             addItem(intOp->intVar,inSchema);
+          if (intOp->coupled())
+            intOp->intVar->controller=it;
+          else
+            intOp->intVar->controller.reset();
         }
     items.push_back(it);
     return items.back();
@@ -480,6 +484,7 @@ namespace minsky
     double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1=y0);
     resizeItems(items,sx,sy);
     resizeItems(groups,sx,sy);
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
   
@@ -723,11 +728,6 @@ namespace minsky
     m_displayContentsChanged = dpc!=displayContents();
     if (!group.lock())
       relZoom*=factor;
-//    for (auto& i: items)
-//      {
-//        if (displayContents() && !m_displayContentsChanged)
-//          i->zoom(xOrigin, yOrigin, factor);
-//      }
     for (auto& i: groups)
       {
         if (displayContents() && !m_displayContentsChanged)
@@ -736,6 +736,23 @@ namespace minsky
       }
   }
 
+  ClickType::Type Group::clickType(float x, float y)
+  {
+    double dx=x-this->x(), dy=y-this->y();
+    auto z=zoomFactor();
+    double w=0.5*width*z, h=0.5*height*z;
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(fabs(dx)-w) < portRadius*z &&
+        fabs(fabs(dy)-h) < portRadius*z)
+      return ClickType::onResize;
+    if (displayContents() && inIORegion(x,y)==IORegion::none)
+      return ClickType::outside;
+    if (auto item=select(x,y))
+      return item->clickType(x,y);
+    if (abs(x-this->x())<w && abs(y-this->y())<h)
+      return ClickType::onItem;
+    return ClickType::outside;
+  }
 
   void Group::draw(cairo_t* cairo) const
   {
@@ -831,8 +848,9 @@ namespace minsky
 
     if (mouseFocus)
       {
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
       }
+    if (onResizeHandles) drawResizeHandles(cairo);
 
     cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
     cairo_clip(cairo);
@@ -991,22 +1009,6 @@ namespace minsky
         g->group=self;
         g->normaliseGroupRefs(g);
       }
-  }
-
-  ClickType::Type Group::clickType(float x, float y)
-  {
-      if (displayContents() && inIORegion(x,y)==IORegion::none)
-        return ClickType::outside;
-      else if (auto item=select(x,y))
-        return item->clickType(x,y);
-      else
-        {
-          auto z=0.5*zoomFactor();
-          if (abs(x-this->x())<z*width && abs(y-this->y())<z*height)
-            return ClickType::onItem;
-          else
-            return ClickType::outside;
-        }
   }
 
   

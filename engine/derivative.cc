@@ -411,6 +411,13 @@ namespace MathDAG
  
   template <>
   NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::ravel>& expr)
+  {
+    throw error("cannot differentiate an empirical curve");
+  }
+ 
+  template <>
+  NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::sqrt>& expr)
   {
     if (expr.arguments[0].empty())
@@ -596,4 +603,29 @@ namespace MathDAG
     else
        throw error("frac is not differentiable");
   }
+  
+#define VECTOR_DERIVATIVE_NOT_IMPLEMENTED(op)           \
+  template <>                                           \
+  NodePtr SystemOfEquations::derivative<>               \
+  (const OperationDAG<OperationType::op>& expr)         \
+  {                                                     \
+    throw error("vector derivatives not implemented");  \
+  }                                                     
+
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(sum)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(product)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(infimum)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(supremum)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(infIndex)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(supIndex)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(any)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(all)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(runningSum)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(runningProduct)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(difference)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(innerProduct)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(outerProduct)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(index)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(gather)
+
 }

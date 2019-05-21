@@ -21,6 +21,7 @@
 #include "canvas.h"
 #include "cairoItems.h"
 #include "minsky.h"
+#include "ravelWrap.h"
 #include <cairo_base.h>
 
 #include <ecolab_epilogue.h>
@@ -35,6 +36,7 @@ namespace minsky
     // firstly, see if the user is selecting an item
     if ((itemFocus=itemAt(x,y)))
       {
+        auto z=itemFocus->zoomFactor();
         clickType=itemFocus->clickType(x,y);
         switch (clickType)
           {
@@ -58,14 +60,24 @@ namespace minsky
               lassoMode=LassoMode::lasso;
             break;
           case ClickType::onRavel:
-            if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+            if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
               r->onMouseDown(x,y);
+            break;
+          case ClickType::onResize:
+            lassoMode=LassoMode::itemResize;
+            // set x0,y0 to the opposite corner of (x,y)
+            lasso.x0 = itemFocus->x() +
+              0.5*itemFocus->width()*z * (x>itemFocus->x()? -1:1);
+            lasso.y0 = itemFocus->y() +
+              0.5*itemFocus->height()*z * (y>itemFocus->y()? -1:1);
+            lasso.x1=x;
+            lasso.y1=y;
+            item=itemFocus;
             break;
           case ClickType::legendMove: case ClickType::legendResize:
             if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
               p->mouseDown(x,y);
             break;
-            
           }
       }
     else
@@ -113,9 +125,13 @@ namespace minsky
     mouseMove(x,y);
     
     if (clickType==ClickType::onRavel)
-      if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
-        r->onMouseUp(x,y);
-    
+      if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
+        {
+          r->onMouseUp(x,y);
+          r->broadcastStateToLockGroup();
+          itemFocus.reset(); // prevent spurious mousemove events being processed
+          minsky().reset();
+        }
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
@@ -187,7 +203,7 @@ namespace minsky
                 requestRedraw();
                 return;
               case ClickType::onSlider:
-                if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+                if (auto v=itemFocus->variableCast())
                   {
                     RenderVariable rv(*v);
                     double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
@@ -200,7 +216,7 @@ namespace minsky
                   }
                 return;
               case ClickType::onRavel:
-                if (auto r=dynamic_cast<RavelWrap*>(itemFocus.get()))
+                if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
                   if (r->onMouseMotion(x,y))
                     requestRedraw();
                 return;
@@ -211,11 +227,16 @@ namespace minsky
                     requestRedraw();
                   }
                 return;
+              case ClickType::onResize:
+                lasso.x1=x;
+                lasso.y1=y;
+                requestRedraw();
+                break;
               default:
                 break;
               }
           }
-        if (fromPort.get())
+        else if (fromPort.get())
           {
             termX=x;
             termY=y;
@@ -236,9 +257,6 @@ namespace minsky
           {
             lasso.x1=x;
             lasso.y1=y;
-            // make lasso symmetric around item's (x,y)
-            lasso.x0=2*item->x() - x;
-            lasso.y0=2*item->y() - y;
             requestRedraw();
           }
         else
@@ -246,11 +264,12 @@ namespace minsky
             // set mouse focus to display ports etc.
             model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
                                               {
+                                                (*i)->disableDelayedTooltip();
                                                 // with coupled integration variables, we
                                                 // do not want to set mousefocus, as this
                                                 // draws unnecessary port circles on the
                                                 // variable
-                                                if (!(*i)->visible() &&
+                                                if (!(*i)->visible() && 
                                                     dynamic_cast<Variable<VariableBase::integral>*>(i->get()))
                                                   (*i)->mouseFocus=false;
                                                 else
@@ -258,9 +277,13 @@ namespace minsky
                                                     auto ct=(*i)->clickType(x,y);
                                                     if (ct==ClickType::onRavel)
                                                       {
-                                                        if (auto r=dynamic_cast<RavelWrap*>(i->get()))
-                                                          if (r->onMouseOver(x,y))
-                                                            requestRedraw();
+                                                        if (auto r=dynamic_cast<Ravel*>(i->get()))
+                                                          {
+                                                            r->mouseFocus=true;
+                                                            r->onBorder = false;
+                                                            if (r->onMouseOver(x,y))
+                                                              requestRedraw();
+                                                          }
                                                       }
                                                     else
                                                       {
@@ -270,8 +293,10 @@ namespace minsky
                                                             requestRedraw();
                                                             (*i)->mouseFocus=mf;
                                                           }
-                                                        if (auto r=dynamic_cast<RavelWrap*>(i->get()))
+                                                        (*i)->onResizeHandles=ct==ClickType::onResize;
+                                                        if (auto r=dynamic_cast<Ravel*>(i->get()))
                                                           {
+                                                            r->onBorder = ct==ClickType::onItem;
                                                             r->onMouseLeave();
                                                             requestRedraw();
                                                           }
@@ -286,7 +311,13 @@ namespace minsky
                                                    {
                                                      (*i)->mouseFocus=mf;
                                                      requestRedraw();
-                                                   }        
+                                                   }
+                                                 bool onResize = (*i)->clickType(x,y)==ClickType::onResize;
+                                                 if (onResize!=(*i)->onResizeHandles)
+                                                   {
+                                                     (*i)->onResizeHandles=onResize;
+                                                     requestRedraw();
+                                                   }
                                                  return false;
                                                });
             model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
@@ -303,6 +334,15 @@ namespace minsky
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
+  void Canvas::displayDelayedTooltip(float x, float y)
+  {
+    if (auto item=itemAt(x,y))
+      {
+        item->displayDelayedTooltip(x,y);
+        requestRedraw();
+      }
+  }
+  
   void Canvas::select(const LassoBox& lasso)
   {
     selection.clear();
@@ -346,7 +386,7 @@ namespace minsky
     if (!item)
       item=model->findAny
         (&Group::groups, [&](const GroupPtr& i)
-                         {return i->visible() && i->clickType(x,y)==ClickType::onItem;});
+                         {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
     return item;
   }
   
@@ -367,6 +407,42 @@ namespace minsky
     r->splitBoundaryCrossingWires();
   }
 
+  void Canvas::lockRavelsInSelection()
+  {
+    vector<shared_ptr<Ravel> > ravelsToLock;
+    shared_ptr<RavelLockGroup> lockGroup;
+    bool conflictingLockGroups=false;
+    for (auto& i: selection.items)
+      if (auto r=dynamic_pointer_cast<Ravel>(i))
+        {
+          ravelsToLock.push_back(r);
+          if (!lockGroup)
+            lockGroup=r->lockGroup;
+          if (lockGroup!=r->lockGroup)
+            conflictingLockGroups=true;
+        }
+    if (ravelsToLock.size()<2)
+      return;
+    if (!lockGroup || conflictingLockGroups)
+      lockGroup.reset(new RavelLockGroup);
+    for (auto& r: ravelsToLock)
+      {
+        lockGroup->ravels.push_back(r);
+        r->leaveLockGroup();
+        r->lockGroup=lockGroup;
+      }
+    if (lockGroup && !lockGroup->ravels.empty())
+      if (auto r=lockGroup->ravels.front().lock())
+        r->broadcastStateToLockGroup();
+  }
+
+  void Canvas::unlockRavelsInSelection()
+  {
+    for (auto& i: selection.items)
+      if (auto r=dynamic_cast<Ravel*>(i.get()))
+        r->leaveLockGroup();
+  }
+  
   void Canvas::deleteItem()
   {
     if (item)
@@ -392,7 +468,7 @@ namespace minsky
           if (auto parent=g->group.lock())
             {
               itemFocus=parent->addItem(item);
-              if (auto v=dynamic_cast<VariableBase*>(itemFocus.get()))
+              if (auto v=itemFocus->variableCast())
                 v->controller.reset();
               g->splitBoundaryCrossingWires();
             }
@@ -403,7 +479,7 @@ namespace minsky
   void Canvas::selectAllVariables()
   {
     selection.clear();
-    auto var=dynamic_cast<VariableBase*>(item.get());
+    auto var=item->variableCast();
     if (!var)
       if (auto i=dynamic_cast<IntOp*>(item.get()))
         var=i->intVar.get();
@@ -412,7 +488,7 @@ namespace minsky
         model->recursiveDo
           (&GroupItems::items, [&](const Items&,Items::const_iterator i)
            {
-             if (auto v=dynamic_cast<VariableBase*>(i->get()))
+             if (auto v=(*i)->variableCast())
                if (v->valueId()==var->valueId())
                  {
                    selection.items.push_back(*i);
@@ -425,7 +501,7 @@ namespace minsky
 
   void Canvas::renameAllInstances(const string newName)
   {
-    auto var=dynamic_cast<VariableBase*>(item.get());
+    auto var=item->variableCast();
     if (!var)
       if (auto i=dynamic_cast<IntOp*>(item.get()))
         var=i->intVar.get();
@@ -435,7 +511,7 @@ namespace minsky
         model->recursiveDo
           (&GroupItems::items, [&](Items&,Items::iterator i)
            {
-             if (auto v=dynamic_cast<VariableBase*>(i->get()))
+             if (auto v=(*i)->variableCast())
                if (v->valueId()==valueId)
                  {
                    if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
@@ -540,10 +616,10 @@ namespace minsky
       }
   }
 
-  void Canvas::handleArrows(int dir, float x, float y)
+  void Canvas::handleArrows(int dir, float x, float y, bool modifier)
   {
     if (auto item=itemAt(x,y))
-      if (item->handleArrows(dir))
+      if (item->handleArrows(dir,modifier))
         {
           requestRedraw();
           minsky().pushHistory(); //for ticket #812
@@ -572,7 +648,7 @@ namespace minsky
     
   bool Canvas::findVariableDefinition()
   {
-    if (auto iv=dynamic_cast<VariableBase*>(item.get()))
+    if (auto iv=item->variableCast())
       {
         if (iv->type()==VariableType::constant ||
             iv->type()==VariableType::parameter || iv->inputWired())
@@ -580,7 +656,7 @@ namespace minsky
         
         auto def=model->findAny
           (&GroupItems::items, [&](const ItemPtr& i) {
-            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            if (auto v=i->variableCast())
               return v->inputWired() && v->valueId()==iv->valueId();
             else if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
               for (auto& v: g->stockVars())
@@ -642,7 +718,6 @@ namespace minsky
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             it.bb.update(it);
              cairo_restore(cairo);
            }
          return false;
@@ -659,7 +734,6 @@ namespace minsky
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
              it.draw(cairo);
-             it.bb.update(it);
              cairo_restore(cairo);
            }
          return false;

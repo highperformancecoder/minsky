@@ -31,7 +31,9 @@
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
+using namespace boost;
 using namespace boost::posix_time;
+using namespace boost::gregorian;
 
 namespace minsky
 {
@@ -121,11 +123,6 @@ namespace minsky
     double z=zoomFactor();
     double w=width*z, h=height*z;
 
-    cairo_new_path(cairo);
-    cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
-
-    cairo_clip(cairo);
-
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel.empty()||!ylabel.empty()||!y1label.empty())
       {
@@ -206,7 +203,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
         // draw legend tags for move/resize
         if (legend)
           {
@@ -235,16 +232,36 @@ namespace minsky
             cairo_stroke(cairo);
           }
       }
-    if (selected) drawSelected(cairo);
+    if (onResizeHandles) drawResizeHandles(cairo);
     justDataChanged=false;
+    
+    cairo_new_path(cairo);
+    cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
+    cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
+
   }
   
   void PlotWidget::scalePlot()
   {
     // set any scale overrides
     setMinMax();
-    if (xminVar.idx()>-1) {minx=xminVar.value();}
-    if (xmaxVar.idx()>-1) {maxx=xmaxVar.value();}
+    if (xminVar.idx()>-1)
+      {
+        if (xIsSecsSinceEpoch && xminVar.units==Units("year"))
+          minx=yearToPTime(xminVar.value());
+        else
+          minx=xminVar.value();
+      }
+
+    if (xmaxVar.idx()>-1)
+      {
+        if (xIsSecsSinceEpoch && xmaxVar.units==Units("year"))
+          maxx=yearToPTime(xmaxVar.value());
+        else
+          maxx=xmaxVar.value();
+      }
+
     if (yminVar.idx()>-1) {miny=yminVar.value();}
     if (ymaxVar.idx()>-1) {maxy=ymaxVar.value();}
     if (y1minVar.idx()>-1) {miny1=y1minVar.value();}
@@ -291,23 +308,6 @@ namespace minsky
       }
   }
 
-  ClickType::Type PlotWidget::clickType(float x, float y)
-  {
-    double legendWidth, legendHeight, z=zoomFactor();
-    legendSize(legendWidth, legendHeight, height*z-portSpace);
-    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*z;
-    double yy= y-this->y() + (legendTop-0.5)*height*z;
-    if (xx>0 && xx<legendWidth)
-      {
-        if (yy>0 && yy<0.8*legendHeight)
-          return ClickType::legendMove;
-        else if (yy>=0.8*legendHeight && yy<legendHeight)
-          return ClickType::legendResize;
-      }
-    return Item::clickType(x,y);
-  }
-
-  
   extern Tk_Window mainWin;
 
   void PlotWidget::redraw()
@@ -329,16 +329,50 @@ namespace minsky
     float invZ=1/zoomFactor();
     width=abs(x.x1-x.x0)*invZ;
     height=abs(x.y1-x.y0)*invZ;
+    moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
 
+  // specialisation to avoid rerendering plots (potentially expensive)
+  ClickType::Type PlotWidget::clickType(float x, float y)
+  {
+    // firstly, check whether a port has been selected
+    double z=zoomFactor();
+    for (auto& p: ports)
+      {
+        if (hypot(x-p->x(), y-p->y()) < portRadius*z)
+          return ClickType::onPort;
+      }
+
+    double legendWidth, legendHeight;
+    legendSize(legendWidth, legendHeight, height*z-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*z;
+    double yy= y-this->y() + (legendTop-0.5)*height*z;
+    if (xx>0 && xx<legendWidth)
+      {
+        if (yy>0 && yy<0.8*legendHeight)
+          return ClickType::legendMove;
+        else if (yy>=0.8*legendHeight && yy<legendHeight)
+          return ClickType::legendResize;
+      }
+    
+    double dx=x-this->x(), dy=y-this->y();
+    double w=0.5*width*z, h=0.5*height*z;
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(fabs(dx)-w) < portRadius*z &&
+        fabs(fabs(dy)-h) < portRadius*z &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
+      return ClickType::onResize;
+    return (abs(dx)<w && abs(dy)<h)?
+      ClickType::onItem: ClickType::outside;
+  }
   
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;
 
   void PlotWidget::addPlotPt(double t)
   {
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (yvars[pen].dims().size()==1 && yvars[pen].dims()[0]==1 && yvars[pen].idx()>=0)
+      if (yvars[pen].numElements()==1 && yvars[pen].idx()>=0)
         {
           double x,y;
           switch (xvars.size())
@@ -381,12 +415,24 @@ namespace minsky
   void PlotWidget::addConstantCurves()
   {
     size_t extraPen=2*numLines;
+
+    // determine if any of the incoming vectors has a ptime-based xVector
+    xIsSecsSinceEpoch=false;
+    for (auto& i: yvars)
+      if (i.idx()>=0 && xvars[&i-&yvars[0]].idx()==-1 && i.xVector.size())
+        {
+          auto& xv=i.xVector[0];
+          if (xv.dimension.type==Dimension::time)
+            xIsSecsSinceEpoch=true;
+        }
+    
     for (size_t pen=0; pen<2*numLines; ++pen)
       if (pen<yvars.size() && yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
         {
           auto& yv=yvars[pen];
-          auto& d=yv.dims();
-
+          auto d=yv.dims();
+          if (d.empty()) continue;
+          
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
@@ -399,12 +445,41 @@ namespace minsky
           else
             {
               xdefault.reserve(d[0]);
+              xticks.clear();
               if (yv.xVector.size()) // yv carries its own x-vector
                 {
-                  xticks=yv.xVector;
-                  assert(xticks.size()==d[0]);
-                  for (auto& i: xticks)
-                    xdefault.push_back(i.first);
+                  auto& xv=yv.xVector[0];
+                  assert(xv.size()==d[0]);
+                  switch (xv.dimension.type)
+                    {
+                    case Dimension::string:
+                      for (size_t i=0; i<xv.size(); ++i)
+                        {
+                          xticks.emplace_back(i, str(xv[i]));
+                          xdefault.push_back(i);
+                        }
+                      break;
+                    case Dimension::value:
+                      if (xIsSecsSinceEpoch && xv.dimension.units=="year")
+                        // interpret "year" as years since epoch (1/1/1970)
+                        for (auto& i: xv)
+                          xdefault.push_back(yearToPTime(any_cast<double>(i)));
+                      else
+                        for (auto& i: xv)
+                          xdefault.push_back(any_cast<double>(i));
+                      break;
+                    case Dimension::time:
+                      {
+                        string format=xv.timeFormat();
+                        for (auto& i: xv)
+                          {
+                            double tv=(any_cast<ptime>(i)-ptime(date(1970,Jan,1))).total_microseconds()*1E-6;
+                            xticks.emplace_back(tv,str(i,format));
+                            xdefault.push_back(tv);
+                          }
+                      }
+                      break;
+                    }
                 }
               else // by default, set x to 0..d[0]-1
                 for (size_t i=0; i<d[0]; ++i)
@@ -412,11 +487,24 @@ namespace minsky
               x=&xdefault[0];
             }
           
-          setPen(pen, x, yv.begin(), d[0]);
           // higher rank y objects treated as multiple y vectors to plot
-          for (auto j=d[0]; j<yv.numElements(); j+=d[0])
-            setPen(extraPen++, x, yv.begin()+j, d[0]);
+          for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
+            {
+              setPen(extraPen, x, yv.begin()+j, d[0]);
+              if (pen>=numLines)
+                assignSide(extraPen,Side::right);
+             string label;
+              size_t stride=d[0];
+              for (size_t i=1; i<yv.xVector.size(); ++i)
+                {
+                  label+=str(yv.xVector[i][(j/stride)%d[i]])+" ";
+                  stride*=d[i];
+                }
+              labelPen(extraPen,label);
+              extraPen++;
+            }
         }
+    scalePlot();
   }
 
   

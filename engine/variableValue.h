@@ -19,6 +19,8 @@
 #ifndef VARIABLE_VALUE
 #define VARIABLE_VALUE
 #include "variableType.h"
+#include "xvector.h"
+#include "tensorVal.h"
 #include "ecolab.h"
 #include "classdesc_access.h"
 #include "constMap.h"
@@ -31,8 +33,36 @@ namespace minsky
   struct VariableValues;
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
+
+  // why are we doing this complicated mixin to constify the xVector
+  // attribute instead of a simple const std::vector<XVector>&
+  // VariableValue::xVector() const getter method?
+
+  //ans: because we want TCL to be able to inspect the xVector
+  // attribute, which is not possible with the getter method
+  class XVectorMixin
+  {
+  public:
+    typedef std::vector<XVector> XVectorVector;
+    CLASSDESC_ACCESS(XVectorMixin);
+  protected:
+    XVectorVector m_xVector;
+  public:
+    // need to use C++98 style initialiser here to get around compiler
+    // bug on Ubuntu 14.04
+    const XVectorVector& xVector; //{m_xVector};
+    XVectorMixin(): xVector(m_xVector) {}
+    XVectorMixin(const XVectorMixin& x):
+      m_xVector(x.m_xVector), xVector(m_xVector) {}
+    XVectorMixin(XVectorMixin&& x):
+      m_xVector(x.m_xVector), xVector(m_xVector) {}
+    XVectorMixin& operator=(const XVectorMixin& x)
+    {m_xVector=x.m_xVector; return *this;}
+    XVectorMixin& operator=(XVectorMixin&& x)
+    {m_xVector=x.m_xVector; return *this;}
+  };
   
-  class VariableValue: public VariableType
+  class VariableValue: public VariableType, public XVectorMixin
   {
     CLASSDESC_ACCESS(VariableValue);
   private:
@@ -40,7 +70,7 @@ namespace minsky
     int m_idx; /// index into value vector
     double& valRef(); 
     double valRef() const;
-    std::vector<unsigned> m_dims{1};
+    std::vector<unsigned> m_dims;
 
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -63,9 +93,12 @@ namespace minsky
 
     /// the initial value of this variable
     std::string init;
+    /// when init is a tensor of values, this overrides the init string
+    TensorVal tensorInit;
 
     /// dimension units of this value
     Units units;
+    bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
     
     bool godleyOverridden;
     std::string name; // name of this variable
@@ -85,30 +118,50 @@ namespace minsky
     
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
-    const std::vector<unsigned>& dims() const {return m_dims;}
+    std::vector<unsigned> dims() const {
+      std::vector<unsigned> d;
+      for (auto& i: xVector) d.push_back(i.size());
+      return d;
+    }
+    size_t rank() const {return xVector.size();}
     ///< set the dimensions. \a d cannot be empty, by may consist of
     ///the single element {1} to refer to a scalar
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
-      if (!d.empty()) {
-          m_dims=d;
-          allocValue();
+      XVectorVector xv;
+      for (size_t i=0; i<d.size(); ++i)
+        {
+          xv.emplace_back(std::to_string(i));
+          xv.back().dimension.type=Dimension::value;
+          for (size_t j=0; j<d[i]; ++j)
+            xv.back().emplace_back(double(j));
         }
-        return m_dims;
+      setXVector(std::move(xv));
+      return d;
     }
     size_t numElements() const {
       size_t s=1;
-      for (auto i: m_dims) s*=i;
+      for (auto& i: xVector) s*=i.size();
       return s;
     }
 
-    /// labels describing the points along dimension 0
-    /// consists of a value and a textual representation
-    typedef std::vector<std::pair<double, std::string>> XVector;
-    XVector xVector;
+    template <class T>
+    void setXVector_(T x) {
+      size_t prevNumElems=numElements();
+      m_xVector=x;
+      if (idx()==-1 || prevNumElems<numElements())
+        allocValue();
+    }
+    void setXVector(XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
+    void setXVector(const XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
 
+    
     /// removes elements of xVector not found in \a
-    /// You should adjust dims()[0] to xVector.size() afterwards
     void makeXConformant(const VariableValue& a);
+
+    /// compute stride and dimension size of dimension \a dim
+    /// @throw if dimension \a dim doesn't exist
+    /// if \a dim is empty, defaults to first dimension
+    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
@@ -116,6 +169,9 @@ namespace minsky
     const VariableValue& operator=(double x) {valRef()=x; return *this;}
     const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
     const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
+    const VariableValue& operator=(const TensorVal& x);
+    //    const VariableValue& operator+=(const TensorVal& x);
+    //    const VariableValue& operator-=(const TensorVal& x);
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
@@ -125,9 +181,9 @@ namespace minsky
     /// evaluates the initial value, based on the set of variables
     /// contained in \a VariableManager. \a visited is used to check
     /// for circular definitions
-    double initValue
+    TensorVal initValue
     (const VariableValues&, std::set<std::string>& visited) const;
-    double initValue(const VariableValues& v) const {
+    TensorVal initValue(const VariableValues& v) const {
       std::set<std::string> visited;
       return initValue(v, visited);
     }
@@ -159,6 +215,8 @@ namespace minsky
     static int scope(const std::string& name);
     /// extract unqualified portion of name
     static std::string uqName(const std::string& name);
+
+    void exportAsCSV(const std::string& filename, const std::string& comment="") const;
   };
 
   struct ValueVector
@@ -191,6 +249,10 @@ namespace minsky
     void reset();
     /// checks that all entry names are valid
     bool validEntries() const;
+    void resetUnitsCache() {
+      for (auto& i: *this)
+        i.second.unitsCached=false;
+    }
   };
   
   struct EngNotation {int sciExp, engExp;};

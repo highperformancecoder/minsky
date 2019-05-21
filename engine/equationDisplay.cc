@@ -71,22 +71,6 @@ namespace MathDAG
       return pango.height();
     }
 
-//    // renders \a source (which is a recording surface) at current point
-//    // note: doesn't work with nested recording surfaces, ie the destination surface cannot be a recording surface
-//    void displaySurface(cairo_t* cairo, const Surface& source, Anchor anchor)
-//    {
-//      cairo_save(cairo);
-//      double x,y;
-//      moveToAnchor(cairo, source, anchor);
-//      cairo_get_current_point(cairo, &x, &y);
-//      cairo_rectangle(cairo, x,y,source.width(), source.height());
-//      cairo_set_source_rgb(cairo,0,1,0);
-//      cairo_stroke_preserve(cairo);
-//      cairo_set_source_surface(cairo, source.surface(), x-source.left(),y-source.top());
-//      cairo_fill(cairo);
-//      cairo_restore(cairo);
-//    }
-
     struct RecordingSurface: public Surface
     {
       RecordingSurface(): Surface(cairo_recording_surface_create
@@ -96,7 +80,7 @@ namespace MathDAG
 
     // renders \a x a function taking a Surface, with big enough brackets around them
     template <class X>
-    double parenthesise(Surface& s, X x)
+    double parenthesise(Surface& s, X x, const string& left="(", const string& right=")")
     {
       double xx,yy;
       cairo_get_current_point(s.cairo(),&xx,&yy);
@@ -106,14 +90,14 @@ namespace MathDAG
       Pango pango(s.cairo());
       double oldFs=pango.getFontSize();
       pango.setFontSize(r.height());
-      pango.setMarkup("(");
+      pango.setMarkup(left);
       cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
       pango.show();
       cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
       cairo_rel_move_to(s.cairo(),pango.width(),0);
       x(s);
       xx+=pango.width()+r.width();
-      pango.setMarkup(")");
+      pango.setMarkup(right);
       cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
       //      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
       pango.show();
@@ -144,7 +128,7 @@ namespace MathDAG
       if (v.rhs) 
         v.rhs->render(surf);
       else
-        print(surf.cairo(), latexToPango(MathDAG::latex(v.init)), Anchor::nw);
+        print(surf.cairo(), latexToPango(latexInit(v.init)), Anchor::nw);
     }
 
   }
@@ -172,7 +156,7 @@ namespace MathDAG
       {
         // initial conditions
         y+=print(dest.cairo(), latexToPango(mathrm(i->name))+"(0) = "+
-                 latexToPango(MathDAG::latex(i->init)),Anchor::nw);
+                 latexToPango(latexInit(i->init)),Anchor::nw);
         
         // differential equation
         Pango num(dest.cairo());
@@ -215,7 +199,7 @@ namespace MathDAG
 
   void ConstantDAG::render(ecolab::cairo::Surface& surf) const
   {
-    print(surf.cairo(), latexToPango(MathDAG::latex(value)),Anchor::nw);
+    print(surf.cairo(), latexToPango(value),Anchor::nw);
   }
 
   void VariableDAG::render(ecolab::cairo::Surface& surf) const
@@ -400,7 +384,17 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::data>::render(Surface& surf) const 
   {
-    if (auto d=dynamic_cast<const minsky::NamedOp*>(state.get()))
+    if (auto d=dynamic_cast<const minsky::DataOp*>(state.get()))
+      print(surf.cairo(),latexToPango(mathrm(d->description)),Anchor::nw);
+    else
+      print(surf.cairo(),latexToPango(mathrm("\\uplus")),Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
+  }
+  template <>
+  void OperationDAG<OperationType::ravel>::render(Surface& surf) const 
+  {
+    if (auto d=dynamic_cast<const minsky::DataOp*>(state.get()))
       print(surf.cairo(),latexToPango(mathrm(d->description)),Anchor::nw);
     else
       print(surf.cairo(),latexToPango(mathrm("\\uplus")),Anchor::nw);
@@ -541,6 +535,131 @@ namespace MathDAG
     print(surf.cairo(),"frac",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
+  }
+
+  template <>
+  void OperationDAG<OperationType::sum>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"∑<sub>i</sub>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        double h=parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        cairo_rel_move_to(surf.cairo(), 0, 0.5*h);
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        cairo_rel_move_to(surf.cairo(), 0, -0.5*h);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::product>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"∏<sub>i</sub>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::infimum>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"min<sub>i</sub>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::supremum>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"min<sub>i</sub>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::infIndex>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"indexOf",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){OperationDAG<OperationType::infimum>().render(surf);});
+  }
+
+  template <>
+  void OperationDAG<OperationType::supIndex>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"indexOf",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){OperationDAG<OperationType::supremum>().render(surf);});
+  }
+
+  template <>
+  void OperationDAG<OperationType::any>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"Θ(max<sub>i</sub>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>&gt;0.5)",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::all>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"∏<sub>i</sub>Θ(",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>&gt;0.5)",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::runningSum>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"∑<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::runningProduct>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"∏<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::difference>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"Δ<sub>i</sub>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+
+  template <>
+  void OperationDAG<OperationType::index>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"index",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+      }
   }
 
   template <>
@@ -725,6 +844,45 @@ namespace MathDAG
         else
           print(surf.cairo(),"0",Anchor::nw);
       }
+  }
+
+  template <>
+  void OperationDAG<OperationType::innerProduct>::render(Surface& surf) const
+  {
+    if (arguments.size()<2 ||  arguments[0].empty() || arguments[1].empty())
+      throw error("incorrectly wired");
+    parenthesise(surf, [&](Surface& surf){
+                         arguments[0][0]->render(surf);
+                       });
+    print(surf.cairo(),"·",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){
+                         arguments[1][0]->render(surf);
+                       });
+  }
+
+  template <>
+  void OperationDAG<OperationType::outerProduct>::render(Surface& surf) const
+  {
+    if (arguments.size()<2 ||  arguments[0].empty() || arguments[1].empty())
+      throw error("incorrectly wired");
+    parenthesise(surf, [&](Surface& surf){
+                         arguments[0][0]->render(surf);
+                       });
+    print(surf.cairo(),"⊗",Anchor::nw);
+    parenthesise(surf, [&](Surface& surf){
+                         arguments[1][0]->render(surf);
+                       });
+  }
+
+  template <>
+  void OperationDAG<OperationType::gather>::render(Surface& surf) const
+  {
+    if (arguments.size()<2 ||  arguments[0].empty() || arguments[1].empty())
+      throw error("incorrectly wired");
+    parenthesise(surf, [&](Surface& surf){
+                         arguments[0][0]->render(surf);});
+    parenthesise(surf, [&](Surface& surf){
+                         arguments[1][0]->render(surf);},"[","]");
   }
 
 

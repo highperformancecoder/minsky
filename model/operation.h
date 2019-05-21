@@ -80,7 +80,19 @@ namespace minsky
 
     /// current value of output port
     double value() const override;
-    
+
+    /// operation argument. For example, the offset used in a
+    /// difference operator, or binsize in a binning op
+    double arg=1;
+
+    /// axis selector in tensor operations
+    string axis;
+
+    /// return dimension names of tensor object attached to input
+    /// if binary op, then the union of dimension names is returned
+    std::vector<string> dimensions() const;
+    Units units() const override;
+
   protected:
 
     friend struct EvalOpBase;
@@ -98,7 +110,17 @@ namespace minsky
     void iconDraw(cairo_t *) const override;
     size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
-    Operation() {this->addPorts();}
+    Operation() {
+      this->addPorts();
+      // custom arg defaults
+      switch (T)  {
+        case OperationType::runningSum: case OperationType::runningProduct:
+          this->arg=-1;
+          break;
+        default:
+          break;
+        }
+    }
     Operation(const Operation& x): Super(x) {this->addPorts();}
     Operation& operator=(const Operation& x) {
       Super::operator=(x);
@@ -108,11 +130,25 @@ namespace minsky
     std::string classType() const override {return "Operation:"+OperationType::typeName(T);}
   };
 
-  struct NamedOp
+  class Time: public Operation<OperationType::time>
   {
-    string description;
+  public:
+    Units units() const override;
+  };
+  
+  class Derivative: public Operation<OperationType::differentiate>
+  {
+  public:
+    Units units() const override;
   };
 
+  class Copy: public Operation<OperationType::copy>
+  {
+  public:
+    Units units() const override {return ports[1]->units();}
+  };
+
+  
   class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>
   {
     typedef Operation<OperationType::integrate> Super;
@@ -147,7 +183,7 @@ namespace minsky
     /// return reference to integration variable
     VariablePtr intVar; 
 
-    bool handleArrows(int dir) override {return intVar->handleArrows(dir);}
+    bool handleArrows(int dir,bool) override {return intVar->handleArrows(dir,false);}
 
     /// toggles coupled state of integration variable. Only valid for integrate
     /// @return coupled state
@@ -156,17 +192,18 @@ namespace minsky
       assert(intVar);
       return ports.size()>0 && intVar->ports.size()>0 && ports[0]==intVar->ports[0];
     }
+    Units units() const override;
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
   };
 
-  class DataOp: public NamedOp, public ItemT<DataOp, Operation<minsky::OperationType::data>>
+  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>
   {
     CLASSDESC_ACCESS(DataOp);
   public:
+    string description;
     std::map<double, double> data;
-    std::vector<std::pair<double, std::string>> xVector;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 
     void initRandom(double xmin, double xmax, unsigned numSamples);
@@ -176,15 +213,13 @@ namespace minsky
     /// derivative is defined as the weighted average of the left & right
     /// derivatives, weighted by the respective intervals
     double deriv(double) const;
+    Units units() const override {return ports[1]->units();}
 
     /// called to initialise a variable value when no input wire is connected
-    void initOutputVariableValue(VariableValue&) const;
+    //    void initOutputVariableValue(VariableValue&) const;
     
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
-//    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override {
-//      ::TCL_obj(t,d,*this);
-//    }
   };
 
   /// shared_ptr class for polymorphic operation objects. Note, you
@@ -205,6 +240,7 @@ namespace minsky
     OperationPtr(const ItemPtr& x): 
       PtrBase(std::dynamic_pointer_cast<OperationBase>(x)) {}
   };
+
 
 }
 

@@ -22,27 +22,62 @@
 
 #include "operation.h"
 #include "cairoRenderer.h"
+#include "ravelState.h"
 
 namespace minsky 
 {
-  struct Ravel;
-  struct DataCube;
-
-  class RavelWrap: public ItemT<RavelWrap, DataOp>
+  class RavelLockGroup;
+  
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
   {
-    Ravel* ravel=nullptr;
-    DataCube* dataCube=nullptr;
+  public:
+    struct RavelImpl;
+    struct DataCube;
+
+    CLASSDESC_ACCESS(Ravel);
+  private:
+    typedef RavelState::HandleState HandleState;
+    Exclude<RavelImpl*> ravel=nullptr;
+    Exclude<DataCube*> dataCube=nullptr;
     void noRavelSetup();
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
     std::string m_filename;
+    std::string explanation; // explanation of Ravel bits displayed as tooltip
+    HandleState::HandleSort previousOrder=HandleState::forward;
+    
+    /// used entirely to defer persisted state data until after first
+    /// load from a variable
+    RavelState initState;
+    
+    friend struct SchemaHelper;
+
+    std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
+
   public:
-    RavelWrap();
-    ~RavelWrap();
-    const char* ravelVersion() const; ///< Ravel version string
+    Ravel();
+    ~Ravel();
+    // copy operations needed for clone, but not really used for now
+    // define them as empty operations to prevent double frees if accidentally used
+    void operator=(const Ravel&) {}
+    Ravel(const Ravel&) {}
+
+    /// local override of axis dimensionality
+    Dimensions axisDimensions;
+
+    /// group of ravels that move syncronously
+    std::shared_ptr<RavelLockGroup> lockGroup;
+    void leaveLockGroup();
+    void broadcastStateToLockGroup() const;
+    
+    /// true to indicate mouse hovering over border
+    bool onBorder=false; 
+    
+    string ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
     void resize(const LassoBox&) override;
+    double radius() const;
     ClickType::Type clickType(float x, float y) override;
     void onMouseDown(float x, float y);
     void onMouseUp(float x, float y);
@@ -51,45 +86,74 @@ namespace minsky
     void onMouseLeave();
     void loadFile(const std::string&);
     const string& filename() const {return m_filename;}
-    void loadDataFromSlice();
-    const char* toXML() const;
-    void fromXML(const std::string&);
+    void loadDataFromSlice(VariableValue&) const;
+    void loadDataCubeFromVariable(const VariableValue&);
+    unsigned maxRank() const;
+    unsigned rank() const;
+    void setRank(unsigned);
+    void adjustSlicer(int); ///< adjust currently selected handle's slicer
+    bool handleArrows(int dir, bool modifier) override;
 
-    // representing the state of the handles
-    struct HandleState
-    {
-      double x,y; ///< handle tip coordinates (only angle important, not length)
-      size_t sliceIndex, sliceMin, sliceMax;
-      bool collapsed, displayFilterCaliper;
-      enum ReductionOp {sum, prod, av, stddev, min, max};
-      ReductionOp reductionOp;
-    };
+    // return selected handle, or -1 if none
+    int selectedHandle() const;
+    
+    /// enable/disable calipers on currently selected handle
+    bool displayFilterCaliper() const;
+    bool setDisplayFilterCaliper(bool);
+    bool toggleDisplayFilterCaliper()
+    {return setDisplayFilterCaliper(!displayFilterCaliper());}
+    /// @}
 
-    struct State
-    {
-      std::map<std::string, HandleState> handleStates;
-      std::vector<std::string> outputHandles;
-    };
+    /// returns all slice labels along the selected handle, in specified order
+    std::vector<string> allSliceLabels() const;
+    /// returns just the picked slice labels along the handle
+    std::vector<string> pickedSliceLabels() const;
+    /// pick (selected) \a pick labels
+    void pickSliceLabels(int axis, const std::vector<string>& pick);
+    
+    /// @{
+    /// the handle sorting order for currently selected handle
+    HandleState::HandleSort sortOrder() const;
+    HandleState::HandleSort setSortOrder(HandleState::HandleSort);
+    /// @}
 
+    /// @} get/set description of selected handle
+    string description() const;
+    void setDescription(const string&);
+    /// @}
+
+    /// @{ get/set selected handle dimension attributes
+    Dimension::Type dimensionType() const;
+    std::string dimensionUnitsFormat() const;
+    /// @throw if type does not match global dimension type
+    void setDimension(Dimension::Type type,const std::string& units);
+    /// @}
+    
     /// get the current state of the Ravel
-    State getState() const;
+    RavelState getState() const;
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-    void applyState(const State&);
+    /// @param preservePositions if true, do not rotate handles
+    void applyState(const RavelState&);
+    void displayDelayedTooltip(float x, float y) override;
+    void exportAsCSV(const std::string& filename) const;
+
+    Units units() const override;
+    
+  };
+
+  class RavelLockGroup
+  {
+    static unsigned nextColour;
+    unsigned m_colour;
+  public:
+    RavelLockGroup() {m_colour=nextColour++;}
+    // an identifyin tag used to colour locked ravels on canvas
+    unsigned colour() const {return m_colour;}
+    std::vector<std::weak_ptr<Ravel>> ravels;
+    void removeFromGroup(const Ravel&);
   };
 }
 
-#ifdef CLASSDESC
-#pragma omit pack minsky::RavelWrap
-#pragma omit unpack minsky::RavelWrap
-#endif
-
-namespace classdesc_access
-{
-  template <> struct access_pack<minsky::RavelWrap>: 
-    public access_pack<minsky::DataOp> {};
-  template <> struct access_unpack<minsky::RavelWrap>: 
-    public access_unpack<minsky::DataOp> {};
-}
 #include "ravelWrap.cd"
 #include "ravelWrap.xcd"
 

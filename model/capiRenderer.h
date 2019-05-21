@@ -20,6 +20,7 @@ struct CAPIRenderer
   void (*newPath)(CAPIRenderer*);
   void (*closePath)(CAPIRenderer*);
   void (*fill)(CAPIRenderer*);
+  void (*clip)(CAPIRenderer*);
   void (*stroke)(CAPIRenderer*);
   void (*strokePreserve)(CAPIRenderer*);
   

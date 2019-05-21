@@ -51,6 +51,7 @@ namespace minsky
     bool first=true;
     for (auto& i: u)
       {
+        if (i.first.empty() || i.second==0) continue; // don't display empty units
         if (!first) o<<" ";
         first=false;
         o<<i.first;

@@ -57,11 +57,10 @@ RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
 
   switch (op.type())
     {
-    case OperationType::constant:
     case OperationType::data:
       {
         cairo_text_extents_t bbox;
-        const NamedOp& c=dynamic_cast<const NamedOp&>(op);
+        auto& c=dynamic_cast<const DataOp&>(op);
 
         Pango pango(lcairo);
         pango.setFontSize(10);

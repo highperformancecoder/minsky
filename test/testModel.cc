@@ -41,41 +41,41 @@ namespace
     TestFixture(): lm(*this)
     {
       a=model->addItem(new Variable<VariableType::flow>("a"));
-     b=model->addItem(new Variable<VariableType::flow>("b"));
-     c=model->addItem(new Variable<VariableType::flow>("c"));
-     // create 3 variables, wire them and add first two to a group,
-     // leaving 3rd external
-     a->moveTo(100,100);
-     b->moveTo(200,100);
-     c->moveTo(300,100);
-     CHECK_EQUAL(2,a->ports.size());
-     CHECK_EQUAL(2,b->ports.size());
-     CHECK_EQUAL(2,c->ports.size());
+      b=model->addItem(new Variable<VariableType::flow>("b"));
+      c=model->addItem(new Variable<VariableType::flow>("c"));
+      // create 3 variables, wire them and add first two to a group,
+      // leaving 3rd external
+      a->moveTo(100,100);
+      b->moveTo(200,100);
+      c->moveTo(300,100);
+      CHECK_EQUAL(2,a->ports.size());
+      CHECK_EQUAL(2,b->ports.size());
+      CHECK_EQUAL(2,c->ports.size());
 
-     ab=model->addWire(new Wire(a->ports[0], b->ports[1]));
-     bc=model->addWire(new Wire(b->ports[0], c->ports[1]));
-     checkWiresConsistent();
+      ab=model->addWire(new Wire(a->ports[0], b->ports[1]));
+      bc=model->addWire(new Wire(b->ports[0], c->ports[1]));
+      checkWiresConsistent();
 
-     group0=model->addGroup(new Group);
-     checkWiresConsistent();
-     group0->addItem(a);
-     checkWiresConsistent();
-     group0->addItem(b);
-     group0->splitBoundaryCrossingWires();
+      group0=model->addGroup(new Group);
+      checkWiresConsistent();
+      group0->addItem(a);
+      checkWiresConsistent();
+      group0->addItem(b);
+      group0->splitBoundaryCrossingWires();
      
-     CHECK_EQUAL(3,group0->items.size());
-     CHECK_EQUAL(2,group0->wires.size());
-     CHECK_EQUAL(1,model->items.size());
-     CHECK_EQUAL(4,model->numItems());
-     CHECK_EQUAL(3,model->numWires());
-     checkWiresConsistent();
+      CHECK_EQUAL(3,group0->items.size());
+      CHECK_EQUAL(2,group0->wires.size());
+      CHECK_EQUAL(1,model->items.size());
+      CHECK_EQUAL(4,model->numItems());
+      CHECK_EQUAL(3,model->numWires());
+      checkWiresConsistent();
 
       // add a couple of time operators, to ensure the group has finite size
-     model->addItem(OperationPtr(OperationType::time))->moveTo(100,75);
-     model->addItem(OperationPtr(OperationType::time))->moveTo(200,125);
-     canvas.select(50,50,250,150);
-     save("TestGroupFixture.mky");
-     CHECK(model->uniqueItems());
+      model->addItem(OperationPtr(OperationType::time))->moveTo(100,75);
+      model->addItem(OperationPtr(OperationType::time))->moveTo(200,125);
+      canvas.select(50,50,250,150);
+      save("TestGroupFixture.mky");
+      CHECK(model->uniqueItems());
     }
 
     void checkWiresConsistent() {
@@ -193,7 +193,7 @@ SUITE(Group)
 
   TEST_FIXTURE(TestFixture, copy)
     {
-      auto t=model->addItem(new Operation<OperationBase::time>);
+      auto t=model->addItem(new minsky::Time);
       model->addWire(new Wire(t->ports[0],a->ports[1]));
       group0->splitBoundaryCrossingWires();
       group0->addGroup(new Group);
@@ -447,7 +447,7 @@ SUITE(Canvas)
 
       // test that groups can be selected
       CHECK(!group0->displayContents());
-      float w=0.5*group0->width+5, h=0.5*group0->height+5;
+      float w=0.5*group0->width+10, h=0.5*group0->height+10;
       x=group0->x()-w; y=group0->y()-h;
       // nw -> se selection
       canvas.mouseDown(x,y);
@@ -510,15 +510,14 @@ SUITE(Canvas)
       {
         model.reset(new Group);
         addGodley();
-        auto& godley=dynamic_cast<GodleyIcon&>(*itemFocus);
-        CHECK(godley.width()!=200);
-        CHECK(godley.height()!=200);
-        mouseUp(200,200);
-        getItemAt(200,200);
-        lassoMode=LassoMode::itemResize;
-        mouseUp(300,300);
-        CHECK_EQUAL(200,godley.width());
-        CHECK_EQUAL(200,godley.height());
+        auto i=itemFocus;
+        double w=i->width(), h=i->height();
+        double x=i->x(), y=i->y();
+
+        mouseDown(x+0.5*w, y+0.5*h);
+        mouseUp(x+w, y+h);
+        CHECK_CLOSE(1.5*w,i->width(),0.1);
+        CHECK_CLOSE(1.5*h,i->height(),0.1);
       }
 
     TEST_FIXTURE(Canvas, groupResize)
@@ -528,14 +527,13 @@ SUITE(Canvas)
         addGroup();
         auto& group=dynamic_cast<Group&>(*itemFocus);
         group.relZoom=0.5; // ensure displayContents is false
-        CHECK(group.width!=200);
-        CHECK(group.height!=200);
-        mouseUp(200,200);
-        getItemAt(200,200);
-        lassoMode=LassoMode::itemResize;
-        mouseUp(300,300);
-        CHECK_EQUAL(200,group.width);
-        CHECK_EQUAL(200,group.height);
+        double w=group.width, h=group.height;
+        double x=group.x(), y=group.y();
+
+        mouseDown(x+0.5*w, y+0.5*h);
+        mouseUp(x+w, y+h);
+        CHECK_CLOSE(1.5*w,group.width,1);
+        CHECK_CLOSE(1.5*h,group.height,1);
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
@@ -813,15 +811,15 @@ SUITE(Canvas)
         cv->sliderMin=0;
         cv->sliderMax=2000;
         cv->sliderStep=100;
-        canvas.handleArrows(1,c->x(),c->y());
+        canvas.handleArrows(1,c->x(),c->y(),false);
         CHECK_EQUAL(1100,cv->value());
-        canvas.handleArrows(-1,c->x(),c->y());
+        canvas.handleArrows(-1,c->x(),c->y(),false);
         CHECK_EQUAL(1000,cv->value());
         for (size_t i=0; i<20; ++i)
-          canvas.handleArrows(1,c->x(),c->y());
+          canvas.handleArrows(1,c->x(),c->y(),false);
         CHECK_EQUAL(2000,cv->value());
         for (size_t i=0; i<30; ++i)
-          canvas.handleArrows(-1,c->x(),c->y());
+          canvas.handleArrows(-1,c->x(),c->y(),false);
         CHECK_EQUAL(0,cv->value());
       }
     

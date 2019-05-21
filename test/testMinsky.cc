@@ -659,6 +659,7 @@ SUITE(Minsky)
         // other operation cannot be tested this way
         switch (op)
           {
+          case OperationType::ravel:
           case OperationType::differentiate:
           case OperationType::and_:
           case OperationType::or_:

@@ -27,9 +27,9 @@
 
 #include <math.h>
 
-//#ifdef __MINGW32_VERSION
-//#define finite isfinite
-//#endif
+using boost::any;
+using boost::any_cast;
+using namespace boost::posix_time;
 
 namespace minsky
 {
@@ -47,25 +47,33 @@ namespace minsky
           fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], 0);
         break;
       case 2:
-        for (unsigned i=0; i<in1.size(); ++i)
-          fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]],
-                             flow2? fv[in2[i]]: sv[in2[i]]);
+          for (unsigned i=0; i<in1.size(); ++i)
+            {
+              double x2=0;
+              const double* v=flow2? fv: sv;
+              for (auto& j: in2[i])
+                  x2+=j.weight*v[j.idx];
+              fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], x2);
+            }
         break;
       }
-    
-    for (unsigned i=0; i<in1.size(); ++i)
-      if (!isfinite(fv[out+i]))
-        {
-          if (state)
-            minsky().displayErrorItem(*state);
-          string msg="Invalid: "+OperationBase::typeName(type())+"(";
-          if (numArgs()>0)
-            msg+=to_string(flow1? fv[in1[i]]: sv[in1[i]]);
-          if (numArgs()>1)
-            msg+=","+to_string(flow2? fv[in2[i]]: sv[in2[i]]);
-          msg+=")";
-          throw runtime_error(msg.c_str());
-        }
+
+    // check for NaNs only on scalars. For tensors, NaNs just means
+    // element not present
+    if (in1.size()==1)
+      for (unsigned i=0; i<in1.size(); ++i)
+        if (!isfinite(fv[out+i]))
+          {
+            if (state)
+              minsky().displayErrorItem(*state);
+            string msg="Invalid: "+OperationBase::typeName(type())+"(";
+            if (numArgs()>0)
+              msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);
+            if (numArgs()>1)
+              msg+=","+std::to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
+            msg+=")";
+            throw runtime_error(msg.c_str());
+          }
   };
 
   /// TODO: handle tensors for implicit methods
@@ -91,12 +99,12 @@ namespace minsky
         {
           assert((flow1 && in1[0]<ValueVector::flowVars.size()) || 
                  (!flow1 && in1[0]<ValueVector::stockVars.size()));
-          assert((flow2 && in2[0]<ValueVector::flowVars.size()) || 
-                 (!flow2 && in2[0]<ValueVector::stockVars.size()));
+          assert((flow2 && in2[0][0].idx<ValueVector::flowVars.size()) || 
+                 (!flow2 && in2[0][0].idx<ValueVector::stockVars.size()));
           double x1=flow1? fv[in1[0]]: sv[in1[0]];
-          double x2=flow2? fv[in2[0]]: sv[in2[0]];
+          double x2=flow2? fv[in2[0][0].idx]: sv[in2[0][0].idx];
           double dx1=flow1? df[in1[0]]: ds[in1[0]];
-          double dx2=flow2? df[in2[0]]: ds[in2[0]];
+          double dx2=flow2? df[in2[0][0].idx]: ds[in2[0][0].idx];
           df[out] = (dx1!=0? dx1 * d1(x1,x2): 0) +
             (dx2!=0? dx2 * d2(x1,x2): 0);
           break;
@@ -173,6 +181,16 @@ namespace minsky
   template <> 
   double EvalOp<OperationType::data>::d2(double x1, double x2) const
   {return 0;}
+
+  template <> double 
+  EvalOp<OperationType::ravel>::evaluate(double in1, double in2) const
+  {throw error("ravel evaluation not supported");}
+  template <> 
+  double EvalOp<OperationType::ravel>::d1(double x1, double x2) const
+  {throw error("ravel evaluation not supported");}
+  template <> 
+  double EvalOp<OperationType::ravel>::d2(double x1, double x2) const
+  {throw error("ravel evaluation not supported");}
 
   template <> 
   double EvalOp<OperationType::sqrt>::evaluate(double in1, double in2) const
@@ -475,6 +493,15 @@ namespace minsky
   double EvalOp<OperationType::numOps>::d2(double x1, double x2) const
   {throw error("calling d2() on EvalOp<numOps> invalid");}
 
+  void RavelEvalOp::eval(double fv[], const double sv[]) 
+  {
+    if (auto r=dynamic_cast<Ravel*>(state.get()))
+      {
+        r->loadDataCubeFromVariable(in);
+        r->loadDataFromSlice(out);
+      }
+  }
+  
   namespace {OperationFactory<EvalOpBase, EvalOp, OperationType::numOps-1> evalOpFactory;}
 
   EvalOpBase* EvalOpBase::create(Type op)
@@ -483,6 +510,8 @@ namespace minsky
       {
       case constant:
         return new ConstantEvalOp;
+      case ravel:
+        return new RavelEvalOp;
       case numOps:
         return NULL;
       default:
@@ -490,136 +519,609 @@ namespace minsky
       }
   }
 
-  EvalOpPtr::EvalOpPtr(OperationType::Type op, VariableValue& to,
-              const VariableValue& from1, const VariableValue& from2)
+  namespace
+  {
+    struct OffsetMap: public map<string,map<string,size_t>>
+    {
+      vector<string> axes;
+      OffsetMap(const VariableValue& v) {
+        size_t stride=1;
+        for (auto& i: v.xVector)
+          {
+            size_t offs=0;
+            for (auto& j: i)
+              {
+                (*this)[i.name][str(j)]=offs;
+                offs+=stride;
+              }
+            stride*=i.size();
+            axes.push_back(i.name);
+          }
+      }
+      size_t offset(const vector<pair<string,string>>& x) {
+        size_t offs=0;
+        for (auto& i: x) {
+          auto j=find(i.first);
+          if (j!=end()) {
+            auto k=j->second.find(i.second);
+            if (k!=j->second.end())
+              offs+=k->second;
+            else
+              throw error("invalid key");
+          }
+        }
+        return offs;
+      }
+    };
+
+    template <class F>
+    void apply(const OffsetMap& targetOffs, vector<string> axes, vector<pair<string,string>> index, F f)
+    {
+      if (axes.empty())
+        f(index);
+      else
+        {
+          auto j=axes.back();
+          auto k=targetOffs.find(j);
+          axes.pop_back();
+          if (k!=targetOffs.end())
+            for (auto& i: k->second)
+              {
+                index.emplace_back(j,i.first);
+                apply(targetOffs, axes, index, f);
+                index.pop_back();
+              }
+        }
+    }
+
+    // recursively apply f() to the indices of targetOffs
+    template <class F>
+    void apply(const OffsetMap& targetOffs, F f)
+    {
+      apply(targetOffs,targetOffs.axes,{},f);
+    }
+
+    typedef vector<XVector> VVV;
+    void checkAllEntriesPresent(const VVV& x, const VVV& y)
+    {
+      for (auto& i: y)
+        if (none_of(x.begin(), x.end(),
+                    [&](const XVector& z)
+                    {return z.name==i.name;}))
+          throw error("invalidly initialised to variable"); 
+    }
+
+    struct ComparableBase: any
+    {
+      ComparableBase(const any& x): any(x) {}
+      virtual bool operator<(const ComparableBase& x) const=0;
+      static ComparableBase* create(const any&);
+      // converts a string var to an any, using this any type.
+      virtual any toAny(const string&) const=0;
+    };
+
+    //bool stringCmp(const string& x, const string& y) {return x<y;}
+    //bool stringCmp(const char*& x, const string& y) {return x<y;}
+    template <class T>
+    bool stringCmp(const T& x, const string& y) {throw error("invalid string comparison");}
+    
+    template <class T>
+    class ComparableAny: public ComparableBase
+    {
+      const T* data;
+    public:
+      ComparableAny(const any& x): ComparableBase(x) {data=any_cast<T>(this);}
+      bool operator<(const ComparableBase& x) const override
+      {
+        if (auto y=dynamic_cast<const ComparableAny<T>*>(&x))
+          return *data<*y->data;
+        return false;
+      }
+      any toAny(const string&) const override;
+    };
+
+    ComparableBase* ComparableBase::create(const any& x) {
+      if (any_cast<string>(&x)) return new ComparableAny<string>(x);
+      if (any_cast<const char*>(&x)) return new ComparableAny<const char*>(x);
+      if (any_cast<double>(&x)) return new ComparableAny<double>(x);
+      if (any_cast<ptime>(&x)) return new ComparableAny<ptime>(x);
+      assert(false); // shouldn't be here...
+      return nullptr;
+    }
+
+    template <> any ComparableAny<string>::toAny(const string& x) const {return x;}
+    template <> any ComparableAny<const char*>::toAny(const string& x) const {throw error("invalid toAny");} // impossible to define...
+    template <> any ComparableAny<double>::toAny(const string& x) const {return stod(x);}
+    template <> any ComparableAny<ptime>::toAny(const string& x) const {return sToPtime(x);}
+    
+    
+    struct OrderedPtr: public unique_ptr<ComparableBase>
+    {
+      OrderedPtr() {}
+      OrderedPtr(const any& x): unique_ptr<ComparableBase>(ComparableBase::create(x)) {}
+      bool operator<(const OrderedPtr& x) const {return **this<*x;}
+    };
+
+    struct Bounds
+    {
+      string dimName;
+      any lesser, greater;
+      Bounds() {}
+      Bounds(const string& d, const any& l, const any& g):
+        dimName(d), lesser(l), greater(g) {}
+    };
+
+    struct GetBounds
+    {
+      // like an xvector, but sorted so that labels can be quickly found
+      map<string, set<OrderedPtr> > xvector;
+      GetBounds(const vector<XVector>& xv) {
+        for (auto& i: xv)
+          xvector.emplace(i.name, set<OrderedPtr>{i.begin(),i.end()});
+      }
+      
+      // returns the two closest values in xvector to the value given by x
+      // if x is found exactly, then return x in both the lesser and greater field
+      vector<Bounds> operator()(const vector<pair<string,string>>& x) const
+      {
+        vector<Bounds> r;
+        for (auto& i: x)
+          {
+            auto j=xvector.find(i.first);
+            if (j!=xvector.end())
+              {
+                if (j->second.empty())
+                  return {};
+                else if (dynamic_cast<ComparableAny<string>*>(j->second.begin()->get()) ||
+                         dynamic_cast<ComparableAny<const char*>*>(j->second.begin()->get()))
+                  {
+                    any label(i.second);
+                    auto k=j->second.find(label);
+                    if (k==j->second.end()) return {};
+                    r.emplace_back(i.first,label,label);
+                  }
+                else
+                  {
+                    OrderedPtr val((*j->second.begin())->toAny(i.second));
+                    auto k=j->second.lower_bound(val); // first k >= val
+                    if (k==j->second.end() && j->second.size()>1)
+                      {
+                        auto l=--k;
+                        --l;
+                        r.emplace_back(i.first,**k,**l); // extrapolate from above
+                      }
+                    else if (val<*k)
+                      {
+                        if (j->second.size()>1)
+                          {
+                            if (k==j->second.begin())
+                              {
+                                auto l=k;
+                                ++l;
+                                r.emplace_back(i.first,**l,**k); // extrapolate from below
+                              }
+                            else
+                              {
+                                auto l=k;
+                                --l;
+                                r.emplace_back(i.first,**l,**k); // interpolate
+                              }
+                          }
+                        else
+                          return {};  // cannot interpolate with one point
+                      }
+                    else // exact match
+                      r.emplace_back(i.first,*val,*val);
+                  }
+              }
+          }
+        return r;
+      }
+    };
+
+    // generate the in1 offset vector for the generic single argument case
+    void generic1ArgIndices(EvalOpBase& t, const VariableValue& to, const VariableValue& from)
+    {
+      OffsetMap from1Offsets(from);
+      apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                           {
+                             size_t offs1=from.idx();
+                             for (auto& i: x)
+                               {
+                                 auto j=from1Offsets.find(i.first);
+                                 if (j!=from1Offsets.end())
+                                   {
+                                     auto k=j->second.find(i.second);
+                                     if (k!=j->second.end())
+                                       offs1+=k->second;
+                                     else
+                                       throw error("invalid key");
+                                   }
+                                 // else allowed a missing dimension - add zero offset
+                               }
+                             t.in1.push_back(offs1);
+                           });
+    }
+
+
+  }
+ 
+  EvalOpPtr::EvalOpPtr(OperationType::Type op, const std::shared_ptr<OperationBase>& state,
+                       VariableValue& to, const VariableValue& from1, const VariableValue& from2)
   {
     
       reset(EvalOpBase::create(op));
       auto t=get();
       assert(t->numArgs()==0 || from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0));
-
-      // check dimensionality is correct
-      switch (op)
+      t->state=state;
+      
+      switch (t->numArgs())
         {
-        case OperationType::time:
-          to.units.clear();
-          if (!EvalOpBase::timeUnit.empty())
-            to.units.emplace(EvalOpBase::timeUnit,1);
-          break;
-        case OperationType::multiply:
-        case OperationType::divide:
-          to.units=from1.units;
-          for (auto& i: from2.units)
+        case 2:
+          switch (op)
             {
-              to.units[i.first]+=
-                (op==OperationType::multiply? 1: -1)*i.second;
-              if (to.units[i.first]==0)
-                to.units.erase(i.first);
+            case gather:
+              {
+                auto& e=dynamic_cast<EvalOp<gather>&>(*t);
+                e.shape=from1.dims();
+                if (to.xVector!=from1.xVector)
+                  to.setXVector(from1.xVector);
+                for (size_t i=0; i<from1.numElements(); ++i)
+                  t->in1.push_back(i+from1.idx());
+                auto from2Dims=from2.dims();
+                if (from2Dims.size()>0)
+                  for (size_t i=0; i<from2.numElements(); i+=from2Dims[0])
+                    {
+                      t->in2.emplace_back();
+                      for (size_t j=0; j<from2Dims[0]; ++j)
+                        t->in2.back().emplace_back(1,i+j+from2.idx());
+                    }
+                else
+                  t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
+              }
+//                switch (from1.rank())
+//                  {
+//                  case 0: break;
+//                  case 1:
+//                    if (from2.rank()>2)
+//                      throw error("index argument needs to be rank 2 or less");
+//                    if (from2.rank()==2 && from2.dims()[0]!=from1.rank())
+//                      throw error("leading dimension of index argument needs to match input argument rank");
+//                    break;
+//                  default:
+//                    if (from2.rank()!=2)
+//                      throw error("index argument needs to be rank 2");
+//                    if (from2.dims()[0]!=from1.rank())
+//                      throw error("leading dimension of index argument needs to match input argument rank");
+//                    break;
+//                  
+//                
+//                // determine stride based on state of the operation argument
+//                size_t stride=1;
+//                if (state && !state->axis.empty())
+//                  for (auto& j: from1.xVector)
+//                    {
+//                      if (j.name==state->axis)
+//                        break;
+//                      stride*=j.size();
+//                    }
+//                for (size_t i=0; i<from1.numElements(); ++i)
+//                  t->in1.push_back(i*stride+from1.idx());
+//                if (from2.xVector.size()!=1)
+//                  throw error("index argument should have rank 1");
+//                else
+//                  for (unsigned i=0; i<from2.xVector[0].size(); ++i)
+//                    t->in2.emplace_back(1,EvalOpBase::Support{1,i+from2.idx()});
+//              }
+              break;
+            default:
+              {
+                map<string,const XVector&> from2XVectorMap;
+                for (auto& i: from2.xVector)
+                  from2XVectorMap.emplace(i.name, i);
+                for (auto& i: from1.xVector)
+                  {
+                    auto j=from2XVectorMap.find(i.name);
+                    if (j!=from2XVectorMap.end() && j->second.dimension.type!=i.dimension.type)
+                      throw error("incompatible dimension type");
+                  }
+            
+                // check that all from2's xvector entries are present in to, and vice versa
+                if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
+                if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
+            
+                if (from1.numElements()==1 && from2.numElements()==1)
+                  {
+                    t->in1.push_back(from1.idx());
+                    t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
+                    if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
+                      to.setXVector(vector<XVector>());
+                    break;
+                  }
+
+                OffsetMap from1Offsets(from1), from2Offsets(from2);
+
+                if (to.xVector.empty())
+                  {
+                    vector<XVector> xv;
+                    for (auto& i: from1.xVector)
+                      if (i.dimension.type==Dimension::string)
+                        {
+                          // compute the common intersection of shared dimensions,
+                          // otherwise broadcast along the others
+                          auto j=from2Offsets.find(i.name);
+                          if (j!=from2Offsets.end())
+                            {
+                              xv.emplace_back(i.name);
+                              xv.back().dimension=i.dimension;
+                              for (auto& k: i)
+                                {
+                                  auto l=j->second.find(str(k));
+                                  if (l!=j->second.end())
+                                    xv.back().push_back(k);
+                                }
+                            }
+                          else
+                            xv.push_back(i);
+                        }
+                      else
+                        xv.push_back(i);
+                     
+                    for (auto& i: from2.xVector)
+                      if (!from1Offsets.count(i.name))
+                        xv.push_back(i);
+                    to.setXVector(move(xv));
+                  }
+                else
+                  to.setXVector(from1.xVector);
+
+                GetBounds from1GetBounds(from1.xVector), from2GetBounds(from2.xVector);
+                apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                                     {
+                                       t->in1.push_back(from1Offsets.offset(x)+from1.idx());
+                                       t->in2.emplace_back();
+                                       auto from1Bounds=from1GetBounds(x);
+                                       auto from2Bounds=from2GetBounds(x);
+                                       double sumD=0;
+
+                                       // loop over edges of a binary hypercube
+                                       for (size_t i=0; i<(1ULL<<from2Bounds.size()); ++i)
+                                         {
+                                           vector<pair<string,string>> key;
+                                           // add verbatim key entries along axes only present in from1
+                                           for (auto& j: x)
+                                             if (!from2XVectorMap.count(j.first))
+                                               key.push_back(j);
+                        
+                                           double weight=1;
+                                           for (auto& b: from2Bounds)
+                                             {
+                                               if (b.lesser.empty()) goto dontAddKey; // string mismatch
+                                               auto ref=find_if(from1Bounds.begin(), from1Bounds.end(),
+                                                                [&](const Bounds& x) {return x.dimName==b.dimName;});
+                                               // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
+                                               if (i&(1ULL<<(&b-&from2Bounds[0]))) // on greater edge
+                                                 if (diff(b.lesser,b.greater)==0 || ref==from1Bounds.end())
+                                                   // if lesser==greater, then needn't add greater key, as already sharply contained in bounds
+                                                   goto dontAddKey;
+                                                 else
+                                                   {
+                                                     key.emplace_back(b.dimName, str(b.greater));
+                                                     weight*=diff(ref->lesser, b.lesser) / diff(b.greater,b.lesser);
+                                                   }
+                                               else
+                                                 {
+                                                   key.emplace_back(b.dimName, str(b.lesser));
+                                                   double d=diff(b.greater,b.lesser);
+                                                   if (ref!=from1Bounds.end() && d!=0)
+                                                     weight*=1-diff(ref->lesser, b.lesser)/d;
+                                                 }
+                                             }
+                                           if (weight!=0)
+                                             t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
+                                         dontAddKey:;
+                                         }
+#ifndef NDEBUG
+                                       double sumWeight=0;
+                                       for (auto& i: t->in2.back()) sumWeight+=i.weight;
+                                       assert(sumWeight-1 < 1e-5);
+#endif
+                                     });
+
+                break;
+              }
             }
+//          if (op==gather) // we need to compute the offsets of each slice and place them in the Support::weight attribute
+//            {
+//              if (t->in1.size()!=t->in2.size())
+//                throw error("gather arguments not conformant");
+//              size_t stride=1;
+//              if (state && !state->axis.empty())
+//                for (auto& j: from1.xVector)
+//                  {
+//                    stride*=j.size();
+//                    if (j.name==state->axis)
+//                      break;
+//                  }
+//              for (size_t i=0; i<t->in1.size(); ++i)
+//                {
+//                  if (t->in2[i].size()!=1)
+//                    throw error("gather's arguments must have compatible x-vectors");
+//                  t->in2[i][0].weight = (t->in1[i] / stride) * stride;
+//                }
+//            }
           break;
-        case OperationType::pow:
-          if (!from1.units.empty())
+        case 1:
+          switch (OperationType::classify(op))
             {
-              if (from2.type()==VariableType::constant)
+            case general: case function: 
+                if (to.idx()==-1 || to.xVector.empty())
+                  to.setXVector(from1.xVector);
+                if (to.xVector==from1.xVector)
+                    for (size_t i=0; i<from1.numElements(); ++i)
+                      t->in1.push_back(i+from1.idx());
+                else
+                  generic1ArgIndices(*t, to, from1);
+              break;
+            case reduction: case scan:
+              {
+                // determine stride based on state of the operation argument
+                size_t stride=1;
+                if (state && !state->axis.empty())
+                  for (auto& j: from1.xVector)
+                    {
+                      if (j.name==state->axis)
+                        break;
+                      stride*=j.size();
+                    }
+                for (size_t i=0; i<from1.numElements(); ++i)
+                  t->in1.push_back(i*stride+from1.idx());
+              }
+              break;
+            case binop: assert(false); break; // shouldn't be here
+            case tensor:
+              switch (op)
                 {
-                  char* ep;
-                  int e=strtol(from2.init.c_str(),&ep,10);
-                  if (*ep!='\0')
-                    throw runtime_error("non integral power of dimensioned quantity requested");
-                  to.units=from1.units;
-                  for (auto& i: to.units)
-                    i.second*=e;
+                case index:
+                  {
+                    vector<unsigned> targetDims{unsigned(from1.rank()),unsigned(from1.numElements())};
+                    if (to.dims()!=targetDims)
+                      to.dims(targetDims);
+                    for (size_t i=0; i < targetDims[1]; ++i)
+                      t->in1.push_back(i+from1.idx());                 
+                    auto& e=dynamic_cast<EvalOp<index>&>(*t);
+                    e.shape=from1.dims();
+                  }
+                  break;
+                default: // TODO
+                  break;
                 }
-              else
-                throw runtime_error("non constant power of dimensioned quantity requested");
+              break;  
             }
-          break;
-        case OperationType::le: case OperationType::lt: case OperationType::eq:
-          if (from1.units!=from2.units)
-            throw runtime_error("incompatible units: "+from1.units.str()+"≠"+from2.units.str());
-          to.units.clear(); // result of comparison ops is dimensionless
-          break;
-        case OperationType::and_: case OperationType::or_: case OperationType::not_:
-          if (!from1.units.empty() || !from2.units.empty())
-            throw runtime_error("logical ops must be applied to dimensionless quantities");
-          to.units.clear(); // result of comparison ops is dimensionless
-          break;
-        case OperationType::integrate: case OperationType::differentiate:
-          assert(false); // shouldn't be here
-          break;
-        case OperationType::copy:
-          to.units=from1.units;
-          break;
-        default:
-          if (t->numArgs()>=2)
-            {
-              if (from1.units!=from2.units)
-                throw runtime_error("incompatible units: "+from1.units.str()+"≠"+from2.units.str());
-            }
-          else if (t->numArgs()==1 && !from1.units.empty())
-            throw runtime_error("function argument not dimensionless, but "+from1.units.str());
-          if (t->numArgs()>0)
-            to.units=from1.units;
           break;
         }
 
-      if (t->numArgs()>=2 && from1.xVector.size() && from2.xVector.size())
-        {
-          // find the common set of indexes shared by x1 and x2
-          map<string, unsigned> xIdx2;
-          unsigned i=from2.idx();
-          for (auto j=from2.xVector.begin(); j!=from2.xVector.end(); ++i, ++j)
-            xIdx2[j->second]=i;
-          
-          i=from1.idx();
-          for (auto j=from1.xVector.begin(); j!=from1.xVector.end(); ++i, ++j)
-            {
-              auto k=xIdx2.find(j->second);
-              if (k!=xIdx2.end())
-                {
-                  t->in1.push_back(i);
-                  t->in2.push_back(k->second);
-                }
-            }
-        }
-      else if (t->numArgs()>0)
-        {
-          unsigned maxIdx=from1.dims()[0];
-          if (maxIdx==1)
-            maxIdx=from2.dims()[0];
-          else if (from2.dims()[0]>1)
-            maxIdx=std::min(maxIdx, from2.dims()[0]);
-
-          for (unsigned i=0; i<maxIdx; ++i)
-            {
-              if (from1.dims()[0]==1)
-                t->in1.push_back(from1.idx());
-              else
-                t->in1.push_back(from1.idx()+i);
-              if (from2.dims()[0]==1)
-                t->in2.push_back(from2.idx());
-              else
-                t->in2.push_back(from2.idx()+i);
-            }
-        }
-      // todo handle tensors
-      if (to.dims().size()!=1 || (t->numArgs()>0 && to.dims()[0]!=t->in1.size()))
-        {
-          assert(&to!=&from1 && &to!=&from2);
-          to.dims({unsigned(t->in1.size())});
-          if (from1.xVector.size())
-            for (auto i: t->in1)
-              to.xVector.push_back(from1.xVector[i-from1.idx()]);
-          else if (from2.xVector.size())
-            for (auto i: t->in2)
-              to.xVector.push_back(from2.xVector[i-from2.idx()]);
-        }
-       
       if (to.idx()==-1) to.allocValue();
+#ifndef NDEBUG
+      switch (OperationType::classify(op))
+        {
+        case general: case binop: case function: case scan:
+          assert(t->numArgs()<1 || to.numElements()==t->in1.size());
+          assert(t->numArgs()<2 || to.numElements()==t->in2.size());
+          break;
+        case reduction:
+          assert(t->numArgs()==1 && to.numElements()==1);
+          break;
+        }
+#endif
       t->out=to.idx();
       t->flow1=from1.isFlowVar();
       t->flow2=from2.isFlowVar();
 
     }
+
+  template<OperationType::Type T>
+  void ReductionEvalOp<T>::eval(double fv[], const double sv[])
+  {
+    fv[this->out]=init();
+    const double* src=this->flow1? fv: sv;
+    for (auto i: this->in1)
+      accum(fv[this->out], src[i]);
+  }
+
+  template<OperationType::Type T>
+  void ScanEvalOp<T>::eval(double fv[], const double sv[])
+  {
+    // input vector assumed to be consecutive locations starting at in1[0]
+    const double* src=this->flow1? &fv[this->in1[0]]: &sv[this->in1[0]];
+    for (size_t i0=0; i0<this->in1.size(); i0+=dimSz*stride) // loop over outer dimensions
+      for (size_t i=i0; i<i0+stride; ++i) // loop over inner dimensions
+        for (size_t j=0; j<dimSz; j++) // loop over dimension being scanned
+          {
+            double s=src[i+j*stride];
+            size_t k0= j>window? j-window: 0;
+            for (size_t k=k0; k<j; k++) 
+              accum(s, src[i+k*stride]);
+            fv[this->out+i+j*stride]=s;
+          }
+  }
+
+  namespace {
+    inline vector<unsigned> unravelIndex(const vector<unsigned>& shape, size_t i) 
+    {
+      vector<unsigned> r;
+      size_t stride=1;
+      for (auto d: shape)
+        {
+          r.push_back(i%d);
+          i/=d;
+        }
+      return r;
+    }
+  }
+  
+  void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    size_t o=out;
+    for (size_t i=0; i<in1.size(); ++i)
+      if (src[in1[i]]>0.5)
+        for (auto j: unravelIndex(shape,i))
+          fv[o++]=j;
+
+    //pad with NaNs to indicate invalid data
+    for (; o<out+in1.size()*shape.size(); ++o)
+      fv[o]=nan("");
+  }
+
+  void EvalOp<minsky::OperationType::infIndex>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    double m=numeric_limits<double>::max();
+    for (size_t i=0; i<in1.size(); ++i)
+      if (src[in1[i]]<m)
+        {
+          m=src[in1[i]];
+          fv[out]=i;
+        }
+  }
+  void EvalOp<minsky::OperationType::supIndex>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    double m=-numeric_limits<double>::max();
+    for (size_t i=0; i<in1.size(); ++i)
+      if (src[in1[i]]>m)
+        {
+          m=src[in1[i]];
+          fv[out]=i;
+        }
+  }
+
+  void EvalOp<minsky::OperationType::gather>::eval(double fv[], const double sv[])
+  {
+    const double* src=this->flow1? fv: sv;
+    const double* idx=this->flow2? fv: sv;
+    // prefill with NaNs to indicate invalid data
+    for (size_t i=0; i<in1.size(); ++i)
+      fv[out+i]=nan("");
+    
+    for (auto& i: in2)
+      {
+        double idx1=0;
+        size_t stride=1;
+        assert(i.size()==shape.size());
+        for (size_t j=0; j<i.size(); ++j)
+          {
+            idx1+=idx[i[j].idx]*stride;
+            stride*=shape[j];
+          }
+        if (isfinite(idx1))
+          {
+            size_t idx2=idx1;
+            fv[out+idx2]=src[in1[idx2]];
+          }
+      }
+  }
+
 
 }

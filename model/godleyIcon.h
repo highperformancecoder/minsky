@@ -87,6 +87,7 @@ namespace minsky
     /// variable icon, null otherwise, indicating that the Godley table
     /// has been selected.
     ItemPtr select(float x, float y) const override;
+    ClickType::Type clickType(float x, float y) override;
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
@@ -96,6 +97,8 @@ namespace minsky
     std::string valueId(const std::string& x) const {
       return VariableValue::valueId(group.lock(), x);
     }
+    /// performs dimensional analysis on stock var column \a stockName
+    Units stockVarUnits(const std::string stockName) const;
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 

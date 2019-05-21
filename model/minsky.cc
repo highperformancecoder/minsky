@@ -133,6 +133,13 @@ namespace minsky
     }
     ~RKdata() {gsl_odeiv2_driver_free(driver);}
   };
+
+  struct BusyCursor
+  {
+    Minsky& minsky;
+    BusyCursor(Minsky& m): minsky(m) {minsky.setBusyCursor();}
+    ~BusyCursor() {minsky.clearBusyCursor();}
+  };
 }
 
 #include "minskyVersion.h"
@@ -182,6 +189,7 @@ namespace minsky
 //    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
 //        makeGodleyIt(godleyItems.end()), variables.values);
 
+    dimensions.clear();
     flags=reset_needed;
   }
 
@@ -193,7 +201,7 @@ namespace minsky
     copy();
     for (auto& i: canvas.selection.items)
       {
-        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+        if (auto v=i->variableCast())
           if (v->controller.lock())
             continue; // do not delete a variable controlled by another item
         model->deleteItem(*i);
@@ -208,7 +216,7 @@ namespace minsky
 #ifndef NDEBUG
     for (auto& i: canvas.selection.items)
       {
-        if (auto v=dynamic_cast<VariableBase*>(i.get()))
+        if (auto v=i->variableCast())
           if (v->controller.lock())
             continue; // variable controlled by another item is not being destroyed
         assert(i.use_count()==1);
@@ -231,6 +239,17 @@ namespace minsky
     putClipboard(os.str());
   }
 
+  VariablePtr Minsky::definingVar(const string& valueId) const 
+  {
+    return dynamic_pointer_cast<VariableBase>
+      (model->findAny(&Group::items, [&](const ItemPtr& x) {
+            auto v=x->variableCast();
+            return v && v->valueId()==valueId &&
+              ((v->ports.size()>1 && !v->ports[1]->wires().empty()) ||
+               (v->type()==VariableValue::stock && v->controller.lock())) ;
+          }));
+  }
+    
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
     schema2::Minsky m(g);
@@ -257,7 +276,6 @@ namespace minsky
   {
     //TODO: individually add or remove item from selection
   }
-
 
   void Minsky::insertGroupFromFile(const char* file)
   {
@@ -296,7 +314,7 @@ namespace minsky
     vector<GodleyIcon*> godleysToUpdate;
     model->recursiveDo(&Group::items, 
                        [&](Items&,Items::iterator i) {
-                         if (auto v=dynamic_cast<VariableBase*>(i->get()))
+                         if (auto v=(*i)->variableCast())
                            existingNames.insert(v->valueId());
                          // ensure Godley table variables are the correct types
                          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
@@ -345,30 +363,19 @@ namespace minsky
   void Minsky::constructEquations()
   {
     if (cycleCheck()) throw error("cyclic network detected");
+
     garbageCollect();
     equations.clear();
     integrals.clear();
 
+    dimensionalAnalysis();
+    
     EvalOpBase::timeUnit=timeUnit;
 
     MathDAG::SystemOfEquations system(*this);
     assert(variableValues.validEntries());
     system.populateEvalOpVector(equations, integrals);
     assert(variableValues.validEntries());
-
-    // perform dimensional analysis on the integral variables
-    for (auto& i: integrals)
-      {
-        auto& stockUnits=variableValues[i.stock.valueId()].units;
-        stockUnits=i.input.units;
-        if (!EvalOpBase::timeUnit.empty())
-          {
-            auto& tu=stockUnits[timeUnit];
-            tu++;
-            if (tu==0)
-              stockUnits.erase(timeUnit);
-          }
-      }
     
     // attach the plots
     model->recursiveDo
@@ -387,10 +394,50 @@ namespace minsky
                    p->connectVar(pp->getVariableValue(), i);
                }
            }
+         
          return false;
        });
   }
 
+  void Minsky::dimensionalAnalysis() const
+  {
+    // increment varsPassed by one to prevent resettting the cache on each check
+    IncrDecrCounter vpIdc(VariableBase::varsPassed);
+    model->recursiveDo
+      (&Group::items,
+       [&](Items& m, Items::iterator i)
+       {
+         if (auto v=(*i)->variableCast())
+           {
+             // check only the defining variables
+             if (v->isStock() && (v->inputWired() || v->controller.lock().get()))
+               v->units();
+           }
+         else if (auto p=dynamic_cast<PlotWidget*>(i->get()))
+           for (auto& i: p->ports)
+             i->units();
+         else if (auto p=dynamic_cast<Sheet*>(i->get()))
+           for (auto& i: p->ports)
+             i->units();
+         return false;
+       });
+  }
+  
+  void Minsky::populateMissingDimensions() {
+    model->recursiveDo
+      (&Group::items,[&](Items& m, Items::iterator it)
+       {
+         if (auto ri=dynamic_cast<Ravel*>(it->get()))
+           {
+             auto state=ri->getState();
+             for (auto& j: state.handleStates)
+               dimensions.emplace(j.first,Dimension());
+           }
+         return false;
+       });
+  }
+
+  
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
@@ -617,6 +664,15 @@ namespace minsky
 
   void Minsky::reset()
   {
+    // do not reset while simulation is running
+    if (RKThreadRunning)
+      {
+        flags |= reset_needed;
+        if (RKThreadRunning) return;
+      }
+    running=false;
+    canvas.itemIndicator=false;
+    BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
     constructEquations();
     // if no stock variables in system, add a dummy stock variable to
@@ -648,6 +704,9 @@ namespace minsky
              p->addConstantCurves();
              p->redraw();
            }
+         else if (auto r=dynamic_cast<Ravel*>(i->get()))
+           if (r->ports[1]->numWires()>0)
+             r->loadDataCubeFromVariable(r->ports[1]->getVariableValue());
          return false;
        });
     canvas.requestRedraw();
@@ -657,10 +716,11 @@ namespace minsky
   {
     if (reset_flag())
       reset();
-
+    running=true;
+    
     // create a private copy for worker thread use
     vector<double> stockVarsCopy(stockVars);
-    volatile bool threadFinished=false;
+    RKThreadRunning=true;
     int err=GSL_SUCCESS;
     string errorMsg;
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
@@ -697,10 +757,10 @@ namespace minsky
         {
           errorMsg="Unknown exception thrown on ODE solver thread";
         }
-      threadFinished=true;
+      RKThreadRunning=false;
     });
 
-    while (!threadFinished)
+    while (RKThreadRunning)
       {
         // while waiting for thread to finish, check and process any UI events
         usleep(1000);
@@ -849,7 +909,7 @@ namespace minsky
 
   void Minsky::load(const std::string& filename) 
   {
-  
+    BusyCursor busy(*this);
     clearAllMaps();
 
     // current schema
@@ -958,12 +1018,12 @@ namespace minsky
         {
           // first add local variables
           for (auto& i: g->items)
-            if (auto v=dynamic_cast<VariableBase*>(i.get()))
+            if (auto v=i->variableCast())
               r.insert(v->name());
           // now add variables in outer scopes, ensuring they qualified
           for (g=g->group.lock(); g;  g=g->group.lock())
             for (auto& i: g->items)
-              if (auto v=dynamic_cast<VariableBase*>(i.get()))
+              if (auto v=i->variableCast())
                 {
                   auto n=v->name();
                   if (!n.empty())
@@ -1065,13 +1125,13 @@ namespace minsky
                 case OperationType::add: case OperationType::subtract:
                 case OperationType::multiply: case OperationType::divide:
                   fvInit[eo.in1[0]] |= op->ports[1]->wires().empty();
-                  fvInit[eo.in2[0]] |= op->ports[3]->wires().empty();
+                  fvInit[eo.in2[0][0].idx] |= op->ports[3]->wires().empty();
                   break;
                 default: break;
                 }
             
             fvInit[eo.out]=
-              (!eo.flow1 ||  fvInit[eo.in1[0]]) && (!eo.flow2 ||  fvInit[eo.in2[0]]);
+              (!eo.flow1 ||  fvInit[eo.in1[0]]) && (!eo.flow2 ||  fvInit[eo.in2[0][0].idx]);
             break;
           default: break;
           }
@@ -1091,7 +1151,7 @@ namespace minsky
     if (op.visible())
       {
         canvas.item=canvas.model->findItem(op);
-        canvas.indicateItem();
+        canvas.itemIndicator=true;
         canvas.requestRedraw();
       }
     else if (auto g=op.group.lock())
@@ -1100,7 +1160,7 @@ namespace minsky
         if (g && g->visible())
           {
             canvas.item=g;
-            canvas.indicateItem();
+            canvas.itemIndicator=true;
             canvas.requestRedraw();
           }
       }
@@ -1226,7 +1286,7 @@ namespace minsky
 
   void Minsky::addIntegral()
   {
-    if (auto v=dynamic_cast<VariableBase*>(canvas.item.get()))
+    if (auto v=canvas.item->variableCast())
       if (auto g=v->group.lock())
         {
           // nb throws if conversion cannot be performed
@@ -1248,7 +1308,7 @@ namespace minsky
     model->recursiveDo
       (&Group::items,
        [&](Items&,Items::const_iterator i) {
-        if (auto v=dynamic_cast<VariableBase*>(i->get()))
+         if (auto v=(*i)->variableCast())
           if (v->valueId()==name)
             {
               r=v->ports.size()>1 && !v->ports[1]->wires().empty();

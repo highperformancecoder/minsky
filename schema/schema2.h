@@ -27,6 +27,7 @@ but any renamed attributes require bumping the schema number.
 
 #include "model/minsky.h"
 #include "model/ravelWrap.h"
+#include "model/sheet.h"
 #include "schema/schema1.h"
 #include "schemaHelper.h"
 #include "classdesc.h"
@@ -35,6 +36,7 @@ but any renamed attributes require bumping the schema number.
 #include "rungeKutta.h"
 
 #include <xsd_generate_base.h>
+#include "xml_common.xcd"
 #include <vector>
 #include <string>
 
@@ -66,11 +68,11 @@ namespace schema2
     template <class U>
     typename classdesc::enable_if<has_empty<U>,void>::T
     assign(const U& x, classdesc::dummy<0> d=0) {
-      if (!x.empty()) this->reset(new U(x));
+      if (!x.empty()) this->reset(new T(x));
     }
     template <class U>
     typename classdesc::enable_if<Not<has_empty<U>>,void>::T
-    assign(const U& x, classdesc::dummy<1> d=0) {this->reset(new U(x));}
+    assign(const U& x, classdesc::dummy<1> d=0) {this->reset(new T(x));}
 
     // if we access an optional, then create its target
     T& operator*() {if (!this->get()) this->reset(new T); return *this->get();}
@@ -78,7 +80,7 @@ namespace schema2
     T* operator->() {return &**this;}
     const T* operator->() const {return &**this;}
 
-    template <class U> Optional& operator=(const U& x) {**this=x; return *this;}
+    template <class U> Optional& operator=(const U& x) {assign(x); return *this;}
   };
 
  
@@ -122,20 +124,31 @@ namespace schema2
     Optional<float> width, height;
     Optional<std::string> name; //name, description or title
     Optional<std::string> init;
+    Optional<std::string> units;
     Optional<Slider> slider;
     Optional<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
-    Optional<minsky::RavelWrap::State> ravelState;
+    Optional<minsky::RavelState> ravelState;
+    Optional<int> lockGroup;
+    Optional<minsky::Dimensions> dimensions;
+    // Operation tensor parameters
+    Optional<std::string> axis;
+    Optional<double> arg;
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
     Optional<float> iconScale; // for handling legacy schemas
     // Plot specific fields
-    Optional<bool> logx, logy;
+    Optional<bool> logx, logy, ypercent;
+    Optional<Plot::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
-    Optional<std::vector<minsky::Bookmark>> bookmarks;
+    Optional<int> nxTicks, nyTicks;
+    Optional<double> xtickAngle, exp_threshold;
     Optional<ecolab::Plot::Side> legend;
+    // group specific fields
+    Optional<std::vector<minsky::Bookmark>> bookmarks;
+    Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
     Optional<std::vector<ecolab::Plot::LineStyle>> palette;
 
     Item() {}
@@ -147,18 +160,30 @@ namespace schema2
       name(v.rawName()), init(v.init()) {
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+      try {units=v.units().str();} catch (...) {} //we only need to save raw user supplied data anyway
+      packTensorInit(v);
     }
+    Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
+      ItemBase(id,static_cast<const minsky::Item&>(o),ports),
+      axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
       width(g.width()/g.zoomFactor()), height(g.height()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      width(p.width), height(p.height), name(p.title), logx(p.logx), logy(p.logy),
-      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label), palette(p.palette)
+      width(p.width), height(p.height), name(p.title),
+      logx(p.logx), logy(p.logy), ypercent(p.percent),
+      plotType(p.plotType),
+      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
+      nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
+      exp_threshold(p.exp_threshold), palette(p.palette)
     {
       if (p.legend) legend=p.legendSide;
     }
+    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
+      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
+      width(s.m_width), height(s.m_height) {}
     Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
     {if (s.flipped) rotation=180;}
@@ -203,6 +228,8 @@ namespace schema2
         slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
                                 layout.sliderMin,layout.sliderMax,layout.sliderStep));
     }
+
+    void packTensorInit(const minsky::VariableBase&);
   };
 
 
@@ -246,6 +273,8 @@ namespace schema2
     minsky::RungeKutta rungeKutta;
     double zoomFactor=1;
     vector<minsky::Bookmark> bookmarks;
+    minsky::Dimensions dimensions;
+    minsky::ConversionsMap conversions;
     
     /// checks that all items are uniquely identified.
     //bool validate() const;
@@ -255,6 +284,8 @@ namespace schema2
       rungeKutta=m;
       zoomFactor=m.model->zoomFactor();
       bookmarks=m.model->bookmarks;
+      dimensions=m.dimensions;
+      conversions=m.conversions;
       //assert(validate());
     }
 

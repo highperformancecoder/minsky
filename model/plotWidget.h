@@ -31,6 +31,10 @@
 
 namespace minsky
 {
+  // seconds in a year. Gregorian year chosen.
+  const double yearLength = 3600*24*365.2525;
+  inline double yearToPTime(double x) {return (x-1970)*yearLength;}
+  
   using namespace ecolab;
   // a container item for a plot widget
   class PlotWidget: public ItemT<PlotWidget>,
@@ -51,6 +55,8 @@ namespace minsky
     // draw(), which is const, so this attribute needs to be mutable.
     mutable bool justDataChanged=false;
     friend struct PlotItem;
+
+    bool xIsSecsSinceEpoch=false;
   public:
     using Item::x;
     using Item::y;
@@ -89,6 +95,7 @@ namespace minsky
     void makeDisplayPlot();
           
     void resize(const LassoBox&) override;
+    ClickType::Type clickType(float x, float y) override;
 
     /// set autoscaling
     void autoScale() {xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();}
@@ -100,9 +107,6 @@ namespace minsky
     void mouseMove(double,double);
     /// @}
 
-    ClickType::Type clickType(float x, float y) override;
-
-    
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}

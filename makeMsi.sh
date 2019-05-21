@@ -13,11 +13,25 @@ msiVersion=`echo $version|tr -d D`
 # determine release or beta depending on the number of fields in the version
 numFields=`echo $version|tr . ' '|wc -w`
 if [ $numFields -le 2 ]; then
-  upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
-  productName=Minsky
+  if [ -f gui-tk/libravel.dll ]; then
+    upgradeId=a39ca2a9-a0e7-4dec-a0db-ae954d11a929
+    productName=Ravel
+    license=ravelLicense.rtf
+  else
+    upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
+    productName=Minsky
+    license=license.rtf
+  fi
 else
-  upgradeId=cba7e03a-c692-400d-9c75-2da0307c3efc
-  productName=MinskyBeta
+  if [ -f gui-tk/libravel.dll ]; then
+    upgradeId=66649e83-9109-4566-9dbe-68cc6a0ceea0
+    productName=RavelBeta
+    license=ravelLicense.rtf
+  else
+    upgradeId=cba7e03a-c692-400d-9c75-2da0307c3efc
+    productName=MinskyBeta
+    license=license.rtf
+  fi
 fi
 
 echo $version
@@ -156,6 +170,6 @@ EOF
 
 candle minsky.wxs
 echo "light minsky.wixobj"
-light -ext WixUIExtension -dWixUILicenseRtf=license.rtf minsky.wixobj
+light -ext WixUIExtension -dWixUILicenseRtf=$license minsky.wixobj
 signtool sign -t http://timestamp.comodoca.com/rfc3161 minsky.msi
-mv minsky.msi Minsky-$version-win-dist.msi
+mv minsky.msi $productName-$version-win-dist.msi

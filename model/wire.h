@@ -33,6 +33,7 @@ namespace minsky
 {
   class Port;
   class Group;
+  class Units;
   using ecolab::error;
 
   class Wire: public NoteBase
@@ -46,6 +47,7 @@ namespace minsky
     std::weak_ptr<Port> m_from, m_to;
 
     constexpr static float handleRadius=3;
+    mutable int unitsCtr=0; ///< for detecting wiring loops in units()
   public:
 
     Wire() {}
@@ -88,6 +90,8 @@ namespace minsky
     void moveIntoGroup(Group& dest);
     /// splits wires crossing group boundaries
     void split();
+    /// units (dimensional analysis) of data flowing across wire
+    Units units() const;
   };
 
   typedef std::shared_ptr<Wire> WirePtr;

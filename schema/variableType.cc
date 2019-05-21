@@ -56,9 +56,9 @@ namespace minsky
         if (i.empty())
           throw runtime_error("empty numerator or denominator: "+x);
         const char* b=i.c_str();
-        for (const char* j=b; *j!='\0';)
+        for (const char*j=b;;)
           {
-            if (*j=='^'||isspace(*j))
+            if (*j=='^'||*j=='\0'||isspace(*j))
               {
                 string name(b,j); // stash end of unit name
                 if (name.empty())
@@ -70,14 +70,16 @@ namespace minsky
                     int v=strtol(k,const_cast<char**>(&j),10);
                     if (j==k)
                       throw runtime_error("invalid exponent: "+x);
-                    (*this)[name]+=coef*v;
+                    if (name!="1")
+                      (*this)[name]+=coef*v;
                   }
-                else
+                else if (name!="1")
                   (*this)[name]+=coef;
                 if ((*this)[name]==0)
                   erase(name);
                 while (isspace(*j)) ++j;
                 b=j; // update to next unit name
+                if (*j=='\0') break; //loop exits here
               }
             else
               ++j;

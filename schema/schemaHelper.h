@@ -75,13 +75,11 @@ namespace minsky
       g.m_flowVars=flowVars;
       g.m_stockVars=stockVars;
     }
-                         
-    
-    static void scaleGodley(minsky::GodleyIcon& g, double globalZoomFactor)
-    {g.m_iconScale*=g.zoomFactor()/globalZoomFactor;
-    }
-  };
 
+    static void initHandleState(minsky::Ravel& r, const RavelState& s)
+    {r.initState=s;}
+
+  };                   
 }
 
 #endif

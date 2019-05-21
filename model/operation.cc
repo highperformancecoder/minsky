@@ -19,6 +19,7 @@
 #include "geometry.h"
 #define OPNAMEDEF
 #include "operation.h"
+#include "ravelWrap.h"
 #include "minsky.h"
 #include "str.h"
 #include "cairoItems.h"
@@ -147,18 +148,17 @@ namespace minsky
 
     auto t=type();
     // call the iconDraw method if data description is empty
-    if (t==OperationType::data && dynamic_cast<const NamedOp&>(*this).description.empty())
+    if (t==OperationType::data && dynamic_cast<const DataOp&>(*this).description.empty())
       t=OperationType::numOps;
 
     switch (t)
       {
         // at the moment its too tricky to get all the information
         // together for rendering constants
-      case OperationType::constant:
       case OperationType::data:
         {
         
-          const NamedOp& c=dynamic_cast<const NamedOp&>(*this);
+          auto& c=dynamic_cast<const DataOp&>(*this);
           cairo_save(cairo);
           
           Pango pango(cairo);
@@ -202,7 +202,7 @@ namespace minsky
           if (mouseFocus)
             {
               drawPorts(cairo);
-              displayTooltip(cairo);
+              displayTooltip(cairo,tooltip);
             }
           if (selected) drawSelected(cairo);
           return;
@@ -345,7 +345,7 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairo);
-        displayTooltip(cairo);
+        displayTooltip(cairo,tooltip);
       }
 
     cairo_new_path(cairo);
@@ -371,7 +371,138 @@ namespace minsky
     return 0;
   }
 
+
+  vector<string> OperationBase::dimensions() const
+  {
+    set<string> names;
+    for (size_t i=1; i<ports.size(); ++i)
+      {
+        auto& vv=ports[i]->getVariableValue();
+        for (auto& i: vv.xVector)
+          names.insert(i.name);
+      }
+    return {names.begin(), names.end()};
+  }
+
+  namespace {
+    // return fractional part of x
+    inline double fracPart(double x) {
+      double dummy;
+      return modf(x,&dummy);
+    }
+
+    // extract units from inputs, checking they're all consistent
+    struct CheckConsistent: public Units
+    {
+      CheckConsistent(const Item& item)
+      {
+        bool inputFound=false;
+        for (size_t i=1; i<item.ports.size(); ++i)
+          for (auto w: item.ports[i]->wires())
+            if (inputFound)
+              {
+                auto tmp=w->units();
+                if (tmp!=*this)
+                  item.throw_error("incompatible units: "+tmp.str()+"≠"+str());
+              }
+            else
+              {
+                inputFound=true;
+                Units::operator=(w->units());
+              }
+      }
+    };
+  }
+
+  Units OperationBase::units() const
+  {
+    // default operations are dimensionless, but check that inputs are also
+    switch (classify(type()))
+      {
+      case function: case reduction: case scan: case tensor:
+        if (!ports[1]->units().empty())
+          throw_error("function input not dimensionless");
+        return {};
+      case binop:
+        switch (type())
+          {
+            // these binops need to have dimensionless units
+          case log: case and_: case or_:
+
+            if (!ports[1]->units().empty())
+              throw_error("function inputs not dimensionless");
+            return {};
+          case pow:
+            {
+              auto r=ports[1]->units();
+
+              if (!r.empty())
+                {
+                  if (!ports[2]->wires().empty())
+                    if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item))
+                      if (fracPart(v->value())==0)
+                        {
+                          for (auto& i: r) i.second*=v->value();
+                          return r;
+                        }
+                  throw_error("dimensioned pow only possible if exponent is a constant integer");
+                }
+              return {};
+            }
+            // these binops must have compatible units
+          case le: case lt: case eq:
+            {
+              CheckConsistent units(*this);
+              return {};
+            }
+          case add: case subtract: case max: case min:
+            {
+              CheckConsistent units(*this);
+              return units;
+            }
+            // multiply and divide are especially computed
+          case multiply: case divide:
+            {
+              Units units;
+              for (auto w: ports[1]->wires())
+                {
+                  auto tmp=w->units();
+                  for (auto& i: tmp)
+                    units[i.first]+=i.second;
+                }
+              int f=(type()==multiply)? 1: -1; //indices are negated for division
+              for (auto w: ports[2]->wires())
+                {
+                  auto tmp=w->units();
+                  for (auto& i: tmp)
+                    units[i.first]+=f*i.second;
+                }
+              return units;
+            }
+          default:
+            throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+          }
+      default:
+        throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+      }
+  }
+
+  Units Time::units() const {return cminsky().timeUnit;}
+  Units Derivative::units() const {
+    Units r=ports[1]->units();
+    if (!cminsky().timeUnit.empty())
+      r[cminsky().timeUnit]--;
+    return r;
+  }
+
   
+  Units IntOp::units() const {
+    Units r=ports[1]->units();
+    if (!cminsky().timeUnit.empty())
+      r[cminsky().timeUnit]++;
+    return r;
+  }
+   
   const IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 
@@ -461,8 +592,12 @@ namespace minsky
   {
     switch (type)
       {
+      case time: return new Time;
+      case copy: return new Copy;
       case integrate: return new IntOp;
+      case differentiate: return new Derivative;
       case data: return new DataOp;
+      case ravel: return new Ravel;
       case constant: throw error("Constant deprecated");
       default: return operationFactory.create(type);
       }
@@ -534,6 +669,7 @@ namespace minsky
     // a delimiter
     description = "\\verb/"+
       ((p!=string::npos)? fileName.substr(p+1): fileName) + "/";
+    //initXVector();
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
@@ -543,8 +679,16 @@ namespace minsky
     double dx=(xmax-xmin)/numSamples;
     for (double x=xmin; x<xmax; x+=dx)
       data[x]=double(rand())/RAND_MAX;
+    //initXVector();
   }
 
+//  void DataOp::initXVector()
+//  {
+//    xVector.clear();
+//    xVector.emplace_back("x");
+//    for (auto& i: data)
+//      xVector[0].emplace_back(i.first,to_string(i.first));
+//  }
   
   double DataOp::interpolate(double x) const
   {
@@ -587,25 +731,24 @@ namespace minsky
       return (v->second-v1->second)/(v->first-v1->first);
   }
 
-  void DataOp::initOutputVariableValue(VariableValue& v) const
-  {
-    v.dims({std::max(1U,unsigned(data.size()))});
-    if (xVector.size())
-      v.xVector=xVector;
-    auto iy=v.begin();
-    for (auto& j: data)
-      {
-        if (xVector.empty())
-          v.xVector.emplace_back(j.first,to_string(j.first));
-        *iy++=j.second;
-      }
-  }
+//  void DataOp::initOutputVariableValue(VariableValue& v) const
+//  {
+//    v.xVector=xVector;
+//    auto iy=v.begin();
+//    for (auto& j: xVector[0])
+//      *iy++=interpolate(j.first);
+//  }
 
   // virtual draw methods for operations - defined here rather than
   // operations.cc because it is more related to the functionality in
   // this file.
 
   template <> void Operation<OperationType::constant>::iconDraw(cairo_t* cairo) const
+  {
+    assert(false); //shouldn't be here
+  }
+
+  template <> void Operation<OperationType::ravel>::iconDraw(cairo_t* cairo) const
   {
     assert(false); //shouldn't be here
   }
@@ -913,6 +1056,132 @@ namespace minsky
     d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
     d.drawPort(&DrawBinOp::drawDivide, l, h, rotation);
   }
+
+  template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor());
+    pango.setMarkup("∑");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor());
+    pango.setMarkup("∏");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::infimum>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"inf");
+  }
+
+ template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"sup");
+  }
+  
+  template <> void Operation<OperationType::infIndex>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"infi");
+  }
+
+ template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"supi");
+  }
+
+  template <> void Operation<OperationType::any>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"any");
+  }
+
+  template <> void Operation<OperationType::all>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"all");
+  }
+
+ template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor());
+    pango.setMarkup("∑+");
+    pango.show();
+  }
+
+ template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-6,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor());
+    pango.setMarkup("∏×");
+    pango.show();
+  }
+
+ template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*zoomFactor());
+    pango.setMarkup("Δ");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(14*zoomFactor());
+    pango.setMarkup("·");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(10*zoomFactor());
+    pango.setMarkup("⊗");
+    pango.show();
+  }
+
+  template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,10);
+    cairo_move_to(cairo,-9,3);
+    cairo_show_text(cairo,"idx");
+  }
+
+  template <> void Operation<OperationType::gather>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_set_font_size(cairo,8);
+    cairo_move_to(cairo,-7,3);
+    cairo_show_text(cairo,"x[i]");
+    cairo_set_font_size(cairo,5);
+    cairo_move_to(cairo, l+1, -h+6);
+    cairo_show_text(cairo,"x");
+    cairo_move_to(cairo, l+1, h-3);
+    cairo_show_text(cairo,"i");
+  }
+
+ 
 
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}

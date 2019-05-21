@@ -27,23 +27,33 @@ namespace minsky
   struct OperationType
   {
     enum Type {constant, // deprecated - left to support legacy schemas
-               add, subtract, multiply, divide, // dual input port ops
-               log, pow,
-               lt, le, eq, min, max, 
-               // underscores to avoid C++ keywords. Can be filtered at UI
-               and_, or_, not_,
                time, // zero input port ops
                integrate, 
                differentiate, // with respect to time
                data, // an interpolated data item
+               ravel, // Ravel™
+               // binary ops
+               add, subtract, multiply, divide, 
+               log, pow,
+               lt, le, eq, min, max, 
+               // underscores to avoid C++ keywords. Can be filtered at UI
+               and_, or_,
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
-               floor, frac,
+               floor, frac, not_,
+               // reductions
+               sum, product, infimum, supremum, any, all, infIndex, supIndex,
+               // scans
+               runningSum, runningProduct, difference,
+               // other tensor ops
+               innerProduct, outerProduct, index, gather,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type
     static std::string typeName(int type);
+    enum Group {general, binop, function, reduction, scan, tensor};
+    static Group classify(Type t);
   };
 
   namespace OperationTypeInfo
