@@ -787,7 +787,6 @@ namespace minsky
       case GSL_EBADFUNC: 
         gsl_odeiv2_driver_reset(ode->driver);
         throw error("Invalid arithmetic operation detected");
-        break;
       default:
         throw error("gsl error: %s",gsl_strerror(err));
       }
