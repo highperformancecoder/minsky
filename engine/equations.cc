@@ -122,8 +122,8 @@ namespace MathDAG
           }
         if (rhs)
           rhs->addEvalOps(ev, result);
-        else
-          throw error("integral not defined");
+        else 
+          throw runtime_error("integral not defined for "+name);
       }
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
