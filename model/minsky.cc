@@ -65,8 +65,7 @@ namespace
       }
     catch (std::exception& e)
       {
-        Tcl_AppendResult(interp(),e.what(),NULL);
-        Tcl_AppendResult(interp(),"\n",NULL);
+        ((Minsky*)params)->threadErrMsg=e.what();
         return GSL_EBADFUNC;
       }
     return GSL_SUCCESS;
@@ -82,8 +81,7 @@ namespace
      }
     catch (std::exception& e)
      {
-       Tcl_AppendResult(interp(),e.what(),NULL);
-       Tcl_AppendResult(interp(),"\n",NULL);
+       ((Minsky*)params)->threadErrMsg=e.what();
        return GSL_EBADFUNC;
      }   
     return GSL_SUCCESS;
@@ -722,7 +720,6 @@ namespace minsky
     vector<double> stockVarsCopy(stockVars);
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
-    string errorMsg;
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
     boost::thread rkThread([&]() {
       try
@@ -751,11 +748,11 @@ namespace minsky
       catch (const std::exception& ex)
         {
           // catch any thrown exception, and report back to GUI thread
-          errorMsg=ex.what();
+          threadErrMsg=ex.what();
         }
       catch (...)
         {
-          errorMsg="Unknown exception thrown on ODE solver thread";
+          threadErrMsg="Unknown exception thrown on ODE solver thread";
         }
       RKThreadRunning=false;
     });
@@ -768,9 +765,13 @@ namespace minsky
       }
     rkThread.join();
 
-    if (!errorMsg.empty())
-      // rethrow exception so message gets displayed to user
-      throw runtime_error(errorMsg);
+    if (!threadErrMsg.empty())
+      {
+        runtime_error err(threadErrMsg);
+        threadErrMsg.clear();
+        // rethrow exception so message gets displayed to user
+        throw err;
+      }
     
     if (reset_flag()) // in case reset() was called during the step evaluation
       {
@@ -1152,7 +1153,6 @@ namespace minsky
       {
         canvas.item=canvas.model->findItem(op);
         canvas.itemIndicator=true;
-        canvas.requestRedraw();
       }
     else if (auto g=op.group.lock())
       {
@@ -1161,9 +1161,10 @@ namespace minsky
           {
             canvas.item=g;
             canvas.itemIndicator=true;
-            canvas.requestRedraw();
           }
       }
+    //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
+    if (!RKThreadRunning) canvas.requestRedraw();
   }
   
   bool Minsky::pushHistory()

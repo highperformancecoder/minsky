@@ -1,5 +1,6 @@
 source "assert.tcl"
 minsky.load $argv(2)
+minsky.doPushHistory 0
 set numItems [minsky.model.items.size]
 for {set i 0} {$i<$numItems} {incr i} {
     minsky.model.items.@elem $i

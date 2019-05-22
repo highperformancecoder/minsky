@@ -65,7 +65,7 @@ namespace minsky
         if (!isfinite(fv[out+i]))
           {
             if (state)
-              minsky().displayErrorItem(*state);
+              cminsky().displayErrorItem(*state);
             string msg="Invalid: "+OperationBase::typeName(type())+"(";
             if (numArgs()>0)
               msg+=std::to_string(flow1? fv[in1[i]]: sv[in1[i]]);

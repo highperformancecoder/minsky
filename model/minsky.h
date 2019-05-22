@@ -107,6 +107,8 @@ namespace minsky
     MinskyExclude(const MinskyExclude&): historyPtr(0) {}
     MinskyExclude& operator=(const MinskyExclude&) {return *this;}
     
+    /// used to report a thrown exception on the simulation thread
+    std::string threadErrMsg;
   protected:
     /// save history of model for undo
     /* 
