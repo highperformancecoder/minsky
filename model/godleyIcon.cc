@@ -338,7 +338,7 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  Units GodleyIcon::stockVarUnits(const string stockName) const
+  Units GodleyIcon::stockVarUnits(const string stockName, bool check) const
   {
     unsigned stockCol=1;
     auto vid=valueId(stockName);
@@ -361,8 +361,8 @@ namespace minsky
             for (auto& v: flowVars())
               if (v->valueId()==vid)
                 {
-                  auto flowUnits=v->units();
-                  if (foundFlow && units!=flowUnits)
+                  auto flowUnits=v->units(check);
+                  if (check && foundFlow && units!=flowUnits)
                     throw_error("incompatible units: "+flowUnits.str()+"≠"+units.str()+" on stock "+stockName);
                   foundFlow=true;
                   units=flowUnits;

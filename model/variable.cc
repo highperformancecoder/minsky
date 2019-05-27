@@ -234,7 +234,7 @@ Units VariableBase::units(bool check) const
               if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
                 units=i->units(check);
               else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-                units=g->stockVarUnits(name());
+                units=g->stockVarUnits(name(),check);
               if (check && units.str()!=vv.units.str())
                 if (auto i=controller.lock())
                   i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());

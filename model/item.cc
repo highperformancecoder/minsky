@@ -236,10 +236,7 @@ namespace minsky
 
   void Item::displayTooltip(cairo_t* cairo, const std::string& tooltip) const
   {
-    string unitstr;
-    try
-      {unitstr=units().str();}
-    catch (...) {} // best effort
+    string unitstr=units().str();
     if (!tooltip.empty() || !unitstr.empty())
       {
         cairo::CairoSave cs(cairo);

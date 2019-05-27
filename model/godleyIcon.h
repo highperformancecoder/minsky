@@ -98,7 +98,8 @@ namespace minsky
       return VariableValue::valueId(group.lock(), x);
     }
     /// performs dimensional analysis on stock var column \a stockName
-    Units stockVarUnits(const std::string stockName) const;
+    /// @param check indicates whether a consistency check is applied
+    Units stockVarUnits(const std::string stockName, bool check) const;
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 
