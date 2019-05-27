@@ -80,7 +80,9 @@ namespace minsky
     const VariableValue& getVariableValue() const;
     /// value associated with this port
     double value() const;
-    Units units() const;
+    Units units(bool) const;
+    /// dimensional analysis with consistency check
+    Units checkUnits() const {return units(true);}
   };
 }
 

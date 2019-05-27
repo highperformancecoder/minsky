@@ -96,10 +96,10 @@ namespace minsky
   }
 
   
-  Units Port::units() const
+  Units Port::units(bool check) const
   {
     if (!wires().empty())
-      return wires()[0]->units();
+      return wires()[0]->units(check);
     else
       return {};
   }

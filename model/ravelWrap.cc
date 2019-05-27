@@ -839,9 +839,9 @@ namespace minsky
     v.exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
   }
 
-  Units Ravel::units() const
+  Units Ravel::units(bool check) const
   {
-    Units inputUnits=ports[1]->units();
+    Units inputUnits=ports[1]->units(check);
     if (inputUnits.empty() || !ravel) return inputUnits;
     size_t multiplier=1;
     // at this stage, gross up exponents by the handle size of each

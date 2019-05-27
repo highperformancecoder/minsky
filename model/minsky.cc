@@ -409,14 +409,14 @@ namespace minsky
            {
              // check only the defining variables
              if (v->isStock() && (v->inputWired() || v->controller.lock().get()))
-               v->units();
+               v->checkUnits();
            }
          else if (auto p=dynamic_cast<PlotWidget*>(i->get()))
            for (auto& i: p->ports)
-             i->units();
+             i->checkUnits();
          else if (auto p=dynamic_cast<Sheet*>(i->get()))
            for (auto& i: p->ports)
-             i->units();
+             i->checkUnits();
          return false;
        });
   }

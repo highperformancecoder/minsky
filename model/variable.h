@@ -153,7 +153,7 @@ namespace minsky
         }};
 
     /// sets/gets the units associated with this type
-    Units units() const override;
+    Units units(bool check=true) const override;
     void setUnits(const std::string&);
     std::string unitsStr() const {return units().str();}
     

@@ -91,7 +91,7 @@ namespace minsky
     /// splits wires crossing group boundaries
     void split();
     /// units (dimensional analysis) of data flowing across wire
-    Units units() const;
+    Units units(bool) const;
   };
 
   typedef std::shared_ptr<Wire> WirePtr;

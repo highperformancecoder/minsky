@@ -201,13 +201,16 @@ double VariableBase::_value(double x)
 int VariableBase::stockVarsPassed=0;
 int VariableBase::varsPassed=0;
 
-Units VariableBase::units() const
+Units VariableBase::units(bool check) const
 {
   if (varsPassed==0) minsky().variableValues.resetUnitsCache(); 
   // we allow possible traversing twice, to allow
   // stock variable to break the cycle
   if (unitsCtr-stockVarsPassed>=1)
-    throw_error("Cycle detected on wiring network");
+    if (check)
+      throw_error("Cycle detected on wiring network");
+    else
+      return {};
 
   auto it=minsky().variableValues.find(valueId());
   if (it!=minsky().variableValues.end())
@@ -229,10 +232,10 @@ Units VariableBase::units() const
               // check that input units match output units
               Units units;
               if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
-                units=i->units();
+                units=i->units(check);
               else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
                 units=g->stockVarUnits(name());
-              if (units.str()!=vv.units.str())
+              if (check && units.str()!=vv.units.str())
                 if (auto i=controller.lock())
                   i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());
                 else

@@ -52,7 +52,7 @@ namespace minsky
       return unsigned(x);
   }
 
-  Units SwitchIcon::units() const 
+  Units SwitchIcon::units(bool check) const 
   {
     bool inputFound=false;
     Units r;
@@ -60,14 +60,14 @@ namespace minsky
       for (auto w: ports[i]->wires())
         if (inputFound)
           {
-            auto tmp=w->units();
+            auto tmp=w->units(check);
             if (tmp!=r)
               throw_error("incompatible units: "+tmp.str()+"≠"+r.str());
           }
         else
           {
             inputFound=true;
-            r=w->units();
+            r=w->units(check);
           }
     return r;
   }

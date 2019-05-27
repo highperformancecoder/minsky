@@ -401,26 +401,26 @@ namespace minsky
           for (auto w: item.ports[i]->wires())
             if (inputFound)
               {
-                auto tmp=w->units();
+                auto tmp=w->units(true);
                 if (tmp!=*this)
                   item.throw_error("incompatible units: "+tmp.str()+"≠"+str());
               }
             else
               {
                 inputFound=true;
-                Units::operator=(w->units());
+                Units::operator=(w->units(true));
               }
       }
     };
   }
 
-  Units OperationBase::units() const
+  Units OperationBase::units(bool check) const
   {
     // default operations are dimensionless, but check that inputs are also
     switch (classify(type()))
       {
       case function: case reduction: case scan: case tensor:
-        if (!ports[1]->units().empty())
+        if (check && !ports[1]->units(check).empty())
           throw_error("function input not dimensionless");
         return {};
       case binop:
@@ -429,37 +429,42 @@ namespace minsky
             // these binops need to have dimensionless units
           case log: case and_: case or_:
 
-            if (!ports[1]->units().empty())
+            if (check && !ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
             return {};
           case pow:
             {
-              auto r=ports[1]->units();
+              auto r=ports[1]->units(check);
 
               if (!r.empty())
                 {
                   if (!ports[2]->wires().empty())
                     if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item))
                       if (fracPart(v->value())==0)
-                        {
-                          for (auto& i: r) i.second*=v->value();
-                          r.normalise();
-                          return r;
-                        }
-                  throw_error("dimensioned pow only possible if exponent is a constant integer");
+                        for (auto& i: r) i.second*=v->value();
+                  if (check)
+                    throw_error("dimensioned pow only possible if exponent is a constant integer");
+                  r.normalise();
                 }
-              return {};
+              return r;
             }
             // these binops must have compatible units
           case le: case lt: case eq:
             {
-              CheckConsistent units(*this);
+              if (check)
+                CheckConsistent(*this);
               return {};
             }
           case add: case subtract: case max: case min:
             {
-              CheckConsistent units(*this);
-              return units;
+              if (check)
+                return CheckConsistent(*this);
+              else if (!ports[1]->wires().empty())
+                return ports[1]->wires()[0]->units(check);
+              else if (!ports[2]->wires().empty())
+                return ports[2]->wires()[0]->units(check);
+              else
+                return {};
             }
             // multiply and divide are especially computed
           case multiply: case divide:
@@ -467,14 +472,14 @@ namespace minsky
               Units units;
               for (auto w: ports[1]->wires())
                 {
-                  auto tmp=w->units();
+                  auto tmp=w->units(check);
                   for (auto& i: tmp)
                     units[i.first]+=i.second;
                 }
               int f=(type()==multiply)? 1: -1; //indices are negated for division
               for (auto w: ports[2]->wires())
                 {
-                  auto tmp=w->units();
+                  auto tmp=w->units(check);
                   for (auto& i: tmp)
                     units[i.first]+=f*i.second;
                 }
@@ -482,16 +487,20 @@ namespace minsky
               return units;
             }
           default:
-            throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+            if (check)
+              throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+            return {};
           }
       default:
-        throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+        if (check)
+          throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");
+        return {};
       }
   }
 
-  Units Time::units() const {return cminsky().timeUnit;}
-  Units Derivative::units() const {
-    Units r=ports[1]->units();
+  Units Time::units(bool) const {return cminsky().timeUnit;}
+  Units Derivative::units(bool check) const {
+    Units r=ports[1]->units(check);
     if (!cminsky().timeUnit.empty())
       r[cminsky().timeUnit]--;
     r.normalise();
@@ -499,8 +508,8 @@ namespace minsky
   }
 
   
-  Units IntOp::units() const {
-    Units r=ports[1]->units();
+  Units IntOp::units(bool check) const {
+    Units r=ports[1]->units(check);
     if (!cminsky().timeUnit.empty())
       r[cminsky().timeUnit]++;
     r.normalise();

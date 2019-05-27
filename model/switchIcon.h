@@ -45,7 +45,7 @@ namespace minsky
     
     bool flipped=false;
 
-    Units units() const override;
+    Units units(bool) const override;
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;

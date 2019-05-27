@@ -233,7 +233,7 @@ namespace minsky
           }
   }
 
-  Units Wire::units() const
+  Units Wire::units(bool check) const
   {
       
     if (auto f=from())
@@ -243,7 +243,7 @@ namespace minsky
         if (unitsCtr>2)
           f->item.throw_error("wiring loop detected");
         IncrDecrCounter idc(unitsCtr);
-        return f->item.units();
+        return f->item.units(check);
       }
     else return {};
   }

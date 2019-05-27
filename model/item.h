@@ -172,8 +172,15 @@ namespace minsky
     virtual void displayDelayedTooltip(float x, float y) {}
     virtual void disableDelayedTooltip() {}
     /// compute the dimensional units
+    /// @param check - if true, then perform consistency checks
+    /// @throw if check=true and dimensions inconsistent
     // all items feeding into other items must implement this
-    virtual Units units() const {throw_error("units not implemented");}
+    virtual Units units(bool check=false) const {
+      if (check) throw_error("units not implemented");
+      return {};
+    }
+    /// perform units consistency checks
+    Units checkUnits() const {return units(true);}
   };
 
   typedef std::shared_ptr<Item> ItemPtr;

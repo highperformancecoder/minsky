@@ -91,7 +91,7 @@ namespace minsky
     /// return dimension names of tensor object attached to input
     /// if binary op, then the union of dimension names is returned
     std::vector<string> dimensions() const;
-    Units units() const override;
+    Units units(bool check=true) const override;
 
   protected:
 
@@ -133,19 +133,19 @@ namespace minsky
   class Time: public Operation<OperationType::time>
   {
   public:
-    Units units() const override;
+    Units units(bool) const override;
   };
   
   class Derivative: public Operation<OperationType::differentiate>
   {
   public:
-    Units units() const override;
+    Units units(bool) const override;
   };
 
   class Copy: public Operation<OperationType::copy>
   {
   public:
-    Units units() const override {return ports[1]->units();}
+    Units units(bool check) const override {return ports[1]->units(check);}
   };
 
   
@@ -192,7 +192,7 @@ namespace minsky
       assert(intVar);
       return ports.size()>0 && intVar->ports.size()>0 && ports[0]==intVar->ports[0];
     }
-    Units units() const override;
+    Units units(bool) const override;
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
@@ -213,7 +213,7 @@ namespace minsky
     /// derivative is defined as the weighted average of the left & right
     /// derivatives, weighted by the respective intervals
     double deriv(double) const;
-    Units units() const override {return ports[1]->units();}
+    Units units(bool check) const override {return ports[1]->units(check);}
 
     /// called to initialise a variable value when no input wire is connected
     //    void initOutputVariableValue(VariableValue&) const;
