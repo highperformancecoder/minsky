@@ -213,29 +213,40 @@ Units VariableBase::units() const
   if (it!=minsky().variableValues.end())
     {
       auto& vv=it->second;
-      if (isStock() && unitsCtr)
-        return vv.units; // stock var cycles back on itself, normalise to dimensionless
       if (vv.unitsCached) return vv.units;
+
       
       IncrDecrCounter ucIdc(unitsCtr);
       IncrDecrCounter vpIdc(varsPassed);
       // use a unique ptr here to only increment counter inside a stockVar
       unique_ptr<IncrDecrCounter> svp;
-      if (isStock()) svp.reset(new IncrDecrCounter(stockVarsPassed));
 
-      // updates units in the process
-      if (ports.size()>1 && !ports[1]->wires().empty())
-        vv.units=ports[1]->wires()[0]->from()->item.units();
-      else if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
-        vv.units=i->units();
-      else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+      if (isStock()) // we use user defined units
         {
-          if (isStock())
-            vv.units=g->stockVarUnits(name());
+          if (unitsCtr==1)
+            {
+              svp.reset(new IncrDecrCounter(stockVarsPassed));
+              // check that input units match output units
+              Units units;
+              if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
+                units=i->units();
+              else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+                units=g->stockVarUnits(name());
+              if (units.str()!=vv.units.str())
+                if (auto i=controller.lock())
+                  i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());
+                else
+                  throw runtime_error("inconsistent units "+units.str()+"≠"+vv.units.str());
+            }
         }
-      else if (auto v=cminsky().definingVar(valueId()))
-        vv.units=v->units();
-      
+      else
+        // updates units in the process
+        if (ports.size()>1 && !ports[1]->wires().empty())
+          vv.units=ports[1]->wires()[0]->from()->item.units();
+        else if (auto v=cminsky().definingVar(valueId()))
+          vv.units=v->units();
+
+      vv.units.normalise();
       vv.unitsCached=true;
       return vv.units;
     }

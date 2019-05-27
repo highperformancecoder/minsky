@@ -1134,7 +1134,7 @@ proc editVar {} {
     set "editVarInput(Type)" [$item.type]
 
     set "editVarInput(Initial Value)" [$item.init]
-    set "editVarInput(Units)" [$item.unitsStr]
+    set "editVarInput(Units)" [value.units.str]
     set "editVarInput(Rotation)" [$item.rotation]
     set "editVarInput(Slider Bounds: Max)" [$item.sliderMax]
     set "editVarInput(Slider Bounds: Min)" [$item.sliderMin]

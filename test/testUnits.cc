@@ -255,7 +255,7 @@ SUITE(Units)
   }
 
   
-  TEST_FIXTURE(TestMinsky,constructEquations)
+  TEST_FIXTURE(TestMinsky,dimensionalAnalysis)
   {
     timeUnit="s";
     auto t=model->addItem(OperationBase::create(OperationType::time));
@@ -279,7 +279,9 @@ SUITE(Units)
     model->addWire(*mult,*diff,1);
     model->addWire(*diff,*vd,1);
 
-    constructEquations();
+    CHECK_THROW(dimensionalAnalysis(),std::exception);
+    integ->intVar->setUnits("m s^2");
+    dimensionalAnalysis();
     CHECK_EQUAL(1,tm->units()["m"]);
     CHECK_EQUAL(1,tm->units()["s"]);
     CHECK_EQUAL(1,integ->intVar->units()["m"]);

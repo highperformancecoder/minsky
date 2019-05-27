@@ -160,7 +160,8 @@ namespace schema2
       name(v.rawName()), init(v.init()) {
       if (v.sliderBoundsSet)
         slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
-      try {units=v.units().str();} catch (...) {} //we only need to save raw user supplied data anyway
+      if (auto vv=v.vValue())
+        units=vv->units.str();
       packTensorInit(v);
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):

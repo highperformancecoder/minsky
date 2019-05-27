@@ -443,6 +443,7 @@ namespace minsky
                       if (fracPart(v->value())==0)
                         {
                           for (auto& i: r) i.second*=v->value();
+                          r.normalise();
                           return r;
                         }
                   throw_error("dimensioned pow only possible if exponent is a constant integer");
@@ -477,6 +478,7 @@ namespace minsky
                   for (auto& i: tmp)
                     units[i.first]+=f*i.second;
                 }
+              units.normalise();
               return units;
             }
           default:
@@ -492,6 +494,7 @@ namespace minsky
     Units r=ports[1]->units();
     if (!cminsky().timeUnit.empty())
       r[cminsky().timeUnit]--;
+    r.normalise();
     return r;
   }
 
@@ -500,6 +503,7 @@ namespace minsky
     Units r=ports[1]->units();
     if (!cminsky().timeUnit.empty())
       r[cminsky().timeUnit]++;
+    r.normalise();
     return r;
   }
    

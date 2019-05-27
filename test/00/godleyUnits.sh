@@ -47,6 +47,8 @@ assert {[catch {minsky.canvas.item.unitsStr}]}
 minsky.findVariable c
 minsky.canvas.item.setUnits b
 minsky.findVariable a
+assert {[catch {minsky.canvas.item.unitsStr}]}
+minsky.canvas.item.setUnits "b s"
 assert {[minsky.canvas.item.unitsStr]=="b s"}
 tcl_exit
 EOF

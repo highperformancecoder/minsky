@@ -44,6 +44,14 @@ namespace minsky
     Units() {}
     Units(const std::string&);
     std::string str() const;
+    // remove entries that are unitary
+    void normalise() {
+      for (auto i=begin(); i!=end(); ) {
+        auto j=i; ++i;
+        if (j->second==0 || j->first.empty()) erase(j);
+      }
+    }
+  
   };
 
   inline std::ostream& operator<<(std::ostream& o, const Units& u)
