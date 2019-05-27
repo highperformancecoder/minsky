@@ -44,6 +44,8 @@ namespace minsky
     Units() {}
     Units(const std::string&);
     std::string str() const;
+    /// insert braces around exponents for LaTeX processing
+    std::string latexStr() const;
     // remove entries that are unitary
     void normalise() {
       for (auto i=begin(); i!=end(); ) {

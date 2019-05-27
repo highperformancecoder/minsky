@@ -37,6 +37,20 @@ namespace minsky
     return s.str();
   }
 
+  string Units::latexStr() const
+  {
+    string s;
+    for (auto& i: *this)
+      if (!i.first.empty() && i.second!=0)
+        {
+          s+=i.first;
+          if (i.second!=1)
+            s+="^{"+to_string(i.second)+"}";
+        }
+    return s;
+  }
+        
+  
   Units::Units(const string& x)
   {
     if (x.empty()) return;

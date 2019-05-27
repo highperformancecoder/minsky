@@ -236,12 +236,12 @@ namespace minsky
 
   void Item::displayTooltip(cairo_t* cairo, const std::string& tooltip) const
   {
-    string unitstr=units().str();
+    string unitstr=units().latexStr();
     if (!tooltip.empty() || !unitstr.empty())
       {
         cairo::CairoSave cs(cairo);
         Pango pango(cairo);
-        pango.setMarkup(latexToPango(tooltip)+" Units:"+unitstr);
+        pango.setMarkup(latexToPango(tooltip)+" Units:"+latexToPango(unitstr));
         float z=zoomFactor();
         cairo_translate(cairo,z*(0.5*bb.width())+10,
                         z*(-0.5*bb.height())-20);
