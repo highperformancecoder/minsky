@@ -648,6 +648,9 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Title" -command {
                 textEntryPopup .editGodleyTitle [minsky.canvas.item.table.title] {minsky.canvas.item.table.title [.editGodleyTitle.entry get]; canvas.requestRedraw}
             }
+            .wiring.context add command -label "Set currency" -command {
+                textEntryPopup .godleyCurrency {} {minsky.canvas.item.setCurrency [.godleyCurrency.entry get]}
+            }
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Export to file" -command "godley::export"
@@ -691,6 +694,8 @@ proc contextMenu {x y X Y} {
     .wiring.context add command -label "Delete [minsky.canvas.item.classType]" -command "canvas.deleteItem"
     tk_popup .wiring.context $X $Y
 }
+
+
 
 menu .wiring.context.axisMenu
 .wiring.context.axisMenu add command -label "Description" -command {

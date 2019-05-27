@@ -338,7 +338,7 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  Units GodleyIcon::stockVarUnits(const string stockName, bool check) const
+  Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
     auto vid=valueId(stockName);

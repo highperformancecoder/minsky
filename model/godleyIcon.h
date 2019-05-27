@@ -99,7 +99,11 @@ namespace minsky
     }
     /// performs dimensional analysis on stock var column \a stockName
     /// @param check indicates whether a consistency check is applied
-    Units stockVarUnits(const std::string stockName, bool check) const;
+    Units stockVarUnits(const std::string& stockName, bool check) const;
+
+    void setCurrency(const std::string& currency) 
+    {for (auto& i: m_stockVars) i->setUnits(currency);}
+      
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 
