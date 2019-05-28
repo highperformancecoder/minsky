@@ -399,6 +399,7 @@ namespace minsky
 
   void Minsky::dimensionalAnalysis() const
   {
+    const_cast<Minsky*>(this)->variableValues.resetUnitsCache();
     // increment varsPassed by one to prevent resettting the cache on each check
     IncrDecrCounter vpIdc(VariableBase::varsPassed);
     model->recursiveDo

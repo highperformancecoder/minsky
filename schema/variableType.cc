@@ -46,6 +46,8 @@ namespace minsky
           s+=i.first;
           if (i.second!=1)
             s+="^{"+to_string(i.second)+"}";
+          else
+            s+=" ";
         }
     return s;
   }
