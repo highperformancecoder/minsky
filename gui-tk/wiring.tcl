@@ -1040,6 +1040,7 @@ proc deiconifyEditConstant {} {
         foreach var {
             "Name"
             "Value"
+            "Units"
             "Rotation"
             "Slider Bounds: Max"
             "Slider Bounds: Min"
@@ -1174,6 +1175,7 @@ proc setIntegralIValue {} {
     # description may have change intVar, so use value instead to set init
     getValue [$item.valueId]
     value.init $constInput(Value)
+    value.setUnits $constInput(Units)
     $item.rotation $constInput(Rotation)
 }
 
@@ -1192,6 +1194,7 @@ proc configEditConstantForIntegral {} {
     foreach var {
         "Name"
         "Value"
+        "Units"
         "Rotation"
     } {
         set row $rowdict($var)
@@ -1241,6 +1244,7 @@ proc editItem {} {
             set constInput(ValueLabel) "Initial Value"
             if {[$item.classType]=="IntOp"} {
                 set constInput(Value) [$item.intVar.init]
+                set constInput(Units) [$item.intVar.unitsStr]
                 set setValue setIntegralIValue
                 configEditConstantForIntegral
             } else {

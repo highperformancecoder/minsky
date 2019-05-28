@@ -462,12 +462,11 @@ namespace minsky
             {
               if (check)
                 return CheckConsistent(*this);
-              else if (!ports[1]->wires().empty())
+              if (!ports[1]->wires().empty())
                 return ports[1]->wires()[0]->units(check);
-              else if (!ports[2]->wires().empty())
+              if (!ports[2]->wires().empty())
                 return ports[2]->wires()[0]->units(check);
-              else
-                return {};
+              return {};
             }
             // multiply and divide are especially computed
           case multiply: case divide:

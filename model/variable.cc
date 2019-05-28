@@ -241,17 +241,15 @@ Units VariableBase::units(bool check) const
                 {
                   if (auto i=controller.lock())
                     i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());
-                  else
-                    throw runtime_error("inconsistent units "+units.str()+"≠"+vv.units.str());
                 }
             }
         }
       else
         // updates units in the process
         if (ports.size()>1 && !ports[1]->wires().empty())
-          vv.units=ports[1]->wires()[0]->from()->item.units();
+          vv.units=ports[1]->wires()[0]->from()->item.units(check);
         else if (auto v=cminsky().definingVar(valueId()))
-          vv.units=v->units();
+          vv.units=v->units(check);
 
       vv.units.normalise();
       vv.unitsCached=true;
