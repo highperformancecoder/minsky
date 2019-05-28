@@ -42,14 +42,15 @@ minsky.canvas.item.setUnits b
 minsky.findVariable c
 minsky.canvas.item.setUnits c
 # should throw incompatible units
-minsky.findVariable a
-assert {[catch {minsky.canvas.item.unitsStr}]}
+assert {[catch minsky.dimensionalAnalysis]}
 minsky.findVariable c
 minsky.canvas.item.setUnits b
+assert {[catch minsky.dimensionalAnalysis]}
 minsky.findVariable a
-assert {[catch {minsky.canvas.item.unitsStr}]}
 minsky.canvas.item.setUnits "b s"
 assert {[minsky.canvas.item.unitsStr]=="b s"}
+minsky.dimensionalAnalysis
+
 tcl_exit
 EOF
 
