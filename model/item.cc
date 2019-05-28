@@ -241,7 +241,10 @@ namespace minsky
       {
         cairo::CairoSave cs(cairo);
         Pango pango(cairo);
-        pango.setMarkup(latexToPango(tooltip)+" Units:"+latexToPango(unitstr));
+        string toolTipText=latexToPango(tooltip);
+        if (!unitstr.empty())
+          toolTipText+=" Units:"+latexToPango(unitstr);
+        pango.setMarkup(toolTipText);
         float z=zoomFactor();
         cairo_translate(cairo,z*(0.5*bb.width())+10,
                         z*(-0.5*bb.height())-20);
