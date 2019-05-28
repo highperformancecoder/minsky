@@ -115,13 +115,13 @@ SUITE(Units)
     init(op);
     // most single arg functions are dimensionless, and args must match for two args
     if (OperationTypeInfo::numArguments<op>()>0)
-      CHECK_THROW(opp->units(), std::exception);
+      CHECK_THROW(opp->checkUnits(), std::exception);
 
     from2->setUnits(from1->unitsStr());
     if (OperationTypeInfo::numArguments<op>()==1)
-      CHECK_THROW(opp->units(), std::exception);
+      CHECK_THROW(opp->checkUnits(), std::exception);
     else
-      CHECK(opp->units()==from1->units());
+      CHECK(opp->checkUnits()==from1->units());
   }
 
   // TODO - not sure what to do here
@@ -134,9 +134,9 @@ SUITE(Units)
   template <OperationType::Type op> void TestOp::testCmp()
   {
     init(op);
-    CHECK_THROW(opp->units(),std::exception);
+    CHECK_THROW(opp->checkUnits(),std::exception);
     from2->setUnits(from1->unitsStr());
-    CHECK(opp->units().empty());
+    CHECK(opp->checkUnits().empty());
   }
 
   template <> void TestOp::impl<OperationType::lt>() {testCmp<OperationType::lt>();}
@@ -146,12 +146,12 @@ SUITE(Units)
   template <OperationType::Type op> void TestOp::testLogical()
   {
     init(op);
-    CHECK_THROW(opp->units(),std::exception);
+    CHECK_THROW(opp->checkUnits(),std::exception);
     from2->setUnits(from1->unitsStr());
-    CHECK_THROW(opp->units(),std::exception);
+    CHECK_THROW(opp->checkUnits(),std::exception);
     from1->setUnits("");
     from2->setUnits("");
-    CHECK(opp->units().empty());
+    CHECK(opp->checkUnits().empty());
   }
   
   template <> void TestOp::impl<OperationType::and_>() {testLogical<OperationType::and_>();}
@@ -162,33 +162,33 @@ SUITE(Units)
   {
     init(OperationType::pow);
     // pow's arguments must be dimensionless
-    CHECK_THROW(opp->units(),std::exception);
+    CHECK_THROW(opp->checkUnits(),std::exception);
     // but if second argument is an integer
     model->removeItem(*from2);
     from2=VariablePtr(VariableType::constant);
     model->addItem(from2);
     model->addWire(from2->ports[0],opp->ports[2]);
     from2->init("2");
-    CHECK_EQUAL(1,opp->units().size());
-    CHECK_EQUAL(2,opp->units()["m"]);
+    CHECK_EQUAL(1,opp->checkUnits().size());
+    CHECK_EQUAL(2,opp->checkUnits()["m"]);
     // check that it throws with a nonintegral exponent
     from2->init("2.5");
-    CHECK_THROW(opp->units(),std::exception);
+    CHECK_THROW(opp->checkUnits(),std::exception);
   }
 
   template <> void TestOp::impl<OperationType::log>()
   {
     init(OperationType::log);
     // log's arguments must be dimensionless
-    CHECK_THROW(opp->units(),std::exception);
+    CHECK_THROW(opp->checkUnits(),std::exception);
     from2->setUnits(from1->unitsStr());
-    CHECK_THROW(opp->units(),std::exception);
+    CHECK_THROW(opp->checkUnits(),std::exception);
   }
   
   template <> void TestOp::impl<OperationType::copy>()
   {
     init(OperationType::copy);
-    CHECK(opp->units()==from1->units());
+    CHECK(opp->checkUnits()==from1->units());
   }
   
 

@@ -207,10 +207,12 @@ Units VariableBase::units(bool check) const
   // we allow possible traversing twice, to allow
   // stock variable to break the cycle
   if (unitsCtr-stockVarsPassed>=1)
-    if (check)
-      throw_error("Cycle detected on wiring network");
-    else
-      return {};
+    {
+      if (check)
+        throw_error("Cycle detected on wiring network");
+      else
+        return {};
+    }
 
   auto it=minsky().variableValues.find(valueId());
   if (it!=minsky().variableValues.end())
@@ -236,10 +238,12 @@ Units VariableBase::units(bool check) const
               else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
                 units=g->stockVarUnits(name(),check);
               if (check && units.str()!=vv.units.str())
-                if (auto i=controller.lock())
-                  i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());
-                else
-                  throw runtime_error("inconsistent units "+units.str()+"≠"+vv.units.str());
+                {
+                  if (auto i=controller.lock())
+                    i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());
+                  else
+                    throw runtime_error("inconsistent units "+units.str()+"≠"+vv.units.str());
+                }
             }
         }
       else

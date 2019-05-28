@@ -441,10 +441,13 @@ namespace minsky
                   if (!ports[2]->wires().empty())
                     if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item))
                       if (fracPart(v->value())==0)
-                        for (auto& i: r) i.second*=v->value();
+                        {
+                          for (auto& i: r) i.second*=v->value();
+                          r.normalise();
+                          return r;
+                        }
                   if (check)
                     throw_error("dimensioned pow only possible if exponent is a constant integer");
-                  r.normalise();
                 }
               return r;
             }

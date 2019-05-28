@@ -91,7 +91,7 @@ namespace minsky
     /// return dimension names of tensor object attached to input
     /// if binary op, then the union of dimension names is returned
     std::vector<string> dimensions() const;
-    Units units(bool check=true) const override;
+    Units units(bool check=false) const override;
 
   protected:
 
