@@ -885,20 +885,6 @@ proc deiconifyEditVar {} {
                   -state readonly -values "constant parameter flow integral stock"] \
             -row 20 -column 20 -sticky ew -columnspan 2
 
-        # disable or enable the name field depending on type being selected
-        bind .wiring.editVar.entry20 <<ComboboxSelected>> {
-            if {[.wiring.editVar.entry20 get]=="constant"} {
-                .wiring.editVar.entry10 configure -state disabled
-            } else {
-                .wiring.editVar.entry10 configure -state enabled
-            }
-        }
-        
-        # initialise variable type when selected from combobox
-        bind .wiring.editVar.entry10 <<ComboboxSelected>> {
-            getValue [valueId [.wiring.editVar.entry10 get]]
-            .wiring.editVar.entry20 set [value.type]
-        }
         
 
         set row 30
@@ -918,7 +904,34 @@ proc deiconifyEditVar {} {
             incr row 10
         }
         set editVarInput(initial_focus_value) ".wiring.editVar.entry$rowdict(Initial Value)"
+        set editVarInput(units_focus_value) ".wiring.editVar.entry$rowdict(Units)"
         set editVarInput(initial_focus_rotation) .wiring.editVar.entry$rowdict(Rotation)
+
+        # disable or enable the name field depending on type being selected
+        # constants cannot edit name, and neither constant nor flows allow units to be edited
+        bind .wiring.editVar.entry20 <<ComboboxSelected>> {
+            switch [.wiring.editVar.entry20 get] {
+                "constant" {
+                    .wiring.editVar.entry10 configure -state disabled
+                     #units
+                    .wiring.editVar.entry40 configure -state disabled
+                }
+                "flow" {
+                    .wiring.editVar.entry10 configure -state enabled
+                    .wiring.editVar.entry40 configure -state disabled
+                }
+                default {
+                    .wiring.editVar.entry10 configure -state enabled
+                    .wiring.editVar.entry40 configure -state enabled
+                }
+            }
+        }
+
+        # initialise variable type when selected from combobox
+        bind .wiring.editVar.entry10 <<ComboboxSelected>> {
+            getValue [valueId [.wiring.editVar.entry10 get]]
+            .wiring.editVar.entry20 set [value.type]
+        }
         
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
@@ -1155,6 +1168,11 @@ proc editVar {} {
         $editVarInput(initial_focus_value) configure -state normal  -foreground black
         ::tk::TabToWindow $editVarInput(initial_focus_value)
     }
+    switch [$item.type] {
+        "constant" -
+        "flow" {$editVarInput(units_focus_value) configure -state disabled  -foreground gray}
+    }
+        
     set editVarInput(title) "[$item.name]: Value=[value.value]"
     tkwait visibility .wiring.editVar
     grab set .wiring.editVar
