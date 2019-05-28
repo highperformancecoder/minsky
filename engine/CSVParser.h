@@ -84,6 +84,10 @@ namespace minsky
     void guessRemainder(std::istream&, char separator);
   };
 
+  /// creates a report CSV file from input, with errors sorted at
+  /// begining of file, with a column for error messages
+  void reportFromCSVFile(std::istream& input, std::ostream& output, const DataSpec& spec);
+
   /// load a variableValue from a stream according to data spec
   void loadValueFromCSVFile(VariableValue&,std::istream&,const DataSpec&);
 }

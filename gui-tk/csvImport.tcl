@@ -71,7 +71,13 @@ proc CSVImportDialog {} {
         
         buttonBar .wiring.csvImport {
             csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
-            loadVariableFromCSV csvDialog.spec $csvParms(filename)
+            if [catch "loadVariableFromCSV csvDialog.spec $csvParms(filename)" err] {
+                toplevel .csvImportError
+                label .csvImportError.errMsg -text $err
+                label .csvImportError.msg -text "Would you like to generate a report?"
+                pack .csvImportError.errMsg .csvImportError.msg -side top
+                buttonBar .csvImportError "doReport $csvParms(filename)"
+            }
             reset
         }
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
@@ -105,6 +111,14 @@ proc CSVImportDialog {} {
     }
 }
 
+proc doReport {inputFname} {
+    set fname [tk_getSaveFile -initialfile [file rootname $inputFname]-error-report.csv]
+    if [string length $fname] {
+        eval csvDialog.reportFromFile $inputFname $fname
+    }
+}
+
+        
 proc scrollTable v {
     csvDialog.xoffs [expr -$v]
     csvDialog.requestRedraw

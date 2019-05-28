@@ -68,7 +68,19 @@ namespace
         r+=c;
     return r;
   }
-    
+
+  bool isNumerical(const string& s)
+  {
+    size_t charsProcd;
+    string stripped=stripWSAndDecimalSep(s);
+    try
+      {
+        quotedStoD(stripped, charsProcd);
+      }
+    catch (...) {return false;}
+    return charsProcd==stripped.size();
+  }
+  
   // returns first position of v such that all elements in that or later
   // positions are numerical or null
   size_t firstNumerical(const vector<string>& v)
@@ -265,6 +277,63 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
 
 namespace minsky
 {
+  void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec)
+  {
+    typedef vector<string> Key;
+    map<Key,string> lines;
+    multimap<Key,string> duplicateLines;
+    string buf;
+    Parser csvParser(spec.escape,spec.separator,spec.quote);
+    for (size_t row=0; getline(input, buf); ++row)
+      {
+        if (row==spec.headerRow)
+          {
+            output<<"error"<<spec.separator<<buf<<endl;
+            continue;
+          }
+        if (row>=spec.nRowAxes())
+          {
+            Tokenizer tok(buf.begin(), buf.end(), csvParser);
+            Key key;
+            auto field=tok.begin();
+            for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
+              if (spec.dimensionCols.count(i))
+                key.push_back(*field);
+            if (field==tok.end())
+              {
+                output<<"missing numerical data"<<spec.separator<<buf<<endl;
+                continue;
+              }
+
+            for (; field!=tok.end(); ++field)
+              {
+                string x=*field;
+                if (x.back()=='\r') x=x.substr(0,x.size()-1); //deal with MS nonsense
+                if (!x.empty() && !isNumerical(x))
+                  {
+                    output<<"invalid numerical data"<<spec.separator<<buf<<endl;
+                    continue;
+                  }
+                if (spec.columnar) break; // only one column to check
+              }
+
+            auto rec=lines.find(key);
+            if (rec!=lines.end())
+              {
+                duplicateLines.insert(*rec);
+                lines.erase(rec);
+              }
+            if (duplicateLines.count(key))
+              duplicateLines.emplace(key, buf);
+            else
+              lines.emplace(key, buf);
+          }
+      }    
+    for (auto& i: duplicateLines)
+      output<<"duplicate key"<<spec.separator<<i.second<<endl;
+    for (auto& i: lines)
+      output<<spec.separator<<i.second<<endl;
+  }
 
   void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
   {

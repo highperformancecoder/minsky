@@ -25,6 +25,13 @@ using namespace minsky;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 
+void CSVDialog::reportFromFile(const std::string& input, const std::string& output)
+{
+  ifstream is(input);
+  ofstream of(output);
+  reportFromCSVFile(is,of,spec);
+}
+
 void CSVDialog::loadFile(const string& fname)
 {
   spec=DataSpec();
