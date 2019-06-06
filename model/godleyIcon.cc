@@ -142,6 +142,17 @@ namespace minsky
     bb.update(*this);
   }
 
+  void GodleyIcon::removeControlledItems() const
+  {
+    if (auto g=group.lock())
+      {
+        for (auto& i: m_flowVars)
+          g->removeItem(*i);
+        for (auto& i: m_stockVars)
+          g->removeItem(*i);
+      }
+  }
+
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
   {
     // if this operation is clearing an initial condition cell, set it to 0

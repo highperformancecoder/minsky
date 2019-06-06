@@ -525,12 +525,14 @@ namespace minsky
     return *this;
   }
 
-  IntOp::~IntOp() 
+  void IntOp::removeControlledItems() const
   {
-    if (auto g=group.lock())
-      g->removeItem(*intVar);
+    if (intVar)
+      if (auto g=group.lock())
+        g->removeItem(*intVar);
   }
 
+  
   void IntOp::description_(string desc)
   {
 

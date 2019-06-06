@@ -42,6 +42,8 @@ namespace minsky
     friend class SchemaHelper;
   public:
     static SVGRenderer svgRenderer;
+
+    ~GodleyIcon() {removeControlledItems();}
     
     /// width of Godley icon in screen coordinates
     float width() const {return (flowMargin+iconSize)*iconScale()*zoomFactor();}
@@ -62,7 +64,8 @@ namespace minsky
     double schema1ZoomFactor() const; 
     
     void resize(const LassoBox&) override;
-
+    void removeControlledItems() const override;
+ 
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);
     /// delete row before \a row

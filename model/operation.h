@@ -165,7 +165,8 @@ namespace minsky
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
       OperationBase(x), Super(x) {group.reset();intVar.reset(); description(x.description());}
-    ~IntOp();
+    ~IntOp() {removeControlledItems();}
+    
     const IntOp& operator=(const IntOp& x); 
 
     /// @{ name of the associated integral variable
@@ -180,7 +181,9 @@ namespace minsky
     string valueId() const 
     {return intVar->valueId();}
 
-    /// return reference to integration variable
+    void removeControlledItems() const override;
+
+   /// return reference to integration variable
     VariablePtr intVar; 
 
     bool handleArrows(int dir,bool) override {return intVar->handleArrows(dir,false);}

@@ -120,6 +120,8 @@ namespace minsky
 
     /// delete all attached wires
     virtual void deleteAttachedWires();
+    /// remove all controlled items from their group
+    virtual void removeControlledItems() const {}
     
     virtual Item* clone() const {
       auto r=new Item(*this);
