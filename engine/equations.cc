@@ -635,7 +635,7 @@ namespace MathDAG
     expressionCache.insert(valueId, r);
     r->init=vv.init;
     if (auto v=minsky.definingVar(valueId))
-      if (v->numPorts()>1 && !v->ports[1]->wires().empty())
+      if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports[1]->wires().empty())
         r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
     return r;
   }
