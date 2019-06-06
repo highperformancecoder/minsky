@@ -412,6 +412,9 @@ namespace minsky
              if (v->isStock() && (v->inputWired() || v->controller.lock().get()))
                v->checkUnits();
            }
+         else if (!(*i)->ports.empty() && !(*i)->ports[0]->input() &&
+                  (*i)->ports[0]->wires().empty())
+           (*i)->checkUnits(); // check anything with an unwired output port
          else if (auto p=dynamic_cast<PlotWidget*>(i->get()))
            for (auto& i: p->ports)
              i->checkUnits();
