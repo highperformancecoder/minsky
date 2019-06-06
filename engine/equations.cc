@@ -634,12 +634,9 @@ namespace MathDAG
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
     r->init=vv.init;
-    if (vv.isFlowVar()) 
-      {
-        auto v=minsky.definingVar(valueId);
-        if (v)
-          r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
-      }
+    if (auto v=minsky.definingVar(valueId))
+      if (v->numPorts()>1 && !v->ports[1]->wires().empty())
+        r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
     return r;
   }
 

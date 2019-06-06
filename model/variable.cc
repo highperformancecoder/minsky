@@ -263,8 +263,6 @@ void VariableBase::setUnits(const string& x)
 {
   if (VariableValue::isValueId(valueId()))
     minsky().variableValues[valueId()].units=Units(x);
-  // reset minsky model to propagate units
-  try {minsky().reset();} catch (...) {}
 }
 
 
