@@ -56,9 +56,9 @@ namespace minsky
   {
     bool inputFound=false;
     Units r;
-    for (size_t i=1; i<ports.size(); ++i)
+    for (size_t i=2; i<ports.size(); ++i)
       for (auto w: ports[i]->wires())
-        if (inputFound)
+        if (check && inputFound)
           {
             auto tmp=w->units(check);
             if (tmp!=r)
