@@ -382,7 +382,7 @@ namespace minsky
       }
     if (!cminsky().timeUnit.empty())
       units[cminsky().timeUnit]++;
-    return units;
+    return foundFlow? units: cminsky().variableValues[vid].units;
   }
 
   
