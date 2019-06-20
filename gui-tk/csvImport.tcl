@@ -184,12 +184,12 @@ proc csvImportButton1Up {x y X Y} {
                 }
                 setupCombo [[csvDialog.spec.dimensions.@elem $col].units] \
                     "csvDialog.spec.dimensions($col).units" \
-                    "Dimension units/format" "-values $units -state normal" $X $Y
+                    "Dimension units/format" "-values \"$units\" -state normal" $X $Y
             }}
             3 {if {$col<[csvDialog.spec.dimensions.size]} {
                 setupCombo [[csvDialog.spec.dimensionNames.@elem $col]] \
                     "csvDialog.spec.dimensionNames($col)" \
-                    "Dimension name" "-values [csvDialog.headerForCol $col] -state normal" $X $Y
+                    "Dimension name" "-values \"[csvDialog.headerForCol $col]\" -state normal" $X $Y
             }}
             default {
                 csvDialog.spec.setDataArea [expr $row-4] $col
