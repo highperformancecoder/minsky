@@ -72,7 +72,6 @@ proc CSVImportDialog {} {
         buttonBar .wiring.csvImport {
             csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
             set fname $csvParms(filename)
-            puts $fname
             if [catch "loadVariableFromCSV csvDialog.spec {$fname}" err] {
                 toplevel .csvImportError
                 label .csvImportError.errMsg -text $err
