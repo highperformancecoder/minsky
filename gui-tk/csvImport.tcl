@@ -79,7 +79,6 @@ proc CSVImportDialog {} {
                 pack .csvImportError.errMsg .csvImportError.msg -side top
                 buttonBar .csvImportError "doReport {$fname}"
             }
-            puts "after"
             reset
         }
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
