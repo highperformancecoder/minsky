@@ -503,8 +503,10 @@ proc canvasContext {x y X Y} {
 }
 
 proc saveSelection {} {
-    set f [tk_getSaveFile -defaultextension .mky]
+    global workDir
+    set f [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
     if [string length $f] {
+        set workDir [file dirname $f]
         eval minsky.saveSelectionAsFile {$f}
     }
 }
@@ -676,7 +678,6 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "$item.flipped [expr ![minsky.canvas.item.flipped]]; canvas.requestRedraw"
         }
         Ravel {
-            .wiring.context add command -label "Load CSV file" -command loadCSVIntoRavel
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             global sortOrder
             set sortOrder [minsky.canvas.item.sortOrder]
@@ -798,18 +799,13 @@ proc setupPickMenu {} {
     grab set .wiring.context.axisMenu.pick
 }
 
-proc loadCSVIntoRavel {} {
-    global workDir
-    eval canvas.item.loadFile {[tk_getOpenFile -multiple 1 -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]}
-    reset
-}
-
 proc exportItemAsCSV {} {
     global workDir
     set f [tk_getSaveFile -filetypes {
         {"CSV" .csv TEXT} {"All" {.*} TEXT}
     } -initialdir $workDir ]
     if {$f!=""} {
+        set workDir [file dirname $f]
         eval minsky.canvas.item.exportAsCSV {$f}
     }
 }
@@ -820,6 +816,7 @@ proc exportItemAsImg {} {
         {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"PNG" .png PNGG}
     } -initialdir $workDir -typevariable type ]
     if {$f==""} return
+    set workDir [file dirname $f]
     if [string match -nocase *.svg "$f"] {
         eval minsky.canvas.item.renderToSVG {$f}
     } elseif [string match -nocase *.pdf "$f"] {
@@ -846,6 +843,7 @@ namespace eval godley {
         set fname [tk_getSaveFile -filetypes {{"CSV files" .csv TEXT} {"LaTeX files" .tex TEXT}} \
                        -initialdir $workDir -typevariable type]  
         if {$fname==""} return
+        set workDir [file dirname $fname]
         if [string match -nocase *.csv "$fname"] {
             eval $item.table.exportToCSV {$fname}
         } elseif [string match -nocase *.tex "$fname"] {
@@ -1297,6 +1295,7 @@ proc importData {} {
     global workDir
     set f [tk_getOpenFile -multiple 1 -initialdir $workDir]
     if [string length $f] {
+        set workDir [file dirname $f]
         eval minsky.canvas.item.readData {$f}
     }
 }

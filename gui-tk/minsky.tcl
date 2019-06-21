@@ -590,6 +590,7 @@ proc exportCanvas {} {
         {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}} \
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
+    set workDir [file dirname $f]
     if [string match -nocase *.svg "$f"] {
         minsky.renderCanvasToSVG "$f"
     } elseif [string match -nocase *.pdf "$f"] {
@@ -1144,6 +1145,7 @@ proc save {} {
         setFname [tk_getSaveFile -defaultextension .mky  -initialdir $workDir \
                   -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]}            
     if [string length $fname] {
+        set workDir [file dirname $fname]
         eval minsky.save {$fname}
     }
 }
@@ -1153,6 +1155,7 @@ proc saveAs {} {
     setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir \
               -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]
     if [string length $fname] {
+        set workDir [file dirname $fname]
         eval minsky.save {$fname}
     }
 }
