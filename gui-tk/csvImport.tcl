@@ -98,6 +98,7 @@ proc CSVImportDialog {} {
     }
     set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
     if [string length $filename] {
+        set workDir [file dirname $filename]
         csvDialog.loadFile $filename
         set csvParms(filename) $filename
         set csvParms(separator) [csvDialog.spec.separator]
@@ -115,7 +116,8 @@ proc CSVImportDialog {} {
 }
 
 proc doReport {inputFname} {
-    set fname [tk_getSaveFile -initialfile [file rootname $inputFname]-error-report.csv]
+    global workDir
+    set fname [tk_getSaveFile -initialfile [file rootname $inputFname]-error-report.csv -initialdir $workDir]
     if [string length $fname] {
         eval csvDialog.reportFromFile {$inputFname} {$fname}
     }
