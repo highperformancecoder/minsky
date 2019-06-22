@@ -18,6 +18,7 @@
 */
 
 #include "CSVParser.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 using namespace minsky;
 using namespace std;
@@ -29,11 +30,11 @@ using namespace std;
 typedef boost::escaped_list_separator<char> Parser;
 typedef boost::tokenizer<Parser> Tokenizer;
 
-struct NoDataColumns: public exception
+struct NoDataColumns: public std::exception
 {
   const char* what() const noexcept override {return "No data columns";}
 };
-struct DuplicateKey: public exception
+struct DuplicateKey: public std::exception
 {
   std::string msg="Duplicate key";
   DuplicateKey(const vector<string>& x) {
@@ -448,6 +449,8 @@ namespace minsky
           }
   
         v.setXVector(xVector);
+        if (!cminsky().checkMemAllocation(v.numElements()*sizeof(double)))
+          throw runtime_error("memory threshold exeeded");
         // stash the data into vv tensorInit field
         v.tensorInit.data.clear();
         v.tensorInit.data.resize(v.numElements(), spec.missingValue);

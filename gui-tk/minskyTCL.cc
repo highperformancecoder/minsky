@@ -28,6 +28,10 @@
 #include <windows.h>
 #endif
 
+#if defined(__linux__)
+#include <sys/sysinfo.h>
+#endif
+
 #include <stdexcept>
 using namespace std;
 
@@ -120,6 +124,38 @@ namespace minsky
       t->is_const=true;
  }
 
+#if defined(__linux__)
+  size_t physicalMem()
+  {
+    struct sysinfo s;
+    sysinfo(&s);
+    return s.totalram;
+  }
+#elif defined(WIN32)
+   size_t physicalMem()
+  {
+    MEMORYSTATUSEX s;
+    GlobalMemoryStatusEx(&s);
+    return s.ullTotalPhys;
+  } 
+#elif defined(__APPLE__)
+  size_t physicalMem()
+  {
+    int mib[2];
+    int64_t physical_memory;
+    size_t length;
+
+    // Get the Physical memory size
+    mib[0] = CTL_HW;
+    mib[1] = HW_MEMSIZE;
+    length = sizeof(int64_t);
+    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+    return physical_memory;
+  }
+#else
+  // all else fails, return max value
+  size_t physicalMem() {return ~0UL;}
+#endif  
 
   tclvar TCL_obj_lib("ecolab_library",ECOLAB_LIB);
   int TCL_obj_minsky=

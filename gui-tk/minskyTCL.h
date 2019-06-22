@@ -36,6 +36,8 @@ namespace minsky
   ecolab::TCL_obj_t& minskyTCL_obj();
   void setTCL_objAttributes();
 
+  size_t physicalMem();
+  
   struct MinskyTCL: public Minsky
   {
     bool rebuildTCLcommands=false;
@@ -347,6 +349,17 @@ namespace minsky
     void clearBusyCursor() override
     {tclcmd()<<"setCursor {}\n";}
 
+    bool checkMemAllocation(size_t bytes) const override {
+      bool r=true;
+      if (bytes>0.2*physicalMem())
+        {
+          tclcmd cmd;
+          cmd<<"tk_messageBox -message {Allocation will use more than 50% of available memory. Do you want to proceed?} -type yesno\n";
+          r=cmd.result=="yes";
+        }
+      return r;
+    }
+    
     int numOpArgs(OperationType::Type o) const;
     OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
   private:
