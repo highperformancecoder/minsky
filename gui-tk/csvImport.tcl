@@ -36,7 +36,7 @@ proc CSVImportDialog {} {
         }
         label .wiring.csvImport.delimiters.missingLabel -text "Missing Value"
         ttk::combobox .wiring.csvImport.delimiters.missingValue \
-            -textvariable csvParms(missingValue) -values {"nan" "0"} -width 5
+            -textvariable csvParms(missingValue) -values {nan 0} -width 5
         bind .wiring.csvImport.delimiters.missingValue <<ComboboxSelected>> {
             csvDialog.spec.missingValue $csvParms(missingValue)}
 
@@ -59,6 +59,15 @@ proc CSVImportDialog {} {
         frame .wiring.csvImport.horizontalName
         label .wiring.csvImport.horizontalName.text -text "Horizontal dimension"
         entry .wiring.csvImport.horizontalName.value -textvariable csvParms(horizontalDimension)
+
+        label .wiring.csvImport.horizontalName.duplicateKeyLabel -text "Duplicate Key Action"
+        ttk::combobox .wiring.csvImport.horizontalName.duplicateKeyValue \
+            -textvariable csvParms(duplicateKeyValue) \
+            -values {throwException sum product min max av} -width 15
+        bind .wiring.csvImport.horizontalName.duplicateKeyValue <<ComboboxSelected>> {
+            csvDialog.spec.duplicateKeyAction $csvParms(duplicateKeyValue)}
+
+        pack .wiring.csvImport.horizontalName.duplicateKeyLabel .wiring.csvImport.horizontalName.duplicateKeyValue -side left
         pack .wiring.csvImport.horizontalName.text .wiring.csvImport.horizontalName.value -side left
         pack .wiring.csvImport.horizontalName
 
@@ -69,17 +78,24 @@ proc CSVImportDialog {} {
         scale .wiring.csvImport.hscroll -orient horiz -from -100 -to 1000 -showvalue 0 -command scrollTable
         pack .wiring.csvImport.hscroll -fill x -expand 1 -side top
         
-        buttonBar .wiring.csvImport {
+        buttonBar .wiring.csvImport {}
+        # redefine OK command to not delete the the import window on error
+        global csvImportFailed
+        set csvImportFailed 0
+        .wiring.csvImport.buttonBar.ok configure -command {
             csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
             set fname $csvParms(filename)
-            if [catch "loadVariableFromCSV csvDialog.spec {$fname}" err] {
+            set csvImportFailed [catch "loadVariableFromCSV csvDialog.spec {$fname}" err]
+            if $csvImportFailed {
                 toplevel .csvImportError
                 label .csvImportError.errMsg -text $err
                 label .csvImportError.msg -text "Would you like to generate a report?"
                 pack .csvImportError.errMsg .csvImportError.msg -side top
-                buttonBar .csvImportError "doReport {$fname}"
+                buttonBar .csvImportError "doReport {$fname}"                
+            } else {
+                reset
+                cancelWin .wiring.csvImport
             }
-            reset
         }
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
         bind .wiring.csvImport.table <Button-1> {csvImportButton1 %x %y};
@@ -105,6 +121,7 @@ proc CSVImportDialog {} {
         set csvParms(quote) [csvDialog.spec.quote]
         set csvParms(mergeDelimiters) [csvDialog.spec.mergeDelimiters]
         set csvParms(missingValue) [csvDialog.spec.missingValue]
+        set csvParms(duplicateKeyValue) [csvDialog.spec.duplicateKeyAction]
         set csvParms(horizontalDimension) [csvDialog.spec.horizontalDimName]
         .wiring.csvImport.delimiters.colWidth set [csvDialog.colWidth]
         wm deiconify .wiring.csvImport
