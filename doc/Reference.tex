@@ -177,9 +177,12 @@ varieties:
 have a name. Their graphical representation shows the actual value of
 the constant.
 \item[Parameters] are named constants. All instances of a given name
-represent the same value, as with all other named variables, so
-changing the value of one parameter, either through its edit menu, or
-through a slider, will affect all the others of that name.
+  represent the same value, as with all other named variables, so
+  changing the value of one parameter, either through its edit menu,
+  or through a slider, will affect all the others of that
+  name. Parameters may be \htmlref{imported from a CSV file}{CSV
+    import}, which is one way of inserting a tensor into the
+  simulation.
 \item[Flow variables] have an input port that defines how the value is
 to be calculated. Only one flow variable of a given name can have its
 input port connected, as they all refer to the same quantity. If no
@@ -234,6 +237,125 @@ actually adjusts the present value of the variable.
 Slider parameters are specified in the edit menu: max, min and step
 size. A relative slider means that the step size is expressed as a
 fraction of max-min.
+
+\subsection{Importing a parameter from a CSV file}\label{CSV import}
+
+Access to data imports is via the ``Import CSV'' item of the
+parameter's context menu. After selecting this item, a dialog will be
+displayed allowing you to select a CSV file. Upon selecting the file,
+a dialog is opened, allowing you to specify assorted encoding
+parameters. The dialog looks somewhat like this:
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog.eps}}
+\end{center}
+
+In this case, the system has automatically guessed that the data is 3
+dimensional, and that the first 3 columns give the axis labels for
+each dimension (shown in blue), and the 4th column contains the
+data. The first row has been automatically determined to be the first
+row of the file --- with the dimension names are shown in green.
+
+In this case, the automatic parsing system has worked things out
+correctly, but often times it needs help from the computer user. An
+example is as follows:
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail.eps}}
+\end{center}
+
+In this example, Minsky has failed to determine where the data starts,
+probably because of the column ``Price (text infill)''. So the first
+thing to do is tell it where the data is located by clicking on the
+first cell of the data region. 
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData.eps}}
+\end{center}
+
+Note that the data region must lie in the bottom right corner of the
+table, so you might need to rearrange the CSV file using a speadsheet
+program to ensure this. The ``columnar'' option exists as a way of
+ignoring any data to the right of a single data column, useful for the
+case where some free form comments are appended to the rows.
+
+Now the axes index labels are rendered in blue, the axes names in
+green and the data is in black. In this example, some axes duplicate
+others, in effect the data is a planar slice through the hypercube. We
+can remove these axes from the data by deselecting the column using
+the checkbox in the ``Dimension'' row. The deselected columns are
+rendered in red, indicating data that is commented out:
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected.eps}}
+\end{center}
+
+In this example, the axis names has not been correctly
+inferred. Whilst, one can manually edit the axis names in the ``Name''
+line, a quick shortcut is to drag ``Header'' and drop it on ``Name'':
+
+The Date column is current parsed as strings, which not only will be
+sorted incorrectly, but even if the data were in a YYYYMMDD format
+which is sorted correctly, will not have a uniform temporal
+spacing. It is therefore important to parse the Date column as
+temporal data, which is achieved by changing the column type to
+``time'', and specifying a format string, which follows strftime
+conventions with the addition of a quarter specifier (\verb+%Q+).
+\index{strftime format specifier}\label{strftime format specifier}
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat.eps}}
+\end{center}
+
+\begin{table}
+  \begin{tabular}{|c|l|}
+    \hline Code & Description \\\hline
+    \%d & Day of month in range 01 to 31\\
+    \%H & Hour in range 00 to 23\\
+    \%m & Month as a decimal number (01 to 12)\\
+    \%M & Minute in range 00 to 59\\
+    \%Q & Quarter (0=1st January, 1=1st March etc)\\
+    \%s & Number of seconds since epoch (1st January 1970)\\
+    \%S & Seconds in range 00 to 59 \\
+    \%y & Two digit year YY\\
+    \%Y & Four digit year YYYY\\
+    \%z & numerical timezone offset\\
+    \%Z & Timezone name\\
+    \%\% & Literal \% character\\
+    \hline
+  \end{tabular}
+  \caption{Table of strftime codes}
+  \label{Strftime code}
+\end{table}
+
+Strftime formatted string consists of escape codes (with leading \%
+characters). All other characters are treated as matching literally
+the characters of the input. So to match a date string of the format
+YYYY-MM-DD HH:MM:SS+ZZ (ISO format), use a format string
+``\verb|%Y-%m-%d %H:%M:%S+%Z|''. Similarly, for quarterly data
+expressed like 1972-Q1, use ``\verb+%Y-Q%Q+''. Note that only \%Y and
+\%y can be mixed with \%Q (nothing else makes sense anyway).
+
+Even in the current settings, you may still get a message ``exhausted
+memory --- try reducing the rank'', or a similar message about hitting
+a 20\% of physical memory threshold. In this case, ``title number''
+and ``address'' are pretty much unique for each record, leading to a
+large, but very sparse hypercube. If we remove those columns, as per
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogRemoved.eps}}
+\end{center}
+
+then we encounter the ``Duplicate key'' message. In this case, we want
+to aggregate over these records, which we can do by setting
+``Duplicate Key Action'' to sum. After some additional playing around
+with dimensions to aggregate over, we can get the data imported.
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal.eps}}
+\end{center}
+
+
 
 \section{Wires}
 
