@@ -44,6 +44,10 @@ namespace minsky
     size_t nColAxes() const {return m_nColAxes;}
     std::string horizontalDimName="?";
 
+    /// what to do with duplicate keys
+    enum DuplicateKeyAction {throwException, sum, product, min, max, av};
+    DuplicateKeyAction duplicateKeyAction=throwException;
+    
     /// rows and columns that are comment lines to be ignored
     std::set<unsigned> dimensionCols;
     void toggleDimension(size_t c) {

@@ -18,6 +18,7 @@
 */
 
 #include "CSVParser.h"
+#include "minsky.h"
 #include <ecolab_epilogue.h>
 using namespace minsky;
 using namespace std;
@@ -29,11 +30,11 @@ using namespace std;
 typedef boost::escaped_list_separator<char> Parser;
 typedef boost::tokenizer<Parser> Tokenizer;
 
-struct NoDataColumns: public exception
+struct NoDataColumns: public std::exception
 {
   const char* what() const noexcept override {return "No data columns";}
 };
-struct DuplicateKey: public exception
+struct DuplicateKey: public std::exception
 {
   std::string msg="Duplicate key";
   DuplicateKey(const vector<string>& x) {
@@ -145,7 +146,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
         starts.push_back(firstNumerical(line));
-        nCols=max(nCols, line.size());
+        nCols=std::max(nCols, line.size());
         if (starts.back()==line.size())
           m_nRowAxes=row;
         if (starts.size()-1 < firstEmpty && starts.back()<nCols && emptyTail(line, starts.back()))
@@ -160,7 +161,7 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
          ++m_nRowAxes);
     m_nColAxes=0;
     for (size_t i=nRowAxes(); i<starts.size(); ++i)
-      m_nColAxes=max(m_nColAxes,starts[i]);
+      m_nColAxes=std::max(m_nColAxes,starts[i]);
     // if more than 1 data column, treat the first row as an axis row
     if (m_nRowAxes==0 && nCols-m_nColAxes>1)
       m_nRowAxes=1;
@@ -341,6 +342,7 @@ namespace minsky
     string buf;
     typedef vector<string> Key;
     map<Key,double> tmpData;
+    map<Key,int> tmpCnt;
     vector<map<string,size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     vector<XVector> xVector;
@@ -350,88 +352,129 @@ namespace minsky
       if (spec.dimensionCols.count(i))
         xVector.emplace_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
 
-    for (size_t row=0; getline(input, buf); ++row)
+    try
       {
-        Tokenizer tok(buf.begin(), buf.end(), csvParser);
-
-        assert(spec.headerRow<=spec.nRowAxes());
-        if (row==spec.headerRow && !spec.columnar) // in header section
+        for (size_t row=0; getline(input, buf); ++row)
           {
-            vector<string> parsedRow(tok.begin(), tok.end());
-            if (parsedRow.size()>spec.nColAxes()+1)
+            Tokenizer tok(buf.begin(), buf.end(), csvParser);
+
+            assert(spec.headerRow<=spec.nRowAxes());
+            if (row==spec.headerRow && !spec.columnar) // in header section
               {
-                tabularFormat=true;
-                horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
-                xVector.emplace_back(spec.horizontalDimName);
-                for (auto& i: horizontalLabels) xVector.back().push_back(i);
-                dimLabels.emplace_back();
-                for (size_t i=0; i<horizontalLabels.size(); ++i)
-                  dimLabels.back()[horizontalLabels[i]]=i;
+                vector<string> parsedRow(tok.begin(), tok.end());
+                if (parsedRow.size()>spec.nColAxes()+1)
+                  {
+                    tabularFormat=true;
+                    horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
+                    xVector.emplace_back(spec.horizontalDimName);
+                    for (auto& i: horizontalLabels) xVector.back().push_back(i);
+                    dimLabels.emplace_back();
+                    for (size_t i=0; i<horizontalLabels.size(); ++i)
+                      dimLabels.back()[horizontalLabels[i]]=i;
+                  }
+              }
+            else if (row>=spec.nRowAxes())// in data section
+              {
+                Key key;
+                auto field=tok.begin();
+                for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
+                  if (spec.dimensionCols.count(i))
+                    {
+                      if (dim>=xVector.size())
+                        xVector.emplace_back("?"); // no header present
+                      key.push_back(*field);
+                      if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
+                        xVector[dim].push_back(*field);
+                      dim++;
+                    }
+                    
+                if (field==tok.end())
+                  throw NoDataColumns();
+          
+                for (size_t col=0; field != tok.end(); ++field, ++col)
+                  {
+                    if (tabularFormat)
+                      key.push_back(horizontalLabels[col]);
+                    if (spec.duplicateKeyAction==DataSpec::throwException && tmpData.count(key))
+                      throw DuplicateKey(key);
+
+                    // remove thousands separators, and set decimal separator to '.' ("C" locale)
+                    string s;
+                    for (auto c: *field)
+                      if (c==spec.decSeparator)
+                        s+='.';
+                      else if (!isspace(c) && c!='.' && c!=',')
+                        s+=c;
+
+                    auto i=tmpData.find(key);
+                    try
+                      {
+                        double v=stod(s);
+                        if (i==tmpData.end())
+                          tmpData.emplace(key,v);
+                        else
+                          switch (spec.duplicateKeyAction)
+                            {
+                            case DataSpec::sum:
+                              i->second+=v;
+                              break;
+                            case DataSpec::product:
+                              i->second*=v;
+                              break;
+                            case DataSpec::min:
+                              if (v<i->second)
+                                i->second=v;
+                              break;
+                            case DataSpec::max:
+                              if (v>i->second)
+                                i->second=v;
+                              break;
+                            case DataSpec::av:
+                              {
+                                int& c=tmpCnt[key]; // c initialised to 0
+                                i->second=((c+1)*i->second + v)/(c+2);
+                                c++;
+                              }
+                              break;
+                            }
+                      }
+                    catch (...)
+                      {
+                        tmpData[key]=spec.missingValue;
+                      }
+                    if (tabularFormat)
+                      key.pop_back();
+                  }
               }
           }
-        else if (row>=spec.nRowAxes())// in data section
+  
+        v.setXVector(xVector);
+        if (!cminsky().checkMemAllocation(v.numElements()*sizeof(double)))
+          throw runtime_error("memory threshold exeeded");
+        // stash the data into vv tensorInit field
+        v.tensorInit.data.clear();
+        v.tensorInit.data.resize(v.numElements(), spec.missingValue);
+        auto dims=v.tensorInit.dims=v.dims();    
+        for (auto& i: tmpData)
           {
-            Key key;
-            auto field=tok.begin();
-            for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
-              if (spec.dimensionCols.count(i))
-                {
-                  if (dim>=xVector.size())
-                    xVector.emplace_back("?"); // no header present
-                  key.push_back(*field);
-                  if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
-                    xVector[dim].push_back(*field);
-                  dim++;
-                }
-                    
-            if (field==tok.end())
-              throw NoDataColumns();
-          
-            for (size_t col=0; field != tok.end(); ++field, ++col)
+            size_t idx=0;
+            assert (dims.size()==i.first.size());
+            assert(dimLabels.size()==dims.size());
+            for (int j=dims.size()-1; j>=0; --j)
               {
-                if (tabularFormat)
-                  key.push_back(horizontalLabels[col]);
-                if (tmpData.count(key))
-                  throw DuplicateKey(key);
-
-                // remove thousands separators, and set decimal separator to '.' ("C" locale)
-                string s;
-                for (auto c: *field)
-                  if (c==spec.decSeparator)
-                    s+='.';
-                  else if (!isspace(c) && c!='.' && c!=',')
-                    s+=c;
-
-                try
-                  {
-                    tmpData[key]=stod(s);
-                  }
-                catch (...)
-                  {
-                    tmpData[key]=spec.missingValue;
-                  }
-                if (tabularFormat)
-                  key.pop_back();
+                assert(dimLabels[j].count(i.first[j]));
+                idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
               }
+            v.tensorInit.data[idx]=i.second;
           }
       }
-  
-    v.setXVector(xVector);
-    // stash the data into vv tensorInit field
-    v.tensorInit.data.clear();
-    v.tensorInit.data.resize(v.numElements(), spec.missingValue);
-    auto dims=v.tensorInit.dims=v.dims();    
-    for (auto& i: tmpData)
-      {
-        size_t idx=0;
-        assert (dims.size()==i.first.size());
-        assert(dimLabels.size()==dims.size());
-        for (int j=dims.size()-1; j>=0; --j)
-          {
-            assert(dimLabels[j].count(i.first[j]));
-            idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-          }
-        v.tensorInit.data[idx]=i.second;
+    catch (const std::bad_alloc&)
+      { // replace with a more user friendly error message
+        throw std::runtime_error("exhausted memory - try reducing the rank");
+      }
+    catch (const std::length_error&)
+      { // replace with a more user friendly error message
+        throw std::runtime_error("exhausted memory - try reducing the rank");
       }
   }
 

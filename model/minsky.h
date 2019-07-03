@@ -377,6 +377,11 @@ namespace minsky
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
+
+    /// check whether to proceed or abort, given a request to allocate
+    /// \a bytes of memory. Implemented in MinskyTCL
+    virtual bool checkMemAllocation(size_t bytes) const {return true;}
+    
   };
 
   /// global minsky object
