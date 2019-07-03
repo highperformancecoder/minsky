@@ -1095,7 +1095,7 @@ proc openFile {} {
     global fname workDir preferences
     set ofname [tk_getOpenFile -multiple 1 -filetypes {
 	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
-    if [string length $ofname] {eval openNamedFile {$ofname}}
+    if [string length $ofname] {eval openNamedFile $ofname}
 }
 
 proc openNamedFile {ofname} {
@@ -1103,7 +1103,7 @@ proc openNamedFile {ofname} {
     newSystem
     setFname $ofname
 
-    eval minsky.load $fname
+    eval minsky.load {$ofname}
     doPushHistory 0
     pushFlags
     recentreCanvas
@@ -1124,7 +1124,7 @@ proc insertFile {} {
     global workDir
     set fname [tk_getOpenFile -multiple 1 -filetypes {
 	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
-    eval insertGroupFromFile {$fname}
+    eval insertGroupFromFile $fname
 }
 
 # adjust canvas so that -ve coordinates appear on canvas
@@ -1495,7 +1495,7 @@ proc unknown {procname args} {
 }
 
 pushFlags
-if {$argc>1 && ![string match "*.tcl" $argv(1)]} {catch {openNamedFile $argv(1)}}
+if {$argc>1 && ![string match "*.tcl" $argv(1)]} {catch {eval openNamedFile {$argv(1)}}}
 
 proc ifDef {var} {
     upvar $var v
