@@ -99,7 +99,10 @@ namespace minsky
       for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
         {
           VariablePtr newVar(varType, *nm);
+          auto myGroup=group.lock();
+          if (myGroup) myGroup->addItem(newVar); // get scope right
           auto v=oldVars.find(newVar);
+          
           if (v==oldVars.end())
             {
               // allow for the possibility that multiple names map to the same valueId
@@ -114,8 +117,9 @@ namespace minsky
               alreadyAdded.insert(newVar->valueId());
               oldVars.erase(v);
               assert(*v);
+              if (myGroup) myGroup->removeItem(*newVar);
             }
-          if (auto g=group.lock()) g->addItem(vars.back(),true);
+          if (myGroup) myGroup->addItem(vars.back(),true);
           // ensure variable type is consistent
           minsky::minsky().convertVarType(vars.back()->valueId(), varType);
           vars.back()->controller=self;
