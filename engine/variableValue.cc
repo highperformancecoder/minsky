@@ -242,7 +242,7 @@ namespace minsky
   
   string VariableValue::valueIdFromScope(const GroupPtr& scope, const std::string& name)
   {
-    if (!scope || !scope->group.lock())
+    if (name.empty() || !scope || !scope->group.lock())
       return VariableValue::valueId(-1,name); // retain previous global var id
     else
       return VariableValue::valueId(size_t(scope.get()), name);
