@@ -166,11 +166,17 @@ namespace minsky
   bool GroupRecursiveDo(G& gp, M GroupItems::*map, O op) 
     {
       for (auto i=(gp.*map).begin(); i!=(gp.*map).end(); ++i)
-        if (op(gp.*map,i))
-          return true;
+        {
+          assert(*i);
+          if (op(gp.*map,i))
+            return true;
+        }
       for (auto& g: gp.groups)
-        if (g->recursiveDo(map, op))
-          return true;
+        {
+          assert(g);
+          if (g->recursiveDo(map, op))
+            return true;
+        }
       return false;
     }
 

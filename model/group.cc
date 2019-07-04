@@ -379,7 +379,7 @@ namespace minsky
              assert(!i->ioVar());
            }
          auto copyOfGroups=source.groups;
-         for (auto& i: source.groups)
+         for (auto& i: copyOfGroups)
            addGroup(i);
          /// no need to move wires, as these are handled above
          source.clear();
@@ -500,6 +500,7 @@ namespace minsky
 
   GroupPtr GroupItems::addGroup(const std::shared_ptr<Group>& g)
   {
+    assert(g);
     auto origGroup=g->group.lock();
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
