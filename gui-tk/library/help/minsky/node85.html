@@ -1,152 +1,56 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<!--Converted with LaTeX2HTML 2018 (Released Feb 1, 2018) -->
 <HTML>
 <HEAD>
-<TITLE>Plot widget</TITLE>
-<META NAME="description" CONTENT="Plot widget">
+<TITLE>infindex</TITLE>
+<META NAME="description" CONTENT="infindex">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2018">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node86.html">
 <LINK REL="previous" HREF="node84.html">
-<LINK REL="up" HREF="node42.html">
+<LINK REL="up" HREF="node78.html">
 <LINK REL="next" HREF="node86.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1091"
+<A NAME="tex2html1152"
   HREF="node86.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1089"
-  HREF="node42.html">
+<A NAME="tex2html1150"
+  HREF="node78.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1083"
+<A NAME="tex2html1144"
   HREF="node84.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1092"
-  HREF="node86.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html1090"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1084"
-  HREF="node84.html">Groups</A>
+<B> Next:</B> <A NAME="tex2html1153"
+  HREF="node86.html">supindex</A>
+<B> Up:</B> <A NAME="tex2html1151"
+  HREF="node78.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1145"
+  HREF="node84.html">all</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00460000000000000000"></A>
-<A NAME="PlotWidget"></A>
+<H2><A NAME="SECTION00427000000000000000"></A><A NAME="Operation:infindex"></A>
 <BR>
-Plot widget
-</H1>
+infindex
+</H2> Return the index of
+the least value along a given axis.
 
 <P>
-A plot widget embeds a dynamic plot into the canvas. Around the
-outside of the plot are a number of input ports that can be wired.
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
- SRC="img190.png"
- ALT="\includegraphics{images/plotWidget.eps}">
-
-</DIV>
-
-<P>
-<DL>
-<DT><STRONG>left hand edge</STRONG></DT>
-<DD>Up to 4 quantities can be plotted on the graph
-  simultaneously, with line colour given by the colour of the input
-  port
-</DD>
-<DT><STRONG>right hand edge</STRONG></DT>
-<DD>Another 4 quantities can be added to the
-  plot. These are shown on a different scale to the left hand inputs,
-  allowing very different magnitudes to be compared on the one plot.
-</DD>
-<DT><STRONG>bottom edge</STRONG></DT>
-<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img67.png"
- ALT="$x$"></SPAN>-coordinates of the
-  curves. The colours match up with the colour of the pen being
-  controlled.
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
- SRC="img191.png"
- ALT="\includegraphics{images/plotLissajous.eps}">
-
-</DIV>
-
-<P>
-If only one bottom port is connected, then that controls all pens
-  simultaneously, and if no ports are connected, then the simulation
-  time is used to provide the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img67.png"
- ALT="$x$"></SPAN> coordinates
-</DD>
-<DT><STRONG>corners</STRONG></DT>
-<DD>Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img67.png"
- ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img68.png"
- ALT="$y$"></SPAN> and right hand
-  <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img68.png"
- ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
-  from the data. This can be used, for example, to implement a sliding
-  window graph
-
-<P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="480" HEIGHT="425" ALIGN="BOTTOM" BORDER="0"
- SRC="img192.png"
- ALT="\includegraphics{images/plotSlidingWindow.eps}">
-
-</DIV>
-</DD>
-</DL>
-
-<P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1091"
-  HREF="node86.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1089"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1083"
-  HREF="node84.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1092"
-  HREF="node86.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html1090"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1084"
-  HREF="node84.html">Groups</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

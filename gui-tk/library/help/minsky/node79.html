@@ -1,129 +1,59 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<!--Converted with LaTeX2HTML 2018 (Released Feb 1, 2018) -->
 <HTML>
 <HEAD>
-<TITLE>Variables</TITLE>
-<META NAME="description" CONTENT="Variables">
+<TITLE>sum </TITLE>
+<META NAME="description" CONTENT="sum ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2018">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node83.html">
+<LINK REL="next" HREF="node80.html">
 <LINK REL="previous" HREF="node78.html">
-<LINK REL="up" HREF="node42.html">
+<LINK REL="up" HREF="node78.html">
 <LINK REL="next" HREF="node80.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1030"
+<A NAME="tex2html1092"
   HREF="node80.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1028"
-  HREF="node42.html">
+<A NAME="tex2html1090"
+  HREF="node78.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1022"
+<A NAME="tex2html1084"
   HREF="node78.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1031"
-  HREF="node80.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1029"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1023"
-  HREF="node78.html">Switch</A>
+<B> Next:</B> <A NAME="tex2html1093"
+  HREF="node80.html">product</A>
+<B> Up:</B> <A NAME="tex2html1091"
+  HREF="node78.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1085"
+  HREF="node78.html">Tensor operations</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00430000000000000000"></A><A NAME="Variable:constant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
+<H2><A NAME="SECTION00421000000000000000"></A><A NAME="Operation:sum"></A>
 <BR>
-Variables
-</H1>
-
-<P>
-Variables represent values in a calculation, and come in a number of
-varieties:
-<DL>
-<DT><STRONG>Constants</STRONG></DT>
-<DD>represent an explicit numerical value, and do not
-have a name. Their graphical representation shows the actual value of
-the constant.
-</DD>
-<DT><STRONG>Parameters</STRONG></DT>
-<DD>are named constants. All instances of a given name
-represent the same value, as with all other named variables, so
-changing the value of one parameter, either through its edit menu, or
-through a slider, will affect all the others of that name.
-</DD>
-<DT><STRONG>Flow variables</STRONG></DT>
-<DD>have an input port that defines how the value is
-to be calculated. Only one flow variable of a given name can have its
-input port connected, as they all refer to the same quantity. If no
-input ports are connected, then flow variables act just like
-parameters.
-</DD>
-<DT><STRONG>Integral variables</STRONG></DT>
-<DD>represent the result of integrating its
-input over time  by means of the differential
-equation solver. The integrand is represented by the input to an
-integral operator that is attached to the integral variable.
-</DD>
-<DT><STRONG>Stock variables</STRONG></DT>
-<DD>are the columns of Godley tables, and represent
-the integral over time of the sum of the flow variables making up the
-column.
-</DD>
-</DL>
-
-<P>
-Variables may be converted between types in the variable edit menu,
-available from the context menu, subject to certain rules. For example,
-a variable whose input is wired anywhere on the canvas cannot be
-changed from &ldquo;flow&rdquo;. Stock variables need to be defined in a Godley
-table, and so on.
+sum <SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="31" ALIGN="MIDDLE" BORDER="0"
+ SRC="img17.png"
+ ALT="$\sum $"></SPAN>
+</H2> Sum along a given
+axis. 
 
 <P>
 <BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A NAME="tex2html1032"
-  HREF="node80.html">Variable names</A>
-<LI><A NAME="tex2html1033"
-  HREF="node81.html">Initial conditions</A>
-<LI><A NAME="tex2html1034"
-  HREF="node82.html">Sliders</A>
-</UL>
-<!--End of Table of Child-Links-->
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1030"
-  HREF="node80.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1028"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1022"
-  HREF="node78.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1031"
-  HREF="node80.html">Variable names</A>
-<B> Up:</B> <A NAME="tex2html1029"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1023"
-  HREF="node78.html">Switch</A></DIV>
-<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>
