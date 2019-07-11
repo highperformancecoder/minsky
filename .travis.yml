@@ -33,9 +33,9 @@ before_install:
   - sudo apt-get install -y libboost-filesystem-dev
   - sudo apt-get install -y libboost-thread-dev
   - sudo apt-get install -y libboost-signals-dev
-  - sudo apt-get install -y libsoci
-  - sudo apt-get install -y libsoci-dev
-  - sudo apt-get install -y libunittest++-dev
+  - sudo apt-get install -y --allow-unauthenticated libsoci
+  - sudo apt-get install -y --allow-unauthenticated libsoci-dev
+  - sudo apt-get install -y --allow-unauthenticated libunittest++-dev
   - sudo apt-get install -y linkchecker
   - sudo apt-get install -y csvprintf
   - sudo apt-get install -y libxml2-utils
