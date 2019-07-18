@@ -137,9 +137,10 @@ endif
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
 # only perform link checking if online
-ifndef TRAVIS
-	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
-endif
+# linkchecker not currently working! :(
+#ifndef TRAVIS
+#	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
+#endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
