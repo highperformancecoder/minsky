@@ -499,9 +499,9 @@ proc addBookMark {} {
         minsky.canvas.model.addBookmark [.bookMarkDialog.name.val get]
     }
     tkwait visibility .bookMarkDialog
-    grab set .bookMarkDialog
     wm transient .bookMarkDialog
-   
+    focus .bookMarkDialog.name.val
+    grab set .bookMarkDialog
 }
     
 # self submitting script that continues while a button is pressed
