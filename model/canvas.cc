@@ -175,7 +175,17 @@ namespace minsky
               case ClickType::onItem:
                 updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
                 // move item relatively to avoid accidental moves on double click
-                itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+                if (selection.empty())
+                  itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
+                else
+                  {
+                    // move the whole selection
+                    auto deltaX=x-moveOffsX-itemFocus->x(), deltaY=y-moveOffsY-itemFocus->y();
+                    for (auto& i: selection.items)
+                      i->moveTo(i->x()+deltaX, i->y()+deltaY);
+                    for (auto& i: selection.groups)
+                      i->moveTo(i->x()+deltaX, i->y()+deltaY);
+                  }
                 // check if the move has moved outside or into a group
                 if (auto g=itemFocus->group.lock())
                   if (g==model || !g->contains(itemFocus->x(),itemFocus->y()))
