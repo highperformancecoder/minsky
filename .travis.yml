@@ -24,7 +24,7 @@ before_install:
   - sudo apt-get install -y libdb-dev
   - sudo apt-get install -y libncurses5-dev
   - sudo apt-get install -y librsvg2-dev
-  - sudo apt-get install -y json-spirit
+  - sudo apt-get install -y --allow-unauthenticated json-spirit
   - sudo apt-get install -y libboost-dev
   - sudo apt-get install -y libboost-system-dev
   - sudo apt-get install -y libboost-regex-dev
@@ -33,11 +33,11 @@ before_install:
   - sudo apt-get install -y libboost-filesystem-dev
   - sudo apt-get install -y libboost-thread-dev
   - sudo apt-get install -y libboost-signals-dev
-  - sudo apt-get install -y libsoci
-  - sudo apt-get install -y libsoci-dev
-  - sudo apt-get install -y libunittest++-dev
+  - sudo apt-get install -y --allow-unauthenticated libsoci
+  - sudo apt-get install -y --allow-unauthenticated libsoci-dev
+  - sudo apt-get install -y --allow-unauthenticated libunittest++-dev
   - sudo apt-get install -y linkchecker
-  - sudo apt-get install -y csvprintf
+  - sudo apt-get install -y --allow-unauthenticated csvprintf
   - sudo apt-get install -y libxml2-utils
   - sudo apt-get install -y octave
   - sudo apt-get install -y texlive
