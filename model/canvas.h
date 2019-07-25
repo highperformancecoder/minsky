@@ -49,6 +49,8 @@ namespace minsky
     CLASSDESC_ACCESS(Canvas);
     void copyVars(const std::vector<VariablePtr>&);
     void reportDrawTime(double) override;
+    void mouseDownCommon(float x, float y);
+
   public:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
     struct Model: public GroupPtr
@@ -111,6 +113,7 @@ namespace minsky
     
     /// event handling for the canvas
     void mouseDown(float x, float y);
+    void controlMouseDown(float x, float y);
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);
     void displayDelayedTooltip(float x, float y);

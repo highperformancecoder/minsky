@@ -31,11 +31,30 @@ namespace minsky
   /// represents items that have been selected
   struct Selection: public Group
   {
-    void clear() {
-      for (auto& i: items) i->selected=false;
-      for (auto& i: groups) i->selected=false;
-      Group::clear();
+    void clear();
+
+    /// add item to selection if not present, or removes it if present
+    /// groups handled as well
+    void toggleItemMembership(const ItemPtr& item);
+
+    /// check if item already present, and if not, inserts item
+    /// delegates to ensureGroupInserted if passed a group
+    void ensureItemInserted(const ItemPtr& item);
+    
+    /// check if \a group already present, and if not, inserts it
+    void ensureGroupInserted(const GroupPtr& item);
+
+    void insertItem(const ItemPtr& item) {
+      items.push_back(item);
+      item->insertControlled(*this);
+      item->selected=true;
     }
+    void insertGroup(const GroupPtr& g) {
+      groups.push_back(g);
+      g->selected=true;
+    }
+    /// return if item is contained in selection
+    bool contains(const ItemPtr& item) const;
   };
 
   /// represents rectangular region of a lasso operation

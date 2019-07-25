@@ -32,7 +32,8 @@
 namespace minsky 
 {
   class LassoBox;
-
+  class Selection;
+  
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
   /// a lasso is intended
@@ -183,6 +184,9 @@ namespace minsky
     }
     /// perform units consistency checks
     Units checkUnits() const {return units(true);}
+    /// insert this items controlled or controller items are inserted
+    /// correctly into \a selection.
+    virtual void insertControlled(Selection& selection) {}
   };
 
   typedef std::shared_ptr<Item> ItemPtr;

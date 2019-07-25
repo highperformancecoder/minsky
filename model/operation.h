@@ -199,6 +199,8 @@ namespace minsky
 
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;
+
+    void insertControlled(Selection& selection) override;
   };
 
   class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>

@@ -107,6 +107,7 @@ namespace minsky
     void setCurrency(const std::string& currency) 
     {for (auto& i: m_stockVars) i->setUnits(currency);}
       
+    void insertControlled(Selection& selection) override;
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 

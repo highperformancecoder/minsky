@@ -249,6 +249,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y) override;
 
     /// returns true if this is higher in the heirarchy than the argument
+    /// this->higher(*this) is false
     bool higher(const Group&) const;
     /// return level in the heirarchy
     unsigned level() const;

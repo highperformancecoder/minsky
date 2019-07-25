@@ -517,7 +517,12 @@ namespace minsky
     r.normalise();
     return r;
   }
-   
+
+  void IntOp::insertControlled(Selection& selection)
+  {
+    selection.ensureItemInserted(intVar);
+  }
+  
   const IntOp& IntOp::operator=(const IntOp& x)
   {
     Super::operator=(x); 

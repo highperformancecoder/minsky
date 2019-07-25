@@ -389,6 +389,13 @@ namespace minsky
     return foundFlow? units: cminsky().variableValues[vid].units;
   }
 
+  void GodleyIcon::insertControlled(Selection& selection)
+  {
+    for (auto& i: flowVars())
+      selection.ensureItemInserted(i);
+    for (auto& i: stockVars())
+      selection.ensureItemInserted(i);
+  }
   
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {

@@ -203,6 +203,7 @@ namespace minsky
       }
     }
 
+    void insertControlled(Selection& selection) override;
   };
 
   template <minsky::VariableType::Type T>

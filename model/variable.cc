@@ -298,6 +298,10 @@ void VariableBase::exportAsCSV(const std::string& filename) const
     value->second.exportAsCSV(filename, name());
 }
 
+void VariableBase::insertControlled(Selection& selection)
+{
+  selection.ensureItemInserted(controller.lock());
+}
 
 namespace minsky
 {

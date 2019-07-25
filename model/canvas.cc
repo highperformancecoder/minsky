@@ -31,7 +31,22 @@ using namespace minsky;
 
 namespace minsky
 {
+  void Canvas::controlMouseDown(float x, float y)
+  {
+    mouseDownCommon(x,y);
+    if (itemFocus && itemFocus->group.lock() == model)
+      selection.toggleItemMembership(itemFocus);
+  }
+
   void Canvas::mouseDown(float x, float y)
+  {
+    mouseDownCommon(x,y);
+    if (!itemFocus || !selection.contains(itemFocus))
+      selection.clear(); // clicking outside a selection clears it
+  }
+  
+  
+  void Canvas::mouseDownCommon(float x, float y)
   {
     // firstly, see if the user is selecting an item
     if ((itemFocus=itemAt(x,y)))
@@ -175,7 +190,7 @@ namespace minsky
               case ClickType::onItem:
                 updateRegion=LassoBox(itemFocus->x(),itemFocus->y(),x,y);
                 // move item relatively to avoid accidental moves on double click
-                if (selection.empty())
+                if (selection.empty() || !selection.contains(itemFocus))
                   itemFocus->moveTo(x-moveOffsX, y-moveOffsY);
                 else
                   {
@@ -363,23 +378,11 @@ namespace minsky
 
     for (auto& i: topLevel->items)
       if (i->visible() && lasso.intersects(*i))
-        {
-          selection.items.push_back(i);
-          i->selected=true;
-          if (auto integ=dynamic_cast<IntOp*>(i.get()))
-            {
-              // ensure integral variable is selected too
-              selection.items.push_back(integ->intVar);
-              integ->intVar->selected=true;
-            }
-        }
+        selection.ensureItemInserted(i);
 
     for (auto& i: topLevel->groups)
       if (i->visible() && lasso.intersects(*i))
-        {
-          selection.groups.push_back(i);
-          i->selected=true;
-        }
+        selection.ensureGroupInserted(i);
 
     for (auto& i: topLevel->wires)
       if (i->visible() && lasso.contains(*i))
