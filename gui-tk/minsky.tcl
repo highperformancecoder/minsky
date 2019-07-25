@@ -41,6 +41,7 @@ set canvasHeight 800
 set backgroundColour lightGray
 set preferences(nRecentFiles) 10
 set preferences(panopticon) 1
+set preferences(focusFollowsMouse) 0
 set recentFiles {}
 
 # select Arial Unicode MS by default, as this gives decent Unicode support
@@ -200,7 +201,9 @@ wm deiconify .
 tk appname [file rootname [file tail $argv(0)]]
 wm title . "$progName: $fname" 
 setBackgroundColour $backgroundColour
-tk_focusFollowsMouse
+proc tk_focusPrev {win} {return $win}
+proc tk_focusNext {win} {return $win}
+if $preferences(focusFollowsMouse) tk_focusFollowsMouse
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
 #source $minskyHome/library/htmllib.tcl
@@ -311,6 +314,7 @@ set preferencesVars {
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
     panopticon        "Enable panopticon" 1 bool
+    focusFollowsMouse        "Focus follows mouse" 1 bool
 }
 lappend preferencesVars defaultFont "Font" [defaultFont] font
 
@@ -1290,6 +1294,7 @@ proc setPreferenceParms {} {
     } else {
         place forget .wiring.panopticon
     }
+    if {$preferences(focusFollowsMouse)} tk_focusFollowsMouse
 }
 
 setPreferenceParms
