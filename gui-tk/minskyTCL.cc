@@ -138,20 +138,20 @@ namespace minsky
     GlobalMemoryStatusEx(&s);
     return s.ullTotalPhys;
   } 
-#elif defined(__APPLE__)
-  size_t physicalMem()
-  {
-    int mib[2];
-    int64_t physical_memory;
-    size_t length;
-
-    // Get the Physical memory size
-    mib[0] = CTL_HW;
-    mib[1] = HW_MEMSIZE;
-    length = sizeof(int64_t);
-    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
-    return physical_memory;
-  }
+//#elif defined(__APPLE__)
+//  size_t physicalMem()
+//  {
+//    int mib[2];
+//    int64_t physical_memory;
+//    size_t length;
+//
+//    // Get the Physical memory size
+//    mib[0] = CTL_HW;
+//    mib[1] = HW_MEMSIZE;
+//    length = sizeof(int64_t);
+//    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+//    return physical_memory;
+//  }
 #else
   // all else fails, return max value
   size_t physicalMem() {return ~0UL;}
