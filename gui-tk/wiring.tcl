@@ -1171,8 +1171,10 @@ proc editVar {} {
         "constant" -
         "flow" {$editVarInput(units_focus_value) configure -state disabled  -foreground gray}
     }
-        
-    set editVarInput(title) "[$item.name]: Value=[value.value]"
+
+    set value "unknown"
+    catch {set value [value.value]}
+    set editVarInput(title) "[$item.name]: Value=$value"
     tkwait visibility .wiring.editVar
     grab set .wiring.editVar
     wm transient .wiring.editVar
