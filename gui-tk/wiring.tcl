@@ -314,7 +314,7 @@ proc addVariable {} {
     set varType flow
     set varInput(title) "Create Variable"
     addConstantOrVariable
-    .wiring.initVar.$initVar_name configure -state enabled
+    .wiring.initVar.$initVar_name configure -state normal
 }
 
 
@@ -331,7 +331,7 @@ proc addParameter {} {
     set varType parameter
     set varInput(title) "Create Parameter"
     addConstantOrVariable
-    .wiring.initVar.$initVar_name configure -state enabled
+    .wiring.initVar.$initVar_name configure -state normal
 }
 
 proc addConstantOrVariable {} {
@@ -916,12 +916,12 @@ proc deiconifyEditVar {} {
                     .wiring.editVar.entry40 configure -state disabled
                 }
                 "flow" {
-                    .wiring.editVar.entry10 configure -state enabled
+                    .wiring.editVar.entry10 configure -state normal
                     .wiring.editVar.entry40 configure -state disabled
                 }
                 default {
-                    .wiring.editVar.entry10 configure -state enabled
-                    .wiring.editVar.entry40 configure -state enabled
+                    .wiring.editVar.entry10 configure -state normal
+                    .wiring.editVar.entry40 configure -state normal
                 }
             }
         }
@@ -1002,7 +1002,7 @@ proc deiconifyInitVar {} {
             if {[.wiring.initVar.entry20 get]=="constant"} {
                 .wiring.initVar.entry10 configure -state disabled
             } else {
-                .wiring.initVar.entry10 configure -state enabled
+                .wiring.initVar.entry10 configure -state normal
             }
         }
 
