@@ -62,12 +62,15 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
   Rotate r(rotation+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
   RenderVariable rv(*this);
   double z=zoomFactor();
-  double hpx=z*rv.handlePos();
-  double hpy=-z*rv.height();
-  if (type()!=constant && hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
-      return ClickType::onSlider;
-  else
-    return Item::clickType(xx,yy);
+  try
+    {
+      double hpx=z*rv.handlePos();
+      double hpy=-z*rv.height();
+      if (type()!=constant && hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
+        return ClickType::onSlider;
+    }
+  catch (...) {}
+  return Item::clickType(xx,yy);
 }
 
 //Factory
