@@ -648,11 +648,15 @@ namespace schema2
                             }
                   }
                 SchemaHelper::setStockAndFlow(*godley, flowVars, stockVars);
-                godley->update();
-                if (i.height)
-                  godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                else if (i.iconScale) //legacy schema handling
-                  godley->scaleIconForHeight(*i.iconScale * godley->height());
+                try
+                  {
+                    godley->update();
+                    if (i.height)
+                      godley->scaleIconForHeight(*i.height*godley->zoomFactor());
+                    else if (i.iconScale) //legacy schema handling
+                      godley->scaleIconForHeight(*i.iconScale * godley->height());
+                  }
+                catch (...) {} //ignore exceptions: ticket #1045
               }
           }
         if (i.type=="Ravel" && i.lockGroup)
