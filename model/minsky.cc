@@ -24,6 +24,10 @@
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv2.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_multifit_nlinear.h>
 #include <cairo_base.h>
 
 #include <schema/schema2.h>
@@ -713,6 +717,103 @@ namespace minsky
        });
     canvas.requestRedraw();
   }
+  
+  /*
+  For using GSL non-linear least square fitting routines
+  patterned on first Large Nonlinear Least Squares Example.
+  See online documentation at https://www.gnu.org/software/gsl/doc/html/nls.html
+  */
+      
+namespace
+{	
+	
+   struct model_params {
+	   double *t;
+	   double *x_init;
+	   shared_ptr<RKdata> d;
+   };      
+	
+   int residual_func(const gsl_vector * x, void *params,
+          gsl_vector * f)
+   {
+	  if (params==NULL) return GSL_EBADFUNC;
+	   	  
+	  struct model_params *par = ((struct model_params *)params); 
+	  
+      int n;
+      int err = GSL_SUCCESS;
+      n = ValueVector::stockVars.size();
+      vector<double> xx(n);
+      
+      for (size_t i = 0; i < n; i++)
+         xx[i] = gsl_vector_get(x,i); 
+       
+      // would like integration to continue from Minsky::step(). So, still a WORK IN PROGRESS
+      
+      //err=gsl_odeiv2_driver_apply(par->d->driver, par->t,numeric_limits<double>::max(),&xx[0]);
+	
+	  // define residual vector function to be optimized 
+      for (size_t i = 0; i < n; i++)
+          gsl_vector_set (f, i, xx[i] - par->x_init[i]);  
+            
+      return err;
+   }
+   
+      static void errHandlerOpt(const char* reason, const char* file, int line, int gsl_errno) {
+         throw error("gsl: %s:%d: %s",file,line,reason);
+   } 
+
+}      
+
+  int Minsky::LM_optimize(double x_out[], void * opt_pars)
+  {
+    	
+      gsl_set_error_handler(errHandlerOpt);	
+      const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_trust;
+      gsl_multifit_nlinear_workspace *w;
+      gsl_multifit_nlinear_fdf fdf;
+      gsl_multifit_nlinear_parameters fdf_params = gsl_multifit_nlinear_default_parameters();	
+      
+      struct model_params *params = ((struct model_params *)opt_pars);
+  	
+      const size_t n = stockVars.size();   
+      const size_t p = n; 
+      
+      gsl_vector *f = gsl_vector_alloc(n);
+      gsl_vector_view x = gsl_vector_view_array (x_out, p);    
+      int status, info;
+      
+      const double xtol = 1e-8;
+      const double gtol = 1e-8;
+      const double ftol = 0.0;
+      
+      /* define the function to be minimized */
+      fdf.f = residual_func;
+      fdf.df = NULL; //func_df;   /* set to NULL for finite-difference Jacobian */
+      fdf.fvv = NULL;     /* not using geodesic acceleration */
+      fdf.n = n;
+      fdf.p = p;
+      fdf.params = params; 
+      
+      /* allocate workspace with default parameters */
+      w = gsl_multifit_nlinear_alloc (T, &fdf_params, n, p);
+      
+      /* initialize solver with starting point and weights */
+      gsl_multifit_nlinear_init (&x.vector, &fdf,w);
+      
+      /* compute initial cost function */
+      f = gsl_multifit_nlinear_residual(w);
+      
+      /* solve the system with a maximum of 100 iterations */
+      status = gsl_multifit_nlinear_driver(100, xtol, gtol, ftol,
+                                           NULL, NULL, &info, w);
+      
+      for (size_t i = 0; i < n; i++)
+         x_out[i] = gsl_vector_get (w->x,i);
+      
+      gsl_multifit_nlinear_free (w);       
+      return status;                      
+  }  
 
   void Minsky::step()
   {
@@ -724,6 +825,7 @@ namespace minsky
     vector<double> stockVarsCopy(stockVars);
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
+    int opt_err=GSL_SUCCESS;
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
     boost::thread rkThread([&]() {
       try
@@ -731,11 +833,18 @@ namespace minsky
           double tp=reverse? -t: t;
           if (ode)
             {
-              gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
-              // we need to update Minsky's t synchronously to support the t operator
-              // potentially means t and stockVars out of sync on GUI, but should still be thread safe
-              err=gsl_odeiv2_driver_apply(ode->driver, &tp, numeric_limits<double>::max(), 
-                                          &stockVarsCopy[0]);
+				
+			  struct model_params pars = { &tp, &stockVarsCopy[0], ode} ;
+			  
+			  gsl_odeiv2_driver_set_nmax(pars.d->driver, nSteps);
+                 // we need to update Minsky's t synchronously to support the t operator
+                 // potentially means t and stockVars out of sync on GUI, but should still be thread safe
+              err=gsl_odeiv2_driver_apply(pars.d->driver, pars.t, numeric_limits<double>::max(),&stockVarsCopy[0]);
+              
+                           
+              // minimize difference between initial stock variable values and values at end point of prior integration step, still a WORK IN PROGRESS
+              opt_err = LM_optimize(&stockVarsCopy[0],&pars);
+                                          
             }
           else // do explicit Euler method
             {
