@@ -21,6 +21,7 @@
 #include "variable.h"
 #include "cairoItems.h"
 #include "minsky.h"
+#include "RESTProcess_base.h"
 #include <error.h>
 #include <ecolab_epilogue.h>
 

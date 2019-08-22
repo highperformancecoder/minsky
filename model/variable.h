@@ -275,4 +275,5 @@ namespace minsky
 
 }
 #include "variable.cd"
+#include "variable.xcd"
 #endif

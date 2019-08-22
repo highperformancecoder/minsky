@@ -138,4 +138,5 @@ inline void xml_pack(classdesc::xml_pack_t&,const ecolab::string&,ecolab::Plot&)
 inline void xml_unpack(classdesc::xml_unpack_t&,const ecolab::string&,ecolab::Plot&) {}
 
 #include "plotWidget.cd"
+#include "plotWidget.xcd"
 #endif

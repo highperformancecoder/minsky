@@ -49,4 +49,5 @@ namespace minsky
 }
 
 #include "SVGItem.cd"
+#include "SVGItem.xcd"
 #endif

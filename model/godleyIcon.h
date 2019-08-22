@@ -119,4 +119,5 @@ namespace minsky
 }
 
 #include "godleyIcon.cd"
+#include "godleyIcon.xcd"
 #endif

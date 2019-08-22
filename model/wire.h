@@ -113,4 +113,5 @@ template <> struct access_unpack<minsky::Wire>:
   public classdesc::NullDescriptor<classdesc::unpack_t> {};
 }
 #include "wire.cd"
+#include "wire.xcd"
 #endif

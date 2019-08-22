@@ -41,4 +41,5 @@ namespace minsky
 }
 
 #include "sheet.cd"
+#include "sheet.xcd"
 #endif

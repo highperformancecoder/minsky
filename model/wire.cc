@@ -22,6 +22,7 @@
 #include "port.h"
 #include "group.h"
 #include "selection.h"
+#include "RESTProcess_epilogue.h"
 #include <ecolab_epilogue.h>
 
 using namespace std;

@@ -45,7 +45,7 @@ namespace minsky
     // copy operations not deleted to allow ItemT<Group> to compile
     GroupItems(const GroupItems& x) {};
     GroupItems& operator=(const GroupItems&) {return *this;}
-    std::weak_ptr<Group> self; ///< weak ref to this
+    classdesc::Exclude<std::weak_ptr<Group>> self; ///< weak ref to this
     
     void clear() {
       items.clear();
@@ -415,4 +415,5 @@ namespace classdesc_access
     public classdesc::NullDescriptor<classdesc::unpack_t> {};
 }
 #include "group.cd"
+#include "group.xcd"
 #endif

@@ -24,6 +24,7 @@
 #include "selection.h"
 #include "operation.h"
 #include "switchIcon.h"
+#include "RESTProcess_epilogue.h"
 #include <ecolab_epilogue.h>
 using namespace std;
 

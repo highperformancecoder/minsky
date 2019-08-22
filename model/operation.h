@@ -266,4 +266,5 @@ inline void xml_unpack(classdesc::xml_unpack_t&,const classdesc::string&,classde
 
 
 #include "operation.cd"
+#include "operation.xcd"
 #endif

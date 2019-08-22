@@ -23,6 +23,7 @@
 #include "noteBase.h"
 #include "port.h"
 #include "intrusiveMap.h"
+#include "RESTProcess_base.h"
 #include <TCL_obj_base.h>
 
 #include <cairo.h>
@@ -79,7 +80,8 @@ namespace minsky
     float m_x=0, m_y=0; ///< position in canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
-    std::weak_ptr<Group> group; ///< owning group of this item.
+    /// owning group of this item.
+    classdesc::Exclude<std::weak_ptr<Group>> group; 
     /// canvas bounding box.
     mutable BoundingBox bb;
     bool contains(float xx, float yy) {
@@ -170,6 +172,12 @@ namespace minsky
     virtual std::shared_ptr<Item> select(float x, float y) const;
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
     {::TCL_obj(t,d,*this);}
+    /// returns a RESTProcessor appropriate for this item type
+    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
+    {
+      return std::unique_ptr<classdesc::RESTProcessBase>
+        (new classdesc::RESTProcessObject<Item>(*this));
+    }
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
@@ -212,6 +220,11 @@ namespace minsky
     }
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
+    std::unique_ptr<classdesc::RESTProcessBase> restProcess() override
+    {
+      return std::unique_ptr<classdesc::RESTProcessBase>
+        (new classdesc::RESTProcessObject<T>(dynamic_cast<T&>(*this)));
+    }
   };
 
 }
@@ -241,6 +254,7 @@ namespace classdesc_access
   };
 }
 #include "item.cd"
+#include "item.xcd"
 
 #endif
 

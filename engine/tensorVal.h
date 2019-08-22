@@ -43,4 +43,5 @@ namespace minsky
 }
 
 #include "tensorVal.cd"
+#include "tensorVal.xcd"
 #endif
