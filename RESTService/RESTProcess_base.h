@@ -76,6 +76,8 @@ namespace classdesc
         case json_spirit::real_type:
           convert(x,j.get_real());
           break;
+        case json_spirit::null_type:
+          break;
         }
   }
   
