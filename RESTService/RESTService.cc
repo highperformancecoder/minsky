@@ -63,16 +63,34 @@ namespace minsky
 int main()
 {
   RESTProcess_t registry;
-  RESTProcess(registry,"minsky",minsky::minsky());
+  RESTProcess(registry,"/minsky",minsky::minsky());
   
   for (;;)
     {
       string cmd;
       cin>>cmd;
+      if (cmd=="/list")
+        {
+          for (auto& i: registry)
+            cout << i.first << endl;
+          continue;
+        }
       json_pack_t jin;
       read(cin,jin);
       auto i=registry.find(cmd);
       if (i!=registry.end())
-        write(i->second->process("",jin), cout);
+        {
+          try
+            {
+              write(i->second->process("",jin), cout);
+            }
+          catch (const std::exception& x)
+            {
+              cout << "Error:"<<x.what();
+            }
+          cout << endl;
+        }
+      else
+        cout << cmd << " not found"<<endl;
     }
 }
