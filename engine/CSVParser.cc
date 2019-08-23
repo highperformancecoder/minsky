@@ -395,8 +395,6 @@ namespace minsky
                   {
                     if (tabularFormat)
                       key.push_back(horizontalLabels[col]);
-                    if (spec.duplicateKeyAction==DataSpec::throwException && tmpData.count(key))
-                      throw DuplicateKey(key);
 
                     // remove thousands separators, and set decimal separator to '.' ("C" locale)
                     string s;
@@ -415,6 +413,8 @@ namespace minsky
                         else
                           switch (spec.duplicateKeyAction)
                             {
+                            case DataSpec::throwException:
+                              throw DuplicateKey(key); 
                             case DataSpec::sum:
                               i->second+=v;
                               break;
