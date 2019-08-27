@@ -7,7 +7,7 @@ env:
   - TEST_SUITE=docs
   
 before_install:
-  - wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_14.04/Release.key
+  - wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_18.04/Release.key
   - sudo apt-key add - < Release.key
   - echo 'deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_14.04/ /' >/tmp/hpcoders.list 
   - sudo mv /tmp/hpcoders.list /etc/apt/sources.list.d/
@@ -41,6 +41,7 @@ before_install:
   - sudo apt-get install -y libxml2-utils
   - sudo apt-get install -y octave
   - sudo apt-get install -y texlive
+  - sudo apt-get install -y texlive-font-utils
   - sudo apt-get install -y latex2html
   - sudo apt-get install -y perl
 #  - psql -c 'create database minsky;' -U postgres
