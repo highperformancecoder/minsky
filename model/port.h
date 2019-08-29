@@ -47,8 +47,13 @@ namespace minsky
     VariableValue variableValue; //refers to variable value representing this port
     std::vector<Wire*> m_wires;
     friend class Wire;
+    Item& m_item;
   public:
-    Item& item; // owner of this port
+    /// @{ owner of this port
+    // this is an accessor to prevent serialisation infinite loops
+    Item& item() {return m_item;};
+    const Item& item() const {return m_item;}
+    /// @}
     GroupPtr group() const;
 
     /// returns a vector of weak references to the wires attached to this port
@@ -70,7 +75,7 @@ namespace minsky
     float y() const;
     void moveTo(float x, float y);
     //Port() {}
-    Port(Item& a_item, int f=noFlags): flags(f), item(a_item) {}
+    Port(Item& item, int f=noFlags): flags(f), m_item(item) {}
 
     // destruction of this port must also destroy all attached wires
     ~Port() {deleteWires();}

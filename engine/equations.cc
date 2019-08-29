@@ -22,7 +22,7 @@
 #include "minsky.h"
 #include "str.h"
 #include "flowCoef.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace minsky;
 
 namespace MathDAG
@@ -723,7 +723,7 @@ namespace MathDAG
     NodePtr r;
     if (auto p=wire.from())
       {
-        auto& item=p->item;
+        auto& item=p->item();
         if (auto o=dynamic_cast<OperationBase*>(&item))
           {
             if (expressionCache.exists(*o))

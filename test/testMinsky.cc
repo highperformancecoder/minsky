@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "minsky.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <gsl/gsl_integration.h>
 using namespace minsky;

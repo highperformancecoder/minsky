@@ -27,7 +27,7 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;

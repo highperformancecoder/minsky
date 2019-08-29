@@ -18,7 +18,7 @@
 */
 
 #include "server/database.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <fstream>
 #include <string>

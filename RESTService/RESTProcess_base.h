@@ -1,4 +1,4 @@
- /*
+/*
   @copyright Steve Keen 2019
   @author Russell Standish
   This file is part of Minsky.
@@ -20,7 +20,6 @@
 #ifndef RESTPROCESS_H
 #define RESTPROCESS_H
 /// A classdesc descriptor to generate virtual xrap processing calls
-
 #include <function.h>
 #include <json_pack_base.h>
 
@@ -33,8 +32,13 @@ namespace classdesc
   {
   public:
     virtual json_pack_t process(const string& remainder, const json_pack_t& arguments)=0;
+    virtual json_pack_t signature() const=0;
+    /// return signature for a function type F
+    template <class F> json_pack_t functionSignature() const;
   };
 
+  template <> inline string typeName<RESTProcessBase>() {return "RESTProcessBase";}
+  
   template <class X, class Y>
   typename enable_if<is_convertible<X,Y>, void>::T
   convert(Y& y, const X& x)
@@ -98,7 +102,7 @@ namespace classdesc
   template <class X>
   void convert(const X* x, const json_pack_t& j)
   {}
-
+  
   /// handle setting and getting of objects
   template <class T> class RESTProcessObject: public RESTProcessBase
   {
@@ -107,10 +111,16 @@ namespace classdesc
     RESTProcessObject(T& obj): obj(obj) {}
     json_pack_t process(const string& remainder, const json_pack_t& arguments) override
     {
-      convert(obj, arguments);
       json_pack_t r;
+      if (remainder=="@type")
+        return r<<typeName<T>();
+      else if (remainder=="@signature")
+        return signature();
+      else
+        convert(obj, arguments);
       return r<<obj;
     }
+    json_pack_t signature() const override;
   };
 
   /// REST processor registry 
@@ -163,6 +173,7 @@ namespace classdesc
       json_pack_t r;
       return r<<obj;
     }
+    json_pack_t signature() const override;
   };
 
   template <class T>
@@ -183,6 +194,7 @@ namespace classdesc
       json_pack_t r;
       return r<<obj;
     }
+    json_pack_t signature() const override;
   };
 
   template <class T>
@@ -204,6 +216,7 @@ namespace classdesc
       else
         return {};
     }
+    json_pack_t signature() const override;
   };
 
   template <class T>
@@ -218,6 +231,7 @@ namespace classdesc
       else
         return {};
     }
+    json_pack_t signature() const override;
   };
 
   
@@ -246,7 +260,7 @@ namespace classdesc
     template <class T>
     JSONBuffer& operator>>(const T& x) {++it; return *this;}
   };
-  
+
   // member functions
   template <class F, class R=typename functional::Return<F>::T>
   class RESTProcessFunction: public RESTProcessBase
@@ -260,6 +274,7 @@ namespace classdesc
       json_pack_t r;
       return r<<argBuf.call(f);
     }
+    json_pack_t signature() const override {return functionSignature<F>();}
   };
 
   template <class F, class R>
@@ -272,6 +287,7 @@ namespace classdesc
     {
       throw std::runtime_error("currently unable to call functions returning unique_ptr");
     }
+    json_pack_t signature() const override {return functionSignature<F>();}
   };
 
  
@@ -288,6 +304,7 @@ namespace classdesc
       argBuf.call(f);
       return {};
     }
+    json_pack_t signature() const override {return functionSignature<F>();}
   };
 
   template <class T, class F>

@@ -24,8 +24,7 @@
 #include "evalGodley.xcd"
 #include "panopticon.xcd"
 #include "selection.xcd"
-#include "RESTProcess_epilogue.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 using namespace classdesc;
 using namespace std;
@@ -44,7 +43,14 @@ namespace classdesc
       else
         return {};
     }
+    json_pack_t signature() const override
+    {
+      vector<minsky::Signature> signature{{ptr->classType(),{}}, {ptr->classType(),{ptr->classType()}}};
+      json_pack_t r;
+      return r<<signature;
+    }
   };
+  
 }
 
 namespace minsky

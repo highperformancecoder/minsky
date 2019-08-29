@@ -22,7 +22,7 @@
 #include "latexMarkup.h"
 #include "group.h"
 #include "selection.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 using namespace std;
 using classdesc::enum_keysData;

@@ -2,7 +2,7 @@
   Temporarily in Minsky for development purposes, but will be moved to EcoLab
 */
 #include "coverage.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 namespace minsky
 {

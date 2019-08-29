@@ -22,8 +22,7 @@
 #include "port.h"
 #include "group.h"
 #include "selection.h"
-#include "RESTProcess_epilogue.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 using namespace std;
 
@@ -101,8 +100,8 @@ namespace minsky
     auto f=from(), t=to();
     assert(f->item.group.lock() && t->item.group.lock());
     return f && t &&
-      (f->item.group.lock()->displayContents() ||
-       t->item.group.lock()->displayContents());
+      (f->item().group.lock()->displayContents() ||
+       t->item().group.lock()->displayContents());
   }
 
   void Wire::moveToPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
@@ -208,9 +207,9 @@ namespace minsky
   void Wire::split()
   {
     // add I/O variables if this wire crosses a group boundary
-    if (auto fg=from()->item.group.lock())
-      if (auto tg=to()->item.group.lock())
-        if (fg!=tg && !from()->item.ioVar() && !to()->item.ioVar()) // crosses boundary
+    if (auto fg=from()->item().group.lock())
+      if (auto tg=to()->item().group.lock())
+        if (fg!=tg && !from()->item().ioVar() && !to()->item().ioVar()) // crosses boundary
           {
             // check if this wire is in from group
             auto cmp=[&](WirePtr w) {return w.get()==this;};
@@ -242,9 +241,9 @@ namespace minsky
         // we allow possible traversing twice over a wire, to allow an
         // integral to break the cycle
         if (unitsCtr>2)
-          f->item.throw_error("wiring loop detected");
+          f->item().throw_error("wiring loop detected");
         IncrDecrCounter idc(unitsCtr);
-        return f->item.units(check);
+        return f->item().units(check);
       }
     else return {};
   }

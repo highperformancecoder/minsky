@@ -142,7 +142,7 @@ namespace minsky
 
 #include "minskyVersion.h"
 
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 
 #include <algorithm>
@@ -1059,7 +1059,7 @@ namespace minsky
           { //traverse finished, check for cycle along branch
             if (::find(stack.begin(), stack.end(), p) != stack.end())
               {
-                cminsky().displayErrorItem(p->item);
+                cminsky().displayErrorItem(p->item());
                 return true;
               }
             else
@@ -1328,16 +1328,16 @@ namespace minsky
   {
     cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
                                       (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
-    canvas.surface.swap(tmp);
+    canvas.surface().swap(tmp);
     canvas.redraw();
-    double left=canvas.surface->left(), top=canvas.surface->top();
-    canvas.surface->surface
-      (s(filename, canvas.surface->width(), canvas.surface->height()));
+    double left=canvas.surface()->left(), top=canvas.surface()->top();
+    canvas.surface()->surface
+      (s(filename, canvas.surface()->width(), canvas.surface()->height()));
     if (s==cairo_ps_surface_create)
-      cairo_ps_surface_set_eps(canvas.surface->surface(),true);
-    cairo_surface_set_device_offset(canvas.surface->surface(), -left, -top);
+      cairo_ps_surface_set_eps(canvas.surface()->surface(),true);
+    cairo_surface_set_device_offset(canvas.surface()->surface(), -left, -top);
     canvas.redraw();
-    canvas.surface.swap(tmp);
+    canvas.surface().swap(tmp);
     auto status=cairo_surface_status(tmp->surface());
     if (status!=CAIRO_STATUS_SUCCESS)
       throw error("cairo rendering error: %s",cairo_status_to_string(status));

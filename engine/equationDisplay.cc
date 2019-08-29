@@ -20,7 +20,7 @@
 #include "latexMarkup.h"
 #include "selection.h"
 #include <pango.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace ecolab;
 using ecolab::cairo::Surface;
 

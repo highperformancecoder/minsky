@@ -19,7 +19,7 @@
 
 #include <equations.h>
 #include <minsky.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 using namespace std;

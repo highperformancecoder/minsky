@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "variableType.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace classdesc;
 
 #include <string>

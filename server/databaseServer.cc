@@ -19,7 +19,7 @@
 
 #include "ecolab.h"
 #include "databaseServer.h"
-#include "ecolab_epilogue.h"
+#include "minsky_epilogue.h"
 #include "minskyVersion.h"
 #include "version.h"
 

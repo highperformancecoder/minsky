@@ -37,7 +37,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "SVGItem.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <librsvg-2.0/librsvg/rsvg.h>
 
 // if not #ifdef protected, you get a deprecated warning, which is

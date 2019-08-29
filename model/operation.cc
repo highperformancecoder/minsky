@@ -26,7 +26,7 @@
 
 #include <cairo_base.h>
 #include <pango.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 #include <math.h>
 #include <sstream>
@@ -439,7 +439,7 @@ namespace minsky
               if (!r.empty())
                 {
                   if (!ports[2]->wires().empty())
-                    if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item))
+                    if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item()))
                       if (fracPart(v->value())==0)
                         {
                           for (auto& i: r) i.second*=v->value();
