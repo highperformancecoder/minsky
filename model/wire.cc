@@ -98,7 +98,7 @@ namespace minsky
   bool Wire::visible() const
   {
     auto f=from(), t=to();
-    assert(f->item.group.lock() && t->item.group.lock());
+    assert(f->item().group.lock() && t->item().group.lock());
     return f && t &&
       (f->item().group.lock()->displayContents() ||
        t->item().group.lock()->displayContents());

@@ -75,12 +75,23 @@ int main()
     {
       string cmd;
       cin>>cmd;
+      if (cmd[0]!='/')
+        {
+          cerr << "command starts with /"<<endl;
+          continue;
+        }
       if (cmd=="/list")
         {
           for (auto& i: registry)
             cout << i.first << endl;
           continue;
         }
+
+      auto n=cmd.rfind('/');
+      auto tail=cmd.substr(n);
+      if (tail[1]=='@')
+        cmd=cmd.substr(0,n);
+      
       json_pack_t jin;
       read(cin,jin);
       auto i=registry.find(cmd);
@@ -88,11 +99,14 @@ int main()
         {
           try
             {
-              write(i->second->process("",jin), cout);
+              if (tail=="/@signature")
+                write(i->second->signature(), cout);
+              else
+                write(i->second->process("",jin), cout);
             }
           catch (const std::exception& x)
             {
-              cout << "Error:"<<x.what();
+              cerr << "Error:"<<x.what();
             }
           cout << endl;
         }

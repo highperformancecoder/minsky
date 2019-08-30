@@ -17,7 +17,7 @@ for i in test/00/*.sh; do
     if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh ]; then
         sh $i
     else
-        sh $i &> /dev/null
+        sh $i #&> /dev/null
     fi
     if test $? -eq 0 ; then 
         echo passed
