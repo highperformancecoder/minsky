@@ -44,9 +44,9 @@ before_install:
   - sudo apt-get install -y texlive-font-utils
   - sudo apt-get install -y latex2html
   - sudo apt-get install -y perl
-#  - psql -c 'create database minsky;' -U postgres
+  - psql -c 'create database minsky;' -U postgres
   - ls /usr/lib/libsoci*
-#addons:
-#  postgresql: "9.3"
+addons:
+  postgresql: "9.3"
 script:
   bash travisRun.sh
