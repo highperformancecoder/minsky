@@ -59,6 +59,19 @@ namespace classdesc_access
 namespace classdesc
 {
 
+  template <> struct tn<cairo_t>
+  {
+    static std::string name()
+    {return "cairo_t";}
+  };
+
+  template <> struct tn<cairo_surface_t>
+  {
+    static std::string name()
+    {return "cairo_surface_t";}
+  };
+
+  
   template <class T> 
   json_pack_t RESTProcessObject<T>::signature() const
   {
@@ -95,12 +108,24 @@ namespace classdesc
     return r<<signature;
   }
 
+  
+  
+  template <class F, int N=functional::Arity<F>::value >
+  struct Args: public std::vector<string>
+  {
+    Args(): std::vector<string>(Args<F,N-1>()) {
+      push_back(typeName<typename functional::Arg<F,N>::type>());
+    }
+  };
+
+  template <class F> struct Args<F,0>: public std::vector<string> {};
+
+  
   template <class F>
   json_pack_t RESTProcessBase::functionSignature() const
   {
     json_pack_t r;
-    return r<<minsky::Signature
-      {typeName<typename functional::Return<F>::T>(),{/*TODO*/}};
+    return r<<minsky::Signature{typeName<typename functional::Return<F>::T>(), Args<F>()};
   }
 
   template <class T>

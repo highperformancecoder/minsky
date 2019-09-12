@@ -132,6 +132,38 @@ namespace classdesc
       std::replace(d.begin(),d.end(),'.','/');
       emplace(d, rp);
     }
+
+    void process(const std::string& query, std::istream& input, std::ostream& output)
+    {
+      if (query[0]!='/') return;
+      string cmd=query;
+      
+      for (auto cmdEnd=query.length(); cmdEnd>0;
+           cmdEnd=cmd.rfind('/'), cmd=cmd.substr(0,cmdEnd))
+        {
+          auto r=find(cmd);
+          if (r!=end())
+            {
+              auto tail=query.substr(cmdEnd);
+              json_pack_t jin(json_spirit::mValue::null);
+              if (input.peek()!='\n')
+                read(input,jin);
+              else
+                {
+                  string t;
+                  getline(input,t); // absorb '\n'
+                }
+              if (tail=="/@signature")
+                write(r->second->signature(), output);
+              else
+                write(r->second->process(tail, jin), output);
+              output<<endl;
+              break;
+            }
+        }
+      if (cmd.empty())
+        output << "Command not found"<<std::endl;
+    }
   };
   
   template <class T>
@@ -157,9 +189,10 @@ namespace classdesc
   {}
 
   
+  inline bool startsWith(const std::string& x, const std::string& prefix)
+  {return x.size()>=prefix.size() && equal(prefix.begin(), prefix.end(), x.begin());}
   
   // sequences
-  
   template <class T> class RESTProcessSequence: public RESTProcessBase
   {
     T& obj;
@@ -167,11 +200,33 @@ namespace classdesc
     RESTProcessSequence(T& obj): obj(obj) {}
     json_pack_t process(const string& remainder, const json_pack_t& arguments) override
     {
+      json_pack_t r;
       // TODO @elem selector in remainder
       if (remainder.empty())
         convert(obj, arguments);
-      json_pack_t r;
-      return r<<obj;
+      else if (startsWith(remainder, "@elem/"))
+        {
+          auto r1=remainder.substr(6);
+          auto n=r1.find('/');
+          if (n!=string::npos)
+            {
+              size_t k=stoi(r1.substr(0,n));
+              if (k<obj.size())
+                {
+                  auto elem=obj.begin();
+                  advance(elem, k);
+                  RESTProcess_t map;
+                  RESTProcess(map,"",*elem);
+                  auto i=map.find(r1.substr(n+1));
+                  // TODO move splitter algorithm into RESTProcess_t
+                  if (i!=map.end())
+                    r<<i->second->process("",arguments);
+                }
+            }
+        }
+      else
+        r<<obj;
+      return r;
     }
     json_pack_t signature() const override;
   };
