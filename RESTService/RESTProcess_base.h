@@ -157,7 +157,7 @@ namespace classdesc
                 write(r->second->signature(), output);
               else
                 write(r->second->process(tail, jin), output);
-              output<<endl;
+              output<<std::endl;
               break;
             }
         }

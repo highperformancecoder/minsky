@@ -29,6 +29,11 @@
 using namespace classdesc;
 using namespace std;
 
+#include <readline/readline.h>
+#include <readline/history.h>
+//extern "C" char *readline(const char *);
+//extern "C" void add_history(const char *);
+
 namespace classdesc
 {
   template <>
@@ -70,31 +75,29 @@ int main()
 {
   RESTProcess_t registry;
   RESTProcess(registry,"/minsky",minsky::minsky());
-  
-  for (;;)
-    {
-      string cmd;
-      getline(cin,cmd);
-      
-      if (cmd[0]!='/')
-        {
-          cerr << cmd << "command doesn't starts with /"<<endl;
-          continue;
-        }
-      if (cmd=="/list")
-        {
-          for (auto& i: registry)
-            cout << i.first << endl;
-          continue;
-        }
 
-      try
+  char* c;
+  
+  while ((c=readline("cmd>"))!=nullptr)
+    {
+      string cmd=c;
+      if (cmd[0]!='/')
+        cerr << cmd << "command doesn't starts with /"<<endl;
+      else if (cmd=="/list")
+        for (auto& i: registry)
+          cout << i.first << endl;
+      else
         {
-          registry.process(cmd, cin, cout);
+          try
+            {
+              registry.process(cmd, cin, cout);
+            }
+          catch (const std::exception& ex)
+            {
+              cerr << "Exception: "<<ex.what() << endl;
+            }
         }
-      catch (const std::exception& ex)
-        {
-          cerr << "Exception: "<<ex.what() << endl;
-        }
+      if (strlen(c)) add_history(c); 
+      free(c);
     }
 }
