@@ -90,7 +90,16 @@ int main()
         {
           try
             {
-              registry.process(cmd, cin, cout);
+              json_pack_t jin(json_spirit::mValue::null);
+              if (cin.peek()!='\n')
+                read(cin,jin);
+              else
+                {
+                  string t;
+                  getline(cin,t); // absorb '\n'
+                }
+              write(registry.process(cmd, jin),cout);
+              cout << endl;
             }
           catch (const std::exception& ex)
             {

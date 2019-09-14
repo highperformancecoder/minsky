@@ -24,6 +24,7 @@
 #include <json_pack_base.h>
 
 #include <map>
+#include <stdexcept>
 
 namespace classdesc
 {
@@ -40,20 +41,21 @@ namespace classdesc
   template <> inline string typeName<RESTProcessBase>() {return "RESTProcessBase";}
   
   template <class X, class Y>
-  typename enable_if<is_convertible<X,Y>, void>::T
+  typename enable_if<And<is_convertible<X,Y>,Not<is_const<Y>>>, void>::T
   convert(Y& y, const X& x)
   {y=x;}
 
   template <class X, class Y>
-  typename enable_if<Not<is_convertible<X,Y>>, void>::T
+  typename enable_if<And<Not<is_convertible<X,Y>>,Not<is_const<Y>>>, void>::T
   convert(Y& y, const X& x)
-  {throw std::runtime_error(typeName<X>()+" connot be converted to "+typeName<Y>());}
+  {throw std::runtime_error(typeName<X>()+" cannot be converted to "+typeName<Y>());}
 
   template <class X, class Y>
-  void convert(const Y&, const X&) {}
+  void convert(const Y&, const X&) 
+  {throw std::runtime_error("attempt to alter a const variable");}
   
   template <class X>
-  typename enable_if<Not<is_sequence<X>>, void>::T
+  typename enable_if<And<Not<is_sequence<X>>,Not<is_const<X>>>, void>::T
   convert(X& x, const json_pack_t& j)
   {
       switch (j.type())
@@ -86,7 +88,7 @@ namespace classdesc
   }
   
   template <class X>
-  typename enable_if<is_sequence<X>, void>::T
+  typename enable_if<And<is_sequence<X>,Not<is_const<X>>>, void>::T
   convert(X& x, const json_pack_t& j)
   {
     if (j.type()==json_spirit::array_type)
@@ -133,9 +135,9 @@ namespace classdesc
       emplace(d, rp);
     }
 
-    void process(const std::string& query, std::istream& input, std::ostream& output)
+    json_pack_t process(const std::string& query, const json_pack_t& jin)
     {
-      if (query[0]!='/') return;
+      if (query[0]!='/') return {};
       string cmd=query;
       
       for (auto cmdEnd=query.length(); cmdEnd>0;
@@ -145,24 +147,13 @@ namespace classdesc
           if (r!=end())
             {
               auto tail=query.substr(cmdEnd);
-              json_pack_t jin(json_spirit::mValue::null);
-              if (input.peek()!='\n')
-                read(input,jin);
-              else
-                {
-                  string t;
-                  getline(input,t); // absorb '\n'
-                }
               if (tail=="/@signature")
-                write(r->second->signature(), output);
+                return r->second->signature();
               else
-                write(r->second->process(tail, jin), output);
-              output<<std::endl;
-              break;
+                return r->second->process(tail, jin);
             }
         }
-      if (cmd.empty())
-        output << "Command not found"<<std::endl;
+      throw std::runtime_error("Command not found");
     }
   };
   
@@ -243,9 +234,35 @@ namespace classdesc
     RESTProcessAssociativeContainer(T& obj): obj(obj) {}
     json_pack_t process(const string& remainder, const json_pack_t& arguments) override
     {
-      // TODO @elem selector in remainder
       if (remainder.empty())
         convert(obj, arguments);
+      else if (startsWith(remainder,"/@elem"))
+        {
+          // extract key
+          auto keyStart=find(remainder.begin()+1, remainder.end(), '/');
+          if (keyStart!=remainder.end())
+            {
+              auto keyEnd=find(keyStart+1, remainder.end(), '/');
+              typename T::key_type key;
+              convert(key, string(keyStart+1, keyEnd));
+              auto i=obj.find(key);
+              if (i==obj.end())
+                throw std::runtime_error("key "+string(keyStart+1, keyEnd)+" not found");
+              else
+                {
+                  RESTProcess_t map;
+                  RESTProcess(map,"",*i);
+                  string query(keyEnd,remainder.end());
+                  if (query.empty())
+                    {
+                      json_pack_t r;;
+                      return r<<*i;
+                    }
+                  else
+                    return map.process(query,arguments);
+                }
+            }
+        }
       json_pack_t r;
       return r<<obj;
     }
@@ -374,8 +391,7 @@ namespace classdesc
   typename enable_if<functional::is_nonmember_function_ptr<F>, void>::T
   RESTProcess(RESTProcess_t& repo, const string& d, F f)
   {
-    std::replace(d.begin(),d.end(),'.','/');
-    repo.emplace(d, new RESTProcessFunction<F>(f));
+    repo.add(d, new RESTProcessFunction<F>(f));
   }
 
   inline void RESTProcess(RESTProcess_t& repo, const string& d, const char*& a)

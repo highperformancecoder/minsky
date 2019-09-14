@@ -264,6 +264,11 @@ namespace minsky
 
 
 }
+namespace classdesc
+{
+  template <> struct is_associative_container<minsky::VariableValues>:
+    public true_type {};
+}
 #include "variableValue.cd"
 #include "variableValue.xcd"
 #endif

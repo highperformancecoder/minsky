@@ -32,22 +32,36 @@ namespace classdesc_access
   template <class T>
   struct access_RESTProcess<cd::shared_ptr<T>>
   {
-    void operator()(cd::RESTProcess_t& repo, const std::string& d, cd::shared_ptr<T>& a)
-    {repo.add(d, new cd::RESTProcessPtr<cd::shared_ptr<T>>(a));}
+    template <class U>
+    void operator()(cd::RESTProcess_t& repo, const std::string& d, U& a)
+    {repo.add(d, new cd::RESTProcessPtr<U>(a));}
   };
 
   template <class T>
   struct access_RESTProcess<cd::weak_ptr<T>>
   {
-    void operator()(cd::RESTProcess_t& repo, const std::string& d, cd::weak_ptr<T>& a)
-    {repo.add(d, new cd::RESTProcessPtr<cd::weak_ptr<T>>(a));}
+    template <class U>
+    void operator()(cd::RESTProcess_t& repo, const std::string& d, U& a)
+    {repo.add(d, new cd::RESTProcessPtr<U>(a));}
   };
 
   template <>
   struct access_RESTProcess<cd::string>
   {
-    void operator()(cd::RESTProcess_t& repo, const std::string& d, cd::string& a)
-    {repo.add(d, new cd::RESTProcessObject<cd::string>(a));}
+    template <class U>
+    void operator()(cd::RESTProcess_t& repo, const std::string& d, U& a)
+    {repo.add(d, new cd::RESTProcessObject<U>(a));}
+  };
+
+  template <class F, class S>
+  struct access_RESTProcess<std::pair<F,S>>
+  {
+    template <class U>
+    void operator()(cd::RESTProcess_t& repo, const std::string& d, U& a)
+    {
+      RESTProcess(repo,d+".first", a.first);
+      RESTProcess(repo,d+".second", a.second);
+    }
   };
 
   template <>
@@ -133,7 +147,7 @@ namespace classdesc
   RESTProcess(RESTProcess_t& repo, string d, T& obj)
   {
     repo.add(d, new RESTProcessObject<T>(obj));
-    classdesc_access::access_RESTProcess<T>()(repo,d,obj);
+    classdesc_access::access_RESTProcess<typename remove_const<T>::type>()(repo,d,obj);
   }
 }
 
