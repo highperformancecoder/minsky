@@ -10,7 +10,10 @@ if test $? -ne 0; then exit 2; fi
 
 killFireFox()
 {
-    kill `ps -ef|grep firefox|grep minsky.html|cut -c10-19`
+    pids=`ps -ef|grep firefox|grep minsky.html|cut -c10-19`
+    if [ "$pids" != "" ]; then
+        kill $pids
+    fi
 }
 
 fail()

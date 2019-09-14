@@ -10,7 +10,8 @@ endif
 include $(ECOLAB_HOME)/include/Makefile
 VPATH= .. ../schema ../model ../engine ../server ../RESTService $(ECOLAB_HOME)/include
 
-UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testDatabase.o testUnits.o testXVector.o testTensorOps.o testLockGroup.o testCSVParser.o
+UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testTensorOps.o testLockGroup.o testCSVParser.o
+#testDatabase.o 
 
 MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o ../RESTService.o,$(wildcard ../*.o))
 FLAGS:=-I.. -I../RESTService $(FLAGS)
