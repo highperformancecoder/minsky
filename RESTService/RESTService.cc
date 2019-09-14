@@ -18,12 +18,6 @@
 */
 
 #include "minsky.h"
-#include "minsky.xcd"
-#include "canvas.xcd"
-#include "constMap.xcd"
-#include "evalGodley.xcd"
-#include "panopticon.xcd"
-#include "selection.xcd"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;

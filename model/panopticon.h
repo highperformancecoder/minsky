@@ -39,4 +39,5 @@ namespace minsky
   };
 }
 #include "panopticon.cd"
+#include "panopticon.xcd"
 #endif

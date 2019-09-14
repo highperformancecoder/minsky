@@ -17,6 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "CSVParser.h"
+#include "group.h"
+#include "selection.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;

@@ -18,6 +18,8 @@
 */
 #include <UnitTest++/UnitTest++.h>
 #include "variableValue.h"
+#include "group.h"
+#include "selection.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;

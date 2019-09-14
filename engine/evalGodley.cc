@@ -18,6 +18,8 @@
 */
 
 #include "evalGodley.h"
+#include "group.h"
+#include "selection.h"
 #include "minsky_epilogue.h"
 
 using namespace std;

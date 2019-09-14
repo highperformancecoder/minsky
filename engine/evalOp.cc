@@ -752,7 +752,7 @@ namespace minsky
     
       reset(EvalOpBase::create(op));
       auto t=get();
-      assert(t->numArgs()==0 || from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0));
+      assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
       t->state=state;
       
       switch (t->numArgs())
@@ -1011,6 +1011,8 @@ namespace minsky
           break;
         case reduction:
           assert(t->numArgs()==1 && to.numElements()==1);
+          break;
+        case tensor:
           break;
         }
 #endif

@@ -18,6 +18,8 @@
 */
 
 #include "CSVDialog.h"
+#include "group.h"
+#include "selection.h"
 #include <pango.h>
 #include "minsky_epilogue.h"
 using namespace std;

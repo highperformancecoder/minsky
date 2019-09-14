@@ -88,4 +88,5 @@ namespace minsky
 }
 
 #include "selection.cd"
+#include "selection.xcd"
 #endif

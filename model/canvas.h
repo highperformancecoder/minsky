@@ -243,4 +243,5 @@ namespace minsky
 }
 
 #include "canvas.cd"
+#include "canvas.xcd"
 #endif
