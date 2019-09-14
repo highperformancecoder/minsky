@@ -23,7 +23,7 @@
 #include "minsky.h"
 #include "str.h"
 
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 #include <math.h>
 

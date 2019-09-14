@@ -18,7 +18,7 @@
 */
 #include "schema2.h"
 #include "sheet.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 #include "a85.h"
 #include <zlib.h>
@@ -633,7 +633,7 @@ namespace schema2
                   {
                     auto newP=portMap.find(p);
                     if (newP!=portMap.end())
-                      if (auto ip=g.findItem(newP->second->item))
+                      if (auto ip=g.findItem(newP->second->item()))
                         if (auto v=dynamic_pointer_cast<minsky::VariableBase>(ip))
                           switch (v->type())
                             {

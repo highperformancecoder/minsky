@@ -18,7 +18,7 @@
 */
 
 #include "evalGodley.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 using namespace std;
 

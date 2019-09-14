@@ -23,7 +23,7 @@
 #include "operation.h"
 #include "minsky.h"
 #include <cairo_base.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
 
@@ -34,8 +34,8 @@ namespace minsky
   // assigned the cloned equivalent of a port
   void asgClonedPort(shared_ptr<Port>& p, const map<Item*,ItemPtr>& cloneMap)
   {
-    auto clone=cloneMap.find(&p->item);
-    auto& oports=p->item.ports;
+    auto clone=cloneMap.find(&p->item());
+    auto& oports=p->item().ports;
     if (clone!=cloneMap.end())
       {
         auto opIt=find(oports.begin(), oports.end(), p);
@@ -277,7 +277,7 @@ namespace minsky
   {
     // Find common ancestor group, and move wire to it
     assert(w.from() && w.to());
-    shared_ptr<Group> p1=w.from()->item.group.lock(), p2=w.to()->item.group.lock();
+    shared_ptr<Group> p1=w.from()->item().group.lock(), p2=w.to()->item().group.lock();
     assert(p1 && p2);
     unsigned l1=p1->level(), l2=p2->level();
     for (; l1>l2; l1--) p1=p1->group.lock();
@@ -313,12 +313,12 @@ namespace minsky
         // determine if this is input or output var
         if (iv->ports[1]->wires().size()>0)
           {
-            auto fromGroup=iv->ports[1]->wires()[0]->from()->item.group.lock();
+            auto fromGroup=iv->ports[1]->wires()[0]->from()->item().group.lock();
             if (fromGroup.get() == this)
               {
                 // not an input var
                 for (auto& w: iv->ports[0]->wires())
-                  if (w->to()->item.group.lock().get() == this)
+                  if (w->to()->item().group.lock().get() == this)
                     // join wires, as not crossing boundary
                     {
                       auto to=w->to();
@@ -329,7 +329,7 @@ namespace minsky
               }
             else
               for (auto& w: iv->ports[0]->wires())
-                if (w->to()->item.group.lock() == fromGroup)
+                if (w->to()->item().group.lock() == fromGroup)
                   // join wires, as not crossing boundary
                   {
                     auto to=w->to();
@@ -522,7 +522,7 @@ namespace minsky
   (const shared_ptr<Port>& fromP, const shared_ptr<Port>& toP, const vector<float>& coords)
   {
     // disallow self-wiring
-    if (&fromP->item==&toP->item) 
+    if (&fromP->item()==&toP->item()) 
       return WirePtr();
 
     // wire must go from an output port to an input port

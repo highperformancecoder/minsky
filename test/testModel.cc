@@ -22,7 +22,7 @@
 #include "group.h"
 #include "minsky.h"
 #include "godleyTableWindow.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
@@ -246,10 +246,10 @@ SUITE(Group)
         {
           auto w1=group0->wires[i], w2=g->wires[i];
           CHECK(w1!=w2);
-          CHECK(w1->to()->item.group.lock()==group0);
-          CHECK(w1->from()->item.group.lock()==group0);
-          CHECK(w2->to()->item.group.lock()==g);
-          CHECK(w2->from()->item.group.lock()==g);
+          CHECK(w1->to()->item().group.lock()==group0);
+          CHECK(w1->from()->item().group.lock()==group0);
+          CHECK(w2->to()->item().group.lock()==g);
+          CHECK(w2->from()->item().group.lock()==g);
           auto c1=w1->coords(), c2=w2->coords();
           CHECK_EQUAL(c1.size(), c2.size());
           CHECK_ARRAY_CLOSE(&c1[0], &c2[0], c1.size(), 1e-2);

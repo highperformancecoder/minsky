@@ -21,7 +21,7 @@
 #include "evalOp.h"
 #include "selection.h"
 #include "xvector.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 

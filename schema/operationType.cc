@@ -19,7 +19,7 @@
 
 #include <vector>
 #include "operationType.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 
 using namespace classdesc;

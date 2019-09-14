@@ -30,7 +30,7 @@
 #include "latexMarkup.h"
 #include <arrays.h>
 #include <pango.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>
 using boost::locale::conv::utf_to_utf;

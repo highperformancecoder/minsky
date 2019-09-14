@@ -21,7 +21,7 @@
 #include "selection.h"
 #include <cairo_base.h>
 #include <pango.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 using namespace minsky;
 using namespace ecolab;

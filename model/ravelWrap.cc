@@ -20,7 +20,7 @@
 #include "ravelWrap.h"
 #include "selection.h"
 #include "minsky.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 static const int ravelVersion=2;
 
 #include <string>

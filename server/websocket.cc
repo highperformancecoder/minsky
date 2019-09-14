@@ -41,7 +41,7 @@ namespace
 //  template <> void json_unpack(json_pack_t&, const string&, Dummy&) {}
 //}
 
-#include "ecolab_epilogue.h"
+#include "minsky_epilogue.h"
 
 namespace minsky
 {

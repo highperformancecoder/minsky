@@ -23,7 +23,7 @@
 #include "evalOp.h"
 #include "selection.h"
 #include "minsky.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 #include <exception>
 using namespace minsky;

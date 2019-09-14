@@ -11,5 +11,3 @@ before_install:
 
 script:
   -  docker build --network=host  .
-
-

@@ -22,7 +22,7 @@
 #include "minskyTCLObj.h"
 #include "CSVDialog.h"
 #include <ecolab.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #ifdef _WIN32
 #undef Realloc
 #include <windows.h>

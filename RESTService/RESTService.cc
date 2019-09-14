@@ -24,8 +24,7 @@
 #include "evalGodley.xcd"
 #include "panopticon.xcd"
 #include "selection.xcd"
-#include "RESTProcess_epilogue.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 using namespace classdesc;
 using namespace std;
@@ -44,7 +43,14 @@ namespace classdesc
       else
         return {};
     }
+    json_pack_t signature() const override
+    {
+      vector<minsky::Signature> signature{{ptr->classType(),{}}, {ptr->classType(),{ptr->classType()}}};
+      json_pack_t r;
+      return r<<signature;
+    }
   };
+  
 }
 
 namespace minsky
@@ -63,16 +69,48 @@ namespace minsky
 int main()
 {
   RESTProcess_t registry;
-  RESTProcess(registry,"minsky",minsky::minsky());
+  RESTProcess(registry,"/minsky",minsky::minsky());
   
   for (;;)
     {
       string cmd;
       cin>>cmd;
+      if (cmd[0]!='/')
+        {
+          cerr << "command starts with /"<<endl;
+          continue;
+        }
+      if (cmd=="/list")
+        {
+          for (auto& i: registry)
+            cout << i.first << endl;
+          continue;
+        }
+
+      auto n=cmd.rfind('/');
+      auto tail=cmd.substr(n);
+      if (tail[1]=='@')
+        cmd=cmd.substr(0,n);
+      
       json_pack_t jin;
       read(cin,jin);
       auto i=registry.find(cmd);
       if (i!=registry.end())
-        write(i->second->process("",jin), cout);
+        {
+          try
+            {
+              if (tail=="/@signature")
+                write(i->second->signature(), cout);
+              else
+                write(i->second->process("",jin), cout);
+            }
+          catch (const std::exception& x)
+            {
+              cerr << "Error:"<<x.what();
+            }
+          cout << endl;
+        }
+      else
+        cout << cmd << " not found"<<endl;
     }
 }
