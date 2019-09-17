@@ -163,21 +163,22 @@ namespace classdesc
   
   /// descriptor for generating building REST processing registry
   template <class T>
-  typename enable_if<is_classdescGenerated<T>, void>::T
-  RESTProcess(RESTProcess_t&, string, T&);
+  //typename enable_if<is_classdescGenerated<T>, void>::T
+  void RESTProcess(RESTProcess_t& r, const string& d, T& a) {RESTProcessp(r,d,a);}
+
+  
+  template <class T>
+  void RESTProcessp(RESTProcess_t& repo, const string& d, Exclude<T>& a)
+  {}
 
   template <class T>
   typename enable_if<is_fundamental<T>, void>::T
-  RESTProcess(RESTProcess_t& repo, const string& d, T& a)
+  RESTProcessp(RESTProcess_t& repo, const string& d, T& a)
   {repo.add(d, new RESTProcessObject<T>(a));}
 
   template <class T>
   void RESTProcess(RESTProcess_t& repo, const string& d, is_const_static, T& a)
   {RESTProcess(repo,d,a);}
-
-  template <class T>
-  void RESTProcess(RESTProcess_t& repo, const string& d, Exclude<T>& a)
-  {}
 
   
   inline bool startsWith(const std::string& x, const std::string& prefix)
@@ -224,7 +225,7 @@ namespace classdesc
 
   template <class T>
   typename enable_if<is_sequence<T>, void>::T
-  RESTProcess(RESTProcess_t& repo, const string& d, T& a)
+  RESTProcessp(RESTProcess_t& repo, const string& d, T& a)
   {repo.add(d, new RESTProcessSequence<T>(a));}
 
   template <class T> class RESTProcessAssociativeContainer: public RESTProcessBase
@@ -271,7 +272,7 @@ namespace classdesc
 
   template <class T>
   typename enable_if<is_associative_container<T>, void>::T
-  RESTProcess(RESTProcess_t& repo, const string& d, T& a)
+  RESTProcessp(RESTProcess_t& repo, const string& d, T& a)
   {
     repo.add(d, new RESTProcessAssociativeContainer<T>(a));
   }
@@ -394,12 +395,13 @@ namespace classdesc
     repo.add(d, new RESTProcessFunction<F>(f));
   }
 
+  template <>
   inline void RESTProcess(RESTProcess_t& repo, const string& d, const char*& a)
   {repo.add(d,new RESTProcessObject<const char*>(a));}
 
   template <class E>
   typename enable_if<is_enum<E>, void>::T
-  RESTProcess(RESTProcess_t& repo, const string& d, E& e)
+  RESTProcessp(RESTProcess_t& repo, const string& d, E& e)
   {
     // TODO
     //repo.add(d, new RESTProcessEnum<E>(e);
