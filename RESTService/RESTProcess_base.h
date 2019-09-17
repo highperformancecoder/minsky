@@ -196,24 +196,29 @@ namespace classdesc
       // TODO @elem selector in remainder
       if (remainder.empty())
         convert(obj, arguments);
-      else if (startsWith(remainder, "@elem/"))
+      else if (startsWith(remainder,"/@elem"))
         {
-          auto r1=remainder.substr(6);
-          auto n=r1.find('/');
-          if (n!=string::npos)
+          // extract idx
+          auto idxStart=find(remainder.begin()+1, remainder.end(), '/');
+          if (idxStart==remainder.end())
+            throw std::runtime_error("no index");
+          auto idxEnd=find(idxStart+1, remainder.end(), '/');
+          size_t idx;
+          convert(idx, string(idxStart+1, idxEnd));
+          if (i>=obj.size())
+            throw std::runtime_error("idx out of bounds");
+          auto& i=obj[idx];
+          string query(idxEnd,remainder.end());
+          if (query.empty())
             {
-              size_t k=stoi(r1.substr(0,n));
-              if (k<obj.size())
-                {
-                  auto elem=obj.begin();
-                  advance(elem, k);
-                  RESTProcess_t map;
-                  RESTProcess(map,"",*elem);
-                  auto i=map.find(r1.substr(n+1));
-                  // TODO move splitter algorithm into RESTProcess_t
-                  if (i!=map.end())
-                    r<<i->second->process("",arguments);
-                }
+              json_pack_t r;;
+              return r<<i;
+            }
+          else
+            {
+              RESTProcess_t map;
+              RESTProcess(map,"",i);
+              return map.process(query,arguments);
             }
         }
       else
