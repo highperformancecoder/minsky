@@ -205,7 +205,7 @@ namespace classdesc
           auto idxEnd=find(idxStart+1, remainder.end(), '/');
           size_t idx;
           convert(idx, string(idxStart+1, idxEnd));
-          if (i>=obj.size())
+          if (idx>=obj.size())
             throw std::runtime_error("idx out of bounds");
           auto& i=obj[idx];
           string query(idxEnd,remainder.end());
