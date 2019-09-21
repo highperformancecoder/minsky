@@ -21,6 +21,8 @@
 #include "RESTProcess_base.h"
 #include "signature.h"
 #include <cairoSurfaceImage.h>
+#include <polyPackBase.h>
+#include <accessor.h>
 
 namespace classdesc_access
 {
@@ -67,6 +69,36 @@ namespace classdesc_access
   template <>
   struct access_RESTProcess<ecolab::CairoSurface>:
     public cd::NullDescriptor<cd::RESTProcess_t> {};
+
+  
+  // TODO implement this properly to duck type an object 
+  template <class T, class G, class S>
+  struct access_RESTProcess<ecolab::Accessor<T,G,S>>:
+    public cd::NullDescriptor<cd::RESTProcess_t> {};
+
+  template <>
+  struct access_RESTProcess<cd::PolyPackBase>: 
+    public cd::NullDescriptor<cd::RESTProcess_t> {};
+
+  template <class T> struct access_json_pack<ecolab::Accessor<T>>
+  {
+    template <class U>
+    void operator()(cd::json_pack_t& j, const cd::string& d, U& a)
+    {
+      j<<a();
+    }
+  };
+  template <class T> struct access_json_unpack<ecolab::Accessor<T>>
+  {
+    template <class U>
+    void operator()(cd::json_pack_t& j, const cd::string& d, U& a)
+    {
+      // Unpack j into a T and arrange to call the setter with it.
+      // Nothing happens if T is not default constructible, or the
+      // target object is const
+      cd::functional::evalVoid<U&,T,cd::json_pack_t>(a, j);
+    }
+  };
   
 }
 

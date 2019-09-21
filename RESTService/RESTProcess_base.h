@@ -256,8 +256,6 @@ namespace classdesc
                 throw std::runtime_error("key "+string(keyStart+1, keyEnd)+" not found");
               else
                 {
-                  RESTProcess_t map;
-                  RESTProcess(map,"",*i);
                   string query(keyEnd,remainder.end());
                   if (query.empty())
                     {
@@ -265,7 +263,11 @@ namespace classdesc
                       return r<<*i;
                     }
                   else
-                    return map.process(query,arguments);
+                    {
+                      RESTProcess_t map;
+                      RESTProcess(map,"",*i);
+                      return map.process(query,arguments);
+                    }
                 }
             }
         }
@@ -290,7 +292,14 @@ namespace classdesc
     json_pack_t process(const string& remainder, const json_pack_t& arguments) override
     {
       if (ptr)
-        return RESTProcessObject<typename T::element_type>(*ptr).process(remainder, arguments);
+        if (remainder.empty())
+          return RESTProcessObject<typename T::element_type>(*ptr).process(remainder, arguments);
+        else
+          {
+            RESTProcess_t map;
+            RESTProcess(map,"",*ptr);
+            return map.process(remainder,arguments);
+          }
       else
         return {};
     }

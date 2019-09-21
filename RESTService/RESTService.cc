@@ -18,6 +18,7 @@
 */
 
 #include "minsky.h"
+#include "plot.xcd"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;
