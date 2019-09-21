@@ -74,7 +74,7 @@ namespace minsky
     class RequestCoordinator {
     public:
       void add_request(const Request& r) {
-        unique_lock<mutex> lock(m_lock);
+        boost::unique_lock<boost::mutex> lock(m_lock);
         //        m_requests.push(r);
         lock.unlock();
         m_cond.notify_one();
@@ -92,7 +92,7 @@ namespace minsky
       }
     private:
       //      queue<Request>         m_requests;
-      mutex                m_lock;
+      boost::mutex                m_lock;
       condition_variable   m_cond;
     };
 
