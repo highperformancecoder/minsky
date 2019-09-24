@@ -298,7 +298,11 @@ namespace minsky
     bool running=false; ///< controls whether simulation is running
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
+<<<<<<< HEAD
     int LM_optimize(double x_out[],OPTpars& opt_params); ///<minimize residual function by LM optimization    
+=======
+    int LM_optimize(double x_out[],OPTpars& opt_params); ///<minimize residual function by Levenberg-Marquardt optimization  
+>>>>>>> 24d6588fac603246e01aeaa306f34830a6e88e75
     void step();  ///< step the equations (by n steps, default 1)
 
     /// save to a file
