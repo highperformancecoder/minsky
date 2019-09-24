@@ -734,11 +734,22 @@ namespace minsky
       
 namespace
 {	
+<<<<<<< HEAD
 		
+=======
+	
+   struct model_params {
+	   double *t;
+	   double *x_init;
+	   shared_ptr<RKdata> d;
+   };      
+	
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
    int residual_func(const gsl_vector * x, void *params,
           gsl_vector * f)
    {
 	  if (params==NULL) return GSL_EBADFUNC;
+<<<<<<< HEAD
 	  else { 	  
 	      struct OPTpars *par = ((struct OPTpars *)params); 
 	      
@@ -768,6 +779,28 @@ namespace
               }          
           
 		}
+=======
+	   	  
+	  struct model_params *par = ((struct model_params *)params); 
+	  
+      int n;
+      int err = GSL_SUCCESS;
+      n = ValueVector::stockVars.size();
+      vector<double> xx(n);
+      
+      for (size_t i = 0; i < n; i++)
+         xx[i] = gsl_vector_get(x,i); 
+       
+      // would like integration to continue from Minsky::step(). So, still a WORK IN PROGRESS
+      
+      //err=gsl_odeiv2_driver_apply(par->d->driver, par->t,numeric_limits<double>::max(),&xx[0]);
+	
+	  // define residual vector function to be optimized 
+      for (size_t i = 0; i < n; i++)
+          gsl_vector_set (f, i, xx[i] - par->x_init[i]);  
+            
+      return err;
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
    }
    
       static void errHandlerOpt(const char* reason, const char* file, int line, int gsl_errno) {
@@ -776,7 +809,11 @@ namespace
 
 }      
 
+<<<<<<< HEAD
   int Minsky::LM_optimize(double x_out[], OPTpars& opt_params)
+=======
+  int Minsky::LM_optimize(double x_out[], void * opt_pars)
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
   {
     	
       gsl_set_error_handler(errHandlerOpt);	
@@ -785,7 +822,11 @@ namespace
       gsl_multifit_nlinear_fdf fdf;
       gsl_multifit_nlinear_parameters fdf_params = gsl_multifit_nlinear_default_parameters();	
       
+<<<<<<< HEAD
      // struct model_params *params = ((struct model_params *)opt_pars);
+=======
+      struct model_params *params = ((struct model_params *)opt_pars);
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
   	
       const size_t n = stockVars.size();   
       const size_t p = n; 
@@ -794,8 +835,13 @@ namespace
       gsl_vector_view x = gsl_vector_view_array (x_out, p);    
       int status, info;
       
+<<<<<<< HEAD
       const double xtol = 1e-10;
       const double gtol = 1e-10;
+=======
+      const double xtol = 1e-8;
+      const double gtol = 1e-8;
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
       const double ftol = 0.0;
       
       /* define the function to be minimized */
@@ -804,7 +850,11 @@ namespace
       fdf.fvv = NULL;     /* not using geodesic acceleration */
       fdf.n = n;
       fdf.p = p;
+<<<<<<< HEAD
       fdf.params = &opt_params; 
+=======
+      fdf.params = params; 
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
       
       /* allocate workspace with default parameters */
       w = gsl_multifit_nlinear_alloc (T, &fdf_params, n, p);
@@ -815,8 +865,13 @@ namespace
       /* compute initial cost function */
       f = gsl_multifit_nlinear_residual(w);
       
+<<<<<<< HEAD
       /* solve the system with a maximum of 50 iterations */
       status = gsl_multifit_nlinear_driver(50, xtol, gtol, ftol,
+=======
+      /* solve the system with a maximum of 100 iterations */
+      status = gsl_multifit_nlinear_driver(100, xtol, gtol, ftol,
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
                                            NULL, NULL, &info, w);
       
       for (size_t i = 0; i < n; i++)
@@ -836,7 +891,11 @@ namespace
     vector<double> stockVarsCopy(stockVars);
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
+<<<<<<< HEAD
     int opt_err=GSL_SUCCESS;    
+=======
+    int opt_err=GSL_SUCCESS;
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
     boost::thread rkThread([&]() {
       try
@@ -845,6 +904,7 @@ namespace
           if (ode)
             {
 				
+<<<<<<< HEAD
 			  // Structure to pass parameters to LM_optimize and residual_func
 			  struct OPTpars pars { &tp, &stockVarsCopy[0],ode};	
 			  
@@ -856,6 +916,19 @@ namespace
               // minimize difference between initial stock variable values and values at end point of prior integration step, still a WORK IN PROGRESS
               // the optimized stock variables are in theory updated in pars.x_init which is an alias for stockVarsCopy
               opt_err = LM_optimize(pars.x_init,pars);
+=======
+			  struct model_params pars = { &tp, &stockVarsCopy[0], ode} ;
+			  
+			  gsl_odeiv2_driver_set_nmax(pars.d->driver, nSteps);
+                 // we need to update Minsky's t synchronously to support the t operator
+                 // potentially means t and stockVars out of sync on GUI, but should still be thread safe
+              err=gsl_odeiv2_driver_apply(pars.d->driver, pars.t, numeric_limits<double>::max(),&stockVarsCopy[0]);
+              
+                           
+              // minimize difference between initial stock variable values and values at end point of prior integration step, still a WORK IN PROGRESS
+              opt_err = LM_optimize(&stockVarsCopy[0],&pars);
+                                          
+>>>>>>> 13692f13078029cbb4095358929a2acd80a924b1
             }
           else // do explicit Euler method
             {
