@@ -132,7 +132,7 @@ namespace classdesc
     void add(string d, RESTProcessBase* rp)
     {
       std::replace(d.begin(),d.end(),'.','/');
-      emplace(d, rp);
+      emplace(d, mapped_type(rp));
     }
 
     json_pack_t process(const std::string& query, const json_pack_t& jin)
