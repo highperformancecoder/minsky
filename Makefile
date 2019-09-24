@@ -9,8 +9,8 @@ SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
 TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_LIB=$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSION)*" -print))
-TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
+TCL_LIB=/usr/lib/tcl8.6#$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSION)*" -print))
+TK_LIB=/usr/lib/tk8.6#$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
 
 # root directory for ecolab include files and libraries
 ifndef ECOLAB_HOME
@@ -33,7 +33,7 @@ endif
 include $(ECOLAB_HOME)/include/Makefile
 
 # override the install prefix here
-PREFIX=/usr/local
+PREFIX=/home/wd/usr/minsky#/usr/local
 
 
 # override MODLINK to remove tclmain.o, which allows us to provide a
@@ -58,7 +58,7 @@ FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 endif
 
 # TODO - remove dependency on GUI directory here
-FLAGS+=-std=c++11 -Ischema -Iengine -Imodel $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -I/home/wd/usr/json_spirit/include -I/usr/include/tcl -I/usr/include/tk $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
 VPATH= schema model engine gui-tk server $(ECOLAB_HOME)/include
 
@@ -102,7 +102,7 @@ BOOST_EXT=
 $(warning Boost extension=$(BOOST_EXT))
 endif
 
-LIBS+=	-ljson_spirit \
+LIBS+= -L/home/wd/usr/json_spirit/lib -ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lgsl -lgslcblas  
