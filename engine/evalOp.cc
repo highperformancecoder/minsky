@@ -594,6 +594,7 @@ namespace minsky
     struct ComparableBase: any
     {
       ComparableBase(const any& x): any(x) {}
+      virtual ~ComparableBase() {}
       virtual bool operator<(const ComparableBase& x) const=0;
       static ComparableBase* create(const any&);
       // converts a string var to an any, using this any type.

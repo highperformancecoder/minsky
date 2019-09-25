@@ -32,6 +32,7 @@ namespace classdesc
   class RESTProcessBase
   {
   public:
+    virtual ~RESTProcessBase() {}
     virtual json_pack_t process(const string& remainder, const json_pack_t& arguments)=0;
     virtual json_pack_t signature() const=0;
     /// return signature for a function type F
@@ -132,7 +133,7 @@ namespace classdesc
     void add(string d, RESTProcessBase* rp)
     {
       std::replace(d.begin(),d.end(),'.','/');
-      emplace(d, mapped_type(rp));
+      emplace(d, std::move(mapped_type(rp)));
     }
 
     json_pack_t process(const std::string& query, const json_pack_t& jin)
