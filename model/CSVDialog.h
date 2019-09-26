@@ -56,4 +56,5 @@ namespace minsky
 }
 
 #include "CSVDialog.cd"
+#include "CSVDialog.xcd"
 #endif

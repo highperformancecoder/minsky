@@ -97,4 +97,5 @@ namespace minsky
 }
 
 #include "CSVParser.cd"
+#include "CSVParser.xcd"
 #endif

@@ -80,6 +80,10 @@ namespace classdesc_access
   struct access_RESTProcess<cd::PolyPackBase>: 
     public cd::NullDescriptor<cd::RESTProcess_t> {};
 
+  template <class T>
+  struct access_RESTProcess<cd::PolyPack<T>>: 
+    public cd::NullDescriptor<cd::RESTProcess_t> {};
+
   template <class T> struct access_json_pack<ecolab::Accessor<T>>
   {
     template <class U>
@@ -88,6 +92,7 @@ namespace classdesc_access
       j<<a();
     }
   };
+
   template <class T> struct access_json_unpack<ecolab::Accessor<T>>
   {
     template <class U>
@@ -99,7 +104,19 @@ namespace classdesc_access
       cd::functional::evalVoid<U&,T,cd::json_pack_t>(a, j);
     }
   };
+
+  template <> struct access_json_pack<ecolab::TCL_obj_t>:
+    public cd::NullDescriptor<cd::json_pack_t> {};
   
+  template <> struct access_json_unpack<ecolab::TCL_obj_t>:
+    public cd::NullDescriptor<cd::json_unpack_t> {};
+  
+  template <> struct access_json_pack<ecolab::cairo::Surface>:
+    public cd::NullDescriptor<cd::json_pack_t> {};
+  
+  template <> struct access_json_unpack<ecolab::cairo::Surface>:
+    public cd::NullDescriptor<cd::json_unpack_t> {};
+ 
 }
 
 namespace classdesc
@@ -132,6 +149,15 @@ namespace classdesc
   {
     json_pack_t r;
     auto tn=typeName<typename T::element_type>();
+    std::vector<minsky::Signature> signature{{tn,{}},{tn,{tn}}};
+    return r<<signature;
+  }
+  
+  template <class T> 
+  json_pack_t RESTProcessPtr<std::weak_ptr<T>>::signature() const
+  {
+    json_pack_t r;
+    auto tn=typeName<T>();
     std::vector<minsky::Signature> signature{{tn,{}},{tn,{tn}}};
     return r<<signature;
   }
@@ -181,6 +207,7 @@ namespace classdesc
     repo.add(d, new RESTProcessObject<T>(obj));
     classdesc_access::access_RESTProcess<typename remove_const<T>::type>()(repo,d,obj);
   }
+  
 
 }
 

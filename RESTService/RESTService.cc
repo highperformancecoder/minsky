@@ -18,7 +18,6 @@
 */
 
 #include "minsky.h"
-#include "plot.xcd"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;
@@ -26,8 +25,6 @@ using namespace std;
 
 #include <readline/readline.h>
 #include <readline/history.h>
-//extern "C" char *readline(const char *);
-//extern "C" void add_history(const char *);
 
 namespace classdesc
 {

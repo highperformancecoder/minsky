@@ -18,6 +18,8 @@
 */
 
 #ifdef RESTPROCESS_H
+#include <plot.h>
+#include "plot.xcd"
 #include "RESTProcess_epilogue.h"
 #endif
 #include <ecolab_epilogue.h>

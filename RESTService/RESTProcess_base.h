@@ -105,26 +105,6 @@ namespace classdesc
   template <class X>
   void convert(const X* x, const json_pack_t& j)
   {}
-  
-  /// handle setting and getting of objects
-  template <class T> class RESTProcessObject: public RESTProcessBase
-  {
-    T& obj;
-  public:
-    RESTProcessObject(T& obj): obj(obj) {}
-    json_pack_t process(const string& remainder, const json_pack_t& arguments) override
-    {
-      json_pack_t r;
-      if (remainder=="@type")
-        return r<<typeName<T>();
-      else if (remainder=="@signature")
-        return signature();
-      else
-        convert(obj, arguments);
-      return r<<obj;
-    }
-    json_pack_t signature() const override;
-  };
 
   /// REST processor registry 
   struct RESTProcess_t: public std::map<std::string, std::unique_ptr<RESTProcessBase> >
@@ -133,6 +113,7 @@ namespace classdesc
     void add(string d, RESTProcessBase* rp)
     {
       std::replace(d.begin(),d.end(),'.','/');
+      erase(d); //TODO is there any way of avoiding this?
       emplace(d, std::move(mapped_type(rp)));
     }
 
@@ -158,6 +139,40 @@ namespace classdesc
     }
   };
   
+  template <class T>
+  inline json_pack_t mapAndProcess(const string& query, const json_pack_t& arguments, T& a)
+  {
+    if (query.empty())
+      {
+        convert(a, arguments); // set object if some args provided
+        json_pack_t r;
+        return r<<a;
+      }
+
+    RESTProcess_t map;
+    RESTProcess(map,"",a);
+    return map.process(query,arguments);
+  }
+  
+  /// handle setting and getting of objects
+  template <class T> class RESTProcessObject: public RESTProcessBase
+  {
+    T& obj;
+  public:
+    RESTProcessObject(T& obj): obj(obj) {}
+    json_pack_t process(const string& remainder, const json_pack_t& arguments) override
+    {
+      json_pack_t r;
+      if (remainder=="@type")
+        return r<<typeName<T>();
+      else if (remainder=="@signature")
+        return signature();
+      else
+        return mapAndProcess(remainder, arguments, obj);
+    }
+    json_pack_t signature() const override;
+  };
+
   template <class T>
   struct is_classdescGenerated:
     public And<is_class<T>, Not<is_container<T>>> {};
@@ -208,19 +223,7 @@ namespace classdesc
           convert(idx, string(idxStart+1, idxEnd));
           if (idx>=obj.size())
             throw std::runtime_error("idx out of bounds");
-          auto& i=obj[idx];
-          string query(idxEnd,remainder.end());
-          if (query.empty())
-            {
-              json_pack_t r;;
-              return r<<i;
-            }
-          else
-            {
-              RESTProcess_t map;
-              RESTProcess(map,"",i);
-              return map.process(query,arguments);
-            }
+          mapAndProcess(string(idxEnd,remainder.end()), arguments, obj[idx]);
         }
       else
         r<<obj;
@@ -256,20 +259,7 @@ namespace classdesc
               if (i==obj.end())
                 throw std::runtime_error("key "+string(keyStart+1, keyEnd)+" not found");
               else
-                {
-                  string query(keyEnd,remainder.end());
-                  if (query.empty())
-                    {
-                      json_pack_t r;;
-                      return r<<*i;
-                    }
-                  else
-                    {
-                      RESTProcess_t map;
-                      RESTProcess(map,"",*i);
-                      return map.process(query,arguments);
-                    }
-                }
+                return mapAndProcess(string(keyEnd,remainder.end()), arguments, *i);
             }
         }
       json_pack_t r;
@@ -296,11 +286,7 @@ namespace classdesc
         if (remainder.empty())
           return RESTProcessObject<typename T::element_type>(*ptr).process(remainder, arguments);
         else
-          {
-            RESTProcess_t map;
-            RESTProcess(map,"",*ptr);
-            return map.process(remainder,arguments);
-          }
+          return mapAndProcess(remainder,arguments,*ptr);
       else
         return {};
     }
@@ -349,6 +335,35 @@ namespace classdesc
     JSONBuffer& operator>>(const T& x) {++it; return *this;}
   };
 
+  template <class F>
+  typename enable_if<
+    And<functional::AllArgs<F, functional::is_default_and_copy_constructible>,
+        Not<is_void<typename functional::Return<F>::T>>>,
+    json_pack_t>::T
+  callFunction(const string& remainder, const json_pack_t& arguments, F f)
+  {
+    functional::PackFunctor<JSONBuffer> argBuf(arguments);
+    json_pack_t r;
+    return r<<argBuf.call(f);
+  }
+  
+  template <class F>
+  typename enable_if<
+    And<functional::AllArgs<F, functional::is_default_and_copy_constructible>,
+        is_void<typename functional::Return<F>::T>>,
+    json_pack_t>::T
+  callFunction(const string& remainder, const json_pack_t& arguments, F f)
+  {
+    functional::PackFunctor<JSONBuffer> argBuf(arguments);
+    argBuf.call(f);
+    return {};
+  }
+
+  // don't do anything if we cannot create or copy an argument
+  template <class F>
+  typename enable_if<Not<functional::AllArgs<F, functional::is_default_and_copy_constructible>>, json_pack_t>::T
+  callFunction(const string& remainder, const json_pack_t& arguments, F f) {return {};}
+
   // member functions
   template <class F, class R=typename functional::Return<F>::T>
   class RESTProcessFunction: public RESTProcessBase
@@ -356,12 +371,11 @@ namespace classdesc
     F f;
   public:
     RESTProcessFunction(F f): f(f) {}
+    
+
     json_pack_t process(const string& remainder, const json_pack_t& arguments) override
-    {
-      functional::PackFunctor<JSONBuffer> argBuf(arguments);
-      json_pack_t r;
-      return r<<argBuf.call(f);
-    }
+    {return callFunction(remainder, arguments, f);}
+    
     json_pack_t signature() const override {return functionSignature<F>();}
   };
 
@@ -380,20 +394,20 @@ namespace classdesc
 
  
   
-  template <class F>
-  class RESTProcessFunction<F,void>: public RESTProcessBase
-  {
-    F f;
-  public:
-    RESTProcessFunction(F f): f(f) {}
-    json_pack_t process(const string& remainder, const json_pack_t& arguments) override
-    {
-      functional::PackFunctor<JSONBuffer> argBuf(arguments);
-      argBuf.call(f);
-      return {};
-    }
-    json_pack_t signature() const override {return functionSignature<F>();}
-  };
+//  template <class F>
+//  class RESTProcessFunction<F,void>: public RESTProcessBase
+//  {
+//    F f;
+//  public:
+//    RESTProcessFunction(F f): f(f) {}
+//    json_pack_t process(const string& remainder, const json_pack_t& arguments) override
+//    {
+//      functional::PackFunctor<JSONBuffer> argBuf(arguments);
+//      argBuf.call(f);
+//      return {};
+//    }
+//    json_pack_t signature() const override {return functionSignature<F>();}
+//  };
 
   template <class T, class F>
   typename enable_if<functional::is_member_function_ptr<F>, void>::T
