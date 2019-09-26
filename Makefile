@@ -58,7 +58,8 @@ FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 endif
 
 # TODO - remove dependency on GUI directory here
-FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -I/home/wd/usr/json_spirit/include -I/usr/include/tcl -I/usr/include/tk $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+#FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -IRESTService -I/home/wd/usr/json_spirit/include $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -IRESTService -I/home/wd/usr/json_spirit/include $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
 VPATH= schema model engine gui-tk server $(ECOLAB_HOME)/include
 

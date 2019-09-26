@@ -138,10 +138,11 @@ namespace minsky
   
   // Weak references to tp and stockVarsCopy in Minsky::step()
   
-   struct OPTpars {
+   struct OptParams {
 	   double *t;
-	   double *x_init;
+	   double *xi;
 	   shared_ptr<RKdata> d;
+	   
    };        
 
   struct BusyCursor
@@ -735,47 +736,40 @@ namespace minsky
 namespace
 {	
 
-   int residual_func(const gsl_vector * x, void *params,
+   int residualFunc(const gsl_vector * x, void *params,
           gsl_vector * f)
    {
 	if (params==NULL) return GSL_EBADFUNC;
-	else { 	  
+	try { 	  
 		
-	  struct OPTpars *par = ((struct OPTpars *)params); 
+	      auto pars=static_cast<OptParams*>(params);  
 	      
           int err = GSL_SUCCESS;
           auto n = ValueVector::stockVars.size();
           vector<double> xx(n);
           
-          for (size_t i = 0; i < n; i++)
-             xx[i] = gsl_vector_get(x,i);     
+          memcpy(xx.data(),reinterpret_cast<const vector<double>*>(x),n);
           
-          err=gsl_odeiv2_driver_apply(par->d->driver, par->t,numeric_limits<double>::max(),&xx[0]);
+          err=gsl_odeiv2_driver_apply(pars->d->driver, pars->t,numeric_limits<double>::max(),&xx[0]);
 	      
-	  // define residual vector function to be optimized 
+		  // define residual vector function to be optimized 
           for (size_t i = 0; i < n; i++)
-              gsl_vector_set (f, i, xx[i] - par->x_init[i]);  
-            
-          switch (err)
-              {
-              case GSL_SUCCESS: case GSL_EMAXITER: return GSL_SUCCESS;
-              case GSL_FAILURE:
-                throw error("unspecified error GSL_FAILURE returned");
-              case GSL_EBADFUNC: 
-                gsl_odeiv2_driver_reset(par->d->driver);
-                throw error("Invalid arithmetic operation detected");
-              default:
-                throw error("gsl error: %s",gsl_strerror(err));
-              }          
-          
-      }
+              gsl_vector_set (f, i, xx[i] - pars->xi[i]);  
+     }
+     catch  (std::exception& e) {
+		((Minsky*)params)->threadErrMsg=e.what();
+        return GSL_EBADFUNC; 
+	 }   
+	 return  GSL_SUCCESS;      
+                        
+   }
    
-      static void errHandlerOpt(const char* reason, const char* file, int line, int gsl_errno) {
+   static void errHandlerOpt(const char* reason, const char* file, int line, int gsl_errno) {
          throw error("gsl: %s:%d: %s",file,line,reason);
-      } 
+   } 
 }      
 
-  int Minsky::LM_optimize(double x_out[], OPTpars& opt_params)
+  int Minsky::optimize(double xf[], OptParams& optPars)
   {
     	
       gsl_set_error_handler(errHandlerOpt);	
@@ -788,20 +782,20 @@ namespace
       const size_t p = n; 
       
       gsl_vector *f = gsl_vector_alloc(n);
-      gsl_vector_view x = gsl_vector_view_array (x_out, p);    
+      gsl_vector_view x = gsl_vector_view_array (xf, p);    
       int status, info;
       
-      const double xtol = 1e-10;
-      const double gtol = 1e-10;
+      const double xtol = 1e-12;
+      const double gtol = 1e-12;
       const double ftol = 0.0;
       
       /* define the function to be minimized */
-      fdf.f = residual_func;
+      fdf.f = residualFunc;
       fdf.df = NULL; //func_df;   /* set to NULL for finite-difference Jacobian */
       fdf.fvv = NULL;     /* not using geodesic acceleration */
       fdf.n = n;
       fdf.p = p;
-      fdf.params = &opt_params; 
+      fdf.params = &optPars; 
       
       /* allocate workspace with default parameters */
       w = gsl_multifit_nlinear_alloc (T, &fdf_params, n, p);
@@ -812,14 +806,14 @@ namespace
       /* compute initial cost function */
       f = gsl_multifit_nlinear_residual(w);
       
-      /* solve the system with a maximum of 50 iterations */
-      status = gsl_multifit_nlinear_driver(50, xtol, gtol, ftol,
+      /* solve the system with a maximum of 200 iterations */
+      status = gsl_multifit_nlinear_driver(200, xtol, gtol, ftol,
                                            NULL, NULL, &info, w);
+                                           
+      memcpy(xf,reinterpret_cast<const vector<double>*>(w->x),n);                                     
       
-      for (size_t i = 0; i < n; i++)
-         x_out[i] = gsl_vector_get (w->x,i);
-      
-      gsl_multifit_nlinear_free (w);       
+      gsl_multifit_nlinear_free (w);
+             
       return status;                      
   }  
 
@@ -844,16 +838,16 @@ namespace
 				
 
      		  // Structure to pass parameters to LM_optimize and residual_func
-	          struct OPTpars pars { &tp, &stockVarsCopy[0],ode};	
+	          struct OptParams pars { &tp, &stockVarsCopy[0],ode};	
 			  
 	          gsl_odeiv2_driver_set_nmax(pars.d->driver, nSteps);
-                  // we need to update Minsky's t synchronously to support the t operator
-                  // potentially means t and stockVars out of sync on GUI, but should still be thread safe
-                  err=gsl_odeiv2_driver_apply(pars.d->driver, pars.t, numeric_limits<double>::max(),pars.x_init);                      
+              // we need to update Minsky's t synchronously to support the t operator
+              // potentially means t and stockVars out of sync on GUI, but should still be thread safe
+              err=gsl_odeiv2_driver_apply(pars.d->driver, pars.t, numeric_limits<double>::max(),pars.xi);                      
                              
-              	  // minimize difference between initial stock variable values and values at end point of prior integration step, still a WORK IN PROGRESS
-                  // the optimized stock variables are in theory updated in pars.x_init which is an alias for stockVarsCopy
-                  opt_err = LM_optimize(pars.x_init,pars);
+              // minimize difference between initial stock variable values and values at end point of prior integration step, still a WORK IN PROGRESS
+              // the optimized stock variables are in theory updated in pars.x_init which is an alias for stockVarsCopy
+              opt_err = optimize(pars.xi,pars);
 
             }
           else // do explicit Euler method
@@ -917,13 +911,12 @@ namespace
     switch (opt_err)
       {
       case GSL_SUCCESS: case GSL_EMAXITER: break;
+      case GSL_ENOPROG:
+        throw error("no further progress can be made GSL_ENOPROG returned");         
       case GSL_FAILURE:
-        throw error("unspecified error GSL_FAILURE returned");
-      case GSL_EBADFUNC: 
-        gsl_odeiv2_driver_reset(ode->driver);
-        throw error("Invalid arithmetic operation detected");
+        throw error("unspecified error GSL_FAILURE returned");        
       default:
-        throw error("gsl error: %s",gsl_strerror(err));
+        throw error("gsl error: %s",gsl_strerror(opt_err));
       }      
 
     stockVars.swap(stockVarsCopy);
