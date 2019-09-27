@@ -138,7 +138,8 @@ namespace minsky
   
   // Weak references to tp and stockVarsCopy in Minsky::step()
   
-   struct OptParams {
+   struct OptParams {  
+	   
 	   double *t;
 	   double *xi;
 	   shared_ptr<RKdata> d;
@@ -748,7 +749,7 @@ namespace
           auto n = ValueVector::stockVars.size();
           vector<double> xx(n);
           
-          memcpy(xx.data(),reinterpret_cast<const vector<double>*>(x),n);
+          memcpy(xx.data(),x,n);
           
           err=gsl_odeiv2_driver_apply(pars->d->driver, pars->t,numeric_limits<double>::max(),&xx[0]);
 	      
@@ -766,33 +767,32 @@ namespace
    
    static void errHandlerOpt(const char* reason, const char* file, int line, int gsl_errno) {
          throw error("gsl: %s:%d: %s",file,line,reason);
-   } 
+   } 	    
+ 
 }      
 
   int Minsky::optimize(double xf[], OptParams& optPars)
   {
-    	
-      gsl_set_error_handler(errHandlerOpt);	
+      
+      /*Trust region method to solve non-linear least squares problem, at present the only implemented method.*/	
       const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_trust;
-      gsl_multifit_nlinear_workspace *w;
-      gsl_multifit_nlinear_fdf fdf;
-      gsl_multifit_nlinear_parameters fdf_params = gsl_multifit_nlinear_default_parameters();	
+      gsl_multifit_nlinear_workspace *w;	
   	
-      const size_t n = stockVars.size();   
+      const size_t n = ValueVector::stockVars.size();
       const size_t p = n; 
       
+      /* Pointer to residual function to be minimized */
       gsl_vector *f = gsl_vector_alloc(n);
+      /* Vector of stock variables that are updated via Runge Kutta integration during optimization*/
       gsl_vector_view x = gsl_vector_view_array (xf, p);    
-      int status, info;
+     
       
-      const double xtol = 1e-12;
-      const double gtol = 1e-12;
-      const double ftol = 0.0;
-      
-      /* define the function to be minimized */
-      fdf.f = residualFunc;
-      fdf.df = NULL; //func_df;   /* set to NULL for finite-difference Jacobian */
-      fdf.fvv = NULL;     /* not using geodesic acceleration */
+      /*Data structure for a general system of functions with arbitrary parameters*/     
+      gsl_multifit_nlinear_fdf fdf;
+      gsl_multifit_nlinear_parameters fdf_params = gsl_multifit_nlinear_default_parameters();      
+      fdf.f = residualFunc;  /* define the callback function to be minimized*/
+      fdf.df = NULL;         /* set to NULL for finite-difference Jacobian */
+      fdf.fvv = NULL;        /* not using geodesic acceleration */
       fdf.n = n;
       fdf.p = p;
       fdf.params = &optPars; 
@@ -806,11 +806,17 @@ namespace
       /* compute initial cost function */
       f = gsl_multifit_nlinear_residual(w);
       
+      int status, info;
+      const double xtol = 1e-12;
+      const double gtol = 1e-12;
+      const double ftol = 0.0;      
+      
       /* solve the system with a maximum of 200 iterations */
       status = gsl_multifit_nlinear_driver(200, xtol, gtol, ftol,
                                            NULL, NULL, &info, w);
-                                           
-      memcpy(xf,reinterpret_cast<const vector<double>*>(w->x),n);                                     
+      
+      /*Return optimized vector of stock variables to Minsky::step()*/                                     
+      memmove(xf,w->x,n);                           
       
       gsl_multifit_nlinear_free (w);
              
@@ -888,6 +894,7 @@ namespace
         threadErrMsg.clear();
         // rethrow exception so message gets displayed to user
         throw err;
+        gsl_set_error_handler(errHandlerOpt);
       }
     
     if (reset_flag()) // in case reset() was called during the step evaluation
