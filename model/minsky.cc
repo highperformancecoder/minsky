@@ -747,9 +747,9 @@ namespace
 	      
           int err = GSL_SUCCESS;
           auto n = ValueVector::stockVars.size();
-          vector<double> xx(n);
-          
-          memcpy(xx.data(),x,n);
+          double xx[x->size];
+             
+          memcpy(xx, x->data, x->size * sizeof(double));
           
           err=gsl_odeiv2_driver_apply(pars->d->driver, pars->t,numeric_limits<double>::max(),&xx[0]);
 	      
@@ -816,7 +816,7 @@ namespace
                                            NULL, NULL, &info, w);
       
       /*Return optimized vector of stock variables to Minsky::step()*/                                     
-      memmove(xf,w->x,n);                           
+      memcpy(xf,w->x->data,w->x->size * sizeof(double));                           
       
       gsl_multifit_nlinear_free (w);
              
