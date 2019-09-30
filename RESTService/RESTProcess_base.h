@@ -113,8 +113,8 @@ namespace classdesc
     void add(string d, RESTProcessBase* rp)
     {
       std::replace(d.begin(),d.end(),'.','/');
-      erase(d); //TODO is there any way of avoiding this?
-      emplace(d, std::move(mapped_type(rp)));
+      auto& i=(*this)[d];
+      i.reset(rp);
     }
 
     json_pack_t process(const std::string& query, const json_pack_t& jin)
@@ -142,15 +142,23 @@ namespace classdesc
   template <class T>
   inline json_pack_t mapAndProcess(const string& query, const json_pack_t& arguments, T& a)
   {
-    if (query.empty())
-      {
-        convert(a, arguments); // set object if some args provided
-        json_pack_t r;
-        return r<<a;
-      }
+//    if (query.empty())
+//      {
+//        convert(a, arguments); // set object if some args provided
+////        json_pack_t r;
+////        return r<<a;
+//      }
 
     RESTProcess_t map;
     RESTProcess(map,"",a);
+    if (query.empty())
+      {
+        auto i=map.find("");
+        if (i!=map.end())
+          return i->second->process("",arguments);
+        else
+          return {};
+      }
     return map.process(query,arguments);
   }
   
@@ -167,8 +175,12 @@ namespace classdesc
         return r<<typeName<T>();
       else if (remainder=="@signature")
         return signature();
-      else
-        return mapAndProcess(remainder, arguments, obj);
+      else if (remainder.empty())
+        {
+          convert(obj, arguments);
+          return r<<obj;
+        }
+      return mapAndProcess(remainder, arguments, obj);
     }
     json_pack_t signature() const override;
   };
@@ -219,15 +231,12 @@ namespace classdesc
           if (idxStart==remainder.end())
             throw std::runtime_error("no index");
           auto idxEnd=find(idxStart+1, remainder.end(), '/');
-          size_t idx;
-          convert(idx, string(idxStart+1, idxEnd));
+          size_t idx=stoi(string(idxStart+1, idxEnd));
           if (idx>=obj.size())
             throw std::runtime_error("idx out of bounds");
-          mapAndProcess(string(idxEnd,remainder.end()), arguments, obj[idx]);
+          return mapAndProcess(string(idxEnd,remainder.end()), arguments, obj[idx]);
         }
-      else
-        r<<obj;
-      return r;
+      return r<<obj;
     }
     json_pack_t signature() const override;
   };
@@ -335,9 +344,14 @@ namespace classdesc
     JSONBuffer& operator>>(const T& x) {++it; return *this;}
   };
 
+  template <class A>
+  struct ArgAcceptable:
+    public And<is_default_constructible<typename remove_reference<A>::type>,
+               is_copy_constructible<typename remove_reference<A>::type>> {};
+
   template <class F>
   typename enable_if<
-    And<functional::AllArgs<F, functional::is_default_and_copy_constructible>,
+    And<functional::AllArgs<F, ArgAcceptable>,
         Not<is_void<typename functional::Return<F>::T>>>,
     json_pack_t>::T
   callFunction(const string& remainder, const json_pack_t& arguments, F f)
@@ -346,10 +360,10 @@ namespace classdesc
     json_pack_t r;
     return r<<argBuf.call(f);
   }
-  
+
   template <class F>
   typename enable_if<
-    And<functional::AllArgs<F, functional::is_default_and_copy_constructible>,
+    And<functional::AllArgs<F, ArgAcceptable>,
         is_void<typename functional::Return<F>::T>>,
     json_pack_t>::T
   callFunction(const string& remainder, const json_pack_t& arguments, F f)
@@ -359,9 +373,10 @@ namespace classdesc
     return {};
   }
 
+  
   // don't do anything if we cannot create or copy an argument
   template <class F>
-  typename enable_if<Not<functional::AllArgs<F, functional::is_default_and_copy_constructible>>, json_pack_t>::T
+  typename enable_if<Not<functional::AllArgs<F, ArgAcceptable>>, json_pack_t>::T
   callFunction(const string& remainder, const json_pack_t& arguments, F f) {return {};}
 
   // member functions
