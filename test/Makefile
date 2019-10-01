@@ -1,11 +1,7 @@
 DEBUG=1
 
 # root directory for ecolab include files and libraries
-ifeq ($(shell ls $(HOME)/usr/ecolab/include/ecolab.h),$(HOME)/usr/ecolab/include/ecolab.h)
-ECOLAB_HOME=$(HOME)/usr/ecolab
-else
-ECOLAB_HOME=/usr/local/ecolab
-endif
+ECOLAB_HOME=../ecolab
 
 include $(ECOLAB_HOME)/include/Makefile
 VPATH= .. ../schema ../model ../engine ../server ../RESTService $(ECOLAB_HOME)/include

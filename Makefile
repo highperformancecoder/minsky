@@ -13,22 +13,7 @@ TCL_LIB=$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSIO
 TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
 
 # root directory for ecolab include files and libraries
-ifndef ECOLAB_HOME
-ifdef MXE
-ECOLAB_HOME=$(HOME)/usr/mxe/ecolab
-else
-ifneq ("$(wildcard  $(HOME)/usr/ecolab/include/ecolab.h)","")
-ECOLAB_HOME=$(HOME)/usr/ecolab
-else
-# This exists when the debian package is installed
-ifneq ("$(wildcard /usr/lib/ecolab/include/ecolab.h)","")
-ECOLAB_HOME=/usr/lib/ecolab
-else
-ECOLAB_HOME=/usr/local/ecolab
-endif
-endif
-endif
-endif
+ECOLAB_HOME=$(shell pwd)/ecolab
 
 include $(ECOLAB_HOME)/include/Makefile
 
@@ -143,6 +128,13 @@ all: $(EXES) $(TESTS) minsky.xsd
 #endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
+.PHONY: ecolab
+ecolab:
+	cd ecolab; $(MAKE) all-without-models
+
+ecolab/include/Makefile.config: ecolab
+
+$(ALL_OBJS): ecolab
 
 include $(ALL_OBJS:.o=.d)
 
@@ -217,6 +209,7 @@ clean:
 	cd schema; $(BASIC_CLEAN)
 	cd gui-wt; $(BASIC_CLEAN)
 	cd server; $(BASIC_CLEAN)
+	cd ecolab; $(MAKE) clean
 
 mac-dist: gui-tk/minsky
 # create executable in the app package directory. Make it 32 bit only
