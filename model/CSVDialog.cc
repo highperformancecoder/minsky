@@ -18,8 +18,10 @@
 */
 
 #include "CSVDialog.h"
+#include "group.h"
+#include "selection.h"
 #include <pango.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace std;
 using namespace minsky;
 using ecolab::Pango;

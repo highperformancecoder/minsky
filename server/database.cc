@@ -18,7 +18,7 @@
 */
 
 #include "database.h"
-#include "ecolab_epilogue.h"
+#include "minsky_epilogue.h"
 using namespace soci;
 using namespace schema1;
 

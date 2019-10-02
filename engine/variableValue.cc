@@ -20,7 +20,7 @@
 #include "flowCoef.h"
 #include "str.h"
 #include "minsky.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <error.h>
 
 using namespace ecolab;

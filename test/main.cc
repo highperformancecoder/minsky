@@ -48,7 +48,7 @@ namespace
 }
 
 #include "minsky.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 namespace minsky {void doOneEvent(bool) {}}
 

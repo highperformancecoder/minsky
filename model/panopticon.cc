@@ -18,7 +18,7 @@
 */
 
 #include "panopticon.h"
-#include "ecolab_epilogue.h"
+#include "minsky_epilogue.h"
 using namespace minsky;
 
 void Panopticon::redraw(int, int, int w, int h)
@@ -29,7 +29,7 @@ void Panopticon::redraw(int, int, int w, int h)
       lastBoundsCheck=Canvas::Timestamp::clock::now();
       cachedImage.reset(new cairo::Surface
                             (cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
-      cachedImage.swap(canvas.surface);
+      cachedImage.swap(canvas.surface());
       // render at zoom=1, 0,0
       double zf=canvas.model->zoomFactor(), x=canvas.model->x(), y=canvas.model->y();
       canvas.model->zoom(x,y,1/zf);
@@ -37,7 +37,7 @@ void Panopticon::redraw(int, int, int w, int h)
       canvas.redraw();
       canvas.model->moveTo(x,y);
       canvas.model->zoom(x,y,zf);
-      cachedImage.swap(canvas.surface);
+      cachedImage.swap(canvas.surface());
     }
   
   double xscale=w/cachedImage->width(), yscale=h/cachedImage->height();

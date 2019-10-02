@@ -60,12 +60,14 @@ namespace minsky
   /// represents rectangular region of a lasso operation
   struct LassoBox
   {
-    float x0, y0, x1, y1;
+    float x0=0, y0=0, x1=0, y1=0;
+    LassoBox() {}
     LassoBox(float x0, float y0, float x1, float y1): 
       x0(x0), y0(y0), x1(x1), y1(y1) {
       if (x0>x1) std::swap(this->x0,this->x1);
       if (y0>y1) std::swap(this->y0,this->y1);
     }
+    
     /// returns whether item's icon overlaps the lasso
     template <class Item>
     bool intersects(const Item& item) const {
@@ -86,4 +88,5 @@ namespace minsky
 }
 
 #include "selection.cd"
+#include "selection.xcd"
 #endif

@@ -4,7 +4,7 @@
 // Utility programme for outputting coverage analysis of TCL code
 
 #include "coverage.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <vector>
 #include <fstream>
 

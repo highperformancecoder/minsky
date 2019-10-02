@@ -24,7 +24,7 @@
 #include "selection.h"
 #include "operation.h"
 #include "switchIcon.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace std;
 
 namespace minsky
@@ -32,23 +32,23 @@ namespace minsky
 
   float Port::x() const 
   {
-    return m_x+item.x();
+    return m_x+item().x();
   }
 
   float Port::y() const 
   {
-    return m_y+item.y();
+    return m_y+item().y();
   }
 
   void Port::moveTo(float x, float y)
   {
-    m_x=x-item.x();
-    m_y=y-item.y();
+    m_x=x-item().x();
+    m_y=y-item().y();
   }
 
   GroupPtr Port::group() const
   {
-    return item.group.lock();
+    return item().group.lock();
   }
 
   void Port::eraseWire(Wire* w) 
@@ -64,7 +64,7 @@ namespace minsky
   void Port::deleteWires() 
   {
     /// wires could be anywhere, so we need to walk the whole heirachy
-    if (auto g=item.group.lock())
+    if (auto g=item().group.lock())
       {
         auto& gg=g->globalGroup();
         auto wires=m_wires; // save copy, as Group::removeWire mutates it
@@ -92,7 +92,7 @@ namespace minsky
         return 0;
       }
     else
-      return item.value();
+      return item().value();
   }
 
   

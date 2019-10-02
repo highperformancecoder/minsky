@@ -421,4 +421,5 @@ namespace minsky
 #endif
 
 #include "minsky.cd"
+#include "minsky.xcd"
 #endif

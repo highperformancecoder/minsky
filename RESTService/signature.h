@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2013
+  @copyright Steve Keen 2019
   @author Russell Standish
   This file is part of Minsky.
 
@@ -17,37 +17,18 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "message.h"
-#include "schema1.h"
-#include "minsky_epilogue.h"
-
-namespace classdesc
-{
-  template <> Factory<minsky::MsgBase, string>::Factory() {}
-}
-
+#ifndef SIGNATURE_H
+#define SIGNATURE_H
+#include <string>
+#include <vector>
 namespace minsky
 {
-
-  MsgFactory::MsgFactory()
+  struct Signature
   {
-    schema1::enumerateRegisterItems(*this);
-    schema1::enumerateRegisterLayout(*this);
-    registerType<Msg<schema1::Minsky> >
-      (suppressSchema(typeName<schema1::Minsky>()));
-    // ... and other message payloads as needed ...
-  }
-
-  string MsgFactory::suppressSchema(const string& typeName) const
-  {
-    size_t p=typeName.rfind("::");
-    if (p!=string::npos) 
-      p+=2;
-    else
-      p=0;
-    return typeName.substr(p);
-  }
-
-  MsgFactory msgFactory;
-
+    std::string ret;
+    std::vector<std::string> args;
+  };
 }
+
+#include "signature.xcd"
+#endif

@@ -21,7 +21,7 @@
 #include "minsky.h"
 #include "flowCoef.h"
 #include "godleyExport.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace minsky;
 
 const char* GodleyTable::initialConditions="Initial Conditions";

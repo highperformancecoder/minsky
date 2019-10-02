@@ -19,7 +19,7 @@
 #include "schema0.h"
 //#include "schemaHelper.h"
 //#include "str.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <fstream>
 using namespace ecolab;
 using namespace classdesc;

@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2018
+  @copyright Steve Keen 2019
   @author Russell Standish
   This file is part of Minsky.
 
@@ -16,32 +16,8 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef TENSOR_VAL
-#define TENSOR_VAL
 
-#include <vector>
-
-namespace minsky
-{
-  /// represent a tensor in initialisation expressions
-  struct TensorVal
-  {
-    std::vector<unsigned> dims;
-    std::vector<double> data;
-    TensorVal() {}
-    TensorVal(double x): data(1,x) {}
-  };
-
-  inline TensorVal operator*(double a, const TensorVal& x)
-  {
-    TensorVal r;
-    r.dims=x.dims;
-    r.data.reserve(x.data.size());
-    for (auto i: x.data) r.data.push_back(a*i);
-    return r;
-  }
-}
-
-#include "tensorVal.cd"
-#include "tensorVal.xcd"
+#ifdef RESTPROCESS_H
+#include "RESTProcess_epilogue.h"
 #endif
+#include <ecolab_epilogue.h>

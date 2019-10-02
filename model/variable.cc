@@ -21,8 +21,9 @@
 #include "variable.h"
 #include "cairoItems.h"
 #include "minsky.h"
+#include "RESTProcess_base.h"
 #include <error.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 #include <boost/regex.hpp>
 
@@ -250,7 +251,7 @@ Units VariableBase::units(bool check) const
       else
         // updates units in the process
         if (ports.size()>1 && !ports[1]->wires().empty())
-          vv.units=ports[1]->wires()[0]->from()->item.units(check);
+          vv.units=ports[1]->wires()[0]->from()->item().units(check);
         else if (auto v=cminsky().definingVar(valueId()))
           vv.units=v->units(check);
 

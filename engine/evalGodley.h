@@ -172,4 +172,5 @@ namespace minsky
 }
 
 #include "evalGodley.cd"
+#include "evalGodley.xcd"
 #endif

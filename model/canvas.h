@@ -110,6 +110,8 @@ namespace minsky
     
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
+
+    ecolab::cairo::SurfacePtr& surface() {return ecolab::CairoSurface::surface;}
     
     /// event handling for the canvas
     void mouseDown(float x, float y);
@@ -236,9 +238,10 @@ namespace minsky
     void recentre();
     
     /// request a redraw on the screen
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    void requestRedraw() {if (surface().get()) surface()->requestRedraw();}
   };
 }
 
 #include "canvas.cd"
+#include "canvas.xcd"
 #endif

@@ -18,7 +18,9 @@
 */
 #include <UnitTest++/UnitTest++.h>
 #include "variableValue.h"
-#include <ecolab_epilogue.h>
+#include "group.h"
+#include "selection.h"
+#include "minsky_epilogue.h"
 
 using namespace minsky;
 

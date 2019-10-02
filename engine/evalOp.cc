@@ -23,7 +23,7 @@
 #include "minsky.h"
 #include "str.h"
 
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 #include <math.h>
 
@@ -594,6 +594,7 @@ namespace minsky
     struct ComparableBase: any
     {
       ComparableBase(const any& x): any(x) {}
+      virtual ~ComparableBase() {}
       virtual bool operator<(const ComparableBase& x) const=0;
       static ComparableBase* create(const any&);
       // converts a string var to an any, using this any type.
@@ -752,7 +753,7 @@ namespace minsky
     
       reset(EvalOpBase::create(op));
       auto t=get();
-      assert(t->numArgs()==0 || from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0));
+      assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
       t->state=state;
       
       switch (t->numArgs())
@@ -1011,6 +1012,8 @@ namespace minsky
           break;
         case reduction:
           assert(t->numArgs()==1 && to.numElements()==1);
+          break;
+        case tensor:
           break;
         }
 #endif

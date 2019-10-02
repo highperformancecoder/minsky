@@ -22,7 +22,7 @@
 #include "latexMarkup.h"
 #include "minsky.h"
 #include <pango.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 
 using namespace std;
 using namespace minsky;
@@ -877,13 +877,15 @@ namespace minsky
         if (selectedRow==0)
           {
             // rename all instances of the stock variable if updated. For ticket #956
-            if (selectedCol<int(godleyIcon->stockVars().size()+1))
-              {
-                auto savedItem=minsky().canvas.item;
-                minsky().canvas.item=godleyIcon->stockVars()[selectedCol-1];
-                minsky().canvas.renameAllInstances(godleyIcon->table.cell(selectedRow,selectedCol));
-                savedItem.swap(minsky().canvas.item);
-              }
+            // find stock variable if it exists
+            for (auto& sv: godleyIcon->stockVars())
+              if (sv->rawName()==savedText)
+                {
+                  auto savedItem=minsky().canvas.item;
+                  minsky().canvas.item=sv;
+                  minsky().canvas.renameAllInstances(godleyIcon->table.cell(selectedRow,selectedCol));
+                  savedItem.swap(minsky().canvas.item);
+                }
             
             minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
           }

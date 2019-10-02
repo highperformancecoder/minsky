@@ -24,7 +24,7 @@
 #include "ravelWrap.h"
 #include <cairo_base.h>
 
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
 using namespace minsky;
@@ -714,8 +714,8 @@ namespace minsky
 
   void Canvas::redrawUpdateRegion()
   {
-    if (!surface.get()) return;
-    auto cairo=surface->cairo();
+    if (!surface().get()) return;
+    auto cairo=surface()->cairo();
     cairo_save(cairo);
     cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
     cairo_clip(cairo);
@@ -789,24 +789,24 @@ namespace minsky
 
     if (itemIndicator && item) // draw a red circle to indicate an error or other marker
       {
-        cairo_save(surface->cairo());
-        cairo_set_source_rgb(surface->cairo(),1,0,0);
-        cairo_arc(surface->cairo(),item->x(),item->y(),15,0,2*M_PI);
-        cairo_stroke(surface->cairo());
-        cairo_restore(surface->cairo());
+        cairo_save(surface()->cairo());
+        cairo_set_source_rgb(surface()->cairo(),1,0,0);
+        cairo_arc(surface()->cairo(),item->x(),item->y(),15,0,2*M_PI);
+        cairo_stroke(surface()->cairo());
+        cairo_restore(surface()->cairo());
       }
 
     cairo_restore(cairo);
-    surface->blit();
+    surface()->blit();
   }
 
   void Canvas::recentre()
   {
-    SurfacePtr tmp(surface);
-    surface.reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
+    SurfacePtr tmp(surface());
+    surface().reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
     redraw();
-    model->moveTo(model->x()-surface->left(), model->y()-surface->top());
-    surface=tmp;
+    model->moveTo(model->x()-surface()->left(), model->y()-surface()->top());
+    surface()=tmp;
     requestRedraw();
   }
 

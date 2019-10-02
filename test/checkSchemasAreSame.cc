@@ -18,7 +18,7 @@
 */
 
 #include "schema2.h"
-#include "ecolab_epilogue.h"
+#include "minsky_epilogue.h"
 #include <iostream>
 #undef NDEBUG
 #include <assert.h>

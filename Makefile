@@ -47,10 +47,11 @@ SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema2.o schema1.o schema0.o variableType.o operationType.o a85.o
 #schema0.o 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
+RESTSERVICE_OBJS=RESTService.o
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS)
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(RESTSERVICE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS)
 
-EXES=gui-tk/minsky $(SERVER_OBJS)
+EXES=gui-tk/minsky $(SERVER_OBJS) RESTService/RESTService 
 #EXES=gui-tk/minsky server/server
 
 ifeq ($(OS),Darwin)
@@ -59,13 +60,13 @@ endif
 
 FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
-VPATH= schema model engine gui-tk server $(ECOLAB_HOME)/include
+VPATH= schema model engine gui-tk server RESTService $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
 	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include  -i $< xml_pack xml_unpack xsd_generate json_pack \
-	json_unpack >$@
+	-I $(ECOLAB_HOME)/include -I RESTService -i $< xml_pack xml_unpack xsd_generate \
+	json_pack json_unpack RESTProcess >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -178,6 +179,9 @@ endif
 server/server: tclmain.o $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SERVER_OBJS) $(GUI_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS)  $(SERVER_LIBS) -o $@
 	-ln -sf `pwd`/GUI/library server
+
+RESTService/RESTService: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
 	rm -f $@

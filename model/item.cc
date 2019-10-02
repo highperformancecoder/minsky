@@ -27,7 +27,7 @@
 #include "minsky.h"
 #include <pango.h>
 #include <cairo_base.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <exception>
 
 using ecolab::Pango;

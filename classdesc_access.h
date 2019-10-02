@@ -23,13 +23,19 @@
 #include <xml_unpack_base.h>
 #include <xsd_generate_base.h>
 
+namespace classdesc_access
+{
+  template <class T> struct access_RESTProcess;
+}
+
 // redefine this to include xml_* descriptors
 #undef CLASSDESC_ACCESS
-#define CLASSDESC_ACCESS(type)                              \
-  friend struct classdesc_access::access_pack<type>;        \
-  friend struct classdesc_access::access_unpack<type>;      \
-  friend struct classdesc_access::access_xml_pack<type>;    \
-  friend struct classdesc_access::access_xml_unpack<type>;  \
-  friend struct classdesc_access::access_xsd_generate<type>   
+#define CLASSDESC_ACCESS(type)                                  \
+  friend struct classdesc_access::access_pack<type>;            \
+  friend struct classdesc_access::access_unpack<type>;          \
+  friend struct classdesc_access::access_xml_pack<type>;        \
+  friend struct classdesc_access::access_xml_unpack<type>;      \
+  friend struct classdesc_access::access_xsd_generate<type>;    \
+  friend struct classdesc_access::access_RESTProcess<type>  
 
 #endif

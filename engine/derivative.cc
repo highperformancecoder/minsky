@@ -22,7 +22,7 @@
 #include "equations.h"
 #include "minsky.h"
 #include "expr.h"
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 #include <boost/regex.hpp>
 using boost::regex;
 using boost::smatch;

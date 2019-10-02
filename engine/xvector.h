@@ -71,6 +71,7 @@ namespace minsky
 #ifdef _CLASSDESC
 #pragma omit pack minsky::XVector
 #pragma omit unpack minsky::XVector
+#pragma omit RESTProcess minsky::XVector
 #endif
 #include <classdesc.h>
 namespace classdesc_access
@@ -99,4 +100,15 @@ namespace classdesc_access
   };
 }
 #include "xvector.cd"
+
+namespace classdesc_access
+{
+  template <>
+  struct access_RESTProcess<minsky::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
+  template <>
+  struct access_json_pack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
+  template <>
+  struct access_json_unpack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
+}
+
 #endif

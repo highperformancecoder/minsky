@@ -19,7 +19,7 @@
 
 #include "xvector.h"
 #include <error.h>
-#include <ecolab_epilogue.h>
+#include "minsky_epilogue.h"
 using ecolab::error;
 
 using namespace std;
