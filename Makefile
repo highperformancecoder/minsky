@@ -132,7 +132,7 @@ all: $(EXES) $(TESTS) minsky.xsd
 ecolab:
 	cd ecolab; $(MAKE) all-without-models
 
-ecolab/include/Makefile.config: ecolab
+$(ECOLAB_HOME)/include/Makefile.config: ecolab
 
 $(ALL_OBJS): ecolab
 
