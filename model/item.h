@@ -44,7 +44,7 @@ namespace minsky
   };
 
   /// radius of circle marking ports at zoom=1
-  constexpr float portRadius=4;
+  constexpr float portRadius=6;
 
   // ports are owned by their items, so it is not appropriate to
   // default copy the port references
