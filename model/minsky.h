@@ -57,6 +57,7 @@ namespace minsky
   using classdesc::shared_ptr;
 
   struct RKdata; // an internal structure for holding Runge-Kutta data
+  struct OptParams; // structure for passing parameters to optimization function
 
   // handle the display of rendered equations on the screen
   class EquationDisplay: public CairoSurface
@@ -297,6 +298,8 @@ namespace minsky
     bool running=false; ///< controls whether simulation is running
     bool reverse=false; ///< reverse direction of simulation
     void reset(); ///<resets the variables back to their initial values
+    /// @return optimize() returns an integer of the status of non-linear least square optimization, either GSL_SUCCESS, GSL_EMAXITER or GSL_ENOPROG
+    int optimize(double xf[],OptParams& optPars); ///<minimize residual function by LM optimization    
     void step();  ///< step the equations (by n steps, default 1)
 
     /// save to a file
