@@ -94,19 +94,11 @@ namespace minsky
           godleyIcon.table.moveRow(idx,0); 
         else if (pos==second)                  // Third button of second row cannot swap initial conditions and second row. For ticket 1064
            godleyIcon.table.moveRow(idx,1); 
-<<<<<<< HEAD
         else if (pos!=first && pos!=firstAndLast)                  // Third button cannot swap column headings and initial conditions row values. For ticket 1064     
           godleyIcon.table.moveRow(idx,-1);   
         break;
       case 3:
         if (pos==middle)             // Fourth button on first and second row cannot move initial conditions row. For ticket 1064
-=======
-        else if (pos !=first)                  // Third button cannot swap column headings and initial conditions row values. For ticket 1064     
-          godleyIcon.table.moveRow(idx,-1);   
-        break;
-      case 3:
-        if (pos==second || pos==middle)             // Fourth button on first and second row cannot move initial conditions row. For ticket 1064
->>>>>>> e0543ca9043a4b33cdf459b9ce96c719a8bc8450
           godleyIcon.table.moveRow(idx,1);
         break;
       }
