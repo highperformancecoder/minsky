@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
-git submodule init
-git submodule update
-
-pushd ecolab
-make -j2 all-without-models
-popd
+git submodule update --init --recursive
 
 make -j2 DEBUG=1
 export TRAVIS=1
