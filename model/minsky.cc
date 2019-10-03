@@ -24,6 +24,10 @@
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv2.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_multifit_nlinear.h>
 #include <cairo_base.h>
 
 #include <schema/schema2.h>
@@ -131,6 +135,16 @@ namespace minsky
     }
     ~RKdata() {gsl_odeiv2_driver_free(driver);}
   };
+  
+  // Weak references to tp and stockVarsCopy in Minsky::step()
+  
+   struct OptParams {  
+	   
+	   double *t;
+	   double *xi;
+	   shared_ptr<RKdata> d;
+	   
+   };        
 
   struct BusyCursor
   {
@@ -713,6 +727,101 @@ namespace minsky
        });
     canvas.requestRedraw();
   }
+  
+  /*
+  For using GSL non-linear least square fitting routines
+  patterned on first Large Nonlinear Least Squares Example.
+  See online documentation at https://www.gnu.org/software/gsl/doc/html/nls.html
+  */
+      
+namespace
+{	
+
+   int residualFunc(const gsl_vector * x, void *params,
+          gsl_vector * f)
+   {
+	if (params==NULL) return GSL_EBADFUNC;
+	try { 	  
+		
+	      auto pars=static_cast<OptParams*>(params);  
+	      
+          int err = GSL_SUCCESS;
+          auto n = ValueVector::stockVars.size();
+          double xx[x->size];
+             
+          memcpy(xx, x->data, x->size * sizeof(double));
+          
+          err=gsl_odeiv2_driver_apply(pars->d->driver, pars->t,numeric_limits<double>::max(),&xx[0]);
+	      
+		  // define residual vector function to be optimized 
+          for (size_t i = 0; i < n; i++)
+              gsl_vector_set (f, i, xx[i] - pars->xi[i]);  
+     }
+     catch  (std::exception& e) {
+		((Minsky*)params)->threadErrMsg=e.what();
+        return GSL_EBADFUNC; 
+	 }   
+	 return  GSL_SUCCESS;      
+                        
+   }
+   
+   static void errHandlerOpt(const char* reason, const char* file, int line, int gsl_errno) {
+         throw error("gsl: %s:%d: %s",file,line,reason);
+   } 	    
+ 
+}      
+
+  int Minsky::optimize(double xf[], OptParams& optPars)
+  {
+      
+      /*Trust region method to solve non-linear least squares problem, at present the only implemented method.*/	
+      const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_trust;
+      gsl_multifit_nlinear_workspace *w;	
+  	
+      const size_t n = ValueVector::stockVars.size();
+      const size_t p = n; 
+      
+      /* Pointer to residual function to be minimized */
+      gsl_vector *f = gsl_vector_alloc(n);
+      /* Vector of stock variables that are updated via Runge Kutta integration during optimization*/
+      gsl_vector_view x = gsl_vector_view_array (xf, p);    
+     
+      
+      /*Data structure for a general system of functions with arbitrary parameters*/     
+      gsl_multifit_nlinear_fdf fdf;
+      gsl_multifit_nlinear_parameters fdf_params = gsl_multifit_nlinear_default_parameters();      
+      fdf.f = residualFunc;  /* define the callback function to be minimized*/
+      fdf.df = NULL;         /* set to NULL for finite-difference Jacobian */
+      fdf.fvv = NULL;        /* not using geodesic acceleration */
+      fdf.n = n;
+      fdf.p = p;
+      fdf.params = &optPars; 
+      
+      /* allocate workspace with default parameters */
+      w = gsl_multifit_nlinear_alloc (T, &fdf_params, n, p);
+      
+      /* initialize solver with starting point and weights */
+      gsl_multifit_nlinear_init (&x.vector, &fdf,w);
+      
+      /* compute initial cost function */
+      f = gsl_multifit_nlinear_residual(w);
+      
+      int status, info;
+      const double xtol = 1e-12;
+      const double gtol = 1e-12;
+      const double ftol = 0.0;      
+      
+      /* solve the system with a maximum of 200 iterations */
+      status = gsl_multifit_nlinear_driver(200, xtol, gtol, ftol,
+                                           NULL, NULL, &info, w);
+      
+      /*Return optimized vector of stock variables to Minsky::step()*/                                     
+      memcpy(xf,w->x->data,w->x->size * sizeof(double));                           
+      
+      gsl_multifit_nlinear_free (w);
+             
+      return status;                      
+  }  
 
   void Minsky::step()
   {
@@ -724,6 +833,7 @@ namespace minsky
     vector<double> stockVarsCopy(stockVars);
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
+    int opt_err=GSL_SUCCESS;    
     // run RK algorithm on a separate worker thread so as to no block UI. See ticket #6
     boost::thread rkThread([&]() {
       try
@@ -731,11 +841,20 @@ namespace minsky
           double tp=reverse? -t: t;
           if (ode)
             {
-              gsl_odeiv2_driver_set_nmax(ode->driver, nSteps);
+				
+
+     		  // Structure to pass parameters to LM_optimize and residual_func
+	          struct OptParams pars { &tp, &stockVarsCopy[0],ode};	
+			  
+	          gsl_odeiv2_driver_set_nmax(pars.d->driver, nSteps);
               // we need to update Minsky's t synchronously to support the t operator
               // potentially means t and stockVars out of sync on GUI, but should still be thread safe
-              err=gsl_odeiv2_driver_apply(ode->driver, &tp, numeric_limits<double>::max(), 
-                                          &stockVarsCopy[0]);
+              err=gsl_odeiv2_driver_apply(pars.d->driver, pars.t, numeric_limits<double>::max(),pars.xi);                      
+                             
+              // minimize difference between initial stock variable values and values at end point of prior integration step, still a WORK IN PROGRESS
+              // the optimized stock variables are in theory updated in pars.x_init which is an alias for stockVarsCopy
+              opt_err = optimize(pars.xi,pars);
+
             }
           else // do explicit Euler method
             {
@@ -775,6 +894,7 @@ namespace minsky
         threadErrMsg.clear();
         // rethrow exception so message gets displayed to user
         throw err;
+        gsl_set_error_handler(errHandlerOpt);
       }
     
     if (reset_flag()) // in case reset() was called during the step evaluation
@@ -794,6 +914,17 @@ namespace minsky
       default:
         throw error("gsl error: %s",gsl_strerror(err));
       }
+
+    switch (opt_err)
+      {
+      case GSL_SUCCESS: case GSL_EMAXITER: break;
+      case GSL_ENOPROG:
+        throw error("no further progress can be made GSL_ENOPROG returned");         
+      case GSL_FAILURE:
+        throw error("unspecified error GSL_FAILURE returned");        
+      default:
+        throw error("gsl error: %s",gsl_strerror(opt_err));
+      }      
 
     stockVars.swap(stockVarsCopy);
 
