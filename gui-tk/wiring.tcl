@@ -562,6 +562,13 @@ proc renameVariableInstances {} {
     wm title .renameDialog "Rename [minsky.canvas.item.name]"
 }
 
+proc renameIntegralInstances {} {
+    textEntryPopup .renameDialog [minsky.canvas.item.description] {
+        canvas.renameAllInstances [.renameDialog.entry get]
+        canvas.requestRedraw
+    }
+    wm title .renameDialog "Rename [minsky.canvas.item.description]"
+}
 
 proc findDefinition {} {
     if [canvas.findVariableDefinition] {
@@ -629,13 +636,13 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Copy" -command "canvas.copyItem"
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.type]=="integrate"} {
-                .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
+               .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
             .wiring.context add command -label "Select all instances" -command {
                 canvas.selectAllVariables
             }
             .wiring.context add command -label "Rename all instances" -command {
-                renameVariableInstances
-            }
+				renameIntegralInstances
+			}	
             }
         }
         "PlotWidget" {
@@ -1191,6 +1198,7 @@ proc setIntegralIValue {} {
     global constInput
     set item minsky.canvas.item
     $item.description $constInput(Name)
+    $item.name $constInput(Name)
     # description may have change intVar, so use value instead to set init
     getValue [$item.valueId]
     value.init $constInput(Value)
