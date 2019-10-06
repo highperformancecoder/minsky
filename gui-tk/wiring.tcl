@@ -1198,7 +1198,6 @@ proc setIntegralIValue {} {
     global constInput
     set item minsky.canvas.item
     $item.description $constInput(Name)
-    $item.name $constInput(Name)
     # description may have change intVar, so use value instead to set init
     getValue [$item.valueId]
     value.init $constInput(Value)

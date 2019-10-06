@@ -90,15 +90,13 @@ namespace minsky
         if (pos!=first && pos!=firstAndLast) godleyIcon.deleteRow(idx+1); // Initial conditions row cannot be deleted, even when it is the only row in the table. For ticket 1064
         break;
       case 2:  
-        if (pos==first && pos==firstAndLast) // Third button cannot move initial conditions row, even when it is the only row in the table. For ticket 1064
-          godleyIcon.table.moveRow(idx,0); 
-        else if (pos==second)                  // Third button of second row cannot swap initial conditions and second row. For ticket 1064
+        if (pos==second)                                       // Third button of second row cannot swap initial conditions and second row. For ticket 1064
            godleyIcon.table.moveRow(idx,1); 
-        else if (pos!=first && pos!=firstAndLast)                  // Third button cannot swap column headings and initial conditions row values. For ticket 1064     
+        else if (pos!=first && pos!=firstAndLast)               // Third button cannot swap column headings and initial conditions row values. For ticket 1064     
           godleyIcon.table.moveRow(idx,-1);   
         break;
       case 3:
-        if (pos==middle)             // Fourth button on first and second row cannot move initial conditions row. For ticket 1064
+        if (pos==middle)                                         // Fourth button on first and second row cannot move initial conditions row. For ticket 1064
           godleyIcon.table.moveRow(idx,1);
         break;
       }
@@ -357,36 +355,33 @@ namespace minsky
           else if (selectedCol==0 || /* selecting individual cell */
                    (selectedCol>=int(scrollColStart) && selectedCol<int(godleyIcon->table.cols())))   
             {
-              if (selectedRow!=0 || selectedCol!=0) // can't select flows/stockVars
+              if ((selectedRow>1 || selectedRow <0) || selectedCol!=0) // can't select flows/stockVars or Initial Conditions labels
                 {
-				 if (selectedRow!=1 || selectedCol!=0) // can't modify cell containing "Initial Conditions", i.e., first column in first row
-				   {	
-                    if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
-                    double x=colLeftMargin[i];
-                    cairo_set_source_rgba(surface->cairo(),1,1,1,1);
-                    cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
-                    cairo_fill(surface->cairo());
-                    pango.setMarkup(defang(godleyIcon->table.cell(selectedRow,selectedCol)));
-                    cairo_set_source_rgba(surface->cairo(),0,0,0,1);
-                    cairo_move_to(surface->cairo(),x,y);
-                    pango.show();
-				    
-                    // show insertion cursor
-                    cairo_move_to(surface->cairo(),x+pango.idxToPos(insertIdx),y);
-                    cairo_rel_line_to(surface->cairo(),0,rowHeight);
-                    cairo_set_line_width(surface->cairo(),1);
-                    cairo_stroke(surface->cairo());
-                    if (motionRow>0 && motionCol>0)
-                      highlightCell(surface->cairo(),motionRow,motionCol);
-                    if (selectIdx!=insertIdx)
-                      {
-                        // indicate some text has been selected
-                        cairo_rectangle(surface->cairo(),x+pango.idxToPos(insertIdx),y,
-                                        pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
-                        cairo_set_source_rgba(surface->cairo(),0.5,0.5,0.5,0.5);
-                        cairo_fill(surface->cairo());
+                  if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
+                  double x=colLeftMargin[i];
+                  cairo_set_source_rgba(surface->cairo(),1,1,1,1);
+                  cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
+                  cairo_fill(surface->cairo());
+                  pango.setMarkup(defang(godleyIcon->table.cell(selectedRow,selectedCol)));
+                  cairo_set_source_rgba(surface->cairo(),0,0,0,1);
+                  cairo_move_to(surface->cairo(),x,y);
+                  pango.show();
+				  
+                  // show insertion cursor
+                  cairo_move_to(surface->cairo(),x+pango.idxToPos(insertIdx),y);
+                  cairo_rel_line_to(surface->cairo(),0,rowHeight);
+                  cairo_set_line_width(surface->cairo(),1);
+                  cairo_stroke(surface->cairo());
+                  if (motionRow>0 && motionCol>0)
+                    highlightCell(surface->cairo(),motionRow,motionCol);
+                  if (selectIdx!=insertIdx)
+                    {
+                      // indicate some text has been selected
+                      cairo_rectangle(surface->cairo(),x+pango.idxToPos(insertIdx),y,
+                                      pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
+                      cairo_set_source_rgba(surface->cairo(),0.5,0.5,0.5,0.5);
+                      cairo_fill(surface->cairo());
                    }
-                  }  
                 }
             }
         }
@@ -914,13 +909,23 @@ namespace minsky
 
   void GodleyTableWindow::checkCell00()
   {
-    if ((selectedCol==0 && selectedRow==0) || (selectedCol==0 && selectedRow==1))
-      // (0,0) and (1,0) cells not editable
+    if (selectedCol==0 && selectedRow==0)
+      // (0,0) cell not editable
       {
         selectedCol=-1;
         selectedRow=-1;
       }         
   }
+  
+  void GodleyTableWindow::checkCell10()
+  {
+    if (selectedCol==0 && selectedRow==1)
+      // (1,0) cell not editable
+      {
+        selectedCol=-1;
+        selectedRow=0;
+      }         
+  }  
 
   
     void GodleyTableWindow::navigateRight()
@@ -935,6 +940,7 @@ namespace minsky
               navigateDown();
             }
           checkCell00();
+          checkCell10();
         }
     }
   
@@ -950,6 +956,7 @@ namespace minsky
               navigateUp();
             }
           checkCell00();
+          checkCell10();
         }
     }
 
@@ -958,6 +965,7 @@ namespace minsky
       if (selectedRow>=0)
         selectedRow=(selectedRow-1)%godleyIcon->table.rows();
       checkCell00();
+      checkCell10();
     }
   
     void GodleyTableWindow::navigateDown()
@@ -965,6 +973,7 @@ namespace minsky
       if (selectedRow>=0)
         selectedRow=(selectedRow+1)%godleyIcon->table.rows();
       checkCell00();
+      checkCell10();
     }
 
   template <ButtonWidgetEnums::RowCol rowCol>

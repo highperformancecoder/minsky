@@ -1017,6 +1017,7 @@ SUITE(GodleyTableWindow)
     struct ButtonWidgetFixture: public GodleyIcon, public ButtonWidget<RC>
   {
     using ButtonWidget<RC>::first;
+    using ButtonWidget<RC>::second;
     using ButtonWidget<RC>::middle;
     using ButtonWidget<RC>::last;
     using ButtonWidget<RC>::idx;
@@ -1055,18 +1056,31 @@ SUITE(GodleyTableWindow)
       for (size_t i=0; i<table.cols(); ++i)
         CHECK_EQUAL("c3"+str(i),table.cell(3,i));
       CHECK(table.getData()==origData);
-    
-      // now check arrow functionality
-      idx=2; pos=first;
+      
+      // now check arrow functionality  
+      // first (Initial Conditions) row cannot be swapped at all 
+      //idx=2; pos=first;                              
+      //invoke(2*buttonSpacing);
+      //CHECK_EQUAL(4,table.rows());
+      //// check row swapped with next 
+      //for (size_t i=0; i<table.cols(); ++i)
+      //  CHECK_EQUAL("c1"+str(i),table.cell(2,i));      
+      //for (size_t i=0; i<table.cols(); ++i)           
+      //  CHECK_EQUAL("c2"+str(i),table.cell(3,i));
+      //for (size_t i=0; i<table.cols(); ++i)
+      //  CHECK_EQUAL("c3"+str(i),table.cell(1,i));               
+        
+      // now check arrow functionality  
+      idx=2; pos=second;                     
       invoke(2*buttonSpacing);
       CHECK_EQUAL(4,table.rows());
       // check row swapped with next
       for (size_t i=0; i<table.cols(); ++i)
-        CHECK_EQUAL("c1"+str(i),table.cell(1,i));
+        CHECK_EQUAL("c1"+str(i),table.cell(1,i));      
+      for (size_t i=0; i<table.cols(); ++i)           
+        CHECK_EQUAL("c2"+str(i),table.cell(3,i));        // second row can only be swapped with third row
       for (size_t i=0; i<table.cols(); ++i)
-        CHECK_EQUAL("c2"+str(i),table.cell(3,i));
-      for (size_t i=0; i<table.cols(); ++i)
-        CHECK_EQUAL("c3"+str(i),table.cell(2,i));
+        CHECK_EQUAL("c3"+str(i),table.cell(2,i));             
     
       pos=middle;
       invoke(2*buttonSpacing);
@@ -1097,11 +1111,14 @@ SUITE(GodleyTableWindow)
         CHECK_EQUAL("c3"+str(i),table.cell(2,i));
 
     
-      // should be no 4th button on first & last
+      // should be no 4th button on first, second & last
       pos=first;
       auto saveData=table.getData();
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
+      pos=second;
+      invoke(3*buttonSpacing);
+      CHECK(table.getData()==saveData);      
       pos=last;
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
@@ -1257,14 +1274,17 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
       CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,3));
       CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,3));
-      x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
-      CHECK_EQUAL(rowWidget, clickType(x,y));
-      mouseDown(x,y);
-      // should have invoked moving row 1 down
-      CHECK_EQUAL("r2c2",godleyIcon->table.cell(1,2));
-      CHECK_EQUAL("r1c2",godleyIcon->table.cell(2,2));
-      CHECK_EQUAL("r2c1",godleyIcon->table.cell(1,3));
-      CHECK_EQUAL("r1c1",godleyIcon->table.cell(2,3));
+      
+      // Row 1 can no longer move down, so the following is no longer needed
+      
+      //x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
+      //CHECK_EQUAL(rowWidget, clickType(x,y));
+      //mouseDown(x,y);
+      //// should have invoked moving row 1 down
+      //CHECK_EQUAL("r2c2",godleyIcon->table.cell(1,2));
+      //CHECK_EQUAL("r1c2",godleyIcon->table.cell(2,2));
+      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(1,3));
+      //CHECK_EQUAL("r1c1",godleyIcon->table.cell(2,3));
     }
   
   TEST_FIXTURE(GodleyTableWindowFixture, moveRowColCell)
@@ -1357,16 +1377,18 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(1,insertIdx);
       keyPress(XK_Left,"");
       CHECK_EQUAL(0,insertIdx);
-      keyPress(XK_Left,"");
-      CHECK_EQUAL(0,selectedCol);
+      // (1,0) cell no longer selectable
+      //keyPress(XK_Left,"");
+      //CHECK_EQUAL(0,selectedCol);    
       keyPress(XK_Tab,"");
-      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(2,selectedCol);  // selectedCol is still equal to 1 since above operation attempting to access cell (1,0) has not been performed
       keyPress(XK_Tab,"");
-      CHECK_EQUAL(2,selectedCol);
-      keyPress(XK_Right,"");
       CHECK_EQUAL(3,selectedCol);
-      keyPress(XK_Right,"");
+      keyPress(XK_Right,"");     // check wrap around
       CHECK_EQUAL(0,selectedCol);
+      // (1,0) cell no longer selectable
+      //keyPress(XK_Right,"");
+      //CHECK_EQUAL(0,selectedCol);
       CHECK_EQUAL(2,selectedRow);
       keyPress(XK_Tab,"");
       CHECK_EQUAL(1,selectedCol);
