@@ -636,7 +636,7 @@ namespace minsky
           case 0xff51: //left arrow
             selectedRow=0; selectedCol=table.cols()-1; break;
           case 0xff54: // down
-            selectedRow=1; selectedCol=0; break;
+            selectedRow=2; selectedCol=0; break;           // Start from second row because Initial Conditions cell (1,0) can no longer be selected.
           case 0xff52: // up
             selectedRow=table.rows()-1; selectedCol=0; break;
           default:
@@ -909,24 +909,13 @@ namespace minsky
 
   void GodleyTableWindow::checkCell00()
   {
-    if (selectedCol==0 && selectedRow==0)
+    if (selectedCol==0 && (selectedRow==0 || selectedRow ==1))
       // (0,0) cell not editable
       {
         selectedCol=-1;
         selectedRow=-1;
       }         
   }
-  
-  void GodleyTableWindow::checkCell10()
-  {
-    if (selectedCol==0 && selectedRow==1)
-      // (1,0) cell not editable
-      {
-        selectedCol=-1;
-        selectedRow=0;
-      }         
-  }  
-
   
     void GodleyTableWindow::navigateRight()
     {
@@ -940,7 +929,6 @@ namespace minsky
               navigateDown();
             }
           checkCell00();
-          checkCell10();
         }
     }
   
@@ -956,7 +944,6 @@ namespace minsky
               navigateUp();
             }
           checkCell00();
-          checkCell10();
         }
     }
 
@@ -965,7 +952,6 @@ namespace minsky
       if (selectedRow>=0)
         selectedRow=(selectedRow-1)%godleyIcon->table.rows();
       checkCell00();
-      checkCell10();
     }
   
     void GodleyTableWindow::navigateDown()
@@ -973,7 +959,6 @@ namespace minsky
       if (selectedRow>=0)
         selectedRow=(selectedRow+1)%godleyIcon->table.rows();
       checkCell00();
-      checkCell10();
     }
 
   template <ButtonWidgetEnums::RowCol rowCol>

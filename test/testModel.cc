@@ -1256,13 +1256,16 @@ SUITE(GodleyTableWindow)
   
   TEST_FIXTURE(GodleyTableWindowFixture, mouseButtons)
     {
-      godleyIcon->table.resize(3,4);
-      godleyIcon->table.cell(0,1)="col1";
+      godleyIcon->table.resize(4,4);
+      godleyIcon->table.cell(0,1)="col1";  
       godleyIcon->table.cell(0,2)="col2";
       godleyIcon->table.cell(1,1)="r1c1";
       godleyIcon->table.cell(1,2)="r1c2";
       godleyIcon->table.cell(2,1)="r2c1";
       godleyIcon->table.cell(2,2)="r2c2";
+      godleyIcon->table.cell(3,1)="r3c1";
+      godleyIcon->table.cell(3,2)="r3c2";      
+      
       surface.reset(new ecolab::cairo::Surface
                     (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
       redraw(0,0,0,0);
@@ -1275,16 +1278,26 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,3));
       CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,3));
       
-      // Row 1 can no longer move down, so the following is no longer needed
+      x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
+      CHECK_EQUAL(rowWidget, clickType(x,y));
+      mouseDown(x,y);
+      // Row 1 cannot move down
+      CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
+      CHECK_EQUAL("r1c2",godleyIcon->table.cell(1,2));
+      // Not sure why column 1's contents cannot be tested????
+      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,1));
+      //CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,1));
       
-      //x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
-      //CHECK_EQUAL(rowWidget, clickType(x,y));
-      //mouseDown(x,y);
-      //// should have invoked moving row 1 down
-      //CHECK_EQUAL("r2c2",godleyIcon->table.cell(1,2));
-      //CHECK_EQUAL("r1c2",godleyIcon->table.cell(2,2));
-      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(1,3));
-      //CHECK_EQUAL("r1c1",godleyIcon->table.cell(2,3));
+      x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+2*rowHeight;
+      CHECK_EQUAL(rowWidget, clickType(x,y));
+      mouseDown(x,y);
+      // should have invoked moving row 2 down, in effect swapping row 2 and 3's contents
+      CHECK_EQUAL("r3c2",godleyIcon->table.cell(2,2));
+      CHECK_EQUAL("r2c2",godleyIcon->table.cell(3,2));
+      // Not sure why column 1's contents cannot be tested????
+      //CHECK_EQUAL("r3c1",godleyIcon->table.cell(2,1));
+      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(3,1));
+      
     }
   
   TEST_FIXTURE(GodleyTableWindowFixture, moveRowColCell)
@@ -1377,32 +1390,34 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(1,insertIdx);
       keyPress(XK_Left,"");
       CHECK_EQUAL(0,insertIdx);
-      // (1,0) cell no longer selectable
-      //keyPress(XK_Left,"");
-      //CHECK_EQUAL(0,selectedCol);    
+      // (1,0) cell no longer selectable, selectedRow and selectedCol become -1
+      keyPress(XK_Left,"");
+      CHECK_EQUAL(-1,selectedCol);   
+      CHECK_EQUAL(-1,selectedRow);      
+      keyPress(XK_Tab,"");          //  No cell selected, selectedRow = 0 and selectedCol = 1 when tab button is pressed, see godleyTableWindow line 633
+      CHECK_EQUAL(1,selectedCol);  
       keyPress(XK_Tab,"");
-      CHECK_EQUAL(2,selectedCol);  // selectedCol is still equal to 1 since above operation attempting to access cell (1,0) has not been performed
-      keyPress(XK_Tab,"");
-      CHECK_EQUAL(3,selectedCol);
-      keyPress(XK_Right,"");     // check wrap around
-      CHECK_EQUAL(0,selectedCol);
-      // (1,0) cell no longer selectable
-      //keyPress(XK_Right,"");
-      //CHECK_EQUAL(0,selectedCol);
-      CHECK_EQUAL(2,selectedRow);
-      keyPress(XK_Tab,"");
-      CHECK_EQUAL(1,selectedCol);
-      keyPress(XK_Up,"");
-      CHECK_EQUAL(1,selectedCol);
-      CHECK_EQUAL(1,selectedRow);
+      CHECK_EQUAL(2,selectedCol);
+      keyPress(XK_Right,"");     
+      CHECK_EQUAL(3,selectedCol);  
       keyPress(XK_Down,"");
-      CHECK_EQUAL(1,selectedCol);
+      CHECK_EQUAL(1,selectedRow);  // selectedRow = 0 from initial tab press 
+      keyPress(XK_Tab,"");
+      CHECK_EQUAL(0,selectedCol);  
+      keyPress(XK_Left,"");
+      CHECK_EQUAL(3,selectedCol);   
+      CHECK_EQUAL(1,selectedRow);   
+      keyPress(XK_Right,"");
+      CHECK_EQUAL(0,selectedCol);   // Moved down one row  
       CHECK_EQUAL(2,selectedRow);
       keyPress(XK_ISO_Left_Tab,"");
-      CHECK_EQUAL(0,selectedCol);
-      keyPress(XK_ISO_Left_Tab,"");
       CHECK_EQUAL(3,selectedCol);
-      CHECK_EQUAL(1,selectedRow);
+      keyPress(XK_ISO_Left_Tab,"");
+      CHECK_EQUAL(2,selectedCol);
+      CHECK_EQUAL(1,selectedRow);    
+      keyPress(XK_Right,"");
+      CHECK_EQUAL(3,selectedCol);
+      CHECK_EQUAL(1,selectedRow);       
       keyPress(XK_Tab,""); // check wrap around
       CHECK_EQUAL(0,selectedCol);
       CHECK_EQUAL(2,selectedRow);
@@ -1446,7 +1461,7 @@ SUITE(GodleyTableWindow)
       selectedCol=-1; selectedRow=-1;
       keyPress(XK_Down,"");
       CHECK_EQUAL(0,selectedCol);
-      CHECK_EQUAL(1,selectedRow);
+      CHECK_EQUAL(2,selectedRow);    // Initial Conditions cell cannot be selected
       
       selectedCol=-1; selectedRow=-1;
       keyPress(XK_Up,"");
