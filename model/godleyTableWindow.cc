@@ -86,17 +86,17 @@ namespace minsky
       case 0:
         godleyIcon.table.insertRow(idx+1);
         break;
-      case 1:
-        godleyIcon.deleteRow(idx+1);
+      case 1:      
+        if (pos!=first && pos!=firstAndLast) godleyIcon.deleteRow(idx+1); // Initial conditions row cannot be deleted, even when it is the only row in the table. For ticket 1064
         break;
-      case 2:
-        if (pos==first)
-          godleyIcon.table.moveRow(idx,1);
-        else
-          godleyIcon.table.moveRow(idx,-1);
+      case 2:  
+        if (pos==second)                                       // Third button of second row cannot swap initial conditions and second row. For ticket 1064
+           godleyIcon.table.moveRow(idx,1); 
+        else if (pos!=first && pos!=firstAndLast)               // Third button cannot swap column headings and initial conditions row values. For ticket 1064     
+          godleyIcon.table.moveRow(idx,-1);   
         break;
       case 3:
-        if (pos==middle)
+        if (pos==middle)                                         // Fourth button on first and second row cannot move initial conditions row. For ticket 1064
           godleyIcon.table.moveRow(idx,1);
         break;
       }
@@ -347,15 +347,15 @@ namespace minsky
               highlightColumn(surface->cairo(),selectedCol);
               highlightColumn(surface->cairo(),motionCol);
             }
-          else if (motionRow>=0 && selectedCol==0 && selectedRow>0) // whole col being moved
+          else if (motionRow>=0 && selectedCol==0 && selectedRow>0) // whole Row being moved
             {
               highlightRow(surface->cairo(),selectedRow);
               highlightRow(surface->cairo(),motionRow);
             }
           else if (selectedCol==0 || /* selecting individual cell */
-                   (selectedCol>=int(scrollColStart) && selectedCol<int(godleyIcon->table.cols())))
+                   (selectedCol>=int(scrollColStart) && selectedCol<int(godleyIcon->table.cols())))   
             {
-              if (selectedRow!=0 || selectedCol!=0) // can't select flows/stockVars label
+              if ((selectedRow>1 || selectedRow <0) || selectedCol!=0) // can't select flows/stockVars or Initial Conditions labels
                 {
                   if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
                   double x=colLeftMargin[i];
@@ -366,7 +366,7 @@ namespace minsky
                   cairo_set_source_rgba(surface->cairo(),0,0,0,1);
                   cairo_move_to(surface->cairo(),x,y);
                   pango.show();
-
+				  
                   // show insertion cursor
                   cairo_move_to(surface->cairo(),x+pango.idxToPos(insertIdx),y);
                   cairo_rel_line_to(surface->cairo(),0,rowHeight);
@@ -381,7 +381,7 @@ namespace minsky
                                       pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
                       cairo_set_source_rgba(surface->cairo(),0.5,0.5,0.5,0.5);
                       cairo_fill(surface->cairo());
-                    }
+                   }
                 }
             }
         }
@@ -636,7 +636,7 @@ namespace minsky
           case 0xff51: //left arrow
             selectedRow=0; selectedCol=table.cols()-1; break;
           case 0xff54: // down
-            selectedRow=1; selectedCol=0; break;
+            selectedRow=2; selectedCol=0; break;           // Start from second row because Initial Conditions cell (1,0) can no longer be selected.
           case 0xff52: // up
             selectedRow=table.rows()-1; selectedCol=0; break;
           default:
@@ -652,7 +652,7 @@ namespace minsky
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
         str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));
-        selectIdx=insertIdx=min(insertIdx,selectIdx);
+        selectIdx=insertIdx=min(insertIdx,selectIdx);   
       }
   }
 
@@ -856,11 +856,17 @@ namespace minsky
     // just ignored
     if (rowWidgets.size()==2)
       rowWidgets[1].pos=firstAndLast;
-    else if (rowWidgets.size()>2)
+    else if (rowWidgets.size()==3)
       {
         rowWidgets[1].pos=first;
-        rowWidgets.back().pos=last;
+        rowWidgets.back().pos=second;       // Position to avoid Initial Conditions row from being moved. For ticket 1064
       }
+    else if (rowWidgets.size()>3)
+      {
+        rowWidgets[1].pos=first;      
+        rowWidgets[2].pos=second;          // Position to avoid Initial Conditions row from being moved. For ticket 1064
+        rowWidgets.back().pos=last;     
+      }  
     if (colWidgets.size()==2)
       colWidgets[1].pos=firstAndLast;
     else if (colWidgets.size()>2)
@@ -903,14 +909,13 @@ namespace minsky
 
   void GodleyTableWindow::checkCell00()
   {
-    if (selectedCol==0 && selectedRow==0)
+    if (selectedCol==0 && (selectedRow==0 || selectedRow ==1))
       // (0,0) cell not editable
       {
         selectedCol=-1;
         selectedRow=-1;
-      }
+      }         
   }
-
   
     void GodleyTableWindow::navigateRight()
     {
@@ -987,13 +992,15 @@ namespace minsky
   {
     CairoSave cs(cairo);
     int idx=0;
-    drawButton(cairo,"+",0,1,0,idx++);
-    drawButton(cairo,"—",1,0,0,idx++);
-    if (pos!=first && pos!=firstAndLast)
-      drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
-    if (pos!=last && pos!=firstAndLast)
-      drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
-  }
+      drawButton(cairo,"+",0,1,0,idx++);
+      if ((pos!=first && pos!=firstAndLast) || rowCol == col) 	// no delete button for first row containing initial conditions. For ticket 1064
+		drawButton(cairo,"—",1,0,0,idx++);
+      if (pos!=first && pos!=second && pos!=firstAndLast) 						// no move up button for first row containing initial conditions. For ticket 1064
+        drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
+      if ((pos!=first && pos!=last && pos!=firstAndLast) || rowCol == col)              // no move down button for first row containing initial conditions. For ticket 1064
+        drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
+  }  
+ 
 
   cairo::SurfacePtr GodleyTableWindow::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
   {
