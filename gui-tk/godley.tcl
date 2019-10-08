@@ -230,12 +230,14 @@ proc godleyContext {id x y X Y} {
             $id.insertIdx 0
             $id.selectIdx 0
         }
-        if {[string length [$id.godleyIcon.table.getCell $r $c]] && [$id.godleyIcon.table.getCell $r $c]!=[$id.godleyIcon.table.getCell 1 0]} {   # Cannot Cut or Copy cell(1,0). For ticket 1064
-            .$id.context add command -label "Cut" -command "$id.cut"
+        if {[string length [$id.godleyIcon.table.getCell $r $c]] && ($r!=1 || $c!=0)} {    # Cannot Cut cell(1,0). For ticket 1064
+            .$id.context add command -label "Cut" -command "$id.cut"    
+        }    
+        if {[string length [$id.godleyIcon.table.getCell $r $c]]} {     
             .$id.context add command -label "Copy" -command "$id.copy"
         }
     }
-    if {![catch {clipboard get -type UTF8_STRING}] && [$id.godleyIcon.table.getCell $r $c]!=[$id.godleyIcon.table.getCell 1 0]} {   # Cannot Paste into cell(1,0). For ticket 1064
+    if {![catch {clipboard get -type UTF8_STRING}]  && ($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
         .$id.context add command -label "Paste" -command "$id.paste"
     }
     tk_popup .$id.context $X $Y

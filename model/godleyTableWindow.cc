@@ -198,7 +198,7 @@ namespace minsky
               }
             
             CairoSave cs(surface->cairo());
-            if (row!=0 || col!=0)                  
+            if (row!=0 || col!=0)               
               {
                 string text=godleyIcon->table.cell(row,col);
                 if (!text.empty())
@@ -222,7 +222,7 @@ namespace minsky
                     // editing, all other cells rendered as LaTeX
                     if (int(row)!=selectedRow || int(col)!=selectedCol && !godleyIcon->table.initialConditionRow(row))
                       {
-                        if (row>0 && col>0)
+                        if (row>0 && col>0)    
                           { // handle DR/CR mode and colouring of text
                             if (fc.coef<0)
                               cairo_set_source_rgb(surface->cairo(),1,0,0);
@@ -241,7 +241,7 @@ namespace minsky
                           }
                         else // is flow tag, stock var or initial condition
                           text = latexToPango(text);
-                        text+=value;
+                        if (row!=1 || col!=0) text+=value;  // Do not add value "= 0.0" to Initial Condtions cell(1,0). For ticket 1064
                       }
                     else
                       text=defang(text);
@@ -411,18 +411,15 @@ namespace minsky
     cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
     ZoomablePango pango(surf.cairo());
     if (selectedRow>=0 && size_t(selectedRow)<godleyIcon->table.rows() &&
-        selectedCol>=0 && size_t(selectedCol)<godleyIcon->table.cols())
+        selectedCol>=0 && size_t(selectedCol)<godleyIcon->table.cols() && (selectedRow!=1 || selectedCol!=0)) // No text index needed for a cell that is immutable. For ticket 1064
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-        if (str!=godleyIcon->table.cell(1,0))                           // No text index needed for a cell that is immutable. For ticket 1064
-          {
-            pango.setMarkup(defang(str));
-            int j=0;
-            if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
-            x-=colLeftMargin[j]+2;
-            x*=zoomFactor;
-            return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;  
-	      }
+        pango.setMarkup(defang(str));
+        int j=0;
+        if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
+        x-=colLeftMargin[j]+2;
+        x*=zoomFactor;
+        return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;  
       }
     return 0;
   }
@@ -465,12 +462,11 @@ namespace minsky
         selectedCol=colX(x);
         selectedRow=rowY(y);
         if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
-            selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
+            selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()) && (selectedRow!=1 || selectedCol!=0)) // Cannot save text in cell(1,0). For ticket 1064
            {
              selectIdx=insertIdx = textIdx(x);
-             auto& str=godleyIcon->table.cell(selectedRow,selectedCol);     
-             if (str!=godleyIcon->table.cell(1,0))                               // Cannot save text in cell(1,0). For ticket 1064
-                savedText=godleyIcon->table.cell(selectedRow, selectedCol);
+             auto& str=godleyIcon->table.cell(selectedRow,selectedCol);                         
+             savedText=godleyIcon->table.cell(selectedRow, selectedCol);
            }
         else
           selectIdx=insertIdx=0;
@@ -495,7 +491,7 @@ namespace minsky
         if (r!=selectedRow && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r))  // Cannot move Intitial Conditions row. For ticket 1064
           godleyIcon->table.moveRow(selectedRow,r-selectedRow);
       }
-    else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0 && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r)) // Cannot swap individual cells in IC row. For ticket 1064
+    else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0 && (c!=0 || r!=1) && (selectedCol!=0 || selectedRow!=1)) // Cannot swap cell(1,0) with another. For ticket 1064
       {
         swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
         selectedCol=c;
@@ -560,7 +556,7 @@ namespace minsky
         selectedRow<int(table.rows()))
           {			  	  
             auto& str=table.cell(selectedRow,selectedCol);
-            if (str!=table.cell(1,0))                                 // Cell (1,0) is off-limits. For ticket 1064
+            if (selectedCol!=0 || selectedRow!=1)                   // Cell (1,0) is off-limits. For ticket 1064
               if (utf8.length())
                 if (unsigned(utf8[0])>=' ' && utf8[0]!=0x7f)
                   {
