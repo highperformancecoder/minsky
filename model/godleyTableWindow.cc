@@ -198,7 +198,7 @@ namespace minsky
               }
             
             CairoSave cs(surface->cairo());
-            if (row!=0 || col!=0)                  
+            if (row!=0 || col!=0)
               {
                 string text=godleyIcon->table.cell(row,col);
                 if (!text.empty())
@@ -220,9 +220,9 @@ namespace minsky
                       }
                     // the active cell renders as bare LaTeX code for
                     // editing, all other cells rendered as LaTeX
-                    if (int(row)!=selectedRow || int(col)!=selectedCol && !godleyIcon->table.initialConditionRow(row))
+                    if (int(row)!=selectedRow || int(col)!=selectedCol)
                       {
-                        if (row>0 && col>0)
+                        if (row>0 && col>0 && !godleyIcon->table.initialConditionRow(row))
                           { // handle DR/CR mode and colouring of text
                             if (fc.coef<0)
                               cairo_set_source_rgb(surface->cairo(),1,0,0);
@@ -321,7 +321,7 @@ namespace minsky
     cairo_stroke(surface->cairo());
 
     // indicate cell mouse is hovering over
-    if ((hoverRow>0 || hoverCol>0) &&                                
+    if ((hoverRow>0 || hoverCol>0) &&
         size_t(hoverRow)<godleyIcon->table.rows() &&
         size_t(hoverCol)<godleyIcon->table.cols())
       {
@@ -414,15 +414,12 @@ namespace minsky
         selectedCol>=0 && size_t(selectedCol)<godleyIcon->table.cols())
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-        if (str!=godleyIcon->table.cell(1,0))                           // No text index needed for a cell that is immutable. For ticket 1064
-          {
-            pango.setMarkup(defang(str));
-            int j=0;
-            if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
-            x-=colLeftMargin[j]+2;
-            x*=zoomFactor;
-            return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;  
-	      }
+        pango.setMarkup(defang(str));
+        int j=0;
+        if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
+        x-=colLeftMargin[j]+2;
+        x*=zoomFactor;
+        return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;
       }
     return 0;
   }
@@ -466,12 +463,10 @@ namespace minsky
         selectedRow=rowY(y);
         if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
             selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()))
-           {
-             selectIdx=insertIdx = textIdx(x);
-             auto& str=godleyIcon->table.cell(selectedRow,selectedCol);     
-             if (str!=godleyIcon->table.cell(1,0))                               // Cannot save text in cell(1,0). For ticket 1064
-                savedText=godleyIcon->table.cell(selectedRow, selectedCol);
-           }
+          {
+            selectIdx=insertIdx = textIdx(x);
+            savedText=godleyIcon->table.cell(selectedRow, selectedCol);
+          }
         else
           selectIdx=insertIdx=0;
         requestRedraw();
@@ -492,10 +487,10 @@ namespace minsky
       }
     else if (r>0 && selectedCol==0)
       {
-        if (r!=selectedRow && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r))  // Cannot move Intitial Conditions row. For ticket 1064
+        if (r!=selectedRow)
           godleyIcon->table.moveRow(selectedRow,r-selectedRow);
       }
-    else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0 && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r)) // Cannot swap individual cells in IC row. For ticket 1064
+    else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
       {
         swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
         selectedCol=c;
@@ -558,78 +553,77 @@ namespace minsky
     auto& table=godleyIcon->table;
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(table.cols()) &&
         selectedRow<int(table.rows()))
-          {			  	  
-            auto& str=table.cell(selectedRow,selectedCol);
-            if (str!=table.cell(1,0))                                 // Cell (1,0) is off-limits. For ticket 1064
-              if (utf8.length())
-                if (unsigned(utf8[0])>=' ' && utf8[0]!=0x7f)
-                  {
-                    delSelection();
-                    if (insertIdx>=str.length()) insertIdx=str.length();
-                    str.insert(insertIdx,utf8);
-                    selectIdx=insertIdx+=utf8.length();
-                  }
-                else
-                  {
-                    switch (utf8[0]) // process control characters
-                      {
-                      case control('x'):
-                        cut();
-                        break;
-                      case control('c'):
-                        copy();
-                        break;
-                      case control('v'):
-                        paste();
-                        break;
-                      case control('h'): case 0x7f:
-                        handleDelete();
-                        break;                  
-                      }
-                  }
-              else
+      {
+        auto& str=table.cell(selectedRow,selectedCol);
+        if (utf8.length())
+          if (unsigned(utf8[0])>=' ' && utf8[0]!=0x7f)
+            {
+              delSelection();
+              if (insertIdx>=str.length()) insertIdx=str.length();
+              str.insert(insertIdx,utf8);
+              selectIdx=insertIdx+=utf8.length();
+            }
+          else
+            {
+              switch (utf8[0]) // process control characters
                 {
-                switch (keySym)
-                  {
-                  case 0xff08: case 0xffff:  //backspace/delete
-                    handleDelete();
-                    break;
-                  case 0xff1b: // escape
-                    if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
-                        selectedCol>=0 && size_t(selectedCol)<=table.cols())
-                      table.cell(selectedRow, selectedCol)=savedText;
-                    selectedRow=selectedCol=-1;
-                    break;
-                  case 0xff0d: //return
-                    update();
-                    selectedRow=selectedCol=-1;
-                    break;
-                  case 0xff51: //left arrow
-                    if (insertIdx>0) insertIdx--;
-                    else navigateLeft();
-                    break;
-                  case 0xff53: //right arrow
-                    if (insertIdx<str.length()) insertIdx++;
-                    else navigateRight();
-                    break;
-                  case 0xff09: // tab
-                    navigateRight();
-                    break;
-                  case 0xfe20: // back tab
-                    navigateLeft();
-                    break;
-                  case 0xff54: // down
-                    navigateDown();
-                    break;
-                  case 0xff52: // up
-                    navigateUp();
-                    break;
-                  default:
-                    return; // key not handled, just return without resetting selection
-                  }
-                  selectIdx=insertIdx;
+                case control('x'):
+                  cut();
+                  break;
+                case control('c'):
+                  copy();
+                  break;
+                case control('v'):
+                  paste();
+                  break;
+                case control('h'): case 0x7f:
+                  handleDelete();
+                  break;                  
                 }
-          }  
+            }
+        else
+          {
+          switch (keySym)
+            {
+            case 0xff08: case 0xffff:  //backspace/delete
+              handleDelete();
+              break;
+            case 0xff1b: // escape
+              if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
+                  selectedCol>=0 && size_t(selectedCol)<=table.cols())
+                table.cell(selectedRow, selectedCol)=savedText;
+              selectedRow=selectedCol=-1;
+              break;
+            case 0xff0d: //return
+              update();
+              selectedRow=selectedCol=-1;
+              break;
+            case 0xff51: //left arrow
+              if (insertIdx>0) insertIdx--;
+              else navigateLeft();
+              break;
+            case 0xff53: //right arrow
+              if (insertIdx<str.length()) insertIdx++;
+              else navigateRight();
+              break;
+            case 0xff09: // tab
+              navigateRight();
+              break;
+            case 0xfe20: // back tab
+              navigateLeft();
+              break;
+            case 0xff54: // down
+              navigateDown();
+              break;
+            case 0xff52: // up
+              navigateUp();
+              break;
+            default:
+              return; // key not handled, just return without resetting selection
+            }
+            selectIdx=insertIdx;
+          }
+      }
     else // nothing selected
       {
         // if one of the navigation keys pressed, move to the first/last etc cell
@@ -642,7 +636,7 @@ namespace minsky
           case 0xff51: //left arrow
             selectedRow=0; selectedCol=table.cols()-1; break;
           case 0xff54: // down
-            selectedRow=2; selectedCol=0; break;           // Start from second row because Initial Conditions cell (1,0) can no longer be selected. For ticket 1064
+            selectedRow=2; selectedCol=0; break;           // Start from second row because Initial Conditions cell (1,0) can no longer be selected.
           case 0xff52: // up
             selectedRow=table.rows()-1; selectedCol=0; break;
           default:
@@ -657,7 +651,7 @@ namespace minsky
     if (insertIdx!=selectIdx)
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-        if (str!=godleyIcon->table.cell(1,0)) str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));  // Cannot erase cell(1,0)'s contents. For ticket 1064
+        str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx)));
         selectIdx=insertIdx=min(insertIdx,selectIdx);   
       }
   }
@@ -669,13 +663,10 @@ namespace minsky
       assert(unsigned(selectedRow)<table.rows());
       assert(unsigned(selectedCol)<table.cols());
       auto& str=table.cell(selectedRow,selectedCol);
-      if (str!=table.cell(1,0))                                          // Cannot erase cell(1,0)'s contents. For ticket 1064
-        {      
-           if (insertIdx!=selectIdx)
-             delSelection();
-           else if (insertIdx>0 && insertIdx<=str.length())
-             str.erase(--insertIdx,1);
-        }  
+      if (insertIdx!=selectIdx)
+        delSelection();
+      else if (insertIdx>0 && insertIdx<=str.length())
+        str.erase(--insertIdx,1);
       selectIdx=insertIdx;
     }
 
@@ -684,13 +675,13 @@ namespace minsky
     copy();
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
         selectedRow<int(godleyIcon->table.rows()))
-      {	  
-         if (selectIdx==insertIdx)
-           // delete entire cell
-           godleyIcon->table.cell(selectedRow,selectedCol).clear();
-         else
-           delSelection();
-         requestRedraw();   
+      {
+        if (selectIdx==insertIdx)
+          // delete entire cell
+          godleyIcon->table.cell(selectedRow,selectedCol).clear();
+        else
+          delSelection();
+        requestRedraw();
       }
   }
   
@@ -698,13 +689,13 @@ namespace minsky
   {
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
         selectedRow<int(godleyIcon->table.rows()))
-      {	  
-         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-         if (selectIdx!=insertIdx)
-           cminsky().putClipboard
-             (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
-         else
-           cminsky().putClipboard(str);  
+      {
+        auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+        if (selectIdx!=insertIdx)
+          cminsky().putClipboard
+            (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
+        else
+          cminsky().putClipboard(str);
       }
   }
 
@@ -713,15 +704,15 @@ namespace minsky
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
         selectedRow<int(godleyIcon->table.rows()))
       {
-	     delSelection();
-         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-         auto stringToInsert=cminsky().getClipboard();
-         // only insert first line
-         auto p=stringToInsert.find('\n');
-         if (p!=string::npos)
-           stringToInsert=stringToInsert.substr(0,p-1);
-         str.insert(insertIdx,stringToInsert);
-         selectIdx=insertIdx+=stringToInsert.length();
+        delSelection();
+        auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+        auto stringToInsert=cminsky().getClipboard();
+        // only insert first line
+        auto p=stringToInsert.find('\n');
+        if (p!=string::npos)
+          stringToInsert=stringToInsert.substr(0,p-1);
+        str.insert(insertIdx,stringToInsert);
+        selectIdx=insertIdx+=stringToInsert.length();
       }
     requestRedraw();
   }
@@ -778,11 +769,11 @@ namespace minsky
     requestRedraw();
   }
 
-  void GodleyTableWindow::addFlow(double y)  
+  void GodleyTableWindow::addFlow(double y)
   {
     y/=zoomFactor;
     int r=rowY(y);
-    if (r>0)                                 
+    if (r>0)
       godleyIcon->table.insertRow(r+1);
     requestRedraw();
   }
@@ -791,7 +782,7 @@ namespace minsky
   {
     y/=zoomFactor;
     int r=rowY(y);
-    if (r>1)                                       // Cannot delete flow in Initial Conditions row. For ticket 1064
+    if (r>0)
       godleyIcon->deleteRow(r+1);
     requestRedraw();
   }
