@@ -118,16 +118,16 @@ namespace MathDAG
         else
           {
             result=&tmpResult;
-            //            result.allocValue();
+            if (tmpResult.idx()<0) tmpResult.allocValue();
           }
         if (rhs)
           rhs->addEvalOps(ev, result);
         else 
           throw runtime_error("integral not defined for "+name);
       }
+    assert(result->idx()>=0);
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
-    assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
   }
