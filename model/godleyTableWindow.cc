@@ -220,7 +220,7 @@ namespace minsky
                       }
                     // the active cell renders as bare LaTeX code for
                     // editing, all other cells rendered as LaTeX
-                    if (int(row)!=selectedRow || int(col)!=selectedCol && !godleyIcon->table.initialConditionRow(row))
+                    if ((int(row)!=selectedRow || int(col)!=selectedCol) && !godleyIcon->table.initialConditionRow(row))
                       {
                         if (row>0 && col>0)    
                           { // handle DR/CR mode and colouring of text
@@ -553,78 +553,77 @@ namespace minsky
     
     auto& table=godleyIcon->table;
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(table.cols()) &&
-        selectedRow<int(table.rows()))
+        selectedRow<int(table.rows()) && (selectedCol!=0 || selectedRow!=1)) // Cell (1,0) is off-limits. For ticket 1064
           {			  	  
             auto& str=table.cell(selectedRow,selectedCol);
-            if (selectedCol!=0 || selectedRow!=1)                   // Cell (1,0) is off-limits. For ticket 1064
-              if (utf8.length())
-                if (unsigned(utf8[0])>=' ' && utf8[0]!=0x7f)
-                  {
-                    delSelection();
-                    if (insertIdx>=str.length()) insertIdx=str.length();
-                    str.insert(insertIdx,utf8);
-                    selectIdx=insertIdx+=utf8.length();
-                  }
-                else
-                  {
-                    switch (utf8[0]) // process control characters
-                      {
-                      case control('x'):
-                        cut();
-                        break;
-                      case control('c'):
-                        copy();
-                        break;
-                      case control('v'):
-                        paste();
-                        break;
-                      case control('h'): case 0x7f:
-                        handleDelete();
-                        break;                  
-                      }
-                  }
+            if (utf8.length())
+              if (unsigned(utf8[0])>=' ' && utf8[0]!=0x7f)
+                {
+                  delSelection();
+                  if (insertIdx>=str.length()) insertIdx=str.length();
+                  str.insert(insertIdx,utf8);
+                  selectIdx=insertIdx+=utf8.length();
+                }
               else
                 {
-                switch (keySym)
-                  {
-                  case 0xff08: case 0xffff:  //backspace/delete
-                    handleDelete();
-                    break;
-                  case 0xff1b: // escape
-                    if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
-                        selectedCol>=0 && size_t(selectedCol)<=table.cols())
-                      table.cell(selectedRow, selectedCol)=savedText;
-                    selectedRow=selectedCol=-1;
-                    break;
-                  case 0xff0d: //return
-                    update();
-                    selectedRow=selectedCol=-1;
-                    break;
-                  case 0xff51: //left arrow
-                    if (insertIdx>0) insertIdx--;
-                    else navigateLeft();
-                    break;
-                  case 0xff53: //right arrow
-                    if (insertIdx<str.length()) insertIdx++;
-                    else navigateRight();
-                    break;
-                  case 0xff09: // tab
-                    navigateRight();
-                    break;
-                  case 0xfe20: // back tab
-                    navigateLeft();
-                    break;
-                  case 0xff54: // down
-                    navigateDown();
-                    break;
-                  case 0xff52: // up
-                    navigateUp();
-                    break;
-                  default:
-                    return; // key not handled, just return without resetting selection
-                  }
-                  selectIdx=insertIdx;
+                  switch (utf8[0]) // process control characters
+                    {
+                    case control('x'):
+                      cut();
+                      break;
+                    case control('c'):
+                      copy();
+                      break;
+                    case control('v'):
+                      paste();
+                      break;
+                    case control('h'): case 0x7f:
+                      handleDelete();
+                      break;                  
+                    }
                 }
+            else
+              {
+              switch (keySym)
+                {
+                case 0xff08: case 0xffff:  //backspace/delete
+                  handleDelete();
+                  break;
+                case 0xff1b: // escape
+                  if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
+                      selectedCol>=0 && size_t(selectedCol)<=table.cols())
+                    table.cell(selectedRow, selectedCol)=savedText;
+                  selectedRow=selectedCol=-1;
+                  break;
+                case 0xff0d: //return
+                  update();
+                  selectedRow=selectedCol=-1;
+                  break;
+                case 0xff51: //left arrow
+                  if (insertIdx>0) insertIdx--;
+                  else navigateLeft();
+                  break;
+                case 0xff53: //right arrow
+                  if (insertIdx<str.length()) insertIdx++;
+                  else navigateRight();
+                  break;
+                case 0xff09: // tab
+                  navigateRight();
+                  break;
+                case 0xfe20: // back tab
+                  navigateLeft();
+                  break;
+                case 0xff54: // down
+                  navigateDown();
+                  break;
+                case 0xff52: // up
+                  navigateUp();
+                  break;
+                default:
+                  return; // key not handled, just return without resetting selection
+                }
+                selectIdx=insertIdx;
+              }
           }  
     else // nothing selected
       {
