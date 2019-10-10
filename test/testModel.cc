@@ -1284,9 +1284,6 @@ SUITE(GodleyTableWindow)
       // Row 1 cannot move down. For ticket 1064
       CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
       CHECK_EQUAL("r1c2",godleyIcon->table.cell(1,2));
-      // Not sure why column 1's contents cannot be tested????
-      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,1));
-      //CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,1));
       
       x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+2*rowHeight;
       CHECK_EQUAL(rowWidget, clickType(x,y));
@@ -1294,9 +1291,6 @@ SUITE(GodleyTableWindow)
       // should have invoked moving row 2 down, in effect swapping row 2 and 3's contents
       CHECK_EQUAL("r3c2",godleyIcon->table.cell(2,2));
       CHECK_EQUAL("r2c2",godleyIcon->table.cell(3,2));
-      // Not sure why column 1's contents cannot be tested????
-      //CHECK_EQUAL("r3c1",godleyIcon->table.cell(2,1));
-      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(3,1));
       
     }
   
