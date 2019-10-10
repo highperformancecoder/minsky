@@ -1281,12 +1281,9 @@ SUITE(GodleyTableWindow)
       x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+rowHeight;
       CHECK_EQUAL(rowWidget, clickType(x,y));
       mouseDown(x,y);
-      // Row 1 cannot move down
+      // Row 1 cannot move down. For ticket 1064
       CHECK_EQUAL("r2c2",godleyIcon->table.cell(2,2));
       CHECK_EQUAL("r1c2",godleyIcon->table.cell(1,2));
-      // Not sure why column 1's contents cannot be tested????
-      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(2,1));
-      //CHECK_EQUAL("r1c1",godleyIcon->table.cell(1,1));
       
       x=2*ButtonWidget<row>::buttonSpacing+1, y=5+topTableOffset+2*rowHeight;
       CHECK_EQUAL(rowWidget, clickType(x,y));
@@ -1294,9 +1291,6 @@ SUITE(GodleyTableWindow)
       // should have invoked moving row 2 down, in effect swapping row 2 and 3's contents
       CHECK_EQUAL("r3c2",godleyIcon->table.cell(2,2));
       CHECK_EQUAL("r2c2",godleyIcon->table.cell(3,2));
-      // Not sure why column 1's contents cannot be tested????
-      //CHECK_EQUAL("r3c1",godleyIcon->table.cell(2,1));
-      //CHECK_EQUAL("r2c1",godleyIcon->table.cell(3,1));
       
     }
   
@@ -1461,7 +1455,7 @@ SUITE(GodleyTableWindow)
       selectedCol=-1; selectedRow=-1;
       keyPress(XK_Down,"");
       CHECK_EQUAL(0,selectedCol);
-      CHECK_EQUAL(2,selectedRow);    // Initial Conditions cell cannot be selected
+      CHECK_EQUAL(2,selectedRow);    // Initial Conditions cell cannot be selected. For ticket 1064
       
       selectedCol=-1; selectedRow=-1;
       keyPress(XK_Up,"");
@@ -1486,10 +1480,16 @@ SUITE(GodleyTableWindow)
       addFlow(y);
       CHECK_EQUAL(3,t.rows());
       CHECK_EQUAL("",t.cell(2,0));
-      t.cell(2,0)="row2";
-      deleteFlow(y);
-      CHECK_EQUAL(2,t.rows());
-      CHECK_EQUAL("row2",t.cell(1,0));
+      addFlow(y+rowHeight);
+      CHECK_EQUAL(4,t.rows());
+      CHECK_EQUAL("",t.cell(3,0));      
+      t.cell(3,0)="row3";
+      deleteFlow(y+rowHeight);
+      CHECK_EQUAL(3,t.rows()); 
+      CHECK_EQUAL("row3",t.cell(2,0));
+      deleteFlow(y);                        // Check that row1 cannot be deleted. For ticket 1064
+      CHECK_EQUAL(3,t.rows()); 
+      CHECK_EQUAL("row3",t.cell(2,0));      
 
       addStockVar(x);
       CHECK_EQUAL(5,t.cols());
