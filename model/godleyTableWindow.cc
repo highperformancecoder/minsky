@@ -483,15 +483,17 @@ namespace minsky
     motionRow=motionCol=-1;
     if (selectedRow==0)
       {
-        if (c>0 && c!=selectedCol)
+        if (c>0 && selectedCol!=0 && c!=selectedCol)      // Cannot move Intitial Conditions cell from col 0 to one with a "NoAssetClass" designation. For ticket 1064/1066
           godleyIcon->table.moveCol(selectedCol,c-selectedCol);
       }
     else if (r>0 && selectedCol==0)
       {
-        if (r!=selectedRow && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r))  // Cannot move Intitial Conditions row. For ticket 1064
+		// Cannot move Intitial Conditions row. For ticket 1064. Also cannot move last row down, i.e., button widgets have to be used to create new rows, otherwise an error occurs. For ticket 1066.  
+        if (r!=selectedRow && r<int(godleyIcon->table.rows()) && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r))  
           godleyIcon->table.moveRow(selectedRow,r-selectedRow);
       }
-    else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0 && (c!=0 || r!=1) && (selectedCol!=0 || selectedRow!=1)) // Cannot swap cell(1,0) with another. For ticket 1064
+     // Cannot swap cell(1,0) with another. For ticket 1064. Also cannot move cells outside an existing Godley table to create new rows or columns. For ticket 1066.  
+    else if ((c!=selectedCol || r!=selectedRow) && (selectedCol!=0 || selectedRow!=1) && c>0 && r>0 && selectedRow<int(godleyIcon->table.rows()) && r<int(godleyIcon->table.rows()) && c <int(godleyIcon->table.cols()) && selectedCol<int(godleyIcon->table.cols()))
       {
         swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
         selectedCol=c;
