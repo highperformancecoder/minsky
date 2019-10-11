@@ -14,6 +14,10 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 
+ifeq ($(OS),Darwin)
+MAKEOVERRIDES+=MAC_OSX_TK=1
+endif
+
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
 build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) all-without-models))
