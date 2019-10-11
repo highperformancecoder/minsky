@@ -1327,8 +1327,8 @@ SUITE(GodleyTableWindow)
       CHECK_EQUAL(2,rowY(y));
       mouseMoveB1(x,y);
       mouseUp(x,y);
-      CHECK_EQUAL("row1",godleyIcon->table.cell(2,0));
-      CHECK_EQUAL("row2",godleyIcon->table.cell(1,0));
+      CHECK_EQUAL("row1",godleyIcon->table.cell(1,0));  //Cannot swap cells (1,0) and (2,0) by click dragging. For ticket 1064/1066
+      CHECK_EQUAL("row2",godleyIcon->table.cell(2,0));
 
       // check moving a cell
       x=colLeftMargin[1]+10;

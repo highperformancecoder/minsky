@@ -481,17 +481,20 @@ namespace minsky
     y/=zoomFactor;
     int c=colX(x), r=rowY(y);
     motionRow=motionCol=-1;
-    if (selectedRow==0)
+    // Cannot swap cell(1,0) with another. For ticket 1064. Also cannot move cells outside an existing Godley table to create new rows or columns. For ticket 1066. 
+    if ((selectedCol==0 && selectedRow==1) || (c==0 && r==1) || size_t(selectedRow)>=(godleyIcon->table.rows()) || size_t(r)>=(godleyIcon->table.rows()) || size_t(c)>=(godleyIcon->table.cols()) || size_t(selectedCol)>=(godleyIcon->table.cols()))
+      return;  
+    else if (selectedRow==0)
       {
-        if (c>0 && c!=selectedCol)
+        if (c>0 && selectedCol!=0 && c!=selectedCol)      // Disallow moving flow labels column. For ticket 1064/1066
           godleyIcon->table.moveCol(selectedCol,c-selectedCol);
       }
     else if (r>0 && selectedCol==0)
       {
-        if (r!=selectedRow && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r))  // Cannot move Intitial Conditions row. For ticket 1064
+        if (r!=selectedRow && !godleyIcon->table.initialConditionRow(selectedRow) && !godleyIcon->table.initialConditionRow(r))  // Cannot move Intitial Conditions row. For ticket 1064.
           godleyIcon->table.moveRow(selectedRow,r-selectedRow);
-      }
-    else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0 && (c!=0 || r!=1) && (selectedCol!=0 || selectedRow!=1)) // Cannot swap cell(1,0) with another. For ticket 1064
+      } 
+    else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
       {
         swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
         selectedCol=c;
@@ -499,7 +502,7 @@ namespace minsky
       }
     else if (selectIdx!=insertIdx)
       copy();
-
+     
     requestRedraw();
   }
 
