@@ -3,7 +3,10 @@ DEBUG=1
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=../ecolab
 
+ifneq ($(MAKECMDGOALS),clean)
 include $(ECOLAB_HOME)/include/Makefile
+endif
+
 VPATH= .. ../schema ../model ../engine ../server ../RESTService $(ECOLAB_HOME)/include
 
 UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testTensorOps.o testLockGroup.o testCSVParser.o
@@ -51,7 +54,9 @@ checkSchemasAreSame: checkSchemasAreSame.o $(MINSKYOBJS)
 tcl-cov: tcl-cov.o $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS) -o $@ $^ $(LIBS)
 
+ifneq ($(MAKECMDGOALS),clean)
 include $(UNITTESTOBJS:.o=.d) $(EXES:=.d)
+endif
 
 clean:
 	$(BASIC_CLEAN) unittests $(EXES)  *.gcda *.gcno

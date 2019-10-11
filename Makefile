@@ -5,7 +5,6 @@ MAC_DIST_DIR=minsky.app/Contents/MacOS
 
 SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
 
-
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
 TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
@@ -15,7 +14,12 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 
+ifneq ($(MAKECMDGOALS),clean)
+# make sure EcoLab is built first, even before starting to include Makefiles
+build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) all-without-models))
+$(warning $(build_ecolab))
 include $(ECOLAB_HOME)/include/Makefile
+endif
 
 # override the install prefix here
 PREFIX=/usr/local
@@ -128,15 +132,9 @@ all: $(EXES) $(TESTS) minsky.xsd
 #endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
-.PHONY: ecolab
-ecolab:
-	cd ecolab; $(MAKE) all-without-models
-
-$(ECOLAB_HOME)/include/Makefile.config: ecolab
-
-$(ALL_OBJS): ecolab
-
+ifneq ($(MAKECMDGOALS),clean)
 include $(ALL_OBJS:.o=.d)
+endif
 
 ifdef MXE
 ifndef DEBUG
@@ -196,20 +194,19 @@ doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN+=*.xcd
+BASIC_CLEAN=rm -rf *.o *~ \#*\# core *.d *.cd *.xcd
 
 clean:
-	find . -name "*,D" -exec rm {} \;
-	$(BASIC_CLEAN) minsky.xsd *.gcda *.gcno
-	rm -f $(EXES)
-	cd test; $(MAKE) clean
-	cd gui-tk; $(BASIC_CLEAN)
-	cd model; $(BASIC_CLEAN)
-	cd engine; $(BASIC_CLEAN)
-	cd schema; $(BASIC_CLEAN)
-	cd gui-wt; $(BASIC_CLEAN)
-	cd server; $(BASIC_CLEAN)
-	cd ecolab; $(MAKE) clean
+	-$(BASIC_CLEAN) minsky.xsd *.gcda *.gcno
+	-rm -f $(EXES)
+	-cd test; $(MAKE) clean
+	-cd gui-tk; $(BASIC_CLEAN)
+	-cd model; $(BASIC_CLEAN)
+	-cd engine; $(BASIC_CLEAN)
+	-cd schema; $(BASIC_CLEAN)
+	-cd gui-wt; $(BASIC_CLEAN)
+	-cd server; $(BASIC_CLEAN)
+	-cd ecolab; $(MAKE) clean
 
 mac-dist: gui-tk/minsky
 # create executable in the app package directory. Make it 32 bit only
@@ -258,7 +255,15 @@ tcl-cov:
 MINSKY_VERSION=$(shell git describe)
 
 dist:
-	git archive --format=tar.gz --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar.gz
+	git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ HEAD -o /tmp/Minsky-$(MINSKY_VERSION).tar
+# add submodules
+	cd ecolab; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd ecolab/classdesc; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/classdesc/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd ecolab/graphcode; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/graphcode/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
 
 lcov:
 	$(MAKE) clean
