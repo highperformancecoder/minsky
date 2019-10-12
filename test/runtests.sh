@@ -13,6 +13,8 @@ for i in test/00/*.sh; do
     if [ "$TRAVIS" = 1 -a $i = test/00/t0007a.sh ]; then continue; fi
     # Why TF is Travis failing this test????
     if [ "$TRAVIS" = 1 -a $i = test/00/t0008a.sh ]; then continue; fi
+    # disable RESTProcess for now
+    if [ $i = test/00/RESTService.sh ]; then continue; fi
     # we need to expose output generated here to prevent a build timeout
     if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh ]; then
         sh $i
