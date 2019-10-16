@@ -1,0 +1,3 @@
+[submodule "ecolab"]
+	path = ecolab
+	url = https://github.com/highperformancecoder/ecolab.git

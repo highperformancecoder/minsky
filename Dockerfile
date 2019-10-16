@@ -2,6 +2,8 @@ FROM highperformancecoder/travisciimage
 COPY . /root
 RUN useradd -m minsky
 RUN chmod a+rx /root
-RUN zypper install -y -l texlive-latex-bin-bin texlive-epstopdf-bin latex2html linkchecker
+#RUN zypper addrepo https://download.opensuse.org/repositories/home:hpcoder1/openSUSE_Tumbleweed/home:hpcoder1.repo
+#RUN zypper --gpg-auto-import-keys refresh
+#RUN zypper install -y -l unuran-devel
 RUN cd /root && sh travisRun.sh
 

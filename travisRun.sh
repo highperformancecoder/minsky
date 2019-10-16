@@ -1,14 +1,10 @@
 #!/bin/bash
 set -e
-rm -rf ecolab
-git clone https://github.com/highperformancecoder/ecolab.git
-pushd ecolab
-git submodule init
-git submodule update
-make -j2 install
-popd
+git submodule update --init --recursive
 
-echo HOME=$HOME
+pushd ecolab
+make -j2 all-without-models
+popd
 
 make -j2 DEBUG=1
 export TRAVIS=1

@@ -33,7 +33,7 @@ namespace minsky
   struct ButtonWidgetEnums
   {
     enum RowCol {row, col};
-    enum Pos {first, middle, last, firstAndLast};
+    enum Pos {first, second, middle, last, firstAndLast};
   };
   
   /// supports +/-/←/→/↓/↑ widget
@@ -83,7 +83,7 @@ namespace minsky
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;
-    /// which cell is active
+    /// which cell is active, none initially
     int selectedRow=-1, selectedCol=-1;
     std::string savedText;
     int hoverRow=-1, hoverCol=-1;
@@ -136,7 +136,6 @@ namespace minsky
     void cut();
     void copy();
     void paste();
-
     
     int textIdx(double x) const;
 
@@ -184,7 +183,7 @@ namespace minsky
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
     std::deque<GodleyTable::Data> history;
     ClickType clickType(double x, double y) const;
-    void checkCell00(); ///<check is cell (0,0) is selected, and deselect if so
+    void checkCell00(); ///<check if cell (0,0) is selected, and deselect if so
     /// handle delete or backspace. Cell assumed selected
     void handleDelete();
   };
