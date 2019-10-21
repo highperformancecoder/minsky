@@ -4,9 +4,14 @@
 
 - Its best to pull from the develop branch of [my fork of MXE](https://github.com/highperformancecoder/mxe), as this is where I push any packages/changes I need. 
 
-- make MXE_TARGETS=i686-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/tcl.tk boost cairo tcl tk tktable json_spirit gsl pango librsvg
+- make MXE_TARGETS=i686-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/tcl.tk boost cairo tcl tk json_spirit gsl pango librsvg
 
-- install necessary prerequisites from your package manager as required by the above line (eg flex, gperf, intltool, scons).
+- For Minsky 1.x, you will also need:
+~~~~
+   make MXE_TARGETS=i686-w64-mingw32.static MXE_PLUGIN_DIRS=plugins/tcl.tk tktable
+~~~~
+
+- Install necessary prerequisites from your package manager as required by the above line (eg flex, gperf, intltool, scons).
 
 - Once these are built, unpack ecolab, and do
 
