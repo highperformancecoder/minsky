@@ -59,6 +59,29 @@ namespace minsky
     bottom=(t+h)*invZ;
   }
 
+    // Permanent solution for ticket 1062 with a circular bounding box?
+//  void BoundingCircle::update(const Item& x)
+//  {
+//    ecolab::cairo::Surface surf
+//       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+//    auto savedMouseFocus=x.mouseFocus;
+//    x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
+//    x.onResizeHandles=false;
+//    try {x.draw(surf.cairo());}
+//    catch (const std::exception& e) 
+//      {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
+//    catch (...) {cerr<<"illegal exception caught in draw()";}
+//    x.mouseFocus=savedMouseFocus;
+//    double xc, yc, rad;
+//    cairo_recording_surface_ink_extents(surf.surface(),
+//                                        &xc,&yc,&rad,&rad);
+//    // note (0,0) is relative to the (x,y) of icon.
+//    double invZ=1/x.zoomFactor();
+//    xcenter=xc;
+//    ycenter=yc;
+//    radius=0.5*rad*invZ;
+//  }  
+
   void Item::throw_error(const std::string& msg) const
   {
     cminsky().displayErrorItem(*this);
@@ -136,7 +159,7 @@ namespace minsky
     ecolab::cairo::Surface dummySurf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
-    if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
+    if (cairo_in_clip(dummySurf.cairo(), dx, dy))
       return ClickType::onItem;
     else
       return ClickType::outside;
@@ -256,6 +279,30 @@ namespace minsky
         cairo_stroke(cairo);
       }
   }
+  
+    // Permanent solution for ticket 1062 with a circular bounding box? 
+//  void Item::displayTooltipCircle(cairo_t* cairo, const std::string& tooltip) const
+//  {
+//    string unitstr=units().latexStr();
+//    if (!tooltip.empty() || !unitstr.empty())
+//      {
+//        cairo::CairoSave cs(cairo);
+//        Pango pango(cairo);
+//        string toolTipText=latexToPango(tooltip);
+//        if (!unitstr.empty())
+//          toolTipText+=" Units:"+latexToPango(unitstr);
+//        pango.setMarkup(toolTipText);
+//        float z=zoomFactor();
+//        cairo_translate(cairo,z*(0.5*bc.diameter())+10,
+//                        z*(0.5*bc.diameter())-20);
+//        cairo_arc(cairo,0,0,0.5*diameter(),0, 2*M_PI);
+//        cairo_set_source_rgb(cairo,1,1,1);
+//        cairo_fill_preserve(cairo);
+//        cairo_set_source_rgb(cairo,0,0,0);
+//        pango.show();
+//        cairo_stroke(cairo);
+//      }
+//  }  
 
   shared_ptr<Port> Item::closestOutPort(float x, float y) const 
   {
