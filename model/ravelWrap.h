@@ -33,10 +33,10 @@ namespace minsky
   public:
     struct RavelImpl;
     struct DataCube;
+    typedef RavelState::HandleState HandleState;
 
     CLASSDESC_ACCESS(Ravel);
   private:
-    typedef RavelState::HandleState HandleState;
     Exclude<RavelImpl*> ravel=nullptr;
     Exclude<DataCube*> dataCube=nullptr;
     void noRavelSetup();

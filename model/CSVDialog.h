@@ -51,7 +51,7 @@ namespace minsky
     size_t rowOver(double x);
     void copyHeaderRowToDimNames(size_t row);
     std::string headerForCol(size_t col) const;
-    std::vector<std::vector<std::string>> parseLines() const;
+    std::vector<std::vector<std::string> > parseLines() const;
   };
 }
 

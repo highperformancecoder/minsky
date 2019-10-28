@@ -53,7 +53,8 @@ namespace minsky
       m_assetClass.resize(cols, noAssetClass);
     }
   public:
-
+    typedef GodleyAssetClass::AssetClass AssetClass;
+    
     bool doubleEntryCompliant;
 
     std::string title;

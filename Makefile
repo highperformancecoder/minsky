@@ -26,8 +26,7 @@ PREFIX=/usr/local
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o
-ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
-	latexMarkup.o variableValue.o xvector.o node_latex.o node_matlab.o CSVParser.o
+ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o latexMarkup.o variableValue.o xvector.o node_latex.o node_matlab.o CSVParser.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema2.o schema1.o schema0.o variableType.o operationType.o a85.o
 #schema0.o 
@@ -49,9 +48,12 @@ VPATH= schema model engine gui-tk server RESTService $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
-	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I RESTService -i $< xml_pack xml_unpack xsd_generate \
-	json_pack json_unpack RESTProcess >$@
+	$(CLASSDESC) -typeName -nodef -respect_private -onbase  \
+	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
+	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
+	$(CLASSDESC) -typeName -nodef -respect_private -use_mbr_pointers -onbase -overload \
+	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
+	RESTProcess >>$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -115,9 +117,12 @@ FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 ifndef AEGIS
 # just build the Minsky executable
-default: gui-tk/minsky$(EXE)
+default: gui-tk/minsky$(EXE) RESTService/RESTService$(EXE)
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
+
+# this dependency is not worked out automatically because they're hidden by a #ifdef in minsky_epilogue.h
+$(MODEL_OBJS): plot.xcd signature.xcd
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 

@@ -20,6 +20,69 @@
 #ifdef RESTPROCESS_H
 #include <plot.h>
 #include "plot.xcd"
+#include <cairoSurfaceImage.h>
+#include "cairoSurfaceImage.xcd"
+#include <signature.h>
+#include "signature.xcd"
+
+namespace classdesc
+{
+  template <>
+  struct tn<cairo_t>
+  {
+    static string name() {return "cairo_t";}
+  };
+  template <>
+  struct tn<cairo_surface_t>
+  {
+    static string name() {return "cairo_surface_t";}
+  };
+}
+
+namespace classdesc_access
+{
+  namespace cd=classdesc;
+  template <class T, class G, class S>
+  struct access_RESTProcess<ecolab::Accessor<T,G,S>>
+  {
+    template <class U>
+    void operator()(cd::RESTProcess_t& r, const cd::string& d, U& a)
+    {
+      ::RESTProcess(r,d,a.g);
+      ::RESTProcess(r,d,a.s);
+    }
+  };
+
+  template <class T>
+  struct access_RESTProcess<ecolab::array<T>>
+  {
+    template <class U>
+    void operator()(cd::RESTProcess_t& r, const cd::string& d, U& a)
+    {
+      r.add(d,new cd::RESTProcessSequence<ecolab::array<T>>(a));
+    }
+  };
+
+  template <> struct access_json_pack<cd::TCL_obj_t>:
+    public cd::NullDescriptor<cd::json_pack_t> {};
+  template <> struct access_json_unpack<cd::TCL_obj_t>:
+    public cd::NullDescriptor<cd::json_unpack_t> {};
+
+  template <> struct access_json_pack<ecolab::cairo::Surface>:
+    public cd::NullDescriptor<cd::json_pack_t> {};
+  template <> struct access_json_unpack<ecolab::cairo::Surface>:
+    public cd::NullDescriptor<cd::json_unpack_t> {};
+  template <> struct access_RESTProcess<ecolab::cairo::Surface>:
+    public cd::NullDescriptor<cd::RESTProcess_t> {};
+
+//  template <> struct access_json_pack<ecolab::CairoSurface>:
+//    public cd::NullDescriptor<cd::json_pack_t> {};
+//  template <> struct access_json_unpack<ecolab::CairoSurface>:
+//    public cd::NullDescriptor<cd::json_unpack_t> {};
+//  template <> struct access_RESTProcess<ecolab::CairoSurface>:
+//    public cd::NullDescriptor<cd::RESTProcess_t> {};
+}
+
 #include "RESTProcess_epilogue.h"
 #endif
 #include <ecolab_epilogue.h>

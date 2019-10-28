@@ -89,7 +89,7 @@ namespace minsky
       return m_type==constant && (init.empty() || init=="0");
     }
 
-    Type type() const {return m_type;}
+    VariableType::Type type() const {return m_type;}
 
     /// the initial value of this variable
     std::string init;
@@ -152,8 +152,8 @@ namespace minsky
       if (idx()==-1 || prevNumElems<numElements())
         allocValue();
     }
-    void setXVector(XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
-    void setXVector(const XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
+    void setXVector(minsky::XVectorMixin::XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
+    void setXVector(const minsky::XVectorMixin::XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
 
     
     /// removes elements of xVector not found in \a
@@ -164,7 +164,7 @@ namespace minsky
     /// if \a dim is empty, defaults to first dimension
     void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
     
-    VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
+    VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 
     const VariableValue& operator=(double x) {valRef()=x; return *this;}

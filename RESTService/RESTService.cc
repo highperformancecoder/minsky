@@ -46,6 +46,14 @@ namespace classdesc
       json_pack_t r;
       return r<<signature;
     }
+    json_pack_t list() const override {
+      if (ptr) return ptr->restProcess()->list();
+      else return json_pack_t(json_spirit::mArray());
+    }
+    json_pack_t type() const override {
+      if (ptr) return ptr->restProcess()->type();
+      else return json_pack_t("void");}
+
   };
   
 }
@@ -69,10 +77,13 @@ int main()
   RESTProcess(registry,"/minsky",minsky::minsky());
 
   char* c;
+  string cmd;
   
-  while ((c=readline("cmd>"))!=nullptr)
+  //  while ((c=readline("cmd>"))!=nullptr)
+  while (getline(cin,cmd))
     {
-      string cmd=c;
+      //      string cmd=c;
+      cout << cmd << endl;
       if (cmd[0]!='/')
         cerr << cmd << "command doesn't starts with /"<<endl;
       else if (cmd=="/list")
@@ -83,13 +94,10 @@ int main()
           try
             {
               json_pack_t jin(json_spirit::mValue::null);
-              if (cin.peek()!='\n')
-                read(cin,jin);
-              else
-                {
-                  string t;
-                  getline(cin,t); // absorb '\n'
-                }
+              string t;
+              getline(cin,t);
+              if (!t.empty())
+                read(t,jin);
               write(registry.process(cmd, jin),cout);
               cout << endl;
             }
@@ -98,7 +106,7 @@ int main()
               cerr << "Exception: "<<ex.what() << endl;
             }
         }
-      if (strlen(c)) add_history(c); 
-      free(c);
+//      if (strlen(c)) add_history(c); 
+//      free(c);
     }
 }

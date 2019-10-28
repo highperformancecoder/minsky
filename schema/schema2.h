@@ -329,6 +329,10 @@ namespace classdesc
 using classdesc::xsd_generate;
 using classdesc::xml_pack;
 
+#ifdef _CLASSDESC
+#pragma omit RESTProcess schema2::has_empty
+#endif
+
 #include "schema2.cd"
 #include "schema2.xcd"
 

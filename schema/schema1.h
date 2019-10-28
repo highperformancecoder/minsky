@@ -167,16 +167,20 @@ namespace schema1
     string init;
     vector<int> ports;
     string name;
-    Variable(): type(minsky::VariableType::undefined), init("0") {}
-    Variable(int id, const minsky::VariableBase& v): 
-      Item(id,v), type(v.type()), init(v.init()), name(v.name()) {}
-    Variable(int id, const schema0::VariablePtr& v):
-      Item(id), type(v.m_type), init(v.init), ports{v.m_outPort,v.m_inPort},
-      name(v.name) {}
+    Variable();
+    Variable(int id, const minsky::VariableBase& v);
+    Variable(int id, const schema0::VariablePtr& v);
   };
 
-  // why is the schema1 qualifier needed here?
-  struct Plot: public SPoly<schema1::Plot,Item>
+  inline Variable::Variable(): type(minsky::VariableType::undefined), init("0") {}
+  inline Variable::Variable(int id, const minsky::VariableBase& v): 
+      Item(id,v), type(v.type()), init(v.init()), name(v.name()) {}
+  inline Variable::Variable(int id, const schema0::VariablePtr& v):
+      Item(id), type(v.m_type), init(v.init), ports{v.m_outPort,v.m_inPort},
+      name{v.name} {}
+
+  // schema1 qualifier needed for classdesc reasons
+  struct Plot: public SPoly<::schema1::Plot,Item>
   {
     typedef ecolab::Plot::Side Side;
     vector<int> ports;

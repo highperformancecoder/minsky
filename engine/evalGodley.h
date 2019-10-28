@@ -91,7 +91,8 @@ namespace minsky
   /// for checking shared columns between tables
   struct SharedColumnCheck: public GodleyAssetClass
   {
-
+    typedef GodleyAssetClass::AssetClass AssetClass;
+    
     /// asset type of previously seen column of this name
     std::map<string, AssetClass> colAssetType;
     /// indicates a column is shared between Godley tables

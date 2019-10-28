@@ -263,7 +263,7 @@ namespace minsky
       // check for incorrect type assignment
       assert(!var || *this);
     }
-    VariablePtr(const PtrBase& x): PtrBase(x) {}
+    VariablePtr(const classdesc::shared_ptr<VariableBase>& x): PtrBase(x) {}
     VariablePtr(const VariableBase& x): PtrBase(x.clone()) {}
     /// changes type of variable to \a type
     void retype(VariableBase::Type type);

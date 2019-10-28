@@ -53,25 +53,25 @@ namespace minsky
   template <class Payload>
   struct Msg: public MsgBase
   {
-    string payloadClass;
+    string payloadClass=classdesc::typeName<Payload>();
     Payload payload;
 
-    Msg(): payloadClass(classdesc::typeName<Payload>()) {}
-    Msg(const MsgBase& m, const Payload& p=Payload()): 
-      MsgBase(m), payloadClass(classdesc::typeName<Payload>()),
-      payload(p) {}
+    Msg() {}
+    Msg(const MsgBase& m, const Payload& p): MsgBase(m), payload(p) {}
+    Msg(const MsgBase& m): MsgBase(m) {}
 
-    string json() const {
+    string json() const{
       json_pack_t j;
       json_pack(j,"",*this);
       return write(j);
     }
 
-    void json(const string& s) {
+    void json(const string& s){
       json_pack_t j;
       json_spirit::read(s, j);
       json_unpack(j,"",*this);
     }
+    
     string typeName() const {return payloadClass;}
 
     // even though technically, Payload could be a poly type, and can
@@ -82,12 +82,13 @@ namespace minsky
 
   };
 
+  
   // specialisation for handling polymorphic types
   // Payload must inherit from PolyJsonBase
   template <class Payload>
   struct PayloadPtr: public classdesc::shared_ptr<Payload> 
   {
-    PayloadPtr(Payload* x):  shared_ptr<Payload>(x) {}
+    PayloadPtr(Payload* x):  shared_ptr<Payload>{x} {}
     PayloadPtr() {}
   };
 
@@ -102,10 +103,10 @@ namespace minsky
     }
 
     MsgPPtr(): 
-      payloadClass(classdesc::typeName<Payload>()), payload(new Payload) {}
+      payloadClass(classdesc::typeName<Payload>()), payload{new Payload} {}
     MsgPPtr(const MsgBase& mb): 
       MsgBase(mb),
-      payloadClass(classdesc::typeName<Payload>()), payload(new Payload) {}
+      payloadClass(classdesc::typeName<Payload>()), payload{new Payload} {}
 
     string json() const {
       json_pack_t j;
@@ -178,6 +179,8 @@ namespace minsky
 
 #pragma omit json_pack minsky::PayloadPtr
 #pragma omit json_unpack minsky::PayloadPtr
+
+#pragma omit RESTProcess minsky::Msg
 #endif
 
 template <class T>
