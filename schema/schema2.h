@@ -319,7 +319,10 @@ namespace classdesc
   void xsd_generate(xsd_generate_t& g, const string& d, const schema2::Optional<T>& a) 
   {
     xsd_generate_t::Optional o(g,true); 
-    xsd_generate(g,d,*a);
+    if (a)
+      xsd_generate(g,d,*a);
+    else
+      xsd_generate(g,d,T());
   }
 
   template <class T> inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<T>& a)
