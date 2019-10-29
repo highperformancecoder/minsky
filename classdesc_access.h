@@ -35,7 +35,7 @@ namespace classdesc_access
   friend struct classdesc_access::access_unpack<type>;          \
   friend struct classdesc_access::access_xml_pack<type>;        \
   friend struct classdesc_access::access_xml_unpack<type>;      \
-  friend struct classdesc_access::access_xsd_generate<type>;    \
-  friend struct classdesc_access::access_RESTProcess<type>  
+  friend struct classdesc_access::access_xsd_generate<type> 
+  //  friend struct classdesc_access::access_RESTProcess<type>  
 
 #endif

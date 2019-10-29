@@ -270,12 +270,12 @@ namespace minsky
 namespace classdesc
 {
   // specialise for VariableValues to give it an associative container flavour
-  template <>
-  inline void RESTProcess(RESTProcess_t& repo, const string& d, minsky::VariableValues& a)
-  {
-    repo.add(d,new RESTProcessAssociativeContainer<minsky::VariableValues>(a));
-    classdesc_access::access_RESTProcess<minsky::VariableValues>()(repo,d,a);
-  }
+//  template <>
+//  inline void RESTProcess(RESTProcess_t& repo, const string& d, minsky::VariableValues& a)
+//  {
+//    repo.add(d,new RESTProcessAssociativeContainer<minsky::VariableValues>(a));
+//    classdesc_access::access_RESTProcess<minsky::VariableValues>()(repo,d,a);
+//  }
 }
 
 #endif
