@@ -60,7 +60,7 @@ VPATH= schema model engine gui-tk server RESTService $(ECOLAB_HOME)/include
 	$(CLASSDESC) -typeName -nodef -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
-	$(CLASSDESC) -typeName -nodef -respect_private -use_mbr_pointers -onbase -overload \
+	$(CLASSDESC) -typeName -nodef -respect_private -use_mbr_pointers -overload \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	RESTProcess >>$@
 
