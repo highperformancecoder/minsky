@@ -101,14 +101,4 @@ namespace classdesc_access
 }
 #include "xvector.cd"
 
-namespace classdesc_access
-{
-  template <>
-  struct access_RESTProcess<minsky::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
-  template <>
-  struct access_json_pack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-  template <>
-  struct access_json_unpack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
-}
-
 #endif
