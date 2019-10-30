@@ -173,11 +173,11 @@ namespace minsky
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
     {::TCL_obj(t,d,*this);}
     /// returns a RESTProcessor appropriate for this item type
-//    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
-//    {
-//      return std::unique_ptr<classdesc::RESTProcessBase>
-//        (new classdesc::RESTProcessObject<Item>(*this));
-//    }
+    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
+    {
+      return std::unique_ptr<classdesc::RESTProcessBase>
+        (new classdesc::RESTProcessObject<Item>(*this));
+    }
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
@@ -220,11 +220,11 @@ namespace minsky
     }
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
-//    std::unique_ptr<classdesc::RESTProcessBase> restProcess() override
-//    {
-//      return std::unique_ptr<classdesc::RESTProcessBase>
-//        (new classdesc::RESTProcessObject<T>(dynamic_cast<T&>(*this)));
-//    }
+    std::unique_ptr<classdesc::RESTProcessBase> restProcess() override
+    {
+      return std::unique_ptr<classdesc::RESTProcessBase>
+        (new classdesc::RESTProcessObject<T>(dynamic_cast<T&>(*this)));
+    }
   };
 
 }

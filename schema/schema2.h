@@ -313,6 +313,7 @@ namespace classdesc
 #ifdef _CLASSDESC
 #pragma omit xsd_generate schema2::Optional
 #pragma omit xml_pack schema2::Optional
+#pragma omit RESTProcess schema2::has_empty
 #endif
 
   template <class T>
@@ -327,14 +328,10 @@ namespace classdesc
 
   template <class T> inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<T>& a)
   {if (a) ::xml_pack(t,d,*a);}
+  
 }
-
 using classdesc::xsd_generate;
 using classdesc::xml_pack;
-
-#ifdef _CLASSDESC
-#pragma omit RESTProcess schema2::has_empty
-#endif
 
 #include "schema2.cd"
 #include "schema2.xcd"
