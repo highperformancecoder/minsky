@@ -79,8 +79,8 @@ namespace classdesc_access
 //    public cd::NullDescriptor<cd::json_pack_t> {};
 //  template <> struct access_json_unpack<ecolab::CairoSurface>:
 //    public cd::NullDescriptor<cd::json_unpack_t> {};
-//  template <> struct access_RESTProcess<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::RESTProcess_t> {};
+  template <> struct access_RESTProcess<ecolab::CairoSurface>:
+    public cd::NullDescriptor<cd::RESTProcess_t> {};
 
 #ifdef XVECTOR_H
   template <>
@@ -90,8 +90,11 @@ namespace classdesc_access
   template <>
   struct access_json_unpack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
 #endif
+  template <>
+  struct access_json_pack<cd::RESTProcess_t>: public classdesc::NullDescriptor<cd::json_pack_t> {};
+  template <>
+  struct access_json_unpack<cd::RESTProcess_t>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
+  
 }
-
-#include "RESTProcess_epilogue.h"
 #endif
 #include <ecolab_epilogue.h>

@@ -148,10 +148,13 @@ namespace schema2
     Schema1Layout(const vector<shared_ptr<schema1::Layout>>& x) {
       for (auto& i: x)
         {
-          // serialise to json, then deserialise to a UnionLayout
-          json_pack_t jbuf;
-          i->json_pack(jbuf,"");
-          json_unpack(jbuf,"",layout[i->id]);
+          // serialise to XML, then deserialise to a UnionLayout
+          ostringstream is;
+          xml_pack_t xmlPackBuf(is);
+          i->xml_pack(xmlPackBuf,"");
+          istringstream os(is.str());
+          xml_unpack_t xmlUnpackBuf(os);
+          xml_unpack(xmlUnpackBuf,"",layout[i->id]);
         }
     }
     template <class V, class O>

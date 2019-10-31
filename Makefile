@@ -1,4 +1,4 @@
-.SUFFIXES: .xcd $(SUFFIXES)
+.SUFFIXES: .xcd .rcd $(SUFFIXES)
 
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
@@ -20,7 +20,8 @@ endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
-build_ecolab:=$(shell cd ecolab; $(MAKE) $(MAKEOVERRIDES) all-without-models))
+# submakes do not parallelise, so explicit force -j4 (reasonable compromise)
+build_ecolab:=$(shell cd ecolab; $(MAKE) -j4 $(MAKEOVERRIDES) all-without-models))
 $(warning $(build_ecolab))
 include $(ECOLAB_HOME)/include/Makefile
 endif
@@ -38,10 +39,10 @@ ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o e
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema2.o schema1.o schema0.o variableType.o operationType.o a85.o
 #schema0.o 
-GUI_TK_OBJS=tclmain.o minskyTCL.o
-RESTSERVICE_OBJS=RESTService.o
+GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
+RESTSERVICE_OBJS=RESTService.o minskyRS.o itemRS.o
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS)
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS)
 
 EXES=gui-tk/minsky $(SERVER_OBJS)
 #RESTService/RESTService 
@@ -59,7 +60,12 @@ VPATH= schema model engine gui-tk server RESTService $(ECOLAB_HOME)/include
 # xml_pack/unpack need to -typeName option, as well as including privates
 	$(CLASSDESC) -typeName -nodef -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
+	xml_pack xml_unpack xsd_generate >$@
+
+.h.rcd:
+	$(CLASSDESC) -typeName -nodef -respect_private \
+	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
+	json_pack json_unpack >$@
 	$(CLASSDESC) -typeName -nodef -respect_private -use_mbr_pointers -overload \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	RESTProcess >>$@
@@ -204,7 +210,7 @@ doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ \#*\# core *.d *.cd *.xcd
+BASIC_CLEAN=rm -rf *.o *~ \#*\# core *.d *.cd *.xcd *.rcd
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd *.gcda *.gcno

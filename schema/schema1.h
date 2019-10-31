@@ -30,7 +30,7 @@ but any renamed attributes require bumping the schema number.
 #include "schemaHelper.h"
 #include "classdesc.h"
 #include "polyXMLBase.h"
-#include "polyJsonBase.h"
+//#include "polyJsonBase.h"
 #include "rungeKutta.h"
 
 #include <xsd_generate_base.h>
@@ -53,12 +53,8 @@ namespace schema1
   struct SPolyBase: 
     virtual public PolyBase<string>,
     virtual public PolyPackBase,
-    virtual public PolyJsonBase, 
     virtual public PolyXMLBase
-  {
-    virtual string json() const=0;
-    virtual string json(const string& s)=0;
-  };
+  {};
 
   template <class T, class B1, class B2=PolyBase<string> >
   struct SPoly: virtual public B1, virtual public B2
@@ -79,24 +75,6 @@ namespace schema1
       
     void xml_unpack(xml_unpack_t& x, const string& d)
     {::xml_unpack(x,d,static_cast<T&>(*this));}
-
-    void json_pack(json_pack_t& x, const string& d) const
-    {::json_pack(x,d,static_cast<const T&>(*this));}
-      
-    void json_unpack(json_unpack_t& x, const string& d)
-    {::json_unpack(x,d,static_cast<T&>(*this));}
-
-    string json() const {
-      json_pack_t j;
-      this->json_pack(j,"");
-      return write(j);
-    }
-    string json(const string& s) {
-      json_pack_t j;
-      read(s, j);
-      this->json_unpack(j,"");
-      return s;
-    }
   };
 
   template <class T, class U>
@@ -109,10 +87,6 @@ namespace schema1
     void unpack(unpack_t& x, const string& d) {}
     void xml_pack(xml_pack_t& x, const string& d) const {}
     void xml_unpack(xml_unpack_t& x, const string& d) {}
-    void json_pack(json_pack_t& x, const string& d) const {}
-    void json_unpack(json_unpack_t& x, const string& d) {}
-    string json() const {return "";}
-    string json(const string& s) {return "";}
   };
 
   struct Item: public SPoly<Item, SPolyBase>
@@ -446,42 +420,10 @@ namespace classdesc_access
     }
   };
 
-  template <>struct access_json_pack<shared_ptr<schema1::Layout> >
-  {
-    template <class U>
-    void operator()(json_pack_t& x, const string& d, U& a)
-    {a->json_pack(x,d);}
-  };
-
-  /// unpack into a UnionLayout structure, so everything's at hand 
-  template <>struct access_json_unpack<shared_ptr<schema1::Layout> >
-  {
-    template <class U>
-    void operator()(json_unpack_t& x, const string& d, U& a)
-    {
-      a.reset(new schema1::UnionLayout);
-      ::json_unpack(x, d, dynamic_cast<schema1::UnionLayout&>(*a));
-    }
-  };
-  
 }
 
 using classdesc::xsd_generate;
 
-
-inline void json_pack(classdesc::json_pack_t& j, const std::string& d, const std::vector<float>& x)
-{
-  std::vector<double> dx(x.begin(), x.end());
-  json_pack(j,d,dx);
-}
-
-inline void json_unpack(classdesc::json_pack_t& j, const std::string& d, std::vector<float>& x)
-{
-  std::vector<double> dx;
-  json_unpack(j,d,dx);
-  x.clear();
-  x.insert(x.end(), dx.begin(), dx.end());
-}
 
 #ifdef _CLASSDESC
 #pragma omit xsd_generate schema1::SPolyBase

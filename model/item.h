@@ -30,6 +30,11 @@
 #include <vector>
 #include <cairo_base.h>
 
+namespace classdesc
+{
+  class RESTProcess_t;
+}
+
 namespace minsky 
 {
   class LassoBox;
@@ -170,14 +175,12 @@ namespace minsky
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
     virtual std::shared_ptr<Item> select(float x, float y) const;
-    virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
+    /// runs the TCL_obj descriptor suitable for this type
+    virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
     {::TCL_obj(t,d,*this);}
-    /// returns a RESTProcessor appropriate for this item type
-    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
-    {
-      return std::unique_ptr<classdesc::RESTProcessBase>
-        (new classdesc::RESTProcessObject<Item>(*this));
-    }
+    /// runs the RESTProcess descriptor suitable for this type
+    virtual void restProcess(classdesc::RESTProcess_t&,const std::string&);
+    virtual void restProcess(classdesc::RESTProcess_t&,const std::string&) const;
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
@@ -218,13 +221,10 @@ namespace minsky
       r->group.reset();
       return r;
     }
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
+    void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d) override 
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
-    std::unique_ptr<classdesc::RESTProcessBase> restProcess() override
-    {
-      return std::unique_ptr<classdesc::RESTProcessBase>
-        (new classdesc::RESTProcessObject<T>(dynamic_cast<T&>(*this)));
-    }
+    void restProcess(classdesc::RESTProcess_t&,const std::string&) override;
+    void restProcess(classdesc::RESTProcess_t&,const std::string&) const override;
   };
 
 }

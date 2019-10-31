@@ -17,7 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "minsky.h"
+#include "minskyRS.h"
+#include "RESTProcess_base.h"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;
@@ -26,37 +27,6 @@ using namespace std;
 #include <readline/readline.h>
 #include <readline/history.h>
 
-namespace classdesc
-{
-  template <>
-  struct RESTProcessPtr<minsky::ItemPtr>: public RESTProcessBase
-  {
-    minsky::ItemPtr& ptr;
-    RESTProcessPtr(minsky::ItemPtr& ptr): ptr(ptr) {}
-    json_pack_t process(const string& remainder, const json_pack_t& arguments) override
-    {
-      if (ptr)
-        return ptr->restProcess()->process(remainder, arguments);
-      else
-        return {};
-    }
-    json_pack_t signature() const override
-    {
-      vector<minsky::Signature> signature{{ptr->classType(),{}}, {ptr->classType(),{ptr->classType()}}};
-      json_pack_t r;
-      return r<<signature;
-    }
-    json_pack_t list() const override {
-      if (ptr) return ptr->restProcess()->list();
-      else return json_pack_t(json_spirit::mArray());
-    }
-    json_pack_t type() const override {
-      if (ptr) return ptr->restProcess()->type();
-      else return json_pack_t("void");}
-
-  };
-  
-}
 
 namespace minsky
 {
