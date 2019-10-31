@@ -44,7 +44,8 @@ RESTSERVICE_OBJS=RESTService.o minskyRS.o itemRS.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS)
 
-EXES=gui-tk/minsky $(SERVER_OBJS)
+EXES=gui-tk/minsky RESTService/RESTService 
+# $(SERVER_OBJS)
 #RESTService/RESTService 
 #EXES=gui-tk/minsky server/server
 
