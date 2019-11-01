@@ -12,7 +12,7 @@ VPATH= .. ../schema ../model ../engine ../server ../RESTService $(ECOLAB_HOME)/i
 UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testTensorOps.o testLockGroup.o testCSVParser.o
 #testDatabase.o 
 
-MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o ../RESTService.o,$(wildcard ../*.o))
+MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o ../RESTService.o ../itemRS.o,$(wildcard ../*.o))
 FLAGS:=-I.. -I../RESTService $(FLAGS)
 FLAGS+=-std=c++11  -Wno-unused-local-typedefs -I../model -I../engine -I../schema
 LIBS+=-ljson_spirit -lsoci_core -lboost_system -lboost_thread \

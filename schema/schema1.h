@@ -30,7 +30,6 @@ but any renamed attributes require bumping the schema number.
 #include "schemaHelper.h"
 #include "classdesc.h"
 #include "polyXMLBase.h"
-//#include "polyJsonBase.h"
 #include "rungeKutta.h"
 
 #include <xsd_generate_base.h>
