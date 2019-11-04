@@ -27,7 +27,7 @@
 using namespace std;
 
 // undocumented internal function in the Tk library
-extern "C" int TkMakeBezierCurve(Tk_Canvas,double*,int,int,void*,double*);
+//extern "C" int TkMakeBezierCurve(Tk_Canvas,double*,int,int,void*,double*);
 
 namespace minsky
 {
@@ -137,12 +137,125 @@ namespace minsky
       dest.addWire(wp);
   }
 
+// For ticket 991. Adapted from https://www.stkent.com/2015/07/03/building-smooth-paths-using-bezier-curves.html
+namespace
+{
+	
+  vector<float> constructLowerDiagonalVector(int length) {
+    vector<float> result(length);
+
+    for (int i = 0; i < result.size() - 1; i++) {
+      result[i] = 1.0;
+    }
+    
+    result[result.size() - 1] = 2.0; 
+
+    return result;
+  }
+
+  vector<float> constructMainDiagonalVector(int n) {
+    vector<float> result(n);
+
+    result[0] = 2.0;
+
+    for (int i = 1; i < result.size() - 1; i++) {
+      result[i] = 4.0;
+    }
+    
+    result[result.size() - 1] = 7.0; 
+
+    return result;
+  }
+
+  vector<float> constructUpperDiagonalVector(int length) {
+    vector<float> result(length);
+
+    for (int i = 0; i < result.size(); i++) {
+      result[i] = 1.0;
+    }
+
+    return result;
+  }	
+  
+  vector<pair<float,float>> constructTargetVector(int n, const vector<pair<float,float>> knots) {
+	
+	assert(knots.size() % 2 == 0);
+	  
+    vector<pair<float,float>> result(n); 
+
+    result[0].first = knots[0].first+2.0*knots[1].first;
+    result[0].second = knots[0].second+2.0*knots[1].second; 
+    
+    for (int i = 1; i < n - 1; i++) {
+      result[i].first = 2.0*(2.0*knots[i].first+(knots[i+1].first)); 
+      result[i].second = 2.0*(2.0*knots[i].second+(knots[i+1].second));  
+    }
+    
+    result[result.size() - 1].first = 8.0*knots[n-1].first+knots[n].first; 
+    result[result.size() - 1].second = 8.0*knots[n-1].second+knots[n].second;
+
+    return result;
+  }  
+
+ vector<pair<float,float>> computeControlPoints(int n, const vector<pair<float,float>> knots) {
+    
+    assert(knots.size() % 2 == 0);
+    
+    vector<pair<float,float>> result(2*n); 
+    
+    vector<pair<float,float>> target = constructTargetVector(n, knots);
+    vector<float> lowerDiag = constructLowerDiagonalVector(n-1); 
+    vector<float> mainDiag = constructMainDiagonalVector(n);
+    vector<float> upperDiag = constructUpperDiagonalVector(n-1);
+
+    vector<pair<float,float>> newTarget(n); 
+    vector<float> newUpperDiag(n-1);
+
+    // forward sweep for control points c_i,0:
+    newUpperDiag[0] = upperDiag[0] / mainDiag[0];
+    newTarget[0].first = target[0].first*(1.0 / mainDiag[0]);
+    newTarget[0].second = target[0].second*(1.0 / mainDiag[0]);  
+
+    for (int i = 1; i < n-1; i++) {
+      newUpperDiag[i] = upperDiag[i] / (mainDiag[i] - lowerDiag[i-1] * newUpperDiag[i-1]);
+    }
+
+    for (int i = 1; i < n; i++) {
+	  float targetScale = 1.0/(mainDiag[i] - lowerDiag[i-1] * newUpperDiag[i-1]);
+      newTarget[i].first = (target[i].first-(newTarget[i-1].first*(lowerDiag[i-1])))*(targetScale);
+      newTarget[i].second = (target[i].second-(newTarget[i-1].second*(lowerDiag[i-1])))*(targetScale);
+    }
+
+    // backward sweep for control points c_i,0:
+    result[n-1].first = newTarget[n-1].first;
+    result[n-1].second = newTarget[n-1].second;
+    
+    for (int i = n-2; i >= 0; i--) {		
+	  result[i].first = newTarget[i].first-(newUpperDiag[i]*result[i+1].first);
+	  result[i].second = newTarget[i].second-(newUpperDiag[i]*result[i+1].second); //x
+    }
+
+    // calculate remaining control points c_i,1 directly:
+    for (int i = 0; i < n-1; i++) {
+      result[n+i].first = 2.0*knots[i+1].first-(result[i+1].first);
+      result[n+i].second = 2.0*knots[i+1].second-(result[i+1].second);
+    }
+
+    result[2*n-1].first = 0.5*(knots[n].first+(result[n-1].first));
+    result[2*n-1].second = 0.5*(knots[n].second+(result[n-1].second));
+
+    return result;
+  }
+
+}
+
   void Wire::draw(cairo_t* cairo) const
   {
     auto coords=this->coords();
     if (coords.size()<4 || !visible()) return;
 
-    double angle, lastx, lasty;
+    //double angle, lastx, lasty;
+    float angle, lastx, lasty;
     if (coords.size()==4)
       {
         cairo_move_to(cairo,coords[0],coords[1]);
@@ -153,25 +266,52 @@ namespace minsky
     else
       {
         // need to convert to double precision for Tk
-        vector<double> dcoords(coords.begin(), coords.end());
+        //vector<double> dcoords(coords.begin(), coords.end());
         // Use Tk's smoothing algorithm for computing curves
-        const int numSteps=100;
+        //const int numSteps=100;
         // Tk's documentation doesn't say how big this buffer should
         // be, hopefully this is ample.
-        vector<double> points(2*numSteps*(dcoords.size()+1));
+        //vector<double> points(2*numSteps*(dcoords.size()+1));
         // TODO - find a way of doing this that doesn't involve Tk!
-        int numPoints=
-          TkMakeBezierCurve(0,dcoords.data(),dcoords.size()/2,numSteps,
-                            nullptr,points.data());
+        //int numPoints=
+          //TkMakeBezierCurve(0,dcoords.data(),dcoords.size()/2,numSteps,
+          //                  nullptr,points.data());
         
-        cairo_move_to(cairo, points[0], points[1]);
-        for (int i=2; i<2*numPoints; i+=2)
-          cairo_line_to(cairo, points[i], points[i+1]);
+        //cairo_move_to(cairo, points[0], points[1]);
+        cairo_move_to(cairo, coords[0], coords[1]);
+        //for (int i=2; i<2*numPoints; i+=2)
+        //  cairo_line_to(cairo, points[i], points[i+1]);
+        //int numPoints = coords.size()/2;
+        
+        // Curved wires pass through all handles
+        vector<pair<float,float>> points(coords.size()-1);
+        for (int i = 0; i < points.size(); i++) {
+			if (i%2 == 0) {
+				points[i].first = coords[i];
+				points[i].second = coords[i+1];
+			}
+			else {
+				points[i].first = 0.5*(coords[i-1]+coords[i+1]);
+				points[i].second = 0.5*(coords[i]+coords[i+2]);
+			}
+		}	
+       
+        // For ticket 991. Adapted from https://www.stkent.com/2015/07/03/building-smooth-paths-using-bezier-curves.html
+        int n = points.size()-1;                                           
+        vector<pair<float,float>> controlPoints = computeControlPoints(n, points);
+        
+        for (int i = 0; i < n; i++) {      
+          cairo_curve_to(cairo, controlPoints[i].first,controlPoints[i].second,controlPoints[n+i].first,controlPoints[n+i].second,points[i+1].first,points[i+1].second);
+        }     
+               
         cairo_stroke(cairo);
-        angle=atan2(points[2*numPoints-1]-points[2*numPoints-3], 
-                    points[2*numPoints-2]-points[2*numPoints-4]);
-        lastx=points[2*numPoints-2]; lasty=points[2*numPoints-1];
-      }
+        //angle=atan2(points[2*numPoints-1]-points[2*numPoints-3], 
+        //            points[2*numPoints-2]-points[2*numPoints-4]);
+        //lastx=points[2*numPoints-2]; lasty=points[2*numPoints-1];   
+        angle=atan2(coords[coords.size()-1]-coords[coords.size()-3], 
+                    coords[coords.size()-2]-coords[coords.size()-4]);                         
+        lastx=coords[coords.size()-2]; lasty=coords[coords.size()-1];
+      } 
     cairo_stroke(cairo);
 
     // draw arrow
@@ -260,15 +400,15 @@ namespace minsky
     }
     
     // returns true if x,y lies in the triangle (x0,y0),(x1,y1),(x2,y2)
-    bool inTriangle(float x0, float y0, float x1, float y1,
-                    float x2, float y2, float x, float y)
-    {
-      float l1 = (x-x0)*(y2-y0) - (x2-x0)*(y-y0), 
-        l2 = (x-x1)*(y0-y1) - (x0-x1)*(y-y1), 
-        l3 = (x-x2)*(y1-y2) - (x1-x2)*(y-y2);
-      return (l1>0 && l2>0  && l3>0) || (l1<0 && l2<0 && l3<0);
-    }
-
+    //bool inTriangle(float x0, float y0, float x1, float y1,
+    //                float x2, float y2, float x, float y)
+    //{
+    //  float l1 = (x-x0)*(y2-y0) - (x2-x0)*(y-y0), 
+    //    l2 = (x-x1)*(y0-y1) - (x0-x1)*(y-y1), 
+    //    l3 = (x-x2)*(y1-y2) - (x1-x2)*(y-y2);
+    //  return (l1>0 && l2>0  && l3>0) || (l1<0 && l2<0 && l3<0);
+    //}
+    
     inline float d2(float x0, float y0, float x1, float y1)
     {return sqr(x0-x1)+sqr(y0-y1);}
   }
@@ -280,9 +420,10 @@ namespace minsky
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
     else
-      for (size_t i=0; i<c.size()-4; i+=2)
-        if (inTriangle(c[i],c[i+1],c[i+2],c[i+3],c[i+4],c[i+5],x,y))
-          return true;
+      for (size_t i=0; i<c.size()-3; i+=2)
+        //if (inTriangle(c[i],c[i+1],c[i+2],c[i+3],c[i+4],c[i+5],x,y))
+        if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y))
+           return true;
     return false;
   }
 
