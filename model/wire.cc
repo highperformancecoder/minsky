@@ -179,7 +179,7 @@ namespace
   
   vector<pair<float,float>> constructTargetVector(int n, const vector<pair<float,float>> knots) {
 	
-	assert(knots.size() % 2 == 0);
+	assert(knots.size() > 2);
 	  
     vector<pair<float,float>> result(n); 
 
@@ -199,7 +199,7 @@ namespace
 
  vector<pair<float,float>> computeControlPoints(int n, const vector<pair<float,float>> knots) {
     
-    assert(knots.size() % 2 == 0);
+    assert(knots.size() > 2);
     
     vector<pair<float,float>> result(2*n); 
     
