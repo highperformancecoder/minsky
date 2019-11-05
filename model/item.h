@@ -45,10 +45,6 @@ namespace minsky
 
   /// radius of circle marking ports at zoom=1
   constexpr float portRadius=6;
-  // Temporary solution for ticket 1062
-  constexpr float portOffset=1;
-  // Permanent solution for ticket 1062 with a circular bounding box?
-  //constexpr float radius=8;
 
   // ports are owned by their items, so it is not appropriate to
   // default copy the port references
@@ -70,27 +66,13 @@ namespace minsky
   public:
     void update(const Item& x);
     bool contains(float x, float y) const {
-      // extend each item by a portradius to solve ticket #903. Degree of extension beyond item reduced for ticket #1062
-      return left-portOffset<=x && right+portOffset>=x && bottom+portOffset>=y && top-portOffset<=y;
+      // extend each item by a portradius to solve ticket #903
+      return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
     }
     bool valid() const {return left!=right;}
     float width() const {return right-left;}
     float height() const {return bottom-top;}
   };
-  
-  // Permanent solution for ticket 1062 with a circular bounding box?
-  //class BoundingCircle
-  //{
-  //  float xcenter=0, ycenter=0, radius;
-  //public:
-  //  void update(const Item& x);
-  //  bool contains(float x, float y) const {
-  //    // extend each item by a portradius to solve ticket #903
-  //    return sqrt(pow(x,2)+pow(y,2)) <= radius;
-  //  }  
-  //  bool valid() const {return (xcenter!=radius || ycenter!=radius);}  
-  //  float diameter() const {return 2*radius;}
-  //};  
 
   class Item: virtual public NoteBase
   {
@@ -102,13 +84,10 @@ namespace minsky
     classdesc::Exclude<std::weak_ptr<Group>> group; 
     /// canvas bounding box.
     mutable BoundingBox bb;
-    // canvas bounding circle. More permanent solution to ticket 1062
-    //mutable BoundingCircle bc;
     bool contains(float xx, float yy) {
       if (!bb.valid()) bb.update(*this);
-      //if (!bc.valid()) bc.update(*this);
       float invZ=1/zoomFactor();
-      return bb.contains((xx-x())*invZ, (yy-y())*invZ); //|| bc.contains((xx-x())*invZ, (yy-y())*invZ);
+      return bb.contains((xx-x())*invZ, (yy-y())*invZ);
     }
     
     /// mark item on canvas, then throw
@@ -139,10 +118,6 @@ namespace minsky
     float right() const {return x()+0.5*zoomFactor()*width();}
     float top() const {return y()+0.5*zoomFactor()*height();}
     float bottom() const {return y()-0.5*zoomFactor()*height();}
-    
-    // Permanent solution for ticket 1062 with a circular bounding box?
-    //float diameter() const {if (!bc.valid()) bc.update(*this); return bc.diameter();}
-    //float perimeter() const {return sqrt(pow(x()-0.5*zoomFactor()*diameter(),2)+pow(y()-0.5*zoomFactor()*diameter(),2));}
 
     virtual void resize(const LassoBox&) {}
 
@@ -170,9 +145,6 @@ namespace minsky
 
     /// display tooltip text, eg on mouseover
     void displayTooltip(cairo_t*, const std::string&) const;
-
-    // Permanent solution for ticket 1062 with a circular bounding box?
-    //void displayTooltipCircle(cairo_t*, const std::string&) const;    
     
     /// update display after a step()
     virtual void updateIcon(double t) {}

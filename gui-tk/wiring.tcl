@@ -520,20 +520,34 @@ proc doubleButton {x y} {
         editItem
     }
 }
-
+# for ticket 1062, new hierarchy of context menu access on mouse right click: wires, items and background canvas.
 bind .wiring.canvas <<contextMenu>> {
-    if [getItemAt %x %y] {
+    if [getWireAt %x %y] {
+        wireContextMenu %X %Y  	
+    } elseif [getItemAt %x %y] {
         switch [minsky.canvas.item.classType] {
             GodleyIcon {rightMouseGodley %x %y %X %Y}
             Group {rightMouseGroup %x %y %X %Y}
             default {contextMenu %x %y %X %Y}
-        }
-    } elseif [getWireAt %x %y] {
-        wireContextMenu %X %Y
+		}
     } else {
         canvasContext %x %y %X %Y
     }
 }
+
+#bind .wiring.canvas <<contextMenu>> {
+#    if [getItemAt %x %y] {
+#        switch [minsky.canvas.item.classType] {
+#            GodleyIcon {rightMouseGodley %x %y %X %Y}
+#            Group {rightMouseGroup %x %y %X %Y}
+#            default {contextMenu %x %y %X %Y}
+#        }
+#    } elseif [getWireAt %x %y] {
+#        wireContextMenu %X %Y
+#    } else {
+#        canvasContext %x %y %X %Y
+#    }
+#}
 
 #  proc raiseItem {item} {
 #      .wiring.canvas raise $item all
