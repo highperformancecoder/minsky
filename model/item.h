@@ -23,7 +23,7 @@
 #include "noteBase.h"
 #include "port.h"
 #include "intrusiveMap.h"
-#include "RESTProcess_base.h"
+//#include "RESTProcess_base.h"
 #include <TCL_obj_base.h>
 
 #include <cairo.h>
