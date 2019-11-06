@@ -535,20 +535,6 @@ bind .wiring.canvas <<contextMenu>> {
     }
 }
 
-#bind .wiring.canvas <<contextMenu>> {
-#    if [getItemAt %x %y] {
-#        switch [minsky.canvas.item.classType] {
-#            GodleyIcon {rightMouseGodley %x %y %X %Y}
-#            Group {rightMouseGroup %x %y %X %Y}
-#            default {contextMenu %x %y %X %Y}
-#        }
-#    } elseif [getWireAt %x %y] {
-#        wireContextMenu %X %Y
-#    } else {
-#        canvasContext %x %y %X %Y
-#    }
-#}
-
 #  proc raiseItem {item} {
 #      .wiring.canvas raise $item all
 #  }
