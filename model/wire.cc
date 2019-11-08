@@ -26,9 +26,6 @@
 
 using namespace std;
 
-// undocumented internal function in the Tk library
-//extern "C" int TkMakeBezierCurve(Tk_Canvas,double*,int,int,void*,double*);
-
 namespace minsky
 {
   vector<float> Wire::_coords() const
@@ -136,50 +133,41 @@ namespace minsky
     if (wp)
       dest.addWire(wp);
   }
-
-// For ticket 991. Adapted from https://www.stkent.com/2015/07/03/building-smooth-paths-using-bezier-curves.html
+ 
 namespace
 {
-	
-  vector<float> constructLowerDiagonalVector(int length) {
-    vector<float> result(length);
 
-    for (int i = 0; i < result.size() - 1; i++) {
-      result[i] = 1.0;
-    }
-    
-    result[result.size() - 1] = 2.0; 
+// For ticket 991. Construct tridoagonal matrix A which relates control points c and knots k (curved wire handles): Ac = k.
+ vector<vector<float>> constructTriDiag(int length) {
 
-    return result;
+   vector<vector<float>> result(length,vector<float>(length));
+   
+   for (int i = 0; i < length; i++)  // rows
+      for (int j = 0; j < length; j++) {  // columns
+ 		  
+ 		//construct upper diagonal   
+ 		if (i == j-1 && i < length-1) result[i][j] = 1.0; 	 			
+ 		//construct main diagonal
+ 		else if (i == j) {
+ 		   if (i == 0) result[i][j] = 2.0;
+ 		   else if (i < length-1) result[i][j] = 4.0;
+ 		   else if (i = length-1) result[i][j] = 7.0;
+ 		}   
+ 		//construct lower diagonal
+ 	    else if (i == j+1) {
+ 			if (j < length-2) result[i][j] = 1.0;
+ 			else if (j == length-2) result[i][j] = 2.0;
+ 		}  
+ 		else result[i][j] = 0.0; 				
   }
-
-  vector<float> constructMainDiagonalVector(int n) {
-    vector<float> result(n);
-
-    result[0] = 2.0;
-
-    for (int i = 1; i < result.size() - 1; i++) {
-      result[i] = 4.0;
-    }
-    
-    result[result.size() - 1] = 7.0; 
-
-    return result;
-  }
-
-  vector<float> constructUpperDiagonalVector(int length) {
-    vector<float> result(length);
-
-    for (int i = 0; i < result.size(); i++) {
-      result[i] = 1.0;
-    }
-
-    return result;
-  }	
   
+  return result;
+ } 
+
+// For ticket 991. Vector of input knots k (all the handles on a curved wire).  
   vector<pair<float,float>> constructTargetVector(int n, const vector<pair<float,float>> knots) {
-	
-	assert(knots.size() > 2);
+	  
+	assert(knots.size() > 2);  
 	  
     vector<pair<float,float>> result(n); 
 
@@ -197,50 +185,144 @@ namespace
     return result;
   }  
 
- vector<pair<float,float>> computeControlPoints(int n, const vector<pair<float,float>> knots) {
+// For ticket 991. Applies Thomas' algorithm to the matrix equation Ac = k.
+ vector<pair<float,float>> computeControlPoints(vector<vector<float>> triDiag, const vector<pair<float,float>> knots, vector<pair<float,float>> target) {
+ /**
+ *  Thomas' algorithm for solving a matrix equation $Ac=k$ is based on LU-decomposition into $LUc=k$ where $L$ is lower triangular and
+ *  $U$ is upper triangular. The matrix equation is solved by setting $Uc = k\'$ and then solving $Lk\' = k$ for $k\'$ first, and subsequently
+ *  $Uc$ for $c$.
+ *  
+ *  There are two steps in this calculation. Step 1 involves simultaneously decomposing $A = LU$ and solving $Lk\'=k$ for $k\'$ in a forward sweep, with
+ *  $Uc=k\'$ as result. In step 2, $Uc=k\'$ is solved for $c$ in a backward sweep. The calculation goes as follows for a small system:
+ *  
+ *       \f[
+ *       \begin{equation}
+ *          \begin{pmatrix} 
+ *             b_1 & a_1 & 0  \\
+ *             d_1 & b_2 & a_2  \\
+ *             0 & d_2 & b_3  \\
+ *          \end{pmatrix} 
+ *          \begin{pmatrix}
+ *             c_1
+ *             c_2
+ *             c_3
+ *          \end{pmatrix}
+ *          =
+ *          \begin{pmatrix}
+ *              k_1
+ *              k_2
+ *              k_3
+ *          \end{pmatrix}
+ *       \end{equation} 
+ *       \f]         
+ *        
+ *  Forward sweep: row 1:
+ *  
+ *  \f$ b_1c_1+a_1c_2 = k_1 \f$ 
+ *  
+ *  \f$ c_1+\frac{c_1}{b_1}c_2 = \frac{k_1}{b_1} \f$ 
+ *  after dividing through by $b_1$
+ * 
+ *  Rewrite row 1 as \f$ c_1 + \alpha_1c_2 = k\'_1 \f$, where $\alpha_1=\frac{c_1}{b_1}$ and $k\'_1 = \frac{k_1}{b_1}$
+ * 
+ *  row 2: 
+ * 
+ *  \f$ d_1c_1+b_2c_2+a_2c_3 = k_2 \f$   
+ * 
+ *  Now eliminate the first term of this equation by subtracting $d_1 \times$ row 1 from row 2, yielding:
+ * 
+ *  \f$ (b_2 - d_1\alpha_1)c_2 + a_2c_3 = k_2 - d_1k\'_1 /f$
+ * 
+ *  Then, dividing through by $(b_2 - d_1\alpha_1)$ and rewriting leads to:
+ * 
+ *  \f$ c_2 + \alpha_2c_3 = k\'_2 \f$, where $\alpha_2 = \frac{a_2}{b_2 - d_1\alpha_1}$ and $k\'_2 = \frac{k_2 - d_1k\'_1}{b_2 - d_1\alpha_1}$
+ * 
+ *  row 3:
+ * 
+ *  Finally, subtracting $d_2 \times$ row 2 from row 3, dividing through by $(b_3-d_2\alpha_2)$, and rewriting, yields:
+ * 
+ *  \f$ c_3 = k\'_3 \f$, where $k\'_3 = \frac{k_3-d_2k\'2}{b_3 - d_2\alpha_2} 
+ * 
+ *  At this point, the matrix equation has been reduced to
+ * 
+ *     \f[
+ *     \begin{equation}
+ *        \begin{pmatrix} 
+ *           1 & \alpha_1 & 0  \\
+ *           0 & 1 & \alpha_2  \\
+ *           0 & 0 & 1    \\
+ *        \end{pmatrix} 
+ *        \begin{pmatrix}
+ *           c_1
+ *           c_2
+ *           c_3
+ *        \end{pmatrix}
+ *        =
+ *        \begin{pmatrix}
+ *            k\'_1
+ *            k\'_2
+ *            k\'_3
+ *        \end{pmatrix}
+ *     \end{equation} 
+ *     \f]         
+ *     
+ *     In this form, one can solve for the $c_i$ in terms of $k\'_i$ directly by sweeping backwards through the matrix equation.
+ *      
+ *     (Source: http://www.industrial-maths.com/ms6021_thomas.pdf)
+ */	 
+  
+    assert(knots.size() > 2); 
     
-    assert(knots.size() > 2);
+    int n = knots.size() - 1;
     
     vector<pair<float,float>> result(2*n); 
-    
-    vector<pair<float,float>> target = constructTargetVector(n, knots);
-    vector<float> lowerDiag = constructLowerDiagonalVector(n-1); 
-    vector<float> mainDiag = constructMainDiagonalVector(n);
-    vector<float> upperDiag = constructUpperDiagonalVector(n-1);
-
+ 
+    // Vector of knots k' after Thomas' algorithm is applied to the initial system Ac = k
     vector<pair<float,float>> newTarget(n); 
-    vector<float> newUpperDiag(n-1);
-
+    
+    // Matrix A' after Thomas' algorithm is applied to the initial system Ac = k
+    vector<vector<float>> newTriDiag(n,vector<float>(n));
+ 
     // forward sweep for control points c_i,0:
-    newUpperDiag[0] = upperDiag[0] / mainDiag[0];
-    newTarget[0].first = target[0].first*(1.0 / mainDiag[0]);
-    newTarget[0].second = target[0].second*(1.0 / mainDiag[0]);  
-
-    for (int i = 1; i < n-1; i++) {
-      newUpperDiag[i] = upperDiag[i] / (mainDiag[i] - lowerDiag[i-1] * newUpperDiag[i-1]);
+    newTriDiag[0][1] = triDiag[0][1]/ triDiag[0][0]; 
+ 
+    newTarget[0].first = target[0].first*(1.0 / triDiag[0][0]);
+    newTarget[0].second = target[0].second*(1.0 / triDiag[0][0]);        
+    
+ 
+    for (int i = 1; i < n-1; i++)
+ 	   for (int j = 0; j < n; j++)
+           if (i == j-1) newTriDiag[i][j] = triDiag[i][j] / (triDiag[i][i] - triDiag[i][j-2] * newTriDiag[i-1][j-1]);
+ 
+    for (int i = 1; i < n; i++)
+      for (int j = 0; j < n; j++) {
+         if (i == j + 1)
+         {
+			float targetScale = 1.0/(triDiag[i][i] - triDiag[i][j] * newTriDiag[i-1][j+1]); 
+            newTarget[i].first = (target[i].first-(newTarget[i-1].first*(triDiag[i][j])))*(targetScale);
+            newTarget[i].second = (target[i].second-(newTarget[i-1].second*(triDiag[i][j])))*(targetScale);
+		}
     }
-
-    for (int i = 1; i < n; i++) {
-	  float targetScale = 1.0/(mainDiag[i] - lowerDiag[i-1] * newUpperDiag[i-1]);
-      newTarget[i].first = (target[i].first-(newTarget[i-1].first*(lowerDiag[i-1])))*(targetScale);
-      newTarget[i].second = (target[i].second-(newTarget[i-1].second*(lowerDiag[i-1])))*(targetScale);
-    }
-
+ 
     // backward sweep for control points c_i,0:
     result[n-1].first = newTarget[n-1].first;
     result[n-1].second = newTarget[n-1].second;
     
-    for (int i = n-2; i >= 0; i--) {		
-	  result[i].first = newTarget[i].first-(newUpperDiag[i]*result[i+1].first);
-	  result[i].second = newTarget[i].second-(newUpperDiag[i]*result[i+1].second); //x
+    for (int i = n-2; i >= 0; i--) 
+       for (int j = n-1; j >= 0; j--) {		
+          if (i == j-1)
+          {
+             result[i].first = newTarget[i].first-(newTriDiag[i][j]*result[i+1].first);
+             result[i].second = newTarget[i].second-(newTriDiag[i][j]*result[i+1].second);
+		  }
     }
-
+ 
     // calculate remaining control points c_i,1 directly:
     for (int i = 0; i < n-1; i++) {
       result[n+i].first = 2.0*knots[i+1].first-(result[i+1].first);
       result[n+i].second = 2.0*knots[i+1].second-(result[i+1].second);
     }
-
+ 
     result[2*n-1].first = 0.5*(knots[n].first+(result[n-1].first));
     result[2*n-1].second = 0.5*(knots[n].second+(result[n-1].second));
 
@@ -254,7 +336,6 @@ namespace
     auto coords=this->coords();
     if (coords.size()<4 || !visible()) return;
 
-    //double angle, lastx, lasty;
     float angle, lastx, lasty;
     if (coords.size()==4)
       {
@@ -265,25 +346,39 @@ namespace
       }
     else
       {
-        // need to convert to double precision for Tk
-        //vector<double> dcoords(coords.begin(), coords.end());
-        // Use Tk's smoothing algorithm for computing curves
-        //const int numSteps=100;
-        // Tk's documentation doesn't say how big this buffer should
-        // be, hopefully this is ample.
-        //vector<double> points(2*numSteps*(dcoords.size()+1));
-        // TODO - find a way of doing this that doesn't involve Tk!
-        //int numPoints=
-          //TkMakeBezierCurve(0,dcoords.data(),dcoords.size()/2,numSteps,
-          //                  nullptr,points.data());
-        
-        //cairo_move_to(cairo, points[0], points[1]);
         cairo_move_to(cairo, coords[0], coords[1]);
-        //for (int i=2; i<2*numPoints; i+=2)
-        //  cairo_line_to(cairo, points[i], points[i+1]);
-        //int numPoints = coords.size()/2;
         
-        // Curved wires pass through all handles
+        /** 
+        *  
+        * Two control points are inserted between two adjacent handles (knots) of the curved wires on the canvas.
+        * The first and second derivatives of the cubic Bezier curves, representing curved segments of wires, and spanning adjacent knots,
+        * are matched at the common knots. The second derivatives are set to zero at the ends to absorb the extra degrees of freedom,
+        * thus leading to a matrix equation relating control points $c_i$ to the knots $k_i$:
+        *
+        *       \f[
+        *       \begin{equation}
+        *          \begin{pmatrix} 
+        *             b_1 & a_1 & 0  \\
+        *             d_1 & b_2 & a_2  \\
+        *             0 & d_2 & b_3  \\
+        *          \end{pmatrix} 
+        *          \begin{pmatrix}
+        *             c_1
+        *             c_2
+        *             c_3
+        *          \end{pmatrix}
+        *          =
+        *          \begin{pmatrix}
+        *              k_1
+        *              k_2
+        *              k_3
+        *          \end{pmatrix}
+        *       \end{equation} 
+        *       \f]                
+        * 
+        */   
+        
+        // For ticket 991. Curved wires pass through all handles (knots).
         vector<pair<float,float>> points(coords.size()-1);
         for (int i = 0; i < points.size(); i++) {
 			if (i%2 == 0) {
@@ -296,18 +391,23 @@ namespace
 			}
 		}	
        
-        // For ticket 991. Adapted from https://www.stkent.com/2015/07/03/building-smooth-paths-using-bezier-curves.html
-        int n = points.size()-1;                                           
-        vector<pair<float,float>> controlPoints = computeControlPoints(n, points);
+        int n = points.size()-1;         
+        
+        // Initial vector of knots in the matrix equation Ac = k
+        vector<pair<float,float>> target = constructTargetVector(n, points);
+      
+        vector<vector<float>> A(n,vector<float>(n));
+        // Initial matrix A which relates control points c_i to knots k_i by matching first and second derivatives of cubic Bezier curves at common points (knots) between curves.
+        A = constructTriDiag(n);
+                                             
+        // For ticket 991. Apply Thomas' algorithm to matrix equation Ac=k
+        vector<pair<float,float>> controlPoints = computeControlPoints(A, points, target);
         
         for (int i = 0; i < n; i++) {      
           cairo_curve_to(cairo, controlPoints[i].first,controlPoints[i].second,controlPoints[n+i].first,controlPoints[n+i].second,points[i+1].first,points[i+1].second);
         }     
                
-        cairo_stroke(cairo);
-        //angle=atan2(points[2*numPoints-1]-points[2*numPoints-3], 
-        //            points[2*numPoints-2]-points[2*numPoints-4]);
-        //lastx=points[2*numPoints-2]; lasty=points[2*numPoints-1];   
+        cairo_stroke(cairo); 
         angle=atan2(coords[coords.size()-1]-coords[coords.size()-3], 
                     coords[coords.size()-2]-coords[coords.size()-4]);                         
         lastx=coords[coords.size()-2]; lasty=coords[coords.size()-1];
@@ -399,18 +499,8 @@ namespace
       return d1+d2<=d+5;
     }
     
-    // returns true if x,y lies in the triangle (x0,y0),(x1,y1),(x2,y2)
-    //bool inTriangle(float x0, float y0, float x1, float y1,
-    //                float x2, float y2, float x, float y)
-    //{
-    //  float l1 = (x-x0)*(y2-y0) - (x2-x0)*(y-y0), 
-    //    l2 = (x-x1)*(y0-y1) - (x0-x1)*(y-y1), 
-    //    l3 = (x-x2)*(y1-y2) - (x1-x2)*(y-y2);
-    //  return (l1>0 && l2>0  && l3>0) || (l1<0 && l2<0 && l3<0);
-    //}
-    
     inline float d2(float x0, float y0, float x1, float y1)
-    {return sqr(x0-x1)+sqr(y0-y1);}
+    {return sqr(x1-x0)+sqr(y1-y0);}
   }
   
   bool Wire::near(float x, float y) const
@@ -420,8 +510,7 @@ namespace
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
     else
-      for (size_t i=0; i<c.size()-3; i+=2)
-        //if (inTriangle(c[i],c[i+1],c[i+2],c[i+3],c[i+4],c[i+5],x,y))
+      for (size_t i=0; i<c.size()-1; i+=2)
         if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y))
            return true;
     return false;
