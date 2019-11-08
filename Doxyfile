@@ -328,7 +328,7 @@ EXTRACT_LOCAL_METHODS  = NO
 # name of the file that contains the anonymous namespace. By default
 # anonymous namespace are hidden.
 
-EXTRACT_ANON_NSPACES   = NO
+EXTRACT_ANON_NSPACES   = YES
 
 # If the HIDE_UNDOC_MEMBERS tag is set to YES, Doxygen will hide all
 # undocumented members of documented classes, files or namespaces.
@@ -768,6 +768,8 @@ IGNORE_PREFIX          =
 # generate HTML output.
 
 GENERATE_HTML          = YES
+
+USE_MATHJAX=YES
 
 # If the HTML_FOOTER_DESCRIPTION tag is set to YES, Doxygen will 
 # add generated date, project name and doxygen version to HTML footer.
