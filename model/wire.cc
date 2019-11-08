@@ -195,26 +195,10 @@ namespace
  *  There are two steps in this calculation. Step 1 involves simultaneously decomposing $A = LU$ and solving $Lk\'=k$ for $k\'$ in a forward sweep, with
  *  $Uc=k\'$ as result. In step 2, $Uc=k\'$ is solved for $c$ in a backward sweep. The calculation goes as follows for a small system:
  *  
- *       \f[
- *       \begin{equation}
- *          \begin{pmatrix} 
- *             b_1 & a_1 & 0  \\
- *             d_1 & b_2 & a_2  \\
- *             0 & d_2 & b_3  \\
- *          \end{pmatrix} 
- *          \begin{pmatrix}
- *             c_1
- *             c_2
- *             c_3
- *          \end{pmatrix}
- *          =
- *          \begin{pmatrix}
- *              k_1
- *              k_2
- *              k_3
- *          \end{pmatrix}
- *       \end{equation} 
- *       \f]         
+ *      $\begin{equation}
+ *         \begin{pmatrix} b_1 & a_1 & 0  \\ d_1 & b_2 & a_2  \\  0 & d_2 & b_3 \end{pmatrix} \begin{pmatrix} c_1 & c_2 & c_3 \end{pmatrix} = \begin{pmatrix} k_1 & k_2 & k_3 \end{pmatrix}
+ *      \end{equation} $
+ *                      
  *        
  *  Forward sweep: row 1:
  *  
@@ -223,7 +207,7 @@ namespace
  *  \f$ c_1+\frac{c_1}{b_1}c_2 = \frac{k_1}{b_1} \f$ 
  *  after dividing through by $b_1$
  * 
- *  Rewrite row 1 as \f$ c_1 + \alpha_1c_2 = k\'_1 \f$, where $\alpha_1=\frac{c_1}{b_1}$ and $k\'_1 = \frac{k_1}{b_1}$
+ *  Rewrite row 1 as $ c_1 + \alpha_1c_2 = k\'_1$, where $\alpha_1=\frac{c_1}{b_1}$ and $k\'_1 = \frac{k_1}{b_1}$
  * 
  *  row 2: 
  * 
@@ -231,40 +215,23 @@ namespace
  * 
  *  Now eliminate the first term of this equation by subtracting $d_1 \times$ row 1 from row 2, yielding:
  * 
- *  \f$ (b_2 - d_1\alpha_1)c_2 + a_2c_3 = k_2 - d_1k\'_1 /f$
+ *  $ (b_2 - d_1\alpha_1)c_2 + a_2c_3 = k_2 - d_1k\'_1 $
  * 
  *  Then, dividing through by $(b_2 - d_1\alpha_1)$ and rewriting leads to:
  * 
- *  \f$ c_2 + \alpha_2c_3 = k\'_2 \f$, where $\alpha_2 = \frac{a_2}{b_2 - d_1\alpha_1}$ and $k\'_2 = \frac{k_2 - d_1k\'_1}{b_2 - d_1\alpha_1}$
+ *  $ c_2 + \alpha_2c_3 = k\'_2 $, where $\alpha_2 = \frac{a_2}{b_2 - d_1\alpha_1}$ and $k\'_2 = \frac{k_2 - d_1k\'_1}{b_2 - d_1\alpha_1}$
  * 
  *  row 3:
  * 
  *  Finally, subtracting $d_2 \times$ row 2 from row 3, dividing through by $(b_3-d_2\alpha_2)$, and rewriting, yields:
  * 
- *  \f$ c_3 = k\'_3 \f$, where $k\'_3 = \frac{k_3-d_2k\'2}{b_3 - d_2\alpha_2} 
+ *  $ c_3 = k\'_3 $, where $k\'_3 = \frac{k_3-d_2k\'2}{b_3 - d_2\alpha_2} 
  * 
  *  At this point, the matrix equation has been reduced to
  * 
- *     \f[
- *     \begin{equation}
- *        \begin{pmatrix} 
- *           1 & \alpha_1 & 0  \\
- *           0 & 1 & \alpha_2  \\
- *           0 & 0 & 1    \\
- *        \end{pmatrix} 
- *        \begin{pmatrix}
- *           c_1
- *           c_2
- *           c_3
- *        \end{pmatrix}
- *        =
- *        \begin{pmatrix}
- *            k\'_1
- *            k\'_2
- *            k\'_3
- *        \end{pmatrix}
- *     \end{equation} 
- *     \f]         
+ *    $\begin{equation}
+ *       \begin{pmatrix} 1 & \alpha_1 & 0  \\ 0 & 1 & \alpha_2  \\  0 & 0 & 1 \end{pmatrix} \begin{pmatrix} c_1 & c_2 & c_3 \end{pmatrix} = \begin{pmatrix} k\'_1 &  k\'_2 & k\'_3 \end{pmatrix}
+ *    \end{equation}$          
  *     
  *     In this form, one can solve for the $c_i$ in terms of $k\'_i$ directly by sweeping backwards through the matrix equation.
  *      
@@ -355,26 +322,10 @@ namespace
         * are matched at the common knots. The second derivatives are set to zero at the ends to absorb the extra degrees of freedom,
         * thus leading to a matrix equation relating control points $c_i$ to the knots $k_i$:
         *
-        *       \f[
-        *       \begin{equation}
-        *          \begin{pmatrix} 
-        *             b_1 & a_1 & 0  \\
-        *             d_1 & b_2 & a_2  \\
-        *             0 & d_2 & b_3  \\
-        *          \end{pmatrix} 
-        *          \begin{pmatrix}
-        *             c_1
-        *             c_2
-        *             c_3
-        *          \end{pmatrix}
-        *          =
-        *          \begin{pmatrix}
-        *              k_1
-        *              k_2
-        *              k_3
-        *          \end{pmatrix}
-        *       \end{equation} 
-        *       \f]                
+        *     
+        *     $\begin{equation}
+        *        \begin{pmatrix} b_1 & a_1 & 0  \\ d_1 & b_2 & a_2 \\ 0 & d_2 & b_3  \end{pmatrix} \begin{pmatrix} c_1 & c_2 & c_3 \end{pmatrix} = \begin{pmatrix}  k_1 & k_2 & k_3 \end{pmatrix}
+        *     \end{equation}$ 
         * 
         */   
         
