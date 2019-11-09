@@ -191,7 +191,7 @@ namespace
    *  \f$U\f$ is upper triangular. The matrix equation is solved by setting \f$Uc = k'\f$ and then solving \f$Lk' = k\f$ for \f$k'\f$ first, and subsequently
    *  \f$Uc\f$ for \f$c\f$.
    *  
-   *  There are two steps in this calculation. Step 1 involves simultaneously decomposing \f$A = LU\f$ and solving \f$Lk'=k\f$ for \f$k'\f$ in a forward sweep, with
+   * There are two steps in this calculation. Step 1 involves simultaneously decomposing \f$A = LU\f$ and solving \f$Lk'=k\f$ for \f$k'\f$ in a forward sweep, with
    *  \f$Uc=k'\f$ as result. In step 2, \f$Uc=k'\f$ is solved for \f$c\f$ in a backward sweep. The calculation goes as follows for a small system:
    *  
    *      \f[
@@ -199,7 +199,7 @@ namespace
    *      \f] 
    *                      
    *        
-   *  Forward sweep: row 1:
+   * Forward sweep: row 1:
    *  
    *  \f$ b_1c_1+a_1c_2 = k_1 \f$ 
    *  
@@ -214,32 +214,31 @@ namespace
    * 
    *  \f$ d_1c_1+b_2c_2+a_2c_3 = k_2 \f$   
    * 
-   *  Now eliminate the first term of this equation by subtracting \f$d_1 \times\f$ row 1 from row 2, yielding:
+   * Now eliminate the first term of this equation by subtracting \f$d_1 \times\f$ row 1 from row 2, yielding:
    * 
    *  \f$ (b_2 - d_1\alpha_1)c_2 + a_2c_3 = k_2 - d_1k'_1 \f$
    * 
-   *  Then, dividing through by \f$(b_2 - d_1\alpha_1)\f$ and rewriting leads to:
+   * Then, dividing through by \f$(b_2 - d_1\alpha_1)\f$ and rewriting leads to:
    * 
    *  \f$ c_2 + \alpha_2c_3 = k'_2 \f$, where 
    * \f$\alpha_2 = \frac{a_2}{b_2 - d_1\alpha_1}\f$ and 
    * \f$k'_2 = \frac{k_2 - d_1k'_1}{b_2 - d_1\alpha_1}\f$
    * 
-   *  row 3:
+   * row 3:
    * 
-   *  Finally, subtracting \f$d_2 \times\f$ row 2 from row 3, dividing through by \f$(b_3-d_2\alpha_2)\f$, and rewriting, yields:
+   * Finally, subtracting \f$d_2 \times\f$ row 2 from row 3, dividing through by \f$(b_3-d_2\alpha_2)\f$, and rewriting, yields:
    * 
    *  \f$ c_3 = k'_3 \f$, where \f$k'_3 = \frac{k_3-d_2k'2}{b_3 - d_2\alpha_2}\f$ 
    * 
-   *  At this point, the matrix equation has been reduced to
+   * At this point, the matrix equation has been reduced to
    * 
    *    \f[
    *       \left(\begin{array}{ccc} 1 & \alpha_1 & 0  \\ 0 & 1 & \alpha_2  \\  0 & 0 & 1 \end{array}\right) \left(\begin{array}{c} c_1 \\ c_2 \\ c_3 \end{array}\right) = \left(\begin{array}{c} k'_1 \\  k'_2 \\ k'_3 \end{array}\right)
  *    \f]          
  *     
- *     In this form, one can solve for the \f$c_i\f$ in terms of 
- \f$k'_i\f$ directly by sweeping backwards through the matrix equation.
+ * In this form, one can solve for the \f$c_i\f$ in terms of \f$k'_i\f$ directly by sweeping backwards through the matrix equation.
  *      
- *     (Source: http://www.industrial-maths.com/ms6021_thomas.pdf)
+ * (Source: http://www.industrial-maths.com/ms6021_thomas.pdf)
  */	 
  vector<pair<float,float>> computeControlPoints(vector<vector<float>> triDiag, const vector<pair<float,float>> knots, vector<pair<float,float>> target) {
   
@@ -320,19 +319,19 @@ namespace
       {
         cairo_move_to(cairo, coords[0], coords[1]);
         
-        /** 
-         *  
-         * Two control points are inserted between two adjacent handles (knots) of the curved wires on the canvas.
-         * The first and second derivatives of the cubic Bezier curves, representing curved segments of wires, and spanning adjacent knots,
-         * are matched at the common knots. The second derivatives are set to zero at the ends to absorb the extra degrees of freedom,
-         * thus leading to a matrix equation relating control points \f$c_i\f$ to the knots \f$k_i\f$:
-         *
-         *     
-         *     \f[
-         *        \left(\begin{array}{c} b_1 & a_1 & 0  \\ d_1 & b_2 & a_2 \\ 0 & d_2 & b_3  \end{array}\right) \left(\begin{array}{c} c_1 \\ c_2 \\ c_3 \end{array}\right) = \left(\begin{array}{c}  k_1 \\ k_2 \\ k_3 \end{array}\right)
-         *     \f] 
-         * 
-         */   
+  /** 
+   *  
+   * Two control points are inserted between two adjacent handles (knots) of the curved wires on the canvas.
+   * The first and second derivatives of the cubic Bezier curves, representing curved segments of wires, and spanning adjacent knots,
+   * are matched at the common knots. The second derivatives are set to zero at the ends to absorb the extra degrees of freedom,
+   * thus leading to a matrix equation relating control points \f$c_i\f$ to the knots \f$k_i\f$:
+   *
+   *     
+   *     \f[
+   *        \left(\begin{array}{c} b_1 & a_1 & 0  \\ d_1 & b_2 & a_2 \\ 0 & d_2 & b_3  \end{array}\right) \left(\begin{array}{c} c_1 \\ c_2 \\ c_3 \end{array}\right) = \left(\begin{array}{c}  k_1 \\ k_2 \\ k_3 \end{array}\right)
+   *     \f] 
+   * 
+   */   
         
         // For ticket 991. Curved wires pass through all handles (knots).
         vector<pair<float,float>> points(coords.size()-1);
