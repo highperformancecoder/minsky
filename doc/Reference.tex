@@ -477,15 +477,24 @@ double-clicking on them.
 
 \section{Tensor values}\index{tensors}
 
-Variables may have tensor values, sets of data which are shaped into an
-array of any number of dimensions. ``Wires'', or the lines connecting
-different components on the screen, transfer these tensor
-values between variables or to inputs of operations. Two ways of
-getting tensor values into Minsky are via tensor-valued initial
-conditions (\S\ref{tensor-init}), or by importing a CSV file into a
-parameter (\S\ref{CSV import}). Scalar operations
-are extended to operating elementwise over tensors, and a number of
-operations exist for operating on tensors (\S\ref{tensor operations}).
+Variables may have tensor values, or sets of data. Different tensors
+are sorted by rank. For example, a tensor of rank 0 may appear as a
+single number, let's refer to it as ``x''. A tensor of rank 1 may appear
+as a sequence of numbers, let's say ``(x x x x)''. Rank 2 means a tensor
+appears as a 2D sequence of numbers, for example:
+
+( x x x )
+( x x x )
+( x x x )
+
+A tensor of rank 3 will appear as a three-dimensional cube,
+rank 4 as a four-dimensional hypercube, and so on. Two 
+ways of getting tensor values into Minsky are via tensor-valued 
+initial conditions (\S\ref{tensor-init}), or by importing a CSV 
+file into a parameter (\S\ref{CSV import}). Scalar 
+operations are extended to operating elementwise over tensors, 
+and a number of operations exist for operating on tensors 
+(\S\ref{tensor operations}).
 
 When two or more tensors are combined with a binary operation (a rule for
 combining two values to create a new value, such as addition or multiplication),
