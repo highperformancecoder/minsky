@@ -353,7 +353,7 @@ example is as follows:
 \end{center}
 
 In this example, Minsky has failed to determine where the data starts,
-probably because of the column ``Price (text infill)''. So the first
+probably because of the ``Unit'' and ``Frequency'' columns. So the first
 thing to do is tell it where the data is located by clicking on the
 first cell of the data region. 
 
@@ -426,15 +426,15 @@ expressed like 1972-Q1, use ``\verb+%Y-Q%Q+''. Note that only \%Y and
 
 Even in the current settings, you may still get a message ``exhausted
 memory --- try reducing the rank'', or a similar message about hitting
-a 20\% of physical memory threshold. In this case, ``title number''
-and ``address'' are pretty much unique for each record, leading to a
-large, but very sparse hypercube. If we remove those columns, as per
+a 20\% of physical memory threshold. In some cases, ``titles''
+and ``addresses'' might be pretty much unique for each record, leading to a
+large, but very sparse hypercube. If you remove those columns, as per
 
 \begin{center}
 \resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogRemoved.eps}}
 \end{center}
 
-then we encounter the ``Duplicate key'' message. In this case, we want
+then you may encounter the ``Duplicate key'' message. In this case, we want
 to aggregate over these records, which we can do by setting
 ``Duplicate Key Action'' to sum. After some additional playing around
 with dimensions to aggregate over, we can get the data imported.
@@ -477,19 +477,33 @@ double-clicking on them.
 
 \section{Tensor values}\index{tensors}
 
-Variables may have tensor values, and wires transfer these tensor
-values between variables or to inputs of operations. Two ways of
-getting tensor values into Minsky are via tensor-valued initial
-conditions (\S\ref{tensor-init}), or by importing a CSV file into a
-parameter (\S\ref{CSV import}). Scalar operations
-are extended to operating elementwise over tensors, and a number of
-operations exist for operating on tensors (\S\ref{tensor operations}).
+Variables may have tensor values, or sets of data. Different tensors
+are sorted by rank. For example, a tensor of rank 0 may appear as a
+single number, let's refer to it as ``x''. A tensor of rank 1 may appear
+as a sequence of numbers, let's say ``(x x x x)''. Rank 2 means a tensor
+appears as a 2D sequence of numbers, for example:
 
-When two or more tensors are combined with a binary operation, such as
-addition or multiplication, they must have the same rank, but can have
-differing dimensions. To understand what happens when a given
-dimension is mismatched requires understanding the concept of an
-x-vector\index{x-vector}.
+( x x x )
+( x x x )
+( x x x )
+
+A tensor of rank 3 will appear as a three-dimensional cube,
+rank 4 as a four-dimensional hypercube, and so on. Two 
+ways of getting tensor values into Minsky are via tensor-valued 
+initial conditions (\S\ref{tensor-init}), or by importing a CSV 
+file into a parameter (\S\ref{CSV import}). Scalar 
+operations are extended to operating elementwise over tensors, 
+and a number of operations exist for operating on tensors 
+(\S\ref{tensor operations}).
+
+When two or more tensors are combined with a binary operation (a rule for
+combining two values to create a new value, such as addition or multiplication),
+they must have the same rank, but can have differing dimensions. This means that,
+if those tensor values were positioned on a large dimensional grid array, 
+they would lie on the same layer as each other. It also means that those same
+values coule be positioned in different areas of the array, on different dimensions.
+To understand what happens when a given dimension is mismatched requires 
+understanding the concept of an x-vector\index{x-vector}.
 
 An x-vector is a vector of real values,
 strings or date/time values, and each dimension of a variable has an
