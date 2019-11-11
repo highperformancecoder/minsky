@@ -265,11 +265,14 @@ namespace minsky
 
 }
 
+namespace classdesc
+{
+  template <>
+  struct is_associative_container<minsky::VariableValues>: public classdesc::true_type {};
+}
+
 
 #include "variableValue.cd"
 #include "variableValue.xcd"
-#ifdef _CLASSDESC
-#pragma omit RESTProcess minsky::VariableValues
-#endif
 
 #endif
