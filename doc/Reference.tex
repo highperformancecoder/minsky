@@ -496,14 +496,23 @@ operations are extended to operating elementwise over tensors,
 and a number of operations exist for operating on tensors 
 (\S\ref{tensor operations}).
 
-When two or more tensors are combined with a binary operation (a rule for
-combining two values to create a new value, such as addition or multiplication),
-they must have the same rank, but can have differing dimensions. This means that,
-if those tensor values were positioned on a large dimensional grid array, 
-they would lie on the same layer as each other. It also means that those same
-values coule be positioned in different areas of the array, on different dimensions.
+When two or more tensors are combined with a binary operation (such 
+as addition or multiplication), they must have the same rank. For example,
+two tensors of rank 2 can be multiplied together, but a tensor of rank 2 and 
+a tensor of rank 3 cannot. They may have differing dimensions, which means
+the values within each tensor may not necessarily match up 1-to-1 exactly.
 To understand what happens when a given dimension is mismatched requires 
 understanding the concept of an x-vector\index{x-vector}.
+
+When Minsky is given tensor values, it sorts the values within each tensor
+by corresponding dimensions. For example, a rank 2 tensor would have its
+values sorted into two sets of data. This data can be in the form of numbers,
+dates (time values), or strings. Minsky will then look at cross-sections of the
+datasets in order to process the values within. When the dimensions of two
+tensors match up, for example two rank 2 tensors, the corresponding
+cross-sections of both tensors should also match up. When they don't, a
+weighted interpolation of the corresponding values is taken. This involves
+using an x-vector.
 
 An x-vector is a vector of real values,
 strings or date/time values, and each dimension of a variable has an
