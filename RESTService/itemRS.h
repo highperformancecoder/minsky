@@ -27,21 +27,29 @@
 //  void RESTProcess(RESTProcess_t& r, const string& d, minsky::Item& a)
 //  {a.restProcess(r,d);}
 //}
-
-namespace classdesc_access
-{
-  namespace cd=classdesc;
-  template <>
-  struct access_RESTProcess<minsky::Item>
-  {
-    template <class U>
-    void operator()(cd::RESTProcess_t& r, const cd::string& d, U& a)
-    {a.restProcess(r,d);}
-  };
-  
-  template <class T, class B>
-  struct access_RESTProcess<minsky::ItemT<T,B>>:
-    public cd::NullDescriptor<cd::RESTProcess_t> {};
-}
+//
+//namespace classdesc_access
+//{
+//  namespace cd=classdesc;
+//  template <>
+//  struct access_RESTProcess<minsky::Item>
+//  {
+//    template <class U>
+//    void operator()(cd::RESTProcess_t& r, const cd::string& d, U& a)
+//    {a.restProcess(r,d);}
+//  };
+//  
+//  template <>
+//  struct access_json_pack<minsky::Item>
+//  {
+//    template <class U>
+//    void operator()(cd::json_pack_t& j, const cd::string& d, U& a)
+//    {a.json_pack(j);}
+//  };
+//  
+//  template <class T, class B>
+//  struct access_RESTProcess<minsky::ItemT<T,B>>:
+//    public cd::NullDescriptor<cd::RESTProcess_t> {};
+//}
 
 #endif

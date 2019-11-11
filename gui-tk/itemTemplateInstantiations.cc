@@ -30,11 +30,16 @@ namespace minsky
   template <class T, class B>
   void ItemT<T,B>::restProcess(classdesc::RESTProcess_t& rp, const std::string& d) const
   {}
+  template <class T, class B>
+  void ItemT<T,B>::json_pack(classdesc::json_pack_t& j) const
+  {}
 
   /// dummy definition for use with gui executable
   void Item::restProcess(classdesc::RESTProcess_t& rp, const std::string& d)
   {}
   void Item::restProcess(classdesc::RESTProcess_t& rp, const std::string& d) const
+  {}
+  void Item::json_pack(classdesc::json_pack_t& rp) const
   {}
 }
 

@@ -32,6 +32,7 @@
 
 namespace classdesc
 {
+  class json_pack_t;
   class RESTProcess_t;
 }
 
@@ -181,6 +182,7 @@ namespace minsky
     /// runs the RESTProcess descriptor suitable for this type
     virtual void restProcess(classdesc::RESTProcess_t&,const std::string&);
     virtual void restProcess(classdesc::RESTProcess_t&,const std::string&) const;
+    virtual void json_pack(classdesc::json_pack_t&) const;
 
     /// enable extended tooltip help message appropriate for mouse at (x,y)
     virtual void displayDelayedTooltip(float x, float y) {}
@@ -225,6 +227,7 @@ namespace minsky
     {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
     void restProcess(classdesc::RESTProcess_t&,const std::string&) override;
     void restProcess(classdesc::RESTProcess_t&,const std::string&) const override;
+    void json_pack(classdesc::json_pack_t&) const override;
   };
 
 }

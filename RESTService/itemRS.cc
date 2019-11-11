@@ -112,6 +112,7 @@ namespace classdesc
 namespace minsky
 {
   using classdesc::RESTProcess_t;
+  using classdesc::json_pack_t;
   using std::string;
 
   void Item::restProcess(RESTProcess_t& rp, const string& d)
@@ -124,6 +125,11 @@ namespace minsky
     ::RESTProcess(rp,d,*this);
   }
 
+  void Item::json_pack(json_pack_t& j) const
+  {
+    ::json_pack(j,"",*this);
+  }
+
   template <class T, class B>
   void ItemT<T,B>::restProcess(RESTProcess_t& rp, const string& d)
   {
@@ -134,6 +140,12 @@ namespace minsky
   void ItemT<T,B>::restProcess(RESTProcess_t& rp, const string& d) const
   {
     ::RESTProcess(rp,d,dynamic_cast<const T&>(*this));
+  }
+  
+  template <class T, class B>
+  void ItemT<T,B>::json_pack(json_pack_t& j) const
+  {
+    ::json_pack(j,"",dynamic_cast<const T&>(*this));
   }
 
 }
