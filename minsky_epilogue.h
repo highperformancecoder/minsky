@@ -97,4 +97,33 @@ namespace classdesc_access
   
 }
 #endif
+
+#ifdef JSON_PACK_BASE_H
+namespace classdesc_access
+{
+  template <class T, class G, class S>
+  struct access_json_pack<ecolab::Accessor<T,G,S>>
+  {
+    template <class U>
+    void operator()(cd::json_pack_t& j, const cd::string& d, U& a)
+    {
+      j<<a();
+    }
+  };
+
+  template <class T, class G, class S>
+  struct access_json_unpack<ecolab::Accessor<T,G,S>>
+  {
+    template <class U>
+    void operator()(cd::json_unpack_t& j, const cd::string& d, U& a)
+    {
+      T x;
+      j>>x;
+      a(x);
+    }
+  };
+}
+
+#endif
+
 #include <ecolab_epilogue.h>
