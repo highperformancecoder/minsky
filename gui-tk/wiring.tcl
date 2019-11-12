@@ -358,6 +358,11 @@ proc addOperationKey {op} {
     canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
 
+proc addNewGodleyItemKey {} {
+    addGodley
+    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+    
 # handle arbitrary text typed into the canvas
 proc textInput {char} {
     if {$char==""} return
