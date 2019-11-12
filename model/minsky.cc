@@ -1317,7 +1317,7 @@ namespace minsky
           if (v->valueId()==name)
             {
               r=v->ports.size()>1 && !v->ports[1]->wires().empty();
-              return true;
+              return r;
             }
         return false;
       });

@@ -538,6 +538,11 @@ namespace minsky
       if (w->from()==fromP)
         return WirePtr();
 
+    // disallow wiring the input of an already defined variable
+    if (auto v=toP->item().variableCast())
+      if (cminsky().inputWired(v->valueId()))
+        return {};
+    
     auto w=addWire(new Wire(fromP, toP, coords));
     adjustWiresGroup(*w);
 
