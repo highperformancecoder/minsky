@@ -453,7 +453,6 @@ setGodleyIconResource $minskyHome/icons/bank.svg
 proc rightMouseGodley {x y X Y} {
     if [selectVar $x $y] {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editItem"
         .wiring.context add command -label "Copy" -command "canvas.copyItem"
         .wiring.context post $X $Y
     } else {
