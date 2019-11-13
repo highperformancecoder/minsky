@@ -25,7 +25,12 @@
 using namespace schema2;
 using namespace std;
 
-namespace minsky {void doOneEvent(bool) {}}
+namespace minsky {
+  void doOneEvent(bool) {}
+  Minsky& minsky() {assert(false); /* not needed */}
+  LocalMinsky::LocalMinsky(Minsky& minsky) {assert(false); /* not needed */}
+  LocalMinsky::~LocalMinsky() {assert(false); /* not needed */}
+}
 
 int main(int argc, const char*argv[])
 {

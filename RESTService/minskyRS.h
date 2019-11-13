@@ -20,6 +20,7 @@
 #ifndef MINSKYRS_H
 #define MINSKYRS_H
 #include "minsky.h"
+#include <RESTProcess_base.h>
 
 namespace classdesc
 {
