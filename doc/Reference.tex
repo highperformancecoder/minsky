@@ -176,8 +176,16 @@ the running sum of $(1,2,3,4)$ is $(1,3,6,10)$.
 
 \subsection{running product $\prod+$}
 \label{Operation:runningProduct} Computes the running
-product of the input tensor along a given axis. For example, the
-running product of $(1,2,3,4)$ is $(1,2,6,24)$.
+product of the input tensor along a given axis. For example, take
+this tensor:
+
+( 1,2,3,4 )
+( 5,4,3,2 )
+( 8,7,6,5 )
+
+The running product of this tensor, along the top axis (row), is: 
+
+( 1,2,6,24 )
 
 \subsection{difference $\Delta$}\label{Operation:difference}
 Computes the nearest neighbour difference along a given direction. The
