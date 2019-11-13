@@ -38,8 +38,16 @@ minsky.load $here/examples/GoodwinLinear02.mky
 recentreCanvas
 assert {[model.numItems]==26} {}
 assert {[model.numWires]==27} {}
-canvas.mouseDown 378 14
-canvas.mouseUp  450 106
+# find "N" and use this work out a selection area
+minsky.findVariable N
+set x1 [expr [canvas.item.x]-15]
+set y1 [expr [canvas.item.y]-73]
+set x2 [expr [canvas.item.x]+57]
+set y2 [expr [canvas.item.y]+19]
+# weirdly, this command is required to get the selection to work below
+recentreCanvas
+canvas.mouseDown \$x1 \$y1
+canvas.mouseUp  \$x2 \$y2
 assert {[canvas.selection.numItems]==3} {}
 assert {[canvas.selection.numWires]==2} {}
 cut

@@ -1565,7 +1565,10 @@ proc replay {} {
             set eventRecordR [eval open {$fname} r]
             newSystem
             if {![running]} runstop
-        } elseif [running] {runstop}
+        } else {
+            if [running] {runstop}
+            set recordingReplay 0
+        }
     } 
 }
 
