@@ -1352,6 +1352,13 @@ namespace minsky
 
   void Minsky::renderCanvasToSVG(const char* filename)
   {vectorRender(filename,cairo_svg_surface_create);}
+    /// render canvas to a EMF image file (Windows only)
+  void Minsky::renderCanvasToEMF(const char* filename)
+#ifdef WIN32_
+  {vectorRender(filename,cairoEMFSurfaceCreate);}
+#else
+  {throw std::runtime_error("EMF functionality only available on Windows");}
+#endif
 
   namespace
   {

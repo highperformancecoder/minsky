@@ -365,7 +365,9 @@ namespace minsky
     void renderCanvasToSVG(const char* filename);
     /// render canvas to a PNG image file
     void renderCanvasToPNG(const char* filename);
-
+    /// render canvas to a EMF image file (Windows only)
+    void renderCanvasToEMF(const char* filename);
+    
     /// render all plots 
     void renderAllPlotsAsSVG(const string& prefix) const;
     /// export all plots
