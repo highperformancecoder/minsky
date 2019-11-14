@@ -19,15 +19,50 @@
 
 #ifdef _WIN32
 #include "cairoEMFSurfaceCreate.h"
-#include "wingdi.h"
+#include <windows.h>
+#include <wingdi.h>
 #include <cairo/cairo-win32.h>
+#include <memory>
+
+#include <iostream>
 
 namespace minsky
 {
-  cairo_surface_t* createEMFSurface(const char* filename, double, double)
+  namespace {
+    struct SurfAndDC
+    {
+      HDC hdc;
+      cairo_surface_t* surf;
+    };
+    
+    cairo_user_data_key_t closeKey;
+    void closeFile(void *x)
+    {
+      std::unique_ptr<SurfAndDC> s(static_cast<SurfAndDC*>(x));
+      cairo_surface_flush(s->surf);
+      // nb the Delete... function deletes the handle created by Close...
+      DeleteEnhMetaFile(CloseEnhMetaFile(s->hdc));
+      DeleteDC(s->hdc);
+    }
+  }
+  
+  cairo_surface_t* createEMFSurface(const char* filename, double width, double height)
   {
-    return cairo_win32_surface_create
-      (CreatEnhMetaFileA(nullptr,filename,nullptr,"Minsky\0"));
+    RECT r{0,0,width,height};
+    HDC hdc=CreateEnhMetaFileA(nullptr,filename,nullptr,"Minsky\0");
+    //SetBkColor(hdc,0x00ffffff); // set transparent background
+    // initialise the image background 
+    //Rectangle(hdc,0,0,width,height);
+    //SetDCBrushColor(hdc,0xFFFFFF);
+    //FillPath(hdc);
+    
+    auto surf=cairo_win32_surface_create_with_format(hdc,CAIRO_FORMAT_ARGB32);
+    SetBkColor(hdc,0x00ffffff);
+    std::cout << SetBkMode(hdc, TRANSPARENT) << std::endl;
+    // set up a callback to flush and close the EMF file
+    cairo_surface_set_user_data(surf,&closeKey,new SurfAndDC{hdc,surf},closeFile);
+    
+    return surf;
   }
 }
 #endif

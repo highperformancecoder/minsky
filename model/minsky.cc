@@ -20,6 +20,7 @@
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
+#include "cairoEMFSurfaceCreate.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -1354,8 +1355,8 @@ namespace minsky
   {vectorRender(filename,cairo_svg_surface_create);}
     /// render canvas to a EMF image file (Windows only)
   void Minsky::renderCanvasToEMF(const char* filename)
-#ifdef WIN32_
-  {vectorRender(filename,cairoEMFSurfaceCreate);}
+#ifdef _WIN32
+  {vectorRender(filename,createEMFSurface);}
 #else
   {throw std::runtime_error("EMF functionality only available on Windows");}
 #endif

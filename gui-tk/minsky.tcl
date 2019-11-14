@@ -588,10 +588,11 @@ menu .exportPlots
 
 
 proc exportCanvas {} {
-    global workDir type fname preferences
+    global workDir type fname preferences tcl_platform
 
-    set f [tk_getSaveFile -filetypes {
-        {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}} \
+    set fileTypes {{"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}}
+    if {$tcl_platform(platform)=="windows"} {lappend fileTypes {"EMF" .emf TEXT}}
+    set f [tk_getSaveFile -filetypes $fileTypes \
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
     set workDir [file dirname $f]
@@ -601,7 +602,9 @@ proc exportCanvas {} {
         minsky.renderCanvasToPDF "$f"
     } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
         minsky.renderCanvasToPS "$f"
-    } elseif {[string match -nocase *.tex "$f"]} {
+    } elseif {$tcl_platform(platform)=="windows" && [string match -nocase *.emf "$f"]} {
+        minsky.renderCanvasToEMF "$f"
+   } elseif {[string match -nocase *.tex "$f"]} {
         latex "$f" $preferences(wrapLaTeXLines)
     } elseif {[string match -nocase *.m "$f"]} {
         matlab "$f"
@@ -609,6 +612,7 @@ proc exportCanvas {} {
         switch $type {
             "SVG" {minsky.renderCanvasToSVG  "$f.svg"}
             "PDF" {minsky.renderCanvasToPDF "$f.pdf"}
+            "EMF" {minsky.renderCanvasToEMF "$f.emf"}
             "Postscript" {minsky.renderCanvasToPS "$f.eps"}
             "LaTeX" {latex "$f.tex" $preferences(wrapLaTeXLines)}
             "Matlab" {matlab "$f.m"}
