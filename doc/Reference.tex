@@ -523,13 +523,19 @@ double-clicking on them.
 
 Variables may have tensor values, or sets of data. Different tensors
 are sorted by rank. For example, a tensor of rank 0 may appear as a
-single number, let's refer to it as ``x''. A tensor of rank 1 may appear
-as a sequence of numbers, let's say ``(x x x x)''. Rank 2 means a tensor
+single number, let's refer to it as $x$. A tensor of rank 1 may appear
+as a sequence of numbers, let's say $(x x x x)$. Rank 2 means a tensor
 appears as a 2D sequence of numbers, for example:
 
-( x x x )
-( x x x )
-( x x x )
+\begin{displaymath}
+  \left(
+  \begin{array}{ccc}
+    x& x& x\\
+    x& x& x\\
+    x& x& x
+  \end{array}
+  \right)
+\end{displaymath}
 
 A tensor of rank 3 will appear as a three-dimensional cube,
 rank 4 as a four-dimensional hypercube, and so on. Two 
