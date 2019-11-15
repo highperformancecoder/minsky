@@ -20,9 +20,9 @@ for i in test/00/*.sh; do
         sh $i
     # t0029a.sh tests that saving over a readonly file is prevented. Test doesn't work as root
     elif [ `whoami` = 'root' -a $i = test/00/t0029a.sh ]; then
-        su minsky $i #&> /dev/null
+        su minsky $i &> /dev/null
     else
-        sh $i #&> /dev/null
+        sh $i &> /dev/null
     fi
     if test $? -eq 0 ; then 
         echo passed

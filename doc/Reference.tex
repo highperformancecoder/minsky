@@ -171,13 +171,57 @@ the least value along a given axis.
 the greatest value along a given axis.
 
 \subsection{running sum $\sum+$}\label{Operation:runningSum} Computes
-the running sum of the input tensor along a given axis. For example,
-the running sum of $(1,2,3,4)$ is $(1,3,6,10)$.
+the running sum of the input tensor along a given axis. For example, take
+this rank 2 tensor:
+
+\begin{displaymath}
+  \left(
+  \begin{array}{cccc}
+    1& 2& 3& 4 \\
+    5& 4& 3& 2 \\
+    8& 7& 6& 5
+  \end{array}
+  \right)
+\end{displaymath}
+
+The running sum of this tensor, along the horizontal dimension, is: 
+
+\begin{displaymath}
+  \left(
+  \begin{array}{cccc}
+    1& 3& 6& 10 \\
+    5& 9& 12& 14 \\
+    8& 15& 21& 26
+  \end{array}
+  \right)
+\end{displaymath}
 
 \subsection{running product $\prod+$}
 \label{Operation:runningProduct} Computes the running
-product of the input tensor along a given axis. For example, the
-running product of $(1,2,3,4)$ is $(1,2,6,24)$.
+product of the input tensor along a given axis. For example, take
+this rank 2 tensor:
+
+\begin{displaymath}
+  \left(
+  \begin{array}{cccc}
+    1& 2& 3& 4\\ 
+    5& 4& 3& 2\\ 
+    8& 7& 6& 5 
+  \end{array}
+  \right)
+\end{displaymath}
+
+The running product of this tensor, along the horizontal dimension, is: 
+
+\begin{displaymath}
+  \left(
+  \begin{array}{cccc}
+    1& 2& 6& 24\\ 
+    5& 20& 60& 120\\ 
+    8& 56& 336& 1680 
+  \end{array}
+  \right)
+\end{displaymath}
 
 \subsection{difference $\Delta$}\label{Operation:difference}
 Computes the nearest neighbour difference along a given direction. The
@@ -479,13 +523,19 @@ double-clicking on them.
 
 Variables may have tensor values, or sets of data. Different tensors
 are sorted by rank. For example, a tensor of rank 0 may appear as a
-single number, let's refer to it as ``x''. A tensor of rank 1 may appear
-as a sequence of numbers, let's say ``(x x x x)''. Rank 2 means a tensor
+single number, let's refer to it as $x$. A tensor of rank 1 may appear
+as a sequence of numbers, let's say $(x x x x)$. Rank 2 means a tensor
 appears as a 2D sequence of numbers, for example:
 
-( x x x )
-( x x x )
-( x x x )
+\begin{displaymath}
+  \left(
+  \begin{array}{ccc}
+    x& x& x\\
+    x& x& x\\
+    x& x& x
+  \end{array}
+  \right)
+\end{displaymath}
 
 A tensor of rank 3 will appear as a three-dimensional cube,
 rank 4 as a four-dimensional hypercube, and so on. Two 
