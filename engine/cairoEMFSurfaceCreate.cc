@@ -48,17 +48,17 @@ namespace minsky
   
   cairo_surface_t* createEMFSurface(const char* filename, double width, double height)
   {
-    RECT r{0,0,width,height};
     HDC hdc=CreateEnhMetaFileA(nullptr,filename,nullptr,"Minsky\0");
-    //SetBkColor(hdc,0x00ffffff); // set transparent background
-    // initialise the image background 
-    //Rectangle(hdc,0,0,width,height);
-    //SetDCBrushColor(hdc,0xFFFFFF);
-    //FillPath(hdc);
-    
     auto surf=cairo_win32_surface_create_with_format(hdc,CAIRO_FORMAT_ARGB32);
-    SetBkColor(hdc,0x00ffffff);
-    std::cout << SetBkMode(hdc, TRANSPARENT) << std::endl;
+    // initialise the image background 
+    auto cairo=cairo_create(surf);
+    // extend the background a bit beyond the bounding box to allow
+    // for additional black stuff inserted by GDI
+    cairo_rectangle(cairo,0,0,width+50,height+50);
+    cairo_set_source_rgb(cairo,1,1,1);
+    cairo_clip_preserve(cairo);
+    cairo_fill(cairo);
+    cairo_destroy(cairo);
     // set up a callback to flush and close the EMF file
     cairo_surface_set_user_data(surf,&closeKey,new SurfAndDC{hdc,surf},closeFile);
     
