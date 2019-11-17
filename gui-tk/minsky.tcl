@@ -586,34 +586,51 @@ menu .exportPlots
 .menubar.file add command -label "Select items" -command selectItems
 .menubar.file add command -label "Command" -command cli
 
+proc imageFileTypes {} {
+    global tcl_platform
+    set fileTypes {{"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT}}
+    if {$tcl_platform(platform)=="windows"} {lappend fileTypes {"EMF" .emf TEXT}}
+    return $fileTypes
+}
+
+proc renderImage {filename type surf} {
+    global tcl_platform
+    if [string match -nocase *.svg "$filename"] {
+        $surf.renderToSVG "$filename"
+    } elseif [string match -nocase *.pdf "$filename"] {
+        $surf.renderToPDF "$filename"
+    } elseif {[string match -nocase *.ps "$filename"] || [string match -nocase *.eps "$filename"]} {
+        $surf.renderToPS "$filename"
+    } elseif {$tcl_platform(platform)=="windows" && [string match -nocase *.emf "$filename"]} {
+        $surf.renderToEMF "$filename"
+    } else {
+        switch $type {
+            "SVG" {$surf.renderToSVG  "$filename.svg"}
+            "PDF" {$surf.renderToPDF "$filename.pdf"}
+            "EMF" {$surf.renderToEMF "$filename.emf"}
+            "Postscript" {$surf.renderToPS "$filename.eps"}
+            default {return false}
+        }
+    }
+    return true
+}
 
 proc exportCanvas {} {
-    global workDir type fname preferences tcl_platform
+    global workDir type fname preferences
 
-    set fileTypes {{"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}}
-    if {$tcl_platform(platform)=="windows"} {lappend fileTypes {"EMF" .emf TEXT}}
+    set fileTypes [imageFileTypes]
+    lappend fileTypes {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}
     set f [tk_getSaveFile -filetypes $fileTypes \
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
     set workDir [file dirname $f]
-    if [string match -nocase *.svg "$f"] {
-        minsky.renderCanvasToSVG "$f"
-    } elseif [string match -nocase *.pdf "$f"] {
-        minsky.renderCanvasToPDF "$f"
-    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
-        minsky.renderCanvasToPS "$f"
-    } elseif {$tcl_platform(platform)=="windows" && [string match -nocase *.emf "$f"]} {
-        minsky.renderCanvasToEMF "$f"
-   } elseif {[string match -nocase *.tex "$f"]} {
+    if [renderImage $f $type canvas] return
+    if {[string match -nocase *.tex "$f"]} {
         latex "$f" $preferences(wrapLaTeXLines)
     } elseif {[string match -nocase *.m "$f"]} {
         matlab "$f"
     } else {
         switch $type {
-            "SVG" {minsky.renderCanvasToSVG  "$f.svg"}
-            "PDF" {minsky.renderCanvasToPDF "$f.pdf"}
-            "EMF" {minsky.renderCanvasToEMF "$f.emf"}
-            "Postscript" {minsky.renderCanvasToPS "$f.eps"}
             "LaTeX" {latex "$f.tex" $preferences(wrapLaTeXLines)}
             "Matlab" {matlab "$f.m"}
         }

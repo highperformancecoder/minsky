@@ -20,7 +20,6 @@
 #include "classdesc_access.h"
 #include "minsky.h"
 #include "flowCoef.h"
-#include "cairoEMFSurfaceCreate.h"
 
 #include "TCL_obj_stl.h"
 #include <gsl/gsl_errno.h>
@@ -29,9 +28,6 @@
 
 #include <schema/schema2.h>
 
-#include <cairo/cairo-ps.h>
-#include <cairo/cairo-pdf.h>
-#include <cairo/cairo-svg.h>
 
 //#include <thread>
 // std::thread apparently not supported on MXE for now...
@@ -1323,54 +1319,6 @@ namespace minsky
         return false;
       });
     return r;
-  }
-
-  cairo::SurfacePtr Minsky::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
-  {
-    cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
-                                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
-    canvas.surface().swap(tmp);
-    canvas.redraw();
-    double left=canvas.surface()->left(), top=canvas.surface()->top();
-    canvas.surface()->surface
-      (s(filename, canvas.surface()->width(), canvas.surface()->height()));
-    if (s==cairo_ps_surface_create)
-      cairo_ps_surface_set_eps(canvas.surface()->surface(),true);
-    cairo_surface_set_device_offset(canvas.surface()->surface(), -left, -top);
-    canvas.redraw();
-    canvas.surface().swap(tmp);
-    auto status=cairo_surface_status(tmp->surface());
-    if (status!=CAIRO_STATUS_SUCCESS)
-      throw error("cairo rendering error: %s",cairo_status_to_string(status));
-    return tmp;
-  }
-  
-  void Minsky::renderCanvasToPS(const char* filename)
-  {vectorRender(filename,cairo_ps_surface_create);}
-
-  void Minsky::renderCanvasToPDF(const char* filename)
-  {vectorRender(filename,cairo_pdf_surface_create);}
-
-  void Minsky::renderCanvasToSVG(const char* filename)
-  {vectorRender(filename,cairo_svg_surface_create);}
-    /// render canvas to a EMF image file (Windows only)
-  void Minsky::renderCanvasToEMF(const char* filename)
-#ifdef _WIN32
-  {vectorRender(filename,createEMFSurface);}
-#else
-  {throw std::runtime_error("EMF functionality only available on Windows");}
-#endif
-
-  namespace
-  {
-    cairo_surface_t* pngDummy(const char*,double width,double height)
-    {return cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);}
-  }
-  
-  void Minsky::renderCanvasToPNG(const char* filename)
-  {
-    auto tmp=vectorRender(filename,pngDummy);
-    cairo_surface_write_to_png(tmp->surface(),filename);
   }
 
   void Minsky::renderAllPlotsAsSVG(const string& prefix) const

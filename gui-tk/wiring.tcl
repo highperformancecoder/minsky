@@ -824,27 +824,10 @@ proc exportItemAsCSV {} {
 
 proc exportItemAsImg {} {
     global workDir type
-    set f [tk_getSaveFile -filetypes {
-        {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"PNG" .png PNGG}
-    } -initialdir $workDir -typevariable type ]
+    set f [tk_getSaveFile -filetypes [imageFileTypes] -initialdir $workDir -typevariable type ]
     if {$f==""} return
     set workDir [file dirname $f]
-    if [string match -nocase *.svg "$f"] {
-        eval minsky.canvas.item.renderToSVG {$f}
-    } elseif [string match -nocase *.pdf "$f"] {
-        eval minsky.canvas.item.renderToPDF {$f}
-    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
-        eval minsky.canvas.item.renderToPS {$f}
-    } elseif {[string match -nocase *.png "$f"]} {
-        eval minsky.canvas.item.renderToPNG {$f}
-    } else {
-        switch $type {
-            "SVG" {eval minsky.canvas.item.renderToSVG  {$f.svg}}
-            "PDF" {eval minsky.canvas.item.renderToPDF {$f.pdf}}
-            "Postscript" {eval minsky.canvas.item.renderToPS {$f.eps}}
-            "PNG" {eval minsky.canvas.item.renderToPNG {$f.png}}
-        }
-    }
+    renderImage $f $type minsky.canvas.item
 }
 
 namespace eval godley {

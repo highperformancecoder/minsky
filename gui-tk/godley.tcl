@@ -267,25 +267,17 @@ proc setGodleyDisplay {} {
 proc exportGodley {id} {
     global workDir type
 
-    set f [tk_getSaveFile -filetypes {
-        {"SVG" .svg TEXT} {"PDF" pdf TEXT} {"Postscript" .eps TEXT} {"LaTeX" .tex TEXT} {"CSV" .csv TEXT}} \
-               -initialdir $workDir -typevariable type]  
+    set fileTypes [imageFileTypes]
+    lappend fileTypes {"LaTeX" .tex TEXT} {"CSV" .csv TEXT}
+    set f [tk_getSaveFile -filetypes $fileTypes -initialdir $workDir -typevariable type]  
     if {$f==""} return
-    if [string match -nocase *.svg "$f"] {
-        eval $id.renderCanvasToSVG {$f}
-    } elseif [string match -nocase *.pdf "$f"] {
-        eval $id.renderCanvasToPDF {$f}
-    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
-        eval $id.renderCanvasToPS {$f}
-    } elseif {[string match -nocase *.tex "$f"]} {
+    if [renderImage $f $type $id] return
+    if {[string match -nocase *.tex "$f"]} {
         eval $id.godleyIcon.table.exportToLaTeX {$f}
     } elseif {[string match -nocase *.csv "$f"]} {
         eval $id.godleyIcon.table.exportToCSV {$f}
     } else {
         switch $type {
-            "SVG" {eval $id.renderCanvasToSVG  {$f.svg}}
-            "PDF" {eval $id.renderCanvasToPDF {$f.pdf}}
-            "Postscript" {eval $id.renderCanvasToPS {$f.eps}}
             "LaTeX" {eval $id.godleyIcon.table.exportToLaTeX {$f.tex}}
             "CSV" {eval $id.godleyIcon.table.exportToCSV {$f.csv}}
         }

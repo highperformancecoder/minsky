@@ -353,20 +353,16 @@ namespace minsky
     /// returns true if any variable of name \a name has a wired input
     bool inputWired(const std::string&) const;
 
-    /// common part of following vector rendering methods
-    cairo::SurfacePtr vectorRender(const char*,
-                      cairo_surface_t* (*)(const char *,double,double));
-
     /// render canvas to a postscript file
-    void renderCanvasToPS(const char* filename);
+    void renderCanvasToPS(const char* filename) {canvas.renderToPS(filename);}
     /// render canvas to a PDF file
-    void renderCanvasToPDF(const char* filename);
+    void renderCanvasToPDF(const char* filename) {canvas.renderToPDF(filename);}
     /// render canvas to an SVG file
-    void renderCanvasToSVG(const char* filename);
+    void renderCanvasToSVG(const char* filename) {canvas.renderToSVG(filename);}
     /// render canvas to a PNG image file
-    void renderCanvasToPNG(const char* filename);
+    void renderCanvasToPNG(const char* filename) {canvas.renderToPNG(filename);}
     /// render canvas to a EMF image file (Windows only)
-    void renderCanvasToEMF(const char* filename);
+    void renderCanvasToEMF(const char* filename) {canvas.renderToEMF(filename);}
     
     /// render all plots 
     void renderAllPlotsAsSVG(const string& prefix) const;
