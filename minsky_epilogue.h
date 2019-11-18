@@ -18,12 +18,6 @@
 */
 
 #ifdef RESTPROCESS_H
-#include <plot.h>
-#include "plot.xcd"
-#include <cairoSurfaceImage.h>
-#include "cairoSurfaceImage.xcd"
-#include <signature.h>
-#include "signature.xcd"
 
 namespace classdesc
 {
@@ -75,10 +69,10 @@ namespace classdesc_access
   template <> struct access_RESTProcess<ecolab::cairo::Surface>:
     public cd::NullDescriptor<cd::RESTProcess_t> {};
 
-//  template <> struct access_json_pack<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::json_pack_t> {};
-//  template <> struct access_json_unpack<ecolab::CairoSurface>:
-//    public cd::NullDescriptor<cd::json_unpack_t> {};
+  template <> struct access_json_pack<ecolab::CairoSurface>:
+    public cd::NullDescriptor<cd::json_pack_t> {};
+  template <> struct access_json_unpack<ecolab::CairoSurface>:
+    public cd::NullDescriptor<cd::json_unpack_t> {};
   template <> struct access_RESTProcess<ecolab::CairoSurface>:
     public cd::NullDescriptor<cd::RESTProcess_t> {};
 
@@ -122,6 +116,11 @@ namespace classdesc_access
       a(x);
     }
   };
+
+  template <>
+  struct access_json_pack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_pack_t> {};
+  template <>
+  struct access_json_unpack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_unpack_t> {};
 }
 
 #endif

@@ -18,7 +18,6 @@
 */
 
 #include "minskyRS.h"
-#include "RESTProcess_base.h"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;

@@ -9,6 +9,7 @@ mkdir /tmp/$$
 cd /tmp/$$
 
 cp -r $here/test/testEq.mky .
+cp $here/examples/GoodwinLinear02.mky .
 if [ -x $here/test/unittests ]; then
     $here/test/unittests
 else

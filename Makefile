@@ -53,7 +53,7 @@ ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
 
 VPATH= schema model engine gui-tk server RESTService $(ECOLAB_HOME)/include
 

@@ -20,7 +20,36 @@
 #ifndef MINSKYRS_H
 #define MINSKYRS_H
 #include "minsky.h"
-#include <RESTProcess_base.h>
+#include "minsky.rcd"
+#include "assetClass.h"
+#include "assetClass.rcd"
+#include "bookmark.rcd"
+#include "canvas.rcd"
+#include "CSVParser.rcd"
+#include "dimension.rcd"
+#include "evalGodley.rcd"
+#include "godleyIcon.rcd"
+#include "godleyTable.rcd"
+#include "group.rcd"
+#include "item.rcd"
+#include "noteBase.rcd"
+#include "operationType.rcd"
+#include "panopticon.rcd"
+#include "plot.rcd"
+#include "plotWidget.rcd"
+#include "port.rcd"
+#include "rungeKutta.rcd"
+#include "selection.rcd"
+#include <signature.h>
+#include "signature.rcd"
+#include "slider.rcd"
+#include "SVGItem.rcd"
+#include "tensorVal.rcd"
+#include "variable.rcd"
+#include "variableValue.rcd"
+#include "variableType.rcd"
+#include "variableValueRS.h"
+#include "wire.rcd"
 
 namespace classdesc
 {
