@@ -231,21 +231,20 @@ skip in computing the differences.
 \subsection{inner product $\cdot$}\label{Operation:innerProduct}
 Computes
 \begin{displaymath}
-z_{i_1,\ldots,i_{r_1-1},j_1,\ldots,j_{r_2-1}} =
-\sum_k x_{i_1\ldots,\ldots,i_{r_1-1},k}
-y_{k,j_1,\ldots,j_{r_2-1}},
+z_{i_1,\ldots,i_{r_x-1},j_1,\ldots,j_{r_y-1}} =
+\sum_k x_{i_1\ldots,i_{a-1},k,i_{a+1}\ldots,i_{r_x-1}}
+y_{j_1,\ldots,j_{r_y-1},k},
 \end{displaymath}
-where $a$ is the
-given axis, and $r_1$ and $r_2$ are the ranks of $x$ an $y$ respectively.
+where $a$ is the given axis, and $r_x$ and $r_y$ are the ranks of $x$ and $y$ respectively.
 
 
 \subsection{outer product $\otimes$}\label{Operation:outerProduct}
 Computes 
 \begin{displaymath}
-$z_{i_1,i_2,\ldots,i_{r_1},j_1,\ldots,j_{r_2}} =
-x_{i_1,,i_2,\ldots,i_{r_1}}y_{j_1,\ldots,j_{r_2}}$.
+z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
+x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
 \end{displaymath}
-where $r_1$ and $r_2$ are the ranks of $x$ an $y$ respectively.
+where $r_x$ and $r_y$ are the ranks of $x$ and $y$ respectively.
 
 
 \section{Switch}\label{SwitchIcon}
