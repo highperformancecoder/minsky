@@ -1,7 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML>
 
-<!--Converted with LaTeX2HTML 2018 (Released Feb 1, 2018) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
+<HTML lang="EN">
 <HEAD>
 <TITLE>Plot widget</TITLE>
 <META NAME="description" CONTENT="Plot widget">
@@ -9,42 +9,42 @@
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2018">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2019.2">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node104.html">
 <LINK REL="previous" HREF="node102.html">
-<LINK REL="up" HREF="node42.html">
 <LINK REL="next" HREF="node104.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1334"
-  HREF="node104.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1332"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1326"
-  HREF="node102.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<A
+ HREF="node104.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node42.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node102.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1335"
-  HREF="node104.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html1333"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1327"
-  HREF="node102.html">Groups</A>
+<B> Next:</B> <A
+ HREF="node104.html">Note Widget</A>
+<B> Up:</B> <A
+ HREF="node42.html">Reference</A>
+<B> Previous:</B> <A
+ HREF="node102.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00480000000000000000"></A>
-<A NAME="PlotWidget"></A>
+<H1><A ID="SECTION00480000000000000000"></A>
+<A ID="PlotWidget"></A>
 <BR>
 Plot widget
 </H1>
@@ -54,10 +54,9 @@ A plot widget embeds a dynamic plot into the canvas. Around the
 outside of the plot are a number of input ports that can be wired.
 
 <P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="241" HEIGHT="240" ALIGN="BOTTOM" BORDER="0"
- SRC="img223.png"
+<DIV class="CENTER">
+<IMG STYLE=""
+ SRC="img227.png"
  ALT="\includegraphics{images/plotWidget.eps}">
 
 </DIV>
@@ -75,18 +74,15 @@ outside of the plot are a number of input ports that can be wired.
   allowing very different magnitudes to be compared on the one plot.
 </DD>
 <DT><STRONG>bottom edge</STRONG></DT>
-<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
+<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
  ALT="$x$"></SPAN>-coordinates of the
   curves. The colours match up with the colour of the pen being
   controlled.
 
 <P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="529" HEIGHT="296" ALIGN="BOTTOM" BORDER="0"
- SRC="img224.png"
+<DIV class="CENTER">
+<IMG STYLE=""
+ SRC="img228.png"
  ALT="\includegraphics{images/plotLissajous.eps}">
 
 </DIV>
@@ -94,32 +90,23 @@ outside of the plot are a number of input ports that can be wired.
 <P>
 If only one bottom port is connected, then that controls all pens
   simultaneously, and if no ports are connected, then the simulation
-  time is used to provide the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
+  time is used to provide the <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
  ALT="$x$"></SPAN> coordinates
 </DD>
 <DT><STRONG>corners</STRONG></DT>
 <DD>Corner ports control the scale. You can wire up
-  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
- SRC="img74.png"
- ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img75.png"
+  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
  ALT="$y$"></SPAN> and right hand
-  <SPAN CLASS="MATH"><IMG
- WIDTH="13" HEIGHT="28" ALIGN="MIDDLE" BORDER="0"
- SRC="img75.png"
+  <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
  ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
   from the data. This can be used, for example, to implement a sliding
   window graph
 
 <P>
-<DIV ALIGN="CENTER">
-<IMG
- WIDTH="480" HEIGHT="425" ALIGN="BOTTOM" BORDER="0"
- SRC="img225.png"
+<DIV class="CENTER">
+<IMG STYLE=""
+ SRC="img229.png"
  ALT="\includegraphics{images/plotSlidingWindow.eps}">
 
 </DIV>
@@ -127,26 +114,7 @@ If only one bottom port is connected, then that controls all pens
 </DL>
 
 <P>
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1334"
-  HREF="node104.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1332"
-  HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1326"
-  HREF="node102.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A NAME="tex2html1335"
-  HREF="node104.html">Note Widget</A>
-<B> Up:</B> <A NAME="tex2html1333"
-  HREF="node42.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html1327"
-  HREF="node102.html">Groups</A></DIV>
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

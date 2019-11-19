@@ -2,18 +2,38 @@
 .MATH    { font-family: "Century Schoolbook", serif; }
 .MATH I  { font-family: "Century Schoolbook", serif; font-style: italic }
 .BOLDMATH { font-family: "Century Schoolbook", serif; font-weight: bold }
+DIV.equation { text-align-last:justify; white-space: nowrap; } /* place eq nos */
+SPAN.MATH { display:inline-block; }	/* don't stretch spaces inside eqn */
+
+DIV.author_info { text-align:center; } /* latex centers author */
+
+.LEFT    { text-align:left; }
+.CENTER  { text-align:center; }
+.CENTER > * { margin:auto; }
+.RIGHT   { text-align:right; }
+.TOP     { vertical-align:top; }
+.MIDDLE  { vertical-align:middle; }
+.BOTTOM  { vertical-align:bottom; }
+
+IMG.LEFT    { float:left; }
+IMG.RIGHT   { float:right; }
+IMG.TOP     { vertical-align:top; }
+IMG.BOTTOM  { vertical-align:baseline; }
+
+DL.COMPACT > dt { float:left; padding-right: 1em; }
+BODY { width:95%; max-width:50em; margin:auto; }
 
 /* implement both fixed-size and relative sizes */
-SMALL.XTINY		{ font-size : xx-small }
-SMALL.TINY		{ font-size : x-small  }
-SMALL.SCRIPTSIZE	{ font-size : smaller  }
-SMALL.FOOTNOTESIZE	{ font-size : small    }
-SMALL.SMALL		{  }
-BIG.LARGE		{  }
-BIG.XLARGE		{ font-size : large    }
-BIG.XXLARGE		{ font-size : x-large  }
-BIG.HUGE		{ font-size : larger   }
-BIG.XHUGE		{ font-size : xx-large }
+.XTINY		{ font-size : xx-small }
+.TINY		{ font-size : x-small  }
+.SCRIPTSIZE	{ font-size : smaller  }
+.FOOTNOTESIZE	{ font-size : small    }
+.SMALL		{  }
+.LARGE		{  }
+.XLARGE		{ font-size : large    }
+.XXLARGE		{ font-size : x-large  }
+.HUGE		{ font-size : larger   }
+.XHUGE		{ font-size : xx-large }
 
 /* heading styles */
 H1		{  }
@@ -24,8 +44,13 @@ H5		{  }
 
 /* mathematics styles */
 DIV.displaymath		{ }	/* math displays */
-TD.eqno			{ }	/* equation-number cells */
-
+TD.eqno			{ width:0; }	/* equation-number cells */
+TABLE.PAD TD	{ padding:3px; }
+TABLE.BORDER TD	{ border:1px solid black; }
+TABLE.equation	{ width:100%; }	/* place eq nos at right/left edge */
+TABLE.equation > *	{ vertical-align:baseline; }
+TABLE.equation TD	{ white-space:nowrap; }
+TABLE		{ border-collapse: collapse; }
 
 /* document-specific styles come next */
 DIV.center		{   }
