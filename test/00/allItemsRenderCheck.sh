@@ -33,7 +33,7 @@ minsky.defaultFont Courier
 minsky.setGodleyIconResource $here/gui-tk/icons/bank.svg
 minsky.setGroupIconResource $here/gui-tk/icons/group.svg
 minsky.load $here/test/allItems.mky
-minsky.renderCanvasToSVG allItemsBare.svg
+minsky.canvas.renderToSVG allItemsBare.svg
 
 for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
   minsky.model.items.@elem \$i
@@ -45,7 +45,7 @@ for {set i 0} {\$i<[minsky.model.groups.size]} {incr i} {
   minsky.model.groups(\$i).mouseFocus 1
   minsky.model.groups(\$i).tooltip tooltip
 }
-minsky.renderCanvasToSVG allItemsMouseOver.svg
+minsky.canvas.renderToSVG allItemsMouseOver.svg
 
 for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
   minsky.model.items(\$i).mouseFocus 0
@@ -55,7 +55,7 @@ for {set i 0} {\$i<[minsky.model.groups.size]} {incr i} {
   minsky.model.groups(\$i).mouseFocus 0
   minsky.model.groups(\$i).selected 1
 }
-minsky.renderCanvasToSVG allItemsSelected.svg
+minsky.canvas.renderToSVG allItemsSelected.svg
 
 tcl_exit
 EOF
