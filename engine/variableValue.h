@@ -268,9 +268,13 @@ namespace minsky
 namespace classdesc
 {
   template <>
-  struct is_associative_container<minsky::VariableValues>: public classdesc::true_type {};
+  struct is_associative_container<minsky::ConstMap<std::string, minsky::VariableValue> >: public classdesc::true_type {};
 }
-
+namespace ecolab
+{
+  // for TCL_obj processing
+  template <> struct is_map<minsky::ConstMap<std::string, minsky::VariableValue> >: public is_map_map {};
+}
 
 #include "variableValue.cd"
 #include "variableValue.xcd"
