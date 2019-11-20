@@ -37,9 +37,10 @@ proc afterMinskyStarted {} {
   set numWires [model.numWires]
   focus .wiring.canvas
 
-#  puts "[minsky.canvas.item.x] [minsky.canvas.item.y]"
-#  puts "getWireAt 404 265=[getWireAt 380 245]"
-  deleteKey 380 245
+  set w [minsky.model.wires.@elem 0]
+  set x {[\$w.coords.@elem 0]}
+  set y {[\$w.coords.@elem 1]}
+  deleteKey \$x \$y
   assert "[model.numWires]==[expr \$numWires-1]" {test wire deletion}
   findVariable emprate
   deleteKey [minsky.canvas.item.x] [minsky.canvas.item.y]

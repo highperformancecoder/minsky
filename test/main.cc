@@ -53,23 +53,6 @@ namespace
 namespace minsky
 {
   void doOneEvent(bool) {}
-
-  namespace
-  {
-    Minsky* l_minsky=NULL;
-  }
-
-  Minsky& minsky()
-  {
-    static Minsky s_minsky;
-    if (l_minsky)
-      return *l_minsky;
-    else
-      return s_minsky;
-  }
-
-  LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
-  LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
 }
 
 int main(int argc, const char** argv)

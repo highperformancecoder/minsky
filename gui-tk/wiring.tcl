@@ -358,6 +358,11 @@ proc addOperationKey {op} {
     canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
 
+proc addNewGodleyItemKey {} {
+    addGodley
+    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+    
 # handle arbitrary text typed into the canvas
 proc textInput {char} {
     if {$char==""} return
@@ -453,7 +458,6 @@ setGodleyIconResource $minskyHome/icons/bank.svg
 proc rightMouseGodley {x y X Y} {
     if [selectVar $x $y] {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Edit" -command "editItem"
         .wiring.context add command -label "Copy" -command "canvas.copyItem"
         .wiring.context post $X $Y
     } else {
@@ -520,16 +524,16 @@ proc doubleButton {x y} {
         editItem
     }
 }
-
+# for ticket 1062, new hierarchy of context menu access on mouse right click: wires, items and background canvas.
 bind .wiring.canvas <<contextMenu>> {
-    if [getItemAt %x %y] {
+    if [getWireAt %x %y] {
+        wireContextMenu %X %Y  	
+    } elseif [getItemAt %x %y] {
         switch [minsky.canvas.item.classType] {
             GodleyIcon {rightMouseGodley %x %y %X %Y}
             Group {rightMouseGroup %x %y %X %Y}
             default {contextMenu %x %y %X %Y}
-        }
-    } elseif [getWireAt %x %y] {
-        wireContextMenu %X %Y
+		}
     } else {
         canvasContext %x %y %X %Y
     }
@@ -820,27 +824,10 @@ proc exportItemAsCSV {} {
 
 proc exportItemAsImg {} {
     global workDir type
-    set f [tk_getSaveFile -filetypes {
-        {"SVG" .svg TEXT} {"PDF" .pdf TEXT} {"Postscript" .eps TEXT} {"PNG" .png PNGG}
-    } -initialdir $workDir -typevariable type ]
+    set f [tk_getSaveFile -filetypes [imageFileTypes] -initialdir $workDir -typevariable type ]
     if {$f==""} return
     set workDir [file dirname $f]
-    if [string match -nocase *.svg "$f"] {
-        eval minsky.canvas.item.renderToSVG {$f}
-    } elseif [string match -nocase *.pdf "$f"] {
-        eval minsky.canvas.item.renderToPDF {$f}
-    } elseif {[string match -nocase *.ps "$f"] || [string match -nocase *.eps "$f"]} {
-        eval minsky.canvas.item.renderToPS {$f}
-    } elseif {[string match -nocase *.png "$f"]} {
-        eval minsky.canvas.item.renderToPNG {$f}
-    } else {
-        switch $type {
-            "SVG" {eval minsky.canvas.item.renderToSVG  {$f.svg}}
-            "PDF" {eval minsky.canvas.item.renderToPDF {$f.pdf}}
-            "Postscript" {eval minsky.canvas.item.renderToPS {$f.eps}}
-            "PNG" {eval minsky.canvas.item.renderToPNG {$f.png}}
-        }
-    }
+    renderImage $f $type minsky.canvas.item
 }
 
 namespace eval godley {

@@ -152,19 +152,6 @@ namespace minsky
     /// update canvas godleyIcon, and any related godley icons. Can throw
     void update();
 
-    /// common part of following vector rendering methods
-    ecolab::cairo::SurfacePtr vectorRender(const char*,
-                      cairo_surface_t* (*)(const char *,double,double));
-
-    /// render canvas to a postscript file
-    void renderCanvasToPS(const char* filename);
-    /// render canvas to a PDF file
-    void renderCanvasToPDF(const char* filename);
-    /// render canvas to an SVG file
-    void renderCanvasToSVG(const char* filename);
-    /// render canvas to a PNG image file
-    void renderCanvasToPNG(const char* filename);
-
     /// @{ move selected cell right, left, up or down, moving to next
     /// line and wrapping if at end of row or col
     void navigateRight();

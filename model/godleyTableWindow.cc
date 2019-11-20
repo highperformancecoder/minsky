@@ -1005,45 +1005,6 @@ namespace minsky
         drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
   }  
  
-
-  cairo::SurfacePtr GodleyTableWindow::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
-  {
-    cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
-                                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
-    surface.swap(tmp);
-    redraw(0,0,0,0);
-    double left=surface->left(), top=surface->top();
-    surface->surface
-      (s(filename, surface->width(), surface->height()));
-    if (s==cairo_ps_surface_create)
-      cairo_ps_surface_set_eps(surface->surface(),true);
-    cairo_surface_set_device_offset(surface->surface(), -left, -top);
-    redraw(0,0,0,0);
-    surface.swap(tmp);
-    return tmp;
-  }
-  
-  void GodleyTableWindow::renderCanvasToPS(const char* filename)
-  {vectorRender(filename,cairo_ps_surface_create);}
-
-  void GodleyTableWindow::renderCanvasToPDF(const char* filename)
-  {vectorRender(filename,cairo_pdf_surface_create);}
-
-  void GodleyTableWindow::renderCanvasToSVG(const char* filename)
-  {vectorRender(filename,cairo_svg_surface_create);}
-
-  namespace
-  {
-    cairo_surface_t* pngDummy(const char*,double width,double height)
-    {return cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);}
-  }
-  
-  void GodleyTableWindow::renderCanvasToPNG(const char* filename)
-  {
-    auto tmp=vectorRender(filename,pngDummy);
-    cairo_surface_write_to_png(tmp->surface(),filename);
-  }
-
   template class ButtonWidget<ButtonWidgetEnums::row>;
   template class ButtonWidget<ButtonWidgetEnums::col>;
 }

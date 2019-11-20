@@ -9,7 +9,7 @@ for $file (@ARGV)
     open INPUT,$file;
     while ($_=<INPUT>)
     {
-        @labels=/<A NAME=\"([^"]*)\"/g;
+        @labels=/<A ID=\"([^"]*)\"/g;
         ($node)=$file=~/.*\/([^\/]*)/;
         for $label (@labels)
         {
