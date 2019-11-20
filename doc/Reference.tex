@@ -699,6 +699,12 @@ outside of the plot are a number of input ports that can be wired.
  canvas to the left-hand side of the sheet widget box. This will diplay
  the input data as a number. Note that only one wire can be connected to
  a sheet, as the sheet can only display a single input value.
+ 
+ The sheet widget can also display rank 0, 1 and rank 2 tensors. These ranks are
+ single values, a string of values, or a 2D matrix of values, respectively.
+ For example, if you create a parameter, and set the initial condition to rand(3,5)
+ (for reference, see section (\S\ref{tensor-init}) ), you can wire that into a sheet.
+ The sheet will then diplay the data in a grid display within the widget box.
 
 \section{Note Widget}
  \label{Notes}\label{Item} Notes allow arbitrary text to be
