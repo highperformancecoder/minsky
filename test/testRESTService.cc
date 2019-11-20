@@ -72,5 +72,17 @@ SUITE(RESTService)
       CHECK_EQUAL(minsky.variableValues.size(), process("/minsky/variableValues/",nullj).get_array().size());
       CHECK_EQUAL(json(minsky.variableValues[":K"]), write(process("/minsky/variableValues/@elem/:K/second",nullj)));
       CHECK_EQUAL("K", process("/minsky/variableValues/@elem/:K/second/name",nullj).get_str());
+      CHECK_EQUAL("Kapital", process("/minsky/variableValues/@elem/:K/second/name","Kapital").get_str());
+      CHECK_EQUAL("Kapital", process("/minsky/variableValues/@elem/:K/second/name",nullj).get_str());
+
+      CHECK_EQUAL(R"({"args":["float","float"],"ret":"void"})",
+                  write(process("/minsky/model/items/@elem/0/moveTo/@signature",nullj)));
+      auto x=minsky.model->items[0]->x(), y=minsky.model->items[0]->y();
+      CHECK_EQUAL(x, process("/minsky/model/items/@elem/0/x",nullj).get_real());
+      CHECK_EQUAL(y, process("/minsky/model/items/@elem/0/y",nullj).get_real());
+      process("/minsky/model/items/@elem/0/moveTo",{x+10,y+10});
+      CHECK_EQUAL(x+10, process("/minsky/model/items/@elem/0/x",nullj).get_real());
+      CHECK_EQUAL(y+10, process("/minsky/model/items/@elem/0/y",nullj).get_real());
+      
     }
 }
