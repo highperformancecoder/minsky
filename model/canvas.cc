@@ -48,6 +48,7 @@ namespace minsky
   
   void Canvas::mouseDownCommon(float x, float y)
   {
+    wireFocus.reset();
     // firstly, see if the user is selecting an item
     if ((itemFocus=itemAt(x,y)))
       {

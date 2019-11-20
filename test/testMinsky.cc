@@ -1031,5 +1031,36 @@ SUITE(Minsky)
       g1->addItem(c);
       CHECK_EQUAL(":c",c->name());
 
-   }
+    }
+
+    TEST_FIXTURE(TestFixture,cantMultiplyDefineVars)
+    {
+      VariablePtr f1(VariableType::flow,"foo");
+      VariablePtr f2(VariableType::flow,"foo");
+      OperationPtr op(OperationType::time);
+      model->addItem(f1);
+      model->addItem(f2);
+      model->addItem(op);
+      model->addWire(op->ports[0],f1->ports[1]);
+      model->addWire(op->ports[0],f2->ports[1]);
+      CHECK_EQUAL(1, f1->ports[1]->wires().size());
+      CHECK_EQUAL(0, f2->ports[1]->wires().size());
+    }
+
+    TEST_FIXTURE(TestFixture,MultiplyDefinedVarsThrowsOnReset)
+    {
+      VariablePtr f1(VariableType::flow,"foo");
+      VariablePtr f2(VariableType::flow,"foo");
+      OperationPtr op(OperationType::time);
+      model->addItem(f1);
+      model->addItem(f2);
+      model->addItem(op);
+      model->addWire(op->ports[0],f1->ports[1]);
+      model->addWire(std::make_shared<Wire>(op->ports[0],f2->ports[1]));
+      CHECK_EQUAL(1, f1->ports[1]->wires().size());
+      // We've tricked the system into having a multiply defined variable
+      CHECK_EQUAL(1, f2->ports[1]->wires().size());
+      CHECK_THROW(reset(), std::exception);
+    }
+
 }

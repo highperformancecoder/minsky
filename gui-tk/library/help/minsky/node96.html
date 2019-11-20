@@ -1,7 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML>
 
-<!--Converted with LaTeX2HTML 2018 (Released Feb 1, 2018) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
+<HTML lang="EN">
 <HEAD>
 <TITLE>Tensor valued initial conditions</TITLE>
 <META NAME="description" CONTENT="Tensor valued initial conditions">
@@ -9,41 +9,41 @@
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2018">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2019.2">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node97.html">
 <LINK REL="previous" HREF="node95.html">
-<LINK REL="up" HREF="node93.html">
 <LINK REL="next" HREF="node97.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1266"
-  HREF="node97.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1264"
-  HREF="node93.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1258"
-  HREF="node95.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<A
+ HREF="node97.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node93.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node95.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1267"
-  HREF="node97.html">Sliders</A>
-<B> Up:</B> <A NAME="tex2html1265"
-  HREF="node93.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1259"
-  HREF="node95.html">Initial conditions</A>
+<B> Next:</B> <A
+ HREF="node97.html">Sliders</A>
+<B> Up:</B> <A
+ HREF="node93.html">Variables</A>
+<B> Previous:</B> <A
+ HREF="node95.html">Initial conditions</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00443000000000000000"></A><A NAME="tensor-init"></A><A NAME="2434"></A>
+<H2><A ID="SECTION00443000000000000000"></A><A ID="tensor-init"></A><A ID="2458"></A>
 <BR>
 Tensor valued initial conditions
 </H2>
@@ -54,35 +54,40 @@ generation of tensor-valued operations. These functions take the form
 <EM>func</EM><!-- MATH
  $(n_1,n_2,\ldots,n_r)$
  -->
-<SPAN CLASS="MATH"></SPAN> where <SPAN CLASS="MATH"></SPAN> is the desired rank, and
-<SPAN CLASS="MATH"></SPAN> etc are the dimensions of the tensor. Available
+<SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img203.png"
+ ALT="$(n_1,n_2,\ldots,n_r)$"></SPAN> where <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img204.png"
+ ALT="$r$"></SPAN> is the desired rank, and
+<SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img205.png"
+ ALT="$n_1,n_2,$"></SPAN> etc are the dimensions of the tensor. Available
 functions include:
 
 <P>
-<TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="RIGHT">name</TD>
-<TD ALIGN="LEFT">description</TD>
+<TABLE class="PAD  BORDER" style="">
+<TR><TD CLASS="RIGHT">name</TD>
+<TD CLASS="LEFT">description</TD>
 </TR>
-<TR><TD ALIGN="RIGHT"><code>one</code></TD>
-<TD ALIGN="LEFT">the tensor is filled with `1'</TD>
+<TR><TD CLASS="RIGHT"><code>one</code></TD>
+<TD CLASS="LEFT">the tensor is filled with `1'</TD>
 </TR>
-<TR><TD ALIGN="RIGHT"><code>zero</code></TD>
-<TD ALIGN="LEFT">the tensor is filled with `0'</TD>
+<TR><TD CLASS="RIGHT"><code>zero</code></TD>
+<TD CLASS="LEFT">the tensor is filled with `0'</TD>
 </TR>
-<TR><TD ALIGN="RIGHT"><code>iota</code></TD>
-<TD ALIGN="LEFT">the arithmetic sequence <!-- MATH
+<TR><TD CLASS="RIGHT"><code>iota</code></TD>
+<TD CLASS="LEFT">the arithmetic sequence <!-- MATH
  $(0,1,...\prod_in_i)$
  -->
-<SPAN CLASS="MATH"></SPAN></TD>
+<SPAN CLASS="MATH"><IMG STYLE="height: 2.52ex; vertical-align: -0.81ex; " SRC="img206.png"
+ ALT="$(0,1,...\prod_in_i)$"></SPAN></TD>
 </TR>
-<TR><TD ALIGN="RIGHT"><code>eye</code></TD>
-<TD ALIGN="LEFT">diagonal elements filled with `1', offdiagonal `0'</TD>
+<TR><TD CLASS="RIGHT"><code>eye</code></TD>
+<TD CLASS="LEFT">diagonal elements filled with `1', offdiagonal `0'</TD>
 </TR>
-<TR><TD ALIGN="RIGHT"><code>rand</code></TD>
-<TD ALIGN="LEFT">tensor filled with random numbers in the range <SPAN CLASS="MATH"></SPAN></TD>
+<TR><TD CLASS="RIGHT"><code>rand</code></TD>
+<TD CLASS="LEFT">tensor filled with random numbers in the range <SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img207.png"
+ ALT="$[0,1)$"></SPAN></TD>
 </TR>
 </TABLE>
-<A NAME="2439"></A><A NAME="2440"></A><A NAME="2441"></A><A NAME="2442"></A><A NAME="2443"></A>
+<A ID="2463"></A><A ID="2464"></A><A ID="2465"></A><A ID="2466"></A><A ID="2467"></A>
 
 <P>
 

@@ -1,7 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML>
 
-<!--Converted with LaTeX2HTML 2018 (Released Feb 1, 2018) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
+<HTML lang="EN">
 <HEAD>
 <TITLE>Importing a parameter from a CSV file</TITLE>
 <META NAME="description" CONTENT="Importing a parameter from a CSV file">
@@ -9,59 +9,58 @@
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META NAME="Generator" CONTENT="LaTeX2HTML v2018">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2019.2">
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node99.html">
 <LINK REL="previous" HREF="node97.html">
-<LINK REL="up" HREF="node93.html">
 <LINK REL="next" HREF="node99.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 
 <DIV CLASS="navigation"><!--Navigation Panel-->
-<A NAME="tex2html1286"
-  HREF="node99.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1284"
-  HREF="node93.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1278"
-  HREF="node97.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<A
+ HREF="node99.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node93.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node97.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1287"
-  HREF="node99.html">Duplicate keys</A>
-<B> Up:</B> <A NAME="tex2html1285"
-  HREF="node93.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1279"
-  HREF="node97.html">Sliders</A>
+<B> Next:</B> <A
+ HREF="node99.html">Duplicate keys</A>
+<B> Up:</B> <A
+ HREF="node93.html">Variables</A>
+<B> Previous:</B> <A
+ HREF="node97.html">Sliders</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00445000000000000000"></A><A NAME="CSV___import"></A><A NAME="2449"></A>
+<H2><A ID="SECTION00445000000000000000"></A><A ID="CSV___import"></A><A ID="2473"></A>
 <BR>
 Importing a parameter from a CSV file
 </H2>
 
 <P>
-Access to data imports is via the &ldquo;Import CSV&rdquo; item of the
-parameter's context menu. After selecting this item, a dialog will be
-displayed allowing you to select a CSV file. Upon selecting the file,
-a dialog is opened, allowing you to specify assorted encoding
-parameters. The dialog looks somewhat like this:
+After creating a parameter from the &ldquo;Variable&rdquo; drop-down in the
+&ldquo;Insert&rdquo; menu, right-clicking the parameter and selecting the option
+to &ldquo;Import CSV&rdquo;, will open a dialogue box that allows you to select 
+a CSV file. Upon selecting the file, a dialog is opened, allowing you to 
+specify assorted encoding parameters. The dialog looks somewhat like this:
 
 <P>
-<DIV ALIGN="CENTER">
+<DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog.eps}}$
  -->
-<IMG
- WIDTH="555" HEIGHT="268" ALIGN="BOTTOM" BORDER="0"
+<IMG STYLE=""
  SRC="img208.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog.eps}}">
 </DIV>
@@ -71,7 +70,7 @@ In this case, the system has automatically guessed that the data is 3
 dimensional, and that the first 3 columns give the axis labels for
 each dimension (shown in blue), and the 4th column contains the
 data. The first row has been automatically determined to be the first
-row of the file -- with the dimension names are shown in green.
+row of the file &mdash; with the dimension names are shown in green.
 
 <P>
 In this case, the automatic parsing system has worked things out
@@ -79,29 +78,27 @@ correctly, but often times it needs help from the computer user. An
 example is as follows:
 
 <P>
-<DIV ALIGN="CENTER">
+<DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail.eps}}$
  -->
-<IMG
- WIDTH="555" HEIGHT="204" ALIGN="BOTTOM" BORDER="0"
+<IMG STYLE=""
  SRC="img209.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail.eps}}">
 </DIV>
 
 <P>
 In this example, Minsky has failed to determine where the data starts,
-probably because of the column &ldquo;Price (text infill)&rdquo;. So the first
+probably because of the &ldquo;Unit&rdquo; and &ldquo;Frequency&rdquo; columns. So the first
 thing to do is tell it where the data is located by clicking on the
 first cell of the data region. 
 
 <P>
-<DIV ALIGN="CENTER">
+<DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData.eps}}$
  -->
-<IMG
- WIDTH="555" HEIGHT="204" ALIGN="BOTTOM" BORDER="0"
+<IMG STYLE=""
  SRC="img210.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData.eps}}">
 </DIV>
@@ -122,12 +119,11 @@ the checkbox in the &ldquo;Dimension&rdquo; row. The deselected columns are
 rendered in red, indicating data that is commented out:
 
 <P>
-<DIV ALIGN="CENTER">
+<DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected.eps}}$
  -->
-<IMG
- WIDTH="555" HEIGHT="204" ALIGN="BOTTOM" BORDER="0"
+<IMG STYLE=""
  SRC="img211.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected.eps}}">
 </DIV>
@@ -145,67 +141,66 @@ spacing. It is therefore important to parse the Date column as
 temporal data, which is achieved by changing the column type to
 &ldquo;time&rdquo;, and specifying a format string, which follows strftime
 conventions with the addition of a quarter specifier (<code>%Q</code>).
-<A NAME="2470"></A><A NAME="strftime_format_specifier"></A>
+<A ID="2494"></A><A ID="strftime_format_specifier"></A>
 <P>
-<DIV ALIGN="CENTER">
+<DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat.eps}}$
  -->
-<IMG
- WIDTH="555" HEIGHT="204" ALIGN="BOTTOM" BORDER="0"
+<IMG STYLE=""
  SRC="img212.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat.eps}}">
 </DIV>
 
 <P>
 <BR><P></P>
-<DIV ALIGN="CENTER"><A NAME="2481"></A>
+<DIV class="CENTER"><A ID="2505"></A>
 <TABLE>
 <CAPTION><STRONG>Table 4.1:</STRONG>
 Table of strftime codes</CAPTION>
-<TR><TD>  <TABLE CELLPADDING=3 BORDER="1">
-<TR><TD ALIGN="CENTER">Code</TD>
-<TD ALIGN="LEFT">Description</TD>
+<TR><TD>  <TABLE class="PAD  BORDER" style="">
+<TR><TD CLASS="CENTER">Code</TD>
+<TD CLASS="LEFT">Description</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%d</TD>
-<TD ALIGN="LEFT">Day of month in range 01 to 31</TD>
+<TR><TD CLASS="CENTER">%d</TD>
+<TD CLASS="LEFT">Day of month in range 01 to 31</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%H</TD>
-<TD ALIGN="LEFT">Hour in range 00 to 23</TD>
+<TR><TD CLASS="CENTER">%H</TD>
+<TD CLASS="LEFT">Hour in range 00 to 23</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%m</TD>
-<TD ALIGN="LEFT">Month as a decimal number (01 to 12)</TD>
+<TR><TD CLASS="CENTER">%m</TD>
+<TD CLASS="LEFT">Month as a decimal number (01 to 12)</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%M</TD>
-<TD ALIGN="LEFT">Minute in range 00 to 59</TD>
+<TR><TD CLASS="CENTER">%M</TD>
+<TD CLASS="LEFT">Minute in range 00 to 59</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%Q</TD>
-<TD ALIGN="LEFT">Quarter (0=1st January, 1=1st March etc)</TD>
+<TR><TD CLASS="CENTER">%Q</TD>
+<TD CLASS="LEFT">Quarter (0=1st January, 1=1st March etc)</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%s</TD>
-<TD ALIGN="LEFT">Number of seconds since epoch (1st January 1970)</TD>
+<TR><TD CLASS="CENTER">%s</TD>
+<TD CLASS="LEFT">Number of seconds since epoch (1st January 1970)</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%S</TD>
-<TD ALIGN="LEFT">Seconds in range 00 to 59</TD>
+<TR><TD CLASS="CENTER">%S</TD>
+<TD CLASS="LEFT">Seconds in range 00 to 59</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%y</TD>
-<TD ALIGN="LEFT">Two digit year YY</TD>
+<TR><TD CLASS="CENTER">%y</TD>
+<TD CLASS="LEFT">Two digit year YY</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%Y</TD>
-<TD ALIGN="LEFT">Four digit year YYYY</TD>
+<TR><TD CLASS="CENTER">%Y</TD>
+<TD CLASS="LEFT">Four digit year YYYY</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%z</TD>
-<TD ALIGN="LEFT">numerical timezone offset</TD>
+<TR><TD CLASS="CENTER">%z</TD>
+<TD CLASS="LEFT">numerical timezone offset</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%Z</TD>
-<TD ALIGN="LEFT">Timezone name</TD>
+<TR><TD CLASS="CENTER">%Z</TD>
+<TD CLASS="LEFT">Timezone name</TD>
 </TR>
-<TR><TD ALIGN="CENTER">%%</TD>
-<TD ALIGN="LEFT">Literal % character</TD>
+<TR><TD CLASS="CENTER">%%</TD>
+<TD CLASS="LEFT">Literal % character</TD>
 </TR>
 </TABLE>
   
-  <A NAME="Strftime_code"></A></TD></TR>
+  <A ID="Strftime_code"></A></TD></TR>
 </TABLE>
 </DIV><P></P>
 <BR>
@@ -221,35 +216,33 @@ expressed like 1972-Q1, use &ldquo;<code>%Y-Q%Q</code>&rdquo;. Note that only %Y
 
 <P>
 Even in the current settings, you may still get a message &ldquo;exhausted
-memory -- try reducing the rank&rdquo;, or a similar message about hitting
-a 20% of physical memory threshold. In this case, &ldquo;title number&rdquo;
-and &ldquo;address&rdquo; are pretty much unique for each record, leading to a
-large, but very sparse hypercube. If we remove those columns, as per
+memory &mdash; try reducing the rank&rdquo;, or a similar message about hitting
+a 20% of physical memory threshold. In some cases, &ldquo;titles&rdquo;
+and &ldquo;addresses&rdquo; might be pretty much unique for each record, leading to a
+large, but very sparse hypercube. If you remove those columns, as per
 
 <P>
-<DIV ALIGN="CENTER">
+<DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogRemoved.eps}}$
  -->
-<IMG
- WIDTH="555" HEIGHT="204" ALIGN="BOTTOM" BORDER="0"
+<IMG STYLE=""
  SRC="img213.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogRemoved.eps}}">
 </DIV>
 
 <P>
-then we encounter the &ldquo;Duplicate key&rdquo; message. In this case, we want
+then you may encounter the &ldquo;Duplicate key&rdquo; message. In this case, we want
 to aggregate over these records, which we can do by setting
 &ldquo;Duplicate Key Action&rdquo; to sum. After some additional playing around
 with dimensions to aggregate over, we can get the data imported.
 
 <P>
-<DIV ALIGN="CENTER">
+<DIV class="CENTER">
 <!-- MATH
  $\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal.eps}}$
  -->
-<IMG
- WIDTH="555" HEIGHT="208" ALIGN="BOTTOM" BORDER="0"
+<IMG STYLE=""
  SRC="img214.png"
  ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal.eps}}">
 </DIV>
@@ -258,22 +251,22 @@ with dimensions to aggregate over, we can get the data imported.
 
 <DIV CLASS="navigation"><HR>
 <!--Navigation Panel-->
-<A NAME="tex2html1286"
-  HREF="node99.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1284"
-  HREF="node93.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1278"
-  HREF="node97.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous" SRC="prev.png"></A>   
+<A
+ HREF="node99.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node93.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node97.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
-<B> Next:</B> <A NAME="tex2html1287"
-  HREF="node99.html">Duplicate keys</A>
-<B> Up:</B> <A NAME="tex2html1285"
-  HREF="node93.html">Variables</A>
-<B> Previous:</B> <A NAME="tex2html1279"
-  HREF="node97.html">Sliders</A></DIV>
+<B> Next:</B> <A
+ HREF="node99.html">Duplicate keys</A>
+<B> Up:</B> <A
+ HREF="node93.html">Variables</A>
+<B> Previous:</B> <A
+ HREF="node97.html">Sliders</A></DIV>
 <!--End of Navigation Panel-->
 
 </BODY>

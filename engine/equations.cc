@@ -497,59 +497,68 @@ namespace MathDAG
     minsky.model->recursiveDo
       (&Group::items,
        [&](const Items&, Items::const_iterator it){
-        if (IntOp* i=dynamic_cast<IntOp*>(it->get()))
-          {
-            if (VariablePtr iv=i->intVar)
-              {
-                // .get() OK here because object lifetime controlled by
-                // expressionCache
-                VariableDAG* v=integVarMap[iv->valueId()]=
-                  dynamic_cast<VariableDAG*>(makeDAG(*iv).get());
-                v->intOp=i;
-                if (i->ports[1]->wires().size()>0)
-                  {
-                    // with integrals, we need to create a distinct variable to
-                    // prevent infinite recursion of order() in the case of graph cycles
-                    VariableDAGPtr input(new IntegralInputVariableDAG);
-                    input->name=iv->name();
-                    variables.push_back(input.get());
-                    // manage object's lifetime with expressionCache
-                    expressionCache.insertIntegralInput(iv->valueId(), input);
-                    try
-                      {input->rhs=getNodeFromWire(*(i->ports[1]->wires()[0]));}
-                    catch (...)
-                      {
-                        // try again later
-                        integralInputs.emplace_back(input,i->ports[1]->wires()[0]);
-                      }
-                  }
+         if (auto v=(*it)->variableCast())
+           {
+             // check variable is not multiply defined
+             if (v->inputWired() && v!=minsky.definingVar(v->valueId()).get())
+               {
+                 minsky.displayErrorItem(*v);
+                 throw runtime_error("Multiply defined");
+               }
+           }
+         else if (IntOp* i=dynamic_cast<IntOp*>(it->get()))
+           {
+             if (VariablePtr iv=i->intVar)
+               {
+                 // .get() OK here because object lifetime controlled by
+                 // expressionCache
+                 VariableDAG* v=integVarMap[iv->valueId()]=
+                   dynamic_cast<VariableDAG*>(makeDAG(*iv).get());
+                 v->intOp=i;
+                 if (i->ports[1]->wires().size()>0)
+                   {
+                     // with integrals, we need to create a distinct variable to
+                     // prevent infinite recursion of order() in the case of graph cycles
+                     VariableDAGPtr input(new IntegralInputVariableDAG);
+                     input->name=iv->name();
+                     variables.push_back(input.get());
+                     // manage object's lifetime with expressionCache
+                     expressionCache.insertIntegralInput(iv->valueId(), input);
+                     try
+                       {input->rhs=getNodeFromWire(*(i->ports[1]->wires()[0]));}
+                     catch (...)
+                       {
+                         // try again later
+                         integralInputs.emplace_back(input,i->ports[1]->wires()[0]);
+                       }
+                   }
                 
-                if (i->ports[2]->wires().size()>0)
-                  {
-                    // second port can be attached to a variable,
-                    // which supplies an init string
-                    NodePtr init;
-                    try
-                      {
-                        init=getNodeFromWire(*(i->ports[2]->wires()[0]));
-                      }
-                    catch (...) {}
-                    if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                      iv->init(v->name);
-                    else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
-                      {
-                        // slightly convoluted to prevent sliderSet from overriding c->value
-                        iv->init(c->value);
-                        iv->adjustSliderBounds();
-                      }
-                    else
-                      throw error("only constants, parameters and variables can be connected to the initial value port");
-                  }
+                 if (i->ports[2]->wires().size()>0)
+                   {
+                     // second port can be attached to a variable,
+                     // which supplies an init string
+                     NodePtr init;
+                     try
+                       {
+                         init=getNodeFromWire(*(i->ports[2]->wires()[0]));
+                       }
+                     catch (...) {}
+                     if (auto v=dynamic_cast<VariableDAG*>(init.get()))
+                       iv->init(v->name);
+                     else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
+                       {
+                         // slightly convoluted to prevent sliderSet from overriding c->value
+                         iv->init(c->value);
+                         iv->adjustSliderBounds();
+                       }
+                     else
+                       throw error("only constants, parameters and variables can be connected to the initial value port");
+                   }
                 
-              }
-          }
-        return false;
-      });
+               }
+           }
+         return false;
+       });
 
     // add input variables for all stock variables to the expression cache
     minsky.model->recursiveDo
