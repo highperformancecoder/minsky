@@ -12,7 +12,8 @@ namespace
   {
     Minsky minsky;
     LocalMinsky lm;
-    TestFixture(): lm(minsky)
+    json_pack_t nullj;
+    TestFixture(): lm(minsky), nullj(json_spirit::mValue::null)
     {
       RESTProcess(*this,"/minsky",minsky);
     }
@@ -34,9 +35,30 @@ SUITE(RESTService)
       CHECK_EQUAL(2,minsky.model->items.size());
     }
   
+  TEST_FIXTURE(TestFixture, minsky)
+    {
+      auto minskyList=process("/minsky/@list",nullj);
+      // count all commands in the registry
+      for (auto i: minskyList.get_array())
+        if (!count("/minsky"+i.get_str()))
+          CHECK_EQUAL("/minsky"+i.get_str(), "not present");
+      // count all commands beginning with /minsky
+      string minskyStr="/minsky/";
+      // +1 because *this also include the top level command /minsky
+      CHECK_EQUAL(size(), minskyList.get_array().size()+1);
+
+      // specific miscellaneous methods
+      CHECK_EQUAL(minsky.edited(), process("/minsky/edited",nullj).get_bool());
+      CHECK_EQUAL(minsky.reset_flag(), process("/minsky/reset_flag",nullj).get_bool());
+      process("/minsky/markEdited",nullj);
+      CHECK_EQUAL(true, minsky.edited());
+      CHECK_EQUAL(true, minsky.reset_flag());
+      CHECK_EQUAL(minsky.edited(), process("/minsky/edited",nullj).get_bool());
+      CHECK_EQUAL(minsky.reset_flag(), process("/minsky/reset_flag",nullj).get_bool());
+    }
+
   TEST_FIXTURE(TestFixture, containers)
     {
-      json_pack_t nullj(json_spirit::mValue::null);
       process("/minsky/load","GoodwinLinear02.mky");
       auto jmodel=process("/minsky/model",nullj);
       CHECK_EQUAL(json(*minsky.model), write(jmodel));
