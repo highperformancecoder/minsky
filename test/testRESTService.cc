@@ -13,7 +13,7 @@ namespace
     Minsky minsky;
     LocalMinsky lm;
     json_pack_t nullj;
-    TestFixture(): lm(minsky), nullj(json_spirit::mValue::null)
+    TestFixture(): lm(minsky), nullj(json_spirit::mValue())
     {
       RESTProcess(*this,"/minsky",minsky);
     }
