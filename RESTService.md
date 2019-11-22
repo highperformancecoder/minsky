@@ -44,7 +44,7 @@ not
 /minsky/intVector [1,2,3,4]
 ~~~~
 
-Overloaded methods are supported, with limitations. Best effort is made to resolve which method overload the JSON arguments refer to, but sometimes this is just not possible. Methods with different numbers of arguments are alwasy resolvable.
+Overloaded methods are supported, with limitations. Best effort is made to resolve which method overload the JSON arguments refer to, but sometimes this is just not possible. Methods with different numbers of arguments are always resolvable.
 
 ## Introspection of the model
 
