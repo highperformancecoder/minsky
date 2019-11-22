@@ -30,15 +30,20 @@ Methods can be called also by specifying the arguments as a json array. A single
 ~~~~
 /minsky/convertVarType ["foobar", "flow"]
 /minsky/load "examples/GoodwinLinear02.mky"
+~~~~
 
 An exception to this latter rule is if the argument is a container, such as std::vector, in which case nested arrays are needed to indicate that a single sequence argument is intended ie
+
 ~~~~
 /minsky/intVector [[1,2,3,4]]
 ~~~~
+
 not
+
 ~~~~
 /minsky/intVector [1,2,3,4]
 ~~~~
+
 Overloaded methods are supported, with limitations. Best effort is made to resolve which method overload the JSON arguments refer to, but sometimes this is just not possible. Methods with different numbers of arguments are alwasy resolvable.
 
 ## Introspection of the model
