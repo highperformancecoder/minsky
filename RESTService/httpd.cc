@@ -24,6 +24,7 @@
 
 #include <boost/beast.hpp>
 #include <boost/asio.hpp>
+#include <boost/filesystem.hpp>
 namespace beast=boost::beast;
 namespace http=beast::http;
 namespace net=boost::asio;
@@ -43,6 +44,30 @@ namespace minsky
   LocalMinsky::~LocalMinsky() {}
 }
 
+tuple<string,string> splitFirstComponent(const string& x)
+{
+  if (x.empty() || x[0]!='/') return {};
+  auto i=find(x.begin()+1, x.end(), '/');
+  if (i==x.end())
+    return {x,{}};
+  else
+    return {{x.begin(),i},{i,x.end()}};
+}
+
+static cairo_status_t appendDataToBuffer(void *p, const unsigned char* data, unsigned length)
+{
+  if (!p) return CAIRO_STATUS_WRITE_ERROR;
+  auto& buffer=*static_cast<vector<unsigned char>*>(p);
+  try
+    {
+      buffer.insert(buffer.end(), data, data+length);
+      return CAIRO_STATUS_SUCCESS;
+    }
+  catch (...)
+    {
+      return CAIRO_STATUS_WRITE_ERROR;
+    }
+}
 
 int main(int argc, const char* argv[])
 {
@@ -60,6 +85,17 @@ int main(int argc, const char* argv[])
         return 1;
       }
 
+  // try to find icon resources. Firstly if in source tree
+  auto executableDir=boost::filesystem::path(argv[0]).parent_path();
+  auto groupIcon=executableDir/".."/"gui-tk"/"icons"/"group.svg";
+  if (!exists(groupIcon)) // then look in installation directory
+    groupIcon=executableDir/".."/"gui-tk"/"icons"/"group.svg";
+  if (exists(groupIcon))
+    {
+      minsky::minsky().setGroupIconResource(groupIcon.string());
+      minsky::minsky().setGodleyIconResource((groupIcon.parent_path()/"bank.svg").string());
+    }
+  
   RESTProcess_t registry;
   RESTProcess(registry,"/minsky",minsky::minsky());
 
@@ -74,9 +110,45 @@ int main(int argc, const char* argv[])
       acceptor.accept(socket);
       http::request<http::string_body> req;
       http::read(socket, buffer, req, ec);
-      json_pack_t arguments(json_spirit::mValue{});
+
       try
         {
+          // handle rendering of named components
+          auto components=splitFirstComponent(req.target().to_string());
+          if (get<0>(components)=="/render")
+            {
+              auto c=registry.find(get<1>(components));
+              if (c!=registry.end())
+                {
+                  ecolab::CairoSurface* cs=c->second->getObject<minsky::Canvas>();
+                  // for future, we can try to get other types
+                  // if (!cs) c=c->second->getObject<some other type>();
+                  if (cs)
+                    {
+                      // create an in-memory PNG representation of the object
+                      vector<unsigned char> buffer;
+                      auto tmp=cs->vectorRender
+                        (nullptr, [](const char*,double width,double height)
+                                  {return cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);});
+                      auto err=cairo_surface_write_to_png_stream(tmp->surface(), appendDataToBuffer, &buffer);
+                      if (err!=CAIRO_STATUS_SUCCESS)
+                        throw runtime_error(cairo_status_to_string(err));
+                      
+                      http::response<http::buffer_body> res{http::status::ok, req.version()};
+                      res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                      res.set(http::field::content_type, "image/png");
+                      
+                      res.body().data=buffer.data();
+                      res.body().size=buffer.size();
+                      res.body().more=false;
+                      res.keep_alive(req.keep_alive());
+                      http::write(socket, res, ec);
+                      continue;
+                    }
+                }
+            }
+      
+          json_pack_t arguments(json_spirit::mValue{});
           switch (req.method())
             {
             case http::verb::head:
