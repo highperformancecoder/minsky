@@ -28,7 +28,7 @@ To compile Minsky, you will need a suitable posix compliant system, [with a numb
 
 ## Using the REST Service
 
-Notes on using the [RESTService].
+Notes on using the [REST Service](RESTService.md).
 
 ## Roadmap
 
