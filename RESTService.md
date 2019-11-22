@@ -19,7 +19,7 @@ There are currently two REST servers available in the RESTService branch
    
 ## The Minsky model
 The leadin string /minsky on the URI introduces the global minsky model.
-The available attributes and methods are described in [Minsky's API](https://minsky.sourceforge.net/doxydoc/html/). 
+The available attributes and methods are described in [Minsky's API](https://minsky.sourceforge.io/doxydoc/html/). 
 
 ## Attributes
 An attribute can be accessed as a getter (REST arguments is null) or a setter (REST argument contains a suitable JSON encoded value) (see previous /minsky/t example).
