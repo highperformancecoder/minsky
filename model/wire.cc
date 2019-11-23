@@ -464,10 +464,17 @@ namespace
     assert(c.size()>=4);
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
-    else
-      for (size_t i=0; i<c.size()-1; i+=2)
-        if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y))
-           return true;
+    else {
+	  // fixes for tickets 1079 and 1085			
+      assert(c.size()%2==0);
+      unsigned n=0; // nearest index
+      float closestD1=d2(c[0],c[1],x,y), closestD2=d2(c[c.size()-2],c[c.size()-1],x,y);
+      for (size_t i=0; i<c.size()-1; i+=2) {
+         float d=d2(c[i],c[i+1],x,y);
+         if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y) && (d < closestD1 || d < closestD2))      
+            return true;         
+		}
+    }
     return false;
   }
 
