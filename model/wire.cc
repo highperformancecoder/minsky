@@ -464,10 +464,40 @@ namespace
     assert(c.size()>=4);
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
-    else
+    else {
+	  // fixes for tickets 1079 and 1085			
+      assert(c.size()%2==0);
+      unsigned n=0; // nearest index
+      float closestD=d2(c[c.size()/2],c[c.size()/2+1],x,y);
       for (size_t i=0; i<c.size()-1; i+=2)
-        if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y))
-           return true;
+        {
+          float d=d2(c[i],c[i+1],x,y);
+          if (d<closestD)
+            {
+              closestD=d;
+              n=i;
+            }
+        }     
+      // now work out if we are near mid handles
+      if (n>0)
+        {	 
+          float mx=0.5*(c[n]+c[n-2]), my=0.5*(c[n+1]+c[n-1]);
+          float dm=d2(mx,my,x,y);
+          if (n==c.size()-2 || dm<closestD) { 
+            return (segNear(mx,my,c[n],c[n+1],x,y));
+	      }
+        } 
+      if (n<c.size()-3)
+        {
+          float mx=0.5*(c[n+2]+c[n]), my=0.5*(c[n+3]+c[n+1]);
+          float dm=d2(mx,my,x,y);
+          if (n==0 || dm<closestD) {
+            return (segNear(c[n],c[n+1],mx,my,x,y)); 
+	      }
+        }   
+      // make sure centre handles can be selected too  
+      return (segNear(c[n],c[n+1],c[n+2],c[n+3],x,y));                
+    }
     return false;
   }
 
