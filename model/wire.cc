@@ -136,6 +136,23 @@ namespace minsky
  
 namespace
 {
+ // For ticket 991. Returns coordinate pairs for all handles on a curved wire	
+ vector<pair<float,float>> allHandleCoords(vector<float> coords) {
+        
+        vector<pair<float,float>> points(coords.size()-1);
+        for (size_t i = 0; i < points.size(); i++) {
+			if (i%2 == 0) {
+				points[i].first = coords[i];
+				points[i].second = coords[i+1];
+			}
+			else {
+				points[i].first = 0.5*(coords[i-1]+coords[i+1]);
+				points[i].second = 0.5*(coords[i]+coords[i+2]);
+			}
+		}		
+		
+   return points;
+ }			
 
 // For ticket 991. Construct tridoagonal matrix A which relates control points c and knots k (curved wire handles): Ac = k.
  vector<vector<float>> constructTriDiag(int length) {
@@ -334,17 +351,7 @@ namespace
    */   
         
         // For ticket 991. Curved wires pass through all handles (knots).
-        vector<pair<float,float>> points(coords.size()-1);
-        for (size_t i = 0; i < points.size(); i++) {
-			if (i%2 == 0) {
-				points[i].first = coords[i];
-				points[i].second = coords[i+1];
-			}
-			else {
-				points[i].first = 0.5*(coords[i-1]+coords[i+1]);
-				points[i].second = 0.5*(coords[i]+coords[i+2]);
-			}
-		}	
+        vector<pair<float,float>> points = allHandleCoords(coords);
        
         int n = points.size()-1;         
         
@@ -465,15 +472,25 @@ namespace
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
     else {
-	  // fixes for tickets 1079 and 1085			
-      assert(c.size()%2==0);
-      unsigned n=0; // nearest index
-      float closestD1=d2(c[0],c[1],x,y), closestD2=d2(c[c.size()-2],c[c.size()-1],x,y);
-      for (size_t i=0; i<c.size()-1; i+=2) {
-         float d=d2(c[i],c[i+1],x,y);
-         if (segNear(c[i],c[i+1],c[i+2],c[i+3],x,y) && (d < closestD1 || d < closestD2))      
-            return true;         
-		}
+	  // fixes for tickets 1079 and 1085
+      vector<pair<float,float>> p=allHandleCoords(c);
+         
+      unsigned k=0; // nearest index
+      float closestD=d2(p[p.size()-1].first,p[p.size()-1].second,x,y);
+      for (size_t i=0; i<p.size()-1; i++)
+        {
+          float d=d2(p[i].first,p[i].second,x,y);
+          if (d<closestD)
+            {
+              closestD=d;
+              k=i;
+            }
+        }
+      
+      // Check for proximity to line segments about index k
+      if (k>0 && k<p.size()-1)  
+        return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));
+      
     }
     return false;
   }
