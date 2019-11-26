@@ -26,9 +26,13 @@ To compile Minsky, you will need a suitable posix compliant system, [with a numb
 - [MacOSX](githubdocs/MacRelease.md)
 - Linux: Linux distributions are managed through the [OpenSUSE build service](https://build.opensuse.org/package/show/home:hpcoder1/minsky) which won't be documented here.
 
+## Using the REST Service
+
+Notes on using the [REST Service](RESTService.md).
+
 ## Roadmap
 
-- Current focus is to bed down the refactored model, and release this as the first Quesnay iteration release (Minsky 2.1). This will include various features to assist pedagogy (marked "Kingston" in the SourceForge ticket tracker).
+- Current focus is on implementing a sparse data representation for tensors, and finalising the Bentham iteration. 
 
-- Support for an online library of models and snippets, via forkable Github repositories.
+- REST Service to support a javascript implementation of Minsky in electron
 
