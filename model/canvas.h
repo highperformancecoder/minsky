@@ -51,6 +51,8 @@ namespace minsky
     void reportDrawTime(double) override;
     void mouseDownCommon(float x, float y);
 
+    /// flag indicating that a redraw is requested, but not yet redrawn
+    bool m_redrawRequested=false;
   public:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock> Timestamp;
     struct Model: public GroupPtr
@@ -236,9 +238,11 @@ namespace minsky
 
     /// adjust canvas so that -ve coordinates appear on canvas
     void recentre();
-    
+
+    /// flag indicating that a redraw is requested, but not yet redrawn
+    bool redrawRequested() const {return m_redrawRequested;}
     /// request a redraw on the screen
-    void requestRedraw() {if (surface().get()) surface()->requestRedraw();}
+    void requestRedraw() {m_redrawRequested=true; if (surface().get()) surface()->requestRedraw();}
   };
 }
 

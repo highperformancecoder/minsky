@@ -716,6 +716,7 @@ namespace minsky
   void Canvas::redrawUpdateRegion()
   {
     if (!surface().get()) return;
+    m_redrawRequested=false;
     auto cairo=surface()->cairo();
     cairo_save(cairo);
     cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
