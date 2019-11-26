@@ -46,27 +46,31 @@ int main()
   RESTProcess(registry,"/minsky",minsky::minsky());
 
   char* c;
-  string cmd;
+  string buffer;
   
   //  while ((c=readline("cmd>"))!=nullptr)
-  while (getline(cin,cmd))
+  while (getline(cin,buffer))
     {
-      //      string cmd=c;
-      cout << cmd << endl;
-      if (cmd[0]!='/')
-        cerr << cmd << "command doesn't starts with /"<<endl;
-      else if (cmd=="/list")
+      //      string buffer=c;
+      if (buffer[0]!='/')
+        cerr << buffer << "command doesn't starts with /"<<endl;
+      else if (buffer=="/list")
         for (auto& i: registry)
           cout << i.first << endl;
       else
         {
           try
             {
+              auto n=buffer.find(' ');
               json_pack_t jin(json_spirit::mValue::null);
-              string t;
-              getline(cin,t);
-              if (!t.empty())
-                read(t,jin);
+              string cmd;
+              if (n==string::npos)
+                cmd=buffer;
+              else
+                { // read argument(s)
+                  cmd=buffer.substr(0,n);
+                  read(buffer.substr(n),jin);
+                }
               write(registry.process(cmd, jin),cout);
               cout << endl;
             }
