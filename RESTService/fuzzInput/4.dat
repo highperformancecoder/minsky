@@ -1,0 +1,8 @@
+# an input file for RESTService suitable for fuzz testing
+/minsky/load "GoodwinLinear02.mky"
+/minsky/model/items/@elem/0/moveTo/@signature
+/minsky/model/items/@elem/0/x
+/minsky/model/items/@elem/0/y
+/minsky/model/items/@elem/0/moveTo [10, 10]
+/minsky/model/items/@elem/0/x
+/minsky/model/items/@elem/0/y

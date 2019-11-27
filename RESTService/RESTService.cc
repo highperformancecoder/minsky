@@ -54,6 +54,7 @@ int main()
       //      string buffer=c;
       if (buffer[0]!='/')
         cerr << buffer << "command doesn't starts with /"<<endl;
+      else if (buffer[0]=='#') continue;
       else if (buffer=="/list")
         for (auto& i: registry)
           cout << i.first << endl;
@@ -71,6 +72,7 @@ int main()
                   cmd=buffer.substr(0,n);
                   read(buffer.substr(n),jin);
                 }
+              cout<<cmd<<"=>";
               write(registry.process(cmd, jin),cout);
               cout << endl;
             }
