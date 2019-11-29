@@ -62,7 +62,7 @@ Container types (eg std::vector, std::map) have some additional properties, intr
 * @insert allows new elements to be inserted into the container
 
 ## enums
- and 
+
 The "enumerators" of an enum can be listed using the /@enum command. /@enum/@list will list available enums. For example, a list of operations can be obtained with
 ~~~~
 /@enum/::minsky::OperationType::Type=>["constant","time","integrate","differentiate","data","ravel","add","subtract","multiply","divide","log","pow","lt","le","eq","min","max","and_","or_","copy","sqrt","exp","ln","sin","cos","tan","asin","acos","atan","sinh","cosh","tanh","abs","floor","frac","not_","sum","product","infimum","supremum","any","all","infIndex","supIndex","runningSum","runningProduct","difference","innerProduct","outerProduct","index","gather","numOps"]
