@@ -40,7 +40,8 @@ SUITE(RESTService)
       auto minskyList=process("/minsky/@list",nullj);
       // count all commands in the registry
       for (auto i: minskyList.get_array())
-        if (!count("/minsky"+i.get_str()))
+        // commands beginning with /@ are special, and must be ignored here
+        if (i.get_str().find("/@")!=0 && !count("/minsky"+i.get_str()))
           CHECK_EQUAL("/minsky"+i.get_str(), "not present");
       // count all commands beginning with /minsky
       string minskyStr="/minsky/";
