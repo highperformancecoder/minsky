@@ -21,8 +21,6 @@ for i in test/00/*.sh; do
     # t0029a.sh tests that saving over a readonly file is prevented. Test doesn't work as root
     elif [ `whoami` = 'root' -a $i = test/00/t0029a.sh ]; then
         su minsky $i &> /dev/null
-    elif [ $i = test/00/t0036a.sh ]; then
-        sh $i 
     else
         sh $i &> /dev/null
     fi
