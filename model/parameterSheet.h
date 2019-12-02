@@ -17,6 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+   Adds a tab to eventually edit parameters in one place
+*/
+
 #ifndef PARAMETERSHEET_H
 #define PARAMETERSHEET_H
 #include <cairoSurfaceImage.h>

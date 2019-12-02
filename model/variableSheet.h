@@ -17,6 +17,10 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+   Adds a tab to eventually edit variables in one place
+*/
+
 #ifndef VARIABLESHEET_H
 #define VARIABLESHEET_H
 #include <cairoSurfaceImage.h>
