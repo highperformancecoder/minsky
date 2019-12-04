@@ -199,7 +199,7 @@ doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ \#*\# core *.d *.cd *.xcd
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd *.gcda *.gcno
