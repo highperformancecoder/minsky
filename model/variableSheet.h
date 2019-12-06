@@ -1,6 +1,7 @@
 /*
-  @copyright Steve Keen 2018
+  @copyright Steve Keen 2019
   @author Russell Standish
+  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it
@@ -15,10 +16,6 @@
 
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/**
-   Adds a tab to eventually edit variables in one place
 */
 
 #ifndef VARIABLESHEET_H
