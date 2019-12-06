@@ -180,7 +180,7 @@ namespace MathDAG
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
-      size_t oldNumElems;
+      size_t oldNumElems=r.numDenseElements();
       // For feature 47
       if (r.index.empty()) oldNumElems=r.numDenseElements();
       else oldNumElems=r.numSparseElements;
