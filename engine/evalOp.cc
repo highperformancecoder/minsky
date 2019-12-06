@@ -34,7 +34,7 @@ using namespace boost::posix_time;
 namespace minsky
 {
 
-  void EvalOpBase::eval(double fv[], const double sv[])                  
+  void EvalOpBase::eval(double fv[], const double sv[])
   {
     assert(out>=0);
     switch (numArgs())
@@ -59,7 +59,7 @@ namespace minsky
       }
 
     // check for NaNs only on scalars. For tensors, NaNs just means
-    // element not present                                                             
+    // element not present
     if (in1.size()==1)
       for (unsigned i=0; i<in1.size(); ++i)
         if (!isfinite(fv[out+i]))
@@ -73,7 +73,7 @@ namespace minsky
               msg+=","+std::to_string(flow2? fv[in2[i][0].idx]: sv[in2[i][0].idx]);
             msg+=")";
             throw runtime_error(msg.c_str());
-          }	        
+          }
   };
 
   /// TODO: handle tensors for implicit methods
@@ -497,7 +497,7 @@ namespace minsky
   {
     if (auto r=dynamic_cast<Ravel*>(state.get()))
       {
-        r->loadDataCubeFromVariable(in);                                 
+        r->loadDataCubeFromVariable(in);
         r->loadDataFromSlice(out);
       }
   }
@@ -521,7 +521,7 @@ namespace minsky
 
   namespace
   {
-    struct OffsetMap: public map<string,map<string,size_t>>                   
+    struct OffsetMap: public map<string,map<string,size_t>>
     {
       vector<string> axes;
       OffsetMap(const VariableValue& v) {
@@ -531,15 +531,14 @@ namespace minsky
             size_t offs=0;
             for (auto& j: i)
               {
-				if (isfinite(boost::any_cast<double>(j)))  
-                  (*this)[i.name][str(j)]=offs;                                    
+                (*this)[i.name][str(j)]=offs;
                 offs+=stride;
               }
             stride*=i.size();
             axes.push_back(i.name);
           }
       }
-      size_t offset(const vector<pair<string,string>>& x) {                    
+      size_t offset(const vector<pair<string,string>>& x) {
         size_t offs=0;
         for (auto& i: x) {
           auto j=find(i.first);
@@ -556,7 +555,7 @@ namespace minsky
     };
 
     template <class F>
-    void apply(const OffsetMap& targetOffs, vector<string> axes, vector<pair<string,string>> index, F f)              
+    void apply(const OffsetMap& targetOffs, vector<string> axes, vector<pair<string,string>> index, F f)
     {
       if (axes.empty())
         f(index);
@@ -583,7 +582,7 @@ namespace minsky
     }
 
     typedef vector<XVector> VVV;
-    void checkAllEntriesPresent(const VVV& x, const VVV& y)                          
+    void checkAllEntriesPresent(const VVV& x, const VVV& y)
     {
       for (auto& i: y)
         if (none_of(x.begin(), x.end(),
@@ -618,7 +617,7 @@ namespace minsky
         if (auto y=dynamic_cast<const ComparableAny<T>*>(&x))
           return *data<*y->data;
         return false;
-      }      
+      }
       any toAny(const string&) const override;
     };
 
@@ -653,7 +652,7 @@ namespace minsky
         dimName(d), lesser(l), greater(g) {}
     };
 
-    struct GetBounds                                                           
+    struct GetBounds
     {
       // like an xvector, but sorted so that labels can be quickly found
       map<string, set<OrderedPtr> > xvector;
@@ -722,7 +721,7 @@ namespace minsky
     };
 
     // generate the in1 offset vector for the generic single argument case
-    void generic1ArgIndices(EvalOpBase& t, const VariableValue& to, const VariableValue& from)                     
+    void generic1ArgIndices(EvalOpBase& t, const VariableValue& to, const VariableValue& from)
     {
       OffsetMap from1Offsets(from);
       apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
@@ -744,11 +743,12 @@ namespace minsky
                              t.in1.push_back(offs1);
                            });
     }
-    
+
+
   }
  
   EvalOpPtr::EvalOpPtr(OperationType::Type op, const std::shared_ptr<OperationBase>& state,
-                       VariableValue& to, const VariableValue& from1, const VariableValue& from2, double fv[], const double sv[])
+                       VariableValue& to, const VariableValue& from1, const VariableValue& from2)
   {
     
       reset(EvalOpBase::create(op));
@@ -767,33 +767,15 @@ namespace minsky
                 e.shape=from1.dims();
                 if (to.xVector!=from1.xVector)
                   to.setXVector(from1.xVector);
-                  
-                  //for (size_t i=0; i<from1.numElements(); ++i)                          
-                  //  t->in1.push_back(i+from1.idx());          
-                          
-                // For feature 47
-                if (from1.index.empty())   
-                  for (size_t i=0; i<from1.numDenseElements(); ++i)                          
-                    t->in1.push_back(i+from1.idx());
-                else for (size_t i=0; i<from1.numSparseElements; ++i)
-					  t->in1.push_back(from1.index[i]+from1.idx());
-
+                for (size_t i=0; i<from1.numElements(); ++i)
+                  t->in1.push_back(i+from1.idx());
                 auto from2Dims=from2.dims();
                 if (from2Dims.size()>0)
-                   {
-				  // For feature 47	   
-                  if (from2.index.empty()) for (size_t i=0; i<from2.numDenseElements(); i+=from2Dims[0])
+                  for (size_t i=0; i<from2.numElements(); i+=from2Dims[0])
                     {
                       t->in2.emplace_back();
                       for (size_t j=0; j<from2Dims[0]; ++j)
-                         t->in2.back().emplace_back(1,i+j+from2.idx()); 
-					}
-                    else for (size_t i=0; i<from2.numSparseElements; i+=from2Dims[0])
-                        {
-						   t->in2.emplace_back();
-						   for (size_t j=0; j<from2Dims[0]; ++j)
-					             t->in2.back().emplace_back(1,i+from2.index[j]+from2.idx());
-						}
+                        t->in2.back().emplace_back(1,i+j+from2.idx());
                     }
                 else
                   t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
@@ -848,20 +830,19 @@ namespace minsky
                 // check that all from2's xvector entries are present in to, and vice versa
                 if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
                 if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
-                
-                // For feature 47            
-                if ((from1.numDenseElements()==1 && from2.numDenseElements()==1) || (from1.numSparseElements==1 && from2.numSparseElements==1))
+            
+                if (from1.numElements()==1 && from2.numElements()==1)
                   {
                     t->in1.push_back(from1.idx());
                     t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
-                    if ((to.numDenseElements()>1 || to.numSparseElements>1) && &to!=&from1 && &to!=&from2)                                  
+                    if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
                       to.setXVector(vector<XVector>());
                     break;
                   }
 
-                OffsetMap from1Offsets(from1), from2Offsets(from2);              
+                OffsetMap from1Offsets(from1), from2Offsets(from2);
 
-                if (to.xVector.empty())                                         
+                if (to.xVector.empty())
                   {
                     vector<XVector> xv;
                     for (auto& i: from1.xVector)
@@ -869,7 +850,7 @@ namespace minsky
                         {
                           // compute the common intersection of shared dimensions,
                           // otherwise broadcast along the others
-                          auto j=from2Offsets.find(i.name);                                  
+                          auto j=from2Offsets.find(i.name);
                           if (j!=from2Offsets.end())
                             {
                               xv.emplace_back(i.name);
@@ -897,7 +878,7 @@ namespace minsky
 
                 GetBounds from1GetBounds(from1.xVector), from2GetBounds(from2.xVector);
                 apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
-                                     { 
+                                     {
                                        t->in1.push_back(from1Offsets.offset(x)+from1.idx());
                                        t->in2.emplace_back();
                                        auto from1Bounds=from1GetBounds(x);
@@ -977,15 +958,9 @@ namespace minsky
             case general: case function: 
                 if (to.idx()==-1 || to.xVector.empty())
                   to.setXVector(from1.xVector);
-                if (to.xVector==from1.xVector) 
-                  { 
-					// For feature 47  
-                    if (from1.index.empty())   
-                      for (size_t i=0; i<from1.numDenseElements(); ++i)                          
-                        t->in1.push_back(i+from1.idx());
-                    else for (size_t i=0; i<from1.numSparseElements; ++i)
-				    	  t->in1.push_back(from1.index[i]+from1.idx());
-                  }
+                if (to.xVector==from1.xVector)
+                    for (size_t i=0; i<from1.numElements(); ++i)
+                      t->in1.push_back(i+from1.idx());
                 else
                   generic1ArgIndices(*t, to, from1);
               break;
@@ -1000,15 +975,8 @@ namespace minsky
                         break;
                       stride*=j.size();
                     }
-                      //for (size_t i=0; i<from1.numElements(); ++i)
-                      //  t->in1.push_back(i*stride+from1.idx());
-                      
-                      // For feature 47
-                     if (from1.index.empty())   
-                       for (size_t i=0; i<from1.numDenseElements(); ++i)                          
-                         t->in1.push_back(i*stride+from1.idx());
-                     else for (size_t i=0; i<from1.numSparseElements; ++i)
-				     	  t->in1.push_back(from1.index[i]*stride+from1.idx());					  					  
+                for (size_t i=0; i<from1.numElements(); ++i)
+                  t->in1.push_back(i*stride+from1.idx());
               }
               break;
             case binop: assert(false); break; // shouldn't be here
@@ -1016,24 +984,12 @@ namespace minsky
               switch (op)
                 {
                 case index:
-                  {  
-					vector<unsigned> targetDims;  
-                    if (from1.index.empty()) targetDims={unsigned(from1.rank()),unsigned(from1.numDenseElements())};
-                    else targetDims={unsigned(from1.rank()),unsigned(from1.numSparseElements)};
+                  {
+                    vector<unsigned> targetDims{unsigned(from1.rank()),unsigned(from1.numElements())};
                     if (to.dims()!=targetDims)
                       to.dims(targetDims);
-                    
-                    //for (size_t i=0; i < targetDims[1]; ++i)     // from1.numElements()
-                    //  t->in1.push_back(i+from1.idx());
-                    
-                    
-                    // For feature 47
-                    if (from1.index.empty())   
-                      for (size_t i=0; i<from1.numDenseElements(); ++i)                          
-                        t->in1.push_back(i+from1.idx());
-                    else for (size_t i=0; i<from1.numSparseElements; ++i)
-				    	  t->in1.push_back(from1.index[i]+from1.idx());
-
+                    for (size_t i=0; i < targetDims[1]; ++i)
+                      t->in1.push_back(i+from1.idx());                 
                     auto& e=dynamic_cast<EvalOp<index>&>(*t);
                     e.shape=from1.dims();
                   }
@@ -1051,11 +1007,11 @@ namespace minsky
       switch (OperationType::classify(op))
         {
         case general: case binop: case function: case scan:
-          assert(t->numArgs()<1 || to.numDenseElements()==t->in1.size() || to.numSparseElements==t->in1.size());
-          assert(t->numArgs()<2 || to.numDenseElements()==t->in2.size() || to.numSparseElements==t->in2.size());
+          assert(t->numArgs()<1 || to.numElements()==t->in1.size());
+          assert(t->numArgs()<2 || to.numElements()==t->in2.size());
           break;
         case reduction:
-          assert(t->numArgs()==1 && (to.numDenseElements()==1 || to.numSparseElements==1));
+          assert(t->numArgs()==1 && to.numElements()==1);
           break;
         case tensor:
           break;
@@ -1077,9 +1033,9 @@ namespace minsky
   }
 
   template<OperationType::Type T>
-  void ScanEvalOp<T>::eval(double fv[], const double sv[])                                      
+  void ScanEvalOp<T>::eval(double fv[], const double sv[])
   {
-    // input vector assumed to be consecutive locations starting at in1[0]                                 
+    // input vector assumed to be consecutive locations starting at in1[0]
     const double* src=this->flow1? &fv[this->in1[0]]: &sv[this->in1[0]];
     for (size_t i0=0; i0<this->in1.size(); i0+=dimSz*stride) // loop over outer dimensions
       for (size_t i=i0; i<i0+stride; ++i) // loop over inner dimensions
@@ -1094,7 +1050,7 @@ namespace minsky
   }
 
   namespace {
-    inline vector<unsigned> unravelIndex(const vector<unsigned>& shape, size_t i)    
+    inline vector<unsigned> unravelIndex(const vector<unsigned>& shape, size_t i) 
     {
       vector<unsigned> r;
       size_t stride=1;
@@ -1107,7 +1063,7 @@ namespace minsky
     }
   }
   
-  void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])   
+  void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
   {
     const double* src=this->flow1? fv: sv;
     size_t o=out;
@@ -1144,7 +1100,7 @@ namespace minsky
         }
   }
 
-  void EvalOp<minsky::OperationType::gather>::eval(double fv[], const double sv[])          
+  void EvalOp<minsky::OperationType::gather>::eval(double fv[], const double sv[])
   {
     const double* src=this->flow1? fv: sv;
     const double* idx=this->flow2? fv: sv;

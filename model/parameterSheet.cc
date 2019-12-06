@@ -1,7 +1,6 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2018
   @author Russell Standish
-  @author Wynand Dednam
   This file is part of Minsky.
 
   Minsky is free software: you can redistribute it and/or modify it

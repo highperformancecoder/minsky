@@ -372,7 +372,7 @@ namespace minsky
   void PlotWidget::addPlotPt(double t)
   {
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if ((yvars[pen].numDenseElements()==1 || yvars[pen].numSparseElements==1) && yvars[pen].idx()>=0)
+      if (yvars[pen].numElements()==1 && yvars[pen].idx()>=0)
         {
           double x,y;
           switch (xvars.size())
@@ -427,8 +427,7 @@ namespace minsky
         }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
-      // For feature 47
-      if (pen<yvars.size() && (yvars[pen].numDenseElements()>1 || yvars[pen].numSparseElements>1) && yvars[pen].idx()>=0)
+      if (pen<yvars.size() && yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
         {
           auto& yv=yvars[pen];
           auto d=yv.dims();
@@ -489,40 +488,21 @@ namespace minsky
             }
           
           // higher rank y objects treated as multiple y vectors to plot
-          
-          // For feature 47
-          if (yv.index.empty())
-            for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numDenseElements()); j+=d[0])
-              {
-                setPen(extraPen, x, yv.begin()+j, d[0]);
-                if (pen>=numLines)
-                  assignSide(extraPen,Side::right);
-               string label;
-                size_t stride=d[0];
-                for (size_t i=1; i<yv.xVector.size(); ++i)
-                  {
-                    label+=str(yv.xVector[i][(j/stride)%d[i]])+" ";
-                    stride*=d[i];
-                  }
-                labelPen(extraPen,label);
-                extraPen++;
-              }
-           else
-            for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numSparseElements); j+=d[0])
-              {
-                setPen(extraPen, x, yv.begin()+j, d[0]);
-                if (pen>=numLines)
-                  assignSide(extraPen,Side::right);
-               string label;
-                size_t stride=d[0];
-                for (size_t i=1; i<yv.xVector.size(); ++i)
-                  {
-                    label+=str(yv.xVector[i][(j/stride)%d[i]])+" ";
-                    stride*=d[i];
-                  }
-                labelPen(extraPen,label);
-                extraPen++;
-              }           
+          for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
+            {
+              setPen(extraPen, x, yv.begin()+j, d[0]);
+              if (pen>=numLines)
+                assignSide(extraPen,Side::right);
+             string label;
+              size_t stride=d[0];
+              for (size_t i=1; i<yv.xVector.size(); ++i)
+                {
+                  label+=str(yv.xVector[i][(j/stride)%d[i]])+" ";
+                  stride*=d[i];
+                }
+              labelPen(extraPen,label);
+              extraPen++;
+            }
         }
     scalePlot();
   }
@@ -561,47 +541,6 @@ namespace minsky
     xvars.clear();
     yvars.clear();
     xminVar=xmaxVar=yminVar=ymaxVar=y1minVar=y1maxVar=VariableValue();
-  }
-
-    cairo::SurfacePtr PlotWidget::vectorRender(const char* filename, cairo_surface_t* (*s)(const char *,double,double))
-  {
-    cairo::SurfacePtr tmp(new cairo::Surface(cairo_recording_surface_create
-                                      (CAIRO_CONTENT_COLOR_ALPHA,nullptr)));
-    surface.swap(tmp);
-    redraw(0,0,500,500);
-    double left=surface->left(), top=surface->top();
-    surface->surface
-      (s(filename, surface->width(), surface->height()));
-    if (s==cairo_ps_surface_create)
-      cairo_ps_surface_set_eps(surface->surface(),true);
-    cairo_surface_set_device_offset(surface->surface(), -left, -top);
-    redraw(0,0,500,500);
-    surface.swap(tmp);
-    auto status=cairo_surface_status(tmp->surface());
-    if (status!=CAIRO_STATUS_SUCCESS)
-      throw error("cairo rendering error: %s",cairo_status_to_string(status));
-    return tmp;
-  }
-  
-  void PlotWidget::renderToPS(const char* filename)
-  {vectorRender(filename,cairo_ps_surface_create);}
-
-  void PlotWidget::renderToPDF(const char* filename)
-  {vectorRender(filename,cairo_pdf_surface_create);}
-
-  void PlotWidget::renderToSVG(const char* filename)
-  {vectorRender(filename,cairo_svg_surface_create);}
-  
-  namespace
-  {
-    cairo_surface_t* pngDummy(const char*,double width,double height)
-    {return cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);}
-  }
-  
-  void PlotWidget::renderToPNG(const char* filename)
-  {
-    auto tmp=vectorRender(filename,pngDummy);
-    cairo_surface_write_to_png(tmp->surface(),filename);
   }
 
 }

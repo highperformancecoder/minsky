@@ -22,8 +22,6 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 #include <error.h>
-#include <map>
-#include <algorithm>
 
 using namespace ecolab;
 using namespace std;
@@ -34,17 +32,14 @@ namespace minsky
 
   const VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
   {
-	 bool realloc;
-	 // For feature 47
-     if (numSparseElements==0) realloc=numDenseElements()!=x.data.size();  
-     else realloc=numSparseElements!=x.data.size();
-     if (dims()!=x.dims) dims(x.dims);
-     if (realloc) allocValue(); 
-     memcpy(&valRef(), &x.data[0], x.data.size()*sizeof(x.data[0]));
-     return *this;
+    bool realloc=numElements()!=x.data.size();
+    if (dims()!=x.dims) dims(x.dims);
+    if (realloc) allocValue();
+    memcpy(&valRef(), &x.data[0], x.data.size()*sizeof(x.data[0]));
+    return *this;
   }
-   
-  VariableValue& VariableValue::allocValue()                                        
+  
+  VariableValue& VariableValue::allocValue()
   {
     switch (m_type)
       {
@@ -56,25 +51,20 @@ namespace minsky
       case constant:
       case parameter:
         m_idx=ValueVector::flowVars.size();
-        //ValueVector::flowVars.resize(ValueVector::flowVars.size()+numElements());
-        // For feature 47
-		if (index.empty()) ValueVector::flowVars.resize(ValueVector::flowVars.size()+numDenseElements());
-		else ValueVector::flowVars.resize(ValueVector::flowVars.size()+numSparseElements);
+        ValueVector::flowVars.resize
+          (ValueVector::flowVars.size()+numElements());
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
-        //ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements());
-        // For feature 47
-		if (index.empty()) ValueVector::stockVars.resize(ValueVector::stockVars.size()+numDenseElements());
-		else ValueVector::stockVars.resize(ValueVector::stockVars.size()+numSparseElements);
+        ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements());
         break;
       default: break;
       }
     return *this;
   }
 
-  double VariableValue::valRef() const                                     
+  double VariableValue::valRef() const
   {
     switch (m_type)
       {
@@ -95,7 +85,7 @@ namespace minsky
     return 0;
   }
   
-  double& VariableValue::valRef()                                         
+  double& VariableValue::valRef()
   {
     if (m_idx==-1)
       allocValue();
@@ -105,22 +95,12 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        // For feature 47
-        if (index.empty())
-          if (size_t(m_idx+numDenseElements())<=ValueVector::flowVars.size())
-            return ValueVector::flowVars[m_idx]; 
-        else
-          if (size_t(m_idx+numSparseElements)<=ValueVector::flowVars.size())
-             return ValueVector::flowVars[m_idx]; 
+        if (size_t(m_idx+numElements())<=ValueVector::flowVars.size())
+          return ValueVector::flowVars[m_idx];
       case stock:
-      case integral: 
-        // For feature 47
-        if (index.empty())
-          if (size_t(m_idx+numDenseElements())<=ValueVector::stockVars.size())
-            return ValueVector::stockVars[m_idx]; 
-        else
-          if (size_t(m_idx+numSparseElements)<=ValueVector::stockVars.size())
-             return ValueVector::stockVars[m_idx];             
+      case integral:
+        if (size_t(m_idx+numElements())<=ValueVector::stockVars.size())
+          return ValueVector::stockVars[m_idx];
         break;
       default: break;
       }
@@ -131,7 +111,7 @@ namespace minsky
   (const VariableValues& v, set<string>& visited) const
   {
     if (!tensorInit.data.empty())
-      return tensorInit;    
+      return tensorInit;
     
     FlowCoef fc(init);
     if (trimWS(fc.name).empty())
@@ -211,8 +191,6 @@ namespace minsky
           }
       }
   }
-  
-
 
   void VariableValue::reset(const VariableValues& v)
   {
@@ -340,7 +318,7 @@ namespace minsky
   string expMultiplier(int exp)
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
-  void VariableValue::makeXConformant(const VariableValue& a)          
+  void VariableValue::makeXConformant(const VariableValue& a)
   {
     auto xv=xVector;
     for (auto& i: a.xVector)
@@ -382,11 +360,11 @@ namespace minsky
           xv.push_back(i);
       }
     setXVector(move(xv));
-    if (numDenseElements()==0 || numSparseElements==0)
+    if (numElements()==0)
       throw error("tensors nonconformant");
-  }  
+  }
 
-  void VariableValue::computeStrideAndSize(const string& dim, size_t& stride, size_t& size) const                   
+  void VariableValue::computeStrideAndSize(const string& dim, size_t& stride, size_t& size) const
   {
     stride=1;
     if (dim.empty())
@@ -405,22 +383,22 @@ namespace minsky
   }
 
 
-  void VariableValue::exportAsCSV(const string& filename, const string& comment) const                 
+  void VariableValue::exportAsCSV(const string& filename, const string& comment) const
   {
     ofstream of(filename);
     if (!comment.empty())
       of<<"\""<<comment<<"\"\n";
     size_t i=0;
-    for (auto& i: xVector)                                          
+    for (auto& i: xVector)
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
-    for (auto d=begin(); d!=end(); ++i, ++d)                          
-      if (isfinite(*d))                                                      
+    for (auto d=begin(); d!=end(); ++i, ++d)
+      if (isfinite(*d))
         {
-          size_t stride=1;                                                      
+          size_t stride=1;
           for (size_t j=0; j<xVector.size(); ++j)
             {
-              of << "\""<<str(xVector[j][(i/stride) % xVector[j].size()]) << "\",";      
+              of << "\""<<str(xVector[j][(i/stride) % xVector[j].size()]) << "\",";
               stride*=xVector[j].size();
             }
           of << *d << endl;

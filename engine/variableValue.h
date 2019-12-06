@@ -26,8 +26,6 @@
 #include "constMap.h"
 #include "str.h"
 #include <boost/regex.hpp>
-#include <boost/any.hpp>
-#include <map>
 
 namespace minsky
 {
@@ -69,8 +67,8 @@ namespace minsky
     CLASSDESC_ACCESS(VariableValue);
   private:
     Type m_type;
-    int m_idx; /// index into value vector                                    
-    double& valRef();                                                       
+    int m_idx; /// index into value vector
+    double& valRef(); 
     double valRef() const;
     std::vector<unsigned> m_dims;
 
@@ -109,21 +107,16 @@ namespace minsky
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
-    double value(size_t i=0) const {return *(begin()+i);}                              
-    int idx() const {return m_idx;}   
+    double value(size_t i=0) const {return *(begin()+i);}
+    int idx() const {return m_idx;}
 
     typedef double* iterator;
     typedef const double* const_iterator;
-    
-    
     iterator begin() {return &valRef();}
     const_iterator begin() const {return &const_cast<VariableValue*>(this)->valRef();}
-	iterator end() {if (!tensorInit.data.empty()) return begin()+numDenseElements();
-		            else return begin()+numSparseElements;}
-	const_iterator end() const {if (!tensorInit.data.empty()) return begin()+numDenseElements();
-		                        else return begin()+numSparseElements;}
- 
-	
+    iterator end() {return begin()+numElements();}
+    const_iterator end() const {return begin()+numElements();}
+    
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
     std::vector<unsigned> dims() const {
@@ -145,41 +138,31 @@ namespace minsky
         }
       setXVector(std::move(xv));
       return d;
-    }    
-    
-    // For feature 47
-    std::vector<size_t> index;
-    
-    double sparsityRatio=0.0;       
-    
-    size_t numDenseElements() const {                                                
+    }
+    size_t numElements() const {
       size_t s=1;
       for (auto& i: xVector) s*=i.size();
       return s;
     }
-    
-    size_t numSparseElements = 0.0;
-    
-    template <class T>                                            
-    void setXVector_(T x) {    
-      size_t prevNumElems;
-      if (sparsityRatio <= 0.5) prevNumElems=numDenseElements();
-      else prevNumElems=numSparseElements;    
-      m_xVector=x;    
-      if (idx()==-1 || (prevNumElems<numDenseElements() || prevNumElems<numSparseElements))    
-        allocValue();    
-    }    
+
+    template <class T>
+    void setXVector_(T x) {
+      size_t prevNumElems=numElements();
+      m_xVector=x;
+      if (idx()==-1 || prevNumElems<numElements())
+        allocValue();
+    }
     void setXVector(XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
     void setXVector(const XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
- 
+
     
     /// removes elements of xVector not found in \a
-    void makeXConformant(const VariableValue& a);                        
+    void makeXConformant(const VariableValue& a);
 
     /// compute stride and dimension size of dimension \a dim
     /// @throw if dimension \a dim doesn't exist
     /// if \a dim is empty, defaults to first dimension
-    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;                       
+    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
@@ -205,7 +188,6 @@ namespace minsky
       std::set<std::string> visited;
       return initValue(v, visited);
     }
-        
     void reset(const VariableValues&); 
 
     /// check that name is a valid valueId (useful for assertions)
