@@ -342,16 +342,15 @@ namespace minsky
     string buf;
     typedef vector<string> Key;
     map<Key,double> tmpData;
-    multimap<Key,double> tmpAll; 
     map<Key,int> tmpCnt;
     vector<map<string,size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
     vector<XVector> xVector;
     vector<string> horizontalLabels;
-	       
+
     for (size_t i=0; i<spec.nColAxes(); ++i)
       if (spec.dimensionCols.count(i))
-        xVector.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+        xVector.emplace_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
 
     try
       {
@@ -403,20 +402,7 @@ namespace minsky
                       if (c==spec.decSeparator)
                         s+='.';
                       else if (!isspace(c) && c!='.' && c!=',')
-                        s+=c;                    
-                    
-                    // for feature 47, stores all values, duplicates included in a temporary map
-                    auto j=tmpAll.find(key);
-                    try
-                     {
-                      double vv=stod(s);    
-                                          
-                      if (j==tmpAll.end()) tmpAll.emplace(pair<Key,double>(key,vv));  
-				     }
-				     catch (...)
-                      {
-                        tmpAll.insert(pair<Key,double>(key,spec.missingValue));
-                      }
+                        s+=c;
 
                     auto i=tmpData.find(key);
                     try
@@ -424,7 +410,7 @@ namespace minsky
                         double v=stod(s);
                         if (i==tmpData.end())
                           tmpData.emplace(key,v);
-                        else	
+                        else
                           switch (spec.duplicateKeyAction)
                             {
                             case DataSpec::throwException:
@@ -461,85 +447,26 @@ namespace minsky
                   }
               }
           }
-                  
-        v.sparsityRatio =  static_cast<double>(1.0-static_cast<double>(tmpData.size())/v.numDenseElements()); 
-		
-		// for feature 47
-		if (v.sparsityRatio <= 0.5) 
-	    {
-          v.setXVector(xVector);          
-          if (!cminsky().checkMemAllocation(v.numDenseElements()*sizeof(double)))
-            throw runtime_error("memory threshold exceeded");
-		  v.index.clear();	            
-          // stash the data into vv tensorInit field
-          v.tensorInit.data.clear();
-          v.tensorInit.data.resize(v.numDenseElements(), spec.missingValue);  
-          auto dims=v.tensorInit.dims=v.dims();    
-          for (auto& i: tmpData)
-            {
-              size_t idx=0;
-              assert (dims.size()==i.first.size());
-              assert(dimLabels.size()==dims.size());
-              for (int j=dims.size()-1; j>=0; --j)
-                {
-                  assert(dimLabels[j].count(i.first[j]));
-                  idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                }
-              v.tensorInit.data[idx]=i.second;  
-            }
-        }    
-        else 
-	    {	
-		  v.numSparseElements=tmpData.size();	
-          v.setXVector(xVector);          
-          if (!cminsky().checkMemAllocation(v.numSparseElements*sizeof(double)))
-            throw runtime_error("memory threshold exceeded");		  
-		  v.index.clear();			
-		  v.tensorInit.data.clear();	
-		  v.tensorInit.data.resize(v.numSparseElements, spec.missingValue); 	
-		  vector<double> tempData;
-          auto dims=v.tensorInit.dims=v.dims();    
-          for (auto& i: tmpData)
-            {
-              size_t idx=0;
-              assert (dims.size()==i.first.size());
-              assert(dimLabels.size()==dims.size());
-              for (int j=dims.size()-1; j>=0; --j)
-                {
-                  assert(dimLabels[j].count(i.first[j]));
-                  idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                }
-               if (!isnan(i.second)) {
-                 v.index.push_back(idx);
-                 tempData.push_back(i.second);
-               }                   
-            }
-           
-            // for feature 47           
-            for (auto& i: tmpAll)
-            {
-			  size_t hIdx=0;	
-              assert (dims.size()==i.first.size());
-              assert(dimLabels.size()==dims.size());
-              for (int j=dims.size()-1; j>=0; --j)
-                {
-                  assert(dimLabels[j].count(i.first[j]));
-                  hIdx = (hIdx*dims[j]) + dimLabels[j][i.first[j]];
-                }                   
-                auto idx = find(v.index.begin(),v.index.end(),hIdx);   
-                // For feature 47. Stores only non-Nan elements from data in tensorInit.data                 
-                if (idx != v.index.end() && *idx<v.tensorInit.data.size()) v.tensorInit.data[*idx]=tempData[*idx];  
-             }               
-            
-            tempData.clear();   
-            
-            assert(tempData.size()*v.tensorInit.data.size()==0);
-            						  
-            if (v.tensorInit.data.size()!=v.numSparseElements) throw std::runtime_error("the number of non-NaN elements should be "+str(v.numSparseElements)+" but is "+str(v.tensorInit.data.size())+ " in a hypercube of "+str(v.numDenseElements())+" elements");
-            v.setXVector(xVector);
-            
-     	}          
-
+  
+        v.setXVector(xVector);
+        if (!cminsky().checkMemAllocation(v.numElements()*sizeof(double)))
+          throw runtime_error("memory threshold exeeded");
+        // stash the data into vv tensorInit field
+        v.tensorInit.data.clear();
+        v.tensorInit.data.resize(v.numElements(), spec.missingValue);
+        auto dims=v.tensorInit.dims=v.dims();    
+        for (auto& i: tmpData)
+          {
+            size_t idx=0;
+            assert (dims.size()==i.first.size());
+            assert(dimLabels.size()==dims.size());
+            for (int j=dims.size()-1; j>=0; --j)
+              {
+                assert(dimLabels[j].count(i.first[j]));
+                idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+              }
+            v.tensorInit.data[idx]=i.second;
+          }
       }
     catch (const std::bad_alloc&)
       { // replace with a more user friendly error message
