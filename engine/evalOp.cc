@@ -767,15 +767,33 @@ namespace minsky
                 e.shape=from1.dims();
                 if (to.xVector!=from1.xVector)
                   to.setXVector(from1.xVector);
-                for (size_t i=0; i<from1.numElements(); ++i)
-                  t->in1.push_back(i+from1.idx());
+                  
+                  //for (size_t i=0; i<from1.numElements(); ++i)                          
+                  //  t->in1.push_back(i+from1.idx());          
+                          
+                // For feature 47
+                if (from1.index.empty())   
+                  for (size_t i=0; i<from1.numDenseElements(); ++i)                          
+                    t->in1.push_back(i+from1.idx());
+                else for (size_t i=0; i<from1.numSparseElements; ++i)
+					  t->in1.push_back(from1.index[i]+from1.idx());
+					  
                 auto from2Dims=from2.dims();
                 if (from2Dims.size()>0)
-                  for (size_t i=0; i<from2.numElements(); i+=from2Dims[0])
+                   {
+				  // For feature 47	   
+                  if (from2.index.empty()) for (size_t i=0; i<from2.numDenseElements(); i+=from2Dims[0])
                     {
                       t->in2.emplace_back();
                       for (size_t j=0; j<from2Dims[0]; ++j)
-                        t->in2.back().emplace_back(1,i+j+from2.idx());
+                         t->in2.back().emplace_back(1,i+j+from2.idx()); 
+					}
+                    else for (size_t i=0; i<from2.numSparseElements; i+=from2Dims[0])
+                        {
+						   t->in2.emplace_back();
+						   for (size_t j=0; j<from2Dims[0]; ++j)
+					             t->in2.back().emplace_back(1,i+from2.index[j]+from2.idx());
+						}
                     }
                 else
                   t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
@@ -831,11 +849,12 @@ namespace minsky
                 if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
                 if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
             
-                if (from1.numElements()==1 && from2.numElements()==1)
+                // For feature 47            
+                if ((from1.numDenseElements()==1 && from2.numDenseElements()==1) || (from1.numSparseElements==1 && from2.numSparseElements==1))
                   {
                     t->in1.push_back(from1.idx());
                     t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
-                    if (to.numElements()>1 && &to!=&from1 && &to!=&from2)
+                    if ((to.numDenseElements()>1 || to.numSparseElements>1) && &to!=&from1 && &to!=&from2)                                  
                       to.setXVector(vector<XVector>());
                     break;
                   }
@@ -959,8 +978,14 @@ namespace minsky
                 if (to.idx()==-1 || to.xVector.empty())
                   to.setXVector(from1.xVector);
                 if (to.xVector==from1.xVector)
-                    for (size_t i=0; i<from1.numElements(); ++i)
-                      t->in1.push_back(i+from1.idx());
+                  { 
+					// For feature 47  
+                    if (from1.index.empty())   
+                      for (size_t i=0; i<from1.numDenseElements(); ++i)                          
+                        t->in1.push_back(i+from1.idx());
+                    else for (size_t i=0; i<from1.numSparseElements; ++i)
+				    	  t->in1.push_back(from1.index[i]+from1.idx());
+                  }
                 else
                   generic1ArgIndices(*t, to, from1);
               break;
@@ -975,8 +1000,15 @@ namespace minsky
                         break;
                       stride*=j.size();
                     }
-                for (size_t i=0; i<from1.numElements(); ++i)
-                  t->in1.push_back(i*stride+from1.idx());
+                      //for (size_t i=0; i<from1.numElements(); ++i)
+                      //  t->in1.push_back(i*stride+from1.idx());
+                      
+                      // For feature 47
+                     if (from1.index.empty())   
+                       for (size_t i=0; i<from1.numDenseElements(); ++i)                          
+                         t->in1.push_back(i*stride+from1.idx());
+                     else for (size_t i=0; i<from1.numSparseElements; ++i)
+				     	  t->in1.push_back(from1.index[i]*stride+from1.idx());	
               }
               break;
             case binop: assert(false); break; // shouldn't be here
@@ -985,11 +1017,23 @@ namespace minsky
                 {
                 case index:
                   {
-                    vector<unsigned> targetDims{unsigned(from1.rank()),unsigned(from1.numElements())};
+					vector<unsigned> targetDims;  
+                    if (from1.index.empty()) targetDims={unsigned(from1.rank()),unsigned(from1.numDenseElements())};
+                    else targetDims={unsigned(from1.rank()),unsigned(from1.numSparseElements)};
                     if (to.dims()!=targetDims)
                       to.dims(targetDims);
-                    for (size_t i=0; i < targetDims[1]; ++i)
-                      t->in1.push_back(i+from1.idx());                 
+                    
+                    //for (size_t i=0; i < targetDims[1]; ++i)     // from1.numElements()
+                    //  t->in1.push_back(i+from1.idx());
+                    
+                    
+                    // For feature 47
+                    if (from1.index.empty())   
+                      for (size_t i=0; i<from1.numDenseElements(); ++i)                          
+                        t->in1.push_back(i+from1.idx());
+                    else for (size_t i=0; i<from1.numSparseElements; ++i)
+				    	  t->in1.push_back(from1.index[i]+from1.idx());
+				    	       
                     auto& e=dynamic_cast<EvalOp<index>&>(*t);
                     e.shape=from1.dims();
                   }
@@ -1007,11 +1051,11 @@ namespace minsky
       switch (OperationType::classify(op))
         {
         case general: case binop: case function: case scan:
-          assert(t->numArgs()<1 || to.numElements()==t->in1.size());
-          assert(t->numArgs()<2 || to.numElements()==t->in2.size());
+          assert(t->numArgs()<1 || to.numDenseElements()==t->in1.size() || to.numSparseElements==t->in1.size());
+          assert(t->numArgs()<2 || to.numDenseElements()==t->in2.size() || to.numSparseElements==t->in2.size());
           break;
         case reduction:
-          assert(t->numArgs()==1 && to.numElements()==1);
+          assert(t->numArgs()==1 && (to.numDenseElements()==1 || to.numSparseElements==1));
           break;
         case tensor:
           break;
