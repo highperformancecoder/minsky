@@ -33,9 +33,7 @@ namespace minsky
   const VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
   {
 	 bool realloc;
-	 // For feature 47
-     if (numSparseElements==0) realloc=numDenseElements()!=x.data.size();  
-     else realloc=numSparseElements!=x.data.size();
+     realloc= dataSize() != x.data.size();  
      if (dims()!=x.dims) dims(x.dims);
      if (realloc) allocValue(); 
      memcpy(&valRef(), &x.data[0], x.data.size()*sizeof(x.data[0]));
@@ -43,7 +41,7 @@ namespace minsky
   }
    
   VariableValue& VariableValue::allocValue()                                        
-  {
+  {    
     switch (m_type)
       {
       case undefined:
@@ -54,18 +52,12 @@ namespace minsky
       case constant:
       case parameter:
         m_idx=ValueVector::flowVars.size();
-        //ValueVector::flowVars.resize(ValueVector::flowVars.size()+numElements());
-        // For feature 47
-		if (index.empty()) ValueVector::flowVars.resize(ValueVector::flowVars.size()+numDenseElements());
-		else ValueVector::flowVars.resize(ValueVector::flowVars.size()+numSparseElements);
+		ValueVector::flowVars.resize(ValueVector::flowVars.size()+dataSize());
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
-        //ValueVector::stockVars.resize(ValueVector::stockVars.size()+numElements());
-        // For feature 47
-		if (index.empty()) ValueVector::stockVars.resize(ValueVector::stockVars.size()+numDenseElements());
-		else ValueVector::stockVars.resize(ValueVector::stockVars.size()+numSparseElements);
+		ValueVector::stockVars.resize(ValueVector::stockVars.size()+dataSize());
         break;
       default: break;
       }
@@ -103,22 +95,12 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        // For feature 47
-        if (index.empty())
-          if (size_t(m_idx+numDenseElements())<=ValueVector::flowVars.size())
-            return ValueVector::flowVars[m_idx]; 
-        else
-          if (size_t(m_idx+numSparseElements)<=ValueVector::flowVars.size())
-             return ValueVector::flowVars[m_idx]; 
+        if (size_t(m_idx+dataSize())<=ValueVector::flowVars.size())
+          return ValueVector::flowVars[m_idx]; 
       case stock:
       case integral: 
-        // For feature 47
-        if (index.empty())
-          if (size_t(m_idx+numDenseElements())<=ValueVector::stockVars.size())
-            return ValueVector::stockVars[m_idx]; 
-        else
-          if (size_t(m_idx+numSparseElements)<=ValueVector::stockVars.size())
-             return ValueVector::stockVars[m_idx];             
+        if (size_t(m_idx+dataSize())<=ValueVector::stockVars.size())
+          return ValueVector::stockVars[m_idx]; 
         break;
       default: break;
       }
@@ -378,7 +360,7 @@ namespace minsky
           xv.push_back(i);
       }
     setXVector(move(xv));
-    if (numDenseElements()==0 || numSparseElements==0)
+    if (dataSize()==0)
       throw error("tensors nonconformant");
   }
 

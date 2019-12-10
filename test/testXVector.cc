@@ -58,7 +58,7 @@ SUITE(XVector)
       CHECK_EQUAL(3, to.dims().size());
       vector<size_t> d{to.xVector[0].size(),to.xVector[1].size(),to.xVector[2].size()};
       CHECK_ARRAY_EQUAL(d, to.dims(), d.size());
-      CHECK_EQUAL(18,to.numElements());
+      CHECK_EQUAL(18,to.dataSize());
 
       // the following assumes that to's xVector is {"a","b","c"}. If
       // different order, then this test will need to be modified
@@ -87,7 +87,7 @@ SUITE(XVector)
       to.setXVector(XV());
       e=EvalOpPtr(OperationType::copy, nullptr, to, from1, from2);
       CHECK(to.xVector==from1.xVector);
-      CHECK_EQUAL(from1.numElements(), e->in1.size());
+      CHECK_EQUAL(from1.dataSize(), e->in1.size());
       for (size_t i=0; i<e->in1.size(); ++i)
         CHECK_EQUAL(from1.idx()+i, e->in1[i]);
 
@@ -99,7 +99,7 @@ SUITE(XVector)
         vector<size_t> d{to.xVector[0].size(),to.xVector[1].size(),to.xVector[2].size()};
         CHECK_ARRAY_EQUAL(d, to.dims(), d.size());
       }
-      CHECK_EQUAL(18,to.numElements());
+      CHECK_EQUAL(18,to.dataSize());
       CHECK_EQUAL(i2.size(),e->in1.size());
       CHECK_ARRAY_EQUAL(i2,e->in1,i1.size());
     }

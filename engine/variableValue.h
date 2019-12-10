@@ -114,10 +114,8 @@ namespace minsky
     typedef const double* const_iterator;
     iterator begin() {return &valRef();}
     const_iterator begin() const {return &const_cast<VariableValue*>(this)->valRef();}
-	iterator end() {if (!tensorInit.data.empty()) return begin()+numDenseElements();
-		            else return begin()+numSparseElements;}
-	const_iterator end() const {if (!tensorInit.data.empty()) return begin()+numDenseElements();
-		                        else return begin()+numSparseElements;}
+	iterator end() {return begin()+dataSize();}
+	const_iterator end() const {return begin()+dataSize();}
     
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
@@ -142,27 +140,25 @@ namespace minsky
       return d;
     }
     // For feature 47
-    std::vector<size_t> index;
-    
-    double sparsityRatio=0.0;       
+    std::vector<size_t> index;     
     
     size_t numDenseElements() const {                                                
       size_t s=1;
       for (auto& i: xVector) s*=i.size();
       return s;
     }
-    
-    size_t numSparseElements = 0.0;
+  
+    size_t dataSize() const {
+		return index.size() ? index.size(): numDenseElements();
+	}    
     
     template <class T>                                            
     void setXVector_(T x) {    
-      size_t prevNumElems;
-      if (sparsityRatio <= 0.5) prevNumElems=numDenseElements();
-      else prevNumElems=numSparseElements;    
+      size_t prevNumElems = dataSize();
       m_xVector=x;    
-      if (idx()==-1 || (prevNumElems<numDenseElements() || prevNumElems<numSparseElements))    
+      if (idx()==-1 || (prevNumElems<dataSize()))    
         allocValue();    
-    } 
+    }    
     void setXVector(XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
     void setXVector(const XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
 
