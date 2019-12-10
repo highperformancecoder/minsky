@@ -372,7 +372,7 @@ namespace minsky
   void PlotWidget::addPlotPt(double t)
   {
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (yvars[pen].numElements()==1 && yvars[pen].idx()>=0)
+      if (yvars[pen].dataSize()==1 && yvars[pen].idx()>=0)
         {
           double x,y;
           switch (xvars.size())
@@ -427,7 +427,8 @@ namespace minsky
         }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen].numElements()>1 && yvars[pen].idx()>=0)
+      // For feature 47
+      if (pen<yvars.size() && (yvars[pen].dataSize()>1) && yvars[pen].idx()>=0)
         {
           auto& yv=yvars[pen];
           auto d=yv.dims();
@@ -488,21 +489,22 @@ namespace minsky
             }
           
           // higher rank y objects treated as multiple y vectors to plot
-          for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.numElements()); j+=d[0])
-            {
-              setPen(extraPen, x, yv.begin()+j, d[0]);
-              if (pen>=numLines)
-                assignSide(extraPen,Side::right);
-             string label;
-              size_t stride=d[0];
-              for (size_t i=1; i<yv.xVector.size(); ++i)
-                {
-                  label+=str(yv.xVector[i][(j/stride)%d[i]])+" ";
-                  stride*=d[i];
-                }
-              labelPen(extraPen,label);
-              extraPen++;
-            }
+          // For feature 47
+            for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.dataSize()); j+=d[0])
+              {
+                setPen(extraPen, x, yv.begin()+j, d[0]);
+                if (pen>=numLines)
+                  assignSide(extraPen,Side::right);
+               string label;
+                size_t stride=d[0];
+                for (size_t i=1; i<yv.xVector.size(); ++i)
+                  {
+                    label+=str(yv.xVector[i][(j/stride)%d[i]])+" ";
+                    stride*=d[i];
+                  }
+                labelPen(extraPen,label);
+                extraPen++;
+              }      
         }
     scalePlot();
   }

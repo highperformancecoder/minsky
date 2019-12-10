@@ -462,7 +462,8 @@ namespace minsky
           {
             vector<size_t> outHandles(dims.size());
             ravel_outputHandleIds(ravel, &outHandles[0]);
-            size_t prevNumElem=v.numElements();
+            // For feature 47
+            size_t prevNumElem = v.dataSize();
             vector<XVector> xv;
             for (size_t j=0; j<outHandles.size(); ++j)
               {
@@ -493,9 +494,10 @@ namespace minsky
               for (size_t i=0; i<dims.size(); ++i)
                 assert(dims[i]==v.dims()[i]);
 #endif
-            if (v.idx()==-1 || v.numElements()>prevNumElem)
+            // For feature 47
+            if (v.idx()==-1 || (v.dataSize()>prevNumElem))
               v.allocValue();
-            for (size_t i=0; i<v.numElements(); ++i)
+            for (size_t i=0; i< v.dataSize(); ++i)
               *(v.begin()+i)=tmp[i];
           }
         else
