@@ -61,7 +61,9 @@ ports are labelled $x$ and $y$, referring the the formula $x^y$.
 \subsection{time $t$}\label{Operation:time}  Returns the current value of system time.
 
 \subsection{differentiate $d/dt$}\label{Operation:differentiate}
-Symbolically differentiates its input.
+Symbolically differentiates its input, producing d/dx[input]. For example, if you input
+$kx^n$ where k is a constant, and differentiate with respect to x, the output will be
+$nkx^n-1$.
 
 \subsection{data }\label{Operation:data} \buttonIcon{data.eps} A data interpolation
 widget. The data can be imported from a file containing
