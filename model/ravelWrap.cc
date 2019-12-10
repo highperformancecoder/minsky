@@ -462,7 +462,6 @@ namespace minsky
           {
             vector<size_t> outHandles(dims.size());
             ravel_outputHandleIds(ravel, &outHandles[0]);
-            size_t prevNumElem;
             // For feature 47
             size_t prevNumElem = v.dataSize();
             vector<XVector> xv;
