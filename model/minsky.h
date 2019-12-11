@@ -37,6 +37,8 @@
 #include "variableValue.h"
 #include "canvas.h"
 #include "panopticon.h"
+#include "variableSheet.h"
+#include "parameterSheet.h"
 #include "dimension.h"
 #include "rungeKutta.h"
 
@@ -153,6 +155,8 @@ namespace minsky
   public:
     EquationDisplay equationDisplay;
     Panopticon panopticon{canvas};
+    ParameterSheet parameterSheet;
+    VariableSheet variableSheet;    
 
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}

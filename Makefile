@@ -34,8 +34,9 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o
-ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o latexMarkup.o variableValue.o xvector.o node_latex.o node_matlab.o CSVParser.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o parameterSheet.o variableSheet.o
+ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
+	latexMarkup.o variableValue.o xvector.o node_latex.o node_matlab.o CSVParser.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema2.o schema1.o schema0.o variableType.o operationType.o a85.o
 #schema0.o 
@@ -214,7 +215,7 @@ doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ \#*\# core *.d *.cd *.xcd *.rcd
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd *.gcda *.gcno

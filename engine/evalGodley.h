@@ -133,38 +133,40 @@ namespace minsky
         // check for shared columns
         if (!compatibility)
           for (size_t col=1; col<g.data()[0].size(); ++col)
-            scCheck.checkShared(g.valueId(trimWS(g.data()[0][col])), g.assetClass(col));
+            if (!trimWS(g.data()[0][col]).empty())
+              scCheck.checkShared(g.valueId(trimWS(g.data()[0][col])), g.assetClass(col));
 
         for (size_t row=1; row<g.data().size(); ++row)
           if (!g.initialConditionRow(row))
             for (size_t col=1; col<g.data()[row].size(); ++col)
               {
                 FlowCoef fvc(g.data()[row][col]);
+                auto svName=trimWS(g.data()[0][col]);
+                if (fvc.name.empty() || svName.empty()) continue;
                 fvc.name=g.valueId(fvc.name);
-                string svName(g.valueId(trimWS(g.data()[0][col])));
+                svName=g.valueId(svName);
 
-                if (!fvc.name.empty() && !svName.empty())
+                auto fv=values.find(fvc.name);
+                auto sv=values.find(svName);
+                if (fv!=values.end() && sv!=values.end() &&
+                    fv->second.idx()>=0 && sv->second.idx()>=0)
                   {
-                    const VariableValue& fv=values[g.valueId(fvc.name)];
-                    const VariableValue& sv=values[svName];
-                    if (fv.idx()>=0 && sv.idx()>=0)
-                      {
-                        // check for compatible column definitions
-                        if (!compatibility && 
-                            scCheck.updateColDefs(svName, fvc))
-                          continue;
+                    // check for compatible column definitions
+                    if (!compatibility && 
+                        scCheck.updateColDefs(svName, fvc))
+                      continue;
                 
-                        iidx.insert(sv.idx());
-                        sidx<<=sv.idx();
-                        fidx<<=fv.idx();
-                        m<<=fvc.coef;
-                      }
+                    iidx.insert(sv->second.idx());
+                    sidx<<=sv->second.idx();
+                    fidx<<=fv->second.idx();
+                    m<<=fvc.coef;
                   }
               }
       }
-    
-    for (std::set<int>::iterator i=iidx.begin(); i!=iidx.end(); ++i)
-      initIdx<<=*i;
+
+    initIdx.clear();
+    for (auto i: iidx)
+      initIdx<<=i;
 
     if (!compatibility)
       scCheck.checkSharedColDefs();

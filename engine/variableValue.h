@@ -114,8 +114,8 @@ namespace minsky
     typedef const double* const_iterator;
     iterator begin() {return &valRef();}
     const_iterator begin() const {return &const_cast<VariableValue*>(this)->valRef();}
-    iterator end() {return begin()+numElements();}
-    const_iterator end() const {return begin()+numElements();}
+	iterator end() {return begin()+dataSize();}
+	const_iterator end() const {return begin()+dataSize();}
     
     ///< dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
@@ -139,19 +139,26 @@ namespace minsky
       setXVector(std::move(xv));
       return d;
     }
-    size_t numElements() const {
+    // For feature 47
+    std::vector<size_t> index;     
+    
+    size_t numDenseElements() const {                                                
       size_t s=1;
       for (auto& i: xVector) s*=i.size();
       return s;
     }
-
-    template <class T>
-    void setXVector_(T x) {
-      size_t prevNumElems=numElements();
-      m_xVector=x;
-      if (idx()==-1 || prevNumElems<numElements())
-        allocValue();
-    }
+  
+    size_t dataSize() const {
+		return index.size() ? index.size(): numDenseElements();
+	}    
+    
+    template <class T>                                            
+    void setXVector_(T x) {    
+      size_t prevNumElems = dataSize();
+      m_xVector=x;    
+      if (idx()==-1 || (prevNumElems<dataSize()))    
+        allocValue();    
+    }    
     void setXVector(minsky::XVectorMixin::XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
     void setXVector(const minsky::XVectorMixin::XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
 
