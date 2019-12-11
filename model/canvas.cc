@@ -395,26 +395,24 @@ namespace minsky
   
   ItemPtr Canvas::itemAt(float x, float y)
   {
-	// Fix for library dependency problem with items during Travis build    
-    ItemPtr item;
+	// Fix for library dependency problem with items during Travis build  
+    ItemPtr closestItem;
     auto minD=numeric_limits<float>::max();
     model->recursiveDo(&GroupItems::items,
                        [&](const Items&, Items::const_iterator i)
                        {
-                          float d=sqr((*i)->x()-x)+sqr((*i)->y()-y);
-                          if (d<minD && (*i)->visible() && (*i)->contains(x,y))
-                            {
-                              minD=d;
-                              item=*i;
-                            }
-                          return false;  
+                         if ((*i)->group.lock()->displayContents() && (*i)->visible() && (*i)->contains(x,y))
+                           {
+                               float d=sqr((*i)->x()-x)+sqr((*i)->y()-y);
+                               if (d<minD)
+                                 {
+                                   minD=d;
+                                   closestItem=*i;
+                                 }
+							}
+                         return false;
                        });
-                       
-    if (!item)
-      auto item=model->findAny
-        (&Group::groups, [&](const GroupPtr& i)
-                         {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
-    return item;
+    return closestItem;    
   }
   
   void Canvas::getWireAt(float x, float y)
