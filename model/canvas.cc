@@ -395,21 +395,8 @@ namespace minsky
   
   ItemPtr Canvas::itemAt(float x, float y)
   {
-	// Fix for library dependency problem with items during Travis build    	  
-    ItemPtr item;
-    auto minD=numeric_limits<float>::max();                       
-    model->recursiveDo(&GroupItems::items,                       
-                       [&](const Items&, Items::const_iterator i)                       
-                       {                       
-                          float d=sqr((*i)->x()-x)+sqr((*i)->y()-y);                       
-                          if (d<minD)                       
-                            {                       
-                              minD=d;                       
-                              item=*i;                       
-                            }                       
-                          return false;                         
-                       });                       
-                     
+    auto item=model->findAny(&Group::items,
+                        [&](const ItemPtr& i){return i->visible() && i->contains(x,y);});
     if (!item)
       item=model->findAny
         (&Group::groups, [&](const GroupPtr& i)
