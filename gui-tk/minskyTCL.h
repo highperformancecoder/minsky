@@ -42,6 +42,22 @@ namespace minsky
   {
     bool rebuildTCLcommands=false;
 
+    /// list the possible string values of an enum (for TCL)
+    template <class E> void enumVals()
+    {
+      tclreturn r;
+      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
+        r << enum_keysData<E>::keysData[i].name;
+    }
+
+    /// list of available operations
+    void availableOperations() {enumVals<OperationType::Type>();}
+    /// list of available variable types
+    void variableTypes() {enumVals<VariableType::Type>();}
+
+    /// return list of available asset classes
+    void assetClasses() {enumVals<GodleyTable::AssetClass>();}
+
     /// generate a TCL_obj referring to variableValues[valueId]
     void getValue(const std::string& valueId);
     
@@ -66,12 +82,6 @@ namespace minsky
     /// @param operationName
     void operationIcon(const char* imageName, const char* opName) const;
 
-//    void displayErrorItem(float x, float y) const override
-//    {
-//      tclcmd() << "catch {indicateCanvasItemInError"<<x<<y<<"}\n";
-//      Tcl_ResetResult(interp());
-//    }
-    
     void putClipboard(const std::string& s) const override; 
     std::string getClipboard() const override; 
 
@@ -285,13 +295,6 @@ namespace minsky
             v->importFromCSV(filename, *spec->memberptr);
     }
     
-    //   void inGroupSelect(int gid, float x0, float y0, float x1, float y1)
-//    {
-//      clearSelection();
-//      if (groupItems.count(gid))
-//        groupItems[gid].select(currentSelection,x0,y0,x1,y1);
-//    }
-//
     void initGroupList(TCL_args args) {
       //      groupTest.initGroupList(groupItems, (args.count? args: -1));
     }

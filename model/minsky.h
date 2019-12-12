@@ -220,22 +220,6 @@ namespace minsky
 
     void clearAllMaps();
 
-    /// list the possible string values of an enum (for TCL)
-    template <class E> void enumVals()
-    {
-      tclreturn r;
-      for (size_t i=0; i < sizeof(enum_keysData<E>::keysData) / sizeof(EnumKey); ++i)
-        r << enum_keysData<E>::keysData[i].name;
-    }
-
-    /// list of available operations
-    void availableOperations() {enumVals<OperationType::Type>();}
-    /// list of available variable types
-    void variableTypes() {enumVals<VariableType::Type>();}
-
-    /// return list of available asset classes
-    void assetClasses() {enumVals<GodleyTable::AssetClass>();}
-
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const;
 
