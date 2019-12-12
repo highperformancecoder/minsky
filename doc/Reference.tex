@@ -61,9 +61,8 @@ ports are labelled $x$ and $y$, referring the the formula $x^y$.
 \subsection{time $t$}\label{Operation:time}  Returns the current value of system time.
 
 \subsection{differentiate $d/dt$}\label{Operation:differentiate}
-Symbolically differentiates its input, producing d/dx[input]. For example, if you input
-$kx^n$ where k is a constant, and differentiate with respect to x, the output will be
-$nkx^(n-1)$.
+Symbolically differentiates its input with respect to system time, producing d/dt[input]. 
+For further explanation regarding differentiation, see \href{https://en.wikipedia.org/wiki/Derivative}{this wikipedia page}.
 
 \subsection{data }\label{Operation:data} \buttonIcon{data.eps} A data interpolation
 widget. The data can be imported from a file containing
@@ -133,16 +132,31 @@ This takes the equation $\log_{e} x$ where ``x'' is the input.
 
 \subsection{sin}\label{Operation:sin} Produces a sine function of the input. For example, 
 connecting a ``time'' block to this function, and then to a graph, will produce a sine wave.
+For further explanation regarding trigonemtric functions, 
+see \href{https://en.wikipedia.org/wiki/Trigonometric_functions}{this wikipedia page}.
 
 \subsection{cos}\label{Operation:cos} Produces a cosine function of the input. For example, 
 connecting a ``time'' block to this function, and then to a graph, will produce a cosine wave.
+For further explanation regarding trigonemtric functions, 
+see \href{https://en.wikipedia.org/wiki/Trigonometric_functions}{this wikipedia page}.
 
 \subsection{tan}\label{Operation:tan} Produces a tangent function of the input. For example, 
 connecting a ``time'' block to this function, and then to a graph, will produce a tangent graph.
+For further explanation regarding trigonemtric functions, 
+see \href{https://en.wikipedia.org/wiki/Trigonometric_functions}{this wikipedia page}.
 
-\subsection{asin}\label{Operation:asin} Arc sine, inverse of sine
-\subsection{acos}\label{Operation:acos} Arc cosine, inverse of cosine
-\subsection{atan}\label{Operation:atan} Arc tangent, inverse of tangent
+\subsection{asin}\label{Operation:asin} Produces an arc sine function of the input, 
+or the inverse of the sine function. For further explanation regarding trigonemtric functions, 
+see \href{https://en.wikipedia.org/wiki/Trigonometric_functions}{this wikipedia page}.
+
+\subsection{acos}\label{Operation:acos} Produces an arc cosine function of the input, 
+or the inverse of the cosine function. For further explanation regarding trigonemtric functions, 
+see \href{https://en.wikipedia.org/wiki/Trigonometric_functions}{this wikipedia page}.
+
+\subsection{atan}\label{Operation:atan} Produces an arc tangent function of the input, 
+or the inverse of the tangent function. For further explanation regarding trigonemtric functions, 
+see \href{https://en.wikipedia.org/wiki/Trigonometric_functions}{this wikipedia page}.
+
 \subsection{sinh}\label{Operation:sinh} hyperbolic sine function $\frac{e^x-e^{-x}}2$
 \subsection{cosh}\label{Operation:cosh} hyperbolic cosine function $\frac{e^x+e^{-x}}2$
 \subsection{tanh}\label{Operation:tanh} hyperbolic tangent function $\frac{e^x-e^{-x}}{e^x+e^{-x}}$
