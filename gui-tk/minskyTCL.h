@@ -295,10 +295,6 @@ namespace minsky
             v->importFromCSV(filename, *spec->memberptr);
     }
     
-    void initGroupList(TCL_args args) {
-      //      groupTest.initGroupList(groupItems, (args.count? args: -1));
-    }
-
     /// load from a file
     void load(const std::string& filename) {
       Minsky::load(filename);
