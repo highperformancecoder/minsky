@@ -344,6 +344,7 @@ proc addConstantOrVariable {} {
     set "varInput(Detailed description)" ""
     deiconifyInitVar
     resetItem
+    garbageCollect
     .wiring.initVar.entry10 configure -values [accessibleVars]
     ::tk::TabToWindow $varInput(initial_focus);
     tkwait visibility .wiring.initVar

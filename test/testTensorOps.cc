@@ -99,13 +99,13 @@ SUITE(TensorOps)
       for (auto i=from.begin(); i!=from.end(); ++i)
         *i=2;
       sum->eval();
-      CHECK_EQUAL(5,to.numElements());
-      for (size_t i=0; i<to.numElements(); ++i)
+      CHECK_EQUAL(5,to.dataSize());
+      for (size_t i=0; i<to.dataSize(); ++i)
         CHECK_EQUAL(2*(i+1),to.value(i));
       
       prod->eval();
-      CHECK_EQUAL(5,to.numElements());
-      for (size_t i=0; i<to.numElements(); ++i)        
+      CHECK_EQUAL(5,to.dataSize());
+      for (size_t i=0; i<to.dataSize(); ++i)        
         CHECK_EQUAL(pow(2,i+1),to.value(i));
     }
 
@@ -120,7 +120,7 @@ SUITE(TensorOps)
       index->eval();
       vector<double> expected{1,3};
       CHECK_ARRAY_EQUAL(expected,to.begin(),2);
-      for (size_t i=3; i<to.numElements(); ++i)
+      for (size_t i=3; i<to.dataSize(); ++i)
         CHECK(std::isnan(to.begin()[i]));
 
       // apply gather to the orignal vector and the index results.
@@ -140,7 +140,7 @@ SUITE(TensorOps)
       index->eval();
       expected={2,4};
       CHECK_ARRAY_EQUAL(expected,to.begin(),2);
-      for (size_t i=3; i<to.numElements(); ++i)
+      for (size_t i=3; i<to.dataSize(); ++i)
         CHECK(std::isnan(to.begin()[i]));
 
       // apply gather to the orignal vector and the index results.

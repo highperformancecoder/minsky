@@ -369,7 +369,8 @@ void VariableBase::initSliderBounds() const
 void VariableBase::adjustSliderBounds() const
 {
   if (auto vv=vValue())
-    if (vv->numElements()==1)
+  // For feature 47
+    if (vv->dataSize()==1)
       {
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
@@ -411,7 +412,8 @@ void VariableBase::draw(cairo_t *cairo) const
   if (VariableValue::isValueId(valueId()))
     vv=minsky::cminsky().variableValues[valueId()];
   
-  if (type()!=constant && !ioVar() && vv.numElements()==1 )
+  // For feature 47
+  if (type()!=constant && !ioVar() && (vv.dataSize()==1) )
     try
     {
       auto val=engExp();

@@ -82,21 +82,7 @@ proc CSVImportDialog {} {
         # redefine OK command to not delete the the import window on error
         global csvImportFailed
         set csvImportFailed 0
-        .wiring.csvImport.buttonBar.ok configure -command {
-            csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
-            set fname $csvParms(filename)
-            set csvImportFailed [catch "loadVariableFromCSV csvDialog.spec {$fname}" err]
-            if $csvImportFailed {
-                toplevel .csvImportError
-                label .csvImportError.errMsg -text $err
-                label .csvImportError.msg -text "Would you like to generate a report?"
-                pack .csvImportError.errMsg .csvImportError.msg -side top
-                buttonBar .csvImportError "doReport {$fname}"                
-            } else {
-                reset
-                cancelWin .wiring.csvImport
-            }
-        }
+        .wiring.csvImport.buttonBar.ok configure -command csvImportDialogOK
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
         bind .wiring.csvImport.table <Button-1> {csvImportButton1 %x %y};
         bind .wiring.csvImport.table <ButtonRelease-1> {csvImportButton1Up %x %y %X %Y};
@@ -127,6 +113,23 @@ proc CSVImportDialog {} {
         wm deiconify .wiring.csvImport
         raise .wiring.csvImport
         csvDialog.requestRedraw
+    }
+}
+
+proc csvImportDialogOK {} {
+    global csvParms
+    csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
+    set filename $csvParms(filename)
+    set csvImportFailed [catch "loadVariableFromCSV csvDialog.spec {$filename}" err]
+    if $csvImportFailed {
+        toplevel .csvImportError
+        label .csvImportError.errMsg -text $err
+        label .csvImportError.msg -text "Would you like to generate a report?"
+        pack .csvImportError.errMsg .csvImportError.msg -side top
+        buttonBar .csvImportError "doReport {$filename}"                
+    } else {
+        reset
+        cancelWin .wiring.csvImport
     }
 }
 

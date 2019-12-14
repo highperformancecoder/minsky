@@ -54,12 +54,24 @@ There are a number of meta methods, introduced by the '@' sign for query types/s
   This means that /minsky/t is an overloaded method, taking 0 or 1 argument of type double, and returning a double. All attributes have a similar sort of signature representing the getter and setter methods.
 * @list - `/minsky/variableValues/@list null` -> ["/@elem","/@insert","/@size"]
 
-There is also a global list method `/list`.
-
 ## Containers
 
 Container types (eg std::vector, std::map) have some additional properties, introduced by the '@' sign.
 * @size - returns the number of elements in the container
 * @elem - indexes into the container. /@elem/0 refers the the first element of a vector, or /@elem/bar refers to the "bar" element of a map with string key type.
 * @insert allows new elements to be inserted into the container
+
+## enums
+
+The "enumerators" of an enum can be listed using the /@enum command. These are the strings that you can pass to arguments expecting an enum type, eg an enum setter. /@enum/@list will list available enums. 
+
+For example, a list of operations can be obtained with
+~~~~
+/@enum/::minsky::OperationType::Type=>["constant","time","integrate","differentiate","data","ravel","add","subtract","multiply","divide","log","pow","lt","le","eq","min","max","and_","or_","copy","sqrt","exp","ln","sin","cos","tan","asin","acos","atan","sinh","cosh","tanh","abs","floor","frac","not_","sum","product","infimum","supremum","any","all","infIndex","supIndex","runningSum","runningProduct","difference","innerProduct","outerProduct","index","gather","numOps"]
+~~~~
+and variable types with
+~~~~
+/@enum/::minsky::VariableType::Type=>["undefined","constant","parameter","flow","integral","stock","tempFlow","numVarTypes"]
+~~~~
+
 

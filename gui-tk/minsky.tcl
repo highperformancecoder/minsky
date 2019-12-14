@@ -842,6 +842,20 @@ pack .equations.canvas -fill both -expand 1
 .tabs add .equations -text equations -padding 0
 .tabs select 0
 
+image create cairoSurface renderedPars -surface minsky.parameterSheet
+ttk::frame .parameters
+label .parameters.canvas -image renderedPars -height $canvasHeight -width $canvasWidth
+pack .parameters.canvas -fill both -expand 1
+.tabs add .parameters -text parameters -padding 0
+.tabs select 0
+
+image create cairoSurface renderedVars -surface minsky.variableSheet
+ttk::frame .variables
+label .variables.canvas -image renderedVars -height $canvasHeight -width $canvasWidth
+pack .variables.canvas -fill both -expand 1
+.tabs add .variables -text variables -padding 0
+.tabs select 0
+
 image create cairoSurface panopticon -surface minsky.panopticon
 label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
 #place .wiring.panopticon -relx 1 -rely 0 -anchor ne
@@ -870,6 +884,14 @@ proc setScrollBars {} {
                 .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/[equationDisplay.height]]
             } else {.vscroll set  0 1}
         }
+        .parameters {
+            .hscroll set 0 1
+            .vscroll set 0 1  
+		}      
+        .variables {
+            .hscroll set 0 1
+            .vscroll set 0 1                 
+        }        
     }
 }
 
@@ -888,6 +910,12 @@ proc panCanvas {offsx offsy} {
             equationDisplay.offsy $offsy
             equationDisplay.requestRedraw
         }
+        .parameters {
+            parameterSheet.requestRedraw
+        }        
+        .variables {
+            variablesSheet.requestRedraw
+        }           
     }
     setScrollBars
 }
