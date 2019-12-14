@@ -176,6 +176,8 @@ namespace minsky
     void deleteItem();
     /// delete wire referenced by wire
     void deleteWire();
+    /// delete wire handle referenced by wire
+    void delHandle(float x, float y);    
     /// remove item from its group, leaving in itemFocus for later placement
     void removeItemFromItsGroup();
 
