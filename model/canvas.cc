@@ -491,8 +491,11 @@ namespace minsky
   {
     wireFocus=model->findAny(&Group::wires,
                    [&](const WirePtr& i){return i->near(x,y);});
-    if (wireFocus)	
-         wireFocus->deleteHandle(x,y);
+    if (wireFocus)
+      {
+        wireFocus->deleteHandle(x,y);
+        wireFocus.reset(); // prevent accidental moves of handle
+      }
     requestRedraw();
   }  
 

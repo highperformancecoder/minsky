@@ -542,19 +542,19 @@ namespace
   void Wire::deleteHandle(float x, float y)
   {
     auto c=coords();
-    unsigned n=0; // nearest index
+    auto n=c.begin(); // nearest index
     float closestD=d2(c[0],c[1],x,y);
-    for (size_t i=2; i<c.size()-1; i+=2)
+    for (auto i=c.begin()+2; i<c.end()-1; i+=2)
       {
-        float d=d2(c[i],c[i+1],x,y);
+        float d=d2(*i,*(i+1),x,y);
         if (d<closestD)
           {
             closestD=d;
             n=i;
           }
       }	  
-    assert(n<c.size()-1);
-    c.erase(c.begin()+n);
+    assert(n<c.end()-1);
+    c.erase(n, n+2);
     coords(c);
   } 
   

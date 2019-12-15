@@ -93,7 +93,7 @@ namespace minsky
     //NoAssign<Exclude<ecolab::cairo::SurfacePtr>> surface;
     ItemPtr itemFocus; ///< item selected by clicking
     WirePtr wireFocus; ///< wire that mouse is hovering over
-    unsigned handleSelected;
+    int handleSelected; ///< selected handle for handle moves, -ve = invalid 
     Exclude<shared_ptr<Port>> fromPort; ///< from port when creating a new wire
     double termX,termY; ///< terminal of wire when extending
     float moveOffsX, moveOffsY;
