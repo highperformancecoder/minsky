@@ -769,8 +769,8 @@ namespace minsky
                   to.setXVector(from1.xVector);
                   
                 // For feature 47. Sparse data representation 
-                  for (size_t i=0; i<from1.dataSize(); ++i)                          
-                    t->in1.push_back(i+from1.idx());
+                for (size_t i=0; i<from1.dataSize(); ++i)                          
+                  t->in1.push_back(i+from1.idx());
 					  
                 auto from2Dims=from2.dims();
                 if (from2Dims.size()>0)
@@ -965,10 +965,11 @@ namespace minsky
             case general: case function: 
                 if (to.idx()==-1 || to.xVector.empty())
                   to.setXVector(from1.xVector);
-                if (to.xVector==from1.xVector)
+                if (to.xVector==from1.xVector) {
 					// For feature 47. Sparse data representation
                       for (size_t i=0; i<from1.dataSize(); ++i)                          
                         t->in1.push_back(i+from1.idx());
+					}
                 else
                   generic1ArgIndices(*t, to, from1);
               break;
