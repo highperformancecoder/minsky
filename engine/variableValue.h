@@ -71,6 +71,7 @@ namespace minsky
     double& valRef(); 
     double valRef() const;
     std::vector<unsigned> m_dims;
+    std::vector<size_t> m_index;    
 
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -139,8 +140,11 @@ namespace minsky
       setXVector(std::move(xv));
       return d;
     }
-    // For feature 47
-    std::vector<size_t> index;     
+    // For feature 47: the sparse data representation    
+    std::vector<size_t> getIndex() const { return m_index;}
+    void setIndex(std::vector<size_t> index) {
+		m_index=index;
+	}
     
     size_t numDenseElements() const {                                                
       size_t s=1;
@@ -149,8 +153,8 @@ namespace minsky
     }
   
     size_t dataSize() const {
-		return index.size() ? index.size(): numDenseElements();
-	}    
+		return getIndex().size() ? getIndex().size(): numDenseElements();
+	}       
     
     template <class T>                                            
     void setXVector_(T x) {    

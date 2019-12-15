@@ -448,61 +448,43 @@ namespace minsky
                   }
               }
           }
-                  
+        // For feature 47: the sparse data representation  
         size_t numHyperCubeElems=1;
         for (auto& i : xVector) numHyperCubeElems*=i.size();
                            
         double sparsityRatio =  static_cast<double>(1.0-static_cast<double>(tmpData.size())/numHyperCubeElems); 
+        
+        v.setXVector(xVector);       
+        if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
+          throw runtime_error("memory threshold exceeded");	  	  		
+        auto dims=v.tensorInit.dims=v.dims();	
+        v.tensorInit.data.clear();           
 		
-		// for feature 47
-		if (sparsityRatio <= 0.5) 
-	    {
-		  v.index.clear();	
-          v.setXVector(xVector);          
-          if (!cminsky().checkMemAllocation(v.numDenseElements()*sizeof(double)))
-            throw runtime_error("memory threshold exceeded");            
-          // stash the data into vv tensorInit field
-          v.tensorInit.data.clear();
-          v.tensorInit.data.resize(v.numDenseElements(), spec.missingValue);  
-          auto dims=v.tensorInit.dims=v.dims();    
-          for (auto& i: tmpData)
-            {
-              size_t idx=0;
-              assert (dims.size()==i.first.size());
-              assert(dimLabels.size()==dims.size());
-              for (int j=dims.size()-1; j>=0; --j)
-                {
-                  assert(dimLabels[j].count(i.first[j]));
-                  idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                }
-              v.tensorInit.data[idx]=i.second;  
-            }
-        }    
-        else 
-	    {	
-          v.index.clear();			
-          v.setXVector(xVector);          
-          if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
-            throw runtime_error("memory threshold exceeded");	  	  		
-          auto dims=v.tensorInit.dims=v.dims();	
-          v.tensorInit.data.clear();   
-          for (auto& i: tmpData)
-            {
-              size_t idx=0;
-              assert (dims.size()==i.first.size());
-              assert(dimLabels.size()==dims.size());
-              for (int j=dims.size()-1; j>=0; --j)
-                {
-                  assert(dimLabels[j].count(i.first[j]));
-                  idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                }
-               if (!isnan(i.second)) {  
-				  v.index.push_back(idx);
-                  v.tensorInit.data.push_back(i.second);
-			   }
-            }
-            assert(v.index.size()==v.tensorInit.data.size());
-     	}                 
+		if (sparsityRatio <= 0.5) v.tensorInit.data.resize(tmpData.size(), spec.missingValue);   
+		vector<size_t> ind; 
+		
+        for (auto& i: tmpData)
+          {
+            size_t idx=0;
+            assert (dims.size()==i.first.size());
+            assert(dimLabels.size()==dims.size());
+            for (int j=dims.size()-1; j>=0; --j)
+              {
+                assert(dimLabels[j].count(i.first[j]));
+                idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+              }
+            if (sparsityRatio <= 0.5) v.tensorInit.data[idx]=i.second;  
+            else if (sparsityRatio > 0.5 && !isnan(i.second)) 
+            { 
+			  ind.push_back(idx);
+              v.tensorInit.data.push_back(i.second);				
+			}
+          }
+          if (sparsityRatio > 0.5)
+          {
+            v.setIndex(ind);
+            assert(ind.size()==v.tensorInit.data.size());          
+		  }           
 
       }
     catch (const std::bad_alloc&)

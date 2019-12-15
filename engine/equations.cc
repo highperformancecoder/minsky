@@ -180,7 +180,7 @@ namespace MathDAG
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
-      // For feature 47
+      // For feature 47. Sparse data representation
       size_t oldNumElems=r.dataSize();
       for (auto& i: argIdx)
         if (i.size() && !i[0].xVector.empty())
