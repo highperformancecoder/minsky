@@ -395,7 +395,7 @@ namespace minsky
   
   ItemPtr Canvas::itemAt(float x, float y)
   {
-    // Fix for library dependency problem with items during Travis build     
+	// Fix for library dependency problem with items during Travis build    
     ItemPtr item;                    
     auto minD=numeric_limits<float>::max();
     model->recursiveDo(&GroupItems::items,
@@ -409,10 +409,6 @@ namespace minsky
                             }
                           return false;  
                        });
-    if (!item)
-      item=model->findAny
-        (&Group::groups, [&](const GroupPtr& i)
-                         {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
     return item;
   }
   
