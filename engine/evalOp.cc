@@ -768,14 +768,14 @@ namespace minsky
                 if (to.xVector!=from1.xVector)
                   to.setXVector(from1.xVector);
                   
-                // For feature 47. Sparse data representation 
+                // For feature 47
                   for (size_t i=0; i<from1.dataSize(); ++i)                          
                     t->in1.push_back(i+from1.idx());
 					  
                 auto from2Dims=from2.dims();
                 if (from2Dims.size()>0)
                    {
-				     // For feature 47. Sparse data representation	   
+				     // For feature 47	   
                      for (size_t i=0; i<from2.dataSize(); i+=from2Dims[0])
                        {
                          t->in2.emplace_back();
@@ -837,7 +837,7 @@ namespace minsky
                 if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
                 if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
             
-               // For feature 47. Sparse data representation          
+                // For feature 47            
                 if ((from1.dataSize()==1) && (from2.dataSize()==1))
                   {
                     t->in1.push_back(from1.idx());
@@ -966,9 +966,11 @@ namespace minsky
                 if (to.idx()==-1 || to.xVector.empty())
                   to.setXVector(from1.xVector);
                 if (to.xVector==from1.xVector)
-					// For feature 47. Sparse data representation
+                  { 
+					// For feature 47  
                       for (size_t i=0; i<from1.dataSize(); ++i)                          
                         t->in1.push_back(i+from1.idx());
+                  }
                 else
                   generic1ArgIndices(*t, to, from1);
               break;
@@ -983,7 +985,7 @@ namespace minsky
                         break;
                       stride*=j.size();
                     }
-                   // For feature 47. Sparse data representation
+                   // For feature 47
                     for (size_t i=0; i<from1.dataSize(); ++i)                          
                       t->in1.push_back(i*stride+from1.idx());	
               }
@@ -994,11 +996,12 @@ namespace minsky
                 {
                 case index:
                   {
-					vector<unsigned> targetDims={unsigned(from1.rank()),unsigned(from1.dataSize())};
+					vector<unsigned> targetDims;  
+                    targetDims={unsigned(from1.rank()),unsigned(from1.dataSize())};
                     if (to.dims()!=targetDims)
                       to.dims(targetDims);
                   
-                    // For feature 47. Sparse data representation
+                    // For feature 47
                       for (size_t i=0; i<from1.dataSize(); ++i)                          
                         t->in1.push_back(i+from1.idx());
 				    	       
