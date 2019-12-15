@@ -554,7 +554,7 @@ namespace
           }
       }	  
     assert(n<c.size()-1);
-    c.erase(c.begin()+n,c.erase(c.begin()+n+1));
+    c.erase(c.begin()+n);
     coords(c);
   } 
   
