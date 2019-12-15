@@ -485,6 +485,16 @@ namespace minsky
     wire.reset();
     requestRedraw();
   }
+  
+  // For ticket 1092. Reinstate delete handle user interaction
+  void Canvas::delHandle(float x, float y)
+  {
+    wireFocus=model->findAny(&Group::wires,
+                   [&](const WirePtr& i){return i->near(x,y);});
+    if (wireFocus)	
+         wireFocus->deleteHandle(x,y);
+    requestRedraw();
+  }  
 
   void Canvas::removeItemFromItsGroup()
   {
