@@ -76,6 +76,7 @@ namespace minsky
         px=model->m_x;
         py=model->m_y;
         pz=model->relZoom;
+        model->group.reset(); // disassociate model from it's parent
         GroupPtr::operator=(model);
         return *this;
       }
