@@ -523,7 +523,10 @@ proc doubleButton {x y} {
     if [getItemAt $x $y] {
         selectVar $x $y
         editItem
-    }
+    } else {
+    # For ticket 1092. Reinstate delete handle user interaction    		
+    canvas.delHandle $x $y
+    }   
 }
 # for ticket 1062, new hierarchy of context menu access on mouse right click: wires, items and background canvas.
 bind .wiring.canvas <<contextMenu>> {
