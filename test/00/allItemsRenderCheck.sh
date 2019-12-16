@@ -29,7 +29,7 @@ pass()
 trap "fail" 1 2 3 15
 
 cat >input.tcl <<EOF
-minsky.defaultFont Courier
+minsky.defaultFont Sans
 minsky.setGodleyIconResource $here/gui-tk/icons/bank.svg
 minsky.setGroupIconResource $here/gui-tk/icons/group.svg
 minsky.load $here/test/allItems.mky

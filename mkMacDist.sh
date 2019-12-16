@@ -92,4 +92,4 @@ rm -f temp.dmg
 codesign -s "Developer ID Application" Minsky-$version-mac-dist.dmg
 xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file Minsky-$version-mac-dist.dmg
 # check using xcrun altool --notarization-history 0 -u apple@hpcoders.com.au -p "@keychain:Minsky"
-xcrun stapler staple Minsky-2.17-mac-dist.dmg
+xcrun stapler staple Minsky-$version-mac-dist.dmg
