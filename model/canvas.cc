@@ -320,6 +320,7 @@ namespace minsky
                                                             (*i)->mouseFocus=mf;
                                                           }
                                                         (*i)->onResizeHandles=ct==ClickType::onResize;
+                                                        requestRedraw();
                                                         if (auto r=dynamic_cast<Ravel*>(i->get()))
                                                           {
                                                             r->onBorder = ct==ClickType::onItem;
