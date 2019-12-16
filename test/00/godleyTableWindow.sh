@@ -29,7 +29,7 @@ pass()
 trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
-minsky.defaultFont Times
+minsky.defaultFont Sans
 
 proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
