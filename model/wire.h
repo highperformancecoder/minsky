@@ -80,6 +80,8 @@ namespace minsky
     /// endpoints are not returned
     unsigned nearestHandle(float x, float y);
     void insertHandle(unsigned position, float x, float y);
+    // For ticket 1092. Reinstate delete handle user interaction
+    void deleteHandle(float x, float y);    
     void editHandle(unsigned position, float x, float y);
     
     void straighten() {m_coords.clear();}
