@@ -403,9 +403,9 @@ namespace minsky
     auto z=zoomFactor();
     double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(dx-w) < portRadius*z &&
-        fabs(dy-h) < portRadius*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
+    if (fabs(dx-w) < portRadiusMult*z &&
+        fabs(dy-h) < portRadiusMult*z &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
       return ClickType::onResize;
     if (dx < w && dy < h)
       return ClickType::onItem;
