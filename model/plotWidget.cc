@@ -231,8 +231,8 @@ namespace minsky
             cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
             cairo_stroke(cairo);
           }
+        if (onResizeHandles) drawResizeHandles(cairo);   
       }
-    if (onResizeHandles) drawResizeHandles(cairo);
     justDataChanged=false;
     
     cairo_new_path(cairo);
@@ -359,9 +359,9 @@ namespace minsky
     double dx=x-this->x(), dy=y-this->y();
     double w=0.5*width*z, h=0.5*height*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadius*z &&
-        fabs(fabs(dy)-h) < portRadius*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
+    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
+        fabs(fabs(dy)-h) < portRadiusMult*z &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
       return ClickType::onResize;
     return (abs(dx)<w && abs(dy)<h)?
       ClickType::onItem: ClickType::outside;
