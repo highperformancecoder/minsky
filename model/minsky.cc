@@ -264,6 +264,22 @@ namespace minsky
     GroupPtr g(new Group);
     canvas.setItemFocus(model->addGroup(g));
     m.populateGroup(*g);
+    // Fix for ticket 1080
+    if (auto p=g->group.lock())
+    {
+	   p->moveContents(*g); 
+       ItemPtr item;
+       model->recursiveDo(&GroupItems::items,
+                              [&](const Items&, Items::const_iterator i)
+                              {
+                                 item=*i;
+                                 item->selected=true;
+                                 canvas.selection.ensureItemInserted(item);
+                                 return false;  
+                              });       
+       canvas.setItemFocus(item);                                   
+       g->splitBoundaryCrossingWires();   
+    }    
     g->resizeOnContents();
   }
 
