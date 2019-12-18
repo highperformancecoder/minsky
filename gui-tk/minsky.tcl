@@ -770,15 +770,25 @@ proc dimFormatPopdown {comboBox type} {
 wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
+bind . <$meta-S> save
 bind . <$meta-o> openFile
+bind . <$meta-O> openFile
 bind . <$meta-n> newSystem
+bind . <$meta-N> newSystem
 bind . <$meta-q> exit
+bind . <$meta-Q> exit
 bind . <$meta-y> "undo -1"
+bind . <$meta-Y> "undo -1"
 bind . <$meta-z> "undo 1"
+bind . <$meta-Z> "undo 1"
 bind . <$meta-x> {minsky.cut}
+bind . <$meta-X> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
-bind . <$meta-v> {paste}
+bind . <$meta-C> {minsky.copy}
+bind . <$meta-v> {minsky.paste}
+bind . <$meta-V> {minsky.paste}
 bind . <$meta-g> {minsky.createGroup}
+bind . <$meta-G> {minsky.createGroup}
 
 # tabbed manager
 ttk::notebook .tabs -padding 0
