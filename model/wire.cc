@@ -146,25 +146,7 @@ namespace
      	points[i/2].second = coords[i+1];
      }
    return points;
- }
- 
- // For ticket 1095. Returns coordinate pairs for both moving and "to be inserted" handles on a curved wire	 
- vector<pair<float,float>> allHandleCoords(vector<float> coords) {
-        
-        vector<pair<float,float>> points(coords.size()-1);
-        
-        for (size_t i = 0; i < points.size(); i++) {
-			if (i%2 == 0) {
-				points[i].first = coords[i];
-				points[i].second = coords[i+1];
-			}
-			else {
-				points[i].first = 0.5*(coords[i-1]+coords[i+1]);
-				points[i].second = 0.5*(coords[i]+coords[i+2]);
-			}
-		}								
-   return points;
- } 		 	  	
+ } 	
 
 // For ticket 991. Construct tridoagonal matrix A which relates control points c and knots k (curved wire handles): Ac = k.
  vector<vector<float>> constructTriDiag(int length) {
@@ -468,10 +450,10 @@ namespace
     // returns true if x,y lies close to the line segment (x0,y0)-(x1,y1)
     bool segNear(float x0, float y0, float x1, float y1, float x, float y)
     {
-      float d=(sqr(x1-x0)+sqr(y1-y0));
-      float d1=(sqr(x-x0)+sqr(y-y0)), d2=(sqr(x-x1)+sqr(y-y1));
+      float d=sqrt(sqr(x1-x0)+sqr(y1-y0));
+      float d1=sqrt(sqr(x-x0)+sqr(y-y0)), d2=sqrt(sqr(x-x1)+sqr(y-y1));
       return d1+d2<=d+5;
-    }   
+    }
     
     inline float d2(float x0, float y0, float x1, float y1)
     {return sqr(x1-x0)+sqr(y1-y0);}
@@ -479,26 +461,27 @@ namespace
   
   bool Wire::near(float x, float y) const
   {
-    auto c=coords();   
+    auto c=coords();
     assert(c.size()>=4);
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
     else {
-	  // fixes for tickets 991/1095
-      vector<pair<float,float>> p=allHandleCoords(c);
+	  // fixes for tickets 991/1092
+      vector<pair<float,float>> p=toCoordPair(c);
          
       unsigned k=0; // nearest index
-      float closestD=d2(p[p.size()/2].first,p[p.size()/2].second,x,y);
-      for (size_t i=0; i<p.size(); i++)
+      float closestD=d2(p[p.size()-1].first,p[p.size()-1].second,x,y);
+      for (size_t i=0; i<p.size()-1; i++)
         {
           float d=d2(p[i].first,p[i].second,x,y);
-          if (d<=closestD)
-            { 	
+          if (d<closestD)
+            {
               closestD=d;
               k=i;
             }
         }
-
+      
+      // Check for proximity to line segments about index k
       if (k>0 && k<p.size()-1)  
         return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));
       
