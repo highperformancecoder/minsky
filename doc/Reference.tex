@@ -776,17 +776,18 @@ Finally come the flows. The first column is a simple textual label
 reserved phrase for setting stock variable initial conditions)
 identifying the flow. The flows themselves are written as a numerical
 multipler times a flow variable. For example, if you wanted to transfer
-an amount between the asset and liability collumn, you might write
+an amount between the asset and liability column, you might write
 ``Amount" in both columns, which would satisfy the equation A-L-E=0.
 It would also be possible to write ``2Amount" in the asset column, 
 along with ``Amount" in both the Liability and Equity columns. This would
 still satisfy A-L-E=0.
 
-The Godley table also returns the value of the entered variable, displayed within the table.
-For example, if you set ``Amount" to equal the value of system time, and then opened
-the Godley table, wherever you entered ``Amount" in the table would read
+The Godley table also shows the value of the entered variable, displayed within the table.
+For example, if you set ``Amount" to equal the value of system time, on opening
+the Godley table, wherever you entered ``Amount" in the table the cell would show
 ``Amount = 0.00" if the system time was set to 0.00. This provides a helpful
 tool for displaying the value of the variable at that point in the simulation.
+This feature can be enabled or disabled in the preferences panel.
 
 \section{Context Menu}
 
