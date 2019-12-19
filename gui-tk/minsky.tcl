@@ -687,7 +687,9 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Redo" -command "undo -1" -accelerator $meta_menu-Y
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
 .menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
-.menubar.edit add command -label "Paste" -command {paste} -accelerator $meta_menu-V
+# Fix for ticket 1080
+.menubar.edit add command -label "Paste Items" -command minsky.pasteItems -accelerator $meta_menu-V
+.menubar.edit add command -label "Paste Group" -command minsky.pasteGroup 
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 
@@ -702,6 +704,14 @@ proc undo {delta} {
 
 proc cut {} {
     minsky.cut
+}
+
+# Fix for ticket 1080
+proc copy {} {
+	if $preferences(focusFollowsMouse) {
+		minsky.copy
+	}
+	else {clipboard clear}
 }
 
 proc dimensionsDialog {} {
@@ -785,8 +795,9 @@ bind . <$meta-x> {minsky.cut}
 bind . <$meta-X> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
 bind . <$meta-C> {minsky.copy}
-bind . <$meta-v> {minsky.paste}
-bind . <$meta-V> {minsky.paste}
+# Fix for ticket 1080
+bind . <$meta-v> {minsky.pasteItems}
+bind . <$meta-V> {minsky.pasteItems}
 bind . <$meta-g> {minsky.createGroup}
 bind . <$meta-G> {minsky.createGroup}
 

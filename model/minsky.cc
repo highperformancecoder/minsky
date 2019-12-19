@@ -255,7 +255,8 @@ namespace minsky
 //      throw runtime_error("cannot save to "+fileName);
   }
 
-  void Minsky::paste()
+    // Fix for ticket 1080
+  void Minsky::pasteGroup()
   {
     istringstream is(getClipboard());
     xml_unpack_t unpacker(is);
@@ -264,6 +265,35 @@ namespace minsky
     GroupPtr g(new Group);
     canvas.setItemFocus(model->addGroup(g));
     m.populateGroup(*g);
+    g->resizeOnContents();	  
+  }
+
+    // Fix for ticket 1080
+  void Minsky::pasteItems()
+  {
+    istringstream is(getClipboard());
+    xml_unpack_t unpacker(is);
+    schema2::Minsky m;
+    xml_unpack(unpacker, "Minsky", m);
+    GroupPtr g(new Group);
+    canvas.setItemFocus(model->addGroup(g));
+    m.populateGroup(*g);
+    if (auto p=g->group.lock())
+    {
+	   p->moveContents(*g); 
+	   canvas.item.reset();
+       model->recursiveDo(&GroupItems::items,
+                              [&](const Items&, Items::const_iterator i)
+                              {
+                                 canvas.item=*i;
+                                 canvas.item->selected=true;
+                                 canvas.selection.ensureItemInserted(canvas.item);
+                                 return false;  
+                              });       
+       canvas.setItemFocus(model->addItem(canvas.item)); 
+       model->normaliseGroupRefs(model);                                  
+       g->splitBoundaryCrossingWires();   
+    }
     g->resizeOnContents();
   }
 

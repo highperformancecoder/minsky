@@ -48,7 +48,7 @@ proc afterMinskyStarted {} {uplevel #0 {
   }
  minsky.copy
  saveSelectionAsFile xxx.mky
- group.get [paste]
+ group.get [pasteGroup]
  assert {[llength [group.operations]]==2}
  popFlags
  minsky.load xxx.mky

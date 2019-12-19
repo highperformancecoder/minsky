@@ -42,7 +42,7 @@ proc afterMinskyStarted {} {uplevel #0 {
   canvas.mouseUp [expr [\$item.x]+0.55*[\$item.width]] [expr [\$item.y]-0.55*[\$item.height]] 
   assert {[canvas.selection.groups.size]==1}
   newSystem
-  paste
+  pasteGroup
   assert {[model.numGroups]==2}
   assert {[model.numItems]==8}
   assert {[model.numWires]==8}
