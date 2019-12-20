@@ -45,7 +45,7 @@ RESTSERVICE_OBJS=minskyRS.o itemRS.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
 
-EXES=gui-tk/minsky RESTService/RESTService RESTService/httpd
+EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
 # $(SERVER_OBJS)
 #RESTService/RESTService 
 #EXES=gui-tk/minsky server/server
@@ -90,7 +90,7 @@ FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor
 endif
 
 ifdef MXE
-BOOST_EXT=-mt
+BOOST_EXT=-mt-x32
 EXE=.exe
 else
 EXE=
@@ -112,7 +112,7 @@ LIBS+=	-ljson_spirit \
 	-lboost_filesystem$(BOOST_EXT) -lgsl -lgslcblas  
 
 ifdef MXE
-LIBS+=-lboost_thread_win32$(BOOST_EXT)
+LIBS+=-lboost_thread$(BOOST_EXT)
 else
 LIBS+=-lboost_thread$(BOOST_EXT) 
 endif
@@ -133,8 +133,7 @@ SERVER_LIBS=-lsoci_core
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 ifndef AEGIS
-# just build the Minsky executable
-default: gui-tk/minsky$(EXE) RESTService/RESTService$(EXE) RESTService/httpd$(EXE)
+default: $(EXES)
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 endif
 
@@ -188,10 +187,10 @@ server/server: tclmain.o $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SERVER_OBJS) $(GUI_OBJS
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS)  $(SERVER_LIBS) -o $@
 	-ln -sf `pwd`/GUI/library server
 
-RESTService/RESTService: RESTService.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+RESTService/minsky-RESTService$(EXE): RESTService.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
-RESTService/httpd: httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
