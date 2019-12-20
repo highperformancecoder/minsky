@@ -136,10 +136,12 @@ namespace minsky
  
 namespace
 {
- // For ticket 991. Returns coordinate pairs for all handles on a curved wire	
+
+ // For ticket 1095. Returns coordinate pairs for both moving and "to be inserted" handles on a curved wire	
  vector<pair<float,float>> allHandleCoords(vector<float> coords) {
         
         vector<pair<float,float>> points(coords.size()-1);
+        
         for (size_t i = 0; i < points.size(); i++) {
 			if (i%2 == 0) {
 				points[i].first = coords[i];
@@ -149,10 +151,22 @@ namespace
 				points[i].first = 0.5*(coords[i-1]+coords[i+1]);
 				points[i].second = 0.5*(coords[i]+coords[i+2]);
 			}
-		}		
+		}						
 		
    return points;
- }			
+ } 	  
+ 	
+ // For ticket 991/1092. Returns coordinate pairs for moving handles on a curved wire	
+ vector<pair<float,float>> toCoordPair(vector<float> coords) {    
+   vector<pair<float,float>> points(coords.size()/2);
+   
+   for (size_t i = 0; i < coords.size(); i++)
+     if (i%2 == 0) {
+     	points[i/2].first = coords[i];
+     	points[i/2].second = coords[i+1];
+     }
+   return points;
+ } 	
 
 // For ticket 991. Construct tridoagonal matrix A which relates control points c and knots k (curved wire handles): Ac = k.
  vector<vector<float>> constructTriDiag(int length) {
@@ -350,8 +364,8 @@ namespace
    * 
    */   
         
-        // For ticket 991. Curved wires pass through all handles (knots).
-        vector<pair<float,float>> points = allHandleCoords(coords);
+        // For ticket 991/1092. Convert to coordinate pairs.
+        vector<pair<float,float>> points = toCoordPair(coords);
        
         int n = points.size()-1;         
         
@@ -472,7 +486,7 @@ namespace
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
     else {
-	  // fixes for tickets 1079 and 1085
+	  // fixes for tickets 991/1095
       vector<pair<float,float>> p=allHandleCoords(c);
          
       unsigned k=0; // nearest index
@@ -480,7 +494,7 @@ namespace
       for (size_t i=0; i<p.size()-1; i++)
         {
           float d=d2(p[i].first,p[i].second,x,y);
-          if (d<closestD)
+          if (d<=closestD)
             {
               closestD=d;
               k=i;
@@ -543,6 +557,26 @@ namespace
     c.insert(c.begin()+n,h.begin(), h.end());
     coords(c);
   }
+
+  // For ticket 1092. Reinstate delete handle user interaction
+  void Wire::deleteHandle(float x, float y)
+  {
+    auto c=coords();
+    auto n=c.begin(); // nearest index
+    float closestD=d2(c[0],c[1],x,y);
+    for (auto i=c.begin()+2; i<c.end()-1; i+=2)
+      {
+        float d=d2(*i,*(i+1),x,y);
+        if (d<closestD)
+          {
+            closestD=d;
+            n=i;
+          }
+      }	  
+    assert(n<c.end()-1);
+    c.erase(n, n+2);
+    coords(c);
+  } 
   
   void Wire::editHandle(unsigned position, float x, float y)
   {

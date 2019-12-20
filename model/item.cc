@@ -189,7 +189,7 @@ namespace minsky
     {
       cairo::CairoSave cs(cairo);
       auto z=zoomFactor();
-      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadius*z;
+      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadiusMult*z;
       drawResizeHandle(cairo,x,y,sf);
       cairo_rotate(cairo,0.5*M_PI);
       drawResizeHandle(cairo,y,x,sf);
