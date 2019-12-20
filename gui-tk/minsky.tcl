@@ -563,7 +563,7 @@ menu .exportPlots
 .menubar.file add command -label "Library"  -command "openURL https://github.com/highperformancecoder/minsky-models"
 
 .menubar.file add command -label "Save" -command save -underline 0 -accelerator $meta_menu-S
-.menubar.file add command -label "SaveAs" -command saveAs 
+.menubar.file add command -label "SaveAs" -command saveAs -underline 4 -accelerator $meta_menu-A 
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
 .menubar.file add command -label "Dimensional Analysis" -command {
@@ -781,6 +781,8 @@ wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
 bind . <$meta-S> save
+bind . <$meta-a> saveAs
+bind . <$meta-A> saveAs
 bind . <$meta-o> openFile
 bind . <$meta-O> openFile
 bind . <$meta-n> newSystem
@@ -1475,7 +1477,7 @@ proc aboutMinsky {} {
    be purchased to use Ravel. See https://ravelation.hpcoders.com.au
 
 Thanks to following Minsky Unicorn sponsors:
-     Edward McDaniel
+     Colin Green
    " 
 }
 
