@@ -49,9 +49,9 @@ tuple<string,string> splitFirstComponent(const string& x)
   if (x.empty() || x[0]!='/') return {};
   auto i=find(x.begin()+1, x.end(), '/');
   if (i==x.end())
-    return {x,{}};
+    return std::make_tuple(x,string());
   else
-    return {{x.begin(),i},{i,x.end()}};
+    return std::make_tuple(string{x.begin(),i},string{i,x.end()});
 }
 
 static cairo_status_t appendDataToBuffer(void *p, const unsigned char* data, unsigned length)

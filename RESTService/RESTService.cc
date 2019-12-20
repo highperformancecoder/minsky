@@ -23,8 +23,8 @@
 using namespace classdesc;
 using namespace std;
 
-#include <readline/readline.h>
-#include <readline/history.h>
+//#include <readline/readline.h>
+//#include <readline/history.h>
 
 
 namespace minsky
