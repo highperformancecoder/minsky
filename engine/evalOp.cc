@@ -526,7 +526,7 @@ namespace minsky
       vector<string> axes;
       OffsetMap(const VariableValue& v) {
         size_t stride=1;
-        for (auto& i: v.xVector)
+        for (auto& i: v.hypercube().xvectors)
           {
             size_t offs=0;
             for (auto& j: i)
@@ -764,19 +764,19 @@ namespace minsky
             case gather:
               {
                 auto& e=dynamic_cast<EvalOp<gather>&>(*t);
-                e.shape=from1.dims();
-                if (to.xVector!=from1.xVector)
-                  to.setXVector(from1.xVector);
+                e.shape=from1.hypercube().dims();
+                if (to.hypercube()!=from1.hypercube())
+                  to.hypercube(from1.hypercube());
                   
                 // For feature 47
-                  for (size_t i=0; i<from1.dataSize(); ++i)                          
-                    t->in1.push_back(i+from1.idx());
+                for (size_t i=0; i<from1.size(); ++i)                          
+                  t->in1.push_back(i+from1.idx());
 					  
-                auto from2Dims=from2.dims();
-                if (from2Dims.size()>0)
+                auto from2Dims=from2.hypercube().dims();
+                if (from2.rank()>0)
                    {
 				     // For feature 47	   
-                     for (size_t i=0; i<from2.dataSize(); i+=from2Dims[0])
+                     for (size_t i=0; i<from2.size(); i+=from2Dims[0])
                        {
                          t->in2.emplace_back();
                          for (size_t j=0; j<from2Dims[0]; ++j)
@@ -824,9 +824,9 @@ namespace minsky
             default:
               {
                 map<string,const XVector&> from2XVectorMap;
-                for (auto& i: from2.xVector)
+                for (auto& i: from2.hypercube().xvectors)
                   from2XVectorMap.emplace(i.name, i);
-                for (auto& i: from1.xVector)
+                for (auto& i: from1.hypercube().xvectors)
                   {
                     auto j=from2XVectorMap.find(i.name);
                     if (j!=from2XVectorMap.end() && j->second.dimension.type!=i.dimension.type)
@@ -834,25 +834,25 @@ namespace minsky
                   }
             
                 // check that all from2's xvector entries are present in to, and vice versa
-                if (&to==&from1) checkAllEntriesPresent(to.xVector, from2.xVector);
-                if (&to==&from2) checkAllEntriesPresent(to.xVector, from1.xVector);
+                if (&to==&from1) checkAllEntriesPresent(to.hypercube().xvectors, from2.hypercube().xvectors);
+                if (&to==&from2) checkAllEntriesPresent(to.hypercube().xvectors, from1.hypercube().xvectors);
             
                 // For feature 47            
-                if ((from1.dataSize()==1) && (from2.dataSize()==1))
+                if ((from1.size()==1) && (from2.size()==1))
                   {
                     t->in1.push_back(from1.idx());
                     t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
-                    if ((to.dataSize()>1) && &to!=&from1 && &to!=&from2)                                  
-                      to.setXVector(vector<XVector>());
+                    if ((to.size()>1) && &to!=&from1 && &to!=&from2)                                  
+                      to.hypercube({});
                     break;
                   }
 
                 OffsetMap from1Offsets(from1), from2Offsets(from2);
 
-                if (to.xVector.empty())
+                if (to.rank()==0)
                   {
                     vector<XVector> xv;
-                    for (auto& i: from1.xVector)
+                    for (auto& i: from1.hypercube().xvectors)
                       if (i.dimension.type==Dimension::string)
                         {
                           // compute the common intersection of shared dimensions,
@@ -875,15 +875,15 @@ namespace minsky
                       else
                         xv.push_back(i);
                      
-                    for (auto& i: from2.xVector)
+                    for (auto& i: from2.hypercube().xvectors)
                       if (!from1Offsets.count(i.name))
                         xv.push_back(i);
-                    to.setXVector(move(xv));
+                    to.hypercube(move(xv));
                   }
                 else
-                  to.setXVector(from1.xVector);
+                  to.hypercube(from1.hypercube());
 
-                GetBounds from1GetBounds(from1.xVector), from2GetBounds(from2.xVector);
+                GetBounds from1GetBounds(from1.hypercube().xvectors), from2GetBounds(from2.hypercube().xvectors);
                 apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
                                      {
                                        t->in1.push_back(from1Offsets.offset(x)+from1.idx());
@@ -963,30 +963,30 @@ namespace minsky
           switch (OperationType::classify(op))
             {
             case general: case function: 
-                if (to.idx()==-1 || to.xVector.empty())
-                  to.setXVector(from1.xVector);
-                if (to.xVector==from1.xVector)
-                  { 
-					// For feature 47  
-                      for (size_t i=0; i<from1.dataSize(); ++i)                          
-                        t->in1.push_back(i+from1.idx());
-                  }
-                else
-                  generic1ArgIndices(*t, to, from1);
+              if (to.idx()==-1 || to.rank()==0)
+                to.hypercube(from1.hypercube());
+              if (to.hypercube()==from1.hypercube())
+                { 
+                  // For feature 47  
+                  for (size_t i=0; i<from1.size(); ++i)                          
+                    t->in1.push_back(i+from1.idx());
+                }
+              else
+                generic1ArgIndices(*t, to, from1);
               break;
             case reduction: case scan:
               {
                 // determine stride based on state of the operation argument
                 size_t stride=1;
                 if (state && !state->axis.empty())
-                  for (auto& j: from1.xVector)
+                  for (auto& j: from1.hypercube().xvectors)
                     {
                       if (j.name==state->axis)
                         break;
                       stride*=j.size();
                     }
                    // For feature 47
-                    for (size_t i=0; i<from1.dataSize(); ++i)                          
+                    for (size_t i=0; i<from1.size(); ++i)                          
                       t->in1.push_back(i*stride+from1.idx());	
               }
               break;
@@ -996,17 +996,17 @@ namespace minsky
                 {
                 case index:
                   {
-					vector<unsigned> targetDims;  
-                    targetDims={unsigned(from1.rank()),unsigned(from1.dataSize())};
-                    if (to.dims()!=targetDims)
-                      to.dims(targetDims);
+                    vector<unsigned> targetDims;  
+                    targetDims={unsigned(from1.rank()),unsigned(from1.size())};
+                    if (to.hypercube().dims()!=targetDims)
+                      to.hypercube(move(targetDims));
                   
                     // For feature 47
-                      for (size_t i=0; i<from1.dataSize(); ++i)                          
+                      for (size_t i=0; i<from1.size(); ++i)                          
                         t->in1.push_back(i+from1.idx());
 				    	       
                     auto& e=dynamic_cast<EvalOp<index>&>(*t);
-                    e.shape=from1.dims();
+                    e.shape=from1.hypercube().dims();
                   }
                   break;
                 default: // TODO
@@ -1022,11 +1022,11 @@ namespace minsky
       switch (OperationType::classify(op))
         {
         case general: case binop: case function: case scan:
-          assert(t->numArgs()<1 || to.dataSize()==t->in1.size());
-          assert(t->numArgs()<2 || to.dataSize()==t->in2.size());
+          assert(t->numArgs()<1 || to.size()==t->in1.size());
+          assert(t->numArgs()<2 || to.size()==t->in2.size());
           break;
         case reduction:
-          assert(t->numArgs()==1 && (to.dataSize()==1));
+          assert(t->numArgs()==1 && (to.size()==1));
           break;
         case tensor:
           break;

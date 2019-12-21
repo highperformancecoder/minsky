@@ -1,27 +1,27 @@
 /*
-  @copyright Steve Keen 2018
+  @copyright Russell Standish 2019
   @author Russell Standish
-  This file is part of Minsky.
+  This file is part of Civita.
 
-  Minsky is free software: you can redistribute it and/or modify it
+  Civita is free software: you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  Minsky is distributed in the hope that it will be useful,
+  Civita is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
+  along with Civita.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DIMENSION_H
-#define DIMENSION_H
+#ifndef CIVITA_DIMENSION_H
+#define CIVITA_DIMENSION_H
 #include <string>
 #include <map>
-namespace minsky
+namespace civita
 {
   struct Dimension
   {
@@ -53,6 +53,4 @@ namespace minsky
   };
 }
 
-#include "dimension.cd"
-#include "dimension.xcd"
 #endif

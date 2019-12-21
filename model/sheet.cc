@@ -66,7 +66,7 @@ void Sheet::draw(cairo_t* cairo) const
     {
       auto& value=ports[0]->getVariableValue();
       Pango pango(cairo);
-      if (value.xVector.size()>2)
+      if (value.hypercube().rank()>2)
         {
           pango.setMarkup("Error: rank>2");
           cairo_move_to(cairo,-0.5*pango.width(),-0.5*pango.height());
@@ -79,7 +79,7 @@ void Sheet::draw(cairo_t* cairo) const
           double colWidth=0;
           pango.setMarkup("9999");
           float rowHeight=pango.height();
-          if (value.xVector.empty())
+          if (value.hypercube().rank()==0)
             {
               cairo_move_to(cairo,x,y);
               pango.setMarkup(str(value.value()));
@@ -87,12 +87,12 @@ void Sheet::draw(cairo_t* cairo) const
             }
           else
             {
-              if (value.xVector.size()==2)
+              if (value.hypercube().rank()==2)
                 y+=rowHeight; // allow room for header row
 
               // draw in label column
-              string format=value.xVector[0].timeFormat();
-              for (auto& i: value.xVector[0])
+              string format=value.hypercube().xvectors[0].timeFormat();
+              for (auto& i: value.hypercube().xvectors[0])
                 {
                   cairo_move_to(cairo,x,y);
                   pango.setText(trimWS(str(i,format)));
@@ -102,7 +102,7 @@ void Sheet::draw(cairo_t* cairo) const
                 }
               y=y0;
               x+=colWidth;
-              if (value.xVector.size()==1)
+              if (value.hypercube().rank()==1)
                 for (auto v: value)
                   {
                     cairo_move_to(cairo,x,y);
@@ -112,14 +112,14 @@ void Sheet::draw(cairo_t* cairo) const
                   }
               else
                 {
-                  format=value.xVector[1].timeFormat();
-                  auto dims=value.dims();
+                  format=value.hypercube().xvectors[1].timeFormat();
+                  auto dims=value.hypercube().dims();
                   for (size_t i=0; i<dims[1]; ++i)
                     {
                       colWidth=0;
                       y=y0;
                       cairo_move_to(cairo,x,y);
-                      pango.setText(trimWS(str(value.xVector[1][i],format)));
+                      pango.setText(trimWS(str(value.hypercube().xvectors[1][i],format)));
                       pango.show();
                       { // draw vertical grid line
                         cairo::CairoSave cs(cairo);

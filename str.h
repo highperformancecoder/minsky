@@ -24,6 +24,7 @@
 #include <vector>
 #include <memory>
 #include <string.h>
+#include <xvector.h>
 
 namespace minsky
 {
@@ -35,6 +36,8 @@ namespace minsky
     return s.str();
   }
 
+  using civita::str;
+  
   // needed for remove_if below
   inline bool IsNotalnum(char x) {return !std::isalnum(x);}
   // strip non alphanum characters - eg signs

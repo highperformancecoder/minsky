@@ -85,19 +85,19 @@ SUITE(CSVParser)
       VariableValue v;
       loadValueFromCSVFile(v,is,*this);
 
-      CHECK_EQUAL(3, v.dims().size());
-      CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.dims(),3);
-      CHECK_EQUAL("foo", v.xVector[0].name);
-      CHECK_EQUAL("A", str(v.xVector[0][0]));
-      CHECK_EQUAL("B", str(v.xVector[0][1]));
-      CHECK_EQUAL("bar", v.xVector[1].name);
-      CHECK_EQUAL("A", str(v.xVector[1][0]));
-      CHECK_EQUAL("B", str(v.xVector[1][1]));
-      CHECK_EQUAL("foobar", v.xVector[2].name);
-      CHECK_EQUAL("A", str(v.xVector[2][0]));
-      CHECK_EQUAL("B", str(v.xVector[2][1]));
-      CHECK_EQUAL("C", str(v.xVector[2][2]));
-      CHECK(v.dims()==v.tensorInit.dims);
+      CHECK_EQUAL(3, v.rank());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
+      CHECK_EQUAL("foo", v.hypercube().xvectors[0].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[0][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[0][1]));
+      CHECK_EQUAL("bar", v.hypercube().xvectors[1].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[1][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[1][1]));
+      CHECK_EQUAL("foobar", v.hypercube().xvectors[2].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[2][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[2][1]));
+      CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
+      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
       CHECK_EQUAL(12, v.tensorInit.data.size());
       CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
                         v.tensorInit.data, 12, 1e-4);

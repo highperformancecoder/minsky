@@ -455,7 +455,7 @@ namespace minsky
         if (dims.empty() || dims[0]==0)
           {
             if (v.idx()==-1) v.allocValue();
-            if (dims.empty() && tmp) v=tmp[0];
+            if (dims.empty() && tmp) v[0]=tmp[0];
             return; // do nothing if ravel data is empty
           }
         if (tmp)
@@ -463,8 +463,9 @@ namespace minsky
             vector<size_t> outHandles(dims.size());
             ravel_outputHandleIds(ravel, &outHandles[0]);
             // For feature 47
-            size_t prevNumElem = v.dataSize();
-            vector<XVector> xv;
+            size_t prevNumElem = v.size();
+            Hypercube hc;
+            auto& xv=hc.xvectors;
             for (size_t j=0; j<outHandles.size(); ++j)
               {
                 auto h=outHandles[j];
@@ -488,16 +489,13 @@ namespace minsky
                 for (size_t i=0; i<labels.size(); ++i)
                   xv.back().push_back(labels[i]);
               }
-            v.setXVector(move(xv));
-#ifndef NDEBUG
-            if (dims.size()==v.dims().size())
-              for (size_t i=0; i<dims.size(); ++i)
-                assert(dims[i]==v.dims()[i]);
-#endif
+            v.hypercube(move(hc));
+            assert(vector<unsigned>(dims.begin(), dims.end())==v.hypercube().dims());
+
             // For feature 47
-            if (v.idx()==-1 || (v.dataSize()>prevNumElem))
+            if (v.idx()==-1 || (v.size()>prevNumElem))
               v.allocValue();
-            for (size_t i=0; i< v.dataSize(); ++i)
+            for (size_t i=0; i< v.size(); ++i)
               *(v.begin()+i)=tmp[i];
           }
         else
@@ -514,7 +512,7 @@ namespace minsky
         RavelState state=initState.empty()? getState(): initState;
         initState.clear();
         ravel_clear(ravel);
-        for (auto& i: v.xVector)
+        for (auto& i: v.hypercube().xvectors)
           {
             vector<string> ss;
             for (auto& j: i) ss.push_back(str(j));
@@ -531,11 +529,11 @@ namespace minsky
             ravel_orderLabels(ravel,h,HandleState::forward);
           }
         if (state.empty())
-          setRank(v.xVector.size());
+          setRank(v.hypercube().rank());
 #ifndef NDEBUG
         if (state.empty())
           {
-            auto d=v.dims();
+            auto d=v.hypercube().dims();
             assert(d.size()==ravel_rank(ravel));
             vector<size_t> outputHandles(d.size());
             ravel_outputHandleIds(ravel,&outputHandles[0]);

@@ -346,12 +346,12 @@ namespace minsky
     map<Key,int> tmpCnt;
     vector<map<string,size_t>> dimLabels(spec.dimensionCols.size());
     bool tabularFormat=false;
-    vector<XVector> xVector;
+    Hypercube hc;
     vector<string> horizontalLabels;
 	       
     for (size_t i=0; i<spec.nColAxes(); ++i)
       if (spec.dimensionCols.count(i))
-        xVector.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+        hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
 
     try
       {
@@ -367,8 +367,8 @@ namespace minsky
                   {
                     tabularFormat=true;
                     horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
-                    xVector.emplace_back(spec.horizontalDimName);
-                    for (auto& i: horizontalLabels) xVector.back().push_back(i);
+                    hc.xvectors.emplace_back(spec.horizontalDimName);
+                    for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
                       dimLabels.back()[horizontalLabels[i]]=i;
@@ -381,11 +381,11 @@ namespace minsky
                 for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
                   if (spec.dimensionCols.count(i))
                     {
-                      if (dim>=xVector.size())
-                        xVector.emplace_back("?"); // no header present
+                      if (dim>=hc.xvectors.size())
+                        hc.xvectors.emplace_back("?"); // no header present
                       key.push_back(*field);
                       if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
-                        xVector[dim].push_back(*field);
+                        hc.xvectors[dim].push_back(*field);
                       dim++;
                     }
                     
@@ -450,27 +450,29 @@ namespace minsky
           }
                   
         size_t numHyperCubeElems=1;
-        for (auto& i : xVector) numHyperCubeElems*=i.size();
+        for (auto& i : hc.xvectors) numHyperCubeElems*=i.size();
                            
         double sparsityRatio =  static_cast<double>(1.0-static_cast<double>(tmpData.size())/numHyperCubeElems); 
 		
 		// for feature 47
 		if (sparsityRatio <= 0.5) 
-	    {
-		  v.index.clear();	
-          v.setXVector(xVector);          
-          if (!cminsky().checkMemAllocation(v.numDenseElements()*sizeof(double)))
-            throw runtime_error("memory threshold exceeded");            
+                  {
+                    v.index({});
+                    v.hypercube(hc);
+                    if (!cminsky().checkMemAllocation(v.numDenseElements()*sizeof(double)))
+                      throw runtime_error("memory threshold exceeded");            
           // stash the data into vv tensorInit field
           v.tensorInit.data.clear();
           v.tensorInit.data.resize(v.numDenseElements(), spec.missingValue);  
-          auto dims=v.tensorInit.dims=v.dims();    
+          auto hc=v.hypercube();
+          auto dims=v.hypercube().dims();
+          v.tensorInit.hypercube(hc);
           for (auto& i: tmpData)
             {
               size_t idx=0;
-              assert (dims.size()==i.first.size());
-              assert(dimLabels.size()==dims.size());
-              for (int j=dims.size()-1; j>=0; --j)
+              assert (hc.rank()==i.first.size());
+              assert(dimLabels.size()==hc.rank());
+              for (int j=hc.rank()-1; j>=0; --j)
                 {
                   assert(dimLabels[j].count(i.first[j]));
                   idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
@@ -480,12 +482,15 @@ namespace minsky
         }    
         else 
 	    {	
-          v.index.clear();			
-          v.setXVector(xVector);          
-          if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
+              v.index({});
+              v.hypercube(hc);          
+              if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
             throw runtime_error("memory threshold exceeded");	  	  		
-          auto dims=v.tensorInit.dims=v.dims();	
-          v.tensorInit.data.clear();   
+              auto dims=v.hypercube().dims();
+              
+              v.tensorInit.hypercube(Hypercube(dims));
+          v.tensorInit.data.clear();
+          vector<size_t> index;
           for (auto& i: tmpData)
             {
               size_t idx=0;
@@ -497,11 +502,12 @@ namespace minsky
                   idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                 }
                if (!isnan(i.second)) {  
-				  v.index.push_back(idx);
-                  v.tensorInit.data.push_back(i.second);
-			   }
+                 index.push_back(idx);
+                 v.tensorInit.data.push_back(i.second);
+               }
             }
-            assert(v.index.size()==v.tensorInit.data.size());
+          v.tensorInit.m_index=index;
+          assert(v.index().size()==v.tensorInit.data.size());
      	}                 
 
       }

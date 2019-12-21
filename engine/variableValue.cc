@@ -32,12 +32,10 @@ namespace minsky
 
   const VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
   {
-	 bool realloc;
-     realloc= dataSize() != x.data.size();  
-     if (dims()!=x.dims) dims(x.dims);
-     if (realloc) allocValue(); 
-     memcpy(&valRef(), &x.data[0], x.data.size()*sizeof(x.data[0]));
-     return *this;
+    index(x.index());
+    hypercube(x.hypercube());
+    memcpy(&valRef(), &x.data[0], x.data.size()*sizeof(x.data[0]));
+    return *this;
   }
    
   VariableValue& VariableValue::allocValue()                                        
@@ -52,12 +50,12 @@ namespace minsky
       case constant:
       case parameter:
         m_idx=ValueVector::flowVars.size();
-		ValueVector::flowVars.resize(ValueVector::flowVars.size()+dataSize());
+        ValueVector::flowVars.resize(ValueVector::flowVars.size()+size());
         break;
       case stock:
       case integral:
         m_idx=ValueVector::stockVars.size();
-		ValueVector::stockVars.resize(ValueVector::stockVars.size()+dataSize());
+        ValueVector::stockVars.resize(ValueVector::stockVars.size()+size());
         break;
       default: break;
       }
@@ -95,11 +93,11 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
-        if (size_t(m_idx+dataSize())<=ValueVector::flowVars.size())
+        if (size_t(m_idx+size())<=ValueVector::flowVars.size())
           return ValueVector::flowVars[m_idx]; 
       case stock:
       case integral: 
-        if (size_t(m_idx+dataSize())<=ValueVector::stockVars.size())
+        if (size_t(m_idx+size())<=ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx]; 
         break;
       default: break;
@@ -125,22 +123,23 @@ namespace minsky
             string fn=fc.name.substr(0,p);
             // unpack args
             const char* x=fc.name.c_str()+p+1;
-            TensorVal r;
             char* e;
+            vector<unsigned> dims;
             for (;;)
               {
                 auto tmp=strtol(x,&e,10);
                 if (tmp>0 && e>x && *e)
                   {
                     x=e+1;
-                    r.dims.push_back(tmp);
+                    dims.push_back(tmp);
                   }
                 else
                   break;
               }
-
+            TensorVal r(dims);
+            
             size_t n=1;
-            for (auto i: r.dims) n*=i;
+            for (auto i: dims) n*=i;
             r.data.resize(n);
 
             if (fn=="iota")
@@ -158,10 +157,10 @@ namespace minsky
                     // diagonal elements set to 1
                     // find minimum dimension, and stride of diagonal elements
                     size_t mind=n, stride=1;
-                    for (auto i: r.dims)
+                    for (auto i: dims)
                       mind=min(mind, size_t(i));
-                    for (size_t i=0; i<r.dims.size()-1; ++i)
-                      stride*=(r.dims[i]+1);
+                    for (size_t i=0; i<dims.size()-1; ++i)
+                      stride*=(dims[i]+1);
                     for (size_t i=0; i<mind; ++i)
                       r.data[stride*i]=1;
                   }
@@ -318,69 +317,69 @@ namespace minsky
   string expMultiplier(int exp)
   {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
 
-  void VariableValue::makeXConformant(const VariableValue& a)
-  {
-    auto xv=xVector;
-    for (auto& i: a.xVector)
-      {
-        size_t j=0;
-        for (j=0; j<xv.size(); ++j)
-          if (xv[j].name==i.name)
-            {
-              if (xv[j].dimension.type!=i.dimension.type)
-                throw error("dimension %s has inconsistent type",i.name.c_str());
-              // only match labels for string dimensions. Other types are interpolated.
-              XVector newLabels;
-              switch (i.dimension.type)
-                {
-                case Dimension::string:
-                  {
-                    set<string> alabels;
-                    for (auto& k: i)
-                      alabels.insert(str(k));
-                    for (auto k: xVector[j])
-                      if (alabels.count(str(k)))
-                        newLabels.push_back(k);
-                    break;
-                  }
-                default:
-                  {
-                    // set overlapping value ranges
-                    set<boost::any, AnyLess> vals(i.begin(), i.end());
-                    for (auto k: xVector[j])
-                      if (diff(k, *vals.begin())>=0 && diff(k, *vals.rbegin())<=0)
-                        newLabels.push_back(k);
-                    break;
-                  }
-                }
-              xv[j].swap(newLabels);
-              break;
-            }
-        if (j==xVector.size()) // axis not present on LHS, so increase rank
-          xv.push_back(i);
-      }
-    setXVector(move(xv));
-    if (dataSize()==0)
-      throw error("tensors nonconformant");
-  }
+//  void VariableValue::makeXConformant(const VariableValue& a)
+//  {
+//    auto xv=xVector;
+//    for (auto& i: a.xVector)
+//      {
+//        size_t j=0;
+//        for (j=0; j<xv.size(); ++j)
+//          if (xv[j].name==i.name)
+//            {
+//              if (xv[j].dimension.type!=i.dimension.type)
+//                throw error("dimension %s has inconsistent type",i.name.c_str());
+//              // only match labels for string dimensions. Other types are interpolated.
+//              XVector newLabels;
+//              switch (i.dimension.type)
+//                {
+//                case Dimension::string:
+//                  {
+//                    set<string> alabels;
+//                    for (auto& k: i)
+//                      alabels.insert(str(k));
+//                    for (auto k: xVector[j])
+//                      if (alabels.count(str(k)))
+//                        newLabels.push_back(k);
+//                    break;
+//                  }
+//                default:
+//                  {
+//                    // set overlapping value ranges
+//                    set<boost::any, AnyLess> vals(i.begin(), i.end());
+//                    for (auto k: xVector[j])
+//                      if (diff(k, *vals.begin())>=0 && diff(k, *vals.rbegin())<=0)
+//                        newLabels.push_back(k);
+//                    break;
+//                  }
+//                }
+//              xv[j].swap(newLabels);
+//              break;
+//            }
+//        if (j==xVector.size()) // axis not present on LHS, so increase rank
+//          xv.push_back(i);
+//      }
+//    setXVector(move(xv));
+//    if (dataSize()==0)
+//      throw error("tensors nonconformant");
+//  }
 
-  void VariableValue::computeStrideAndSize(const string& dim, size_t& stride, size_t& size) const
-  {
-    stride=1;
-    if (dim.empty())
-      // default to first axis if empty
-      size=xVector.empty()? 1:xVector[0].size();
-    else
-      {
-        for (auto& i: xVector)
-          {
-            size=i.size();
-            if (i.name==dim) return;
-            stride*=i.size();
-          }
-        throw runtime_error("axis "+dim+" not found");
-      }
-  }
+//  void VariableValue::computeStrideAndSize(const string& dim, size_t& stride, size_t& size) const
+//  {
+//    stride=1;
+//    if (dim.empty())
+//      // default to first axis if empty
+//      size=xVector.empty()? 1:xVector[0].size();
+//    else
+//      {
+//        for (auto& i: xVector)
+//          {
+//            size=i.size();
+//            if (i.name==dim) return;
+//            stride*=i.size();
+//          }
+//        throw runtime_error("axis "+dim+" not found");
+//      }
+//  }
 
 
   void VariableValue::exportAsCSV(const string& filename, const string& comment) const
@@ -389,17 +388,17 @@ namespace minsky
     if (!comment.empty())
       of<<"\""<<comment<<"\"\n";
     size_t i=0;
-    for (auto& i: xVector)
+    for (auto& i: hypercube().xvectors)
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
     for (auto d=begin(); d!=end(); ++i, ++d)
       if (isfinite(*d))
         {
           size_t stride=1;
-          for (size_t j=0; j<xVector.size(); ++j)
+          for (size_t j=0; j<rank(); ++j)
             {
-              of << "\""<<str(xVector[j][(i/stride) % xVector[j].size()]) << "\",";
-              stride*=xVector[j].size();
+              of << "\""<<str(hypercube().xvectors[j][(i/stride) % hypercube().xvectors[j].size()]) << "\",";
+              stride*=hypercube().xvectors[j].size();
             }
           of << *d << endl;
         }

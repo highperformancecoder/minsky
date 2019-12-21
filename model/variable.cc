@@ -198,7 +198,7 @@ double VariableBase::_value() const
 double VariableBase::_value(double x)
 {
   if (!m_name.empty() && VariableValue::isValueId(valueId()))
-    minsky().variableValues[valueId()]=x;
+    minsky().variableValues[valueId()][0]=x;
   return x;
 }
 
@@ -370,7 +370,7 @@ void VariableBase::adjustSliderBounds() const
 {
   if (auto vv=vValue())
   // For feature 47
-    if (vv->dataSize()==1)
+    if (vv->size()==1)
       {
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
@@ -413,7 +413,7 @@ void VariableBase::draw(cairo_t *cairo) const
     vv=minsky::cminsky().variableValues[valueId()];
   
   // For feature 47
-  if (type()!=constant && !ioVar() && (vv.dataSize()==1) )
+  if (type()!=constant && !ioVar() && (vv.size()==1) )
     try
     {
       auto val=engExp();

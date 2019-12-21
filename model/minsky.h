@@ -57,7 +57,8 @@ namespace minsky
 {
   using namespace std;
   using classdesc::shared_ptr;
-
+  using namespace civita;
+  
   struct RKdata; // an internal structure for holding Runge-Kutta data
 
   // handle the display of rendered equations on the screen

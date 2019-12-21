@@ -48,7 +48,7 @@ namespace MathDAG
     v.init=init;
     auto t=v.initValue(cminsky().variableValues);
     string r;
-    switch (t.dims.size())
+    switch (t.rank())
       {
       case 0: return str(t.data[0]);
       case 1: r="[";
@@ -56,10 +56,10 @@ namespace MathDAG
         return r+"]";
       case 2:
         r="[";
-        for (size_t i=0; i<t.dims[1]; ++i)
+        for (size_t i=0; i<t.hypercube().xvectors[1].size(); ++i)
           {
-            for (size_t j=0; j<t.dims[0]; ++j)
-              r+=str(t.data[i*t.dims[0]+j])+",";
+            for (size_t j=0; j<t.hypercube().xvectors[0].size(); ++j)
+              r+=str(t.data[i*t.hypercube().xvectors[0].size()+j])+",";
             r+=";";
           }
         return r+"]";

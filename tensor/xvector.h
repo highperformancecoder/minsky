@@ -1,37 +1,38 @@
 /*
-  @copyright Steve Keen 2018
+  @copyright Russell Standish 2019
   @author Russell Standish
-  This file is part of Minsky.
+  This file is part of Civita.
 
-  Minsky is free software: you can redistribute it and/or modify it
+  Civita is free software: you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  Minsky is distributed in the hope that it will be useful,
+  Civita is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
+  along with Civita.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef XVECTOR_H
-#define XVECTOR_H
+#ifndef CIVITA_XVECTOR_H
+#define CIVITA_XVECTOR_H
 #include "dimension.h"
 #include <boost/any.hpp>
 #include <boost/date_time.hpp>
 #include <vector>
 #include <initializer_list>
 
-namespace minsky
+namespace civita
 {
+  /// convert string rep to an any rep
+  boost::any anyVal(const Dimension&, const std::string&);
+
   /// \a format - can be any format string suitable for a
   /// boost::date_time time_facet. eg "%Y-%m-%d %H:%M:%S"
   std::string str(const boost::any&, const std::string& format="");
-  /// convert string rep to an any rep
-  boost::any anyVal(const Dimension&, const std::string&);
 
   /// return absolute difference between any elements
   /// for strings, returns hamming distance
@@ -65,50 +66,6 @@ namespace minsky
     std::string timeFormat() const;
   };
 
-}
-
-// nobble these, as they're not needed, and boost::any has rather nontrivial serialisers
-#ifdef _CLASSDESC
-#pragma omit pack minsky::XVector
-#pragma omit unpack minsky::XVector
-#pragma omit RESTProcess minsky::XVector
-#endif
-#include <classdesc.h>
-namespace classdesc_access
-{
-  template<> struct access_pack<minsky::XVector> {
-    void operator()(classdesc::pack_t& b, const std::string&, const minsky::XVector& a)
-    {
-      b<<a.name<<a.dimension<<a.size();
-      for (auto& i: a)
-        b<<minsky::str(i);
-    }
-  };
-  template<> struct access_unpack<minsky::XVector> {
-    void operator()(classdesc::pack_t& b, const std::string&, minsky::XVector& a)
-    {
-      size_t size;
-      std::string x;
-      a.clear();
-      b>>a.name>>a.dimension>>size;
-      for (size_t i=0; i<size; ++i)
-        {
-          b>>x;
-          a.push_back(x);
-        }
-    }
-  };
-}
-#include "xvector.cd"
-
-namespace classdesc_access
-{
-//  template <>
-//  struct access_RESTProcess<minsky::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
-  template <>
-  struct access_json_pack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-  template <>
-  struct access_json_unpack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
 }
 
 #endif

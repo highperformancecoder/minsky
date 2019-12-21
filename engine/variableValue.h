@@ -19,7 +19,7 @@
 #ifndef VARIABLE_VALUE
 #define VARIABLE_VALUE
 #include "variableType.h"
-#include "xvector.h"
+#include "tensorInterface.h"
 #include "tensorVal.h"
 #include "ecolab.h"
 #include "classdesc_access.h"
@@ -33,36 +33,37 @@ namespace minsky
   struct VariableValues;
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
-
-  // why are we doing this complicated mixin to constify the xVector
-  // attribute instead of a simple const std::vector<XVector>&
-  // VariableValue::xVector() const getter method?
-
-  //ans: because we want TCL to be able to inspect the xVector
-  // attribute, which is not possible with the getter method
-  class XVectorMixin
-  {
-  public:
-    typedef std::vector<XVector> XVectorVector;
-    CLASSDESC_ACCESS(XVectorMixin);
-  protected:
-    XVectorVector m_xVector;
-  public:
-    // need to use C++98 style initialiser here to get around compiler
-    // bug on Ubuntu 14.04
-    const XVectorVector& xVector; //{m_xVector};
-    XVectorMixin(): xVector(m_xVector) {}
-    XVectorMixin(const XVectorMixin& x):
-      m_xVector(x.m_xVector), xVector(m_xVector) {}
-    XVectorMixin(XVectorMixin&& x):
-      m_xVector(x.m_xVector), xVector(m_xVector) {}
-    XVectorMixin& operator=(const XVectorMixin& x)
-    {m_xVector=x.m_xVector; return *this;}
-    XVectorMixin& operator=(XVectorMixin&& x)
-    {m_xVector=x.m_xVector; return *this;}
-  };
+  using namespace civita;
   
-  class VariableValue: public VariableType, public XVectorMixin
+//  // why are we doing this complicated mixin to constify the xVector
+//  // attribute instead of a simple const std::vector<XVector>&
+//  // VariableValue::xVector() const getter method?
+//
+//  //ans: because we want TCL to be able to inspect the xVector
+//  // attribute, which is not possible with the getter method
+//  class XVectorMixin
+//  {
+//  public:
+//    typedef std::vector<XVector> XVectorVector;
+//    CLASSDESC_ACCESS(XVectorMixin);
+//  protected:
+//    XVectorVector m_xVector;
+//  public:
+//    // need to use C++98 style initialiser here to get around compiler
+//    // bug on Ubuntu 14.04
+//    const XVectorVector& xVector; //{m_xVector};
+//    XVectorMixin(): xVector(m_xVector) {}
+//    XVectorMixin(const XVectorMixin& x):
+//      m_xVector(x.m_xVector), xVector(m_xVector) {}
+//    XVectorMixin(XVectorMixin&& x):
+//      m_xVector(x.m_xVector), xVector(m_xVector) {}
+//    XVectorMixin& operator=(const XVectorMixin& x)
+//    {m_xVector=x.m_xVector; return *this;}
+//    XVectorMixin& operator=(XVectorMixin&& x)
+//    {m_xVector=x.m_xVector; return *this;}
+//  };
+  
+  class VariableValue: public VariableType, public civita::ITensor
   {
     CLASSDESC_ACCESS(VariableValue);
   private:
@@ -71,10 +72,12 @@ namespace minsky
     double& valRef(); 
     double valRef() const;
     std::vector<unsigned> m_dims;
+    std::vector<size_t> m_index;     
 
     friend class VariableManager;
     friend struct SchemaHelper;
   public:
+    using ITensor::hypercube;
     /// variable has an input port
     bool lhs() const {
       return m_type==flow || m_type==tempFlow;}
@@ -114,72 +117,55 @@ namespace minsky
     typedef const double* const_iterator;
     iterator begin() {return &valRef();}
     const_iterator begin() const {return &const_cast<VariableValue*>(this)->valRef();}
-	iterator end() {return begin()+dataSize();}
-	const_iterator end() const {return begin()+dataSize();}
+    iterator end() {return begin()+size();}
+    const_iterator end() const {return begin()+size();}
+
+    double operator[](size_t i) const override {return *(begin()+i);}
+    double& operator[](size_t i) {return *(begin()+i);}
+
+
+    const std::vector<size_t>& index() const override {return m_index;}
+    const std::vector<size_t>& index(const std::vector<size_t>& i)
+    {
+      size_t prevNumElems = size();
+      m_index=i;
+      if (idx()==-1 || (prevNumElems<size()))    
+        allocValue();    
+      return m_index;
+    }
+
     
-    ///< dimensions of this variable value. dims.size() is the rank, a
-    ///scalar variable has dims[0]=1, etc.
-    std::vector<unsigned> dims() const {
-      std::vector<unsigned> d;
-      for (auto& i: xVector) d.push_back(i.size());
-      return d;
-    }
-    size_t rank() const {return xVector.size();}
-    ///< set the dimensions. \a d cannot be empty, by may consist of
-    ///the single element {1} to refer to a scalar
-    const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
-      XVectorVector xv;
-      for (size_t i=0; i<d.size(); ++i)
-        {
-          xv.emplace_back(std::to_string(i));
-          xv.back().dimension.type=Dimension::value;
-          for (size_t j=0; j<d[i]; ++j)
-            xv.back().emplace_back(double(j));
-        }
-      setXVector(std::move(xv));
-      return d;
-    }
-    // For feature 47
-    std::vector<size_t> index;     
-    
-    size_t numDenseElements() const {                                                
-      size_t s=1;
-      for (auto& i: xVector) s*=i.size();
-      return s;
-    }
+    size_t numDenseElements() const {return hypercube().numElements();}
   
-    size_t dataSize() const {
-		return index.size() ? index.size(): numDenseElements();
-	}    
+    size_t size() const override
+    {return m_index.size() ? m_index.size(): numDenseElements();}    
     
     template <class T>                                            
-    void setXVector_(T x) {    
-      size_t prevNumElems = dataSize();
-      m_xVector=x;    
-      if (idx()==-1 || (prevNumElems<dataSize()))    
+    void hypercube_(T x) {    
+      size_t prevNumElems = size();
+      ITensor::hypercube(x);    
+      if (idx()==-1 || (prevNumElems<size()))    
         allocValue();    
-    }    
-    void setXVector(XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
-    void setXVector(const XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
-
+    }
     
-    /// removes elements of xVector not found in \a
-    void makeXConformant(const VariableValue& a);
-
-    /// compute stride and dimension size of dimension \a dim
-    /// @throw if dimension \a dim doesn't exist
-    /// if \a dim is empty, defaults to first dimension
-    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
+    const Hypercube& hypercube(const Hypercube& hc) override
+    {hypercube_(hc); return m_hypercube;}
+    const Hypercube& hypercube(Hypercube&& hc) override
+    {hypercube_(hc); return m_hypercube;}
+                                                                              
+    void makeXConformant(const ITensor& x) {
+      m_hypercube.makeConformant(x.hypercube());
+    }
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 
-    const VariableValue& operator=(double x) {valRef()=x; return *this;}
-    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
-    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
+//    const VariableValue& operator=(double x) {valRef()=x; return *this;}
+//    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
+//    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
     const VariableValue& operator=(const TensorVal& x);
-    //    const VariableValue& operator+=(const TensorVal& x);
-    //    const VariableValue& operator-=(const TensorVal& x);
+    const VariableValue& operator+=(const TensorVal& x);
+    const VariableValue& operator-=(const TensorVal& x);
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();

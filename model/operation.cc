@@ -378,7 +378,7 @@ namespace minsky
     for (size_t i=1; i<ports.size(); ++i)
       {
         auto& vv=ports[i]->getVariableValue();
-        for (auto& i: vv.xVector)
+        for (auto& i: vv.hypercube().xvectors)
           names.insert(i.name);
       }
     return {names.begin(), names.end()};

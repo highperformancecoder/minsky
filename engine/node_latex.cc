@@ -72,7 +72,7 @@ namespace MathDAG
     v.init=init;
     auto t=v.initValue(cminsky().variableValues);
     string r;
-    switch (t.dims.size())
+    switch (t.rank())
       {
       case 0: return str(t.data[0]);
       case 1: r="(";

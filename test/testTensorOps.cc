@@ -38,7 +38,7 @@ SUITE(TensorOps)
   TEST(reduction)
     {
       VariableValue from(VariableType::flow), to(VariableType::flow);
-      from.dims({5});
+      from.hypercube(vector<unsigned>{5});
       from.allocValue();
       EvalOpPtr sum(OperationType::sum, nullptr, to, from);
       EvalOpPtr prod(OperationType::product, nullptr, to, from);
@@ -85,7 +85,7 @@ SUITE(TensorOps)
   TEST(scan)
     {
       VariableValue from(VariableType::flow), to(VariableType::flow);
-      from.dims({5}); to.dims({5});
+      from.hypercube(vector<unsigned>{5}); to.hypercube(vector<unsigned>{5});
       from.allocValue();
       
       EvalOpPtr sum(OperationType::runningSum, nullptr, to, from);
@@ -99,20 +99,20 @@ SUITE(TensorOps)
       for (auto i=from.begin(); i!=from.end(); ++i)
         *i=2;
       sum->eval();
-      CHECK_EQUAL(5,to.dataSize());
-      for (size_t i=0; i<to.dataSize(); ++i)
-        CHECK_EQUAL(2*(i+1),to.value(i));
+      CHECK_EQUAL(5,to.size());
+      for (size_t i=0; i<to.size(); ++i)
+        CHECK_EQUAL(2*(i+1),to[i]);
       
       prod->eval();
-      CHECK_EQUAL(5,to.dataSize());
-      for (size_t i=0; i<to.dataSize(); ++i)        
+      CHECK_EQUAL(5,to.size());
+      for (size_t i=0; i<to.size(); ++i)        
         CHECK_EQUAL(pow(2,i+1),to.value(i));
     }
 
   TEST(indexGather)
     {
       VariableValue from(VariableType::flow), to(VariableType::flow);
-      from.dims({5}); to.dims({5});
+      from.hypercube(vector<unsigned>{5}); to.hypercube(vector<unsigned>{5});
       from.allocValue();
       for (auto i=from.begin(); i!=from.end(); ++i)
         *i=(i-from.begin())%2;
@@ -120,11 +120,11 @@ SUITE(TensorOps)
       index->eval();
       vector<double> expected{1,3};
       CHECK_ARRAY_EQUAL(expected,to.begin(),2);
-      for (size_t i=3; i<to.dataSize(); ++i)
+      for (size_t i=3; i<to.size(); ++i)
         CHECK(std::isnan(to.begin()[i]));
 
       // apply gather to the orignal vector and the index results.
-      VariableValue gathered(VariableType::flow); gathered.dims({5});
+      VariableValue gathered(VariableType::flow); gathered.hypercube(vector<unsigned>{5});
       EvalOpPtr gather(OperationType::gather, nullptr, gathered, from, to);
       gather->eval();
       // replace nans with -1 to make comparison test simpler
@@ -140,7 +140,7 @@ SUITE(TensorOps)
       index->eval();
       expected={2,4};
       CHECK_ARRAY_EQUAL(expected,to.begin(),2);
-      for (size_t i=3; i<to.dataSize(); ++i)
+      for (size_t i=3; i<to.size(); ++i)
         CHECK(std::isnan(to.begin()[i]));
 
       // apply gather to the orignal vector and the index results.

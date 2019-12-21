@@ -186,7 +186,7 @@ namespace minsky
               const double sv[]=&ValueVector::stockVars[0]) override;
     void setTensorParams(const VariableValue& v,const OperationBase& op) override
     {
-      v.computeStrideAndSize(op.axis,stride,dimSz);
+      v.hypercube().computeStrideAndSize(op.axis,stride,dimSz);
       window=op.arg<0? dimSz: op.arg;
     }
   };

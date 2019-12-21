@@ -280,7 +280,7 @@ namespace schema2
       if (!val->tensorInit.data.empty())
         {
           pack_t buf;
-          buf<<val->tensorInit<<val->xVector;
+          buf<<val->tensorInit<<val->hypercube().xvectors;
           
           vector<unsigned char> zbuf(buf.size());
           DeflateZStream zs(buf, zbuf);
@@ -503,7 +503,7 @@ namespace schema2
               try
                 {
                   zs.output>>val->tensorInit>>xv;
-                  val->setXVector(xv);
+                  val->hypercube(move(xv));
                 }
               catch (...) {} // absorb for now - maybe log later
             }

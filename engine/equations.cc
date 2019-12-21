@@ -181,21 +181,24 @@ namespace MathDAG
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
       // For feature 47
-      size_t oldNumElems=r.dataSize();
+      size_t oldNumElems=r.size();
       for (auto& i: argIdx)
-        if (i.size() && !i[0].xVector.empty())
+        if (i.size())
           {
             // initialise r's xVector
-            r.setXVector(i[0].xVector);
+            r.hypercube(i[0].hypercube());
             break;
           }
-      if (!r.xVector.empty())
+      if (r.rank()>0)
         {
           // ensure dimensions are correct
+          auto hc=r.hypercube();
           for (auto& i: argIdx)
             for (auto& j: i)
-              r.makeXConformant(j);
-          if (r.xVector.empty())
+              hc.makeConformant(j.hypercube());
+          r.hypercube(hc);
+
+          if (r.rank()==0)
             return; // no common intersection amongst arguments
         }
       if (r.idx()==-1) r.allocValue();
@@ -246,8 +249,7 @@ namespace MathDAG
             {
               // multiple wires to second input port
               VariableValue tmp(VariableType::tempFlow);
-              tmp.setXVector(r.xVector);
-              tmp.dims(r.dims());
+              tmp.hypercube(r.hypercube());
               size_t i=0;
               if (accum==OperationType::add)
                 while (i<argIdx[1].size() && argIdx[1][i].isZero()) i++;
@@ -337,7 +339,7 @@ namespace MathDAG
                 {
                   if (argIdx.empty() || argIdx[0].empty())
                     throw error("input not wired");
-                  result->setXVector(argIdx[0][0].xVector);
+                  result->hypercube(argIdx[0][0].hypercube());
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
                   assert(state);
                   ev.back()->setTensorParams(argIdx[0][0],*state);
@@ -351,11 +353,11 @@ namespace MathDAG
                   EvalOpPtr op(subtract, state, *result, argIdx[0][0], argIdx[0][0]);
                   ev.push_back(op);
                   size_t stride, dimSz;
-                  argIdx[0][0].computeStrideAndSize(state->axis, stride,dimSz);
+                  argIdx[0][0].hypercube().computeStrideAndSize(state->axis, stride,dimSz);
 
                   // trim off leading or trailing components
-                  auto xVector=result->xVector;
-                  for (auto& i: xVector)
+                  auto hc=result->hypercube();
+                  for (auto& i: hc.xvectors)
                     if (state->axis.empty() || i.name==state->axis)
                       {
                         if (state->arg>=i.size())
@@ -366,7 +368,7 @@ namespace MathDAG
                           i.erase(i.end()+state->arg, i.end());
                         break;
                       }
-                  result->setXVector(xVector);
+                  result->hypercube(hc);
                   
                   decltype(op->in1) in1;
                   decltype(op->in2) in2;
@@ -390,9 +392,9 @@ namespace MathDAG
                 }
               case index: 
                 {
-                  auto xVector=argIdx[0][0].xVector;
-                  for (auto& i: xVector)
-                    if (state->axis.empty() || i.name==state->axis || xVector.size()==1)
+                  auto hc=argIdx[0][0].hypercube();
+                  for (auto& i: hc.xvectors)
+                    if (state->axis.empty() || i.name==state->axis || hc.rank()==1)
                       {
                         i.dimension.type=Dimension::value;
                         i.dimension.units.clear();
@@ -400,15 +402,15 @@ namespace MathDAG
                           i[j]=double(j);
                         break;
                       }
-                  result->setXVector(xVector);
+                  result->hypercube(hc);
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
                 }                
                 break;
               case gather:
                 {
-                  auto xVector=argIdx[0][0].xVector;
-                  for (auto& i: xVector)
-                    if (state->axis.empty() || i.name==state->axis || xVector.size()==1)
+                  auto hc=argIdx[0][0].hypercube();
+                  for (auto& i: hc.xvectors)
+                    if (state->axis.empty() || i.name==state->axis || hc.rank()==1)
                       {
                         i.dimension.type=Dimension::value;
                         i.dimension.units.clear();
@@ -416,7 +418,7 @@ namespace MathDAG
                           i[j]=double(j);
                         break;
                       }
-                  result->setXVector(xVector);
+                  result->hypercube(hc);
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
                 }                
                 break;

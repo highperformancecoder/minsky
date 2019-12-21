@@ -27,6 +27,7 @@
 
 namespace minsky
 {
+  using namespace civita;
   class DataSpec
   {
     size_t m_nRowAxes=0, m_nColAxes=0;

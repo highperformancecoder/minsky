@@ -7,13 +7,13 @@ ifneq ($(MAKECMDGOALS),clean)
 include $(ECOLAB_HOME)/include/Makefile
 endif
 
-VPATH= .. ../schema ../model ../engine ../server ../RESTService $(ECOLAB_HOME)/include
+VPATH= .. ../schema ../model ../engine ../tensor ../server ../RESTService $(ECOLAB_HOME)/include
 
 UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testTensorOps.o testLockGroup.o testCSVParser.o
 #testDatabase.o 
 
 MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o ../RESTService.o,$(wildcard ../*.o))
-FLAGS:=-I.. -I../RESTService $(FLAGS)
+FLAGS:=-I.. -I../RESTService -I../tensor $(FLAGS)
 FLAGS+=-std=c++11  -Wno-unused-local-typedefs -I../model -I../engine -I../schema
 LIBS+=-ljson_spirit -lsoci_core -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem \

@@ -116,7 +116,7 @@ namespace minsky
     /// variableValue associated with this. nullptr if not associated with a variableValue
     VariableValue* vValue() const;
     std::vector<unsigned> dims() const {
-      if (auto v=vValue()) return v->dims();
+      if (auto v=vValue()) return v->hypercube().dims();
       else return {};
     }
       

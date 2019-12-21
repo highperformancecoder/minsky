@@ -26,6 +26,7 @@
 
 namespace minsky 
 {
+  using namespace civita;
   class RavelLockGroup;
   
   class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
