@@ -1001,7 +1001,7 @@ namespace minsky
 		drawButton(cairo,"—",1,0,0,idx++);
       if (pos!=first && pos!=second && pos!=firstAndLast) 						// no move up button for first row containing initial conditions. For ticket 1064
         drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
-      if ((pos!=first && pos!=last && pos!=firstAndLast) || rowCol == col)              // no move down button for first row containing initial conditions. For ticket 1064
+      if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
         drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
   }  
  
