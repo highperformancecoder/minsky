@@ -485,8 +485,8 @@ namespace minsky
     if ((selectedCol==0 && selectedRow==1) || (c==0 && r==1) || size_t(selectedRow)>=(godleyIcon->table.rows()) || size_t(r)>=(godleyIcon->table.rows()) || size_t(c)>=(godleyIcon->table.cols()) || size_t(selectedCol)>=(godleyIcon->table.cols()))
       return;  
     else if (selectedRow==0)
-      {
-        if (c>0 && selectedCol!=0 && c!=selectedCol)      // Disallow moving flow labels column. For ticket 1064/1066
+      { // Disallow moving flow labels column, in paticular between different asset classes. For tickets 1053/1064/1066
+        if (c>0 && selectedCol!=0 && c!=selectedCol && godleyIcon->table._assetClass(c)==godleyIcon->table._assetClass(selectedCol))
           godleyIcon->table.moveCol(selectedCol,c-selectedCol);
       }
     else if (r>0 && selectedCol==0)
