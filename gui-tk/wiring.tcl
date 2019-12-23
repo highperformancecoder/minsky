@@ -499,8 +499,7 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy" -command minsky.copy
     .wiring.context add command -label "Save selection as" -command saveSelection
-    .wiring.context add command -label "Paste Group" -command minsky.pasteGroup
-    .wiring.context add command -label "Paste Item(s)" -command minsky.pasteItems
+    .wiring.context add command -label "Paste" -command minsky.paste
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"

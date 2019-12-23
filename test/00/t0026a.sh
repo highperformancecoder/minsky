@@ -53,7 +53,7 @@ assert {[canvas.selection.numWires]==2} {}
 cut
 assert {[model.numItems]==23} {}
 assert {[model.numWires]==23} {}
-pasteItems
+paste
 
 event generate .wiring.canvas <Button-1>
 
