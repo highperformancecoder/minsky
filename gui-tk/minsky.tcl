@@ -1477,7 +1477,7 @@ proc aboutMinsky {} {
    be purchased to use Ravel. See https://ravelation.hpcoders.com.au
 
 Thanks to following Minsky Unicorn sponsors:
-     Colin Green
+     Edward McDaniel
    " 
 }
 
