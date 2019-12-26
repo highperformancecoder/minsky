@@ -699,17 +699,8 @@ proc undo {delta} {
     doPushHistory 1
 }
 
-
 proc cut {} {
     minsky.cut
-}
-
-# Fix for ticket 1080
-proc copy {} {
-	if $preferences(focusFollowsMouse) {
-		minsky.copy
-	}
-	else {clipboard clear}
 }
 
 proc dimensionsDialog {} {
