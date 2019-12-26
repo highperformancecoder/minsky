@@ -652,7 +652,7 @@ You may also select ``Open in canvas'' from the context menu. This
 replaces the current canvas contents with the contents of the group,
 allowing you to edit the contents of the group directly without the
 distractions of the rest of the model. Select ``Open master group'' to
-return to the toplevel group occupying the canvas.
+return to the top level group occupying the canvas.
 
 Around the edges of a group are input or output variables, which allow
 one to parameterise the group. One can drag a variable and dock it in
@@ -775,7 +775,7 @@ Finally come the flows. The first column is a simple textual label
 (the phrase ``Initial Conditions'', regardless of capitalisation, is a
 reserved phrase for setting stock variable initial conditions)
 identifying the flow. The flows themselves are written as a numerical
-multipler times a flow variable. For example, if you wanted to transfer
+multiplier times a flow variable. For example, if you wanted to transfer
 an amount between the asset and liability column, you might write
 ``Amount" in both columns, which would satisfy the equation A-L-E=0.
 It would also be possible to write ``2Amount" in the asset column, 
@@ -951,3 +951,17 @@ automatically has units of person, and EmpRate is dimensionless.
 All function objects require dimensionless inputs. You can use dimensional 
 analysis to prevent incorrectly feeding a degree measurement into a sin, by 
 requiring them to be multiplied by a radiansPerDegree parameter.
+
+\section{Bookmarks}
+
+Bookmarks are a useful feature for saving the current position and
+zoom of the canvas, to be able to come back to that part of the canvas
+later. This helps managing more complicated models.  To create a new
+bookmark, click on the ``Bookmark'' tab in the top left-hand corner
+(in-between ``Edit'' and ``Insert'') and select ``Bookmark this
+position''. The program will provide a dialogue box to enter in a name
+for the new bookmark. After creating the bookmark, all user-created
+bookmarks can be seen in the Bookmarks menu. To delete a bookmark,
+simply select ``Delete'' from the Bookmarks menu and select the
+desired bookmark. To open an existing bookmark, select one from the
+menu.

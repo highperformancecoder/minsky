@@ -397,7 +397,7 @@ proc showPreferences {} {
     deiconify .preferencesForm
     update idletasks
     ::tk::TabToWindow $preferences(initial_focus)
-    tkwait visibility .preferencesForm
+    ensureWindowVisible .preferencesForm
     grab set .preferencesForm
     wm transient .preferencesForm .
 }
@@ -417,7 +417,7 @@ menu .menubar.rungeKutta
     deiconifyRKDataForm
     update idletasks
     ::tk::TabToWindow $rkVarInput(initial_focus)
-    tkwait visibility .rkDataForm
+    ensureWindowVisible .rkDataForm
     grab set .rkDataForm
     wm transient .rkDataForm .
 } -underline 0 
@@ -502,7 +502,7 @@ proc addBookMark {} {
     buttonBar .bookMarkDialog {
         minsky.canvas.model.addBookmark [.bookMarkDialog.name.val get]
     }
-    tkwait visibility .bookMarkDialog
+    ensureWindowVisible .bookMarkDialog
     wm transient .bookMarkDialog
     focus .bookMarkDialog.name.val
     grab set .bookMarkDialog
@@ -563,7 +563,7 @@ menu .exportPlots
 .menubar.file add command -label "Library"  -command "openURL https://github.com/highperformancecoder/minsky-models"
 
 .menubar.file add command -label "Save" -command save -underline 0 -accelerator $meta_menu-S
-.menubar.file add command -label "SaveAs" -command saveAs 
+.menubar.file add command -label "SaveAs" -command saveAs -underline 4 -accelerator $meta_menu-A 
 .menubar.file add command -label "Insert File as Group" -command insertFile
 
 .menubar.file add command -label "Dimensional Analysis" -command {
@@ -665,7 +665,7 @@ proc getLogVars {} {
     pack .logVars.selection.vscroll -fill y -side left -expand y
     pack .logVars.buttons .logVars.selection
     
-    tkwait visibility .logVars
+    ensureWindowVisible .logVars
     grab set .logVars
     wm transient .logVars
 }
@@ -771,6 +771,8 @@ wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
 bind . <$meta-S> save
+bind . <$meta-a> saveAs
+bind . <$meta-A> saveAs
 bind . <$meta-o> openFile
 bind . <$meta-O> openFile
 bind . <$meta-n> newSystem
@@ -813,6 +815,12 @@ proc cancelWin window {
     destroy $window
 }
 
+proc ensureWindowVisible window {
+    if {![winfo ismapped $window]} {
+        tkwait visibility $window
+    }
+}
+
 # pop up a text entry widget to capture some user input
 # @param win is top level window name
 # @param init initialises the entry widget
@@ -830,7 +838,7 @@ proc textEntryPopup {win init okproc} {
     $win.entry insert 0 $init
     wm transient $win
     focus $win.entry
-    tkwait visibility $win
+    ensureWindowVisible $win
     grab set $win
     
 }
