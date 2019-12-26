@@ -486,7 +486,7 @@ namespace minsky
       return;  
     else if (selectedRow==0)
       {
-        if (c>0 && selectedCol!=0 && c!=selectedCol)      // Disallow moving flow labels column. For ticket 1064/1066
+        if (c>0 && size_t(c)<godleyIcon->table.cols() && selectedCol>0 && size_t(selectedCol)<godleyIcon->table.cols() && c!=selectedCol)  // Disallow moving flow labels column. For ticket 1064/1066
           godleyIcon->table.moveCol(selectedCol,c-selectedCol);
       }
     else if (r>0 && selectedCol==0)
