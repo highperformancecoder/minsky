@@ -385,6 +385,31 @@ namespace minsky
          source.clear();
        }
   }
+  
+  // Move contents out of source group but leave them in selection. Fix for tickets 1080
+  void Group::moveContentsInSelection(Group& source) {
+     if (&source!=this)
+       {
+         if (source.higher(*this))
+             throw error("attempt to move a group into itself");
+         // make temporary copies as addItem removes originals
+         auto copyOfItems=source.items;
+         for (auto& i: copyOfItems)
+           {
+             addItem(i);
+             minsky().canvas.selection.ensureItemInserted(i);
+             assert(!i->ioVar());
+           }
+         auto copyOfGroups=source.groups;
+         for (auto& i: copyOfGroups)
+         {
+           addGroup(i);
+           minsky().canvas.selection.ensureGroupInserted(i);
+	     }
+         /// no need to move wires, as these are handled above
+         source.clear();
+       }
+  }    
 
   VariablePtr Group::addIOVar()
   {
