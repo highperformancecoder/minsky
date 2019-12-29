@@ -579,7 +579,16 @@ proc renameIntegralInstances {} {
 }
 
 proc findDefinition {} {
-    if [canvas.findVariableDefinition] {
+    set cwidth [.wiring.canvas cget -width]
+    set cheight [.wiring.canvas cget -height]
+    if [findVariableDefinition] {
+        if {abs([minsky.canvas.item.x]-0.5*$cwidth)>0.5*$cwidth ||
+            abs([minsky.canvas.item.y]-0.5*$cheight)>0.5*$cheight} {
+            # recentre found item
+            set offsX [expr [minsky.canvas.model.x]-[minsky.canvas.item.x]+0.5*$cwidth]
+            set offsY [expr [minsky.canvas.model.y]-[minsky.canvas.item.y]+0.5*$cheight]
+            panCanvas $offsX $offsY
+        }
         canvas.itemIndicator 1
     } else {
         tk_messageBox -message "Definition not found"
