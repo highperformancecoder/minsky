@@ -493,6 +493,7 @@ namespace MathDAG
     map<string, VariableDAG*> integVarMap;
 
     vector<pair<VariableDAGPtr,Wire*>> integralInputs;
+    // list of stock vars whose input expression has not yet been calculated when the derivative operator is called.
     
     // search through operations looking for integrals
     minsky.model->recursiveDo
@@ -582,6 +583,7 @@ namespace MathDAG
       i.first->rhs=getNodeFromWire(*i.second);
 
     // process the Godley tables
+    derivInputs.clear();
     map<string, GodleyColumnDAG> godleyVars;
     m.model->recursiveDo
       (&Group::items,
@@ -603,6 +605,38 @@ namespace MathDAG
           expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
       }
 
+    // fix up broken derivative computations, now that all stock vars
+    // are defined. See ticket #1087
+    for (auto& i: derivInputs)
+      if (auto ii=expressionCache.getIntegralInput(i.second))
+        {
+          if (ii->rhs)
+            {
+              i.first->rhs=ii->rhs;
+              continue;
+            }
+        }
+      else
+        throw runtime_error("Unable to differentiate "+i.second);
+    
+//    // check that all integral input variables now have a rhs defined,
+//    // so that derivatives can be processed correctly
+//    m.model->recursiveDo
+//      (&Group::items,
+//       [&](const Items&, Items::const_iterator i)
+//       {
+//         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+//           for (auto& v: g->flowVars())
+//             if (auto vv=minsky.definingVar(v->valueId()))
+//               {
+//                 auto vd=makeDAG(*vv);
+//                 static_cast<VariableDAG*>(vd.get())->rhs=getNodeFromWire(*vv->ports[1]->wires()[0]);
+//               }
+//         return false;
+//       });
+    
+    
+    
     for (auto& v: integVarMap)
       integrationVariables.push_back(v.second);
 

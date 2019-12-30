@@ -335,7 +335,8 @@ namespace MathDAG
     vector<VariableDAG*> variables;
     vector<VariableDAG*> integrationVariables;
     set<string> processedColumns; // to avoid double counting shared columns
-
+    vector<pair<VariableDAGPtr,string>> derivInputs; //handle recursively defined stock vars and derivatives
+    
     const Minsky& minsky;
 
     /// create a variable DAG. returns cached value if previously called
