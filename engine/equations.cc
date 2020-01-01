@@ -507,6 +507,13 @@ namespace MathDAG
                  minsky.displayErrorItem(*v);
                  throw runtime_error("Multiply defined");
                }
+             // check that variable's type matches it's variableValue's type (see ticket #1087)
+             if (auto vv=v->vValue())
+               if (vv->type() != v->type())
+                 {
+                   minsky.displayErrorItem(*v);
+                   throw error("type %s of variable %s doesn't match it's value's type %s",VariableType::typeName(v->type()).c_str(), v->name().c_str(), VariableType::typeName(vv->type()).c_str());
+                 }
            }
          else if (IntOp* i=dynamic_cast<IntOp*>(it->get()))
            {
