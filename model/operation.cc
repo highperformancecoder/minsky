@@ -159,7 +159,6 @@ namespace minsky
         {
         
           auto& c=dynamic_cast<const DataOp&>(*this);
-          cairo_save(cairo);
           
           Pango pango(cairo);
           pango.setFontSize(10*z);
@@ -173,10 +172,12 @@ namespace minsky
           h=0.5*pango.height()+4*z;
           hoffs=pango.top()/z;
     
-          cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
-          pango.show();
-          cairo_restore(cairo);
-          cairo_save(cairo);
+          {
+            cairo::CairoSave cs(cairo);
+            cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
+            pango.show();
+          }
+
           cairo_rotate(cairo, angle);
                
           cairo_set_source_rgb(cairo,0,0,1);
@@ -187,8 +188,10 @@ namespace minsky
           cairo_line_to(cairo,w+2*z,0);
           cairo_line_to(cairo,w,-h);
           cairo_close_path(cairo);
-          cairo_clip_preserve(cairo);
+          cairo::Path clipPath(cairo);
           cairo_stroke(cairo);
+          
+          cairo_rotate(cairo,-angle); // undo rotation
 
           // set the output ports coordinates
           // compute port coordinates relative to the icon's
@@ -198,12 +201,13 @@ namespace minsky
           ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
           if (numPorts()>1)
             ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
-          cairo_restore(cairo); // undo rotation
           if (mouseFocus)
             {
               drawPorts(cairo);
               displayTooltip(cairo,tooltip);
             }
+          clipPath.appendToCurrent(cairo);
+          cairo_clip(cairo);
           if (selected) drawSelected(cairo);
           return;
         }

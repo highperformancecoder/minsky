@@ -9,7 +9,7 @@ endif
 
 VPATH= .. ../schema ../model ../engine ../server ../RESTService $(ECOLAB_HOME)/include
 
-UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testTensorOps.o testLockGroup.o testCSVParser.o testRESTService.o
+UNITTESTOBJS=main.o testRESTService.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testTensorOps.o testLockGroup.o testCSVParser.o 
 #testDatabase.o 
 
 MINSKYOBJS=$(filter-out ../tclmain.o ../itemTemplateInstantiations.o ../server-main.o ../RESTService.o ../httpd.o,$(wildcard ../*.o))

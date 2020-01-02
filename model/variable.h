@@ -84,6 +84,11 @@ namespace minsky
     virtual size_t numPorts() const=0;
     virtual Type type() const=0;
 
+    /// attempt to replace this variable with variable of \a type.
+    /// @throw if not possible
+    void retype(VariableType::Type type);
+
+    
     /// reference to a controlling item - eg GodleyIcon, IntOp or a Group if an IOVar.
     classdesc::Exclude<std::weak_ptr<Item>> controller;
     bool visible() const override {return !controller.lock() && Item::visible();}

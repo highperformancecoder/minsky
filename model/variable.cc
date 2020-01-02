@@ -91,6 +91,24 @@ VariableBase* VariableBase::create(VariableType::Type type)
     }
 }
 
+void VariableBase::retype(VariableType::Type type)
+{
+  if (type==this->type()) return; // nothing to do
+  if (auto vv=vValue())
+    if (type==vv->type())
+      if (auto g=group.lock())
+        for (auto& i: g->items)
+          if (i.get()==this)
+            {
+              VariablePtr vp{i};
+              vp.retype(type);
+              i=vp;
+              return;
+            }
+  minsky().convertVarType(valueId(), type);
+}
+
+
 float VariableBase::zoomFactor() const
 {
   if (ioVar())
