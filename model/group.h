@@ -216,10 +216,7 @@ namespace minsky
     void drawIORegion(cairo_t*) const;
 
     /// move all items from source to this
-    void moveContents(Group& source); 
-    
-    /// move all items from source to this and leave them in selection
-    void moveContentsInSelection(Group& source);     
+    void moveContents(Group& source);     
 
     /// returns which I/O region (x,y) is in if any
     struct IORegion {enum type {none,input,output};};
