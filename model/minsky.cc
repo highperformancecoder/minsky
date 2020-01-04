@@ -265,15 +265,18 @@ namespace minsky
     canvas.setItemFocus(model->addGroup(g));
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    auto p = minsky().model;
-	for (auto i: p->items)	
-	    if (!dynamic_cast<IntOp*>(i.get())) canvas.selection.toggleItemMembership(i);   
-	p->moveContents(*g);
-	auto q = model;
-	for (auto i: q->items)
-	  canvas.selection.toggleItemMembership(i); 	
-	g->splitBoundaryCrossingWires(); 
-    p->removeGroup(*g);
+    auto copyOfItems=g->items;
+    for (auto& i: copyOfItems)
+      {
+        model->addItem(i);
+        canvas.selection.toggleItemMembership(i);
+        assert(!i->ioVar());
+      }
+    auto copyOfGroups=g->groups;
+    for (auto& i: copyOfGroups)
+      model->addGroup(i);
+    g->clear();  
+    model->removeGroup(*g);  
   }
 
   void Minsky::toggleSelected(ItemType itemType, int item)
