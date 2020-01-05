@@ -499,7 +499,7 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy" -command "minsky.copy"
     .wiring.context add command -label "Save selection as" -command saveSelection
-    .wiring.context add command -label "Paste" -command "minsky.paste"
+    .wiring.context add command -label "Paste" -command "minsky.paste $x $y"
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
@@ -629,7 +629,7 @@ proc contextMenu {x y X Y} {
                 renameVariableInstances
             }
             .wiring.context add command -label "Edit" -command "editItem"
-            .wiring.context add command -label "Copy" -command "minsky.copy"
+            .wiring.context add command -label "Copy" -command "copy.canvasItem"
             if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
@@ -650,7 +650,7 @@ proc contextMenu {x y X Y} {
                .wiring.context add command -label "Initialise Random" \
                     -command "initRandom" 
             }
-            .wiring.context add command -label "Copy" -command "minsky.copy"
+            .wiring.context add command -label "Copy" -command "copy.canvasItem"
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.type]=="integrate"} {
                .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
@@ -695,7 +695,7 @@ proc contextMenu {x y X Y} {
         }
         "Item" {
             .wiring.context delete 0 end
-            .wiring.context add command -label "Copy" -command "minsky.copy"
+            .wiring.context add command -label "Copy" -command "copy.canvasItem"
         }
         SwitchIcon {
             .wiring.context add command -label "Add case" -command "incrCase 1" 
