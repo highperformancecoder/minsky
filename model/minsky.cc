@@ -255,7 +255,7 @@ namespace minsky
 //      throw runtime_error("cannot save to "+fileName);
   }
 
-  void Minsky::paste(float x, float y)
+  void Minsky::paste()
   {
     istringstream is(getClipboard());
     xml_unpack_t unpacker(is);
@@ -265,7 +265,6 @@ namespace minsky
     canvas.setItemFocus(model->addGroup(g));
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    g->moveTo(x,y);      
     auto copyOfItems=g->items;
     for (auto& i: copyOfItems)
       {
