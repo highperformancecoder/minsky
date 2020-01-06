@@ -266,17 +266,35 @@ namespace minsky
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     auto copyOfItems=g->items;
+    size_t count=0;
+    size_t numPaste=0;    
+    if (copyOfItems.size()%2==0) numPaste = copyOfItems.size()/2-g->numWires();
+    else numPaste = copyOfItems.size()/2-g->numWires()-1;    
     for (auto& i: copyOfItems)
-      {
-        model->addItem(i);
-        canvas.selection.toggleItemMembership(i);
-        canvas.setItemFocus(i);        
-        assert(!i->ioVar());
+      {		
+		 // Ensure only a single copy of a selection of items exists at time 
+		 if (count<numPaste && model->uniqueItems()) 
+		 {	 
+           canvas.model->addItem(i);			  
+           canvas.selection.ensureItemInserted(i);			 
+           canvas.setItemFocus(i);
+           assert(!i->ioVar());
+           if (!i->ioVar()) count++;
+	     }
       }
     auto copyOfGroups=g->groups;
-    for (auto& i: copyOfGroups) {
-      model->addGroup(i);
-      canvas.setItemFocus(i);      
+    count=0;
+    if (copyOfGroups.size()%2==0) numPaste = copyOfGroups.size()/2;
+    else numPaste = copyOfGroups.size()/2-1;  
+    for (auto& i: copyOfGroups)
+    {
+		 // Ensure only a single copy of a selection of items exists at time 		
+		if (count<numPaste && model->uniqueItems())
+		{
+		   count++;	
+           canvas.model->addGroup(i);			  
+           canvas.setItemFocus(i);
+	    } 
     }
     g->clear();  
     model->removeGroup(*g);  
