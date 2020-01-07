@@ -554,10 +554,13 @@ namespace minsky
              if (auto v=(*i)->variableCast())
                if (v->valueId()==valueId)
                  {
+				   // Ensure value of variable is preserved after rename. For ticket 1106.	 
+				   auto tempVal=v->value();					 
                    if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
                        // fix up internal references in Godley table
                        g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
                    v->name(newName);
+                   v->value(tempVal);                   
                  }
              return false;
            });
