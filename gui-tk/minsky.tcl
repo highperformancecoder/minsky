@@ -203,7 +203,23 @@ wm title . "$progName: $fname"
 setBackgroundColour $backgroundColour
 proc tk_focusPrev {win} {return $win}
 proc tk_focusNext {win} {return $win}
-if $preferences(focusFollowsMouse) tk_focusFollowsMouse
+if {$preferences(focusFollowsMouse)} {
+	tk_focusFollowsMouse
+# Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.	
+} else {
+    set old [bind all <Enter>]
+    set script {
+	if {"%d" eq "NotifyAncestor" || "%d" eq "NotifyNonlinear" \
+		|| "%d" eq "NotifyInferior"} {
+	       tk::FocusOK %W	
+	    }
+    }
+    if {$old ne ""} {
+	bind all <Enter> "$old; $script"
+    } else {
+	bind all <Enter> $script
+    }
+}
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
 #source $minskyHome/library/htmllib.tcl
@@ -1360,7 +1376,23 @@ proc setPreferenceParms {} {
     } else {
         place forget .wiring.panopticon
     }
-    if {$preferences(focusFollowsMouse)} tk_focusFollowsMouse
+    if {$preferences(focusFollowsMouse)} {
+		tk_focusFollowsMouse
+	# Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.
+    } else {
+       set old [bind all <Enter>]
+       set script {
+	   if {"%d" eq "NotifyAncestor" || "%d" eq "NotifyNonlinear" \
+	   	|| "%d" eq "NotifyInferior"} {
+	          tk::FocusOK %W	
+	       }
+       }
+       if {$old ne ""} {
+	   bind all <Enter> "$old; $script"
+       } else {
+	   bind all <Enter> $script
+       }
+    }  
 }
 
 setPreferenceParms
