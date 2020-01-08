@@ -192,7 +192,7 @@ string VariableBase::_init() const
 
 string VariableBase::_init(const string& x)
 {
-  ensureValueExists(); 
+  ensureValueExists(nullptr); 
   if (VariableValue::isValueId(valueId()))
     {
       VariableValue& val=minsky().variableValues[valueId()];
@@ -355,7 +355,7 @@ void VariablePtr::retype(VariableBase::Type type)
             assert(!tmp->ports[i]->input());
             w->moveToPorts(get()->ports[i], w->to());
           }
-      get()->ensureValueExists();
+      get()->ensureValueExists(nullptr);
     }
 }
 
