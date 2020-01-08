@@ -114,7 +114,7 @@ namespace minsky
     bool ioVar() const override;
     
     /// ensure an associated variableValue exists
-    void ensureValueExists() const;
+    void ensureValueExists(VariableValue* vv) const;
 
     /// string used to link to the VariableValue associated with this
     virtual std::string valueId() const;
@@ -172,7 +172,7 @@ namespace minsky
     bool isStock() const {return type()==stock || type()==integral;}
 
     VariableBase() {}
-    VariableBase(const VariableBase& x): Item(x), Slider(x), m_name(x.m_name) {ensureValueExists();}
+    VariableBase(const VariableBase& x): Item(x), Slider(x), m_name(x.m_name) {ensureValueExists(x.vValue());}
     VariableBase& operator=(const VariableBase& x) {
       Item::operator=(x);
       Slider::operator=(x);
@@ -242,10 +242,10 @@ namespace minsky
   {
     int id;
     static int nextId;
-    VarConstant(): id(nextId++) {ensureValueExists();}
+    VarConstant(): id(nextId++) {ensureValueExists(nullptr);}
     std::string valueId() const override {return "constant:"+str(id);}
     std::string _name() const override {return init();}
-    std::string _name(const std::string& nm) override {ensureValueExists(); return _name();}
+    std::string _name(const std::string& nm) override {ensureValueExists(nullptr); return _name();}
     double _value(double x) override {init(str(x)); return x;}
     VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
     std::string classType() const override {return "VarConstant";}

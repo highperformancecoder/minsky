@@ -151,9 +151,11 @@ string VariableBase::_name(const std::string& name)
 {
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
+  // Ensure value of variable is preserved after rename. For ticket 1106.	
+  auto tmpVV=vValue();  
   // ensure integral variables are not global when wired to an integral operation
-  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
-  ensureValueExists();
+  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;  
+  ensureValueExists(tmpVV);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
@@ -162,7 +164,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists() const
+void VariableBase::ensureValueExists(VariableValue* vv) const
 {
   string valueId=this->valueId();
   // disallow blank names
@@ -170,8 +172,11 @@ void VariableBase::ensureValueExists() const
       minsky().variableValues.count(valueId)==0)
     {
       assert(VariableValue::isValueId(valueId));
-      minsky().variableValues.insert
+	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
+      if (vv==nullptr) minsky().variableValues.insert
         (make_pair(valueId,VariableValue(type(), name(), "", group.lock())));
+      else minsky().variableValues.insert
+        (make_pair(valueId,*vv));
     }
 }
 
