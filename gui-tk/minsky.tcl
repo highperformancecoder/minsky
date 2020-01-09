@@ -781,7 +781,12 @@ proc dimFormatPopdown {comboBox type} {
         }
     }
 }
-    
+
+proc pasteAt {} {
+    minsky.paste
+    canvas.mouseMove [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+
 wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
@@ -802,8 +807,8 @@ bind . <$meta-x> {minsky.cut}
 bind . <$meta-X> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
 bind . <$meta-C> {minsky.copy}
-bind . <$meta-v> {minsky.paste}
-bind . <$meta-V> {minsky.paste}
+bind . <$meta-v> {pasteAt}
+bind . <$meta-V> {pasteAt}
 bind . <$meta-g> {minsky.createGroup}
 bind . <$meta-G> {minsky.createGroup}
 
