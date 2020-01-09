@@ -654,6 +654,19 @@ namespace minsky
           ni->name(':'+ni->name());
         y+=2*heights[i];
       }
+    // Stock and flow variables on Godley icons should not be copied as groups. For ticket 1039
+    selection.clear();    
+    auto copyOfItems=group->items;
+    for (auto& i: copyOfItems)
+      {		
+         model->addItem(i);			  
+         selection.ensureItemInserted(i);		 
+         assert(!i->ioVar());
+      } 
+    if (!copyOfItems.empty()) setItemFocus(copyOfItems[0]);       
+    group->clear();  
+    model->removeGroup(*group);
+    requestRedraw();        
   }
 
   void Canvas::handleArrows(int dir, float x, float y, bool modifier)
