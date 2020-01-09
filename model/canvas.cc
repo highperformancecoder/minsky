@@ -553,11 +553,11 @@ namespace minsky
            {
              if (auto v=(*i)->variableCast())
                if (v->valueId()==valueId)
-                 {
+                 {			 
                    if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
                        // fix up internal references in Godley table
                        g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
-                   v->name(newName);
+                   v->name(newName);                 
                  }
              return false;
            });
