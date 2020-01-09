@@ -283,7 +283,6 @@ namespace minsky
     if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
     g->clear();  
     model->removeGroup(*g);
-    canvas.requestRedraw();
   }
 
   void Minsky::toggleSelected(ItemType itemType, int item)
