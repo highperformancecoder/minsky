@@ -629,7 +629,6 @@ namespace minsky
   void Canvas::copyVars(const std::vector<VariablePtr>& v)
   {
     auto group=model->addGroup(new Group);
-    setItemFocus(group);
     float maxWidth=0, totalHeight=0;
     vector<float> widths, heights;
     for (auto i: v)
