@@ -347,7 +347,7 @@ proc addConstantOrVariable {} {
     garbageCollect
     .wiring.initVar.entry10 configure -values [accessibleVars]
     ::tk::TabToWindow $varInput(initial_focus);
-    tkwait visibility .wiring.initVar
+    ensureWindowVisible .wiring.initVar
     grab set .wiring.initVar
     wm transient .wiring.initVar
 }
@@ -497,9 +497,9 @@ proc canvasContext {x y X Y} {
     .wiring.context delete 0 end
     .wiring.context add command -label Help -command {help DesignCanvas}
     .wiring.context add command -label "Cut" -command cut
-    .wiring.context add command -label "Copy" -command minsky.copy
+    .wiring.context add command -label "Copy selection" -command "minsky.copy"
     .wiring.context add command -label "Save selection as" -command saveSelection
-    .wiring.context add command -label "Paste" -command {paste}
+    .wiring.context add command -label "Paste selection" -command pasteAt
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
@@ -579,7 +579,16 @@ proc renameIntegralInstances {} {
 }
 
 proc findDefinition {} {
-    if [canvas.findVariableDefinition] {
+    set cwidth [.wiring.canvas cget -width]
+    set cheight [.wiring.canvas cget -height]
+    if [findVariableDefinition] {
+        if {abs([minsky.canvas.item.x]-0.5*$cwidth)>0.5*$cwidth ||
+            abs([minsky.canvas.item.y]-0.5*$cheight)>0.5*$cheight} {
+            # recentre found item
+            set offsX [expr [minsky.canvas.model.x]-[minsky.canvas.item.x]+0.5*$cwidth]
+            set offsY [expr [minsky.canvas.model.y]-[minsky.canvas.item.y]+0.5*$cheight]
+            panCanvas $offsX $offsY
+        }
         canvas.itemIndicator 1
     } else {
         tk_messageBox -message "Definition not found"
@@ -620,7 +629,7 @@ proc contextMenu {x y X Y} {
                 renameVariableInstances
             }
             .wiring.context add command -label "Edit" -command "editItem"
-            .wiring.context add command -label "Copy" -command "canvas.copyItem"
+            .wiring.context add command -label "Copy item" -command "canvas.copyItem"
             if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
@@ -641,7 +650,7 @@ proc contextMenu {x y X Y} {
                .wiring.context add command -label "Initialise Random" \
                     -command "initRandom" 
             }
-            .wiring.context add command -label "Copy" -command "canvas.copyItem"
+            .wiring.context add command -label "Copy item" -command "canvas.copyItem"
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.type]=="integrate"} {
                .wiring.context add command -label "Toggle var binding" -command "minsky.canvas.item.toggleCoupled; canvas.requestRedraw"
@@ -686,7 +695,7 @@ proc contextMenu {x y X Y} {
         }
         "Item" {
             .wiring.context delete 0 end
-            .wiring.context add command -label "Copy" -command "canvas.copyItem"
+            .wiring.context add command -label "Copy item" -command "canvas.copyItem"
         }
         SwitchIcon {
             .wiring.context add command -label "Add case" -command "incrCase 1" 
@@ -763,7 +772,7 @@ proc setDimension {} {
     .wiring.context.axisMenu.dim.type.value set [minsky.canvas.item.dimensionType]
     .wiring.context.axisMenu.dim.units.value delete 0 end
     .wiring.context.axisMenu.dim.units.value insert 0 [minsky.canvas.item.dimensionUnitsFormat]
-    tkwait visibility .wiring.context.axisMenu.dim
+    ensureWindowVisible .wiring.context.axisMenu.dim
     grab set .wiring.context.axisMenu.dim
     wm transient .wiring.context.axisMenu.dim
 }
@@ -811,7 +820,7 @@ proc setupPickMenu {} {
     set pickHandle [minsky.canvas.item.selectedHandle]
     wm transient .wiring.context.axisMenu.pick
     wm geometry .wiring.context.axisMenu.pick +[winfo pointerx .]+[winfo pointery .]
-    tkwait visibility .wiring.context.axisMenu.pick
+    ensureWindowVisible .wiring.context.axisMenu.pick
     grab set .wiring.context.axisMenu.pick
 }
 
@@ -933,7 +942,7 @@ proc deiconifyEditVar {} {
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
             set item minsky.canvas.item
-            convertVarType [$item.valueId] $editVarInput(Type)
+            $item.retype $editVarInput(Type)
             $item.name $editVarInput(Name)
             $item.init $editVarInput(Initial Value)
             $item.setUnits $editVarInput(Units)
@@ -1173,7 +1182,7 @@ proc editVar {} {
     set value "unknown"
     catch {set value [value.value]}
     set editVarInput(title) "[$item.name]: Value=$value"
-    tkwait visibility .wiring.editVar
+    ensureWindowVisible .wiring.editVar
     grab set .wiring.editVar
     wm transient .wiring.editVar
 }
@@ -1243,13 +1252,13 @@ proc editItem {} {
         "Variable*|VarConstant" {editVar}
         "Operation*" {
             set opType [minsky.canvas.item.type]
-                set opInput(title) [minsky.canvas.item.type]
-                set opInput(Rotation) [minsky.canvas.item.rotation]
-                deiconifyEditOperation
- 		::tk::TabToWindow $opInput(initial_focus);
- 		tkwait visibility .wiring.editOperation
- 		grab set .wiring.editOperation
- 		wm transient .wiring.editOperation
+            set opInput(title) [minsky.canvas.item.type]
+            set opInput(Rotation) [minsky.canvas.item.rotation]
+            deiconifyEditOperation
+            ::tk::TabToWindow $opInput(initial_focus);
+            ensureWindowVisible .wiring.editOperation
+            grab set .wiring.editOperation
+            wm transient .wiring.editOperation
         }
         "IntOp|DataOp" {
             set constInput(Value) ""
@@ -1279,7 +1288,7 @@ proc editItem {} {
             set constInput(cancelCommand) "closeEditWindow .wiring.editConstant"
 
             ::tk::TabToWindow $constInput(initial_focus);
-            tkwait visibility .wiring.editConstant
+            ensureWindowVisible .wiring.editConstant
             grab set .wiring.editConstant
             wm transient .wiring.editConstant
         }
@@ -1329,7 +1338,7 @@ proc initRandom {} {
     } else {
         deiconify .wiring.initRandom
     }
-    tkwait visibility .wiring.initRandom
+    ensureWindowVisible .wiring.initRandom
     grab set .wiring.initRandom
     wm transient .wiring.initRandom
 }
@@ -1365,7 +1374,7 @@ proc postNote {item} {
     .wiring.note.text delete 1.0 end
     .wiring.note.text insert 1.0 [minsky.canvas.$item.detailedText]
     .wiring.note.buttons.ok configure -command "OKnote $item"
-    tkwait visibility .wiring.note
+    ensureWindowVisible .wiring.note
     grab set .wiring.note
     wm transient .wiring.note
 }

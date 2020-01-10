@@ -136,6 +136,26 @@ namespace minsky
  
 namespace
 {
+
+ // For ticket 1095. Returns coordinate pairs for both moving and "to be inserted" handles on a curved wire	
+ vector<pair<float,float>> allHandleCoords(vector<float> coords) {
+        
+        vector<pair<float,float>> points(coords.size()-1);
+        
+        for (size_t i = 0; i < points.size(); i++) {
+			if (i%2 == 0) {
+				points[i].first = coords[i];
+				points[i].second = coords[i+1];
+			}
+			else {
+				points[i].first = 0.5*(coords[i-1]+coords[i+1]);
+				points[i].second = 0.5*(coords[i]+coords[i+2]);
+			}
+		}						
+		
+   return points;
+ } 	  
+ 	
  // For ticket 991/1092. Returns coordinate pairs for moving handles on a curved wire	
  vector<pair<float,float>> toCoordPair(vector<float> coords) {    
    vector<pair<float,float>> points(coords.size()/2);
@@ -466,15 +486,15 @@ namespace
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
     else {
-	  // fixes for tickets 991/1092
-      vector<pair<float,float>> p=toCoordPair(c);
+	  // fixes for tickets 991/1095
+      vector<pair<float,float>> p=allHandleCoords(c);
          
       unsigned k=0; // nearest index
       float closestD=d2(p[p.size()-1].first,p[p.size()-1].second,x,y);
       for (size_t i=0; i<p.size()-1; i++)
         {
           float d=d2(p[i].first,p[i].second,x,y);
-          if (d<closestD)
+          if (d<=closestD)
             {
               closestD=d;
               k=i;

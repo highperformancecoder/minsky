@@ -119,6 +119,17 @@ namespace minsky
       registerRef(canvas.item,"minsky.canvas.item");
       return canvas.item.get();
     }
+
+    bool findVariableDefinition()
+    {
+      if (canvas.findVariableDefinition())
+        {
+          TCL_obj_deregister("minsky.canvas.item");
+          registerRef(canvas.item,"minsky.canvas.item");
+          return true;
+        }
+      return false;
+    }
     
     bool getWireAt(float x, float y)
     {

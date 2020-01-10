@@ -262,9 +262,28 @@ namespace minsky
     schema2::Minsky m;
     xml_unpack(unpacker, "Minsky", m);
     GroupPtr g(new Group);
-    canvas.setItemFocus(model->addGroup(g));
+    canvas.model->addGroup(g);
     m.populateGroup(*g);
-    g->resizeOnContents();
+    // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
+    canvas.selection.clear();    
+    auto copyOfItems=g->items;
+    for (auto& i: copyOfItems)
+      {		
+         canvas.model->addItem(i);			  
+         canvas.selection.ensureItemInserted(i);		 
+         assert(!i->ioVar());
+      }
+    // Attach mouse focus only to first item in selection. For ticket 1098.      
+    if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	      
+    auto copyOfGroups=g->groups;
+    for (auto& i: copyOfGroups)
+    {	
+        canvas.model->addGroup(i);	
+    }
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
+    g->clear();  
+    model->removeGroup(*g);
+    canvas.requestRedraw();
   }
 
   void Minsky::toggleSelected(ItemType itemType, int item)

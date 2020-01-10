@@ -91,6 +91,24 @@ VariableBase* VariableBase::create(VariableType::Type type)
     }
 }
 
+void VariableBase::retype(VariableType::Type type)
+{
+  if (type==this->type()) return; // nothing to do
+  if (auto vv=vValue())
+    if (type==vv->type())
+      if (auto g=group.lock())
+        for (auto& i: g->items)
+          if (i.get()==this)
+            {
+              VariablePtr vp{i};
+              vp.retype(type);
+              i=vp;
+              return;
+            }
+  minsky().convertVarType(valueId(), type);
+}
+
+
 float VariableBase::zoomFactor() const
 {
   if (ioVar())
@@ -133,9 +151,11 @@ string VariableBase::_name(const std::string& name)
 {
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
+  // Ensure value of variable is preserved after rename. For ticket 1106.	
+  auto tmpVV=vValue();  
   // ensure integral variables are not global when wired to an integral operation
-  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
-  ensureValueExists();
+  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;  
+  ensureValueExists(tmpVV);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
@@ -144,7 +164,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists() const
+void VariableBase::ensureValueExists(VariableValue* vv) const
 {
   string valueId=this->valueId();
   // disallow blank names
@@ -152,8 +172,11 @@ void VariableBase::ensureValueExists() const
       minsky().variableValues.count(valueId)==0)
     {
       assert(VariableValue::isValueId(valueId));
-      minsky().variableValues.insert
+	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
+      if (vv==nullptr) minsky().variableValues.insert
         (make_pair(valueId,VariableValue(type(), name(), "", group.lock())));
+      else minsky().variableValues.insert
+        (make_pair(valueId,*vv));
     }
 }
 
@@ -169,7 +192,7 @@ string VariableBase::_init() const
 
 string VariableBase::_init(const string& x)
 {
-  ensureValueExists(); 
+  ensureValueExists(nullptr); 
   if (VariableValue::isValueId(valueId()))
     {
       VariableValue& val=minsky().variableValues[valueId()];
@@ -332,7 +355,7 @@ void VariablePtr::retype(VariableBase::Type type)
             assert(!tmp->ports[i]->input());
             w->moveToPorts(get()->ports[i], w->to());
           }
-      get()->ensureValueExists();
+      get()->ensureValueExists(nullptr);
     }
 }
 

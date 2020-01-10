@@ -233,8 +233,8 @@ namespace minsky
     void cut();
     /// copy items in current selection into clipboard
     void copy() const;
-    /// paste clipboard as a new group. canvas.itemFocus is set to
-    /// refer to the new group
+    /// paste clipboard as a new group or ungrouped items on the canvas. canvas.itemFocus is set to
+    /// refer to the new group or items.
     void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     

@@ -43,15 +43,10 @@ proc afterMinskyStarted {} {uplevel #0 {
   assert {[canvas.selection.groups.size]==1}
   newSystem
   paste
-  assert {[model.numGroups]==2}
+  # For ticket 1080. There is no longer an outer group when existing groups or items are pasted between canvasses or in the same canvas
+  assert {[model.numGroups]==1}
   assert {[model.numItems]==8}
   assert {[model.numWires]==8}
-  # retrieve inner group
-  findObject Group
-  \$item.groups.@elem 0
-
-  assert {[minsky.canvas.item.groups(0).items.size]==8}
-  assert {[minsky.canvas.item.groups(0).wires.size]==8}
   tcl_exit
 }}
 EOF
