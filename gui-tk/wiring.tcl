@@ -467,8 +467,8 @@ proc rightMouseGodley {x y X Y} {
 }
 # pan mode
 bind .wiring.canvas <Shift-Button-1> {
-    set panOffsX [expr %x-[model.x]]
-    set panOffsY [expr %y-[model.y]]
+    set panOffsX [expr %x-[minsky.canvas.model.x]]
+    set panOffsY [expr %y-[minsky.canvas.model.y]]
 }
 bind .wiring.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
