@@ -467,8 +467,8 @@ proc rightMouseGodley {x y X Y} {
 }
 # pan mode
 bind .wiring.canvas <Shift-Button-1> {
-    set panOffsX [expr %x-[model.x]]
-    set panOffsY [expr %y-[model.y]]
+    set panOffsX [expr %x-[minsky.canvas.model.x]]
+    set panOffsY [expr %y-[minsky.canvas.model.y]]
 }
 bind .wiring.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
@@ -499,7 +499,7 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy selection" -command "minsky.copy"
     .wiring.context add command -label "Save selection as" -command saveSelection
-    .wiring.context add command -label "Paste selection" -command "minsky.paste"
+    .wiring.context add command -label "Paste selection" -command pasteAt
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"

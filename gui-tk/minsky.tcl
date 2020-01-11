@@ -781,7 +781,12 @@ proc dimFormatPopdown {comboBox type} {
         }
     }
 }
-    
+
+proc pasteAt {} {
+    minsky.paste
+    canvas.mouseMove [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+
 wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
@@ -802,8 +807,8 @@ bind . <$meta-x> {minsky.cut}
 bind . <$meta-X> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
 bind . <$meta-C> {minsky.copy}
-bind . <$meta-v> {minsky.paste}
-bind . <$meta-V> {minsky.paste}
+bind . <$meta-v> {pasteAt}
+bind . <$meta-V> {pasteAt}
 bind . <$meta-g> {minsky.createGroup}
 bind . <$meta-G> {minsky.createGroup}
 
@@ -902,8 +907,8 @@ set helpTopics(.wiring.panopticon) Panopticon
 proc setScrollBars {} {
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
-            set x0 [expr (10000-[model.x])/20000.0]
-            set y0 [expr (10000-[model.y])/20000.0]
+            set x0 [expr (10000-[minsky.canvas.model.x])/20000.0]
+            set y0 [expr (10000-[minsky.canvas.model.y])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
         }
@@ -934,7 +939,7 @@ proc panCanvas {offsx offsy} {
     global preferences
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
-            model.moveTo $offsx $offsy
+            minsky.canvas.model.moveTo $offsx $offsy
             canvas.requestRedraw
             if $preferences(panopticon) {panopticon.requestRedraw}
         }
@@ -961,8 +966,8 @@ proc scrollCanvases {xyview args} {
     set wh [winfo height $win]
     switch $win {
         .wiring {
-            set x [model.x]
-            set y [model.y]
+            set x [minsky.canvas.model.x]
+            set y [minsky.canvas.model.y]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]

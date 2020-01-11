@@ -80,7 +80,7 @@ FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor
 endif
 
 ifdef MXE
-BOOST_EXT=-mt
+BOOST_EXT=-mt-x32
 EXE=.exe
 else
 EXE=
@@ -102,7 +102,7 @@ LIBS+=	-ljson_spirit \
 	-lboost_filesystem$(BOOST_EXT) -lgsl -lgslcblas  
 
 ifdef MXE
-LIBS+=-lboost_thread_win32$(BOOST_EXT)
+LIBS+=-lboost_thread$(BOOST_EXT)
 else
 LIBS+=-lboost_thread$(BOOST_EXT) 
 endif
