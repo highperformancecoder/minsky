@@ -16,7 +16,6 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# disable tear-off menus
 
 set fname ""
 set workDir [pwd]
@@ -196,6 +195,7 @@ proc setBackgroundColour bgc {
     if [winfo exists .controls.runmode] {.controls.runmode configure -selectcolor $bgc}
 }
 
+# disable tear-off menus
 option add *Menu.tearOff 0
 wm deiconify .
 tk appname [file rootname [file tail $argv(0)]]
