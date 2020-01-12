@@ -849,7 +849,7 @@ proc textEntryPopup {win init okproc} {
     if {![winfo exists $win]} {
         toplevel $win
         entry $win.entry
-        pack $win.entry -side top
+        pack $win.entry -side top -ipadx 50
         buttonBar $win $okproc
     } else {
         wm deiconify $win
