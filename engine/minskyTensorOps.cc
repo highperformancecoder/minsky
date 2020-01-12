@@ -249,18 +249,21 @@ namespace minsky
 
       double selector=0;
       if (args[0])
-        if (args[0]->rank()==0) // scalar selector, so broadcast
-          selector = (*args[0])[0];
-        else
-          selector = args[0]->atHCIndex(hcIndex(i));
-
+        {
+          if (args[0]->rank()==0) // scalar selector, so broadcast
+            selector = (*args[0])[0];
+          else
+            selector = args[0]->atHCIndex(hcIndex(i));
+        }
       ssize_t idx = selector+1.5; // selector selects between args 1..n
       
-      if (idx>0 && idx<args.size())
-        if (args[idx]->rank()==0)
-          return (*args[idx])[0];
-        else
-          return args[idx]->atHCIndex(hcIndex(i));
+      if (idx>0 && idx<int(args.size()))
+        {
+          if (args[idx]->rank()==0)
+            return (*args[idx])[0];
+          else
+            return args[idx]->atHCIndex(hcIndex(i));
+        }
       return nan("");
     }
   };

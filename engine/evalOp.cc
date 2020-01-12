@@ -1002,7 +1002,7 @@ namespace minsky
               }
               break;
             case binop: assert(false); break; // shouldn't be here
-//            case tensor:
+            case tensor:
 //              switch (op)
 //                {
 //                case index:
@@ -1019,7 +1019,7 @@ namespace minsky
 //                    auto& e=dynamic_cast<EvalOp<index>&>(*t);
 //                    e.shape=from1.hypercube().dims();
 //                  }
-//                  break;
+                  break;
 //            default: // TODO
 //              break;
 //            }
