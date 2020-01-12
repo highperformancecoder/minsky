@@ -359,6 +359,15 @@ void VariablePtr::retype(VariableBase::Type type)
     }
 }
 
+bool VariableBase::visible() const
+{
+  auto g=group.lock();
+  //toplevel i/o items always visible
+  if ((!g || !g->group.lock()) && g==controller.lock()) return true;
+  return !controller.lock() && Item::visible();
+}
+
+
 void VariableBase::sliderSet(double x)
 {
   if (x<sliderMin) x=sliderMin;
