@@ -358,7 +358,7 @@ namespace minsky
   {
     try
       {
-        unique_ptr<EvalOpBase> e(EvalOpBase::create(type()));
+        unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type()));
         switch (e->numArgs())
           {
           case 0: return e->evaluate(0,0);

@@ -62,6 +62,9 @@ namespace minsky
     static OperationBase* create(Type type); 
     virtual Type type() const=0;
 
+    const OperationBase* operationCast() const override {return this;}
+    OperationBase* operationCast() override {return this;}
+    
     virtual ~OperationBase() {}
 
     /// visual representation of operation on the canvas

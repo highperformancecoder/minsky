@@ -50,16 +50,16 @@ namespace MathDAG
     string r;
     switch (t.rank())
       {
-      case 0: return str(t.data[0]);
+      case 0: return str(t[0]);
       case 1: r="[";
-        for (auto i: t.data) r+=str(i)+",";
+        for (auto i: t) r+=str(i)+",";
         return r+"]";
       case 2:
         r="[";
         for (size_t i=0; i<t.hypercube().xvectors[1].size(); ++i)
           {
             for (size_t j=0; j<t.hypercube().xvectors[0].size(); ++j)
-              r+=str(t.data[i*t.hypercube().xvectors[0].size()+j])+",";
+              r+=str(t[i*t.hypercube().xvectors[0].size()+j])+",";
             r+=";";
           }
         return r+"]";

@@ -37,12 +37,12 @@ uplevel #0 {
 addVariable
 set varInput(Name) "foo"
 .wiring.initVar.buttonBar.ok invoke
-event generate .wiring.canvas <Button-1>
+event generate .wiring.canvas <Button-1> -x 100 -y 100
 assert {[model.items.size]==1}
 
 addConstant
 .wiring.initVar.buttonBar.ok invoke
-event generate .wiring.canvas <Button-1>
+event generate .wiring.canvas <Button-1> -x 100 -y 100
 assert {[model.items.size]==2}
 
 addOperationKey add

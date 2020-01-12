@@ -24,6 +24,7 @@
 #ifndef CLASSDESC_ACCESS
 #define CLASSDESC_ACCESS(x)
 #endif
+#include <chrono>
 
 namespace civita
 {
@@ -43,7 +44,7 @@ namespace civita
     size_t rank() const {return hypercube().rank();}
     
     /// the index vector - assumed to be ordered and unique
-    virtual const std::vector<size_t>& index() const=0;
+    virtual std::vector<size_t> index() const=0;
     /// return or compute data at a location
     virtual double operator[](size_t) const=0;
     /// return number of elements in tensor - maybe less than hypercube.numElements if sparse
@@ -51,8 +52,11 @@ namespace civita
     
     /// returns the data value at hypercube index \a hcIdx, or NaN if 
     double atHCIndex(size_t hcIdx) {
-      auto& idx=index();
-      if (idx.empty()) return (*this)[hcIdx]; // this is dense
+      auto idx=index();
+      if (idx.empty()) {
+        assert(hcIdx<size());
+        return (*this)[hcIdx]; // this is dense
+      }
       assert(idx.size()==size());
       assert(std::all_of(idx.begin()+1, idx.end(), [](const size_t& i){return i>*(&i-1);}));
       auto i=std::lower_bound(idx.begin(), idx.end(), hcIdx);
@@ -60,6 +64,13 @@ namespace civita
       return nan("");
     }
 
+    using Timestamp=std::chrono::time_point<std::chrono::high_resolution_clock>;
+    /// timestamp indicating how old the dependendent data might
+    /// be. Used in CachedTensorOp to determine when to invalidate the
+    /// cache
+    virtual Timestamp timestamp() const=0;
+
+    
   protected:
     Hypercube m_hypercube;
   };

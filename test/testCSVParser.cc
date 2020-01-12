@@ -98,9 +98,9 @@ SUITE(CSVParser)
       CHECK_EQUAL("B", str(v.hypercube().xvectors[2][1]));
       CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
       CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
-      CHECK_EQUAL(12, v.tensorInit.data.size());
+      CHECK_EQUAL(12, v.tensorInit.size());
       CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
-                        v.tensorInit.data, 12, 1e-4);
+                        v.tensorInit, 12, 1e-4);
     }
   
 }

@@ -40,7 +40,8 @@ but any renamed attributes require bumping the schema number.
 #include <vector>
 #include <string>
 
-namespace schema2
+
+  namespace schema2
 {
 
   using minsky::SchemaHelper;

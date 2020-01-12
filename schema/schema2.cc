@@ -25,8 +25,68 @@
 
 namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
 
+
+namespace classdesc_access
+{
+}
+
 namespace schema2
 {
+  // binary serialisation used to serialise the tensorInit field of
+  // variableValues into the minsky schema, fixed off here, rather
+  // than classdesc generated to ensure backward compatibility
+  void pack(classdesc::pack_t& b, const civita::XVector& a)
+  {
+    b<<a.name<<a.dimension<<a.size();
+    for (auto& i: a)
+      b<<civita::str(i);
+  }
+
+  void unpack(classdesc::pack_t& b, civita::XVector& a)
+  {
+    size_t size;
+    std::string x;
+    a.clear();
+    b>>a.name>>a.dimension>>size;
+    for (size_t i=0; i<size; ++i)
+      {
+        b>>x;
+        a.push_back(x);
+      }
+  }
+  
+  void pack(classdesc::pack_t& b, const civita::TensorVal& a)
+  {
+    // redundant dims field encoded in schema 2
+    b<<a.hypercube().dims()<<a.size();
+    for (size_t i=0; i<a.size(); ++i)
+      b<<a[i];
+    b<<a.hypercube().xvectors.size();
+    for (auto& i: a.hypercube().xvectors)
+      pack(b, i);
+  }
+
+
+  void unpack(classdesc::pack_t& b, civita::TensorVal& a)
+  {
+    vector<unsigned> dims; // ignored, because info carried with xvectors
+    vector<double> data;
+    b>>dims>>data;
+    
+    civita::Hypercube hc;
+    size_t sz;
+    b>>sz;
+    for (size_t i=0; i<sz; ++i)
+      {
+        civita::XVector xv;
+        unpack(b,xv);
+        hc.xvectors.push_back(xv);
+      }
+    
+    a.hypercube(hc); //dimension data
+    assert(a.size()==data.size());
+    memcpy(a.begin(),&data[0],data.size());
+  }
 
   // map of object to ID, that allocates a new ID on objects not seen before
   struct IdMap: public map<void*,int>
@@ -277,10 +337,10 @@ namespace schema2
   void Item::packTensorInit(const minsky::VariableBase& v)
   {
     if (auto val=v.vValue())
-      if (!val->tensorInit.data.empty())
+      if (val->tensorInit.size())
         {
           pack_t buf;
-          buf<<val->tensorInit<<val->hypercube().xvectors;
+          pack(buf,val->tensorInit);
           
           vector<unsigned char> zbuf(buf.size());
           DeflateZStream zs(buf, zbuf);
@@ -499,11 +559,10 @@ namespace schema2
               InflateZStream zs(zbuf);
               zs.inflate();
               
-              vector<minsky::XVector> xv;
               try
                 {
-                  zs.output>>val->tensorInit>>xv;
-                  val->hypercube(move(xv));
+                  unpack(zs.output, val->tensorInit);
+                  val->hypercube(val->tensorInit.hypercube());
                 }
               catch (...) {} // absorb for now - maybe log later
             }

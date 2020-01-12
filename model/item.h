@@ -57,6 +57,7 @@ namespace minsky
 
   class VariablePtr;
   class VariableBase;
+  class OperationBase;
 
   class Item;
   /// bounding box information (at zoom=1 scale)
@@ -103,9 +104,13 @@ namespace minsky
 
     virtual std::string classType() const {return "Item";}
 
-    /// @{ replacement for dynamic_cast<VariableBase*>(this)
+    /// @{ a more efficient replacement for dynamic_cast<VariableBase*>(this)
     virtual const VariableBase* variableCast() const {return nullptr;}
     virtual VariableBase* variableCast() {return nullptr;}
+    /// @}
+    /// @{ a more efficient replacement for dynamic_cast<OperationBase*>(this)
+    virtual const OperationBase* operationCast() const {return nullptr;}
+    virtual OperationBase* operationCast() {return nullptr;}
     /// @}
 
     ItemPortVector ports;

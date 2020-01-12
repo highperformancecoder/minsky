@@ -74,14 +74,14 @@ namespace MathDAG
     string r;
     switch (t.rank())
       {
-      case 0: return str(t.data[0]);
+      case 0: return str(t[0]);
       case 1: r="(";
-        for (size_t i=0; i<5 && i<t.data.size(); ++i)
+        for (size_t i=0; i<5 && i<t.size(); ++i)
           {
             if (i>0) r+=' ';
-            r+=str(t.data[i]);
+            r+=str(t[i]);
           }
-        if (t.data.size()>5)
+        if (t.size()>5)
           r+="\\ldots";
         return r+")";
       default:

@@ -545,7 +545,7 @@ SUITE(Minsky)
   TEST(checkAllOpsDefined)
   {
     using namespace MathDAG;
-    for (int o=0; o<OperationType::numOps; ++o)
+    for (int o=0; o<OperationType::sum; ++o)
       {
         if (OperationType::Type(o)==OperationType::constant) continue; // constant deprecated
         OperationType::Type op=OperationType::Type(o);
@@ -592,7 +592,7 @@ SUITE(Minsky)
   
 
     // adaptor class to test each derivative of binary ops
-    struct FixedArg1: public EvalOpBase
+    struct FixedArg1: public ScalarEvalOp
     {
       EvalOpPtr op;
       double arg1;
@@ -612,7 +612,7 @@ SUITE(Minsky)
       {return 0;}
     };
 
-    struct FixedArg2: public EvalOpBase
+    struct FixedArg2: public ScalarEvalOp
     {
       EvalOpPtr op;
       double arg2;
@@ -653,7 +653,8 @@ SUITE(Minsky)
   TEST(checkDerivatives)
   {
     gsl_integration_workspace* ws=gsl_integration_workspace_alloc(1000);
-    for (int op=0; op<OperationType::numOps; ++op)
+    // do not test tensor ops
+    for (int op=0; op<OperationType::sum; ++op)
       {
         // derivatives should not have EvalOps instantiated
         // other operation cannot be tested this way

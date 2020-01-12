@@ -277,6 +277,8 @@ namespace MathDAG
         else
           result=&tmpResult;
 
+        
+        
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
         for (size_t i=0; type()!=integrate && i<arguments.size(); ++i)
@@ -335,137 +337,146 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
                 break;
-              case runningSum: case runningProduct:
-                {
-                  if (argIdx.empty() || argIdx[0].empty())
-                    throw error("input not wired");
-                  result->hypercube(argIdx[0][0].hypercube());
-                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
-                  assert(state);
-                  ev.back()->setTensorParams(argIdx[0][0],*state);
-                }
-                break;
-              case difference:
-                {
-                  // implement the difference operator as a
-                  // subtraction, by fiddling with the offsets of the
-                  // second variableValue
-                  EvalOpPtr op(subtract, state, *result, argIdx[0][0], argIdx[0][0]);
-                  ev.push_back(op);
-                  size_t stride, dimSz;
-                  argIdx[0][0].hypercube().computeStrideAndSize(state->axis, stride,dimSz);
-
-                  // trim off leading or trailing components
-                  auto hc=result->hypercube();
-                  for (auto& i: hc.xvectors)
-                    if (state->axis.empty() || i.name==state->axis)
-                      {
-                        if (state->arg>=i.size())
-                          throw error("difference argument %g greater than vector length %ul",state->arg,(long)i.size());
-                        if (state->arg>0)
-                          i.erase(i.begin(), i.begin()+state->arg);
-                        else
-                          i.erase(i.end()+state->arg, i.end());
-                        break;
-                      }
-                  result->hypercube(hc);
-                  
-                  decltype(op->in1) in1;
-                  decltype(op->in2) in2;
-                  for (auto& i: op->in2)
-                    {
-                      assert(state);
-                      assert(i.size()==1);
-                      assert(i[0].weight==1);
-                      auto j=((i[0].idx-argIdx[0][0].idx())/stride)%dimSz;
-                      if (j>=state->arg && j<dimSz+state->arg)
-                        {
-                          // only transfer in bound references
-                          in1.push_back(op->in1[&i-&op->in2[0]]);
-                          i[0].idx-=stride*state->arg;
-                          in2.push_back(i);
-                        }
-                    }
-                  op->in1.swap(in1);
-                  op->in2.swap(in2);
-                  break;
-                }
-              case index: 
-                {
-                  auto hc=argIdx[0][0].hypercube();
-                  for (auto& i: hc.xvectors)
-                    if (state->axis.empty() || i.name==state->axis || hc.rank()==1)
-                      {
-                        i.dimension.type=Dimension::value;
-                        i.dimension.units.clear();
-                        for (size_t j=0; j<i.size(); ++j)
-                          i[j]=double(j);
-                        break;
-                      }
-                  result->hypercube(hc);
-                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
-                }                
-                break;
-              case gather:
-                {
-                  auto hc=argIdx[0][0].hypercube();
-                  for (auto& i: hc.xvectors)
-                    if (state->axis.empty() || i.name==state->axis || hc.rank()==1)
-                      {
-                        i.dimension.type=Dimension::value;
-                        i.dimension.units.clear();
-                        for (size_t j=0; j<i.size(); ++j)
-                          i[j]=double(j);
-                        break;
-                      }
-                  result->hypercube(hc);
-                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
-                }                
-                break;
+//              case runningSum: case runningProduct:
+//                {
+//                  if (argIdx.empty() || argIdx[0].empty())
+//                    throw error("input not wired");
+//                  result->hypercube(argIdx[0][0].hypercube());
+//                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+//                  assert(state);
+//                  ev.back()->setTensorParams(argIdx[0][0],*state);
+//                }
+//                break;
+//              case difference:
+//                {
+//                  // implement the difference operator as a
+//                  // subtraction, by fiddling with the offsets of the
+//                  // second variableValue
+//                  EvalOpPtr op(subtract, state, *result, argIdx[0][0], argIdx[0][0]);
+//                  ev.push_back(op);
+//                  size_t stride, dimSz;
+//                  argIdx[0][0].hypercube().computeStrideAndSize(state->axis, stride,dimSz);
+//
+//                  // trim off leading or trailing components
+//                  auto hc=result->hypercube();
+//                  for (auto& i: hc.xvectors)
+//                    if (state->axis.empty() || i.name==state->axis)
+//                      {
+//                        if (state->arg>=i.size())
+//                          throw error("difference argument %g greater than vector length %ul",state->arg,(long)i.size());
+//                        if (state->arg>0)
+//                          i.erase(i.begin(), i.begin()+state->arg);
+//                        else
+//                          i.erase(i.end()+state->arg, i.end());
+//                        break;
+//                      }
+//                  result->hypercube(hc);
+//                  
+//                  decltype(op->in1) in1;
+//                  decltype(op->in2) in2;
+//                  for (auto& i: op->in2)
+//                    {
+//                      assert(state);
+//                      assert(i.size()==1);
+//                      assert(i[0].weight==1);
+//                      auto j=((i[0].idx-argIdx[0][0].idx())/stride)%dimSz;
+//                      if (j>=state->arg && j<dimSz+state->arg)
+//                        {
+//                          // only transfer in bound references
+//                          in1.push_back(op->in1[&i-&op->in2[0]]);
+//                          i[0].idx-=stride*state->arg;
+//                          in2.push_back(i);
+//                        }
+//                    }
+//                  op->in1.swap(in1);
+//                  op->in2.swap(in2);
+//                  break;
+//                }
+//              case index: 
+//                {
+//                  auto hc=argIdx[0][0].hypercube();
+//                  for (auto& i: hc.xvectors)
+//                    if (state->axis.empty() || i.name==state->axis || hc.rank()==1)
+//                      {
+//                        i.dimension.type=Dimension::value;
+//                        i.dimension.units.clear();
+//                        for (size_t j=0; j<i.size(); ++j)
+//                          i[j]=double(j);
+//                        break;
+//                      }
+//                  result->hypercube(hc);
+//                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+//                }                
+//                break;
+//              case gather:
+//                {
+//                  auto hc=argIdx[0][0].hypercube();
+//                  for (auto& i: hc.xvectors)
+//                    if (state->axis.empty() || i.name==state->axis || hc.rank()==1)
+//                      {
+//                        i.dimension.type=Dimension::value;
+//                        i.dimension.units.clear();
+//                        for (size_t j=0; j<i.size(); ++j)
+//                          i[j]=double(j);
+//                        break;
+//                      }
+//                  result->hypercube(hc);
+//                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
+//                }                
+//                break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
                 break;
-              case ravel:
-                if (auto r=dynamic_cast<Ravel*>(state.get()))
-                  {
-                    if (argIdx.size()>0 && argIdx[0].size()==1)
-                      {
-                        // process ravel to dimension the result
-                        // variable correctly (data may be bogus at
-                        // this time)
-                        r->loadDataCubeFromVariable(argIdx[0][0]);
-                        r->loadDataFromSlice(*result);
-                        ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
-                        ev.back()->state=state;
-                      }
-                    else
-                      r->loadDataFromSlice(*result);
-                  }
-                break;
+//              case ravel:
+//                if (auto r=dynamic_cast<Ravel*>(state.get()))
+//                  {
+//                    if (argIdx.size()>0 && argIdx[0].size()==1)
+//                      {
+//                        // process ravel to dimension the result
+//                        // variable correctly (data may be bogus at
+//                        // this time)
+//                        r->loadDataCubeFromVariable(argIdx[0][0]);
+//                        r->loadDataFromSlice(*result);
+//                        ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
+//                        ev.back()->state=state;
+//                      }
+//                    else
+//                      r->loadDataFromSlice(*result);
+//                  }
+//                break;
               default:
-                // sanity check that the correct number of arguments is provided 
-                bool correctlyWired=true;
-                for (size_t i=0; i<arguments.size(); ++i)
-                  correctlyWired &= arguments[i].size()==1;
-                if (!correctlyWired)
-                  throw error("inputs for highlighted operations incorrectly wired");
-            
-                switch (arguments.size())
+                switch (classify(type()))
                   {
-                  case 0:
-                    ev.push_back(EvalOpPtr(type(), state, *result));
-                    break;
-                  case 1:
-                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
-                    break;
-                  case 2:
-                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
-                    break;
+                  case reduction: case scan: case tensor:
+                    if (result->idx()==-1) result->allocValue();
+                    break; // TODO handle tensor properly later
                   default:
-                    throw error("Too many arguments");
+                    {
+                      // sanity check that the correct number of arguments is provided 
+                      bool correctlyWired=true;
+                      for (size_t i=0; i<arguments.size(); ++i)
+                        correctlyWired &= arguments[i].size()==1;
+                      if (!correctlyWired)
+                        throw error("inputs for highlighted operations incorrectly wired");
+            
+                      switch (arguments.size())
+                        {
+                        case 0:
+                          ev.push_back(EvalOpPtr(type(), state, *result));
+                          break;
+                        case 1:
+                          ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+                          break;
+                        case 2:
+                          ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
+                          break;
+                        default:
+                          throw error("Too many arguments");
+                        }
+                    }
                   }
               }
           }

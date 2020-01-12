@@ -34,10 +34,19 @@ namespace minsky
   {
     index(x.index());
     hypercube(x.hypercube());
-    memcpy(&valRef(), &x.data[0], x.data.size()*sizeof(x.data[0]));
+    memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
-   
+
+  const VariableValue& VariableValue::operator=(const ITensor& x)
+  {
+    index(x.index());
+    hypercube(x.hypercube());
+    for (size_t i=0; i<x.size(); ++i)
+      (*this)[i]=x[i];
+    return *this;
+  }
+ 
   VariableValue& VariableValue::allocValue()                                        
   {    
     switch (m_type)
@@ -62,7 +71,7 @@ namespace minsky
     return *this;
   }
 
-  double VariableValue::valRef() const                                     
+  const double& VariableValue::valRef() const                                     
   {
     switch (m_type)
       {
@@ -80,7 +89,8 @@ namespace minsky
         break;
       default: break;
       }
-    return 0;
+    static double zero=0;
+    return zero;
   }
   
   double& VariableValue::valRef()                                         
@@ -108,7 +118,7 @@ namespace minsky
   TensorVal VariableValue::initValue
   (const VariableValues& v, set<string>& visited) const
   {
-    if (!tensorInit.data.empty())
+    if (tensorInit.size())
       return tensorInit;
     
     FlowCoef fc(init);
@@ -137,39 +147,36 @@ namespace minsky
                   break;
               }
             TensorVal r(dims);
-            
-            size_t n=1;
-            for (auto i: dims) n*=i;
-            r.data.resize(n);
+            r.allocVal();
 
             if (fn=="iota")
-              for (size_t i=0; i<n; ++i)
-                r.data[i]=i;
+              for (size_t i=0; i<r.size(); ++i)
+                r[i]=i;
             else if (fn=="one")
-              for (size_t i=0; i<n; ++i)
-                r.data[i]=1;
+              for (size_t i=0; i<r.size(); ++i)
+                r[i]=1;
             else if (fn=="zero" || fn=="eye")
               {
-                for (size_t i=0; i<n; ++i)
-                  r.data[i]=0;
+                for (size_t i=0; i<r.size(); ++i)
+                  r[i]=0;
                 if (fn=="eye")
                   {
                     // diagonal elements set to 1
                     // find minimum dimension, and stride of diagonal elements
-                    size_t mind=n, stride=1;
+                    size_t mind=r.size(), stride=1;
                     for (auto i: dims)
                       mind=min(mind, size_t(i));
                     for (size_t i=0; i<dims.size()-1; ++i)
                       stride*=(dims[i]+1);
                     for (size_t i=0; i<mind; ++i)
-                      r.data[stride*i]=1;
+                      r[stride*i]=1;
                   }
               }
             else if (fn=="rand")
               {
                 srand(time(nullptr));
-                for (size_t i=0; i<n; ++i)
-                  r.data[i]=double(rand())/RAND_MAX;
+                for (size_t i=0; i<r.size(); ++i)
+                  r[i]=double(rand())/RAND_MAX;
               }
             return r;
           }

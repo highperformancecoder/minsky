@@ -444,7 +444,7 @@ namespace minsky
       }
   }
 
-  void Ravel::loadDataFromSlice(VariableValue& v) const
+  void Ravel::loadDataFromSlice(ITensorVal& v) const
   {
     if (ravel && dataCube)
       {
@@ -454,7 +454,7 @@ namespace minsky
         ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
         if (dims.empty() || dims[0]==0)
           {
-            if (v.idx()==-1) v.allocValue();
+            v.hypercube({});
             if (dims.empty() && tmp) v[0]=tmp[0];
             return; // do nothing if ravel data is empty
           }
@@ -492,19 +492,16 @@ namespace minsky
             v.hypercube(move(hc));
             assert(vector<unsigned>(dims.begin(), dims.end())==v.hypercube().dims());
 
-            // For feature 47
-            if (v.idx()==-1 || (v.size()>prevNumElem))
-              v.allocValue();
             for (size_t i=0; i< v.size(); ++i)
               *(v.begin()+i)=tmp[i];
           }
         else
           throw error(ravel_lastErr());
       }
-    if (v.idx()==-1) v.allocValue();
+    v.hypercube({}); // ensure scalar data space allocated
   }
 
-  void Ravel::loadDataCubeFromVariable(const VariableValue& v)
+  void Ravel::loadDataCubeFromVariable(const ITensor& v)
   {
     if (ravel && dataCube)
       {
@@ -541,7 +538,9 @@ namespace minsky
               assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
           }
 #endif
-        ravelDC_loadData(dataCube, ravel, v.begin());
+        vector<double> tmp(v.size());
+        for (size_t i=0; i<v.size(); ++i) tmp[i]=v[i];
+        ravelDC_loadData(dataCube, ravel, &tmp[0]);
         applyState(state);
       }
   }

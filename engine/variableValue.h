@@ -63,17 +63,17 @@ namespace minsky
 //    {m_xVector=x.m_xVector; return *this;}
 //  };
   
-  class VariableValue: public VariableType, public civita::ITensor
+  class VariableValue: public VariableType, public civita::ITensorVal
   {
     CLASSDESC_ACCESS(VariableValue);
   private:
     Type m_type;
     int m_idx; /// index into value vector
     double& valRef(); 
-    double valRef() const;
+    const double& valRef() const;
     std::vector<unsigned> m_dims;
     std::vector<size_t> m_index;     
-
+    
     friend class VariableManager;
     friend struct SchemaHelper;
   public:
@@ -113,25 +113,19 @@ namespace minsky
     double value(size_t i=0) const {return *(begin()+i);}
     int idx() const {return m_idx;}
 
-    typedef double* iterator;
-    typedef const double* const_iterator;
-    iterator begin() {return &valRef();}
-    const_iterator begin() const {return &const_cast<VariableValue*>(this)->valRef();}
-    iterator end() {return begin()+size();}
-    const_iterator end() const {return begin()+size();}
-
-    double operator[](size_t i) const override {return *(begin()+i);}
-    double& operator[](size_t i) {return *(begin()+i);}
+    // values are always live
+    Timestamp timestamp() const override {return Timestamp::clock::now();}
+    
+    double operator[](size_t i) const override {return *(&valRef()+i);}
+    double& operator[](size_t i) {return *(&valRef()+i);}
 
 
-    const std::vector<size_t>& index() const override {return m_index;}
-    const std::vector<size_t>& index(const std::vector<size_t>& i)
-    {
+    std::vector<size_t> index() const override {return m_index;}
+    void index(const std::vector<size_t>& i) {
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
         allocValue();    
-      return m_index;
     }
 
     
@@ -163,9 +157,10 @@ namespace minsky
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}
 //    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
 //    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
-    const VariableValue& operator=(const TensorVal& x);
-    const VariableValue& operator+=(const TensorVal& x);
-    const VariableValue& operator-=(const TensorVal& x);
+    const VariableValue& operator=(TensorVal const&);
+    const VariableValue& operator=(const ITensor& x) override;
+//    const VariableValue& operator+=(const TensorVal& x);
+//    const VariableValue& operator-=(const TensorVal& x);
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
@@ -269,6 +264,22 @@ namespace classdesc
 //    repo.add(d,new RESTProcessAssociativeContainer<minsky::VariableValues>(a));
 //    classdesc_access::access_RESTProcess<minsky::VariableValues>()(repo,d,a);
 //  }
+}
+
+#ifdef _CLASSDESC
+#pragma omit pack minsky::VariableValue
+#pragma omit unpack minsky::VariableValue
+#endif
+
+namespace classdesc_access
+{
+  // nobble these as we're not using them
+  template <>
+  struct access_pack<minsky::VariableValue>:
+    public classdesc::NullDescriptor<classdesc::pack_t> {};
+  template <>
+  struct access_unpack<minsky::VariableValue>:
+    public classdesc::NullDescriptor<classdesc::unpack_t> {};
 }
 
 #endif

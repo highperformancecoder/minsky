@@ -34,7 +34,7 @@ using namespace boost::posix_time;
 namespace minsky
 {
 
-  void EvalOpBase::eval(double fv[], const double sv[])
+  void ScalarEvalOp::eval(double fv[], const double sv[])
   {
     assert(out>=0);
     switch (numArgs())
@@ -76,8 +76,7 @@ namespace minsky
           }
   };
 
-  /// TODO: handle tensors for implicit methods
-  void EvalOpBase::deriv(double df[], const double ds[],
+  void ScalarEvalOp::deriv(double df[], const double ds[],
                      const double sv[], const double fv[])
   {
     assert(out>=0 && size_t(out)<ValueVector::flowVars.size());
@@ -493,30 +492,42 @@ namespace minsky
   double EvalOp<OperationType::numOps>::d2(double x1, double x2) const
   {throw error("calling d2() on EvalOp<numOps> invalid");}
 
-  void RavelEvalOp::eval(double fv[], const double sv[]) 
-  {
-    if (auto r=dynamic_cast<Ravel*>(state.get()))
-      {
-        r->loadDataCubeFromVariable(in);
-        r->loadDataFromSlice(out);
-      }
-  }
+//  void RavelEvalOp::eval(double fv[], const double sv[]) 
+//  {
+//    if (auto r=dynamic_cast<Ravel*>(state.get()))
+//      {
+//        r->loadDataCubeFromVariable(in);
+//        r->loadDataFromSlice(out);
+//      }
+//  }
   
-  namespace {OperationFactory<EvalOpBase, EvalOp, OperationType::numOps-1> evalOpFactory;}
+  namespace {OperationFactory<ScalarEvalOp, EvalOp, OperationType::sum-1> evalOpFactory;}
 
-  EvalOpBase* EvalOpBase::create(Type op)
+  ScalarEvalOp* ScalarEvalOp::create(Type op)
   {
-    switch (op)
+    switch (classify(op))
       {
-      case constant:
-        return new ConstantEvalOp;
-      case ravel:
-        return new RavelEvalOp;
-      case numOps:
-        return NULL;
-      default:
-        return evalOpFactory.create(op);
+      case general:
+      case binop:
+      case function:
+        switch (op)
+          {
+          case constant:
+            return new ConstantEvalOp;
+            //      case ravel:
+            //        return new RavelEvalOp;
+          case numOps:
+            return NULL;
+          default:
+            return evalOpFactory.create(op);
+          }
+      case reduction:
+      case scan:
+      case tensor:
+        return nullptr; //TODO should we be here?
       }
+    assert(false); //shouldn't be here
+    return nullptr;
   }
 
   namespace
@@ -751,7 +762,7 @@ namespace minsky
                        VariableValue& to, const VariableValue& from1, const VariableValue& from2)
   {
     
-      reset(EvalOpBase::create(op));
+      reset(ScalarEvalOp::create(op));
       auto t=get();
       assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
       t->state=state;
@@ -761,31 +772,31 @@ namespace minsky
         case 2:
           switch (op)
             {
-            case gather:
-              {
-                auto& e=dynamic_cast<EvalOp<gather>&>(*t);
-                e.shape=from1.hypercube().dims();
-                if (to.hypercube()!=from1.hypercube())
-                  to.hypercube(from1.hypercube());
-                  
-                // For feature 47
-                for (size_t i=0; i<from1.size(); ++i)                          
-                  t->in1.push_back(i+from1.idx());
-					  
-                auto from2Dims=from2.hypercube().dims();
-                if (from2.rank()>0)
-                   {
-				     // For feature 47	   
-                     for (size_t i=0; i<from2.size(); i+=from2Dims[0])
-                       {
-                         t->in2.emplace_back();
-                         for (size_t j=0; j<from2Dims[0]; ++j)
-                            t->in2.back().emplace_back(1,i+j+from2.idx()); 
-				       }
-                    }
-                else
-                  t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
-              }
+//            case gather:
+//              {
+//                auto& e=dynamic_cast<EvalOp<gather>&>(*t);
+//                e.shape=from1.hypercube().dims();
+//                if (to.hypercube()!=from1.hypercube())
+//                  to.hypercube(from1.hypercube());
+//                  
+//                // For feature 47
+//                for (size_t i=0; i<from1.size(); ++i)                          
+//                  t->in1.push_back(i+from1.idx());
+//					  
+//                auto from2Dims=from2.hypercube().dims();
+//                if (from2.rank()>0)
+//                   {
+//				     // For feature 47	   
+//                     for (size_t i=0; i<from2.size(); i+=from2Dims[0])
+//                       {
+//                         t->in2.emplace_back();
+//                         for (size_t j=0; j<from2Dims[0]; ++j)
+//                            t->in2.back().emplace_back(1,i+j+from2.idx()); 
+//				       }
+//                    }
+//                else
+//                  t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
+//              }
 //                switch (from1.rank())
 //                  {
 //                  case 0: break;
@@ -991,27 +1002,27 @@ namespace minsky
               }
               break;
             case binop: assert(false); break; // shouldn't be here
-            case tensor:
-              switch (op)
-                {
-                case index:
-                  {
-                    vector<unsigned> targetDims;  
-                    targetDims={unsigned(from1.rank()),unsigned(from1.size())};
-                    if (to.hypercube().dims()!=targetDims)
-                      to.hypercube(move(targetDims));
-                  
-                    // For feature 47
-                      for (size_t i=0; i<from1.size(); ++i)                          
-                        t->in1.push_back(i+from1.idx());
-				    	       
-                    auto& e=dynamic_cast<EvalOp<index>&>(*t);
-                    e.shape=from1.hypercube().dims();
-                  }
-                  break;
-                default: // TODO
-                  break;
-                }
+//            case tensor:
+//              switch (op)
+//                {
+//                case index:
+//                  {
+//                    vector<unsigned> targetDims;  
+//                    targetDims={unsigned(from1.rank()),unsigned(from1.size())};
+//                    if (to.hypercube().dims()!=targetDims)
+//                      to.hypercube(move(targetDims));
+//                  
+//                    // For feature 47
+//                      for (size_t i=0; i<from1.size(); ++i)                          
+//                        t->in1.push_back(i+from1.idx());
+//				    	       
+//                    auto& e=dynamic_cast<EvalOp<index>&>(*t);
+//                    e.shape=from1.hypercube().dims();
+//                  }
+//                  break;
+//            default: // TODO
+//              break;
+//            }
               break;  
             }
           break;
@@ -1038,108 +1049,112 @@ namespace minsky
 
     }
 
-  template<OperationType::Type T>
-  void ReductionEvalOp<T>::eval(double fv[], const double sv[])
-  {
-    fv[this->out]=init();
-    const double* src=this->flow1? fv: sv;
-    for (auto i: this->in1)
-      accum(fv[this->out], src[i]);
-  }
-
-  template<OperationType::Type T>
-  void ScanEvalOp<T>::eval(double fv[], const double sv[])
-  {
-    // input vector assumed to be consecutive locations starting at in1[0]
-    const double* src=this->flow1? &fv[this->in1[0]]: &sv[this->in1[0]];
-    for (size_t i0=0; i0<this->in1.size(); i0+=dimSz*stride) // loop over outer dimensions
-      for (size_t i=i0; i<i0+stride; ++i) // loop over inner dimensions
-        for (size_t j=0; j<dimSz; j++) // loop over dimension being scanned
-          {
-            double s=src[i+j*stride];
-            size_t k0= j>window? j-window: 0;
-            for (size_t k=k0; k<j; k++) 
-              accum(s, src[i+k*stride]);
-            fv[this->out+i+j*stride]=s;
-          }
-  }
-
-  namespace {
-    inline vector<unsigned> unravelIndex(const vector<unsigned>& shape, size_t i) 
-    {
-      vector<unsigned> r;
-      size_t stride=1;
-      for (auto d: shape)
-        {
-          r.push_back(i%d);
-          i/=d;
-        }
-      return r;
-    }
-  }
-  
-  void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
-  {
-    const double* src=this->flow1? fv: sv;
-    size_t o=out;
-    for (size_t i=0; i<in1.size(); ++i)
-      if (src[in1[i]]>0.5)
-        for (auto j: unravelIndex(shape,i))
-          fv[o++]=j;
-
-    //pad with NaNs to indicate invalid data
-    for (; o<out+in1.size()*shape.size(); ++o)
-      fv[o]=nan("");
-  }
-
-  void EvalOp<minsky::OperationType::infIndex>::eval(double fv[], const double sv[])
-  {
-    const double* src=this->flow1? fv: sv;
-    double m=numeric_limits<double>::max();
-    for (size_t i=0; i<in1.size(); ++i)
-      if (src[in1[i]]<m)
-        {
-          m=src[in1[i]];
-          fv[out]=i;
-        }
-  }
-  void EvalOp<minsky::OperationType::supIndex>::eval(double fv[], const double sv[])
-  {
-    const double* src=this->flow1? fv: sv;
-    double m=-numeric_limits<double>::max();
-    for (size_t i=0; i<in1.size(); ++i)
-      if (src[in1[i]]>m)
-        {
-          m=src[in1[i]];
-          fv[out]=i;
-        }
-  }
-
-  void EvalOp<minsky::OperationType::gather>::eval(double fv[], const double sv[])
-  {
-    const double* src=this->flow1? fv: sv;
-    const double* idx=this->flow2? fv: sv;
-    // prefill with NaNs to indicate invalid data
-    for (size_t i=0; i<in1.size(); ++i)
-      fv[out+i]=nan("");
-    
-    for (auto& i: in2)
-      {
-        double idx1=0;
-        size_t stride=1;
-        assert(i.size()==shape.size());
-        for (size_t j=0; j<i.size(); ++j)
-          {
-            idx1+=idx[i[j].idx]*stride;
-            stride*=shape[j];
-          }
-        if (isfinite(idx1))
-          {
-            size_t idx2=idx1;
-            fv[out+idx2]=src[in1[idx2]];
-          }
-      }
-  }
-
+//  template<OperationType::Type T>
+//  void ReductionEvalOp<T>::eval(double fv[], const double sv[])
+//  {
+//    fv[this->out]=init();
+//    const double* src=this->flow1? fv: sv;
+//    for (auto i: this->in1)
+//      accum(fv[this->out], src[i]);
+//  }
+//
+//  template<OperationType::Type T>
+//  void ScanEvalOp<T>::eval(double fv[], const double sv[])
+//  {
+//    // input vector assumed to be consecutive locations starting at in1[0]
+//    const double* src=this->flow1? &fv[this->in1[0]]: &sv[this->in1[0]];
+//    for (size_t i0=0; i0<this->in1.size(); i0+=dimSz*stride) // loop over outer dimensions
+//      for (size_t i=i0; i<i0+stride; ++i) // loop over inner dimensions
+//        for (size_t j=0; j<dimSz; j++) // loop over dimension being scanned
+//          {
+//            double s=src[i+j*stride];
+//            size_t k0= j>window? j-window: 0;
+//            for (size_t k=k0; k<j; k++) 
+//              accum(s, src[i+k*stride]);
+//            fv[this->out+i+j*stride]=s;
+//          }
+//  }
+//
+//  namespace {
+//    inline vector<unsigned> unravelIndex(const vector<unsigned>& shape, size_t i) 
+//    {
+//      vector<unsigned> r;
+//      size_t stride=1;
+//      for (auto d: shape)
+//        {
+//          r.push_back(i%d);
+//          i/=d;
+//        }
+//      return r;
+//    }
+//  }
+//  
+//  void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
+//  {
+//    const double* src=this->flow1? fv: sv;
+//    size_t o=out;
+//    for (size_t i=0; i<in1.size(); ++i)
+//      if (src[in1[i]]>0.5)
+//        for (auto j: unravelIndex(shape,i))
+//          fv[o++]=j;
+//
+//    //pad with NaNs to indicate invalid data
+//    for (; o<out+in1.size()*shape.size(); ++o)
+//      fv[o]=nan("");
+//  }
+//
+//  void EvalOp<minsky::OperationType::infIndex>::eval(double fv[], const double sv[])
+//  {
+//    const double* src=this->flow1? fv: sv;
+//    double m=numeric_limits<double>::max();
+//    for (size_t i=0; i<in1.size(); ++i)
+//      if (src[in1[i]]<m)
+//        {
+//          m=src[in1[i]];
+//          fv[out]=i;
+//        }
+//  }
+//  void EvalOp<minsky::OperationType::supIndex>::eval(double fv[], const double sv[])
+//  {
+//    const double* src=this->flow1? fv: sv;
+//    double m=-numeric_limits<double>::max();
+//    for (size_t i=0; i<in1.size(); ++i)
+//      if (src[in1[i]]>m)
+//        {
+//          m=src[in1[i]];
+//          fv[out]=i;
+//        }
+//  }
+//
+//  void EvalOp<minsky::OperationType::gather>::eval(double fv[], const double sv[])
+//  {
+//    const double* src=this->flow1? fv: sv;
+//    const double* idx=this->flow2? fv: sv;
+//    // prefill with NaNs to indicate invalid data
+//    for (size_t i=0; i<in1.size(); ++i)
+//      fv[out+i]=nan("");
+//    
+//    for (auto& i: in2)
+//      {
+//        double idx1=0;
+//        size_t stride=1;
+//        assert(i.size()==shape.size());
+//        for (size_t j=0; j<i.size(); ++j)
+//          {
+//            idx1+=idx[i[j].idx]*stride;
+//            stride*=shape[j];
+//          }
+//        if (isfinite(idx1))
+//          {
+//            size_t idx2=idx1;
+//            fv[out+idx2]=src[in1[idx2]];
+//          }
+//      }
+//  }
+//
+//  void TensorVarEvalOp::eval(double fv[], const double sv[])
+//  {
+//    
+//  }
 
 }

@@ -454,61 +454,54 @@ namespace minsky
                            
         double sparsityRatio =  static_cast<double>(1.0-static_cast<double>(tmpData.size())/numHyperCubeElems); 
 		
-		// for feature 47
-		if (sparsityRatio <= 0.5) 
+        if (sparsityRatio <= 0.5) 
+          { // dense case
+            v.index({});
+            if (!cminsky().checkMemAllocation(hc.numElements()*sizeof(double)))
+              throw runtime_error("memory threshold exceeded");            
+            v.hypercube(hc);
+            // stash the data into vv tensorInit field
+            v.tensorInit.hypercube(hc);
+            for (auto& i: v.tensorInit)
+              i=spec.missingValue;
+            auto dims=v.hypercube().dims();
+            for (auto& i: tmpData)
+              {
+                size_t idx=0;
+                assert (hc.rank()==i.first.size());
+                assert(dimLabels.size()==hc.rank());
+                for (int j=hc.rank()-1; j>=0; --j)
                   {
-                    v.index({});
-                    v.hypercube(hc);
-                    if (!cminsky().checkMemAllocation(v.numDenseElements()*sizeof(double)))
-                      throw runtime_error("memory threshold exceeded");            
-          // stash the data into vv tensorInit field
-          v.tensorInit.data.clear();
-          v.tensorInit.data.resize(v.numDenseElements(), spec.missingValue);  
-          auto hc=v.hypercube();
-          auto dims=v.hypercube().dims();
-          v.tensorInit.hypercube(hc);
-          for (auto& i: tmpData)
-            {
-              size_t idx=0;
-              assert (hc.rank()==i.first.size());
-              assert(dimLabels.size()==hc.rank());
-              for (int j=hc.rank()-1; j>=0; --j)
-                {
-                  assert(dimLabels[j].count(i.first[j]));
-                  idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                }
-              v.tensorInit.data[idx]=i.second;  
-            }
-        }    
+                    assert(dimLabels[j].count(i.first[j]));
+                    idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                  }
+                v.tensorInit[idx]=i.second;  
+              }
+          }    
         else 
-	    {	
-              v.index({});
-              v.hypercube(hc);          
-              if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
-            throw runtime_error("memory threshold exceeded");	  	  		
-              auto dims=v.hypercube().dims();
+          { // sparse case	
+            if (!cminsky().checkMemAllocation(tmpData.size()*sizeof(double)))
+              throw runtime_error("memory threshold exceeded");	  	  		
+            auto dims=hc.dims();
               
-              v.tensorInit.hypercube(Hypercube(dims));
-          v.tensorInit.data.clear();
-          vector<size_t> index;
-          for (auto& i: tmpData)
-            {
-              size_t idx=0;
-              assert (dims.size()==i.first.size());
-              assert(dimLabels.size()==dims.size());
-              for (int j=dims.size()-1; j>=0; --j)
-                {
-                  assert(dimLabels[j].count(i.first[j]));
-                  idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
-                }
-               if (!isnan(i.second)) {  
-                 index.push_back(idx);
-                 v.tensorInit.data.push_back(i.second);
-               }
-            }
-          v.tensorInit.m_index=index;
-          assert(v.index().size()==v.tensorInit.data.size());
-     	}                 
+            vector<size_t> index;
+            for (auto& i: tmpData)
+              {
+                size_t idx=0;
+                assert (dims.size()==i.first.size());
+                assert(dimLabels.size()==dims.size());
+                for (int j=dims.size()-1; j>=0; --j)
+                  {
+                    assert(dimLabels[j].count(i.first[j]));
+                    idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
+                  }
+                if (!isnan(i.second))   
+                  v.tensorInit.push_back(idx, i.second);
+              }
+            v.index(index);
+            v.hypercube(hc);
+            v.tensorInit.hypercube(hc);
+          }                 
 
       }
     catch (const std::bad_alloc&)

@@ -25,49 +25,27 @@
 #include "dimension.cd"
 #include "dimension.xcd"
 #endif
-#ifdef CIVITA_TENSORINTERFACE_H
-#include "tensorInterface.cd"
-#endif
-#ifdef CIVITA_TENSORVAL_H
-#include "tensorVal.cd"
-#endif
-#ifdef CIVITA_HYPERCUBE_H
-#include "hypercube.cd"
-#endif
-#ifdef CIVITA_XVECTOR_H
-namespace classdesc_access
-{
-  template<> struct access_pack<civita::XVector> {
-    void operator()(classdesc::pack_t& b, const std::string&, const civita::XVector& a)
-    {
-      b<<a.name<<a.dimension<<a.size();
-      for (auto& i: a)
-        b<<civita::str(i);
-    }
-  };
-  template<> struct access_unpack<civita::XVector> {
-    void operator()(classdesc::pack_t& b, const std::string&, civita::XVector& a)
-    {
-      size_t size;
-      std::string x;
-      a.clear();
-      b>>a.name>>a.dimension>>size;
-      for (size_t i=0; i<size; ++i)
-        {
-          b>>x;
-          a.push_back(x);
-        }
-    }
-  };
+//#ifdef CIVITA_TENSORINTERFACE_H
+//#include "tensorInterface.cd"
+//#endif
+////#ifdef CIVITA_TENSORVAL_H
+////#include "tensorVal.cd"
+////#endif
+//#ifdef CIVITA_HYPERCUBE_H
+//#include "hypercube.cd"
+//#endif
 
+//#ifdef CIVITA_XVECTOR_H
+//namespace classdesc_access
+//{
+////  template <>
+////  struct access_RESTProcess<civita::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
 //  template <>
-//  struct access_RESTProcess<civita::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
-  template <>
-  struct access_json_pack<civita::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-  template <>
-  struct access_json_unpack<civita::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
-}
-
-#endif
+//  struct access_json_pack<civita::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
+//  template <>
+//  struct access_json_unpack<civita::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
+//}
+//
+//#endif
 
 #include <ecolab_epilogue.h>
