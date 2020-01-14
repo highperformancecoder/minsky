@@ -776,32 +776,15 @@ SUITE(Canvas)
         godley->table.cell(2,2)="y";
         godley->update();
 
-        
+        // Unit test greatly simplified since flow/stock vars no longer copied via temporary group. For ticket 1039
         unsigned originalNumItems=model->numItems();
-        unsigned originalNumGroups=model->numGroups();
         copyAllFlowVars();
         CHECK_EQUAL(originalNumItems+godley->flowVars().size(),model->numItems());
-        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
-        auto newG=model->groups.back();
-        CHECK_EQUAL(godley->flowVars().size(), newG->items.size());
-        // assume the copied items are done in order
-        for (size_t i=0; i<godley->flowVars().size(); ++i)
-          CHECK_EQUAL(godley->flowVars()[i]->valueId(),
-                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
 
         originalNumItems=model->numItems();
-        originalNumGroups=model->numGroups();
         
         copyAllStockVars();
         CHECK_EQUAL(originalNumItems+godley->stockVars().size(),model->numItems());
-        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
-        newG=model->groups.back();
-        CHECK_EQUAL(godley->stockVars().size(), newG->items.size());
-        // assume the copied items are done in order
-        for (size_t i=0; i<godley->stockVars().size(); ++i)
-          CHECK_EQUAL(godley->stockVars()[i]->valueId(),
-                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
-
       }
 
     TEST_FIXTURE(TestFixture,handleArrows)
