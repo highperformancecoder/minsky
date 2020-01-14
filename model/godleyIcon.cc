@@ -407,6 +407,9 @@ namespace minsky
         fabs(dy-h) < portRadiusMult*z &&
         fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
       return ClickType::onResize;
+    // Make it possible to pull wires from variables attached to Godley icons. For ticket 940  
+    if (auto item=select(x,y))
+      return item->clickType(x,y);         
     if (dx < w && dy < h)
       return ClickType::onItem;
     else

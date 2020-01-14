@@ -942,7 +942,6 @@ proc deiconifyEditVar {} {
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
             set item minsky.canvas.item
-            $item.retype $editVarInput(Type)
             $item.name $editVarInput(Name)
             $item.init $editVarInput(Initial Value)
             $item.setUnits $editVarInput(Units)
@@ -953,6 +952,8 @@ proc deiconifyEditVar {} {
             $item.sliderMin  $editVarInput(Slider Bounds: Min)
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
+            # retype invalidates $item, so perform this last
+            $item.retype $editVarInput(Type)
             makeVariablesConsistent
             catch reset
             closeEditWindow .wiring.editVar
