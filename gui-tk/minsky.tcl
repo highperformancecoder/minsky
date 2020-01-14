@@ -704,6 +704,11 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
 .menubar.edit add command -label "Copy" -command "minsky.copy" -accelerator $meta_menu-C
 .menubar.edit add command -label "Paste" -command "minsky.paste" -accelerator $meta_menu-V
+if {![catch {clipboard get -displayof .menubar.edit -type UTF8_STRING}]} {
+	.menubar.edit entryconfigure end -state normal
+} else {
+	.menubar.edit entryconfigure end -state disabled
+}
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 

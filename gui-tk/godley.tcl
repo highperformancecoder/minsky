@@ -96,6 +96,11 @@ proc openGodley {id} {
         .$id.menubar.edit add command -label Cut -command "$id.cut" -accelerator $meta_menu-X
         .$id.menubar.edit add command -label Copy -command "$id.copy" -accelerator $meta_menu-C
         .$id.menubar.edit add command -label Paste -command "$id.paste" -accelerator $meta_menu-V
+	     if {![catch {clipboard get -displayof .$id.context -type UTF8_STRING}]} {
+			.$id.menubar.edit entryconfigure end -state normal
+	     } else {
+	     	.$id.menubar.edit entryconfigure end -state disabled
+	     }                
 
         menu .$id.menubar.view
         .$id.menubar.view add command -label "Zoom in" -command "zoomIn $id" -accelerator $meta_menu-+
@@ -239,7 +244,11 @@ proc godleyContext {id x y X Y} {
     }
     if {![catch {clipboard get -type UTF8_STRING}]  && ($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
         .$id.context add command -label "Paste" -command "$id.paste"
-    }
+        
+    } else {
+		.$id.context add command -label "Paste" -command "$id.paste"
+		.$id.context entryconfigure end -state disabled
+	}
     tk_popup .$id.context $X $Y
 }
 
