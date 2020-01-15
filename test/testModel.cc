@@ -776,15 +776,33 @@ SUITE(Canvas)
         godley->table.cell(2,2)="y";
         godley->update();
 
-        // Unit test greatly simplified since flow/stock vars no longer copied via temporary group. For ticket 1039
         unsigned originalNumItems=model->numItems();
         copyAllFlowVars();
         CHECK_EQUAL(originalNumItems+godley->flowVars().size(),model->numItems());
-
-        originalNumItems=model->numItems();
+        // Check that the number of items in selection after copyAllFlowVars() is equal to the number of flowVars attached to the Godley Icon. For ticket 1039.
+        CHECK_EQUAL(godley->flowVars().size(),selection.items.size());
         
+        //Check that there are two copies of the flowVars orginally attached to the Godley Icon. For ticket 1039.
+        map<string,int> idCnt;
+        for (auto& i: model->items)
+          if (auto v=i->variableCast())
+             idCnt[v->valueId()]++;
+        for (auto v: godley->flowVars())
+        CHECK_EQUAL(2, idCnt[v->valueId()]);                
+        
+        originalNumItems=model->numItems();
         copyAllStockVars();
         CHECK_EQUAL(originalNumItems+godley->stockVars().size(),model->numItems());
+        // Check that the number of items in selection after copyAllStockVars() is equal to the number of stockVars attached to the Godley Icon. For ticket 1039.
+        CHECK_EQUAL(godley->stockVars().size(),selection.items.size());     
+        
+        //Check that there are two copies of the stockVars orginally attached to the Godley Icon. For ticket 1039.
+        idCnt.clear();
+        for (auto& i: model->items)
+          if (auto v=i->variableCast())
+             if (v->isStock()) idCnt[v->valueId()]++;
+        for (auto v: godley->stockVars())
+        CHECK_EQUAL(2, idCnt[v->valueId()]);    
       }
 
     TEST_FIXTURE(TestFixture,handleArrows)

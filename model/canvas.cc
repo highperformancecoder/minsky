@@ -644,24 +644,21 @@ namespace minsky
       float y=v[0]->y() - totalHeight;
       for (size_t i=0; i<v.size(); ++i)
         {
-          auto ni=v[i]->clone();
-          ni->rotation=0;
-          //ni->zoomFactor=group->zoomFactor;
+		  // Stock and flow variables on Godley icons should not be copied as groups. For ticket 1039	
+          ItemPtr ni(v[i]->clone());
+          (ni->variableCast())->rotation=0;
           ni->moveTo(v[0]->x()+maxWidth-v[i]->zoomFactor()*widths[i],
                      y+heights[i]);
           // variables need to refer to outer scope
-          if (ni->name()[0]!=':')
-            ni->name(':'+ni->name());
+          if ((ni->variableCast())->name()[0]!=':')
+            (ni->variableCast())->name(':'+(ni->variableCast())->name());
           y+=2*v[i]->zoomFactor()*heights[i];
-          // Stock and flow variables on Godley icons should not be copied as groups. For ticket 1039
-          ItemPtr newI(ni);
-          selection.insertItem(model->addItem(newI));		 
+          selection.insertItem(model->addItem(ni));		 
         }
         // Item focus put on one of the copied vars that are still in selection. For ticket 1039
-        setItemFocus(model->findAny
-          (&GroupItems::items, [&](const ItemPtr& i)
-                         {return selection.contains(i);}));   
-    } else throw error("no flow or stock variables to copy");      
+        if (!selection.empty()) setItemFocus(selection.items[0]);
+        else selection.clear();  
+    } else throw error("no flow or stock variables to copy");    
   }
 
   void Canvas::handleArrows(int dir, float x, float y, bool modifier)
