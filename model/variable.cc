@@ -204,8 +204,12 @@ string VariableBase::_init(const string& x)
               (type()==flow && !cminsky().definingVar(valueId()))) 
             val.reset(minsky().variableValues);
         }
-      catch (...)
-        {}
+      // Catch exception "Unknown variable XX in initialisation of YY" at input time. For ticket 1045.
+      catch (const std::exception& e)
+        {
+		    val.init.clear();
+			throw runtime_error(e.what());
+		}
     }
   return x;
 }
