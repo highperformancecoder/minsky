@@ -657,7 +657,7 @@ namespace minsky
         }
         // Item focus put on one of the copied vars that are still in selection. For ticket 1039
         if (!selection.empty()) setItemFocus(selection.items[0]);
-        else selection.clear();  
+        else setItemFocus(nullptr);  
     } else throw error("no flow or stock variables to copy");    
   }
 
