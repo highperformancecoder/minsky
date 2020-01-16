@@ -118,6 +118,9 @@ namespace minsky
 
     /// string used to link to the VariableValue associated with this
     virtual std::string valueId() const;
+    /// returns valueId for \a nm. If nm is not qualified, this
+    /// variable's scope is used
+    std::string valueIdInCurrentScope(const std::string& nm) const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
     VariableValue* vValue() const;
     std::vector<unsigned> dims() const {

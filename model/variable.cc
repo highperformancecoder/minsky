@@ -134,6 +134,11 @@ string VariableBase::valueId() const
   return VariableValue::valueId(group.lock(), m_name);
 }
 
+std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const
+{
+  return VariableValue::valueId(group.lock(), nm);
+}
+
 string VariableBase::_name()  const
 {
   if (m_name==":_") return "";

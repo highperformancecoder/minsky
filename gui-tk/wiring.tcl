@@ -935,7 +935,7 @@ proc deiconifyEditVar {} {
 
         # initialise variable type when selected from combobox
         bind .wiring.editVar.entry10 <<ComboboxSelected>> {
-            getValue [valueId [.wiring.editVar.entry10 get]]
+            getValue [minsky.canvas.item.valueIdInCurrentScope [.wiring.editVar.entry10 get]]
             .wiring.editVar.entry20 set [value.type]
         }
         
