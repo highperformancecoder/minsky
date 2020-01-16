@@ -305,7 +305,7 @@ if {[tk windowingsystem] == "aqua"} {
 menu .menubar.file
 .menubar add cascade -menu .menubar.file -label File -underline 0
 
-menu .menubar.edit
+menu .menubar.edit -postcommand "togglePaste window"
 .menubar add cascade -menu .menubar.edit -label Edit -underline 0
 
 menu .menubar.bookmarks -postcommand generateBookmarkMenu
@@ -704,13 +704,14 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
 .menubar.edit add command -label "Copy" -command "minsky.copy" -accelerator $meta_menu-C
 .menubar.edit add command -label "Paste" -command "minsky.paste" -accelerator $meta_menu-V
-if {![catch {clipboard get -displayof .menubar.edit -type UTF8_STRING}]} {
-	.menubar.edit entryconfigure end -state normal
-} else {
-	.menubar.edit entryconfigure end -state disabled
-}
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
+
+proc togglePaste {window} {
+	if {[catch {clipboard get -type UTF8_STRING}]} {
+	.menubar.edit entryconfigure "Paste" -state disabled
+	}
+}
 
 proc undo {delta} {
     # do not record changes to state from the undo command
