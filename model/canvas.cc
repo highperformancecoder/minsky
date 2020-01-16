@@ -547,20 +547,36 @@ namespace minsky
         var=i->intVar.get();
     if (var)
       {
+        // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
+        string fromName=var->rawName();
+        vector<GodleyIcon*> godleysToUpdate;
         model->recursiveDo
           (&GroupItems::items, [&](Items&,Items::iterator i)
            {
              if (auto v=(*i)->variableCast())
-               if (v->valueId()==valueId)
-                 {			 
-                   if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
-                       // fix up internal references in Godley table
-                       g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
-                   v->name(newName);                 
-                 }
+               {
+                 if (v->valueId()==valueId)
+                   {			 
+                     if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
+                       {
+                         // fix up internal references in Godley table
+                         g->table.rename(fromName, (fromName[0]==':'?":":"")+newName);
+                         // GodleyIcon::update invalidates the iterator, so postpone update
+                         godleysToUpdate.push_back(g);
+                       }
+                     else
+                       {
+                         v->name(newName);
+                         if (auto vv=v->vValue())
+                           v->retype(vv->type()); // ensure correct type. Note this invalidates v.
+                       }
+                   }
+                 
+               }
              return false;
            });
+        for (auto g: godleysToUpdate) g->update();
        }
    }
   
@@ -589,7 +605,13 @@ namespace minsky
         else if (auto group=dynamic_cast<Group*>(item.get()))
           newItem=group->copy();
         else
-          newItem.reset(item->clone());
+          {
+            newItem.reset(item->clone());
+            // if copied from a Godley table or I/O var, set orientation to default
+            if (auto v=item->variableCast())
+              if (v->controller.lock())
+                newItem->rotation=defaultRotation;
+          }
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
       }
