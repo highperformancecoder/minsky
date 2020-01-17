@@ -539,6 +539,13 @@ namespace minsky
        }
   }
 
+  namespace
+  {
+    // return true if scope g refers to the global model group
+    bool isGlobal(const GroupPtr& g)
+    {return !g || g==cminsky().model;}
+  }
+  
   void Canvas::renameAllInstances(const string newName)
   {
     auto var=item->variableCast();
@@ -547,7 +554,17 @@ namespace minsky
         var=i->intVar.get();
     if (var)
       {
+        // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
+        auto varScope=VariableValue::scope(var->group.lock(), valueId);
+        string fromName=var->rawName();
+        // unqualified versions of the names
+        string uqFromName=fromName.substr(fromName[0]==':'? 1: 0);
+        string uqNewName = newName.substr(newName[0]==':'? 1: 0);
+        set<GodleyIcon*> godleysToUpdate;
+#ifndef NDEBUG
+        auto numItems=model->numItems();
+#endif
         model->recursiveDo
           (&GroupItems::items, [&](Items&,Items::iterator i)
            {
@@ -555,13 +572,39 @@ namespace minsky
                if (v->valueId()==valueId)
                  {			 
                    if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
-                       // fix up internal references in Godley table
-                       g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
-                   v->name(newName);                 
+                     {
+                       if (varScope==g->group.lock() ||
+                           (!varScope && g->group.lock()==cminsky().model)) // fix local variables
+                         g->table.rename(uqFromName, uqNewName);
+                       
+                       // scope of an external ref in the Godley Table
+                       auto externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqNewName);
+                       // if we didn't find it, perhaps the outerscope variable hasn't been changed
+                       if (!externalVarScope)
+                         externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqFromName);
+
+                       if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
+                         // fix external variable references
+                         g->table.rename(':'+uqFromName, ':'+uqNewName);
+                       // GodleyIcon::update invalidates the iterator, so postpone update
+                       godleysToUpdate.insert(g);
+                     }
+                   else
+                     {
+                       v->name(newName);
+                       if (auto vv=v->vValue())
+                         v->retype(vv->type()); // ensure correct type. Note this invalidates v.
+                     }
                  }
              return false;
            });
-       }
+        assert(model->numItems()==numItems);
+        for (auto g: godleysToUpdate)
+          {
+            g->update();
+            assert(model->numItems()==numItems);
+          }
+      }
    }
   
   void Canvas::ungroupItem()
@@ -589,7 +632,13 @@ namespace minsky
         else if (auto group=dynamic_cast<Group*>(item.get()))
           newItem=group->copy();
         else
-          newItem.reset(item->clone());
+          {
+            newItem.reset(item->clone());
+            // if copied from a Godley table or I/O var, set orientation to default
+            if (auto v=item->variableCast())
+              if (v->controller.lock())
+                newItem->rotation=defaultRotation;
+          }
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
       }

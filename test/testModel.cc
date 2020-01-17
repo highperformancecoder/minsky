@@ -681,22 +681,22 @@ SUITE(Canvas)
         gi2->update();
         
         canvas.item=a;
-        canvas.copyItem();
-        canvas.mouseUp(500,500);
+        auto numItems=model->numItems();
         canvas.renameAllInstances("foobar");
+        CHECK_EQUAL(numItems, model->numItems());
         unsigned count=0;
         for (auto i: model->items)
           if (auto v=dynamic_cast<VariableBase*>(i.get()))
             {
-              CHECK(v->name()!="a");
-              if (v->name()=="foobar")
+              CHECK(v->valueId()!=":a");
+              if (v->valueId()==":foobar")
                 count++;
             }
-        CHECK_EQUAL(4,count);
+        CHECK_EQUAL(2,count); // should be 1 from first godley table, and the original a
 
         // check that the Godley table got updated
         CHECK_EQUAL("foobar",gi->table.cell(2,1));
-        CHECK_EQUAL("foobar",gi->table.cell(2,2));
+        CHECK_EQUAL(":foobar",gi->table.cell(2,2));
         CHECK_EQUAL("a",gi2->table.cell(2,1)); // local var, not target of rename
         CHECK_EQUAL(":foobar",gi2->table.cell(2,2));
 
