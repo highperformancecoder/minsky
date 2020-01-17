@@ -583,7 +583,7 @@ namespace minsky
                        if (!externalVarScope)
                          externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqFromName);
 
-                       if (varScope==externalVarScope ||  isGlobal(varScope) && isGlobal(externalVarScope))
+                       if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
                          // fix external variable references
                          g->table.rename(':'+uqFromName, ':'+uqNewName);
                        // GodleyIcon::update invalidates the iterator, so postpone update
