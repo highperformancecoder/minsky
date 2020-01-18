@@ -501,6 +501,9 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Copy selection" -command "minsky.copy"
     .wiring.context add command -label "Save selection as" -command saveSelection
     .wiring.context add command -label "Paste selection" -command pasteAt
+	if {[catch {clipboard get -type UTF8_STRING}]} {
+		.wiring.context entryconfigure end -state disabled
+	} 
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
