@@ -677,32 +677,37 @@ namespace minsky
 
   void Canvas::copyVars(const std::vector<VariablePtr>& v)
   {
-    auto group=model->addGroup(new Group);
-    setItemFocus(group);
-    float maxWidth=0, totalHeight=0;
+    float maxWidth=0, totalHeight=0, yCentre=0;
     vector<float> widths, heights;
-    for (auto i: v)
-      {
-        RenderVariable rv(*i);
-        widths.push_back(rv.width());
-        heights.push_back(rv.height());
-        maxWidth=max(maxWidth, widths.back());
-        totalHeight+=heights.back();
-      }
-    float y=group->y() - totalHeight;
-    for (size_t i=0; i<v.size(); ++i)
-      {
-        auto ni=v[i]->clone();
-        group->addItem(ni);
-        ni->rotation=0;
-        //ni->zoomFactor=group->zoomFactor;
-        ni->moveTo(group->x()+maxWidth - widths[i],
-                   y+heights[i]);
-        // variables need to refer to outer scope
-        if (ni->name()[0]!=':')
-          ni->name(':'+ni->name());
-        y+=2*heights[i];
-      }
+    // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
+    if (!v.empty()) {    
+	  selection.clear();	
+      for (auto i: v)
+        {
+          RenderVariable rv(*i);
+          widths.push_back(rv.width());
+          heights.push_back(rv.height());
+          maxWidth=max(maxWidth, widths.back());
+          totalHeight+=heights.back();
+        }
+      float y=v[0]->y() - totalHeight;
+      for (size_t i=0; i<v.size(); ++i)
+        {
+		  // Stock and flow variables on Godley icons should not be copied as groups. For ticket 1039	
+          ItemPtr ni(v[i]->clone());
+          (ni->variableCast())->rotation=0;
+          ni->moveTo(v[0]->x()+maxWidth-v[i]->zoomFactor()*widths[i],
+                     y+heights[i]);
+          // variables need to refer to outer scope
+          if ((ni->variableCast())->name()[0]!=':')
+            (ni->variableCast())->name(':'+(ni->variableCast())->name());
+          y+=2*v[i]->zoomFactor()*heights[i];
+          selection.insertItem(model->addItem(ni));		 
+        }
+        // Item focus put on one of the copied vars that are still in selection. For ticket 1039
+        if (!selection.empty()) setItemFocus(selection.items[0]);
+        else setItemFocus(nullptr);  
+    } else throw error("no flow or stock variables to copy");    
   }
 
   void Canvas::handleArrows(int dir, float x, float y, bool modifier)

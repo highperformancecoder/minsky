@@ -776,32 +776,33 @@ SUITE(Canvas)
         godley->table.cell(2,2)="y";
         godley->update();
 
-        
         unsigned originalNumItems=model->numItems();
-        unsigned originalNumGroups=model->numGroups();
         copyAllFlowVars();
         CHECK_EQUAL(originalNumItems+godley->flowVars().size(),model->numItems());
-        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
-        auto newG=model->groups.back();
-        CHECK_EQUAL(godley->flowVars().size(), newG->items.size());
-        // assume the copied items are done in order
-        for (size_t i=0; i<godley->flowVars().size(); ++i)
-          CHECK_EQUAL(godley->flowVars()[i]->valueId(),
-                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
-
-        originalNumItems=model->numItems();
-        originalNumGroups=model->numGroups();
+        // Check that the number of items in selection after copyAllFlowVars() is equal to the number of flowVars attached to the Godley Icon. For ticket 1039.
+        CHECK_EQUAL(godley->flowVars().size(),selection.items.size());
         
+        //Check that there are two copies of the flowVars orginally attached to the Godley Icon. For ticket 1039.
+        map<string,int> idCnt;
+        for (auto& i: model->items)
+          if (auto v=i->variableCast())
+             idCnt[v->valueId()]++;
+        for (auto v: godley->flowVars())
+        CHECK_EQUAL(2, idCnt[v->valueId()]);                
+        
+        originalNumItems=model->numItems();
         copyAllStockVars();
         CHECK_EQUAL(originalNumItems+godley->stockVars().size(),model->numItems());
-        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
-        newG=model->groups.back();
-        CHECK_EQUAL(godley->stockVars().size(), newG->items.size());
-        // assume the copied items are done in order
-        for (size_t i=0; i<godley->stockVars().size(); ++i)
-          CHECK_EQUAL(godley->stockVars()[i]->valueId(),
-                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
-
+        // Check that the number of items in selection after copyAllStockVars() is equal to the number of stockVars attached to the Godley Icon. For ticket 1039.
+        CHECK_EQUAL(godley->stockVars().size(),selection.items.size());     
+        
+        //Check that there are two copies of the stockVars orginally attached to the Godley Icon. For ticket 1039.
+        idCnt.clear();
+        for (auto& i: model->items)
+          if (auto v=i->variableCast())
+             if (v->isStock()) idCnt[v->valueId()]++;
+        for (auto v: godley->stockVars())
+        CHECK_EQUAL(2, idCnt[v->valueId()]);    
       }
 
     TEST_FIXTURE(TestFixture,handleArrows)
