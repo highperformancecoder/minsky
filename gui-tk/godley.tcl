@@ -124,9 +124,11 @@ proc openGodley {id} {
 }
 
 proc toggleGodleyPaste id {
-	if {[catch {clipboard get -type UTF8_STRING}]} {
+    if {[catch {clipboard get -type UTF8_STRING}]} {
 	.$id.menubar.edit entryconfigure end -state disabled
-	}
+    } else {
+	.$id.menubar.edit entryconfigure end -state normal
+    }        
 }
 
 proc zoomOut id {
