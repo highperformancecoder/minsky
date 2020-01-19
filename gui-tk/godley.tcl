@@ -124,7 +124,7 @@ proc openGodley {id} {
 }
 
 proc toggleGodleyPaste id {
-    if {[catch {clipboard get -type UTF8_STRING}]} {
+    if {[getClipboard]==""} {
 	.$id.menubar.edit entryconfigure end -state disabled
     } else {
 	.$id.menubar.edit entryconfigure end -state normal
@@ -247,10 +247,10 @@ proc godleyContext {id x y X Y} {
     }
     if {($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
         .$id.context add command -label "Paste" -command "$id.paste"
-        if {[catch {clipboard get -type UTF8_STRING}]} {
-			.$id.context entryconfigure end -state disabled 
-           }
-	}
+        if {[getClipboard]==""} {
+            .$id.context entryconfigure end -state disabled 
+        }
+    }
     tk_popup .$id.context $X $Y
 }
 

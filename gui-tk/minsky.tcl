@@ -708,7 +708,7 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 
 proc togglePaste {} {
-    if {[catch {clipboard get -type UTF8_STRING}]} {
+    if {[getClipboard]==""} {
 	.menubar.edit entryconfigure "Paste" -state disabled
     } else {
 	.menubar.edit entryconfigure "Paste" -state normal
