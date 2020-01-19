@@ -32,12 +32,13 @@ namespace minsky
                differentiate, // with respect to time
                data, // an interpolated data item
                ravel, // Ravel™
-               // binary ops
-               add, subtract, multiply, divide, 
-               log, pow,
-               lt, le, eq, min, max, 
-               // underscores to avoid C++ keywords. Can be filtered at UI
+               // multiwire binary ops
+               add, subtract, multiply, divide, min, max, 
                and_, or_,
+               // single wire binops
+               log, pow,
+               lt, le, eq, 
+               // underscores to avoid C++ keywords. Can be filtered at UI
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,

@@ -196,6 +196,8 @@ namespace MathDAG
     VariableValue addEvalOps(EvalOpVector&, VariableValue* v=nullptr) override;
     void render(ecolab::cairo::Surface& surf) const override;
     NodePtr derivative(SystemOfEquations&) const override; 
+    /// adds a TensorEvalOp, returns true if successful
+    bool addTensorOp(EvalOpVector& ev);
   };
 
   typedef shared_ptr<VariableDAG> VariableDAGPtr;

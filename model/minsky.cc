@@ -1100,46 +1100,46 @@ namespace minsky
         fvInit[v.second.idx()]=true;
 
     for (auto& e: equations)
-      {
-        const EvalOpBase& eo=*e;
-        if (eo.out < 0|| (eo.numArgs()>0 && eo.in1.empty()) ||
-            (eo.numArgs() > 1 && eo.in2.empty()))
-          {
-            //cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
-            return false;
-          }
-        switch  (eo.numArgs())
-          {
-          case 0:
-            fvInit[eo.out]=true;
-            break;
-          case 1:
-            fvInit[eo.out]=!eo.flow1 || fvInit[eo.in1[0]];
-            break;
-          case 2:
-            // we need to check if an associated binary operator has
-            // an unwired input, and if so, treat its input as
-            // initialised, since it has already been initialised in
-            // getInputFromVar()
-            if (auto op=eo.state)
-              switch (op->type())
-                {
-                case OperationType::add: case OperationType::subtract:
-                case OperationType::multiply: case OperationType::divide:
-                  fvInit[eo.in1[0]] |= op->ports[1]->wires().empty();
-                  fvInit[eo.in2[0][0].idx] |= op->ports[3]->wires().empty();
-                  break;
-                default: break;
-                }
+      if (auto eo=dynamic_cast<const ScalarEvalOp*>(e.get()))
+        {
+          if (eo->out < 0|| (eo->numArgs()>0 && eo->in1.empty()) ||
+            (eo->numArgs() > 1 && eo->in2.empty()))
+            {
+              //cerr << "Incorrectly wired operation "<<opIdOfEvalOp(eo)<<endl;
+              return false;
+            }
+          switch  (eo->numArgs())
+            {
+            case 0:
+              fvInit[eo->out]=true;
+              break;
+            case 1:
+              fvInit[eo->out]=!eo->flow1 || fvInit[eo->in1[0]];
+              break;
+            case 2:
+              // we need to check if an associated binary operator has
+              // an unwired input, and if so, treat its input as
+              // initialised, since it has already been initialised in
+              // getInputFromVar()
+              if (auto op=eo->state)
+                switch (op->type())
+                  {
+                  case OperationType::add: case OperationType::subtract:
+                  case OperationType::multiply: case OperationType::divide:
+                    fvInit[eo->in1[0]] |= op->ports[1]->wires().empty();
+                    fvInit[eo->in2[0][0].idx] |= op->ports[3]->wires().empty();
+                    break;
+                  default: break;
+                  }
             
-            fvInit[eo.out]=
-              (!eo.flow1 ||  fvInit[eo.in1[0]]) && (!eo.flow2 ||  fvInit[eo.in2[0][0].idx]);
+              fvInit[eo->out]=
+                (!eo->flow1 ||  fvInit[eo->in1[0]]) && (!eo->flow2 ||  fvInit[eo->in2[0][0].idx]);
             break;
-          default: break;
+            default: break;
           }
 //        if (!fvInit[eo.out])
 //          cerr << "Operation "<<opIdOfEvalOp(eo)<<" out of order"<<endl;
-      }
+        }
     
     return all(fvInit);
   }

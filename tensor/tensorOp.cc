@@ -48,10 +48,10 @@ namespace civita
   double ReduceArguments::operator[](size_t i) const
   {
     if (args.empty()) return nan("");
-    double r=(*args[0])[i]; 
-    for (auto j=args.begin()+1; j!=args.end(); ++j)
+    double r=init; 
+    for (auto j: args)
       {
-        auto x=(*j)->rank()==0? (**j)[0]: (**j)[i];
+        auto x=j->rank()==0? (*j)[0]: (*j)[i];
         if (!isnan(x)) f(r, x);
       }
     return r;
@@ -68,8 +68,8 @@ namespace civita
   double ReduceAllOp::operator[](size_t) const
   {
     assert(arg->size()>0);
-    double r=(*arg)[0];
-    for (size_t i=1; i<arg->size(); ++i)
+    double r=init;
+    for (size_t i=0; i<arg->size(); ++i)
       {
         double x=(*arg)[i];
         if (!isnan(x)) f(r,x);
@@ -80,16 +80,21 @@ namespace civita
   void ReductionOp::setArgument(const TensorPtr& a, const std::string& dimName)
   {
     arg=a;
-    m_hypercube=arg->hypercube();
     dimension=std::numeric_limits<size_t>::max();
-    auto& xv=m_hypercube.xvectors;
-    for (auto i=xv.begin(); i!=xv.end(); ++i)
-      if (i->name==dimName)
-        dimension=i-xv.begin();
-    if (dimension<arg->rank())
-      m_hypercube.xvectors.erase(m_hypercube.xvectors.begin()+dimension);
+    if (arg)
+      {
+        m_hypercube=arg->hypercube();
+        auto& xv=m_hypercube.xvectors;
+        for (auto i=xv.begin(); i!=xv.end(); ++i)
+          if (i->name==dimName)
+            dimension=i-xv.begin();
+        if (dimension<arg->rank())
+          m_hypercube.xvectors.erase(m_hypercube.xvectors.begin()+dimension);
+        else
+          m_hypercube.xvectors.clear(); //reduce all, return scalar
+      }
     else
-      m_hypercube.xvectors.clear(); //reduce all, return scalar
+      m_hypercube.xvectors.clear();
   }
 
   
@@ -106,8 +111,8 @@ namespace civita
         auto quotRem=ldiv(i, stride); // quotient and remainder calc in one hit
         auto start=quotRem.quot*stride*argDims[dimension] + quotRem.rem;
         assert(stride*argDims[dimension]>0);
-        double r=arg->atHCIndex(start);
-        for (auto j=start+stride; j<start+stride*argDims[dimension]; ++j)
+        double r=init;
+        for (auto j=start; j<start+stride*argDims[dimension]; ++j)
           {
             double x=arg->atHCIndex(j);
             if (!isnan(x)) f(r,x);

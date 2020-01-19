@@ -45,6 +45,7 @@ namespace minsky
   struct TensorsFromPort
   {
     shared_ptr<EvalCommon> ev;
+    TensorsFromPort() {}
     TensorsFromPort(const shared_ptr<EvalCommon>& ev): ev(ev) {}
     
     /// returns vector of tensor ops for all wires attach to port. Port
@@ -60,14 +61,25 @@ namespace minsky
     using classdesc::Factory<civita::TensorOp, OperationType::Type>::create;
   public:
     TensorOpFactory();
-    std::shared_ptr<TensorOp> create(const OperationBase&, const TensorsFromPort&);
+    /// create a tensor representation of the expression rooted at
+    /// op. If expression doesn't contain any references variables,
+    /// then the \a tp parameter may be omitted.
+    std::shared_ptr<TensorOp> create(const OperationBase&, const TensorsFromPort& tp={});
   };    
   
   extern TensorOpFactory tensorOpFactory;
 
-
+  /// support for partial derivatives needed for implicit method
+  struct DerivativeMixin
+  {
+    /// partial derivative of tensor component \a ti wrt flow variable \a fi
+    virtual double dFlow(size_t ti, size_t fi) const=0;
+    /// partial derivative of tensor component \a ti wrt stock variable \a si
+    virtual double dStock(size_t ti, size_t si) const=0;
+  };
+  
   // a VariableValue that contains a references to overridable value vectors
-  struct TensorVarVal: public VariableValue
+  struct TensorVarVal: public VariableValue, public DerivativeMixin
   {
     /// reference to EvalOpVector owning this value, to extract
     /// flowVar and stockVarinfo
@@ -85,30 +97,28 @@ namespace minsky
       ev->update(ev->flowVars(),ev->stockVars());
       return *this;
     }
+    double dFlow(size_t ti, size_t fi) const override 
+    {return isFlowVar() && fi==ti+idx();}
+    double dStock(size_t ti, size_t si) const override 
+    {return !isFlowVar() && si==ti+idx();}
   };
 
 
   /// A helper to evaluate a variable value
-  class TensorEval: EvalOpBase
+  class TensorEval: public classdesc::Poly<TensorEval, EvalOpBase>
+  //                    public classdesc::PolyPack<TensorEval>
   {
     TensorVarVal result;
     TensorPtr rhs;
 
   public:
+    // not used, but required to make this a concrete type
+    Type type() const {assert(false); return OperationType::numOps;} 
     TensorEval(const VariableValue& v, const shared_ptr<EvalCommon>& ev);
-    
-    void eval(double fv[], const double sv[]) override {
-      if (rhs)
-        {
-          result.ev->update(fv, sv);
-          for (size_t i=0; i<rhs->size(); ++i)
-            result[i]=(*rhs)[i];
-        }
-    }
-    
-    void deriv(double df[], const double ds[],
-               const double sv[], const double fv[]) override
-    {throw error("derivative not yet implemented");}
+    TensorEval(const VariableValue& dest, const VariableValue& src);
+               
+    void eval(double fv[], const double sv[]) override;
+    void deriv(double df[],const double ds[],const double sv[],const double fv[]) override;
   };
 
 

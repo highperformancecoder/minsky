@@ -36,27 +36,121 @@ namespace minsky
 
   TensorOpFactory tensorOpFactory;
 
+  struct DerivativeNotDefined: public std::exception
+  {
+    const char* what() const throw() {return "Derivative not defined";}
+  };
+
   // Default template calls the regular legacy double function
-  template <OperationType::Type op> struct MinskyTensorOp: public civita::ElementWiseOp
+  template <OperationType::Type op> struct MinskyTensorOp: public civita::ElementWiseOp, public DerivativeMixin
   {
     EvalOp<op> eo;
     MinskyTensorOp(): ElementWiseOp([this](double x){return eo.evaluate(x);}) {}
+    void setArguments(const std::vector<TensorPtr>& a) override {if (!a.empty()) arg=a[0];}
+    double dFlow(size_t ti, size_t fi) const override {
+      auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
+      if (!deriv) throw DerivativeNotDefined();
+      if (double df=deriv->dFlow(ti,fi))
+        return eo.d1((*arg)[ti])*df;
+      return 0;
+    }
+    double dStock(size_t ti, size_t si) const override {
+      auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
+      if (!deriv) throw DerivativeNotDefined();
+      if (double ds=deriv->dStock(ti,si))
+        return eo.d1((*arg)[ti])*ds;
+      return 0;
+    }
   };
 
-  template <OperationType::Type op> struct TensorBinOp: civita::BinOp
+  template <OperationType::Type op> struct TensorBinOp: civita::BinOp, public DerivativeMixin
   {
     EvalOp<op> eo;
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
+    virtual void setArguments(const std::vector<TensorPtr>& a1, const std::vector<TensorPtr>& a2)
+    {
+      civita::BinOp::setArguments
+        (a1.empty()? TensorPtr(): a1[0],
+         a2.empty()?  TensorPtr(): a2[0]
+         );
+    }
+    double dFlow(size_t ti, size_t fi) const override {
+      auto deriv1=dynamic_cast<DerivativeMixin*>(arg1.get());
+      auto deriv2=dynamic_cast<DerivativeMixin*>(arg2.get());
+      if (!deriv1 || !deriv2) throw DerivativeNotDefined();
+      double r=0;
+      if (double df=deriv1->dFlow(ti,fi))
+        r += eo.d1((*arg1)[ti])*df;
+      if (double df=deriv2->dFlow(ti,fi))
+        r += eo.d2((*arg2)[ti])*df;
+      return r;
+    }
+    double dStock(size_t ti, size_t si) const override {
+      auto deriv1=dynamic_cast<DerivativeMixin*>(arg1.get());
+      auto deriv2=dynamic_cast<DerivativeMixin*>(arg2.get());
+      if (!deriv1 || !deriv2) throw DerivativeNotDefined();
+      double r=0;
+      if (double ds=deriv1->dStock(ti,si))
+        r += eo.d1((*arg1)[ti])*ds;
+      if (double ds=deriv2->dStock(ti,si))
+        r += eo.d2((*arg2)[ti])*ds;
+      return r;
+    }
+  };
+
+  template <OperationType::Type op> struct AccumArgs;
+
+  template <> struct AccumArgs<OperationType::add>: public civita::ReduceArguments
+  {
+    AccumArgs(): civita::ReduceArguments([](double& x,double y){x+=y;},0) {}
+  };
+  template <> struct AccumArgs<OperationType::subtract>: public AccumArgs<OperationType::add> {};
+
+  template <> struct AccumArgs<OperationType::multiply>: public civita::ReduceArguments
+  {
+    AccumArgs(): civita::ReduceArguments([](double& x,double y){x*=y;},1) {}
+  };
+  template <> struct AccumArgs<OperationType::divide>: public AccumArgs<OperationType::add> {};
+
+  template <> struct AccumArgs<OperationType::min>: public civita::ReduceArguments
+  {
+    AccumArgs(): civita::ReduceArguments([](double& x,double y){if (y<x) x=y;},std::numeric_limits<double>::max()) {}
+  };
+  template <> struct AccumArgs<OperationType::max>: public civita::ReduceArguments
+  {
+    AccumArgs(): civita::ReduceArguments([](double& x,double y){if (y>x) x=y;},-std::numeric_limits<double>::max()) {}
+  };
+
+  template <> struct AccumArgs<OperationType::and_>: public civita::ReduceArguments
+  {
+    AccumArgs(): civita::ReduceArguments([](double& x,double y){x*=(y>0.5);},1) {}
+  };
+  template <> struct AccumArgs<OperationType::or_>: public civita::ReduceArguments
+  {
+    AccumArgs(): civita::ReduceArguments([](double& x,double y){if (y>0.5) x=1;},0) {}
   };
 
   
-  template <minsky::OperationType::Type T>
-  struct ReductionTraits
+  
+  template <OperationType::Type op> struct MultiWireBinOp: public TensorBinOp<op>
   {
-    /// x op= y
-    static void accum(double& x, double y);
-    static const double init;
+    virtual void setArguments(const std::vector<TensorPtr>& a1,
+                              const std::vector<TensorPtr>& a2)
+    {
+      auto pa1=make_shared<AccumArgs<op>>(), pa2=make_shared<AccumArgs<op>>();
+      pa1->setArguments(a1); pa2->setArguments(a2);
+      civita::BinOp::setArguments(pa1, pa2);
+    }
   };
+
+  
+//  template <minsky::OperationType::Type T>
+//  struct ReductionTraits
+//  {
+//    /// x op= y
+//    static void accum(double& x, double y);
+//    static const double init;
+//  };
 
   template <OperationType::Type op> struct GeneralTensorOp;
                                                                                       
@@ -83,7 +177,8 @@ namespace minsky
 
   TensorOpFactory::TensorOpFactory()
   {
-    registerOps<TensorBinOp, OperationType::add, OperationType::copy>(*this);
+    registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this);
+    registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);
     registerOps<MinskyTensorOp, OperationType::copy, OperationType::sum>(*this);
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
   }
@@ -92,37 +187,37 @@ namespace minsky
   class GeneralTensorOp<OperationType::sum>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x+=y;}){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x+=y;},0){}
   };
   template <>
   class GeneralTensorOp<OperationType::product>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x*=y;}){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x*=y;},1){}
   };
   template <>
   class GeneralTensorOp<OperationType::infimum>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y<x) x=y;}){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y<x) x=y;},std::numeric_limits<double>::max()){}
    };
   template <>
   class GeneralTensorOp<OperationType::supremum>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y>x) x=y;}){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
    };
   template <>
   class GeneralTensorOp<OperationType::any>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y>0.5) x=1;}){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y>0.5) x=1;},0){}
    };
   template <>
   class GeneralTensorOp<OperationType::all>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x*=(y>0.5);}){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x*=(y>0.5);},1){}
    };
 
   template <>
@@ -306,29 +401,34 @@ namespace minsky
     if (!p.input()) return {};
     vector<TensorPtr> r;
     for (auto w: p.wires())
-      if (auto o=w->from()->item().operationCast())
-        r.push_back(tensorOpFactory.create(*o, *this));
-      else if (auto v=w->from()->item().variableCast())
-        r.push_back(make_shared<TensorVarVal>(*v->vValue(), ev));
-      else if (auto s=dynamic_cast<SwitchIcon*>(&w->from()->item()))
-        {
-          auto st=make_shared<SwitchTensor>();
-          vector<TensorPtr> args;
-          for (auto& p: s->ports)
-            {
-              if (p->wires().empty())
-                s->throw_error("Unwired switch");
-              args.push_back(tensorsFromPort(*p)[0]);
-            }
-        r.push_back(st);
-        }
-      else if (auto ravel=dynamic_cast<Ravel*>(&w->from()->item()))
-        {
-          auto rt=make_shared<RavelTensor>(*ravel);
-          auto args=tensorsFromPort(*ravel->ports[1]);
-          if (!args.empty()) rt->setArgument(args[0]);
-          r.push_back(rt);
-        }
+      {
+        Item& item=w->from()->item();
+        if (auto o=item.operationCast())
+          r.push_back(tensorOpFactory.create(*o, *this));
+        else if (auto v=item.variableCast())
+          r.push_back(make_shared<TensorVarVal>(*v->vValue(), ev));
+        else if (auto s=dynamic_cast<SwitchIcon*>(&item))
+          {
+            auto st=make_shared<SwitchTensor>();
+            vector<TensorPtr> args;
+            for (auto& p: s->ports)
+              {
+                if (p->wires().empty())
+                  s->throw_error("Unwired switch");
+                args.push_back(tensorsFromPort(*p)[0]);
+              }
+            r.push_back(st);
+          }
+        else if (auto ravel=dynamic_cast<Ravel*>(&item))
+          {
+            auto rt=make_shared<RavelTensor>(*ravel);
+            auto args=tensorsFromPort(*ravel->ports[1]);
+            if (!args.empty()) rt->setArgument(args[0]);
+            r.push_back(rt);
+          }
+        else
+          item.throw_error("Invalid item for TensorOp");
+      }
     return r;
   }
 
@@ -342,5 +442,46 @@ namespace minsky
           result.index(rhs->index());
         }
   }
+  
+  TensorEval::TensorEval(const VariableValue& dest, const VariableValue& src):
+    result(dest,make_shared<EvalCommon>())
+  {
+    Operation<OperationType::copy> tmp;
+    auto copy=tensorOpFactory.create(tmp);
+    copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
+    rhs=move(copy);
+  }
 
+  void TensorEval::eval(double fv[], const double sv[])
+  {
+    if (rhs)
+      {
+        result.ev->update(fv, sv);
+        for (size_t i=0; i<rhs->size(); ++i)
+          result[i]=(*rhs)[i];
+      }
+  }
+
+  
+  void TensorEval::deriv(double df[], const double ds[],
+                         const double sv[], const double fv[])
+  {
+    if (result.idx()<0) return;
+    if (rhs)
+      {
+        result.ev->update(const_cast<double*>(fv), sv);
+        if (auto deriv=dynamic_cast<DerivativeMixin*>(rhs.get()))
+          for (size_t i=0; i<rhs->size(); ++i)
+            {
+              df[result.idx()+i]=0;
+              for (size_t j=0; j<result.idx(); ++j)
+                df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
+              // skip self variables
+              for (size_t j=result.idx()+result.size(); j<ValueVector::flowVars.size(); ++j)
+                df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
+              for (size_t j=0; j<ValueVector::stockVars.size(); ++j)
+                df[result.idx()+i] += ds[j]*deriv->dStock(i,j);
+            }
+      }
+  }
 }

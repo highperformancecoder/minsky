@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "str.h"
 #include "flowCoef.h"
+#include "minskyTensorOps.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -87,6 +88,21 @@ namespace MathDAG
     return *result;
   }
 
+  bool VariableDAG::addTensorOp(EvalOpVector& ev)
+  {
+    if (rhs)
+      if (auto nodeOp=dynamic_cast<OperationDAGBase*>(rhs.payload))
+        if (auto op=nodeOp->state)
+          // call this just to determine rank!!
+          if (auto tensorOp=tensorOpFactory.create(*op))
+            if (tensorOp->rank()>0) // delegate tensor processing to Civita
+              {
+                ev.emplace_back(new TensorEval(*result,make_shared<EvalCommon>()));
+                return true;
+              }
+    return false;
+  }
+  
   VariableValue VariableDAG::addEvalOps
   (EvalOpVector& ev, VariableValue* r)
   {
@@ -97,12 +113,16 @@ namespace MathDAG
         if (ri==minsky::minsky().variableValues.end())
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValue(VariableType::tempFlow)).first;
         result=&ri->second;
-        if (result->idx()<0) result->allocValue();
-        if (rhs)
-          rhs->addEvalOps(ev, result);
+        if (!addTensorOp(ev)) // delegate to Civita if tensor RHS
+          { // everything scalar, revert to scalar processing
+            if (result->idx()<0) result->allocValue();
+            if (rhs)
+              rhs->addEvalOps(ev, result);
+          }
       }
-    if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
+    if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
+      ev.emplace_back(new TensorEval(*r,*result));
+    //      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;

@@ -59,6 +59,7 @@ namespace civita
   /// Arguments need to be conformal: at least one must be a scalar, or both arguments have the same shape
   class BinOp: public TensorOp
   {
+  protected:
     std::function<double(double,double)> f;
     TensorPtr arg1, arg2;
   public:
@@ -67,7 +68,8 @@ namespace civita
       f(f) {setArguments(arg1,arg2);}
     
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
-      if (arg1->rank()!=0 && arg2->rank()!=0 && arg1->hypercube().dims()==arg2->hypercube().dims())
+      arg1=a1; arg2=a2;
+      if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0 && arg1->hypercube().dims()==arg2->hypercube().dims())
         throw std::runtime_error("arguments not conformal");
     }
     
@@ -85,9 +87,9 @@ namespace civita
     std::vector<TensorPtr> args;
     std::vector<size_t> m_index;
     std::function<void(double&,double)> f;
-    
+    double init;
   public:
-    template <class F> ReduceArguments(F f): f(f) {}
+    template <class F> ReduceArguments(F f, double init): f(f), init(init) {}
     void setArguments(const std::vector<TensorPtr>& a) override;
     std::vector<size_t> index() const override {return m_index;}
     double operator[](size_t i) const override;
@@ -100,11 +102,12 @@ namespace civita
   struct ReduceAllOp: public TensorOp
   {
     std::function<void(double&,double)> f;
+    double init;
     std::shared_ptr<ITensor> arg;
     void setArgument(const TensorPtr& a,const std::string&) override {arg=a;}
 
     template <class F>
-    ReduceAllOp(F f, const std::shared_ptr<ITensor>& arg={}): f(f), arg(arg) {}
+    ReduceAllOp(F f, double init, const std::shared_ptr<ITensor>& arg={}): f(f),init(init), arg(arg) {}
 
     std::vector<size_t> index() const override {return {};}
     size_t size() const override {return 1;}
@@ -120,8 +123,8 @@ namespace civita
   public:
    
     template <class F>
-    ReductionOp(F f, const TensorPtr& arg={}, const std::string& dimName=""):
-      ReduceAllOp(f) {setArgument(arg,dimName);}
+    ReductionOp(F f, double init, const TensorPtr& arg={}, const std::string& dimName=""):
+      ReduceAllOp(f,init) {setArgument(arg,dimName);}
 
     void setArgument(const TensorPtr& a, const std::string& dimName={}) override;
     size_t size() const override {return hypercube().numElements();}

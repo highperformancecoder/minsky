@@ -44,7 +44,7 @@ namespace minsky
   using namespace std;
 
   struct EvalOpBase: public classdesc::PolyBase<minsky::OperationType::Type>,
-                     virtual public classdesc::PolyPackBase,
+                     //                     virtual public classdesc::PolyPackBase,
                      public OperationType
   {
     typedef OperationType::Type Type;
@@ -77,11 +77,6 @@ namespace minsky
     std::shared_ptr<OperationBase> state;
     virtual ~EvalOpBase() {}
 
-    /// operation this EvalOp refers to
-    virtual OperationType::Type type() const=0; 
-
-    /// number of arguments to this operation
-    virtual int numArgs() const =0;
     /**
        total derivate with respect to a variable, which is a function of the stock variables.
        @param sv - stock variables
@@ -109,6 +104,12 @@ namespace minsky
   /// Legacy EvalOp base interface
   struct ScalarEvalOp: public EvalOpBase
   {
+    /// operation this EvalOp refers to
+    virtual OperationType::Type type() const=0; 
+
+    /// number of arguments to this operation
+    virtual int numArgs() const =0;
+
     /// factory method
     static ScalarEvalOp* create(Type op/*=numOps*/);
 
@@ -131,8 +132,8 @@ namespace minsky
   
   /// represents the operation when evaluating the equations
   template <minsky::OperationType::Type T>
-  struct EvalOp: public classdesc::Poly<EvalOp<T>, ScalarEvalOp>,
-                 public classdesc::PolyPack<EvalOp<T> >
+  struct EvalOp: public classdesc::Poly<EvalOp<T>, ScalarEvalOp>//,
+  //             public classdesc::PolyPack<EvalOp<T> >
   {
     OperationType::Type type() const  override {return T;}
     int numArgs() const override {
@@ -145,11 +146,11 @@ namespace minsky
 
   // dummy tensor EvalOps to get this mess to link
   template <minsky::OperationType::Type T>
-  struct TensorEvalOp: public classdesc::Poly<TensorEvalOp<T>, EvalOpBase>,
-                 public classdesc::PolyPack<TensorEvalOp<T> >
+  struct TensorEvalOp: public classdesc::Poly<TensorEvalOp<T>, EvalOpBase>
+  //                 public classdesc::PolyPack<TensorEvalOp<T> >
   {
-    OperationType::Type type() const override {return T;} 
-    int numArgs() const override {return OperationTypeInfo::numArguments<T>();}
+//    OperationType::Type type() const override {return T;} 
+//    int numArgs() const override {return OperationTypeInfo::numArguments<T>();}
     void deriv(double df[], const double ds[], 
                const double sv[], const double fv[]) override {}
 
@@ -307,13 +308,13 @@ namespace minsky
 //               const double sv[], const double fv[]) override {}
 //  };
   
-  struct EvalOpPtr: public classdesc::shared_ptr<ScalarEvalOp>, 
+  struct EvalOpPtr: public classdesc::shared_ptr<EvalOpBase>, 
                     public OperationType
   {
     EvalOpPtr() {}
-    EvalOpPtr(ScalarEvalOp* e): classdesc::shared_ptr<ScalarEvalOp>(e) {}
+    EvalOpPtr(EvalOpBase* e): classdesc::shared_ptr<EvalOpBase>(e) {}
     EvalOpPtr(OperationType::Type op):
-      classdesc::shared_ptr<ScalarEvalOp>(ScalarEvalOp::create(op)) {}
+      classdesc::shared_ptr<EvalOpBase>(ScalarEvalOp::create(op)) {}
     EvalOpPtr(OperationType::Type op,
               const std::shared_ptr<OperationBase>& state,
               VariableValue& to,

@@ -575,8 +575,8 @@ SUITE(Minsky)
     // integrand function for following test
     double integrand(double x, void* params)
     {
-      EvalOpPtr& e=*static_cast<EvalOpPtr*>(params);
-      return e->d1(x,0);
+      auto& e=dynamic_cast<ScalarEvalOp&>(**static_cast<EvalOpPtr*>(params));
+      return e.d1(x,0);
     }
 
     // macro to make lines numbers work out
@@ -594,9 +594,11 @@ SUITE(Minsky)
     // adaptor class to test each derivative of binary ops
     struct FixedArg1: public ScalarEvalOp
     {
-      EvalOpPtr op;
+      shared_ptr<ScalarEvalOp> op;
       double arg1;
-      FixedArg1(OperationType::Type op, double arg): op(op), arg1(arg) {}
+      FixedArg1(OperationType::Type op, double arg):
+        op(dynamic_pointer_cast<ScalarEvalOp>(EvalOpPtr(op))), arg1(arg)
+      {}
 
       OperationType::Type type() const {return op->type();}
       FixedArg1* clone() const {return new FixedArg1(*this);}
@@ -614,9 +616,10 @@ SUITE(Minsky)
 
     struct FixedArg2: public ScalarEvalOp
     {
-      EvalOpPtr op;
+      shared_ptr<ScalarEvalOp> op;
       double arg2;
-      FixedArg2(OperationType::Type op, double arg): op(op), arg2(arg) {}
+      FixedArg2(OperationType::Type op, double arg):
+        op(dynamic_pointer_cast<ScalarEvalOp>(EvalOpPtr(op))), arg2(arg) {}
 
       OperationType::Type type() const {return op->type();}
       FixedArg2* clone() const {return new FixedArg2(*this);}
@@ -675,7 +678,7 @@ SUITE(Minsky)
             break;
           }
         cout << "checking "<<OperationType::typeName(op)<<endl;
-        EvalOpPtr evalOp=EvalOpPtr(OperationType::Type(op));
+        shared_ptr<ScalarEvalOp> evalOp=dynamic_pointer_cast<ScalarEvalOp>(EvalOpPtr(OperationType::Type(op)));
         if (evalOp->numArgs()==1)
           {
             testUnOp(evalOp, ws);
