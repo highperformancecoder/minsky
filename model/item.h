@@ -70,16 +70,16 @@ namespace minsky
       // extend each item by a portradius to solve ticket #903
       return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
     }
-    bool valid() const {return left!=right;}
+    bool valid() const {return right-left!=2*portRadius;}
     float width() const {return right-left;}
     float height() const {return bottom-top;}
   };
 
   class Item: virtual public NoteBase
   {
+	double m_rotation=0; ///< rotation of icon, in degrees  
   public:
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    double rotation=0; ///< rotation of icon, in degrees
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
@@ -94,13 +94,29 @@ namespace minsky
     /// mark item on canvas, then throw
     [[noreturn]] void throw_error(const std::string&) const;
 
+     /// @{ current rotation angle associated with this item, update bounding box if rotated
+    virtual double _rotation() const;  
+    virtual double _rotation(double);
+    ecolab::Accessor<double> rotation {
+      [this]() {return _rotation();},
+        [this](double x){return _rotation(x);}};
+    /// @} 
+    
+    
+    Item() {}
+    Item(const Item& x): m_rotation(x.m_rotation) {}
+    Item& operator=(const Item& x) {
+      m_rotation=x.m_rotation;
+      return *this;
+    }             
+
     /// indicates this is a group I/O variable
     virtual bool ioVar() const {return false;}
     /// current value of output port
     virtual double value() const {return 0;}
     
     /// rotate icon though 180∘
-    void flip() {rotation+=180;}
+    void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
 

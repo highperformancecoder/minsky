@@ -82,7 +82,7 @@ namespace
 
     // puts a small symbol to identify port
     // x, y = position of symbol
-    void drawPort(void (DrawBinOp::*symbol)() const, float x, float y, float rotation)  const
+    void drawPort(void (DrawBinOp::*symbol)() const, float x, float y, double rotation)  const
     {
       cairo_save(cairo);
       
@@ -140,8 +140,8 @@ namespace minsky
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
-    double angle=rotation * M_PI / 180.0;
-    double fm=std::fmod(rotation,360);
+    double angle=rotation() * M_PI / 180.0;
+    double fm=std::fmod(rotation(),360);
     bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
     double coupledIntTranslation=0;
     float z=zoomFactor();
@@ -164,7 +164,7 @@ namespace minsky
           pango.setFontSize(10*z);
           pango.setMarkup(latexToPango(c.description));
           pango.angle=angle + (textFlipped? M_PI: 0);
-          Rotate r(rotation+ (textFlipped? 180: 0),0,0);
+          Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
 
           // parameters of icon in userspace (unscaled) coordinates
           float w, h, hoffs;
@@ -196,7 +196,7 @@ namespace minsky
           // set the output ports coordinates
           // compute port coordinates relative to the icon's
           // point of reference
-          Rotate rr(rotation,0,0);
+          Rotate rr(rotation(),0,0);
 
           ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
           if (numPorts()>1)
@@ -219,10 +219,10 @@ namespace minsky
               //            iv.zoomFactor=zoomFactor;
               RenderVariable rv(iv,cairo);
               // we need to add some translation if the variable is bound
-              cairo_rotate(cairo,rotation*M_PI/180.0);
+              cairo_rotate(cairo,rotation()*M_PI/180.0);
               coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*z;
               //            cairo_translate(cairo, coupledIntTranslation, 0);
-              cairo_rotate(cairo,-rotation*M_PI/180.0);
+              cairo_rotate(cairo,-rotation()*M_PI/180.0);
             }
         cairo_save(cairo);
         cairo_scale(cairo,z,z);
@@ -275,8 +275,8 @@ namespace minsky
           cairo_translate(cairo,r+ivo+intVarWidth,0);
           // to get text to render correctly, we need to set
           // the var's rotation, then antirotate it
-          i->intVar->rotation=i->rotation;
-          cairo_rotate(cairo, -M_PI*i->rotation/180.0);
+          i->intVar->rotation(i->rotation());
+          cairo_rotate(cairo, -M_PI*i->rotation()/180.0);
           rv.draw();
           //i->getIntVar()->draw(cairo);
           cairo_restore(cairo);
@@ -647,7 +647,7 @@ namespace minsky
         else
           minsky().model->addWire(newWire);
         intVar->controller.reset();
-        intVar->rotation=rotation;
+        intVar->rotation(rotation());
      }
     else
       {
@@ -1055,32 +1055,32 @@ namespace minsky
   {
     DrawBinOp d(cairo);
     d.drawPlus();
-    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation);
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
+    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation());
+    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation());
   }
 
   template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);
     d.drawMinus();
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
-    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation);
+    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation());
+    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation());
   }
 
   template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);
     d.drawMultiply();
-    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation);
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
+    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation());
+    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation());
   }
 
   template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);
     d.drawDivide();
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
-    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation);
+    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation());
+    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation());
   }
 
   template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const

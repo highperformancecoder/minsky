@@ -321,7 +321,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     ItemLayout() {}
     template <class T> ItemLayout(int id, const T& item): 
       Layout(id), PositionLayout(id, item), VisibilityLayout(item),
-      rotation(item.rotation) {}
+      rotation(rotation) {}
   };
 
 
