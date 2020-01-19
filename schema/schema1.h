@@ -316,11 +316,12 @@ namespace schema1
 struct ItemLayout: public SPoly<ItemLayout, Layout, 
                                 Join<PositionLayout, VisibilityLayout> >
   {
-    double rotation=0;
-
+	double rotation=0;
     ItemLayout() {}
-    template <class T> ItemLayout(const T& item): rotation(item.rotation) {} 
-    template <class T> ItemLayout(int id, const T& item): Layout(id), PositionLayout(id, item), VisibilityLayout(item) {}
+    template <class T> ItemLayout(const T& item): rotation(item.rotation){} 
+    template <class T> 
+    ItemLayout(int id, const T& item): 
+      Layout(id), PositionLayout(id, item), VisibilityLayout(item) {}
   };
 
 
