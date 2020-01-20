@@ -93,13 +93,14 @@ namespace MathDAG
     if (rhs)
       if (auto nodeOp=dynamic_cast<OperationDAGBase*>(rhs.payload))
         if (auto op=nodeOp->state)
-          // call this just to determine rank!!
-          if (auto tensorOp=tensorOpFactory.create(*op))
-            if (tensorOp->rank()>0) // delegate tensor processing to Civita
-              {
-                ev.emplace_back(new TensorEval(*result,make_shared<EvalCommon>()));
-                return true;
-              }
+          if (op->type()!=OperationType::numOps)
+            // call this just to determine rank!!
+            if (auto tensorOp=tensorOpFactory.create(*op))
+              if (tensorOp->rank()>0) // delegate tensor processing to Civita
+                {
+                  ev.emplace_back(new TensorEval(*result,make_shared<EvalCommon>()));
+                  return true;
+                }
     return false;
   }
   

@@ -104,7 +104,10 @@ namespace minsky
     {creators.emplace_back(new Creator<T<OperationType::Type(I)>>);}
 
     /// create an object of type T<o> on the heap
-    Base* create(OperationType::Type o) {return creators[o]->create();}
+    Base* create(OperationType::Type o) const {
+      assert(o<creators.size());
+      return creators[o]->create();
+    }
 
     OperationFactory() {registerNext<OperationType::Type(0)>();}
   };
