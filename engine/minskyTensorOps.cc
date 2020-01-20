@@ -40,7 +40,7 @@ namespace minsky
   {
     const char* what() const throw() {return "Derivative not defined";}
   };
-
+  
   struct TimeOp: public TensorOp
   {
     size_t size() const override {return 1;}
@@ -392,17 +392,22 @@ namespace minsky
   std::shared_ptr<TensorOp> TensorOpFactory::create
   (const OperationBase& op, const TensorsFromPort& tfp)
   {
-    std::shared_ptr<TensorOp> r{create(op.type())};
-    switch (op.ports.size())
+    try
       {
-      case 2:
-        r->setArguments(tfp.tensorsFromPort(*op.ports[1]));
-        break;
-      case 3:
-        r->setArguments(tfp.tensorsFromPort(*op.ports[1]), tfp.tensorsFromPort(*op.ports[2]));
-        break;
+        std::shared_ptr<TensorOp> r{create(op.type())};
+        switch (op.ports.size())
+          {
+          case 2:
+            r->setArguments(tfp.tensorsFromPort(*op.ports[1]));
+            break;
+          case 3:
+            r->setArguments(tfp.tensorsFromPort(*op.ports[1]), tfp.tensorsFromPort(*op.ports[2]));
+            break;
+          }
+        return r;
       }
-    return r;
+    catch (const InvalidType&)
+      {return {};}
   }
 
   vector<TensorPtr> TensorsFromPort::tensorsFromPort(const Port& p) const
@@ -413,7 +418,22 @@ namespace minsky
       {
         Item& item=w->from()->item();
         if (auto o=item.operationCast())
-          r.push_back(tensorOpFactory.create(*o, *this));
+          {
+            if (o->type()==OperationType::differentiate)
+              {
+                // check if we're differentiating a scalar or tensor
+                // expression, and throw accordingly
+                auto rhs=tensorsFromPort(*o->ports[1]);
+                if (rhs.empty() || rhs[0]->size()==1)
+                  throw FallBackToScalar();
+                else
+                  // TODO - implement symbolic differentiation of
+                  // tensor operations
+                  throw std::runtime_error("Tensor derivative not implemented");
+              }
+            r.push_back(tensorOpFactory.create(*o, *this));
+            assert(r.back());
+          }
         else if (auto v=item.variableCast())
           r.push_back(make_shared<TensorVarVal>(*v->vValue(), ev));
         else if (auto s=dynamic_cast<SwitchIcon*>(&item))
@@ -467,7 +487,11 @@ namespace minsky
       {
         result.ev->update(fv, sv);
         for (size_t i=0; i<rhs->size(); ++i)
-          result[i]=(*rhs)[i];
+          {
+            result[i]=(*rhs)[i];
+            assert(fv[result.idx()+i]==(*rhs)[i]);
+            //            cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< (*rhs)[i] << " should be "<<fv[result.idx()]<<endl;
+          }
       }
   }
 

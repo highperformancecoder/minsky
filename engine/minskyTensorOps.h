@@ -26,6 +26,11 @@ namespace minsky
 {
   using namespace civita;
 
+  struct FallBackToScalar: public std::exception
+  {
+    const char* what() const throw() {return "Falling back to scalar processing";}
+  };
+
   /// A place to store common data shared between TensorVarVals within a give calculation
   class EvalCommon
   {
@@ -86,9 +91,12 @@ namespace minsky
     shared_ptr<EvalCommon> ev;
     /// 
     Timestamp timestamp() const {return ev->timestamp();}
-    using VariableValue::operator[];
     double operator[](size_t i) const override {
       return isFlowVar()? ev->flowVars()[idx()+i]: ev->stockVars()[idx()+i];
+    }
+    double& operator[](size_t i) override {
+      assert(isFlowVar());
+      return ev->flowVars()[idx()+i];
     }
     TensorVarVal(const VariableValue& vv, const shared_ptr<EvalCommon>& ev):
       VariableValue(vv), ev(ev) {}

@@ -93,14 +93,17 @@ namespace MathDAG
     if (rhs)
       if (auto nodeOp=dynamic_cast<OperationDAGBase*>(rhs.payload))
         if (auto op=nodeOp->state)
-          if (op->type()!=OperationType::numOps)
-            // call this just to determine rank!!
-            if (auto tensorOp=tensorOpFactory.create(*op))
-              if (tensorOp->rank()>0) // delegate tensor processing to Civita
-                {
-                  ev.emplace_back(new TensorEval(*result,make_shared<EvalCommon>()));
-                  return true;
-                }
+          try
+            {
+              // call this just to determine rank!!
+              if (auto tensorOp=tensorOpFactory.create(*op))
+                if (tensorOp->rank()>0) // delegate tensor processing to Civita
+                  {
+                    ev.emplace_back(new TensorEval(*result,make_shared<EvalCommon>()));
+                    return true;
+                  }
+            }
+          catch(const FallBackToScalar&) {/* fall back to scalar processing */}
     return false;
   }
   
@@ -123,7 +126,7 @@ namespace MathDAG
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(new TensorEval(*r,*result));
-    //      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
+    //ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
     return *result;
@@ -694,10 +697,7 @@ namespace MathDAG
         assert(op.ports.size()==2);
         NodePtr expr;
         if (op.ports[1]->wires().size()==0 || !(expr=getNodeFromWire(*op.ports[1]->wires()[0])))
-          {
-            minsky::minsky().displayErrorItem(op);          
-            throw error("derivative not wired");
-          }
+          op.throw_error("derivative not wired");
         try
           {
             return expressionCache.insert
