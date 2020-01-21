@@ -24,11 +24,13 @@
 #include "port.h"
 #include "intrusiveMap.h"
 //#include "RESTProcess_base.h"
+#include "classdesc_access.h"
 #include <TCL_obj_base.h>
 
 #include <cairo.h>
 #include <vector>
 #include <cairo_base.h>
+#include <accessor.h>
 
 namespace minsky 
 {
@@ -45,7 +47,7 @@ namespace minsky
 
   /// radius of circle marking ports at zoom=1
   constexpr float portRadius=6;
-  constexpr float portRadiusMult=2.0f*portRadius;  
+  constexpr float portRadiusMult=2.0f*portRadius;
 
   // ports are owned by their items, so it is not appropriate to
   // default copy the port references
@@ -59,30 +61,31 @@ namespace minsky
   class VariablePtr;
   class VariableBase;
 
-  class Item;
+  class ItemData;
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
-  {
+  { 
     float left=0, right=0, top, bottom;
   public:
-    void update(const Item& x);
+    void update(const ItemData& x);
     bool contains(float x, float y) const {
       // extend each item by a portradius to solve ticket #903
       return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
     }
-    bool valid() const {return left!=right;}
+    bool valid() const {return right!=left;}
     float width() const {return right-left;}
     float height() const {return bottom-top;}
   };
 
-  class Item: virtual public NoteBase
-  {
-  public:
+class ItemData: public NoteBase
+{
+protected:		
+   double m_rotation=0; ///< rotation of icon, in degrees
+public:
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    double rotation=0; ///< rotation of icon, in degrees
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     /// owning group of this item.
-    classdesc::Exclude<std::weak_ptr<Group>> group; 
+    classdesc::Exclude<std::weak_ptr<Group>> group;
     /// canvas bounding box.
     mutable BoundingBox bb;
     bool contains(float xx, float yy) {
@@ -90,119 +93,136 @@ namespace minsky
       float invZ=1/zoomFactor();
       return bb.contains((xx-x())*invZ, (yy-y())*invZ);
     }
-    
-    /// mark item on canvas, then throw
-    [[noreturn]] void throw_error(const std::string&) const;
 
-    /// indicates this is a group I/O variable
-    virtual bool ioVar() const {return false;}
-    /// current value of output port
-    virtual double value() const {return 0;}
-    
-    /// rotate icon though 180∘
-    void flip() {rotation+=180;}
+  /// mark item on canvas, then throw
+  [[noreturn]] void throw_error(const std::string&) const;
 
-    virtual std::string classType() const {return "Item";}
+  /// indicates this is a group I/O variable
+  virtual bool ioVar() const {return false;}
+  /// current value of output port
+  virtual double value() const {return 0;}
 
-    /// @{ replacement for dynamic_cast<VariableBase*>(this)
-    virtual const VariableBase* variableCast() const {return nullptr;}
-    virtual VariableBase* variableCast() {return nullptr;}
-    /// @}
+  double _rotation() const;  
+  double _rotation(double);      
+  
+  virtual ItemData* clone() const {
+    auto r=new ItemData(*this);
+    r->group.reset();
+    return r;
+  }    
+  
+  /// rotate icon though 180∘
+  void flip() {_rotation(_rotation()+180);}
 
-    ItemPortVector ports;
-    float x() const; 
-    float y() const;
-    virtual float zoomFactor() const;
-    float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
-    float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
-    float left() const {return x()-0.5*zoomFactor()*width();}
-    float right() const {return x()+0.5*zoomFactor()*width();}
-    float top() const {return y()+0.5*zoomFactor()*height();}
-    float bottom() const {return y()-0.5*zoomFactor()*height();}
+  virtual std::string classType() const {return "Item";}
 
-    virtual void resize(const LassoBox&) {}
+  /// @{ replacement for dynamic_cast<VariableBase*>(this)
+  virtual const VariableBase* variableCast() const {return nullptr;}
+  virtual VariableBase* variableCast() {return nullptr;}
+  /// @}
 
-    /// delete all attached wires
-    virtual void deleteAttachedWires();
-    /// remove all controlled items from their group
-    virtual void removeControlledItems() const {}
-    
-    virtual Item* clone() const {
-      auto r=new Item(*this);
-      r->group.reset();
-      return r;
-    }
+  ItemPortVector ports;           
+  float x() const; 
+  float y() const;
+  virtual float zoomFactor() const;
+  float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
+  float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
+  float left() const {return x()-0.5*zoomFactor()*width();}
+  float right() const {return x()+0.5*zoomFactor()*width();}
+  float top() const {return y()+0.5*zoomFactor()*height();}
+  float bottom() const {return y()-0.5*zoomFactor()*height();}
 
-    /// whether this item is visible on the canvas. 
-    virtual bool visible() const;
+  virtual void resize(const LassoBox&) {}
 
-    void moveTo(float x, float y);
+  /// delete all attached wires
+  virtual void deleteAttachedWires();
+  /// remove all controlled items from their group
+  virtual void removeControlledItems() const {}
 
-    /// draw this item into a cairo context
-    virtual void draw(cairo_t* cairo) const;
-    /// draw into a dummy cairo context, for purposes of calculating
-    /// port positions
-    void dummyDraw() const;
+  /// whether this item is visible on the canvas. 
+  virtual bool visible() const;
 
-    /// display tooltip text, eg on mouseover
-    void displayTooltip(cairo_t*, const std::string&) const;
-    
-    /// update display after a step()
-    virtual void updateIcon(double t) {}
-    virtual ~Item() {}
+  void moveTo(float x, float y);
+  
+  virtual bool closestItem(float x, float y) const;
 
-    void drawPorts(cairo_t* cairo) const;
-    void drawSelected(cairo_t* cairo) const;
-    void drawResizeHandles(cairo_t* cairo) const;
-    
-    /// returns the clicktype given a mouse click at \a x, \a y.
-    virtual ClickType::Type clickType(float x, float y);
+  /// draw this item into a cairo context
+  virtual void draw(cairo_t* cairo) const;
+  /// draw into a dummy cairo context, for purposes of calculating
+  /// port positions
+  void dummyDraw() const;
 
-    /// returns closest output port to \a x,y
-    virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 
-    virtual std::shared_ptr<Port> closestInPort(float x, float y) const;
+  /// display tooltip text, eg on mouseover
+  void displayTooltip(cairo_t*, const std::string&) const;
+  
+  /// update display after a step()
+  virtual void updateIcon(double t) {}  
 
-    /// respond to arrow keys.
-    /// @param dir = -1/1 if left/down, right/up pressed
-    /// @param modifier = true if modifier (eg shift/control) pressed
-    /// @return true if state changed, and item needs to be redrawn
-    virtual bool handleArrows(int dir, bool modifier=false) {return false;}
-    
+  void drawPorts(cairo_t* cairo) const;
+  void drawSelected(cairo_t* cairo) const;
+  void drawResizeHandles(cairo_t* cairo) const;
+  
+  /// returns the clicktype given a mouse click at \a x, \a y.
+  virtual ClickType::Type clickType(float x, float y);
+
+  /// returns closest output port to \a x,y
+  virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 
+  virtual std::shared_ptr<Port> closestInPort(float x, float y) const;
+
+  /// respond to arrow keys.
+  /// @param dir = -1/1 if left/down, right/up pressed
+  /// @param modifier = true if modifier (eg shift/control) pressed
+  /// @return true if state changed, and item needs to be redrawn
+  virtual bool handleArrows(int dir, bool modifier=false) {return false;}
     /// returns the variable if point (x,y) is within a
-    /// visible variable icon, null otherwise.
-    virtual std::shared_ptr<Item> select(float x, float y) const;
-    virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
-    {::TCL_obj(t,d,*this);}
-    /// returns a RESTProcessor appropriate for this item type
-//    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
-//    {
-//      return std::unique_ptr<classdesc::RESTProcessBase>
-//        (new classdesc::RESTProcessObject<Item>(*this));
-//    }
+  /// visible variable icon, null otherwise.
+  virtual std::shared_ptr<ItemData> select(float x, float y) const;
+  virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
+  {::TCL_obj(t,d,*this);}
+  /// returns a RESTProcessor appropriate for this item type
+    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
+    {
+      return std::unique_ptr<classdesc::RESTProcessBase>
+        (new classdesc::RESTProcessObject<ItemData>(*this));
+    }            
 
-    /// enable extended tooltip help message appropriate for mouse at (x,y)
-    virtual void displayDelayedTooltip(float x, float y) {}
-    virtual void disableDelayedTooltip() {}
-    /// compute the dimensional units
-    /// @param check - if true, then perform consistency checks
-    /// @throw if check=true and dimensions inconsistent
-    // all items feeding into other items must implement this
-    virtual Units units(bool check=false) const {
-      if (check) throw_error("units not implemented");
-      return {};
-    }
-    /// perform units consistency checks
-    Units checkUnits() const {return units(true);}
-    /// insert this items controlled or controller items are inserted
-    /// correctly into \a selection.
-    virtual void insertControlled(Selection& selection) {}
+  /// enable extended tooltip help message appropriate for mouse at (x,y)
+  virtual void displayDelayedTooltip(float x, float y) {}
+  virtual void disableDelayedTooltip() {}
+  /// compute the dimensional units
+  /// @param check - if true, then perform consistency checks
+  /// @throw if check=true and dimensions inconsistent
+  // all items feeding into other items must implement this
+  virtual Units units(bool check=false) const {
+    if (check) throw_error("units not implemented");
+    return {};
+  }
+  /// perform units consistency checks
+  Units checkUnits() const {return units(true);}
+  /// insert this items controlled or controller items are inserted
+  /// correctly into \a selection.
+  virtual void insertControlled(Selection& selection) {}
   };
+  
+class Item: virtual public ItemData
+{
+public:   
+  Item() {}
+  Item(const Item& x): ItemData(x) {}      
+   /// @{ current rotation angle associated with this item, update bounding box if rotated  
+  ecolab::Accessor<double> rotation {
+    [this]() {return _rotation();},
+    [this](double x){return _rotation(x);}};      
+  /// @}  
+  
+  virtual ~Item() {} 
+};         
 
-  typedef std::shared_ptr<Item> ItemPtr;
+  typedef std::shared_ptr<ItemData> ItemPtr;
   typedef std::vector<ItemPtr> Items;
   
   /** curiously recursive template pattern for generating overrides */
-  template <class T, class Base=Item>
+  template <class T, class Base=ItemData>
   struct ItemT: virtual public Base
   {
     std::string classType() const override {
@@ -233,14 +253,14 @@ namespace minsky
 #ifdef CLASSDESC
 // omit these, because weak/shared pointers cause problems, and its
 // not needed anyway
-#pragma omit pack minsky::Item
-#pragma omit unpack minsky::Item
+#pragma omit pack minsky::ItemData
+#pragma omit unpack minsky::ItemData
 #endif
 namespace classdesc_access
 {
-  template <> struct access_pack<minsky::Item>: 
+  template <> struct access_pack<minsky::ItemData>: 
     public classdesc::NullDescriptor<classdesc::pack_t> {};
-  template <> struct access_unpack<minsky::Item>: 
+  template <> struct access_unpack<minsky::ItemData>: 
     public classdesc::NullDescriptor<classdesc::unpack_t> {};
 
   // this implements polymorphic TCL_obj drilldown

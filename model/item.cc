@@ -36,7 +36,7 @@ using namespace std;
 namespace minsky
 {
 
-  void BoundingBox::update(const Item& x)
+  void BoundingBox::update(const ItemData& x)
   {
     ecolab::cairo::Surface surf
        (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
@@ -59,13 +59,25 @@ namespace minsky
     bottom=(t+h)*invZ;
   }
 
-  void Item::throw_error(const std::string& msg) const
+  void ItemData::throw_error(const std::string& msg) const
   {
     cminsky().displayErrorItem(*this);
     throw runtime_error(msg);
   }
+
+  double ItemData::_rotation() const
+  {
+    return m_rotation;
+  } 
   
-  float Item::x() const 
+  double ItemData::_rotation(double x)
+  {
+    m_rotation=x;  
+    bb.update(*this);    
+    return m_rotation;
+  }      
+  
+  float ItemData::x() const 
   {
     if (auto g=group.lock())
       return zoomFactor()*m_x+g->x();
@@ -73,7 +85,7 @@ namespace minsky
       return m_x;
   }
 
-  float Item::y() const 
+  float ItemData::y() const 
   {
     if (auto g=group.lock())
       return zoomFactor()*m_y+g->y();
@@ -81,7 +93,7 @@ namespace minsky
       return m_y;
   }
 
-  float Item::zoomFactor() const
+  float ItemData::zoomFactor() const
   {
     if (auto g=group.lock())
       return g->zoomFactor()*g->relZoom;
@@ -89,20 +101,20 @@ namespace minsky
       return 1;
   }
   
-  void Item::deleteAttachedWires()
+  void ItemData::deleteAttachedWires()
   {
     for (auto& p: ports)
       p->deleteWires();
   }
   
-  bool Item::visible() const 
+  bool ItemData::visible() const 
   {
     auto g=group.lock();
     return !g || g->displayContents();
   }
   
 
-  void Item::moveTo(float x, float y)
+  void ItemData::moveTo(float x, float y)
   {
     if (auto g=group.lock())
       {
@@ -117,8 +129,20 @@ namespace minsky
       }
     assert(abs(x-this->x())<1 && abs(y-this->y())<1);
   }
+  
+  bool ItemData::closestItem(float x, float y) const
+  {
+    if (auto g=group.lock())
+      {
+        float invZ=1/zoomFactor();
+        return abs((x-g->x())*invZ)<1 && abs((y-g->y())*invZ);
+      }
+    else
+      return (abs(x-this->x())<1 && abs(y-this->y())<1);
+   }
+  
 
-  ClickType::Type Item::clickType(float x, float y)
+  ClickType::Type ItemData::clickType(float x, float y)
   {
     // if selecting a contained variable, the delegate to that
     if (auto item=select(x,y))
@@ -127,7 +151,7 @@ namespace minsky
     // firstly, check whether a port has been selected
     for (auto& p: ports)
       {
-        if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
+        if (hypot((x-p->x()), (y-p->y())) < portRadius*zoomFactor())
           return ClickType::onPort;
       }
 
@@ -142,7 +166,7 @@ namespace minsky
       return ClickType::outside;
   }
 
-  void Item::drawPorts(cairo_t* cairo) const
+  void ItemData::drawPorts(cairo_t* cairo) const
   {
     cairo_save(cairo);
     cairo_new_path(cairo);
@@ -157,7 +181,7 @@ namespace minsky
     cairo_restore(cairo);
   }
 
-  void Item::drawSelected(cairo_t* cairo) const
+  void ItemData::drawSelected(cairo_t* cairo) const
   {
     // implemented by filling the clip region with a transparent grey
     cairo_save(cairo);
@@ -184,7 +208,7 @@ namespace minsky
     }
   }
   
-  void Item::drawResizeHandles(cairo_t* cairo) const
+  void ItemData::drawResizeHandles(cairo_t* cairo) const
   {
     {
       cairo::CairoSave cs(cairo);
@@ -203,12 +227,12 @@ namespace minsky
 
   
   // default is just to display the detailed text (ie a "note")
-  void Item::draw(cairo_t* cairo) const
+  void ItemData::draw(cairo_t* cairo) const
   {
-    Rotate r(rotation,0,0);
+    Rotate r(_rotation(),0,0);
     Pango pango(cairo);
     float w, h, z=zoomFactor();
-    pango.angle=rotation * M_PI / 180.0;
+    pango.angle=_rotation() * M_PI / 180.0;
     pango.setFontSize(12*z);
     pango.setMarkup(latexToPango(detailedText)); 
     // parameters of icon in userspace (unscaled) coordinates
@@ -228,13 +252,13 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  void Item::dummyDraw() const
+  void ItemData::dummyDraw() const
   {
     ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     draw(s.cairo());
   }
 
-  void Item::displayTooltip(cairo_t* cairo, const std::string& tooltip) const
+  void ItemData::displayTooltip(cairo_t* cairo, const std::string& tooltip) const
   {
     string unitstr=units().latexStr();
     if (!tooltip.empty() || !unitstr.empty())
@@ -257,14 +281,14 @@ namespace minsky
       }
   }
 
-  shared_ptr<Port> Item::closestOutPort(float x, float y) const 
+  shared_ptr<Port> ItemData::closestOutPort(float x, float y) const 
   {
     if (auto v=select(x,y))
       return v->closestOutPort(x,y);
     return ports.size()>0 && !ports[0]->input()? ports[0]: nullptr;
   }
   
-  shared_ptr<Port> Item::closestInPort(float x, float y) const
+  shared_ptr<Port> ItemData::closestInPort(float x, float y) const
   {
     if (auto v=select(x,y))
       return v->closestInPort(x,y);
@@ -277,7 +301,7 @@ namespace minsky
     return r;
   }
 
-  ItemPtr Item::select(float x, float y) const
+  ItemPtr ItemData::select(float x, float y) const
   {return ItemPtr();}
 
 
