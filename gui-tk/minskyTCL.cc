@@ -251,9 +251,14 @@ namespace minsky
       CloseClipboard();
       return r;
 #else
-      tclvar clipboardData("minsky.getClipboard.data","");
-      tclcmd()<<"catch {set minsky.getClipboard.data [clipboard get -type UTF8_STRING]}\n";
-      return (const char*)clipboardData;
+      try
+        {
+          return (tclcmd()<<"clipboard get -type UTF8_STRING\n").result;
+        }
+      catch (...)
+        {
+          return {};
+        }
 #endif
     }
 

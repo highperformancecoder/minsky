@@ -663,6 +663,7 @@ namespace minsky
         ports[0]=intVar->ports[0];
         intVar->mouseFocus=false; // prevent drawing of variable ports when coupled
       }
+    bb.update(*this); // adjust bounding box for coupled integral operation - see ticket #1055  
     return coupled();
   }
 
