@@ -330,10 +330,6 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
   {
     double displayZoom=1;
     GroupLayout(): displayZoom(1) {}
-    GroupLayout(int id, const minsky::Group& g):
-      Layout(id), PositionLayout(id, g), VisibilityLayout(g),
-      ItemLayout(id, g), SizeLayout(g), 
-      displayZoom(g.displayZoom) {}
     GroupLayout(int id, const schema0::GroupIcon& g):
       Layout(id), PositionLayout(id, g.x, g.y), ItemLayout(id, g), SizeLayout(g) {}
   };

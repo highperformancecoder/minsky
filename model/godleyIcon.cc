@@ -276,7 +276,7 @@ namespace minsky
       {
         // right justification
         RenderVariable rv(*v);
-        v->rotation=0;
+        v->rotation(0);
         v->bb.update(*v);
         v->moveTo(x-0.5*v->width()*zoomFactor,y);
         y+=2*rv.height()*zoomFactor;
@@ -288,7 +288,7 @@ namespace minsky
       {
         // top justification at bottom of icon
         RenderVariable rv(*v);
-        v->rotation=90;
+        v->rotation(90);
         v->bb.update(*v);
         v->moveTo(x,y+0.5*v->height()*zoomFactor);
         x+=2*rv.height()*zoomFactor;
