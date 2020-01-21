@@ -26,8 +26,8 @@
 #ifdef _WIN32
 #undef Realloc
 #include <windows.h>
-#endif
 #include <tkPlatDecls.h>
+#endif
 
 #if defined(__linux__)
 #include <sys/sysinfo.h>
