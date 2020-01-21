@@ -180,11 +180,11 @@ public:
   virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
   {::TCL_obj(t,d,*this);}
   /// returns a RESTProcessor appropriate for this item type
-    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
-    {
-      return std::unique_ptr<classdesc::RESTProcessBase>
-        (new classdesc::RESTProcessObject<ItemData>(*this));
-    }            
+//    virtual std::unique_ptr<classdesc::RESTProcessBase> restProcess()
+//    {
+//      return std::unique_ptr<classdesc::RESTProcessBase>
+//        (new classdesc::RESTProcessObject<ItemData>(*this));
+//    }            
 
   /// enable extended tooltip help message appropriate for mouse at (x,y)
   virtual void displayDelayedTooltip(float x, float y) {}
