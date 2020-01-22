@@ -46,8 +46,9 @@ proc afterMinskyStarted {} {uplevel #0 {
  canvas.mouseDown [expr \$x+0.5*\$w] [expr \$y+0.5*\$h]
  canvas.mouseUp [expr \$x+\$w]  [expr \$y+\$h]
 
- assert "abs([expr 1.5*\$w]-[minsky.canvas.item.width])<5"
- assert "abs([expr 1.5*\$h]-[minsky.canvas.item.height])<5"
+ # Resize handles larger on groups, see ticket 1023, so needed to adjust the factors below
+ assert "abs([expr 1.3*\$w]-[minsky.canvas.item.width])<5"
+ assert "abs([expr 1.4*\$h]-[minsky.canvas.item.height])<5"
  tcl_exit
 }}
 EOF
