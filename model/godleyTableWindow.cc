@@ -756,7 +756,7 @@ namespace minsky
   {
     x/=zoomFactor;
     int c=colX(x);
-    if (c>0)
+    if (c>0 && godleyIcon->table._assetClass(c)!=GodleyAssetClass::noAssetClass)
       {
         godleyIcon->table.cell(0,c)=name;
         minsky().importDuplicateColumn(godleyIcon->table, c);
@@ -882,7 +882,7 @@ namespace minsky
 
   void GodleyTableWindow::update()
   {
-    if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()))
+    if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()) && godleyIcon->table._assetClass(selectedCol)!=GodleyAssetClass::noAssetClass)
       {
         if (selectedRow==0)
           {
