@@ -369,35 +369,51 @@ namespace minsky
   
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;
 
+  static const size_t maxNumTensorElementsToPlot=10;
+  
   void PlotWidget::addPlotPt(double t)
   {
+    size_t extraPen=2*numLines+1;
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen].size()==1 && yvars[pen].idx()>=0)
-        {
-          double x,y;
-          switch (xvars.size())
-            {
-            case 0: // use t, when x variable not attached
-              x=t;
-              y=yvars[pen].value();
-              break;
-            case 1: // use the value of attached variable
-              assert(xvars[0].idx()>=0);
-              x=xvars[0].value();
-              y=yvars[pen].value();
-              break;
-            default:
-              if (pen < xvars.size() && xvars[pen].idx()>=0)
-                {
-                  x=xvars[pen].value();
-                  y=yvars[pen].value();
-                }
-              else
-                throw error("x input not wired for pen %d",(int)pen+1);
-              break;
-            }
-          addPt(pen, x, y);
-        }
+      if (pen<yvars.size() && yvars[pen].idx()>=0)
+        for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen].size()); ++i)
+          {
+            double x,y;
+            switch (xvars.size())
+              {
+              case 0: // use t, when x variable not attached
+                x=t;
+                y=yvars[pen][i];
+                break;
+              case 1: // use the value of attached variable
+                assert(xvars[0].idx()>=0);
+                if (xvars[0].size()>1)
+                  throw_error("Tensor valued x inputs not supported");
+                x=xvars[0][0];
+                y=yvars[pen][i];
+                break;
+              default:
+                if (pen < xvars.size() && xvars[pen].idx()>=0)
+                  {
+                    if (xvars[pen].size()>1)
+                      throw_error("Tensor valued x inputs not supported");
+                    x=xvars[pen][0];
+                    y=yvars[pen][i];
+                  }
+                else
+                  throw error("x input not wired for pen %d",(int)pen+1);
+                break;
+              }
+            size_t p=pen;
+            if (i>0)
+              {
+                // ensure next pen is a different colour
+                if (extraPen%(2*numLines)==pen%(2*numLines))
+                  extraPen++;
+                p+=extraPen++;
+              }
+            addPt(p, x, y);
+          }
     
     // throttle plot redraws
     static time_duration maxWait=milliseconds(1000);
@@ -427,7 +443,6 @@ namespace minsky
         }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
-      // For feature 47
       if (pen<yvars.size() && (yvars[pen].size()>1) && yvars[pen].idx()>=0)
         {
           auto& yv=yvars[pen];
@@ -490,7 +505,7 @@ namespace minsky
           
           // higher rank y objects treated as multiple y vectors to plot
           // For feature 47
-            for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.size()); j+=d[0])
+            for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv.size()); j+=d[0])
               {
                 setPen(extraPen, x, yv.begin()+j, d[0]);
                 if (pen>=numLines)

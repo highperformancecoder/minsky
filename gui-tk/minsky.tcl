@@ -1088,10 +1088,8 @@ proc simulate {} {
               set d [expr int(pow(10,$delay/4.0))]
               after $d {
                   if [running] {
-                      if {![running] && [reset_flag]} runstop else {
-                          step
-                          simulate
-                      }
+                      step
+                      simulate
                   }
               }
         }

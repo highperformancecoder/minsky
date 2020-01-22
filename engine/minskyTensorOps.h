@@ -123,6 +123,11 @@ namespace minsky
     // not used, but required to make this a concrete type
     Type type() const {assert(false); return OperationType::numOps;} 
     TensorEval(const VariableValue& v, const shared_ptr<EvalCommon>& ev);
+    TensorEval(const VariableValue& v, const shared_ptr<EvalCommon>& ev,
+               const TensorPtr& rhs): result(v, ev), rhs(rhs) {
+      assert(result.idx()>=0);
+      assert(result.size()==rhs->size());
+    } 
     TensorEval(const VariableValue& dest, const VariableValue& src);
                
     void eval(double fv[], const double sv[]) override;

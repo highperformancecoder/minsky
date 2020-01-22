@@ -88,22 +88,34 @@ namespace MathDAG
     return *result;
   }
 
+  namespace
+  {
+    bool addTensorOp(VariableValue& result, OperationDAGBase& nodeOp, EvalOpVector& ev)
+    {
+      if (auto op=nodeOp.state)
+        try
+          {
+            // call this just to determine rank!!
+            //              if (auto tensorOp=tensorOpFactory.create(*op))
+            //                if (tensorOp->rank()>0) // delegate tensor processing to Civita
+            {
+              auto ec=make_shared<EvalCommon>();
+              TensorPtr rhs=tensorOpFactory.create(*op,TensorsFromPort(ec));
+              result.hypercube(rhs->hypercube());
+              ev.emplace_back(new TensorEval(result, ec, rhs));
+              return true;
+            }
+          }
+        catch(const FallBackToScalar&) {/* fall back to scalar processing */}
+      return false;
+    }
+  }
+  
   bool VariableDAG::addTensorOp(EvalOpVector& ev)
   {
     if (rhs)
       if (auto nodeOp=dynamic_cast<OperationDAGBase*>(rhs.payload))
-        if (auto op=nodeOp->state)
-          try
-            {
-              // call this just to determine rank!!
-              if (auto tensorOp=tensorOpFactory.create(*op))
-                if (tensorOp->rank()>0) // delegate tensor processing to Civita
-                  {
-                    ev.emplace_back(new TensorEval(*result,make_shared<EvalCommon>()));
-                    return true;
-                  }
-            }
-          catch(const FallBackToScalar&) {/* fall back to scalar processing */}
+        return MathDAG::addTensorOp(*result,*nodeOp,ev);
     return false;
   }
   
@@ -300,7 +312,8 @@ namespace MathDAG
           result=r;
         else
           result=&tmpResult;
-
+        if (addTensorOp(*result, *this, ev))
+          return *result;
         
         
         // prepare argument expressions

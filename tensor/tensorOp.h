@@ -36,9 +36,11 @@ namespace civita
   public:
     virtual void setArgument(const TensorPtr&, const std::string& dimension={}) {notImpl();}
     virtual void setArguments(const TensorPtr&, const TensorPtr&) {notImpl();}
-    virtual void setArguments(const std::vector<TensorPtr>&) {notImpl();}
-    virtual void setArguments(const std::vector<TensorPtr>&,
-                              const std::vector<TensorPtr>&) {notImpl();}
+    virtual void setArguments(const std::vector<TensorPtr>& a) 
+    {if (a.size()) setArgument(a[0]);}
+    virtual void setArguments(const std::vector<TensorPtr>& a1,
+                              const std::vector<TensorPtr>& a2)
+    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0]);}
   };
 
   /// perform an operation elementwise over a tensor valued argument
@@ -48,7 +50,8 @@ namespace civita
     std::shared_ptr<ITensor> arg;
     template <class F>
     ElementWiseOp(F f, const std::shared_ptr<ITensor>& arg={}): f(f), arg(arg) {}
-    void setArgument(const TensorPtr& a,const std::string&) override {arg=a;}
+    void setArgument(const TensorPtr& a,const std::string& dum={}) override
+    {arg=a; hypercube(arg->hypercube());}
     std::vector<size_t> index() const override {return arg->index();}
     double operator[](size_t i) const override {return f((*arg)[i]);}
     size_t size() const override {return arg->size();}
@@ -69,13 +72,23 @@ namespace civita
     
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
       arg1=a1; arg2=a2;
-      if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0 && arg1->hypercube().dims()==arg2->hypercube().dims())
-        throw std::runtime_error("arguments not conformal");
+      if (arg1 && arg1->rank()!=0)
+        {
+          hypercube(arg1->hypercube());
+          if (arg2 && arg2->rank()!=0 && arg1->hypercube().dims()==arg2->hypercube().dims())
+            throw std::runtime_error("arguments not conformal");
+        }
+      else if (arg2)
+        hypercube(arg2->hypercube());
     }
-    
+
+    // TODO merge indices
     std::vector<size_t> index() const override {return {};}
-    double operator[](size_t i) const override
-    {return f(arg1->atHCIndex(i),arg2->atHCIndex(i));}
+    double operator[](size_t i) const override {
+      // scalars are broadcast
+      return f(arg1->rank()? arg1->atHCIndex(i): arg1->atHCIndex(0),
+               arg2->rank()? arg2->atHCIndex(i): arg2->atHCIndex(0));
+    }
     size_t size() const override {return arg1->size();}
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}

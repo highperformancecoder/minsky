@@ -669,7 +669,7 @@ namespace minsky
         flags |= reset_needed;
         if (RKThreadRunning) return;
       }
-    running=false;
+
     canvas.itemIndicator=false;
     BusyCursor busy(*this);
     EvalOpBase::t=t=t0;
@@ -688,7 +688,7 @@ namespace minsky
           ode.reset(new RKdata(this)); // set up GSL ODE routines
       }
 
-    flags &= ~reset_needed;
+      
     // update flow variable
     evalEquations();
     
@@ -700,7 +700,8 @@ namespace minsky
            {
              p->clear();
              p->updateIcon(t);
-             p->addConstantCurves();
+             if (!running)
+               p->addConstantCurves();
              p->redraw();
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
@@ -708,6 +709,13 @@ namespace minsky
              r->loadDataCubeFromVariable(r->ports[1]->getVariableValue());
          return false;
        });
+
+    if (running)
+      flags &= ~reset_needed; // clear reset flag
+    else
+      flags |= reset_needed; // enforce another reset at simulation start
+    running=false;
+
     canvas.requestRedraw();
   }
 
@@ -839,22 +847,22 @@ namespace minsky
     for (size_t i=0; i<equations.size(); ++i)
       equations[i]->eval(&flow[0], vars);
 
-    // then create the result using the Godley table
-    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
-    evalGodley.eval(result, &flow[0]);
-
-    // integrations are kind of a copy
-    for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
-      {
-        if (i->input.idx()<0)
-          {
-            if (i->operation)
-              displayErrorItem(*i->operation);
-            throw error("integral not wired");
-          }
-        result[i->stock.idx()] = reverseFactor *
-          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
-      }
+//    // then create the result using the Godley table
+//    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
+//    evalGodley.eval(result, &flow[0]);
+//
+//    // integrations are kind of a copy
+//    for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
+//      {
+//        if (i->input.idx()<0)
+//          {
+//            if (i->operation)
+//              displayErrorItem(*i->operation);
+//            throw error("integral not wired");
+//          }
+//        result[i->stock.idx()] = reverseFactor *
+//          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
+//      }
   }
 
   void Minsky::jacobian(Matrix& jac, double t, const double sv[])

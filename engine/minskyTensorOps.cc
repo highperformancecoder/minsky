@@ -54,7 +54,8 @@ namespace minsky
   {
     EvalOp<op> eo;
     MinskyTensorOp(): ElementWiseOp([this](double x){return eo.evaluate(x);}) {}
-    void setArguments(const std::vector<TensorPtr>& a) override {if (!a.empty()) arg=a[0];}
+    void setArguments(const std::vector<TensorPtr>& a) override
+    {if (!a.empty()) setArgument(a[0]);}
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
@@ -475,16 +476,21 @@ namespace minsky
   TensorEval::TensorEval(const VariableValue& dest, const VariableValue& src):
     result(dest,make_shared<EvalCommon>())
   {
+    result.index(src.index());
+    result.hypercube(src.hypercube());
     Operation<OperationType::copy> tmp;
     auto copy=tensorOpFactory.create(tmp);
     copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
     rhs=move(copy);
+    assert(result.size()==rhs->size());
   }
 
   void TensorEval::eval(double fv[], const double sv[])
   {
     if (rhs)
       {
+        assert(result.idx()>=0);
+        assert(result.size()==rhs->size());
         result.ev->update(fv, sv);
         for (size_t i=0; i<rhs->size(); ++i)
           {
