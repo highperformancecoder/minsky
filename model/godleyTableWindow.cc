@@ -756,6 +756,7 @@ namespace minsky
   {
     x/=zoomFactor;
     int c=colX(x);
+    // Prevents a noAssetClass column to be matched with an asset or liability column. See ticket 1118.
     if (c>0 && godleyIcon->table._assetClass(c)!=GodleyAssetClass::noAssetClass)
       {
         godleyIcon->table.cell(0,c)=name;
@@ -882,6 +883,7 @@ namespace minsky
 
   void GodleyTableWindow::update()
   {
+	// Prevents a noAssetClass column to be matched with an asset or liability column. See ticket 1118.  
     if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()) && godleyIcon->table._assetClass(selectedCol)!=GodleyAssetClass::noAssetClass)
       {
         if (selectedRow==0)
