@@ -513,7 +513,7 @@ namespace minsky
           for (size_t i=0; i<rhs->size(); ++i)
             {
               df[result.idx()+i]=0;
-              for (size_t j=0; j<result.idx(); ++j)
+              for (int j=0; j<result.idx(); ++j)
                 df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
               // skip self variables
               for (size_t j=result.idx()+result.size(); j<ValueVector::flowVars.size(); ++j)
