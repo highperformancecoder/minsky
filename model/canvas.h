@@ -101,6 +101,9 @@ namespace minsky
     ClickType::Type clickType;
     /// for drawing error indicators on the canvas
     bool itemIndicator=false;
+
+    /// indicates if focusFollowsMouse mode or clickToFocus is being used
+    bool focusFollowsMouse=false;
     
     /// lasso mode support
     struct LassoMode {enum type  {none, lasso, itemResize};};

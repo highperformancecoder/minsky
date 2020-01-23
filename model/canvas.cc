@@ -390,7 +390,8 @@ namespace minsky
       if (i->visible() && lasso.contains(*i))
         selection.wires.push_back(i);
 
-    minsky().copy();
+    if (focusFollowsMouse)
+      minsky().copy();
   }
 
   

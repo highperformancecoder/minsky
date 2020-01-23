@@ -203,8 +203,9 @@ wm title . "$progName: $fname"
 setBackgroundColour $backgroundColour
 proc tk_focusPrev {win} {return $win}
 proc tk_focusNext {win} {return $win}
+canvas.focusFollowsMouse $preferences(focusFollowsMouse)
 if {$preferences(focusFollowsMouse)} {
-	tk_focusFollowsMouse
+    tk_focusFollowsMouse
 # Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.	
 } else {
     set old [bind all <Enter>]
@@ -1389,8 +1390,9 @@ proc setPreferenceParms {} {
     } else {
         place forget .wiring.panopticon
     }
+    canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     if {$preferences(focusFollowsMouse)} {
-		tk_focusFollowsMouse
+        tk_focusFollowsMouse
 	# Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.
     } else {
        set old [bind all <Enter>]
