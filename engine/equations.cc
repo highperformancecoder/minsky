@@ -95,20 +95,20 @@ namespace MathDAG
       if (auto op=nodeOp.state)
         try
           {
-            // call this just to determine rank!!
-            //              if (auto tensorOp=tensorOpFactory.create(*op))
-            //                if (tensorOp->rank()>0) // delegate tensor processing to Civita
-            {
-              auto ec=make_shared<EvalCommon>();
-              TensorPtr rhs=tensorOpFactory.create(*op,TensorsFromPort(ec));
-              result.hypercube(rhs->hypercube());
-              ev.emplace_back(new TensorEval(result, ec, rhs));
-              return true;
-            }
+            auto ec=make_shared<EvalCommon>();
+            TensorPtr rhs=tensorOpFactory.create(*op,TensorsFromPort(ec));
+            result.hypercube(rhs->hypercube());
+            ev.emplace_back(new TensorEval(result, ec, rhs));
+            return true;
           }
         catch(const FallBackToScalar&) {/* fall back to scalar processing */}
       return false;
     }
+  }
+
+  bool VariableDAG::tensorEval() const
+  {
+    return cminsky().variableValues[valueId].rank()>0;
   }
   
   bool VariableDAG::addTensorOp(EvalOpVector& ev)
@@ -129,12 +129,13 @@ namespace MathDAG
         if (ri==minsky::minsky().variableValues.end())
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValue(VariableType::tempFlow)).first;
         result=&ri->second;
-        if (!addTensorOp(ev)) // delegate to Civita if tensor RHS
-          { // everything scalar, revert to scalar processing
-            if (result->idx()<0) result->allocValue();
-            if (rhs)
-              rhs->addEvalOps(ev, result);
-          }
+        if (rhs)
+          if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
+            { // everything scalar, revert to scalar processing
+              if (result->idx()<0) result->allocValue();
+              if (rhs)
+                rhs->addEvalOps(ev, result);
+            }
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(new TensorEval(*r,*result));
@@ -202,6 +203,24 @@ namespace MathDAG
     return cachedOrder=order;
   }
 
+  bool OperationDAGBase::tensorEval() const 
+  {
+    switch (OperationType::classify(type()))
+      {
+      case reduction: case scan: case tensor:
+        return true;
+      case general: case binop: case function:
+        for (auto& i: arguments)
+          for (auto j: i)
+            if (j && j->tensorEval()) return true;
+        return false;
+      default:
+        assert(false);// above cases should exhaust
+        return false;
+      }
+  }
+
+  
   void OperationDAGBase::checkArg(unsigned i, unsigned j) const
   {
     if (arguments.size()<=i || arguments[i].size()<=j || !arguments[i][j])
@@ -312,7 +331,7 @@ namespace MathDAG
           result=r;
         else
           result=&tmpResult;
-        if (addTensorOp(*result, *this, ev))
+        if (tensorEval() && addTensorOp(*result, *this, ev))
           return *result;
         
         

@@ -105,6 +105,8 @@ namespace MathDAG
     /// returns evaluation order in sequence of variable defintions
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
+    /// returns true if the evaluation of this involves tensor processing
+    virtual bool tensorEval() const=0;
     mutable int cachedOrder=-1;
     /// used within io streaming
     LaTeXManip latex() const {return LaTeXManip(*this);}
@@ -158,6 +160,7 @@ namespace MathDAG
     ConstantDAG(double value): value(str(value)) {}
     int BODMASlevel() const  override {return 0;}
     int order(unsigned maxOrder) const  override {return 0;}
+    bool tensorEval() const override {return false;}
     ostream& latex(ostream& o) const  override {return o<<value;}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
@@ -188,6 +191,7 @@ namespace MathDAG
       else
         return 0;
     }
+    bool tensorEval() const override;
     using Node::latex;
     using Node::matlab;
     using Node::addEvalOps;
@@ -221,6 +225,7 @@ namespace MathDAG
     /// factory method 
     static OperationDAGBase* create(Type type, const string& name="");
     int order(unsigned maxOrder) const override;
+    bool tensorEval() const override;
     VariableValue addEvalOps(EvalOpVector&, VariableValue*) override;
     void checkArg(unsigned i, unsigned j) const;
   };

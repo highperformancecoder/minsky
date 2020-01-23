@@ -847,22 +847,22 @@ namespace minsky
     for (size_t i=0; i<equations.size(); ++i)
       equations[i]->eval(&flow[0], vars);
 
-//    // then create the result using the Godley table
-//    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
-//    evalGodley.eval(result, &flow[0]);
-//
-//    // integrations are kind of a copy
-//    for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
-//      {
-//        if (i->input.idx()<0)
-//          {
-//            if (i->operation)
-//              displayErrorItem(*i->operation);
-//            throw error("integral not wired");
-//          }
-//        result[i->stock.idx()] = reverseFactor *
-//          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
-//      }
+    // then create the result using the Godley table
+    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
+    evalGodley.eval(result, &flow[0]);
+
+    // integrations are kind of a copy
+    for (vector<Integral>::iterator i=integrals.begin(); i<integrals.end(); ++i)
+      {
+        if (i->input.idx()<0)
+          {
+            if (i->operation)
+              displayErrorItem(*i->operation);
+            throw error("integral not wired");
+          }
+        result[i->stock.idx()] = reverseFactor *
+          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
+      }
   }
 
   void Minsky::jacobian(Matrix& jac, double t, const double sv[])

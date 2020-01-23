@@ -42,6 +42,7 @@ namespace civita
     virtual const Hypercube& hypercube(const Hypercube& hc) {return m_hypercube=hc;}
     virtual const Hypercube& hypercube(Hypercube&& hc) {return m_hypercube=std::move(hc);}
     size_t rank() const {return hypercube().rank();}
+    std::vector<unsigned> shape() const {return hypercube().dims();}
     
     /// the index vector - assumed to be ordered and unique
     virtual std::vector<size_t> index() const=0;

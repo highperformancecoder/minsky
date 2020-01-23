@@ -41,7 +41,7 @@ namespace civita
     /// dimensions of this variable value. dims.size() is the rank, a
     ///scalar variable has dims[0]=1, etc.
     std::vector<unsigned> dims() const;
-
+    
     /// number of elements in the hypercube, equaly to the product of
     /// dimensions
     size_t numElements() const;
