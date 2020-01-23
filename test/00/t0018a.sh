@@ -52,6 +52,7 @@ foreach name [variableValues.#keys] {
 }
 use_namespace minsky
 
+running 1
 for {set step 0} {\$step<\$nsteps} {incr step} {
   step
   puts -nonewline \$out "[t]"

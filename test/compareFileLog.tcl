@@ -27,6 +27,7 @@ foreach name [variableValues.#keys] {
 use_namespace minsky
 set ret 0
 
+running 1
 for {set step 0} {$step<10} {incr step} {
     step
     gets $log logbuf

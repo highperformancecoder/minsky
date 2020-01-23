@@ -47,6 +47,10 @@ proc afterMinskyStarted {} {
     findObject VarConstant
     set a [\$item.value]
     assert {[minsky.canvas.item.value]!=0}
+
+    # setting this flag prevents an extra reset occurring - used to
+    # distinguish between static plot updates and simulation
+    running 1 
     minsky.reset
     step
     step  
