@@ -24,6 +24,7 @@
 #ifndef GODLEYTABLEWINDOW_H
 #define GODLEYTABLEWINDOW_H
 #include "godleyIcon.h"
+#include "assetClass.h"
 #include <cairoSurfaceImage.h>
 #include <memory>
 #include <vector>
@@ -67,7 +68,7 @@ namespace minsky
       godleyIcon(godleyIcon), idx(idx) {}
   };
 
-  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums
+  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums, public GodleyAssetClass
   {
     
     CLASSDESC_ACCESS(GodleyTableWindow);
@@ -168,7 +169,8 @@ namespace minsky
     /// row at \a y in unzoomed coordinates
     int rowY(double y) const;
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
-    std::deque<GodleyTable::Data> history;
+    // Include asset class of each column in history at avoid spurious noAssetClass columns. For ticket 1118.
+    std::deque<std::pair<GodleyTable::Data,std::vector<AssetClass>>> history;
     ClickType clickType(double x, double y) const;
     void checkCell00(); ///<check if cell (0,0) is selected, and deselect if so
     /// handle delete or backspace. Cell assumed selected

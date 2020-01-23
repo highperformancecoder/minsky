@@ -466,7 +466,7 @@ namespace minsky
            {
              selectIdx=insertIdx = textIdx(x);
              auto& str=godleyIcon->table.cell(selectedRow,selectedCol);                         
-             savedText=godleyIcon->table.cell(selectedRow, selectedCol);
+             savedText=str;
            }
         else
           selectIdx=insertIdx=0;
@@ -756,8 +756,7 @@ namespace minsky
   {
     x/=zoomFactor;
     int c=colX(x);
-    // Prevents a noAssetClass column to be matched with an asset or liability column. See ticket 1118.
-    if (c>0 && godleyIcon->table._assetClass(c)!=GodleyAssetClass::noAssetClass)
+    if (c>0)
       {
         godleyIcon->table.cell(0,c)=name;
         minsky().importDuplicateColumn(godleyIcon->table, c);
@@ -826,8 +825,10 @@ namespace minsky
   void GodleyTableWindow::pushHistory()
   {
     while (history.size()>maxHistory) history.pop_front();
-    if (history.empty() || history.back()!=godleyIcon->table.getData())
-      history.push_back(godleyIcon->table.getData());
+    // Include asset class of each column in history at avoid spurious noAssetClass columns. For ticket 1118.
+    if (history.empty() || (history.back().first!=godleyIcon->table.getData() && history.back().second!=godleyIcon->table._assetClass())) {
+      history.push_back(make_pair(godleyIcon->table.getData(), godleyIcon->table._assetClass()));
+    }
     historyPtr=history.size();
   }
       
@@ -838,12 +839,16 @@ namespace minsky
     historyPtr-=changes;
     if (historyPtr > 0 && historyPtr <= history.size())
       {
-        auto& d=history[historyPtr-1];
+        auto& d=history[historyPtr-1].first;
+        // Include asset class of each column in history at avoid spurious noAssetClass columns. For ticket 1118.
+        auto& dd=history[historyPtr-1].second;
         if (d.empty()) return; // should not happen
         godleyIcon->table.resize(d.size(), d[0].size());
         for (size_t r=0; r<godleyIcon->table.rows(); ++r)
-          for (size_t c=0; c<godleyIcon->table.cols(); ++c)
-            godleyIcon->table.cell(r,c)=d[r][c];
+          for (size_t c=0; c<godleyIcon->table.cols(); ++c) {
+			godleyIcon->table.cell(r,c)=d[r][c];
+			godleyIcon->table._assetClass(c,dd[c]);    
+		}
         requestRedraw();
       }
   }
@@ -883,8 +888,7 @@ namespace minsky
 
   void GodleyTableWindow::update()
   {
-	// Prevents a noAssetClass column to be matched with an asset or liability column. See ticket 1118.  
-    if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()) && godleyIcon->table._assetClass(selectedCol)!=GodleyAssetClass::noAssetClass)
+    if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()))
       {
         if (selectedRow==0)
           {
