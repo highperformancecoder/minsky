@@ -697,6 +697,7 @@ namespace minsky
     description = "\\verb/"+
       ((p!=string::npos)? fileName.substr(p+1): fileName) + "/";
     //initXVector();
+    bb.update(*this); // adjust bounding box for data import operation - see ticket #1121 
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
