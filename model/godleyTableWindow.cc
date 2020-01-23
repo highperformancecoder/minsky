@@ -466,7 +466,7 @@ namespace minsky
            {
              selectIdx=insertIdx = textIdx(x);
              auto& str=godleyIcon->table.cell(selectedRow,selectedCol);                         
-             savedText=str;
+             savedText=godleyIcon->table.cell(selectedRow, selectedCol);
            }
         else
           selectIdx=insertIdx=0;
