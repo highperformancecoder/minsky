@@ -127,7 +127,7 @@ namespace minsky
 
     /// move row \a row down by \a n places (up if -ve)
     void moveRow(int row, int n);
-    void moveCol(int row, int n);
+    void moveCol(int col, int n);
 
     void dimension(unsigned rows, unsigned cols) {clear(); resize(rows,cols);}
 
