@@ -68,7 +68,7 @@ namespace minsky
       godleyIcon(godleyIcon), idx(idx) {}
   };
 
-  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums, public GodleyAssetClass
+  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums
   {
     
     CLASSDESC_ACCESS(GodleyTableWindow);
@@ -170,7 +170,8 @@ namespace minsky
     int rowY(double y) const;
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
     // Include asset class of each column in history at avoid spurious noAssetClass columns. For ticket 1118.
-    std::deque<std::pair<GodleyTable::Data,std::vector<AssetClass>>> history;
+    //std::deque<GodleyTable::Data> history;
+    std::deque<std::pair<GodleyTable::Data,std::vector<GodleyAssetClass::AssetClass>>> history;
     ClickType clickType(double x, double y) const;
     void checkCell00(); ///<check if cell (0,0) is selected, and deselect if so
     /// handle delete or backspace. Cell assumed selected

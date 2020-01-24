@@ -826,28 +826,28 @@ namespace minsky
   {
     while (history.size()>maxHistory) history.pop_front();
     // Include asset class of each column in history at avoid spurious noAssetClass columns. For ticket 1118.
-    if (history.empty() || (history.back().first!=godleyIcon->table.getData() && history.back().second!=godleyIcon->table._assetClass())) {
+    if (history.empty() || history.back().first!=godleyIcon->table.getData()) {
       history.push_back(make_pair(godleyIcon->table.getData(), godleyIcon->table._assetClass()));
     }
     historyPtr=history.size();
   }
       
   void GodleyTableWindow::undo(int changes)
-  {
+  { 
     if (historyPtr==history.size())
       pushHistory();
     historyPtr-=changes;
     if (historyPtr > 0 && historyPtr <= history.size())
       {
-        auto& d=history[historyPtr-1].first;
+        auto& d1=history[historyPtr-1].first;
+        auto& d2=history[historyPtr-1].second;
         // Include asset class of each column in history at avoid spurious noAssetClass columns. For ticket 1118.
-        auto& dd=history[historyPtr-1].second;
-        if (d.empty()) return; // should not happen
-        godleyIcon->table.resize(d.size(), d[0].size());
+        if (d1.empty() || d2.empty()) return; // should not happen
+        godleyIcon->table.resize(d1.size(), d1[0].size());
         for (size_t r=0; r<godleyIcon->table.rows(); ++r)
           for (size_t c=0; c<godleyIcon->table.cols(); ++c) {
-			godleyIcon->table.cell(r,c)=d[r][c];
-			godleyIcon->table._assetClass(c,dd[c]);    
+			godleyIcon->table.cell(r,c)=d1[r][c];
+			godleyIcon->table._assetClass(c,d2[c]);
 		}
         requestRedraw();
       }
