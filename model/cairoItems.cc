@@ -64,7 +64,7 @@ RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
 
         Pango pango(lcairo);
         pango.setFontSize(10);
-        pango.setMarkup(latexToPango(c.description));
+        pango.setMarkup(latexToPango(c.description()));
         w=0.5*pango.width()+2; 
         h=0.5*pango.height()+4;
         hoffs=pango.top();
