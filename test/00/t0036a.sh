@@ -38,6 +38,7 @@ proc afterMinskyStarted {} {uplevel #0 {
   openNamedFile $here/examples/GoodwinLinear02.mky
   assert {[findObject Group]}
   set item minsky.canvas.item
+  canvas.focusFollowsMouse 1
   canvas.mouseDown [expr [\$item.x]-0.55*[\$item.width]] [expr [\$item.y]+0.55*[\$item.height]]
   canvas.mouseUp [expr [\$item.x]+0.55*[\$item.width]] [expr [\$item.y]-0.55*[\$item.height]] 
   assert {[canvas.selection.groups.size]==1}

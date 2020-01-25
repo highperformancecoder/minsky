@@ -227,11 +227,16 @@ namespace minsky
 
   void Minsky::copy() const
   {
-    schema2::Minsky m(canvas.selection);
-    ostringstream os;
-    xml_pack_t packer(os, schemaURL);
-    xml_pack(packer, "Minsky", m);
-    putClipboard(os.str());
+    if (canvas.selection.empty())
+      putClipboard(""); // clear clipboard
+    else
+      {
+        schema2::Minsky m(canvas.selection);
+        ostringstream os;
+        xml_pack_t packer(os, schemaURL);
+        xml_pack(packer, "Minsky", m);
+        putClipboard(os.str());
+      }
   }
 
   VariablePtr Minsky::definingVar(const string& valueId) const 
