@@ -164,7 +164,7 @@ namespace minsky
     IntOp() {description("");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {group.reset();intVar.reset(); description(x.description());}
+      OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
     ~IntOp() {removeControlledItems();}
     
     const IntOp& operator=(const IntOp& x); 
@@ -212,7 +212,7 @@ namespace minsky
     DataOp() {}
     // ensure that copies create a new data operation
     DataOp(const DataOp& x): 
-      OperationBase(x){group.reset(); description(x.description());}
+      OperationBase(x){description(x.description());}
     ~DataOp() {}
     
     const DataOp& operator=(const DataOp& x); 
