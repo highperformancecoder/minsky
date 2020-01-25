@@ -209,7 +209,7 @@ namespace minsky
     friend struct SchemaHelper;
     string m_description;
   public:
-    DataOp() {description("");}
+    DataOp() {}
     // ensure that copies create a new data operation
     DataOp(const DataOp& x): 
       OperationBase(x){group.reset(); description(x.description());}

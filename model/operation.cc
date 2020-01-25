@@ -686,8 +686,8 @@ namespace minsky
    
   string DataOp::description_(const std::string& x)
   {
-    bb.update(*this); // adjust icon bounding box - see ticket #704
     m_description=x;
+    bb.update(*this); // adjust icon bounding box - see ticket #1121
     return m_description;
   }    
 
@@ -709,7 +709,6 @@ namespace minsky
     description("\\verb/"+
       ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
     //initXVector();
-    bb.update(*this); // adjust bounding box for data import operation - see ticket #1121 
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
