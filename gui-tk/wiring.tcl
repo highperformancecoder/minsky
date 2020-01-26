@@ -339,6 +339,7 @@ proc addConstantOrVariable {} {
     set varInput(Name) ""
     set varInput(Value) ""
     set varInput(Units) ""
+    set varInput(Rotation) [minsky.canvas.defaultRotation]
     set varInput(Type) $varType
     set "varInput(Short description)" ""
     set "varInput(Detailed description)" ""

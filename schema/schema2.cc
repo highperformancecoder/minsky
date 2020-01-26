@@ -442,7 +442,7 @@ namespace schema2
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
-    x.rotation=y.rotation;
+    x.rotation(y.rotation);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)

@@ -392,7 +392,7 @@ namespace minsky
                   VariableValue::uqName(cminsky().variableValues.newName(to_string(size_t(this))+":")));
     addItem(v,true);
     createdIOvariables.push_back(v);
-    v->rotation=rotation;
+    v->rotation(rotation());
     v->controller=self;
     return v;
   }
@@ -401,8 +401,8 @@ namespace minsky
   {
     float left, right, z=zoomFactor();
     margins(left,right);
-    float dx=(x-this->x())*cos(rotation*M_PI/180)-
-      (y-this->y())*sin(rotation*M_PI/180);
+    float dx=(x-this->x())*cos(rotation()*M_PI/180)-
+      (y-this->y())*sin(rotation()*M_PI/180);
     float w=0.5*width*z;
     if (w-right*edgeScale()<dx)
       return IORegion::output;
@@ -453,7 +453,6 @@ namespace minsky
       i->moveTo(i->x()-dx, i->y()-dy);
 
     moveTo(xx,yy);
-
   }
 
   namespace
@@ -762,7 +761,7 @@ namespace minsky
 
   void Group::draw(cairo_t* cairo) const
   {
-    double angle=rotation * M_PI / 180.0;
+    double angle=rotation() * M_PI / 180.0;
 
     // determine how big the group icon should be to allow
     // sufficient space around the side for the edge variables
@@ -830,7 +829,7 @@ namespace minsky
         cairo_text_extents(cairo,title.c_str(),&bbox);
         double w=0.5*bbox.width+2; 
         double h=0.5*bbox.height+5;
-        double fm=std::fmod(rotation,360);
+        double fm=std::fmod(rotation(),360);
 
         // if rotation is in 1st or 3rd quadrant, rotate as
         // normal, otherwise flip the text so it reads L->R
@@ -877,13 +876,13 @@ namespace minsky
     for (size_t i=0; i<vars.size(); ++i)
       {
         float y=i%2? top:bottom;
-        Rotate r(rotation,0,0);
+        Rotate r(rotation(),0,0);
         auto& v=vars[i];
         v->moveTo(r.x(x,y)+this->x(), r.y(x,y)+this->y());
-        v->rotation=rotation;
+        v->rotation(rotation());
         cairo::CairoSave cs(cairo);
         cairo_translate(cairo,x,y);
-        cairo_rotate(cairo,M_PI*rotation/180);
+        cairo_rotate(cairo,M_PI*rotation()/180);
         v->draw(cairo);
         if (i==0)
           {
@@ -903,7 +902,7 @@ namespace minsky
     left*=edgeScale();
     right*=edgeScale();
     cairo::CairoSave cs(cairo);
-    cairo_rotate(cairo,-M_PI*rotation/180);
+    cairo_rotate(cairo,-M_PI*rotation()/180);
     float z=zoomFactor();
     draw1edge(inVariables, cairo, -0.5*(z*width-left));
     draw1edge(outVariables, cairo, 0.5*(z*width-right));
@@ -925,7 +924,7 @@ namespace minsky
       }
     cairo_set_source_rgba(cairo,0,1,1,0.5);
     float w=0.5*z*width, h=0.5*z*height;
-    cairo_rotate(cairo,rotation*M_PI/180);
+    cairo_rotate(cairo,rotation()*M_PI/180);
     
     cairo_move_to(cairo,-w,-h);
     // create notch in input region
@@ -986,7 +985,7 @@ namespace minsky
   float Group::rotFactor() const
   {
     float rotFactor;
-    float ac=abs(cos(rotation*M_PI/180));
+    float ac=abs(cos(rotation()*M_PI/180));
     static const float invSqrt2=1/sqrt(2);
     if (ac>=invSqrt2) 
       rotFactor=1.15/ac; //use |1/cos(angle)| as rotation factor
@@ -1023,12 +1022,12 @@ namespace minsky
     for (auto& i: items)
       {
         i->moveTo(x()-i->m_x,i->y());
-        i->rotation+=180;
+        i->flip();
       }
     for (auto& i: groups)
       {
         i->moveTo(x()-i->m_x,i->y());
-        i->rotation+=180;
+        i->flip();
       }
   }
 

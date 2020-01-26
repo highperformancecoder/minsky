@@ -57,10 +57,10 @@ bool VariableBase::inputWired() const
 
 ClickType::Type VariableBase::clickType(float xx, float yy)
 {
-  double fm=std::fmod(rotation,360);
+  double fm=std::fmod(rotation(),360);
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
   float xxx=xx-x(), yyy=yy-y();
-  Rotate r(rotation+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
+  Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
   RenderVariable rv(*this);
   double z=zoomFactor();
   try
@@ -424,8 +424,8 @@ bool VariableBase::handleArrows(int dir,bool reset)
 
 void VariableBase::draw(cairo_t *cairo) const
 {
-  double angle=rotation * M_PI / 180.0;
-  double fm=std::fmod(rotation,360);
+  double angle=rotation() * M_PI / 180.0;
+  double fm=std::fmod(rotation(),360);
   float z=zoomFactor();
 
   RenderVariable rv(*this,cairo);
@@ -433,7 +433,7 @@ void VariableBase::draw(cairo_t *cairo) const
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-  Rotate r(rotation + (notflipped? 0: 180),0,0);
+  Rotate r(rotation() + (notflipped? 0: 180),0,0);
   rv.angle=angle+(notflipped? 0: M_PI);
 
   // parameters of icon in userspace (unscaled) coordinates

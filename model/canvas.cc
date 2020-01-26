@@ -232,7 +232,7 @@ namespace minsky
                 if (auto v=itemFocus->variableCast())
                   {
                     RenderVariable rv(*v);
-                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
+                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation()*M_PI/180));
                     v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
                                  rw + 0.5*(v->sliderMin+v->sliderMax));
                     // push History to prevent an unnecessary reset when
@@ -638,7 +638,7 @@ namespace minsky
             // if copied from a Godley table or I/O var, set orientation to default
             if (auto v=item->variableCast())
               if (v->controller.lock())
-                newItem->rotation=defaultRotation;
+                newItem->rotation(defaultRotation);
           }
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
@@ -696,7 +696,7 @@ namespace minsky
         {
 		  // Stock and flow variables on Godley icons should not be copied as groups. For ticket 1039	
           ItemPtr ni(v[i]->clone());
-          (ni->variableCast())->rotation=0;
+          (ni->variableCast())->rotation(0);
           ni->moveTo(v[0]->x()+maxWidth-v[i]->zoomFactor()*widths[i],
                      y+heights[i]);
           // variables need to refer to outer scope

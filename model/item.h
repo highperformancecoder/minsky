@@ -24,6 +24,7 @@
 #include "port.h"
 #include "intrusiveMap.h"
 //#include "RESTProcess_base.h"
+#include "tclAccessor.h"
 #include <TCL_obj_base.h>
 
 #include <cairo.h>
@@ -75,11 +76,13 @@ namespace minsky
     float height() const {return bottom-top;}
   };
 
-  class Item: virtual public NoteBase
+  class Item: virtual public NoteBase, public TCLAccessor<Item,double>
   {
+    double m_rotation=0; ///< rotation of icon, in degrees
   public:
+
+    Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    double rotation=0; ///< rotation of icon, in degrees
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
@@ -98,9 +101,16 @@ namespace minsky
     virtual bool ioVar() const {return false;}
     /// current value of output port
     virtual double value() const {return 0;}
+
+    double rotation() const {return m_rotation;}
+    double rotation(double r) {
+      m_rotation=r;
+      bb.update(*this);
+      return m_rotation;
+    }
     
     /// rotate icon though 180∘
-    void flip() {rotation+=180;}
+    void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
 

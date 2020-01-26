@@ -205,10 +205,10 @@ namespace minsky
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
   {
-    Rotate r(rotation,0,0);
+    Rotate r(rotation(),0,0);
     Pango pango(cairo);
     float w, h, z=zoomFactor();
-    pango.angle=rotation * M_PI / 180.0;
+    pango.angle=rotation() * M_PI / 180.0;
     pango.setFontSize(12*z);
     pango.setMarkup(latexToPango(detailedText)); 
     // parameters of icon in userspace (unscaled) coordinates
