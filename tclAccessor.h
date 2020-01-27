@@ -41,9 +41,9 @@ namespace minsky
     using Getter=V (T::*)() const;
     using Setter=V (T::*)(V);
     TCLAccessor(const std::string& name, Getter g, Setter s):
-      _self(static_cast<T&>(*this)), name(name), g(g), s(s) {}
+      name(name), _self(static_cast<T&>(*this)), g(g), s(s) {}
     TCLAccessor(const TCLAccessor& x):
-      _self(static_cast<T&>(*this)), name(x.name), g(x.g), s(x.s) {}
+      name(x.name), _self(static_cast<T&>(*this)), g(x.g), s(x.s) {}
     // assignment need do nothing, everything is set up for this
     TCLAccessor& operator=(const TCLAccessor& x) {return *this;}
     void proc(int argc, Tcl_Obj *const argv[]) {
