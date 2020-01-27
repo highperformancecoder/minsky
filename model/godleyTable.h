@@ -72,6 +72,13 @@ namespace minsky
         doubleEntryCompliant(other.doubleEntryCompliant),
         title(other.title)
     { }
+  
+    // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
+    bool operator==(const GodleyTable& other) const 
+    {
+		return (data==other.data && m_assetClass==other.m_assetClass &&
+		 doubleEntryCompliant==other.doubleEntryCompliant && title==other.title);
+    }    
 
     /// class of each column (used in DE compliant mode)
     const vector<AssetClass>& _assetClass() const {return m_assetClass;}
