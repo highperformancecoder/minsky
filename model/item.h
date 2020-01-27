@@ -93,6 +93,7 @@ namespace minsky
       float invZ=1/zoomFactor();
       return bb.contains((xx-x())*invZ, (yy-y())*invZ);
     }
+    void updateBoundingBox() {bb.update(*this);}
     
     /// mark item on canvas, then throw
     [[noreturn]] void throw_error(const std::string&) const;

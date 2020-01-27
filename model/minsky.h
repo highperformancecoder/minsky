@@ -211,7 +211,7 @@ namespace minsky
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky(): equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
-      model->height=model->width=std::numeric_limits<float>::max();
+      model->iconHeight=model->iconWidth=std::numeric_limits<float>::max();
       model->self=model;
     }
 

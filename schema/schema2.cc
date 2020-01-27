@@ -564,8 +564,9 @@ namespace schema2
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
-        if (y.width) x1->width=*y.width;
-        if (y.height) x1->height=*y.height;
+        if (y.width) x1->iconWidth=*y.width;
+        if (y.height) x1->iconHeight=*y.height;
+        x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
         if (y.bookmarks) x1->bookmarks=*y.bookmarks;
       }

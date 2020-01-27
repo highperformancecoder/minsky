@@ -298,14 +298,14 @@ SUITE(Group)
 
     TEST_FIXTURE(Group, checkAddIORegion)
       {
-        CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*width, y()));
-        CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*width, y()));
+        CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
+        CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
         VariablePtr inp(VariableType::flow,"input");
         VariablePtr outp(VariableType::flow,"output");
-        inp->moveTo(x()-0.5*width, y());
+        inp->moveTo(x()-0.5*iconWidth, y());
         addItem(inp);
         checkAddIORegion(inp);
-        outp->moveTo(x()+0.5*width, y());
+        outp->moveTo(x()+0.5*iconWidth, y());
         addItem(outp);
         checkAddIORegion(outp);
         CHECK_EQUAL(1,inVariables.size());
@@ -447,7 +447,7 @@ SUITE(Canvas)
 
       // test that groups can be selected
       CHECK(!group0->displayContents());
-      float w=0.5*group0->width+10, h=0.5*group0->height+10;
+      float w=0.5*group0->width()+10, h=0.5*group0->height()+10;
       x=group0->x()-w; y=group0->y()-h;
       // nw -> se selection
       canvas.mouseDown(x,y);
@@ -527,13 +527,13 @@ SUITE(Canvas)
         addGroup();
         auto& group=dynamic_cast<Group&>(*itemFocus);
         group.relZoom=0.5; // ensure displayContents is false
-        double w=group.width, h=group.height;
+        double w=group.iconWidth, h=group.iconHeight;
         double x=group.x(), y=group.y();
 
         mouseDown(x+0.5*w, y+0.5*h);
         mouseUp(x+w, y+h);
-        CHECK_CLOSE(1.5*w,group.width,1);
-        CHECK_CLOSE(1.5*h,group.height,1);
+        CHECK_CLOSE(1.5*w,group.iconWidth,1);
+        CHECK_CLOSE(1.5*h,group.iconHeight,1);
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)

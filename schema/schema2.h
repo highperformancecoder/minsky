@@ -190,7 +190,7 @@ namespace schema2
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.width), height(g.height), name(g.title), bookmarks(g.bookmarks) {} 
+      width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
 
     // schema1 importers
     Item(const schema1::Operation& it):

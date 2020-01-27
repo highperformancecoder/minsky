@@ -187,7 +187,7 @@ namespace minsky
   public:
     
     std::string title;
-    float width{100}, height{100}; // size of icon
+    float iconWidth{100}, iconHeight{100}; // size of icon
     std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 
