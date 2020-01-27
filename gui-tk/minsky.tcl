@@ -16,7 +16,6 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# disable tear-off menus
 
 set fname ""
 set workDir [pwd]
@@ -196,6 +195,7 @@ proc setBackgroundColour bgc {
     if [winfo exists .controls.runmode] {.controls.runmode configure -selectcolor $bgc}
 }
 
+# disable tear-off menus
 option add *Menu.tearOff 0
 wm deiconify .
 tk appname [file rootname [file tail $argv(0)]]
@@ -203,8 +203,9 @@ wm title . "$progName: $fname"
 setBackgroundColour $backgroundColour
 proc tk_focusPrev {win} {return $win}
 proc tk_focusNext {win} {return $win}
+canvas.focusFollowsMouse $preferences(focusFollowsMouse)
 if {$preferences(focusFollowsMouse)} {
-	tk_focusFollowsMouse
+    tk_focusFollowsMouse
 # Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.	
 } else {
     set old [bind all <Enter>]
@@ -305,7 +306,7 @@ if {[tk windowingsystem] == "aqua"} {
 menu .menubar.file
 .menubar add cascade -menu .menubar.file -label File -underline 0
 
-menu .menubar.edit
+menu .menubar.edit -postcommand togglePaste
 .menubar add cascade -menu .menubar.edit -label Edit -underline 0
 
 menu .menubar.bookmarks -postcommand generateBookmarkMenu
@@ -707,6 +708,14 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
 
+proc togglePaste {} {
+    if {[getClipboard]==""} {
+	.menubar.edit entryconfigure "Paste" -state disabled
+    } else {
+	.menubar.edit entryconfigure "Paste" -state normal
+    }
+}
+
 proc undo {delta} {
     # do not record changes to state from the undo command
     doPushHistory 0
@@ -781,7 +790,12 @@ proc dimFormatPopdown {comboBox type} {
         }
     }
 }
-    
+
+proc pasteAt {} {
+    minsky.paste
+    canvas.mouseMove [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+
 wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
@@ -802,8 +816,8 @@ bind . <$meta-x> {minsky.cut}
 bind . <$meta-X> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
 bind . <$meta-C> {minsky.copy}
-bind . <$meta-v> {minsky.paste}
-bind . <$meta-V> {minsky.paste}
+bind . <$meta-v> {pasteAt}
+bind . <$meta-V> {pasteAt}
 bind . <$meta-g> {minsky.createGroup}
 bind . <$meta-G> {minsky.createGroup}
 
@@ -844,7 +858,7 @@ proc textEntryPopup {win init okproc} {
     if {![winfo exists $win]} {
         toplevel $win
         entry $win.entry
-        pack $win.entry -side top
+        pack $win.entry -side top -ipadx 50
         buttonBar $win $okproc
     } else {
         wm deiconify $win
@@ -902,8 +916,8 @@ set helpTopics(.wiring.panopticon) Panopticon
 proc setScrollBars {} {
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
-            set x0 [expr (10000-[model.x])/20000.0]
-            set y0 [expr (10000-[model.y])/20000.0]
+            set x0 [expr (10000-[minsky.canvas.model.x])/20000.0]
+            set y0 [expr (10000-[minsky.canvas.model.y])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
         }
@@ -934,7 +948,7 @@ proc panCanvas {offsx offsy} {
     global preferences
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
-            model.moveTo $offsx $offsy
+            minsky.canvas.model.moveTo $offsx $offsy
             canvas.requestRedraw
             if $preferences(panopticon) {panopticon.requestRedraw}
         }
@@ -961,8 +975,8 @@ proc scrollCanvases {xyview args} {
     set wh [winfo height $win]
     switch $win {
         .wiring {
-            set x [model.x]
-            set y [model.y]
+            set x [minsky.canvas.model.x]
+            set y [minsky.canvas.model.y]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
@@ -1376,8 +1390,9 @@ proc setPreferenceParms {} {
     } else {
         place forget .wiring.panopticon
     }
+    canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     if {$preferences(focusFollowsMouse)} {
-		tk_focusFollowsMouse
+        tk_focusFollowsMouse
 	# Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.
     } else {
        set old [bind all <Enter>]

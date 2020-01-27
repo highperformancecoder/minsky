@@ -107,8 +107,14 @@ namespace minsky
             {
               // allow for the possibility that multiple names map to the same valueId
               if (!alreadyAdded.count(newVar->valueId()))
+                {
                   // add new variable
                   vars.push_back(newVar);
+                  alreadyAdded.insert(newVar->valueId());
+                }
+              else
+                if (myGroup)
+                  myGroup->removeItem(*newVar);
             }
           else
             {
@@ -227,9 +233,6 @@ namespace minsky
         for (size_t c=1; c<table.cols(); ++c)
           {
             string name=trimWS(table.cell(0,c));
-            // if local reference, then append namespace
-//            if (name.find(':')==string::npos)
-//              name=":"+name;
             auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
             VariableValue& v=vi->second;
@@ -407,6 +410,9 @@ namespace minsky
         fabs(dy-h) < portRadiusMult*z &&
         fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
       return ClickType::onResize;
+    // Make it possible to pull wires from variables attached to Godley icons. For ticket 940  
+    if (auto item=select(x,y))
+      return item->clickType(x,y);         
     if (dx < w && dy < h)
       return ClickType::onItem;
     else

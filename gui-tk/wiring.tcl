@@ -459,7 +459,8 @@ setGodleyIconResource $minskyHome/icons/bank.svg
 proc rightMouseGodley {x y X Y} {
     if [selectVar $x $y] {
         .wiring.context delete 0 end
-        .wiring.context add command -label "Copy" -command "canvas.copyItem"
+        .wiring.context add command -label "Copy" -command canvas.copyItem
+        .wiring.context add command -label "Rename all instances" -command renameVariableInstances
         .wiring.context post $X $Y
     } else {
         contextMenu $x $y $X $Y
@@ -467,8 +468,8 @@ proc rightMouseGodley {x y X Y} {
 }
 # pan mode
 bind .wiring.canvas <Shift-Button-1> {
-    set panOffsX [expr %x-[model.x]]
-    set panOffsY [expr %y-[model.y]]
+    set panOffsX [expr %x-[minsky.canvas.model.x]]
+    set panOffsY [expr %y-[minsky.canvas.model.y]]
 }
 bind .wiring.canvas <Shift-B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
@@ -499,7 +500,10 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Cut" -command cut
     .wiring.context add command -label "Copy selection" -command "minsky.copy"
     .wiring.context add command -label "Save selection as" -command saveSelection
-    .wiring.context add command -label "Paste selection" -command "minsky.paste"
+    .wiring.context add command -label "Paste selection" -command pasteAt
+    if {[getClipboard]==""} {
+        .wiring.context entryconfigure end -state disabled
+    } 
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
@@ -935,14 +939,13 @@ proc deiconifyEditVar {} {
 
         # initialise variable type when selected from combobox
         bind .wiring.editVar.entry10 <<ComboboxSelected>> {
-            getValue [valueId [.wiring.editVar.entry10 get]]
+            getValue [minsky.canvas.item.valueIdInCurrentScope [.wiring.editVar.entry10 get]]
             .wiring.editVar.entry20 set [value.type]
         }
         
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
             set item minsky.canvas.item
-            $item.retype $editVarInput(Type)
             $item.name $editVarInput(Name)
             $item.init $editVarInput(Initial Value)
             $item.setUnits $editVarInput(Units)
@@ -953,6 +956,8 @@ proc deiconifyEditVar {} {
             $item.sliderMin  $editVarInput(Slider Bounds: Min)
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
+            # retype invalidates $item, so perform this last
+            $item.retype $editVarInput(Type)
             makeVariablesConsistent
             catch reset
             closeEditWindow .wiring.editVar

@@ -91,7 +91,7 @@ namespace minsky
     
     /// reference to a controlling item - eg GodleyIcon, IntOp or a Group if an IOVar.
     classdesc::Exclude<std::weak_ptr<Item>> controller;
-    bool visible() const override {return !controller.lock() && Item::visible();}
+    bool visible() const override;
 
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}
@@ -118,6 +118,9 @@ namespace minsky
 
     /// string used to link to the VariableValue associated with this
     virtual std::string valueId() const;
+    /// returns valueId for \a nm. If nm is not qualified, this
+    /// variable's scope is used
+    std::string valueIdInCurrentScope(const std::string& nm) const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
     VariableValue* vValue() const;
     std::vector<unsigned> dims() const {

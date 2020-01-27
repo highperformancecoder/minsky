@@ -26,6 +26,7 @@
 #ifdef _WIN32
 #undef Realloc
 #include <windows.h>
+#include <tkPlatDecls.h>
 #endif
 
 #if defined(__linux__)
@@ -195,7 +196,7 @@ namespace minsky
       int status;
       wait(&status);
 #elif defined(_WIN32)
-      OpenClipboard(nullptr);
+      OpenClipboard(Tk_GetHWND(Tk_WindowId(Tk_MainWindow(interp()))));
       EmptyClipboard();
       HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, s.length()+1);
       LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
@@ -243,11 +244,21 @@ namespace minsky
       string r;
       OpenClipboard(nullptr);
       if (HANDLE h=GetClipboardData(CF_TEXT))
-        r=static_cast<const char*>(h);
+        {
+          r=static_cast<const char*>(GlobalLock(h));
+          GlobalUnlock(h);
+        }
       CloseClipboard();
       return r;
 #else
-      return (tclcmd()<<"clipboard get -type UTF8_STRING\n").result;
+      try
+        {
+          return (tclcmd()<<"clipboard get -type UTF8_STRING\n").result;
+        }
+      catch (...)
+        {
+          return {};
+        }
 #endif
     }
 

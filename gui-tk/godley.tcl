@@ -88,14 +88,14 @@ proc openGodley {id} {
         menu .$id.menubar.file
         .$id.menubar.file add command -label "Export" -command "exportGodley $id"
         
-        menu .$id.menubar.edit
+        menu .$id.menubar.edit -postcommand "toggleGodleyPaste $id"
         .$id configure -menu .$id.menubar
         .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
         .$id.menubar.edit add command -label Redo -command "$id.undo -1" -accelerator $meta_menu-Y
         .$id.menubar.edit add command -label Title -command "textEntryPopup .godleyTitle {[$id.godleyIcon.table.title]} {setGodleyTitleOK $id}"
         .$id.menubar.edit add command -label Cut -command "$id.cut" -accelerator $meta_menu-X
         .$id.menubar.edit add command -label Copy -command "$id.copy" -accelerator $meta_menu-C
-        .$id.menubar.edit add command -label Paste -command "$id.paste" -accelerator $meta_menu-V
+        .$id.menubar.edit add command -label Paste -command "$id.paste" -accelerator $meta_menu-V               
 
         menu .$id.menubar.view
         .$id.menubar.view add command -label "Zoom in" -command "zoomIn $id" -accelerator $meta_menu-+
@@ -121,6 +121,14 @@ proc openGodley {id} {
     }
     wm deiconify .$id
     raise .$id .
+}
+
+proc toggleGodleyPaste id {
+    if {[getClipboard]==""} {
+	.$id.menubar.edit entryconfigure end -state disabled
+    } else {
+	.$id.menubar.edit entryconfigure end -state normal
+    }        
 }
 
 proc zoomOut id {
@@ -237,8 +245,11 @@ proc godleyContext {id x y X Y} {
             .$id.context add command -label "Copy" -command "$id.copy"
         }
     }
-    if {![catch {clipboard get -type UTF8_STRING}]  && ($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
+    if {($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
         .$id.context add command -label "Paste" -command "$id.paste"
+        if {[getClipboard]==""} {
+            .$id.context entryconfigure end -state disabled 
+        }
     }
     tk_popup .$id.context $X $Y
 }

@@ -101,6 +101,9 @@ namespace minsky
     ClickType::Type clickType;
     /// for drawing error indicators on the canvas
     bool itemIndicator=false;
+
+    /// indicates if focusFollowsMouse mode or clickToFocus is being used
+    bool focusFollowsMouse=false;
     
     /// lasso mode support
     struct LassoMode {enum type  {none, lasso, itemResize};};
@@ -196,12 +199,12 @@ namespace minsky
     /// reinitialises canvas to the group located in item
     void openGroupInCanvas(const ItemPtr& item);
 
-    /// copy all flowVars of a GodleyIcon in \a item and leave them in a group
+    /// copy all flowVars of a GodleyIcon in \a item
     void copyAllFlowVars() {
       if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
         copyVars(g->flowVars());
     }
-    /// copy all stockVars of a GodleyIcon in \a item and leave them in a group
+    /// copy all stockVars of a GodleyIcon in \a item
     void copyAllStockVars(){
       if (auto g=dynamic_cast<GodleyIcon*>(item.get()))
         copyVars(g->stockVars());

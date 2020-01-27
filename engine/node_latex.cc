@@ -206,7 +206,7 @@ namespace MathDAG
           {
             checkArg(1,i);
             if (i>0) o<<"\\times ";
-            ParenIf p(o, i>0 && arguments[0][i]->BODMASlevel()>BODMASlevel());
+            ParenIf p(o, i>0 && arguments[1][i]->BODMASlevel()>BODMASlevel());
             o<<arguments[1][i]->latex();
           }
         o<<"}";

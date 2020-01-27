@@ -134,6 +134,11 @@ string VariableBase::valueId() const
   return VariableValue::valueId(group.lock(), m_name);
 }
 
+std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const
+{
+  return VariableValue::valueId(group.lock(), nm);
+}
+
 string VariableBase::_name()  const
 {
   if (m_name==":_") return "";
@@ -154,7 +159,7 @@ string VariableBase::_name(const std::string& name)
   // Ensure value of variable is preserved after rename. For ticket 1106.	
   auto tmpVV=vValue();  
   // ensure integral variables are not global when wired to an integral operation
-  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;  
+  m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
   ensureValueExists(tmpVV);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
@@ -358,6 +363,15 @@ void VariablePtr::retype(VariableBase::Type type)
       get()->ensureValueExists(nullptr);
     }
 }
+
+bool VariableBase::visible() const
+{
+  auto g=group.lock();
+  //toplevel i/o items always visible
+  if ((!g || !g->group.lock()) && g==controller.lock()) return true;
+  return !controller.lock() && Item::visible();
+}
+
 
 void VariableBase::sliderSet(double x)
 {

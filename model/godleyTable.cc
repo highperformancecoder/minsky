@@ -322,7 +322,7 @@ void GodleyTable::orderAssetClasses()
 
 void GodleyTable::rename(const std::string& from, const std::string& to)
 {
-  for (size_t r=1; r<rows(); ++r)   // Part of tickets 1053/1072. Fixes up disappearing column headings when whole columns are moved.
+  for (size_t r=0; r<rows(); ++r)   // Part of tickets 1053/1072. Fixes up disappearing column headings when whole columns are moved.
     for (size_t c=1; c<cols(); ++c)
       {
         FlowCoef fc(cell(r,c));

@@ -38,12 +38,12 @@ proc afterMinskyStarted {} {uplevel #0 {
   openNamedFile $here/examples/GoodwinLinear02.mky
   assert {[findObject Group]}
   set item minsky.canvas.item
+  canvas.focusFollowsMouse 1
   canvas.mouseDown [expr [\$item.x]-0.55*[\$item.width]] [expr [\$item.y]+0.55*[\$item.height]]
   canvas.mouseUp [expr [\$item.x]+0.55*[\$item.width]] [expr [\$item.y]-0.55*[\$item.height]] 
   assert {[canvas.selection.groups.size]==1}
   newSystem
-  # For ticket 1098. Paste items at mouse position
-  paste [expr [\$item.x]+0.55*[\$item.width]] [expr [\$item.y]-0.55*[\$item.height]]
+  paste
   # For ticket 1080. There is no longer an outer group when existing groups or items are pasted between canvasses or in the same canvas
   assert {[model.numGroups]==1}
   assert {[model.numItems]==8}
