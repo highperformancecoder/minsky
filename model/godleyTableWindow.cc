@@ -486,7 +486,7 @@ namespace minsky
       return;  
     else if (selectedRow==0)
       {  
-		// Disallow moving flow labels column and prevent columns from moving when import stockvar dropdown button is pressed in empty column. For ticket 1064/1066
+		// Disallow moving flow labels column and prevent columns from moving when import stockvar dropdown button is pressed in empty column. For tickets 1053/1064/1066
         if (c>0 && size_t(c)<godleyIcon->table.cols() && selectedCol>0 && size_t(selectedCol)<godleyIcon->table.cols() && c!=selectedCol && !(colLeftMargin[c+1]-x < pulldownHot)) 
           godleyIcon->table.moveCol(selectedCol,c-selectedCol);
       }
