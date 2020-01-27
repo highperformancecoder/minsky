@@ -23,7 +23,7 @@ for i in test/00/*.sh; do
         su minsky $i &> /dev/null
     elif [ $i = test/00/findDefinition.sh ]; then
         sh $i
-    elif [ $i = test/00/t0001.sh ]; then
+    elif [ $i = test/00/t0001a.sh ]; then
         sh $i
     else
         sh $i &> /dev/null
