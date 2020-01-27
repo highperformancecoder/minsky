@@ -42,6 +42,9 @@ proc openGodley {id} {
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
         bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]"
+        # Pressing the return key deselects a cell. For ticket 1122.        
+        bind .$id.table <Key-Return> "enter $id"
+        bind .$id.table <Key-KP_Enter> "enter $id"        
 
         global meta meta_menu
         bind .$id.table <$meta-y> "$id.undo -1"
@@ -138,6 +141,11 @@ proc zoomOut id {
 proc zoomIn id {
     $id.zoomFactor [expr [$id.zoomFactor]*1.1]
     $id.requestRedraw
+}
+# Pressing the return key deselects a cell. For ticket 1122.
+proc enter id {
+	$id.update
+	$id.mouseDown -1 -1
 }
 
 proc mouseDown {id x y X Y} {
