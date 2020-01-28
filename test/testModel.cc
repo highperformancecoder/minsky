@@ -445,6 +445,8 @@ SUITE(Canvas)
       CHECK_EQUAL(1,canvas.selection.items.size());
       CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),op) !=canvas.selection.items.end());
 
+      group0->updateBoundingBox(); //why? for Travis.
+      
       // test that groups can be selected
       CHECK(!group0->displayContents());
       float w=0.5*group0->width()+10, h=0.5*group0->height()+10;
