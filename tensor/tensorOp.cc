@@ -72,7 +72,7 @@ namespace civita
     for (size_t i=0; i<arg->size(); ++i)
       {
         double x=(*arg)[i];
-        if (!isnan(x)) f(r,x);
+        if (!isnan(x)) f(r,x,i);
       }
     return r;
   }
@@ -112,10 +112,10 @@ namespace civita
         auto start=quotRem.quot*stride*argDims[dimension] + quotRem.rem;
         assert(stride*argDims[dimension]>0);
         double r=init;
-        for (auto j=start; j<start+stride*argDims[dimension]; ++j)
+        for (size_t j=0; j<argDims[dimension]; ++j)
           {
-            double x=arg->atHCIndex(j);
-            if (!isnan(x)) f(r,x);
+            double x=arg->atHCIndex(j*stride+start);
+            if (!isnan(x)) f(r,x,j);
           }
         return r;
       }
@@ -130,7 +130,7 @@ namespace civita
     return cachedResult[i];
   }
 
-  void Scan::setArgument(const TensorPtr& a, const std::string& dimName)
+  void DimensionedArgCachedOp::setArgument(const TensorPtr& a, const std::string& dimName)
   {
     arg=a;
     m_hypercube=arg->hypercube();

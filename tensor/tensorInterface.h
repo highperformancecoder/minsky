@@ -38,7 +38,7 @@ namespace civita
     ITensor(const std::vector<unsigned>& dims) {m_hypercube.dims(dims);}
     virtual ~ITensor() {}
     /// information describing the axes, types and labels of this tensor
-    const Hypercube& hypercube() const {return m_hypercube;}
+    virtual const Hypercube& hypercube() const {return m_hypercube;}
     virtual const Hypercube& hypercube(const Hypercube& hc) {return m_hypercube=hc;}
     virtual const Hypercube& hypercube(Hypercube&& hc) {return m_hypercube=std::move(hc);}
     size_t rank() const {return hypercube().rank();}

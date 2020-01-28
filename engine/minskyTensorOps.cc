@@ -197,51 +197,51 @@ namespace minsky
   class GeneralTensorOp<OperationType::sum>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x+=y;},0){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x+=y;},0){}
   };
   template <>
   class GeneralTensorOp<OperationType::product>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x*=y;},1){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x*=y;},1){}
   };
   template <>
   class GeneralTensorOp<OperationType::infimum>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y<x) x=y;},std::numeric_limits<double>::max()){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
    };
   template <>
   class GeneralTensorOp<OperationType::supremum>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
    };
   template <>
   class GeneralTensorOp<OperationType::any>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){if (y>0.5) x=1;},0){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y>0.5) x=1;},0){}
    };
   template <>
   class GeneralTensorOp<OperationType::all>: public civita::ReductionOp
   {
   public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y){x*=(y>0.5);},1){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x*=(y>0.5);},1){}
    };
 
   template <>
   class GeneralTensorOp<OperationType::runningSum>: public civita::Scan
   {
   public:
-    GeneralTensorOp(): civita::Scan([](double& x,double y){x+=y;}) {}
+    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x+=y;}) {}
   };
 
   template <>
   class GeneralTensorOp<OperationType::runningProduct>: public civita::Scan
   {
   public:
-    GeneralTensorOp(): civita::Scan([](double& x,double y){x+=y;}) {}
+    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x+=y;}) {}
   };
   
   template <>
@@ -275,39 +275,72 @@ namespace minsky
   template <>
   class GeneralTensorOp<OperationType::index>: public civita::CachedTensorOp
   {
-    std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
+    std::shared_ptr<ITensor> arg;
+    void computeTensor() const override {
+      size_t i=0, j=0;
+      for (; i<arg->size(); ++i)
+        if ((*arg)[i]>0.5)
+          cachedResult[j++]=i;
+      for (; j<cachedResult.size(); ++j)
+        cachedResult[j]=nan("");
     }
-    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    void setArgument(const TensorPtr& a, const string&) override {
+      arg=a; cachedResult.index(a->index()); cachedResult.hypercube(a->hypercube());
+    }
+    
+    Timestamp timestamp() const override {return arg->timestamp();}
   };
 
   template <>
   class GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
+    void computeTensor() const override {
+      for (size_t i=0; i<arg2->size(); ++i) {
+        auto idx=(*arg2)[i];
+        if (isfinite(idx) && idx>=0 && idx<arg1->size())
+          cachedResult[i]=(*arg1)[idx];
+        else
+          cachedResult[i]=nan("");
+      }              
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+      arg1=a1; arg2=a2;
+      cachedResult.index(arg2->index());
+      cachedResult.hypercube(arg2->hypercube());
+    }
+      
   };
 
   template <>
-  class GeneralTensorOp<OperationType::supIndex>: public civita::CachedTensorOp
+  class GeneralTensorOp<OperationType::supIndex>: public civita::ReductionOp
   {
-    std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
-    }
-    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    double maxValue; // scratch register for holding current max
+  public:
+    GeneralTensorOp(): civita::ReductionOp
+                       ([this](double& r,double x,size_t i){
+                          if (i==0 || x>maxValue) {
+                            maxValue=x;
+                            r=i;
+                          }
+                        },0) {}
   };
-
+  
   template <>
-  class GeneralTensorOp<OperationType::infIndex>: public civita::CachedTensorOp
+  class GeneralTensorOp<OperationType::infIndex>: public civita::ReductionOp
   {
-    std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
-    }
-    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    double minValue; // scratch register for holding current min
+  public:
+    GeneralTensorOp(): civita::ReductionOp
+                       ([this](double& r,double x,size_t i){
+                          if (i==0 || x<minValue) {
+                            minValue=x;
+                            r=i;
+                          }
+                        },0) {}
   };
-
+  
   class SwitchTensor: public TensorOp
   {
     size_t m_size=1;
@@ -495,7 +528,7 @@ namespace minsky
         for (size_t i=0; i<rhs->size(); ++i)
           {
             result[i]=(*rhs)[i];
-            assert(fv[result.idx()+i]==(*rhs)[i]);
+            assert(!finite(result[i]) || fv[result.idx()+i]==(*rhs)[i]);
             //            cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< (*rhs)[i] << " should be "<<fv[result.idx()]<<endl;
           }
       }

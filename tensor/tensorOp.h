@@ -114,13 +114,14 @@ namespace civita
   /// reduce all elements to a single number
   struct ReduceAllOp: public TensorOp
   {
-    std::function<void(double&,double)> f;
+    std::function<void(double&,double,size_t)> f;
     double init;
     std::shared_ptr<ITensor> arg;
     void setArgument(const TensorPtr& a,const std::string&) override {arg=a;}
 
     template <class F>
-    ReduceAllOp(F f, double init, const std::shared_ptr<ITensor>& arg={}): f(f),init(init), arg(arg) {}
+    ReduceAllOp(F f, double init, const std::shared_ptr<ITensor>& arg={}):
+      f(f),init(init), arg(arg) {}
 
     std::vector<size_t> index() const override {return {};}
     size_t size() const override {return 1;}
@@ -157,9 +158,17 @@ namespace civita
     std::vector<size_t> index() const override {return cachedResult.index();}
     size_t size() const override {return cachedResult.size();}
     double operator[](size_t i) const override;
+    const Hypercube& hypercube() const override {return cachedResult.hypercube();}
   };
 
-  class Scan: public CachedTensorOp
+  struct DimensionedArgCachedOp: public CachedTensorOp
+  {
+    size_t dimension; // dimension to apply operation over. >rank = all dims
+    TensorPtr arg;
+    void setArgument(const TensorPtr& a, const std::string& dimName={}) override;
+  };
+  
+  class Scan: public DimensionedArgCachedOp
   {
     size_t dimension; // dimension to scan over. >rank = all dims
     TensorPtr arg;
@@ -167,7 +176,6 @@ namespace civita
     std::function<void(double&,double)> f;
     template <class F>
     Scan(F f, const TensorPtr& arg={}, const std::string& dimName="") {setArgument(arg,dimName);}
-    void setArgument(const TensorPtr& a, const std::string& dimName={}) override;
     void computeTensor() const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
