@@ -148,7 +148,7 @@ namespace minsky
 
     auto t=type();
     // call the iconDraw method if data description is empty
-    if (t==OperationType::data && dynamic_cast<const DataOp&>(*this).description.empty())
+    if (t==OperationType::data && dynamic_cast<const DataOp&>(*this).description().empty())
       t=OperationType::numOps;
 
     switch (t)
@@ -162,7 +162,7 @@ namespace minsky
           
           Pango pango(cairo);
           pango.setFontSize(10*z);
-          pango.setMarkup(latexToPango(c.description));
+          pango.setMarkup(latexToPango(c.description()));
           pango.angle=angle + (textFlipped? M_PI: 0);
           Rotate r(rotation+ (textFlipped? 180: 0),0,0);
 
@@ -678,6 +678,18 @@ namespace minsky
       r+=" [in2]="+ to_string(ports[2]->value());
     return r;
   }
+  
+  string DataOp::description_() const
+  {
+	return m_description;  
+  }
+   
+  string DataOp::description_(const std::string& x)
+  {
+    m_description=x;
+    bb.update(*this); // adjust icon bounding box - see ticket #1121
+    return m_description;
+  }    
 
   void DataOp::readData(const string& fileName)
   {
@@ -694,10 +706,9 @@ namespace minsky
     size_t p=fileName.rfind('/');
     // '/' is guaranteed not to be in fileName, so we can use that as
     // a delimiter
-    description = "\\verb/"+
-      ((p!=string::npos)? fileName.substr(p+1): fileName) + "/";
+    description("\\verb/"+
+      ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
     //initXVector();
-    bb.update(*this); // adjust bounding box for data import operation - see ticket #1121 
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)

@@ -66,7 +66,7 @@ namespace schema2
           if (auto d=dynamic_cast<minsky::DataOp*>(i))
             {
               items.back().dataOpData=d->data;
-              items.back().name=d->description;
+              items.back().name=d->description();
             }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
@@ -446,7 +446,7 @@ namespace schema2
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
-          x1->description=*y.name;
+          x1->description(*y.name);
         if (y.dataOpData)
           x1->data=*y.dataOpData;
       }

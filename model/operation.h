@@ -164,7 +164,7 @@ namespace minsky
     IntOp() {description("");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {group.reset();intVar.reset(); description(x.description());}
+      OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
     ~IntOp() {removeControlledItems();}
     
     const IntOp& operator=(const IntOp& x); 
@@ -206,8 +206,27 @@ namespace minsky
   class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>
   {
     CLASSDESC_ACCESS(DataOp);
+    friend struct SchemaHelper;
+    string m_description;
   public:
-    string description;
+    DataOp() {}
+    // ensure that copies create a new data operation
+    DataOp(const DataOp& x): 
+      OperationBase(x){description(x.description());}
+    ~DataOp() {}
+    
+    const DataOp& operator=(const DataOp& x); 
+
+    /// @{ name of the associated data operation
+    Accessor<std::string> description {
+      [this]() {return description_();},
+        [this](const std::string& x) {
+          return description_(x);
+        }};
+    /// @}
+    
+    string description_() const;  
+    string description_(const std::string&);    
     std::map<double, double> data;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 
