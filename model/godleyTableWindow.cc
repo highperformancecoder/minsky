@@ -485,8 +485,9 @@ namespace minsky
     if ((selectedCol==0 && selectedRow==1) || (c==0 && r==1) || size_t(selectedRow)>=(godleyIcon->table.rows()) || size_t(r)>=(godleyIcon->table.rows()) || size_t(c)>=(godleyIcon->table.cols()) || size_t(selectedCol)>=(godleyIcon->table.cols()))
       return;  
     else if (selectedRow==0)
-      {
-        if (c>0 && size_t(c)<godleyIcon->table.cols() && selectedCol>0 && size_t(selectedCol)<godleyIcon->table.cols() && c!=selectedCol)  // Disallow moving flow labels column. For ticket 1064/1066
+      {  
+		// Disallow moving flow labels column and prevent columns from moving when import stockvar dropdown button is pressed in empty column. For tickets 1053/1064/1066
+        if (c>0 && size_t(c)<godleyIcon->table.cols() && selectedCol>0 && size_t(selectedCol)<godleyIcon->table.cols() && c!=selectedCol && !(colLeftMargin[c+1]-x < pulldownHot)) 
           godleyIcon->table.moveCol(selectedCol,c-selectedCol);
       }
     else if (r>0 && selectedCol==0)
@@ -598,10 +599,14 @@ namespace minsky
                     table.cell(selectedRow, selectedCol)=savedText;
                   selectedRow=selectedCol=-1;
                   break;
-                case 0xff0d: //return
-                  update();
-                  selectedRow=selectedCol=-1;
+                case 0xff0d: //return              
+                  update();                       
+                  selectedRow=selectedCol=-1;                       
                   break;
+                case 0xff8d: //enter added for ticket 1122         
+                  update();                       
+                  selectedRow=selectedCol=-1;                  
+                  break;     
                 case 0xff51: //left arrow
                   if (insertIdx>0) insertIdx--;
                   else navigateLeft();
@@ -825,24 +830,24 @@ namespace minsky
   void GodleyTableWindow::pushHistory()
   {
     while (history.size()>maxHistory) history.pop_front();
-    if (history.empty() || history.back()!=godleyIcon->table.getData())
-      history.push_back(godleyIcon->table.getData());
+    // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
+    if (history.empty() || !(history.back()==godleyIcon->table)) {
+      history.push_back(godleyIcon->table);
+    }
     historyPtr=history.size();
   }
       
   void GodleyTableWindow::undo(int changes)
-  {
+  { 
     if (historyPtr==history.size())
       pushHistory();
     historyPtr-=changes;
     if (historyPtr > 0 && historyPtr <= history.size())
       {
         auto& d=history[historyPtr-1];
-        if (d.empty()) return; // should not happen
-        godleyIcon->table.resize(d.size(), d[0].size());
-        for (size_t r=0; r<godleyIcon->table.rows(); ++r)
-          for (size_t c=0; c<godleyIcon->table.cols(); ++c)
-            godleyIcon->table.cell(r,c)=d[r][c];
+        // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
+        if (d.getData().empty()) return; // should not happen
+		godleyIcon->table=d; 
         requestRedraw();
       }
   }
