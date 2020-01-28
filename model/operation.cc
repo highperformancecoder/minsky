@@ -513,6 +513,8 @@ namespace minsky
     return r;
   }
 
+  IntOpAccessor::IntOpAccessor(): ecolab::TCLAccessor<IntOp, std::string>
+    ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
   
   Units IntOp::units(bool check) const {
     Units r=ports[1]->units(check);
@@ -542,9 +544,10 @@ namespace minsky
   }
 
   
-  void IntOp::description_(string desc)
+  string IntOp::description(const string& a_desc)
   {
-
+    auto desc=a_desc;
+    
     // set a default name if none given
     if (desc.empty())
       desc=minsky().variableValues.newName
@@ -554,7 +557,7 @@ namespace minsky
     if (desc[0]==':') desc=desc.substr(1);
     
     if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
-      return; // nothing to do
+      return description(); // nothing to do
 
     vector<Wire> savedWires;
     if (numPorts()>0)
@@ -607,6 +610,7 @@ namespace minsky
     // this should also adjust the wire's group ownership appropriately
     if (auto g=group.lock())
       g->addItem(intVar);
+    return description();
   }
 
   namespace
