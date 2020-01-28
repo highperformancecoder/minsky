@@ -683,12 +683,12 @@ namespace minsky
     return r;
   }
   
-  string DataOp::description_() const
+  string DataOp::description() const
   {
 	return m_description;  
   }
    
-  string DataOp::description_(const std::string& x)
+  string DataOp::description(const std::string& x)
   {
     m_description=x;
     bb.update(*this); // adjust icon bounding box - see ticket #1121

@@ -202,30 +202,25 @@ namespace minsky
     void insertControlled(Selection& selection) override;
   };
 
-  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>
+  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
+                public ecolab::TCLAccessor<DataOp,std::string>
   {
     CLASSDESC_ACCESS(DataOp);
     friend struct SchemaHelper;
     string m_description;
   public:
-    DataOp() {}
-    // ensure that copies create a new data operation
-    DataOp(const DataOp& x): 
-      OperationBase(x){description(x.description());}
+    DataOp(): ecolab::TCLAccessor<DataOp,std::string>
+      ("description",(ecolab::TCLAccessor<DataOp,std::string>::Getter)&DataOp::description,
+       (ecolab::TCLAccessor<DataOp,std::string>::Setter)&DataOp::description)
+    {}
     ~DataOp() {}
     
     const DataOp& operator=(const DataOp& x); 
 
     /// @{ name of the associated data operation
-    Accessor<std::string> description {
-      [this]() {return description_();},
-        [this](const std::string& x) {
-          return description_(x);
-        }};
+    std::string description() const;  
+    std::string description(const std::string&);    
     /// @}
-    
-    string description_() const;  
-    string description_(const std::string&);    
     std::map<double, double> data;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 
