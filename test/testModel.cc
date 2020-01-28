@@ -467,7 +467,7 @@ SUITE(Canvas)
       // se -> nw selection
       canvas.selection.clear();
       canvas.mouseDown(x+2*w,y+2*h);
-      canvas.mouseUp(x-2*w,y-2*h);
+      canvas.mouseUp(x,y);
       CHECK_EQUAL(0,canvas.selection.items.size());
       CHECK_EQUAL(1,canvas.selection.groups.size());
       CHECK(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
