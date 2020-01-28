@@ -44,10 +44,10 @@ namespace minsky
   struct SchemaHelper;
   class GodleyIcon;
 
-  template <class T, class G, class S>
-  ecolab::Accessor<T,G,S> makeAccessor(G g,S s) {
-    return ecolab::Accessor<T,G,S>(g,s);
-  }
+//  template <class T, class G, class S>
+//  ecolab::Accessor<T,G,S> makeAccessor(G g,S s) {
+//    return ecolab::Accessor<T,G,S>(g,s);
+//  }
   
   /// exception-safe increment/decrement of a counter in a block
   struct IncrDecrCounter
@@ -57,9 +57,21 @@ namespace minsky
     ~IncrDecrCounter() {--ctr;}
   };
 
+  namespace VarAccessors
+  {
+    // constructors defined below once member functions available
+    struct NameAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,0> {NameAccessor();};
+    struct InitAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,1> {InitAccessor();};
+    struct ValueAccessor: ecolab::TCLAccessor<minsky::VariableBase,double> {ValueAccessor();};
+    struct SliderVisibleAccessor: ecolab::TCLAccessor<minsky::VariableBase,bool> {SliderVisibleAccessor();};
+  }
+
   class VariableBase: virtual public classdesc::PolyPackBase,
-                      public Item, public Slider, 
-                      public VariableType
+                      public Item, public Slider, public VariableType,
+                      public VarAccessors::NameAccessor,
+                      public VarAccessors::InitAccessor,
+                      public VarAccessors::ValueAccessor,
+                      public VarAccessors::SliderVisibleAccessor
   {
   public:
     typedef VariableType::Type Type;
@@ -100,11 +112,8 @@ namespace minsky
     float zoomFactor() const override;
     
     /// @{ variable displayed name
-    virtual std::string _name() const;
-    virtual std::string _name(const std::string& nm);
-    ecolab::Accessor<std::string> name {
-      [this]() {return _name();},
-        [this](const std::string& s){return _name(s);}};
+    virtual std::string name() const;
+    virtual std::string name(const std::string& nm);
     /// @}
 
     /// accessor for the name member (may differ from name() with top
@@ -130,19 +139,13 @@ namespace minsky
       
 
     /// @{ the initial value of this variable
-    std::string _init() const; /// < return initial value for this variable
-    std::string _init(const std::string&); /// < set the initial value for this variable
-    ecolab::Accessor<std::string> init {
-      [this]() {return _init();},
-        [this](const std::string& s){return _init(s);}};
+    std::string init() const; /// < return initial value for this variable
+    std::string init(const std::string&); /// < set the initial value for this variable
     /// @}
     
     /// @{ current value associated with this variable
-    virtual double _value(double);
-    virtual double _value() const;  
-    ecolab::Accessor<double> value {
-      [this]() {return _value();},
-        [this](double x){return _value(x);}};
+    virtual double value(const double&);
+    virtual double value() const;  
     /// @}
     
     //    void setValue(const TensorVal&);
@@ -153,12 +156,11 @@ namespace minsky
     /// initialise slider bounds when slider first opened
     void initSliderBounds() const;
     void adjustSliderBounds() const;
-    ecolab::Accessor<bool> sliderVisible {
-      [this]() {return Slider::sliderVisible;},
-        [this](bool v) {
+    bool sliderVisible() const {return Slider::sliderVisible;}
+    bool sliderVisible(const bool& v) {
           if (v) {initSliderBounds(); adjustSliderBounds();}
           return Slider::sliderVisible=v;
-        }};
+    }
 
     /// sets/gets the units associated with this type
     Units units(bool check=false) const override;
@@ -174,14 +176,6 @@ namespace minsky
     virtual VariableBase* clone() const override=0;
     bool isStock() const {return type()==stock || type()==integral;}
 
-    VariableBase() {}
-    VariableBase(const VariableBase& x): Item(x), Slider(x), m_name(x.m_name) {ensureValueExists(x.vValue());}
-    VariableBase& operator=(const VariableBase& x) {
-      Item::operator=(x);
-      Slider::operator=(x);
-      m_name=x.m_name;
-      return *this;
-    }
     virtual ~VariableBase();
 
     /** draws the icon onto the given cairo context 
@@ -213,6 +207,18 @@ namespace minsky
 
     void insertControlled(Selection& selection) override;
   };
+
+ namespace VarAccessors
+  {
+    inline NameAccessor::NameAccessor(): ecolab::TCLAccessor<VariableBase,std::string,0>
+        ("name",(Getter)&VariableBase::name,(Setter)&VariableBase::name) {}
+    inline InitAccessor::InitAccessor(): ecolab::TCLAccessor<VariableBase,std::string,1>
+        ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
+    inline ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
+      ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
+    inline SliderVisibleAccessor::SliderVisibleAccessor(): ecolab::TCLAccessor<VariableBase,bool>
+      ("sliderVisible",(Getter)&VariableBase::sliderVisible,(Setter)&VariableBase::sliderVisible) {}
+ }
 
   template <minsky::VariableType::Type T>
   class Variable: public ItemT<Variable<T>, VariableBase>,
@@ -247,9 +253,10 @@ namespace minsky
     static int nextId;
     VarConstant(): id(nextId++) {ensureValueExists(nullptr);}
     std::string valueId() const override {return "constant:"+str(id);}
-    std::string _name() const override {return init();}
-    std::string _name(const std::string& nm) override {ensureValueExists(nullptr); return _name();}
-    double _value(double x) override {init(str(x)); return x;}
+    std::string name() const override {return init();}
+    std::string name(const std::string& nm) override {ensureValueExists(nullptr); return name();}
+    using VariableBase::value;
+    double value(const double& x) override {init(str(x)); return x;}
     VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
     std::string classType() const override {return "VarConstant";}
     void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 

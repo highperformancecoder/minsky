@@ -104,7 +104,7 @@ namespace minsky
     virtual double value() const {return 0;}
 
     double rotation() const {return m_rotation;}
-    double rotation(double r) {
+    double rotation(const double& r) {
       m_rotation=r;
       bb.update(*this);
       return m_rotation;

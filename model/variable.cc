@@ -139,7 +139,7 @@ std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const
   return VariableValue::valueId(group.lock(), nm);
 }
 
-string VariableBase::_name()  const
+string VariableBase::name()  const
 {
   if (m_name==":_") return "";
   // hide any leading ':' in upper level
@@ -152,7 +152,7 @@ string VariableBase::_name()  const
   return m_name;
 }
 
-string VariableBase::_name(const std::string& name) 
+string VariableBase::name(const std::string& name) 
 {
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
@@ -186,7 +186,7 @@ void VariableBase::ensureValueExists(VariableValue* vv) const
 }
 
 
-string VariableBase::_init() const
+string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
@@ -195,7 +195,7 @@ string VariableBase::_init() const
     return "0";
 }
 
-string VariableBase::_init(const string& x)
+string VariableBase::init(const string& x)
 {
   ensureValueExists(nullptr); 
   if (VariableValue::isValueId(valueId()))
@@ -215,7 +215,7 @@ string VariableBase::_init(const string& x)
   return x;
 }
 
-double VariableBase::_value() const
+double VariableBase::value() const
 {
   if (VariableValue::isValueId(valueId()))
     return minsky::cminsky().variableValues[valueId()].value();
@@ -223,7 +223,7 @@ double VariableBase::_value() const
     return 0;
 }
 
-double VariableBase::_value(double x)
+double VariableBase::value(const double& x)
 {
   if (!m_name.empty() && VariableValue::isValueId(valueId()))
     minsky().variableValues[valueId()]=x;
