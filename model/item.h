@@ -24,7 +24,7 @@
 #include "port.h"
 #include "intrusiveMap.h"
 //#include "RESTProcess_base.h"
-#include "tclAccessor.h"
+#include <accessor.h>
 #include <TCL_obj_base.h>
 
 #include <cairo.h>
@@ -76,7 +76,7 @@ namespace minsky
     float height() const {return bottom-top;}
   };
 
-  class Item: virtual public NoteBase, public TCLAccessor<Item,double>
+  class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
   public:
