@@ -34,6 +34,22 @@ using namespace minsky;
 using ecolab::array;
 using namespace ecolab::cairo;
 
+namespace minsky
+{
+ namespace VarAccessors
+  {
+    NameAccessor::NameAccessor(): ecolab::TCLAccessor<VariableBase,std::string,0>
+        ("name",(Getter)&VariableBase::name,(Setter)&VariableBase::name) {}
+    InitAccessor::InitAccessor(): ecolab::TCLAccessor<VariableBase,std::string,1>
+        ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
+    ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
+      ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
+    SliderVisibleAccessor::SliderVisibleAccessor(): ecolab::TCLAccessor<VariableBase,bool>
+      ("sliderVisible",(Getter)&VariableBase::sliderVisible,(Setter)&VariableBase::sliderVisible) {}
+ }
+}
+
+
 VariableBase::~VariableBase() {}
 
 void VariableBase::addPorts()

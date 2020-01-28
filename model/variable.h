@@ -208,18 +208,6 @@ namespace minsky
     void insertControlled(Selection& selection) override;
   };
 
- namespace VarAccessors
-  {
-    inline NameAccessor::NameAccessor(): ecolab::TCLAccessor<VariableBase,std::string,0>
-        ("name",(Getter)&VariableBase::name,(Setter)&VariableBase::name) {}
-    inline InitAccessor::InitAccessor(): ecolab::TCLAccessor<VariableBase,std::string,1>
-        ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
-    inline ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
-      ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
-    inline SliderVisibleAccessor::SliderVisibleAccessor(): ecolab::TCLAccessor<VariableBase,bool>
-      ("sliderVisible",(Getter)&VariableBase::sliderVisible,(Setter)&VariableBase::sliderVisible) {}
- }
-
   template <minsky::VariableType::Type T>
   class Variable: public ItemT<Variable<T>, VariableBase>,
                   public classdesc::PolyPack<Variable<T> >
