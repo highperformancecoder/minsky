@@ -897,14 +897,13 @@ namespace minsky
             // rename all instances of the stock variable if updated. For ticket #956
             // find stock variable if it exists
             for (auto& sv: godleyIcon->stockVars())
-              if (sv->rawName()==godleyIcon->table.savedText)
+              if (sv->valueId()==godleyIcon->valueId(godleyIcon->table.savedText))
                 {
                   auto savedItem=minsky().canvas.item;
                   minsky().canvas.item=sv;
                   minsky().canvas.renameAllInstances(godleyIcon->table.cell(selectedRow,selectedCol));
                   savedItem.swap(minsky().canvas.item);
                 }
-            
             minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
           }
         else
