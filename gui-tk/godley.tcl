@@ -138,12 +138,6 @@ proc zoomIn id {
     $id.zoomFactor [expr [$id.zoomFactor]*1.1]
     $id.requestRedraw
 }
-# Pressing the return key updates a cell, leaving it unhighlighted via mouseDown. For tickets 1058/1094/1122/1127.
-proc enter {id x y} {
-	set r [$id.rowYZoomed $y]
-	set c [$id.colXZoomed $x]
-	$id.mouseDown $r $c
-}
 
 proc mouseDown {id x y X Y} {
     if {[$id.clickTypeZoomed $x $y]=="importStock"} {
