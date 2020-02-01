@@ -560,7 +560,10 @@ namespace minsky
         selectedRow<int(table.rows()) && (selectedCol!=0 || selectedRow!=1)) // Cell (1,0) is off-limits. For ticket 1064
           {			  	  
             auto& str=table.cell(selectedRow,selectedCol);
-            if (utf8.length())
+            if (utf8.length() && keySym<0x7f)
+              // all printing and control characters have keysym
+              // <0x80. But some keys (eg tab, backspace and escape
+              // are mapped to control characters
               if (unsigned(utf8[0])>=' ' && utf8[0]!=0x7f)
                 {
                   delSelection();
@@ -583,7 +586,7 @@ namespace minsky
                       break;
                     case control('h'): case 0x7f:
                       handleDelete();
-                      break;                  
+                      break;
                     }
                 }
             else
