@@ -115,6 +115,8 @@ void GodleyTable::moveCol(int col, int n)
   _assetClass(col+n, targetAssetClass);
   // insert extra empty column if an asset class gets emptied out of this
   orderAssetClasses();
+  // save text in currently highlighted column heading.  For tickets 1058/1094/1122/1127.
+  savedText=data[0][col];
 }
 
 

@@ -86,7 +86,6 @@ namespace minsky
     unsigned scrollRowStart=1, scrollColStart=1;
     /// which cell is active, none initially
     int selectedRow=-1, selectedCol=-1;
-    std::string savedText;
     int hoverRow=-1, hoverCol=-1;
     /// computed positions of the table columns
     std::vector<double> colLeftMargin;

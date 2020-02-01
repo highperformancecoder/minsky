@@ -466,7 +466,7 @@ namespace minsky
            {
              selectIdx=insertIdx = textIdx(x);
              auto& str=godleyIcon->table.cell(selectedRow,selectedCol);                         
-             savedText=godleyIcon->table.cell(selectedRow, selectedCol);
+             godleyIcon->table.savedText=godleyIcon->table.cell(selectedRow, selectedCol);
            }
         else
           selectIdx=insertIdx=0;
@@ -599,7 +599,7 @@ namespace minsky
                 case 0xff1b: // escape
                   if (selectedRow>=0 && size_t(selectedRow)<=table.rows() &&
                       selectedCol>=0 && size_t(selectedCol)<=table.cols())
-                    table.cell(selectedRow, selectedCol)=savedText;
+                    table.cell(selectedRow, selectedCol)=table.savedText;
                   selectedRow=selectedCol=-1;
                   break;
                 case 0xff0d: //return              
@@ -897,7 +897,7 @@ namespace minsky
             // rename all instances of the stock variable if updated. For ticket #956
             // find stock variable if it exists
             for (auto& sv: godleyIcon->stockVars())
-              if (sv->rawName()==savedText)
+              if (sv->rawName()==godleyIcon->table.savedText)
                 {
                   auto savedItem=minsky().canvas.item;
                   minsky().canvas.item=sv;

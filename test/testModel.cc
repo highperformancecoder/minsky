@@ -1373,7 +1373,7 @@ SUITE(GodleyTableWindow)
       
       selectedCol=1;
       selectedRow=1;
-      savedText="abc";
+      godleyIcon->table.savedText="abc";
       keyPress('d',"d"); keyPress(XK_Escape,""); // should revert to previous
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
       CHECK_EQUAL(-1,selectedCol);

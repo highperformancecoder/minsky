@@ -160,6 +160,9 @@ namespace minsky
     /// get the vector of unique variable names from the interior of the
     /// table, in row, then column order
     std::vector<std::string> getVariables() const;
+    /// save text in currently highlighted column heading for renaming all variable instances
+    /// and to enable user to fix problems
+    std::string savedText;
 
     /// get column data
     std::vector<std::string> getColumn(unsigned col) const;
