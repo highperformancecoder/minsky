@@ -360,6 +360,11 @@ proc addOperationKey {op} {
     canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
 
+proc addPlotKey {} {
+    addPlot
+    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+
 proc addNewGodleyItemKey {} {
     addGodley
     canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
@@ -417,7 +422,7 @@ bind . <Key-asciicircum> {addOperationKey pow}
 #bind . <Key-backslash> {addOperationKey sqrt}
 bind . <Key-ampersand> {addOperationKey integrate}
 bind . <Key-equal> {addNewGodleyItemKey}
-bind . <Key-at> {newPlotItem [plots.nextPlotID] [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
+bind . <Key-at> {addPlotKey}
 
 bind . <Key> {textInput %A}
 
