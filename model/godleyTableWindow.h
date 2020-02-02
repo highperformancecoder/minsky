@@ -133,7 +133,8 @@ namespace minsky
 		unsigned c=colX(x);
 		unsigned visibleCol=c-scrollColStart+1;
         if (c<colWidgets.size() && visibleCol < colLeftMargin.size())
-            return  colWidgets[c].button(x-colLeftMargin[visibleCol]);		
+            return  colWidgets[c].button(x-colLeftMargin[visibleCol]);
+        return 0;    		
 	}       
 
     void highlightColumn(cairo_t* cairo,unsigned col);
