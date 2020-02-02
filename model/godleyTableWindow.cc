@@ -602,12 +602,10 @@ namespace minsky
                     table.cell(selectedRow, selectedCol)=table.savedText;
                   selectedRow=selectedCol=-1;
                   break;
-                case 0xff0d: //return              
-                  update();                       
+                case 0xff0d: //return                                    
                   selectedRow=selectedCol=-1;                       
                   break;
-                case 0xff8d: //enter added for ticket 1122         
-                  update();                       
+                case 0xff8d: //enter added for ticket 1122                            
                   selectedRow=selectedCol=-1;                  
                   break;     
                 case 0xff51: //left arrow

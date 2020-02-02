@@ -126,6 +126,15 @@ namespace minsky
     
     int colXZoomed(double x) const {return colX(x/zoomFactor);}
     int rowYZoomed(double y) const {return rowY(y/zoomFactor);}
+    
+    // returns the position of the column button widget that has been pressed. For ticket 1072.
+    int getColWidget(double x) const {
+		x/=zoomFactor;
+		unsigned c=colX(x);
+		unsigned visibleCol=c-scrollColStart+1;
+        if (c<colWidgets.size() && visibleCol < colLeftMargin.size())
+            return  colWidgets[c].button(x-colLeftMargin[visibleCol]);		
+	}       
 
     void highlightColumn(cairo_t* cairo,unsigned col);
     void highlightRow(cairo_t* cairo,unsigned row);

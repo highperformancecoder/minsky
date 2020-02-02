@@ -106,6 +106,14 @@ namespace minsky
        sets if assetClass present, otherwise gets
     */
     string assetClass(ecolab::TCL_args args);
+    
+    // returns the asset class of column col. For ticket 1072.
+    AssetClass getAssetClass(unsigned col) const {
+      if (col<cols())
+        return _assetClass(col);
+      else
+        return noAssetClass;
+    }     
   
     // returns true if \a row is an "Initial Conditions" row
     bool initialConditionRow(unsigned row) const;
