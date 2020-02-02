@@ -158,11 +158,11 @@ proc mouseDown {id x y X Y} {
 
 # warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
 proc moveAssetClass {id x y X Y} {	
-   set c [$id.colXZoomed $x]
-   set oldAssetClass [$id.godleyIcon.table.getAssetClass $c]    	
-   set moveVar [$id.godleyIcon.table.getCell 0 $c]
    switch [$id.clickTypeZoomed $x $y] {    
    colWidget {
+      set c [$id.colXZoomed $x]   	
+      set moveVar [$id.godleyIcon.table.getCell 0 $c]	   
+	  set oldAssetClass [$id.godleyIcon.table.getAssetClass $c]  
 	  set colWId [$id.getColWidget $x] 
 		  if {$colWId==3} {     
              set targetAssetClass [$id.godleyIcon.table.getAssetClass [expr $c+1]]
