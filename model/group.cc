@@ -781,7 +781,7 @@ namespace minsky
       // display I/O region in grey
       drawIORegion(cairo);
 
-      cairo_translate(cairo, -0.5*iconWidth+leftMargin, -0.5*iconHeight);
+      cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
 
 
               
@@ -789,7 +789,7 @@ namespace minsky
       cairo_scale(cairo, scalex, 1);
 
       // draw a simple frame 
-      cairo_rectangle(cairo,0,0,iconWidth,iconHeight);
+      cairo_rectangle(cairo,0,0,width,height);
       {
         cairo::CairoSave cs(cairo);
         cairo_identity_matrix(cairo);
@@ -801,11 +801,11 @@ namespace minsky
         {
           if (displayPlot)
             {
-              displayPlot->Plot::draw(cairo, iconWidth, iconHeight);
+              displayPlot->Plot::draw(cairo, width, height);
             }
           else
             {
-              cairo_scale(cairo,iconWidth/svgRenderer.width(),iconHeight/svgRenderer.height());
+              cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
               cairo_rectangle(cairo,0, 0,svgRenderer.width(), svgRenderer.height());
               cairo_clip(cairo);
               svgRenderer.render(cairo);
@@ -859,7 +859,7 @@ namespace minsky
       }
     if (onResizeHandles) drawResizeHandles(cairo);
 
-    cairo_rectangle(cairo,-0.5*width,-0.5*iconHeight,iconWidth,iconHeight);
+    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
     cairo_clip(cairo);
     if (selected)
       drawSelected(cairo);
