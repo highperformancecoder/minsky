@@ -126,6 +126,11 @@ namespace minsky
     
     int colXZoomed(double x) const {return colX(x/zoomFactor);}
     int rowYZoomed(double y) const {return rowY(y/zoomFactor);}
+    
+    // warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
+    string moveAssetClass(double x, double y);
+    // warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
+    string swapAssetClass(double x, double y);
 
     void highlightColumn(cairo_t* cairo,unsigned col);
     void highlightRow(cairo_t* cairo,unsigned row);
