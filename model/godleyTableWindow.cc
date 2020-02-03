@@ -798,6 +798,55 @@ namespace minsky
       godleyIcon->deleteRow(r+1);
     requestRedraw();
   }
+  
+  string GodleyTableWindow::moveAssetClass(double x, double y)
+  {
+	x/=zoomFactor;
+	y/=zoomFactor;
+	unsigned c=colX(x);	
+	string tmpStr="";
+	if (clickType(x,y)==colWidget) {
+	    unsigned visibleCol=c-scrollColStart+1;
+        if (c<colWidgets.size() && visibleCol < colLeftMargin.size()) {
+		    auto& moveVar=godleyIcon->table.cell(0,c);
+		    auto oldAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c));			
+            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3) {
+				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c+1));
+				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
+					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
+			}
+			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass=="asset") {
+				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c+1));
+				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
+					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
+			}
+			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2) {
+				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c-1));
+				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
+					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
+			}
+		}
+	}
+   return tmpStr;	    		 	
+   }
+  
+  string GodleyTableWindow::swapAssetClass(double x, double y) 
+  {
+	x/=zoomFactor;
+	y/=zoomFactor;
+	unsigned c=colX(x);	
+	string tmpStr="";	  
+	if (clickType(x,y)==row0) {
+	   if (c>0 && selectedCol>0 && c!=selectedCol) {
+		 auto& swapVar=godleyIcon->table.cell(0,selectedCol);
+		 auto oldAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(selectedCol));
+		 auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c));
+		 if (targetAssetClass!=oldAssetClass && !swapVar.empty())
+		    tmpStr="This will convert "+swapVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";  
+		}
+	  }
+	return tmpStr;  	  
+  }    
 
   void GodleyTableWindow::highlightColumn(cairo_t* cairo, unsigned col)
   {
@@ -936,7 +985,8 @@ namespace minsky
           insertIdx=0;
           if (selectedCol>=int(godleyIcon->table.cols()))
             {
-              selectedCol=0;
+              if (selectedRow>0) selectedCol=0;   // Minor fix: Make sure tabbing and right arrow traverse all editable cells.
+              else selectedCol=1;
               navigateDown();
             }
           checkCell00();

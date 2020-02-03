@@ -34,7 +34,7 @@ proc openGodley {id} {
         bind .$id.table <Destroy> "$id.delete"
 
         bind .$id.table <ButtonPress-1> "moveAssetClass $id %x %y %X %Y"
-        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; swapAssetClasses $id %x %y"
+        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; swapAssetClass $id %x %y"
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMoveB1 %x %y"
         bind .$id.table <Motion> "$id.mouseMove %x %y"
         bind .$id.table <Leave> "$id.mouseMove -1 -1; $id.update"
@@ -157,87 +157,31 @@ proc mouseDown {id x y X Y} {
 }
 
 # warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
-proc moveAssetClass {id x y X Y} {	
-   switch [$id.clickTypeZoomed $x $y] {    
-   colWidget {
-      set c [$id.colXZoomed $x]   	
-      set moveVar [$id.godleyIcon.table.getCell 0 $c]	   
-	  set oldAssetClass [$id.godleyIcon.table.getAssetClass $c]  
-	  set colWId [$id.getColWidget $x] 
-		  if {$colWId==3} {     
-             set targetAssetClass [$id.godleyIcon.table.getAssetClass [expr $c+1]]
- 	         if {$targetAssetClass!=$oldAssetClass && [llength $moveVar] != 0} {	
-                 switch [tk_messageBox -message "This will convert $moveVar from $oldAssetClass to $targetAssetClass. Are you sure?" -type yesno -parent .$id.table] {
-                   yes {
- 	            	    mouseDown $id $x $y $X $Y
- 	            	  }
-                   no {
- 	            	    mouseDown $id $x $c $X $Y
- 	            	  }   
-                 }
-             } else {
-               mouseDown $id $x $y $X $Y
-             }
-           } elseif {$colWId==2 && $oldAssetClass=="asset"} {  
-             set targetAssetClass [$id.godleyIcon.table.getAssetClass [expr $c+1]]
- 	         if {$targetAssetClass!=$oldAssetClass && [llength $moveVar] != 0} {	
-                 switch [tk_messageBox -message "This will convert $moveVar from $oldAssetClass to $targetAssetClass. Are you sure?" -type yesno -parent .$id.table] {
-                   yes {
- 	            	    mouseDown $id $x $y $X $Y
- 	            	  }
-                   no {
- 	            	    mouseDown $id $x $c $X $Y
- 	            	  }   
-                 }
-             } else {
-               mouseDown $id $x $y $X $Y
-             }
-		   } elseif {$colWId==2} {
-             set targetAssetClass [$id.godleyIcon.table.getAssetClass [expr $c-1]]
- 	         if {$targetAssetClass!=$oldAssetClass && [llength $moveVar] != 0} {	
-                 switch [tk_messageBox -message "This will convert $moveVar from $oldAssetClass to $targetAssetClass. Are you sure?" -type yesno -parent .$id.table] {
-                   yes {
- 	            	    mouseDown $id $x $y $X $Y
- 	            	  }
-                   no {
- 	            	    mouseDown $id $x $c $X $Y
- 	            	  }   
-                 }
-             } else {
-               mouseDown $id $x $y $X $Y
-             }			   
-		   } else {
-               mouseDown $id $x $y $X $Y
-           }			  	      
-      } 
-      default {
-        mouseDown $id $x $y $X $Y
-      }
-   }
+proc moveAssetClass {id x y X Y} {
+	set testStr [$id.moveAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		mouseDown $id $x $y $X $Y
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes {mouseDown $id $x $y $X $Y}
+        no {mouseDown $id $x $c $X $Y}	  
+ 	    }
+ 	 }
 }
 
 # warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
-proc swapAssetClasses {id x y} {
-    set c [$id.colXZoomed $x]
-    if {[$id.selectedRow]==0 && $c>0 && [$id.selectedCol]>0 && $c!=[$id.selectedCol]} {
-        set swapVar [$id.godleyIcon.table.getCell 0 [$id.selectedCol]]
- 	    set oldAssetClass [$id.godleyIcon.table.getAssetClass [$id.selectedCol]]
- 	    set targetAssetClass [$id.godleyIcon.table.getAssetClass $c]
- 	    if {$targetAssetClass!=$oldAssetClass && [llength $swapVar] != 0 } {	
-            switch [tk_messageBox -message "This will convert $swapVar from $oldAssetClass to $targetAssetClass. Are you sure?" -type yesno -parent .$id.table] {
-              yes {
- 	       	    $id.update
- 	       	    $id.mouseUp $x $y
- 	       	  }
-              no {
- 	       	    $id.update
- 	       	    $id.mouseUp $x $c
- 	       	  }   
-            }
-        } else {
-        $id.mouseUp $x $y
-        }
-    }  
+proc swapAssetClass {id x y} {
+	set testStr [$id.swapAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		$id.mouseUp $x $y 
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes { $id.mouseUp $x $y }
+        no { $id.mouseUp $x $c }
+ 	 }
+   }
 }
 
 proc importStockVar {id var x} {
