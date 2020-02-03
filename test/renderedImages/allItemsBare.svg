@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="757pt" height="388pt" viewBox="0 0 757 388" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="757pt" height="390pt" viewBox="0 0 757 390" version="1.1">
 <defs>
 <g>
 <symbol overflow="visible" id="glyph0-0">
@@ -709,7 +709,7 @@
   <path d="M 307.996094 288.359375 L 360.996094 288.359375 L 360.996094 387.359375 L 307.996094 387.359375 Z M 307.996094 288.359375 "/>
 </clipPath>
 </defs>
-<g id="surface206">
+<g id="surface281">
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-1" x="0.5" y="19.467773"/>
   <use xlink:href="#glyph0-2" x="9.5" y="19.467773"/>
