@@ -33,8 +33,8 @@ proc openGodley {id} {
         bind .$id.table <Configure> "$id.requestRedraw"
         bind .$id.table <Destroy> "$id.delete"
 
-        bind .$id.table <ButtonPress-1> "mouseDown $id %x %y %X %Y"
-        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; $id.mouseUp %x %y"
+        bind .$id.table <ButtonPress-1> "moveAssetClass $id %x %y %X %Y"
+        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; swapAssetClass $id %x %y"
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMoveB1 %x %y"
         bind .$id.table <Motion> "$id.mouseMove %x %y"
         bind .$id.table <Leave> "$id.mouseMove -1 -1; $id.update"
@@ -154,6 +154,34 @@ proc mouseDown {id x y X Y} {
         $id.mouseDown $x $y
         focus .$id.table
     }
+}
+
+# warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
+proc moveAssetClass {id x y X Y} {
+	set testStr [$id.moveAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		mouseDown $id $x $y $X $Y
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes {mouseDown $id $x $y $X $Y}
+        no {mouseDown $id $x $c $X $Y}	  
+ 	    }
+ 	 }
+}
+
+# warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
+proc swapAssetClass {id x y} {
+	set testStr [$id.swapAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		$id.mouseUp $x $y 
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes { $id.mouseUp $x $y }
+        no { $id.mouseUp $x $c }
+ 	 }
+   }
 }
 
 proc importStockVar {id var x} {
