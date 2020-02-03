@@ -834,7 +834,7 @@ namespace minsky
   {
 	x/=zoomFactor;
 	y/=zoomFactor;
-	unsigned c=colX(x);	
+	int c=colX(x);	
 	string tmpStr="";	  
 	if (clickType(x,y)==row0) {
 	   if (c>0 && selectedCol>0 && c!=selectedCol) {
