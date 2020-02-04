@@ -105,14 +105,14 @@ SUITE(TensorOps)
       evalOp<OperationType::runningSum>();
       {
         auto& toVal=*to.vValue();
-        for (auto i=0; i<toVal.size(); ++i)
+        for (size_t i=0; i<toVal.size(); ++i)
           CHECK_EQUAL(2*(i+1),toVal[i]);
       }
       
       evalOp<OperationType::runningProduct>();
       {
         auto& toVal=*to.vValue();
-        for (auto i=0; i<toVal.size(); ++i)
+        for (size_t i=0; i<toVal.size(); ++i)
           CHECK_EQUAL(pow(2,i+1),toVal[i]);
       }
     }
