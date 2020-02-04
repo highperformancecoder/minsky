@@ -170,14 +170,19 @@ namespace civita
   
   class Scan: public DimensionedArgCachedOp
   {
-    size_t dimension; // dimension to scan over. >rank = all dims
-    TensorPtr arg;
   public:
-    std::function<void(double&,double)> f;
+    std::function<void(double&,double,size_t)> f;
     template <class F>
-    Scan(F f, const TensorPtr& arg={}, const std::string& dimName="") {setArgument(arg,dimName);}
+    Scan(F f, const TensorPtr& arg={}, const std::string& dimName=""): f(f) 
+      {setArgument(arg,dimName);}
+    void setArgument(const TensorPtr& arg, const std::string& dimName="") override {
+      DimensionedArgCachedOp::setArgument(arg,dimName);
+      if (arg)
+        cachedResult.hypercube(arg->hypercube());
+      // TODO - can we handle sparse data?
+    }      
     void computeTensor() const override;
-    Timestamp timestamp() const override {return arg->timestamp();}
+    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
 
 }

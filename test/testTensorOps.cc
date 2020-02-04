@@ -21,6 +21,7 @@
 #include "evalOp.h"
 #include "selection.h"
 #include "xvector.h"
+#include "minskyTensorOps.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
@@ -33,121 +34,130 @@ using namespace boost;
 using namespace boost::posix_time;
 using namespace boost::gregorian;
 
+// convenience structure to avoid putting items into Minsky
+// note privately derived from EvalCommon pointer to get around initialisation order issues
+struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
+{
+  template <class Op>
+  Eval(VariableBase& result, Op& op):
+    shared_ptr<EvalCommon>(new EvalCommon),
+    TensorEval(*result.vValue(), *this,
+               TensorOpFactory().create(op,TensorsFromPort(*this))) {}
+  
+  void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());}
+};
+
+struct TestFixture
+{
+  Variable<VariableType::flow> from, to;
+  VariableValue& fromVal;
+  TestFixture(): from("from"), to("to"), fromVal(*from.vValue()) {
+    fromVal.hypercube(Hypercube(vector<unsigned>{5}));
+    for (auto& i: fromVal)
+      i=&i-&fromVal[0]+1;
+  }
+
+  template <OperationType::Type op>
+  void evalOp()
+  {
+    Operation<op> theOp;
+    Wire w1(from.ports[0], theOp.ports[1]), w2(theOp.ports[0], to.ports[1]);
+    Eval(to, theOp)();
+  }
+  template <OperationType::Type op>
+  void checkReduction(double v)
+  {
+    evalOp<op>();
+    CHECK_EQUAL(v,to.vValue()->value());
+  }
+};
+
 SUITE(TensorOps)
 {
-  TEST(reduction)
+  TEST_FIXTURE(TestFixture, reduction)
     {
-      VariableValue from(VariableType::flow), to(VariableType::flow);
-      from.hypercube(vector<unsigned>{5});
-      from.allocValue();
-      EvalOpPtr sum(OperationType::sum, nullptr, to, from);
-      EvalOpPtr prod(OperationType::product, nullptr, to, from);
-      EvalOpPtr inf(OperationType::infimum, nullptr, to, from);
-      EvalOpPtr sup(OperationType::supremum, nullptr, to, from);
-      EvalOpPtr any(OperationType::any, nullptr, to, from);
-      EvalOpPtr all(OperationType::all, nullptr, to, from);
-      EvalOpPtr infIndex(OperationType::infIndex, nullptr, to, from);
-      EvalOpPtr supIndex(OperationType::supIndex, nullptr, to, from);
-      for (auto i=from.begin(); i!=from.end(); ++i)
-        *i=i-from.begin()+1;
-      sum->eval();
-      CHECK_EQUAL(15,to.value());
-      prod->eval();
-      CHECK_EQUAL(120,to.value());
-      inf->eval();
-      CHECK_EQUAL(1,to.value());
-      sup->eval();
-      CHECK_EQUAL(5,to.value());
-      any->eval();
-      CHECK_EQUAL(1,to.value());
-      all->eval();
-      CHECK_EQUAL(1,to.value());
-      from.begin()[3]=0;
-      any->eval();
-      CHECK_EQUAL(1,to.value());
-      all->eval();
-      CHECK_EQUAL(0,to.value());
-      for (auto i=from.begin(); i!=from.end(); ++i)
-        *i=0;
-      any->eval();
-      CHECK_EQUAL(0,to.value());
-      all->eval();
-      CHECK_EQUAL(0,to.value());
+      checkReduction<OperationType::sum>(15);
+      checkReduction<OperationType::product>(120);
+      checkReduction<OperationType::infimum>(1);
+      checkReduction<OperationType::supremum>(5);
+      checkReduction<OperationType::any>(1);
+      checkReduction<OperationType::all>(1);
 
-      from.begin()[1]=-1;
-      from.begin()[3]=10;
-      infIndex->eval();
-      CHECK_EQUAL(1,to.value());
-      supIndex->eval();
-      CHECK_EQUAL(3,to.value());
+      fromVal[3]=0;
+      checkReduction<OperationType::all>(0);
+
+      for (auto& i: fromVal)
+        i=0;
+      checkReduction<OperationType::any>(0);
+      checkReduction<OperationType::all>(0);
+
+      fromVal[1]=-1;
+      fromVal[3]=10;
+      checkReduction<OperationType::infIndex>(1);
+      checkReduction<OperationType::supIndex>(3);
     }
   
-  TEST(scan)
+  TEST_FIXTURE(TestFixture, scan)
     {
-      VariableValue from(VariableType::flow), to(VariableType::flow);
-      from.hypercube(vector<unsigned>{5}); to.hypercube(vector<unsigned>{5});
-      from.allocValue();
+      for (auto& i: fromVal)
+        i=2;
       
-      EvalOpPtr sum(OperationType::runningSum, nullptr, to, from);
-      Operation<OperationType::runningSum> opSum;
-      sum->setTensorParams(from,opSum);
+      evalOp<OperationType::runningSum>();
+      {
+        auto& toVal=*to.vValue();
+        for (auto i=0; i<toVal.size(); ++i)
+          CHECK_EQUAL(2*(i+1),toVal[i]);
+      }
       
-      EvalOpPtr prod(OperationType::runningProduct, nullptr, to, from);
-      Operation<OperationType::runningProduct> opProduct;
-      prod->setTensorParams(from,opProduct);
-      
-      for (auto i=from.begin(); i!=from.end(); ++i)
-        *i=2;
-      sum->eval();
-      CHECK_EQUAL(5,to.size());
-      for (size_t i=0; i<to.size(); ++i)
-        CHECK_EQUAL(2*(i+1),to[i]);
-      
-      prod->eval();
-      CHECK_EQUAL(5,to.size());
-      for (size_t i=0; i<to.size(); ++i)        
-        CHECK_EQUAL(pow(2,i+1),to.value(i));
+      evalOp<OperationType::runningProduct>();
+      {
+        auto& toVal=*to.vValue();
+        for (auto i=0; i<toVal.size(); ++i)
+          CHECK_EQUAL(pow(2,i+1),toVal[i]);
+      }
     }
 
-  TEST(indexGather)
+  TEST_FIXTURE(TestFixture, indexGather)
     {
-      VariableValue from(VariableType::flow), to(VariableType::flow);
-      from.hypercube(vector<unsigned>{5}); to.hypercube(vector<unsigned>{5});
-      from.allocValue();
-      for (auto i=from.begin(); i!=from.end(); ++i)
-        *i=(i-from.begin())%2;
-      EvalOpPtr index(OperationType::index, nullptr, to, from);
-      index->eval();
+      auto& toVal=*to.vValue();
+      for (auto& i: fromVal)
+        i=(&i-&fromVal[0])%2;
+      evalOp<OperationType::index>();
       vector<double> expected{1,3};
-      CHECK_ARRAY_EQUAL(expected,to.begin(),2);
-      for (size_t i=3; i<to.size(); ++i)
-        CHECK(std::isnan(to.begin()[i]));
+      CHECK_ARRAY_EQUAL(expected,toVal.begin(),2);
+      for (size_t i=3; i<toVal.size(); ++i)
+        CHECK(std::isnan(toVal[i]));
 
       // apply gather to the orignal vector and the index results.
-      VariableValue gathered(VariableType::flow); gathered.hypercube(vector<unsigned>{5});
-      EvalOpPtr gather(OperationType::gather, nullptr, gathered, from, to);
-      gather->eval();
+      Operation<OperationType::gather> gatherOp;
+      Variable<VariableType::flow> gatheredVar("gathered");
+      Wire w1(from.ports[0], gatherOp.ports[1]);
+      Wire w2(to.ports[0], gatherOp.ports[3]);
+      Wire w3(gatherOp.ports[0], gatheredVar.ports[1]);
+
+      auto& gathered=*gatheredVar.vValue();
+      Eval eval(gatheredVar, gatherOp);
+      eval();
+      
       // replace nans with -1 to make comparison test simpler
-      for (auto g=gathered.begin(); g!=gathered.end(); ++g)
-        if (!finite(*g)) *g=-1;
+      for (auto& g: gathered)
+        if (!finite(g)) g=-1;
       expected={-1,1,-1,1,-1};
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
 
-      // another example - check form corner cases
+      // another example - check for corner cases
       vector<double> data{0.36,0.412,0.877,0.437,0.751};
-      memcpy(from.begin(),&data[0],data.size()*sizeof(data[0]));
+      memcpy(fromVal.begin(),&data[0],data.size()*sizeof(data[0]));
       
-      index->eval();
+      eval();
       expected={2,4};
-      CHECK_ARRAY_EQUAL(expected,to.begin(),2);
-      for (size_t i=3; i<to.size(); ++i)
-        CHECK(std::isnan(to.begin()[i]));
+      CHECK_ARRAY_EQUAL(expected,toVal.begin(),2);
+      for (size_t i=3; i<toVal.size(); ++i)
+        CHECK(std::isnan(toVal[i]));
 
-      // apply gather to the orignal vector and the index results.
-      gather->eval();
       // replace nans with -1 to make comparison test simpler
-      for (auto g=gathered.begin(); g!=gathered.end(); ++g)
-        if (!finite(*g)) *g=-1;
+      for (auto& g: gathered)
+        if (!finite(g)) g=-1;
       expected={-1,-1,0.877,-1,0.751};
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
     }

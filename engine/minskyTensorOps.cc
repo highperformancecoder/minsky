@@ -241,7 +241,7 @@ namespace minsky
   class GeneralTensorOp<OperationType::runningProduct>: public civita::Scan
   {
   public:
-    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x+=y;}) {}
+    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x*=y;}) {}
   };
   
   template <>
@@ -495,7 +495,7 @@ namespace minsky
     return r;
   }
 
-  TensorEval::TensorEval(const VariableValue& v, const shared_ptr<EvalCommon>& ev): result(v, ev)
+  TensorEval::TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev): result(v, ev)
   {
     if (auto var=cminsky().definingVar(v.valueId()))
       if (var->lhs())
@@ -503,6 +503,7 @@ namespace minsky
           rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports[1])[0];
           result.hypercube(rhs->hypercube());
           result.index(rhs->index());
+          v=result;
         }
   }
   

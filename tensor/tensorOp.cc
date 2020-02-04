@@ -133,6 +133,7 @@ namespace civita
   void DimensionedArgCachedOp::setArgument(const TensorPtr& a, const std::string& dimName)
   {
     arg=a;
+    if (!arg) {m_hypercube.xvectors.clear(); return;}
     m_hypercube=arg->hypercube();
     dimension=std::numeric_limits<size_t>::max();
     auto& xv=m_hypercube.xvectors;
@@ -157,17 +158,17 @@ namespace civita
               for (size_t k=i+j+stride; k<i+j+stride*argDims[dimension]; k+=stride)
                 {
                   cachedResult[k] = cachedResult[k-stride];
-                  f(cachedResult[k], arg->atHCIndex(k));
+                  f(cachedResult[k], arg->atHCIndex(k), k);
                 }
             }
       }
     else
       {
         cachedResult[0]=arg->atHCIndex(0);
-        for (size_t i=0; i<hypercube().numElements(); ++i)
+        for (size_t i=1; i<hypercube().numElements(); ++i)
           {
             cachedResult[i]=cachedResult[i-1];
-            f(cachedResult[i], arg->atHCIndex(i));
+            f(cachedResult[i], arg->atHCIndex(i), i);
           }
       }
   }

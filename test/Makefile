@@ -9,8 +9,8 @@ endif
 
 VPATH= .. ../schema ../model ../engine ../tensor ../server ../RESTService $(ECOLAB_HOME)/include
 
-UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testLockGroup.o testCSVParser.o
-#testDatabase.o testTensorOps.o 
+UNITTESTOBJS=main.o testModel.o testMinsky.o testLatexToPango.o testVariable.o testDerivative.o testUnits.o testXVector.o testLockGroup.o testCSVParser.o testTensorOps.o 
+#testDatabase.o
 
 MINSKYOBJS=$(filter-out ../tclmain.o ../server-main.o ../RESTService.o,$(wildcard ../*.o))
 FLAGS:=-I.. -I../RESTService -I../tensor $(FLAGS)

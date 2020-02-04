@@ -122,9 +122,12 @@ namespace minsky
   public:
     // not used, but required to make this a concrete type
     Type type() const {assert(false); return OperationType::numOps;} 
-    TensorEval(const VariableValue& v, const shared_ptr<EvalCommon>& ev);
-    TensorEval(const VariableValue& v, const shared_ptr<EvalCommon>& ev,
+    TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev); 
+    TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
+      result.hypercube(rhs->hypercube());
+      result.index(rhs->index());
+      v=result;
       assert(result.idx()>=0);
       assert(result.size()==rhs->size());
     } 
