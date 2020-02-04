@@ -799,6 +799,15 @@ namespace minsky
     requestRedraw();
   }
   
+namespace {
+  string constructMessage(GodleyAssetClass::AssetClass& targetAC, GodleyAssetClass::AssetClass& oldAC, string& var)
+  {
+	  string tmpStr="";
+	  tmpStr="This will convert "+var+" from "+classdesc::enumKey<GodleyAssetClass::AssetClass>(oldAC)+" to "+classdesc::enumKey<GodleyAssetClass::AssetClass>(targetAC)+". Are you sure?";
+	  return tmpStr;
+  }	  
+}
+  
   string GodleyTableWindow::moveAssetClass(double x, double y)
   {
 	x/=zoomFactor;
@@ -808,22 +817,22 @@ namespace minsky
 	if (clickType(x,y)==colWidget) {
 	    unsigned visibleCol=c-scrollColStart+1;
         if (c<colWidgets.size() && visibleCol < colLeftMargin.size()) {
-		    auto& moveVar=godleyIcon->table.cell(0,c);
-		    auto oldAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c));			
+		    auto& moveVar=godleyIcon->table.cell(0,c);		
+		    auto oldAssetClass=godleyIcon->table._assetClass(c);
             if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3) {
-				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c+1));
+				auto targetAssetClass=godleyIcon->table._assetClass(c+1);
 				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
+				    tmpStr=constructMessage(targetAssetClass,oldAssetClass,moveVar);
 			}
-			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass=="asset") {
-				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c+1));
+			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==1 && godleyIcon->table._assetClass(c-1)!=1) {
+				auto targetAssetClass=godleyIcon->table._assetClass(c+1);
 				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
+				    tmpStr=constructMessage(targetAssetClass,oldAssetClass,moveVar);
 			}
 			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2) {
-				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c-1));
+				auto targetAssetClass=godleyIcon->table._assetClass(c-1);
 				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
+				    tmpStr=constructMessage(targetAssetClass,oldAssetClass,moveVar);
 			}
 		}
 	}
@@ -839,10 +848,10 @@ namespace minsky
 	if (clickType(x,y)==row0) {
 	   if (c>0 && selectedCol>0 && c!=selectedCol) {
 		 auto& swapVar=godleyIcon->table.cell(0,selectedCol);
-		 auto oldAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(selectedCol));
-		 auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c));
+		 auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
+		 auto targetAssetClass=godleyIcon->table._assetClass(c);
 		 if (targetAssetClass!=oldAssetClass && !swapVar.empty())
-		    tmpStr="This will convert "+swapVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";  
+		    tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
 		}
 	  }
 	return tmpStr;  	  
