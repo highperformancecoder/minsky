@@ -132,7 +132,7 @@ SUITE(TensorOps)
       Operation<OperationType::gather> gatherOp;
       Variable<VariableType::flow> gatheredVar("gathered");
       Wire w1(from.ports[0], gatherOp.ports[1]);
-      Wire w2(to.ports[0], gatherOp.ports[3]);
+      Wire w2(to.ports[0], gatherOp.ports[2]);
       Wire w3(gatherOp.ports[0], gatheredVar.ports[1]);
 
       auto& gathered=*gatheredVar.vValue();
@@ -142,7 +142,7 @@ SUITE(TensorOps)
       // replace nans with -1 to make comparison test simpler
       for (auto& g: gathered)
         if (!finite(g)) g=-1;
-      expected={-1,1,-1,1,-1};
+      expected={1,1,-1,-1,-1};
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
 
       // another example - check for corner cases
@@ -150,7 +150,7 @@ SUITE(TensorOps)
       memcpy(fromVal.begin(),&data[0],data.size()*sizeof(data[0]));
       
       eval();
-      expected={2,4};
+      expected={1,3};
       CHECK_ARRAY_EQUAL(expected,toVal.begin(),2);
       for (size_t i=3; i<toVal.size(); ++i)
         CHECK(std::isnan(toVal[i]));
@@ -158,7 +158,7 @@ SUITE(TensorOps)
       // replace nans with -1 to make comparison test simpler
       for (auto& g: gathered)
         if (!finite(g)) g=-1;
-      expected={-1,-1,0.877,-1,0.751};
+      expected={0.412, 0.437, -1, -1, -1};
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
     }
 }
