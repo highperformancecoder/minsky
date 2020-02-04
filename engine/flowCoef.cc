@@ -54,6 +54,8 @@ namespace minsky
 
   string FlowCoef::str() const
   {
+    if (name.empty())
+      return minsky::str(coef);
     if (coef==1)
       return name;
     else if (coef==-1)

@@ -652,7 +652,7 @@ You may also select ``Open in canvas'' from the context menu. This
 replaces the current canvas contents with the contents of the group,
 allowing you to edit the contents of the group directly without the
 distractions of the rest of the model. Select ``Open master group'' to
-return to the toplevel group occupying the canvas.
+return to the top level group occupying the canvas.
 
 Around the edges of a group are input or output variables, which allow
 one to parameterise the group. One can drag a variable and dock it in
@@ -775,7 +775,19 @@ Finally come the flows. The first column is a simple textual label
 (the phrase ``Initial Conditions'', regardless of capitalisation, is a
 reserved phrase for setting stock variable initial conditions)
 identifying the flow. The flows themselves are written as a numerical
-multipler times a flow variable. 
+multiplier times a flow variable. For example, if you wanted to transfer
+an amount between the asset and liability column, you might write
+``Amount" in both columns, which would satisfy the equation A-L-E=0.
+It would also be possible to write ``2Amount" in the asset column, 
+along with ``Amount" in both the Liability and Equity columns. This would
+still satisfy A-L-E=0.
+
+The Godley table also shows the value of the entered variable, displayed within the table.
+For example, if you set ``Amount" to equal the value of system time, on opening
+the Godley table, wherever you entered ``Amount" in the table the cell would show
+``Amount = 0.00" if the system time was set to 0.00. This provides a helpful
+tool for displaying the value of the variable at that point in the simulation.
+This feature can be enabled or disabled in the preferences panel.
 
 \section{Context Menu}
 
@@ -891,3 +903,65 @@ The following keystrokes insert an operation
 
 Typing any other character, then return will insert an operation (if
 the name matches), or otherwise a variable with that name.
+
+\section{Dimensional Analysis}
+
+Dimensional analysis is the idea of attaching units of measurement
+(eg metre or second) to the quantities being computed. It provides an 
+additional constraint that the system must satisfy, reducing the chance 
+of wiring errors. Two different units being added together will throw up 
+an error - you cannot add 2 metres to 3 kilograms. But it should be 
+possible add 2 metres to 3 feet, and get the correct answer. You may need 
+to explicitly add a multiply operation to convert from one unit to another,
+for example, dividing the 3 feet by 3.281 before adding it to the 2 metres,
+providing a total of 2.914 meters.
+
+\textbf{Using Dimensional Analysis in Minsky}
+
+To attach units to quantities in Minsky, you use the units field of the 
+variable/parameters/constants edit dialog box. Each word typed in this box 
+describes a separate unit. ``\^'' followed by an integer is used to 
+represent a power. Finally, a single ``/'' indicates that the following units 
+are on the denominator, dividing the first set of units by the second. So 
+to represent the unit of acceleration, you can equivalently type all of the following:
+
+\begin{itemize}
+  \item \verb+m/s^2+
+  \item \verb+m/s s+
+  \item \verb+m/s^-2+
+\end{itemize}
+
+Or spelling it out in full:
+
+\begin{itemize}
+  \item \verb+metre/second^2+
+  \item \verb+metre second^-2+
+  \item \verb+metre / second second+
+\end{itemize}
+
+Note that metre and m are distinctly different units in Minsky.
+
+Consider the network introduced in the \hyperref[intro:new]{New to System Dynamics}
+section of the Minsky manual. For GDP, one could enter \$/year for the units. Labor 
+Productivity should be expressed in terms of \$ per person year. If the system
+does not accept \$/person year, you can enter this as \verb+$ person^-1 year^-1+. 
+Finally, Population has units of person. Press reset, and the Workers variable 
+automatically has units of person, and EmpRate is dimensionless.
+
+All function objects require dimensionless inputs. You can use dimensional 
+analysis to prevent incorrectly feeding a degree measurement into a sin, by 
+requiring them to be multiplied by a radiansPerDegree parameter.
+
+\section{Bookmarks}
+
+Bookmarks are a useful feature for saving the current position and
+zoom of the canvas, to be able to come back to that part of the canvas
+later. This helps managing more complicated models.  To create a new
+bookmark, click on the ``Bookmark'' tab in the top left-hand corner
+(in-between ``Edit'' and ``Insert'') and select ``Bookmark this
+position''. The program will provide a dialogue box to enter in a name
+for the new bookmark. After creating the bookmark, all user-created
+bookmarks can be seen in the Bookmarks menu. To delete a bookmark,
+simply select ``Delete'' from the Bookmarks menu and select the
+desired bookmark. To open an existing bookmark, select one from the
+menu.

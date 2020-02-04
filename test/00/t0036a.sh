@@ -38,20 +38,16 @@ proc afterMinskyStarted {} {uplevel #0 {
   openNamedFile $here/examples/GoodwinLinear02.mky
   assert {[findObject Group]}
   set item minsky.canvas.item
+  canvas.focusFollowsMouse 1
   canvas.mouseDown [expr [\$item.x]-0.55*[\$item.width]] [expr [\$item.y]+0.55*[\$item.height]]
   canvas.mouseUp [expr [\$item.x]+0.55*[\$item.width]] [expr [\$item.y]-0.55*[\$item.height]] 
   assert {[canvas.selection.groups.size]==1}
   newSystem
   paste
-  assert {[model.numGroups]==2}
+  # For ticket 1080. There is no longer an outer group when existing groups or items are pasted between canvasses or in the same canvas
+  assert {[model.numGroups]==1}
   assert {[model.numItems]==8}
   assert {[model.numWires]==8}
-  # retrieve inner group
-  findObject Group
-  \$item.groups.@elem 0
-
-  assert {[minsky.canvas.item.groups(0).items.size]==8}
-  assert {[minsky.canvas.item.groups(0).wires.size]==8}
   tcl_exit
 }}
 EOF

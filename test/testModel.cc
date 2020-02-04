@@ -298,14 +298,14 @@ SUITE(Group)
 
     TEST_FIXTURE(Group, checkAddIORegion)
       {
-        CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*width, y()));
-        CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*width, y()));
+        CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
+        CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
         VariablePtr inp(VariableType::flow,"input");
         VariablePtr outp(VariableType::flow,"output");
-        inp->moveTo(x()-0.5*width, y());
+        inp->moveTo(x()-0.5*iconWidth, y());
         addItem(inp);
         checkAddIORegion(inp);
-        outp->moveTo(x()+0.5*width, y());
+        outp->moveTo(x()+0.5*iconWidth, y());
         addItem(outp);
         checkAddIORegion(outp);
         CHECK_EQUAL(1,inVariables.size());
@@ -445,9 +445,11 @@ SUITE(Canvas)
       CHECK_EQUAL(1,canvas.selection.items.size());
       CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),op) !=canvas.selection.items.end());
 
+      group0->updateBoundingBox(); //why? for Travis.
+      
       // test that groups can be selected
       CHECK(!group0->displayContents());
-      float w=0.5*group0->width+10, h=0.5*group0->height+10;
+      float w=0.5*group0->width()+10, h=0.5*group0->height()+10;
       x=group0->x()-w; y=group0->y()-h;
       // nw -> se selection
       canvas.mouseDown(x,y);
@@ -467,7 +469,7 @@ SUITE(Canvas)
       // se -> nw selection
       canvas.selection.clear();
       canvas.mouseDown(x+2*w,y+2*h);
-      canvas.mouseUp(x-2*w,y-2*h);
+      canvas.mouseUp(x,y);
       CHECK_EQUAL(0,canvas.selection.items.size());
       CHECK_EQUAL(1,canvas.selection.groups.size());
       CHECK(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
@@ -527,13 +529,13 @@ SUITE(Canvas)
         addGroup();
         auto& group=dynamic_cast<Group&>(*itemFocus);
         group.relZoom=0.5; // ensure displayContents is false
-        double w=group.width, h=group.height;
+        double w=group.iconWidth, h=group.iconHeight;
         double x=group.x(), y=group.y();
 
         mouseDown(x+0.5*w, y+0.5*h);
         mouseUp(x+w, y+h);
-        CHECK_CLOSE(1.5*w,group.width,1);
-        CHECK_CLOSE(1.5*h,group.height,1);
+        CHECK_CLOSE(1.5*w,group.iconWidth,1);
+        CHECK_CLOSE(1.5*h,group.iconHeight,1);
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
@@ -681,22 +683,22 @@ SUITE(Canvas)
         gi2->update();
         
         canvas.item=a;
-        canvas.copyItem();
-        canvas.mouseUp(500,500);
+        auto numItems=model->numItems();
         canvas.renameAllInstances("foobar");
+        CHECK_EQUAL(numItems, model->numItems());
         unsigned count=0;
         for (auto i: model->items)
           if (auto v=dynamic_cast<VariableBase*>(i.get()))
             {
-              CHECK(v->name()!="a");
-              if (v->name()=="foobar")
+              CHECK(v->valueId()!=":a");
+              if (v->valueId()==":foobar")
                 count++;
             }
-        CHECK_EQUAL(4,count);
+        CHECK_EQUAL(2,count); // should be 1 from first godley table, and the original a
 
         // check that the Godley table got updated
         CHECK_EQUAL("foobar",gi->table.cell(2,1));
-        CHECK_EQUAL("foobar",gi->table.cell(2,2));
+        CHECK_EQUAL(":foobar",gi->table.cell(2,2));
         CHECK_EQUAL("a",gi2->table.cell(2,1)); // local var, not target of rename
         CHECK_EQUAL(":foobar",gi2->table.cell(2,2));
 
@@ -776,32 +778,33 @@ SUITE(Canvas)
         godley->table.cell(2,2)="y";
         godley->update();
 
-        
         unsigned originalNumItems=model->numItems();
-        unsigned originalNumGroups=model->numGroups();
         copyAllFlowVars();
         CHECK_EQUAL(originalNumItems+godley->flowVars().size(),model->numItems());
-        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
-        auto newG=model->groups.back();
-        CHECK_EQUAL(godley->flowVars().size(), newG->items.size());
-        // assume the copied items are done in order
-        for (size_t i=0; i<godley->flowVars().size(); ++i)
-          CHECK_EQUAL(godley->flowVars()[i]->valueId(),
-                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
-
-        originalNumItems=model->numItems();
-        originalNumGroups=model->numGroups();
+        // Check that the number of items in selection after copyAllFlowVars() is equal to the number of flowVars attached to the Godley Icon. For ticket 1039.
+        CHECK_EQUAL(godley->flowVars().size(),selection.items.size());
         
+        //Check that there are two copies of the flowVars orginally attached to the Godley Icon. For ticket 1039.
+        map<string,int> idCnt;
+        for (auto& i: model->items)
+          if (auto v=i->variableCast())
+             idCnt[v->valueId()]++;
+        for (auto v: godley->flowVars())
+        CHECK_EQUAL(2, idCnt[v->valueId()]);                
+        
+        originalNumItems=model->numItems();
         copyAllStockVars();
         CHECK_EQUAL(originalNumItems+godley->stockVars().size(),model->numItems());
-        CHECK_EQUAL(originalNumGroups+1,model->numGroups());
-        newG=model->groups.back();
-        CHECK_EQUAL(godley->stockVars().size(), newG->items.size());
-        // assume the copied items are done in order
-        for (size_t i=0; i<godley->stockVars().size(); ++i)
-          CHECK_EQUAL(godley->stockVars()[i]->valueId(),
-                      dynamic_cast<VariableBase*>(newG->items[i].get())->valueId());
-
+        // Check that the number of items in selection after copyAllStockVars() is equal to the number of stockVars attached to the Godley Icon. For ticket 1039.
+        CHECK_EQUAL(godley->stockVars().size(),selection.items.size());     
+        
+        //Check that there are two copies of the stockVars orginally attached to the Godley Icon. For ticket 1039.
+        idCnt.clear();
+        for (auto& i: model->items)
+          if (auto v=i->variableCast())
+             if (v->isStock()) idCnt[v->valueId()]++;
+        for (auto v: godley->stockVars())
+        CHECK_EQUAL(2, idCnt[v->valueId()]);    
       }
 
     TEST_FIXTURE(TestFixture,handleArrows)
@@ -1370,7 +1373,7 @@ SUITE(GodleyTableWindow)
       
       selectedCol=1;
       selectedRow=1;
-      savedText="abc";
+      godleyIcon->table.savedText="abc";
       keyPress('d',"d"); keyPress(XK_Escape,""); // should revert to previous
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
       CHECK_EQUAL(-1,selectedCol);

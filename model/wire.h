@@ -31,12 +31,15 @@
 
 namespace minsky
 {
+  class Wire;
   class Port;
   class Group;
   class Units;
   using ecolab::error;
-
-  class Wire: public NoteBase
+  
+  struct WireAccessor: public ecolab::TCLAccessor<Wire, std::vector<float>> {WireAccessor();};
+  
+  class Wire: public NoteBase, public WireAccessor
   {
     CLASSDESC_ACCESS(Wire);
     friend struct SchemaHelper;
@@ -53,8 +56,6 @@ namespace minsky
     Wire() {}
     Wire(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to, 
          const std::vector<float>& a_coords=std::vector<float>()); 
-    Wire(const Wire& x): NoteBase(x), m_coords(x.m_coords), m_from(x.m_from), m_to(x.m_to) {}
-    
    ~Wire();
 
     std::shared_ptr<Port> from() const {return m_from.lock();}
@@ -66,12 +67,8 @@ namespace minsky
     void draw(cairo_t* cairo) const;
     
     /// display coordinates 
-    std::vector<float> _coords() const;
-    std::vector<float> _coords(const std::vector<float>& coords);
-    ecolab::Accessor<std::vector<float>> coords {
-      [this]() {return _coords();},
-        [this](const std::vector<float>& c) {return _coords(c);}
-    };
+    std::vector<float> coords() const;
+    std::vector<float> coords(const std::vector<float>& coords);
     
     /// returns true if coordinates are near this wire
     bool near(float x, float y) const;

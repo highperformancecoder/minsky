@@ -64,7 +64,7 @@ RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
 
         Pango pango(lcairo);
         pango.setFontSize(10);
-        pango.setMarkup(latexToPango(c.description));
+        pango.setMarkup(latexToPango(c.description()));
         w=0.5*pango.width()+2; 
         h=0.5*pango.height()+4;
         hoffs=pango.top();
@@ -141,7 +141,7 @@ void RenderVariable::draw()
 
 void RenderVariable::updatePortLocs() const
 {
-  double angle=var.rotation * M_PI / 180.0;
+  double angle=var.rotation() * M_PI / 180.0;
   double x0=w, y0=0, x1=-w+2, y1=0, z=var.zoomFactor();
   double sa=sin(angle), ca=cos(angle);
   var.ports[0]->moveTo(var.x()+z*(x0*ca-y0*sa), 
@@ -153,8 +153,8 @@ void RenderVariable::updatePortLocs() const
 bool RenderVariable::inImage(float x, float y)
 {
   float dx=x-var.x(), dy=y-var.y();
-  float rx=dx*cos(var.rotation*M_PI/180)-dy*sin(var.rotation*M_PI/180);
-  float ry=dy*cos(var.rotation*M_PI/180)+dx*sin(var.rotation*M_PI/180);
+  float rx=dx*cos(var.rotation()*M_PI/180)-dy*sin(var.rotation()*M_PI/180);
+  float ry=dy*cos(var.rotation()*M_PI/180)+dx*sin(var.rotation()*M_PI/180);
   return rx>=-w && rx<=w && ry>=-h && ry <= h;
 }
 

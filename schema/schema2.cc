@@ -126,7 +126,7 @@ namespace schema2
           if (auto d=dynamic_cast<minsky::DataOp*>(i))
             {
               items.back().dataOpData=d->data;
-              items.back().name=d->description;
+              items.back().name=d->description();
             }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
@@ -502,11 +502,11 @@ namespace schema2
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
-    x.rotation=y.rotation;
+    x.rotation(y.rotation);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
-          x1->description=*y.name;
+          x1->description(*y.name);
         if (y.dataOpData)
           x1->data=*y.dataOpData;
       }
@@ -623,8 +623,9 @@ namespace schema2
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
-        if (y.width) x1->width=*y.width;
-        if (y.height) x1->height=*y.height;
+        if (y.width) x1->iconWidth=*y.width;
+        if (y.height) x1->iconHeight=*y.height;
+        x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
         if (y.bookmarks) x1->bookmarks=*y.bookmarks;
       }

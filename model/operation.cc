@@ -140,15 +140,15 @@ namespace minsky
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
-    double angle=rotation * M_PI / 180.0;
-    double fm=std::fmod(rotation,360);
+    double angle=rotation() * M_PI / 180.0;
+    double fm=std::fmod(rotation(),360);
     bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
     double coupledIntTranslation=0;
     float z=zoomFactor();
 
     auto t=type();
     // call the iconDraw method if data description is empty
-    if (t==OperationType::data && dynamic_cast<const DataOp&>(*this).description.empty())
+    if (t==OperationType::data && dynamic_cast<const DataOp&>(*this).description().empty())
       t=OperationType::numOps;
 
     switch (t)
@@ -159,13 +159,12 @@ namespace minsky
         {
         
           auto& c=dynamic_cast<const DataOp&>(*this);
-          cairo_save(cairo);
           
           Pango pango(cairo);
           pango.setFontSize(10*z);
-          pango.setMarkup(latexToPango(c.description));
+          pango.setMarkup(latexToPango(c.description()));
           pango.angle=angle + (textFlipped? M_PI: 0);
-          Rotate r(rotation+ (textFlipped? 180: 0),0,0);
+          Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
 
           // parameters of icon in userspace (unscaled) coordinates
           float w, h, hoffs;
@@ -173,10 +172,12 @@ namespace minsky
           h=0.5*pango.height()+4*z;
           hoffs=pango.top()/z;
     
-          cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
-          pango.show();
-          cairo_restore(cairo);
-          cairo_save(cairo);
+          {
+            cairo::CairoSave cs(cairo);
+            cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
+            pango.show();
+          }
+
           cairo_rotate(cairo, angle);
                
           cairo_set_source_rgb(cairo,0,0,1);
@@ -187,23 +188,26 @@ namespace minsky
           cairo_line_to(cairo,w+2*z,0);
           cairo_line_to(cairo,w,-h);
           cairo_close_path(cairo);
-          cairo_clip_preserve(cairo);
+          cairo::Path clipPath(cairo);
           cairo_stroke(cairo);
+          
+          cairo_rotate(cairo,-angle); // undo rotation
 
           // set the output ports coordinates
           // compute port coordinates relative to the icon's
           // point of reference
-          Rotate rr(rotation,0,0);
+          Rotate rr(rotation(),0,0);
 
           ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
           if (numPorts()>1)
             ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
-          cairo_restore(cairo); // undo rotation
           if (mouseFocus)
             {
               drawPorts(cairo);
               displayTooltip(cairo,tooltip);
             }
+          clipPath.appendToCurrent(cairo);
+          cairo_clip(cairo);
           if (selected) drawSelected(cairo);
           return;
         }
@@ -215,10 +219,10 @@ namespace minsky
               //            iv.zoomFactor=zoomFactor;
               RenderVariable rv(iv,cairo);
               // we need to add some translation if the variable is bound
-              cairo_rotate(cairo,rotation*M_PI/180.0);
+              cairo_rotate(cairo,rotation()*M_PI/180.0);
               coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*z;
               //            cairo_translate(cairo, coupledIntTranslation, 0);
-              cairo_rotate(cairo,-rotation*M_PI/180.0);
+              cairo_rotate(cairo,-rotation()*M_PI/180.0);
             }
         cairo_save(cairo);
         cairo_scale(cairo,z,z);
@@ -271,8 +275,8 @@ namespace minsky
           cairo_translate(cairo,r+ivo+intVarWidth,0);
           // to get text to render correctly, we need to set
           // the var's rotation, then antirotate it
-          i->intVar->rotation=i->rotation;
-          cairo_rotate(cairo, -M_PI*i->rotation/180.0);
+          i->intVar->rotation(i->rotation());
+          cairo_rotate(cairo, -M_PI*i->rotation()/180.0);
           rv.draw();
           //i->getIntVar()->draw(cairo);
           cairo_restore(cairo);
@@ -509,6 +513,8 @@ namespace minsky
     return r;
   }
 
+  IntOpAccessor::IntOpAccessor(): ecolab::TCLAccessor<IntOp, std::string>
+    ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
   
   Units IntOp::units(bool check) const {
     Units r=ports[1]->units(check);
@@ -538,9 +544,10 @@ namespace minsky
   }
 
   
-  void IntOp::description_(string desc)
+  string IntOp::description(const string& a_desc)
   {
-
+    auto desc=a_desc;
+    
     // set a default name if none given
     if (desc.empty())
       desc=minsky().variableValues.newName
@@ -550,7 +557,7 @@ namespace minsky
     if (desc[0]==':') desc=desc.substr(1);
     
     if (intVar && intVar->group.lock() == group.lock() && intVar->name()==desc)
-      return; // nothing to do
+      return description(); // nothing to do
 
     vector<Wire> savedWires;
     if (numPorts()>0)
@@ -603,6 +610,7 @@ namespace minsky
     // this should also adjust the wire's group ownership appropriately
     if (auto g=group.lock())
       g->addItem(intVar);
+    return description();
   }
 
   namespace
@@ -643,7 +651,7 @@ namespace minsky
         else
           minsky().model->addWire(newWire);
         intVar->controller.reset();
-        intVar->rotation=rotation;
+        intVar->rotation(rotation());
      }
     else
       {
@@ -659,6 +667,7 @@ namespace minsky
         ports[0]=intVar->ports[0];
         intVar->mouseFocus=false; // prevent drawing of variable ports when coupled
       }
+    bb.update(*this); // adjust bounding box for coupled integral operation - see ticket #1055  
     return coupled();
   }
 
@@ -673,6 +682,18 @@ namespace minsky
       r+=" [in2]="+ to_string(ports[2]->value());
     return r;
   }
+  
+  string DataOp::description() const
+  {
+	return m_description;  
+  }
+   
+  string DataOp::description(const std::string& x)
+  {
+    m_description=x;
+    bb.update(*this); // adjust icon bounding box - see ticket #1121
+    return m_description;
+  }    
 
   void DataOp::readData(const string& fileName)
   {
@@ -689,8 +710,8 @@ namespace minsky
     size_t p=fileName.rfind('/');
     // '/' is guaranteed not to be in fileName, so we can use that as
     // a delimiter
-    description = "\\verb/"+
-      ((p!=string::npos)? fileName.substr(p+1): fileName) + "/";
+    description("\\verb/"+
+      ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
     //initXVector();
   }
 
@@ -1051,32 +1072,32 @@ namespace minsky
   {
     DrawBinOp d(cairo);
     d.drawPlus();
-    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation);
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
+    d.drawPort(&DrawBinOp::drawPlus, l, h, rotation());
+    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation());
   }
 
   template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);
     d.drawMinus();
-    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation);
-    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation);
+    d.drawPort(&DrawBinOp::drawPlus, l, -h, rotation());
+    d.drawPort(&DrawBinOp::drawMinus, l, h, rotation());
   }
 
   template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);
     d.drawMultiply();
-    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation);
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
+    d.drawPort(&DrawBinOp::drawMultiply, l, h, rotation());
+    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation());
   }
 
   template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);
     d.drawDivide();
-    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation);
-    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation);
+    d.drawPort(&DrawBinOp::drawMultiply, l, -h, rotation());
+    d.drawPort(&DrawBinOp::drawDivide, l, h, rotation());
   }
 
   template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const

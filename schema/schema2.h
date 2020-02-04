@@ -105,7 +105,7 @@ but any renamed attributes require bumping the schema number.
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation),
+      x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation()),
       ports(ports) {}
     ItemBase(const schema1::Item& it, const std::string& type="Item"):
       Note(it), id(it.id), type(type) {}
@@ -191,7 +191,7 @@ but any renamed attributes require bumping the schema number.
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.width), height(g.height), name(g.title), bookmarks(g.bookmarks) {} 
+      width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
 
     // schema1 importers
     Item(const schema1::Operation& it):

@@ -34,6 +34,22 @@ using namespace minsky;
 using ecolab::array;
 using namespace ecolab::cairo;
 
+namespace minsky
+{
+ namespace VarAccessors
+  {
+    NameAccessor::NameAccessor(): ecolab::TCLAccessor<VariableBase,std::string,0>
+        ("name",(Getter)&VariableBase::name,(Setter)&VariableBase::name) {}
+    InitAccessor::InitAccessor(): ecolab::TCLAccessor<VariableBase,std::string,1>
+        ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
+    ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
+      ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
+    SliderVisibleAccessor::SliderVisibleAccessor(): ecolab::TCLAccessor<VariableBase,bool>
+      ("sliderVisible",(Getter)&VariableBase::sliderVisible,(Setter)&VariableBase::sliderVisible) {}
+ }
+}
+
+
 VariableBase::~VariableBase() {}
 
 void VariableBase::addPorts()
@@ -57,10 +73,10 @@ bool VariableBase::inputWired() const
 
 ClickType::Type VariableBase::clickType(float xx, float yy)
 {
-  double fm=std::fmod(rotation,360);
+  double fm=std::fmod(rotation(),360);
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
   float xxx=xx-x(), yyy=yy-y();
-  Rotate r(rotation+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
+  Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
   RenderVariable rv(*this);
   double z=zoomFactor();
   try
@@ -91,6 +107,24 @@ VariableBase* VariableBase::create(VariableType::Type type)
     }
 }
 
+void VariableBase::retype(VariableType::Type type)
+{
+  if (type==this->type()) return; // nothing to do
+  if (auto vv=vValue())
+    if (type==vv->type())
+      if (auto g=group.lock())
+        for (auto& i: g->items)
+          if (i.get()==this)
+            {
+              VariablePtr vp{i};
+              vp.retype(type);
+              i=vp;
+              return;
+            }
+  minsky().convertVarType(valueId(), type);
+}
+
+
 float VariableBase::zoomFactor() const
 {
   if (ioVar())
@@ -116,7 +150,12 @@ string VariableBase::valueId() const
   return VariableValue::valueId(group.lock(), m_name);
 }
 
-string VariableBase::_name()  const
+std::string VariableBase::valueIdInCurrentScope(const std::string& nm) const
+{
+  return VariableValue::valueId(group.lock(), nm);
+}
+
+string VariableBase::name()  const
 {
   if (m_name==":_") return "";
   // hide any leading ':' in upper level
@@ -129,13 +168,15 @@ string VariableBase::_name()  const
   return m_name;
 }
 
-string VariableBase::_name(const std::string& name) 
+string VariableBase::name(const std::string& name) 
 {
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
+  // Ensure value of variable is preserved after rename. For ticket 1106.	
+  auto tmpVV=vValue();  
   // ensure integral variables are not global when wired to an integral operation
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
-  ensureValueExists();
+  ensureValueExists(tmpVV);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
@@ -144,7 +185,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists() const
+void VariableBase::ensureValueExists(VariableValue* vv) const
 {
   string valueId=this->valueId();
   // disallow blank names
@@ -152,13 +193,16 @@ void VariableBase::ensureValueExists() const
       minsky().variableValues.count(valueId)==0)
     {
       assert(VariableValue::isValueId(valueId));
-      minsky().variableValues.insert
+	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
+      if (vv==nullptr) minsky().variableValues.insert
         (make_pair(valueId,VariableValue(type(), name(), "", group.lock())));
+      else minsky().variableValues.insert
+        (make_pair(valueId,*vv));
     }
 }
 
 
-string VariableBase::_init() const
+string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
@@ -167,9 +211,9 @@ string VariableBase::_init() const
     return "0";
 }
 
-string VariableBase::_init(const string& x)
+string VariableBase::init(const string& x)
 {
-  ensureValueExists(); 
+  ensureValueExists(nullptr); 
   if (VariableValue::isValueId(valueId()))
     {
       VariableValue& val=minsky().variableValues[valueId()];
@@ -187,7 +231,7 @@ string VariableBase::_init(const string& x)
   return x;
 }
 
-double VariableBase::_value() const
+double VariableBase::value() const
 {
   if (VariableValue::isValueId(valueId()))
     return minsky::cminsky().variableValues[valueId()].value();
@@ -195,7 +239,7 @@ double VariableBase::_value() const
     return 0;
 }
 
-double VariableBase::_value(double x)
+double VariableBase::value(const double& x)
 {
   if (!m_name.empty() && VariableValue::isValueId(valueId()))
     minsky().variableValues[valueId()][0]=x;
@@ -332,9 +376,18 @@ void VariablePtr::retype(VariableBase::Type type)
             assert(!tmp->ports[i]->input());
             w->moveToPorts(get()->ports[i], w->to());
           }
-      get()->ensureValueExists();
+      get()->ensureValueExists(nullptr);
     }
 }
+
+bool VariableBase::visible() const
+{
+  auto g=group.lock();
+  //toplevel i/o items always visible
+  if ((!g || !g->group.lock()) && g==controller.lock()) return true;
+  return !controller.lock() && Item::visible();
+}
+
 
 void VariableBase::sliderSet(double x)
 {
@@ -387,8 +440,8 @@ bool VariableBase::handleArrows(int dir,bool reset)
 
 void VariableBase::draw(cairo_t *cairo) const
 {
-  double angle=rotation * M_PI / 180.0;
-  double fm=std::fmod(rotation,360);
+  double angle=rotation() * M_PI / 180.0;
+  double fm=std::fmod(rotation(),360);
   float z=zoomFactor();
 
   RenderVariable rv(*this,cairo);
@@ -396,7 +449,7 @@ void VariableBase::draw(cairo_t *cairo) const
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-  Rotate r(rotation + (notflipped? 0: 180),0,0);
+  Rotate r(rotation() + (notflipped? 0: 180),0,0);
   rv.angle=angle+(notflipped? 0: M_PI);
 
   // parameters of icon in userspace (unscaled) coordinates

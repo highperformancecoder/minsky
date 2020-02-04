@@ -33,8 +33,8 @@ proc openGodley {id} {
         bind .$id.table <Configure> "$id.requestRedraw"
         bind .$id.table <Destroy> "$id.delete"
 
-        bind .$id.table <ButtonPress-1> "mouseDown $id %x %y %X %Y"
-        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; $id.mouseUp %x %y"
+        bind .$id.table <ButtonPress-1> "moveAssetClass $id %x %y %X %Y"
+        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; swapAssetClass $id %x %y"
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMoveB1 %x %y"
         bind .$id.table <Motion> "$id.mouseMove %x %y"
         bind .$id.table <Leave> "$id.mouseMove -1 -1; $id.update"
@@ -42,7 +42,6 @@ proc openGodley {id} {
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
         bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]"
-
         global meta meta_menu
         bind .$id.table <$meta-y> "$id.undo -1"
         bind .$id.table <$meta-z> "$id.undo 1"
@@ -88,14 +87,14 @@ proc openGodley {id} {
         menu .$id.menubar.file
         .$id.menubar.file add command -label "Export" -command "exportGodley $id"
         
-        menu .$id.menubar.edit
+        menu .$id.menubar.edit -postcommand "toggleGodleyPaste $id"
         .$id configure -menu .$id.menubar
         .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
         .$id.menubar.edit add command -label Redo -command "$id.undo -1" -accelerator $meta_menu-Y
         .$id.menubar.edit add command -label Title -command "textEntryPopup .godleyTitle {[$id.godleyIcon.table.title]} {setGodleyTitleOK $id}"
         .$id.menubar.edit add command -label Cut -command "$id.cut" -accelerator $meta_menu-X
         .$id.menubar.edit add command -label Copy -command "$id.copy" -accelerator $meta_menu-C
-        .$id.menubar.edit add command -label Paste -command "$id.paste" -accelerator $meta_menu-V
+        .$id.menubar.edit add command -label Paste -command "$id.paste" -accelerator $meta_menu-V               
 
         menu .$id.menubar.view
         .$id.menubar.view add command -label "Zoom in" -command "zoomIn $id" -accelerator $meta_menu-+
@@ -123,6 +122,14 @@ proc openGodley {id} {
     raise .$id .
 }
 
+proc toggleGodleyPaste id {
+    if {[getClipboard]==""} {
+	.$id.menubar.edit entryconfigure end -state disabled
+    } else {
+	.$id.menubar.edit entryconfigure end -state normal
+    }        
+}
+
 proc zoomOut id {
     $id.zoomFactor [expr [$id.zoomFactor]/1.1]
     $id.requestRedraw
@@ -147,6 +154,34 @@ proc mouseDown {id x y X Y} {
         $id.mouseDown $x $y
         focus .$id.table
     }
+}
+
+# warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
+proc moveAssetClass {id x y X Y} {
+	set testStr [$id.moveAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		mouseDown $id $x $y $X $Y
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes {mouseDown $id $x $y $X $Y}
+        no {mouseDown $id $x $c $X $Y}	  
+ 	    }
+ 	 }
+}
+
+# warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
+proc swapAssetClass {id x y} {
+	set testStr [$id.swapAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		$id.mouseUp $x $y 
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes { $id.mouseUp $x $y }
+        no { $id.mouseUp $x $c }
+ 	 }
+   }
 }
 
 proc importStockVar {id var x} {
@@ -237,8 +272,11 @@ proc godleyContext {id x y X Y} {
             .$id.context add command -label "Copy" -command "$id.copy"
         }
     }
-    if {![catch {clipboard get -type UTF8_STRING}]  && ($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
+    if {($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
         .$id.context add command -label "Paste" -command "$id.paste"
+        if {[getClipboard]==""} {
+            .$id.context entryconfigure end -state disabled 
+        }
     }
     tk_popup .$id.context $X $Y
 }

@@ -385,7 +385,7 @@ namespace MathDAG
   void OperationDAG<OperationType::data>::render(Surface& surf) const 
   {
     if (auto d=dynamic_cast<const minsky::DataOp*>(state.get()))
-      print(surf.cairo(),latexToPango(mathrm(d->description)),Anchor::nw);
+      print(surf.cairo(),latexToPango(mathrm(d->description())),Anchor::nw);
     else
       print(surf.cairo(),latexToPango(mathrm("\\uplus")),Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
@@ -395,7 +395,7 @@ namespace MathDAG
   void OperationDAG<OperationType::ravel>::render(Surface& surf) const 
   {
     if (auto d=dynamic_cast<const minsky::DataOp*>(state.get()))
-      print(surf.cairo(),latexToPango(mathrm(d->description)),Anchor::nw);
+      print(surf.cairo(),latexToPango(mathrm(d->description())),Anchor::nw);
     else
       print(surf.cairo(),latexToPango(mathrm("\\uplus")),Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])

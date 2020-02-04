@@ -107,8 +107,14 @@ namespace minsky
             {
               // allow for the possibility that multiple names map to the same valueId
               if (!alreadyAdded.count(newVar->valueId()))
+                {
                   // add new variable
                   vars.push_back(newVar);
+                  alreadyAdded.insert(newVar->valueId());
+                }
+              else
+                if (myGroup)
+                  myGroup->removeItem(*newVar);
             }
           else
             {
@@ -227,9 +233,6 @@ namespace minsky
         for (size_t c=1; c<table.cols(); ++c)
           {
             string name=trimWS(table.cell(0,c));
-            // if local reference, then append namespace
-//            if (name.find(':')==string::npos)
-//              name=":"+name;
             auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
             VariableValue& v=vi->second;
@@ -273,7 +276,7 @@ namespace minsky
       {
         // right justification
         RenderVariable rv(*v);
-        v->rotation=0;
+        v->rotation(0);
         v->bb.update(*v);
         v->moveTo(x-0.5*v->width()*zoomFactor,y);
         y+=2*rv.height()*zoomFactor;
@@ -285,7 +288,7 @@ namespace minsky
       {
         // top justification at bottom of icon
         RenderVariable rv(*v);
-        v->rotation=90;
+        v->rotation(90);
         v->bb.update(*v);
         v->moveTo(x,y+0.5*v->height()*zoomFactor);
         x+=2*rv.height()*zoomFactor;
@@ -403,10 +406,13 @@ namespace minsky
     auto z=zoomFactor();
     double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(dx-w) < portRadius*z &&
-        fabs(dy-h) < portRadius*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
+    if (fabs(dx-w) < portRadiusMult*z &&
+        fabs(dy-h) < portRadiusMult*z &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
       return ClickType::onResize;
+    // Make it possible to pull wires from variables attached to Godley icons. For ticket 940  
+    if (auto item=select(x,y))
+      return item->clickType(x,y);         
     if (dx < w && dy < h)
       return ClickType::onItem;
     else

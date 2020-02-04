@@ -24,6 +24,7 @@
 #include "port.h"
 #include "intrusiveMap.h"
 //#include "RESTProcess_base.h"
+#include <accessor.h>
 #include <TCL_obj_base.h>
 
 #include <cairo.h>
@@ -45,6 +46,7 @@ namespace minsky
 
   /// radius of circle marking ports at zoom=1
   constexpr float portRadius=6;
+  constexpr float portRadiusMult=2.0f*portRadius;  
 
   // ports are owned by their items, so it is not appropriate to
   // default copy the port references
@@ -75,11 +77,13 @@ namespace minsky
     float height() const {return bottom-top;}
   };
 
-  class Item: virtual public NoteBase
+  class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
   {
+    double m_rotation=0; ///< rotation of icon, in degrees
   public:
+
+    Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
-    double rotation=0; ///< rotation of icon, in degrees
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
@@ -90,6 +94,7 @@ namespace minsky
       float invZ=1/zoomFactor();
       return bb.contains((xx-x())*invZ, (yy-y())*invZ);
     }
+    void updateBoundingBox() {bb.update(*this);}
     
     /// mark item on canvas, then throw
     [[noreturn]] void throw_error(const std::string&) const;
@@ -98,9 +103,16 @@ namespace minsky
     virtual bool ioVar() const {return false;}
     /// current value of output port
     virtual double value() const {return 0;}
+
+    double rotation() const {return m_rotation;}
+    double rotation(const double& r) {
+      m_rotation=r;
+      bb.update(*this);
+      return m_rotation;
+    }
     
     /// rotate icon though 180∘
-    void flip() {rotation+=180;}
+    void flip() {rotation(rotation()+180);}
 
     virtual std::string classType() const {return "Item";}
 

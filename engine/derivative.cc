@@ -98,8 +98,8 @@ namespace MathDAG
           throw error("integral input %s not defined",expr.valueId.c_str());
         if (ii->rhs)
           r->rhs=ii->rhs; // elide input variable, in case this is a temporary
-        else
-          r->rhs=ii.get();
+        else 
+          derivInputs.emplace_back(r, expr.valueId);
       }
     else
       {

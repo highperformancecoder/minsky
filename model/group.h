@@ -187,7 +187,7 @@ namespace minsky
   public:
     
     std::string title;
-    float width{100}, height{100}; // size of icon
+    float iconWidth{100}, iconHeight{100}; // size of icon
     std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 
@@ -216,7 +216,7 @@ namespace minsky
     void drawIORegion(cairo_t*) const;
 
     /// move all items from source to this
-    void moveContents(Group& source); 
+    void moveContents(Group& source);     
 
     /// returns which I/O region (x,y) is in if any
     struct IORegion {enum type {none,input,output};};

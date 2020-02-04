@@ -151,14 +151,17 @@ namespace minsky
     Units units(bool check) const override {return ports[1]->units(check);}
   };
 
+  class IntOp;
+  struct IntOpAccessor: public ecolab::TCLAccessor<minsky::IntOp, std::string>
+  {IntOpAccessor();};
   
-  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>
+  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>,
+               public IntOpAccessor
   {
     typedef Operation<OperationType::integrate> Super;
     // integrals have named integration variables
     ///integration variable associated with this op.
     CLASSDESC_ACCESS(IntOp);
-    //   void addPorts() override; //. Also allocates new integral var if intVar==-1
     friend struct SchemaHelper;
   public:
     // offset for coupled integration variable, tr
@@ -167,18 +170,14 @@ namespace minsky
     IntOp() {description("");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {group.reset();intVar.reset(); description(x.description());}
+      OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
     ~IntOp() {removeControlledItems();}
     
     const IntOp& operator=(const IntOp& x); 
 
     /// @{ name of the associated integral variable
-    void description_(std::string desc);
-    Accessor<std::string> description {
-      [this]() {return intVar? intVar->name(): "";},
-        [this](const std::string& x) {
-          description_(x); return intVar? intVar->name(): "";
-        }};
+    std::string description(const std::string& desc);
+    std::string description() const {return intVar? intVar->name(): "";}
     /// @}
 
     string valueId() const 
@@ -206,11 +205,25 @@ namespace minsky
     void insertControlled(Selection& selection) override;
   };
 
-  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>
+  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
+                public ecolab::TCLAccessor<DataOp,std::string>
   {
     CLASSDESC_ACCESS(DataOp);
+    friend struct SchemaHelper;
+    string m_description;
   public:
-    string description;
+    DataOp(): ecolab::TCLAccessor<DataOp,std::string>
+      ("description",(ecolab::TCLAccessor<DataOp,std::string>::Getter)&DataOp::description,
+       (ecolab::TCLAccessor<DataOp,std::string>::Setter)&DataOp::description)
+    {}
+    ~DataOp() {}
+    
+    const DataOp& operator=(const DataOp& x); 
+
+    /// @{ name of the associated data operation
+    std::string description() const;  
+    std::string description(const std::string&);    
+    /// @}
     std::map<double, double> data;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 

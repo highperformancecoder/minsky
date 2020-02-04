@@ -19,6 +19,14 @@ if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
+# determine release or beta depending on the number of fields in the version
+numFields=`echo $version|tr . ' '|wc -w`
+if [ $numFields -le 2 ]; then
+    productName=Minsky
+else
+    productName=MinskyBeta
+fi
+
 rewrite_dylibs()
 {
     local target=$1
@@ -87,9 +95,15 @@ fi
 
 rm -f Minsky-$version-mac-dist.dmg
 hdiutil create -srcfolder minsky.app -volname Minsky -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 150M temp.dmg
-hdiutil convert -format UDZO -imagekey zlib-level=9 -o Minsky-$version-mac-dist.dmg temp.dmg 
+hdiutil convert -format UDZO -imagekey zlib-level=9 -o $productName-$version-mac-dist.dmg temp.dmg 
 rm -f temp.dmg
-codesign -s "Developer ID Application" Minsky-$version-mac-dist.dmg
-xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file Minsky-$version-mac-dist.dmg
+codesign -s "Developer ID Application" $productName-$version-mac-dist.dmg
+xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $productName-$version-mac-dist.dmg
 # check using xcrun altool --notarization-history 0 -u apple@hpcoders.com.au -p "@keychain:Minsky"
-xcrun stapler staple Minsky-2.17-mac-dist.dmg
+echo "Sleeping for a bit for software to be notarised"
+sleep 60
+xcrun stapler staple $productName-$version-mac-dist.dmg
+if [ $? -ne 0 ]; then
+    echo "Manually staple with:"
+    echo "xcrun stapler staple $productName-$version-mac-dist.dmg"
+fi

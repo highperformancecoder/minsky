@@ -72,6 +72,13 @@ namespace minsky
         doubleEntryCompliant(other.doubleEntryCompliant),
         title(other.title)
     { }
+  
+    // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
+    bool operator==(const GodleyTable& other) const 
+    {
+		return (data==other.data && m_assetClass==other.m_assetClass &&
+		 doubleEntryCompliant==other.doubleEntryCompliant && title==other.title);
+    }    
 
     /// class of each column (used in DE compliant mode)
     const vector<AssetClass>& _assetClass() const {return m_assetClass;}
@@ -99,6 +106,14 @@ namespace minsky
        sets if assetClass present, otherwise gets
     */
     string assetClass(ecolab::TCL_args args);
+    
+    // returns the asset class of column col. For ticket 1072.
+    AssetClass getAssetClass(unsigned col) const {
+      if (col<cols())
+        return _assetClass(col);
+      else
+        return noAssetClass;
+    }     
   
     // returns true if \a row is an "Initial Conditions" row
     bool initialConditionRow(unsigned row) const;
@@ -127,7 +142,7 @@ namespace minsky
 
     /// move row \a row down by \a n places (up if -ve)
     void moveRow(int row, int n);
-    void moveCol(int row, int n);
+    void moveCol(int col, int n);
 
     void dimension(unsigned rows, unsigned cols) {clear(); resize(rows,cols);}
 
@@ -153,6 +168,9 @@ namespace minsky
     /// get the vector of unique variable names from the interior of the
     /// table, in row, then column order
     std::vector<std::string> getVariables() const;
+    /// save text in currently highlighted column heading for renaming all variable instances
+    /// and to enable user to fix problems
+    std::string savedText;
 
     /// get column data
     std::vector<std::string> getColumn(unsigned col) const;

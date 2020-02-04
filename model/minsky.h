@@ -212,7 +212,7 @@ namespace minsky
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky(): equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
-      model->height=model->width=std::numeric_limits<float>::max();
+      model->iconHeight=model->iconWidth=std::numeric_limits<float>::max();
       model->self=model;
     }
 
@@ -234,8 +234,8 @@ namespace minsky
     void cut();
     /// copy items in current selection into clipboard
     void copy() const;
-    /// paste clipboard as a new group. canvas.itemFocus is set to
-    /// refer to the new group
+    /// paste clipboard as a new group or ungrouped items on the canvas. canvas.itemFocus is set to
+    /// refer to the new group or items.
     void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     
