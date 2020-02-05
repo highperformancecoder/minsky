@@ -316,16 +316,17 @@ namespace minsky
   {
     double r=ravelDefaultRadius, z=zoomFactor();
     if (ravel) r=1.1*z*ravel_radius(ravel);
-    ports[0]->moveTo(x()+1.1*r, y());
-    ports[1]->moveTo(x()-1.1*r, y());
+    double s=r*z;    
+    ports[0]->moveTo(x()+1.1*s, y());
+    ports[1]->moveTo(x()-1.1*s, y());
     if (mouseFocus)
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
       }
     if (onResizeHandles) drawResizeHandles(cairo);
-    cairo_rectangle(cairo,-r,-r,2*r,2*r);
-    cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
+    cairo_rectangle(cairo,-s,-s,2*s,2*s);
+    cairo_rectangle(cairo,-1.1*s,-1.1*s,2.2*s,2.2*s);
     cairo_stroke_preserve(cairo);
     if (onBorder || lockGroup)
       { // shadow the border when mouse is over it
