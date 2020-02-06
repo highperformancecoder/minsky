@@ -100,6 +100,8 @@ namespace minsky
           godleyIcon.table.moveRow(idx,1);
         break;
       }
+      try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
+      catch (...) {}
   }
 
   template <>
@@ -125,6 +127,8 @@ namespace minsky
           godleyIcon.table.moveCol(idx,1);
         break;
       }
+      try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
+      catch (...) {}      
   }
 
 
