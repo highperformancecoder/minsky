@@ -574,7 +574,7 @@ namespace minsky
 
     string vid=VariableValue::valueId(group.lock(),desc);
     auto i=minsky().variableValues.find(vid);      
-    if (i!=minsky().variableValues.end() && minsky().definingVar(vid))
+    if (i!=minsky().variableValues.end() && minsky().definingVar(vid)) // Also check that integral has input. for ticket 1068.
       {
         if (i->second.type()!=VariableType::integral) 
           try
