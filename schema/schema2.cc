@@ -590,6 +590,7 @@ namespace schema2
       {
         if (y.width) x1->width=*y.width;
         if (y.height) x1->height=*y.height;
+        x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;
         if (y.logy) x1->logy=*y.logy;
