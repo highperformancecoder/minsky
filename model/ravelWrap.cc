@@ -314,7 +314,7 @@ namespace minsky
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double r=ravelDefaultRadius, z=zoomFactor();
+    double  z=zoomFactor(), r=ravelDefaultRadius*z;
     if (ravel) r=1.1*z*ravel_radius(ravel);
     ports[0]->moveTo(x()+1.1*r, y());
     ports[1]->moveTo(x()-1.1*r, y());
