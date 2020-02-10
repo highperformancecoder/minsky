@@ -106,7 +106,7 @@ void Sheet::draw(cairo_t* cairo) const
                 for (auto v: value)
                   {
                     cairo_move_to(cairo,x,y);
-                    if (!isnan(v))
+                    if (!std::isnan(v))
                       {
                         pango.setMarkup(str(v));
                         pango.show();
@@ -138,7 +138,7 @@ void Sheet::draw(cairo_t* cairo) const
                           if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
                           auto v=value.value(j+i*dims[0]);
-                          if (!isnan(v))
+                          if (!std::isnan(v))
                             {
                               pango.setText(str(v));
                               pango.show();
