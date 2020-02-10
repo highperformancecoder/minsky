@@ -574,7 +574,7 @@ namespace minsky
 
     string vid=VariableValue::valueId(group.lock(),desc);
     auto i=minsky().variableValues.find(vid);      
-    if (i!=minsky().variableValues.end() && minsky().definingVar(vid)) // Also check that integral has input. for ticket 1068.
+    if (i!=minsky().variableValues.end() && minsky().definingVar(vid)) 
       {
         if (i->second.type()!=VariableType::integral) 
           try
@@ -586,7 +586,10 @@ namespace minsky
               desc=minsky().variableValues.newName(vid);
             }
         else
-          desc=minsky().variableValues.newName(vid);
+          if (minsky().definingVar(vid))               // Also check that integral has input. for ticket 1068.
+            desc=minsky().variableValues.newName(vid);
+          else 
+            desc=vid; 
         if (desc[0]==':') desc=desc.substr(1);// disallow global integration variables
       }
     
