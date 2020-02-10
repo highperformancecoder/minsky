@@ -210,18 +210,26 @@ namespace minsky
                     string value;
                     FlowCoef fc(text);
                     if (displayValues)
-                      {
-                        auto vv=cminsky().variableValues
-                          [VariableValue::valueIdFromScope
-                           (godleyIcon->group.lock(),fc.name)];
-                        if (vv.idx()>=0)
-                          {
-                            double val=fc.coef*vv.value();
-                            auto ee=engExp(val);
-                            if (ee.engExp==-3) ee.engExp=0;
-                            value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);
-                          }
-                      }
+                      try
+                        {
+                          auto vv=cminsky().variableValues
+                            [VariableValue::valueIdFromScope
+                             (godleyIcon->group.lock(),fc.name)];
+                          if (vv.idx()>=0)
+                            {
+                              double val=fc.coef*vv.value();
+                              auto ee=engExp(val);
+                              if (ee.engExp==-3) ee.engExp=0;
+                              value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);
+                            }
+                        }
+                      catch (const std::exception& ex)
+                        {
+                          value=string("= Err: ")+ex.what();
+                          // highlight error in red
+                          cairo_set_source_rgb(surface->cairo(),1,0,0);
+                        }
+                            
                     // the active cell renders as bare LaTeX code for
                     // editing, all other cells rendered as LaTeX
                     if ((int(row)!=selectedRow || int(col)!=selectedCol) && !godleyIcon->table.initialConditionRow(row))
