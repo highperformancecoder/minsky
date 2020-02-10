@@ -200,10 +200,14 @@ namespace minsky
 
   void VariableValue::reset(const VariableValues& v)
   {
-    if (m_idx<0) allocValue();
-    // initialise variable only if its variable is not defined or it is a stock
-    if (!isFlowVar() || !cminsky().definingVar(valueId()))
-      operator=(initValue(v));
+	try {  // catch possible exceptions due to incomplete models. For ticket 1049.
+      if (m_idx<0) allocValue();
+      // initialise variable only if its variable is not defined or it is a stock
+      if (!isFlowVar() || !cminsky().definingVar(valueId()))
+        operator=(initValue(v));
+    }
+    catch(...)
+      {}
   }
 
 
