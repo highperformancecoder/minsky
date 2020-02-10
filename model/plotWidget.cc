@@ -198,7 +198,6 @@ namespace minsky
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;
     Plot::draw(cairo,gw,gh); 
-    
     cairo_restore(cairo);
     if (mouseFocus)
       {

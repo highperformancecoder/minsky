@@ -334,14 +334,16 @@ namespace minsky
     string valueId(const string& x) {return VariableValue::valueId(x);}
 
     vector<string> listFonts() const {
+      vector<string> r;
+#ifdef PANGO
       PangoFontFamily **families;
       int num;
       pango_font_map_list_families(pango_cairo_font_map_get_default(),
                                    &families,&num);
-      vector<string> r;
       for (int i=0; i<num; ++i)
         r.push_back(pango_font_family_get_name(families[i]));
       g_free(families);
+#endif
       return r;
     }
 
