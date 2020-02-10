@@ -244,5 +244,16 @@ namespace schema0
 
 }
 
+namespace classdesc
+{
+  template <class T>
+  void xml_unpackp(xml_unpack_t& t, const string& d, ecolab::array<T>& a)
+  {
+    string x; xml_unpack(t,d,x);
+    std::istringstream is(x);
+    is>>a;
+  }
+}
+
 #include "schema0.xcd"
 #endif
