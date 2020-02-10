@@ -340,7 +340,7 @@ namespace minsky
     void addIntegral();
     
     /// returns true if any variable of name \a name has a wired input
-    bool inputWired(const std::string&) const;
+    bool inputWired(const std::string& name) const {return definingVar(name).get();}
 
     /// render canvas to a postscript file
     void renderCanvasToPS(const char* filename) {canvas.renderToPS(filename);}

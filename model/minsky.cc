@@ -246,7 +246,7 @@ namespace minsky
             auto v=x->variableCast();
             return v && v->valueId()==valueId &&
               ((v->ports.size()>1 && !v->ports[1]->wires().empty()) ||
-               (v->type()==VariableValue::stock && v->controller.lock())) ;
+               (v->isStock() && v->controller.lock())) ;
           }));
   }
     
@@ -1333,24 +1333,6 @@ namespace minsky
           
           canvas.requestRedraw();
         }
-  }
-
-  
-  bool Minsky::inputWired(const std::string& name) const
-  {
-    bool r=false;
-    model->recursiveDo
-      (&Group::items,
-       [&](Items&,Items::const_iterator i) {
-         if (auto v=(*i)->variableCast())
-          if (v->valueId()==name)
-            {
-              r=v->ports.size()>1 && !v->ports[1]->wires().empty();
-              return r;
-            }
-        return false;
-      });
-    return r;
   }
 
   void Minsky::renderAllPlotsAsSVG(const string& prefix) const
