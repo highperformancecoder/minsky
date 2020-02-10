@@ -640,7 +640,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Edit" -command "editItem"
             .wiring.context add command -label "Copy item" -command "canvas.copyItem"
-            if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
+            if {![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
