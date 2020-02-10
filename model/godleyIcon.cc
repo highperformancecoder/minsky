@@ -126,9 +126,9 @@ namespace minsky
               if (myGroup) myGroup->removeItem(*newVar);
             }
           if (myGroup) myGroup->addItem(vars.back(),true);
+          vars.back()->controller=self;
           // ensure variable type is consistent
           minsky::minsky().convertVarType(vars.back()->valueId(), varType);
-          vars.back()->controller=self;
         }
       // remove any previously existing variables
       if (auto g=group.lock())
