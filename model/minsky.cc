@@ -1289,8 +1289,9 @@ namespace minsky
          return false;
        });
                        
-    if (inputWired(name)) 
-      throw error("cannot convert a variable whose input is wired");
+    if (auto var=definingVar(name))
+      if (var->type() != type)
+        throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets
     switch (type)

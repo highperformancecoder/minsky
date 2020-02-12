@@ -367,6 +367,7 @@ SUITE(Canvas)
       CHECK(findVariableDefinition());
       CHECK(item==integ);
       model->removeItem(*integ);
+      integ->removeControlledItems();
       
       shared_ptr<GodleyIcon> godley(new GodleyIcon);
       model->addItem(godley);
