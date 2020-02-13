@@ -200,14 +200,10 @@ namespace minsky
 
   void VariableValue::reset(const VariableValues& v)
   {
-	try {  // catch possible exceptions due to incomplete models. For ticket 1049.
       if (m_idx<0) allocValue();
       // initialise variable only if its variable is not defined or it is a stock
       if (!isFlowVar() || !cminsky().definingVar(valueId()))
         operator=(initValue(v));
-    }
-    catch(...)
-      {}
   }
 
 
@@ -284,8 +280,10 @@ namespace minsky
     // reallocate all variables
     ValueVector::stockVars.clear();
     ValueVector::flowVars.clear();
-    for (auto& v: *this)
+    for (auto& v: *this) {
+      v.second.reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
       v.second.allocValue().reset(*this);
+    }
 }
 
   bool VariableValues::validEntries() const

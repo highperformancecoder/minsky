@@ -112,6 +112,7 @@ namespace minsky
     ///(i=0) is right for scalar quantities
     double value(size_t i=0) const {return *(begin()+i);}
     int idx() const {return m_idx;}
+    void reset_idx() {m_idx=-1;}    
 
     // values are always live
     Timestamp timestamp() const override {return Timestamp::clock::now();}
