@@ -178,6 +178,7 @@ namespace minsky
     ClickType clickType(double x, double y) const;
     void checkCell00(); ///<check if cell (0,0) is selected, and deselect if so
     /// handle delete or backspace. Cell assumed selected
+    void handleBackspace();    
     void handleDelete();
   };
 }
