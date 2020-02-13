@@ -59,7 +59,7 @@ include $(UNITTESTOBJS:.o=.d) $(EXES:=.d)
 endif
 
 clean:
-	$(BASIC_CLEAN) unittests $(EXES)  *.gcda *.gcno
+	$(BASIC_CLEAN) unittests $(EXES) *.d *.cd *.gcda *.gcno
 	cd 00; $(BASIC_CLEAN)
 	cd exampleLogs; $(BASIC_CLEAN)
 	cd oldSchema; $(BASIC_CLEAN)

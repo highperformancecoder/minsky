@@ -111,6 +111,26 @@ namespace minsky
       return canvas.item.get();
     }
 
+    // call item->retype, and update the canvas.item ptr with the new object
+    void retypeItem(VariableType::Type type)
+    {
+      if (canvas.item)
+        if (auto g=canvas.item->group.lock()) 
+          {
+            // snag a reference to the actual location of this item,
+            // so we can update canvas.item later. Ticket #1135.
+            auto itemItr=find(g->items.begin(), g->items.end(), canvas.item);
+            if (auto v=canvas.item->variableCast())
+              v->retype(type);
+            if (itemItr!=g->items.end())
+              {
+                canvas.item=*itemItr;
+                TCL_obj_deregister("minsky.canvas.item");
+                registerRef(canvas.item,"minsky.canvas.item");
+              }
+          }
+    }
+    
     bool getItemAtFocus()
     {
       // deregister any old definitions, as item is polymorphic

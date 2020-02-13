@@ -952,7 +952,6 @@ proc deiconifyEditVar {} {
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
             set item minsky.canvas.item
-            $item.name $editVarInput(Name)
             $item.init $editVarInput(Initial Value)
             $item.setUnits $editVarInput(Units)
             $item.rotation  $editVarInput(Rotation)
@@ -962,8 +961,10 @@ proc deiconifyEditVar {} {
             $item.sliderMin  $editVarInput(Slider Bounds: Min)
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
-            # retype invalidates $item, so perform this last
-            $item.retype $editVarInput(Type)
+            retypeItem $editVarInput(Type)
+            # update name after type change, as it is needed when changing from constants. (ticket #1135)
+            $item.name $editVarInput(Name)
+                
             makeVariablesConsistent
             catch reset
             closeEditWindow .wiring.editVar
