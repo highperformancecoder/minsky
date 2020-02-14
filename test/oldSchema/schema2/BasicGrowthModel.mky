@@ -1,5 +1,5 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>3</schemaVersion>
+  <schemaVersion>2</schemaVersion>
   <wires>
    <Wire>
     <id>74</id>
@@ -234,7 +234,7 @@
    <Item>
     <id>37</id>
     <type>Variable:integral</type>
-    <x>882</x>
+    <x>922</x>
     <y>174</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -407,7 +407,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -419,7 +418,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -431,7 +429,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -443,7 +440,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -455,7 +451,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -467,7 +462,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -479,7 +473,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -491,7 +484,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>

@@ -16,12 +16,23 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "schema2.h"
+#include "schema3.h"
 #include "sheet.h"
 #include "minsky_epilogue.h"
 
+#include "a85.h"
+#include <zlib.h>
 
-namespace schema2
+using namespace std;
+
+namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}
+
+
+namespace classdesc_access
+{
+}
+
+namespace schema3
 {
   // binary serialisation used to serialise the tensorInit field of
   // variableValues into the minsky schema, fixed off here, rather
@@ -48,10 +59,10 @@ namespace schema2
   
   void pack(classdesc::pack_t& b, const civita::TensorVal& a)
   {
-    // redundant dims field encoded in schema 2
-    b<<a.hypercube().dims()<<a.size();
+    b<<a.size();
     for (size_t i=0; i<a.size(); ++i)
       b<<a[i];
+    b<<a.index();
     b<<a.hypercube().xvectors.size();
     for (auto& i: a.hypercube().xvectors)
       pack(b, i);
@@ -60,9 +71,9 @@ namespace schema2
 
   void unpack(classdesc::pack_t& b, civita::TensorVal& a)
   {
-    vector<unsigned> dims; // ignored, because info carried with xvectors
     vector<double> data;
-    b>>dims>>data;
+    vector<size_t> index;
+    b>>data>>index;
     
     civita::Hypercube hc;
     size_t sz;
@@ -75,10 +86,26 @@ namespace schema2
       }
     
     a.hypercube(hc); //dimension data
+    a.index(index);
     assert(a.size()==data.size());
     memcpy(a.begin(),&data[0],data.size());
   }
 
+  Optional<classdesc::CDATA> Item::convertTensorDataFromSchema2(const Optional<classdesc::CDATA>& x)
+  {
+    Optional<classdesc::CDATA> r;
+    if (x)
+      {
+        auto buf=minsky::decode(*x);
+        civita::TensorVal tmp;
+        schema2::unpack(buf,tmp);
+        buf.reseti();
+        pack(buf,tmp);
+        r=minsky::encode(buf);
+      }
+    return r;
+  }
+  
   // map of object to ID, that allocates a new ID on objects not seen before
   struct IdMap: public map<void*,int>
   {
@@ -97,7 +124,7 @@ namespace schema2
         r.push_back(at(i.get()));
       return r;
     }
-    
+  
     template <class T>
     bool emplaceIf(vector<Item>& items, minsky::Item* i)
     {
@@ -213,48 +240,6 @@ namespace schema2
     }
   };
 
-  Item::Item(const schema1::Godley& it):
-    ItemBase(it, "GodleyIcon"),
-    name(it.name), data(it.data), assetClasses(it.assetClasses)
-  {
-    typedef minsky::GodleyAssetClass::AssetClass AssetClass;
-    ports=it.ports;
-    // strip off leading :, since in schema 1, all godley tables are global
-    for (auto& i: *data)
-      for (auto& j: i)
-        {
-          minsky::FlowCoef fc(j);
-          if (fc.coef==0)
-            j="";
-          else
-            {
-              if (fc.name.length()>0 && fc.name[0]==':')
-                fc.name=fc.name.substr(1);
-              j=fc.str();
-            }
-        }
-
-    // in doubleEntry mode, schema1 got the accounting equation wrong.
-    if (it.doubleEntryCompliant)
-      {
-        for (size_t r=1; r<data->size(); ++r)
-          for (size_t c=1; c<(*data)[r].size(); ++c)
-            if (!(*data)[r][c].empty() &&
-                ((*assetClasses)[c]==AssetClass::liability || (*assetClasses)[c]==AssetClass::equity))
-              {
-                minsky::FlowCoef fc((*data)[r][c]);
-                fc.coef*=-1;
-                (*data)[r][c]=fc.str();
-              }
-      }
-    else
-      {
-        // make all columns assets
-        assetClasses->resize((*data)[0].size());
-        for (auto& i: *assetClasses) i=AssetClass::asset;
-      }
-  }
-  
   void Item::packTensorInit(const minsky::VariableBase& v)
   {
     if (auto val=v.vValue())
@@ -266,61 +251,7 @@ namespace schema2
         }
   }
 
-  
-  Minsky::Minsky(const schema1::Minsky& m)
-  {
-    // read in layout into a map indexed by id
-    Schema1Layout layout(m.layout);
-    
-    for (auto& i: m.model.wires)
-      layout.addItem(wires,i);
-    for (auto& i: m.model.notes)
-      layout.addItem(items,i);    
-    for (auto& i: m.model.operations)
-      layout.addItem(items,i);    
 
-    // save a mapping of ports to variables for later use by group
-    map<int,pair<int,bool>> portToVar;
-    for (auto& i: m.model.variables)
-      {
-        layout.addItem(items,i);
-        for (size_t j=0; j<i.ports.size(); ++j)
-          portToVar[i.ports[j]]=make_pair(i.id,j>0);
-      }
-    
-    for (auto& i: m.model.plots)
-      layout.addItem(items,i);    
-    for (auto& i: m.model.switches)
-      layout.addItem(items,i);
-    
-    for (auto& i: m.model.godleys)
-      {
-        layout.addItem(items,i);
-        // override any height specifcation with a legacy iconScale parameter
-        items.back().height.reset();
-        items.back().iconScale=i.zoomFactor/m.zoomFactor;
-      }
-    for (auto& i: m.model.groups)
-      {
-        layout.addItem(groups,i);
-        for (auto p: i.ports)
-          {
-            auto v=portToVar.find(p);
-            if (v!=portToVar.end())
-              {
-                if (v->second.second)
-                  groups.back().inVariables->push_back(v->second.first);
-                else
-                  groups.back().outVariables->push_back(v->second.first);
-              }
-          }
-      }
-    
-    rungeKutta=m.model.rungeKutta;
-    zoomFactor=m.zoomFactor;
-  }
-
-  
   Minsky::Minsky(const minsky::Group& g)
   {
     IdMap itemMap;
@@ -465,6 +396,9 @@ namespace schema2
                   unpack(buf, val->tensorInit);
                   val->hypercube(val->tensorInit.hypercube());
                 }
+              catch (const std::exception& ex) {
+                cout<<ex.what()<<endl;
+              }
               catch (...) {} // absorb for now - maybe log later
             }
       }
@@ -548,7 +482,7 @@ namespace schema2
   void Minsky::populateGroup(minsky::Group& g) const {
     map<int, minsky::ItemPtr> itemMap;
     map<int, shared_ptr<minsky::Port>> portMap;
-    map<int, schema2::Item> schema2VarMap;
+    map<int, schema3::Item> schema3VarMap;
     MinskyItemFactory factory;
     map<int,LockGroupFactory> lockGroups;
     
@@ -559,7 +493,7 @@ namespace schema2
           for (size_t j=0; j<min(newItem->ports.size(), i.ports.size()); ++j)
             portMap[i.ports[j]]=newItem->ports[j];
           if (matchesStart(i.type,"Variable:"))
-            schema2VarMap[i.id]=i;
+            schema3VarMap[i.id]=i;
         }
     // second loop over items to wire up integrals, and populate Godley table variables
     for (auto& i: items)
@@ -576,8 +510,8 @@ namespace schema2
                     g.removeItem(*integ->intVar);
                     integ->intVar=itemMap[*i.intVar];
                   }
-                auto iv=schema2VarMap.find(*i.intVar);
-                if (iv!=schema2VarMap.end())
+                auto iv=schema3VarMap.find(*i.intVar);
+                if (iv!=schema3VarMap.end())
                   if ((!i.ports.empty() && i.ports[0]==iv->second.ports[0]) != integ->coupled())
                     integ->toggleCoupled();
                 // ensure that the correct port is inserted (may have been the deleted intVar)
@@ -680,6 +614,7 @@ namespace schema2
           }
       }
   }
+  
 }
 
 

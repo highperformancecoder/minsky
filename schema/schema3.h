@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2017
+  @copyright Steve Keen 2020
   @author Russell Standish
   This file is part of Minsky.
 
@@ -18,32 +18,29 @@
 */
 
 /**
-   @file schema 2 is a defined and published Minsky schema. It is
+   @file schema 3 is a defined and published Minsky schema. It is
 expected to grow over time, deprecated attributes are also allowed,
 but any renamed attributes require bumping the schema number.  
 */
-#ifndef SCHEMA_2_H
-#define SCHEMA_2_H
+#ifndef SCHEMA_3_H
+#define SCHEMA_3_H
 
 #include "model/minsky.h"
 #include "model/ravelWrap.h"
 #include "model/sheet.h"
-#include "schema/schema1.h"
+#include "schema/schema2.h"
 #include "schemaHelper.h"
 #include "classdesc.h"
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
 #include "rungeKutta.h"
 
-#include "optional.h"
-
 #include <xsd_generate_base.h>
-#include "xml_common.xcd"
 #include <vector>
 #include <string>
 
 
-namespace schema2
+namespace schema3
 {
 
   using minsky::SchemaHelper;
@@ -52,9 +49,7 @@ namespace schema2
   using classdesc::shared_ptr;
   using minsky::Optional;
 
-  /// unpack a TensorVal from a pack_t buffer. Schema2 encoding.
-  void unpack(classdesc::pack_t&, civita::TensorVal&);
-
+ 
   struct Note
   {
     Optional<std::string> detailedText, tooltip;
@@ -77,8 +72,9 @@ namespace schema2
       Note(it), id(id), type(it.classType()),
       x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation()),
       ports(ports) {}
-    ItemBase(const schema1::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type) {}
+    ItemBase(const schema2::Item& it, const std::string& type="Item"):
+      Note(it), id(it.id), type(type), x(it.x), y(it.y), zoomFactor(it.zoomFactor),
+      rotation(it.rotation), ports(it.ports) {}
   };
 
   struct Slider
@@ -88,6 +84,8 @@ namespace schema2
     Slider() {}
     Slider(bool v, bool stepRel, double min, double max, double step):
       visible(v), stepRel(stepRel), min(min), max(max), step(step) {}
+    Slider(const schema2::Slider& s):
+      visible(s.visible), stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
   };
     
   struct Item: public ItemBase
@@ -122,10 +120,11 @@ namespace schema2
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
     Optional<std::vector<ecolab::Plot::LineStyle>> palette;
 
+    void packTensorInit(const minsky::VariableBase&);
+
     Item() {}
     Item(int id, const minsky::Item& it, const std::vector<int>& ports): ItemBase(id,it,ports) {}
     // minsky object importers
-    Item(const schema1::Item& it): ItemBase(it) {}
     Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
       name(v.rawName()), init(v.init()) {
@@ -163,45 +162,22 @@ namespace schema2
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
       width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
 
-    // schema1 importers
-    Item(const schema1::Operation& it):
-      ItemBase(it, "Operation:"+minsky::OperationType::typeName(it.type)),
-      name(it.name), dataOpData(it.data) {
-      if (it.intVar>-1) intVar=it.intVar;
-      ports=it.ports;
-      // rewrite deprecated constants as variables
-      if (it.type==minsky::OperationType::constant)
-        {
-          type="Variable:constant";
-          init.reset(new std::string(std::to_string(it.value)));
-        }
-    }
-    Item(const schema1::Variable& it):
-      ItemBase(it, "Variable:"+minsky::VariableType::typeName(it.type)),
-      name(it.name), init(it.init)  {ports=it.ports;}
-    Item(const schema1::Godley& it);
-    Item(const schema1::Plot& it):
-      ItemBase(it, "PlotWidget"),
-      name(it.title), logx(it.logx), logy(it.logy), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label)
-    {
-      if (it.legend) legend=*it.legend;
-      ports=it.ports;
-    }
-    Item(const schema1::Group& it): ItemBase(it,"Group"), name(it.name) {} 
-    Item(const schema1::Switch& it): ItemBase(it,"SwitchIcon") {ports=it.ports;} 
+    static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
-    void addLayout(const schema1::UnionLayout& layout) {
-      x=layout.x;
-      y=layout.y;
-      rotation=layout.rotation;
-      width.reset(new float(layout.width));
-      height.reset(new float(layout.height));
-      if (layout.sliderBoundsSet)
-        slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
-                                layout.sliderMin,layout.sliderMax,layout.sliderStep));
-    }
+    Item(const schema2::Item& it):
+      ItemBase(it,it.type), width(it.width), height(it.height), name(it.name), init(it.init),
+      units(it.units),
+      slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
+      ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
+      axis(it.axis), arg(it.arg), data(it.data), assetClasses(it.assetClasses),
+      iconScale(it.iconScale), logx(it.logx), logy(it.logy), ypercent(it.ypercent),
+      plotType(it.plotType), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
+      nxTicks(it.nxTicks), nyTicks(it.nyTicks), xtickAngle(it.xtickAngle),
+      exp_threshold(it.exp_threshold), legend(it.legend), bookmarks(it.bookmarks),
+      tensorData(convertTensorDataFromSchema2(it.tensorData)), palette(it.palette)
+    {}
 
-    void packTensorInit(const minsky::VariableBase&);
+                 
   };
 
 
@@ -215,11 +191,7 @@ namespace schema2
       if (w.coords().size()>4)
         coords.reset(new std::vector<float>(w.coords()));
      }
-    Wire(const schema1::Wire& w): Note(w), id(w.id), from(w.from), to(w.to) {}
-    void addLayout(const schema1::UnionLayout& layout) {
-      if (layout.coords.size()>4)
-        coords.reset(new std::vector<float>(layout.coords));
-    }
+    Wire(const schema2::Wire& w): Note(w), id(w.id), from(w.from), to(w.to), coords(w.coords) {}
   };
 
   struct Group: public Item
@@ -229,15 +201,14 @@ namespace schema2
     Group() {}
     Group(int id, const minsky::Group& g): Item(id,g,std::vector<int>()) {}
 
-    /// note this assumes that ids have been uniquified prior to this call
-    Group(const schema1::Group& g):
-      Item(g), items(g.items) {}
+    Group(const schema2::Group& g):
+      Item(g), items(g.items), inVariables(g.inVariables), outVariables(g.outVariables) {}
   };
 
 
   struct Minsky
   {
-    static const int version=2;
+    static const int version=3;
     int schemaVersion=Minsky::version;
     vector<Wire> wires;
     vector<Item> items;
@@ -258,12 +229,16 @@ namespace schema2
       conversions=m.conversions;
     }
 
-    Minsky(const schema1::Minsky& m);
-
     /// populate schema from XML data
     Minsky(classdesc::xml_unpack_t& data): schemaVersion(0)
-    {minsky::loadSchema<schema1::Minsky>(*this,data,"Minsky");}
-   
+    {minsky::loadSchema<schema2::Minsky>(*this,data,"Minsky");}
+    
+    Minsky(const schema2::Minsky& m):
+      wires(m.wires.begin(), m.wires.end()), items(m.items.begin(), m.items.end()),
+      groups(m.groups.begin(), m.groups.end()), rungeKutta(m.rungeKutta),
+      zoomFactor(m.zoomFactor), bookmarks(m.bookmarks), dimensions(m.dimensions),
+      conversions(m.conversions) {}
+    
     /// create a Minsky model from this
     operator minsky::Minsky() const;
     /// populate a group object from this. This mutates the ids in a
@@ -275,8 +250,10 @@ namespace schema2
 
 }
 
+using classdesc::xsd_generate;
+using classdesc::xml_pack;
 
-#include "schema2.cd"
-#include "schema2.xcd"
+#include "schema3.cd"
+#include "schema3.xcd"
 
 #endif

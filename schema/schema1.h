@@ -395,6 +395,10 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     Minsky(): schemaVersion(-1) {} // schemaVersion defined on read in
     Minsky(const schema0::Minsky& m);
     
+    /// populate schema from XML data
+    Minsky(classdesc::xml_unpack_t& data): schemaVersion(0)
+    {minsky::loadSchema<schema0::Minsky>(*this,data,"Minsky");}
+
     /** See ticket #329 and references within. At some stage, IntOp had
         no destructor, which leads to an orphaned, invisible integral
         variable, with invalid output port. This bit of code deals with

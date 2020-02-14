@@ -26,7 +26,7 @@
 #include <gsl/gsl_odeiv2.h>
 #include <cairo_base.h>
 
-#include <schema/schema2.h>
+#include <schema/schema3.h>
 
 
 //#include <thread>
@@ -231,7 +231,7 @@ namespace minsky
       putClipboard(""); // clear clipboard
     else
       {
-        schema2::Minsky m(canvas.selection);
+        schema3::Minsky m(canvas.selection);
         ostringstream os;
         xml_pack_t packer(os, schemaURL);
         xml_pack(packer, "Minsky", m);
@@ -252,7 +252,7 @@ namespace minsky
     
   void Minsky::saveGroupAsFile(const Group& g, const string& fileName) const
   {
-    schema2::Minsky m(g);
+    schema3::Minsky m(g);
     ofstream os(fileName);
     xml_pack_t packer(os, schemaURL);
     xml_pack(packer, "Minsky", m);
@@ -264,8 +264,7 @@ namespace minsky
   {
     istringstream is(getClipboard());
     xml_unpack_t unpacker(is);
-    schema2::Minsky m;
-    xml_unpack(unpacker, "Minsky", m);
+    schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
     canvas.model->addGroup(g);
     m.populateGroup(*g);
@@ -298,13 +297,9 @@ namespace minsky
 
   void Minsky::insertGroupFromFile(const char* file)
   {
-    schema2::Minsky currentSchema;
     ifstream inf(file);
     xml_unpack_t saveFile(inf);
-    xml_unpack(saveFile, "Minsky", currentSchema);
-
-    if (currentSchema.version != currentSchema.schemaVersion)
-      throw error("Invalid Minsky schema file");
+    schema3::Minsky currentSchema(saveFile);
 
     GroupPtr g(new Group);
     currentSchema.populateGroup(*model->addGroup(g));
@@ -312,18 +307,6 @@ namespace minsky
     canvas.itemFocus=g;
   }
 
-//  vector<int> Minsky::unwiredOperations() const
-//  {
-//    return model->findItemIds([&](const ItemPtr& x) {
-//        if (auto o=dynamic_cast<OperationBase*>(x.get()))
-//          for (auto& p: o->ports)
-//            if (p->input() && !p->multiWireAllowed() && p->wires.empty())
-//              return true;
-//        return false;
-//      }
-//      );
-//  }
-//
   void Minsky::makeVariablesConsistent()
   {
     // remove variableValues not in variables
@@ -926,7 +909,7 @@ namespace minsky
     ofstream of(filename);
     xml_pack_t saveFile(of, schemaURL);
     saveFile.prettyPrint=true;
-    schema2::Minsky m(*this);
+    schema3::Minsky m(*this);
     try
       {
         xml_pack(saveFile, "Minsky", m);
@@ -940,47 +923,51 @@ namespace minsky
     flags &= ~is_edited;
   }
 
+  namespace
+  {
+  }
 
   void Minsky::load(const std::string& filename) 
   {
     BusyCursor busy(*this);
     clearAllMaps();
 
-    // current schema
-    schema2::Minsky currentSchema;
     ifstream inf(filename);
     if (!inf)
       throw runtime_error("failed to open "+filename);
     xml_unpack_t saveFile(inf);
-    xml_unpack(saveFile, "Minsky", currentSchema);
-
-    switch (currentSchema.schemaVersion)
-      {
-      case 0:
-        {
-          schema0::Minsky schema0;
-          xml_unpack(saveFile, "root", schema0);
-          schema1::Minsky schema1(schema0);
-          // fix corruption caused by ticket #329
-          schema1.removeIntVarOrphans();
-          *this=schema2::Minsky(schema1);
-          break;
-        }
-      case 1:
-        {
-          schema1::Minsky schema1;
-          xml_unpack(saveFile, "Minsky", schema1);
-          // fix corruption caused by ticket #329
-          schema1.removeIntVarOrphans();
-          *this=schema2::Minsky(schema1);
-          break;
-        }
-      case 2:
-        *this = currentSchema;
-        break;
-      default:
-        throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
-      }
+    *this=schema3::Minsky(saveFile);
+//
+//
+//    xml_unpack(saveFile, "Minsky", currentSchema);
+//
+//    switch (currentSchema.schemaVersion)
+//      {
+//      case 0:
+//        {
+//          schema0::Minsky schema0;
+//          xml_unpack(saveFile, "root", schema0);
+//          schema1::Minsky schema1(schema0);
+//          // fix corruption caused by ticket #329
+//          schema1.removeIntVarOrphans();
+//          *this=schema2::Minsky(schema1);
+//          break;
+//        }
+//      case 1:
+//        {
+//          schema1::Minsky schema1;
+//          xml_unpack(saveFile, "Minsky", schema1);
+//          // fix corruption caused by ticket #329
+//          schema1.removeIntVarOrphans();
+//          *this=schema2::Minsky(schema1);
+//          break;
+//        }
+//      case 2:
+//        *this = currentSchema;
+//        break;
+//      default:
+//        throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
+//      }
 
     // try balancing all Godley tables
     try
@@ -1004,7 +991,6 @@ namespace minsky
   void Minsky::exportSchema(const char* filename, int schemaLevel)
   {
     xsd_generate_t x;
-    // currently, there is only 1 schema level, so ignore second arg
     switch (schemaLevel)
       {
       case 0:
@@ -1015,6 +1001,9 @@ namespace minsky
         break;
       case 2:
         xsd_generate(x,"Minsky",schema2::Minsky());
+        break;
+      case 3:
+        xsd_generate(x,"Minsky",schema3::Minsky());
         break;
       }
     ofstream f(filename);

@@ -1,15 +1,15 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>3</schemaVersion>
+  <schemaVersion>2</schemaVersion>
   <wires>
    <Wire>
     <id>38</id>
     <from>4</from>
     <to>1</to>
     <coords>
-     <float>66</float>
+     <float>76</float>
      <float>15</float>
-     <float>15.5515</float>
-     <float>31.8162</float>
+     <float>18.9332</float>
+     <float>34.0223</float>
      <float>41</float>
      <float>54</float>
     </coords>
@@ -36,10 +36,10 @@
     <coords>
      <float>140</float>
      <float>27</float>
-     <float>151.684</float>
-     <float>-6.2063</float>
-     <float>84</float>
-     <float>24</float>
+     <float>153.566</float>
+     <float>-11.5561</float>
+     <float>76</float>
+     <float>15</float>
     </coords>
    </Wire>
   </wires>
@@ -76,7 +76,7 @@
    <Item>
     <id>9</id>
     <type>Variable:integral</type>
-    <x>86</x>
+    <x>88</x>
     <y>63</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -187,7 +187,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -199,7 +198,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -211,7 +209,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -223,7 +220,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -235,7 +231,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -247,7 +242,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -259,7 +253,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -271,7 +264,6 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
-      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>

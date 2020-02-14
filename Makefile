@@ -38,7 +38,7 @@ ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o e
 	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o
 SERVER_OBJS=database.o message.o websocket.o databaseServer.o
-SCHEMA_OBJS=schema2.o schema1.o schema0.o variableType.o operationType.o a85.o
+SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o operationType.o a85.o
 #schema0.o 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=RESTService.o
@@ -220,7 +220,7 @@ mac-dist: gui-tk/minsky
 	sh -v mkMacDist.sh
 
 minsky.xsd: gui-tk/minsky
-	gui-tk/minsky exportSchema.tcl 2
+	gui-tk/minsky exportSchema.tcl 3
 
 upload-schema: minsky.xsd
 	scp minsky.xsd $(SF_WEB)

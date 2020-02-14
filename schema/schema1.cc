@@ -221,8 +221,9 @@ namespace schema1
     model.rungeKutta.nSteps=m.nSteps;
     model.rungeKutta.epsAbs=m.epsAbs;
     model.rungeKutta.epsRel=m.epsRel;
+    removeIntVarOrphans();
   }
-  
+
 }
 
 namespace classdesc

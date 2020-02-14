@@ -232,6 +232,9 @@ namespace schema0
      /// load from a file
     void load(const std::string& filename);
 
+    Minsky(classdesc::xml_unpack_t& data)
+    {::xml_unpack(data,"root",*this);}
+    
     /** See ticket #329 and references within. At some stage, IntOp had
         no destructor, which leads to an orphaned, invisible integral
         variable, with invalid output port. This bit of code deals with
