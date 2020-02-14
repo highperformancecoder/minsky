@@ -1358,7 +1358,7 @@ SUITE(GodleyTableWindow)
       selectedCol=1;
       selectedRow=1;
       selectIdx=insertIdx=0;
-      keyPress('a',"a"); keyPress('b',"b"); keyPress('b',"b"); keyPress(XK_Delete,"");
+      keyPress('a',"a"); keyPress('b',"b"); keyPress('b',"b"); insertIdx=2; keyPress(XK_Delete,"");
       keyPress('c',"c"); keyPress('c',"c"); keyPress(XK_BackSpace,"");
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
 

@@ -605,7 +605,10 @@ namespace minsky
               {
               switch (keySym)
                 {
-                case 0xff08: case 0xffff:  //backspace/delete
+                case 0xff08: // backspace
+		          handleBackspace();
+		          break;
+		        case 0xffff:  // delete
                   handleDelete();
                   break;
                 case 0xff1b: // escape
@@ -680,7 +683,7 @@ namespace minsky
       }
   }
 
-    void GodleyTableWindow::handleDelete()
+    void GodleyTableWindow::handleBackspace()
     {
       auto& table=godleyIcon->table;
       assert(selectedRow>=0 && selectedCol>=0);
@@ -691,6 +694,20 @@ namespace minsky
         delSelection();
       else if (insertIdx>0 && insertIdx<=str.length())
         str.erase(--insertIdx,1);
+      selectIdx=insertIdx;
+    }
+
+      void GodleyTableWindow::handleDelete()
+    {
+      auto& table=godleyIcon->table;
+      assert(selectedRow>=0 && selectedCol>=0);
+      assert(unsigned(selectedRow)<table.rows());
+      assert(unsigned(selectedCol)<table.cols());
+      auto& str=table.cell(selectedRow,selectedCol); 
+      if (insertIdx!=selectIdx)
+        delSelection();
+      else if (insertIdx>=0 && insertIdx<str.length())
+        str.erase(insertIdx,1);
       selectIdx=insertIdx;
     }
 
