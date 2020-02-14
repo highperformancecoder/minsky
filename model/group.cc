@@ -444,8 +444,9 @@ namespace minsky
     double xx=0.5*(x0+x1), yy=0.5*(y0+y1);
     double dx=xx-x(), dy=yy-y();
     float l,r; margins(l,r);
-    iconWidth=(x1-x0)+l+r;
-    iconHeight=(y1-y0);
+    float z=zoomFactor();
+    iconWidth=((x1-x0)+l+r)/z;
+    iconHeight=(y1-y0)/z;
 
     // adjust contents by the offset
     for (auto& i: items)
@@ -482,7 +483,7 @@ namespace minsky
     // rescale contents to fit
     double x0, x1, y0, y1;
     contentBounds(x0,y0,x1,y1);
-    double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1=y0);
+    double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1-y0);
     resizeItems(items,sx,sy);
     resizeItems(groups,sx,sy);
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
@@ -874,7 +875,7 @@ namespace minsky
   void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
                         float x) const
   {
-    float top=0, bottom=0;
+    float top=0, bottom=0, z=zoomFactor();
     for (size_t i=0; i<vars.size(); ++i)
       {
         float y=i%2? top:bottom;
@@ -888,13 +889,13 @@ namespace minsky
         v->draw(cairo);
         if (i==0)
           {
-            top=varToTextRatio*0.5*v->height(); //??? should be 0.5*varToTextRatio
+            top=0.5*varToTextRatio*v->height()*z; //??? should be 0.5*varToTextRatio
             bottom=-top;
           }
         else if (i%2)
-          top+=varToTextRatio*0.5*v->height();
+          top+=0.5*varToTextRatio*v->height()*z;
         else
-          bottom-=varToTextRatio*0.5*v->height();
+          bottom-=0.5*varToTextRatio*v->height()*z;
       }
   }
 
@@ -931,9 +932,9 @@ namespace minsky
     cairo_move_to(cairo,-w,-h);
     // create notch in input region
     cairo_line_to(cairo,-w,y-dy);
-    cairo_line_to(cairo,left-w-4,y-dy);
+    cairo_line_to(cairo,left-w-4*z,y-dy);
     cairo_line_to(cairo,left-w,y);
-    cairo_line_to(cairo,left-w-4,y+dy);
+    cairo_line_to(cairo,left-w-4*z,y+dy);
     cairo_line_to(cairo,-w,y+dy);
     cairo_line_to(cairo,-w,h);
     cairo_line_to(cairo,left-w,h);
@@ -950,9 +951,9 @@ namespace minsky
     cairo_move_to(cairo,w,-h);
     // create notch in output region
     cairo_line_to(cairo,w,y-dy);
-    cairo_line_to(cairo,w-right-2,y-dy);
-    cairo_line_to(cairo,w-right+2,y);
-    cairo_line_to(cairo,w-right-2,y+dy);
+    cairo_line_to(cairo,w-right-2*z,y-dy);
+    cairo_line_to(cairo,w-right+2*z,y);
+    cairo_line_to(cairo,w-right-2*z,y+dy);
     cairo_line_to(cairo,w,y+dy);
     cairo_line_to(cairo,w,h);
     cairo_line_to(cairo,w-right,h);
