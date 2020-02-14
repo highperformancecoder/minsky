@@ -123,45 +123,8 @@ namespace schema2
     Optional<std::vector<ecolab::Plot::LineStyle>> palette;
 
     Item() {}
-    Item(int id, const minsky::Item& it, const std::vector<int>& ports): ItemBase(id,it,ports) {}
     // minsky object importers
     Item(const schema1::Item& it): ItemBase(it) {}
-    Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      name(v.rawName()), init(v.init()) {
-      if (v.sliderBoundsSet)
-        slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
-      if (auto vv=v.vValue())
-        units=vv->units.str();
-      packTensorInit(v);
-    }
-    Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(o),ports),
-      axis(o.axis), arg(o.arg) {}
-    Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.width()/g.zoomFactor()), height(g.height()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
-      assetClasses(g.table._assetClass()) {}
-    Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      width(p.width), height(p.height), name(p.title),
-      logx(p.logx), logy(p.logy), ypercent(p.percent),
-      plotType(p.plotType),
-      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
-      nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), palette(p.palette)
-    {
-      if (p.legend) legend=p.legendSide;
-    }
-    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
-      width(s.m_width), height(s.m_height) {}
-    Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
-      ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
-    {if (s.flipped) rotation=180;}
-    Item(int id, const minsky::Group& g, const std::vector<int>& ports):
-      ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
 
     // schema1 importers
     Item(const schema1::Operation& it):
@@ -201,7 +164,7 @@ namespace schema2
                                 layout.sliderMin,layout.sliderMax,layout.sliderStep));
     }
 
-    void packTensorInit(const minsky::VariableBase&);
+    //    void packTensorInit(const minsky::VariableBase&);
   };
 
 
@@ -211,10 +174,6 @@ namespace schema2
     int from=-1, to=-1;
     Optional<std::vector<float>> coords;
     Wire() {}
-    Wire(int id, const minsky::Wire& w): Note(w), id(id) {
-      if (w.coords().size()>4)
-        coords.reset(new std::vector<float>(w.coords()));
-     }
     Wire(const schema1::Wire& w): Note(w), id(w.id), from(w.from), to(w.to) {}
     void addLayout(const schema1::UnionLayout& layout) {
       if (layout.coords.size()>4)
@@ -227,8 +186,6 @@ namespace schema2
     vector<int> items;
     Optional<vector<int>> inVariables, outVariables;
     Group() {}
-    Group(int id, const minsky::Group& g): Item(id,g,std::vector<int>()) {}
-
     /// note this assumes that ids have been uniquified prior to this call
     Group(const schema1::Group& g):
       Item(g), items(g.items) {}
@@ -249,27 +206,11 @@ namespace schema2
     minsky::ConversionsMap conversions;
     
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
-    Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m): Minsky(*m.model) {
-      rungeKutta=m;
-      zoomFactor=m.model->zoomFactor();
-      bookmarks=m.model->bookmarks;
-      dimensions=m.dimensions;
-      conversions=m.conversions;
-    }
-
     Minsky(const schema1::Minsky& m);
 
     /// populate schema from XML data
     Minsky(classdesc::xml_unpack_t& data): schemaVersion(0)
     {minsky::loadSchema<schema1::Minsky>(*this,data,"Minsky");}
-   
-    /// create a Minsky model from this
-    operator minsky::Minsky() const;
-    /// populate a group object from this. This mutates the ids in a
-    /// consistent way into the free id space of the global minsky
-    /// object
-    void populateGroup(minsky::Group& g) const;
   };
 
 

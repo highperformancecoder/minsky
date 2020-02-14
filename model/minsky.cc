@@ -1193,7 +1193,7 @@ namespace minsky
   {
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
-    schema2::Minsky m(*this);
+    schema3::Minsky m(*this);
     pack_t buf;
     buf<<m;
     if (history.empty())
@@ -1242,7 +1242,7 @@ namespace minsky
     historyPtr-=changes;
     if (historyPtr > 0 && historyPtr <= history.size())
       {
-        schema2::Minsky m;
+        schema3::Minsky m;
         history[historyPtr-1].reseto()>>m;
         clearAllMaps();
         model->clear();
