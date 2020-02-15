@@ -159,7 +159,7 @@ namespace schema0
     double rotation; // orientation of icon
 
     GroupIcon(): width(100), height(100), rotation(0) {}
-    void updateEdgeVariables(const VariableManager& vm);
+    //    void updateEdgeVariables(const VariableManager& vm);
   };
 
 
@@ -173,7 +173,7 @@ namespace schema0
     };
   }
 
-  struct PlotWidget //: public ecolab::Plot
+  struct PlotWidget 
   {
     int nxTicks, nyTicks; ///< number of x/y-axis ticks
     double fontScale; ///< scale tick labels
@@ -229,8 +229,6 @@ namespace schema0
     int nSteps=1;     ///< number of steps per GUI update
     double epsAbs=1e-3;     ///< absolute error
     double epsRel=1e-2;     ///< relative error
-     /// load from a file
-    void load(const std::string& filename);
 
     Minsky(classdesc::xml_unpack_t& data)
     {::xml_unpack(data,"root",*this);}

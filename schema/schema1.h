@@ -251,7 +251,7 @@ namespace schema1
     int id;
     Layout(int id=-1): id(id) {}
     virtual ~Layout() {}
-    static Layout* create(const string&);
+    //    static Layout* create(const string&);
   };
 
   /// represent objects whose layouts just have a position (ports,
@@ -382,7 +382,7 @@ struct ItemLayout: public SPoly<ItemLayout, Layout,
     minsky::RungeKutta rungeKutta;
 
     /// checks that all items are uniquely identified.
-    bool validate() const;
+    //bool validate() const;
   };
 
   struct Minsky
