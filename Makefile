@@ -37,17 +37,15 @@ MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIc
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o
-SERVER_OBJS=database.o message.o websocket.o databaseServer.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schemaHelper.o variableType.o operationType.o a85.o
 #schema0.o 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=RESTService.o
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS)
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS)
 
-EXES=gui-tk/minsky $(SERVER_OBJS)
+EXES=gui-tk/minsky
 #RESTService/RESTService 
-#EXES=gui-tk/minsky server/server
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
@@ -55,7 +53,7 @@ endif
 
 FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
-VPATH= schema model engine tensor gui-tk server RESTService $(ECOLAB_HOME)/include
+VPATH= schema model engine tensor gui-tk RESTService $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -118,8 +116,6 @@ FLAGS+=$(shell $(PKG_CONFIG) --cflags librsvg-2.0)
 LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
 
 GUI_LIBS=
-#SERVER_LIBS=-lwebsocketpp -lsoci_core 
-SERVER_LIBS=-lsoci_core 
 # disable a deprecation warning that comes from Wt
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
@@ -172,10 +168,6 @@ ifdef MXE
 	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
-server/server: tclmain.o $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SERVER_OBJS) $(GUI_OBJS)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS)  $(SERVER_LIBS) -o $@
-	-ln -sf `pwd`/GUI/library server
-
 RESTService/RESTService: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
@@ -200,18 +192,17 @@ doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno
 
 clean:
-	-$(BASIC_CLEAN) minsky.xsd *.gcda *.gcno
+	-$(BASIC_CLEAN) minsky.xsd
 	-rm -f $(EXES)
-	-cd test; $(MAKE) clean
+	-cd test; $(MAKE)  clean
 	-cd gui-tk; $(BASIC_CLEAN)
 	-cd model; $(BASIC_CLEAN)
 	-cd engine; $(BASIC_CLEAN)
 	-cd schema; $(BASIC_CLEAN)
 	-cd gui-wt; $(BASIC_CLEAN)
-	-cd server; $(BASIC_CLEAN)
 	-cd ecolab; $(MAKE) clean
 
 mac-dist: gui-tk/minsky
