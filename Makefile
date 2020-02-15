@@ -37,7 +37,7 @@ MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIc
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o
-SCHEMA_OBJS=schema3.o schema2.o schema1.o schemaHelper.o variableType.o operationType.o a85.o
+SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o operationType.o a85.o
 #schema0.o 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=RESTService.o
