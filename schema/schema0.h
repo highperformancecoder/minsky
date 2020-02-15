@@ -231,7 +231,10 @@ namespace schema0
     double epsRel=1e-2;     ///< relative error
 
     Minsky(classdesc::xml_unpack_t& data)
-    {::xml_unpack(data,"root",*this);}
+    {
+      ::xml_unpack(data,"root",*this);
+      void removeIntVarOrphans();
+    }
     
     /** See ticket #329 and references within. At some stage, IntOp had
         no destructor, which leads to an orphaned, invisible integral
@@ -241,7 +244,7 @@ namespace schema0
         Apparently schema0 files suffered from this problem too!
     */
     void removeIntVarOrphans();
-};
+  };
 
 }
 
