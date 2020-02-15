@@ -29,79 +29,6 @@ namespace schema1
   using minsky::SchemaHelper;
   const int Minsky::version;
 
-
-  namespace
-  {
-    // internal type used in MinskyModel::validate()
-    struct Validate  {
-      set<int> items;
-      template <class T> bool check(const T& x) {
-        for (typename T::const_iterator i=x.begin(); i!=x.end(); ++i)
-          {
-            bool ok=items.insert(i->id).second;
-            assert(ok);
-            if (!ok) 
-              return false;
-          }
-        return true;
-      }
-    };
-
-    template <class T>
-    bool assignIf(UnionLayout& u, const Layout& l)
-    {
-      const T* p;
-      if ((p=dynamic_cast<const T*>(&l)))
-        static_cast<T&>(u)=*p;
-      return p;
-    }
-  }
-  
-  UnionLayout::UnionLayout(const Layout& l)
-  {
-    assignIf<UnionLayout>(*this, l) ||
-      assignIf<SliderLayout>(*this, l) ||
-      assignIf<GroupLayout>(*this, l) ||
-      assignIf<PlotLayout>(*this, l) ||
-      assignIf<WireLayout>(*this, l) ||
-      assignIf<ItemLayout>(*this, l) ||
-      assignIf<PositionLayout>(*this, l);
-  }
-
-
-  bool MinskyModel::validate() const
-  {
-    // check that wire from/to labels refer to ports
-    set<int> portIds;
-    for (auto& i: operations)
-      for (auto j:i.ports)
-        portIds.insert(j);
-    for (auto& i: variables)
-      for (auto j:i.ports)
-        portIds.insert(j);
-    for (auto& i: plots)
-      for (auto j:i.ports)
-        portIds.insert(j);
-    for (auto& i: groups)
-      for (auto j:i.ports)
-        portIds.insert(j);
-    for (auto& i: switches)
-      for (auto j:i.ports)
-        portIds.insert(j);
-
-    for (auto& w: wires)
-      {
-        assert(portIds.find(w.from)!=portIds.end() && portIds.find(w.to)!=portIds.end());
-        if (portIds.find(w.from)==portIds.end() || portIds.find(w.to)==portIds.end())
-          return false;
-      }
-
-    // check that ids are unique
-    Validate v;
-    return v.check(wires) && v.check(operations) && 
-      v.check(variables) && v.check(groups) && v.check(godleys);
-  }
-
   namespace
   {
     struct IsOrphan
@@ -249,19 +176,5 @@ namespace schema1
   ItemFactory itemFactory;
   Factory<schema1::Layout,string> factoryForLayout;
 
-
-  template <> unique_ptr<Item> factory<Item>(const string& name)
-  {
-    return unique_ptr<Item>(itemFactory.create(name));
-  }
-  template <> unique_ptr<Layout> factory<Layout>(const string& name)
-  {
-    return unique_ptr<Layout>(factoryForLayout.create(name));
-  }
-
-  Layout* Layout::create(const string& name)
-  {
-    return factoryForLayout.create(name);
-  }
 }
 
