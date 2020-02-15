@@ -240,7 +240,7 @@ namespace schema0
 
         Apparently schema0 files suffered from this problem too!
     */
-    void removeIntVarOrphans();
+    //void removeIntVarOrphans();
 };
 
 }
