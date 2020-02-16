@@ -27,69 +27,6 @@ using namespace std;
 
 namespace schema0
 {
-//  // like assignment between containers, but value_types needn't be identical
-//  template <class C1, class C2>
-//  void asg(C1& c1, const C2& c2)
-//  {
-//    C1 tmp(c2.begin(), c2.end());
-//    tmp.swap(c1);
-//  }
-//
-//  void GroupIcon::updateEdgeVariables(const VariableManager& vm)
-//  {
-//    inVariables.clear();
-//    outVariables.clear();
-//    // for each edge port, we need to determine the edgeVariable
-//    // associated with it, and whether it is an input or output edge
-//    // variable
-//    for (size_t p=0; p<m_ports.size(); ++p)
-//      {
-//        map<int,int>::const_iterator vid=vm.portToVariable.find(m_ports[p]);
-//        if (vid!=vm.portToVariable.end())
-//          {
-//            VariableManager::Variables::const_iterator v=vm.find(vid->second);
-//            if (v!=vm.end())
-//              {
-//                if (v->second.m_inPort==m_ports[p])
-//                  inVariables.push_back(v->first);
-//                else if (v->second.m_outPort==m_ports[p])
-//                  outVariables.push_back(v->first);
-//              }
-//          }
-//      }
-//  }
-//void Minsky::load(const string& filename)
-//{
-//  ifstream inf(filename);
-//  xml_unpack_t saveFile(inf);
-//  saveFile >> *this;
-//
-//  // if a godley table is present, and no godley icon present, copy
-//  // into godleyItems, to support XML migration
-//  if (godleyItems.empty() && godley.rows()>2)
-//    {
-//      godleyItems[0].table=godley;
-//      godleyItems[0].x=godleyItems[0].y=10;
-//    }
-//  
-//  map<int, xml_conversions::GodleyIcon> gItems;
-//  xml_unpack(saveFile,"root.godleyItems", gItems);
-//  
-//  for (GodleyItems::iterator g=godleyItems.begin(); g!=godleyItems.end(); ++g)
-//    if (g->second.flowVars.empty() && g->second.stockVars.empty())
-//      {
-//        xml_conversions::GodleyIcon& gicon=gItems[g->first];
-//        GodleyIcon& gi=g->second;
-//        asg(gi.flowVars, gicon.flowVars);
-//        asg(gi.stockVars, gicon.stockVars);
-//      }
-//  
-//  for (size_t i=0; i<groupItems.size(); ++i)
-//    groupItems[i].updateEdgeVariables(variables);
-//
-//  removeIntVarOrphans();
-//}
-
   namespace
   {
     struct IsOrphan
