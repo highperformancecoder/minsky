@@ -45,6 +45,8 @@ void CSVDialog::loadFile(const string& fname)
       initialLines.emplace_back();
       getline(is, initialLines.back());
     }
+  // Ensure dimensions.size() is the same as nColAxes() upon first load of a CSV file. For ticket 974.
+  if (spec.dimensions.size()<spec.nColAxes()) spec.setDataArea(spec.nRowAxes(),spec.nColAxes());     
 }
 
 template <class Parser>
