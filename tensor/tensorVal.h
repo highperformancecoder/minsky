@@ -66,7 +66,7 @@ namespace civita
     
     std::vector<size_t> index() const override {return m_index;}
     void index(const std::vector<size_t>& idx) override
-    {m_index=idx; data.resize(idx.size());}
+    {m_index=idx; if (!idx.empty()) data.resize(idx.size());}
     const Hypercube& hypercube(const Hypercube& hc) override
     {m_hypercube=hc; allocVal(); return m_hypercube;}
     const Hypercube& hypercube(Hypercube&& hc) override 

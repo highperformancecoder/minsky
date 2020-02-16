@@ -88,7 +88,7 @@ namespace schema3
     a.hypercube(hc); //dimension data
     a.index(index);
     assert(a.size()==data.size());
-    memcpy(a.begin(),&data[0],data.size());
+    memcpy(a.begin(),&data[0],data.size()*sizeof(data[0]));
   }
 
   Optional<classdesc::CDATA> Item::convertTensorDataFromSchema2(const Optional<classdesc::CDATA>& x)

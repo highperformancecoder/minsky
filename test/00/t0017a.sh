@@ -36,6 +36,7 @@ for i in examples/*.mky; do
     if [ $i = "examples/math-examples.mky" ]; then continue; fi
     # data object not suppported in Octave
     if [ $i = "examples/data-example.mky" ]; then continue; fi
+    if [ $i = "examples/importedCSV.mky" ]; then continue; fi
     echo $i
     
     for order in 1 2 4; do

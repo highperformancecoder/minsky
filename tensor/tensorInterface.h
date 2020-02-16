@@ -52,7 +52,7 @@ namespace civita
     virtual size_t size() const=0;
     
     /// returns the data value at hypercube index \a hcIdx, or NaN if 
-    double atHCIndex(size_t hcIdx) {
+    double atHCIndex(size_t hcIdx) const {
       auto idx=index();
       if (idx.empty()) {
         assert(hcIdx<size());
