@@ -390,7 +390,7 @@ namespace MathDAG
     NodePtr zero{new ConstantDAG("0")}, one{new ConstantDAG("1")};
 
     /// render equations into a cairo context
-    void renderEquations(ecolab::cairo::Surface&) const;
+    void renderEquations(ecolab::cairo::Surface&, float offsx, float offsy) const;
   };
 
   /// creates a new name to represent the derivative of a variable

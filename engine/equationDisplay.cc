@@ -96,6 +96,11 @@ namespace MathDAG
       cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
       cairo_rel_move_to(s.cairo(),pango.width(),0);
       x(s);
+      //      cairo_set_source_surface(s.cairo(),r.surface(),-xx,-yy);
+      //cairo_set_source_surface(s.cairo(),r.surface(),xx,yy);
+      //cairo_rectangle(s.cairo(),xx,yy,r.width(),r.height());
+      //cairo_fill(s.cairo());
+
       xx+=pango.width()+r.width();
       pango.setMarkup(right);
       cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
@@ -133,15 +138,18 @@ namespace MathDAG
 
   }
 
-  void SystemOfEquations::renderEquations(Surface& dest) const
+  void SystemOfEquations::renderEquations(Surface& dest, float offsx, float offsy) const
   {
     double x, y; // starting position of current line
     cairo_get_current_point(dest.cairo(),&x,&y);
     Pango den(dest.cairo());
     den.setMarkup("dt");
+    cout << x << " "<<offsx<< " "<<y<< " "<<offsy<< " "<<dest.height()<<endl;
 
     for (const VariableDAG* i: variables)
       {
+        //if (y<-offsy) continue;
+        if ((y+offsy)>dest.height()) break;
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
         if (i->type==VariableType::constant) continue;
         RecordingSurface line;
@@ -154,6 +162,8 @@ namespace MathDAG
 
     for (const VariableDAG* i: integrationVariables)
       {
+        //if (y<-offsy) continue;
+        if ((y+offsy)>dest.height()) break;
         // initial conditions
         y+=print(dest.cairo(), latexToPango(mathrm(i->name))+"(0) = "+
                  latexToPango(latexInit(i->init)),Anchor::nw);

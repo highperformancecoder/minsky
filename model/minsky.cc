@@ -358,7 +358,7 @@ namespace minsky
     ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
-    system.renderEquations(surf);
+    system.renderEquations(surf,0,0);
     surf.blit();
   }
 
