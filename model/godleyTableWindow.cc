@@ -100,35 +100,36 @@ namespace minsky
           godleyIcon.table.moveRow(idx,1);
         break;
       }
-      try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
-      catch (...) {}
+    try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
+    catch (...) {}
   }
 
   template <>
   void ButtonWidget<ButtonWidgetEnums::col>::invoke(double x)
   {
     int button=x/buttonSpacing;
-    switch (button)
-      {
-      case 0:
-        godleyIcon.table.insertCol(idx+1);
-        break;
-      case 1:
-        godleyIcon.table.deleteCol(idx+1);
-        break;
-      case 2:
-        if (pos==first)
-          godleyIcon.table.moveCol(idx,1);
-        else
-          godleyIcon.table.moveCol(idx,-1);
-        break;
-      case 3:
-        if (pos==middle)
-          godleyIcon.table.moveCol(idx,1);
-        break;
-      }
-      try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
-      catch (...) {}      
+    if (pos!=last)
+      switch (button)
+       {
+       case 0:
+         godleyIcon.table.insertCol(idx+1);
+         break;
+       case 1:
+         godleyIcon.table.deleteCol(idx+1);
+         break;
+       case 2:
+         if (pos==first)
+           godleyIcon.table.moveCol(idx,1);
+         else if (pos!=first)
+           godleyIcon.table.moveCol(idx,-1);
+         break;
+       case 3:
+         if (pos==middle)
+           godleyIcon.table.moveCol(idx,1);
+         break;
+       }
+    try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
+    catch (...) {}      
   }
 
 
@@ -848,21 +849,24 @@ namespace {
         if (c<colWidgets.size() && visibleCol < colLeftMargin.size()) {
 		    auto& moveVar=godleyIcon->table.cell(0,c);		
 		    auto oldAssetClass=godleyIcon->table._assetClass(c);
-            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3) {
-				auto targetAssetClass=godleyIcon->table._assetClass(c+1);
-				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-				    tmpStr=constructMessage(targetAssetClass,oldAssetClass,moveVar);
-			}
-			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==1 && godleyIcon->table._assetClass(c-1)!=1) {
-				auto targetAssetClass=godleyIcon->table._assetClass(c+1);
-				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-				    tmpStr=constructMessage(targetAssetClass,oldAssetClass,moveVar);
-			}
-			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2) {
-				auto targetAssetClass=godleyIcon->table._assetClass(c-1);
-				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-				    tmpStr=constructMessage(targetAssetClass,oldAssetClass,moveVar);
-			}
+		    auto targetAssetClassPlus=godleyIcon->table._assetClass(c+1);
+		    auto targetAssetClassMinus=godleyIcon->table._assetClass(c-1);
+            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=3) {
+		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=3 && targetAssetClassPlus!=0)
+		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
+		    	else if ((targetAssetClassPlus==3 || targetAssetClassPlus==0) && !moveVar.empty())
+		    	    tmpStr="Cannot convert stock variable to an equity class";    
+		    }
+		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==1 && oldAssetClass!=3 && targetAssetClassMinus!=1) {
+		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=3 && targetAssetClassPlus!=0)
+		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
+		    	else if ((targetAssetClassPlus==3 || targetAssetClassPlus==0) && !moveVar.empty())
+		    	    tmpStr="Cannot convert stock variable to an equity class"; 		    	    
+		    }
+		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass!=3) {
+		    	if (targetAssetClassMinus!=oldAssetClass && !moveVar.empty())
+		    	    tmpStr=constructMessage(targetAssetClassMinus,oldAssetClass,moveVar);
+		    }
 		}
 	}
    return tmpStr;	    		 	
@@ -879,8 +883,10 @@ namespace {
 		 auto& swapVar=godleyIcon->table.cell(0,selectedCol);
 		 auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
 		 auto targetAssetClass=godleyIcon->table._assetClass(c);
-		 if (targetAssetClass!=oldAssetClass && !swapVar.empty())
+		 if (targetAssetClass!=oldAssetClass && !swapVar.empty() && targetAssetClass!=3 && targetAssetClass!=0)
 		    tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
+		 else if ((targetAssetClass==3 || targetAssetClass==0) && !swapVar.empty())
+		     tmpStr="Cannot convert stock variable to an equity class"; 		    
 		}
 	  }
 	return tmpStr;  	  
@@ -1088,16 +1094,17 @@ namespace {
   
   template <ButtonWidgetEnums::RowCol rowCol>
   void ButtonWidget<rowCol>::draw(cairo_t* cairo)
-  {
+  {	    
     CairoSave cs(cairo);
     int idx=0;
+    if (rowCol == row || (rowCol == col && pos!=last)) 
       drawButton(cairo,"+",0,1,0,idx++);
-      if ((pos!=first && pos!=firstAndLast) || rowCol == col) 	// no delete button for first row containing initial conditions. For ticket 1064
-		drawButton(cairo,"—",1,0,0,idx++);
-      if (pos!=first && pos!=second && pos!=firstAndLast) 						// no move up button for first row containing initial conditions. For ticket 1064
-        drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
-      if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
-        drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
+    if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064
+	  drawButton(cairo,"—",1,0,0,idx++);
+    if ((rowCol == row && pos!=first && pos!=second && pos!=firstAndLast) || (rowCol == col && pos!=first && pos!=last))	// no move up button for first row containing initial conditions. For ticket 1064
+      drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
+    if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
+      drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
   }  
  
   template class ButtonWidget<ButtonWidgetEnums::row>;
