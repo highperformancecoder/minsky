@@ -145,7 +145,7 @@ namespace minsky
     
     /// @{ current value associated with this variable
     virtual double value(const double&);
-    virtual double value() const;  
+    virtual double value() const override;  
     /// @}
     
     //    void setValue(const TensorVal&);

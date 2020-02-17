@@ -118,11 +118,11 @@ namespace minsky
     Timestamp timestamp() const override {return Timestamp::clock::now();}
     
     double operator[](size_t i) const override {return *(&valRef()+i);}
-    double& operator[](size_t i) {return *(&valRef()+i);}
+    double& operator[](size_t i) override {return *(&valRef()+i);}
 
 
     std::vector<size_t> index() const override {return m_index;}
-    void index(const std::vector<size_t>& i) {
+    void index(const std::vector<size_t>& i) override {
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    

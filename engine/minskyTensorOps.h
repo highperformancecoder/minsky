@@ -90,7 +90,7 @@ namespace minsky
     /// flowVar and stockVarinfo
     shared_ptr<EvalCommon> ev;
     /// 
-    Timestamp timestamp() const {return ev->timestamp();}
+    Timestamp timestamp() const override {return ev->timestamp();}
     double operator[](size_t i) const override {
       return isFlowVar()? ev->flowVars()[idx()+i]: ev->stockVars()[idx()+i];
     }
@@ -121,7 +121,7 @@ namespace minsky
 
   public:
     // not used, but required to make this a concrete type
-    Type type() const {assert(false); return OperationType::numOps;} 
+    Type type() const override {assert(false); return OperationType::numOps;} 
     TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev); 
     TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
