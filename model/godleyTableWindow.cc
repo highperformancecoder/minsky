@@ -847,7 +847,7 @@ namespace {
 	if (clickType(x,y)==colWidget) {
 	    unsigned visibleCol=c-scrollColStart+1;
         if (c<colWidgets.size() && visibleCol < colLeftMargin.size()) {
-		    auto& moveVar=godleyIcon->table.cell(0,c);		
+		    auto moveVar=godleyIcon->table.getCell(0,c);		
 		    auto oldAssetClass=godleyIcon->table._assetClass(c);
 		    auto targetAssetClassPlus=godleyIcon->table._assetClass(c+1);
 		    auto targetAssetClassMinus=godleyIcon->table._assetClass(c-1);
@@ -873,21 +873,22 @@ namespace {
    }
   
   string GodleyTableWindow::swapAssetClass(double x, double y) 
-  {
+  {  
 	x/=zoomFactor;
 	y/=zoomFactor;
 	int c=colX(x);	
 	string tmpStr="";	  
-	if (clickType(x,y)==row0) {
-	   if (c>0 && selectedCol>0 && c!=selectedCol) {
-		 auto& swapVar=godleyIcon->table.cell(0,selectedCol);
-		 auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
-		 auto targetAssetClass=godleyIcon->table._assetClass(c);
-		 if (targetAssetClass!=oldAssetClass && !swapVar.empty() && targetAssetClass!=3 && targetAssetClass!=0)
-		    tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
-		 else if ((targetAssetClass==3 || targetAssetClass==0) && !swapVar.empty())
-		     tmpStr="Cannot convert stock variable to an equity class"; 		    
-		}
+	if (selectedRow==0) {  // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
+	    if (c>0 && selectedCol>0 && c!=selectedCol) {
+		    auto swapVar=godleyIcon->table.getCell(0,selectedCol);
+		    auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
+		    auto targetAssetClass=godleyIcon->table._assetClass(c);
+		    if (!swapVar.empty())
+		      if (targetAssetClass!=oldAssetClass && targetAssetClass!=3 && targetAssetClass!=0)
+		         tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
+		      else if ((targetAssetClass==3 || targetAssetClass==0) || oldAssetClass==0)
+		          tmpStr="Cannot convert stock variable to an equity class"; 		    
+		  }
 	  }
 	return tmpStr;  	  
   }    
