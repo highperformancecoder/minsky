@@ -883,11 +883,12 @@ namespace {
 		    auto swapVar=godleyIcon->table.getCell(0,selectedCol);
 		    auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
 		    auto targetAssetClass=godleyIcon->table._assetClass(c);
-		    if (!swapVar.empty())
+		    if (!swapVar.empty()) {
 		      if (targetAssetClass!=oldAssetClass && targetAssetClass!=3 && targetAssetClass!=0)
 		         tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
 		      else if ((targetAssetClass==3 || targetAssetClass==0) || oldAssetClass==0)
 		          tmpStr="Cannot convert stock variable to an equity class"; 		    
+			}
 		  }
 	  }
 	return tmpStr;  	  
