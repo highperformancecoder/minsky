@@ -1059,20 +1059,7 @@ SUITE(GodleyTableWindow)
       // check row deleted
       for (size_t i=0; i<table.cols(); ++i)
         CHECK_EQUAL("c3"+str(i),table.cell(3,i));
-      CHECK(table.getData()==origData);
-      
-      // now check arrow functionality  
-      // first (Initial Conditions) row cannot be swapped at all 
-      //idx=2; pos=first;                              
-      //invoke(2*buttonSpacing);
-      //CHECK_EQUAL(4,table.rows());
-      //// check row swapped with next 
-      //for (size_t i=0; i<table.cols(); ++i)
-      //  CHECK_EQUAL("c1"+str(i),table.cell(2,i));      
-      //for (size_t i=0; i<table.cols(); ++i)           
-      //  CHECK_EQUAL("c2"+str(i),table.cell(3,i));
-      //for (size_t i=0; i<table.cols(); ++i)
-      //  CHECK_EQUAL("c3"+str(i),table.cell(1,i));               
+      CHECK(table.getData()==origData);               
         
       // now check arrow functionality  
       idx=2; pos=second;                     
@@ -1181,24 +1168,19 @@ SUITE(GodleyTableWindow)
         CHECK_EQUAL("c"+str(i)+"3",table.cell(i,4));
       for (size_t i=0; i<table.rows(); ++i)
         CHECK_EQUAL("",table.cell(i,2));
-    
-      pos=last; idx=3;
-      invoke(2*buttonSpacing);
-      CHECK_EQUAL(4,table.cols());
-      for (size_t i=0; i<table.rows(); ++i)
-        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
-      for (size_t i=0; i<table.rows(); ++i)
-        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,2));
-      for (size_t i=0; i<table.rows(); ++i)
-        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
 
-    
-      // should be no 4th button on first & last
+      // should be no 4th button on first
       pos=first;
       auto saveData=table.getData();
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
+      
+      // should be no button on last
       pos=last;
+      invoke(buttonSpacing);
+      CHECK(table.getData()==saveData);
+      invoke(2*buttonSpacing);
+      CHECK(table.getData()==saveData);      
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
     }
