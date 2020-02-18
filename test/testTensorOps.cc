@@ -194,7 +194,7 @@ SUITE(TensorOps)
                 CHECK_EQUAL(src.vValue()->size(), dest.vValue()->size());
                 unique_ptr<ScalarEvalOp> scalarOp(ScalarEvalOp::create(op));
                 CHECK(scalarOp.get());
-                for (int i=0; i<src.vValue()->size(); ++i)
+                for (size_t i=0; i<src.vValue()->size(); ++i)
                   {
                     double x=scalarOp->evaluate((*src.vValue())[i]);
                     double y=(*dest.vValue())[i];

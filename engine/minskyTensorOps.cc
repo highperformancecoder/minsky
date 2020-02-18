@@ -253,7 +253,7 @@ namespace minsky
                        ([this](double& x,double y,size_t i)
                         {
                           ssize_t t=ssize_t(i)-delta;
-                          if (t>=0 && t<arg->size())
+                          if (t>=0 && t<ssize_t(arg->size()))
                             x = y-arg->atHCIndex(t);
                         }) {}
     void setArgument(const TensorPtr& a,const std::string& s,double d) override {
