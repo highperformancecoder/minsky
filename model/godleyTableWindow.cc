@@ -847,23 +847,23 @@ namespace {
 	if (clickType(x,y)==colWidget) {
 	    unsigned visibleCol=c-scrollColStart+1;
         if (c<colWidgets.size() && visibleCol < colLeftMargin.size()) {
-		    auto moveVar=godleyIcon->table.getCell(0,c);		
+		    auto moveVar=godleyIcon->table.cell(0,c);		
 		    auto oldAssetClass=godleyIcon->table._assetClass(c);
 		    auto targetAssetClassPlus=godleyIcon->table._assetClass(c+1);
 		    auto targetAssetClassMinus=godleyIcon->table._assetClass(c-1);
-            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=3) {
-		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=3 && targetAssetClassPlus!=0)
+            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=GodleyAssetClass::equity) {
+		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
 		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
-		    	else if ((targetAssetClassPlus==3 || targetAssetClassPlus==0) && !moveVar.empty())
+		    	else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
 		    	    tmpStr="Cannot convert stock variable to an equity class";    
 		    }
-		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==1 && oldAssetClass!=3 && targetAssetClassMinus!=1) {
-		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=3 && targetAssetClassPlus!=0)
+		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==GodleyAssetClass::asset && oldAssetClass!=GodleyAssetClass::equity && targetAssetClassMinus!=GodleyAssetClass::asset) {
+		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
 		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
-		    	else if ((targetAssetClassPlus==3 || targetAssetClassPlus==0) && !moveVar.empty())
+		    	else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
 		    	    tmpStr="Cannot convert stock variable to an equity class"; 		    	    
 		    }
-		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass!=3) {
+		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass!=GodleyAssetClass::equity) {
 		    	if (targetAssetClassMinus!=oldAssetClass && !moveVar.empty())
 		    	    tmpStr=constructMessage(targetAssetClassMinus,oldAssetClass,moveVar);
 		    }
@@ -880,13 +880,13 @@ namespace {
 	string tmpStr="";	  
 	if (selectedRow==0) {  // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
 	    if (c>0 && selectedCol>0 && c!=selectedCol) {
-		    auto swapVar=godleyIcon->table.getCell(0,selectedCol);
+		    auto swapVar=godleyIcon->table.cell(0,selectedCol);
 		    auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
 		    auto targetAssetClass=godleyIcon->table._assetClass(c);
 		    if (!swapVar.empty()) {
-		      if (targetAssetClass!=oldAssetClass && targetAssetClass!=3 && targetAssetClass!=0)
+		      if (targetAssetClass!=oldAssetClass && targetAssetClass!=GodleyAssetClass::equity && targetAssetClass!=GodleyAssetClass::noAssetClass)
 		         tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
-		      else if ((targetAssetClass==3 || targetAssetClass==0) || oldAssetClass==0)
+		      else if ((targetAssetClass==GodleyAssetClass::equity || targetAssetClass==GodleyAssetClass::noAssetClass) || oldAssetClass==GodleyAssetClass::noAssetClass)
 		          tmpStr="Cannot convert stock variable to an equity class"; 		    
 			}
 		  }
