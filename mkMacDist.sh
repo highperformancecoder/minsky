@@ -81,7 +81,7 @@ rm -rf $MINSKYHOME/library/{tcl,tk}
 cp -r $TCL_LIB $MINSKYHOME/library/tcl
 cp -r $TK_LIB $MINSKYHOME/library/tk
 
-codesign -s "Developer ID Application" --deep --force minsky.app
+codesign -s "Developer ID Application" --deep --force --options runtime minsky.app
 if [ $? -ne 0 ]; then
     echo "try running this script on the Mac GUI desktop, not ssh shell"
 fi
@@ -93,11 +93,11 @@ fi
 #    echo "try running this script on the Mac GUI desktop, not ssh shell"
 #fi
 
-rm -f Minsky-$version-mac-dist.dmg
+rm -f $productName-$version-mac-dist.dmg
 hdiutil create -srcfolder minsky.app -volname Minsky -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size 150M temp.dmg
 hdiutil convert -format UDZO -imagekey zlib-level=9 -o $productName-$version-mac-dist.dmg temp.dmg 
 rm -f temp.dmg
-codesign -s "Developer ID Application" $productName-$version-mac-dist.dmg
+codesign -s "Developer ID Application" --options runtime $productName-$version-mac-dist.dmg
 xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $productName-$version-mac-dist.dmg
 # check using xcrun altool --notarization-history 0 -u apple@hpcoders.com.au -p "@keychain:Minsky"
 echo "Sleeping for a bit for software to be notarised"

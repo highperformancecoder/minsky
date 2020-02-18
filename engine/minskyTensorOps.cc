@@ -76,7 +76,7 @@ namespace minsky
   {
     EvalOp<op> eo;
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
-    virtual void setArguments(const std::vector<TensorPtr>& a1, const std::vector<TensorPtr>& a2)
+    virtual void setArguments(const std::vector<TensorPtr>& a1, const std::vector<TensorPtr>& a2) override
     {
       civita::BinOp::setArguments
         (a1.empty()? TensorPtr(): a1[0],
