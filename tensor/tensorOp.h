@@ -77,7 +77,7 @@ namespace civita
       if (arg1 && arg1->rank()!=0)
         {
           hypercube(arg1->hypercube());
-          if (arg2 && arg2->rank()!=0 && arg1->hypercube().dims()==arg2->hypercube().dims())
+          if (arg2 && arg2->rank()!=0 && arg1->hypercube().dims()!=arg2->hypercube().dims())
             throw std::runtime_error("arguments not conformal");
         }
       else if (arg2)

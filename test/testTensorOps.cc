@@ -199,7 +199,7 @@ SUITE(TensorOps)
                     double x=scalarOp->evaluate((*src.vValue())[i]);
                     double y=(*dest.vValue())[i];
                     if (finite(x)||finite(y))
-                      CHECK_EQUAL(scalarOp->evaluate((*src.vValue())[i]), (*dest.vValue())[i]);
+                      CHECK_EQUAL(x,y);
                   }
                 break;
               }
@@ -214,6 +214,41 @@ SUITE(TensorOps)
             default:
               CHECK(false);
               break;
+            }
+        }
+    }
+  
+  TEST_FIXTURE(MinskyFixture, tensorBinOpFactory)
+    {
+      TensorOpFactory factory;
+      auto ev=make_shared<EvalCommon>();
+      TensorsFromPort tp(ev);
+      Variable<VariableType::flow> src1("src1"), src2("src2"), dest("dest");
+      src1.init("iota(5)");
+      src2.init("one(5)");
+      variableValues.reset();
+      CHECK_EQUAL(1,src1.vValue()->rank());
+      CHECK_EQUAL(5,src1.vValue()->size());
+      CHECK_EQUAL(1,src2.vValue()->rank());
+      CHECK_EQUAL(5,src2.vValue()->size());
+      for (OperationType::Type op=OperationType::add; op<OperationType::copy;
+           op=OperationType::Type(op+1))
+        {
+          OperationPtr o(op);
+          CHECK_EQUAL(3, o->numPorts());
+          Wire w1(src1.ports[0], o->ports[1]), w2(src2.ports[0], o->ports[2]),
+            w3(o->ports[0], dest.ports[1]);
+          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
+          eval.eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());
+          CHECK_EQUAL(src1.vValue()->size(), dest.vValue()->size());
+          CHECK_EQUAL(src2.vValue()->size(), dest.vValue()->size());
+          unique_ptr<ScalarEvalOp> scalarOp(ScalarEvalOp::create(op));
+          for (size_t i=0; i<src1.vValue()->size(); ++i)
+            {
+              double x=scalarOp->evaluate((*src1.vValue())[i], (*src2.vValue())[i]);
+              double y=(*dest.vValue())[i];
+              if (finite(x)||finite(y))
+                CHECK_EQUAL(x,y);
             }
         }
     }

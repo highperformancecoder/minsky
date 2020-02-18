@@ -272,6 +272,7 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
+      throw runtime_error("inner product not yet implemented");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
   };
@@ -281,6 +282,7 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
+      throw runtime_error("outer product not yet implemented");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
   };
