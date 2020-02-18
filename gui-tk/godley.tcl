@@ -162,6 +162,8 @@ proc moveAssetClass {id x y X Y} {
 	set c [$id.colXZoomed $x]
     if {$testStr==""} {
 		mouseDown $id $x $y $X $Y
+	} elseif {$testStr=="Cannot convert stock variable to an equity class"} {
+	    tk_messageBox -message $testStr -type ok -parent .$id.table		
     } else {
        switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
         yes {mouseDown $id $x $y $X $Y}
@@ -176,6 +178,8 @@ proc swapAssetClass {id x y} {
 	set c [$id.colXZoomed $x]
     if {$testStr==""} {
 		$id.mouseUp $x $y 
+	} elseif {$testStr=="Cannot convert stock variable to an equity class"} {
+	    tk_messageBox -message $testStr -type ok -parent .$id.table				
     } else {
        switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
         yes { $id.mouseUp $x $y }
