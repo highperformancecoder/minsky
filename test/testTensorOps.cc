@@ -22,6 +22,7 @@
 #include "selection.h"
 #include "xvector.h"
 #include "minskyTensorOps.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
@@ -70,6 +71,11 @@ struct TestFixture
     evalOp<op>();
     CHECK_EQUAL(v,to.vValue()->value());
   }
+};
+
+struct MinskyFixture: public Minsky
+{
+  LocalMinsky lm{*this};
 };
 
 SUITE(TensorOps)
@@ -161,4 +167,55 @@ SUITE(TensorOps)
       expected={0.412, 0.437, -1, -1, -1};
       CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
     }
+
+  TEST_FIXTURE(MinskyFixture, tensorUnOpFactory)
+    {
+      TensorOpFactory factory;
+      auto ev=make_shared<EvalCommon>();
+      TensorsFromPort tp(ev);
+      Variable<VariableType::flow> src("src"), dest("dest");
+      src.init("iota(5)");
+      variableValues.reset();
+      CHECK_EQUAL(1,src.vValue()->rank());
+      CHECK_EQUAL(5,src.vValue()->size());
+      for (OperationType::Type op=OperationType::copy; op<OperationType::innerProduct;
+           op=OperationType::Type(op+1))
+        {
+          OperationPtr o(op);
+          CHECK_EQUAL(2, o->numPorts());
+          Wire w1(src.ports[0], o->ports[1]), w2(o->ports[0], dest.ports[1]);
+          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
+          eval.eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());
+          switch (OperationType::classify(op))
+            {
+            case OperationType::function:
+              {
+                // just check that scalar functions are performed elementwise
+                CHECK_EQUAL(src.vValue()->size(), dest.vValue()->size());
+                unique_ptr<ScalarEvalOp> scalarOp(ScalarEvalOp::create(op));
+                CHECK(scalarOp.get());
+                for (int i=0; i<src.vValue()->size(); ++i)
+                  {
+                    double x=scalarOp->evaluate((*src.vValue())[i]);
+                    double y=(*dest.vValue())[i];
+                    if (finite(x)||finite(y))
+                      CHECK_EQUAL(scalarOp->evaluate((*src.vValue())[i]), (*dest.vValue())[i]);
+                  }
+                break;
+              }
+            case OperationType::reduction:
+              CHECK_EQUAL(0, dest.vValue()->rank());
+              CHECK_EQUAL(1, dest.vValue()->size());
+              break;
+            case OperationType::scan:
+              CHECK_EQUAL(1, dest.vValue()->rank());
+              CHECK_EQUAL(src.vValue()->size(), dest.vValue()->size());
+              break;
+            default:
+              CHECK(false);
+              break;
+            }
+        }
+    }
+  
 }

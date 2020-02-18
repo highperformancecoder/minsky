@@ -256,16 +256,6 @@ namespace minsky
 
 #include "variableValue.cd"
 #include "variableValue.xcd"
-namespace classdesc
-{
-  // specialise for VariableValues to give it an associative container flavour
-//  template <>
-//  inline void RESTProcess(RESTProcess_t& repo, const string& d, minsky::VariableValues& a)
-//  {
-//    repo.add(d,new RESTProcessAssociativeContainer<minsky::VariableValues>(a));
-//    classdesc_access::access_RESTProcess<minsky::VariableValues>()(repo,d,a);
-//  }
-}
 
 #ifdef _CLASSDESC
 #pragma omit pack minsky::VariableValue

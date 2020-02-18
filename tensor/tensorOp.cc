@@ -24,7 +24,7 @@ using namespace std;
 
 namespace civita
 {
-  void ReduceArguments::setArguments(const vector<TensorPtr>& a)
+  void ReduceArguments::setArguments(const vector<TensorPtr>& a,const std::string&,double)
   {
     set<size_t> indices;
     hypercube({});
@@ -77,7 +77,7 @@ namespace civita
     return r;
   }
 
-  void ReductionOp::setArgument(const TensorPtr& a, const std::string& dimName)
+  void ReductionOp::setArgument(const TensorPtr& a, const std::string& dimName,double)
   {
     arg=a;
     dimension=std::numeric_limits<size_t>::max();
@@ -130,9 +130,10 @@ namespace civita
     return cachedResult[i];
   }
 
-  void DimensionedArgCachedOp::setArgument(const TensorPtr& a, const std::string& dimName)
+  void DimensionedArgCachedOp::setArgument(const TensorPtr& a, const std::string& dimName, double av)
   {
     arg=a;
+    argVal=av;
     if (!arg) {m_hypercube.xvectors.clear(); return;}
     m_hypercube=arg->hypercube();
     dimension=std::numeric_limits<size_t>::max();

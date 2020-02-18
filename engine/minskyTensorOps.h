@@ -136,24 +136,6 @@ namespace minsky
     void eval(double fv[], const double sv[]) override;
     void deriv(double df[],const double ds[],const double sv[],const double fv[]) override;
   };
-
-
-  
-//  template <> struct TensorOp<OperationType::add>: public TensorBinOp<OperationType::add> {};
-//  template <> struct TensorOp<OperationType::subtract>: public TensorBinOp<OperationType::subtract> {};
-//  template <> struct TensorOp<OperationType::multiply>: public TensorBinOp<OperationType::multiple> {};
-//  template <> struct TensorOp<OperationType::divide>: public TensorBinOp<OperationType::divide> {};
-//  template <> struct TensorOp<OperationType::log>: public TensorBinOp<OperationType::log> {};
-//  template <> struct TensorOp<OperationType::pow>: public TensorBinOp<OperationType::pow> {};
-//  template <> struct TensorOp<OperationType::lt>: public TensorBinOp<OperationType::lt> {};
-//  template <> struct TensorOp<OperationType::le>: public TensorBinOp<OperationType::le> {};
-//  template <> struct TensorOp<OperationType::eq>: public TensorBinOp<OperationType::eq> {};
-//  template <> struct TensorOp<OperationType::min>: public TensorBinOp<OperationType::min> {};
-//  template <> struct TensorOp<OperationType::max>: public TensorBinOp<OperationType::max> {};
-//  template <> struct TensorOp<OperationType::and_>: public TensorBinOp<OperationType::and_> {};
-//  template <> struct TensorOp<OperationType::or_>: public TensorBinOp<OperationType::or_> {};
-
-  
 }
   
   

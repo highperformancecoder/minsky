@@ -34,10 +34,12 @@ namespace civita
     void notImpl() const
     {throw std::runtime_error("setArgument(s) variant not implemented");}
   public:
-    virtual void setArgument(const TensorPtr&, const std::string& dimension={}) {notImpl();}
+    virtual void setArgument(const TensorPtr&, const std::string& dimension={},
+                             double argVal=0)  {notImpl();}
     virtual void setArguments(const TensorPtr&, const TensorPtr&) {notImpl();}
-    virtual void setArguments(const std::vector<TensorPtr>& a) 
-    {if (a.size()) setArgument(a[0]);}
+    virtual void setArguments(const std::vector<TensorPtr>& a,
+                              const std::string& dimension={}, double argVal=0) 
+    {if (a.size()) setArgument(a[0], dimension, argVal);}
     virtual void setArguments(const std::vector<TensorPtr>& a1,
                               const std::vector<TensorPtr>& a2)
     {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0]);}
@@ -50,7 +52,7 @@ namespace civita
     std::shared_ptr<ITensor> arg;
     template <class F>
     ElementWiseOp(F f, const std::shared_ptr<ITensor>& arg={}): f(f), arg(arg) {}
-    void setArgument(const TensorPtr& a,const std::string& dum={}) override
+    void setArgument(const TensorPtr& a,const std::string&,double) override
     {arg=a; hypercube(arg->hypercube());}
     std::vector<size_t> index() const override {return arg->index();}
     double operator[](size_t i) const override {return f((*arg)[i]);}
@@ -103,7 +105,7 @@ namespace civita
     double init;
   public:
     template <class F> ReduceArguments(F f, double init): f(f), init(init) {}
-    void setArguments(const std::vector<TensorPtr>& a) override;
+    void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override;
     std::vector<size_t> index() const override {return m_index;}
     double operator[](size_t i) const override;
     size_t size() const override {return m_index.empty()? hypercube().numElements(): m_index.size();}
@@ -117,7 +119,7 @@ namespace civita
     std::function<void(double&,double,size_t)> f;
     double init;
     std::shared_ptr<ITensor> arg;
-    void setArgument(const TensorPtr& a,const std::string&) override {arg=a;}
+    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
 
     template <class F>
     ReduceAllOp(F f, double init, const std::shared_ptr<ITensor>& arg={}):
@@ -138,9 +140,9 @@ namespace civita
    
     template <class F>
     ReductionOp(F f, double init, const TensorPtr& arg={}, const std::string& dimName=""):
-      ReduceAllOp(f,init) {setArgument(arg,dimName);}
+      ReduceAllOp(f,init) {setArgument(arg,dimName,0);}
 
-    void setArgument(const TensorPtr& a, const std::string& dimName={}) override;
+    void setArgument(const TensorPtr& a, const std::string&,double) override;
     size_t size() const override {return hypercube().numElements();}
     double operator[](size_t i) const override;
   };
@@ -164,8 +166,9 @@ namespace civita
   struct DimensionedArgCachedOp: public CachedTensorOp
   {
     size_t dimension; // dimension to apply operation over. >rank = all dims
+    double argVal;
     TensorPtr arg;
-    void setArgument(const TensorPtr& a, const std::string& dimName={}) override;
+    void setArgument(const TensorPtr& a, const std::string&,double) override;
   };
   
   class Scan: public DimensionedArgCachedOp
@@ -173,10 +176,10 @@ namespace civita
   public:
     std::function<void(double&,double,size_t)> f;
     template <class F>
-    Scan(F f, const TensorPtr& arg={}, const std::string& dimName=""): f(f) 
-      {setArgument(arg,dimName);}
-    void setArgument(const TensorPtr& arg, const std::string& dimName="") override {
-      DimensionedArgCachedOp::setArgument(arg,dimName);
+    Scan(F f, const TensorPtr& arg={}, const std::string& dimName="", double av=0): f(f) 
+    {setArgument(arg,dimName,av);}
+    void setArgument(const TensorPtr& arg, const std::string& dimName,double argVal) override {
+      DimensionedArgCachedOp::setArgument(arg,dimName,argVal);
       if (arg)
         cachedResult.hypercube(arg->hypercube());
       // TODO - can we handle sparse data?

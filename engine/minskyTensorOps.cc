@@ -54,8 +54,8 @@ namespace minsky
   {
     EvalOp<op> eo;
     MinskyTensorOp(): ElementWiseOp([this](double x){return eo.evaluate(x);}) {}
-    void setArguments(const std::vector<TensorPtr>& a) override
-    {if (!a.empty()) setArgument(a[0]);}
+    void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override
+    {if (!a.empty()) setArgument(a[0],{},0);}
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
@@ -147,7 +147,7 @@ namespace minsky
                               const std::vector<TensorPtr>& a2)
     {
       auto pa1=make_shared<AccumArgs<op>>(), pa2=make_shared<AccumArgs<op>>();
-      pa1->setArguments(a1); pa2->setArguments(a2);
+      pa1->setArguments(a1,{},0); pa2->setArguments(a2,{},0);
       civita::BinOp::setArguments(pa1, pa2);
     }
   };
@@ -245,13 +245,26 @@ namespace minsky
   };
   
   template <>
-  class GeneralTensorOp<OperationType::difference>: public civita::CachedTensorOp
+  class GeneralTensorOp<OperationType::difference>: public civita::Scan
   {
-    TensorPtr arg;
+    ssize_t delta;
   public:
-    void computeTensor() const override {//TODO
+    GeneralTensorOp(): civita::Scan
+                       ([this](double& x,double y,size_t i)
+                        {
+                          ssize_t t=ssize_t(i)-delta;
+                          if (t>=0 && t<arg->size())
+                            x = y-arg->atHCIndex(t);
+                        }) {}
+    void setArgument(const TensorPtr& a,const std::string& s,double d) override {
+      civita::Scan::setArgument(a,s,d);
+      delta=d;
+      // determine offset in hypercube space
+      auto dims=arg->hypercube().dims();
+      if (dimension<dims.size())
+        for (size_t i=0; i<dimension; ++i)
+          delta*=dims[i];
     }
-    Timestamp timestamp() const override {return arg->timestamp();}
   };
   
   template <>
@@ -284,7 +297,7 @@ namespace minsky
       for (; j<cachedResult.size(); ++j)
         cachedResult[j]=nan("");
     }
-    void setArgument(const TensorPtr& a, const string&) override {
+    void setArgument(const TensorPtr& a, const string&,double) override {
       arg=a; cachedResult.index(a->index()); cachedResult.hypercube(a->hypercube());
     }
     
@@ -352,7 +365,7 @@ namespace minsky
       return m_index[i];
     }
   public:
-    void setArguments(const std::vector<TensorPtr>& a) override {
+    void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override {
       args=a;
       set<size_t> indices; // collect the union of argument indices
       for (auto& i: args)
@@ -419,7 +432,7 @@ namespace minsky
     
   public:
     RavelTensor(Ravel& ravel): ravel(ravel) {}
-    void setArgument(const TensorPtr& a,const std::string& d={}) override {arg=a;}
+    void setArgument(const TensorPtr& a,const std::string& d,double) override {arg=a;}
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
   
@@ -432,7 +445,7 @@ namespace minsky
         switch (op.ports.size())
           {
           case 2:
-            r->setArguments(tfp.tensorsFromPort(*op.ports[1]));
+            r->setArguments(tfp.tensorsFromPort(*op.ports[1]),op.axis,op.arg);
             break;
           case 3:
             r->setArguments(tfp.tensorsFromPort(*op.ports[1]), tfp.tensorsFromPort(*op.ports[2]));
@@ -486,7 +499,7 @@ namespace minsky
           {
             auto rt=make_shared<RavelTensor>(*ravel);
             auto args=tensorsFromPort(*ravel->ports[1]);
-            if (!args.empty()) rt->setArgument(args[0]);
+            if (!args.empty()) rt->setArgument(args[0],{},0);
             r.push_back(rt);
           }
         else

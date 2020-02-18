@@ -132,8 +132,7 @@ namespace minsky
   
   /// represents the operation when evaluating the equations
   template <minsky::OperationType::Type T>
-  struct EvalOp: public classdesc::Poly<EvalOp<T>, ScalarEvalOp>//,
-  //             public classdesc::PolyPack<EvalOp<T> >
+  struct EvalOp: public classdesc::Poly<EvalOp<T>, ScalarEvalOp>
   {
     OperationType::Type type() const  override {return T;}
     int numArgs() const override {
@@ -144,152 +143,38 @@ namespace minsky
     double d2(double x1=0, double x2=0) const override;
   };
 
-  // dummy tensor EvalOps to get this mess to link
-  template <minsky::OperationType::Type T>
-  struct TensorEvalOp: public classdesc::Poly<TensorEvalOp<T>, EvalOpBase>
-  //                 public classdesc::PolyPack<TensorEvalOp<T> >
-  {
-//    OperationType::Type type() const override {return T;} 
-//    int numArgs() const override {return OperationTypeInfo::numArguments<T>();}
-    void deriv(double df[], const double ds[], 
-               const double sv[], const double fv[]) override {}
-
-    void eval(double fv[]=&ValueVector::flowVars[0], 
-              const double sv[]=&ValueVector::stockVars[0]) override {}
-    
-  };
-
-#define TMPEVALOP(t) template <> struct EvalOp<OperationType::t>: public TensorEvalOp<OperationType::t> {};
-
-  TMPEVALOP(sum);
-  TMPEVALOP(product);
-  TMPEVALOP(infimum);
-  TMPEVALOP(supremum);
-  TMPEVALOP(any);
-  TMPEVALOP(all);
-  TMPEVALOP(infIndex);
-  TMPEVALOP(supIndex);
-  TMPEVALOP(runningSum);
-  TMPEVALOP(runningProduct);
-  TMPEVALOP(difference);
-  TMPEVALOP(innerProduct);
-  TMPEVALOP(outerProduct);
-  TMPEVALOP(index);
-  TMPEVALOP(gather);
-  
+//  // dummy tensor EvalOps to get this mess to link
 //  template <minsky::OperationType::Type T>
-//  struct ReductionEvalOp: public TensorEvalOp<T>
+//  struct TensorEvalOp: public classdesc::Poly<TensorEvalOp<T>, EvalOpBase>
+//  //                 public classdesc::PolyPack<TensorEvalOp<T> >
 //  {
-//    /// x op= y
-//    inline void accum(double& x, double y) const;
-//    inline double init() const;
+////    OperationType::Type type() const override {return T;} 
+////    int numArgs() const override {return OperationTypeInfo::numArguments<T>();}
+//    void deriv(double df[], const double ds[], 
+//               const double sv[], const double fv[]) override {}
+//
 //    void eval(double fv[]=&ValueVector::flowVars[0], 
-//              const double sv[]=&ValueVector::stockVars[0]) override;
+//              const double sv[]=&ValueVector::stockVars[0]) override {}
+//    
 //  };
+
+//#define TMPEVALOP(t) template <> struct EvalOp<OperationType::t>: public TensorEvalOp<OperationType::t> {};
 //
-//  template<> inline
-//  double ReductionEvalOp<OperationType::sum>::init() const {return 0;}
-//  template<> inline
-//  void ReductionEvalOp<OperationType::sum>::accum(double& x, double y) const
-//  {x+=y;}
-//  template<> inline
-//  double ReductionEvalOp<OperationType::product>::init() const {return 1;}
-//  template<> inline
-//  void ReductionEvalOp<OperationType::product>::accum(double& x, double y) const
-//  {x*=y;}
-//  template<> inline
-//  double ReductionEvalOp<OperationType::infimum>::init() const {return std::numeric_limits<double>::max();}
-//  template<> inline
-//  void ReductionEvalOp<OperationType::infimum>::accum(double& x, double y) const
-//  {if (y<x) x=y;}
-//  template<> inline
-//  double ReductionEvalOp<OperationType::supremum>::init() const {return -std::numeric_limits<double>::max();}
-//  template<> inline
-//  void ReductionEvalOp<OperationType::supremum>::accum(double& x, double y) const
-//  {if (y>x) x=y;}
-//  template<> inline
-//  double ReductionEvalOp<OperationType::any>::init() const {return 0;}
-//  template<> inline
-//  void ReductionEvalOp<OperationType::any>::accum(double& x, double y) const
-//  {if (y>0.5) x=1;}
-//  template<> inline
-//  double ReductionEvalOp<OperationType::all>::init() const {return 1;}
-//  template<> inline
-//  void ReductionEvalOp<OperationType::all>::accum(double& x, double y) const
-//  {x*=(y>0.5);}
-//
-//  
-//  template <minsky::OperationType::Type T>
-//  struct ScanEvalOp: public TensorEvalOp<T>
-//  {
-//    /// parameters describing the axis along which the scan is performed, and the window size of the scan
-//    size_t stride=1, dimSz=1,  window=1;
-//    inline double init() const;
-//    /// x op= y
-//    inline void accum(double& x, double y) const;
-//    void eval(double fv[]=&ValueVector::flowVars[0], 
-//              const double sv[]=&ValueVector::stockVars[0]) override;
-//    void setTensorParams(const VariableValue& v,const OperationBase& op) override
-//    {
-//      v.hypercube().computeStrideAndSize(op.axis,stride,dimSz);
-//      window=op.arg<0? dimSz: op.arg;
-//    }
-//  };
-//
-//  template<> inline
-//  double ScanEvalOp<OperationType::runningSum>::init() const {return 0;}
-//  template<> inline
-//  void ScanEvalOp<OperationType::runningSum>::accum(double& x, double y) const
-//  {x+=y;}
-//
-//  template<> inline
-//  double ScanEvalOp<OperationType::runningProduct>::init() const {return 1;}
-//  template<> inline
-//  void ScanEvalOp<OperationType::runningProduct>::accum(double& x, double y) const
-//  {x*=y;}
-//
-//
-//  
-//  template <> struct EvalOp<minsky::OperationType::sum>: public ReductionEvalOp<OperationType::sum> {};
-//  template <> struct EvalOp<minsky::OperationType::product>: public ReductionEvalOp<OperationType::product> {};
-//  template <> struct EvalOp<minsky::OperationType::infimum>: public ReductionEvalOp<OperationType::infimum> {};
-//  template <> struct EvalOp<minsky::OperationType::supremum>: public ReductionEvalOp<OperationType::supremum> {};
-//  template <> struct EvalOp<minsky::OperationType::any>: public ReductionEvalOp<OperationType::any> {};
-//  template <> struct EvalOp<minsky::OperationType::all>: public ReductionEvalOp<OperationType::all> {};
-//  
-//  template <> struct EvalOp<minsky::OperationType::runningSum>: public ScanEvalOp<OperationType::runningSum> {};
-//  template <> struct EvalOp<minsky::OperationType::runningProduct>: public ScanEvalOp<OperationType::runningProduct> {};
-//
-//  // not used, but needed for the linker
-//  template <> struct EvalOp<minsky::OperationType::difference>: public TensorEvalOp<OperationType::difference> {};
-//
-//  template <> struct EvalOp<minsky::OperationType::innerProduct>: public TensorEvalOp<OperationType::innerProduct> {};
-//  template <> struct EvalOp<minsky::OperationType::outerProduct>: public TensorEvalOp<OperationType::outerProduct> {};
-//  template <> struct EvalOp<minsky::OperationType::index>: public TensorEvalOp<OperationType::index>
-//  {
-//    vector<unsigned> shape;  ///< input argument's shape
-//    void eval(double fv[]=&ValueVector::flowVars[0], 
-//              const double sv[]=&ValueVector::stockVars[0]) override;
-//
-//  };
-//  template <> struct EvalOp<minsky::OperationType::infIndex>: public TensorEvalOp<OperationType::infIndex>
-//  {
-//    void eval(double fv[]=&ValueVector::flowVars[0], 
-//              const double sv[]=&ValueVector::stockVars[0]) override;
-//
-//  };
-//  template <> struct EvalOp<minsky::OperationType::supIndex>: public TensorEvalOp<OperationType::supIndex>
-//  {
-//    void eval(double fv[]=&ValueVector::flowVars[0], 
-//              const double sv[]=&ValueVector::stockVars[0]) override;
-//
-//  };
-//  template <> struct EvalOp<minsky::OperationType::gather>: public TensorEvalOp<OperationType::gather>
-//  {
-//    vector<unsigned> shape; ///< input argument's shape
-//    void eval(double fv[]=&ValueVector::flowVars[0], 
-//              const double sv[]=&ValueVector::stockVars[0]) override;
-//  };
+//  TMPEVALOP(sum);
+//  TMPEVALOP(product);
+//  TMPEVALOP(infimum);
+//  TMPEVALOP(supremum);
+//  TMPEVALOP(any);
+//  TMPEVALOP(all);
+//  TMPEVALOP(infIndex);
+//  TMPEVALOP(supIndex);
+//  TMPEVALOP(runningSum);
+//  TMPEVALOP(runningProduct);
+//  TMPEVALOP(difference);
+//  TMPEVALOP(innerProduct);
+//  TMPEVALOP(outerProduct);
+//  TMPEVALOP(index);
+//  TMPEVALOP(gather);
   
  struct ConstantEvalOp: public EvalOp<minsky::OperationType::constant>
   {
@@ -297,17 +182,6 @@ namespace minsky
     double evaluate(double in1=0, double in2=0) const override;
  };
 
-//  struct RavelEvalOp: public EvalOp<minsky::OperationType::ravel>
-//  {
-//    VariableValue in, out;
-//    RavelEvalOp() {}
-//    RavelEvalOp(const VariableValue& in, const VariableValue& out):
-//      in(in), out(out) {}
-//    void eval(double*, const double* sv) override;
-//    void deriv(double df[], const double ds[], 
-//               const double sv[], const double fv[]) override {}
-//  };
-  
   struct EvalOpPtr: public classdesc::shared_ptr<EvalOpBase>, 
                     public OperationType
   {
