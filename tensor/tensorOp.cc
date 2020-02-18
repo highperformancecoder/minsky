@@ -47,7 +47,7 @@ namespace civita
 
   double ReduceArguments::operator[](size_t i) const
   {
-    if (args.empty()) return nan("");
+    if (args.empty()) return init;
     double r=init; 
     for (auto j: args)
       {

@@ -119,7 +119,7 @@ namespace minsky
   {
     AccumArgs(): civita::ReduceArguments([](double& x,double y){x*=y;},1) {}
   };
-  template <> struct AccumArgs<OperationType::divide>: public AccumArgs<OperationType::add> {};
+  template <> struct AccumArgs<OperationType::divide>: public AccumArgs<OperationType::multiply> {};
 
   template <> struct AccumArgs<OperationType::min>: public civita::ReduceArguments
   {

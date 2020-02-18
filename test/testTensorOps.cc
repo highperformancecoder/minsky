@@ -252,5 +252,41 @@ SUITE(TensorOps)
             }
         }
     }
-  
+
+  template <OperationType::Type op, class F, class F2>
+    void multiWireTest(double identity, F f, F2 f2)
+  {
+    //cout << OperationType::typeName(op)<<endl;
+    Operation<op> o;
+    auto tensorOp=TensorOpFactory().create(o);
+    CHECK_EQUAL(1, tensorOp->size());
+    CHECK_EQUAL(identity, (*tensorOp)[0]);
+    Hypercube hc(vector<unsigned>{2});
+    auto tv1=make_shared<TensorVal>(hc), tv2=make_shared<TensorVal>(hc);
+    tv1->push_back(0,1), tv2->push_back(0,2);
+    tv1->push_back(1,2), tv2->push_back(1,1);
+    tensorOp->setArguments(vector<TensorPtr>{tv1,tv2},vector<TensorPtr>{});
+    CHECK_EQUAL(f((*tv1)[0],(*tv2)[0]), (*tensorOp)[0]);
+    CHECK_EQUAL(f((*tv1)[1],(*tv2)[1]), (*tensorOp)[1]);
+    tensorOp->setArguments(vector<TensorPtr>{},vector<TensorPtr>{tv1,tv2});
+    CHECK_EQUAL(f2(f((*tv1)[0],(*tv2)[0])), (*tensorOp)[0]);
+    CHECK_EQUAL(f2(f((*tv1)[1],(*tv2)[1])), (*tensorOp)[1]);
+  }
+
+  TEST_FIXTURE(MinskyFixture, tensorBinOpMultiples)
+    {
+      auto id=[](double x){return x;};
+      multiWireTest<OperationType::add>(0, [](double x,double y){return x+y;},id);
+      multiWireTest<OperationType::subtract>
+        (0, [](double x,double y){return x+y;}, [](double x){return -x;});
+      multiWireTest<OperationType::multiply>(1, [](double x,double y){return x*y;}, id);
+      multiWireTest<OperationType::divide>
+        (1, [](double x,double y){return x*y;}, [](double x){return 1/x;});
+      multiWireTest<OperationType::min>
+        (std::numeric_limits<double>::max(), [](double x,double y){return x<y? x: y;}, id);
+      multiWireTest<OperationType::max>
+        (-std::numeric_limits<double>::max(), [](double x,double y){return x>y? x: y;}, id);
+      multiWireTest<OperationType::and_>(1, [](double x,double y){return x>0.5 && y>0.5;}, id);
+      multiWireTest<OperationType::or_>(0, [](double x,double y){return x>0.5 || y>0.5;}, id);
+    }
 }
