@@ -70,10 +70,10 @@ namespace minsky
       if (surface.get()) {
         MathDAG::SystemOfEquations system(m);
         cairo_move_to(surface->cairo(),offsx,offsy);
-        system.renderEquations(*surface,offsx,offsy);
+        system.renderEquations(*surface);
         ecolab::cairo::Surface surf
           (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-        system.renderEquations(surf,offsx,offsy);
+        system.renderEquations(surf);
         m_width=surf.width();
         m_height=surf.height();
       }
