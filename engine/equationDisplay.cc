@@ -144,7 +144,6 @@ namespace MathDAG
     cairo_get_current_point(dest.cairo(),&x,&y);
     Pango den(dest.cairo());
     den.setMarkup("dt");
-    cout << x << " "<<offsx<< " "<<y<< " "<<offsy<< " "<<dest.height()<<endl;
 
     for (const VariableDAG* i: variables)
       {
