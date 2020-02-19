@@ -291,8 +291,8 @@ namespace minsky
     cairo_stroke(surface->cairo());
 
     cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
-    //pango.setMarkup("▼");
-    //pango.show();
+    pango.setMarkup("▼");
+    pango.show();
 
     // now row sum column
     x+=3;
@@ -769,7 +769,7 @@ namespace minsky
   
     if (r==0)
       {
-        if (colLeftMargin[c+1]-x < pulldownHot && c!=int(godleyIcon->table.cols())-1)
+        if (colLeftMargin[c+1]-x < pulldownHot)
           return importStock;
         return row0;
       }
