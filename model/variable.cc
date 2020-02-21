@@ -169,14 +169,14 @@ string VariableBase::name()  const
 }
 
 string VariableBase::name(const std::string& name) 
-{
+{	
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
   // Ensure value of variable is preserved after rename. For ticket 1106.	
-  auto tmpVV=vValue();  
+  auto tmpVV=vValue(); 
   // ensure integral variables are not global when wired to an integral operation
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
-  ensureValueExists(tmpVV);
+  ensureValueExists(tmpVV,name);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
@@ -185,7 +185,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists(VariableValue* vv) const
+void VariableBase::ensureValueExists(VariableValue* vv, const std::string& name) const
 {
   string valueId=this->valueId();
   // disallow blank names
@@ -195,9 +195,10 @@ void VariableBase::ensureValueExists(VariableValue* vv) const
       assert(VariableValue::isValueId(valueId));
 	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
       if (vv==nullptr) minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(), name(), "", group.lock())));
+        (make_pair(valueId,VariableValue(type(), rawName(),"",group.lock())));
+      // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else minsky().variableValues.insert
-        (make_pair(valueId,*vv));
+        (make_pair(valueId,VariableValue(type(),name,vv->init,group.lock())));
     }
 }
 
@@ -213,7 +214,7 @@ string VariableBase::init() const
 
 string VariableBase::init(const string& x)
 {
-  ensureValueExists(nullptr); 
+  ensureValueExists(nullptr,""); 
   if (VariableValue::isValueId(valueId()))
     {
       VariableValue& val=minsky().variableValues[valueId()];
@@ -376,7 +377,7 @@ void VariablePtr::retype(VariableBase::Type type)
             assert(!tmp->ports[i]->input());
             w->moveToPorts(get()->ports[i], w->to());
           }
-      get()->ensureValueExists(nullptr);
+      get()->ensureValueExists(nullptr,"");
     }
 }
 
