@@ -472,16 +472,16 @@ void VariableBase::draw(cairo_t *cairo) const
       auto val=engExp();
   
       Pango pangoVal(cairo);
-      if (isfinite(value())) {
+      if (!isnan(value())) {
 		   pangoVal.setFontSize(6*z);
 		   pangoVal.setMarkup(mantissa(val));
 	   }
-      else if (!isfinite(value())) { // Display divide by zero as infinity. For ticket 1155
+      else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
 		  pangoVal.setFontSize(8*z);
 		  if (signbit(value())) pangoVal.setMarkup("-∞");
           else pangoVal.setMarkup("∞");
 	  }
-	  else {  // Display any other NaN case as ???. For ticket 1155
+	  else {  // Display all other NaN cases as ???. For ticket 1155
 		  pangoVal.setFontSize(6*z);
 		  pangoVal.setMarkup("???");
 	  }
@@ -490,7 +490,7 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
                     r.y(w-pangoVal.width()-2,-h-hoffs+2));
       pangoVal.show();
-      if (val.engExp!=0 && isfinite(value())) // Avoid large exponential number in variable value display. For ticket 1155
+      if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
         {
           pangoVal.setMarkup(expMultiplier(val.engExp));
           cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
