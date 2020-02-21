@@ -477,7 +477,7 @@ void VariableBase::draw(cairo_t *cairo) const
 		   pangoVal.setMarkup(mantissa(val));
 	   }
       else if (!isfinite(value())) { // Display divide by zero as infinity. For ticket 1155
-		  pangoVal.setFontSize(12*z);
+		  pangoVal.setFontSize(8*z);
 		  if (signbit(value())) pangoVal.setMarkup("-∞");
           else pangoVal.setMarkup("∞");
 	  }
@@ -490,7 +490,7 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
                     r.y(w-pangoVal.width()-2,-h-hoffs+2));
       pangoVal.show();
-      if (val.engExp!=0)
+      if (val.engExp!=0 && isfinite(value())) // Avoid large exponential number in variable value display. For ticket 1155
         {
           pangoVal.setMarkup(expMultiplier(val.engExp));
           cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
