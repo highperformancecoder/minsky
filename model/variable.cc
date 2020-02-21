@@ -478,7 +478,7 @@ void VariableBase::draw(cairo_t *cairo) const
 	   }
       else if (!isfinite(value())) { // Display divide by zero as infinity. For ticket 1155
 		  pangoVal.setFontSize(12*z);
-		  if (!signbit(value())) pangoVal.setMarkup("-∞");
+		  if (signbit(value())) pangoVal.setMarkup("-∞");
           else pangoVal.setMarkup("∞");
 	  }
 	  else {  // Display any other NaN case as ???. For ticket 1155
