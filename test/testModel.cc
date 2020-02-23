@@ -170,6 +170,8 @@ SUITE(Group)
       double x=model->x();
       double y=model->y();
       group0->gotoBookmark(0);
+      CHECK(x!=group0->x());
+      CHECK(y!=group0->y());
       x=group0->x();
       y=group0->y();
       auto& b=group0->bookmarks[0];
