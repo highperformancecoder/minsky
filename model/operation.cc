@@ -363,16 +363,17 @@ namespace minsky
     try
       {
         unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type()));
-        switch (e->numArgs())
-          {
-          case 0: return e->evaluate(0,0);
-          case 1: return e->evaluate(ports[1]->value());
-          case 2: return e->evaluate(ports[1]->value(),ports[2]->value());
-          }
+        if (e)
+          switch (e->numArgs())
+            {
+            case 0: return e->evaluate(0,0);
+            case 1: return e->evaluate(ports[1]->value());
+            case 2: return e->evaluate(ports[1]->value(),ports[2]->value());
+            }
       }
     catch (...)
       {/* absorb exception here - some operators cannot be evaluated this way*/}
-    return 0;
+    return nan("");
   }
 
 
