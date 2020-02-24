@@ -313,10 +313,21 @@ namespace minsky
     void computeTensor() const override {
       for (size_t i=0; i<arg2->size(); ++i) {
         auto idx=(*arg2)[i];
-        if (isfinite(idx) && idx>=0 && idx<arg1->size())
-          cachedResult[i]=(*arg1)[idx];
-        else
-          cachedResult[i]=nan("");
+        if (isfinite(idx))
+          if (idx>=0)
+            {
+              if (idx==arg1->size()-1)
+                cachedResult[i]=(*arg1)[idx];
+              else if (idx<arg1->size()-1)
+                {
+                  double s=idx-floor(idx);
+                  cachedResult[i]=(1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
+                }
+            }
+          else if (idx>-1)
+            cachedResult[i]=(*arg1)[0];
+          else
+            cachedResult[i]=nan("");
       }              
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
