@@ -159,29 +159,36 @@ SUITE(Group)
     {
       model->findGroup(*group0);
       group0->bookmarks.clear();		
+      auto g=model->addGroup(group0->copy());
+      g->moveTo(group0->x()+1e-2,group0->y()+1e-2);
+      // set same zoom factors to ensure copied items have same zooms
+      group0->setZoom(1);
+      g->setZoom(1);
+      // force rendering to ensure everything is placed the same
+      group0->bb.update(*group0);
+      g->bb.update(*g);      
       group0->addBookmark("bookmark0");
       CHECK_EQUAL("bookmark0",group0->bookmarkList()[0]);
       CHECK_EQUAL(1,group0->bookmarks.size());
-      model->moveTo(500,500);
-      model->addBookmark("bookmark1");
-      CHECK_EQUAL("bookmark1",model->bookmarkList()[0]);
-      CHECK_EQUAL(1,model->bookmarks.size());
-      model->gotoBookmark(0);
-      double x=model->x();
-      double y=model->y();
-      group0->gotoBookmark(0);
-      CHECK(x!=group0->x());
-      CHECK(y!=group0->y());
-      x=group0->x();
-      y=group0->y();
-      auto& b=group0->bookmarks[0];
-      group0->moveTo(b.x, b.y);
-      CHECK_EQUAL(x,b.x);
-      CHECK_EQUAL(y,b.y);
+      g->addBookmark("bookmark1");
+      CHECK_EQUAL("bookmark1",g->bookmarkList()[0]);
+      CHECK_EQUAL(1,g->bookmarks.size());      
+      group0->gotoBookmark(0);  
+      CHECK_CLOSE(group0->bb.width(), g->bb.width(), 2e-2);
+      CHECK_CLOSE(group0->bb.height(), g->bb.height(), 2e-2);
+      CHECK_CLOSE(group0->x(),g->x(), 2e-2);
+      CHECK_CLOSE(group0->y(),g->y(), 2e-2);
+      CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 2e-2);      
+      g->gotoBookmark(0);
+      CHECK_CLOSE(group0->bb.width(), g->bb.width(), 2e-2);
+      CHECK_CLOSE(group0->bb.height(), g->bb.height(), 2e-2);
+      CHECK_CLOSE(group0->x(),g->x(), 2e-2);
+      CHECK_CLOSE(group0->y(),g->y(), 2e-2);
+      CHECK_ARRAY_CLOSE(&group0->cBounds()[0], &g->cBounds()[0], 4, 2e-2);            
       group0->deleteBookmark(0);
       CHECK_EQUAL(0,group0->bookmarks.size());      
-      model->deleteBookmark(0);
-      CHECK_EQUAL(0,model->bookmarks.size());            
+      g->deleteBookmark(0);
+      CHECK_EQUAL(0,g->bookmarks.size());            
     }  
   
   // check that removing then adding an item leaves the group idempotent
