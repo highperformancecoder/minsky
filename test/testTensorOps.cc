@@ -160,40 +160,59 @@ SUITE(TensorOps)
       fromVal.hypercube(Hypercube(dims));
       for (size_t i=0; i<dims[0]; ++i)
         for (size_t j=0; j<dims[1]; ++j)
-          fromVal[i+j*dims[0]] = i+j; 
+          fromVal({i,j}) = i+j*dims[0]; 
 
       int bin=2;
-      evalOp<OperationType::runningSum>("0",2);
+      evalOp<OperationType::runningSum>("0",bin);
       {
         auto& toVal=*to.vValue();
         for (size_t i=0; i<dims[0]; ++i)
           for (size_t j=0; j<dims[1]; ++j)
             {
               double ref=0;
-              for (int k=max(int(i)-bin,0); k<=i; ++k)
-                ref+=fromVal[k+j*dims[0]];
-              cout << i<<","<<j<<endl;
-              CHECK_EQUAL(ref,toVal[i+j*dims[0]]);
+              for (size_t k=max(int(i)-bin+1,0); k<=i; ++k)
+                ref+=fromVal({k,j});
+              CHECK_EQUAL(ref,toVal({i,j}));
             }
       }
+      
       evalOp<OperationType::runningSum>("1",2);
       {
         auto& toVal=*to.vValue();
-        for (size_t i=0; i<toVal.size(); ++i)
-          CHECK_EQUAL(2*(i+1),toVal[i]);
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=0;
+              for (size_t k=max(int(j)-bin+1,0); k<=j; ++k)
+                ref+=fromVal({i,k});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
       }
-     
+      
       evalOp<OperationType::runningProduct>("0",2);
       {
         auto& toVal=*to.vValue();
-        for (size_t i=0; i<toVal.size(); ++i)
-          CHECK_EQUAL(pow(2,i+1),toVal[i]);
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=1;
+              for (size_t k=max(int(i)-bin+1,0); k<=i; ++k)
+                ref*=fromVal({k,j});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
       }
+
       evalOp<OperationType::runningProduct>("1",2);
       {
         auto& toVal=*to.vValue();
-        for (size_t i=0; i<toVal.size(); ++i)
-          CHECK_EQUAL(pow(2,i+1),toVal[i]);
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=1;
+              for (size_t k=max(int(j)-bin+1,0); k<=j; ++k)
+                ref*=fromVal({i,k});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
       }
     }
 
