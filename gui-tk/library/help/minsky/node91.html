@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
 <HTML lang="EN">
 <HEAD>
-<TITLE>outer product </TITLE>
-<META NAME="description" CONTENT="outer product ">
+<TITLE>gather</TITLE>
+<META NAME="description" CONTENT="gather">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,6 +15,7 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
+<LINK REL="next" HREF="node92.html">
 <LINK REL="previous" HREF="node90.html">
 <LINK REL="next" HREF="node92.html">
 </HEAD>
@@ -33,44 +34,32 @@
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
 <B> Next:</B> <A
- HREF="node92.html">Switch</A>
+ HREF="node92.html">inner product</A>
 <B> Up:</B> <A
  HREF="node78.html">Tensor operations</A>
 <B> Previous:</B> <A
- HREF="node90.html">inner product</A>
+ HREF="node90.html">index</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION004213000000000000000"></A><A ID="Operation:outerProduct"></A>
+<H2><A ID="SECTION004213000000000000000"></A><A ID="Operation:gather"></A>
 <BR>
-outer product <SPAN CLASS="MATH"><IMG STYLE="height: 1.61ex; vertical-align: -0.31ex; " SRC="img23.png"
- ALT="$\otimes $"></SPAN>
+gather
 </H2>
-Computes 
-<BR><P></P>
-<DIV CLASS="mathdisplay">
-<!-- MATH
- \begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}
- -->
 
-<IMG STYLE=""
- SRC="img200.png"
- ALT="\begin{displaymath}
-z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
-x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-where <SPAN CLASS="MATH"><IMG STYLE="height: 1.47ex; vertical-align: -0.46ex; " SRC="img198.png"
- ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG STYLE="height: 1.75ex; vertical-align: -0.78ex; " SRC="img199.png"
- ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
- ALT="$y$"></SPAN> respectively.
+<P>
+Gather collects the values at index locations indexed by the second
+argument. The output tensor has the same shape as the second (index)
+argument.
+
+<P>
+If the index is not an integer, the gather will linearly interpolate between
+the values on either side. So <!-- MATH
+ $x[2.5] = 0.5 (x[2]+x[3])$
+ -->
+<SPAN CLASS="MATH"><IMG STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img201.png"
+ ALT="$x[2.5] = 0.5 (x[2]+x[3])$"></SPAN>.
 
 <P>
 <BR><HR>
