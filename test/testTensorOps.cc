@@ -162,7 +162,21 @@ SUITE(TensorOps)
         for (size_t j=0; j<dims[1]; ++j)
           fromVal({i,j}) = i+j*dims[0]; 
 
-      int bin=2;
+      int bin=0;
+      evalOp<OperationType::runningSum>("1",bin);
+      {
+        auto& toVal=*to.vValue();
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=0;
+              for (size_t k=0; k<=j; ++k)
+                ref+=fromVal({i,k});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
+      }
+
+      bin=2;
       evalOp<OperationType::runningSum>("0",bin);
       {
         auto& toVal=*to.vValue();

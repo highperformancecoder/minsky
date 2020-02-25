@@ -78,7 +78,8 @@ namespace civita
         }
       return index;
     }
-    double operator()(const std::initializer_list<size_t>& indices) const
+    template <class T>
+    double operator()(const std::initializer_list<T>& indices) const
     {return atHCIndex(hcIndex(indices));}
                        
     using Timestamp=std::chrono::time_point<std::chrono::high_resolution_clock>;
