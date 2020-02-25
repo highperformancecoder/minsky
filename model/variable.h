@@ -123,7 +123,7 @@ namespace minsky
     bool ioVar() const override;
     
     /// ensure an associated variableValue exists
-    void ensureValueExists(VariableValue* vv) const;
+    void ensureValueExists(VariableValue* vv, const std::string& name) const;
 
     /// string used to link to the VariableValue associated with this
     virtual std::string valueId() const;
@@ -239,10 +239,10 @@ namespace minsky
   {
     int id;
     static int nextId;
-    VarConstant(): id(nextId++) {ensureValueExists(nullptr);}
+    VarConstant(): id(nextId++) {ensureValueExists(nullptr,"");}
     std::string valueId() const override {return "constant:"+str(id);}
     std::string name() const override {return init();}
-    std::string name(const std::string& nm) override {ensureValueExists(nullptr); return name();}
+    std::string name(const std::string& nm) override {ensureValueExists(nullptr,""); return name();}
     using VariableBase::value;
     double value(const double& x) override {init(str(x)); return x;}
     VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
