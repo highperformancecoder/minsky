@@ -63,6 +63,38 @@ SUITE(CSVParser)
       CHECK_EQUAL("%Y-Q%Q",dimensions[1].units);
       CHECK((set<unsigned>{0,1}==dimensionCols));
     }
+    
+  TEST_FIXTURE(DataSpec,reportFromCSV)
+    {
+      string input="A comment\n"
+        ";;foobar\n"
+        "foo;bar;A;B;C\n"
+        "A;A;1.2;1.3;1.4\n"
+        "A;B;1;2;3\n"
+        "B;A;3;2;1\n";
+      string output="";  
+      istringstream is(input);
+      ostringstream os(output);
+            
+      reportFromCSVFile(is,os,*this);
+      
+      CHECK(os.str().find("error") != std::string::npos);
+      CHECK(os.str().find("invalid numerical data") != std::string::npos);
+      CHECK(os.str().find("duplicate key") != std::string::npos);
+      
+      string in="Country,value$,\n"
+        "Australia\n"
+        "Brazil,1.1,\n"
+        "China,1.5,\n"
+        "\n";
+      string out="";  
+      istringstream isn(in);
+      ostringstream osn(out);
+            
+      reportFromCSVFile(isn,osn,*this);
+      
+      CHECK(osn.str().find("missing numerical data") != std::string::npos);
+    }    
   
   TEST_FIXTURE(DataSpec,loadVar)
     {
