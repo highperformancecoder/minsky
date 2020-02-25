@@ -4261,7 +4261,7 @@
   <path d="M 1501 791.109375 L 1505.722656 791.109375 L 1505.722656 940.804688 L 1501 940.804688 Z M 1501 791.109375 "/>
 </clipPath>
 </defs>
-<g id="surface3346">
+<g id="surface3344">
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -4.99884 -0.00152588 L 5.00116 -0.00152588 M 1.00116 2.998474 C 1.00116 4.334412 -0.99884 4.334412 -0.99884 2.998474 C -0.99884 1.666443 1.00116 1.666443 1.00116 2.998474 M 1.00116 -3.001526 C 1.00116 -1.665588 -0.99884 -1.665588 -0.99884 -3.001526 C -0.99884 -4.333557 1.00116 -4.333557 1.00116 -3.001526 " transform="matrix(1,0,0,1,105.475403,712.314026)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5.000806 -5.001489 L 4.999194 4.998511 M -5.000806 4.998511 L 4.999194 -5.001489 " transform="matrix(0.5,0,0,0.5,99.875403,705.114026)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5.000806 0.00319824 L 4.999194 0.00319824 M 0.999194 3.003198 C 0.999194 4.331323 -1.000806 4.331323 -1.000806 3.003198 C -1.000806 1.667261 0.999194 1.667261 0.999194 3.003198 M 0.999194 -2.996802 C 0.999194 -1.668677 -1.000806 -1.668677 -1.000806 -2.996802 C -1.000806 -4.332739 0.999194 -4.332739 0.999194 -2.996802 " transform="matrix(0.5,0,0,0.5,99.875403,719.514026)"/>

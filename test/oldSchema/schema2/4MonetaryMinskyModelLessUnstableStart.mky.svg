@@ -1336,7 +1336,7 @@
   <path d="M 1225 412.367188 L 1240.082031 412.367188 L 1240.082031 949.992188 L 1225 949.992188 Z M 1225 412.367188 "/>
 </clipPath>
 </defs>
-<g id="surface2617">
+<g id="surface2615">
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5 -5 L 5 5 M -5 5 L 5 -5 " transform="matrix(1,0,0,1,123,579)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5.003125 -5.001563 L 4.996875 4.998437 M -5.003125 4.998437 L 4.996875 -5.001563 " transform="matrix(0.5,0,0,0.5,117.4,586.2)"/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5.003125 -4.998437 L 4.996875 5.001563 M -5.003125 5.001563 L 4.996875 -4.998437 " transform="matrix(0.5,0,0,0.5,117.4,571.8)"/>
