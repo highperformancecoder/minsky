@@ -218,7 +218,7 @@ namespace MathDAG
     vector<vector<WeakNodePtr> > arguments;
     string name;
     string init="0";
-    OperationPtr state;
+    ItemPtr state;
     OperationDAGBase(const string& name=""): 
       name(name) {}
     virtual Type type() const=0;

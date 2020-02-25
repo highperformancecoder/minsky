@@ -758,216 +758,132 @@ namespace minsky
 
   }
  
-  EvalOpPtr::EvalOpPtr(OperationType::Type op, const std::shared_ptr<OperationBase>& state,
+  EvalOpPtr::EvalOpPtr(OperationType::Type op, const ItemPtr& state,
                        VariableValue& to, const VariableValue& from1, const VariableValue& from2)
   {
     auto t=ScalarEvalOp::create(op);
     reset(t);
     assert(t->numArgs()==0 || (from1.idx()>=0 && (t->numArgs()==1 || from2.idx()>=0)));
-    t->state=state;
+    t->state=dynamic_pointer_cast<OperationBase>(state);
       
     switch (t->numArgs())
       {
       case 2:
-        switch (op)
-          {
-            //            case gather:
-            //              {
-            //                auto& e=dynamic_cast<EvalOp<gather>&>(*t);
-            //                e.shape=from1.hypercube().dims();
-            //                if (to.hypercube()!=from1.hypercube())
-            //                  to.hypercube(from1.hypercube());
-            //                  
-            //                // For feature 47
-            //                for (size_t i=0; i<from1.size(); ++i)                          
-            //                  t->in1.push_back(i+from1.idx());
-            //					  
-            //                auto from2Dims=from2.hypercube().dims();
-            //                if (from2.rank()>0)
-            //                   {
-            //				     // For feature 47	   
-            //                     for (size_t i=0; i<from2.size(); i+=from2Dims[0])
-            //                       {
-            //                         t->in2.emplace_back();
-            //                         for (size_t j=0; j<from2Dims[0]; ++j)
-            //                            t->in2.back().emplace_back(1,i+j+from2.idx()); 
-            //				       }
-            //                    }
-            //                else
-            //                  t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
-            //              }
-            //                switch (from1.rank())
-            //                  {
-            //                  case 0: break;
-            //                  case 1:
-            //                    if (from2.rank()>2)
-            //                      throw error("index argument needs to be rank 2 or less");
-            //                    if (from2.rank()==2 && from2.dims()[0]!=from1.rank())
-            //                      throw error("leading dimension of index argument needs to match input argument rank");
-            //                    break;
-            //                  default:
-            //                    if (from2.rank()!=2)
-            //                      throw error("index argument needs to be rank 2");
-            //                    if (from2.dims()[0]!=from1.rank())
-            //                      throw error("leading dimension of index argument needs to match input argument rank");
-            //                    break;
-            //                  
-            //                
-            //                // determine stride based on state of the operation argument
-            //                size_t stride=1;
-            //                if (state && !state->axis.empty())
-            //                  for (auto& j: from1.xVector)
-            //                    {
-            //                      if (j.name==state->axis)
-            //                        break;
-            //                      stride*=j.size();
-            //                    }
-            //                for (size_t i=0; i<from1.numElements(); ++i)
-            //                  t->in1.push_back(i*stride+from1.idx());
-            //                if (from2.xVector.size()!=1)
-            //                  throw error("index argument should have rank 1");
-            //                else
-            //                  for (unsigned i=0; i<from2.xVector[0].size(); ++i)
-            //                    t->in2.emplace_back(1,EvalOpBase::Support{1,i+from2.idx()});
-            //              }
-            break;
-          default:
+        {
+          map<string,const XVector&> from2XVectorMap;
+          for (auto& i: from2.hypercube().xvectors)
+            from2XVectorMap.emplace(i.name, i);
+          for (auto& i: from1.hypercube().xvectors)
             {
-              map<string,const XVector&> from2XVectorMap;
-              for (auto& i: from2.hypercube().xvectors)
-                from2XVectorMap.emplace(i.name, i);
+              auto j=from2XVectorMap.find(i.name);
+              if (j!=from2XVectorMap.end() && j->second.dimension.type!=i.dimension.type)
+                throw error("incompatible dimension type");
+            }
+          
+          // check that all from2's xvector entries are present in to, and vice versa
+          if (&to==&from1) checkAllEntriesPresent(to.hypercube().xvectors, from2.hypercube().xvectors);
+          if (&to==&from2) checkAllEntriesPresent(to.hypercube().xvectors, from1.hypercube().xvectors);
+            
+          // For feature 47            
+          if ((from1.size()==1) && (from2.size()==1))
+            {
+              t->in1.push_back(from1.idx());
+              t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
+              if ((to.size()>1) && &to!=&from1 && &to!=&from2)                                  
+                to.hypercube({});
+              break;
+            }
+
+          OffsetMap from1Offsets(from1), from2Offsets(from2);
+
+          if (to.rank()==0)
+            {
+              vector<XVector> xv;
               for (auto& i: from1.hypercube().xvectors)
-                {
-                  auto j=from2XVectorMap.find(i.name);
-                  if (j!=from2XVectorMap.end() && j->second.dimension.type!=i.dimension.type)
-                    throw error("incompatible dimension type");
-                }
-            
-              // check that all from2's xvector entries are present in to, and vice versa
-              if (&to==&from1) checkAllEntriesPresent(to.hypercube().xvectors, from2.hypercube().xvectors);
-              if (&to==&from2) checkAllEntriesPresent(to.hypercube().xvectors, from1.hypercube().xvectors);
-            
-              // For feature 47            
-              if ((from1.size()==1) && (from2.size()==1))
-                {
-                  t->in1.push_back(from1.idx());
-                  t->in2.emplace_back(1,EvalOpBase::Support{1,unsigned(from2.idx())});
-                  if ((to.size()>1) && &to!=&from1 && &to!=&from2)                                  
-                    to.hypercube({});
-                  break;
-                }
-
-              OffsetMap from1Offsets(from1), from2Offsets(from2);
-
-              if (to.rank()==0)
-                {
-                  vector<XVector> xv;
-                  for (auto& i: from1.hypercube().xvectors)
-                    if (i.dimension.type==Dimension::string)
+                if (i.dimension.type==Dimension::string)
+                  {
+                    // compute the common intersection of shared dimensions,
+                    // otherwise broadcast along the others
+                    auto j=from2Offsets.find(i.name);
+                    if (j!=from2Offsets.end())
                       {
-                        // compute the common intersection of shared dimensions,
-                        // otherwise broadcast along the others
-                        auto j=from2Offsets.find(i.name);
-                        if (j!=from2Offsets.end())
+                        xv.emplace_back(i.name);
+                        xv.back().dimension=i.dimension;
+                        for (auto& k: i)
                           {
-                            xv.emplace_back(i.name);
-                            xv.back().dimension=i.dimension;
-                            for (auto& k: i)
-                              {
-                                auto l=j->second.find(str(k));
-                                if (l!=j->second.end())
-                                  xv.back().push_back(k);
-                              }
+                            auto l=j->second.find(str(k));
+                            if (l!=j->second.end())
+                              xv.back().push_back(k);
                           }
-                        else
-                          xv.push_back(i);
                       }
                     else
                       xv.push_back(i);
+                  }
+                else
+                  xv.push_back(i);
                      
-                  for (auto& i: from2.hypercube().xvectors)
-                    if (!from1Offsets.count(i.name))
-                      xv.push_back(i);
-                  to.hypercube(move(xv));
-                }
-              else
-                to.hypercube(from1.hypercube());
-
-              GetBounds from1GetBounds(from1.hypercube().xvectors), from2GetBounds(from2.hypercube().xvectors);
-              apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
-                                   {
-                                     t->in1.push_back(from1Offsets.offset(x)+from1.idx());
-                                     t->in2.emplace_back();
-                                     auto from1Bounds=from1GetBounds(x);
-                                     auto from2Bounds=from2GetBounds(x);
-                                     double sumD=0;
-
-                                     // loop over edges of a binary hypercube
-                                     for (size_t i=0; i<(1ULL<<from2Bounds.size()); ++i)
-                                       {
-                                         vector<pair<string,string>> key;
-                                         // add verbatim key entries along axes only present in from1
-                                         for (auto& j: x)
-                                           if (!from2XVectorMap.count(j.first))
-                                             key.push_back(j);
-                        
-                                         double weight=1;
-                                         for (auto& b: from2Bounds)
-                                           {
-                                             if (b.lesser.empty()) goto dontAddKey; // string mismatch
-                                             auto ref=find_if(from1Bounds.begin(), from1Bounds.end(),
-                                                              [&](const Bounds& x) {return x.dimName==b.dimName;});
-                                             // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
-                                             if (i&(1ULL<<(&b-&from2Bounds[0]))) // on greater edge
-                                               if (diff(b.lesser,b.greater)==0 || ref==from1Bounds.end())
-                                                 // if lesser==greater, then needn't add greater key, as already sharply contained in bounds
-                                                 goto dontAddKey;
-                                               else
-                                                 {
-                                                   key.emplace_back(b.dimName, str(b.greater));
-                                                   weight*=diff(ref->lesser, b.lesser) / diff(b.greater,b.lesser);
-                                                 }
-                                             else
-                                               {
-                                                 key.emplace_back(b.dimName, str(b.lesser));
-                                                 double d=diff(b.greater,b.lesser);
-                                                 if (ref!=from1Bounds.end() && d!=0)
-                                                   weight*=1-diff(ref->lesser, b.lesser)/d;
-                                               }
-                                           }
-                                         if (weight!=0)
-                                           t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
-                                       dontAddKey:;
-                                       }
-#ifndef NDEBUG
-                                     double sumWeight=0;
-                                     for (auto& i: t->in2.back()) sumWeight+=i.weight;
-                                     assert(sumWeight-1 < 1e-5);
-#endif
-                                   });
-
-              break;
+              for (auto& i: from2.hypercube().xvectors)
+                if (!from1Offsets.count(i.name))
+                  xv.push_back(i);
+              to.hypercube(move(xv));
             }
-          }
-        //          if (op==gather) // we need to compute the offsets of each slice and place them in the Support::weight attribute
-        //            {
-        //              if (t->in1.size()!=t->in2.size())
-        //                throw error("gather arguments not conformant");
-        //              size_t stride=1;
-        //              if (state && !state->axis.empty())
-        //                for (auto& j: from1.xVector)
-        //                  {
-        //                    stride*=j.size();
-        //                    if (j.name==state->axis)
-        //                      break;
-        //                  }
-        //              for (size_t i=0; i<t->in1.size(); ++i)
-        //                {
-        //                  if (t->in2[i].size()!=1)
-        //                    throw error("gather's arguments must have compatible x-vectors");
-        //                  t->in2[i][0].weight = (t->in1[i] / stride) * stride;
-        //                }
-        //            }
+          else
+            to.hypercube(from1.hypercube());
+
+          GetBounds from1GetBounds(from1.hypercube().xvectors), from2GetBounds(from2.hypercube().xvectors);
+          apply(OffsetMap(to), [&](const vector<pair<string,string>>& x)
+                               {
+                                 t->in1.push_back(from1Offsets.offset(x)+from1.idx());
+                                 t->in2.emplace_back();
+                                 auto from1Bounds=from1GetBounds(x);
+                                 auto from2Bounds=from2GetBounds(x);
+                                 double sumD=0;
+
+                                 // loop over edges of a binary hypercube
+                                 for (size_t i=0; i<(1ULL<<from2Bounds.size()); ++i)
+                                   {
+                                     vector<pair<string,string>> key;
+                                     // add verbatim key entries along axes only present in from1
+                                     for (auto& j: x)
+                                       if (!from2XVectorMap.count(j.first))
+                                         key.push_back(j);
+                        
+                                     double weight=1;
+                                     for (auto& b: from2Bounds)
+                                       {
+                                         if (b.lesser.empty()) goto dontAddKey; // string mismatch
+                                         auto ref=find_if(from1Bounds.begin(), from1Bounds.end(),
+                                                          [&](const Bounds& x) {return x.dimName==b.dimName;});
+                                         // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
+                                         if (i&(1ULL<<(&b-&from2Bounds[0]))) // on greater edge
+                                           if (diff(b.lesser,b.greater)==0 || ref==from1Bounds.end())
+                                             // if lesser==greater, then needn't add greater key, as already sharply contained in bounds
+                                             goto dontAddKey;
+                                           else
+                                             {
+                                               key.emplace_back(b.dimName, str(b.greater));
+                                               weight*=diff(ref->lesser, b.lesser) / diff(b.greater,b.lesser);
+                                             }
+                                         else
+                                           {
+                                             key.emplace_back(b.dimName, str(b.lesser));
+                                             double d=diff(b.greater,b.lesser);
+                                             if (ref!=from1Bounds.end() && d!=0)
+                                               weight*=1-diff(ref->lesser, b.lesser)/d;
+                                           }
+                                       }
+                                     if (weight!=0)
+                                       t->in2.back().emplace_back(weight, from2Offsets.offset(key)+from2.idx());
+                                   dontAddKey:;
+                                   }
+#ifndef NDEBUG
+                                 double sumWeight=0;
+                                 for (auto& i: t->in2.back()) sumWeight+=i.weight;
+                                 assert(sumWeight-1 < 1e-5);
+#endif
+                               });
+
+        }
         break;
       case 1:
         switch (OperationType::classify(op))
@@ -984,45 +900,7 @@ namespace minsky
             else
               generic1ArgIndices(*t, to, from1);
             break;
-          case reduction: case scan:
-            {
-              // determine stride based on state of the operation argument
-              size_t stride=1;
-              if (state && !state->axis.empty())
-                for (auto& j: from1.hypercube().xvectors)
-                  {
-                    if (j.name==state->axis)
-                      break;
-                    stride*=j.size();
-                  }
-              // For feature 47
-              for (size_t i=0; i<from1.size(); ++i)                          
-                t->in1.push_back(i*stride+from1.idx());	
-            }
-            break;
-          case binop: assert(false); break; // shouldn't be here
-          case tensor:
-            //              switch (op)
-            //                {
-            //                case index:
-            //                  {
-            //                    vector<unsigned> targetDims;  
-            //                    targetDims={unsigned(from1.rank()),unsigned(from1.size())};
-            //                    if (to.hypercube().dims()!=targetDims)
-            //                      to.hypercube(move(targetDims));
-            //                  
-            //                    // For feature 47
-            //                      for (size_t i=0; i<from1.size(); ++i)                          
-            //                        t->in1.push_back(i+from1.idx());
-            //				    	       
-            //                    auto& e=dynamic_cast<EvalOp<index>&>(*t);
-            //                    e.shape=from1.hypercube().dims();
-            //                  }
-            break;
-            //            default: // TODO
-            //              break;
-            //            }
-            break;  
+          default: assert(false); break; // shouldn't be here
           }
         break;
       }
@@ -1047,113 +925,5 @@ namespace minsky
     t->flow2=from2.isFlowVar();
 
   }
-
-//  template<OperationType::Type T>
-//  void ReductionEvalOp<T>::eval(double fv[], const double sv[])
-//  {
-//    fv[this->out]=init();
-//    const double* src=this->flow1? fv: sv;
-//    for (auto i: this->in1)
-//      accum(fv[this->out], src[i]);
-//  }
-//
-//  template<OperationType::Type T>
-//  void ScanEvalOp<T>::eval(double fv[], const double sv[])
-//  {
-//    // input vector assumed to be consecutive locations starting at in1[0]
-//    const double* src=this->flow1? &fv[this->in1[0]]: &sv[this->in1[0]];
-//    for (size_t i0=0; i0<this->in1.size(); i0+=dimSz*stride) // loop over outer dimensions
-//      for (size_t i=i0; i<i0+stride; ++i) // loop over inner dimensions
-//        for (size_t j=0; j<dimSz; j++) // loop over dimension being scanned
-//          {
-//            double s=src[i+j*stride];
-//            size_t k0= j>window? j-window: 0;
-//            for (size_t k=k0; k<j; k++) 
-//              accum(s, src[i+k*stride]);
-//            fv[this->out+i+j*stride]=s;
-//          }
-//  }
-//
-//  namespace {
-//    inline vector<unsigned> unravelIndex(const vector<unsigned>& shape, size_t i) 
-//    {
-//      vector<unsigned> r;
-//      size_t stride=1;
-//      for (auto d: shape)
-//        {
-//          r.push_back(i%d);
-//          i/=d;
-//        }
-//      return r;
-//    }
-//  }
-//  
-//  void EvalOp<minsky::OperationType::index>::eval(double fv[], const double sv[])
-//  {
-//    const double* src=this->flow1? fv: sv;
-//    size_t o=out;
-//    for (size_t i=0; i<in1.size(); ++i)
-//      if (src[in1[i]]>0.5)
-//        for (auto j: unravelIndex(shape,i))
-//          fv[o++]=j;
-//
-//    //pad with NaNs to indicate invalid data
-//    for (; o<out+in1.size()*shape.size(); ++o)
-//      fv[o]=nan("");
-//  }
-//
-//  void EvalOp<minsky::OperationType::infIndex>::eval(double fv[], const double sv[])
-//  {
-//    const double* src=this->flow1? fv: sv;
-//    double m=numeric_limits<double>::max();
-//    for (size_t i=0; i<in1.size(); ++i)
-//      if (src[in1[i]]<m)
-//        {
-//          m=src[in1[i]];
-//          fv[out]=i;
-//        }
-//  }
-//  void EvalOp<minsky::OperationType::supIndex>::eval(double fv[], const double sv[])
-//  {
-//    const double* src=this->flow1? fv: sv;
-//    double m=-numeric_limits<double>::max();
-//    for (size_t i=0; i<in1.size(); ++i)
-//      if (src[in1[i]]>m)
-//        {
-//          m=src[in1[i]];
-//          fv[out]=i;
-//        }
-//  }
-//
-//  void EvalOp<minsky::OperationType::gather>::eval(double fv[], const double sv[])
-//  {
-//    const double* src=this->flow1? fv: sv;
-//    const double* idx=this->flow2? fv: sv;
-//    // prefill with NaNs to indicate invalid data
-//    for (size_t i=0; i<in1.size(); ++i)
-//      fv[out+i]=nan("");
-//    
-//    for (auto& i: in2)
-//      {
-//        double idx1=0;
-//        size_t stride=1;
-//        assert(i.size()==shape.size());
-//        for (size_t j=0; j<i.size(); ++j)
-//          {
-//            idx1+=idx[i[j].idx]*stride;
-//            stride*=shape[j];
-//          }
-//        if (isfinite(idx1))
-//          {
-//            size_t idx2=idx1;
-//            fv[out+idx2]=src[in1[idx2]];
-//          }
-//      }
-//  }
-//
-//  void TensorVarEvalOp::eval(double fv[], const double sv[])
-//  {
-//    
-//  }
 
 }

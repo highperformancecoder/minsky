@@ -174,7 +174,6 @@ namespace minsky
               }
             else if (fn=="rand")
               {
-                srand(time(nullptr));
                 for (size_t i=0; i<r.size(); ++i)
                   r[i]=double(rand())/RAND_MAX;
               }

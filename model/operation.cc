@@ -721,7 +721,6 @@ namespace minsky
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
   {
-    srand(::time(nullptr));
     data.clear();
     double dx=(xmax-xmin)/numSamples;
     for (double x=xmin; x<xmax; x+=dx)

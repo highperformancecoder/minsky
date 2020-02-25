@@ -69,7 +69,7 @@ namespace minsky
     /// create a tensor representation of the expression rooted at
     /// op. If expression doesn't contain any references variables,
     /// then the \a tp parameter may be omitted.
-    std::shared_ptr<TensorOp> create(const OperationBase&, const TensorsFromPort& tp={});
+    std::shared_ptr<TensorOp> create(const Item&, const TensorsFromPort& tp={});
   };    
   
   extern TensorOpFactory tensorOpFactory;

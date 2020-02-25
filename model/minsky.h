@@ -360,6 +360,8 @@ namespace minsky
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
+    /// set std library RNG seed
+    void srand(int seed) {::srand(seed);}
 
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
