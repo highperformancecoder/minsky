@@ -680,9 +680,6 @@
 <symbol overflow="visible" id="glyph16-9">
 <path style="stroke:none;" d="M 4.21875 -1.40625 L 3.71875 -0.875 L 2.296875 -2.3125 L 0.890625 -0.875 L 0.375 -1.40625 L 1.78125 -2.84375 L 0.390625 -4.265625 L 0.90625 -4.796875 L 2.296875 -3.359375 L 3.703125 -4.796875 L 4.203125 -4.265625 L 2.8125 -2.84375 Z M 4.21875 -1.40625 "/>
 </symbol>
-<symbol overflow="visible" id="glyph16-10">
-<path style="stroke:none;" d=""/>
-</symbol>
 <symbol overflow="visible" id="glyph17-0">
 <path style="stroke:none;" d="M 0.765625 0 L 0.765625 -11.140625 L 6.1875 -11.140625 L 6.1875 0 Z M 1.484375 -10.734375 L 3.453125 -6.09375 L 5.421875 -10.734375 Z M 3.671875 -5.578125 L 5.765625 -0.640625 L 5.765625 -10.5 Z M 1.171875 -10.40625 L 1.171875 -0.734375 L 3.234375 -5.578125 Z M 1.484375 -0.40625 L 5.421875 -0.40625 L 3.453125 -5.046875 Z M 1.484375 -0.40625 "/>
 </symbol>
@@ -6339,12 +6336,7 @@
   <use xlink:href="#glyph16-9" x="941.460938" y="45.352539"/>
 </g>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
-  <use xlink:href="#glyph16-2" x="946.460938" y="45.352539"/>
-  <use xlink:href="#glyph16-3" x="951.460938" y="45.352539"/>
-  <use xlink:href="#glyph16-3" x="956.460938" y="45.352539"/>
-  <use xlink:href="#glyph16-3" x="961.460938" y="45.352539"/>
-  <use xlink:href="#glyph16-10" x="966.460938" y="45.352539"/>
-  <use xlink:href="#glyph16-10" x="968.460938" y="45.352539"/>
+  <use xlink:href="#glyph16-3" x="946.460938" y="45.352539"/>
 </g>
 <g clip-path="url(#clip335)" clip-rule="nonzero">
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 918 133.355469 L 931.839844 133.355469 " transform="matrix(1,0,0,1,20,54)"/>
