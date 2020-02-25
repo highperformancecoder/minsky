@@ -59,17 +59,49 @@ struct TestFixture
   }
 
   template <OperationType::Type op>
-  void evalOp()
+  void evalOp(const std::string& axis="", double arg=0)
   {
     Operation<op> theOp;
+    theOp.axis=axis;
+    theOp.arg=arg;
     Wire w1(from.ports[0], theOp.ports[1]), w2(theOp.ports[0], to.ports[1]);
     Eval(to, theOp)();
   }
-  template <OperationType::Type op>
-  void checkReduction(double v)
+  template <OperationType::Type op, class F>
+  void checkReduction(F f)
   {
+    // reduce all
     evalOp<op>();
-    CHECK_EQUAL(v,to.vValue()->value());
+    double ref=fromVal[0];
+    for (size_t i=1; i<fromVal.size(); ++i) ref=f(ref, fromVal[i]);
+    CHECK_EQUAL(ref,to.vValue()->value());
+
+    vector<unsigned> dims{5,5};
+    fromVal.hypercube(Hypercube(dims));
+    auto& toVal=*to.vValue();
+    for (auto& i: fromVal)
+      i=&i-&fromVal[0]+1;
+
+    // reduce over first dimension
+    evalOp<op>("0");
+    CHECK_EQUAL(1, toVal.rank());
+    for (size_t i=0; i<toVal.size(); ++i)
+      {
+        double ref=fromVal[dims[0]*i];
+        for (size_t j=1; j<dims[0]; ++j)
+          ref=f(ref,fromVal[j+dims[0]*i]);
+        CHECK_EQUAL(ref,toVal[i]);
+      }
+      
+    evalOp<op>("1");
+    CHECK_EQUAL(1, toVal.rank());
+    for (size_t i=0; i<toVal.size(); ++i)
+      {
+        double ref=fromVal[i];
+        for (size_t j=1; j<dims[1]; ++j)
+          ref=f(ref,fromVal[i+dims[0]*j]);
+        CHECK_EQUAL(ref,toVal[i]);
+      }
   }
 };
 
@@ -82,25 +114,27 @@ SUITE(TensorOps)
 {
   TEST_FIXTURE(TestFixture, reduction)
     {
-      checkReduction<OperationType::sum>(15);
-      checkReduction<OperationType::product>(120);
-      checkReduction<OperationType::infimum>(1);
-      checkReduction<OperationType::supremum>(5);
-      checkReduction<OperationType::any>(1);
-      checkReduction<OperationType::all>(1);
+      checkReduction<OperationType::sum>([](double x,double y){return x+y;});
+      checkReduction<OperationType::product>([](double x,double y){return x*y;});
+      checkReduction<OperationType::infimum>([](double x,double y){return x<y? x: y;});
+      checkReduction<OperationType::supremum>([](double x,double y){return x>y? x: y;});
+      checkReduction<OperationType::any>([](double x,double y){return x>0.5 || y>0.5;});
+      checkReduction<OperationType::all>([](double x,double y){return x>0.5 && y>0.5;});
 
       fromVal[3]=0;
-      checkReduction<OperationType::all>(0);
+      checkReduction<OperationType::all>([](double x,double y){return x>0.5 && y>0.5;});
 
       for (auto& i: fromVal)
         i=0;
-      checkReduction<OperationType::any>(0);
-      checkReduction<OperationType::all>(0);
+      checkReduction<OperationType::any>([](double x,double y){return x>0.5 || y>0.5;});
+      checkReduction<OperationType::all>([](double x,double y){return x>0.5 && y>0.5;});
 
       fromVal[1]=-1;
-      fromVal[3]=10;
-      checkReduction<OperationType::infIndex>(1);
-      checkReduction<OperationType::supIndex>(3);
+      fromVal[3]=100;
+      evalOp<OperationType::infIndex>();
+      CHECK_EQUAL(1,to.vValue()->value());
+      evalOp<OperationType::supIndex>();
+      CHECK_EQUAL(3,to.vValue()->value());
     }
   
   TEST_FIXTURE(TestFixture, scan)
@@ -120,6 +154,65 @@ SUITE(TensorOps)
         auto& toVal=*to.vValue();
         for (size_t i=0; i<toVal.size(); ++i)
           CHECK_EQUAL(pow(2,i+1),toVal[i]);
+      }
+
+      vector<unsigned> dims{5,5};
+      fromVal.hypercube(Hypercube(dims));
+      for (size_t i=0; i<dims[0]; ++i)
+        for (size_t j=0; j<dims[1]; ++j)
+          fromVal({i,j}) = i+j*dims[0]; 
+
+      int bin=2;
+      evalOp<OperationType::runningSum>("0",bin);
+      {
+        auto& toVal=*to.vValue();
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=0;
+              for (size_t k=max(int(i)-bin+1,0); k<=i; ++k)
+                ref+=fromVal({k,j});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
+      }
+      
+      evalOp<OperationType::runningSum>("1",2);
+      {
+        auto& toVal=*to.vValue();
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=0;
+              for (size_t k=max(int(j)-bin+1,0); k<=j; ++k)
+                ref+=fromVal({i,k});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
+      }
+      
+      evalOp<OperationType::runningProduct>("0",2);
+      {
+        auto& toVal=*to.vValue();
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=1;
+              for (size_t k=max(int(i)-bin+1,0); k<=i; ++k)
+                ref*=fromVal({k,j});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
+      }
+
+      evalOp<OperationType::runningProduct>("1",2);
+      {
+        auto& toVal=*to.vValue();
+        for (size_t i=0; i<dims[0]; ++i)
+          for (size_t j=0; j<dims[1]; ++j)
+            {
+              double ref=1;
+              for (size_t k=max(int(j)-bin+1,0); k<=j; ++k)
+                ref*=fromVal({i,k});
+              CHECK_EQUAL(ref,toVal({i,j}));
+            }
       }
     }
 
@@ -289,4 +382,6 @@ SUITE(TensorOps)
       multiWireTest<OperationType::and_>(1, [](double x,double y){return x>0.5 && y>0.5;}, id);
       multiWireTest<OperationType::or_>(0, [](double x,double y){return x>0.5 || y>0.5;}, id);
     }
+
+  
 }

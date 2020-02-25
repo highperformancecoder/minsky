@@ -61,10 +61,26 @@ namespace civita
       assert(idx.size()==size());
       assert(std::all_of(idx.begin()+1, idx.end(), [](const size_t& i){return i>*(&i-1);}));
       auto i=std::lower_bound(idx.begin(), idx.end(), hcIdx);
-      if (*i==hcIdx) return (*this)[i-idx.begin()]; // hcIdx found, return data element with same offset
+      if (i!=idx.end() && *i==hcIdx)
+        return (*this)[i-idx.begin()]; // hcIdx found, return data element with same offset
       return nan("");
     }
 
+    size_t hcIndex(const std::initializer_list<size_t>& indices) const
+    {
+      size_t stride=1, index=0;
+      auto dims=hypercube().dims();
+      auto dim=dims.begin();
+      for (auto i: indices)
+        {
+          index += i*stride;
+          stride *= *(dim++);
+        }
+      return index;
+    }
+    double operator()(const std::initializer_list<size_t>& indices) const
+    {return atHCIndex(hcIndex(indices));}
+                       
     using Timestamp=std::chrono::time_point<std::chrono::high_resolution_clock>;
     /// timestamp indicating how old the dependendent data might
     /// be. Used in CachedTensorOp to determine when to invalidate the

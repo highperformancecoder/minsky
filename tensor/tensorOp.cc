@@ -152,17 +152,31 @@ namespace civita
         size_t stride=1;
         for (size_t j=0; j<dimension; ++j)
           stride*=argDims[j];
-        for (size_t i=0; i<hypercube().numElements(); i+=stride*argDims[dimension])
-          for (size_t j=0; j<stride; ++j)
-            {
-              cachedResult[i+j]=arg->atHCIndex(i+j);
-              for (size_t k=i+j+stride; k<i+j+stride*argDims[dimension]; k+=stride)
+        if (argVal>=1 && argVal<argDims[dimension])
+          // argVal is interpreted as the binning window. -ve argVal ignored
+          for (size_t i=0; i<hypercube().numElements(); i+=stride*argDims[dimension])
+            for (size_t j=0; j<stride; ++j)
+              for (size_t j1=0; j1<argDims[dimension]*stride; j1+=stride)
                 {
-                  cachedResult[k] = cachedResult[k-stride];
-                  f(cachedResult[k], arg->atHCIndex(k), k);
-                }
-            }
-      }
+                  size_t k=i+j+max(ssize_t(0), ssize_t(j1-ssize_t(argVal-1)*stride));
+                  cachedResult[i+j+j1]=arg->atHCIndex(i+j+j1);
+                  for (; k<i+j+j1; k+=stride)
+                    {
+                      f(cachedResult[i+j+j1], arg->atHCIndex(k), k);
+                    }
+              }
+        else // scan over whole dimension
+          for (size_t i=0; i<hypercube().numElements(); i+=stride*argDims[dimension])
+            for (size_t j=0; j<stride; ++j)
+              {
+                cachedResult[i+j]=arg->atHCIndex(i+j);
+                for (size_t k=i+j+stride; k<i+j+stride*argDims[dimension]; k+=stride)
+                  {
+                    cachedResult[k] = cachedResult[k-stride];
+                    f(cachedResult[k], arg->atHCIndex(k), k);
+                  }
+              }
+          }
     else
       {
         cachedResult[0]=arg->atHCIndex(0);

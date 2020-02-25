@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
 <HTML lang="EN">
 <HEAD>
-<TITLE>inner product </TITLE>
-<META NAME="description" CONTENT="inner product ">
+<TITLE>index</TITLE>
+<META NAME="description" CONTENT="index">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -34,7 +34,7 @@
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
 <B> Next:</B> <A
- HREF="node91.html">outer product</A>
+ HREF="node91.html">gather</A>
 <B> Up:</B> <A
  HREF="node78.html">Tensor operations</A>
 <B> Previous:</B> <A
@@ -43,39 +43,51 @@
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION004212000000000000000"></A><A ID="Operation:innerProduct"></A>
+<H2><A ID="SECTION004212000000000000000"></A><A ID="Operation:index"></A>
 <BR>
-inner product <SPAN CLASS="MATH"><IMG STYLE="height: 0.28ex; vertical-align: -0.12ex; " SRC="img22.png"
- ALT="$\cdot $"></SPAN>
+index
 </H2>
-Computes
-<BR><P></P>
+
+<P>
+Returns the index within the hypecube where the input is true (ie
+<SPAN CLASS="MATH"><IMG STYLE="height: 1.68ex; vertical-align: -0.21ex; " SRC="img199.png"
+ ALT="$&gt;0.5$"></SPAN>). For example, where
+<P></P>
 <DIV CLASS="mathdisplay">
 <!-- MATH
- \begin{displaymath}
-z_{i_1,\ldots,i_{r_x-1},j_1,\ldots,j_{r_y-1}} =
-\sum_k x_{i_1\ldots,i_{a-1},k,i_{a+1}\ldots,i_{r_x-1}}
-y_{j_1,\ldots,j_{r_y-1},k},
-\end{displaymath}
+ \begin{eqnarray*}
+\iota(3,3) &=& \left(\begin{array}{ccc}
+  0 & 3 & 6 \\
+  1 & 4 & 7 \\
+  2 & 5 & 8 \\
+  \end{array}\right),\\
+  \mathrm{idx}(\iota(3,3)<5) &=&
+  \left(\begin{array}{ccc}
+    0 & 3 &\\
+    1 & 4 &\\
+    2 & &
+  \end{array}\right),\\
+\end{eqnarray*}
  -->
-
 <IMG STYLE=""
- SRC="img197.png"
- ALT="\begin{displaymath}
-z_{i_1,\ldots,i_{r_x-1},j_1,\ldots,j_{r_y-1}} =
-\sum_k x_{i_...
-...i_{a-1},k,i_{a+1}\ldots,i_{r_x-1}}
-y_{j_1,\ldots,j_{r_y-1},k},
-\end{displaymath}">
-</DIV>
-<BR CLEAR="ALL">
-<P></P>
-where <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img119.png"
- ALT="$a$"></SPAN> is the given axis, and <SPAN CLASS="MATH"><IMG STYLE="height: 1.47ex; vertical-align: -0.46ex; " SRC="img198.png"
- ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG STYLE="height: 1.75ex; vertical-align: -0.78ex; " SRC="img199.png"
- ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
- ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
- ALT="$y$"></SPAN> respectively.
+ SRC="img200.png"
+ ALT="\begin{eqnarray*}
+\iota(3,3) &amp;=&amp; \left(\begin{array}{ccc}
+0 &amp; 3 &amp; 6 \\
+1 &amp; 4...
+...ray}{ccc}
+0 &amp; 3 &amp;\\
+1 &amp; 4 &amp;\\
+2 &amp; &amp;
+\end{array}\right),\\
+\end{eqnarray*}"></DIV>
+<BR CLEAR="ALL"><P></P>
+<BR CLEAR="ALL"><P></P>
+Note that the output array has the same shape as the input, with
+unused values padded with NANs (missing value).
+
+<P>
+Dimension and argument parameters are unused.
 
 <P>
 <BR><HR>

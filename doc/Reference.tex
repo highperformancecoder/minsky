@@ -254,6 +254,38 @@ Computes the nearest neighbour difference along a given direction. The
 optional argument can be used to specify the number of neighbours to
 skip in computing the differences.
 
+\subsection{index}\label{Operation:index}
+
+Returns the index within the hypecube where the input is true (ie
+$>0.5$). For example, where
+\begin{eqnarray*}
+  \iota(3,3) &=& \left(\begin{array}{ccc}
+  0 & 3 & 6 \\
+  1 & 4 & 7 \\
+  2 & 5 & 8 \\
+  \end{array}\right),\\
+  \mathrm{idx}(\iota(3,3)<5) &=&
+  \left(\begin{array}{ccc}
+    0 & 3 &\\
+    1 & 4 &\\
+    2 & &
+  \end{array}\right),\\
+\end{eqnarray*}
+Note that the output array has the same shape as the input, with
+unused values padded with NANs (missing value).
+
+Dimension and argument parameters are unused.
+
+
+\subsection{gather}\label{Operation:gather}
+
+Gather collects the values at index locations indexed by the second
+argument. The output tensor has the same shape as the second (index)
+argument.
+
+If the index is not an integer, the gather will linearly interpolate between
+the values on either side. So $x[2.5] = 0.5 (x[2]+x[3])$.
+
 \subsection{inner product $\cdot$}\label{Operation:innerProduct}
 Computes
 \begin{displaymath}
@@ -263,6 +295,7 @@ y_{j_1,\ldots,j_{r_y-1},k},
 \end{displaymath}
 where $a$ is the given axis, and $r_x$ and $r_y$ are the ranks of $x$ and $y$ respectively.
 
+Not currently implemented.
 
 \subsection{outer product $\otimes$}\label{Operation:outerProduct}
 Computes 
@@ -272,6 +305,7 @@ x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
 \end{displaymath}
 where $r_x$ and $r_y$ are the ranks of $x$ and $y$ respectively.
 
+Not currently implemented.
 
 \section{Switch}\label{SwitchIcon}
 

@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
 <HTML lang="EN">
 <HEAD>
-<TITLE>Godley Tables</TITLE>
-<META NAME="description" CONTENT="Godley Tables">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -34,78 +34,87 @@
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
 <B> Next:</B> <A
- HREF="node106.html">Context Menu</A>
+ HREF="node106.html">Sheet Widget</A>
 <B> Up:</B> <A
  HREF="node42.html">Reference</A>
 <B> Previous:</B> <A
- HREF="node104.html">Note Widget</A>
+ HREF="node104.html">Groups</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A ID="SECTION004100000000000000000"></A><A ID="godley"></A><A ID="GodleyIcon"></A>
+<H1><A ID="SECTION00480000000000000000"></A>
+<A ID="PlotWidget"></A>
 <BR>
-Godley Tables
+Plot widget
 </H1>
 
 <P>
-Godley tables describes sets of financial flows from the point of view
-of a particular economic agent, such as a bank. The columns of the
-table represent accounts (possibly aggregated), which are treated as
-integration variables by the system. Accounts may be assets,
-liabilities or equities. Assets may appear as liabilities in another
-agent's Godley table, and vice versa, with the sense of the financial
-flows treated oppositely (a credit flow increasing the asset of one
-entity will appear as a debit flow, increasing the value of a
-liability). Transfers between accounts should satisfy the <EM>  accounting equation</EM><A ID="2555"></A>
-(Assets-Liabilities-Equities = 0). So if the transfer is between an
-asset and a liability, then it should appear with the same sign (both
-positive or both negative), otherwise between two accounts of the same
-type, or between a liability and an equity, the terms should have
-opposite signs.
+A plot widget embeds a dynamic plot into the canvas. Around the
+outside of the plot are a number of input ports that can be wired.
 
 <P>
-Instead of signed flows, one can optionally use CR and DR prefixes, as
-specified in the options panel. Each row of the table should have have
-one CR entry, and one DR entry. The row sum column should be zero if
-it is done correctly.
+<DIV class="CENTER">
+<IMG STYLE=""
+ SRC="img232.png"
+ ALT="\includegraphics{images/plotWidget.eps}">
+
+</DIV>
 
 <P>
-The first row specifies the stock variables, after which follow the
-flow rows. Usually, the row marked &ldquo;Initial Conditions&rdquo; comes next,
-but may be placed in any position. These specify the initial
-conditions of the stock variables, and may refer to a multiple of
-another variable, just like the <A HREF="node95.html#var:init">initial condition
-field</A>, or just be a numerical value.
+<DL>
+<DT><STRONG>left hand edge</STRONG></DT>
+<DD>Up to 4 quantities can be plotted on the graph
+  simultaneously, with line colour given by the colour of the input
+  port
+</DD>
+<DT><STRONG>right hand edge</STRONG></DT>
+<DD>Another 4 quantities can be added to the
+  plot. These are shown on a different scale to the left hand inputs,
+  allowing very different magnitudes to be compared on the one plot.
+</DD>
+<DT><STRONG>bottom edge</STRONG></DT>
+<DD>Quantities controlling the <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
+ ALT="$x$"></SPAN>-coordinates of the
+  curves. The colours match up with the colour of the pen being
+  controlled.
 
 <P>
-Finally come the flows. The first column is a simple textual label
-(the phrase &ldquo;Initial Conditions&rdquo;, regardless of capitalisation, is a
-reserved phrase for setting stock variable initial conditions)
-identifying the flow. The flows themselves are written as a numerical
-multipler times a flow variable. 
+<DIV class="CENTER">
+<IMG STYLE=""
+ SRC="img233.png"
+ ALT="\includegraphics{images/plotLissajous.eps}">
+
+</DIV>
 
 <P>
+If only one bottom port is connected, then that controls all pens
+  simultaneously, and if no ports are connected, then the simulation
+  time is used to provide the <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
+ ALT="$x$"></SPAN> coordinates
+</DD>
+<DT><STRONG>corners</STRONG></DT>
+<DD>Corner ports control the scale. You can wire up
+  variables controlling minimum and maximum of the <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
+ ALT="$x$"></SPAN>, <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
+ ALT="$y$"></SPAN> and right hand
+  <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
+ ALT="$y$"></SPAN> axes. If left unwired, the scales are determined automatically
+  from the data. This can be used, for example, to implement a sliding
+  window graph
 
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A
- HREF="node106.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node104.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A
- HREF="node106.html">Context Menu</A>
-<B> Up:</B> <A
- HREF="node42.html">Reference</A>
-<B> Previous:</B> <A
- HREF="node104.html">Note Widget</A></DIV>
-<!--End of Navigation Panel-->
+<P>
+<DIV class="CENTER">
+<IMG STYLE=""
+ SRC="img234.png"
+ ALT="\includegraphics{images/plotSlidingWindow.eps}">
+
+</DIV>
+</DD>
+</DL>
+
+<P>
+<BR><HR>
 
 </BODY>
 </HTML>

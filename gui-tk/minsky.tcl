@@ -1479,7 +1479,7 @@ proc openURL {URL} {
     } elseif [catch {exec xdg-open $URL &}] {
         # try a few likely suspects
         foreach browser {firefox konqueror seamonkey opera} {
-            set browserNotFound [catch {exec firefox $URL &}]
+            set browserNotFound [catch {exec $browser $URL &}]
             if {!$browserNotFound} break
         }
         if $browserNotFound {

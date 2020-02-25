@@ -190,7 +190,7 @@ namespace minsky
     EvalOpPtr(OperationType::Type op):
       classdesc::shared_ptr<EvalOpBase>(ScalarEvalOp::create(op)) {}
     EvalOpPtr(OperationType::Type op,
-              const std::shared_ptr<OperationBase>& state,
+              const ItemPtr& state,
               VariableValue& to,
               const VariableValue& from1=VariableValue(), 
               const VariableValue& from2=VariableValue());

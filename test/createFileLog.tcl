@@ -8,8 +8,13 @@ source $minskyHome/library/init.tcl
 use_namespace minsky
 minsky.load $argv(2)
 
+
 set nsteps 10
 puts "nsteps 10"
+#provide seed to ensure repeatability
+srand 10
+step
+
 for {set step 0} {$step<$nsteps} {incr step} {
     step
     puts -nonewline "[t] "

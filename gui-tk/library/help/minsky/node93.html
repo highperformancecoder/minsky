@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
 <HTML lang="EN">
 <HEAD>
-<TITLE>Variables</TITLE>
-<META NAME="description" CONTENT="Variables">
+<TITLE>outer product </TITLE>
+<META NAME="description" CONTENT="outer product ">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,7 +15,6 @@
 
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
-<LINK REL="next" HREF="node100.html">
 <LINK REL="previous" HREF="node92.html">
 <LINK REL="next" HREF="node94.html">
 </HEAD>
@@ -27,111 +26,57 @@
  HREF="node94.html">
 <IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
 <A
- HREF="node42.html">
+ HREF="node78.html">
 <IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
 <A
  HREF="node92.html">
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
 <B> Next:</B> <A
- HREF="node94.html">Variable names</A>
+ HREF="node94.html">Switch</A>
 <B> Up:</B> <A
- HREF="node42.html">Reference</A>
+ HREF="node78.html">Tensor operations</A>
 <B> Previous:</B> <A
- HREF="node92.html">Switch</A>
+ HREF="node92.html">inner product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A ID="SECTION00440000000000000000"></A><A ID="Variable:constant"></A><A ID="Variable:parameter"></A><A ID="Variable:flow"></A><A ID="Variable:integral"></A><A ID="Variable:stock"></A>
+<H2><A ID="SECTION004215000000000000000"></A><A ID="Operation:outerProduct"></A>
 <BR>
-Variables
-</H1>
+outer product <SPAN CLASS="MATH"><IMG STYLE="height: 1.61ex; vertical-align: -0.31ex; " SRC="img23.png"
+ ALT="$\otimes $"></SPAN>
+</H2>
+Computes 
+<BR><P></P>
+<DIV CLASS="mathdisplay">
+<!-- MATH
+ \begin{displaymath}
+z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
+x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
+\end{displaymath}
+ -->
+
+<IMG STYLE=""
+ SRC="img205.png"
+ ALT="\begin{displaymath}
+z_{i_1,i_2,\ldots,i_{r_x},j_1,\ldots,j_{r_y}} =
+x_{i_1,,i_2,\ldots,i_{r_x}}y_{j_1,\ldots,j_{r_y}}.
+\end{displaymath}">
+</DIV>
+<BR CLEAR="ALL">
+<P></P>
+where <SPAN CLASS="MATH"><IMG STYLE="height: 1.47ex; vertical-align: -0.46ex; " SRC="img203.png"
+ ALT="$r_x$"></SPAN> and <SPAN CLASS="MATH"><IMG STYLE="height: 1.75ex; vertical-align: -0.78ex; " SRC="img204.png"
+ ALT="$r_y$"></SPAN> are the ranks of <SPAN CLASS="MATH"><IMG STYLE="height: 1.12ex; vertical-align: -0.12ex; " SRC="img74.png"
+ ALT="$x$"></SPAN> and <SPAN CLASS="MATH"><IMG STYLE="height: 1.54ex; vertical-align: -0.57ex; " SRC="img75.png"
+ ALT="$y$"></SPAN> respectively.
 
 <P>
-Variables represent values in a calculation, and come in a number of
-varieties:
-<DL>
-<DT><STRONG>Constants</STRONG></DT>
-<DD>represent an explicit numerical value, and do not
-have a name. Their graphical representation shows the actual value of
-the constant.
-</DD>
-<DT><STRONG>Parameters</STRONG></DT>
-<DD>are named constants. All instances of a given name
-  represent the same value, as with all other named variables, so
-  changing the value of one parameter, either through its edit menu,
-  or through a slider, will affect all the others of that
-  name. Parameters may be <A HREF="#CSV_____import">imported from a CSV file</A>, which is one way of inserting a tensor into the
-  simulation.
-</DD>
-<DT><STRONG>Flow variables</STRONG></DT>
-<DD>have an input port that defines how the value is
-to be calculated. Only one flow variable of a given name can have its
-input port connected, as they all refer to the same quantity. If no
-input ports are connected, then flow variables act just like
-parameters.
-</DD>
-<DT><STRONG>Integral variables</STRONG></DT>
-<DD>represent the result of integrating its
-input over time  by means of the differential
-equation solver. The integrand is represented by the input to an
-integral operator that is attached to the integral variable.
-</DD>
-<DT><STRONG>Stock variables</STRONG></DT>
-<DD>are the columns of Godley tables, and represent
-the integral over time of the sum of the flow variables making up the
-column.
-</DD>
-</DL>
-
-<P>
-Variables may be converted between types in the variable edit menu,
-available from the context menu, subject to certain rules. For example,
-a variable whose input is wired anywhere on the canvas cannot be
-changed from &ldquo;flow&rdquo;. Stock variables need to be defined in a Godley
-table, and so on.
+Not currently implemented.
 
 <P>
 <BR><HR>
-<!--Table of Child-Links-->
-<A ID="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A ID="tex2html322"
-  HREF="node94.html">Variable names</A>
-<LI><A ID="tex2html323"
-  HREF="node95.html">Initial conditions</A>
-<LI><A ID="tex2html324"
-  HREF="node96.html">Tensor valued initial conditions</A>
-<LI><A ID="tex2html325"
-  HREF="node97.html">Sliders</A>
-<LI><A ID="tex2html326"
-  HREF="node98.html">Importing a parameter from a CSV file</A>
-<LI><A ID="tex2html327"
-  HREF="node99.html">Duplicate keys</A>
-</UL>
-<!--End of Table of Child-Links-->
-
-<DIV CLASS="navigation"><HR>
-<!--Navigation Panel-->
-<A
- HREF="node94.html">
-<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
-<A
- HREF="node42.html">
-<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
-<A
- HREF="node92.html">
-<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
-<BR>
-<B> Next:</B> <A
- HREF="node94.html">Variable names</A>
-<B> Up:</B> <A
- HREF="node42.html">Reference</A>
-<B> Previous:</B> <A
- HREF="node92.html">Switch</A></DIV>
-<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

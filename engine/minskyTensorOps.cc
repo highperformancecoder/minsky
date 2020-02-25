@@ -310,14 +310,31 @@ namespace minsky
   class GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {
-      for (size_t i=0; i<arg2->size(); ++i) {
-        auto idx=(*arg2)[i];
-        if (isfinite(idx) && idx>=0 && idx<arg1->size())
-          cachedResult[i]=(*arg1)[idx];
-        else
-          cachedResult[i]=nan("");
-      }              
+    void computeTensor() const override
+    {
+      for (size_t i=0; i<arg2->size(); ++i)
+        {
+          auto idx=(*arg2)[i];
+          if (isfinite(idx))
+            {
+              if (idx>=0)
+                {
+                  if (idx==arg1->size()-1)
+                    cachedResult[i]=(*arg1)[idx];
+                  else if (idx<arg1->size()-1)
+                    {
+                      double s=idx-floor(idx);
+                      cachedResult[i]=(1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
+                    }
+                }
+              else if (idx>-1)
+                cachedResult[i]=(*arg1)[0];
+              else
+                cachedResult[i]=nan("");
+            }
+          else
+            cachedResult[i]=nan("");
+        }              
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
@@ -369,6 +386,14 @@ namespace minsky
   public:
     void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override {
       args=a;
+      if (args.size()<2)
+        hypercube(Hypercube());
+      else
+        hypercube(args[1]->hypercube());
+      if (!args.empty() && args[0]->rank()!=0)
+        // TODO: feature ticket #36 - extend to conformant selector arg
+        throw runtime_error("tensor value selectors not yet supported");
+      
       set<size_t> indices; // collect the union of argument indices
       for (auto& i: args)
         {
@@ -379,6 +404,7 @@ namespace minsky
               if (m_size==1)
                 m_size=i->size();
               else if (m_size!=i->size())
+                // TODO - should we check and throw on nonconformat hypercubes?
                 throw runtime_error("noconformant tensor arguments in switch");
             }
         }
@@ -439,24 +465,38 @@ namespace minsky
   };
   
   std::shared_ptr<TensorOp> TensorOpFactory::create
-  (const OperationBase& op, const TensorsFromPort& tfp)
+  (const Item& it, const TensorsFromPort& tfp)
   {
-    try
+    if (auto op=dynamic_cast<const OperationBase*>(&it))
+      try
+        {
+          std::shared_ptr<TensorOp> r{create(op->type())};
+          switch (op->ports.size())
+            {
+            case 2:
+              r->setArguments(tfp.tensorsFromPort(*op->ports[1]),op->axis,op->arg);
+            break;
+            case 3:
+              r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]));
+              break;
+            }
+          return r;
+        }
+      catch (const InvalidType&)
+        {return {};}
+    else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))
       {
-        std::shared_ptr<TensorOp> r{create(op.type())};
-        switch (op.ports.size())
+        vector<TensorPtr> args;
+        for (auto& p: it.ports)
           {
-          case 2:
-            r->setArguments(tfp.tensorsFromPort(*op.ports[1]),op.axis,op.arg);
-            break;
-          case 3:
-            r->setArguments(tfp.tensorsFromPort(*op.ports[1]), tfp.tensorsFromPort(*op.ports[2]));
-            break;
+            auto tensorArgs=tfp.tensorsFromPort(*p);
+            args.insert(args.end(), tensorArgs.begin(), tensorArgs.end());
           }
+        std::shared_ptr<TensorOp> r{new SwitchTensor};
+        r->setArguments(args);
         return r;
       }
-    catch (const InvalidType&)
-      {return {};}
+    return {};
   }
 
   vector<TensorPtr> TensorsFromPort::tensorsFromPort(const Port& p) const

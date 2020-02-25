@@ -51,5 +51,23 @@ for i in */*.mky; do
     fi        
 done 
 
+# skip reference image checking on Travis CI
+if [ -n "$TRAVIS" ]; then
+    pass
+fi
+
+# prepare directory structure
+for i in *; do
+    mkdir -p $tmp/$i
+done
+
+for i in */*.mky; do
+    $here/gui-tk/minsky $here/test/renderCanvas.tcl $i $tmp/$i.svg
+    diff -wq $tmp/$i.svg $i.svg 
+    if test $? -ne 0; then
+        echo "rendered $i canvas mutated"
+        fail
+    fi
+done
 
 pass
