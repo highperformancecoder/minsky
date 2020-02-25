@@ -11,8 +11,8 @@
    <Item>
     <id>3</id>
     <type>IntOp</type>
-    <x>205</x>
-    <y>474</y>
+    <x>0</x>
+    <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -26,8 +26,8 @@
    <Item>
     <id>5</id>
     <type>Variable:integral</type>
-    <x>248</x>
-    <y>474</y>
+    <x>43</x>
+    <y>0</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -35,7 +35,7 @@
      <int>4</int>
     </ports>
     <name>int</name>
-    <init>-0.380952</init>
+    <init>0</init>
     <slider>
      <visible>false</visible>
      <stepRel>false</stepRel>
@@ -47,8 +47,8 @@
    <Item>
     <id>8</id>
     <type>Variable:integral</type>
-    <x>55</x>
-    <y>-5</y>
+    <x>34</x>
+    <y>78</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -56,7 +56,7 @@
      <int>7</int>
     </ports>
     <name>int</name>
-    <init>-0.380952</init>
+    <init>0</init>
     <slider>
      <visible>false</visible>
      <stepRel>false</stepRel>
@@ -68,8 +68,8 @@
    <Item>
     <id>11</id>
     <type>Variable:flow</type>
-    <x>363</x>
-    <y>466</y>
+    <x>111</x>
+    <y>3</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -89,8 +89,8 @@
    <Item>
     <id>13</id>
     <type>Variable:stock</type>
-    <x>390.5</x>
-    <y>172.5</y>
+    <x>241.5</x>
+    <y>77.5</y>
     <zoomFactor>1</zoomFactor>
     <rotation>90</rotation>
     <ports>
@@ -109,8 +109,8 @@
    <Item>
     <id>15</id>
     <type>Variable:stock</type>
-    <x>206</x>
-    <y>18</y>
+    <x>73</x>
+    <y>146</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -129,8 +129,8 @@
    <Item>
     <id>18</id>
     <type>Variable:flow</type>
-    <x>198</x>
-    <y>249</y>
+    <x>177</x>
+    <y>158</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -150,8 +150,8 @@
    <Item>
     <id>20</id>
     <type>Variable:parameter</type>
-    <x>41</x>
-    <y>228</y>
+    <x>264</x>
+    <y>165</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -170,27 +170,20 @@
    <Item>
     <id>22</id>
     <type>VarConstant</type>
-    <x>69</x>
-    <y>72</y>
+    <x>342</x>
+    <y>163</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>21</int>
     </ports>
     <init>3</init>
-    <slider>
-     <visible>false</visible>
-     <stepRel>false</stepRel>
-     <min>-30</min>
-     <max>30</max>
-     <step>0.3</step>
-    </slider>
    </Item>
    <Item>
     <id>23</id>
     <type>GodleyIcon</type>
-    <x>433</x>
-    <y>120</y>
+    <x>284</x>
+    <y>25</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>

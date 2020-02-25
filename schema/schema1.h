@@ -53,8 +53,10 @@ namespace schema1
   // refine poly templates for current usage
   struct SPolyBase: 
     virtual public PolyBase<string>,
+    virtual public PolyJsonBase, 
     virtual public PolyXMLBase
-  {};
+  {
+  };
 
   template <class T, class B1, class B2=PolyBase<string> >
   struct SPoly: virtual public B1, virtual public B2
@@ -64,14 +66,17 @@ namespace schema1
     SPoly* clone() const {return new T(static_cast<const T&>(*this));}
     string type() const {return classdesc::typeName<T>();}
 
-    void xml_pack(xml_pack_t& x, const string& d) const
+    void xml_pack(xml_pack_t& x, const string& d) const override
     {::xml_pack(x,d,static_cast<const T&>(*this));}
       
-    void xml_unpack(xml_unpack_t& x, const string& d)
+    void xml_unpack(xml_unpack_t& x, const string& d) override
     {::xml_unpack(x,d,static_cast<T&>(*this));}
 
-    void json_pack(json_pack_t& x, const string& d) const
+    void json_pack(json_pack_t& x, const string& d) const override
     {::json_pack(x,d,static_cast<const T&>(*this));}
+      
+    void json_unpack(json_unpack_t& x, const string& d) override
+    {::json_unpack(x,d,static_cast<T&>(*this));}
   };
 
   template <class T, class U>
@@ -80,8 +85,10 @@ namespace schema1
     Join& operator=(const Join&)=default;
     Join* clone() const {return new Join(*this);}
     string type() const {return "";}
-    void xml_pack(xml_pack_t& x, const string& d) const {}
-    void xml_unpack(xml_unpack_t& x, const string& d) {}
+    void xml_pack(xml_pack_t& x, const string& d) const override {}
+    void xml_unpack(xml_unpack_t& x, const string& d) override {}
+    void json_pack(json_pack_t& x, const string& d) const override {}
+    void json_unpack(json_unpack_t& x, const string& d) override {}
   };
 
   struct Item: public SPoly<Item, SPolyBase>
@@ -90,6 +97,11 @@ namespace schema1
     /// commentary and short commentary on this item
     string detailedText, tooltip;
     Item(int id=-1): id(id) {}
+    template <class T>
+    Item(int id, const T& it): 
+      id(id), detailedText(it.detailedText), tooltip(it.tooltip) {}
+    // just because Operation and Variable overload "type"
+    string typeName() const {return type();}
   };
 
 
@@ -97,14 +109,12 @@ namespace schema1
   {
     bool input;
     Port(): input(false) {}
-    //    Port(int id, const minsky::Port& p): Item(id), input(p.input()) {}
   };
 
   struct Wire: public SPoly<Wire,Item>
   {
     int from, to;
     Wire(): from(-1), to(-1) {}
-    //    Wire(int id, const minsky::Wire& w): Item(id,w) {}
     Wire(int id, int from, int to): Item(id), from(from), to(to) {}
   };
 
@@ -117,7 +127,6 @@ namespace schema1
     string name;
     int intVar;
     Operation(): type(minsky::OperationType::numOps), value(0) {}
-    //    Operation(int id, const minsky::OperationBase& op);
     Operation(int id, const schema0::Operation& op):
       Item(id), type(op.m_type), value(op.value),
       ports(op.m_ports),
@@ -208,6 +217,8 @@ namespace schema1
 
     PositionLayout() {}
     PositionLayout(int id, double x, double y): Layout(id), x(x), y(y) {}
+    template <class T> PositionLayout(int id, const T& item): 
+      Layout(id), x(item.m_x), y(item.m_y) {}
     PositionLayout(int id, const schema0::Operation& o):
       Layout(id), x(o.x), y(o.y) {}
     PositionLayout(int id, const schema0::Variable& v):
@@ -288,6 +299,13 @@ namespace schema1
     bool sliderVisible, sliderBoundsSet, sliderStepRel;
     double sliderMin, sliderMax, sliderStep;
     SliderLayout(): sliderVisible(false), sliderBoundsSet(false), sliderStepRel(false) {}
+    template <class T>
+    SliderLayout(int id, const T& item):
+      Layout(id), PositionLayout(id, item), VisibilityLayout(item), 
+      ItemLayout(id, item), sliderVisible(item.sliderVisible()),
+      sliderBoundsSet(item.sliderBoundsSet), sliderStepRel(item.sliderStepRel),
+      sliderMin(item.sliderMin), sliderMax(item.sliderMax), 
+      sliderStep(item.sliderStep) {}
   };
 
   /// structure representing a union of all of the above Layout
@@ -297,10 +315,13 @@ namespace schema1
                                    Join<PlotLayout, WireLayout> >
   {
     UnionLayout() {}
+    UnionLayout(const Layout&);
   };
 
   struct MinskyModel
   {
+    //the following field is left commented out here to indicate this
+    //deprecated field is part of the version 1 spec
     //    vector<Port> ports;
     vector<Wire> wires;
     vector<Item> notes; ///< descriptive notes
@@ -378,17 +399,22 @@ namespace classdesc_access
 
 using classdesc::xsd_generate;
 
+
 #ifdef _CLASSDESC
 #pragma omit xsd_generate schema1::SPolyBase
 #pragma omit xsd_generate schema1::SPoly
 #endif
 
-//inline void xsd_generate(classdesc::xsd_generate_t&,const string&,const schema1::SPolyBase&) {}
-//
-//// Layout is end of the line, no need to process further
-//inline void xsd_generate(classdesc::xsd_generate_t& x,const string& d, 
-//                  const schema1::SPoly<schema1::Layout,schema1::SPolyBase>& a) 
-//{}
+inline void xsd_generate(classdesc::xsd_generate_t&,const string&,const schema1::SPolyBase&) {}
+template <class T, class B1, class B2>
+void xsd_generate(classdesc::xsd_generate_t& x,const string& d, 
+                  const schema1::SPoly<T,B1,B2>& a) 
+{xsd_generate(x,d,static_cast<const B1&>(a));}
+
+// Layout is end of the line, no need to process further
+inline void xsd_generate(classdesc::xsd_generate_t& x,const string& d, 
+                  const schema1::SPoly<schema1::Layout,schema1::SPolyBase>& a) 
+{}
 
 
 #include "schema1.cd"
