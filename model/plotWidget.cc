@@ -196,7 +196,8 @@ namespace minsky
 
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
-    double gw=w-2*portSpace, gh=h-portSpace;
+    double gw=w-2*portSpace, gh=h-portSpace;;
+    if (!title.empty()) gh=h-portSpace-titleHeight;  // take into account room for the title
     Plot::draw(cairo,gw,gh); 
     cairo_restore(cairo);
     if (mouseFocus)
@@ -210,8 +211,10 @@ namespace minsky
             legendSize(width,height,gh);
             width+=legendOffset*gw;
 
+            
             double x=legendLeft*gw-0.5*(w-width)+portSpace;
             double y=-legendTop*gh+0.5*(h+height)-portSpace;
+            if (!title.empty()) y=-legendTop*gh+0.5*(h+height)-portSpace+titleHeight*h; // take into account room for the title
             double arrowLength=6;
             cairo_move_to(cairo,x-arrowLength,y);
             cairo_rel_line_to(cairo,2*arrowLength,0);
@@ -228,13 +231,12 @@ namespace minsky
             drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
 
             cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
-            cairo_stroke(cairo);
           }
         if (onResizeHandles) drawResizeHandles(cairo);   
       }
     justDataChanged=false;
     
-    cairo_new_path(cairo);
+    cairo_new_path(cairo);  
     cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
@@ -282,6 +284,7 @@ namespace minsky
     double z=zoomFactor();
     double gw=width*z-2*portSpace;
     double gh=height*z-portSpace;
+    if (!title.empty()) gh=height*z-portSpace-titleHeight;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -290,17 +293,29 @@ namespace minsky
   void PlotWidget::mouseMove(double x,double y)
   {
     double z=zoomFactor();
+    double w=0.5*width*z, h=0.5*height*z;
+    double dx=x-this->x(), dy=y-this->y();
     double gw=width*z-2*portSpace;
     double gh=height*z-portSpace;
+    if (!title.empty()) gh=height*z-portSpace-titleHeight;
     double yoffs=this->y()-(legendTop-0.5)*height*z;
     switch (ct)
       {
       case ClickType::legendMove:
-        legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
-        legendTop = (oldLegendTop + clickY - y)/gh;
+        if (abs(dx)<w && abs(dy)<h) {  //Ensure plot legend cannot be moved off plot widget  
+           legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
+           legendTop = (oldLegendTop + clickY - y)/gh;
+           if (!title.empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
+	    } else {
+			legendLeft = oldLegendLeft/gw;
+			legendTop = oldLegendTop/gh;
+		}
         break;
       case ClickType::legendResize:
-        legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
+        if (abs(dx)<w && abs(dy)<h) { //Ensure plot legend cannot be resized beyond extent of plot widget  
+           legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
+           if (!title.empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
+	    } else legendFontSz = oldLegendFontSz;
         break;
       default:
         break;
