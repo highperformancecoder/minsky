@@ -390,9 +390,9 @@ namespace minsky
         hypercube(Hypercube());
       else
         hypercube(args[1]->hypercube());
-      if (!args.empty() && args[0]->rank()!=0)
-        // TODO: feature ticket #36 - extend to conformant selector arg
-        throw runtime_error("tensor value selectors not yet supported");
+//      if (!args.empty() && args[0]->rank()!=0)
+//        // TODO: feature ticket #36 - extend to conformant selector arg
+//        throw runtime_error("tensor value selectors not yet supported");
       
       set<size_t> indices; // collect the union of argument indices
       for (auto& i: args)
