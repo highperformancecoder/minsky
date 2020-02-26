@@ -56,20 +56,23 @@ namespace minsky
     /// returns vector of tensor ops for all wires attach to port. Port
     /// must be an input port
     std::vector<TensorPtr> tensorsFromPort(const Port&) const;
+    /// returns vector of tensor ops for all wires attached ports.
+    std::vector<TensorPtr> tensorsFromPorts
+    (const std::vector<std::shared_ptr<Port>>&) const;
   };
 
   /// As it says on the tin, this is a factory for creating a TensorOp
   /// which can compute the result of op applied to its arguments and
   /// so on until all the argument terminate in variables.
-  class TensorOpFactory: public classdesc::Factory<TensorOp, OperationType::Type>
+  class TensorOpFactory: public classdesc::Factory<civita::ITensor, OperationType::Type>
   {
-    using classdesc::Factory<civita::TensorOp, OperationType::Type>::create;
+    using classdesc::Factory<civita::ITensor, OperationType::Type>::create;
   public:
     TensorOpFactory();
     /// create a tensor representation of the expression rooted at
     /// op. If expression doesn't contain any references variables,
     /// then the \a tp parameter may be omitted.
-    std::shared_ptr<TensorOp> create(const Item&, const TensorsFromPort& tp={});
+    std::shared_ptr<ITensor> create(const Item&, const TensorsFromPort& tp={});
   };    
   
   extern TensorOpFactory tensorOpFactory;

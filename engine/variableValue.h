@@ -35,34 +35,6 @@ namespace minsky
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
   
-//  // why are we doing this complicated mixin to constify the xVector
-//  // attribute instead of a simple const std::vector<XVector>&
-//  // VariableValue::xVector() const getter method?
-//
-//  //ans: because we want TCL to be able to inspect the xVector
-//  // attribute, which is not possible with the getter method
-//  class XVectorMixin
-//  {
-//  public:
-//    typedef std::vector<XVector> XVectorVector;
-//    CLASSDESC_ACCESS(XVectorMixin);
-//  protected:
-//    XVectorVector m_xVector;
-//  public:
-//    // need to use C++98 style initialiser here to get around compiler
-//    // bug on Ubuntu 14.04
-//    const XVectorVector& xVector; //{m_xVector};
-//    XVectorMixin(): xVector(m_xVector) {}
-//    XVectorMixin(const XVectorMixin& x):
-//      m_xVector(x.m_xVector), xVector(m_xVector) {}
-//    XVectorMixin(XVectorMixin&& x):
-//      m_xVector(x.m_xVector), xVector(m_xVector) {}
-//    XVectorMixin& operator=(const XVectorMixin& x)
-//    {m_xVector=x.m_xVector; return *this;}
-//    XVectorMixin& operator=(XVectorMixin&& x)
-//    {m_xVector=x.m_xVector; return *this;}
-//  };
-  
   class VariableValue: public VariableType, public civita::ITensorVal
   {
     CLASSDESC_ACCESS(VariableValue);

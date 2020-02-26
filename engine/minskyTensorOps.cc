@@ -26,7 +26,7 @@ using namespace civita;
 namespace classdesc
 {
   // postpone factory definition to TensorOpFactory()
-  template <> Factory<TensorOp, minsky::OperationType::Type>::Factory() {}
+  template <> Factory<ITensor, minsky::OperationType::Type>::Factory() {}
 }
 
 
@@ -41,7 +41,7 @@ namespace minsky
     const char* what() const throw() {return "Derivative not defined";}
   };
   
-  struct TimeOp: public TensorOp
+  struct TimeOp: public ITensor
   {
     size_t size() const override {return 1;}
     vector<size_t> index() const override {return {};}
@@ -373,7 +373,7 @@ namespace minsky
                         },0) {}
   };
   
-  class SwitchTensor: public TensorOp
+  class SwitchTensor: public ITensor
   {
     size_t m_size=1;
     vector<size_t> m_index;
@@ -384,7 +384,7 @@ namespace minsky
       return m_index[i];
     }
   public:
-    void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override {
+    void setArguments(const std::vector<TensorPtr>& a,const std::string& axis={},double argv=0) override {
       args=a;
       if (args.size()<2)
         hypercube(Hypercube());
@@ -449,28 +449,28 @@ namespace minsky
 
   class RavelTensor: public CachedTensorOp
   {
-    Ravel& ravel;
+    const Ravel& ravel;
     TensorPtr arg;
     void computeTensor() const override
     {
-      ravel.loadDataCubeFromVariable(*arg);
+      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);
       ravel.loadDataFromSlice(cachedResult);
       m_timestamp = Timestamp::clock::now();
     }
     
   public:
-    RavelTensor(Ravel& ravel): ravel(ravel) {}
+    RavelTensor(const Ravel& ravel): ravel(ravel) {}
     void setArgument(const TensorPtr& a,const std::string& d,double) override {arg=a;}
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
   
-  std::shared_ptr<TensorOp> TensorOpFactory::create
+  std::shared_ptr<ITensor> TensorOpFactory::create
   (const Item& it, const TensorsFromPort& tfp)
   {
-    if (auto op=dynamic_cast<const OperationBase*>(&it))
+    if (auto op=it.operationCast())
       try
         {
-          std::shared_ptr<TensorOp> r{create(op->type())};
+          TensorPtr r{create(op->type())};
           switch (op->ports.size())
             {
             case 2:
@@ -484,16 +484,18 @@ namespace minsky
         }
       catch (const InvalidType&)
         {return {};}
+    else if (auto v=it.variableCast())
+      return make_shared<TensorVarVal>(*v->vValue(), tfp.ev);
     else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))
       {
-        vector<TensorPtr> args;
-        for (auto& p: it.ports)
-          {
-            auto tensorArgs=tfp.tensorsFromPort(*p);
-            args.insert(args.end(), tensorArgs.begin(), tensorArgs.end());
-          }
-        std::shared_ptr<TensorOp> r{new SwitchTensor};
-        r->setArguments(args);
+        auto r=make_shared<SwitchTensor>();
+        r->setArguments(tfp.tensorsFromPorts(it.ports));
+        return r;
+      }
+    else if (auto ravel=dynamic_cast<const Ravel*>(&it))
+      {
+        auto r=make_shared<RavelTensor>(*ravel);
+        r->setArguments(tfp.tensorsFromPorts(it.ports));
         return r;
       }
     return {};
@@ -520,33 +522,23 @@ namespace minsky
                   // tensor operations
                   throw std::runtime_error("Tensor derivative not implemented");
               }
-            r.push_back(tensorOpFactory.create(*o, *this));
-            assert(r.back());
           }
-        else if (auto v=item.variableCast())
-          r.push_back(make_shared<TensorVarVal>(*v->vValue(), ev));
-        else if (auto s=dynamic_cast<SwitchIcon*>(&item))
-          {
-            auto st=make_shared<SwitchTensor>();
-            vector<TensorPtr> args;
-            for (auto& p: s->ports)
-              {
-                if (p->wires().empty())
-                  s->throw_error("Unwired switch");
-                args.push_back(tensorsFromPort(*p)[0]);
-              }
-            r.push_back(st);
-          }
-        else if (auto ravel=dynamic_cast<Ravel*>(&item))
-          {
-            auto rt=make_shared<RavelTensor>(*ravel);
-            auto args=tensorsFromPort(*ravel->ports[1]);
-            if (!args.empty()) rt->setArgument(args[0],{},0);
-            r.push_back(rt);
-          }
-        else
-          item.throw_error("Invalid item for TensorOp");
+        r.push_back(tensorOpFactory.create(item, *this));
+        assert(r.back());
       }
+    return r;
+  }
+
+
+  vector<TensorPtr> TensorsFromPort::tensorsFromPorts(const vector<shared_ptr<Port>>& ports) const
+  {
+    vector<TensorPtr> r;
+    for (auto& p: ports)
+      if (p->input())
+        {
+          auto tensorArgs=tensorsFromPort(*p);
+          r.insert(r.end(), tensorArgs.begin(), tensorArgs.end());
+        }
     return r;
   }
 
@@ -568,7 +560,7 @@ namespace minsky
     result.index(src.index());
     result.hypercube(src.hypercube());
     Operation<OperationType::copy> tmp;
-    auto copy=tensorOpFactory.create(tmp);
+    auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
     copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
     rhs=move(copy);
     assert(result.size()==rhs->size());

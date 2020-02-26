@@ -27,26 +27,9 @@
 
 namespace civita
 {
-  using TensorPtr=std::shared_ptr<ITensor>;
-  
-  class TensorOp: public ITensor
-  {
-    void notImpl() const
-    {throw std::runtime_error("setArgument(s) variant not implemented");}
-  public:
-    virtual void setArgument(const TensorPtr&, const std::string& dimension={},
-                             double argVal=0)  {notImpl();}
-    virtual void setArguments(const TensorPtr&, const TensorPtr&) {notImpl();}
-    virtual void setArguments(const std::vector<TensorPtr>& a,
-                              const std::string& dimension={}, double argVal=0) 
-    {if (a.size()) setArgument(a[0], dimension, argVal);}
-    virtual void setArguments(const std::vector<TensorPtr>& a1,
-                              const std::vector<TensorPtr>& a2)
-    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0]);}
-  };
 
   /// perform an operation elementwise over a tensor valued argument
-  struct ElementWiseOp: public TensorOp
+  struct ElementWiseOp: public ITensor
   {
     std::function<double(double)> f;
     std::shared_ptr<ITensor> arg;
@@ -62,7 +45,7 @@ namespace civita
 
   /// perform a binary operation elementwise over two tensor arguments.
   /// Arguments need to be conformal: at least one must be a scalar, or both arguments have the same shape
-  class BinOp: public TensorOp
+  class BinOp: public ITensor
   {
   protected:
     std::function<double(double,double)> f;
@@ -97,7 +80,7 @@ namespace civita
   };
 
   /// elementwise reduction over a vector of arguments
-  class ReduceArguments: public TensorOp
+  class ReduceArguments: public ITensor
   {
     std::vector<TensorPtr> args;
     std::vector<size_t> m_index;
@@ -114,7 +97,7 @@ namespace civita
     
     
   /// reduce all elements to a single number
-  struct ReduceAllOp: public TensorOp
+  struct ReduceAllOp: public ITensor
   {
     std::function<void(double&,double,size_t)> f;
     double init;
@@ -148,7 +131,7 @@ namespace civita
   };
 
   // general tensor expression - all elements calculated and cached
-  class CachedTensorOp: public TensorOp
+  class CachedTensorOp: public ITensor
   {
   protected:
     mutable TensorVal cachedResult;

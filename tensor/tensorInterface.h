@@ -28,6 +28,9 @@
 
 namespace civita
 {
+  class ITensor;
+  using TensorPtr=std::shared_ptr<ITensor>;
+
   class ITensor
   {
   public:
@@ -88,10 +91,23 @@ namespace civita
     /// cache
     virtual Timestamp timestamp() const=0;
 
-    
+    /// arguments relevant for tensor expressions, not always meaningful. Exception thrown if not.
+    virtual void setArgument(const TensorPtr&, const std::string& dimension={},
+                             double argVal=0)  {notImpl();}
+    virtual void setArguments(const TensorPtr&, const TensorPtr&) {notImpl();}
+    virtual void setArguments(const std::vector<TensorPtr>& a,
+                              const std::string& dimension={}, double argVal=0) 
+    {if (a.size()) setArgument(a[0], dimension, argVal);}
+    virtual void setArguments(const std::vector<TensorPtr>& a1,
+                              const std::vector<TensorPtr>& a2)
+    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0]);}
+   
   protected:
     Hypercube m_hypercube;
+    void notImpl() const
+    {throw std::runtime_error("setArgument(s) variant not implemented");}
   };
+
 }
 
 #endif
