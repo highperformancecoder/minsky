@@ -1020,18 +1020,6 @@
   <use xlink:href="#glyph0-32" x="395" y="9.369141"/>
 </g>
 <path style="fill:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 479 30 L 479 259.125 M 476 30 L 476 259.125 " transform="matrix(1,0,0,1,1,-3)"/>
-<g style="fill:rgb(0%,100%,0%);fill-opacity:1;">
-  <use xlink:href="#glyph2-1" x="477" y="23.84375"/>
-</g>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(50%,50%,50%);stroke-opacity:1;stroke-miterlimit:10;" d="M 476 15.75 L 491 15.75 L 491 30.75 L 476 30.75 Z M 476 15.75 " transform="matrix(1,0,0,1,1,-3)"/>
-<g style="fill:rgb(100%,0%,0%);fill-opacity:1;">
-  <use xlink:href="#glyph2-2" x="492" y="23.84375"/>
-</g>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(50%,50%,50%);stroke-opacity:1;stroke-miterlimit:10;" d="M 491 15.75 L 506 15.75 L 506 30.75 L 491 30.75 Z M 491 15.75 " transform="matrix(1,0,0,1,1,-3)"/>
-<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
-  <use xlink:href="#glyph4-2" x="507" y="23.484375"/>
-</g>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(50%,50%,50%);stroke-opacity:1;stroke-miterlimit:10;" d="M 506 15.574219 L 521 15.574219 L 521 30.574219 L 506 30.574219 Z M 506 15.574219 " transform="matrix(1,0,0,1,1,-3)"/>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph1-2" x="465" y="39.070312"/>
 </g>
@@ -1085,9 +1073,6 @@
   <use xlink:href="#glyph0-32" x="521" y="9.369141"/>
 </g>
 <path style="fill:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 541 30 L 541 259.125 M 544 30 L 544 259.125 " transform="matrix(1,0,0,1,1,-3)"/>
-<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
-  <use xlink:href="#glyph1-2" x="530" y="39.070312"/>
-</g>
 <g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
   <use xlink:href="#glyph0-23" x="545" y="39.369141"/>
   <use xlink:href="#glyph0-36" x="554" y="39.369141"/>
