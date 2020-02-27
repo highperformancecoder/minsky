@@ -185,7 +185,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists(VariableValue* vv, const std::string& name) const
+void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) const
 {
   string valueId=this->valueId();
   // disallow blank names
@@ -195,10 +195,10 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& name)
       assert(VariableValue::isValueId(valueId));
 	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
       if (vv==nullptr) minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(), rawName(),"",group.lock())));
+        (make_pair(valueId,VariableValue(type(), name(),"",group.lock())));
       // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(),name,vv->init,group.lock())));
+        (make_pair(valueId,VariableValue(type(),nm,vv->init,group.lock())));
     }
 }
 
