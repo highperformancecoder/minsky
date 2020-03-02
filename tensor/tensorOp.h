@@ -72,10 +72,12 @@ namespace civita
     double operator[](size_t i) const override {
       // missing arguments treated as group identity
       if (!arg1)
-        if (arg2)
-          return (*arg2)[i];
-        else
-          throw std::runtime_error("inputs undefined");
+        {
+          if (arg2)
+            return (*arg2)[i];
+          else
+            throw std::runtime_error("inputs undefined");
+        }
       if (!arg2) return (*arg1)[i];
       // scalars are broadcast
       return f(arg1->rank()? arg1->atHCIndex(i): arg1->atHCIndex(0),

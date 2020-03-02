@@ -89,13 +89,15 @@ namespace minsky
       arg1=a1;
 
       if (a2)
-        if (a2->hypercube()==hypercube())
-          arg2=a2;
-        else
-          {
-            arg2=make_shared<InterpolateHC>();
-            arg2->setArgument(a2);
-          }
+        {
+          if (a2->hypercube()==hypercube())
+            arg2=a2;
+          else
+            {
+              arg2=make_shared<InterpolateHC>();
+              arg2->setArgument(a2);
+            }
+        }
     }
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv1=dynamic_cast<DerivativeMixin*>(arg1.get());
