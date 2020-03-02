@@ -169,14 +169,14 @@ string VariableBase::name()  const
 }
 
 string VariableBase::name(const std::string& name) 
-{
+{	
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
   // Ensure value of variable is preserved after rename. For ticket 1106.	
-  auto tmpVV=vValue();  
+  auto tmpVV=vValue(); 
   // ensure integral variables are not global when wired to an integral operation
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
-  ensureValueExists(tmpVV);
+  ensureValueExists(tmpVV,name);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
@@ -185,7 +185,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists(VariableValue* vv) const
+void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) const
 {
   string valueId=this->valueId();
   // disallow blank names
@@ -195,9 +195,10 @@ void VariableBase::ensureValueExists(VariableValue* vv) const
       assert(VariableValue::isValueId(valueId));
 	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
       if (vv==nullptr) minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(), name(), "", group.lock())));
+        (make_pair(valueId,VariableValue(type(), name(),"",group.lock())));
+      // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else minsky().variableValues.insert
-        (make_pair(valueId,*vv));
+        (make_pair(valueId,VariableValue(type(),nm,vv->init,group.lock())));
     }
 }
 
@@ -213,7 +214,7 @@ string VariableBase::init() const
 
 string VariableBase::init(const string& x)
 {
-  ensureValueExists(nullptr); 
+  ensureValueExists(nullptr,""); 
   if (VariableValue::isValueId(valueId()))
     {
       VariableValue& val=minsky().variableValues[valueId()];
@@ -376,7 +377,7 @@ void VariablePtr::retype(VariableBase::Type type)
             assert(!tmp->ports[i]->input());
             w->moveToPorts(get()->ports[i], w->to());
           }
-      get()->ensureValueExists(nullptr);
+      get()->ensureValueExists(nullptr,"");
     }
 }
 
@@ -472,14 +473,25 @@ void VariableBase::draw(cairo_t *cairo) const
       auto val=engExp();
   
       Pango pangoVal(cairo);
-      pangoVal.setFontSize(6*z);
-      pangoVal.setMarkup(mantissa(val));
+      if (!isnan(value())) {
+		   pangoVal.setFontSize(6*z);
+		   pangoVal.setMarkup(mantissa(val));
+	   }
+      else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
+		  pangoVal.setFontSize(8*z);
+		  if (signbit(value())) pangoVal.setMarkup("-∞");
+          else pangoVal.setMarkup("∞");
+	  }
+	  else {  // Display all other NaN cases as ???. For ticket 1155
+		  pangoVal.setFontSize(6*z);
+		  pangoVal.setMarkup("???");
+	  }
       pangoVal.angle=angle+(notflipped? 0: M_PI);
 
       cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
                     r.y(w-pangoVal.width()-2,-h-hoffs+2));
       pangoVal.show();
-      if (val.engExp!=0)
+      if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
         {
           pangoVal.setMarkup(expMultiplier(val.engExp));
           cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));

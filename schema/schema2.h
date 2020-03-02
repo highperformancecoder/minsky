@@ -35,56 +35,26 @@ but any renamed attributes require bumping the schema number.
 #include "polyJsonBase.h"
 #include "rungeKutta.h"
 
+#include "optional.h"
+
 #include <xsd_generate_base.h>
 #include "xml_common.xcd"
 #include <vector>
 #include <string>
 
 
-  namespace schema2
+namespace schema2
 {
 
   using minsky::SchemaHelper;
   using namespace std;
   using namespace classdesc;
   using classdesc::shared_ptr;
+  using minsky::Optional;
 
+  /// unpack a TensorVal from a pack_t buffer. Schema2 encoding.
+  void unpack(classdesc::pack_t&, civita::TensorVal&);
 
-  // see discussion in Stroustrup 4th ed 28.4.4
-  template <class T> struct has_empty
-  {
-    template <class X>
-    static auto check(X x)->decltype(x.empty());
-    static std::false_type check(...);
-    
-    static constexpr const bool value = std::is_integral<decltype(check(std::declval<T>()))>::value;
-  };
-   
-  /// convenience class to omit writing XML records when data absent or empty
-  template <class T>
-  struct Optional: shared_ptr<T>
-  {
-    Optional() {}
-    Optional(const T& x) {assign(x);}
-    template <class U>
-    typename classdesc::enable_if<has_empty<U>,void>::T
-    assign(const U& x, classdesc::dummy<0> d=0) {
-      if (!x.empty()) this->reset(new T(x));
-    }
-    template <class U>
-    typename classdesc::enable_if<Not<has_empty<U>>,void>::T
-    assign(const U& x, classdesc::dummy<1> d=0) {this->reset(new T(x));}
-
-    // if we access an optional, then create its target
-    T& operator*() {if (!this->get()) this->reset(new T); return *this->get();}
-    const T& operator*() const {return *this->get();}
-    T* operator->() {return &**this;}
-    const T* operator->() const {return &**this;}
-
-    template <class U> Optional& operator=(const U& x) {assign(x); return *this;}
-  };
-
- 
   struct Note
   {
     Optional<std::string> detailedText, tooltip;
@@ -153,45 +123,8 @@ but any renamed attributes require bumping the schema number.
     Optional<std::vector<ecolab::Plot::LineStyle>> palette;
 
     Item() {}
-    Item(int id, const minsky::Item& it, const std::vector<int>& ports): ItemBase(id,it,ports) {}
     // minsky object importers
     Item(const schema1::Item& it): ItemBase(it) {}
-    Item(int id, const minsky::VariableBase& v, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(v),ports),
-      name(v.rawName()), init(v.init()) {
-      if (v.sliderBoundsSet)
-        slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
-      if (auto vv=v.vValue())
-        units=vv->units.str();
-      packTensorInit(v);
-    }
-    Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(o),ports),
-      axis(o.axis), arg(o.arg) {}
-    Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.width()/g.zoomFactor()), height(g.height()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
-      assetClasses(g.table._assetClass()) {}
-    Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      width(p.width), height(p.height), name(p.title),
-      logx(p.logx), logy(p.logy), ypercent(p.percent),
-      plotType(p.plotType),
-      xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
-      nxTicks(p.nxTicks), nyTicks(p.nyTicks), xtickAngle(p.xtickAngle),
-      exp_threshold(p.exp_threshold), palette(p.palette)
-    {
-      if (p.legend) legend=p.legendSide;
-    }
-    Item(int id, const minsky::Sheet& s, const std::vector<int>& ports):
-      ItemBase(id,static_cast<const minsky::Item&>(s),ports),
-      width(s.m_width), height(s.m_height) {}
-    Item(int id, const minsky::SwitchIcon& s, const std::vector<int>& ports):
-      ItemBase(id, static_cast<const minsky::Item&>(s),ports) 
-    {if (s.flipped) rotation=180;}
-    Item(int id, const minsky::Group& g, const std::vector<int>& ports):
-      ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
 
     // schema1 importers
     Item(const schema1::Operation& it):
@@ -231,7 +164,7 @@ but any renamed attributes require bumping the schema number.
                                 layout.sliderMin,layout.sliderMax,layout.sliderStep));
     }
 
-    void packTensorInit(const minsky::VariableBase&);
+    //    void packTensorInit(const minsky::VariableBase&);
   };
 
 
@@ -241,10 +174,6 @@ but any renamed attributes require bumping the schema number.
     int from=-1, to=-1;
     Optional<std::vector<float>> coords;
     Wire() {}
-    Wire(int id, const minsky::Wire& w): Note(w), id(id) {
-      if (w.coords().size()>4)
-        coords.reset(new std::vector<float>(w.coords()));
-     }
     Wire(const schema1::Wire& w): Note(w), id(w.id), from(w.from), to(w.to) {}
     void addLayout(const schema1::UnionLayout& layout) {
       if (layout.coords.size()>4)
@@ -257,8 +186,6 @@ but any renamed attributes require bumping the schema number.
     vector<int> items;
     Optional<vector<int>> inVariables, outVariables;
     Group() {}
-    Group(int id, const minsky::Group& g): Item(id,g,std::vector<int>()) {}
-
     /// note this assumes that ids have been uniquified prior to this call
     Group(const schema1::Group& g):
       Item(g), items(g.items) {}
@@ -278,57 +205,17 @@ but any renamed attributes require bumping the schema number.
     minsky::Dimensions dimensions;
     minsky::ConversionsMap conversions;
     
-    /// checks that all items are uniquely identified.
-    //bool validate() const;
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
-    Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m): Minsky(*m.model) {
-      rungeKutta=m;
-      zoomFactor=m.model->zoomFactor();
-      bookmarks=m.model->bookmarks;
-      dimensions=m.dimensions;
-      conversions=m.conversions;
-      //assert(validate());
-    }
-
     Minsky(const schema1::Minsky& m);
-    
-    /// create a Minsky model from this
-    operator minsky::Minsky() const;
-    /// populate a group object from this. This mutates the ids in a
-    /// consistent way into the free id space of the global minsky
-    /// object
-    void populateGroup(minsky::Group& g) const;
+
+    /// populate schema from XML data
+    Minsky(classdesc::xml_unpack_t& data): schemaVersion(0)
+    {minsky::loadSchema<schema1::Minsky>(*this,data,"Minsky");}
   };
 
 
 }
 
-  /*
-    This code ensure optional fields are not exported when empty 
-  */
-
-namespace classdesc
-{
-
-#ifdef _CLASSDESC
-#pragma omit xsd_generate schema2::Optional
-#pragma omit xml_pack schema2::Optional
-#endif
-
-  template <class T>
-  void xsd_generate(xsd_generate_t& g, const string& d, const schema2::Optional<T>& a) 
-  {
-    xsd_generate_t::Optional o(g,true); 
-    xsd_generate(g,d,*a);
-  }
-
-  template <class T> inline void xml_pack(xml_pack_t& t,const string& d,schema2::Optional<T>& a)
-  {if (a) ::xml_pack(t,d,*a);}
-}
-
-using classdesc::xsd_generate;
-using classdesc::xml_pack;
 
 #include "schema2.cd"
 #include "schema2.xcd"

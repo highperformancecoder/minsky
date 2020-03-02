@@ -593,8 +593,9 @@ namespace minsky
                    else
                      {
                        v->name(newName);
-                       if (auto vv=v->vValue())
-                         v->retype(vv->type()); // ensure correct type. Note this invalidates v.
+                       if (auto vv=v->vValue()) {
+                        v->retype(vv->type()); // ensure correct type. Note this invalidates v.
+                       }
                      }
                  }
              return false;
@@ -605,6 +606,7 @@ namespace minsky
             g->update();
             assert(model->numItems()==numItems);
           }
+      minsky().reset();   // Updates model after variables rename. For ticket 1109.    
       }
    }
   

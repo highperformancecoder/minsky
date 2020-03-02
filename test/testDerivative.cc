@@ -36,10 +36,10 @@ struct BinOpFixture: public Minsky
   //  OperationPtr minus{OperationType::subtract};
   //  OperationPtr pow{OperationType::pow};
   OperationPtr deriv{OperationType::differentiate};
-  VariablePtr f; // to receive results of function before differentiation
+  VariablePtr f{VariableType::flow,"f"}; // to receive results of function before differentiation
+  VariablePtr df{VariableType::flow,"df"}; // to receive results of function after differentiation
   IntOp& integ;
   BinOpFixture(): 
-    f(VariableType::flow,"f"),
     integ(dynamic_cast<IntOp&>
           (*(model->addItem(OperationPtr(OperationType::integrate)))))
   {
@@ -58,7 +58,9 @@ struct BinOpFixture: public Minsky
     model->addWire(new Wire(plus->ports[0],tcube->ports[1]));
     model->addWire(new Wire(tsq->ports[0],tcube->ports[2]));
     model->addWire(new Wire(deriv->ports[0], integ.ports[1]));
-
+    model->addItem(df);
+    model->addWire(new Wire(deriv->ports[0], df->ports[1]));
+    
     stepMin=1e-6;
     stepMax=1e-3;
     epsAbs=0.001;
@@ -189,7 +191,7 @@ SUITE(Derivative)
    
         reset(); 
         nSteps=1;step(); // ensure f is evaluated
-        CHECK_EQUAL(0, deriv->ports[0]->value());
+        CHECK_EQUAL(0, df->value());
         model->deleteItem(*opp);
       }
 
@@ -204,7 +206,7 @@ SUITE(Derivative)
         // no inputs should evaluate to zero
         reset(); 
         nSteps=1;step(); // ensure f is evaluated
-        CHECK_EQUAL(0, deriv->ports[0]->value());
+        CHECK_EQUAL(0, df->value());
         
         auto opWire=model->addWire(new Wire(t->ports[0],opp->ports[1]));
 

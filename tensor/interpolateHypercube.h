@@ -26,7 +26,7 @@ namespace civita
 {
   /// Interpolates its argument to its hypercube
   /// rank must equal arg->rank(), and xvectors type must match
-  class InterpolateHC: public TensorOp
+  class InterpolateHC: public ITensor
   {
     TensorPtr arg;
     ///< hypercube that's been rotated to match the arguments hypercube
@@ -36,10 +36,11 @@ namespace civita
     //
     vector<size_t> splitAndRotate(size_t) const;
   public:
-    void setArgument(const TensorPtr& a, const string&) override;
+    void setArgument(const TensorPtr& a, const string&,double) override;
     std::vector<size_t> index() const {return {};}
     double operator[](size_t) const;
     size_t size() const {return hypercube().numElements();}
+    Timestamp timestamp() const override {return arg->timestamp();}
   };
   
 }

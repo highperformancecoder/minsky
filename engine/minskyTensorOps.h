@@ -56,20 +56,23 @@ namespace minsky
     /// returns vector of tensor ops for all wires attach to port. Port
     /// must be an input port
     std::vector<TensorPtr> tensorsFromPort(const Port&) const;
+    /// returns vector of tensor ops for all wires attached ports.
+    std::vector<TensorPtr> tensorsFromPorts
+    (const std::vector<std::shared_ptr<Port>>&) const;
   };
 
   /// As it says on the tin, this is a factory for creating a TensorOp
   /// which can compute the result of op applied to its arguments and
   /// so on until all the argument terminate in variables.
-  class TensorOpFactory: public classdesc::Factory<TensorOp, OperationType::Type>
+  class TensorOpFactory: public classdesc::Factory<civita::ITensor, OperationType::Type>
   {
-    using classdesc::Factory<civita::TensorOp, OperationType::Type>::create;
+    using classdesc::Factory<civita::ITensor, OperationType::Type>::create;
   public:
     TensorOpFactory();
     /// create a tensor representation of the expression rooted at
     /// op. If expression doesn't contain any references variables,
     /// then the \a tp parameter may be omitted.
-    std::shared_ptr<TensorOp> create(const OperationBase&, const TensorsFromPort& tp={});
+    std::shared_ptr<ITensor> create(const Item&, const TensorsFromPort& tp={});
   };    
   
   extern TensorOpFactory tensorOpFactory;
@@ -90,7 +93,7 @@ namespace minsky
     /// flowVar and stockVarinfo
     shared_ptr<EvalCommon> ev;
     /// 
-    Timestamp timestamp() const {return ev->timestamp();}
+    Timestamp timestamp() const override {return ev->timestamp();}
     double operator[](size_t i) const override {
       return isFlowVar()? ev->flowVars()[idx()+i]: ev->stockVars()[idx()+i];
     }
@@ -121,7 +124,7 @@ namespace minsky
 
   public:
     // not used, but required to make this a concrete type
-    Type type() const {assert(false); return OperationType::numOps;} 
+    Type type() const override {assert(false); return OperationType::numOps;} 
     TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev); 
     TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
@@ -136,24 +139,6 @@ namespace minsky
     void eval(double fv[], const double sv[]) override;
     void deriv(double df[],const double ds[],const double sv[],const double fv[]) override;
   };
-
-
-  
-//  template <> struct TensorOp<OperationType::add>: public TensorBinOp<OperationType::add> {};
-//  template <> struct TensorOp<OperationType::subtract>: public TensorBinOp<OperationType::subtract> {};
-//  template <> struct TensorOp<OperationType::multiply>: public TensorBinOp<OperationType::multiple> {};
-//  template <> struct TensorOp<OperationType::divide>: public TensorBinOp<OperationType::divide> {};
-//  template <> struct TensorOp<OperationType::log>: public TensorBinOp<OperationType::log> {};
-//  template <> struct TensorOp<OperationType::pow>: public TensorBinOp<OperationType::pow> {};
-//  template <> struct TensorOp<OperationType::lt>: public TensorBinOp<OperationType::lt> {};
-//  template <> struct TensorOp<OperationType::le>: public TensorBinOp<OperationType::le> {};
-//  template <> struct TensorOp<OperationType::eq>: public TensorBinOp<OperationType::eq> {};
-//  template <> struct TensorOp<OperationType::min>: public TensorBinOp<OperationType::min> {};
-//  template <> struct TensorOp<OperationType::max>: public TensorBinOp<OperationType::max> {};
-//  template <> struct TensorOp<OperationType::and_>: public TensorBinOp<OperationType::and_> {};
-//  template <> struct TensorOp<OperationType::or_>: public TensorBinOp<OperationType::or_> {};
-
-  
 }
   
   

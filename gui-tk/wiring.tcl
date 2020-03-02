@@ -62,7 +62,7 @@ button .wiring.menubar.var -text var -foreground #9f0000 -command {
 tooltip .wiring.menubar.var "variable"
 set helpTopics(.wiring.menubar.var) Variable
 
-menu .wiring.menubar.var.menu
+menu .wiring.menubar.var.menu -tearoff 1
 .wiring.menubar.var.menu add command -label "variable" -command addVariable
 .wiring.menubar.var.menu add command -label "constant" -command addConstant
 .wiring.menubar.var.menu add command -label "parameter" -command addParameter
@@ -71,31 +71,31 @@ button .wiring.menubar.binops -image addImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.binops "binary operations"
 set helpTopics(.wiring.menubar.binops) Operations
-menu .wiring.menubar.binops.menu
+menu .wiring.menubar.binops.menu -tearoff 1
 
 button .wiring.menubar.fnops -image sqrtImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.fnops "functions"
 set helpTopics(.wiring.menubar.fnops) Operations
-menu .wiring.menubar.fnops.menu
+menu .wiring.menubar.fnops.menu -tearoff 1
 
 button .wiring.menubar.reductionops -image sumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.reductionops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.reductionops "reductions"
 set helpTopics(.wiring.menubar.reductionops) Operations
-menu .wiring.menubar.reductionops.menu
+menu .wiring.menubar.reductionops.menu -tearoff 1
 
 button .wiring.menubar.scanops -image runningSumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.scanops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.scanops "scans"
 set helpTopics(.wiring.menubar.scanops) Operations
-menu .wiring.menubar.scanops.menu
+menu .wiring.menubar.scanops.menu -tearoff 1
 
 button .wiring.menubar.tensorops -image outerProductImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.tensorops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.tensorops "tensor operations"
 set helpTopics(.wiring.menubar.tensorops) Operations
-menu .wiring.menubar.tensorops.menu
+menu .wiring.menubar.tensorops.menu -tearoff 1
 
 pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
 pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
@@ -132,6 +132,14 @@ foreach op [availableOperations] {
         }
     }
 }
+
+tooltip .wiring.menubar.var.menu -index 0 "variable toolbar"
+tooltip .wiring.menubar.binops.menu -index 0 "binary operations toolbox"
+tooltip .wiring.menubar.fnops.menu -index 0 "function toolbar"
+tooltip .wiring.menubar.reductionops.menu -index 0 "reduction operations toolbox"
+tooltip .wiring.menubar.scanops.menu -index 0 "scans toolbox"
+tooltip .wiring.menubar.tensorops.menu -index 0 "tensor toolbox"
+
 
 button .wiring.menubar.data -image dataImg \
     -height 24 -width 37 -command {addOperation data}
@@ -640,7 +648,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Edit" -command "editItem"
             .wiring.context add command -label "Copy item" -command "canvas.copyItem"
-            if {[$item.type]=="flow" && ![inputWired [$item.valueId]]} {
+            if {![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
@@ -952,7 +960,6 @@ proc deiconifyEditVar {} {
         frame .wiring.editVar.buttonBar
         button .wiring.editVar.buttonBar.ok -text OK -command {
             set item minsky.canvas.item
-            $item.name $editVarInput(Name)
             $item.init $editVarInput(Initial Value)
             $item.setUnits $editVarInput(Units)
             $item.rotation  $editVarInput(Rotation)
@@ -962,8 +969,10 @@ proc deiconifyEditVar {} {
             $item.sliderMin  $editVarInput(Slider Bounds: Min)
             $item.sliderStep  $editVarInput(Slider Step Size)
             $item.sliderStepRel  $editVarInput(relative)
-            # retype invalidates $item, so perform this last
-            $item.retype $editVarInput(Type)
+            retypeItem $editVarInput(Type)
+            # update name after type change, as it is needed when changing from constants. (ticket #1135)
+            $item.name $editVarInput(Name)
+                
             makeVariablesConsistent
             catch reset
             closeEditWindow .wiring.editVar

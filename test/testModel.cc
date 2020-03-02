@@ -155,6 +155,48 @@ SUITE(Group)
     CHECK(integ->intVar->group.lock()==group0);
   }
   
+  TEST_FIXTURE(TestFixture, addBookmark)
+    {
+	  model->addBookmark("bookmark0");
+	  CHECK_EQUAL("bookmark0",model->bookmarkList()[model->bookmarks.size()-1]);
+	  CHECK_EQUAL(1,model->bookmarks.size());
+      auto& b0=model->bookmarks[model->bookmarks.size()-1];
+	  double x0 =b0.x, y0=b0.y;	  
+	  model->moveTo(100,100);
+	  model->addBookmark("bookmark1");
+	  CHECK_EQUAL("bookmark1",model->bookmarkList()[model->bookmarks.size()-1]);
+	  CHECK_EQUAL(2,model->bookmarks.size());
+	  auto& b1=model->bookmarks[model->bookmarks.size()-1];
+	  double x1=b1.x,y1=b1.y;
+	  CHECK_EQUAL(x1,model->x());
+	  CHECK_EQUAL(y1,model->y());
+	  model->moveTo(200,200);
+	  model->addBookmark("bookmark2");
+	  CHECK_EQUAL("bookmark2",model->bookmarkList()[model->bookmarks.size()-1]);
+	  CHECK_EQUAL(3,model->bookmarks.size());
+	  auto& b2=model->bookmarks[model->bookmarks.size()-1];
+	  double x2=b2.x,y2=b2.y;
+	  CHECK_EQUAL(x2,model->x());
+	  CHECK_EQUAL(y2,model->y());
+	  model->moveTo(300,300);
+	  model->addBookmark("bookmark3");
+	  CHECK_EQUAL("bookmark3",model->bookmarkList()[model->bookmarks.size()-1]);
+	  CHECK_EQUAL(4,model->bookmarks.size());
+	  auto& b3=model->bookmarks[model->bookmarks.size()-1];
+	  double x3=b3.x,y3=b3.y;
+	  CHECK_EQUAL(x3,model->x());
+	  CHECK_EQUAL(y3,model->y());	  
+	  model->gotoBookmark(0);
+	  CHECK_EQUAL(x0,model->x());
+	  CHECK_EQUAL(y0,model->y());
+	  CHECK(x0!=x1 && y0!=y1 && x0!=x2 && y0!=y2 && x0!=x3 && y0!=y3);
+	  model->deleteBookmark(model->bookmarks.size()-1);
+	  model->deleteBookmark(model->bookmarks.size()-1);
+	  model->deleteBookmark(model->bookmarks.size()-1);
+	  model->deleteBookmark(model->bookmarks.size()-1);
+	  CHECK_EQUAL(0,model->bookmarks.size()); 	   	          
+    }  
+  
   // check that removing then adding an item leaves the group idempotent
   TEST_FIXTURE(TestFixture, removeAddItem)
   {
@@ -367,6 +409,7 @@ SUITE(Canvas)
       CHECK(findVariableDefinition());
       CHECK(item==integ);
       model->removeItem(*integ);
+      integ->removeControlledItems();
       
       shared_ptr<GodleyIcon> godley(new GodleyIcon);
       model->addItem(godley);
@@ -1058,20 +1101,7 @@ SUITE(GodleyTableWindow)
       // check row deleted
       for (size_t i=0; i<table.cols(); ++i)
         CHECK_EQUAL("c3"+str(i),table.cell(3,i));
-      CHECK(table.getData()==origData);
-      
-      // now check arrow functionality  
-      // first (Initial Conditions) row cannot be swapped at all 
-      //idx=2; pos=first;                              
-      //invoke(2*buttonSpacing);
-      //CHECK_EQUAL(4,table.rows());
-      //// check row swapped with next 
-      //for (size_t i=0; i<table.cols(); ++i)
-      //  CHECK_EQUAL("c1"+str(i),table.cell(2,i));      
-      //for (size_t i=0; i<table.cols(); ++i)           
-      //  CHECK_EQUAL("c2"+str(i),table.cell(3,i));
-      //for (size_t i=0; i<table.cols(); ++i)
-      //  CHECK_EQUAL("c3"+str(i),table.cell(1,i));               
+      CHECK(table.getData()==origData);               
         
       // now check arrow functionality  
       idx=2; pos=second;                     
@@ -1180,24 +1210,19 @@ SUITE(GodleyTableWindow)
         CHECK_EQUAL("c"+str(i)+"3",table.cell(i,4));
       for (size_t i=0; i<table.rows(); ++i)
         CHECK_EQUAL("",table.cell(i,2));
-    
-      pos=last; idx=3;
-      invoke(2*buttonSpacing);
-      CHECK_EQUAL(4,table.cols());
-      for (size_t i=0; i<table.rows(); ++i)
-        CHECK_EQUAL("c"+str(i)+"1",table.cell(i,1));
-      for (size_t i=0; i<table.rows(); ++i)
-        CHECK_EQUAL("c"+str(i)+"2",table.cell(i,2));
-      for (size_t i=0; i<table.rows(); ++i)
-        CHECK_EQUAL("c"+str(i)+"3",table.cell(i,3));
 
-    
-      // should be no 4th button on first & last
+      // should be no 4th button on first
       pos=first;
       auto saveData=table.getData();
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
+      
+      // should be no button on last
       pos=last;
+      invoke(buttonSpacing);
+      CHECK(table.getData()==saveData);
+      invoke(2*buttonSpacing);
+      CHECK(table.getData()==saveData);      
       invoke(3*buttonSpacing);
       CHECK(table.getData()==saveData);
     }
@@ -1357,7 +1382,7 @@ SUITE(GodleyTableWindow)
       selectedCol=1;
       selectedRow=1;
       selectIdx=insertIdx=0;
-      keyPress('a',"a"); keyPress('b',"b"); keyPress('b',"b"); keyPress(XK_Delete,"");
+      keyPress('a',"a"); keyPress('b',"b"); keyPress('b',"b"); insertIdx=2; keyPress(XK_Delete,"");
       keyPress('c',"c"); keyPress('c',"c"); keyPress(XK_BackSpace,"");
       CHECK_EQUAL("abc",godleyIcon->table.cell(1,1));
 

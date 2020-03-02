@@ -100,31 +100,36 @@ namespace minsky
           godleyIcon.table.moveRow(idx,1);
         break;
       }
+    try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
+    catch (...) {}
   }
 
   template <>
   void ButtonWidget<ButtonWidgetEnums::col>::invoke(double x)
   {
     int button=x/buttonSpacing;
-    switch (button)
-      {
-      case 0:
-        godleyIcon.table.insertCol(idx+1);
-        break;
-      case 1:
-        godleyIcon.table.deleteCol(idx+1);
-        break;
-      case 2:
-        if (pos==first)
-          godleyIcon.table.moveCol(idx,1);
-        else
-          godleyIcon.table.moveCol(idx,-1);
-        break;
-      case 3:
-        if (pos==middle)
-          godleyIcon.table.moveCol(idx,1);
-        break;
-      }
+    if (pos!=last)
+      switch (button)
+       {
+       case 0:
+         godleyIcon.table.insertCol(idx+1);
+         break;
+       case 1:
+         godleyIcon.table.deleteCol(idx+1);
+         break;
+       case 2:
+         if (pos==first)
+           godleyIcon.table.moveCol(idx,1);
+         else if (pos!=first)
+           godleyIcon.table.moveCol(idx,-1);
+         break;
+       case 3:
+         if (pos==middle)
+           godleyIcon.table.moveCol(idx,1);
+         break;
+       }
+    try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
+    catch (...) {}      
   }
 
 
@@ -206,18 +211,26 @@ namespace minsky
                     string value;
                     FlowCoef fc(text);
                     if (displayValues)
-                      {
-                        auto vv=cminsky().variableValues
-                          [VariableValue::valueIdFromScope
-                           (godleyIcon->group.lock(),fc.name)];
-                        if (vv.idx()>=0)
-                          {
-                            double val=fc.coef*vv.value();
-                            auto ee=engExp(val);
-                            if (ee.engExp==-3) ee.engExp=0;
-                            value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);
-                          }
-                      }
+                      try
+                        {
+                          auto vv=cminsky().variableValues
+                            [VariableValue::valueIdFromScope
+                             (godleyIcon->group.lock(),fc.name)];
+                          if (vv.idx()>=0)
+                            {
+                              double val=fc.coef*vv.value();
+                              auto ee=engExp(val);
+                              if (ee.engExp==-3) ee.engExp=0;
+                              value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);
+                            }
+                        }
+                      catch (const std::exception& ex)
+                        {
+                          value=string("= Err: ")+ex.what();
+                          // highlight error in red
+                          cairo_set_source_rgb(surface->cairo(),1,0,0);
+                        }
+                            
                     // the active cell renders as bare LaTeX code for
                     // editing, all other cells rendered as LaTeX
                     if ((int(row)!=selectedRow || int(col)!=selectedCol) && !godleyIcon->table.initialConditionRow(row))
@@ -278,8 +291,6 @@ namespace minsky
     cairo_stroke(surface->cairo());
 
     cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
-    pango.setMarkup("▼");
-    pango.show();
 
     // now row sum column
     x+=3;
@@ -560,7 +571,7 @@ namespace minsky
         selectedRow<int(table.rows()) && (selectedCol!=0 || selectedRow!=1)) // Cell (1,0) is off-limits. For ticket 1064
           {			  	  
             auto& str=table.cell(selectedRow,selectedCol);
-            if (utf8.length() && keySym<0x7f)
+            if (utf8.length() && (keySym<0x7f || (0xffb0 < keySym && keySym < 0xffbe)))  // Enable numeric keypad key presses. For ticket 1136
               // all printing and control characters have keysym
               // <0x80. But some keys (eg tab, backspace and escape
               // are mapped to control characters
@@ -593,7 +604,10 @@ namespace minsky
               {
               switch (keySym)
                 {
-                case 0xff08: case 0xffff:  //backspace/delete
+                case 0xff08: // backspace
+		          handleBackspace();
+		          break;
+		        case 0xffff:  // delete
                   handleDelete();
                   break;
                 case 0xff1b: // escape
@@ -668,7 +682,7 @@ namespace minsky
       }
   }
 
-    void GodleyTableWindow::handleDelete()
+    void GodleyTableWindow::handleBackspace()
     {
       auto& table=godleyIcon->table;
       assert(selectedRow>=0 && selectedCol>=0);
@@ -679,6 +693,20 @@ namespace minsky
         delSelection();
       else if (insertIdx>0 && insertIdx<=str.length())
         str.erase(--insertIdx,1);
+      selectIdx=insertIdx;
+    }
+
+      void GodleyTableWindow::handleDelete()
+    {
+      auto& table=godleyIcon->table;
+      assert(selectedRow>=0 && selectedCol>=0);
+      assert(unsigned(selectedRow)<table.rows());
+      assert(unsigned(selectedCol)<table.cols());
+      auto& str=table.cell(selectedRow,selectedCol); 
+      if (insertIdx!=selectIdx)
+        delSelection();
+      else if (insertIdx>=0 && insertIdx<str.length())
+        str.erase(insertIdx,1);
       selectIdx=insertIdx;
     }
 
@@ -739,7 +767,7 @@ namespace minsky
   
     if (r==0)
       {
-        if (colLeftMargin[c+1]-x < pulldownHot)
+        if (colLeftMargin[c+1]-x < pulldownHot && c!=int(godleyIcon->table.cols())-1) //Disable importStock on Equity column. For ticket 1154
           return importStock;
         return row0;
       }
@@ -799,6 +827,15 @@ namespace minsky
     requestRedraw();
   }
   
+namespace {
+  string constructMessage(GodleyAssetClass::AssetClass& targetAC, GodleyAssetClass::AssetClass& oldAC, string& var)
+  {
+	  string tmpStr="";
+	  tmpStr="This will convert "+var+" from "+classdesc::enumKey<GodleyAssetClass::AssetClass>(oldAC)+" to "+classdesc::enumKey<GodleyAssetClass::AssetClass>(targetAC)+". Are you sure?";
+	  return tmpStr;
+  }	  
+}
+  
   string GodleyTableWindow::moveAssetClass(double x, double y)
   {
 	x/=zoomFactor;
@@ -808,42 +845,49 @@ namespace minsky
 	if (clickType(x,y)==colWidget) {
 	    unsigned visibleCol=c-scrollColStart+1;
         if (c<colWidgets.size() && visibleCol < colLeftMargin.size()) {
-		    auto& moveVar=godleyIcon->table.cell(0,c);
-		    auto oldAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c));			
-            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3) {
-				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c+1));
-				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
-			}
-			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass=="asset") {
-				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c+1));
-				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
-			}
-			else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2) {
-				auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c-1));
-				if (targetAssetClass!=oldAssetClass && !moveVar.empty())
-					tmpStr="This will convert "+moveVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";
-			}
+		    auto moveVar=godleyIcon->table.cell(0,c);		
+		    auto oldAssetClass=godleyIcon->table._assetClass(c);
+		    auto targetAssetClassPlus=godleyIcon->table._assetClass(c+1);
+		    auto targetAssetClassMinus=godleyIcon->table._assetClass(c-1);
+            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=GodleyAssetClass::equity) {
+		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
+		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
+		    	else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
+		    	    tmpStr="Cannot convert stock variable to an equity class";    
+		    }
+		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==GodleyAssetClass::asset && oldAssetClass!=GodleyAssetClass::equity && targetAssetClassMinus!=GodleyAssetClass::asset) {
+		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
+		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
+		    	else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
+		    	    tmpStr="Cannot convert stock variable to an equity class"; 		    	    
+		    }
+		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass!=GodleyAssetClass::equity) {
+		    	if (targetAssetClassMinus!=oldAssetClass && !moveVar.empty())
+		    	    tmpStr=constructMessage(targetAssetClassMinus,oldAssetClass,moveVar);
+		    }
 		}
 	}
    return tmpStr;	    		 	
    }
   
   string GodleyTableWindow::swapAssetClass(double x, double y) 
-  {
+  {  
 	x/=zoomFactor;
 	y/=zoomFactor;
 	int c=colX(x);	
 	string tmpStr="";	  
-	if (clickType(x,y)==row0) {
-	   if (c>0 && selectedCol>0 && c!=selectedCol) {
-		 auto& swapVar=godleyIcon->table.cell(0,selectedCol);
-		 auto oldAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(selectedCol));
-		 auto targetAssetClass=classdesc::enumKey<GodleyAssetClass::AssetClass>(godleyIcon->table._assetClass(c));
-		 if (targetAssetClass!=oldAssetClass && !swapVar.empty())
-		    tmpStr="This will convert "+swapVar+" from "+oldAssetClass+" to "+targetAssetClass+". Are you sure?";  
-		}
+	if (selectedRow==0) {  // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
+	    if (c>0 && selectedCol>0 && c!=selectedCol) {
+		    auto swapVar=godleyIcon->table.cell(0,selectedCol);
+		    auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
+		    auto targetAssetClass=godleyIcon->table._assetClass(c);
+		    if (!swapVar.empty()) {
+		      if (targetAssetClass!=oldAssetClass && targetAssetClass!=GodleyAssetClass::equity && targetAssetClass!=GodleyAssetClass::noAssetClass)
+		         tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
+		      else if ((targetAssetClass==GodleyAssetClass::equity || targetAssetClass==GodleyAssetClass::noAssetClass) || oldAssetClass==GodleyAssetClass::noAssetClass)
+		          tmpStr="Cannot convert stock variable to an equity class"; 		    
+			}
+		  }
 	  }
 	return tmpStr;  	  
   }    
@@ -1050,16 +1094,17 @@ namespace minsky
   
   template <ButtonWidgetEnums::RowCol rowCol>
   void ButtonWidget<rowCol>::draw(cairo_t* cairo)
-  {
+  {	    
     CairoSave cs(cairo);
     int idx=0;
+    if (rowCol == row || (rowCol == col && pos!=last)) 
       drawButton(cairo,"+",0,1,0,idx++);
-      if ((pos!=first && pos!=firstAndLast) || rowCol == col) 	// no delete button for first row containing initial conditions. For ticket 1064
-		drawButton(cairo,"—",1,0,0,idx++);
-      if (pos!=first && pos!=second && pos!=firstAndLast) 						// no move up button for first row containing initial conditions. For ticket 1064
-        drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
-      if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
-        drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
+    if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064
+	  drawButton(cairo,"—",1,0,0,idx++);
+    if ((rowCol == row && pos!=first && pos!=second && pos!=firstAndLast) || (rowCol == col && pos!=first && pos!=last))	// no move up button for first row containing initial conditions. For ticket 1064
+      drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
+    if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
+      drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
   }  
  
   template class ButtonWidget<ButtonWidgetEnums::row>;

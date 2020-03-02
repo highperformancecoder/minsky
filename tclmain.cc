@@ -137,6 +137,8 @@ int main(int argc, char* argv[])
     }
   tclvar minskyHome("minskyHome",minskydir.string().c_str());
 
+  srand(time(nullptr));
+
   if (Tcl_EvalFile(interp(), (minskydir/"minsky.tcl").string().c_str())!=TCL_OK)
     {
       fprintf(stderr,"%s\n",Tcl_GetStringResult(interp()));

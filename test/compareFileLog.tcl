@@ -12,6 +12,7 @@ set log [open $argv(3) r]
 # first line should specify no of steps to run
 set nsteps [lindex [gets $log] 1]
 
+
 proc fclose {x y} {
     if {abs($x)>1e-30} {
         return [expr abs($x-$y)/(abs($x)+abs($y)) < 1e-2]
@@ -28,14 +29,18 @@ use_namespace minsky
 set ret 0
 
 running 1
+#provide seed to ensure repeatability
+srand 10
+
 for {set step 0} {$step<10} {incr step} {
+
     step
     gets $log logbuf
-
     if {![fclose [t] [lindex $logbuf 0]]} {
         puts "t=[t], logged [lindex $logbuf 0]"
         set ret 1
     }
+
 
     array set values [lrange $logbuf 1 end]
 

@@ -159,7 +159,7 @@ namespace schema0
     double rotation; // orientation of icon
 
     GroupIcon(): width(100), height(100), rotation(0) {}
-    void updateEdgeVariables(const VariableManager& vm);
+    //    void updateEdgeVariables(const VariableManager& vm);
   };
 
 
@@ -173,7 +173,7 @@ namespace schema0
     };
   }
 
-  struct PlotWidget //: public ecolab::Plot
+  struct PlotWidget 
   {
     int nxTicks, nyTicks; ///< number of x/y-axis ticks
     double fontScale; ///< scale tick labels
@@ -229,9 +229,13 @@ namespace schema0
     int nSteps=1;     ///< number of steps per GUI update
     double epsAbs=1e-3;     ///< absolute error
     double epsRel=1e-2;     ///< relative error
-     /// load from a file
-    void load(const std::string& filename);
 
+    Minsky(classdesc::xml_unpack_t& data)
+    {
+      ::xml_unpack(data,"root",*this);
+      void removeIntVarOrphans();
+    }
+    
     /** See ticket #329 and references within. At some stage, IntOp had
         no destructor, which leads to an orphaned, invisible integral
         variable, with invalid output port. This bit of code deals with
@@ -240,8 +244,19 @@ namespace schema0
         Apparently schema0 files suffered from this problem too!
     */
     void removeIntVarOrphans();
-};
+  };
 
+}
+
+namespace classdesc
+{
+  template <class T>
+  void xml_unpackp(xml_unpack_t& t, const string& d, ecolab::array<T>& a)
+  {
+    string x; xml_unpack(t,d,x);
+    std::istringstream is(x);
+    is>>a;
+  }
 }
 
 #include "schema0.xcd"

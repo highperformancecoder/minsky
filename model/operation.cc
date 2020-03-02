@@ -363,16 +363,17 @@ namespace minsky
     try
       {
         unique_ptr<ScalarEvalOp> e(ScalarEvalOp::create(type()));
-        switch (e->numArgs())
-          {
-          case 0: return e->evaluate(0,0);
-          case 1: return e->evaluate(ports[1]->value());
-          case 2: return e->evaluate(ports[1]->value(),ports[2]->value());
-          }
+        if (e)
+          switch (e->numArgs())
+            {
+            case 0: return e->evaluate(0,0);
+            case 1: return e->evaluate(ports[1]->value());
+            case 2: return e->evaluate(ports[1]->value(),ports[2]->value());
+            }
       }
     catch (...)
       {/* absorb exception here - some operators cannot be evaluated this way*/}
-    return 0;
+    return nan("");
   }
 
 
@@ -574,7 +575,7 @@ namespace minsky
 
     string vid=VariableValue::valueId(group.lock(),desc);
     auto i=minsky().variableValues.find(vid);      
-    if (i!=minsky().variableValues.end())
+    if (i!=minsky().variableValues.end()) 
       {
         if (i->second.type()!=VariableType::integral) 
           try
@@ -586,7 +587,10 @@ namespace minsky
               desc=minsky().variableValues.newName(vid);
             }
         else
-          desc=minsky().variableValues.newName(vid);
+          if (minsky().definingVar(vid))               // Also check that integral has input. for ticket 1068.
+            desc=minsky().variableValues.newName(vid);
+          else 
+            desc=vid; 
         if (desc[0]==':') desc=desc.substr(1);// disallow global integration variables
       }
     
@@ -717,7 +721,6 @@ namespace minsky
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
   {
-    srand(::time(nullptr));
     data.clear();
     double dx=(xmax-xmin)/numSamples;
     for (double x=xmin; x<xmax; x+=dx)

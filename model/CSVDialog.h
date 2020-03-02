@@ -35,6 +35,7 @@ namespace minsky
   {
     std::vector<std::string> initialLines; ///< initial lines of file
     double rowHeight=0;
+    CLASSDESC_ACCESS(DataSpec);    
   public:
     const unsigned numInitialLines=30;
     double xoffs=80;

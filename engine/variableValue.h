@@ -35,34 +35,6 @@ namespace minsky
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
   
-//  // why are we doing this complicated mixin to constify the xVector
-//  // attribute instead of a simple const std::vector<XVector>&
-//  // VariableValue::xVector() const getter method?
-//
-//  //ans: because we want TCL to be able to inspect the xVector
-//  // attribute, which is not possible with the getter method
-//  class XVectorMixin
-//  {
-//  public:
-//    typedef std::vector<XVector> XVectorVector;
-//    CLASSDESC_ACCESS(XVectorMixin);
-//  protected:
-//    XVectorVector m_xVector;
-//  public:
-//    // need to use C++98 style initialiser here to get around compiler
-//    // bug on Ubuntu 14.04
-//    const XVectorVector& xVector; //{m_xVector};
-//    XVectorMixin(): xVector(m_xVector) {}
-//    XVectorMixin(const XVectorMixin& x):
-//      m_xVector(x.m_xVector), xVector(m_xVector) {}
-//    XVectorMixin(XVectorMixin&& x):
-//      m_xVector(x.m_xVector), xVector(m_xVector) {}
-//    XVectorMixin& operator=(const XVectorMixin& x)
-//    {m_xVector=x.m_xVector; return *this;}
-//    XVectorMixin& operator=(XVectorMixin&& x)
-//    {m_xVector=x.m_xVector; return *this;}
-//  };
-  
   class VariableValue: public VariableType, public civita::ITensorVal
   {
     CLASSDESC_ACCESS(VariableValue);
@@ -112,16 +84,17 @@ namespace minsky
     ///(i=0) is right for scalar quantities
     double value(size_t i=0) const {return *(begin()+i);}
     int idx() const {return m_idx;}
+    void reset_idx() {m_idx=-1;}    
 
     // values are always live
     Timestamp timestamp() const override {return Timestamp::clock::now();}
     
     double operator[](size_t i) const override {return *(&valRef()+i);}
-    double& operator[](size_t i) {return *(&valRef()+i);}
+    double& operator[](size_t i) override {return *(&valRef()+i);}
 
 
     std::vector<size_t> index() const override {return m_index;}
-    void index(const std::vector<size_t>& i) {
+    void index(const std::vector<size_t>& i) override {
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
@@ -255,16 +228,6 @@ namespace minsky
 
 #include "variableValue.cd"
 #include "variableValue.xcd"
-namespace classdesc
-{
-  // specialise for VariableValues to give it an associative container flavour
-//  template <>
-//  inline void RESTProcess(RESTProcess_t& repo, const string& d, minsky::VariableValues& a)
-//  {
-//    repo.add(d,new RESTProcessAssociativeContainer<minsky::VariableValues>(a));
-//    classdesc_access::access_RESTProcess<minsky::VariableValues>()(repo,d,a);
-//  }
-}
 
 #ifdef _CLASSDESC
 #pragma omit pack minsky::VariableValue

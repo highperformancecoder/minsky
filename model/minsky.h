@@ -340,7 +340,7 @@ namespace minsky
     void addIntegral();
     
     /// returns true if any variable of name \a name has a wired input
-    bool inputWired(const std::string&) const;
+    bool inputWired(const std::string& name) const {return definingVar(name).get();}
 
     /// render canvas to a postscript file
     void renderCanvasToPS(const char* filename) {canvas.renderToPS(filename);}
@@ -360,6 +360,8 @@ namespace minsky
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
+    /// set std library RNG seed
+    void srand(int seed) {::srand(seed);}
 
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}

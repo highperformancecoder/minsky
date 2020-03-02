@@ -1,5 +1,5 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>2</schemaVersion>
+  <schemaVersion>3</schemaVersion>
   <wires>
    <Wire>
     <id>64</id>
@@ -7,13 +7,13 @@
     <to>21</to>
     <coords>
      <float>106.48</float>
-     <float>286.831</float>
-     <float>83.0702</float>
-     <float>315.891</float>
-     <float>47.552</float>
-     <float>133.457</float>
-     <float>36.671</float>
-     <float>42.0278</float>
+     <float>296.831</float>
+     <float>82.0614</float>
+     <float>327.143</float>
+     <float>45.0127</float>
+     <float>136.848</float>
+     <float>33.9862</float>
+     <float>41.3869</float>
     </coords>
    </Wire>
    <Wire>
@@ -22,13 +22,13 @@
     <to>24</to>
     <coords>
      <float>151.48</float>
-     <float>286.831</float>
-     <float>94.6063</float>
-     <float>346.738</float>
-     <float>51.3824</float>
-     <float>170.808</float>
-     <float>15.1861</float>
-     <float>74.0278</float>
+     <float>296.831</float>
+     <float>91.8647</float>
+     <float>359.626</float>
+     <float>46.5573</float>
+     <float>175.215</float>
+     <float>15.6405</float>
+     <float>69.4238</float>
     </coords>
    </Wire>
    <Wire>
@@ -37,11 +37,11 @@
     <to>27</to>
     <coords>
      <float>189.48</float>
-     <float>287.831</float>
-     <float>58.9135</float>
-     <float>400.561</float>
-     <float>15.1861</float>
-     <float>106.028</float>
+     <float>297.831</float>
+     <float>52.6486</float>
+     <float>415.97</float>
+     <float>17.679</float>
+     <float>97.4606</float>
     </coords>
    </Wire>
    <Wire>
@@ -131,9 +131,9 @@
    <Item>
     <id>13</id>
     <type>Variable:stock</type>
-    <x>95.2204</x>
-    <y>164.198</y>
-    <zoomFactor>1.10367</zoomFactor>
+    <x>96.4428</x>
+    <y>175.679</y>
+    <zoomFactor>1.0384</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>12</int>
@@ -151,9 +151,9 @@
    <Item>
     <id>15</id>
     <type>Variable:stock</type>
-    <x>124.214</x>
-    <y>165.104</y>
-    <zoomFactor>1.10367</zoomFactor>
+    <x>123.443</x>
+    <y>178.568</y>
+    <zoomFactor>1.0384</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>14</int>
@@ -171,9 +171,9 @@
    <Item>
     <id>17</id>
     <type>Variable:stock</type>
-    <x>153.209</x>
-    <y>165.104</y>
-    <zoomFactor>1.10367</zoomFactor>
+    <x>150.443</x>
+    <y>177.605</y>
+    <zoomFactor>1.0384</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>16</int>
@@ -191,9 +191,9 @@
    <Item>
     <id>19</id>
     <type>Variable:stock</type>
-    <x>182.203</x>
-    <y>159.668</y>
-    <zoomFactor>1.10367</zoomFactor>
+    <x>177.443</x>
+    <y>172.79</y>
+    <zoomFactor>1.0384</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>18</int>
@@ -211,9 +211,9 @@
    <Item>
     <id>22</id>
     <type>Variable:flow</type>
-    <x>59.9142</x>
-    <y>38.0799</y>
-    <zoomFactor>1.10367</zoomFactor>
+    <x>59.8033</x>
+    <y>39.8563</y>
+    <zoomFactor>1.0384</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>20</int>
@@ -232,9 +232,9 @@
    <Item>
     <id>25</id>
     <type>Variable:flow</type>
-    <x>49.9475</x>
-    <y>67.074</y>
-    <zoomFactor>1.10367</zoomFactor>
+    <x>51.1361</x>
+    <y>66.8563</y>
+    <zoomFactor>1.0384</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>23</int>
@@ -253,9 +253,9 @@
    <Item>
     <id>28</id>
     <type>Variable:flow</type>
-    <x>49.9475</x>
-    <y>96.068</y>
-    <zoomFactor>1.10367</zoomFactor>
+    <x>52.0991</x>
+    <y>93.8563</y>
+    <zoomFactor>1.0384</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>26</int>
@@ -424,6 +424,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -435,6 +436,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -446,6 +448,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -457,6 +460,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -468,6 +472,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -479,6 +484,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -490,6 +496,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -501,6 +508,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>
@@ -520,7 +528,7 @@
      <int>16</int>
      <int>18</int>
     </ports>
-    <width>284.748</width>
+    <width>280.784</width>
     <height>270.4</height>
     <name>Godleyitem44746400</name>
     <data>

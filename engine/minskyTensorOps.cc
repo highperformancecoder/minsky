@@ -19,6 +19,7 @@
 
 #include <classdesc.h>
 #include "minskyTensorOps.h"
+#include "interpolateHypercube.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
 
@@ -26,7 +27,7 @@ using namespace civita;
 namespace classdesc
 {
   // postpone factory definition to TensorOpFactory()
-  template <> Factory<TensorOp, minsky::OperationType::Type>::Factory() {}
+  template <> Factory<ITensor, minsky::OperationType::Type>::Factory() {}
 }
 
 
@@ -41,7 +42,7 @@ namespace minsky
     const char* what() const throw() {return "Derivative not defined";}
   };
   
-  struct TimeOp: public TensorOp
+  struct TimeOp: public ITensor
   {
     size_t size() const override {return 1;}
     vector<size_t> index() const override {return {};}
@@ -54,8 +55,8 @@ namespace minsky
   {
     EvalOp<op> eo;
     MinskyTensorOp(): ElementWiseOp([this](double x){return eo.evaluate(x);}) {}
-    void setArguments(const std::vector<TensorPtr>& a) override
-    {if (!a.empty()) setArgument(a[0]);}
+    void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override
+    {if (!a.empty()) setArgument(a[0],{},0);}
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv=dynamic_cast<DerivativeMixin*>(arg.get());
       if (!deriv) throw DerivativeNotDefined();
@@ -76,12 +77,25 @@ namespace minsky
   {
     EvalOp<op> eo;
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
-    virtual void setArguments(const std::vector<TensorPtr>& a1, const std::vector<TensorPtr>& a2)
+    virtual void setArguments(const TensorPtr& a1, const TensorPtr& a2) override
     {
-      civita::BinOp::setArguments
-        (a1.empty()? TensorPtr(): a1[0],
-         a2.empty()?  TensorPtr(): a2[0]
-         );
+      if (a1 && a1->rank()>0)
+        hypercube(a1->hypercube());
+      else if (a2)
+        hypercube(a2->hypercube());
+      else
+        hypercube(Hypercube());
+      
+      arg1=a1;
+
+      if (a2)
+        if (a2->hypercube()==hypercube())
+          arg2=a2;
+        else
+          {
+            arg2=make_shared<InterpolateHC>();
+            arg2->setArgument(a2);
+          }
     }
     double dFlow(size_t ti, size_t fi) const override {
       auto deriv1=dynamic_cast<DerivativeMixin*>(arg1.get());
@@ -119,7 +133,7 @@ namespace minsky
   {
     AccumArgs(): civita::ReduceArguments([](double& x,double y){x*=y;},1) {}
   };
-  template <> struct AccumArgs<OperationType::divide>: public AccumArgs<OperationType::add> {};
+  template <> struct AccumArgs<OperationType::divide>: public AccumArgs<OperationType::multiply> {};
 
   template <> struct AccumArgs<OperationType::min>: public civita::ReduceArguments
   {
@@ -146,8 +160,23 @@ namespace minsky
     virtual void setArguments(const std::vector<TensorPtr>& a1,
                               const std::vector<TensorPtr>& a2)
     {
-      auto pa1=make_shared<AccumArgs<op>>(), pa2=make_shared<AccumArgs<op>>();
-      pa1->setArguments(a1); pa2->setArguments(a2);
+      TensorPtr pa1, pa2;
+      if (a1.size()==1)
+        pa1=a1[0];
+      else
+        {
+          pa1 = make_shared<AccumArgs<op>>();
+          pa1->setArguments(a1,{},0);
+        }
+
+      if (a2.size()==1)
+        pa2=a2[0];
+      else
+        {
+          pa2 = make_shared<AccumArgs<op>>();
+          pa2->setArguments(a2,{},0);
+        }
+      
       civita::BinOp::setArguments(pa1, pa2);
     }
   };
@@ -245,13 +274,26 @@ namespace minsky
   };
   
   template <>
-  class GeneralTensorOp<OperationType::difference>: public civita::CachedTensorOp
+  class GeneralTensorOp<OperationType::difference>: public civita::Scan
   {
-    TensorPtr arg;
+    ssize_t delta;
   public:
-    void computeTensor() const override {//TODO
+    GeneralTensorOp(): civita::Scan
+                       ([this](double& x,double y,size_t i)
+                        {
+                          ssize_t t=ssize_t(i)-delta;
+                          if (t>=0 && t<ssize_t(arg->size()))
+                            x = y-arg->atHCIndex(t);
+                        }) {}
+    void setArgument(const TensorPtr& a,const std::string& s,double d) override {
+      civita::Scan::setArgument(a,s,d);
+      delta=d;
+      // determine offset in hypercube space
+      auto dims=arg->hypercube().dims();
+      if (dimension<dims.size())
+        for (size_t i=0; i<dimension; ++i)
+          delta*=dims[i];
     }
-    Timestamp timestamp() const override {return arg->timestamp();}
   };
   
   template <>
@@ -259,6 +301,7 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
+      throw runtime_error("inner product not yet implemented");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
   };
@@ -268,6 +311,7 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
+      throw runtime_error("outer product not yet implemented");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
   };
@@ -284,7 +328,7 @@ namespace minsky
       for (; j<cachedResult.size(); ++j)
         cachedResult[j]=nan("");
     }
-    void setArgument(const TensorPtr& a, const string&) override {
+    void setArgument(const TensorPtr& a, const string&,double) override {
       arg=a; cachedResult.index(a->index()); cachedResult.hypercube(a->hypercube());
     }
     
@@ -295,14 +339,31 @@ namespace minsky
   class GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {
-      for (size_t i=0; i<arg2->size(); ++i) {
-        auto idx=(*arg2)[i];
-        if (isfinite(idx) && idx>=0 && idx<arg1->size())
-          cachedResult[i]=(*arg1)[idx];
-        else
-          cachedResult[i]=nan("");
-      }              
+    void computeTensor() const override
+    {
+      for (size_t i=0; i<arg2->size(); ++i)
+        {
+          auto idx=(*arg2)[i];
+          if (isfinite(idx))
+            {
+              if (idx>=0)
+                {
+                  if (idx==arg1->size()-1)
+                    cachedResult[i]=(*arg1)[idx];
+                  else if (idx<arg1->size()-1)
+                    {
+                      double s=idx-floor(idx);
+                      cachedResult[i]=(1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
+                    }
+                }
+              else if (idx>-1)
+                cachedResult[i]=(*arg1)[0];
+              else
+                cachedResult[i]=nan("");
+            }
+          else
+            cachedResult[i]=nan("");
+        }              
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
@@ -341,7 +402,7 @@ namespace minsky
                         },0) {}
   };
   
-  class SwitchTensor: public TensorOp
+  class SwitchTensor: public ITensor
   {
     size_t m_size=1;
     vector<size_t> m_index;
@@ -352,8 +413,16 @@ namespace minsky
       return m_index[i];
     }
   public:
-    void setArguments(const std::vector<TensorPtr>& a) override {
+    void setArguments(const std::vector<TensorPtr>& a,const std::string& axis={},double argv=0) override {
       args=a;
+      if (args.size()<2)
+        hypercube(Hypercube());
+      else
+        hypercube(args[1]->hypercube());
+//      if (!args.empty() && args[0]->rank()!=0)
+//        // TODO: feature ticket #36 - extend to conformant selector arg
+//        throw runtime_error("tensor value selectors not yet supported");
+      
       set<size_t> indices; // collect the union of argument indices
       for (auto& i: args)
         {
@@ -364,6 +433,7 @@ namespace minsky
               if (m_size==1)
                 m_size=i->size();
               else if (m_size!=i->size())
+                // TODO - should we check and throw on nonconformat hypercubes?
                 throw runtime_error("noconformant tensor arguments in switch");
             }
         }
@@ -408,40 +478,56 @@ namespace minsky
 
   class RavelTensor: public CachedTensorOp
   {
-    Ravel& ravel;
+    const Ravel& ravel;
     TensorPtr arg;
     void computeTensor() const override
     {
-      ravel.loadDataCubeFromVariable(*arg);
+      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);
       ravel.loadDataFromSlice(cachedResult);
       m_timestamp = Timestamp::clock::now();
     }
     
   public:
-    RavelTensor(Ravel& ravel): ravel(ravel) {}
-    void setArgument(const TensorPtr& a,const std::string& d={}) override {arg=a;}
+    RavelTensor(const Ravel& ravel): ravel(ravel) {}
+    void setArgument(const TensorPtr& a,const std::string& d,double) override {arg=a;}
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
   
-  std::shared_ptr<TensorOp> TensorOpFactory::create
-  (const OperationBase& op, const TensorsFromPort& tfp)
+  std::shared_ptr<ITensor> TensorOpFactory::create
+  (const Item& it, const TensorsFromPort& tfp)
   {
-    try
+    if (auto op=it.operationCast())
+      try
+        {
+          TensorPtr r{create(op->type())};
+          switch (op->ports.size())
+            {
+            case 2:
+              r->setArguments(tfp.tensorsFromPort(*op->ports[1]),op->axis,op->arg);
+            break;
+            case 3:
+              r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]));
+              break;
+            }
+          return r;
+        }
+      catch (const InvalidType&)
+        {return {};}
+    else if (auto v=it.variableCast())
+      return make_shared<TensorVarVal>(*v->vValue(), tfp.ev);
+    else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))
       {
-        std::shared_ptr<TensorOp> r{create(op.type())};
-        switch (op.ports.size())
-          {
-          case 2:
-            r->setArguments(tfp.tensorsFromPort(*op.ports[1]));
-            break;
-          case 3:
-            r->setArguments(tfp.tensorsFromPort(*op.ports[1]), tfp.tensorsFromPort(*op.ports[2]));
-            break;
-          }
+        auto r=make_shared<SwitchTensor>();
+        r->setArguments(tfp.tensorsFromPorts(it.ports));
         return r;
       }
-    catch (const InvalidType&)
-      {return {};}
+    else if (auto ravel=dynamic_cast<const Ravel*>(&it))
+      {
+        auto r=make_shared<RavelTensor>(*ravel);
+        r->setArguments(tfp.tensorsFromPorts(it.ports));
+        return r;
+      }
+    return {};
   }
 
   vector<TensorPtr> TensorsFromPort::tensorsFromPort(const Port& p) const
@@ -465,33 +551,23 @@ namespace minsky
                   // tensor operations
                   throw std::runtime_error("Tensor derivative not implemented");
               }
-            r.push_back(tensorOpFactory.create(*o, *this));
-            assert(r.back());
           }
-        else if (auto v=item.variableCast())
-          r.push_back(make_shared<TensorVarVal>(*v->vValue(), ev));
-        else if (auto s=dynamic_cast<SwitchIcon*>(&item))
-          {
-            auto st=make_shared<SwitchTensor>();
-            vector<TensorPtr> args;
-            for (auto& p: s->ports)
-              {
-                if (p->wires().empty())
-                  s->throw_error("Unwired switch");
-                args.push_back(tensorsFromPort(*p)[0]);
-              }
-            r.push_back(st);
-          }
-        else if (auto ravel=dynamic_cast<Ravel*>(&item))
-          {
-            auto rt=make_shared<RavelTensor>(*ravel);
-            auto args=tensorsFromPort(*ravel->ports[1]);
-            if (!args.empty()) rt->setArgument(args[0]);
-            r.push_back(rt);
-          }
-        else
-          item.throw_error("Invalid item for TensorOp");
+        r.push_back(tensorOpFactory.create(item, *this));
+        assert(r.back());
       }
+    return r;
+  }
+
+
+  vector<TensorPtr> TensorsFromPort::tensorsFromPorts(const vector<shared_ptr<Port>>& ports) const
+  {
+    vector<TensorPtr> r;
+    for (auto& p: ports)
+      if (p->input())
+        {
+          auto tensorArgs=tensorsFromPort(*p);
+          r.insert(r.end(), tensorArgs.begin(), tensorArgs.end());
+        }
     return r;
   }
 
@@ -513,7 +589,7 @@ namespace minsky
     result.index(src.index());
     result.hypercube(src.hypercube());
     Operation<OperationType::copy> tmp;
-    auto copy=tensorOpFactory.create(tmp);
+    auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
     copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
     rhs=move(copy);
     assert(result.size()==rhs->size());

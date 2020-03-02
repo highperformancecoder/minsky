@@ -82,7 +82,7 @@ void Sheet::draw(cairo_t* cairo) const
           if (value.hypercube().rank()==0)
             {
               cairo_move_to(cairo,x,y);
-              pango.setMarkup(str(value.value()));
+              pango.setMarkup(str(value[0]));
               pango.show();
             }
           else
@@ -106,8 +106,11 @@ void Sheet::draw(cairo_t* cairo) const
                 for (auto v: value)
                   {
                     cairo_move_to(cairo,x,y);
-                    pango.setMarkup(str(v));
-                    pango.show();
+                    if (!std::isnan(v))
+                      {
+                        pango.setMarkup(str(v));
+                        pango.show();
+                      }
                     y+=rowHeight;
                   }
               else
@@ -134,8 +137,12 @@ void Sheet::draw(cairo_t* cairo) const
                           y+=rowHeight;
                           if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
-                          pango.setText(str(value.value(j+i*dims[0])));
-                          pango.show();
+                          auto v=value.atHCIndex(j+i*dims[0]);
+                          if (!std::isnan(v))
+                            {
+                              pango.setText(str(v));
+                              pango.show();
+                            }
                           colWidth=std::max(colWidth, pango.width());
                         }
                       x+=colWidth;

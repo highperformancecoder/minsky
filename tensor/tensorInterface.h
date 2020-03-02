@@ -28,6 +28,9 @@
 
 namespace civita
 {
+  class ITensor;
+  using TensorPtr=std::shared_ptr<ITensor>;
+
   class ITensor
   {
   public:
@@ -52,7 +55,7 @@ namespace civita
     virtual size_t size() const=0;
     
     /// returns the data value at hypercube index \a hcIdx, or NaN if 
-    double atHCIndex(size_t hcIdx) {
+    double atHCIndex(size_t hcIdx) const {
       auto idx=index();
       if (idx.empty()) {
         assert(hcIdx<size());
@@ -61,20 +64,50 @@ namespace civita
       assert(idx.size()==size());
       assert(std::all_of(idx.begin()+1, idx.end(), [](const size_t& i){return i>*(&i-1);}));
       auto i=std::lower_bound(idx.begin(), idx.end(), hcIdx);
-      if (*i==hcIdx) return (*this)[i-idx.begin()]; // hcIdx found, return data element with same offset
+      if (i!=idx.end() && *i==hcIdx)
+        return (*this)[i-idx.begin()]; // hcIdx found, return data element with same offset
       return nan("");
     }
 
+    size_t hcIndex(const std::initializer_list<size_t>& indices) const
+    {
+      size_t stride=1, index=0;
+      auto dims=hypercube().dims();
+      auto dim=dims.begin();
+      for (auto i: indices)
+        {
+          index += i*stride;
+          stride *= *(dim++);
+        }
+      return index;
+    }
+    template <class T>
+    double operator()(const std::initializer_list<T>& indices) const
+    {return atHCIndex(hcIndex(indices));}
+                       
     using Timestamp=std::chrono::time_point<std::chrono::high_resolution_clock>;
     /// timestamp indicating how old the dependendent data might
     /// be. Used in CachedTensorOp to determine when to invalidate the
     /// cache
     virtual Timestamp timestamp() const=0;
 
-    
+    /// arguments relevant for tensor expressions, not always meaningful. Exception thrown if not.
+    virtual void setArgument(const TensorPtr&, const std::string& dimension={},
+                             double argVal=0)  {notImpl();}
+    virtual void setArguments(const TensorPtr&, const TensorPtr&) {notImpl();}
+    virtual void setArguments(const std::vector<TensorPtr>& a,
+                              const std::string& dimension={}, double argVal=0) 
+    {if (a.size()) setArgument(a[0], dimension, argVal);}
+    virtual void setArguments(const std::vector<TensorPtr>& a1,
+                              const std::vector<TensorPtr>& a2)
+    {setArguments(a1.empty()? TensorPtr(): a1[0], a2.empty()? TensorPtr(): a2[0]);}
+   
   protected:
     Hypercube m_hypercube;
+    void notImpl() const
+    {throw std::runtime_error("setArgument(s) variant not implemented");}
   };
+
 }
 
 #endif

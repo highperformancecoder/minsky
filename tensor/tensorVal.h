@@ -37,7 +37,24 @@ namespace civita
 
     virtual double& operator[](size_t)=0;
     using ITensor::operator[];
-
+    using ITensor::operator();
+    template <class T>
+    double& operator()(const std::initializer_list<T>& indices)
+    {
+      auto idx=index();
+      auto hcIdx=hcIndex(indices);
+      if (idx.empty())
+        return operator[](hcIdx);
+      else
+        {
+          auto i=std::lower_bound(idx.begin(), idx.end(), hcIdx);
+          if (i!=idx.end() && *i==hcIdx)
+            return operator[](i-idx.begin()); 
+          static double noValue;
+          return noValue;
+        }
+    }
+          
     virtual void index(const std::vector<size_t>&)=0;
     using ITensor::index;
     
@@ -66,7 +83,7 @@ namespace civita
     
     std::vector<size_t> index() const override {return m_index;}
     void index(const std::vector<size_t>& idx) override
-    {m_index=idx; data.resize(idx.size());}
+    {m_index=idx; if (!idx.empty()) data.resize(idx.size());}
     const Hypercube& hypercube(const Hypercube& hc) override
     {m_hypercube=hc; allocVal(); return m_hypercube;}
     const Hypercube& hypercube(Hypercube&& hc) override 

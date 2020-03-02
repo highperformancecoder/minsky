@@ -1,5 +1,5 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>2</schemaVersion>
+  <schemaVersion>3</schemaVersion>
   <wires>
    <Wire>
     <id>102</id>
@@ -41,15 +41,15 @@
     <from>8</from>
     <to>31</to>
     <coords>
-     <float>432.002</float>
+     <float>442.002</float>
      <float>49.0004</float>
-     <float>440.322</float>
-     <float>56.2831</float>
-     <float>477.781</float>
-     <float>67.7279</float>
-     <float>460.091</float>
-     <float>127.032</float>
-     <float>477.5</float>
+     <float>450.112</float>
+     <float>56.0991</float>
+     <float>486.624</float>
+     <float>67.2547</float>
+     <float>469.381</float>
+     <float>125.06</float>
+     <float>479.5</float>
      <float>155</float>
     </coords>
    </Wire>
@@ -68,11 +68,11 @@
     <from>16</from>
     <to>40</to>
     <coords>
-     <float>38.0001</float>
+     <float>28.0001</float>
      <float>174</float>
-     <float>8.98815</float>
-     <float>102.506</float>
-     <float>3.4999</float>
+     <float>-0.298094</float>
+     <float>104.265</float>
+     <float>3.9999</float>
      <float>67.0002</float>
     </coords>
    </Wire>
@@ -96,14 +96,14 @@
     <from>30</from>
     <to>59</to>
     <coords>
-     <float>402.5</float>
+     <float>400.5</float>
      <float>155</float>
-     <float>372.731</float>
-     <float>75.2056</float>
-     <float>162.196</float>
-     <float>120.013</float>
-     <float>262</float>
-     <float>137</float>
+     <float>352.995</float>
+     <float>27.6639</float>
+     <float>17.0224</float>
+     <float>99.1677</float>
+     <float>187</float>
+     <float>80.75</float>
     </coords>
    </Wire>
    <Wire>
@@ -116,12 +116,12 @@
     <from>84</from>
     <to>13</to>
     <coords>
-     <float>172.734</float>
+     <float>172.234</float>
      <float>291.335</float>
-     <float>127.767</float>
-     <float>168.15</float>
-     <float>82.0002</float>
-     <float>152</float>
+     <float>126.366</float>
+     <float>165.682</float>
+     <float>90.0002</float>
+     <float>143</float>
     </coords>
    </Wire>
    <Wire>
@@ -129,12 +129,12 @@
     <from>84</from>
     <to>60</to>
     <coords>
-     <float>172.734</float>
+     <float>172.234</float>
      <float>291.335</float>
-     <float>118.169</float>
-     <float>182.104</float>
-     <float>262</float>
-     <float>137</float>
+     <float>119.07</float>
+     <float>184.908</float>
+     <float>187</float>
+     <float>118.25</float>
     </coords>
    </Wire>
    <Wire>
@@ -142,11 +142,11 @@
     <from>30</from>
     <to>100</to>
     <coords>
-     <float>402.5</float>
+     <float>400.5</float>
      <float>155</float>
-     <float>419.223</float>
-     <float>276.633</float>
-     <float>316</float>
+     <float>417.086</float>
+     <float>275.635</float>
+     <float>316.5</float>
      <float>291.335</float>
     </coords>
    </Wire>
@@ -175,14 +175,14 @@
     <from>84</from>
     <to>93</to>
     <coords>
-     <float>172.734</float>
+     <float>172.234</float>
      <float>291.335</float>
-     <float>175.276</float>
-     <float>247.857</float>
-     <float>177.581</float>
-     <float>246.671</float>
-     <float>231.931</float>
-     <float>299.583</float>
+     <float>174.674</float>
+     <float>249.606</float>
+     <float>176.886</float>
+     <float>248.468</float>
+     <float>229.015</float>
+     <float>299.494</float>
     </coords>
    </Wire>
    <Wire>
@@ -567,6 +567,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -578,6 +579,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -589,6 +591,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -600,6 +603,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -611,6 +615,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -622,6 +627,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -633,6 +639,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -644,6 +651,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>
@@ -652,7 +660,7 @@
     <type>Operation:subtract</type>
     <x>59.2501</x>
     <y>-4.53831</y>
-    <zoomFactor>0.497</zoomFactor>
+    <zoomFactor>0.555714</zoomFactor>
     <rotation>180</rotation>
     <ports>
      <int>76</int>
@@ -666,7 +674,7 @@
     <type>Operation:multiply</type>
     <x>4.79043</x>
     <y>-5.54682</y>
-    <zoomFactor>0.497</zoomFactor>
+    <zoomFactor>0.555714</zoomFactor>
     <rotation>180</rotation>
     <ports>
      <int>80</int>
@@ -701,7 +709,7 @@
     <type>IntOp</type>
     <x>-113.205</x>
     <y>-3.02555</y>
-    <zoomFactor>0.497</zoomFactor>
+    <zoomFactor>0.555714</zoomFactor>
     <rotation>180</rotation>
     <ports>
      <int>87</int>
@@ -716,7 +724,7 @@
     <type>Operation:multiply</type>
     <x>-49.6693</x>
     <y>-1.51276</y>
-    <zoomFactor>0.497</zoomFactor>
+    <zoomFactor>0.555714</zoomFactor>
     <rotation>180</rotation>
     <ports>
      <int>91</int>
@@ -730,7 +738,7 @@
     <type>Variable:parameter</type>
     <x>100.599</x>
     <y>-30.7596</y>
-    <zoomFactor>0.497</zoomFactor>
+    <zoomFactor>0.555714</zoomFactor>
     <rotation>180</rotation>
     <ports>
      <int>95</int>
@@ -750,7 +758,7 @@
     <type>Variable:parameter</type>
     <x>72.3608</x>
     <y>29.7511</y>
-    <zoomFactor>0.497</zoomFactor>
+    <zoomFactor>0.555714</zoomFactor>
     <rotation>180</rotation>
     <ports>
      <int>97</int>

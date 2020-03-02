@@ -68,8 +68,9 @@ namespace minsky
       {
         auto& gg=g->globalGroup();
         auto wires=m_wires; // save copy, as Group::removeWire mutates it
+        vector<WirePtr> wireHold; // postpone actual wire destruction until after loop
         for (auto& w: wires)
-          gg.removeWire(*w);
+          wireHold.push_back(gg.removeWire(*w));
       }
     m_wires.clear();
   }

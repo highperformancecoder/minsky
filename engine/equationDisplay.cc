@@ -96,6 +96,11 @@ namespace MathDAG
       cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
       cairo_rel_move_to(s.cairo(),pango.width(),0);
       x(s);
+      //      cairo_set_source_surface(s.cairo(),r.surface(),-xx,-yy);
+      //cairo_set_source_surface(s.cairo(),r.surface(),xx,yy);
+      //cairo_rectangle(s.cairo(),xx,yy,r.width(),r.height());
+      //cairo_fill(s.cairo());
+
       xx+=pango.width()+r.width();
       pango.setMarkup(right);
       cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
