@@ -202,7 +202,6 @@ clean:
 	-cd model; $(BASIC_CLEAN)
 	-cd engine; $(BASIC_CLEAN)
 	-cd schema; $(BASIC_CLEAN)
-	-cd gui-wt; $(BASIC_CLEAN)
 	-cd ecolab; $(MAKE) clean
 
 mac-dist: gui-tk/minsky

@@ -296,9 +296,9 @@ namespace schema1
   /// describes item with sliders - currently just constants
   struct SliderLayout: public SPoly<SliderLayout, ItemLayout>
   {
-    bool sliderVisible, sliderBoundsSet, sliderStepRel;
-    double sliderMin, sliderMax, sliderStep;
-    SliderLayout(): sliderVisible(false), sliderBoundsSet(false), sliderStepRel(false) {}
+    bool sliderVisible=false, sliderBoundsSet=false, sliderStepRel=false;
+    double sliderMin=0, sliderMax=0, sliderStep=0;
+    SliderLayout() {}
     template <class T>
     SliderLayout(int id, const T& item):
       Layout(id), PositionLayout(id, item), VisibilityLayout(item), 

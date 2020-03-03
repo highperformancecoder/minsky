@@ -267,7 +267,6 @@ namespace minsky
             pango.show();
             y+=rowHeight;
           }
-        y=topTableOffset;
         colWidth+=5;
 
         colLeftMargin.push_back(x);
@@ -870,10 +869,9 @@ namespace {
    return tmpStr;	    		 	
    }
   
-  string GodleyTableWindow::swapAssetClass(double x, double y) 
+  string GodleyTableWindow::swapAssetClass(double x, double) 
   {  
 	x/=zoomFactor;
-	y/=zoomFactor;
 	int c=colX(x);	
 	string tmpStr="";	  
 	if (selectedRow==0) {  // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	

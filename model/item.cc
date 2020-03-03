@@ -131,8 +131,6 @@ namespace minsky
           return ClickType::onPort;
       }
 
-    double dx=x-this->x(), dy=y-this->y();
-
     ecolab::cairo::Surface dummySurf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
