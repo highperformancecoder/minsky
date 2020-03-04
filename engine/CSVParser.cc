@@ -439,7 +439,9 @@ namespace minsky
                               break;
                             }
                       }
-                    catch (...)
+                    catch (const DuplicateKey&)
+                      {throw;}
+                    catch (...) //TODO are we expecting any othere exception other than from stod?
                       {
                         tmpData[key]=spec.missingValue;
                       }

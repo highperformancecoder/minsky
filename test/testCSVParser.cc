@@ -134,5 +134,64 @@ SUITE(CSVParser)
       CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
                         v.tensorInit, 12, 1e-4);
     }
+
+  TEST_FIXTURE(DataSpec, duplicateActions)
+    {
+      string input="A comment\n"
+        ";;foobar\n" // horizontal dim name
+        "foo;bar;A;B;C\n"
+        "A;A;1.2;1.3;1.4\n"
+        "A;A;1;2;3\n"
+        "B;A;3;2;1\n";
+      
+      separator=';';
+      setDataArea(3,2);
+      missingValue=-1;
+      headerRow=2;
+      dimensionNames={"foo","bar"};
+      dimensionCols={0,1};
+      horizontalDimName="foobar";
+
+      VariableValue v(VariableType::parameter);
+      {
+        istringstream is(input);
+        CHECK_THROW(loadValueFromCSVFile(v,is,*this), std::exception);
+      }
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=sum;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(2.2, v.tensorInit[0]);
+      }
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=product;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(1.2, v.tensorInit[0]);
+      }
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=min;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(1, v.tensorInit[0]);
+      }
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=max;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(1.2, v.tensorInit[0]);
+      }
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=av;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(1.1, v.tensorInit[0]);
+      }
+    }
   
 }
