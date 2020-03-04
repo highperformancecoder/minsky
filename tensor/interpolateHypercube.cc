@@ -76,18 +76,33 @@ namespace civita
   
   double InterpolateHC::operator[](size_t idx) const
   {
+    assert(arg->size()==weightedIndices.size());
+    if (idx<weightedIndices.size())
+      {
+        double r=0;
+        for (auto& i: weightedIndices[idx])
+          r+=i.weight * (*arg)[i.index];
+        return r;
+      }
+    return nan("");
+  }
+
+  WeightedIndexVector InterpolateHC::bodyCentredNeighbourhood(size_t destIdx) const
+  {
     // note this agorithm is limited in rank (typically 32 dims on 32bit machine, or 64 dims on 64bit)
     assert(rank()<=sizeof(size_t)*8);
     size_t numNeighbours=size_t(1)<<rank();
-    vector<size_t> iIdx=splitAndRotate(idx);
+    vector<size_t> iIdx=splitAndRotate(destIdx);
     auto& argHC=arg->hypercube();
     // loop over the nearest neighbours in argument hypercube space of
     // this point in interimHypercube space
-    double sumWeight=0, r=0;
+    double sumWeight=0;
+    WeightedIndexVector r;
+    auto argIndexVector=arg->index();
     // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
     for (size_t nbr=0; nbr<numNeighbours; ++nbr)
       {
-        size_t idx=0;
+        size_t argIdx=0;
         double weight=1;
         for (size_t dim=0, stride=1; dim<rank(); ++dim, stride*=argHC.xvectors[dim].size())
           {
@@ -115,17 +130,29 @@ namespace civita
             if (d>0)
               weight *= greaterSide? diff(v,lesser): d-diff(v,lesser);
           }
-        {
-          double x=arg->atHCIndex(idx);
-          if (isfinite(x))
-            {
-              r+=weight*x;
-              sumWeight+=weight;
-            }
-        }
+        if (index.empty())
+          {
+            r.emplace_back({idx,weight});
+            sumWeight+=weight;
+          }
+        else
+          {
+            auto it=binary_search(index.begin(), index.end());
+            if (it!=index.end())
+              {
+                r.emplace_back({idx,weight});
+                sumWeight+=weight;
+              }
+          }
       nextNeighbour:;
       }
-    return r/sumWeight;
+
+    if (r.size()==1 && r[0].idx==
+
+    // normalise weights
+    for (auto& i: r) i.weight/=sumWeight;
+    return r;
   }
 
+  WeightedIndexVector InterpolateHC::missingBodyCentredNeighbourhood(size_t idx) const
 }

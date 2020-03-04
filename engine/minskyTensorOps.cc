@@ -90,11 +90,12 @@ namespace minsky
 
       if (a2)
         {
-          if (a2->hypercube()==hypercube())
+          if (a2->hypercube()==hypercube() && a2->index().empty())
             arg2=a2;
           else
             {
               arg2=make_shared<InterpolateHC>();
+              arg2->hypercube(hypercube());
               arg2->setArgument(a2);
             }
         }
@@ -179,7 +180,7 @@ namespace minsky
           pa2->setArguments(a2,{},0);
         }
       
-      civita::BinOp::setArguments(pa1, pa2);
+      TensorBinOp<op>::setArguments(pa1, pa2);
     }
   };
 

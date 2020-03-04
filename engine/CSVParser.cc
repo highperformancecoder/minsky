@@ -445,6 +445,8 @@ namespace minsky
                       }
                     if (tabularFormat)
                       key.pop_back();
+                    else
+                      break; // only one column of data needs to be read
                   }
               }
           }

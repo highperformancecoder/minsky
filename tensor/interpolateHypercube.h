@@ -29,12 +29,34 @@ namespace civita
   class InterpolateHC: public ITensor
   {
     TensorPtr arg;
-    ///< hypercube that's been rotated to match the arguments hypercube
+    /// hypercube that's been rotated to match the arguments hypercube
     Hypercube interimHC;
     std::vector<size_t> strides; ///<strides along each dimension of this->hypercube()
     std::vector<size_t> rotation; ///< permutation of axes of interimHC and this->hypercube()
     //
     vector<size_t> splitAndRotate(size_t) const;
+
+    /// structure for referring to an argument index and its weight 
+    struct WeightedIndex
+    {
+      size_t index;
+      double weight;
+    };
+
+    struct WeightedIndexVector: public vector<WeightedIndex>
+    {
+      bool argIsOnDestHypercube=false;
+    };
+    
+    /// map from this tensor's index into the argument tensor
+    vector<vector<WeightedIndex>> weightedIndices;
+
+    /// computes the neighbourhood around a target argument index when
+    /// the target index is not on the hypercube
+    vector<WeightedIndex> bodyCentredNeighbourhood(size_t idx) const;
+    /// computes neighbourhood when the centre point is on the hypercube, but missing (NaN or not in index vector
+    vector<WeightedIndex> missingBodyCentredNeighbourhood(size_t idx) const;
+
   public:
     void setArgument(const TensorPtr& a, const string&,double) override;
     std::vector<size_t> index() const {return {};}

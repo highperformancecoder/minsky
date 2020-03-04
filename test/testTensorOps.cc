@@ -397,5 +397,31 @@ SUITE(TensorOps)
       multiWireTest<OperationType::or_>(0, [](double x,double y){return x>0.5 || y>0.5;}, id);
     }
 
-  
+//  TEST_FIXTURE(MinskyFixture, binOpInterpolation)
+//    {
+//      // same example as examples/binaryInterpolation.mky
+//      VariablePtr x1(VariableType::parameter,"x1"), x2(VariableType::parameter,"x2");
+//      auto& x1Val=*x1->vValue();
+//      auto& x2Val=*x2->vValue();
+//      Hypercube hc({6});
+//      x1Val.hypercube(hc);
+//      x2Val.hypercube(hc);
+//      x1Val.index({0,1,2,5});
+//      x2Val.index({0,2,3,4,5});
+//      x1Val={1,2,2,1};
+//      x2Val={3,4,5,5,4};
+//      OperationPtr add(OperationType::add);
+//      VariablePtr result(VariableType::flow,"result");
+//      Wire w1(x1->ports[0],add->ports[1]);
+//      Wire w2(x2->ports[0],add->ports[2]);
+//      Wire w3(add->ports[0], result->ports[1]);
+//      auto ev=make_shared<EvalCommon>();
+//      TensorEval eval(*result->vValue(), ev, tensorOpFactory.create(*add,TensorsFromPort(ev)));
+//      eval.eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());
+//      CHECK_EQUAL(6,result->vValue()->size());
+//
+//      vector<double> expected{4,5.5,6,6.66666,6.33333,5};
+//      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 6, 0.001);
+//    }
+
 }

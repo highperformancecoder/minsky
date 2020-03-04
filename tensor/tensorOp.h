@@ -83,7 +83,7 @@ namespace civita
       return f(arg1->rank()? arg1->atHCIndex(i): arg1->atHCIndex(0),
                arg2->rank()? arg2->atHCIndex(i): arg2->atHCIndex(0));
     }
-    size_t size() const override {return arg1 && arg1->size()>1? arg1->size(): arg2? arg2->size(): 0;}
+    size_t size() const override {return hypercube().numElements();}
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}
   };

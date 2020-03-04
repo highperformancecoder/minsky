@@ -34,6 +34,13 @@ namespace civita
     ITensorVal(Hypercube&& hc): ITensor(std::move(hc)) {}
     ITensorVal(const std::vector<unsigned>& dims): ITensor(dims) {}
     virtual const ITensorVal& operator=(const ITensor&)=0;
+    template <class T>
+    ITensorVal& operator=(const std::initializer_list<T>& vals) {
+      auto i=begin();
+      for (auto j: vals)
+        *i++=j;
+      return *this;
+    }
 
     virtual double& operator[](size_t)=0;
     using ITensor::operator[];
