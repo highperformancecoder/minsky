@@ -55,6 +55,8 @@ namespace minsky
   public:
 
     bool doubleEntryCompliant;
+    // Allow multiple equity columns.
+    bool multipleEquities;
 
     std::string title;
   
@@ -65,11 +67,12 @@ namespace minsky
       cell(1,0)=initialConditions;
       
     }
-
+    
     GodleyTable(const GodleyTable& other)
       : m_assetClass(other.m_assetClass),
         data(other.data),
         doubleEntryCompliant(other.doubleEntryCompliant),
+        multipleEquities(other.multipleEquities),
         title(other.title)
     { }
   
@@ -77,7 +80,7 @@ namespace minsky
     bool operator==(const GodleyTable& other) const 
     {
 		return (data==other.data && m_assetClass==other.m_assetClass &&
-		 doubleEntryCompliant==other.doubleEntryCompliant && title==other.title);
+		 doubleEntryCompliant==other.doubleEntryCompliant && multipleEquities==other.multipleEquities && title==other.title);
     }    
 
     /// class of each column (used in DE compliant mode)

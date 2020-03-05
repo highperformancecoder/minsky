@@ -328,6 +328,7 @@ set preferencesVars {
     godleyDisplayStyle       "Godley Table Output Style"    sign  { enum
         "DR/CR" DRCR
         "+/-" sign } 
+    multipleEquities       "Enable muliple equity columns" 1 bool        
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
     panopticon        "Enable panopticon" 1 bool
