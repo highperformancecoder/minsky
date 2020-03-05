@@ -162,6 +162,10 @@ namespace minsky
 //  };
 
   template <OperationType::Type op> struct GeneralTensorOp;
+
+
+  template <OperationType::Type ravel> struct RavelTensor;  
+  
                                                                                       
   namespace
   {
@@ -191,7 +195,7 @@ namespace minsky
     registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);
     registerOps<MinskyTensorOp, OperationType::copy, OperationType::sum>(*this);
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
-    //registerOps<RavelTensor, OperationType::sum, OperationType::numOps>(*this);
+    registerOps<RavelTensor, OperationType::sum, OperationType::numOps>(*this);
   }
                                                                                     
   template <>
@@ -447,8 +451,6 @@ namespace minsky
       return nan("");
     }
   };
-
-  template <OperationType::Type ravel> struct RavelTensor;
    
   template <>  
   class RavelTensor<OperationType::ravel>: public civita::CachedTensorOp
