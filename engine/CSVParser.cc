@@ -443,9 +443,19 @@ namespace minsky
                         s+=c;                    
 
                     auto i=tmpData.find(key);
+                    bool valueExists=true;
+                    double v=spec.missingValue;
                     try
                       {
-                        double v=stod(s);
+                        v=stod(s);
+                      }
+                    catch (...) // value misunderstood
+                      {
+                        if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                          valueExists=false;
+                      }
+                    if (valueExists)
+                      {
                         if (i==tmpData.end())
                           tmpData.emplace(key,v);
                         else	
@@ -475,12 +485,6 @@ namespace minsky
                               }
                               break;
                             }
-                      }
-                    catch (const DuplicateKey&)
-                      {throw;}
-                    catch (...) //TODO are we expecting any othere exception other than from stod?
-                      {
-                        tmpData[key]=spec.missingValue;
                       }
                     if (tabularFormat)
                       key.pop_back();
@@ -523,7 +527,7 @@ namespace minsky
               throw runtime_error("memory threshold exceeded");	  	  		
             auto dims=hc.dims();
               
-            vector<size_t> index;
+            map<size_t,double> indexValue; // intermediate stash to sort index vector
             for (auto& i: tmpData)
               {
                 size_t idx=0;
@@ -534,8 +538,15 @@ namespace minsky
                     assert(dimLabels[j].count(i.first[j]));
                     idx = (idx*dims[j]) + dimLabels[j][i.first[j]];
                   }
-                if (!isnan(i.second))   
-                  v.tensorInit.push_back(idx, i.second);
+                if (!isnan(i.second))
+                  indexValue.emplace(idx, i.second);
+              }
+            
+            vector<size_t> index;
+            for (auto& i: indexValue)
+              {
+                index.push_back(i.first);
+                v.tensorInit.push_back(i.first, i.second);
               }
             v.index(index);
             v.hypercube(hc);
