@@ -108,26 +108,48 @@ namespace minsky
   void ButtonWidget<ButtonWidgetEnums::col>::invoke(double x)
   {
     int button=x/buttonSpacing;
-    if (pos!=last)
-      switch (button)
-       {
-       case 0:
-         godleyIcon.table.insertCol(idx+1);
-         break;
-       case 1:
-         godleyIcon.table.deleteCol(idx+1);
-         break;
-       case 2:
-         if (pos==first)
-           godleyIcon.table.moveCol(idx,1);
-         else if (pos!=first)
-           godleyIcon.table.moveCol(idx,-1);
-         break;
-       case 3:
-         if (pos==middle)
-           godleyIcon.table.moveCol(idx,1);
-         break;
-       }
+    if (!godleyIcon.table.multipleEquities) {
+      if (pos!=last)
+        switch (button)
+         {
+         case 0:
+           godleyIcon.table.insertCol(idx+1);
+           break;
+         case 1:
+           godleyIcon.table.deleteCol(idx+1);
+           break;
+         case 2:
+           if (pos==first)
+             godleyIcon.table.moveCol(idx,1);
+           else if (pos!=first)
+             godleyIcon.table.moveCol(idx,-1);
+           break;
+         case 3:
+           if (pos==middle)
+             godleyIcon.table.moveCol(idx,1);
+           break;
+         }
+	 } else {
+        switch (button)
+          {
+          case 0:
+            godleyIcon.table.insertCol(idx+1);
+            break;
+          case 1:
+            godleyIcon.table.deleteCol(idx+1);
+            break;
+          case 2:
+            if (pos==first)
+              godleyIcon.table.moveCol(idx,1);
+            else
+              godleyIcon.table.moveCol(idx,-1);
+            break;
+          case 3:
+            if (pos==middle)
+              godleyIcon.table.moveCol(idx,1);
+            break;
+          }	 
+     }
     try {godleyIcon.update();}   // Update current Godley icon and table after button widget invoke. for ticket 1059.
     catch (...) {}      
   }
@@ -267,6 +289,7 @@ namespace minsky
             pango.show();
             y+=rowHeight;
           }
+        y=topTableOffset;
         colWidth+=5;
 
         colLeftMargin.push_back(x);
@@ -869,9 +892,10 @@ namespace {
    return tmpStr;	    		 	
    }
   
-  string GodleyTableWindow::swapAssetClass(double x, double) 
+  string GodleyTableWindow::swapAssetClass(double x, double y) 
   {  
 	x/=zoomFactor;
+	y/=zoomFactor;
 	int c=colX(x);	
 	string tmpStr="";	  
 	if (selectedRow==0) {  // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
@@ -1095,14 +1119,25 @@ namespace {
   {	    
     CairoSave cs(cairo);
     int idx=0;
-    if (rowCol == row || (rowCol == col && pos!=last)) 
+    if (!godleyIcon.table.multipleEquities || rowCol==row) {
+      if (rowCol == row || (rowCol == col && pos!=last)) 
+        drawButton(cairo,"+",0,1,0,idx++);
+      if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064
+	    drawButton(cairo,"—",1,0,0,idx++);  
+      if ((rowCol == row && pos!=first && pos!=second && pos!=firstAndLast) || (rowCol == col && pos!=first && pos!=last))	// no move up button for first row containing initial conditions. For ticket 1064
+        drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
+      if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
+        drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
+    } else {
       drawButton(cairo,"+",0,1,0,idx++);
-    if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064
-	  drawButton(cairo,"—",1,0,0,idx++);
-    if ((rowCol == row && pos!=first && pos!=second && pos!=firstAndLast) || (rowCol == col && pos!=first && pos!=last))	// no move up button for first row containing initial conditions. For ticket 1064
-      drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
-    if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
-      drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);
+      if ((pos!=first && pos!=firstAndLast) || rowCol == col) 	// no delete button for first row containing initial conditions. For ticket 1064
+		drawButton(cairo,"—",1,0,0,idx++);
+      if (pos!=first && pos!=second && pos!=firstAndLast) 						// no move up button for first row containing initial conditions. For ticket 1064
+        drawButton(cairo,rowCol==row? "↑": "←",0,0,0,idx++);
+      if ((pos!=first && pos!=last && pos!=firstAndLast) || (rowCol == col && pos!=last))      // no move down button for first row containing initial conditions. For ticket 1064
+        drawButton(cairo,rowCol==row? "↓": "→",0,0,0,idx++);		
+	}
+    
   }  
  
   template class ButtonWidget<ButtonWidgetEnums::row>;
