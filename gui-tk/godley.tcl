@@ -106,6 +106,7 @@ proc openGodley {id} {
         menu .$id.menubar.options
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
+        .$id.menubar.options add checkbutton -label "Enable multiple equities" -variable preferences(multipleEquities) -command setGodleyDisplay
         
         .$id.menubar add cascade -label File -menu .$id.menubar.file -underline 0
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
@@ -116,6 +117,7 @@ proc openGodley {id} {
         global preferences
         $id.displayValues $preferences(godleyDisplay)
         $id.displayStyle $preferences(godleyDisplayStyle)
+        $id.godleyIcon.table.multipleEquities $preferences(multipleEquities)
 
     }
     wm deiconify .$id
@@ -303,8 +305,12 @@ proc setGodleyDisplay {} {
     foreach c [info commands godleyWindow*.displayStyle] {
         $c $preferences(godleyDisplayStyle)
     }
+    foreach c [info commands godleyIcon.table.multipleEquities] {
+        $c $preferences(multipleEquities)
+    }    
     redrawAllGodleyTables
 }
+	
 
 proc exportGodley {id} {
     global workDir type
