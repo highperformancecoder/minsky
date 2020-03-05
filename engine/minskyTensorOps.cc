@@ -191,6 +191,7 @@ namespace minsky
     registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);
     registerOps<MinskyTensorOp, OperationType::copy, OperationType::sum>(*this);
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
+    //registerOps<RavelTensor, OperationType::sum, OperationType::numOps>(*this);
   }
                                                                                     
   template <>
@@ -447,22 +448,207 @@ namespace minsky
     }
   };
 
-  class RavelTensor: public CachedTensorOp
+  template <OperationType::Type ravel> struct RavelTensor;
+   
+  template <>  
+  class RavelTensor<OperationType::ravel>: public civita::CachedTensorOp
   {
     const Ravel& ravel;
-    TensorPtr arg;
-    void computeTensor() const override
+    //TensorPtr arg;
+    std::shared_ptr<ITensor> arg;
+    void computeTensor() const override  
     {
       const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);
       ravel.loadDataFromSlice(cachedResult);
       m_timestamp = Timestamp::clock::now();
-    }
+    }    
     
   public:
-    RavelTensor(const Ravel& ravel): ravel(ravel) {}
-    void setArgument(const TensorPtr& a,const std::string& d,double) override {arg=a;}
+    //RavelTensor(const Ravel& ravel): ravel(ravel) {}
+    void setArgument(const TensorPtr& a,const std::string& d={},double argv={}) override {arg=a;}
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
+
   };
+  
+  template <>
+  class RavelTensor<OperationType::sum>: public civita::ReductionOp
+  {
+  public:
+    RavelTensor(): civita::ReductionOp([](double& x, double y,size_t){x+=y;},0){}
+  };
+  template <>
+  class RavelTensor<OperationType::product>: public civita::ReductionOp
+  {
+  public:
+    RavelTensor(): civita::ReductionOp([](double& x, double y,size_t){x*=y;},1){}
+  };
+  template <>
+  class RavelTensor<OperationType::infimum>: public civita::ReductionOp
+  {
+  public:
+    RavelTensor(): civita::ReductionOp([](double& x, double y,size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
+   };
+  template <>
+  class RavelTensor<OperationType::supremum>: public civita::ReductionOp
+  {
+  public:
+    RavelTensor(): civita::ReductionOp([](double& x, double y,size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
+   };
+  template <>
+  class RavelTensor<OperationType::any>: public civita::ReductionOp
+  {
+  public:
+    RavelTensor(): civita::ReductionOp([](double& x, double y,size_t){if (y>0.5) x=1;},0){}
+   };
+  template <>
+  class RavelTensor<OperationType::all>: public civita::ReductionOp
+  {
+  public:
+    RavelTensor(): civita::ReductionOp([](double& x, double y,size_t){x*=(y>0.5);},1){}
+   };
+
+  template <>
+  class RavelTensor<OperationType::runningSum>: public civita::Scan
+  {
+  public:
+    RavelTensor(): civita::Scan([](double& x,double y,size_t){x+=y;}) {}
+  };
+
+  template <>
+  class RavelTensor<OperationType::runningProduct>: public civita::Scan
+  {
+  public:
+    RavelTensor(): civita::Scan([](double& x,double y,size_t){x*=y;}) {}
+  };
+  
+  template <>
+  class RavelTensor<OperationType::difference>: public civita::Scan
+  {
+    ssize_t delta;
+  public:
+    RavelTensor(): civita::Scan
+                       ([this](double& x,double y,size_t i)
+                        {
+                          ssize_t t=ssize_t(i)-delta;
+                          if (t>=0 && t<ssize_t(arg->size()))
+                            x = y-arg->atHCIndex(t);
+                        }) {}
+    void setArgument(const TensorPtr& a,const std::string& s,double d) override {
+      civita::Scan::setArgument(a,s,d);
+      delta=d;
+      // determine offset in hypercube space
+      auto dims=arg->hypercube().dims();
+      if (dimension<dims.size())
+        for (size_t i=0; i<dimension; ++i)
+          delta*=dims[i];
+    }
+  };
+  
+  template <>
+  class RavelTensor<OperationType::innerProduct>: public civita::CachedTensorOp
+  {
+    std::shared_ptr<ITensor> arg1, arg2;
+    void computeTensor() const override {//TODO
+      throw runtime_error("inner product not yet implemented");
+    }
+    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+  };
+
+  template <>
+  class RavelTensor<OperationType::outerProduct>: public civita::CachedTensorOp
+  {
+    std::shared_ptr<ITensor> arg1, arg2;
+    void computeTensor() const override {//TODO
+      throw runtime_error("outer product not yet implemented");
+    }
+    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+  };
+
+  template <>
+  class RavelTensor<OperationType::index>: public civita::CachedTensorOp
+  {
+    std::shared_ptr<ITensor> arg;
+    void computeTensor() const override {
+      size_t i=0, j=0;
+      for (; i<arg->size(); ++i)
+        if ((*arg)[i]>0.5)
+          cachedResult[j++]=i;
+      for (; j<cachedResult.size(); ++j)
+        cachedResult[j]=nan("");
+    }
+    void setArgument(const TensorPtr& a, const string&,double) override {
+      arg=a; cachedResult.index(a->index()); cachedResult.hypercube(a->hypercube());
+    }
+    
+    Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  template <>
+  class RavelTensor<OperationType::gather>: public civita::CachedTensorOp
+  {
+    std::shared_ptr<ITensor> arg1, arg2;
+    void computeTensor() const override
+    {
+      for (size_t i=0; i<arg2->size(); ++i)
+        {
+          auto idx=(*arg2)[i];
+          if (isfinite(idx))
+            {
+              if (idx>=0)
+                {
+                  if (idx==arg1->size()-1)
+                    cachedResult[i]=(*arg1)[idx];
+                  else if (idx<arg1->size()-1)
+                    {
+                      double s=idx-floor(idx);
+                      cachedResult[i]=(1-s)*(*arg1)[idx]+s*(*arg1)[idx+1];
+                    }
+                }
+              else if (idx>-1)
+                cachedResult[i]=(*arg1)[0];
+              else
+                cachedResult[i]=nan("");
+            }
+          else
+            cachedResult[i]=nan("");
+        }              
+    }
+    Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+      arg1=a1; arg2=a2;
+      cachedResult.index(arg2->index());
+      cachedResult.hypercube(arg2->hypercube());
+    }
+      
+  };
+
+  template <>
+  class RavelTensor<OperationType::supIndex>: public civita::ReductionOp
+  {
+    double maxValue; // scratch register for holding current max
+  public:
+    RavelTensor(): civita::ReductionOp
+                       ([this](double& r,double x,size_t i){
+                          if (i==0 || x>maxValue) {
+                            maxValue=x;
+                            r=i;
+                          }
+                        },0) {}
+  };
+  
+  template <>
+  class RavelTensor<OperationType::infIndex>: public civita::ReductionOp
+  {
+    double minValue; // scratch register for holding current min
+  public:
+    RavelTensor(): civita::ReductionOp
+                       ([this](double& r,double x,size_t i){
+                          if (i==0 || x<minValue) {
+                            minValue=x;
+                            r=i;
+                          }
+                        },0) {}
+  };  
   
   std::shared_ptr<ITensor> TensorOpFactory::create
   (const Item& it, const TensorsFromPort& tfp)
@@ -492,12 +678,12 @@ namespace minsky
         r->setArguments(tfp.tensorsFromPorts(it.ports));
         return r;
       }
-    else if (auto ravel=dynamic_cast<const Ravel*>(&it))
-      {
-        auto r=make_shared<RavelTensor>(*ravel);
-        r->setArguments(tfp.tensorsFromPorts(it.ports));
-        return r;
-      }
+    //else if (auto ravel=dynamic_cast<const Ravel*>(&it))
+    //  {
+    //    auto r=make_shared<RavelTensor>(*ravel);
+    //    r->setArguments(tfp.tensorsFromPorts(it.ports));
+    //    return r;
+    //  }
     return {};
   }
 
@@ -564,7 +750,7 @@ namespace minsky
     copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
     rhs=move(copy);
     assert(result.size()==rhs->size());
-  }
+  }   
 
   void TensorEval::eval(double fv[], const double sv[])
   {
@@ -581,8 +767,7 @@ namespace minsky
           }
       }
   }
-
-  
+   
   void TensorEval::deriv(double df[], const double ds[],
                          const double sv[], const double fv[])
   {
