@@ -42,7 +42,7 @@ struct SpaceSeparatorParser
     bool quoted=false;
     for (; next!=end; ++next)
       if (*next==escape)
-        tok+=*(next++);
+        tok+=*(++next);
       else if (*next==quote)
         quoted=!quoted;
       else if (!quoted && isspace(*next))

@@ -173,7 +173,7 @@ SUITE(CSVParser)
     {
       string input="A comment\n"
         "  foobar\n" // horizontal dim name
-        "foo bar A B C\n"
+        "\"foo\" bar \\A B C\n"
         "A A 1.2 1.3 1.4\n"
         "A B 1 2 3\n"
         "B A 3 2 1\n";
