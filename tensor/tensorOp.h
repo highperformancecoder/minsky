@@ -53,7 +53,7 @@ namespace civita
   public:
     template <class F>
     BinOp(F f, const TensorPtr& arg1={},const TensorPtr& arg2={}):
-      f(f) {setArguments(arg1,arg2);}
+      f(f) {BinOp::setArguments(arg1,arg2);}
     
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
       arg1=a1; arg2=a2;
@@ -123,7 +123,7 @@ namespace civita
    
     template <class F>
     ReductionOp(F f, double init, const TensorPtr& arg={}, const std::string& dimName=""):
-      ReduceAllOp(f,init) {setArgument(arg,dimName,0);}
+      ReduceAllOp(f,init) {ReduceAllOp::setArgument(arg,dimName,0);}
 
     void setArgument(const TensorPtr& a, const std::string&,double) override;
     size_t size() const override {return hypercube().numElements();}
@@ -160,7 +160,7 @@ namespace civita
     std::function<void(double&,double,size_t)> f;
     template <class F>
     Scan(F f, const TensorPtr& arg={}, const std::string& dimName="", double av=0): f(f) 
-    {setArgument(arg,dimName,av);}
+    {Scan::setArgument(arg,dimName,av);}
     void setArgument(const TensorPtr& arg, const std::string& dimName,double argVal) override {
       DimensionedArgCachedOp::setArgument(arg,dimName,argVal);
       if (arg)

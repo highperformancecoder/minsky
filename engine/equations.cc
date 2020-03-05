@@ -41,23 +41,14 @@ namespace MathDAG
       }
     };
 
-    struct NoArgument: public std::exception
+    struct NoArgument: public runtime_error
     {
-      OperationPtr state;
-      unsigned argNum1, argNum2;
-      NoArgument(const OperationPtr& s, unsigned a1, unsigned a2): 
-        state(s), argNum1(a1), argNum2(a2) {}
-      const char* what() const noexcept override {
-        string r="missing argument "+to_string(argNum1)+","+to_string(argNum2)+
-          " on operation ";
-        if (state)
-          {
-            minsky::minsky().displayErrorItem(*state);
-            r+=OperationType::typeName(state->type());
-          }
-        
-        return r.c_str();
-      }
+      std::string message;
+      NoArgument(const OperationPtr& s, unsigned a1, unsigned a2):
+        std::runtime_error
+        ("missing argument "+to_string(a1)+","+to_string(a2)+
+         (s?(" on operation "+OperationType::typeName(s->type())):string()))
+      {minsky::minsky().displayErrorItem(*s);}
     };
 
   }
@@ -99,7 +90,7 @@ namespace MathDAG
             TensorPtr rhs=tensorOpFactory.create(*state,TensorsFromPort(ec));
             if (!rhs) return false;
             result.hypercube(rhs->hypercube());
-            ev.emplace_back(new TensorEval(result, ec, rhs));
+            ev.emplace_back(EvalOpPtr(new TensorEval(result, ec, rhs)));
             return true;
           }
         catch(const FallBackToScalar&) {/* fall back to scalar processing */}
@@ -139,7 +130,7 @@ namespace MathDAG
             }
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
-      ev.emplace_back(new TensorEval(*r,*result));
+      ev.emplace_back(EvalOpPtr(new TensorEval(*r,*result)));
     //ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
@@ -237,7 +228,6 @@ namespace MathDAG
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
       // For feature 47
-      size_t oldNumElems=r.size();
       for (auto& i: argIdx)
         if (i.size())
           {
@@ -452,7 +442,7 @@ namespace MathDAG
   {
     expressionCache.insertAnonymous(zero);
     expressionCache.insertAnonymous(one);
-    zero->result=&const_cast<Minsky&>(m).variableValues.find("constant:zero")->second;
+    zero->result=const_cast<VariableValue*>(&/*const_cast<Minsky&>(*/m/*)*/.variableValues.find("constant:zero")->second);
     one->result=&const_cast<Minsky&>(m).variableValues.find("constant:one")->second;
 
     // store stock & integral variables for later reordering
@@ -775,7 +765,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
-            i->type==VariableType::constant) continue;
+            !i || i->type==VariableType::constant) continue;
         o << i->latex() << "&=&";
         if (i->rhs) 
           i->rhs->latex(o);
@@ -803,7 +793,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
-        if (i->type==VariableType::constant) continue;
+        if (!i || i->type==VariableType::constant) continue;
         o<<"\\begin{dmath*}\n";
         o << i->latex() << "=";
         if (i->rhs) 
@@ -838,7 +828,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
-            i->type==VariableType::constant) continue;
+            !i || i->type==VariableType::constant) continue;
         o << i->matlab() << "=";
         if (i->rhs)
           o << i->rhs->matlab();

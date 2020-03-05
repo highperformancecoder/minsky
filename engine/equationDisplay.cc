@@ -148,7 +148,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
-        if (i->type==VariableType::constant) continue;
+        if (!i || i->type==VariableType::constant) continue;
         RecordingSurface line;
         variableRender(line,*i);
         cairo_move_to(dest.cairo(), x, y-line.top());

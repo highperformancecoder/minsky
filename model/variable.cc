@@ -75,7 +75,6 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
 {
   double fm=std::fmod(rotation(),360);
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-  float xxx=xx-x(), yyy=yy-y();
   Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
   RenderVariable rv(*this);
   double z=zoomFactor();

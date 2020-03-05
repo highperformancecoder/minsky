@@ -1,6 +1,8 @@
 ---
-Checks:          'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*'
-WarningsAsErrors: 'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*'
+#Checks:          'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*'
+#WarningsAsErrors: 'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*'
+Checks:          'clang-diagnostic-*,clang-analyzer-*'
+WarningsAsErrors: 'clang-diagnostic-*,clang-analyzer-*'
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
 User:            rks

@@ -723,7 +723,7 @@ namespace minsky
   {
     data.clear();
     double dx=(xmax-xmin)/numSamples;
-    for (double x=xmin; x<xmax; x+=dx)
+    for (double x=xmin; x<xmax; x+=dx) //NOLINT
       data[x]=double(rand())/RAND_MAX;
     //initXVector();
   }

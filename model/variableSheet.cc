@@ -35,7 +35,7 @@ namespace
   struct CroppedPango: public Pango
   {
     cairo_t* cairo;
-    double w, x, y;
+    double w, x=0, y=0;
     CroppedPango(cairo_t* cairo, double width): Pango(cairo), cairo(cairo), w(width) {}
     void setxy(double xx, double yy) {x=xx; y=yy;}
     void show() {

@@ -14,7 +14,7 @@ namespace ravel
     static cairo_t* cairo(CAPIRenderer* r)
     {return static_cast<CairoRenderer*>(r)->cr;}
     
-    cairo_text_extents_t ext;
+    cairo_text_extents_t ext{0,0,0,0,0,0};
     static cairo_text_extents_t& extents(CAPIRenderer* r)
     {return static_cast<CairoRenderer*>(r)->ext;}
     
