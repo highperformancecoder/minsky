@@ -37,7 +37,7 @@ namespace minsky
     bool mergeDelimiters=false;
     bool columnar=false;
     double missingValue=nan("");
-    /// start row/col of data area
+    /// number of header rows
     size_t headerRow=0;
     /// start row of the data area
     size_t nRowAxes() const {return m_nRowAxes;}

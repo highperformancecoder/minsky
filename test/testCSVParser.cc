@@ -44,7 +44,41 @@ SUITE(CSVParser)
       CHECK_EQUAL(2,headerRow);
       CHECK((set<unsigned>{0,1}==dimensionCols));
     }
-  
+   TEST_FIXTURE(DataSpec,guessSpace)
+    {
+      string input="foo bar  A B C\n"
+        "A A 1.2 1.3  1.4\n"
+        "A B  1 2 3\n"
+        "B A 3 2 1\n";
+
+      istringstream is(input);
+      guessFromStream(is);
+
+      CHECK_EQUAL(' ',separator);
+      CHECK_EQUAL(1,nRowAxes());
+      CHECK_EQUAL(2,nColAxes());
+      CHECK_EQUAL(0,headerRow);
+      CHECK((set<unsigned>{0,1}==dimensionCols));
+    }
+    TEST_FIXTURE(DataSpec,guessTab)
+    {
+      string input="A comment\n"
+        "\t\tfoobar\n" // horizontal dim name
+        "foo\tbar\tA\tB\tC\n"
+        "A\tA\t1.2\t1.3\t1.4\n"
+        "A\tB\t1\t2\t3\n"
+        "B\tA\t3\t2\t1\n";
+
+      istringstream is(input);
+      guessFromStream(is);
+
+      CHECK_EQUAL('\t',separator);
+      CHECK_EQUAL(3,nRowAxes());
+      CHECK_EQUAL(2,nColAxes());
+      CHECK_EQUAL(2,headerRow);
+      CHECK((set<unsigned>{0,1}==dimensionCols));
+    }
+
   TEST_FIXTURE(DataSpec,guessColumnar)
     {
       string input="Country,Time_Period,value$\n"
@@ -107,6 +141,45 @@ SUITE(CSVParser)
       istringstream is(input);
       
       separator=';';
+      setDataArea(3,2);
+      missingValue=-1;
+      headerRow=2;
+      dimensionNames={"foo","bar"};
+      dimensionCols={0,1};
+      horizontalDimName="foobar";
+      
+      VariableValue v;
+      loadValueFromCSVFile(v,is,*this);
+
+      CHECK_EQUAL(3, v.rank());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
+      CHECK_EQUAL("foo", v.hypercube().xvectors[0].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[0][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[0][1]));
+      CHECK_EQUAL("bar", v.hypercube().xvectors[1].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[1][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[1][1]));
+      CHECK_EQUAL("foobar", v.hypercube().xvectors[2].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[2][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[2][1]));
+      CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
+      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
+      CHECK_EQUAL(12, v.tensorInit.size());
+      CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
+                        v.tensorInit, 12, 1e-4);
+    }
+
+  TEST_FIXTURE(DataSpec,loadVarSpace)
+    {
+      string input="A comment\n"
+        "  foobar\n" // horizontal dim name
+        "foo bar A B C\n"
+        "A A 1.2 1.3 1.4\n"
+        "A B 1 2 3\n"
+        "B A 3 2 1\n";
+      istringstream is(input);
+      
+      separator=' ';
       setDataArea(3,2);
       missingValue=-1;
       headerRow=2;

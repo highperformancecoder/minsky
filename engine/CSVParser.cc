@@ -30,6 +30,33 @@ using namespace std;
 typedef boost::escaped_list_separator<char> Parser;
 typedef boost::tokenizer<Parser> Tokenizer;
 
+struct SpaceSeparatorParser
+{
+  char escape, quote;
+  SpaceSeparatorParser(char escape='\\', char sep=' ', char quote='"'):
+    escape(escape), quote(quote) {}
+  template <class I>
+  bool operator()(I& next, I end, std::string& tok)
+  {
+    tok.clear();
+    bool quoted=false;
+    for (; next!=end; ++next)
+      if (*next==escape)
+        tok+=*(next++);
+      else if (*next==quote)
+        quoted=!quoted;
+      else if (!quoted && isspace(*next))
+        {
+          while (isspace(*next)) ++next;
+          return true;
+        }
+      else
+        tok+=*next;
+    return !tok.empty();
+  }
+  void reset() {}
+};
+
 struct NoDataColumns: public std::exception
 {
   const char* what() const noexcept override {return "No data columns";}
@@ -175,7 +202,7 @@ void DataSpec::guessRemainder(std::istream& input, char sep)
 {
   separator=sep;
   if (separator==' ')
-    givenTFguessRemainder(input,boost::char_separator<char>()); //asumes merged whitespace separators
+    givenTFguessRemainder(input,SpaceSeparatorParser(escape,separator,quote)); //asumes merged whitespace separators
   else
     givenTFguessRemainder(input,Parser(escape,separator,quote));
 }
@@ -224,7 +251,7 @@ void DataSpec::guessFromStream(std::istream& input)
 void DataSpec::guessDimensionsFromStream(std::istream& i)
 {
   if (separator==' ')
-    guessDimensionsFromStream(i,boost::char_separator<char>());
+    guessDimensionsFromStream(i,SpaceSeparatorParser(escape,quote));
   else
     guessDimensionsFromStream(i,Parser(escape,separator,quote));
 }
@@ -278,13 +305,14 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
 
 namespace minsky
 {
-  void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec)
+  template <class P>
+  void reportFromCSVFileT(istream& input, ostream& output, const DataSpec& spec)
   {
     typedef vector<string> Key;
     map<Key,string> lines;
     multimap<Key,string> duplicateLines;
     string buf;
-    Parser csvParser(spec.escape,spec.separator,spec.quote);
+    P csvParser(spec.escape,spec.separator,spec.quote);
     for (size_t row=0; getline(input, buf); ++row)
       {
         if (row==spec.headerRow)
@@ -294,7 +322,7 @@ namespace minsky
           }
         if (row>=spec.nRowAxes())
           {
-            Tokenizer tok(buf.begin(), buf.end(), csvParser);
+            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
             Key key;
             auto field=tok.begin();
             for (size_t i=0, dim=0; i<spec.nColAxes() && field!=tok.end(); ++i, ++field)
@@ -336,9 +364,18 @@ namespace minsky
       output<<spec.separator<<i.second<<endl;
   }
 
-  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  void reportFromCSVFile(istream& input, ostream& output, const DataSpec& spec)
   {
-    Parser csvParser(spec.escape,spec.separator,spec.quote);
+    if (spec.separator==' ')
+      reportFromCSVFileT<SpaceSeparatorParser>(input,output,spec);
+    else
+      reportFromCSVFileT<Parser>(input,output,spec);
+  }
+
+  template <class P>
+  void loadValueFromCSVFileT(VariableValue& v, istream& input, const DataSpec& spec)
+  {
+    P csvParser(spec.escape,spec.separator,spec.quote);
     string buf;
     typedef vector<string> Key;
     map<Key,double> tmpData;
@@ -357,7 +394,7 @@ namespace minsky
       {
         for (size_t row=0; getline(input, buf); ++row)
           {
-            Tokenizer tok(buf.begin(), buf.end(), csvParser);
+            boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
             assert(spec.headerRow<=spec.nRowAxes());
             if (row==spec.headerRow && !spec.columnar) // in header section
@@ -515,5 +552,12 @@ namespace minsky
         throw std::runtime_error("exhausted memory - try reducing the rank");
       }
   }
-
+  
+  void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  {
+    if (spec.separator==' ')
+      loadValueFromCSVFileT<SpaceSeparatorParser>(v,input,spec);
+    else
+      loadValueFromCSVFileT<Parser>(v,input,spec);
+  }
 }
