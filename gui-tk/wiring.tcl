@@ -35,7 +35,6 @@ foreach op [availableOperations] {
 
 proc addToolTipToTearOff {text menu tornOffMenu} {
     for {set i 1} {$i<=[$menu index last]} {incr i} {
-        puts "tooltip $menu -index [$menu entrycget $i -label]"
         tooltip $tornOffMenu -index $i [$menu entrycget $i -label]
     }
 }
