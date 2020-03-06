@@ -21,6 +21,7 @@
 #define CIVITA_DIMENSION_H
 #include <string>
 #include <map>
+#include <exception>
 namespace civita
 {
   struct Dimension
