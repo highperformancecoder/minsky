@@ -492,15 +492,6 @@ namespace minsky
   double EvalOp<OperationType::numOps>::d2(double x1, double x2) const
   {throw error("calling d2() on EvalOp<numOps> invalid");}
 
-//  void RavelEvalOp::eval(double fv[], const double sv[]) 
-//  {
-//    if (auto r=dynamic_cast<Ravel*>(state.get()))
-//      {
-//        r->loadDataCubeFromVariable(in);
-//        r->loadDataFromSlice(out);
-//      }
-//  }
-  
   namespace {OperationFactory<ScalarEvalOp, EvalOp, OperationType::sum-1> evalOpFactory;}
 
   ScalarEvalOp* ScalarEvalOp::create(Type op)

@@ -143,39 +143,6 @@ namespace minsky
     double d2(double x1=0, double x2=0) const override;
   };
 
-//  // dummy tensor EvalOps to get this mess to link
-//  template <minsky::OperationType::Type T>
-//  struct TensorEvalOp: public classdesc::Poly<TensorEvalOp<T>, EvalOpBase>
-//  //                 public classdesc::PolyPack<TensorEvalOp<T> >
-//  {
-////    OperationType::Type type() const override {return T;} 
-////    int numArgs() const override {return OperationTypeInfo::numArguments<T>();}
-//    void deriv(double df[], const double ds[], 
-//               const double sv[], const double fv[]) override {}
-//
-//    void eval(double fv[]=&ValueVector::flowVars[0], 
-//              const double sv[]=&ValueVector::stockVars[0]) override {}
-//    
-//  };
-
-//#define TMPEVALOP(t) template <> struct EvalOp<OperationType::t>: public TensorEvalOp<OperationType::t> {};
-//
-//  TMPEVALOP(sum);
-//  TMPEVALOP(product);
-//  TMPEVALOP(infimum);
-//  TMPEVALOP(supremum);
-//  TMPEVALOP(any);
-//  TMPEVALOP(all);
-//  TMPEVALOP(infIndex);
-//  TMPEVALOP(supIndex);
-//  TMPEVALOP(runningSum);
-//  TMPEVALOP(runningProduct);
-//  TMPEVALOP(difference);
-//  TMPEVALOP(innerProduct);
-//  TMPEVALOP(outerProduct);
-//  TMPEVALOP(index);
-//  TMPEVALOP(gather);
-  
  struct ConstantEvalOp: public EvalOp<minsky::OperationType::constant>
   {
     double value;

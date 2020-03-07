@@ -33,6 +33,11 @@ foreach op [availableOperations] {
     image create photo [set op]Img -file $minskyHome/icons/$op.gif
 }
 
+proc addToolTipToTearOff {text menu tornOffMenu} {
+    for {set i 1} {$i<=[$menu index last]} {incr i} {
+        tooltip $tornOffMenu -index $i [$menu entrycget $i -label]
+    }
+}
 
 image create photo godleyImg -file $minskyHome/icons/bank.gif
 button .wiring.menubar.godley -image godleyImg -height 24 -width 37 \
@@ -62,7 +67,7 @@ button .wiring.menubar.var -text var -foreground #9f0000 -command {
 tooltip .wiring.menubar.var "variable"
 set helpTopics(.wiring.menubar.var) Variable
 
-menu .wiring.menubar.var.menu -tearoff 1
+menu .wiring.menubar.var.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "variable toolbar"}
 .wiring.menubar.var.menu add command -label "variable" -command addVariable
 .wiring.menubar.var.menu add command -label "constant" -command addConstant
 .wiring.menubar.var.menu add command -label "parameter" -command addParameter
@@ -71,31 +76,31 @@ button .wiring.menubar.binops -image addImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.binops "binary operations"
 set helpTopics(.wiring.menubar.binops) Operations
-menu .wiring.menubar.binops.menu -tearoff 1
+menu .wiring.menubar.binops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "binary operations toolbox"}
 
 button .wiring.menubar.fnops -image sqrtImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.fnops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.fnops "functions"
 set helpTopics(.wiring.menubar.fnops) Operations
-menu .wiring.menubar.fnops.menu -tearoff 1
+menu .wiring.menubar.fnops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "function toolbox"}
 
 button .wiring.menubar.reductionops -image sumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.reductionops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.reductionops "reductions"
 set helpTopics(.wiring.menubar.reductionops) Operations
-menu .wiring.menubar.reductionops.menu -tearoff 1
+menu .wiring.menubar.reductionops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "reduction operations toolbox"}
 
 button .wiring.menubar.scanops -image runningSumImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.scanops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.scanops "scans"
 set helpTopics(.wiring.menubar.scanops) Operations
-menu .wiring.menubar.scanops.menu -tearoff 1
+menu .wiring.menubar.scanops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff  "scans toolbox"}
 
 button .wiring.menubar.tensorops -image outerProductImg -width 37 -height 24 -command {
     tk_popup  .wiring.menubar.tensorops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.tensorops "tensor operations"
 set helpTopics(.wiring.menubar.tensorops) Operations
-menu .wiring.menubar.tensorops.menu -tearoff 1
+menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "tensor toolbox"}
 
 pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
 pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left

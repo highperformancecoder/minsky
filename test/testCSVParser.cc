@@ -173,7 +173,7 @@ SUITE(CSVParser)
     {
       string input="A comment\n"
         "  foobar\n" // horizontal dim name
-        "foo bar A B C\n"
+        "\"foo\" bar \\A B C\n"
         "A A 1.2 1.3 1.4\n"
         "A B 1 2 3\n"
         "B A 3 2 1\n";
@@ -206,6 +206,44 @@ SUITE(CSVParser)
       CHECK_EQUAL(12, v.tensorInit.size());
       CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
                         v.tensorInit, 12, 1e-4);
+    }
+
+  TEST_FIXTURE(DataSpec,loadVarSparse)
+    {
+      string input="A comment\n"
+        ";;foobar\n" // horizontal dim name
+        "foo;bar;A;B;C\n"
+        "A;A;;1.3;1.4\n"
+        "A;B;1;;\n"
+        "B;A;;2;\n";
+      istringstream is(input);
+      
+      separator=';';
+      setDataArea(3,2);
+      headerRow=2;
+      dimensionNames={"foo","bar"};
+      dimensionCols={0,1};
+      horizontalDimName="foobar";
+      
+      VariableValue v;
+      loadValueFromCSVFile(v,is,*this);
+
+      CHECK_EQUAL(3, v.rank());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
+      CHECK_EQUAL("foo", v.hypercube().xvectors[0].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[0][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[0][1]));
+      CHECK_EQUAL("bar", v.hypercube().xvectors[1].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[1][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[1][1]));
+      CHECK_EQUAL("foobar", v.hypercube().xvectors[2].name);
+      CHECK_EQUAL("A", str(v.hypercube().xvectors[2][0]));
+      CHECK_EQUAL("B", str(v.hypercube().xvectors[2][1]));
+      CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
+      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
+      CHECK_EQUAL(4, v.tensorInit.size());
+      CHECK_ARRAY_EQUAL(vector<unsigned>({2,4,5,8}),v.tensorInit.index(), 4);
+      CHECK_ARRAY_CLOSE(vector<double>({1,1.3,2,1.4}),v.tensorInit, 4, 1e-4);
     }
 
   TEST_FIXTURE(DataSpec, duplicateActions)
