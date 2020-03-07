@@ -308,13 +308,12 @@ proc setGodleyDisplay {} {
     redrawAllGodleyTables
 }
 
+# sets each individual Godley table mutliple equity column preference
 proc toggleEquityColumns id {
 	global preferences
-	tk_messageBox -message "Close and reopen the Godley table to bring this feature into effect" -type ok -parent .$id.table
-    foreach c [info commands godleyIcon.table.multipleEquities] {
-        $c $preferences(multipleEquities)
-    }   
-    redrawAllGodleyTables
+	tk_messageBox -message "Close and reopen the Godley table to enable/disable this feature" -type ok -parent .$id.table
+    set $id.multipleEquities [info commands id.godleyIcon.table.multipleEquities]
+    $id.requestRedraw
 } 
 
 proc exportGodley {id} {
