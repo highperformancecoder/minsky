@@ -593,7 +593,7 @@ namespace minsky
         selectedRow<int(table.rows()) && (selectedCol!=0 || selectedRow!=1)) // Cell (1,0) is off-limits. For ticket 1064
           {			  	  
             auto& str=table.cell(selectedRow,selectedCol);
-            if (utf8.length() && (keySym<0x7f || (0xffb0 < keySym && keySym < 0xffbe)))  // Enable numeric keypad key presses. For ticket 1136
+            if (utf8.length() && (keySym<0x7f || (0xffaa <= keySym && keySym <= 0xffbf)))  // Enable numeric keypad key presses. For ticket 1136
               // all printing and control characters have keysym
               // <0x80. But some keys (eg tab, backspace and escape
               // are mapped to control characters
@@ -639,13 +639,10 @@ namespace minsky
                   selectedRow=selectedCol=-1;
                   break;
                 case 0xff0d: //return
+                case 0xff8d: //enter added for ticket 1122                            
                   update();                                    
                   selectedRow=selectedCol=-1;                       
                   break;
-                case 0xff8d: //enter added for ticket 1122                            
-                  update();
-                  selectedRow=selectedCol=-1;                  
-                  break;     
                 case 0xff51: //left arrow
                   if (insertIdx>0) insertIdx--;
                   else navigateLeft();
