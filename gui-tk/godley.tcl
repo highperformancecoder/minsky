@@ -103,10 +103,10 @@ proc openGodley {id} {
         
         
         
-        menu .$id.menubar.options
+        menu .$id.menubar.options  
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
-        .$id.menubar.options add checkbutton -label "Enable multiple equities" -variable preferences(multipleEquities) -command setGodleyDisplay
+        .$id.menubar.options add checkbutton -label "Enable multiple equity columns" -variable preferences(multipleEquities) -command "toggleEquityColumns $id"
         
         .$id.menubar add cascade -label File -menu .$id.menubar.file -underline 0
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
@@ -305,12 +305,17 @@ proc setGodleyDisplay {} {
     foreach c [info commands godleyWindow*.displayStyle] {
         $c $preferences(godleyDisplayStyle)
     }
-    foreach c [info commands godleyIcon.table.multipleEquities] {
-        $c $preferences(multipleEquities)
-    }    
     redrawAllGodleyTables
 }
-	
+
+proc toggleEquityColumns id {
+	global preferences
+	tk_messageBox -message "Close and reopen the Godley table to bring this feature into effect" -type ok -parent .$id.table
+    foreach c [info commands godleyIcon.table.multipleEquities] {
+        $c $preferences(multipleEquities)
+    }   
+    redrawAllGodleyTables
+} 
 
 proc exportGodley {id} {
     global workDir type
