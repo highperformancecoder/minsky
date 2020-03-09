@@ -944,8 +944,13 @@ namespace minsky
       throw runtime_error("failed to open "+filename);
     stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
-    *this=schema3::Minsky(saveFile);
-
+    schema3::Minsky currentSchema(saveFile);
+    *this=currentSchema;
+    if (currentSchema.schemaVersion<currentSchema.version)
+      message("You are converting the model from an older version of Minsky. "
+              "Once you save this file, you may not be able to open this file"
+              " in older versions of Minsky.");
+    
     // try balancing all Godley tables
     try
       {

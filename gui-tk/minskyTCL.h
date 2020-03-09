@@ -381,6 +381,10 @@ namespace minsky
     void clearBusyCursor() override
     {tclcmd()<<"setCursor {}\n";}
 
+    void message(const std::string& m) override
+    {(tclcmd()<<"tk_messageBox -message \"")|m|"\" -type ok\n";}
+
+    
     bool checkMemAllocation(size_t bytes) const override {
       bool r=true;
       if (bytes>0.2*physicalMem())

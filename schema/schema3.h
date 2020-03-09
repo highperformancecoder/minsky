@@ -234,7 +234,9 @@ namespace schema3
     {minsky::loadSchema<schema2::Minsky>(*this,data,"Minsky");}
     
     Minsky(const schema2::Minsky& m):
-      wires(m.wires.begin(), m.wires.end()), items(m.items.begin(), m.items.end()),
+      schemaVersion(m.schemaVersion),
+      wires(m.wires.begin(), m.wires.end()),
+      items(m.items.begin(), m.items.end()),
       groups(m.groups.begin(), m.groups.end()), rungeKutta(m.rungeKutta),
       zoomFactor(m.zoomFactor), bookmarks(m.bookmarks), dimensions(m.dimensions),
       conversions(m.conversions) {}
