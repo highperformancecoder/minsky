@@ -319,7 +319,7 @@ namespace minsky
     cairo_set_line_width(surface->cairo(),0.5);
     cairo_stroke(surface->cairo());
 
-    //cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
+    cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
 
     // now row sum column
     x+=3;
