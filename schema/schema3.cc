@@ -414,7 +414,6 @@ namespace schema3
         if (y.data) data=*y.data;
         if (y.assetClasses) assetClasses=*y.assetClasses;
         if (y.name) x1->table.title=*y.name;
-        if (y.multipleEquities) x1->table.multipleEquities=*y.multipleEquities;
         SchemaHelper::setPrivates(x1->table,data,assetClasses);
         try
           {

@@ -101,10 +101,10 @@ proc openGodley {id} {
         .$id.menubar.view add command -label "Zoom out" -command "zoomOut $id" -accelerator $meta_menu--
         .$id.menubar.view add command -label "Reset zoom" -command "$id.zoomFactor 1; $id.requestRedraw"
         
-        menu .$id.menubar.options -postcommand "toggleEquityColumns $id" 
+        menu .$id.menubar.options  
+        ###-postcommand "toggleEquityColumns $id" 
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
-        .$id.menubar.options add checkbutton -label "Enable multiple equity columns" -variable equityColumns -command "toggleEquityColumns $id"
         
         .$id.menubar add cascade -label File -menu .$id.menubar.file -underline 0
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
@@ -115,9 +115,6 @@ proc openGodley {id} {
         global preferences
         $id.displayValues $preferences(godleyDisplay)
         $id.displayStyle $preferences(godleyDisplayStyle)
-        global equityColumns
-        $id.godleyIcon.table.multipleEquities $equityColumns
-
         
     }
     wm deiconify .$id
@@ -304,23 +301,9 @@ proc setGodleyDisplay {} {
     }
     foreach c [info commands godleyWindow*.displayStyle] {
         $c $preferences(godleyDisplayStyle)
-    }
+    }    
     redrawAllGodleyTables
 }
-
-# sets each individual Godley table mutliple equity column preference
-proc toggleEquityColumns id {
-	global equityColumns
-    foreach c [info commands id.godleyIcon.table.multipleEquities] {
-        $c $equityColumns
-        if {$c==0} {
-	     .$id.menubar.edit entryconfigure end -state disabled
-        } else {
-	     .$id.menubar.edit entryconfigure end -state normal
-        }          
-    }        
-    redrawAllGodleyTables
-} 
 
 proc exportGodley {id} {
     global workDir type

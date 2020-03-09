@@ -108,7 +108,6 @@ namespace schema3
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
     Optional<float> iconScale; // for handling legacy schemas
-    Optional<bool> multipleEquities; //  per godley table attribute
     // Plot specific fields
     Optional<bool> logx, logy, ypercent;
     Optional<Plot::PlotType> plotType;
@@ -141,7 +140,7 @@ namespace schema3
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
       width(g.width()/g.zoomFactor()), height(g.height()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
-      assetClasses(g.table._assetClass()),multipleEquities(g.table.multipleEquities) {}
+      assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
       width(p.width), height(p.height), name(p.title),

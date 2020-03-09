@@ -41,6 +41,7 @@ set backgroundColour lightGray
 set preferences(nRecentFiles) 10
 set preferences(panopticon) 1
 set preferences(focusFollowsMouse) 0
+set preferences(multipleEquities) 0
 set recentFiles {}
 
 # select Arial Unicode MS by default, as this gives decent Unicode support
@@ -223,6 +224,14 @@ if {$preferences(focusFollowsMouse)} {
 }
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
+# Toggle single or multiple equity column mode
+multipleEquities $preferences(multipleEquities)
+if $preferences(multipleEquities) {
+   set multipleEquities 0
+} else {
+   set multipleEquities 1
+}	
+
 #source $minskyHome/library/htmllib.tcl
 #toplevel .splash
 #text .splash.text
@@ -327,7 +336,8 @@ set preferencesVars {
     godleyDisplay        "Godley Table Show Values"      1      bool
     godleyDisplayStyle       "Godley Table Output Style"    sign  { enum
         "DR/CR" DRCR
-        "+/-" sign }      
+        "+/-" sign }
+    multipleEquities   "Enable mutliple equity columns"      1      bool        
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
     panopticon        "Enable panopticon" 1 bool
@@ -1405,7 +1415,14 @@ proc setPreferenceParms {} {
        } else {
 	   bind all <Enter> $script
        }
-    }  
+    }
+    # Toggle single or multiple equity column mode
+    multipleEquities $preferences(multipleEquities)
+    if $preferences(multipleEquities) {
+       set multipleEquities 0
+    } else {
+       set multipleEquities 1
+    }	      
 }
 
 setPreferenceParms
