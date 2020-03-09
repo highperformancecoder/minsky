@@ -646,9 +646,6 @@ namespace minsky
                   selectedRow=selectedCol=-1;
                   break;
                 case 0xff0d: //return
-                  update();                                    
-                  selectedRow=selectedCol=-1;                       
-                  break;
                 case 0xff8d: //enter added for ticket 1122                            
                   update();
                   selectedRow=selectedCol=-1;                  
