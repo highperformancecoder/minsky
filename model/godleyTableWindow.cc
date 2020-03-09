@@ -108,7 +108,7 @@ namespace minsky
   void ButtonWidget<ButtonWidgetEnums::col>::invoke(double x)
   {
     int button=x/buttonSpacing;
-    if (!godleyIcon.table.multipleEquities) {
+    if (!godleyIcon.table.multipleEquities) {  // no column widgets on equity column in single equity column mode
       if (pos!=last)
         switch (button)
          {
@@ -202,6 +202,11 @@ namespace minsky
             CairoSave cs(surface->cairo());
             cairo_move_to(surface->cairo(), x, columnButtonsOffset);
             colWidgets[col].draw(surface->cairo());
+            // Prevent the existence of more than one equity column in single equity column mode
+            if (godleyIcon->table._assetClass(col)==GodleyAssetClass::equity && col!=godleyIcon->table.cols()-1 && !godleyIcon->table.multipleEquities) {
+               godleyIcon->table.deleteCol(col);
+               requestRedraw();
+		   }
           }
       
         if (col>1)
@@ -1119,7 +1124,7 @@ namespace {
   {	    
     CairoSave cs(cairo);
     int idx=0;
-    if (!godleyIcon.table.multipleEquities || rowCol==row) {
+    if (!godleyIcon.table.multipleEquities || rowCol==row) {  // no column widgets on equity column in single equity column mode
       if (rowCol == row || (rowCol == col && pos!=last)) 
         drawButton(cairo,"+",0,1,0,idx++);
       if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064
