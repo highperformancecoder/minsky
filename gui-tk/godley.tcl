@@ -102,7 +102,6 @@ proc openGodley {id} {
         .$id.menubar.view add command -label "Reset zoom" -command "$id.zoomFactor 1; $id.requestRedraw"
         
         menu .$id.menubar.options  
-        ###-postcommand "toggleEquityColumns $id" 
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
         
