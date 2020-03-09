@@ -244,9 +244,6 @@ namespace minsky
     virtual std::string getClipboard() const {return "";}
     /// @}
 
-    /// toggle selected status of given item
-    void toggleSelected(ItemType itemType, int item);
-
     void insertGroupFromFile(const char* file);
 
     void makeVariablesConsistent();

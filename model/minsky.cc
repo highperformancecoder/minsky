@@ -290,14 +290,25 @@ namespace minsky
     canvas.requestRedraw();
   }
 
-  void Minsky::toggleSelected(ItemType itemType, int item)
+  namespace
   {
-    //TODO: individually add or remove item from selection
+    /// checks if the input stream has the UTF-8 byte ordering marker,
+    /// and removes it if present
+    void stripByteOrderingMarker(istream& s)
+    {
+      char bom[4];
+      s.get(bom,4);
+      if (strcmp(bom,"\357\273\277")==0) return; //skipped BOM
+      s.seekg(0); //rewind input stream
+    }
   }
 
   void Minsky::insertGroupFromFile(const char* file)
   {
     ifstream inf(file);
+    if (!inf)
+      throw runtime_error(string("failed to open ")+file);
+    stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
     schema3::Minsky currentSchema(saveFile);
 
@@ -923,10 +934,6 @@ namespace minsky
     flags &= ~is_edited;
   }
 
-  namespace
-  {
-  }
-
   void Minsky::load(const std::string& filename) 
   {
     BusyCursor busy(*this);
@@ -935,39 +942,9 @@ namespace minsky
     ifstream inf(filename);
     if (!inf)
       throw runtime_error("failed to open "+filename);
+    stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
     *this=schema3::Minsky(saveFile);
-//
-//
-//    xml_unpack(saveFile, "Minsky", currentSchema);
-//
-//    switch (currentSchema.schemaVersion)
-//      {
-//      case 0:
-//        {
-//          schema0::Minsky schema0;
-//          xml_unpack(saveFile, "root", schema0);
-//          schema1::Minsky schema1(schema0);
-//          // fix corruption caused by ticket #329
-//          schema1.removeIntVarOrphans();
-//          *this=schema2::Minsky(schema1);
-//          break;
-//        }
-//      case 1:
-//        {
-//          schema1::Minsky schema1;
-//          xml_unpack(saveFile, "Minsky", schema1);
-//          // fix corruption caused by ticket #329
-//          schema1.removeIntVarOrphans();
-//          *this=schema2::Minsky(schema1);
-//          break;
-//        }
-//      case 2:
-//        *this = currentSchema;
-//        break;
-//      default:
-//        throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
-//      }
 
     // try balancing all Godley tables
     try
