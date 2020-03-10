@@ -384,6 +384,8 @@ namespace minsky
     void message(const std::string& m) override
     {(tclcmd()<<"tk_messageBox -message \"")|m|"\" -type ok\n";}
 
+    void redrawAllGodleyTables() override 
+    {tclcmd()<<"redrawAllGodleyTables\n";}
     
     bool checkMemAllocation(size_t bytes) const override {
       bool r=true;

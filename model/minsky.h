@@ -366,6 +366,8 @@ namespace minsky
 
     /// display a message in a popup box on the GUI
     virtual void message(const std::string&) {}
+    /// request all Godley table windows to redraw
+    virtual void redrawAllGodleyTables() {}
     
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
