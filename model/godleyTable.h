@@ -129,7 +129,9 @@ namespace minsky
     */
     /// insert row at \a row
     void insertRow(unsigned row);
-   /// insert col at \a col
+    /// delete row at \a row
+    void deleteRow(unsigned row) {data.erase(data.begin()+row);}
+    /// insert col at \a col
     void insertCol(unsigned col);
     /// delete col before \a col
     void deleteCol(unsigned col);

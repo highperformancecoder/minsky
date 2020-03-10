@@ -629,6 +629,7 @@ namespace minsky
                            }
                        }
                    // items to delete
+                   vector<size_t> rowsToDelete;
                    for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
                      if (i->second!=0 && srcFlows[i->first]==0)
                        for (size_t row=1; row<destTable.rows(); ++row)
@@ -637,8 +638,17 @@ namespace minsky
                            if (!fc.name.empty())
                              fc.name=gi->valueId(fc.name);
                            if (fc.name==gi->valueId(i->first))
-                             destTable.cell(row, col).clear();
+                             {
+                               destTable.cell(row, col).clear();
+                               // if this leaves an empty row, delete entire row
+                               for (int c=0; c<destTable.cols(); ++c)
+                                 if (!destTable.cell(row, col).empty())
+                                   goto rowNotEmpty;
+                               rowsToDelete.push_back(row);
+                             rowNotEmpty:;
+                             }
                          }
+                   for (auto row: rowsToDelete) destTable.deleteRow(row);
                  }   
          return false;
        });  // TODO - this lambda is FAR too long!

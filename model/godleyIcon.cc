@@ -182,7 +182,7 @@ namespace minsky
   {
     if (row>0 && row<=table.rows())
       {
-        table.data.erase(table.data.begin()+row-1);
+        table.deleteRow(row-1);
         // if shared column data is deleted, remove it from the other tables too
         for (size_t col=1; col<table.cols(); ++col)
           minsky().balanceDuplicateColumns(*this, col);
