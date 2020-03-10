@@ -201,14 +201,7 @@ namespace minsky
           {
             CairoSave cs(surface->cairo());
             cairo_move_to(surface->cairo(), x, columnButtonsOffset);
-            // Prevent the existence of more than one equity column in single equity column mode
-            if (godleyIcon->table._assetClass(col)==GodleyAssetClass::equity && col!=godleyIcon->table.cols()-1 && !godleyIcon->table.multipleEquities) {
-               godleyIcon->table.deleteCol(col);
-               colWidgets[col].draw(surface->cairo());
-		   }
-            else {
-			   colWidgets[col].draw(surface->cairo());   
-		   }
+        	colWidgets[col].draw(surface->cairo());   
           }
       
         if (col>1)
