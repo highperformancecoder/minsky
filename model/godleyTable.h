@@ -84,6 +84,9 @@ namespace minsky
     const vector<AssetClass>& _assetClass() const {return m_assetClass;}
     AssetClass _assetClass(size_t col) const;
     AssetClass _assetClass(size_t col, AssetClass cls);
+    
+    // Check whether more than one equity column is present irrespective of single or multiple equity column mode. For feature 111.
+    bool singleEquity();
 
     /**
      * Generates a unique name for this table.

@@ -169,6 +169,13 @@ GodleyTable::AssetClass GodleyTable::_assetClass
   return _assetClass(col);
 }
 
+bool GodleyTable::singleEquity() {
+	int count=0;
+	for (size_t c=1;c<cols();++c)
+	  if (m_assetClass[c]==GodleyAssetClass::equity) count++;
+	if (count > 1) return false;
+	return true;  
+}
 
 string GodleyTable::assetClass(TCL_args args)
 {
