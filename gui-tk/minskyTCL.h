@@ -383,10 +383,10 @@ namespace minsky
     {tclcmd()<<"setCursor {}\n";}
 
     void message(const std::string& m) override
-    {(tclcmd()<<"if [info exists tk_messageBox] {tk_messageBox -message \"")|m|"\" -type ok}\n";}
+    {(tclcmd()<<"if [llength [info exists tk_messageBox]] {tk_messageBox -message \"")|m|"\" -type ok}\n";}
 
     void redrawAllGodleyTables() override 
-    {tclcmd()<<"if [info exists redrawAllGodleyTables] redrawAllGodleyTables\n";}
+    {tclcmd()<<"if [llength [info command redrawAllGodleyTables]] redrawAllGodleyTables\n";}
     
     bool checkMemAllocation(size_t bytes) const override {
       bool r=true;
