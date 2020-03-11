@@ -35,6 +35,7 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
+  minsky.save no	
   openNamedFile $here/examples/GoodwinLinear02.mky
   assert {[findObject Group]}
   set item minsky.canvas.item

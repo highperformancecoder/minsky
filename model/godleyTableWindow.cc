@@ -1119,7 +1119,7 @@ namespace {
   {	    
     CairoSave cs(cairo);
     int idx=0;
-    if ((!cminsky().multipleEquities && godleyIcon.table.singleEquity()) || rowCol==row) {  // no column widgets on equity column in single equity column mode
+    if ((rowCol==row || godleyIcon.table.singleEquity()) || (!cminsky().multipleEquities && godleyIcon.table.singleEquity())) {  // no column widgets on equity column in single equity column mode
       if (rowCol == row || (rowCol == col && pos!=last)) 
         drawButton(cairo,"+",0,1,0,idx++);
       if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064

@@ -170,10 +170,8 @@ GodleyTable::AssetClass GodleyTable::_assetClass
 }
 
 bool GodleyTable::singleEquity() {
-	int count=0;
-	for (size_t c=1;c<cols();++c)
-	  if (m_assetClass[c]==GodleyAssetClass::equity) count++;
-	if (count > 1) return false;
+	GodleyTable::AssetClass cls=GodleyAssetClass::equity;
+	if (m_assetClass[cols()-1]==cls && m_assetClass[cols()-2]==cls) return false;
 	return true;  
 }
 
