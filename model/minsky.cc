@@ -595,7 +595,7 @@ namespace minsky
                      destFlows=gi->flowSignature(col);
                    // items to add
                    for (map<string,double>::iterator i=srcFlows.begin(); i!=srcFlows.end(); ++i)
-                     if (i->second != -destFlows[i->first])
+                     if (i->second != destFlows[i->first])
                        {
                          int scope=-1;
                          if (i->first.find(':')!=string::npos)
