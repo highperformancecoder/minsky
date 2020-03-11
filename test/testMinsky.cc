@@ -851,14 +851,16 @@ SUITE(Minsky)
       g1->update();
       g2->update();
 
-      balanceDuplicateColumns(*g1, 2);
-      // two rows should have been added
-      CHECK_EQUAL(5,godley2.rows());
+      godley2.exportToCSV("before.csv");
+      CHECK_EQUAL(3,godley2.rows());
+      balanceDuplicateColumns(*g1, 2); 
+      godley2.exportToCSV("after.csv");
+      // two rows should have been added, and one deleted
+      CHECK_EQUAL(4,godley2.rows());
       CHECK_EQUAL("a",trimWS(godley2.cell(1,1)));
-      CHECK(trimWS(godley2.cell(2,1)).empty()); // "d" is deleted
-      CHECK_EQUAL("b",godley2.cell(3,1));
-      CHECK_EQUAL("c",godley2.cell(4,1));
-      CHECK_EQUAL("row3",godley2.cell(4,0)); // check label transferred
+      CHECK_EQUAL("b",godley2.cell(2,1));
+      CHECK_EQUAL("c",godley2.cell(3,1));
+      CHECK_EQUAL("row3",godley2.cell(3,0)); // check label transferred
     }
 
   TEST_FIXTURE(TestFixture,importDuplicateColumn)
