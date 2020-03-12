@@ -494,6 +494,7 @@ namespace minsky
         else
           throw error(ravel_lastErr());
       }
+      // This line causes an empty result from ravel output port
     //v.hypercube({}); // ensure scalar data space allocated
   }
 
