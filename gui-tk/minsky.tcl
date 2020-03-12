@@ -1205,6 +1205,8 @@ proc openNamedFile {ofname} {
 
     eval minsky.load {$ofname}
     doPushHistory 0
+    # minsky.load resets minsky.multipleEquities, so restore it to preferences
+    minsky.multipleEquities $preferences(multipleEquities)
     pushFlags
     recentreCanvas
 
