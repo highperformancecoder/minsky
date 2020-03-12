@@ -494,7 +494,7 @@ namespace minsky
         else
           throw error(ravel_lastErr());
       }
-    v.hypercube({}); // ensure scalar data space allocated
+    //v.hypercube({}); // ensure scalar data space allocated
   }
 
   void Ravel::loadDataCubeFromVariable(const ITensor& v)
