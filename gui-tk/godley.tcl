@@ -304,9 +304,7 @@ proc setGodleyDisplay {} {
     foreach c [info commands godleyWindow*.displayStyle] {
         $c $preferences(godleyDisplayStyle)
     }
-    foreach c [info commands multipleEquities] {
-        $c $preferences(multipleEquities)
-    }          
+    multipleEquities $preferences(multipleEquities)
     redrawAllGodleyTables
 }
 
