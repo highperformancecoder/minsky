@@ -34,7 +34,6 @@ trap "fail" 1 2 3 15
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {
-  minsky.save no
   minsky.load $here/examples/1Free.mky
   recentreCanvas
   assert {[findObject GodleyIcon]}

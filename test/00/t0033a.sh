@@ -33,8 +33,6 @@ trap "fail" 1 2 3 15
 # exit 0 to indicate pass, and exit 1 to indicate failure
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
-proc afterMinskyStarted {} {uplevel #0 {
- minsky.save no
  minsky.load $here/examples/GoodwinLinear02.mky
  pushFlags
  recentreCanvas

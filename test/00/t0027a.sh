@@ -35,7 +35,6 @@ cat >input.tcl <<EOF
 source assert.tcl
 proc afterMinskyStarted {} {
 uplevel #0 {
-minsky.save no
 openNamedFile $here/examples/GoodwinLinear02.mky
 pushFlags
 runstop
