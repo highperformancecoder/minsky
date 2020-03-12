@@ -158,6 +158,8 @@ namespace minsky
     Panopticon panopticon{canvas};
     ParameterSheet parameterSheet;
     VariableSheet variableSheet;    
+        // Allow multiple equity columns.
+    bool multipleEquities=false;    
 
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}

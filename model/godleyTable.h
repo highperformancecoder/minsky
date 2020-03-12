@@ -55,8 +55,6 @@ namespace minsky
   public:
 
     bool doubleEntryCompliant;
-    // Allow multiple equity columns.
-    bool multipleEquities;
 
     std::string title;
   
@@ -72,7 +70,6 @@ namespace minsky
       : m_assetClass(other.m_assetClass),
         data(other.data),
         doubleEntryCompliant(other.doubleEntryCompliant),
-        multipleEquities(other.multipleEquities),
         title(other.title)
     { }
   
@@ -80,13 +77,16 @@ namespace minsky
     bool operator==(const GodleyTable& other) const 
     {
 		return (data==other.data && m_assetClass==other.m_assetClass &&
-		 doubleEntryCompliant==other.doubleEntryCompliant && multipleEquities==other.multipleEquities && title==other.title);
+		 doubleEntryCompliant==other.doubleEntryCompliant && title==other.title);
     }    
 
     /// class of each column (used in DE compliant mode)
     const vector<AssetClass>& _assetClass() const {return m_assetClass;}
     AssetClass _assetClass(size_t col) const;
     AssetClass _assetClass(size_t col, AssetClass cls);
+    
+    // Check whether more than one equity column is present irrespective of single or multiple equity column mode. For feature 111.
+    bool singleEquity();
 
     /**
      * Generates a unique name for this table.
