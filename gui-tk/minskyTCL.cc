@@ -114,7 +114,7 @@ namespace minsky
     if (auto t=getCommandData("minsky.integral.description"))
       t->is_setterGetter=true;
     if (auto t=getCommandData("minsky.resetEdited"))
-      t->is_const=true;
+      t->is_const=true;  
     if (auto t=getCommandData("minsky.initGroupList"))
       t->is_const=true;
     if (auto t=getCommandData("minsky.godley.mouseFocus"))

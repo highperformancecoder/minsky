@@ -108,7 +108,7 @@ namespace minsky
   void ButtonWidget<ButtonWidgetEnums::col>::invoke(double x)
   {
     int button=x/buttonSpacing;
-    if (!godleyIcon.table.multipleEquities) {
+    if (!cminsky().multipleEquities && godleyIcon.table.singleEquity()) {  // no column widgets on equity column in single equity column mode
       if (pos!=last)
         switch (button)
          {
@@ -201,7 +201,7 @@ namespace minsky
           {
             CairoSave cs(surface->cairo());
             cairo_move_to(surface->cairo(), x, columnButtonsOffset);
-            colWidgets[col].draw(surface->cairo());
+        	colWidgets[col].draw(surface->cairo());   
           }
       
         if (col>1)
@@ -640,9 +640,9 @@ namespace minsky
                   break;
                 case 0xff0d: //return
                 case 0xff8d: //enter added for ticket 1122                            
-                  update();                                    
-                  selectedRow=selectedCol=-1;                       
-                  break;
+                  update();
+                  selectedRow=selectedCol=-1;                  
+                  break;     
                 case 0xff51: //left arrow
                   if (insertIdx>0) insertIdx--;
                   else navigateLeft();
@@ -900,7 +900,7 @@ namespace {
 		    auto swapVar=godleyIcon->table.cell(0,selectedCol);
 		    auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
 		    auto targetAssetClass=godleyIcon->table._assetClass(c);
-		    if (!swapVar.empty()) {
+		    if (!swapVar.empty() && !(colLeftMargin[c+1]-x < pulldownHot)) { // ImportVar dropdown button should not trigger this condition. For ticket 1162
 		      if (targetAssetClass!=oldAssetClass && targetAssetClass!=GodleyAssetClass::equity && targetAssetClass!=GodleyAssetClass::noAssetClass)
 		         tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
 		      else if ((targetAssetClass==GodleyAssetClass::equity || targetAssetClass==GodleyAssetClass::noAssetClass) || oldAssetClass==GodleyAssetClass::noAssetClass)
@@ -1028,6 +1028,7 @@ namespace {
             g->update();
       }
     minsky().canvas.requestRedraw();
+    minsky().redrawAllGodleyTables();
   }
 
   void GodleyTableWindow::checkCell00()
@@ -1116,7 +1117,7 @@ namespace {
   {	    
     CairoSave cs(cairo);
     int idx=0;
-    if (!godleyIcon.table.multipleEquities || rowCol==row) {
+    if (rowCol==row || (!cminsky().multipleEquities && godleyIcon.table.singleEquity())) {  // no column widgets on equity column in single equity column mode
       if (rowCol == row || (rowCol == col && pos!=last)) 
         drawButton(cairo,"+",0,1,0,idx++);
       if ((rowCol == row && pos!=first && pos!=firstAndLast) || (rowCol == col && pos!=last)) 	// no delete button for first row containing initial conditions. For ticket 1064

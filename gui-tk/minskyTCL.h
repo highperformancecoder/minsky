@@ -23,8 +23,9 @@
 #include "godleyTableWindow.h"
 #include <fstream>
 
-// TCL specific definitions for global minsky object
+namespace ecolab {extern Tk_Window mainWin;}
 
+// TCL specific definitions for global minsky object
 namespace minsky
 {
   cmd_data* getCommandData(const string& name);
@@ -381,9 +382,15 @@ namespace minsky
     void clearBusyCursor() override
     {tclcmd()<<"setCursor {}\n";}
 
+    void message(const std::string& m) override
+    {(tclcmd()<<"if [llength [info command tk_messageBox]] {tk_messageBox -message \"")|m|"\" -type ok}\n";}
+
+    void redrawAllGodleyTables() override 
+    {tclcmd()<<"if [llength [info command redrawAllGodleyTables]] redrawAllGodleyTables\n";}
+    
     bool checkMemAllocation(size_t bytes) const override {
       bool r=true;
-      if (bytes>0.2*physicalMem())
+      if (ecolab::mainWin && bytes>0.2*physicalMem())
         {
           tclcmd cmd;
           cmd<<"tk_messageBox -message {Allocation will use more than 50% of available memory. Do you want to proceed?} -type yesno\n";

@@ -51,6 +51,7 @@ namespace
 #include "minsky_epilogue.h"
 
 namespace minsky {void doOneEvent(bool) {}}
+namespace ecolab {Tk_Window mainWin=0;}
 
 int main(int argc, const char** argv)
 {

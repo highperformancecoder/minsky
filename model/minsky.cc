@@ -290,14 +290,25 @@ namespace minsky
     canvas.requestRedraw();
   }
 
-  void Minsky::toggleSelected(ItemType itemType, int item)
+  namespace
   {
-    //TODO: individually add or remove item from selection
+    /// checks if the input stream has the UTF-8 byte ordering marker,
+    /// and removes it if present
+    void stripByteOrderingMarker(istream& s)
+    {
+      char bom[4];
+      s.get(bom,4);
+      if (strcmp(bom,"\357\273\277")==0) return; //skipped BOM
+      s.seekg(0); //rewind input stream
+    }
   }
 
   void Minsky::insertGroupFromFile(const char* file)
   {
     ifstream inf(file);
+    if (!inf)
+      throw runtime_error(string("failed to open ")+file);
+    stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
     schema3::Minsky currentSchema(saveFile);
 
@@ -584,7 +595,7 @@ namespace minsky
                      destFlows=gi->flowSignature(col);
                    // items to add
                    for (map<string,double>::iterator i=srcFlows.begin(); i!=srcFlows.end(); ++i)
-                     if (i->second != -destFlows[i->first])
+                     if (i->second != destFlows[i->first])
                        {
                          int scope=-1;
                          if (i->first.find(':')!=string::npos)
@@ -618,6 +629,7 @@ namespace minsky
                            }
                        }
                    // items to delete
+                   vector<size_t> rowsToDelete;
                    for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
                      if (i->second!=0 && srcFlows[i->first]==0)
                        for (size_t row=1; row<destTable.rows(); ++row)
@@ -626,8 +638,17 @@ namespace minsky
                            if (!fc.name.empty())
                              fc.name=gi->valueId(fc.name);
                            if (fc.name==gi->valueId(i->first))
-                             destTable.cell(row, col).clear();
+                             {
+                               destTable.cell(row, col).clear();
+                               // if this leaves an empty row, delete entire row
+                               for (size_t c=0; c<destTable.cols(); ++c)
+                                 if (!destTable.cell(row, col).empty())
+                                   goto rowNotEmpty;
+                               rowsToDelete.push_back(row);
+                             rowNotEmpty:;
+                             }
                          }
+                   for (auto row: rowsToDelete) destTable.deleteRow(row);
                  }   
          return false;
        });  // TODO - this lambda is FAR too long!
@@ -923,10 +944,6 @@ namespace minsky
     flags &= ~is_edited;
   }
 
-  namespace
-  {
-  }
-
   void Minsky::load(const std::string& filename) 
   {
     BusyCursor busy(*this);
@@ -935,40 +952,15 @@ namespace minsky
     ifstream inf(filename);
     if (!inf)
       throw runtime_error("failed to open "+filename);
+    stripByteOrderingMarker(inf);
     xml_unpack_t saveFile(inf);
-    *this=schema3::Minsky(saveFile);
-//
-//
-//    xml_unpack(saveFile, "Minsky", currentSchema);
-//
-//    switch (currentSchema.schemaVersion)
-//      {
-//      case 0:
-//        {
-//          schema0::Minsky schema0;
-//          xml_unpack(saveFile, "root", schema0);
-//          schema1::Minsky schema1(schema0);
-//          // fix corruption caused by ticket #329
-//          schema1.removeIntVarOrphans();
-//          *this=schema2::Minsky(schema1);
-//          break;
-//        }
-//      case 1:
-//        {
-//          schema1::Minsky schema1;
-//          xml_unpack(saveFile, "Minsky", schema1);
-//          // fix corruption caused by ticket #329
-//          schema1.removeIntVarOrphans();
-//          *this=schema2::Minsky(schema1);
-//          break;
-//        }
-//      case 2:
-//        *this = currentSchema;
-//        break;
-//      default:
-//        throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
-//      }
-
+    schema3::Minsky currentSchema(saveFile);
+    *this=currentSchema;
+    if (currentSchema.schemaVersion<currentSchema.version)
+      message("You are converting the model from an older version of Minsky. "
+              "Once you save this file, you may not be able to open this file"
+              " in older versions of Minsky.");
+    
     // try balancing all Godley tables
     try
       {

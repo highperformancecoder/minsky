@@ -1,5 +1,5 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>2</schemaVersion>
+  <schemaVersion>3</schemaVersion>
   <wires>
   </wires>
   <items>
@@ -16,6 +16,13 @@
     </ports>
     <name>a</name>
     <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>5</id>
@@ -30,6 +37,13 @@
     </ports>
     <name>b</name>
     <init>12</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>6</id>
@@ -42,39 +56,54 @@
      <int>7</int>
      <int>8</int>
     </ports>
-    <width>156</width>
+    <width>159.162</width>
     <height>156</height>
     <data>
      <vector>
       <string>Flows&#32;&#-30;&#-122;&#-109;&#32;/&#32;Stock&#32;Variables&#32;&#-30;&#-122;&#-110;</string>
       <string>aaa</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Initial&#32;Conditions</string>
       <string>2.000000</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string></string>
       <string>bbb</string>
+      <string></string>
+      <string></string>
      </vector>
     </data>
     <assetClasses>
      <AssetClass>noAssetClass</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
    <Item>
     <id>9</id>
     <type>Variable:stock</type>
-    <x>7585.39</x>
-    <y>2035.61</y>
-    <zoomFactor>44.8531</zoomFactor>
+    <x>7796.41</x>
+    <y>-102.845</y>
+    <zoomFactor>47.2776</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>8</int>
     </ports>
     <name>aaa</name>
-    <init>2.000000</init>
+    <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>2</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>11</id>
@@ -87,23 +116,37 @@
      <int>10</int>
     </ports>
     <name>aaa</name>
-    <init>2.000000</init>
+    <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>13</id>
     <type>Variable:flow</type>
-    <x>6262.22</x>
-    <y>-1059.26</y>
-    <zoomFactor>44.8531</zoomFactor>
+    <x>7767.38</x>
+    <y>-173.878</y>
+    <zoomFactor>47.2776</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>12</int>
      <int>7</int>
     </ports>
     <name>bbb</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>16</id>
+    <id>17</id>
     <type>IntOp</type>
     <x>4142.63</x>
     <y>1654.66</y>
@@ -112,123 +155,211 @@
     <ports>
      <int>14</int>
      <int>15</int>
+     <int>16</int>
     </ports>
-    <intVar>17</intVar>
+    <intVar>19</intVar>
+    <arg>1</arg>
    </Item>
    <Item>
-    <id>17</id>
+    <id>19</id>
     <type>Variable:integral</type>
-    <x>6564.4</x>
+    <x>4189.63</x>
     <y>1654.66</y>
     <zoomFactor>44.8531</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>14</int>
+     <int>18</int>
     </ports>
     <name>int1</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>20</id>
+    <id>22</id>
     <type>Variable:flow</type>
     <x>139.472</x>
     <y>3.54889</y>
-    <zoomFactor>1</zoomFactor>
+    <zoomFactor>0.00780364</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>18</int>
-     <int>19</int>
+     <int>20</int>
+     <int>21</int>
     </ports>
     <name>a</name>
     <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>2</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>21</id>
-    <type>GodleyIcon</type>
-    <x>38.7763</x>
-    <y>108.817</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>22</int>
-     <int>23</int>
-    </ports>
-    <width>156</width>
-    <height>156</height>
-    <data>
-     <vector>
-      <string>Flows&#32;&#-30;&#-122;&#-109;&#32;/&#32;Stock&#32;Variables&#32;&#-30;&#-122;&#-110;</string>
-      <string>aaa</string>
-     </vector>
-     <vector>
-      <string>Initial&#32;Conditions</string>
-      <string>2.000000</string>
-     </vector>
-     <vector>
-      <string></string>
-      <string>bbb</string>
-     </vector>
-    </data>
-    <assetClasses>
-     <AssetClass>noAssetClass</AssetClass>
-     <AssetClass>asset</AssetClass>
-    </assetClasses>
-   </Item>
-   <Item>
-    <id>26</id>
-    <type>IntOp</type>
-    <x>-27.588</x>
-    <y>8.33398</y>
-    <zoomFactor>1</zoomFactor>
-    <rotation>0</rotation>
-    <ports>
-     <int>24</int>
-     <int>25</int>
-    </ports>
-    <intVar>31</intVar>
-   </Item>
-   <Item>
-    <id>27</id>
+    <id>24</id>
     <type>Variable:stock</type>
-    <x>24.2763</x>
-    <y>157.817</y>
-    <zoomFactor>1</zoomFactor>
+    <x>19.827</x>
+    <y>554.799</y>
+    <zoomFactor>0.00822546</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>23</int>
     </ports>
     <name>aaa</name>
-    <init>2.000000</init>
+    <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>2</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
-    <id>29</id>
+    <id>27</id>
     <type>Variable:flow</type>
-    <x>-5.22369</x>
-    <y>88.817</y>
-    <zoomFactor>1</zoomFactor>
+    <x>-347.388</x>
+    <y>83.3445</y>
+    <zoomFactor>0.00822546</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>28</int>
-     <int>22</int>
+     <int>25</int>
+     <int>26</int>
     </ports>
     <name>bbb</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>28</id>
+    <type>GodleyIcon</type>
+    <x>38.7763</x>
+    <y>108.817</y>
+    <zoomFactor>0.00780364</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>26</int>
+     <int>23</int>
+    </ports>
+    <width>159.162</width>
+    <height>156</height>
+    <data>
+     <vector>
+      <string>Flows&#32;&#-30;&#-122;&#-109;&#32;/&#32;Stock&#32;Variables&#32;&#-30;&#-122;&#-110;</string>
+      <string>aaa</string>
+      <string></string>
+      <string></string>
+     </vector>
+     <vector>
+      <string>Initial&#32;Conditions</string>
+      <string>2.000000</string>
+      <string></string>
+      <string></string>
+     </vector>
+     <vector>
+      <string></string>
+      <string>bbb</string>
+      <string></string>
+      <string></string>
+     </vector>
+    </data>
+    <assetClasses>
+     <AssetClass>noAssetClass</AssetClass>
+     <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
+    </assetClasses>
    </Item>
    <Item>
     <id>31</id>
     <type>Variable:integral</type>
-    <x>26.412</x>
+    <x>19.412</x>
     <y>8.33398</y>
-    <zoomFactor>1</zoomFactor>
+    <zoomFactor>0.00780364</zoomFactor>
     <rotation>0</rotation>
     <ports>
-     <int>24</int>
+     <int>29</int>
      <int>30</int>
     </ports>
     <name>int1</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>34</id>
+    <type>IntOp</type>
+    <x>-27.588</x>
+    <y>8.33398</y>
+    <zoomFactor>0.00780364</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>29</int>
+     <int>32</int>
+     <int>33</int>
+    </ports>
+    <intVar>31</intVar>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>36</id>
+    <type>Variable:stock</type>
+    <x>21.7763</x>
+    <y>161.317</y>
+    <zoomFactor>0.00822546</zoomFactor>
+    <rotation>90</rotation>
+    <ports>
+     <int>35</int>
+    </ports>
+    <name>aaa</name>
+    <init>2</init>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>39</id>
+    <type>Variable:flow</type>
+    <x>-8.7237</x>
+    <y>88.817</y>
+    <zoomFactor>0.00822546</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>37</int>
+     <int>38</int>
+    </ports>
+    <name>bbb</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
   </items>
   <groups>
    <Group>
-    <id>32</id>
+    <id>40</id>
     <type>Group</type>
     <x>333.926</x>
     <y>-316.041</y>
@@ -236,13 +367,17 @@
     <rotation>0</rotation>
     <ports>
     </ports>
+    <width>100</width>
+    <height>100</height>
     <items>
-     <int>20</int>
-     <int>21</int>
-     <int>26</int>
+     <int>22</int>
+     <int>24</int>
      <int>27</int>
-     <int>29</int>
+     <int>28</int>
      <int>31</int>
+     <int>34</int>
+     <int>36</int>
+     <int>39</int>
     </items>
    </Group>
   </groups>
@@ -255,6 +390,13 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <timeUnit></timeUnit>
   </rungeKutta>
-  <zoomFactor>44.8531</zoomFactor>
+  <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

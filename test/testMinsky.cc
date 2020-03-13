@@ -851,14 +851,53 @@ SUITE(Minsky)
       g1->update();
       g2->update();
 
-      balanceDuplicateColumns(*g1, 2);
-      // two rows should have been added
-      CHECK_EQUAL(5,godley2.rows());
+      godley2.exportToCSV("before.csv");
+      CHECK_EQUAL(3,godley2.rows());
+      balanceDuplicateColumns(*g1, 2); 
+      godley2.exportToCSV("after.csv");
+      // two rows should have been added, and one deleted
+      CHECK_EQUAL(4,godley2.rows());
       CHECK_EQUAL("a",trimWS(godley2.cell(1,1)));
-      CHECK(trimWS(godley2.cell(2,1)).empty()); // "d" is deleted
-      CHECK_EQUAL("b",godley2.cell(3,1));
-      CHECK_EQUAL("c",godley2.cell(4,1));
-      CHECK_EQUAL("row3",godley2.cell(4,0)); // check label transferred
+      CHECK_EQUAL("b",godley2.cell(2,1));
+      CHECK_EQUAL("c",godley2.cell(3,1));
+      CHECK_EQUAL("row3",godley2.cell(3,0)); // check label transferred
+    }
+
+  TEST_FIXTURE(TestFixture,bug1157)
+    {
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
+      GodleyTable& godley1=g1->table;
+      GodleyTable& godley2=g2->table;
+      godley1.resize(3,2);
+      godley2.resize(3,2);
+
+      godley1._assetClass(1,GodleyAssetClass::asset);  
+      godley2._assetClass(1,GodleyAssetClass::liability);  
+
+      godley1.cell(0,1)="a";  
+      godley1.cell(2,0)="xx";
+      godley1.cell(2,1)="-b";
+      g1->update();
+      
+      godley2.cell(0,1)="a";  
+      godley2.cell(2,0)="yy";  
+      godley2.cell(2,1)="-b";
+      g2->update();
+
+      CHECK_EQUAL(3,godley2.rows());
+      CHECK_EQUAL("yy",godley2.cell(2,0));
+      CHECK_EQUAL("-b",godley2.cell(2,1));
+      godley2.exportToCSV("before.csv");
+
+      godley1.cell(2,1)="b";
+      balanceDuplicateColumns(*g1, 1); 
+      godley2.exportToCSV("after.csv");
+      CHECK_EQUAL(4,godley2.rows());
+      CHECK_EQUAL("yy",godley2.cell(2,0)); // row label should be updated
+      CHECK_EQUAL("-b",godley2.cell(2,1));  // sign should be transferred
+      CHECK_EQUAL("xx",godley2.cell(3,0)); // row label should be updated
+      CHECK_EQUAL("2b",godley2.cell(3,1));  // sign should be transferred
     }
 
   TEST_FIXTURE(TestFixture,importDuplicateColumn)

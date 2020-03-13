@@ -169,6 +169,10 @@ GodleyTable::AssetClass GodleyTable::_assetClass
   return _assetClass(col);
 }
 
+bool GodleyTable::singleEquity() const {
+  assert(cols()>=3);
+  return m_assetClass[cols()-2]!=GodleyAssetClass::equity;
+}
 
 string GodleyTable::assetClass(TCL_args args)
 {

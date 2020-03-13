@@ -1,5 +1,5 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>2</schemaVersion>
+  <schemaVersion>3</schemaVersion>
   <wires>
    <Wire>
     <id>64</id>
@@ -47,6 +47,7 @@
      <int>3</int>
     </ports>
     <intVar>18</intVar>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>8</id>
@@ -60,13 +61,14 @@
      <int>6</int>
      <int>7</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>10</id>
     <type>Variable:stock</type>
-    <x>39.5</x>
-    <y>172</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>29.4516</x>
+    <y>165.274</y>
+    <zoomFactor>1.08772</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>9</int>
@@ -84,9 +86,9 @@
    <Item>
     <id>13</id>
     <type>Variable:flow</type>
-    <x>3.8147e-05</x>
-    <y>103</y>
-    <zoomFactor>0.999999</zoomFactor>
+    <x>-7.06455</x>
+    <y>93.0806</y>
+    <zoomFactor>1.08772</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>11</int>
@@ -126,7 +128,7 @@
    <Item>
     <id>18</id>
     <type>Variable:integral</type>
-    <x>343</x>
+    <x>337</x>
     <y>48.0001</y>
     <zoomFactor>0.999999</zoomFactor>
     <rotation>0</rotation>
@@ -179,6 +181,110 @@
     <height>150</height>
     <logx>false</logx>
     <logy>false</logy>
+    <ypercent>false</ypercent>
+    <plotType>line</plotType>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+    </palette>
    </Item>
    <Item>
     <id>46</id>
@@ -205,26 +311,34 @@
      <int>12</int>
      <int>9</int>
     </ports>
-    <width>176</width>
+    <width>177.298</width>
     <height>186</height>
     <name>title</name>
     <data>
      <vector>
       <string>Flows&#32;&#-30;&#-122;&#-109;&#32;/&#32;Stock&#32;Variables&#32;&#-30;&#-122;&#-110;</string>
       <string>stock1</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string>Initial&#32;Conditions</string>
       <string>0</string>
+      <string></string>
+      <string></string>
      </vector>
      <vector>
       <string></string>
       <string>flow1</string>
+      <string></string>
+      <string></string>
      </vector>
     </data>
     <assetClasses>
      <AssetClass>asset</AssetClass>
      <AssetClass>asset</AssetClass>
+     <AssetClass>liability</AssetClass>
+     <AssetClass>equity</AssetClass>
     </assetClasses>
    </Item>
    <Item>
@@ -232,7 +346,7 @@
     <type>Variable:flow</type>
     <x>-27</x>
     <y>0</y>
-    <zoomFactor>0.749999</zoomFactor>
+    <zoomFactor>0.999999</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>48</int>
@@ -253,32 +367,34 @@
     <type>Operation:add</type>
     <x>-21.2554</x>
     <y>1.30011</y>
-    <zoomFactor>1</zoomFactor>
+    <zoomFactor>0.857143</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>51</int>
      <int>52</int>
      <int>53</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>57</id>
     <type>Operation:exp</type>
     <x>18.7446</x>
     <y>1.30011</y>
-    <zoomFactor>1</zoomFactor>
+    <zoomFactor>0.857143</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>55</int>
      <int>56</int>
     </ports>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>60</id>
     <type>Variable:flow</type>
     <x>22</x>
     <y>0</y>
-    <zoomFactor>0.749999</zoomFactor>
+    <zoomFactor>0.999999</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>58</int>
@@ -299,7 +415,7 @@
     <type>Variable:flow</type>
     <x>-27</x>
     <y>24.3</y>
-    <zoomFactor>0.749999</zoomFactor>
+    <zoomFactor>0.999999</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>61</int>
@@ -326,6 +442,8 @@
     <rotation>0</rotation>
     <ports>
     </ports>
+    <width>100</width>
+    <height>100</height>
     <items>
      <int>50</int>
      <int>54</int>
@@ -351,6 +469,13 @@
    <order>4</order>
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
+   <timeUnit></timeUnit>
   </rungeKutta>
-  <zoomFactor>0.999999</zoomFactor>
+  <zoomFactor>1</zoomFactor>
+  <bookmarks>
+  </bookmarks>
+  <dimensions>
+  </dimensions>
+  <conversions>
+  </conversions>
  </Minsky>

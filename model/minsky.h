@@ -158,6 +158,8 @@ namespace minsky
     Panopticon panopticon{canvas};
     ParameterSheet parameterSheet;
     VariableSheet variableSheet;    
+        // Allow multiple equity columns.
+    bool multipleEquities=false;    
 
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
@@ -243,9 +245,6 @@ namespace minsky
     virtual void putClipboard(const string&) const {}
     virtual std::string getClipboard() const {return "";}
     /// @}
-
-    /// toggle selected status of given item
-    void toggleSelected(ItemType itemType, int item);
 
     void insertGroupFromFile(const char* file);
 
@@ -367,6 +366,11 @@ namespace minsky
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
 
+    /// display a message in a popup box on the GUI
+    virtual void message(const std::string&) {}
+    /// request all Godley table windows to redraw
+    virtual void redrawAllGodleyTables() {}
+    
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
     virtual bool checkMemAllocation(size_t bytes) const {return true;}

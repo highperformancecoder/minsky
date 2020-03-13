@@ -101,12 +101,10 @@ proc openGodley {id} {
         .$id.menubar.view add command -label "Zoom out" -command "zoomOut $id" -accelerator $meta_menu--
         .$id.menubar.view add command -label "Reset zoom" -command "$id.zoomFactor 1; $id.requestRedraw"
         
-        
-        
-        menu .$id.menubar.options
+        menu .$id.menubar.options  
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
-        .$id.menubar.options add checkbutton -label "Enable multiple equities" -variable preferences(multipleEquities) -command setGodleyDisplay
+        .$id.menubar.options add checkbutton -label "Enable multiple equity columns" -variable preferences(multipleEquities) -command setGodleyDisplay
         
         .$id.menubar add cascade -label File -menu .$id.menubar.file -underline 0
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
@@ -117,8 +115,7 @@ proc openGodley {id} {
         global preferences
         $id.displayValues $preferences(godleyDisplay)
         $id.displayStyle $preferences(godleyDisplayStyle)
-        $id.godleyIcon.table.multipleEquities $preferences(multipleEquities)
-
+        
     }
     wm deiconify .$id
     raise .$id .
@@ -293,7 +290,9 @@ proc setGodleyTitleOK id {
 }
     
 proc redrawAllGodleyTables {} {
-    foreach c [info commands godleyWindow*.requestRedraw] {$c}
+    foreach c [info commands godleyWindow*.requestRedraw] {
+        $c
+    }
 }
 
 # sets each individual Godley table displayValue preference
@@ -305,12 +304,9 @@ proc setGodleyDisplay {} {
     foreach c [info commands godleyWindow*.displayStyle] {
         $c $preferences(godleyDisplayStyle)
     }
-    foreach c [info commands godleyIcon.table.multipleEquities] {
-        $c $preferences(multipleEquities)
-    }    
+    multipleEquities $preferences(multipleEquities)
     redrawAllGodleyTables
 }
-	
 
 proc exportGodley {id} {
     global workDir type
