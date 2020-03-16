@@ -461,7 +461,7 @@ namespace minsky
      
     //ravel.loadDataFromSlice(cachedResult);      
     
-    // This scan operation is similar to the Scan() in Ravel::partialReduction.h, need to binning (Bin()) and Change ()
+    // This scan operation is similar to the Scan() in Ravel::partialReduction.h, needed for binning (Bin()) and Change ()
     
     //if (dimension<rank())
     //  {
@@ -509,6 +509,7 @@ namespace minsky
     }    
     CLASSDESC_ACCESS(Ravel);
   public:
+  
 	//RavelTensor* RavelTensor::create(RavelOpType t)
     //{
     //  switch (t)
