@@ -449,23 +449,93 @@ namespace minsky
     }
   };
 
-  class RavelTensor: public civita::CachedTensorOp
+  class RavelTensor: public civita::DimensionedArgCachedOp
   {
     const Ravel& ravel;
-    TensorPtr arg;
+    //TensorPtr arg;
+    //enum class RavelOpType {bin,scan,change}
     void computeTensor() const override  
-    {	 
-      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);         
-      ravel.loadDataFromSlice(cachedResult);  
-      m_timestamp = Timestamp::clock::now();
+    {
+	   
+    //const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);      
+     
+    //ravel.loadDataFromSlice(cachedResult);      
+    
+    // This scan operation is similar to the Scan() in Ravel::partialReduction.h, need to binning (Bin()) and Change ()
+    
+    //if (dimension<rank())
+    //  {
+    //    auto argDims=arg->hypercube().dims();
+    //    size_t stride=1;
+    //    for (size_t j=0; j<dimension; ++j)
+    //      stride*=argDims[j];
+    //    if (argVal>=1 && argVal<argDims[dimension])
+    //      // argVal is interpreted as the binning window. -ve argVal ignored
+    //      for (size_t i=0; i<hypercube().numElements(); i+=stride*argDims[dimension])
+    //        for (size_t j=0; j<stride; ++j)
+    //          for (size_t j1=0; j1<argDims[dimension]*stride; j1+=stride)
+    //            {
+    //              size_t k=i+j+max(ssize_t(0), ssize_t(j1-ssize_t(argVal-1)*stride));
+    //              cachedResult[i+j+j1]=arg->atHCIndex(i+j+j1);
+    //              //for (; k<i+j+j1; k+=stride)
+    //              //  {
+    //              //    f(cachedResult[i+j+j1], arg->atHCIndex(k), k);
+    //              //  }
+    //          }
+    //    else // scan over whole dimension
+    //      for (size_t i=0; i<hypercube().numElements(); i+=stride*argDims[dimension])
+    //        for (size_t j=0; j<stride; ++j)
+    //          {
+    //            cachedResult[i+j]=arg->atHCIndex(i+j);
+    //            for (size_t k=i+j+stride; k<i+j+stride*argDims[dimension]; k+=stride)
+    //              {
+    //                cachedResult[k] = cachedResult[k-stride];
+    //                //f(cachedResult[k], arg->atHCIndex(k), k);
+    //              }
+    //          }
+    //      }
+    //else
+    //  {
+    //    cachedResult[0]=arg->atHCIndex(0);
+    //    for (size_t i=1; i<hypercube().numElements(); ++i)
+    //      {
+    //        cachedResult[i]=cachedResult[i-1];
+    //        //f(cachedResult[i], arg->atHCIndex(i), i);
+    //      }
+    //  }    
+     
+    
+     m_timestamp = Timestamp::clock::now();
     }    
     CLASSDESC_ACCESS(Ravel);
   public:
-    RavelTensor(const Ravel& ravel): ravel(ravel) {}
-    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;		
-  	cachedResult.index(arg->index()); cachedResult.hypercube(arg->hypercube());}
+	//RavelTensor* RavelTensor::create(RavelOpType t)
+    //{
+    //  switch (t)
+    //    {
+    //    case RavelOpType::bin: return new Bin();
+    //    case RavelOpType::scan: return new Scan();
+    //    case RavelOpType::change: return new Change();
+    //    default: return nullptr;
+    //    }
+    //}	
+    //Op op;
+    //template<RavelOpType op>
+    //RavelTensor(RavelOpType op, const Ravel& ravel, const TensorPtr& arg={}, const std::string& dimName="", double av=0): ravel(ravel) {
+	//	RavelTensor::setArgument(arg,dimName,av);}    
+	
+    RavelTensor(const Ravel& ravel, const TensorPtr& arg={}, const std::string& dimName="", double av=0): ravel(ravel) {
+		RavelTensor::setArgument(arg,dimName,av);}
+    void setArgument(const TensorPtr& arg, const std::string& dimName,double argVal) override {
+      DimensionedArgCachedOp::setArgument(arg,dimName,argVal);
+      if (arg) {
+		   cachedResult.index(cachedResult.index());
+		   cachedResult.hypercube(cachedResult.hypercube());
+		  } 
+      }
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
-  };
+    
+  };  
        
   std::shared_ptr<ITensor> TensorOpFactory::create
   (const Item& it, const TensorsFromPort& tfp)
