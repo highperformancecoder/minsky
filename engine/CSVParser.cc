@@ -450,7 +450,7 @@ namespace minsky
                       }
                     catch (...) // value misunderstood
                       {
-                        if (isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
+                        if (std::isnan(spec.missingValue)) // if spec.missingValue is NaN, then don't populate the tmpData map
                           valueExists=false;
                       }
                     if (valueExists)
