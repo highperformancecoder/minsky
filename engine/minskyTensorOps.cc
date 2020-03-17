@@ -162,8 +162,6 @@ namespace minsky
 //  };
 
   template <OperationType::Type op> struct GeneralTensorOp;
-  
-  //struct RavelTensor;
                                                                                       
   namespace
   {
@@ -188,7 +186,6 @@ namespace minsky
   TensorOpFactory::TensorOpFactory()
   {
     registerType<TimeOp>(OperationType::time);
-    //registerType<RavelTensor>(OperationType::ravel);
     registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this);
     registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);
     registerOps<MinskyTensorOp, OperationType::copy, OperationType::sum>(*this);
@@ -452,91 +449,110 @@ namespace minsky
   class RavelTensor: public civita::DimensionedArgCachedOp
   {
     const Ravel& ravel;
-    //TensorPtr arg;
-    //enum class RavelOpType {bin,scan,change}
+
+    struct checkCollapsed
+    {
+      checkCollapsed( bool collapsed ) : collapsed_(collapsed) {}
+      bool operator()( const std::pair<std::string, RavelState::HandleState>& v ) const 
+      { 
+        return v.second.collapsed == collapsed_; 
+      }
+    private:
+      bool collapsed_;
+    };
+
+    struct checkRotated
+    {
+      checkRotated( vector<pair<double,double>>& coords) : coords_(coords) {}
+      bool operator()( const std::pair<std::string, RavelState::HandleState>& v ) const 
+      { 
+		for (auto i: coords_)
+           if (v.second.x == i.first && v.second.y == i.second) return true;
+         return false;   
+      }
+    private:
+      vector<pair<double,double>> coords_;
+    };
+
+    
     void computeTensor() const override  
     {
-	   
-    //const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);      
+	 
+	 RavelState initState=const_cast<Ravel&>(ravel).getState();
+	 
+	 //vector<pair<double,double>> initHandleCoords;
+	 //for (auto& h: initState.handleStates) initHandleCoords.push_back(make_pair(h.second.x,h.second.y));
+	 //
+     //std::map<std::string, RavelState::HandleState>::iterator iter1 = find_if(initState.handleStates.begin(),initState.handleStates.end(),checkRotated(initHandleCoords));	 
+	 
+	 RavelState state=const_cast<Ravel&>(ravel).getState(); 
+	 
+	 
+	 Hypercube hc; 
+     auto& xv=hc.xvectors;
      
-    //ravel.loadDataFromSlice(cachedResult);      
-    
-    // This scan operation is similar to the Scan() in Ravel::partialReduction.h, needed for binning (Bin()) and Change ()
-    
-    //if (dimension<rank())
-    //  {
-    //    auto argDims=arg->hypercube().dims();
-    //    size_t stride=1;
-    //    for (size_t j=0; j<dimension; ++j)
-    //      stride*=argDims[j];
-    //    if (argVal>=1 && argVal<argDims[dimension])
-    //      // argVal is interpreted as the binning window. -ve argVal ignored
-    //      for (size_t i=0; i<hypercube().numElements(); i+=stride*argDims[dimension])
-    //        for (size_t j=0; j<stride; ++j)
-    //          for (size_t j1=0; j1<argDims[dimension]*stride; j1+=stride)
-    //            {
-    //              size_t k=i+j+max(ssize_t(0), ssize_t(j1-ssize_t(argVal-1)*stride));
-    //              cachedResult[i+j+j1]=arg->atHCIndex(i+j+j1);
-    //              //for (; k<i+j+j1; k+=stride)
-    //              //  {
-    //              //    f(cachedResult[i+j+j1], arg->atHCIndex(k), k);
-    //              //  }
-    //          }
-    //    else // scan over whole dimension
-    //      for (size_t i=0; i<hypercube().numElements(); i+=stride*argDims[dimension])
-    //        for (size_t j=0; j<stride; ++j)
-    //          {
-    //            cachedResult[i+j]=arg->atHCIndex(i+j);
-    //            for (size_t k=i+j+stride; k<i+j+stride*argDims[dimension]; k+=stride)
-    //              {
-    //                cachedResult[k] = cachedResult[k-stride];
-    //                //f(cachedResult[k], arg->atHCIndex(k), k);
-    //              }
-    //          }
-    //      }
-    //else
-    //  {
-    //    cachedResult[0]=arg->atHCIndex(0);
-    //    for (size_t i=1; i<hypercube().numElements(); ++i)
-    //      {
-    //        cachedResult[i]=cachedResult[i-1];
-    //        //f(cachedResult[i], arg->atHCIndex(i), i);
-    //      }
-    //  }    
+     size_t labelSize;
+     map<std::string, RavelState::HandleState>::iterator iter = find_if(state.handleStates.begin(),state.handleStates.end(),checkCollapsed(true)); 
+     if (iter!=state.handleStates.end()) iter->second.collapsed=true;
+     else iter->second.collapsed=false;
+     //cout << iter->second.collapsed << endl;
      
+     if (iter->second.collapsed) labelSize=1;
+     else {
+     	labelSize=const_cast<Ravel&>(ravel).allSliceLabels().size();
+         cout  << "There are " << labelSize << " labels on the presently selected handle" << endl;	
+     }	
+	
+     vector<const char*> labels(labelSize);     
+     
+     for (size_t i=0; i<labelSize; ++i)
+       labels[i]=const_cast<Ravel&>(ravel).allSliceLabels()[i].c_str();
+     assert(all_of(labels.begin(), labels.end(),
+                   [](const char* i){return bool(i);}));
+     xv.emplace_back(const_cast<Ravel&>(ravel).description());     
+      
+     for (size_t i=0; i<labels.size(); ++i)    
+       xv.back().push_back(labels[i]);     
+     
+     cachedResult.hypercube(xv);	 
+     
+     for (size_t i=0; i< (*arg).size(); ++i)
+       *(cachedResult.begin()+i)==(*arg)[i];   
+   
+     //const_cast<Ravel&>(ravel).applyState(state); 
+	
+   	 vector<pair<double,double>> finalHandleCoords;
+	 for (auto& h: state.handleStates) finalHandleCoords.push_back(make_pair(h.second.x,h.second.y));        
     
-     m_timestamp = Timestamp::clock::now();
+    std::map<std::string, RavelState::HandleState>::iterator iter2 = find_if(state.handleStates.begin(),state.handleStates.end(),checkRotated(finalHandleCoords)); 
+    
+    if (iter2!=state.handleStates.end())  {
+		cout << "Handle with description " <<  const_cast<Ravel&>(ravel).description() << " has just been rotated to x-y coordinate pair: (" <<  iter2->second.x <<"," <<iter2->second.y << ")" << endl;
+		//cout << "Handle with description " <<  iter2->first << " has just been rotated to x-y coordinate pair: (" <<  iter2->second.x <<"," <<iter2->second.y << ")" << endl;
+		m_timestamp = Timestamp::clock::now();   
+	}
+
+     //ravel.loadDataFromSlice(cachedResult); 	
+
+      //m_timestamp = Timestamp::clock::now();
     }    
     CLASSDESC_ACCESS(Ravel);
   public:
-  
-	//RavelTensor* RavelTensor::create(RavelOpType t)
-    //{
-    //  switch (t)
-    //    {
-    //    case RavelOpType::bin: return new Bin();
-    //    case RavelOpType::scan: return new Scan();
-    //    case RavelOpType::change: return new Change();
-    //    default: return nullptr;
-    //    }
-    //}	
-    //Op op;
-    //template<RavelOpType op>
-    //RavelTensor(RavelOpType op, const Ravel& ravel, const TensorPtr& arg={}, const std::string& dimName="", double av=0): ravel(ravel) {
-	//	RavelTensor::setArgument(arg,dimName,av);}    
-	
     RavelTensor(const Ravel& ravel, const TensorPtr& arg={}, const std::string& dimName="", double av=0): ravel(ravel) {
-		RavelTensor::setArgument(arg,dimName,av);}
-    void setArgument(const TensorPtr& arg, const std::string& dimName,double argVal) override {
-      DimensionedArgCachedOp::setArgument(arg,dimName,argVal);
-      if (arg) {
-		   cachedResult.index(cachedResult.index());
-		   cachedResult.hypercube(cachedResult.hypercube());
-		  } 
-      }
-    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
-    
-  };  
+    RavelTensor::setArgument(arg,dimName,av);}
+    void setArgument(const TensorPtr& arg, const std::string& dimName,double argVal) override {  
+      DimensionedArgCachedOp::setArgument(arg,dimName,argVal);  
+      if (arg) {  
+       //cachedResult.index(arg->index());  
+       cachedResult.hypercube(arg->hypercube());  
+      }   
+    }  
+    //RavelTensor(const Ravel& ravel): ravel(ravel) {}   
+	//
+    //void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;			
+  	//cachedResult.index(cachedResult.index()); cachedResult.hypercube(cachedResult.hypercube());}
+    Timestamp timestamp() const override {return max(arg->timestamp(),cachedResult.timestamp());}
+  };
        
   std::shared_ptr<ITensor> TensorOpFactory::create
   (const Item& it, const TensorsFromPort& tfp)
