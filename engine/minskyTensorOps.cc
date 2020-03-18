@@ -446,9 +446,10 @@ namespace minsky
     }
   };
 
-  class RavelTensor: public civita::DimensionedArgCachedOp
+  class RavelTensor: public civita::CachedTensorOp
   {
     const Ravel& ravel;
+    TensorPtr arg;
 
     struct checkDesc    
     {    
@@ -534,19 +535,9 @@ namespace minsky
     }    
     CLASSDESC_ACCESS(Ravel);
   public:
-    RavelTensor(const Ravel& ravel, const TensorPtr& arg={}, const std::string& dimName="", double av=0): ravel(ravel) {
-    RavelTensor::setArgument(arg,dimName,av);}
-    void setArgument(const TensorPtr& arg, const std::string& dimName,double argVal) override {  
-      DimensionedArgCachedOp::setArgument(arg,dimName,argVal);  
-      if (arg) {  
-       //cachedResult.index(arg->index());  
-       cachedResult.hypercube(arg->hypercube());  
-      }   
-    }  
-    //RavelTensor(const Ravel& ravel): ravel(ravel) {}   
-	//
-    //void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;			
-  	//cachedResult.index(cachedResult.index()); cachedResult.hypercube(cachedResult.hypercube());}
+    RavelTensor(const Ravel& ravel): ravel(ravel) {}   
+    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;			
+  	cachedResult.index(arg->index()); cachedResult.hypercube(arg->hypercube());}
     Timestamp timestamp() const override {return max(arg->timestamp(),cachedResult.timestamp());}
   };
        
@@ -583,13 +574,7 @@ namespace minsky
         auto r=make_shared<SwitchTensor>();
         r->setArguments(tfp.tensorsFromPorts(it.ports));
         return r;
-      } // Original code
-    //else if (auto ravel=dynamic_cast<const Ravel*>(&it))
-    //  {
-    //    auto r=make_shared<RavelTensor>(*ravel);
-    //    r->setArguments(tfp.tensorsFromPorts(it.ports));
-    //    return r;
-    //  }
+      }
     return {};
   }
 
