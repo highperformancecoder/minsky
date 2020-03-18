@@ -61,7 +61,7 @@ namespace minsky
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
     void operator=(const Ravel&) {}
-    Ravel(const Ravel&) {}   
+    Ravel(const Ravel&) {}
 
     /// local override of axis dimensionality
     Dimensions axisDimensions;
@@ -107,6 +107,8 @@ namespace minsky
 
     /// returns all slice labels along the selected handle, in specified order
     std::vector<string> allSliceLabels() const;
+    /// returns all slice labels along an axis(dimension) identified by its number
+    std::vector<string> allSliceLabelsAxis(int axis) const;
     /// returns just the picked slice labels along the handle
     std::vector<string> pickedSliceLabels() const;
     /// pick (selected) \a pick labels

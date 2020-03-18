@@ -450,89 +450,85 @@ namespace minsky
   {
     const Ravel& ravel;
 
-    struct checkCollapsed
-    {
-      checkCollapsed( bool collapsed ) : collapsed_(collapsed) {}
-      bool operator()( const std::pair<std::string, RavelState::HandleState>& v ) const 
-      { 
-        return v.second.collapsed == collapsed_; 
-      }
-    private:
-      bool collapsed_;
-    };
-
-    struct checkRotated
-    {
-      checkRotated( vector<pair<double,double>>& coords) : coords_(coords) {}
-      bool operator()( const std::pair<std::string, RavelState::HandleState>& v ) const 
-      { 
-		for (auto i: coords_)
-           if (v.second.x == i.first && v.second.y == i.second) return true;
-         return false;   
-      }
-    private:
-      vector<pair<double,double>> coords_;
-    };
-
-    
+    struct checkDesc    
+    {    
+      checkDesc(string desc) : desc_(desc) {}    
+      bool operator()( const std::pair<std::string, RavelState::HandleState>& v ) const     
+      {     
+        return v.first == desc_;     
+      }    
+    private:    
+      string desc_;    
+    };    
+   
     void computeTensor() const override  
     {
-	 
-	 RavelState initState=const_cast<Ravel&>(ravel).getState();
-	 
-	 //vector<pair<double,double>> initHandleCoords;
-	 //for (auto& h: initState.handleStates) initHandleCoords.push_back(make_pair(h.second.x,h.second.y));
-	 //
-     //std::map<std::string, RavelState::HandleState>::iterator iter1 = find_if(initState.handleStates.begin(),initState.handleStates.end(),checkRotated(initHandleCoords));	 
 	 
 	 RavelState state=const_cast<Ravel&>(ravel).getState(); 
 	 
 	 
 	 Hypercube hc; 
+	 
      auto& xv=hc.xvectors;
      
-     size_t labelSize;
-     map<std::string, RavelState::HandleState>::iterator iter = find_if(state.handleStates.begin(),state.handleStates.end(),checkCollapsed(true)); 
-     if (iter!=state.handleStates.end()) iter->second.collapsed=true;
-     else iter->second.collapsed=false;
-     //cout << iter->second.collapsed << endl;
+     if (state.outputHandles.size()>0)
+     {
      
-     if (iter->second.collapsed) labelSize=1;
-     else {
-     	labelSize=const_cast<Ravel&>(ravel).allSliceLabels().size();
-         cout  << "There are " << labelSize << " labels on the presently selected handle" << endl;	
-     }	
-	
-     vector<const char*> labels(labelSize);     
-     
-     for (size_t i=0; i<labelSize; ++i)
-       labels[i]=const_cast<Ravel&>(ravel).allSliceLabels()[i].c_str();
-     assert(all_of(labels.begin(), labels.end(),
-                   [](const char* i){return bool(i);}));
-     xv.emplace_back(const_cast<Ravel&>(ravel).description());     
-      
-     for (size_t i=0; i<labels.size(); ++i)    
-       xv.back().push_back(labels[i]);     
-     
-     cachedResult.hypercube(xv);	 
-     
-     for (size_t i=0; i< (*arg).size(); ++i)
-       *(cachedResult.begin()+i)==(*arg)[i];   
-   
-     //const_cast<Ravel&>(ravel).applyState(state); 
-	
-   	 vector<pair<double,double>> finalHandleCoords;
-	 for (auto& h: state.handleStates) finalHandleCoords.push_back(make_pair(h.second.x,h.second.y));        
-    
-    std::map<std::string, RavelState::HandleState>::iterator iter2 = find_if(state.handleStates.begin(),state.handleStates.end(),checkRotated(finalHandleCoords)); 
-    
-    if (iter2!=state.handleStates.end())  {
-		cout << "Handle with description " <<  const_cast<Ravel&>(ravel).description() << " has just been rotated to x-y coordinate pair: (" <<  iter2->second.x <<"," <<iter2->second.y << ")" << endl;
-		//cout << "Handle with description " <<  iter2->first << " has just been rotated to x-y coordinate pair: (" <<  iter2->second.x <<"," <<iter2->second.y << ")" << endl;
-		m_timestamp = Timestamp::clock::now();   
-	}
+         vector<size_t> labelSize(state.outputHandles.size());
 
-     //ravel.loadDataFromSlice(cachedResult); 	
+         
+         size_t outHandle=0;
+         for (auto h: state.outputHandles) {
+            map<std::string, RavelState::HandleState>::iterator iter = find_if(state.handleStates.begin(),state.handleStates.end(),checkDesc(h)); 
+            if (iter!=state.handleStates.end() && !iter->second.collapsed) 
+               labelSize[outHandle]=const_cast<Ravel&>(ravel).allSliceLabelsAxis(outHandle).size();
+            else labelSize[outHandle]=1;  
+            outHandle++; 
+		}
+         
+
+         for (size_t j=0;j<state.outputHandles.size();j++) 
+         {
+             vector<const char*> labels(labelSize[j]);     
+            
+            for (size_t i=0; i<labelSize[j]; ++i)
+              labels[i]=const_cast<Ravel&>(ravel).allSliceLabelsAxis(j)[i].c_str();
+            
+            cout << " " << const_cast<Ravel&>(ravel).description() << " " << state.outputHandles[j] << " " << labelSize[j] << endl;               
+              
+            assert(all_of(labels.begin(), labels.end(),
+                          [](const char* i){return bool(i);}));
+            xv.emplace_back(state.outputHandles[j]);      
+		    
+            auto dim=const_cast<Ravel&>(ravel).axisDimensions.find(xv.back().name);
+            if (dim!=const_cast<Ravel&>(ravel).axisDimensions.end())
+              xv.back().dimension=dim->second;
+            else
+              {       
+                auto dim=cminsky().dimensions.find(xv.back().name);    
+                if (dim!=cminsky().dimensions.end())     
+                  xv.back().dimension=dim->second;     
+              }     
+              
+            for (size_t i=0; i<labels.size(); ++i)    
+              xv.back().push_back(labels[i]);   		                
+           }
+             
+             
+           cachedResult.hypercube(arg->hypercube());
+            
+           size_t stride=1;
+           for (size_t i=0; i<hc.numElements(); i+=stride)
+            {
+             for (size_t j=0; j<stride; ++j)
+               {
+                 cachedResult[i+j]=(*arg)[j];
+               }
+             stride*=xv.back().size();  
+           }                      
+          
+	   } else ravel.loadDataFromSlice(cachedResult);
+     
 
       //m_timestamp = Timestamp::clock::now();
     }    
