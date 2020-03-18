@@ -490,6 +490,7 @@ namespace minsky
 
             for (size_t i=0; i< v.size(); ++i)
               *(v.begin()+i)=tmp[i];
+          return;
           }
         else
           throw error(ravel_lastErr());
