@@ -9,6 +9,8 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
 - edit the file /opt/local/etc/macports/macports.conf, and add the following
   - macosx_deployment_target 10.9
   - buildfromsource         always
+- Install rust, needed to build librsvg. Note, this cannot be built from source in this configuration, so do a binary install:
+  - port -b install rust
 - Now install port prerequisistes for Minsky. 
   - tcl/tk needs to be installed from source code if using Aqua. See below. If using X11, then you can use the MacPorts build of tk.
   - cairo
