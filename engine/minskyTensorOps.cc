@@ -450,88 +450,12 @@ namespace minsky
   {
     const Ravel& ravel;
     TensorPtr arg;
-
-    struct checkDesc    
-    {    
-      checkDesc(string desc) : desc_(desc) {}    
-      bool operator()( const std::pair<std::string, RavelState::HandleState>& v ) const     
-      {     
-        return v.first == desc_;     
-      }    
-    private:    
-      string desc_;    
-    };    
    
     void computeTensor() const override  
     {
-	 
-	 RavelState state=const_cast<Ravel&>(ravel).getState(); 
-	 
-	 
-	 Hypercube hc; 
-	 
-     auto& xv=hc.xvectors;
-     
-     if (state.outputHandles.size()>0)
-     {
-     
-         vector<size_t> labelSize(state.outputHandles.size());
-
-         
-         size_t outHandle=0;
-         for (auto h: state.outputHandles) {
-            map<std::string, RavelState::HandleState>::iterator iter = find_if(state.handleStates.begin(),state.handleStates.end(),checkDesc(h)); 
-            if (iter!=state.handleStates.end() && !iter->second.collapsed) 
-               labelSize[outHandle]=const_cast<Ravel&>(ravel).allSliceLabelsAxis(outHandle).size();
-            else labelSize[outHandle]=1;  
-            outHandle++; 
-		}
-         
-
-         for (size_t j=0;j<state.outputHandles.size();j++) 
-         {
-             vector<const char*> labels(labelSize[j]);     
-            
-            for (size_t i=0; i<labelSize[j]; ++i)
-              labels[i]=const_cast<Ravel&>(ravel).allSliceLabelsAxis(j)[i].c_str();
-            
-            cout << " " << const_cast<Ravel&>(ravel).description() << " " << state.outputHandles[j] << " " << labelSize[j] << endl;               
-              
-            assert(all_of(labels.begin(), labels.end(),
-                          [](const char* i){return bool(i);}));
-            xv.emplace_back(state.outputHandles[j]);      
-		    
-            auto dim=const_cast<Ravel&>(ravel).axisDimensions.find(xv.back().name);
-            if (dim!=const_cast<Ravel&>(ravel).axisDimensions.end())
-              xv.back().dimension=dim->second;
-            else
-              {       
-                auto dim=cminsky().dimensions.find(xv.back().name);    
-                if (dim!=cminsky().dimensions.end())     
-                  xv.back().dimension=dim->second;     
-              }     
-              
-            for (size_t i=0; i<labels.size(); ++i)    
-              xv.back().push_back(labels[i]);   		                
-           }
-             
-             
-           cachedResult.hypercube(arg->hypercube());
-            
-           size_t stride=1;
-           for (size_t i=0; i<hc.numElements(); i+=stride)
-            {
-             for (size_t j=0; j<stride; ++j)
-               {
-                 cachedResult[i+j]=(*arg)[j];
-               }
-             stride*=xv.back().size();  
-           }                      
-          
-	   } else ravel.loadDataFromSlice(cachedResult);
-     
-
-      //m_timestamp = Timestamp::clock::now();
+      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg); 	 
+      ravel.loadDataFromSlice(cachedResult);
+      m_timestamp = Timestamp::clock::now();
     }    
     CLASSDESC_ACCESS(Ravel);
   public:
