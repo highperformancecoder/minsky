@@ -20,6 +20,7 @@
 #include <classdesc.h>
 #include "minskyTensorOps.h"
 #include "minsky.h"
+#include "ravelWrap.h"
 #include "minsky_epilogue.h"
 
 using namespace civita;
@@ -151,8 +152,7 @@ namespace minsky
       civita::BinOp::setArguments(pa1, pa2);
     }
   };
-
-  
+   
 //  template <minsky::OperationType::Type T>
 //  struct ReductionTraits
 //  {
@@ -182,7 +182,6 @@ namespace minsky
   typename classdesc::enable_if<is_equal<op, to>, void>::T
   registerOps(TensorOpFactory& tensorOpFactory)
   {}  //terminates recursion
-
 
   TensorOpFactory::TensorOpFactory()
   {
@@ -447,27 +446,35 @@ namespace minsky
     }
   };
 
-  class RavelTensor: public CachedTensorOp
+  class RavelTensor: public civita::CachedTensorOp
   {
     const Ravel& ravel;
     TensorPtr arg;
-    void computeTensor() const override
+   
+    void computeTensor() const override  
     {
-      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);
+      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg); 	 
       ravel.loadDataFromSlice(cachedResult);
       m_timestamp = Timestamp::clock::now();
-    }
-    
+    }    
+    CLASSDESC_ACCESS(Ravel);
   public:
-    RavelTensor(const Ravel& ravel): ravel(ravel) {}
-    void setArgument(const TensorPtr& a,const std::string& d,double) override {arg=a;}
-    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
+    RavelTensor(const Ravel& ravel): ravel(ravel) {}   
+    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;			
+  	cachedResult.index(arg->index()); cachedResult.hypercube(arg->hypercube());}
+    Timestamp timestamp() const override {return max(arg->timestamp(),cachedResult.timestamp());}
   };
-  
+       
   std::shared_ptr<ITensor> TensorOpFactory::create
   (const Item& it, const TensorsFromPort& tfp)
   {
-    if (auto op=it.operationCast())
+    if (auto ravel=dynamic_cast<const Ravel*>(&it))
+	    {
+	      auto r=make_shared<RavelTensor>(*ravel);
+	      r->setArguments(tfp.tensorsFromPorts(it.ports));
+	      return r;
+	    }
+    else if (auto op=it.operationCast())
       try
         {
           TensorPtr r{create(op->type())};
@@ -479,7 +486,7 @@ namespace minsky
             case 3:
               r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]));
               break;
-            }
+		    }
           return r;
         }
       catch (const InvalidType&)
@@ -489,12 +496,6 @@ namespace minsky
     else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))
       {
         auto r=make_shared<SwitchTensor>();
-        r->setArguments(tfp.tensorsFromPorts(it.ports));
-        return r;
-      }
-    else if (auto ravel=dynamic_cast<const Ravel*>(&it))
-      {
-        auto r=make_shared<RavelTensor>(*ravel);
         r->setArguments(tfp.tensorsFromPorts(it.ports));
         return r;
       }
@@ -564,7 +565,7 @@ namespace minsky
     copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
     rhs=move(copy);
     assert(result.size()==rhs->size());
-  }
+  }   
 
   void TensorEval::eval(double fv[], const double sv[])
   {
@@ -581,8 +582,7 @@ namespace minsky
           }
       }
   }
-
-  
+   
   void TensorEval::deriv(double df[], const double ds[],
                          const double sv[], const double fv[])
   {

@@ -39,7 +39,7 @@ namespace minsky
   private:
     typedef RavelState::HandleState HandleState;
     Exclude<RavelImpl*> ravel=nullptr;
-    Exclude<DataCube*> dataCube=nullptr;
+    Exclude<DataCube*> dataCube=nullptr;       
     void noRavelSetup();
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
@@ -107,6 +107,8 @@ namespace minsky
 
     /// returns all slice labels along the selected handle, in specified order
     std::vector<string> allSliceLabels() const;
+    /// returns all slice labels along an axis(dimension) identified by its number
+    std::vector<string> allSliceLabelsAxis(int axis) const;
     /// returns just the picked slice labels along the handle
     std::vector<string> pickedSliceLabels() const;
     /// pick (selected) \a pick labels

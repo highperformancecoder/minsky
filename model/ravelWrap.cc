@@ -490,6 +490,7 @@ namespace minsky
 
             for (size_t i=0; i< v.size(); ++i)
               *(v.begin()+i)=tmp[i];
+          return;
           }
         else
           throw error(ravel_lastErr());
@@ -602,6 +603,11 @@ namespace minsky
   {
       return allSliceLabelsImpl(ravel_selectedHandle(ravel),HandleState::forward);
   }
+  
+  vector<string> Ravel::allSliceLabelsAxis(int axis) const
+  {
+      return allSliceLabelsImpl(axis,HandleState::forward);
+  }  
 
   vector<string> Ravel::allSliceLabelsImpl(int axis, HandleSort order) const
   {
