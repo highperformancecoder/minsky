@@ -460,9 +460,11 @@ namespace minsky
     CLASSDESC_ACCESS(Ravel);
   public:
     RavelTensor(const Ravel& ravel): ravel(ravel) {}   
-    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;			
-  	cachedResult.index(arg->index()); cachedResult.hypercube(arg->hypercube());}
-    Timestamp timestamp() const override {return max(arg->timestamp(),cachedResult.timestamp());}
+    void setArgument(const TensorPtr& a,const std::string&,double) override {
+      arg=a;			
+      hypercube(ravel.hypercube());
+    }
+    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
        
   std::shared_ptr<ITensor> TensorOpFactory::create

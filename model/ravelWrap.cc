@@ -443,59 +443,57 @@ namespace minsky
       }
   }
 
+  Hypercube Ravel::hypercube(double*& data) const
+  {
+    if (!ravel) return {};
+
+    vector<size_t> dims(ravel_rank(ravel));
+    ravelDC_hyperSlice(dataCube, ravel, &dims[0], &data);
+    if (dims.size() && dims[0]==0) dims.clear();
+    
+    vector<size_t> outHandles(dims.size());
+    ravel_outputHandleIds(ravel, &outHandles[0]);
+    Hypercube hc;
+    auto& xv=hc.xvectors;
+    for (size_t j=0; j<outHandles.size(); ++j)
+      {
+        auto h=outHandles[j];
+        vector<const char*> labels(ravel_numSliceLabels(ravel,h));
+        assert(ravel_numSliceLabels(ravel,h)==dims[j]);
+        ravel_sliceLabels(ravel,h,&labels[0]);
+        assert(all_of(labels.begin(), labels.end(),
+                      [](const char* i){return bool(i);}));
+        xv.emplace_back
+          (ravel_handleDescription(ravel,h));
+        auto dim=axisDimensions.find(xv.back().name);
+        if (dim!=axisDimensions.end())
+          xv.back().dimension=dim->second;
+        else
+          {
+            auto dim=cminsky().dimensions.find(xv.back().name);
+            if (dim!=cminsky().dimensions.end())
+              xv.back().dimension=dim->second;
+          }
+        // else otherwise dimension is a string (default type)
+        for (size_t i=0; i<labels.size(); ++i)
+          xv.back().push_back(labels[i]);
+      }
+    assert(vector<unsigned>(dims.begin(), dims.end())==hc.dims());
+    return hc;
+  }
+  
   void Ravel::loadDataFromSlice(ITensorVal& v) const
   {
-    if (ravel && dataCube)
+    double* tmp=nullptr;
+    v.hypercube(hypercube(tmp));
+    if (tmp)
       {
-        vector<size_t> dims(ravel_rank(ravel));
-        double* tmp=nullptr;
-        ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
-        if (dims.empty() || dims[0]==0)
-          {
-            v.hypercube({});
-            if (dims.empty() && tmp) v[0]=tmp[0];
-            return; // do nothing if ravel data is empty
-          }
-        if (tmp)
-          {
-            vector<size_t> outHandles(dims.size());
-            ravel_outputHandleIds(ravel, &outHandles[0]);
-            Hypercube hc;
-            auto& xv=hc.xvectors;
-            for (size_t j=0; j<outHandles.size(); ++j)
-              {
-                auto h=outHandles[j];
-                vector<const char*> labels(ravel_numSliceLabels(ravel,h));
-                assert(ravel_numSliceLabels(ravel,h)==dims[j]);
-                ravel_sliceLabels(ravel,h,&labels[0]);
-                assert(all_of(labels.begin(), labels.end(),
-                              [](const char* i){return bool(i);}));
-                xv.emplace_back
-                  (ravel_handleDescription(ravel,h));
-                auto dim=axisDimensions.find(xv.back().name);
-                if (dim!=axisDimensions.end())
-                  xv.back().dimension=dim->second;
-                else
-                  {
-                    auto dim=cminsky().dimensions.find(xv.back().name);
-                    if (dim!=cminsky().dimensions.end())
-                      xv.back().dimension=dim->second;
-                  }
-                // else otherwise dimension is a string (default type)
-                for (size_t i=0; i<labels.size(); ++i)
-                  xv.back().push_back(labels[i]);
-              }
-            v.hypercube(move(hc));
-            assert(vector<unsigned>(dims.begin(), dims.end())==v.hypercube().dims());
-
-            for (size_t i=0; i< v.size(); ++i)
-              *(v.begin()+i)=tmp[i];
-          return;
-          }
-        else
-          throw error(ravel_lastErr());
+        for (size_t i=0; i< v.size(); ++i)
+          *(v.begin()+i)=tmp[i];
+        return;
       }
-    v.hypercube({}); // ensure scalar data space allocated
+    else
+      throw error(ravel_lastErr());
   }
 
   void Ravel::loadDataCubeFromVariable(const ITensor& v)
