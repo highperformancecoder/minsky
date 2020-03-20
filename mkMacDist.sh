@@ -7,8 +7,8 @@
 # ensure ~/usr/bin overrides every other TCL installation
 PATH=~/usr/bin:$PATH
 
-# check that EcoLab and Tk has been built for extract a quartz context
-if ! nm $HOME/usr/ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
+# check that EcoLab and Tk has been built for extracting a quartz context
+if ! nm ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
     echo "Rebuild EcoLab with MAC_OSX_TK=1"
     exit 1
 fi
