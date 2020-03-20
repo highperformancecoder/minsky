@@ -55,6 +55,9 @@ namespace minsky
 
     std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
 
+    /// return hypercube corresponding to the current Ravel state. \a data returns a pointer to the current data slice
+    Hypercube hypercube(double*& data) const;
+
   public:
     Ravel();
     ~Ravel();
@@ -87,6 +90,8 @@ namespace minsky
     void onMouseLeave();
     void loadFile(const std::string&);
     const string& filename() const {return m_filename;}
+    /// return hypercube corresponding to the current Ravel state
+    Hypercube hypercube() const {double* tmp; return hypercube(tmp);}
     void loadDataFromSlice(ITensorVal&) const;
     void loadDataCubeFromVariable(const ITensor&);
     unsigned maxRank() const;
