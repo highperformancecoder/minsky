@@ -454,10 +454,15 @@ namespace minsky
     void computeTensor() const override  
     {
 	  
+	  double sparsityRatio =  static_cast<double>(1.0-static_cast<double>(arg->size())/arg->hypercube().numElements());  
+	  
 	  if (arg->index().empty()) {	
 	      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);	
 	      ravel.loadDataFromSlice(cachedResult);	      
-      } else throw runtime_error("ravel evaluation of sparse data not available");
+      } else if (sparsityRatio <= 0.5) {
+		  const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg);	
+		  ravel.loadDataFromSlice(cachedResult);	      
+	  } else throw runtime_error("ravel evaluation of sparse data not available");	
       
       m_timestamp = Timestamp::clock::now();
     }    
