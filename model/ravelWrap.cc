@@ -538,7 +538,10 @@ namespace minsky
         vector<double> tmp(v.size());
         if (v.index().empty()) 
            for (size_t i=0; i<v.size(); ++i) tmp[i]=v[i];
-        else for (size_t i=0; i<v.size(); ++i) tmp[i]=v.atHCIndex(i);
+        else {
+            size_t inc=0; 
+		    for (auto i: v.index()) tmp[++inc]=v.atHCIndex(i);
+		 }
         ravelDC_loadData(dataCube, ravel, &tmp[0]);
         applyState(state);
       }
