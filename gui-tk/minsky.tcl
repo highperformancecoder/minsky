@@ -787,7 +787,7 @@ proc dimFormatPopdown {comboBox type} {
         }
         time {
             $comboBox configure -values {
-                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q"
+                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q HopkinsDate"
             }
         }
     }
