@@ -322,7 +322,7 @@ proc addVariablePostModal {} {
     closeEditWindow .wiring.initVar
 }
 
-proc subSpecChars name {
+proc subSpecChars {name} {
 	    # This RE is just a character class for everything "bad"
     set RE {[][{}\$\s\u0100-\uffff]}
     
@@ -425,7 +425,7 @@ proc textOK {} {
         addNote [string range $textBuffer 1 end]
     } else {
         if [regexp "(.*)=(.*)" $textBuffer dummy name init] {            
-            set nameSubbed [subSpecChars $name)]
+            set nameSubbed [subSpecChars $name]
             minsky.addVariable $nameSubbed flow
 			minsky.canvas.itemFocus.init $init
             minsky.variableValues.reset
