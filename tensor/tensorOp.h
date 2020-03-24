@@ -150,10 +150,13 @@ namespace civita
 
   struct DimensionedArgCachedOp: public CachedTensorOp
   {
-    size_t dimension; // dimension to apply operation over. >rank = all dims
-    double argVal;
+    /// dimension to apply operation over. >rank = all dims
+    size_t dimension=std::numeric_limits<size_t>::max(); 
+    /// op arg value, eg binsize or delta in difference op
+    double argVal=0;
     TensorPtr arg;
     void setArgument(const TensorPtr& a, const std::string&,double) override;
+    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
   
   class Scan: public DimensionedArgCachedOp
@@ -170,7 +173,6 @@ namespace civita
       // TODO - can we handle sparse data?
     }      
     void computeTensor() const override;
-    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
 
 }

@@ -244,26 +244,53 @@ namespace minsky
   };
   
   template <>
-  class GeneralTensorOp<OperationType::difference>: public civita::Scan
+  class GeneralTensorOp<OperationType::difference>: public civita::DimensionedArgCachedOp
   {
-    ssize_t delta;
+    ssize_t delta=0;
   public:
-    GeneralTensorOp(): civita::Scan
-                       ([this](double& x,double y,size_t i)
-                        {
-                          ssize_t t=ssize_t(i)-delta;
-                          if (t>=0 && t<ssize_t(arg->size()))
-                            x = y-arg->atHCIndex(t);
-                        }) {}
     void setArgument(const TensorPtr& a,const std::string& s,double d) override {
-      civita::Scan::setArgument(a,s,d);
+      civita::DimensionedArgCachedOp::setArgument(a,s,d);
+      if (dimension>=rank() && rank()>1)
+        throw error("axis name needs to be specified in difference operator");
+      
       delta=d;
+      // remove initial slice of hypercube
+      auto hc=arg->hypercube();
+      unsigned dim=rank()>1? dimension: 0;
+      auto& xv=hc.xvectors[0];
+      if (delta>=0)
+        xv.erase(xv.begin(), xv.begin()+delta);
+      else
+        xv.erase(xv.end()+delta, xv.end());
+      hypercube(move(hc));
+      
       // determine offset in hypercube space
       auto dims=arg->hypercube().dims();
       if (dimension<dims.size())
         for (size_t i=0; i<dimension; ++i)
           delta*=dims[i];
+      auto idx=arg->index();
+      // strip of any indices outside the output range
+      idx.erase(remove_if(idx.begin(), idx.end(),
+                          [this](size_t i) {
+                            auto t=ssize_t(i)-delta; return t<0 || t>=size();}),
+                idx.end());
+      for (auto& i: idx)
+        i-=delta;
+      cachedResult.index(idx);
     }
+
+    void computeTensor() const override
+    {
+      if (delta>=0)
+        for (size_t i=0; i<size(); ++i)
+          cachedResult[i]=arg->atHCIndex(i+delta)-arg->atHCIndex(i);
+      else
+        for (size_t i=0; i<size(); ++i)
+          cachedResult[i]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
+        
+    }
+
   };
   
   template <>
