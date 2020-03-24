@@ -303,8 +303,7 @@ proc addVariablePostModal {} {
     global varInput
     global varType
     
-    set name [string trim [subSpecChars $varInput(Name)]]
-    #set name [string trim $varInput(Name)]
+    set name [string trim $varInput(Name)]
     set varExists [variableValues.count $name]
     minsky.addVariable $name $varInput(Type)
     canvas.itemFocus.init $varInput(Value)
@@ -320,19 +319,6 @@ proc addVariablePostModal {} {
         canvas.itemFocus.sliderBoundsSet 1
     }
     closeEditWindow .wiring.initVar
-}
-
-proc subSpecChars {name} {
-	    # This RE is just a character class for everything "bad"
-    set RE {[][{}\$\s\u0100-\uffff]}
-    
-    # We will substitute with a fragment of Tcl script in brackets
-    set substitution {[format \\\\u%04x [scan "\\¿" %c]]}
-    
-    # Now we apply the substitution to get a subst-string that
-    # will perform the computational parts of the conversion.
-    set nameSubbed [subst [regsub -all $RE $name $substitution]]	
-    return $nameSubbed
 }
 
 
@@ -425,8 +411,7 @@ proc textOK {} {
         addNote [string range $textBuffer 1 end]
     } else {
         if [regexp "(.*)=(.*)" $textBuffer dummy name init] {            
-            set nameSubbed [subSpecChars $name]
-            minsky.addVariable $nameSubbed flow
+            minsky.addVariable $name flow
 			minsky.canvas.itemFocus.init $init
             minsky.variableValues.reset
         } else {
@@ -1196,11 +1181,8 @@ proc editVar {} {
     .wiring.editVar.entry10 configure -values [accessibleVars]
     
 
-    set nameSubbed [subSpecChars $item.name]	    
-    set "editVarInput(Name)" [$nameSubbed]
-    #set "editVarInput(Name)" [$item.name]
+    set "editVarInput(Name)" [$item.name]
     set "editVarInput(Type)" [$item.type]
-
     set "editVarInput(Initial Value)" [$item.init]
     set "editVarInput(Units)" [value.units.str]
     set "editVarInput(Rotation)" [$item.rotation]

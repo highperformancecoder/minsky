@@ -41,8 +41,7 @@ proc openGodley {id} {
         bind .$id.table <Enter> "$id.adjustWidgets; $id.requestRedraw"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-        bind .$id.table <KeyPress> "$id.keyPress %N [inputText %A]"
-        #bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]"
+        bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]"
         global meta meta_menu
         bind .$id.table <$meta-y> "$id.undo -1"
         bind .$id.table <$meta-z> "$id.undo 1"
@@ -154,20 +153,6 @@ proc mouseDown {id x y X Y} {
         $id.mouseDown $x $y
         focus .$id.table
     }
-}
-
-proc inputText A {
-    # This RE is just a character class for everything "bad"
-    set RE {[][{}\$\s\u0100-\uffff]}
-    
-    # We will substitute with a fragment of Tcl script in brackets
-    set substitution {[format \\\\u%04x [scan "\\¿" %c]]}
-    
-    # Now we apply the substitution to get a subst-string that
-    # will perform the computational parts of the conversion.
-    set nameSubbed [subst [regsub -all $RE $A $substitution]]	
-    
-    return $nameSubbed	
 }
 
 # warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.

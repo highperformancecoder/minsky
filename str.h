@@ -63,17 +63,17 @@ namespace minsky
   inline std::string stripActive(const std::string& s) {
     std::string r; r.reserve(s.length());
     for (size_t i=0; i<s.length(); ++i)
-      //switch (s[i])        
-      //  {
-      //  case '\\': case '{': case '}':
-      //    break;
-      //  default:
+      switch (s[i])        
+        {
+        case '\\': //case '{': case '}':
+          break;
+        default:
           if (isspace(s[i]))
             r+='_';
           else
             r+=s[i];
-        //  break;
-        //}
+          break;
+        }
     if (r.empty()) return "_";
     return r;
   }
