@@ -389,24 +389,7 @@ namespace MathDAG
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
-                break;
-              //case ravel:
-              //  if (auto r=dynamic_cast<Ravel*>(state.get()))
-              //    {
-              //      if (argIdx.size()>0 && argIdx[0].size()==1)
-              //        {
-              //          // process ravel to dimension the result
-              //          // variable correctly (data may be bogus at
-              //          // this time)
-              //          r->loadDataCubeFromVariable(argIdx[0][0]);
-              //          r->loadDataFromSlice(*result);
-              //          ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
-              //          //ev.back()->state=state;
-              //        }
-              //      else
-              //        r->loadDataFromSlice(*result);
-              //    }
-              //  break;                
+                break;            
               default:
                 switch (classify(type()))
                   {
