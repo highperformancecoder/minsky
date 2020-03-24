@@ -262,25 +262,33 @@ SUITE(TensorOps)
         i=cnt++;
 
       int delta=1;
-      evalOp<OperationType::difference>("",delta);
+      evalOp<OperationType::difference>("",delta=1);
       CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
       for (auto& i: *to.vValue())
         CHECK_EQUAL(1,i);
       CHECK_EQUAL(1, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
 
-      delta=-1;
-      evalOp<OperationType::difference>("",delta);
+      evalOp<OperationType::difference>("",delta=-1);
       CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
       for (auto& i: *to.vValue())
         CHECK_EQUAL(-1,i);
       CHECK_EQUAL(0, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
                   
-      delta=2;
-      evalOp<OperationType::difference>("",delta);
+      evalOp<OperationType::difference>("",delta=2);
       CHECK_EQUAL(3, to.vValue()->hypercube().dims()[0]);
       for (auto& i: *to.vValue())
         CHECK_EQUAL(2,i);
       CHECK_EQUAL(2, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+
+      // check that the sparse code works as expected
+      fromVal.index({0,1,2,3,4});
+      evalOp<OperationType::difference>("",delta=1);
+      CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(1,i);
+      CHECK_EQUAL(1, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+      vector<size_t> ii{0,1,2,3};
+      CHECK_ARRAY_EQUAL(ii, to.vValue()->index(), 4);
     }
   
   TEST_FIXTURE(TestFixture, indexGather)
