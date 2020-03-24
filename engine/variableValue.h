@@ -154,7 +154,7 @@ namespace minsky
     /// check that name is a valid valueId (useful for assertions)
     static bool isValueId(const std::string& name) {
       return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\{}]+)"));
+        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s]+)"));
     }
 
     /// construct a valueId
