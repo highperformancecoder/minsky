@@ -38,7 +38,7 @@ namespace minsky
     struct OrderByName
     {
       bool operator()(const VariablePtr& x, const VariablePtr& y) const
-      {assert(x&&y); return x->valueId() < y->valueId();}
+      {assert(x&&y); return x->name() < y->name();}    // Characeters stripped from valueIds by stripActive() seem to cause this to not work properly. For ticket 1165.
     };
 
     struct DrawVars
