@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "godleyTableWindow.h"
 #include <fstream>
+#include <memory>
 
 namespace ecolab {extern Tk_Window mainWin;}
 
@@ -62,7 +63,7 @@ namespace minsky
     /// generate a TCL_obj referring to variableValues[valueId]
     void getValue(const std::string& valueId);
     
-    std::unique_ptr<ostream> eventRecord;
+    std::unique_ptr<std::ostream> eventRecord;
     void startRecording(const char* file) {
       eventRecord.reset(new std::ofstream(file));
       *eventRecord<<"checkRecordingVersion "<<minskyVersion<<endl;
@@ -71,6 +72,11 @@ namespace minsky
       eventRecord.reset();
     }
 
+    std::unique_ptr<std::string> autoSaveFile;
+    void setAutoSaveFile(const std::string& file) {
+      autoSaveFile.reset(new std::string(file));
+    }
+    
     /// flag to indicate whether a TCL should be pushed onto the
     /// history stack, or logged in a recording. This is used to avoid
     /// movements being added to recordings and undo history

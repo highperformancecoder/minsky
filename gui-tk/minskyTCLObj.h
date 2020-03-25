@@ -97,6 +97,17 @@ namespace minsky
                   (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";
                 (*m.eventRecord)<<endl;
               }
+            if (modelChanged && m.autoSaveFile.get())
+              try
+                {
+                  m.save(*m.autoSaveFile);
+                  m.markEdited(); // undo edited flag reset
+                }
+              catch(...)
+                { // unable to autosave
+                  m.autoSaveFile.reset();
+                  throw std::runtime_error("Unable to autosave to this location");
+                }
           }
       }
     if (m.rebuildTCLcommands)
