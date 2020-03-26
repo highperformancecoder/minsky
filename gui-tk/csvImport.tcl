@@ -203,7 +203,7 @@ proc csvImportButton1Up {x y X Y} {
             2 {if {$col<[csvDialog.spec.dimensions.size]} {
                 set units ""
                 if {[[csvDialog.spec.dimensions.@elem $col].type]=="time"} {
-                    set units "{%Y-%m-%D %Y-%m-%d %H:%M:%S %Y-Q%Q}"
+                    set units "{%Y-%m-%D %Y-%m-%d %H:%M:%S %Y-Q%Q HopkinsDate}"
                 }
                 setupCombo [[csvDialog.spec.dimensions.@elem $col].units] \
                     "csvDialog.spec.dimensions($col).units" \

@@ -498,6 +498,13 @@ temporal data, which is achieved by changing the column type to
 conventions with the addition of a quarter specifier (\verb+%Q+).
 \index{strftime format specifier}\label{strftime format specifier}
 
+If your temporal data is in the form Y*M*D*H*M*S, where * signifies
+any sequence of non-digit characters, and the year, month, day, hour
+minutes, second fields are regular integers in that order, then it
+suffices to use the blank format string \index{blank strftime
+  format}. If some of the fields are missing, eg minutes and seconds,
+then they will be filled in with sensible defaults.
+
 \begin{center}
 \resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat.eps}}
 \end{center}
@@ -505,11 +512,17 @@ conventions with the addition of a quarter specifier (\verb+%Q+).
 \begin{table}
   \begin{tabular}{|c|l|}
     \hline Code & Description \\\hline
+    \%a or \%A &  The name of the day of the week according to the current locale,
+                 in abbreviated form or the full name.\\
+    \%b or \%B &  The month name according to the current locale,  in  abbreviated
+              form or the full name.\\
     \%d & Day of month in range 01 to 31\\
-    \%H & Hour in range 00 to 23\\
+    \%H & Hour in range 0 to 23\\
+    \%I & Hour in range 1 to 12\\
     \%m & Month as a decimal number (01 to 12)\\
     \%M & Minute in range 00 to 59\\
     \%Q & Quarter (0=1st January, 1=1st March etc)\\
+    \%p & AM or PM\\
     \%s & Number of seconds since epoch (1st January 1970)\\
     \%S & Seconds in range 00 to 59 \\
     \%y & Two digit year YY\\
@@ -753,7 +766,7 @@ outside of the plot are a number of input ports that can be wired.
 \end{description}
 
 \section{Sheet Widget}
- \label{Sheets}\label{Item} The Sheet widget displays input data as a
+ \label{Sheets} The Sheet widget displays input data as a
  number, rather than as a 2D graph, as in the case of the plot widget.
  To use the Sheet widget, simply wire a variable or other item on your
  canvas to the left-hand side of the sheet widget box. This will diplay

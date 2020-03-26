@@ -592,7 +592,11 @@ namespace minsky
                      }
                    else
                      {
-                       v->name(newName);
+                       if (varScope==v->group.lock() ||
+                           (newName.size() && newName[0]==':') )
+                         v->name(newName);
+                       else
+                         v->name(":"+newName);
                        if (auto vv=v->vValue()) {
                         v->retype(vv->type()); // ensure correct type. Note this invalidates v.
                        }

@@ -230,6 +230,67 @@ SUITE(TensorOps)
       }
     }
 
+  TEST_FIXTURE(TestFixture, difference2D)
+    {
+      vector<unsigned> dims{5,5};
+      fromVal.hypercube(Hypercube(dims));
+      int cnt=0;
+      for (auto& i: fromVal)
+        i=cnt++;
+
+      int delta=1;
+      evalOp<OperationType::difference>("0",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(1,i);
+      evalOp<OperationType::difference>("1",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(5,i);
+      delta=2;
+      evalOp<OperationType::difference>("0",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(2,i);
+      evalOp<OperationType::difference>("1",delta);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(10,i);
+    }
+  TEST_FIXTURE(TestFixture, difference1D)
+    {
+      vector<unsigned> dims{5};
+      fromVal.hypercube(Hypercube(dims));
+      int cnt=0;
+      for (auto& i: fromVal)
+        i=cnt++;
+
+      int delta=1;
+      evalOp<OperationType::difference>("",delta=1);
+      CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(1,i);
+      CHECK_EQUAL(1, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+
+      evalOp<OperationType::difference>("",delta=-1);
+      CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(-1,i);
+      CHECK_EQUAL(0, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+                  
+      evalOp<OperationType::difference>("",delta=2);
+      CHECK_EQUAL(3, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(2,i);
+      CHECK_EQUAL(2, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+
+      // check that the sparse code works as expected
+      fromVal.index({0,1,2,3,4});
+      evalOp<OperationType::difference>("",delta=1);
+      CHECK_EQUAL(4, to.vValue()->hypercube().dims()[0]);
+      for (auto& i: *to.vValue())
+        CHECK_EQUAL(1,i);
+      CHECK_EQUAL(1, any_cast<double>(to.vValue()->hypercube().xvectors[0][0]));
+      vector<size_t> ii{0,1,2,3};
+      CHECK_ARRAY_EQUAL(ii, to.vValue()->index(), 4);
+    }
+  
   TEST_FIXTURE(TestFixture, indexGather)
     {
       auto& toVal=*to.vValue();
@@ -316,7 +377,10 @@ SUITE(TensorOps)
               break;
             case OperationType::scan:
               CHECK_EQUAL(1, dest.vValue()->rank());
-              CHECK_EQUAL(src.vValue()->size(), dest.vValue()->size());
+              if (op==OperationType::difference) //TODO should difference really be a scan?
+                CHECK_EQUAL(src.vValue()->size()-1, dest.vValue()->size());
+              else
+                CHECK_EQUAL(src.vValue()->size(), dest.vValue()->size());
               break;
             default:
               CHECK(false);

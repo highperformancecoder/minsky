@@ -787,7 +787,7 @@ proc dimFormatPopdown {comboBox type} {
         }
         time {
             $comboBox configure -values {
-                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q"
+                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q HopkinsDate"
             }
         }
     }
@@ -1198,13 +1198,24 @@ proc openFile {} {
     if [string length $ofname] {eval openNamedFile $ofname}
 }
 
+proc autoBackupName {} {
+    global fname
+    return "$fname#"
+}
 proc openNamedFile {ofname} {
     global fname workDir preferences
     newSystem
     setFname $ofname
-
-    eval minsky.load {$ofname}
+    
+    if {[file exists [autoBackupName]] && [tk_messageBox -message "Auto save file exists, do you wish to load it" -type yesno]=="yes"} {
+        eval minsky.load {[autoBackupName]}
+    } else {
+        eval minsky.load {$ofname}
+        file delete [autoBackupName]
+    }
     doPushHistory 0
+    setAutoSaveFile [autoBackupName]
+
     # minsky.load resets minsky.multipleEquities, so restore it to preferences
     minsky.multipleEquities $preferences(multipleEquities)
     pushFlags
@@ -1249,6 +1260,7 @@ proc save {} {
     if [string length $fname] {
         set workDir [file dirname $fname]
         eval minsky.save {$fname}
+        file delete [autoBackupName]
     }
 }
 
@@ -1256,15 +1268,12 @@ proc saveAs {} {
     global fname workDir
     setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir \
               -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]
-    if [string length $fname] {
-        set workDir [file dirname $fname]
-        eval minsky.save {$fname}
-    }
+    if [string length $fname] save
 }
 
 proc newSystem {} {
     doPushHistory 0
-    if [edited] {
+    if {[edited] || [file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save?" -type yesnocancel] {
             yes save
             no {}
@@ -1543,7 +1552,7 @@ proc deleteSubsidiaryTopLevels {} {
 
 proc exit {} {
     # check if the model has been saved yet
-    if [edited] {
+    if {[edited]||[file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
             no {}

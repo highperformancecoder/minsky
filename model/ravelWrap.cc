@@ -500,6 +500,8 @@ namespace minsky
   {
     if (ravel && dataCube)
       {
+        if (!v.index().empty())
+          throw runtime_error("Sparse data not currently supported");
         // this ensure that handles are restored correctly after loading a .mky file. 
         RavelState state=initState.empty()? getState(): initState;
         initState.clear();

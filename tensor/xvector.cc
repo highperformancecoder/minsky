@@ -30,6 +30,8 @@ using namespace boost;
 using namespace boost::posix_time;
 using namespace boost::gregorian;
 
+#include <time.h>
+
 namespace civita
 {
 
@@ -124,15 +126,30 @@ namespace civita
             }
           else if (!dim.units.empty())
             {
-              unique_ptr<time_input_facet> facet
-                (new time_input_facet(dim.units.c_str()));
-              istringstream is(s);
-              is.imbue(locale(is.getloc(), facet.release()));
-              ptime pt;
-              is>>pt;
-              if (pt.is_special())
+              // note: boost time_input_facet too restrictive, so using strptime instead. See Ravel ticket #35
+//              time_input_facet(dim.units.c_str(),
+//              istringstream is(s);
+//              is.imbue(locale(is.getloc(), new time_input_facet(dim.units.c_str())));
+//              ptime pt;
+//              is>>pt;
+//              cout << pt << endl;
+//              if (pt.is_special())
+//                throw error("invalid date/time: %s",s.c_str());
+//              return pt;
+              struct tm tm;
+              memset(&tm,0,sizeof(tm));
+              if (char* next=strptime(s.c_str(), dim.units.c_str(), &tm))
+                try
+                  {
+                    return ptime(date(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday), time_duration(tm.tm_hour,tm.tm_min,tm.tm_sec));
+                  }
+                catch (...)
+                  {
+                    cout << s << " " << tm.tm_year<<tm.tm_mon << " " << tm.tm_mday << endl;
+                    throw;
+                  }
+              else
                 throw error("invalid date/time: %s",s.c_str());
-              return pt;
             }
           else
             return sToPtime(s);
