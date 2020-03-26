@@ -58,6 +58,7 @@ tcl_exit
 EOF
 
 cp $here/test/assert.tcl .
+rm $here/examples/*.mky\#
 $here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 
