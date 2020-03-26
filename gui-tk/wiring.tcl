@@ -302,7 +302,7 @@ proc addVariablePostModal {} {
     global globals
     global varInput
     global varType
-
+    
     set name [string trim $varInput(Name)]
     set varExists [variableValues.count $name]
     minsky.addVariable $name $varInput(Type)
@@ -410,9 +410,9 @@ proc textOK {} {
     } elseif [string match "\[%#\]*" $textBuffer] {
         addNote [string range $textBuffer 1 end]
     } else {
-        if [regexp "(.*)=(.*)" $textBuffer dummy name init] {
+        if [regexp "(.*)=(.*)" $textBuffer dummy name init] {            
             minsky.addVariable $name flow
-            minsky.canvas.itemFocus.init $init
+			minsky.canvas.itemFocus.init $init
             minsky.variableValues.reset
         } else {
             minsky.addVariable $textBuffer flow
@@ -1179,10 +1179,10 @@ proc editVar {} {
     wm title .wiring.editVar "Edit [$item.name]"
     # populate combobox with existing variable names
     .wiring.editVar.entry10 configure -values [accessibleVars]
+    
 
     set "editVarInput(Name)" [$item.name]
     set "editVarInput(Type)" [$item.type]
-
     set "editVarInput(Initial Value)" [$item.init]
     set "editVarInput(Units)" [value.units.str]
     set "editVarInput(Rotation)" [$item.rotation]

@@ -389,7 +389,7 @@ namespace MathDAG
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
-                break;
+                break;            
               default:
                 switch (classify(type()))
                   {
