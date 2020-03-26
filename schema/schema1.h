@@ -62,9 +62,9 @@ namespace schema1
   struct SPoly: virtual public B1, virtual public B2
   {
     SPoly& operator=(const SPoly&)=default;
-    // clone() has to return an SPoly* to satsify covariance
-    SPoly* clone() const {return new T(static_cast<const T&>(*this));}
-    string type() const {return classdesc::typeName<T>();}
+    // clone() has to return an SPoly* to satisfy covariance
+    SPoly* clone() const override {return new T(static_cast<const T&>(*this));}
+    string type() const override {return classdesc::typeName<T>();}
 
     void xml_pack(xml_pack_t& x, const string& d) const override
     {::xml_pack(x,d,static_cast<const T&>(*this));}
@@ -83,8 +83,8 @@ namespace schema1
   struct Join: virtual public T, virtual public U 
   {
     Join& operator=(const Join&)=default;
-    Join* clone() const {return new Join(*this);}
-    string type() const {return "";}
+    Join* clone() const override {return new Join(*this);}
+    string type() const override {return "";}
     void xml_pack(xml_pack_t& x, const string& d) const override {}
     void xml_unpack(xml_unpack_t& x, const string& d) override {}
     void json_pack(json_pack_t& x, const string& d) const override {}
