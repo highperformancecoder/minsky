@@ -137,6 +137,7 @@ namespace civita
 //                throw error("invalid date/time: %s",s.c_str());
 //              return pt;
               struct tm tm;
+              memset(&tm,0,sizeof(tm));
               if (char* next=strptime(s.c_str(), dim.units.c_str(), &tm))
                 try
                   {
