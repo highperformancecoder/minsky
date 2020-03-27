@@ -1,5 +1,5 @@
 # assume canvas.minsky.item is the variable
-package require http
+package require http 2
 CSVDialog csvDialog
 proc CSVImportDialog {} {
     global workDir csvParms
@@ -214,15 +214,18 @@ proc CSVWebImportDialog {} {
             csvDialog.requestRedraw
         }
     }
-       
-    set urlfile [inputUrl]
     
-    #set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialfile [getFile $urlfile] ]  
+    # Example CSV file that Minsky can import, but to be replaced by user input
+    set initUrl "http://samplecsvs.s3.amazonaws.com/TechCrunchcontinentalUSA.csv"   
+    set urlFile [inputUrl $initUrl] 
+    puts $urlFile
     
-    set filename [getFile $urlfile]
+    # Create temporary file for downloaded CSV file
+    set filename [file tempfile [getFile $urlFile] ./*.csv]
+    puts $filename
     
     if [string length $filename] {
-        set workDir [file dirname $filename ]
+        set workDir [file dirname $filename]
         csvDialog.loadFile $filename
         set csvParms(filename) $filename
         set csvParms(separator) [csvDialog.spec.separator]
@@ -275,61 +278,36 @@ proc csvWebImportDialogOK {} {
 }
 
 # Allow user to input the full web address of a desired file to opened
-proc inputUrl {} {
-	set url "http://www.patreon.com/hpcoder"
-    toplevel .csvImportURL
-    pack [entry .csvImportURL.e -textvariable $url]
-    pack [button .csvImportURL.b -text "OK" -command {destroy .csvImportURL}]
-    bind .csvImportURL <Return> {.csvImportURL.b invoke}
-    focus .csvImportURL.e
+proc inputUrl {initUrl} {
+    set x [get_pointer_x .wiring.canvas]
+    set y [get_pointer_y .wiring.canvas]	
+	set url $initUrl
+	textEntryPopup .inputUrl $url {inputOK $url}
+	.inputUrl.entry configure -textvariable url -takefocus 1	
+    wm geometry .inputUrl "+[winfo pointerx .]+[winfo pointery .]"    
     return $url
-} 
-
-#proc getFile { url } { 
-#   set token [::http::geturl $url]
-#   set data [::http::data $token]
-#   ::http::cleanup $token          
-#   return $data
-#}
-
-# Return contents of a file on the web
-proc getFile { url } {
-  global workDir	
-  set f [open $workDir/download.tar wb]
-  set tok [http::geturl $url -channel $f -binary 1]
-  set data [::http::data $tok]
-  close $f
-  if {[http::status $tok] eq "ok" && [http::ncode $tok] == 200} {
-      puts "Downloaded successfully"
-  }
-  http::cleanup $tok
-  return $data
 }
 
-#proc openCSVFromURL {URL} {
-#    global tcl_platform
-#    if {[tk windowingsystem]=="win32"} {
-#        #shellOpen $URL
-#        set command [list {*}[auto_execok start] {}]
-#        if {[file isdirectory $url]} {
-#            # if there is an executable named eg ${url}.exe, avoid opening that instead:
-#            set url [file nativename [file join $url .]]             
-#    } elseif {$tcl_platform(os)=="Darwin"} {
-#        #exec open $URL
-#        set command [list open]
-#    #} elseif [catch {exec xdg-open $URL &}] {
-#    } elseif [catch {set command [list xdg-open]}] {
-#        # try a few likely suspects
-#        foreach browser {firefox konqueror seamonkey opera} {
-#            set browserNotFound [catch {exec $browser $URL &}]
-#            if {!$browserNotFound} break
-#        }
-#        if $browserNotFound {
-#            tk_messageBox -detail "Unable to find a working web browser, 
-#please consult $URL" -type ok -icon warning
-#        }
-#    }
-#}
+proc inputOK {url} {
+    grab release .inputUrl
+    destroy .inputUrl
+    canvas.moveOffsX 0
+    canvas.moveOffsY 0    
+    if {[lsearch [availableOperations] $url]>-1} {
+        addOperationKey $url
+    } elseif [string match "\[%#\]*" $url] {
+        addNote [string range $url 1 end] 
+	}
+    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]        
+}
+
+# Return contents of a file on the web
+proc getFile { url } { 
+   set token [::http::geturl $url]
+   set data [::http::data $token]
+   ::http::cleanup $token          
+   return $data
+}
 
 proc doReport {inputFname} {
     global workDir
