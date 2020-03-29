@@ -1,5 +1,6 @@
 # assume canvas.minsky.item is the variable
 package require http 2
+package require tls 1.7.2
 CSVDialog csvDialog
 proc CSVImportDialog {} {
     global workDir csvParms
@@ -119,7 +120,7 @@ proc CSVImportDialog {} {
 }
 
 proc CSVWebImportDialog {} {
-    global workDir csvParms
+    global workDir csvParms url
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
         frame .wiring.csvImport.delimiters
@@ -217,16 +218,21 @@ proc CSVWebImportDialog {} {
     
     # Example CSV file that Minsky can import, but to be replaced by user input
     set initUrl "http://samplecsvs.s3.amazonaws.com/TechCrunchcontinentalUSA.csv"   
-    set urlFile [inputUrl $initUrl] 
-    puts $urlFile
+    #set initUrl ""
+    set url [inputUrl $initUrl] 
+    puts $url
     
     # Create temporary file for downloaded CSV file
-    set filename [file tempfile [getFile $urlFile] ./*.csv]
-    puts $filename
+    set filenm [file tail $url]
+    puts $filenm
+    set filestream [getFile]
+    file tempfile $filestream]
+    
+    set filename [open $filestream]
     
     if [string length $filename] {
         set workDir [file dirname $filename]
-        csvDialog.loadFile $filename
+        csvDialog.loadFile $filename 
         set csvParms(filename) $filename
         set csvParms(separator) [csvDialog.spec.separator]
         set csvParms(decSeparator) [csvDialog.spec.decSeparator]
@@ -240,7 +246,8 @@ proc CSVWebImportDialog {} {
         wm deiconify .wiring.csvImport
         raise .wiring.csvImport
         csvDialog.requestRedraw
-    }  
+    }
+    close $filename  
 }
 
 proc csvImportDialogOK {} {
@@ -279,16 +286,18 @@ proc csvWebImportDialogOK {} {
 
 # Allow user to input the full web address of a desired file to opened
 proc inputUrl {initUrl} {
+	global url
     set x [get_pointer_x .wiring.canvas]
     set y [get_pointer_y .wiring.canvas]	
-	set url $initUrl
-	textEntryPopup .inputUrl $url {inputOK $url}
+	textEntryPopup .inputUrl $initUrl {inputOK}
 	.inputUrl.entry configure -textvariable url -takefocus 1	
-    wm geometry .inputUrl "+[winfo pointerx .]+[winfo pointery .]"    
+	set url [.inputUrl.entry get]   
+    wm geometry .inputUrl "+[winfo pointerx .]+[winfo pointery .]"  
     return $url
 }
 
-proc inputOK {url} {
+proc inputOK {} {
+	global url
     grab release .inputUrl
     destroy .inputUrl
     canvas.moveOffsX 0
@@ -302,7 +311,9 @@ proc inputOK {url} {
 }
 
 # Return contents of a file on the web
-proc getFile { url } { 
+proc getFile {} {
+   global url	 
+   http::register https 443 [list ::tls::socket -autoservername true]	 
    set token [::http::geturl $url]
    set data [::http::data $token]
    ::http::cleanup $token          
