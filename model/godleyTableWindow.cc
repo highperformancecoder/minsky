@@ -427,7 +427,7 @@ namespace minsky
     if (x<colLeftMargin[1]) return 0;
     auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), x);
     size_t r=p-colLeftMargin.begin()-2+scrollColStart;
-    if (r>godleyIcon->table.cols()-1) r=-1; // out of bounds, invalidate. Also exclude A-L-E column. for ticket 1163.
+    if (r>godleyIcon->table.cols()-1) r=-1; // out of bounds, invalidate. Also exclude A-L-E column. For ticket 1163.
     return r;
   }
 
