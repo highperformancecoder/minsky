@@ -315,6 +315,8 @@ namespace minsky
     P csvParser(spec.escape,spec.separator,spec.quote);
     for (size_t row=0; getline(input, buf); ++row)
       {
+        // remove trailing carriage returns
+        if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
         if (row==spec.headerRow)
           {
             output<<"error"<<spec.separator<<buf<<endl;
@@ -394,6 +396,8 @@ namespace minsky
       {
         for (size_t row=0; getline(input, buf); ++row)
           {
+            // remove trailing carriage returns
+            if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);//buf.erase(buf.end()-1);
             boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
             assert(spec.headerRow<=spec.nRowAxes());
@@ -506,6 +510,7 @@ namespace minsky
               throw runtime_error("memory threshold exceeded");            
             v.hypercube(hc);
             // stash the data into vv tensorInit field
+            v.tensorInit.index({});
             v.tensorInit.hypercube(hc);
             for (auto& i: v.tensorInit)
               i=spec.missingValue;
