@@ -163,7 +163,6 @@ namespace civita
               is.imbue(locale(is.getloc(), new time_input_facet(dim.units.c_str())));
               ptime pt;
               is>>pt;
-              cout << pt << endl;
               if (pt.is_special())
                 throw error("invalid date/time: %s",s.c_str());
               return pt;
