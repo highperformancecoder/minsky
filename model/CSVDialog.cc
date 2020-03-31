@@ -22,16 +22,189 @@
 #include "selection.h"
 #include <pango.h>
 #include "minsky_epilogue.h"
+
+#include <boost/beast/example/common/root_certificates.hpp>
+
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/version.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/ssl/error.hpp>
+#include <boost/asio/ssl/stream.hpp>
+#include <boost/regex.hpp>
+#include <boost/filesystem.hpp>
+#include <cstdlib>
+#include <iostream>
+
 using namespace std;
 using namespace minsky;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
+using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+namespace ssl = boost::asio::ssl;       // from <boost/asio/ssl.hpp>
+namespace http = boost::beast::http;    // from <boost/beast/http.hpp>
 
 void CSVDialog::reportFromFile(const std::string& input, const std::string& output)
 {
   ifstream is(input);
   ofstream of(output);
   reportFromCSVFile(is,of,spec);
+}
+
+// Performs an HTTP GET and prints the response
+void CSVDialog::loadWebFile(const string& url)
+{
+    try
+    {
+        boost::regex ex("(http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\x3f?([^ #]*)#?([^ ]*)");
+        boost::cmatch what;
+        if(regex_match(url.c_str(), what, ex)) 
+        {
+            cout << "protocol: " << string(what[1].first, what[1].second) << endl;
+            cout << "domain:   " << string(what[2].first, what[2].second) << endl;
+            cout << "port:     " << string(what[3].first, what[3].second) << endl;
+            cout << "path:     " << string(what[4].first, what[4].second) << endl;
+            cout << "query:    " << string(what[5].first, what[5].second) << endl;
+            cout << "fragment: " << string(what[6].first, what[6].second) << endl;  
+        }		
+		
+        // Check command line arguments.
+        if (string(what[2].first, what[2].second).empty())
+        {
+            std::cerr <<
+                "Usage: http-client-sync-ssl <host> <port> <target> [<HTTP version: 1.0 or 1.1(default)>]\n" <<
+                "Example:\n" <<
+                "    http-client-sync-ssl www.example.com 443 /\n" <<
+                "    http-client-sync-ssl www.example.com 443 / 1.0\n";
+            return;
+        }
+
+        auto const host = what[2];
+        
+        string port = string(what[1].first, what[1].second);
+        if (string(what[1].first, what[1].second)=="https") port = "https";  //what[3].second;
+        else port = "http";
+        
+        auto const target = string(what[4].first, what[4].second);   //what[5].second;
+        
+        int version;
+        if (!string(what[6].first, what[6].second).empty() && !std::strcmp("1.0", what[6].second)) version= 11;
+        else version=10;
+
+        // The io_context is required for all I/O
+        boost::asio::io_context ioc;
+        //boost::asio::io_service ioc;
+        
+        // The SSL context is required, and holds certificates
+        ssl::context ctx{ssl::context::sslv23_client};
+		 
+        // This holds the root certificate used for verification
+        load_root_certificates(ctx);
+		
+        // Verify the remote server's certificate
+        ctx.set_verify_mode(ssl::verify_peer);    
+       
+        // These objects perform our I/O
+        tcp::resolver resolver{ioc};
+        ssl::stream<tcp::socket> stream{ioc, ctx};
+
+        // Look up the domain name
+        auto const results = resolver.resolve(what[2], what[1]);
+        
+        // Make the connection on the IP address we get from a lookup
+        boost::asio::connect(stream.next_layer(), results.begin(), results.end());
+        
+        // Set SNI Hostname (many hosts need this to handshake successfully)
+        if(! SSL_set_tlsext_host_name(stream.native_handle(), what[2].first))
+        {
+            boost::system::error_code ec{static_cast<int>(::ERR_get_error()), boost::asio::error::get_ssl_category()};
+            throw boost::system::system_error{ec};
+        }                        
+             
+        // Perform the SSL handshake
+        stream.handshake(ssl::stream_base::client);             
+
+        // Set up an HTTP GET request message
+        http::request<http::string_body> req{http::verb::get, target, version};
+        req.set(http::field::host, host);
+        req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+
+        // Send the HTTP request to the remote host
+        http::write(stream, req);
+
+        // This buffer is used for reading and must be persisted
+        boost::beast::flat_buffer buffer;
+
+        // Declare a container to hold the response
+        http::response<http::string_body> res;
+
+        // Receive the HTTP response
+        http::read(stream, buffer, res);
+                    
+        // Extract the file name and extension
+        boost::filesystem::path p(string(what[4].first, what[4].second));        
+        cout << "filename and extension : " << p.filename() << std::endl; // file.ext
+        cout << "filename only          : " << p.stem() << std::endl;     // file         
+        
+        // Dump the outstream into a CSV file and load into CSVParser        
+        std::ofstream outFile(p.filename().c_str(), std::ofstream::out);        
+        outFile << res.body();                                      
+        
+        // Dump the buffer in a temporary file and load into CSVParser
+        //FILE * tempFile;
+        //char * fileptr;
+        //fileptr = tmpnam(NULL);
+        //tempFile = fopen(fileptr,"wb+");
+        
+        //std::ostringstream ss;
+        //
+        //ss << res.body();   //boost::beast::buffers(buffer.data())
+		//
+        //fputs(ss.str().data(),tempFile);        
+
+        spec=DataSpec();        
+        spec.guessFromFile(p.filename().c_str());        
+        ifstream is(p.filename().c_str());        
+        //spec.guessFromFile(fileptr); 
+        //ifstream is(fileptr);        
+        initialLines.clear();        
+        for (size_t i=0; i<numInitialLines && is; ++i)        
+          {        
+            initialLines.emplace_back();        
+            getline(is, initialLines.back());        
+          }              
+        // Ensure dimensions.size() is the same as nColAxes() upon first load of a CSV file. For ticket 974.        
+        if (spec.dimensions.size()<spec.nColAxes()) spec.setDataArea(spec.nRowAxes(),spec.nColAxes());    
+        
+        // Write the message to standard out
+        //std::cout << res << std::endl;
+        
+        // Gracefully close the socket
+        boost::system::error_code ec;
+        stream.shutdown(ec);
+        if (ec == boost::asio::error::eof)
+        {
+            // Rationale:
+            // http://stackoverflow.com/questions/25587403/boost-asio-ssl-async-shutdown-always-finishes-with-an-error
+            ec.assign(0, ec.category());
+        }
+        if(ec)
+            throw boost::system::system_error{ec}; 
+            
+        // close the output file
+        outFile.close();
+        //fclose(tempFile);    
+            
+
+        // If we get here then the connection is closed gracefully
+    }
+    catch(std::exception const& e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return;
+    }
+    //return EXIT_SUCCESS;
 }
 
 void CSVDialog::loadFile(const string& fname)
@@ -46,7 +219,7 @@ void CSVDialog::loadFile(const string& fname)
       getline(is, initialLines.back());
     }
   // Ensure dimensions.size() is the same as nColAxes() upon first load of a CSV file. For ticket 974.
-  if (spec.dimensions.size()<spec.nColAxes()) spec.setDataArea(spec.nRowAxes(),spec.nColAxes());     
+  if (spec.dimensions.size()<spec.nColAxes()) spec.setDataArea(spec.nRowAxes(),spec.nColAxes());    
 }
 
 template <class Parser>
@@ -112,7 +285,7 @@ void CSVDialog::redraw(int, int, int width, int height)
     cairo_move_to(cairo,xoffs-pango.width()-5,(4+spec.headerRow)*rowHeight);
     pango.show();
     
-  }
+  }	
   
   set<size_t> done;
   double x=xoffs, y=0;

@@ -217,22 +217,20 @@ proc CSVWebImportDialog {} {
     }
     
     # Example CSV file that Minsky can import, but to be replaced by user input
-    set initUrl "http://samplecsvs.s3.amazonaws.com/TechCrunchcontinentalUSA.csv"   
-    #set initUrl ""
-    set url [inputUrl $initUrl] 
-    puts $url
+    set url "https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv"   
+    #set url "https://raw.githubusercontent.com/datasets/covid-19/master/data/worldwide-aggregated.csv"
+    #set url "http://samplecsvs.s3.amazonaws.com/TechCrunchcontinentalUSA.csv"
+                 
+    #set initUrl {} 
+    #set url [inputUrl $initUrl]
+    #puts $url
     
-    # Create temporary file for downloaded CSV file
-    set filenm [file tail $url]
-    puts $filenm
-    set filestream [getFile]
-    file tempfile $filestream]
-    
-    set filename [open $filestream]
+    #Grab name of CSV file
+    set filename [file tail $url]
     
     if [string length $filename] {
         set workDir [file dirname $filename]
-        csvDialog.loadFile $filename 
+        csvDialog.loadWebFile $url 
         set csvParms(filename) $filename
         set csvParms(separator) [csvDialog.spec.separator]
         set csvParms(decSeparator) [csvDialog.spec.decSeparator]
@@ -247,7 +245,6 @@ proc CSVWebImportDialog {} {
         raise .wiring.csvImport
         csvDialog.requestRedraw
     }
-    close $filename  
 }
 
 proc csvImportDialogOK {} {
@@ -285,40 +282,38 @@ proc csvWebImportDialogOK {} {
 }
 
 # Allow user to input the full web address of a desired file to opened
-proc inputUrl {initUrl} {
-	global url
-    set x [get_pointer_x .wiring.canvas]
-    set y [get_pointer_y .wiring.canvas]	
-	textEntryPopup .inputUrl $initUrl {inputOK}
-	.inputUrl.entry configure -textvariable url -takefocus 1	
-	set url [.inputUrl.entry get]   
-    wm geometry .inputUrl "+[winfo pointerx .]+[winfo pointery .]"  
-    return $url
-}
-
-proc inputOK {} {
-	global url
-    grab release .inputUrl
-    destroy .inputUrl
-    canvas.moveOffsX 0
-    canvas.moveOffsY 0    
-    if {[lsearch [availableOperations] $url]>-1} {
-        addOperationKey $url
-    } elseif [string match "\[%#\]*" $url] {
-        addNote [string range $url 1 end] 
-	}
-    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]        
-}
-
+#proc inputUrl {initUrl} {
+#	bind . <Key> {[inputUrl %initUrl}
+#    set x [get_pointer_x .wiring.canvas]
+#    set y [get_pointer_y .wiring.canvas]	
+#	textEntryPopup .inputUrl $initUrl {inputOK $initUrl}
+#	.inputUrl.entry configure -textvariable url -takefocus 1	    
+#    wm geometry .inputUrl "+[winfo pointerx .]+[winfo pointery .]"  
+#    return [.inputUrl.entry get]
+#}
+#
+#proc inputOK {url} {
+#    grab release .inputUrl
+#    destroy .inputUrl
+#    canvas.moveOffsX 0
+#    canvas.moveOffsY 0    
+#    if {[lsearch [availableOperations] $url]>-1} {
+#        addOperationKey $url
+#    } elseif [string match "\[%#\]*" $url] {
+#        addNote [string range $url 1 end] 
+#	}
+#    canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]        
+#}
+#
 # Return contents of a file on the web
-proc getFile {} {
-   global url	 
-   http::register https 443 [list ::tls::socket -autoservername true]	 
-   set token [::http::geturl $url]
-   set data [::http::data $token]
-   ::http::cleanup $token          
-   return $data
-}
+#proc getFile {} {
+#   global url	 
+#   #http::register https 443 [list ::tls::socket -autoservername true]	 
+#   set token [::http::geturl $url]
+#   set data [::http::data $token]
+#   ::http::cleanup $token          
+#   return $data
+#}
 
 proc doReport {inputFname} {
     global workDir
