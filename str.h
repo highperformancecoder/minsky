@@ -65,7 +65,7 @@ namespace minsky
     for (size_t i=0; i<s.length(); ++i)
       switch (s[i])        
         {
-        case '\\': case '{': case '}':
+        case '\\':     // Leave curly braces in valueIds. For ticket 1165.
           break;
         default:
           if (isspace(s[i]))

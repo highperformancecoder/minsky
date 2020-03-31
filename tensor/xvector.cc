@@ -103,6 +103,8 @@ namespace civita
       case Dimension::time:
         {
           string::size_type pq;
+          static regex screwyDates{R"(%([mdyY])[^%]%([mdyY])[^%]%([mdyY]))"};
+          smatch m;
           if ((pq=dim.units.find("%Q"))!=string::npos)
             {
               // year quarter format expected. Takes the first %Y (or
@@ -124,32 +126,63 @@ namespace civita
                 throw error("invalid quarter %d",quarter);
               return ptime(date(year, quarterMonth[quarter-1], 1));
             }
+          else if (regex_match(dim.units, m, screwyDates)) // handle dates with 1 or 2 digits see Ravel ticket #35
+            {
+              static regex valParser{R"((\d+)\D(\d+)\D(\d+))"};
+              smatch val;
+              if (regex_match(s, val, valParser))
+                {
+                  int day, month, year;
+                  for (size_t i=1; i<val.size(); ++i)
+                    {
+                      
+                      int v;
+                      try
+                        {v=stoi(val[i]);}
+                      catch (...)
+                        {throw runtime_error(val[i]+" is not an integer");}
+                      switch (m.str(i)[0])
+                        {
+                        case 'd': day=v; break;
+                        case 'm': month=v; break;
+                        case 'y':
+                          if (v>99) throw runtime_error(val[i]+" is out of range for %y");
+                          year=v>68? v+1900: v+2000;
+                          break;
+                        case 'Y': year=v; break;
+                        }
+                    }
+                  return ptime(date(year,month,day));
+                }
+              else
+                throw runtime_error(s+" doesn't match "+dim.units);
+            }
           else if (!dim.units.empty())
             {
-              // note: boost time_input_facet too restrictive, so using strptime instead. See Ravel ticket #35
-//              time_input_facet(dim.units.c_str(),
-//              istringstream is(s);
-//              is.imbue(locale(is.getloc(), new time_input_facet(dim.units.c_str())));
-//              ptime pt;
-//              is>>pt;
-//              cout << pt << endl;
-//              if (pt.is_special())
-//                throw error("invalid date/time: %s",s.c_str());
-//              return pt;
-              struct tm tm;
-              memset(&tm,0,sizeof(tm));
-              if (char* next=strptime(s.c_str(), dim.units.c_str(), &tm))
-                try
-                  {
-                    return ptime(date(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday), time_duration(tm.tm_hour,tm.tm_min,tm.tm_sec));
-                  }
-                catch (...)
-                  {
-                    cout << s << " " << tm.tm_year<<tm.tm_mon << " " << tm.tm_mday << endl;
-                    throw;
-                  }
-              else
+              istringstream is(s);
+              is.imbue(locale(is.getloc(), new time_input_facet(dim.units.c_str())));
+              ptime pt;
+              is>>pt;
+              cout << pt << endl;
+              if (pt.is_special())
                 throw error("invalid date/time: %s",s.c_str());
+              return pt;
+              // note: boost time_input_facet too restrictive, so this was a strptime attempt. See Ravel ticket #35
+              // strptime is not available on Windows alas
+              //              struct tm tm;
+              //              memset(&tm,0,sizeof(tm));
+              //              if (char* next=strptime(s.c_str(), dim.units.c_str(), &tm))
+              //                try
+              //                  {
+              //                    return ptime(date(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday), time_duration(tm.tm_hour,tm.tm_min,tm.tm_sec));
+              //                  }
+              //                catch (...)
+              //                  {
+              //                    cout << s << " " << tm.tm_year<<tm.tm_mon << " " << tm.tm_mday << endl;
+              //                    throw;
+              //                  }
+              //              else
+              //                throw error("invalid date/time: %s",s.c_str());
             }
           else
             return sToPtime(s);
