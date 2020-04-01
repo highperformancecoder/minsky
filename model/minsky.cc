@@ -727,8 +727,9 @@ namespace minsky
          if (auto p=dynamic_cast<PlotWidget*>(i->get()))
            {
              p->clear();
-             p->updateIcon(t);
-             if (!running)
+             if (running)
+               p->updateIcon(t);
+             else
                p->addConstantCurves();
              p->redraw();
            }
