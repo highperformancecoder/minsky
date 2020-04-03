@@ -242,10 +242,12 @@ namespace minsky
     int intVarWidth=0;
     cairo_save(cairo);
     cairo_rotate(cairo, angle);
-    cairo_move_to(cairo,l,h);
-    cairo_line_to(cairo,l,-h);
-    cairo_line_to(cairo,r,0);
-              
+    // Operation icons now have the same shape as constants/parameters. For ticket 362.
+    cairo_move_to(cairo,-r,-h);
+    cairo_line_to(cairo,-r,h);
+    cairo_line_to(cairo,r,h);
+    cairo_line_to(cairo,r+2*z,0);
+    cairo_line_to(cairo,r,-h);        
     cairo_close_path(cairo);
 
     //  cairo_save(cairo);
