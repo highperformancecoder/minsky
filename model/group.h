@@ -357,15 +357,13 @@ namespace minsky
       if (i<bookmarks.size())
         bookmarks.erase(bookmarks.begin()+i);
     }
-    void gotoBookmark(size_t i) {
-      if (i<bookmarks.size())
-        {
-          auto& b=bookmarks[i];
-          moveTo(b.x, b.y);
-          zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
-        }
+    void gotoBookmark_b(const Bookmark& b) {
+      moveTo(b.x, b.y);
+      zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
     }
-    
+    void gotoBookmark(size_t i) 
+    {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
+
 
   };
 

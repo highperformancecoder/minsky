@@ -21,6 +21,7 @@
 #define MINSKYTCL_H
 #include "minsky.h"
 #include "godleyTableWindow.h"
+#include "variableInstanceList.h"
 #include <fstream>
 #include <memory>
 
@@ -305,6 +306,8 @@ namespace minsky
       TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
     }
 
+    
+    
     std::string openGodley() {
       if (auto gi=dynamic_pointer_cast<GodleyIcon>(canvas.item))
         {
@@ -318,6 +321,25 @@ namespace minsky
                  (Tcl_CmdProc*)deleteTclObject<GodleyTableWindow>,
                  (ClientData)godley,NULL);
               TCL_obj(minskyTCL_obj(),name,*godley);
+            }
+          return name;
+        }
+      return "";
+    }
+
+    std::string listAllInstances() const {
+      if (auto v=canvas.item->variableCast())
+        {
+          std::string name="instanceList"+to_string(size_t(canvas.item.get()));
+          if (TCL_obj_properties().count(name)==0)
+            {
+              auto instanceList=new VariableInstanceList(*canvas.model, v->valueId());
+              // pass ownership of object to TCL interpreter
+              Tcl_CreateCommand
+                (ecolab::interp(), (name+".delete").c_str(),
+                 (Tcl_CmdProc*)deleteTclObject<VariableInstanceList>,
+                 (ClientData)instanceList,NULL);
+              TCL_obj(minskyTCL_obj(),name,*instanceList);
             }
           return name;
         }
