@@ -105,7 +105,7 @@ proc CSVImportDialog {url} {
     if [string length $filename] {
         set workDir [file dirname $filename]
         if [string length $url] {
-	       csvDialog.loadWebFile $url
+	       csvDialog.loadFile [csvDialog.loadWebFile $url]
 	    } else {
            csvDialog.loadFile $filename
         }
