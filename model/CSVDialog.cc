@@ -101,7 +101,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
         // end::stream_setup_source[]         
 
         // Look up the domain name
-        auto const results = resolver.resolve(what[2], what[1]);
+        auto const results = resolver.resolve(host, what[1]);
                 
         // Make the connection on the IP address we get from a lookup
         boost::asio::connect(stream.next_layer(), results.begin(), results.end());                   
@@ -129,9 +129,9 @@ std::string CSVDialog::loadWebFile(const std::string& url)
                                                        
         // Dump the outstream into a temporary file for loading it into Minsky' CSV parser 
         boost::filesystem::path temp = boost::filesystem::unique_path();
-        const std::string tempstr    = temp.native();
+        const std::string tempStr    = temp.native();
                 
-        std::ofstream outFile(tempstr, std::ofstream::out);  
+        std::ofstream outFile(tempStr, std::ofstream::out);  
         outFile << res.get().body();                                            
              
         // Gracefully close the socket
@@ -143,11 +143,11 @@ std::string CSVDialog::loadWebFile(const std::string& url)
             // http://stackoverflow.com/questions/25587403/boost-asio-ssl-async-shutdown-always-finishes-with-an-error
             ec.assign(0, ec.category());
         }
-        if(ec)
+        if (ec)
             throw boost::system::system_error{ec}; 
             
         // Return the file name for loading the in csvimport.tcl 
-        return tempstr;
+        return tempStr;
 
         // If we get here then the connection is closed gracefully
     }

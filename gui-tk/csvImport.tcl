@@ -82,7 +82,7 @@ proc CSVImportDialog {url} {
         # redefine OK command to not delete the the import window on error
         global csvImportFailed
         set csvImportFailed 0
-        .wiring.csvImport.buttonBar.ok configure -command csvImportDialogOK
+        .wiring.csvImport.buttonBar.ok configure -command "csvImportDialogOK {$url}"
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
         bind .wiring.csvImport.table <Button-1> {csvImportButton1 %x %y};
         bind .wiring.csvImport.table <ButtonRelease-1> {csvImportButton1Up %x %y %X %Y};
@@ -122,7 +122,7 @@ proc CSVImportDialog {url} {
 
 }
 
-proc csvImportDialogOK {} {
+proc csvImportDialogOK {url} {
     global csvParms
     csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
     set filename $csvParms(filename)
@@ -136,6 +136,10 @@ proc csvImportDialogOK {} {
     } else {
         reset
         cancelWin .wiring.csvImport
+        # Delete tempoarray file created by web import of CSV data
+        if [string length $url] {
+	        file delete $filename      
+        }
     }
 }
 

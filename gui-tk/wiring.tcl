@@ -661,6 +661,9 @@ proc contextMenu {x y X Y} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog {}}
                 .wiring.context add command -label "Import CSV from web" -command {
 					textEntryPopup .loadWebUrl {} {CSVImportDialog [.loadWebUrl.entry get]}
+                .loadWebUrl.entry configure -takefocus 1					
+				wm title .loadWebUrl "Insert URL:"		
+                wm geometry .loadWebUrl "+[winfo pointerx .]+[winfo pointery .]"						 				
 				} 
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
