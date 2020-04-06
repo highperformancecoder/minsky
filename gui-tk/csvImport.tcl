@@ -98,17 +98,13 @@ proc CSVImportDialog {url} {
     }
     
     if [string length $url] {
-	   set filename [file tail $url]
+	   set filename [csvDialog.loadWebFile $url]
 	} else {
        set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
     }
     if [string length $filename] {
         set workDir [file dirname $filename]
-        if [string length $url] {
-	       csvDialog.loadFile [csvDialog.loadWebFile $url]
-	    } else {
-           csvDialog.loadFile $filename
-        }
+        csvDialog.loadFile $filename
         set csvParms(filename) $filename
         set csvParms(separator) [csvDialog.spec.separator]
         set csvParms(decSeparator) [csvDialog.spec.decSeparator]
