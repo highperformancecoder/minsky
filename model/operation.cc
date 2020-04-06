@@ -242,13 +242,21 @@ namespace minsky
     int intVarWidth=0;
     cairo_save(cairo);
     cairo_rotate(cairo, angle);
-    // Operation icons now have the same shape as constants/parameters. For ticket 362.
-    cairo_move_to(cairo,-r,-h);
-    cairo_line_to(cairo,-r,h);
-    cairo_line_to(cairo,r,h);
-    cairo_line_to(cairo,r+2*z,0);
-    cairo_line_to(cairo,r,-h);        
-    cairo_close_path(cairo);
+    // Operation icons now have the same shape as constants/parameters. Coupled integrate operation retains previous shape. For ticket 362.
+    if (const IntOp* i=dynamic_cast<const IntOp*>(this)) {
+      if (i->coupled()) {
+         cairo_move_to(cairo,l,h);
+         cairo_line_to(cairo,l,-h);
+         cairo_line_to(cairo,r,0);    
+	   }      
+	 } else {
+         cairo_move_to(cairo,-r,-h);
+         cairo_line_to(cairo,-r,h);
+         cairo_line_to(cairo,r,h);
+         cairo_line_to(cairo,r+2*z,0);
+         cairo_line_to(cairo,r,-h);        
+	 }
+     cairo_close_path(cairo);		  	 
 
     //  cairo_save(cairo);
     cairo_set_source_rgb(cairo,0,0,1);
