@@ -136,7 +136,7 @@ proc csvImportDialogOK {url} {
     } else {
         reset
         cancelWin .wiring.csvImport
-        # Delete tempoarray file created by web import of CSV data
+        # Delete temporary file created by web import of CSV data
         if [string length $url] {
 	        file delete $filename      
         }
