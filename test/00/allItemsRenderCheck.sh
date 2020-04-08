@@ -33,6 +33,7 @@ minsky.defaultFont Sans
 minsky.setGodleyIconResource $here/gui-tk/icons/bank.svg
 minsky.setGroupIconResource $here/gui-tk/icons/group.svg
 minsky.load $here/test/allItems.mky
+minsky.multipleEquities 1
 minsky.canvas.renderToSVG allItemsBare.svg
 
 for {set i 0} {\$i<[minsky.model.items.size]} {incr i} {
