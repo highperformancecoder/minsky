@@ -49,7 +49,6 @@ namespace minsky
     friend class VariableManager;
     friend struct SchemaHelper;
   public:
-    using ITensor::hypercube;
     /// variable has an input port
     bool lhs() const {
       return m_type==flow || m_type==tempFlow;}
@@ -93,7 +92,12 @@ namespace minsky
     double& operator[](size_t i) override {return *(&valRef()+i);}
 
 
-    std::vector<size_t> index() const override {return m_index;}
+    std::vector<size_t> index() const override {
+      if (m_type==parameter && tensorInit.size())
+        return tensorInit.index();
+      else
+        return m_index;
+    }
     void index(const std::vector<size_t>& i) override {
       size_t prevNumElems = size();
       m_index=i;
@@ -103,10 +107,20 @@ namespace minsky
 
     
     size_t numDenseElements() const {return hypercube().numElements();}
-  
+
     size_t size() const override
-    {return m_index.size() ? m_index.size(): numDenseElements();}    
+    {
+      auto idx=index();
+      return idx.size() ? idx.size(): numDenseElements();
+    }    
     
+    const Hypercube& hypercube() const {
+      if (m_type==parameter && tensorInit.size())
+        return tensorInit.hypercube();
+      else
+        return ITensor::hypercube();
+    }
+
     template <class T>                                            
     void hypercube_(T x) {    
       size_t prevNumElems = size();

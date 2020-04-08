@@ -132,7 +132,7 @@ namespace civita
               smatch val;
               if (regex_match(s, val, valParser))
                 {
-                  int day, month, year;
+                  int day=0, month=0, year=0;
                   for (size_t i=1; i<val.size(); ++i)
                     {
                       
@@ -163,7 +163,6 @@ namespace civita
               is.imbue(locale(is.getloc(), new time_input_facet(dim.units.c_str())));
               ptime pt;
               is>>pt;
-              cout << pt << endl;
               if (pt.is_special())
                 throw error("invalid date/time: %s",s.c_str());
               return pt;

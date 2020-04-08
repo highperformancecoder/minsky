@@ -19,6 +19,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - librsvg
   - boost
   - cmake (for building json_spirit)
+  - pkgconfig
   - json_spirit needs to be installed from source code
 - if you already have ports installed, you can recompile for the new deployment target with
   port upgrade --force installed
@@ -37,7 +38,6 @@ Because we need to use an internal function with tk when compiling Minsky for Aq
 - cd tk8.6.9/unix 
 - ./configure --prefix=$HOME/usr --disable-shared --enable-aqua
 - make -j install
-- tar zxvf tk8.6.9.1-src.tar.gz
 
 # compile json_spirit from source code (install boost and cmake first)
 - tar xvf json_spirit_v4.08.tar.gz

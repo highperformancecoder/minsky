@@ -11,4 +11,5 @@ export TRAVIS=1
 # This step generates reference image files on the CI server 
 #  - sh createRenderedEquations
 xvfb-run make -j2 AEGIS=1 sure
-make doc
+# currently failing on Travis due to OpenSUSE Tumbleweed bug. Ticket #1170
+#make doc
