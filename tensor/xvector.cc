@@ -259,7 +259,9 @@ namespace civita
     static const auto day=hours(24);
     static const auto month=day*30;
     static const auto year=day*365;
-    auto dt=any_cast<ptime>(back())-any_cast<ptime>(front());
+    auto f=any_cast<ptime>(front()), b=any_cast<ptime>(back());
+    if (f>b) std::swap(f,b);
+    auto dt=b-f;
     if (dt > year*5)
       return "%Y";
     else if (dt > year)

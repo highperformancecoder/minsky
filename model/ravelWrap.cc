@@ -19,9 +19,10 @@
 
 #include "ravelWrap.h"
 #include "selection.h"
+#include "dimension.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
-static const int ravelVersion=2;
+static const int ravelVersion=3;
 
 #include <string>
 #include <cmath>
@@ -222,7 +223,14 @@ namespace minsky
       RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
       void operator()(A0 a0, A1 a1, A2 a2,A3 a3) {if (f) f(a0,a1,a2,a3);}
     };
-    
+    template <class A0, class A1, class A2,class A3,class A4>
+    struct RavelFn<void,A0,A1,A2,A3,A4>
+    {
+      void (*f)(A0,A1,A2,A3,A4)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      void operator()(A0 a0, A1 a1, A2 a2,A3 a3,A4 a4) {if (f) f(a0,a1,a2,a3,a4);}
+    };
+   
 #define DEFFN(f,...) RavelFn<__VA_ARGS__> f(#f,ravelLib.lib);
     
     DEFFN(ravel_lastErr, const char*);
@@ -253,7 +261,7 @@ namespace minsky
     DEFFN(ravel_displayFilterCaliper, void, Ravel::RavelImpl*, size_t, bool);
     DEFFN(ravel_setSlicer,void,Ravel::RavelImpl*,size_t,const char*);
     DEFFN(ravel_setCalipers,void,Ravel::RavelImpl*,size_t,const char*,const char*);
-    DEFFN(ravel_orderLabels, void, Ravel::RavelImpl*, size_t,HandleSort);
+    DEFFN(ravel_orderLabels, void, Ravel::RavelImpl*, size_t,HandleSort,Dimension::Type, const char*);
     DEFFN(ravel_applyCustomPermutation, void, Ravel::RavelImpl*, size_t, size_t, const size_t*);
     DEFFN(ravel_currentPermutation, void, Ravel::RavelImpl*, size_t, size_t, size_t*);
     DEFFN(ravel_toXML, const char*, Ravel::RavelImpl*);
@@ -437,7 +445,7 @@ namespace minsky
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           {
             ravel_displayFilterCaliper(ravel,i,false);
-            ravel_orderLabels(ravel,i,HandleState::forward);
+            setHandleSortOrder(HandleState::forward,i);
           }
         setRank(ravel_numHandles(ravel));
       }
@@ -519,8 +527,6 @@ namespace minsky
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
             size_t h=ravel_numHandles(ravel)-1;
             ravel_displayFilterCaliper(ravel,h,false);
-            // set forward sort order
-            ravel_orderLabels(ravel,h,HandleState::forward);
           }
         if (state.empty())
           setRank(v.hypercube().rank());
@@ -664,7 +670,7 @@ namespace minsky
         if (pick.size()>=numSliceLabels)
           {
             // if all labels are selected, revert ordering to previous
-            ravel_orderLabels(ravel,axis,previousOrder);
+            setHandleSortOrder(previousOrder, axis);
             return;
           }
         
@@ -683,6 +689,15 @@ namespace minsky
         ravel_applyCustomPermutation(ravel,axis,customOrder.size(),&customOrder[0]);
       }
   }
+
+  Dimension Ravel::dimension(int handle) const
+  {
+    Dimension dim;
+    auto dimitr=cminsky().dimensions.find(ravel_handleDescription(ravel,handle));
+    if (dimitr!=cminsky().dimensions.end())
+      dim=dimitr->second;
+    return dim;
+  }
   
   Ravel::HandleState::HandleSort Ravel::sortOrder() const
   {
@@ -700,12 +715,20 @@ namespace minsky
  
   Ravel::HandleState::HandleSort Ravel::setSortOrder(Ravel::HandleState::HandleSort x)
   {
-    int h=ravel_selectedHandle(ravel);
-    if (h>=0)
-      ravel_orderLabels(ravel,h,x);
+    if (ravel)
+        setHandleSortOrder(x, ravel_selectedHandle(ravel));
     return x;
   }
 
+  Ravel::HandleState::HandleSort Ravel::setHandleSortOrder(HandleState::HandleSort order, int handle)
+  {
+    if (ravel && handle>=0)
+      {
+        Dimension dim=dimension(handle);
+        ravel_orderLabels(ravel,handle,order,dim.type,dim.units.c_str());
+      }
+  }
+  
   string Ravel::description() const
   {
     return ravel_handleDescription(ravel,ravel_selectedHandle(ravel));
@@ -821,6 +844,7 @@ namespace minsky
               {
                 RavelHandleState state(hs->second);
                 ravel_setHandleState(ravel,i,&state);
+                setHandleSortOrder(state.order,i);
                 if (hs->second.order==HandleState::custom)
                   pickSliceLabels(i,hs->second.customOrder);
                 else if (state.displayFilterCaliper)

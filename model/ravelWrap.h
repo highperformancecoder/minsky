@@ -118,12 +118,18 @@ namespace minsky
     std::vector<string> pickedSliceLabels() const;
     /// pick (selected) \a pick labels
     void pickSliceLabels(int axis, const std::vector<string>& pick);
+
+    /// dimension details associated with handle 
+    Dimension dimension(int handle) const;
     
     /// @{
     /// the handle sorting order for currently selected handle
     HandleState::HandleSort sortOrder() const;
     HandleState::HandleSort setSortOrder(HandleState::HandleSort);
     /// @}
+
+    /// set a given handle sort order
+    HandleState::HandleSort setHandleSortOrder(HandleState::HandleSort, int handle);
 
     /// @} get/set description of selected handle
     string description() const;

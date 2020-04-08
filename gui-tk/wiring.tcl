@@ -761,9 +761,9 @@ menu .wiring.context.axisMenu
 menu .wiring.context.axisMenu.sort 
 .wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort 
 set sortOrder none
-foreach order {none forward reverse numForward numReverse} {
+foreach order {none forward reverse} {
     .wiring.context.axisMenu.sort add radiobutton -label $order -command {
-        minsky.canvas.item.setSortOrder $order
+        minsky.canvas.item.setSortOrder $sortOrder
         minsky.canvas.item.broadcastStateToLockGroup
         reset
     } -value $order -variable sortOrder

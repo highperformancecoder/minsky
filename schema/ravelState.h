@@ -33,7 +33,8 @@ namespace minsky
       bool collapsed, displayFilterCaliper;
       enum ReductionOp {sum, prod, av, stddev, min, max};
       ReductionOp reductionOp;
-      enum HandleSort {none, forward, reverse, numForward, numReverse, custom};
+      // TODO: numForward, numReverse, timeForward, timeReverse are deprecated, but need to remove from ravel code.
+      enum HandleSort {none, forward, reverse, custom};
       HandleSort order;
       // note this member must appear after all members of
       // CAPIHandleState from the Ravel CAPI
