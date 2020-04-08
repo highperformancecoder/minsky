@@ -16,7 +16,7 @@ FLAGS:=-I.. -I../RESTService -I../tensor $(FLAGS)
 FLAGS+=-std=c++11  -Wno-unused-local-typedefs -I../model -I../engine -I../schema
 LIBS+=-ljson_spirit -lsoci_core -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem \
-	-lUnitTest++ -lgsl -lgslcblas  -lxml2 -ltiff
+	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff
 
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)

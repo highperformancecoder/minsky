@@ -14,7 +14,7 @@ foreach op $ops {
         "ravel" -
         "integrate"  continue 
     }
-    image create photo [set op]Img -width 24 -height 24
+    image create photo [set op]Img -width 30 -height 24
     operationIcon [set op]Img "$op"
     # I don't like the hardcoded background value here, but the
     # transparent icons appear ghastly on the Mac. The value #f0f0f0
