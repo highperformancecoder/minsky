@@ -470,7 +470,7 @@ SUITE(Canvas)
     TEST_FIXTURE(TestFixture,lasso)
     {
       canvas.selection.clear();
-      canvas.mouseDown(250,50);
+      canvas.mouseDown(250,0); //Adjusted for new shape of operation icons. For ticket 362.
       canvas.mouseUp(350,150);
       CHECK_EQUAL(1,canvas.selection.items.size());
       CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),c) !=canvas.selection.items.end());

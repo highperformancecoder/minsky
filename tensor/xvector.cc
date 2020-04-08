@@ -132,7 +132,7 @@ namespace civita
               smatch val;
               if (regex_match(s, val, valParser))
                 {
-                  int day, month, year;
+                  int day=0, month=0, year=0;
                   for (size_t i=1; i<val.size(); ++i)
                     {
                       

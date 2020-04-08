@@ -1,6 +1,6 @@
 # assume canvas.minsky.item is the variable
 CSVDialog csvDialog
-proc CSVImportDialog {} {
+proc CSVImportDialog {url} {
     global workDir csvParms
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
@@ -82,7 +82,7 @@ proc CSVImportDialog {} {
         # redefine OK command to not delete the the import window on error
         global csvImportFailed
         set csvImportFailed 0
-        .wiring.csvImport.buttonBar.ok configure -command csvImportDialogOK
+        .wiring.csvImport.buttonBar.ok configure -command "csvImportDialogOK {$url}"
         bind .wiring.csvImport.table <Configure> "csvDialog.requestRedraw"
         bind .wiring.csvImport.table <Button-1> {csvImportButton1 %x %y};
         bind .wiring.csvImport.table <ButtonRelease-1> {csvImportButton1Up %x %y %X %Y};
@@ -96,7 +96,12 @@ proc CSVImportDialog {} {
             csvDialog.requestRedraw
         }
     }
-    set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
+    
+    if [string length $url] {
+	   set filename [csvDialog.loadWebFile $url]
+	} else {
+       set filename [tk_getOpenFile -filetypes {{CSV {.csv}} {All {.*}}} -initialdir $workDir]
+    }
     if [string length $filename] {
         set workDir [file dirname $filename]
         csvDialog.loadFile $filename
@@ -114,9 +119,10 @@ proc CSVImportDialog {} {
         raise .wiring.csvImport
         csvDialog.requestRedraw
     }
+
 }
 
-proc csvImportDialogOK {} {
+proc csvImportDialogOK {url} {
     global csvParms
     csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
     set filename $csvParms(filename)
@@ -130,6 +136,10 @@ proc csvImportDialogOK {} {
     } else {
         reset
         cancelWin .wiring.csvImport
+        # Delete temporary file created by web import of CSV data
+        if [string length $url] {
+	        file delete $filename      
+        }
     }
 }
 

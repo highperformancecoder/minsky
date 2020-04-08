@@ -35,7 +35,7 @@ namespace minsky
   {
     std::vector<std::string> initialLines; ///< initial lines of file
     double rowHeight=0;
-    CLASSDESC_ACCESS(DataSpec);    
+    CLASSDESC_ACCESS(DataSpec);
   public:
     const unsigned numInitialLines=30;
     double xoffs=80;
@@ -44,6 +44,8 @@ namespace minsky
     DataSpec spec;
     void redraw(int, int, int width, int height) override;
     void loadFile(const std::string& fname);
+    // Return file name after downloading a CSV file from the web. 
+    std::string loadWebFile(const std::string& url); 
     void reportFromFile(const std::string& input, const std::string& output);
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// return column mouse is over
