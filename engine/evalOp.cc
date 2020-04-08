@@ -138,8 +138,36 @@ namespace minsky
   template <>
   double EvalOp<OperationType::time>::d2(double x1, double x2) const
   {return 0;}
-
-
+  
+  template <>
+  double EvalOp<OperationType::euler>::evaluate(double in1, double in2) const
+  {return 2.71828182845904523536028747135266249775724709369995;}
+  template <> 
+  double EvalOp<OperationType::euler>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::euler>::d2(double x1, double x2) const
+  {return 0;} 
+  
+  template <>
+  double EvalOp<OperationType::pi>::evaluate(double in1, double in2) const
+  {return 3.14159265358979323846264338327950288419716939937510;}
+  template <> 
+  double EvalOp<OperationType::pi>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::pi>::d2(double x1, double x2) const
+  {return 0;}      
+  
+  template <>
+  double EvalOp<OperationType::feigenbaum>::evaluate(double in1, double in2) const
+  {return 4.669201609102990671853203821578;}
+  template <> 
+  double EvalOp<OperationType::feigenbaum>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::feigenbaum>::d2(double x1, double x2) const
+  {return 0;} 
 
   template <>
   double EvalOp<OperationType::copy>::evaluate(double in1, double in2) const
@@ -491,6 +519,15 @@ namespace minsky
   template <>
   double EvalOp<OperationType::numOps>::d2(double x1, double x2) const
   {throw error("calling d2() on EvalOp<numOps> invalid");}
+  
+//  void RavelEvalOp::eval(double fv[], const double sv[]) 
+//  {
+//    if (auto r=dynamic_cast<Ravel*>(state.get()))
+//      {
+//        r->loadDataCubeFromVariable(in);
+//        r->loadDataFromSlice(out);
+//      }
+//  }  
 
   namespace {OperationFactory<ScalarEvalOp, EvalOp, OperationType::sum-1> evalOpFactory;}
 
@@ -505,8 +542,8 @@ namespace minsky
           {
           case constant:
             return new ConstantEvalOp;
-            //      case ravel:
-            //        return new RavelEvalOp;
+          //case ravel:
+          //  return new RavelEvalOp;
           case numOps:
             return NULL;
           default:

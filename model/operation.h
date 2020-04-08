@@ -139,6 +139,24 @@ namespace minsky
     Units units(bool) const override;
   };
   
+  //class Eu: public Operation<OperationType::euler>
+  //{
+  //public:
+  //  Units units(bool) const override;
+  //};  
+  //
+  //class Pi: public Operation<OperationType::pi>
+  //{
+  //public:
+  //  Units units(bool) const override;
+  //};        
+  //
+  //class Fb: public Operation<OperationType::feigenbaum>
+  //{
+  //public:
+  //  Units units(bool) const override;
+  //};    
+  
   class Derivative: public Operation<OperationType::differentiate>
   {
   public:

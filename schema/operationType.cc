@@ -58,11 +58,13 @@ namespace minsky
     template <> int numArguments<OperationType::or_>() {return 2;}
     template <> int numArguments<OperationType::not_>() {return 1;}
     template <> int numArguments<OperationType::time>() {return 0;}
+    template <> int numArguments<OperationType::euler>() {return 0;}
+    template <> int numArguments<OperationType::pi>() {return 0;}    
+    template <> int numArguments<OperationType::feigenbaum>() {return 0;}
     template <> int numArguments<OperationType::copy>() {return 1;}
     template <> int numArguments<OperationType::integrate>() {return 2;}
     template <> int numArguments<OperationType::differentiate>() {return 1;}
     template <> int numArguments<OperationType::data>() {return 1;}
-    template <> int numArguments<OperationType::ravel>() {return 1;}
     template <> int numArguments<OperationType::sqrt>() {return 1;}
     template <> int numArguments<OperationType::exp>() {return 1;}
     template <> int numArguments<OperationType::ln>() {return 1;}
@@ -93,6 +95,7 @@ namespace minsky
     template <> int numArguments<OperationType::outerProduct>() {return 2;}
     template <> int numArguments<OperationType::index>() {return 1;}
     template <> int numArguments<OperationType::gather>() {return 2;}
+    template <> int numArguments<OperationType::ravel>() {return 1;}    
     template <> int numArguments<OperationType::numOps>() {return -1;} //no output port as well
   }
 }
