@@ -263,7 +263,6 @@ source $minskyHome/library/tooltip.tcl
 namespace import tooltip::tooltip
 
 source $minskyHome/library/obj-browser.tcl
-source $minskyHome/library/tls.tcl
 namespace import -force
 
 # Macs have a weird numbering of mouse buttons, so lets virtualise B2 & B3
