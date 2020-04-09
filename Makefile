@@ -98,12 +98,10 @@ endif
 LIBS+=	-ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
-	-lboost_filesystem$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
+	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
-LIBS+=-lboost_thread$(BOOST_EXT)
-else
-LIBS+=-lboost_thread$(BOOST_EXT) 
+LIBS+=-lcrypt32
 endif
 
 ifdef CPUPROFILE
