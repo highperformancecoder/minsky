@@ -727,6 +727,7 @@ namespace minsky
         Dimension dim=dimension(handle);
         ravel_orderLabels(ravel,handle,order,dim.type,dim.units.c_str());
       }
+    return order;
   }
   
   string Ravel::description() const
