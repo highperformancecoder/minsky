@@ -232,7 +232,8 @@ namespace minsky
 
             cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
           }
-        if (onResizeHandles) drawResizeHandles(cairo);   
+        // Resize handles always visible on mousefocus. For ticket 92.
+        drawResizeHandles(cairo);   
       }
     justDataChanged=false;
     
