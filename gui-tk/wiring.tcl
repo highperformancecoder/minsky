@@ -75,7 +75,7 @@ menu .wiring.menubar.var.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "v
 button .wiring.menubar.constops -image eulerImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.constops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.constops "constant operations"
-set helpTopics(.wiring.menubar.constops) Operations
+#set helpTopics(.wiring.menubar.constops) Operations
 menu .wiring.menubar.constops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "constant operations toolbox"}
 
 button .wiring.menubar.binops -image addImg -width 37 -height 24 -command {
@@ -145,8 +145,8 @@ foreach op [availableOperations] {
     }
 }
 
-tooltip .wiring.menubar.var.menu -index 0 "variable toolbar"
 #tooltip .wiring.menubar.constops.menu -index 0 "constant operations toolbox"
+tooltip .wiring.menubar.var.menu -index 0 "variable toolbar"
 tooltip .wiring.menubar.binops.menu -index 0 "binary operations toolbox"
 tooltip .wiring.menubar.fnops.menu -index 0 "function toolbar"
 tooltip .wiring.menubar.reductionops.menu -index 0 "reduction operations toolbox"
@@ -265,8 +265,8 @@ proc zoomAt {x0 y0 factor} {
 
 .menubar.ops add command -label "Godley Table" -command canvas.addGodley
 
-.menubar.ops add cascade -label "Constant Ops" -menu .menubar.ops.constops
 .menubar.ops add cascade -label "Variable" -menu .wiring.menubar.var.menu
+.menubar.ops add cascade -label "Constant Ops" -menu .menubar.ops.constops
 .menubar.ops add cascade -label "Binary Ops" -menu .menubar.ops.binops
 .menubar.ops add cascade -label "Functions" -menu .menubar.ops.functions
 .menubar.ops add cascade -label "Reductions" -menu .menubar.ops.reductions
@@ -292,7 +292,7 @@ foreach op [availableOperations] {
         "data"  {.menubar.ops add command -label $label -command "minsky.addOperation $op"}
         default {
             switch [classifyOp $op] {
-                constop {.menubar.ops.constops add command -label $label  -command "minsky.addOperation $op"}
+                constop {.menubar.ops.constops add command -label $label -command "minsky.addOperation $op"}
                 function {.menubar.ops.functions add command -label $label  -command "minsky.addOperation $op"}
                 binop {.menubar.ops.binops add command -label $label  -command "minsky.addOperation $op"}
                 reduction {.menubar.ops.reductions add command -label $label  -command "minsky.addOperation $op"}
