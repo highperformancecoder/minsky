@@ -43,10 +43,10 @@ proc openGodley {id} {
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
         bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]; $id.requestRedraw"
         global meta meta_menu
-        bind .$id.table <$meta-y> "$id.undo -1"
-        bind .$id.table <$meta-z> "$id.undo 1"
-        bind .$id <$meta-y> "$id.undo -1"
-        bind .$id <$meta-z> "$id.undo 1"
+        bind .$id.table <$meta-y> "$id.undo -1; $id.requestRedraw"
+        bind .$id.table <$meta-z> "$id.undo 1; $id.requestRedraw"
+        bind .$id <$meta-y> "$id.undo -1; $id.requestRedraw"
+        bind .$id <$meta-z> "$id.undo 1; $id.requestRedraw"
         
         bind .$id <$meta-plus> "zoomIn $id"
         bind .$id <$meta-minus> "zoomOut $id"
@@ -256,8 +256,8 @@ proc godleyContext {id x y X Y} {
             }
         }
         col0 {
-            .$id.context add command -label "Add flow" -command "$id.addFlow $y"
-            .$id.context add command -label "Delete flow" -command "$id.deleteFlow $y"
+            .$id.context add command -label "Add flow" -command "$id.addFlow $y; $id.requestRedraw"
+            .$id.context add command -label "Delete flow" -command "$id.deleteFlow $y; $id.requestRedraw"
         }
         internal {}
     }

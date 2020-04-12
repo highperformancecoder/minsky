@@ -32,23 +32,41 @@
 
 namespace minsky
 {
+  class GodleyTableEditor;
+
   class GodleyIcon: public ItemT<GodleyIcon>
   {
     /// for placement of bank icon within complex
-    float flowMargin=0, stockMargin=0, iconSize=100;
+    float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
     /// icon scale is adjusted when Godley icon is resized
     float m_iconScale=1;
     CLASSDESC_ACCESS(GodleyIcon);
     friend class SchemaHelper;
+
+    /// support godley edit window on canvas
+    struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>
+    {
+      // make this copiable, but do nothing on copying
+      CopiableUniquePtr();
+      ~CopiableUniquePtr();
+      CopiableUniquePtr(const CopiableUniquePtr&);
+      CopiableUniquePtr& operator=(const CopiableUniquePtr&) {}
+    };
+    CopiableUniquePtr editor;
   public:
     static SVGRenderer svgRenderer;
 
     ~GodleyIcon() {removeControlledItems();}
+
+    /// inidcate whether icon is in editor mode or icon mode
+    bool editorMode() const {return editor.get();}
+    void setEditorMode();
+    void setIconMode();
     
     /// width of Godley icon in screen coordinates
-    float width() const {return (flowMargin+iconSize)*iconScale()*zoomFactor();}
+    float width() const {return (flowMargin+iconWidth)*iconScale()*zoomFactor();}
     /// height of Godley icon in screen coordinates
-    float height() const {return (stockMargin+iconSize)*iconScale()*zoomFactor();}
+    float height() const {return (stockMargin+iconHeight)*iconScale()*zoomFactor();}
     /// scale icon until it's height matches \a h 
     void scaleIconForHeight(float h) {update(); m_iconScale*=h/height();}
 
