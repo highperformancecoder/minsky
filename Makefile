@@ -14,9 +14,6 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 
-# root directroy for certify include files
-CERTIFY_HOME=$(shell pwd)/certify/include/boost
-
 ifeq ($(OS),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1
 endif
@@ -55,7 +52,7 @@ FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -I $(CERTIFY_HOME)/certify -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
 VPATH= schema model engine tensor gui-tk RESTService $(ECOLAB_HOME)/include
 
