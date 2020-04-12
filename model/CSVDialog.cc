@@ -32,8 +32,8 @@
 #include <boost/regex.hpp>
 #include <boost/filesystem.hpp>
    
-#include "certify/extensions.hpp"         
-#include "certify/https_verification.hpp" 
+#include "certify/include/boost/certify/extensions.hpp"         
+#include "certify/include/boost/certify/https_verification.hpp" 
 
 #include <cstdlib>
 #include <iostream>

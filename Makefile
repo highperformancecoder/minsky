@@ -14,6 +14,9 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 
+# root directroy for certify include files
+CERTIFY_HOME=$(shell pwd)/certify/include/boost
+
 ifeq ($(OS),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1
 endif
@@ -52,14 +55,14 @@ FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -I $(CERTIFY_HOME)/certify -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
 VPATH= schema model engine tensor gui-tk RESTService $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
 	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I RESTService -i $< xml_pack xml_unpack xsd_generate \
+	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< xml_pack xml_unpack xsd_generate \
 	json_pack json_unpack >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
