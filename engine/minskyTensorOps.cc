@@ -605,8 +605,9 @@ namespace minsky
         result.ev->update(fv, sv);
         for (size_t i=0; i<rhs->size(); ++i)
           {
-            result[i]=(*rhs)[i];
-            assert(!finite(result[i]) || fv[result.idx()+i]==(*rhs)[i]);
+            auto v=(*rhs)[i];
+            result[i]=v;
+            assert(!finite(result[i]) || fv[result.idx()+i]==v);
             //            cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< (*rhs)[i] << " should be "<<fv[result.idx()]<<endl;
           }
       }
