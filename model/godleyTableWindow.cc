@@ -471,7 +471,6 @@ namespace minsky
               rowWidgets[r].invoke(x);
               adjustWidgets();
               selectedCol=selectedRow=-1;
-              //requestRedraw();
             }
           return;
         }
@@ -484,7 +483,6 @@ namespace minsky
               colWidgets[c].invoke(x-colLeftMargin[visibleCol]);
               adjustWidgets();
               selectedCol=selectedRow=-1;
-              //requestRedraw();
             }
           return;
         }
@@ -503,7 +501,6 @@ namespace minsky
            }
         else
           selectIdx=insertIdx=0;
-        //requestRedraw();
         break;
       }
   }
@@ -536,8 +533,6 @@ namespace minsky
       }
     else if (selectIdx!=insertIdx)
       copy();
-     
-    //requestRedraw();
   }
 
   void GodleyTableEditor::mouseMoveB1(double x, double y)
@@ -580,7 +575,6 @@ namespace minsky
         hoverCol=colX(x);
         break;
       }
-    //requestRedraw();
   }
 
   inline constexpr char control(char x) {return x-'`';}
@@ -688,7 +682,6 @@ namespace minsky
             return; // early return, no need to redraw
           }
       }
-    //requestRedraw();
   }
 
   void GodleyTableEditor::delSelection()
@@ -740,7 +733,6 @@ namespace minsky
            godleyIcon->table.cell(selectedRow,selectedCol).clear();
          else
            delSelection();
-         //requestRedraw();   
       }
   }
   
@@ -773,7 +765,6 @@ namespace minsky
          str.insert(insertIdx,stringToInsert);
          selectIdx=insertIdx+=stringToInsert.length();
       }
-    //requestRedraw();
   }
 
   GodleyTableEditor::ClickType GodleyTableEditor::clickType(double x, double y) const
@@ -805,7 +796,6 @@ namespace minsky
     int c=colX(x);
     if (c>0)
       godleyIcon->table.insertCol(c+1);
-    //requestRedraw();
   }
   void GodleyTableEditor::importStockVar(const string& name, double x)
   {
@@ -816,7 +806,6 @@ namespace minsky
         godleyIcon->table.cell(0,c)=name;
         minsky().importDuplicateColumn(godleyIcon->table, c);
       }
-    //requestRedraw();
   }
 
   void GodleyTableEditor::deleteStockVar(double x)
@@ -825,7 +814,6 @@ namespace minsky
     int c=colX(x);
     if (c>=0)
       godleyIcon->table.deleteCol(c+1);
-    //requestRedraw();
   }
 
   void GodleyTableEditor::addFlow(double y)  
@@ -834,7 +822,6 @@ namespace minsky
     int r=rowY(y);
     if (r>0)                                 
       godleyIcon->table.insertRow(r+1);
-    //requestRedraw();
   }
 
   void GodleyTableEditor::deleteFlow(double y)
@@ -843,7 +830,6 @@ namespace minsky
     int r=rowY(y);
     if (r>1)                                       // Cannot delete flow in Initial Conditions row. For ticket 1064
       godleyIcon->deleteRow(r+1);
-    //requestRedraw();
   }
   
 namespace {
@@ -963,7 +949,6 @@ namespace {
         // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
         if (d.getData().empty()) return; // should not happen
 		godleyIcon->table=d; 
-                //requestRedraw();
       }
   }
 
