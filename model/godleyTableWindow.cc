@@ -33,9 +33,9 @@ using namespace ecolab::cairo;
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
-constexpr double GodleyTableWindow::leftTableOffset,
-  GodleyTableWindow::topTableOffset, GodleyTableWindow::pulldownHot,
-  GodleyTableWindow::columnButtonsOffset, GodleyTableWindow::minColumnWidth;
+constexpr double GodleyTableEditor::leftTableOffset,
+  GodleyTableEditor::topTableOffset, GodleyTableEditor::pulldownHot,
+  GodleyTableEditor::columnButtonsOffset, GodleyTableEditor::minColumnWidth;
 
 namespace
 {
@@ -155,13 +155,13 @@ namespace minsky
   }
 
 
-  void GodleyTableWindow::redraw(int, int, int, int)
+  void GodleyTableEditor::draw(cairo_t *cairo)
   {
     if (!godleyIcon) return;
-    CairoSave cs(surface->cairo());
-    cairo_scale(surface->cairo(),zoomFactor,zoomFactor);
+    CairoSave cs(cairo);
+    cairo_scale(cairo,zoomFactor,zoomFactor);
     ZoomablePango::zoomFactor=zoomFactor;
-    ZoomablePango pango(surface->cairo());
+    ZoomablePango pango(cairo);
     pango.setMarkup("Flows ↓ / Stock Vars →");
     rowHeight=pango.height()+2;
     double tableHeight=(godleyIcon->table.rows()-scrollRowStart+1)*rowHeight;
@@ -183,30 +183,30 @@ namespace minsky
                 // increase column by enough to fit asset class label
                 if (x < pango.width()+lastAssetBoundary+3)
                   x=pango.width()+lastAssetBoundary+3;
-                cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
-                showAsset(pango, surface->cairo(), assetClass);
+                cairo_move_to(cairo,0.5*(x+lastAssetBoundary-pango.width()),0);
+                showAsset(pango, cairo, assetClass);
               }
             lastAssetBoundary=x;
           
             assetClass=godleyIcon->table._assetClass(col);
-            cairo_move_to(surface->cairo(),x+3,topTableOffset);
-            cairo_rel_line_to(surface->cairo(),0,tableHeight);
+            cairo_move_to(cairo,x+3,topTableOffset);
+            cairo_rel_line_to(cairo,0,tableHeight);
           }
-        cairo_move_to(surface->cairo(),x,topTableOffset);
-        cairo_rel_line_to(surface->cairo(),0,tableHeight);
-        cairo_set_line_width(surface->cairo(),0.5);
-        cairo_stroke(surface->cairo());
+        cairo_move_to(cairo,x,topTableOffset);
+        cairo_rel_line_to(cairo,0,tableHeight);
+        cairo_set_line_width(cairo,0.5);
+        cairo_stroke(cairo);
       
         if (col>0 && col<colWidgets.size())
           {
-            CairoSave cs(surface->cairo());
-            cairo_move_to(surface->cairo(), x, columnButtonsOffset);
-        	colWidgets[col].draw(surface->cairo());   
+            CairoSave cs(cairo);
+            cairo_move_to(cairo, x, columnButtonsOffset);
+        	colWidgets[col].draw(cairo);   
           }
       
         if (col>1)
           {
-            cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
+            cairo_move_to(cairo,x-pulldownHot,topTableOffset);
             pango.setMarkup("▼");
             pango.show();
           }
@@ -219,12 +219,12 @@ namespace minsky
 
             if (col==0 && row>0 && col<rowWidgets.size())
               {
-                CairoSave cs(surface->cairo());
-                cairo_move_to(surface->cairo(), 0, y);
-                rowWidgets[row].draw(surface->cairo());
+                CairoSave cs(cairo);
+                cairo_move_to(cairo, 0, y);
+                rowWidgets[row].draw(cairo);
               }
             
-            CairoSave cs(surface->cairo());
+            CairoSave cs(cairo);
             if (row!=0 || col!=0)               
               {
                 string text=godleyIcon->table.cell(row,col);
@@ -250,7 +250,7 @@ namespace minsky
                         {
                           value=string("= Err: ")+ex.what();
                           // highlight error in red
-                          cairo_set_source_rgb(surface->cairo(),1,0,0);
+                          cairo_set_source_rgb(cairo,1,0,0);
                         }
                             
                     // the active cell renders as bare LaTeX code for
@@ -260,7 +260,7 @@ namespace minsky
                         if (row>0 && col>0)    
                           { // handle DR/CR mode and colouring of text
                             if (fc.coef<0)
-                              cairo_set_source_rgb(surface->cairo(),1,0,0);
+                              cairo_set_source_rgb(cairo,1,0,0);
                             if (displayStyle==DRCR)
                               {
                                 if (assetClass==GodleyAssetClass::asset ||
@@ -285,7 +285,7 @@ namespace minsky
               }
             // allow extra space for the ▼ in row 0
             colWidth=max(colWidth,pango.width() + (row==0? pulldownHot:0));
-            cairo_move_to(surface->cairo(),x+3,y);
+            cairo_move_to(cairo,x+3,y);
             pango.show();
             y+=rowHeight;
           }
@@ -301,23 +301,23 @@ namespace minsky
     // increase column by enough to fit asset class label
     if (x < pango.width()+lastAssetBoundary+3)
       x=pango.width()+lastAssetBoundary+3;
-    cairo_move_to(surface->cairo(),0.5*(x+lastAssetBoundary-pango.width()),0);
-    showAsset(pango, surface->cairo(), assetClass);
+    cairo_move_to(cairo,0.5*(x+lastAssetBoundary-pango.width()),0);
+    showAsset(pango, cairo, assetClass);
     // final column vertical line
     colLeftMargin.push_back(x);
-    cairo_move_to(surface->cairo(),x,topTableOffset);
-    cairo_rel_line_to(surface->cairo(),0,tableHeight);
-    cairo_move_to(surface->cairo(),x+3,topTableOffset);
-    cairo_rel_line_to(surface->cairo(),0,tableHeight);
-    cairo_set_line_width(surface->cairo(),0.5);
-    cairo_stroke(surface->cairo());
+    cairo_move_to(cairo,x,topTableOffset);
+    cairo_rel_line_to(cairo,0,tableHeight);
+    cairo_move_to(cairo,x+3,topTableOffset);
+    cairo_rel_line_to(cairo,0,tableHeight);
+    cairo_set_line_width(cairo,0.5);
+    cairo_stroke(cairo);
 
-    cairo_move_to(surface->cairo(),x-pulldownHot,topTableOffset);
+    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
 
     // now row sum column
     x+=3;
     double y=topTableOffset;
-    cairo_move_to(surface->cairo(),x,y);
+    cairo_move_to(cairo,x,y);
     pango.setMarkup("A-L-E");
     pango.show();
     double colWidth=pango.width();
@@ -328,7 +328,7 @@ namespace minsky
         if (row>0 && row<scrollRowStart) continue;
         pango.setMarkup(latexToPango(godleyIcon->table.rowSum(row)));
         colWidth=max(colWidth,pango.width());
-        cairo_move_to(surface->cairo(),x,y);
+        cairo_move_to(cairo,x,y);
         pango.show();
         y+=rowHeight;
       }
@@ -339,36 +339,36 @@ namespace minsky
       {
         // horizontal lines
         if (row>0 && row<scrollRowStart) continue;
-        cairo_move_to(surface->cairo(),leftTableOffset,y);
-        cairo_line_to(surface->cairo(),x,y);
-        cairo_set_line_width(surface->cairo(),0.5);
-        cairo_stroke(surface->cairo());
+        cairo_move_to(cairo,leftTableOffset,y);
+        cairo_line_to(cairo,x,y);
+        cairo_set_line_width(cairo,0.5);
+        cairo_stroke(cairo);
         y+=rowHeight;
       }
 
     // final vertical line
     colLeftMargin.push_back(x);
-    cairo_move_to(surface->cairo(),x,topTableOffset);
-    cairo_rel_line_to(surface->cairo(),0,tableHeight);
-    cairo_set_line_width(surface->cairo(),0.5);
-    cairo_stroke(surface->cairo());
+    cairo_move_to(cairo,x,topTableOffset);
+    cairo_rel_line_to(cairo,0,tableHeight);
+    cairo_set_line_width(cairo,0.5);
+    cairo_stroke(cairo);
 
     // indicate cell mouse is hovering over
     if ((hoverRow>0 || hoverCol>0) &&                                
         size_t(hoverRow)<godleyIcon->table.rows() &&
         size_t(hoverCol)<godleyIcon->table.cols())
       {
-        CairoSave cs(surface->cairo());
-        cairo_rectangle(surface->cairo(),
+        CairoSave cs(cairo);
+        cairo_rectangle(cairo,
                         colLeftMargin[hoverCol],hoverRow*rowHeight+topTableOffset,
                         colLeftMargin[hoverCol+1]-colLeftMargin[hoverCol],rowHeight);
-        cairo_set_line_width(surface->cairo(),1);
-        cairo_stroke(surface->cairo());
+        cairo_set_line_width(cairo,1);
+        cairo_stroke(cairo);
       }
           
     // indicate selected cells
     {
-      CairoSave cs(surface->cairo());
+      CairoSave cs(cairo);
       if (selectedRow==0 || (selectedRow>=int(scrollRowStart) && selectedRow<int(godleyIcon->table.rows())))
         {
           size_t i=0, j=0;
@@ -377,13 +377,13 @@ namespace minsky
 
           if (motionCol>=0 && selectedRow==0 && selectedCol>0) // whole col being moved
             {
-              highlightColumn(surface->cairo(),selectedCol);
-              highlightColumn(surface->cairo(),motionCol);
+              highlightColumn(cairo,selectedCol);
+              highlightColumn(cairo,motionCol);
             }
           else if (motionRow>=0 && selectedCol==0 && selectedRow>0) // whole Row being moved
             {
-              highlightRow(surface->cairo(),selectedRow);
-              highlightRow(surface->cairo(),motionRow);
+              highlightRow(cairo,selectedRow);
+              highlightRow(cairo,motionRow);
             }
           else if (selectedCol==0 || /* selecting individual cell */
                    (selectedCol>=int(scrollColStart) && selectedCol<int(godleyIcon->table.cols())))   
@@ -392,28 +392,28 @@ namespace minsky
                 {
                   if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
                   double x=colLeftMargin[i];
-                  cairo_set_source_rgba(surface->cairo(),1,1,1,1);
-                  cairo_rectangle(surface->cairo(),x,y,colLeftMargin[i+1]-x,rowHeight);
-                  cairo_fill(surface->cairo());
+                  cairo_set_source_rgba(cairo,1,1,1,1);
+                  cairo_rectangle(cairo,x,y,colLeftMargin[i+1]-x,rowHeight);
+                  cairo_fill(cairo);
                   pango.setMarkup(defang(godleyIcon->table.cell(selectedRow,selectedCol)));
-                  cairo_set_source_rgba(surface->cairo(),0,0,0,1);
-                  cairo_move_to(surface->cairo(),x,y);
+                  cairo_set_source_rgba(cairo,0,0,0,1);
+                  cairo_move_to(cairo,x,y);
                   pango.show();
 				  
                   // show insertion cursor
-                  cairo_move_to(surface->cairo(),x+pango.idxToPos(insertIdx),y);
-                  cairo_rel_line_to(surface->cairo(),0,rowHeight);
-                  cairo_set_line_width(surface->cairo(),1);
-                  cairo_stroke(surface->cairo());
+                  cairo_move_to(cairo,x+pango.idxToPos(insertIdx),y);
+                  cairo_rel_line_to(cairo,0,rowHeight);
+                  cairo_set_line_width(cairo,1);
+                  cairo_stroke(cairo);
                   if (motionRow>0 && motionCol>0)
-                    highlightCell(surface->cairo(),motionRow,motionCol);
+                    highlightCell(cairo,motionRow,motionCol);
                   if (selectIdx!=insertIdx)
                     {
                       // indicate some text has been selected
-                      cairo_rectangle(surface->cairo(),x+pango.idxToPos(insertIdx),y,
+                      cairo_rectangle(cairo,x+pango.idxToPos(insertIdx),y,
                                       pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
-                      cairo_set_source_rgba(surface->cairo(),0.5,0.5,0.5,0.5);
-                      cairo_fill(surface->cairo());
+                      cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
+                      cairo_fill(cairo);
                    }
                 }
             }
@@ -421,7 +421,7 @@ namespace minsky
     }
   }
 
-  int GodleyTableWindow::colX(double x) const
+  int GodleyTableEditor::colX(double x) const
   {
     if (x<colLeftMargin[0]) return -1;
     if (x<colLeftMargin[1]) return 0;
@@ -431,7 +431,7 @@ namespace minsky
     return r;
   }
 
-  int GodleyTableWindow::rowY(double y) const
+  int GodleyTableEditor::rowY(double y) const
   {
     int c=(y-topTableOffset)/rowHeight;
     if (c>0) c+=scrollRowStart-1;
@@ -439,7 +439,7 @@ namespace minsky
     return c;
   }
 
-  int GodleyTableWindow::textIdx(double x) const
+  int GodleyTableEditor::textIdx(double x) const
   {
     cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
     ZoomablePango pango(surf.cairo());
@@ -457,7 +457,7 @@ namespace minsky
     return 0;
   }
 
-  void GodleyTableWindow::mouseDown(double x, double y)
+  void GodleyTableEditor::mouseDown(double x, double y)
   {
     x/=zoomFactor;
     y/=zoomFactor;
@@ -471,7 +471,7 @@ namespace minsky
               rowWidgets[r].invoke(x);
               adjustWidgets();
               selectedCol=selectedRow=-1;
-              requestRedraw();
+              //requestRedraw();
             }
           return;
         }
@@ -484,7 +484,7 @@ namespace minsky
               colWidgets[c].invoke(x-colLeftMargin[visibleCol]);
               adjustWidgets();
               selectedCol=selectedRow=-1;
-              requestRedraw();
+              //requestRedraw();
             }
           return;
         }
@@ -503,12 +503,12 @@ namespace minsky
            }
         else
           selectIdx=insertIdx=0;
-        requestRedraw();
+        //requestRedraw();
         break;
       }
   }
 
-  void GodleyTableWindow::mouseUp(double x, double y)
+  void GodleyTableEditor::mouseUp(double x, double y)
   {
     x/=zoomFactor;
     y/=zoomFactor;
@@ -537,10 +537,10 @@ namespace minsky
     else if (selectIdx!=insertIdx)
       copy();
      
-    requestRedraw();
+    //requestRedraw();
   }
 
-  void GodleyTableWindow::mouseMoveB1(double x, double y)
+  void GodleyTableEditor::mouseMoveB1(double x, double y)
   {
     x/=zoomFactor;
     y/=zoomFactor;
@@ -549,7 +549,7 @@ namespace minsky
       selectIdx=textIdx(x);
   }
 
-  void GodleyTableWindow::mouseMove(double x, double y)
+  void GodleyTableEditor::mouseMove(double x, double y)
   {
     x/=zoomFactor;
     y/=zoomFactor;
@@ -580,12 +580,12 @@ namespace minsky
         hoverCol=colX(x);
         break;
       }
-    requestRedraw();
+    //requestRedraw();
   }
 
   inline constexpr char control(char x) {return x-'`';}
   
-  void GodleyTableWindow::keyPress(int keySym, const std::string& utf8)
+  void GodleyTableEditor::keyPress(int keySym, const std::string& utf8)
   {
     
     auto& table=godleyIcon->table;
@@ -688,10 +688,10 @@ namespace minsky
             return; // early return, no need to redraw
           }
       }
-    requestRedraw();
+    //requestRedraw();
   }
 
-  void GodleyTableWindow::delSelection()
+  void GodleyTableEditor::delSelection()
   {
     if (insertIdx!=selectIdx)
       {
@@ -701,7 +701,7 @@ namespace minsky
       }
   }
 
-    void GodleyTableWindow::handleBackspace()
+    void GodleyTableEditor::handleBackspace()
     {
       auto& table=godleyIcon->table;
       assert(selectedRow>=0 && selectedCol>=0);
@@ -715,7 +715,7 @@ namespace minsky
       selectIdx=insertIdx;
     }
 
-      void GodleyTableWindow::handleDelete()
+      void GodleyTableEditor::handleDelete()
     {
       auto& table=godleyIcon->table;
       assert(selectedRow>=0 && selectedCol>=0);
@@ -729,7 +729,7 @@ namespace minsky
       selectIdx=insertIdx;
     }
 
-  void GodleyTableWindow::cut()
+  void GodleyTableEditor::cut()
   {
     copy();
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
@@ -740,11 +740,11 @@ namespace minsky
            godleyIcon->table.cell(selectedRow,selectedCol).clear();
          else
            delSelection();
-         requestRedraw();   
+         //requestRedraw();   
       }
   }
   
-  void GodleyTableWindow::copy()
+  void GodleyTableEditor::copy()
   {
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
         selectedRow<int(godleyIcon->table.rows()))
@@ -758,7 +758,7 @@ namespace minsky
       }
   }
 
-  void GodleyTableWindow::paste()
+  void GodleyTableEditor::paste()
   {
     if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
         selectedRow<int(godleyIcon->table.rows()))
@@ -773,10 +773,10 @@ namespace minsky
          str.insert(insertIdx,stringToInsert);
          selectIdx=insertIdx+=stringToInsert.length();
       }
-    requestRedraw();
+    //requestRedraw();
   }
 
-  GodleyTableWindow::ClickType GodleyTableWindow::clickType(double x, double y) const
+  GodleyTableEditor::ClickType GodleyTableEditor::clickType(double x, double y) const
   {
     int c=colX(x), r=rowY(y);
     if (x<leftTableOffset && r>0)
@@ -800,14 +800,14 @@ namespace minsky
     return background;
   }
 
-  void GodleyTableWindow::addStockVar(double x)
+  void GodleyTableEditor::addStockVar(double x)
   {
     int c=colX(x);
     if (c>0)
       godleyIcon->table.insertCol(c+1);
-    requestRedraw();
+    //requestRedraw();
   }
-  void GodleyTableWindow::importStockVar(const string& name, double x)
+  void GodleyTableEditor::importStockVar(const string& name, double x)
   {
     x/=zoomFactor;
     int c=colX(x);
@@ -816,34 +816,34 @@ namespace minsky
         godleyIcon->table.cell(0,c)=name;
         minsky().importDuplicateColumn(godleyIcon->table, c);
       }
-    requestRedraw();
+    //requestRedraw();
   }
 
-  void GodleyTableWindow::deleteStockVar(double x)
+  void GodleyTableEditor::deleteStockVar(double x)
   {
     x/=zoomFactor;
     int c=colX(x);
     if (c>=0)
       godleyIcon->table.deleteCol(c+1);
-    requestRedraw();
+    //requestRedraw();
   }
 
-  void GodleyTableWindow::addFlow(double y)  
+  void GodleyTableEditor::addFlow(double y)  
   {
     y/=zoomFactor;
     int r=rowY(y);
     if (r>0)                                 
       godleyIcon->table.insertRow(r+1);
-    requestRedraw();
+    //requestRedraw();
   }
 
-  void GodleyTableWindow::deleteFlow(double y)
+  void GodleyTableEditor::deleteFlow(double y)
   {
     y/=zoomFactor;
     int r=rowY(y);
     if (r>1)                                       // Cannot delete flow in Initial Conditions row. For ticket 1064
       godleyIcon->deleteRow(r+1);
-    requestRedraw();
+    //requestRedraw();
   }
   
 namespace {
@@ -855,7 +855,7 @@ namespace {
   }	  
 }
   
-  string GodleyTableWindow::moveAssetClass(double x, double y)
+  string GodleyTableEditor::moveAssetClass(double x, double y)
   {
 	x/=zoomFactor;
 	y/=zoomFactor;
@@ -889,7 +889,7 @@ namespace {
    return tmpStr;	    		 	
    }
   
-  string GodleyTableWindow::swapAssetClass(double x, double y) 
+  string GodleyTableEditor::swapAssetClass(double x, double y) 
   {  
 	x/=zoomFactor;
 	y/=zoomFactor;
@@ -911,7 +911,7 @@ namespace {
 	return tmpStr;  	  
   }    
 
-  void GodleyTableWindow::highlightColumn(cairo_t* cairo, unsigned col)
+  void GodleyTableEditor::highlightColumn(cairo_t* cairo, unsigned col)
   {
     if (col<scrollColStart) return;
     double x=colLeftMargin[col-scrollColStart+1];
@@ -922,7 +922,7 @@ namespace {
     cairo_fill(cairo);
   }
 
-  void GodleyTableWindow::highlightRow(cairo_t* cairo, unsigned row)
+  void GodleyTableEditor::highlightRow(cairo_t* cairo, unsigned row)
   {
     if (row<scrollRowStart) return;
     double y=(row-scrollRowStart+1)*rowHeight+topTableOffset;
@@ -931,7 +931,7 @@ namespace {
     cairo_fill(cairo);
   }
 
-  void GodleyTableWindow::highlightCell(cairo_t* cairo, unsigned row, unsigned col)
+  void GodleyTableEditor::highlightCell(cairo_t* cairo, unsigned row, unsigned col)
   {
     if (row<scrollRowStart || col<scrollColStart) return;
     double x=colLeftMargin[col-scrollColStart+1];
@@ -942,7 +942,7 @@ namespace {
     cairo_fill(cairo);
   }
 
-  void GodleyTableWindow::pushHistory()
+  void GodleyTableEditor::pushHistory()
   {
     while (history.size()>maxHistory) history.pop_front();
     // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
@@ -952,7 +952,7 @@ namespace {
     historyPtr=history.size();
   }
       
-  void GodleyTableWindow::undo(int changes)
+  void GodleyTableEditor::undo(int changes)
   { 
     if (historyPtr==history.size())
       pushHistory();
@@ -963,11 +963,11 @@ namespace {
         // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
         if (d.getData().empty()) return; // should not happen
 		godleyIcon->table=d; 
-        requestRedraw();
+                //requestRedraw();
       }
   }
 
-  void GodleyTableWindow::adjustWidgets()
+  void GodleyTableEditor::adjustWidgets()
   {
     assert(godleyIcon);
     rowWidgets.clear();
@@ -1000,7 +1000,7 @@ namespace {
       }
   }
 
-  void GodleyTableWindow::update()
+  void GodleyTableEditor::update()
   {
     if (selectedCol>0 && selectedCol<int(godleyIcon->table.cols()))
       {
@@ -1031,7 +1031,7 @@ namespace {
     minsky().redrawAllGodleyTables();
   }
 
-  void GodleyTableWindow::checkCell00()
+  void GodleyTableEditor::checkCell00()
   {
     if (selectedCol==0 && (selectedRow==0 || selectedRow ==1))
       // (0,0) cell not editable
@@ -1041,7 +1041,7 @@ namespace {
       }         
   }
   
-    void GodleyTableWindow::navigateRight()
+    void GodleyTableEditor::navigateRight()
     {
       if (selectedCol>=0)
         {
@@ -1057,7 +1057,7 @@ namespace {
         }
     }
   
-    void GodleyTableWindow::navigateLeft()
+    void GodleyTableEditor::navigateLeft()
     {
       if (selectedCol>=0)
         {
@@ -1072,14 +1072,14 @@ namespace {
         }
     }
 
-    void GodleyTableWindow::navigateUp()
+    void GodleyTableEditor::navigateUp()
     {
       if (selectedRow>=0)
         selectedRow=(selectedRow-1)%godleyIcon->table.rows();
       checkCell00();
     }
   
-    void GodleyTableWindow::navigateDown()
+    void GodleyTableEditor::navigateDown()
     {
       if (selectedRow>=0)
         selectedRow=(selectedRow+1)%godleyIcon->table.rows();

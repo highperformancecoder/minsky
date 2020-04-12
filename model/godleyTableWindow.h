@@ -68,10 +68,10 @@ namespace minsky
       godleyIcon(godleyIcon), idx(idx) {}
   };
 
-  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums
+  class GodleyTableEditor: public ButtonWidgetEnums
   {
     
-    CLASSDESC_ACCESS(GodleyTableWindow);
+    CLASSDESC_ACCESS(GodleyTableEditor);
   public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
@@ -99,11 +99,11 @@ namespace minsky
     DisplayStyle displayStyle=sign;
     double zoomFactor=1; ///< zoom the display
 
-    GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
+    GodleyTableEditor(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
     {adjustWidgets();}
+
+    void draw(cairo_t* cairo);
     
-    void redraw(int, int, int width, int height) override;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// event handling 
     void mouseDown(double x, double y);
     void mouseUp(double x, double y);
@@ -181,6 +181,18 @@ namespace minsky
     void handleBackspace();    
     void handleDelete();
   };
+
+  class GodleyTableWindow: public ecolab::CairoSurface, public GodleyTableEditor
+  {
+  public:
+    GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): GodleyTableEditor(g) {}
+    void redraw(int, int, int width, int height) override {
+      if (surface.get()) draw(surface->cairo());
+    }
+    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+   
+  };
+
 }
 
 #include "godleyTableWindow.cd"
