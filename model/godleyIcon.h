@@ -50,7 +50,7 @@ namespace minsky
       CopiableUniquePtr();
       ~CopiableUniquePtr();
       CopiableUniquePtr(const CopiableUniquePtr&);
-      CopiableUniquePtr& operator=(const CopiableUniquePtr&) {}
+      CopiableUniquePtr& operator=(const CopiableUniquePtr&) {return *this;}
     };
     CopiableUniquePtr editor;
   public:
