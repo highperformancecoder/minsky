@@ -333,12 +333,6 @@ namespace MathDAG
   {
     return o<<"π";
   }      
-  
-  template <>
-  ostream& OperationDAG<OperationType::feigenbaum>::matlab(ostream& o) const
-  {
-    return o<<"δ";
-  }  
 
   template <>
   ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const

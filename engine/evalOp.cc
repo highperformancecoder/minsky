@@ -160,16 +160,6 @@ namespace minsky
   {return 0;}      
   
   template <>
-  double EvalOp<OperationType::feigenbaum>::evaluate(double in1, double in2) const
-  {return 4.669201609102990671853203821578;}
-  template <> 
-  double EvalOp<OperationType::feigenbaum>::d1(double x1, double x2) const
-  {return 0;}
-  template <>
-  double EvalOp<OperationType::feigenbaum>::d2(double x1, double x2) const
-  {return 0;} 
-
-  template <>
   double EvalOp<OperationType::copy>::evaluate(double in1, double in2) const
   {return in1;}
   template <>

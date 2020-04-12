@@ -27,7 +27,7 @@ namespace minsky
   struct OperationType
   {
     enum Type {constant, // deprecated - left to support legacy schemas
-               time, euler, pi, feigenbaum, // zero input port ops
+               time, euler, pi, // zero input port ops
                integrate, 
                differentiate, // with respect to time
                data, // an interpolated data item
@@ -53,7 +53,7 @@ namespace minsky
     };
     /// return the symbolic name of \a type
     static std::string typeName(int type);
-    enum Group {general, binop, function, reduction, scan, tensor};
+    enum Group {general, binop, constop, function, reduction, scan, tensor};
     static Group classify(Type t);
   };
 

@@ -194,11 +194,10 @@ namespace minsky
   TensorOpFactory::TensorOpFactory()
   {
     registerType<TimeOp>(OperationType::time);
-    registerType<ConstOp>(OperationType::euler);
-    registerType<ConstOp>(OperationType::pi);
-    registerType<ConstOp>(OperationType::feigenbaum);
-    registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this);
+    registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this); 
     registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);
+    registerType<ConstOp>(OperationType::euler);
+    registerType<ConstOp>(OperationType::pi);    
     registerOps<MinskyTensorOp, OperationType::copy, OperationType::sum>(*this);
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
   }

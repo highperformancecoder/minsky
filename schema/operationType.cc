@@ -33,6 +33,7 @@ namespace minsky
   {
       if (t<add) return general;
       if (t<copy) return binop;
+      if (t<integrate) return constop;      
       if (t<sum) return function;
       if (t<runningSum) return reduction;
       if (t<innerProduct) return scan;
@@ -57,11 +58,10 @@ namespace minsky
     template <> int numArguments<OperationType::and_>() {return 2;}
     template <> int numArguments<OperationType::or_>() {return 2;}
     template <> int numArguments<OperationType::not_>() {return 1;}
-    template <> int numArguments<OperationType::time>() {return 0;}
+    template <> int numArguments<OperationType::time>() {return 0;}    
+    template <> int numArguments<OperationType::copy>() {return 1;}
     template <> int numArguments<OperationType::euler>() {return 0;}
     template <> int numArguments<OperationType::pi>() {return 0;}    
-    template <> int numArguments<OperationType::feigenbaum>() {return 0;}
-    template <> int numArguments<OperationType::copy>() {return 1;}
     template <> int numArguments<OperationType::integrate>() {return 2;}
     template <> int numArguments<OperationType::differentiate>() {return 1;}
     template <> int numArguments<OperationType::data>() {return 1;}
