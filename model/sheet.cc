@@ -52,7 +52,8 @@ void Sheet::draw(cairo_t* cairo) const
     {
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
-      if (onResizeHandles) drawResizeHandles(cairo);
+      // Resize handles always visible on mousefocus. For ticket 92.
+      drawResizeHandles(cairo);
     }
 
   cairo_scale(cairo,z,z);

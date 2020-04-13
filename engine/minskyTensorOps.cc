@@ -273,7 +273,7 @@ namespace minsky
       // strip of any indices outside the output range
       idx.erase(remove_if(idx.begin(), idx.end(),
                           [this](size_t i) {
-                            auto t=ssize_t(i)-delta; return t<0 || t>=size();}),
+                            auto t=ssize_t(i)-delta; return t<0 || t>=ssize_t(size());}),
                 idx.end());
       for (auto& i: idx)
         i-=delta;

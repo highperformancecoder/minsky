@@ -49,16 +49,17 @@ EXES=gui-tk/minsky
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
+LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
 VPATH= schema model engine tensor gui-tk RESTService $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
 	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I RESTService -i $< xml_pack xml_unpack xsd_generate \
+	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< xml_pack xml_unpack xsd_generate \
 	json_pack json_unpack >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
@@ -98,12 +99,10 @@ endif
 LIBS+=	-ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
-	-lboost_filesystem$(BOOST_EXT) -lgsl -lgslcblas  
+	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
-LIBS+=-lboost_thread$(BOOST_EXT)
-else
-LIBS+=-lboost_thread$(BOOST_EXT) 
+LIBS+=-lcrypt32
 endif
 
 ifdef CPUPROFILE
