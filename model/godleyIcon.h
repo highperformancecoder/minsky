@@ -58,10 +58,16 @@ namespace minsky
 
     ~GodleyIcon() {removeControlledItems();}
 
-    /// inidcate whether icon is in editor mode or icon mode
+    /// indicate whether icon is in editor mode or icon mode
     bool editorMode() const {return editor.get();}
-    void setEditorMode();
-    void setIconMode();
+    void toggleEditorMode();
+
+    /// enable/disable drawing buttons in table on canvas display
+    bool buttonDisplay() const;
+    void toggleButtons(); 
+
+    bool variableDisplay;
+    void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
     /// width of Godley icon in screen coordinates
     float width() const {return (flowMargin+iconWidth)*iconScale()*zoomFactor();}

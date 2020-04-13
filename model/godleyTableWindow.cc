@@ -33,9 +33,8 @@ using namespace ecolab::cairo;
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
-constexpr double GodleyTableEditor::leftTableOffset,
-  GodleyTableEditor::topTableOffset, GodleyTableEditor::pulldownHot,
-  GodleyTableEditor::columnButtonsOffset, GodleyTableEditor::minColumnWidth;
+constexpr double GodleyTableEditor::pulldownHot,
+  GodleyTableEditor::columnButtonsOffsetDefault, GodleyTableEditor::minColumnWidth;
 
 namespace
 {
@@ -197,7 +196,7 @@ namespace minsky
         cairo_set_line_width(cairo,0.5);
         cairo_stroke(cairo);
       
-        if (col>0 && col<colWidgets.size())
+        if (drawButtons && col>0 && col<colWidgets.size())
           {
             CairoSave cs(cairo);
             cairo_move_to(cairo, x, columnButtonsOffset);
@@ -217,7 +216,7 @@ namespace minsky
           {
             if (row>0 && row<scrollRowStart) continue;
 
-            if (col==0 && row>0 && col<rowWidgets.size())
+            if (drawButtons && col==0 && row>0 && col<rowWidgets.size())
               {
                 CairoSave cs(cairo);
                 cairo_move_to(cairo, 0, y);

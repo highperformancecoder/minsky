@@ -141,16 +141,26 @@ namespace minsky
         g->deleteItem(*v);   
   }
 
-  void GodleyIcon::setEditorMode()
+  void GodleyIcon::toggleEditorMode()
   {
-    if (auto g=group.lock())
-      if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
-        editor.reset(new GodleyTableEditor(icon));
+    if (editor)
+      editor.reset();
+    else
+      if (auto g=group.lock())
+        if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
+          editor.reset(new GodleyTableEditor(icon));
   }
 
-  void GodleyIcon::setIconMode()
-  {editor.reset();}
-    
+  bool GodleyIcon::buttonDisplay() const {return editor && editor->drawButtons;}
+  void GodleyIcon::toggleButtons()
+  {
+    if (editor)
+      if (editor->drawButtons)
+        editor->disableButtons();
+      else
+        editor->enableButtons();
+  }
+
   double GodleyIcon::schema1ZoomFactor() const
   {
     if (auto g=group.lock())
