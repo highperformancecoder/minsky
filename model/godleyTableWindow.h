@@ -73,7 +73,7 @@ namespace minsky
     
     CLASSDESC_ACCESS(GodleyTableEditor);
   public:
-    static constexpr double columnButtonsOffsetDefault=12;
+    static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
     double leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
     double topTableOffset=30;
@@ -81,10 +81,9 @@ namespace minsky
     /// minimum column width (for eg empty columns)
     static constexpr double minColumnWidth=4*ButtonWidget<col>::buttonSpacing;
 
-    double columnButtonsOffset=columnButtonsOffsetDefault;
     bool drawButtons=true; ///< whether to draw row/column buttons
-    void disableButtons() {drawButtons=false; columnButtonsOffset=0;leftTableOffset=0; topTableOffset=20; }
-    void enableButtons() {drawButtons=true; columnButtonsOffset=columnButtonsOffsetDefault; leftTableOffset=4*ButtonWidget<col>::buttonSpacing; topTableOffset=30;}
+    void disableButtons() {drawButtons=false; leftTableOffset=0; topTableOffset=20; }
+    void enableButtons() {drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing; topTableOffset=30;}
 
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region

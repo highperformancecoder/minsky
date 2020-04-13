@@ -34,7 +34,7 @@ using namespace ecolab::cairo;
 #include <cairo/cairo-svg.h>
 
 constexpr double GodleyTableEditor::pulldownHot,
-  GodleyTableEditor::columnButtonsOffsetDefault, GodleyTableEditor::minColumnWidth;
+  GodleyTableEditor::columnButtonsOffset, GodleyTableEditor::minColumnWidth;
 
 namespace
 {
