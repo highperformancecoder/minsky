@@ -608,7 +608,8 @@ namespace minsky
             auto v=(*rhs)[i];
             result[i]=v;
             assert(!finite(result[i]) || fv[result.idx()+i]==v);
-            //            cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< (*rhs)[i] << " should be "<<fv[result.idx()]<<endl;
+            if (finite(result[i]) && fv[result.idx()+i]!=v)
+              cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< v << " should be "<<fv[result.idx()]<<endl;
           }
       }
   }
