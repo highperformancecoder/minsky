@@ -607,12 +607,12 @@ namespace minsky
           {
             auto v=(*rhs)[i];
             result[i]=v;
-            assert(!finite(result[i]) || fv[result.idx()+i]==v);
 #ifndef NDEBUG
-            // print statement to try a catch an intermittent bug causing the abive assertion to fail
+            // print statement to try a catch an intermittent bug causing the below assertion to fail
             if (finite(result[i]) && fv[result.idx()+i]!=v)
               cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< v << " should be "<<fv[result.idx()]<<endl;
 #endif
+            assert(!finite(result[i]) || fv[result.idx()+i]==v);
           }
       }
   }

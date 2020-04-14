@@ -53,6 +53,13 @@ namespace minsky
       CopiableUniquePtr& operator=(const CopiableUniquePtr&) {return *this;}
     };
     CopiableUniquePtr editor;
+
+    void updateBB() {
+      auto wasSelected=selected;
+      selected=true; // ensure bounding box is set to the entire icon
+      bb.update(*this); 
+      selected=wasSelected;
+    }
   public:
     static SVGRenderer svgRenderer;
 
@@ -66,20 +73,20 @@ namespace minsky
     bool buttonDisplay() const;
     void toggleButtons(); 
 
-    bool variableDisplay;
+    bool variableDisplay=true;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
     /// width of Godley icon in screen coordinates
-    float width() const {return (flowMargin+iconWidth)*iconScale()*zoomFactor();}
+    float gWidth() const {return leftMargin()+iconWidth*iconScale()*zoomFactor();}
     /// height of Godley icon in screen coordinates
-    float height() const {return (stockMargin+iconHeight)*iconScale()*zoomFactor();}
+    float gHeight() const {return bottomMargin()+iconHeight*iconScale()*zoomFactor();}
     /// scale icon until it's height matches \a h 
-    void scaleIconForHeight(float h) {update(); m_iconScale*=h/height();}
+    void scaleIconForHeight(float h) {update(); m_iconScale*=h/gHeight();}
 
     /// left margin of bank icon with Godley icon
-    float leftMargin() const {return flowMargin*iconScale()*zoomFactor();}
+    float leftMargin() const {return variableDisplay? flowMargin*iconScale()*zoomFactor(): 0;}
     /// bottom margin of bank icon with Godley icon
-    float bottomMargin() const {return stockMargin*iconScale()*zoomFactor();}
+    float bottomMargin() const {return variableDisplay? stockMargin*iconScale()*zoomFactor(): 0;}
 
     /// icon scale is adjusted when Godley icon is resized
     float iconScale() const {return m_iconScale;}
@@ -99,16 +106,12 @@ namespace minsky
     /// flows, along with multipliers, appearing in \a col
     std::map<string,double> flowSignature(int col) const;
 
-    //float scale; ///< scale factor of the XGL image
     typedef std::vector<VariablePtr> Variables;
     const Variables& flowVars() const {return m_flowVars;}
     const Variables& stockVars() const {return m_stockVars;}
     GodleyTable table;
     /// updates the variable lists with the Godley table
     void update();
-
-//    void zoom(float xOrigin, float yOrigin,float factor) override
-//    {update();}
 
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table

@@ -171,11 +171,13 @@ namespace minsky
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-    iconWidth*=abs(b.x0-b.x1)/width();
-    iconHeight*=abs(b.x0-b.x1)/width();
+    auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
+    if (bw<=leftMargin() || bh<=bottomMargin()) return;
+    iconWidth*=(bw-leftMargin())/(gWidth()-leftMargin());
+    iconHeight*=(bh-bottomMargin())/(gHeight()-bottomMargin());
     update();
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    bb.update(*this);
+    updateBB(); 
   }
 
   void GodleyIcon::removeControlledItems() const
@@ -280,44 +282,48 @@ namespace minsky
           }
 
 
-    // determine height of variables part of icon
-    float stockH=0, flowH=0;
-    stockMargin=0;
-    flowMargin=0;
-    accumulateWidthHeight(m_stockVars, stockH, stockMargin);
-    accumulateWidthHeight(m_flowVars, flowH, flowMargin);
-    iconWidth=max(iconWidth, 1.8f*stockH);
-    iconHeight=max(iconHeight, 1.8f*flowH);
-
+    if (variableDisplay)
+      {
+        // determine height of variables part of icon
+        float stockH=0, flowH=0;
+        stockMargin=0;
+        flowMargin=0;
+        accumulateWidthHeight(m_stockVars, stockH, stockMargin);
+        accumulateWidthHeight(m_flowVars, flowH, flowMargin);
+        iconWidth=max(iconWidth, 1.8f*stockH);
+        iconHeight=max(iconHeight, 1.8f*flowH);
+      }
+    
     positionVariables();
-    bb.update(*this);
+    updateBB();
   }
 
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
     float zoomFactor=iconScale()*this->zoomFactor();
-    float x= this->x() - 0.5*(iconWidth-flowMargin)*zoomFactor;
-    float y= this->y() - 0.2*iconHeight*zoomFactor;
+    float vdf=variableDisplay? 1: -1; // variable display factor
+    float x= this->x() - 0.5*gWidth()+leftMargin();
+    float y= this->y() - 0.5*gHeight()+0.35*(gHeight()-bottomMargin());
     for (auto& v: m_flowVars)
       {
-        // right justification
+        // right justification if displayed, left otherwisw
         RenderVariable rv(*v);
         v->rotation(0);
         v->bb.update(*v);
-        v->moveTo(x-0.5*v->width()*zoomFactor,y);
+        v->moveTo(x-0.5*v->width()*zoomFactor*vdf,y);
         y+=2*rv.height()*zoomFactor;
       }
-    x= this->x() - 0.5*(0.85*iconWidth-flowMargin)*zoomFactor;
-    y= this->y() + 0.5*(iconHeight-stockMargin)*zoomFactor;
+    x= this->x() - 0.45*gWidth()+leftMargin();
+    y= this->y() + 0.5*gHeight()-bottomMargin();
 
     for (auto& v: m_stockVars)
       {
-        // top justification at bottom of icon
+        // top justification at bottom of icon if displayed, bottom justfied otherwise
         RenderVariable rv(*v);
         v->rotation(90);
         v->bb.update(*v);
-        v->moveTo(x,y+0.5*v->height()*zoomFactor);
+        v->moveTo(x,y+0.5*v->height()*zoomFactor*vdf);
         x+=2*rv.height()*zoomFactor;
       }
   }
@@ -336,44 +342,47 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
     positionVariables();
+    double titley;
     if (editor.get())
       {
         CairoSave cs(cairo);
-        cairo_rectangle(cairo, -0.5*width()+leftMargin(), -0.5*height(), width()-leftMargin(), height()-bottomMargin());
+        cairo_rectangle(cairo, -0.5*gWidth()+leftMargin(),-0.5*gHeight(), gWidth()-leftMargin(), gHeight()-bottomMargin());
         cairo_clip(cairo);
-        cairo_translate(cairo,-0.5*width()+leftMargin(),-0.5*height());
+        cairo_translate(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight()+12*zoomFactor()/* space for title*/);
+        //cairo_scale(cairo, zoomFactor(), zoomFactor());
+        editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
+        titley=-0.5*gHeight();
       }
     else
       {
         CairoSave cs(cairo);
-        cairo_translate(cairo,-0.5*width()+leftMargin(),-0.5*height());
-        cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
-        svgRenderer.render(cairo); 
-
-        if (!table.title.empty())
-          {
-            CairoSave cs(cairo);
-            cairo_move_to(cairo,0.5*leftMargin(),-0.5*bottomMargin()-0.25*height());
-            cairo_select_font_face
-              (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_NORMAL);
-            cairo_set_font_size(cairo,12);
-            cairo_set_source_rgb(cairo,0,0,0);
-            
-            cairo_text_extents_t bbox;
-            cairo_text_extents(cairo,table.title.c_str(),&bbox);
-            
-            cairo_rel_move_to(cairo,-0.5*bbox.width,0.5*bbox.height);
-            cairo_show_text(cairo,table.title.c_str());
-          }
+        cairo_translate(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight());
+        cairo_scale(cairo, (gWidth()-leftMargin())/svgRenderer.width(), (gHeight()-bottomMargin())/svgRenderer.height());
+        svgRenderer.render(cairo);
+        titley=-0.5*gHeight()+0.15*(gHeight()-bottomMargin());
       }
+    
+    if (!table.title.empty())
+      {
+        CairoSave cs(cairo);
+        Pango pango(cairo);
+        pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
+        pango.setFontSize(12*zoomFactor());
+        cairo_move_to(cairo,-0.5*(pango.width()-leftMargin()), titley);
+        pango.show();
+      }
+      
           
 
-    // render the variables
-    DrawVars drawVars(cairo,x(),y());
-    drawVars(m_flowVars); 
-    drawVars(m_stockVars); 
-
+    if (variableDisplay)
+      {
+        // render the variables
+        DrawVars drawVars(cairo,x(),y());
+        drawVars(m_flowVars); 
+        drawVars(m_stockVars); 
+      }
+    
     if (mouseFocus)
       {
         drawPorts(cairo);
@@ -381,8 +390,8 @@ namespace minsky
         drawResizeHandles(cairo);
       }
       
-    cairo_rectangle(cairo,-0.5*width()+leftMargin(),-0.5*height(),
-                    width()-leftMargin(),height()-bottomMargin());
+    cairo_rectangle(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight(),
+                    gWidth()-leftMargin(),gHeight()-bottomMargin());
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }

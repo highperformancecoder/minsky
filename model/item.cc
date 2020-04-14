@@ -45,7 +45,7 @@ namespace minsky
     x.onResizeHandles=false;
     try {x.draw(surf.cairo());}
     catch (const std::exception& e) 
-      {cerr<<"illegal exception caught in draw()"<<e.what()<<endl;}
+      {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
     catch (...) {cerr<<"illegal exception caught in draw()";}
     x.mouseFocus=savedMouseFocus;
     double l,t,w,h;
