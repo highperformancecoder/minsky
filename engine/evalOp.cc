@@ -518,6 +518,7 @@ namespace minsky
       {
       case general:
       case binop:
+      case constop:
       case function:
         switch (op)
           {
@@ -897,7 +898,7 @@ namespace minsky
       case 1:
         switch (OperationType::classify(op))
           {
-          case general: case function: 
+          case general: case constop: case function: 
             if (to.idx()==-1 || to.rank()==0)
               to.hypercube(from1.hypercube());
             if (to.hypercube()==from1.hypercube())
@@ -918,7 +919,7 @@ namespace minsky
 #ifndef NDEBUG
     switch (OperationType::classify(op))
       {
-      case general: case binop: case function: case scan:
+      case general: case binop: case constop: case function: case scan:
         assert(t->numArgs()<1 || to.size()==t->in1.size());
         assert(t->numArgs()<2 || to.size()==t->in2.size());
         break;

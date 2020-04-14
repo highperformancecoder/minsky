@@ -201,7 +201,7 @@ namespace MathDAG
       {
       case reduction: case scan: case tensor:
         return true;
-      case general: case binop: case function:
+      case general: case binop: case constop: case function:
         for (auto& i: arguments)
           for (auto j: i)
             if (j && j->tensorEval()) return true;
