@@ -329,8 +329,9 @@ namespace minsky
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
+        // Resize handles always visible on mousefocus. For ticket 92.
+        drawResizeHandles(cairo);
       }
-    if (onResizeHandles) drawResizeHandles(cairo);
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
     cairo_stroke_preserve(cairo);
@@ -727,6 +728,7 @@ namespace minsky
         Dimension dim=dimension(handle);
         ravel_orderLabels(ravel,handle,order,dim.type,dim.units.c_str());
       }
+    return order;
   }
   
   string Ravel::description() const

@@ -114,7 +114,7 @@ namespace minsky
       return idx.size() ? idx.size(): numDenseElements();
     }    
     
-    const Hypercube& hypercube() const {
+    const Hypercube& hypercube() const override {
       if (m_type==parameter && tensorInit.size())
         return tensorInit.hypercube();
       else

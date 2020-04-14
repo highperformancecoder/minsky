@@ -32,8 +32,8 @@
 #include <boost/regex.hpp>
 #include <boost/filesystem.hpp>
    
-#include "certify/extensions.hpp"         
-#include "certify/https_verification.hpp" 
+#include "certify/include/boost/certify/extensions.hpp"         
+#include "certify/include/boost/certify/https_verification.hpp" 
 
 #include <cstdlib>
 #include <iostream>
@@ -135,7 +135,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
                                                  
   // Dump the outstream into a temporary file for loading it into Minsky' CSV parser 
   boost::filesystem::path temp = boost::filesystem::unique_path();
-  const std::string tempStr    = temp.native();
+  const std::string tempStr    = temp.string();
           
   std::ofstream outFile(tempStr, std::ofstream::out);  
   outFile << res.get().body();                                            
