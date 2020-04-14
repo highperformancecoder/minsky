@@ -610,7 +610,7 @@ namespace minsky
 #ifndef NDEBUG
             // print statement to try a catch an intermittent bug causing the below assertion to fail
             if (finite(result[i]) && fv[result.idx()+i]!=v)
-              cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< v << " should be "<<fv[result.idx()]<<endl;
+              cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< result[i] << "actually "<<fv[result.idx()] << " should be "<<v<<endl;
 #endif
             assert(!finite(result[i]) || fv[result.idx()+i]==v);
           }
