@@ -97,6 +97,10 @@ namespace minsky
     double operator[](size_t i) const override {
       return isFlowVar()? ev->flowVars()[idx()+i]: ev->stockVars()[idx()+i];
     }
+    double operator[](size_t i) const override {
+      assert(isFlowVar());
+      return ev->flowVars()[idx()+i];
+    }
     double& operator[](size_t i) override {
       assert(isFlowVar());
       return ev->flowVars()[idx()+i];
