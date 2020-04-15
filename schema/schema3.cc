@@ -550,7 +550,7 @@ namespace schema3
                     if (i.height)
                       godley->scaleIconForHeight(*i.height*godley->zoomFactor());
                     else if (i.iconScale) //legacy schema handling
-                      godley->scaleIconForHeight(*i.iconScale * godley->height());
+                      godley->scaleIconForHeight(*i.iconScale * godley->gHeight());
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }
