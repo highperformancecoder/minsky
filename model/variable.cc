@@ -82,8 +82,14 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
     {
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
-      if (type()!=constant && hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
-        return ClickType::onSlider;
+      double dx=xx-x(), dy=yy-y(); 
+      if (type()!=constant && hypot(dx-r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
+        return ClickType::onSlider; 
+      double w=0.5*rv.width()*z, h=0.5*rv.height()*z;
+      if (fabs(fabs(dx)-w) < portRadiusMult*z &&
+          fabs(fabs(dy)-h) < portRadiusMult*z &&
+          fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
+        return ClickType::onResize;
     }
   catch (...) {}
   return Item::clickType(xx,yy);
@@ -172,7 +178,7 @@ string VariableBase::name(const std::string& name)
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
   // Ensure value of variable is preserved after rename. For ticket 1106.	
-  auto tmpVV=vValue(); 
+  auto tmpVV=vValue();
   // ensure integral variables are not global when wired to an integral operation
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
   ensureValueExists(tmpVV,name);
@@ -552,6 +558,7 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo::CairoSave cs(cairo);
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
+      drawResizeHandles(cairo);
     }
 
   cairo_new_path(cairo);
@@ -560,10 +567,19 @@ void VariableBase::draw(cairo_t *cairo) const
   if (selected) drawSelected(cairo);
 }
 
-void VariablePtr::makeConsistentWithValue()
+void VariableBase::resize(const LassoBox& b)
 {
-  retype(minsky::cminsky().variableValues[get()->valueId()].type());
+  RenderVariable rv(*this);	
+  float invZ=1/zoomFactor();
+  rv.width(abs(b.x1-b.x0)*invZ);
+  rv.height(abs(b.y1-b.y0)*invZ);  
+  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
+  bb.update(*this);	  
 }
 
+void VariablePtr::makeConsistentWithValue()
+{
+	retype(minsky::cminsky().variableValues[get()->valueId()].type());
+}
 
 int VarConstant::nextId=0;

@@ -38,6 +38,7 @@ namespace minsky
   public:
     // render a variable to a given cairo context
     RenderOperation(const OperationBase& var, cairo_t* cairo=NULL);
+    
     /// render the cairo image
     void draw();
     /// half width of unrotated image
@@ -67,8 +68,10 @@ namespace minsky
     void updatePortLocs() const;
     /// half width of unrotated image
     float width() const {return w;}
+    float width(float width) {w=width; return w;}
     /// half height of unrotated image
     float height() const {return h;}
+    float height(float height) {h=height; return h;}
     /// return the boost geometry corresponding to this variable's shape
     //Polygon geom() const;
     bool inImage(float x, float y); ///< true if (x,y) within rendered image
