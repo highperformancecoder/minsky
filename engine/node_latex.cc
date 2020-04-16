@@ -384,7 +384,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::pi>::latex(ostream& o) const
   {
-    return o<<" π ";
+    return o<<"\\pi ";
   }    
 
   template <>

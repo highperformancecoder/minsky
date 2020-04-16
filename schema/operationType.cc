@@ -31,8 +31,8 @@ namespace minsky
 
   OperationType::Group OperationType::classify(Type t)
   {
+	  if (t<euler) return general;
 	  if (t<add) return constop; 
-      if (t<euler) return general;
       if (t<copy) return binop;     
       if (t<sum) return function;
       if (t<runningSum) return reduction;

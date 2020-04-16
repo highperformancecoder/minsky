@@ -54,7 +54,7 @@ namespace minsky
     };
     /// return the symbolic name of \a type
     static std::string typeName(int type);
-    enum Group {constop, general, binop, function, reduction, scan, tensor};
+    enum Group {general, constop, binop, function, reduction, scan, tensor};
     static Group classify(Type t);
   };
 

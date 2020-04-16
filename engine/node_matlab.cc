@@ -331,7 +331,7 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::pi>::matlab(ostream& o) const
   {
-    return o<<"π";
+    return o<<"pi";
   }      
 
   template <>
