@@ -374,6 +374,18 @@ namespace MathDAG
   {
     return o<<" t ";
   }
+  
+  template <>
+  ostream& OperationDAG<OperationType::euler>::latex(ostream& o) const
+  {
+    return o<<" e ";
+  }
+ 
+  template <>
+  ostream& OperationDAG<OperationType::pi>::latex(ostream& o) const
+  {
+    return o<<"\\pi ";
+  }    
 
   template <>
   ostream& OperationDAG<OperationType::copy>::latex(ostream& o) const

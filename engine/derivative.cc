@@ -377,7 +377,21 @@ namespace MathDAG
   {
     return one;
   }
-
+  
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::euler>& expr)
+  {
+    return zero;
+  }
+    
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::pi>& expr)
+  {
+    return zero;
+  }
+  
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::copy>& expr)

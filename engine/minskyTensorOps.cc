@@ -186,8 +186,9 @@ namespace minsky
   TensorOpFactory::TensorOpFactory()
   {
     registerType<TimeOp>(OperationType::time);
-    registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this);
-    registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);
+    registerOps<MinskyTensorOp, OperationType::euler, OperationType::add>(*this);
+    registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this); 
+    registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);   
     registerOps<MinskyTensorOp, OperationType::copy, OperationType::sum>(*this);
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
   }

@@ -72,6 +72,12 @@ menu .wiring.menubar.var.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "v
 .wiring.menubar.var.menu add command -label "constant" -command addConstant
 .wiring.menubar.var.menu add command -label "parameter" -command addParameter
 
+button .wiring.menubar.constops -image eulerImg -width 37 -height 24 -command {
+    tk_popup .wiring.menubar.constops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
+tooltip .wiring.menubar.constops "fundamental constants"
+set helpTopics(.wiring.menubar.constops) Operations
+menu .wiring.menubar.constops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "fundamental constants toolbox"}
+
 button .wiring.menubar.binops -image addImg -width 37 -height 24 -command {
     tk_popup .wiring.menubar.binops.menu [winfo pointerx .wiring.canvas] [winfo pointery .wiring.canvas]}
 tooltip .wiring.menubar.binops "binary operations"
@@ -103,7 +109,7 @@ set helpTopics(.wiring.menubar.tensorops) Operations
 menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "tensor toolbox"}
 
 pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
-pack .wiring.menubar.time .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
+pack .wiring.menubar.time .wiring.menubar.constops .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
 pack .wiring.menubar.scanops .wiring.menubar.tensorops -side left
 
 proc addOpMenu {menu op} {
@@ -126,9 +132,10 @@ foreach op [availableOperations] {
         "data" continue 
     }
 
-    switch [classifyOp $op] {
+    switch [classifyOp $op] {	
         function {addOpMenu .wiring.menubar.fnops.menu $op}
-        binop {addOpMenu .wiring.menubar.binops.menu $op}
+        constop {addOpMenu .wiring.menubar.constops.menu $op}	        
+        binop {addOpMenu .wiring.menubar.binops.menu $op}        
         reduction {addOpMenu .wiring.menubar.reductionops.menu $op}
         "scan" {addOpMenu .wiring.menubar.scanops.menu $op}
         tensor {addOpMenu .wiring.menubar.tensorops.menu $op}
@@ -139,6 +146,7 @@ foreach op [availableOperations] {
 }
 
 tooltip .wiring.menubar.var.menu -index 0 "variable toolbar"
+tooltip .wiring.menubar.constops.menu -index 0 "fundamental constants toolbox"
 tooltip .wiring.menubar.binops.menu -index 0 "binary operations toolbox"
 tooltip .wiring.menubar.fnops.menu -index 0 "function toolbar"
 tooltip .wiring.menubar.reductionops.menu -index 0 "reduction operations toolbox"
@@ -258,12 +266,14 @@ proc zoomAt {x0 y0 factor} {
 .menubar.ops add command -label "Godley Table" -command canvas.addGodley
 
 .menubar.ops add cascade -label "Variable" -menu .wiring.menubar.var.menu
+.menubar.ops add cascade -label "Fundamental constants" -menu .menubar.ops.constops
 .menubar.ops add cascade -label "Binary Ops" -menu .menubar.ops.binops
 .menubar.ops add cascade -label "Functions" -menu .menubar.ops.functions
 .menubar.ops add cascade -label "Reductions" -menu .menubar.ops.reductions
 .menubar.ops add cascade -label "Scans" -menu .menubar.ops.scans
 .menubar.ops add cascade -label "Tensor operations" -menu .menubar.ops.tensors
 
+menu .menubar.ops.constops
 menu .menubar.ops.binops
 menu .menubar.ops.functions
 menu .menubar.ops.reductions
@@ -283,6 +293,7 @@ foreach op [availableOperations] {
         default {
             switch [classifyOp $op] {
                 function {.menubar.ops.functions add command -label $label  -command "minsky.addOperation $op"}
+                constop {.menubar.ops.constops add command -label $label -command "minsky.addOperation $op"}                                
                 binop {.menubar.ops.binops add command -label $label  -command "minsky.addOperation $op"}
                 reduction {.menubar.ops.reductions add command -label $label  -command "minsky.addOperation $op"}
                 "scan" {.menubar.ops.scans add command -label $label  -command "minsky.addOperation $op"}
