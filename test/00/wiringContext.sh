@@ -71,7 +71,11 @@ proc afterMinskyStarted {} {
 
     # delivered to the Godley icon
     findObject GodleyIcon
-    event generate .wiring.canvas <Button-3>  -x [minsky.canvas.item.x] -y [minsky.canvas.item.y] -rootx 100 -rooty 100
+    # put the event in upper right quadrant to ensure we've got the icon
+    event generate .wiring.canvas <Button-3>  \
+    -x [expr [minsky.canvas.item.x]+0.4*[minsky.canvas.item.width]] \
+    -y [expr [minsky.canvas.item.y]-0.4*[minsky.canvas.item.height]] \
+    -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] godley
     # debug print statement to diagnose Travis failure
     puts [.wiring.context entrycget 2 -command]
