@@ -603,6 +603,7 @@ namespace minsky
         assert(result.idx()>=0);
         assert(result.size()==rhs->size());
         result.ev->update(fv, sv);
+        auto ev_sav=result.ev.get();
         for (size_t i=0; i<rhs->size(); ++i)
           {
             auto v=(*rhs)[i];
@@ -612,6 +613,7 @@ namespace minsky
             if (finite(result[i]) && fv[result.idx()+i]!=v)
               {
                 cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< result[i] << "actually "<<fv[result.idx()+i] << " should be "<<v<<endl;
+                cout << ev_sav << " " << result.ev.get()<<endl;
                 cout << fv << " " << result.ev->flowVars() << " " << result.isFlowVar()<<endl;
               }
 #endif
