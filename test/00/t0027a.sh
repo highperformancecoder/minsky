@@ -40,7 +40,7 @@ openNamedFile $here/examples/GoodwinLinear02.mky
 pushFlags
 runstop
 assert {[running] == 1}
-simulate
+set running 1
 after 500 {runstop; set running 0}
 vwait running
 assert {[t]>0}
