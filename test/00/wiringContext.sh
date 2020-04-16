@@ -77,8 +77,6 @@ proc afterMinskyStarted {} {
     -y [expr [minsky.canvas.item.y]-0.4*[minsky.canvas.item.height]] \
     -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] godley
-    # debug print statement to diagnose Travis failure
-    puts [.wiring.context entrycget 2 -command]
     assert "\[.wiring.context entrycget 2 -command\]==\"openGodley \[minsky.openGodley\]\"" godley
     assert "\[.wiring.context entrycget 12 -command]\==\"canvas.deleteItem\"" godley
 

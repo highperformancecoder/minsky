@@ -608,15 +608,6 @@ namespace minsky
           {
             auto v=(*rhs)[i];
             result[i]=v;
-#ifndef NDEBUG
-            cout << "fv="<<fv << " " << result.ev->flowVars() << " " << result.isFlowVar()<<endl;
-            // print statement to try a catch an intermittent bug causing the below assertion to fail
-            if (finite(result[i]) && fv[result.idx()+i]!=v)
-              {
-                cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< result[i] << "actually "<<fv[result.idx()+i] << " should be "<<v<<endl;
-                cout << ev_sav << " " << result.ev.get()<<endl;
-              }
-#endif
             assert(!finite(result[i]) || fv[result.idx()+i]==v);
           }
       }
