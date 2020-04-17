@@ -148,6 +148,30 @@ namespace civita
     const Hypercube& hypercube(Hypercube&& hc) override {return cachedResult.hypercube(std::move(hc));}
   };
 
+  /// calculates the average along an axis or whole tensor
+  struct Average: public ReductionOp
+  {
+    size_t count;
+  public:
+    Average(): ReductionOp([this](double& x, double y,size_t){x+=y; ++count;},0) {}
+    double operator[](size_t i)
+    {count=0; return ReductionOp::operator[](i)/count;}
+  };
+
+  /// calculates the standard deviation along an axis or whole tensor
+  struct StdDeviation: public ReductionOp
+  {
+    size_t count;
+    double sqr;
+  public:
+    StdDeviation(): ReductionOp([this](double& x, double y,size_t){x+=y; sqr+=y*y; ++count;},0) {}
+    double operator[](size_t i){
+      count=0; sqr=0;
+      double av=ReductionOp::operator[](i)/count;
+      return sqrt(std::max(0.0, sqr/count-av*av));
+    }
+  };
+  
   struct DimensionedArgCachedOp: public CachedTensorOp
   {
     /// dimension to apply operation over. >rank = all dims
@@ -175,6 +199,41 @@ namespace civita
     void computeTensor() const override;
   };
 
+  /// corresponds to OLAP slice operation
+  class Slice: public ITensor
+  {
+    size_t stride=1, split=1;
+    TensorPtr arg;
+  public:
+    void setArgument(const TensorPtr& a,const std::string&,double) override;
+    double operator[](size_t i) const override {
+      auto res=div(ssize_t(i), ssize_t(split));
+      return arg->atHCIndex(res.quot*stride + res.rem);
+    }
+    std::vector<size_t> index() const {return {};}
+    size_t size() const override {return hypercube().numElements();}
+    Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  /// corresponds to the OLAP pivot operation
+  class Pivot: public ITensor
+  {
+    std::vector<size_t> permutation;
+    TensorPtr arg;
+    std::vector<size_t> m_index;
+    size_t pivotIndex(size_t) const; ///< return index into arg from index into this
+  public:
+    void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
+    /// set's the pivots orientation
+    /// @param axes - list of axes that are the output
+    void setOrientation(const std::vector<std::string>& axes);
+    double operator[](size_t i) const override
+    {return arg->atHCIndex(pivotIndex(i));}
+    std::vector<size_t> index() const {return m_index;}
+    size_t size() const override {
+      return m_index.empty()? hypercube().numElements(): m_index.size();}
+    Timestamp timestamp() const override {return arg->timestamp();}
+  };
 }
 
 #endif

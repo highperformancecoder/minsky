@@ -112,5 +112,33 @@ namespace civita
         throw runtime_error("axis "+dim+" not found");
       }
   }
+
+    /// split lineal index into components along each dimension
+    vector<size_t> Hypercube::splitIndex(size_t i) const
+    {
+      std::vector<size_t> splitIndex;
+      for (auto& d: dims())
+        {
+          auto res=div(ssize_t(i),ssize_t(d));
+          splitIndex.push_back(res.rem);
+          i=res.quot;
+        }
+      return splitIndex;
+    }
+  
+    /// combine a split index into a lineal hypercube index
+  size_t Hypercube::linealIndex(const std::vector<size_t>& splitIndex) const
+    {
+      assert(dims().size()==splitIndex.size());
+      size_t index=0, stride=1;
+      auto dd=dims();
+      for (size_t i=0; i<dd.size(); ++i)
+        {
+          index+=splitIndex[i]*stride;
+          stride*=dd[i];
+        }
+      return index;
+    }
+
 }
 

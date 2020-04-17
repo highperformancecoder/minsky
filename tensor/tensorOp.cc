@@ -188,5 +188,99 @@ namespace civita
       }
   }
 
+  void Slice::setArgument(const TensorPtr& a,const string& axis, double index)
+  {
+    arg=a;
+    if (arg)
+      {
+        auto& xv=arg->hypercube().xvectors;
+        Hypercube hc;
+        // find axis where slicing along
+        split=1;
+        auto i=xv.begin();
+        for (; i!=xv.end(); ++i)
+          if (i->name==axis)
+            {
+              stride=split*i->size();
+              break;
+            }
+          else
+            {
+              hc.xvectors.push_back(*i);
+              split*=i->size();
+            }
+
+        if (i==xv.end())
+          split=stride=1;
+        else
+          for (; i!=xv.end(); ++i)
+            // finish building hypercube
+            hc.xvectors.push_back(*i);
+        hypercube(hc);
+      }
+  }
+
+  void Pivot::setArgument(const TensorPtr& a,const std::string&,double)
+  {
+    arg=a;
+    vector<string> axes;
+    for (auto& i: arg->hypercube().xvectors)
+      axes.push_back(i.name);
+    setOrientation(axes);
+  }
+
+  
+  void Pivot::setOrientation(const vector<string>& axes)
+  {
+    map<string,size_t> pMap;
+    map<string,XVector> xVectorMap;
+    auto& ahc=arg->hypercube();
+    for (size_t i=0; i<ahc.xvectors.size(); ++i)
+      {
+        pMap[ahc.xvectors[i].name]=i;
+        xVectorMap[ahc.xvectors[i].name]=ahc.xvectors[i];
+      }
+    Hypercube hc;
+    permutation.clear();
+    set<string> axisSet;
+    for (auto& i: axes)
+      {
+        axisSet.insert(i);
+        auto v=pMap.find(i);
+        if (v==pMap.end())
+          throw runtime_error("axis "+i+" not found in argument");
+        permutation.push_back(v->second);
+        hc.xvectors.push_back(xVectorMap[i]);
+      }
+    // add remaining axes to permutation in found order
+    for (size_t i=0; i<ahc.xvectors.size(); ++i)
+      if (!axisSet.count(ahc.xvectors[i].name))
+        {
+          permutation.push_back(i);
+          hc.xvectors.push_back(ahc.xvectors[i]);
+        }
+
+    assert(hc.rank()==arg->rank());
+    // permute the index vector
+    m_index=arg->index();
+    for (auto& i: m_index)
+      {
+        auto idx=arg->hypercube().splitIndex(i);
+        vector<size_t> pidx(idx.size());
+        for (size_t i=0; i<idx.size(); ++i)
+          pidx[i]=idx[permutation[i]];
+        i=hc.linealIndex(pidx);
+      }
+    hypercube(move(hc));
+  }
+
+  size_t Pivot::pivotIndex(size_t i) const
+  {
+    auto idx=hypercube().splitIndex(i);
+    vector<size_t> pidx(idx.size());
+    for (size_t i=0; i<idx.size(); ++i)
+      pidx[permutation[i]]=idx[i];
+    return arg->hypercube().linealIndex(pidx);
+  }
 
 }
