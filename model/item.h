@@ -65,8 +65,8 @@ namespace minsky
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
-    float left=0, right=0, top, bottom;
   public:
+    float left=0, right=0, top, bottom;  
     void update(const Item& x);
     bool contains(float x, float y) const {
       // extend each item by a portradius to solve ticket #903
@@ -136,7 +136,7 @@ namespace minsky
     float top() const {return y()+0.5*zoomFactor()*height();}
     float bottom() const {return y()-0.5*zoomFactor()*height();}
 
-    virtual void resize(const LassoBox&) {}
+    virtual void resize(const LassoBox& b);
 
     /// delete all attached wires
     virtual void deleteAttachedWires();
