@@ -20,6 +20,7 @@
 #ifndef CIVITA_TENSOROP_H
 #define CIVITA_TENSOROP_H
 #include "tensorVal.h"
+#include "ravelState.h"
 
 #include <functional>
 #include <memory>
@@ -148,24 +149,51 @@ namespace civita
     const Hypercube& hypercube(Hypercube&& hc) override {return cachedResult.hypercube(std::move(hc));}
   };
 
+  /// calculate the sum along an axis or whole tensor
+  struct Sum: public ReductionOp
+  {
+  public:
+    Sum(): ReductionOp([this](double& x, double y,size_t){x+=y;},0) {}
+  };
+  
+  /// calculate the product along an axis or whole tensor
+  struct Product: public ReductionOp
+  {
+  public:
+    Product(): ReductionOp([this](double& x, double y,size_t){x*=y;},1) {}
+  };
+  
+  /// calculate the minimum along an axis or whole tensor
+  class Min: public civita::ReductionOp
+  {
+  public:
+    Min(): civita::ReductionOp([](double& x, double y,size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
+   };
+  /// calculate the maximum along an axis or whole tensor
+  class Max: public civita::ReductionOp
+  {
+  public:
+    Max(): civita::ReductionOp([](double& x, double y,size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
+   };
+
   /// calculates the average along an axis or whole tensor
   struct Average: public ReductionOp
   {
-    size_t count;
+    mutable size_t count;
   public:
     Average(): ReductionOp([this](double& x, double y,size_t){x+=y; ++count;},0) {}
-    double operator[](size_t i)
+    double operator[](size_t i) const override
     {count=0; return ReductionOp::operator[](i)/count;}
   };
 
   /// calculates the standard deviation along an axis or whole tensor
   struct StdDeviation: public ReductionOp
   {
-    size_t count;
-    double sqr;
+    mutable size_t count;
+    mutable double sqr;
   public:
     StdDeviation(): ReductionOp([this](double& x, double y,size_t){x+=y; sqr+=y*y; ++count;},0) {}
-    double operator[](size_t i){
+    double operator[](size_t i) const override {
       count=0; sqr=0;
       double av=ReductionOp::operator[](i)/count;
       return sqrt(std::max(0.0, sqr/count-av*av));
@@ -234,6 +262,11 @@ namespace civita
       return m_index.empty()? hypercube().numElements(): m_index.size();}
     Timestamp timestamp() const override {return arg->timestamp();}
   };
+
+  /// creates a chain of tensor operations that represents a Ravel in
+  /// state \a state, operating on \a arg
+  std::vector<TensorPtr> createRavelChain(const minsky::RavelState&, const TensorPtr& arg);
+
 }
 
 #endif

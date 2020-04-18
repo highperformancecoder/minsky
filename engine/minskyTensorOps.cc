@@ -193,30 +193,10 @@ namespace minsky
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
   }
                                                                                     
-  template <>
-  class GeneralTensorOp<OperationType::sum>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x+=y;},0){}
-  };
-  template <>
-  class GeneralTensorOp<OperationType::product>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x*=y;},1){}
-  };
-  template <>
-  class GeneralTensorOp<OperationType::infimum>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
-   };
-  template <>
-  class GeneralTensorOp<OperationType::supremum>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
-   };
+  template <> class GeneralTensorOp<OperationType::sum>: public civita::Sum {};
+  template <> class GeneralTensorOp<OperationType::product>: public civita::Product {};
+  template <> class GeneralTensorOp<OperationType::infimum>: public civita::Min {};
+  template <> class GeneralTensorOp<OperationType::supremum>: public civita::Max {};
   template <>
   class GeneralTensorOp<OperationType::any>: public civita::ReductionOp
   {
@@ -483,56 +463,8 @@ namespace minsky
   public:
     RavelTensor(const Ravel& ravel): ravel(ravel) {}
 
-    /// factory method for creating reduction operations
-    TensorPtr createReductionOp(RavelState::HandleState::ReductionOp op)
-    {
-      switch (op)
-        {
-        case RavelState::HandleState::sum:
-          return make_shared<GeneralTensorOp<OperationType::sum>>();
-        case RavelState::HandleState::prod: return make_shared<GeneralTensorOp<OperationType::product>>();
-        case RavelState::HandleState::av: return make_shared<civita::Average>();
-        case RavelState::HandleState::stddev: return make_shared<civita::StdDeviation>();
-        case RavelState::HandleState::min: return make_shared<GeneralTensorOp<OperationType::infimum>>();
-        case RavelState::HandleState::max: return make_shared<GeneralTensorOp<OperationType::supremum>>();
-        default: throw runtime_error("Reduction "+to_string(op)+" not understood");
-        }
-    }
-    
     void setArgument(const TensorPtr& a,const std::string&,double) override {
-      auto state=ravel.getState();
-      set<string> outputHandles(state.outputHandles.begin(), state.outputHandles.end());
-      chain.emplace_back(a);
-      // TODO sorts and calipers
-      for (auto& i: state.handleStates)
-        if (!outputHandles.count(i.first))
-          {
-            auto arg=chain.back();
-            if (i.second.collapsed)
-              {
-                chain.emplace_back(createReductionOp(i.second.reductionOp));
-                chain.back()->setArgument(arg, i.first);
-              }
-            else
-              {
-                chain.emplace_back(new Slice);
-                auto& xv=arg->hypercube().xvectors;
-                auto axisIt=find_if(xv.begin(), xv.end(),
-                                    [&](const XVector& j){return j.name==i.first;});
-                if (axisIt==xv.end()) throw runtime_error("axis "+i.first+" not found");
-                auto sliceIt=find_if(axisIt->begin(), axisIt->end(),
-                                     [&](const boost::any& j){return str(j,axisIt->dimension.units)==i.second.sliceLabel;});
-                // determine slice index
-                size_t sliceIdx=0;
-                if (sliceIt!=axisIt->end())
-                  sliceIdx=sliceIt-axisIt->begin();
-                chain.back()->setArgument(arg, i.first, sliceIdx);
-              }
-          }
-      auto finalPivot=make_shared<Pivot>();
-      finalPivot->setArgument(chain.back());
-      finalPivot->setOrientation(state.outputHandles);
-      chain.push_back(finalPivot);
+      chain=move(civita::createRavelChain(ravel.getState(), a));
       hypercube(chain.back()->hypercube());
     }
 
