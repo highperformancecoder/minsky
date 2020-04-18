@@ -2,648 +2,668 @@
   <schemaVersion>3</schemaVersion>
   <wires>
    <Wire>
-    <id>314</id>
+    <id>330</id>
     <from>278</from>
     <to>238</to>
    </Wire>
    <Wire>
-    <id>315</id>
+    <id>331</id>
     <from>255</from>
     <to>5</to>
    </Wire>
    <Wire>
-    <id>316</id>
+    <id>332</id>
     <from>8</from>
     <to>6</to>
    </Wire>
    <Wire>
-    <id>317</id>
+    <id>333</id>
     <from>4</from>
     <to>11</to>
    </Wire>
    <Wire>
-    <id>318</id>
+    <id>334</id>
     <from>14</from>
     <to>12</to>
    </Wire>
    <Wire>
-    <id>319</id>
+    <id>335</id>
     <from>257</from>
     <to>15</to>
    </Wire>
    <Wire>
-    <id>320</id>
+    <id>336</id>
     <from>10</from>
     <to>19</to>
    </Wire>
    <Wire>
-    <id>321</id>
+    <id>337</id>
     <from>260</from>
     <to>20</to>
    </Wire>
    <Wire>
-    <id>322</id>
+    <id>338</id>
     <from>22</from>
     <to>263</to>
    </Wire>
    <Wire>
-    <id>323</id>
+    <id>339</id>
     <from>18</from>
     <to>27</to>
    </Wire>
    <Wire>
-    <id>324</id>
+    <id>340</id>
     <from>26</from>
     <to>266</to>
    </Wire>
    <Wire>
-    <id>325</id>
+    <id>341</id>
     <from>4</from>
     <to>24</to>
     <coords>
-     <float>1118.64</float>
-     <float>100</float>
-     <float>1131.06</float>
-     <float>124</float>
-     <float>1036.46</float>
-     <float>135</float>
-     <float>913.196</float>
-     <float>208</float>
-     <float>1075.64</float>
-     <float>244</float>
+     <float>490.64</float>
+     <float>119</float>
+     <float>503.108</float>
+     <float>143.093</float>
+     <float>408.14</float>
+     <float>154.136</float>
+     <float>284.397</float>
+     <float>227.42</float>
+     <float>445.64</float>
+     <float>263</float>
     </coords>
    </Wire>
    <Wire>
-    <id>326</id>
+    <id>342</id>
     <from>14</from>
     <to>23</to>
     <coords>
-     <float>1114.64</float>
-     <float>156</float>
-     <float>1127.96</float>
-     <float>168</float>
-     <float>1040.45</float>
-     <float>215</float>
-     <float>1075.64</float>
-     <float>226</float>
+     <float>486.64</float>
+     <float>175</float>
+     <float>500.125</float>
+     <float>187.149</float>
+     <float>411.531</float>
+     <float>234.731</float>
+     <float>445.64</float>
+     <float>245</float>
     </coords>
    </Wire>
    <Wire>
-    <id>327</id>
+    <id>343</id>
     <from>29</from>
     <to>1</to>
    </Wire>
    <Wire>
-    <id>328</id>
+    <id>344</id>
     <from>237</from>
     <to>30</to>
    </Wire>
    <Wire>
-    <id>329</id>
+    <id>345</id>
     <from>33</from>
     <to>31</to>
    </Wire>
    <Wire>
-    <id>330</id>
+    <id>346</id>
     <from>280</from>
     <to>16</to>
    </Wire>
    <Wire>
-    <id>331</id>
+    <id>347</id>
     <from>35</from>
     <to>38</to>
    </Wire>
    <Wire>
-    <id>332</id>
+    <id>348</id>
     <from>37</from>
     <to>41</to>
    </Wire>
    <Wire>
-    <id>333</id>
+    <id>349</id>
     <from>40</from>
     <to>44</to>
    </Wire>
    <Wire>
-    <id>334</id>
+    <id>350</id>
     <from>46</from>
     <to>50</to>
    </Wire>
    <Wire>
-    <id>335</id>
+    <id>351</id>
     <from>49</from>
     <to>62</to>
    </Wire>
    <Wire>
-    <id>336</id>
+    <id>352</id>
     <from>61</from>
     <to>65</to>
    </Wire>
    <Wire>
-    <id>337</id>
+    <id>353</id>
     <from>64</from>
     <to>68</to>
    </Wire>
    <Wire>
-    <id>338</id>
+    <id>354</id>
     <from>35</from>
     <to>53</to>
    </Wire>
    <Wire>
-    <id>339</id>
+    <id>355</id>
     <from>52</from>
     <to>56</to>
    </Wire>
    <Wire>
-    <id>340</id>
+    <id>356</id>
     <from>55</from>
     <to>59</to>
    </Wire>
    <Wire>
-    <id>341</id>
+    <id>357</id>
     <from>43</from>
     <to>47</to>
    </Wire>
    <Wire>
-    <id>342</id>
+    <id>358</id>
     <from>67</from>
     <to>71</to>
    </Wire>
    <Wire>
-    <id>343</id>
+    <id>359</id>
     <from>58</from>
     <to>75</to>
    </Wire>
    <Wire>
-    <id>344</id>
+    <id>360</id>
     <from>282</from>
     <to>79</to>
    </Wire>
    <Wire>
-    <id>345</id>
+    <id>361</id>
     <from>285</from>
     <to>80</to>
    </Wire>
    <Wire>
-    <id>346</id>
+    <id>362</id>
     <from>78</from>
     <to>83</to>
    </Wire>
    <Wire>
-    <id>347</id>
+    <id>363</id>
     <from>82</from>
     <to>87</to>
    </Wire>
    <Wire>
-    <id>348</id>
+    <id>364</id>
     <from>90</from>
     <to>84</to>
    </Wire>
    <Wire>
-    <id>349</id>
+    <id>365</id>
     <from>287</from>
     <to>91</to>
    </Wire>
    <Wire>
-    <id>350</id>
+    <id>366</id>
     <from>290</from>
     <to>92</to>
    </Wire>
    <Wire>
-    <id>351</id>
+    <id>367</id>
     <from>98</from>
     <to>95</to>
    </Wire>
    <Wire>
-    <id>352</id>
+    <id>368</id>
     <from>94</from>
     <to>291</to>
    </Wire>
    <Wire>
-    <id>353</id>
+    <id>369</id>
     <from>100</from>
     <to>288</to>
    </Wire>
    <Wire>
-    <id>354</id>
+    <id>370</id>
     <from>98</from>
     <to>108</to>
    </Wire>
    <Wire>
-    <id>355</id>
+    <id>371</id>
     <from>107</from>
     <to>104</to>
     <coords>
-     <float>1093.82</float>
-     <float>376</float>
-     <float>1125.82</float>
-     <float>396</float>
-     <float>1150.82</float>
-     <float>406</float>
+     <float>465.82</float>
+     <float>395</float>
+     <float>496.944</float>
+     <float>414.453</float>
+     <float>520.82</float>
+     <float>425</float>
     </coords>
-   </Wire>
-   <Wire>
-    <id>356</id>
-    <from>98</from>
-    <to>111</to>
-   </Wire>
-   <Wire>
-    <id>357</id>
-    <from>110</from>
-    <to>105</to>
-    <coords>
-     <float>1090.82</float>
-     <float>443</float>
-     <float>1104.82</float>
-     <float>437</float>
-     <float>1150.82</float>
-     <float>424</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>358</id>
-    <from>103</from>
-    <to>296</to>
-   </Wire>
-   <Wire>
-    <id>359</id>
-    <from>98</from>
-    <to>114</to>
-   </Wire>
-   <Wire>
-    <id>360</id>
-    <from>113</from>
-    <to>104</to>
-    <coords>
-     <float>1091.82</float>
-     <float>410</float>
-     <float>1122.82</float>
-     <float>409</float>
-     <float>1150.82</float>
-     <float>406</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>361</id>
-    <from>98</from>
-    <to>117</to>
-   </Wire>
-   <Wire>
-    <id>362</id>
-    <from>116</from>
-    <to>105</to>
-    <coords>
-     <float>1088.82</float>
-     <float>477</float>
-     <float>1122.82</float>
-     <float>454</float>
-     <float>1150.82</float>
-     <float>424</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>363</id>
-    <from>98</from>
-    <to>122</to>
-   </Wire>
-   <Wire>
-    <id>364</id>
-    <from>120</from>
-    <to>105</to>
-    <coords>
-     <float>1089.82</float>
-     <float>507</float>
-     <float>1126.82</float>
-     <float>463</float>
-     <float>1150.82</float>
-     <float>424</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>365</id>
-    <from>262</from>
-    <to>126</to>
-    <coords>
-     <float>1176.64</float>
-     <float>233</float>
-     <float>1248.54</float>
-     <float>264.877</float>
-     <float>745.478</float>
-     <float>272.847</float>
-     <float>932.758</float>
-     <float>614.533</float>
-     <float>1068.82</float>
-     <float>553</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>366</id>
-    <from>98</from>
-    <to>125</to>
-   </Wire>
-   <Wire>
-    <id>367</id>
-    <from>124</from>
-    <to>105</to>
-   </Wire>
-   <Wire>
-    <id>368</id>
-    <from>98</from>
-    <to>129</to>
-   </Wire>
-   <Wire>
-    <id>369</id>
-    <from>262</from>
-    <to>138</to>
-    <coords>
-     <float>1176.64</float>
-     <float>233</float>
-     <float>1274.44</float>
-     <float>267.77</float>
-     <float>643.42</float>
-     <float>250.386</float>
-     <float>1069.82</float>
-     <float>622</float>
-    </coords>
-   </Wire>
-   <Wire>
-    <id>370</id>
-    <from>128</from>
-    <to>105</to>
-   </Wire>
-   <Wire>
-    <id>371</id>
-    <from>132</from>
-    <to>105</to>
    </Wire>
    <Wire>
     <id>372</id>
     <from>98</from>
-    <to>137</to>
+    <to>111</to>
    </Wire>
    <Wire>
     <id>373</id>
-    <from>136</from>
+    <from>110</from>
     <to>105</to>
+    <coords>
+     <float>462.82</float>
+     <float>462</float>
+     <float>476.396</float>
+     <float>456.181</float>
+     <float>520.82</float>
+     <float>443</float>
+    </coords>
    </Wire>
    <Wire>
     <id>374</id>
-    <from>144</from>
-    <to>299</to>
+    <from>103</from>
+    <to>296</to>
    </Wire>
    <Wire>
     <id>375</id>
-    <from>140</from>
-    <to>145</to>
+    <from>98</from>
+    <to>114</to>
    </Wire>
    <Wire>
     <id>376</id>
-    <from>148</from>
-    <to>145</to>
+    <from>113</from>
+    <to>104</to>
+    <coords>
+     <float>463.82</float>
+     <float>429</float>
+     <float>493.774</float>
+     <float>428.034</float>
+     <float>520.82</float>
+     <float>425</float>
+    </coords>
    </Wire>
    <Wire>
     <id>377</id>
-    <from>152</from>
-    <to>146</to>
+    <from>98</from>
+    <to>117</to>
    </Wire>
    <Wire>
     <id>378</id>
-    <from>156</from>
-    <to>141</to>
+    <from>116</from>
+    <to>105</to>
+    <coords>
+     <float>460.82</float>
+     <float>496</float>
+     <float>494.191</float>
+     <float>473.426</float>
+     <float>520.82</float>
+     <float>443</float>
+    </coords>
    </Wire>
    <Wire>
     <id>379</id>
-    <from>156</from>
-    <to>154</to>
+    <from>98</from>
+    <to>122</to>
    </Wire>
    <Wire>
     <id>380</id>
-    <from>295</from>
-    <to>153</to>
+    <from>120</from>
+    <to>105</to>
+    <coords>
+     <float>461.82</float>
+     <float>526</float>
+     <float>498.399</float>
+     <float>482.5</float>
+     <float>520.82</float>
+     <float>443</float>
+    </coords>
    </Wire>
    <Wire>
     <id>381</id>
-    <from>295</from>
-    <to>159</to>
+    <from>262</from>
+    <to>126</to>
     <coords>
-     <float>1252.32</float>
-     <float>414</float>
-     <float>1338.49</float>
-     <float>330.831</float>
-     <float>1443.71</float>
-     <float>368.908</float>
-     <float>1497.82</float>
-     <float>405</float>
+     <float>550.64</float>
+     <float>252</float>
+     <float>622.817</float>
+     <float>284</float>
+     <float>117.82</float>
+     <float>292</float>
+     <float>305.82</float>
+     <float>635</float>
+     <float>438.82</float>
+     <float>572</float>
     </coords>
    </Wire>
    <Wire>
     <id>382</id>
+    <from>98</from>
+    <to>125</to>
+   </Wire>
+   <Wire>
+    <id>383</id>
+    <from>124</from>
+    <to>105</to>
+   </Wire>
+   <Wire>
+    <id>384</id>
+    <from>98</from>
+    <to>129</to>
+   </Wire>
+   <Wire>
+    <id>385</id>
+    <from>262</from>
+    <to>138</to>
+    <coords>
+     <float>550.64</float>
+     <float>252</float>
+     <float>648.701</float>
+     <float>286.863</float>
+     <float>15.9954</float>
+     <float>269.432</float>
+     <float>439.82</float>
+     <float>641</float>
+    </coords>
+   </Wire>
+   <Wire>
+    <id>386</id>
+    <from>128</from>
+    <to>105</to>
+   </Wire>
+   <Wire>
+    <id>387</id>
+    <from>132</from>
+    <to>105</to>
+   </Wire>
+   <Wire>
+    <id>388</id>
+    <from>98</from>
+    <to>137</to>
+   </Wire>
+   <Wire>
+    <id>389</id>
+    <from>136</from>
+    <to>105</to>
+   </Wire>
+   <Wire>
+    <id>390</id>
+    <from>144</from>
+    <to>299</to>
+   </Wire>
+   <Wire>
+    <id>391</id>
+    <from>140</from>
+    <to>145</to>
+   </Wire>
+   <Wire>
+    <id>392</id>
+    <from>148</from>
+    <to>145</to>
+   </Wire>
+   <Wire>
+    <id>393</id>
+    <from>152</from>
+    <to>146</to>
+   </Wire>
+   <Wire>
+    <id>394</id>
+    <from>156</from>
+    <to>141</to>
+   </Wire>
+   <Wire>
+    <id>395</id>
+    <from>156</from>
+    <to>154</to>
+   </Wire>
+   <Wire>
+    <id>396</id>
+    <from>295</from>
+    <to>153</to>
+   </Wire>
+   <Wire>
+    <id>397</id>
+    <from>295</from>
+    <to>159</to>
+    <coords>
+     <float>622.82</float>
+     <float>433</float>
+     <float>708.815</float>
+     <float>350</float>
+     <float>813.821</float>
+     <float>388</float>
+     <float>867.82</float>
+     <float>424</float>
+    </coords>
+   </Wire>
+   <Wire>
+    <id>398</id>
     <from>298</from>
     <to>159</to>
    </Wire>
    <Wire>
-    <id>383</id>
+    <id>399</id>
     <from>170</from>
     <to>160</to>
    </Wire>
    <Wire>
-    <id>384</id>
+    <id>400</id>
     <from>170</from>
     <to>163</to>
    </Wire>
    <Wire>
-    <id>385</id>
+    <id>401</id>
     <from>170</from>
     <to>168</to>
    </Wire>
    <Wire>
-    <id>386</id>
+    <id>402</id>
     <from>158</from>
     <to>302</to>
    </Wire>
    <Wire>
-    <id>387</id>
+    <id>403</id>
     <from>162</from>
     <to>173</to>
    </Wire>
    <Wire>
-    <id>388</id>
+    <id>404</id>
     <from>166</from>
     <to>174</to>
    </Wire>
    <Wire>
-    <id>389</id>
+    <id>405</id>
     <from>295</from>
     <to>177</to>
     <coords>
-     <float>1252.32</float>
-     <float>414</float>
-     <float>1360.44</float>
-     <float>369.142</float>
-     <float>1523.51</float>
-     <float>357.126</float>
-     <float>1634.82</float>
-     <float>382</float>
+     <float>622.82</float>
+     <float>433</float>
+     <float>730.8</float>
+     <float>388.2</float>
+     <float>893.658</float>
+     <float>376.2</float>
+     <float>1004.82</float>
+     <float>401</float>
     </coords>
    </Wire>
    <Wire>
-    <id>390</id>
+    <id>406</id>
     <from>301</from>
     <to>177</to>
    </Wire>
    <Wire>
-    <id>391</id>
+    <id>407</id>
     <from>180</from>
     <to>178</to>
    </Wire>
    <Wire>
-    <id>392</id>
+    <id>408</id>
     <from>180</from>
     <to>183</to>
    </Wire>
    <Wire>
-    <id>393</id>
+    <id>409</id>
     <from>180</from>
     <to>188</to>
    </Wire>
    <Wire>
-    <id>394</id>
+    <id>410</id>
     <from>172</from>
     <to>192</to>
    </Wire>
    <Wire>
-    <id>395</id>
+    <id>411</id>
     <from>176</from>
     <to>191</to>
    </Wire>
    <Wire>
-    <id>396</id>
+    <id>412</id>
     <from>182</from>
     <to>191</to>
    </Wire>
    <Wire>
-    <id>397</id>
+    <id>413</id>
     <from>186</from>
     <to>192</to>
    </Wire>
    <Wire>
-    <id>398</id>
+    <id>414</id>
     <from>190</from>
     <to>305</to>
    </Wire>
    <Wire>
-    <id>399</id>
+    <id>415</id>
     <from>194</from>
     <to>198</to>
    </Wire>
    <Wire>
-    <id>400</id>
+    <id>416</id>
     <from>132</from>
     <to>202</to>
    </Wire>
    <Wire>
-    <id>401</id>
+    <id>417</id>
     <from>196</from>
     <to>201</to>
    </Wire>
    <Wire>
-    <id>402</id>
+    <id>418</id>
     <from>196</from>
     <to>205</to>
    </Wire>
    <Wire>
-    <id>403</id>
+    <id>419</id>
     <from>196</from>
     <to>210</to>
    </Wire>
    <Wire>
-    <id>404</id>
+    <id>420</id>
     <from>200</from>
     <to>213</to>
    </Wire>
    <Wire>
-    <id>405</id>
+    <id>421</id>
     <from>204</from>
     <to>213</to>
    </Wire>
    <Wire>
-    <id>406</id>
+    <id>422</id>
     <from>208</from>
     <to>214</to>
    </Wire>
    <Wire>
-    <id>407</id>
+    <id>423</id>
     <from>136</from>
     <to>201</to>
    </Wire>
    <Wire>
-    <id>408</id>
+    <id>424</id>
     <from>212</from>
     <to>308</to>
    </Wire>
    <Wire>
-    <id>409</id>
+    <id>425</id>
     <from>136</from>
     <to>217</to>
    </Wire>
    <Wire>
-    <id>410</id>
+    <id>426</id>
     <from>128</from>
     <to>217</to>
    </Wire>
    <Wire>
-    <id>411</id>
+    <id>427</id>
     <from>196</from>
     <to>218</to>
    </Wire>
    <Wire>
-    <id>412</id>
+    <id>428</id>
     <from>216</from>
     <to>221</to>
    </Wire>
    <Wire>
-    <id>413</id>
+    <id>429</id>
     <from>220</from>
     <to>232</to>
    </Wire>
    <Wire>
-    <id>414</id>
+    <id>430</id>
     <from>223</from>
     <to>233</to>
    </Wire>
    <Wire>
-    <id>415</id>
+    <id>431</id>
     <from>227</from>
     <to>233</to>
    </Wire>
    <Wire>
-    <id>416</id>
+    <id>432</id>
     <from>196</from>
     <to>224</to>
    </Wire>
    <Wire>
-    <id>417</id>
+    <id>433</id>
     <from>231</from>
     <to>311</to>
    </Wire>
    <Wire>
-    <id>418</id>
+    <id>434</id>
     <from>235</from>
     <to>101</to>
    </Wire>
    <Wire>
-    <id>419</id>
+    <id>435</id>
     <from>98</from>
     <to>134</to>
    </Wire>
    <Wire>
-    <id>420</id>
+    <id>436</id>
     <from>156</from>
     <to>150</to>
    </Wire>
    <Wire>
-    <id>421</id>
+    <id>437</id>
     <from>196</from>
     <to>229</to>
+   </Wire>
+   <Wire>
+    <id>438</id>
+    <from>317</from>
+    <to>320</to>
+   </Wire>
+   <Wire>
+    <id>439</id>
+    <from>322</from>
+    <to>325</to>
+   </Wire>
+   <Wire>
+    <id>440</id>
+    <from>319</from>
+    <to>315</to>
+   </Wire>
+   <Wire>
+    <id>441</id>
+    <from>324</from>
+    <to>328</to>
    </Wire>
   </wires>
   <items>
@@ -1613,9 +1633,9 @@
    <Item>
     <id>243</id>
     <type>Variable:stock</type>
-    <x>911.679</x>
-    <y>203.4</y>
-    <zoomFactor>1</zoomFactor>
+    <x>937.672</x>
+    <y>206.295</y>
+    <zoomFactor>0.976937</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>242</int>
@@ -1633,9 +1653,9 @@
    <Item>
     <id>246</id>
     <type>Variable:flow</type>
-    <x>888.034</x>
-    <y>98.84</y>
-    <zoomFactor>1</zoomFactor>
+    <x>913.555</x>
+    <y>101.862</y>
+    <zoomFactor>0.976937</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>244</int>
@@ -1654,9 +1674,9 @@
    <Item>
     <id>249</id>
     <type>Variable:flow</type>
-    <x>872.034</x>
-    <y>125.84</y>
-    <zoomFactor>1</zoomFactor>
+    <x>894.107</x>
+    <y>128.862</y>
+    <zoomFactor>0.976937</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>247</int>
@@ -1675,9 +1695,9 @@
    <Item>
     <id>252</id>
     <type>Variable:flow</type>
-    <x>863.034</x>
-    <y>152.84</y>
-    <zoomFactor>1</zoomFactor>
+    <x>885.406</x>
+    <y>155.862</y>
+    <zoomFactor>0.976937</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>250</int>
@@ -1696,9 +1716,9 @@
    <Item>
     <id>254</id>
     <type>Variable:stock</type>
-    <x>938.679</x>
-    <y>186.9</y>
-    <zoomFactor>1</zoomFactor>
+    <x>964.672</x>
+    <y>187.87</y>
+    <zoomFactor>0.976937</zoomFactor>
     <rotation>90</rotation>
     <ports>
      <int>253</int>
@@ -1861,7 +1881,7 @@
    <Item>
     <id>275</id>
     <type>Variable:integral</type>
-    <x>1661.64</x>
+    <x>1662.64</x>
     <y>45</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -1882,7 +1902,7 @@
    <Item>
     <id>277</id>
     <type>Variable:integral</type>
-    <x>1625.64</x>
+    <x>1627.64</x>
     <y>125</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -2026,7 +2046,7 @@
    <Item>
     <id>294</id>
     <type>Variable:integral</type>
-    <x>1555.64</x>
+    <x>1558.64</x>
     <y>256</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
@@ -2184,7 +2204,7 @@
      <int>242</int>
      <int>253</int>
     </ports>
-    <width>229.8</width>
+    <width>232.316</width>
     <height>211.8</height>
     <name>Godley0</name>
     <data>
@@ -2225,6 +2245,96 @@
      <AssetClass>liability</AssetClass>
      <AssetClass>equity</AssetClass>
     </assetClasses>
+   </Item>
+   <Item>
+    <id>316</id>
+    <type>Variable:flow</type>
+    <x>1589</x>
+    <y>166</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>314</int>
+     <int>315</int>
+    </ports>
+    <name>m</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>318</id>
+    <type>Operation:euler</type>
+    <x>1439</x>
+    <y>171</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>317</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>321</id>
+    <type>Operation:ln</type>
+    <x>1509</x>
+    <y>169</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>319</int>
+     <int>320</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>323</id>
+    <type>Operation:pi</type>
+    <x>1433</x>
+    <y>214</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>322</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>326</id>
+    <type>Operation:cos</type>
+    <x>1510</x>
+    <y>215</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>324</int>
+     <int>325</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>329</id>
+    <type>Variable:flow</type>
+    <x>1573</x>
+    <y>213</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>327</int>
+     <int>328</int>
+    </ports>
+    <name>n</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
   </items>
   <groups>

@@ -62,17 +62,23 @@ proc afterMinskyStarted {} {
     .wiring.context unpost
 
     # delivered to bar
-    event generate .wiring.canvas <Button-3> -x 55 -y 80 -rootx 100 -rooty 100
+    findVariable bar
+    event generate .wiring.canvas <Button-3>  -x [minsky.canvas.item.x] -y [minsky.canvas.item.y] -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] bar
     assert {[.wiring.context entrycget 0 -label]=="Copy"} bar
 
     .wiring.context unpost
 
     # delivered to the Godley icon
-    event generate .wiring.canvas <Button-3> -x 113 -y 69 -rootx 100 -rooty 100
+    findObject GodleyIcon
+    # put the event in upper right quadrant to ensure we've got the icon
+    event generate .wiring.canvas <Button-3>  \
+    -x [expr [minsky.canvas.item.x]+0.4*[minsky.canvas.item.width]] \
+    -y [expr [minsky.canvas.item.y]-0.4*[minsky.canvas.item.height]] \
+    -rootx 100 -rooty 100
     assert [winfo viewable .wiring.context] godley
     assert "\[.wiring.context entrycget 2 -command\]==\"openGodley \[minsky.openGodley\]\"" godley
-    assert "\[.wiring.context entrycget 9 -command]\==\"canvas.deleteItem\"" godley
+    assert "\[.wiring.context entrycget 12 -command]\==\"canvas.deleteItem\"" godley
 
     .wiring.context unpost
     # delivered to nowhere

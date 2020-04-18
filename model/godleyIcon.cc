@@ -18,6 +18,7 @@
 */
 #include "variable.h"
 #include "godleyIcon.h"
+#include "godleyTableWindow.h"
 #include "cairoItems.h"
 #include "minsky.h"
 #include "selection.h"
@@ -33,6 +34,10 @@ using namespace std;
 
 namespace minsky
 {
+  GodleyIcon::CopiableUniquePtr::CopiableUniquePtr() {}
+  GodleyIcon::CopiableUniquePtr::~CopiableUniquePtr() {}
+  GodleyIcon::CopiableUniquePtr::CopiableUniquePtr(const CopiableUniquePtr&) {}
+
   namespace
   {
     struct OrderByName
@@ -83,58 +88,78 @@ namespace minsky
 
   }
 
-    void GodleyIcon::updateVars(GodleyIcon::Variables& vars, 
-                    const vector<string>& varNames, 
-                    VariableType::Type varType)
-    {
-      // update the map of variables from the Godley table
-      set<VariablePtr, OrderByName> oldVars(vars.begin(), vars.end());
-      set<string> alreadyAdded;
+  void GodleyIcon::updateVars(GodleyIcon::Variables& vars, 
+                              const vector<string>& varNames, 
+                              VariableType::Type varType)
+  {
+    // update the map of variables from the Godley table
+    set<VariablePtr, OrderByName> oldVars(vars.begin(), vars.end());
+    set<string> alreadyAdded;
 
-      vars.clear();
-      shared_ptr<GodleyIcon> self;
-      if (auto g=group.lock())
-        self=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this));
+    vars.clear();
+    shared_ptr<GodleyIcon> self;
+    if (auto g=group.lock())
+      self=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this));
       
-      for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
-        {
-          VariablePtr newVar(varType, *nm);
-          auto myGroup=group.lock();
-          if (myGroup) myGroup->addItem(newVar); // get scope right
-          auto v=oldVars.find(newVar);
+    for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
+      {
+        VariablePtr newVar(varType, *nm);
+        auto myGroup=group.lock();
+        if (myGroup) myGroup->addItem(newVar); // get scope right
+        auto v=oldVars.find(newVar);
           
-          if (v==oldVars.end())
-            {	
-              // allow for the possibility that multiple names map to the same valueId
-              if (!alreadyAdded.count(newVar->valueId()))
-                {
-                  // add new variable
-                  vars.push_back(newVar);
-                  alreadyAdded.insert(newVar->valueId());
-                }
-              else
-                if (myGroup)
-                  myGroup->removeItem(*newVar);
-            }
-          else
-            {
-              // move existing variable
-              vars.push_back(*v);
-              alreadyAdded.insert(newVar->valueId());
-              oldVars.erase(v);
-              assert(*v);
-              if (myGroup) myGroup->removeItem(*newVar);
-            }
-          if (myGroup) myGroup->addItem(vars.back(),true);
-          vars.back()->controller=self;
-          // ensure variable type is consistent
-          minsky::minsky().convertVarType(vars.back()->valueId(), varType);
-        }
-      // remove any previously existing variables
+        if (v==oldVars.end())
+          {	
+            // allow for the possibility that multiple names map to the same valueId
+            if (!alreadyAdded.count(newVar->valueId()))
+              {
+                // add new variable
+                vars.push_back(newVar);
+                alreadyAdded.insert(newVar->valueId());
+              }
+            else
+              if (myGroup)
+                myGroup->removeItem(*newVar);
+          }
+        else
+          {
+            // move existing variable
+            vars.push_back(*v);
+            alreadyAdded.insert(newVar->valueId());
+            oldVars.erase(v);
+            assert(*v);
+            if (myGroup) myGroup->removeItem(*newVar);
+          }
+        if (myGroup) myGroup->addItem(vars.back(),true);
+        vars.back()->controller=self;
+        // ensure variable type is consistent
+        minsky::minsky().convertVarType(vars.back()->valueId(), varType);
+      }
+    // remove any previously existing variables
+    if (auto g=group.lock())
+      for (auto& v: oldVars)
+        g->deleteItem(*v);   
+  }
+
+  void GodleyIcon::toggleEditorMode()
+  {
+    if (editor)
+      editor.reset();
+    else
       if (auto g=group.lock())
-        for (auto& v: oldVars)
-          g->deleteItem(*v);   
-    }
+        if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
+          editor.reset(new GodleyTableEditor(icon));
+  }
+
+  bool GodleyIcon::buttonDisplay() const {return editor && editor->drawButtons;}
+  void GodleyIcon::toggleButtons()
+  {
+    if (editor)
+      if (editor->drawButtons)
+        editor->disableButtons();
+      else
+        editor->enableButtons();
+  }
 
   double GodleyIcon::schema1ZoomFactor() const
   {
@@ -146,10 +171,13 @@ namespace minsky
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-    m_iconScale*=min(abs(b.x0-b.x1)/width(), abs(b.y0-b.y1)/height());
+    auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
+    if (bw<=leftMargin() || bh<=bottomMargin()) return;
+    iconWidth*=(bw-leftMargin())/(gWidth()-leftMargin());
+    iconHeight*=(bh-bottomMargin())/(gHeight()-bottomMargin());
     update();
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    bb.update(*this);
+    updateBB(); 
   }
 
   void GodleyIcon::removeControlledItems() const
@@ -254,43 +282,48 @@ namespace minsky
           }
 
 
-    // determine height of variables part of icon
-    float height=0;
-    stockMargin=0;
-    flowMargin=0;
-    accumulateWidthHeight(m_stockVars, height, stockMargin);
-    accumulateWidthHeight(m_flowVars, height, flowMargin);
-    iconSize=max(100.0, 1.8*height);
-
+    if (variableDisplay)
+      {
+        // determine height of variables part of icon
+        float stockH=0, flowH=0;
+        stockMargin=0;
+        flowMargin=0;
+        accumulateWidthHeight(m_stockVars, stockH, stockMargin);
+        accumulateWidthHeight(m_flowVars, flowH, flowMargin);
+        iconWidth=max(iconWidth, 1.8f*stockH);
+        iconHeight=max(iconHeight, 1.8f*flowH);
+      }
+    
     positionVariables();
-    bb.update(*this);
+    updateBB();
   }
 
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
     float zoomFactor=iconScale()*this->zoomFactor();
-    float x= this->x() - 0.5*(0.9*iconSize-flowMargin)*zoomFactor;
-    float y= this->y() - 0.2*iconSize*zoomFactor;
+    float vdf=variableDisplay? 1: -1; // variable display factor
+    float x= this->x() - 0.5*gWidth()+leftMargin();
+    float y= this->y() - 0.5*gHeight()+0.35*(gHeight()-bottomMargin());
     for (auto& v: m_flowVars)
       {
-        // right justification
+        // right justification if displayed, left otherwisw
         RenderVariable rv(*v);
         v->rotation(0);
         v->bb.update(*v);
-        v->moveTo(x-0.5*v->width()*zoomFactor,y);
+        v->moveTo(x-0.5*v->width()*zoomFactor*vdf,y);
         y+=2*rv.height()*zoomFactor;
       }
-    x= this->x() - 0.5*(0.85*iconSize-flowMargin)*zoomFactor;
-    y= this->y() + 0.5*(iconSize-stockMargin)*zoomFactor;
+    x= this->x() - 0.45*gWidth()+leftMargin();
+    y= this->y() + 0.5*gHeight()-bottomMargin();
 
     for (auto& v: m_stockVars)
       {
-        // top justification at bottom of icon
+        // top justification at bottom of icon if displayed, bottom justfied otherwise
         RenderVariable rv(*v);
         v->rotation(90);
         v->bb.update(*v);
-        v->moveTo(x,y+0.5*v->height()*zoomFactor);
+        v->moveTo(x,y+0.5*v->height()*zoomFactor*vdf);
         x+=2*rv.height()*zoomFactor;
       }
   }
@@ -309,40 +342,47 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
     positionVariables();
-    {
-      CairoSave cs(cairo);
-      cairo_translate(cairo,-0.5*width()+leftMargin(),-0.5*height());
-      cairo_scale(cairo, (width()-leftMargin())/svgRenderer.width(), (height()-bottomMargin())/svgRenderer.height());
-
+    double titley;
+    if (editor.get())
       {
-        CairoSave cs(cairo); //following call mutates transformation matrix
-        svgRenderer.render(cairo); 
+        CairoSave cs(cairo);
+        cairo_rectangle(cairo, -0.5*gWidth()+leftMargin(),-0.5*gHeight(), gWidth()-leftMargin(), gHeight()-bottomMargin());
+        cairo_clip(cairo);
+        cairo_translate(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight()+12*zoomFactor()/* space for title*/);
+        //cairo_scale(cairo, zoomFactor(), zoomFactor());
+        editor->zoomFactor=zoomFactor();
+        editor->draw(cairo);
+        titley=-0.5*gHeight();
       }
-
-    }
-
+    else
+      {
+        CairoSave cs(cairo);
+        cairo_translate(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight());
+        cairo_scale(cairo, (gWidth()-leftMargin())/svgRenderer.width(), (gHeight()-bottomMargin())/svgRenderer.height());
+        svgRenderer.render(cairo);
+        titley=-0.5*gHeight()+0.15*(gHeight()-bottomMargin());
+      }
+    
     if (!table.title.empty())
       {
         CairoSave cs(cairo);
-        cairo_move_to(cairo,0.5*leftMargin(),-0.5*bottomMargin()-0.25*height());
-        cairo_select_font_face
-          (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_NORMAL);
-        cairo_set_font_size(cairo,12);
-        cairo_set_source_rgb(cairo,0,0,0);
-
-        cairo_text_extents_t bbox;
-        cairo_text_extents(cairo,table.title.c_str(),&bbox);
-              
-        cairo_rel_move_to(cairo,-0.5*bbox.width,0.5*bbox.height);
-        cairo_show_text(cairo,table.title.c_str());
+        Pango pango(cairo);
+        pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
+        pango.setFontSize(12*zoomFactor());
+        cairo_move_to(cairo,-0.5*(pango.width()-leftMargin()), titley);
+        pango.show();
       }
+      
           
 
-    // render the variables
-    DrawVars drawVars(cairo,x(),y());
-    drawVars(m_flowVars); 
-    drawVars(m_stockVars); 
-
+    if (variableDisplay)
+      {
+        // render the variables
+        DrawVars drawVars(cairo,x(),y());
+        drawVars(m_flowVars); 
+        drawVars(m_stockVars); 
+      }
+    
     if (mouseFocus)
       {
         drawPorts(cairo);
@@ -350,8 +390,8 @@ namespace minsky
         drawResizeHandles(cairo);
       }
       
-    cairo_rectangle(cairo,-0.5*width()+leftMargin(),-0.5*height(),
-                    width()-leftMargin(),height()-bottomMargin());
+    cairo_rectangle(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight(),
+                    gWidth()-leftMargin(),gHeight()-bottomMargin());
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }

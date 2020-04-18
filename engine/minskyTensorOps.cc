@@ -186,8 +186,9 @@ namespace minsky
   TensorOpFactory::TensorOpFactory()
   {
     registerType<TimeOp>(OperationType::time);
-    registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this);
-    registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);
+    registerOps<MinskyTensorOp, OperationType::euler, OperationType::add>(*this);
+    registerOps<MultiWireBinOp, OperationType::add, OperationType::log>(*this); 
+    registerOps<TensorBinOp, OperationType::log, OperationType::copy>(*this);   
     registerOps<MinskyTensorOp, OperationType::copy, OperationType::sum>(*this);
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
   }
@@ -603,11 +604,12 @@ namespace minsky
         assert(result.idx()>=0);
         assert(result.size()==rhs->size());
         result.ev->update(fv, sv);
+        auto ev_sav=result.ev.get();
         for (size_t i=0; i<rhs->size(); ++i)
           {
-            result[i]=(*rhs)[i];
-            assert(!finite(result[i]) || fv[result.idx()+i]==(*rhs)[i]);
-            //            cout << "i="<<i<<"idx="<<result.idx()<<" set to "<< (*rhs)[i] << " should be "<<fv[result.idx()]<<endl;
+            auto v=(*rhs)[i];
+            result[i]=v;
+            assert(!finite(result[i]) || fv[result.idx()+i]==v);
           }
       }
   }

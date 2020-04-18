@@ -139,7 +139,7 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.width()/g.zoomFactor()), height(g.height()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
+      width(g.gWidth()/g.zoomFactor()), height(g.gHeight()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),

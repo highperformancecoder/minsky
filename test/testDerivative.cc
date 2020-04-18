@@ -263,6 +263,7 @@ SUITE(Derivative)
             case OperationType::scan:
             case OperationType::tensor:
             case OperationType::binop:
+            case OperationType::constop:
               continue;
             default:
               break;

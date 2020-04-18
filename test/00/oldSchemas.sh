@@ -30,7 +30,7 @@ trap "fail" 1 2 3 15
 cd $here/test/oldSchema
 for i in */*.mky; do
     # this example has a constant and variable of the same name, so will fail this test
-#    echo $i
+    echo $i
     if [ $i = schema0/4MonetaryMinskyModelLessUnstableStart.mky ]; then continue; fi
     $here/gui-tk/minsky $here/test/rewriteMky.tcl $i $tmp/tmp.mky
     if test $? -ne 0; then fail; fi

@@ -310,8 +310,8 @@ namespace minsky
     cairo::Path clipPath(cairo);
 
     // compute port coordinates relative to the icon's
-    // point of reference
-    double x0=r-2, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+    // point of reference. Move out port 2 pixels right for ticket For ticket 362.
+    double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
       x2=l, y2=numPorts() > 2? h-3: 0;
                   
     if (textFlipped) swap(y1,y2);
@@ -438,6 +438,10 @@ namespace minsky
         if (check && !ports[1]->units(check).empty())
           throw_error("function input not dimensionless");
         return {};
+      case constop:
+        if (check && !ports[0]->units(check).empty())
+          throw_error("function input not dimensionless");
+        return {};        
       case binop:
         switch (type())
           {
@@ -829,6 +833,18 @@ namespace minsky
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"t");
   }
+  
+  template <> void Operation<OperationType::euler>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"e");
+  }
+   
+    template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"π");
+  }    
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {

@@ -27,11 +27,12 @@ namespace minsky
   struct OperationType
   {
     enum Type {constant, // deprecated - left to support legacy schemas
-               time, // zero input port ops
+               time,  // zero input port ops
                integrate, 
                differentiate, // with respect to time
                data, // an interpolated data item
                ravel, // Ravel™
+               euler, pi, // fundamental constants
                // multiwire binary ops
                add, subtract, multiply, divide, min, max, 
                and_, or_,
@@ -53,7 +54,7 @@ namespace minsky
     };
     /// return the symbolic name of \a type
     static std::string typeName(int type);
-    enum Group {general, binop, function, reduction, scan, tensor};
+    enum Group {general, constop, binop, function, reduction, scan, tensor};
     static Group classify(Type t);
   };
 
