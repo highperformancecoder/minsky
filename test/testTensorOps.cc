@@ -498,4 +498,47 @@ SUITE(TensorOps)
       vector<double> expected={0,6,12,1,7,13,2,8,14};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
     }
+  TEST_FIXTURE(TensorValFixture, reduction2dswapped)
+    {
+      state.handleStates["sex"].collapsed=true;
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::sum;
+      state.outputHandles={"date","country"};
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      auto& chc=chain.back()->hypercube();
+      auto& ahc=arg->hypercube();
+      CHECK_EQUAL("date",chc.xvectors[0].name);
+      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
+      CHECK_EQUAL("country",chc.xvectors[1].name);
+      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
+      CHECK_EQUAL(9,chain.back()->size());
+      vector<double> expected={3,15,27,5,17,29,7,19,31};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::prod;
+      chain=createRavelChain(state, arg);
+      expected={0,54,180,4,70,208,10,88,238};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::av;
+      chain=createRavelChain(state, arg);
+      expected={1.5,7.5,13.5,2.5,8.5,14.5,3.5,9.5,15.5};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::stddev;
+      chain=createRavelChain(state, arg);
+      expected={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::min;
+      chain=createRavelChain(state, arg);
+      expected={0,6,12,1,7,13,2,8,14};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::max;
+      chain=createRavelChain(state, arg);
+      expected={3,9,15,4,10,16,5,11,17};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+     
+    }
 }
