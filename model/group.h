@@ -219,7 +219,7 @@ namespace minsky
     void moveContents(Group& source);     
 
     /// returns which I/O region (x,y) is in if any
-    struct IORegion {enum type {none,input,output};};
+    struct IORegion {enum type {none,input,output,header,footer};};
       
     IORegion::type inIORegion(float x, float y) const;
     /// check if item is a variable and located in an I/O region, and add it if it is
@@ -274,11 +274,11 @@ namespace minsky
     bool displayContentsChanged() const {return m_displayContentsChanged;}
 
     /// margin sizes to allow space for edge variables. 
-    void margins(float& left, float& right) const;
+    void margins(float& left, float& right, float& top, float& bottom) const;
 
     /// for debugging purposes
     std::vector<float> marginsV() const {
-      float l, r; margins(l,r);  return {l,r};
+      float l, r, t, bm; margins(l,r,t,bm);  return {l,r,t,bm};
     }
     
     /// computes the zoom at which to show contents, given current
