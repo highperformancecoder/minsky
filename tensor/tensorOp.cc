@@ -203,6 +203,7 @@ namespace civita
           if (i->name==axis)
             {
               stride=split*i->size();
+              i++;
               break;
             }
           else
@@ -337,7 +338,7 @@ namespace civita
     finalPivot->setArgument(chain.back());
     finalPivot->setOrientation(state.outputHandles);
     chain.push_back(finalPivot);
-    
+    return chain;
   }
   
 }

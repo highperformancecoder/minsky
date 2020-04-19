@@ -461,5 +461,41 @@ SUITE(TensorOps)
       multiWireTest<OperationType::or_>(0, [](double x,double y){return x>0.5 || y>0.5;}, id);
     }
 
+  struct TensorValFixture
+  {
+    RavelState state;
+    std::shared_ptr<TensorVal> arg;
+    TensorValFixture() {
+      Hypercube hc;
+      arg=make_shared<TensorVal>();
+      hc.xvectors=
+        {
+         XVector("country",{"Australia","Canada","US"}),
+         XVector("sex",{"male","female"}),
+         XVector("date",{"2010","2011","2012"})
+        };
+      arg->hypercube(hc);
+      for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
+      for (auto& xv: hc.xvectors) state.handleStates[xv.name]={};
+    }
+  };
   
+  TEST_FIXTURE(TensorValFixture, sliced2dswapped)
+    {
+      state.handleStates["sex"].sliceLabel="male";
+      state.outputHandles={"date","country"};
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      auto& chc=chain.back()->hypercube();
+      auto& ahc=arg->hypercube();
+      CHECK_EQUAL("date",chc.xvectors[0].name);
+      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
+      CHECK_EQUAL("country",chc.xvectors[1].name);
+      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
+      CHECK_EQUAL(9,chain.back()->size());
+      for (size_t i=0; i<chain.back()->size(); ++i)
+        CHECK(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
+      vector<double> expected={0,6,12,1,7,13,2,8,14};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+    }
 }
