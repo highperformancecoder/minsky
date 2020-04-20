@@ -33,11 +33,11 @@ namespace minsky
     struct HandleState
     {
       double x,y; ///< handle tip coordinates (only angle important, not length)
-      bool collapsed, displayFilterCaliper;
+      bool collapsed=false, displayFilterCaliper=false;
       enum ReductionOp {sum, prod, av, stddev, min, max};
-      ReductionOp reductionOp;
+      ReductionOp reductionOp=sum;
       enum HandleSort {none, forward, reverse, custom};
-      HandleSort order;
+      HandleSort order=none;
       // note this member must appear after all members of
       // CAPIHandleState from the Ravel CAPI
       std::vector<std::string> customOrder; // used if order==custom

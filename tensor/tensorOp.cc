@@ -84,13 +84,25 @@ namespace civita
     dimension=std::numeric_limits<size_t>::max();
     if (arg)
       {
-        m_hypercube=arg->hypercube();
+        const auto& ahc=arg->hypercube();
+        m_hypercube=ahc;
         auto& xv=m_hypercube.xvectors;
         for (auto i=xv.begin(); i!=xv.end(); ++i)
           if (i->name==dimName)
             dimension=i-xv.begin();
         if (dimension<arg->rank())
-          m_hypercube.xvectors.erase(m_hypercube.xvectors.begin()+dimension);
+          {
+            xv.erase(xv.begin()+dimension);
+            // compute index - enter index elements that have any in the argument
+            set<size_t> indices;
+            for (auto i: arg->index())
+              {
+                auto splitIdx=ahc.splitIndex(i);
+                splitIdx.erase(splitIdx.begin()+dimension);
+                indices.insert(m_hypercube.linealIndex(splitIdx));
+              }
+            m_index=vector<size_t>(indices.begin(), indices.end());
+          }
         else
           m_hypercube.xvectors.clear(); //reduce all, return scalar
       }
@@ -109,6 +121,7 @@ namespace civita
         size_t stride=1;
         for (size_t j=0; j<dimension; ++j)
           stride*=argDims[j];
+        if (!m_index.empty()) i=m_index[i];
         auto quotRem=ldiv(i, stride); // quotient and remainder calc in one hit
         auto start=quotRem.quot*stride*argDims[dimension] + quotRem.rem;
         assert(stride*argDims[dimension]>0);
@@ -192,12 +205,14 @@ namespace civita
   void Slice::setArgument(const TensorPtr& a,const string& axis, double index)
   {
     arg=a;
+    sliceIndex=index;
     if (arg)
       {
         auto& xv=arg->hypercube().xvectors;
         Hypercube hc;
         // find axis where slicing along
         split=1;
+        size_t splitAxis=0;
         auto i=xv.begin();
         for (; i!=xv.end(); ++i)
           if (i->name==axis)
@@ -210,6 +225,7 @@ namespace civita
             {
               hc.xvectors.push_back(*i);
               split*=i->size();
+              splitAxis++;
             }
 
         if (i==xv.end())
@@ -219,9 +235,45 @@ namespace civita
             // finish building hypercube
             hc.xvectors.push_back(*i);
         hypercube(hc);
+
+        // set up index vector
+        auto idx=arg->index();
+        auto& ahc=arg->hypercube();
+        vector<pair<size_t,size_t>> indices;
+        for (auto& i: idx)
+          {
+            auto splitIdx=ahc.splitIndex(i);
+            if (splitIdx[splitAxis]==sliceIndex)
+              {
+                splitIdx.erase(splitIdx.begin()+splitAxis);
+                indices.emplace_back(hc.linealIndex(splitIdx), &i-&idx[0]);
+              }
+          }
+        sort(indices.begin(), indices.end(),
+             [](const pair<size_t,size_t>& i, const pair<size_t,size_t>& j)
+             {return i.first<j.first;});
+        m_index.clear();
+        arg_index.clear();
+        for (auto& i: indices)
+          {
+            m_index.push_back(i.first);
+            arg_index.push_back(i.second);
+          }
+          
       }
   }
 
+  double Slice::operator[](size_t i) const
+  {
+    if (m_index.empty())
+      {
+        auto res=div(ssize_t(i), ssize_t(split));
+        return (*arg)[res.quot*stride + sliceIndex*split + res.rem];
+      }
+    else
+      return (*arg)[arg_index[i]];
+  }
+  
   void Pivot::setArgument(const TensorPtr& a,const std::string&,double)
   {
     arg=a;
@@ -273,11 +325,13 @@ namespace civita
           pidx[i]=idx[permutation[i]];
         i=hc.linealIndex(pidx);
       }
+    sort(m_index.begin(), m_index.end());
     hypercube(move(hc));
   }
 
   size_t Pivot::pivotIndex(size_t i) const
   {
+    if (m_index.size()) i=m_index[i];
     auto idx=hypercube().splitIndex(i);
     vector<size_t> pidx(idx.size());
     for (size_t i=0; i<idx.size(); ++i)

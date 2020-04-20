@@ -70,17 +70,8 @@ namespace civita
     }
 
     size_t hcIndex(const std::initializer_list<size_t>& indices) const
-    {
-      size_t stride=1, index=0;
-      auto dims=hypercube().dims();
-      auto dim=dims.begin();
-      for (auto i: indices)
-        {
-          index += i*stride;
-          stride *= *(dim++);
-        }
-      return index;
-    }
+    {return hypercube().linealIndex(indices);}
+
     template <class T>
     double operator()(const std::initializer_list<T>& indices) const
     {return atHCIndex(hcIndex(indices));}

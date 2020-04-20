@@ -497,6 +497,13 @@ SUITE(TensorOps)
         CHECK(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
       vector<double> expected={0,6,12,1,7,13,2,8,14};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].sliceLabel="female";
+      chain=createRavelChain(state, arg);
+      CHECK_EQUAL(9,chain.back()->size());
+      for (size_t i=0; i<chain.back()->size(); ++i)
+        CHECK(ahc.splitIndex((*chain.back())[i])[1]==1); //entry is "female"
+      
     }
   TEST_FIXTURE(TensorValFixture, reduction2dswapped)
     {
@@ -541,4 +548,37 @@ SUITE(TensorOps)
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
      
     }
+
+    TEST_FIXTURE(TensorValFixture, sparseSlicedRavel)
+    {
+      state.outputHandles={"date","country"};
+      arg->index({0,4,8,12,16});
+      state.handleStates["sex"].sliceLabel="male";
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      CHECK_EQUAL(3, chain.back()->size());
+      vector<size_t> expectedi{0,5,6};
+      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      expectedi={0,2,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      vector<double> expectedf{0,1,2,3,4};
+      CHECK_ARRAY_EQUAL(expectedf, *arg,3);
+      expectedf={0,2,3};
+      CHECK_ARRAY_EQUAL(expectedf, *chain[1],3);
+      expectedf={0,3,2};
+      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),3);
+
+      state.handleStates["sex"].collapsed=true;
+      chain=createRavelChain(state, arg);
+      CHECK_EQUAL(5, chain.back()->size());
+      expectedi={0,1,5,6,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      expectedi={0,2,3,5,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      expectedf={0,1,2,3,4};
+      CHECK_ARRAY_EQUAL(expectedf, *chain[1], 5);
+      expectedf={0,3,1,4,2};
+      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),5);
+    }
+
 }

@@ -120,6 +120,7 @@ namespace civita
   class ReductionOp: public ReduceAllOp
   {
     size_t dimension;
+    std::vector<size_t> m_index;
   public:
    
     template <class F>
@@ -127,7 +128,8 @@ namespace civita
       ReduceAllOp(f,init) {ReduceAllOp::setArgument(arg,dimName,0);}
 
     void setArgument(const TensorPtr& a, const std::string&,double) override;
-    size_t size() const override {return hypercube().numElements();}
+    std::vector<size_t> index() const override {return m_index;}
+    size_t size() const override {return m_index.size()? m_index.size(): hypercube().numElements();}
     double operator[](size_t i) const override;
   };
 
@@ -230,16 +232,14 @@ namespace civita
   /// corresponds to OLAP slice operation
   class Slice: public ITensor
   {
-    size_t stride=1, split=1;
+    size_t stride=1, split=1, sliceIndex=0;
     TensorPtr arg;
+    std::vector<size_t> m_index, arg_index;
   public:
     void setArgument(const TensorPtr& a,const std::string&,double) override;
-    double operator[](size_t i) const override {
-      auto res=div(ssize_t(i), ssize_t(split));
-      return arg->atHCIndex(res.quot*stride + res.rem);
-    }
-    std::vector<size_t> index() const {return {};}
-    size_t size() const override {return hypercube().numElements();}
+    double operator[](size_t i) const override;
+    std::vector<size_t> index() const {return m_index;}
+    size_t size() const override {return m_index.size()? m_index.size(): hypercube().numElements();}
     Timestamp timestamp() const override {return arg->timestamp();}
   };
 
