@@ -89,8 +89,6 @@ namespace minsky
     void addPorts();
     
   public:
-    mutable float w, h;
-    
     static int varsPassed; ///< for caching units calculation
     ///factory method
     static VariableBase* create(Type type); 

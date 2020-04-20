@@ -32,6 +32,18 @@ namespace minsky
     ports.emplace_back(new Port(*this, Port::inputPort));
     setNumCases(2); ///<default to if/then
   }
+  
+  ClickType::Type SwitchIcon::clickType(float x, float y)
+  {
+    double dx=x-this->x(), dy=y-this->y();
+    auto z=zoomFactor();
+    // check if (x,y) is within portradius of the 4 corners
+    if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
+        fabs(fabs(dy)-iWidth()) < portRadius*z &&
+        fabs(hypot(dx,dy)-hypot(iWidth(),iWidth())) < portRadius*z)
+      return ClickType::onResize;
+    return Item::clickType(x,y);
+  }  
 
   void SwitchIcon::setNumCases(unsigned n)
   {
@@ -77,6 +89,9 @@ namespace minsky
     cairo_set_line_width(cairo,1);
     // square icon
     float width=8*zoomFactor()*numCases();
+    if (width<iWidth()*zoomFactor()*numCases()) {
+		width=iWidth()*zoomFactor()*numCases();
+	}
     cairo_rectangle(cairo,-0.5*width,-0.5*width,width,width);
     cairo_stroke(cairo);
 
@@ -114,6 +129,7 @@ namespace minsky
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip);
+        if (onResizeHandles) drawResizeHandles(cairo);
       }
 
     // add 8 pt margin to allow for ports
@@ -121,6 +137,14 @@ namespace minsky
     cairo_clip(cairo);
      if (selected) drawSelected(cairo);
   }
+  
+  void SwitchIcon::resize(const LassoBox& b)
+  {
+    float invZ=1/zoomFactor();
+    iWidth(abs(b.x1-b.x0)*invZ);
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));
+    bb.update(*this);	  
+  }  
 
 
 }

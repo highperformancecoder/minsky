@@ -49,6 +49,8 @@ namespace minsky
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
+    void resize(const LassoBox& b) override;
+    ClickType::Type clickType(float x, float y) override;
   };
 }
 

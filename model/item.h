@@ -65,8 +65,8 @@ namespace minsky
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
+    float left=0, right=0, top, bottom;  	  
   public:
-    float left=0, right=0, top, bottom;  
     void update(const Item& x);
     bool contains(float x, float y) const {
       // extend each item by a portradius to solve ticket #903
@@ -80,6 +80,7 @@ namespace minsky
   class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
+    double m_width=0, m_height=0;
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
@@ -111,6 +112,20 @@ namespace minsky
       return m_rotation;
     }
     
+    double iWidth() const {return m_width;}
+    double iWidth(const double& w) {
+      m_width=w;
+      bb.update(*this);
+      return m_width;
+    }
+    
+    double iHeight() const {return m_height;}
+    double iHeight(const double& h) {
+      m_height=h;
+      bb.update(*this);
+      return m_height;
+    }        
+    
     /// rotate icon though 180∘
     void flip() {rotation(rotation()+180);}
 
@@ -136,8 +151,6 @@ namespace minsky
     float top() const {return y()+0.5*zoomFactor()*height();}
     float bottom() const {return y()-0.5*zoomFactor()*height();}
 
-    virtual void resize(const LassoBox& b);
-
     /// delete all attached wires
     virtual void deleteAttachedWires();
     /// remove all controlled items from their group
@@ -156,6 +169,9 @@ namespace minsky
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;
+    
+    virtual void resize(const LassoBox& b);
+    
     /// draw into a dummy cairo context, for purposes of calculating
     /// port positions
     void dummyDraw() const;

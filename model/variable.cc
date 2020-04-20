@@ -82,10 +82,13 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
     {
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
+      if (rv.height()!=iHeight()) hpy=-z*iHeight();
       double dx=xx-x(), dy=yy-y(); 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
-        return ClickType::onSlider; 
-      w=rv.width()*z, h=rv.height()*z;
+        return ClickType::onSlider;
+      double w=z*rv.width(), h=z*rv.height();
+      if (rv.width()<iWidth()) w=z*iWidth();
+      if (rv.height()<iHeight()) h=z*iHeight();
       if (fabs(fabs(dx)-w) < portRadius*z &&
           fabs(fabs(dy)-h) < portRadius*z &&
           fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
@@ -459,10 +462,16 @@ void VariableBase::draw(cairo_t *cairo) const
   rv.angle=angle+(notflipped? 0: M_PI);
 
   // parameters of icon in userspace (unscaled) coordinates
-  float hoffs;
+  float w, h, hoffs, fontFactor;
   w=rv.width()*z; 
   h=rv.height()*z;
+  fontFactor=min(iWidth()/rv.width(),iHeight()/rv.height());
+  if (rv.width()<iWidth()) w=iWidth()*z;
+  if (rv.height()<iHeight()) h=iHeight()*z;
+  if (rv.width()<iWidth() || rv.height()<iHeight()) rv.setFontSize(12*fontFactor*z);
+  else fontFactor=1;
   hoffs=rv.top()*z;
+  
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
@@ -479,16 +488,16 @@ void VariableBase::draw(cairo_t *cairo) const
   
       Pango pangoVal(cairo);
       if (!isnan(value())) {
-		   pangoVal.setFontSize(6*z);
+		   pangoVal.setFontSize(6*fontFactor*z);
 		   pangoVal.setMarkup(mantissa(val));
 	   }
       else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-		  pangoVal.setFontSize(8*z);
+		  pangoVal.setFontSize(8*fontFactor*z);
 		  if (signbit(value())) pangoVal.setMarkup("-∞");
           else pangoVal.setMarkup("∞");
 	  }
 	  else {  // Display all other NaN cases as ???. For ticket 1155
-		  pangoVal.setFontSize(6*z);
+		  pangoVal.setFontSize(6*fontFactor*z);
 		  pangoVal.setMarkup("???");
 	  }
       pangoVal.angle=angle+(notflipped? 0: M_PI);
@@ -558,8 +567,8 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo::CairoSave cs(cairo);
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
-      drawResizeHandles(cairo);
-    }
+      if (onResizeHandles) drawResizeHandles(cairo);
+    }  
 
   cairo_new_path(cairo);
   clipPath->appendToCurrent(cairo);
@@ -569,9 +578,9 @@ void VariableBase::draw(cairo_t *cairo) const
 
 void VariableBase::resize(const LassoBox& b)
 {
-  float invZ=1/zoomFactor();
-  w=abs(b.x1-b.x0)*invZ;
-  h=abs(b.y1-b.y0)*invZ;  
+  float w=iWidth(), h=iHeight(), invZ=1/zoomFactor();
+  iWidth(abs(b.x1-b.x0)*invZ);
+  iHeight(abs(b.y1-b.y0)*invZ);
   moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
   bb.update(*this);	  
 }

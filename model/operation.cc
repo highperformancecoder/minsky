@@ -135,6 +135,24 @@ namespace minsky
       ports.emplace_back
         (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
+  
+  ClickType::Type OperationBase::clickType(float xx, float yy)
+  {
+    double fm=std::fmod(rotation(),360);
+    bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+    Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
+    double z=zoomFactor();
+    try
+      {
+        double dx=xx-x(), dy=yy-y();
+        if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
+            fabs(fabs(dy)-iHeight()) < portRadius*z &&
+            fabs(hypot(dx,dy)-hypot(iWidth(),iHeight())) < portRadius*z)
+          return ClickType::onResize;
+      }
+    catch (...) {}
+    return Item::clickType(xx,yy);
+  }  
 
   void OperationBase::draw(cairo_t* cairo) const
   {
@@ -169,7 +187,7 @@ namespace minsky
           // parameters of icon in userspace (unscaled) coordinates
           float w, h, hoffs;
           w=0.5*pango.width()+2*z; 
-          h=0.5*pango.height()+4*z;
+          h=0.5*pango.height()+4*z;        
           hoffs=pango.top()/z;
     
           {
@@ -205,6 +223,7 @@ namespace minsky
             {
               drawPorts(cairo);
               displayTooltip(cairo,tooltip);
+              if (onResizeHandles) drawResizeHandles(cairo);             
             }
           clipPath.appendToCurrent(cairo);
           cairo_clip(cairo);
@@ -221,6 +240,7 @@ namespace minsky
               // we need to add some translation if the variable is bound
               cairo_rotate(cairo,rotation()*M_PI/180.0);
               coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*z;
+              //if (rv.width()<iWidth()) coupledIntTranslation=-0.5*(i->intVarOffset+2*iWidth()+2+r)*z;
               //            cairo_translate(cairo, coupledIntTranslation, 0);
               cairo_rotate(cairo,-rotation()*M_PI/180.0);
             }
@@ -239,6 +259,9 @@ namespace minsky
 
     float l=OperationBase::l*z, r=OperationBase::r*z, 
       h=OperationBase::h*z;
+    if (fabs(l)<iWidth()*z) l=-iWidth()*z;  
+    if (r<iWidth()*z) r=iWidth()*z;
+    if (h<iHeight()*z) h=iHeight()*z;
     int intVarWidth=0;
     cairo_save(cairo);
     cairo_rotate(cairo, angle);
@@ -277,7 +300,8 @@ namespace minsky
           // display an integration variable next to it
           RenderVariable rv(*intVar, cairo);
           // save the render width for later use in setting the clip
-          intVarWidth=rv.width()*z; 
+          intVarWidth=rv.width()*z;
+          //if (rv.width()<iWidth()) intVarWidth=iWidth()*z; 
           // set the port location...
           intVar->moveTo(i->x()+r+ivo+intVarWidth, i->y());
             
@@ -297,6 +321,8 @@ namespace minsky
           cairo_line_to(cairo,r,0);
           cairo_line_to(cairo,r+ivo,0);
           float rvw=rv.width()*z, rvh=rv.height()*z;
+          //if (rv.width()<iWidth()) rvw=iWidth()*z;
+          //if (rv.height()<iHeight()) rvh=iHeight()*z;
           cairo_line_to(cairo,r+ivo,-rvh);
           cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
           cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
@@ -360,6 +386,7 @@ namespace minsky
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip);
+        if (onResizeHandles) drawResizeHandles(cairo);
       }
 
     cairo_new_path(cairo);
@@ -367,6 +394,16 @@ namespace minsky
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }
+  
+  void OperationBase::resize(const LassoBox& b)
+  {
+    float w=iWidth(), h=iHeight(), invZ=1/zoomFactor();
+    iWidth(std::abs(b.x1-b.x0)*invZ);
+    iHeight(std::abs(b.y1-b.y0)*invZ);
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
+    bb.update(*this);	  
+  }
+  
 
   double OperationBase::value() const
   {
