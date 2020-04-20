@@ -404,17 +404,17 @@ namespace minsky
     margins(left,right,top,bottom);
     float dx=(x-this->x())*cos(rotation()*M_PI/180)-
       (y-this->y())*sin(rotation()*M_PI/180);
-    float dy=(x-this->x())*sin(rotation()*M_PI/180)+
-      (y-this->y())*cos(rotation()*M_PI/180);      
+    //float dy=(x-this->x())*sin(rotation()*M_PI/180)+
+    //  (y-this->y())*cos(rotation()*M_PI/180);      
     float w=0.5*iconWidth*z,h=0.5*iconHeight*z;
     if (w-right*edgeScale()<dx)
       return IORegion::output;
     else if (-w+left*edgeScale()>dx)
       return IORegion::input;
-    else if (h-bottom*edgeScale()<dy)
-      return IORegion::footer;
-    else if (-h+top*edgeScale()>dy)
-      return IORegion::header;
+    //else if (h-bottom*edgeScale()<dy)
+    //  return IORegion::footer;
+    //else if (-h+top*edgeScale()>dy)
+    //  return IORegion::header;
     else     
       return IORegion::none;
   }
@@ -852,11 +852,11 @@ namespace minsky
         // prepare a background for the text, partially obscuring graphic
         double transparency=displayContents()? 0.25: 1;
         cairo_set_source_rgba(cairo,0,1,1,0.5*transparency);
-        cairo_rectangle(cairo,-w,-top+offset,2*w,2*top);
+        cairo_rectangle(cairo,-w,-h+offset-0.5*height,2*w,2*h);
         cairo_fill(cairo);
 
         // display text
-        cairo_move_to(cairo, -w+1, top-4 +offset);
+        cairo_move_to(cairo, -w+1, h-4 +offset-0.5*height);
         cairo_set_source_rgba(cairo,0,0,0,transparency);
         cairo_show_text(cairo,title.c_str());
       }
