@@ -95,11 +95,15 @@ namespace civita
             xv.erase(xv.begin()+dimension);
             // compute index - enter index elements that have any in the argument
             set<size_t> indices;
-            for (auto i: arg->index())
+            auto& aIdx=arg->index();
+            sumOverIndices.clear();
+            for (auto i=0; i<aIdx.size(); ++i)
               {
-                auto splitIdx=ahc.splitIndex(i);
+                auto splitIdx=ahc.splitIndex(aIdx[i]);
                 splitIdx.erase(splitIdx.begin()+dimension);
-                indices.insert(m_hypercube.linealIndex(splitIdx));
+                auto idx=m_hypercube.linealIndex(splitIdx);
+                sumOverIndices[idx].push_back(i);
+                indices.insert(idx);
               }
             m_index=vector<size_t>(indices.begin(), indices.end());
           }
@@ -117,19 +121,34 @@ namespace civita
       return ReduceAllOp::operator[](i);
     else
       {
-        auto argDims=arg->hypercube().dims();
-        size_t stride=1;
-        for (size_t j=0; j<dimension; ++j)
-          stride*=argDims[j];
-        if (!m_index.empty()) i=m_index[i];
-        auto quotRem=ldiv(i, stride); // quotient and remainder calc in one hit
-        auto start=quotRem.quot*stride*argDims[dimension] + quotRem.rem;
-        assert(stride*argDims[dimension]>0);
         double r=init;
-        for (size_t j=0; j<argDims[dimension]; ++j)
+        if (index().empty())
           {
-            double x=arg->atHCIndex(j*stride+start);
-            if (!isnan(x)) f(r,x,j);
+            auto argDims=arg->shape();
+            size_t stride=1;
+            for (size_t j=0; j<dimension; ++j)
+              stride*=argDims[j];
+            auto quotRem=ldiv(i, stride); // quotient and remainder calc in one hit
+            auto start=quotRem.quot*stride*argDims[dimension] + quotRem.rem;
+            assert(stride*argDims[dimension]>0);
+            for (size_t j=0; j<argDims[dimension]; ++j)
+              {
+                double x=arg->atHCIndex(j*stride+start);
+                if (!isnan(x)) f(r,x,j);
+              }
+          }
+        else
+          {
+            auto soi=sumOverIndices.find(m_index[i]);
+            assert(soi!=sumOverIndices.end());
+            if (soi!=sumOverIndices.end())
+              for (auto j: soi->second)
+                {
+                  double x=(*arg)[j];
+                  // TODO is this an excessive cost to pay just to support supIndex/infIndex?
+                  auto splitIdx=arg->hypercube().splitIndex(j);
+                  if (!isnan(x)) f(r,x,splitIdx[dimension]);
+                }
           }
         return r;
       }

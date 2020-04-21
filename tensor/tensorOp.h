@@ -114,6 +114,8 @@ namespace civita
   class ReductionOp: public ReduceAllOp
   {
     size_t dimension;
+    /// array[size()] of arg hypercube indices to sum over at each position
+    std::map<size_t, std::vector<size_t>> sumOverIndices;
   public:
    
     template <class F>
