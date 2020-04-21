@@ -501,9 +501,7 @@ namespace minsky
                            
         double sparsityRatio =  static_cast<double>(1.0-static_cast<double>(tmpData.size())/numHyperCubeElems); 
 
-        // temporary change to allow smaller datasets to load as dense
-        // for Ravel purposes
-        if (hc.numElements()<256*1024*1024 || sparsityRatio <= 0.5) 
+        if (sparsityRatio <= 0.5) 
           { // dense case
             v.index({});
             if (!cminsky().checkMemAllocation(hc.numElements()*sizeof(double)))

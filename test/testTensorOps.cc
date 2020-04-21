@@ -461,5 +461,124 @@ SUITE(TensorOps)
       multiWireTest<OperationType::or_>(0, [](double x,double y){return x>0.5 || y>0.5;}, id);
     }
 
+  struct TensorValFixture
+  {
+    RavelState state;
+    std::shared_ptr<TensorVal> arg;
+    TensorValFixture() {
+      Hypercube hc;
+      arg=make_shared<TensorVal>();
+      hc.xvectors=
+        {
+         XVector("country",{"Australia","Canada","US"}),
+         XVector("sex",{"male","female"}),
+         XVector("date",{"2010","2011","2012"})
+        };
+      arg->hypercube(hc);
+      for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
+      for (auto& xv: hc.xvectors) state.handleStates[xv.name]={};
+    }
+  };
   
+  TEST_FIXTURE(TensorValFixture, sliced2dswapped)
+    {
+      state.handleStates["sex"].sliceLabel="male";
+      state.outputHandles={"date","country"};
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      auto& chc=chain.back()->hypercube();
+      auto& ahc=arg->hypercube();
+      CHECK_EQUAL("date",chc.xvectors[0].name);
+      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
+      CHECK_EQUAL("country",chc.xvectors[1].name);
+      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
+      CHECK_EQUAL(9,chain.back()->size());
+      for (size_t i=0; i<chain.back()->size(); ++i)
+        CHECK(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
+      vector<double> expected={0,6,12,1,7,13,2,8,14};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].sliceLabel="female";
+      chain=createRavelChain(state, arg);
+      CHECK_EQUAL(9,chain.back()->size());
+      for (size_t i=0; i<chain.back()->size(); ++i)
+        CHECK(ahc.splitIndex((*chain.back())[i])[1]==1); //entry is "female"
+      
+    }
+  TEST_FIXTURE(TensorValFixture, reduction2dswapped)
+    {
+      state.handleStates["sex"].collapsed=true;
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::sum;
+      state.outputHandles={"date","country"};
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      auto& chc=chain.back()->hypercube();
+      auto& ahc=arg->hypercube();
+      CHECK_EQUAL("date",chc.xvectors[0].name);
+      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
+      CHECK_EQUAL("country",chc.xvectors[1].name);
+      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
+      CHECK_EQUAL(9,chain.back()->size());
+      vector<double> expected={3,15,27,5,17,29,7,19,31};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::prod;
+      chain=createRavelChain(state, arg);
+      expected={0,54,180,4,70,208,10,88,238};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::av;
+      chain=createRavelChain(state, arg);
+      expected={1.5,7.5,13.5,2.5,8.5,14.5,3.5,9.5,15.5};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::stddev;
+      chain=createRavelChain(state, arg);
+      expected={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::min;
+      chain=createRavelChain(state, arg);
+      expected={0,6,12,1,7,13,2,8,14};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      
+      state.handleStates["sex"].reductionOp=RavelState::HandleState::max;
+      chain=createRavelChain(state, arg);
+      expected={3,9,15,4,10,16,5,11,17};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+     
+    }
+
+    TEST_FIXTURE(TensorValFixture, sparseSlicedRavel)
+    {
+      state.outputHandles={"date","country"};
+      arg->index({0,4,8,12,16});
+      state.handleStates["sex"].sliceLabel="male";
+      auto chain=createRavelChain(state, arg);
+      CHECK_EQUAL(2, chain.back()->rank());
+      CHECK_EQUAL(3, chain.back()->size());
+      vector<size_t> expectedi{0,5,6};
+      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      expectedi={0,2,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      vector<double> expectedf{0,1,2,3,4};
+      CHECK_ARRAY_EQUAL(expectedf, *arg,3);
+      expectedf={0,2,3};
+      CHECK_ARRAY_EQUAL(expectedf, *chain[1],3);
+      expectedf={0,3,2};
+      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),3);
+
+      state.handleStates["sex"].collapsed=true;
+      chain=createRavelChain(state, arg);
+      CHECK_EQUAL(5, chain.back()->size());
+      expectedi={0,1,5,6,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      expectedi={0,2,3,5,7};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      expectedf={0,1,2,3,4};
+      CHECK_ARRAY_EQUAL(expectedf, *chain[1], 5);
+      expectedf={0,3,1,4,2};
+      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),5);
+    }
+
 }

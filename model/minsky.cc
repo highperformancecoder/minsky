@@ -735,7 +735,7 @@ namespace minsky
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            if (r->ports[1]->numWires()>0)
-             r->loadDataCubeFromVariable(r->ports[1]->getVariableValue());
+             r->populateHypercube(r->ports[1]->getVariableValue().hypercube());
          return false;
        });
 

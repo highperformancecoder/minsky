@@ -308,8 +308,8 @@
 <g clip-path="url(#clip24)" clip-rule="nonzero">
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(50%,50%,50%);stroke-opacity:1;stroke-miterlimit:10;" d="M 171 -0.832031 L 301 -0.832031 " transform="matrix(1,0,0,1,13,14)"/>
 </g>
-<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 10 0 L 35 1 " transform="matrix(1,0,0,1,13,14)"/>
-<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 48 15 L 43.125 11.800781 L 45.003906 14.878906 L 42.882812 17.796875 Z M 48 15 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 12 0 L 35 1 " transform="matrix(1,0,0,1,13,14)"/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 48 15 L 43.136719 11.785156 L 45.003906 14.871094 L 42.875 17.78125 Z M 48 15 "/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 89 1 L 107 4.5 " transform="matrix(1,0,0,1,13,14)"/>
 <path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 120 18.5 L 115.664062 14.601562 L 117.054688 17.925781 L 114.519531 20.492188 Z M 120 18.5 "/>
 <path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 137 4.5 L 161 6.25 " transform="matrix(1,0,0,1,13,14)"/>

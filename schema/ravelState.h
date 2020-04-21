@@ -19,6 +19,9 @@
 
 #ifndef RAVELSTATE_H
 #define RAVELSTATE_H
+#include <map>
+#include <string>
+#include <vector>
 
 namespace minsky
 {
@@ -30,16 +33,15 @@ namespace minsky
     struct HandleState
     {
       double x,y; ///< handle tip coordinates (only angle important, not length)
-      bool collapsed, displayFilterCaliper;
+      bool collapsed=false, displayFilterCaliper=false;
       enum ReductionOp {sum, prod, av, stddev, min, max};
-      ReductionOp reductionOp;
-      // TODO: numForward, numReverse, timeForward, timeReverse are deprecated, but need to remove from ravel code.
+      ReductionOp reductionOp=sum;
       enum HandleSort {none, forward, reverse, custom};
-      HandleSort order;
+      HandleSort order=none;
       // note this member must appear after all members of
       // CAPIHandleState from the Ravel CAPI
-      vector<string> customOrder; // used if order==custom
-      string minLabel, maxLabel, sliceLabel;
+      std::vector<std::string> customOrder; // used if order==custom
+      std::string minLabel, maxLabel, sliceLabel;
     };
 
     double radius=ravelDefaultRadius;

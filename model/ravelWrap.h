@@ -92,6 +92,7 @@ namespace minsky
     const string& filename() const {return m_filename;}
     /// return hypercube corresponding to the current Ravel state
     Hypercube hypercube() const {double* tmp; return hypercube(tmp);}
+    void populateHypercube(const Hypercube&);
     void loadDataFromSlice(ITensorVal&) const;
     void loadDataCubeFromVariable(const ITensor&);
     unsigned maxRank() const;

@@ -92,7 +92,7 @@ namespace minsky
     double& operator[](size_t i) override {return *(&valRef()+i);}
 
 
-    std::vector<size_t> index() const override {
+    const std::vector<size_t>& index() const override {
       if (m_type==parameter && tensorInit.size())
         return tensorInit.index();
       else
