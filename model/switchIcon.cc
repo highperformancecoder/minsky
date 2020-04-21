@@ -141,9 +141,8 @@ namespace minsky
   void SwitchIcon::resize(const LassoBox& b)
   {
     float invZ=1/zoomFactor();
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));    
     iWidth(abs(b.x1-b.x0)*invZ);
-    moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));
-    bb.update(*this);	  
   }  
 
 

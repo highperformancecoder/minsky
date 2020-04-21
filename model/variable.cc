@@ -81,8 +81,7 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
   try
     {
       double hpx=z*rv.handlePos();
-      double hpy=-z*rv.height();
-      if (rv.height()!=iHeight()) hpy=-z*iHeight();
+      double hpy=hpy=-z*iHeight();
       double dx=xx-x(), dy=yy-y(); 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
@@ -454,7 +453,6 @@ void VariableBase::draw(cairo_t *cairo) const
   float z=zoomFactor();
 
   RenderVariable rv(*this,cairo);
-  rv.setFontSize(12*z);
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
@@ -465,11 +463,10 @@ void VariableBase::draw(cairo_t *cairo) const
   float w, h, hoffs, fontFactor;
   w=rv.width()*z; 
   h=rv.height()*z;
-  fontFactor=min(iWidth()/rv.width(),iHeight()/rv.height());
   if (rv.width()<iWidth()) w=iWidth()*z;
   if (rv.height()<iHeight()) h=iHeight()*z;
-  if (rv.width()<iWidth() || rv.height()<iHeight()) rv.setFontSize(12*fontFactor*z);
-  else fontFactor=1;
+  fontFactor=max(1.0,min(iWidth()/rv.width(),iHeight()/rv.height()));  
+  rv.setFontSize(12*fontFactor*z);
   hoffs=rv.top()*z;
   
 
@@ -578,11 +575,10 @@ void VariableBase::draw(cairo_t *cairo) const
 
 void VariableBase::resize(const LassoBox& b)
 {
-  float w=iWidth(), h=iHeight(), invZ=1/zoomFactor();
+  float invZ=1/zoomFactor();
+  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));  
   iWidth(abs(b.x1-b.x0)*invZ);
   iHeight(abs(b.y1-b.y0)*invZ);
-  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-  bb.update(*this);	  
 }
 
 void VariablePtr::makeConsistentWithValue()

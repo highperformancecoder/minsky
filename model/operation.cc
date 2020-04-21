@@ -142,15 +142,11 @@ namespace minsky
     bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
     Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
     double z=zoomFactor();
-    try
-      {
-        double dx=xx-x(), dy=yy-y();
-        if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
-            fabs(fabs(dy)-iHeight()) < portRadius*z &&
-            fabs(hypot(dx,dy)-hypot(iWidth(),iHeight())) < portRadius*z)
-          return ClickType::onResize;
-      }
-    catch (...) {}
+    double dx=xx-x(), dy=yy-y();
+    if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
+        fabs(fabs(dy)-iHeight()) < portRadius*z &&
+        fabs(hypot(dx,dy)-hypot(iWidth(),iHeight())) < portRadius*z)
+      return ClickType::onResize;
     return Item::clickType(xx,yy);
   }  
 
@@ -240,7 +236,7 @@ namespace minsky
               // we need to add some translation if the variable is bound
               cairo_rotate(cairo,rotation()*M_PI/180.0);
               coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*z;
-              //if (rv.width()<iWidth()) coupledIntTranslation=-0.5*(i->intVarOffset+2*iWidth()+2+r)*z;
+              if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(i->intVarOffset+2*iv.iWidth()+2+r)*z;
               //            cairo_translate(cairo, coupledIntTranslation, 0);
               cairo_rotate(cairo,-rotation()*M_PI/180.0);
             }
@@ -301,7 +297,7 @@ namespace minsky
           RenderVariable rv(*intVar, cairo);
           // save the render width for later use in setting the clip
           intVarWidth=rv.width()*z;
-          //if (rv.width()<iWidth()) intVarWidth=iWidth()*z; 
+          if (rv.width()<intVar->iWidth()) intVarWidth=intVar->iWidth()*z;
           // set the port location...
           intVar->moveTo(i->x()+r+ivo+intVarWidth, i->y());
             
@@ -321,8 +317,8 @@ namespace minsky
           cairo_line_to(cairo,r,0);
           cairo_line_to(cairo,r+ivo,0);
           float rvw=rv.width()*z, rvh=rv.height()*z;
-          //if (rv.width()<iWidth()) rvw=iWidth()*z;
-          //if (rv.height()<iHeight()) rvh=iHeight()*z;
+          if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
+          if (rv.height()<intVar->iHeight()) rvw=intVar->iHeight()*z;
           cairo_line_to(cairo,r+ivo,-rvh);
           cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
           cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
@@ -397,11 +393,10 @@ namespace minsky
   
   void OperationBase::resize(const LassoBox& b)
   {
-    float w=iWidth(), h=iHeight(), invZ=1/zoomFactor();
+    float invZ=1/zoomFactor();
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     iWidth(std::abs(b.x1-b.x0)*invZ);
     iHeight(std::abs(b.y1-b.y0)*invZ);
-    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    bb.update(*this);	  
   }
   
 

@@ -430,11 +430,11 @@ SUITE(Canvas)
     {
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       c->draw(surf.cairo());// reposition ports
-      CHECK(c->clickType(c->x(),c->y()) == ClickType::onItem);
+      CHECK(c->clickType(c->x(),c->y()) == ClickType::onSlider);
       canvas.mouseDown(c->x(),c->y());
-      canvas.mouseUp(400,500);
-      CHECK_EQUAL(400,c->x());
-      CHECK_EQUAL(500,c->y());
+      canvas.mouseUp(300,100);
+      CHECK_EQUAL(300,c->x());
+      CHECK_EQUAL(100,c->y());
     }
 
     TEST_FIXTURE(TestFixture,onSlider)
@@ -445,7 +445,8 @@ SUITE(Canvas)
       cv->sliderMax=2000;
       // work out where slider is located
       RenderVariable rv(*cv);
-      float xc=cv->x()+rv.handlePos(), yc=cv->y()-rv.height();
+      float xc=cv->x()+rv.handlePos(), yc=cv->y();
+      //if (rv.height()<cv->iHeight()) yc=cv->y()-cv->iHeight();
       CHECK_EQUAL(ClickType::onSlider, cv->clickType(xc,yc));
       canvas.mouseDown(xc,yc);
       xc+=5;
