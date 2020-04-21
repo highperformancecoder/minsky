@@ -25,6 +25,7 @@
 #define CLASSDESC_ACCESS(x)
 #endif
 #include <chrono>
+#include <set>
 
 namespace civita
 {
@@ -48,11 +49,14 @@ namespace civita
     std::vector<unsigned> shape() const {return hypercube().dims();}
     
     /// the index vector - assumed to be ordered and unique
-    virtual std::vector<size_t> index() const=0;
+    virtual const std::vector<size_t>& index() const {return m_index;}
     /// return or compute data at a location
     virtual double operator[](size_t) const=0;
     /// return number of elements in tensor - maybe less than hypercube.numElements if sparse
-    virtual size_t size() const=0;
+    virtual size_t size() const {
+      size_t s=index().size();
+      return s? s: hypercube().numElements();
+    }        
     
     /// returns the data value at hypercube index \a hcIdx, or NaN if 
     double atHCIndex(size_t hcIdx) const {
@@ -95,6 +99,12 @@ namespace civita
    
   protected:
     Hypercube m_hypercube;
+    std::vector<size_t> m_index;
+    /// check that the index vector is sorted.
+    bool checkSorted(const std::vector<size_t>& v) {
+      std::set<size_t> tmp(v.begin(), v.end());
+      return std::vector<size_t>(tmp.begin(),tmp.end())==v;
+    }
     void notImpl() const
     {throw std::runtime_error("setArgument(s) variant not implemented");}
   };

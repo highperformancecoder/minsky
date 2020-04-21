@@ -45,7 +45,6 @@ namespace minsky
   struct TimeOp: public ITensor
   {
     size_t size() const override {return 1;}
-    vector<size_t> index() const override {return {};}
     double operator[](size_t) const override {return EvalOpBase::t;}
     Timestamp timestamp() const override {return {};}
   };
@@ -419,7 +418,6 @@ namespace minsky
       m_index.insert(m_index.end(),indices.begin(), indices.end());
       if (!m_index.empty()) m_size=m_index.size();
     }
-    vector<size_t> index() const override {return m_index;}
     size_t size() const override {return m_size;}
     Timestamp timestamp() const override {
       Timestamp t;
@@ -470,7 +468,8 @@ namespace minsky
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
     size_t size() const override {return chain.empty()? 0: chain.back()->size();}
-    vector<size_t> index() const override {if (chain.empty()) return {}; else return chain.back()->index();}
+    const vector<size_t>& index() const override
+    {if (chain.empty()) return m_index; else return chain.back()->index();}
     Timestamp timestamp() const override
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}
   };
