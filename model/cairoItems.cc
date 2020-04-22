@@ -136,6 +136,10 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
 void RenderVariable::draw()
 {
   //  updatePortLocs();
+  //if (var.type()==VariableType::integral) {
+  // float scaleFactor=max(1.0,min(var.iWidth()/width(),var.iHeight()/height()));
+  // cairo_scale(cairo,scaleFactor,scaleFactor);
+  //}
   var.draw(cairo);
 }
 

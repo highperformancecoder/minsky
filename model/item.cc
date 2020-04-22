@@ -120,6 +120,12 @@ namespace minsky
 
   ClickType::Type Item::clickType(float x, float y)
   {
+	 double w=iWidth(), h=iHeight(); 
+     if (abs(abs(x-m_x)-w) < portRadius*zoomFactor() &&	  
+             abs(abs(y-m_y)-h) < portRadius*zoomFactor() &&	  
+             abs(hypot((x-m_x),(y-m_y))-hypot(w,h)) < portRadius*zoomFactor())	  
+       return ClickType::onResize;        	  
+	  
     // if selecting a contained variable, the delegate to that
     if (auto item=select(x,y))
       return item->clickType(x,y);
@@ -129,19 +135,20 @@ namespace minsky
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
           return ClickType::onPort;
-      }
- 
-    // Then, check whether the resize handles have been selected
-    if (fabs(fabs(x-this->x())-iWidth()) < portRadius*zoomFactor() &&
-            fabs(fabs(y-this->y())-iHeight()) < portRadius*zoomFactor() &&
-            fabs(std::hypot((x-this->x()),(y-this->y()))-std::hypot(iWidth(),iHeight())) < portRadius*zoomFactor())
-     return ClickType::onResize;      
+      }          
+     
+    // then, check whether a resize handle has been selected  
+    //double w=this->iWidth(), h=this->iHeight();
+    //if (abs(abs(x-this->x())-w) < portRadius*zoomFactor() &&
+    //        abs(abs(y-this->y())-h) < portRadius*zoomFactor() &&
+    //        abs(hypot((x-this->x()),(y-this->y()))-hypot(w,h)) < portRadius*zoomFactor())
+    //  return ClickType::onResize;        
 
     ecolab::cairo::Surface dummySurf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
     if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
-      return ClickType::onItem;
+      return ClickType::onItem;               
     else                  
       return ClickType::outside;
   }
@@ -191,11 +198,10 @@ namespace minsky
   // Refactor resize() code for all canvas items here. For feature 25
   void Item::resize(const LassoBox& b)
   {
-    float w=m_width, h=m_height, invZ=1/zoomFactor();
+    float invZ=1/zoomFactor();
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));               
     m_width=abs(b.x1-b.x0)*invZ;
-    m_height=abs(b.y1-b.y0)*invZ;
-    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    bb.update(*this);	  
+    m_height=abs(b.y1-b.y0)*invZ; 
   }
   
   void Item::drawResizeHandles(cairo_t* cairo) const
@@ -233,9 +239,9 @@ namespace minsky
     pango.show();
 
     if (mouseFocus) {
-		displayTooltip(cairo,tooltip);
-		drawResizeHandles(cairo);
+		displayTooltip(cairo,tooltip);	
 	}
+	if (onResizeHandles) drawResizeHandles(cairo);	
     cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));
     cairo_line_to(cairo,r.x(w,-h), r.y(w,-h));
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));

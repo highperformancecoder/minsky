@@ -430,12 +430,11 @@ SUITE(Canvas)
     {
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       c->draw(surf.cairo());// reposition ports
-      RenderVariable rv(*dynamic_cast<VariableBase*>(c.get()));
-      CHECK(c->clickType(c->x()+0.5*rv.width(),c->y()+0.5*rv.height()) == ClickType::onItem); // offset added because resize handles grabbed otherwise, for feature 94
-      canvas.mouseDown(c->x()+0.5*rv.width(),c->y()+0.5*rv.height());
-      canvas.mouseUp(500,500);
-      CHECK_EQUAL(500,c->x()+0.5*rv.width());
-      CHECK_EQUAL(500,c->y()+0.5*rv.height());
+      CHECK(c->clickType(c->x()+5,c->y()+5) == ClickType::onItem); // small offset added because resize handles grabbed otherwise, for feature 94
+      canvas.mouseDown(c->x()+5,c->y()+5);
+      canvas.mouseUp(400,500);
+      CHECK_EQUAL(400,c->x()+5);
+      CHECK_EQUAL(500,c->y()+5);
     }
 
     TEST_FIXTURE(TestFixture,onSlider)
@@ -446,7 +445,7 @@ SUITE(Canvas)
       cv->sliderMax=2000;
       // work out where slider is located
       RenderVariable rv(*cv);
-      float xc=cv->x()+rv.handlePos(), yc=cv->y();
+      float xc=cv->x()+rv.handlePos(), yc=cv->y()-rv.height();
       CHECK_EQUAL(ClickType::onSlider, cv->clickType(xc,yc));
       canvas.mouseDown(xc,yc);
       xc+=5;
@@ -601,9 +600,9 @@ SUITE(Canvas)
         CHECK_EQUAL(2,model->numItems());
         CHECK_EQUAL(0,g->inVariables.size());
 
-        // move b into group. slight offset added because resize handles grabbed otherwise, for feature 94
-        mouseDown(b->x()+5,b->y()+5);
-        mouseUp(g->x(),g->y());
+        // move b into group. 
+        mouseDown(b->x()+5,b->y()+5);   // small offset added because resize handles grabbed otherwise, for feature 94
+        mouseUp(g->x()+5,g->y()+5);
         CHECK(b->group.lock()==g);
         CHECK_EQUAL(2,model->numWires());
         CHECK_EQUAL(3,model->numItems());
@@ -612,7 +611,7 @@ SUITE(Canvas)
         // move b out of group
         item=g;
         zoomToDisplay();
-        mouseDown(b->x()+5,b->y()+5);  //slight offset added because resize handles grabbed otherwise, for feature 94
+        mouseDown(b->x()+5,b->y()+5);  // small offset added because resize handles grabbed otherwise, for feature 94
         mouseUp(200,200);
         CHECK(b->group.lock()==model);
         CHECK_EQUAL(1,model->numWires());

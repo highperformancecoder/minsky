@@ -81,13 +81,13 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
   try
     {
       double hpx=z*rv.handlePos();
-      double hpy=hpy=-z*iHeight();
+      double hpy=-z*rv.height();
+      if (rv.height()<iHeight()) hpy=-z*iHeight(); 
       double dx=xx-x(), dy=yy-y(); 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
-      double w=z*rv.width(), h=z*rv.height();
+      double w=z*rv.width(), h=-hpy;
       if (rv.width()<iWidth()) w=z*iWidth();
-      if (rv.height()<iHeight()) h=z*iHeight();
       if (fabs(fabs(dx)-w) < portRadius*z &&
           fabs(fabs(dy)-h) < portRadius*z &&
           fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
@@ -533,6 +533,9 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_line_to(cairo,w+2*z,0);
     cairo_line_to(cairo,w,-h);
     cairo_close_path(cairo);
+    if (type()==integral) {
+	   cairo_scale(cairo,fontFactor,fontFactor); 
+    }
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
     if (type()!=constant && !ioVar())
