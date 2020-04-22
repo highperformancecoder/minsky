@@ -439,8 +439,6 @@ namespace minsky
           throw_error("function input not dimensionless");
         return {};
       case constop:
-        if (check && !ports[0]->units(check).empty())
-          throw_error("function input not dimensionless");
         return {};        
       case binop:
         switch (type())
