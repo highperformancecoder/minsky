@@ -119,13 +119,7 @@ namespace minsky
   }
 
   ClickType::Type Item::clickType(float x, float y)
-  {
-	 double w=iWidth(), h=iHeight(); 
-     if (abs(abs(x-m_x)-w) < portRadius*zoomFactor() &&	  
-             abs(abs(y-m_y)-h) < portRadius*zoomFactor() &&	  
-             abs(hypot((x-m_x),(y-m_y))-hypot(w,h)) < portRadius*zoomFactor())	  
-       return ClickType::onResize;        	  
-	  
+  {     	    
     // if selecting a contained variable, the delegate to that
     if (auto item=select(x,y))
       return item->clickType(x,y);
@@ -138,11 +132,11 @@ namespace minsky
       }          
      
     // then, check whether a resize handle has been selected  
-    //double w=this->iWidth(), h=this->iHeight();
-    //if (abs(abs(x-this->x())-w) < portRadius*zoomFactor() &&
-    //        abs(abs(y-this->y())-h) < portRadius*zoomFactor() &&
-    //        abs(hypot((x-this->x()),(y-this->y()))-hypot(w,h)) < portRadius*zoomFactor())
-    //  return ClickType::onResize;        
+	double w=0.5*width()*zoomFactor(), h=0.5*height()*zoomFactor(); 
+    if (abs(abs(x-this->x())-w) < portRadiusMult*zoomFactor() &&	  
+            abs(abs(y-this->y())-h) < portRadiusMult*zoomFactor() &&	  
+            abs(hypot((x-this->x()),(y-this->y()))-hypot(w,h)) < portRadiusMult*zoomFactor())	  
+      return ClickType::onResize;         
 
     ecolab::cairo::Surface dummySurf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
@@ -198,10 +192,11 @@ namespace minsky
   // Refactor resize() code for all canvas items here. For feature 25
   void Item::resize(const LassoBox& b)
   {
-    float invZ=1/zoomFactor();
-    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));               
-    m_width=abs(b.x1-b.x0)*invZ;
-    m_height=abs(b.y1-b.y0)*invZ; 
+    float wb=iWidth(), hb=iHeight(), invZ=1/zoomFactor();   
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
+    iWidth(abs(b.x1-b.x0)*invZ);
+    iHeight(abs(b.y1-b.y0)*invZ);
+    iScaleFactor(max(1.0,min(iWidth()/wb,iHeight()/hb)));        
   }
   
   void Item::drawResizeHandles(cairo_t* cairo) const
@@ -228,12 +223,12 @@ namespace minsky
     Rotate r(rotation(),0,0);
     Pango pango(cairo);
     float w, h, z=zoomFactor();
-    pango.angle=rotation() * M_PI / 180.0;
-    pango.setFontSize(12*z);
-    pango.setMarkup(latexToPango(detailedText)); 
+    pango.angle=rotation() * M_PI / 180.0; 
+    pango.setFontSize(12*iScaleFactor()*z);
+    pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates
     w=0.5*pango.width()+2*z; 
-    h=0.5*pango.height()+4*z;
+    h=0.5*pango.height()+4*z;       
 
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();

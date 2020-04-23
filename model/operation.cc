@@ -236,11 +236,9 @@ namespace minsky
               // we need to add some translation if the variable is bound
               cairo_rotate(cairo,rotation()*M_PI/180.0);
               coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*z;
-              //if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(i->intVarOffset+2*iv.iWidth()+2+r)*z;
+              if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(i->intVarOffset+2*iv.iWidth()+2+r)*z;
               //            cairo_translate(cairo, coupledIntTranslation, 0);
               cairo_rotate(cairo,-rotation()*M_PI/180.0);
-              //float scaleFactor=std::max(1.0,std::min(iv.iWidth()/rv.width(),iv.iHeight()/rv.height())); 
-	          //cairo_scale(cairo,scaleFactor,scaleFactor);
             }
         cairo_save(cairo);
         cairo_scale(cairo,z,z);
@@ -257,11 +255,11 @@ namespace minsky
 
     float l=OperationBase::l*z, r=OperationBase::r*z, 
       h=OperationBase::h*z;
-    float ll=l, rr=r, hh=h;
       
-    if (fabs(ll)<iWidth()*z) ll=-iWidth()*z;  
-    if (rr<iWidth()*z) rr=iWidth()*z;
-    if (hh<iHeight()*z) hh=iHeight()*z;
+    if (fabs(l)<iWidth()*z) l=-iWidth()*z;        
+    if (r<iWidth()*z) r=iWidth()*z;    
+    if (h<iHeight()*z) h=iHeight()*z;
+      
     int intVarWidth=0;
     cairo_save(cairo);
     cairo_rotate(cairo, angle);
@@ -273,11 +271,11 @@ namespace minsky
          cairo_line_to(cairo,r,0);    
 	   }      
 	 } else {
-         cairo_move_to(cairo,-rr,-hh);
-         cairo_line_to(cairo,-rr,hh);
-         cairo_line_to(cairo,rr,hh);
-         cairo_line_to(cairo,rr+2*z,0);
-         cairo_line_to(cairo,rr,-hh);        
+         cairo_move_to(cairo,-r,-h);
+         cairo_line_to(cairo,-r,h);
+         cairo_line_to(cairo,r,h);
+         cairo_line_to(cairo,r+2*z,0);
+         cairo_line_to(cairo,r,-h);        
 	 }
      cairo_close_path(cairo);		  	 
 
@@ -301,7 +299,7 @@ namespace minsky
           RenderVariable rv(*intVar, cairo);
           // save the render width for later use in setting the clip
           intVarWidth=rv.width()*z;
-          //if (rv.width()<intVar->iWidth()) intVarWidth=intVar->iWidth()*z;
+          if (rv.width()<intVar->iWidth()) intVarWidth=intVar->iWidth();
           // set the port location...
           intVar->moveTo(i->x()+r+ivo+intVarWidth, i->y());
             
@@ -311,7 +309,9 @@ namespace minsky
           // the var's rotation, then antirotate it
           i->intVar->rotation(i->rotation());
           cairo_rotate(cairo, -M_PI*i->rotation()/180.0);
-          rv.draw();
+          //rv.draw();
+          intVar->draw(cairo);
+          cairo_scale(cairo,intVar->iScaleFactor(),intVar->iScaleFactor());  //doesn't work either. I don't understand why...
           //i->getIntVar()->draw(cairo);
           cairo_restore(cairo);
 
@@ -321,8 +321,8 @@ namespace minsky
           cairo_line_to(cairo,r,0);
           cairo_line_to(cairo,r+ivo,0);
           float rvw=rv.width()*z, rvh=rv.height()*z;
-          //if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
-          //if (rv.height()<intVar->iHeight()) rvw=intVar->iHeight()*z;
+          if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
+          if (rv.height()<intVar->iHeight()) rvh=intVar->iHeight()*z;
           cairo_line_to(cairo,r+ivo,-rvh);
           cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
           cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
@@ -331,16 +331,14 @@ namespace minsky
           cairo_line_to(cairo,r+ivo,0);
           cairo_line_to(cairo,r,0);
           cairo_close_path(cairo);
-          //float scaleFactor=std::max(1.0,std::min(intVar->iWidth()/rv.width(),intVar->iHeight()/rv.height())); 
-	      //cairo_scale(cairo,scaleFactor,scaleFactor); 
         }
 
     cairo::Path clipPath(cairo);
 
     // compute port coordinates relative to the icon's
     // point of reference. Move out port 2 pixels right for ticket For ticket 362.
-    double x0=rr, y0=0, x1=ll, y1=numPorts() > 2? -hh+3: 0, 
-      x2=ll, y2=numPorts() > 2? hh-3: 0;
+    double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+      x2=l, y2=numPorts() > 2? h-3: 0;
                   
     if (textFlipped) swap(y1,y2);
 
