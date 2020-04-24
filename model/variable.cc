@@ -460,13 +460,12 @@ void VariableBase::draw(cairo_t *cairo) const
   rv.angle=angle+(notflipped? 0: M_PI);
 
   // parameters of icon in userspace (unscaled) coordinates
-  float w, h, hoffs, fontFactor;
+  float w, h, hoffs;
   w=rv.width()*z; 
   h=rv.height()*z;
   if (rv.width()<iWidth()) w=iWidth()*z;
   if (rv.height()<iHeight()) h=iHeight()*z;
-  fontFactor=max(1.0,min(iWidth()/rv.width(),iHeight()/rv.height()));  
-  rv.setFontSize(12*fontFactor*z);
+  rv.setFontSize(12*iScaleFactor()*z);
   hoffs=rv.top()*z;
   
 
@@ -485,16 +484,16 @@ void VariableBase::draw(cairo_t *cairo) const
   
       Pango pangoVal(cairo);
       if (!isnan(value())) {
-		   pangoVal.setFontSize(6*fontFactor*z);
+		   pangoVal.setFontSize(6*iScaleFactor()*z);
 		   pangoVal.setMarkup(mantissa(val));
 	   }
       else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-		  pangoVal.setFontSize(8*fontFactor*z);
+		  pangoVal.setFontSize(8*iScaleFactor()*z);
 		  if (signbit(value())) pangoVal.setMarkup("-∞");
           else pangoVal.setMarkup("∞");
 	  }
 	  else {  // Display all other NaN cases as ???. For ticket 1155
-		  pangoVal.setFontSize(6*fontFactor*z);
+		  pangoVal.setFontSize(6*iScaleFactor()*z);
 		  pangoVal.setMarkup("???");
 	  }
       pangoVal.angle=angle+(notflipped? 0: M_PI);
@@ -538,7 +537,7 @@ void VariableBase::draw(cairo_t *cairo) const
     //  if (i->coupled())
     //    //cairo_scale(cairo,i->iScaleFactor(),i->iScaleFactor());                    // doesn't work, I don't know why
     //    cairo_scale(cairo,i->intVar->iScaleFactor(),i->intVar->iScaleFactor());       // doesn't work either, I don't know why 
-    //cairo_stroke(cairo);
+    cairo_stroke(cairo);
     if (type()!=constant && !ioVar())
       {
         // draw slider
