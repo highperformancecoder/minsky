@@ -534,11 +534,11 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_line_to(cairo,w,-h);
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
-    if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))    
-      if (i->coupled())
-        //cairo_scale(cairo,i->iScaleFactor(),i->iScaleFactor());                    // doesn't work, I don't know why
-        cairo_scale(cairo,i->intVar->iScaleFactor(),i->intVar->iScaleFactor());       // doesn't work either, I don't know why 
-    cairo_stroke(cairo);
+    //if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))    
+    //  if (i->coupled())
+    //    //cairo_scale(cairo,i->iScaleFactor(),i->iScaleFactor());                    // doesn't work, I don't know why
+    //    cairo_scale(cairo,i->intVar->iScaleFactor(),i->intVar->iScaleFactor());       // doesn't work either, I don't know why 
+    //cairo_stroke(cairo);
     if (type()!=constant && !ioVar())
       {
         // draw slider

@@ -309,9 +309,9 @@ namespace minsky
           // the var's rotation, then antirotate it
           i->intVar->rotation(i->rotation());
           cairo_rotate(cairo, -M_PI*i->rotation()/180.0);
-          //rv.draw();
-          intVar->draw(cairo);
-          cairo_scale(cairo,intVar->iScaleFactor(),intVar->iScaleFactor());  //doesn't work either. I don't understand why...
+          rv.draw();
+          //intVar->draw(cairo);
+          //cairo_scale(cairo,intVar->iScaleFactor(),intVar->iScaleFactor());  //doesn't work either. I don't understand why...
           //i->getIntVar()->draw(cairo);
           cairo_restore(cairo);
 
