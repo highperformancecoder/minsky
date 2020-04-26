@@ -168,6 +168,10 @@ namespace minsky
         if (item)
           {
             item->resize(lasso);
+            // resize both operator and variable in coupled integral variable. for feature 94
+            if (auto i=dynamic_cast<IntOp*>(item.get()))
+               if (i->coupled())
+                 i->intVar->resize(lasso);
             requestRedraw();
           }
         break;

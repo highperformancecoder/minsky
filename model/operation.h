@@ -81,7 +81,8 @@ namespace minsky
 
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;
-    ClickType::Type clickType(float x, float y) override;        
+    ClickType::Type clickType(float x, float y) override; 
+    float scaleFactor() const;       
 
     /// current value of output port
     double value() const override;

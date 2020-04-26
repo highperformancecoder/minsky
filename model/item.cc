@@ -192,11 +192,10 @@ namespace minsky
   // Refactor resize() code for all canvas items here. For feature 25
   void Item::resize(const LassoBox& b)
   {
-    float wb=iWidth(), hb=iHeight(), invZ=1/zoomFactor();   
+    float invZ=1/zoomFactor();   
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
     iWidth(abs(b.x1-b.x0)*invZ);
-    iHeight(abs(b.y1-b.y0)*invZ);
-    iScaleFactor(max(1.0,min(iWidth()/wb,iHeight()/hb)));        
+    iHeight(abs(b.y1-b.y0)*invZ);     
   }
   
   void Item::drawResizeHandles(cairo_t* cairo) const
@@ -224,7 +223,7 @@ namespace minsky
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=rotation() * M_PI / 180.0; 
-    pango.setFontSize(12*iScaleFactor()*z);
+    pango.setFontSize(12*z);
     pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates
     w=0.5*pango.width()+2*z; 
