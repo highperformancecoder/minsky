@@ -404,17 +404,11 @@ namespace minsky
     margins(left,right,top,bottom);
     float dx=(x-this->x())*cos(rotation()*M_PI/180)-
       (y-this->y())*sin(rotation()*M_PI/180);
-    //float dy=(x-this->x())*sin(rotation()*M_PI/180)+
-    //  (y-this->y())*cos(rotation()*M_PI/180);      
     float w=0.5*iconWidth*z,h=0.5*iconHeight*z;
     if (w-right*edgeScale()<dx)
       return IORegion::output;
     else if (-w+left*edgeScale()>dx)
       return IORegion::input;
-    //else if (h-bottom*edgeScale()<dy)
-    //  return IORegion::footer;
-    //else if (-h+top*edgeScale()>dy)
-    //  return IORegion::header;
     else     
       return IORegion::none;
   }
@@ -489,7 +483,7 @@ namespace minsky
     // rescale contents to fit
     double x0, x1, y0, y1;
     contentBounds(x0,y0,x1,y1);
-    double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-z*(t+bm))/(y1-y0);
+    double sx=fabs(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=fabs(fabs(b.y0-b.y1)-z*(t+bm))/(y1-y0);
     resizeItems(items,sx,sy);
     resizeItems(groups,sx,sy);
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
@@ -788,7 +782,7 @@ namespace minsky
       // display I/O region in grey
       drawIORegion(cairo);
 
-      cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height+topMargin);
+      cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
 
 
               
@@ -848,15 +842,15 @@ namespace minsky
         else
           cairo_rotate(cairo, angle+M_PI);
 
-        double offset = - displayContents()*0.45*this->iconHeight;
+        //double offset = - displayContents()*0.45*this->iconHeight;
         // prepare a background for the text, partially obscuring graphic
         double transparency=displayContents()? 0.25: 1;
         cairo_set_source_rgba(cairo,0,1,1,0.5*transparency);
-        cairo_rectangle(cairo,-w,-h+offset-0.5*height,2*w,2*h);
+        cairo_rectangle(cairo,-w,-h+4-0.5*(height-topMargin)/z,2*w,2*h);
         cairo_fill(cairo);
 
         // display text
-        cairo_move_to(cairo, -w+1, h-4 +offset-0.5*height);
+        cairo_move_to(cairo, -w+1, h-4-0.5*(height-topMargin)/z);
         cairo_set_source_rgba(cairo,0,0,0,transparency);
         cairo_show_text(cairo,title.c_str());
       }
