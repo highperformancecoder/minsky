@@ -112,15 +112,15 @@ namespace minsky
       return m_rotation;
     }
     
-    double iWidth() const {return m_width;}
-    double iWidth(const double& w) {
+    float iWidth() const {return m_width;}
+    float iWidth(const float& w) {
       m_width=w;
       bb.update(*this);
       return m_width;
     }
     
-    double iHeight() const {return m_height;}
-    double iHeight(const double& h) {
+    float iHeight() const {return m_height;}
+    float iHeight(const float& h) {
       m_height=h;
       bb.update(*this);
       return m_height;

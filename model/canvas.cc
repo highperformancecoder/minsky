@@ -167,11 +167,27 @@ namespace minsky
       case LassoMode::itemResize:
         if (item)
           {
-            item->resize(lasso);
             // resize both operator and variable in coupled integral variable. for feature 94
-            if (auto i=dynamic_cast<IntOp*>(item.get()))
-               if (i->coupled())
-                 i->intVar->resize(lasso);
+            if (auto i=dynamic_cast<IntOp*>(item.get())) {
+               if (i->coupled()) {
+				  i->resize(lasso); 
+				   
+				  float invZ=1.0/i->zoomFactor(); 
+				  
+                  float oldIWidth=i->iWidth();
+                  
+                  i->intVar->iWidth(std::abs(lasso.x1-lasso.x0)*invZ);
+                  i->intVar->iWidth(i->intVar->iWidth() * i->iWidth()/oldIWidth);
+             
+                  float oldIHeight=i->iHeight();
+                  
+                  i->intVar->iHeight(std::abs(lasso.y1-lasso.y0)*invZ);
+                  i->intVar->iHeight(i->intVar->iHeight() * i->iHeight()/oldIHeight);
+                  
+                  item->bb.update(*item);
+                  
+			  } else item->resize(lasso);
+			} else item->resize(lasso);  
             requestRedraw();
           }
         break;
