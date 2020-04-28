@@ -67,7 +67,7 @@ namespace minsky
   
   float Item::x() const 
   {
-    if (auto g=group.lock())
+    if (auto g=group.lock()) 
       return zoomFactor()*m_x+g->x();
     else
       return m_x;
@@ -87,6 +87,13 @@ namespace minsky
       return g->zoomFactor()*g->relZoom;
     else
       return 1;
+  }
+  
+  float Item::scaleFactor() const
+  {
+	float w=iWidth(), h=iHeight();  
+	if (m_height>0 && m_width>0 && m_width < w && m_height < h) return std::max(m_sf,std::max(static_cast<double>(w)/m_width,static_cast<double>(h)/m_height)); // don't understand why this doesn't work, when overrid version in operator.cc does./
+	else return m_sf;
   }
   
   void Item::deleteAttachedWires()
@@ -132,7 +139,10 @@ namespace minsky
       }          
      
     // then, check whether a resize handle has been selected  
-	float w=0.5*width()*zoomFactor(), h=0.5*height()*zoomFactor(); 
+	float w=0.5*width()*zoomFactor(), h=0.5*height()*zoomFactor();
+	// make sure resize handles can be grabbed at right-hand corners of coupled integral variable too. for feature 94.
+      if (const IntOp* i=dynamic_cast<const IntOp*>(this))
+        if (i->coupled()) w=iWidth()*zoomFactor();    	 
     if (abs(abs(x-this->x())-w) < portRadiusMult*zoomFactor() &&	  
             abs(abs(y-this->y())-h) < portRadiusMult*zoomFactor() &&	  
             abs(hypot((x-this->x()),(y-this->y()))-hypot(w,h)) < portRadiusMult*zoomFactor())	  
@@ -203,7 +213,10 @@ namespace minsky
     {
       cairo::CairoSave cs(cairo);
       auto z=zoomFactor();
-      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadiusMult*z;
+      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadiusMult*z; 
+      // make sure resize handles appear at least at right-hand corners of coupled integral variable. for feature 94.
+      if (const IntOp* i=dynamic_cast<const IntOp*>(this))
+        if (i->coupled()) x+=i->intVar->iWidth()*z;     
       drawResizeHandle(cairo,x,y,sf);
       cairo_rotate(cairo,0.5*M_PI);
       drawResizeHandle(cairo,y,x,sf);
@@ -220,10 +233,11 @@ namespace minsky
   void Item::draw(cairo_t* cairo) const
   {
     Rotate r(rotation(),0,0);
+    cairo_scale(cairo,scaleFactor(),scaleFactor());   // unlike operator icon contents, this does nothing and I don't understand why...
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=rotation() * M_PI / 180.0; 
-    pango.setFontSize(12*z);
+    pango.setFontSize(12*scaleFactor()*z);
     pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates
     w=0.5*pango.width()+2*z; 

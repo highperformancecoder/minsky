@@ -143,6 +143,9 @@ namespace minsky
     Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
     double z=zoomFactor();
     float dx=xx-x(), dy=yy-y(), w=iWidth()*z, h=iHeight()*z;
+    // make sure resize handles can be grabbed at right-hand corners of coupled integral variable too. for feature 94.
+    if (const IntOp* i=dynamic_cast<const IntOp*>(this))
+      if (i->coupled()) w+=2.0*i->intVar->iWidth()*z;    
     if (fabs(fabs(dx)-w) < portRadius*z &&
         fabs(fabs(dy)-h) < portRadius*z &&
         fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
@@ -340,7 +343,7 @@ namespace minsky
     cairo::Path clipPath(cairo);
 
     // compute port coordinates relative to the icon's
-    // point of reference. Move out port 2 pixels right for ticket For ticket 362.
+    // point of reference. Move outport 2 pixels right for ticket For ticket 362.
     double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
       x2=l, y2=numPorts() > 2? h-3: 0;
                   
@@ -595,6 +598,25 @@ namespace minsky
       if (auto g=group.lock())
         g->removeItem(*intVar);
   }
+  
+  float IntOp::x() const 
+  {
+    if (auto g=group.lock())
+      return zoomFactor()*m_x+g->x();
+    else {
+	  // adjust x() for coupled integral resizing operation. for feature 94.	
+	  if (coupled()) return intVar->m_x;	
+      return m_x;
+     }
+  }
+
+  float IntOp::y() const 
+  {
+    if (auto g=group.lock())
+      return zoomFactor()*m_y+g->y();
+    else
+      return m_y;
+  }  
 
   
   string IntOp::description(const string& a_desc)

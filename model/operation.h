@@ -82,7 +82,7 @@ namespace minsky
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) override; 
-    float scaleFactor() const;       
+    float scaleFactor() const override;       
 
     /// current value of output port
     double value() const override;
@@ -187,6 +187,8 @@ namespace minsky
     {return intVar->valueId();}
 
     void removeControlledItems() const override;
+    float x() const override;
+    float y() const override;
 
    /// return reference to integration variable
     VariablePtr intVar; 
