@@ -21,16 +21,40 @@
 #include "str.h"
 #include <ctype.h>
 #include <stdlib.h>
+#include <boost/spirit/include/qi.hpp>
+namespace qi = boost::spirit::qi;
 
 using namespace std;
+
+namespace
+// Extract leading number from a string. See https://stackoverflow.com/questions/45600212/regular-expression-multiple-floating-point.
+{
+  bool parseLine(std::string const& line, double& num) {
+      using It = std::string::const_iterator;
+      //qi::rule<It, std::string()> quoted = *~qi::char_(' ') ;
+  
+      It f = line.begin(), l = line.end();
+      //return qi::phrase_parse(f, l, qi::double_ >> quoted, qi::blank, num, name);
+      return qi::phrase_parse(f, l, qi::double_, qi::blank, num);
+  }	
+	
+}
+
 namespace minsky
 {
   FlowCoef::FlowCoef(const string& formula)
   {
       const char* f=formula.c_str();
       char* tail;
+      double fnum;      
+      
       // attempt to read leading numerical value
-      coef=strtod(f,&tail);
+      if (parseLine(f, fnum)) {  	
+	       const char* ff=(std::to_string(fnum)).c_str();  
+           coef=strtod(ff,&tail);
+      } else coef=strtod(f,&tail);
+      
+      //coef=strtod(f,&tail);
       if (tail==f) // oops, that failed, check if there's a leading - sign
         {
           // skip whitespace
