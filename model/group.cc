@@ -404,11 +404,15 @@ namespace minsky
     margins(left,right,top,bottom);
     float dx=(x-this->x())*cos(rotation()*M_PI/180)-
       (y-this->y())*sin(rotation()*M_PI/180);
+    float dy=(x-this->x())*sin(rotation()*M_PI/180)+
+      (y-this->y())*cos(rotation()*M_PI/180);      
     float w=0.5*iconWidth*z,h=0.5*iconHeight*z;
     if (w-right*edgeScale()<dx)
       return IORegion::output;
     else if (-w+left*edgeScale()>dx)
       return IORegion::input;
+    else if (-h+top>dy || h-bottom<dy) 
+      return IORegion::topBottom;  
     else     
       return IORegion::none;
   }
@@ -672,7 +676,7 @@ namespace minsky
     // account for shrinking margins
     float readjust=zoomFactor()/edgeScale() / (displayZoom>1? displayZoom:1);
     margins(l,r,t,bm);
-    l*=readjust; r*=readjust; t*=readjust; bm*=readjust;
+    l*=readjust; r*=readjust; t*=zoomFactor(); bm*=zoomFactor();
     displayZoom = max(displayZoom, 
                       float(max((x1-x())/(0.5f*iconWidth-r), max((x()-x0)/(0.5f*iconWidth-l), max((y1-y())/(0.5f*iconHeight-bm), (y()-y0)/(0.5f*iconHeight-t)) ))));
   
@@ -750,14 +754,15 @@ namespace minsky
     auto z=zoomFactor();
     double w=0.5*iconWidth*z, h=0.5*iconHeight*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadius*z &&
-        fabs(fabs(dy)-h) < portRadius*z)
+    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
+        fabs(fabs(dy)-h) < portRadiusMult*z &&
+        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
       return ClickType::onResize;
     if (displayContents() && inIORegion(x,y)==IORegion::none)
       return ClickType::outside;
     if (auto item=select(x,y))
       return item->clickType(x,y);
-    if (abs(x-this->x())<w && abs(y-this->y())<h)
+    if ((abs(x-this->x())<w && abs(y-this->y())<h) || inIORegion(x,y)==IORegion::topBottom) // check also if (x,y) is within top and bottom margins of group. for feature 88
       return ClickType::onItem;
     return ClickType::outside;
   }
@@ -771,7 +776,7 @@ namespace minsky
     float leftMargin, rightMargin, topMargin, bottomMargin;
     margins(leftMargin, rightMargin, topMargin, bottomMargin);
     float z=zoomFactor();
-    leftMargin*=edgeScale(); rightMargin*=edgeScale();
+    leftMargin*=edgeScale(); rightMargin*=edgeScale(); topMargin*=z; bottomMargin*=z;
 
     unsigned width=z*this->iconWidth, height=z*this->iconHeight;
 
@@ -921,6 +926,8 @@ namespace minsky
     margins(left,right,top,bottom);
     left*=edgeScale();
     right*=edgeScale();
+    top*=zoomFactor();
+    bottom*=zoomFactor();
     float y=0, dy=10*edgeScale();
     for (auto& i: inVariables)
       {
@@ -962,7 +969,25 @@ namespace minsky
     cairo_line_to(cairo,w-right,-h);
     cairo_close_path(cairo);
     cairo_fill(cairo);
-
+    
+    // draw top margin. for feature 88
+    cairo_move_to(cairo,-w,-h);
+    cairo_line_to(cairo,-w,-h-top);
+    cairo_line_to(cairo,w,-h-top);
+    cairo_line_to(cairo,w,-h);
+    cairo_line_to(cairo,-w,-h);
+    cairo_close_path(cairo);
+    cairo_fill(cairo);    
+    
+    // draw bottom margin. for feature 88
+    cairo_move_to(cairo,-w,h);
+    cairo_line_to(cairo,-w,h+bottom);
+    cairo_line_to(cairo,w,h+bottom);
+    cairo_line_to(cairo,w,h);
+    cairo_line_to(cairo,-w,h);
+    cairo_close_path(cairo);
+    cairo_fill(cairo);    
+    
     cairo_restore(cairo);
   }
 

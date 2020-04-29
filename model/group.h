@@ -219,7 +219,7 @@ namespace minsky
     void moveContents(Group& source);     
 
     /// returns which I/O region (x,y) is in if any
-    struct IORegion {enum type {none,input,output};};
+    struct IORegion {enum type {none,input,output,topBottom};};
       
     IORegion::type inIORegion(float x, float y) const;
     /// check if item is a variable and located in an I/O region, and add it if it is
