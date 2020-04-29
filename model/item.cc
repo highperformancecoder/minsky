@@ -139,10 +139,7 @@ namespace minsky
       }          
      
     // then, check whether a resize handle has been selected  
-	float w=0.5*width()*zoomFactor(), h=0.5*height()*zoomFactor();
-	// make sure resize handles can be grabbed at right-hand corners of coupled integral variable too. for feature 94.
-    //  if (const IntOp* i=dynamic_cast<const IntOp*>(this))
-    //    if (i->coupled()) w=iWidth()*zoomFactor();    	 
+	float w=0.5*width()*zoomFactor(), h=0.5*height()*zoomFactor();	 
     if (abs(abs(x-this->x())-w) < portRadiusMult*zoomFactor() &&	  
             abs(abs(y-this->y())-h) < portRadiusMult*zoomFactor() &&	  
             abs(hypot((x-this->x()),(y-this->y()))-hypot(w,h)) < portRadiusMult*zoomFactor())	  
