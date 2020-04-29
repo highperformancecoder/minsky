@@ -92,7 +92,7 @@ namespace minsky
   float Item::scaleFactor() const
   {
 	float w=iWidth(), h=iHeight();  
-	if (m_height>0 && m_width>0 && m_width < w && m_height < h) return std::max(m_sf,std::max(static_cast<double>(w)/m_width,static_cast<double>(h)/m_height)); // don't understand why this doesn't work, when overrid version in operator.cc does./
+	if (m_height>0 && m_width>0 && m_width < w && m_height < h) return std::max(static_cast<double>(m_sf),std::max(static_cast<double>(w)/m_width,static_cast<double>(h)/m_height)); // don't understand why this doesn't work, when overrid version in operator.cc does./
 	else return m_sf;
   }
   
@@ -141,8 +141,8 @@ namespace minsky
     // then, check whether a resize handle has been selected  
 	float w=0.5*width()*zoomFactor(), h=0.5*height()*zoomFactor();
 	// make sure resize handles can be grabbed at right-hand corners of coupled integral variable too. for feature 94.
-      if (const IntOp* i=dynamic_cast<const IntOp*>(this))
-        if (i->coupled()) w=iWidth()*zoomFactor();    	 
+    //  if (const IntOp* i=dynamic_cast<const IntOp*>(this))
+    //    if (i->coupled()) w=iWidth()*zoomFactor();    	 
     if (abs(abs(x-this->x())-w) < portRadiusMult*zoomFactor() &&	  
             abs(abs(y-this->y())-h) < portRadiusMult*zoomFactor() &&	  
             abs(hypot((x-this->x()),(y-this->y()))-hypot(w,h)) < portRadiusMult*zoomFactor())	  

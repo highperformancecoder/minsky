@@ -80,11 +80,12 @@ namespace minsky
   class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
-    double m_width=0, m_height=0, m_sf=1;
+    double m_width=0, m_height=0;
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
+    float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
