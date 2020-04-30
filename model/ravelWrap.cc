@@ -505,17 +505,13 @@ namespace minsky
       throw error(ravel_lastErr());
   }
 
-  void Ravel::loadDataCubeFromVariable(const ITensor& v)
+  void Ravel::populateHypercube(const Hypercube& hc)
   {
-    if (ravel && dataCube)
+    if (ravel)
       {
-        if (!v.index().empty())
-          throw runtime_error("Sparse data not currently supported");
-        // this ensure that handles are restored correctly after loading a .mky file. 
-        RavelState state=initState.empty()? getState(): initState;
-        initState.clear();
+        RavelState state=getState();
         ravel_clear(ravel);
-        for (auto& i: v.hypercube().xvectors)
+        for (auto& i: hc.xvectors)
           {
             vector<string> ss;
             for (auto& j: i) ss.push_back(str(j));
@@ -530,7 +526,20 @@ namespace minsky
             ravel_displayFilterCaliper(ravel,h,false);
           }
         if (state.empty())
-          setRank(v.hypercube().rank());
+          setRank(hc.rank());
+        else
+          applyState(state);
+      }
+  }
+  
+  void Ravel::loadDataCubeFromVariable(const ITensor& v)
+  {
+    if (ravel && dataCube)
+      {
+        // this ensure that handles are restored correctly after loading a .mky file. 
+        RavelState state=initState.empty()? getState(): initState;
+        initState.clear();
+        populateHypercube(v.hypercube());
 #ifndef NDEBUG
         if (state.empty())
           {

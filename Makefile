@@ -258,6 +258,8 @@ dist:
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	cd ecolab/graphcode; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/graphcode/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd certify; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/certify/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
 
 lcov:

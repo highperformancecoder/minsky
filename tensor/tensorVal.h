@@ -70,7 +70,6 @@ namespace civita
   /// represent a tensor in initialisation expressions
   class TensorVal: public ITensorVal
   {
-    std::vector<size_t> m_index;
     std::vector<double> data;
     Timestamp m_timestamp;
     CLASSDESC_ACCESS(TensorVal);
@@ -80,8 +79,8 @@ namespace civita
     TensorVal(const Hypercube& hc): ITensorVal(hc) {}
     TensorVal(Hypercube&& hc): ITensorVal(std::move(hc)) {}
     TensorVal(const std::vector<unsigned>& dims): ITensorVal(dims) {}
-    
-    std::vector<size_t> index() const override {return m_index;}
+
+    using ITensorVal::index;
     void index(const std::vector<size_t>& idx) override
     {m_index=idx; if (!idx.empty()) data.resize(idx.size());}
     const Hypercube& hypercube(const Hypercube& hc) override

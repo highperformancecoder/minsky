@@ -45,7 +45,6 @@ namespace minsky
   struct TimeOp: public ITensor
   {
     size_t size() const override {return 1;}
-    vector<size_t> index() const override {return {};}
     double operator[](size_t) const override {return EvalOpBase::t;}
     Timestamp timestamp() const override {return {};}
   };
@@ -193,30 +192,10 @@ namespace minsky
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
   }
                                                                                     
-  template <>
-  class GeneralTensorOp<OperationType::sum>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x+=y;},0){}
-  };
-  template <>
-  class GeneralTensorOp<OperationType::product>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x*=y;},1){}
-  };
-  template <>
-  class GeneralTensorOp<OperationType::infimum>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
-   };
-  template <>
-  class GeneralTensorOp<OperationType::supremum>: public civita::ReductionOp
-  {
-  public:
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
-   };
+  template <> class GeneralTensorOp<OperationType::sum>: public civita::Sum {};
+  template <> class GeneralTensorOp<OperationType::product>: public civita::Product {};
+  template <> class GeneralTensorOp<OperationType::infimum>: public civita::Min {};
+  template <> class GeneralTensorOp<OperationType::supremum>: public civita::Max {};
   template <>
   class GeneralTensorOp<OperationType::any>: public civita::ReductionOp
   {
@@ -439,7 +418,6 @@ namespace minsky
       m_index.insert(m_index.end(),indices.begin(), indices.end());
       if (!m_index.empty()) m_size=m_index.size();
     }
-    vector<size_t> index() const override {return m_index;}
     size_t size() const override {return m_size;}
     Timestamp timestamp() const override {
       Timestamp t;
@@ -474,25 +452,26 @@ namespace minsky
     }
   };
 
-  class RavelTensor: public civita::CachedTensorOp
+  class RavelTensor: public civita::ITensor
   {
     const Ravel& ravel;
-    TensorPtr arg;
-   
-    void computeTensor() const override  
-    {
-      const_cast<Ravel&>(ravel).loadDataCubeFromVariable(*arg); 	 
-      ravel.loadDataFromSlice(cachedResult);
-      m_timestamp = Timestamp::clock::now();
-    }    
+    vector<TensorPtr> chain;
+    
     CLASSDESC_ACCESS(Ravel);
   public:
-    RavelTensor(const Ravel& ravel): ravel(ravel) {}   
+    RavelTensor(const Ravel& ravel): ravel(ravel) {}
+
     void setArgument(const TensorPtr& a,const std::string&,double) override {
-      arg=a;			
-      hypercube(ravel.hypercube());
+      chain=move(civita::createRavelChain(ravel.getState(), a));
+      hypercube(chain.back()->hypercube());
     }
-    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
+
+    double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
+    size_t size() const override {return chain.empty()? 0: chain.back()->size();}
+    const vector<size_t>& index() const override
+    {if (chain.empty()) return m_index; else return chain.back()->index();}
+    Timestamp timestamp() const override
+    {return chain.empty()? Timestamp(): chain.back()->timestamp();}
   };
        
   std::shared_ptr<ITensor> TensorOpFactory::create

@@ -20,6 +20,7 @@
 #ifndef CIVITA_TENSOROP_H
 #define CIVITA_TENSOROP_H
 #include "tensorVal.h"
+#include "ravelState.h"
 
 #include <functional>
 #include <memory>
@@ -35,12 +36,12 @@ namespace civita
     std::shared_ptr<ITensor> arg;
     template <class F>
     ElementWiseOp(F f, const std::shared_ptr<ITensor>& arg={}): f(f), arg(arg) {}
-    void setArgument(const TensorPtr& a,const std::string&,double) override
-    {arg=a; hypercube(arg->hypercube());}
-    std::vector<size_t> index() const override {return arg->index();}
-    double operator[](size_t i) const override {return f((*arg)[i]);}
-    size_t size() const override {return arg->size();}
-    Timestamp timestamp() const override {return arg->timestamp();}
+    void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
+    const Hypercube& hypercube() const {return arg? arg->hypercube(): m_hypercube;}
+    const std::vector<size_t>& index() const override {return arg? arg->index(): m_index;}
+    double operator[](size_t i) const override {return arg? f((*arg)[i]): 0;}
+    size_t size() const override {return arg? arg->size(): 0;}
+    Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
 
   /// perform a binary operation elementwise over two tensor arguments.
@@ -68,13 +69,12 @@ namespace civita
     }
 
     // TODO merge indices
-    std::vector<size_t> index() const override {return {};}
     double operator[](size_t i) const override {
       // scalars are broadcast
       return f(arg1->rank()? arg1->atHCIndex(i): arg1->atHCIndex(0),
                arg2->rank()? arg2->atHCIndex(i): arg2->atHCIndex(0));
     }
-    size_t size() const override {return arg1->size()>1? arg1->size(): arg2->size();}
+    size_t size() const override {return arg1 && arg1->size()>1? arg1->size(): (arg2? arg2->size(): 0);}
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}
   };
@@ -83,15 +83,12 @@ namespace civita
   class ReduceArguments: public ITensor
   {
     std::vector<TensorPtr> args;
-    std::vector<size_t> m_index;
     std::function<void(double&,double)> f;
     double init;
   public:
     template <class F> ReduceArguments(F f, double init): f(f), init(init) {}
     void setArguments(const std::vector<TensorPtr>& a,const std::string&,double) override;
-    std::vector<size_t> index() const override {return m_index;}
     double operator[](size_t i) const override;
-    size_t size() const override {return m_index.empty()? hypercube().numElements(): m_index.size();}
     Timestamp timestamp() const override;
   };
     
@@ -108,8 +105,6 @@ namespace civita
     ReduceAllOp(F f, double init, const std::shared_ptr<ITensor>& arg={}):
       f(f),init(init), arg(arg) {}
 
-    std::vector<size_t> index() const override {return {};}
-    size_t size() const override {return 1;}
     double operator[](size_t) const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
@@ -119,6 +114,8 @@ namespace civita
   class ReductionOp: public ReduceAllOp
   {
     size_t dimension;
+    /// array[size()] of arg hypercube indices to sum over at each position
+    std::map<size_t, std::vector<size_t>> sumOverIndices;
   public:
    
     template <class F>
@@ -126,7 +123,6 @@ namespace civita
       ReduceAllOp(f,init) {ReduceAllOp::setArgument(arg,dimName,0);}
 
     void setArgument(const TensorPtr& a, const std::string&,double) override;
-    size_t size() const override {return hypercube().numElements();}
     double operator[](size_t i) const override;
   };
 
@@ -140,7 +136,7 @@ namespace civita
     /// logically const
     virtual void computeTensor() const=0;
   public:
-    std::vector<size_t> index() const override {return cachedResult.index();}
+    const std::vector<size_t>& index() const override {return cachedResult.index();}
     size_t size() const override {return cachedResult.size();}
     double operator[](size_t i) const override;
     const Hypercube& hypercube() const override {return cachedResult.hypercube();}
@@ -148,6 +144,57 @@ namespace civita
     const Hypercube& hypercube(Hypercube&& hc) override {return cachedResult.hypercube(std::move(hc));}
   };
 
+  /// calculate the sum along an axis or whole tensor
+  struct Sum: public ReductionOp
+  {
+  public:
+    Sum(): ReductionOp([this](double& x, double y,size_t){x+=y;},0) {}
+  };
+  
+  /// calculate the product along an axis or whole tensor
+  struct Product: public ReductionOp
+  {
+  public:
+    Product(): ReductionOp([this](double& x, double y,size_t){x*=y;},1) {}
+  };
+  
+  /// calculate the minimum along an axis or whole tensor
+  class Min: public civita::ReductionOp
+  {
+  public:
+    Min(): civita::ReductionOp([](double& x, double y,size_t){if (y<x) x=y;},std::numeric_limits<double>::max()){}
+   };
+  /// calculate the maximum along an axis or whole tensor
+  class Max: public civita::ReductionOp
+  {
+  public:
+    Max(): civita::ReductionOp([](double& x, double y,size_t){if (y>x) x=y;},-std::numeric_limits<double>::max()){}
+   };
+
+  /// calculates the average along an axis or whole tensor
+  struct Average: public ReductionOp
+  {
+    mutable size_t count;
+  public:
+    Average(): ReductionOp([this](double& x, double y,size_t){x+=y; ++count;},0) {}
+    double operator[](size_t i) const override
+    {count=0; return ReductionOp::operator[](i)/count;}
+  };
+
+  /// calculates the standard deviation along an axis or whole tensor
+  struct StdDeviation: public ReductionOp
+  {
+    mutable size_t count;
+    mutable double sqr;
+  public:
+    StdDeviation(): ReductionOp([this](double& x, double y,size_t){x+=y; sqr+=y*y; ++count;},0) {}
+    double operator[](size_t i) const override {
+      count=0; sqr=0;
+      double av=ReductionOp::operator[](i)/count;
+      return sqrt(std::max(0.0, sqr/count-av*av));
+    }
+  };
+  
   struct DimensionedArgCachedOp: public CachedTensorOp
   {
     /// dimension to apply operation over. >rank = all dims
@@ -174,6 +221,38 @@ namespace civita
     }      
     void computeTensor() const override;
   };
+
+  /// corresponds to OLAP slice operation
+  class Slice: public ITensor
+  {
+    size_t stride=1, split=1, sliceIndex=0;
+    TensorPtr arg;
+    std::vector<size_t> arg_index;
+  public:
+    void setArgument(const TensorPtr& a,const std::string&,double) override;
+    double operator[](size_t i) const override;
+    Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  /// corresponds to the OLAP pivot operation
+  class Pivot: public ITensor
+  {
+    std::vector<size_t> permutation;
+    TensorPtr arg;
+    size_t pivotIndex(size_t) const; ///< return index into arg from index into this
+  public:
+    void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
+    /// set's the pivots orientation
+    /// @param axes - list of axes that are the output
+    void setOrientation(const std::vector<std::string>& axes);
+    double operator[](size_t i) const override
+    {return arg->atHCIndex(pivotIndex(i));}
+    Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  /// creates a chain of tensor operations that represents a Ravel in
+  /// state \a state, operating on \a arg
+  std::vector<TensorPtr> createRavelChain(const minsky::RavelState&, const TensorPtr& arg);
 
 }
 
