@@ -23,7 +23,6 @@
 #include <pango.h>
 #include "minsky_epilogue.h"
 #include "zStream.h"
-#include "a85.h"
 
 #include <boost/asio/ssl/error.hpp>
 #include <boost/asio/ssl/stream.hpp>
@@ -149,14 +148,13 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   if (found!=std::string::npos) {
       vector<unsigned char> zbuf(res.get().body().size());
       DeflateZStream zs(res.get().body(), zbuf);
-      zs.deflate();  
+      zs.deflate();
       
-      vector<char> cbuf(a85::size_for_a85(zs.total_out,false));
-      a85::to_a85(&zbuf[0],zs.total_out, &cbuf[0], false);
-      // this ensures that the escape sequence ']]>' never appears in the data
-      replace(cbuf.begin(),cbuf.end(),']','~');      
+      //vector<char> cbuf(zs.total_out);
+      //memcpy(&cbuf,&zbuf,zs.total_out);   
+      //memcpy(&cbuf[0],&zbuf[0],zbuf.size()*sizeof(zbuf[0]));      
     
-      outFile << cbuf.data();
+      outFile << zbuf.data();
   }
   else outFile << res.get().body();                                                    
        
