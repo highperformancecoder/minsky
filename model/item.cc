@@ -90,10 +90,14 @@ namespace minsky
   }
   
   float Item::scaleFactor() const
-  {
-	float w=iWidth(), h=iHeight();  
-	if (m_height>0 && m_width>0 && m_width < w && m_height < h) return std::max(static_cast<double>(m_sf),std::max(static_cast<double>(w)/m_width,static_cast<double>(h)/m_height)); // don't understand why this doesn't work, when overrid version in operator.cc does./
-	else return m_sf;
+  { 
+	// don't know why this doesn't work, when overridden version in operation.cc does. this->width() and this->height() seem not to exist at this point and I don't know how to initialize them.     
+	//auto i=make_shared<Item>(*this);  
+	//bb.update(*i);
+	//float w=i->iWidth(), h=i->iHeight();  
+	//if (i->width() < w && i->height() < h) return std::max(static_cast<double>(m_sf),std::max(static_cast<double>(w)/i->width(),static_cast<double>(h)/i->height())); 
+	//else return m_sf;
+	return m_sf;
   }
   
   void Item::deleteAttachedWires()
@@ -230,7 +234,7 @@ namespace minsky
   void Item::draw(cairo_t* cairo) const
   {
     Rotate r(rotation(),0,0);
-    cairo_scale(cairo,scaleFactor(),scaleFactor());   // unlike operator icon contents, this does nothing and I don't understand why...
+    cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=rotation() * M_PI / 180.0; 
