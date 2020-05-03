@@ -91,6 +91,41 @@ namespace minsky
       throw runtime_error(string("compression failure: ")+(msg? msg:""));
     }
   };
+  
+  struct InflateFileZStream: public ZStream
+  {
+    string output{};
+    Bytef* inputData;
+    size_t inputSize;
+      
+    template <class I>
+    InflateFileZStream(const I& input):
+      ZStream((Bytef*)input, input->size(), 0,0),
+      inputData((Bytef*)input),inputSize(input->size())
+    {
+      next_out=(Bytef*)output.data();
+      avail_out=output.size();
+      if (inflateInit(this)!=Z_OK) throwError();
+    }
+    ~InflateFileZStream() {inflateEnd(this);}
+
+    void inflate() {
+      int err;
+      while ((err=::inflate(this,Z_SYNC_FLUSH))==Z_OK)
+        {
+          // try doubling size
+          output.resize(2*output.size());
+          next_out=(Bytef*)(output.data())+total_out;
+          avail_out=output.size()-total_out;
+          next_in=inputData+total_in;
+          avail_in=inputSize-total_in;
+        }
+      if (err!=Z_STREAM_END) throwError();
+    }
+    void throwError() {
+      throw runtime_error(string("compression failure: ")+(msg? msg:""));
+    }
+  };  
 }
 
 #include "zStream.cd"

@@ -17,27 +17,31 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CSVDialog.h"
-#include "group.h"
-#include "selection.h"
-#include <pango.h>
-#include "minsky_epilogue.h"
-#include "zStream.h"
-
-#include <boost/asio/ssl/error.hpp>
-#include <boost/asio/ssl/stream.hpp>
-#include <boost/asio.hpp>
-#include <boost/beast/core.hpp>          
-#include <boost/beast/http.hpp>          
-#include <boost/beast/version.hpp>  
-#include <boost/regex.hpp>
-#include <boost/filesystem.hpp>
-   
-#include "certify/include/boost/certify/extensions.hpp"         
-#include "certify/include/boost/certify/https_verification.hpp" 
-
-#include <cstdlib>
-#include <iostream>
+#include "CSVDialog.h"                                                           
+#include "group.h"                                                               
+#include "selection.h"                                                           
+#include <pango.h>                                                               
+#include "minsky_epilogue.h"                                                     
+#include "zStream.h"                                                           
+                                                                                 
+#include <boost/asio/ssl/error.hpp>                                              
+#include <boost/asio/ssl/stream.hpp>                                             
+#include <boost/asio.hpp>                                                        
+#include <boost/beast/core.hpp>                                                  
+#include <boost/beast/http.hpp>                                                  
+#include <boost/beast/version.hpp>                                               
+#include <boost/regex.hpp>                                                       
+#include <boost/filesystem.hpp>                                                  
+                                                                                 
+#include "certify/include/boost/certify/extensions.hpp"                          
+#include "certify/include/boost/certify/https_verification.hpp"                  
+                                                                                 
+#include <cstdlib>                                                               
+#include <iostream>                                                              
+#include <string>                                                                
+#include <stdexcept>                                                             
+#include <iomanip>                                                               
+#include <sstream>                                                        
 
 using namespace std;
 using namespace minsky;
@@ -52,6 +56,60 @@ void CSVDialog::reportFromFile(const std::string& input, const std::string& outp
   ifstream is(input);
   ofstream of(output);
   reportFromCSVFile(is,of,spec);
+}
+
+ // Adapted from https://github.com/boostorg/beast/issues/1813. Does not work unfortunately
+namespace 
+{
+  int gzdecompress(Byte *zdata, uLong nzdata, Byte *data, uLong ndata)
+  {
+     int err = 0;
+     z_stream d_stream = {0}; // decompression stream */
+     
+     static char dummy_head[2] = {
+         0x8 + 0x7 * 0x10,
+         (((0x8 + 0x7 * 0x10) * 0x100 + 30) / 31 * 31) & 0xFF,
+     };
+     
+     d_stream.zalloc = NULL;
+     d_stream.zfree = NULL;
+     d_stream.opaque = NULL;
+     d_stream.next_in = zdata;
+     d_stream.avail_in = 0;
+     d_stream.next_out = data;
+     
+     
+     if (inflateInit2(&d_stream, -MAX_WBITS) != Z_OK) {
+         return -1;
+     }
+     
+     // if(inflateInit2(&d_stream, 47) != Z_OK) return -1;
+     
+     while (d_stream.total_out < ndata && d_stream.total_in < nzdata) {
+         d_stream.avail_in = d_stream.avail_out = 1; /* force small buffers */
+         if((err = inflate(&d_stream, Z_NO_FLUSH)) == Z_STREAM_END)
+         break;
+     
+         if (err != Z_OK) {
+             if (err == Z_DATA_ERROR) {
+                 d_stream.next_in = (Bytef*) dummy_head;
+                 d_stream.avail_in = sizeof(dummy_head);
+                 if((err = inflate(&d_stream, Z_NO_FLUSH)) != Z_OK) {
+                     return -1;
+                 }
+             } else {
+                 return -1;
+             }
+         }
+     }
+     
+     if (inflateEnd(&d_stream)!= Z_OK)
+         return -1;
+     ndata = d_stream.total_out;
+     return 0;
+  
+  }
+
 }
 
 // Return file name after downloading a CSV file from the web.
@@ -72,10 +130,10 @@ std::string CSVDialog::loadWebFile(const std::string& url)
          
   auto const protocol =what[1];
   auto const host = what[2];
-  //auto const port = what[3];
+  auto const port = what[3];
   auto const target = what[4];
-  //auto const query = what[5];
-  //auto const fragment = what[6];  
+  auto const query = what[5];
+  auto const fragment = what[6];  
   
   // The io_context is required for all I/O
   boost::asio::io_context ioc;
@@ -125,6 +183,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
 
   // Declare a container to hold the response
   http::response_parser<http::string_body> res;
+  //http::response<http::string_body> res;
   res.body_limit((std::numeric_limits<std::uint64_t>::max)());
 
   // Receive the HTTP response
@@ -146,17 +205,89 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   std::size_t found = targetStr.find(fileExt);
   
   if (found!=std::string::npos) {
-      vector<unsigned char> zbuf(res.get().body().size());
-      DeflateZStream zs(res.get().body(), zbuf);
-      zs.deflate();
+	  
+	   InflateFileZStream zs(&res.get().body());
+       zs.inflate();
+	   
+       outFile << zs.output;
+                 
+        // Adapted from https://github.com/boostorg/beast/issues/1813. Not working.
+        
+        //Byte* out;
+        //uLong nzdata,ndata;
+        //int status = gzdecompress(reinterpret_cast<Byte*>(&res.get().body()),nzdata, out,ndata);
+        //if (status==0) {
+        //   size_t len;
+        //   std::string s( reinterpret_cast<char const*>(out), len ) ;
+        //   outFile << s;   
+	    //} else throw runtime_error("Failed to decompress zipped CSV file");
+	   
+       // Adapted from https://pastebin.com/DiUME7Z1 based on discussions at https://github.com/boostorg/beast/issues/664. Unfortunately I have not been able to get it to work.
       
-      //vector<char> cbuf(zs.total_out);
-      //memcpy(&cbuf,&zbuf,zs.total_out);   
-      //memcpy(&cbuf[0],&zbuf[0],zbuf.size()*sizeof(zbuf[0]));      
+        //z_stream zs;                        // z_stream is zlib's control structure      
+        //memset(&zs, 0, sizeof(zs));
+        //
+        //if (inflateInit2(&zs, MAX_WBITS + 16) != Z_OK)
+        //    throw(std::runtime_error("inflateInit failed while decompressing."));
+        //
+        ////zs.next_in = reinterpret_cast<Bytef*>(&res.get().body());
+        //zs.next_in = (Bytef*)res.get().body().data();
+        //zs.avail_in = res.get().body().size();
+        //
+        //int ret;
+        //char outbuffer;
+        //std::string outstring;
+        //
+        //// get the decompressed bytes blockwise using repeated calls to inflate
+        //do {
+        //    zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
+        //    zs.avail_out = sizeof(outbuffer);
+        //
+        //    ret = inflate(&zs, 0);
+        //
+        //    if (outstring.size() < zs.total_out) {
+        //        outstring.append(outbuffer,
+        //            zs.total_out - outstring.size());
+        //    }
+        //
+        //} while (ret == Z_OK);
+        //
+        //inflateEnd(&zs);
+        //
+        //if (ret != Z_STREAM_END) {          // an error occurred that was not EOF
+        //    std::ostringstream oss;
+        //    oss << "Exception during zlib decompression: (" << ret << ") "
+        //        << zs.msg;
+        //    throw(std::runtime_error(oss.str()));
+        //}
+		//
+        //outFile << outstring;     	   
+	   
     
-      outFile << zbuf.data();
-  }
-  else outFile << res.get().body();                                                    
+  }  else outFile << res.get().body();                                                    
+  
+  
+  // Adapted from https://pastebin.com/DiUME7Z1 based on discussion at https://github.com/boostorg/beast/issues/664. Does not work unfortunately.
+  //try    
+  //  {
+  //      //decompress with boost's interface
+  //      boost::iostreams::array_source src{ res.get().body().data(), res.get().body().size() };
+  //      boost::iostreams::filtering_istream is;
+  //      is.push(boost::iostreams::zlib_decompressor{});
+  //      is.push(src);
+  //      std::string s;
+  //      is >> s;
+  //      //std::cout << s << '\n';
+  //      outFile << s;
+  //
+  //      // decompress with zlib directly
+  //      std::cout << "decompress_string(res.body())=" << decompress_string(res.get().body()) << std::endl;     
+  //   
+  //  }
+  //  catch (const std::exception& e)
+  //  {
+  //      std::cout << "error: " << e.what() << std::endl;
+  //  }  
        
   // Gracefully close the socket
   boost::system::error_code ec;
