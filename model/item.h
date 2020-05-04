@@ -174,6 +174,7 @@ namespace minsky
     virtual void resize(const LassoBox& b);
     /// factor by which item has been resized
     virtual float scaleFactor() const;
+    virtual float scaleFactor(const float& sf);
     
     /// draw into a dummy cairo context, for purposes of calculating
     /// port positions

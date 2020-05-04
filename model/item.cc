@@ -91,14 +91,14 @@ namespace minsky
   
   float Item::scaleFactor() const
   { 
-	// don't know why this doesn't work, when overridden version in operation.cc does. this->width() and this->height() seem not to exist at this point and I don't know how to initialize them.     
-	//auto i=make_shared<Item>(*this);  
-	//bb.update(*i);
-	//float w=i->iWidth(), h=i->iHeight();  
-	//if (i->width() < w && i->height() < h) return std::max(static_cast<double>(m_sf),std::max(static_cast<double>(w)/i->width(),static_cast<double>(h)/i->height())); 
-	//else return m_sf;
-	return m_sf;
-  }
+    return m_sf;
+  }  
+  
+  float Item::scaleFactor(const float& sf) {
+    m_sf=sf;
+    bb.update(*this);
+    return m_sf;
+  }   
   
   void Item::deleteAttachedWires()
   {
@@ -200,13 +200,14 @@ namespace minsky
     }
   }
   
-  // Refactor resize() code for all canvas items here. For feature 25
+  // Refactor resize() code for all canvas items here. For feature 25 and 94
   void Item::resize(const LassoBox& b)
   {
-    float invZ=1/zoomFactor();   
+    float w=width(), h=height(), invZ=1/zoomFactor();   
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
     iWidth(abs(b.x1-b.x0)*invZ);
     iHeight(abs(b.y1-b.y0)*invZ);     
+    scaleFactor(std::max(1.0,std::min(static_cast<double>(iWidth()/w),static_cast<double>(iHeight()/h))));
   }
   
   void Item::drawResizeHandles(cairo_t* cairo) const
@@ -234,7 +235,7 @@ namespace minsky
   void Item::draw(cairo_t* cairo) const
   {
     Rotate r(rotation(),0,0);
-    cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
+    //cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
     Pango pango(cairo);
     float w, h, z=zoomFactor();
     pango.angle=rotation() * M_PI / 180.0; 

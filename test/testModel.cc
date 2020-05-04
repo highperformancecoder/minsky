@@ -436,6 +436,18 @@ SUITE(Canvas)
       CHECK_EQUAL(400,c->x());
       CHECK_EQUAL(500,c->y());
     }
+    
+    TEST_FIXTURE(TestFixture,resizeItem)
+    {
+      cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
+      c->draw(surf.cairo());// reposition ports
+      float xc=c->x()+0.5*c->width(), yc=c->y()+0.5*c->height();      
+      CHECK(c->clickType(xc,yc) == ClickType::onResize); 
+      canvas.mouseDown(xc,yc);
+      canvas.mouseUp(800,1000);
+      CHECK_EQUAL(1062,c->x()+0.5*c->width());
+      CHECK_EQUAL(1460,c->y()+0.5*c->height());
+    }    
 
     TEST_FIXTURE(TestFixture,onSlider)
     {
