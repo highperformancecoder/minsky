@@ -65,14 +65,14 @@ namespace minsky
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
-    float left=0, right=0, top=0, bottom=0;  	  
+    float left=0, right=0, top, bottom;  	  
   public:
     void update(const Item& x);
     bool contains(float x, float y) const {
       // extend each item by a portradius to solve ticket #903
       return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
     }
-    bool valid() const {return left!=right && top!=bottom;}
+    bool valid() const {return left!=right;}
     float width() const {return right-left;}
     float height() const {return bottom-top;}
   };
