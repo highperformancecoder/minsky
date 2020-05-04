@@ -27,15 +27,23 @@ namespace qi = boost::spirit::qi;
 using namespace std;
 
 namespace
-// Extract leading number from a string. See https://stackoverflow.com/questions/45600212/regular-expression-multiple-floating-point.
+// Extract leading number from a string. for ticket 1177. See https://stackoverflow.com/questions/45600212/regular-expression-multiple-floating-point.
 {
   bool parseLine(std::string const& line, double& num) {
       using It = std::string::const_iterator;
-      //qi::rule<It, std::string()> quoted = *~qi::char_(' ') ;
+      
+      // Construct grammar to skip in input formula
+      qi::rule<It, std::string()> nan = -qi::lit("1.0#") >> qi::no_case["nan"] >> -('(' >> *(qi::char_ - ')') >> ')');
+      qi::rule<It, std::string()> inf = qi::no_case[qi::lit("inf") >> -qi::lit("inity")];                                          
+      qi::rule<It, std::string()> sign =   qi::lit('+') | '-';
+      qi::rule<It, std::string()> skip = qi::char_( '/' ) | qi::char_( '\\' ) | qi::char_( '_' );
   
-      It f = line.begin(), l = line.end();
-      //return qi::phrase_parse(f, l, qi::double_ >> quoted, qi::blank, num, name);
-      return qi::phrase_parse(f, l, qi::double_, qi::blank, num);
+      It first = line.begin(), last = line.end();
+      return qi::phrase_parse(first,
+                              last,
+                              qi::double_,
+                              qi::lexeme [ nan | inf | sign | skip],
+                              num);
   }	
 	
 }
@@ -46,15 +54,13 @@ namespace minsky
   {
       const char* f=formula.c_str();
       char* tail;
-      double fnum;      
+      double fnum;     
       
-      // attempt to read leading numerical value
+      // attempt to read leading numerical value. for ticket 1177
       if (parseLine(f, fnum)) {  	
-	       const char* ff=(std::to_string(fnum)).c_str();  
-           coef=strtod(ff,&tail);
+           coef=strtod(std::to_string(fnum).c_str(),&tail);
       } else coef=strtod(f,&tail);
       
-      //coef=strtod(f,&tail);
       if (tail==f) // oops, that failed, check if there's a leading - sign
         {
           // skip whitespace
