@@ -33,8 +33,19 @@
 namespace minsky
 {
   class GodleyTableEditor;
+  
+  // Godley broken out in a separate structure, as copying is non-default
+  struct Godley
+  {  
+    Godley() {}
+    virtual ~Godley() {}
+    // copy operations not deleted to allow ItemT<Group> to compile
+    Godley(const Godley& x) {};
+    Godley& operator=(const Godley&) {return *this;}
+ 
+  };	  
 
-  class GodleyIcon: public ItemT<GodleyIcon>
+  class GodleyIcon: public ItemT<GodleyIcon>, public Godley
   {
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
