@@ -159,7 +159,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   stream.handshake(ssl::stream_base::client);             
 
   // Set up an HTTP GET request message
-  http::request<http::string_body> req;
+  http::request<http::dynamic_body> req;
   req.method(http::verb::get);     
   req.target(target.str());     
   req.version(10);
