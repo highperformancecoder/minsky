@@ -42,7 +42,8 @@ namespace minsky
     // copy operations not deleted to allow ItemT<Group> to compile
     Godley(const Godley& x) {};
     Godley& operator=(const Godley&) {return *this;}
- 
+  private:
+    CLASSDESC_ACCESS(Godley);
   };	  
 
   class GodleyIcon: public ItemT<GodleyIcon>, public Godley
