@@ -34,10 +34,12 @@ namespace
      
      // Construct grammar to treat inf and nan separately in input formula. See https://www.boost.org/doc/libs/1_68_0/libs/spirit/doc/html/spirit/qi/reference/numeric/real.html
      qi::rule<it, std::string()> nan = -qi::lit("1.0#") >> qi::no_case["nan"] >> -('(' >> *(qi::char_ - ')') >> ')');
-     qi::rule<it, std::string()> inf = qi::no_case[qi::lit("inf") >> -qi::lit("inity")];    
+     qi::rule<it, std::string()> inf = qi::no_case[qi::lit("inf") >> -qi::lit("inity")];
+     qi::rule<it, std::string()> sign = qi::lit('+') | '-';
+    
      
      it first = line.begin(), last = line.end();
-     return (qi::phrase_parse(first, last, (inf | nan) ,qi::blank, pref));
+     return (qi::phrase_parse(first, last, -sign >> ( inf | nan) ,qi::blank, pref));
   }
 }
 
