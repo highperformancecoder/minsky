@@ -582,5 +582,21 @@ SUITE(TensorOps)
       expectedf={0,3,1,4,2};
       CHECK_ARRAY_EQUAL(expectedf, *chain.back(),5);
     }
-
+    
+    TEST_FIXTURE(TensorValFixture, calipered)
+    {
+      state.outputHandles={"date","country"};
+      state.handleStates["country"].minLabel="Canada";
+      state.handleStates["country"].displayFilterCaliper=true;
+      state.handleStates["date"].maxLabel="2011";
+      state.handleStates["date"].displayFilterCaliper=true;
+      arg->index({0,4,8,12,16});
+      auto chain=createRavelChain(state, arg);
+      vector<double> expected={2};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), expected.size());
+      vector<double> expectedi={3};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(), expectedi.size());
+      vector<size_t> dims={2,2};
+      CHECK_ARRAY_EQUAL(dims, chain.back()->shape(), 2);
+    }
 }

@@ -334,9 +334,8 @@ namespace civita
       }
     m_index=pi;
     // convert to lineal indexing
-    permutedIndex.resize(pi.size());
-    size_t j=0;
-    for (auto& i: pi) permutedIndex[j++]=i.second;
+    permutedIndex.clear();
+    for (auto& i: pi) permutedIndex.push_back(i.second);
     if (permutedIndex.size()) permutation.clear(); // not used in sparse case
   }
 
@@ -398,19 +397,19 @@ namespace civita
     auto& axv=arg->hypercube().xvectors[m_axis];
     for (auto i: m_permutation)
       xv.push_back(axv[i]);
-    vector<int> reverseIndex(axv.size(),-1);
+    vector<unsigned> reverseIndex(axv.size(),axv.size());
     for (size_t i=0; i<m_permutation.size(); ++i)
       reverseIndex[m_permutation[i]]=i;
-    set<size_t> indices;
-    for (size_t i=0; i<arg->size(); ++i)
+    map<size_t,size_t> indices;
+    for (size_t i=0; i<arg->index().size(); ++i)
       {
         auto splitted=arg->hypercube().splitIndex(arg->index()[i]);
-        splitted[m_axis]=reverseIndex[splitted[m_axis]];
-        auto l=hypercube().linealIndex(splitted);
-        indices.insert(l);
-        permutedIndex[l]=i;
+        if ((splitted[m_axis]=reverseIndex[splitted[m_axis]])<axv.size())
+          indices[hypercube().linealIndex(splitted)]=i;
       }
     m_index=indices;
+    permutedIndex.clear();
+    for (auto& i: indices) permutedIndex.push_back(i.second);
   }
   
   double PermuteAxis::operator[](size_t i) const
@@ -487,23 +486,21 @@ namespace civita
                 break;
               }
             }
-          // remove any perumtation items outside calipers
+          // remove any permutation items outside calipers
           if (!i.second.minLabel.empty())
-            {
-              size_t j=0;
-              for (; j<perm.size(); ++j)
-                if (str(xv[perm[j]],xv.dimension.units) == i.second.minLabel)
+            for (auto j=perm.begin(); j!=perm.end(); ++j)
+              if (str(xv[*j],xv.dimension.units) == i.second.minLabel)
+                {
+                  perm.erase(perm.begin(), j);
                   break;
-              perm.erase(perm.begin(), perm.begin()+j);
-            }
+                }
           if (!i.second.maxLabel.empty())
-            {
-              size_t j=0;
-              for (; j<perm.size(); ++j)
-                if (str(xv[perm[j]],xv.dimension.units) == i.second.maxLabel)
+            for (auto j=perm.begin(); j!=perm.end(); ++j)
+              if (str(xv[*j],xv.dimension.units) == i.second.maxLabel)
+                {
+                  perm.erase(j+1, perm.end());
                   break;
-              perm.erase(perm.begin()+j, perm.end());
-            }
+                }
           permuteAxis->setPermutation(move(perm));
           chain.push_back(permuteAxis);
         }
