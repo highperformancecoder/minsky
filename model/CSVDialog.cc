@@ -29,7 +29,8 @@
 #include <boost/asio.hpp>                                                        
 #include <boost/beast/core.hpp>                                                  
 #include <boost/beast/http.hpp>                                                  
-#include <boost/beast/version.hpp>                                               
+#include <boost/beast/version.hpp>  
+                                      
 #include <boost/regex.hpp>                                                       
 #include <boost/filesystem.hpp>                                                  
                                                                                  
@@ -39,9 +40,8 @@
 #include <cstdlib>                                                               
 #include <iostream>                                                              
 #include <string>                                                                
-#include <stdexcept>                                                             
-#include <iomanip>                                                               
-#include <sstream>                                                        
+#include <stdexcept>                                                                                                                         
+#include <sstream>      
 
 using namespace std;
 using namespace minsky;
@@ -58,59 +58,50 @@ void CSVDialog::reportFromFile(const std::string& input, const std::string& outp
   reportFromCSVFile(is,of,spec);
 }
 
- // Adapted from https://github.com/boostorg/beast/issues/1813. Does not work unfortunately
-namespace 
-{
-  int gzdecompress(Byte *zdata, uLong nzdata, Byte *data, uLong ndata)
-  {
-     int err = 0;
-     z_stream d_stream = {0}; // decompression stream */
-     
-     static char dummy_head[2] = {
-         0x8 + 0x7 * 0x10,
-         (((0x8 + 0x7 * 0x10) * 0x100 + 30) / 31 * 31) & 0xFF,
-     };
-     
-     d_stream.zalloc = NULL;
-     d_stream.zfree = NULL;
-     d_stream.opaque = NULL;
-     d_stream.next_in = zdata;
-     d_stream.avail_in = 0;
-     d_stream.next_out = data;
-     
-     
-     if (inflateInit2(&d_stream, -MAX_WBITS) != Z_OK) {
-         return -1;
-     }
-     
-     // if(inflateInit2(&d_stream, 47) != Z_OK) return -1;
-     
-     while (d_stream.total_out < ndata && d_stream.total_in < nzdata) {
-         d_stream.avail_in = d_stream.avail_out = 1; /* force small buffers */
-         if((err = inflate(&d_stream, Z_NO_FLUSH)) == Z_STREAM_END)
-         break;
-     
-         if (err != Z_OK) {
-             if (err == Z_DATA_ERROR) {
-                 d_stream.next_in = (Bytef*) dummy_head;
-                 d_stream.avail_in = sizeof(dummy_head);
-                 if((err = inflate(&d_stream, Z_NO_FLUSH)) != Z_OK) {
-                     return -1;
-                 }
-             } else {
-                 return -1;
-             }
-         }
-     }
-     
-     if (inflateEnd(&d_stream)!= Z_OK)
-         return -1;
-     ndata = d_stream.total_out;
-     return 0;
-  
-  }
-
-}
+//namespace    // Adapted from https://pastebin.com/DiUME7Z1. Fails with "operator << not defined for Pc", for which a google search yields nothing.
+//{
+// //** Decompress an STL string using zlib and return the original data. */
+//  std::string decompressString(const std::string& str)
+//  {
+//      z_stream zs;                        // z_stream is zlib's control structure
+//      memset(&zs, 0, sizeof(zs));
+//   
+//      if (inflateInit(&zs) != Z_OK)
+//          throw(std::runtime_error("inflateInit failed while decompressing."));
+//   
+//      zs.next_in = (Bytef*)str.data();
+//      zs.avail_in = str.size();
+//   
+//      int ret=0;
+//      char outbuffer[3276800];
+//      std::string outstring;
+//   
+//      // get the decompressed bytes blockwise using repeated calls to inflate
+//      do {
+//          zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
+//          zs.avail_out = sizeof(outbuffer);
+//   
+//          ret = inflate(&zs, 0);
+//   
+//          if (outstring.size() < zs.total_out) {
+//              outstring.append(outbuffer,
+//                  zs.total_out - outstring.size());
+//          }
+//   
+//      } while (ret == Z_OK);
+//   
+//      inflateEnd(&zs);
+//   
+//      if (ret != Z_STREAM_END) {          // an error occurred that was not EOF
+//          std::ostringstream oss;
+//          oss << "Exception during zlib decompression: (" << ret << ") "
+//              << zs.msg;
+//          throw(std::runtime_error(oss.str()));
+//      }
+//   
+//      return outstring;
+//  }
+//}
 
 // Return file name after downloading a CSV file from the web.
 std::string CSVDialog::loadWebFile(const std::string& url)
@@ -182,112 +173,35 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   boost::beast::flat_buffer buffer;
 
   // Declare a container to hold the response
-  http::response_parser<http::string_body> res;
-  //http::response<http::string_body> res;
-  res.body_limit((std::numeric_limits<std::uint64_t>::max)());
+  http::response<http::dynamic_body> res;
 
   // Receive the HTTP response
   http::read(stream, buffer, res);
-  
-  res.eager(true);  // See https://github.com/boostorg/beast/issues/1352
+
   // Check response status and throw error all values 400 and above. See https://www.boost.org/doc/libs/master/boost/beast/http/status.hpp for status codes
-  if (res.get().result_int() >= 400) throw runtime_error("Invalid HTTP response. Response code: " + std::to_string(res.get().result_int()));
-                                                 
+  if (res.result_int() >= 400) throw runtime_error("Invalid HTTP response. Response code: " + std::to_string(res.result_int()));
+                          
   // Dump the outstream into a temporary file for loading it into Minsky' CSV parser 
   boost::filesystem::path temp = boost::filesystem::unique_path();
   const std::string tempStr    = temp.string();
           
-  std::ofstream outFile(tempStr, std::ofstream::out);  
- 
-  // Deal with zipped csv files 
-  std::string targetStr = target.str();
-  std::string fileExt = ".zip";
-  std::size_t found = targetStr.find(fileExt);
+  std::ofstream outFile(tempStr, std::ofstream::binary);  
   
-  if (found!=std::string::npos) {
+  // Handle zipped CSV files. Not working... 
+  if (res[http::field::content_type]=="application/zip") {
+	   
 	  
-	   InflateFileZStream zs(&res.get().body());
+	   std::string responseBody = boost::beast::buffers_to_string(res.body().data());
+	   
+	   InflateFileZStream zs(&responseBody);
+	       	   
        zs.inflate();
-	   
-       outFile << zs.output;
-                 
-        // Adapted from https://github.com/boostorg/beast/issues/1813. Not working.
-        
-        //Byte* out;
-        //uLong nzdata,ndata;
-        //int status = gzdecompress(reinterpret_cast<Byte*>(&res.get().body()),nzdata, out,ndata);
-        //if (status==0) {
-        //   size_t len;
-        //   std::string s( reinterpret_cast<char const*>(out), len ) ;
-        //   outFile << s;   
-	    //} else throw runtime_error("Failed to decompress zipped CSV file");
-	   
-       // Adapted from https://pastebin.com/DiUME7Z1 based on discussions at https://github.com/boostorg/beast/issues/664. Unfortunately I have not been able to get it to work.
-      
-        //z_stream zs;                        // z_stream is zlib's control structure      
-        //memset(&zs, 0, sizeof(zs));
-        //
-        //if (inflateInit2(&zs, MAX_WBITS + 16) != Z_OK)
-        //    throw(std::runtime_error("inflateInit failed while decompressing."));
-        //
-        ////zs.next_in = reinterpret_cast<Bytef*>(&res.get().body());
-        //zs.next_in = (Bytef*)res.get().body().data();
-        //zs.avail_in = res.get().body().size();
-        //
-        //int ret;
-        //char outbuffer;
-        //std::string outstring;
-        //
-        //// get the decompressed bytes blockwise using repeated calls to inflate
-        //do {
-        //    zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
-        //    zs.avail_out = sizeof(outbuffer);
-        //
-        //    ret = inflate(&zs, 0);
-        //
-        //    if (outstring.size() < zs.total_out) {
-        //        outstring.append(outbuffer,
-        //            zs.total_out - outstring.size());
-        //    }
-        //
-        //} while (ret == Z_OK);
-        //
-        //inflateEnd(&zs);
-        //
-        //if (ret != Z_STREAM_END) {          // an error occurred that was not EOF
-        //    std::ostringstream oss;
-        //    oss << "Exception during zlib decompression: (" << ret << ") "
-        //        << zs.msg;
-        //    throw(std::runtime_error(oss.str()));
-        //}
-		//
-        //outFile << outstring;     	   
-	   
+         
+       //outFile << decompressString(responseBody).c_str();        
+       
+       outFile << zs.output.c_str();  // Fails with compression failure: invalid stored block lengths, as if all zipped CSV files are corrupt, which I doubt: https://stackoverflow.com/questions/10577045/what-might-explain-an-invalid-stored-block-lengths-error                     
     
-  }  else outFile << res.get().body();                                                    
-  
-  
-  // Adapted from https://pastebin.com/DiUME7Z1 based on discussion at https://github.com/boostorg/beast/issues/664. Does not work unfortunately.
-  //try    
-  //  {
-  //      //decompress with boost's interface
-  //      boost::iostreams::array_source src{ res.get().body().data(), res.get().body().size() };
-  //      boost::iostreams::filtering_istream is;
-  //      is.push(boost::iostreams::zlib_decompressor{});
-  //      is.push(src);
-  //      std::string s;
-  //      is >> s;
-  //      //std::cout << s << '\n';
-  //      outFile << s;
-  //
-  //      // decompress with zlib directly
-  //      std::cout << "decompress_string(res.body())=" << decompress_string(res.get().body()) << std::endl;     
-  //   
-  //  }
-  //  catch (const std::exception& e)
-  //  {
-  //      std::cout << "error: " << e.what() << std::endl;
-  //  }  
+  }  else outFile << boost::beast::buffers_to_string(res.body().data());
        
   // Gracefully close the socket
   boost::system::error_code ec;

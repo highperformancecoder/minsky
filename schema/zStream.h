@@ -94,7 +94,7 @@ namespace minsky
   
   struct InflateFileZStream: public ZStream
   {
-    string output{};
+    std::string output;
     Bytef* inputData;
     size_t inputSize;
       
@@ -105,7 +105,7 @@ namespace minsky
     {
       next_out=(Bytef*)output.data();
       avail_out=output.size();
-      if (inflateInit(this)!=Z_OK) throwError();
+      if (inflateInit2(this,-MAX_WBITS)!=Z_OK) throwError();  //none of MAX_WBITS + 16, MAX_WBITS or -MAX_WBITS works. see https://stackoverflow.com/questions/1838699/how-can-i-decompress-a-gzip-stream-with-zlib
     }
     ~InflateFileZStream() {inflateEnd(this);}
 
