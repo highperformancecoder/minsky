@@ -27,25 +27,18 @@ namespace qi = boost::spirit::qi;
 using namespace std;
 
 namespace
-// Extract leading number from a string. for ticket 1177. See https://stackoverflow.com/questions/45600212/regular-expression-multiple-floating-point.
 {
-  bool parseLine(std::string const& line, double& num) {
-      using It = std::string::const_iterator;
-      
-      // Construct grammar to skip in input formula
-      qi::rule<It, std::string()> nan = -qi::lit("1.0#") >> qi::no_case["nan"] >> -('(' >> *(qi::char_ - ')') >> ')');
-      qi::rule<It, std::string()> inf = qi::no_case[qi::lit("inf") >> -qi::lit("inity")];                                          
-      qi::rule<It, std::string()> sign =   qi::lit('+') | '-';
-      qi::rule<It, std::string()> skip = qi::char_( '/' ) | qi::char_( '\\' ) | qi::char_( '_' );
-  
-      It first = line.begin(), last = line.end();
-      return qi::phrase_parse(first,
-                              last,
-                              qi::double_,
-                              qi::lexeme [ nan | inf | sign | skip],
-                              num);
-  }	
-	
+  // Extract leading number from a string. for ticket 1177. See https://stackoverflow.com/questions/45600212/regular-expression-multiple-floating-point.
+  bool parseLine(std::string const& line, std::string& pref) {
+     using it = std::string::const_iterator;	
+     
+     // Construct grammar to treat inf and nan separately in input formula. See https://www.boost.org/doc/libs/1_68_0/libs/spirit/doc/html/spirit/qi/reference/numeric/real.html
+     qi::rule<it, std::string()> nan = -qi::lit("1.0#") >> qi::no_case["nan"] >> -('(' >> *(qi::char_ - ')') >> ')');
+     qi::rule<it, std::string()> inf = qi::no_case[qi::lit("inf") >> -qi::lit("inity")];                                 
+     
+     it first = line.begin(), last = line.end();
+     return qi::phrase_parse(first, last, *(inf | nan), qi::blank, pref);
+  }
 }
 
 namespace minsky
@@ -54,12 +47,12 @@ namespace minsky
   {
       const char* f=formula.c_str();
       char* tail;
-      double fnum;     
+      std::string prefix;  
       
-      // attempt to read leading numerical value. for ticket 1177
-      if (parseLine(f, fnum)) {  	
-           coef=strtod(std::to_string(fnum).c_str(),&tail);
-      } else coef=strtod(f,&tail);
+      // If NaN or inf appear in any form or case in the name of a flow coefficient, tail is set equal to f. For ticket 1177.
+      if (parseLine(f, prefix)) {
+          tail=(char*)f;
+	  } else coef=strtod(f,&tail);  
       
       if (tail==f) // oops, that failed, check if there's a leading - sign
         {
