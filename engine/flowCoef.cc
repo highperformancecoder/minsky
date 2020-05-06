@@ -34,10 +34,10 @@ namespace
      
      // Construct grammar to treat inf and nan separately in input formula. See https://www.boost.org/doc/libs/1_68_0/libs/spirit/doc/html/spirit/qi/reference/numeric/real.html
      qi::rule<it, std::string()> nan = -qi::lit("1.0#") >> qi::no_case["nan"] >> -('(' >> *(qi::char_ - ')') >> ')');
-     qi::rule<it, std::string()> inf = qi::no_case[qi::lit("inf") >> -qi::lit("inity")];                                 
+     qi::rule<it, std::string()> inf = qi::no_case[qi::lit("inf") >> -qi::lit("inity")];    
      
      it first = line.begin(), last = line.end();
-     return qi::phrase_parse(first, last, *(inf | nan), qi::blank, pref);
+     return (qi::phrase_parse(first, last, (inf | nan) ,qi::blank, pref));
   }
 }
 
@@ -50,8 +50,8 @@ namespace minsky
       std::string prefix;  
       
       // If NaN or inf appear in any form or case in the name of a flow coefficient, tail is set equal to f. For ticket 1177.
-      if (parseLine(f, prefix)) {
-          tail=(char*)f;
+      if (parseLine(formula, prefix)) {
+         tail=(char*)f;
 	  } else coef=strtod(f,&tail);  
       
       if (tail==f) // oops, that failed, check if there's a leading - sign
