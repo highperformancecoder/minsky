@@ -547,13 +547,8 @@ namespace minsky
                   indexValue.emplace(idx, i.second);
               }
             
-            vector<size_t> index;
             for (auto& i: indexValue)
-              {
-                index.push_back(i.first);
-                v.tensorInit.push_back(i.first, i.second);
-              }
-            v.index(index);
+              v.tensorInit.push_back(i.first, i.second);
             v.hypercube(hc);
             v.tensorInit.hypercube(hc);
           }                 

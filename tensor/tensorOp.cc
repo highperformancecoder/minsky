@@ -27,23 +27,22 @@ namespace civita
 {
   void ReduceArguments::setArguments(const vector<TensorPtr>& a,const std::string&,double)
   {
-    set<size_t> indices;
     hypercube({});
     if (!a.empty())
       {
         auto hc=a[0]->hypercube();
         hypercube(hc);
+        size_t cnt=0;
+        set<size_t> idx;
         for (auto& i: a)
           {
             if (i->rank()>0 && i->hypercube()!=hc)
               throw runtime_error("arguments not conformal");
-            auto idx=i->index();
-            indices.insert(idx.begin(), idx.end());
+            idx.insert(i->index().begin(), i->index().end());
           }
+        m_index=idx;
       }
     args=a;
-    m_index.clear();
-    m_index.insert(m_index.end(), indices.begin(), indices.end());
   }
 
   double ReduceArguments::operator[](size_t i) const
@@ -95,17 +94,16 @@ namespace civita
             xv.erase(xv.begin()+dimension);
             // compute index - enter index elements that have any in the argument
             set<size_t> indices;
-            auto& aIdx=arg->index();
-            sumOverIndices.clear();
-            for (auto i=0; i<aIdx.size(); ++i)
+            for (size_t i=0; i<arg->size(); ++i)
               {
-                auto splitIdx=ahc.splitIndex(aIdx[i]);
+                auto splitIdx=ahc.splitIndex(arg->index()[i]);
+                SOI soi{i,splitIdx[dimension]};
                 splitIdx.erase(splitIdx.begin()+dimension);
                 auto idx=m_hypercube.linealIndex(splitIdx);
-                sumOverIndices[idx].push_back(i);
+                sumOverIndices[idx].emplace_back(soi);
                 indices.insert(idx);
               }
-            m_index=vector<size_t>(indices.begin(), indices.end());
+            m_index=indices;
           }
         else
           m_hypercube.xvectors.clear(); //reduce all, return scalar
@@ -139,15 +137,13 @@ namespace civita
           }
         else
           {
-            auto soi=sumOverIndices.find(m_index[i]);
+            auto soi=sumOverIndices.find(index()[i]);
             assert(soi!=sumOverIndices.end());
             if (soi!=sumOverIndices.end())
               for (auto j: soi->second)
                 {
-                  double x=(*arg)[j];
-                  // TODO is this an excessive cost to pay just to support supIndex/infIndex?
-                  auto splitIdx=arg->hypercube().splitIndex(j);
-                  if (!isnan(x)) f(r,x,splitIdx[dimension]);
+                  double x=(*arg)[j.index];
+                  if (!isnan(x)) f(r,x,j.dimIndex);
                 }
           }
         return r;
@@ -256,29 +252,23 @@ namespace civita
         hypercube(hc);
 
         // set up index vector
-        auto idx=arg->index();
         auto& ahc=arg->hypercube();
-        vector<pair<size_t,size_t>> indices;
-        for (auto& i: idx)
+        map<size_t, size_t> ai;
+        for (size_t i=0; i<arg->size(); ++i)
           {
-            auto splitIdx=ahc.splitIndex(i);
+            auto splitIdx=ahc.splitIndex(arg->index()[i]);
             if (splitIdx[splitAxis]==sliceIndex)
               {
                 splitIdx.erase(splitIdx.begin()+splitAxis);
-                indices.emplace_back(hc.linealIndex(splitIdx), &i-&idx[0]);
+                auto l=hc.linealIndex(splitIdx);
+                ai[l]=i;
               }
           }
-        sort(indices.begin(), indices.end(),
-             [](const pair<size_t,size_t>& i, const pair<size_t,size_t>& j)
-             {return i.first<j.first;});
-        m_index.clear();
-        arg_index.clear();
-        for (auto& i: indices)
-          {
-            m_index.push_back(i.first);
-            arg_index.push_back(i.second);
-          }
-          
+        m_index=ai;
+        arg_index.resize(ai.size());
+        // convert into lineal addressing
+        size_t j=0;
+        for (auto& i: ai) arg_index[j++]=i.second;
       }
   }
 
@@ -334,30 +324,40 @@ namespace civita
         }
 
     assert(hc.rank()==arg->rank());
-    // permute the index vector
-    m_index=arg->index();
-    for (auto& i: m_index)
-      {
-        auto idx=arg->hypercube().splitIndex(i);
-        vector<size_t> pidx(idx.size());
-        for (size_t i=0; i<idx.size(); ++i)
-          pidx[i]=idx[permutation[i]];
-        i=hc.linealIndex(pidx);
-      }
-    sort(m_index.begin(), m_index.end());
     hypercube(move(hc));
+    // permute the index vector
+    map<size_t, size_t> pi;
+    for (size_t i=0; i<arg->size(); ++i)
+      {
+        auto l=pivotIndex(arg->index()[i]);
+        pi[l]=i;
+      }
+    m_index=pi;
+    // convert to lineal indexing
+    permutedIndex.resize(pi.size());
+    size_t j=0;
+    for (auto& i: pi) permutedIndex[j++]=i.second;
+    if (permutedIndex.size()) permutation.clear(); // not used in sparse case
   }
 
   size_t Pivot::pivotIndex(size_t i) const
   {
-    if (m_index.size()) i=m_index[i];
     auto idx=hypercube().splitIndex(i);
-    vector<size_t> pidx(idx.size());
+    auto pidx=idx;
     for (size_t i=0; i<idx.size(); ++i)
       pidx[permutation[i]]=idx[i];
     return arg->hypercube().linealIndex(pidx);
   }
 
+  double Pivot::operator[](size_t i) const
+  {
+    if (index().empty())
+      return arg->atHCIndex(pivotIndex(i));
+    else
+      return (*arg)[permutedIndex[i]];
+  }
+
+  
   namespace
   {
     /// factory method for creating reduction operations
@@ -375,6 +375,54 @@ namespace civita
         }
     }
   } 
+
+  void PermuteAxis::setArgument(const TensorPtr& a,const std::string& axisName,double)
+  {
+    arg=a;
+    hypercube(arg->hypercube());
+    m_index=arg->index();
+    for (m_axis=0; m_axis<m_hypercube.xvectors.size(); ++m_axis)
+      if (m_hypercube.xvectors[m_axis].name==axisName)
+        break;
+    if (m_axis==m_hypercube.xvectors.size())
+      throw runtime_error("axis "+axisName+" not found");
+    for (size_t i=0; i<m_hypercube.xvectors[m_axis].size(); ++i)
+      m_permutation.push_back(i);
+  }
+
+  void PermuteAxis::setPermutation(vector<size_t>&& p)
+  {
+    m_permutation=move(p);
+    auto& xv=m_hypercube.xvectors[m_axis];
+    xv.clear();
+    auto& axv=arg->hypercube().xvectors[m_axis];
+    for (auto i: m_permutation)
+      xv.push_back(axv[i]);
+    vector<int> reverseIndex(axv.size(),-1);
+    for (size_t i=0; i<m_permutation.size(); ++i)
+      reverseIndex[m_permutation[i]]=i;
+    set<size_t> indices;
+    for (size_t i=0; i<arg->size(); ++i)
+      {
+        auto splitted=arg->hypercube().splitIndex(arg->index()[i]);
+        splitted[m_axis]=reverseIndex[splitted[m_axis]];
+        auto l=hypercube().linealIndex(splitted);
+        indices.insert(l);
+        permutedIndex[l]=i;
+      }
+    m_index=indices;
+  }
+  
+  double PermuteAxis::operator[](size_t i) const
+  {
+    if (index().empty())
+      {
+        auto splitted=hypercube().splitIndex(i);
+        splitted[m_axis]=m_permutation[splitted[m_axis]];
+        return arg->atHCIndex(arg->hypercube().linealIndex(splitted));
+      }
+    return (*arg)[permutedIndex[i]];
+  }
 
   
   vector<TensorPtr> createRavelChain(const minsky::RavelState& state, const TensorPtr& arg)
@@ -407,6 +455,59 @@ namespace civita
               chain.back()->setArgument(arg, i.first, sliceIdx);
             }
         }
+      else if (i.second.order!=minsky::RavelState::HandleState::none || i.second.displayFilterCaliper)
+        {
+          //apply sorting/calipers
+          auto permuteAxis=make_shared<PermuteAxis>();
+          permuteAxis->setArgument(chain.back(), i.first);
+          auto& xv=chain.back()->hypercube().xvectors[permuteAxis->axis()];
+          vector<size_t> perm;
+          for (size_t i=0; i<xv.size(); ++i)
+            perm.push_back(i);
+          switch (i.second.order)
+            {
+            case minsky::RavelState::HandleState::none: break;
+            case minsky::RavelState::HandleState::forward:
+              sort(perm.begin(), perm.end(),
+                   [&](size_t i, size_t j) {return diff(xv[i],xv[j])<0;});
+              break;
+            case minsky::RavelState::HandleState::reverse:
+              sort(perm.begin(), perm.end(),
+                   [&](size_t i, size_t j) {return diff(xv[i],xv[j])>0;});
+              break;
+            case minsky::RavelState::HandleState::custom:
+              {
+                map<string, size_t> offsets;
+                for (size_t i=0; i<xv.size(); ++i)
+                  offsets[str(xv[i], xv.dimension.units)]=i;
+                perm.clear();
+                for (auto& i: i.second.customOrder)
+                  if (offsets.count(i))
+                    perm.push_back(offsets[i]);
+                break;
+              }
+            }
+          // remove any perumtation items outside calipers
+          if (!i.second.minLabel.empty())
+            {
+              size_t j=0;
+              for (; j<perm.size(); ++j)
+                if (str(xv[perm[j]],xv.dimension.units) == i.second.minLabel)
+                  break;
+              perm.erase(perm.begin(), perm.begin()+j);
+            }
+          if (!i.second.maxLabel.empty())
+            {
+              size_t j=0;
+              for (; j<perm.size(); ++j)
+                if (str(xv[perm[j]],xv.dimension.units) == i.second.maxLabel)
+                  break;
+              perm.erase(perm.begin()+j, perm.end());
+            }
+          permuteAxis->setPermutation(move(perm));
+          chain.push_back(permuteAxis);
+        }
+ 
     auto finalPivot=make_shared<Pivot>();
     finalPivot->setArgument(chain.back());
     finalPivot->setOrientation(state.outputHandles);

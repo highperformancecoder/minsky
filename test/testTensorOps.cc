@@ -495,7 +495,9 @@ SUITE(TensorOps)
       CHECK_EQUAL(9,chain.back()->size());
       for (size_t i=0; i<chain.back()->size(); ++i)
         CHECK(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
-      vector<double> expected={0,6,12,1,7,13,2,8,14};
+      vector<double> expected={0,1,2,6,7,8,12,13,14};
+      CHECK_ARRAY_EQUAL(expected, *chain[1], 9);
+      expected={0,6,12,1,7,13,2,8,14};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
 
       state.handleStates["sex"].sliceLabel="female";

@@ -38,7 +38,7 @@ namespace civita
     ElementWiseOp(F f, const std::shared_ptr<ITensor>& arg={}): f(f), arg(arg) {}
     void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
     const Hypercube& hypercube() const {return arg? arg->hypercube(): m_hypercube;}
-    const std::vector<size_t>& index() const override {return arg? arg->index(): m_index;}
+    const Index& index() const override {return arg? arg->index(): m_index;}
     double operator[](size_t i) const override {return arg? f((*arg)[i]): 0;}
     size_t size() const override {return arg? arg->size(): 0;}
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
@@ -114,8 +114,8 @@ namespace civita
   class ReductionOp: public ReduceAllOp
   {
     size_t dimension;
-    /// array[size()] of arg hypercube indices to sum over at each position
-    std::map<size_t, std::vector<size_t>> sumOverIndices;
+    struct SOI {size_t index, dimIndex;};
+    std::map<size_t, std::vector<SOI>> sumOverIndices;
   public:
    
     template <class F>
@@ -136,7 +136,7 @@ namespace civita
     /// logically const
     virtual void computeTensor() const=0;
   public:
-    const std::vector<size_t>& index() const override {return cachedResult.index();}
+    const Index& index() const override {return cachedResult.index();}
     size_t size() const override {return cachedResult.size();}
     double operator[](size_t i) const override;
     const Hypercube& hypercube() const override {return cachedResult.hypercube();}
@@ -237,19 +237,36 @@ namespace civita
   /// corresponds to the OLAP pivot operation
   class Pivot: public ITensor
   {
-    std::vector<size_t> permutation;
+    std::vector<size_t> permutation;   /// permutation of axes
+    std::vector<size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
     TensorPtr arg;
-    size_t pivotIndex(size_t) const; ///< return index into arg from index into this
+    // returns hypercube index of arg given hypercube index of this
+    size_t pivotIndex(size_t i) const;
   public:
     void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
     /// set's the pivots orientation
     /// @param axes - list of axes that are the output
     void setOrientation(const std::vector<std::string>& axes);
-    double operator[](size_t i) const override
-    {return arg->atHCIndex(pivotIndex(i));}
+    double operator[](size_t i) const override;
     Timestamp timestamp() const override {return arg->timestamp();}
   };
 
+  class PermuteAxis: public ITensor
+  {
+    TensorPtr arg;
+    size_t m_axis;
+    std::vector<size_t> m_permutation;
+    std::vector<size_t> permutedIndex; /// argument indices corresponding to this indices, when sparse
+  public:
+    void setArgument(const TensorPtr& a,const std::string& axis="",double arg=0) override;
+    void setPermutation(std::vector<size_t>&&);
+    size_t axis() const {return m_axis;}
+    const std::vector<size_t>& permutation() const {return m_permutation;}
+    double operator[](size_t i) const override;
+    Timestamp timestamp() const override {return arg->timestamp();}
+  };
+
+  
   /// creates a chain of tensor operations that represents a Ravel in
   /// state \a state, operating on \a arg
   std::vector<TensorPtr> createRavelChain(const minsky::RavelState&, const TensorPtr& arg);
