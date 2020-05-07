@@ -28,7 +28,6 @@
 #include <cairo_base.h>
 #include <ctype.h>
 #include "minsky_epilogue.h"
-#include "latexMarkup.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
@@ -54,9 +53,9 @@ namespace minsky
       DrawVars(cairo_t* cairo, float x, float y): 
         cairo(cairo), x(x), y(y) {}
       
-      void operator()(const GodleyVars::Variables& vars)
+      void operator()(const GodleyIcon::Variables& vars)
       {
-        for (GodleyVars::Variables::const_iterator v=vars.begin(); 
+        for (GodleyIcon::Variables::const_iterator v=vars.begin(); 
              v!=vars.end(); ++v)
           {
             ecolab::cairo::CairoSave cs(cairo);
@@ -69,7 +68,7 @@ namespace minsky
     };
 
     // determine the width and maximum height on screen of variables in vars
-    void accumulateWidthHeight(const GodleyVars::Variables& vars,
+    void accumulateWidthHeight(const GodleyIcon::Variables& vars,
                                float& height, float& width)
     {
       float h=0;
@@ -89,7 +88,7 @@ namespace minsky
 
   }
 
-  void GodleyVars::updateVars(GodleyVars::Variables& vars, 
+  void GodleyIcon::updateVars(GodleyIcon::Variables& vars, 
                               const vector<string>& varNames, 
                               VariableType::Type varType)
   {
@@ -181,7 +180,7 @@ namespace minsky
     updateBB(); 
   }
 
-  void GodleyVars::removeControlledItems() const
+  void GodleyIcon::removeControlledItems() const
   {
     if (auto g=group.lock())
       {
@@ -238,7 +237,7 @@ namespace minsky
       }
   }
 
-  map<string,double> GodleyVars::flowSignature(int col) const
+  map<string,double> GodleyIcon::flowSignature(int col) const
   {
     map<string,double> r;
     for (size_t row=1; row<table.rows(); ++row)
@@ -251,7 +250,7 @@ namespace minsky
     return r;
   }
 
-  void GodleyVars::update()
+  void GodleyIcon::update()
   {
     updateVars(m_stockVars, table.getColumnVariables(), VariableType::stock);
     updateVars(m_flowVars, table.getVariables(), VariableType::flow);
@@ -299,7 +298,7 @@ namespace minsky
     updateBB();
   }
 
-  void GodleyVars::positionVariables() const
+  void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
     float zoomFactor=iconScale()*this->zoomFactor();
@@ -397,7 +396,7 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  Units GodleyVars::stockVarUnits(const string& stockName, bool check) const
+  Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
     auto vid=valueId(stockName);
@@ -433,7 +432,7 @@ namespace minsky
     return foundFlow? units: cminsky().variableValues[vid].units;
   }
 
-  void GodleyVars::insertControlled(Selection& selection)
+  void GodleyIcon::insertControlled(Selection& selection)
   {
     for (auto& i: flowVars())
       selection.ensureItemInserted(i);
