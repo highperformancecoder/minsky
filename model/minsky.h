@@ -150,6 +150,8 @@ namespace minsky
 
     /// write current state of all variables to the log file
     void logVariables() const;
+    
+    bool m_multipleEquities=false;
 
     Exclude<boost::posix_time::ptime> lastRedraw;
 
