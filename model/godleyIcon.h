@@ -34,26 +34,69 @@ namespace minsky
 {
   class GodleyTableEditor;
   
-  // Godley broken out in a separate structure, as copying is non-default
-  struct Godley
-  {  
-    Godley() {}
-    virtual ~Godley() {}
+  // Godley variables broken out in a separate structure, as copying is non-default
+  class GodleyVars: public ItemT<GodleyVars>
+  {
+  public:	    
+    typedef std::vector<VariablePtr> Variables;
+    const Variables& flowVars() const {return m_flowVars;}
+    const Variables& stockVars() const {return m_stockVars;}    	  
+	  
+    GodleyVars() {}
+    virtual ~GodleyVars() {}
     // copy operations not deleted to allow ItemT<Group> to compile
-    Godley(const Godley& x) {};
-    Godley& operator=(const Godley&) {return *this;}
+    GodleyVars(const GodleyVars& x) {};
+    GodleyVars& operator=(const GodleyVars&) {return *this;}
+    classdesc::Exclude<std::weak_ptr<GodleyIcon>> self; ///< weak ref to this    
+    
+    void clear() {
+      m_flowVars.clear();
+      m_stockVars.clear();
+    }  
+    
+    bool variableDisplay=true;
+    void toggleVariableDisplay() {variableDisplay=!variableDisplay;}   
+    
+    void removeControlledItems() const override;    
+    
+    /// flows, along with multipliers, appearing in \a col
+    std::map<string,double> flowSignature(int col) const;    
+    
+    GodleyTable table;
+    
+    /// updates the variable lists with the Godley table
+    void update(); 
+    
+    /// returns valueid for variable reference in table
+    // TODO: this should be refactored to a more central location
+    std::string valueId(const std::string& x) const {
+      return VariableValue::valueId(group.lock(), x);
+    }
+    
+    void setCurrency(const std::string& currency) 
+    {for (auto& i: m_stockVars) i->setUnits(currency);}
+    
+    /// performs dimensional analysis on stock var column \a stockName
+    /// @param check indicates whether a consistency check is applied
+    Units stockVarUnits(const std::string& stockName, bool check) const;
+      
+    void insertControlled(Selection& selection) override;    
+    
   private:
-    CLASSDESC_ACCESS(Godley);
+    friend class SchemaHelper;  
+    void updateVars(Variables& vars, 
+                    const vector<string>& varNames, 
+                    VariableBase::Type varType);
+    /// move contained variables to correct locations within icon
+    void positionVariables() const;
+    Variables m_flowVars, m_stockVars;  
+    CLASSDESC_ACCESS(GodleyVars);
   };	  
 
-  class GodleyIcon: public ItemT<GodleyIcon>, public Godley
+  class GodleyIcon: public GodleyVars
   {
-    /// for placement of bank icon within complex
-    float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
-    /// icon scale is adjusted when Godley icon is resized
-    float m_iconScale=1;
+    friend class GodleyVars;  
     CLASSDESC_ACCESS(GodleyIcon);
-    friend class SchemaHelper;
 
     /// support godley edit window on canvas
     struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>
@@ -65,14 +108,20 @@ namespace minsky
       CopiableUniquePtr& operator=(const CopiableUniquePtr&) {return *this;}
     };
     CopiableUniquePtr editor;
-
+    
+  public:
+    /// for placement of bank icon within complex
+    float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
+    /// icon scale is adjusted when Godley icon is resized
+    float m_iconScale=1;  
+    
     void updateBB() {
       auto wasSelected=selected;
       selected=true; // ensure bounding box is set to the entire icon
       bb.update(*this); 
       selected=wasSelected;
-    }
-  public:
+    }    
+  
     static SVGRenderer svgRenderer;
 
     ~GodleyIcon() {removeControlledItems();}
@@ -84,9 +133,6 @@ namespace minsky
     /// enable/disable drawing buttons in table on canvas display
     bool buttonDisplay() const;
     void toggleButtons(); 
-
-    bool variableDisplay=true;
-    void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
     /// width of Godley icon in screen coordinates
     float gWidth() const {return leftMargin()+iconWidth*iconScale()*zoomFactor();}
@@ -107,7 +153,6 @@ namespace minsky
     double schema1ZoomFactor() const; 
     
     void resize(const LassoBox&) override;
-    void removeControlledItems() const override;
  
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);
@@ -115,15 +160,6 @@ namespace minsky
     void deleteRow(unsigned row);
     /// move the contents of cell at (srcRow, srcCol) to (destRow, destCol).
     void moveCell(int srcRow, int srcCol, int destRow, int destCol);
-    /// flows, along with multipliers, appearing in \a col
-    std::map<string,double> flowSignature(int col) const;
-
-    typedef std::vector<VariablePtr> Variables;
-    const Variables& flowVars() const {return m_flowVars;}
-    const Variables& stockVars() const {return m_stockVars;}
-    GodleyTable table;
-    /// updates the variable lists with the Godley table
-    void update();
 
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table
@@ -134,27 +170,22 @@ namespace minsky
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
 
-    /// returns valueid for variable reference in table
-    // TODO: this should be refactored to a more central location
-    std::string valueId(const std::string& x) const {
-      return VariableValue::valueId(group.lock(), x);
-    }
-    /// performs dimensional analysis on stock var column \a stockName
-    /// @param check indicates whether a consistency check is applied
-    Units stockVarUnits(const std::string& stockName, bool check) const;
-
-    void setCurrency(const std::string& currency) 
-    {for (auto& i: m_stockVars) i->setUnits(currency);}
-      
-    void insertControlled(Selection& selection) override;
-  private:
-    void updateVars(Variables& vars, 
-                    const vector<string>& varNames, 
-                    VariableBase::Type varType);
-    /// move contained variables to correct locations within icon
-    void positionVariables() const;
-    Variables m_flowVars, m_stockVars;
+//  private:
   };
+}
+
+#ifdef CLASSDESC
+// omit these, because weak/shared pointers cause problems, and its
+// not needed anyway
+#pragma omit pack minsky::GodleyIcon
+#pragma omit unpack minsky::GodleyIcon
+#endif
+namespace classdesc_access
+{
+  template <> struct access_pack<minsky::GodleyIcon>: 
+    public classdesc::NullDescriptor<classdesc::pack_t> {};
+  template <> struct access_unpack<minsky::GodleyIcon>: 
+    public classdesc::NullDescriptor<classdesc::unpack_t> {};
 }
 
 #include "godleyIcon.cd"

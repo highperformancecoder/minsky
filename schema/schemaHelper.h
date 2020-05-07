@@ -72,9 +72,9 @@ namespace minsky
       g.m_assetClass=assetClass;
     }
 
-    static void setStockAndFlow(minsky::GodleyIcon& g,
-                         const minsky::GodleyIcon::Variables& flowVars,
-                         const minsky::GodleyIcon::Variables& stockVars)
+    static void setStockAndFlow(minsky::GodleyVars& g,
+                         const minsky::GodleyVars::Variables& flowVars,
+                         const minsky::GodleyVars::Variables& stockVars)
     {
       g.m_flowVars=flowVars;
       g.m_stockVars=stockVars;
