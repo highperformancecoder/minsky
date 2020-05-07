@@ -430,7 +430,7 @@ SUITE(Canvas)
     {
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       c->draw(surf.cairo());// reposition ports
-      CHECK(c->clickType(c->x(),c->y()) == ClickType::onItem);
+      CHECK(c->clickType(c->x(),c->y()) == ClickType::onItem); 
       canvas.mouseDown(c->x(),c->y());
       canvas.mouseUp(400,500);
       CHECK_EQUAL(400,c->x());
@@ -573,12 +573,12 @@ SUITE(Canvas)
         auto& group=dynamic_cast<Group&>(*itemFocus);
         group.relZoom=0.5; // ensure displayContents is false
         double w=group.iconWidth, h=group.iconHeight;
-        double x=group.x(), y=group.y();
+        double x=group.x(), y=group.y(), z=group.relZoom;
 
         mouseDown(x+0.5*w, y+0.5*h);
-        mouseUp(x+w, y+h);
+        mouseUp(x+w, y+h-20*z); // take into account top and bottom margins and the relative zoom defined above. for feature 88
         CHECK_CLOSE(1.5*w,group.iconWidth,1);
-        CHECK_CLOSE(1.5*h,group.iconHeight,1);
+        CHECK_CLOSE(1.5*h,group.iconHeight,1); 
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
@@ -600,7 +600,7 @@ SUITE(Canvas)
         CHECK_EQUAL(2,model->numItems());
         CHECK_EQUAL(0,g->inVariables.size());
 
-        // move b into group
+        // move b into group. 
         mouseDown(b->x(),b->y());
         mouseUp(g->x(),g->y());
         CHECK(b->group.lock()==g);
