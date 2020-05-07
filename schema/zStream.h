@@ -100,8 +100,8 @@ namespace minsky
       
     template <class I>
     InflateFileZStream(const I& input):
-      ZStream((Bytef*)input, input->size(), 0,0),
-      inputData((Bytef*)input),inputSize(input->size())
+      ZStream((Bytef*)input.data(), input.size(), 0,0),
+      inputData((Bytef*)input.data()),inputSize(input.size())
     {
       next_out=(Bytef*)output.data();
       avail_out=output.size();
