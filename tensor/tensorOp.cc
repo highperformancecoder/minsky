@@ -235,7 +235,6 @@ namespace civita
           if (i->name==axis)
             {
               stride=split*i->size();
-              i++;
               break;
             }
           else
@@ -248,7 +247,7 @@ namespace civita
         if (i==xv.end())
           split=stride=1;
         else
-          for (; i!=xv.end(); ++i)
+          for (i++; i!=xv.end(); ++i)
             // finish building hypercube
             hc.xvectors.push_back(*i);
         hypercube(hc);
