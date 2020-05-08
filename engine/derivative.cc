@@ -394,6 +394,27 @@ namespace MathDAG
   
   template <>
   NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::zero>& expr)
+  {
+    return zero;
+  }
+    
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::one>& expr)
+  {
+    return zero;
+  }  
+  
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::inf>& expr)
+  {
+    return zero;
+  }  
+  
+  template <>
+  NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::copy>& expr)
   {
     if (!expr.arguments[0].empty() && expr.arguments[0][0])

@@ -842,7 +842,28 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"π");
-  }    
+  }
+  
+    template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
+  {  
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"0");
+  }
+  
+  template <> void Operation<OperationType::one>::iconDraw(cairo_t* cairo) const
+  {  
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"1");
+  }
+  
+  template <> void Operation<OperationType::inf>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(10*zoomFactor());
+    pango.setMarkup("∞");
+    pango.show();    
+  }        
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {

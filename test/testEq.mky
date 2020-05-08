@@ -2,62 +2,62 @@
   <schemaVersion>3</schemaVersion>
   <wires>
    <Wire>
-    <id>330</id>
+    <id>354</id>
     <from>278</from>
     <to>238</to>
    </Wire>
    <Wire>
-    <id>331</id>
+    <id>355</id>
     <from>255</from>
     <to>5</to>
    </Wire>
    <Wire>
-    <id>332</id>
+    <id>356</id>
     <from>8</from>
     <to>6</to>
    </Wire>
    <Wire>
-    <id>333</id>
+    <id>357</id>
     <from>4</from>
     <to>11</to>
    </Wire>
    <Wire>
-    <id>334</id>
+    <id>358</id>
     <from>14</from>
     <to>12</to>
    </Wire>
    <Wire>
-    <id>335</id>
+    <id>359</id>
     <from>257</from>
     <to>15</to>
    </Wire>
    <Wire>
-    <id>336</id>
+    <id>360</id>
     <from>10</from>
     <to>19</to>
    </Wire>
    <Wire>
-    <id>337</id>
+    <id>361</id>
     <from>260</from>
     <to>20</to>
    </Wire>
    <Wire>
-    <id>338</id>
+    <id>362</id>
     <from>22</from>
     <to>263</to>
    </Wire>
    <Wire>
-    <id>339</id>
+    <id>363</id>
     <from>18</from>
     <to>27</to>
    </Wire>
    <Wire>
-    <id>340</id>
+    <id>364</id>
     <from>26</from>
     <to>266</to>
    </Wire>
    <Wire>
-    <id>341</id>
+    <id>365</id>
     <from>4</from>
     <to>24</to>
     <coords>
@@ -74,7 +74,7 @@
     </coords>
    </Wire>
    <Wire>
-    <id>342</id>
+    <id>366</id>
     <from>14</from>
     <to>23</to>
     <coords>
@@ -89,147 +89,147 @@
     </coords>
    </Wire>
    <Wire>
-    <id>343</id>
+    <id>367</id>
     <from>29</from>
     <to>1</to>
    </Wire>
    <Wire>
-    <id>344</id>
+    <id>368</id>
     <from>237</from>
     <to>30</to>
    </Wire>
    <Wire>
-    <id>345</id>
+    <id>369</id>
     <from>33</from>
     <to>31</to>
    </Wire>
    <Wire>
-    <id>346</id>
+    <id>370</id>
     <from>280</from>
     <to>16</to>
    </Wire>
    <Wire>
-    <id>347</id>
+    <id>371</id>
     <from>35</from>
     <to>38</to>
    </Wire>
    <Wire>
-    <id>348</id>
+    <id>372</id>
     <from>37</from>
     <to>41</to>
    </Wire>
    <Wire>
-    <id>349</id>
+    <id>373</id>
     <from>40</from>
     <to>44</to>
    </Wire>
    <Wire>
-    <id>350</id>
+    <id>374</id>
     <from>46</from>
     <to>50</to>
    </Wire>
    <Wire>
-    <id>351</id>
+    <id>375</id>
     <from>49</from>
     <to>62</to>
    </Wire>
    <Wire>
-    <id>352</id>
+    <id>376</id>
     <from>61</from>
     <to>65</to>
    </Wire>
    <Wire>
-    <id>353</id>
+    <id>377</id>
     <from>64</from>
     <to>68</to>
    </Wire>
    <Wire>
-    <id>354</id>
+    <id>378</id>
     <from>35</from>
     <to>53</to>
    </Wire>
    <Wire>
-    <id>355</id>
+    <id>379</id>
     <from>52</from>
     <to>56</to>
    </Wire>
    <Wire>
-    <id>356</id>
+    <id>380</id>
     <from>55</from>
     <to>59</to>
    </Wire>
    <Wire>
-    <id>357</id>
+    <id>381</id>
     <from>43</from>
     <to>47</to>
    </Wire>
    <Wire>
-    <id>358</id>
+    <id>382</id>
     <from>67</from>
     <to>71</to>
    </Wire>
    <Wire>
-    <id>359</id>
+    <id>383</id>
     <from>58</from>
     <to>75</to>
    </Wire>
    <Wire>
-    <id>360</id>
+    <id>384</id>
     <from>282</from>
     <to>79</to>
    </Wire>
    <Wire>
-    <id>361</id>
+    <id>385</id>
     <from>285</from>
     <to>80</to>
    </Wire>
    <Wire>
-    <id>362</id>
+    <id>386</id>
     <from>78</from>
     <to>83</to>
    </Wire>
    <Wire>
-    <id>363</id>
+    <id>387</id>
     <from>82</from>
     <to>87</to>
    </Wire>
    <Wire>
-    <id>364</id>
+    <id>388</id>
     <from>90</from>
     <to>84</to>
    </Wire>
    <Wire>
-    <id>365</id>
+    <id>389</id>
     <from>287</from>
     <to>91</to>
    </Wire>
    <Wire>
-    <id>366</id>
+    <id>390</id>
     <from>290</from>
     <to>92</to>
    </Wire>
    <Wire>
-    <id>367</id>
+    <id>391</id>
     <from>98</from>
     <to>95</to>
    </Wire>
    <Wire>
-    <id>368</id>
+    <id>392</id>
     <from>94</from>
     <to>291</to>
    </Wire>
    <Wire>
-    <id>369</id>
+    <id>393</id>
     <from>100</from>
     <to>288</to>
    </Wire>
    <Wire>
-    <id>370</id>
+    <id>394</id>
     <from>98</from>
     <to>108</to>
    </Wire>
    <Wire>
-    <id>371</id>
+    <id>395</id>
     <from>107</from>
     <to>104</to>
     <coords>
@@ -242,12 +242,12 @@
     </coords>
    </Wire>
    <Wire>
-    <id>372</id>
+    <id>396</id>
     <from>98</from>
     <to>111</to>
    </Wire>
    <Wire>
-    <id>373</id>
+    <id>397</id>
     <from>110</from>
     <to>105</to>
     <coords>
@@ -260,17 +260,17 @@
     </coords>
    </Wire>
    <Wire>
-    <id>374</id>
+    <id>398</id>
     <from>103</from>
     <to>296</to>
    </Wire>
    <Wire>
-    <id>375</id>
+    <id>399</id>
     <from>98</from>
     <to>114</to>
    </Wire>
    <Wire>
-    <id>376</id>
+    <id>400</id>
     <from>113</from>
     <to>104</to>
     <coords>
@@ -283,12 +283,12 @@
     </coords>
    </Wire>
    <Wire>
-    <id>377</id>
+    <id>401</id>
     <from>98</from>
     <to>117</to>
    </Wire>
    <Wire>
-    <id>378</id>
+    <id>402</id>
     <from>116</from>
     <to>105</to>
     <coords>
@@ -301,12 +301,12 @@
     </coords>
    </Wire>
    <Wire>
-    <id>379</id>
+    <id>403</id>
     <from>98</from>
     <to>122</to>
    </Wire>
    <Wire>
-    <id>380</id>
+    <id>404</id>
     <from>120</from>
     <to>105</to>
     <coords>
@@ -319,7 +319,7 @@
     </coords>
    </Wire>
    <Wire>
-    <id>381</id>
+    <id>405</id>
     <from>262</from>
     <to>126</to>
     <coords>
@@ -336,22 +336,22 @@
     </coords>
    </Wire>
    <Wire>
-    <id>382</id>
+    <id>406</id>
     <from>98</from>
     <to>125</to>
    </Wire>
    <Wire>
-    <id>383</id>
+    <id>407</id>
     <from>124</from>
     <to>105</to>
    </Wire>
    <Wire>
-    <id>384</id>
+    <id>408</id>
     <from>98</from>
     <to>129</to>
    </Wire>
    <Wire>
-    <id>385</id>
+    <id>409</id>
     <from>262</from>
     <to>138</to>
     <coords>
@@ -366,62 +366,62 @@
     </coords>
    </Wire>
    <Wire>
-    <id>386</id>
+    <id>410</id>
     <from>128</from>
     <to>105</to>
    </Wire>
    <Wire>
-    <id>387</id>
+    <id>411</id>
     <from>132</from>
     <to>105</to>
    </Wire>
    <Wire>
-    <id>388</id>
+    <id>412</id>
     <from>98</from>
     <to>137</to>
    </Wire>
    <Wire>
-    <id>389</id>
+    <id>413</id>
     <from>136</from>
     <to>105</to>
    </Wire>
    <Wire>
-    <id>390</id>
+    <id>414</id>
     <from>144</from>
     <to>299</to>
    </Wire>
    <Wire>
-    <id>391</id>
+    <id>415</id>
     <from>140</from>
     <to>145</to>
    </Wire>
    <Wire>
-    <id>392</id>
+    <id>416</id>
     <from>148</from>
     <to>145</to>
    </Wire>
    <Wire>
-    <id>393</id>
+    <id>417</id>
     <from>152</from>
     <to>146</to>
    </Wire>
    <Wire>
-    <id>394</id>
+    <id>418</id>
     <from>156</from>
     <to>141</to>
    </Wire>
    <Wire>
-    <id>395</id>
+    <id>419</id>
     <from>156</from>
     <to>154</to>
    </Wire>
    <Wire>
-    <id>396</id>
+    <id>420</id>
     <from>295</from>
     <to>153</to>
    </Wire>
    <Wire>
-    <id>397</id>
+    <id>421</id>
     <from>295</from>
     <to>159</to>
     <coords>
@@ -436,42 +436,42 @@
     </coords>
    </Wire>
    <Wire>
-    <id>398</id>
+    <id>422</id>
     <from>298</from>
     <to>159</to>
    </Wire>
    <Wire>
-    <id>399</id>
+    <id>423</id>
     <from>170</from>
     <to>160</to>
    </Wire>
    <Wire>
-    <id>400</id>
+    <id>424</id>
     <from>170</from>
     <to>163</to>
    </Wire>
    <Wire>
-    <id>401</id>
+    <id>425</id>
     <from>170</from>
     <to>168</to>
    </Wire>
    <Wire>
-    <id>402</id>
+    <id>426</id>
     <from>158</from>
     <to>302</to>
    </Wire>
    <Wire>
-    <id>403</id>
+    <id>427</id>
     <from>162</from>
     <to>173</to>
    </Wire>
    <Wire>
-    <id>404</id>
+    <id>428</id>
     <from>166</from>
     <to>174</to>
    </Wire>
    <Wire>
-    <id>405</id>
+    <id>429</id>
     <from>295</from>
     <to>177</to>
     <coords>
@@ -486,184 +486,214 @@
     </coords>
    </Wire>
    <Wire>
-    <id>406</id>
+    <id>430</id>
     <from>301</from>
     <to>177</to>
    </Wire>
    <Wire>
-    <id>407</id>
+    <id>431</id>
     <from>180</from>
     <to>178</to>
    </Wire>
    <Wire>
-    <id>408</id>
+    <id>432</id>
     <from>180</from>
     <to>183</to>
    </Wire>
    <Wire>
-    <id>409</id>
+    <id>433</id>
     <from>180</from>
     <to>188</to>
    </Wire>
    <Wire>
-    <id>410</id>
+    <id>434</id>
     <from>172</from>
     <to>192</to>
    </Wire>
    <Wire>
-    <id>411</id>
+    <id>435</id>
     <from>176</from>
     <to>191</to>
    </Wire>
    <Wire>
-    <id>412</id>
+    <id>436</id>
     <from>182</from>
     <to>191</to>
    </Wire>
    <Wire>
-    <id>413</id>
+    <id>437</id>
     <from>186</from>
     <to>192</to>
    </Wire>
    <Wire>
-    <id>414</id>
+    <id>438</id>
     <from>190</from>
     <to>305</to>
    </Wire>
    <Wire>
-    <id>415</id>
+    <id>439</id>
     <from>194</from>
     <to>198</to>
    </Wire>
    <Wire>
-    <id>416</id>
+    <id>440</id>
     <from>132</from>
     <to>202</to>
    </Wire>
    <Wire>
-    <id>417</id>
+    <id>441</id>
     <from>196</from>
     <to>201</to>
    </Wire>
    <Wire>
-    <id>418</id>
+    <id>442</id>
     <from>196</from>
     <to>205</to>
    </Wire>
    <Wire>
-    <id>419</id>
+    <id>443</id>
     <from>196</from>
     <to>210</to>
    </Wire>
    <Wire>
-    <id>420</id>
+    <id>444</id>
     <from>200</from>
     <to>213</to>
    </Wire>
    <Wire>
-    <id>421</id>
+    <id>445</id>
     <from>204</from>
     <to>213</to>
    </Wire>
    <Wire>
-    <id>422</id>
+    <id>446</id>
     <from>208</from>
     <to>214</to>
    </Wire>
    <Wire>
-    <id>423</id>
+    <id>447</id>
     <from>136</from>
     <to>201</to>
    </Wire>
    <Wire>
-    <id>424</id>
+    <id>448</id>
     <from>212</from>
     <to>308</to>
    </Wire>
    <Wire>
-    <id>425</id>
+    <id>449</id>
     <from>136</from>
     <to>217</to>
    </Wire>
    <Wire>
-    <id>426</id>
+    <id>450</id>
     <from>128</from>
     <to>217</to>
    </Wire>
    <Wire>
-    <id>427</id>
+    <id>451</id>
     <from>196</from>
     <to>218</to>
    </Wire>
    <Wire>
-    <id>428</id>
+    <id>452</id>
     <from>216</from>
     <to>221</to>
    </Wire>
    <Wire>
-    <id>429</id>
+    <id>453</id>
     <from>220</from>
     <to>232</to>
    </Wire>
    <Wire>
-    <id>430</id>
+    <id>454</id>
     <from>223</from>
     <to>233</to>
    </Wire>
    <Wire>
-    <id>431</id>
+    <id>455</id>
     <from>227</from>
     <to>233</to>
    </Wire>
    <Wire>
-    <id>432</id>
+    <id>456</id>
     <from>196</from>
     <to>224</to>
    </Wire>
    <Wire>
-    <id>433</id>
+    <id>457</id>
     <from>231</from>
     <to>311</to>
    </Wire>
    <Wire>
-    <id>434</id>
+    <id>458</id>
     <from>235</from>
     <to>101</to>
    </Wire>
    <Wire>
-    <id>435</id>
+    <id>459</id>
     <from>98</from>
     <to>134</to>
    </Wire>
    <Wire>
-    <id>436</id>
+    <id>460</id>
     <from>156</from>
     <to>150</to>
    </Wire>
    <Wire>
-    <id>437</id>
+    <id>461</id>
     <from>196</from>
     <to>229</to>
    </Wire>
    <Wire>
-    <id>438</id>
+    <id>462</id>
     <from>317</from>
     <to>320</to>
    </Wire>
    <Wire>
-    <id>439</id>
+    <id>463</id>
     <from>322</from>
     <to>325</to>
    </Wire>
    <Wire>
-    <id>440</id>
+    <id>464</id>
     <from>319</from>
     <to>315</to>
    </Wire>
    <Wire>
-    <id>441</id>
+    <id>465</id>
     <from>324</from>
     <to>328</to>
+   </Wire>
+   <Wire>
+    <id>466</id>
+    <from>330</from>
+    <to>333</to>
+   </Wire>
+   <Wire>
+    <id>467</id>
+    <from>332</from>
+    <to>336</to>
+   </Wire>
+   <Wire>
+    <id>468</id>
+    <from>338</from>
+    <to>341</to>
+   </Wire>
+   <Wire>
+    <id>469</id>
+    <from>343</from>
+    <to>346</to>
+   </Wire>
+   <Wire>
+    <id>470</id>
+    <from>345</from>
+    <to>349</to>
+   </Wire>
+   <Wire>
+    <id>471</id>
+    <from>340</from>
+    <to>352</to>
    </Wire>
   </wires>
   <items>
@@ -1633,7 +1663,7 @@
    <Item>
     <id>243</id>
     <type>Variable:stock</type>
-    <x>937.672</x>
+    <x>959.237</x>
     <y>206.295</y>
     <zoomFactor>0.976937</zoomFactor>
     <rotation>90</rotation>
@@ -1653,8 +1683,8 @@
    <Item>
     <id>246</id>
     <type>Variable:flow</type>
-    <x>913.555</x>
-    <y>101.862</y>
+    <x>929.165</x>
+    <y>73.6517</y>
     <zoomFactor>0.976937</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -1674,8 +1704,8 @@
    <Item>
     <id>249</id>
     <type>Variable:flow</type>
-    <x>894.107</x>
-    <y>128.862</y>
+    <x>909.717</x>
+    <y>100.652</y>
     <zoomFactor>0.976937</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -1695,8 +1725,8 @@
    <Item>
     <id>252</id>
     <type>Variable:flow</type>
-    <x>885.406</x>
-    <y>155.862</y>
+    <x>901.016</x>
+    <y>127.652</y>
     <zoomFactor>0.976937</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -1716,7 +1746,7 @@
    <Item>
     <id>254</id>
     <type>Variable:stock</type>
-    <x>964.672</x>
+    <x>986.237</x>
     <y>187.87</y>
     <zoomFactor>0.976937</zoomFactor>
     <rotation>90</rotation>
@@ -1777,8 +1807,8 @@
    <Item>
     <id>261</id>
     <type>Variable:stock</type>
-    <x>1139.64</x>
-    <y>174</y>
+    <x>1154.64</x>
+    <y>181</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -1943,8 +1973,8 @@
    <Item>
     <id>281</id>
     <type>Variable:parameter</type>
-    <x>1032.64</x>
-    <y>179</y>
+    <x>1040.64</x>
+    <y>185</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2204,7 +2234,7 @@
      <int>242</int>
      <int>253</int>
     </ports>
-    <width>232.316</width>
+    <width>187.572</width>
     <height>211.8</height>
     <name>Godley0</name>
     <data>
@@ -2319,8 +2349,8 @@
    <Item>
     <id>329</id>
     <type>Variable:flow</type>
-    <x>1573</x>
-    <y>213</y>
+    <x>1584</x>
+    <y>212</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2333,6 +2363,141 @@
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>331</id>
+    <type>Operation:zero</type>
+    <x>1692</x>
+    <y>170</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>330</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>334</id>
+    <type>Operation:acos</type>
+    <x>1758</x>
+    <y>171</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>332</int>
+     <int>333</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>337</id>
+    <type>Variable:flow</type>
+    <x>1830</x>
+    <y>168</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>335</int>
+     <int>336</int>
+    </ports>
+    <name>o</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1.5708</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>339</id>
+    <type>Operation:inf</type>
+    <x>1697</x>
+    <y>267</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>338</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>342</id>
+    <type>Operation:atan</type>
+    <x>1757</x>
+    <y>264</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>340</int>
+     <int>341</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>344</id>
+    <type>Operation:one</type>
+    <x>1694</x>
+    <y>217</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>343</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>347</id>
+    <type>Operation:asin</type>
+    <x>1755</x>
+    <y>213</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>345</int>
+     <int>346</int>
+    </ports>
+    <arg>1</arg>
+   </Item>
+   <Item>
+    <id>350</id>
+    <type>Variable:flow</type>
+    <x>1827</x>
+    <y>215</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>348</int>
+     <int>349</int>
+    </ports>
+    <name>p</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1.5708</max>
+     <step>0.1</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>353</id>
+    <type>Variable:flow</type>
+    <x>1826</x>
+    <y>267</y>
+    <zoomFactor>1</zoomFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>351</int>
+     <int>352</int>
+    </ports>
+    <name>q</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1.5708</max>
      <step>0.1</step>
     </slider>
    </Item>

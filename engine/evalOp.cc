@@ -160,6 +160,36 @@ namespace minsky
   {return 0;}      
   
   template <>
+  double EvalOp<OperationType::zero>::evaluate(double in1, double in2) const
+  {return 0;}
+  template <> 
+  double EvalOp<OperationType::zero>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::zero>::d2(double x1, double x2) const
+  {return 0;} 
+  
+  template <>
+  double EvalOp<OperationType::one>::evaluate(double in1, double in2) const
+  {return 1;}
+  template <> 
+  double EvalOp<OperationType::one>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::one>::d2(double x1, double x2) const
+  {return 0;}     
+  
+  template <>
+  double EvalOp<OperationType::inf>::evaluate(double in1, double in2) const
+  {return numeric_limits<double>::max();}
+  template <> 
+  double EvalOp<OperationType::inf>::d1(double x1, double x2) const
+  {return 0;}
+  template <>
+  double EvalOp<OperationType::inf>::d2(double x1, double x2) const
+  {return 0;}  
+  
+  template <>
   double EvalOp<OperationType::copy>::evaluate(double in1, double in2) const
   {return in1;}
   template <>
