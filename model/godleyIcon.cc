@@ -98,14 +98,14 @@ namespace minsky
     set<string> alreadyAdded;
 
     vars.clear();
-    shared_ptr<GodleyIcon> self;
-    if (auto g=group.lock())
-      self=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this));
+    shared_ptr<GodleyIcon> godleySelf;
+    if (auto g=self->group.lock())
+      godleySelf=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this->self));
       
     for (vector<string>::const_iterator nm=varNames.begin(); nm!=varNames.end(); ++nm)
       {
         VariablePtr newVar(varType, *nm);
-        auto myGroup=group.lock();
+        auto myGroup=self->group.lock();
         if (myGroup) myGroup->addItem(newVar); // get scope right
         auto v=oldVars.find(newVar);
           
@@ -132,12 +132,12 @@ namespace minsky
             if (myGroup) myGroup->removeItem(*newVar);
           }
         if (myGroup) myGroup->addItem(vars.back(),true);
-        vars.back()->controller=self;
+        vars.back()->controller=godleySelf;
         // ensure variable type is consistent
         minsky::minsky().convertVarType(vars.back()->valueId(), varType);
       }
     // remove any previously existing variables
-    if (auto g=group.lock())
+    if (auto g=self->group.lock())
       for (auto& v: oldVars)
         g->deleteItem(*v);   
   }
@@ -147,7 +147,7 @@ namespace minsky
     if (editor)
       editor.reset();
     else
-      if (auto g=group.lock())
+      if (auto g=self->group.lock())
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
           editor.reset(new GodleyTableEditor(icon));
   }
@@ -164,7 +164,7 @@ namespace minsky
 
   double GodleyIcon::schema1ZoomFactor() const
   {
-    if (auto g=group.lock())
+    if (auto g=self->group.lock())
       return iconScale()*g->zoomFactor();
     else
       return iconScale();
@@ -181,9 +181,9 @@ namespace minsky
     updateBB(); 
   }
 
-  void GodleyVars::removeControlledItems() const
+  void GodleyIcon::removeControlledItems() const
   {
-    if (auto g=group.lock())
+    if (auto g=self->group.lock())
       {
         for (auto& i: m_flowVars)
           g->removeItem(*i);
@@ -238,7 +238,7 @@ namespace minsky
       }
   }
 
-  map<string,double> GodleyVars::flowSignature(int col) const
+  map<string,double> GodleyIcon::flowSignature(int col) const
   {
     map<string,double> r;
     for (size_t row=1; row<table.rows(); ++row)
@@ -253,23 +253,23 @@ namespace minsky
 
   void GodleyVars::update()
   {
-    updateVars(m_stockVars, table.getColumnVariables(), VariableType::stock);
-    updateVars(m_flowVars, table.getVariables(), VariableType::flow);
+    updateVars(m_stockVars, self->table.getColumnVariables(), VariableType::stock);
+    updateVars(m_flowVars, self->table.getVariables(), VariableType::flow);
 
     // retrieve initial conditions, if any
-    for (size_t r=1; r<table.rows(); ++r)
-      if (table.initialConditionRow(r))
-        for (size_t c=1; c<table.cols(); ++c)
+    for (size_t r=1; r<self->table.rows(); ++r)
+      if (self->table.initialConditionRow(r))
+        for (size_t c=1; c<self->table.cols(); ++c)
           {
-            string name=trimWS(table.cell(0,c));
-            auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
+            string name=trimWS(self->table.cell(0,c));
+            auto vi=minsky().variableValues.find(VariableValue::valueId(self->group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
             VariableValue& v=vi->second;
             v.godleyOverridden=false;
-            string::size_type start=table.cell(r,c).find_first_not_of(" ");
+            string::size_type start=self->table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)
               {
-                FlowCoef fc(table.cell(r,c).substr(start));
+                FlowCoef fc(self->table.cell(r,c).substr(start));
                 v.init=fc.str();
                 v.godleyOverridden=true;
               }
@@ -277,35 +277,35 @@ namespace minsky
               {
                 // populate cell with current variable's initial value
                 FlowCoef fc(v.init);
-                table.cell(r,c)=fc.str();
+                self->table.cell(r,c)=fc.str();
                 v.godleyOverridden=true;
               }
           }
 
 
-    if (variableDisplay)
+    if (self->variableDisplay)
       {
         // determine height of variables part of icon
         float stockH=0, flowH=0;
-        stockMargin=0;
-        flowMargin=0;
-        accumulateWidthHeight(m_stockVars, stockH, stockMargin);
-        accumulateWidthHeight(m_flowVars, flowH, flowMargin);
-        iconWidth=max(iconWidth, 1.8f*stockH);
-        iconHeight=max(iconHeight, 1.8f*flowH);
+        self->stockMargin=0;
+        self->flowMargin=0;
+        accumulateWidthHeight(m_stockVars, stockH, self->stockMargin);
+        accumulateWidthHeight(m_flowVars, flowH, self->flowMargin);
+        self->iconWidth=max(self->iconWidth, 1.8f*stockH);
+        self->iconHeight=max(self->iconHeight, 1.8f*flowH);
       }
     
     positionVariables();
-    updateBB();
+    self->updateBB();
   }
 
   void GodleyVars::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
-    float zoomFactor=iconScale()*this->zoomFactor();
-    float vdf=variableDisplay? 1: -1; // variable display factor
-    float x= this->x() - 0.5*gWidth()+leftMargin();
-    float y= this->y() - 0.5*gHeight()+0.35*(gHeight()-bottomMargin());
+    float zoomFactor=self->iconScale()*self->zoomFactor();
+    float vdf=self->variableDisplay? 1: -1; // variable display factor
+    float x= self->x() - 0.5*self->gWidth()+self->leftMargin();
+    float y= self->y() - 0.5*self->gHeight()+0.35*(self->gHeight()-self->bottomMargin());
     for (auto& v: m_flowVars)
       {
         // right justification if displayed, left otherwisw
@@ -315,8 +315,8 @@ namespace minsky
         v->moveTo(x-0.5*v->width()*zoomFactor*vdf,y);
         y+=2*rv.height()*zoomFactor;
       }
-    x= this->x() - 0.45*gWidth()+leftMargin();
-    y= this->y() + 0.5*gHeight()-bottomMargin();
+    x= self->x() - 0.45*self->gWidth()+self->leftMargin();
+    y= self->y() + 0.5*self->gHeight()-self->bottomMargin();
 
     for (auto& v: m_stockVars)
       {
@@ -364,11 +364,11 @@ namespace minsky
         titley=-0.5*gHeight()+0.15*(gHeight()-bottomMargin());
       }
     
-    if (!table.title.empty())
+    if (!self->table.title.empty())
       {
         CairoSave cs(cairo);
         Pango pango(cairo);
-        pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
+        pango.setMarkup("<b>"+latexToPango(self->table.title)+"</b>");
         pango.setFontSize(12*zoomFactor());
         cairo_move_to(cairo,-0.5*(pango.width()-leftMargin()), titley);
         pango.show();
@@ -397,22 +397,22 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  Units GodleyVars::stockVarUnits(const string& stockName, bool check) const
+  Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
     auto vid=valueId(stockName);
-    for (; stockCol<table.cols(); ++stockCol)
-      if (valueId(table.cell(0,stockCol))==vid)
+    for (; stockCol<self->table.cols(); ++stockCol)
+      if (valueId(self->table.cell(0,stockCol))==vid)
         break;
 
-    if (stockCol>=table.cols()) return {};
+    if (stockCol>=self->table.cols()) return {};
 
     bool foundFlow=false;
     Units units;
-    for (unsigned row=1; row<table.rows(); ++row)
+    for (unsigned row=1; row<self->table.rows(); ++row)
       {
-        if (table.initialConditionRow(row)) continue;
-        FlowCoef fc(table.cell(row,stockCol));
+        if (self->table.initialConditionRow(row)) continue;
+        FlowCoef fc(self->table.cell(row,stockCol));
         if (fc.coef!=0)
           {
             auto vid=valueId(fc.name);
@@ -433,7 +433,7 @@ namespace minsky
     return foundFlow? units: cminsky().variableValues[vid].units;
   }
 
-  void GodleyVars::insertControlled(Selection& selection)
+  void GodleyIcon::insertControlled(Selection& selection)
   {
     for (auto& i: flowVars())
       selection.ensureItemInserted(i);
