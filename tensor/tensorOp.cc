@@ -48,6 +48,7 @@ namespace civita
   double ReduceArguments::operator[](size_t i) const
   {
     if (args.empty()) return init;
+    assert(i<size());
     double r=init; 
     for (auto j: args)
       {
@@ -67,7 +68,6 @@ namespace civita
   
   double ReduceAllOp::operator[](size_t) const
   {
-    assert(arg->size()>0);
     double r=init;
     for (size_t i=0; i<arg->size(); ++i)
       {
@@ -115,6 +115,7 @@ namespace civita
   
   double ReductionOp::operator[](size_t i) const
   {
+    assert(i<size());
     if (dimension>arg->rank())
       return ReduceAllOp::operator[](i);
     else
@@ -152,6 +153,7 @@ namespace civita
 
   double CachedTensorOp::operator[](size_t i) const
   {
+    assert(i<size());
     if (m_timestamp<timestamp()) {
       computeTensor();
       m_timestamp=Timestamp::clock::now();
@@ -254,7 +256,7 @@ namespace civita
         // set up index vector
         auto& ahc=arg->hypercube();
         map<size_t, size_t> ai;
-        for (size_t i=0; i<arg->size(); ++i)
+        for (size_t i=0; i<arg->index().size(); ++i)
           {
             auto splitIdx=ahc.splitIndex(arg->index()[i]);
             if (splitIdx[splitAxis]==sliceIndex)
@@ -274,10 +276,11 @@ namespace civita
 
   double Slice::operator[](size_t i) const
   {
+    assert(i<size());
     if (m_index.empty())
       {
         auto res=div(ssize_t(i), ssize_t(split));
-        return (*arg)[res.quot*stride + sliceIndex*split + res.rem];
+        return arg->atHCIndex(res.quot*stride + sliceIndex*split + res.rem);
       }
     else
       return (*arg)[arg_index[i]];
@@ -350,6 +353,7 @@ namespace civita
 
   double Pivot::operator[](size_t i) const
   {
+    assert(i<size());
     if (index().empty())
       return arg->atHCIndex(pivotIndex(i));
     else
@@ -414,6 +418,7 @@ namespace civita
   
   double PermuteAxis::operator[](size_t i) const
   {
+    assert(i<size());
     if (index().empty())
       {
         auto splitted=hypercube().splitIndex(i);
@@ -504,11 +509,14 @@ namespace civita
           permuteAxis->setPermutation(move(perm));
           chain.push_back(permuteAxis);
         }
- 
-    auto finalPivot=make_shared<Pivot>();
-    finalPivot->setArgument(chain.back());
-    finalPivot->setOrientation(state.outputHandles);
-    chain.push_back(finalPivot);
+
+    if (chain.back()->rank()>1)
+      {
+        auto finalPivot=make_shared<Pivot>();
+        finalPivot->setArgument(chain.back());
+        finalPivot->setOrientation(state.outputHandles);
+        chain.push_back(finalPivot);
+      }
     return chain;
   }
   

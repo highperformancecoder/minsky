@@ -35,7 +35,8 @@ namespace civita
       CLASSDESC_ACCESS(Index);
     public:
       Index() {}
-      Index(const std::set<size_t>& indices): index(indices.begin(), indices.end()) {}
+      template <class T>
+      Index(const T& indices) {*this=indices;}
 
       // assign an associative container (sorted keys)
       size_t key(const size_t& x) const {return x;}

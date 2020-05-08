@@ -98,7 +98,7 @@ namespace civita
 
     void allocVal() {if (m_index.empty()) data.resize(hypercube().numElements());}
 
-    void push_back(size_t index, double val) {m_index.insert(index, data, val);}
+    //void push_back(size_t index, double val) {m_index.insert(index, data, val);}
     
     double operator[](size_t i) const override {return data[i];}
     double& operator[](size_t i) override {return data[i];}

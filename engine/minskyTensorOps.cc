@@ -454,6 +454,8 @@ namespace minsky
     RavelTensor(const Ravel& ravel): ravel(ravel) {}
 
     void setArgument(const TensorPtr& a,const std::string&,double) override {
+      // not sure how to avoid this const cast here
+      const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=move(civita::createRavelChain(ravel.getState(), a));
       hypercube(chain.back()->hypercube());
     }
