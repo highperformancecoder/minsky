@@ -47,7 +47,7 @@ namespace minsky
     virtual ~GodleyVars() {}
     // copy operations not deleted to allow ItemT<GodleyIcon> to compile
     GodleyVars(const GodleyVars& x) {const_cast<GodleyVars&>(x).update();}
-    GodleyVars& operator=(const GodleyVars&) {update();}
+    GodleyVars& operator=(const GodleyVars&) {update(); return *this;}
     //classdesc::Exclude<std::weak_ptr<GodleyIcon>> self; ///< weak ref to this    
     classdesc::Exclude<std::shared_ptr<GodleyIcon>> self;
     
