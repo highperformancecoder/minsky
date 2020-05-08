@@ -489,6 +489,7 @@ namespace minsky
                           xticks.emplace_back(i, str(xv[i]));
                           xdefault.push_back(i);
                         }
+                      plotType=bar;
                       break;
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
@@ -498,6 +499,7 @@ namespace minsky
                       else
                         for (auto& i: xv)
                           xdefault.push_back(any_cast<double>(i));
+                      plotType=line;
                       break;
                     case Dimension::time:
                       {
@@ -509,6 +511,7 @@ namespace minsky
                             xdefault.push_back(tv);
                           }
                       }
+                      plotType=line;
                       break;
                     }
                 }
