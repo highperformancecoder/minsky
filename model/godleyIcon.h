@@ -19,7 +19,6 @@
 #ifndef GODLEYICON_H
 #define GODLEYICON_H
 
-#include "item.h"
 #include "variable.h"
 #include "godleyTable.h"
 #include "zoom.h"
@@ -39,38 +38,27 @@ namespace minsky
   struct GodleyVars
   {
   public:	    
-    typedef std::vector<VariablePtr> Variables;
-    const Variables& flowVars() const {return m_flowVars;}
-    const Variables& stockVars() const {return m_stockVars;}    	  
 	  
     GodleyVars() {}
     virtual ~GodleyVars() {}
     // copy operations not deleted to allow ItemT<GodleyIcon> to compile
-    GodleyVars(const GodleyVars& x) {const_cast<GodleyVars&>(x).update();}
+    GodleyVars(const GodleyVars& x) {} //{const_cast<GodleyVars&>(x).update();}
     GodleyVars& operator=(const GodleyVars&) {update(); return *this;}
     //classdesc::Exclude<std::weak_ptr<GodleyIcon>> self; ///< weak ref to this    
-    classdesc::Exclude<std::shared_ptr<GodleyIcon>> self;
-    
-    void clear() {
-      m_flowVars.clear();
-      m_stockVars.clear();
-    }    
+    //classdesc::Exclude<std::shared_ptr<GodleyIcon>> self;
 
-    /// updates the variable lists with the Godley table
-    virtual void update();            
-    
-  protected:
-    friend class SchemaHelper;  
-    void updateVars(Variables& vars, 
-                    const vector<string>& varNames, 
-                    VariableBase::Type varType);
-    /// move contained variables to correct locations within icon
-    void positionVariables() const;
-    Variables m_flowVars, m_stockVars;  
+    virtual void update() = 0;            
   };	  
 
   class GodleyIcon: public ItemT<GodleyIcon>, public GodleyVars
   {
+    /// for placement of bank icon within complex
+    float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
+    /// icon scale is adjusted when Godley icon is resized
+    float m_iconScale=1;
+    CLASSDESC_ACCESS(GodleyIcon);
+    friend class SchemaHelper;
+
     /// support godley edit window on canvas
     struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>
     {
@@ -81,21 +69,16 @@ namespace minsky
       CopiableUniquePtr& operator=(const CopiableUniquePtr&) {return *this;}
     };
     CopiableUniquePtr editor;
-    
-  public:
-    /// for placement of bank icon within complex
-    float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
-    /// icon scale is adjusted when Godley icon is resized
-    float m_iconScale=1;  
-    
+
     void updateBB() {
       auto wasSelected=selected;
       selected=true; // ensure bounding box is set to the entire icon
       bb.update(*this); 
       selected=wasSelected;
-    }    
+    }
+  public:
     static SVGRenderer svgRenderer;
-
+    
     ~GodleyIcon() {removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
@@ -105,9 +88,9 @@ namespace minsky
     /// enable/disable drawing buttons in table on canvas display
     bool buttonDisplay() const;
     void toggleButtons(); 
-    
+
     bool variableDisplay=true;
-    void toggleVariableDisplay() {variableDisplay=!variableDisplay;}          
+    void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
     /// width of Godley icon in screen coordinates
     float gWidth() const {return leftMargin()+iconWidth*iconScale()*zoomFactor();}
@@ -128,7 +111,7 @@ namespace minsky
     double schema1ZoomFactor() const; 
     
     void resize(const LassoBox&) override;
-    void removeControlledItems() const override;         
+    void removeControlledItems() const override;
  
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);
@@ -136,11 +119,15 @@ namespace minsky
     void deleteRow(unsigned row);
     /// move the contents of cell at (srcRow, srcCol) to (destRow, destCol).
     void moveCell(int srcRow, int srcCol, int destRow, int destCol);
-    
     /// flows, along with multipliers, appearing in \a col
-    std::map<string,double> flowSignature(int col) const;  
-        
+    std::map<string,double> flowSignature(int col) const;
+
+    typedef std::vector<VariablePtr> Variables;
+    const Variables& flowVars() const {return m_flowVars;}
+    const Variables& stockVars() const {return m_stockVars;}
     GodleyTable table;
+    /// updates the variable lists with the Godley table
+    void update() override;
 
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table
@@ -156,18 +143,21 @@ namespace minsky
     std::string valueId(const std::string& x) const {
       return VariableValue::valueId(group.lock(), x);
     }
-    
-    void setCurrency(const std::string& currency) 
-    {for (auto& i: m_stockVars) i->setUnits(currency);}
-    
     /// performs dimensional analysis on stock var column \a stockName
     /// @param check indicates whether a consistency check is applied
     Units stockVarUnits(const std::string& stockName, bool check) const;
-      
-    void insertControlled(Selection& selection) override;     
 
+    void setCurrency(const std::string& currency) 
+    {for (auto& i: m_stockVars) i->setUnits(currency);}
+      
+    void insertControlled(Selection& selection) override;
   private:
-    CLASSDESC_ACCESS(GodleyIcon);
+    void updateVars(Variables& vars, 
+                    const vector<string>& varNames, 
+                    VariableBase::Type varType);
+    /// move contained variables to correct locations within icon
+    void positionVariables() const;
+    Variables m_flowVars, m_stockVars;
   };
 }
 
