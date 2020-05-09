@@ -672,27 +672,27 @@
    </Wire>
    <Wire>
     <id>467</id>
-    <from>332</from>
-    <to>336</to>
+    <from>335</from>
+    <to>338</to>
    </Wire>
    <Wire>
     <id>468</id>
-    <from>338</from>
-    <to>341</to>
+    <from>340</from>
+    <to>343</to>
    </Wire>
    <Wire>
     <id>469</id>
-    <from>343</from>
+    <from>332</from>
     <to>346</to>
    </Wire>
    <Wire>
     <id>470</id>
-    <from>345</from>
+    <from>342</from>
     <to>349</to>
    </Wire>
    <Wire>
     <id>471</id>
-    <from>340</from>
+    <from>337</from>
     <to>352</to>
    </Wire>
   </wires>
@@ -1807,8 +1807,8 @@
    <Item>
     <id>261</id>
     <type>Variable:stock</type>
-    <x>1154.64</x>
-    <y>181</y>
+    <x>1139.64</x>
+    <y>174</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -1973,8 +1973,8 @@
    <Item>
     <id>281</id>
     <type>Variable:parameter</type>
-    <x>1040.64</x>
-    <y>185</y>
+    <x>1032.64</x>
+    <y>179</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2349,8 +2349,8 @@
    <Item>
     <id>329</id>
     <type>Variable:flow</type>
-    <x>1584</x>
-    <y>212</y>
+    <x>1573</x>
+    <y>213</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2369,8 +2369,8 @@
    <Item>
     <id>331</id>
     <type>Operation:zero</type>
-    <x>1692</x>
-    <y>170</y>
+    <x>1696</x>
+    <y>168</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2381,8 +2381,8 @@
    <Item>
     <id>334</id>
     <type>Operation:acos</type>
-    <x>1758</x>
-    <y>171</y>
+    <x>1762</x>
+    <y>169</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2392,80 +2392,80 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <id>337</id>
-    <type>Variable:flow</type>
-    <x>1830</x>
-    <y>168</y>
+    <id>336</id>
+    <type>Operation:inf</type>
+    <x>1701</x>
+    <y>265</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>335</int>
-     <int>336</int>
     </ports>
-    <name>o</name>
-    <slider>
-     <visible>false</visible>
-     <stepRel>false</stepRel>
-     <min>-1</min>
-     <max>1.5708</max>
-     <step>0.1</step>
-    </slider>
+    <arg>1</arg>
    </Item>
    <Item>
     <id>339</id>
-    <type>Operation:inf</type>
-    <x>1697</x>
-    <y>267</y>
+    <type>Operation:atan</type>
+    <x>1761</x>
+    <y>262</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>337</int>
      <int>338</int>
     </ports>
     <arg>1</arg>
    </Item>
    <Item>
-    <id>342</id>
-    <type>Operation:atan</type>
-    <x>1757</x>
-    <y>264</y>
+    <id>341</id>
+    <type>Operation:one</type>
+    <x>1698</x>
+    <y>215</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>340</int>
-     <int>341</int>
     </ports>
     <arg>1</arg>
    </Item>
    <Item>
     <id>344</id>
-    <type>Operation:one</type>
-    <x>1694</x>
-    <y>217</y>
+    <type>Operation:asin</type>
+    <x>1759</x>
+    <y>211</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
+     <int>342</int>
      <int>343</int>
     </ports>
     <arg>1</arg>
    </Item>
    <Item>
     <id>347</id>
-    <type>Operation:asin</type>
-    <x>1755</x>
-    <y>213</y>
+    <type>Variable:flow</type>
+    <x>1818</x>
+    <y>169</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>345</int>
      <int>346</int>
     </ports>
-    <arg>1</arg>
+    <name>o</name>
+    <slider>
+     <visible>false</visible>
+     <stepRel>false</stepRel>
+     <min>-1</min>
+     <max>1</max>
+     <step>0.1</step>
+    </slider>
    </Item>
    <Item>
     <id>350</id>
     <type>Variable:flow</type>
-    <x>1827</x>
-    <y>215</y>
+    <x>1822</x>
+    <y>214</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2477,15 +2477,15 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1.5708</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
    <Item>
     <id>353</id>
     <type>Variable:flow</type>
-    <x>1826</x>
-    <y>267</y>
+    <x>1820</x>
+    <y>262</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
@@ -2497,7 +2497,7 @@
      <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>1.5708</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
