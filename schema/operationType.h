@@ -32,7 +32,7 @@ namespace minsky
                differentiate, // with respect to time
                data, // an interpolated data item
                ravel, // Ravel™
-               euler, pi, // fundamental constants
+               euler, pi, zero, one, inf, // fundamental constants
                // multiwire binary ops
                add, subtract, multiply, divide, min, max, 
                and_, or_,
