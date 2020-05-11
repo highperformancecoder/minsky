@@ -640,7 +640,10 @@ namespace minsky
           newItem=group->copy();
         else
           {
-            newItem.reset(item->clone());
+			//  Use GodleyIcon's native clone() method. for tickets 1180/1183  
+            if (auto godley=dynamic_cast<GodleyIcon*>(item.get()))
+              newItem.reset(godley->clone());      			    
+            else newItem.reset(item->clone());
             // if copied from a Godley table or I/O var, set orientation to default
             if (auto v=item->variableCast())
               if (v->controller.lock())

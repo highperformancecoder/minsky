@@ -37,17 +37,15 @@ namespace minsky
   // Godley variables broken out in a separate structure, as copying is non-default
   struct GodleyVars
   {
-  public:	    
-	  
+  public:	      
     GodleyVars() {}
     virtual ~GodleyVars() {}
     // copy operations not deleted to allow ItemT<GodleyIcon> to compile
-    GodleyVars(const GodleyVars& x) {} //{const_cast<GodleyVars&>(x).update();}
-    GodleyVars& operator=(const GodleyVars&) {update(); return *this;}
-    //classdesc::Exclude<std::weak_ptr<GodleyIcon>> self; ///< weak ref to this    
-    //classdesc::Exclude<std::shared_ptr<GodleyIcon>> self;
+    GodleyVars(const GodleyVars& x) {}
+    GodleyVars& operator=(const GodleyVars&) {return *this;}
 
-    virtual void update() = 0;            
+    virtual void update() = 0;     
+            
   };	  
 
   class GodleyIcon: public ItemT<GodleyIcon>, public GodleyVars
@@ -128,6 +126,13 @@ namespace minsky
     GodleyTable table;
     /// updates the variable lists with the Godley table
     void update() override;
+    
+    GodleyIcon* clone() const override {
+      auto r=new GodleyIcon(*this);
+      r->group.reset();
+      r->update();
+      return r;
+    }    
 
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table
