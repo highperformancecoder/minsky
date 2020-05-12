@@ -409,7 +409,7 @@ namespace minsky
       return IORegion::output;
     else if (-w+left*edgeScale()>dx)
       return IORegion::input;
-    else if ((fabs(-h-10*z)>fabs(dy) && dy<0) || (h+10*z>dy && dy>0))     
+    else if ((-h-10*z<dy && dy<0) || (h+10*z>dy && dy>0))     
       return IORegion::topBottom;  
     else     
       return IORegion::none;
@@ -448,7 +448,7 @@ namespace minsky
     float l,r; margins(l,r);    
     float z=zoomFactor();
     iconWidth=((x1-x0)+l+r)/z;
-    iconHeight=((y1-y0))/z+20;
+    iconHeight=((y1-y0)+20*z)/z;
 
     // adjust contents by the offset
     for (auto& i: items)
@@ -485,7 +485,7 @@ namespace minsky
     // rescale contents to fit
     double x0, x1, y0, y1;
     contentBounds(x0,y0,x1,y1);
-    double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=fabs(b.y0-b.y1)/(y1-y0);    
+    double sx=(fabs(b.x0-b.x1)-z*(l+r)>0? fabs(b.x0-b.x1)-z*(l+r) : z*(l+r) )/(x1-x0), sy=(fabs(b.y0-b.y1)-20*z>0 ? fabs(b.y0-b.y1)-20*z : 20*z )/(y1-y0);    
     resizeItems(items,sx,sy);
     resizeItems(groups,sx,sy);
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
@@ -695,7 +695,7 @@ namespace minsky
     margins(l,r);    
     double dx=x1-x0, dy=y1-y0;
     if (iconWidth-l-r>0 && dx>0 && dy>0)
-      relZoom=std::min(1.0, std::min((iconWidth-l-r)/(z*dx), (iconHeight-20)/(z*dy)));    
+      relZoom=std::min(1.0, std::min((iconWidth-l-r)/(z*dx), (iconHeight-20*z)/(z*dy)));    
   }
   
   const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item* ignore) const
