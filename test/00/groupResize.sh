@@ -42,9 +42,10 @@ proc afterMinskyStarted {} {uplevel #0 {
  set y [\$item.y]
  set w [\$item.width]
  set h [\$item.height]
+ set z [\$item.zoomFactor]
 
  canvas.mouseDown [expr \$x+0.5*\$w] [expr \$y+0.5*\$h]
- canvas.mouseUp [expr \$x+\$w]  [expr \$y+\$h]
+ canvas.mouseUp [expr \$x+\$w]  [expr \$y+\$h-20*\$z]
 
  assert "abs([expr 1.5*\$w]-[minsky.canvas.item.width])<5"
  assert "abs([expr 1.5*\$h]-[minsky.canvas.item.height])<5"
