@@ -189,7 +189,7 @@ namespace minsky
 
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
-    void drawResizeHandles(cairo_t* cairo) const;
+    virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);

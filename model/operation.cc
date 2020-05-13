@@ -142,7 +142,7 @@ namespace minsky
     bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
     Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
     double z=zoomFactor();
-    float dx=xx-x(), dy=yy-y(), w=iWidth()*z, h=iHeight()*z;
+    float dx=xx-x(), dy=yy-y(), w=iWidth()*z, h=iHeight()*z; 
     // make sure resize handles can be grabbed at corners of coupled integral variable. for feature 94.
     if (const IntOp* i=dynamic_cast<const IntOp*>(this))
       if (i->coupled()) {    
@@ -151,7 +151,7 @@ namespace minsky
           fabs(fabs(dy)-h) < 0.5*portRadius*z &&
           (fabs(hypot(dl,dy)-hypot(wl,h)) < 0.5*portRadius*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < 0.5*portRadius*z))
               return ClickType::onResize;		  
-	  }
+	  } 
     if (fabs(fabs(dx)-w) < portRadius*z &&
         fabs(fabs(dy)-h) < portRadius*z &&
         fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
@@ -176,13 +176,6 @@ namespace minsky
     bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
     double coupledIntTranslation=0;
     float z=zoomFactor();
-    
-    //float l=OperationBase::l*z, r=OperationBase::r*z, 
-    //  h=OperationBase::h*z;
-    //  
-    //if (fabs(l)<iWidth()*z) l=-iWidth()*z;        
-    //if (r<iWidth()*z) r=iWidth()*z;    
-    //if (h<iHeight()*z) h=iHeight()*z;    
 
     auto t=type();
     // call the iconDraw method if data description is empty
@@ -252,128 +245,6 @@ namespace minsky
           return;
         }
       case OperationType::integrate:
-        //if (const IntOp* i=dynamic_cast<const IntOp*>(this))
-        //{
-        //  if (i->coupled())
-        //    {
-        //      auto& iv=*i->intVar;
-        //      //            iv.zoomFactor=zoomFactor;
-        //      RenderVariable rv(iv,cairo);
-        //      // we need to add some translation if the variable is bound
-        //      cairo_rotate(cairo,rotation()*M_PI/180.0);
-        //      coupledIntTranslation=-0.5*(i->intVarOffset+2*rv.width()+2+r)*z;
-        //      if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(i->intVarOffset+2*iv.iWidth()+2+r)*z;
-        //      //            cairo_translate(cairo, coupledIntTranslation, 0);
-        //      cairo_rotate(cairo,-rotation()*M_PI/180.0);
-        //    }
-        //
-        //  cairo_save(cairo); 
-        //  cairo_scale(cairo,z,z);
-        //  iconDraw(cairo);
-        //  cairo_restore(cairo);
-        //      
-        //  int intVarWidth=0;
-        //  
-        //  cairo_save(cairo);
-        //  cairo_rotate(cairo, angle); 
-        //  
-        //  cairo_move_to(cairo,l,h);
-        //  cairo_line_to(cairo,l,-h);
-        //  cairo_line_to(cairo,r,0);     
-        //  
-        //  cairo_close_path(cairo);		  	 
-        //  
-        //  cairo_set_source_rgb(cairo,0,0,1);    
-        //  cairo_stroke_preserve(cairo);    
-        //  
-        //  if (i->coupled())
-        //   {
-        //     float ivo=i->intVarOffset*z;
-        //     cairo_new_path(cairo);
-        //     cairo_move_to(cairo,r,0);
-        //     cairo_line_to(cairo,r+ivo,0);
-        //     cairo_set_source_rgb(cairo,0,0,0);
-        //     cairo_stroke(cairo);
-        //   
-        //     VariablePtr intVar=i->intVar;
-        //     // display an integration variable next to it
-        //     RenderVariable rv(*intVar, cairo);
-        //     // save the render width for later use in setting the clip
-        //     intVarWidth=rv.width()*z;
-        //     if (rv.width()<intVar->iWidth()) intVarWidth=intVar->iWidth()*z;
-        //     // set the port location...
-        //     intVar->moveTo(i->x()+r+ivo+intVarWidth, i->y());
-        //       
-        //     cairo_save(cairo);
-        //     cairo_translate(cairo,r+ivo+intVarWidth,0);
-        //     // to get text to render correctly, we need to set
-        //     // the var's rotation, then antirotate it
-        //     i->intVar->rotation(i->rotation());
-        //     cairo_rotate(cairo, -M_PI*i->rotation()/180.0);
-        //     rv.draw();
-        //     //i->getIntVar()->draw(cairo);
-        //     cairo_restore(cairo);
-	    //   
-        //     // build clip path the hard way grr...
-        //     cairo_move_to(cairo,l,h);
-        //     cairo_line_to(cairo,l,-h);
-        //     cairo_line_to(cairo,r,0);
-        //     cairo_line_to(cairo,r+ivo,0);
-        //     float rvw=rv.width()*z, rvh=rv.height()*z;
-        //     if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
-        //     if (rv.height()<intVar->iHeight()) rvh=intVar->iHeight()*z;
-        //     cairo_line_to(cairo,r+ivo,-rvh);
-        //     cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
-        //     cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
-        //     cairo_line_to(cairo,r+ivo+2*rvw,rvh);
-        //     cairo_line_to(cairo,r+ivo,rvh);
-        //     cairo_line_to(cairo,r+ivo,0);        
-        //     cairo_line_to(cairo,r,0);        
-        //     cairo_close_path(cairo);        
-        //   }
-        //  
-        //  cairo::Path clipPath(cairo); 
-        //  
-        //  double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
-        //    x2=l, y2=numPorts() > 2? h-3: 0;
-        //                
-        //  if (textFlipped) swap(y1,y2);
-		//  
-        //  // adjust for integration variable
-        //  if (i->coupled())
-        //      x0+=i->intVarOffset+2*intVarWidth+2;
-		//
-        //  cairo_save(cairo);
-        //  cairo_identity_matrix(cairo);
-        //  cairo_translate(cairo, x(), y());
-        //  //cairo_scale(cairo,zoomFactor,zoomFactor);
-        //  cairo_rotate(cairo, angle);
-        //  cairo_user_to_device(cairo, &x0, &y0);
-        //  cairo_user_to_device(cairo, &x1, &y1);
-        //  cairo_user_to_device(cairo, &x2, &y2);
-        //  cairo_restore(cairo);
-		//
-        //  if (numPorts()>0) 
-        //    ports[0]->moveTo(x0, y0);
-        //  if (numPorts()>1) 
-        //        ports[1]->moveTo(x1, y1);
-        //  if (numPorts()>2)
-        //        ports[2]->moveTo(x2, y2);
-		//  
-        //  cairo_translate(cairo,-coupledIntTranslation,0);        
-        //  cairo_restore(cairo); // undo rotation
-        //  if (mouseFocus)
-        //    {
-        //      drawPorts(cairo);
-        //      displayTooltip(cairo,tooltip);
-        //      if (onResizeHandles) i->drawResizeHandles(cairo);
-        //    }
-	    //  
-        //  cairo_new_path(cairo);
-        //  clipPath.appendToCurrent(cairo);
-        //  cairo_clip(cairo);          
-        //  if (selected) drawSelected(cairo);  
-	    //}               
         break;
       default:
         cairo_save(cairo);
@@ -463,10 +334,10 @@ namespace minsky
   
   void OperationBase::resize(const LassoBox& b)
   {
-    float invZ=1/zoomFactor();  
-    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    iWidth(std::abs(b.x1-b.x0)*invZ);
-    iHeight(std::abs(b.y1-b.y0)*invZ);
+     float invZ=1/zoomFactor();  
+     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
+     iWidth(std::abs(b.x1-b.x0)*invZ);
+     iHeight(std::abs(b.y1-b.y0)*invZ);
   }
   
 
@@ -707,7 +578,6 @@ namespace
     
     cairo_save(cairo); 
     cairo_scale(cairo,z,z);
-    //iconDraw(cairo);
 	double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-7,4.5);
@@ -826,37 +696,7 @@ namespace
     intVar->iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
     intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
     bb.update(*this);	  
-  }
- 
-  //ClickType::Type IntOp::clickType(float xx, float yy)
-  //{
-  //  double fm=std::fmod(rotation(),360);
-  //  bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-  //  Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
-  //  double z=zoomFactor();
-  //  float dx=xx-x(), dy=yy-y(), w=iWidth()*z, h=iHeight()*z;
-  //  // make sure resize handles can be grabbed at corners of coupled integral variable. for feature 94.
-  //  if (coupled()) {    
-  //   	  float dl=xx-x(), dr=xx-intVar->x(), wl=w, wr=intVar->iWidth()*z;
-  //        if (((fabs(fabs(dl)-wl) < portRadiusMult*z) || (fabs(fabs(dr)-wr) < portRadiusMult*z)) &&
-  //        fabs(fabs(dy)-h) < portRadiusMult*z &&
-  //        (fabs(hypot(dl,dy)-hypot(wl,h)) < portRadiusMult*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < portRadiusMult*z))
-  //            return ClickType::onResize;		  
-  //   }
-  //  else if (fabs(fabs(dx)-w) < portRadius*z &&
-  //      fabs(fabs(dy)-h) < portRadius*z &&
-  //      fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
-  //    return ClickType::onResize;  
-  //  return Item::clickType(xx,yy);
-  //}
-  
-  //float IntOp::scaleFactor() const
-  //{
-  //  float z=zoomFactor();
-  //  float l=OperationBase::l*z, r=OperationBase::r*z, 
-  //    h=OperationBase::h*z;
-  //  return std::max(1.0,std::min(static_cast<double>(iWidth())*z/(std::max(l,r)),static_cast<double>(iHeight())*z/h));  
-  //}    
+  } 
 
   void IntOp::insertControlled(Selection& selection)
   {
@@ -876,15 +716,6 @@ namespace
       if (auto g=group.lock())
         g->removeItem(*intVar);
   }
-  
-  //float IntOp::x() const 
-  //{
-  //  // adjust x() for coupled integral resizing operation. for feature 94.	
-  //  if (coupled()) return intVar->m_x;		  
-  //  if (auto g=group.lock())
-  //    return zoomFactor()*m_x+g->x();
-  //  return m_x;
-  //}
   
   string IntOp::description(const string& a_desc)
   {
@@ -1224,14 +1055,7 @@ namespace
 
   template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
   {/* moved to IntOp::draw() but needs to be here, and is actually called */}
-  //{
-  //  double sf = scaleFactor();  
-  //  cairo_scale(cairo,sf,sf);		  
-  //  cairo_move_to(cairo,-7,4.5);
-  //  cairo_show_text(cairo,"\xE2\x88\xAB");
-  //  cairo_show_text(cairo,"dt");
-  //}
-
+  
   template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
   { 
     cairo_save(cairo);

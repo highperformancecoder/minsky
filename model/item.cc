@@ -203,7 +203,8 @@ namespace minsky
   // Refactor resize() code for all canvas items here. For feature 25 and 94
   void Item::resize(const LassoBox& b)
   {
-    float w=width(), h=height(), invZ=1/zoomFactor();   
+	 // Set initial iWidth() and iHeight() to initial Pango determined values. This resize method is not very reliable. Probably a Pango issue. 
+    float w=iWidth(width()), h=iHeight(height()), invZ=1/zoomFactor();   
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
     iWidth(abs(b.x1-b.x0)*invZ);
     iHeight(abs(b.y1-b.y0)*invZ);     
@@ -215,10 +216,7 @@ namespace minsky
     {
       cairo::CairoSave cs(cairo);
       auto z=zoomFactor();
-      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadiusMult*z; 
-      // make sure resize handles appear at least at right-hand corners of coupled integral variable. for feature 94.
-      if (const IntOp* i=dynamic_cast<const IntOp*>(this))
-        if (i->coupled()) x+=i->intVar->iWidth()*z;     
+      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadiusMult*z;  
       drawResizeHandle(cairo,x,y,sf);
       cairo_rotate(cairo,0.5*M_PI);
       drawResizeHandle(cairo,y,x,sf);
