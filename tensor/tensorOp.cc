@@ -308,12 +308,14 @@ namespace civita
     Hypercube hc;
     permutation.clear();
     set<string> axisSet;
+    map<size_t, size_t> invPermutation;
     for (auto& i: axes)
       {
         axisSet.insert(i);
         auto v=pMap.find(i);
         if (v==pMap.end())
           throw runtime_error("axis "+i+" not found in argument");
+        invPermutation[v->second]=permutation.size();
         permutation.push_back(v->second);
         hc.xvectors.push_back(xVectorMap[i]);
       }
@@ -331,8 +333,11 @@ namespace civita
     map<size_t, size_t> pi;
     for (size_t i=0; i<arg->size(); ++i)
       {
-        auto l=pivotIndex(arg->index()[i]);
-        pi[l]=i;
+        auto idx=hypercube().splitIndex(arg->index()[i]);
+        auto pidx=idx;
+        for (size_t j=0; j<idx.size(); ++j)
+          pidx[invPermutation[j]]=idx[j];
+        pi[hypercube().linealIndex(pidx)]=i;
       }
     m_index=pi;
     // convert to lineal indexing

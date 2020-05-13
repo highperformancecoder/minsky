@@ -49,6 +49,21 @@ namespace civita
     size_t rank() const {return hypercube().rank();}
     std::vector<unsigned> shape() const {return hypercube().dims();}
 
+    /// impose dimensions according to dimension map \a dimensions
+    void imposeDimensions(const Dimensions& dimensions) {
+      auto hc=hypercube();
+      for (auto& xv: hc.xvectors)
+        {
+          auto dim=dimensions.find(xv.name);
+          if (dim!=dimensions.end())
+            {
+              xv.dimension=dim->second;
+              xv.imposeDimension();
+            }
+        }
+      hypercube(std::move(hc));
+    }
+    
     /// the index vector - assumed to be ordered and unique
     virtual const Index& index() const {return m_index;}
     /// return or compute data at a location

@@ -101,7 +101,8 @@ namespace minsky
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
-        allocValue();    
+        allocValue();
+      return m_index;
     }
     using ITensorVal::index;
     

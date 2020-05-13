@@ -786,7 +786,10 @@ namespace minsky
           throw error("type mismatch with global dimension");
       }
     else
-      minsky().dimensions[descr]=d;
+      {
+        minsky().dimensions[descr]=d;
+        minsky().imposeDimensions();
+      }
     axisDimensions[descr]=d;
   }
 

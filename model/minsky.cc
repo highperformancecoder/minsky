@@ -345,6 +345,15 @@ namespace minsky
     
   }
 
+  void Minsky::imposeDimensions()
+  {
+    for (auto& v: variableValues)
+      {
+        v.second.imposeDimensions(dimensions);
+        v.second.tensorInit.imposeDimensions(dimensions);
+      }
+  }
+
 
   void Minsky::garbageCollect()
   {

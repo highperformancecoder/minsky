@@ -64,6 +64,17 @@ namespace civita
     using V::push_back;
     /// best time format given range of data for plot xticks and spreadsheet labels
     std::string timeFormat() const;
+    /// rewrites the labels according to dimension
+    void imposeDimension();
+    /// @return true if all elements of this are of type T
+    template <class T>
+    bool checkType() {
+      for (auto& i:*this)
+        if (!boost::any_cast<T>(&i))
+          return false;
+      return true;
+    }
+
   };
 
 }
