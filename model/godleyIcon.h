@@ -33,22 +33,8 @@
 namespace minsky
 {
   class GodleyTableEditor;
-  
-  // Godley variables broken out in a separate structure, as copying is non-default
-  struct GodleyVars
-  {
-  public:	      
-    GodleyVars() {}
-    virtual ~GodleyVars() {}
-    // copy operations not deleted to allow ItemT<GodleyIcon> to compile
-    GodleyVars(const GodleyVars& x) {}
-    GodleyVars& operator=(const GodleyVars&) {return *this;}
 
-    virtual void update() = 0;     
-            
-  };	  
-
-  class GodleyIcon: public ItemT<GodleyIcon>, public GodleyVars
+  class GodleyIcon: public ItemT<GodleyIcon>
   {
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
@@ -125,11 +111,10 @@ namespace minsky
     const Variables& stockVars() const {return m_stockVars;}
     GodleyTable table;
     /// updates the variable lists with the Godley table
-    void update() override;
+    void update();
     
     GodleyIcon* clone() const override {
       auto r=new GodleyIcon(*this);
-      r->group.reset();
       r->update();
       return r;
     }    
