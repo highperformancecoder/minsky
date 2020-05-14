@@ -41,7 +41,7 @@ namespace schema3
   {
     b<<a.name<<a.dimension<<a.size();
     for (auto& i: a)
-      b<<civita::str(i);
+      b<<civita::str(i,a.dimension.units);
   }
 
   void unpack(classdesc::pack_t& b, civita::XVector& a)
