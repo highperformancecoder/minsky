@@ -202,7 +202,21 @@ namespace minsky
       if (m_idx<0) allocValue();
       // initialise variable only if its variable is not defined or it is a stock
       if (!isFlowVar() || !cminsky().definingVar(valueId()))
-        operator=(initValue(v));
+        {
+          if (tensorInit.size())
+            {
+              // ensure dimensions are correct
+              auto hc=tensorInit.hypercube();
+              for (auto& xv: hc.xvectors)
+                {
+                  auto dim=cminsky().dimensions.find(xv.name);
+                  if (dim!=cminsky().dimensions.end())
+                    xv.dimension=dim->second;
+                }
+              tensorInit.hypercube(hc);
+            }
+          operator=(initValue(v));
+        }
   }
 
 

@@ -320,8 +320,8 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::time>::matlab(ostream& o) const
   {
     return o<<"t";
-  }
-  
+  }    
+ 
   template <>
   ostream& OperationDAG<OperationType::euler>::matlab(ostream& o) const
   {
@@ -332,7 +332,25 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::pi>::matlab(ostream& o) const
   {
     return o<<"pi";
-  }      
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::zero>::matlab(ostream& o) const
+  {
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::one>::matlab(ostream& o) const
+  {
+    return o<<"1";
+  }            
+ 
+  template <>
+  ostream& OperationDAG<OperationType::inf>::matlab(ostream& o) const
+  {
+    return o<<"inf";
+  }  
 
   template <>
   ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const

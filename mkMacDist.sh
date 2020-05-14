@@ -19,9 +19,9 @@ if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
-# determine release or beta depending on the number of fields in the version
-numFields=`echo $version|tr . ' '|wc -w`
-if [ $numFields -le 2 ]; then
+# determine release or beta depending on the number of fields separated by '-' in the version string
+numFields=`echo $version|tr - ' '|wc -w`
+if [ $numFields -le 1 ]; then
     productName=Minsky
 else
     productName=MinskyBeta

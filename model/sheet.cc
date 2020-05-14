@@ -104,9 +104,12 @@ void Sheet::draw(cairo_t* cairo) const
               y=y0;
               x+=colWidth;
               if (value.hypercube().rank()==1)
-                for (auto v: value)
+                for (size_t i=0; i<value.size(); ++i)
                   {
+                    if (!value.index().empty())
+                      y=y0+value.index()[i]*rowHeight;
                     cairo_move_to(cairo,x,y);
+                    auto v=value[i];
                     if (!std::isnan(v))
                       {
                         pango.setMarkup(str(v));
