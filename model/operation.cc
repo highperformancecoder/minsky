@@ -690,8 +690,12 @@ namespace minsky
   string OperationBase::portValues() const
   {
     string r="equations not yet constructed, please reset";
-    if (ports.size()>0)
-      r="[out]="+to_string(ports[0]->value());
+    if (ports.size()>0 && ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
+    {
+      std::stringstream ss;
+      ss <<"[out]="<<ports[0]->value();		
+      r=ss.str();
+    } else r="[out]="+to_string(ports[0]->value());
     if (ports.size()>1)
       r+=" [in1]="+ to_string(ports[1]->value());
     if (ports.size()>2)
@@ -842,7 +846,28 @@ namespace minsky
   {
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"π");
-  }    
+  }
+  
+    template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
+  {  
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"0");
+  }
+  
+  template <> void Operation<OperationType::one>::iconDraw(cairo_t* cairo) const
+  {  
+    cairo_move_to(cairo,-4,2);
+    cairo_show_text(cairo,"1");
+  }
+  
+  template <> void Operation<OperationType::inf>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-4,-10);
+    Pango pango(cairo);
+    pango.setFontSize(10*zoomFactor());
+    pango.setMarkup("∞");
+    pango.show();    
+  }        
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {

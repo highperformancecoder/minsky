@@ -447,8 +447,8 @@ bind . <Key-asciicircum> {addOperationKey pow}
 bind . <Key-ampersand> {addOperationKey integrate}
 bind . <Key-equal> {addNewGodleyItemKey}
 bind . <Key-at> {addPlotKey}
-
-bind . <Key> {textInput %A}
+#Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
+bind . <Key> {textInput %A; .wiring.canvas configure -cursor {}}  
 
 bind . <Key-Delete> {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}
 bind . <Key-BackSpace> {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}

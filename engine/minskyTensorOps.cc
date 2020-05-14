@@ -250,14 +250,15 @@ namespace minsky
         for (size_t i=0; i<dimension; ++i)
           delta*=dims[i];
       auto idx=arg->index();
-      // strip of any indices outside the output range
-      idx.erase(remove_if(idx.begin(), idx.end(),
-                          [this](size_t i) {
-                            auto t=ssize_t(i)-delta; return t<0 || t>=ssize_t(size());}),
-                idx.end());
+      set<size_t> newIdx;
       for (auto& i: idx)
-        i-=delta;
-      cachedResult.index(idx);
+        {
+          // strip of any indices outside the output range
+          auto t=ssize_t(i)-delta;
+          if (t>=0 && t<ssize_t(size()))
+            newIdx.insert(t);
+        }
+      cachedResult.index(Index(newIdx));
     }
 
     void computeTensor() const override
@@ -382,13 +383,7 @@ namespace minsky
   class SwitchTensor: public ITensor
   {
     size_t m_size=1;
-    vector<size_t> m_index;
     vector<TensorPtr> args;
-    size_t hcIndex(size_t i) const {
-      if (m_index.empty()) return i;
-      if (i>=m_index.size()) return numeric_limits<size_t>::max();
-      return m_index[i];
-    }
   public:
     void setArguments(const std::vector<TensorPtr>& a,const std::string& axis={},double argv=0) override {
       args=a;
@@ -396,15 +391,13 @@ namespace minsky
         hypercube(Hypercube());
       else
         hypercube(args[1]->hypercube());
-//      if (!args.empty() && args[0]->rank()!=0)
-//        // TODO: feature ticket #36 - extend to conformant selector arg
-//        throw runtime_error("tensor value selectors not yet supported");
       
-      set<size_t> indices; // collect the union of argument indices
+      m_size=1;
+      set<size_t> indices;
       for (auto& i: args)
         {
-          auto ai=i->index();
-          indices.insert(ai.begin(), ai.end());
+          for (auto& j: i->index())
+            indices.insert(j);
           if (i->size()>1)
             {
               if (m_size==1)
@@ -414,8 +407,7 @@ namespace minsky
                 throw runtime_error("noconformant tensor arguments in switch");
             }
         }
-      m_index.clear();
-      m_index.insert(m_index.end(),indices.begin(), indices.end());
+      m_index=indices;
       if (!m_index.empty()) m_size=m_index.size();
     }
     size_t size() const override {return m_size;}
@@ -437,7 +429,7 @@ namespace minsky
           if (args[0]->rank()==0) // scalar selector, so broadcast
             selector = (*args[0])[0];
           else
-            selector = args[0]->atHCIndex(hcIndex(i));
+            selector = (*args[0])[i];
         }
       ssize_t idx = selector+1.5; // selector selects between args 1..n
       
@@ -446,7 +438,7 @@ namespace minsky
           if (args[idx]->rank()==0)
             return (*args[idx])[0];
           else
-            return args[idx]->atHCIndex(hcIndex(i));
+            return args[idx]->atHCIndex(index()[i]);
         }
       return nan("");
     }
@@ -462,13 +454,15 @@ namespace minsky
     RavelTensor(const Ravel& ravel): ravel(ravel) {}
 
     void setArgument(const TensorPtr& a,const std::string&,double) override {
+      // not sure how to avoid this const cast here
+      const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=move(civita::createRavelChain(ravel.getState(), a));
       hypercube(chain.back()->hypercube());
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
     size_t size() const override {return chain.empty()? 0: chain.back()->size();}
-    const vector<size_t>& index() const override
+    const Index& index() const override
     {if (chain.empty()) return m_index; else return chain.back()->index();}
     Timestamp timestamp() const override
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}

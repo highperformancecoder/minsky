@@ -509,18 +509,15 @@ namespace minsky
   {
     if (ravel)
       {
-        RavelState state=getState();
+        RavelState state=initState.empty()? getState(): initState;
+        initState.clear();
         ravel_clear(ravel);
         for (auto& i: hc.xvectors)
           {
             vector<string> ss;
-            for (auto& j: i) ss.push_back(str(j));
-            // clear the format if time so that data will reload correctly
-            if (i.dimension.type==Dimension::time)
-              axisDimensions[i.name]=Dimension(Dimension::time,"");
+            for (auto& j: i) ss.push_back(str(j,i.dimension.units));
             vector<const char*> sl;
-            for (auto& j: ss)
-              sl.push_back(j.c_str());
+            for (auto& j: ss) sl.push_back(j.c_str());
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
             size_t h=ravel_numHandles(ravel)-1;
             ravel_displayFilterCaliper(ravel,h,false);
@@ -529,6 +526,17 @@ namespace minsky
           setRank(hc.rank());
         else
           applyState(state);
+#ifndef NDEBUG
+        if (state.empty())
+          {
+            auto d=hc.dims();
+            assert(d.size()==ravel_rank(ravel));
+            vector<size_t> outputHandles(d.size());
+            ravel_outputHandleIds(ravel,&outputHandles[0]);
+            for (size_t i=0; i<d.size(); ++i)
+              assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
+          }
+#endif
       }
   }
   
@@ -537,25 +545,11 @@ namespace minsky
     if (ravel && dataCube)
       {
         // this ensure that handles are restored correctly after loading a .mky file. 
-        RavelState state=initState.empty()? getState(): initState;
-        initState.clear();
         populateHypercube(v.hypercube());
-#ifndef NDEBUG
-        if (state.empty())
-          {
-            auto d=v.hypercube().dims();
-            assert(d.size()==ravel_rank(ravel));
-            vector<size_t> outputHandles(d.size());
-            ravel_outputHandleIds(ravel,&outputHandles[0]);
-            for (size_t i=0; i<d.size(); ++i)
-              assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
-          }
-#endif
         auto sz=v.size();
         vector<double> tmp(sz);
         for (size_t i=0; i<sz; ++i) tmp[i]=v[i];
         ravelDC_loadData(dataCube, ravel, &tmp[0]);
-        applyState(state);
       }
   }
 
@@ -792,7 +786,10 @@ namespace minsky
           throw error("type mismatch with global dimension");
       }
     else
-      minsky().dimensions[descr]=d;
+      {
+        minsky().dimensions[descr]=d;
+        minsky().imposeDimensions();
+      }
     axisDimensions[descr]=d;
   }
 

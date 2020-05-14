@@ -44,7 +44,6 @@ namespace minsky
     double& valRef(); 
     const double& valRef() const;
     std::vector<unsigned> m_dims;
-    std::vector<size_t> m_index;     
     
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -92,19 +91,20 @@ namespace minsky
     double& operator[](size_t i) override {return *(&valRef()+i);}
 
 
-    const std::vector<size_t>& index() const override {
+    const Index& index() const override {
       if (m_type==parameter && tensorInit.size())
         return tensorInit.index();
       else
         return m_index;
     }
-    void index(const std::vector<size_t>& i) override {
+    const Index& index(Index&& i) override {
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
-        allocValue();    
+        allocValue();
+      return m_index;
     }
-
+    using ITensorVal::index;
     
     size_t numDenseElements() const {return hypercube().numElements();}
 

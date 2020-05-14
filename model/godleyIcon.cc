@@ -155,10 +155,12 @@ namespace minsky
   void GodleyIcon::toggleButtons()
   {
     if (editor)
-      if (editor->drawButtons)
-        editor->disableButtons();
-      else
-        editor->enableButtons();
+      {
+        if (editor->drawButtons)
+          editor->disableButtons();
+        else
+          editor->enableButtons();
+      }
   }
 
   double GodleyIcon::schema1ZoomFactor() const

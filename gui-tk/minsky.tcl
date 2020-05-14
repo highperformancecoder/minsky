@@ -745,6 +745,7 @@ proc dimensionsDialog {} {
                             $d.units [.dimensions.g${i}_units get]
                         }
                     }
+                imposeDimensions
                 wm withdraw .dimensions
                 reset
             }]

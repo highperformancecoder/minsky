@@ -25,6 +25,9 @@
 #include "dimension.cd"
 #include "dimension.xcd"
 #endif
+#ifdef CIVITA_INDEX_H
+#include "index.cd"
+#endif
 //#ifdef CIVITA_TENSORINTERFACE_H
 //#include "tensorInterface.cd"
 //#endif
