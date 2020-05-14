@@ -142,24 +142,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
           
   std::ofstream outFile(tempStr, std::ofstream::binary);  
   
-  // Handle zipped CSV files. Not working... 
-  if (res[http::field::content_type]=="application/zip") {
-	   
-	  string responseBody=boost::beast::buffers_to_string(res.body().data());
-	  
-	  //outFile << responseBody;  downloads file correctly as zip file. the problem is definitely in z_stream implementation.
-    
-       vector<unsigned char> zbuf(responseBody.begin(),responseBody.end());
-       //vector<char> zbuf(responseBody.length()+1,0);                   // None work. See answers https://stackoverflow.com/questions/7378087/how-to-efficiently-copy-a-stdstring-into-a-vector 
-       //std::strncpy(&zbuf[0],&responseBody[0],responseBody.length());
-	   	   
-	   InflateFileZStream zs(zbuf);
-	       	   
-       zs.inflate(); 
-       
-       outFile << zs.output;  // Fails with compression failure: invalid stored block lengths, as if all zipped CSV files were corrupt, which I doubt: https://stackoverflow.com/questions/10577045/what-might-explain-an-invalid-stored-block-lengths-error                     
-    
-  }  else outFile << boost::beast::buffers_to_string(res.body().data());
+  outFile << boost::beast::buffers_to_string(res.body().data());
        
   // Gracefully close the socket
   boost::system::error_code ec;
@@ -177,6 +160,12 @@ std::string CSVDialog::loadWebFile(const std::string& url)
       
   // Return the file name for loading the in csvimport.tcl 
   return tempStr;
+}
+
+void CSVDialog::deleteFile(const string& fname)
+{  
+  int status;	
+  status=std::remove(fname.c_str());
 }
 
 void CSVDialog::loadFile(const string& fname)
