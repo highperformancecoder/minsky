@@ -25,6 +25,7 @@
 #include "intrusiveMap.h"
 #include "classdesc_access.h"
 #include "SVGItem.h"
+#include "group.h"
 
 #include <map>
 #include <cairo.h>
@@ -115,7 +116,23 @@ namespace minsky
     
     GodleyIcon* clone() const override {
       auto r=new GodleyIcon(*this);
-      r->update();
+      // create a dummy group for the cloned Godley icon to live in while the update takes place. for tickets 1180-1183. 
+      if (auto g=r->group.lock())
+      {
+	   GroupPtr dummy(new Group);
+       for (auto& i: g->items)
+       {		
+          dummy->addItem(i);			  
+          assert(!i->ioVar());
+       }
+	   for (auto& it: dummy->items) 
+	     if (auto godley=dynamic_cast<GodleyIcon*>(it.get())) {
+	        godley->update();
+	        r=godley;
+	     }
+	   dummy->clear(); 
+	  }
+	  else r->update();
       return r;
     }    
 
