@@ -491,9 +491,9 @@ namespace civita
                 for (size_t i=0; i<xv.size(); ++i)
                   offsets[str(xv[i], xv.dimension.units)]=i;
                 perm.clear();
-                for (auto& i: i.second.customOrder)
-                  if (offsets.count(i))
-                    perm.push_back(offsets[i]);
+                for (auto& j: i.second.customOrder)
+                  if (offsets.count(j))
+                    perm.push_back(offsets[j]);
                 break;
               }
             }
