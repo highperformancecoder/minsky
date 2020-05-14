@@ -98,7 +98,13 @@ namespace civita
 
     void allocVal() {if (m_index.empty()) data.resize(hypercube().numElements());}
 
-    //void push_back(size_t index, double val) {m_index.insert(index, data, val);}
+    // assign a sparse data set
+    TensorVal& operator=(const std::map<size_t,double>& x) {
+      m_index=x;
+      data.clear(); data.reserve(x.size());
+      for (auto& j: x) data.push_back(j.second);
+      return *this;
+    }
     
     double operator[](size_t i) const override {return data[i];}
     double& operator[](size_t i) override {return data[i];}
@@ -137,6 +143,4 @@ namespace civita
   }
 }
 
-//#include "tensorVal.cd"
-//#include "tensorVal.xcd"
 #endif

@@ -23,11 +23,11 @@
 
 namespace civita
 {
-  ptrdiff_t Index::linealOffset(size_t h) const
+  size_t Index::linealOffset(size_t h) const
   {
     auto lb=std::lower_bound(index.begin(), index.end(), h);
     if (lb!=index.end() && *lb==h)
-      return lb-index.begin();
+      return size_t(lb-index.begin());
     return index.size();
   }
 

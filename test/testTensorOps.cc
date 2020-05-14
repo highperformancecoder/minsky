@@ -434,8 +434,9 @@ SUITE(TensorOps)
     CHECK_EQUAL(identity, (*tensorOp)[0]);
     Hypercube hc(vector<unsigned>{2});
     auto tv1=make_shared<TensorVal>(hc), tv2=make_shared<TensorVal>(hc);
-    tv1->push_back(0,1), tv2->push_back(0,2);
-    tv1->push_back(1,2), tv2->push_back(1,1);
+    map<size_t,double> tv1Data{{0,1},{1,2}}, tv2Data{{0,2},{1,1}};
+    *tv1=tv1Data;
+    *tv2=tv2Data;
     tensorOp->setArguments(vector<TensorPtr>{tv1,tv2},vector<TensorPtr>{});
     CHECK_EQUAL(f((*tv1)[0],(*tv2)[0]), (*tensorOp)[0]);
     CHECK_EQUAL(f((*tv1)[1],(*tv2)[1]), (*tensorOp)[1]);

@@ -21,6 +21,7 @@
 #define CIVITA_INDEX_H
 #include <vector>
 #include <set>
+#include <map>
 
 #ifndef CLASSDESC_ACCESS
 #define CLASSDESC_ACCESS(x)
@@ -38,15 +39,17 @@ namespace civita
       template <class T>
       Index(const T& indices) {*this=indices;}
 
-      // assign an associative container (sorted keys)
-      size_t key(const size_t& x) const {return x;}
-      template <class V> size_t key(const std::pair<const size_t,V>& x) const {return x.first;}
-      
-      template <class T>
-      Index& operator=(const T& indices) {
-        std::vector<size_t> t; t.reserve(indices.size());
-        for (auto& i: indices) t.push_back(key(i));
-        index.swap(t);
+      // can only assign ordered containers
+      template <class T, class C, class A>
+      Index& operator=(const std::set<T,C,A>& indices) {
+        index.clear(); index.reserve(indices.size());
+        for (auto& i: indices) index.push_back(i);
+        return *this;
+      }
+      template <class K, class V, class C, class A>
+      Index& operator=(const std::map<K,V,C,A>& indices) {
+        index.clear(); index.reserve(indices.size());
+        for (auto& i: indices) index.push_back(i.first);
         return *this;
       }
 
@@ -59,7 +62,7 @@ namespace civita
       size_t size() const {return index.size();}
       void clear() {index.clear();}
       /// return the lineal index of hypercube index h, or size if not present 
-      ptrdiff_t linealOffset(size_t h) const;
+      size_t linealOffset(size_t h) const;
       /// insert value into v at hc index h, maintaining sorted order
       void insert(size_t h, std::vector<double>& v, double x);
       std::vector<size_t>::const_iterator begin() const {return index.begin();}
