@@ -331,13 +331,15 @@ namespace civita
     hypercube(move(hc));
     // permute the index vector
     map<size_t, size_t> pi;
-    for (size_t i=0; i<arg->size(); ++i)
+    for (size_t i=0; i<arg->index().size(); ++i)
       {
-        auto idx=hypercube().splitIndex(arg->index()[i]);
+        auto idx=arg->hypercube().splitIndex(arg->index()[i]);
         auto pidx=idx;
         for (size_t j=0; j<idx.size(); ++j)
           pidx[invPermutation[j]]=idx[j];
-        pi[hypercube().linealIndex(pidx)]=i;
+        auto l=hypercube().linealIndex(pidx);
+        assert(pi.count(l)==0);
+        pi[l]=i;
       }
     m_index=pi;
     // convert to lineal indexing
