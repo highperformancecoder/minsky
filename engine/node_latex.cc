@@ -386,6 +386,24 @@ namespace MathDAG
   {
     return o<<"\\pi ";
   }    
+  
+  template <>
+  ostream& OperationDAG<OperationType::zero>::latex(ostream& o) const
+  {
+    return o<<" 0 ";
+  }
+ 
+  template <>
+  ostream& OperationDAG<OperationType::one>::latex(ostream& o) const
+  {
+    return o<<" 1 ";
+  }      
+  
+  template <>
+  ostream& OperationDAG<OperationType::inf>::latex(ostream& o) const
+  {
+    return o<<"\\infty ";
+  }  
 
   template <>
   ostream& OperationDAG<OperationType::copy>::latex(ostream& o) const
