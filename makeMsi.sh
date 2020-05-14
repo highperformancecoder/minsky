@@ -8,34 +8,40 @@ if [ $version = 'unknown' ]; then
     version=1.1.1
 fi
 minskyWxs=`pwd`/minsky.wxs
-msiVersion=`echo $version|tr -d D`
 
-# determine release or beta depending on the number of fields in the version
-numFields=`echo $version|tr . ' '|wc -w`
-if [ $numFields -le 2 ]; then
-  if [ -f gui-tk/libravel.dll ]; then
-    upgradeId=a39ca2a9-a0e7-4dec-a0db-ae954d11a929
-    productName=Ravel
-    license=ravelLicense.rtf
-  else
-    upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
-    productName=Minsky
-    license=license.rtf
-  fi
+# determine release or beta depending on the number of fields separated by '-' in the version string
+numFields=`echo $version|tr - ' '|wc -w`
+if [ $numFields -le 1 ]; then
+    msiVersion=$version
+    if [ -f gui-tk/libravel.dll ]; then
+        upgradeId=a39ca2a9-a0e7-4dec-a0db-ae954d11a929
+        productName=Ravel
+        license=ravelLicense.rtf
+    else
+        upgradeId=01a8458a-5fb5-49e6-a459-531a16e2ea01
+        productName=Minsky
+        license=license.rtf
+    fi
 else
-  if [ -f gui-tk/libravel.dll ]; then
-    upgradeId=66649e83-9109-4566-9dbe-68cc6a0ceea0
-    productName=RavelBeta
-    license=ravelLicense.rtf
-  else
-    upgradeId=cba7e03a-c692-400d-9c75-2da0307c3efc
-    productName=MinskyBeta
-    license=license.rtf
-  fi
+    # remove last digit, and add in beta
+    betaNo=${version##*.}
+    # add 1000 for release candidates
+    if [ ${version##*-} = rc.$betaNo ]; then
+        betaNo=$[$betaNo+1000]
+    fi
+    msiVersion=${version%.*-*}.$betaNo
+    if [ -f gui-tk/libravel.dll ]; then
+        upgradeId=66649e83-9109-4566-9dbe-68cc6a0ceea0
+        productName=RavelBeta
+        license=ravelLicense.rtf
+    else
+        upgradeId=cba7e03a-c692-400d-9c75-2da0307c3efc
+        productName=MinskyBeta
+        license=license.rtf
+    fi
 fi
 
-echo $version
-echo $productName
+echo $productName: version=$version, msiVersion=$msiVersion
 
 cat >$minskyWxs <<EOF
 <?xml version='1.0' encoding='windows-1252'?>
