@@ -378,8 +378,11 @@ proc showPreferences {} {
             }
             font {
                 grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
+                image create cairoSurface fontSampler -surface minsky.fontSampler
+                grid [label .preferencesForm.fontSample -image fontSampler -width 150 -height 20] -row $row -column 30 -sticky w
                 bind .preferencesForm.font <<ComboboxSelected>> {
                     defaultFont [.preferencesForm.font get]
+                    fontSampler.requestRedraw
                     canvas.requestRedraw
                 }
             }

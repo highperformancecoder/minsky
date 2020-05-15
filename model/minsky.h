@@ -37,6 +37,7 @@
 #include "variableValue.h"
 #include "canvas.h"
 #include "panopticon.h"
+#include "fontDisplay.h"
 #include "variableSheet.h"
 #include "parameterSheet.h"
 #include "dimension.h"
@@ -156,6 +157,7 @@ namespace minsky
   public:
     EquationDisplay equationDisplay;
     Panopticon panopticon{canvas};
+    FontDisplay fontSampler;
     ParameterSheet parameterSheet;
     VariableSheet variableSheet;    
         // Allow multiple equity columns.
