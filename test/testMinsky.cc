@@ -27,9 +27,14 @@ namespace
   struct TestFixture: public Minsky
   {
     LocalMinsky lm;
+    mutable string clipboard;
+    string savedMessage;
     TestFixture(): lm(*this)
     {
     }
+    string getClipboard() const override {return clipboard;}
+    void putClipboard(const string& x) const override {clipboard=x;}
+    void message(const string& x) override {savedMessage=x;}
   };
 }
 
@@ -1106,4 +1111,68 @@ SUITE(Minsky)
       CHECK_THROW(reset(), std::exception);
     }
 
+    TEST_FIXTURE(TestFixture, RemoveDefinitionsFromPastedVars)
+      {
+        VariablePtr a(VariableType::flow,"a");
+        VariablePtr b(VariableType::flow,"b");
+        model->addItem(a); model->addItem(b);
+        model->addWire(a->ports[0], b->ports[1]);
+        canvas.selection.ensureItemInserted(a);
+        canvas.selection.ensureItemInserted(b);
+        copy();
+        paste();
+        CHECK_EQUAL(4, model->items.size());
+        // ensure extra wire is not copied
+        CHECK_EQUAL(1, model->wires.size());
+        // check that b's definition remains as before
+        CHECK(definingVar(":b")==b);
+      }
+
+    TEST_FIXTURE(TestFixture, DefinitionPasted)
+      {
+        VariablePtr a(VariableType::flow,"a");
+        VariablePtr b(VariableType::flow,"b");
+        model->addItem(a); model->addItem(b);
+        model->addWire(a->ports[0], b->ports[1]);
+        canvas.selection.ensureItemInserted(a);
+        canvas.selection.ensureItemInserted(b);
+        copy();
+        model->removeItem(*b);
+        paste();
+        // ensure extra wire is not copied
+        CHECK_EQUAL(1, model->wires.size());
+        // check that b's definition is now the copied var
+        CHECK(definingVar(":b")!=b);
+      }
+    
+    TEST_FIXTURE(TestFixture, PastedIntOpShowsMessage)
+      {
+        auto intOp=make_shared<IntOp>();
+        intOp->description("foo");
+        model->addItem(intOp);
+        CHECK_EQUAL(2,model->items.size());
+        canvas.selection.ensureItemInserted(intOp);
+        copy();
+        paste();
+        CHECK(savedMessage.size()); // check that pop message is written
+      }
+
+    TEST_FIXTURE(TestFixture, RetypePastedIntegralVariable)
+      {
+        auto intOp=make_shared<IntOp>();
+        intOp->description("foo");
+        model->addItem(intOp);
+        VariablePtr clonedIntVar(intOp->intVar->clone());
+        model->addItem(clonedIntVar);
+        canvas.selection.ensureItemInserted(clonedIntVar);
+        copy();
+        model->removeItem(*intOp);
+        intOp.reset();
+        paste();
+        CHECK_EQUAL(2,model->items.size());
+        CHECK(model->items[1]->variableCast());
+        CHECK_EQUAL(VariableType::flow, model->items[1]->variableCast()->type());
+        CHECK_EQUAL(clonedIntVar->name(), model->items[1]->variableCast()->name());
+      }
+    
 }

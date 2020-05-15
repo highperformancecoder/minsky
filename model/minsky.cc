@@ -244,9 +244,7 @@ namespace minsky
     return dynamic_pointer_cast<VariableBase>
       (model->findAny(&Group::items, [&](const ItemPtr& x) {
             auto v=x->variableCast();
-            return v && v->valueId()==valueId &&
-              ((v->ports.size()>1 && !v->ports[1]->wires().empty()) ||
-               (v->isStock() && v->controller.lock())) ;
+            return v && v->valueId()==valueId && v->defined();
           }));
   }
     
@@ -270,15 +268,44 @@ namespace minsky
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();    
+
+    // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
+    g->recursiveDo(&GroupItems::items,
+                   [&](Items&, Items::iterator i) {
+                     if (auto v=(*i)->variableCast())
+                       if (v->defined() || v->isStock())
+                         {
+                           // if defined, check no other defining variable exists
+                           auto alreadyDefined = canvas.model->findAny
+                             (&GroupItems::items,
+                              [&v](const ItemPtr& j)
+                              {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
+                           if (v->isStock())
+                             {
+                               if (v->defined() && alreadyDefined)
+                                 message("Integral/Stock variable "+v->name()+" already defined"); 
+                               else if (!v->defined() && !alreadyDefined)
+                                 convertVarType(v->valueId(), VariableType::flow);
+                             }
+                           else if (alreadyDefined)
+                             {
+                               // delete defining wire from this
+                               assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
+                               canvas.model->removeWire(*v->ports[1]->wires()[0]);
+                             }
+                         }
+                     return false;
+                   });
+
     auto copyOfItems=g->items;
     for (auto& i: copyOfItems)
       {		
          canvas.model->addItem(i);			  
-         canvas.selection.ensureItemInserted(i);		 
+         canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
     // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	      
+    if (!g->items.empty()) canvas.setItemFocus(g->items[0]);	      
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
@@ -1281,7 +1308,8 @@ namespace minsky
        });
                        
     if (auto var=definingVar(name))
-      if (var->type() != type)
+      // we want to be able to convert stock vars to flow vars when their input is wired
+      if (var->type() != type && (!var->isStock() || var->controller.lock()))
         throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets

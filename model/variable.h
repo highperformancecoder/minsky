@@ -183,6 +183,9 @@ namespace minsky
     */
     void draw(cairo_t*) const override;
     ClickType::Type clickType(float x, float y) override;
+
+    /// @return true if variable is defined (inputWired() || isStock() && controlled)
+    bool defined() const {return inputWired() || (isStock() && controller.lock());}
     
     bool inputWired() const;
     /// return a list of existing variables a variable in this group
