@@ -162,12 +162,6 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   return tempStr;
 }
 
-void CSVDialog::deleteFile(const string& fname)
-{  
-  int status;	
-  status=std::remove(fname.c_str());
-}
-
 void CSVDialog::loadFile(const string& fname)
 {
   spec=DataSpec();

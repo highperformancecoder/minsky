@@ -45,9 +45,7 @@ namespace minsky
     void redraw(int, int, int width, int height) override;
     void loadFile(const std::string& fname);
     // Return file name after downloading a CSV file from the web. 
-    std::string loadWebFile(const std::string& url);
-    // Delete temporary web file. 
-    void deleteFile(const std::string& fname);    
+    std::string loadWebFile(const std::string& url); 
     void reportFromFile(const std::string& input, const std::string& output);
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// return column mouse is over

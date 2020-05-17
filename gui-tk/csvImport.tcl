@@ -126,7 +126,12 @@ proc csvImportDialogOK {url} {
     global csvParms
     csvDialog.spec.horizontalDimName $csvParms(horizontalDimension)
     set filename $csvParms(filename)
-    set csvImportFailed [catch "loadVariableFromCSV csvDialog.spec {$filename}" err]
+    if [string length $url] {
+		# deal with temporary files downloaded from the internet. For ticket 1173.
+		set csvImportFailed [catch "loadVariableFromWebCSV csvDialog.spec {$filename} {$url}" err]
+	} else {
+		set csvImportFailed [catch "loadVariableFromCSV csvDialog.spec {$filename}" err]	
+	}
     if $csvImportFailed {
         toplevel .csvImportError
         label .csvImportError.errMsg -text $err
@@ -136,10 +141,6 @@ proc csvImportDialogOK {url} {
     } else {
         reset
         cancelWin .wiring.csvImport
-        # Delete temporary file created by web import of CSV data
-        if [string length $url] {
-	        csvDialog.deleteFile $filename   
-        }
     }
 }
 
