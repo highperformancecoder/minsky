@@ -117,8 +117,8 @@ namespace minsky
     GodleyIcon* clone() const override {
       auto r=new GodleyIcon(*this);  
 	  r->update();       
-	  if (group.lock()) group.lock().reset();    	  	  
-      return r;
+	  r->group.reset();
+	  return r;
     }      
 
     /// returns the variable if point (x,y) is within a
