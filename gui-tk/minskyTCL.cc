@@ -253,7 +253,8 @@ namespace minsky
 #else
       try
         {
-          return (tclcmd()<<"clipboard get -type UTF8_STRING\n").result;
+		  // seems more stable in copying all items. for ticket 1180/1183	
+          return (tclcmd()<<"selection get -selection CLIPBOARD -type UTF8_STRING\n").result;
         }
       catch (...)
         {
