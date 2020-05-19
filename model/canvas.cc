@@ -639,7 +639,7 @@ namespace minsky
         else if (auto group=dynamic_cast<Group*>(item.get()))
           newItem=group->copy();
         else
-          {
+          {    			    
             newItem.reset(item->clone());
             // if copied from a Godley table or I/O var, set orientation to default
             if (auto v=item->variableCast())
