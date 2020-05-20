@@ -245,6 +245,7 @@ install-manual: doc/minsky/labels.pl
 tcl-cov:
 	rm -f minsky.cov minsky.cov.{pag,dir} coverage.o
 	-env MINSKY_COV=`pwd`/minsky.cov $(MAKE) AEGIS=1 sure
+	cd test; $(MAKE) tcl-cov
 	sh test/run-tcl-cov.sh
 
 MINSKY_VERSION=$(shell git describe)

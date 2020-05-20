@@ -73,6 +73,20 @@ struct ElementStack: public vector<Element>
   }
 };
 
+namespace ecolab
+{
+  Tk_Window mainWin=0;
+}
+
+namespace minsky
+{
+  // check and perform a GUI event
+  void doOneEvent(bool idletasksOnly)
+  {
+    Tcl_DoOneEvent(TCL_DONT_WAIT | (idletasksOnly? TCL_IDLE_EVENTS: 0));
+  }
+}
+
 int main(int argc, char** argv)
 {
   if (argc<3)
