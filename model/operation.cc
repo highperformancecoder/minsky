@@ -1120,6 +1120,16 @@ namespace minsky
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"frac");
   }
+  template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-6,3);
+    cairo_show_text(cairo,"%");
+  }
+  template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"!");
+  }      
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
   {
     DrawBinOp d(cairo);

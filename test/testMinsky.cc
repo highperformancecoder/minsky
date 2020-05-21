@@ -678,6 +678,7 @@ SUITE(Minsky)
           case OperationType::eq:
           case OperationType::floor:
           case OperationType::frac:
+          case OperationType::percent:
             continue;
           default:
             break;

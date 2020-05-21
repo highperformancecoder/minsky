@@ -279,7 +279,7 @@ SUITE(Derivative)
           save(OperationType::typeName(op)+".mky");
           switch (OperationType::Type(op))
             {
-            case OperationType::floor: case OperationType::frac:
+            case OperationType::floor: case OperationType::frac: case OperationType::percent: case OperationType::fact:
             case OperationType::index:
             case OperationType::data:
               CHECK_THROW(reset(), ecolab::error);

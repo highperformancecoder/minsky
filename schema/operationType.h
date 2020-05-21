@@ -43,7 +43,7 @@ namespace minsky
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
-               floor, frac, not_,
+               floor, frac, not_, percent, fact,
                // reductions
                sum, product, infimum, supremum, any, all, infIndex, supIndex,
                // scans

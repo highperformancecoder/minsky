@@ -529,6 +529,20 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"\\mathrm{frac}("<<arguments[0][0]->latex()<<")";
   }
+  
+  template <>
+  ostream& OperationDAG<OperationType::percent>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\left"<<arguments[0][0]->latex()<<"\\right\\%";
+  }  
+  
+  template <>
+  ostream& OperationDAG<OperationType::fact>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\left"<<arguments[0][0]->latex()<<"\\right!";
+  }    
 
   template <>
   ostream& OperationDAG<OperationType::sum>::latex(ostream& o) const
