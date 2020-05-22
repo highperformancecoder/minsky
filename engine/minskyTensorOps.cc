@@ -236,6 +236,8 @@ namespace minsky
       delta=d;
       // remove initial slice of hypercube
       auto hc=arg->hypercube();
+      if (rank()==0) return;
+      
       unsigned dim=rank()>1? dimension: 0;
       auto& xv=hc.xvectors[0];
       if (delta>=0)
@@ -263,11 +265,12 @@ namespace minsky
 
     void computeTensor() const override
     {
+      size_t ane=arg->hypercube().numElements();
       if (delta>=0)
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<size() && i+delta<ane; ++i)
           cachedResult[i]=arg->atHCIndex(i+delta)-arg->atHCIndex(i);
       else
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<size() && i-delta<ane; ++i)
           cachedResult[i]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
         
     }
@@ -461,7 +464,7 @@ namespace minsky
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
-    size_t size() const override {return chain.empty()? 0: chain.back()->size();}
+    size_t size() const override {return chain.empty()? 1: chain.back()->size();}
     const Index& index() const override
     {if (chain.empty()) return m_index; else return chain.back()->index();}
     Timestamp timestamp() const override
@@ -489,11 +492,16 @@ namespace minsky
             case 3:
               r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]));
               break;
-		    }
+            }
           return r;
         }
       catch (const InvalidType&)
         {return {};}
+      catch (const std::exception& ex)
+        {
+          // rethrow with op attached to mark op on canvas
+          op->throw_error(ex.what());
+        }
     else if (auto v=it.variableCast())
       return make_shared<TensorVarVal>(*v->vValue(), tfp.ev);
     else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))

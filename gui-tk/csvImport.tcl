@@ -139,7 +139,7 @@ proc csvImportDialogOK {url} {
         pack .csvImportError.errMsg .csvImportError.msg -side top
         buttonBar .csvImportError "doReport {$filename}"                
     } else {
-        reset
+        catch reset
         cancelWin .wiring.csvImport
     }
 }
