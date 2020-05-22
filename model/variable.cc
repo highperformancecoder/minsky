@@ -196,8 +196,10 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
       if (vv==nullptr) minsky().variableValues.insert
         (make_pair(valueId,VariableValue(type(), name(),"",group.lock())));
       // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
-      else minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(),nm,vv->init,group.lock())));
+      else
+        minsky().variableValues.insert
+        (make_pair(valueId,VariableValue(type(),nm,vv->init,group.lock()))).first->
+          second.tensorInit=vv->tensorInit;
     }
 }
 
