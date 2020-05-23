@@ -183,8 +183,8 @@ namespace minsky
   
   template <>
   double EvalOp<OperationType::inf>::evaluate(double in1, double in2) const
-  {return numeric_limits<double>::max();}
-  //{return numeric_limits<double>::infinity();}
+  //{return numeric_limits<double>::max();}
+  {return numeric_limits<double>::infinity();}
   template <> 
   double EvalOp<OperationType::inf>::d1(double x1, double x2) const
   {return 0;}
@@ -494,10 +494,10 @@ namespace minsky
   
   template <>
   double EvalOp<OperationType::percent>::evaluate(double in1, double in2) const
-  {return 100*in1;}
+  {return 0.01*in1;}
   template <>
   double EvalOp<OperationType::percent>::d1(double x1, double x2) const
-  {return 0;}
+  {return 0.01;}
   template <>
   double EvalOp<OperationType::percent>::d2(double x1, double x2) const
   {return 0;}

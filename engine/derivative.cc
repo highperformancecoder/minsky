@@ -647,7 +647,11 @@ namespace MathDAG
     if (expr.arguments[0].empty())
       return zero;
     else
-       throw error("percent is not differentiable");
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        Expr percent=x-0.99*x;
+        return chainRule(x, percent);
+      }
   }
   
 //  template <>
