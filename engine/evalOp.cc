@@ -40,7 +40,7 @@ namespace minsky
     switch (numArgs())
       {
       case 0:
-        assert(out<n);
+        assert(size_t(out)<n);
         fv[out]=evaluate(0,0);
         break;
       case 1:

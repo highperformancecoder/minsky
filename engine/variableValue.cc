@@ -32,8 +32,8 @@ namespace minsky
 
   double& VariableValue::operator[](size_t i)
   {
-    assert(isFlowVar() && i+m_idx<ValueVector::flowVars.size() ||
-           !isFlowVar() && i+m_idx<ValueVector::stockVars.size());
+    assert((isFlowVar() && i+m_idx<ValueVector::flowVars.size()) ||
+           (!isFlowVar() && i+m_idx<ValueVector::stockVars.size()));
     return *(&valRef()+i);
   }
 
@@ -41,8 +41,8 @@ namespace minsky
   {
     index(x.index());
     hypercube(x.hypercube());
-    assert(isFlowVar() && x.size()+m_idx<=ValueVector::flowVars.size() ||
-           !isFlowVar() && x.size()+m_idx<=ValueVector::stockVars.size());
+    assert((isFlowVar() && x.size()+m_idx<=ValueVector::flowVars.size()) ||
+           (!isFlowVar() && x.size()+m_idx<=ValueVector::stockVars.size()));
     memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
