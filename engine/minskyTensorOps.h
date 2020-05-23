@@ -35,15 +35,21 @@ namespace minsky
   class EvalCommon
   {
     double* m_flowVars=nullptr;
+    size_t m_fvSize=0;
     const double* m_stockVars=nullptr;
     ITensor::Timestamp m_timestamp;
   public:
     double* flowVars() const {return m_flowVars;}
+    size_t fvSize() const {return m_fvSize;}
     const double* stockVars() const {return m_stockVars;}
     ITensor::Timestamp timestamp() const {return m_timestamp;}
-    void update(double* fv, const double* sv)
+    /// initialise flow and stock var array pointers
+    /// @param fv - pointer to flow variable vector
+    /// @param n - size of flow variable vector
+    /// @param sv - pointer to stock variable vector
+    void update(double* fv, size_t n, const double* sv)
     {
-      m_flowVars=fv; m_stockVars=sv; m_timestamp=ITensor::Timestamp::clock::now();
+      m_flowVars=fv; m_fvSize=n; m_stockVars=sv; m_timestamp=ITensor::Timestamp::clock::now();
     }
   };
 
@@ -99,13 +105,14 @@ namespace minsky
     }
     double& operator[](size_t i) override {
       assert(isFlowVar());
+      assert(idx()+i<ev->fvSize());
       return ev->flowVars()[idx()+i];
     }
     TensorVarVal(const VariableValue& vv, const shared_ptr<EvalCommon>& ev):
       VariableValue(vv), ev(ev) {}
     const TensorVarVal& operator=(const ITensor& t) override {
       VariableValue::operator=(t);
-      ev->update(ev->flowVars(),ev->stockVars());
+      ev->update(ev->flowVars(), ev->fvSize(), ev->stockVars());
       return *this;
     }
     double dFlow(size_t ti, size_t fi) const override 
@@ -136,8 +143,8 @@ namespace minsky
     } 
     TensorEval(const VariableValue& dest, const VariableValue& src);
                
-    void eval(double fv[], const double sv[]) override;
-    void deriv(double df[],const double ds[],const double sv[],const double fv[]) override;
+    void eval(double fv[], size_t,const double sv[]) override;
+    void deriv(double df[],size_t,const double ds[],const double sv[],const double fv[]) override;
   };
 }
   

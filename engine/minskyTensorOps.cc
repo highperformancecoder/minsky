@@ -578,13 +578,13 @@ namespace minsky
     assert(result.size()==rhs->size());
   }   
 
-  void TensorEval::eval(double fv[], const double sv[])
+  void TensorEval::eval(double fv[], size_t n, const double sv[])
   {
     if (rhs)
       {
         assert(result.idx()>=0);
         assert(result.size()==rhs->size());
-        result.ev->update(fv, sv);
+        result.ev->update(fv, n, sv);
         auto ev_sav=result.ev.get();
         for (size_t i=0; i<rhs->size(); ++i)
           {
@@ -595,25 +595,28 @@ namespace minsky
       }
   }
    
-  void TensorEval::deriv(double df[], const double ds[],
+  void TensorEval::deriv(double df[], size_t n, const double ds[],
                          const double sv[], const double fv[])
   {
     if (result.idx()<0) return;
     if (rhs)
       {
-        result.ev->update(const_cast<double*>(fv), sv);
+        result.ev->update(const_cast<double*>(fv), n, sv);
         if (auto deriv=dynamic_cast<DerivativeMixin*>(rhs.get()))
-          for (size_t i=0; i<rhs->size(); ++i)
-            {
-              df[result.idx()+i]=0;
-              for (int j=0; j<result.idx(); ++j)
-                df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
-              // skip self variables
-              for (size_t j=result.idx()+result.size(); j<ValueVector::flowVars.size(); ++j)
-                df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
-              for (size_t j=0; j<ValueVector::stockVars.size(); ++j)
-                df[result.idx()+i] += ds[j]*deriv->dStock(i,j);
-            }
+          {
+            assert(result.idx()+rhs->size()<=n);
+            for (size_t i=0; i<rhs->size(); ++i)
+              {
+                df[result.idx()+i]=0;
+                for (int j=0; j<result.idx(); ++j)
+                  df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
+                // skip self variables
+                for (size_t j=result.idx()+result.size(); j<ValueVector::flowVars.size(); ++j)
+                  df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
+                for (size_t j=0; j<ValueVector::stockVars.size(); ++j)
+                  df[result.idx()+i] += ds[j]*deriv->dStock(i,j);
+              }
+          }
       }
   }
 }

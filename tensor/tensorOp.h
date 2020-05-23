@@ -40,7 +40,7 @@ namespace civita
     const Hypercube& hypercube() const {return arg? arg->hypercube(): m_hypercube;}
     const Index& index() const override {return arg? arg->index(): m_index;}
     double operator[](size_t i) const override {return arg? f((*arg)[i]): 0;}
-    size_t size() const override {return arg? arg->size(): 0;}
+    size_t size() const override {return arg? arg->size(): 1;}
     Timestamp timestamp() const override {return arg? arg->timestamp(): Timestamp();}
   };
 

@@ -80,7 +80,7 @@ namespace minsky
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
-    double value(size_t i=0) const {return *(begin()+i);}
+    double value(size_t i=0) const {return operator[](i);}
     int idx() const {return m_idx;}
     void reset_idx() {m_idx=-1;}    
 
@@ -88,8 +88,7 @@ namespace minsky
     Timestamp timestamp() const override {return Timestamp::clock::now();}
     
     double operator[](size_t i) const override {return *(&valRef()+i);}
-    double& operator[](size_t i) override {return *(&valRef()+i);}
-
+    double& operator[](size_t i) override;
 
     const Index& index() const override {
       if (m_type==parameter && tensorInit.size())
@@ -115,7 +114,7 @@ namespace minsky
     }    
     
     const Hypercube& hypercube() const override {
-      if (m_type==parameter && tensorInit.size())
+      if (m_type==parameter && tensorInit.rank()>0)
         return tensorInit.hypercube();
       else
         return ITensor::hypercube();
