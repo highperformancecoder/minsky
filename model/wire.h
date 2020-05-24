@@ -34,7 +34,7 @@ namespace minsky
   class Wire;
   class Port;
   class Group;
-  class Units;
+  struct Units;
   using ecolab::error;
   
   struct WireAccessor: public ecolab::TCLAccessor<Wire, std::vector<float>> {WireAccessor();};

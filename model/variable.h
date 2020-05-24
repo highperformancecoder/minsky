@@ -263,6 +263,7 @@ namespace minsky
     VariablePtr(VariableBase::Type type=VariableBase::undefined, 
                 const std::string& name=""): 
       PtrBase(VariableBase::create(type)) {get()->name(name);}
+    virtual ~VariablePtr() {}
     template <class P>
     VariablePtr(P* var): PtrBase(dynamic_cast<VariableBase*>(var)) 
     {

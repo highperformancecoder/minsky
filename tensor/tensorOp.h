@@ -37,7 +37,7 @@ namespace civita
     template <class F>
     ElementWiseOp(F f, const std::shared_ptr<ITensor>& arg={}): f(f), arg(arg) {}
     void setArgument(const TensorPtr& a,const std::string&,double) override {arg=a;}
-    const Hypercube& hypercube() const {return arg? arg->hypercube(): m_hypercube;}
+    const Hypercube& hypercube() const override {return arg? arg->hypercube(): m_hypercube;}
     const Index& index() const override {return arg? arg->index(): m_index;}
     double operator[](size_t i) const override {return arg? f((*arg)[i]): 0;}
     size_t size() const override {return arg? arg->size(): 1;}
@@ -139,14 +139,14 @@ namespace civita
   struct Sum: public ReductionOp
   {
   public:
-    Sum(): ReductionOp([this](double& x, double y,size_t){x+=y;},0) {}
+    Sum(): ReductionOp([](double& x, double y,size_t){x+=y;},0) {}
   };
   
   /// calculate the product along an axis or whole tensor
   struct Product: public ReductionOp
   {
   public:
-    Product(): ReductionOp([this](double& x, double y,size_t){x*=y;},1) {}
+    Product(): ReductionOp([](double& x, double y,size_t){x*=y;},1) {}
   };
   
   /// calculate the minimum along an axis or whole tensor

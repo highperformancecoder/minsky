@@ -106,9 +106,6 @@ namespace minsky
   /// Legacy EvalOp base interface
   struct ScalarEvalOp: public EvalOpBase
   {
-    /// operation this EvalOp refers to
-    virtual OperationType::Type type() const=0; 
-
     /// number of arguments to this operation
     virtual int numArgs() const =0;
 
