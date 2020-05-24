@@ -183,8 +183,7 @@ namespace minsky
   
   template <>
   double EvalOp<OperationType::inf>::evaluate(double in1, double in2) const
-  //{return numeric_limits<double>::max();}
-  {return numeric_limits<double>::infinity();}
+  {return numeric_limits<double>::max();}
   template <> 
   double EvalOp<OperationType::inf>::d1(double x1, double x2) const
   {return 0;}
@@ -504,10 +503,10 @@ namespace minsky
   
   template <>
   double EvalOp<OperationType::fact>::evaluate(double in1, double in2) const
-  {return boost::math::tgamma(in1+1);}
+  {return static_cast<double>(boost::math::tgamma(in1+1));}
   template <>
   double EvalOp<OperationType::fact>::d1(double x1, double x2) const
-  {return boost::math::digamma(x1+1)*boost::math::tgamma(x1+1);}
+  {return static_cast<double>(boost::math::digamma(x1+1)*boost::math::tgamma(x1+1));}
   template <>
   double EvalOp<OperationType::fact>::d2(double x1, double x2) const
   {return 0;}      
