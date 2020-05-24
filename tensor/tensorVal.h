@@ -108,7 +108,7 @@ namespace civita
     
     double operator[](size_t i) const override {return data.empty()? 0: data[i];}
     double& operator[](size_t i) override {return data[i];}
-    size_t size() const override {return std::max(data.size(),1UL);}
+    size_t size() const override {return std::max(data.size(),size_t(1));}
     const TensorVal& operator=(const ITensor& x) override {
       hypercube(x.hypercube());
       m_index=index();
