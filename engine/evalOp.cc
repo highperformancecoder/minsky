@@ -494,10 +494,10 @@ namespace minsky
   
   template <>
   double EvalOp<OperationType::percent>::evaluate(double in1, double in2) const
-  {return 0.01*in1;}
+  {return 100.0*in1;}
   template <>
   double EvalOp<OperationType::percent>::d1(double x1, double x2) const
-  {return 0.01;}
+  {return 100.0;}
   template <>
   double EvalOp<OperationType::percent>::d2(double x1, double x2) const
   {return 0;}

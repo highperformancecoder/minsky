@@ -568,7 +568,7 @@ namespace MathDAG
 
       Pango pango(s.cairo());
       double oldFs=pango.getFontSize();
-      pango.setFontSize(r.height());
+      pango.setFontSize(r.height());     
       cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
       pango.show();
       cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));

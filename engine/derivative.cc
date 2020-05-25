@@ -649,8 +649,7 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        Expr percent=x-0.99*x;
-        return chainRule(x, percent);
+        return chainRule(x, 100*x);
       }
   }
   
