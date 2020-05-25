@@ -30,10 +30,19 @@ namespace minsky
   std::vector<double> ValueVector::stockVars(1);
   std::vector<double> ValueVector::flowVars(1);
 
+  double& VariableValue::operator[](size_t i)
+  {
+    assert((isFlowVar() && i+m_idx<ValueVector::flowVars.size()) ||
+           (!isFlowVar() && i+m_idx<ValueVector::stockVars.size()));
+    return *(&valRef()+i);
+  }
+
   const VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
   {
     index(x.index());
     hypercube(x.hypercube());
+    assert((isFlowVar() && x.size()+m_idx<=ValueVector::flowVars.size()) ||
+           (!isFlowVar() && x.size()+m_idx<=ValueVector::stockVars.size()));
     memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
@@ -118,7 +127,7 @@ namespace minsky
   TensorVal VariableValue::initValue
   (const VariableValues& v, set<string>& visited) const
   {
-    if (tensorInit.size())
+    if (tensorInit.rank()>0)
       return tensorInit;
     
     FlowCoef fc(init);

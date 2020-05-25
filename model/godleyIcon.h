@@ -42,7 +42,7 @@ namespace minsky
     /// icon scale is adjusted when Godley icon is resized
     float m_iconScale=1;
     CLASSDESC_ACCESS(GodleyIcon);
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
 
     /// support godley edit window on canvas
     struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>

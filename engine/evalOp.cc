@@ -37,27 +37,30 @@ using namespace boost::math;
 namespace minsky
 {
 
-  void ScalarEvalOp::eval(double fv[], const double sv[])
+  void ScalarEvalOp::eval(double fv[], size_t n, const double sv[])
   {
     assert(out>=0);
     switch (numArgs())
       {
       case 0:
+        assert(size_t(out)<n);
         fv[out]=evaluate(0,0);
         break;
       case 1:
+        assert(out+in1.size()<=n);
         for (unsigned i=0; i<in1.size(); ++i)
           fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], 0);
         break;
       case 2:
-          for (unsigned i=0; i<in1.size(); ++i)
-            {
-              double x2=0;
-              const double* v=flow2? fv: sv;
-              for (auto& j: in2[i])
-                  x2+=j.weight*v[j.idx];
-              fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], x2);
-            }
+        assert(out+in1.size()<=n);
+        for (unsigned i=0; i<in1.size(); ++i)
+          {
+            double x2=0;
+            const double* v=flow2? fv: sv;
+            for (auto& j: in2[i])
+              x2+=j.weight*v[j.idx];
+            fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], x2);
+          }
         break;
       }
 
@@ -79,10 +82,10 @@ namespace minsky
           }
   };
 
-  void ScalarEvalOp::deriv(double df[], const double ds[],
+  void ScalarEvalOp::deriv(double df[], size_t n, const double ds[],
                      const double sv[], const double fv[])
   {
-    assert(out>=0 && size_t(out)<ValueVector::flowVars.size());
+    assert(out>=0 && size_t(out)<n);
     switch (numArgs())
       {
       case 0:

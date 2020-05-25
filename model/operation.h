@@ -99,7 +99,7 @@ namespace minsky
   protected:
 
     friend struct EvalOpBase;
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
   };
 
   template <minsky::OperationType::Type T>

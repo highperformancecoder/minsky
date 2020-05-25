@@ -41,7 +41,7 @@ namespace minsky
 //    bool m_multiWireAllowed;
 //    bool m_input; ///<true if input port
     CLASSDESC_ACCESS(Port);
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
     Port(const Port&)=delete;
     void operator=(const Port&)=delete;
     VariableValue variableValue; //refers to variable value representing this port

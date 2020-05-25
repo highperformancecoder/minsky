@@ -44,7 +44,7 @@ namespace minsky
     double clickX, clickY, oldLegendLeft, oldLegendTop, oldLegendFontSz;
     ClickType::Type ct;
     CLASSDESC_ACCESS(PlotWidget);
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
     // timestamp of last time this widget was blitted and also the
     // accumulated blit time at last add.
     classdesc::Exclude<boost::posix_time::ptime> 
@@ -86,6 +86,7 @@ namespace minsky
     /// connect variable \a var to port \a port. 
     void connectVar(const VariableValue& var, unsigned port);
     void disconnectAllVars();
+    using ecolab::Plot::draw;
     void draw(cairo_t* cairo) const override;
     void redraw(); // redraw plot using current data to all open windows
     void redraw(int x0, int y0, int width, int height) override

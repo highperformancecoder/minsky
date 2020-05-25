@@ -25,6 +25,25 @@ using namespace std;
 
 namespace civita
 {
+  void BinOp::setArguments(const TensorPtr& a1, const TensorPtr& a2)
+  {
+    arg1=a1; arg2=a2;
+    if (arg1 && arg1->rank()!=0)
+      {
+        hypercube(arg1->hypercube());
+        if (arg2 && arg2->rank()!=0 && arg1->hypercube().dims()!=arg2->hypercube().dims())
+          throw std::runtime_error("arguments not conformal");
+        
+      }
+    else if (arg2)
+      hypercube(arg2->hypercube());
+    set<size_t> indices;
+    if (arg1) indices.insert(arg1->index().begin(), arg1->index().end());
+    if (arg2) indices.insert(arg2->index().begin(), arg2->index().end());
+    m_index=indices;
+  }
+
+
   void ReduceArguments::setArguments(const vector<TensorPtr>& a,const std::string&,double)
   {
     hypercube({});
@@ -166,12 +185,13 @@ namespace civita
     arg=a;
     argVal=av;
     if (!arg) {m_hypercube.xvectors.clear(); return;}
-    m_hypercube=arg->hypercube();
     dimension=std::numeric_limits<size_t>::max();
-    auto& xv=m_hypercube.xvectors;
+    auto hc=arg->hypercube();
+    auto& xv=hc.xvectors;
     for (auto i=xv.begin(); i!=xv.end(); ++i)
       if (i->name==dimName)
         dimension=i-xv.begin();
+    hypercube(move(hc));
   }
 
   
