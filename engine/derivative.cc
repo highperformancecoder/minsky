@@ -649,24 +649,24 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, 100*x);
+        return chainRule(x, 100*x/x);
       }
   }
-  
-//  template <>
-//  NodePtr SystemOfEquations::derivative
-//  (const OperationDAG<OperationType::fact>& expr)
-//  {
-//    if (expr.arguments[0].empty())
-//      return zero;
-//    else
-//      {
-//        //Expr x(expressionCache, expr.arguments[0][0]);
-//        //Expr gamma_p = boost::math::digamma(one+x)*boost::math::tgamma(one+x);
-//        //return chainRule(x,gamma_p);
-//        throw error("vector derivatives not implemented");
-//      }
-//  }    
+   
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::fact>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        Expr gamma_p = digamma(one+x)*gamma(one+x);
+        return chainRule(x,gamma_p);
+        //throw error("vector derivatives not implemented");
+      }
+  }    
   
 #define VECTOR_DERIVATIVE_NOT_IMPLEMENTED(op)           \
   template <>                                           \
@@ -676,7 +676,8 @@ namespace MathDAG
     throw error("vector derivatives not implemented");  \
   }                                                     
 
-  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(fact)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(gamma)
+  VECTOR_DERIVATIVE_NOT_IMPLEMENTED(digamma)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(sum)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(product)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(infimum)

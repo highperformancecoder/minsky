@@ -582,6 +582,22 @@ namespace MathDAG
   }
   
   template <>
+  void OperationDAG<OperationType::gamma>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"Γ",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
+  }
+  
+  template <>
+  void OperationDAG<OperationType::digamma>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"ψ",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
+  }    
+  
+  template <>
   void OperationDAG<OperationType::fact>::render(Surface& s) const
   {
       double xx,yy;

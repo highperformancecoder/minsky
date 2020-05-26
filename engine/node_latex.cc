@@ -535,7 +535,21 @@ namespace MathDAG
   {
     checkArg(0,0);
     return o<<"\\left"<<arguments[0][0]->latex()<<"\\right\\%";
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::gamma>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\gamma\\left("<<arguments[0][0]->latex()<<"\\right)";
   }  
+  
+  template <>
+  ostream& OperationDAG<OperationType::digamma>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\psi\\left("<<arguments[0][0]->latex()<<"\\right)";
+  }        
   
   template <>
   ostream& OperationDAG<OperationType::fact>::latex(ostream& o) const

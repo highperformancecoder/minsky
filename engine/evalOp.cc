@@ -28,6 +28,7 @@
 #include <math.h>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/digamma.hpp>
+#include <boost/math/special_functions/trigamma.hpp>
 
 using boost::any;
 using boost::any_cast;
@@ -506,14 +507,34 @@ namespace minsky
   {return 0;}
   
   template <>
+  double EvalOp<OperationType::gamma>::evaluate(double in1, double in2) const
+  {return boost::math::tgamma(in1);}
+  template <>
+  double EvalOp<OperationType::gamma>::d1(double x1, double x2) const
+  {return boost::math::digamma(x1)*boost::math::tgamma(x1);}
+  template <>
+  double EvalOp<OperationType::gamma>::d2(double x1, double x2) const
+  {return 0;} 
+  
+  template <>
+  double EvalOp<OperationType::digamma>::evaluate(double in1, double in2) const
+  {return boost::math::digamma(in1);}
+  template <>
+  double EvalOp<OperationType::digamma>::d1(double x1, double x2) const
+  {return boost::math::trigamma(x1)+boost::math::digamma(x1)*boost::math::digamma(x1);}
+  template <>
+  double EvalOp<OperationType::digamma>::d2(double x1, double x2) const
+  {return 0;}     
+  
+  template <>
   double EvalOp<OperationType::fact>::evaluate(double in1, double in2) const
-  {return boost::math::tgamma(in1+1);}
+  {return in1 >= -1? boost::math::tgamma(in1+1) : 1;}
   template <>
   double EvalOp<OperationType::fact>::d1(double x1, double x2) const
-  {return boost::math::digamma(x1+1)*boost::math::tgamma(x1+1);}
+  {return x1 >= -1? boost::math::digamma(x1+1)*boost::math::tgamma(x1+1) : 0;}
   template <>
   double EvalOp<OperationType::fact>::d2(double x1, double x2) const
-  {return 0;}      
+  {return 0;}          
 
   template <>
   double EvalOp<OperationType::add>::evaluate(double in1, double in2) const
