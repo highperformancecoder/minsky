@@ -438,21 +438,24 @@ namespace minsky
         switch (type())
           {
 		  case percent:
-		    {
-             if (check && !ports[1]->units(check).empty())
-               throw_error("function input not dimensionless");
-             //return ports[0]->units(check);  
-              
+		    { 
+		     // Add % sign to units from input to % operator		
              if (!ports[0]->wires().empty() && !ports[1]->wires().empty())  
                {
-			 	 // set units of item attached to output port to "%".  
-                 if (auto vV=dynamic_cast<VariableValue*>(&ports[0]->wires()[0]->to()->item()))
-                   {
-			         vV->setUnits("%");
-                     return vV->units; 
-		           } 
-		       }  
-		     else return {};
+				 if (auto vV=dynamic_cast<VariableValue*>(&ports[0]->wires()[0]->to()->item())) 
+	             {    
+				   auto r=ports[1]->units(check);	 
+				   if (!r.empty()) {
+			           vV->setUnits("%"+r.str());
+			           vV->units.normalise();
+                       return vV->units; 
+		           } else {
+					  vV->setUnits("%");
+					  vV->units.normalise();
+                      return vV->units;
+				   } 
+			     }
+		       } else return {};
 		    }
           default:  
            {
@@ -467,7 +470,7 @@ namespace minsky
         switch (type())
           {
             // these binops need to have dimensionless units
-          case log: case and_: case or_:
+          case log: case and_: case or_: case polygamma:
 
             if (check && !ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
@@ -1157,7 +1160,16 @@ namespace minsky
   {
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"ψ");
-  }      
+  }
+  template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,3);
+    cairo_show_text(cairo,"ψ");
+    cairo_rel_move_to(cairo,0,-3);
+    cairo_set_font_size(cairo,7);
+    cairo_show_text(cairo,"(n)");
+    cairo_rel_move_to(cairo,0,-2);
+  }     
   template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
   {
     cairo_move_to(cairo,-3,3);

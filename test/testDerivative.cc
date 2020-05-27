@@ -286,9 +286,7 @@ SUITE(Derivative)
               continue;
             case OperationType::ravel:
             case OperationType::not_:
-              continue; // test not meaningful for a step function
-            //case OperationType::percent:
-            //  continue; // seems to behave similar to a step function and lead to numerical instability because of a value spike                 
+              continue; // test not meaningful for a step function    
             default:
               reset(); 
             }
@@ -298,7 +296,6 @@ SUITE(Derivative)
           integ.intVar->value(f0);
           nSteps=800; step();
           CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-          CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
         }
     }
   

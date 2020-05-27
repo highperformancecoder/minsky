@@ -649,9 +649,29 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x, 100*x/x);
+        return (100*x)->derivative(*this);
       }
   }
+
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::polygamma>& expr)
+  {
+    assert(expr.arguments.size()==2);
+    if (expr.arguments[0].empty())
+      return zero;
+    else if (expr.arguments[1].empty())
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return chainRule(x,polygamma(one,x));
+      }
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        Expr y(expressionCache,  expr.arguments[1][0]);
+        return chainRule(x,polygamma(y+one,x));;
+      }
+  }    
    
   template <>
   NodePtr SystemOfEquations::derivative
@@ -662,9 +682,8 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        Expr gamma_p = digamma(one+x)*gamma(one+x);
+        Expr gamma_p = polygamma(zero,one+x)*gamma(one+x);
         return chainRule(x,gamma_p);
-        //throw error("vector derivatives not implemented");
       }
   }    
   
@@ -678,6 +697,7 @@ namespace MathDAG
 
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(gamma)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(digamma)
+  //VECTOR_DERIVATIVE_NOT_IMPLEMENTED(polygamma)  
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(sum)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(product)
   VECTOR_DERIVATIVE_NOT_IMPLEMENTED(infimum)

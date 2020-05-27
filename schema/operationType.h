@@ -37,7 +37,7 @@ namespace minsky
                add, subtract, multiply, divide, min, max, 
                and_, or_,
                // single wire binops
-               log, pow,
+               log, pow, polygamma, 
                lt, le, eq, 
                // underscores to avoid C++ keywords. Can be filtered at UI
                // functions
