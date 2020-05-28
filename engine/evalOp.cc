@@ -27,8 +27,6 @@
 
 #include <math.h>
 #include <boost/math/special_functions/gamma.hpp>
-#include <boost/math/special_functions/digamma.hpp>
-#include <boost/math/special_functions/trigamma.hpp>
 #include <boost/math/special_functions/polygamma.hpp>
 
 using boost::any;
@@ -516,16 +514,6 @@ namespace minsky
   template <>
   double EvalOp<OperationType::gamma>::d2(double x1, double x2) const
   {return 0;} 
-  
-  template <>
-  double EvalOp<OperationType::digamma>::evaluate(double in1, double in2) const
-  {return boost::math::digamma(in1);}
-  template <>
-  double EvalOp<OperationType::digamma>::d1(double x1, double x2) const
-  {return boost::math::trigamma(x1)+boost::math::digamma(x1)*boost::math::digamma(x1);}
-  template <>
-  double EvalOp<OperationType::digamma>::d2(double x1, double x2) const
-  {return 0;}     
   
   template <>
   double EvalOp<OperationType::polygamma>::evaluate(double in1, double in2) const

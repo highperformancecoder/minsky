@@ -279,14 +279,14 @@ SUITE(Derivative)
           save(OperationType::typeName(op)+".mky");
           switch (OperationType::Type(op))
             {
-            case OperationType::floor: case OperationType::frac: case OperationType::gamma: case OperationType::digamma:
+            case OperationType::floor: case OperationType::frac:
             case OperationType::index:
             case OperationType::data:
               CHECK_THROW(reset(), ecolab::error);
               continue;
             case OperationType::ravel:
             case OperationType::not_:
-              continue; // test not meaningful for a step function    
+              continue; // test not meaningful for a step function
             default:
               reset(); 
             }
@@ -296,6 +296,7 @@ SUITE(Derivative)
           integ.intVar->value(f0);
           nSteps=800; step();
           CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+          CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
         }
     }
   

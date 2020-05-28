@@ -444,16 +444,10 @@ namespace minsky
                {
 				 if (auto vV=dynamic_cast<VariableValue*>(&ports[0]->wires()[0]->to()->item())) 
 	             {    
-				   auto r=ports[1]->units(check);	 
-				   if (!r.empty()) {
-			           vV->setUnits("%"+r.str());
-			           vV->units.normalise();
-                       return vV->units; 
-		           } else {
-					  vV->setUnits("%");
-					  vV->units.normalise();
-                      return vV->units;
-				   } 
+                   auto r=ports[1]->units(check);	 
+                   vV->setUnits("%"+r.str());
+                   vV->units.normalise();
+                   return vV->units; 
 			     }
 		       } else return {};
 		    }
@@ -1156,11 +1150,6 @@ namespace minsky
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"Γ");
   }      
-  template <> void Operation<OperationType::digamma>::iconDraw(cairo_t* cairo) const
-  {
-    cairo_move_to(cairo,-6,3);
-    cairo_show_text(cairo,"ψ");
-  }
   template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
   {
     cairo_move_to(cairo,-7,3);

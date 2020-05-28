@@ -506,20 +506,13 @@ namespace MathDAG
   {
     checkArg(0,0);
     return o<<"gamma("<<arguments[0][0]->matlab()<<")";
-  }
-  
-  template <>
-  ostream& OperationDAG<OperationType::digamma>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"psi(2,("<<arguments[0][0]->matlab()<<"))";
-  }      
+  }    
   
   template <>
   ostream& OperationDAG<OperationType::polygamma>::matlab(ostream& o) const
   {
     checkArg(0,0); checkArg(1,0);
-    return o<<"psi(("<<arguments[1][0]->matlab()<<"),("<<arguments[0][0]->matlab()<<"))";
+    return o<<"psi(floor("<<arguments[1][0]->matlab()<<"),("<<arguments[0][0]->matlab()<<"))";
   }       
   
   template <>

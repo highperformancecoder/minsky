@@ -545,13 +545,6 @@ namespace MathDAG
   }  
   
   template <>
-  ostream& OperationDAG<OperationType::digamma>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\psi\\left("<<arguments[0][0]->latex()<<"\\right)";
-  }
-  
-  template <>
   ostream& OperationDAG<OperationType::polygamma>::latex(ostream& o) const
   {
     checkArg(0,0);
