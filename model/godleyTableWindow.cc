@@ -495,7 +495,6 @@ namespace minsky
             selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()) && (selectedRow!=1 || selectedCol!=0)) // Cannot save text in cell(1,0). For ticket 1064
            {
              selectIdx=insertIdx = textIdx(x);
-             auto& str=godleyIcon->table.cell(selectedRow,selectedCol);                         
              godleyIcon->table.savedText=godleyIcon->table.cell(selectedRow, selectedCol);
            }
         else
@@ -699,7 +698,7 @@ namespace minsky
       assert(selectedRow>=0 && selectedCol>=0);
       assert(unsigned(selectedRow)<table.rows());
       assert(unsigned(selectedCol)<table.cols());
-      auto& str=table.cell(selectedRow,selectedCol); 
+      auto& str=table.cell(selectedRow,selectedCol);
       if (insertIdx!=selectIdx)
         delSelection();
       else if (insertIdx>0 && insertIdx<=str.length())
@@ -1001,6 +1000,12 @@ namespace {
                   savedItem.swap(minsky().canvas.item);
                 }
             minsky().importDuplicateColumn(godleyIcon->table, selectedCol);
+          }
+        else if (godleyIcon->table.initialConditionRow(selectedRow))
+          {
+            // if the contents of the cell are cleared, set the cell to "0". For #1181
+            if (!godleyIcon->table.savedText.empty() && godleyIcon->table.cell(selectedRow,selectedCol).empty())
+              godleyIcon->table.cell(selectedRow,selectedCol)="0";
           }
         else
           minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
