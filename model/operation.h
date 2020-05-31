@@ -144,13 +144,6 @@ namespace minsky
   public:
     Units units(bool) const override;
   };
-  
-  class Percent: public Operation<OperationType::percent>
-  {
-  public:
-    // set units of item attached to output port to "%"
-    Units units(bool check) const override {return ports[0]->units(check);}
-  };  
 
   class Copy: public Operation<OperationType::copy>
   {

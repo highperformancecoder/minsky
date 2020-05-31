@@ -507,30 +507,30 @@ namespace minsky
   
   template <>
   double EvalOp<OperationType::gamma>::evaluate(double in1, double in2) const
-  {return boost::math::tgamma(in1);}
+  {return in1 > 0? boost::math::tgamma(in1) : 1;}
   template <>
   double EvalOp<OperationType::gamma>::d1(double x1, double x2) const
-  {return boost::math::digamma(x1)*boost::math::tgamma(x1);}
+  {return x1 > 0? boost::math::digamma(x1)*boost::math::tgamma(x1) : 0;}
   template <>
   double EvalOp<OperationType::gamma>::d2(double x1, double x2) const
   {return 0;} 
   
   template <>
   double EvalOp<OperationType::polygamma>::evaluate(double in1, double in2) const
-  {return boost::math::polygamma(::floor(in2),in1);}
+  {return in1 > 0? boost::math::polygamma(::floor(in2),in1) : numeric_limits<double>::max();}
   template <>
   double EvalOp<OperationType::polygamma>::d1(double x1, double x2) const
-  {return boost::math::polygamma(::floor(x2)+1,x1);}
+  {return x1 > 0? boost::math::polygamma(::floor(x2)+1,x1) : numeric_limits<double>::max();}
   template <>
   double EvalOp<OperationType::polygamma>::d2(double x1, double x2) const
   {return 0;}     
   
   template <>
   double EvalOp<OperationType::fact>::evaluate(double in1, double in2) const
-  {return in1 >= -1? boost::math::tgamma(in1+1) : 1;}
+  {return in1 > -1? boost::math::tgamma(in1+1) : 1;}
   template <>
   double EvalOp<OperationType::fact>::d1(double x1, double x2) const
-  {return x1 >= -1? boost::math::polygamma(0,x1+1)*boost::math::tgamma(x1+1) : 0;}
+  {return x1 > -1? boost::math::polygamma(0,x1+1)*boost::math::tgamma(x1+1) : 0;}
   template <>
   double EvalOp<OperationType::fact>::d2(double x1, double x2) const
   {return 0;}          
