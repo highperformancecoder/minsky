@@ -662,30 +662,29 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        Expr gamma_p = polygamma(x,0)*gamma(x);
-        return chainRule(x,gamma_p);
-      }
-  }   
+        return chainRule(x,polygamma(x,0)*gamma(x)); 
+      }                                                                                       
+  }                                                                                           
 
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::polygamma>& expr)
   {
-    assert(expr.arguments.size()==2);
-    if (expr.arguments[0].empty())
-      return zero;
-    else if (expr.arguments[1].empty())
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(x,1));
-      }
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(x,1+expr.arguments[1][0]));
-      }
-  }    
-   
+      assert(expr.arguments.size()==2);
+      if (expr.arguments[0].empty())
+        return zero;
+      else 
+        {
+          Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
+          if (expr.arguments[1].empty())
+            return (polygamma(x,1))->derivative(*this);
+          else
+            {
+              return (polygamma(x,1+expr.arguments[1][0]))->derivative(*this);
+            }
+        }
+    }
+  
   template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::fact>& expr)
@@ -695,8 +694,7 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        Expr gamma_p = polygamma(one+x,0)*gamma(one+x);
-        return chainRule(x,gamma_p);
+        return chainRule(x,polygamma(one+x,0)*gamma(one+x));
       }
   }    
   

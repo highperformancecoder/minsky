@@ -446,7 +446,6 @@ namespace minsky
                     {    
                       vV->setUnits("%"+r.str());
                       vV->units.normalise();
-                      std::cout << " " << vV->units.str() << " " <<std::endl;
                       return vV->units; 
                     }
                   return r; 
@@ -465,7 +464,7 @@ namespace minsky
         switch (type())
           {
             // these binops need to have dimensionless units
-          case log: case and_: case or_: 
+          case log: case and_: case or_: case polygamma:
 
             if (check && !ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
@@ -526,25 +525,6 @@ namespace minsky
               units.normalise();
               return units;
             }
-          case polygamma:
-            {
-              auto r=ports[1]->units(check);
-
-              if (!r.empty())
-                {
-                  if (!ports[2]->wires().empty())
-                    if (auto v=dynamic_cast<VarConstant*>(&ports[2]->wires()[0]->from()->item()))
-                      if (fracPart(v->value())==0)
-                        {
-                          for (auto& i: r) i.second*=v->value();
-                          r.normalise();
-                          return r;
-                        }
-                  if (check)
-                    throw_error("dimensioned polygamma only possible if order is a constant integer"); 
-                } else return {}; 
-              return r;
-            }                      
           default:
             if (check)
               throw_error("Operation<"+OperationType::typeName(type())+">::units() should be overridden");

@@ -290,13 +290,31 @@ SUITE(Derivative)
             default:
               reset(); 
             }
-          nSteps=1;step(); // ensure f is evaluated
-          // set the constant of integration to the value of f at t=0
-          double f0=f->value();
-          integ.intVar->value(f0);
-          nSteps=800; step();
-          CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-          CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+          if (OperationType::Type(op)==OperationType::gamma) {
+             nSteps=1;step(); // ensure f is evaluated
+             // set the constant of integration to the value of f at t=0
+             double f0=f->value();
+             integ.intVar->value(f0);			  
+             nSteps=1883; step();       
+             CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+             CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs             
+          } else if (OperationType::Type(op)==OperationType::fact) {
+             nSteps=1;step(); // ensure f is evaluated
+             // set the constant of integration to the value of f at t=0
+             double f0=f->value();
+             integ.intVar->value(f0);			  
+             nSteps=1448; step();
+             CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+             CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs             			  
+		  } else {
+             nSteps=1;step(); // ensure f is evaluated
+             // set the constant of integration to the value of f at t=0
+             double f0=f->value();
+             integ.intVar->value(f0);			  
+             nSteps=800; step();
+             CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+             CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs                          
+		  }
         }
     }
   

@@ -247,10 +247,10 @@ namespace minsky
 
   template <> 
   double EvalOp<OperationType::sqrt>::evaluate(double in1, double in2) const
-  {return ::sqrt(in1);}
+  {return ::sqrt(fabs(in1));}
   template <>
   double EvalOp<OperationType::sqrt>::d1(double x1, double x2) const
-  {return 0.5/::sqrt(x1);}
+  {return 0.5/::sqrt(fabs(x1));}
   template <>
   double EvalOp<OperationType::sqrt>::d2(double x1, double x2) const
   {return 0;}
@@ -507,10 +507,10 @@ namespace minsky
   
   template <>
   double EvalOp<OperationType::gamma>::evaluate(double in1, double in2) const
-  {return in1 > 0? boost::math::tgamma(in1) : 1;}
+  {return in1 > 0? boost::math::tgamma(in1) : numeric_limits<double>::max();}
   template <>
   double EvalOp<OperationType::gamma>::d1(double x1, double x2) const
-  {return x1 > 0? boost::math::digamma(x1)*boost::math::tgamma(x1) : 0;}
+  {return boost::math::digamma(fabs(x1))*boost::math::tgamma(fabs(x1));}
   template <>
   double EvalOp<OperationType::gamma>::d2(double x1, double x2) const
   {return 0;} 
@@ -520,7 +520,7 @@ namespace minsky
   {return in1 > 0? boost::math::polygamma(::floor(in2),in1) : numeric_limits<double>::max();}
   template <>
   double EvalOp<OperationType::polygamma>::d1(double x1, double x2) const
-  {return x1 > 0? boost::math::polygamma(::floor(x2)+1,x1) : numeric_limits<double>::max();}
+  {return boost::math::polygamma(::floor(x2)+1,fabs(x1));}
   template <>
   double EvalOp<OperationType::polygamma>::d2(double x1, double x2) const
   {return 0;}     
