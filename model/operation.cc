@@ -441,7 +441,7 @@ namespace minsky
             { 
               // Add % sign to units from input to % operator. Need the first conditional otherwise Minsky crashes		
                 auto r=ports[1]->units(check);	 	 
-                if (!r.empty()) {
+                if (!ports[1]->wires().empty()) {
                   if (auto vV=dynamic_cast<VariableValue*>(&ports[1]->wires()[0]->from()->item())) 
                     {    
                       vV->setUnits("%"+r.str());

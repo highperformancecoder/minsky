@@ -677,10 +677,10 @@ namespace MathDAG
         {
           Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
           if (expr.arguments[1].empty())
-            return (polygamma(x,1))->derivative(*this);
+            return chainRule(x,polygamma(x,1));
           else
             {
-              return (polygamma(x,1+expr.arguments[1][0]))->derivative(*this);
+              return chainRule(x,polygamma(x,1+expr.arguments[1][0]));
             }
         }
     }
