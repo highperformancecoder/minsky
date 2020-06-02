@@ -678,7 +678,7 @@ namespace minsky
                                destTable.cell(row, col).clear();
                                // if this leaves an empty row, delete entire row
                                for (size_t c=0; c<destTable.cols(); ++c)
-                                 if (!destTable.cell(row, col).empty())
+                                 if (!destTable.cell(row, c).empty())
                                    goto rowNotEmpty;
                                rowsToDelete.push_back(row);
                              rowNotEmpty:;
