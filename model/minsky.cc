@@ -267,7 +267,10 @@ namespace minsky
     canvas.model->addGroup(g);
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();    
+    canvas.selection.clear();        
+
+    // Needed to ensure all wires are copied in a complex selection as in, for example, 1Free.mky. For ticket 1190
+    g->splitBoundaryCrossingWires();    
 
     // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
     g->recursiveDo(&GroupItems::items,
@@ -296,22 +299,30 @@ namespace minsky
                          }
                      return false;
                    });
-
-    auto copyOfItems=g->items;
-    for (auto& i: copyOfItems)
-      {		
-         canvas.model->addItem(i);			  
-         canvas.selection.ensureItemInserted(i);
-         assert(!i->ioVar());
-      }
-    // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!g->items.empty()) canvas.setItemFocus(g->items[0]);	      
+    
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
-        canvas.model->addGroup(i);	
+        canvas.model->addGroup(i);
+        //canvas.selection.ensureGroupInserted(i);	
     }
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);  
+    else canvas.setItemFocus(nullptr);        
+
+    auto copyOfItems=g->items;
+    
+    for (auto& i: copyOfItems)
+      {		
+         canvas.model->addItem(i);		  
+         //canvas.selection.ensureItemInserted(i);
+         canvas.selection.toggleItemMembership(i);
+         assert(!i->ioVar());
+      }
+    // Attach mouse focus only to first item in selection. For ticket 1098.      
+    
+    if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	      
+    else canvas.setItemFocus(nullptr);	
+     
     g->clear();  
     model->removeGroup(*g);
     canvas.requestRedraw();

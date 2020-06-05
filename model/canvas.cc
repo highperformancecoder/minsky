@@ -390,8 +390,13 @@ namespace minsky
       if (i->visible() && lasso.contains(*i))
         selection.wires.push_back(i);
 
-    if (focusFollowsMouse)
+// always copy on lasso selection on X11 systems. for ticket 1189
+#if defined(__linux__)    
       minsky().copy();
+#else
+    if (focusFollowsMouse)    
+      minsky().copy();
+#endif  
   }
 
   
