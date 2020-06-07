@@ -1156,7 +1156,9 @@ namespace minsky
     cairo_show_text(cairo,"ψ");
     cairo_rel_move_to(cairo,0,-3);
     cairo_set_font_size(cairo,7);
-    cairo_show_text(cairo,"(n)");
+    // show order of polygamma function. 0 is default.
+    std::string order="("+to_string(static_cast<unsigned>(ports[2]->value()))+")";
+    cairo_show_text(cairo,order.c_str());
     cairo_rel_move_to(cairo,0,-2);
   }     
   template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
