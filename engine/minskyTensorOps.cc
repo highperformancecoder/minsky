@@ -453,7 +453,6 @@ namespace minsky
       // not sure how to avoid this const cast here
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=civita::createRavelChain(ravel.getState(), a);
-      hypercube(chain.back()->hypercube());
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
@@ -462,6 +461,7 @@ namespace minsky
     {if (chain.empty()) return m_index; else return chain.back()->index();}
     Timestamp timestamp() const override
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}
+    const Hypercube& hypercube() const override {return chain.back()->hypercube();}
   };
        
   std::shared_ptr<ITensor> TensorOpFactory::create
@@ -576,8 +576,9 @@ namespace minsky
     if (rhs)
       {
         assert(result.idx()>=0);
-        assert(result.size()==rhs->size());
         result.ev->update(fv, n, sv);
+        assert(result.size()==rhs->size());
+        result.hypercube(rhs->hypercube());
         auto ev_sav=result.ev.get();
         for (size_t i=0; i<rhs->size(); ++i)
           {

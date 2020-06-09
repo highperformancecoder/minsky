@@ -93,15 +93,16 @@ namespace minsky
     /// return hypercube corresponding to the current Ravel state
     Hypercube hypercube() const {double* tmp; return hypercube(tmp);}
     void populateHypercube(const Hypercube&);
-    void loadDataFromSlice(ITensorVal&) const;
-    void loadDataCubeFromVariable(const ITensor&);
+    /// @return input rank
     unsigned maxRank() const;
+    /// @return output rank
     unsigned rank() const;
-    void setRank(unsigned);
+    /// adjust output dimensions to first \a r handles
+    void setRank(unsigned r);
     void adjustSlicer(int); ///< adjust currently selected handle's slicer
     bool handleArrows(int dir, bool modifier) override;
 
-    // return selected handle, or -1 if none
+    /// return selected handle, or -1 if none
     int selectedHandle() const;
     
     /// enable/disable calipers on currently selected handle
@@ -132,6 +133,11 @@ namespace minsky
     /// set a given handle sort order
     HandleState::HandleSort setHandleSortOrder(HandleState::HandleSort, int handle);
 
+    /// Set the sort order to sort by value. Only applicable for rank 1 ravels
+    HandleState::HandleSort sortByValue = HandleState::none;
+    /// @return true if mouse is over an output handle sortable by value
+    bool handleSortableByValue() const;
+    
     /// @} get/set description of selected handle
     string description() const;
     void setDescription(const string&);
