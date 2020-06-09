@@ -784,7 +784,11 @@ proc contextMenu {x y X Y} {
         Ravel {
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             global sortOrder
-            set sortOrder [minsky.canvas.item.sortOrder]
+            if {[minsky.canvas.item.handleSortableByValue] && [minsky.canvas.item.sortByValue]!="none"} {
+                set sortOrder [minsky.canvas.item.sortByValue]
+            } else {
+                set sortOrder [minsky.canvas.item.sortOrder]
+            }
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
             .wiring.context add command -label "Unlock" -command {
                 minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
@@ -802,7 +806,7 @@ proc contextMenu {x y X Y} {
 
 
 
-menu .wiring.context.axisMenu
+menu .wiring.context.axisMenu 
 .wiring.context.axisMenu add command -label "Description" -command {
     textEntryPopup .wiring.context.axisMenu.desc [minsky.canvas.item.description] {
         minsky.canvas.item.setDescription [.wiring.context.axisMenu.desc.entry get]
@@ -814,16 +818,31 @@ menu .wiring.context.axisMenu
     minsky.canvas.item.broadcastStateToLockGroup
     reset
 }
-menu .wiring.context.axisMenu.sort 
-.wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort 
+menu .wiring.context.axisMenu.sort -postcommand populateSortOptions
+.wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort
 set sortOrder none
-foreach order {none forward reverse} {
-    .wiring.context.axisMenu.sort add radiobutton -label $order -command {
-        minsky.canvas.item.setSortOrder $sortOrder
-        minsky.canvas.item.broadcastStateToLockGroup
-        reset
-    } -value $order -variable sortOrder
+
+proc populateSortOptions {} {
+    set orders {none forward reverse}
+    if [minsky.canvas.item.handleSortableByValue] {
+        lappend orders "forward by value" "reverse by value"
+    }
+    .wiring.context.axisMenu.sort delete 0 end
+    foreach order $orders {
+        .wiring.context.axisMenu.sort add radiobutton -label $order -command {
+            if [regexp "(.*) by value" $sortOrder dummy valueOrder] {
+                puts "sorting by value $valueOrder"
+                minsky.canvas.item.sortByValue $valueOrder
+            } else {
+                minsky.canvas.item.sortByValue none
+                minsky.canvas.item.setSortOrder $sortOrder
+            }
+            minsky.canvas.item.broadcastStateToLockGroup
+            reset
+        } -value "$order" -variable sortOrder
+    }
 }
+
 .wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu
 
 

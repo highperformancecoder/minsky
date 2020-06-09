@@ -45,6 +45,8 @@ namespace minsky
     };
 
     double radius=ravelDefaultRadius;
+    /// sort 1D ravel by value. Ignored for any other rank.
+    HandleState::HandleSort sortByValue=HandleState::none;
     std::map<std::string, HandleState> handleStates;
     std::vector<std::string> outputHandles;
     bool empty() const {return handleStates.empty();}

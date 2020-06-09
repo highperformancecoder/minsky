@@ -20,6 +20,7 @@
 #include "ravelWrap.h"
 #include "selection.h"
 #include "dimension.h"
+#include "minskyTensorOps.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
 static const int ravelVersion=3;
@@ -491,20 +492,6 @@ namespace minsky
     return hc;
   }
   
-  void Ravel::loadDataFromSlice(ITensorVal& v) const
-  {
-    double* tmp=nullptr;
-    v.hypercube(hypercube(tmp));
-    if (tmp)
-      {
-        for (size_t i=0; i< v.size(); ++i)
-          *(v.begin()+i)=tmp[i];
-        return;
-      }
-    else
-      throw error(ravel_lastErr());
-  }
-
   void Ravel::populateHypercube(const Hypercube& hc)
   {
     if (ravel)
@@ -540,19 +527,6 @@ namespace minsky
       }
   }
   
-  void Ravel::loadDataCubeFromVariable(const ITensor& v)
-  {
-    if (ravel && dataCube)
-      {
-        // this ensure that handles are restored correctly after loading a .mky file. 
-        populateHypercube(v.hypercube());
-        auto sz=v.size();
-        vector<double> tmp(sz);
-        for (size_t i=0; i<sz; ++i) tmp[i]=v[i];
-        ravelDC_loadData(dataCube, ravel, &tmp[0]);
-      }
-  }
-
   unsigned Ravel::maxRank() const
   {
     if (ravel) return ravel_numHandles(ravel);
@@ -733,6 +707,15 @@ namespace minsky
       }
     return order;
   }
+
+  bool Ravel::handleSortableByValue() const
+  {
+    if (!ravel || rank()!=1) return false;
+    size_t ids[1];
+    ravel_outputHandleIds(ravel,ids);
+    return selectedHandle()==ids[0];
+  }
+
   
   string Ravel::description() const
   {
@@ -824,6 +807,7 @@ namespace minsky
         ravel_outputHandleIds(ravel,&ids[0]);
         for (size_t i=0; i<ids.size(); ++i)
           state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
+        state.sortByValue=sortByValue;
       }
     return state;
   }
@@ -833,6 +817,7 @@ namespace minsky
   {
     if (ravel)
       {
+        sortByValue=state.sortByValue;
         ravel_rescale(ravel,state.radius);
 
         vector<size_t> ids;
@@ -867,9 +852,11 @@ namespace minsky
 
   void Ravel::exportAsCSV(const string& filename) const
   {
-    // TODO: add some comment lines
     VariableValue v(VariableType::flow);
-    loadDataFromSlice(v);
+    TensorsFromPort tp(make_shared<EvalCommon>());
+    tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
+    v=*tensorOpFactory.create(*this, tp);
+    // TODO: add some comment lines
     v.exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
   }
 
