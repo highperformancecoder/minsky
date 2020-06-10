@@ -156,6 +156,25 @@ namespace MathDAG
     r->arguments[0].push_back(x);
     return Expr(x.cache,r);
   }
+  
+  inline Expr gamma(const Expr& x) {
+    shared_ptr<OperationDAGBase> r(x.newNode(OperationType::fact));
+    r->arguments[0].push_back(x);
+    return Expr(x.cache,r);
+  }     
+  
+  inline Expr polygamma(const Expr& x, double y) {
+    shared_ptr<OperationDAGBase> r(x.newNode(OperationType::polygamma));
+    r->arguments[0].push_back(x);
+    r->arguments[1].push_back(NodePtr(new ConstantDAG(y)));    
+    return Expr(x.cache,r);
+  }     
+  
+  inline Expr fact(const Expr& x) {
+    shared_ptr<OperationDAGBase> r(x.newNode(OperationType::fact));
+    r->arguments[0].push_back(x);
+    return Expr(x.cache,r);
+  }   
 
   inline Expr operator<=(const Expr& x, const NodePtr& y) {
     shared_ptr<OperationDAGBase> r(x.newNode(OperationType::le));
