@@ -54,7 +54,7 @@ namespace MathDAG
   }
 
   VariableValue ConstantDAG::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result || result->idx()<0)
       {
@@ -65,10 +65,10 @@ namespace MathDAG
             // set the initial value of the actual variableValue (if it exists)
             auto v=values.find(result->name);
             if (v!=values.end())
-              v->second.init=value;
+              v->second->init=value;
           }
         else
-          result=&tmpResult;
+          result=tmpResult;
         result->init=value;
         *result=result->initValue(values);
       }
@@ -81,7 +81,7 @@ namespace MathDAG
 
   namespace
   {
-    bool addTensorOp(VariableValue& result, OperationDAGBase& nodeOp, EvalOpVector& ev)
+    bool addTensorOp(const shared_ptr<VariableValue>& result, OperationDAGBase& nodeOp, EvalOpVector& ev)
     {
       if (auto state=nodeOp.state)
         try
@@ -89,7 +89,7 @@ namespace MathDAG
             auto ec=make_shared<EvalCommon>();
             TensorPtr rhs=tensorOpFactory.create(*state,TensorsFromPort(ec));
             if (!rhs) return false;
-            result.hypercube(rhs->hypercube());
+            result->hypercube(rhs->hypercube());
             ev.emplace_back(EvalOpPtr(new TensorEval(result, ec, rhs)));
             return true;
           }
@@ -100,27 +100,27 @@ namespace MathDAG
 
   bool VariableDAG::tensorEval() const
   {
-    return cminsky().variableValues[valueId].rank()>0;
+    return cminsky().variableValues[valueId]->rank()>0;
   }
   
   bool VariableDAG::addTensorOp(EvalOpVector& ev)
   {
     if (rhs)
       if (auto nodeOp=dynamic_cast<OperationDAGBase*>(rhs.payload))
-        return MathDAG::addTensorOp(*result,*nodeOp,ev);
+        return MathDAG::addTensorOp(result,*nodeOp,ev);
     return false;
   }
   
   VariableValue VariableDAG::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result || result->idx()<0)
       {
         assert(VariableValue::isValueId(valueId));
         auto ri=minsky::minsky().variableValues.find(valueId);
         if (ri==minsky::minsky().variableValues.end())
-          ri=minsky::minsky().variableValues.emplace(valueId,VariableValue(VariableType::tempFlow)).first;
-        result=&ri->second;
+          ri=minsky::minsky().variableValues.emplace(valueId,VariableValuePtr(VariableType::tempFlow)).first;
+        result=ri->second;
         if (rhs)
           if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
             { // everything scalar, revert to scalar processing
@@ -130,7 +130,7 @@ namespace MathDAG
             }
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
-      ev.emplace_back(EvalOpPtr(new TensorEval(*r,*result)));
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
     //ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
@@ -138,7 +138,7 @@ namespace MathDAG
   }
 
   VariableValue IntegralInputVariableDAG::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result)
       {
@@ -146,8 +146,8 @@ namespace MathDAG
           result=r;
         else
           {
-            result=&tmpResult;
-            if (tmpResult.idx()<0) tmpResult.allocValue();
+            result=tmpResult;
+            if (tmpResult->idx()<0) tmpResult->allocValue();
           }
         if (rhs)
           rhs->addEvalOps(ev, result);
@@ -313,7 +313,7 @@ namespace MathDAG
   }
 
   VariableValue OperationDAGBase::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result)
       {
@@ -321,8 +321,8 @@ namespace MathDAG
         if (r && r->isFlowVar())
           result=r;
         else
-          result=&tmpResult;
-        if (tensorEval() && addTensorOp(*result, *this, ev))
+          result=tmpResult;
+        if (tensorEval() && addTensorOp(result, *this, ev))
           return *result;
         
         
@@ -442,8 +442,8 @@ namespace MathDAG
   {
     expressionCache.insertAnonymous(zero);
     expressionCache.insertAnonymous(one);
-    zero->result=const_cast<VariableValue*>(&/*const_cast<Minsky&>(*/m/*)*/.variableValues.find("constant:zero")->second);
-    one->result=&const_cast<Minsky&>(m).variableValues.find("constant:one")->second;
+    zero->result=m.variableValues.find("constant:zero")->second;
+    one->result=m.variableValues.find("constant:one")->second;
 
     // store stock & integral variables for later reordering
     map<string, VariableDAG*> integVarMap;
@@ -606,9 +606,9 @@ namespace MathDAG
     // now start with the variables, and work our way back to how they
     // are defined
     for (VariableValues::value_type v: m.variableValues)
-      if (v.second.isFlowVar())
+      if (v.second->isFlowVar())
         if (auto vv=dynamic_cast<VariableDAG*>
-            (makeDAG(v.first, v.second.name, v.second.type()).get()))
+            (makeDAG(v.first, v.second->name, v.second->type()).get()))
           variables.push_back(vv);
           
     // sort variables into their order of definition
@@ -623,11 +623,11 @@ namespace MathDAG
 
     assert(VariableValue::isValueId(valueId));
     assert(minsky.variableValues.count(valueId));
-    VariableValue vv=minsky.variableValues[valueId];
+    auto vv=minsky.variableValues[valueId];
 
     if (type==VariableType::constant)
       {
-        NodePtr r(new ConstantDAG(vv.init));
+        NodePtr r(new ConstantDAG(vv->init));
         expressionCache.insert(valueId, r);
         return r;
       }
@@ -640,7 +640,7 @@ namespace MathDAG
     
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
-    r->init=vv.init;
+    r->init=vv->init;
     if (auto v=minsky.definingVar(valueId))
       if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports[1]->wires().empty())
         r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
@@ -876,7 +876,7 @@ namespace MathDAG
         integrals.push_back(Integral());
         assert(VariableValue::isValueId(vid));
         assert(minsky.variableValues.count(vid));
-        integrals.back().stock=minsky.variableValues[vid];
+        integrals.back().stock=*minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
@@ -895,7 +895,7 @@ namespace MathDAG
                throw error("variable %s has undefined type",v->name().c_str());
              assert(minsky.variableValues.count(v->valueId()));
              if (!v->ports.empty())
-               v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
+               v->ports[0]->setVariableValue(*minsky.variableValues[v->valueId()]);
            }
          else if (auto pw=dynamic_cast<PlotWidget*>(i->get()))
            for (auto& port: pw->ports) 

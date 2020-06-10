@@ -831,7 +831,6 @@ proc populateSortOptions {} {
     foreach order $orders {
         .wiring.context.axisMenu.sort add radiobutton -label $order -command {
             if [regexp "(.*) by value" $sortOrder dummy valueOrder] {
-                puts "sorting by value $valueOrder"
                 minsky.canvas.item.sortByValue $valueOrder
             } else {
                 minsky.canvas.item.sortByValue none

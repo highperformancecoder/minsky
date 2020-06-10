@@ -93,35 +93,56 @@ namespace minsky
   };
   
   // a VariableValue that contains a references to overridable value vectors
-  struct TensorVarVal: public VariableValue, public DerivativeMixin
+  template <class VV=const VariableValue, class I=ITensor>
+  struct TensorVarValBase: public I, public DerivativeMixin
   {
+    std::shared_ptr<VV> value;
     /// reference to EvalOpVector owning this value, to extract
     /// flowVar and stockVarinfo
     shared_ptr<EvalCommon> ev;
+
+    int idx() const {return value->idx();}
+    
     /// 
-    Timestamp timestamp() const override {return ev->timestamp();}
+    ITensor::Timestamp timestamp() const override {return ev->timestamp();}
     double operator[](size_t i) const override {
-      return isFlowVar()? ev->flowVars()[idx()+i]: ev->stockVars()[idx()+i];
+      return value->isFlowVar()? ev->flowVars()[value->idx()+i]: ev->stockVars()[value->idx()+i];
     }
+    TensorVarValBase(const std::shared_ptr<VV>& vv, const shared_ptr<EvalCommon>& ev):
+      value(vv), ev(ev) {}
+    const Hypercube& hypercube() const override {return value->hypercube();}
+    const Index& index() const override {return value->index();}
+    
+    double dFlow(size_t ti, size_t fi) const override 
+    {return value->isFlowVar() && fi==ti+value->idx();}
+    double dStock(size_t ti, size_t si) const override 
+    {return !value->isFlowVar() && si==ti+value->idx();}
+  };
+
+  using ConstTensorVarVal=TensorVarValBase<>;
+
+  struct TensorVarVal: public TensorVarValBase<VariableValue,ITensorVal>
+  {
+    TensorVarVal(const std::shared_ptr<VariableValue>& vv, const shared_ptr<EvalCommon>& ev):
+      TensorVarValBase<VariableValue,ITensorVal>(vv,ev) {}
+    using ITensorVal::index;
+    const Index& index(Index&& x) override {return value->index(move(x));}
+    const Hypercube& hypercube(const Hypercube& hc) override {return value->hypercube(hc);}
+    const Hypercube& hypercube(Hypercube&& hc) override {return value->hypercube(std::move(hc));}
+    using ITensorVal::operator[];
     double& operator[](size_t i) override {
-      assert(isFlowVar());
-      assert(idx()+i<ev->fvSize());
-      return ev->flowVars()[idx()+i];
+      assert(value->isFlowVar());
+      assert(value->idx()+i<ev->fvSize());
+      return ev->flowVars()[value->idx()+i];
     }
-    TensorVarVal(const VariableValue& vv, const shared_ptr<EvalCommon>& ev):
-      VariableValue(vv), ev(ev) {}
-    const TensorVarVal& operator=(const ITensor& t) override {
-      VariableValue::operator=(t);
+    TensorVarVal& operator=(const ITensor& t) override {
+      *value=t;
       ev->update(ev->flowVars(), ev->fvSize(), ev->stockVars());
       return *this;
     }
-    double dFlow(size_t ti, size_t fi) const override 
-    {return isFlowVar() && fi==ti+idx();}
-    double dStock(size_t ti, size_t si) const override 
-    {return !isFlowVar() && si==ti+idx();}
   };
 
-
+  
   /// A helper to evaluate a variable value
   class TensorEval: public classdesc::Poly<TensorEval, EvalOpBase>
   //                    public classdesc::PolyPack<TensorEval>
@@ -132,16 +153,15 @@ namespace minsky
   public:
     // not used, but required to make this a concrete type
     Type type() const override {assert(false); return OperationType::numOps;} 
-    TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev); 
-    TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev,
+    TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev); 
+    TensorEval(const std::shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev,
                const TensorPtr& rhs): result(v, ev), rhs(rhs) {
       result.hypercube(rhs->hypercube());
       result.index(rhs->index());
-      v=result;
       assert(result.idx()>=0);
       assert(result.size()==rhs->size());
     } 
-    TensorEval(const VariableValue& dest, const VariableValue& src);
+    TensorEval(const std::shared_ptr<VariableValue>& dest, const std::shared_ptr<VariableValue>& src);
                
     void eval(double fv[], size_t,const double sv[]) override;
     void deriv(double df[],size_t,const double ds[],const double sv[],const double fv[]) override;

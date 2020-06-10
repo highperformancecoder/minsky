@@ -265,7 +265,7 @@ namespace minsky
             string name=trimWS(table.cell(0,c));
             auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
-            VariableValue& v=vi->second;
+            VariableValue& v=*vi->second;
             v.godleyOverridden=false;
             string::size_type start=table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)
@@ -431,7 +431,7 @@ namespace minsky
       }
     if (!cminsky().timeUnit.empty())
       units[cminsky().timeUnit]++;
-    return foundFlow? units: cminsky().variableValues[vid].units;
+    return foundFlow? units: cminsky().variableValues[vid]->units;
   }
 
   void GodleyIcon::insertControlled(Selection& selection)

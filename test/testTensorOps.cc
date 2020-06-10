@@ -42,7 +42,7 @@ struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
   template <class Op>
   Eval(VariableBase& result, Op& op):
     shared_ptr<EvalCommon>(new EvalCommon),
-    TensorEval(*result.vValue(), *this,
+    TensorEval(result.vValue(), *this,
                TensorOpFactory().create(op,TensorsFromPort(*this))) {}
   
   void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());}
@@ -352,7 +352,7 @@ SUITE(TensorOps)
           OperationPtr o(op);
           CHECK_EQUAL(2, o->numPorts());
           Wire w1(src.ports[0], o->ports[1]), w2(o->ports[0], dest.ports[1]);
-          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
+          TensorEval eval(dest.vValue(), ev, factory.create(*o,tp));
           eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           switch (OperationType::classify(op))
             {
@@ -409,7 +409,7 @@ SUITE(TensorOps)
           CHECK_EQUAL(3, o->numPorts());
           Wire w1(src1.ports[0], o->ports[1]), w2(src2.ports[0], o->ports[2]),
             w3(o->ports[0], dest.ports[1]);
-          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
+          TensorEval eval(dest.vValue(), ev, factory.create(*o,tp));
           eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           CHECK_EQUAL(src1.vValue()->size(), dest.vValue()->size());
           CHECK_EQUAL(src2.vValue()->size(), dest.vValue()->size());
