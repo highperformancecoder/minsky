@@ -26,6 +26,7 @@
 #include "minsky_epilogue.h"
 
 #include <math.h>
+#undef Complex 
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/polygamma.hpp>
 
