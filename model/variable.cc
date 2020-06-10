@@ -135,13 +135,13 @@ float VariableBase::zoomFactor() const
   return Item::zoomFactor();
 }
 
-VariableValue* VariableBase::vValue() const
+shared_ptr<VariableValue> VariableBase::vValue() const
 {
   auto vv=minsky().variableValues.find(valueId());
   if (vv!=minsky().variableValues.end())
-    return &vv->second;
+    return vv->second;
   else
-    return nullptr;
+    return {};
 }
 
 string VariableBase::valueId() const 
@@ -175,7 +175,7 @@ string VariableBase::name(const std::string& name)
   auto tmpVV=vValue(); 
   // ensure integral variables are not global when wired to an integral operation
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
-  ensureValueExists(tmpVV,name);
+  ensureValueExists(tmpVV.get(),name);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
@@ -193,13 +193,13 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
     {
       assert(VariableValue::isValueId(valueId));
 	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
-      if (vv==nullptr) minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(), name(),"",group.lock())));
+      if (vv==nullptr)
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"",group.lock()));
       // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else
-        minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(),nm,vv->init,group.lock()))).first->
-          second.tensorInit=vv->tensorInit;
+        minsky().variableValues.emplace
+          (valueId,VariableValuePtr(type(),nm,vv->init,group.lock())).first->
+          second->tensorInit=vv->tensorInit;
     }
 }
 
@@ -208,7 +208,7 @@ string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
-    return value->second.init;
+    return value->second->init;
   else
     return "0";
 }
@@ -218,7 +218,7 @@ string VariableBase::init(const string& x)
   ensureValueExists(nullptr,""); 
   if (VariableValue::isValueId(valueId()))
     {
-      VariableValue& val=minsky().variableValues[valueId()];
+      VariableValue& val=*minsky().variableValues[valueId()];
       val.init=x;
       // for constant types, we may as well set the current value. See ticket #433. Also ignore errors (for now), as they will reappear at reset time.
       try
@@ -236,7 +236,7 @@ string VariableBase::init(const string& x)
 double VariableBase::value() const
 {
   if (VariableValue::isValueId(valueId()))
-    return minsky::cminsky().variableValues[valueId()].value();
+    return minsky::cminsky().variableValues[valueId()]->value();
   else
     return 0;
 }
@@ -244,7 +244,7 @@ double VariableBase::value() const
 double VariableBase::value(const double& x)
 {
   if (!m_name.empty() && VariableValue::isValueId(valueId()))
-    minsky().variableValues[valueId()][0]=x;
+    (*minsky().variableValues[valueId()])[0]=x;
   return x;
 }
 
@@ -268,7 +268,7 @@ Units VariableBase::units(bool check) const
   if (it!=minsky().variableValues.end())
     {
       auto& vv=it->second;
-      if (vv.unitsCached) return vv.units;
+      if (vv->unitsCached) return vv->units;
 
       
       IncrDecrCounter ucIdc(unitsCtr);
@@ -287,23 +287,23 @@ Units VariableBase::units(bool check) const
                 units=i->units(check);
               else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
                 units=g->stockVarUnits(name(),check);
-              if (check && units.str()!=vv.units.str())
+              if (check && units.str()!=vv->units.str())
                 {
                   if (auto i=controller.lock())
-                    i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());
+                    i->throw_error("inconsistent units "+units.str()+"≠"+vv->units.str());
                 }
             }
         }
       else
         // updates units in the process
         if (ports.size()>1 && !ports[1]->wires().empty())
-          vv.units=ports[1]->wires()[0]->from()->item().units(check);
+          vv->units=ports[1]->wires()[0]->from()->item().units(check);
         else if (auto v=cminsky().definingVar(valueId()))
-          vv.units=v->units(check);
+          vv->units=v->units(check);
 
-      vv.units.normalise();
-      vv.unitsCached=true;
-      return vv.units;
+      vv->units.normalise();
+      vv->unitsCached=true;
+      return vv->units;
     }
   else
     return Units();
@@ -312,7 +312,7 @@ Units VariableBase::units(bool check) const
 void VariableBase::setUnits(const string& x)
 {
   if (VariableValue::isValueId(valueId()))
-    minsky().variableValues[valueId()].units=Units(x);
+    minsky().variableValues[valueId()]->units=Units(x);
 }
 
 
@@ -345,7 +345,7 @@ void VariableBase::exportAsCSV(const std::string& filename) const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
-    value->second.exportAsCSV(filename, name());
+    value->second->exportAsCSV(filename, name());
 }
 
 void VariableBase::insertControlled(Selection& selection)
@@ -467,7 +467,7 @@ void VariableBase::draw(cairo_t *cairo) const
 
   VariableValue vv;
   if (VariableValue::isValueId(valueId()))
-    vv=minsky::cminsky().variableValues[valueId()];
+    vv=*minsky::cminsky().variableValues[valueId()];
   
   // For feature 47
   if (type()!=constant && !ioVar() && (vv.size()==1) )
@@ -566,7 +566,7 @@ void VariableBase::draw(cairo_t *cairo) const
 
 void VariablePtr::makeConsistentWithValue()
 {
-  retype(minsky::cminsky().variableValues[get()->valueId()].type());
+  retype(minsky::cminsky().variableValues[get()->valueId()]->type());
 }
 
 

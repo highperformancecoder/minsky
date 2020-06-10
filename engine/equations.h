@@ -101,7 +101,7 @@ namespace MathDAG
     /// flowVariable has been provided in \a result, that may be used
     /// directly, otherwise a copy operation is added to ensure it
     /// receives the result.
-    virtual VariableValue addEvalOps(EvalOpVector&, VariableValue* result=nullptr)=0;
+    virtual VariableValue addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={})=0;
     /// returns evaluation order in sequence of variable defintions
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
@@ -118,14 +118,7 @@ namespace MathDAG
     // SystemOfEquations via a templated method.
     virtual std::shared_ptr<Node> derivative(SystemOfEquations&) const=0;
     /// reference to where this node's value is stored
-    /** VariableValues are themselves a kind of reference into the
-        flowVar/stockVar vectors. However, we need a reference to a
-        reference, since we need to redimension them according to what
-        operations return, and that information needs to be propagated
-        to the variableValues map in Minsky.
-     */
-    VariableValue *result=nullptr;
-    VariableValue tmpResult{VariableValue::tempFlow};
+    std::shared_ptr<VariableValue> result, tmpResult{std::make_shared<VariableValue>(VariableValue::tempFlow)};
   };
 
   typedef std::shared_ptr<Node> NodePtr;
@@ -164,7 +157,7 @@ namespace MathDAG
     ostream& latex(ostream& o) const  override {return o<<value;}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
-    VariableValue addEvalOps(EvalOpVector&, VariableValue*) override;
+    VariableValue addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>&) override;
     NodePtr derivative(SystemOfEquations&) const override;
   };
 
@@ -197,7 +190,7 @@ namespace MathDAG
     using Node::addEvalOps;
     ostream& latex(ostream&) const override;
     ostream& matlab(ostream&) const override;
-    VariableValue addEvalOps(EvalOpVector&, VariableValue* v=nullptr) override;
+    VariableValue addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& v={}) override;
     void render(ecolab::cairo::Surface& surf) const override;
     NodePtr derivative(SystemOfEquations&) const override; 
     /// adds a TensorEvalOp, returns true if successful
@@ -210,7 +203,7 @@ namespace MathDAG
   /// Variable DAG in that it doesn't refer to the VariableValue
   struct IntegralInputVariableDAG: public VariableDAG
   {
-    VariableValue addEvalOps(EvalOpVector&,VariableValue*) override;
+    VariableValue addEvalOps(EvalOpVector&,const std::shared_ptr<VariableValue>&) override;
   };
 
   struct OperationDAGBase: public Node, public OperationType  
@@ -226,7 +219,7 @@ namespace MathDAG
     static OperationDAGBase* create(Type type, const string& name="");
     int order(unsigned maxOrder) const override;
     bool tensorEval() const override;
-    VariableValue addEvalOps(EvalOpVector&, VariableValue*) override;
+    VariableValue addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>&) override;
     void checkArg(unsigned i, unsigned j) const;
   };
 
@@ -349,7 +342,7 @@ namespace MathDAG
     /// create a variable DAG. returns cached value if previously called
     NodePtr makeDAG(const string& valueId, const string& name, VariableType::Type type);
     NodePtr makeDAG(VariableBase& v)
-    {v.ensureValueExists(v.vValue(),v.name()); return makeDAG(v.valueId(),VariableValue::uqName(v.name()),v.type());}
+    {v.ensureValueExists(v.vValue().get(),v.name()); return makeDAG(v.valueId(),VariableValue::uqName(v.name()),v.type());}
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationBase& op);
     NodePtr makeDAG(const SwitchIcon& op);

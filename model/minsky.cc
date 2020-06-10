@@ -153,7 +153,7 @@ namespace minsky
     *outputDataFile<< "#time";
     for (auto& v: variableValues)
       if (logVarList.count(v.first))
-        *outputDataFile<<" "<<v.second.name;
+        *outputDataFile<<" "<<v.second->name;
     *outputDataFile<<endl;
   }
 
@@ -165,7 +165,7 @@ namespace minsky
         *outputDataFile<<t;
         for (auto& v: variableValues)
           if (logVarList.count(v.first))
-            *outputDataFile<<" "<<v.second.value();
+            *outputDataFile<<" "<<v.second->value();
         *outputDataFile<<endl;
       }
   }        
@@ -376,8 +376,8 @@ namespace minsky
   {
     for (auto& v: variableValues)
       {
-        v.second.imposeDimensions(dimensions);
-        v.second.tensorInit.imposeDimensions(dimensions);
+        v.second->imposeDimensions(dimensions);
+        v.second->tensorInit.imposeDimensions(dimensions);
       }
   }
 
@@ -392,7 +392,7 @@ namespace minsky
 
     // remove all temporaries
     for (auto v=variableValues.begin(); v!=variableValues.end();)
-      if (v->second.temp())
+      if (v->second->temp())
         variableValues.erase(v++);
       else
         ++v;
@@ -640,7 +640,7 @@ namespace minsky
                          if (scope==-1 || !variableValues.count(i->first))
                            df.name=VariableValue::uqName(i->first);
                          else
-                           df.name=variableValues[i->first].name;
+                           df.name=variableValues[i->first]->name;
                          df.coef=i->second-destFlows[i->first];
                          if (df.coef==0) continue;
                          string flowEntry=df.str();
@@ -892,7 +892,7 @@ namespace minsky
     // firstly check if any variables are not finite
     for (VariableValues::const_iterator v=variableValues.begin();
          v!=variableValues.end(); ++v)
-      if (!isfinite(v->second.value()))
+      if (!isfinite(v->second->value()))
         return v->first;
 
     // now check operator equations
@@ -1146,8 +1146,8 @@ namespace minsky
     ecolab::array<bool> fvInit(flowVars.size(), false);
     // firstly, find all flowVars that are constants
     for (auto& v: variableValues)
-      if (!inputWired(v.first) && v.second.idx()>=0)
-        fvInit[v.second.idx()]=true;
+      if (!inputWired(v.first) && v.second->idx()>=0)
+        fvInit[v.second->idx()]=true;
 
     for (auto& e: equations)
       if (auto eo=dynamic_cast<const ScalarEvalOp*>(e.get()))
@@ -1287,7 +1287,7 @@ namespace minsky
     VariableValues::iterator i=variableValues.find(name);
     if (i==variableValues.end())
       throw error("variable %s doesn't exist",name.c_str());
-    if (i->second.type()==type) return; // nothing to do!
+    if (i->second->type()==type) return; // nothing to do!
 
     model->recursiveDo
       (&GroupItems::items,
@@ -1335,7 +1335,7 @@ namespace minsky
                              }
                          return false;
                        });
-    i->second=VariableValue(type,i->second.name,i->second.init);
+    i->second=VariableValuePtr(type,i->second->name,i->second->init);
   }
 
   void Minsky::addIntegral()

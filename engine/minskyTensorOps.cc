@@ -496,7 +496,7 @@ namespace minsky
           op->throw_error(ex.what());
         }
     else if (auto v=it.variableCast())
-      return make_shared<TensorVarVal>(*v->vValue(), tfp.ev);
+      return make_shared<ConstTensorVarVal>(v->vValue(), tfp.ev);
     else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))
       {
         auto r=make_shared<SwitchTensor>();
@@ -547,26 +547,27 @@ namespace minsky
     return r;
   }
 
-  TensorEval::TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev): result(v, ev)
+  TensorEval::TensorEval(const shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev):
+    result(v, ev)
   {
-    if (auto var=cminsky().definingVar(v.valueId()))
+    if (auto var=cminsky().definingVar(v->valueId()))
       if (var->lhs())
         {
           rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports[1])[0];
           result.hypercube(rhs->hypercube());
           result.index(rhs->index());
-          v=result;
+          *v=result;
         }
   }
   
-  TensorEval::TensorEval(const VariableValue& dest, const VariableValue& src):
+  TensorEval::TensorEval(const shared_ptr<VariableValue>& dest, const shared_ptr<VariableValue>& src):
     result(dest,make_shared<EvalCommon>())
   {
-    result.index(src.index());
-    result.hypercube(src.hypercube());
+    result.index(src->index());
+    result.hypercube(src->hypercube());
     Operation<OperationType::copy> tmp;
     auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
-    copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
+    copy->setArgument(make_shared<ConstTensorVarVal>(src,result.ev));
     rhs=move(copy);
     assert(result.size()==rhs->size());
   }   
@@ -577,7 +578,7 @@ namespace minsky
       {
         assert(result.idx()>=0);
         result.ev->update(fv, n, sv);
-        assert(result.size()==rhs->size());
+        //        assert(result.size()==rhs->size());
         result.hypercube(rhs->hypercube());
         auto ev_sav=result.ev.get();
         for (size_t i=0; i<rhs->size(); ++i)

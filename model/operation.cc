@@ -589,7 +589,7 @@ namespace minsky
     auto i=minsky().variableValues.find(vid);      
     if (i!=minsky().variableValues.end()) 
       {
-        if (i->second.type()!=VariableType::integral) 
+        if (i->second->type()!=VariableType::integral) 
           try
             {
               minsky().convertVarType(vid, VariableType::integral);

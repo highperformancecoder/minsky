@@ -237,9 +237,9 @@ namespace minsky
                           auto vv=cminsky().variableValues
                             [VariableValue::valueIdFromScope
                              (godleyIcon->group.lock(),fc.name)];
-                          if (vv.idx()>=0)
+                          if (vv->idx()>=0)
                             {
-                              double val=fc.coef*vv.value();
+                              double val=fc.coef*vv->value();
                               auto ee=engExp(val);
                               if (ee.engExp==-3) ee.engExp=0;
                               value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);

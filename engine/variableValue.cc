@@ -201,7 +201,7 @@ namespace minsky
         else
           {
             visited.insert(valueId);
-            return fc.coef*vv->second.initValue(v, visited);
+            return fc.coef*vv->second->initValue(v, visited);
           }
       }
   }
@@ -303,15 +303,15 @@ namespace minsky
     ValueVector::stockVars.clear();
     ValueVector::flowVars.clear();
     for (auto& v: *this) {
-      v.second.reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
-      v.second.allocValue().reset(*this);
+      v.second->reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
+      v.second->allocValue().reset(*this);
     }
 }
 
   bool VariableValues::validEntries() const
   {
     for (auto& v: *this)
-      if (!v.second.isValueId(v.first))
+      if (!v.second->isValueId(v.first))
         return false;
     return true;
   }
