@@ -266,11 +266,29 @@ namespace minsky
     GroupPtr g(new Group);
     canvas.model->addGroup(g);
     m.populateGroup(*g);
+    
+    // curved wires not always included in the new group, add them if they aren't. For ticket 1190.
+    if (canvas.selection.numWires()!=g->numWires())
+      {
+        canvas.selection.recursiveDo(&GroupItems::wires,
+                       [&](Wires&, Wires::iterator w) {
+                         auto alreadyAdded = g->findAny
+                           (&GroupItems::wires,
+                            [&w](const WirePtr& u)
+                            {return u.get()==w->get();});
+                                      
+                         if (!alreadyAdded) {  
+                           auto f=w->get()->from(), t=w->get()->to();
+                           g->addWire(new Wire(f,t,w->get()->coords()));
+                         }
+                         return false;
+                       });             		
+      }
+	
+	assert(canvas.selection.numWires()==g->numWires());
+    
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();        
-
-    // Needed to ensure all wires are copied in a complex selection as in, for example, 1Free.mky. For ticket 1190
-    g->splitBoundaryCrossingWires();    
+    canvas.selection.clear();         
 
     // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
     g->recursiveDo(&GroupItems::items,
@@ -298,30 +316,30 @@ namespace minsky
                              }
                          }
                      return false;
-                   });
+                   });                   
     
-    auto copyOfGroups=g->groups;
-    for (auto& i: copyOfGroups)
-    {	
-        canvas.model->addGroup(i);
-        //canvas.selection.ensureGroupInserted(i);	
-    }
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);  
-    else canvas.setItemFocus(nullptr);        
-
     auto copyOfItems=g->items;
     
     for (auto& i: copyOfItems)
       {		
          canvas.model->addItem(i);		  
-         //canvas.selection.ensureItemInserted(i);
-         canvas.selection.toggleItemMembership(i);
+         canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
     // Attach mouse focus only to first item in selection. For ticket 1098.      
     
     if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	      
-    else canvas.setItemFocus(nullptr);	
+    else canvas.setItemFocus(nullptr);	    
+    
+    if (!g->groups.empty()) {
+      auto copyOfGroups=g->groups;		
+      for (auto& i: copyOfGroups)
+        {	
+          canvas.model->addGroup(i);
+        }
+      if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]); 
+      else canvas.setItemFocus(nullptr);        
+    }
      
     g->clear();  
     model->removeGroup(*g);
