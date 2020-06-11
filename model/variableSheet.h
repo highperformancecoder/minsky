@@ -21,16 +21,22 @@
 #ifndef VARIABLESHEET_H
 #define VARIABLESHEET_H
 #include <cairoSurfaceImage.h>
+#include <item.h>
 
 namespace minsky
 {
 	 
-  class VariableSheet: public ecolab::CairoSurface
+  class VariableSheet: public ecolab::CairoSurface, public ItemT<VariableSheet>
   {
   public:
     double xoffs=80;  
     double rowHeight=0;
-    double colWidth=50;  
+    double colWidth=50;
+    float m_width=1600, m_height=400;
+    Items itemvector;
+    //ItemPtr item;
+    void populateItemvector();
+    void draw(cairo_t* cairo) const override;      
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
