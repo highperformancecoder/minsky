@@ -21,22 +21,16 @@
 #ifndef PARAMETERSHEET_H
 #define PARAMETERSHEET_H
 #include <cairoSurfaceImage.h>
-#include <item.h>
 
 namespace minsky
 {
 	 
-  class ParameterSheet: public ecolab::CairoSurface, public ItemT<ParameterSheet>
+  class ParameterSheet: public ecolab::CairoSurface
   {
   public:
     double xoffs=80;  
     double rowHeight=0;
-    double colWidth=50;
-    float m_width=1600, m_height=400;
-    Items itemvector;
-    //ItemPtr item;
-    void populateItemvector();
-    void draw(cairo_t* cairo) const override;      
+    double colWidth=50;  
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
