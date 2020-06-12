@@ -662,7 +662,7 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(x,0)*gamma(x)); 
+        return chainRule(x,polygamma(x,Expr(expressionCache,zero))*gamma(x)); 
       }                                                                                       
   }                                                                                           
 
@@ -677,10 +677,10 @@ namespace MathDAG
         {
           Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
           if (expr.arguments[1].empty())
-            return chainRule(x,polygamma(x,1));
+            return chainRule(x,polygamma(x,Expr(expressionCache, one)));
           else
             {
-              return chainRule(x,polygamma(x,1+expr.arguments[1][0]));
+              return chainRule(x,polygamma(x,1+Expr(expressionCache, expr.arguments[1][0])));
             }
         }
     }
@@ -694,7 +694,7 @@ namespace MathDAG
     else
       {
         Expr x(expressionCache, expr.arguments[0][0]);
-        return chainRule(x,polygamma(one+x,0)*gamma(one+x));
+        return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*gamma(1+x));
       }
   }    
   
