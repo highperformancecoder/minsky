@@ -44,7 +44,7 @@ namespace minsky
     friend struct SchemaHelper;
     Port(const Port&)=delete;
     void operator=(const Port&)=delete;
-    VariableValue variableValue; //refers to variable value representing this port
+    std::shared_ptr<VariableValue> variableValue; //refers to variable value representing this port
     std::vector<Wire*> m_wires;
     friend class Wire;
     Item& m_item;
@@ -81,8 +81,8 @@ namespace minsky
     ~Port() {deleteWires();}
 
     /// sets the VariableValue associated with this port. Only for output ports
-    void setVariableValue(const VariableValue& v);
-    const VariableValue& getVariableValue() const;
+    void setVariableValue(const std::shared_ptr<VariableValue>& v);
+    std::shared_ptr<VariableValue> getVariableValue() const;
     /// value associated with this port
     double value() const;
     Units units(bool) const;

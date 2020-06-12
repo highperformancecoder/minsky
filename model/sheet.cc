@@ -65,9 +65,10 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      auto& value=ports[0]->getVariableValue();
+      auto value=ports[0]->getVariableValue();
+      if (!value) return;
       Pango pango(cairo);
-      if (value.hypercube().rank()>2)
+      if (value->hypercube().rank()>2)
         {
           pango.setMarkup("Error: rank>2");
           cairo_move_to(cairo,-0.5*pango.width(),-0.5*pango.height());
@@ -80,20 +81,20 @@ void Sheet::draw(cairo_t* cairo) const
           double colWidth=0;
           pango.setMarkup("9999");
           float rowHeight=pango.height();
-          if (value.hypercube().rank()==0)
+          if (value->hypercube().rank()==0)
             {
               cairo_move_to(cairo,x,y);
-              pango.setMarkup(str(value[0]));
+              pango.setMarkup(str((*value)[0]));
               pango.show();
             }
           else
             {
-              if (value.hypercube().rank()==2)
+              if (value->hypercube().rank()==2)
                 y+=rowHeight; // allow room for header row
 
               // draw in label column
-              string format=value.hypercube().xvectors[0].timeFormat();
-              for (auto& i: value.hypercube().xvectors[0])
+              string format=value->hypercube().xvectors[0].timeFormat();
+              for (auto& i: value->hypercube().xvectors[0])
                 {
                   cairo_move_to(cairo,x,y);
                   pango.setText(trimWS(str(i,format)));
@@ -103,13 +104,13 @@ void Sheet::draw(cairo_t* cairo) const
                 }
               y=y0;
               x+=colWidth;
-              if (value.hypercube().rank()==1)
-                for (size_t i=0; i<value.size(); ++i)
+              if (value->hypercube().rank()==1)
+                for (size_t i=0; i<value->size(); ++i)
                   {
-                    if (!value.index().empty())
-                      y=y0+value.index()[i]*rowHeight;
+                    if (!value->index().empty())
+                      y=y0+value->index()[i]*rowHeight;
                     cairo_move_to(cairo,x,y);
-                    auto v=value[i];
+                    auto v=(*value)[i];
                     if (!std::isnan(v))
                       {
                         pango.setMarkup(str(v));
@@ -119,14 +120,14 @@ void Sheet::draw(cairo_t* cairo) const
                   }
               else
                 {
-                  format=value.hypercube().xvectors[1].timeFormat();
-                  auto dims=value.hypercube().dims();
+                  format=value->hypercube().xvectors[1].timeFormat();
+                  auto dims=value->hypercube().dims();
                   for (size_t i=0; i<dims[1]; ++i)
                     {
                       colWidth=0;
                       y=y0;
                       cairo_move_to(cairo,x,y);
-                      pango.setText(trimWS(str(value.hypercube().xvectors[1][i],format)));
+                      pango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
                       pango.show();
                       { // draw vertical grid line
                         cairo::CairoSave cs(cairo);
@@ -141,7 +142,7 @@ void Sheet::draw(cairo_t* cairo) const
                           y+=rowHeight;
                           if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
-                          auto v=value.atHCIndex(j+i*dims[0]);
+                          auto v=value->atHCIndex(j+i*dims[0]);
                           if (!std::isnan(v))
                             {
                               pango.setText(str(v));

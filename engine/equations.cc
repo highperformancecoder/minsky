@@ -53,7 +53,7 @@ namespace MathDAG
 
   }
 
-  VariableValue ConstantDAG::addEvalOps
+  shared_ptr<VariableValue> ConstantDAG::addEvalOps
   (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result || result->idx()<0)
@@ -76,7 +76,7 @@ namespace MathDAG
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
   namespace
@@ -111,7 +111,7 @@ namespace MathDAG
     return false;
   }
   
-  VariableValue VariableDAG::addEvalOps
+  shared_ptr<VariableValue> VariableDAG::addEvalOps
   (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result || result->idx()<0)
@@ -134,10 +134,10 @@ namespace MathDAG
     //ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
-  VariableValue IntegralInputVariableDAG::addEvalOps
+  shared_ptr<VariableValue> IntegralInputVariableDAG::addEvalOps
   (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result)
@@ -158,7 +158,7 @@ namespace MathDAG
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
   namespace {OperationFactory<OperationDAGBase, OperationDAG, 
@@ -312,7 +312,7 @@ namespace MathDAG
     }
   }
 
-  VariableValue OperationDAGBase::addEvalOps
+  shared_ptr<VariableValue> OperationDAGBase::addEvalOps
   (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result)
@@ -323,7 +323,7 @@ namespace MathDAG
         else
           result=tmpResult;
         if (tensorEval() && addTensorOp(result, *this, ev))
-          return *result;
+          return result;
         
         
         // prepare argument expressions
@@ -331,7 +331,7 @@ namespace MathDAG
         for (size_t i=0; type()!=integrate && i<arguments.size(); ++i)
           for (size_t j=0; j<arguments[i].size(); ++j)
             if (arguments[i][j])
-              argIdx[i].push_back(arguments[i][j]->addEvalOps(ev));
+              argIdx[i].push_back(*arguments[i][j]->addEvalOps(ev));
             else
               {
                 argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
@@ -432,10 +432,10 @@ namespace MathDAG
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
       ev.push_back(EvalOpPtr(copy, state, *r, *result));
     if (state && !state->ports.empty() && state->ports[0]) 
-      state->ports[0]->setVariableValue(*result);
+      state->ports[0]->setVariableValue(result);
     assert(result->idx()>=0);
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
   SystemOfEquations::SystemOfEquations(const Minsky& m): minsky(m)
@@ -880,7 +880,7 @@ namespace MathDAG
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
-            integrals.back().input=iInput->rhs->addEvalOps(equations);
+            integrals.back().input=*iInput->rhs->addEvalOps(equations);
       }
     assert(minsky.variableValues.validEntries());
 
@@ -895,7 +895,7 @@ namespace MathDAG
                throw error("variable %s has undefined type",v->name().c_str());
              assert(minsky.variableValues.count(v->valueId()));
              if (!v->ports.empty())
-               v->ports[0]->setVariableValue(*minsky.variableValues[v->valueId()]);
+               v->ports[0]->setVariableValue(minsky.variableValues[v->valueId()]);
            }
          else if (auto pw=dynamic_cast<PlotWidget*>(i->get()))
            for (auto& port: pw->ports) 

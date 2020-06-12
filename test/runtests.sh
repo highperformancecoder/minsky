@@ -15,7 +15,7 @@ for i in test/00/*.sh; do
     if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh ]; then
         sh $i
     # t0029a.sh tests that saving over a readonly file is prevented. Test doesn't work as root
-    elif [ `whoami` = 'root' -a $i = test/00/t0029a.sh ]; then
+    elif [ `whoami` = 'root' -a $i = test/00/checkReadOnlySaveFails.sh ]; then
         su minsky $i &> /dev/null
     else
         sh $i &> /dev/null

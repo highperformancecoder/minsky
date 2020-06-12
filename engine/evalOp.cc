@@ -69,7 +69,7 @@ namespace minsky
     // element not present
     if (in1.size()==1)
       for (unsigned i=0; i<in1.size(); ++i)
-        if (!isfinite(fv[out+i]))
+        if (!std::isfinite(fv[out+i]))
           {
             if (state)
               cminsky().displayErrorItem(*state);
@@ -116,7 +116,7 @@ namespace minsky
           break;
         }
       }
-    if (!isfinite(df[out]))
+    if (!std::isfinite(df[out]))
       throw error("Invalid operation detected on a %s operation",
                   OperationBase::typeName(type()).c_str());
   }

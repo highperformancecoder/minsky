@@ -392,9 +392,10 @@ namespace minsky
     set<string> names;
     for (size_t i=1; i<ports.size(); ++i)
       {
-        auto& vv=ports[i]->getVariableValue();
-        for (auto& i: vv.hypercube().xvectors)
-          names.insert(i.name);
+        auto vv=ports[i]->getVariableValue();
+        if (vv)
+          for (auto& i: vv->hypercube().xvectors)
+            names.insert(i.name);
       }
     return {names.begin(), names.end()};
   }
