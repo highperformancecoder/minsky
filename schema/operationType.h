@@ -37,13 +37,13 @@ namespace minsky
                add, subtract, multiply, divide, min, max, 
                and_, or_,
                // single wire binops
-               log, pow,
+               log, pow, polygamma, 
                lt, le, eq, 
                // underscores to avoid C++ keywords. Can be filtered at UI
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
-               floor, frac, not_,
+               floor, frac, not_, percent, gamma, fact,
                // reductions
                sum, product, infimum, supremum, any, all, infIndex, supIndex,
                // scans
