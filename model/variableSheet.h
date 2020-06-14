@@ -32,7 +32,7 @@ namespace minsky
     double xoffs=80;  
     double rowHeight=0;
     double colWidth=50;
-    float m_width=1600, m_height=400;
+    float m_width=10000, m_height=10000;
     Items itemvector;
     //ItemPtr item;
     void populateItemvector();

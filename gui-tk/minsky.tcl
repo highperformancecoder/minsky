@@ -938,12 +938,36 @@ proc setScrollBars {} {
             } else {.vscroll set  0 1}
         }
         .parameters {
-            .hscroll set 0 1
-            .vscroll set 0 1  
+            #.hscroll set 0 1
+            #.vscroll set 0 1
+            set x0 [expr (10000-[get_pointer_x .parameters])/20000.0]
+            set y0 [expr (10000-[get_pointer_y .parameters])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .parameters]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .parameters]/20000.0]
+            #if {[parametersSheet.width]>0} {
+            #    set x0 [expr [parametersSheet.offsx]/[parametersSheet.width]]
+            #    .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/[parametersSheet.width]]
+            #} else {.hscroll set 0 1}
+            #if {[parametersSheet.height]>0} {
+            #    set y0 [expr [parametersSheet.offsx]/[parametersSheet.height]]
+            #    .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/[parametersSheet.height]]
+            #} else {.vscroll set  0 1}           
 		}      
         .variables {
-            .hscroll set 0 1
-            .vscroll set 0 1                 
+            #.hscroll set 0 1
+            #.vscroll set 0 1                 
+            set x0 [expr (10000-[get_pointer_x .variables])/20000.0]
+            set y0 [expr (10000-[get_pointer_y .variables])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .variables]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .variables]/20000.0]
+            #if {[variableSheet.width]>0} {
+            #    set x0 [expr [variableSheet.offsx]/[variableSheet.width]]
+            #    .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/[variableSheet.width]]
+            #} else {.hscroll set 0 1}
+            #if {[variableSheet.height]>0} {
+            #    set y0 [expr [variableSheet.offsx]/[variableSheet.height]]
+            #    .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/[variableSheet.height]]
+            #} else {.vscroll set  0 1}                      
         }        
     }
 }
@@ -964,9 +988,13 @@ proc panCanvas {offsx offsy} {
             equationDisplay.requestRedraw
         }
         .parameters {
+            parameterSheet.offsx $offsx
+            parameterSheet.offsy $offsy			
             parameterSheet.requestRedraw
         }        
         .variables {
+            variablesSheet.offsx $offsx
+            variablesSheet.offsy $offsy						
             variablesSheet.requestRedraw
         }           
     }
@@ -996,6 +1024,22 @@ proc scrollCanvases {xyview args} {
             set w [equationDisplay.width]
             set h [equationDisplay.height]
         }
+        .parameters {
+            set x [get_pointer_x .parameters]
+            set y [get_pointer_y .parameters]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }
+        .variables {
+            set x [get_pointer_x .variables]
+            set y [get_pointer_y .variables]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }                
     }
     switch [lindex $args 0] {
         moveto {

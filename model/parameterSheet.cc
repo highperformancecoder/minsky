@@ -56,13 +56,14 @@ void ParameterSheet::populateItemvector() {
                                           itemvector.emplace_back(*i);
                                           return false;
                                         });   	
-}	
+}
 
 void ParameterSheet::draw(cairo_t* cairo) const
 {   
-  cairo_rectangle(cairo,0,0,m_width,m_height);
-  cairo_stroke_preserve(cairo);
-  cairo_clip(cairo);
+  //cairo_rectangle(cairo,0,0,m_width,m_height);
+  //cairo_stroke_preserve(cairo);
+ //cairo_clip(cairo);
+ double x1=0,x2=0,y1=0,y2=0, width=0, height=0;
 
   try
     {	
@@ -73,7 +74,7 @@ void ParameterSheet::draw(cairo_t* cairo) const
         if (auto v=itemvector[0]->variableCast())
         //if (auto v=item->variableCast())
           if (v->type()==VariableType::parameter)
-            {
+            {	
 	          auto value=v->vValue();
               Pango pango(cairo);
               if (value->hypercube().rank()>2)
@@ -113,19 +114,21 @@ void ParameterSheet::draw(cairo_t* cairo) const
                       y=y0;
                       x+=colWidth;
                       if (value->hypercube().rank()==1)
-                        for (size_t i=0; i<value->size(); ++i)
-                          {
-                            if (!value->index().empty())
-                              y=y0+value->index()[i]*rowHeight;
-                            cairo_move_to(cairo,x,y);
-                            auto v=value->value(i);
-                            if (!std::isnan(v))
-                              {
-                                pango.setMarkup(str(v));
-                                pango.show();
-                              }
-                            y+=rowHeight;
-                          }
+                        {
+                          for (size_t i=0; i<value->size(); ++i)
+                            {
+                              if (!value->index().empty())
+                                y=y0+value->index()[i]*rowHeight;
+                              cairo_move_to(cairo,x,y);
+                              auto v=value->value(i);
+                              if (!std::isnan(v))
+                                {
+                                  pango.setMarkup(str(v));
+                                  pango.show();
+                                }
+                              y+=rowHeight;
+                            }
+					    }
                       else
                         {
                           format=value->hypercube().xvectors[1].timeFormat();
@@ -148,7 +151,7 @@ void ParameterSheet::draw(cairo_t* cairo) const
                               for (size_t j=0; j<dims[0]; ++j)
                                 {
                                   y+=rowHeight;
-                                  if (y>1.5*m_height) break;
+                                  if (y>m_height) break;
                                   cairo_move_to(cairo,x,y);
                                   auto v=value->atHCIndex(j+i*dims[0]);
                                   if (!std::isnan(v))
@@ -159,23 +162,40 @@ void ParameterSheet::draw(cairo_t* cairo) const
                                   colWidth=std::max(colWidth, pango.width());
                                 }
                               x+=colWidth;
-                              if (x>1.5*m_width) break;
-                            }
+                              if (x>m_width) break;
+                            }      
                         }
+                        
+                      cairo_stroke_extents (cairo,&x1,&y1,&x2,&y2);
+                      width+=x2-x1;
+                      height+=y2-y1; 
+                      cairo_path_extents (cairo,&x1,&y1,&x2,&y2); 
+                      width+=x2-x1;
+                      height+=y2-y1;
+                      cairo_fill_extents (cairo,&x1,&y1,&x2,&y2); 
+                      width+=x2-x1;
+                      height+=y2-y1; 
+                      cairo_clip_extents (cairo,&x1,&y1,&x2,&y2); 
+                      width+=x2-x1;
+                      height+=y2-y1;                                                                 
+                      cout << width << " " << height << endl;
                       // draw grid
                       {
                         cairo::CairoSave cs(cairo);
                         cairo_set_source_rgba(cairo,0,0,0,0.2);
-                        for (y=y0+0.8*rowHeight; y<1.5*m_height; y+=2*rowHeight)
+                        for (y=y0+0.8*rowHeight; y<height; y+=2*rowHeight)
                           {
-                            cairo_rectangle(cairo,0.0,y,1.5*m_width,rowHeight);
+                            cairo_rectangle(cairo,0.0,y,width,rowHeight);
                             cairo_fill(cairo);
                           }
                       }
                 
-                    }
-                }
-            } 
+                    }     
+                cairo_rectangle(cairo,0,0,width,height);
+                cairo_stroke(cairo);
+                cairo_clip(cairo);                     
+                }   
+            }
     }
   catch (...) {throw;/* exception most likely invalid variable value */}
 }    
