@@ -20,6 +20,7 @@
 #include "ravelWrap.h"
 #include "selection.h"
 #include "dimension.h"
+#include "minskyTensorOps.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
 static const int ravelVersion=3;
@@ -491,36 +492,19 @@ namespace minsky
     return hc;
   }
   
-  void Ravel::loadDataFromSlice(ITensorVal& v) const
-  {
-    double* tmp=nullptr;
-    v.hypercube(hypercube(tmp));
-    if (tmp)
-      {
-        for (size_t i=0; i< v.size(); ++i)
-          *(v.begin()+i)=tmp[i];
-        return;
-      }
-    else
-      throw error(ravel_lastErr());
-  }
-
   void Ravel::populateHypercube(const Hypercube& hc)
   {
     if (ravel)
       {
-        RavelState state=getState();
+        RavelState state=initState.empty()? getState(): initState;
+        initState.clear();
         ravel_clear(ravel);
         for (auto& i: hc.xvectors)
           {
             vector<string> ss;
-            for (auto& j: i) ss.push_back(str(j));
-            // clear the format if time so that data will reload correctly
-            if (i.dimension.type==Dimension::time)
-              axisDimensions[i.name]=Dimension(Dimension::time,"");
+            for (auto& j: i) ss.push_back(str(j,i.dimension.units));
             vector<const char*> sl;
-            for (auto& j: ss)
-              sl.push_back(j.c_str());
+            for (auto& j: ss) sl.push_back(j.c_str());
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
             size_t h=ravel_numHandles(ravel)-1;
             ravel_displayFilterCaliper(ravel,h,false);
@@ -529,21 +513,10 @@ namespace minsky
           setRank(hc.rank());
         else
           applyState(state);
-      }
-  }
-  
-  void Ravel::loadDataCubeFromVariable(const ITensor& v)
-  {
-    if (ravel && dataCube)
-      {
-        // this ensure that handles are restored correctly after loading a .mky file. 
-        RavelState state=initState.empty()? getState(): initState;
-        initState.clear();
-        populateHypercube(v.hypercube());
 #ifndef NDEBUG
         if (state.empty())
           {
-            auto d=v.hypercube().dims();
+            auto d=hc.dims();
             assert(d.size()==ravel_rank(ravel));
             vector<size_t> outputHandles(d.size());
             ravel_outputHandleIds(ravel,&outputHandles[0]);
@@ -551,14 +524,9 @@ namespace minsky
               assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
           }
 #endif
-        auto sz=v.size();
-        vector<double> tmp(sz);
-        for (size_t i=0; i<sz; ++i) tmp[i]=v[i];
-        ravelDC_loadData(dataCube, ravel, &tmp[0]);
-        applyState(state);
       }
   }
-
+  
   unsigned Ravel::maxRank() const
   {
     if (ravel) return ravel_numHandles(ravel);
@@ -739,6 +707,15 @@ namespace minsky
       }
     return order;
   }
+
+  bool Ravel::handleSortableByValue() const
+  {
+    if (!ravel || rank()!=1) return false;
+    size_t ids[1];
+    ravel_outputHandleIds(ravel,ids);
+    return selectedHandle()==ids[0];
+  }
+
   
   string Ravel::description() const
   {
@@ -792,7 +769,10 @@ namespace minsky
           throw error("type mismatch with global dimension");
       }
     else
-      minsky().dimensions[descr]=d;
+      {
+        minsky().dimensions[descr]=d;
+        minsky().imposeDimensions();
+      }
     axisDimensions[descr]=d;
   }
 
@@ -827,6 +807,7 @@ namespace minsky
         ravel_outputHandleIds(ravel,&ids[0]);
         for (size_t i=0; i<ids.size(); ++i)
           state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
+        state.sortByValue=sortByValue;
       }
     return state;
   }
@@ -836,6 +817,7 @@ namespace minsky
   {
     if (ravel)
       {
+        sortByValue=state.sortByValue;
         ravel_rescale(ravel,state.radius);
 
         vector<size_t> ids;
@@ -870,9 +852,11 @@ namespace minsky
 
   void Ravel::exportAsCSV(const string& filename) const
   {
-    // TODO: add some comment lines
     VariableValue v(VariableType::flow);
-    loadDataFromSlice(v);
+    TensorsFromPort tp(make_shared<EvalCommon>());
+    tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
+    v=*tensorOpFactory.create(*this, tp);
+    // TODO: add some comment lines
     v.exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
   }
 

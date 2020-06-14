@@ -17,26 +17,31 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "CSVDialog.h"
-#include "group.h"
-#include "selection.h"
-#include <pango.h>
-#include "minsky_epilogue.h"
-
-#include <boost/asio/ssl/error.hpp>
-#include <boost/asio/ssl/stream.hpp>
-#include <boost/asio.hpp>
-#include <boost/beast/core.hpp>          
-#include <boost/beast/http.hpp>          
+#include "CSVDialog.h"                                                           
+#include "group.h"                                                               
+#include "selection.h"                                                           
+#include <pango.h>                                                               
+#include "minsky_epilogue.h"                                                     
+#include "zStream.h"                                                           
+                                                                                 
+#include <boost/asio/ssl/error.hpp>                                              
+#include <boost/asio/ssl/stream.hpp>                                             
+#include <boost/asio.hpp>                                                        
+#include <boost/beast/core.hpp>                                                  
+#include <boost/beast/http.hpp>                                                  
 #include <boost/beast/version.hpp>  
-#include <boost/regex.hpp>
-#include <boost/filesystem.hpp>
-   
-#include "certify/include/boost/certify/extensions.hpp"         
-#include "certify/include/boost/certify/https_verification.hpp" 
-
-#include <cstdlib>
-#include <iostream>
+                                      
+#include <boost/regex.hpp>                                                       
+#include <boost/filesystem.hpp>                                                  
+                                                                                 
+#include "certify/include/boost/certify/extensions.hpp"                          
+#include "certify/include/boost/certify/https_verification.hpp"                  
+                                                                                 
+#include <cstdlib>                                                               
+#include <iostream>                                                              
+#include <string>                                                                
+#include <stdexcept>                                                                                                                         
+#include <sstream>      
 
 using namespace std;
 using namespace minsky;
@@ -109,7 +114,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   stream.handshake(ssl::stream_base::client);             
 
   // Set up an HTTP GET request message
-  http::request<http::string_body> req;
+  http::request<http::dynamic_body> req;
   req.method(http::verb::get);     
   req.target(target.str());     
   req.version(10);
@@ -123,22 +128,21 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   boost::beast::flat_buffer buffer;
 
   // Declare a container to hold the response
-  http::response_parser<http::string_body> res;
-  res.body_limit((std::numeric_limits<std::uint64_t>::max)());
+  http::response<http::dynamic_body> res;
 
   // Receive the HTTP response
   http::read(stream, buffer, res);
-  
-  res.eager(true);  // See https://github.com/boostorg/beast/issues/1352
+
   // Check response status and throw error all values 400 and above. See https://www.boost.org/doc/libs/master/boost/beast/http/status.hpp for status codes
-  if (res.get().result_int() >= 400) throw runtime_error("Invalid HTTP response. Response code: " + std::to_string(res.get().result_int()));
-                                                 
+  if (res.result_int() >= 400) throw runtime_error("Invalid HTTP response. Response code: " + std::to_string(res.result_int()));
+                          
   // Dump the outstream into a temporary file for loading it into Minsky' CSV parser 
   boost::filesystem::path temp = boost::filesystem::unique_path();
   const std::string tempStr    = temp.string();
           
-  std::ofstream outFile(tempStr, std::ofstream::out);  
-  outFile << res.get().body();                                            
+  std::ofstream outFile(tempStr, std::ofstream::binary);  
+  
+  outFile << boost::beast::buffers_to_string(res.body().data());
        
   // Gracefully close the socket
   boost::system::error_code ec;

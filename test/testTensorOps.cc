@@ -42,10 +42,10 @@ struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
   template <class Op>
   Eval(VariableBase& result, Op& op):
     shared_ptr<EvalCommon>(new EvalCommon),
-    TensorEval(*result.vValue(), *this,
+    TensorEval(result.vValue(), *this,
                TensorOpFactory().create(op,TensorsFromPort(*this))) {}
   
-  void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());}
+  void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());}
 };
 
 struct TestFixture
@@ -352,8 +352,8 @@ SUITE(TensorOps)
           OperationPtr o(op);
           CHECK_EQUAL(2, o->numPorts());
           Wire w1(src.ports[0], o->ports[1]), w2(o->ports[0], dest.ports[1]);
-          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
-          eval.eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());
+          TensorEval eval(dest.vValue(), ev, factory.create(*o,tp));
+          eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           switch (OperationType::classify(op))
             {
             case OperationType::function:
@@ -409,8 +409,8 @@ SUITE(TensorOps)
           CHECK_EQUAL(3, o->numPorts());
           Wire w1(src1.ports[0], o->ports[1]), w2(src2.ports[0], o->ports[2]),
             w3(o->ports[0], dest.ports[1]);
-          TensorEval eval(*dest.vValue(), ev, factory.create(*o,tp));
-          eval.eval(ValueVector::flowVars.data(), ValueVector::stockVars.data());
+          TensorEval eval(dest.vValue(), ev, factory.create(*o,tp));
+          eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
           CHECK_EQUAL(src1.vValue()->size(), dest.vValue()->size());
           CHECK_EQUAL(src2.vValue()->size(), dest.vValue()->size());
           unique_ptr<ScalarEvalOp> scalarOp(ScalarEvalOp::create(op));
@@ -434,8 +434,9 @@ SUITE(TensorOps)
     CHECK_EQUAL(identity, (*tensorOp)[0]);
     Hypercube hc(vector<unsigned>{2});
     auto tv1=make_shared<TensorVal>(hc), tv2=make_shared<TensorVal>(hc);
-    tv1->push_back(0,1), tv2->push_back(0,2);
-    tv1->push_back(1,2), tv2->push_back(1,1);
+    map<size_t,double> tv1Data{{0,1},{1,2}}, tv2Data{{0,2},{1,1}};
+    *tv1=tv1Data;
+    *tv2=tv2Data;
     tensorOp->setArguments(vector<TensorPtr>{tv1,tv2},vector<TensorPtr>{});
     CHECK_EQUAL(f((*tv1)[0],(*tv2)[0]), (*tensorOp)[0]);
     CHECK_EQUAL(f((*tv1)[1],(*tv2)[1]), (*tensorOp)[1]);
@@ -495,7 +496,9 @@ SUITE(TensorOps)
       CHECK_EQUAL(9,chain.back()->size());
       for (size_t i=0; i<chain.back()->size(); ++i)
         CHECK(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
-      vector<double> expected={0,6,12,1,7,13,2,8,14};
+      vector<double> expected={0,1,2,6,7,8,12,13,14};
+      CHECK_ARRAY_EQUAL(expected, *chain[1], 9);
+      expected={0,6,12,1,7,13,2,8,14};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
 
       state.handleStates["sex"].sliceLabel="female";
@@ -580,5 +583,21 @@ SUITE(TensorOps)
       expectedf={0,3,1,4,2};
       CHECK_ARRAY_EQUAL(expectedf, *chain.back(),5);
     }
-
+    
+    TEST_FIXTURE(TensorValFixture, calipered)
+    {
+      state.outputHandles={"date","country"};
+      state.handleStates["country"].minLabel="Canada";
+      state.handleStates["country"].displayFilterCaliper=true;
+      state.handleStates["date"].maxLabel="2011";
+      state.handleStates["date"].displayFilterCaliper=true;
+      arg->index({0,4,8,12,16});
+      auto chain=createRavelChain(state, arg);
+      vector<double> expected={2};
+      CHECK_ARRAY_EQUAL(expected, *chain.back(), expected.size());
+      vector<double> expectedi={3};
+      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(), expectedi.size());
+      vector<size_t> dims={2,2};
+      CHECK_ARRAY_EQUAL(dims, chain.back()->shape(), 2);
+    }
 }

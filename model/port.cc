@@ -76,16 +76,16 @@ namespace minsky
   }
   
   /// sets the VariableValue associated with this port
-  void Port::setVariableValue(const VariableValue& v) {
+  void Port::setVariableValue(const std::shared_ptr<VariableValue>& v) {
     if (!input())
       variableValue=v;
   }
 
   /// value associated with this port
   double Port::value() const {
-    auto& vv=getVariableValue();
-    if (vv.type()!=VariableType::undefined)
-      return vv.value();
+    auto vv=getVariableValue();
+    if (vv && vv->type()!=VariableType::undefined)
+      return vv->value();
     if (input())
       {
         if (!m_wires.empty())
@@ -105,7 +105,7 @@ namespace minsky
       return {};
   }
 
-  const VariableValue& Port::getVariableValue() const {
+  shared_ptr<VariableValue> Port::getVariableValue() const {
     if (input() && !m_wires.empty())
       return m_wires[0]->from()->getVariableValue();
     return variableValue;

@@ -76,7 +76,7 @@ namespace minsky
   {
     EvalOp<op> eo;
     TensorBinOp(): BinOp([this](double x,double y){return eo.evaluate(x,y);}) {}
-    virtual void setArguments(const std::vector<TensorPtr>& a1, const std::vector<TensorPtr>& a2) override
+    void setArguments(const std::vector<TensorPtr>& a1, const std::vector<TensorPtr>& a2) override
     {
       civita::BinOp::setArguments
         (a1.empty()? TensorPtr(): a1[0],
@@ -192,42 +192,37 @@ namespace minsky
     registerOps<GeneralTensorOp, OperationType::sum, OperationType::numOps>(*this);
   }
                                                                                     
-  template <> class GeneralTensorOp<OperationType::sum>: public civita::Sum {};
-  template <> class GeneralTensorOp<OperationType::product>: public civita::Product {};
-  template <> class GeneralTensorOp<OperationType::infimum>: public civita::Min {};
-  template <> class GeneralTensorOp<OperationType::supremum>: public civita::Max {};
+  template <> struct GeneralTensorOp<OperationType::sum>: public civita::Sum {};
+  template <> struct GeneralTensorOp<OperationType::product>: public civita::Product {};
+  template <> struct GeneralTensorOp<OperationType::infimum>: public civita::Min {};
+  template <> struct GeneralTensorOp<OperationType::supremum>: public civita::Max {};
   template <>
-  class GeneralTensorOp<OperationType::any>: public civita::ReductionOp
+  struct GeneralTensorOp<OperationType::any>: public civita::ReductionOp
   {
-  public:
     GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){if (y>0.5) x=1;},0){}
    };
   template <>
-  class GeneralTensorOp<OperationType::all>: public civita::ReductionOp
+  struct GeneralTensorOp<OperationType::all>: public civita::ReductionOp
   {
-  public:
     GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x*=(y>0.5);},1){}
    };
 
   template <>
-  class GeneralTensorOp<OperationType::runningSum>: public civita::Scan
+  struct GeneralTensorOp<OperationType::runningSum>: public civita::Scan
   {
-  public:
     GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x+=y;}) {}
   };
 
   template <>
-  class GeneralTensorOp<OperationType::runningProduct>: public civita::Scan
+  struct GeneralTensorOp<OperationType::runningProduct>: public civita::Scan
   {
-  public:
     GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x*=y;}) {}
   };
   
   template <>
-  class GeneralTensorOp<OperationType::difference>: public civita::DimensionedArgCachedOp
+  struct GeneralTensorOp<OperationType::difference>: public civita::DimensionedArgCachedOp
   {
     ssize_t delta=0;
-  public:
     void setArgument(const TensorPtr& a,const std::string& s,double d) override {
       civita::DimensionedArgCachedOp::setArgument(a,s,d);
       if (dimension>=rank() && rank()>1)
@@ -236,6 +231,8 @@ namespace minsky
       delta=d;
       // remove initial slice of hypercube
       auto hc=arg->hypercube();
+      if (rank()==0) return;
+      
       unsigned dim=rank()>1? dimension: 0;
       auto& xv=hc.xvectors[0];
       if (delta>=0)
@@ -250,23 +247,25 @@ namespace minsky
         for (size_t i=0; i<dimension; ++i)
           delta*=dims[i];
       auto idx=arg->index();
-      // strip of any indices outside the output range
-      idx.erase(remove_if(idx.begin(), idx.end(),
-                          [this](size_t i) {
-                            auto t=ssize_t(i)-delta; return t<0 || t>=ssize_t(size());}),
-                idx.end());
+      set<size_t> newIdx;
       for (auto& i: idx)
-        i-=delta;
-      cachedResult.index(idx);
+        {
+          // strip of any indices outside the output range
+          auto t=ssize_t(i)-delta;
+          if (t>=0 && t<ssize_t(size()))
+            newIdx.insert(t);
+        }
+      cachedResult.index(Index(newIdx));
     }
 
     void computeTensor() const override
     {
+      size_t ane=arg->hypercube().numElements();
       if (delta>=0)
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<size() && i+delta<ane; ++i)
           cachedResult[i]=arg->atHCIndex(i+delta)-arg->atHCIndex(i);
       else
-        for (size_t i=0; i<size(); ++i)
+        for (size_t i=0; i<size() && i-delta<ane; ++i)
           cachedResult[i]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
         
     }
@@ -274,7 +273,7 @@ namespace minsky
   };
   
   template <>
-  class GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp
+  struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
@@ -284,7 +283,7 @@ namespace minsky
   };
 
   template <>
-  class GeneralTensorOp<OperationType::outerProduct>: public civita::CachedTensorOp
+  struct GeneralTensorOp<OperationType::outerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
@@ -294,7 +293,7 @@ namespace minsky
   };
 
   template <>
-  class GeneralTensorOp<OperationType::index>: public civita::CachedTensorOp
+  struct GeneralTensorOp<OperationType::index>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg;
     void computeTensor() const override {
@@ -313,7 +312,7 @@ namespace minsky
   };
 
   template <>
-  class GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
+  struct GeneralTensorOp<OperationType::gather>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override
@@ -352,10 +351,9 @@ namespace minsky
   };
 
   template <>
-  class GeneralTensorOp<OperationType::supIndex>: public civita::ReductionOp
+  struct GeneralTensorOp<OperationType::supIndex>: public civita::ReductionOp
   {
     double maxValue; // scratch register for holding current max
-  public:
     GeneralTensorOp(): civita::ReductionOp
                        ([this](double& r,double x,size_t i){
                           if (i==0 || x>maxValue) {
@@ -366,10 +364,9 @@ namespace minsky
   };
   
   template <>
-  class GeneralTensorOp<OperationType::infIndex>: public civita::ReductionOp
+  struct GeneralTensorOp<OperationType::infIndex>: public civita::ReductionOp
   {
     double minValue; // scratch register for holding current min
-  public:
     GeneralTensorOp(): civita::ReductionOp
                        ([this](double& r,double x,size_t i){
                           if (i==0 || x<minValue) {
@@ -382,13 +379,7 @@ namespace minsky
   class SwitchTensor: public ITensor
   {
     size_t m_size=1;
-    vector<size_t> m_index;
     vector<TensorPtr> args;
-    size_t hcIndex(size_t i) const {
-      if (m_index.empty()) return i;
-      if (i>=m_index.size()) return numeric_limits<size_t>::max();
-      return m_index[i];
-    }
   public:
     void setArguments(const std::vector<TensorPtr>& a,const std::string& axis={},double argv=0) override {
       args=a;
@@ -396,15 +387,13 @@ namespace minsky
         hypercube(Hypercube());
       else
         hypercube(args[1]->hypercube());
-//      if (!args.empty() && args[0]->rank()!=0)
-//        // TODO: feature ticket #36 - extend to conformant selector arg
-//        throw runtime_error("tensor value selectors not yet supported");
       
-      set<size_t> indices; // collect the union of argument indices
+      m_size=1;
+      set<size_t> indices;
       for (auto& i: args)
         {
-          auto ai=i->index();
-          indices.insert(ai.begin(), ai.end());
+          for (auto& j: i->index())
+            indices.insert(j);
           if (i->size()>1)
             {
               if (m_size==1)
@@ -414,8 +403,7 @@ namespace minsky
                 throw runtime_error("noconformant tensor arguments in switch");
             }
         }
-      m_index.clear();
-      m_index.insert(m_index.end(),indices.begin(), indices.end());
+      m_index=indices;
       if (!m_index.empty()) m_size=m_index.size();
     }
     size_t size() const override {return m_size;}
@@ -437,7 +425,7 @@ namespace minsky
           if (args[0]->rank()==0) // scalar selector, so broadcast
             selector = (*args[0])[0];
           else
-            selector = args[0]->atHCIndex(hcIndex(i));
+            selector = (*args[0])[i];
         }
       ssize_t idx = selector+1.5; // selector selects between args 1..n
       
@@ -446,7 +434,7 @@ namespace minsky
           if (args[idx]->rank()==0)
             return (*args[idx])[0];
           else
-            return args[idx]->atHCIndex(hcIndex(i));
+            return args[idx]->atHCIndex(index()[i]);
         }
       return nan("");
     }
@@ -462,16 +450,18 @@ namespace minsky
     RavelTensor(const Ravel& ravel): ravel(ravel) {}
 
     void setArgument(const TensorPtr& a,const std::string&,double) override {
-      chain=move(civita::createRavelChain(ravel.getState(), a));
-      hypercube(chain.back()->hypercube());
+      // not sure how to avoid this const cast here
+      const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
+      chain=civita::createRavelChain(ravel.getState(), a);
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
-    size_t size() const override {return chain.empty()? 0: chain.back()->size();}
-    const vector<size_t>& index() const override
+    size_t size() const override {return chain.empty()? 1: chain.back()->size();}
+    const Index& index() const override
     {if (chain.empty()) return m_index; else return chain.back()->index();}
     Timestamp timestamp() const override
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}
+    const Hypercube& hypercube() const override {return chain.back()->hypercube();}
   };
        
   std::shared_ptr<ITensor> TensorOpFactory::create
@@ -495,13 +485,18 @@ namespace minsky
             case 3:
               r->setArguments(tfp.tensorsFromPort(*op->ports[1]), tfp.tensorsFromPort(*op->ports[2]));
               break;
-		    }
+            }
           return r;
         }
       catch (const InvalidType&)
         {return {};}
+      catch (const std::exception& ex)
+        {
+          // rethrow with op attached to mark op on canvas
+          op->throw_error(ex.what());
+        }
     else if (auto v=it.variableCast())
-      return make_shared<TensorVarVal>(*v->vValue(), tfp.ev);
+      return make_shared<ConstTensorVarVal>(v->vValue(), tfp.ev);
     else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))
       {
         auto r=make_shared<SwitchTensor>();
@@ -552,37 +547,39 @@ namespace minsky
     return r;
   }
 
-  TensorEval::TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev): result(v, ev)
+  TensorEval::TensorEval(const shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev):
+    result(v, ev)
   {
-    if (auto var=cminsky().definingVar(v.valueId()))
+    if (auto var=cminsky().definingVar(v->valueId()))
       if (var->lhs())
         {
           rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports[1])[0];
           result.hypercube(rhs->hypercube());
           result.index(rhs->index());
-          v=result;
+          *v=result;
         }
   }
   
-  TensorEval::TensorEval(const VariableValue& dest, const VariableValue& src):
+  TensorEval::TensorEval(const shared_ptr<VariableValue>& dest, const shared_ptr<VariableValue>& src):
     result(dest,make_shared<EvalCommon>())
   {
-    result.index(src.index());
-    result.hypercube(src.hypercube());
+    result.index(src->index());
+    result.hypercube(src->hypercube());
     Operation<OperationType::copy> tmp;
     auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
-    copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
+    copy->setArgument(make_shared<ConstTensorVarVal>(src,result.ev));
     rhs=move(copy);
     assert(result.size()==rhs->size());
   }   
 
-  void TensorEval::eval(double fv[], const double sv[])
+  void TensorEval::eval(double fv[], size_t n, const double sv[])
   {
     if (rhs)
       {
         assert(result.idx()>=0);
-        assert(result.size()==rhs->size());
-        result.ev->update(fv, sv);
+        result.ev->update(fv, n, sv);
+        //        assert(result.size()==rhs->size());
+        result.hypercube(rhs->hypercube());
         auto ev_sav=result.ev.get();
         for (size_t i=0; i<rhs->size(); ++i)
           {
@@ -593,25 +590,28 @@ namespace minsky
       }
   }
    
-  void TensorEval::deriv(double df[], const double ds[],
+  void TensorEval::deriv(double df[], size_t n, const double ds[],
                          const double sv[], const double fv[])
   {
     if (result.idx()<0) return;
     if (rhs)
       {
-        result.ev->update(const_cast<double*>(fv), sv);
+        result.ev->update(const_cast<double*>(fv), n, sv);
         if (auto deriv=dynamic_cast<DerivativeMixin*>(rhs.get()))
-          for (size_t i=0; i<rhs->size(); ++i)
-            {
-              df[result.idx()+i]=0;
-              for (int j=0; j<result.idx(); ++j)
-                df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
-              // skip self variables
-              for (size_t j=result.idx()+result.size(); j<ValueVector::flowVars.size(); ++j)
-                df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
-              for (size_t j=0; j<ValueVector::stockVars.size(); ++j)
-                df[result.idx()+i] += ds[j]*deriv->dStock(i,j);
-            }
+          {
+            assert(result.idx()+rhs->size()<=n);
+            for (size_t i=0; i<rhs->size(); ++i)
+              {
+                df[result.idx()+i]=0;
+                for (int j=0; j<result.idx(); ++j)
+                  df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
+                // skip self variables
+                for (size_t j=result.idx()+result.size(); j<ValueVector::flowVars.size(); ++j)
+                  df[result.idx()+i] += df[j]*deriv->dFlow(i,j);
+                for (size_t j=0; j<ValueVector::stockVars.size(); ++j)
+                  df[result.idx()+i] += ds[j]*deriv->dStock(i,j);
+              }
+          }
       }
   }
 }

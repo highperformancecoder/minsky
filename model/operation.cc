@@ -365,9 +365,10 @@ namespace minsky
     set<string> names;
     for (size_t i=1; i<ports.size(); ++i)
       {
-        auto& vv=ports[i]->getVariableValue();
-        for (auto& i: vv.hypercube().xvectors)
-          names.insert(i.name);
+        auto vv=ports[i]->getVariableValue();
+        if (vv)
+          for (auto& i: vv->hypercube().xvectors)
+            names.insert(i.name);
       }
     return {names.begin(), names.end()};
   }
@@ -408,16 +409,36 @@ namespace minsky
     switch (classify(type()))
       {
       case function: case reduction: case scan: case tensor:
-        if (check && !ports[1]->units(check).empty())
-          throw_error("function input not dimensionless");
-        return {};
+        switch (type())
+          {
+          case percent:
+            { 
+              // Add % sign to units from input to % operator. Need the first conditional otherwise Minsky crashes		
+              if (!ports[1]->wires().empty()) {
+                auto r=ports[1]->units(check);	 	 
+                if (auto vV=dynamic_cast<VariableValue*>(&ports[1]->wires()[0]->from()->item())) 
+                  {    
+                    vV->setUnits("%"+r.str());
+                    vV->units.normalise();
+                    return vV->units; 
+                  }
+                return r; 
+              } else return {};
+            }
+          default:  
+           {
+             if (check && !ports[1]->units(check).empty())
+               throw_error("function input not dimensionless");
+             return {};
+		   }
+	   }
       case constop:
         return {};        
       case binop:
         switch (type())
           {
             // these binops need to have dimensionless units
-          case log: case and_: case or_:
+          case log: case and_: case or_: case polygamma:
 
             if (check && !ports[1]->units(check).empty())
               throw_error("function inputs not dimensionless");
@@ -749,7 +770,7 @@ namespace
     auto i=minsky().variableValues.find(vid);      
     if (i!=minsky().variableValues.end()) 
       {
-        if (i->second.type()!=VariableType::integral) 
+        if (i->second->type()!=VariableType::integral) 
           try
             {
               minsky().convertVarType(vid, VariableType::integral);
@@ -1342,6 +1363,32 @@ namespace
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"frac");
   }
+  template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-6,3);
+    cairo_show_text(cairo,"%");
+  }
+  template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-6,3);
+    cairo_show_text(cairo,"Γ");
+  }      
+  template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-7,3);
+    cairo_show_text(cairo,"ψ");
+    cairo_rel_move_to(cairo,0,-3);
+    cairo_set_font_size(cairo,7);
+    // show order of polygamma function. 0 is default.
+    std::string order="("+to_string(static_cast<unsigned>(ports[2]->value()))+")";
+    cairo_show_text(cairo,order.c_str());
+    cairo_rel_move_to(cairo,0,-2);
+  }     
+  template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
+  {
+    cairo_move_to(cairo,-3,3);
+    cairo_show_text(cairo,"!");
+  }      
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
   {
 	double sf = scaleFactor(); 	     

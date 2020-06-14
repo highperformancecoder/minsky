@@ -30,10 +30,19 @@ namespace minsky
   std::vector<double> ValueVector::stockVars(1);
   std::vector<double> ValueVector::flowVars(1);
 
+  double& VariableValue::operator[](size_t i)
+  {
+    assert((isFlowVar() && i+m_idx<ValueVector::flowVars.size()) ||
+           (!isFlowVar() && i+m_idx<ValueVector::stockVars.size()));
+    return *(&valRef()+i);
+  }
+
   const VariableValue& VariableValue::operator=(minsky::TensorVal const& x)
   {
     index(x.index());
     hypercube(x.hypercube());
+    assert((isFlowVar() && x.size()+m_idx<=ValueVector::flowVars.size()) ||
+           (!isFlowVar() && x.size()+m_idx<=ValueVector::stockVars.size()));
     memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
@@ -118,7 +127,7 @@ namespace minsky
   TensorVal VariableValue::initValue
   (const VariableValues& v, set<string>& visited) const
   {
-    if (tensorInit.size())
+    if (tensorInit.rank()>0)
       return tensorInit;
     
     FlowCoef fc(init);
@@ -192,7 +201,7 @@ namespace minsky
         else
           {
             visited.insert(valueId);
-            return fc.coef*vv->second.initValue(v, visited);
+            return fc.coef*vv->second->initValue(v, visited);
           }
       }
   }
@@ -202,7 +211,21 @@ namespace minsky
       if (m_idx<0) allocValue();
       // initialise variable only if its variable is not defined or it is a stock
       if (!isFlowVar() || !cminsky().definingVar(valueId()))
-        operator=(initValue(v));
+        {
+          if (tensorInit.size())
+            {
+              // ensure dimensions are correct
+              auto hc=tensorInit.hypercube();
+              for (auto& xv: hc.xvectors)
+                {
+                  auto dim=cminsky().dimensions.find(xv.name);
+                  if (dim!=cminsky().dimensions.end())
+                    xv.dimension=dim->second;
+                }
+              tensorInit.hypercube(hc);
+            }
+          operator=(initValue(v));
+        }
   }
 
 
@@ -280,15 +303,15 @@ namespace minsky
     ValueVector::stockVars.clear();
     ValueVector::flowVars.clear();
     for (auto& v: *this) {
-      v.second.reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
-      v.second.allocValue().reset(*this);
+      v.second->reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
+      v.second->allocValue().reset(*this);
     }
 }
 
   bool VariableValues::validEntries() const
   {
     for (auto& v: *this)
-      if (!v.second.isValueId(v.first))
+      if (!v.second->isValueId(v.first))
         return false;
     return true;
   }

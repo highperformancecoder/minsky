@@ -21,78 +21,9 @@
 #include "selection.h"
 #include "minsky_epilogue.h"
 #include "a85.h"
+#include "zStream.h"
 #include <zlib.h>
 using namespace std;
-
-namespace
-{
-  // nice RAII wrappers around zlib's data structures
-  struct ZStream: public z_stream
-  {
-    ZStream(Bytef* input, size_t inputSize, Bytef* output, size_t outputSize)
-    {
-      next_in=input;
-      avail_in=inputSize;
-      next_out=output;
-      avail_out=outputSize;
-      zfree=Z_NULL;
-      zalloc=Z_NULL;
-    }
-    void throwError() const {
-      throw runtime_error(string("compression failure: ")+(msg? msg:""));
-    }
-  };
-    
-  struct DeflateZStream: public ZStream
-  {
-    template <class I, class O>
-    DeflateZStream(const I& input, O& output):
-      ZStream((Bytef*)input.data(), input.size(),
-              (Bytef*)output.data(), output.size())
-    {
-      if (deflateInit(this,9)!=Z_OK) throwError();
-    }
-    ~DeflateZStream() {deflateEnd(this);}
-    void deflate() {
-      if (::deflate(this,Z_FINISH)!=Z_STREAM_END) throwError();
-    }
-  };
-    
-  struct InflateZStream: public ZStream
-  {
-    classdesc::pack_t output{256};
-    Bytef* inputData;
-    size_t inputSize;
-      
-    template <class I>
-    InflateZStream(const I& input):
-      ZStream((Bytef*)input.data(), input.size(), 0,0),
-      inputData((Bytef*)input.data()),inputSize(input.size())
-    {
-      next_out=(Bytef*)output.data();
-      avail_out=output.size();
-      if (inflateInit(this)!=Z_OK) throwError();
-    }
-    ~InflateZStream() {inflateEnd(this);}
-
-    void inflate() {
-      int err;
-      while ((err=::inflate(this,Z_SYNC_FLUSH))==Z_OK)
-        {
-          // try doubling size
-          output.resize(2*output.size());
-          next_out=(Bytef*)(output.data())+total_out;
-          avail_out=output.size()-total_out;
-          next_in=inputData+total_in;
-          avail_in=inputSize-total_in;
-        }
-      if (err!=Z_STREAM_END) throwError();
-    }
-    void throwError() {
-      throw runtime_error(string("compression failure: ")+(msg? msg:""));
-    }
-  };
-}
 
 namespace minsky
 {

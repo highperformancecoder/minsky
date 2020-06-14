@@ -24,6 +24,7 @@
 #include "expr.h"
 #include "minsky_epilogue.h"
 #include <boost/regex.hpp>
+
 using boost::regex;
 using boost::smatch;
 using namespace minsky;
@@ -638,6 +639,64 @@ namespace MathDAG
     else
        throw error("frac is not differentiable");
   }
+  
+  template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::percent>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return (100*x)->derivative(*this);
+      }
+  }
+  
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::gamma>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return chainRule(x,polygamma(x,Expr(expressionCache,zero))*gamma(x)); 
+      }                                                                                       
+  }                                                                                           
+
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::polygamma>& expr)
+  {
+      assert(expr.arguments.size()==2);
+      if (expr.arguments[0].empty())
+        return zero;
+      else 
+        {
+          Expr x(expressionCache, expressionCache.reverseLookup(*expr.arguments[0][0]));
+          if (expr.arguments[1].empty())
+            return chainRule(x,polygamma(x,Expr(expressionCache, one)));
+          else
+            {
+              return chainRule(x,polygamma(x,1+Expr(expressionCache, expr.arguments[1][0])));
+            }
+        }
+    }
+  
+  template <>
+  NodePtr SystemOfEquations::derivative
+  (const OperationDAG<OperationType::fact>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return chainRule(x,polygamma(1+x,Expr(expressionCache,zero))*gamma(1+x));
+      }
+  }    
   
 #define VECTOR_DERIVATIVE_NOT_IMPLEMENTED(op)           \
   template <>                                           \

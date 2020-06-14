@@ -37,6 +37,7 @@
 #include "variableValue.h"
 #include "canvas.h"
 #include "panopticon.h"
+#include "fontDisplay.h"
 #include "variableSheet.h"
 #include "parameterSheet.h"
 #include "dimension.h"
@@ -156,6 +157,7 @@ namespace minsky
   public:
     EquationDisplay equationDisplay;
     Panopticon panopticon{canvas};
+    FontDisplay fontSampler;
     ParameterSheet parameterSheet;
     VariableSheet variableSheet;    
         // Allow multiple equity columns.
@@ -185,7 +187,7 @@ namespace minsky
     /// @throw ecolab::error if equations are illdefined
     void evalEquations() {
       for (auto& eq: equations)
-        eq->eval(&flowVars[0], &stockVars[0]);
+        eq->eval(&flowVars[0], flowVars.size(), &stockVars[0]);
     }
     
     VariableValues variableValues;
@@ -249,6 +251,8 @@ namespace minsky
     void insertGroupFromFile(const char* file);
 
     void makeVariablesConsistent();
+
+    void imposeDimensions();
 
     // runs over all ports and variables removing those not in use
     void garbageCollect();

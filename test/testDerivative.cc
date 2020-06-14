@@ -61,8 +61,8 @@ struct BinOpFixture: public Minsky
     model->addItem(df);
     model->addWire(new Wire(deriv->ports[0], df->ports[1]));
     
-    stepMin=1e-6;
-    stepMax=1e-3;
+    stepMin=1e-12;
+    stepMax=1e-9;
     epsAbs=0.001;
     epsRel=0.01;
     order=4;
@@ -99,9 +99,9 @@ SUITE(Derivative)
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
     integ.intVar->value(f0);
-    nSteps=800; step();
+    nSteps=1000; step();
     CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+    CHECK(abs(f->value()-f0)>0.000001*f0); // checks that evolution of function value occurs
    
   }
 
@@ -122,9 +122,9 @@ SUITE(Derivative)
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
     integ.intVar->value(f0);
-    nSteps=800; step();step();
+    nSteps=1000; step();step();
     CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+    CHECK(abs(f->value()-f0)>0.0000001*f0); // checks that evolution of function value occurs
    
   }
 
@@ -152,9 +152,9 @@ SUITE(Derivative)
     // set the constant of integration to the value of f at t=0
     double f0=f->value();
     integ.intVar->value(f0);
-    nSteps=800; step();
+    nSteps=1000; step();
     CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+    CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
    
   }
   
@@ -218,9 +218,9 @@ SUITE(Derivative)
         // set the constant of integration to the value of f at t=0
         double f0=f->value();
         integ.intVar->value(f0);
-        nSteps=800; step();
+        nSteps=1000; step();
         CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
 
         // check other single input wired
         model->removeWire(*opWire);
@@ -230,9 +230,9 @@ SUITE(Derivative)
         // set the constant of integration to the value of f at t=0
         f0=f->value();
         integ.intVar->value(f0);
-        nSteps=800; step();
+        nSteps=1000; step();
         CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
        
         // now check with two inputs wired
         model->addWire(new Wire(t->ports[0],opp->ports[1]));
@@ -241,9 +241,9 @@ SUITE(Derivative)
         // set the constant of integration to the value of f at t=0
         f0=f->value();
         integ.intVar->value(f0);
-        nSteps=800; step();
+        nSteps=1000; step();
         CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
 
         model->deleteItem(*opp);
       }
@@ -290,13 +290,13 @@ SUITE(Derivative)
             default:
               reset(); 
             }
-          nSteps=1;step(); // ensure f is evaluated
-          // set the constant of integration to the value of f at t=0
-          double f0=f->value();
-          integ.intVar->value(f0);
-          nSteps=800; step();
-          CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-          CHECK(abs(f->value()-f0)>0.1*f0); // checks that evolution of function value occurs
+             nSteps=1;step(); // ensure f is evaluated
+             // set the constant of integration to the value of f at t=0
+             double f0=f->value();
+             integ.intVar->value(f0);			  
+             nSteps=1000; step();
+             CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
+             CHECK(abs(f->value()-f0)>0.00000000001*f0); // checks that evolution of function value occurs                          
         }
     }
   

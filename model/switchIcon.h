@@ -27,7 +27,7 @@ namespace minsky
   class SwitchIcon: public ItemT<SwitchIcon>
   {
     CLASSDESC_ACCESS(SwitchIcon);
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
   public:
     SwitchIcon();
 

@@ -33,8 +33,8 @@
 
 namespace minsky 
 {
-  class LassoBox;
-  class Selection;
+  struct LassoBox;
+  struct Selection;
   
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and

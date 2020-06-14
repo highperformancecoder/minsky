@@ -83,17 +83,19 @@ namespace minsky
        @param fv - flow variables (function of stock variables, computed by eval)
        @param ds - derivative of stock variables
        @param df - derivative of flow variables (updated by this function)
+       @param n - size of df array
 
        To compute the partial derivatives with respect to stock variable
        i, seed ds with 1 in the ith position, 0 every else, and
        initialise df to zero.
     */
-    virtual void deriv(double df[], const double ds[], 
+    virtual void deriv(double df[], size_t n, const double ds[], 
                        const double sv[], const double fv[])=0;
 
     /// evaluate expression on sv and current value of fv, storing result
     /// in output variable (of \a fv)
-    virtual void eval(double fv[]=&ValueVector::flowVars[0], 
+    /// @param n - size of fv array
+    virtual void eval(double fv[]=&ValueVector::flowVars[0], size_t n=ValueVector::flowVars.size(), 
                       const double sv[]=&ValueVector::stockVars[0])=0;
  
 
@@ -104,20 +106,16 @@ namespace minsky
   /// Legacy EvalOp base interface
   struct ScalarEvalOp: public EvalOpBase
   {
-    /// operation this EvalOp refers to
-    virtual OperationType::Type type() const=0; 
-
     /// number of arguments to this operation
     virtual int numArgs() const =0;
 
     /// factory method
     static ScalarEvalOp* create(Type op/*=numOps*/);
 
-    virtual void deriv(double df[], const double ds[], 
-                       const double sv[], const double fv[]);
+    void deriv(double df[], size_t n, const double ds[], 
+                       const double sv[], const double fv[]) override;
 
-    virtual void eval(double fv[]=&ValueVector::flowVars[0], 
-                      const double sv[]=&ValueVector::stockVars[0]);
+    void eval(double fv[], size_t, const double sv[]) override;
  
     /// evaluate expression on given arguments, returning result
     virtual double evaluate(double in1=0, double in2=0) const=0;

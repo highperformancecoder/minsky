@@ -44,7 +44,7 @@ namespace minsky
     double clickX, clickY, oldLegendLeft, oldLegendTop, oldLegendFontSz;
     ClickType::Type ct;
     CLASSDESC_ACCESS(PlotWidget);
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
     // timestamp of last time this widget was blitted and also the
     // accumulated blit time at last add.
     classdesc::Exclude<boost::posix_time::ptime> 
@@ -63,8 +63,8 @@ namespace minsky
     using ecolab::CairoSurface::surface;
 
     /// variable port attached to (if any)
-    std::vector<VariableValue> yvars;
-    std::vector<VariableValue> xvars;
+    std::vector<std::shared_ptr<VariableValue>> yvars;
+    std::vector<std::shared_ptr<VariableValue>> xvars;
 
     /// variable ports specifying plot size
     VariableValue xminVar, xmaxVar, yminVar, ymaxVar, y1minVar, y1maxVar;
@@ -84,8 +84,9 @@ namespace minsky
     /// add vector/tensor curves to plot
     void addConstantCurves();
     /// connect variable \a var to port \a port. 
-    void connectVar(const VariableValue& var, unsigned port);
+    void connectVar(const std::shared_ptr<VariableValue>& var, unsigned port);
     void disconnectAllVars();
+    using ecolab::Plot::draw;
     void draw(cairo_t* cairo) const override;
     void redraw(); // redraw plot using current data to all open windows
     void redraw(int x0, int y0, int width, int height) override

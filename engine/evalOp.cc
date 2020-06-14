@@ -26,35 +26,42 @@
 #include "minsky_epilogue.h"
 
 #include <math.h>
+#undef Complex 
+#include <boost/math/special_functions/gamma.hpp>
+#include <boost/math/special_functions/polygamma.hpp>
 
 using boost::any;
 using boost::any_cast;
 using namespace boost::posix_time;
+using namespace boost::math;
 
 namespace minsky
 {
 
-  void ScalarEvalOp::eval(double fv[], const double sv[])
+  void ScalarEvalOp::eval(double fv[], size_t n, const double sv[])
   {
     assert(out>=0);
     switch (numArgs())
       {
       case 0:
+        assert(size_t(out)<n);
         fv[out]=evaluate(0,0);
         break;
       case 1:
+        assert(out+in1.size()<=n);
         for (unsigned i=0; i<in1.size(); ++i)
           fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], 0);
         break;
       case 2:
-          for (unsigned i=0; i<in1.size(); ++i)
-            {
-              double x2=0;
-              const double* v=flow2? fv: sv;
-              for (auto& j: in2[i])
-                  x2+=j.weight*v[j.idx];
-              fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], x2);
-            }
+        assert(out+in1.size()<=n);
+        for (unsigned i=0; i<in1.size(); ++i)
+          {
+            double x2=0;
+            const double* v=flow2? fv: sv;
+            for (auto& j: in2[i])
+              x2+=j.weight*v[j.idx];
+            fv[out+i]=evaluate(flow1? fv[in1[i]]: sv[in1[i]], x2);
+          }
         break;
       }
 
@@ -62,7 +69,7 @@ namespace minsky
     // element not present
     if (in1.size()==1)
       for (unsigned i=0; i<in1.size(); ++i)
-        if (!isfinite(fv[out+i]))
+        if (!std::isfinite(fv[out+i]))
           {
             if (state)
               cminsky().displayErrorItem(*state);
@@ -76,10 +83,10 @@ namespace minsky
           }
   };
 
-  void ScalarEvalOp::deriv(double df[], const double ds[],
+  void ScalarEvalOp::deriv(double df[], size_t n, const double ds[],
                      const double sv[], const double fv[])
   {
-    assert(out>=0 && size_t(out)<ValueVector::flowVars.size());
+    assert(out>=0 && size_t(out)<n);
     switch (numArgs())
       {
       case 0:
@@ -109,7 +116,7 @@ namespace minsky
           break;
         }
       }
-    if (!isfinite(df[out]))
+    if (!std::isfinite(df[out]))
       throw error("Invalid operation detected on a %s operation",
                   OperationBase::typeName(type()).c_str());
   }
@@ -241,10 +248,10 @@ namespace minsky
 
   template <> 
   double EvalOp<OperationType::sqrt>::evaluate(double in1, double in2) const
-  {return ::sqrt(in1);}
+  {return ::sqrt(fabs(in1));}
   template <>
   double EvalOp<OperationType::sqrt>::d1(double x1, double x2) const
-  {return 0.5/::sqrt(x1);}
+  {return 0.5/::sqrt(fabs(x1));}
   template <>
   double EvalOp<OperationType::sqrt>::d2(double x1, double x2) const
   {return 0;}
@@ -488,6 +495,46 @@ namespace minsky
   template <>
   double EvalOp<OperationType::frac>::d2(double x1, double x2) const
   {return 0;}
+  
+  template <>
+  double EvalOp<OperationType::percent>::evaluate(double in1, double in2) const
+  {return 100.0*in1;}
+  template <>
+  double EvalOp<OperationType::percent>::d1(double x1, double x2) const
+  {return 100.0;}
+  template <>
+  double EvalOp<OperationType::percent>::d2(double x1, double x2) const
+  {return 0;}
+  
+  template <>
+  double EvalOp<OperationType::gamma>::evaluate(double in1, double in2) const
+  {return in1 > 0? boost::math::tgamma(in1) : numeric_limits<double>::max();}
+  template <>
+  double EvalOp<OperationType::gamma>::d1(double x1, double x2) const
+  {return boost::math::digamma(fabs(x1))*boost::math::tgamma(fabs(x1));}
+  template <>
+  double EvalOp<OperationType::gamma>::d2(double x1, double x2) const
+  {return 0;} 
+  
+  template <>
+  double EvalOp<OperationType::polygamma>::evaluate(double in1, double in2) const
+  {return in1 > 0? boost::math::polygamma(::floor(in2),in1) : numeric_limits<double>::max();}
+  template <>
+  double EvalOp<OperationType::polygamma>::d1(double x1, double x2) const
+  {return boost::math::polygamma(::floor(x2)+1,fabs(x1));}
+  template <>
+  double EvalOp<OperationType::polygamma>::d2(double x1, double x2) const
+  {return 0;}     
+  
+  template <>
+  double EvalOp<OperationType::fact>::evaluate(double in1, double in2) const
+  {return in1 > -1? boost::math::tgamma(in1+1) : 1;}
+  template <>
+  double EvalOp<OperationType::fact>::d1(double x1, double x2) const
+  {return x1 > -1? boost::math::polygamma(0,x1+1)*boost::math::tgamma(x1+1) : 0;}
+  template <>
+  double EvalOp<OperationType::fact>::d2(double x1, double x2) const
+  {return 0;}          
 
   template <>
   double EvalOp<OperationType::add>::evaluate(double in1, double in2) const

@@ -26,6 +26,7 @@
 #include "constMap.h"
 #include "str.h"
 #include <boost/regex.hpp>
+#include <utility>
 
 namespace minsky
 {
@@ -44,7 +45,6 @@ namespace minsky
     double& valRef(); 
     const double& valRef() const;
     std::vector<unsigned> m_dims;
-    std::vector<size_t> m_index;     
     
     friend class VariableManager;
     friend struct SchemaHelper;
@@ -81,7 +81,7 @@ namespace minsky
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
-    double value(size_t i=0) const {return *(begin()+i);}
+    double value(size_t i=0) const {return operator[](i);}
     int idx() const {return m_idx;}
     void reset_idx() {m_idx=-1;}    
 
@@ -89,22 +89,22 @@ namespace minsky
     Timestamp timestamp() const override {return Timestamp::clock::now();}
     
     double operator[](size_t i) const override {return *(&valRef()+i);}
-    double& operator[](size_t i) override {return *(&valRef()+i);}
+    double& operator[](size_t i) override;
 
-
-    const std::vector<size_t>& index() const override {
+    const Index& index() const override {
       if (m_type==parameter && tensorInit.size())
         return tensorInit.index();
       else
         return m_index;
     }
-    void index(const std::vector<size_t>& i) override {
+    const Index& index(Index&& i) override {
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
-        allocValue();    
+        allocValue();
+      return m_index;
     }
-
+    using ITensorVal::index;
     
     size_t numDenseElements() const {return hypercube().numElements();}
 
@@ -115,7 +115,7 @@ namespace minsky
     }    
     
     const Hypercube& hypercube() const override {
-      if (m_type==parameter && tensorInit.size())
+      if (m_type==parameter && tensorInit.rank()>0)
         return tensorInit.hypercube();
       else
         return ITensor::hypercube();
@@ -206,19 +206,22 @@ namespace minsky
     static std::vector<double> flowVars;
   };
 
-  struct VariableValues: public ConstMap<std::string, VariableValue>
+  /// a shared_ptr that default constructs a default target
+  struct VariableValuePtr: public std::shared_ptr<VariableValue>
+  {
+    template <class... A>
+    VariableValuePtr(A... a): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(std::forward<A>(a)...)) {}
+  };
+  
+  struct VariableValues: public ConstMap<std::string, VariableValuePtr>
   {
     VariableValues() {clear();}
     void clear() {
-      ConstMap<std::string, VariableValue>::clear();
+      ConstMap<std::string, mapped_type>::clear();
       // add special values for zero and one, used for the derivative
       // operator in SystemOfEquations
-      insert
-        (value_type("constant:zero",
-                    VariableValue(VariableType::constant,"constant:zero","0")));
-      insert
-        (value_type("constant:one",
-                    VariableValue(VariableType::constant,"constant:one","1")));
+      emplace("constant:zero", VariableValuePtr(VariableType::constant,"constant:zero","0"));
+      emplace("constant:one", VariableValuePtr(VariableType::constant,"constant:one","1"));
     }
     /// generate a new valueId not otherwise in the system
     std::string newName(const std::string& name) const;
@@ -227,7 +230,7 @@ namespace minsky
     bool validEntries() const;
     void resetUnitsCache() {
       for (auto& i: *this)
-        i.second.unitsCached=false;
+        i.second->unitsCached=false;
     }
   };
   

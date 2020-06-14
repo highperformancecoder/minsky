@@ -153,7 +153,7 @@ namespace minsky
     *outputDataFile<< "#time";
     for (auto& v: variableValues)
       if (logVarList.count(v.first))
-        *outputDataFile<<" "<<v.second.name;
+        *outputDataFile<<" "<<v.second->name;
     *outputDataFile<<endl;
   }
 
@@ -165,7 +165,7 @@ namespace minsky
         *outputDataFile<<t;
         for (auto& v: variableValues)
           if (logVarList.count(v.first))
-            *outputDataFile<<" "<<v.second.value();
+            *outputDataFile<<" "<<v.second->value();
         *outputDataFile<<endl;
       }
   }        
@@ -244,9 +244,7 @@ namespace minsky
     return dynamic_pointer_cast<VariableBase>
       (model->findAny(&Group::items, [&](const ItemPtr& x) {
             auto v=x->variableCast();
-            return v && v->valueId()==valueId &&
-              ((v->ports.size()>1 && !v->ports[1]->wires().empty()) ||
-               (v->isStock() && v->controller.lock())) ;
+            return v && v->valueId()==valueId && v->defined();
           }));
   }
     
@@ -270,15 +268,44 @@ namespace minsky
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();    
+
+    // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
+    g->recursiveDo(&GroupItems::items,
+                   [&](Items&, Items::iterator i) {
+                     if (auto v=(*i)->variableCast())
+                       if (v->defined() || v->isStock())
+                         {
+                           // if defined, check no other defining variable exists
+                           auto alreadyDefined = canvas.model->findAny
+                             (&GroupItems::items,
+                              [&v](const ItemPtr& j)
+                              {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
+                           if (v->isStock())
+                             {
+                               if (v->defined() && alreadyDefined)
+                                 message("Integral/Stock variable "+v->name()+" already defined"); 
+                               else if (!v->defined() && !alreadyDefined)
+                                 convertVarType(v->valueId(), VariableType::flow);
+                             }
+                           else if (alreadyDefined)
+                             {
+                               // delete defining wire from this
+                               assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
+                               canvas.model->removeWire(*v->ports[1]->wires()[0]);
+                             }
+                         }
+                     return false;
+                   });
+
     auto copyOfItems=g->items;
     for (auto& i: copyOfItems)
       {		
          canvas.model->addItem(i);			  
-         canvas.selection.ensureItemInserted(i);		 
+         canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
     // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	      
+    if (!g->items.empty()) canvas.setItemFocus(g->items[0]);	      
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
@@ -345,6 +372,15 @@ namespace minsky
     
   }
 
+  void Minsky::imposeDimensions()
+  {
+    for (auto& v: variableValues)
+      {
+        v.second->imposeDimensions(dimensions);
+        v.second->tensorInit.imposeDimensions(dimensions);
+      }
+  }
+
 
   void Minsky::garbageCollect()
   {
@@ -356,7 +392,7 @@ namespace minsky
 
     // remove all temporaries
     for (auto v=variableValues.begin(); v!=variableValues.end();)
-      if (v->second.temp())
+      if (v->second->temp())
         variableValues.erase(v++);
       else
         ++v;
@@ -403,7 +439,7 @@ namespace minsky
              for (size_t i=0; i<p->ports.size(); ++i)
                {
                  auto& pp=p->ports[i];
-                 if (pp->wires().size()>0 && pp->getVariableValue().idx()>=0)
+                 if (pp->wires().size()>0 && pp->getVariableValue()->idx()>=0)
                    p->connectVar(pp->getVariableValue(), i);
                }
            }
@@ -604,7 +640,7 @@ namespace minsky
                          if (scope==-1 || !variableValues.count(i->first))
                            df.name=VariableValue::uqName(i->first);
                          else
-                           df.name=variableValues[i->first].name;
+                           df.name=variableValues[i->first]->name;
                          df.coef=i->second-destFlows[i->first];
                          if (df.coef==0) continue;
                          string flowEntry=df.str();
@@ -642,7 +678,7 @@ namespace minsky
                                destTable.cell(row, col).clear();
                                // if this leaves an empty row, delete entire row
                                for (size_t c=0; c<destTable.cols(); ++c)
-                                 if (!destTable.cell(row, col).empty())
+                                 if (!destTable.cell(row, c).empty())
                                    goto rowNotEmpty;
                                rowsToDelete.push_back(row);
                              rowNotEmpty:;
@@ -735,7 +771,7 @@ namespace minsky
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            if (r->ports[1]->numWires()>0)
-             r->populateHypercube(r->ports[1]->getVariableValue().hypercube());
+             r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
          return false;
        });
 
@@ -856,7 +892,7 @@ namespace minsky
     // firstly check if any variables are not finite
     for (VariableValues::const_iterator v=variableValues.begin();
          v!=variableValues.end(); ++v)
-      if (!isfinite(v->second.value()))
+      if (!isfinite(v->second->value()))
         return v->first;
 
     // now check operator equations
@@ -874,7 +910,7 @@ namespace minsky
     // that no input vars are correctly initialised
     vector<double> flow(flowVars);
     for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flow[0], vars);
+      equations[i]->eval(&flow[0], flow.size(), vars);
 
     // then create the result using the Godley table
     for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
@@ -902,7 +938,7 @@ namespace minsky
     // that no input vars are correctly initialised
     vector<double> flow=flowVars;
     for (size_t i=0; i<equations.size(); ++i)
-      equations[i]->eval(&flow[0], sv);
+      equations[i]->eval(&flow[0], flow.size(), sv);
 
     // then determine the derivatives with respect to variable j
     for (size_t j=0; j<stockVars.size(); ++j)
@@ -910,7 +946,7 @@ namespace minsky
         vector<double> ds(stockVars.size()), df(flowVars.size());
         ds[j]=1;
         for (size_t i=0; i<equations.size(); ++i)
-          equations[i]->deriv(&df[0], &ds[0], sv, &flow[0]);
+          equations[i]->deriv(&df[0], df.size(), &ds[0], sv, &flow[0]);
         vector<double> d(stockVars.size());
         evalGodley.eval(&d[0], &df[0]);
         for (vector<Integral>::iterator i=integrals.begin(); 
@@ -1110,8 +1146,8 @@ namespace minsky
     ecolab::array<bool> fvInit(flowVars.size(), false);
     // firstly, find all flowVars that are constants
     for (auto& v: variableValues)
-      if (!inputWired(v.first) && v.second.idx()>=0)
-        fvInit[v.second.idx()]=true;
+      if (!inputWired(v.first) && v.second->idx()>=0)
+        fvInit[v.second->idx()]=true;
 
     for (auto& e: equations)
       if (auto eo=dynamic_cast<const ScalarEvalOp*>(e.get()))
@@ -1251,7 +1287,7 @@ namespace minsky
     VariableValues::iterator i=variableValues.find(name);
     if (i==variableValues.end())
       throw error("variable %s doesn't exist",name.c_str());
-    if (i->second.type()==type) return; // nothing to do!
+    if (i->second->type()==type) return; // nothing to do!
 
     model->recursiveDo
       (&GroupItems::items,
@@ -1272,7 +1308,8 @@ namespace minsky
        });
                        
     if (auto var=definingVar(name))
-      if (var->type() != type)
+      // we want to be able to convert stock vars to flow vars when their input is wired
+      if (var->type() != type && (!var->isStock() || var->controller.lock()))
         throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets
@@ -1298,7 +1335,7 @@ namespace minsky
                              }
                          return false;
                        });
-    i->second=VariableValue(type,i->second.name,i->second.init);
+    i->second=VariableValuePtr(type,i->second->name,i->second->init);
   }
 
   void Minsky::addIntegral()

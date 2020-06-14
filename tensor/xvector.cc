@@ -280,5 +280,24 @@ namespace civita
       return "%s";
   }
   
+  void XVector::imposeDimension()
+  {
+    // check if anything to be done
+    switch (dimension.type)
+      {
+      case Dimension::string:
+        if (checkType<string>()) return;
+        break;
+      case Dimension::value:
+        if (checkType<double>()) return;
+        break;
+      case Dimension::time:
+        if (checkType<ptime>()) return;
+        break;
+      }
+
+    for (auto& i: *this)
+      i=anyVal(dimension, str(i));
+  }
 
 }

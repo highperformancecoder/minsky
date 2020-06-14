@@ -25,6 +25,7 @@
 #include "intrusiveMap.h"
 #include "classdesc_access.h"
 #include "SVGItem.h"
+#include "group.h"
 
 #include <map>
 #include <cairo.h>
@@ -41,7 +42,7 @@ namespace minsky
     /// icon scale is adjusted when Godley icon is resized
     float m_iconScale=1;
     CLASSDESC_ACCESS(GodleyIcon);
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
 
     /// support godley edit window on canvas
     struct CopiableUniquePtr: public std::unique_ptr<GodleyTableEditor>
@@ -62,7 +63,7 @@ namespace minsky
     }
   public:
     static SVGRenderer svgRenderer;
-
+    
     ~GodleyIcon() {removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
@@ -112,6 +113,13 @@ namespace minsky
     GodleyTable table;
     /// updates the variable lists with the Godley table
     void update();
+    
+    GodleyIcon* clone() const override {
+      auto r=new GodleyIcon(*this);  
+	  r->update();       
+	  r->group.reset();
+	  return r;
+    }      
 
     /// returns the variable if point (x,y) is within a
     /// variable icon, null otherwise, indicating that the Godley table
@@ -145,6 +153,21 @@ namespace minsky
   };
 }
 
+#ifdef CLASSDESC
+// omit these, because weak/shared pointers cause problems, and its
+// not needed anyway
+#pragma omit pack minsky::GodleyIcon
+#pragma omit unpack minsky::GodleyIcon
+#endif
+namespace classdesc_access
+{
+  template <> struct access_pack<minsky::GodleyIcon>: 
+    public classdesc::NullDescriptor<classdesc::pack_t> {};
+  template <> struct access_unpack<minsky::GodleyIcon>: 
+    public classdesc::NullDescriptor<classdesc::unpack_t> {};
+}
+
 #include "godleyIcon.cd"
 #include "godleyIcon.xcd"
 #endif
+

@@ -44,11 +44,6 @@ namespace minsky
   struct SchemaHelper;
   class GodleyIcon;
 
-//  template <class T, class G, class S>
-//  ecolab::Accessor<T,G,S> makeAccessor(G g,S s) {
-//    return ecolab::Accessor<T,G,S>(g,s);
-//  }
-  
   /// exception-safe increment/decrement of a counter in a block
   struct IncrDecrCounter
   {
@@ -130,7 +125,7 @@ namespace minsky
     /// variable's scope is used
     std::string valueIdInCurrentScope(const std::string& nm) const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
-    VariableValue* vValue() const;
+    std::shared_ptr<VariableValue> vValue() const;
     std::vector<unsigned> dims() const {
       if (auto v=vValue()) return v->hypercube().dims();
       else return {};
@@ -183,6 +178,9 @@ namespace minsky
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) override;
+
+    /// @return true if variable is defined (inputWired() || isStock() && controlled)
+    bool defined() const {return inputWired() || (isStock() && controller.lock());}
     
     bool inputWired() const;
     /// return a list of existing variables a variable in this group
@@ -260,6 +258,7 @@ namespace minsky
     VariablePtr(VariableBase::Type type=VariableBase::undefined, 
                 const std::string& name=""): 
       PtrBase(VariableBase::create(type)) {get()->name(name);}
+    virtual ~VariablePtr() {}
     template <class P>
     VariablePtr(P* var): PtrBase(dynamic_cast<VariableBase*>(var)) 
     {
