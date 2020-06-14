@@ -88,9 +88,9 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
         return ClickType::onSlider;
       double w=z*rv.width(), h=-hpy;
       if (rv.width()<iWidth()) w=z*iWidth();
-      if (fabs(fabs(dx)-w) < portRadius*z &&
-          fabs(fabs(dy)-h) < portRadius*z &&
-          fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
+      if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
+          fabs(fabs(dy)-h) < 0.5*portRadius*z &&
+          fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
         return ClickType::onResize;
     }
   catch (...) {}
