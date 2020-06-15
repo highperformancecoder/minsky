@@ -60,8 +60,8 @@ void ParameterSheet::populateItemvector() {
 
 void ParameterSheet::draw(cairo_t* cairo) const
 {   
-  //cairo_rectangle(cairo,0,0,m_width,m_height);
-  //cairo_stroke_preserve(cairo);
+ //cairo_rectangle(cairo,0,0,m_width,m_height);
+ //cairo_stroke(cairo);
  //cairo_clip(cairo);
  double x1=0,x2=0,y1=0,y2=0, width=0, height=0;
 
@@ -145,7 +145,7 @@ void ParameterSheet::draw(cairo_t* cairo) const
                                 cairo_set_source_rgba(cairo,0,0,0,0.5);
                                 cairo_move_to(cairo,x-2.5,0.0);
                                 cairo_line_to(cairo,x-2.5,m_height);
-                                cairo_stroke(cairo);
+                                cairo_stroke_preserve(cairo);
                               }
                               colWidth=std::max(colWidth, 5+pango.width());
                               for (size_t j=0; j<dims[0]; ++j)
@@ -168,15 +168,15 @@ void ParameterSheet::draw(cairo_t* cairo) const
                         
                       cairo_stroke_extents (cairo,&x1,&y1,&x2,&y2);
                       width+=x2-x1;
-                      height+=y2-y1; 
+                      //height+=y2-y1; 
                       cairo_path_extents (cairo,&x1,&y1,&x2,&y2); 
                       width+=x2-x1;
-                      height+=y2-y1;
-                      cairo_fill_extents (cairo,&x1,&y1,&x2,&y2); 
-                      width+=x2-x1;
-                      height+=y2-y1; 
+                      //height+=y2-y1;
+                      //cairo_fill_extents (cairo,&x1,&y1,&x2,&y2); 
+                      //width+=x2-x1;
+                      //height+=y2-y1; 
                       cairo_clip_extents (cairo,&x1,&y1,&x2,&y2); 
-                      width+=x2-x1;
+                      //width+=x2-x1;
                       height+=y2-y1;                                                                 
                       cout << width << " " << height << endl;
                       // draw grid
@@ -192,7 +192,7 @@ void ParameterSheet::draw(cairo_t* cairo) const
                 
                     }     
                 cairo_rectangle(cairo,0,0,width,height);
-                cairo_stroke(cairo);
+                cairo_stroke_preserve(cairo);
                 cairo_clip(cairo);                     
                 }   
             }
