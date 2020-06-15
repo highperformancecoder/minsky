@@ -60,10 +60,13 @@ namespace schema3
   void pack(classdesc::pack_t& b, const civita::TensorVal& a)
   {
     b<<uint64_t(a.size());
-    for (size_t i=0; i<a.size(); ++i)
-      b<<a[i];
-    b<<a.index();
-    b<<a.hypercube().xvectors.size();
+    for (auto i: a)
+      b<<i;
+    b<<uint64_t(a.index().size());
+    for (auto i: a.index())
+      b<<uint64_t(i);
+
+    b<<uint64_t(a.hypercube().xvectors.size());
     for (auto& i: a.hypercube().xvectors)
       pack(b, i);
   }
@@ -71,13 +74,28 @@ namespace schema3
 
   void unpack(classdesc::pack_t& b, civita::TensorVal& a)
   {
-    vector<double> data;
-    set<size_t> index;
-    b>>data>>index;
-    
-    civita::Hypercube hc;
     uint64_t sz;
     b>>sz;
+    vector<double> data;
+    for (size_t i=0; i<sz; ++i)
+      {
+        data.emplace_back();
+        b>>data.back();
+      }
+    b>>sz;
+    set<size_t> index;
+    for (size_t i=0; i<sz; ++i)
+      {
+        uint64_t x;
+        b>>x;
+        index.insert(x);
+      }
+
+    b>>sz;
+    civita::Hypercube hc;
+
+    cout << data.size() << " " <<index.size() << " " << sz << endl;
+    
     for (size_t i=0; i<sz; ++i)
       {
         civita::XVector xv;
