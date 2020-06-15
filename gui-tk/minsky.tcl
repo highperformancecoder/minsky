@@ -943,15 +943,7 @@ proc setScrollBars {} {
             set x0 [expr (10000-[get_pointer_x .parameters])/20000.0]
             set y0 [expr (10000-[get_pointer_y .parameters])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .parameters]/20000.0]
-            .vscroll set $y0 [expr $y0+[winfo height .parameters]/20000.0]
-            #if {[parametersSheet.width]>0} {
-            #    set x0 [expr [parametersSheet.offsx]/[parametersSheet.width]]
-            #    .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/[parametersSheet.width]]
-            #} else {.hscroll set 0 1}
-            #if {[parametersSheet.height]>0} {
-            #    set y0 [expr [parametersSheet.offsx]/[parametersSheet.height]]
-            #    .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/[parametersSheet.height]]
-            #} else {.vscroll set  0 1}           
+            .vscroll set $y0 [expr $y0+[winfo height .parameters]/20000.0]        
 		}      
         .variables {
             #.hscroll set 0 1
@@ -959,15 +951,7 @@ proc setScrollBars {} {
             set x0 [expr (10000-[get_pointer_x .variables])/20000.0]
             set y0 [expr (10000-[get_pointer_y .variables])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .variables]/20000.0]
-            .vscroll set $y0 [expr $y0+[winfo height .variables]/20000.0]
-            #if {[variableSheet.width]>0} {
-            #    set x0 [expr [variableSheet.offsx]/[variableSheet.width]]
-            #    .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/[variableSheet.width]]
-            #} else {.hscroll set 0 1}
-            #if {[variableSheet.height]>0} {
-            #    set y0 [expr [variableSheet.offsx]/[variableSheet.height]]
-            #    .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/[variableSheet.height]]
-            #} else {.vscroll set  0 1}                      
+            .vscroll set $y0 [expr $y0+[winfo height .variables]/20000.0]                 
         }        
     }
 }
