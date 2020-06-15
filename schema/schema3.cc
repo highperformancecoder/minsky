@@ -39,14 +39,14 @@ namespace schema3
   // than classdesc generated to ensure backward compatibility
   void pack(classdesc::pack_t& b, const civita::XVector& a)
   {
-    b<<a.name<<a.dimension<<a.size();
+    b<<a.name<<a.dimension<<uint64_t(a.size());
     for (auto& i: a)
       b<<civita::str(i,a.dimension.units);
   }
 
   void unpack(classdesc::pack_t& b, civita::XVector& a)
   {
-    size_t size;
+    uint64_t size;
     std::string x;
     a.clear();
     b>>a.name>>a.dimension>>size;
@@ -59,7 +59,7 @@ namespace schema3
   
   void pack(classdesc::pack_t& b, const civita::TensorVal& a)
   {
-    b<<a.size();
+    b<<uint64_t(a.size());
     for (size_t i=0; i<a.size(); ++i)
       b<<a[i];
     b<<a.index();
@@ -76,7 +76,7 @@ namespace schema3
     b>>data>>index;
     
     civita::Hypercube hc;
-    size_t sz;
+    uint64_t sz;
     b>>sz;
     for (size_t i=0; i<sz; ++i)
       {
