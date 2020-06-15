@@ -50,6 +50,7 @@ namespace schema3
     std::string x;
     a.clear();
     b>>a.name>>a.dimension>>size;
+    cout<<a.name<<size<<endl;
     for (size_t i=0; i<size; ++i)
       {
         b>>x;
@@ -76,6 +77,7 @@ namespace schema3
   {
     uint64_t sz;
     b>>sz;
+    cout << "data size="<<sz<<" b.pos="<<b.pos()<<endl;
     vector<double> data;
     for (size_t i=0; i<sz; ++i)
       {
@@ -83,6 +85,7 @@ namespace schema3
         b>>data.back();
       }
     b>>sz;
+    cout << "index size="<<sz<<" b.pos="<<b.pos()<<endl;
     set<size_t> index;
     for (size_t i=0; i<sz; ++i)
       {
@@ -94,7 +97,7 @@ namespace schema3
     b>>sz;
     civita::Hypercube hc;
 
-    cout << data.size() << " " <<index.size() << " " << sz << endl;
+    cout << data.size() << " " <<index.size() << " " << sz << " b.pos="<<b.pos()<<endl;
     
     for (size_t i=0; i<sz; ++i)
       {
@@ -102,7 +105,7 @@ namespace schema3
         unpack(b,xv);
         hc.xvectors.push_back(xv);
       }
-    
+    cout << "after hypercube"<<endl;
     a.hypercube(hc); //dimension data
     a.index(index);
     assert(a.size()==data.size());
