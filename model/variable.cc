@@ -468,8 +468,8 @@ void VariableBase::draw(cairo_t *cairo) const
   w=rv.width()*z; 
   h=rv.height()*z;
   scaleFactor=max(1.0,min(static_cast<double>(iWidth())*z/w,static_cast<double>(iHeight())*z/h));
-  if (rv.width()<iWidth()) w=iWidth()*z;
-  if (rv.height()<iHeight()) h=iHeight()*z;
+  if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
+  if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
   rv.setFontSize(12*scaleFactor*z);
   hoffs=rv.top()*z;
   

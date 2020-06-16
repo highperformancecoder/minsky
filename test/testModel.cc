@@ -437,7 +437,7 @@ SUITE(Canvas)
       CHECK_EQUAL(500,c->y());
     }
     
-    TEST_FIXTURE(TestFixture,resizeItem)
+    TEST_FIXTURE(TestFixture,resizeVariable)
     {
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       c->draw(surf.cairo());// reposition ports
@@ -445,8 +445,23 @@ SUITE(Canvas)
       CHECK(c->clickType(xc,yc) == ClickType::onResize); 
       canvas.mouseDown(xc,yc);
       canvas.mouseUp(600,800);
-      CHECK_CLOSE(600-xc,0.5*c->width(),4*portRadiusMult); // I know, volkswagening. I don't understand why, but default item does not resize predictably. Pango problem?
-      CHECK_CLOSE(800-yc,0.5*c->height(),4*portRadiusMult);
+      CHECK_CLOSE(600-c->x(),0.5*c->width(),4*portRadiusMult);
+      CHECK_CLOSE(800-c->y(),0.5*c->height(),4*portRadiusMult);
+    }    
+
+    TEST_FIXTURE(TestFixture,resizeOperation)
+    {
+      OperationPtr add(OperationType::add);
+      model->addItem(add);
+      add->moveTo(400,300);
+      cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
+      add->draw(surf.cairo());// reposition ports
+      float xc=add->x()+0.5*add->width(), yc=add->y()+0.5*add->height();      
+      CHECK(add->clickType(xc,yc) == ClickType::onResize); 
+      canvas.mouseDown(xc,yc);
+      canvas.mouseUp(600,800);
+      CHECK_CLOSE(600-add->x(),0.5*add->width(),4*portRadiusMult);
+      CHECK_CLOSE(800-add->y(),0.5*add->height(),4*portRadiusMult);
     }    
 
     TEST_FIXTURE(TestFixture,onSlider)

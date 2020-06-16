@@ -161,10 +161,10 @@ namespace minsky
   
   float OperationBase::scaleFactor() const
   {
-	float z=zoomFactor();
+    float z=zoomFactor();
     float l=OperationBase::l*z, r=OperationBase::r*z, 
       h=OperationBase::h*z;
-    return std::max(1.0,std::min(static_cast<double>(iWidth())*z/(std::max(l,r)),static_cast<double>(iHeight())*z/h));  
+    return std::max(1.0f,std::min(iWidth()*z/std::max(l,r),iHeight()*z/h));  
   }
   
   void OperationBase::draw(cairo_t* cairo) const
@@ -257,9 +257,9 @@ namespace minsky
         float l=OperationBase::l*z, r=OperationBase::r*z, 
           h=OperationBase::h*z;
           
-        if (fabs(l)<iWidth()*z) l=-iWidth()*z;        
-        if (r<iWidth()*z) r=iWidth()*z;    
-        if (h<iHeight()*z) h=iHeight()*z;    
+        if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
+        if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
+        if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
         
         cairo_move_to(cairo,-r,-h);
         cairo_line_to(cairo,-r,h);
