@@ -412,9 +412,12 @@ namespace schema3
                   val->hypercube(val->tensorInit.hypercube());
                 }
               catch (const std::exception& ex) {
+                val->tensorInit.hypercube({});
                 cout<<ex.what()<<endl;
               }
-              catch (...) {} // absorb for now - maybe log later
+              catch (...) {
+                val->tensorInit.hypercube({});
+              } // absorb for now - maybe log later
             }
       }
     if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
