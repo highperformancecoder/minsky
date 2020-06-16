@@ -195,7 +195,6 @@ namespace minsky
           pango.setFontSize(10*scaleFactor()*z);
           pango.setMarkup(latexToPango(c.description()));
           pango.angle=angle + (textFlipped? M_PI: 0);
-          //Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
           Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
 
           // parameters of icon in userspace (unscaled) coordinates
@@ -270,10 +269,8 @@ namespace minsky
     	
         cairo_close_path(cairo);		  	 
     
-        //  cairo_save(cairo);
         cairo_set_source_rgb(cairo,0,0,1);
         cairo_stroke_preserve(cairo);
-        //  cairo_restore(cairo);
         
         cairo::Path clipPath(cairo);
     
@@ -287,7 +284,6 @@ namespace minsky
         cairo_save(cairo);
         cairo_identity_matrix(cairo);
         cairo_translate(cairo, x(), y());
-        //cairo_scale(cairo,zoomFactor,zoomFactor);
         cairo_rotate(cairo, angle);
         cairo_user_to_device(cairo, &x0, &y0);
         cairo_user_to_device(cairo, &x1, &y1);
@@ -593,7 +589,6 @@ namespace
         cairo_rotate(cairo,rotation()*M_PI/180.0);
         coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
         if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
-        //            cairo_translate(cairo, coupledIntTranslation, 0);
         cairo_rotate(cairo,-rotation()*M_PI/180.0);
       }
     
@@ -644,7 +639,6 @@ namespace
        intVar->rotation(rotation());
        cairo_rotate(cairo, -M_PI*rotation()/180.0);
        rv.draw();
-       //getIntVar()->draw(cairo);
        cairo_restore(cairo);
 	 
        // build clip path the hard way grr...
@@ -679,7 +673,6 @@ namespace
     cairo_save(cairo);
     cairo_identity_matrix(cairo);
     cairo_translate(cairo, x(), y());
-    //cairo_scale(cairo,zoomFactor,zoomFactor);
     cairo_rotate(cairo, angle);
     cairo_user_to_device(cairo, &x0, &y0);
     cairo_user_to_device(cairo, &x1, &y1);
@@ -835,7 +828,6 @@ namespace
     if (type()!=integrate) return false;
 
     assert(intVar);
-    //        intVar->toggleInPort();
 
     assert(ports.size()==3);
     if (coupled()) 
@@ -913,7 +905,6 @@ namespace
     // a delimiter
     description("\\verb/"+
       ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
-    //initXVector();
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
@@ -922,17 +913,8 @@ namespace
     double dx=(xmax-xmin)/numSamples;
     for (double x=xmin; x<xmax; x+=dx) //NOLINT
       data[x]=double(rand())/RAND_MAX;
-    //initXVector();
   }
 
-//  void DataOp::initXVector()
-//  {
-//    xVector.clear();
-//    xVector.emplace_back("x");
-//    for (auto& i: data)
-//      xVector[0].emplace_back(i.first,to_string(i.first));
-//  }
-  
   double DataOp::interpolate(double x) const
   {
     // not terribly sensible, but need to return something
@@ -974,14 +956,6 @@ namespace
       return (v->second-v1->second)/(v->first-v1->first);
   }
 
-//  void DataOp::initOutputVariableValue(VariableValue& v) const
-//  {
-//    v.xVector=xVector;
-//    auto iy=v.begin();
-//    for (auto& j: xVector[0])
-//      *iy++=interpolate(j.first);
-//  }
-
   // virtual draw methods for operations - defined here rather than
   // operations.cc because it is more related to the functionality in
   // this file.
@@ -998,7 +972,7 @@ namespace
 
   template <> void Operation<OperationType::data>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_translate(cairo,-1,0);
     cairo_scale(cairo,1.5*sf,0.75*sf);
     cairo_arc(cairo,0,-3,3,0,2*M_PI);
@@ -1014,7 +988,7 @@ namespace
 
   template <> void Operation<OperationType::time>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);	  	  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"t");
@@ -1022,7 +996,7 @@ namespace
   
   template <> void Operation<OperationType::euler>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"e");
@@ -1030,7 +1004,7 @@ namespace
   
     template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"π");
@@ -1038,7 +1012,7 @@ namespace
    
     template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"0");
@@ -1046,7 +1020,7 @@ namespace
   
   template <> void Operation<OperationType::one>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"1");
@@ -1054,7 +1028,7 @@ namespace
   
   template <> void Operation<OperationType::inf>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
@@ -1065,7 +1039,7 @@ namespace
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  	  
     cairo_move_to(cairo,-4,-5);
     Pango pango(cairo);
@@ -1080,7 +1054,7 @@ namespace
   template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
   { 
     cairo_save(cairo);
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-7,-1);
     cairo_set_font_size(cairo,8);
@@ -1095,7 +1069,7 @@ namespace
   template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
   {	  
     cairo_save(cairo);
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);   
     cairo_move_to(cairo,-7,6);
@@ -1106,12 +1080,11 @@ namespace
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_stroke(cairo);    
     cairo_restore(cairo);  
-    //    cairo_show_text(cairo,"sqrt");
   }
 
   template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	    
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"e");
@@ -1122,7 +1095,7 @@ namespace
 
   template <> void Operation<OperationType::pow>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"x");
@@ -1146,7 +1119,7 @@ namespace
 
   template <> void Operation<OperationType::le>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"≤");
@@ -1154,7 +1127,7 @@ namespace
 
   template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"<");
@@ -1162,7 +1135,7 @@ namespace
 
   template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"=");
@@ -1170,7 +1143,7 @@ namespace
 
   template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	   
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"min");
@@ -1178,7 +1151,7 @@ namespace
 
   template <> void Operation<OperationType::max>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"max");
@@ -1187,7 +1160,7 @@ namespace
   template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
   {	  
     cairo_save(cairo);
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	   
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_move_to(cairo,-4,3);
@@ -1200,7 +1173,7 @@ namespace
   template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
   {  
     cairo_save(cairo);
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	 
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_move_to(cairo,-4,-3);
@@ -1212,7 +1185,7 @@ namespace
 
   template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"¬");
@@ -1220,7 +1193,7 @@ namespace
 
   template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo," ln");
@@ -1228,7 +1201,7 @@ namespace
 
   template <> void Operation<OperationType::log>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"log");
@@ -1245,7 +1218,7 @@ namespace
 
   template <> void Operation<OperationType::sin>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1254,7 +1227,7 @@ namespace
 
   template <> void Operation<OperationType::cos>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1263,7 +1236,7 @@ namespace
 
   template <> void Operation<OperationType::tan>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1272,7 +1245,7 @@ namespace
 
   template <> void Operation<OperationType::asin>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
@@ -1285,7 +1258,7 @@ namespace
 
   template <> void Operation<OperationType::acos>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
@@ -1298,7 +1271,7 @@ namespace
 
   template <> void Operation<OperationType::atan>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
@@ -1311,7 +1284,7 @@ namespace
 
   template <> void Operation<OperationType::sinh>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -1320,7 +1293,7 @@ namespace
 
   template <> void Operation<OperationType::cosh>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -1329,7 +1302,7 @@ namespace
 
   template <> void Operation<OperationType::tanh>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -1338,7 +1311,7 @@ namespace
 
   template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-6,3);
@@ -1346,8 +1319,7 @@ namespace
   }
   template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
   {
-//    cairo_set_font_size(cairo,8);
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-7,-7);
     Pango pango(cairo);
@@ -1357,7 +1329,7 @@ namespace
   }
   template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
@@ -1391,7 +1363,7 @@ namespace
   }      
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 	  
     DrawBinOp d(cairo);
     d.drawPlus();
@@ -1401,7 +1373,7 @@ namespace
 
   template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     DrawBinOp d(cairo);
     d.drawMinus();
@@ -1411,7 +1383,7 @@ namespace
 
   template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     DrawBinOp d(cairo);
     d.drawMultiply();
@@ -1421,7 +1393,7 @@ namespace
 
   template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     DrawBinOp d(cairo);
     d.drawDivide();
@@ -1431,7 +1403,7 @@ namespace
 
   template <> void Operation<OperationType::sum>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
@@ -1442,7 +1414,7 @@ namespace
 
   template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
@@ -1453,7 +1425,7 @@ namespace
 
   template <> void Operation<OperationType::infimum>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1462,7 +1434,7 @@ namespace
 
  template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1471,7 +1443,7 @@ namespace
   
   template <> void Operation<OperationType::infIndex>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1480,7 +1452,7 @@ namespace
 
  template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1489,7 +1461,7 @@ namespace
 
   template <> void Operation<OperationType::any>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1498,7 +1470,7 @@ namespace
 
   template <> void Operation<OperationType::all>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1507,7 +1479,7 @@ namespace
 
  template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
     cairo_move_to(cairo,-7,-7);
     Pango pango(cairo);
@@ -1518,7 +1490,7 @@ namespace
 
  template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-6,-7);
     Pango pango(cairo);
@@ -1529,7 +1501,7 @@ namespace
 
  template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
@@ -1540,7 +1512,7 @@ namespace
 
   template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
@@ -1551,7 +1523,7 @@ namespace
 
   template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_move_to(cairo,-4,-10);
     Pango pango(cairo);
@@ -1562,7 +1534,7 @@ namespace
 
   template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1571,7 +1543,7 @@ namespace
 
   template <> void Operation<OperationType::gather>::iconDraw(cairo_t* cairo) const
   {
-	double sf = scaleFactor(); 	     
+    double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-7,3);
