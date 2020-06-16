@@ -82,8 +82,16 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
     {
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
-      if (type()!=constant && hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
+      if (rv.height()<iHeight()) hpy=-z*iHeight(); 
+      double dx=xx-x(), dy=yy-y(); 
+      if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
+      double w=z*rv.width(), h=-hpy;
+      if (rv.width()<iWidth()) w=z*iWidth();
+      if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
+          fabs(fabs(dy)-h) < 0.5*portRadius*z &&
+          fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
+        return ClickType::onResize;
     }
   catch (...) {}
   return Item::clickType(xx,yy);
@@ -172,7 +180,7 @@ string VariableBase::name(const std::string& name)
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
   // Ensure value of variable is preserved after rename. For ticket 1106.	
-  auto tmpVV=vValue(); 
+  auto tmpVV=vValue();
   // ensure integral variables are not global when wired to an integral operation
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
   ensureValueExists(tmpVV.get(),name);
@@ -449,7 +457,6 @@ void VariableBase::draw(cairo_t *cairo) const
   float z=zoomFactor();
 
   RenderVariable rv(*this,cairo);
-  rv.setFontSize(12*z);
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
@@ -457,10 +464,15 @@ void VariableBase::draw(cairo_t *cairo) const
   rv.angle=angle+(notflipped? 0: M_PI);
 
   // parameters of icon in userspace (unscaled) coordinates
-  float w, h, hoffs;
+  float w, h, hoffs, scaleFactor;
   w=rv.width()*z; 
   h=rv.height()*z;
+  scaleFactor=max(1.0,min(static_cast<double>(iWidth())*z/w,static_cast<double>(iHeight())*z/h));
+  if (rv.width()<iWidth()) w=iWidth()*z;
+  if (rv.height()<iHeight()) h=iHeight()*z;
+  rv.setFontSize(12*scaleFactor*z);
   hoffs=rv.top()*z;
+  
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
@@ -477,16 +489,16 @@ void VariableBase::draw(cairo_t *cairo) const
   
       Pango pangoVal(cairo);
       if (!isnan(value())) {
-		   pangoVal.setFontSize(6*z);
+		   pangoVal.setFontSize(6*scaleFactor*z);
 		   pangoVal.setMarkup(mantissa(val));
 	   }
       else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-		  pangoVal.setFontSize(8*z);
+		  pangoVal.setFontSize(8*scaleFactor*z);
 		  if (signbit(value())) pangoVal.setMarkup("-∞");
           else pangoVal.setMarkup("∞");
 	  }
 	  else {  // Display all other NaN cases as ???. For ticket 1155
-		  pangoVal.setFontSize(6*z);
+		  pangoVal.setFontSize(6*scaleFactor*z);
 		  pangoVal.setMarkup("???");
 	  }
       pangoVal.angle=angle+(notflipped? 0: M_PI);
@@ -556,18 +568,27 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo::CairoSave cs(cairo);
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
-    }
+      if (onResizeHandles) drawResizeHandles(cairo);
+    }  
 
   cairo_new_path(cairo);
   clipPath->appendToCurrent(cairo);
+  // Rescale size of variable attached to intop. For ticket 94
   cairo_clip(cairo);
   if (selected) drawSelected(cairo);
+}
+
+void VariableBase::resize(const LassoBox& b)
+{
+  float invZ=1/zoomFactor();
+  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));  
+  iWidth(abs(b.x1-b.x0)*invZ);
+  iHeight(abs(b.y1-b.y0)*invZ);   
 }
 
 void VariablePtr::makeConsistentWithValue()
 {
   retype(minsky::cminsky().variableValues[get()->valueId()]->type());
 }
-
 
 int VarConstant::nextId=0;
