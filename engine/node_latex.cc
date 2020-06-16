@@ -238,7 +238,7 @@ namespace MathDAG
   {
     if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
       {
-        o<<"\\Theta\\left(";
+        o<<"\\theta\\left(";
         if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
           o<<arguments[1][0]->latex()<<"-";
         else
@@ -251,7 +251,7 @@ namespace MathDAG
       }
     else
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)";
+        o<<"\\theta\\left("<<arguments[1][0]->latex()<<"\\right)";
       else
         o<<"0";
     return o;
@@ -335,7 +335,7 @@ namespace MathDAG
   {
     if (arguments.size()>1 && !arguments[0].empty() && arguments[0][0] && 
         !arguments[1].empty() && arguments[1][0])
-      o<<"\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)\\Theta\\left(" <<
+      o<<"\\theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)\\theta\\left(" <<
         arguments[1][0]->latex()<<"-0.5\\right)";
     else
       o<<"0";
@@ -347,13 +347,13 @@ namespace MathDAG
   {
     if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\max\\left(\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)," <<
-          "\\Theta\\left("<<arguments[1][0]->latex()<<"\\right)\\right)";
+        o<<"\\max\\left(\\theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)," <<
+          "\\theta\\left("<<arguments[1][0]->latex()<<"\\right)\\right)";
       else
-        o<<"\\Theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)";
+        o<<"\\theta\\left("<<arguments[0][0]->latex()<<"-0.5\\right)";
     else
       if (arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
-        o<<"\\Theta\\left("<<arguments[1][0]->latex()<<"-0.5\\right)";
+        o<<"\\theta\\left("<<arguments[1][0]->latex()<<"-0.5\\right)";
       else
         o<<"0";
     return o;
@@ -363,7 +363,7 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::not_>::latex(ostream& o) const
   {
     if (arguments.size()>0 && !arguments[0].empty() && arguments[0][0])
-      o<<"\\left(1-\\Theta\\left(0.5-"<<arguments[0][0]->latex()<<"\\right)\\right)";
+      o<<"\\left(1-\\theta\\left(0.5-"<<arguments[0][0]->latex()<<"\\right)\\right)";
     else
       o<<"1";
     return o;
@@ -604,14 +604,14 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::any>::latex(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"\\Theta\\left(\\sum_i\\Theta\\left(\\left("<<arguments[0][0]->latex()<<"\\right)_i-0.5\\right)\\right)";
+    return o<<"\\theta\\left(\\sum_i\\theta\\left(\\left("<<arguments[0][0]->latex()<<"\\right)_i-0.5\\right)\\right)";
   }
 
   template <>
   ostream& OperationDAG<OperationType::all>::latex(ostream& o) const
   {
     checkArg(0,0);
-    return o<<"\\prod_i\\Theta\\left(\\left("<<arguments[0][0]->latex()<<"\\right)_i-0.5\\right)";
+    return o<<"\\prod_i\\theta\\left(\\left("<<arguments[0][0]->latex()<<"\\right)_i-0.5\\right)";
   }
 
   template <>
