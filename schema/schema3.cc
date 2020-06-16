@@ -360,6 +360,7 @@ namespace schema3
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
+    x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {

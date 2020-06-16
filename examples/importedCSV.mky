@@ -18,7 +18,7 @@
     <type>Variable:parameter</type>
     <x>146</x>
     <y>124</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -39,7 +39,7 @@
     <type>Variable:parameter</type>
     <x>145</x>
     <y>248</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
@@ -60,7 +60,7 @@
     <type>Sheet</type>
     <x>361</x>
     <y>119</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>4</int>
@@ -73,7 +73,7 @@
     <type>Sheet</type>
     <x>362</x>
     <y>252</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>6</int>
