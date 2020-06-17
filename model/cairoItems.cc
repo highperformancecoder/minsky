@@ -137,6 +137,7 @@ void RenderVariable::draw()
 {
   //  updatePortLocs();
   var.draw(cairo);
+
 }
 
 void RenderVariable::updatePortLocs() const

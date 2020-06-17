@@ -6,10 +6,10 @@
     <from>4</from>
     <to>1</to>
     <coords>
-     <float>66</float>
+     <float>64</float>
      <float>15</float>
-     <float>15.5515</float>
-     <float>31.8162</float>
+     <float>14.6928</float>
+     <float>31.4358</float>
      <float>41</float>
      <float>54</float>
     </coords>
@@ -49,7 +49,7 @@
     <type>IntOp</type>
     <x>49</x>
     <y>63</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -64,7 +64,7 @@
     <type>Operation:multiply</type>
     <x>76</x>
     <y>15</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>4</int>
@@ -78,7 +78,7 @@
     <type>Variable:integral</type>
     <x>86</x>
     <y>63</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -99,7 +99,7 @@
     <type>Variable:flow</type>
     <x>121</x>
     <y>27</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>10</int>
@@ -120,7 +120,7 @@
     <type>Variable:parameter</type>
     <x>143</x>
     <y>2</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>13</int>
@@ -140,7 +140,7 @@
     <type>PlotWidget</type>
     <x>277</x>
     <y>77</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>15</int>

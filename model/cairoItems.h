@@ -38,6 +38,7 @@ namespace minsky
   public:
     // render a variable to a given cairo context
     RenderOperation(const OperationBase& var, cairo_t* cairo=NULL);
+    
     /// render the cairo image
     void draw();
     /// half width of unrotated image

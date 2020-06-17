@@ -90,10 +90,10 @@
     <from>28</from>
     <to>35</to>
     <coords>
-     <float>259</float>
+     <float>261</float>
      <float>406</float>
-     <float>226</float>
-     <float>538</float>
+     <float>228.157</float>
+     <float>537.373</float>
      <float>302</float>
      <float>532</float>
     </coords>
@@ -110,7 +110,7 @@
     <type>Variable:parameter</type>
     <x>110</x>
     <y>208</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -130,7 +130,7 @@
     <type>Sheet</type>
     <x>501.5</x>
     <y>166.25</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
@@ -143,7 +143,7 @@
     <type>Operation:infimum</type>
     <x>240</x>
     <y>180</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>4</int>
@@ -156,7 +156,7 @@
     <type>Variable:flow</type>
     <x>304</x>
     <y>178</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>7</int>
@@ -176,7 +176,7 @@
     <type>Variable:flow</type>
     <x>302</x>
     <y>222</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>10</int>
@@ -196,7 +196,7 @@
     <type>Variable:flow</type>
     <x>302</x>
     <y>271</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>13</int>
@@ -216,7 +216,7 @@
     <type>Variable:flow</type>
     <x>311</x>
     <y>339</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>16</int>
@@ -236,7 +236,7 @@
     <type>Operation:supremum</type>
     <x>241</x>
     <y>231</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>19</int>
@@ -249,7 +249,7 @@
     <type>Operation:infIndex</type>
     <x>244</x>
     <y>273</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>22</int>
@@ -262,7 +262,7 @@
     <type>Operation:supIndex</type>
     <x>245</x>
     <y>332</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>25</int>
@@ -275,7 +275,7 @@
     <type>Operation:index</type>
     <x>249</x>
     <y>406</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>28</int>
@@ -289,7 +289,7 @@
     <type>Sheet</type>
     <x>662.25</x>
     <y>381.375</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>31</int>
@@ -302,7 +302,7 @@
     <type>Operation:gather</type>
     <x>310</x>
     <y>523</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>33</int>
@@ -317,7 +317,7 @@
     <type>Sheet</type>
     <x>501.5</x>
     <y>546</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>37</int>

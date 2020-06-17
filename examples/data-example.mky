@@ -23,7 +23,7 @@
     <type>DataOp</type>
     <x>61</x>
     <y>1</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -59,7 +59,7 @@
     <type>Operation:time</type>
     <x>0</x>
     <y>0</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>3</int>
@@ -71,7 +71,7 @@
     <type>Variable:flow</type>
     <x>121</x>
     <y>4.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>5</int>
@@ -92,7 +92,7 @@
     <type>PlotWidget</type>
     <x>236</x>
     <y>62.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>8</int>

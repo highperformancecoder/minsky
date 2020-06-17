@@ -436,6 +436,33 @@ SUITE(Canvas)
       CHECK_EQUAL(400,c->x());
       CHECK_EQUAL(500,c->y());
     }
+    
+    TEST_FIXTURE(TestFixture,resizeVariable)
+    {
+      cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
+      c->draw(surf.cairo());// reposition ports
+      float xc=c->x()+0.5*c->width(), yc=c->y()+0.5*c->height();      
+      CHECK(c->clickType(xc,yc) == ClickType::onResize); 
+      canvas.mouseDown(xc,yc);
+      canvas.mouseUp(600,800);
+      CHECK_CLOSE(600-c->x(),0.5*c->width(),4*portRadiusMult);
+      CHECK_CLOSE(800-c->y(),0.5*c->height(),4*portRadiusMult);
+    }    
+
+    TEST_FIXTURE(TestFixture,resizeOperation)
+    {
+      OperationPtr add(OperationType::add);
+      model->addItem(add);
+      add->moveTo(400,300);
+      cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
+      add->draw(surf.cairo());// reposition ports
+      float xc=add->x()+0.5*add->width(), yc=add->y()+0.5*add->height();      
+      CHECK(add->clickType(xc,yc) == ClickType::onResize); 
+      canvas.mouseDown(xc,yc);
+      canvas.mouseUp(600,800);
+      CHECK_CLOSE(600-add->x(),0.5*add->width(),4*portRadiusMult);
+      CHECK_CLOSE(800-add->y(),0.5*add->height(),4*portRadiusMult);
+    }    
 
     TEST_FIXTURE(TestFixture,onSlider)
     {
@@ -479,12 +506,12 @@ SUITE(Canvas)
       OperationPtr op(OperationType::time);
       model->addItem(op);
       op->moveTo(500,500);
-      float x=512, y=512;
-      CHECK(op->contains(x,y));
+      float x=524, y=524;               // adjusted for 2*portRadius near corners, for feature 94
+      CHECK(op->contains(x-12,y-12));
       CHECK_EQUAL(ClickType::outside, op->clickType(x,y));
       canvas.selection.clear();
       canvas.mouseDown(x,y);
-      canvas.mouseUp(x-5,y-5);
+      canvas.mouseUp(x-17,y-17);
       CHECK_EQUAL(1,canvas.selection.items.size());
       CHECK(find(canvas.selection.items.begin(),canvas.selection.items.end(),op) !=canvas.selection.items.end());
 
@@ -600,9 +627,9 @@ SUITE(Canvas)
         CHECK_EQUAL(2,model->numItems());
         CHECK_EQUAL(0,g->inVariables.size());
 
-        // move b into group. 
-        mouseDown(b->x(),b->y());
-        mouseUp(g->x(),g->y());
+        // move b into group.
+        mouseDown(b->x()+5,b->y()+5);   
+        mouseUp(g->x()+5,g->y()+5);  // small offset added because resize handles grabbed otherwise, for feature 94. don't understand why?
         CHECK(b->group.lock()==g);
         CHECK_EQUAL(2,model->numWires());
         CHECK_EQUAL(3,model->numItems());
@@ -611,7 +638,7 @@ SUITE(Canvas)
         // move b out of group
         item=g;
         zoomToDisplay();
-        mouseDown(b->x(),b->y());
+        mouseDown(b->x()+5,b->y()+5);  
         mouseUp(200,200);
         CHECK(b->group.lock()==model);
         CHECK_EQUAL(1,model->numWires());

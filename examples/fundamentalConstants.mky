@@ -163,7 +163,7 @@
     <type>PlotWidget</type>
     <x>659.25</x>
     <y>266.75</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -303,7 +303,7 @@
     <type>Operation:euler</type>
     <x>380.132</x>
     <y>132.104</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>23</int>
@@ -315,7 +315,7 @@
     <type>Operation:add</type>
     <x>234</x>
     <y>246</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>25</int>
@@ -329,7 +329,7 @@
     <type>Operation:divide</type>
     <x>156</x>
     <y>284</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>29</int>
@@ -343,7 +343,7 @@
     <type>Operation:pow</type>
     <x>278.683</x>
     <y>287.662</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>33</int>
@@ -357,7 +357,7 @@
     <type>Operation:time</type>
     <x>240</x>
     <y>349</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>37</int>
@@ -369,7 +369,7 @@
     <type>Operation:time</type>
     <x>28.6819</x>
     <y>310.255</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>39</int>
@@ -381,7 +381,7 @@
     <type>Operation:add</type>
     <x>85</x>
     <y>348</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>41</int>
@@ -395,7 +395,7 @@
     <type>VarConstant</type>
     <x>-0.464888</x>
     <y>374.205</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>45</int>
@@ -414,7 +414,7 @@
     <type>Operation:divide</type>
     <x>149.86</x>
     <y>507.699</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>47</int>
@@ -428,7 +428,7 @@
     <type>Operation:add</type>
     <x>110.948</x>
     <y>537.825</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>51</int>
@@ -442,7 +442,7 @@
     <type>Operation:time</type>
     <x>7.39023</x>
     <y>562.302</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>55</int>
@@ -454,7 +454,7 @@
     <type>Operation:pow</type>
     <x>60.738</x>
     <y>586.78</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>57</int>
@@ -466,9 +466,9 @@
    <Item>
     <id>63</id>
     <type>Variable:integral</type>
-    <x>320.646</x>
+    <x>319.246</x>
     <y>523.39</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>61</int>
@@ -488,7 +488,7 @@
     <type>IntOp</type>
     <x>272.246</x>
     <y>523.39</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>61</int>
@@ -503,7 +503,7 @@
     <type>PlotWidget</type>
     <x>677.375</x>
     <y>560.733</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>67</int>
@@ -643,7 +643,7 @@
     <type>VarConstant</type>
     <x>-0.141214</x>
     <y>614.395</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>90</int>
@@ -662,7 +662,7 @@
     <type>Operation:pi</type>
     <x>298.606</x>
     <y>428.619</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>92</int>
@@ -674,7 +674,7 @@
     <type>VarConstant</type>
     <x>141.073</x>
     <y>422.343</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>94</int>
@@ -693,7 +693,7 @@
     <type>Operation:multiply</type>
     <x>205.091</x>
     <y>468.787</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>96</int>
@@ -707,7 +707,7 @@
     <type>Variable:flow</type>
     <x>361.727</x>
     <y>273.9</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>100</int>
@@ -727,7 +727,7 @@
     <type>Operation:one</type>
     <x>165</x>
     <y>192</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>103</int>
@@ -739,7 +739,7 @@
     <type>Operation:one</type>
     <x>94</x>
     <y>243</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>105</int>
@@ -751,7 +751,7 @@
     <type>Operation:one</type>
     <x>102</x>
     <y>459</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>107</int>
@@ -763,7 +763,7 @@
     <type>Operation:one</type>
     <x>56</x>
     <y>509</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>109</int>
@@ -775,7 +775,7 @@
     <type>PlotWidget</type>
     <x>663.25</x>
     <y>812.25</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>111</int>
@@ -915,7 +915,7 @@
     <type>Operation:inf</type>
     <x>73.3</x>
     <y>774.4</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>134</int>
@@ -927,7 +927,7 @@
     <type>Variable:flow</type>
     <x>267</x>
     <y>774</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>136</int>
@@ -947,7 +947,7 @@
     <type>Operation:zero</type>
     <x>391.6</x>
     <y>393.1</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>139</int>
@@ -959,7 +959,7 @@
     <type>Operation:zero</type>
     <x>359.7</x>
     <y>650.5</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>141</int>
@@ -971,7 +971,7 @@
     <type>Operation:atan</type>
     <x>157.3</x>
     <y>778.1</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>143</int>
@@ -984,7 +984,7 @@
     <type>Operation:pi</type>
     <x>313.5</x>
     <y>687.9</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>146</int>
@@ -996,7 +996,7 @@
     <type>Operation:pi</type>
     <x>209</x>
     <y>906.8</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>148</int>
@@ -1008,7 +1008,7 @@
     <type>Operation:divide</type>
     <x>310.2</x>
     <y>939.8</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>150</int>
@@ -1022,7 +1022,7 @@
     <type>VarConstant</type>
     <x>215.6</x>
     <y>992.6</y>
-    <zoomFactor>0.909091</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>154</int>

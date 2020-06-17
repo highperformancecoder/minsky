@@ -215,8 +215,8 @@
      <float>402</float>
      <float>795.712</float>
      <float>420.741</float>
-     <float>847.988</float>
-     <float>499.647</float>
+     <float>847.987</float>
+     <float>499.646</float>
      <float>1037.67</float>
      <float>480</float>
     </coords>
@@ -518,10 +518,10 @@
     <from>63</from>
     <to>72</to>
     <coords>
-     <float>1375</float>
+     <float>1377</float>
      <float>124</float>
-     <float>1366.83</float>
-     <float>616.426</float>
+     <float>1368.82</float>
+     <float>616.938</float>
      <float>1242</float>
      <float>614</float>
     </coords>
@@ -606,12 +606,12 @@
     <from>193</from>
     <to>178</to>
     <coords>
-     <float>18</float>
+     <float>16</float>
      <float>268</float>
-     <float>308.004</float>
-     <float>373.166</float>
-     <float>604.382</float>
-     <float>475.146</float>
+     <float>306.529</float>
+     <float>373.356</float>
+     <float>603.444</float>
+     <float>475.521</float>
      <float>1011</float>
      <float>601</float>
     </coords>
@@ -623,7 +623,7 @@
     <type>IntOp</type>
     <x>209</x>
     <y>0</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -638,7 +638,7 @@
     <type>Operation:divide</type>
     <x>284</x>
     <y>12</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>4</int>
@@ -652,7 +652,7 @@
     <type>IntOp</type>
     <x>317</x>
     <y>66</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>8</int>
@@ -667,7 +667,7 @@
     <type>Operation:multiply</type>
     <x>230</x>
     <y>66</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>12</int>
@@ -681,7 +681,7 @@
     <type>Operation:divide</type>
     <x>390</x>
     <y>35</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>16</int>
@@ -695,7 +695,7 @@
     <type>IntOp</type>
     <x>469</x>
     <y>118</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>20</int>
@@ -710,7 +710,7 @@
     <type>Operation:multiply</type>
     <x>395</x>
     <y>122</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>24</int>
@@ -724,7 +724,7 @@
     <type>Operation:divide</type>
     <x>548</x>
     <y>76</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>28</int>
@@ -738,7 +738,7 @@
     <type>Operation:subtract</type>
     <x>804.75</x>
     <y>195.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>32</int>
@@ -752,7 +752,7 @@
     <type>Operation:divide</type>
     <x>832.75</x>
     <y>161.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>36</int>
@@ -766,7 +766,7 @@
     <type>Operation:multiply</type>
     <x>871.75</x>
     <y>133.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>40</int>
@@ -780,7 +780,7 @@
     <type>Operation:exp</type>
     <x>906.75</x>
     <y>131.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>44</int>
@@ -793,7 +793,7 @@
     <type>Operation:add</type>
     <x>997.75</x>
     <y>129.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>47</int>
@@ -807,7 +807,7 @@
     <type>Operation:subtract</type>
     <x>815.75</x>
     <y>96.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>51</int>
@@ -821,7 +821,7 @@
     <type>Operation:multiply</type>
     <x>940.75</x>
     <y>118.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>55</int>
@@ -835,7 +835,7 @@
     <type>Operation:subtract</type>
     <x>903.75</x>
     <y>57.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>59</int>
@@ -849,7 +849,7 @@
     <type>IntOp</type>
     <x>1291</x>
     <y>124</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>63</int>
@@ -864,7 +864,7 @@
     <type>Operation:multiply</type>
     <x>1110.75</x>
     <y>144.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>67</int>
@@ -878,7 +878,7 @@
     <type>Operation:multiply</type>
     <x>1234</x>
     <y>623</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>71</int>
@@ -892,7 +892,7 @@
     <type>Operation:subtract</type>
     <x>1101</x>
     <y>617</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>75</int>
@@ -906,7 +906,7 @@
     <type>Operation:divide</type>
     <x>1132</x>
     <y>537</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>79</int>
@@ -920,7 +920,7 @@
     <type>Operation:multiply</type>
     <x>1150.75</x>
     <y>133.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>83</int>
@@ -934,7 +934,7 @@
     <type>Operation:subtract</type>
     <x>588</x>
     <y>593</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>87</int>
@@ -948,7 +948,7 @@
     <type>Operation:divide</type>
     <x>522</x>
     <y>582</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>91</int>
@@ -962,7 +962,7 @@
     <type>Operation:subtract</type>
     <x>496</x>
     <y>498</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>95</int>
@@ -976,7 +976,7 @@
     <type>Operation:multiply</type>
     <x>449</x>
     <y>521</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>99</int>
@@ -990,7 +990,7 @@
     <type>Operation:exp</type>
     <x>404</x>
     <y>519</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>103</int>
@@ -1003,7 +1003,7 @@
     <type>Operation:multiply</type>
     <x>359</x>
     <y>495</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>106</int>
@@ -1017,7 +1017,7 @@
     <type>Operation:subtract</type>
     <x>400</x>
     <y>477</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>110</int>
@@ -1031,7 +1031,7 @@
     <type>Operation:add</type>
     <x>320</x>
     <y>509</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>114</int>
@@ -1045,7 +1045,7 @@
     <type>Operation:divide</type>
     <x>828</x>
     <y>579</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>118</int>
@@ -1059,7 +1059,7 @@
     <type>Operation:multiply</type>
     <x>222</x>
     <y>502</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>122</int>
@@ -1073,7 +1073,7 @@
     <type>Operation:subtract</type>
     <x>160</x>
     <y>764</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>126</int>
@@ -1087,7 +1087,7 @@
     <type>IntOp</type>
     <x>231</x>
     <y>768</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>130</int>
@@ -1102,7 +1102,7 @@
     <type>Operation:multiply</type>
     <x>305</x>
     <y>746</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>134</int>
@@ -1116,7 +1116,7 @@
     <type>Operation:divide</type>
     <x>452</x>
     <y>787</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>138</int>
@@ -1130,7 +1130,7 @@
     <type>Operation:subtract</type>
     <x>1056</x>
     <y>630</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>142</int>
@@ -1144,7 +1144,7 @@
     <type>Operation:subtract</type>
     <x>397</x>
     <y>203</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>146</int>
@@ -1158,7 +1158,7 @@
     <type>Operation:subtract</type>
     <x>546</x>
     <y>291</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>150</int>
@@ -1172,7 +1172,7 @@
     <type>Operation:divide</type>
     <x>499</x>
     <y>278</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>154</int>
@@ -1186,7 +1186,7 @@
     <type>Operation:subtract</type>
     <x>542</x>
     <y>206</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>158</int>
@@ -1200,7 +1200,7 @@
     <type>Operation:multiply</type>
     <x>458</x>
     <y>253</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>162</int>
@@ -1214,7 +1214,7 @@
     <type>Operation:exp</type>
     <x>406</x>
     <y>259</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>166</int>
@@ -1227,7 +1227,7 @@
     <type>Operation:multiply</type>
     <x>363</x>
     <y>233</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>169</int>
@@ -1241,7 +1241,7 @@
     <type>Operation:add</type>
     <x>319</x>
     <y>249</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>173</int>
@@ -1255,7 +1255,7 @@
     <type>Operation:add</type>
     <x>1003</x>
     <y>610</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>177</int>
@@ -1269,7 +1269,7 @@
     <type>Operation:multiply</type>
     <x>232</x>
     <y>272</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>181</int>
@@ -1283,7 +1283,7 @@
     <type>Operation:multiply</type>
     <x>86</x>
     <y>113</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>185</int>
@@ -1297,7 +1297,7 @@
     <type>Operation:subtract</type>
     <x>118</x>
     <y>15</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>189</int>
@@ -1311,7 +1311,7 @@
     <type>IntOp</type>
     <x>136</x>
     <y>268</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>193</int>
@@ -1326,7 +1326,7 @@
     <type>Variable:integral</type>
     <x>267</x>
     <y>0</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -1347,7 +1347,7 @@
     <type>Variable:flow</type>
     <x>330</x>
     <y>13</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>199</int>
@@ -1368,7 +1368,7 @@
     <type>Variable:integral</type>
     <x>392</x>
     <y>66</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>8</int>
@@ -1389,7 +1389,7 @@
     <type>Variable:integral</type>
     <x>158</x>
     <y>85</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>204</int>
@@ -1410,7 +1410,7 @@
     <type>Variable:flow</type>
     <x>455</x>
     <y>36</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>207</int>
@@ -1431,7 +1431,7 @@
     <type>Variable:integral</type>
     <x>541</x>
     <y>118</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>20</int>
@@ -1452,7 +1452,7 @@
     <type>Variable:integral</type>
     <x>322</x>
     <y>147</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>212</int>
@@ -1473,7 +1473,7 @@
     <type>Variable:flow</type>
     <x>607</x>
     <y>73</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>215</int>
@@ -1494,7 +1494,7 @@
     <type>Variable:flow</type>
     <x>1056.75</x>
     <y>129.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>218</int>
@@ -1515,7 +1515,7 @@
     <type>Variable:integral</type>
     <x>1344</x>
     <y>124</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>63</int>
@@ -1536,7 +1536,7 @@
     <type>Variable:integral</type>
     <x>1063.75</x>
     <y>162.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>223</int>
@@ -1557,7 +1557,7 @@
     <type>Variable:flow</type>
     <x>1327</x>
     <y>630</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>226</int>
@@ -1578,7 +1578,7 @@
     <type>Variable:flow</type>
     <x>1167</x>
     <y>599</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>229</int>
@@ -1599,7 +1599,7 @@
     <type>Variable:flow</type>
     <x>1169</x>
     <y>627</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>232</int>
@@ -1620,7 +1620,7 @@
     <type>Variable:flow</type>
     <x>944</x>
     <y>606</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>235</int>
@@ -1641,7 +1641,7 @@
     <type>Variable:flow</type>
     <x>136</x>
     <y>542</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>238</int>
@@ -1662,7 +1662,7 @@
     <type>Variable:flow</type>
     <x>1067</x>
     <y>516</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>360</rotation>
     <ports>
      <int>241</int>
@@ -1683,7 +1683,7 @@
     <type>Variable:flow</type>
     <x>1081</x>
     <y>548</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>244</int>
@@ -1704,7 +1704,7 @@
     <type>Variable:flow</type>
     <x>1200</x>
     <y>533</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>247</int>
@@ -1725,7 +1725,7 @@
     <type>Variable:flow</type>
     <x>760</x>
     <y>370</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>250</int>
@@ -1746,7 +1746,7 @@
     <type>Variable:flow</type>
     <x>760</x>
     <y>402</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>253</int>
@@ -1767,7 +1767,7 @@
     <type>Variable:integral</type>
     <x>879</x>
     <y>590</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>256</int>
@@ -1788,7 +1788,7 @@
     <type>Variable:flow</type>
     <x>760</x>
     <y>574</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>259</int>
@@ -1809,7 +1809,7 @@
     <type>Variable:flow</type>
     <x>325</x>
     <y>466</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>262</int>
@@ -1830,7 +1830,7 @@
     <type>Variable:flow</type>
     <x>104</x>
     <y>776</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>360</rotation>
     <ports>
      <int>265</int>
@@ -1851,7 +1851,7 @@
     <type>Variable:integral</type>
     <x>281</x>
     <y>768</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>130</int>
@@ -1872,7 +1872,7 @@
     <type>Variable:flow</type>
     <x>405</x>
     <y>705</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>270</int>
@@ -1893,7 +1893,7 @@
     <type>Variable:flow</type>
     <x>401</x>
     <y>799</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>360</rotation>
     <ports>
      <int>273</int>
@@ -1914,7 +1914,7 @@
     <type>Variable:flow</type>
     <x>275</x>
     <y>280</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>276</int>
@@ -1935,7 +1935,7 @@
     <type>Variable:flow</type>
     <x>277</x>
     <y>251</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>279</int>
@@ -1956,7 +1956,7 @@
     <type>Variable:integral</type>
     <x>167</x>
     <y>140</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>282</int>
@@ -1977,7 +1977,7 @@
     <type>Variable:flow</type>
     <x>278</x>
     <y>510</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>285</int>
@@ -1998,7 +1998,7 @@
     <type>Variable:integral</type>
     <x>206</x>
     <y>268</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>193</int>
@@ -2019,7 +2019,7 @@
     <type>Variable:parameter</type>
     <x>252</x>
     <y>27</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>290</int>
@@ -2039,7 +2039,7 @@
     <type>Variable:parameter</type>
     <x>178</x>
     <y>57</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>292</int>
@@ -2059,7 +2059,7 @@
     <type>Variable:parameter</type>
     <x>330</x>
     <y>120</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>294</int>
@@ -2079,7 +2079,7 @@
     <type>Variable:parameter</type>
     <x>656</x>
     <y>556</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>296</int>
@@ -2099,7 +2099,7 @@
     <type>Variable:parameter</type>
     <x>584</x>
     <y>257</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>298</int>
@@ -2119,7 +2119,7 @@
     <type>Variable:parameter</type>
     <x>651</x>
     <y>614</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>300</int>
@@ -2139,7 +2139,7 @@
     <type>Variable:parameter</type>
     <x>727.75</x>
     <y>204.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>302</int>
@@ -2159,7 +2159,7 @@
     <type>Variable:parameter</type>
     <x>735.75</x>
     <y>253.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>304</int>
@@ -2179,7 +2179,7 @@
     <type>Variable:parameter</type>
     <x>775.75</x>
     <y>161.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>306</int>
@@ -2199,7 +2199,7 @@
     <type>Variable:parameter</type>
     <x>904.75</x>
     <y>165.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>308</int>
@@ -2219,7 +2219,7 @@
     <type>Variable:parameter</type>
     <x>724.75</x>
     <y>128.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>310</int>
@@ -2239,7 +2239,7 @@
     <type>Variable:parameter</type>
     <x>866.75</x>
     <y>46.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>312</int>
@@ -2259,7 +2259,7 @@
     <type>Variable:parameter</type>
     <x>860.75</x>
     <y>66.5</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>314</int>
@@ -2279,7 +2279,7 @@
     <type>Variable:parameter</type>
     <x>452</x>
     <y>190</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>316</int>
@@ -2299,7 +2299,7 @@
     <type>Variable:parameter</type>
     <x>457</x>
     <y>213</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>318</int>
@@ -2319,7 +2319,7 @@
     <type>Variable:parameter</type>
     <x>563</x>
     <y>576</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>540</rotation>
     <ports>
      <int>320</int>
@@ -2339,7 +2339,7 @@
     <type>Variable:parameter</type>
     <x>575</x>
     <y>525</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>322</int>
@@ -2359,7 +2359,7 @@
     <type>Variable:parameter</type>
     <x>445</x>
     <y>460</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>324</int>
@@ -2379,7 +2379,7 @@
     <type>Variable:parameter</type>
     <x>449</x>
     <y>483</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>326</int>
@@ -2399,7 +2399,7 @@
     <type>Variable:parameter</type>
     <x>362</x>
     <y>537</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>328</int>
@@ -2419,7 +2419,7 @@
     <type>Variable:parameter</type>
     <x>249</x>
     <y>730</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>330</int>
@@ -2439,7 +2439,7 @@
     <type>Variable:parameter</type>
     <x>632</x>
     <y>297</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>332</int>
@@ -2459,7 +2459,7 @@
     <type>Variable:parameter</type>
     <x>607</x>
     <y>349</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>334</int>
@@ -2479,7 +2479,7 @@
     <type>Variable:parameter</type>
     <x>597</x>
     <y>203</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>336</int>
@@ -2499,7 +2499,7 @@
     <type>Variable:parameter</type>
     <x>367</x>
     <y>270</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>338</int>
@@ -2519,7 +2519,7 @@
     <type>Variable:parameter</type>
     <x>164</x>
     <y>111</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>180</rotation>
     <ports>
      <int>340</int>
@@ -2539,7 +2539,7 @@
     <type>PlotWidget</type>
     <x>913</x>
     <y>412</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>342</int>
@@ -2679,7 +2679,7 @@
     <type>PlotWidget</type>
     <x>1096</x>
     <y>405</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>365</int>
@@ -2819,7 +2819,7 @@
     <type>PlotWidget</type>
     <x>575</x>
     <y>828</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>388</int>

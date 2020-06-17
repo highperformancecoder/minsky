@@ -23,7 +23,7 @@
     <type>Variable:parameter</type>
     <x>185.636</x>
     <y>18.4546</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -45,7 +45,7 @@
     <type>PlotWidget</type>
     <x>648.705</x>
     <y>169.159</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
@@ -185,7 +185,7 @@
     <type>Operation:gather</type>
     <x>316.091</x>
     <y>73.9091</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>25</int>
@@ -199,7 +199,7 @@
     <type>Operation:time</type>
     <x>184.455</x>
     <y>96.3637</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>29</int>

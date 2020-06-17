@@ -167,7 +167,7 @@ namespace minsky
       case LassoMode::itemResize:
         if (item)
           {
-            item->resize(lasso);
+            item->resize(lasso);  
             requestRedraw();
           }
         break;
