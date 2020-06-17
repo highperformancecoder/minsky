@@ -29,7 +29,8 @@ using ecolab::cairo::Surface;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 
-namespace minsky{
+namespace minsky
+{
 	
 namespace
 {    
@@ -49,30 +50,26 @@ namespace
   };
 }
 
-void ParameterSheet::populateItemvector() {
-  itemvector.clear();	
-  minsky().canvas.selection.recursiveDo(&GroupItems::items,
+void ParameterSheet::populateItemVector() {
+  itemVector.clear();	
+  minsky().canvas.model->recursiveDo(&GroupItems::items,
                                         [&](Items&, Items::iterator i) {                                 
-                                          itemvector.emplace_back(*i);
+                                          itemVector.emplace_back(*i);
                                           return false;
                                         });   	
 }
 
 void ParameterSheet::draw(cairo_t* cairo) const
 {   
- //cairo_rectangle(cairo,0,0,m_width,m_height);
- //cairo_stroke(cairo);
- //cairo_clip(cairo);
- double x1=0,x2=0,y1=0,y2=0, width=0, height=0;
-
   try
     {	
       		
-      //auto& value=ports[0]->getVariableValue();
-      if (!itemvector.empty())
-      //if (item)
-        if (auto v=itemvector[0]->variableCast())
-        //if (auto v=item->variableCast())
+      if (!itemVector.empty())
+      {
+	   float x0=0.0, y0=0.0;//+pango.height();	
+	   double w,h,h_prev,lh; 
+       for (size_t i=0; i<itemVector.size(); ++i)
+        if (auto v=itemVector[i]->variableCast())
           if (v->type()==VariableType::parameter)
             {	
 	          auto value=v->vValue();
@@ -84,8 +81,7 @@ void ParameterSheet::draw(cairo_t* cairo) const
                   pango.show();
                 }
               else
-                {
-                  float x0=0.0, y0=0.0;//+pango.height();
+                {  	 
                   float x=x0, y=y0;
                   double colWidth=0;
                   pango.setMarkup("9999");
@@ -137,15 +133,18 @@ void ParameterSheet::draw(cairo_t* cairo) const
                             {
                               colWidth=0;
                               y=y0;
+                              lh=0;
                               cairo_move_to(cairo,x,y);
+                              for (size_t j=0; j<dims[0]; ++j)
+                                 lh+=rowHeight;
                               pango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
                               pango.show();
                               { // draw vertical grid line
                                 cairo::CairoSave cs(cairo);
                                 cairo_set_source_rgba(cairo,0,0,0,0.5);
-                                cairo_move_to(cairo,x-2.5,0.0);
-                                cairo_line_to(cairo,x-2.5,m_height);
-                                cairo_stroke_preserve(cairo);
+                                cairo_move_to(cairo,x-2.5,y0);
+                                cairo_line_to(cairo,x-2.5,y0+lh+1.2*rowHeight);
+                                cairo_stroke(cairo);
                               }
                               colWidth=std::max(colWidth, 5+pango.width());
                               for (size_t j=0; j<dims[0]; ++j)
@@ -165,44 +164,37 @@ void ParameterSheet::draw(cairo_t* cairo) const
                               if (x>m_width) break;
                             }      
                         }
-                        
-                      cairo_stroke_extents (cairo,&x1,&y1,&x2,&y2);
-                      width+=x2-x1;
-                      //height+=y2-y1; 
-                      cairo_path_extents (cairo,&x1,&y1,&x2,&y2); 
-                      width+=x2-x1;
-                      //height+=y2-y1;
-                      //cairo_fill_extents (cairo,&x1,&y1,&x2,&y2); 
-                      //width+=x2-x1;
-                      //height+=y2-y1; 
-                      cairo_clip_extents (cairo,&x1,&y1,&x2,&y2); 
-                      //width+=x2-x1;
-                      height+=y2-y1;                                                                 
-                      cout << width << " " << height << endl;
+                      h_prev=h;  
+                      w=0;h=0;      
+                      cairo_get_current_point (cairo,&w,&h);                                                                            
+                      cout << w << " " << h << endl;
                       // draw grid
                       {
                         cairo::CairoSave cs(cairo);
                         cairo_set_source_rgba(cairo,0,0,0,0.2);
-                        for (y=y0+0.8*rowHeight; y<height; y+=2*rowHeight)
+                        for (y=y0+rowHeight; y<h+rowHeight; y+=2*rowHeight)
                           {
-                            cairo_rectangle(cairo,0.0,y,width,rowHeight);
+                            cairo_rectangle(cairo,0.0,y,w+colWidth,rowHeight);
                             cairo_fill(cairo);
                           }
                       }
                 
-                    }     
-                cairo_rectangle(cairo,0,0,width,height);
-                cairo_stroke_preserve(cairo);
-                cairo_clip(cairo);                     
-                }   
+                    }
+                cairo::CairoSave cs(cairo);    
+                cairo_rectangle(cairo,x0,y0,w+colWidth,h-h_prev+1.2*rowHeight);    
+                cairo_stroke(cairo);                          
+                cairo_clip(cairo);
+                }
+            y0=h-h_prev+1.2*rowHeight;       
             }
+		}
     }
   catch (...) {throw;/* exception most likely invalid variable value */}
 }    
 
 void ParameterSheet::redraw(int, int, int width, int height)
 {
-  cairo_t* cairo=surface->cairo();
+  cairo_t* cairo=surface->cairo();  
   CroppedPango pango(cairo, colWidth);
   rowHeight=15;
   pango.setFontSize(5.0*rowHeight);
@@ -212,11 +204,10 @@ void ParameterSheet::redraw(int, int, int width, int height)
     //pango.setText("Watch this space");
     //cairo_move_to(cairo,0.5*m_width,0);
     //pango.show();
-    if (!minsky().canvas.selection.empty()) {	  
-      populateItemvector();			
-    }
-    
-    draw(cairo);  
+    if (!minsky().canvas.model->empty()) {	  
+      populateItemVector();			
+      draw(cairo);    
+    }     
   }
 }
 

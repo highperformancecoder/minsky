@@ -50,31 +50,28 @@ namespace
   };
 }
 
-void VariableSheet::populateItemvector() {
-  itemvector.clear();	
-  minsky().canvas.selection.recursiveDo(&GroupItems::items,
+void VariableSheet::populateItemVector() {
+  itemVector.clear();	
+  minsky().canvas.model->recursiveDo(&GroupItems::items,
                                         [&](Items&, Items::iterator i) {                                 
-                                          itemvector.emplace_back(*i);
+                                          itemVector.emplace_back(*i);
                                           return false;
                                         });   	
 }	
 
 void VariableSheet::draw(cairo_t* cairo) const
 {   
-  cairo_rectangle(cairo,0,0,m_width,m_height);
-  cairo_stroke_preserve(cairo);
-  cairo_clip(cairo);
-
   try
     {	
       		
-      //auto& value=ports[0]->getVariableValue();
-      if (!itemvector.empty())
-      //if (item)
-        if (auto v=itemvector[0]->variableCast())
-        //if (auto v=item->variableCast())
+      if (!itemVector.empty())
+      {
+	   float x0=0.0, y0=0.0;//+pango.height();	
+	   double w,h,h_prev,lh; 
+       for (size_t i=0; i<itemVector.size(); ++i)
+        if (auto v=itemVector[i]->variableCast())
           if (v->type()!=VariableType::parameter)
-            {
+            {	
 	          auto value=v->vValue();
               Pango pango(cairo);
               if (value->hypercube().rank()>2)
@@ -84,8 +81,7 @@ void VariableSheet::draw(cairo_t* cairo) const
                   pango.show();
                 }
               else
-                {
-                  float x0=0.0, y0=0.0;//+pango.height();
+                {  	 
                   float x=x0, y=y0;
                   double colWidth=0;
                   pango.setMarkup("9999");
@@ -114,19 +110,21 @@ void VariableSheet::draw(cairo_t* cairo) const
                       y=y0;
                       x+=colWidth;
                       if (value->hypercube().rank()==1)
-                        for (size_t i=0; i<value->size(); ++i)
-                          {
-                            if (!value->index().empty())
-                              y=y0+value->index()[i]*rowHeight;
-                            cairo_move_to(cairo,x,y);
-                            auto v=value->value(i);
-                            if (!std::isnan(v))
-                              {
-                                pango.setMarkup(str(v));
-                                pango.show();
-                              }
-                            y+=rowHeight;
-                          }
+                        {
+                          for (size_t i=0; i<value->size(); ++i)
+                            {
+                              if (!value->index().empty())
+                                y=y0+value->index()[i]*rowHeight;
+                              cairo_move_to(cairo,x,y);
+                              auto v=value->value(i);
+                              if (!std::isnan(v))
+                                {
+                                  pango.setMarkup(str(v));
+                                  pango.show();
+                                }
+                              y+=rowHeight;
+                            }
+					    }
                       else
                         {
                           format=value->hypercube().xvectors[1].timeFormat();
@@ -135,21 +133,24 @@ void VariableSheet::draw(cairo_t* cairo) const
                             {
                               colWidth=0;
                               y=y0;
+                              lh=0;
                               cairo_move_to(cairo,x,y);
+                              for (size_t j=0; j<dims[0]; ++j)
+                                 lh+=rowHeight;
                               pango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
                               pango.show();
                               { // draw vertical grid line
                                 cairo::CairoSave cs(cairo);
                                 cairo_set_source_rgba(cairo,0,0,0,0.5);
-                                cairo_move_to(cairo,x-2.5,0.0);
-                                cairo_line_to(cairo,x-2.5,m_height);
+                                cairo_move_to(cairo,x-2.5,y0);
+                                cairo_line_to(cairo,x-2.5,y0+lh+1.2*rowHeight);
                                 cairo_stroke(cairo);
                               }
                               colWidth=std::max(colWidth, 5+pango.width());
                               for (size_t j=0; j<dims[0]; ++j)
                                 {
                                   y+=rowHeight;
-                                  if (y>1.5*m_height) break;
+                                  if (y>m_height) break;
                                   cairo_move_to(cairo,x,y);
                                   auto v=value->atHCIndex(j+i*dims[0]);
                                   if (!std::isnan(v))
@@ -160,23 +161,33 @@ void VariableSheet::draw(cairo_t* cairo) const
                                   colWidth=std::max(colWidth, pango.width());
                                 }
                               x+=colWidth;
-                              if (x>1.5*m_width) break;
-                            }
+                              if (x>m_width) break;
+                            }      
                         }
+                      h_prev=h;  
+                      w=0;h=0;      
+                      cairo_get_current_point (cairo,&w,&h);                                                                            
+                      cout << w << " " << h << endl;
                       // draw grid
                       {
                         cairo::CairoSave cs(cairo);
                         cairo_set_source_rgba(cairo,0,0,0,0.2);
-                        for (y=y0+0.8*rowHeight; y<1.5*m_height; y+=2*rowHeight)
+                        for (y=y0+rowHeight; y<h+rowHeight; y+=2*rowHeight)
                           {
-                            cairo_rectangle(cairo,0.0,y,1.5*m_width,rowHeight);
+                            cairo_rectangle(cairo,0.0,y,w+colWidth,rowHeight);
                             cairo_fill(cairo);
                           }
                       }
                 
                     }
+                cairo::CairoSave cs(cairo);    
+                cairo_rectangle(cairo,x0,y0,w+colWidth,h-h_prev+1.2*rowHeight);    
+                cairo_stroke(cairo);                          
+                cairo_clip(cairo);
                 }
-            } 
+            y0=h-h_prev+1.2*rowHeight;       
+            }
+		}
     }
   catch (...) {throw;/* exception most likely invalid variable value */}
 }        
@@ -193,12 +204,10 @@ void VariableSheet::redraw(int, int, int width, int height)
     //pango.setText("Watch this space");
     //cairo_move_to(cairo,800,400);
     //pango.show();
-    if (!minsky().canvas.selection.empty()) {	  
-      populateItemvector();			
-    }
-    
-    draw(cairo);      
-    
+    if (!minsky().canvas.model->empty()) {	  
+      populateItemVector();			
+      draw(cairo); 
+    }     
   }
 }
 
