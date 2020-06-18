@@ -33,7 +33,7 @@ namespace minsky
     double xoffs=80;  
     double rowHeight=0;
     double colWidth=50;    
-    float m_width=10000, m_height=10000;
+    float m_width=2e09, m_height=2e09;
     Items itemVector;
     void populateItemVector();
     void draw(cairo_t* cairo) const override;      
