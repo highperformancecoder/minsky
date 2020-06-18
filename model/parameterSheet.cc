@@ -166,7 +166,7 @@ void ParameterSheet::draw(cairo_t* cairo) const
                       h_prev=h;  
                       w=0;h=0;      
                       cairo_get_current_point (cairo,&w,&h);   
-                      if (h<h_prev) h+=h_prev;                                                                         
+                      if (h<h_prev) h+=h_prev;                                                                          
                       cout << " " << w << " " << h << " " << y0 << " " << h_prev << endl;
                       // draw grid
                       {
@@ -181,7 +181,7 @@ void ParameterSheet::draw(cairo_t* cairo) const
                 
                     }
                   cairo::CairoSave cs(cairo);    
-                  cairo_rectangle(cairo,x0,y0,w+colWidth,h-h_prev+1.1*rowHeight);    
+                  cairo_rectangle(cairo,x0,y0,w+colWidth,y-y0);    
                   cairo_stroke(cairo);                          
                   cairo_clip(cairo);
                   y0=h+1.1*rowHeight;   

@@ -181,7 +181,7 @@ void VariableSheet::draw(cairo_t* cairo) const
                 
                     }
                   cairo::CairoSave cs(cairo);    
-                  cairo_rectangle(cairo,x0,y0,w+colWidth,h-h_prev+1.1*rowHeight);    
+                  cairo_rectangle(cairo,x0,y0,w+colWidth,y-y0);    
                   cairo_stroke(cairo);                          
                   cairo_clip(cairo);
                   y0=h+1.1*rowHeight;   
