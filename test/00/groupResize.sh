@@ -38,17 +38,18 @@ proc afterMinskyStarted {} {uplevel #0 {
  recentreCanvas
  set item minsky.canvas.item
  assert {[findObject Group]}
- set x [\$item.x]
- set y [\$item.y]
+ set x [\$item.right]
+ set y [\$item.top]
  set w [\$item.width]
  set h [\$item.height]
  set z [\$item.zoomFactor]
 
- canvas.mouseDown [expr \$x+0.5*\$w] [expr \$y+0.5*\$h]
- canvas.mouseUp [expr \$x+\$w]  [expr \$y+\$h-20*\$z]
+ canvas.mouseDown [expr \$x] [expr \$y]
+ canvas.mouseUp [expr \$x+0.5*\$w]  [expr \$y+0.5*\$h]
 
- assert "abs([expr 1.5*\$w]-[minsky.canvas.item.width])<5"
- assert "abs([expr 1.5*\$h]-[minsky.canvas.item.height])<5"
+ findObject Group
+ assert "abs([expr \$x+0.5*\$w]-[minsky.canvas.item.right])<5"
+ assert "abs([expr \$y+0.5*\$h]-[minsky.canvas.item.top])<5"
  tcl_exit
 }}
 EOF

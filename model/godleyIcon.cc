@@ -321,7 +321,7 @@ namespace minsky
 
     for (auto& v: m_stockVars)
       {
-        // top justification at bottom of icon if displayed, bottom justfied otherwise
+        // top justification at bottom of icon if displayed, bottom justified otherwise
         RenderVariable rv(*v);
         v->rotation(90);
         v->bb.update(*v);
@@ -333,10 +333,10 @@ namespace minsky
   ItemPtr GodleyIcon::select(float x, float y) const
   {
     for (auto& v: m_flowVars)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (v->contains(x,y)) 
         return v;
     for (auto& v: m_stockVars)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (v->contains(x,y)) 
         return v;
     return ItemPtr();
   }
