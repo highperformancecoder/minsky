@@ -38,6 +38,7 @@
 #include "canvas.h"
 #include "panopticon.h"
 #include "fontDisplay.h"
+#include "parVarSheet.h"
 #include "variableSheet.h"
 #include "parameterSheet.h"
 #include "dimension.h"
