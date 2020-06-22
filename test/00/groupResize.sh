@@ -39,7 +39,7 @@ proc afterMinskyStarted {} {uplevel #0 {
  set item minsky.canvas.item
  assert {[findObject Group]}
  set x [\$item.right]
- set y [\$item.top]
+ set y [\$item.bottom]
  set w [\$item.width]
  set h [\$item.height]
  set z [\$item.zoomFactor]
@@ -49,7 +49,7 @@ proc afterMinskyStarted {} {uplevel #0 {
 
  findObject Group
  assert "abs([expr \$x+0.5*\$w]-[minsky.canvas.item.right])<5"
- assert "abs([expr \$y+0.5*\$h]-[minsky.canvas.item.top])<5"
+ assert "abs([expr \$y+0.5*\$h]-[minsky.canvas.item.bottom])<5"
  tcl_exit
 }}
 EOF

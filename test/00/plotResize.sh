@@ -43,16 +43,18 @@ proc afterMinskyStarted {} {uplevel #0 {
  canvas.mouseUp 300 200
  findObject PlotWidget
  set item minsky.canvas.item
- set x [\$item.x]
- set y [\$item.y]
+ \$item.updateBoundingBox
+# add 5 pixels to avoid clicking on a port
+ set x [expr [\$item.right]+5]
+ set y [expr [\$item.bottom]+5]
  set w [\$item.width]
  set h [\$item.height]
-
- canvas.mouseDown [expr \$x+0.5*\$w+2] [expr \$y+0.5*\$h+2]
+ 
+ canvas.mouseDown \$x \$y
  canvas.mouseUp [expr \$x+\$w]  [expr \$y+\$h]
 
- assert "abs([expr 1.5*\$w]-[minsky.canvas.item.width])<5"
- assert "abs([expr 1.5*\$h]-[minsky.canvas.item.height])<5"
+ assert "abs([expr \$x+\$w]-[minsky.canvas.item.right])<5"
+ assert "abs([expr \$y+\$h]-[minsky.canvas.item.bottom])<5"
 
  tcl_exit
 

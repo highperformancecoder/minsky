@@ -444,12 +444,12 @@ SUITE(Canvas)
       c->updateBoundingBox();
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       c->draw(surf.cairo());// reposition ports
-      float xc=c->right(), yc=c->top();      
+      float xc=c->right(), yc=c->bottom();      
       CHECK(c->clickType(xc,yc) == ClickType::onResize);
       canvas.mouseDown(xc,yc);
       canvas.mouseUp(600,800);
       CHECK_CLOSE(600, c->right(),4*portRadiusMult);
-      CHECK_CLOSE(800, c->top(),4*portRadiusMult);
+      CHECK_CLOSE(800, c->bottom(),4*portRadiusMult);
     }    
 
     TEST_FIXTURE(TestFixture,resizeOperation)
@@ -459,12 +459,12 @@ SUITE(Canvas)
       add->moveTo(400,300);
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       add->draw(surf.cairo());// reposition ports
-      float xc=add->right(), yc=add->top();      
+      float xc=add->right(), yc=add->bottom();      
       CHECK(add->clickType(xc,yc) == ClickType::onResize); 
       canvas.mouseDown(xc,yc);
       canvas.mouseUp(600,800);
       CHECK_CLOSE(600,add->right(),4*portRadiusMult);
-      CHECK_CLOSE(800,add->top(),4*portRadiusMult);
+      CHECK_CLOSE(800,add->bottom(),4*portRadiusMult);
     }    
 
     TEST_FIXTURE(TestFixture,onSlider)
@@ -607,10 +607,10 @@ SUITE(Canvas)
         double x=group.x(), y=group.y(), z=group.relZoom;
         CHECK(group.clickType(group.right(),group.top()) == ClickType::onResize);
 
-        mouseDown(group.right(), group.top());
+        mouseDown(group.right(), group.bottom());
         mouseUp(x+w, y+h);
         CHECK_CLOSE(x+w,group.right(),1);
-        CHECK_CLOSE(y+h,group.top(),1); 
+        CHECK_CLOSE(y+h,group.bottom(),1); 
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
@@ -1004,6 +1004,7 @@ SUITE(GodleyIcon)
       table.cell(2,1)="flow1";
       table.cell(0,1)="stock1";
       update();
+      updateBoundingBox();
       CHECK_EQUAL(1,flowVars().size());
       CHECK_EQUAL(1,stockVars().size());
       for (auto& i: flowVars())

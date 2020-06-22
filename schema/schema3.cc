@@ -442,8 +442,8 @@ namespace schema3
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
-        if (y.width) x1->width=*y.width;
-        if (y.height) x1->height=*y.height;
+        if (y.width) x1->iWidth(*y.width);
+        if (y.height) x1->iHeight(*y.height);
         x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;

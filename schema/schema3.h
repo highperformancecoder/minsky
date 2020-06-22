@@ -145,7 +145,7 @@ namespace schema3
       assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      width(p.width), height(p.height), name(p.title),
+      width(p.iWidth()), height(p.iHeight()), name(p.title),
       logx(p.logx), logy(p.logy), ypercent(p.percent),
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),

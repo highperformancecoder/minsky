@@ -48,15 +48,15 @@ namespace minsky
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
     catch (...) {cerr<<"illegal exception caught in draw()";}
     x.mouseFocus=savedMouseFocus;
-    double l,b,w,h;
+    double l,t,w,h;
     cairo_recording_surface_ink_extents(surf.surface(),
-                                        &l,&b,&w,&h);
+                                        &l,&t,&w,&h);
     // note (0,0) is relative to the (x,y) of icon.
     double invZ=1/x.zoomFactor();
     m_left=l*invZ;
     m_right=(l+w)*invZ;
-    m_bottom=b*invZ;
-    m_top=(b+h)*invZ;
+    m_top=t*invZ;
+    m_bottom=(t+h)*invZ; //coordinates increase down the page
   }
 
   void Item::throw_error(const std::string& msg) const
@@ -214,10 +214,10 @@ namespace minsky
   void Item::drawResizeHandles(cairo_t* cairo) const
   {
     double sf=portRadiusMult*zoomFactor();  
-    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0);
-    drawResizeHandle(cairo,left()-x(),top()-y(),sf,0.5*M_PI);
-    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,M_PI);
-    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
     cairo_stroke(cairo);
   }
 

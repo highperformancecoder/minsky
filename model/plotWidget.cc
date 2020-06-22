@@ -83,14 +83,14 @@ namespace minsky
 
   PlotWidget::PlotWidget()
   {
-    // TODO assignPorts();
+    m_width=m_height=150;
     nxTicks=nyTicks=10;
     fontScale=2;
     leadingMarker=true;
     grid=true;
     legendLeft=0.1; // override ecolab's default value
 
-    float w=width, h=height;
+    float w=iWidth(), h=iHeight();
     float dx=w/(2*numLines+1); // x location of ports
     float dy = h/(numLines);
 
@@ -121,7 +121,7 @@ namespace minsky
   void PlotWidget::draw(cairo_t* cairo) const
   {
     double z=zoomFactor();
-    double w=width*z, h=height*z;
+    double w=iWidth()*z, h=iHeight()*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel.empty()||!ylabel.empty()||!y1label.empty())
@@ -283,9 +283,9 @@ namespace minsky
     clickY=y;
     ct=clickType(x,y);
     double z=zoomFactor();
-    double gw=width*z-2*portSpace;
-    double gh=height*z-portSpace;
-    if (!title.empty()) gh=height*z-portSpace-titleHeight;
+    double gw=iWidth()*z-2*portSpace;
+    double gh=iHeight()*z-portSpace;
+    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -294,12 +294,12 @@ namespace minsky
   void PlotWidget::mouseMove(double x,double y)
   {
     double z=zoomFactor();
-    double w=0.5*width*z, h=0.5*height*z;
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     double dx=x-this->x(), dy=y-this->y();
-    double gw=width*z-2*portSpace;
-    double gh=height*z-portSpace;
-    if (!title.empty()) gh=height*z-portSpace-titleHeight;
-    double yoffs=this->y()-(legendTop-0.5)*height*z;
+    double gw=iWidth()*z-2*portSpace;
+    double gh=iHeight()*z-portSpace;
+    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
+    double yoffs=this->y()-(legendTop-0.5)*iHeight()*z;
     switch (ct)
       {
       case ClickType::legendMove:
@@ -342,8 +342,8 @@ namespace minsky
   void PlotWidget::resize(const LassoBox& x)
   {
     float invZ=1/zoomFactor();
-    width=abs(x.x1-x.x0)*invZ;
-    height=abs(x.y1-x.y0)*invZ;
+    iWidth(abs(x.x1-x.x0)*invZ);
+    iHeight(abs(x.y1-x.y0)*invZ);
     moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
@@ -360,9 +360,9 @@ namespace minsky
       }
 
     double legendWidth, legendHeight;
-    legendSize(legendWidth, legendHeight, height*z-portSpace);
-    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*z;
-    double yy= y-this->y() + (legendTop-0.5)*height*z;
+    legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
+    double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
     if (xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
@@ -370,14 +370,14 @@ namespace minsky
         else if (yy>=0.8*legendHeight && yy<legendHeight)
           return ClickType::legendResize;
       }
-    
+
+    // TODO - delegate to Item::clickType
+    if ((abs(x-Item::left()) < portRadius*z || abs(x-Item::right()) < portRadius*z) &&
+      (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      return ClickType::onResize;         
+
     double dx=x-this->x(), dy=y-this->y();
-    double w=0.5*width*z, h=0.5*height*z;
-    // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-        fabs(fabs(dy)-h) < portRadiusMult*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-      return ClickType::onResize;
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     return (abs(dx)<w && abs(dy)<h)?
       ClickType::onItem: ClickType::outside;
   }

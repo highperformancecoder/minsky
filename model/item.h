@@ -70,11 +70,11 @@ namespace minsky
     void update(const Item& x);
     bool contains(float x, float y) const {
       // extend each item by a portradius to solve ticket #903
-      return m_left-portRadius<=x && m_right+portRadius>=x && m_bottom-portRadius<=y && m_top+portRadius>=y;
+      return m_left-portRadius<=x && m_right+portRadius>=x && m_top-portRadius<=y && m_bottom+portRadius>=y;
     }
     bool valid() const {return m_left!=m_right;}
     float width() const {return m_right-m_left;}
-    float height() const {return m_top-m_bottom;}
+    float height() const {return m_bottom-m_top;}
     float left() const {return m_left;}
     float right() const {return m_right;}
     float top() const {return m_top;}
@@ -84,6 +84,8 @@ namespace minsky
   class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
+  protected:
+    // these need to be protected, not private to allow the setting of these in constructors
     double m_width=0, m_height=0;
   public:
 

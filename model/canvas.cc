@@ -83,7 +83,7 @@ namespace minsky
             lassoMode=LassoMode::itemResize;
             // set x0,y0 to the opposite corner of (x,y)
             lasso.x0 = x>itemFocus->x()? itemFocus->left(): itemFocus->right();
-            lasso.y0 = y>itemFocus->y()? itemFocus->bottom(): itemFocus->top();
+            lasso.y0 = y>itemFocus->y()? itemFocus->top(): itemFocus->bottom();
             lasso.x1=x;
             lasso.y1=y;
             item=itemFocus;
