@@ -310,33 +310,31 @@ namespace minsky
     for (auto& v: m_flowVars)
       {
         // right justification if displayed, left otherwisw
-        RenderVariable rv(*v);
+        //RenderVariable rv(*v);
         v->rotation(0);
-        v->bb.update(*v);
-        v->moveTo(x-0.5*v->width()*zoomFactor*vdf,y);
-        y+=2*rv.height()*zoomFactor;
+        v->moveTo(x+v->x() - (variableDisplay? v->right(): v->left()), y);
+        y+=v->height();//2*rv.height()*zoomFactor;
       }
     x= this->x() - 0.45*gWidth()+leftMargin();
     y= this->y() + 0.5*gHeight()-bottomMargin();
 
     for (auto& v: m_stockVars)
       {
-        // top justification at bottom of icon if displayed, bottom justfied otherwise
-        RenderVariable rv(*v);
+        // top justification at bottom of icon if displayed, bottom justified otherwise
+        //RenderVariable rv(*v);
         v->rotation(90);
-        v->bb.update(*v);
-        v->moveTo(x,y+0.5*v->height()*zoomFactor*vdf);
-        x+=2*rv.height()*zoomFactor;
+        v->moveTo(x, y + v->y() - (variableDisplay? v->top(): v->bottom()));
+        x+=v->width();//2*rv.height()*zoomFactor;
       }
   }
 
   ItemPtr GodleyIcon::select(float x, float y) const
   {
     for (auto& v: m_flowVars)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (v->contains(x,y)) 
         return v;
     for (auto& v: m_stockVars)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (v->contains(x,y)) 
         return v;
     return ItemPtr();
   }

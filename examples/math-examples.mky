@@ -8,7 +8,7 @@
     <type>Variable:flow</type>
     <x>0</x>
     <y>0</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -29,7 +29,7 @@
     <type>Variable:flow</type>
     <x>9.0001</x>
     <y>53.0002</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>3</int>
@@ -50,7 +50,7 @@
     <type>Variable:flow</type>
     <x>105</x>
     <y>2.0002</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>6</int>
@@ -71,7 +71,7 @@
     <type>Variable:flow</type>
     <x>126</x>
     <y>75.0002</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>9</int>
@@ -92,7 +92,7 @@
     <type>Variable:flow</type>
     <x>21.0001</x>
     <y>141</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>12</int>
@@ -113,7 +113,7 @@
     <type>Variable:flow</type>
     <x>140.001</x>
     <y>162.001</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>15</int>
@@ -134,7 +134,7 @@
     <type>Variable:flow</type>
     <x>111</x>
     <y>218.001</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>18</int>
@@ -155,7 +155,7 @@
     <type>Variable:flow</type>
     <x>265.001</x>
     <y>155.001</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>21</int>

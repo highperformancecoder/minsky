@@ -103,7 +103,6 @@ namespace minsky
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}
 
-    
     float zoomFactor() const override;
     
     /// @{ variable displayed name
@@ -177,6 +176,7 @@ namespace minsky
         @return cairo path of icon outline
     */
     void draw(cairo_t*) const override;
+    void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) override;
 
     /// @return true if variable is defined (inputWired() || isStock() && controlled)

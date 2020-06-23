@@ -66,16 +66,16 @@ namespace schema3
     int id=-1;
     std::string type;
     float x=0, y=0; ///< position in canvas, or within group
-    float zoomFactor=1;
+    float scaleFactor=1; ///< scale factor of item on canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
     std::vector<int> ports;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation()),
-      ports(ports) {}
+      x(it.m_x), y(it.m_y), rotation(it.rotation()),
+       scaleFactor(it.m_sf), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y), zoomFactor(it.zoomFactor),
+      Note(it), id(it.id), type(type), x(it.x), y(it.y), 
       rotation(it.rotation), ports(it.ports) {}
   };
 
@@ -145,7 +145,7 @@ namespace schema3
       assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      width(p.width), height(p.height), name(p.title),
+      width(p.iWidth()), height(p.iHeight()), name(p.title),
       logx(p.logx), logy(p.logy), ypercent(p.percent),
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),

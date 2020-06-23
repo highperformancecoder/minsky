@@ -38,7 +38,7 @@
     <type>Operation:time</type>
     <x>71</x>
     <y>0</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -50,7 +50,7 @@
     <type>IntOp</type>
     <x>161</x>
     <y>60</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
@@ -65,7 +65,7 @@
     <type>VarConstant</type>
     <x>1</x>
     <y>21</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>6</int>
@@ -84,7 +84,7 @@
     <type>VarConstant</type>
     <x>0</x>
     <y>50</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>8</int>
@@ -103,7 +103,7 @@
     <type>Variable:flow</type>
     <x>4</x>
     <y>90</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>10</int>
@@ -124,7 +124,7 @@
     <type>Variable:integral</type>
     <x>208</x>
     <y>60</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
@@ -145,7 +145,7 @@
     <type>Variable:parameter</type>
     <x>2</x>
     <y>127</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>15</int>
@@ -165,7 +165,7 @@
     <type>PlotWidget</type>
     <x>340</x>
     <y>112</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>17</int>
@@ -306,7 +306,7 @@
     <type>SwitchIcon</type>
     <x>81</x>
     <y>62</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>40</int>

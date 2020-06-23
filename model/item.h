@@ -65,25 +65,33 @@ namespace minsky
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
-    float left=0, right=0, top, bottom;
+    float m_left=0, m_right=0, m_top, m_bottom;  	  
   public:
     void update(const Item& x);
     bool contains(float x, float y) const {
       // extend each item by a portradius to solve ticket #903
-      return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
+      return m_left-portRadius<=x && m_right+portRadius>=x && m_top-portRadius<=y && m_bottom+portRadius>=y;
     }
-    bool valid() const {return left!=right;}
-    float width() const {return right-left;}
-    float height() const {return bottom-top;}
+    bool valid() const {return m_left!=m_right;}
+    float width() const {return m_right-m_left;}
+    float height() const {return m_bottom-m_top;}
+    float left() const {return m_left;}
+    float right() const {return m_right;}
+    float top() const {return m_top;}
+    float bottom() const {return m_bottom;}
   };
 
   class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
+  protected:
+    // these need to be protected, not private to allow the setting of these in constructors
+    double m_width=0, m_height=0;
   public:
 
     Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
     float m_x=0, m_y=0; ///< position in canvas, or within group
+    float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
@@ -111,6 +119,20 @@ namespace minsky
       return m_rotation;
     }
     
+    float iWidth() const {return m_width;}
+    float iWidth(const float& w) {
+      m_width=w;
+      bb.update(*this);
+      return m_width;
+    }
+    
+    float iHeight() const {return m_height;}
+    float iHeight(const float& h) {
+      m_height=h;
+      bb.update(*this);
+      return m_height;
+    }         
+    
     /// rotate icon though 180∘
     void flip() {rotation(rotation()+180);}
 
@@ -126,17 +148,15 @@ namespace minsky
     /// @}
 
     ItemPortVector ports;
-    float x() const; 
-    float y() const;
+    virtual float x() const; 
+    virtual float y() const;
     virtual float zoomFactor() const;
     float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
     float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
-    float left() const {return x()-0.5*zoomFactor()*width();}
-    float right() const {return x()+0.5*zoomFactor()*width();}
-    float top() const {return y()+0.5*zoomFactor()*height();}
-    float bottom() const {return y()-0.5*zoomFactor()*height();}
-
-    virtual void resize(const LassoBox&) {}
+    float left() const {return x()+bb.left()*zoomFactor();}
+    float right() const {return x()+bb.right()*zoomFactor();}
+    float top() const {return y()+bb.top()*zoomFactor();}
+    float bottom() const {return y()+bb.bottom()*zoomFactor();}
 
     /// delete all attached wires
     virtual void deleteAttachedWires();
@@ -156,6 +176,12 @@ namespace minsky
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;
+    /// resize this item on the canvas
+    virtual void resize(const LassoBox& b);
+    /// factor by which item has been resized
+    virtual float scaleFactor() const;
+    virtual float scaleFactor(const float& sf);
+    
     /// draw into a dummy cairo context, for purposes of calculating
     /// port positions
     void dummyDraw() const;
@@ -169,7 +195,7 @@ namespace minsky
 
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
-    void drawResizeHandles(cairo_t* cairo) const;
+    virtual void drawResizeHandles(cairo_t* cairo) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);

@@ -48,7 +48,7 @@
     <type>Variable:parameter</type>
     <x>123</x>
     <y>112</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -68,7 +68,7 @@
     <type>PlotWidget</type>
     <x>739.25</x>
     <y>205.25</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
@@ -208,7 +208,7 @@
     <type>Operation:time</type>
     <x>103</x>
     <y>166</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>25</int>
@@ -220,7 +220,7 @@
     <type>Operation:multiply</type>
     <x>208</x>
     <y>152</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>27</int>
@@ -234,7 +234,7 @@
     <type>Operation:sin</type>
     <x>259</x>
     <y>154</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>31</int>
@@ -247,7 +247,7 @@
     <type>Operation:sum</type>
     <x>315</x>
     <y>149</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>34</int>
@@ -260,7 +260,7 @@
     <type>IntOp</type>
     <x>392</x>
     <y>202</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>37</int>
@@ -275,7 +275,7 @@
     <type>Variable:integral</type>
     <x>429</x>
     <y>202</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>37</int>
@@ -295,7 +295,7 @@
     <type>PlotWidget</type>
     <x>708.75</x>
     <y>424.75</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>43</int>

@@ -27,6 +27,9 @@
 using namespace std;
 using namespace ecolab::cairo;
 
+// size of the top and bottom margins of the group icon
+static const int topMargin=10;
+
 namespace minsky
 {
   SVGRenderer Group::svgRenderer;
@@ -409,7 +412,7 @@ namespace minsky
       return IORegion::output;
     else if (-w+left*edgeScale()>dx)
       return IORegion::input;
-    else if ((-h-10*z<dy && dy<0) || (h+10*z>dy && dy>0))     
+    else if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
       return IORegion::topBottom;  
     else     
       return IORegion::none;
@@ -478,7 +481,7 @@ namespace minsky
   {
     float z=zoomFactor();
     iconWidth=fabs(b.x0-b.x1)/z;
-    iconHeight=fabs(b.y0-b.y1)/z;
+    iconHeight=(fabs(b.y0-b.y1)-2*topMargin)/z;
     // account for margins
     float l, r;
     margins(l,r);    
@@ -753,10 +756,13 @@ namespace minsky
     auto z=zoomFactor();
     double w=0.5*iconWidth*z, h=0.5*iconHeight*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-        fabs(fabs(dy)-h) < portRadiusMult*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-      return ClickType::onResize;
+    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
+      (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      return ClickType::onResize;         
+//    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
+//        fabs(fabs(dy)-h) < portRadiusMult*z &&
+//        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
+//      return ClickType::onResize;
     if (displayContents() && inIORegion(x,y)==IORegion::none)
       return ClickType::outside;
     if (auto item=select(x,y))
@@ -920,7 +926,7 @@ namespace minsky
     margins(left,right);    
     left*=edgeScale();
     right*=edgeScale();
-    float y=0, dy=10*edgeScale();
+    float y=0, dy=topMargin*edgeScale();
     for (auto& i: inVariables)
       {
         RenderVariable rv(*i);
@@ -963,11 +969,11 @@ namespace minsky
     cairo_fill(cairo);
     
     // draw top margin. for feature 88
-    cairo_rectangle(cairo,-w,-h,2*w,-10*z);
+    cairo_rectangle(cairo,-w,-h,2*w,-topMargin*z);
     cairo_fill(cairo);    
     
     // draw bottom margin. for feature 88
-    cairo_rectangle(cairo,-w,h,2*w,10*z);
+    cairo_rectangle(cairo,-w,h,2*w,topMargin*z);
     cairo_fill(cairo);    
     
     cairo_restore(cairo);

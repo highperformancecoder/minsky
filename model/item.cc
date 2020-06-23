@@ -53,10 +53,10 @@ namespace minsky
                                         &l,&t,&w,&h);
     // note (0,0) is relative to the (x,y) of icon.
     double invZ=1/x.zoomFactor();
-    left=l*invZ;
-    right=(l+w)*invZ;
-    top=t*invZ;
-    bottom=(t+h)*invZ;
+    m_left=l*invZ;
+    m_right=(l+w)*invZ;
+    m_top=t*invZ;
+    m_bottom=(t+h)*invZ; //coordinates increase down the page
   }
 
   void Item::throw_error(const std::string& msg) const
@@ -67,7 +67,7 @@ namespace minsky
   
   float Item::x() const 
   {
-    if (auto g=group.lock())
+    if (auto g=group.lock()) 
       return zoomFactor()*m_x+g->x();
     else
       return m_x;
@@ -88,6 +88,17 @@ namespace minsky
     else
       return 1;
   }
+  
+  float Item::scaleFactor() const
+  { 
+    return m_sf;
+  }  
+  
+  float Item::scaleFactor(const float& sf) {
+    m_sf=sf;
+    bb.update(*this);
+    return m_sf;
+  }   
   
   void Item::deleteAttachedWires()
   {
@@ -119,7 +130,7 @@ namespace minsky
   }
 
   ClickType::Type Item::clickType(float x, float y)
-  {
+  {     	    
     // if selecting a contained variable, the delegate to that
     if (auto item=select(x,y))
       return item->clickType(x,y);
@@ -129,14 +140,20 @@ namespace minsky
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
           return ClickType::onPort;
-      }
+      }          
+     
+    // then, check whether a resize handle has been selected  
+    float z=zoomFactor();
+    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
+      (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      return ClickType::onResize;         
 
     ecolab::cairo::Surface dummySurf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
     if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
-      return ClickType::onItem;
-    else
+      return ClickType::onItem;               
+    else                  
       return ClickType::outside;
   }
 
@@ -166,10 +183,11 @@ namespace minsky
 
   namespace
   {
-    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf)
+    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
     {
       cairo::CairoSave cs(cairo);
       cairo_translate(cairo,x,y);
+      cairo_rotate(cairo,angle);
       cairo_scale(cairo,sf,sf);
       cairo_move_to(cairo,-1,-.2);
       cairo_line_to(cairo,-1,-1);
@@ -182,20 +200,24 @@ namespace minsky
     }
   }
   
+  // Refactor resize() code for all canvas items here. For feature 25 and 94
+  void Item::resize(const LassoBox& b)
+  {
+	 // Set initial iWidth() and iHeight() to initial Pango determined values. This resize method is not very reliable. Probably a Pango issue. 
+    float w=iWidth(width()), h=iHeight(height()), invZ=1/zoomFactor();   
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
+    iWidth(abs(b.x1-b.x0)*invZ);
+    iHeight(abs(b.y1-b.y0)*invZ);     
+    scaleFactor(std::max(1.0f,std::min(iWidth()/w,iHeight()/h)));
+  }
+  
   void Item::drawResizeHandles(cairo_t* cairo) const
   {
-    {
-      cairo::CairoSave cs(cairo);
-      auto z=zoomFactor();
-      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadiusMult*z;
-      drawResizeHandle(cairo,x,y,sf);
-      cairo_rotate(cairo,0.5*M_PI);
-      drawResizeHandle(cairo,y,x,sf);
-      cairo_rotate(cairo,0.5*M_PI);
-      drawResizeHandle(cairo,x,y,sf);
-      cairo_rotate(cairo,0.5*M_PI);
-      drawResizeHandle(cairo,y,x,sf);
-    }
+    double sf=portRadiusMult*zoomFactor();  
+    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
     cairo_stroke(cairo);
   }
 
@@ -204,19 +226,23 @@ namespace minsky
   void Item::draw(cairo_t* cairo) const
   {
     Rotate r(rotation(),0,0);
+    //cairo_scale(cairo,scaleFactor(),scaleFactor());   // would like to see this work like operator icon contents, but width() and height() point to nothing at this stage.
     Pango pango(cairo);
     float w, h, z=zoomFactor();
-    pango.angle=rotation() * M_PI / 180.0;
-    pango.setFontSize(12*z);
-    pango.setMarkup(latexToPango(detailedText)); 
+    pango.angle=rotation() * M_PI / 180.0; 
+    pango.setFontSize(12*scaleFactor()*z);
+    pango.setMarkup(latexToPango(detailedText));         
     // parameters of icon in userspace (unscaled) coordinates
     w=0.5*pango.width()+2*z; 
-    h=0.5*pango.height()+4*z;
+    h=0.5*pango.height()+4*z;       
 
     cairo_move_to(cairo,r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     pango.show();
 
-    if (mouseFocus) displayTooltip(cairo,tooltip);
+    if (mouseFocus) {
+		displayTooltip(cairo,tooltip);	
+	}
+	if (onResizeHandles) drawResizeHandles(cairo);	
     cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));
     cairo_line_to(cairo,r.x(w,-h), r.y(w,-h));
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));

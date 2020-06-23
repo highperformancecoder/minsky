@@ -767,7 +767,7 @@ namespace MathDAG
         if (!arguments[1].empty() && arguments[1][0])
           if (!arguments[0].empty() && arguments[0][0])
             {
-              print(surf.cairo(),"Θ",Anchor::nw);
+              print(surf.cairo(),"θ",Anchor::nw);
               parenthesise(surf, [&](Surface& surf){
                   arguments[1][0]->render(surf);
                   print(surf.cairo()," - ",Anchor::nw);
@@ -781,13 +781,13 @@ namespace MathDAG
             }
           else
             {
-              print(surf.cairo(),"Θ",Anchor::nw);
+              print(surf.cairo(),"θ",Anchor::nw);
               parenthesise(surf, [&](Surface& surf){arguments[1][0]->render(surf);});
             }
         else
           if (!arguments[0].empty() && arguments[0][0])
             {
-              print(surf.cairo(),"Θ",Anchor::nw);
+              print(surf.cairo(),"θ",Anchor::nw);
               parenthesise(surf, [&](Surface& surf){
                   print(surf.cairo()," - ",Anchor::nw);
                   if (arguments[0][0]->BODMASlevel()>1)

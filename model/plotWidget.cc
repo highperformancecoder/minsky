@@ -83,14 +83,14 @@ namespace minsky
 
   PlotWidget::PlotWidget()
   {
-    // TODO assignPorts();
+    m_width=m_height=150;
     nxTicks=nyTicks=10;
     fontScale=2;
     leadingMarker=true;
     grid=true;
     legendLeft=0.1; // override ecolab's default value
 
-    float w=width, h=height;
+    float w=iWidth(), h=iHeight();
     float dx=w/(2*numLines+1); // x location of ports
     float dy = h/(numLines);
 
@@ -121,7 +121,7 @@ namespace minsky
   void PlotWidget::draw(cairo_t* cairo) const
   {
     double z=zoomFactor();
-    double w=width*z, h=height*z;
+    double w=iWidth()*z, h=iHeight()*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel.empty()||!ylabel.empty()||!y1label.empty())
@@ -273,8 +273,8 @@ namespace minsky
     if (!justDataChanged)
       // label pens
       for (size_t i=0; i<yvars.size(); ++i)
-        if (yvars[i].idx()>=0)
-          labelPen(i, latexToPango(yvars[i].name));
+        if (yvars[i])
+          labelPen(i, latexToPango(yvars[i]->name));
   }
 
   void PlotWidget::mouseDown(double x,double y)
@@ -283,9 +283,9 @@ namespace minsky
     clickY=y;
     ct=clickType(x,y);
     double z=zoomFactor();
-    double gw=width*z-2*portSpace;
-    double gh=height*z-portSpace;
-    if (!title.empty()) gh=height*z-portSpace-titleHeight;
+    double gw=iWidth()*z-2*portSpace;
+    double gh=iHeight()*z-portSpace;
+    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -294,12 +294,12 @@ namespace minsky
   void PlotWidget::mouseMove(double x,double y)
   {
     double z=zoomFactor();
-    double w=0.5*width*z, h=0.5*height*z;
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     double dx=x-this->x(), dy=y-this->y();
-    double gw=width*z-2*portSpace;
-    double gh=height*z-portSpace;
-    if (!title.empty()) gh=height*z-portSpace-titleHeight;
-    double yoffs=this->y()-(legendTop-0.5)*height*z;
+    double gw=iWidth()*z-2*portSpace;
+    double gh=iHeight()*z-portSpace;
+    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
+    double yoffs=this->y()-(legendTop-0.5)*iHeight()*z;
     switch (ct)
       {
       case ClickType::legendMove:
@@ -342,8 +342,8 @@ namespace minsky
   void PlotWidget::resize(const LassoBox& x)
   {
     float invZ=1/zoomFactor();
-    width=abs(x.x1-x.x0)*invZ;
-    height=abs(x.y1-x.y0)*invZ;
+    iWidth(abs(x.x1-x.x0)*invZ);
+    iHeight(abs(x.y1-x.y0)*invZ);
     moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
@@ -360,9 +360,9 @@ namespace minsky
       }
 
     double legendWidth, legendHeight;
-    legendSize(legendWidth, legendHeight, height*z-portSpace);
-    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*z;
-    double yy= y-this->y() + (legendTop-0.5)*height*z;
+    legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
+    double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
     if (xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
@@ -370,14 +370,14 @@ namespace minsky
         else if (yy>=0.8*legendHeight && yy<legendHeight)
           return ClickType::legendResize;
       }
-    
+
+    // TODO - delegate to Item::clickType
+    if ((abs(x-Item::left()) < portRadius*z || abs(x-Item::right()) < portRadius*z) &&
+      (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      return ClickType::onResize;         
+
     double dx=x-this->x(), dy=y-this->y();
-    double w=0.5*width*z, h=0.5*height*z;
-    // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-        fabs(fabs(dy)-h) < portRadiusMult*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-      return ClickType::onResize;
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     return (abs(dx)<w && abs(dy)<h)?
       ClickType::onItem: ClickType::outside;
   }
@@ -390,30 +390,30 @@ namespace minsky
   {
     size_t extraPen=2*numLines+1;
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen].idx()>=0)
-        for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen].size()); ++i)
+      if (pen<yvars.size() && yvars[pen])
+        for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen]->size()); ++i)
           {
             double x,y;
             switch (xvars.size())
               {
               case 0: // use t, when x variable not attached
                 x=t;
-                y=yvars[pen][i];
+                y=(*yvars[pen])[i];
                 break;
               case 1: // use the value of attached variable
-                assert(xvars[0].idx()>=0);
-                if (xvars[0].size()>1)
+                assert(xvars[0]->idx()>=0);
+                if (xvars[0]->size()>1)
                   throw_error("Tensor valued x inputs not supported");
-                x=xvars[0][0];
-                y=yvars[pen][i];
+                x=(*xvars[0])[0];
+                y=(*yvars[pen])[i];
                 break;
               default:
-                if (pen < xvars.size() && xvars[pen].idx()>=0)
+                if (pen < xvars.size() && xvars[pen]->idx()>=0)
                   {
-                    if (xvars[pen].size()>1)
+                    if (xvars[pen]->size()>1)
                       throw_error("Tensor valued x inputs not supported");
-                    x=xvars[pen][0];
-                    y=yvars[pen][i];
+                    x=(*xvars[pen])[0];
+                    y=(*yvars[pen])[i];
                   }
                 else
                   throw error("x input not wired for pen %d",(int)pen+1);
@@ -450,36 +450,36 @@ namespace minsky
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
     for (auto& i: yvars)
-      if (i.idx()>=0 && xvars[&i-&yvars[0]].idx()==-1 && i.hypercube().xvectors.size())
+      if (i && xvars[&i-&yvars[0]] && i->hypercube().xvectors.size())
         {
-          auto& xv=i.hypercube().xvectors[0];
+          auto& xv=i->hypercube().xvectors[0];
           if (xv.dimension.type==Dimension::time)
             xIsSecsSinceEpoch=true;
         }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && (yvars[pen].size()>1) && yvars[pen].idx()>=0)
+      if (pen<yvars.size() && yvars[pen] && yvars[pen]->size()>1)
         {
           auto& yv=yvars[pen];
-          auto d=yv.hypercube().dims();
+          auto d=yv->hypercube().dims();
           if (d.empty()) continue;
           
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
-          if (pen<xvars.size() && xvars[pen].idx()>=0)
+          if (pen<xvars.size() && xvars[pen]->idx()>=0)
             {
-              if (xvars[pen].hypercube().xvectors[0].size()!=d[0])
+              if (xvars[pen]->hypercube().xvectors[0].size()!=d[0])
                 throw error("x vector not same length as y vectors");
-              x=xvars[pen].begin();
+              x=xvars[pen]->begin();
             }
           else
             {
               xdefault.reserve(d[0]);
               xticks.clear();
-              if (yv.hypercube().rank()) // yv carries its own x-vector
+              if (yv->hypercube().rank()) // yv carries its own x-vector
                 {
-                  auto& xv=yv.hypercube().xvectors[0];
+                  auto& xv=yv->hypercube().xvectors[0];
                   assert(xv.size()==d[0]);
                   switch (xv.dimension.type)
                     {
@@ -523,16 +523,16 @@ namespace minsky
           
           // higher rank y objects treated as multiple y vectors to plot
           // For feature 47
-            for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv.size()); j+=d[0])
+            for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
               {
-                setPen(extraPen, x, yv.begin()+j, d[0]);
+                setPen(extraPen, x, yv->begin()+j, d[0]);
                 if (pen>=numLines)
                   assignSide(extraPen,Side::right);
                string label;
                 size_t stride=d[0];
-                for (size_t i=1; i<yv.hypercube().rank(); ++i)
+                for (size_t i=1; i<yv->hypercube().rank(); ++i)
                   {
-                    label+=str(yv.hypercube().xvectors[i][(j/stride)%d[i]])+" ";
+                    label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
                     stride*=d[i];
                   }
                 labelPen(extraPen,label);
@@ -543,17 +543,18 @@ namespace minsky
   }
 
   
-  void PlotWidget::connectVar(const VariableValue& var, unsigned port)
+  void PlotWidget::connectVar(const shared_ptr<VariableValue>& var, unsigned port)
   {
+    assert(var);
     if (port<nBoundsPorts)
       switch (port)
         {
-        case 0: xminVar=var; return;
-        case 1: xmaxVar=var; return;
-        case 2: yminVar=var; return;
-        case 3: ymaxVar=var; return;
-        case 4: y1minVar=var; return;
-        case 5: y1maxVar=var; return;
+        case 0: xminVar=*var; return;
+        case 1: xmaxVar=*var; return;
+        case 2: yminVar=*var; return;
+        case 3: ymaxVar=*var; return;
+        case 4: y1minVar=*var; return;
+        case 5: y1maxVar=*var; return;
         }
     unsigned pen=port-nBoundsPorts;
     if (pen<2*numLines)

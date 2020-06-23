@@ -74,7 +74,7 @@
     <type>SwitchIcon</type>
     <x>290</x>
     <y>125</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -89,7 +89,7 @@
     <type>Variable:parameter</type>
     <x>152</x>
     <y>112</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>6</int>
@@ -109,7 +109,7 @@
     <type>Variable:parameter</type>
     <x>148</x>
     <y>156</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>8</int>
@@ -131,7 +131,7 @@
     <type>Variable:parameter</type>
     <x>147</x>
     <y>197</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>10</int>
@@ -151,7 +151,7 @@
     <type>Operation:time</type>
     <x>217</x>
     <y>29</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>12</int>
@@ -163,7 +163,7 @@
     <type>PlotWidget</type>
     <x>815.75</x>
     <y>297.75</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>14</int>
@@ -303,7 +303,7 @@
     <type>Variable:parameter</type>
     <x>283</x>
     <y>725</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>37</int>
@@ -323,7 +323,7 @@
     <type>Operation:time</type>
     <x>268</x>
     <y>666</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>39</int>
@@ -335,7 +335,7 @@
     <type>Operation:multiply</type>
     <x>415</x>
     <y>686</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>41</int>
@@ -350,7 +350,7 @@
     <type>SwitchIcon</type>
     <x>453</x>
     <y>837</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>45</int>
@@ -365,7 +365,7 @@
     <type>Variable:parameter</type>
     <x>344</x>
     <y>805</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>51</int>
@@ -385,7 +385,7 @@
     <type>Variable:parameter</type>
     <x>344</x>
     <y>845</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>53</int>
@@ -407,7 +407,7 @@
     <type>Variable:parameter</type>
     <x>342</x>
     <y>891</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>55</int>
@@ -428,7 +428,7 @@
     <type>Item</type>
     <x>263</x>
     <y>254</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
     </ports>
@@ -439,7 +439,7 @@
     <type>Item</type>
     <x>539</x>
     <y>655</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
     </ports>
@@ -449,7 +449,7 @@
     <type>PlotWidget</type>
     <x>919.25</x>
     <y>894.75</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>59</int>
@@ -589,7 +589,7 @@
     <type>Operation:sin</type>
     <x>441</x>
     <y>741</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>82</int>

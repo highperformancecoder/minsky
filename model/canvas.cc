@@ -82,10 +82,8 @@ namespace minsky
           case ClickType::onResize:
             lassoMode=LassoMode::itemResize;
             // set x0,y0 to the opposite corner of (x,y)
-            lasso.x0 = itemFocus->x() +
-              0.5*itemFocus->width()*z * (x>itemFocus->x()? -1:1);
-            lasso.y0 = itemFocus->y() +
-              0.5*itemFocus->height()*z * (y>itemFocus->y()? -1:1);
+            lasso.x0 = x>itemFocus->x()? itemFocus->left(): itemFocus->right();
+            lasso.y0 = y>itemFocus->y()? itemFocus->top(): itemFocus->bottom();
             lasso.x1=x;
             lasso.y1=y;
             item=itemFocus;
@@ -167,7 +165,7 @@ namespace minsky
       case LassoMode::itemResize:
         if (item)
           {
-            item->resize(lasso);
+            item->resize(lasso);  
             requestRedraw();
           }
         break;
