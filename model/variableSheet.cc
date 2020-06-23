@@ -49,16 +49,6 @@ namespace minsky
     };
   }
 
-  void VariableSheet::populateItemVector() {
-    itemVector.clear();	
-    minsky().canvas.model->recursiveDo(&GroupItems::items,
-                                       [&](Items&, Items::iterator i) {
-                                         if ((*i)->variableCast()->type()!=VariableType::parameter)		                                 
-                                           itemVector.emplace_back(*i);
-                                         return false;
-                                       });   	
-  }	     
-
   void VariableSheet::redraw(int, int, int width, int height)
   {
     cairo_t* cairo=surface->cairo();

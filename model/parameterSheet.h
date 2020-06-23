@@ -29,7 +29,7 @@ namespace minsky
   class ParameterSheet: public ecolab::CairoSurface, public ParVarSheet
   {  
   public:
-    void populateItemVector() override;   
+    bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()==VariableType::parameter;}   
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };

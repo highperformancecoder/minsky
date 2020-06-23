@@ -18,22 +18,27 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef VARIABLESHEET_H
-#define VARIABLESHEET_H
-#include <cairoSurfaceImage.h>
-#include <parVarSheet.h>
+#ifndef PARVARSHEET_H
+#define PARVARSHEET_H
+#include <item.h>
+#include <variable.h>
 
 namespace minsky
 {
 	 
-  class VariableSheet: public ecolab::CairoSurface, public ParVarSheet
-  {
+  class ParVarSheet: public ItemT<ParVarSheet>
+  {     
   public:
-    bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()!=VariableType::parameter;}
-    void redraw(int, int, int width, int height) override;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    double xoffs=80;  
+    double rowHeight=0;
+    double colWidth=50;    
+    float m_width=2e09, m_height=2e09;
+    Items itemVector;
+    void populateItemVector();
+    virtual bool variableSelector(ItemPtr i) {return false;}
+    void draw(cairo_t* cairo) const override;      
   };
   
 }
-#include "variableSheet.cd"
+#include "parVarSheet.cd"
 #endif
