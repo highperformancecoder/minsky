@@ -198,6 +198,15 @@ namespace minsky
     cairo_set_line_width(cairo,1);
     double gw=w-2*portSpace, gh=h-portSpace;;
     if (!title.empty()) gh=h-portSpace-titleHeight;  // take into account room for the title
+    //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
+    auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
+    switch (plotType)
+      {
+      case line: pt=Plot::line; break;
+      case bar:  pt=Plot::bar;  break;
+      default: break;
+      }
+      
     Plot::draw(cairo,gw,gh); 
     cairo_restore(cairo);
     if (mouseFocus)
@@ -467,7 +476,7 @@ namespace minsky
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
-          if (pen<xvars.size() && xvars[pen]->idx()>=0)
+          if (pen<xvars.size() && xvars[pen])
             {
               if (xvars[pen]->hypercube().xvectors[0].size()!=d[0])
                 throw error("x vector not same length as y vectors");
@@ -489,7 +498,8 @@ namespace minsky
                           xticks.emplace_back(i, str(xv[i]));
                           xdefault.push_back(i);
                         }
-                      plotType=bar;
+                      if (plotType==automatic)
+                        Plot::plotType=Plot::bar;
                       break;
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
@@ -499,7 +509,8 @@ namespace minsky
                       else
                         for (auto& i: xv)
                           xdefault.push_back(any_cast<double>(i));
-                      plotType=line;
+                      if (plotType==automatic)
+                        Plot::plotType=Plot::line;
                       break;
                     case Dimension::time:
                       {
@@ -511,7 +522,8 @@ namespace minsky
                             xdefault.push_back(tv);
                           }
                       }
-                      plotType=line;
+                      if (plotType==automatic)
+                        Plot::plotType=Plot::line;
                       break;
                     }
                 }

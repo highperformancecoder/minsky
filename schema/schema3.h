@@ -112,7 +112,7 @@ namespace schema3
     Optional<float> iconScale; // for handling legacy schemas
     // Plot specific fields
     Optional<bool> logx, logy, ypercent;
-    Optional<Plot::PlotType> plotType;
+    Optional<minsky::PlotWidget::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
@@ -173,7 +173,8 @@ namespace schema3
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
       axis(it.axis), arg(it.arg), data(it.data), assetClasses(it.assetClasses),
       iconScale(it.iconScale), logx(it.logx), logy(it.logy), ypercent(it.ypercent),
-      plotType(it.plotType), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
+      plotType(minsky::PlotWidget::PlotType(it.plotType? int(*it.plotType): 0)),
+      xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
       nxTicks(it.nxTicks), nyTicks(it.nyTicks), xtickAngle(it.xtickAngle),
       exp_threshold(it.exp_threshold), legend(it.legend), bookmarks(it.bookmarks),
       tensorData(convertTensorDataFromSchema2(it.tensorData)), palette(it.palette)

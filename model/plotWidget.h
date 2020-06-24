@@ -74,7 +74,11 @@ namespace minsky
 
 
     std::string title;
- 
+
+    /// automatic means choose line or bar depending on the x-vector type.
+    enum PlotType {line, bar, automatic};
+    PlotType plotType=automatic;
+    
     PlotWidget();
 
     // pick the Item width method, not ecolab::Plot's
