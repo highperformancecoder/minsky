@@ -164,7 +164,7 @@ namespace minsky
     float z=zoomFactor();
     float l=OperationBase::l*z, r=OperationBase::r*z, 
       h=OperationBase::h*z;
-    return std::max(1.0f,std::min(iWidth()*z/std::max(l,r),iHeight()*z/h));  
+    return std::max(1.0f,std::min(0.5f*iWidth()*z/std::max(l,r),0.5f*iHeight()*z/h));  
   }
   
   void OperationBase::draw(cairo_t* cairo) const

@@ -104,129 +104,130 @@ namespace
 SUITE(Group)
 {
   TEST_FIXTURE(TestFixture, SelectGroup)
-  {
-    Group& g=*model->addGroup(new Group);
-    g.addItem(a);
-    g.addItem(b);
-    CHECK_EQUAL(2, g.items.size());
-    CHECK_EQUAL(1, g.wires.size());
-    CHECK(&g==a->group.lock().get());
-    CHECK(!a->visible());
-    CHECK(&g==b->group.lock().get());
-    CHECK(!b->visible()); 
-    CHECK(c->group.lock()==model);
-    CHECK(c->visible());
-    CHECK(!model->findWire(*ab)->visible());
-    CHECK(model->findWire(*bc)->visible());
-    CHECK(find(g.wires.begin(), g.wires.end(), ab) != g.wires.end()); 
-    CHECK(model->uniqueItems());
-  }
+    {
+      auto& g=*model->addGroup(new Group);
+      g.addItem(a);
+      g.addItem(b);
+      CHECK_EQUAL(2, g.items.size());
+      CHECK_EQUAL(1, g.wires.size());
+      CHECK(&g==a->group.lock().get());
+      CHECK(!a->visible());
+      CHECK(&g==b->group.lock().get());
+      CHECK(!b->visible()); 
+      CHECK(c->group.lock()==model);
+      CHECK(c->visible());
+      CHECK(!model->findWire(*ab)->visible());
+      CHECK(model->findWire(*bc)->visible());
+      CHECK(find(g.wires.begin(), g.wires.end(), ab) != g.wires.end()); 
+      CHECK(model->uniqueItems());
+      model->removeGroup(g); // why is this needed???
+    }
 
   TEST_FIXTURE(TestFixture, addVariable)
-  {
-    group0->addItem(c);
-    CHECK(model->uniqueItems());
-    CHECK_EQUAL(4,group0->items.size());
-    CHECK_EQUAL(2,model->items.size());
-    CHECK_EQUAL(3,group0->wires.size());
-    CHECK_EQUAL(0,model->wires.size());
+    {
+      group0->addItem(c);
+      CHECK(model->uniqueItems());
+      CHECK_EQUAL(4,group0->items.size());
+      CHECK_EQUAL(2,model->items.size());
+      CHECK_EQUAL(3,group0->wires.size());
+      CHECK_EQUAL(0,model->wires.size());
     
-    checkWiresConsistent();
+      checkWiresConsistent();
 
-    // now check removal
-    group0->group.lock()->addItem(c);
+      // now check removal
+      group0->group.lock()->addItem(c);
 
-    CHECK_EQUAL(3,group0->items.size());
-    CHECK_EQUAL(2,group0->wires.size());
-    CHECK_EQUAL(3,model->items.size());
-    CHECK_EQUAL(1,model->wires.size());
-  }
+      CHECK_EQUAL(3,group0->items.size());
+      CHECK_EQUAL(2,group0->wires.size());
+      CHECK_EQUAL(3,model->items.size());
+      CHECK_EQUAL(1,model->wires.size());
+    }
 
   TEST_FIXTURE(TestFixture, addIntegral)
-  {
-    unsigned numItems=model->numItems();
-    auto integ=make_shared<IntOp>();
-    model->addItem(integ);
-    CHECK_EQUAL(numItems+2,model->numItems());
-    CHECK(integ->group.lock()==model);
-    CHECK(integ->intVar->group.lock()==model);
-    group0->addItem(integ);
-    CHECK(integ->group.lock()==group0);
-    CHECK(integ->intVar->group.lock()==group0);
-  }
+    {
+      unsigned numItems=model->numItems();
+      auto integ=make_shared<IntOp>();
+      model->addItem(integ);
+      CHECK_EQUAL(numItems+2,model->numItems());
+      CHECK(integ->group.lock()==model);
+      CHECK(integ->intVar->group.lock()==model);
+      group0->addItem(integ);
+      CHECK(integ->group.lock()==group0);
+      CHECK(integ->intVar->group.lock()==group0);
+    }
   
   TEST_FIXTURE(TestFixture, addBookmark)
     {
-	  model->addBookmark("bookmark0");
-	  CHECK_EQUAL("bookmark0",model->bookmarkList()[model->bookmarks.size()-1]);
-	  CHECK_EQUAL(1,model->bookmarks.size());
+      model->addBookmark("bookmark0");
+      CHECK_EQUAL("bookmark0",model->bookmarkList()[model->bookmarks.size()-1]);
+      CHECK_EQUAL(1,model->bookmarks.size());
       auto& b0=model->bookmarks[model->bookmarks.size()-1];
-	  double x0 =b0.x, y0=b0.y;	  
-	  model->moveTo(100,100);
-	  model->addBookmark("bookmark1");
-	  CHECK_EQUAL("bookmark1",model->bookmarkList()[model->bookmarks.size()-1]);
-	  CHECK_EQUAL(2,model->bookmarks.size());
-	  auto& b1=model->bookmarks[model->bookmarks.size()-1];
-	  double x1=b1.x,y1=b1.y;
-	  CHECK_EQUAL(x1,model->x());
-	  CHECK_EQUAL(y1,model->y());
-	  model->moveTo(200,200);
-	  model->addBookmark("bookmark2");
-	  CHECK_EQUAL("bookmark2",model->bookmarkList()[model->bookmarks.size()-1]);
-	  CHECK_EQUAL(3,model->bookmarks.size());
-	  auto& b2=model->bookmarks[model->bookmarks.size()-1];
-	  double x2=b2.x,y2=b2.y;
-	  CHECK_EQUAL(x2,model->x());
-	  CHECK_EQUAL(y2,model->y());
-	  model->moveTo(300,300);
-	  model->addBookmark("bookmark3");
-	  CHECK_EQUAL("bookmark3",model->bookmarkList()[model->bookmarks.size()-1]);
-	  CHECK_EQUAL(4,model->bookmarks.size());
-	  auto& b3=model->bookmarks[model->bookmarks.size()-1];
-	  double x3=b3.x,y3=b3.y;
-	  CHECK_EQUAL(x3,model->x());
-	  CHECK_EQUAL(y3,model->y());	  
-	  model->gotoBookmark(0);
-	  CHECK_EQUAL(x0,model->x());
-	  CHECK_EQUAL(y0,model->y());
-	  CHECK(x0!=x1 && y0!=y1 && x0!=x2 && y0!=y2 && x0!=x3 && y0!=y3);
-	  model->deleteBookmark(model->bookmarks.size()-1);
-	  model->deleteBookmark(model->bookmarks.size()-1);
-	  model->deleteBookmark(model->bookmarks.size()-1);
-	  model->deleteBookmark(model->bookmarks.size()-1);
-	  CHECK_EQUAL(0,model->bookmarks.size()); 	   	          
+      double x0 =b0.x, y0=b0.y;	  
+      model->moveTo(100,100);
+      model->addBookmark("bookmark1");
+      CHECK_EQUAL("bookmark1",model->bookmarkList()[model->bookmarks.size()-1]);
+      CHECK_EQUAL(2,model->bookmarks.size());
+      auto& b1=model->bookmarks[model->bookmarks.size()-1];
+      double x1=b1.x,y1=b1.y;
+      CHECK_EQUAL(x1,model->x());
+      CHECK_EQUAL(y1,model->y());
+      model->moveTo(200,200);
+      model->addBookmark("bookmark2");
+      CHECK_EQUAL("bookmark2",model->bookmarkList()[model->bookmarks.size()-1]);
+      CHECK_EQUAL(3,model->bookmarks.size());
+      auto& b2=model->bookmarks[model->bookmarks.size()-1];
+      double x2=b2.x,y2=b2.y;
+      CHECK_EQUAL(x2,model->x());
+      CHECK_EQUAL(y2,model->y());
+      model->moveTo(300,300);
+      model->addBookmark("bookmark3");
+      CHECK_EQUAL("bookmark3",model->bookmarkList()[model->bookmarks.size()-1]);
+      CHECK_EQUAL(4,model->bookmarks.size());
+      auto& b3=model->bookmarks[model->bookmarks.size()-1];
+      double x3=b3.x,y3=b3.y;
+      CHECK_EQUAL(x3,model->x());
+      CHECK_EQUAL(y3,model->y());	  
+      model->gotoBookmark(0);
+      CHECK_EQUAL(x0,model->x());
+      CHECK_EQUAL(y0,model->y());
+      CHECK(x0!=x1 && y0!=y1 && x0!=x2 && y0!=y2 && x0!=x3 && y0!=y3);
+      model->deleteBookmark(model->bookmarks.size()-1);
+      model->deleteBookmark(model->bookmarks.size()-1);
+      model->deleteBookmark(model->bookmarks.size()-1);
+      model->deleteBookmark(model->bookmarks.size()-1);
+      CHECK_EQUAL(0,model->bookmarks.size()); 	   	          
     }  
   
   // check that removing then adding an item leaves the group idempotent
   TEST_FIXTURE(TestFixture, removeAddItem)
-  {
-    CHECK_EQUAL(1,group0->createdIOvariables.size());
-    CHECK_EQUAL(3,model->items.size());
-    model->addItem(a);
-    group0->splitBoundaryCrossingWires();
-    save("x1.mky");
-    CHECK_EQUAL(3,group0->items.size()); // extra io var created
-    CHECK_EQUAL(4,model->items.size());
-    CHECK_EQUAL(2,group0->createdIOvariables.size());
-    CHECK_EQUAL(4,model->numWires());
-    group0->addItem(a);
-    group0->splitBoundaryCrossingWires();
-    CHECK_EQUAL(3,group0->items.size());
-    CHECK_EQUAL(3,model->items.size());
-    CHECK_EQUAL(1,group0->createdIOvariables.size());
-    CHECK_EQUAL(3,model->numWires());
-    CHECK_EQUAL(3,group0->items.size());
-  }
+    {
+      CHECK_EQUAL(1,group0->createdIOvariables.size());
+      CHECK_EQUAL(3,model->items.size());
+      model->addItem(a);
+      group0->splitBoundaryCrossingWires();
+      save("x1.mky");
+      CHECK_EQUAL(3,group0->items.size()); // extra io var created
+      CHECK_EQUAL(4,model->items.size());
+      CHECK_EQUAL(2,group0->createdIOvariables.size());
+      CHECK_EQUAL(4,model->numWires());
+      group0->addItem(a);
+      group0->splitBoundaryCrossingWires();
+      CHECK_EQUAL(3,group0->items.size());
+      CHECK_EQUAL(3,model->items.size());
+      CHECK_EQUAL(1,group0->createdIOvariables.size());
+      CHECK_EQUAL(3,model->numWires());
+      CHECK_EQUAL(3,group0->items.size());
+    }
 
   TEST_FIXTURE(TestFixture, displayPlot)
-  {
-    auto plot=new PlotWidget;
-    group0->addItem(plot);
-    plot->makeDisplayPlot();
-    CHECK(group0->displayPlot.get()==plot);
-    group0->removeDisplayPlot();
-    CHECK(!group0->displayPlot);
-  }
+    {
+      auto plot=new PlotWidget;
+      group0->addItem(plot);
+      plot->makeDisplayPlot();
+      CHECK(group0->displayPlot.get()==plot);
+      group0->removeDisplayPlot();
+      CHECK(!group0->displayPlot);
+    }
 
   TEST_FIXTURE(TestFixture, findGroup)
     {
@@ -244,8 +245,8 @@ SUITE(Group)
       group0->setZoom(1);
       g->setZoom(1);
       // force rendering to ensure everything is placed the same
-      group0->bb.update(*group0);
-      g->bb.update(*g);
+      group0->updateBoundingBox();
+      g->updateBoundingBox();
       CHECK_CLOSE(group0->bb.width(), g->bb.width(), 1e-2);
       CHECK_CLOSE(group0->bb.height(), g->bb.height(), 1e-2);
       CHECK_CLOSE(group0->x(),g->x(), 1e-2);
@@ -309,52 +310,52 @@ SUITE(Group)
       auto g=addGroup(new Group);
       g->addItem(new Operation<OperationType::ln>);
       CHECK(recursiveDo(&GroupItems::items,[&](Items&,Items::iterator i)
-                        {return dynamic_cast<Operation<OperationType::exp>*>(i->get());}));
+                                           {return dynamic_cast<Operation<OperationType::exp>*>(i->get());}));
       CHECK(recursiveDo(&GroupItems::items,[&](Items&,Items::iterator i)
-                        {return dynamic_cast<Operation<OperationType::ln>*>(i->get());}));
+                                           {return dynamic_cast<Operation<OperationType::ln>*>(i->get());}));
       CHECK(!recursiveDo(&GroupItems::items,[&](Items&,Items::iterator i)
-                        {return dynamic_cast<Operation<OperationType::add>*>(i->get());}));
+                                            {return dynamic_cast<Operation<OperationType::add>*>(i->get());}));
     }
   
-   TEST_FIXTURE(TestFixture, removeGroup)
+  TEST_FIXTURE(TestFixture, removeGroup)
     {
       auto g=model->removeGroup(*group0);
       CHECK(g==group0);
       CHECK(find(model->groups.begin(),model->groups.end(),group0)==model->groups.end());
     }
    
-    TEST_FIXTURE(TestFixture,moveContents)
-      {
-        group0->addItem(new Group);
-        unsigned numItems=model->numItems();
-        unsigned numGroups=model->numGroups();
-        unsigned numWires=model->numWires();
-        CHECK(!group0->empty());
-        model->moveContents(*group0);
-        CHECK(group0->empty());
-        CHECK_EQUAL(numItems, model->numItems());
-        CHECK_EQUAL(numGroups, model->numGroups());
-        CHECK_EQUAL(numWires, model->numWires());
-        CHECK_THROW(group0->moveContents(*model), error);
-      }
+  TEST_FIXTURE(TestFixture,moveContents)
+    {
+      group0->addItem(new Group);
+      unsigned numItems=model->numItems();
+      unsigned numGroups=model->numGroups();
+      unsigned numWires=model->numWires();
+      CHECK(!group0->empty());
+      model->moveContents(*group0);
+      CHECK(group0->empty());
+      CHECK_EQUAL(numItems, model->numItems());
+      CHECK_EQUAL(numGroups, model->numGroups());
+      CHECK_EQUAL(numWires, model->numWires());
+      CHECK_THROW(group0->moveContents(*model), error);
+    }
 
-    TEST_FIXTURE(Group, checkAddIORegion)
-      {
-        CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
-        CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
-        VariablePtr inp(VariableType::flow,"input");
-        VariablePtr outp(VariableType::flow,"output");
-        inp->moveTo(x()-0.5*iconWidth, y());
-        addItem(inp);
-        checkAddIORegion(inp);
-        outp->moveTo(x()+0.5*iconWidth, y());
-        addItem(outp);
-        checkAddIORegion(outp);
-        CHECK_EQUAL(1,inVariables.size());
-        CHECK_EQUAL(1,outVariables.size());
-        CHECK_EQUAL("input",inVariables[0]->name());
-        CHECK_EQUAL("output",outVariables[0]->name());
-      }
+  TEST_FIXTURE(Group, checkAddIORegion)
+    {
+      CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
+      CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
+      VariablePtr inp(VariableType::flow,"input");
+      VariablePtr outp(VariableType::flow,"output");
+      inp->moveTo(x()-0.5*iconWidth, y());
+      addItem(inp);
+      checkAddIORegion(inp);
+      outp->moveTo(x()+0.5*iconWidth, y());
+      addItem(outp);
+      checkAddIORegion(outp);
+      CHECK_EQUAL(1,inVariables.size());
+      CHECK_EQUAL(1,outVariables.size());
+      CHECK_EQUAL("input",inVariables[0]->name());
+      CHECK_EQUAL("output",outVariables[0]->name());
+    }
     
 }
 
@@ -439,14 +440,16 @@ SUITE(Canvas)
     
     TEST_FIXTURE(TestFixture,resizeVariable)
     {
+      c->moveTo(400,300);
+      c->updateBoundingBox();
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       c->draw(surf.cairo());// reposition ports
-      float xc=c->x()+0.5*c->width(), yc=c->y()+0.5*c->height();      
-      CHECK(c->clickType(xc,yc) == ClickType::onResize); 
+      float xc=c->right(), yc=c->bottom();      
+      CHECK(c->clickType(xc,yc) == ClickType::onResize);
       canvas.mouseDown(xc,yc);
       canvas.mouseUp(600,800);
-      CHECK_CLOSE(600-c->x(),0.5*c->width(),4*portRadiusMult);
-      CHECK_CLOSE(800-c->y(),0.5*c->height(),4*portRadiusMult);
+      CHECK_CLOSE(600, c->right(),4*portRadiusMult);
+      CHECK_CLOSE(800, c->bottom(),4*portRadiusMult);
     }    
 
     TEST_FIXTURE(TestFixture,resizeOperation)
@@ -456,12 +459,12 @@ SUITE(Canvas)
       add->moveTo(400,300);
       cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
       add->draw(surf.cairo());// reposition ports
-      float xc=add->x()+0.5*add->width(), yc=add->y()+0.5*add->height();      
+      float xc=add->right(), yc=add->bottom();      
       CHECK(add->clickType(xc,yc) == ClickType::onResize); 
       canvas.mouseDown(xc,yc);
       canvas.mouseUp(600,800);
-      CHECK_CLOSE(600-add->x(),0.5*add->width(),4*portRadiusMult);
-      CHECK_CLOSE(800-add->y(),0.5*add->height(),4*portRadiusMult);
+      CHECK_CLOSE(600,add->right(),4*portRadiusMult);
+      CHECK_CLOSE(800,add->bottom(),4*portRadiusMult);
     }    
 
     TEST_FIXTURE(TestFixture,onSlider)
@@ -598,14 +601,16 @@ SUITE(Canvas)
         model->self=model;
         addGroup();
         auto& group=dynamic_cast<Group&>(*itemFocus);
+        group.updateBoundingBox();
         group.relZoom=0.5; // ensure displayContents is false
         double w=group.iconWidth, h=group.iconHeight;
         double x=group.x(), y=group.y(), z=group.relZoom;
+        CHECK(group.clickType(group.right(),group.top()) == ClickType::onResize);
 
-        mouseDown(x+0.5*w, y+0.5*h);
-        mouseUp(x+w, y+h-20*z); // take into account top and bottom margins and the relative zoom defined above. for feature 88
-        CHECK_CLOSE(1.5*w,group.iconWidth,1);
-        CHECK_CLOSE(1.5*h,group.iconHeight,1); 
+        mouseDown(group.right(), group.bottom());
+        mouseUp(x+w, y+h);
+        CHECK_CLOSE(x+w,group.right(),1);
+        CHECK_CLOSE(y+h,group.bottom(),1); 
       }
 
     TEST_FIXTURE(Canvas, moveIntoThenOutOfGroup)
@@ -998,13 +1003,14 @@ SUITE(GodleyIcon)
       table.resize(3,2);
       table.cell(2,1)="flow1";
       table.cell(0,1)="stock1";
-      update();
+      // TODO - shouldn't be needed, but there is some font problem causing bottomMargin to be calculated incorrectly
+      scaleIconForHeight(500);
       CHECK_EQUAL(1,flowVars().size());
       CHECK_EQUAL(1,stockVars().size());
       for (auto& i: flowVars())
-        CHECK(i==select(i->x(),i->y()));
-      for (auto& i: stockVars())
-        CHECK(i==select(i->x(),i->y()));
+          CHECK(i==select(i->x(),i->y()));
+       for (auto& i: stockVars())
+         CHECK(i==select(i->x(),i->y()));
       CHECK(!select(x(),y()));
     }
   

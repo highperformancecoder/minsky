@@ -65,21 +65,27 @@ namespace minsky
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
-    float left=0, right=0, top, bottom;  	  
+    float m_left=0, m_right=0, m_top, m_bottom;  	  
   public:
     void update(const Item& x);
     bool contains(float x, float y) const {
       // extend each item by a portradius to solve ticket #903
-      return left-portRadius<=x && right+portRadius>=x && bottom+portRadius>=y && top-portRadius<=y;
+      return m_left-portRadius<=x && m_right+portRadius>=x && m_top-portRadius<=y && m_bottom+portRadius>=y;
     }
-    bool valid() const {return left!=right;}
-    float width() const {return right-left;}
-    float height() const {return bottom-top;}
+    bool valid() const {return m_left!=m_right;}
+    float width() const {return m_right-m_left;}
+    float height() const {return m_bottom-m_top;}
+    float left() const {return m_left;}
+    float right() const {return m_right;}
+    float top() const {return m_top;}
+    float bottom() const {return m_bottom;}
   };
 
   class Item: virtual public NoteBase, public ecolab::TCLAccessor<Item,double>
   {
     double m_rotation=0; ///< rotation of icon, in degrees
+  protected:
+    // these need to be protected, not private to allow the setting of these in constructors
     double m_width=0, m_height=0;
   public:
 
@@ -147,10 +153,10 @@ namespace minsky
     virtual float zoomFactor() const;
     float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
     float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
-    float left() const {return x()-0.5*zoomFactor()*width();}
-    float right() const {return x()+0.5*zoomFactor()*width();}
-    float top() const {return y()+0.5*zoomFactor()*height();}
-    float bottom() const {return y()-0.5*zoomFactor()*height();}
+    float left() const {return x()+bb.left()*zoomFactor();}
+    float right() const {return x()+bb.right()*zoomFactor();}
+    float top() const {return y()+bb.top()*zoomFactor();}
+    float bottom() const {return y()+bb.bottom()*zoomFactor();}
 
     /// delete all attached wires
     virtual void deleteAttachedWires();

@@ -53,10 +53,10 @@ namespace minsky
                                         &l,&t,&w,&h);
     // note (0,0) is relative to the (x,y) of icon.
     double invZ=1/x.zoomFactor();
-    left=l*invZ;
-    right=(l+w)*invZ;
-    top=t*invZ;
-    bottom=(t+h)*invZ;
+    m_left=l*invZ;
+    m_right=(l+w)*invZ;
+    m_top=t*invZ;
+    m_bottom=(t+h)*invZ; //coordinates increase down the page
   }
 
   void Item::throw_error(const std::string& msg) const
@@ -143,10 +143,9 @@ namespace minsky
       }          
      
     // then, check whether a resize handle has been selected  
-	float w=0.5*width()*zoomFactor(), h=0.5*height()*zoomFactor();	 
-    if (abs(abs(x-this->x())-w) < portRadiusMult*zoomFactor() &&	  
-            abs(abs(y-this->y())-h) < portRadiusMult*zoomFactor() &&	  
-            abs(hypot((x-this->x()),(y-this->y()))-hypot(w,h)) < portRadiusMult*zoomFactor())	  
+    float z=zoomFactor();
+    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
+      (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
       return ClickType::onResize;         
 
     ecolab::cairo::Surface dummySurf
@@ -184,10 +183,11 @@ namespace minsky
 
   namespace
   {
-    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf)
+    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
     {
       cairo::CairoSave cs(cairo);
       cairo_translate(cairo,x,y);
+      cairo_rotate(cairo,angle);
       cairo_scale(cairo,sf,sf);
       cairo_move_to(cairo,-1,-.2);
       cairo_line_to(cairo,-1,-1);
@@ -208,23 +208,16 @@ namespace minsky
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
     iWidth(abs(b.x1-b.x0)*invZ);
     iHeight(abs(b.y1-b.y0)*invZ);     
-    scaleFactor(std::max(1.0,std::min(static_cast<double>(iWidth()/w),static_cast<double>(iHeight()/h))));
+    scaleFactor(std::max(1.0f,std::min(iWidth()/w,iHeight()/h)));
   }
   
   void Item::drawResizeHandles(cairo_t* cairo) const
   {
-    {
-      cairo::CairoSave cs(cairo);
-      auto z=zoomFactor();
-      double x=0.5*width()*z, y=0.5*height()*z, sf=portRadiusMult*z;  
-      drawResizeHandle(cairo,x,y,sf);
-      cairo_rotate(cairo,0.5*M_PI);
-      drawResizeHandle(cairo,y,x,sf);
-      cairo_rotate(cairo,0.5*M_PI);
-      drawResizeHandle(cairo,x,y,sf);
-      cairo_rotate(cairo,0.5*M_PI);
-      drawResizeHandle(cairo,y,x,sf);
-    }
+    double sf=portRadiusMult*zoomFactor();  
+    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
     cairo_stroke(cairo);
   }
 
