@@ -29,10 +29,12 @@ namespace minsky
   class ParVarSheet: public ItemT<ParVarSheet>
   {     
   public:
-    double xoffs=80;  
+    double xoffs=80;
     double rowHeight=0;
     double colWidth=50;    
-    float m_width=2e09, m_height=2e09;
+    float m_width=600, m_height=800;
+    virtual float width() const {return m_width;}
+    virtual float height() const {return m_height;}
     Items itemVector;
     void populateItemVector();
     virtual bool variableSelector(ItemPtr i) {return false;}

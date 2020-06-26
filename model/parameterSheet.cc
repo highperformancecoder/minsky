@@ -47,21 +47,27 @@ namespace minsky
         Pango::show();
       }
     };
-  }	
+  }
 
   void ParameterSheet::redraw(int, int, int width, int height)
   {
-    cairo_t* cairo=surface->cairo();  
-    CroppedPango pango(cairo, colWidth);
-    rowHeight=15;
-    pango.setFontSize(5.0*rowHeight);
-  
-    {
-      if (!minsky().canvas.model->empty()) {	  
-        populateItemVector();			
-        draw(cairo);    
-      }     
+    if (surface.get()) {
+        cairo_t* cairo=surface->cairo();  
+        CroppedPango pango(cairo, colWidth);
+        rowHeight=15;
+        pango.setFontSize(5.0*rowHeight);
+	    
+        if (!minsky().canvas.model->empty()) {	  
+          populateItemVector();			        
+          cairo_move_to(cairo,offsx,offsy);        
+          draw(cairo); 
+          ecolab::cairo::Surface surf
+            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+          draw(surf.cairo());
+          m_width=surf.width();
+          m_height=surf.height();              
+        }     
+      }
     }
-  }
 
 }

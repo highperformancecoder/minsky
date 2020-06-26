@@ -30,6 +30,12 @@ namespace minsky
   {
   public:
     bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()!=VariableType::parameter;}
+    float offsx=0, offsy=0;
+    //float width() const override;
+    //float height() const override;
+    float width() const override {return m_width;}
+    float height() const override {return m_height;}    
+    VariableSheet& operator=(const VariableSheet& x) {CairoSurface::operator=(x); return *this;}            
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };

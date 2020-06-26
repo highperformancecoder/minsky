@@ -916,6 +916,8 @@ minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
 bind .equations.canvas <Configure> {setScrollBars}
+bind .parameters.canvas <Configure> {setScrollBars}
+bind .variables.canvas <Configure> {setScrollBars}
 
 set helpTopics(.wiring.panopticon) Panopticon
 
@@ -940,18 +942,28 @@ proc setScrollBars {} {
         .parameters {
             #.hscroll set 0 1
             #.vscroll set 0 1
-            set x0 [expr (10000-[get_pointer_x .parameters])/20000.0]
-            set y0 [expr (10000-[get_pointer_y .parameters])/20000.0]
-            .hscroll set $x0 [expr $x0+[winfo width .parameters]/20000.0]
-            .vscroll set $y0 [expr $y0+[winfo height .parameters]/20000.0]        
+            set x0 [expr (10000-[get_pointer_x .parameters.canvas])/20000.0]
+            set y0 [expr (10000-[get_pointer_y .parameters.canvas])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .parameters.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .parameters.canvas]/20000.0]        
+            #puts [parameterSheet.width]
+            #if {[parameterSheet.width]>0} {
+            #    set x0 [expr [parameterSheet.offsx]/[parameterSheet.width]]
+            #    .hscroll set $x0 [expr $x0+[winfo width .parameters.canvas]/[parameterSheet.width]]
+            #} else {.hscroll set 0 1}
+            #if {[parameterSheet.height]>0} {
+            #    set y0 [expr [parameterSheet.offsy]/[parameterSheet.height]]
+            #    .vscroll set $y0 [expr $y0+[winfo height .parameters.canvas]/[parameterSheet.height]]
+            #} else {.vscroll set  0 1}            
+            #puts "$x0 $y0"       
 		}      
         .variables {
             #.hscroll set 0 1
             #.vscroll set 0 1                 
-            set x0 [expr (10000-[get_pointer_x .variables])/20000.0]
-            set y0 [expr (10000-[get_pointer_y .variables])/20000.0]
-            .hscroll set $x0 [expr $x0+[winfo width .variables]/20000.0]
-            .vscroll set $y0 [expr $y0+[winfo height .variables]/20000.0]                 
+            set x0 [expr (10000-[get_pointer_x .variables.canvas])/20000.0]
+            set y0 [expr (10000-[get_pointer_y .variables.canvas])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]                 
         }        
     }
 }
@@ -976,11 +988,11 @@ proc panCanvas {offsx offsy} {
             parameterSheet.offsy $offsy			
             parameterSheet.requestRedraw
         }        
-        .variables {
-            variablesSheet.offsx $offsx
-            variablesSheet.offsy $offsy						
-            variablesSheet.requestRedraw
-        }           
+        #.variables {
+        #    variablesSheet.offsx $offsx
+        #    variablesSheet.offsy $offsy						
+        #    variablesSheet.requestRedraw
+        #}           
     }
     setScrollBars
 }
@@ -1009,16 +1021,22 @@ proc scrollCanvases {xyview args} {
             set h [equationDisplay.height]
         }
         .parameters {
-            set x [get_pointer_x .parameters]
-            set y [get_pointer_y .parameters]
+            set x [get_pointer_x .parameters.canvas]
+            set y [get_pointer_y .parameters.canvas]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
             set y1 [expr 0.5*$h]
+            #set x [parameterSheet.offsx]
+            #set y [parameterSheet.offsy]
+            #set x1 0
+            #set y1 0
+            #set w [parameterSheet.width]
+            #set h [parameterSheet.height]            
         }
         .variables {
-            set x [get_pointer_x .variables]
-            set y [get_pointer_y .variables]
+            set x [get_pointer_x .variables.canvas]
+            set y [get_pointer_y .variables.canvas]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
@@ -1071,6 +1089,14 @@ bind .equations.canvas <Button-1> {
     set panOffsY [expr %y-[equationDisplay.offsy]]
 }
 bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# parameters pan mode
+.parameters.canvas configure -cursor $panIcon
+bind .parameters.canvas <Button-1> {
+    set panOffsX [expr %x-[parameterSheet.offsx]]
+    set panOffsY [expr %y-[parameterSheet.offsy]]
+}
+bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns

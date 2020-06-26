@@ -61,7 +61,7 @@ namespace minsky
                     pango.show();
                   }
                 else
-                  {  	 
+                {  	 
                     float x=x0, y=y0;
                     double colWidth=0;
                     pango.setMarkup("9999");
@@ -70,7 +70,7 @@ namespace minsky
                       {
                         cairo_move_to(cairo,x,y);
                         pango.setMarkup(str(value->value(0)));
-                        pango.show();
+                        pango.show();              
                       }
                     else
                       {
@@ -130,7 +130,7 @@ namespace minsky
                                 for (size_t j=0; j<dims[0]; ++j)
                                   {
                                     y+=rowHeight;
-                                    if (y>m_height) break;
+                                    if (y>20000) break;
                                     cairo_move_to(cairo,x,y);
                                     auto v=value->atHCIndex(j+i*dims[0]);
                                     if (!std::isnan(v))
@@ -141,7 +141,7 @@ namespace minsky
                                     colWidth=std::max(colWidth, pango.width());
                                   }
                                 x+=colWidth;
-                                if (x>m_width) break;
+                                if (x>20000) break;
                               }      
                           }
                         h_prev=h;  
@@ -161,18 +161,23 @@ namespace minsky
                         }
                 
                       }
-                    cairo::CairoSave cs(cairo);
-                    auto dims=value->hypercube().dims();    
                     auto rank=value->hypercube().rank();
-                    //cout << " " << dims[dims.size()-1] << " " << rank << endl;
-                    float rectHeight=0;
-                    // make sure rectangle has right height
-                    if ((dims[dims.size()-1])%2!=0 || rank%2==0) rectHeight= y-y0;
-                    else rectHeight=y-y0-rowHeight;
-                    cairo_rectangle(cairo,x0,y0,w+colWidth,rectHeight);    
-                    cairo_stroke(cairo);                          
-                    cairo_clip(cairo);
-                    y0=h+2.1*rowHeight;   
+                    if (rank>0) {  
+                      cairo::CairoSave cs(cairo);
+                      auto dims=value->hypercube().dims();    
+                      //cout << " " << dims[dims.size()-1] << " " << rank << " " << y0 << endl;
+                      //cout << " " << width() << " " << height() << endl;
+                      float rectHeight=0;
+                      // make sure rectangle has right height
+                      if ((dims[dims.size()-1])%2!=0 || rank%2==0) rectHeight= y-y0;
+                      else rectHeight=y-y0-rowHeight;
+                      cairo_rectangle(cairo,x0,y0,w+colWidth,rectHeight);    
+                      cairo_rectangle(cairo,x0,y0,w+colWidth,y-y0);    
+                      cairo_stroke(cairo);                          
+                      cairo_clip(cairo);
+                      y0=h+2.1*rowHeight;
+				    } else y0+=2.1*rowHeight;
+                       
                   }    
               }
           }
