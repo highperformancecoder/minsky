@@ -1057,7 +1057,16 @@ proc deiconifyEditVar {} {
 
         button .wiring.editVar.buttonBar.cancel -text Cancel -command {
             closeEditWindow .wiring.editVar}
-        pack .wiring.editVar.buttonBar.ok [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
+        pack .wiring.editVar.buttonBar.ok -side left -pady 10
+        if {[minsky.canvas.item.type]=="parameter"} {
+            button .wiring.editVar.buttonBar.import -text "Import CSV" -command {
+                .wiring.editVar.buttonBar.ok invoke
+                CSVImportDialog
+            }
+            pack .wiring.editVar.buttonBar.import -side left -pady 10
+        }
+
+        pack [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
         grid .wiring.editVar.buttonBar -row 999 -column 0 -columnspan 1000
         bind .wiring.editVar <Key-Return> {invokeOKorCancel .wiring.editVar.buttonBar}
         bind .wiring.editVar <Key-Escape> {.wiring.editVar.buttonBar.cancel invoke}
