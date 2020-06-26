@@ -25,6 +25,7 @@
 #include "classdesc_access.h"
 #include "constMap.h"
 #include "str.h"
+#include "CSVDialog.h"
 #include <boost/regex.hpp>
 #include <utility>
 
@@ -153,6 +154,9 @@ namespace minsky
     VariableValue& allocValue();
 
     std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
+
+    /// for importing CSV files
+    CSVDialog csvDialog;
     
     /// evaluates the initial value, based on the set of variables
     /// contained in \a VariableManager. \a visited is used to check
