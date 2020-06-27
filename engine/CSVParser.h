@@ -18,7 +18,9 @@
 */
 #ifndef CSVPARSER_H
 #define CSVPARSER_H
-#include "variableValue.h"
+
+#include "dimension.h"
+#include "classdesc_access.h"
 
 #include <stddef.h>
 #include <string>
@@ -27,7 +29,8 @@
 
 namespace minsky
 {
-  using namespace civita;
+  class VariableValue;
+
   class DataSpec
   {
     size_t m_nRowAxes=0, m_nColAxes=0;
@@ -61,7 +64,7 @@ namespace minsky
 
     void setDataArea(size_t row, size_t col);
     
-    std::vector<Dimension> dimensions;
+    std::vector<civita::Dimension> dimensions;
     std::vector<std::string> dimensionNames;
     
     /// initial stab at dataspec from examining stream

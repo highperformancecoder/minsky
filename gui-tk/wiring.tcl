@@ -701,13 +701,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.type]=="parameter"} {
-                .wiring.context add command -label "Import CSV" -command {CSVImportDialog {}}
-                .wiring.context add command -label "Import CSV from web" -command {
-                    textEntryPopup .loadWebUrl {} {CSVImportDialog [.loadWebUrl.entry get]}
-                    .loadWebUrl.entry configure -takefocus 1					
-                    wm title .loadWebUrl "Insert URL:"		
-                    wm geometry .loadWebUrl "+[winfo pointerx .]+[winfo pointery .]"						 				
-				} 
+                .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
@@ -1063,7 +1057,16 @@ proc deiconifyEditVar {} {
 
         button .wiring.editVar.buttonBar.cancel -text Cancel -command {
             closeEditWindow .wiring.editVar}
-        pack .wiring.editVar.buttonBar.ok [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
+        pack .wiring.editVar.buttonBar.ok -side left -pady 10
+        if {[minsky.canvas.item.type]=="parameter"} {
+            button .wiring.editVar.buttonBar.import -text "Import CSV" -command {
+                .wiring.editVar.buttonBar.ok invoke
+                CSVImportDialog
+            }
+            pack .wiring.editVar.buttonBar.import -side left -pady 10
+        }
+
+        pack [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
         grid .wiring.editVar.buttonBar -row 999 -column 0 -columnspan 1000
         bind .wiring.editVar <Key-Return> {invokeOKorCancel .wiring.editVar.buttonBar}
         bind .wiring.editVar <Key-Escape> {.wiring.editVar.buttonBar.cancel invoke}

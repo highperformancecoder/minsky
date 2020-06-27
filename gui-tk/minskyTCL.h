@@ -355,20 +355,6 @@ namespace minsky
             v->importFromCSV(filename, *spec->memberptr);
     }
     
-    // Deal with temporary files downloaded from the internet. For ticket 1173.
-    void loadVariableFromWebCSV(const std::string& specVar, const std::string& filename, const std::string& url)
-    {
-      if (url.empty()) return;
-      auto i=TCL_obj_properties().find(specVar);
-      if (i!=TCL_obj_properties().end())
-        if (auto spec=dynamic_cast<member_entry<DataSpec>*>(i->second.get()))
-          if (auto v=dynamic_cast<VariableBase*>(canvas.item.get()))
-            v->importFromCSV(filename, *spec->memberptr);
-      int status;	      
-      status=std::remove(filename.c_str());
-      if (status!=0) throw error("delete downloaded file manually from working drectory");      
-    }     
-    
     /// load from a file
     void load(const std::string& filename) {
       Minsky::load(filename);

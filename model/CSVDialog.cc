@@ -37,7 +37,8 @@
 #include "certify/include/boost/certify/extensions.hpp"                          
 #include "certify/include/boost/certify/https_verification.hpp"                  
                                                                                  
-#include <cstdlib>                                                               
+#include <cstdlib>
+#include <chrono>
 #include <iostream>                                                              
 #include <string>                                                                
 #include <stdexcept>                                                                                                                         
@@ -51,6 +52,8 @@ using tcp = boost::asio::ip::tcp;
 namespace ssl = boost::asio::ssl;       
 namespace http = boost::beast::http;    
 
+const unsigned CSVDialog::numInitialLines;
+
 void CSVDialog::reportFromFile(const std::string& input, const std::string& output)
 {
   ifstream is(input);
@@ -58,9 +61,58 @@ void CSVDialog::reportFromFile(const std::string& input, const std::string& outp
   reportFromCSVFile(is,of,spec);
 }
 
+namespace
+{
+  // manage temporary files
+  struct CacheEntry
+  {
+    chrono::time_point<chrono::system_clock> timestamp;
+    string url, filename;
+    CacheEntry(string url): timestamp(chrono::system_clock::now()), url(url),
+                            filename(boost::filesystem::unique_path().string()) {}
+    ~CacheEntry() {boost::filesystem::remove(filename);}
+    bool operator<(const CacheEntry& x) const {return url<x.url;}
+  };
+
+  // note: this cache will leak disk storage if Minsky is killed, not shut down cleanly
+  struct Cache: private set<CacheEntry> 
+  {
+    using set<CacheEntry>::find;
+    using set<CacheEntry>::end;
+    using set<CacheEntry>::erase;
+    iterator emplace(string url)
+    {
+      if (size()>=10)
+        {
+          // find oldest element and erase
+          auto entryToErase=begin();
+          auto ts=entryToErase->timestamp;
+          for (auto i=begin(); i!=end(); ++i)
+            if (i->timestamp<ts)
+              {
+                ts=i->timestamp;
+                entryToErase=i;
+              }
+          erase(entryToErase);
+        }
+      return set<CacheEntry>::emplace(url).first;
+    }
+  };
+}
+
 // Return file name after downloading a CSV file from the web.
 std::string CSVDialog::loadWebFile(const std::string& url)
 {
+  static Cache cache;
+  auto cacheEntry = cache.find(url);
+  if (cacheEntry!=cache.end())
+    {
+      if (chrono::system_clock::now() < cacheEntry->timestamp + chrono::minutes(5))
+        return cacheEntry->filename;
+      else // expire the entry
+        cache.erase(cacheEntry);
+    }
+  
   // Parse input URL. Also handles URLs of the type username:password@example.com/pathname#section. See https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
   boost::regex ex(R"((http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\??([^ #]*)#?([^ ]*)|^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
   boost::cmatch what;
@@ -137,9 +189,8 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   if (res.result_int() >= 400) throw runtime_error("Invalid HTTP response. Response code: " + std::to_string(res.result_int()));
                           
   // Dump the outstream into a temporary file for loading it into Minsky' CSV parser 
-  boost::filesystem::path temp = boost::filesystem::unique_path();
-  const std::string tempStr    = temp.string();
-          
+  const std::string tempStr = cache.emplace(url)->filename;
+
   std::ofstream outFile(tempStr, std::ofstream::binary);  
   
   outFile << boost::beast::buffers_to_string(res.body().data());
@@ -162,9 +213,10 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   return tempStr;
 }
 
-void CSVDialog::loadFile(const string& fname)
+void CSVDialog::loadFile()
 {
   spec=DataSpec();
+  string fname = url.find("://")==string::npos? url: loadWebFile(url);
   spec.guessFromFile(fname);
   ifstream is(fname);
   initialLines.clear();
