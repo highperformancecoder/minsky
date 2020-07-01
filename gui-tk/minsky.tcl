@@ -901,6 +901,41 @@ label .parameters.canvas -image renderedPars -height $canvasHeight -width $canva
 pack .parameters.canvas -fill both -expand 1
 .tabs add .parameters -text parameters -padding 0
 .tabs select 0
+bind .parameters.canvas  <ButtonRelease-1> "defaultCursor .parameters.canvas" 
+bind .parameters.canvas <B1-Motion> "motionCursor .parameters.canvas ; parVarSheet.mouseMoveB1 %x %y"                     
+bind .parameters.canvas <Motion> "parVarSheet.mouseMove %x %y; parameterSheet.requestRedraw"                                  
+bind .parameters.canvas <Leave> "parVarSheet.mouseMove -1 -1; parVarSheet.update; parameterSheet.requestRedraw"               
+bind .parameters.canvas <Enter> "parameterSheet.requestRedraw"              
+
+#bind .$parameters.canvas <<contextMenu>> "parameterContext $id %x %y %X %Y"                                             
+bind .parameters.canvas <KeyPress> ".parVarSheet.keyPress %N [encoding convertto utf-8 %A]; parameterSheet.requestRedraw"   
+
+bind .parameters.canvas <$meta-y> "parVarSheet.undo -1; parameterSheet.requestRedraw"                   
+bind .parameters.canvas <$meta-z> "parVarSheet.undo 1; parameterSheet.requestRedraw"    
+
+#menu .$parameters.context -tearoff 0                                                
+#menu .$parameters.context.import -tearoff 0                    
+
+proc mouseDown {x y X Y} {                                                  ###useful for editable par tab!!
+     switch [lindex [.tabs tabs] [.tabs index current]] {
+	 .parameters {	 	
+         parVarSheet.mouseDown $x $y
+         parameterSheet.requestRedraw
+     }
+   }
+}
+
+proc motionCursor {w} {                                     ###useful for editable par tab!!
+    if {[tk windowingsystem]=="aqua"} {
+        $w configure -cursor copyarrow
+    } else {
+        $w configure -cursor exchange
+    }
+}
+ ###useful for editable par tab!! 
+proc defaultCursor {w} {$w configure -cursor {}}   
+
+
 
 image create cairoSurface renderedVars -surface minsky.variableSheet
 ttk::frame .variables
