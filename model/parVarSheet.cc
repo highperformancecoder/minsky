@@ -104,8 +104,9 @@ namespace minsky
                         y+=rowHeight;
                         colWidth=std::max(colWidth,5+pango.width());
                       }
+                    insertCol(size_t(rank));  
                     y=y0;
-                    colLeftMargin.push_back(x);                    
+                    //colLeftMargin.push_back(x);                    
                     x+=colWidth;
                     for (size_t i=0; i<value->size(); ++i)
                       {
@@ -113,6 +114,7 @@ namespace minsky
                           y=y0+value->index()[i]*rowHeight;
                         cairo_move_to(cairo,x,y);
                         auto v=value->value(i);
+                        insertRow(i+1);
                         if (!std::isnan(v))
                           {
                             pango.setMarkup(str(v));
@@ -120,6 +122,7 @@ namespace minsky
                           }
                         y+=rowHeight;
                       }
+                    resize(value->size(),size_t(rank));  
                     h_prev=h;
                     w=0;h=0;      
                     cairo_get_current_point (cairo,&w,&h);   
@@ -175,7 +178,7 @@ namespace minsky
                             colWidth=std::max(colWidth,5+pango.width());
                           }
                         y=y0;
-                        colLeftMargin.push_back(x);  
+                        //colLeftMargin.push_back(x);  
                         x+=colWidth;
                         format=value->hypercube().xvectors[k+1].timeFormat();
                         for (size_t i=0; i<dims[k+1]; ++i)
@@ -336,7 +339,8 @@ namespace minsky
   }
   
   int ParVarSheet::colX(double x) const
-  {
+  { 
+	if (x==-1 || itemVector.empty()) return -1;  
     if (x<colLeftMargin[0]) return -1;
     if (x<colLeftMargin[1]) return 0;
     auto p=std::upper_bound(colLeftMargin.begin(), colLeftMargin.end(), x);
@@ -434,7 +438,7 @@ namespace minsky
         hoverRow=rowY(y);
         hoverCol=colX(x);
         break;
-      }
+      }  
   }
 
   inline constexpr char control(char x) {return x-'`';}

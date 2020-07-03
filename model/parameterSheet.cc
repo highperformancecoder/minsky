@@ -59,15 +59,18 @@ namespace minsky
 	    
         if (!minsky().canvas.model->empty()) {	  
           populateItemVector();			               
-          cairo_translate(cairo,offsx,offsy);          
+          cairo_translate(cairo,offsx,offsy); 
+          colLeftMargin.clear();         
           draw(cairo); 
           ecolab::cairo::Surface surf
             (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));            
           draw(surf.cairo());      
           m_width=surf.width();
           m_height=surf.height();
-          cout << m_width << " " << m_height << " " << offsx << " " << offsy << endl;
-          if (((fabs(offsx)>1.5*m_width) || (offsx<0 && fabs(offsx)>600)) || ((fabs(offsy)>1.5*m_height) || (offsy<0 && fabs(offsy)>800))) cairo_translate(surf.cairo(),0.0,0.0); 
+          //cout << m_width << " " << m_height << " " << offsx << " " << offsy << " " << rows() << " " << cols() << " " << hoverRow << " " << hoverCol << endl;
+          //for (size_t i=0; i< colLeftMargin.size(); i++) cout << " " << colLeftMargin[i];
+          //cout << endl;
+          //if (((fabs(offsx)>1.5*m_width) || (offsx<0 && fabs(offsx)>600)) || ((fabs(offsy)>1.5*m_height) || (offsy<0 && fabs(offsy)>800))) cairo_translate(surf.cairo(),0.0,0.0); 
         }     
       }
     }

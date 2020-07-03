@@ -27,7 +27,7 @@ namespace minsky
 {
 	 
   class VariableSheet: public ecolab::CairoSurface, public ParVarSheet
-  {
+  {	  
   public:
     bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()!=VariableType::parameter;}
     float offsx=0, offsy=0;

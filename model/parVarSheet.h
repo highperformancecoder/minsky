@@ -26,6 +26,8 @@
 
 namespace minsky
 {
+  
+  //class ParameterSheet;	
 	 
   class ParVarSheet: public ItemT<ParVarSheet>
   {
@@ -42,6 +44,8 @@ namespace minsky
       data.resize(rows, std::vector<std::string>(cols));
     }            
   public: 
+    ParVarSheet() {}
+  
     double xoffs=80;
     double rowHeight=0;
     double colWidth=50;    
@@ -55,7 +59,8 @@ namespace minsky
     size_t rows() const {return data.size();}                                           // useful for editable par tab!!
     size_t cols() const {return data.empty()? 0: data[0].size();}      
        
-    void clear() {data.clear(); markEdited();}          
+    void clear() {data.clear(); markEdited();}
+    void resize(unsigned rows, unsigned cols){_resize(rows,cols); markEdited();}              
     
     /// insert row at \a row
     void insertRow(unsigned row);  
@@ -93,7 +98,7 @@ namespace minsky
     int selectedRow=-1, selectedCol=-1;                                      // useful for editable par tab!!
     int hoverRow=-1, hoverCol=-1;
     /// computed positions of the table columns
-    std::vector<double> colLeftMargin;         
+    std::vector<double> colLeftMargin;          
     
     unsigned insertIdx=0, selectIdx=0;                                       // useful for editable par tab!!                                
 
@@ -138,6 +143,8 @@ namespace minsky
     void navigateUp();
     void navigateDown();
     /// @}
+    
+    ~ParVarSheet() {}
    
   protected:
     /// column at \a x in unzoomed coordinates

@@ -28,7 +28,6 @@ namespace minsky
 	 
   class ParameterSheet: public ecolab::CairoSurface, public ParVarSheet
   {
-    CLASSDESC_ACCESS(ParameterSheet);	  
   public:
     friend struct SchemaHelper;  
     bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()==VariableType::parameter;} 
