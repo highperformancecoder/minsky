@@ -146,7 +146,7 @@ namespace minsky
     // make sure resize handles can be grabbed at corners of coupled integral variable. for feature 94.
     if (const IntOp* i=dynamic_cast<const IntOp*>(this))
       if (i->coupled()) {    
-		  float dl=xx-i->x(), dr=xx-i->intVar->x(), wl=i->iWidth()*z, wr=i->intVar->iWidth()*z+i->intVarOffset;
+		  float dl=xx-i->x(), dr=xx-i->intVar->x(), wl=i->iWidth()*z, wr=0.5*i->intVar->iWidth()*z+i->intVarOffset;
           if (((fabs(fabs(dl)-wl) < 0.5*portRadius*z) || (fabs(fabs(dr)-wr) < 0.5*portRadius*z)) &&
           fabs(fabs(dy)-h) < 0.5*portRadius*z &&
           (fabs(hypot(dl,dy)-hypot(wl,h)) < 0.5*portRadius*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < 0.5*portRadius*z))
@@ -166,6 +166,37 @@ namespace minsky
       h=OperationBase::h*z;
     return std::max(1.0f,std::min(0.5f*iWidth()*z/std::max(l,r),0.5f*iHeight()*z/h));  
   }
+  
+namespace
+{
+	
+    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
+    {
+      cairo::CairoSave cs(cairo);
+      cairo_translate(cairo,x,y);
+      cairo_rotate(cairo,angle);      
+      cairo_scale(cairo,sf,sf);
+      cairo_move_to(cairo,-1,-.2);
+      cairo_line_to(cairo,-1,-1);
+      cairo_line_to(cairo,1,1);
+      cairo_line_to(cairo,1,0.2);
+      cairo_move_to(cairo,-1,-1);
+      cairo_line_to(cairo,-.2,-1);
+      cairo_move_to(cairo,.2,1);
+      cairo_line_to(cairo,1,1);
+    }
+}  
+  
+  void OperationBase::drawResizeHandles(cairo_t* cairo) const
+  {
+    cairo::CairoSave cs(cairo);
+    double sf=portRadius*zoomFactor();  
+    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
+    cairo_stroke(cairo);
+  }  
   
   void OperationBase::draw(cairo_t* cairo) const
   {
@@ -526,40 +557,21 @@ namespace minsky
     r.normalise();
     return r;
   }
-    
-namespace
-{
-	
-    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf)
-    {
-      cairo::CairoSave cs(cairo);
-      cairo_translate(cairo,x,y);
-      cairo_scale(cairo,sf,sf);
-      cairo_move_to(cairo,-1,-.2);
-      cairo_line_to(cairo,-1,-1);
-      cairo_line_to(cairo,1,1);
-      cairo_line_to(cairo,1,0.2);
-      cairo_move_to(cairo,-1,-1);
-      cairo_line_to(cairo,-.2,-1);
-      cairo_move_to(cairo,.2,1);
-      cairo_line_to(cairo,1,1);
-    }
-}
 	
   void IntOp::drawResizeHandles(cairo_t* cairo) const
   {
     cairo::CairoSave cs(cairo);
     auto z=zoomFactor();
-    double xl=iWidth()*z, xr=xl, y=iHeight()*z, sf=portRadiusMult*z; 
+    double xl=iWidth()*z, xr=xl, y=iHeight()*z, sf=portRadius*z; 
     // make sure resize handles appear at corners of coupled integral variable. for feature 94.
-    if (coupled()) xr=xl+intVarOffset+2.0*intVar->iWidth()*z;     
-    drawResizeHandle(cairo,xr,y,sf);
+    if (coupled()) xr=xl+intVarOffset+intVar->iWidth()*z;     
+    drawResizeHandle(cairo,xr,y,sf,0);
     cairo_rotate(cairo,0.5*M_PI);
-    drawResizeHandle(cairo,y,xl,sf);
+    drawResizeHandle(cairo,y,xl,sf,0);
     cairo_rotate(cairo,0.5*M_PI);
-    drawResizeHandle(cairo,xl,y,sf);
+    drawResizeHandle(cairo,xl,y,sf,0);
     cairo_rotate(cairo,0.5*M_PI);
-    drawResizeHandle(cairo,y,xr,sf);
+    drawResizeHandle(cairo,y,xr,sf,0);
     cairo_stroke(cairo);
   }
   
@@ -628,7 +640,7 @@ namespace
        RenderVariable rv(*intVar, cairo);
        // save the render width for later use in setting the clip
        intVarWidth=rv.width()*z;
-       if (rv.width()<intVar->iWidth()) intVarWidth=intVar->iWidth()*z;
+       if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
        // set the port location...
        intVar->moveTo(x()+r+ivo+intVarWidth, y());
          

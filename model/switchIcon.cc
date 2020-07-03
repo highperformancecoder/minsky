@@ -83,6 +83,35 @@ namespace minsky
           }
     return r;
   }
+  
+namespace
+{
+  void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
+  {
+    cairo::CairoSave cs(cairo);
+    cairo_translate(cairo,x,y);
+    cairo_rotate(cairo,angle);
+    cairo_scale(cairo,sf,sf);
+    cairo_move_to(cairo,-1,-.2);
+    cairo_line_to(cairo,-1,-1);
+    cairo_line_to(cairo,1,1);
+    cairo_line_to(cairo,1,0.2);
+    cairo_move_to(cairo,-1,-1);
+    cairo_line_to(cairo,-.2,-1);
+    cairo_move_to(cairo,.2,1);
+    cairo_line_to(cairo,1,1);
+  }
+}  
+  
+  void SwitchIcon::drawResizeHandles(cairo_t* cairo) const
+  {
+    double sf=portRadius*zoomFactor();  
+    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
+    cairo_stroke(cairo);
+  }    
 
   void SwitchIcon::draw(cairo_t* cairo) const
   {

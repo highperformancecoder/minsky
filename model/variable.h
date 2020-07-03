@@ -176,6 +176,7 @@ namespace minsky
         @return cairo path of icon outline
     */
     void draw(cairo_t*) const override;
+    void drawResizeHandles(cairo_t* cairo) const override;    
     void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) override;
 
