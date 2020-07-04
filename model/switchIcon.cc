@@ -38,9 +38,10 @@ namespace minsky
     double dx=x-this->x(), dy=y-this->y();
     auto z=zoomFactor();
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
-        fabs(fabs(dy)-iWidth()) < portRadius*z &&
-        fabs(hypot(dx,dy)-hypot(iWidth(),iWidth())) < portRadius*z)
+    //if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
+    //    fabs(fabs(dy)-iWidth()) < portRadius*z &&
+    //    fabs(hypot(dx,dy)-hypot(iWidth(),iWidth())) < portRadius*z)
+    if (fabs(x-right()) < portRadius*z && fabs(y-bottom()*z) < portRadius*z)
       return ClickType::onResize;
     return Item::clickType(x,y);
   }  
@@ -106,9 +107,9 @@ namespace
   void SwitchIcon::drawResizeHandles(cairo_t* cairo) const
   {
     double sf=portRadius*zoomFactor();  
-    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    //drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    //drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    //drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
     drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
     cairo_stroke(cairo);
   }    
@@ -170,8 +171,9 @@ namespace
   void SwitchIcon::resize(const LassoBox& b)
   {
     float invZ=1/zoomFactor();
-    moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));    
-    iWidth(abs(b.x1-b.x0)*invZ);
+    //moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));    
+    iWidth(0.5*abs(b.x1-b.x0)*invZ);
+    bb.update(*this);
   }  
 
 

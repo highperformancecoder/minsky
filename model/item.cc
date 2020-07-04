@@ -144,7 +144,8 @@ namespace minsky
      
     // then, check whether a resize handle has been selected  
     float z=zoomFactor();
-    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
+    if (!variableCast() && !operationCast() &&
+      (abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
       (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
       return ClickType::onResize;         
 

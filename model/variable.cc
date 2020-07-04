@@ -88,9 +88,10 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
         return ClickType::onSlider;
       double w=z*rv.width(), h=-hpy;
       if (rv.width()<iWidth()) w=z*iWidth();
-      if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
-          fabs(fabs(dy)-h) < 0.5*portRadius*z &&
-          fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
+      //if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
+      //    fabs(fabs(dy)-h) < 0.5*portRadius*z &&
+      //    fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
+      if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()*z) < portRadius*z)
         return ClickType::onResize;
     }
   catch (...) {}
@@ -471,9 +472,9 @@ namespace
 void VariableBase::drawResizeHandles(cairo_t* cairo) const
 {
   double sf=portRadius*zoomFactor();  
-  drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-  drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-  drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+  //drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+  //drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+  //drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
   drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
   cairo_stroke(cairo);
 }

@@ -188,6 +188,7 @@ namespace minsky
     {return intVar->valueId();}
     
     void drawResizeHandles(cairo_t* cairo) const override;
+    ClickType::Type clickType(float x, float y) override;     
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;   
 
