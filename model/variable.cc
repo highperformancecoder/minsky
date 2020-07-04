@@ -86,8 +86,8 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       double dx=xx-x(), dy=yy-y(); 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
-      double w=z*rv.width(), h=-hpy;
-      if (rv.width()<iWidth()) w=z*iWidth();
+      //double w=z*rv.width(), h=-hpy;
+      //if (rv.width()<iWidth()) w=z*iWidth();
       //if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
       //    fabs(fabs(dy)-h) < 0.5*portRadius*z &&
       //    fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
