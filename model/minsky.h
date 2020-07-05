@@ -38,7 +38,6 @@
 #include "canvas.h"
 #include "panopticon.h"
 #include "fontDisplay.h"
-#include "parVarSheet.h"
 #include "variableSheet.h"
 #include "parameterSheet.h"
 #include "dimension.h"
@@ -152,6 +151,8 @@ namespace minsky
 
     /// write current state of all variables to the log file
     void logVariables() const;
+    
+    bool m_multipleEquities=false;
 
     Exclude<boost::posix_time::ptime> lastRedraw;
 
@@ -161,7 +162,7 @@ namespace minsky
     FontDisplay fontSampler;
     ParameterSheet parameterSheet;
     VariableSheet variableSheet;
-    ParVarSheet parVarSheet{parameterSheet}; 
+    ParVarSheet parVarSheet{parameterSheet};    
         // Allow multiple equity columns.
     bool multipleEquities=false;    
 
@@ -198,6 +199,8 @@ namespace minsky
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
 
+    void populateMissingDimensionsFromVariable(const VariableValue&);
+    
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
     void setGroupIconResource(const string& s)
