@@ -387,11 +387,13 @@ namespace minsky
     bool tabularFormat=false;
     Hypercube hc;
     vector<string> horizontalLabels;
-	       
+
     for (size_t i=0; i<spec.nColAxes(); ++i)
       if (spec.dimensionCols.count(i))
-        hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
-
+        {
+          hc.xvectors.push_back(i<spec.dimensionNames.size()? spec.dimensionNames[i]: "dim"+str(i));
+          hc.xvectors.back().dimension=spec.dimensions[i];
+        }
     try
       {
         for (size_t row=0; getline(input, buf); ++row)
@@ -409,6 +411,7 @@ namespace minsky
                     tabularFormat=true;
                     horizontalLabels.assign(parsedRow.begin()+spec.nColAxes(), parsedRow.end());
                     hc.xvectors.emplace_back(spec.horizontalDimName);
+                    hc.xvectors.back().dimension=spec.horizontalDimension;
                     for (auto& i: horizontalLabels) hc.xvectors.back().push_back(i);
                     dimLabels.emplace_back();
                     for (size_t i=0; i<horizontalLabels.size(); ++i)
@@ -496,6 +499,9 @@ namespace minsky
               }
           }
                   
+        for (auto& xv: hc.xvectors)
+          xv.imposeDimension();
+
         size_t numHyperCubeElems=1;
         for (auto& i : hc.xvectors) numHyperCubeElems*=i.size();
                            
@@ -564,6 +570,7 @@ namespace minsky
       { // replace with a more user friendly error message
         throw std::runtime_error("exhausted memory - try reducing the rank");
       }
+
   }
   
   void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)

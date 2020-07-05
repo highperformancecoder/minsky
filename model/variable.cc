@@ -356,6 +356,18 @@ void VariableBase::exportAsCSV(const std::string& filename) const
     value->second->exportAsCSV(filename, name());
 }
 
+void VariableBase::importFromCSV(std::string filename, const DataSpec& spec)
+{
+  if (auto v=vValue()) {
+    if (filename.find("://")!=std::string::npos)
+      filename = v->csvDialog.loadWebFile(filename);
+    std::ifstream is(filename);
+    loadValueFromCSVFile(*v, is, spec);
+    minsky().populateMissingDimensionsFromVariable(*v);
+  }
+}
+
+
 void VariableBase::insertControlled(Selection& selection)
 {
   selection.ensureItemInserted(controller.lock());
@@ -539,7 +551,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (type()!=constant && !ioVar())
+    if (type()!=constant && !ioVar() && !dynamic_cast<GodleyIcon*>(controller.lock().get()))
       {
         // draw slider
         CairoSave cs(cairo);
