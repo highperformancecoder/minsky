@@ -351,7 +351,7 @@ namespace minsky
       auto i=TCL_obj_properties().find(specVar);
       if (i!=TCL_obj_properties().end())
         if (auto spec=dynamic_cast<member_entry<DataSpec>*>(i->second.get()))
-          if (auto v=dynamic_cast<VariableBase*>(canvas.item.get()))
+          if (auto v=canvas.item->variableCast())
             v->importFromCSV(filename, *spec->memberptr);
     }
     

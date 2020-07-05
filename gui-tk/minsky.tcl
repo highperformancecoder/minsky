@@ -780,7 +780,12 @@ proc dimensionsDialog {} {
     }
 }
 
+set timeFormatStrings {
+    "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q" "%m/%d/%y"
+}
+
 proc dimFormatPopdown {comboBox type} {
+    global timeFormatStrings
     switch $type {
         string {
             $comboBox configure -values {}
@@ -790,9 +795,7 @@ proc dimFormatPopdown {comboBox type} {
             $comboBox configure -values {}
         }
         time {
-            $comboBox configure -values {
-                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q HopkinsDate"
-            }
+            $comboBox configure -values $timeFormatStrings
         }
     }
 }

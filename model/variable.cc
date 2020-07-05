@@ -356,6 +356,18 @@ void VariableBase::exportAsCSV(const std::string& filename) const
     value->second->exportAsCSV(filename, name());
 }
 
+void VariableBase::importFromCSV(std::string filename, const DataSpec& spec)
+{
+  if (auto v=vValue()) {
+    if (filename.find("://")!=std::string::npos)
+      filename = v->csvDialog.loadWebFile(filename);
+    std::ifstream is(filename);
+    loadValueFromCSVFile(*v, is, spec);
+    minsky().populateMissingDimensionsFromVariable(*v);
+  }
+}
+
+
 void VariableBase::insertControlled(Selection& selection)
 {
   selection.ensureItemInserted(controller.lock());
