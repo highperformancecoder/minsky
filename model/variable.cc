@@ -539,7 +539,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (type()!=constant && !ioVar())
+    if (type()!=constant && !ioVar() && !dynamic_cast<GodleyIcon*>(controller.lock().get()))
       {
         // draw slider
         CairoSave cs(cairo);
