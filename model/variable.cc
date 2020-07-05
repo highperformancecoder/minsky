@@ -471,7 +471,7 @@ namespace
 
 void VariableBase::drawResizeHandles(cairo_t* cairo) const
 {
-  double sf=portRadius*zoomFactor()*scaleFactor();  
+  double sf=portRadius*zoomFactor();  
   //drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
   //drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
   //drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
