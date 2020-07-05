@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2020
   @author Russell Standish
   @author Wynand Dednam
   This file is part of Minsky.

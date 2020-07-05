@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2019
+  @copyright Steve Keen 2020
   @author Russell Standish
   @author Wynand Dednam
   This file is part of Minsky.
@@ -48,7 +48,7 @@ namespace minsky
       		
         if (!itemVector.empty())
           {
-            float x0, y0=0.0;//+pango.height();	
+            float x0, y0=1.5*rowHeight;//+pango.height();	
             double w,h,w_prev, h_prev,lh; 
             for (auto& it: itemVector)
               {
@@ -62,14 +62,14 @@ namespace minsky
                 pango.setMarkup("9999");
                 if (rank==0)
                   { 
-                    cairo_move_to(cairo,x,y);
+                    cairo_move_to(cairo,x,y-1.5*rowHeight);
                     pango.setMarkup(value->name+" = "+str(value->value(0)));
                     pango.show();              
                   }
                 else if (rank==1)
                   {
-                    cairo_move_to(cairo,x,y-rowHeight);
-                    pango.setMarkup(value->name+" : ");
+                    cairo_move_to(cairo,x,y-1.5*rowHeight);
+                    pango.setMarkup(value->name+":");
                     pango.show();              
                     string format=value->hypercube().xvectors[0].timeFormat();
                     for (auto& i: value->hypercube().xvectors[0])
@@ -118,12 +118,12 @@ namespace minsky
                     cairo_stroke(cairo);                          
                     cairo_clip(cairo);             
                    
-                    y0=h+2.1*rowHeight;                 
+                    y0=h+3.1*rowHeight;                 
 			      }
 			    else
 			      {
-                    cairo_move_to(cairo,x,y-rowHeight);
-                    pango.setMarkup(value->name+" : ");
+                    cairo_move_to(cairo,x,y-1.5*rowHeight);
+                    pango.setMarkup(value->name+":");
                     pango.show();  					    
                     for (size_t k=0; k<rank-1; k++)  
                       {   
@@ -193,7 +193,7 @@ namespace minsky
                         cairo::CairoSave cs(cairo);
                         float rectHeight=0;
                         // make sure rectangle has right height
-                        if ((dims[k])%2!=0 || rank%2==0) rectHeight= y-y0;
+                        if (((dims[k])%2==0 && rank%2==0) && ((dims[k+1])%2==0 && rank%2!=0)) rectHeight= y-y0;
                         else rectHeight=y-y0-rowHeight;
                         if (rank > 2) rectHeight+=rowHeight;
                         cairo_rectangle(cairo,x0,y0,w+colWidth,rectHeight);    
@@ -206,8 +206,8 @@ namespace minsky
 
                   }
                }
-               if (rank>0) y0=h+2.1*rowHeight;
-               else y0+=2.1*rowHeight;   
+               if (rank>0) y0=h+3.1*rowHeight;
+               else y0+=3.1*rowHeight;   
                
 		    }
           }
