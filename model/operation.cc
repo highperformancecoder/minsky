@@ -136,31 +136,6 @@ namespace minsky
         (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
   
-  ClickType::Type OperationBase::clickType(float xx, float yy)
-  {
-    double fm=std::fmod(rotation(),360);
-    bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-    Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
-    double z=zoomFactor();
-    float dx=xx-x(), dy=yy-y();//, w=iWidth()*z, h=iHeight()*z; 
-    //// make sure resize handles can be grabbed at corners of coupled integral variable. for feature 94.
-    //if (const IntOp* i=dynamic_cast<const IntOp*>(this))
-    //  if (i->coupled()) {    
-	//	  float dl=xx-i->x(), dr=xx-i->intVar->x(), wl=i->iWidth()*z, wr=0.5*i->intVar->iWidth()*z+i->intVarOffset;
-    //      if (((fabs(fabs(dl)-wl) < 0.5*portRadius*z) || (fabs(fabs(dr)-wr) < 0.5*portRadius*z)) &&
-    //      fabs(fabs(dy)-h) < 0.5*portRadius*z &&
-    //      (fabs(hypot(dl,dy)-hypot(wl,h)) < 0.5*portRadius*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < 0.5*portRadius*z))
-    //          return ClickType::onResize;		  
-	//  } 
-    //if (fabs(fabs(dx)-w) < portRadius*z &&
-    //    fabs(fabs(dy)-h) < portRadius*z &&
-    //    fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
-    //if (fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
-    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
-      return ClickType::onResize;  
-    return Item::clickType(xx,yy);
-  }
-  
   float OperationBase::scaleFactor() const
   {
     float z=zoomFactor();
@@ -168,42 +143,6 @@ namespace minsky
       h=OperationBase::h*z;
     return std::max(1.0f,std::min(0.5f*iWidth()*z/std::max(l,r),0.5f*iHeight()*z/h));  
   }
-  
-namespace
-{
-	
-    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
-    {
-      cairo::CairoSave cs(cairo);
-      cairo_translate(cairo,x,y);
-      cairo_rotate(cairo,angle);      
-      cairo_scale(cairo,sf,sf);
-      cairo_move_to(cairo,-1,-.2);
-      cairo_line_to(cairo,-1,-1);
-      cairo_line_to(cairo,1,1);
-      cairo_line_to(cairo,1,0.2);
-      cairo_move_to(cairo,-1,-1);
-      cairo_line_to(cairo,-.2,-1);
-      cairo_move_to(cairo,.2,1);
-      cairo_line_to(cairo,1,1);
-    }
-}  
-  
-  void OperationBase::drawResizeHandles(cairo_t* cairo) const
-  {
-    cairo::CairoSave cs(cairo);
-    double sf=portRadius*zoomFactor();  
-    auto t=type();
-    // call the iconDraw method if data description is empty
-    if (t==OperationType::ravel) {    
-        drawResizeHandle(cairo,right()-x(),top()-y(),2*sf,0.5*M_PI);
-        drawResizeHandle(cairo,left()-x(),top()-y(),2*sf,M_PI);
-        drawResizeHandle(cairo,left()-x(),bottom()-y(),2*sf,1.5*M_PI);
-        drawResizeHandle(cairo,right()-x(),bottom()-y(),2*sf,0);
-    }
-    else drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
-    cairo_stroke(cairo);
-  }  
   
   void OperationBase::draw(cairo_t* cairo) const
   {
@@ -564,49 +503,7 @@ namespace
     r.normalise();
     return r;
   }
-  
-  ClickType::Type IntOp::clickType(float xx, float yy)
-  {
-    double fm=std::fmod(rotation(),360);
-    bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-    Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
-    double z=zoomFactor();
-    float dx=xx-x(), dy=yy-y();//, w=iWidth()*z, h=iHeight()*z; 
-    // make sure resize handles can be grabbed at corners of coupled integral variable. for feature 94.
-    //if (coupled()) {    
-	//	  float dl=xx-x(), dr=xx-intVar->x(), wl=iWidth()*z, wr=0.5*intVar->iWidth()*z+intVarOffset;
-    //      if (((fabs(fabs(dl)-wl) < portRadius*z) || (fabs(fabs(dr)-wr) < portRadius*z)) &&
-    //      fabs(fabs(dy)-h) < portRadius*z &&
-    //      (fabs(hypot(dl,dy)-hypot(wl,h)) < portRadius*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < portRadius*z))
-    //          return ClickType::onResize;		  
-	//  } 
-    //else if (fabs(fabs(dx)-w) < portRadius*z &&
-    //    fabs(fabs(dy)-h) < portRadius*z &&
-    //    fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
-    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
-      return ClickType::onResize;  
-    return Item::clickType(xx,yy);
-  }  
-	
-  void IntOp::drawResizeHandles(cairo_t* cairo) const
-  {
-    cairo::CairoSave cs(cairo);
-    auto z=zoomFactor();
-    double sf=portRadius*z;
-    //double xl=iWidth()*z, xr=xl, y=iHeight()*z, sf=portRadius*z; 
-    // make sure resize handles appear at corners of coupled integral variable. for feature 94.
-    //if (coupled()) xr=xl+intVarOffset+intVar->iWidth()*z;     
-    //drawResizeHandle(cairo,xr,y,sf,0);
-    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
-    //cairo_rotate(cairo,0.5*M_PI);
-    //drawResizeHandle(cairo,y,xl,sf,0);
-    //cairo_rotate(cairo,0.5*M_PI);
-    //drawResizeHandle(cairo,xl,y,sf,0);
-    //cairo_rotate(cairo,0.5*M_PI);
-    //drawResizeHandle(cairo,y,xr,sf,0);
-    cairo_stroke(cairo);
-  }
-  
+ 
   void IntOp::draw(cairo_t* cairo) const
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
@@ -750,7 +647,8 @@ namespace
     float invZ=1.0/zoomFactor();
     this->moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
-    iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
+    // Ensure int op height and var height similar to make gripping resize handle easier. for ticket 1203.
+    iHeight(0.25*std::abs(b.y1-b.y0)*invZ);
     intVar->iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
     intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
     bb.update(*this);	  
@@ -1381,16 +1279,22 @@ namespace
   }
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"%");
   }
   template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"Γ");
   }      
   template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"ψ");
     cairo_rel_move_to(cairo,0,-3);
@@ -1402,6 +1306,8 @@ namespace
   }     
   template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-3,3);
     cairo_show_text(cairo,"!");
   }      

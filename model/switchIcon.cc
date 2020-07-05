@@ -33,18 +33,18 @@ namespace minsky
     setNumCases(2); ///<default to if/then
   }
   
-  ClickType::Type SwitchIcon::clickType(float x, float y)
-  {
-    double dx=x-this->x(), dy=y-this->y();
-    auto z=zoomFactor();
-    // check if (x,y) is within portradius of the 4 corners
-    //if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
-    //    fabs(fabs(dy)-iWidth()) < portRadius*z &&
-    //    fabs(hypot(dx,dy)-hypot(iWidth(),iWidth())) < portRadius*z)
-    if (fabs(x-right()) < portRadius*z && fabs(y-bottom()) < portRadius*z)
-      return ClickType::onResize;
-    return Item::clickType(x,y);
-  }  
+//  ClickType::Type SwitchIcon::clickType(float x, float y)
+//  {
+//    double dx=x-this->x(), dy=y-this->y();
+//    auto z=zoomFactor();
+//    // check if (x,y) is within portradius of the 4 corners
+//    //if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
+//    //    fabs(fabs(dy)-iWidth()) < portRadius*z &&
+//    //    fabs(hypot(dx,dy)-hypot(iWidth(),iWidth())) < portRadius*z)
+//    if (fabs(x-right()) < portRadius*z && fabs(y-bottom()) < portRadius*z)
+//      return ClickType::onResize;
+//    return Item::clickType(x,y);
+//  }  
 
   void SwitchIcon::setNumCases(unsigned n)
   {
@@ -83,36 +83,7 @@ namespace minsky
             r=w->units(check);
           }
     return r;
-  }
-  
-namespace
-{
-  void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
-  {
-    cairo::CairoSave cs(cairo);
-    cairo_translate(cairo,x,y);
-    cairo_rotate(cairo,angle);
-    cairo_scale(cairo,sf,sf);
-    cairo_move_to(cairo,-1,-.2);
-    cairo_line_to(cairo,-1,-1);
-    cairo_line_to(cairo,1,1);
-    cairo_line_to(cairo,1,0.2);
-    cairo_move_to(cairo,-1,-1);
-    cairo_line_to(cairo,-.2,-1);
-    cairo_move_to(cairo,.2,1);
-    cairo_line_to(cairo,1,1);
-  }
-}  
-  
-  void SwitchIcon::drawResizeHandles(cairo_t* cairo) const
-  {
-    double sf=portRadius*zoomFactor();  
-    //drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-    //drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-    //drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
-    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
-    cairo_stroke(cairo);
-  }    
+  } 
 
   void SwitchIcon::draw(cairo_t* cairo) const
   {

@@ -79,10 +79,8 @@ namespace minsky
     // manage the port structures associated with this operation
     virtual void addPorts();
 
-    void drawResizeHandles(cairo_t* cairo) const override;
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;
-    ClickType::Type clickType(float x, float y) override; 
     float scaleFactor() const override;       
 
     /// current value of output port
@@ -186,9 +184,7 @@ namespace minsky
 
     string valueId() const 
     {return intVar->valueId();}
-    
-    void drawResizeHandles(cairo_t* cairo) const override;
-    ClickType::Type clickType(float x, float y) override;     
+      
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;   
 

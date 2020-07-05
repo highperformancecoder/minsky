@@ -86,11 +86,6 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       double dx=xx-x(), dy=yy-y(); 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
-      //double w=z*rv.width(), h=-hpy;
-      //if (rv.width()<iWidth()) w=z*iWidth();
-      //if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
-      //    fabs(fabs(dy)-h) < 0.5*portRadius*z &&
-      //    fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
       if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
         return ClickType::onResize;
     }
@@ -448,35 +443,6 @@ bool VariableBase::handleArrows(int dir,bool reset)
   sliderSet(value()+dir*sliderStep);
   if (reset) minsky().reset();
   return true;
-}
-
-namespace
-{
-  void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
-  {
-    cairo::CairoSave cs(cairo);
-    cairo_translate(cairo,x,y);
-    cairo_rotate(cairo,angle);
-    cairo_scale(cairo,sf,sf);
-    cairo_move_to(cairo,-1,-.2);
-    cairo_line_to(cairo,-1,-1);
-    cairo_line_to(cairo,1,1);
-    cairo_line_to(cairo,1,0.2);
-    cairo_move_to(cairo,-1,-1);
-    cairo_line_to(cairo,-.2,-1);
-    cairo_move_to(cairo,.2,1);
-    cairo_line_to(cairo,1,1);
-  }
-}
-
-void VariableBase::drawResizeHandles(cairo_t* cairo) const
-{
-  double sf=portRadius*zoomFactor();  
-  //drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-  //drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-  //drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
-  drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
-  cairo_stroke(cairo);
 }
 
 void VariableBase::draw(cairo_t *cairo) const
