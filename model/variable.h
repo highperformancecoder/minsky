@@ -196,14 +196,7 @@ namespace minsky
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
-    void importFromCSV(std::string filename, const DataSpec& spec) {
-      if (auto v=vValue()) {
-        if (filename.find("://")!=std::string::npos)
-          filename = v->csvDialog.loadWebFile(filename);
-        std::ifstream is(filename);
-        loadValueFromCSVFile(*v, is, spec);
-      }
-    }
+    void importFromCSV(std::string filename, const DataSpec& spec);
 
     void insertControlled(Selection& selection) override;
   };

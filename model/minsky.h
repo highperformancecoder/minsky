@@ -196,6 +196,8 @@ namespace minsky
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
 
+    void populateMissingDimensionsFromVariable(const VariableValue&);
+    
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
     void setGroupIconResource(const string& s)
