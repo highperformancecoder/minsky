@@ -156,7 +156,7 @@ namespace minsky
     //    fabs(fabs(dy)-h) < portRadius*z &&
     //    fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
     //if (fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
-    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()*z) < portRadius*z)
+    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
       return ClickType::onResize;  
     return Item::clickType(xx,yy);
   }
@@ -583,7 +583,7 @@ namespace
     //else if (fabs(fabs(dx)-w) < portRadius*z &&
     //    fabs(fabs(dy)-h) < portRadius*z &&
     //    fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
-    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()*z) < portRadius*z)
+    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
       return ClickType::onResize;  
     return Item::clickType(xx,yy);
   }  

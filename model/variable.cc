@@ -91,7 +91,7 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       //if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
       //    fabs(fabs(dy)-h) < 0.5*portRadius*z &&
       //    fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
-      if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()*z) < portRadius*z)
+      if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
         return ClickType::onResize;
     }
   catch (...) {}
@@ -471,7 +471,7 @@ namespace
 
 void VariableBase::drawResizeHandles(cairo_t* cairo) const
 {
-  double sf=portRadius*zoomFactor();  
+  double sf=portRadius*zoomFactor()*scaleFactor();  
   //drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
   //drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
   //drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);

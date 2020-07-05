@@ -41,7 +41,7 @@ namespace minsky
     //if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
     //    fabs(fabs(dy)-iWidth()) < portRadius*z &&
     //    fabs(hypot(dx,dy)-hypot(iWidth(),iWidth())) < portRadius*z)
-    if (fabs(x-right()) < portRadius*z && fabs(y-bottom()*z) < portRadius*z)
+    if (fabs(x-right()) < portRadius*z && fabs(y-bottom()) < portRadius*z)
       return ClickType::onResize;
     return Item::clickType(x,y);
   }  
@@ -171,7 +171,7 @@ namespace
   void SwitchIcon::resize(const LassoBox& b)
   {
     float invZ=1/zoomFactor();
-    //moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));    
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));    
     iWidth(0.5*abs(b.x1-b.x0)*invZ);
     bb.update(*this);
   }  
