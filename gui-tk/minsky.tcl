@@ -1081,13 +1081,13 @@ bind .parameters.canvas <Button-1> {
 }
 bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
-# parameters pan mode
+# variables pan mode
 .variables.canvas configure -cursor $panIcon
 bind .variables.canvas <Button-1> {
     set panOffsX [expr %x-[variableSheet.offsx]]
     set panOffsY [expr %y-[variableSheet.offsy]]
 }
-bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew

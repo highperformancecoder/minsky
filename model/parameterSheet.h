@@ -20,21 +20,15 @@
 
 #ifndef PARAMETERSHEET_H
 #define PARAMETERSHEET_H
-#include <cairoSurfaceImage.h>
 #include <parVarSheet.h>
 
 namespace minsky
 {
 	 
-  class ParameterSheet: public ecolab::CairoSurface, public ParVarSheet
+  class ParameterSheet: public ParVarSheet
   {
   public:
     bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()==VariableType::parameter;} 
-    float offsx=0, offsy=0;       
-    float width() const override {return m_width;}
-    float height() const override {return m_height;}
-    void redraw(int, int, int width, int height) override;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
   };
   
 }

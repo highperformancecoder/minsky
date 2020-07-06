@@ -20,16 +20,14 @@
 
 #ifndef PARVARSHEET_H
 #define PARVARSHEET_H
-#include <item.h>
 #include <variable.h>
+#include <cairoSurfaceImage.h>
 #include "classdesc_access.h"
 
 namespace minsky
 {
-  
-  //class ParameterSheet;	
 	 
-  class ParVarSheet: public ItemT<ParVarSheet>
+  class ParVarSheet: public ecolab::CairoSurface
   {
     CLASSDESC_ACCESS(ParVarSheet);         
   public: 
@@ -37,15 +35,18 @@ namespace minsky
   
     double xoffs=80;
     double rowHeight=0;
-    double colWidth=50;    
+    double colWidth=50; 
+    float offsx=0, offsy=0;       
     float m_width=600, m_height=800;
     virtual float width() const {return m_width;}
     virtual float height() const {return m_height;}
     Items itemVector;                             
 
     void populateItemVector();
-    virtual bool variableSelector(ItemPtr i) {return false;}
-    void draw(cairo_t* cairo);      
+    virtual bool variableSelector(ItemPtr i) = 0;
+    void draw(cairo_t* cairo); 
+    void redraw(int, int, int width, int height) override;
+    void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
        
     ~ParVarSheet() {}
   };

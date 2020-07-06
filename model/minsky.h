@@ -151,8 +151,6 @@ namespace minsky
 
     /// write current state of all variables to the log file
     void logVariables() const;
-    
-    bool m_multipleEquities=false;
 
     Exclude<boost::posix_time::ptime> lastRedraw;
 
@@ -162,7 +160,6 @@ namespace minsky
     FontDisplay fontSampler;
     ParameterSheet parameterSheet;
     VariableSheet variableSheet;
-    ParVarSheet parVarSheet{parameterSheet};    
         // Allow multiple equity columns.
     bool multipleEquities=false;    
 

@@ -215,4 +215,43 @@ namespace minsky
     catch (...) {throw;/* exception most likely invalid variable value */}
   }
 
+  namespace
+  {    
+    struct CroppedPango: public Pango
+    {
+      cairo_t* cairo;
+      double w, x=0, y=0;
+      CroppedPango(cairo_t* cairo, double width): Pango(cairo), cairo(cairo), w(width) {}
+      void setxy(double xx, double yy) {x=xx; y=yy;}
+      void show() {
+        CairoSave cs(cairo);
+        cairo_rectangle(cairo,x,y,w,height());
+        cairo_clip(cairo);
+        cairo_move_to(cairo,x,y);
+        Pango::show();
+      }
+    };
+  }
+
+  void ParVarSheet::redraw(int, int, int width, int height)
+  {
+    if (surface.get()) {
+        cairo_t* cairo=surface->cairo();  
+        CroppedPango pango(cairo, colWidth);
+        rowHeight=15;
+        pango.setFontSize(5.0*rowHeight);
+	    
+        if (!minsky().canvas.model->empty()) {	  
+          populateItemVector();			               
+          cairo_translate(cairo,offsx,offsy); 
+          draw(cairo); 
+          ecolab::cairo::Surface surf
+            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));            
+          draw(surf.cairo());      
+          m_width=surf.width();
+          m_height=surf.height();
+        }     
+      }
+    }
+
 }
