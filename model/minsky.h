@@ -159,7 +159,7 @@ namespace minsky
     Panopticon panopticon{canvas};
     FontDisplay fontSampler;
     ParameterSheet parameterSheet;
-    VariableSheet variableSheet;    
+    VariableSheet variableSheet;
         // Allow multiple equity columns.
     bool multipleEquities=false;    
 
