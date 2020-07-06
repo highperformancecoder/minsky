@@ -146,15 +146,15 @@ namespace minsky
     float z=zoomFactor();
     // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203
     if (!variableCast()) 
-      if (!dynamic_cast<SwitchIcon*>(this) && (!operationCast() || operationCast()->type()==OperationType::ravel) &&
-        (abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
-        (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      if (!switchIconCast() && (!operationCast() || operationCast()->type()==OperationType::ravel) &&
+          (abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
+          (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
         return ClickType::onResize;
       else if (abs(x-right()) < portRadius*z && abs(y-bottom()) < portRadius*z)
         return ClickType::onResize;             
 
     ecolab::cairo::Surface dummySurf
-      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
+                                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
     draw(dummySurf.cairo());
     if (cairo_in_clip(dummySurf.cairo(), (x-this->x()), (y-this->y())))
       return ClickType::onItem;               
@@ -208,7 +208,7 @@ namespace minsky
   // Refactor resize() code for all canvas items here. For feature 25 and 94
   void Item::resize(const LassoBox& b)
   {
-	 // Set initial iWidth() and iHeight() to initial Pango determined values. This resize method is not very reliable. Probably a Pango issue. 
+    // Set initial iWidth() and iHeight() to initial Pango determined values. This resize method is not very reliable. Probably a Pango issue. 
     float w=iWidth(width()), h=iHeight(height()), invZ=1/zoomFactor();   
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));                 
     iWidth(abs(b.x1-b.x0)*invZ);
@@ -220,13 +220,13 @@ namespace minsky
   {
     double sf=portRadiusMult*zoomFactor();
     // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203
-    if (!dynamic_cast<const SwitchIcon*>(this) && !variableCast() && (!operationCast() || operationCast()->type()==OperationType::ravel))  
-    {
-       drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-       drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-       drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
-       drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
-    } else drawResizeHandle(cairo,right()-x(),bottom()-y(),0.5*sf,0);
+    if (!switchIconCast() && !variableCast() && (!operationCast() || operationCast()->type()==OperationType::ravel))  
+      {
+        drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+        drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+        drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+        drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
+      } else drawResizeHandle(cairo,right()-x(),bottom()-y(),0.5*sf,0);
     cairo_stroke(cairo);
   }
 
@@ -249,9 +249,9 @@ namespace minsky
     pango.show();
 
     if (mouseFocus) {
-		displayTooltip(cairo,tooltip);	
-	}
-	if (onResizeHandles) drawResizeHandles(cairo);	
+      displayTooltip(cairo,tooltip);	
+    }
+    if (onResizeHandles) drawResizeHandles(cairo);	
     cairo_move_to(cairo,r.x(-w,-h), r.y(-w,-h));
     cairo_line_to(cairo,r.x(w,-h), r.y(w,-h));
     cairo_line_to(cairo,r.x(w,h), r.y(w,h));
