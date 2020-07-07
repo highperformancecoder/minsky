@@ -490,7 +490,17 @@ namespace minsky
        });
   }
 
-  
+
+  void Minsky::populateMissingDimensionsFromVariable(const VariableValue& v)
+  {
+    for (auto& xv: v.hypercube().xvectors)
+      {
+        auto d=dimensions.find(xv.name);
+        if (d==dimensions.end())
+          dimensions.emplace(xv.name, xv.dimension);
+      }
+  }
+      
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;

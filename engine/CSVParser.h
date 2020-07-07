@@ -47,7 +47,8 @@ namespace minsky
     /// start column of the data area
     size_t nColAxes() const {return m_nColAxes;}
     std::string horizontalDimName="?";
-
+    civita::Dimension horizontalDimension;
+    
     /// what to do with duplicate keys
     enum DuplicateKeyAction {throwException, sum, product, min, max, av};
     DuplicateKeyAction duplicateKeyAction=throwException;

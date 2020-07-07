@@ -780,7 +780,12 @@ proc dimensionsDialog {} {
     }
 }
 
+set timeFormatStrings {
+    "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q" "%m/%d/%y"
+}
+
 proc dimFormatPopdown {comboBox type} {
+    global timeFormatStrings
     switch $type {
         string {
             $comboBox configure -values {}
@@ -790,9 +795,7 @@ proc dimFormatPopdown {comboBox type} {
             $comboBox configure -values {}
         }
         time {
-            $comboBox configure -values {
-                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q HopkinsDate"
-            }
+            $comboBox configure -values $timeFormatStrings
         }
     }
 }
@@ -916,6 +919,8 @@ minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
 bind .equations.canvas <Configure> {setScrollBars}
+bind .parameters.canvas <Configure> {setScrollBars}
+bind .variables.canvas <Configure> {setScrollBars}
 
 set helpTopics(.wiring.panopticon) Panopticon
 
@@ -938,12 +943,16 @@ proc setScrollBars {} {
             } else {.vscroll set  0 1}
         }
         .parameters {
-            .hscroll set 0 1
-            .vscroll set 0 1  
+            set x0 [expr (10000-[parameterSheet.offsx])/20000.0]
+            set y0 [expr (10000-[parameterSheet.offsy])/20000.0]       
+            .hscroll set $x0 [expr $x0+[winfo width .parameters.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .parameters.canvas]/20000.0]           
 		}      
         .variables {
-            .hscroll set 0 1
-            .vscroll set 0 1                 
+            set x0 [expr (10000-[variableSheet.offsx])/20000.0]
+            set y0 [expr (10000-[variableSheet.offsy])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .variables.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .variables.canvas]/20000.0]                 
         }        
     }
 }
@@ -964,10 +973,14 @@ proc panCanvas {offsx offsy} {
             equationDisplay.requestRedraw
         }
         .parameters {
+            parameterSheet.offsx $offsx
+            parameterSheet.offsy $offsy			
             parameterSheet.requestRedraw
         }        
         .variables {
-            variablesSheet.requestRedraw
+            variableSheet.offsx $offsx
+            variableSheet.offsy $offsy						
+            variableSheet.requestRedraw
         }           
     }
     setScrollBars
@@ -996,6 +1009,22 @@ proc scrollCanvases {xyview args} {
             set w [equationDisplay.width]
             set h [equationDisplay.height]
         }
+        .parameters {
+            set x [parameterSheet.offsx]
+            set y [parameterSheet.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]       
+        }
+        .variables {
+            set x [variableSheet.offsx]
+            set y [variableSheet.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }                
     }
     switch [lindex $args 0] {
         moveto {
@@ -1044,6 +1073,21 @@ bind .equations.canvas <Button-1> {
 }
 bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
+# parameters pan mode
+.parameters.canvas configure -cursor $panIcon
+bind .parameters.canvas <Button-1> {
+    set panOffsX [expr %x-[parameterSheet.offsx]]
+    set panOffsY [expr %y-[parameterSheet.offsy]]
+}
+bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# variables pan mode
+.variables.canvas configure -cursor $panIcon
+bind .variables.canvas <Button-1> {
+    set panOffsX [expr %x-[variableSheet.offsx]]
+    set panOffsY [expr %y-[variableSheet.offsy]]
+}
+bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
