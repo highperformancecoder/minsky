@@ -151,8 +151,8 @@ namespace minsky
     virtual float x() const; 
     virtual float y() const;
     virtual float zoomFactor() const;
-    float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
-    float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
+    float width() const {if (!bb.valid()) bb.update(*this); return bb.width()*zoomFactor();}
+    float height() const {if (!bb.valid()) bb.update(*this); return bb.height()*zoomFactor();}
     float left() const {return x()+bb.left()*zoomFactor();}
     float right() const {return x()+bb.right()*zoomFactor();}
     float top() const {return y()+bb.top()*zoomFactor();}

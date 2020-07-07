@@ -443,11 +443,14 @@ namespace minsky
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor();
-    double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
+    //double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
+    double w=0.5*Item::width(), h=0.5*Item::height();
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(dx-w) < portRadiusMult*z &&
-        fabs(dy-h) < portRadiusMult*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
+    //if (fabs(dx-w) < portRadiusMult*z &&
+    //    fabs(dy-h) < portRadiusMult*z &&
+    //    fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
+    if ((abs(x-Item::left()) < portRadiusMult*z || abs(x-Item::right()) < portRadiusMult*z) &&
+      (abs(y-Item::top()) < portRadiusMult*z || abs(y-Item::bottom()) < portRadiusMult*z))    
       return ClickType::onResize;
     // Make it possible to pull wires from variables attached to Godley icons. For ticket 940  
     if (auto item=select(x,y))

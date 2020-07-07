@@ -145,7 +145,7 @@ namespace minsky
     // then, check whether a resize handle has been selected  
     float z=zoomFactor();
     if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
-      (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
       return ClickType::onResize;         
 
     ecolab::cairo::Surface dummySurf
