@@ -911,7 +911,7 @@ SUITE(Minsky)
       auto g2=new GodleyIcon; model->addItem(g2);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
-      godley1.resize(4,2);
+      godley1.resize(4,3);
       godley2.resize(2,2);
 
       godley1._assetClass(1,GodleyAssetClass::asset);  
