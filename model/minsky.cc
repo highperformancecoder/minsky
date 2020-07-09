@@ -305,7 +305,7 @@ namespace minsky
          assert(!i->ioVar());
       }
     // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!g->items.empty()) canvas.setItemFocus(g->items[0]);	      
+    if (!copyOfItems.empty()) canvas.setItemFocus(g->items[0]);	      
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
