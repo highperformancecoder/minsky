@@ -83,7 +83,10 @@ namespace minsky
     //float gHeight() const {return bottomMargin()+iconHeight*iconScale()*zoomFactor();}
     ///// scale icon until it's height matches \a h 
     //void scaleIconForHeight(float h) {update(); m_iconScale*=h/gHeight();}
-            
+    
+    /// scale icon until it's height matches \a h 
+    void scaleIconForHeight(float h) {update(); m_iconScale*=h/(bottomMargin()+iHeight()*iconScale()*zoomFactor());}        
+    
     /// left margin of bank icon with Godley icon
     float leftMargin() const {return variableDisplay? flowMargin*iconScale()*zoomFactor(): 0;}
     /// bottom margin of bank icon with Godley icon

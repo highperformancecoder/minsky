@@ -408,7 +408,7 @@ namespace minsky
     float dy=(x-this->x())*sin(rotation()*M_PI/180)+
       (y-this->y())*cos(rotation()*M_PI/180);      
     //float w=0.5*iconWidth*z,h=0.5*iconHeight*z;
-    float w=this->iWidth()*z,h=this->iHeight()*z;
+    float w=0.5*this->iWidth(),h=0.5*this->iHeight();
     if (w-right*edgeScale()<dx)
       return IORegion::output;
     else if (-w+left*edgeScale()>dx)
@@ -454,8 +454,8 @@ namespace minsky
     //iconWidth=((x1-x0)+l+r)/z;
     //iconHeight=((y1-y0)+20*z)/z;
     
-    this->iWidth(((x1-x0)+l+r)/z);
-    this->iHeight(((y1-y0)+20*z)/z);
+    this->iWidth(((x1-x0)+(l+r)*z)/z);
+    this->iHeight(((y1-y0)+2*topMargin*z)/z);
 
     // adjust contents by the offset
     for (auto& i: items)
@@ -487,14 +487,14 @@ namespace minsky
     //iconWidth=fabs(b.x0-b.x1)/z;
     //iconHeight=(fabs(b.y0-b.y1)-2*topMargin)/z;
     this->iWidth(fabs(b.x0-b.x1)/z);
-    this->iHeight((fabs(b.y0-b.y1)-2*topMargin)/z);
+    this->iHeight((fabs(b.y0-b.y1)-2*topMargin*z)/z);
     // account for margins
     float l, r;
     margins(l,r);    
     // rescale contents to fit
     double x0, x1, y0, y1;
     contentBounds(x0,y0,x1,y1);
-    double sx=(fabs(b.x0-b.x1)-z*(l+r)>0? fabs(b.x0-b.x1)-z*(l+r) : z*(l+r) )/(x1-x0), sy=(fabs(b.y0-b.y1)-20*z>0 ? fabs(b.y0-b.y1)-20*z : 20*z )/(y1-y0);    
+    double sx=(fabs(b.x0-b.x1)-z*(l+r)>0? fabs(b.x0-b.x1)-z*(l+r) : z*(l+r) )/(x1-x0), sy=(fabs(b.y0-b.y1)-2*topMargin*z>0 ? fabs(b.y0-b.y1)-2*topMargin*z : 2*topMargin*z )/(y1-y0);    
     resizeItems(items,sx,sy);
     resizeItems(groups,sx,sy);
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
@@ -664,6 +664,9 @@ namespace minsky
         y0=cy-10;
         y1=cy+10;
       }
+    
+   // is this the correct formula for localZoom??   
+   //localZoom= max( (x1-x0)/(this->iWidth()), (y1-y0)/(this->iHeight()) );
 
     return localZoom;
   }
@@ -679,14 +682,14 @@ namespace minsky
     y0=min(y0,double(y()));
     y1=max(y1,double(y()));
     // first compute the value assuming margins are of zero width
-    displayZoom = max( max(x1-x(), x()-x0)/this->iWidth(), max(y1-y(), y()-y0)/this->iHeight() );
+    displayZoom = 2*max( max(x1-x(), x()-x0)/this->iWidth(), max(y1-y(), y()-y0)/this->iHeight() );
 
     // account for shrinking margins
     float readjust=zoomFactor()/edgeScale() / (displayZoom>1? displayZoom:1);
     margins(l,r);
     l*=readjust; r*=readjust;    
     displayZoom = max(displayZoom, 
-                  float(max((x1-x())/(this->iWidth()-r), (x()-x0)/(this->iWidth()-l))));
+                  float(max((x1-x())/(0.5*this->iWidth()-r), (x()-x0)/(0.5*this->iWidth()-l))));
   
     displayZoom*=1.1*rotFactor()/lz;
 
@@ -703,15 +706,15 @@ namespace minsky
     float l, r;
     margins(l,r);    
     double dx=x1-x0, dy=y1-y0;
-    if (iWidth()-l-r>0 && dx>0 && dy>0)
-      relZoom=std::min(1.0, std::min((iWidth()-l-r)/(z*dx), (iHeight()-20*z)/(z*dy)));    
+    if (this->iWidth()-l-r>0 && dx>0 && dy>0)
+      relZoom=std::min(1.0, std::min((this->iWidth()-l-r)/(z*dx), (this->iHeight()-2*topMargin)/(z*dy)));    
   }
   
   const Group* Group::minimalEnclosingGroup(float x0, float y0, float x1, float y1, const Item* ignore) const
   {
     float z=zoomFactor();
-    if (x0<x()-z*iWidth() || x1>x()+z*iWidth() || 
-        y0<y()-z*iHeight() || y1>y()+z*iHeight())
+    if (x0<x()-0.5*z*iWidth() || x1>x()+0.5*z*iWidth() || 
+        y0<y()-0.5*z*iHeight() || y1>y()+0.5*z*iHeight())
       return nullptr;
     // at this point, this is a candidate. Check if any child groups are also
     for (auto& g: groups)
@@ -760,7 +763,7 @@ namespace minsky
   {
     double dx=x-this->x(), dy=y-this->y();
     auto z=zoomFactor();
-    double w=iWidth()*z, h=iHeight()*z;
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     // check if (x,y) is within portradius of the 4 corners
     if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
       (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
@@ -997,7 +1000,7 @@ namespace minsky
         i->bb.update(*i);
         if (i->width()>left) left=i->width();
       }
-    for (auto& i: outVariables)
+    for (auto& i: outVariables)  
       {
         assert(i->type()!=VariableType::undefined);
         i->bb.update(*i);

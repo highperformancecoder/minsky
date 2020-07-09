@@ -566,12 +566,10 @@ namespace schema3
                 try
                   {
                     godley->update();
-                    //if (i.height)
-                    //  godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                      //godley->scaleIcon(*i.width*godley->zoomFactor(),*i.height*godley->zoomFactor());
-                    //else if (i.iconScale) //legacy schema handling
-                    //  godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
-                      //godley->scaleIcon(*i.iconScale * godley->iWidth(), *i.iconScale * godley->iHeight());
+                    if (i.height)
+                      godley->scaleIconForHeight(*i.height*godley->zoomFactor());
+                    else if (i.iconScale) //legacy schema handling
+                      godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }
