@@ -33,6 +33,7 @@ void GodleyTable::markEdited()
 
 bool GodleyTable::initialConditionRow(unsigned row) const
 {
+  if (row>=rows()) return false;
   const string& label=cell(row,0);
   static size_t initialConditionsSz=strlen(initialConditions);
   size_t i, j;

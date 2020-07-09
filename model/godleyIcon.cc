@@ -196,6 +196,7 @@ namespace minsky
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
   {
+    if (!table.cellInTable(row,col)) return;
     // if this operation is clearing an initial condition cell, set it to 0
     string& c=table.cell(row,col);
     if (newVal.empty() && !c.empty() && table.initialConditionRow(row))
@@ -223,6 +224,7 @@ namespace minsky
 
   void GodleyIcon::moveCell(int srcRow, int srcCol, int destRow, int destCol)
   {
+    if (!table.cellInTable(srcRow, srcCol) || !table.cellInTable(destRow, destCol)) return;
     if (srcCol!=destCol) // if moving between columns, we can delete and
       // add, which ensures any linked columns are
       // correctly updated
@@ -243,7 +245,7 @@ namespace minsky
   map<string,double> GodleyIcon::flowSignature(int col) const
   {
     map<string,double> r;
-    for (size_t row=1; row<table.rows(); ++row)
+    for (size_t row=1; row<table.rows() && col<table.cols(); ++row)
       if (!table.initialConditionRow(row))
         {
           FlowCoef fc(table.cell(row,col));
