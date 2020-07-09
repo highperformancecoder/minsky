@@ -478,8 +478,8 @@ namespace schema3
       }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
-        if (y.width) x1->iconWidth=*y.width;
-        if (y.height) x1->iconHeight=*y.height;
+        if (y.width) x1->iWidth(*y.width);
+        if (y.height) x1->iHeight(*y.height);
         x1->bb.update(*x1);
         if (y.name) x1->title=*y.name;
         if (y.bookmarks) x1->bookmarks=*y.bookmarks;
@@ -566,10 +566,12 @@ namespace schema3
                 try
                   {
                     godley->update();
-                    if (i.height)
-                      godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                    else if (i.iconScale) //legacy schema handling
-                      godley->scaleIconForHeight(*i.iconScale * godley->gHeight());
+                    //if (i.height)
+                    //  godley->scaleIconForHeight(*i.height*godley->zoomFactor());
+                      //godley->scaleIcon(*i.width*godley->zoomFactor(),*i.height*godley->zoomFactor());
+                    //else if (i.iconScale) //legacy schema handling
+                    //  godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
+                      //godley->scaleIcon(*i.iconScale * godley->iWidth(), *i.iconScale * godley->iHeight());
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }

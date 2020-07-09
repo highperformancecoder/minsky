@@ -141,7 +141,7 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.gWidth()/g.zoomFactor()), height(g.gHeight()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
+      width(g.iWidth()/g.zoomFactor()), height(g.iHeight()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
       assetClasses(g.table._assetClass()) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
@@ -162,7 +162,7 @@ namespace schema3
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
+      width(g.iWidth()), height(g.iHeight()), name(g.title), bookmarks(g.bookmarks) {} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
