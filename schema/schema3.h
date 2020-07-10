@@ -72,8 +72,8 @@ namespace schema3
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), rotation(it.rotation()),
-       scaleFactor(it.m_sf), ports(ports) {}
+      x(it.m_x), y(it.m_y), scaleFactor(it.m_sf),
+      rotation(it.rotation()), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
       Note(it), id(it.id), type(type), x(it.x), y(it.y), 
       rotation(it.rotation), ports(it.ports) {}

@@ -244,7 +244,7 @@ namespace minsky
       }
   }
 
-  map<string,double> GodleyIcon::flowSignature(int col) const
+  map<string,double> GodleyIcon::flowSignature(unsigned col) const
   {
     map<string,double> r;
     for (size_t row=1; row<table.rows() && col<table.cols(); ++row)

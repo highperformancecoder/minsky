@@ -101,7 +101,7 @@ namespace minsky
     /// move the contents of cell at (srcRow, srcCol) to (destRow, destCol).
     void moveCell(int srcRow, int srcCol, int destRow, int destCol);
     /// flows, along with multipliers, appearing in \a col
-    std::map<string,double> flowSignature(int col) const;
+    std::map<string,double> flowSignature(unsigned col) const;
 
     typedef std::vector<VariablePtr> Variables;
     const Variables& flowVars() const {return m_flowVars;}
