@@ -1007,6 +1007,7 @@ SUITE(GodleyIcon)
       // TODO - shouldn't be needed, but there is some font problem causing bottomMargin to be calculated incorrectly
       
       scaleIconForHeight(2.5*bottomMargin());
+      update();
       CHECK_EQUAL(1,flowVars().size());
       CHECK_EQUAL(1,stockVars().size());
       for (auto& i: flowVars())

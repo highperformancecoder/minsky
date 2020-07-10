@@ -305,7 +305,7 @@ namespace minsky
          assert(!i->ioVar());
       }
     // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!g->items.empty()) canvas.setItemFocus(g->items[0]);	      
+    if (!copyOfItems.empty()) canvas.setItemFocus(g->items[0]);	      
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
@@ -549,6 +549,7 @@ namespace minsky
 
   void Minsky::importDuplicateColumn(GodleyTable& srcTable, int srcCol)
   {
+    if (srcCol<0 || size_t(srcCol)>=srcTable.cols()) return;
     // find any duplicate column, and use it to do balanceDuplicateColumns
     const string& colName=trimWS(srcTable.cell(0,srcCol));
     if (colName.empty()) return; //ignore blank columns
@@ -577,6 +578,7 @@ namespace minsky
   void Minsky::balanceDuplicateColumns(const GodleyIcon& srcGodley, int srcCol)
   {
     const GodleyTable& srcTable=srcGodley.table;
+    if (srcCol<0 || size_t(srcCol)>=srcTable.cols()) return;
     // find if there is a matching column
     const string& colName=srcGodley.valueId(trimWS(srcTable.cell(0,srcCol)));
     if (colName.empty() || colName==":_") return; //ignore blank columns

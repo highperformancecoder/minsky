@@ -147,7 +147,7 @@ namespace minsky
     if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z && type()!=ravel)
       return ClickType::onResize;  
     else if ((fabs(xx-left()) < portRadius*z || fabs(xx-right()) < portRadius*z) &&
-      (fabs(yy-top()) < portRadius*z || fabs(yy-bottom()) < portRadius*z))
+      (fabs(yy-top()) < portRadius*z || fabs(yy-
       return ClickType::onResize;  
     return Item::clickType(xx,yy);
   }  
