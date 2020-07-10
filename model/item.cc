@@ -144,14 +144,9 @@ namespace minsky
      
     // then, check whether a resize handle has been selected  
     float z=zoomFactor();
-    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203
-    if (!variableCast()) 
-      if (!switchIconCast() && (!operationCast() || operationCast()->type()==OperationType::ravel) &&
-          (abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
-          (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
-        return ClickType::onResize;
-      else if (abs(x-right()) < portRadius*z && abs(y-bottom()) < portRadius*z)
-        return ClickType::onResize;             
+    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
+        (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      return ClickType::onResize;
 
     ecolab::cairo::Surface dummySurf
                                 (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));

@@ -136,6 +136,22 @@ namespace minsky
         (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
   
+  ClickType::Type OperationBase::clickType(float xx, float yy)
+  {
+    double fm=std::fmod(rotation(),360);
+    bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+    Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
+    double z=zoomFactor();
+    float dx=xx-x(), dy=yy-y();
+    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203 
+    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z && type()!=ravel)
+      return ClickType::onResize;  
+    else if ((fabs(xx-left()) < portRadius*z || fabs(xx-right()) < portRadius*z) &&
+      (fabs(yy-top()) < portRadius*z || fabs(yy-bottom()) < portRadius*z))
+      return ClickType::onResize;  
+    return Item::clickType(xx,yy);
+  }  
+  
   float OperationBase::scaleFactor() const
   {
     float z=zoomFactor();

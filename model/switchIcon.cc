@@ -32,6 +32,16 @@ namespace minsky
     ports.emplace_back(new Port(*this, Port::inputPort));
     setNumCases(2); ///<default to if/then
   }
+  
+  ClickType::Type SwitchIcon::clickType(float x, float y)
+  {
+    double dx=x-this->x(), dy=y-this->y();
+    auto z=zoomFactor();
+    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
+    if (fabs(x-right()) < portRadius*z && fabs(y-bottom()) < portRadius*z)
+      return ClickType::onResize;
+    return Item::clickType(x,y);
+  }    
 
   void SwitchIcon::setNumCases(unsigned n)
   {
