@@ -713,7 +713,7 @@ namespace minsky
     if (!ravel || rank()!=1) return false;
     size_t ids[1];
     ravel_outputHandleIds(ravel,ids);
-    return selectedHandle()==ids[0];
+    return size_t(selectedHandle())==ids[0];
   }
 
   

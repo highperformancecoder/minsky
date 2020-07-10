@@ -145,13 +145,15 @@ namespace minsky
     float dx=xx-x(), dy=yy-y(), w=iWidth()*z, h=iHeight()*z; 
     // make sure resize handles can be grabbed at corners of coupled integral variable. for feature 94.
     if (const IntOp* i=dynamic_cast<const IntOp*>(this))
-      if (i->coupled()) {    
-		  float dl=xx-i->x(), dr=xx-i->intVar->x(), wl=i->iWidth()*z, wr=i->intVar->iWidth()*z+i->intVarOffset;
-          if (((fabs(fabs(dl)-wl) < 0.5*portRadius*z) || (fabs(fabs(dr)-wr) < 0.5*portRadius*z)) &&
-          fabs(fabs(dy)-h) < 0.5*portRadius*z &&
-          (fabs(hypot(dl,dy)-hypot(wl,h)) < 0.5*portRadius*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < 0.5*portRadius*z))
-              return ClickType::onResize;		  
-	  } 
+      if (i->coupled())
+        {    
+          float dl=xx-i->x(), dr=xx-i->intVar->x(), wl=i->iWidth()*z, wr=i->intVar->iWidth()*z+i->intVarOffset;
+          if (((fabs(fabs(dl)-wl) < 0.5*portRadius*z) || (fabs(fabs(dr)-wr) < 0.5*portRadius*z)||
+               (fabs(hypot(dl,dy)-hypot(wl,h)) < 0.5*portRadius*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < 0.5*portRadius*z)) &&
+              fabs(fabs(dy)-h) < 0.5*portRadius*z 
+              )
+            return ClickType::onResize;		  
+        } 
     if (fabs(fabs(dx)-w) < portRadius*z &&
         fabs(fabs(dy)-h) < portRadius*z &&
         fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
