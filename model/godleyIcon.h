@@ -38,7 +38,7 @@ namespace minsky
   class GodleyIcon: public ItemT<GodleyIcon>
   {
     /// for placement of bank icon within complex
-    float flowMargin=0, stockMargin=0; //, iconWidth=100, iconHeight=100;
+    float flowMargin=0, stockMargin=0;
     /// icon scale is adjusted when Godley icon is resized
     float m_iconScale=1;
     CLASSDESC_ACCESS(GodleyIcon);
@@ -76,13 +76,6 @@ namespace minsky
 
     bool variableDisplay=true;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
-    
-    ///// width of Godley icon in screen coordinates
-    //float gWidth() const {return leftMargin()+iconWidth*iconScale()*zoomFactor();}
-    ///// height of Godley icon in screen coordinates
-    //float gHeight() const {return bottomMargin()+iconHeight*iconScale()*zoomFactor();}
-    ///// scale icon until it's height matches \a h 
-    //void scaleIconForHeight(float h) {update(); m_iconScale*=h/gHeight();}
     
     /// scale icon until it's height matches \a h 
     void scaleIconForHeight(float h) {update(); m_iconScale*=h/(bottomMargin()+iHeight()*iconScale()*zoomFactor());}        

@@ -361,12 +361,12 @@ namespace minsky
   ClickType::Type PlotWidget::clickType(float x, float y)
   {
     // firstly, check whether a port has been selected
-    double z=zoomFactor();
-    //for (auto& p: ports)
-    //  {
-    //    if (hypot(x-p->x(), y-p->y()) < portRadius*z)
-    //      return ClickType::onPort;
-    //  }
+    double z=zoomFactor();  
+    for (auto& p: ports)
+      {
+        if (hypot(x-p->x(), y-p->y()) < portRadius*z)
+          return ClickType::onPort;
+      }
 
     double legendWidth, legendHeight;
     legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
@@ -379,19 +379,16 @@ namespace minsky
         else if (yy>=0.8*legendHeight && yy<legendHeight)
           return ClickType::legendResize;
       }
-    
-    // Delegate to Item::clickType  
-    return Item::clickType(x,y);  
 
     // TODO - delegate to Item::clickType
-    //if ((abs(x-Item::left()) < portRadius*z || abs(x-Item::right()) < portRadius*z) &&
-    //  (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
-    //  return ClickType::onResize;         
-	//
-    //double dx=x-this->x(), dy=y-this->y();
-    //double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
-    //return (abs(dx)<w && abs(dy)<h)?
-    //  ClickType::onItem: ClickType::outside;
+    if ((abs(x-Item::left()) < portRadius*z || abs(x-Item::right()) < portRadius*z) &&
+      (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
+      return ClickType::onResize;         
+	
+    double dx=x-this->x(), dy=y-this->y();
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
+    return (abs(dx)<w && abs(dy)<h)?
+      ClickType::onItem: ClickType::outside;
   }
   
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;

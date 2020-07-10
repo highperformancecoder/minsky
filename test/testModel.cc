@@ -341,18 +341,14 @@ SUITE(Group)
 
   TEST_FIXTURE(Group, checkAddIORegion)
     {
-      //CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
-      //CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
-      CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iWidth(), y()));
-      CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iWidth(), y()));
+      CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
+      CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
       VariablePtr inp(VariableType::flow,"input");
       VariablePtr outp(VariableType::flow,"output");
-      //inp->moveTo(x()-0.5*iconWidth, y());
-      inp->moveTo(x()-0.5*iWidth(), y());
+      inp->moveTo(x()-0.5*iconWidth, y());
       addItem(inp);
       checkAddIORegion(inp);
-      //outp->moveTo(x()+0.5*iconWidth, y());
-      outp->moveTo(x()+0.5*iWidth(), y());
+      outp->moveTo(x()+0.5*iconWidth, y());
       addItem(outp);
       checkAddIORegion(outp);
       CHECK_EQUAL(1,inVariables.size());
