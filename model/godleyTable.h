@@ -154,7 +154,7 @@ namespace minsky
         throw std::out_of_range("Godley table index error");
       return data[row][col];
     }
-    bool cellInTable(int row, int col) const
+    bool cellInTable(unsigned row, unsigned col) const
     {return row>=0 && row<rows() && col>=0 && col<cols();}
     string getCell(unsigned row, unsigned col) const {
       if (row<rows() && col<cols())
