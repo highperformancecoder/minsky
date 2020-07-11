@@ -173,7 +173,7 @@ namespace minsky
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-	float z=zoomFactor(), iw=this->iWidth(), ih=this->iHeight(), is=iconScale();  
+	float z=zoomFactor(), iw=this->iWidth(svgRenderer.width()), ih=this->iHeight(svgRenderer.height()), is=iconScale();  
 	float minusLeftMargin=iw*z*is, minusBottomMargin=ih*z*is;
     auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
     if (bw<=leftMargin() || bh<=bottomMargin()) return;
