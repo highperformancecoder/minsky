@@ -270,6 +270,7 @@ namespace minsky
           else
             intOp->intVar->controller.reset();
         }
+         
     items.push_back(it);
     return items.back();
   }

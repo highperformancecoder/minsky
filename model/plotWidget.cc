@@ -361,7 +361,7 @@ namespace minsky
   ClickType::Type PlotWidget::clickType(float x, float y)
   {
     // firstly, check whether a port has been selected
-    double z=zoomFactor();
+    double z=zoomFactor();  
     for (auto& p: ports)
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*z)
@@ -382,9 +382,9 @@ namespace minsky
 
     // TODO - delegate to Item::clickType
     if ((abs(x-Item::left()) < portRadius*z || abs(x-Item::right()) < portRadius*z) &&
-      (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
+      (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
       return ClickType::onResize;         
-
+	
     double dx=x-this->x(), dy=y-this->y();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     return (abs(dx)<w && abs(dy)<h)?
