@@ -270,13 +270,6 @@ namespace minsky
           else
             intOp->intVar->controller.reset();
         }
-        
-    // need to deal with godley to set initial width and height. for ticket 1205
-    if (auto godley=dynamic_cast<GodleyIcon*>(it.get()))        
-      {
-		  godley->iWidth(GodleyIcon::svgRenderer.width());
-		  godley->iHeight(GodleyIcon::svgRenderer.height());
-	  }    
          
     items.push_back(it);
     return items.back();

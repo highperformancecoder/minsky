@@ -603,8 +603,7 @@ SUITE(Canvas)
         auto& group=dynamic_cast<Group&>(*itemFocus);
         group.updateBoundingBox();
         group.relZoom=0.5; // ensure displayContents is false
-        //double w=group.iconWidth, h=group.iconHeight;
-        double w=group.iWidth(), h=group.iHeight();
+        double w=group.iconWidth, h=group.iconHeight;
         double x=group.x(), y=group.y(), z=group.relZoom;
         CHECK(group.clickType(group.right(),group.top()) == ClickType::onResize);
 
