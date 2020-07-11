@@ -783,7 +783,7 @@ namespace minsky
   {
     x/=zoomFactor;
     int c=colX(x);
-    if (c>0 && c<godleyIcon->table.cols())
+    if (c>0 && size_t(c)<godleyIcon->table.cols())
       {
         godleyIcon->table.cell(0,c)=name;
         minsky().importDuplicateColumn(godleyIcon->table, c);
@@ -865,7 +865,7 @@ namespace {
     y/=zoomFactor;
     int c=colX(x);	
     string tmpStr="";	  
-    if (selectedRow==0 && selectedCol<godleyIcon->table.cols())
+    if (selectedRow==0 && size_t(selectedCol)<godleyIcon->table.cols())
       {
         // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
         if (c>0 && selectedCol>0 && c!=selectedCol) {
