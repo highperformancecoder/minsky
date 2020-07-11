@@ -236,6 +236,9 @@ namespace minsky
                     // push History to prevent an unnecessary reset when
                     // adjusting the slider whilst paused. See ticket #812
                     minsky().pushHistory();
+                    if (minsky().reset_flag())
+                      minsky().reset();
+                    minsky().evalEquations();
                     requestRedraw();
                   }
                 return;
