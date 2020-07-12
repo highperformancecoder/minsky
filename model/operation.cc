@@ -585,7 +585,7 @@ namespace minsky
         RenderVariable rv(*intVar, cairo);
         // save the render width for later use in setting the clip
         intVarWidth=rv.width()*z;
-        if (rv.width()!=intVar->iWidth() && intVar->iWidth()>0) intVarWidth=0.5*intVar->iWidth()*z;
+        if (rv.width()!=0.5*intVar->iWidth() && intVar->iWidth()>0) intVarWidth=0.5*intVar->iWidth()*z;
         // set the port location...
         intVar->moveTo(x()+r+ivo+intVarWidth, y());
          
