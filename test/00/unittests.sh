@@ -8,7 +8,7 @@ here=`pwd`
 mkdir /tmp/$$
 cd /tmp/$$
 
-cp -r $here/test/testEq.mky .
+cp -r $here/test/testEq.mky $here/gui-tk/icons/bank.svg .
 if [ -x $here/test/unittests ]; then
     $here/test/unittests
 else
