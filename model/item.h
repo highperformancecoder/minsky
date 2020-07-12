@@ -60,6 +60,7 @@ namespace minsky
   class VariablePtr;
   class VariableBase;
   class OperationBase;
+  class SwitchIcon;
 
   class Item;
   /// bounding box information (at zoom=1 scale)
@@ -146,6 +147,10 @@ namespace minsky
     virtual const OperationBase* operationCast() const {return nullptr;}
     virtual OperationBase* operationCast() {return nullptr;}
     /// @}
+    /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
+    virtual const SwitchIcon* switchIconCast() const {return nullptr;}
+    virtual SwitchIcon* switchIconCast() {return nullptr;}
+    /// @}    
 
     ItemPortVector ports;
     virtual float x() const; 

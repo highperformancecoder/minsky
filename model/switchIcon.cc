@@ -37,13 +37,11 @@ namespace minsky
   {
     double dx=x-this->x(), dy=y-this->y();
     auto z=zoomFactor();
-    // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-iWidth()) < portRadius*z &&
-        fabs(fabs(dy)-iWidth()) < portRadius*z &&
-        fabs(hypot(dx,dy)-hypot(iWidth(),iWidth())) < portRadius*z)
+    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
+    if (fabs(x-right()) < portRadius*z && fabs(y-bottom()) < portRadius*z)
       return ClickType::onResize;
     return Item::clickType(x,y);
-  }  
+  }    
 
   void SwitchIcon::setNumCases(unsigned n)
   {
@@ -82,7 +80,7 @@ namespace minsky
             r=w->units(check);
           }
     return r;
-  }
+  } 
 
   void SwitchIcon::draw(cairo_t* cairo) const
   {
@@ -90,8 +88,8 @@ namespace minsky
     // square icon
     float width=8*zoomFactor()*numCases();
     if (width<iWidth()*zoomFactor()*numCases()) {
-		width=iWidth()*zoomFactor()*numCases();
-	}
+      width=iWidth()*zoomFactor()*numCases();
+    }
     cairo_rectangle(cairo,-0.5*width,-0.5*width,width,width);
     cairo_stroke(cairo);
 
@@ -135,14 +133,15 @@ namespace minsky
     // add 8 pt margin to allow for ports
     cairo_rectangle(cairo,-0.5*width-8,-0.5*width-8,width+16,width+8);
     cairo_clip(cairo);
-     if (selected) drawSelected(cairo);
+    if (selected) drawSelected(cairo);
   }
   
   void SwitchIcon::resize(const LassoBox& b)
   {
     float invZ=1/zoomFactor();
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));    
-    iWidth(abs(b.x1-b.x0)*invZ);
+    iWidth(0.5*abs(b.x1-b.x0)*invZ);
+    bb.update(*this);
   }  
 
 

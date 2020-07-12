@@ -142,24 +142,15 @@ namespace minsky
     bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
     Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
     double z=zoomFactor();
-    float dx=xx-x(), dy=yy-y(), w=iWidth()*z, h=iHeight()*z; 
-    // make sure resize handles can be grabbed at corners of coupled integral variable. for feature 94.
-    if (const IntOp* i=dynamic_cast<const IntOp*>(this))
-      if (i->coupled())
-        {    
-          float dl=xx-i->x(), dr=xx-i->intVar->x(), wl=i->iWidth()*z, wr=i->intVar->iWidth()*z+i->intVarOffset;
-          if (((fabs(fabs(dl)-wl) < 0.5*portRadius*z) || (fabs(fabs(dr)-wr) < 0.5*portRadius*z)||
-               (fabs(hypot(dl,dy)-hypot(wl,h)) < 0.5*portRadius*z) || (fabs(hypot(dr,dy)-hypot(wr,h)) < 0.5*portRadius*z)) &&
-              fabs(fabs(dy)-h) < 0.5*portRadius*z 
-              )
-            return ClickType::onResize;		  
-        } 
-    if (fabs(fabs(dx)-w) < portRadius*z &&
-        fabs(fabs(dy)-h) < portRadius*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadius*z)
+    float dx=xx-x(), dy=yy-y();
+    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203 
+    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z && type()!=ravel)
+      return ClickType::onResize;  
+    else if ((fabs(xx-left()) < portRadius*z || fabs(xx-right()) < portRadius*z) &&
+      (fabs(yy-top()) < portRadius*z || fabs(yy-bottom()) < portRadius*z))
       return ClickType::onResize;  
     return Item::clickType(xx,yy);
-  }
+  }  
   
   float OperationBase::scaleFactor() const
   {
@@ -296,21 +287,21 @@ namespace minsky
           ports[0]->moveTo(x0, y0);
         if (numPorts()>1) 
           {
-    #ifdef DISPLAY_POW_UPSIDE_DOWN
+#ifdef DISPLAY_POW_UPSIDE_DOWN
             if (type()==OperationType::pow)
               ports[1]->moveTo(x2, y2);
             else
-    #endif
+#endif
               ports[1]->moveTo(x1, y1);
           }
     
         if (numPorts()>2)
           {
-    #ifdef DISPLAY_POW_UPSIDE_DOWN
+#ifdef DISPLAY_POW_UPSIDE_DOWN
             if (type()==OperationType::pow)
               ports[2]->moveTo(x1, y1);
             else
-    #endif
+#endif
               ports[2]->moveTo(x2, y2);
           }
 
@@ -332,10 +323,10 @@ namespace minsky
   
   void OperationBase::resize(const LassoBox& b)
   {
-     float invZ=1/zoomFactor();  
-     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-     iWidth(std::abs(b.x1-b.x0)*invZ);
-     iHeight(std::abs(b.y1-b.y0)*invZ);
+    float invZ=1/zoomFactor();  
+    moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
+    iWidth(std::abs(b.x1-b.x0)*invZ);
+    iHeight(std::abs(b.y1-b.y0)*invZ);
   }
   
 
@@ -528,43 +519,7 @@ namespace minsky
     r.normalise();
     return r;
   }
-    
-namespace
-{
-	
-    void drawResizeHandle(cairo_t* cairo, double x, double y, double sf)
-    {
-      cairo::CairoSave cs(cairo);
-      cairo_translate(cairo,x,y);
-      cairo_scale(cairo,sf,sf);
-      cairo_move_to(cairo,-1,-.2);
-      cairo_line_to(cairo,-1,-1);
-      cairo_line_to(cairo,1,1);
-      cairo_line_to(cairo,1,0.2);
-      cairo_move_to(cairo,-1,-1);
-      cairo_line_to(cairo,-.2,-1);
-      cairo_move_to(cairo,.2,1);
-      cairo_line_to(cairo,1,1);
-    }
-}
-	
-  void IntOp::drawResizeHandles(cairo_t* cairo) const
-  {
-    cairo::CairoSave cs(cairo);
-    auto z=zoomFactor();
-    double xl=iWidth()*z, xr=xl, y=iHeight()*z, sf=portRadiusMult*z; 
-    // make sure resize handles appear at corners of coupled integral variable. for feature 94.
-    if (coupled()) xr=xl+intVarOffset+2.0*intVar->iWidth()*z;     
-    drawResizeHandle(cairo,xr,y,sf);
-    cairo_rotate(cairo,0.5*M_PI);
-    drawResizeHandle(cairo,y,xl,sf);
-    cairo_rotate(cairo,0.5*M_PI);
-    drawResizeHandle(cairo,xl,y,sf);
-    cairo_rotate(cairo,0.5*M_PI);
-    drawResizeHandle(cairo,y,xr,sf);
-    cairo_stroke(cairo);
-  }
-  
+ 
   void IntOp::draw(cairo_t* cairo) const
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
@@ -596,7 +551,7 @@ namespace
     
     cairo_save(cairo); 
     cairo_scale(cairo,z,z);
-	double sf = scaleFactor();  
+    double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
     cairo_move_to(cairo,-7,4.5);
     cairo_show_text(cairo,"\xE2\x88\xAB");
@@ -618,48 +573,48 @@ namespace
     cairo_stroke_preserve(cairo);    
     
     if (coupled())
-     {
-       float ivo=intVarOffset*z;
-       cairo_new_path(cairo);
-       cairo_move_to(cairo,r,0);
-       cairo_line_to(cairo,r+ivo,0);
-       cairo_set_source_rgb(cairo,0,0,0);
-       cairo_stroke(cairo);
+      {
+        float ivo=intVarOffset*z;
+        cairo_new_path(cairo);
+        cairo_move_to(cairo,r,0);
+        cairo_line_to(cairo,r+ivo,0);
+        cairo_set_source_rgb(cairo,0,0,0);
+        cairo_stroke(cairo);
      
-       // display an integration variable next to it
-       RenderVariable rv(*intVar, cairo);
-       // save the render width for later use in setting the clip
-       intVarWidth=rv.width()*z;
-       if (rv.width()<intVar->iWidth()) intVarWidth=intVar->iWidth()*z;
-       // set the port location...
-       intVar->moveTo(x()+r+ivo+intVarWidth, y());
+        // display an integration variable next to it
+        RenderVariable rv(*intVar, cairo);
+        // save the render width for later use in setting the clip
+        intVarWidth=rv.width()*z;
+        if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
+        // set the port location...
+        intVar->moveTo(x()+r+ivo+intVarWidth, y());
          
-       cairo_save(cairo);
-       cairo_translate(cairo,r+ivo+intVarWidth,0);
-       // to get text to render correctly, we need to set
-       // the var's rotation, then antirotate it
-       intVar->rotation(rotation());
-       cairo_rotate(cairo, -M_PI*rotation()/180.0);
-       rv.draw();
-       cairo_restore(cairo);
+        cairo_save(cairo);
+        cairo_translate(cairo,r+ivo+intVarWidth,0);
+        // to get text to render correctly, we need to set
+        // the var's rotation, then antirotate it
+        intVar->rotation(rotation());
+        cairo_rotate(cairo, -M_PI*rotation()/180.0);
+        rv.draw();
+        cairo_restore(cairo);
 	 
-       // build clip path the hard way grr...
-       cairo_move_to(cairo,l,h);
-       cairo_line_to(cairo,l,-h);
-       cairo_line_to(cairo,r,0);
-       cairo_line_to(cairo,r+ivo,0);
-       float rvw=rv.width()*z, rvh=rv.height()*z;
-       if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
-       if (rv.height()<intVar->iHeight()) rvh=intVar->iHeight()*z;
-       cairo_line_to(cairo,r+ivo,-rvh);
-       cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
-       cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
-       cairo_line_to(cairo,r+ivo+2*rvw,rvh);
-       cairo_line_to(cairo,r+ivo,rvh);
-       cairo_line_to(cairo,r+ivo,0);        
-       cairo_line_to(cairo,r,0);        
-       cairo_close_path(cairo);        
-     }
+        // build clip path the hard way grr...
+        cairo_move_to(cairo,l,h);
+        cairo_line_to(cairo,l,-h);
+        cairo_line_to(cairo,r,0);
+        cairo_line_to(cairo,r+ivo,0);
+        float rvw=rv.width()*z, rvh=rv.height()*z;
+        if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
+        if (rv.height()<intVar->iHeight()) rvh=intVar->iHeight()*z;
+        cairo_line_to(cairo,r+ivo,-rvh);
+        cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
+        cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
+        cairo_line_to(cairo,r+ivo+2*rvw,rvh);
+        cairo_line_to(cairo,r+ivo,rvh);
+        cairo_line_to(cairo,r+ivo,0);        
+        cairo_line_to(cairo,r,0);        
+        cairo_close_path(cairo);        
+      }
     
     cairo::Path clipPath(cairo); 
     
@@ -670,7 +625,7 @@ namespace
 	
     // adjust for integration variable
     if (coupled())
-        x0+=intVarOffset+2*intVarWidth+2;
+      x0+=intVarOffset+2*intVarWidth+2;
 	
     cairo_save(cairo);
     cairo_identity_matrix(cairo);
@@ -684,9 +639,9 @@ namespace
     if (numPorts()>0) 
       ports[0]->moveTo(x0, y0);
     if (numPorts()>1) 
-          ports[1]->moveTo(x1, y1);
+      ports[1]->moveTo(x1, y1);
     if (numPorts()>2)
-          ports[2]->moveTo(x2, y2);
+      ports[2]->moveTo(x2, y2);
 	
     cairo_translate(cairo,-coupledIntTranslation,0);        
     cairo_restore(cairo); // undo rotation
@@ -708,7 +663,8 @@ namespace
     float invZ=1.0/zoomFactor();
     this->moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
-    iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
+    // Ensure int op height and var height similar to make gripping resize handle easier. for ticket 1203.
+    iHeight(0.25*std::abs(b.y1-b.y0)*invZ);
     intVar->iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
     intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
     bb.update(*this);	  
@@ -1339,16 +1295,22 @@ namespace
   }
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"%");
   }
   template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"Γ");
   }      
   template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"ψ");
     cairo_rel_move_to(cairo,0,-3);
@@ -1360,6 +1322,8 @@ namespace
   }     
   template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
   {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 	  
     cairo_move_to(cairo,-3,3);
     cairo_show_text(cairo,"!");
   }      

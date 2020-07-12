@@ -86,11 +86,8 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       double dx=xx-x(), dy=yy-y(); 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
-      double w=z*rv.width(), h=-hpy;
-      if (rv.width()<iWidth()) w=z*iWidth();
-      if (fabs(fabs(dx)-w) < 0.5*portRadius*z &&
-          fabs(fabs(dy)-h) < 0.5*portRadius*z &&
-          fabs(hypot(dx,dy)-hypot(w,h)) < 0.5*portRadius*z)
+      // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
+      if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
         return ClickType::onResize;
     }
   catch (...) {}
@@ -461,7 +458,6 @@ bool VariableBase::handleArrows(int dir,bool reset)
   return true;
 }
 
-
 void VariableBase::draw(cairo_t *cairo) const
 {
   double angle=rotation() * M_PI / 180.0;
@@ -496,35 +492,35 @@ void VariableBase::draw(cairo_t *cairo) const
   // For feature 47
   if (type()!=constant && !ioVar() && (vv.size()==1) )
     try
-    {
-      auto val=engExp();
+      {
+        auto val=engExp();
   
-      Pango pangoVal(cairo);
-      if (!isnan(value())) {
-		   pangoVal.setFontSize(6*scaleFactor*z);
-		   pangoVal.setMarkup(mantissa(val));
-	   }
-      else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-		  pangoVal.setFontSize(8*scaleFactor*z);
-		  if (signbit(value())) pangoVal.setMarkup("-∞");
-          else pangoVal.setMarkup("∞");
-	  }
-	  else {  // Display all other NaN cases as ???. For ticket 1155
-		  pangoVal.setFontSize(6*scaleFactor*z);
-		  pangoVal.setMarkup("???");
-	  }
-      pangoVal.angle=angle+(notflipped? 0: M_PI);
-
-      cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
-                    r.y(w-pangoVal.width()-2,-h-hoffs+2));
-      pangoVal.show();
-      if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
-        {
-          pangoVal.setMarkup(expMultiplier(val.engExp));
-          cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
-          pangoVal.show();
+        Pango pangoVal(cairo);
+        if (!isnan(value())) {
+          pangoVal.setFontSize(6*scaleFactor*z);
+          pangoVal.setMarkup(mantissa(val));
         }
-    }
+        else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
+          pangoVal.setFontSize(8*scaleFactor*z);
+          if (signbit(value())) pangoVal.setMarkup("-∞");
+          else pangoVal.setMarkup("∞");
+        }
+        else {  // Display all other NaN cases as ???. For ticket 1155
+          pangoVal.setFontSize(6*scaleFactor*z);
+          pangoVal.setMarkup("???");
+        }
+        pangoVal.angle=angle+(notflipped? 0: M_PI);
+
+        cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
+                      r.y(w-pangoVal.width()-2,-h-hoffs+2));
+        pangoVal.show();
+        if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
+          {
+            pangoVal.setMarkup(expMultiplier(val.engExp));
+            cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
+            pangoVal.show();
+          }
+      }
     catch (...) {} // ignore errors in obtaining values
 
   unique_ptr<cairo::Path> clipPath;

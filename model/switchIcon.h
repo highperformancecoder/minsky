@@ -43,6 +43,9 @@ namespace minsky
     unsigned switchValue() const;
     double value() const override {return ports[switchValue()+2]->value();}
     
+    const SwitchIcon* switchIconCast() const override {return this;}
+    SwitchIcon* switchIconCast() override {return this;}    
+    
     bool flipped=false;
 
     Units units(bool) const override;
@@ -50,7 +53,7 @@ namespace minsky
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
     void resize(const LassoBox& b) override;
-    ClickType::Type clickType(float x, float y) override;
+    ClickType::Type clickType(float x, float y) override;    
   };
 }
 
