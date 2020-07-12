@@ -318,7 +318,7 @@ namespace minsky
         // right justification if displayed, left otherwisw
         v->rotation(0);
         v->moveTo(x+v->x() - (variableDisplay? v->right(): v->left()), y);
-        y+=v->height()*v->zoomFactor();
+        y+=v->height();
       }
     x= this->x() + 0.55*leftMargin()-0.45*iWidth()*z;
     y= this->y() + 0.5*iHeight()*z-0.5*bottomMargin();
@@ -328,7 +328,7 @@ namespace minsky
         // top justification at bottom of icon if displayed, bottom justified otherwise
         v->rotation(90);
         v->moveTo(x, y + v->y() - (variableDisplay? v->top(): v->bottom()));
-        x+=v->width()*v->zoomFactor();
+        x+=v->width();
       }
   }
 

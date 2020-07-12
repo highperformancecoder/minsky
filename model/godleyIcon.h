@@ -64,6 +64,7 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer;
     
+    GodleyIcon() {iWidth(150); iHeight(150);}
     ~GodleyIcon() {removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
