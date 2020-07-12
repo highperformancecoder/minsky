@@ -82,7 +82,7 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
     {
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
-      if (rv.height()<iHeight()) hpy=-z*iHeight(); 
+      if (rv.height()!=iHeight() && iHeight()>0) hpy=-z*iHeight(); 
       double dx=xx-x(), dy=yy-y(); 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
@@ -476,8 +476,8 @@ void VariableBase::draw(cairo_t *cairo) const
   w=rv.width()*z; 
   h=rv.height()*z;
   scaleFactor=max(1.0f,min(0.5f*iWidth()*z/w,0.5f*iHeight()*z/h));
-  if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
-  if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
+  if (rv.width()!=0.5*iWidth() && iWidth()>0) w=0.5*iWidth()*z;
+  if (rv.height()!=0.5*iHeight() && iHeight()>0) h=0.5*iHeight()*z;
   rv.setFontSize(12*scaleFactor*z);
   hoffs=rv.top()*z;
   

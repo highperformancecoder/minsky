@@ -760,10 +760,6 @@ namespace minsky
     if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
       (abs(y-top()) < portRadius*z || abs(y-bottom()*z) < portRadius*z))
       return ClickType::onResize;         
-//    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-//        fabs(fabs(dy)-h) < portRadiusMult*z &&
-//        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-//      return ClickType::onResize;
     if (displayContents() && inIORegion(x,y)==IORegion::none)
       return ClickType::outside;
     if (auto item=select(x,y))

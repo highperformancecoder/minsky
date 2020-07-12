@@ -250,9 +250,9 @@ namespace minsky
         float l=OperationBase::l*z, r=OperationBase::r*z, 
           h=OperationBase::h*z;
           
-        if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
-        if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
-        if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
+		if (fabs(l)!=iWidth()*z && iWidth()>0) l=-iWidth()*z;        
+		if (r!=iWidth()*z && iWidth()>0) r=iWidth()*z;    
+		if (h!=iHeight()*z && iHeight()>0) h=iHeight()*z;   
         
         cairo_move_to(cairo,-r,-h);
         cairo_line_to(cairo,-r,h);
@@ -533,9 +533,9 @@ namespace minsky
     float l=OperationBase::l*z, r=OperationBase::r*z, 
       h=OperationBase::h*z;
       
-    if (fabs(l)<iWidth()*z) l=-iWidth()*z;        
-    if (r<iWidth()*z) r=iWidth()*z;    
-    if (h<iHeight()*z) h=iHeight()*z;   
+    if (fabs(l)!=iWidth()*z && iWidth()>0) l=-iWidth()*z;        
+    if (r!=iWidth()*z && iWidth()>0) r=iWidth()*z;    
+    if (h!=iHeight()*z && iHeight()>0) h=iHeight()*z;   
 
     if (coupled())
       {
@@ -545,7 +545,7 @@ namespace minsky
         // we need to add some translation if the variable is bound
         cairo_rotate(cairo,rotation()*M_PI/180.0);
         coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
-        if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
+        if (rv.width()!=iv.iWidth() && iv.iWidth()>0) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
         cairo_rotate(cairo,-rotation()*M_PI/180.0);
       }
     
@@ -585,7 +585,7 @@ namespace minsky
         RenderVariable rv(*intVar, cairo);
         // save the render width for later use in setting the clip
         intVarWidth=rv.width()*z;
-        if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
+        if (rv.width()!=intVar->iWidth() && intVar->iWidth()>0) intVarWidth=0.5*intVar->iWidth()*z;
         // set the port location...
         intVar->moveTo(x()+r+ivo+intVarWidth, y());
          
@@ -604,8 +604,8 @@ namespace minsky
         cairo_line_to(cairo,r,0);
         cairo_line_to(cairo,r+ivo,0);
         float rvw=rv.width()*z, rvh=rv.height()*z;
-        if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
-        if (rv.height()<intVar->iHeight()) rvh=intVar->iHeight()*z;
+        if (rv.width()!=intVar->iWidth() && intVar->iWidth()>0) rvw=intVar->iWidth()*z;
+        if (rv.height()!=intVar->iHeight() && intVar->iHeight()>0) rvh=intVar->iHeight()*z;
         cairo_line_to(cairo,r+ivo,-rvh);
         cairo_line_to(cairo,r+ivo+2*rvw,-rvh);
         cairo_line_to(cairo,r+ivo+2*rvw+2*z,0);
