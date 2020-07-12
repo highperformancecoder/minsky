@@ -35,11 +35,8 @@ ClickType::Type Sheet::clickType(float x, float y)
 {
   double dx=x-this->x(), dy=y-this->y();
   auto z=zoomFactor();
-  double w=0.5*m_width*z, h=0.5*m_height*z;
-  // check if (x,y) is within portradius of the 4 corners
-  if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-      fabs(fabs(dy)-h) < portRadiusMult*z &&
-      fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
+  if ((abs(x-left()) < portRadiusMult*z || abs(x-right()) < portRadiusMult*z) &&
+      (abs(y-top()) < portRadiusMult*z || abs(y-bottom()) < portRadiusMult*z))  
     return ClickType::onResize;
   return Item::clickType(x,y);
 }

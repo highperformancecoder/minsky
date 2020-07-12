@@ -86,7 +86,7 @@ namespace minsky
   {
     double m_rotation=0; ///< rotation of icon, in degrees
   protected:
-    // these need to be protected, not private to allow the setting of these in constructors
+    // these need to be protected, not private to allow the setting of these in constructors.
     double m_width=0, m_height=0;
   public:
 
@@ -156,8 +156,8 @@ namespace minsky
     virtual float x() const; 
     virtual float y() const;
     virtual float zoomFactor() const;
-    float width() const {if (!bb.valid()) bb.update(*this); return bb.width();}
-    float height() const {if (!bb.valid()) bb.update(*this); return bb.height();}
+    float width() const {if (!bb.valid()) bb.update(*this); return bb.width()*zoomFactor();}
+    float height() const {if (!bb.valid()) bb.update(*this); return bb.height()*zoomFactor();}
     float left() const {return x()+bb.left()*zoomFactor();}
     float right() const {return x()+bb.right()*zoomFactor();}
     float top() const {return y()+bb.top()*zoomFactor();}
