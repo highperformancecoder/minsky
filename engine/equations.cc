@@ -627,7 +627,7 @@ namespace MathDAG
 
     if (type==VariableType::constant)
       {
-        NodePtr r(new ConstantDAG(vv->init));
+        NodePtr r(new ConstantDAG(vv->lhs()? str(vv->value()) : vv->init)); // Ensure flows with non-zero lhs and used as initial condtions in Godley table headings. For ticket 1137.
         expressionCache.insert(valueId, r);
         return r;
       }
@@ -640,7 +640,7 @@ namespace MathDAG
     
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
-    r->init=vv->init;
+    r->init=vv->lhs()? str(vv->value()) :vv->init; // Ensure flows with non-zero lhs and used as initial condtions in Godley table headings. For ticket 1137.
     if (auto v=minsky.definingVar(valueId))
       if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports[1]->wires().empty())
         r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
@@ -922,6 +922,9 @@ namespace MathDAG
           continue; // ignore empty Godley columns
         // resolve scope
         colName=VariableValue::valueId(gi.group.lock(), colName);
+		//auto colVV=minsky.variableValues.find(VariableValue::valueId(gi.group.lock(),colName));
+		//if (colVV==minsky.variableValues.end()) continue;
+        //auto colInit=minsky.variableValues[VariableValue::valueIdFromScope(gi.group.lock(),colVV->second->init)];                            		
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
@@ -930,6 +933,9 @@ namespace MathDAG
         for (size_t r=1; r<godley.rows(); ++r)
           {
             if (godley.initialConditionRow(r)) continue;
+            // Ensure flows with non-zero lhs and used as initial condtions in Godley table headings. For ticket 1137.  
+            //FlowCoef fc((colInit->lhs() && !godley.initialConditionRow(r))? str(colVV->second->init) : godley.cell(r,c));
+            //if (godley.initialConditionRow(r)) continue;
             FlowCoef fc(godley.cell(r,c));
             if (fc.name.empty()) continue;
             //            if (godley.signConventionReversed(c)) fc.coef*=-1;
