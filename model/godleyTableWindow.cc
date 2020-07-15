@@ -278,7 +278,9 @@ namespace minsky
                         if (row!=1 || col!=0) text+=value;  // Do not add value "= 0.0" to Initial Condtions cell(1,0). For ticket 1064
                       }
                     else
-                      text=defang(text);
+                      //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
+                      if (godleyIcon->table.initialConditionRow(row) && displayValues) text=defang(text+value);
+                      else text=defang(text);
                   }
                 pango.setMarkup(text);
               }
