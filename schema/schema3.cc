@@ -344,7 +344,8 @@ namespace schema3
     m.model->bookmarks=bookmarks;
     m.dimensions=dimensions;
     m.conversions=conversions;
-
+    m.fileVersion=minskyVersion;
+    
     static_cast<minsky::RungeKutta&>(m)=rungeKutta;
     return m;
   }

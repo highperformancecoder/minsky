@@ -213,6 +213,7 @@ namespace schema3
   {
     static const int version=3;
     int schemaVersion=Minsky::version;
+    std::string minskyVersion="unknown";
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
@@ -224,7 +225,9 @@ namespace schema3
     
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m): Minsky(*m.model) {
+    Minsky(const minsky::Minsky& m):
+      Minsky(*m.model)  {
+      minskyVersion=m.minskyVersion;
       rungeKutta=m;
       zoomFactor=m.model->zoomFactor();
       bookmarks=m.model->bookmarks;

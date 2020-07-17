@@ -1,19 +1,20 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>64</id>
     <from>8</from>
     <to>21</to>
     <coords>
-     <float>106.48</float>
-     <float>298.831</float>
-     <float>78.1846</float>
-     <float>333.955</float>
-     <float>35.2539</float>
-     <float>113.449</float>
-     <float>-4.12283</float>
-     <float>11.7088</float>
+     <float>134.48</float>
+     <float>351.831</float>
+     <float>106.306</float>
+     <float>386.805</float>
+     <float>63.5587</float>
+     <float>167.242</float>
+     <float>26.0667</float>
+     <float>65.2822</float>
     </coords>
    </Wire>
    <Wire>
@@ -21,14 +22,14 @@
     <from>4</from>
     <to>24</to>
     <coords>
-     <float>151.48</float>
-     <float>298.831</float>
-     <float>81.8472</float>
-     <float>372.178</float>
-     <float>28.9266</float>
-     <float>156.779</float>
-     <float>-27.1129</float>
-     <float>46.179</float>
+     <float>179.48</float>
+     <float>351.831</float>
+     <float>110.482</float>
+     <float>424.509</float>
+     <float>58.0442</float>
+     <float>211.074</float>
+     <float>2.80001</float>
+     <float>101.282</float>
     </coords>
    </Wire>
    <Wire>
@@ -36,12 +37,12 @@
     <from>0</from>
     <to>27</to>
     <coords>
-     <float>189.48</float>
-     <float>299.831</float>
-     <float>30.7401</float>
-     <float>436.886</float>
-     <float>-24.3362</float>
-     <float>80.6493</float>
+     <float>217.48</float>
+     <float>352.831</float>
+     <float>60.9522</float>
+     <float>487.976</float>
+     <float>6.05186</float>
+     <float>137.282</float>
     </coords>
    </Wire>
    <Wire>
@@ -131,8 +132,8 @@
    <Item>
     <id>13</id>
     <type>Variable:stock</type>
-    <x>69.0555</x>
-    <y>136.056</y>
+    <x>71.3307</x>
+    <y>138.465</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -151,8 +152,8 @@
    <Item>
     <id>15</id>
     <type>Variable:stock</type>
-    <x>96.0555</x>
-    <y>139.189</y>
+    <x>100.088</x>
+    <y>141.66</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -171,8 +172,8 @@
    <Item>
     <id>17</id>
     <type>Variable:stock</type>
-    <x>123.055</x>
-    <y>138.014</y>
+    <x>128.845</x>
+    <y>140.862</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -191,8 +192,8 @@
    <Item>
     <id>19</id>
     <type>Variable:stock</type>
-    <x>150.055</x>
-    <y>133.314</y>
+    <x>157.603</x>
+    <y>135.27</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -211,8 +212,8 @@
    <Item>
     <id>22</id>
     <type>Variable:flow</type>
-    <x>24.2041</x>
-    <y>9.17131</y>
+    <x>25.858</x>
+    <y>9.81125</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -232,8 +233,8 @@
    <Item>
     <id>25</id>
     <type>Variable:flow</type>
-    <x>15.1963</x>
-    <y>36.1713</y>
+    <x>16.2722</x>
+    <y>38.5686</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -253,8 +254,8 @@
    <Item>
     <id>28</id>
     <type>Variable:flow</type>
-    <x>16.3712</x>
-    <y>63.1713</y>
+    <x>17.8698</x>
+    <y>67.326</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -528,8 +529,8 @@
      <int>16</int>
      <int>18</int>
     </ports>
-    <width>345.213</width>
-    <height>270.4</height>
+    <width>194.4</width>
+    <height>150</height>
     <name>Godleyitem44746400</name>
     <data>
      <vector>
