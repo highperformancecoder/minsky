@@ -781,7 +781,7 @@ proc dimensionsDialog {} {
 }
 
 set timeFormatStrings {
-    "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q" "%m/%d/%y"
+    "%Y-%m-%d" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q" "%m/%d/%y"
 }
 
 proc dimFormatPopdown {comboBox type} {
@@ -1567,6 +1567,7 @@ proc help {topic} {
 proc aboutMinsky {} {
   tk_messageBox -message "
    Minsky [minskyVersion]\n
+   Version used to save file [fileVersion]\n
    EcoLab [ecolabVersion]\n
    Tcl/Tk [info tclversion]\n
    Ravel [ravelVersion]

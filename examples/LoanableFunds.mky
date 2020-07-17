@@ -1,5 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>550</id>
@@ -727,7 +728,7 @@
     <id>86</id>
     <type>Variable:stock</type>
     <x>546.24</x>
-    <y>416.021</y>
+    <y>415.031</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -830,8 +831,8 @@
    <Item>
     <id>101</id>
     <type>Variable:flow</type>
-    <x>504.301</x>
-    <y>218.565</y>
+    <x>503.311</x>
+    <y>244.201</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -851,8 +852,8 @@
    <Item>
     <id>104</id>
     <type>Variable:flow</type>
-    <x>505.29</x>
-    <y>250.448</y>
+    <x>504.301</x>
+    <y>279.815</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -872,8 +873,8 @@
    <Item>
     <id>107</id>
     <type>Variable:flow</type>
-    <x>507.268</x>
-    <y>154.8</y>
+    <x>506.279</x>
+    <y>172.974</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -893,8 +894,8 @@
    <Item>
     <id>110</id>
     <type>Variable:flow</type>
-    <x>508.258</x>
-    <y>282.331</y>
+    <x>507.268</x>
+    <y>315.428</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -914,8 +915,8 @@
    <Item>
     <id>113</id>
     <type>Variable:flow</type>
-    <x>508.258</x>
-    <y>186.682</y>
+    <x>507.268</x>
+    <y>208.587</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -935,8 +936,8 @@
    <Item>
     <id>116</id>
     <type>Variable:flow</type>
-    <x>503.311</x>
-    <y>91.0341</y>
+    <x>502.322</x>
+    <y>101.746</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -956,8 +957,8 @@
    <Item>
     <id>119</id>
     <type>Variable:flow</type>
-    <x>505.29</x>
-    <y>122.917</y>
+    <x>504.301</x>
+    <y>137.36</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -977,7 +978,7 @@
    <Item>
     <id>122</id>
     <type>Variable:flow</type>
-    <x>497.376</x>
+    <x>496.386</x>
     <y>-16.9659</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -998,8 +999,8 @@
    <Item>
     <id>125</id>
     <type>Variable:flow</type>
-    <x>502.322</x>
-    <y>64.0341</y>
+    <x>501.333</x>
+    <y>72.0682</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1019,8 +1020,8 @@
    <Item>
     <id>128</id>
     <type>Variable:flow</type>
-    <x>493.419</x>
-    <y>10.0341</y>
+    <x>492.429</x>
+    <y>12.7121</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1040,8 +1041,8 @@
    <Item>
     <id>131</id>
     <type>Variable:flow</type>
-    <x>505.29</x>
-    <y>37.0341</y>
+    <x>504.301</x>
+    <y>42.3902</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1061,8 +1062,8 @@
    <Item>
     <id>134</id>
     <type>Variable:flow</type>
-    <x>893.675</x>
-    <y>171.065</y>
+    <x>892.654</x>
+    <y>188.413</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1082,8 +1083,8 @@
    <Item>
     <id>137</id>
     <type>Variable:flow</type>
-    <x>895.717</x>
-    <y>202.948</y>
+    <x>894.696</x>
+    <y>223.126</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1103,8 +1104,8 @@
    <Item>
     <id>140</id>
     <type>Variable:flow</type>
-    <x>891.633</x>
-    <y>234.831</y>
+    <x>890.612</x>
+    <y>257.84</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1124,8 +1125,8 @@
    <Item>
     <id>143</id>
     <type>Variable:flow</type>
-    <x>890.612</x>
-    <y>112.182</y>
+    <x>889.591</x>
+    <y>123.071</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1145,8 +1146,8 @@
    <Item>
     <id>146</id>
     <type>Variable:flow</type>
-    <x>896.738</x>
-    <y>266.714</y>
+    <x>895.717</x>
+    <y>292.553</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1166,7 +1167,7 @@
    <Item>
     <id>149</id>
     <type>Variable:flow</type>
-    <x>885.507</x>
+    <x>884.486</x>
     <y>31.1824</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -1187,8 +1188,8 @@
    <Item>
     <id>152</id>
     <type>Variable:flow</type>
-    <x>881.423</x>
-    <y>58.1824</y>
+    <x>880.402</x>
+    <y>61.8117</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1208,8 +1209,8 @@
    <Item>
     <id>155</id>
     <type>Variable:flow</type>
-    <x>891.633</x>
-    <y>139.182</y>
+    <x>890.612</x>
+    <y>153.7</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1229,8 +1230,8 @@
    <Item>
     <id>158</id>
     <type>Variable:flow</type>
-    <x>893.675</x>
-    <y>85.1824</y>
+    <x>892.654</x>
+    <y>92.4411</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1250,8 +1251,8 @@
    <Item>
     <id>160</id>
     <type>Variable:stock</type>
-    <x>960.509</x>
-    <y>363.455</y>
+    <x>963.34</x>
+    <y>362.434</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -1270,8 +1271,8 @@
    <Item>
     <id>162</id>
     <type>Variable:stock</type>
-    <x>987.509</x>
-    <y>373.665</y>
+    <x>993.969</x>
+    <y>372.644</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -1290,8 +1291,8 @@
    <Item>
     <id>165</id>
     <type>Variable:flow</type>
-    <x>588.125</x>
-    <y>392</y>
+    <x>587.117</x>
+    <y>404.062</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1311,8 +1312,8 @@
    <Item>
     <id>168</id>
     <type>Variable:flow</type>
-    <x>589.132</x>
-    <y>423.883</y>
+    <x>588.125</x>
+    <y>438.321</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1332,8 +1333,8 @@
    <Item>
     <id>171</id>
     <type>Variable:flow</type>
-    <x>589.132</x>
-    <y>455.766</y>
+    <x>588.125</x>
+    <y>472.58</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1353,7 +1354,7 @@
    <Item>
     <id>174</id>
     <type>Variable:flow</type>
-    <x>578.049</x>
+    <x>577.041</x>
     <y>279.117</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -1374,8 +1375,8 @@
    <Item>
     <id>177</id>
     <type>Variable:flow</type>
-    <x>574.018</x>
-    <y>306.117</y>
+    <x>573.01</x>
+    <y>309.346</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1395,8 +1396,8 @@
    <Item>
     <id>180</id>
     <type>Variable:flow</type>
-    <x>586.109</x>
-    <y>360.117</y>
+    <x>585.102</x>
+    <y>369.803</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1416,8 +1417,8 @@
    <Item>
     <id>183</id>
     <type>Variable:flow</type>
-    <x>586.109</x>
-    <y>333.117</y>
+    <x>585.102</x>
+    <y>339.574</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1437,8 +1438,8 @@
    <Item>
     <id>185</id>
     <type>Variable:stock</type>
-    <x>679.636</x>
-    <y>549.297</y>
+    <x>685.241</x>
+    <y>548.289</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -1457,8 +1458,8 @@
    <Item>
     <id>188</id>
     <type>Variable:flow</type>
-    <x>911.459</x>
-    <y>384.233</y>
+    <x>892.796</x>
+    <y>392.011</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1478,7 +1479,7 @@
    <Item>
     <id>191</id>
     <type>Variable:flow</type>
-    <x>911.459</x>
+    <x>892.796</x>
     <y>320.467</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -1499,8 +1500,8 @@
    <Item>
     <id>194</id>
     <type>Variable:flow</type>
-    <x>913.037</x>
-    <y>352.35</y>
+    <x>894.9</x>
+    <y>356.239</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1520,8 +1521,8 @@
    <Item>
     <id>196</id>
     <type>Variable:stock</type>
-    <x>976.631</x>
-    <y>463.939</y>
+    <x>964.67</x>
+    <y>462.887</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -2748,8 +2749,8 @@
    <Item>
     <id>344</id>
     <type>Variable:stock</type>
-    <x>652.636</x>
-    <y>542.244</y>
+    <x>655.013</x>
+    <y>541.236</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -3123,8 +3124,8 @@
    <Item>
     <id>395</id>
     <type>Variable:stock</type>
-    <x>573.24</x>
-    <y>394.257</y>
+    <x>575.918</x>
+    <y>393.267</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -3143,8 +3144,8 @@
    <Item>
     <id>397</id>
     <type>Variable:stock</type>
-    <x>605.123</x>
-    <y>391.289</y>
+    <x>611.532</x>
+    <y>390.3</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -3163,8 +3164,8 @@
    <Item>
     <id>399</id>
     <type>Variable:stock</type>
-    <x>637.006</x>
-    <y>396.235</y>
+    <x>647.145</x>
+    <y>395.246</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -3183,8 +3184,8 @@
    <Item>
     <id>401</id>
     <type>Variable:stock</type>
-    <x>668.889</x>
-    <y>393.267</y>
+    <x>682.759</x>
+    <y>392.278</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -3204,7 +3205,7 @@
     <id>403</id>
     <type>Variable:stock</type>
     <x>928.626</x>
-    <y>367.539</y>
+    <y>366.518</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -3224,7 +3225,7 @@
     <id>405</id>
     <type>Variable:stock</type>
     <x>620.754</x>
-    <y>543.251</y>
+    <y>542.244</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -3243,8 +3244,8 @@
    <Item>
     <id>407</id>
     <type>Variable:stock</type>
-    <x>944.748</x>
-    <y>457.627</y>
+    <x>928.899</x>
+    <y>456.574</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -4143,8 +4144,8 @@
      <int>398</int>
      <int>400</int>
     </ports>
-    <width>347.89</width>
-    <height>689.523</height>
+    <width>278.156</width>
+    <height>596.123</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -4281,8 +4282,8 @@
      <int>159</int>
      <int>161</int>
     </ports>
-    <width>224.665</width>
-    <height>524.345</height>
+    <width>163.378</width>
+    <height>481.345</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -4389,8 +4390,8 @@
      <int>343</int>
      <int>184</int>
     </ports>
-    <width>227.644</width>
-    <height>420.156</height>
+    <width>163.378</width>
+    <height>375.356</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
@@ -4468,8 +4469,8 @@
      <int>406</int>
      <int>195</int>
     </ports>
-    <width>152.815</width>
-    <height>218.767</height>
+    <width>150</width>
+    <height>172.167</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>

@@ -1,5 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>127</id>
@@ -406,7 +407,7 @@
     <id>46</id>
     <type>Variable:stock</type>
     <x>363.332</x>
-    <y>240.611</y>
+    <y>239.655</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -425,8 +426,8 @@
    <Item>
     <id>48</id>
     <type>Variable:stock</type>
-    <x>390.332</x>
-    <y>241.566</y>
+    <x>393.916</x>
+    <y>240.611</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -445,8 +446,8 @@
    <Item>
     <id>50</id>
     <type>Variable:stock</type>
-    <x>417.332</x>
-    <y>235.832</y>
+    <x>424.5</x>
+    <y>234.876</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -465,8 +466,8 @@
    <Item>
     <id>52</id>
     <type>Variable:stock</type>
-    <x>444.332</x>
-    <y>238.699</y>
+    <x>455.085</x>
+    <y>237.743</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -485,8 +486,8 @@
    <Item>
     <id>54</id>
     <type>Variable:stock</type>
-    <x>471.332</x>
-    <y>249.212</y>
+    <x>485.669</x>
+    <y>248.257</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -505,7 +506,7 @@
    <Item>
     <id>57</id>
     <type>Variable:flow</type>
-    <x>330.367</x>
+    <x>329.412</x>
     <y>48.2535</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -526,8 +527,8 @@
    <Item>
     <id>60</id>
     <type>Variable:flow</type>
-    <x>330.367</x>
-    <y>75.2535</y>
+    <x>329.412</x>
+    <y>78.8376</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -547,8 +548,8 @@
    <Item>
     <id>63</id>
     <type>Variable:flow</type>
-    <x>330.367</x>
-    <y>102.254</y>
+    <x>329.412</x>
+    <y>109.422</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -568,8 +569,8 @@
    <Item>
     <id>66</id>
     <type>Variable:flow</type>
-    <x>330.367</x>
-    <y>129.254</y>
+    <x>329.412</x>
+    <y>140.006</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -589,8 +590,8 @@
    <Item>
     <id>69</id>
     <type>Variable:flow</type>
-    <x>330.367</x>
-    <y>156.254</y>
+    <x>329.411</x>
+    <y>170.59</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -1006,8 +1007,8 @@
      <int>51</int>
      <int>53</int>
     </ports>
-    <width>289.824</width>
-    <height>339</height>
+    <width>243</width>
+    <height>243</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>

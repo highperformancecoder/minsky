@@ -319,6 +319,8 @@ namespace minsky
     std::string ecolabVersion() const {return VERSION;}
     std::string ravelVersion() const;
 
+    std::string fileVersion; ///< Minsky version file was saved under
+    
     unsigned maxHistory{100}; ///< maximum no. of history states to save
     int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvaas during simulation
 
