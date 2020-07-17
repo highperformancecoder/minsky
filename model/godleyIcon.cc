@@ -267,29 +267,28 @@ namespace minsky
       if (table.initialConditionRow(r))
         for (size_t c=1; c<table.cols(); ++c)
           {
-            string name=trimWS(table.cell(0,c));           
+            string name=trimWS(table.cell(0,c));
             auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
-            VariableValue& v=*vi->second;           
+            VariableValue& v=*vi->second;
             v.godleyOverridden=false;
             string::size_type start=table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)
               {
-				// Ensure flows with non-zero lhs and used as initial condtions in Godley table headings. For ticket 1137.  
-				auto vv=minsky().variableValues[VariableValue::valueIdFromScope(group.lock(),v.init)];                  
-                FlowCoef fc((vv->lhs())? str(vv->value()) : table.cell(r,c).substr(start));                      
-                //FlowCoef fc(table.cell(r,c).substr(start));                      
+                FlowCoef fc(table.cell(r,c).substr(start));
                 v.init=fc.str();
+                // ensure that flows used as intial conditions, which inherit their values from other vars, correctly initialise corresponding stock var. for ticket 1137.
+                auto vv=minsky().variableValues[VariableValue::valueIdFromScope(group.lock(),v.init)];
+                if (vv->lhs()) vv->init=str(vv->value());
                 v.godleyOverridden=true;
               }
             else
-              { 
+              {
                 // populate cell with current variable's initial value
-                FlowCoef fc(v.init);   
-				table.cell(r,c)=fc.str();
+                FlowCoef fc(v.init);
+                table.cell(r,c)=fc.str();
                 v.godleyOverridden=true;
               }
-
           }
 
 
@@ -454,7 +453,6 @@ namespace minsky
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor();
-    //double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
     double w=iWidth()*z, h=iHeight()*z;
     // check if (x,y) is within portradius of the 4 corners
     if ((abs(x-Item::left()) < portRadiusMult*z || abs(x-Item::right()) < portRadiusMult*z) &&
