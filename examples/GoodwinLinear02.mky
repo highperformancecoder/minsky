@@ -1,5 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>102</id>
@@ -177,12 +178,12 @@
     <coords>
      <float>164.734</float>
      <float>305.335</float>
-     <float>167.533</float>
-     <float>257.477</float>
-     <float>170.07</float>
-     <float>256.173</float>
-     <float>230.015</float>
-     <float>313.494</float>
+     <float>167.54</float>
+     <float>257.363</float>
+     <float>170.083</float>
+     <float>256.056</float>
+     <float>230.172</float>
+     <float>313.499</float>
     </coords>
    </Wire>
    <Wire>
