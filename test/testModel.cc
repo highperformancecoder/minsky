@@ -1059,6 +1059,7 @@ SUITE(GodleyIcon)
       CHECK_EQUAL(1,varCount["flow1"]);
       CHECK_EQUAL(0,varCount["flow2"]);
     }
+
 }
 
 SUITE(Minsky)
@@ -1579,6 +1580,53 @@ SUITE(GodleyTableWindow)
        CHECK_EQUAL("row1",t.cell(1,0));
        undo(-1);
        CHECK_EQUAL("xxx",t.cell(1,0));
+     }
+
+   TEST_FIXTURE(TestFixture, copyBetweenCols)
+     {
+       // test scenario in bug #1212, where item is dragged from one column to another in linked tables
+       auto godley1=dynamic_pointer_cast<GodleyIcon>(model->addItem(new GodleyIcon));
+       godley1->table.resize(3,4);
+       godley1->table.cell(0,1)="foo";
+       godley1->table.cell(0,2)="bar";
+       godley1->table.cell(2,1)="foobar";
+
+       // linked table assets are liabilities and vice versa
+       auto godley2=new GodleyIcon;
+       model->addItem(godley2);
+       godley2->table.resize(3,4);
+       godley2->table.cell(0,2)="foo";
+       godley2->table.cell(0,1)="bar";
+       godley2->table.cell(2,2)="foobar";
+
+       godley1->update();
+       godley2->update();
+
+       GodleyTableWindow gw(godley1);
+       // render GodleyTableWindow to compute column/row boundaries
+       ecolab::cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
+       gw.draw(surf.cairo());
+       // positions of the 2,1 and 2,2 cells
+       double x1=gw.colLeftMargin[1]+5, x2=gw.colLeftMargin[2]+5, y=2*gw.rowHeight+gw.topTableOffset;
+       CHECK_EQUAL(1,gw.colXZoomed(x1));
+       CHECK_EQUAL(2,gw.colXZoomed(x2));
+       CHECK_EQUAL(2,gw.rowYZoomed(y));
+
+       // move cell from asset to liability
+       gw.mouseDown(x2,y);
+       gw.mouseUp(x1,y);
+       gw.update();
+
+       // this scenario should not add extra rows
+       CHECK_EQUAL(3,godley1->table.rows());
+       CHECK_EQUAL(3,godley2->table.rows());
+       CHECK_EQUAL(4,godley1->table.cols());
+       CHECK_EQUAL(4,godley2->table.cols());
+
+       CHECK_EQUAL("",godley1->table.cell(2,1));
+       CHECK_EQUAL("",godley2->table.cell(2,2));
+       CHECK_EQUAL("foobar",godley1->table.cell(2,2));
+       CHECK_EQUAL("foobar",godley2->table.cell(2,1));
      }
   
 }

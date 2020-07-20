@@ -526,8 +526,10 @@ namespace minsky
     else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
       {
         swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
-        selectedCol=c;
-        selectedRow=r;
+        minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+        minsky().balanceDuplicateColumns(*godleyIcon,c);
+        selectedCol=-1;//c;
+        selectedRow=-1;//r;
       }
     else if (selectIdx!=insertIdx)
       copy();
