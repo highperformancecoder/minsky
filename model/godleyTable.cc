@@ -45,6 +45,14 @@ bool GodleyTable::initialConditionRow(unsigned row) const
   return j==initialConditionsSz;
 }
 
+bool GodleyTable::singularRow(unsigned row, unsigned col)
+{
+  for (size_t c=0; c<cols(); ++c)
+    if (c!=col && !cell(row, c).empty())
+      return false;
+  return true;
+}
+
 void GodleyTable::insertRow(unsigned row)
 {
   if (row<=data.size())

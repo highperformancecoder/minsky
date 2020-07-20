@@ -678,7 +678,7 @@ namespace minsky
                            }
                        }
                    // items to delete
-                   vector<size_t> rowsToDelete;
+                   set<size_t> rowsToDelete;
                    for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
                      if (i->second!=0 && srcFlows[i->first]==0)
                        for (size_t row=1; row<destTable.rows(); ++row)
@@ -693,11 +693,29 @@ namespace minsky
                                for (size_t c=0; c<destTable.cols(); ++c)
                                  if (!destTable.cell(row, c).empty())
                                    goto rowNotEmpty;
-                               rowsToDelete.push_back(row);
+                               rowsToDelete.insert(row);
                              rowNotEmpty:;
                              }
                          }
-                   for (auto row: rowsToDelete) destTable.deleteRow(row);
+                   // amalgamate unlabelled rows with singular value
+                   map<string,double> unlabelledSigs;
+                   for (size_t row=1; row<destTable.rows(); ++row)
+                     {
+                       if (!destTable.singularRow(row, col)) continue;
+                       FlowCoef fc(destTable.cell(row, col));
+                       unlabelledSigs[fc.name]+=fc.coef;
+                       rowsToDelete.insert(row);
+                     }
+                   // append amalgamated rows
+                   for (auto& i: unlabelledSigs)
+                     if (i.second!=0)
+                       {
+                         destTable.insertRow(destTable.rows());
+                         destTable.cell(destTable.rows()-1,col)=to_string(i.second)+i.first;
+                       }
+                   
+                   for (auto row=rowsToDelete.rbegin(); row!=rowsToDelete.rend(); ++row)
+                     destTable.deleteRow(*row);
                  }   
          return false;
        });  // TODO - this lambda is FAR too long!

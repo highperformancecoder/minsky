@@ -1625,8 +1625,66 @@ SUITE(GodleyTableWindow)
 
        CHECK_EQUAL("",godley1->table.cell(2,1));
        CHECK_EQUAL("",godley2->table.cell(2,2));
-       CHECK_EQUAL("foobar",godley1->table.cell(2,2));
-       CHECK_EQUAL("foobar",godley2->table.cell(2,1));
+       FlowCoef fc(godley1->table.cell(2,2));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(1,fc.coef);
+       fc=FlowCoef(godley2->table.cell(2,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(1,fc.coef);
      }
-  
+   
+     TEST_FIXTURE(TestFixture, almalgamateLines)
+     {
+       // test scenario in bug #1212, where item is dragged from one column to another in linked tables
+       auto godley1=dynamic_pointer_cast<GodleyIcon>(model->addItem(new GodleyIcon));
+       godley1->table.resize(4,4);
+       godley1->table.cell(0,1)="foo";
+       godley1->table.cell(0,2)="bar";
+       godley1->table.cell(2,1)="foobar";
+       godley1->table.cell(3,1)="-2foobar";
+
+       // linked table assets are liabilities and vice versa
+       auto godley2=new GodleyIcon;
+       model->addItem(godley2);
+       godley2->table.resize(3,4);
+       godley2->table.cell(0,2)="foo";
+       godley2->table.cell(0,1)="bar";
+       godley2->table.cell(2,2)="-foobar";
+
+       balanceDuplicateColumns(*godley2,2);
+       
+       // row 2 & 3 should be amalgamated, and the sign changed
+       CHECK_EQUAL(3,godley1->table.rows());
+       FlowCoef fc(godley1->table.cell(2,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(-1,fc.coef);
+
+       CHECK_EQUAL(3,godley2->table.rows());
+       fc=FlowCoef(godley2->table.cell(2,2));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(-1,fc.coef);
+
+       // Now add a name to the row, to fix things
+       godley1->table.resize(4,4);
+       godley1->table.cell(3,1)="2foobar";
+       balanceDuplicateColumns(*godley1,1);
+       godley1->table.cell(2,0)="tax";
+       balanceDuplicateColumns(*godley2,2);
+       
+       // extra row should not be amalgamated on godley1, but amalgamated on godley2
+       CHECK_EQUAL(4,godley1->table.rows());
+       fc=FlowCoef(godley1->table.cell(2,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(-1,fc.coef);
+       fc=FlowCoef(godley1->table.cell(3,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(2,fc.coef);
+
+       CHECK_EQUAL(3,godley2->table.rows());
+       fc=FlowCoef(godley2->table.cell(2,2));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(1,fc.coef);
+      
+     }
+
 }
