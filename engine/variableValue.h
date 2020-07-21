@@ -26,6 +26,7 @@
 #include "constMap.h"
 #include "str.h"
 #include "CSVDialog.h"
+#include "latexMarkup.h"
 #include <boost/regex.hpp>
 #include <utility>
 
@@ -178,7 +179,7 @@ namespace minsky
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
       if (scope<0) return ":"+stripActive(uqName(name));
-      else return std::to_string(scope)+":"+stripActive(uqName(name));
+      else return std::to_string(scope)+":"+stripActive(latexToPango(uqName(name)));
     }
     static std::string valueId(std::string name) {
       return valueId(scope(name), name);
