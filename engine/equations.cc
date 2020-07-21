@@ -560,9 +560,8 @@ namespace MathDAG
     for (auto& g: godleyVars)
       {
         //        assert(g->second.godleyId>=0);
-        integVarMap[VariableValue::valueId(g.first)]=
-          dynamic_cast<VariableDAG*>
-          (makeDAG(VariableValue::valueId(g.first),
+        integVarMap[g.first]=dynamic_cast<VariableDAG*>
+          (makeDAG(g.first,
                    VariableValue::uqName(g.first), VariableValue::stock).get());
         expressionCache.getIntegralInput(g.first)->rhs=
           expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
@@ -917,8 +916,8 @@ namespace MathDAG
     auto& godley=gi.table;
     for (size_t c=1; c<godley.cols(); ++c)
       {
-        string colName=stripActive(trimWS(godley.cell(0,c)));
-        if (colName=="_" || VariableValue::uqName(colName).empty())
+        string colName=trimWS(godley.cell(0,c));
+        if (VariableValue::uqName(colName).empty())
           continue; // ignore empty Godley columns
         // resolve scope
         colName=VariableValue::valueId(gi.group.lock(), colName);

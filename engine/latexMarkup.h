@@ -23,7 +23,12 @@
 
 namespace minsky
 {
-  std::string latexToPango(const char*);
+  std::string latexToPangoNonItalicised(const char*);
+  inline std::string latexToPangoNonItalicised(const std::string& x) 
+  {return latexToPangoNonItalicised(x.c_str());}
+  
+  inline std::string latexToPango(const char* s)
+  {return "<i>"+latexToPangoNonItalicised(s)+"</i>";}
   /// interprets LaTeX sequences within, returning result as UTF-8
   /// containing Pango markup. Only a small subset of LaTeX is implemented.
   inline std::string latexToPango(const std::string& x) 
