@@ -83,10 +83,10 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
       if (rv.height()<iHeight()) hpy=-z*iHeight(); 
-      double dx=xx-x(), dy=yy-y(); 
+      double dx=xx-x(), dy=yy-y();       
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
-      // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
+    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203          
       if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
         return ClickType::onResize;
     }
@@ -134,9 +134,9 @@ float VariableBase::zoomFactor() const
   if (ioVar())
     if (auto g=group.lock())
       return g->edgeScale();
-  // scale by GodleyIcon::iconScale if part of an Godley icon
+  // scale by GodleyIcon::scaleFactor if part of an Godley icon
   if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-    return g->iconScale() * Item::zoomFactor();
+    return g->scaleFactor() * Item::zoomFactor();
   return Item::zoomFactor();
 }
 

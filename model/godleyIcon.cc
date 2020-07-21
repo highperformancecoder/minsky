@@ -166,14 +166,14 @@ namespace minsky
   double GodleyIcon::schema1ZoomFactor() const
   {
     if (auto g=group.lock())
-      return iconScale()*g->zoomFactor();
+      return this->scaleFactor()*g->zoomFactor();
     else
-      return iconScale();
+      return this->scaleFactor();
   }
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-	float z=zoomFactor(), iw=this->iWidth(svgRenderer.width()), ih=this->iHeight(svgRenderer.height()), is=iconScale();  
+	float z=zoomFactor(), iw=this->iWidth(svgRenderer.width()), ih=this->iHeight(svgRenderer.height()), is=this->scaleFactor();  
 	float minusLeftMargin=iw*z*is, minusBottomMargin=ih*z*is;
     auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
     if (bw<=leftMargin() || bh<=bottomMargin()) return;
@@ -267,25 +267,29 @@ namespace minsky
       if (table.initialConditionRow(r))
         for (size_t c=1; c<table.cols(); ++c)
           {
-            string name=trimWS(table.cell(0,c));
+            string name=trimWS(table.cell(0,c));           
             auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
-            VariableValue& v=*vi->second;
+            VariableValue& v=*vi->second;           
             v.godleyOverridden=false;
             string::size_type start=table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)
               {
-                FlowCoef fc(table.cell(r,c).substr(start));
+                FlowCoef fc(table.cell(r,c).substr(start));                      
                 v.init=fc.str();
+                // ensure that flows used as intial conditions, which inherit their values from other vars, correctly initialise corresponding stock var. for ticket 1137.
+                //auto vv=minsky().variableValues[VariableValue::valueIdFromScope(group.lock(),v.init)];
+                //if (vv->lhs()) vv->init=str(vv->value());                
                 v.godleyOverridden=true;
               }
             else
-              {
+              { 
                 // populate cell with current variable's initial value
-                FlowCoef fc(v.init);
-                table.cell(r,c)=fc.str();
+                FlowCoef fc(v.init);   
+				table.cell(r,c)=fc.str();
                 v.godleyOverridden=true;
               }
+
           }
 
 
@@ -309,7 +313,7 @@ namespace minsky
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
-    float z=iconScale()*this->zoomFactor();
+    float z=this->scaleFactor()*this->zoomFactor();
     float vdf=variableDisplay? 1: -1; // variable display factor
     float x= this->x() - 0.5*iWidth()*z+0.5*leftMargin();
     float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
@@ -346,7 +350,7 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
 	  
-    float z=zoomFactor()*iconScale();   
+    float z=zoomFactor()*this->scaleFactor();   
     positionVariables();
     double titley;
     
@@ -450,10 +454,11 @@ namespace minsky
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor();
+    //double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
     double w=iWidth()*z, h=iHeight()*z;
     // check if (x,y) is within portradius of the 4 corners
-    if ((abs(x-Item::left()) < portRadiusMult*z || abs(x-Item::right()) < portRadiusMult*z) &&
-      (abs(y-Item::top()) < portRadiusMult*z || abs(y-Item::bottom()) < portRadiusMult*z))    
+    if ((abs(x-left()) < portRadiusMult*z || abs(x-right()) < portRadiusMult*z) &&
+      (abs(y-top()) < portRadiusMult*z || abs(y-bottom()) < portRadiusMult*z))    
       return ClickType::onResize;
     // Make it possible to pull wires from variables attached to Godley icons. For ticket 940  
     if (auto item=select(x,y))
