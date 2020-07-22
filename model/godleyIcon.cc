@@ -162,18 +162,23 @@ namespace minsky
           editor->enableButtons();
       }
   }
+  
+  float GodleyIcon::scaleFactor(const float& sf) {
+    m_sf=sf;
+    return m_sf;
+  }     
 
   double GodleyIcon::schema1ZoomFactor() const
   {
     if (auto g=group.lock())
-      return this->scaleFactor()*g->zoomFactor();
+      return Item::scaleFactor()*g->zoomFactor();
     else
-      return this->scaleFactor();
+      return Item::scaleFactor();
   }
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-	float z=zoomFactor(), iw=this->iWidth(svgRenderer.width()), ih=this->iHeight(svgRenderer.height()), is=this->scaleFactor();  
+	float z=zoomFactor(), iw=this->iWidth(svgRenderer.width()), ih=this->iHeight(svgRenderer.height()), is=Item::scaleFactor();  
 	float minusLeftMargin=iw*z*is, minusBottomMargin=ih*z*is;
     auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
     if (bw<=leftMargin() || bh<=bottomMargin()) return;
@@ -276,10 +281,7 @@ namespace minsky
             if (start!=string::npos)
               {
                 FlowCoef fc(table.cell(r,c).substr(start));                      
-                v.init=fc.str();
-                // ensure that flows used as intial conditions, which inherit their values from other vars, correctly initialise corresponding stock var. for ticket 1137.
-                //auto vv=minsky().variableValues[VariableValue::valueIdFromScope(group.lock(),v.init)];
-                //if (vv->lhs()) vv->init=str(vv->value());                
+                v.init=fc.str();              
                 v.godleyOverridden=true;
               }
             else
@@ -313,7 +315,7 @@ namespace minsky
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
-    float z=this->scaleFactor()*this->zoomFactor();
+    float z=Item::scaleFactor()*this->zoomFactor();
     float vdf=variableDisplay? 1: -1; // variable display factor
     float x= this->x() - 0.5*iWidth()*z+0.5*leftMargin();
     float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
@@ -350,7 +352,7 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
 	  
-    float z=zoomFactor()*this->scaleFactor();   
+    float z=zoomFactor()*Item::scaleFactor();   
     positionVariables();
     double titley;
     
@@ -454,7 +456,6 @@ namespace minsky
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor();
-    //double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
     double w=iWidth()*z, h=iHeight()*z;
     // check if (x,y) is within portradius of the 4 corners
     if ((abs(x-left()) < portRadiusMult*z || abs(x-right()) < portRadiusMult*z) &&
