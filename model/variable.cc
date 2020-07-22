@@ -136,7 +136,7 @@ float VariableBase::zoomFactor() const
       return g->edgeScale();
   // scale by GodleyIcon::scaleFactor if part of an Godley icon
   if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-    return Item::scaleFactor() * Item::zoomFactor();
+    return g->scaleFactor() * Item::zoomFactor();
   return Item::zoomFactor();
 }
 

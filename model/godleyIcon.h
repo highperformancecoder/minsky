@@ -40,6 +40,7 @@ namespace minsky
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0;
     /// icon scale is adjusted when Godley icon is resized
+    float m_sf=1;
     CLASSDESC_ACCESS(GodleyIcon);
     friend struct SchemaHelper;
 
@@ -86,6 +87,7 @@ namespace minsky
     float bottomMargin() const {return variableDisplay? stockMargin*Item::scaleFactor()*zoomFactor(): 0;}
 
     /// icon scale is adjusted when Godley icon is resized
+    float scaleFactor() const override;
     float scaleFactor(const float& sf) override;
     
     /// helper for schema1
