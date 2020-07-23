@@ -163,13 +163,9 @@ namespace minsky
       }
   }
   
-  float GodleyIcon::scaleFactor() const
-  { 
-    return m_sf;
-  }    
-  
   float GodleyIcon::scaleFactor(const float& sf) {
     m_sf=sf;
+    update();
     return m_sf;
   }     
 

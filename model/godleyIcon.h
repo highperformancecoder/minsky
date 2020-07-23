@@ -39,8 +39,6 @@ namespace minsky
   {
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0;
-    /// icon scale is adjusted when Godley icon is resized
-    float m_sf=1;
     CLASSDESC_ACCESS(GodleyIcon);
     friend struct SchemaHelper;
 
@@ -61,6 +59,8 @@ namespace minsky
       bb.update(*this); 
       selected=wasSelected;
     }
+  protected:
+     float m_sf=1;
   public:
     static SVGRenderer svgRenderer;
     
@@ -79,20 +79,18 @@ namespace minsky
     void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
     /// scale icon until it's height matches \a h        
-    void scaleIconForHeight(float h) {update(); this->scaleFactor(Item::scaleFactor()*h/(bottomMargin()+iHeight()*Item::scaleFactor()*zoomFactor()));}        
+    void scaleIconForHeight(float h) {update(); this->scaleFactor(this->scaleFactor()*h/(bottomMargin()+iHeight()*this->scaleFactor()*zoomFactor()));}        
     
     /// left margin of bank icon with Godley icon
-    float leftMargin() const {return variableDisplay? flowMargin*Item::scaleFactor()*zoomFactor(): 0;}
+    float leftMargin() const {return variableDisplay? flowMargin*this->scaleFactor()*zoomFactor(): 0;}
     /// bottom margin of bank icon with Godley icon
-    float bottomMargin() const {return variableDisplay? stockMargin*Item::scaleFactor()*zoomFactor(): 0;}
+    float bottomMargin() const {return variableDisplay? stockMargin*this->scaleFactor()*zoomFactor(): 0;}
 
-    /// icon scale is adjusted when Godley icon is resized
-    float scaleFactor() const override;
-    float scaleFactor(const float& sf) override;
-    
     /// helper for schema1
     double schema1ZoomFactor() const; 
     
+    float scaleFactor() const override {return m_sf;};
+    float scaleFactor(const float& sf) override;
     void resize(const LassoBox&) override;
     void removeControlledItems() const override;
  
