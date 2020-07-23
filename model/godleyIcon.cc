@@ -74,10 +74,11 @@ namespace minsky
       float h=0;
       for (auto& v: vars)
         {
-          RenderVariable rv(*v);
-          h+=2*rv.height();
+          //RenderVariable rv(*v);
+          h+=v->height();//2*rv.height();
           if (h>height) height=h;
-          float w=2*rv.width();
+          //float w=2*rv.width();
+          float w=v->width();
           if (w>width) width=w;
         }
     }
