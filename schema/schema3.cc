@@ -431,15 +431,24 @@ namespace schema3
       {
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
+        float iconScale=1;
         if (y.data) data=*y.data;
         if (y.assetClasses) assetClasses=*y.assetClasses;
-        if (y.name) x1->table.title=*y.name;
-        SchemaHelper::setPrivates(x1->table,data,assetClasses);
+        if (y.iconScale) iconScale=*y.iconScale;
+        SchemaHelper::setPrivates(*x1,data,assetClasses,iconScale);
         try
           {
             x1->table.orderAssetClasses();
           }
         catch (const std::exception&) {}
+        if (y.name) x1->table.title=*y.name;
+        if (y.editorMode && *y.editorMode!=x1->editorMode())
+          x1->toggleEditorMode();
+        if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
+          x1->toggleButtons();
+        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
+        if (y.width) x1->iWidth(*y.width);
+        if (y.height) x1->iWidth(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
