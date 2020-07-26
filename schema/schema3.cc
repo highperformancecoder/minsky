@@ -578,10 +578,12 @@ namespace schema3
                     
                     godley->update();
                     if (!godley->editorMode())
-                      if (i.height)
-                        godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                      else if (i.iconScale) //legacy schema handling
-                        godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
+                      {
+                        if (i.height)
+                          godley->scaleIconForHeight(*i.height*godley->zoomFactor());
+                        else if (i.iconScale) //legacy schema handling
+                          godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
+                      }
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }
