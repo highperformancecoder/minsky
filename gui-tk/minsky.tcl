@@ -646,7 +646,9 @@ proc exportCanvas {} {
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
     set workDir [file dirname $f]
-    if [renderImage $f $type canvas] return
+    # extract the surface name from the current tab, for #912
+    set surf [lindex [.tabs tabs] [.tabs index current]].canvas
+    if [renderImage $f $type $surf] return
     if {[string match -nocase *.tex "$f"]} {
         latex "$f" $preferences(wrapLaTeXLines)
     } elseif {[string match -nocase *.m "$f"]} {
