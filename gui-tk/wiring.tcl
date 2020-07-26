@@ -16,8 +16,6 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ttk::frame  .wiring
-
 frame .wiring.menubar 
 
 # create icons for all operations
@@ -212,9 +210,6 @@ proc wrapHoverMouse {op x y} {
     after 3000 hoverMouse
 }
     
-image create cairoSurface minskyCanvas -surface minsky.canvas
-label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
-pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
 bind .wiring.canvas <Control-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}

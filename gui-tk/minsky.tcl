@@ -638,7 +638,7 @@ proc renderImage {filename type surf} {
 }
 
 proc exportCanvas {} {
-    global workDir type fname preferences
+    global workDir type fname preferences tabSurface
 
     set fileTypes [imageFileTypes]
     lappend fileTypes {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}
@@ -648,7 +648,7 @@ proc exportCanvas {} {
     set workDir [file dirname $f]
     # extract the surface name from the current tab, for #912
     set surf [lindex [.tabs tabs] [.tabs index current]].canvas
-    if [renderImage $f $type $surf] return
+    if [renderImage $f $type $tabSurface([.tabs tab current -text])] return
     if {[string match -nocase *.tex "$f"]} {
         latex "$f" $preferences(wrapLaTeXLines)
     } elseif {[string match -nocase *.m "$f"]} {
@@ -883,36 +883,28 @@ proc textEntryPopup {win init okproc} {
     
 }
 
-source $minskyHome/godley.tcl
-source $minskyHome/wiring.tcl
-source $minskyHome/plots.tcl
-source $minskyHome/group.tcl
-source $minskyHome/csvImport.tcl
+proc addTab {window label surface} {
+    image create cairoSurface rendered$window -surface $surface
+    ttk::frame .$window
+    global canvasHeight canvasWidth tabSurface
+    label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
+    pack .$window.canvas -fill both -expand 1
+    .tabs add .$window -text $label -padding 0
+    set tabSurface($label) $surface
+}
 
 # add the tabbed windows
-.tabs add .wiring -text "Wiring" -padding 0
-
-image create cairoSurface renderedEquations -surface minsky.equationDisplay
-#-file $minskyHome/icons/plot.gif
-ttk::frame .equations 
-label .equations.canvas -image renderedEquations -height $canvasHeight -width $canvasWidth
-pack .equations.canvas -fill both -expand 1
-.tabs add .equations -text equations -padding 0
+addTab wiring "Wiring" minsky.canvas
+addTab equations "Equations" minsky.equationDisplay
+addTab parameters "Parameters" minsky.parameterSheet
+addTab variables "Variables" minsky.variableSheet
 .tabs select 0
 
-image create cairoSurface renderedPars -surface minsky.parameterSheet
-ttk::frame .parameters
-label .parameters.canvas -image renderedPars -height $canvasHeight -width $canvasWidth
-pack .parameters.canvas -fill both -expand 1
-.tabs add .parameters -text parameters -padding 0
-.tabs select 0
-
-image create cairoSurface renderedVars -surface minsky.variableSheet
-ttk::frame .variables
-label .variables.canvas -image renderedVars -height $canvasHeight -width $canvasWidth
-pack .variables.canvas -fill both -expand 1
-.tabs add .variables -text variables -padding 0
-.tabs select 0
+source $minskyHome/godley.tcl
+source $minskyHome/plots.tcl
+source $minskyHome/group.tcl
+source $minskyHome/wiring.tcl
+source $minskyHome/csvImport.tcl
 
 image create cairoSurface panopticon -surface minsky.panopticon
 label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
