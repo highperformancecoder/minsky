@@ -448,7 +448,7 @@ namespace schema3
           x1->toggleButtons();
         if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.width) x1->iWidth(*y.width);
-        if (y.height) x1->iWidth(*y.height);
+        if (y.height) x1->iHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
@@ -575,11 +575,15 @@ namespace schema3
                 SchemaHelper::setStockAndFlow(*godley, flowVars, stockVars);
                 try
                   {
+                    
                     godley->update();
-                    if (i.height)
-                      godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                    else if (i.iconScale) //legacy schema handling
-                      godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
+                    if (!godley->editorMode())
+                      {
+                        if (i.height)
+                          godley->scaleIconForHeight(*i.height*godley->zoomFactor());
+                        else if (i.iconScale) //legacy schema handling
+                          godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
+                      }
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }
