@@ -78,7 +78,7 @@ namespace minsky
       setPrivates(g.table, data, assetClass);
       g.m_iconScale=iconScale;
     }
-
+    
     static void setStockAndFlow(minsky::GodleyIcon& g,
                          const minsky::GodleyIcon::Variables& flowVars,
                          const minsky::GodleyIcon::Variables& stockVars)
