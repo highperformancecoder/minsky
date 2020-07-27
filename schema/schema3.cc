@@ -431,11 +431,9 @@ namespace schema3
       {
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
-        float iconScale=1;
         if (y.data) data=*y.data;
         if (y.assetClasses) assetClasses=*y.assetClasses;
-        if (y.iconScale) iconScale=*y.iconScale;
-        SchemaHelper::setPrivates(*x1,data,assetClasses,iconScale);
+        SchemaHelper::setPrivates(*x1,data,assetClasses);
         try
           {
             x1->table.orderAssetClasses();
@@ -448,7 +446,7 @@ namespace schema3
           x1->toggleButtons();
         if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.width) x1->iWidth(*y.width);
-        if (y.height) x1->iWidth(*y.height);
+        if (y.height) x1->iHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
@@ -576,10 +574,6 @@ namespace schema3
                 try
                   {
                     godley->update();
-                    if (i.height)
-                      godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                    else if (i.iconScale) //legacy schema handling
-                      godley->scaleIconForHeight(*i.iconScale * godley->iHeight());
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }
