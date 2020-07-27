@@ -74,10 +74,9 @@ namespace minsky
       float h=0;
       for (auto& v: vars)
         { 
-		  RenderVariable rv(*v);	
-          h+=2*rv.height();
+          h+=v->height();
           if (h>height) height=h;
-          float w=2*rv.width();
+          float w=v->width();
           if (w>width) width=w;
         }
     }
@@ -173,15 +172,14 @@ namespace minsky
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-    float z=zoomFactor(), iw=this->iWidth(svgRenderer.width()), ih=this->iHeight(svgRenderer.height()), is=scaleFactor();  
-    float minusLeftMargin=iw*z*is, minusBottomMargin=ih*z*is;
+    float invZ=1.0/this->zoomFactor();
     auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
     if (bw<=leftMargin() || bh<=bottomMargin()) return;
-    this->iWidth((bw-leftMargin())/(minusLeftMargin));
-    this->iHeight((bh-bottomMargin())/(minusBottomMargin));
-    scaleIconForHeight(bh);
-    update();
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
+    this->iWidth(0.5*(bw-leftMargin())*invZ);
+    this->iHeight(0.5*(bh-bottomMargin())*invZ);
+    scaleIcon(bw,bh);
+    update();
     updateBB(); 
   }
 
@@ -298,7 +296,7 @@ namespace minsky
         flowMargin=0;
         accumulateWidthHeight(m_stockVars, stockH, stockMargin);
         accumulateWidthHeight(m_flowVars, flowH, flowMargin);
-        float iw=this->iWidth(), ih=this->iHeight();
+        float iw=this->iWidth()*this->zoomFactor(), ih=this->iHeight()*this->zoomFactor();
         this->iWidth(max(iw, 1.8f*stockH));
         this->iHeight(max(ih, 1.8f*flowH));
       }

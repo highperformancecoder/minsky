@@ -39,8 +39,6 @@ namespace minsky
   {
     /// for placement of bank icon within complex
     float flowMargin=0, stockMargin=0;
-    /// icon scale is adjusted when Godley icon is resized. legacy method.
-    float m_iconScale=1;
     CLASSDESC_ACCESS(GodleyIcon);
     friend struct SchemaHelper;
 
@@ -78,8 +76,8 @@ namespace minsky
     bool variableDisplay=true;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
-    /// scale icon until it's height matches \a h        
-    void scaleIconForHeight(float h) {update(); scaleFactor(scaleFactor()*h/(bottomMargin()+iHeight()*scaleFactor()*zoomFactor()));}        
+    /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
+    void scaleIcon(float w, float h) {update(); scaleFactor(scaleFactor()*min(w/(leftMargin()+iWidth()*scaleFactor()*zoomFactor()),h/(bottomMargin()+iHeight()*scaleFactor()*zoomFactor())));}        
     
     /// left margin of bank icon with Godley icon
     float leftMargin() const {return variableDisplay? flowMargin*scaleFactor()*zoomFactor(): 0;}
@@ -88,9 +86,6 @@ namespace minsky
 
     /// helper for schema1
     double schema1ZoomFactor() const; 
-    
-    /// icon scale is adjusted when Godley icon is resized. legacy method.
-    float iconScale() const {return m_iconScale;};
     
     void resize(const LassoBox&) override;
     void removeControlledItems() const override;
