@@ -176,8 +176,8 @@ namespace minsky
     auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
     if (bw<=leftMargin() || bh<=bottomMargin()) return;
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    this->iWidth(0.5*(bw-leftMargin())*invZ);
-    this->iHeight(0.5*(bh-bottomMargin())*invZ);
+    iWidth((bw-leftMargin())*invZ);
+    iHeight((bh-bottomMargin())*invZ);
     scaleIcon(bw,bh);
     update();
     updateBB(); 
