@@ -314,9 +314,9 @@ namespace minsky
     float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
     for (auto& v: m_flowVars)
       {
-        // right justification if displayed, left otherwisw
+        // right justification if displayed, left otherwise. Remove this for ticket 1220?
         v->rotation(0);
-        v->moveTo(x+v->x() - (variableDisplay? v->right(): v->left()), y);
+        v->moveTo(x+v->x() - v->right(), y);
         y+=v->height();
       }
     x= this->x() + 0.55*leftMargin()-0.45*iWidth()*z;
@@ -324,9 +324,9 @@ namespace minsky
 
     for (auto& v: m_stockVars)
       {
-        // top justification at bottom of icon if displayed, bottom justified otherwise
+        // top justification at bottom of icon if displayed, bottom justified otherwise. Remove this for ticket 1220?
         v->rotation(90);
-        v->moveTo(x, y + v->y() - (variableDisplay? v->top(): v->bottom()));
+        v->moveTo(x, y + v->y() - v->top());
         x+=v->width();
       }
   }

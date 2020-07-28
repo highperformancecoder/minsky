@@ -89,6 +89,10 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
       if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
         return ClickType::onResize;
+      //if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+      //  if (!g->variableDisplay && fabs(xx-g->x()) < g->iWidth()*g->zoomFactor() 
+      //      && fabs(yy-g->y()) < g->iHeight()*g->zoomFactor())
+      //      return ClickType::outside;           
     }
   catch (...) {}
   return Item::clickType(xx,yy);
