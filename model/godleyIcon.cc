@@ -74,9 +74,10 @@ namespace minsky
       float h=0;
       for (auto& v: vars)
         { 
-          h+=v->height();
+		  RenderVariable rv(*v);	
+          h+=2*rv.height();
           if (h>height) height=h;
-          float w=v->width();
+          float w=2*rv.width();
           if (w>width) width=w;
         }
     }
@@ -296,7 +297,7 @@ namespace minsky
         flowMargin=0;
         accumulateWidthHeight(m_stockVars, stockH, stockMargin);
         accumulateWidthHeight(m_flowVars, flowH, flowMargin);
-        float iw=this->iWidth()*this->zoomFactor(), ih=this->iHeight()*this->zoomFactor();
+        float iw=this->iWidth(), ih=this->iHeight();
         this->iWidth(max(iw, 1.8f*stockH));
         this->iHeight(max(ih, 1.8f*flowH));
       }
