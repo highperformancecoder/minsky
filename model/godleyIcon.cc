@@ -74,15 +74,11 @@ namespace minsky
       float h=0;
       for (auto& v: vars)
         { 
-		  RenderVariable rv(*v);
-		  h+=2*rv.height();
-		  if (h>height) height=h;
-		  float w=2*rv.width();
-		  if (w>width) width=w;
-          //h+=v->height();
-          //if (h>height) height=h;
-          //float w=v->width();
-          //if (w>width) width=w;
+          RenderVariable rv(*v);
+          h+=2*rv.height();
+          if (h>height) height=h;
+          float w=2*rv.width();
+          if (w>width) width=w;
         }
     }
 
@@ -169,8 +165,8 @@ namespace minsky
   
   void GodleyIcon::scaleIcon(float w, float h)
   {
-	 update();
-	 scaleFactor(min(w/(leftMargin()+iWidth()*zoomFactor()),h/(bottomMargin()+iHeight()*zoomFactor())));
+    update();
+    scaleFactor(min(w/(leftMargin()+iWidth()*zoomFactor()),h/(bottomMargin()+iHeight()*zoomFactor())));
   }  
 
   double GodleyIcon::schema1ZoomFactor() const

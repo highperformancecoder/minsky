@@ -617,15 +617,15 @@ namespace minsky
     y1=-numeric_limits<float>::max();
 
     for (auto& i: items)
-       if (auto g=dynamic_cast<GodleyIcon*>(i.get())) // Godley icon bounding box behaves unpredictably. For ticket 1219.
+      if (auto g=dynamic_cast<GodleyIcon*>(i.get())) // Godley icon bounding box behaves unpredictably. For ticket 1219.
         { 
-	      float z=g->zoomFactor()*g->scaleFactor();	
+          float z=g->zoomFactor()*g->scaleFactor();	
           if (g->x()-0.5*z*g->iWidth()<x0) x0=g->x()-0.5*z*g->iWidth();
           if (g->x()+0.5*z*g->iWidth()>x1) x1=g->x()+0.5*z*g->iWidth();
           if (g->y()-0.5*z*g->iHeight()<y0) y0=g->y()-0.5*z*g->iHeight();
           if (g->y()+0.5*z*g->iHeight()>y1) y1=g->y()+0.5*z*g->iHeight();
-	    }
-       else if (!i->ioVar())
+        }
+      else if (!i->ioVar())
         {
           if (i->left()<x0) x0=i->left();
           if (i->right()>x1) x1=i->right();
