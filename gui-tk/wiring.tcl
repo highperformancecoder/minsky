@@ -745,7 +745,7 @@ proc contextMenu {x y X Y} {
             set variableDisplay [$item.variableDisplay]
             .wiring.context add checkbutton -label "Editor mode" -command "$item.toggleEditorMode" -variable editorMode
             .wiring.context add checkbutton -label "Row/Col buttons" -command "$item.toggleButtons" -variable buttonDisplay
-            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay" -variable variableDisplay
+            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay; $item.update" -variable variableDisplay
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Export to file" -command "godley::export"
