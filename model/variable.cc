@@ -84,15 +84,15 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       double hpy=-z*rv.height();
       if (rv.height()<iHeight()) hpy=-z*iHeight(); 
       double dx=xx-x(), dy=yy-y(); 
+      if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+        if (!g->variableDisplay && fabs(xx-g->x()) < 0.5*g->iWidth()*g->zoomFactor() 
+            && fabs(yy-g->y()) < 0.5*g->iHeight()*g->zoomFactor())
+            return ClickType::outside;                 
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
       // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
       if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
         return ClickType::onResize;
-      //if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-      //  if (!g->variableDisplay && fabs(xx-g->x()) < g->iWidth()*g->zoomFactor() 
-      //      && fabs(yy-g->y()) < g->iHeight()*g->zoomFactor())
-      //      return ClickType::outside;           
     }
   catch (...) {}
   return Item::clickType(xx,yy);

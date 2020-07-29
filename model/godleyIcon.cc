@@ -314,9 +314,9 @@ namespace minsky
     float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
     for (auto& v: m_flowVars)
       {
-        // right justification if displayed, left otherwise. Remove this for ticket 1220?
+        // right justification if displayed, left otherwisw
         v->rotation(0);
-        v->moveTo(x+v->x() - v->right(), y);
+        v->moveTo(x+v->x() - (variableDisplay? v->right(): v->left()), y);
         y+=v->height();
       }
     x= this->x() + 0.55*leftMargin()-0.45*iWidth()*z;
@@ -324,9 +324,9 @@ namespace minsky
 
     for (auto& v: m_stockVars)
       {
-        // top justification at bottom of icon if displayed, bottom justified otherwise. Remove this for ticket 1220?
+        // top justification at bottom of icon if displayed, bottom justified otherwise
         v->rotation(90);
-        v->moveTo(x, y + v->y() - v->top());
+        v->moveTo(x, y + v->y() - (variableDisplay? v->top(): v->bottom()));
         x+=v->width();
       }
   }
@@ -448,8 +448,8 @@ namespace minsky
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
-    auto z=zoomFactor();
-    double w=iWidth()*z, h=iHeight()*z;
+    auto z=zoomFactor()*scaleFactor();
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     // check if (x,y) is within portradius of the 4 corners
     if ((abs(x-left()) < portRadiusMult*z || abs(x-right()) < portRadiusMult*z) &&
         (abs(y-top()) < portRadiusMult*z || abs(y-bottom()) < portRadiusMult*z))    
