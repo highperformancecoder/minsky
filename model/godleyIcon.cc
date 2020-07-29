@@ -339,7 +339,7 @@ namespace minsky
 
   ItemPtr GodleyIcon::select(float x, float y) const
   {
-	if (variableDisplay) 
+	if (variableDisplay)           // Disable selection of stock and flow vars when they are hidden. for tickets 1217 and 1220.
 	{   
        for (auto& v: m_flowVars)
          if (v->contains(x,y)) 
