@@ -339,12 +339,15 @@ namespace minsky
 
   ItemPtr GodleyIcon::select(float x, float y) const
   {
-    for (auto& v: m_flowVars)
-      if (v->contains(x,y)) 
-        return v;
-    for (auto& v: m_stockVars)
-      if (v->contains(x,y)) 
-        return v;
+	if (variableDisplay) 
+	{   
+       for (auto& v: m_flowVars)
+         if (v->contains(x,y)) 
+           return v;
+       for (auto& v: m_stockVars)
+         if (v->contains(x,y)) 
+           return v; 
+     }
     return ItemPtr();
   }
 
