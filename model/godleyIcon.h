@@ -77,7 +77,7 @@ namespace minsky
     void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
-    void scaleIcon(float w, float h) {update(); scaleFactor(scaleFactor()*min(w/(leftMargin()+iWidth()*scaleFactor()*zoomFactor()),h/(bottomMargin()+iHeight()*scaleFactor()*zoomFactor())));}        
+    void scaleIcon(float w, float h);         
     
     /// left margin of bank icon with Godley icon
     float leftMargin() const {return variableDisplay? flowMargin*scaleFactor()*zoomFactor(): 0;}
