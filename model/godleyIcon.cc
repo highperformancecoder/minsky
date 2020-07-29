@@ -367,7 +367,11 @@ namespace minsky
         //cairo_scale(cairo, zoomFactor(), zoomFactor());
         editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
+        // Adjust bounding box to fit table in Canvas. For ticket 1178.
+        double ww=w,hh=h;      
+        cairo_get_current_point(cairo,&ww,&hh);           
         titley=-0.5*(bottomMargin()+h);
+        w=ww,h=hh;
       }
     else
       {
