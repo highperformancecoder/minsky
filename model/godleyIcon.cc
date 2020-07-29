@@ -74,9 +74,10 @@ namespace minsky
       float h=0;
       for (auto& v: vars)
         { 
-          h+=v->height();
+          RenderVariable rv(*v);
+          h+=2*rv.height();
           if (h>height) height=h;
-          float w=v->width();
+          float w=2*rv.width();
           if (w>width) width=w;
         }
     }
@@ -160,6 +161,12 @@ namespace minsky
         else
           editor->enableButtons();
       }
+  }
+  
+  void GodleyIcon::scaleIcon(float w, float h)
+  {
+    update();
+    scaleFactor(min(w/(leftMargin()+iWidth()*zoomFactor()),h/(bottomMargin()+iHeight()*zoomFactor())));
   }  
 
   double GodleyIcon::schema1ZoomFactor() const
@@ -172,14 +179,13 @@ namespace minsky
 
   void GodleyIcon::resize(const LassoBox& b)
   {
-    float invZ=1.0/this->zoomFactor();
+    float invZ=1.0/(this->zoomFactor());
     auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
     if (bw<=leftMargin() || bh<=bottomMargin()) return;
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     iWidth((bw-leftMargin())*invZ);
-    iHeight((bh-bottomMargin())*invZ);
+    iHeight((bh-bottomMargin())*invZ);  
     scaleIcon(bw,bh);
-    update();
     updateBB(); 
   }
 
@@ -296,7 +302,7 @@ namespace minsky
         flowMargin=0;
         accumulateWidthHeight(m_stockVars, stockH, stockMargin);
         accumulateWidthHeight(m_flowVars, flowH, flowMargin);
-        float iw=this->iWidth()*this->zoomFactor(), ih=this->iHeight()*this->zoomFactor();
+        float iw=this->iWidth(), ih=this->iHeight();
         this->iWidth(max(iw, 1.8f*stockH));
         this->iHeight(max(ih, 1.8f*flowH));
       }
@@ -308,7 +314,7 @@ namespace minsky
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
-    float z=scaleFactor()*this->zoomFactor();
+    float z=this->zoomFactor()*scaleFactor();
     float vdf=variableDisplay? 1: -1; // variable display factor
     float x= this->x() - 0.5*iWidth()*z+0.5*leftMargin();
     float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
@@ -344,29 +350,29 @@ namespace minsky
 
   void GodleyIcon::draw(cairo_t* cairo) const
   {
-	  
-    float z=zoomFactor()*scaleFactor();   
+    float z=zoomFactor()*scaleFactor();
+    float w=iWidth()*z, h=iHeight()*z;
     positionVariables();
     double titley;
     
     if (editor.get())
       {
         CairoSave cs(cairo);
-        cairo_rectangle(cairo, -0.5*(iWidth()*z-leftMargin()),-0.5*(bottomMargin()+iHeight()*z), iWidth()*z, iHeight()*z);
+        cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);
         cairo_clip(cairo);
-        cairo_translate(cairo,-0.5*(iWidth()*z-leftMargin()),-0.5*(bottomMargin()+iHeight()*z)+12*zoomFactor()/* space for title*/);
+        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h)+12*zoomFactor()/* space for title*/);
         //cairo_scale(cairo, zoomFactor(), zoomFactor());
         editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
-        titley=-0.5*(bottomMargin()+iHeight()*z);
+        titley=-0.5*(bottomMargin()+h);
       }
     else
       {
         CairoSave cs(cairo);
-        cairo_translate(cairo,-0.5*(iWidth()*z-leftMargin()),-0.5*(bottomMargin()+iHeight()*z));
-        cairo_scale(cairo, (iWidth()*z)/svgRenderer.width(), (iHeight()*z)/svgRenderer.height());
+        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h));
+        cairo_scale(cairo, (w)/svgRenderer.width(), (h)/svgRenderer.height());
         svgRenderer.render(cairo);
-        titley=-0.5*bottomMargin()-0.35*(iHeight()*z);
+        titley=-0.5*bottomMargin()-0.35*(h);
       }
     
     if (!table.title.empty())
@@ -374,8 +380,8 @@ namespace minsky
         CairoSave cs(cairo);
         Pango pango(cairo);
         pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
-        pango.setFontSize(12*this->zoomFactor());
-        cairo_move_to(cairo,-0.5*(pango.width()-leftMargin()), titley);
+        pango.setFontSize(12*z);
+        cairo_move_to(cairo,-0.5*(pango.width()*z-0.5*leftMargin()), titley);
         pango.show();
       }
       
@@ -396,7 +402,7 @@ namespace minsky
         drawResizeHandles(cairo);
       }
       
-    cairo_rectangle(cairo, -0.5*(iWidth()*z-leftMargin()),-0.5*(bottomMargin()+iHeight()*z), iWidth()*z, iHeight()*z);    
+    cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);    
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }
