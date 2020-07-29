@@ -258,13 +258,6 @@ proc zoomAt {x0 y0 factor} {
     if $preferences(panopticon) panopticon.requestRedraw
 }
 
-proc zoomAtItem {x0 y0 factor} {
-    global preferences
-    canvas.selection.zoom $x0 $y0 $factor
-    canvas.requestRedraw
-    if $preferences(panopticon) panopticon.requestRedraw
-}
-
 .menubar.ops add command -label "Godley Table" -command canvas.addGodley
 
 .menubar.ops add cascade -label "Variable" -menu .wiring.menubar.var.menu
@@ -796,14 +789,6 @@ proc contextMenu {x y X Y} {
 #            .wiring.context add command -label "Raise" -command "raiseItem $tag"
 #            .wiring.context add command -label "Lower" -command "lowerItem $tag"
     .wiring.context add command -label "Browse object" -command "obj_browser minsky.canvas.item.*"
-    #.wiring.context add command -label "Toggle zoom"   -command {
-    #    if {[minsky.canvas.item.zoomFactor]>0} {
-	#		minsky.canvas.item.setZoomFactor { expr 1/[minsky.canvas.item.zoomFactor]}
-    #        zoomAtItem [minsky.canvas.item.x] [minsky.canvas.item.y] [minsky.canvas.item.zoomFactor]
-    #    } else {
-    #        zoomAtItem [minsky.canvas.item.x] [minsky.canvas.item.y] 1
-    #    }
-	#} 
     .wiring.context add command -label "Delete [minsky.canvas.item.classType]" -command "canvas.deleteItem"
     tk_popup .wiring.context $X $Y
 }
