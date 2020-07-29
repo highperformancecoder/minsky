@@ -138,27 +138,35 @@ namespace MathDAG
 
   }
 
-  void SystemOfEquations::renderEquations(Surface& dest) const
+  void SystemOfEquations::renderEquations(Surface& dest, double height) const
   {
     double x, y; // starting position of current line
     cairo_get_current_point(dest.cairo(),&x,&y);
+    const double origin=-y;
     Pango den(dest.cairo());
     den.setMarkup("dt");
 
+    const double fontHeight=30;
+    int baseEqn=origin/fontHeight;
+    int eqnNo=0;
+    
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
         if (!i || i->type==VariableType::constant) continue;
+        if (eqnNo++ < baseEqn) continue;
         RecordingSurface line;
         variableRender(line,*i);
         cairo_move_to(dest.cairo(), x, y-line.top());
         variableRender(dest,*i);
         y+=line.height()+4;
         cairo_move_to(dest.cairo(), x, y);
+        if (y>height) return;
        }
 
     for (const VariableDAG* i: integrationVariables)
       {
+        if (eqnNo++ < baseEqn) continue;
         // initial conditions
         y+=print(dest.cairo(), latexToPango(mathrm(i->name))+"(0) = "+
                  latexToPango(latexInit(i->init)),Anchor::nw);
@@ -197,8 +205,8 @@ namespace MathDAG
         cairo_move_to(dest.cairo(), x+0.5*(num.width()-den.width()), eqY);
         den.show();
         cairo_move_to(dest.cairo(), x, y+=lineSpacing);// move to next line
-        
 
+        if (y>height) return;
       }
   } 
 

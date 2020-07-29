@@ -67,18 +67,7 @@ namespace minsky
   {
     Minsky& m;
     double m_width=0, m_height=0;
-    void redraw(int x0, int y0, int width, int height) override {
-      if (surface.get()) {
-        MathDAG::SystemOfEquations system(m);
-        cairo_move_to(surface->cairo(),offsx,offsy);
-        system.renderEquations(*surface);
-        ecolab::cairo::Surface surf
-          (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-        system.renderEquations(surf);
-        m_width=surf.width();
-        m_height=surf.height();
-      }
-    }
+    void redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(EquationDisplay);
   public:
     float offsx=0, offsy=0; // pan controls
@@ -98,7 +87,7 @@ namespace minsky
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
     
-    enum StateFlags {is_edited=1, reset_needed=2};
+    enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
     
     std::vector<int> flagStack;
@@ -169,7 +158,7 @@ namespace minsky
     bool reset_flag() const {return flags & reset_needed;}
     /// indicate model has been changed since last saved
     void markEdited() {
-      flags |= is_edited | reset_needed;
+      flags |= is_edited | reset_needed | fullEqnDisplay_needed;
       canvas.model.updateTimestamp();
     }
 
@@ -302,12 +291,6 @@ namespace minsky
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
-
-    /// returns operation ID for a given EvalOp. -1 if a temporary
-    //    int opIdOfEvalOp(const EvalOpBase&) const;
-
-    /// return the order in which operations are applied (for debugging purposes)
-    ecolab::array<int> opOrder() const;
 
     /// return a list of existing variables a variable could be
     /// connected to. This includes all global variables, plus any

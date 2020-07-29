@@ -888,7 +888,6 @@ proc addTab {window label surface} {
     ttk::frame .$window
     global canvasHeight canvasWidth tabSurface
     label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
-    pack .$window.canvas -fill both -expand 1
     .tabs add .$window -text $label -padding 0
     set tabSurface($label) $surface
 }
@@ -896,8 +895,11 @@ proc addTab {window label surface} {
 # add the tabbed windows
 addTab wiring "Wiring" minsky.canvas
 addTab equations "Equations" minsky.equationDisplay
+pack .equations.canvas -fill both -expand 1
 addTab parameters "Parameters" minsky.parameterSheet
+pack .parameters.canvas -fill both -expand 1
 addTab variables "Variables" minsky.variableSheet
+pack .variables.canvas -fill both -expand 1
 .tabs select 0
 
 source $minskyHome/godley.tcl
@@ -905,6 +907,8 @@ source $minskyHome/plots.tcl
 source $minskyHome/group.tcl
 source $minskyHome/wiring.tcl
 source $minskyHome/csvImport.tcl
+
+pack .wiring.canvas -fill both -expand 1
 
 image create cairoSurface panopticon -surface minsky.panopticon
 label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
@@ -1208,10 +1212,7 @@ proc reset {} {
         .controls.statusbar configure -text "t: 0 Δt: 0"
         .controls.run configure -image runButton
 
-        global oplist lastOp
-        set oplist [opOrder]
         redrawAllGodleyTables
-        set lastOp -1
         return -code $err $result
     }
 }

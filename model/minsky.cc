@@ -147,6 +147,29 @@ using namespace std;
 
 namespace minsky
 {
+  void EquationDisplay::redraw(int x0, int y0, int width, int height)
+  {
+    if (surface.get()) {
+      m.setBusyCursor();
+      MathDAG::SystemOfEquations system(m);
+      cairo_rectangle(surface->cairo(),0,0,width,height);
+      cairo_clip(surface->cairo());
+      cairo_move_to(surface->cairo(),offsx,offsy);
+      system.renderEquations(*surface,height);
+      if (m.flags & Minsky::fullEqnDisplay_needed)
+        {
+          ecolab::cairo::Surface surf
+            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+          system.renderEquations(surf,std::numeric_limits<double>::max());
+          m_width=surf.width();
+          m_height=surf.height();
+          m.flags &= ~Minsky::fullEqnDisplay_needed;
+        }
+      m.clearBusyCursor();
+    }
+  }
+
+  
   void Minsky::openLogFile(const string& name)
   {
     outputDataFile.reset(new ofstream(name));
@@ -181,11 +204,9 @@ namespace minsky
     
     flowVars.clear();
     stockVars.clear();
-//    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
-//        makeGodleyIt(godleyItems.end()), variables.values);
 
     dimensions.clear();
-    flags=reset_needed;
+    flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
   }
 
@@ -406,7 +427,7 @@ namespace minsky
     ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
-    system.renderEquations(surf);
+    system.renderEquations(surf, surf.height());
     surf.blit();
   }
 
@@ -1046,7 +1067,7 @@ namespace minsky
       }
     catch (...) {}
     panopticon.requestRedraw();
-    flags=reset_needed;
+    flags=reset_needed|fullEqnDisplay_needed;
   }
 
   void Minsky::exportSchema(const char* filename, int schemaLevel)
@@ -1069,25 +1090,6 @@ namespace minsky
       }
     ofstream f(filename);
     x.output(f,schemaURL);
-  }
-
-//  int Minsky::opIdOfEvalOp(const EvalOpBase& e) const
-//  {
-//    if (e.state)
-//      for (Operations::const_iterator j=operations.begin(); 
-//           j!=operations.end(); ++j)
-//        if (e.state==*j)
-//          return j->id();
-//    return -1;
-//  }
-
-
-  ecolab::array<int> Minsky::opOrder() const
-  {
-    ecolab::array<int> r;
-//    for (size_t i=0; i<equations.size(); ++i)
-//      r<<opIdOfEvalOp(*equations[i]);
-    return r;
   }
 
   vector<string> Minsky::accessibleVars() const
