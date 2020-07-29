@@ -1208,10 +1208,7 @@ proc reset {} {
         .controls.statusbar configure -text "t: 0 Δt: 0"
         .controls.run configure -image runButton
 
-        global oplist lastOp
-        set oplist [opOrder]
         redrawAllGodleyTables
-        set lastOp -1
         return -code $err $result
     }
 }
