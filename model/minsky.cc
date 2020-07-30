@@ -732,7 +732,7 @@ namespace minsky
                      if (i.second!=0)
                        {
                          destTable.insertRow(destTable.rows());
-                         destTable.cell(destTable.rows()-1,col)=to_string(i.second)+i.first;
+                         destTable.cell(destTable.rows()-1,col)=FlowCoef(i.second,i.first).str();
                        }
                    
                    for (auto row=rowsToDelete.rbegin(); row!=rowsToDelete.rend(); ++row)
