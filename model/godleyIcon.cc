@@ -338,12 +338,15 @@ namespace minsky
 
   ItemPtr GodleyIcon::select(float x, float y) const
   {
-    for (auto& v: m_flowVars)
-      if (v->contains(x,y)) 
-        return v;
-    for (auto& v: m_stockVars)
-      if (v->contains(x,y)) 
-        return v;
+	if (variableDisplay)           // Disable selection of stock and flow vars when they are hidden. for tickets 1217 and 1220.
+	{   
+       for (auto& v: m_flowVars)
+         if (v->contains(x,y)) 
+           return v;
+       for (auto& v: m_stockVars)
+         if (v->contains(x,y)) 
+           return v; 
+     }
     return ItemPtr();
   }
 
@@ -363,7 +366,11 @@ namespace minsky
         //cairo_scale(cairo, zoomFactor(), zoomFactor());
         editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
+        // Adjust bounding box to fit table in Canvas. For ticket 1178.
+        double ww=w,hh=h;      
+        cairo_get_current_point(cairo,&ww,&hh);           
         titley=-0.5*(bottomMargin()+h);
+        w=ww,h=hh;
       }
     else
       {
@@ -453,8 +460,8 @@ namespace minsky
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
-    auto z=zoomFactor();
-    double w=iWidth()*z, h=iHeight()*z;
+    auto z=zoomFactor()*scaleFactor();
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     // check if (x,y) is within portradius of the 4 corners
     if ((abs(x-left()) < portRadiusMult*z || abs(x-right()) < portRadiusMult*z) &&
         (abs(y-top()) < portRadiusMult*z || abs(y-bottom()) < portRadiusMult*z))    
