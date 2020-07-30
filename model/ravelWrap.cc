@@ -711,7 +711,7 @@ namespace minsky
   bool Ravel::handleSortableByValue() const
   {
     if (!ravel || rank()!=1) return false;
-    size_t ids[1];
+    size_t ids[]{0};
     ravel_outputHandleIds(ravel,ids);
     return size_t(selectedHandle())==ids[0];
   }

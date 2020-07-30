@@ -52,7 +52,6 @@ namespace minsky
     // firstly, see if the user is selecting an item
     if ((itemFocus=itemAt(x,y)))
       {
-        auto z=itemFocus->zoomFactor();
         clickType=itemFocus->clickType(x,y);
         switch (clickType)
           {

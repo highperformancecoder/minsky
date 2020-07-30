@@ -315,7 +315,6 @@ namespace minsky
   {
     // position of margin in absolute canvas coordinate
     float z=this->zoomFactor()*scaleFactor();
-    float vdf=variableDisplay? 1: -1; // variable display factor
     float x= this->x() - 0.5*iWidth()*z+0.5*leftMargin();
     float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
     for (auto& v: m_flowVars)
