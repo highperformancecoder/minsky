@@ -1234,20 +1234,22 @@ namespace minsky
     // this method is logically const, but because of the way
     // canvas rendering is done, canvas state needs updating
     auto& canvas=const_cast<Canvas&>(this->canvas);
+    canvas.item=nullptr;
     if (op.visible())
-      {
-        canvas.item=canvas.model->findItem(op);
-        canvas.itemIndicator=true;
-      }
-    else if (auto g=op.group.lock())
-      {
-        while (g && !g->visible()) g=g->group.lock();
-        if (g && g->visible())
-          {
+      canvas.item=canvas.model->findItem(op);
+    else if (auto v=op.variableCast())
+      if (auto c=v->controller.lock())
+        displayErrorItem(*c);
+
+    if (!canvas.item)
+      if (auto g=op.group.lock())
+        {
+          while (g && !g->visible()) g=g->group.lock();
+          if (g && g->visible())
             canvas.item=g;
-            canvas.itemIndicator=true;
-          }
-      }
+        }
+    
+    canvas.itemIndicator=canvas.item.get();
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
   }
