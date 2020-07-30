@@ -147,13 +147,36 @@ using namespace std;
 
 namespace minsky
 {
+  void EquationDisplay::redraw(int x0, int y0, int width, int height)
+  {
+    if (surface.get()) {
+      m.setBusyCursor();
+      MathDAG::SystemOfEquations system(m);
+      cairo_rectangle(surface->cairo(),0,0,width,height);
+      cairo_clip(surface->cairo());
+      cairo_move_to(surface->cairo(),offsx,offsy);
+      system.renderEquations(*surface,height);
+      if (m.flags & Minsky::fullEqnDisplay_needed)
+        {
+          ecolab::cairo::Surface surf
+            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+          system.renderEquations(surf,std::numeric_limits<double>::max());
+          m_width=surf.width();
+          m_height=surf.height();
+          m.flags &= ~Minsky::fullEqnDisplay_needed;
+        }
+      m.clearBusyCursor();
+    }
+  }
+
+  
   void Minsky::openLogFile(const string& name)
   {
     outputDataFile.reset(new ofstream(name));
     *outputDataFile<< "#time";
     for (auto& v: variableValues)
       if (logVarList.count(v.first))
-        *outputDataFile<<" "<<v.second.name;
+        *outputDataFile<<" "<<v.second->name;
     *outputDataFile<<endl;
   }
 
@@ -165,7 +188,7 @@ namespace minsky
         *outputDataFile<<t;
         for (auto& v: variableValues)
           if (logVarList.count(v.first))
-            *outputDataFile<<" "<<v.second.value();
+            *outputDataFile<<" "<<v.second->value();
         *outputDataFile<<endl;
       }
   }        
@@ -181,11 +204,10 @@ namespace minsky
     
     flowVars.clear();
     stockVars.clear();
-//    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
-//        makeGodleyIt(godleyItems.end()), variables.values);
 
     dimensions.clear();
-    flags=reset_needed;
+    flags=reset_needed|fullEqnDisplay_needed;
+    fileVersion=minskyVersion;
   }
 
 
@@ -266,12 +288,14 @@ namespace minsky
     GroupPtr g(new Group);
     canvas.model->addGroup(g);
     m.populateGroup(*g);
-    
+    // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
+    canvas.selection.clear();    
+
     // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
     g->recursiveDo(&GroupItems::items,
                    [&](Items&, Items::iterator i) {
                      if (auto v=(*i)->variableCast())
-                       if ((v->defined() || v->isStock()) && !v->group.lock())
+                       if (v->defined() || v->isStock())
                          {
                            // if defined, check no other defining variable exists
                            auto alreadyDefined = canvas.model->findAny
@@ -293,57 +317,23 @@ namespace minsky
                              }
                          }
                      return false;
-                   });               
-    
-    // curved wires not always included in the new group, add them if they aren't. For ticket 1190.
-    if (canvas.selection.numWires()!=g->numWires())
-      {
-        canvas.selection.recursiveDo(&GroupItems::wires,
-                       [&](Wires&, Wires::iterator w) {
-                         auto alreadyAdded = g->findAny
-                           (&GroupItems::wires,
-                            [&w](const WirePtr& u)
-                            {return u.get()==w->get();});
-                                      
-                         if (!alreadyAdded) {  
-                           auto f=w->get()->from(), t=w->get()->to();
-                           g->addWire(new Wire(f,t,w->get()->coords()));
-                         }
-                         return false;
-                       });
-         if (canvas.selection.numWires()!=g->numWires()) throw runtime_error("Some of the wires have not been pasted correctly, please try selecting, copying and pasting again");                           		
-      }
+                   });
 
-//#ifndef NDEBUG	
-//	assert(canvas.selection.numWires()==g->numWires());
-//#endif
-    
-    // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();                
-    
-    if (!g->groups.empty()) {
-      auto copyOfGroups=g->groups;		
-      for (auto& i: copyOfGroups)
-        {	
-          canvas.model->addGroup(i);
-        }
-      if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]); 
-      else canvas.setItemFocus(nullptr);        
-    }    
-    
     auto copyOfItems=g->items;
-    
     for (auto& i: copyOfItems)
       {		
-         canvas.model->addItem(i);		  
+         canvas.model->addItem(i);			  
          canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
     // Attach mouse focus only to first item in selection. For ticket 1098.      
-    
-    if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	      
-    else canvas.setItemFocus(nullptr);	    
-     
+    if (!copyOfItems.empty()) canvas.setItemFocus(g->items[0]);	      
+    auto copyOfGroups=g->groups;
+    for (auto& i: copyOfGroups)
+    {	
+        canvas.model->addGroup(i);	
+    }
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
     g->clear();  
     model->removeGroup(*g);
     canvas.requestRedraw();
@@ -408,8 +398,8 @@ namespace minsky
   {
     for (auto& v: variableValues)
       {
-        v.second.imposeDimensions(dimensions);
-        v.second.tensorInit.imposeDimensions(dimensions);
+        v.second->imposeDimensions(dimensions);
+        v.second->tensorInit.imposeDimensions(dimensions);
       }
   }
 
@@ -424,7 +414,7 @@ namespace minsky
 
     // remove all temporaries
     for (auto v=variableValues.begin(); v!=variableValues.end();)
-      if (v->second.temp())
+      if (v->second->temp())
         variableValues.erase(v++);
       else
         ++v;
@@ -437,7 +427,7 @@ namespace minsky
     ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
-    system.renderEquations(surf);
+    system.renderEquations(surf, surf.height());
     surf.blit();
   }
 
@@ -471,7 +461,7 @@ namespace minsky
              for (size_t i=0; i<p->ports.size(); ++i)
                {
                  auto& pp=p->ports[i];
-                 if (pp->wires().size()>0 && pp->getVariableValue().idx()>=0)
+                 if (pp->wires().size()>0 && pp->getVariableValue()->idx()>=0)
                    p->connectVar(pp->getVariableValue(), i);
                }
            }
@@ -522,7 +512,17 @@ namespace minsky
        });
   }
 
-  
+
+  void Minsky::populateMissingDimensionsFromVariable(const VariableValue& v)
+  {
+    for (auto& xv: v.hypercube().xvectors)
+      {
+        auto d=dimensions.find(xv.name);
+        if (d==dimensions.end())
+          dimensions.emplace(xv.name, xv.dimension);
+      }
+  }
+      
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
@@ -571,6 +571,7 @@ namespace minsky
 
   void Minsky::importDuplicateColumn(GodleyTable& srcTable, int srcCol)
   {
+    if (srcCol<0 || size_t(srcCol)>=srcTable.cols()) return;
     // find any duplicate column, and use it to do balanceDuplicateColumns
     const string& colName=trimWS(srcTable.cell(0,srcCol));
     if (colName.empty()) return; //ignore blank columns
@@ -599,6 +600,7 @@ namespace minsky
   void Minsky::balanceDuplicateColumns(const GodleyIcon& srcGodley, int srcCol)
   {
     const GodleyTable& srcTable=srcGodley.table;
+    if (srcCol<0 || size_t(srcCol)>=srcTable.cols()) return;
     // find if there is a matching column
     const string& colName=srcGodley.valueId(trimWS(srcTable.cell(0,srcCol)));
     if (colName.empty() || colName==":_") return; //ignore blank columns
@@ -672,7 +674,7 @@ namespace minsky
                          if (scope==-1 || !variableValues.count(i->first))
                            df.name=VariableValue::uqName(i->first);
                          else
-                           df.name=variableValues[i->first].name;
+                           df.name=variableValues[i->first]->name;
                          df.coef=i->second-destFlows[i->first];
                          if (df.coef==0) continue;
                          string flowEntry=df.str();
@@ -697,7 +699,7 @@ namespace minsky
                            }
                        }
                    // items to delete
-                   vector<size_t> rowsToDelete;
+                   set<size_t> rowsToDelete;
                    for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
                      if (i->second!=0 && srcFlows[i->first]==0)
                        for (size_t row=1; row<destTable.rows(); ++row)
@@ -712,11 +714,29 @@ namespace minsky
                                for (size_t c=0; c<destTable.cols(); ++c)
                                  if (!destTable.cell(row, c).empty())
                                    goto rowNotEmpty;
-                               rowsToDelete.push_back(row);
+                               rowsToDelete.insert(row);
                              rowNotEmpty:;
                              }
                          }
-                   for (auto row: rowsToDelete) destTable.deleteRow(row);
+                   // amalgamate unlabelled rows with singular value
+                   map<string,double> unlabelledSigs;
+                   for (size_t row=1; row<destTable.rows(); ++row)
+                     {
+                       if (!destTable.singularRow(row, col)) continue;
+                       FlowCoef fc(destTable.cell(row, col));
+                       unlabelledSigs[fc.name]+=fc.coef;
+                       rowsToDelete.insert(row);
+                     }
+                   // append amalgamated rows
+                   for (auto& i: unlabelledSigs)
+                     if (i.second!=0)
+                       {
+                         destTable.insertRow(destTable.rows());
+                         destTable.cell(destTable.rows()-1,col)=to_string(i.second)+i.first;
+                       }
+                   
+                   for (auto row=rowsToDelete.rbegin(); row!=rowsToDelete.rend(); ++row)
+                     destTable.deleteRow(*row);
                  }   
          return false;
        });  // TODO - this lambda is FAR too long!
@@ -803,7 +823,7 @@ namespace minsky
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            if (r->ports[1]->numWires()>0)
-             r->populateHypercube(r->ports[1]->getVariableValue().hypercube());
+             r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
          return false;
        });
 
@@ -924,7 +944,7 @@ namespace minsky
     // firstly check if any variables are not finite
     for (VariableValues::const_iterator v=variableValues.begin();
          v!=variableValues.end(); ++v)
-      if (!isfinite(v->second.value()))
+      if (!isfinite(v->second->value()))
         return v->first;
 
     // now check operator equations
@@ -1011,6 +1031,7 @@ namespace minsky
       throw;
     }
     flags &= ~is_edited;
+    fileVersion=minskyVersion;
   }
 
   void Minsky::load(const std::string& filename) 
@@ -1046,7 +1067,7 @@ namespace minsky
       }
     catch (...) {}
     panopticon.requestRedraw();
-    flags=reset_needed;
+    flags=reset_needed|fullEqnDisplay_needed;
   }
 
   void Minsky::exportSchema(const char* filename, int schemaLevel)
@@ -1069,25 +1090,6 @@ namespace minsky
       }
     ofstream f(filename);
     x.output(f,schemaURL);
-  }
-
-//  int Minsky::opIdOfEvalOp(const EvalOpBase& e) const
-//  {
-//    if (e.state)
-//      for (Operations::const_iterator j=operations.begin(); 
-//           j!=operations.end(); ++j)
-//        if (e.state==*j)
-//          return j->id();
-//    return -1;
-//  }
-
-
-  ecolab::array<int> Minsky::opOrder() const
-  {
-    ecolab::array<int> r;
-//    for (size_t i=0; i<equations.size(); ++i)
-//      r<<opIdOfEvalOp(*equations[i]);
-    return r;
   }
 
   vector<string> Minsky::accessibleVars() const
@@ -1178,8 +1180,8 @@ namespace minsky
     ecolab::array<bool> fvInit(flowVars.size(), false);
     // firstly, find all flowVars that are constants
     for (auto& v: variableValues)
-      if (!inputWired(v.first) && v.second.idx()>=0)
-        fvInit[v.second.idx()]=true;
+      if (!inputWired(v.first) && v.second->idx()>=0)
+        fvInit[v.second->idx()]=true;
 
     for (auto& e: equations)
       if (auto eo=dynamic_cast<const ScalarEvalOp*>(e.get()))
@@ -1319,7 +1321,7 @@ namespace minsky
     VariableValues::iterator i=variableValues.find(name);
     if (i==variableValues.end())
       throw error("variable %s doesn't exist",name.c_str());
-    if (i->second.type()==type) return; // nothing to do!
+    if (i->second->type()==type) return; // nothing to do!
 
     model->recursiveDo
       (&GroupItems::items,
@@ -1367,7 +1369,7 @@ namespace minsky
                              }
                          return false;
                        });
-    i->second=VariableValue(type,i->second.name,i->second.init);
+    i->second=VariableValuePtr(type,i->second->name,i->second->init);
   }
 
   void Minsky::addIntegral()
