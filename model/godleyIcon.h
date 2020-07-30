@@ -38,9 +38,7 @@ namespace minsky
   class GodleyIcon: public ItemT<GodleyIcon>
   {
     /// for placement of bank icon within complex
-    float flowMargin=0, stockMargin=0, iconWidth=100, iconHeight=100;
-    /// icon scale is adjusted when Godley icon is resized
-    float m_iconScale=1;
+    float flowMargin=0, stockMargin=0;
     CLASSDESC_ACCESS(GodleyIcon);
     friend struct SchemaHelper;
 
@@ -64,6 +62,7 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer;
     
+    GodleyIcon() {iWidth(150); iHeight(150);}
     ~GodleyIcon() {removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
@@ -77,21 +76,14 @@ namespace minsky
     bool variableDisplay=true;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay;}
     
-    /// width of Godley icon in screen coordinates
-    float gWidth() const {return leftMargin()+iconWidth*iconScale()*zoomFactor();}
-    /// height of Godley icon in screen coordinates
-    float gHeight() const {return bottomMargin()+iconHeight*iconScale()*zoomFactor();}
-    /// scale icon until it's height matches \a h 
-    void scaleIconForHeight(float h) {update(); m_iconScale*=h/gHeight();}
-
-    /// left margin of bank icon with Godley icon
-    float leftMargin() const {return variableDisplay? flowMargin*iconScale()*zoomFactor(): 0;}
-    /// bottom margin of bank icon with Godley icon
-    float bottomMargin() const {return variableDisplay? stockMargin*iconScale()*zoomFactor(): 0;}
-
-    /// icon scale is adjusted when Godley icon is resized
-    float iconScale() const {return m_iconScale;}
+    /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
+    void scaleIcon(float w, float h);         
     
+    /// left margin of bank icon with Godley icon
+    float leftMargin() const {return variableDisplay? flowMargin*scaleFactor()*zoomFactor(): 0;}
+    /// bottom margin of bank icon with Godley icon
+    float bottomMargin() const {return variableDisplay? stockMargin*scaleFactor()*zoomFactor(): 0;}
+
     /// helper for schema1
     double schema1ZoomFactor() const; 
     
@@ -105,7 +97,7 @@ namespace minsky
     /// move the contents of cell at (srcRow, srcCol) to (destRow, destCol).
     void moveCell(int srcRow, int srcCol, int destRow, int destCol);
     /// flows, along with multipliers, appearing in \a col
-    std::map<string,double> flowSignature(int col) const;
+    std::map<string,double> flowSignature(unsigned col) const;
 
     typedef std::vector<VariablePtr> Variables;
     const Variables& flowVars() const {return m_flowVars;}

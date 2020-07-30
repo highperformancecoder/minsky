@@ -207,22 +207,22 @@ SUITE(Minsky)
       godley.cell(2,2)="-:a";
       gi->update();
  
-      variableValues[":a"].init="5";
+      variableValues[":a"]->init="5";
  
       garbageCollect();
       reset();
-      CHECK_EQUAL(10,variableValues[":c"].value());
-      CHECK_EQUAL(20,variableValues[":d"].value());
-      CHECK_EQUAL(30,variableValues[":e"].value());
-      CHECK_EQUAL(5,variableValues[":a"].value());
+      CHECK_EQUAL(10,variableValues[":c"]->value());
+      CHECK_EQUAL(20,variableValues[":d"]->value());
+      CHECK_EQUAL(30,variableValues[":e"]->value());
+      CHECK_EQUAL(5,variableValues[":a"]->value());
       for (size_t i=0; i<stockVars.size(); ++i)
         stockVars[i]=0;
      
       evalGodley.eval(&stockVars[0], &flowVars[0]);
-      CHECK_EQUAL(5,variableValues[":c"].value());
-      CHECK_EQUAL(-5,variableValues[":d"].value());
-      CHECK_EQUAL(0,variableValues[":e"].value());
-      CHECK_EQUAL(5,variableValues[":a"].value());
+      CHECK_EQUAL(5,variableValues[":c"]->value());
+      CHECK_EQUAL(-5,variableValues[":d"]->value());
+      CHECK_EQUAL(0,variableValues[":e"]->value());
+      CHECK_EQUAL(5,variableValues[":a"]->value());
     
     }
 
@@ -278,9 +278,9 @@ SUITE(Minsky)
       vector<double> j(stockVars.size()*stockVars.size());
       Matrix jac(stockVars.size(),&j[0]);
  
-      VariableValue& c=variableValues[":c"];   c=100;
-      VariableValue& d=variableValues[":d"];   d=200;
-      VariableValue& e=variableValues[":e"];   e=300;
+      auto& c=*variableValues[":c"];   c=100;
+      auto& d=*variableValues[":d"];   d=200;
+      auto& e=*variableValues[":e"];   e=300;
       double& x=stockVars.back();   x=0; // temporary variable storing \int c+d
  
       CHECK_EQUAL(4, stockVars.size());
@@ -326,7 +326,7 @@ SUITE(Minsky)
       step();
       // for now, constructEquations doesn work
       CHECK_CLOSE(value*t, integrals[0].stock.value(), 1e-5);
-      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"].value(), 1e-5);
+      CHECK_CLOSE(integrals[0].stock.value(), variableValues[":output"]->value(), 1e-5);
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
@@ -425,8 +425,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -449,7 +449,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.3, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.3, variableValues[":c"]->value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsSubtract)
@@ -457,8 +457,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -480,7 +480,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(-0.3, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(-0.3, variableValues[":c"]->value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsMultiply)
@@ -488,8 +488,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -511,7 +511,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.02, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(0.02, variableValues[":c"]->value(), 1e-5);
     }
 
   TEST_FIXTURE(TestFixture,multiVariableInputsDivide)
@@ -519,8 +519,8 @@ SUITE(Minsky)
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
       auto varC = model->addItem(VariablePtr(VariableType::flow, "c"));
-      variableValues[":a"].init="0.1";
-      variableValues[":b"].init="0.2";
+      variableValues[":a"]->init="0.1";
+      variableValues[":b"]->init="0.2";
 
       auto intOp = model->addItem(OperationBase::create(OperationType::integrate)); //enables equations to step
   
@@ -542,7 +542,7 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(50, variableValues[":c"].value(), 1e-5);
+      CHECK_CLOSE(50, variableValues[":c"]->value(), 1e-5);
     }
 
   // instantiate all operations and variables to ensure that definitions
@@ -677,7 +677,7 @@ SUITE(Minsky)
           case OperationType::le:
           case OperationType::eq:
           case OperationType::floor:
-          case OperationType::frac:
+          case OperationType::frac:      
             continue;
           default:
             break;
@@ -911,7 +911,7 @@ SUITE(Minsky)
       auto g2=new GodleyIcon; model->addItem(g2);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
-      godley1.resize(4,2);
+      godley1.resize(4,3);
       godley2.resize(2,2);
 
       godley1._assetClass(1,GodleyAssetClass::asset);  

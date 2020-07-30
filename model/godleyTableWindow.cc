@@ -237,9 +237,9 @@ namespace minsky
                           auto vv=cminsky().variableValues
                             [VariableValue::valueIdFromScope
                              (godleyIcon->group.lock(),fc.name)];
-                          if (vv.idx()>=0)
+                          if (vv->idx()>=0)
                             {
-                              double val=fc.coef*vv.value();
+                              double val=fc.coef*vv->value();
                               auto ee=engExp(val);
                               if (ee.engExp==-3) ee.engExp=0;
                               value=" = "+mantissa(val,ee)+expMultiplier(ee.engExp);
@@ -278,7 +278,9 @@ namespace minsky
                         if (row!=1 || col!=0) text+=value;  // Do not add value "= 0.0" to Initial Condtions cell(1,0). For ticket 1064
                       }
                     else
-                      text=defang(text);
+                      //Display values of parameters used as initial conditions in Godley tables. for ticket 1126.  
+                      if (godleyIcon->table.initialConditionRow(row) && displayValues) text=defang(text+value);
+                      else text=defang(text);
                   }
                 pango.setMarkup(text);
               }
@@ -288,7 +290,6 @@ namespace minsky
             pango.show();
             y+=rowHeight;
           }
-        y=topTableOffset;
         colWidth+=5;
 
         colLeftMargin.push_back(x);
@@ -442,8 +443,7 @@ namespace minsky
   {
     cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
     ZoomablePango pango(surf.cairo());
-    if (selectedRow>=0 && size_t(selectedRow)<godleyIcon->table.rows() &&
-        selectedCol>=0 && size_t(selectedCol)<godleyIcon->table.cols() && (selectedRow!=1 || selectedCol!=0)) // No text index needed for a cell that is immutable. For ticket 1064
+    if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // No text index needed for a cell that is immutable. For ticket 1064
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
         pango.setMarkup(defang(str));
@@ -491,8 +491,7 @@ namespace minsky
         catch (...) {}
         selectedCol=colX(x);
         selectedRow=rowY(y);
-        if (selectedRow>=0 && selectedRow<int(godleyIcon->table.rows()) &&
-            selectedCol>=0 && selectedCol<int(godleyIcon->table.cols()) && (selectedRow!=1 || selectedCol!=0)) // Cannot save text in cell(1,0). For ticket 1064
+        if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // Cannot save text in cell(1,0). For ticket 1064
            {
              selectIdx=insertIdx = textIdx(x);
              godleyIcon->table.savedText=godleyIcon->table.cell(selectedRow, selectedCol);
@@ -526,8 +525,10 @@ namespace minsky
     else if ((c!=selectedCol || r!=selectedRow) && c>0 && r>0)
       {
         swap(godleyIcon->table.cell(selectedRow,selectedCol), godleyIcon->table.cell(r,c));
-        selectedCol=c;
-        selectedRow=r;
+        minsky().balanceDuplicateColumns(*godleyIcon,selectedCol);
+        minsky().balanceDuplicateColumns(*godleyIcon,c);
+        selectedCol=-1;//c;
+        selectedRow=-1;//r;
       }
     else if (selectIdx!=insertIdx)
       copy();
@@ -581,8 +582,7 @@ namespace minsky
   {
     
     auto& table=godleyIcon->table;
-    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(table.cols()) &&
-        selectedRow<int(table.rows()) && (selectedCol!=0 || selectedRow!=1)) // Cell (1,0) is off-limits. For ticket 1064
+    if (selectedCellInTable() && (selectedCol!=0 || selectedRow!=1)) // Cell (1,0) is off-limits. For ticket 1064
           {			  	  
             auto& str=table.cell(selectedRow,selectedCol);
             if (utf8.length() && (keySym<0x7f || (0xffaa <= keySym && keySym <= 0xffbf)))  // Enable numeric keypad key presses. For ticket 1136
@@ -684,7 +684,7 @@ namespace minsky
 
   void GodleyTableEditor::delSelection()
   {
-    if (insertIdx!=selectIdx)
+    if (selectedCellInTable() && insertIdx!=selectIdx)
       {
         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
         str.erase(min(insertIdx,selectIdx),abs(int(insertIdx)-int(selectIdx))); 
@@ -694,10 +694,8 @@ namespace minsky
 
     void GodleyTableEditor::handleBackspace()
     {
+      if (!selectedCellInTable()) return;
       auto& table=godleyIcon->table;
-      assert(selectedRow>=0 && selectedCol>=0);
-      assert(unsigned(selectedRow)<table.rows());
-      assert(unsigned(selectedCol)<table.cols());
       auto& str=table.cell(selectedRow,selectedCol);
       if (insertIdx!=selectIdx)
         delSelection();
@@ -708,10 +706,8 @@ namespace minsky
 
       void GodleyTableEditor::handleDelete()
     {
+      if (!selectedCellInTable()) return;
       auto& table=godleyIcon->table;
-      assert(selectedRow>=0 && selectedCol>=0);
-      assert(unsigned(selectedRow)<table.rows());
-      assert(unsigned(selectedCol)<table.cols());
       auto& str=table.cell(selectedRow,selectedCol); 
       if (insertIdx!=selectIdx)
         delSelection();
@@ -722,47 +718,38 @@ namespace minsky
 
   void GodleyTableEditor::cut()
   {
+    if (!selectedCellInTable()) return;
     copy();
-    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
-        selectedRow<int(godleyIcon->table.rows()))
-      {	  
-         if (selectIdx==insertIdx)
-           // delete entire cell
-           godleyIcon->table.cell(selectedRow,selectedCol).clear();
-         else
-           delSelection();
-      }
+    if (selectIdx==insertIdx)
+      // delete entire cell
+      godleyIcon->table.cell(selectedRow,selectedCol).clear();
+    else
+      delSelection();
   }
   
   void GodleyTableEditor::copy()
   {
-    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
-        selectedRow<int(godleyIcon->table.rows()))
-      {	  
-         auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
-         if (selectIdx!=insertIdx)
-           cminsky().putClipboard
-             (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
-         else
-           cminsky().putClipboard(str);  
-      }
+    if (!selectedCellInTable()) return;
+    auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+    if (selectIdx!=insertIdx)
+      cminsky().putClipboard
+        (str.substr(min(selectIdx,insertIdx), abs(int(selectIdx)-int(insertIdx))));
+    else
+      cminsky().putClipboard(str);  
   }
 
   void GodleyTableEditor::paste()
   {
-    if (selectedCol>=0 && selectedRow>=0 && selectedCol<int(godleyIcon->table.cols()) &&
-        selectedRow<int(godleyIcon->table.rows()))
-      {
-	     delSelection();
-         auto& str=godleyIcon->table.cell(selectedRow,selectedCol); 
-         auto stringToInsert=cminsky().getClipboard();
-         // only insert first line
-         auto p=stringToInsert.find('\n');
-         if (p!=string::npos)
-           stringToInsert=stringToInsert.substr(0,p-1);
-         str.insert(insertIdx,stringToInsert);
-         selectIdx=insertIdx+=stringToInsert.length();
-      }
+    if (!selectedCellInTable()) return;
+    delSelection();
+    auto& str=godleyIcon->table.cell(selectedRow,selectedCol); 
+    auto stringToInsert=cminsky().getClipboard();
+    // only insert first line
+    auto p=stringToInsert.find('\n');
+    if (p!=string::npos)
+      stringToInsert=stringToInsert.substr(0,p-1);
+    str.insert(insertIdx,stringToInsert);
+    selectIdx=insertIdx+=stringToInsert.length();
   }
 
   GodleyTableEditor::ClickType GodleyTableEditor::clickType(double x, double y) const
@@ -799,7 +786,7 @@ namespace minsky
   {
     x/=zoomFactor;
     int c=colX(x);
-    if (c>0)
+    if (c>0 && size_t(c)<godleyIcon->table.cols())
       {
         godleyIcon->table.cell(0,c)=name;
         minsky().importDuplicateColumn(godleyIcon->table, c);
@@ -841,58 +828,61 @@ namespace {
   
   string GodleyTableEditor::moveAssetClass(double x, double y)
   {
-	x/=zoomFactor;
-	y/=zoomFactor;
-	unsigned c=colX(x);	
-	string tmpStr="";
-	if (clickType(x,y)==colWidget) {
-	    unsigned visibleCol=c-scrollColStart+1;
-        if (c<colWidgets.size() && visibleCol < colLeftMargin.size()) {
-		    auto moveVar=godleyIcon->table.cell(0,c);		
-		    auto oldAssetClass=godleyIcon->table._assetClass(c);
-		    auto targetAssetClassPlus=godleyIcon->table._assetClass(c+1);
-		    auto targetAssetClassMinus=godleyIcon->table._assetClass(c-1);
-            if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=GodleyAssetClass::equity) {
-		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
-		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
-		    	else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
-		    	    tmpStr="Cannot convert stock variable to an equity class";    
-		    }
-		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==GodleyAssetClass::asset && oldAssetClass!=GodleyAssetClass::equity && targetAssetClassMinus!=GodleyAssetClass::asset) {
-		    	if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
-		    	    tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
-		    	else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
-		    	    tmpStr="Cannot convert stock variable to an equity class"; 		    	    
-		    }
-		    else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass!=GodleyAssetClass::equity) {
-		    	if (targetAssetClassMinus!=oldAssetClass && !moveVar.empty())
-		    	    tmpStr=constructMessage(targetAssetClassMinus,oldAssetClass,moveVar);
-		    }
-		}
-	}
-   return tmpStr;	    		 	
-   }
+    x/=zoomFactor;
+    y/=zoomFactor;
+    unsigned c=colX(x);
+    string tmpStr="";
+    if (c>=godleyIcon->table.cols()) return tmpStr;
+    if (clickType(x,y)==colWidget) {
+      unsigned visibleCol=c-scrollColStart+1;
+      if (c<colWidgets.size() && visibleCol < colLeftMargin.size())
+        {
+          auto moveVar=godleyIcon->table.cell(0,c);		
+          auto oldAssetClass=godleyIcon->table._assetClass(c);
+          auto targetAssetClassPlus=godleyIcon->table._assetClass(c+1);
+          auto targetAssetClassMinus=godleyIcon->table._assetClass(c-1);
+          if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=GodleyAssetClass::equity) {
+            if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
+              tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
+            else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
+              tmpStr="Cannot convert stock variable to an equity class";    
+          }
+          else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass==GodleyAssetClass::asset && oldAssetClass!=GodleyAssetClass::equity && targetAssetClassMinus!=GodleyAssetClass::asset) {
+            if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
+              tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
+            else if ((targetAssetClassPlus==GodleyAssetClass::equity || targetAssetClassPlus==GodleyAssetClass::noAssetClass) && !moveVar.empty())
+              tmpStr="Cannot convert stock variable to an equity class"; 		    	    
+          }
+          else if (colWidgets[c].button(x-colLeftMargin[visibleCol])==2 && oldAssetClass!=GodleyAssetClass::equity) {
+            if (targetAssetClassMinus!=oldAssetClass && !moveVar.empty())
+              tmpStr=constructMessage(targetAssetClassMinus,oldAssetClass,moveVar);
+          }
+        }
+    }
+    return tmpStr;	    		 	
+  }
   
   string GodleyTableEditor::swapAssetClass(double x, double y) 
   {  
-	x/=zoomFactor;
-	y/=zoomFactor;
-	int c=colX(x);	
-	string tmpStr="";	  
-	if (selectedRow==0) {  // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
-	    if (c>0 && selectedCol>0 && c!=selectedCol) {
-		    auto swapVar=godleyIcon->table.cell(0,selectedCol);
-		    auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
-		    auto targetAssetClass=godleyIcon->table._assetClass(c);
-		    if (!swapVar.empty() && !(colLeftMargin[c+1]-x < pulldownHot)) { // ImportVar dropdown button should not trigger this condition. For ticket 1162
-		      if (targetAssetClass!=oldAssetClass && targetAssetClass!=GodleyAssetClass::equity && targetAssetClass!=GodleyAssetClass::noAssetClass)
-		         tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
-		      else if ((targetAssetClass==GodleyAssetClass::equity || targetAssetClass==GodleyAssetClass::noAssetClass) || oldAssetClass==GodleyAssetClass::noAssetClass)
-		          tmpStr="Cannot convert stock variable to an equity class"; 		    
-			}
-		  }
-	  }
-	return tmpStr;  	  
+    x/=zoomFactor;
+    int c=colX(x);	
+    string tmpStr="";	  
+    if (selectedRow==0 && size_t(selectedCol)<godleyIcon->table.cols())
+      {
+        // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
+        if (c>0 && selectedCol>0 && c!=selectedCol) {
+          auto swapVar=godleyIcon->table.cell(0,selectedCol);
+          auto oldAssetClass=godleyIcon->table._assetClass(selectedCol);
+          auto targetAssetClass=godleyIcon->table._assetClass(c);
+          if (!swapVar.empty() && !(colLeftMargin[c+1]-x < pulldownHot)) { // ImportVar dropdown button should not trigger this condition. For ticket 1162
+            if (targetAssetClass!=oldAssetClass && targetAssetClass!=GodleyAssetClass::equity && targetAssetClass!=GodleyAssetClass::noAssetClass)
+              tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);
+            else if ((targetAssetClass==GodleyAssetClass::equity || targetAssetClass==GodleyAssetClass::noAssetClass) || oldAssetClass==GodleyAssetClass::noAssetClass)
+              tmpStr="Cannot convert stock variable to an equity class"; 		    
+          }
+        }
+      }
+    return tmpStr;  	  
   }    
 
   void GodleyTableEditor::highlightColumn(cairo_t* cairo, unsigned col)

@@ -57,19 +57,20 @@ namespace minsky
       return "";
   }
 
-  /// strips characters that cause interpretation by TCL backslashes
-  // are eliminated, and spaces are replaced by underscores, as they
-  // cause problems
+  /// repaces characters that cause interpretation by TCL, backslashes
+  /// are replaced by the set minus operator ∖, and spaces are replaced
+  /// by ␣, as they cause problems
   inline std::string stripActive(const std::string& s) {
     std::string r; r.reserve(s.length());
     for (size_t i=0; i<s.length(); ++i)
       switch (s[i])        
         {
-        case '\\':     // Leave curly braces in valueIds. For ticket 1165.
+        case '\\':
+          r+="∖";
           break;
         default:
           if (isspace(s[i]))
-            r+='_';
+            r+="␣";
           else
             r+=s[i];
           break;

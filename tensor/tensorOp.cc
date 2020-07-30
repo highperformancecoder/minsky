@@ -454,6 +454,39 @@ namespace civita
     return (*arg)[permutedIndex[i]];
   }
 
+
+  void SortByValue::computeTensor() const 
+  {
+    assert(arg->rank()==1);
+    vector<size_t> idx; idx.reserve(arg->size());
+    vector<double> tmp;
+    for (size_t i=0; i<arg->size(); ++i)
+      {
+        idx.push_back(i);
+        tmp.push_back((*arg)[i]);
+      }
+    switch (order)
+      {
+      case minsky::RavelState::HandleState::forward:
+        sort(idx.begin(), idx.end(), [&](size_t i, size_t j){return tmp[i]<tmp[j];});
+        break;
+      case minsky::RavelState::HandleState::reverse:
+        sort(idx.begin(), idx.end(), [&](size_t i, size_t j){return tmp[i]>tmp[j];});
+        break;
+      default:
+        break;
+      }
+    // reorder labels
+    auto hc=arg->hypercube();
+    XVector xv(hc.xvectors[0]);
+    for (size_t i=0; i<idx.size(); ++i)
+      xv[i]=hc.xvectors[0][idx[i]];
+    hc.xvectors[0].swap(xv);
+    cachedResult.hypercube(move(hc));
+    for (size_t i=0; i<idx.size(); ++i)
+      cachedResult[i]=tmp[idx[i]];
+  }
+
   
   vector<TensorPtr> createRavelChain(const minsky::RavelState& state, const TensorPtr& arg)
   {
@@ -542,6 +575,12 @@ namespace civita
         finalPivot->setArgument(chain.back());
         finalPivot->setOrientation(state.outputHandles);
         chain.push_back(finalPivot);
+      }
+    if (state.sortByValue!=minsky::RavelState::HandleState::none && chain.back()->rank()==1)
+      {
+        auto sortByValue=make_shared<SortByValue>(state.sortByValue);
+        sortByValue->setArgument(chain.back());
+        chain.push_back(sortByValue);
       }
     return chain;
   }

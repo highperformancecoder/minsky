@@ -82,8 +82,13 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
     {
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
-      if (type()!=constant && hypot(xx-x() - r.x(hpx,hpy), yy-y()-r.y(hpx,hpy)) < 5)
+      if (rv.height()<iHeight()) hpy=-z*iHeight(); 
+      double dx=xx-x(), dy=yy-y();         
+      if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
+      // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
+      if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
+        return ClickType::onResize;
     }
   catch (...) {}
   return Item::clickType(xx,yy);
@@ -129,19 +134,19 @@ float VariableBase::zoomFactor() const
   if (ioVar())
     if (auto g=group.lock())
       return g->edgeScale();
-  // scale by GodleyIcon::iconScale if part of an Godley icon
+  // scale by GodleyIcon::scaleFactor if part of an Godley icon
   if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-    return g->iconScale() * Item::zoomFactor();
+    return g->scaleFactor() * Item::zoomFactor();
   return Item::zoomFactor();
 }
 
-VariableValue* VariableBase::vValue() const
+shared_ptr<VariableValue> VariableBase::vValue() const
 {
   auto vv=minsky().variableValues.find(valueId());
   if (vv!=minsky().variableValues.end())
-    return &vv->second;
+    return vv->second;
   else
-    return nullptr;
+    return {};
 }
 
 string VariableBase::valueId() const 
@@ -172,10 +177,10 @@ string VariableBase::name(const std::string& name)
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
   // Ensure value of variable is preserved after rename. For ticket 1106.	
-  auto tmpVV=vValue(); 
+  auto tmpVV=vValue();
   // ensure integral variables are not global when wired to an integral operation
   m_name=(type()==integral && name[0]==':' &&inputWired())? name.substr(1): name;
-  ensureValueExists(tmpVV,name);
+  ensureValueExists(tmpVV.get(),name);
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   return this->name();
 }
@@ -193,13 +198,13 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
     {
       assert(VariableValue::isValueId(valueId));
 	  // Ensure value of variable is preserved after rename. For ticket 1106.	      
-      if (vv==nullptr) minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(), name(),"",group.lock())));
+      if (vv==nullptr)
+        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), name(),"",group.lock()));
       // Ensure variable names are updated correctly everywhere they appear. For tickets 1109/1138.  
       else
-        minsky().variableValues.insert
-        (make_pair(valueId,VariableValue(type(),nm,vv->init,group.lock()))).first->
-          second.tensorInit=vv->tensorInit;
+        minsky().variableValues.emplace
+          (valueId,VariableValuePtr(type(),nm,vv->init,group.lock())).first->
+          second->tensorInit=vv->tensorInit;
     }
 }
 
@@ -208,7 +213,7 @@ string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
-    return value->second.init;
+    return value->second->init;
   else
     return "0";
 }
@@ -218,7 +223,7 @@ string VariableBase::init(const string& x)
   ensureValueExists(nullptr,""); 
   if (VariableValue::isValueId(valueId()))
     {
-      VariableValue& val=minsky().variableValues[valueId()];
+      VariableValue& val=*minsky().variableValues[valueId()];
       val.init=x;
       // for constant types, we may as well set the current value. See ticket #433. Also ignore errors (for now), as they will reappear at reset time.
       try
@@ -236,7 +241,7 @@ string VariableBase::init(const string& x)
 double VariableBase::value() const
 {
   if (VariableValue::isValueId(valueId()))
-    return minsky::cminsky().variableValues[valueId()].value();
+    return minsky::cminsky().variableValues[valueId()]->value();
   else
     return 0;
 }
@@ -244,7 +249,7 @@ double VariableBase::value() const
 double VariableBase::value(const double& x)
 {
   if (!m_name.empty() && VariableValue::isValueId(valueId()))
-    minsky().variableValues[valueId()][0]=x;
+    (*minsky().variableValues[valueId()])[0]=x;
   return x;
 }
 
@@ -268,7 +273,7 @@ Units VariableBase::units(bool check) const
   if (it!=minsky().variableValues.end())
     {
       auto& vv=it->second;
-      if (vv.unitsCached) return vv.units;
+      if (vv->unitsCached) return vv->units;
 
       
       IncrDecrCounter ucIdc(unitsCtr);
@@ -287,23 +292,23 @@ Units VariableBase::units(bool check) const
                 units=i->units(check);
               else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
                 units=g->stockVarUnits(name(),check);
-              if (check && units.str()!=vv.units.str())
+              if (check && units.str()!=vv->units.str())
                 {
                   if (auto i=controller.lock())
-                    i->throw_error("inconsistent units "+units.str()+"≠"+vv.units.str());
+                    i->throw_error("inconsistent units "+units.str()+"≠"+vv->units.str());
                 }
             }
         }
       else
         // updates units in the process
         if (ports.size()>1 && !ports[1]->wires().empty())
-          vv.units=ports[1]->wires()[0]->from()->item().units(check);
+          vv->units=ports[1]->wires()[0]->from()->item().units(check);
         else if (auto v=cminsky().definingVar(valueId()))
-          vv.units=v->units(check);
+          vv->units=v->units(check);
 
-      vv.units.normalise();
-      vv.unitsCached=true;
-      return vv.units;
+      vv->units.normalise();
+      vv->unitsCached=true;
+      return vv->units;
     }
   else
     return Units();
@@ -312,7 +317,7 @@ Units VariableBase::units(bool check) const
 void VariableBase::setUnits(const string& x)
 {
   if (VariableValue::isValueId(valueId()))
-    minsky().variableValues[valueId()].units=Units(x);
+    minsky().variableValues[valueId()]->units=Units(x);
 }
 
 
@@ -345,8 +350,20 @@ void VariableBase::exportAsCSV(const std::string& filename) const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end())
-    value->second.exportAsCSV(filename, name());
+    value->second->exportAsCSV(filename, name());
 }
+
+void VariableBase::importFromCSV(std::string filename, const DataSpec& spec)
+{
+  if (auto v=vValue()) {
+    if (filename.find("://")!=std::string::npos)
+      filename = v->csvDialog.loadWebFile(filename);
+    std::ifstream is(filename);
+    loadValueFromCSVFile(*v, is, spec);
+    minsky().populateMissingDimensionsFromVariable(*v);
+  }
+}
+
 
 void VariableBase::insertControlled(Selection& selection)
 {
@@ -441,7 +458,6 @@ bool VariableBase::handleArrows(int dir,bool reset)
   return true;
 }
 
-
 void VariableBase::draw(cairo_t *cairo) const
 {
   double angle=rotation() * M_PI / 180.0;
@@ -449,7 +465,6 @@ void VariableBase::draw(cairo_t *cairo) const
   float z=zoomFactor();
 
   RenderVariable rv(*this,cairo);
-  rv.setFontSize(12*z);
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
@@ -457,50 +472,55 @@ void VariableBase::draw(cairo_t *cairo) const
   rv.angle=angle+(notflipped? 0: M_PI);
 
   // parameters of icon in userspace (unscaled) coordinates
-  float w, h, hoffs;
+  float w, h, hoffs, scaleFactor;
   w=rv.width()*z; 
   h=rv.height()*z;
+  scaleFactor=max(1.0f,min(0.5f*iWidth()*z/w,0.5f*iHeight()*z/h));
+  if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
+  if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
+  rv.setFontSize(12*scaleFactor*z);
   hoffs=rv.top()*z;
+  
 
   cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
   rv.show();
 
   VariableValue vv;
   if (VariableValue::isValueId(valueId()))
-    vv=minsky::cminsky().variableValues[valueId()];
+    vv=*minsky::cminsky().variableValues[valueId()];
   
   // For feature 47
   if (type()!=constant && !ioVar() && (vv.size()==1) )
     try
-    {
-      auto val=engExp();
+      {
+        auto val=engExp();
   
-      Pango pangoVal(cairo);
-      if (!isnan(value())) {
-		   pangoVal.setFontSize(6*z);
-		   pangoVal.setMarkup(mantissa(val));
-	   }
-      else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-		  pangoVal.setFontSize(8*z);
-		  if (signbit(value())) pangoVal.setMarkup("-∞");
-          else pangoVal.setMarkup("∞");
-	  }
-	  else {  // Display all other NaN cases as ???. For ticket 1155
-		  pangoVal.setFontSize(6*z);
-		  pangoVal.setMarkup("???");
-	  }
-      pangoVal.angle=angle+(notflipped? 0: M_PI);
-
-      cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
-                    r.y(w-pangoVal.width()-2,-h-hoffs+2));
-      pangoVal.show();
-      if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
-        {
-          pangoVal.setMarkup(expMultiplier(val.engExp));
-          cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
-          pangoVal.show();
+        Pango pangoVal(cairo);
+        if (!isnan(value())) {
+          pangoVal.setFontSize(6*scaleFactor*z);
+          pangoVal.setMarkup(mantissa(val));
         }
-    }
+        else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
+          pangoVal.setFontSize(8*scaleFactor*z);
+          if (signbit(value())) pangoVal.setMarkup("-∞");
+          else pangoVal.setMarkup("∞");
+        }
+        else {  // Display all other NaN cases as ???. For ticket 1155
+          pangoVal.setFontSize(6*scaleFactor*z);
+          pangoVal.setMarkup("???");
+        }
+        pangoVal.angle=angle+(notflipped? 0: M_PI);
+
+        cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
+                      r.y(w-pangoVal.width()-2,-h-hoffs+2));
+        pangoVal.show();
+        if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
+          {
+            pangoVal.setMarkup(expMultiplier(val.engExp));
+            cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
+            pangoVal.show();
+          }
+      }
     catch (...) {} // ignore errors in obtaining values
 
   unique_ptr<cairo::Path> clipPath;
@@ -527,7 +547,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (type()!=constant && !ioVar())
+    if (type()!=constant && !ioVar() && !dynamic_cast<GodleyIcon*>(controller.lock().get()))
       {
         // draw slider
         CairoSave cs(cairo);
@@ -556,18 +576,27 @@ void VariableBase::draw(cairo_t *cairo) const
       cairo::CairoSave cs(cairo);
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
-    }
+      if (onResizeHandles) drawResizeHandles(cairo);
+    }  
 
   cairo_new_path(cairo);
   clipPath->appendToCurrent(cairo);
+  // Rescale size of variable attached to intop. For ticket 94
   cairo_clip(cairo);
   if (selected) drawSelected(cairo);
 }
 
-void VariablePtr::makeConsistentWithValue()
+void VariableBase::resize(const LassoBox& b)
 {
-  retype(minsky::cminsky().variableValues[get()->valueId()].type());
+  float invZ=1/zoomFactor();
+  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));  
+  iWidth(abs(b.x1-b.x0)*invZ);
+  iHeight(abs(b.y1-b.y0)*invZ);   
 }
 
+void VariablePtr::makeConsistentWithValue()
+{
+  retype(minsky::cminsky().variableValues[get()->valueId()]->type());
+}
 
 int VarConstant::nextId=0;

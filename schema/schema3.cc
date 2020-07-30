@@ -39,14 +39,14 @@ namespace schema3
   // than classdesc generated to ensure backward compatibility
   void pack(classdesc::pack_t& b, const civita::XVector& a)
   {
-    b<<a.name<<a.dimension<<a.size();
+    b<<a.name<<a.dimension<<uint64_t(a.size());
     for (auto& i: a)
       b<<civita::str(i,a.dimension.units);
   }
 
   void unpack(classdesc::pack_t& b, civita::XVector& a)
   {
-    size_t size;
+    uint64_t size;
     std::string x;
     a.clear();
     b>>a.name>>a.dimension>>size;
@@ -59,11 +59,14 @@ namespace schema3
   
   void pack(classdesc::pack_t& b, const civita::TensorVal& a)
   {
-    b<<a.size();
-    for (size_t i=0; i<a.size(); ++i)
-      b<<a[i];
-    b<<a.index();
-    b<<a.hypercube().xvectors.size();
+    b<<uint64_t(a.size());
+    for (auto i: a)
+      b<<i;
+    b<<uint64_t(a.index().size());
+    for (auto i: a.index())
+      b<<uint64_t(i);
+
+    b<<uint64_t(a.hypercube().xvectors.size());
     for (auto& i: a.hypercube().xvectors)
       pack(b, i);
   }
@@ -71,20 +74,32 @@ namespace schema3
 
   void unpack(classdesc::pack_t& b, civita::TensorVal& a)
   {
-    vector<double> data;
-    set<size_t> index;
-    b>>data>>index;
-    
-    civita::Hypercube hc;
-    size_t sz;
+    uint64_t sz;
     b>>sz;
+    vector<double> data;
+    for (size_t i=0; i<sz; ++i)
+      {
+        data.emplace_back();
+        b>>data.back();
+      }
+    b>>sz;
+    set<size_t> index;
+    for (size_t i=0; i<sz; ++i)
+      {
+        uint64_t x;
+        b>>x;
+        index.insert(x);
+      }
+
+    b>>sz;
+    civita::Hypercube hc;
+
     for (size_t i=0; i<sz; ++i)
       {
         civita::XVector xv;
         unpack(b,xv);
         hc.xvectors.push_back(xv);
       }
-    
     a.hypercube(hc); //dimension data
     a.index(index);
     assert(a.size()==data.size());
@@ -243,7 +258,7 @@ namespace schema3
   void Item::packTensorInit(const minsky::VariableBase& v)
   {
     if (auto val=v.vValue())
-      if (val->tensorInit.size())
+      if (val->tensorInit.rank())
         {
           pack_t buf;
           pack(buf,val->tensorInit);
@@ -329,7 +344,8 @@ namespace schema3
     m.model->bookmarks=bookmarks;
     m.dimensions=dimensions;
     m.conversions=conversions;
-
+    m.fileVersion=minskyVersion;
+    
     static_cast<minsky::RungeKutta&>(m)=rungeKutta;
     return m;
   }
@@ -345,6 +361,7 @@ namespace schema3
     populateNote(x,y);
     x.m_x=y.x;
     x.m_y=y.y;
+    x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
@@ -397,9 +414,12 @@ namespace schema3
                   val->hypercube(val->tensorInit.hypercube());
                 }
               catch (const std::exception& ex) {
+                val->tensorInit.hypercube({});
                 cout<<ex.what()<<endl;
               }
-              catch (...) {} // absorb for now - maybe log later
+              catch (...) {
+                val->tensorInit.hypercube({});
+              } // absorb for now - maybe log later
             }
       }
     if (auto x1=dynamic_cast<minsky::OperationBase*>(&x))
@@ -413,18 +433,25 @@ namespace schema3
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
         if (y.data) data=*y.data;
         if (y.assetClasses) assetClasses=*y.assetClasses;
-        if (y.name) x1->table.title=*y.name;
-        SchemaHelper::setPrivates(x1->table,data,assetClasses);
+        SchemaHelper::setPrivates(*x1,data,assetClasses);
         try
           {
             x1->table.orderAssetClasses();
           }
         catch (const std::exception&) {}
+        if (y.name) x1->table.title=*y.name;
+        if (y.editorMode && *y.editorMode!=x1->editorMode())
+          x1->toggleEditorMode();
+        if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
+          x1->toggleButtons();
+        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
+        if (y.width) x1->iWidth(*y.width);
+        if (y.height) x1->iHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
-        if (y.width) x1->width=*y.width;
-        if (y.height) x1->height=*y.height;
+        if (y.width) x1->iWidth(*y.width);
+        if (y.height) x1->iHeight(*y.height);
         x1->bb.update(*x1);        
         if (y.name) x1->title=*y.name;
         if (y.logx) x1->logx=*y.logx;
@@ -547,10 +574,6 @@ namespace schema3
                 try
                   {
                     godley->update();
-                    if (i.height)
-                      godley->scaleIconForHeight(*i.height*godley->zoomFactor());
-                    else if (i.iconScale) //legacy schema handling
-                      godley->scaleIconForHeight(*i.iconScale * godley->gHeight());
                   }
                 catch (...) {} //ignore exceptions: ticket #1045
               }

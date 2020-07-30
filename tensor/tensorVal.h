@@ -76,7 +76,7 @@ namespace civita
     Timestamp m_timestamp;
     CLASSDESC_ACCESS(TensorVal);
   public:
-    TensorVal() {}
+    TensorVal(): data(1) {}
     TensorVal(double x): data(1,x) {}
     TensorVal(const Hypercube& hc): ITensorVal(hc) {}
     TensorVal(Hypercube&& hc): ITensorVal(std::move(hc)) {}

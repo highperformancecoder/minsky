@@ -16,8 +16,6 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ttk::frame  .wiring
-
 frame .wiring.menubar 
 
 # create icons for all operations
@@ -212,9 +210,6 @@ proc wrapHoverMouse {op x y} {
     after 3000 hoverMouse
 }
     
-image create cairoSurface minskyCanvas -surface minsky.canvas
-label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
-pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
 bind .wiring.canvas <Control-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
@@ -701,13 +696,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
             if {[$item.type]=="parameter"} {
-                .wiring.context add command -label "Import CSV" -command {CSVImportDialog {}}
-                .wiring.context add command -label "Import CSV from web" -command {
-                    textEntryPopup .loadWebUrl {} {CSVImportDialog [.loadWebUrl.entry get]}
-                    .loadWebUrl.entry configure -takefocus 1					
-                    wm title .loadWebUrl "Insert URL:"		
-                    wm geometry .loadWebUrl "+[winfo pointerx .]+[winfo pointery .]"						 				
-				} 
+                .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
@@ -754,9 +743,9 @@ proc contextMenu {x y X Y} {
             set editorMode [$item.editorMode]
             set buttonDisplay [$item.buttonDisplay]
             set variableDisplay [$item.variableDisplay]
-            .wiring.context add checkbutton -label "Editor mode" -command "$item.toggleEditorMode" -variable editorMode
-            .wiring.context add checkbutton -label "Row/Col buttons" -command "$item.toggleButtons" -variable buttonDisplay
-            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay" -variable variableDisplay
+            .wiring.context add checkbutton -label "Editor mode" -command "$item.toggleEditorMode; $item.update" -variable editorMode
+            .wiring.context add checkbutton -label "Row/Col buttons" -command "$item.toggleButtons ; $item.update" -variable buttonDisplay
+            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay; $item.update" -variable variableDisplay
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Export to file" -command "godley::export"
@@ -784,7 +773,11 @@ proc contextMenu {x y X Y} {
         Ravel {
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
             global sortOrder
-            set sortOrder [minsky.canvas.item.sortOrder]
+            if {[minsky.canvas.item.handleSortableByValue] && [minsky.canvas.item.sortByValue]!="none"} {
+                set sortOrder [minsky.canvas.item.sortByValue]
+            } else {
+                set sortOrder [minsky.canvas.item.sortOrder]
+            }
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
             .wiring.context add command -label "Unlock" -command {
                 minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
@@ -802,7 +795,7 @@ proc contextMenu {x y X Y} {
 
 
 
-menu .wiring.context.axisMenu
+menu .wiring.context.axisMenu 
 .wiring.context.axisMenu add command -label "Description" -command {
     textEntryPopup .wiring.context.axisMenu.desc [minsky.canvas.item.description] {
         minsky.canvas.item.setDescription [.wiring.context.axisMenu.desc.entry get]
@@ -814,16 +807,30 @@ menu .wiring.context.axisMenu
     minsky.canvas.item.broadcastStateToLockGroup
     reset
 }
-menu .wiring.context.axisMenu.sort 
-.wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort 
+menu .wiring.context.axisMenu.sort -postcommand populateSortOptions
+.wiring.context.axisMenu add cascade -label "Sort" -menu .wiring.context.axisMenu.sort
 set sortOrder none
-foreach order {none forward reverse} {
-    .wiring.context.axisMenu.sort add radiobutton -label $order -command {
-        minsky.canvas.item.setSortOrder $sortOrder
-        minsky.canvas.item.broadcastStateToLockGroup
-        reset
-    } -value $order -variable sortOrder
+
+proc populateSortOptions {} {
+    set orders {none forward reverse}
+    if [minsky.canvas.item.handleSortableByValue] {
+        lappend orders "forward by value" "reverse by value"
+    }
+    .wiring.context.axisMenu.sort delete 0 end
+    foreach order $orders {
+        .wiring.context.axisMenu.sort add radiobutton -label $order -command {
+            if [regexp "(.*) by value" $sortOrder dummy valueOrder] {
+                minsky.canvas.item.sortByValue $valueOrder
+            } else {
+                minsky.canvas.item.sortByValue none
+                minsky.canvas.item.setSortOrder $sortOrder
+            }
+            minsky.canvas.item.broadcastStateToLockGroup
+            reset
+        } -value "$order" -variable sortOrder
+    }
 }
+
 .wiring.context.axisMenu add command -label "Pick Slices" -command setupPickMenu
 
 
@@ -1045,7 +1052,16 @@ proc deiconifyEditVar {} {
 
         button .wiring.editVar.buttonBar.cancel -text Cancel -command {
             closeEditWindow .wiring.editVar}
-        pack .wiring.editVar.buttonBar.ok [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
+        pack .wiring.editVar.buttonBar.ok -side left -pady 10
+        if {[minsky.canvas.item.type]=="parameter"} {
+            button .wiring.editVar.buttonBar.import -text "Import CSV" -command {
+                .wiring.editVar.buttonBar.ok invoke
+                CSVImportDialog
+            }
+            pack .wiring.editVar.buttonBar.import -side left -pady 10
+        }
+
+        pack [label .wiring.editVar.buttonBar.spacer -width 2] .wiring.editVar.buttonBar.cancel -side left -pady 10
         grid .wiring.editVar.buttonBar -row 999 -column 0 -columnspan 1000
         bind .wiring.editVar <Key-Return> {invokeOKorCancel .wiring.editVar.buttonBar}
         bind .wiring.editVar <Key-Escape> {.wiring.editVar.buttonBar.cancel invoke}

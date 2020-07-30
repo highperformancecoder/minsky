@@ -55,6 +55,7 @@ namespace minsky
     template <> int numArguments<OperationType::divide>() {return 2;}
     template <> int numArguments<OperationType::log>() {return 2;}
     template <> int numArguments<OperationType::pow>() {return 2;}
+    template <> int numArguments<OperationType::polygamma>() {return 2;}       
     template <> int numArguments<OperationType::lt>() {return 2;}
     template <> int numArguments<OperationType::le>() {return 2;}
     template <> int numArguments<OperationType::eq>() {return 2;}
@@ -83,6 +84,9 @@ namespace minsky
     template <> int numArguments<OperationType::abs>() {return 1;}
     template <> int numArguments<OperationType::floor>() {return 1;}
     template <> int numArguments<OperationType::frac>() {return 1;}
+    template <> int numArguments<OperationType::percent>() {return 1;}
+    template <> int numArguments<OperationType::gamma>() {return 1;}            
+    template <> int numArguments<OperationType::fact>() {return 1;}        
     template <> int numArguments<OperationType::sum>() {return 1;}
     template <> int numArguments<OperationType::product>() {return 1;}
     template <> int numArguments<OperationType::infimum>() {return 1;}

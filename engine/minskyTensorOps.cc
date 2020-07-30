@@ -233,7 +233,6 @@ namespace minsky
       auto hc=arg->hypercube();
       if (rank()==0) return;
       
-      unsigned dim=rank()>1? dimension: 0;
       auto& xv=hc.xvectors[0];
       if (delta>=0)
         xv.erase(xv.begin(), xv.begin()+delta);
@@ -453,7 +452,6 @@ namespace minsky
       // not sure how to avoid this const cast here
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=civita::createRavelChain(ravel.getState(), a);
-      hypercube(chain.back()->hypercube());
     }
 
     double operator[](size_t i) const override {return chain.empty()? 0: (*chain.back())[i];}
@@ -462,6 +460,7 @@ namespace minsky
     {if (chain.empty()) return m_index; else return chain.back()->index();}
     Timestamp timestamp() const override
     {return chain.empty()? Timestamp(): chain.back()->timestamp();}
+    const Hypercube& hypercube() const override {return chain.back()->hypercube();}
   };
        
   std::shared_ptr<ITensor> TensorOpFactory::create
@@ -496,7 +495,7 @@ namespace minsky
           op->throw_error(ex.what());
         }
     else if (auto v=it.variableCast())
-      return make_shared<TensorVarVal>(*v->vValue(), tfp.ev);
+      return make_shared<ConstTensorVarVal>(v->vValue(), tfp.ev);
     else if (auto sw=dynamic_cast<const SwitchIcon*>(&it))
       {
         auto r=make_shared<SwitchTensor>();
@@ -547,26 +546,27 @@ namespace minsky
     return r;
   }
 
-  TensorEval::TensorEval(VariableValue& v, const shared_ptr<EvalCommon>& ev): result(v, ev)
+  TensorEval::TensorEval(const shared_ptr<VariableValue>& v, const shared_ptr<EvalCommon>& ev):
+    result(v, ev)
   {
-    if (auto var=cminsky().definingVar(v.valueId()))
+    if (auto var=cminsky().definingVar(v->valueId()))
       if (var->lhs())
         {
           rhs=TensorsFromPort(ev).tensorsFromPort(*var->ports[1])[0];
           result.hypercube(rhs->hypercube());
           result.index(rhs->index());
-          v=result;
+          *v=result;
         }
   }
   
-  TensorEval::TensorEval(const VariableValue& dest, const VariableValue& src):
+  TensorEval::TensorEval(const shared_ptr<VariableValue>& dest, const shared_ptr<VariableValue>& src):
     result(dest,make_shared<EvalCommon>())
   {
-    result.index(src.index());
-    result.hypercube(src.hypercube());
+    result.index(src->index());
+    result.hypercube(src->hypercube());
     Operation<OperationType::copy> tmp;
     auto copy=dynamic_pointer_cast<ITensor>(tensorOpFactory.create(tmp));
-    copy->setArgument(make_shared<TensorVarVal>(src,result.ev));
+    copy->setArgument(make_shared<ConstTensorVarVal>(src,result.ev));
     rhs=move(copy);
     assert(result.size()==rhs->size());
   }   
@@ -576,9 +576,9 @@ namespace minsky
     if (rhs)
       {
         assert(result.idx()>=0);
-        assert(result.size()==rhs->size());
         result.ev->update(fv, n, sv);
-        auto ev_sav=result.ev.get();
+        //        assert(result.size()==rhs->size());
+        result.hypercube(rhs->hypercube());
         for (size_t i=0; i<rhs->size(); ++i)
           {
             auto v=(*rhs)[i];

@@ -1,11 +1,11 @@
 nsteps 10
-3 {:FirmInt} 0.858866 {:Firms} 85.8866 {:IntLoan} 4.70502 {:Loan} 2.44978 {:Loans} 94.1004 {:Safe} 8.21384 {:Vault} 4.89956 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-6.02049 {:FirmInt} 0.783437 {:Firms} 78.3437 {:IntLoan} 4.93813 {:Loan} 0.118746 {:Loans} 98.7625 {:Safe} 20.4188 {:Vault} 0.237492 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-9.0989 {:FirmInt} 0.655612 {:Firms} 65.5612 {:IntLoan} 4.94946 {:Loan} 0.00542632 {:Loans} 98.9891 {:Safe} 33.4279 {:Vault} 0.0108526 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-12.597 {:FirmInt} 0.502844 {:Firms} 50.2844 {:IntLoan} 4.94998 {:Loan} 0.000158069 {:Loans} 98.9997 {:Safe} 48.7153 {:Vault} 0.000316138 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-17.2533 {:FirmInt} 0.290882 {:Firms} 29.0882 {:IntLoan} 4.95 {:Loan} -2.36134e-06 {:Loans} 99 {:Safe} 69.9118 {:Vault} -4.72268e-06 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-24.2533 {:FirmInt} -0.0469424 {:Firms} -4.69424 {:IntLoan} 4.95 {:Loan} 1.53463e-06 {:Loans} 99 {:Safe} 103.694 {:Vault} 3.06927e-06 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-31.2533 {:FirmInt} -0.409262 {:Firms} -40.9262 {:IntLoan} 4.95 {:Loan} -9.97358e-07 {:Loans} 99 {:Safe} 139.926 {:Vault} -1.99472e-06 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-38.2533 {:FirmInt} -0.797852 {:Firms} -79.7852 {:IntLoan} 4.95 {:Loan} 6.48183e-07 {:Loans} 99 {:Safe} 178.785 {:Vault} 1.29637e-06 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-45.2533 {:FirmInt} -1.21462 {:Firms} -121.462 {:IntLoan} 4.95 {:Loan} -4.21254e-07 {:Loans} 99 {:Safe} 220.462 {:Vault} -8.42508e-07 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
-52.2533 {:FirmInt} -1.6616 {:Firms} -166.16 {:IntLoan} 4.95 {:Loan} 2.73773e-07 {:Loans} 99 {:Safe} 265.16 {:Vault} 5.47546e-07 {:rD} 0.01 {:rL} 0.05 {:tau_mathrm{vault}} 0.5 
+3 {:FirmInt} 0.858866 {:Firms} 85.8866 {:IntLoan} 4.70502 {:Loan} 2.44978 {:Loans} 94.1004 {:Safe} 8.21384 {:Vault} 4.89956 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+6.02049 {:FirmInt} 0.783437 {:Firms} 78.3437 {:IntLoan} 4.93813 {:Loan} 0.118746 {:Loans} 98.7625 {:Safe} 20.4188 {:Vault} 0.237492 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+9.0989 {:FirmInt} 0.655612 {:Firms} 65.5612 {:IntLoan} 4.94946 {:Loan} 0.00542632 {:Loans} 98.9891 {:Safe} 33.4279 {:Vault} 0.0108526 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+12.597 {:FirmInt} 0.502844 {:Firms} 50.2844 {:IntLoan} 4.94998 {:Loan} 0.000158069 {:Loans} 98.9997 {:Safe} 48.7153 {:Vault} 0.000316138 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+17.2533 {:FirmInt} 0.290882 {:Firms} 29.0882 {:IntLoan} 4.95 {:Loan} -2.36134e-06 {:Loans} 99 {:Safe} 69.9118 {:Vault} -4.72268e-06 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+24.2533 {:FirmInt} -0.0469424 {:Firms} -4.69424 {:IntLoan} 4.95 {:Loan} 1.53463e-06 {:Loans} 99 {:Safe} 103.694 {:Vault} 3.06927e-06 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+31.2533 {:FirmInt} -0.409262 {:Firms} -40.9262 {:IntLoan} 4.95 {:Loan} -9.97358e-07 {:Loans} 99 {:Safe} 139.926 {:Vault} -1.99472e-06 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+38.2533 {:FirmInt} -0.797852 {:Firms} -79.7852 {:IntLoan} 4.95 {:Loan} 6.48183e-07 {:Loans} 99 {:Safe} 178.785 {:Vault} 1.29637e-06 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+45.2533 {:FirmInt} -1.21462 {:Firms} -121.462 {:IntLoan} 4.95 {:Loan} -4.21254e-07 {:Loans} 99 {:Safe} 220.462 {:Vault} -8.42508e-07 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 
+52.2533 {:FirmInt} -1.6616 {:Firms} -166.16 {:IntLoan} 4.95 {:Loan} 2.73773e-07 {:Loans} 99 {:Safe} 265.16 {:Vault} 5.47546e-07 {:rD} 0.01 {:rL} 0.05 {:τ<sub><span␣style="normal">vault</span></sub>} 0.5 

@@ -1,5 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>127</id>
@@ -132,7 +133,7 @@
     <type>Operation:multiply</type>
     <x>45</x>
     <y>108</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -146,7 +147,7 @@
     <type>Operation:multiply</type>
     <x>47</x>
     <y>163</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>4</int>
@@ -160,7 +161,7 @@
     <type>Operation:multiply</type>
     <x>46</x>
     <y>215</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>8</int>
@@ -174,7 +175,7 @@
     <type>Operation:multiply</type>
     <x>58</x>
     <y>269</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>12</int>
@@ -188,7 +189,7 @@
     <type>Operation:multiply</type>
     <x>52</x>
     <y>328</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>16</int>
@@ -202,7 +203,7 @@
     <type>Variable:stock</type>
     <x>2</x>
     <y>205</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>20</int>
@@ -222,7 +223,7 @@
     <type>Variable:stock</type>
     <x>2</x>
     <y>150</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>22</int>
@@ -242,7 +243,7 @@
     <type>Variable:stock</type>
     <x>9</x>
     <y>315</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>24</int>
@@ -262,7 +263,7 @@
     <type>Variable:stock</type>
     <x>0</x>
     <y>99</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>26</int>
@@ -282,7 +283,7 @@
     <type>Variable:stock</type>
     <x>11</x>
     <y>257</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>28</int>
@@ -302,7 +303,7 @@
     <type>Variable:flow</type>
     <x>112</x>
     <y>106</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>30</int>
@@ -323,7 +324,7 @@
     <type>Variable:flow</type>
     <x>105</x>
     <y>163</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>33</int>
@@ -344,7 +345,7 @@
     <type>Variable:flow</type>
     <x>103</x>
     <y>215</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>36</int>
@@ -365,7 +366,7 @@
     <type>Variable:flow</type>
     <x>102</x>
     <y>269</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>39</int>
@@ -386,7 +387,7 @@
     <type>Variable:flow</type>
     <x>96</x>
     <y>328</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>42</int>
@@ -405,9 +406,9 @@
    <Item>
     <id>46</id>
     <type>Variable:stock</type>
-    <x>367.707</x>
-    <y>240.611</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>363.332</x>
+    <y>239.655</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>45</int>
@@ -425,9 +426,9 @@
    <Item>
     <id>48</id>
     <type>Variable:stock</type>
-    <x>394.707</x>
-    <y>241.566</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>393.916</x>
+    <y>240.611</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>47</int>
@@ -445,9 +446,9 @@
    <Item>
     <id>50</id>
     <type>Variable:stock</type>
-    <x>421.707</x>
-    <y>235.832</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>424.5</x>
+    <y>234.876</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>49</int>
@@ -465,9 +466,9 @@
    <Item>
     <id>52</id>
     <type>Variable:stock</type>
-    <x>448.707</x>
-    <y>238.699</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>455.085</x>
+    <y>237.743</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>51</int>
@@ -485,9 +486,9 @@
    <Item>
     <id>54</id>
     <type>Variable:stock</type>
-    <x>475.707</x>
-    <y>249.212</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>485.669</x>
+    <y>248.257</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>53</int>
@@ -505,9 +506,9 @@
    <Item>
     <id>57</id>
     <type>Variable:flow</type>
-    <x>342.517</x>
-    <y>76.6035</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>329.412</x>
+    <y>48.2535</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>55</int>
@@ -526,9 +527,9 @@
    <Item>
     <id>60</id>
     <type>Variable:flow</type>
-    <x>342.517</x>
-    <y>103.604</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>329.412</x>
+    <y>78.8376</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>58</int>
@@ -547,9 +548,9 @@
    <Item>
     <id>63</id>
     <type>Variable:flow</type>
-    <x>342.517</x>
-    <y>130.604</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>329.412</x>
+    <y>109.422</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>61</int>
@@ -568,9 +569,9 @@
    <Item>
     <id>66</id>
     <type>Variable:flow</type>
-    <x>342.517</x>
-    <y>157.604</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>329.412</x>
+    <y>140.006</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>64</int>
@@ -589,9 +590,9 @@
    <Item>
     <id>69</id>
     <type>Variable:flow</type>
-    <x>342.517</x>
-    <y>184.604</y>
-    <zoomFactor>1.0463</zoomFactor>
+    <x>329.411</x>
+    <y>170.59</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>67</int>
@@ -612,7 +613,7 @@
     <type>Variable:parameter</type>
     <x>2</x>
     <y>125</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>70</int>
@@ -632,7 +633,7 @@
     <type>Variable:parameter</type>
     <x>2</x>
     <y>173</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>72</int>
@@ -652,7 +653,7 @@
     <type>Variable:parameter</type>
     <x>3</x>
     <y>226</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>74</int>
@@ -672,7 +673,7 @@
     <type>Variable:parameter</type>
     <x>13</x>
     <y>277</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>76</int>
@@ -692,7 +693,7 @@
     <type>Variable:parameter</type>
     <x>9</x>
     <y>336</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>78</int>
@@ -712,7 +713,7 @@
     <type>PlotWidget</type>
     <x>301</x>
     <y>131</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>80</int>
@@ -852,7 +853,7 @@
     <type>PlotWidget</type>
     <x>300</x>
     <y>304</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>103</int>
@@ -992,7 +993,7 @@
     <type>GodleyIcon</type>
     <x>475</x>
     <y>131</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>56</int>
@@ -1006,8 +1007,8 @@
      <int>51</int>
      <int>53</int>
     </ports>
-    <width>289.824</width>
-    <height>339</height>
+    <width>243</width>
+    <height>243</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>

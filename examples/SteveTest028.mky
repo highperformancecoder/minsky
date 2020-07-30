@@ -1,5 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>128</id>
@@ -144,7 +145,7 @@
     <type>Operation:divide</type>
     <x>61</x>
     <y>47</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -158,7 +159,7 @@
     <type>Operation:multiply</type>
     <x>70</x>
     <y>93</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>4</int>
@@ -172,7 +173,7 @@
     <type>Operation:divide</type>
     <x>77</x>
     <y>163</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>8</int>
@@ -186,7 +187,7 @@
     <type>Operation:subtract</type>
     <x>23</x>
     <y>132</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>12</int>
@@ -200,7 +201,7 @@
     <type>Operation:multiply</type>
     <x>50</x>
     <y>144</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>16</int>
@@ -214,7 +215,7 @@
     <type>Operation:divide</type>
     <x>73</x>
     <y>230</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>20</int>
@@ -228,7 +229,7 @@
     <type>Operation:divide</type>
     <x>77</x>
     <y>284</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>24</int>
@@ -242,7 +243,7 @@
     <type>Operation:divide</type>
     <x>124</x>
     <y>129</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>28</int>
@@ -256,7 +257,7 @@
     <type>Variable:stock</type>
     <x>48</x>
     <y>274</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>32</int>
@@ -276,7 +277,7 @@
     <type>Variable:stock</type>
     <x>15</x>
     <y>33</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>34</int>
@@ -296,7 +297,7 @@
     <type>Variable:stock</type>
     <x>16</x>
     <y>164</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>36</int>
@@ -316,7 +317,7 @@
     <type>Variable:stock</type>
     <x>40</x>
     <y>112</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>38</int>
@@ -336,7 +337,7 @@
     <type>Variable:stock</type>
     <x>39</x>
     <y>214</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>40</int>
@@ -356,7 +357,7 @@
     <type>Variable:flow</type>
     <x>91</x>
     <y>48</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>42</int>
@@ -377,7 +378,7 @@
     <type>Variable:flow</type>
     <x>107</x>
     <y>95</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>45</int>
@@ -398,7 +399,7 @@
     <type>Variable:flow</type>
     <x>107</x>
     <y>160</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>48</int>
@@ -419,7 +420,7 @@
     <type>Variable:flow</type>
     <x>104</x>
     <y>229</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>51</int>
@@ -440,7 +441,7 @@
     <type>Variable:flow</type>
     <x>102</x>
     <y>284</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>54</int>
@@ -461,7 +462,7 @@
     <type>Variable:flow</type>
     <x>160</x>
     <y>133</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>57</int>
@@ -480,9 +481,9 @@
    <Item>
     <id>61</id>
     <type>Variable:stock</type>
-    <x>409.109</x>
-    <y>265.647</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>425.389</x>
+    <y>264.641</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>60</int>
@@ -500,9 +501,9 @@
    <Item>
     <id>63</id>
     <type>Variable:stock</type>
-    <x>436.109</x>
-    <y>264.641</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>455.567</x>
+    <y>263.635</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>62</int>
@@ -520,9 +521,9 @@
    <Item>
     <id>65</id>
     <type>Variable:stock</type>
-    <x>463.109</x>
-    <y>265.647</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>485.745</x>
+    <y>264.641</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>64</int>
@@ -540,9 +541,9 @@
    <Item>
     <id>67</id>
     <type>Variable:stock</type>
-    <x>490.109</x>
-    <y>267.659</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>515.922</x>
+    <y>266.653</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>66</int>
@@ -560,9 +561,9 @@
    <Item>
     <id>69</id>
     <type>Variable:stock</type>
-    <x>517.109</x>
-    <y>265.647</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>546.1</x>
+    <y>264.641</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
      <int>68</int>
@@ -580,9 +581,9 @@
    <Item>
     <id>72</id>
     <type>Variable:flow</type>
-    <x>382.204</x>
-    <y>61.385</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>391.421</x>
+    <y>51.965</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>70</int>
@@ -601,9 +602,9 @@
    <Item>
     <id>75</id>
     <type>Variable:flow</type>
-    <x>382.204</x>
-    <y>88.385</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>391.421</x>
+    <y>82.1427</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>73</int>
@@ -622,9 +623,9 @@
    <Item>
     <id>78</id>
     <type>Variable:flow</type>
-    <x>382.204</x>
-    <y>115.385</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>391.421</x>
+    <y>112.32</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>76</int>
@@ -643,9 +644,9 @@
    <Item>
     <id>81</id>
     <type>Variable:flow</type>
-    <x>382.204</x>
-    <y>142.385</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>391.421</x>
+    <y>142.498</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>79</int>
@@ -664,9 +665,9 @@
    <Item>
     <id>84</id>
     <type>Variable:flow</type>
-    <x>382.707</x>
-    <y>169.385</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>391.421</x>
+    <y>172.676</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>82</int>
@@ -685,9 +686,9 @@
    <Item>
     <id>87</id>
     <type>Variable:flow</type>
-    <x>382.707</x>
-    <y>196.385</y>
-    <zoomFactor>0.994111</zoomFactor>
+    <x>391.421</x>
+    <y>202.854</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>85</int>
@@ -708,7 +709,7 @@
     <type>Variable:parameter</type>
     <x>40</x>
     <y>241</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>88</int>
@@ -728,7 +729,7 @@
     <type>Variable:parameter</type>
     <x>19</x>
     <y>57</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>90</int>
@@ -748,7 +749,7 @@
     <type>Variable:parameter</type>
     <x>28</x>
     <y>79</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>92</int>
@@ -768,7 +769,7 @@
     <type>Variable:parameter</type>
     <x>18</x>
     <y>192</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>94</int>
@@ -788,7 +789,7 @@
     <type>Variable:parameter</type>
     <x>0</x>
     <y>146</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>96</int>
@@ -808,7 +809,7 @@
     <type>Variable:parameter</type>
     <x>0</x>
     <y>118</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>98</int>
@@ -828,7 +829,7 @@
     <type>Variable:parameter</type>
     <x>49</x>
     <y>303</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>100</int>
@@ -848,7 +849,7 @@
     <type>Variable:parameter</type>
     <x>82</x>
     <y>133</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>102</int>
@@ -868,7 +869,7 @@
     <type>PlotWidget</type>
     <x>326</x>
     <y>129</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>104</int>
@@ -1008,7 +1009,7 @@
     <type>GodleyIcon</type>
     <x>513</x>
     <y>119</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>71</int>
@@ -1023,8 +1024,8 @@
      <int>66</int>
      <int>68</int>
     </ports>
-    <width>323.682</width>
-    <height>337.6</height>
+    <width>243</width>
+    <height>291.6</height>
     <data>
      <vector>
       <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>

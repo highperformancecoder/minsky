@@ -148,16 +148,16 @@ namespace minsky
                 auto fv=values.find(fvc.name);
                 auto sv=values.find(svName);
                 if (fv!=values.end() && sv!=values.end() &&
-                    fv->second.idx()>=0 && sv->second.idx()>=0)
+                    fv->second->idx()>=0 && sv->second->idx()>=0)
                   {
                     // check for compatible column definitions
                     if (!compatibility && 
                         scCheck.updateColDefs(svName, fvc))
                       continue;
                 
-                    iidx.insert(sv->second.idx());
-                    sidx<<=sv->second.idx();
-                    fidx<<=fv->second.idx();
+                    iidx.insert(sv->second->idx());
+                    sidx<<=sv->second->idx();
+                    fidx<<=fv->second->idx();
                     m<<=fvc.coef;
                   }
               }

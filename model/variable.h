@@ -44,11 +44,6 @@ namespace minsky
   struct SchemaHelper;
   class GodleyIcon;
 
-//  template <class T, class G, class S>
-//  ecolab::Accessor<T,G,S> makeAccessor(G g,S s) {
-//    return ecolab::Accessor<T,G,S>(g,s);
-//  }
-  
   /// exception-safe increment/decrement of a counter in a block
   struct IncrDecrCounter
   {
@@ -108,7 +103,6 @@ namespace minsky
     const VariableBase* variableCast() const override {return this;}
     VariableBase* variableCast() override {return this;}
 
-    
     float zoomFactor() const override;
     
     /// @{ variable displayed name
@@ -131,7 +125,7 @@ namespace minsky
     /// variable's scope is used
     std::string valueIdInCurrentScope(const std::string& nm) const;
     /// variableValue associated with this. nullptr if not associated with a variableValue
-    VariableValue* vValue() const;
+    std::shared_ptr<VariableValue> vValue() const;
     std::vector<unsigned> dims() const {
       if (auto v=vValue()) return v->hypercube().dims();
       else return {};
@@ -181,7 +175,8 @@ namespace minsky
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
-    void draw(cairo_t*) const override;
+    void draw(cairo_t*) const override;  
+    void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) override;
 
     /// @return true if variable is defined (inputWired() || isStock() && controlled)
@@ -201,12 +196,7 @@ namespace minsky
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;
     /// import CSV file, using \a spec
-    void importFromCSV(const std::string& filename, const DataSpec& spec) {
-      if (auto v=vValue()) {
-        std::ifstream is(filename);
-        loadValueFromCSVFile(*v, is, spec);
-      }
-    }
+    void importFromCSV(std::string filename, const DataSpec& spec);
 
     void insertControlled(Selection& selection) override;
   };

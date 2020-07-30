@@ -25,7 +25,10 @@
 #include "classdesc_access.h"
 #include "constMap.h"
 #include "str.h"
+#include "CSVDialog.h"
+#include "latexMarkup.h"
 #include <boost/regex.hpp>
+#include <utility>
 
 namespace minsky
 {
@@ -152,6 +155,9 @@ namespace minsky
     VariableValue& allocValue();
 
     std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
+
+    /// for importing CSV files
+    CSVDialog csvDialog;
     
     /// evaluates the initial value, based on the set of variables
     /// contained in \a VariableManager. \a visited is used to check
@@ -172,8 +178,9 @@ namespace minsky
 
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
-      if (scope<0) return ":"+stripActive(uqName(name));
-      else return std::to_string(scope)+":"+stripActive(uqName(name));
+      auto tmp=":"+stripActive(trimWS(latexToPangoNonItalicised(uqName(name))));
+      if (scope<0) return tmp;
+      else return std::to_string(scope)+tmp;
     }
     static std::string valueId(std::string name) {
       return valueId(scope(name), name);
@@ -205,19 +212,22 @@ namespace minsky
     static std::vector<double> flowVars;
   };
 
-  struct VariableValues: public ConstMap<std::string, VariableValue>
+  /// a shared_ptr that default constructs a default target
+  struct VariableValuePtr: public std::shared_ptr<VariableValue>
+  {
+    template <class... A>
+    VariableValuePtr(A... a): std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(std::forward<A>(a)...)) {}
+  };
+  
+  struct VariableValues: public ConstMap<std::string, VariableValuePtr>
   {
     VariableValues() {clear();}
     void clear() {
-      ConstMap<std::string, VariableValue>::clear();
+      ConstMap<std::string, mapped_type>::clear();
       // add special values for zero and one, used for the derivative
       // operator in SystemOfEquations
-      insert
-        (value_type("constant:zero",
-                    VariableValue(VariableType::constant,"constant:zero","0")));
-      insert
-        (value_type("constant:one",
-                    VariableValue(VariableType::constant,"constant:one","1")));
+      emplace("constant:zero", VariableValuePtr(VariableType::constant,"constant:zero","0"));
+      emplace("constant:one", VariableValuePtr(VariableType::constant,"constant:one","1"));
     }
     /// generate a new valueId not otherwise in the system
     std::string newName(const std::string& name) const;
@@ -226,7 +236,7 @@ namespace minsky
     bool validEntries() const;
     void resetUnitsCache() {
       for (auto& i: *this)
-        i.second.unitsCached=false;
+        i.second->unitsCached=false;
     }
   };
   

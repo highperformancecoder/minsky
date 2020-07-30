@@ -27,6 +27,9 @@
 using namespace std;
 using namespace ecolab::cairo;
 
+// size of the top and bottom margins of the group icon
+static const int topMargin=10;
+
 namespace minsky
 {
   SVGRenderer Group::svgRenderer;
@@ -267,6 +270,7 @@ namespace minsky
           else
             intOp->intVar->controller.reset();
         }
+         
     items.push_back(it);
     return items.back();
   }
@@ -409,7 +413,7 @@ namespace minsky
       return IORegion::output;
     else if (-w+left*edgeScale()>dx)
       return IORegion::input;
-    else if ((-h-10*z<dy && dy<0) || (h+10*z>dy && dy>0))     
+    else if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
       return IORegion::topBottom;  
     else     
       return IORegion::none;
@@ -478,7 +482,7 @@ namespace minsky
   {
     float z=zoomFactor();
     iconWidth=fabs(b.x0-b.x1)/z;
-    iconHeight=fabs(b.y0-b.y1)/z;
+    iconHeight=(fabs(b.y0-b.y1)-2*topMargin)/z;
     // account for margins
     float l, r;
     margins(l,r);    
@@ -613,13 +617,22 @@ namespace minsky
     y1=-numeric_limits<float>::max();
 
     for (auto& i: items)
-      if (!i->ioVar())
+      if (auto g=dynamic_cast<GodleyIcon*>(i.get())) // Godley icon bounding box behaves unpredictably. For ticket 1219.
+        { 
+          float z=g->zoomFactor()*g->scaleFactor();	
+          if (g->x()-0.5*z*g->iWidth()<x0) x0=g->x()-0.5*z*g->iWidth();
+          if (g->x()+0.5*z*g->iWidth()>x1) x1=g->x()+0.5*z*g->iWidth();
+          if (g->y()-0.5*z*g->iHeight()<y0) y0=g->y()-0.5*z*g->iHeight();
+          if (g->y()+0.5*z*g->iHeight()>y1) y1=g->y()+0.5*z*g->iHeight();
+        }
+      else if (!i->ioVar())
         {
           if (i->left()<x0) x0=i->left();
           if (i->right()>x1) x1=i->right();
           if (i->bottom()<y0) y0=i->bottom();
           if (i->top()>y1) y1=i->top();
-        }
+        }  		
+			  
     for (auto& i: groups)
       {
         if (i->left()<x0) x0=i->left();
@@ -749,14 +762,16 @@ namespace minsky
 
   ClickType::Type Group::clickType(float x, float y)
   {
-    double dx=x-this->x(), dy=y-this->y();
     auto z=zoomFactor();
     double w=0.5*iconWidth*z, h=0.5*iconHeight*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-        fabs(fabs(dy)-h) < portRadiusMult*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-      return ClickType::onResize;
+    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
+      (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
+      return ClickType::onResize;         
+//    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
+//        fabs(fabs(dy)-h) < portRadiusMult*z &&
+//        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
+//      return ClickType::onResize;
     if (displayContents() && inIORegion(x,y)==IORegion::none)
       return ClickType::outside;
     if (auto item=select(x,y))
@@ -920,7 +935,7 @@ namespace minsky
     margins(left,right);    
     left*=edgeScale();
     right*=edgeScale();
-    float y=0, dy=10*edgeScale();
+    float y=0, dy=topMargin*edgeScale();
     for (auto& i: inVariables)
       {
         RenderVariable rv(*i);
@@ -963,11 +978,11 @@ namespace minsky
     cairo_fill(cairo);
     
     // draw top margin. for feature 88
-    cairo_rectangle(cairo,-w,-h,2*w,-10*z);
+    cairo_rectangle(cairo,-w,-h,2*w,-topMargin*z);
     cairo_fill(cairo);    
     
     // draw bottom margin. for feature 88
-    cairo_rectangle(cairo,-w,h,2*w,10*z);
+    cairo_rectangle(cairo,-w,h,2*w,topMargin*z);
     cairo_fill(cairo);    
     
     cairo_restore(cairo);

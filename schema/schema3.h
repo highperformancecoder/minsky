@@ -66,16 +66,16 @@ namespace schema3
     int id=-1;
     std::string type;
     float x=0, y=0; ///< position in canvas, or within group
-    float zoomFactor=1;
+    float scaleFactor=1; ///< scale factor of item on canvas, or within group
     double rotation=0; ///< rotation of icon, in degrees
     std::vector<int> ports;
     ItemBase() {}
     ItemBase(int id, const minsky::Item& it, const std::vector<int>& ports): 
       Note(it), id(id), type(it.classType()),
-      x(it.m_x), y(it.m_y), zoomFactor(it.zoomFactor()), rotation(it.rotation()),
-      ports(ports) {}
+      x(it.m_x), y(it.m_y), scaleFactor(it.m_sf),
+      rotation(it.rotation()), ports(ports) {}
     ItemBase(const schema2::Item& it, const std::string& type="Item"):
-      Note(it), id(it.id), type(type), x(it.x), y(it.y), zoomFactor(it.zoomFactor),
+      Note(it), id(it.id), type(type), x(it.x), y(it.y), 
       rotation(it.rotation), ports(it.ports) {}
   };
 
@@ -109,10 +109,10 @@ namespace schema3
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
-    Optional<float> iconScale; // for handling legacy schemas
+    Optional<bool> editorMode, buttonDisplay, variableDisplay;
     // Plot specific fields
     Optional<bool> logx, logy, ypercent;
-    Optional<Plot::PlotType> plotType;
+    Optional<minsky::PlotWidget::PlotType> plotType;
     Optional<std::string> xlabel, ylabel, y1label;
     Optional<int> nxTicks, nyTicks;
     Optional<double> xtickAngle, exp_threshold;
@@ -141,11 +141,13 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      width(g.gWidth()/g.zoomFactor()), height(g.gHeight()/g.zoomFactor()), name(g.table.title), data(g.table.getData()),
-      assetClasses(g.table._assetClass()) {}
+      width(g.iWidth()), height(g.iHeight()), name(g.table.title), data(g.table.getData()),
+      assetClasses(g.table._assetClass()),
+      editorMode(g.editorMode()),
+      buttonDisplay(g.buttonDisplay()), variableDisplay(g.variableDisplay) {}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),
-      width(p.width), height(p.height), name(p.title),
+      width(p.iWidth()), height(p.iHeight()), name(p.title),
       logx(p.logx), logy(p.logy), ypercent(p.percent),
       plotType(p.plotType),
       xlabel(p.xlabel), ylabel(p.ylabel), y1label(p.y1label),
@@ -172,8 +174,9 @@ namespace schema3
       slider(it.slider), intVar(it.intVar), dataOpData(it.dataOpData), filename(it.filename),
       ravelState(it.ravelState), lockGroup(it.lockGroup), dimensions(it.dimensions),
       axis(it.axis), arg(it.arg), data(it.data), assetClasses(it.assetClasses),
-      iconScale(it.iconScale), logx(it.logx), logy(it.logy), ypercent(it.ypercent),
-      plotType(it.plotType), xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
+      logx(it.logx), logy(it.logy), ypercent(it.ypercent),
+      plotType(minsky::PlotWidget::PlotType(it.plotType? int(*it.plotType): 0)),
+      xlabel(it.xlabel), ylabel(it.ylabel), y1label(it.y1label),
       nxTicks(it.nxTicks), nyTicks(it.nyTicks), xtickAngle(it.xtickAngle),
       exp_threshold(it.exp_threshold), legend(it.legend), bookmarks(it.bookmarks),
       tensorData(convertTensorDataFromSchema2(it.tensorData)), palette(it.palette)
@@ -212,6 +215,7 @@ namespace schema3
   {
     static const int version=3;
     int schemaVersion=Minsky::version;
+    std::string minskyVersion="unknown";
     vector<Wire> wires;
     vector<Item> items;
     vector<Group> groups;
@@ -223,7 +227,9 @@ namespace schema3
     
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
     Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m): Minsky(*m.model) {
+    Minsky(const minsky::Minsky& m):
+      Minsky(*m.model)  {
+      minskyVersion=m.minskyVersion;
       rungeKutta=m;
       zoomFactor=m.model->zoomFactor();
       bookmarks=m.model->bookmarks;

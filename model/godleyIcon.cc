@@ -73,7 +73,7 @@ namespace minsky
     {
       float h=0;
       for (auto& v: vars)
-        {
+        { 
           RenderVariable rv(*v);
           h+=2*rv.height();
           if (h>height) height=h;
@@ -162,23 +162,30 @@ namespace minsky
           editor->enableButtons();
       }
   }
+  
+  void GodleyIcon::scaleIcon(float w, float h)
+  {
+    update();
+    scaleFactor(min(w/(leftMargin()+iWidth()*zoomFactor()),h/(bottomMargin()+iHeight()*zoomFactor())));
+  }  
 
   double GodleyIcon::schema1ZoomFactor() const
   {
     if (auto g=group.lock())
-      return iconScale()*g->zoomFactor();
+      return scaleFactor()*g->zoomFactor();
     else
-      return iconScale();
+      return scaleFactor();
   }
 
   void GodleyIcon::resize(const LassoBox& b)
   {
+    float invZ=1.0/(this->zoomFactor());
     auto bw=abs(b.x0-b.x1), bh=abs(b.y0-b.y1);
     if (bw<=leftMargin() || bh<=bottomMargin()) return;
-    iconWidth*=(bw-leftMargin())/(gWidth()-leftMargin());
-    iconHeight*=(bh-bottomMargin())/(gHeight()-bottomMargin());
-    update();
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
+    iWidth((bw-leftMargin())*invZ);
+    iHeight((bh-bottomMargin())*invZ);  
+    scaleIcon(bw,bh);
     updateBB(); 
   }
 
@@ -195,6 +202,7 @@ namespace minsky
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
   {
+    if (!table.cellInTable(row,col)) return;
     // if this operation is clearing an initial condition cell, set it to 0
     string& c=table.cell(row,col);
     if (newVal.empty() && !c.empty() && table.initialConditionRow(row))
@@ -222,6 +230,7 @@ namespace minsky
 
   void GodleyIcon::moveCell(int srcRow, int srcCol, int destRow, int destCol)
   {
+    if (!table.cellInTable(srcRow, srcCol) || !table.cellInTable(destRow, destCol)) return;
     if (srcCol!=destCol) // if moving between columns, we can delete and
       // add, which ensures any linked columns are
       // correctly updated
@@ -239,10 +248,10 @@ namespace minsky
       }
   }
 
-  map<string,double> GodleyIcon::flowSignature(int col) const
+  map<string,double> GodleyIcon::flowSignature(unsigned col) const
   {
     map<string,double> r;
-    for (size_t row=1; row<table.rows(); ++row)
+    for (size_t row=1; row<table.rows() && col<table.cols(); ++row)
       if (!table.initialConditionRow(row))
         {
           FlowCoef fc(table.cell(row,col));
@@ -262,25 +271,26 @@ namespace minsky
       if (table.initialConditionRow(r))
         for (size_t c=1; c<table.cols(); ++c)
           {
-            string name=trimWS(table.cell(0,c));
+            string name=trimWS(table.cell(0,c));           
             auto vi=minsky().variableValues.find(VariableValue::valueId(group.lock(),name));
             if (vi==minsky().variableValues.end()) continue;
-            VariableValue& v=vi->second;
+            VariableValue& v=*vi->second;           
             v.godleyOverridden=false;
             string::size_type start=table.cell(r,c).find_first_not_of(" ");
             if (start!=string::npos)
               {
-                FlowCoef fc(table.cell(r,c).substr(start));
-                v.init=fc.str();
+                FlowCoef fc(table.cell(r,c).substr(start));                      
+                v.init=fc.str();              
                 v.godleyOverridden=true;
               }
             else
-              {
+              { 
                 // populate cell with current variable's initial value
-                FlowCoef fc(v.init);
+                FlowCoef fc(v.init);   
                 table.cell(r,c)=fc.str();
                 v.godleyOverridden=true;
               }
+
           }
 
 
@@ -292,8 +302,9 @@ namespace minsky
         flowMargin=0;
         accumulateWidthHeight(m_stockVars, stockH, stockMargin);
         accumulateWidthHeight(m_flowVars, flowH, flowMargin);
-        iconWidth=max(iconWidth, 1.8f*stockH);
-        iconHeight=max(iconHeight, 1.8f*flowH);
+        float iw=this->iWidth(), ih=this->iHeight();
+        this->iWidth(max(iw, 1.8f*stockH));
+        this->iHeight(max(ih, 1.8f*flowH));
       }
     
     positionVariables();
@@ -303,66 +314,71 @@ namespace minsky
   void GodleyIcon::positionVariables() const
   {
     // position of margin in absolute canvas coordinate
-    float zoomFactor=iconScale()*this->zoomFactor();
-    float vdf=variableDisplay? 1: -1; // variable display factor
-    float x= this->x() - 0.5*gWidth()+leftMargin();
-    float y= this->y() - 0.5*gHeight()+0.35*(gHeight()-bottomMargin());
+    float z=this->zoomFactor()*scaleFactor();
+    float x= this->x() - 0.5*iWidth()*z+0.5*leftMargin();
+    float y= this->y() - 0.5*bottomMargin()-0.15*iHeight()*z;
     for (auto& v: m_flowVars)
       {
         // right justification if displayed, left otherwisw
-        RenderVariable rv(*v);
         v->rotation(0);
-        v->bb.update(*v);
-        v->moveTo(x-0.5*v->width()*zoomFactor*vdf,y);
-        y+=2*rv.height()*zoomFactor;
+        v->moveTo(x+v->x() - (variableDisplay? v->right(): v->left()), y);
+        y+=v->height();
       }
-    x= this->x() - 0.45*gWidth()+leftMargin();
-    y= this->y() + 0.5*gHeight()-bottomMargin();
+    x= this->x() + 0.55*leftMargin()-0.45*iWidth()*z;
+    y= this->y() + 0.5*iHeight()*z-0.5*bottomMargin();
 
     for (auto& v: m_stockVars)
       {
-        // top justification at bottom of icon if displayed, bottom justfied otherwise
-        RenderVariable rv(*v);
+        // top justification at bottom of icon if displayed, bottom justified otherwise
         v->rotation(90);
-        v->bb.update(*v);
-        v->moveTo(x,y+0.5*v->height()*zoomFactor*vdf);
-        x+=2*rv.height()*zoomFactor;
+        v->moveTo(x, y + v->y() - (variableDisplay? v->top(): v->bottom()));
+        x+=v->width();
       }
   }
 
   ItemPtr GodleyIcon::select(float x, float y) const
   {
-    for (auto& v: m_flowVars)
-      if (RenderVariable(*v).inImage(x,y)) 
-        return v;
-    for (auto& v: m_stockVars)
-      if (RenderVariable(*v).inImage(x,y)) 
-        return v;
+	if (variableDisplay)           // Disable selection of stock and flow vars when they are hidden. for tickets 1217 and 1220.
+	{   
+       for (auto& v: m_flowVars)
+         if (v->contains(x,y)) 
+           return v;
+       for (auto& v: m_stockVars)
+         if (v->contains(x,y)) 
+           return v; 
+     }
     return ItemPtr();
   }
 
   void GodleyIcon::draw(cairo_t* cairo) const
   {
+    float z=zoomFactor()*scaleFactor();
+    float w=iWidth()*z, h=iHeight()*z;
     positionVariables();
     double titley;
+    
     if (editor.get())
       {
         CairoSave cs(cairo);
-        cairo_rectangle(cairo, -0.5*gWidth()+leftMargin(),-0.5*gHeight(), gWidth()-leftMargin(), gHeight()-bottomMargin());
+        cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);
         cairo_clip(cairo);
-        cairo_translate(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight()+12*zoomFactor()/* space for title*/);
+        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h)+12*zoomFactor()/* space for title*/);
         //cairo_scale(cairo, zoomFactor(), zoomFactor());
         editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
-        titley=-0.5*gHeight();
+        // Adjust bounding box to fit table in Canvas. For ticket 1178.
+        double ww=w,hh=h;      
+        cairo_get_current_point(cairo,&ww,&hh);           
+        titley=-0.5*(bottomMargin()+h);
+        w=ww,h=hh;
       }
     else
       {
         CairoSave cs(cairo);
-        cairo_translate(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight());
-        cairo_scale(cairo, (gWidth()-leftMargin())/svgRenderer.width(), (gHeight()-bottomMargin())/svgRenderer.height());
+        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h));
+        cairo_scale(cairo, (w)/svgRenderer.width(), (h)/svgRenderer.height());
         svgRenderer.render(cairo);
-        titley=-0.5*gHeight()+0.15*(gHeight()-bottomMargin());
+        titley=-0.5*bottomMargin()-0.35*(h);
       }
     
     if (!table.title.empty())
@@ -370,8 +386,8 @@ namespace minsky
         CairoSave cs(cairo);
         Pango pango(cairo);
         pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
-        pango.setFontSize(12*zoomFactor());
-        cairo_move_to(cairo,-0.5*(pango.width()-leftMargin()), titley);
+        pango.setFontSize(12*z);
+        cairo_move_to(cairo,-0.5*(pango.width()*z-0.5*leftMargin()), titley);
         pango.show();
       }
       
@@ -392,8 +408,7 @@ namespace minsky
         drawResizeHandles(cairo);
       }
       
-    cairo_rectangle(cairo,-0.5*gWidth()+leftMargin(),-0.5*gHeight(),
-                    gWidth()-leftMargin(),gHeight()-bottomMargin());
+    cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);    
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }
@@ -431,7 +446,7 @@ namespace minsky
       }
     if (!cminsky().timeUnit.empty())
       units[cminsky().timeUnit]++;
-    return foundFlow? units: cminsky().variableValues[vid].units;
+    return foundFlow? units: cminsky().variableValues[vid]->units;
   }
 
   void GodleyIcon::insertControlled(Selection& selection)
@@ -445,12 +460,11 @@ namespace minsky
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
-    auto z=zoomFactor();
-    double w=0.5*Item::width()*z, h=0.5*Item::height()*z;
+    auto z=zoomFactor()*scaleFactor();
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     // check if (x,y) is within portradius of the 4 corners
-    if (fabs(dx-w) < portRadiusMult*z &&
-        fabs(dy-h) < portRadiusMult*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
+    if ((abs(x-left()) < portRadiusMult*z || abs(x-right()) < portRadiusMult*z) &&
+        (abs(y-top()) < portRadiusMult*z || abs(y-bottom()) < portRadiusMult*z))    
       return ClickType::onResize;
     // Make it possible to pull wires from variables attached to Godley icons. For ticket 940  
     if (auto item=select(x,y))

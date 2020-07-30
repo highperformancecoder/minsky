@@ -72,7 +72,7 @@ namespace minsky
     template <class Item>
     bool intersects(const Item& item) const {
       return item.right() >= x0 && item.left() <= x1 &&
-        item.top() >= y0 && item.bottom() <= y1;
+        item.bottom() >= y0 && item.top() <= y1;
     }
 
     /// return true if both endpoints of the wire lie
