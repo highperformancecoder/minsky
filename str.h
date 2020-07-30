@@ -102,5 +102,26 @@ namespace minsky
   /// a wrapper around std::ofstream that checks the write succeeded,
   /// throwing an exception if not
   
+  /// number of bytes in a UTF-8 character encoding
+  inline unsigned numBytes(unsigned char x)
+  {
+    if ((x&0xF8) == 0xF0)
+      return 4;
+    if ((x&0xF0) == 0xE0)
+      return 3;
+    if ((x&0xE0) == 0xC0)
+      return 2;
+    return 1;
+  }
+
+  /// return index of previous character to \a index
+  inline size_t prevIndex(const std::string& str, size_t index)
+  {
+    if (index>str.length()) return prevIndex(str, str.length());
+    for (size_t i=4; i>1; --i)
+      if (index>=i && numBytes(str[index-i])==i)
+        return index-i;
+    return index>0? index-1: 0;
+  }
 }
 #endif

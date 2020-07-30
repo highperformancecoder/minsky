@@ -72,6 +72,7 @@ namespace
   };
 
   double ZoomablePango::zoomFactor=1;
+
 }
 
 namespace minsky
@@ -452,7 +453,12 @@ namespace minsky
         if (selectedCol>=int(scrollColStart)) j=selectedCol-scrollColStart+1;
         x-=colLeftMargin[j]+2;
         x*=zoomFactor;
-        return x>0 && str.length()>0?pango.posToIdx(x)+1: 0;  
+        if (x>0 && str.length())
+          {
+            auto p=pango.posToIdx(x);
+            if (p<str.length())
+              return p+numBytes(str[p]);
+          }
       }
     return 0;
   }
@@ -637,11 +643,11 @@ namespace minsky
                   selectedRow=selectedCol=-1;                  
                   break;     
                 case 0xff51: //left arrow
-                  if (insertIdx>0) insertIdx--;
+                  if (insertIdx>0) insertIdx=prevIndex(str, insertIdx);
                   else navigateLeft();
                   break;
                 case 0xff53: //right arrow
-                  if (insertIdx<str.length()) insertIdx++;
+                  if (insertIdx<str.length()) insertIdx+=numBytes(str[insertIdx]);
                   else navigateRight();
                   break;
                 case 0xff09: // tab
@@ -701,11 +707,14 @@ namespace minsky
       if (insertIdx!=selectIdx)
         delSelection();
       else if (insertIdx>0 && insertIdx<=str.length())
-        str.erase(--insertIdx,1);
+        {
+          insertIdx=prevIndex(str, insertIdx);
+          str.erase(insertIdx,numBytes(str[insertIdx]));
+        }
       selectIdx=insertIdx;
     }
 
-      void GodleyTableEditor::handleDelete()
+    void GodleyTableEditor::handleDelete()
     {
       if (!selectedCellInTable()) return;
       auto& table=godleyIcon->table;
@@ -713,7 +722,7 @@ namespace minsky
       if (insertIdx!=selectIdx)
         delSelection();
       else if (insertIdx>=0 && insertIdx<str.length())
-        str.erase(insertIdx,1);
+        str.erase(insertIdx,numBytes(str[insertIdx]));
       selectIdx=insertIdx;
     }
 
