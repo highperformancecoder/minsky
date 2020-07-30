@@ -291,7 +291,6 @@ namespace minsky
             pango.show();
             y+=rowHeight;
           }
-        y=topTableOffset;
         colWidth+=5;
 
         colLeftMargin.push_back(x);
@@ -875,7 +874,6 @@ namespace {
   string GodleyTableEditor::swapAssetClass(double x, double y) 
   {  
     x/=zoomFactor;
-    y/=zoomFactor;
     int c=colX(x);	
     string tmpStr="";	  
     if (selectedRow==0 && size_t(selectedCol)<godleyIcon->table.cols())

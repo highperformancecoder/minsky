@@ -49,7 +49,7 @@ namespace minsky
         if (!itemVector.empty())
           {
             float x0, y0=1.5*rowHeight;//+pango.height();	
-            double w,h,w_prev, h_prev,lh; 
+            double w=0,h=0,w_prev, h_prev,lh; 
             for (auto& it: itemVector)
               {
                 auto value=it->variableCast()->vValue();
@@ -137,7 +137,6 @@ namespace minsky
                             y+=rowHeight;
                             colWidth=std::max(colWidth,5+pango.width());
                           }
-                        y=y0;
                         x+=colWidth;
                         format=value->hypercube().xvectors[k+1].timeFormat();
                         for (size_t i=0; i<dims[k+1]; ++i)

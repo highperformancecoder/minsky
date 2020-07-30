@@ -233,7 +233,6 @@ namespace minsky
       auto hc=arg->hypercube();
       if (rank()==0) return;
       
-      unsigned dim=rank()>1? dimension: 0;
       auto& xv=hc.xvectors[0];
       if (delta>=0)
         xv.erase(xv.begin(), xv.begin()+delta);
@@ -580,7 +579,6 @@ namespace minsky
         result.ev->update(fv, n, sv);
         //        assert(result.size()==rhs->size());
         result.hypercube(rhs->hypercube());
-        auto ev_sav=result.ev.get();
         for (size_t i=0; i<rhs->size(); ++i)
           {
             auto v=(*rhs)[i];

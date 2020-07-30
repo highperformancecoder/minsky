@@ -762,7 +762,6 @@ namespace minsky
 
   ClickType::Type Group::clickType(float x, float y)
   {
-    double dx=x-this->x(), dy=y-this->y();
     auto z=zoomFactor();
     double w=0.5*iconWidth*z, h=0.5*iconHeight*z;
     // check if (x,y) is within portradius of the 4 corners
