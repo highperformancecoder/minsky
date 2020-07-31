@@ -380,10 +380,7 @@ namespace minsky
           return ClickType::legendResize;
       }
 
-    // TODO - delegate to Item::clickType
-    if ((abs(x-Item::left()) < portRadius*z || abs(x-Item::right()) < portRadius*z) &&
-      (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
-      return ClickType::onResize;         
+    if (onResizeHandle(x,y)) return ClickType::onResize;         
 	
     double dx=x-this->x(), dy=y-this->y();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;

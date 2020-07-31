@@ -49,7 +49,7 @@ namespace minsky
   class OperationPtr;
 
   class OperationBase: virtual public classdesc::PolyPackBase,
-                       public Item, public OperationType
+                       public BottomRightResizerItem, public OperationType
   {
     CLASSDESC_ACCESS(OperationBase);
   public:
@@ -81,7 +81,6 @@ namespace minsky
 
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;
-    ClickType::Type clickType(float x, float y) override;     
     float scaleFactor() const override;       
 
     /// current value of output port

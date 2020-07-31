@@ -105,6 +105,14 @@ namespace minsky
     for (auto& p: ports)
       p->deleteWires();
   }
+
+  bool Item::onResizeHandle(float x, float y) const
+  {
+    float rhSize=resizeHandleSize();
+    return (abs(x-left()) < rhSize || abs(x-right()) < rhSize) &&
+                            (abs(y-top()) < rhSize || abs(y-bottom()) < rhSize);
+  }
+
   
   bool Item::visible() const 
   {
@@ -141,12 +149,8 @@ namespace minsky
         if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
           return ClickType::onPort;
       }          
-     
-    // then, check whether a resize handle has been selected  
-    float z=zoomFactor();
-    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
-      (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
-      return ClickType::onResize;         
+
+    if (onResizeHandle(x,y)) return ClickType::onResize;         
 
     ecolab::cairo::Surface dummySurf
                                 (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
@@ -213,7 +217,7 @@ namespace minsky
   
   void Item::drawResizeHandles(cairo_t* cairo) const
   {
-    double sf=portRadiusMult*zoomFactor();
+    auto sf=resizeHandleSize();
     // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203
     // TODO(#1210) refactor to use virtual functions
     if (!switchIconCast() && !variableCast() && (!operationCast() || operationCast()->type()==OperationType::ravel))  

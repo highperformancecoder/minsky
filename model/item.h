@@ -156,13 +156,18 @@ namespace minsky
     virtual float x() const; 
     virtual float y() const;
     virtual float zoomFactor() const;
-    float width() const {if (!bb.valid()) bb.update(*this); return bb.width()*zoomFactor();}
-    float height() const {if (!bb.valid()) bb.update(*this); return bb.height()*zoomFactor();}
-    float left() const {return x()+bb.left()*zoomFactor();}
-    float right() const {return x()+bb.right()*zoomFactor();}
-    float top() const {return y()+bb.top()*zoomFactor();}
-    float bottom() const {return y()+bb.bottom()*zoomFactor();}
+    void ensureBBValid() const {if (!bb.valid()) bb.update(*this);}
+    float width()  const {ensureBBValid(); return bb.width()*zoomFactor();}
+    float height() const {ensureBBValid(); return bb.height()*zoomFactor();}
+    float left()   const {ensureBBValid(); return x()+bb.left()*zoomFactor();}
+    float right()  const {ensureBBValid(); return x()+bb.right()*zoomFactor();}
+    float top()    const {ensureBBValid(); return y()+bb.top()*zoomFactor();}
+    float bottom() const {ensureBBValid(); return y()+bb.bottom()*zoomFactor();}
 
+    // resize handles should be at least a percentage if the icon size (#1025)
+    float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
+    virtual bool onResizeHandle(float x, float y) const;
+    
     /// delete all attached wires
     virtual void deleteAttachedWires();
     /// remove all controlled items from their group
@@ -275,6 +280,14 @@ namespace minsky
 //    }
   };
 
+  struct BottomRightResizerItem: public Item
+  {
+    bool onResizeHandle(float x, float y) const override {
+      float rhSize=resizeHandleSize();
+      return fabs(x-right()) < rhSize && fabs(y-bottom()) < rhSize;
+    }
+  };
+  
 }
 
 #ifdef CLASSDESC

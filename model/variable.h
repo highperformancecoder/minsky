@@ -62,7 +62,8 @@ namespace minsky
   }
 
   class VariableBase: virtual public classdesc::PolyPackBase,
-                      public Item, public Slider, public VariableType,
+                      public BottomRightResizerItem,
+                      public Slider, public VariableType,
                       public VarAccessors::NameAccessor,
                       public VarAccessors::InitAccessor,
                       public VarAccessors::ValueAccessor,
