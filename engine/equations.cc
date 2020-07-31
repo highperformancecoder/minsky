@@ -509,7 +509,7 @@ namespace MathDAG
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                       iv->init(v->name);
+                       iv->init(VariableValue::uqName(v->valueId));
                      else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value

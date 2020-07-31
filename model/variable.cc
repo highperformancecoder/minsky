@@ -295,7 +295,7 @@ Units VariableBase::units(bool check) const
                     i->throw_error("Inconsistent units "+units.str()+"≠"+vv->units.str());
                 }
 
-              if (check)
+              if (check && controller.lock())
                 {
                   FlowCoef fc(init());
                   if (!fc.name.empty())
