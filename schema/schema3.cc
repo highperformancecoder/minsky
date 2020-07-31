@@ -445,8 +445,8 @@ namespace schema3
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
         if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
-        if (y.width) x1->iWidth(*y.width);
-        if (y.height) x1->iHeight(*y.height);
+        if (y.width && *y.width>0) x1->iWidth(*y.width);
+        if (y.height && *y.height>0) x1->iHeight(*y.height);
       }
     if (auto x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
