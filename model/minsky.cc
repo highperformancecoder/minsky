@@ -283,14 +283,15 @@ namespace minsky
   void Minsky::paste()
   {
     istringstream is(getClipboard());
-    xml_unpack_t unpacker(is);
+    xml_unpack_t unpacker(is); 
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
-    canvas.model->addGroup(g);
-    m.populateGroup(*g);
+    m.populateGroup(*model->addGroup(g)); 
+    g->resizeOnContents();
+    //canvas.itemFocus=g;  
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();    
-
+    canvas.selection.clear();               
+    
     // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
     g->recursiveDo(&GroupItems::items,
                    [&](Items&, Items::iterator i) {
@@ -298,10 +299,10 @@ namespace minsky
                        if (v->defined() || v->isStock())
                          {
                            // if defined, check no other defining variable exists
-                           auto alreadyDefined = canvas.model->findAny
+                           auto alreadyDefined = model->findAny
                              (&GroupItems::items,
                               [&v](const ItemPtr& j)
-                              {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
+                              {return j->variableCast() && j->variableCast()!=v && j->variableCast()->defined();});
                            if (v->isStock())
                              {
                                if (v->defined() && alreadyDefined)
@@ -312,32 +313,43 @@ namespace minsky
                            else if (alreadyDefined)
                              {
                                // delete defining wire from this
-                               assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
-                               canvas.model->removeWire(*v->ports[1]->wires()[0]);
+                               assert(v->ports.size()>1 && !v->ports[1]->wires().empty()); 
+                               model->removeWire(*v->ports[1]->wires()[0]);
                              }
-                         }
+                         } 
                      return false;
-                   });
+                   });                              
 
+    //if (canvas.model!=g) {
     auto copyOfItems=g->items;
+    ItemPtr selectedItem;
     for (auto& i: copyOfItems)
       {		
-         canvas.model->addItem(i);			  
+         model->addItem(i);			  
          canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
     // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!copyOfItems.empty()) canvas.setItemFocus(g->items[0]);	      
+    if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	       
+       
     auto copyOfGroups=g->groups;
-    for (auto& i: copyOfGroups)
+    for (auto& j: copyOfGroups)
     {	
-        canvas.model->addGroup(i);	
+        model->addGroup(j);
+        //canvas.selection.ensureGroupInserted(j);	
     }
     if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
-    g->clear();  
+    
+    //auto copyOfWires=g->wires;
+    //for (auto& w: copyOfWires)
+    //{	
+    //    model->addWire(w);
+    //    //canvas.selection.ensureGroupInserted(j);	
+    //}    
+    
     model->removeGroup(*g);
     canvas.requestRedraw();
-  }
+  }  
 
   namespace
   {
