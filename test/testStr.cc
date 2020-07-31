@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2013
+  @copyright Steve Keen 2020
   @author Russell Standish
   This file is part of Minsky.
 
@@ -16,25 +16,28 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FLOWCOEF_H
-#define FLOWCOEF_H
-#include <string>
 
-namespace minsky
+#include "str.h"
+using namespace minsky;
+
+#include <UnitTest++/UnitTest++.h>
+
+SUITE(Str)
 {
+  TEST(numBytes)
+    {
+      CHECK_EQUAL(strlen("A"),numBytes("A"[0]));
+      CHECK_EQUAL(strlen("π"),numBytes("π"[0]));
+      CHECK_EQUAL(strlen("㐀"),numBytes("㐀"[0]));
+      CHECK_EQUAL(strlen("𪜢"),numBytes("𪜢"[0]));
+    }
 
-  /// represents a numerical coefficient times a variable (a "flow")
-  struct FlowCoef
-  {
-    double coef;
-    std::string name;
-    FlowCoef(): coef(0) {}
-    FlowCoef(double coef, const std::string& name): coef(coef), name(name) {}
-    FlowCoef(const std::string& formula);
-    // string form of this entry
-    std::string str() const;
-  };
-
+  TEST(prevIndex)
+    {
+      CHECK_EQUAL(0, prevIndex("1A", 0));
+      CHECK_EQUAL(1, prevIndex("1A", strlen("1A")));
+      CHECK_EQUAL(1, prevIndex("1π", strlen("1π")));
+      CHECK_EQUAL(1, prevIndex("1㐀", strlen("1㐀")));
+      CHECK_EQUAL(1, prevIndex("1𪜢", strlen("1𪜢")));
+    }
 }
-
-#endif

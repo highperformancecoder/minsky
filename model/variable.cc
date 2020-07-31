@@ -295,7 +295,25 @@ Units VariableBase::units(bool check) const
               if (check && units.str()!=vv->units.str())
                 {
                   if (auto i=controller.lock())
-                    i->throw_error("inconsistent units "+units.str()+"≠"+vv->units.str());
+                    i->throw_error("Inconsistent units "+units.str()+"≠"+vv->units.str());
+                }
+
+              if (check)
+                {
+                  FlowCoef fc(init());
+                  if (!fc.name.empty())
+                    {
+                      // extract the valueid corresponding to the initialisation variable
+                      auto vid=VariableValue::valueId(vv->m_scope.lock(), fc.name);
+                      // find the first variable matching vid, and check that the units match
+                      if (auto initVar=cminsky().model->findAny
+                          (&GroupItems::items, [&vid](const ItemPtr& i){
+                                                 if (auto v=i->variableCast())
+                                                   return v->valueId()==vid;
+                                                 return false;}))
+                        if (units!=initVar->units(check))
+                          throw_error("Inconsistent units in initial conditions");
+                    }
                 }
             }
         }
