@@ -341,14 +341,14 @@ SUITE(Group)
 
   TEST_FIXTURE(Group, checkAddIORegion)
     {
-      CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
-      CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
+      CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iWidth()*zoomFactor(), y()));
+      CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iWidth()*zoomFactor(), y()));
       VariablePtr inp(VariableType::flow,"input");
       VariablePtr outp(VariableType::flow,"output");
-      inp->moveTo(x()-0.5*iconWidth, y());
+      inp->moveTo(x()-0.5*iWidth()*zoomFactor(), y());
       addItem(inp);
       checkAddIORegion(inp);
-      outp->moveTo(x()+0.5*iconWidth, y());
+      outp->moveTo(x()+0.5*iWidth()*zoomFactor(), y());
       addItem(outp);
       checkAddIORegion(outp);
       CHECK_EQUAL(1,inVariables.size());
@@ -605,7 +605,7 @@ SUITE(Canvas)
         auto& group=dynamic_cast<Group&>(*itemFocus);
         group.updateBoundingBox();
         group.relZoom=0.5; // ensure displayContents is false
-        double w=group.iconWidth, h=group.iconHeight;
+        double w=group.iWidth()*group.zoomFactor(), h=group.iHeight()*group.zoomFactor();
         double x=group.x(), y=group.y(), z=group.relZoom;
         CHECK(group.clickType(group.right(),group.top()) == ClickType::onResize);
 
