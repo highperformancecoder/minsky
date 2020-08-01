@@ -560,7 +560,11 @@ proc doubleButton {x y} {
 # for ticket 1062, new hierarchy of context menu access on mouse right click: wires, items and background canvas.
 bind .wiring.canvas <<contextMenu>> {
     if [getWireAt %x %y] {
-        wireContextMenu %X %Y  	
+        if [minsky.canvas.wire.visible] {   # prevents wire context menu from being accessed when group contents are not transparent. for ticket 1225.
+			wireContextMenu %X %Y  	
+		} elseif [getItemAt %x %y] {  # Wire::visible() tests for group.lock(), so only this option used here.
+			rightMouseGroup %x %y %X %Y 
+		} else {wireContextMenu %X %Y}  	  
     } elseif [getItemAt %x %y] {
         switch [minsky.canvas.item.classType] {
             GodleyIcon {rightMouseGodley %x %y %X %Y}
