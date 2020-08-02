@@ -164,7 +164,7 @@ namespace schema3
     {if (s.flipped) rotation=180;}
     Item(int id, const minsky::Group& g, const std::vector<int>& ports):
       ItemBase(id, static_cast<const minsky::Item&>(g),ports),
-      width(g.iconWidth), height(g.iconHeight), name(g.title), bookmarks(g.bookmarks) {} 
+      width(g.iWidth()), height(g.iHeight()), name(g.title), bookmarks(g.bookmarks) {} 
 
     static Optional<classdesc::CDATA> convertTensorDataFromSchema2(const Optional<classdesc::CDATA>&);  
 
