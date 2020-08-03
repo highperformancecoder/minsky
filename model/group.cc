@@ -202,8 +202,12 @@ namespace minsky
 
     // stash init value to initialise new variableValue
     string init;
+    string units;
     if (auto v=it->variableCast())
-      init=v->init();
+      {
+        init=v->init();
+        units=v->unitsStr();
+      }
     
     it->group=self;
     if (!inSchema) it->moveTo(x,y);
@@ -241,6 +245,7 @@ namespace minsky
                   v->name(v->name().substr(1));
             }
         v->init(init); //NB calls ensureValueExists()
+        v->setUnits(units);
       }
      
     // move wire to highest common group
