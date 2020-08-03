@@ -562,7 +562,7 @@ namespace MathDAG
         //        assert(g->second.godleyId>=0);
         integVarMap[g.first]=dynamic_cast<VariableDAG*>
           (makeDAG(g.first,
-                   VariableValue::uqName(g.first), VariableValue::stock).get());
+                   g.second.name, VariableValue::stock).get());
         expressionCache.getIntegralInput(g.first)->rhs=
           expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
       }
@@ -924,6 +924,7 @@ namespace MathDAG
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
+        gd.name=trimWS(godley.cell(0,c));
         gd.arguments.resize(2);
         vector<WeakNodePtr>& arguments=gd.arguments[0];
         for (size_t r=1; r<godley.rows(); ++r)
