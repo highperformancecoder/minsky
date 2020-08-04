@@ -45,6 +45,7 @@ proc afterMinskyStarted {} {uplevel #0 {
   newSystem
   paste
   # For ticket 1080. There is no longer an outer group when existing groups or items are pasted between canvasses or in the same canvas
+  puts "[model.numGroups] [model.numItems] [model.numWires]"
   assert {[model.numGroups]==1}
   assert {[model.numItems]==8}
   assert {[model.numWires]==8}
