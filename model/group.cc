@@ -414,9 +414,9 @@ namespace minsky
     float dy=(x-this->x())*sin(rotation()*M_PI/180)+
       (y-this->y())*cos(rotation()*M_PI/180);      
     float w=0.5*iWidth()*z,h=0.5*iHeight()*z;
-    if (w-right*edgeScale()<dx)
+    if (w-right<dx)
       return IORegion::output;
-    else if (-w+left*edgeScale()>dx)
+    else if (-w+left>dx)
       return IORegion::input;
     else if ((-h-topMargin*z<dy && dy<0) || (h+topMargin*z>dy && dy>0))     
       return IORegion::topBottom;  
@@ -781,24 +781,24 @@ namespace minsky
     float leftMargin, rightMargin;
     margins(leftMargin, rightMargin);    
     float z=zoomFactor();
-    leftMargin*=edgeScale(); rightMargin*=edgeScale();
 
     unsigned width=z*this->iWidth(), height=z*this->iHeight();
 
+    // draw default group icon
+    cairo::CairoSave cs(cairo);
+    cairo_rotate(cairo,angle);
+
+    // display I/O region in grey
+    drawIORegion(cairo);
+
     {
-      // draw default group icon
       cairo::CairoSave cs(cairo);
-
-      // display I/O region in grey
-      drawIORegion(cairo);
-
       cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
-
 
               
       double scalex=double(width-leftMargin-rightMargin)/width;
       cairo_scale(cairo, scalex, 1);
-
+      
       // draw a simple frame 
       cairo_rectangle(cairo,0,0,width,height);
       {
@@ -846,10 +846,8 @@ namespace minsky
 
         // if rotation is in 1st or 3rd quadrant, rotate as
         // normal, otherwise flip the text so it reads L->R
-        if ((fm>-90 && fm<90) || fm>270 || fm<-270)
-          cairo_rotate(cairo, angle);
-        else
-          cairo_rotate(cairo, angle+M_PI);
+        if (abs(fm)>90 && abs(fm)<270)
+          cairo_rotate(cairo, M_PI);
 
         // prepare a background for the text, partially obscuring graphic
         double transparency=displayContents()? 0.25: 1;
@@ -871,6 +869,7 @@ namespace minsky
     cairo_clip(cairo);
     if (selected)
       drawSelected(cairo);
+    
   }
 
   namespace
@@ -883,57 +882,72 @@ namespace minsky
                         float x) const
   {
     float top=0, bottom=0;
+    double angle=rotation() * M_PI / 180.0;
     for (size_t i=0; i<vars.size(); ++i)
       {
-        float y=i%2? top:bottom;
         Rotate r(rotation(),0,0);
         auto& v=vars[i];
+        float y=0;
+        auto z=v->zoomFactor();
+        auto t=v->bb.top()*z, b=v->bb.bottom()*z;
+        if (i>0) y = i%2? top-b: bottom-t;
         v->moveTo(r.x(x,y)+this->x(), r.y(x,y)+this->y());
-        v->rotation(rotation());
         cairo::CairoSave cs(cairo);
         cairo_translate(cairo,x,y);
-        cairo_rotate(cairo,M_PI*rotation()/180);
+        // cairo context is already rotated, so antirotate
+        cairo_rotate(cairo,-angle);
+        v->rotation(rotation()); 
         v->draw(cairo);
         if (i==0)
           {
-            top=0.5*varToTextRatio*v->height()*edgeScale(); //??? should be 0.5*varToTextRatio
-            bottom=-top;
+            bottom=b;
+            top=t;
           }
         else if (i%2)
-          top+=0.5*varToTextRatio*v->height()*edgeScale();
+          top-=v->height();
         else
-          bottom-=0.5*varToTextRatio*v->height()*edgeScale();
+          bottom+=v->height();
       }
   }
 
   void Group::drawEdgeVariables(cairo_t* cairo) const
   {
     float left, right; margins(left,right);    
-    left*=edgeScale();
-    right*=edgeScale();
     cairo::CairoSave cs(cairo);
-    cairo_rotate(cairo,-M_PI*rotation()/180);
     float z=zoomFactor();
     draw1edge(inVariables, cairo, -0.5*(iWidth()*z-left));
     draw1edge(outVariables, cairo, 0.5*(iWidth()*z-right));
   }
 
+  namespace
+  {
+    // return the y position of the notch
+    float notchY(const vector<VariablePtr>& vars)
+    {
+      if (vars.empty()) return 0;
+      float z=vars[0]->zoomFactor();
+      float top=vars[0]->bb.top()*z, bottom=vars[0]->bb.top()*z;
+      float y=0;
+      for (size_t i=0; i<vars.size(); ++i)
+          {
+            if (i%2)
+              top-=vars[i]->height();
+            else
+              bottom+=vars[i]->height();
+          }
+      return vars.size()%2? top-vars.back()->bb.bottom()*z: bottom-vars.back()->bb.top()*z;
+    }
+  }
+    
   // draw notches in the I/O region to indicate docking capability
   void Group::drawIORegion(cairo_t* cairo) const
   {
-    cairo_save(cairo);
-    float left, right, z=zoomFactor();
+    cairo::CairoSave cs(cairo);
+    float left, right, z=zoomFactor(), es=edgeScale();
     margins(left,right);    
-    left*=edgeScale();
-    right*=edgeScale();
-    float y=0, dy=topMargin*edgeScale();
-    for (auto& i: inVariables)
-      {
-        y=max(y, fabs(i->y()-this->y())+varToTextRatio*i->height()*edgeScale());
-      }
+    float y=notchY(inVariables), dy=topMargin*edgeScale();
     cairo_set_source_rgba(cairo,0,1,1,0.5);
     float w=0.5*z*iWidth(), h=0.5*z*iHeight();
-    cairo_rotate(cairo,rotation()*M_PI/180);
     
     cairo_move_to(cairo,-w,-h);
     // create notch in input region
@@ -948,11 +962,7 @@ namespace minsky
     cairo_close_path(cairo);
     cairo_fill(cairo);
 
-    y=0;
-    for (auto& i: outVariables)
-      {
-        y=max(y, fabs(i->y()-this->y())+varToTextRatio*i->height()*edgeScale());
-      }
+    y=notchY(outVariables);
     cairo_move_to(cairo,w,-h);
     // create notch in output region
     cairo_line_to(cairo,w,y-dy);
@@ -973,8 +983,6 @@ namespace minsky
     // draw bottom margin. for feature 88
     cairo_rectangle(cairo,-w,h,2*w,topMargin*z);
     cairo_fill(cairo);    
-    
-    cairo_restore(cairo);
   }
 
 

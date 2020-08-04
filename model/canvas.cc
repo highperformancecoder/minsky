@@ -333,13 +333,14 @@ namespace minsky
                                               });
             model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
                                                {
-                                                 bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
+                                                 auto ct=(*i)->clickType(x,y);
+                                                 bool mf=ct!=ClickType::outside;
                                                  if (mf!=(*i)->mouseFocus)
                                                    {
                                                      (*i)->mouseFocus=mf;
                                                      requestRedraw();
                                                    }
-                                                 bool onResize = (*i)->clickType(x,y)==ClickType::onResize;
+                                                 bool onResize = ct==ClickType::onResize;
                                                  if (onResize!=(*i)->onResizeHandles)
                                                    {
                                                      (*i)->onResizeHandles=onResize;

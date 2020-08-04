@@ -284,7 +284,7 @@ namespace minsky
     
     /// computes the zoom at which to show contents, given current
     /// contentBounds and width
-    float displayZoom{1}; ///< extra fzoom at which contents are displayed
+    float displayZoom{1}; ///< extra zoom at which contents are displayed
     float relZoom{1}; ///< relative zoom contents of this group are displayed at
     float computeDisplayZoom();
     void computeRelZoom();

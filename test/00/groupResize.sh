@@ -48,8 +48,8 @@ proc afterMinskyStarted {} {uplevel #0 {
  canvas.mouseUp [expr \$x+0.5*\$w]  [expr \$y+0.5*\$h]
 
  findObject Group
- assert "abs([expr \$x+0.5*\$w]-[minsky.canvas.item.right])<5"
- assert "abs([expr \$y+0.5*\$h]-[minsky.canvas.item.bottom])<5"
+ assert "abs([expr \$x+0.5*\$w]-[minsky.canvas.item.right])<6"
+ assert "abs([expr \$y+0.5*\$h]-[minsky.canvas.item.bottom])<6"
  tcl_exit
 }}
 EOF

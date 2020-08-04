@@ -282,10 +282,8 @@ namespace minsky
 
   struct BottomRightResizerItem: public Item
   {
-    bool onResizeHandle(float x, float y) const override {
-      float rhSize=resizeHandleSize();
-      return fabs(x-right()) < rhSize && fabs(y-bottom()) < rhSize;
-    }
+    bool onResizeHandle(float x, float y) const override; 
+    void drawResizeHandles(cairo_t* cairo) const override;
   };
   
 }

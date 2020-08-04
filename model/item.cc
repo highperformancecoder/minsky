@@ -25,6 +25,7 @@
 #include "geometry.h"
 #include "selection.h"
 #include "minsky.h"
+#include "geometry.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
@@ -43,11 +44,16 @@ namespace minsky
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     x.onResizeHandles=false;
-    try {x.draw(surf.cairo());}
+    try
+      {
+        cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
+        x.draw(surf.cairo());
+      }
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
     catch (...) {cerr<<"illegal exception caught in draw()";}
     x.mouseFocus=savedMouseFocus;
+    
     double l,t,w,h;
     cairo_recording_surface_ink_extents(surf.surface(),
                                         &l,&t,&w,&h);
@@ -106,14 +112,30 @@ namespace minsky
       p->deleteWires();
   }
 
+  namespace
+  {
+    bool near(float x0, float y0, float x1, float y1, float d, const Rotate& r)
+    {
+      return abs(x0-r.x(x1,y1))<d && abs(y0-r.y(x1,y1))<d;
+    }
+  }
+  
   bool Item::onResizeHandle(float x, float y) const
   {
     float rhSize=resizeHandleSize();
-    return (abs(x-left()) < rhSize || abs(x-right()) < rhSize) &&
-                            (abs(y-top()) < rhSize || abs(y-bottom()) < rhSize);
+    Rotate r(rotation(),this->x(),this->y());
+    return near(x,y,left(),top(),rhSize,r) ||
+      near(x,y,right(),top(),rhSize,r) ||
+      near(x,y,left(),bottom(),rhSize,r) ||
+      near(x,y,right(),bottom(),rhSize,r); 
   }
 
-  
+   bool BottomRightResizerItem::onResizeHandle(float x, float y) const
+  {
+    return near(x,y,right(),bottom(),resizeHandleSize(),Rotate(rotation(),this->x(),this->y()));
+  }
+
+ 
   bool Item::visible() const 
   {
     auto g=group.lock();
@@ -218,18 +240,19 @@ namespace minsky
   void Item::drawResizeHandles(cairo_t* cairo) const
   {
     auto sf=resizeHandleSize();
-    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203
-    // TODO(#1210) refactor to use virtual functions
-    if (!switchIconCast() && !variableCast() && (!operationCast() || operationCast()->type()==OperationType::ravel))  
-      {
-        drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-        drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-        drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
-        drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
-      } else drawResizeHandle(cairo,right()-x(),bottom()-y(),0.5*sf,0);
+    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
     cairo_stroke(cairo);
   }
 
+  void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
+  {
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),0.5*resizeHandleSize(),0);
+    cairo_stroke(cairo);
+  }
+  
   
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
