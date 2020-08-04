@@ -951,9 +951,9 @@ namespace minsky
     cairo_move_to(cairo,w,-h);
     // create notch in output region
     cairo_line_to(cairo,w,y-dy);
-    cairo_line_to(cairo,w-right-2*z,y-dy);
-    cairo_line_to(cairo,w-right+2*z,y);
-    cairo_line_to(cairo,w-right-2*z,y+dy);
+    cairo_line_to(cairo,w-right+4*z,y-dy);
+    cairo_line_to(cairo,w-right,y);
+    cairo_line_to(cairo,w-right+4*z,y+dy);
     cairo_line_to(cairo,w,y+dy);
     cairo_line_to(cairo,w,h);
     cairo_line_to(cairo,w-right,h);
