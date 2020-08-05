@@ -46,7 +46,7 @@ namespace minsky
     x.onResizeHandles=false;
     try
       {
-        cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
+        //cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
         x.draw(surf.cairo());
       }
     catch (const std::exception& e) 
