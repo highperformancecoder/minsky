@@ -132,7 +132,9 @@ namespace minsky
 
    bool BottomRightResizerItem::onResizeHandle(float x, float y) const
   {
-    return near(x,y,right(),bottom(),resizeHandleSize(),Rotate(rotation(),this->x(),this->y()));
+    double angle=rotation() * M_PI / 180.0;	  // Why doesn't this work???
+	double sa=sin(angle), ca=cos(angle); 
+    return near(x,y,right()*ca+bottom()*sa,bottom()*ca-right()*sa,resizeHandleSize(),Rotate(rotation(),this->x(),this->y()));
   }
 
  
