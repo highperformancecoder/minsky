@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# remove any backup files to prevent unintended hangs
+rm examples/*.mky# test/*.mky#
+
 t=0
 for i in test/00/*.sh; do
     echo -n "$i: "
@@ -13,8 +16,6 @@ for i in test/00/*.sh; do
     if [ $i = test/00/RESTService.sh ]; then echo disabled; continue; fi
     # we need to expose output generated here to prevent a build timeout
     if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh ]; then
-        sh $i
-    elif [ "$TRAVIS" = 1 -a $i = test/00/t0036a.sh ]; then
         sh $i
     # checkReadOnlySaveFails tests that saving over a readonly file is prevented. Test doesn't work as root
     elif [ `whoami` = 'root' -a $i = test/00/checkReadOnlySaveFails.sh ]; then

@@ -486,11 +486,12 @@ namespace minsky
   void Group::resize(const LassoBox& b)
   {
     float z=zoomFactor();
-    iWidth(fabs(b.x0-b.x1)/z);
-    iHeight((fabs(b.y0-b.y1)-2*topMargin)/z);
     // account for margins
     float l, r;
-    margins(l,r);    
+    margins(l,r);
+    if (fabs(b.x0-b.x1) < l+r || fabs(b.y0-b.y1)<2*topMargin) return;
+    iWidth(fabs(b.x0-b.x1)/z);
+    iHeight((fabs(b.y0-b.y1)-2*topMargin)/z);
     // rescale contents to fit
     double x0, x1, y0, y1;
     contentBounds(x0,y0,x1,y1);
@@ -783,6 +784,12 @@ namespace minsky
     float z=zoomFactor();
 
     unsigned width=z*this->iWidth(), height=z*this->iHeight();
+    // In docker environments, something invisible gets drawn outside
+    // the horizontal dimensions, stuffing up the bb.width()
+    // calculation, and then causing the groupResize test to
+    // fail. This extra clip path fixes the problem.
+    cairo_rectangle(cairo,-0.5*width,-0.5*height-topMargin, width, height+2*topMargin);
+    cairo_clip(cairo);
 
     // draw default group icon
     cairo::CairoSave cs(cairo);
