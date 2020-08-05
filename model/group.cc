@@ -829,7 +829,7 @@ namespace minsky
     // the horizontal dimensions, stuffing up the bb.width()
     // calculation, and then causing the groupResize test to
     // fail. This extra clip path fixes the problem.
-    cairo_rectangle(cairo,-0.5*width,-0.5*height-topMargin, width, height+2*topMargin);
+    cairo_rectangle(cairo,-0.5*width,-0.5*height-topMargin*z, width, height+2*topMargin*z);
     cairo_clip(cairo);
 
     // draw default group icon
