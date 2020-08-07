@@ -46,8 +46,8 @@ namespace minsky
     x.onResizeHandles=false;
     try
       {
-        //cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
         x.draw(surf.cairo());
+		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232      
       }
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
@@ -132,7 +132,38 @@ namespace minsky
 
    bool BottomRightResizerItem::onResizeHandle(float x, float y) const
   {
-    return near(x,y,right(),bottom(),resizeHandleSize(),Rotate(rotation(),this->x(),this->y()));
+	// ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+    double fm=std::fmod(rotation(),360), angle;	
+    float x1=right(),y1=bottom();  
+	if (fm==-90 || fm==270) {
+		angle=-rotation();
+		Rotate r1(angle,this->x(),this->y());
+		x1=r1.x(right(),bottom());
+		y1=r1.y(right(),bottom());						  
+		if (auto i=dynamic_cast<const IntOp*>(this))
+		{
+			if (i->coupled()) {
+				angle=-i->intVar->rotation();
+				Rotate r2(angle,i->intVar->x(),i->intVar->y()); //Why doesn't this work?????
+				float xInt=i->intVar->right();
+				float yInt=i->intVar->bottom();
+		        x1=r2.x(xInt,yInt);
+		        y1=r2.y(xInt,yInt);							  
+			}
+		}		
+	 }
+	else if (abs(fm)==180) {
+		angle=rotation();
+		x1=right();
+		if (auto i=dynamic_cast<const IntOp*>(this))
+		{
+			if (i->coupled()) x1=i->intVar->right();
+		}	
+		y1=top();			
+	}
+	else angle=0.0;
+    Rotate r(angle,this->x(),this->y());		  
+    return near(x,y,x1,y1,resizeHandleSize(),r);
   }
 
  
@@ -248,8 +279,39 @@ namespace minsky
   }
 
   void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
-  {
-    drawResizeHandle(cairo,right()-x(),bottom()-y(),0.5*resizeHandleSize(),0);
+  { 
+	// ensure resize handle is always drawn on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+    double fm=std::fmod(rotation(),360), angle;	
+    float x1=right(),y1=bottom();  
+	if (fm==-90 || fm==270) {
+		angle=-rotation();
+		Rotate r1(angle,this->x(),this->y());
+		x1=r1.x(right(),bottom());
+		y1=r1.y(right(),bottom());						  
+		if (auto i=dynamic_cast<const IntOp*>(this))
+		{
+			if (i->coupled()) {
+				angle=-i->intVar->rotation();
+				Rotate r2(angle,i->intVar->x(),i->intVar->y()); //Why doesn't this work?????
+				float xInt=i->intVar->right();
+				float yInt=i->intVar->bottom();
+		        x1=r2.x(xInt,yInt);
+		        y1=r2.y(xInt,yInt);							  
+			}
+		}					  			
+	 }
+	else if (abs(fm)==180) {
+		angle=rotation();
+		x1=right();
+		if (auto i=dynamic_cast<const IntOp*>(this))
+		{
+			if (i->coupled()) x1=i->intVar->right();
+		}		
+		y1=top();					
+	}
+	else angle=0;
+	Rotate r(angle,this->x(),this->y());
+    drawResizeHandle(cairo,r.x(x1,y1)-x(),r.y(x1,y1)-y(),0.5*resizeHandleSize(),abs(fm)==180? M_PI_2 : 0);
     cairo_stroke(cairo);
   }
   
