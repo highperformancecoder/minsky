@@ -140,28 +140,35 @@ namespace minsky
 		Rotate r1(angle,this->x(),this->y());
 		x1=r1.x(right(),bottom());
 		y1=r1.y(right(),bottom());						  
-		if (auto i=dynamic_cast<const IntOp*>(this))
-		{
-			if (i->coupled()) {
-				angle=-i->intVar->rotation();
-				Rotate r2(angle,i->intVar->x(),i->intVar->y()); //Why doesn't this work?????
-				float xInt=i->intVar->right();
-				float yInt=i->intVar->bottom();
-		        x1=r2.x(xInt,yInt);
-		        y1=r2.y(xInt,yInt);							  
-			}
-		}		
 	 }
 	else if (abs(fm)==180) {
 		angle=rotation();
 		x1=right();
-		if (auto i=dynamic_cast<const IntOp*>(this))
-		{
-			if (i->coupled()) x1=i->intVar->right();
-		}	
-		y1=top();			
+		y1=top();					
 	}
-	else angle=0.0;
+	else angle=0;	
+	if (auto i=dynamic_cast<const IntOp*>(this))
+	{
+		if (i->coupled()) {
+		  angle=i->intVar->rotation();    // apparently this angle has to be positive???
+		  Rotate r2(angle,i->intVar->x(),i->intVar->y());		
+	      if (fm==-90 || fm==270) {
+	        x1=r2.x(i->intVar->right(),i->intVar->bottom());
+	        y1=r2.y(i->intVar->right(),i->intVar->bottom());
+	      } else if (fm==90 || fm==-270) {
+	        x1=r2.x(i->intVar->left(),i->intVar->top());
+	        y1=r2.y(i->intVar->left(),i->intVar->top());			       
+		  } else if (abs(fm)==180) {
+            angle=-i->intVar->rotation();
+            x1=i->intVar->right();  			  
+            y1=i->intVar->top();  				       		  
+		  } else if (fm==0 || fm==360) {
+			angle=-i->intVar->rotation();
+			x1=i->intVar->right(); 			
+			y1=i->intVar->bottom(); 				  
+		  } else angle=0;
+	    }
+	}	
     Rotate r(angle,this->x(),this->y());		  
     return near(x,y,x1,y1,resizeHandleSize(),r);
   }
@@ -288,28 +295,35 @@ namespace minsky
 		Rotate r1(angle,this->x(),this->y());
 		x1=r1.x(right(),bottom());
 		y1=r1.y(right(),bottom());						  
-		if (auto i=dynamic_cast<const IntOp*>(this))
-		{
-			if (i->coupled()) {
-				angle=-i->intVar->rotation();
-				Rotate r2(angle,i->intVar->x(),i->intVar->y()); //Why doesn't this work?????
-				float xInt=i->intVar->right();
-				float yInt=i->intVar->bottom();
-		        x1=r2.x(xInt,yInt);
-		        y1=r2.y(xInt,yInt);							  
-			}
-		}					  			
 	 }
 	else if (abs(fm)==180) {
 		angle=rotation();
 		x1=right();
-		if (auto i=dynamic_cast<const IntOp*>(this))
-		{
-			if (i->coupled()) x1=i->intVar->right();
-		}		
 		y1=top();					
 	}
-	else angle=0;
+	else angle=0;	
+	if (auto i=dynamic_cast<const IntOp*>(this))
+	{
+		if (i->coupled()) {
+		  angle=i->intVar->rotation();    // apparently this angle has to be positive???
+		  Rotate r2(angle,i->intVar->x(),i->intVar->y());		
+	      if (fm==-90 || fm==270) {
+	        x1=r2.x(i->intVar->right(),i->intVar->bottom());
+	        y1=r2.y(i->intVar->right(),i->intVar->bottom());
+	      } else if (fm==90 || fm==-270) {
+	        x1=r2.x(i->intVar->left(),i->intVar->top());
+	        y1=r2.y(i->intVar->left(),i->intVar->top());			       
+		  } else if (abs(fm)==180) {
+            angle=-i->intVar->rotation();
+            x1=i->intVar->right();  			  
+            y1=i->intVar->top();  	 			  
+		  } else if (fm==0 || fm==360) {
+			angle=-i->intVar->rotation();
+			x1=i->intVar->right(); 			
+			y1=i->intVar->bottom(); 					  
+		  } else angle=0;
+	    }
+	}					  				
 	Rotate r(angle,this->x(),this->y());
     drawResizeHandle(cairo,r.x(x1,y1)-x(),r.y(x1,y1)-y(),0.5*resizeHandleSize(),abs(fm)==180? M_PI_2 : 0);
     cairo_stroke(cairo);
