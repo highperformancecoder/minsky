@@ -76,7 +76,8 @@ namespace minsky
     Units units;
     bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
     void setUnits(const std::string& x) {units=Units(x);}
-    
+
+    bool sliderVisible=false; // determined at reset time
     bool godleyOverridden;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;

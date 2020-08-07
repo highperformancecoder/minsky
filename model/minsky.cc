@@ -822,8 +822,15 @@ namespace minsky
              p->redraw();
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
-           if (r->ports[1]->numWires()>0)
-             r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+           {
+             if (r->ports[1]->numWires()>0)
+               r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+           }
+         else if (auto v=(*i)->variableCast())
+           { //determine whether a slider should be shown
+             if (auto vv=v->vValue())
+               vv->sliderVisible = v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId()));
+           }
          return false;
        });
 
