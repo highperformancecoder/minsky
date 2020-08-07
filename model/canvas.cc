@@ -641,11 +641,27 @@ namespace minsky
           newItem=group->copy();
         else
           {    			    
+            if (item->ioVar())
+              if (auto v=item->variableCast())
+                if (v->rawName()[0]!=':')
+                  try
+                    {
+                      minsky().pushHistory(); // save current state in case of failure
+                      // attempt to make variable outer scoped. For #1100
+                      minsky().canvas.renameAllInstances(":"+v->rawName());
+                    }
+                  catch (...)
+                    {
+                      minsky().undo(); // back out of change
+                      throw;
+                    }
+            
             newItem.reset(item->clone());
             // if copied from a Godley table or I/O var, set orientation to default
             if (auto v=item->variableCast())
               if (v->controller.lock())
                 newItem->rotation(defaultRotation);
+                    
           }
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
