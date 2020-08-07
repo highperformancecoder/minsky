@@ -44,8 +44,6 @@ namespace minsky
         ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
     ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
       ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
-    SliderVisibleAccessor::SliderVisibleAccessor(): ecolab::TCLAccessor<VariableBase,bool>
-      ("sliderVisible",(Getter)&VariableBase::sliderVisible,(Setter)&VariableBase::sliderVisible) {}
  }
 }
 
@@ -468,7 +466,7 @@ void VariableBase::adjustSliderBounds() const
 
 bool VariableBase::handleArrows(int dir,bool reset)
 {
-  sliderSet(value()+dir*sliderStep);
+  sliderSet(value()+dir*(sliderStepRel? value(): 1)*sliderStep);
   if (reset) minsky().reset();
   return true;
 }
@@ -513,7 +511,16 @@ void VariableBase::draw(cairo_t *cairo) const
         Pango pangoVal(cairo);
         if (!isnan(value())) {
           pangoVal.setFontSize(6*scaleFactor*z);
-          pangoVal.setMarkup(mantissa(val));
+          if (sliderBoundsSet && vv.sliderVisible)
+            pangoVal.setMarkup
+              (mantissa(val,
+                        int(1+
+                         (sliderStepRel?
+                          -log10(sliderStep):
+                          log10(value()/sliderStep)
+                          ))));
+          else
+            pangoVal.setMarkup(mantissa(val));
         }
         else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
           pangoVal.setFontSize(8*scaleFactor*z);

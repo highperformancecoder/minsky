@@ -394,7 +394,6 @@ namespace schema3
         if (y.slider)
           {
             x1->sliderBoundsSet=true;
-            x1->sliderVisible(y.slider->visible);
             x1->sliderStepRel=y.slider->stepRel;
             x1->sliderMin=y.slider->min;
             x1->sliderMax=y.slider->max;

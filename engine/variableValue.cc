@@ -328,20 +328,22 @@ namespace minsky
     return r;
   }
 
-  string mantissa(double value, const EngNotation& e)
+  string mantissa(double value, const EngNotation& e, int digits)
   {
-    const char* conv;
+    int width, decimal_places;
+    digits=std::max(digits, 3);
     switch (e.sciExp-e.engExp)
       {
-      case -3: conv="%7.4f"; break;
-      case -2: conv="%6.3f"; break;
-      case 0: case -1: conv="%5.2f"; break;
-      case 1: conv="%5.1f"; break;
-      case 2: case 3: conv="%5.0f"; break;
+      case -3: width=digits+4; decimal_places=digits+1; break;
+      case -2: width=digits+3; decimal_places=digits; break;
+      case 0: case -1: width=digits+2; decimal_places=digits-1; break;
+      case 1: width=digits+2; decimal_places=digits-2; break;
+      case 2: case 3: width=digits+2; decimal_places=digits-3; break;
       default: return ""; // shouldn't be here...
       }
     char val[10];
-    sprintf(val,conv,value*pow(10,-e.engExp));
+    const char conv[]="%*.*f";
+    sprintf(val,conv,width,decimal_places,value*pow(10,-e.engExp));
     return val;
   }
   

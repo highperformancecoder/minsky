@@ -244,7 +244,7 @@ namespace minsky
   struct EngNotation {int sciExp, engExp;};
   /// return formatted mantissa and exponent in engineering format
   EngNotation engExp(double value);
-  std::string mantissa(double value, const EngNotation&);
+  std::string mantissa(double value, const EngNotation&,int digits=3);
   std::string expMultiplier(int exp);
 
 

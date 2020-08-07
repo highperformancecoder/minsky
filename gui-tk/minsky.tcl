@@ -1600,7 +1600,7 @@ proc exit {} {
     if {[edited]||[file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
-            no {}
+            no {file delete [autoBackupName]}
             cancel {return -level [info level]}
         }
     }

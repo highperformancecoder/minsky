@@ -58,7 +58,6 @@ namespace minsky
     struct NameAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,0> {NameAccessor();};
     struct InitAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,1> {InitAccessor();};
     struct ValueAccessor: ecolab::TCLAccessor<minsky::VariableBase,double> {ValueAccessor();};
-    struct SliderVisibleAccessor: ecolab::TCLAccessor<minsky::VariableBase,bool> {SliderVisibleAccessor();};
   }
 
   class VariableBase: virtual public classdesc::PolyPackBase,
@@ -66,8 +65,7 @@ namespace minsky
                       public Slider, public VariableType,
                       public VarAccessors::NameAccessor,
                       public VarAccessors::InitAccessor,
-                      public VarAccessors::ValueAccessor,
-                      public VarAccessors::SliderVisibleAccessor
+                      public VarAccessors::ValueAccessor
   {
   public:
     typedef VariableType::Type Type;
@@ -151,11 +149,6 @@ namespace minsky
     /// initialise slider bounds when slider first opened
     void initSliderBounds() const;
     void adjustSliderBounds() const;
-    bool sliderVisible() const {return Slider::sliderVisible;}
-    bool sliderVisible(const bool& v) {
-          if (v) {initSliderBounds(); adjustSliderBounds();}
-          return Slider::sliderVisible=v;
-    }
 
     /// sets/gets the units associated with this type
     Units units(bool check=false) const override;
@@ -191,8 +184,8 @@ namespace minsky
     /// return formatted mantissa and exponent in engineering format
     EngNotation engExp() const
     {return minsky::engExp(value());}
-    std::string mantissa(const EngNotation& e) const
-    {return minsky::mantissa(value(),e);}
+    std::string mantissa(const EngNotation& e, int digits=3) const
+    {return minsky::mantissa(value(),e, digits);}
 
     /// export this variable as a CSV file
     void exportAsCSV(const std::string& filename) const;

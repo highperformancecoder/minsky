@@ -81,13 +81,13 @@ namespace schema3
 
   struct Slider
   {
-    bool visible=true, stepRel=false;
+    bool  stepRel=false;
     double min, max, step;
     Slider() {}
-    Slider(bool v, bool stepRel, double min, double max, double step):
-      visible(v), stepRel(stepRel), min(min), max(max), step(step) {}
+    Slider(bool stepRel, double min, double max, double step):
+      stepRel(stepRel), min(min), max(max), step(step) {}
     Slider(const schema2::Slider& s):
-      visible(s.visible), stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
+      stepRel(s.stepRel), min(s.min), max(s.max), step(s.step) {}
   };
     
   struct Item: public ItemBase
@@ -131,7 +131,7 @@ namespace schema3
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
       name(v.rawName()), init(v.init()) {
       if (v.sliderBoundsSet)
-        slider.reset(new Slider(v.sliderVisible(),v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
+        slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
         units=vv->units.str();
       packTensorInit(v);
