@@ -19,6 +19,7 @@
 
 set fname ""
 set workDir [pwd]
+encoding system utf-8
 
 # On mac-build versions, fontconfig needs to find its config file,
 # which is packaged up in the Minsky.app directory
