@@ -475,12 +475,39 @@ namespace minsky
     void resizeItems(T& items, double sx, double sy)
     {
       for (auto& i: items)
-        {
-          i->m_x*=sx;
-          i->m_y*=sy;
-          //i->zoomFactor*=std::max(sx,sy);
-        }
+        if (!i->ioVar())
+          {
+            i->m_x*=sx;
+            i->m_y*=sy;
+            //i->zoomFactor*=std::max(sx,sy);
+          }
     }
+
+    
+    template <class T>
+    void accumulateCentres(const T& items, float& xc, float& yc, size_t& n)
+    {
+      for (auto& i: items)
+        if (!i->ioVar())
+          {
+            xc+=i->m_x;
+            yc+=i->m_y;
+            n++;
+          }
+    }
+
+    template <class T>
+    void recentreItems(const T& items, float xc, float yc)
+    {
+      for (auto& i: items)
+        if (!i->ioVar())
+          {
+            i->m_x-=xc;
+            i->m_y-=yc;
+          }
+    }
+
+  
   }
   
   void Group::resize(const LassoBox& b)
@@ -489,15 +516,29 @@ namespace minsky
     // account for margins
     float l, r;
     margins(l,r);
-    if (fabs(b.x0-b.x1) < l+r || fabs(b.y0-b.y1)<2*topMargin) return;
+    if (fabs(b.x0-b.x1) < l+r || fabs(b.y0-b.y1)<2*z*topMargin) return;
     iWidth(fabs(b.x0-b.x1)/z);
     iHeight((fabs(b.y0-b.y1)-2*topMargin)/z);
+
     // rescale contents to fit
-    double x0, x1, y0, y1;
-    contentBounds(x0,y0,x1,y1);
-    double sx=(fabs(b.x0-b.x1)-z*(l+r)>0? fabs(b.x0-b.x1)-z*(l+r) : z*(l+r) )/(x1-x0), sy=(fabs(b.y0-b.y1)-20*z>0 ? fabs(b.y0-b.y1)-20*z : 20*z )/(y1-y0);    
-    resizeItems(items,sx,sy);
-    resizeItems(groups,sx,sy);
+    // firstly, recentre the centroid
+    float xc=0, yc=0;
+    size_t n=0;
+    accumulateCentres(items,xc,yc,n);
+    accumulateCentres(groups,xc,yc,n);
+    if (n>0)
+      {
+        xc/=n; yc/=n;
+        recentreItems(items,xc,yc);
+        recentreItems(groups,xc,yc);
+        
+        double x0, x1, y0, y1;
+        contentBounds(x0,y0,x1,y1);
+        double sx=(fabs(b.x0-b.x1)-(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);    
+        resizeItems(items,sx,sy);
+        resizeItems(groups,sx,sy);
+      }
+    
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
@@ -788,7 +829,7 @@ namespace minsky
     // the horizontal dimensions, stuffing up the bb.width()
     // calculation, and then causing the groupResize test to
     // fail. This extra clip path fixes the problem.
-    cairo_rectangle(cairo,-0.5*width,-0.5*height-topMargin, width, height+2*topMargin);
+    cairo_rectangle(cairo,-0.5*width,-0.5*height-topMargin*z, width, height+2*topMargin*z);
     cairo_clip(cairo);
 
     // draw default group icon
