@@ -176,6 +176,9 @@ namespace minsky
     ~IntOp() {removeControlledItems();}
     
     const IntOp& operator=(const IntOp& x); 
+    
+    const IntOp* intOpCast() const override {return this;}
+    IntOp* intOpCast() override {return this;}    
 
     /// @{ name of the associated integral variable
     std::string description(const std::string& desc);
