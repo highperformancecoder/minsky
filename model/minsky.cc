@@ -439,7 +439,15 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
-    dimensionalAnalysis();
+    try
+      {
+        dimensionalAnalysis();
+      }
+    catch (const std::exception& ex)
+      {
+        // do not block reset() on dimensional analysis failure
+        message(ex.what());
+      }
     
     EvalOpBase::timeUnit=timeUnit;
 
@@ -496,6 +504,12 @@ namespace minsky
              i->checkUnits();
          return false;
        });
+  }
+
+  void Minsky::deleteAllUnits()
+  {
+    for (auto& i: variableValues)
+      i.second->units.clear();
   }
   
   void Minsky::populateMissingDimensions() {
@@ -819,7 +833,7 @@ namespace minsky
                p->updateIcon(t);
              else
                p->addConstantCurves();
-             p->redraw();
+             p->requestRedraw();
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            {

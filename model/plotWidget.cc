@@ -334,7 +334,7 @@ namespace minsky
 
   extern Tk_Window mainWin;
 
-  void PlotWidget::redraw()
+  void PlotWidget::requestRedraw()
   {
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff
     // store previous min/max values to determine if plot scale changes
@@ -442,7 +442,7 @@ namespace minsky
         min((accumulatedBlitTime-(ptime&)lastAccumulatedBlitTime) * 2, maxWait))
       {
         ptime timerStart=microsec_clock::local_time();
-        redraw();
+        requestRedraw();
         lastAccumulatedBlitTime = accumulatedBlitTime;
         lastAdd=microsec_clock::local_time();
         accumulatedBlitTime += lastAdd - timerStart;
