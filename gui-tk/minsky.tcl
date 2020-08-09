@@ -715,6 +715,7 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Paste" -command "minsky.paste" -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
+.menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
 
 proc togglePaste {} {
     if {[getClipboard]==""} {

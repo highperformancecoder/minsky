@@ -505,6 +505,12 @@ namespace minsky
          return false;
        });
   }
+
+  void Minsky::deleteAllUnits()
+  {
+    for (auto& i: variableValues)
+      i.second->units.clear();
+  }
   
   void Minsky::populateMissingDimensions() {
     model->recursiveDo

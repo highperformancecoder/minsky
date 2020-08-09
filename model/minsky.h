@@ -267,6 +267,8 @@ namespace minsky
     void evalEquations(double result[], double t, const double vars[]);
     /// performs dimension analysis, throws if there is a problem
     void dimensionalAnalysis() const;
+    /// removes units markup from all variables in model
+    void deleteAllUnits();
     
     /// consistency check of the equation order. Should return
     /// true. Outputs the operation number of the invalidly ordered
