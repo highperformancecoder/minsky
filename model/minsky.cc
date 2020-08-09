@@ -833,7 +833,7 @@ namespace minsky
                p->updateIcon(t);
              else
                p->addConstantCurves();
-             p->redraw();
+             p->requestRedraw();
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            {

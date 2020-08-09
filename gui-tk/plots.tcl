@@ -220,7 +220,7 @@ proc penStyleOK plot {
             "- · -" {$p.dashStyle dashDot}
         }
     }
-    $plot.redraw
+    $plot.requestRedraw
 }
 
 proc addRow plot {
