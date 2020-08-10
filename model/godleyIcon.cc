@@ -434,7 +434,7 @@ namespace minsky
         FlowCoef fc(table.cell(row,stockCol));
         if (fc.coef!=0)
           {
-            auto vid=valueId(fc.name);
+            auto vid=valueId(utf_to_utf<char>(fc.name));
             // find variable assciated with this flow
             for (auto& v: flowVars())
               if (v->valueId()==vid)
