@@ -137,7 +137,7 @@ namespace minsky
        y1=top();					
      }
      else angle=0;	
-     if (auto i=intOpCast())
+     if (auto i=dynamic_cast<const IntOp*>(this))
        {
          if (i->coupled()) {
            angle=i->intVar->rotation();  
