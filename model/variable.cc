@@ -26,6 +26,8 @@
 #include "minsky_epilogue.h"
 
 #include <boost/regex.hpp>
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 
 using namespace classdesc;
 using namespace ecolab;
@@ -164,7 +166,7 @@ string VariableBase::name()  const
       if (!g || g==cminsky().model)
         return m_name.substr(1);
     }
-  return m_name;
+  return utf_to_utf<char>(m_name);
 }
 
 string VariableBase::name(const std::string& name) 
