@@ -23,6 +23,7 @@
 #include "noteBase.h"
 #include "port.h"
 #include "intrusiveMap.h"
+#include "geometry.h"
 //#include "RESTProcess_base.h"
 #include <accessor.h>
 #include <TCL_obj_base.h>
@@ -206,7 +207,7 @@ namespace minsky
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
     virtual void drawResizeHandles(cairo_t* cairo) const;
-    std::pair<double,std::pair<float,float>> rotatedPoints() const;    
+    virtual std::pair<double,Point> rotatedPoints() const;    
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);

@@ -25,7 +25,6 @@
 #include "geometry.h"
 #include "selection.h"
 #include "minsky.h"
-#include "geometry.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
@@ -120,7 +119,7 @@ namespace minsky
     }
 }
     
-   std::pair<double,std::pair<float,float>> Item::rotatedPoints() const
+   std::pair<double,Point> Item::rotatedPoints() const
    {
      // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
      double fm=std::fmod(rotation(),360), angle;	
@@ -137,29 +136,8 @@ namespace minsky
        y1=top();					
      }
      else angle=0;	
-     if (auto i=dynamic_cast<const IntOp*>(this))
-       {
-         if (i->coupled()) {
-           angle=i->intVar->rotation();  
-           Rotate r2(angle,i->intVar->x(),i->intVar->y());		
-           if (fm==-90 || fm==270) {
-             x1=r2.x(i->intVar->right(),i->intVar->bottom());
-             y1=r2.y(i->intVar->right(),i->intVar->bottom());
-           } else if (fm==90 || fm==-270) {
-             x1=r2.x(i->intVar->left(),i->intVar->top());
-             y1=r2.y(i->intVar->left(),i->intVar->top());			       
-           } else if (abs(fm)==180) {
-             angle=-i->intVar->rotation();
-             x1=i->intVar->right();  			  
-             y1=i->intVar->top();  				       		  
-           } else if (fm==0 || fm==360) {
-             angle=-i->intVar->rotation();
-             x1=i->intVar->right(); 			
-             y1=i->intVar->bottom(); 				  
-           } else angle=0;
-         }
-       }	
-     return make_pair(angle,make_pair(x1,y1));  
+     Point p(x1,y1);  
+     return make_pair(angle,p);  
   }
   
   bool Item::onResizeHandle(float x, float y) const
@@ -175,9 +153,9 @@ namespace minsky
    bool BottomRightResizerItem::onResizeHandle(float x, float y) const
   {
     double angle=rotatedPoints().first;		  
-    std::pair<float,float> xy=rotatedPoints().second;		  
+    Point p=rotatedPoints().second;		  
     Rotate r(angle,this->x(),this->y());		  
-    return near(x,y,xy.first,xy.second,resizeHandleSize(),r);
+    return near(x,y,p.x(),p.y(),resizeHandleSize(),r);
   }
 
  
@@ -295,9 +273,9 @@ namespace minsky
   void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
   { 			  			
     double angle=rotatedPoints().first;		  
-    std::pair<float,float> xy=rotatedPoints().second;		  
+    Point p=rotatedPoints().second;			  
     Rotate r(angle,this->x(),this->y());
-    drawResizeHandle(cairo,r.x(xy.first,xy.second)-x(),r.y(xy.first,xy.second)-y(),0.5*resizeHandleSize(),abs(rotation())==180? M_PI_2 : 0);
+    drawResizeHandle(cairo,r.x(p.x(),p.y())-x(),r.y(p.x(),p.y())-y(),0.5*resizeHandleSize(),abs(rotation())==180? M_PI_2 : 0);
     cairo_stroke(cairo);
   }
   
