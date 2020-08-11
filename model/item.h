@@ -23,6 +23,7 @@
 #include "noteBase.h"
 #include "port.h"
 #include "intrusiveMap.h"
+#include "geometry.h"
 //#include "RESTProcess_base.h"
 #include <accessor.h>
 #include <TCL_obj_base.h>
@@ -150,7 +151,7 @@ namespace minsky
     /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
     virtual const SwitchIcon* switchIconCast() const {return nullptr;}
     virtual SwitchIcon* switchIconCast() {return nullptr;}
-    /// @}    
+    /// @}      
 
     ItemPortVector ports;
     virtual float x() const; 
@@ -206,6 +207,7 @@ namespace minsky
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
     virtual void drawResizeHandles(cairo_t* cairo) const;
+    virtual std::pair<double,Point> rotatedPoints() const;    
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);
