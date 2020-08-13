@@ -19,9 +19,11 @@
 
 #include "ravelWrap.h"
 #include "selection.h"
+#include "dimension.h"
+#include "minskyTensorOps.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
-static const int ravelVersion=2;
+static const int ravelVersion=3;
 
 #include <string>
 #include <cmath>
@@ -59,11 +61,11 @@ namespace minsky
     
     struct RavelHandleState
     {
-      double x,y; ///< handle tip coordinates (only angle important, not length)
-      size_t sliceIndex, sliceMin, sliceMax;
-      bool collapsed, displayFilterCaliper;
-      ReductionOp reductionOp;
-      HandleSort order;
+      double x=0,y=0; ///< handle tip coordinates (only angle important, not length)
+      size_t sliceIndex=0, sliceMin=0, sliceMax=0;
+      bool collapsed=false, displayFilterCaliper=false;
+      ReductionOp reductionOp=RavelState::HandleState::sum;
+      HandleSort order=RavelState::HandleState::none;
       RavelHandleState() {}
       // NB: sliceIndex, sliceMin, sliceMax need to be dealt with separately
       RavelHandleState(const RavelState::HandleState& s):
@@ -116,14 +118,13 @@ namespace minsky
       
         auto version=(const char* (*)())dlsym(lib,"ravel_version");
         auto capi_version=(int (*)())dlsym(lib,"ravel_capi_version");
+        if (version) versionFound=version();
         if (!version || !capi_version || ravelVersion!=capi_version())
           { // incompatible API
             errorMsg="Incompatible libravel dynamic library found";
-            if (version) versionFound=version();
             dlclose(lib);
             lib=nullptr;
           }
-        versionFound=version();
       }
       ~RavelLib() {
         if (lib)
@@ -223,7 +224,14 @@ namespace minsky
       RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
       void operator()(A0 a0, A1 a1, A2 a2,A3 a3) {if (f) f(a0,a1,a2,a3);}
     };
-    
+    template <class A0, class A1, class A2,class A3,class A4>
+    struct RavelFn<void,A0,A1,A2,A3,A4>
+    {
+      void (*f)(A0,A1,A2,A3,A4)=nullptr;
+      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
+      void operator()(A0 a0, A1 a1, A2 a2,A3 a3,A4 a4) {if (f) f(a0,a1,a2,a3,a4);}
+    };
+   
 #define DEFFN(f,...) RavelFn<__VA_ARGS__> f(#f,ravelLib.lib);
     
     DEFFN(ravel_lastErr, const char*);
@@ -254,7 +262,7 @@ namespace minsky
     DEFFN(ravel_displayFilterCaliper, void, Ravel::RavelImpl*, size_t, bool);
     DEFFN(ravel_setSlicer,void,Ravel::RavelImpl*,size_t,const char*);
     DEFFN(ravel_setCalipers,void,Ravel::RavelImpl*,size_t,const char*,const char*);
-    DEFFN(ravel_orderLabels, void, Ravel::RavelImpl*, size_t,HandleSort);
+    DEFFN(ravel_orderLabels, void, Ravel::RavelImpl*, size_t,HandleSort,Dimension::Type, const char*);
     DEFFN(ravel_applyCustomPermutation, void, Ravel::RavelImpl*, size_t, size_t, const size_t*);
     DEFFN(ravel_currentPermutation, void, Ravel::RavelImpl*, size_t, size_t, size_t*);
     DEFFN(ravel_toXML, const char*, Ravel::RavelImpl*);
@@ -314,7 +322,7 @@ namespace minsky
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double r=ravelDefaultRadius, z=zoomFactor();
+    double  z=zoomFactor(), r=ravelDefaultRadius*z;
     if (ravel) r=1.1*z*ravel_radius(ravel);
     ports[0]->moveTo(x()+1.1*r, y());
     ports[1]->moveTo(x()-1.1*r, y());
@@ -322,8 +330,9 @@ namespace minsky
       {
         drawPorts(cairo);
         displayTooltip(cairo,tooltip.empty()? explanation: tooltip);
+        // Resize handles always visible on mousefocus. For ticket 92.
+        drawResizeHandles(cairo);
       }
-    if (onResizeHandles) drawResizeHandles(cairo);
     cairo_rectangle(cairo,-r,-r,2*r,2*r);
     cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
     cairo_stroke_preserve(cairo);
@@ -375,17 +384,13 @@ namespace minsky
     double r=1.1*z*(ravel? ravel_radius(ravel): ravelDefaultRadius);
     double R=1.1*r;
     double dx=xx-x(), dy=yy-y();
-    // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-R) < portRadius*z &&
-        fabs(fabs(dy)-R) < portRadius*z &&
-        fabs(hypot(dx,dy)-std::sqrt(2)*R) < portRadius*z)
-      return ClickType::onResize;
-    else if (std::abs(xx-x())>R || std::abs(yy-y())>R)
+    if (onResizeHandle(xx,yy))
+      return ClickType::onResize;         
+    if (std::abs(xx-x())>R || std::abs(yy-y())>R)
       return ClickType::outside;    
-    else if (std::abs(dx)<=r && std::abs(dy)<=r)
+    if (std::abs(dx)<=r && std::abs(dy)<=r)
       return ClickType::onRavel;
-    else
-      return ClickType::onItem;
+    return ClickType::onItem;
   }
 
   int Ravel::selectedHandle() const {
@@ -438,104 +443,76 @@ namespace minsky
         for (size_t i=0; i<ravel_numHandles(ravel); ++i)
           {
             ravel_displayFilterCaliper(ravel,i,false);
-            ravel_orderLabels(ravel,i,HandleState::forward);
+            setHandleSortOrder(HandleState::forward,i);
           }
         setRank(ravel_numHandles(ravel));
       }
   }
 
-  void Ravel::loadDataFromSlice(VariableValue& v) const
+  Hypercube Ravel::hypercube(double*& data) const
   {
-    if (ravel && dataCube)
-      {
-        //        assert(ravel_rank(ravel)==1);
-        vector<size_t> dims(ravel_rank(ravel));
-        double* tmp;
-        ravelDC_hyperSlice(dataCube, ravel, &dims[0], &tmp);
-        if (dims.empty() || dims[0]==0)
-          {
-            if (v.idx()==-1) v.allocValue();
-            if (dims.empty() && tmp) v=tmp[0];
-            return; // do nothing if ravel data is empty
-          }
-        if (tmp)
-          {
-            vector<size_t> outHandles(dims.size());
-            ravel_outputHandleIds(ravel, &outHandles[0]);
-            // For feature 47
-            size_t prevNumElem = v.dataSize();
-            vector<XVector> xv;
-            for (size_t j=0; j<outHandles.size(); ++j)
-              {
-                auto h=outHandles[j];
-                vector<const char*> labels(ravel_numSliceLabels(ravel,h));
-                assert(ravel_numSliceLabels(ravel,h)==dims[j]);
-                ravel_sliceLabels(ravel,h,&labels[0]);
-                assert(all_of(labels.begin(), labels.end(),
-                              [](const char* i){return bool(i);}));
-                xv.emplace_back
-                  (ravel_handleDescription(ravel,h));
-                auto dim=axisDimensions.find(xv.back().name);
-                if (dim!=axisDimensions.end())
-                  xv.back().dimension=dim->second;
-                else
-                  {
-                    auto dim=cminsky().dimensions.find(xv.back().name);
-                    if (dim!=cminsky().dimensions.end())
-                      xv.back().dimension=dim->second;
-                  }
-                // else otherwise dimension is a string (default type)
-                for (size_t i=0; i<labels.size(); ++i)
-                  xv.back().push_back(labels[i]);
-              }
-            v.setXVector(move(xv));
-#ifndef NDEBUG
-            if (dims.size()==v.dims().size())
-              for (size_t i=0; i<dims.size(); ++i)
-                assert(dims[i]==v.dims()[i]);
-#endif
-            // For feature 47
-            if (v.idx()==-1 || (v.dataSize()>prevNumElem))
-              v.allocValue();
-            for (size_t i=0; i< v.dataSize(); ++i)
-              *(v.begin()+i)=tmp[i];
-          }
-        else
-          throw error(ravel_lastErr());
-      }
-    if (v.idx()==-1) v.allocValue();
-  }
+    if (!ravel) return {};
 
-  void Ravel::loadDataCubeFromVariable(const VariableValue& v)
-  {
-    if (ravel && dataCube)
+    vector<size_t> dims(ravel_rank(ravel));
+    ravelDC_hyperSlice(dataCube, ravel, &dims[0], &data);
+    if (dims.size() && dims[0]==0) dims.clear();
+    
+    vector<size_t> outHandles(dims.size());
+    ravel_outputHandleIds(ravel, &outHandles[0]);
+    Hypercube hc;
+    auto& xv=hc.xvectors;
+    for (size_t j=0; j<outHandles.size(); ++j)
       {
-        // this ensure that handles are restored correctly after loading a .mky file. 
+        auto h=outHandles[j];
+        vector<const char*> labels(ravel_numSliceLabels(ravel,h));
+        assert(ravel_numSliceLabels(ravel,h)==dims[j]);
+        ravel_sliceLabels(ravel,h,&labels[0]);
+        assert(all_of(labels.begin(), labels.end(),
+                      [](const char* i){return bool(i);}));
+        xv.emplace_back
+          (ravel_handleDescription(ravel,h));
+        auto dim=axisDimensions.find(xv.back().name);
+        if (dim!=axisDimensions.end())
+          xv.back().dimension=dim->second;
+        else
+          {
+            auto dim=cminsky().dimensions.find(xv.back().name);
+            if (dim!=cminsky().dimensions.end())
+              xv.back().dimension=dim->second;
+          }
+        // else otherwise dimension is a string (default type)
+        for (size_t i=0; i<labels.size(); ++i)
+          xv.back().push_back(labels[i]);
+      }
+    assert(vector<unsigned>(dims.begin(), dims.end())==hc.dims());
+    return hc;
+  }
+  
+  void Ravel::populateHypercube(const Hypercube& hc)
+  {
+    if (ravel)
+      {
         RavelState state=initState.empty()? getState(): initState;
         initState.clear();
         ravel_clear(ravel);
-        for (auto& i: v.xVector)
+        for (auto& i: hc.xvectors)
           {
             vector<string> ss;
-            for (auto& j: i) ss.push_back(str(j));
-            // clear the format if time so that data will reload correctly
-            if (i.dimension.type==Dimension::time)
-              axisDimensions[i.name]=Dimension(Dimension::time,"");
+            for (auto& j: i) ss.push_back(str(j,i.dimension.units));
             vector<const char*> sl;
-            for (auto& j: ss)
-              sl.push_back(j.c_str());
+            for (auto& j: ss) sl.push_back(j.c_str());
             ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
             size_t h=ravel_numHandles(ravel)-1;
             ravel_displayFilterCaliper(ravel,h,false);
-            // set forward sort order
-            ravel_orderLabels(ravel,h,HandleState::forward);
           }
         if (state.empty())
-          setRank(v.xVector.size());
+          setRank(hc.rank());
+        else
+          applyState(state);
 #ifndef NDEBUG
         if (state.empty())
           {
-            auto d=v.dims();
+            auto d=hc.dims();
             assert(d.size()==ravel_rank(ravel));
             vector<size_t> outputHandles(d.size());
             ravel_outputHandleIds(ravel,&outputHandles[0]);
@@ -543,11 +520,9 @@ namespace minsky
               assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
           }
 #endif
-        ravelDC_loadData(dataCube, ravel, v.begin());
-        applyState(state);
       }
   }
-
+  
   unsigned Ravel::maxRank() const
   {
     if (ravel) return ravel_numHandles(ravel);
@@ -609,6 +584,11 @@ namespace minsky
   {
       return allSliceLabelsImpl(ravel_selectedHandle(ravel),HandleState::forward);
   }
+  
+  vector<string> Ravel::allSliceLabelsAxis(int axis) const
+  {
+      return allSliceLabelsImpl(axis,HandleState::forward);
+  }  
 
   vector<string> Ravel::allSliceLabelsImpl(int axis, HandleSort order) const
   {
@@ -664,7 +644,7 @@ namespace minsky
         if (pick.size()>=numSliceLabels)
           {
             // if all labels are selected, revert ordering to previous
-            ravel_orderLabels(ravel,axis,previousOrder);
+            setHandleSortOrder(previousOrder, axis);
             return;
           }
         
@@ -683,6 +663,15 @@ namespace minsky
         ravel_applyCustomPermutation(ravel,axis,customOrder.size(),&customOrder[0]);
       }
   }
+
+  Dimension Ravel::dimension(int handle) const
+  {
+    Dimension dim;
+    auto dimitr=cminsky().dimensions.find(ravel_handleDescription(ravel,handle));
+    if (dimitr!=cminsky().dimensions.end())
+      dim=dimitr->second;
+    return dim;
+  }
   
   Ravel::HandleState::HandleSort Ravel::sortOrder() const
   {
@@ -700,12 +689,30 @@ namespace minsky
  
   Ravel::HandleState::HandleSort Ravel::setSortOrder(Ravel::HandleState::HandleSort x)
   {
-    int h=ravel_selectedHandle(ravel);
-    if (h>=0)
-      ravel_orderLabels(ravel,h,x);
+    if (ravel)
+        setHandleSortOrder(x, ravel_selectedHandle(ravel));
     return x;
   }
 
+  Ravel::HandleState::HandleSort Ravel::setHandleSortOrder(HandleState::HandleSort order, int handle)
+  {
+    if (ravel && handle>=0)
+      {
+        Dimension dim=dimension(handle);
+        ravel_orderLabels(ravel,handle,order,dim.type,dim.units.c_str());
+      }
+    return order;
+  }
+
+  bool Ravel::handleSortableByValue() const
+  {
+    if (!ravel || rank()!=1) return false;
+    size_t ids[]{0};
+    ravel_outputHandleIds(ravel,ids);
+    return size_t(selectedHandle())==ids[0];
+  }
+
+  
   string Ravel::description() const
   {
     return ravel_handleDescription(ravel,ravel_selectedHandle(ravel));
@@ -758,7 +765,10 @@ namespace minsky
           throw error("type mismatch with global dimension");
       }
     else
-      minsky().dimensions[descr]=d;
+      {
+        minsky().dimensions[descr]=d;
+        minsky().imposeDimensions();
+      }
     axisDimensions[descr]=d;
   }
 
@@ -793,6 +803,7 @@ namespace minsky
         ravel_outputHandleIds(ravel,&ids[0]);
         for (size_t i=0; i<ids.size(); ++i)
           state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
+        state.sortByValue=sortByValue;
       }
     return state;
   }
@@ -802,6 +813,7 @@ namespace minsky
   {
     if (ravel)
       {
+        sortByValue=state.sortByValue;
         ravel_rescale(ravel,state.radius);
 
         vector<size_t> ids;
@@ -821,6 +833,7 @@ namespace minsky
               {
                 RavelHandleState state(hs->second);
                 ravel_setHandleState(ravel,i,&state);
+                setHandleSortOrder(state.order,i);
                 if (hs->second.order==HandleState::custom)
                   pickSliceLabels(i,hs->second.customOrder);
                 else if (state.displayFilterCaliper)
@@ -835,9 +848,11 @@ namespace minsky
 
   void Ravel::exportAsCSV(const string& filename) const
   {
-    // TODO: add some comment lines
     VariableValue v(VariableType::flow);
-    loadDataFromSlice(v);
+    TensorsFromPort tp(make_shared<EvalCommon>());
+    tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
+    v=*tensorOpFactory.create(*this, tp);
+    // TODO: add some comment lines
     v.exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
   }
 

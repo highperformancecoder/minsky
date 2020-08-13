@@ -101,10 +101,12 @@ namespace MathDAG
     /// flowVariable has been provided in \a result, that may be used
     /// directly, otherwise a copy operation is added to ensure it
     /// receives the result.
-    virtual VariableValue addEvalOps(EvalOpVector&, VariableValue* result=nullptr)=0;
+    virtual std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& result={})=0;
     /// returns evaluation order in sequence of variable defintions
     /// @param maxOrder is used to limit the recursion depth
     virtual int order(unsigned maxOrder) const=0;
+    /// returns true if the evaluation of this involves tensor processing
+    virtual bool tensorEval() const=0;
     mutable int cachedOrder=-1;
     /// used within io streaming
     LaTeXManip latex() const {return LaTeXManip(*this);}
@@ -116,14 +118,7 @@ namespace MathDAG
     // SystemOfEquations via a templated method.
     virtual std::shared_ptr<Node> derivative(SystemOfEquations&) const=0;
     /// reference to where this node's value is stored
-    /** VariableValues are themselves a kind of reference into the
-        flowVar/stockVar vectors. However, we need a reference to a
-        reference, since we need to redimension them according to what
-        operations return, and that information needs to be propagated
-        to the variableValues map in Minsky.
-     */
-    VariableValue *result=nullptr;
-    VariableValue tmpResult{VariableValue::tempFlow};
+    std::shared_ptr<VariableValue> result, tmpResult{std::make_shared<VariableValue>(VariableValue::tempFlow)};
   };
 
   typedef std::shared_ptr<Node> NodePtr;
@@ -158,10 +153,11 @@ namespace MathDAG
     ConstantDAG(double value): value(str(value)) {}
     int BODMASlevel() const  override {return 0;}
     int order(unsigned maxOrder) const  override {return 0;}
+    bool tensorEval() const override {return false;}
     ostream& latex(ostream& o) const  override {return o<<value;}
     ostream& matlab(ostream& o) const  override {return o<<value;}
     void render(ecolab::cairo::Surface& surf) const override;
-    VariableValue addEvalOps(EvalOpVector&, VariableValue*) override;
+    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>&) override;
     NodePtr derivative(SystemOfEquations&) const override;
   };
 
@@ -188,14 +184,17 @@ namespace MathDAG
       else
         return 0;
     }
+    bool tensorEval() const override;
     using Node::latex;
     using Node::matlab;
     using Node::addEvalOps;
     ostream& latex(ostream&) const override;
     ostream& matlab(ostream&) const override;
-    VariableValue addEvalOps(EvalOpVector&, VariableValue* v=nullptr) override;
+    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>& v={}) override;
     void render(ecolab::cairo::Surface& surf) const override;
     NodePtr derivative(SystemOfEquations&) const override; 
+    /// adds a TensorEvalOp, returns true if successful
+    bool addTensorOp(EvalOpVector& ev);
   };
 
   typedef shared_ptr<VariableDAG> VariableDAGPtr;
@@ -204,7 +203,7 @@ namespace MathDAG
   /// Variable DAG in that it doesn't refer to the VariableValue
   struct IntegralInputVariableDAG: public VariableDAG
   {
-    VariableValue addEvalOps(EvalOpVector&,VariableValue*) override;
+    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&,const std::shared_ptr<VariableValue>&) override;
   };
 
   struct OperationDAGBase: public Node, public OperationType  
@@ -212,14 +211,15 @@ namespace MathDAG
     vector<vector<WeakNodePtr> > arguments;
     string name;
     string init="0";
-    OperationPtr state;
+    ItemPtr state;
     OperationDAGBase(const string& name=""): 
       name(name) {}
     virtual Type type() const=0;
     /// factory method 
     static OperationDAGBase* create(Type type, const string& name="");
     int order(unsigned maxOrder) const override;
-    VariableValue addEvalOps(EvalOpVector&, VariableValue*) override;
+    bool tensorEval() const override;
+    std::shared_ptr<VariableValue> addEvalOps(EvalOpVector&, const std::shared_ptr<VariableValue>&) override;
     void checkArg(unsigned i, unsigned j) const;
   };
 
@@ -260,8 +260,7 @@ namespace MathDAG
   /// represents a Godley column
   struct GodleyColumnDAG: public OperationDAG<OperationType::subtract>
   {
-    //    int godleyId;
-    //GodleyColumnDAG(): godleyId(-1) {}
+    std::string name; //unqualified name of stock variable
     int order(unsigned maxOrder) const override {return 0;} // Godley columns define integration vars
   };
 
@@ -342,7 +341,7 @@ namespace MathDAG
     /// create a variable DAG. returns cached value if previously called
     NodePtr makeDAG(const string& valueId, const string& name, VariableType::Type type);
     NodePtr makeDAG(VariableBase& v)
-    {v.ensureValueExists(); return makeDAG(v.valueId(),VariableValue::uqName(v.name()),v.type());}
+    {v.ensureValueExists(v.vValue().get(),v.name()); return makeDAG(v.valueId(),VariableValue::uqName(v.name()),v.type());}
     /// create an operation DAG. returns cached value if previously called
     NodePtr makeDAG(const OperationBase& op);
     NodePtr makeDAG(const SwitchIcon& op);
@@ -383,7 +382,7 @@ namespace MathDAG
     NodePtr zero{new ConstantDAG("0")}, one{new ConstantDAG("1")};
 
     /// render equations into a cairo context
-    void renderEquations(ecolab::cairo::Surface&) const;
+    void renderEquations(ecolab::cairo::Surface&, double height) const;
   };
 
   /// creates a new name to represent the derivative of a variable

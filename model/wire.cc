@@ -17,8 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "geometry.h"
 #include "wire.h"
+#include "geometry.h"
 #include "port.h"
 #include "group.h"
 #include "selection.h"
@@ -28,7 +28,11 @@ using namespace std;
 
 namespace minsky
 {
-  vector<float> Wire::_coords() const
+  WireAccessor::WireAccessor(): ecolab::TCLAccessor<Wire, std::vector<float>>
+  ("coords", (Getter)&Wire::coords, (Setter)&Wire::coords)  {}
+
+
+  vector<float> Wire::coords() const
   {
     vector<float> c;
     assert(from() && to());
@@ -52,7 +56,7 @@ namespace minsky
     return c;
   }
 
-  vector<float> Wire::_coords(const vector<float>& coords)
+  vector<float> Wire::coords(const vector<float>& coords)
   {
     if (coords.size()<6) 
       m_coords.clear();

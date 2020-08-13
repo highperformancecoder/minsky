@@ -17,6 +17,20 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef CIVITA_DIMENSION_H
+#include "dimension.cd"
+#include "dimension.xcd"
+#endif
+#ifdef CIVITA_INDEX_H
+#include "index.cd"
+#endif
+#ifdef CIVITA_TENSORINTERFACE_H
+#include "tensorInterface.xcd"
+#endif
+#ifdef CIVITA_TENSORVAL_H
+#include "tensorVal.xcd"
+#endif
+
 #ifdef RESTPROCESS_H
 
 namespace classdesc
@@ -46,6 +60,12 @@ namespace classdesc_access
       ::RESTProcess(r,d,a.s);
     }
   };
+
+//  template <class T, class V>
+//  struct access_RESTProcess<ecolab::TCLAccessor<T,V>>: public cd::NullDescriptor<cd::RESTProcess_t> {};
+
+  template <class T, class V, int N>
+  struct access_RESTProcess<ecolab::TCLAccessor<T,V,N>>: public cd::NullDescriptor<cd::RESTProcess_t> {};
 
   template <class T>
   struct access_RESTProcess<ecolab::array<T>>
@@ -95,6 +115,8 @@ namespace classdesc_access
 #ifdef JSON_PACK_BASE_H
 namespace classdesc_access
 {
+
+#ifdef ACCESSOR_H
   template <class T, class G, class S>
   struct access_json_pack<ecolab::Accessor<T,G,S>>
   {
@@ -117,6 +139,12 @@ namespace classdesc_access
     }
   };
 
+  template <class T, class V, int N>
+  struct access_json_pack<ecolab::TCLAccessor<T,V,N>>: public cd::NullDescriptor<cd::json_pack_t> {};
+  template <class T, class V, int N>
+  struct access_json_unpack<ecolab::TCLAccessor<T,V,N>>: public cd::NullDescriptor<cd::json_unpack_t> {};
+#endif
+  
   template <>
   struct access_json_pack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_pack_t> {};
   template <>

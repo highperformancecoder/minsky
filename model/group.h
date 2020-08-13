@@ -187,7 +187,8 @@ namespace minsky
   public:
     
     std::string title;
-    float width{100}, height{100}; // size of icon
+    Group() {iWidth(100); iHeight(100);}
+    ~Group() {}   
     std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 
@@ -216,10 +217,10 @@ namespace minsky
     void drawIORegion(cairo_t*) const;
 
     /// move all items from source to this
-    void moveContents(Group& source); 
+    void moveContents(Group& source);     
 
     /// returns which I/O region (x,y) is in if any
-    struct IORegion {enum type {none,input,output};};
+    struct IORegion {enum type {none,input,output,topBottom};};
       
     IORegion::type inIORegion(float x, float y) const;
     /// check if item is a variable and located in an I/O region, and add it if it is
@@ -274,16 +275,16 @@ namespace minsky
     bool displayContentsChanged() const {return m_displayContentsChanged;}
 
     /// margin sizes to allow space for edge variables. 
-    void margins(float& left, float& right) const;
+    void margins(float& left, float& right) const;    
 
     /// for debugging purposes
     std::vector<float> marginsV() const {
       float l, r; margins(l,r);  return {l,r};
-    }
+    }    
     
     /// computes the zoom at which to show contents, given current
     /// contentBounds and width
-    float displayZoom{1}; ///< extra fzoom at which contents are displayed
+    float displayZoom{1}; ///< extra zoom at which contents are displayed
     float relZoom{1}; ///< relative zoom contents of this group are displayed at
     float computeDisplayZoom();
     void computeRelZoom();
@@ -357,15 +358,13 @@ namespace minsky
       if (i<bookmarks.size())
         bookmarks.erase(bookmarks.begin()+i);
     }
-    void gotoBookmark(size_t i) {
-      if (i<bookmarks.size())
-        {
-          auto& b=bookmarks[i];
-          moveTo(b.x, b.y);
-          zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
-        }
+    void gotoBookmark_b(const Bookmark& b) {
+      moveTo(b.x, b.y);
+      zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
     }
-    
+    void gotoBookmark(size_t i) 
+    {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
+
 
   };
 

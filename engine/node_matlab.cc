@@ -48,18 +48,18 @@ namespace MathDAG
     v.init=init;
     auto t=v.initValue(cminsky().variableValues);
     string r;
-    switch (t.dims.size())
+    switch (t.rank())
       {
-      case 0: return str(t.data[0]);
+      case 0: return str(t[0]);
       case 1: r="[";
-        for (auto i: t.data) r+=str(i)+",";
+        for (auto i: t) r+=str(i)+",";
         return r+"]";
       case 2:
         r="[";
-        for (size_t i=0; i<t.dims[1]; ++i)
+        for (size_t i=0; i<t.hypercube().xvectors[1].size(); ++i)
           {
-            for (size_t j=0; j<t.dims[0]; ++j)
-              r+=str(t.data[i*t.dims[0]+j])+",";
+            for (size_t j=0; j<t.hypercube().xvectors[0].size(); ++j)
+              r+=str(t[i*t.hypercube().xvectors[0].size()+j])+",";
             r+=";";
           }
         return r+"]";
@@ -320,7 +320,37 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::time>::matlab(ostream& o) const
   {
     return o<<"t";
+  }    
+ 
+  template <>
+  ostream& OperationDAG<OperationType::euler>::matlab(ostream& o) const
+  {
+    return o<<"e";
   }
+
+  template <>
+  ostream& OperationDAG<OperationType::pi>::matlab(ostream& o) const
+  {
+    return o<<"pi";
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::zero>::matlab(ostream& o) const
+  {
+    return o<<"0";
+  }
+
+  template <>
+  ostream& OperationDAG<OperationType::one>::matlab(ostream& o) const
+  {
+    return o<<"1";
+  }            
+ 
+  template <>
+  ostream& OperationDAG<OperationType::inf>::matlab(ostream& o) const
+  {
+    return o<<"inf";
+  }  
 
   template <>
   ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const
@@ -463,6 +493,34 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"frac("<<arguments[0][0]->matlab()<<")";
   }
+  
+  template <>
+  ostream& OperationDAG<OperationType::percent>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"100*("<<arguments[0][0]->matlab()<<")";
+  }
+ 
+  template <>
+  ostream& OperationDAG<OperationType::gamma>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"gamma("<<arguments[0][0]->matlab()<<")";
+  }    
+  
+  template <>
+  ostream& OperationDAG<OperationType::polygamma>::matlab(ostream& o) const
+  {
+    checkArg(0,0); checkArg(1,0);
+    return o<<"psi(floor("<<arguments[1][0]->matlab()<<"),("<<arguments[0][0]->matlab()<<"))";
+  }       
+  
+  template <>
+  ostream& OperationDAG<OperationType::fact>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"gamma(1+("<<arguments[0][0]->matlab()<<"))";
+  }  
 
   template <>
   ostream& OperationDAG<OperationType::sum>::matlab(ostream& o) const

@@ -16,10 +16,10 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# disable tear-off menus
 
 set fname ""
 set workDir [pwd]
+encoding system utf-8
 
 # On mac-build versions, fontconfig needs to find its config file,
 # which is packaged up in the Minsky.app directory
@@ -42,6 +42,7 @@ set backgroundColour lightGray
 set preferences(nRecentFiles) 10
 set preferences(panopticon) 1
 set preferences(focusFollowsMouse) 0
+set preferences(multipleEquities) 0
 set recentFiles {}
 
 # select Arial Unicode MS by default, as this gives decent Unicode support
@@ -196,6 +197,7 @@ proc setBackgroundColour bgc {
     if [winfo exists .controls.runmode] {.controls.runmode configure -selectcolor $bgc}
 }
 
+# disable tear-off menus
 option add *Menu.tearOff 0
 wm deiconify .
 tk appname [file rootname [file tail $argv(0)]]
@@ -203,7 +205,24 @@ wm title . "$progName: $fname"
 setBackgroundColour $backgroundColour
 proc tk_focusPrev {win} {return $win}
 proc tk_focusNext {win} {return $win}
-if $preferences(focusFollowsMouse) tk_focusFollowsMouse
+canvas.focusFollowsMouse $preferences(focusFollowsMouse)
+if {$preferences(focusFollowsMouse)} {
+    tk_focusFollowsMouse
+# Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.	
+} else {
+    set old [bind all <Enter>]
+    set script {
+	if {"%d" eq "NotifyAncestor" || "%d" eq "NotifyNonlinear" \
+		|| "%d" eq "NotifyInferior"} {
+	       tk::FocusOK %W	
+	    }
+    }
+    if {$old ne ""} {
+	bind all <Enter> "$old; $script"
+    } else {
+	bind all <Enter> $script
+    }
+}
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
 #source $minskyHome/library/htmllib.tcl
@@ -289,7 +308,7 @@ if {[tk windowingsystem] == "aqua"} {
 menu .menubar.file
 .menubar add cascade -menu .menubar.file -label File -underline 0
 
-menu .menubar.edit
+menu .menubar.edit -postcommand togglePaste
 .menubar add cascade -menu .menubar.edit -label Edit -underline 0
 
 menu .menubar.bookmarks -postcommand generateBookmarkMenu
@@ -310,11 +329,12 @@ set preferencesVars {
     godleyDisplay        "Godley Table Show Values"      1      bool
     godleyDisplayStyle       "Godley Table Output Style"    sign  { enum
         "DR/CR" DRCR
-        "+/-" sign } 
+        "+/-" sign }       
+    multipleEquities     "Enable multiple equity columns"      1      bool         
     nRecentFiles          "Number of recent files to display" 10 text
     wrapLaTeXLines        "Wrap long equations in LaTeX export" 1 bool
     panopticon        "Enable panopticon" 1 bool
-    focusFollowsMouse        "Focus follows mouse" 1 bool
+    focusFollowsMouse        "Focus follows mouse" 1 bool    
 }
 lappend preferencesVars defaultFont "Font" [defaultFont] font
 
@@ -359,8 +379,11 @@ proc showPreferences {} {
             }
             font {
                 grid [ttk::combobox .preferencesForm.font -textvariable preferences_input($var) -values [lsort [listFonts]] -state readonly] -row $row -column 20 -sticky w
+                image create cairoSurface fontSampler -surface minsky.fontSampler
+                grid [label .preferencesForm.fontSample -image fontSampler -width 150 -height 20] -row $row -column 30 -sticky w
                 bind .preferencesForm.font <<ComboboxSelected>> {
                     defaultFont [.preferencesForm.font get]
+                    fontSampler.requestRedraw
                     canvas.requestRedraw
                 }
             }
@@ -616,7 +639,7 @@ proc renderImage {filename type surf} {
 }
 
 proc exportCanvas {} {
-    global workDir type fname preferences
+    global workDir type fname preferences tabSurface
 
     set fileTypes [imageFileTypes]
     lappend fileTypes {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}
@@ -624,7 +647,9 @@ proc exportCanvas {} {
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
     set workDir [file dirname $f]
-    if [renderImage $f $type canvas] return
+    # extract the surface name from the current tab, for #912
+    set surf [lindex [.tabs tabs] [.tabs index current]].canvas
+    if [renderImage $f $type $tabSurface([.tabs tab current -text])] return
     if {[string match -nocase *.tex "$f"]} {
         latex "$f" $preferences(wrapLaTeXLines)
     } elseif {[string match -nocase *.m "$f"]} {
@@ -686,10 +711,19 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Undo" -command "undo 1" -accelerator $meta_menu-Z
 .menubar.edit add command -label "Redo" -command "undo -1" -accelerator $meta_menu-Y
 .menubar.edit add command -label "Cut" -command cut -accelerator $meta_menu-X
-.menubar.edit add command -label "Copy" -command minsky.copy -accelerator $meta_menu-C
-.menubar.edit add command -label "Paste" -command minsky.paste -accelerator $meta_menu-V
+.menubar.edit add command -label "Copy" -command "minsky.copy" -accelerator $meta_menu-C
+.menubar.edit add command -label "Paste" -command "minsky.paste" -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
+.menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
+
+proc togglePaste {} {
+    if {[getClipboard]==""} {
+	.menubar.edit entryconfigure "Paste" -state disabled
+    } else {
+	.menubar.edit entryconfigure "Paste" -state normal
+    }
+}
 
 proc undo {delta} {
     # do not record changes to state from the undo command
@@ -718,6 +752,7 @@ proc dimensionsDialog {} {
                             $d.units [.dimensions.g${i}_units get]
                         }
                     }
+                imposeDimensions
                 wm withdraw .dimensions
                 reset
             }]
@@ -749,7 +784,12 @@ proc dimensionsDialog {} {
     }
 }
 
+set timeFormatStrings {
+    "%Y-%m-%d" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q" "%m/%d/%y"
+}
+
 proc dimFormatPopdown {comboBox type} {
+    global timeFormatStrings
     switch $type {
         string {
             $comboBox configure -values {}
@@ -759,13 +799,16 @@ proc dimFormatPopdown {comboBox type} {
             $comboBox configure -values {}
         }
         time {
-            $comboBox configure -values {
-                "%Y-%m-%D" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q"
-            }
+            $comboBox configure -values $timeFormatStrings
         }
     }
 }
-    
+
+proc pasteAt {} {
+    minsky.paste
+    canvas.mouseMove [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
+}
+
 wm protocol . WM_DELETE_WINDOW exit
 # keyboard accelerators
 bind . <$meta-s> save
@@ -786,8 +829,8 @@ bind . <$meta-x> {minsky.cut}
 bind . <$meta-X> {minsky.cut}
 bind . <$meta-c> {minsky.copy}
 bind . <$meta-C> {minsky.copy}
-bind . <$meta-v> {minsky.paste}
-bind . <$meta-V> {minsky.paste}
+bind . <$meta-v> {pasteAt}
+bind . <$meta-V> {pasteAt}
 bind . <$meta-g> {minsky.createGroup}
 bind . <$meta-G> {minsky.createGroup}
 
@@ -828,7 +871,7 @@ proc textEntryPopup {win init okproc} {
     if {![winfo exists $win]} {
         toplevel $win
         entry $win.entry
-        pack $win.entry -side top
+        pack $win.entry -side top -ipadx 50
         buttonBar $win $okproc
     } else {
         wm deiconify $win
@@ -842,36 +885,32 @@ proc textEntryPopup {win init okproc} {
     
 }
 
-source $minskyHome/godley.tcl
-source $minskyHome/wiring.tcl
-source $minskyHome/plots.tcl
-source $minskyHome/group.tcl
-source $minskyHome/csvImport.tcl
+proc addTab {window label surface} {
+    image create cairoSurface rendered$window -surface $surface
+    ttk::frame .$window
+    global canvasHeight canvasWidth tabSurface
+    label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
+    .tabs add .$window -text $label -padding 0
+    set tabSurface($label) $surface
+}
 
 # add the tabbed windows
-.tabs add .wiring -text "Wiring" -padding 0
-
-image create cairoSurface renderedEquations -surface minsky.equationDisplay
-#-file $minskyHome/icons/plot.gif
-ttk::frame .equations 
-label .equations.canvas -image renderedEquations -height $canvasHeight -width $canvasWidth
+addTab wiring "Wiring" minsky.canvas
+addTab equations "Equations" minsky.equationDisplay
 pack .equations.canvas -fill both -expand 1
-.tabs add .equations -text equations -padding 0
-.tabs select 0
-
-image create cairoSurface renderedPars -surface minsky.parameterSheet
-ttk::frame .parameters
-label .parameters.canvas -image renderedPars -height $canvasHeight -width $canvasWidth
+addTab parameters "Parameters" minsky.parameterSheet
 pack .parameters.canvas -fill both -expand 1
-.tabs add .parameters -text parameters -padding 0
+addTab variables "Variables" minsky.variableSheet
+pack .variables.canvas -fill both -expand 1
 .tabs select 0
 
-image create cairoSurface renderedVars -surface minsky.variableSheet
-ttk::frame .variables
-label .variables.canvas -image renderedVars -height $canvasHeight -width $canvasWidth
-pack .variables.canvas -fill both -expand 1
-.tabs add .variables -text variables -padding 0
-.tabs select 0
+source $minskyHome/godley.tcl
+source $minskyHome/plots.tcl
+source $minskyHome/group.tcl
+source $minskyHome/wiring.tcl
+source $minskyHome/csvImport.tcl
+
+pack .wiring.canvas -fill both -expand 1
 
 image create cairoSurface panopticon -surface minsky.panopticon
 label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
@@ -880,14 +919,16 @@ minsky.panopticon.width $canvasWidth
 minsky.panopticon.height $canvasHeight
 bind .wiring.canvas <Configure> {setScrollBars; minsky.panopticon.width %w; minsky.panopticon.height %h; panopticon.requestRedraw}
 bind .equations.canvas <Configure> {setScrollBars}
+bind .parameters.canvas <Configure> {setScrollBars}
+bind .variables.canvas <Configure> {setScrollBars}
 
 set helpTopics(.wiring.panopticon) Panopticon
 
 proc setScrollBars {} {
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
-            set x0 [expr (10000-[model.x])/20000.0]
-            set y0 [expr (10000-[model.y])/20000.0]
+            set x0 [expr (10000-[minsky.canvas.model.x])/20000.0]
+            set y0 [expr (10000-[minsky.canvas.model.y])/20000.0]
             .hscroll set $x0 [expr $x0+[winfo width .wiring.canvas]/20000.0]
             .vscroll set $y0 [expr $y0+[winfo height .wiring.canvas]/20000.0]
         }
@@ -902,12 +943,16 @@ proc setScrollBars {} {
             } else {.vscroll set  0 1}
         }
         .parameters {
-            .hscroll set 0 1
-            .vscroll set 0 1  
+            set x0 [expr (10000-[parameterSheet.offsx])/20000.0]
+            set y0 [expr (10000-[parameterSheet.offsy])/20000.0]       
+            .hscroll set $x0 [expr $x0+[winfo width .parameters.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .parameters.canvas]/20000.0]           
 		}      
         .variables {
-            .hscroll set 0 1
-            .vscroll set 0 1                 
+            set x0 [expr (10000-[variableSheet.offsx])/20000.0]
+            set y0 [expr (10000-[variableSheet.offsy])/20000.0]
+            .hscroll set $x0 [expr $x0+[winfo width .variables.canvas]/20000.0]
+            .vscroll set $y0 [expr $y0+[winfo height .variables.canvas]/20000.0]                 
         }        
     }
 }
@@ -918,7 +963,7 @@ proc panCanvas {offsx offsy} {
     global preferences
     switch [lindex [.tabs tabs] [.tabs index current]] {
         .wiring {
-            model.moveTo $offsx $offsy
+            minsky.canvas.model.moveTo $offsx $offsy
             canvas.requestRedraw
             if $preferences(panopticon) {panopticon.requestRedraw}
         }
@@ -928,10 +973,14 @@ proc panCanvas {offsx offsy} {
             equationDisplay.requestRedraw
         }
         .parameters {
+            parameterSheet.offsx $offsx
+            parameterSheet.offsy $offsy			
             parameterSheet.requestRedraw
         }        
         .variables {
-            variablesSheet.requestRedraw
+            variableSheet.offsx $offsx
+            variableSheet.offsy $offsy						
+            variableSheet.requestRedraw
         }           
     }
     setScrollBars
@@ -945,8 +994,8 @@ proc scrollCanvases {xyview args} {
     set wh [winfo height $win]
     switch $win {
         .wiring {
-            set x [model.x]
-            set y [model.y]
+            set x [minsky.canvas.model.x]
+            set y [minsky.canvas.model.y]
             set w [expr 10*$ww]
             set h [expr 10*$wh]
             set x1 [expr 0.5*$w]
@@ -960,6 +1009,22 @@ proc scrollCanvases {xyview args} {
             set w [equationDisplay.width]
             set h [equationDisplay.height]
         }
+        .parameters {
+            set x [parameterSheet.offsx]
+            set y [parameterSheet.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]       
+        }
+        .variables {
+            set x [variableSheet.offsx]
+            set y [variableSheet.offsy]
+            set w [expr 10*$ww]
+            set h [expr 10*$wh]
+            set x1 [expr 0.5*$w]
+            set y1 [expr 0.5*$h]
+        }                
     }
     switch [lindex $args 0] {
         moveto {
@@ -1008,6 +1073,21 @@ bind .equations.canvas <Button-1> {
 }
 bind .equations.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 
+# parameters pan mode
+.parameters.canvas configure -cursor $panIcon
+bind .parameters.canvas <Button-1> {
+    set panOffsX [expr %x-[parameterSheet.offsx]]
+    set panOffsY [expr %y-[parameterSheet.offsy]]
+}
+bind .parameters.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
+
+# variables pan mode
+.variables.canvas configure -cursor $panIcon
+bind .variables.canvas <Button-1> {
+    set panOffsX [expr %x-[variableSheet.offsx]]
+    set panOffsY [expr %y-[variableSheet.offsy]]
+}
+bind .variables.canvas <B1-Motion> {panCanvas [expr %x-$panOffsX] [expr %y-$panOffsY]}
 grid .sizegrip -row 999 -column 999
 grid .vscroll -column 999 -row 10 -rowspan 989 -sticky ns
 grid .hscroll -row 999 -column 0 -columnspan 999 -sticky ew
@@ -1105,10 +1185,8 @@ proc simulate {} {
               set d [expr int(pow(10,$delay/4.0))]
               after $d {
                   if [running] {
-                      if {![running] && [reset_flag]} runstop else {
-                          step
-                          simulate
-                      }
+                      step
+                      simulate
                   }
               }
         }
@@ -1136,10 +1214,7 @@ proc reset {} {
         .controls.statusbar configure -text "t: 0 Δt: 0"
         .controls.run configure -image runButton
 
-        global oplist lastOp
-        set oplist [opOrder]
         redrawAllGodleyTables
-        set lastOp -1
         return -code $err $result
     }
 }
@@ -1168,13 +1243,27 @@ proc openFile {} {
     if [string length $ofname] {eval openNamedFile $ofname}
 }
 
+proc autoBackupName {} {
+    global fname
+    return "$fname#"
+}
 proc openNamedFile {ofname} {
     global fname workDir preferences
     newSystem
     setFname $ofname
-
-    eval minsky.load {$ofname}
+    
+    if {[file exists [autoBackupName]] && [tk_messageBox -message "Auto save file exists, do you wish to load it" -type yesno]=="yes"} {
+        eval minsky.load {[autoBackupName]}
+    } else {
+        eval minsky.load {$ofname}
+        file delete [autoBackupName]
+    }
     doPushHistory 0
+    setAutoSaveFile [autoBackupName]
+
+    # minsky.load resets minsky.multipleEquities, so restore it to preferences
+    minsky.multipleEquities $preferences(multipleEquities)
+    canvas.focusFollowsMouse $preferences(focusFollowsMouse)
     pushFlags
     recentreCanvas
 
@@ -1217,6 +1306,7 @@ proc save {} {
     if [string length $fname] {
         set workDir [file dirname $fname]
         eval minsky.save {$fname}
+        file delete [autoBackupName]
     }
 }
 
@@ -1224,15 +1314,12 @@ proc saveAs {} {
     global fname workDir
     setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir \
               -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]
-    if [string length $fname] {
-        set workDir [file dirname $fname]
-        eval minsky.save {$fname}
-    }
+    if [string length $fname] save
 }
 
 proc newSystem {} {
     doPushHistory 0
-    if [edited] {
+    if {[edited] || [file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save?" -type yesnocancel] {
             yes save
             no {}
@@ -1354,13 +1441,31 @@ proc setPreferenceParms {} {
 	set preferences($var) $preferences_input($var)
     }
     defaultFont $preferences(defaultFont)
+    multipleEquities $preferences(multipleEquities)
     setGodleyDisplay
     if {$preferences(panopticon)} {
         place .wiring.panopticon -relx 1 -rely 0 -anchor ne
     } else {
         place forget .wiring.panopticon
     }
-    if {$preferences(focusFollowsMouse)} tk_focusFollowsMouse
+    canvas.focusFollowsMouse $preferences(focusFollowsMouse)
+    if {$preferences(focusFollowsMouse)} {
+        tk_focusFollowsMouse
+	# Make tab traversal possible within a window that is given focus by only clicking on it (no focusFollowsMouse). For ticket 901.
+    } else {
+       set old [bind all <Enter>]
+       set script {
+	   if {"%d" eq "NotifyAncestor" || "%d" eq "NotifyNonlinear" \
+	   	|| "%d" eq "NotifyInferior"} {
+	          tk::FocusOK %W	
+	       }
+       }
+       if {$old ne ""} {
+	   bind all <Enter> "$old; $script"
+       } else {
+	   bind all <Enter> $script
+       }
+    }
 }
 
 setPreferenceParms
@@ -1434,7 +1539,7 @@ proc openURL {URL} {
     } elseif [catch {exec xdg-open $URL &}] {
         # try a few likely suspects
         foreach browser {firefox konqueror seamonkey opera} {
-            set browserNotFound [catch {exec firefox $URL &}]
+            set browserNotFound [catch {exec $browser $URL &}]
             if {!$browserNotFound} break
         }
         if $browserNotFound {
@@ -1459,6 +1564,7 @@ proc help {topic} {
 proc aboutMinsky {} {
   tk_messageBox -message "
    Minsky [minskyVersion]\n
+   Version used to save file [fileVersion]\n
    EcoLab [ecolabVersion]\n
    Tcl/Tk [info tclversion]\n
    Ravel [ravelVersion]
@@ -1493,10 +1599,10 @@ proc deleteSubsidiaryTopLevels {} {
 
 proc exit {} {
     # check if the model has been saved yet
-    if [edited] {
+    if {[edited]||[file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
-            no {}
+            no {file delete [autoBackupName]}
             cancel {return -level [info level]}
         }
     }

@@ -66,18 +66,29 @@ namespace minsky
       cell(1,0)=initialConditions;
       
     }
-
+    
     GodleyTable(const GodleyTable& other)
       : m_assetClass(other.m_assetClass),
         data(other.data),
         doubleEntryCompliant(other.doubleEntryCompliant),
         title(other.title)
     { }
+  
+    // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
+    bool operator==(const GodleyTable& other) const 
+    {
+		return (data==other.data && m_assetClass==other.m_assetClass &&
+		 doubleEntryCompliant==other.doubleEntryCompliant && title==other.title);
+    }    
 
     /// class of each column (used in DE compliant mode)
     const vector<AssetClass>& _assetClass() const {return m_assetClass;}
     AssetClass _assetClass(size_t col) const;
     AssetClass _assetClass(size_t col, AssetClass cls);
+    
+    /// Check whether more than one equity column is present
+    /// irrespective of single or multiple equity column mode.
+    bool singleEquity() const;
 
     /**
      * Generates a unique name for this table.
@@ -99,11 +110,14 @@ namespace minsky
        @return current asset class value for column \a col
        sets if assetClass present, otherwise gets
     */
-    string assetClass(ecolab::TCL_args args);
+    string assetClass(ecolab::TCL_args args); 
   
-    // returns true if \a row is an "Initial Conditions" row
+    /// returns true if \a row is an "Initial Conditions" row
     bool initialConditionRow(unsigned row) const;
-
+    
+    /// return true if row is empty apart from a value in column \a col
+    bool singularRow(unsigned row, unsigned col);
+    
     size_t rows() const {return data.size();}
     size_t cols() const {return data.empty()? 0: data[0].size();}
 
@@ -120,7 +134,9 @@ namespace minsky
     */
     /// insert row at \a row
     void insertRow(unsigned row);
-   /// insert col at \a col
+    /// delete row at \a row
+    void deleteRow(unsigned row) {data.erase(data.begin()+row);}
+    /// insert col at \a col
     void insertCol(unsigned col);
     /// delete col before \a col
     void deleteCol(unsigned col);
@@ -128,7 +144,7 @@ namespace minsky
 
     /// move row \a row down by \a n places (up if -ve)
     void moveRow(int row, int n);
-    void moveCol(int row, int n);
+    void moveCol(int col, int n);
 
     void dimension(unsigned rows, unsigned cols) {clear(); resize(rows,cols);}
 
@@ -142,6 +158,8 @@ namespace minsky
         throw std::out_of_range("Godley table index error");
       return data[row][col];
     }
+    bool cellInTable(int row, int col) const
+    {return row>=0 && size_t(row)<rows() && col>=0 && size_t(col)<cols();}
     string getCell(unsigned row, unsigned col) const {
       if (row<rows() && col<cols())
         return cell(row,col);
@@ -154,6 +172,9 @@ namespace minsky
     /// get the vector of unique variable names from the interior of the
     /// table, in row, then column order
     std::vector<std::string> getVariables() const;
+    /// save text in currently highlighted column heading for renaming all variable instances
+    /// and to enable user to fix problems
+    std::string savedText;
 
     /// get column data
     std::vector<std::string> getColumn(unsigned col) const;

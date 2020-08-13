@@ -49,7 +49,7 @@ namespace minsky
   class OperationPtr;
 
   class OperationBase: virtual public classdesc::PolyPackBase,
-                       public Item, public OperationType
+                       public BottomRightResizerItem, public OperationType
   {
     CLASSDESC_ACCESS(OperationBase);
   public:
@@ -62,6 +62,9 @@ namespace minsky
     static OperationBase* create(Type type); 
     virtual Type type() const=0;
 
+    const OperationBase* operationCast() const override {return this;}
+    OperationBase* operationCast() override {return this;}
+    
     virtual ~OperationBase() {}
 
     /// visual representation of operation on the canvas
@@ -77,6 +80,8 @@ namespace minsky
     virtual void addPorts();
 
     void draw(cairo_t*) const override;
+    void resize(const LassoBox& b) override;
+    float scaleFactor() const override;       
 
     /// current value of output port
     double value() const override;
@@ -96,7 +101,7 @@ namespace minsky
   protected:
 
     friend struct EvalOpBase;
-    friend class SchemaHelper;
+    friend struct SchemaHelper;
   };
 
   template <minsky::OperationType::Type T>
@@ -148,14 +153,17 @@ namespace minsky
     Units units(bool check) const override {return ports[1]->units(check);}
   };
 
+  class IntOp;
+  struct IntOpAccessor: public ecolab::TCLAccessor<minsky::IntOp, std::string>
+  {IntOpAccessor();};
   
-  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>
+  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>,
+               public IntOpAccessor
   {
     typedef Operation<OperationType::integrate> Super;
     // integrals have named integration variables
     ///integration variable associated with this op.
     CLASSDESC_ACCESS(IntOp);
-    //   void addPorts() override; //. Also allocates new integral var if intVar==-1
     friend struct SchemaHelper;
   public:
     // offset for coupled integration variable, tr
@@ -164,22 +172,22 @@ namespace minsky
     IntOp() {description("");}
     // ensure that copies create a new integral variable
     IntOp(const IntOp& x): 
-      OperationBase(x), Super(x) {group.reset();intVar.reset(); description(x.description());}
+      OperationBase(x), Super(x) {intVar.reset(); description(x.description());}
     ~IntOp() {removeControlledItems();}
     
     const IntOp& operator=(const IntOp& x); 
 
     /// @{ name of the associated integral variable
-    void description_(std::string desc);
-    Accessor<std::string> description {
-      [this]() {return intVar? intVar->name(): "";},
-        [this](const std::string& x) {
-          description_(x); return intVar? intVar->name(): "";
-        }};
+    std::string description(const std::string& desc);
+    std::string description() const {return intVar? intVar->name(): "";}
     /// @}
 
     string valueId() const 
     {return intVar->valueId();}
+      
+    void draw(cairo_t*) const override;
+    void resize(const LassoBox& b) override;  
+    std::pair<double,Point> rotatedPoints() const override;        
 
     void removeControlledItems() const override;
 
@@ -203,11 +211,25 @@ namespace minsky
     void insertControlled(Selection& selection) override;
   };
 
-  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>
+  class DataOp: public ItemT<DataOp, Operation<minsky::OperationType::data>>,
+                public ecolab::TCLAccessor<DataOp,std::string>
   {
     CLASSDESC_ACCESS(DataOp);
+    friend struct SchemaHelper;
+    string m_description;
   public:
-    string description;
+    DataOp(): ecolab::TCLAccessor<DataOp,std::string>
+      ("description",(ecolab::TCLAccessor<DataOp,std::string>::Getter)&DataOp::description,
+       (ecolab::TCLAccessor<DataOp,std::string>::Setter)&DataOp::description)
+    {}
+    ~DataOp() {}
+    
+    const DataOp& operator=(const DataOp& x); 
+
+    /// @{ name of the associated data operation
+    std::string description() const;  
+    std::string description(const std::string&);    
+    /// @}
     std::map<double, double> data;
     void readData(const string& fileName);
     /// initialise with uniform random numbers 

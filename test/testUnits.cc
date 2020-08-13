@@ -114,13 +114,19 @@ SUITE(Units)
     if (OperationType::classify(op)==OperationType::tensor) return;
     init(op);
     // most single arg functions are dimensionless, and args must match for two args
-    if (OperationTypeInfo::numArguments<op>()>0)
+    if (OperationTypeInfo::numArguments<op>()>0 && op!=OperationType::percent)
       CHECK_THROW(opp->checkUnits(), std::exception);
 
     from2->setUnits(from1->unitsStr());
     if (OperationTypeInfo::numArguments<op>()==1)
-      CHECK_THROW(opp->checkUnits(), std::exception);
-    else
+       if (op!=OperationType::percent)
+         CHECK_THROW(opp->checkUnits(), std::exception);
+       else {
+		  // Add % sign to units from input to % operator. 
+		  from1->setUnits("%"+from1->unitsStr());
+		  CHECK(opp->checkUnits()==from1->units());  
+	   }
+    else 
       CHECK(opp->checkUnits()==from1->units());
   }
 
@@ -184,14 +190,21 @@ SUITE(Units)
     from2->setUnits(from1->unitsStr());
     CHECK_THROW(opp->checkUnits(),std::exception);
   }
+
+  template <> void TestOp::impl<OperationType::polygamma>()
+  {
+    init(OperationType::polygamma);
+    // polygamma's arguments must be dimensionless
+    CHECK_THROW(opp->checkUnits(),std::exception);
+    from2->setUnits(from1->unitsStr());
+    CHECK_THROW(opp->checkUnits(),std::exception);
+  }  
   
   template <> void TestOp::impl<OperationType::copy>()
   {
     init(OperationType::copy);
     CHECK(opp->checkUnits()==from1->units());
   }
-  
-
 
   template <> void TestOp::impl<OperationType::divide>()
   {

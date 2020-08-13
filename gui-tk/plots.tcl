@@ -44,7 +44,7 @@ proc deiconifyPltWindowOptions {} {
 
         frame .pltWindowOptions.plotType
         label .pltWindowOptions.plotType.label -text "Plot type"
-        ttk::combobox  .pltWindowOptions.plotType.val -width 20 -state readonly -textvariable plotWindowOptions(plotType) -value {line bar}
+        ttk::combobox  .pltWindowOptions.plotType.val -width 20 -state readonly -textvariable plotWindowOptions(plotType) -value {line bar automatic}
         pack .pltWindowOptions.plotType.label .pltWindowOptions.plotType.val  -side left
         
         
@@ -220,7 +220,7 @@ proc penStyleOK plot {
             "- · -" {$p.dashStyle dashDot}
         }
     }
-    $plot.redraw
+    $plot.requestRedraw
 }
 
 proc addRow plot {

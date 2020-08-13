@@ -34,43 +34,40 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o parameterSheet.o variableSheet.o
+MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIcon.o godleyTable.o cairoItems.o godleyIcon.o SVGItem.o plotWidget.o canvas.o panopticon.o godleyTableWindow.o ravelWrap.o sheet.o CSVDialog.o selection.o parVarSheet.o variableInstanceList.o
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
-	latexMarkup.o variableValue.o xvector.o node_latex.o node_matlab.o CSVParser.o
-SERVER_OBJS=database.o message.o websocket.o databaseServer.o
-SCHEMA_OBJS=schema2.o schema1.o schema0.o variableType.o operationType.o a85.o
+	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o
+TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o
+SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o operationType.o a85.o
 #schema0.o 
 GUI_TK_OBJS=tclmain.o minskyTCL.o itemTemplateInstantiations.o
 RESTSERVICE_OBJS=minskyRS.o itemRS.o
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SERVER_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS) $(RESTSERVICE_OBJS) RESTService.o httpd.o
 
 EXES=gui-tk/minsky$(EXE) RESTService/minsky-RESTService$(EXE) RESTService/minsky-httpd$(EXE)
-# $(SERVER_OBJS)
-#RESTService/RESTService 
-#EXES=gui-tk/minsky server/server
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
+LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Imodel -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
 
-VPATH= schema model engine gui-tk server RESTService $(ECOLAB_HOME)/include
+FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs
+
+
+VPATH= schema model engine tensor gui-tk RESTService $(ECOLAB_HOME)/include
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
-	$(CLASSDESC) -typeName -nodef -respect_private \
-	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	xml_pack xml_unpack xsd_generate >$@
+	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
+	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< \
+	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
 
 .h.rcd:
-	$(CLASSDESC) -typeName -nodef -respect_private \
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -respect_private \
 	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	json_pack json_unpack >$@
-	$(CLASSDESC) -typeName -nodef -respect_private -use_mbr_pointers -overload \
-	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	RESTProcess >>$@
+	RESTProcess >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -109,12 +106,10 @@ endif
 LIBS+=	-ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
-	-lboost_filesystem$(BOOST_EXT) -lgsl -lgslcblas  
+	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
-LIBS+=-lboost_thread$(BOOST_EXT)
-else
-LIBS+=-lboost_thread$(BOOST_EXT) 
+LIBS+=-lcrypt32
 endif
 
 ifdef CPUPROFILE
@@ -127,8 +122,6 @@ FLAGS+=$(shell $(PKG_CONFIG) --cflags librsvg-2.0)
 LIBS+=$(shell $(PKG_CONFIG) --libs librsvg-2.0)
 
 GUI_LIBS=
-#SERVER_LIBS=-lwebsocketpp -lsoci_core 
-SERVER_LIBS=-lsoci_core 
 # disable a deprecation warning that comes from Wt
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
@@ -173,7 +166,7 @@ endif
 MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
@@ -183,14 +176,10 @@ ifdef MXE
 	cp -r $(TK_LIB) gui-tk/library/tk
 endif
 
-server/server: tclmain.o $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SERVER_OBJS) $(GUI_OBJS)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS)  $(SERVER_LIBS) -o $@
-	-ln -sf `pwd`/GUI/library server
-
-RESTService/minsky-RESTService$(EXE): RESTService.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+RESTService/minsky-RESTService$(EXE): RESTService.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
-RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS)
+RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 -L. $(LIBS) -o $@
 
 gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
@@ -214,18 +203,16 @@ doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 tests: $(EXES)
 	cd test; $(MAKE)
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno
 
 clean:
-	-$(BASIC_CLEAN) minsky.xsd *.gcda *.gcno
+	-$(BASIC_CLEAN) minsky.xsd
 	-rm -f $(EXES)
-	-cd test; $(MAKE) clean
+	-cd test; $(MAKE)  clean
 	-cd gui-tk; $(BASIC_CLEAN)
 	-cd model; $(BASIC_CLEAN)
 	-cd engine; $(BASIC_CLEAN)
 	-cd schema; $(BASIC_CLEAN)
-	-cd gui-wt; $(BASIC_CLEAN)
-	-cd server; $(BASIC_CLEAN)
 	-cd ecolab; $(MAKE) clean
 
 mac-dist: gui-tk/minsky
@@ -234,7 +221,7 @@ mac-dist: gui-tk/minsky
 	sh -v mkMacDist.sh
 
 minsky.xsd: gui-tk/minsky
-	gui-tk/minsky exportSchema.tcl 2
+	gui-tk/minsky exportSchema.tcl 3
 
 upload-schema: minsky.xsd
 	scp minsky.xsd $(SF_WEB)
@@ -270,6 +257,7 @@ install-manual: doc/minsky/labels.pl
 tcl-cov:
 	rm -f minsky.cov minsky.cov.{pag,dir} coverage.o
 	-env MINSKY_COV=`pwd`/minsky.cov $(MAKE) AEGIS=1 sure
+	cd test; $(MAKE) tcl-cov
 	sh test/run-tcl-cov.sh
 
 MINSKY_VERSION=$(shell git describe)
@@ -283,16 +271,21 @@ dist:
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	cd ecolab/graphcode; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/graphcode/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd certify; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/certify/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
 
 lcov:
 	$(MAKE) clean
 	-$(MAKE) GCOV=1 tests
 	lcov -i -c -d . --no-external -o lcovi.info
+# ensure schema export code is exercised
+	-$(MAKE) GCOV=1 minsky.xsd
 	-$(MAKE) GCOV=1 sure
-	lcov -c -d . --no-external -o lcovt.info
+	lcov -c -d .  --no-external -o lcovt.info
 	lcov -a lcovi.info -a lcovt.info -o lcov.info
-	genhtml -o coverage lcov.info
+	lcov -r lcov.info */ecolab/* "*.cd" "*.xcd" -o lcovr.info 
+	genhtml -o coverage lcovr.info
 
 compile_commands.json: Makefile
 	$(MAKE) clean

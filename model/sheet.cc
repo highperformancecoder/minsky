@@ -31,19 +31,6 @@ Sheet::Sheet()
   ports.emplace_back(new Port(*this, Port::inputPort));
 }
 
-ClickType::Type Sheet::clickType(float x, float y)
-{
-  double dx=x-this->x(), dy=y-this->y();
-  auto z=zoomFactor();
-  double w=0.5*m_width*z, h=0.5*m_height*z;
-  // check if (x,y) is within portradius of the 4 corners
-  if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-      fabs(fabs(dy)-h) < portRadiusMult*z &&
-      fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-    return ClickType::onResize;
-  return Item::clickType(x,y);
-}
-
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();
@@ -52,7 +39,8 @@ void Sheet::draw(cairo_t* cairo) const
     {
       drawPorts(cairo);
       displayTooltip(cairo,tooltip);
-      if (onResizeHandles) drawResizeHandles(cairo);
+      // Resize handles always visible on mousefocus. For ticket 92.
+      drawResizeHandles(cairo);
     }
 
   cairo_scale(cairo,z,z);
@@ -64,9 +52,10 @@ void Sheet::draw(cairo_t* cairo) const
 
   try
     {
-      auto& value=ports[0]->getVariableValue();
+      auto value=ports[0]->getVariableValue();
+      if (!value) return;
       Pango pango(cairo);
-      if (value.xVector.size()>2)
+      if (value->hypercube().rank()>2)
         {
           pango.setMarkup("Error: rank>2");
           cairo_move_to(cairo,-0.5*pango.width(),-0.5*pango.height());
@@ -79,20 +68,20 @@ void Sheet::draw(cairo_t* cairo) const
           double colWidth=0;
           pango.setMarkup("9999");
           float rowHeight=pango.height();
-          if (value.xVector.empty())
+          if (value->hypercube().rank()==0)
             {
               cairo_move_to(cairo,x,y);
-              pango.setMarkup(str(value.value()));
+              pango.setMarkup(str((*value)[0]));
               pango.show();
             }
           else
             {
-              if (value.xVector.size()==2)
+              if (value->hypercube().rank()==2)
                 y+=rowHeight; // allow room for header row
 
               // draw in label column
-              string format=value.xVector[0].timeFormat();
-              for (auto& i: value.xVector[0])
+              string format=value->hypercube().xvectors[0].timeFormat();
+              for (auto& i: value->hypercube().xvectors[0])
                 {
                   cairo_move_to(cairo,x,y);
                   pango.setText(trimWS(str(i,format)));
@@ -102,24 +91,30 @@ void Sheet::draw(cairo_t* cairo) const
                 }
               y=y0;
               x+=colWidth;
-              if (value.xVector.size()==1)
-                for (auto v: value)
+              if (value->hypercube().rank()==1)
+                for (size_t i=0; i<value->size(); ++i)
                   {
+                    if (!value->index().empty())
+                      y=y0+value->index()[i]*rowHeight;
                     cairo_move_to(cairo,x,y);
-                    pango.setMarkup(str(v));
-                    pango.show();
+                    auto v=(*value)[i];
+                    if (!std::isnan(v))
+                      {
+                        pango.setMarkup(str(v));
+                        pango.show();
+                      }
                     y+=rowHeight;
                   }
               else
                 {
-                  format=value.xVector[1].timeFormat();
-                  auto dims=value.dims();
+                  format=value->hypercube().xvectors[1].timeFormat();
+                  auto dims=value->hypercube().dims();
                   for (size_t i=0; i<dims[1]; ++i)
                     {
                       colWidth=0;
                       y=y0;
                       cairo_move_to(cairo,x,y);
-                      pango.setText(trimWS(str(value.xVector[1][i],format)));
+                      pango.setText(trimWS(str(value->hypercube().xvectors[1][i],format)));
                       pango.show();
                       { // draw vertical grid line
                         cairo::CairoSave cs(cairo);
@@ -134,8 +129,12 @@ void Sheet::draw(cairo_t* cairo) const
                           y+=rowHeight;
                           if (y>0.5*m_height) break;
                           cairo_move_to(cairo,x,y);
-                          pango.setText(str(value.value(j+i*dims[0])));
-                          pango.show();
+                          auto v=value->atHCIndex(j+i*dims[0]);
+                          if (!std::isnan(v))
+                            {
+                              pango.setText(str(v));
+                              pango.show();
+                            }
                           colWidth=std::max(colWidth, pango.width());
                         }
                       x+=colWidth;

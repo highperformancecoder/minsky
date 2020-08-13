@@ -27,21 +27,23 @@ namespace minsky
   struct OperationType
   {
     enum Type {constant, // deprecated - left to support legacy schemas
-               time, // zero input port ops
+               time,  // zero input port ops
                integrate, 
                differentiate, // with respect to time
                data, // an interpolated data item
                ravel, // Ravel™
-               // binary ops
-               add, subtract, multiply, divide, 
-               log, pow,
-               lt, le, eq, min, max, 
-               // underscores to avoid C++ keywords. Can be filtered at UI
+               euler, pi, zero, one, inf, // fundamental constants
+               // multiwire binary ops
+               add, subtract, multiply, divide, min, max, 
                and_, or_,
+               // single wire binops
+               log, pow, polygamma, 
+               lt, le, eq, 
+               // underscores to avoid C++ keywords. Can be filtered at UI
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
-               floor, frac, not_,
+               floor, frac, not_, percent, gamma, fact,
                // reductions
                sum, product, infimum, supremum, any, all, infIndex, supIndex,
                // scans
@@ -52,7 +54,7 @@ namespace minsky
     };
     /// return the symbolic name of \a type
     static std::string typeName(int type);
-    enum Group {general, binop, function, reduction, scan, tensor};
+    enum Group {general, constop, binop, function, reduction, scan, tensor};
     static Group classify(Type t);
   };
 
@@ -103,7 +105,10 @@ namespace minsky
     {creators.emplace_back(new Creator<T<OperationType::Type(I)>>);}
 
     /// create an object of type T<o> on the heap
-    Base* create(OperationType::Type o) {return creators[o]->create();}
+    Base* create(OperationType::Type o) const {
+      assert(o<creators.size());
+      return creators[o]->create();
+    }
 
     OperationFactory() {registerNext<OperationType::Type(0)>();}
   };

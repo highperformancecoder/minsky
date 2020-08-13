@@ -3,8 +3,8 @@
 <!--Converted with LaTeX2HTML 2019.2 (Released June 5, 2019) -->
 <HTML lang="EN">
 <HEAD>
-<TITLE>Variable names</TITLE>
-<META NAME="description" CONTENT="Variable names">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="minsky">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,7 +16,7 @@
 <LINK REL="STYLESHEET" HREF="minsky.css">
 
 <LINK REL="next" HREF="node95.html">
-<LINK REL="previous" HREF="node93.html">
+<LINK REL="previous" HREF="node78.html">
 <LINK REL="next" HREF="node95.html">
 </HEAD>
 
@@ -27,35 +27,69 @@
  HREF="node95.html">
 <IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
 <A
- HREF="node93.html">
+ HREF="node42.html">
 <IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
 <A
  HREF="node93.html">
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A>   
 <BR>
 <B> Next:</B> <A
- HREF="node95.html">Initial conditions</A>
+ HREF="node95.html">Variables</A>
 <B> Up:</B> <A
- HREF="node93.html">Variables</A>
+ HREF="node42.html">Reference</A>
 <B> Previous:</B> <A
- HREF="node93.html">Variables</A>
+ HREF="node93.html">outer product</A>
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00441000000000000000">
-Variable names</A>
-</H2>
+<H1><A ID="SECTION00430000000000000000"></A><A ID="SwitchIcon"></A>
+<BR>
+Switch
+</H1>
 
 <P>
-Variable names uniquely identify variables. Multiple icons on the
-canvas may have the same name &mdash; they all refer to the same
-variable. Variable names have scope, which is either local (no initial
-`:'), belonging to an outer <A HREF="node102.html#Group">group</A> (indicated by a leading `:' on the
-inner group variable, and the outer group variable having no such
-leading `:'), or completely global otherwise. You may select a
-variable name from a drop down list in the &ldquo;name&rdquo; combo box, which
-makes for an easier way of selecting exactly which variable you want.
+
+  <!-- MATH
+ $\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}$
+ -->
+<IMG STYLE=""
+ SRC="img85.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}">
+  
+A switch block (also known as a case block, or select in the Fortran
+world) is a way of selecting from a range of alternatives according
+to the value of the input, effectively defining a piecewise function.
+
+<P>
+<DIV class="CENTER">
+<!-- MATH
+ $\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}$
+ -->
+<IMG STYLE=""
+ SRC="img206.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch.eps}}">
+<EM>An example switch block with 3 cases</EM>
+
+</DIV>
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1,
+or false and true, a two case switch statement will naturally appear
+&ldquo;upside down&rdquo; to how you might think of an if statement. In other
+words, it looks like:
+
+<P>
+<IMG STYLE="height: 7.13ex; vertical-align: -3.13ex; " SRC="img207.png"
+ ALT="$\textstyle \parbox{\textwidth}{
+{\tt if not }{\em condition} {\tt then}\\
+\ldots
+{\tt else}\\
+\ldots
+}$">
+<P>
+You can add or remove cases through the context menu. 
 
 <P>
 <BR><HR>

@@ -22,6 +22,7 @@
 #include "minsky.h"
 #include "str.h"
 #include "flowCoef.h"
+#include "minskyTensorOps.h"
 #include "minsky_epilogue.h"
 using namespace minsky;
 
@@ -40,29 +41,20 @@ namespace MathDAG
       }
     };
 
-    struct NoArgument: public std::exception
+    struct NoArgument: public runtime_error
     {
-      OperationPtr state;
-      unsigned argNum1, argNum2;
-      NoArgument(const OperationPtr& s, unsigned a1, unsigned a2): 
-        state(s), argNum1(a1), argNum2(a2) {}
-      const char* what() const noexcept override {
-        string r="missing argument "+to_string(argNum1)+","+to_string(argNum2)+
-          " on operation ";
-        if (state)
-          {
-            minsky::minsky().displayErrorItem(*state);
-            r+=OperationType::typeName(state->type());
-          }
-        
-        return r.c_str();
-      }
+      std::string message;
+      NoArgument(const OperationPtr& s, unsigned a1, unsigned a2):
+        std::runtime_error
+        ("missing argument "+to_string(a1)+","+to_string(a2)+
+         (s?(" on operation "+OperationType::typeName(s->type())):string()))
+      {minsky::minsky().displayErrorItem(*s);}
     };
 
   }
 
-  VariableValue ConstantDAG::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  shared_ptr<VariableValue> ConstantDAG::addEvalOps
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result || result->idx()<0)
       {
@@ -73,10 +65,10 @@ namespace MathDAG
             // set the initial value of the actual variableValue (if it exists)
             auto v=values.find(result->name);
             if (v!=values.end())
-              v->second.init=value;
+              v->second->init=value;
           }
         else
-          result=&tmpResult;
+          result=tmpResult;
         result->init=value;
         *result=result->initValue(values);
       }
@@ -84,32 +76,69 @@ namespace MathDAG
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
-  VariableValue VariableDAG::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  namespace
+  {
+    bool addTensorOp(const shared_ptr<VariableValue>& result, OperationDAGBase& nodeOp, EvalOpVector& ev)
+    {
+      if (auto state=nodeOp.state)
+        try
+          {
+            auto ec=make_shared<EvalCommon>();
+            TensorPtr rhs=tensorOpFactory.create(*state,TensorsFromPort(ec));
+            if (!rhs) return false;
+            result->hypercube(rhs->hypercube());
+            ev.emplace_back(EvalOpPtr(new TensorEval(result, ec, rhs)));
+            return true;
+          }
+        catch(const FallBackToScalar&) {/* fall back to scalar processing */}
+    return false;
+    }
+  }
+
+  bool VariableDAG::tensorEval() const
+  {
+    return cminsky().variableValues[valueId]->rank()>0;
+  }
+  
+  bool VariableDAG::addTensorOp(EvalOpVector& ev)
+  {
+    if (rhs)
+      if (auto nodeOp=dynamic_cast<OperationDAGBase*>(rhs.payload))
+        return MathDAG::addTensorOp(result,*nodeOp,ev);
+    return false;
+  }
+  
+  shared_ptr<VariableValue> VariableDAG::addEvalOps
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result || result->idx()<0)
       {
         assert(VariableValue::isValueId(valueId));
         auto ri=minsky::minsky().variableValues.find(valueId);
         if (ri==minsky::minsky().variableValues.end())
-          ri=minsky::minsky().variableValues.emplace(valueId,VariableValue(VariableType::tempFlow)).first;
-        result=&ri->second;
-        if (result->idx()<0) result->allocValue();
+          ri=minsky::minsky().variableValues.emplace(valueId,VariableValuePtr(VariableType::tempFlow)).first;
+        result=ri->second;
         if (rhs)
-          rhs->addEvalOps(ev, result);
+          if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
+            { // everything scalar, revert to scalar processing
+              if (result->idx()<0) result->allocValue();
+              if (rhs)
+                rhs->addEvalOps(ev, result);
+            }
       }
-    if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
-      ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
+    if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
+      ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
+    //ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     assert(result->idx()>=0);
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
-  VariableValue IntegralInputVariableDAG::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  shared_ptr<VariableValue> IntegralInputVariableDAG::addEvalOps
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result)
       {
@@ -117,8 +146,8 @@ namespace MathDAG
           result=r;
         else
           {
-            result=&tmpResult;
-            if (tmpResult.idx()<0) tmpResult.allocValue();
+            result=tmpResult;
+            if (tmpResult->idx()<0) tmpResult->allocValue();
           }
         if (rhs)
           rhs->addEvalOps(ev, result);
@@ -129,7 +158,7 @@ namespace MathDAG
     if (r && r->isFlowVar() && (r!=result || !result->isFlowVar()))
       ev.push_back(EvalOpPtr(OperationType::copy, nullptr, *r, *result));
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
   namespace {OperationFactory<OperationDAGBase, OperationDAG, 
@@ -166,6 +195,24 @@ namespace MathDAG
     return cachedOrder=order;
   }
 
+  bool OperationDAGBase::tensorEval() const 
+  {
+    switch (OperationType::classify(type()))
+      {
+      case reduction: case scan: case tensor:
+        return true;
+      case general: case binop: case constop: case function:
+        for (auto& i: arguments)
+          for (auto j: i)
+            if (j && j->tensorEval()) return true;
+        return false;
+      default:
+        assert(false);// above cases should exhaust
+        return false;
+      }
+  }
+
+  
   void OperationDAGBase::checkArg(unsigned i, unsigned j) const
   {
     if (arguments.size()<=i || arguments[i].size()<=j || !arguments[i][j])
@@ -175,27 +222,29 @@ namespace MathDAG
 
   namespace
   {
-    void cumulate(EvalOpVector& ev, const std::shared_ptr<OperationBase>& state, VariableValue& r,
+    void cumulate(EvalOpVector& ev, const ItemPtr& state, VariableValue& r,
                   const vector<vector<VariableValue> >& argIdx,
                   OperationType::Type op, OperationType::Type accum, double groupIdentity)
     {
       // check if any arguments have x-vectors, and if so, initialise r.xVector
       // For feature 47
-      size_t oldNumElems=r.dataSize();
       for (auto& i: argIdx)
-        if (i.size() && !i[0].xVector.empty())
+        if (i.size())
           {
             // initialise r's xVector
-            r.setXVector(i[0].xVector);
+            r.hypercube(i[0].hypercube());
             break;
           }
-      if (!r.xVector.empty())
+      if (r.rank()>0)
         {
           // ensure dimensions are correct
+          auto hc=r.hypercube();
           for (auto& i: argIdx)
             for (auto& j: i)
-              r.makeXConformant(j);
-          if (r.xVector.empty())
+              hc.makeConformant(j.hypercube());
+          r.hypercube(hc);
+
+          if (r.rank()==0)
             return; // no common intersection amongst arguments
         }
       if (r.idx()==-1) r.allocValue();
@@ -246,8 +295,7 @@ namespace MathDAG
             {
               // multiple wires to second input port
               VariableValue tmp(VariableType::tempFlow);
-              tmp.setXVector(r.xVector);
-              tmp.dims(r.dims());
+              tmp.hypercube(r.hypercube());
               size_t i=0;
               if (accum==OperationType::add)
                 while (i<argIdx[1].size() && argIdx[1][i].isZero()) i++;
@@ -264,8 +312,8 @@ namespace MathDAG
     }
   }
 
-  VariableValue OperationDAGBase::addEvalOps
-  (EvalOpVector& ev, VariableValue* r)
+  shared_ptr<VariableValue> OperationDAGBase::addEvalOps
+  (EvalOpVector& ev, const std::shared_ptr<VariableValue>& r)
   {
     if (!result)
       {
@@ -273,14 +321,17 @@ namespace MathDAG
         if (r && r->isFlowVar())
           result=r;
         else
-          result=&tmpResult;
-
+          result=tmpResult;
+        if (tensorEval() && addTensorOp(result, *this, ev))
+          return result;
+        
+        
         // prepare argument expressions
         vector<vector<VariableValue> > argIdx(arguments.size());
         for (size_t i=0; type()!=integrate && i<arguments.size(); ++i)
           for (size_t j=0; j<arguments[i].size(); ++j)
             if (arguments[i][j])
-              argIdx[i].push_back(arguments[i][j]->addEvalOps(ev));
+              argIdx[i].push_back(*arguments[i][j]->addEvalOps(ev));
             else
               {
                 argIdx[i].push_back(VariableValue(VariableValue::tempFlow));
@@ -333,137 +384,42 @@ namespace MathDAG
                     }
                 ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0])); 
                 break;
-              case runningSum: case runningProduct:
-                {
-                  if (argIdx.empty() || argIdx[0].empty())
-                    throw error("input not wired");
-                  result->setXVector(argIdx[0][0].xVector);
-                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
-                  assert(state);
-                  ev.back()->setTensorParams(argIdx[0][0],*state);
-                }
-                break;
-              case difference:
-                {
-                  // implement the difference operator as a
-                  // subtraction, by fiddling with the offsets of the
-                  // second variableValue
-                  EvalOpPtr op(subtract, state, *result, argIdx[0][0], argIdx[0][0]);
-                  ev.push_back(op);
-                  size_t stride, dimSz;
-                  argIdx[0][0].computeStrideAndSize(state->axis, stride,dimSz);
-
-                  // trim off leading or trailing components
-                  auto xVector=result->xVector;
-                  for (auto& i: xVector)
-                    if (state->axis.empty() || i.name==state->axis)
-                      {
-                        if (state->arg>=i.size())
-                          throw error("difference argument %g greater than vector length %ul",state->arg,(long)i.size());
-                        if (state->arg>0)
-                          i.erase(i.begin(), i.begin()+state->arg);
-                        else
-                          i.erase(i.end()+state->arg, i.end());
-                        break;
-                      }
-                  result->setXVector(xVector);
-                  
-                  decltype(op->in1) in1;
-                  decltype(op->in2) in2;
-                  for (auto& i: op->in2)
-                    {
-                      assert(state);
-                      assert(i.size()==1);
-                      assert(i[0].weight==1);
-                      auto j=((i[0].idx-argIdx[0][0].idx())/stride)%dimSz;
-                      if (j>=state->arg && j<dimSz+state->arg)
-                        {
-                          // only transfer in bound references
-                          in1.push_back(op->in1[&i-&op->in2[0]]);
-                          i[0].idx-=stride*state->arg;
-                          in2.push_back(i);
-                        }
-                    }
-                  op->in1.swap(in1);
-                  op->in2.swap(in2);
-                  break;
-                }
-              case index: 
-                {
-                  auto xVector=argIdx[0][0].xVector;
-                  for (auto& i: xVector)
-                    if (state->axis.empty() || i.name==state->axis || xVector.size()==1)
-                      {
-                        i.dimension.type=Dimension::value;
-                        i.dimension.units.clear();
-                        for (size_t j=0; j<i.size(); ++j)
-                          i[j]=double(j);
-                        break;
-                      }
-                  result->setXVector(xVector);
-                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
-                }                
-                break;
-              case gather:
-                {
-                  auto xVector=argIdx[0][0].xVector;
-                  for (auto& i: xVector)
-                    if (state->axis.empty() || i.name==state->axis || xVector.size()==1)
-                      {
-                        i.dimension.type=Dimension::value;
-                        i.dimension.units.clear();
-                        for (size_t j=0; j<i.size(); ++j)
-                          i[j]=double(j);
-                        break;
-                      }
-                  result->setXVector(xVector);
-                  ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
-                }                
-                break;
               case data:
                 if (argIdx.size()>0 && argIdx[0].size()==1)
                   ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0])); 
                 else
                   throw error("inputs for highlighted operations incorrectly wired");
-                break;
-              case ravel:
-                if (auto r=dynamic_cast<Ravel*>(state.get()))
-                  {
-                    if (argIdx.size()>0 && argIdx[0].size()==1)
-                      {
-                        // process ravel to dimension the result
-                        // variable correctly (data may be bogus at
-                        // this time)
-                        r->loadDataCubeFromVariable(argIdx[0][0]);
-                        r->loadDataFromSlice(*result);
-                        ev.emplace_back(new RavelEvalOp(argIdx[0][0], *result));
-                        ev.back()->state=state;
-                      }
-                    else
-                      r->loadDataFromSlice(*result);
-                  }
-                break;
+                break;            
               default:
-                // sanity check that the correct number of arguments is provided 
-                bool correctlyWired=true;
-                for (size_t i=0; i<arguments.size(); ++i)
-                  correctlyWired &= arguments[i].size()==1;
-                if (!correctlyWired)
-                  throw error("inputs for highlighted operations incorrectly wired");
-            
-                switch (arguments.size())
+                switch (classify(type()))
                   {
-                  case 0:
-                    ev.push_back(EvalOpPtr(type(), state, *result));
-                    break;
-                  case 1:
-                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
-                    break;
-                  case 2:
-                    ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
-                    break;
+                  case reduction: case scan: case tensor:
+                    if (result->idx()==-1) result->allocValue();
+                    break; // TODO handle tensor properly later
                   default:
-                    throw error("Too many arguments");
+                    {
+                      // sanity check that the correct number of arguments is provided 
+                      bool correctlyWired=true;
+                      for (size_t i=0; i<arguments.size(); ++i)
+                        correctlyWired &= arguments[i].size()==1;
+                      if (!correctlyWired)
+                        throw error("inputs for highlighted operations incorrectly wired");
+            
+                      switch (arguments.size())
+                        {
+                        case 0:
+                          ev.push_back(EvalOpPtr(type(), state, *result));
+                          break;
+                        case 1:
+                          ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0]));
+                          break;
+                        case 2:
+                          ev.push_back(EvalOpPtr(type(), state, *result, argIdx[0][0], argIdx[1][0]));
+                          break;
+                        default:
+                          throw error("Too many arguments");
+                        }
+                    }
                   }
               }
           }
@@ -476,18 +432,18 @@ namespace MathDAG
     if (type()!=integrate && r && r->isFlowVar() && result!=r)
       ev.push_back(EvalOpPtr(copy, state, *r, *result));
     if (state && !state->ports.empty() && state->ports[0]) 
-      state->ports[0]->setVariableValue(*result);
+      state->ports[0]->setVariableValue(result);
     assert(result->idx()>=0);
     doOneEvent(true);
-    return *result;
+    return result;
   }
 
   SystemOfEquations::SystemOfEquations(const Minsky& m): minsky(m)
   {
     expressionCache.insertAnonymous(zero);
     expressionCache.insertAnonymous(one);
-    zero->result=&const_cast<Minsky&>(m).variableValues.find("constant:zero")->second;
-    one->result=&const_cast<Minsky&>(m).variableValues.find("constant:one")->second;
+    zero->result=m.variableValues.find("constant:zero")->second;
+    one->result=m.variableValues.find("constant:one")->second;
 
     // store stock & integral variables for later reordering
     map<string, VariableDAG*> integVarMap;
@@ -553,7 +509,7 @@ namespace MathDAG
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                       iv->init(v->name);
+                       iv->init(VariableValue::uqName(v->valueId));
                      else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value
@@ -604,10 +560,9 @@ namespace MathDAG
     for (auto& g: godleyVars)
       {
         //        assert(g->second.godleyId>=0);
-        integVarMap[VariableValue::valueId(g.first)]=
-          dynamic_cast<VariableDAG*>
-          (makeDAG(VariableValue::valueId(g.first),
-                   VariableValue::uqName(g.first), VariableValue::stock).get());
+        integVarMap[g.first]=dynamic_cast<VariableDAG*>
+          (makeDAG(g.first,
+                   g.second.name, VariableValue::stock).get());
         expressionCache.getIntegralInput(g.first)->rhs=
           expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
       }
@@ -650,9 +605,9 @@ namespace MathDAG
     // now start with the variables, and work our way back to how they
     // are defined
     for (VariableValues::value_type v: m.variableValues)
-      if (v.second.isFlowVar())
+      if (v.second->isFlowVar())
         if (auto vv=dynamic_cast<VariableDAG*>
-            (makeDAG(v.first, v.second.name, v.second.type()).get()))
+            (makeDAG(v.first, v.second->name, v.second->type()).get()))
           variables.push_back(vv);
           
     // sort variables into their order of definition
@@ -667,11 +622,11 @@ namespace MathDAG
 
     assert(VariableValue::isValueId(valueId));
     assert(minsky.variableValues.count(valueId));
-    VariableValue vv=minsky.variableValues[valueId];
+    auto vv=minsky.variableValues[valueId];
 
     if (type==VariableType::constant)
       {
-        NodePtr r(new ConstantDAG(vv.init));
+        NodePtr r(new ConstantDAG(vv->init));
         expressionCache.insert(valueId, r);
         return r;
       }
@@ -684,7 +639,7 @@ namespace MathDAG
     
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
-    r->init=vv.init;
+    r->init=vv->init;
     if (auto v=minsky.definingVar(valueId))
       if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports[1]->wires().empty())
         r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
@@ -701,10 +656,7 @@ namespace MathDAG
         assert(op.ports.size()==2);
         NodePtr expr;
         if (op.ports[1]->wires().size()==0 || !(expr=getNodeFromWire(*op.ports[1]->wires()[0])))
-          {
-            minsky::minsky().displayErrorItem(op);          
-            throw error("derivative not wired");
-          }
+          op.throw_error("derivative not wired");
         try
           {
             return expressionCache.insert
@@ -720,9 +672,9 @@ namespace MathDAG
       {
         shared_ptr<OperationDAGBase> r(OperationDAGBase::create(op.type()));
         expressionCache.insert(op, NodePtr(r));
-        r->state=dynamic_pointer_cast<OperationBase>(minsky.model->findItem(op));
+        r->state=minsky.model->findItem(op);
         assert(r->state);
-        assert( r->state->type()!=OperationType::numOps);
+        //assert( r->state->type()!=OperationType::numOps);
 
         r->arguments.resize(op.numPorts()-1);
         for (size_t i=1; i<op.ports.size(); ++i)
@@ -756,6 +708,8 @@ namespace MathDAG
     Expr input(expressionCache, getNodeFromWire(*wires[0]));
 
     auto r=make_shared<OperationDAG<OperationType::add>>();
+    r->state=minsky.model->findItem(sw);
+    assert(r->state);
     expressionCache.insert(sw, r);
     r->arguments[0].resize(sw.numCases());
 
@@ -810,7 +764,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
-            i->type==VariableType::constant) continue;
+            !i || i->type==VariableType::constant) continue;
         o << i->latex() << "&=&";
         if (i->rhs) 
           i->rhs->latex(o);
@@ -838,7 +792,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i)) continue;
-        if (i->type==VariableType::constant) continue;
+        if (!i || i->type==VariableType::constant) continue;
         o<<"\\begin{dmath*}\n";
         o << i->latex() << "=";
         if (i->rhs) 
@@ -873,7 +827,7 @@ namespace MathDAG
     for (const VariableDAG* i: variables)
       {
         if (dynamic_cast<const IntegralInputVariableDAG*>(i) ||
-            i->type==VariableType::constant) continue;
+            !i || i->type==VariableType::constant) continue;
         o << i->matlab() << "=";
         if (i->rhs)
           o << i->rhs->matlab();
@@ -921,11 +875,11 @@ namespace MathDAG
         integrals.push_back(Integral());
         assert(VariableValue::isValueId(vid));
         assert(minsky.variableValues.count(vid));
-        integrals.back().stock=minsky.variableValues[vid];
+        integrals.back().stock=*minsky.variableValues[vid];
         integrals.back().operation=dynamic_cast<IntOp*>(i->intOp);
         VariableDAGPtr iInput=expressionCache.getIntegralInput(vid);
         if (iInput && iInput->rhs)
-            integrals.back().input=iInput->rhs->addEvalOps(equations);
+            integrals.back().input=*iInput->rhs->addEvalOps(equations);
       }
     assert(minsky.variableValues.validEntries());
 
@@ -962,14 +916,15 @@ namespace MathDAG
     auto& godley=gi.table;
     for (size_t c=1; c<godley.cols(); ++c)
       {
-        string colName=stripActive(trimWS(godley.cell(0,c)));
-        if (colName=="_" || VariableValue::uqName(colName).empty())
+        string colName=trimWS(godley.cell(0,c));
+        if (VariableValue::uqName(colName).empty())
           continue; // ignore empty Godley columns
         // resolve scope
         colName=VariableValue::valueId(gi.group.lock(), colName);
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
+        gd.name=trimWS(godley.cell(0,c));
         gd.arguments.resize(2);
         vector<WeakNodePtr>& arguments=gd.arguments[0];
         for (size_t r=1; r<godley.rows(); ++r)

@@ -25,9 +25,14 @@
 using namespace schema2;
 using namespace std;
 
+<<<<<<< HEAD
 namespace minsky {
   void doOneEvent(bool) {}
 }
+=======
+namespace minsky {void doOneEvent(bool) {}}
+namespace ecolab {Tk_Window mainWin=0;}
+>>>>>>> master
 
 int main(int argc, const char*argv[])
 {

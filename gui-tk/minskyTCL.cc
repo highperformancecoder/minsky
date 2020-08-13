@@ -26,6 +26,7 @@
 #ifdef _WIN32
 #undef Realloc
 #include <windows.h>
+#include <tkPlatDecls.h>
 #endif
 
 #if defined(__linux__)
@@ -113,7 +114,7 @@ namespace minsky
     if (auto t=getCommandData("minsky.integral.description"))
       t->is_setterGetter=true;
     if (auto t=getCommandData("minsky.resetEdited"))
-      t->is_const=true;
+      t->is_const=true;  
     if (auto t=getCommandData("minsky.initGroupList"))
       t->is_const=true;
     if (auto t=getCommandData("minsky.godley.mouseFocus"))
@@ -195,7 +196,7 @@ namespace minsky
       int status;
       wait(&status);
 #elif defined(_WIN32)
-      OpenClipboard(nullptr);
+      OpenClipboard(Tk_GetHWND(Tk_WindowId(Tk_MainWindow(interp()))));
       EmptyClipboard();
       HGLOBAL h=GlobalAlloc(GMEM_MOVEABLE, s.length()+1);
       LPTSTR hh=static_cast<LPTSTR>(GlobalLock(h));
@@ -243,11 +244,22 @@ namespace minsky
       string r;
       OpenClipboard(nullptr);
       if (HANDLE h=GetClipboardData(CF_TEXT))
-        r=static_cast<const char*>(h);
+        {
+          r=static_cast<const char*>(GlobalLock(h));
+          GlobalUnlock(h);
+        }
       CloseClipboard();
       return r;
 #else
-      return (tclcmd()<<"clipboard get -type UTF8_STRING\n").result;
+      try
+        {
+		  // seems more stable in copying all items. for ticket 1180/1183	
+          return (tclcmd()<<"selection get -selection CLIPBOARD -type UTF8_STRING\n").result;
+        }
+      catch (...)
+        {
+          return {};
+        }
 #endif
     }
 

@@ -26,6 +26,7 @@
 
 namespace minsky 
 {
+  using namespace civita;
   class RavelLockGroup;
   
   class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
@@ -38,7 +39,7 @@ namespace minsky
     CLASSDESC_ACCESS(Ravel);
   private:
     Exclude<RavelImpl*> ravel=nullptr;
-    Exclude<DataCube*> dataCube=nullptr;
+    Exclude<DataCube*> dataCube=nullptr;       
     void noRavelSetup();
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
@@ -53,6 +54,9 @@ namespace minsky
     friend struct SchemaHelper;
 
     std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
+
+    /// return hypercube corresponding to the current Ravel state. \a data returns a pointer to the current data slice
+    Hypercube hypercube(double*& data) const;
 
   public:
     Ravel();
@@ -86,15 +90,19 @@ namespace minsky
     void onMouseLeave();
     void loadFile(const std::string&);
     const string& filename() const {return m_filename;}
-    void loadDataFromSlice(VariableValue&) const;
-    void loadDataCubeFromVariable(const VariableValue&);
+    /// return hypercube corresponding to the current Ravel state
+    Hypercube hypercube() const {double* tmp; return hypercube(tmp);}
+    void populateHypercube(const Hypercube&);
+    /// @return input rank
     unsigned maxRank() const;
+    /// @return output rank
     unsigned rank() const;
-    void setRank(unsigned);
+    /// adjust output dimensions to first \a r handles
+    void setRank(unsigned r);
     void adjustSlicer(int); ///< adjust currently selected handle's slicer
     bool handleArrows(int dir, bool modifier) override;
 
-    // return selected handle, or -1 if none
+    /// return selected handle, or -1 if none
     int selectedHandle() const;
     
     /// enable/disable calipers on currently selected handle
@@ -106,10 +114,15 @@ namespace minsky
 
     /// returns all slice labels along the selected handle, in specified order
     std::vector<string> allSliceLabels() const;
+    /// returns all slice labels along an axis(dimension) identified by its number
+    std::vector<string> allSliceLabelsAxis(int axis) const;
     /// returns just the picked slice labels along the handle
     std::vector<string> pickedSliceLabels() const;
     /// pick (selected) \a pick labels
     void pickSliceLabels(int axis, const std::vector<string>& pick);
+
+    /// dimension details associated with handle 
+    Dimension dimension(int handle) const;
     
     /// @{
     /// the handle sorting order for currently selected handle
@@ -117,6 +130,14 @@ namespace minsky
     HandleState::HandleSort setSortOrder(HandleState::HandleSort);
     /// @}
 
+    /// set a given handle sort order
+    HandleState::HandleSort setHandleSortOrder(HandleState::HandleSort, int handle);
+
+    /// Set the sort order to sort by value. Only applicable for rank 1 ravels
+    HandleState::HandleSort sortByValue = HandleState::none;
+    /// @return true if mouse is over an output handle sortable by value
+    bool handleSortableByValue() const;
+    
     /// @} get/set description of selected handle
     string description() const;
     void setDescription(const string&);

@@ -33,6 +33,7 @@ minsky.defaultFont Sans
 
 proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
+  minsky.multipleEquities 1
   findObject GodleyIcon
   set id [minsky.openGodley]
   openGodley \$id

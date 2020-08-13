@@ -35,11 +35,12 @@ cat >input.tcl <<EOF
 source assert.tcl
 proc afterMinskyStarted {} {
 uplevel #0 {
+file delete [autoBackupName]
 openNamedFile $here/examples/GoodwinLinear02.mky
 pushFlags
 runstop
 assert {[running] == 1}
-simulate
+set running 1
 after 500 {runstop; set running 0}
 vwait running
 assert {[t]>0}
@@ -47,6 +48,7 @@ set tt [t]
 reset
 assert {[t]==0}
 popFlags
+file delete [autoBackupName]
 newSystem
 assert {[minsky.model.numItems]==0}
 assert {[minsky.model.numWires]==0}
@@ -56,6 +58,7 @@ tcl_exit
 EOF
 
 cp $here/test/assert.tcl .
+rm $here/examples/*.mky\#
 $here/gui-tk/minsky input.tcl
 if test $? -ne 0; then fail; fi
 

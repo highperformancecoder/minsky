@@ -19,13 +19,16 @@
 #ifndef VARIABLE_VALUE
 #define VARIABLE_VALUE
 #include "variableType.h"
-#include "xvector.h"
+#include "tensorInterface.h"
 #include "tensorVal.h"
 #include "ecolab.h"
 #include "classdesc_access.h"
 #include "constMap.h"
 #include "str.h"
+#include "CSVDialog.h"
+#include "latexMarkup.h"
 #include <boost/regex.hpp>
+#include <utility>
 
 namespace minsky
 {
@@ -33,45 +36,18 @@ namespace minsky
   struct VariableValues;
   class Group;
   typedef std::shared_ptr<Group> GroupPtr;
-
-  // why are we doing this complicated mixin to constify the xVector
-  // attribute instead of a simple const std::vector<XVector>&
-  // VariableValue::xVector() const getter method?
-
-  //ans: because we want TCL to be able to inspect the xVector
-  // attribute, which is not possible with the getter method
-  class XVectorMixin
-  {
-  public:
-    typedef std::vector<XVector> XVectorVector;
-    CLASSDESC_ACCESS(XVectorMixin);
-  protected:
-    XVectorVector m_xVector;
-  public:
-    // need to use C++98 style initialiser here to get around compiler
-    // bug on Ubuntu 14.04
-    const XVectorVector& xVector; //{m_xVector};
-    XVectorMixin(): xVector(m_xVector) {}
-    XVectorMixin(const XVectorMixin& x):
-      m_xVector(x.m_xVector), xVector(m_xVector) {}
-    XVectorMixin(XVectorMixin&& x):
-      m_xVector(x.m_xVector), xVector(m_xVector) {}
-    XVectorMixin& operator=(const XVectorMixin& x)
-    {m_xVector=x.m_xVector; return *this;}
-    XVectorMixin& operator=(XVectorMixin&& x)
-    {m_xVector=x.m_xVector; return *this;}
-  };
+  using namespace civita;
   
-  class VariableValue: public VariableType, public XVectorMixin
+  class VariableValue: public VariableType, public civita::ITensorVal
   {
     CLASSDESC_ACCESS(VariableValue);
   private:
     Type m_type;
     int m_idx; /// index into value vector
     double& valRef(); 
-    double valRef() const;
+    const double& valRef() const;
     std::vector<unsigned> m_dims;
-
+    
     friend class VariableManager;
     friend struct SchemaHelper;
   public:
@@ -100,91 +76,89 @@ namespace minsky
     Units units;
     bool unitsCached=false; // optimisation to prevent evaluating this units value more than once
     void setUnits(const std::string& x) {units=Units(x);}
-    
+
+    bool sliderVisible=false; // determined at reset time
     bool godleyOverridden;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
 
     ///< value at the \a ith location of the vector/tensor. Default,
     ///(i=0) is right for scalar quantities
-    double value(size_t i=0) const {return *(begin()+i);}
+    double value(size_t i=0) const {return operator[](i);}
     int idx() const {return m_idx;}
+    void reset_idx() {m_idx=-1;}    
 
-    typedef double* iterator;
-    typedef const double* const_iterator;
-    iterator begin() {return &valRef();}
-    const_iterator begin() const {return &const_cast<VariableValue*>(this)->valRef();}
-	iterator end() {return begin()+dataSize();}
-	const_iterator end() const {return begin()+dataSize();}
+    // values are always live
+    Timestamp timestamp() const override {return Timestamp::clock::now();}
     
-    ///< dimensions of this variable value. dims.size() is the rank, a
-    ///scalar variable has dims[0]=1, etc.
-    std::vector<unsigned> dims() const {
-      std::vector<unsigned> d;
-      for (auto& i: xVector) d.push_back(i.size());
-      return d;
+    double operator[](size_t i) const override {return *(&valRef()+i);}
+    double& operator[](size_t i) override;
+
+    const Index& index() const override {
+      if (m_type==parameter && tensorInit.size())
+        return tensorInit.index();
+      else
+        return m_index;
     }
-    size_t rank() const {return xVector.size();}
-    ///< set the dimensions. \a d cannot be empty, by may consist of
-    ///the single element {1} to refer to a scalar
-    const std::vector<unsigned>& dims(const std::vector<unsigned>& d) {
-      XVectorVector xv;
-      for (size_t i=0; i<d.size(); ++i)
-        {
-          xv.emplace_back(std::to_string(i));
-          xv.back().dimension.type=Dimension::value;
-          for (size_t j=0; j<d[i]; ++j)
-            xv.back().emplace_back(double(j));
-        }
-      setXVector(std::move(xv));
-      return d;
+    const Index& index(Index&& i) override {
+      size_t prevNumElems = size();
+      m_index=i;
+      if (idx()==-1 || (prevNumElems<size()))    
+        allocValue();
+      return m_index;
     }
-    // For feature 47
-    std::vector<size_t> index;     
+    using ITensorVal::index;
     
-    size_t numDenseElements() const {                                                
-      size_t s=1;
-      for (auto& i: xVector) s*=i.size();
-      return s;
-    }
-  
-    size_t dataSize() const {
-		return index.size() ? index.size(): numDenseElements();
-	}    
-    
-    template <class T>                                            
-    void setXVector_(T x) {    
-      size_t prevNumElems = dataSize();
-      m_xVector=x;    
-      if (idx()==-1 || (prevNumElems<dataSize()))    
-        allocValue();    
+    size_t numDenseElements() const {return hypercube().numElements();}
+
+    size_t size() const override
+    {
+      auto idx=index();
+      return idx.size() ? idx.size(): numDenseElements();
     }    
-    void setXVector(minsky::XVectorMixin::XVectorVector&& x) {setXVector_<XVectorVector&&>(std::move(x));}
-    void setXVector(const minsky::XVectorMixin::XVectorVector& x) {setXVector_<const XVectorVector&>(x);}
-
     
-    /// removes elements of xVector not found in \a
-    void makeXConformant(const VariableValue& a);
+    const Hypercube& hypercube() const override {
+      if (m_type==parameter && tensorInit.rank()>0)
+        return tensorInit.hypercube();
+      else
+        return ITensor::hypercube();
+    }
 
-    /// compute stride and dimension size of dimension \a dim
-    /// @throw if dimension \a dim doesn't exist
-    /// if \a dim is empty, defaults to first dimension
-    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
+    template <class T>                                            
+    void hypercube_(T x) {    
+      size_t prevNumElems = size();
+      ITensor::hypercube(x);    
+      if (idx()==-1 || (prevNumElems<size()))    
+        allocValue();    
+    }
+    
+    const Hypercube& hypercube(const Hypercube& hc) override
+    {hypercube_(hc); return m_hypercube;}
+    const Hypercube& hypercube(Hypercube&& hc) override
+    {hypercube_(hc); return m_hypercube;}
+                                                                              
+    void makeXConformant(const ITensor& x) {
+      m_hypercube.makeConformant(x.hypercube());
+    }
     
     VariableValue(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
       m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
 
-    const VariableValue& operator=(double x) {valRef()=x; return *this;}
-    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
-    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
-    const VariableValue& operator=(const TensorVal& x);
-    //    const VariableValue& operator+=(const TensorVal& x);
-    //    const VariableValue& operator-=(const TensorVal& x);
+//    const VariableValue& operator=(double x) {valRef()=x; return *this;}
+//    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
+//    const VariableValue& operator-=(double x) {valRef()-=x; return *this;}
+    const VariableValue& operator=(TensorVal const&);
+    const VariableValue& operator=(const ITensor& x) override;
+//    const VariableValue& operator+=(const TensorVal& x);
+//    const VariableValue& operator-=(const TensorVal& x);
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();
 
     std::string valueId() const {return valueIdFromScope(m_scope.lock(),name);}
+
+    /// for importing CSV files
+    CSVDialog csvDialog;
     
     /// evaluates the initial value, based on the set of variables
     /// contained in \a VariableManager. \a visited is used to check
@@ -200,13 +174,14 @@ namespace minsky
     /// check that name is a valid valueId (useful for assertions)
     static bool isValueId(const std::string& name) {
       return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\{}]+)"));
+        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
     }
 
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
-      if (scope<0) return ":"+stripActive(uqName(name));
-      else return std::to_string(scope)+":"+stripActive(uqName(name));
+      auto tmp=":"+stripActive(trimWS(latexToPangoNonItalicised(uqName(name))));
+      if (scope<0) return tmp;
+      else return std::to_string(scope)+tmp;
     }
     static std::string valueId(std::string name) {
       return valueId(scope(name), name);
@@ -238,19 +213,22 @@ namespace minsky
     static std::vector<double> flowVars;
   };
 
-  struct VariableValues: public ConstMap<std::string, VariableValue>
+  /// a shared_ptr that default constructs a default target
+  struct VariableValuePtr: public std::shared_ptr<VariableValue>
+  {
+    VariableValuePtr(VariableType::Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()):
+      std::shared_ptr<VariableValue>(std::make_shared<VariableValue>(type,name,init,group)) {}
+  };
+  
+  struct VariableValues: public ConstMap<std::string, VariableValuePtr>
   {
     VariableValues() {clear();}
     void clear() {
-      ConstMap<std::string, VariableValue>::clear();
+      ConstMap<std::string, mapped_type>::clear();
       // add special values for zero and one, used for the derivative
       // operator in SystemOfEquations
-      insert
-        (value_type("constant:zero",
-                    VariableValue(VariableType::constant,"constant:zero","0")));
-      insert
-        (value_type("constant:one",
-                    VariableValue(VariableType::constant,"constant:one","1")));
+      emplace("constant:zero", VariableValuePtr(VariableType::constant,"constant:zero","0"));
+      emplace("constant:one", VariableValuePtr(VariableType::constant,"constant:one","1"));
     }
     /// generate a new valueId not otherwise in the system
     std::string newName(const std::string& name) const;
@@ -259,14 +237,14 @@ namespace minsky
     bool validEntries() const;
     void resetUnitsCache() {
       for (auto& i: *this)
-        i.second.unitsCached=false;
+        i.second->unitsCached=false;
     }
   };
   
   struct EngNotation {int sciExp, engExp;};
   /// return formatted mantissa and exponent in engineering format
   EngNotation engExp(double value);
-  std::string mantissa(double value, const EngNotation&);
+  std::string mantissa(double value, const EngNotation&,int digits=3);
   std::string expMultiplier(int exp);
 
 
@@ -285,5 +263,21 @@ namespace ecolab
 
 #include "variableValue.cd"
 #include "variableValue.xcd"
+
+#ifdef _CLASSDESC
+#pragma omit pack minsky::VariableValue
+#pragma omit unpack minsky::VariableValue
+#endif
+
+namespace classdesc_access
+{
+  // nobble these as we're not using them
+  template <>
+  struct access_pack<minsky::VariableValue>:
+    public classdesc::NullDescriptor<classdesc::pack_t> {};
+  template <>
+  struct access_unpack<minsky::VariableValue>:
+    public classdesc::NullDescriptor<classdesc::unpack_t> {};
+}
 
 #endif

@@ -1,3 +1,6 @@
 [submodule "ecolab"]
 	path = ecolab
 	url = https://github.com/highperformancecoder/ecolab.git
+[submodule "certify"]
+	path = certify
+	url = https://github.com/djarek/certify

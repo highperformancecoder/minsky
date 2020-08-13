@@ -1,4 +1,4 @@
-FROM highperformancecoder/travisciimage
+FROM highperformancecoder/builttravisciimage
 COPY . /root
 RUN useradd -m minsky
 RUN chmod a+rx /root

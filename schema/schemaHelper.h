@@ -20,9 +20,13 @@
 #ifndef SCHEMA_HELPER
 #define SCHEMA_HELPER
 
-#include "../model/operation.h"
-#include "../model/variable.h"
-#include "../engine/variableValue.h"
+#include "operation.h"
+#include "variable.h"
+#include "godleyTable.h"
+#include "godleyIcon.h"
+#include "ravelWrap.h"
+#include "variableValue.h"
+#include <xml_unpack_base.h>
 
 template <class T>
 ecolab::array<T> toArray(const std::vector<T>& v) 
@@ -67,7 +71,13 @@ namespace minsky
       g.data=data;
       g.m_assetClass=assetClass;
     }
-
+    static void setPrivates
+    (minsky::GodleyIcon& g, const vector<vector<string> >& data, 
+     const vector<GodleyTable::AssetClass>& assetClass)
+    {
+      setPrivates(g.table, data, assetClass);
+    }
+    
     static void setStockAndFlow(minsky::GodleyIcon& g,
                          const minsky::GodleyIcon::Variables& flowVars,
                          const minsky::GodleyIcon::Variables& stockVars)
@@ -79,7 +89,28 @@ namespace minsky
     static void initHandleState(minsky::Ravel& r, const RavelState& s)
     {r.initState=s;}
 
-  };                   
+  };
+
+  template <class PreviousSchema, class CurrentSchema>
+  void loadSchema(CurrentSchema& currentSchema,
+                  classdesc::xml_unpack_t& data, const std::string& rootElement)
+  {
+    xml_unpack(data, rootElement, currentSchema);
+    if (currentSchema.schemaVersion < currentSchema.version)
+      {
+        PreviousSchema prevSchema(data);
+        currentSchema=prevSchema;
+      }
+    else if (currentSchema.schemaVersion > currentSchema.version)
+      throw error("Minsky schema version %d not supported",currentSchema.schemaVersion);
+  }
+
+  /// decode ascii-encoded representation to binary data
+  classdesc::pack_t decode(const classdesc::CDATA&);
+  /// encode binary data to ascii-encoded 
+  classdesc::CDATA encode(const classdesc::pack_t&);
+
+  
 }
 
 #endif

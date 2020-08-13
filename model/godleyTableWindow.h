@@ -24,6 +24,7 @@
 #ifndef GODLEYTABLEWINDOW_H
 #define GODLEYTABLEWINDOW_H
 #include "godleyIcon.h"
+#include "assetClass.h"
 #include <cairoSurfaceImage.h>
 #include <memory>
 #include <vector>
@@ -67,25 +68,32 @@ namespace minsky
       godleyIcon(godleyIcon), idx(idx) {}
   };
 
-  class GodleyTableWindow: public ecolab::CairoSurface, public ButtonWidgetEnums
+  class GodleyTableEditor: public ButtonWidgetEnums
   {
     
-    CLASSDESC_ACCESS(GodleyTableWindow);
+    CLASSDESC_ACCESS(GodleyTableEditor);
   public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
-    static constexpr double leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
-    static constexpr double topTableOffset=30;
+    double leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
+    double topTableOffset=30;
     static constexpr double pulldownHot=12; ///< space for ▼ in stackVar cells
     /// minimum column width (for eg empty columns)
     static constexpr double minColumnWidth=4*ButtonWidget<col>::buttonSpacing;
+
+    bool drawButtons=true; ///< whether to draw row/column buttons
+    void disableButtons() {drawButtons=false; leftTableOffset=0; topTableOffset=20; }
+    void enableButtons() {drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing; topTableOffset=30;}
 
     std::shared_ptr<GodleyIcon> godleyIcon;
     /// starting row/col number of the scrolling region
     unsigned scrollRowStart=1, scrollColStart=1;
     /// which cell is active, none initially
     int selectedRow=-1, selectedCol=-1;
-    std::string savedText;
+    /// src cell in the event of a move
+    int srcRow=-1, srcCol=-1;
+    bool selectedCellInTable() const
+    {return godleyIcon->table.cellInTable(selectedRow, selectedCol);}
     int hoverRow=-1, hoverCol=-1;
     /// computed positions of the table columns
     std::vector<double> colLeftMargin;
@@ -99,11 +107,11 @@ namespace minsky
     DisplayStyle displayStyle=sign;
     double zoomFactor=1; ///< zoom the display
 
-    GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
-    {adjustWidgets();}
+    GodleyTableEditor(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)
+    {enableButtons(); adjustWidgets();}
+
+    void draw(cairo_t* cairo);
     
-    void redraw(int, int, int width, int height) override;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// event handling 
     void mouseDown(double x, double y);
     void mouseUp(double x, double y);
@@ -126,6 +134,11 @@ namespace minsky
     
     int colXZoomed(double x) const {return colX(x/zoomFactor);}
     int rowYZoomed(double y) const {return rowY(y/zoomFactor);}
+    
+    // warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
+    string moveAssetClass(double x, double y);
+    // warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
+    string swapAssetClass(double x, double y);
 
     void highlightColumn(cairo_t* cairo,unsigned col);
     void highlightRow(cairo_t* cairo,unsigned row);
@@ -168,12 +181,26 @@ namespace minsky
     /// row at \a y in unzoomed coordinates
     int rowY(double y) const;
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
-    std::deque<GodleyTable::Data> history;
+    // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
+    std::deque<GodleyTable> history;
     ClickType clickType(double x, double y) const;
     void checkCell00(); ///<check if cell (0,0) is selected, and deselect if so
     /// handle delete or backspace. Cell assumed selected
+    void handleBackspace();    
     void handleDelete();
   };
+
+  class GodleyTableWindow: public ecolab::CairoSurface, public GodleyTableEditor
+  {
+  public:
+    GodleyTableWindow(const std::shared_ptr<GodleyIcon>& g): GodleyTableEditor(g) {}
+    void redraw(int, int, int width, int height) override {
+      if (surface.get()) draw(surface->cairo());
+    }
+    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+   
+  };
+
 }
 
 #include "godleyTableWindow.cd"

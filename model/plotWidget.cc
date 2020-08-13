@@ -83,14 +83,14 @@ namespace minsky
 
   PlotWidget::PlotWidget()
   {
-    // TODO assignPorts();
+    m_width=m_height=150;
     nxTicks=nyTicks=10;
     fontScale=2;
     leadingMarker=true;
     grid=true;
     legendLeft=0.1; // override ecolab's default value
 
-    float w=width, h=height;
+    float w=iWidth(), h=iHeight();
     float dx=w/(2*numLines+1); // x location of ports
     float dy = h/(numLines);
 
@@ -121,7 +121,7 @@ namespace minsky
   void PlotWidget::draw(cairo_t* cairo) const
   {
     double z=zoomFactor();
-    double w=width*z, h=height*z;
+    double w=iWidth()*z, h=iHeight()*z;
 
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel.empty()||!ylabel.empty()||!y1label.empty())
@@ -196,9 +196,18 @@ namespace minsky
 
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
-    double gw=w-2*portSpace, gh=h-portSpace;
+    double gw=w-2*portSpace, gh=h-portSpace;;
+    if (!title.empty()) gh=h-portSpace-titleHeight;  // take into account room for the title
+    //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
+    auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
+    switch (plotType)
+      {
+      case line: pt=Plot::line; break;
+      case bar:  pt=Plot::bar;  break;
+      default: break;
+      }
+      
     Plot::draw(cairo,gw,gh); 
-    
     cairo_restore(cairo);
     if (mouseFocus)
       {
@@ -211,8 +220,10 @@ namespace minsky
             legendSize(width,height,gh);
             width+=legendOffset*gw;
 
+            
             double x=legendLeft*gw-0.5*(w-width)+portSpace;
             double y=-legendTop*gh+0.5*(h+height)-portSpace;
+            if (!title.empty()) y=-legendTop*gh+0.5*(h+height)-portSpace+titleHeight*h; // take into account room for the title
             double arrowLength=6;
             cairo_move_to(cairo,x-arrowLength,y);
             cairo_rel_line_to(cairo,2*arrowLength,0);
@@ -229,13 +240,13 @@ namespace minsky
             drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
 
             cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
-            cairo_stroke(cairo);
           }
-        if (onResizeHandles) drawResizeHandles(cairo);   
+        // Resize handles always visible on mousefocus. For ticket 92.
+        drawResizeHandles(cairo);   
       }
     justDataChanged=false;
     
-    cairo_new_path(cairo);
+    cairo_new_path(cairo);  
     cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
@@ -271,8 +282,8 @@ namespace minsky
     if (!justDataChanged)
       // label pens
       for (size_t i=0; i<yvars.size(); ++i)
-        if (yvars[i].idx()>=0)
-          labelPen(i, latexToPango(yvars[i].name));
+        if (yvars[i])
+          labelPen(i, latexToPango(yvars[i]->name));
   }
 
   void PlotWidget::mouseDown(double x,double y)
@@ -281,8 +292,9 @@ namespace minsky
     clickY=y;
     ct=clickType(x,y);
     double z=zoomFactor();
-    double gw=width*z-2*portSpace;
-    double gh=height*z-portSpace;
+    double gw=iWidth()*z-2*portSpace;
+    double gh=iHeight()*z-portSpace;
+    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -291,17 +303,29 @@ namespace minsky
   void PlotWidget::mouseMove(double x,double y)
   {
     double z=zoomFactor();
-    double gw=width*z-2*portSpace;
-    double gh=height*z-portSpace;
-    double yoffs=this->y()-(legendTop-0.5)*height*z;
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
+    double dx=x-this->x(), dy=y-this->y();
+    double gw=iWidth()*z-2*portSpace;
+    double gh=iHeight()*z-portSpace;
+    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
+    double yoffs=this->y()-(legendTop-0.5)*iHeight()*z;
     switch (ct)
       {
       case ClickType::legendMove:
-        legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
-        legendTop = (oldLegendTop + clickY - y)/gh;
+        if (abs(dx)<w && abs(dy)<h) {  //Ensure plot legend cannot be moved off plot widget  
+           legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
+           legendTop = (oldLegendTop + clickY - y)/gh;
+           if (!title.empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
+	    } else {
+			legendLeft = oldLegendLeft/gw;
+			legendTop = oldLegendTop/gh;
+		}
         break;
       case ClickType::legendResize:
-        legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
+        if (abs(dx)<w && abs(dy)<h) { //Ensure plot legend cannot be resized beyond extent of plot widget  
+           legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
+           if (!title.empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
+	    } else legendFontSz = oldLegendFontSz;
         break;
       default:
         break;
@@ -310,7 +334,7 @@ namespace minsky
 
   extern Tk_Window mainWin;
 
-  void PlotWidget::redraw()
+  void PlotWidget::requestRedraw()
   {
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff
     // store previous min/max values to determine if plot scale changes
@@ -327,8 +351,8 @@ namespace minsky
   void PlotWidget::resize(const LassoBox& x)
   {
     float invZ=1/zoomFactor();
-    width=abs(x.x1-x.x0)*invZ;
-    height=abs(x.y1-x.y0)*invZ;
+    iWidth(abs(x.x1-x.x0)*invZ);
+    iHeight(abs(x.y1-x.y0)*invZ);
     moveTo(0.5*(x.x0+x.x1), 0.5*(x.y0+x.y1));
     bb.update(*this);
   }
@@ -337,7 +361,7 @@ namespace minsky
   ClickType::Type PlotWidget::clickType(float x, float y)
   {
     // firstly, check whether a port has been selected
-    double z=zoomFactor();
+    double z=zoomFactor();  
     for (auto& p: ports)
       {
         if (hypot(x-p->x(), y-p->y()) < portRadius*z)
@@ -345,9 +369,9 @@ namespace minsky
       }
 
     double legendWidth, legendHeight;
-    legendSize(legendWidth, legendHeight, height*z-portSpace);
-    double xx= x-this->x() - portSpace +(0.5-legendLeft)*width*z;
-    double yy= y-this->y() + (legendTop-0.5)*height*z;
+    legendSize(legendWidth, legendHeight, iHeight()*z-portSpace);
+    double xx= x-this->x() - portSpace +(0.5-legendLeft)*iWidth()*z;
+    double yy= y-this->y() + (legendTop-0.5)*iHeight()*z;
     if (xx>0 && xx<legendWidth)
       {
         if (yy>0 && yy<0.8*legendHeight)
@@ -355,49 +379,62 @@ namespace minsky
         else if (yy>=0.8*legendHeight && yy<legendHeight)
           return ClickType::legendResize;
       }
-    
+
+    if (onResizeHandle(x,y)) return ClickType::onResize;         
+	
     double dx=x-this->x(), dy=y-this->y();
-    double w=0.5*width*z, h=0.5*height*z;
-    // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-w) < portRadiusMult*z &&
-        fabs(fabs(dy)-h) < portRadiusMult*z &&
-        fabs(hypot(dx,dy)-hypot(w,h)) < portRadiusMult*z)
-      return ClickType::onResize;
+    double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     return (abs(dx)<w && abs(dy)<h)?
       ClickType::onItem: ClickType::outside;
   }
   
   static ptime epoch=microsec_clock::local_time(), accumulatedBlitTime=epoch;
 
+  static const size_t maxNumTensorElementsToPlot=10;
+  
   void PlotWidget::addPlotPt(double t)
   {
+    size_t extraPen=2*numLines+1;
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (yvars[pen].dataSize()==1 && yvars[pen].idx()>=0)
-        {
-          double x,y;
-          switch (xvars.size())
-            {
-            case 0: // use t, when x variable not attached
-              x=t;
-              y=yvars[pen].value();
-              break;
-            case 1: // use the value of attached variable
-              assert(xvars[0].idx()>=0);
-              x=xvars[0].value();
-              y=yvars[pen].value();
-              break;
-            default:
-              if (pen < xvars.size() && xvars[pen].idx()>=0)
-                {
-                  x=xvars[pen].value();
-                  y=yvars[pen].value();
-                }
-              else
-                throw error("x input not wired for pen %d",(int)pen+1);
-              break;
-            }
-          addPt(pen, x, y);
-        }
+      if (pen<yvars.size() && yvars[pen])
+        for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen]->size()); ++i)
+          {
+            double x,y;
+            switch (xvars.size())
+              {
+              case 0: // use t, when x variable not attached
+                x=t;
+                y=(*yvars[pen])[i];
+                break;
+              case 1: // use the value of attached variable
+                assert(xvars[0]->idx()>=0);
+                if (xvars[0]->size()>1)
+                  throw_error("Tensor valued x inputs not supported");
+                x=(*xvars[0])[0];
+                y=(*yvars[pen])[i];
+                break;
+              default:
+                if (pen < xvars.size() && xvars[pen]->idx()>=0)
+                  {
+                    if (xvars[pen]->size()>1)
+                      throw_error("Tensor valued x inputs not supported");
+                    x=(*xvars[pen])[0];
+                    y=(*yvars[pen])[i];
+                  }
+                else
+                  throw error("x input not wired for pen %d",(int)pen+1);
+                break;
+              }
+            size_t p=pen;
+            if (i>0)
+              {
+                // ensure next pen is a different colour
+                if (extraPen%(2*numLines)==pen%(2*numLines))
+                  extraPen++;
+                p+=extraPen++;
+              }
+            addPt(p, x, y);
+          }
     
     // throttle plot redraws
     static time_duration maxWait=milliseconds(1000);
@@ -405,7 +442,7 @@ namespace minsky
         min((accumulatedBlitTime-(ptime&)lastAccumulatedBlitTime) * 2, maxWait))
       {
         ptime timerStart=microsec_clock::local_time();
-        redraw();
+        requestRedraw();
         lastAccumulatedBlitTime = accumulatedBlitTime;
         lastAdd=microsec_clock::local_time();
         accumulatedBlitTime += lastAdd - timerStart;
@@ -419,37 +456,36 @@ namespace minsky
     // determine if any of the incoming vectors has a ptime-based xVector
     xIsSecsSinceEpoch=false;
     for (auto& i: yvars)
-      if (i.idx()>=0 && xvars[&i-&yvars[0]].idx()==-1 && i.xVector.size())
+      if (i && xvars[&i-&yvars[0]] && i->hypercube().xvectors.size())
         {
-          auto& xv=i.xVector[0];
+          auto& xv=i->hypercube().xvectors[0];
           if (xv.dimension.type==Dimension::time)
             xIsSecsSinceEpoch=true;
         }
     
     for (size_t pen=0; pen<2*numLines; ++pen)
-      // For feature 47
-      if (pen<yvars.size() && (yvars[pen].dataSize()>1) && yvars[pen].idx()>=0)
+      if (pen<yvars.size() && yvars[pen] && yvars[pen]->size()>1)
         {
           auto& yv=yvars[pen];
-          auto d=yv.dims();
+          auto d=yv->hypercube().dims();
           if (d.empty()) continue;
           
           // work out a reference to the x data
           vector<double> xdefault;
           double* x;
-          if (pen<xvars.size() && xvars[pen].idx()>=0)
+          if (pen<xvars.size() && xvars[pen])
             {
-              if (xvars[pen].dims()[0]!=d[0])
+              if (xvars[pen]->hypercube().xvectors[0].size()!=d[0])
                 throw error("x vector not same length as y vectors");
-              x=xvars[pen].begin();
+              x=xvars[pen]->begin();
             }
           else
             {
               xdefault.reserve(d[0]);
               xticks.clear();
-              if (yv.xVector.size()) // yv carries its own x-vector
+              if (yv->hypercube().rank()) // yv carries its own x-vector
                 {
-                  auto& xv=yv.xVector[0];
+                  auto& xv=yv->hypercube().xvectors[0];
                   assert(xv.size()==d[0]);
                   switch (xv.dimension.type)
                     {
@@ -459,6 +495,8 @@ namespace minsky
                           xticks.emplace_back(i, str(xv[i]));
                           xdefault.push_back(i);
                         }
+                      if (plotType==automatic)
+                        Plot::plotType=Plot::bar;
                       break;
                     case Dimension::value:
                       if (xIsSecsSinceEpoch && xv.dimension.units=="year")
@@ -468,6 +506,8 @@ namespace minsky
                       else
                         for (auto& i: xv)
                           xdefault.push_back(any_cast<double>(i));
+                      if (plotType==automatic)
+                        Plot::plotType=Plot::line;
                       break;
                     case Dimension::time:
                       {
@@ -479,6 +519,8 @@ namespace minsky
                             xdefault.push_back(tv);
                           }
                       }
+                      if (plotType==automatic)
+                        Plot::plotType=Plot::line;
                       break;
                     }
                 }
@@ -490,16 +532,16 @@ namespace minsky
           
           // higher rank y objects treated as multiple y vectors to plot
           // For feature 47
-            for (size_t j=0 /*d[0]*/; j<std::min(size_t(10)*d[0], yv.dataSize()); j+=d[0])
+            for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
               {
-                setPen(extraPen, x, yv.begin()+j, d[0]);
+                setPen(extraPen, x, yv->begin()+j, d[0]);
                 if (pen>=numLines)
                   assignSide(extraPen,Side::right);
                string label;
                 size_t stride=d[0];
-                for (size_t i=1; i<yv.xVector.size(); ++i)
+                for (size_t i=1; i<yv->hypercube().rank(); ++i)
                   {
-                    label+=str(yv.xVector[i][(j/stride)%d[i]])+" ";
+                    label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
                     stride*=d[i];
                   }
                 labelPen(extraPen,label);
@@ -510,17 +552,18 @@ namespace minsky
   }
 
   
-  void PlotWidget::connectVar(const VariableValue& var, unsigned port)
+  void PlotWidget::connectVar(const shared_ptr<VariableValue>& var, unsigned port)
   {
+    assert(var);
     if (port<nBoundsPorts)
       switch (port)
         {
-        case 0: xminVar=var; return;
-        case 1: xmaxVar=var; return;
-        case 2: yminVar=var; return;
-        case 3: ymaxVar=var; return;
-        case 4: y1minVar=var; return;
-        case 5: y1maxVar=var; return;
+        case 0: xminVar=*var; return;
+        case 1: xmaxVar=*var; return;
+        case 2: yminVar=*var; return;
+        case 3: ymaxVar=*var; return;
+        case 4: y1minVar=*var; return;
+        case 5: y1maxVar=*var; return;
         }
     unsigned pen=port-nBoundsPorts;
     if (pen<2*numLines)

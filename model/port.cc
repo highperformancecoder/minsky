@@ -68,23 +68,24 @@ namespace minsky
       {
         auto& gg=g->globalGroup();
         auto wires=m_wires; // save copy, as Group::removeWire mutates it
+        vector<WirePtr> wireHold; // postpone actual wire destruction until after loop
         for (auto& w: wires)
-          gg.removeWire(*w);
+          wireHold.push_back(gg.removeWire(*w));
       }
     m_wires.clear();
   }
   
   /// sets the VariableValue associated with this port
-  void Port::setVariableValue(const VariableValue& v) {
+  void Port::setVariableValue(const std::shared_ptr<VariableValue>& v) {
     if (!input())
       variableValue=v;
   }
 
   /// value associated with this port
   double Port::value() const {
-    auto& vv=getVariableValue();
-    if (vv.type()!=VariableType::undefined)
-      return vv.value();
+    auto vv=getVariableValue();
+    if (vv && vv->type()!=VariableType::undefined)
+      return vv->value();
     if (input())
       {
         if (!m_wires.empty())
@@ -104,7 +105,7 @@ namespace minsky
       return {};
   }
 
-  const VariableValue& Port::getVariableValue() const {
+  shared_ptr<VariableValue> Port::getVariableValue() const {
     if (input() && !m_wires.empty())
       return m_wires[0]->from()->getVariableValue();
     return variableValue;

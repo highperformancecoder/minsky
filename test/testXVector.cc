@@ -40,31 +40,31 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      from1.setXVector(XV{{"a",{"a1","a2","a3"}},{"b",{"b1","b3","b4"}}});
-      from2.setXVector(XV{{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}});
-      from1.allocValue();
-      from2.allocValue();
+      from1.hypercube(XV{{"a",{"a1","a2","a3"}},{"b",{"b1","b3","b4"}}});
+      from2.hypercube(XV{{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}});
+//      from1.allocValue();
+//      from2.allocValue();
       EvalOpPtr e(OperationType::add, nullptr, to, from1, from2);
-      CHECK_EQUAL(3,to.xVector.size());
+      CHECK_EQUAL(3,to.rank());
       map<string, XVector> m;
-      for (auto& i: to.xVector)
+      for (auto& i: to.hypercube().xvectors)
         m[i.name]=i;
       CHECK_EQUAL(3,m["a"].size());
-      CHECK(m["a"]==from1.xVector[0]);
-      CHECK(m["c"]==from2.xVector[0]);
+      CHECK(m["a"]==from1.hypercube().xvectors[0]);
+      CHECK(m["c"]==from2.hypercube().xvectors[0]);
       XVector t1{"b",{"b3","b4"}};
       CHECK(m["b"]==t1);
 
-      CHECK_EQUAL(3, to.dims().size());
-      vector<size_t> d{to.xVector[0].size(),to.xVector[1].size(),to.xVector[2].size()};
-      CHECK_ARRAY_EQUAL(d, to.dims(), d.size());
-      CHECK_EQUAL(18,to.dataSize());
+      CHECK_EQUAL(3, to.hypercube().dims().size());
+      vector<size_t> d{to.hypercube().xvectors[0].size(),to.hypercube().xvectors[1].size(),to.hypercube().xvectors[2].size()};
+      CHECK_ARRAY_EQUAL(d, to.hypercube().dims(), d.size());
+      CHECK_EQUAL(18,to.size());
 
       // the following assumes that to's xVector is {"a","b","c"}. If
       // different order, then this test will need to be modified
-      CHECK_EQUAL("a",to.xVector[0].name);
-      CHECK_EQUAL("b",to.xVector[1].name);
-      CHECK_EQUAL("c",to.xVector[2].name);
+      CHECK_EQUAL("a",to.hypercube().xvectors[0].name);
+      CHECK_EQUAL("b",to.hypercube().xvectors[1].name);
+      CHECK_EQUAL("c",to.hypercube().xvectors[2].name);
       vector<unsigned> i1{3,4,5,6,7,8,3,4,5,6,7,8,3,4,5,6,7,8};
       vector<unsigned> i2{3,3,3,6,6,6,4,4,4,7,7,7,5,5,5,8,8,8};
       for (auto& i:i1) i+=from1.idx();
@@ -84,22 +84,22 @@ SUITE(XVector)
       // target incompatible dimension with source
       CHECK_THROW(EvalOpPtr(OperationType::add, nullptr, from1, from1, from2), std::exception);
 
-      to.setXVector(XV());
+      to.hypercube({});
       e=EvalOpPtr(OperationType::copy, nullptr, to, from1, from2);
-      CHECK(to.xVector==from1.xVector);
-      CHECK_EQUAL(from1.dataSize(), e->in1.size());
+      CHECK(to.hypercube()==from1.hypercube());
+      CHECK_EQUAL(from1.size(), e->in1.size());
       for (size_t i=0; i<e->in1.size(); ++i)
         CHECK_EQUAL(from1.idx()+i, e->in1[i]);
 
       to.makeXConformant(from1);
       to.makeXConformant(from2);
       e=EvalOpPtr(OperationType::copy, nullptr, to, from2);
-      CHECK_EQUAL(3, to.dims().size());
+      CHECK_EQUAL(3, to.rank());
       {
-        vector<size_t> d{to.xVector[0].size(),to.xVector[1].size(),to.xVector[2].size()};
-        CHECK_ARRAY_EQUAL(d, to.dims(), d.size());
+        vector<size_t> d{to.hypercube().xvectors[0].size(),to.hypercube().xvectors[1].size(),to.hypercube().xvectors[2].size()};
+        CHECK_ARRAY_EQUAL(d, to.hypercube().dims(), d.size());
       }
-      CHECK_EQUAL(18,to.dataSize());
+      CHECK_EQUAL(18,to.size());
       CHECK_EQUAL(i2.size(),e->in1.size());
       CHECK_ARRAY_EQUAL(i2,e->in1,i1.size());
     }
@@ -111,10 +111,10 @@ SUITE(XVector)
       XV xv1{{"a",{1.0,2.0,3.0}},{"b",{1.0,3.0,4.0,6.0}}};
       xv1[0].dimension.type=Dimension::value;
       xv1[1].dimension.type=Dimension::value;
-      from1.setXVector(xv1);
+      from1.hypercube(xv1);
       XV xv2{{"c",{"c1","c2","c3"}},{"b",{2.0,3.0,3.5,4.2,5.0}}};
       xv2[1].dimension.type=Dimension::value;
-      from2.setXVector(xv2);
+      from2.hypercube(xv2);
       from1.allocValue();
       from2.allocValue();
       EvalOpPtr e(OperationType::add, nullptr, to, from1, from2);

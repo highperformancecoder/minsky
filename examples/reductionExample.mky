@@ -1,40 +1,46 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
-  <schemaVersion>2</schemaVersion>
+  <schemaVersion>3</schemaVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
-    <id>43</id>
+    <id>66</id>
     <from>0</from>
     <to>28</to>
    </Wire>
    <Wire>
-    <id>44</id>
+    <id>67</id>
     <from>25</from>
     <to>29</to>
    </Wire>
    <Wire>
-    <id>45</id>
+    <id>68</id>
     <from>27</from>
     <to>32</to>
    </Wire>
    <Wire>
-    <id>46</id>
+    <id>69</id>
     <from>31</from>
     <to>35</to>
    </Wire>
    <Wire>
-    <id>47</id>
+    <id>70</id>
     <from>34</from>
     <to>8</to>
    </Wire>
    <Wire>
-    <id>48</id>
+    <id>71</id>
     <from>34</from>
     <to>38</to>
    </Wire>
    <Wire>
-    <id>49</id>
+    <id>72</id>
     <from>37</from>
     <to>9</to>
+   </Wire>
+   <Wire>
+    <id>73</id>
+    <from>31</from>
+    <to>49</to>
    </Wire>
   </wires>
   <items>
@@ -43,7 +49,7 @@
     <type>Variable:parameter</type>
     <x>123</x>
     <y>112</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>0</int>
@@ -61,9 +67,9 @@
    <Item>
     <id>24</id>
     <type>PlotWidget</type>
-    <x>591</x>
-    <y>194</y>
-    <zoomFactor>1</zoomFactor>
+    <x>739.25</x>
+    <y>205.25</y>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
@@ -89,8 +95,8 @@
      <int>22</int>
      <int>23</int>
     </ports>
-    <width>150</width>
-    <height>150</height>
+    <width>447</width>
+    <height>173</height>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -110,6 +116,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -121,6 +128,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -132,6 +140,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -143,6 +152,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -154,6 +164,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -165,6 +176,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -176,6 +188,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
      <LineStyle>
       <colour>
@@ -187,6 +200,7 @@
       <width>1</width>
       <dashStyle>solid</dashStyle>
       <width>1</width>
+      <dashStyle>solid</dashStyle>
      </LineStyle>
     </palette>
    </Item>
@@ -195,7 +209,7 @@
     <type>Operation:time</type>
     <x>103</x>
     <y>166</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>25</int>
@@ -207,7 +221,7 @@
     <type>Operation:multiply</type>
     <x>208</x>
     <y>152</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>27</int>
@@ -221,7 +235,7 @@
     <type>Operation:sin</type>
     <x>259</x>
     <y>154</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>31</int>
@@ -234,7 +248,7 @@
     <type>Operation:sum</type>
     <x>315</x>
     <y>149</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>34</int>
@@ -247,7 +261,7 @@
     <type>IntOp</type>
     <x>392</x>
     <y>202</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>37</int>
@@ -260,9 +274,9 @@
    <Item>
     <id>42</id>
     <type>Variable:integral</type>
-    <x>431</x>
+    <x>429</x>
     <y>202</y>
-    <zoomFactor>1</zoomFactor>
+    <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
      <int>37</int>
@@ -276,6 +290,146 @@
      <max>2.73591</max>
      <step>0.1</step>
     </slider>
+   </Item>
+   <Item>
+    <id>65</id>
+    <type>PlotWidget</type>
+    <x>708.75</x>
+    <y>424.75</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>43</int>
+     <int>44</int>
+     <int>45</int>
+     <int>46</int>
+     <int>47</int>
+     <int>48</int>
+     <int>49</int>
+     <int>50</int>
+     <int>51</int>
+     <int>52</int>
+     <int>53</int>
+     <int>54</int>
+     <int>55</int>
+     <int>56</int>
+     <int>57</int>
+     <int>58</int>
+     <int>59</int>
+     <int>60</int>
+     <int>61</int>
+     <int>62</int>
+     <int>63</int>
+     <int>64</int>
+    </ports>
+    <width>522</width>
+    <height>198</height>
+    <logx>false</logx>
+    <logy>false</logy>
+    <ypercent>false</ypercent>
+    <plotType>line</plotType>
+    <nxTicks>10</nxTicks>
+    <nyTicks>10</nyTicks>
+    <xtickAngle>-45</xtickAngle>
+    <exp_threshold>4</exp_threshold>
+    <palette>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0.6</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0</r>
+       <g>1</g>
+       <b>1</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>1</r>
+       <g>0.647</g>
+       <b>0</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+     <LineStyle>
+      <colour>
+       <r>0.627</r>
+       <g>0.125</g>
+       <b>0.941</b>
+       <a>1</a>
+      </colour>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+      <width>1</width>
+      <dashStyle>solid</dashStyle>
+     </LineStyle>
+    </palette>
    </Item>
   </items>
   <groups>

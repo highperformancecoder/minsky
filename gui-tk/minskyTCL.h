@@ -21,10 +21,13 @@
 #define MINSKYTCL_H
 #include "minsky.h"
 #include "godleyTableWindow.h"
+#include "variableInstanceList.h"
 #include <fstream>
+#include <memory>
+
+namespace ecolab {extern Tk_Window mainWin;}
 
 // TCL specific definitions for global minsky object
-
 namespace minsky
 {
   cmd_data* getCommandData(const string& name);
@@ -61,7 +64,7 @@ namespace minsky
     /// generate a TCL_obj referring to variableValues[valueId]
     void getValue(const std::string& valueId);
     
-    std::unique_ptr<ostream> eventRecord;
+    std::unique_ptr<std::ostream> eventRecord;
     void startRecording(const char* file) {
       eventRecord.reset(new std::ofstream(file));
       *eventRecord<<"checkRecordingVersion "<<minskyVersion<<endl;
@@ -70,6 +73,11 @@ namespace minsky
       eventRecord.reset();
     }
 
+    std::unique_ptr<std::string> autoSaveFile;
+    void setAutoSaveFile(const std::string& file) {
+      autoSaveFile.reset(new std::string(file));
+    }
+    
     /// flag to indicate whether a TCL should be pushed onto the
     /// history stack, or logged in a recording. This is used to avoid
     /// movements being added to recordings and undo history
@@ -111,6 +119,26 @@ namespace minsky
       return canvas.item.get();
     }
 
+    // call item->retype, and update the canvas.item ptr with the new object
+    void retypeItem(VariableType::Type type)
+    {
+      if (canvas.item)
+        if (auto g=canvas.item->group.lock()) 
+          {
+            // snag a reference to the actual location of this item,
+            // so we can update canvas.item later. Ticket #1135.
+            auto itemItr=find(g->items.begin(), g->items.end(), canvas.item);
+            if (auto v=canvas.item->variableCast())
+              v->retype(type);
+            if (itemItr!=g->items.end())
+              {
+                canvas.item=*itemItr;
+                TCL_obj_deregister("minsky.canvas.item");
+                registerRef(canvas.item,"minsky.canvas.item");
+              }
+          }
+    }
+    
     bool getItemAtFocus()
     {
       // deregister any old definitions, as item is polymorphic
@@ -278,6 +306,8 @@ namespace minsky
       TCL_obj(minskyTCL_obj(),"minsky.canvas.model", *canvas.model);
     }
 
+    
+    
     std::string openGodley() {
       if (auto gi=dynamic_pointer_cast<GodleyIcon>(canvas.item))
         {
@@ -297,12 +327,31 @@ namespace minsky
       return "";
     }
 
+    std::string listAllInstances() const {
+      if (auto v=canvas.item->variableCast())
+        {
+          std::string name="instanceList"+to_string(size_t(canvas.item.get()));
+          if (TCL_obj_properties().count(name)==0)
+            {
+              auto instanceList=new VariableInstanceList(*canvas.model, v->valueId());
+              // pass ownership of object to TCL interpreter
+              Tcl_CreateCommand
+                (ecolab::interp(), (name+".delete").c_str(),
+                 (Tcl_CmdProc*)deleteTclObject<VariableInstanceList>,
+                 (ClientData)instanceList,NULL);
+              TCL_obj(minskyTCL_obj(),name,*instanceList);
+            }
+          return name;
+        }
+      return "";
+    }
+
     void loadVariableFromCSV(const std::string& specVar, const std::string& filename)
     {
       auto i=TCL_obj_properties().find(specVar);
       if (i!=TCL_obj_properties().end())
         if (auto spec=dynamic_cast<member_entry<DataSpec>*>(i->second.get()))
-          if (auto v=dynamic_cast<VariableBase*>(canvas.item.get()))
+          if (auto v=canvas.item->variableCast())
             v->importFromCSV(filename, *spec->memberptr);
     }
     
@@ -334,14 +383,16 @@ namespace minsky
     string valueId(const string& x) {return VariableValue::valueId(x);}
 
     vector<string> listFonts() const {
+      vector<string> r;
+#ifdef PANGO
       PangoFontFamily **families;
       int num;
       pango_font_map_list_families(pango_cairo_font_map_get_default(),
                                    &families,&num);
-      vector<string> r;
       for (int i=0; i<num; ++i)
         r.push_back(pango_font_family_get_name(families[i]));
       g_free(families);
+#endif
       return r;
     }
 
@@ -359,9 +410,15 @@ namespace minsky
     void clearBusyCursor() override
     {tclcmd()<<"setCursor {}\n";}
 
+    void message(const std::string& m) override
+    {(tclcmd()<<"if [llength [info command tk_messageBox]] {tk_messageBox -message \"")|m|"\" -type ok}\n";}
+
+    void redrawAllGodleyTables() override 
+    {tclcmd()<<"if [llength [info command redrawAllGodleyTables]] redrawAllGodleyTables\n";}
+    
     bool checkMemAllocation(size_t bytes) const override {
       bool r=true;
-      if (bytes>0.2*physicalMem())
+      if (ecolab::mainWin && bytes>0.2*physicalMem())
         {
           tclcmd cmd;
           cmd<<"tk_messageBox -message {Allocation will use more than 50% of available memory. Do you want to proceed?} -type yesno\n";

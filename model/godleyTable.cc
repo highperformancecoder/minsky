@@ -33,6 +33,7 @@ void GodleyTable::markEdited()
 
 bool GodleyTable::initialConditionRow(unsigned row) const
 {
+  if (row>=rows()) return false;
   const string& label=cell(row,0);
   static size_t initialConditionsSz=strlen(initialConditions);
   size_t i, j;
@@ -42,6 +43,14 @@ bool GodleyTable::initialConditionRow(unsigned row) const
   for (j=0; j<initialConditionsSz && i<label.size() && 
          toupper(label[i])==toupper(initialConditions[j]); ++i, ++j);
   return j==initialConditionsSz;
+}
+
+bool GodleyTable::singularRow(unsigned row, unsigned col)
+{
+  for (size_t c=0; c<cols(); ++c)
+    if (c!=col && !cell(row, c).empty())
+      return false;
+  return true;
 }
 
 void GodleyTable::insertRow(unsigned row)
@@ -115,6 +124,8 @@ void GodleyTable::moveCol(int col, int n)
   _assetClass(col+n, targetAssetClass);
   // insert extra empty column if an asset class gets emptied out of this
   orderAssetClasses();
+  // save text in currently highlighted column heading.  For tickets 1058/1094/1122/1127.
+  savedText=data[0][col];
 }
 
 
@@ -167,6 +178,10 @@ GodleyTable::AssetClass GodleyTable::_assetClass
   return _assetClass(col);
 }
 
+bool GodleyTable::singleEquity() const {
+  assert(cols()>=3);
+  return m_assetClass[cols()-2]!=GodleyAssetClass::equity;
+}
 
 string GodleyTable::assetClass(TCL_args args)
 {
@@ -322,7 +337,7 @@ void GodleyTable::orderAssetClasses()
 
 void GodleyTable::rename(const std::string& from, const std::string& to)
 {
-  for (size_t r=1; r<rows(); ++r)   // Part of tickets 1053/1072. Fixes up disappearing column headings when whole columns are moved.
+  for (size_t r=0; r<rows(); ++r)   // Part of tickets 1053/1072. Fixes up disappearing column headings when whole columns are moved.
     for (size_t c=1; c<cols(); ++c)
       {
         FlowCoef fc(cell(r,c));

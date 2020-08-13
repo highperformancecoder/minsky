@@ -52,7 +52,6 @@ namespace minsky
     // firstly, see if the user is selecting an item
     if ((itemFocus=itemAt(x,y)))
       {
-        auto z=itemFocus->zoomFactor();
         clickType=itemFocus->clickType(x,y);
         switch (clickType)
           {
@@ -82,10 +81,8 @@ namespace minsky
           case ClickType::onResize:
             lassoMode=LassoMode::itemResize;
             // set x0,y0 to the opposite corner of (x,y)
-            lasso.x0 = itemFocus->x() +
-              0.5*itemFocus->width()*z * (x>itemFocus->x()? -1:1);
-            lasso.y0 = itemFocus->y() +
-              0.5*itemFocus->height()*z * (y>itemFocus->y()? -1:1);
+            lasso.x0 = x>itemFocus->x()? itemFocus->left(): itemFocus->right();
+            lasso.y0 = y>itemFocus->y()? itemFocus->top(): itemFocus->bottom();
             lasso.x1=x;
             lasso.y1=y;
             item=itemFocus;
@@ -167,7 +164,7 @@ namespace minsky
       case LassoMode::itemResize:
         if (item)
           {
-            item->resize(lasso);
+            item->resize(lasso);  
             requestRedraw();
           }
         break;
@@ -232,12 +229,15 @@ namespace minsky
                 if (auto v=itemFocus->variableCast())
                   {
                     RenderVariable rv(*v);
-                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation*M_PI/180));
+                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation()*M_PI/180));
                     v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
                                  rw + 0.5*(v->sliderMin+v->sliderMax));
                     // push History to prevent an unnecessary reset when
                     // adjusting the slider whilst paused. See ticket #812
                     minsky().pushHistory();
+                    if (minsky().reset_flag())
+                      minsky().reset();
+                    minsky().evalEquations();
                     requestRedraw();
                   }
                 return;
@@ -333,13 +333,14 @@ namespace minsky
                                               });
             model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
                                                {
-                                                 bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
+                                                 auto ct=(*i)->clickType(x,y);
+                                                 bool mf=ct!=ClickType::outside;
                                                  if (mf!=(*i)->mouseFocus)
                                                    {
                                                      (*i)->mouseFocus=mf;
                                                      requestRedraw();
                                                    }
-                                                 bool onResize = (*i)->clickType(x,y)==ClickType::onResize;
+                                                 bool onResize = ct==ClickType::onResize;
                                                  if (onResize!=(*i)->onResizeHandles)
                                                    {
                                                      (*i)->onResizeHandles=onResize;
@@ -390,7 +391,8 @@ namespace minsky
       if (i->visible() && lasso.contains(*i))
         selection.wires.push_back(i);
 
-    minsky().copy();
+    if (focusFollowsMouse)
+      minsky().copy();
   }
 
   
@@ -539,6 +541,13 @@ namespace minsky
        }
   }
 
+  namespace
+  {
+    // return true if scope g refers to the global model group
+    bool isGlobal(const GroupPtr& g)
+    {return !g || g==cminsky().model;}
+  }
+  
   void Canvas::renameAllInstances(const string newName)
   {
     auto var=item->variableCast();
@@ -547,21 +556,63 @@ namespace minsky
         var=i->intVar.get();
     if (var)
       {
+        // cache name and valueId for later use as var gets invalidated in the recursiveDo
         auto valueId=var->valueId();
+        auto varScope=VariableValue::scope(var->group.lock(), valueId);
+        string fromName=var->rawName();
+        // unqualified versions of the names
+        string uqFromName=fromName.substr(fromName[0]==':'? 1: 0);
+        string uqNewName = newName.substr(newName[0]==':'? 1: 0);
+        set<GodleyIcon*> godleysToUpdate;
+#ifndef NDEBUG
+        auto numItems=model->numItems();
+#endif
         model->recursiveDo
           (&GroupItems::items, [&](Items&,Items::iterator i)
            {
              if (auto v=(*i)->variableCast())
                if (v->valueId()==valueId)
-                 {
+                 {			 
                    if (auto g=dynamic_cast<GodleyIcon*>(v->controller.lock().get()))
-                       // fix up internal references in Godley table
-                       g->table.rename(v->rawName(), (v->name()[0]==':'?":":"")+newName);
-                   v->name(newName);
+                     {
+                       if (varScope==g->group.lock() ||
+                           (!varScope && g->group.lock()==cminsky().model)) // fix local variables
+                         g->table.rename(uqFromName, uqNewName);
+                       
+                       // scope of an external ref in the Godley Table
+                       auto externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqNewName);
+                       // if we didn't find it, perhaps the outerscope variable hasn't been changed
+                       if (!externalVarScope)
+                         externalVarScope=VariableValue::scope(g->group.lock(), ':'+uqFromName);
+
+                       if (varScope==externalVarScope ||  (isGlobal(varScope) && isGlobal(externalVarScope)))
+                         // fix external variable references
+                         g->table.rename(':'+uqFromName, ':'+uqNewName);
+                       // GodleyIcon::update invalidates the iterator, so postpone update
+                       godleysToUpdate.insert(g);
+                     }
+                   else
+                     {
+                       if (varScope==v->group.lock() ||
+                           (newName.size() && newName[0]==':') )
+                         v->name(newName);
+                       else
+                         v->name(":"+newName);
+                       if (auto vv=v->vValue()) {
+                        v->retype(vv->type()); // ensure correct type. Note this invalidates v.
+                       }
+                     }
                  }
              return false;
            });
-       }
+        assert(model->numItems()==numItems);
+        for (auto g: godleysToUpdate)
+          {
+            g->update();
+            assert(model->numItems()==numItems);
+          }
+      minsky().reset();   // Updates model after variables rename. For ticket 1109.    
+      }
    }
   
   void Canvas::ungroupItem()
@@ -589,7 +640,29 @@ namespace minsky
         else if (auto group=dynamic_cast<Group*>(item.get()))
           newItem=group->copy();
         else
-          newItem.reset(item->clone());
+          {    			    
+            if (item->ioVar())
+              if (auto v=item->variableCast())
+                if (v->rawName()[0]!=':')
+                  try
+                    {
+                      minsky().pushHistory(); // save current state in case of failure
+                      // attempt to make variable outer scoped. For #1100
+                      minsky().canvas.renameAllInstances(":"+v->rawName());
+                    }
+                  catch (...)
+                    {
+                      minsky().undo(); // back out of change
+                      throw;
+                    }
+            
+            newItem.reset(item->clone());
+            // if copied from a Godley table or I/O var, set orientation to default
+            if (auto v=item->variableCast())
+              if (v->controller.lock())
+                newItem->rotation(defaultRotation);
+                    
+          }
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);
       }
@@ -628,32 +701,37 @@ namespace minsky
 
   void Canvas::copyVars(const std::vector<VariablePtr>& v)
   {
-    auto group=model->addGroup(new Group);
-    setItemFocus(group);
-    float maxWidth=0, totalHeight=0;
+    float maxWidth=0, totalHeight=0, yCentre=0;
     vector<float> widths, heights;
-    for (auto i: v)
-      {
-        RenderVariable rv(*i);
-        widths.push_back(rv.width());
-        heights.push_back(rv.height());
-        maxWidth=max(maxWidth, widths.back());
-        totalHeight+=heights.back();
-      }
-    float y=group->y() - totalHeight;
-    for (size_t i=0; i<v.size(); ++i)
-      {
-        auto ni=v[i]->clone();
-        group->addItem(ni);
-        ni->rotation=0;
-        //ni->zoomFactor=group->zoomFactor;
-        ni->moveTo(group->x()+maxWidth - widths[i],
-                   y+heights[i]);
-        // variables need to refer to outer scope
-        if (ni->name()[0]!=':')
-          ni->name(':'+ni->name());
-        y+=2*heights[i];
-      }
+    // Throw error if no stock/flow vars on Godley icon. For ticket 1039 
+    if (!v.empty()) {    
+	  selection.clear();	
+      for (auto i: v)
+        {
+          RenderVariable rv(*i);
+          widths.push_back(rv.width());
+          heights.push_back(rv.height());
+          maxWidth=max(maxWidth, widths.back());
+          totalHeight+=heights.back();
+        }
+      float y=v[0]->y() - totalHeight;
+      for (size_t i=0; i<v.size(); ++i)
+        {
+		  // Stock and flow variables on Godley icons should not be copied as groups. For ticket 1039	
+          ItemPtr ni(v[i]->clone());
+          (ni->variableCast())->rotation(0);
+          ni->moveTo(v[0]->x()+maxWidth-v[i]->zoomFactor()*widths[i],
+                     y+heights[i]);
+          // variables need to refer to outer scope
+          if ((ni->variableCast())->name()[0]!=':')
+            (ni->variableCast())->name(':'+(ni->variableCast())->name());
+          y+=2*v[i]->zoomFactor()*heights[i];
+          selection.insertItem(model->addItem(ni));		 
+        }
+        // Item focus put on one of the copied vars that are still in selection. For ticket 1039
+        if (!selection.empty()) setItemFocus(selection.items[0]);
+        else setItemFocus(nullptr);  
+    } else throw error("no flow or stock variables to copy");    
   }
 
   void Canvas::handleArrows(int dir, float x, float y, bool modifier)

@@ -33,21 +33,20 @@ proc openGodley {id} {
         bind .$id.table <Configure> "$id.requestRedraw"
         bind .$id.table <Destroy> "$id.delete"
 
-        bind .$id.table <ButtonPress-1> "mouseDown $id %x %y %X %Y"
-        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; $id.mouseUp %x %y"
+        bind .$id.table <ButtonPress-1> "moveAssetClass $id %x %y %X %Y"
+        bind .$id.table <ButtonRelease-1> "defaultCursor .$id.table; swapAssetClass $id %x %y"
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMoveB1 %x %y"
-        bind .$id.table <Motion> "$id.mouseMove %x %y"
-        bind .$id.table <Leave> "$id.mouseMove -1 -1; $id.update"
+        bind .$id.table <Motion> "$id.mouseMove %x %y; $id.requestRedraw"
+        bind .$id.table <Leave> "$id.mouseMove -1 -1; $id.update; $id.requestRedraw"
         bind .$id.table <Enter> "$id.adjustWidgets; $id.requestRedraw"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-        bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]"
-
+        bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]; $id.requestRedraw"
         global meta meta_menu
-        bind .$id.table <$meta-y> "$id.undo -1"
-        bind .$id.table <$meta-z> "$id.undo 1"
-        bind .$id <$meta-y> "$id.undo -1"
-        bind .$id <$meta-z> "$id.undo 1"
+        bind .$id.table <$meta-y> "$id.undo -1; $id.requestRedraw"
+        bind .$id.table <$meta-z> "$id.undo 1; $id.requestRedraw"
+        bind .$id <$meta-y> "$id.undo -1; $id.requestRedraw"
+        bind .$id <$meta-z> "$id.undo 1; $id.requestRedraw"
         
         bind .$id <$meta-plus> "zoomIn $id"
         bind .$id <$meta-minus> "zoomOut $id"
@@ -88,25 +87,24 @@ proc openGodley {id} {
         menu .$id.menubar.file
         .$id.menubar.file add command -label "Export" -command "exportGodley $id"
         
-        menu .$id.menubar.edit
+        menu .$id.menubar.edit -postcommand "toggleGodleyPaste $id"
         .$id configure -menu .$id.menubar
         .$id.menubar.edit add command -label Undo -command "$id.undo 1" -accelerator $meta_menu-Z
         .$id.menubar.edit add command -label Redo -command "$id.undo -1" -accelerator $meta_menu-Y
         .$id.menubar.edit add command -label Title -command "textEntryPopup .godleyTitle {[$id.godleyIcon.table.title]} {setGodleyTitleOK $id}"
-        .$id.menubar.edit add command -label Cut -command "$id.cut" -accelerator $meta_menu-X
+        .$id.menubar.edit add command -label Cut -command "$id.cut; $id.requestRedraw" -accelerator $meta_menu-X
         .$id.menubar.edit add command -label Copy -command "$id.copy" -accelerator $meta_menu-C
-        .$id.menubar.edit add command -label Paste -command "$id.paste" -accelerator $meta_menu-V
+        .$id.menubar.edit add command -label Paste -command "$id.paste; $id.requestRedraw" -accelerator $meta_menu-V               
 
         menu .$id.menubar.view
         .$id.menubar.view add command -label "Zoom in" -command "zoomIn $id" -accelerator $meta_menu-+
         .$id.menubar.view add command -label "Zoom out" -command "zoomOut $id" -accelerator $meta_menu--
         .$id.menubar.view add command -label "Reset zoom" -command "$id.zoomFactor 1; $id.requestRedraw"
         
-        
-        
-        menu .$id.menubar.options
+        menu .$id.menubar.options  
         .$id.menubar.options add checkbutton -label "Show Values" -variable preferences(godleyDisplay) -command setGodleyDisplay
         .$id.menubar.options add checkbutton -label "DR/CR style" -variable preferences(godleyDisplayStyle) -onvalue DRCR -offvalue sign -command setGodleyDisplay
+        .$id.menubar.options add checkbutton -label "Enable multiple equity columns" -variable preferences(multipleEquities) -command setGodleyDisplay
         
         .$id.menubar add cascade -label File -menu .$id.menubar.file -underline 0
         .$id.menubar add cascade -label Edit -menu .$id.menubar.edit -underline 0
@@ -117,10 +115,18 @@ proc openGodley {id} {
         global preferences
         $id.displayValues $preferences(godleyDisplay)
         $id.displayStyle $preferences(godleyDisplayStyle)
-
+        
     }
     wm deiconify .$id
     raise .$id .
+}
+
+proc toggleGodleyPaste id {
+    if {[getClipboard]==""} {
+	.$id.menubar.edit entryconfigure end -state disabled
+    } else {
+	.$id.menubar.edit entryconfigure end -state normal
+    }        
 }
 
 proc zoomOut id {
@@ -145,8 +151,42 @@ proc mouseDown {id x y X Y} {
         }
     } else {
         $id.mouseDown $x $y
+        $id.requestRedraw
         focus .$id.table
     }
+}
+
+# warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
+proc moveAssetClass {id x y X Y} {
+	set testStr [$id.moveAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		mouseDown $id $x $y $X $Y
+	} elseif {$testStr=="Cannot convert stock variable to an equity class"} {
+	    tk_messageBox -message $testStr -type ok -parent .$id.table		
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes {mouseDown $id $x $y $X $Y}
+        no {mouseDown $id $x $c $X $Y}	  
+ 	    }
+ 	 }
+}
+
+# warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
+proc swapAssetClass {id x y} {
+	set testStr [$id.swapAssetClass $x $y]
+	set c [$id.colXZoomed $x]
+    if {$testStr==""} {
+		$id.mouseUp $x $y 
+	} elseif {$testStr=="Cannot convert stock variable to an equity class"} {
+	    tk_messageBox -message $testStr -type ok -parent .$id.table				
+    } else {
+       switch [tk_messageBox -message $testStr -type yesno -parent .$id.table] {
+        yes { $id.mouseUp $x $y }
+        no { $id.mouseUp $x $c }
+ 	 }
+    }
+    $id.requestRedraw
 }
 
 proc importStockVar {id var x} {
@@ -157,6 +197,7 @@ proc importStockVar {id var x} {
             cancel {}
         }
     } else {$id.importStockVar $var $x}
+    $id.requestRedraw
 }
 
 proc setStartVar {cmd x var max} {
@@ -206,17 +247,17 @@ proc godleyContext {id x y X Y} {
     switch [$id.clickTypeZoomed $x $y] {
         background {}
         row0 {
-            .$id.context add command -label "Add new stock variable" -command "$id.addStockVar $x"
+            .$id.context add command -label "Add new stock variable" -command "$id.addStockVar $x; $id.requestRedraw"
             .$id.context add cascade -label "Import variable" -menu .$id.context.import
-            .$id.context add command -label "Delete stock variable" -command "$id.deleteStockVar $x"
+            .$id.context add command -label "Delete stock variable" -command "$id.deleteStockVar $x; $id.requestRedraw"
             .$id.context.import delete 0 end
             foreach var [matchingTableColumns $id.godleyIcon [$id.godleyIcon.table.assetClass [$id.colXZoomed $x] ]] {
-                .$id.context.import add command -label $var -command "$id.importStockVar $var $x"
+                .$id.context.import add command -label $var -command "$id.importStockVar $var $x; $id.requestRedraw"
             }
         }
         col0 {
-            .$id.context add command -label "Add flow" -command "$id.addFlow $y"
-            .$id.context add command -label "Delete flow" -command "$id.deleteFlow $y"
+            .$id.context add command -label "Add flow" -command "$id.addFlow $y; $id.requestRedraw"
+            .$id.context add command -label "Delete flow" -command "$id.deleteFlow $y; $id.requestRedraw"
         }
         internal {}
     }
@@ -231,14 +272,17 @@ proc godleyContext {id x y X Y} {
             $id.selectIdx 0
         }
         if {[string length [$id.godleyIcon.table.getCell $r $c]] && ($r!=1 || $c!=0)} {    # Cannot Cut cell(1,0). For ticket 1064
-            .$id.context add command -label "Cut" -command "$id.cut"    
+            .$id.context add command -label "Cut" -command "$id.cut; $id.requestRedraw"    
         }    
         if {[string length [$id.godleyIcon.table.getCell $r $c]]} {     
             .$id.context add command -label "Copy" -command "$id.copy"
         }
     }
-    if {![catch {clipboard get -type UTF8_STRING}]  && ($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
-        .$id.context add command -label "Paste" -command "$id.paste"
+    if {($r!=1 || $c!=0)} {   # Cannot Paste into cell(1,0). For ticket 1064
+        .$id.context add command -label "Paste" -command "$id.paste; $id.requestRedraw"
+        if {[getClipboard]==""} {
+            .$id.context entryconfigure end -state disabled 
+        }
     }
     tk_popup .$id.context $X $Y
 }
@@ -249,7 +293,9 @@ proc setGodleyTitleOK id {
 }
     
 proc redrawAllGodleyTables {} {
-    foreach c [info commands godleyWindow*.requestRedraw] {$c}
+    foreach c [info commands godleyWindow*.requestRedraw] {
+        $c
+    }
 }
 
 # sets each individual Godley table displayValue preference
@@ -261,6 +307,7 @@ proc setGodleyDisplay {} {
     foreach c [info commands godleyWindow*.displayStyle] {
         $c $preferences(godleyDisplayStyle)
     }
+    multipleEquities $preferences(multipleEquities)
     redrawAllGodleyTables
 }
 

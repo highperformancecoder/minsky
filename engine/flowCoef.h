@@ -29,6 +29,7 @@ namespace minsky
     double coef;
     std::string name;
     FlowCoef(): coef(0) {}
+    FlowCoef(double coef, const std::string& name): coef(coef), name(name) {}
     FlowCoef(const std::string& formula);
     // string form of this entry
     std::string str() const;

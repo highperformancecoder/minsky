@@ -18,6 +18,8 @@
 */
 
 #include "minskyRS.h"
+#include "parVarSheet.h"
+#include "parVarSheet.rcd"
 #include "minsky_epilogue.h"
 
 namespace classdesc

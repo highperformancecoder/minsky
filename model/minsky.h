@@ -37,6 +37,7 @@
 #include "variableValue.h"
 #include "canvas.h"
 #include "panopticon.h"
+#include "fontDisplay.h"
 #include "variableSheet.h"
 #include "parameterSheet.h"
 #include "dimension.h"
@@ -57,7 +58,8 @@ namespace minsky
 {
   using namespace std;
   using classdesc::shared_ptr;
-
+  using namespace civita;
+  
   struct RKdata; // an internal structure for holding Runge-Kutta data
 
   // handle the display of rendered equations on the screen
@@ -65,18 +67,7 @@ namespace minsky
   {
     Minsky& m;
     double m_width=0, m_height=0;
-    void redraw(int x0, int y0, int width, int height) override {
-      if (surface.get()) {
-        MathDAG::SystemOfEquations system(m);
-        cairo_move_to(surface->cairo(),offsx,offsy);
-        system.renderEquations(*surface);
-        ecolab::cairo::Surface surf
-          (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-        system.renderEquations(surf);
-        m_width=surf.width();
-        m_height=surf.height();
-      }
-    }
+    void redraw(int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(EquationDisplay);
   public:
     float offsx=0, offsy=0; // pan controls
@@ -96,7 +87,7 @@ namespace minsky
     shared_ptr<RKdata> ode;
     shared_ptr<ofstream> outputDataFile;
     
-    enum StateFlags {is_edited=1, reset_needed=2};
+    enum StateFlags {is_edited=1, reset_needed=2, fullEqnDisplay_needed=4};
     int flags=reset_needed;
     
     std::vector<int> flagStack;
@@ -155,8 +146,11 @@ namespace minsky
   public:
     EquationDisplay equationDisplay;
     Panopticon panopticon{canvas};
+    FontDisplay fontSampler;
     ParameterSheet parameterSheet;
-    VariableSheet variableSheet;    
+    VariableSheet variableSheet;
+        // Allow multiple equity columns.
+    bool multipleEquities=false;    
 
     /// reflects whether the model has been changed since last save
     bool edited() const {return flags & is_edited;}
@@ -164,7 +158,7 @@ namespace minsky
     bool reset_flag() const {return flags & reset_needed;}
     /// indicate model has been changed since last saved
     void markEdited() {
-      flags |= is_edited | reset_needed;
+      flags |= is_edited | reset_needed | fullEqnDisplay_needed;
       canvas.model.updateTimestamp();
     }
 
@@ -182,7 +176,7 @@ namespace minsky
     /// @throw ecolab::error if equations are illdefined
     void evalEquations() {
       for (auto& eq: equations)
-        eq->eval(&flowVars[0], &stockVars[0]);
+        eq->eval(&flowVars[0], flowVars.size(), &stockVars[0]);
     }
     
     VariableValues variableValues;
@@ -191,6 +185,8 @@ namespace minsky
     /// fills in dimensions table with all loaded ravel axes
     void populateMissingDimensions();
 
+    void populateMissingDimensionsFromVariable(const VariableValue&);
+    
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
     void setGroupIconResource(const string& s)
@@ -211,7 +207,8 @@ namespace minsky
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky(): equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
-      model->height=model->width=std::numeric_limits<float>::max();
+      model->iHeight(std::numeric_limits<float>::max());
+      model->iWidth(std::numeric_limits<float>::max());
       model->self=model;
     }
 
@@ -233,9 +230,9 @@ namespace minsky
     void cut();
     /// copy items in current selection into clipboard
     void copy() const;
-    /// paste clipboard as a new group. canvas.itemFocus is set to
-    /// refer to the new group 
-    void paste();  
+    /// paste clipboard as a new group or ungrouped items on the canvas. canvas.itemFocus is set to
+    /// refer to the new group or items.
+    void paste();
     void saveSelectionAsFile(const string& fileName) const {saveGroupAsFile(canvas.selection,fileName);}
     
     /// @{ override to provide clipboard handling functionality
@@ -243,12 +240,11 @@ namespace minsky
     virtual std::string getClipboard() const {return "";}
     /// @}
 
-    /// toggle selected status of given item
-    void toggleSelected(ItemType itemType, int item);
-
     void insertGroupFromFile(const char* file);
 
     void makeVariablesConsistent();
+
+    void imposeDimensions();
 
     // runs over all ports and variables removing those not in use
     void garbageCollect();
@@ -271,6 +267,8 @@ namespace minsky
     void evalEquations(double result[], double t, const double vars[]);
     /// performs dimension analysis, throws if there is a problem
     void dimensionalAnalysis() const;
+    /// removes units markup from all variables in model
+    void deleteAllUnits();
     
     /// consistency check of the equation order. Should return
     /// true. Outputs the operation number of the invalidly ordered
@@ -297,12 +295,6 @@ namespace minsky
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
 
-    /// returns operation ID for a given EvalOp. -1 if a temporary
-    //    int opIdOfEvalOp(const EvalOpBase&) const;
-
-    /// return the order in which operations are applied (for debugging purposes)
-    ecolab::array<int> opOrder() const;
-
     /// return a list of existing variables a variable could be
     /// connected to. This includes all global variables, plus any
     /// accessible from item's group
@@ -313,6 +305,8 @@ namespace minsky
     std::string ecolabVersion() const {return VERSION;}
     std::string ravelVersion() const;
 
+    std::string fileVersion; ///< Minsky version file was saved under
+    
     unsigned maxHistory{100}; ///< maximum no. of history states to save
     int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvaas during simulation
 
@@ -339,7 +333,7 @@ namespace minsky
     void addIntegral();
     
     /// returns true if any variable of name \a name has a wired input
-    bool inputWired(const std::string&) const;
+    bool inputWired(const std::string& name) const {return definingVar(name).get();}
 
     /// render canvas to a postscript file
     void renderCanvasToPS(const char* filename) {canvas.renderToPS(filename);}
@@ -359,11 +353,18 @@ namespace minsky
 
     /// set DE mode on all godley tables
     void setAllDEmode(bool);
+    /// set std library RNG seed
+    void srand(int seed) {::srand(seed);}
 
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
 
+    /// display a message in a popup box on the GUI
+    virtual void message(const std::string&) {}
+    /// request all Godley table windows to redraw
+    virtual void redrawAllGodleyTables() {}
+    
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL
     virtual bool checkMemAllocation(size_t bytes) const {return true;}
