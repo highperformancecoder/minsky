@@ -275,7 +275,7 @@ namespace minsky
     double angle=rotatedPoints().first;		  
     Point p=rotatedPoints().second;			  
     Rotate r(angle,this->x(),this->y());
-    drawResizeHandle(cairo,r.x(p.x(),p.y())-x(),r.y(p.x(),p.y())-y(),0.5*resizeHandleSize(),abs(rotation())==180? M_PI_2 : 0);
+    drawResizeHandle(cairo,r.x(p.x(),p.y())-x(),r.y(p.x(),p.y())-y(),0.5*resizeHandleSize(),abs(rotation())==180? 0.5*M_PI : 0);
     cairo_stroke(cairo);
   }
   
