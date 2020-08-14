@@ -319,7 +319,6 @@ namespace minsky
                      return false;
                    });
 
-    //canvas.model->addGroup(g);
     auto copyOfItems=g->items;
     for (auto& i: copyOfItems)
       {		
@@ -327,8 +326,13 @@ namespace minsky
          canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
-    // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!copyOfItems.empty()) canvas.setItemFocus(g->items[0]);	      
+    // Attach mouse focus only to first visible item in selection. For ticket 1098.      
+    for (auto& i: copyOfItems)
+      if (i->visible())
+        {
+          canvas.setItemFocus(i);
+          break;
+        }
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
