@@ -148,7 +148,8 @@ namespace minsky
     else
       if (auto g=group.lock())
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
-          editor.reset(new GodleyTableEditor(icon));
+            editor.reset(new GodleyTableEditor(icon));
+    updateBoundingBox();
   }
 
   bool GodleyIcon::buttonDisplay() const {return editor && editor->drawButtons;}
@@ -160,6 +161,7 @@ namespace minsky
           editor->disableButtons();
         else
           editor->enableButtons();
+        updateBoundingBox();
       }
   }
   
@@ -308,7 +310,7 @@ namespace minsky
       }
     
     positionVariables();
-    updateBB();
+    updateBoundingBox();
   }
 
   void GodleyIcon::positionVariables() const
@@ -353,29 +355,24 @@ namespace minsky
   void GodleyIcon::draw(cairo_t* cairo) const
   {
     float z=zoomFactor()*scaleFactor();
-    float w=iWidth()*z, h=iHeight()*z;
+    float w=iWidth()*z, h=iHeight()*z, left=-0.5*(w-leftMargin()), top=-0.5*(bottomMargin()+h);
     positionVariables();
     double titley;
     
     if (editor.get())
       {
         CairoSave cs(cairo);
-        cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);
+        cairo_rectangle(cairo, left, top, w, h);
         cairo_clip(cairo);
-        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h)+12*zoomFactor()/* space for title*/);
-        //cairo_scale(cairo, zoomFactor(), zoomFactor());
+        cairo_translate(cairo,left,top+12*zoomFactor()/* space for title*/);
         editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
-        // Adjust bounding box to fit table in Canvas. For ticket 1178.
-        double ww=w,hh=h;      
-        cairo_get_current_point(cairo,&ww,&hh);           
         titley=-0.5*(bottomMargin()+h);
-        w=ww,h=hh;
       }
     else
       {
         CairoSave cs(cairo);
-        cairo_translate(cairo,-0.5*(w-leftMargin()),-0.5*(bottomMargin()+h));
+        cairo_translate(cairo,left,top);
         cairo_scale(cairo, (w)/svgRenderer.width(), (h)/svgRenderer.height());
         svgRenderer.render(cairo);
         titley=-0.5*bottomMargin()-0.35*(h);
@@ -408,9 +405,12 @@ namespace minsky
         drawResizeHandles(cairo);
       }
       
-    cairo_rectangle(cairo, -0.5*(w-leftMargin()),-0.5*(bottomMargin()+h), w, h);    
-    cairo_clip(cairo);
-    if (selected) drawSelected(cairo);
+    if (selected)
+      {
+        cairo_rectangle(cairo, left,top, w, h);    
+        cairo_clip(cairo);
+        drawSelected(cairo);
+      }
   }
 
   Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
