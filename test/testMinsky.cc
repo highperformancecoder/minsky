@@ -778,8 +778,8 @@ SUITE(Minsky)
       godley2.cell(2,1)="2:a";
       godley3.cell(2,1)=":a";
       godley3.cell(3,1)=":a";
-      variableValues[":a"]=VariableValue(VariableType::flow).allocValue();
-      variableValues[":hello2"]=VariableValue(VariableType::stock).allocValue();
+      (variableValues[":a"]=VariableValuePtr(VariableType::flow))->allocValue();
+      (variableValues[":hello2"]=VariableValuePtr(VariableType::stock))->allocValue();
 
       initGodleys();
 

@@ -50,6 +50,7 @@ namespace classdesc
 namespace classdesc_access
 {
   namespace cd=classdesc;
+#ifdef ACCESSOR_H
   template <class T, class G, class S>
   struct access_RESTProcess<ecolab::Accessor<T,G,S>>
   {
@@ -61,12 +62,10 @@ namespace classdesc_access
     }
   };
 
-//  template <class T, class V>
-//  struct access_RESTProcess<ecolab::TCLAccessor<T,V>>: public cd::NullDescriptor<cd::RESTProcess_t> {};
-
   template <class T, class V, int N>
   struct access_RESTProcess<ecolab::TCLAccessor<T,V,N>>: public cd::NullDescriptor<cd::RESTProcess_t> {};
-
+#endif
+  
   template <class T>
   struct access_RESTProcess<ecolab::array<T>>
   {

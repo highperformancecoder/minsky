@@ -28,16 +28,13 @@ pass()
 
 trap "fail" 1 2 3 15
 
-$here/RESTService/RESTService >output <<EOF
+$here/RESTService/minsky-RESTService >output <<EOF
 /minsky/variableValues/@elem/constant:one
-
 EOF
 if [ $? -ne 0 ]; then fail; fi
 
 cat >reference <<EOF
-cmd>/minsky/variableValues/@elem/constant:one
-{"first":"constant:one","second":{"godleyOverridden":false,"init":"1","name":"constant:one","tensorInit":{"data":[],"dims":[]},"units":[],"unitsCached":false,"xVector":[]}}
-cmd>
+/minsky/variableValues/@elem/constant:one=>{"first":"constant:one","second":{"csvDialog":{"colWidth":50,"flashNameRow":false,"spec":{"columnar":false,"decSeparator":".","dimensionCols":[],"dimensionNames":[],"dimensions":[],"duplicateKeyAction":"throwException","escape":"\\\\","headerRow":0,"horizontalDimName":"?","horizontalDimension":{"type":"string","units":""},"mergeDelimiters":false,"missingValue":nan,"quote":"\"","separator":","},"url":"","xoffs":80},"godleyOverridden":false,"init":"1","name":"constant:one","sliderVisible":false,"tensorInit":{},"units":[],"unitsCached":false}}
 EOF
 
 diff -q -w output reference
