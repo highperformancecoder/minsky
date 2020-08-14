@@ -286,7 +286,7 @@ namespace minsky
     xml_unpack_t unpacker(is);
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
-    canvas.model->addGroup(g);
+    //    canvas.model->addGroup(g);
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();    
@@ -319,6 +319,7 @@ namespace minsky
                      return false;
                    });
 
+    canvas.model->addGroup(g);
     auto copyOfItems=g->items;
     for (auto& i: copyOfItems)
       {		
