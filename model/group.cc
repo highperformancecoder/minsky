@@ -140,7 +140,18 @@ namespace minsky
         return r;
     return ItemPtr();
   }
-       
+
+  void Group::deleteItem(const Item& i)
+  {
+    if (auto r=removeItem(i))
+      {
+        r->deleteAttachedWires();
+        r->removeControlledItems();
+        minsky().runItemDeletedCallback(*r);
+      }
+  }
+
+  
   WirePtr GroupItems::removeWire(const Wire& w)
   {
     for (auto i=wires.begin(); i!=wires.end(); ++i)

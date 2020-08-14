@@ -95,6 +95,7 @@ namespace minsky
     float m_x=0, m_y=0; ///< position in canvas, or within group
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
+    std::string deleteCallback; /// callback to be run when item deleted from group
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
     /// canvas bounding box.

@@ -3,7 +3,8 @@ proc openGodley {id} {
         image create cairoSurface $id -surface $id
         toplevel .$id
         wm title .$id "Godley Table:[$id.godleyIcon.table.title]"
-
+        $id.godleyIcon.deleteCallback "destroy .$id"
+        
         frame .$id.controls
         button .$id.controls.run -image runButton -height 25 -width 25 -command runstop -takefocus 0
         button .$id.controls.reset -image resetButton -height 25 -width 25 -command reset -takefocus 0

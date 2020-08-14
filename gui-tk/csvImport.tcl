@@ -6,7 +6,8 @@ proc CSVImportDialog {} {
     global workDir csvParms
     if {![winfo exists .wiring.csvImport]} {
         toplevel .wiring.csvImport
-
+        minsky.canvas.item.deleteCallback "destroy .wiring.csvImport"
+        
         # file/url control
         frame .wiring.csvImport.fileUrl
         button .wiring.csvImport.fileUrl.file -text "File" -command {

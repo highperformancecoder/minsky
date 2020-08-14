@@ -168,6 +168,7 @@ proc plotDoubleClick {plotId} {
     pack .plot$plotId.menubar  -side top -fill x
 
     image create cairoSurface .plot$plotId.image -surface $plotId -width 400 -height 400
+    $plotId.deleteCallback "destroy .plot$plotId"
     label .plot$plotId.label -image .plot$plotId.image -width 400 -height 400
     pack .plot$plotId.label -fill both -expand 1
 }

@@ -415,6 +415,9 @@ namespace minsky
 
     void redrawAllGodleyTables() override 
     {tclcmd()<<"if [llength [info command redrawAllGodleyTables]] redrawAllGodleyTables\n";}
+
+    void runItemDeletedCallback(const Item& item) override
+    {tclcmd()<<item.deleteCallback<<'\n';}
     
     bool checkMemAllocation(size_t bytes) const override {
       bool r=true;

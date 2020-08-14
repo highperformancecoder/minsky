@@ -364,6 +364,9 @@ namespace minsky
     virtual void message(const std::string&) {}
     /// request all Godley table windows to redraw
     virtual void redrawAllGodleyTables() {}
+
+    /// run callback attached to \a item
+    virtual void runItemDeletedCallback(const Item&) {}
     
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL

@@ -231,13 +231,8 @@ namespace minsky
 
     ItemPtr removeItem(const Item&);
     /// remove item from group, and also all attached wires.
-    void deleteItem(const Item& i) {
-      auto r=removeItem(i);
-      if (r) {
-        r->deleteAttachedWires();
-        r->removeControlledItems();
-      }
-    }
+    void deleteItem(const Item&);
+
     void deleteAttachedWires() override {
       for (auto& i: inVariables) i->deleteAttachedWires();
       for (auto& i: outVariables) i->deleteAttachedWires();

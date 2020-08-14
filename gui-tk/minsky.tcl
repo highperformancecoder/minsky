@@ -730,6 +730,7 @@ proc undo {delta} {
     doPushHistory 0
     minsky.undo $delta
     minsky.canvas.requestRedraw
+    deleteSubsidiaryTopLevels
     doPushHistory 1
 }
 
