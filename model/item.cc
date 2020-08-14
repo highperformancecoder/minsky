@@ -25,7 +25,6 @@
 #include "geometry.h"
 #include "selection.h"
 #include "minsky.h"
-#include "geometry.h"
 #include <pango.h>
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
@@ -46,8 +45,8 @@ namespace minsky
     x.onResizeHandles=false;
     try
       {
-        cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
         x.draw(surf.cairo());
+		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232      
       }
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
@@ -118,6 +117,27 @@ namespace minsky
     {
       return abs(x0-r.x(x1,y1))<d && abs(y0-r.y(x1,y1))<d;
     }
+}
+    
+   std::pair<double,Point> Item::rotatedPoints() const
+   {
+     // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+     double fm=std::fmod(rotation(),360), angle;	
+     float x1=right(),y1=bottom();  
+     if (fm==-90 || fm==270) {
+       angle=-rotation();
+       Rotate r1(angle,this->x(),this->y());
+       x1=r1.x(right(),bottom());
+       y1=r1.y(right(),bottom());						  
+     }
+     else if (abs(fm)==180) {
+       angle=rotation();
+       x1=right();
+       y1=top();					
+     }
+     else angle=0;	
+     Point p(x1,y1);  
+     return make_pair(angle,p);  
   }
   
   bool Item::onResizeHandle(float x, float y) const
@@ -132,7 +152,10 @@ namespace minsky
 
    bool BottomRightResizerItem::onResizeHandle(float x, float y) const
   {
-    return near(x,y,right(),bottom(),resizeHandleSize(),Rotate(rotation(),this->x(),this->y()));
+    double angle=rotatedPoints().first;		  
+    Point p=rotatedPoints().second;		  
+    Rotate r(angle,this->x(),this->y());		  
+    return near(x,y,p.x(),p.y(),resizeHandleSize(),r);
   }
 
  
@@ -248,8 +271,11 @@ namespace minsky
   }
 
   void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
-  {
-    drawResizeHandle(cairo,right()-x(),bottom()-y(),0.5*resizeHandleSize(),0);
+  { 			  			
+    double angle=rotatedPoints().first;		  
+    Point p=rotatedPoints().second;			  
+    Rotate r(angle,this->x(),this->y());
+    drawResizeHandle(cairo,r.x(p.x(),p.y())-x(),r.y(p.x(),p.y())-y(),0.5*resizeHandleSize(),abs(rotation())==180? 0.5*M_PI : 0);
     cairo_stroke(cairo);
   }
   

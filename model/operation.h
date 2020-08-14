@@ -186,7 +186,8 @@ namespace minsky
     {return intVar->valueId();}
       
     void draw(cairo_t*) const override;
-    void resize(const LassoBox& b) override;   
+    void resize(const LassoBox& b) override;  
+    std::pair<double,Point> rotatedPoints() const override;        
 
     void removeControlledItems() const override;
 
