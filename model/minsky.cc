@@ -307,7 +307,15 @@ namespace minsky
                                if (v->defined() && alreadyDefined)
                                  message("Integral/Stock variable "+v->name()+" already defined"); 
                                else if (!v->defined() && !alreadyDefined)
-                                 convertVarType(v->valueId(), VariableType::flow);
+                                 {
+                                   // need to do this var explicitly, as not currently part of model structure
+                                   if (auto vp=VariablePtr(*i))
+                                     {
+                                       vp.retype(VariableType::flow);
+                                       *i=vp;
+                                       convertVarType(vp->valueId(), VariableType::flow);
+                                     }
+                                 }
                              }
                            else if (alreadyDefined)
                              {
@@ -319,6 +327,7 @@ namespace minsky
                      return false;
                    });
 
+    canvas.model->addGroup(g); // needed to ensure wires are correctly handled
     auto copyOfItems=g->items;
     for (auto& i: copyOfItems)
       {		
@@ -338,7 +347,8 @@ namespace minsky
     {	
         canvas.model->addGroup(i);	
     }
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);
+    canvas.model->removeGroup(*g);
     canvas.requestRedraw();
   }
 

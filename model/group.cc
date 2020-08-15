@@ -298,14 +298,16 @@ namespace minsky
     shared_ptr<Group> p1=w.from()->item().group.lock(), p2=w.to()->item().group.lock();
     assert(p1 && p2);
     unsigned l1=p1->level(), l2=p2->level();
-    for (; l1>l2; l1--) p1=p1->group.lock();
-    for (; l2>l1; l2--) p2=p2->group.lock();
-    while (p1!=p2) 
+    for (; p1 && l1>l2; l1--) p1=p1->group.lock();
+    for (; p2 && l2>l1; l2--) p2=p2->group.lock();
+    
+    while (p1 && p2 && p1!=p2) 
       {
         assert(p1 && p2);
         p1=p1->group.lock();
         p2=p2->group.lock();
       }
+    if (!p1 || !p2) return;
     w.moveIntoGroup(*p1);
   }
   
