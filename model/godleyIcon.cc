@@ -28,6 +28,8 @@
 #include <cairo_base.h>
 #include <ctype.h>
 #include "minsky_epilogue.h"
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
@@ -416,6 +418,7 @@ namespace minsky
   Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
+    //string sName=utf_to_utf<char>(stockName);    
     auto vid=valueId(stockName);
     for (; stockCol<table.cols(); ++stockCol)
       if (valueId(table.cell(0,stockCol))==vid)
