@@ -29,6 +29,8 @@
 #include "latexMarkup.h"
 #include <boost/regex.hpp>
 #include <utility>
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 
 namespace minsky
 {
@@ -142,7 +144,7 @@ namespace minsky
     }
     
     VariableValue(Type type=VariableType::undefined, const std::string& name="", const std::string& init="", const GroupPtr& group=GroupPtr()): 
-      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(name), m_scope(scope(group,name)) {}
+      m_type(type), m_idx(-1), init(init), godleyOverridden(0), name(utf_to_utf<char>(name)), m_scope(scope(group,name)) {}
 
 //    const VariableValue& operator=(double x) {valRef()=x; return *this;}
 //    const VariableValue& operator+=(double x) {valRef()+=x; return *this;}
@@ -172,25 +174,26 @@ namespace minsky
     void reset(const VariableValues&); 
 
     /// check that name is a valid valueId (useful for assertions)
-    static bool isValueId(const std::string& name) {
+    static bool isValueId(const std::string& name) {	
       return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        boost::regex_match(name, boost::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
+        boost::regex_match(utf_to_utf<char>(name), boost::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
     }
 
     /// construct a valueId
     static std::string valueId(int scope, std::string name) {
-      auto tmp=":"+stripActive(trimWS(latexToPangoNonItalicised(uqName(name))));
+      auto tmp=":"+utf_to_utf<char>(stripActive(trimWS(latexToPangoNonItalicised(uqName(name)))));
       if (scope<0) return tmp;
       else return std::to_string(scope)+tmp;
     }
     static std::string valueId(std::string name) {
+	  name=utf_to_utf<char>(name);	
       return valueId(scope(name), name);
     }
     /// starting from reference group ref, applying scoping rules to determine the actual scope of \a name
     /// If name prefixed by :, then search up group heirarchy for locally scoped var, otherwise return ref
     static GroupPtr scope(GroupPtr ref, const std::string& name);
     static std::string valueId(const GroupPtr& ref, const std::string& name) 
-    {return valueIdFromScope(scope(ref,name), name);}
+    {return valueIdFromScope(scope(ref,utf_to_utf<char>(name)), utf_to_utf<char>(name));}
     static std::string valueIdFromScope(const GroupPtr& scope, const std::string& name);
     
     /// extract scope from a qualified variable name

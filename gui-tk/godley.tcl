@@ -38,10 +38,10 @@ proc openGodley {id} {
         bind .$id.table <B1-Motion> "motionCursor .$id.table; $id.mouseMoveB1 %x %y"
         bind .$id.table <Motion> "$id.mouseMove %x %y; $id.requestRedraw"
         bind .$id.table <Leave> "$id.mouseMove -1 -1; $id.update; $id.requestRedraw"
-        bind .$id.table <Enter> "$id.adjustWidgets; $id.requestRedraw"
+        bind .$id.table <Enter> "$id.adjustWidgets; $id.update; $id.requestRedraw"
 
         bind .$id.table <<contextMenu>> "godleyContext $id %x %y %X %Y"
-        bind .$id.table <KeyPress> "$id.keyPress %N [encoding convertto utf-8 %A]; $id.requestRedraw"
+        bind .$id.table <Key> "$id.keyPress %N [encoding convertto utf-8 %A]; $id.requestRedraw"
         global meta meta_menu
         bind .$id.table <$meta-y> "$id.undo -1; $id.requestRedraw"
         bind .$id.table <$meta-z> "$id.undo 1; $id.requestRedraw"
