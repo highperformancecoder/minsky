@@ -620,7 +620,8 @@ namespace MathDAG
     if (expressionCache.exists(valueId))
       return expressionCache[valueId];
 
-    assert(VariableValue::isValueId(valueId));
+    if (!VariableValue::isValueId(valueId))
+      throw runtime_error("Invalid valueId: "+valueId);
     assert(minsky.variableValues.count(valueId));
     auto vv=minsky.variableValues[valueId];
 
