@@ -32,7 +32,8 @@ Notes on using the [REST Service](RESTService.md).
 
 ## Roadmap
 
-- Current focus is on implementing a sparse data representation for tensors, and finalising the Bentham iteration. 
-
-- REST Service to support a javascript implementation of Minsky in electron
+- Finalising the Malthus iteration, due end of August.
+- Starting the Say iteration.
+- Javascript implementation of Minsky in electron.
+- Emscripten classdesc descriptor to support Minsky in a browser.
 
