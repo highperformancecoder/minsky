@@ -23,6 +23,8 @@
 #include "group.h"
 #include "selection.h"
 #include "minsky_epilogue.h"
+#include  <random>
+#include  <iterator>
 
 using namespace std;
 
@@ -482,6 +484,25 @@ namespace
     inline float d2(float x0, float y0, float x1, float y1)
     {return sqr(x1-x0)+sqr(y1-y0);}
   }
+
+ // For ticket 1079. Randomly selects initial coordinate pair for minimum distance shooting method. 
+ // See https://stackoverflow.com/questions/6942273/how-to-get-a-random-element-from-a-c-container/6942343
+namespace
+{
+   template<typename Iter, typename RandomGenerator>
+   Iter selectRandomly(Iter start, Iter end, RandomGenerator& g) {
+       std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
+       std::advance(start, dis(g));
+       return start;
+   }
+   
+   template<typename Iter>
+   Iter selectRandomly(Iter start, Iter end) {
+       static std::random_device rd;
+       static std::mt19937 gen(rd());
+       return selectRandomly(start, end, gen);
+   }	
+}    
   
   bool Wire::near(float x, float y) const
   {
@@ -494,8 +515,9 @@ namespace
       vector<pair<float,float>> p=allHandleCoords(c);
          
       unsigned k=0; // nearest index
-      float closestD=d2(p[p.size()-1].first,p[p.size()-1].second,x,y);
-      for (size_t i=0; i<p.size()-1; i++)
+      pair<float,float> pRand= *selectRandomly(p.begin(), p.end());
+      float closestD=d2(pRand.first,pRand.second,x,y);      
+      for (size_t i=0; i<p.size(); i++)
         {
           float d=d2(p[i].first,p[i].second,x,y);
           if (d<=closestD)
@@ -508,6 +530,8 @@ namespace
       // Check for proximity to line segments about index k
       if (k>0 && k<p.size()-1)  
         return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));
+      if (k==0) return segNear(p[0].first,p[0].second,p[1].first,p[1].second,x,y);  
+      if (k==p.size()-1) return segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y);  
       
     }
     return false;
@@ -516,17 +540,24 @@ namespace
   unsigned Wire::nearestHandle(float x, float y)
   {
     auto c=coords();
+    vector<pair<float,float>> p=toCoordPair(c);
+       
     unsigned n=0; // nearest index
-    float closestD=d2(c[0],c[1],x,y);
-    for (size_t i=2; i<c.size()-1; i+=2)
+    pair<float,float> pRand= *selectRandomly(p.begin(), p.end());
+    float closestD=d2(pRand.first,pRand.second,x,y);
+    for (size_t i=0; i<p.size()-1; i++)
       {
-        float d=d2(c[i],c[i+1],x,y);
-        if (d<closestD)
+        float d=d2(p[i].first,p[i].second,x,y);
+        if (d<=closestD)
           {
             closestD=d;
             n=i;
           }
       }
+    
+    //n++;
+    n*=2;      
+    
     // now work out if we need to insert a midpoint handle
     if (n>0)
       {
