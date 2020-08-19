@@ -483,11 +483,9 @@ namespace
     
     inline float d2(float x0, float y0, float x1, float y1)
     {return sqr(x1-x0)+sqr(y1-y0);}
-  }
 
  // For ticket 1079. Randomly selects coordinate pair for minimum distance shooting method. 
  // See https://stackoverflow.com/questions/6942273/how-to-get-a-random-element-from-a-c-container/6942343
-
    template<typename Iter, typename RandomGenerator>
    Iter selectRandomly(Iter start, Iter end, RandomGenerator& g) {
        std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
@@ -517,7 +515,7 @@ namespace
       vector<pair<unsigned,pair<float,float>>> pIdx;
       for (auto elem: p) pIdx.push_back(make_pair(k++,elem));
       
-      float closestD=d2(p[p.size()/2].first,p[p.size()/2].second,x,y);
+      float closestD=std::min({d2(p[0].first,p[0].second,x,y), d2(p[p.size()/2].first,p[p.size()/2].second,x,y), d2(p[p.size()-1].first,p[p.size()-1].second,x,y)});
       
       // perform random distance comparisons to make selection of desired handle more likely. for ticket 1079
       pair<unsigned,pair<float,float>> pRand;      
@@ -552,7 +550,7 @@ namespace
     vector<pair<unsigned,pair<float,float>>> pIdx;
     for (auto elem: p) pIdx.push_back(make_pair(n++,elem)); 
     
-    float closestD=d2(p[p.size()/2].first,p[p.size()/2].second,x,y);
+      float closestD=std::min({d2(p[0].first,p[0].second,x,y), d2(p[p.size()/2].first,p[p.size()/2].second,x,y), d2(p[p.size()-1].first,p[p.size()-1].second,x,y)});
 
     // perform random distance comparisons to make selection of desired handle more likely. for ticket 1079    
     pair<unsigned,pair<float,float>> pRand;      

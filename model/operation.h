@@ -177,8 +177,6 @@ namespace minsky
      
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;        
-
-    Units units(bool check) const override {return ports[1]->units(check);}
     
     void pack(pack_t& x, const string& d) const override;
     void unpack(unpack_t& x, const string& d) override;    
