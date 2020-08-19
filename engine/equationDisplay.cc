@@ -590,6 +590,10 @@ namespace MathDAG
   }
   
   template <>
+  void OperationDAG<OperationType::connector>::render(Surface& surf) const 
+  {print(surf.cairo(),"<i>→</i>",Anchor::nw);}     
+  
+  template <>
   void OperationDAG<OperationType::gamma>::render(Surface& surf) const
   {
     print(surf.cairo(),"Γ",Anchor::nw);

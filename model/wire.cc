@@ -485,10 +485,9 @@ namespace
     {return sqr(x1-x0)+sqr(y1-y0);}
   }
 
- // For ticket 1079. Randomly selects initial coordinate pair for minimum distance shooting method. 
+ // For ticket 1079. Randomly selects coordinate pair for minimum distance shooting method. 
  // See https://stackoverflow.com/questions/6942273/how-to-get-a-random-element-from-a-c-container/6942343
-namespace
-{
+
    template<typename Iter, typename RandomGenerator>
    Iter selectRandomly(Iter start, Iter end, RandomGenerator& g) {
        std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
@@ -513,25 +512,32 @@ namespace
     else {
 	  // fixes for tickets 991/1095
       vector<pair<float,float>> p=allHandleCoords(c);
-         
+               
       unsigned k=0; // nearest index
-      pair<float,float> pRand= *selectRandomly(p.begin(), p.end());
-      float closestD=d2(pRand.first,pRand.second,x,y);      
-      for (size_t i=0; i<p.size(); i++)
-        {
-          float d=d2(p[i].first,p[i].second,x,y);
+      vector<pair<unsigned,pair<float,float>>> pIdx;
+      for (auto elem: p) pIdx.push_back(make_pair(k++,elem));
+      
+      float closestD=d2(p[p.size()/2].first,p[p.size()/2].second,x,y);
+      
+      // perform random distance comparisons to make selection of desired handle more likely. for ticket 1079
+      pair<unsigned,pair<float,float>> pRand;      
+      size_t count=0;
+      do {
+		  pRand = *selectRandomly(pIdx.begin(), pIdx.end());	
+          float d=d2((pRand.second).first,(pRand.second).second,x,y);
           if (d<=closestD)
             {
               closestD=d;
-              k=i;
+              k=pRand.first;
+              count++;
             }
-        }
+       } while (count<2*p.size()); 
       
       // Check for proximity to line segments about index k
-      if (k>0 && k<p.size()-1)  
-        return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));
       if (k==0) return segNear(p[0].first,p[0].second,p[1].first,p[1].second,x,y);  
       if (k==p.size()-1) return segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y);  
+      if (k>0 && k<p.size()-1)  
+        return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));      
       
     }
     return false;
@@ -543,20 +549,26 @@ namespace
     vector<pair<float,float>> p=toCoordPair(c);
        
     unsigned n=0; // nearest index
-    pair<float,float> pRand= *selectRandomly(p.begin(), p.end());
-    float closestD=d2(pRand.first,pRand.second,x,y);
-    for (size_t i=0; i<p.size()-1; i++)
-      {
-        float d=d2(p[i].first,p[i].second,x,y);
+    vector<pair<unsigned,pair<float,float>>> pIdx;
+    for (auto elem: p) pIdx.push_back(make_pair(n++,elem)); 
+    
+    float closestD=d2(p[p.size()/2].first,p[p.size()/2].second,x,y);
+
+    // perform random distance comparisons to make selection of desired handle more likely. for ticket 1079    
+    pair<unsigned,pair<float,float>> pRand;      
+    size_t count=0;
+    do {
+	    pRand = *selectRandomly(pIdx.begin(), pIdx.end());	
+        float d=d2((pRand.second).first,(pRand.second).second,x,y);
         if (d<=closestD)
           {
             closestD=d;
-            n=i;
+            n=pRand.first;
+            count++;
           }
-      }
-    
-    //n++;
-    n*=2;      
+     } while (count<2*p.size()); //}       
+   
+    n*=2;       
     
     // now work out if we need to insert a midpoint handle
     if (n>0)

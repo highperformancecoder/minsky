@@ -507,6 +507,16 @@ namespace minsky
   {return 0;}
   
   template <>
+  double EvalOp<OperationType::connector>::evaluate(double in1, double in2) const
+  {return in1;}
+  template <>
+  double EvalOp<OperationType::connector>::d1(double x1, double x2) const
+  {return 1.0;}
+  template <>
+  double EvalOp<OperationType::connector>::d2(double x1, double x2) const
+  {return 0;}  
+  
+  template <>
   double EvalOp<OperationType::gamma>::evaluate(double in1, double in2) const
   {return in1 > 0? boost::math::tgamma(in1) : numeric_limits<double>::max();}
   template <>

@@ -152,6 +152,38 @@ namespace minsky
   public:
     Units units(bool check) const override {return ports[1]->units(check);}
   };
+  
+  class ConnectOp;
+  struct ConnectOpAccessor: public ecolab::TCLAccessor<minsky::ConnectOp, std::string>
+  {ConnectOpAccessor();};  
+  
+  class ConnectOp: public ItemT<ConnectOp, Operation<minsky::OperationType::connector>>,
+                  public ConnectOpAccessor
+  {
+    typedef Operation<OperationType::connector> Super;	  
+    CLASSDESC_ACCESS(ConnectOp);
+    friend struct SchemaHelper;
+  public:
+  
+    ConnectOp() {description();}
+    ~ConnectOp() {}
+    
+    const ConnectOp& operator=(const ConnectOp& x);
+    
+    /// @{ dummy name
+    std::string description() const {return "";}
+    /// @}
+     
+     
+    void draw(cairo_t*) const override;
+    void resize(const LassoBox& b) override;        
+
+    Units units(bool check) const override {return ports[1]->units(check);}
+    
+    void pack(pack_t& x, const string& d) const override;
+    void unpack(unpack_t& x, const string& d) override;    
+
+  };    
 
   class IntOp;
   struct IntOpAccessor: public ecolab::TCLAccessor<minsky::IntOp, std::string>

@@ -654,6 +654,19 @@ namespace MathDAG
   }
   
   template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::connector>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return x->derivative(*this);
+      }
+  }  
+  
+  template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::gamma>& expr)
   {

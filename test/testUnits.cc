@@ -132,6 +132,7 @@ SUITE(Units)
 
   // TODO - not sure what to do here
   template <> void TestOp::impl<OperationType::data>() {}
+  template <> void TestOp::impl<OperationType::connector>() {}  
   template <> void TestOp::impl<OperationType::differentiate>(){}
   template <> void TestOp::impl<OperationType::integrate>() {}
   template <> void TestOp::impl<OperationType::gather>() {/* nothing to check, arg2 should be dimensionless*/}
