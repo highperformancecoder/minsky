@@ -399,14 +399,14 @@ namespace minsky
                   }
                 return r; 
               } else return {};
-            }       
-          default:  
-            {
-              if (check && !ports[1]->units(check).empty())
-                throw_error("function input not dimensionless");
-              return {};
             }
-          }
+          default:  
+           {
+             if (check && !ports[1]->units(check).empty())
+               throw_error("function input not dimensionless");
+             return {};
+		   }
+	   }
       case constop:
         return {};        
       case binop:
@@ -503,75 +503,75 @@ namespace minsky
   
   void ConnectOp::draw(cairo_t* cairo) const
   {
-    // if rotation is in 1st or 3rd quadrant, rotate as
-    // normal, otherwise flip the text so it reads L->R
-    double angle=rotation() * M_PI / 180.0;
-    double fm=std::fmod(rotation(),360);
-    bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
-    float z=zoomFactor();
+        // if rotation is in 1st or 3rd quadrant, rotate as
+        // normal, otherwise flip the text so it reads L->R
+        double angle=rotation() * M_PI / 180.0;
+        double fm=std::fmod(rotation(),360);
+        bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
+        float z=zoomFactor();
 
-    cairo_save(cairo);
-    cairo_scale(cairo,z,z);
-    iconDraw(cairo);
-    cairo_restore(cairo);      
+        cairo_save(cairo);
+        cairo_scale(cairo,z,z);
+        iconDraw(cairo);
+        cairo_restore(cairo);      
       
-    cairo_save(cairo);
-    cairo_rotate(cairo, angle);
+        cairo_save(cairo);
+        cairo_rotate(cairo, angle);
         
-    float l=OperationBase::l*z, r=OperationBase::r*z, 
-      h=OperationBase::h*z/6;
+        float l=OperationBase::l*z, r=OperationBase::r*z, 
+          h=OperationBase::h*z/6;
           
-    //if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
-    //if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
-    //if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
+        //if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
+        //if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
+        //if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
         
-    cairo_move_to(cairo,-r,-h);
-    cairo_line_to(cairo,-r,h);
-    cairo_line_to(cairo,r,h);
-    cairo_line_to(cairo,r+2*z,0);
-    cairo_line_to(cairo,r,-h);      
+        cairo_move_to(cairo,-r,-h);
+        cairo_line_to(cairo,-r,h);
+        cairo_line_to(cairo,r,h);
+        cairo_line_to(cairo,r+2*z,0);
+        cairo_line_to(cairo,r,-h);      
     	
-    cairo_close_path(cairo);		  	 
+        cairo_close_path(cairo);		  	 
     
-    cairo_set_source_rgb(cairo,0,0,1);
-    cairo_stroke_preserve(cairo);
+        cairo_set_source_rgb(cairo,0,0,1);
+        cairo_stroke_preserve(cairo);
         
-    cairo::Path clipPath(cairo);
+        cairo::Path clipPath(cairo);
     
-    // compute port coordinates relative to the icon's
-    // point of reference. Move outport 2 pixels right for ticket For ticket 362.
-    double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
-      x2=l, y2=numPorts() > 2? h-3: 0;
+        // compute port coordinates relative to the icon's
+        // point of reference. Move outport 2 pixels right for ticket For ticket 362.
+        double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+          x2=l, y2=numPorts() > 2? h-3: 0;
                       
-    if (textFlipped) swap(y1,y2);
+        if (textFlipped) swap(y1,y2);
     
-    cairo_save(cairo);
-    cairo_identity_matrix(cairo);
-    cairo_translate(cairo, x(), y());
-    cairo_rotate(cairo, angle);
-    cairo_user_to_device(cairo, &x0, &y0);
-    cairo_user_to_device(cairo, &x1, &y1);
-    cairo_user_to_device(cairo, &x2, &y2);
-    cairo_restore(cairo);
+        cairo_save(cairo);
+        cairo_identity_matrix(cairo);
+        cairo_translate(cairo, x(), y());
+        cairo_rotate(cairo, angle);
+        cairo_user_to_device(cairo, &x0, &y0);
+        cairo_user_to_device(cairo, &x1, &y1);
+        cairo_user_to_device(cairo, &x2, &y2);
+        cairo_restore(cairo);
     
-    if (numPorts()>0) 
-      ports[0]->moveTo(x0, y0);
-    if (numPorts()>1) 
-      ports[1]->moveTo(x1, y1); 
-    if (numPorts()>2)
-      ports[2]->moveTo(x2, y2);
-    cairo_restore(cairo); // undo rotation
-    if (mouseFocus)
-      {
-        drawPorts(cairo);
-        displayTooltip(cairo,tooltip);
-        //if (onResizeHandles) drawResizeHandles(cairo);
-      }
+        if (numPorts()>0) 
+          ports[0]->moveTo(x0, y0);
+        if (numPorts()>1) 
+          ports[1]->moveTo(x1, y1); 
+        if (numPorts()>2)
+          ports[2]->moveTo(x2, y2);
+        cairo_restore(cairo); // undo rotation
+        if (mouseFocus)
+          {
+            drawPorts(cairo);
+            displayTooltip(cairo,tooltip);
+            //if (onResizeHandles) drawResizeHandles(cairo);
+          }
 	    
-    cairo_new_path(cairo);          
-    clipPath.appendToCurrent(cairo);          
-    cairo_clip(cairo);          
-    if (selected) drawSelected(cairo);               
+        cairo_new_path(cairo);          
+        clipPath.appendToCurrent(cairo);          
+        cairo_clip(cairo);          
+        if (selected) drawSelected(cairo);               
   }
   
   void ConnectOp::resize(const LassoBox& b)
@@ -753,44 +753,44 @@ namespace minsky
     bb.update(*this);	  
   }
   
-  std::pair<double,Point> IntOp::rotatedPoints() const
-  {
-    // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
-    double fm=std::fmod(this->rotation(),360), angle;	
-    float x1=this->right(),y1=this->bottom();
-    if (fm==-90 || fm==270) {
-      angle=-this->rotation();
-      Rotate r1(angle,this->x(),this->y());
-      x1=r1.x(this->right(),this->bottom());
-      y1=r1.y(this->right(),this->bottom());						  
-    }
-    else if (fabs(fm)==180) {
-      angle=this->rotation();
-      x1=this->right();
-      y1=this->top();					
-    }
-    else angle=0;	       
-    if (coupled()) {
-      angle=intVar->rotation();  
-      Rotate r2(angle,intVar->x(),intVar->y());		
-      if (fm==-90 || fm==270) {
-        x1=r2.x(intVar->right(),intVar->bottom());
-        y1=r2.y(intVar->right(),intVar->bottom());
-      } else if (fm==90 || fm==-270) {
-        x1=r2.x(intVar->left(),intVar->top());
-        y1=r2.y(intVar->left(),intVar->top());			       
-      } else if (fabs(fm)==180) {
-        angle=-intVar->rotation();
-        x1=intVar->right();  			  
-        y1=intVar->top();  				       		  
-      } else if (fm==0 || fm==360) {
-        angle=-intVar->rotation();
-        x1=intVar->right(); 			
-        y1=intVar->bottom(); 				  
-      } else angle=0;
-    }
-    Point p(x1,y1);  
-    return make_pair(angle,p);  
+   std::pair<double,Point> IntOp::rotatedPoints() const
+   {
+     // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+     double fm=std::fmod(this->rotation(),360), angle;	
+     float x1=this->right(),y1=this->bottom();
+     if (fm==-90 || fm==270) {
+       angle=-this->rotation();
+       Rotate r1(angle,this->x(),this->y());
+       x1=r1.x(this->right(),this->bottom());
+       y1=r1.y(this->right(),this->bottom());						  
+     }
+     else if (fabs(fm)==180) {
+       angle=this->rotation();
+       x1=this->right();
+       y1=this->top();					
+     }
+     else angle=0;	       
+     if (coupled()) {
+       angle=intVar->rotation();  
+       Rotate r2(angle,intVar->x(),intVar->y());		
+       if (fm==-90 || fm==270) {
+         x1=r2.x(intVar->right(),intVar->bottom());
+         y1=r2.y(intVar->right(),intVar->bottom());
+       } else if (fm==90 || fm==-270) {
+         x1=r2.x(intVar->left(),intVar->top());
+         y1=r2.y(intVar->left(),intVar->top());			       
+       } else if (fabs(fm)==180) {
+         angle=-intVar->rotation();
+         x1=intVar->right();  			  
+         y1=intVar->top();  				       		  
+       } else if (fm==0 || fm==360) {
+         angle=-intVar->rotation();
+         x1=intVar->right(); 			
+         y1=intVar->bottom(); 				  
+       } else angle=0;
+     }
+     Point p(x1,y1);  
+     return make_pair(angle,p);  
   }   
 
   void IntOp::insertControlled(Selection& selection)
@@ -923,7 +923,7 @@ namespace minsky
           minsky().model->addWire(newWire);
         intVar->controller.reset();
         intVar->rotation(rotation());
-      }
+     }
     else
       {
         // need to explicitly remove wire, as deleting the port is
@@ -946,11 +946,11 @@ namespace minsky
   {
     string r="equations not yet constructed, please reset";
     if (ports.size()>0 && ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
-      {
-        std::stringstream ss;
-        ss <<"[out]="<<ports[0]->value();		
-        r=ss.str();
-      } else r="[out]="+to_string(ports[0]->value());
+    {
+      std::stringstream ss;
+      ss <<"[out]="<<ports[0]->value();		
+      r=ss.str();
+    } else r="[out]="+to_string(ports[0]->value());
     if (ports.size()>1)
       r+=" [in1]="+ to_string(ports[1]->value());
     if (ports.size()>2)
@@ -960,7 +960,7 @@ namespace minsky
   
   string DataOp::description() const
   {
-    return m_description;  
+	return m_description;  
   }
    
   string DataOp::description(const std::string& x)
@@ -986,7 +986,7 @@ namespace minsky
     // '/' is guaranteed not to be in fileName, so we can use that as
     // a delimiter
     description("\\verb/"+
-                ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
+      ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
@@ -1084,7 +1084,7 @@ namespace minsky
     cairo_show_text(cairo,"e");
   }
   
-  template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
+    template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
@@ -1092,7 +1092,7 @@ namespace minsky
     cairo_show_text(cairo,"π");
   }           
    
-  template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
+    template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
@@ -1523,7 +1523,7 @@ namespace minsky
     cairo_show_text(cairo,"inf");
   }
 
-  template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
+ template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
@@ -1541,7 +1541,7 @@ namespace minsky
     cairo_show_text(cairo,"infi");
   }
 
-  template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
+ template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
@@ -1568,7 +1568,7 @@ namespace minsky
     cairo_show_text(cairo,"all");
   }
 
-  template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
+ template <> void Operation<OperationType::runningSum>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);	  
@@ -1579,7 +1579,7 @@ namespace minsky
     pango.show();
   }
 
-  template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
+ template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf);  
@@ -1590,7 +1590,7 @@ namespace minsky
     pango.show();
   }
 
-  template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
+ template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
     cairo_scale(cairo,sf,sf); 
