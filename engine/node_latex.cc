@@ -538,13 +538,6 @@ namespace MathDAG
   }
   
   template <>
-  ostream& OperationDAG<OperationType::connector>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<arguments[0][0]->latex();
-  }  
-  
-  template <>
   ostream& OperationDAG<OperationType::gamma>::latex(ostream& o) const
   {
     checkArg(0,0);

@@ -55,12 +55,6 @@ button .wiring.menubar.differentiate -image differentiateImg -width 37 -height 2
 tooltip .wiring.menubar.differentiate differantiate
 set helpTopics(.wiring.menubar.differentiate) Operation:differentiate
 
-image create photo connectorImg -file $minskyHome/icons/connector.gif
-button .wiring.menubar.connector -image connectorImg -width 37 -height 24 -command {
-    addOperation connector}
-tooltip .wiring.menubar.connector connector
-set helpTopics(.wiring.menubar.connector) Operation:connector
-
 button .wiring.menubar.time -image timeImg -width 37 -height 24 -command {
     addOperation time}
 tooltip .wiring.menubar.time time
@@ -112,7 +106,7 @@ tooltip .wiring.menubar.tensorops "tensor operations"
 set helpTopics(.wiring.menubar.tensorops) Operations
 menu .wiring.menubar.tensorops.menu -tearoff 1 -tearoffcommand {addToolTipToTearOff "tensor toolbox"}
 
-pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate .wiring.menubar.connector -side left -fill y
+pack .wiring.menubar.godley .wiring.menubar.var .wiring.menubar.integrate .wiring.menubar.differentiate -side left -fill y
 pack .wiring.menubar.time .wiring.menubar.constops .wiring.menubar.binops .wiring.menubar.fnops .wiring.menubar.reductionops -side left
 pack .wiring.menubar.scanops .wiring.menubar.tensorops -side left
 
@@ -131,7 +125,6 @@ foreach op [availableOperations] {
         "copy" -
         "ravel" -
         "integrate"  -
-        "connector"  -
         "differentiate" -
         "time" -
         "data" continue 
@@ -289,7 +282,6 @@ foreach op [availableOperations] {
     switch $op {
         "ravel" -
         "integrate"  -
-        "connector"  -
         "differentiate"  -
         "time" -
         "data"  {.menubar.ops add command -label $label -command "minsky.addOperation $op"}
@@ -708,7 +700,7 @@ proc contextMenu {x y X Y} {
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
-        "Operation*|IntOp|ConnectOp|DataOp" {
+        "Operation*|IntOp|DataOp" {
             set portValues "unknown"
             catch {set portValues [$item.portValues]}
             .wiring.context add command -label "Port values $portValues" 
@@ -1365,7 +1357,7 @@ proc editItem {} {
             grab set .wiring.editOperation
             wm transient .wiring.editOperation
         }
-        "IntOp|ConnectOp|DataOp" {
+        "IntOp|DataOp" {
             set constInput(Value) ""
             set "constInput(Slider Bounds: Min)" ""
             set "constInput(Slider Bounds: Max)" ""

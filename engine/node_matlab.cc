@@ -500,13 +500,6 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"100*("<<arguments[0][0]->matlab()<<")";
   }
-  
-  template <>
-  ostream& OperationDAG<OperationType::connector>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"("<<arguments[0][0]->matlab()<<")";
-  }  
  
   template <>
   ostream& OperationDAG<OperationType::gamma>::matlab(ostream& o) const

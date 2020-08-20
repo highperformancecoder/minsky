@@ -222,8 +222,6 @@ namespace minsky
         }
       case OperationType::integrate:
         break;
-      case OperationType::connector:        
-        break;
       default:
         cairo_save(cairo);
         cairo_scale(cairo,z,z);
@@ -494,103 +492,6 @@ namespace minsky
     r.normalise();
     return r;
   }
-  
-  ConnectOpAccessor::ConnectOpAccessor(): ecolab::TCLAccessor<ConnectOp, std::string>
-    ("description",(Getter)&ConnectOp::description,(Setter)&ConnectOp::description) {}  
-    
-  template <> void Operation<OperationType::connector>::iconDraw(cairo_t* cairo) const
-  {/* moved to IntOp::draw() but needs to be here, and is actually called */}    
-  
-  void ConnectOp::draw(cairo_t* cairo) const
-  {
-        // if rotation is in 1st or 3rd quadrant, rotate as
-        // normal, otherwise flip the text so it reads L->R
-        double angle=rotation() * M_PI / 180.0;
-        double fm=std::fmod(rotation(),360);
-        bool textFlipped=!((fm>-90 && fm<90) || fm>270 || fm<-270);
-        float z=zoomFactor();
-
-        cairo_save(cairo);
-        cairo_scale(cairo,z,z);
-        iconDraw(cairo);
-        cairo_restore(cairo);      
-      
-        cairo_save(cairo);
-        cairo_rotate(cairo, angle);
-        
-        float l=OperationBase::l*z, r=OperationBase::r*z, 
-          h=OperationBase::h*z/6;
-          
-        //if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
-        //if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
-        //if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
-        
-        cairo_move_to(cairo,-r,-h);
-        cairo_line_to(cairo,-r,h);
-        cairo_line_to(cairo,r,h);
-        cairo_line_to(cairo,r+2*z,0);
-        cairo_line_to(cairo,r,-h);      
-    	
-        cairo_close_path(cairo);		  	 
-    
-        cairo_set_source_rgb(cairo,0,0,1);
-        cairo_stroke_preserve(cairo);
-        
-        cairo::Path clipPath(cairo);
-    
-        // compute port coordinates relative to the icon's
-        // point of reference. Move outport 2 pixels right for ticket For ticket 362.
-        double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
-          x2=l, y2=numPorts() > 2? h-3: 0;
-                      
-        if (textFlipped) swap(y1,y2);
-    
-        cairo_save(cairo);
-        cairo_identity_matrix(cairo);
-        cairo_translate(cairo, x(), y());
-        cairo_rotate(cairo, angle);
-        cairo_user_to_device(cairo, &x0, &y0);
-        cairo_user_to_device(cairo, &x1, &y1);
-        cairo_user_to_device(cairo, &x2, &y2);
-        cairo_restore(cairo);
-    
-        if (numPorts()>0) 
-          ports[0]->moveTo(x0, y0);
-        if (numPorts()>1) 
-          ports[1]->moveTo(x1, y1); 
-        if (numPorts()>2)
-          ports[2]->moveTo(x2, y2);
-        cairo_restore(cairo); // undo rotation
-        if (mouseFocus)
-          {
-            drawPorts(cairo);
-            displayTooltip(cairo,tooltip);
-            //if (onResizeHandles) drawResizeHandles(cairo);
-          }
-	    
-        cairo_new_path(cairo);          
-        clipPath.appendToCurrent(cairo);          
-        cairo_clip(cairo);          
-        if (selected) drawSelected(cairo);               
-  }
-  
-  void ConnectOp::resize(const LassoBox& b)
-  {
-    //float invZ=1.0/zoomFactor();
-    //this->moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-    //iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
-    //// Ensure int op height and var height similar to make gripping resize handle easier. for ticket 1203.
-    //iHeight(0.25*std::abs(b.y1-b.y0)*invZ);
-    //intVar->iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
-    //intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
-    bb.update(*this);	  
-  }
- 
-  const ConnectOp& ConnectOp::operator=(const ConnectOp& x)
-  {
-    Super::operator=(x); 
-    return *this;
-  }    
 
   IntOpAccessor::IntOpAccessor(): ecolab::TCLAccessor<IntOp, std::string>
     ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
@@ -882,8 +783,8 @@ namespace minsky
     if (auto g=group.lock())
       g->addItem(intVar);
     return description();
-  }  
-  
+  }
+
   namespace
   {
     OperationFactory<OperationBase, Operation> operationFactory;
@@ -898,7 +799,6 @@ namespace minsky
       case integrate: return new IntOp;
       case differentiate: return new Derivative;
       case data: return new DataOp;
-      case connector: return new ConnectOp;      
       case ravel: return new Ravel;
       case constant: throw error("Constant deprecated");
       default: return operationFactory.create(type);
@@ -1424,7 +1324,6 @@ namespace minsky
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"%");
   }
-    
   template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
@@ -1656,12 +1555,6 @@ namespace minsky
       
   void IntOp::unpack(unpack_t& x, const string& d)
   {::unpack(x,d,*this);}
-  
-  void ConnectOp::pack(pack_t& x, const string& d) const
-  {::pack(x,d,*this);}
-      
-  void ConnectOp::unpack(unpack_t& x, const string& d)
-  {::unpack(x,d,*this);}  
 
   void DataOp::pack(pack_t& x, const string& d) const
   {::pack(x,d,*this);}

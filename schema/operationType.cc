@@ -85,7 +85,6 @@ namespace minsky
     template <> int numArguments<OperationType::floor>() {return 1;}
     template <> int numArguments<OperationType::frac>() {return 1;}
     template <> int numArguments<OperationType::percent>() {return 1;}
-    template <> int numArguments<OperationType::connector>() {return 1;}
     template <> int numArguments<OperationType::gamma>() {return 1;}            
     template <> int numArguments<OperationType::fact>() {return 1;}        
     template <> int numArguments<OperationType::sum>() {return 1;}
