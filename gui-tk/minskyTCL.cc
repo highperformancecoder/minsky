@@ -315,7 +315,7 @@ namespace minsky
       OperationPtr op;
       void draw(cairo_t* cairo)
       {
-        RenderOperation(*op, cairo).draw();
+        op->draw(cairo);
       }
     };
   }

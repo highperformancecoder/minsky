@@ -40,61 +40,6 @@ using namespace std;
 using namespace minsky;
 using namespace boost::geometry;
 
-RenderOperation::RenderOperation(const OperationBase& op, cairo_t* cairo):
-  op(op), cairo(cairo), hoffs(0)
-{
-  cairo_t *lcairo=cairo;
-  cairo_surface_t* surf=NULL;
-  if (!lcairo)
-    {
-      surf = cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100);
-      lcairo = cairo_create(surf);
-    }
-
-  const float l=op.l, r=op.r;
-  w=0.5*(-l+r);
-  h=op.h;
-
-  switch (op.type())
-    {
-    case OperationType::data:
-      {
-        cairo_text_extents_t bbox;
-        auto& c=dynamic_cast<const DataOp&>(op);
-
-        Pango pango(lcairo);
-        pango.setFontSize(10);
-        pango.setMarkup(latexToPango(c.description()));
-        w=0.5*pango.width()+2; 
-        h=0.5*pango.height()+4;
-        hoffs=pango.top();
-        break;
-      }
-    case OperationType::integrate:
-      {
-        const IntOp& i=dynamic_cast<const IntOp&>(op);
-        if (i.coupled())
-          {
-            RenderVariable rv(*i.intVar,cairo);
-            w+=i.intVarOffset+rv.width(); 
-            h=max(h, rv.height());
-          }
-        break;
-      }
-    default: break;
-    }
- if (surf) //cleanup temporary surface
-    {
-      cairo_destroy(lcairo);
-      cairo_surface_destroy(surf);
-    }
-}
-
-void RenderOperation::draw()
-{
-  op.draw(cairo);
-}
-
 namespace
 {
   cairo::Surface dummySurf(cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100));
