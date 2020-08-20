@@ -26,31 +26,6 @@
 
 namespace minsky
 {
-  /** class that renders an operation into a cairo context. 
-      A user can also query the size of the unrotated rendered image
-  */
-  class RenderOperation
-  {
-    const OperationBase& op;
-    cairo_t *cairo;
-    float w, h, hoffs;
-
-  public:
-    // render a variable to a given cairo context
-    RenderOperation(const OperationBase& var, cairo_t* cairo=NULL);
-    
-    /// render the cairo image
-    void draw();
-    /// half width of unrotated image
-    float width() const {return w;}
-    /// half height of unrotated image
-    float height() const {return h;}
-
-    //Polygon geom() const;
-    bool inImage(float x, float y); ///< true if (x,y) within rendered image
-  };
-
-
   /** class that renders a variable into a cairo context. 
       A user can also query the size of the unrotated rendered image
   */
