@@ -23,6 +23,8 @@
 #include "group.h"
 #include "selection.h"
 #include "minsky_epilogue.h"
+#include  <random>
+#include  <iterator>
 
 using namespace std;
 
@@ -337,6 +339,31 @@ namespace
 
 }
 
+  void Wire::calcCairoCoords(cairo_t* cairo) const
+  {
+	    cairoCoords.clear(); 
+	    cairo_path_t *path;
+        cairo_path_data_t *data;
+         
+        path = cairo_copy_path_flat(cairo);
+         
+        for (int j=0; j < path->num_data; j += path->data[j].header.length) {
+            data = &path->data[j];
+            switch (data->header.type) {
+            case CAIRO_PATH_MOVE_TO:
+                break;
+            case CAIRO_PATH_LINE_TO:
+                cairoCoords.push_back(make_pair(data[1].point.x,data[1].point.y));
+                break;
+            case CAIRO_PATH_CURVE_TO:
+                break;
+            case CAIRO_PATH_CLOSE_PATH:
+                break;
+            }
+        }
+        cairo_path_destroy (path);              
+   }
+   
   void Wire::draw(cairo_t* cairo) const
   {
     auto coords=this->coords();
@@ -382,12 +409,17 @@ namespace
                                              
         // For ticket 991. Apply Thomas' algorithm to matrix equation Ac=k
         vector<pair<float,float>> controlPoints = computeControlPoints(A, points, target);
+
+        /* Decrease tolerance a bit, since it's going to be magnified */
+        cairo_set_tolerance (cairo, 0.01);
         
         for (int i = 0; i < n; i++) {      
           cairo_curve_to(cairo, controlPoints[i].first,controlPoints[i].second,controlPoints[n+i].first,controlPoints[n+i].second,points[i+1].first,points[i+1].second);
-        }     
-               
-        cairo_stroke(cairo); 
+        }		    
+        
+        if (coords.size()>4) calcCairoCoords(cairo);    
+                                         
+        cairo_stroke(cairo);     
         angle=atan2(coords[coords.size()-1]-coords[coords.size()-3], 
                     coords[coords.size()-2]-coords[coords.size()-4]);                         
         lastx=coords[coords.size()-2]; lasty=coords[coords.size()-1];
@@ -408,18 +440,27 @@ namespace
 
     // draw handles
     if (mouseFocus)
-      {
-        cairo_save(cairo);
+      {    
+        cairo_save(cairo);        
         cairo_set_source_rgb(cairo,0,0,1);
-        for (size_t i=0; i<coords.size()-3; i+=2)
+        if (cairoCoords.empty() || coords.size()==4)
           {
-            double midx=0.5*(coords[i]+coords[i+2]);
-            double midy=0.5*(coords[i+1]+coords[i+3]);
-            cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
-            if (i>0) // draw existing interor handle
-              cairo_arc(cairo,coords[i],coords[i+1],handleRadius, 0, 2*M_PI);
+            double midx=0.5*(coords[0]+coords[2]);
+            double midy=0.5*(coords[1]+coords[3]);
+            cairo_arc(cairo,midx,midy,1.5*handleRadius, 0, 2*M_PI);
             cairo_fill(cairo);
-          }
+          } else {
+          size_t numSmallHandles=0.5*(coords.size()-4)+1, numCairoCoords=cairoCoords.size()-1;
+          for (size_t i=0; i<coords.size()-3; i+=2)
+            {
+              double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
+              double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
+              cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
+              if (i>0) // draw existing interior gripping handle            
+                cairo_arc(cairo,coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
+              cairo_fill(cairo);
+            } 
+        }
         cairo_restore(cairo);
       }
   }
@@ -481,7 +522,8 @@ namespace
     
     inline float d2(float x0, float y0, float x1, float y1)
     {return sqr(x1-x0)+sqr(y1-y0);}
-  }
+    	
+}    
   
   bool Wire::near(float x, float y) const
   {
@@ -490,12 +532,17 @@ namespace
     if (c.size()==4)
       return segNear(c[0],c[1],c[2],c[3],x,y);
     else {
-	  // fixes for tickets 991/1095
+      // fixes for tickets 991/1095
       vector<pair<float,float>> p=allHandleCoords(c);
+      if (!cairoCoords.empty()) {
+        p.clear();
+        for (auto cC: cairoCoords)
+          p.push_back(cC);
+      }
          
       unsigned k=0; // nearest index
-      float closestD=d2(p[p.size()-1].first,p[p.size()-1].second,x,y);
-      for (size_t i=0; i<p.size()-1; i++)
+      float closestD=d2(p[0].first,p[0].second,x,y);      
+      for (size_t i=0; i<p.size(); i++)
         {
           float d=d2(p[i].first,p[i].second,x,y);
           if (d<=closestD)
@@ -507,8 +554,7 @@ namespace
       
       // Check for proximity to line segments about index k
       if (k>0 && k<p.size()-1)  
-        return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));
-      
+        return (segNear(p[k-1].first,p[k-1].second,p[k].first,p[k].second,x,y) || segNear(p[k].first,p[k].second,p[k+1].first,p[k+1].second,x,y));      
     }
     return false;
   }
@@ -516,17 +562,19 @@ namespace
   unsigned Wire::nearestHandle(float x, float y)
   {
     auto c=coords();
+           
     unsigned n=0; // nearest index
     float closestD=d2(c[0],c[1],x,y);
     for (size_t i=2; i<c.size()-1; i+=2)
       {
-        float d=d2(c[i],c[i+1],x,y);
-        if (d<closestD)
+        float d=d2(c[i],c[i+1],x,y);	  
+        if (d<=closestD)
           {
             closestD=d;
-            n=i;
-          }
+            n=i;			    
+          } 
       }
+      
     // now work out if we need to insert a midpoint handle
     if (n>0)
       {
@@ -564,7 +612,7 @@ namespace
 
   // For ticket 1092. Reinstate delete handle user interaction
   void Wire::deleteHandle(float x, float y)
-  {
+  {	    
     auto c=coords();
     auto n=c.begin(); // nearest index
     float closestD=d2(c[0],c[1],x,y);
@@ -577,7 +625,7 @@ namespace
             n=i;
           }
       }	  
-    assert(n<c.end()-1);
+    assert(n<c.end()-1);    
     c.erase(n, n+2);
     coords(c);
   } 
