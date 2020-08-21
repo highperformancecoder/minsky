@@ -26,6 +26,8 @@
 #include "minsky_epilogue.h"
 
 #include <boost/regex.hpp>
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 
 using namespace classdesc;
 using namespace ecolab;
@@ -44,8 +46,6 @@ namespace minsky
         ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
     ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
       ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
-    SliderVisibleAccessor::SliderVisibleAccessor(): ecolab::TCLAccessor<VariableBase,bool>
-      ("sliderVisible",(Getter)&VariableBase::sliderVisible,(Setter)&VariableBase::sliderVisible) {}
  }
 }
 
@@ -83,12 +83,9 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
       if (rv.height()<iHeight()) hpy=-z*iHeight(); 
-      double dx=xx-x(), dy=yy-y(); 
+      double dx=xx-x(), dy=yy-y();         
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
-      // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
-      if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
-        return ClickType::onResize;
     }
   catch (...) {}
   return Item::clickType(xx,yy);
@@ -134,9 +131,9 @@ float VariableBase::zoomFactor() const
   if (ioVar())
     if (auto g=group.lock())
       return g->edgeScale();
-  // scale by GodleyIcon::iconScale if part of an Godley icon
+  // scale by GodleyIcon::scaleFactor if part of an Godley icon
   if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-    return g->iconScale() * Item::zoomFactor();
+    return g->scaleFactor() * Item::zoomFactor();
   return Item::zoomFactor();
 }
 
@@ -169,11 +166,11 @@ string VariableBase::name()  const
       if (!g || g==cminsky().model)
         return m_name.substr(1);
     }
-  return m_name;
+  return utf_to_utf<char>(m_name);
 }
 
 string VariableBase::name(const std::string& name) 
-{	
+{
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
   // Ensure value of variable is preserved after rename. For ticket 1106.	
@@ -190,7 +187,7 @@ bool VariableBase::ioVar() const
 
 
 void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) const
-{
+{	
   string valueId=this->valueId();
   // disallow blank names
   if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_" && 
@@ -212,9 +209,22 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
 string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
-  if (value!=minsky().variableValues.end())
+  if (value!=minsky().variableValues.end()) {
+    if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
+      if (i->ports.size()>1 && !i->ports[1]->wires().empty())
+         i->intVar->init(i->ports[1]->wires()[0]->from()->item().variableCast()->init());
+    else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+      for (auto v: g->stockVars())
+         if (v->ports.size()>1 && !v->ports[1]->wires().empty())
+            v->init(v->ports[1]->wires()[0]->from()->item().variableCast()->init());        	  
+	//if (inputWired()) {  
+    //  if (ports.size()>1 && !ports[1]->wires().empty())
+    //    value->second->init=ports[1]->wires()[0]->from()->item().variableCast()->init();
+      //else if (auto v=cminsky().definingVar(valueId()))
+      //  return vv->init=v->init();
     return value->second->init;
-  else
+  }
+  else 
     return "0";
 }
 
@@ -295,7 +305,25 @@ Units VariableBase::units(bool check) const
               if (check && units.str()!=vv->units.str())
                 {
                   if (auto i=controller.lock())
-                    i->throw_error("inconsistent units "+units.str()+"≠"+vv->units.str());
+                    i->throw_error("Inconsistent units "+units.str()+"≠"+vv->units.str());
+                }
+
+              if (check && controller.lock())
+                {
+                  FlowCoef fc(init());
+                  if (!fc.name.empty())
+                    {
+                      // extract the valueid corresponding to the initialisation variable
+                      auto vid=VariableValue::valueId(vv->m_scope.lock(), fc.name);
+                      // find the first variable matching vid, and check that the units match
+                      if (auto initVar=cminsky().model->findAny
+                          (&GroupItems::items, [&vid](const ItemPtr& i){
+                                                 if (auto v=i->variableCast())
+                                                   return v->valueId()==vid;
+                                                 return false;}))
+                        if (units!=initVar->units(check))
+                          throw_error("Inconsistent units in initial conditions");
+                    }
                 }
             }
         }
@@ -453,7 +481,7 @@ void VariableBase::adjustSliderBounds() const
 
 bool VariableBase::handleArrows(int dir,bool reset)
 {
-  sliderSet(value()+dir*sliderStep);
+  sliderSet(value()+dir*(sliderStepRel? value(): 1)*sliderStep);
   if (reset) minsky().reset();
   return true;
 }
@@ -498,7 +526,16 @@ void VariableBase::draw(cairo_t *cairo) const
         Pango pangoVal(cairo);
         if (!isnan(value())) {
           pangoVal.setFontSize(6*scaleFactor*z);
-          pangoVal.setMarkup(mantissa(val));
+          if (sliderBoundsSet && vv.sliderVisible)
+            pangoVal.setMarkup
+              (mantissa(val,
+                        int(1+
+                         (sliderStepRel?
+                          -log10(sliderStep):
+                          log10(value()/sliderStep)
+                          ))));
+          else
+            pangoVal.setMarkup(mantissa(val));
         }
         else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
           pangoVal.setFontSize(8*scaleFactor*z);
@@ -547,7 +584,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (type()!=constant && !ioVar() && !dynamic_cast<GodleyIcon*>(controller.lock().get()))
+    if (vv.sliderVisible)
       {
         // draw slider
         CairoSave cs(cairo);

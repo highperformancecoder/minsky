@@ -509,7 +509,7 @@ namespace MathDAG
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                       iv->init(v->name);
+                       iv->init(VariableValue::uqName(v->name));
                      else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value
@@ -560,10 +560,9 @@ namespace MathDAG
     for (auto& g: godleyVars)
       {
         //        assert(g->second.godleyId>=0);
-        integVarMap[VariableValue::valueId(g.first)]=
-          dynamic_cast<VariableDAG*>
-          (makeDAG(VariableValue::valueId(g.first),
-                   VariableValue::uqName(g.first), VariableValue::stock).get());
+        integVarMap[g.first]=dynamic_cast<VariableDAG*>
+          (makeDAG(g.first,
+                   g.second.name, VariableValue::stock).get());
         expressionCache.getIntegralInput(g.first)->rhs=
           expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
       }
@@ -641,16 +640,9 @@ namespace MathDAG
     shared_ptr<VariableDAG> r(new VariableDAG(valueId, nm, type));
     expressionCache.insert(valueId, r);
     r->init=vv->init;
-    if (auto v=minsky.definingVar(valueId)) {
+    if (auto v=minsky.definingVar(valueId))
       if (v->type()!=VariableType::integral && v->numPorts()>1 && !v->ports[1]->wires().empty())
         r->rhs=getNodeFromWire(*v->ports[1]->wires()[0]);
-	  // ensure that flows used as intial conditions, which inherit their values from other vars, correctly initialise corresponding stock var. for ticket 1137.
-	  auto vi=minsky.variableValues[VariableValue::valueId(v->group.lock(),vv->init)];
-	  if (vi->lhs()) {
-		  vv->init=str(vv->value());        
-		  r->init=vv->init;
-	  }
-	}
     return r;
   }
 
@@ -924,14 +916,15 @@ namespace MathDAG
     auto& godley=gi.table;
     for (size_t c=1; c<godley.cols(); ++c)
       {
-        string colName=stripActive(trimWS(godley.cell(0,c)));
-        if (colName=="_" || VariableValue::uqName(colName).empty())
+        string colName=trimWS(godley.cell(0,c));
+        if (VariableValue::uqName(colName).empty())
           continue; // ignore empty Godley columns
         // resolve scope
         colName=VariableValue::valueId(gi.group.lock(), colName);
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
+        gd.name=trimWS(godley.cell(0,c));
         gd.arguments.resize(2);
         vector<WeakNodePtr>& arguments=gd.arguments[0];
         for (size_t r=1; r<godley.rows(); ++r)
