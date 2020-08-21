@@ -210,16 +210,15 @@ string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end()) {
-    if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
-      if (i->ports.size()>1 && !i->ports[1]->wires().empty())
-         i->intVar->init(i->ports[1]->wires()[0]->from()->item().variableCast()->init());
-    else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-      for (auto v: g->stockVars())
-         if (v->ports.size()>1 && !v->ports[1]->wires().empty())
-            v->init(v->ports[1]->wires()[0]->from()->item().variableCast()->init());        	  
-	//if (inputWired()) {  
-    //  if (ports.size()>1 && !ports[1]->wires().empty())
-    //    value->second->init=ports[1]->wires()[0]->from()->item().variableCast()->init();
+    //if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
+    //  if (i->ports.size()>1 && !i->ports[1]->wires().empty())
+    //     i->intVar->init(i->ports[1]->wires()[0]->from()->item().variableCast()->init());
+    //else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
+    //  for (auto v: g->stockVars())
+    //     if (v->ports.size()>1 && !v->ports[1]->wires().empty())
+    //        v->init(v->ports[1]->wires()[0]->from()->item().variableCast()->init());        	  
+	if (inputWired())
+        value->second->init=ports[1]->wires()[0]->from()->item().variableCast()->init();
       //else if (auto v=cminsky().definingVar(valueId()))
       //  return vv->init=v->init();
     return value->second->init;
@@ -234,7 +233,7 @@ string VariableBase::init(const string& x)
   if (VariableValue::isValueId(valueId()))
     {
       VariableValue& val=*minsky().variableValues[valueId()];
-      val.init=x;
+      val.init=x;     
       // for constant types, we may as well set the current value. See ticket #433. Also ignore errors (for now), as they will reappear at reset time.
       try
         {
