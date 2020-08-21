@@ -29,7 +29,7 @@ namespace minsky
   /** class that renders a variable into a cairo context. 
       A user can also query the size of the unrotated rendered image
   */
-  class RenderVariable: public Pango
+  class RenderVariable: public ecolab::Pango
   {
     const VariableBase& var;
     cairo_t *cairo;

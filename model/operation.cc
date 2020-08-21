@@ -706,11 +706,10 @@ namespace minsky
     return *this;
   }
 
-  void IntOp::removeControlledItems() const
+  void IntOp::removeControlledItems(minsky::Group& g) const
   {
     if (intVar)
-      if (auto g=group.lock())
-        g->removeItem(*intVar);
+      g.removeItem(*intVar);
   }
   
   string IntOp::description(const string& a_desc)

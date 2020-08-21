@@ -38,8 +38,8 @@ namespace minsky
     CLASSDESC_ACCESS(Ravel);
   private:
     typedef RavelState::HandleState HandleState;
-    Exclude<RavelImpl*> ravel=nullptr;
-    Exclude<DataCube*> dataCube=nullptr;       
+    classdesc::Exclude<RavelImpl*> ravel=nullptr;
+    classdesc::Exclude<DataCube*> dataCube=nullptr;       
     void noRavelSetup();
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
@@ -53,7 +53,7 @@ namespace minsky
     
     friend struct SchemaHelper;
 
-    std::vector<string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
+    std::vector<std::string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
 
     /// return hypercube corresponding to the current Ravel state. \a data returns a pointer to the current data slice
     Hypercube hypercube(double*& data) const;
@@ -77,7 +77,7 @@ namespace minsky
     /// true to indicate mouse hovering over border
     bool onBorder=false; 
     
-    string ravelVersion() const; ///< Ravel version string
+    std::string ravelVersion() const; ///< Ravel version string
     const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
     void resize(const LassoBox&) override;
@@ -89,7 +89,7 @@ namespace minsky
     bool onMouseOver(float x, float y);
     void onMouseLeave();
     void loadFile(const std::string&);
-    const string& filename() const {return m_filename;}
+    const std::string& filename() const {return m_filename;}
     /// return hypercube corresponding to the current Ravel state
     Hypercube hypercube() const {double* tmp; return hypercube(tmp);}
     void populateHypercube(const Hypercube&);
@@ -113,13 +113,13 @@ namespace minsky
     /// @}
 
     /// returns all slice labels along the selected handle, in specified order
-    std::vector<string> allSliceLabels() const;
+    std::vector<std::string> allSliceLabels() const;
     /// returns all slice labels along an axis(dimension) identified by its number
-    std::vector<string> allSliceLabelsAxis(int axis) const;
+    std::vector<std::string> allSliceLabelsAxis(int axis) const;
     /// returns just the picked slice labels along the handle
-    std::vector<string> pickedSliceLabels() const;
+    std::vector<std::string> pickedSliceLabels() const;
     /// pick (selected) \a pick labels
-    void pickSliceLabels(int axis, const std::vector<string>& pick);
+    void pickSliceLabels(int axis, const std::vector<std::string>& pick);
 
     /// dimension details associated with handle 
     Dimension dimension(int handle) const;
@@ -139,8 +139,8 @@ namespace minsky
     bool handleSortableByValue() const;
     
     /// @} get/set description of selected handle
-    string description() const;
-    void setDescription(const string&);
+    std::string description() const;
+    void setDescription(const std::string&);
     /// @}
 
     /// @{ get/set selected handle dimension attributes
