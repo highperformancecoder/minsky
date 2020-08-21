@@ -187,7 +187,8 @@ namespace minsky
   public:
     
     std::string title;
-    float iconWidth{100}, iconHeight{100}; // size of icon
+    Group() {iWidth(100); iHeight(100);}
+    ~Group() {}   
     std::vector<VariablePtr> createdIOvariables;
     
     bool nocycles() const override; 
@@ -230,13 +231,8 @@ namespace minsky
 
     ItemPtr removeItem(const Item&);
     /// remove item from group, and also all attached wires.
-    void deleteItem(const Item& i) {
-      auto r=removeItem(i);
-      if (r) {
-        r->deleteAttachedWires();
-        r->removeControlledItems();
-      }
-    }
+    void deleteItem(const Item&);
+
     void deleteAttachedWires() override {
       for (auto& i: inVariables) i->deleteAttachedWires();
       for (auto& i: outVariables) i->deleteAttachedWires();
@@ -283,7 +279,7 @@ namespace minsky
     
     /// computes the zoom at which to show contents, given current
     /// contentBounds and width
-    float displayZoom{1}; ///< extra fzoom at which contents are displayed
+    float displayZoom{1}; ///< extra zoom at which contents are displayed
     float relZoom{1}; ///< relative zoom contents of this group are displayed at
     float computeDisplayZoom();
     void computeRelZoom();

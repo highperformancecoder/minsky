@@ -111,9 +111,12 @@ namespace minsky
     */
     string assetClass(ecolab::TCL_args args); 
   
-    // returns true if \a row is an "Initial Conditions" row
+    /// returns true if \a row is an "Initial Conditions" row
     bool initialConditionRow(unsigned row) const;
-
+    
+    /// return true if row is empty apart from a value in column \a col
+    bool singularRow(unsigned row, unsigned col);
+    
     size_t rows() const {return data.size();}
     size_t cols() const {return data.empty()? 0: data[0].size();}
 

@@ -16,8 +16,6 @@
 #  along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ttk::frame  .wiring
-
 frame .wiring.menubar 
 
 # create icons for all operations
@@ -212,9 +210,6 @@ proc wrapHoverMouse {op x y} {
     after 3000 hoverMouse
 }
     
-image create cairoSurface minskyCanvas -surface minsky.canvas
-label .wiring.canvas -image minskyCanvas -height $canvasHeight -width $canvasWidth
-pack .wiring.canvas -fill both -expand 1
 bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
 bind .wiring.canvas <Control-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
@@ -564,8 +559,8 @@ proc doubleButton {x y} {
 }
 # for ticket 1062, new hierarchy of context menu access on mouse right click: wires, items and background canvas.
 bind .wiring.canvas <<contextMenu>> {
-    if [getWireAt %x %y] {
-        wireContextMenu %X %Y  	
+    if {[getWireAt %x %y] && [minsky.canvas.wire.visible]} {    # prevents wire context menu from being accessed when group contents are not transparent. for ticket 1225.
+		wireContextMenu %X %Y  	  
     } elseif [getItemAt %x %y] {
         switch [minsky.canvas.item.classType] {
             GodleyIcon {rightMouseGodley %x %y %X %Y}
@@ -748,9 +743,9 @@ proc contextMenu {x y X Y} {
             set editorMode [$item.editorMode]
             set buttonDisplay [$item.buttonDisplay]
             set variableDisplay [$item.variableDisplay]
-            .wiring.context add checkbutton -label "Editor mode" -command "$item.toggleEditorMode" -variable editorMode
-            .wiring.context add checkbutton -label "Row/Col buttons" -command "$item.toggleButtons" -variable buttonDisplay
-            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay" -variable variableDisplay
+            .wiring.context add checkbutton -label "Editor mode" -command "$item.toggleEditorMode; $item.update" -variable editorMode
+            .wiring.context add checkbutton -label "Row/Col buttons" -command "$item.toggleButtons ; $item.update" -variable buttonDisplay
+            .wiring.context add checkbutton -label "Display variables" -command "$item.toggleVariableDisplay; $item.update" -variable variableDisplay
             .wiring.context add command -label "Copy flow variables" -command "canvas.copyAllFlowVars"
             .wiring.context add command -label "Copy stock variables" -command "canvas.copyAllStockVars"
             .wiring.context add command -label "Export to file" -command "godley::export"

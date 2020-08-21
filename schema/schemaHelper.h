@@ -71,7 +71,13 @@ namespace minsky
       g.data=data;
       g.m_assetClass=assetClass;
     }
-
+    static void setPrivates
+    (minsky::GodleyIcon& g, const vector<vector<string> >& data, 
+     const vector<GodleyTable::AssetClass>& assetClass)
+    {
+      setPrivates(g.table, data, assetClass);
+    }
+    
     static void setStockAndFlow(minsky::GodleyIcon& g,
                          const minsky::GodleyIcon::Variables& flowVars,
                          const minsky::GodleyIcon::Variables& stockVars)

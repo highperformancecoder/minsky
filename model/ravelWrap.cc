@@ -384,17 +384,13 @@ namespace minsky
     double r=1.1*z*(ravel? ravel_radius(ravel): ravelDefaultRadius);
     double R=1.1*r;
     double dx=xx-x(), dy=yy-y();
-    // check if (x,y) is within portradius of the 4 corners
-    if (fabs(fabs(dx)-R) < portRadius*z &&
-        fabs(fabs(dy)-R) < portRadius*z &&
-        fabs(hypot(dx,dy)-std::sqrt(2)*R) < portRadius*z)
-      return ClickType::onResize;
-    else if (std::abs(xx-x())>R || std::abs(yy-y())>R)
+    if (onResizeHandle(xx,yy))
+      return ClickType::onResize;         
+    if (std::abs(xx-x())>R || std::abs(yy-y())>R)
       return ClickType::outside;    
-    else if (std::abs(dx)<=r && std::abs(dy)<=r)
+    if (std::abs(dx)<=r && std::abs(dy)<=r)
       return ClickType::onRavel;
-    else
-      return ClickType::onItem;
+    return ClickType::onItem;
   }
 
   int Ravel::selectedHandle() const {
@@ -711,7 +707,7 @@ namespace minsky
   bool Ravel::handleSortableByValue() const
   {
     if (!ravel || rank()!=1) return false;
-    size_t ids[1];
+    size_t ids[]{0};
     ravel_outputHandleIds(ravel,ids);
     return size_t(selectedHandle())==ids[0];
   }

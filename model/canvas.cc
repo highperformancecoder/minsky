@@ -52,7 +52,6 @@ namespace minsky
     // firstly, see if the user is selecting an item
     if ((itemFocus=itemAt(x,y)))
       {
-        auto z=itemFocus->zoomFactor();
         clickType=itemFocus->clickType(x,y);
         switch (clickType)
           {
@@ -334,13 +333,14 @@ namespace minsky
                                               });
             model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
                                                {
-                                                 bool mf=(*i)->contains(x,y) && !(*i)->displayContents();
+                                                 auto ct=(*i)->clickType(x,y);
+                                                 bool mf=ct!=ClickType::outside;
                                                  if (mf!=(*i)->mouseFocus)
                                                    {
                                                      (*i)->mouseFocus=mf;
                                                      requestRedraw();
                                                    }
-                                                 bool onResize = (*i)->clickType(x,y)==ClickType::onResize;
+                                                 bool onResize = ct==ClickType::onResize;
                                                  if (onResize!=(*i)->onResizeHandles)
                                                    {
                                                      (*i)->onResizeHandles=onResize;
@@ -641,11 +641,27 @@ namespace minsky
           newItem=group->copy();
         else
           {    			    
+            if (item->ioVar())
+              if (auto v=item->variableCast())
+                if (v->rawName()[0]!=':')
+                  try
+                    {
+                      minsky().pushHistory(); // save current state in case of failure
+                      // attempt to make variable outer scoped. For #1100
+                      minsky().canvas.renameAllInstances(":"+v->rawName());
+                    }
+                  catch (...)
+                    {
+                      minsky().undo(); // back out of change
+                      throw;
+                    }
+            
             newItem.reset(item->clone());
             // if copied from a Godley table or I/O var, set orientation to default
             if (auto v=item->variableCast())
               if (v->controller.lock())
                 newItem->rotation(defaultRotation);
+                    
           }
         setItemFocus(model->addItem(newItem));
         model->normaliseGroupRefs(model);

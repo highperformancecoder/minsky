@@ -90,6 +90,8 @@ namespace minsky
     unsigned scrollRowStart=1, scrollColStart=1;
     /// which cell is active, none initially
     int selectedRow=-1, selectedCol=-1;
+    /// src cell in the event of a move
+    int srcRow=-1, srcCol=-1;
     bool selectedCellInTable() const
     {return godleyIcon->table.cellInTable(selectedRow, selectedCol);}
     int hoverRow=-1, hoverCol=-1;

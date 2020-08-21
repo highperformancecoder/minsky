@@ -60,7 +60,7 @@ namespace minsky
   /// represents rectangular region of a lasso operation
   struct LassoBox
   {
-    float x0=0, y0=0, x1=0, y1=0;
+    float x0=0, y0=0, x1=0, y1=0, angle=0;
     LassoBox() {}
     LassoBox(float x0, float y0, float x1, float y1): 
       x0(x0), y0(y0), x1(x1), y1(y1) {

@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2012
+  @copyright Steve Keen 2020
   @author Russell Standish
   This file is part of Minsky.
 
@@ -17,25 +17,27 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SLIDER_H
-#define SLIDER_H
-namespace minsky
+#include "str.h"
+using namespace minsky;
+
+#include <UnitTest++/UnitTest++.h>
+
+SUITE(Str)
 {
-  constexpr float sliderHandleRadius=3;
-  
-  /// data structure supporting sliders - shared between constant
-  /// operations and variables
-  struct Slider
-  {
-    mutable bool sliderBoundsSet, ///< slider bounds have been initialised at some point
-      sliderStepRel;   /**< sliderStep is relative to the range
-                          [sliderMin,sliderMax] */
+  TEST(numBytes)
+    {
+      CHECK_EQUAL(strlen("A"),numBytes("A"[0]));
+      CHECK_EQUAL(strlen("π"),numBytes("π"[0]));
+      CHECK_EQUAL(strlen("㐀"),numBytes("㐀"[0]));
+      CHECK_EQUAL(strlen("𪜢"),numBytes("𪜢"[0]));
+    }
 
-    mutable double sliderMin, sliderMax, sliderStep;
-    Slider(): sliderBoundsSet(false), sliderStepRel(false) {}
-  };
+  TEST(prevIndex)
+    {
+      CHECK_EQUAL(0, prevIndex("1A", 0));
+      CHECK_EQUAL(1, prevIndex("1A", strlen("1A")));
+      CHECK_EQUAL(1, prevIndex("1π", strlen("1π")));
+      CHECK_EQUAL(1, prevIndex("1㐀", strlen("1㐀")));
+      CHECK_EQUAL(1, prevIndex("1𪜢", strlen("1𪜢")));
+    }
 }
-
-#include "slider.cd"
-#include "slider.xcd"
-#endif

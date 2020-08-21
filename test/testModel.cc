@@ -341,14 +341,14 @@ SUITE(Group)
 
   TEST_FIXTURE(Group, checkAddIORegion)
     {
-      CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iconWidth, y()));
-      CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iconWidth, y()));
+      CHECK_EQUAL(IORegion::input, inIORegion(x()-0.5*iWidth()*zoomFactor(), y()));
+      CHECK_EQUAL(IORegion::output, inIORegion(x()+0.5*iWidth()*zoomFactor(), y()));
       VariablePtr inp(VariableType::flow,"input");
       VariablePtr outp(VariableType::flow,"output");
-      inp->moveTo(x()-0.5*iconWidth, y());
+      inp->moveTo(x()-0.5*iWidth()*zoomFactor(), y());
       addItem(inp);
       checkAddIORegion(inp);
-      outp->moveTo(x()+0.5*iconWidth, y());
+      outp->moveTo(x()+0.5*iWidth()*zoomFactor(), y());
       addItem(outp);
       checkAddIORegion(outp);
       CHECK_EQUAL(1,inVariables.size());
@@ -605,7 +605,7 @@ SUITE(Canvas)
         auto& group=dynamic_cast<Group&>(*itemFocus);
         group.updateBoundingBox();
         group.relZoom=0.5; // ensure displayContents is false
-        double w=group.iconWidth, h=group.iconHeight;
+        double w=group.iWidth()*group.zoomFactor(), h=group.iHeight()*group.zoomFactor();
         double x=group.x(), y=group.y(), z=group.relZoom;
         CHECK(group.clickType(group.right(),group.top()) == ClickType::onResize);
 
@@ -1010,7 +1010,7 @@ SUITE(GodleyIcon)
       update();
       // TODO - shouldn't be needed, but there is some font problem causing bottomMargin to be calculated incorrectly
       
-      scaleIconForHeight(2.5*bottomMargin());
+      scaleIcon(2.5*bottomMargin(),2.5*leftMargin());
       update();
       CHECK_EQUAL(1,flowVars().size());
       CHECK_EQUAL(1,stockVars().size());
@@ -1059,6 +1059,7 @@ SUITE(GodleyIcon)
       CHECK_EQUAL(1,varCount["flow1"]);
       CHECK_EQUAL(0,varCount["flow2"]);
     }
+
 }
 
 SUITE(Minsky)
@@ -1580,5 +1581,110 @@ SUITE(GodleyTableWindow)
        undo(-1);
        CHECK_EQUAL("xxx",t.cell(1,0));
      }
-  
+
+   TEST_FIXTURE(TestFixture, copyBetweenCols)
+     {
+       // test scenario in bug #1212, where item is dragged from one column to another in linked tables
+       auto godley1=dynamic_pointer_cast<GodleyIcon>(model->addItem(new GodleyIcon));
+       godley1->table.resize(3,4);
+       godley1->table.cell(0,1)="foo";
+       godley1->table.cell(0,2)="bar";
+       godley1->table.cell(2,1)="foobar";
+
+       // linked table assets are liabilities and vice versa
+       auto godley2=new GodleyIcon;
+       model->addItem(godley2);
+       godley2->table.resize(3,4);
+       godley2->table.cell(0,2)="foo";
+       godley2->table.cell(0,1)="bar";
+       godley2->table.cell(2,2)="foobar";
+
+       godley1->update();
+       godley2->update();
+
+       GodleyTableWindow gw(godley1);
+       // render GodleyTableWindow to compute column/row boundaries
+       ecolab::cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
+       gw.draw(surf.cairo());
+       // positions of the 2,1 and 2,2 cells
+       double x1=gw.colLeftMargin[1]+5, x2=gw.colLeftMargin[2]+5, y=2*gw.rowHeight+gw.topTableOffset;
+       CHECK_EQUAL(1,gw.colXZoomed(x1));
+       CHECK_EQUAL(2,gw.colXZoomed(x2));
+       CHECK_EQUAL(2,gw.rowYZoomed(y));
+
+       // move cell from asset to liability
+       gw.mouseDown(x2,y);
+       gw.mouseUp(x1,y);
+       gw.update();
+
+       // this scenario should not add extra rows
+       CHECK_EQUAL(3,godley1->table.rows());
+       CHECK_EQUAL(3,godley2->table.rows());
+       CHECK_EQUAL(4,godley1->table.cols());
+       CHECK_EQUAL(4,godley2->table.cols());
+
+       CHECK_EQUAL("",godley1->table.cell(2,1));
+       CHECK_EQUAL("",godley2->table.cell(2,2));
+       FlowCoef fc(godley1->table.cell(2,2));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(1,fc.coef);
+       fc=FlowCoef(godley2->table.cell(2,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(1,fc.coef);
+     }
+   
+     TEST_FIXTURE(TestFixture, almalgamateLines)
+     {
+       // test scenario in bug #1212, where item is dragged from one column to another in linked tables
+       auto godley1=dynamic_pointer_cast<GodleyIcon>(model->addItem(new GodleyIcon));
+       godley1->table.resize(4,4);
+       godley1->table.cell(0,1)="foo";
+       godley1->table.cell(0,2)="bar";
+       godley1->table.cell(2,1)="foobar";
+       godley1->table.cell(3,1)="-2foobar";
+
+       // linked table assets are liabilities and vice versa
+       auto godley2=new GodleyIcon;
+       model->addItem(godley2);
+       godley2->table.resize(3,4);
+       godley2->table.cell(0,2)="foo";
+       godley2->table.cell(0,1)="bar";
+       godley2->table.cell(2,2)="-foobar";
+
+       balanceDuplicateColumns(*godley2,2);
+       
+       // row 2 & 3 should be amalgamated, and the sign changed
+       CHECK_EQUAL(3,godley1->table.rows());
+       FlowCoef fc(godley1->table.cell(2,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(-1,fc.coef);
+
+       CHECK_EQUAL(3,godley2->table.rows());
+       fc=FlowCoef(godley2->table.cell(2,2));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(-1,fc.coef);
+
+       // Now add a name to the row, to fix things
+       godley1->table.resize(4,4);
+       godley1->table.cell(3,1)="2foobar";
+       balanceDuplicateColumns(*godley1,1);
+       godley1->table.cell(2,0)="tax";
+       balanceDuplicateColumns(*godley2,2);
+       
+       // extra row should not be amalgamated on godley1, but amalgamated on godley2
+       CHECK_EQUAL(4,godley1->table.rows());
+       fc=FlowCoef(godley1->table.cell(2,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(-1,fc.coef);
+       fc=FlowCoef(godley1->table.cell(3,1));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(2,fc.coef);
+
+       CHECK_EQUAL(3,godley2->table.rows());
+       fc=FlowCoef(godley2->table.cell(2,2));
+       CHECK_EQUAL("foobar",fc.name);
+       CHECK_EQUAL(1,fc.coef);
+      
+     }
+
 }

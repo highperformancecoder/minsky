@@ -147,6 +147,29 @@ using namespace std;
 
 namespace minsky
 {
+  void EquationDisplay::redraw(int x0, int y0, int width, int height)
+  {
+    if (surface.get()) {
+      m.setBusyCursor();
+      MathDAG::SystemOfEquations system(m);
+      cairo_rectangle(surface->cairo(),0,0,width,height);
+      cairo_clip(surface->cairo());
+      cairo_move_to(surface->cairo(),offsx,offsy);
+      system.renderEquations(*surface,height);
+      if (m.flags & Minsky::fullEqnDisplay_needed)
+        {
+          ecolab::cairo::Surface surf
+            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+          system.renderEquations(surf,std::numeric_limits<double>::max());
+          m_width=surf.width();
+          m_height=surf.height();
+          m.flags &= ~Minsky::fullEqnDisplay_needed;
+        }
+      m.clearBusyCursor();
+    }
+  }
+
+  
   void Minsky::openLogFile(const string& name)
   {
     outputDataFile.reset(new ofstream(name));
@@ -181,11 +204,9 @@ namespace minsky
     
     flowVars.clear();
     stockVars.clear();
-//    evalGodley.initialiseGodleys(makeGodleyIt(godleyItems.begin()),
-//        makeGodleyIt(godleyItems.end()), variables.values);
 
     dimensions.clear();
-    flags=reset_needed;
+    flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
   }
 
@@ -265,7 +286,7 @@ namespace minsky
     xml_unpack_t unpacker(is);
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
-    canvas.model->addGroup(g);
+    g->self=g;
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();    
@@ -286,7 +307,15 @@ namespace minsky
                                if (v->defined() && alreadyDefined)
                                  message("Integral/Stock variable "+v->name()+" already defined"); 
                                else if (!v->defined() && !alreadyDefined)
-                                 convertVarType(v->valueId(), VariableType::flow);
+                                 {
+                                   // need to do this var explicitly, as not currently part of model structure
+                                   if (auto vp=VariablePtr(*i))
+                                     {
+                                       vp.retype(VariableType::flow);
+                                       *i=vp;
+                                       convertVarType(vp->valueId(), VariableType::flow);
+                                     }
+                                 }
                              }
                            else if (alreadyDefined)
                              {
@@ -298,6 +327,7 @@ namespace minsky
                      return false;
                    });
 
+    canvas.model->addGroup(g); // needed to ensure wires are correctly handled
     auto copyOfItems=g->items;
     for (auto& i: copyOfItems)
       {		
@@ -305,16 +335,20 @@ namespace minsky
          canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
-    // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!copyOfItems.empty()) canvas.setItemFocus(g->items[0]);	      
+    // Attach mouse focus only to first visible item in selection. For ticket 1098.      
+    for (auto& i: copyOfItems)
+      if (i->visible())
+        {
+          canvas.setItemFocus(i);
+          break;
+        }
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
         canvas.model->addGroup(i);	
     }
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
-    g->clear();  
-    model->removeGroup(*g);
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);
+    canvas.model->removeGroup(*g);
     canvas.requestRedraw();
   }
 
@@ -406,7 +440,7 @@ namespace minsky
     ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image));
     cairo_move_to(surf.cairo(),0,0);
     MathDAG::SystemOfEquations system(*this);
-    system.renderEquations(surf);
+    system.renderEquations(surf, surf.height());
     surf.blit();
   }
 
@@ -418,7 +452,15 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
-    dimensionalAnalysis();
+    try
+      {
+        dimensionalAnalysis();
+      }
+    catch (const std::exception& ex)
+      {
+        // do not block reset() on dimensional analysis failure
+        message(ex.what());
+      }
     
     EvalOpBase::timeUnit=timeUnit;
 
@@ -475,6 +517,12 @@ namespace minsky
              i->checkUnits();
          return false;
        });
+  }
+
+  void Minsky::deleteAllUnits()
+  {
+    for (auto& i: variableValues)
+      i.second->units.clear();
   }
   
   void Minsky::populateMissingDimensions() {
@@ -678,7 +726,7 @@ namespace minsky
                            }
                        }
                    // items to delete
-                   vector<size_t> rowsToDelete;
+                   set<size_t> rowsToDelete;
                    for (map<string,double>::iterator i=destFlows.begin(); i!=destFlows.end(); ++i)
                      if (i->second!=0 && srcFlows[i->first]==0)
                        for (size_t row=1; row<destTable.rows(); ++row)
@@ -693,11 +741,29 @@ namespace minsky
                                for (size_t c=0; c<destTable.cols(); ++c)
                                  if (!destTable.cell(row, c).empty())
                                    goto rowNotEmpty;
-                               rowsToDelete.push_back(row);
+                               rowsToDelete.insert(row);
                              rowNotEmpty:;
                              }
                          }
-                   for (auto row: rowsToDelete) destTable.deleteRow(row);
+                   // amalgamate unlabelled rows with singular value
+                   map<string,double> unlabelledSigs;
+                   for (size_t row=1; row<destTable.rows(); ++row)
+                     {
+                       if (!destTable.singularRow(row, col)) continue;
+                       FlowCoef fc(destTable.cell(row, col));
+                       unlabelledSigs[fc.name]+=fc.coef;
+                       rowsToDelete.insert(row);
+                     }
+                   // append amalgamated rows
+                   for (auto& i: unlabelledSigs)
+                     if (i.second!=0)
+                       {
+                         destTable.insertRow(destTable.rows());
+                         destTable.cell(destTable.rows()-1,col)=FlowCoef(i.second,i.first).str();
+                       }
+                   
+                   for (auto row=rowsToDelete.rbegin(); row!=rowsToDelete.rend(); ++row)
+                     destTable.deleteRow(*row);
                  }   
          return false;
        });  // TODO - this lambda is FAR too long!
@@ -780,11 +846,18 @@ namespace minsky
                p->updateIcon(t);
              else
                p->addConstantCurves();
-             p->redraw();
+             p->requestRedraw();
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
-           if (r->ports[1]->numWires()>0)
-             r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+           {
+             if (r->ports[1]->numWires()>0)
+               r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+           }
+         else if (auto v=(*i)->variableCast())
+           { //determine whether a slider should be shown
+             if (auto vv=v->vValue())
+               vv->sliderVisible = v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId()));
+           }
          return false;
        });
 
@@ -1028,7 +1101,7 @@ namespace minsky
       }
     catch (...) {}
     panopticon.requestRedraw();
-    flags=reset_needed;
+    flags=reset_needed|fullEqnDisplay_needed;
   }
 
   void Minsky::exportSchema(const char* filename, int schemaLevel)
@@ -1051,25 +1124,6 @@ namespace minsky
       }
     ofstream f(filename);
     x.output(f,schemaURL);
-  }
-
-//  int Minsky::opIdOfEvalOp(const EvalOpBase& e) const
-//  {
-//    if (e.state)
-//      for (Operations::const_iterator j=operations.begin(); 
-//           j!=operations.end(); ++j)
-//        if (e.state==*j)
-//          return j->id();
-//    return -1;
-//  }
-
-
-  ecolab::array<int> Minsky::opOrder() const
-  {
-    ecolab::array<int> r;
-//    for (size_t i=0; i<equations.size(); ++i)
-//      r<<opIdOfEvalOp(*equations[i]);
-    return r;
   }
 
   vector<string> Minsky::accessibleVars() const
@@ -1214,20 +1268,22 @@ namespace minsky
     // this method is logically const, but because of the way
     // canvas rendering is done, canvas state needs updating
     auto& canvas=const_cast<Canvas&>(this->canvas);
+    canvas.item=nullptr;
     if (op.visible())
-      {
-        canvas.item=canvas.model->findItem(op);
-        canvas.itemIndicator=true;
-      }
-    else if (auto g=op.group.lock())
-      {
-        while (g && !g->visible()) g=g->group.lock();
-        if (g && g->visible())
-          {
+      canvas.item=canvas.model->findItem(op);
+    else if (auto v=op.variableCast())
+      if (auto c=v->controller.lock())
+        displayErrorItem(*c);
+
+    if (!canvas.item)
+      if (auto g=op.group.lock())
+        {
+          while (g && !g->visible()) g=g->group.lock();
+          if (g && g->visible())
             canvas.item=g;
-            canvas.itemIndicator=true;
-          }
-      }
+        }
+    
+    canvas.itemIndicator=canvas.item.get();
     //requestRedraw calls back into TCL, so don't call it from the simulation thread. See ticket #973
     if (!RKThreadRunning) canvas.requestRedraw();
   }

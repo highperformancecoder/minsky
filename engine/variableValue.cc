@@ -232,7 +232,7 @@ namespace minsky
   int VariableValue::scope(const std::string& name) 
   {
     boost::smatch m;
-    if (boost::regex_search(name, m, boost::regex(R"((\d*)]?:.*)")))
+    if (boost::regex_search(utf_to_utf<char>(name), m, boost::regex(R"((\d*)]?:.*)")))
       if (m.size()>1 && m[1].matched && !m[1].str().empty())
         {
           int r;
@@ -248,7 +248,7 @@ namespace minsky
 
   GroupPtr VariableValue::scope(GroupPtr scope, const std::string& a_name)
   {
-    auto name=stripActive(a_name);
+    auto name=utf_to_utf<char>(stripActive(utf_to_utf<char>(a_name)));
     if (name[0]==':' && scope)
       {
         // find maximum enclosing scope that has this same-named variable
@@ -273,18 +273,18 @@ namespace minsky
   string VariableValue::valueIdFromScope(const GroupPtr& scope, const std::string& name)
   {
     if (name.empty() || !scope || !scope->group.lock())
-      return VariableValue::valueId(-1,name); // retain previous global var id
+      return VariableValue::valueId(-1,utf_to_utf<char>(name)); // retain previous global var id
     else
-      return VariableValue::valueId(size_t(scope.get()), name);
+      return VariableValue::valueId(size_t(scope.get()), utf_to_utf<char>(name));
 }
   
   std::string VariableValue::uqName(const std::string& name)
   {
     string::size_type p=name.rfind(':');
     if (p==string::npos)
-      return name;
+      return utf_to_utf<char>(name);
     else
-    return name.substr(p+1);
+    return utf_to_utf<char>(name).substr(p+1);
   }
  
   string VariableValues::newName(const string& name) const
@@ -292,7 +292,7 @@ namespace minsky
     int i=1;
     string trialName;
     do
-      trialName=name+to_string(i++);
+      trialName=utf_to_utf<char>(name)+to_string(i++);
     while (count(VariableValue::valueId(trialName)));
     return trialName;
   }
@@ -328,20 +328,22 @@ namespace minsky
     return r;
   }
 
-  string mantissa(double value, const EngNotation& e)
+  string mantissa(double value, const EngNotation& e, int digits)
   {
-    const char* conv;
+    int width, decimal_places;
+    digits=std::max(digits, 3);
     switch (e.sciExp-e.engExp)
       {
-      case -3: conv="%7.4f"; break;
-      case -2: conv="%6.3f"; break;
-      case 0: case -1: conv="%5.2f"; break;
-      case 1: conv="%5.1f"; break;
-      case 2: case 3: conv="%5.0f"; break;
+      case -3: width=digits+4; decimal_places=digits+1; break;
+      case -2: width=digits+3; decimal_places=digits; break;
+      case 0: case -1: width=digits+2; decimal_places=digits-1; break;
+      case 1: width=digits+2; decimal_places=digits-2; break;
+      case 2: case 3: width=digits+2; decimal_places=digits-3; break;
       default: return ""; // shouldn't be here...
       }
     char val[10];
-    sprintf(val,conv,value*pow(10,-e.engExp));
+    const char conv[]="%*.*f";
+    sprintf(val,conv,width,decimal_places,value*pow(10,-e.engExp));
     return val;
   }
   

@@ -31,16 +31,6 @@ Sheet::Sheet()
   ports.emplace_back(new Port(*this, Port::inputPort));
 }
 
-ClickType::Type Sheet::clickType(float x, float y)
-{
-  double dx=x-this->x(), dy=y-this->y();
-  auto z=zoomFactor();
-  if ((abs(x-left()) < portRadiusMult*z || abs(x-right()) < portRadiusMult*z) &&
-      (abs(y-top()) < portRadiusMult*z || abs(y-bottom()) < portRadiusMult*z))  
-    return ClickType::onResize;
-  return Item::clickType(x,y);
-}
-
 void Sheet::draw(cairo_t* cairo) const
 {
   auto z=zoomFactor();

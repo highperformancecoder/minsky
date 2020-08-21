@@ -19,6 +19,7 @@
 
 set fname ""
 set workDir [pwd]
+encoding system utf-8
 
 # On mac-build versions, fontconfig needs to find its config file,
 # which is packaged up in the Minsky.app directory
@@ -638,7 +639,7 @@ proc renderImage {filename type surf} {
 }
 
 proc exportCanvas {} {
-    global workDir type fname preferences
+    global workDir type fname preferences tabSurface
 
     set fileTypes [imageFileTypes]
     lappend fileTypes {"LaTeX" .tex TEXT} {"Matlab" .m TEXT}
@@ -646,7 +647,9 @@ proc exportCanvas {} {
                -initialdir $workDir -typevariable type -initialfile [file rootname [file tail $fname]]]  
     if {$f==""} return
     set workDir [file dirname $f]
-    if [renderImage $f $type canvas] return
+    # extract the surface name from the current tab, for #912
+    set surf [lindex [.tabs tabs] [.tabs index current]].canvas
+    if [renderImage $f $type $tabSurface([.tabs tab current -text])] return
     if {[string match -nocase *.tex "$f"]} {
         latex "$f" $preferences(wrapLaTeXLines)
     } elseif {[string match -nocase *.m "$f"]} {
@@ -712,6 +715,7 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Paste" -command "minsky.paste" -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
+.menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
 
 proc togglePaste {} {
     if {[getClipboard]==""} {
@@ -726,6 +730,7 @@ proc undo {delta} {
     doPushHistory 0
     minsky.undo $delta
     minsky.canvas.requestRedraw
+    deleteSubsidiaryTopLevels
     doPushHistory 1
 }
 
@@ -881,36 +886,32 @@ proc textEntryPopup {win init okproc} {
     
 }
 
-source $minskyHome/godley.tcl
-source $minskyHome/wiring.tcl
-source $minskyHome/plots.tcl
-source $minskyHome/group.tcl
-source $minskyHome/csvImport.tcl
+proc addTab {window label surface} {
+    image create cairoSurface rendered$window -surface $surface
+    ttk::frame .$window
+    global canvasHeight canvasWidth tabSurface
+    label .$window.canvas -image rendered$window -height $canvasHeight -width $canvasWidth
+    .tabs add .$window -text $label -padding 0
+    set tabSurface($label) $surface
+}
 
 # add the tabbed windows
-.tabs add .wiring -text "Wiring" -padding 0
-
-image create cairoSurface renderedEquations -surface minsky.equationDisplay
-#-file $minskyHome/icons/plot.gif
-ttk::frame .equations 
-label .equations.canvas -image renderedEquations -height $canvasHeight -width $canvasWidth
+addTab wiring "Wiring" minsky.canvas
+addTab equations "Equations" minsky.equationDisplay
 pack .equations.canvas -fill both -expand 1
-.tabs add .equations -text equations -padding 0
-.tabs select 0
-
-image create cairoSurface renderedPars -surface minsky.parameterSheet
-ttk::frame .parameters
-label .parameters.canvas -image renderedPars -height $canvasHeight -width $canvasWidth
+addTab parameters "Parameters" minsky.parameterSheet
 pack .parameters.canvas -fill both -expand 1
-.tabs add .parameters -text parameters -padding 0
+addTab variables "Variables" minsky.variableSheet
+pack .variables.canvas -fill both -expand 1
 .tabs select 0
 
-image create cairoSurface renderedVars -surface minsky.variableSheet
-ttk::frame .variables
-label .variables.canvas -image renderedVars -height $canvasHeight -width $canvasWidth
-pack .variables.canvas -fill both -expand 1
-.tabs add .variables -text variables -padding 0
-.tabs select 0
+source $minskyHome/godley.tcl
+source $minskyHome/plots.tcl
+source $minskyHome/group.tcl
+source $minskyHome/wiring.tcl
+source $minskyHome/csvImport.tcl
+
+pack .wiring.canvas -fill both -expand 1
 
 image create cairoSurface panopticon -surface minsky.panopticon
 label .wiring.panopticon -image panopticon -width 100 -height 100 -borderwidth 3 -relief sunken
@@ -1214,10 +1215,7 @@ proc reset {} {
         .controls.statusbar configure -text "t: 0 Δt: 0"
         .controls.run configure -image runButton
 
-        global oplist lastOp
-        set oplist [opOrder]
         redrawAllGodleyTables
-        set lastOp -1
         return -code $err $result
     }
 }
@@ -1605,7 +1603,7 @@ proc exit {} {
     if {[edited]||[file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
-            no {}
+            no {file delete [autoBackupName]}
             cancel {return -level [info level]}
         }
     }
