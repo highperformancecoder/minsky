@@ -339,30 +339,30 @@ namespace
 
 }
 
-  void Wire::calcCairoCoords(cairo_t* cairo) const
+  void Wire::storeCairoCoords(cairo_t* cairo) const
   {
-	    cairoCoords.clear(); 
-	    cairo_path_t *path;
-        cairo_path_data_t *data;
+    cairoCoords.clear(); 
+    cairo_path_t *path;
+    cairo_path_data_t *data;
          
-        path = cairo_copy_path_flat(cairo);
+    path = cairo_copy_path_flat(cairo);
          
-        for (int j=0; j < path->num_data; j += path->data[j].header.length) {
-            data = &path->data[j];
-            switch (data->header.type) {
-            case CAIRO_PATH_MOVE_TO:
-                break;
-            case CAIRO_PATH_LINE_TO:
-                cairoCoords.push_back(make_pair(data[1].point.x,data[1].point.y));
-                break;
-            case CAIRO_PATH_CURVE_TO:
-                break;
-            case CAIRO_PATH_CLOSE_PATH:
-                break;
-            }
-        }
-        cairo_path_destroy (path);              
-   }
+    for (int j=0; j < path->num_data; j += path->data[j].header.length) {
+      data = &path->data[j];
+      switch (data->header.type) {
+      case CAIRO_PATH_MOVE_TO:
+        break;
+      case CAIRO_PATH_LINE_TO:
+        cairoCoords.push_back(make_pair(data[1].point.x,data[1].point.y));
+        break;
+      case CAIRO_PATH_CURVE_TO:
+        break;
+      case CAIRO_PATH_CLOSE_PATH:
+        break;
+      }
+    }
+    cairo_path_destroy (path);              
+  }
    
   void Wire::draw(cairo_t* cairo) const
   {
@@ -381,19 +381,19 @@ namespace
       {
         cairo_move_to(cairo, coords[0], coords[1]);
         
-  /** 
-   *  
-   * Two control points are inserted between two adjacent handles (knots) of the curved wires on the canvas.
-   * The first and second derivatives of the cubic Bezier curves, representing curved segments of wires, and spanning adjacent knots,
-   * are matched at the common knots. The second derivatives are set to zero at the ends to absorb the extra degrees of freedom,
-   * thus leading to a matrix equation relating control points \f$c_i\f$ to the knots \f$k_i\f$:
-   *
-   *     
-   *     \f[
-   *        \left(\begin{array}{c} b_1 & a_1 & 0  \\ d_1 & b_2 & a_2 \\ 0 & d_2 & b_3  \end{array}\right) \left(\begin{array}{c} c_1 \\ c_2 \\ c_3 \end{array}\right) = \left(\begin{array}{c}  k_1 \\ k_2 \\ k_3 \end{array}\right)
-   *     \f] 
-   * 
-   */   
+        /** 
+         *  
+         * Two control points are inserted between two adjacent handles (knots) of the curved wires on the canvas.
+         * The first and second derivatives of the cubic Bezier curves, representing curved segments of wires, and spanning adjacent knots,
+         * are matched at the common knots. The second derivatives are set to zero at the ends to absorb the extra degrees of freedom,
+         * thus leading to a matrix equation relating control points \f$c_i\f$ to the knots \f$k_i\f$:
+         *
+         *     
+         *     \f[
+         *        \left(\begin{array}{c} b_1 & a_1 & 0  \\ d_1 & b_2 & a_2 \\ 0 & d_2 & b_3  \end{array}\right) \left(\begin{array}{c} c_1 \\ c_2 \\ c_3 \end{array}\right) = \left(\begin{array}{c}  k_1 \\ k_2 \\ k_3 \end{array}\right)
+         *     \f] 
+         * 
+         */   
         
         // For ticket 991/1092. Convert to coordinate pairs.
         vector<pair<float,float>> points = toCoordPair(coords);
@@ -410,14 +410,15 @@ namespace
         // For ticket 991. Apply Thomas' algorithm to matrix equation Ac=k
         vector<pair<float,float>> controlPoints = computeControlPoints(A, points, target);
 
-        /* Decrease tolerance a bit, since it's going to be magnified */
+        // Decrease tolerance a bit, since it's going to be magnified
         cairo_set_tolerance (cairo, 0.01);
         
         for (int i = 0; i < n; i++) {      
           cairo_curve_to(cairo, controlPoints[i].first,controlPoints[i].second,controlPoints[n+i].first,controlPoints[n+i].second,points[i+1].first,points[i+1].second);
         }		    
         
-        if (coords.size()>4) calcCairoCoords(cairo);    
+        // Stash the internal cairo coordinates used to draw curved wires. for ticket 1079.
+        if (coords.size()>4) storeCairoCoords(cairo);    
                                          
         cairo_stroke(cairo);     
         angle=atan2(coords[coords.size()-1]-coords[coords.size()-3], 
@@ -449,18 +450,20 @@ namespace
             double midy=0.5*(coords[1]+coords[3]);
             cairo_arc(cairo,midx,midy,1.5*handleRadius, 0, 2*M_PI);
             cairo_fill(cairo);
-          } else {
-          size_t numSmallHandles=0.5*(coords.size()-4)+1, numCairoCoords=cairoCoords.size()-1;
-          for (size_t i=0; i<coords.size()-3; i+=2)
-            {
-              double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
-              double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
-              cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
-              if (i>0) // draw existing interior gripping handle            
-                cairo_arc(cairo,coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
-              cairo_fill(cairo);
-            } 
-        }
+          } 
+        else 
+          {
+            size_t numSmallHandles=0.5*(coords.size()-4)+1, numCairoCoords=cairoCoords.size()-1;
+            for (size_t i=0; i<coords.size()-3; i+=2)
+              {
+                double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
+                double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
+                cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
+                if (i>0) // draw existing interior gripping handle            
+                  cairo_arc(cairo,coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
+                cairo_fill(cairo);
+              } 
+          }
         cairo_restore(cairo);
       }
   }
@@ -523,7 +526,7 @@ namespace
     inline float d2(float x0, float y0, float x1, float y1)
     {return sqr(x1-x0)+sqr(y1-y0);}
     	
-}    
+  }    
   
   bool Wire::near(float x, float y) const
   {
@@ -534,11 +537,7 @@ namespace
     else {
       // fixes for tickets 991/1095
       vector<pair<float,float>> p=allHandleCoords(c);
-      if (!cairoCoords.empty()) {
-        p.clear();
-        for (auto cC: cairoCoords)
-          p.push_back(cC);
-      }
+      if (!cairoCoords.empty()) p=cairoCoords;   
          
       unsigned k=0; // nearest index
       float closestD=d2(p[0].first,p[0].second,x,y);      
