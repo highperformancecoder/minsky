@@ -122,7 +122,6 @@ namespace minsky
                  remove(createdIOvariables, r);
                  v->controller.reset();
                 }
-          r->removeControlledItems(*this);
           return r;
         }
 

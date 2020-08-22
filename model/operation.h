@@ -42,10 +42,6 @@
 
 namespace minsky
 {
-  //using namespace ecolab;
-  //using namespace classdesc;
-  //using namespace std;
-  using classdesc::shared_ptr;
   class OperationPtr;
   class Group;
 
@@ -254,10 +250,10 @@ namespace minsky
   /// shared_ptr class for polymorphic operation objects. Note, you
   /// may assume that this pointer is always valid, although currently
   /// the implementation doesn't guarantee it (eg reset() is exposed).
-  class OperationPtr: public classdesc::shared_ptr<OperationBase>
+  class OperationPtr: public std::shared_ptr<OperationBase>
   {
   public:
-    typedef classdesc::shared_ptr<OperationBase> PtrBase;
+    typedef std::shared_ptr<OperationBase> PtrBase;
     OperationPtr(OperationType::Type type=OperationType::numOps): 
       PtrBase(OperationBase::create(type)) {}
     // reset pointer to a newly created operation
