@@ -193,15 +193,12 @@ namespace minsky
     updateBB(); 
   }
 
-  void GodleyIcon::removeControlledItems() const
+  void GodleyIcon::removeControlledItems(Group& g) const
   {
-    if (auto g=group.lock())
-      {
-        for (auto& i: m_flowVars)
-          g->removeItem(*i);
-        for (auto& i: m_stockVars)
-          g->removeItem(*i);
-      }
+    for (auto& i: m_flowVars)
+      g.removeItem(*i);
+    for (auto& i: m_stockVars)
+      g.removeItem(*i);
   }
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 

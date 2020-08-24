@@ -122,12 +122,15 @@ namespace MathDAG
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValuePtr(VariableType::tempFlow)).first;
         result=ri->second;
         if (rhs)
-          if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
-            { // everything scalar, revert to scalar processing
-              if (result->idx()<0) result->allocValue();
-              if (rhs)
+          {
+            if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
+              { // everything scalar, revert to scalar processing
+                if (result->idx()<0) result->allocValue();
                 rhs->addEvalOps(ev, result);
-            }
+              }
+          }
+        else
+          if (result->idx()<0) result->allocValue();
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
@@ -620,7 +623,8 @@ namespace MathDAG
     if (expressionCache.exists(valueId))
       return expressionCache[valueId];
 
-    assert(VariableValue::isValueId(valueId));
+    if (!VariableValue::isValueId(valueId))
+      throw runtime_error("Invalid valueId: "+valueId);
     assert(minsky.variableValues.count(valueId));
     auto vv=minsky.variableValues[valueId];
 

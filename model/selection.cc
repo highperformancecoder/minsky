@@ -32,11 +32,11 @@ namespace minsky
 
   void Selection::toggleItemMembership(const ItemPtr& item)
   {
-    auto it=find(items.begin(), items.end(),item);
-    if (it!=items.end())
+    if (!item) return;
+    if (removeItem(*item))
       {
-        items.erase(it);
         item->selected=false;
+        item->removeControlledItems(*this);
       }
     else if (auto gPtr=std::dynamic_pointer_cast<Group>(item))
       {

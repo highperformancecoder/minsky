@@ -302,4 +302,22 @@ SUITE(Units)
     CHECK_EQUAL(1,vd->units()["m"]);
     CHECK_EQUAL(0,vd->units()["s"]);
   }
+
+  TEST_FIXTURE(TestMinsky,populateMissingDimensionsFromVariable)
+  {
+    civita::Hypercube hc({3,4});
+    hc.xvectors[0].dimension=civita::Dimension(civita::Dimension::value,"m");
+    hc.xvectors[0].name="length";
+    hc.xvectors[1].dimension=civita::Dimension(civita::Dimension::time,"%Y-%m-%d");
+    hc.xvectors[1].name="time";
+    VariableValue v;
+    v.hypercube(hc);
+    populateMissingDimensionsFromVariable(v);
+    CHECK_EQUAL(1,dimensions.count("length"));
+    CHECK_EQUAL(1,dimensions.count("time"));
+    CHECK_EQUAL(civita::Dimension::value,dimensions["length"].type);
+    CHECK_EQUAL(civita::Dimension::time,dimensions["time"].type);
+    CHECK_EQUAL("m",dimensions["length"].units);
+    CHECK_EQUAL("%Y-%m-%d",dimensions["time"].units);
+  }
 }

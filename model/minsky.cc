@@ -290,7 +290,8 @@ namespace minsky
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();    
-
+    bool alreadyDefinedMessageDisplayed=false;
+    
     // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
     g->recursiveDo(&GroupItems::items,
                    [&](Items&, Items::iterator i) {
@@ -304,8 +305,11 @@ namespace minsky
                               {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
                            if (v->isStock())
                              {
-                               if (v->defined() && alreadyDefined)
-                                 message("Integral/Stock variable "+v->name()+" already defined"); 
+                               if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)
+                                 {
+                                   message("Integral/Stock variable "+v->name()+" already defined.");
+                                   alreadyDefinedMessageDisplayed=true;
+                                 }
                                else if (!v->defined() && !alreadyDefined)
                                  {
                                    // need to do this var explicitly, as not currently part of model structure

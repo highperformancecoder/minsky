@@ -1175,4 +1175,31 @@ SUITE(Minsky)
         CHECK_EQUAL(clonedIntVar->name(), model->items[1]->variableCast()->name());
       }
     
+    TEST_FIXTURE(TestFixture, cut)
+      {
+        auto a=model->addItem(new Variable<VariableType::flow>("a"));
+        auto integ=new IntOp;
+        model->addItem(integ);
+        auto g=model->addGroup(new Group);
+        g->addItem(new Variable<VariableType::flow>("a1"));
+        CHECK_EQUAL(4,model->numItems());
+        CHECK_EQUAL(1,model->numGroups());
+
+        canvas.selection.ensureItemInserted(a);
+        CHECK_EQUAL(1,canvas.selection.numItems());
+        canvas.selection.toggleItemMembership(integ->intVar);
+        CHECK_EQUAL(3,canvas.selection.numItems()); // both integral and intVar must be inserted
+        canvas.selection.toggleItemMembership(model->findItem(*integ));
+        CHECK_EQUAL(1,canvas.selection.numItems());
+        canvas.selection.items.push_back(integ->intVar);
+        CHECK_EQUAL(2,canvas.selection.numItems());
+        canvas.selection.ensureGroupInserted(g);
+        CHECK_EQUAL(3,canvas.selection.numItems());
+        CHECK_EQUAL(1,canvas.selection.numGroups());
+
+        a.reset(); g.reset(); // prevent triggering assertion filaure in cut()
+        cut();
+        CHECK_EQUAL(2,model->numItems()); //intVar should not be deleted
+        CHECK_EQUAL(0,model->numGroups());
+      }
 }

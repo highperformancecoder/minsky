@@ -583,7 +583,7 @@ namespace minsky
           {
             auto v=(*rhs)[i];
             result[i]=v;
-            assert(!finite(result[i]) || fv[result.idx()+i]==v);
+            assert(!isfinite(result[i]) || fv[result.idx()+i]==v);
           }
       }
   }

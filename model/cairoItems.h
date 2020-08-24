@@ -29,7 +29,7 @@ namespace minsky
   /** class that renders a variable into a cairo context. 
       A user can also query the size of the unrotated rendered image
   */
-  class RenderVariable: public Pango
+  class RenderVariable: public ecolab::Pango
   {
     const VariableBase& var;
     cairo_t *cairo;
@@ -39,8 +39,6 @@ namespace minsky
     RenderVariable(const VariableBase& var, cairo_t* cairo=NULL);
     /// render the cairo image
     void draw();
-    /// compute and update port locations
-    void updatePortLocs() const;
     /// half width of unrotated image
     float width() const {return w;}
     /// half height of unrotated image

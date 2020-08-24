@@ -1479,6 +1479,8 @@ proc postNote {item} {
 proc OKnote {item} {
     minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
     minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
+    # update bounding box - see ticket #1164
+    minsky.canvas.$item.updateBoundingBox 
     closeEditWindow .wiring.note
 }
 

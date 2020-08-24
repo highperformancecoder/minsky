@@ -80,20 +80,8 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
 
 void RenderVariable::draw()
 {
-  //  updatePortLocs();
   var.draw(cairo);
 
-}
-
-void RenderVariable::updatePortLocs() const
-{
-  double angle=var.rotation() * M_PI / 180.0;
-  double x0=w, y0=0, x1=-w+2, y1=0, z=var.zoomFactor();
-  double sa=sin(angle), ca=cos(angle);
-  var.ports[0]->moveTo(var.x()+z*(x0*ca-y0*sa), 
-                           var.y()+z*(y0*ca+x0*sa));
-  var.ports[1]->moveTo(var.x()+z*(x1*ca-y1*sa), 
-                           var.y()+z*(y1*ca+x1*sa));
 }
 
 bool RenderVariable::inImage(float x, float y)

@@ -36,7 +36,14 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  
+  class Group;
+  class VariablePtr;
+  class VariableBase;
+  class OperationBase;
+  class SwitchIcon;
+
+  class Item;
+
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
   /// a lasso is intended
@@ -58,12 +65,6 @@ namespace minsky
     ItemPortVector& operator=(const ItemPortVector&) {return *this;}
   };
 
-  class VariablePtr;
-  class VariableBase;
-  class OperationBase;
-  class SwitchIcon;
-
-  class Item;
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
@@ -172,8 +173,6 @@ namespace minsky
     
     /// delete all attached wires
     virtual void deleteAttachedWires();
-    /// remove all controlled items from their group
-    virtual void removeControlledItems() const {}
     
     virtual Item* clone() const {
       auto r=new Item(*this);
@@ -251,6 +250,10 @@ namespace minsky
     /// insert this items controlled or controller items are inserted
     /// correctly into \a selection.
     virtual void insertControlled(Selection& selection) {}
+    /// remove all controlled items from a group
+    virtual void removeControlledItems(Group&) const {}
+    /// remove all controlled items their owning group
+    void removeControlledItems() const;
   };
 
   typedef std::shared_ptr<Item> ItemPtr;
