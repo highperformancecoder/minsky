@@ -211,7 +211,7 @@ string VariableBase::init() const
   if (value!=minsky().variableValues.end()) {   	
       try
         {
-	       // set initial value of int var to init value of input to second port. fo ticket 1137
+	       // set initial value of int var to init value of input to second port. for ticket 1137
 	        if (!ports[0]->wires().empty())
 	          if (auto i=dynamic_cast<IntOp*>(&ports[0]->wires()[0]->to()->item()))
 	            if (!i->ports[2]->wires().empty()) {
