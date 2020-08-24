@@ -205,22 +205,22 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
     }
 }
 
-
 string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
-  if (value!=minsky().variableValues.end()) {
-    //if (auto i=dynamic_cast<IntOp*>(controller.lock().get()))
-    //  if (i->ports.size()>1 && !i->ports[1]->wires().empty())
-    //     i->intVar->init(i->ports[1]->wires()[0]->from()->item().variableCast()->init());
-    //else if (auto g=dynamic_cast<GodleyIcon*>(controller.lock().get()))
-    //  for (auto v: g->stockVars())
-    //     if (v->ports.size()>1 && !v->ports[1]->wires().empty())
-    //        v->init(v->ports[1]->wires()[0]->from()->item().variableCast()->init());        	  
-	if (inputWired())
-        value->second->init=ports[1]->wires()[0]->from()->item().variableCast()->init();
-      //else if (auto v=cminsky().definingVar(valueId()))
-      //  return vv->init=v->init();
+  if (value!=minsky().variableValues.end()) {   	
+      try
+        {
+	       // set initial value of int var to init value of input to second port. fo ticket 1137
+	        if (!ports[0]->wires().empty())
+	          if (auto i=dynamic_cast<IntOp*>(&ports[0]->wires()[0]->to()->item()))
+	            if (!i->ports[2]->wires().empty()) {
+					auto vv=i->ports[2]->wires()[0]->from()->item().variableCast()->vValue();
+					if (vv) value->second->init=vv->init;
+				}
+        }
+      catch (...)
+        {}      	
     return value->second->init;
   }
   else 
