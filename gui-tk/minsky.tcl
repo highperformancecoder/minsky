@@ -434,7 +434,7 @@ proc showPreferences {} {
 }
 
 menu .menubar.rungeKutta
-.menubar.rungeKutta add command -label "Runge Kutta" -command {
+.menubar.rungeKutta add command -label "Simulation" -command {
     foreach {var text} $rkVars { set rkVarInput($var) [$var] }
     set implicitSolver [implicit]
     deiconifyRKDataForm
