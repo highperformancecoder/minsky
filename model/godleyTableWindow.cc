@@ -505,7 +505,10 @@ namespace minsky
         if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // Cannot save text in cell(1,0). For ticket 1064
            {
              // Make sure non-utf8 chars converted to utf8 as far as possible. for ticket 1166.
-             godleyIcon->table.savedText=utf_to_utf<char>(godleyIcon->table.cell(selectedRow, selectedCol));
+             auto& str=godleyIcon->table.cell(selectedRow,selectedCol);
+             str=utf_to_utf<char>(str);	 
+             godleyIcon->table.savedText=str;
+             selectIdx=insertIdx = textIdx(x);
            }
         else
           selectIdx=insertIdx=0;
