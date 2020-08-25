@@ -173,14 +173,6 @@ namespace minsky
     scaleFactor(min(w/(leftMargin()+iWidth()*zoomFactor()),h/(bottomMargin()+iHeight()*zoomFactor())));
   }  
 
-  double GodleyIcon::schema1ZoomFactor() const
-  {
-    if (auto g=group.lock())
-      return scaleFactor()*g->zoomFactor();
-    else
-      return scaleFactor();
-  }
-
   void GodleyIcon::resize(const LassoBox& b)
   {
     float invZ=1.0/(this->zoomFactor());
