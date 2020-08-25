@@ -209,12 +209,12 @@ string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
   if (value!=minsky().variableValues.end()) {   	
-        // set initial value of int var to init value of input to second port. for ticket 1137
-        if (!ports[0]->wires().empty())
-          if (auto i=dynamic_cast<IntOp*>(&ports[0]->wires()[0]->to()->item()))
-            if (i->ports.size()>2 && !i->ports[2]->wires().empty())
-              if (auto lhsVar=i->ports[2]->wires()[0]->from()->item().variableCast())
-                 value->second->init=lhsVar->vValue()->init;
+    // set initial value of int var to init value of input to second port. for ticket 1137
+    if (!ports[0]->wires().empty())
+      if (auto i=dynamic_cast<IntOp*>(&ports[0]->wires()[0]->to()->item()))
+        if (i->ports.size()>2 && !i->ports[2]->wires().empty())
+          if (auto lhsVar=i->ports[2]->wires()[0]->from()->item().variableCast())
+            value->second->init=lhsVar->vValue()->init;
     return value->second->init;
   }
   else 
