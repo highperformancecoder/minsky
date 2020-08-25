@@ -285,7 +285,8 @@ namespace minsky
                 // set initial value of stock var to init value of flow that is defined by a parameter or a constant. for ticket 1137
                 if (auto initVar=minsky().definingVar(VariableValue::valueId(group.lock(),table.cell(r,c).substr(start))))
                   if (initVar->inputWired() && initVar->type()==VariableType::flow)
-                    v.init=initVar->ports[1]->wires()[0]->from()->item().variableCast()->vValue()->init;              
+                    if (auto lhsVar=initVar->ports[1]->wires()[0]->from()->item().variableCast())
+                       v.init=lhsVar->vValue()->init;              
                 v.godleyOverridden=true;
               }
             else
