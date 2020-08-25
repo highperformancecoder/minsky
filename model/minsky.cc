@@ -286,11 +286,11 @@ namespace minsky
     xml_unpack_t unpacker(is); 
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
-    m.populateGroup(*model->addGroup(g)); 
-    g->resizeOnContents();
-    //canvas.itemFocus=g;  
+    g->self=g;
+    m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();               
+    canvas.selection.clear();    
+    bool alreadyDefinedMessageDisplayed=false;
     
     // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
     g->recursiveDo(&GroupItems::items,
@@ -305,10 +305,21 @@ namespace minsky
                               {return j->variableCast() && j->variableCast()!=v && j->variableCast()->defined();});
                            if (v->isStock())
                              {
-                               if (v->defined() && alreadyDefined)
-                                 message("Integral/Stock variable "+v->name()+" already defined"); 
+                               if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)
+                                 {
+                                   message("Integral/Stock variable "+v->name()+" already defined.");
+                                   alreadyDefinedMessageDisplayed=true;
+                                 }
                                else if (!v->defined() && !alreadyDefined)
-                                 convertVarType(v->valueId(), VariableType::flow);
+                                 {
+                                   // need to do this var explicitly, as not currently part of model structure
+                                   if (auto vp=VariablePtr(*i))
+                                     {
+                                       vp.retype(VariableType::flow);
+                                       *i=vp;
+                                       convertVarType(vp->valueId(), VariableType::flow);
+                                     }
+                                 }
                              }
                            else if (alreadyDefined)
                              {
@@ -320,7 +331,7 @@ namespace minsky
                      return false;
                    });                              
 
-    //if (canvas.model!=g) {
+    canvas.model->addGroup(g); // needed to ensure wires are correctly handled
     auto copyOfItems=g->items;
     ItemPtr selectedItem;
     for (auto& i: copyOfItems)
@@ -329,25 +340,24 @@ namespace minsky
          canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
-    // Attach mouse focus only to first item in selection. For ticket 1098.      
-    if (!copyOfItems.empty()) canvas.setItemFocus(copyOfItems[0]);	       
-       
+
+    // Attach mouse focus only to first visible item in selection. For ticket 1098.      
+    for (auto& i: copyOfItems)
+      if (i->visible())
+        {
+          canvas.setItemFocus(i);
+          break;
+        }
+
     auto copyOfGroups=g->groups;
     for (auto& j: copyOfGroups)
     {	
         model->addGroup(j);
         //canvas.selection.ensureGroupInserted(j);	
     }
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);    
-    
-    //auto copyOfWires=g->wires;
-    //for (auto& w: copyOfWires)
-    //{	
-    //    model->addWire(w);
-    //    //canvas.selection.ensureGroupInserted(j);	
-    //}    
-    
-    model->removeGroup(*g);
+
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);
+    canvas.model->removeGroup(*g);
     canvas.requestRedraw();
   }  
 
@@ -451,7 +461,15 @@ namespace minsky
     equations.clear();
     integrals.clear();
 
-    dimensionalAnalysis();
+    try
+      {
+        dimensionalAnalysis();
+      }
+    catch (const std::exception& ex)
+      {
+        // do not block reset() on dimensional analysis failure
+        message(ex.what());
+      }
     
     EvalOpBase::timeUnit=timeUnit;
 
@@ -508,6 +526,12 @@ namespace minsky
              i->checkUnits();
          return false;
        });
+  }
+
+  void Minsky::deleteAllUnits()
+  {
+    for (auto& i: variableValues)
+      i.second->units.clear();
   }
   
   void Minsky::populateMissingDimensions() {
@@ -831,11 +855,18 @@ namespace minsky
                p->updateIcon(t);
              else
                p->addConstantCurves();
-             p->redraw();
+             p->requestRedraw();
            }
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
-           if (r->ports[1]->numWires()>0)
-             r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+           {
+             if (r->ports[1]->numWires()>0)
+               r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+           }
+         else if (auto v=(*i)->variableCast())
+           { //determine whether a slider should be shown
+             if (auto vv=v->vValue())
+               vv->sliderVisible = v->type()==VariableType::parameter || (v->type()==VariableType::flow && !inputWired(v->valueId()));
+           }
          return false;
        });
 

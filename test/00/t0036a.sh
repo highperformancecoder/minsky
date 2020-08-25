@@ -36,11 +36,12 @@ cat >input.tcl <<EOF
 source $here/test/assert.tcl
 proc afterMinskyStarted {} {uplevel #0 {
   openNamedFile $here/examples/GoodwinLinear02.mky
+  update
   assert {[findObject Group]}
   set item minsky.canvas.item
   canvas.focusFollowsMouse 1
-  canvas.mouseDown [expr [\$item.x]-0.55*[\$item.width]] [expr [\$item.y]+0.55*[\$item.height]]
-  canvas.mouseUp [expr [\$item.x]+0.55*[\$item.width]] [expr [\$item.y]-0.55*[\$item.height]] 
+  canvas.mouseDown [expr [\$item.left]-10] [expr [\$item.bottom]+10]
+  canvas.mouseUp [expr [\$item.left]+10] [expr [\$item.bottom]-10] 
   assert {[canvas.selection.groups.size]==1}
   newSystem
   paste

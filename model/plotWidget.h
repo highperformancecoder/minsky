@@ -94,7 +94,7 @@ namespace minsky
     void disconnectAllVars();
     using ecolab::Plot::draw;
     void draw(cairo_t* cairo) const override;
-    void redraw(); // redraw plot using current data to all open windows
+    void requestRedraw(); ///< redraw plot using current data to all open windows
     void redraw(int x0, int y0, int width, int height) override
     {if (surface.get()) {Plot::draw(surface->cairo(),width,height); surface->blit();}}
     void redrawWithBounds() override {redraw(0,0,500,500);}

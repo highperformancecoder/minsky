@@ -559,8 +559,8 @@ proc doubleButton {x y} {
 }
 # for ticket 1062, new hierarchy of context menu access on mouse right click: wires, items and background canvas.
 bind .wiring.canvas <<contextMenu>> {
-    if [getWireAt %x %y] {
-        wireContextMenu %X %Y  	
+    if {[getWireAt %x %y] && [minsky.canvas.wire.visible]} {    # prevents wire context menu from being accessed when group contents are not transparent. for ticket 1225.
+		wireContextMenu %X %Y  	  
     } elseif [getItemAt %x %y] {
         switch [minsky.canvas.item.classType] {
             GodleyIcon {rightMouseGodley %x %y %X %Y}
@@ -1479,6 +1479,8 @@ proc postNote {item} {
 proc OKnote {item} {
     minsky.canvas.$item.tooltip [.wiring.note.tooltip.entry get]
     minsky.canvas.$item.detailedText  [string trim [.wiring.note.text get 1.0 end]]
+    # update bounding box - see ticket #1164
+    minsky.canvas.$item.updateBoundingBox 
     closeEditWindow .wiring.note
 }
 

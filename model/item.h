@@ -23,6 +23,7 @@
 #include "noteBase.h"
 #include "port.h"
 #include "intrusiveMap.h"
+#include "geometry.h"
 //#include "RESTProcess_base.h"
 #include <accessor.h>
 #include <TCL_obj_base.h>
@@ -35,7 +36,14 @@ namespace minsky
 {
   struct LassoBox;
   struct Selection;
-  
+  class Group;
+  class VariablePtr;
+  class VariableBase;
+  class OperationBase;
+  class SwitchIcon;
+
+  class Item;
+
   /// represents whether a mouse click is on the item, on an output
   /// port (for wiring, or is actually outside the items boundary, and
   /// a lasso is intended
@@ -57,12 +65,6 @@ namespace minsky
     ItemPortVector& operator=(const ItemPortVector&) {return *this;}
   };
 
-  class VariablePtr;
-  class VariableBase;
-  class OperationBase;
-  class SwitchIcon;
-
-  class Item;
   /// bounding box information (at zoom=1 scale)
   class BoundingBox
   {
@@ -94,6 +96,7 @@ namespace minsky
     float m_x=0, m_y=0; ///< position in canvas, or within group
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
+    std::string deleteCallback; /// callback to be run when item deleted from group
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
     /// canvas bounding box.
@@ -150,23 +153,26 @@ namespace minsky
     /// @{ a more efficient replacement for dynamic_cast<SwitchIcon*>(this)
     virtual const SwitchIcon* switchIconCast() const {return nullptr;}
     virtual SwitchIcon* switchIconCast() {return nullptr;}
-    /// @}    
+    /// @}      
 
     ItemPortVector ports;
     virtual float x() const; 
     virtual float y() const;
     virtual float zoomFactor() const;
-    float width() const {if (!bb.valid()) bb.update(*this); return bb.width()*zoomFactor();}
-    float height() const {if (!bb.valid()) bb.update(*this); return bb.height()*zoomFactor();}
-    float left() const {return x()+bb.left()*zoomFactor();}
-    float right() const {return x()+bb.right()*zoomFactor();}
-    float top() const {return y()+bb.top()*zoomFactor();}
-    float bottom() const {return y()+bb.bottom()*zoomFactor();}
+    void ensureBBValid() const {if (!bb.valid()) bb.update(*this);}
+    float width()  const {ensureBBValid(); return bb.width()*zoomFactor();}
+    float height() const {ensureBBValid(); return bb.height()*zoomFactor();}
+    float left()   const {ensureBBValid(); return x()+bb.left()*zoomFactor();}
+    float right()  const {ensureBBValid(); return x()+bb.right()*zoomFactor();}
+    float top()    const {ensureBBValid(); return y()+bb.top()*zoomFactor();}
+    float bottom() const {ensureBBValid(); return y()+bb.bottom()*zoomFactor();}
 
+    // resize handles should be at least a percentage if the icon size (#1025)
+    float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
+    virtual bool onResizeHandle(float x, float y) const;
+    
     /// delete all attached wires
     virtual void deleteAttachedWires();
-    /// remove all controlled items from their group
-    virtual void removeControlledItems() const {}
     
     virtual Item* clone() const {
       auto r=new Item(*this);
@@ -201,6 +207,7 @@ namespace minsky
     void drawPorts(cairo_t* cairo) const;
     void drawSelected(cairo_t* cairo) const;
     virtual void drawResizeHandles(cairo_t* cairo) const;
+    virtual std::pair<double,Point> rotatedPoints() const;    
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y);
@@ -243,6 +250,10 @@ namespace minsky
     /// insert this items controlled or controller items are inserted
     /// correctly into \a selection.
     virtual void insertControlled(Selection& selection) {}
+    /// remove all controlled items from a group
+    virtual void removeControlledItems(Group&) const {}
+    /// remove all controlled items their owning group
+    void removeControlledItems() const;
   };
 
   typedef std::shared_ptr<Item> ItemPtr;
@@ -275,6 +286,12 @@ namespace minsky
 //    }
   };
 
+  struct BottomRightResizerItem: public Item
+  {
+    bool onResizeHandle(float x, float y) const override; 
+    void drawResizeHandles(cairo_t* cairo) const override;
+  };
+  
 }
 
 #ifdef CLASSDESC

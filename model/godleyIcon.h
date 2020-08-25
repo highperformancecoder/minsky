@@ -63,7 +63,7 @@ namespace minsky
     static SVGRenderer svgRenderer;
     
     GodleyIcon() {iWidth(150); iHeight(150);}
-    ~GodleyIcon() {removeControlledItems();}
+    ~GodleyIcon() {Item::removeControlledItems();}
 
     /// indicate whether icon is in editor mode or icon mode
     bool editorMode() const {return editor.get();}
@@ -84,11 +84,8 @@ namespace minsky
     /// bottom margin of bank icon with Godley icon
     float bottomMargin() const {return variableDisplay? stockMargin*scaleFactor()*zoomFactor(): 0;}
 
-    /// helper for schema1
-    double schema1ZoomFactor() const; 
-    
     void resize(const LassoBox&) override;
-    void removeControlledItems() const override;
+    void removeControlledItems(Group&) const override;
  
     /// set cell(row,col) with contents val
     void setCell(int row, int col, const string& val);

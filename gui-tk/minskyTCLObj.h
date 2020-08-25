@@ -56,11 +56,11 @@ namespace minsky
         argv0!="minsky.availableOperations" &&
         argv0!="minsky.canvas.select" &&
         argv0!="minsky.canvas.recentre" &&
-        argv0!="minsky.canvas.mouseDown" &&
         argv0!="minsky.canvas.focusFollowsMouse" &&
-        argv0!="minsky.canvas.requestRedraw" &&
-        (argv0!="minsky.canvas.mouseMove"
-         || m.eventRecord.get()) && /* ensure we record mouse movements, but filter from history */
+        (argv0!="minsky.canvas.requestRedraw" || m.eventRecord.get()) &&
+        /* ensure we record mouse movements, but filter from history */
+        (argv0!="minsky.canvas.mouseDown" || m.eventRecord.get()) &&
+        (argv0!="minsky.canvas.mouseMove" || m.eventRecord.get()) && 
         argv0!="minsky.clearAll" &&
         argv0!="minsky.doPushHistory" &&
         argv0!="minsky.model.moveTo" &&
@@ -79,7 +79,7 @@ namespace minsky
         argv0!="minsky.multipleEquities" &&
         argv0.find("minsky.panopticon")==string::npos &&
         argv0.find("minsky.equationDisplay")==string::npos && 
-        argv0.find(".get")==string::npos && 
+        (argv0.find(".get")==string::npos  || m.eventRecord.get()) && 
         argv0.find(".@elem")==string::npos && 
         argv0.find(".mouseFocus")==string::npos
         )
@@ -91,7 +91,11 @@ namespace minsky
             bool modelChanged=m.pushHistory();
             if (modelChanged && argv0!="minsky.load" && argv0!="minsky.reverse") m.markEdited();
             if (m.eventRecord.get() && argv0!="minsky.startRecording" &&
-                (modelChanged || argv0.find("minsky.canvas.mouse")!=string::npos))
+                (modelChanged ||
+                 argv0.find("minsky.canvas.mouse")!=string::npos ||
+                 argv0=="minsky.getItemAt" ||
+                 argv0=="minsky.getItemAtFocus" ||
+                 argv0=="minsky.getWireAt"))
               {
                 for (int i=0; i<argc; ++i)
                   (*m.eventRecord) << "{"<<to_string(argv[i]) <<"} ";

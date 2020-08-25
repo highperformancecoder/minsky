@@ -136,21 +136,6 @@ namespace minsky
         (new Port(*this, Port::inputPort | (multiWire()? Port::multiWire: Port::noFlags)));
   }
   
-  ClickType::Type OperationBase::clickType(float xx, float yy)
-  {
-    double fm=std::fmod(rotation(),360);
-    bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-    Rotate r(rotation()+(notflipped? 0: 180),0,0); // rotate into variable's frame of reference
-    double z=zoomFactor();
-    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203 
-    if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z && type()!=ravel)
-      return ClickType::onResize;  
-    else if ((fabs(xx-left()) < portRadius*z || fabs(xx-right()) < portRadius*z) &&
-      (fabs(yy-top()) < portRadius*z || fabs(yy-bottom()) < portRadius*z))
-      return ClickType::onResize;  
-    return Item::clickType(xx,yy);
-  }  
-  
   float OperationBase::scaleFactor() const
   {
     float z=zoomFactor();
@@ -667,7 +652,47 @@ namespace minsky
     intVar->iWidth(0.5*std::abs(b.x1-b.x0)*invZ);
     intVar->iHeight(0.5*std::abs(b.y1-b.y0)*invZ);
     bb.update(*this);	  
-  } 
+  }
+  
+   std::pair<double,Point> IntOp::rotatedPoints() const
+   {
+     // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+     double fm=std::fmod(this->rotation(),360), angle;	
+     float x1=this->right(),y1=this->bottom();
+     if (fm==-90 || fm==270) {
+       angle=-this->rotation();
+       Rotate r1(angle,this->x(),this->y());
+       x1=r1.x(this->right(),this->bottom());
+       y1=r1.y(this->right(),this->bottom());						  
+     }
+     else if (fabs(fm)==180) {
+       angle=this->rotation();
+       x1=this->right();
+       y1=this->top();					
+     }
+     else angle=0;	       
+     if (coupled()) {
+       angle=intVar->rotation();  
+       Rotate r2(angle,intVar->x(),intVar->y());		
+       if (fm==-90 || fm==270) {
+         x1=r2.x(intVar->right(),intVar->bottom());
+         y1=r2.y(intVar->right(),intVar->bottom());
+       } else if (fm==90 || fm==-270) {
+         x1=r2.x(intVar->left(),intVar->top());
+         y1=r2.y(intVar->left(),intVar->top());			       
+       } else if (fabs(fm)==180) {
+         angle=-intVar->rotation();
+         x1=intVar->right();  			  
+         y1=intVar->top();  				       		  
+       } else if (fm==0 || fm==360) {
+         angle=-intVar->rotation();
+         x1=intVar->right(); 			
+         y1=intVar->bottom(); 				  
+       } else angle=0;
+     }
+     Point p(x1,y1);  
+     return make_pair(angle,p);  
+  }   
 
   void IntOp::insertControlled(Selection& selection)
   {
@@ -681,11 +706,10 @@ namespace minsky
     return *this;
   }
 
-  void IntOp::removeControlledItems() const
+  void IntOp::removeControlledItems(minsky::Group& g) const
   {
     if (intVar)
-      if (auto g=group.lock())
-        g->removeItem(*intVar);
+      g.removeItem(*intVar);
   }
   
   string IntOp::description(const string& a_desc)

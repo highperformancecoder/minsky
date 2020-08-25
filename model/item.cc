@@ -43,11 +43,16 @@ namespace minsky
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     x.onResizeHandles=false;
-    try {x.draw(surf.cairo());}
+    try
+      {
+        x.draw(surf.cairo());
+		cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);  // perform transformation after drawing, otherwise ink extents not calculated correctly below. For ticket 1232      
+      }
     catch (const std::exception& e) 
       {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
     catch (...) {cerr<<"illegal exception caught in draw()";}
     x.mouseFocus=savedMouseFocus;
+    
     double l,t,w,h;
     cairo_recording_surface_ink_extents(surf.surface(),
                                         &l,&t,&w,&h);
@@ -105,7 +110,55 @@ namespace minsky
     for (auto& p: ports)
       p->deleteWires();
   }
+
+  namespace
+  {
+    bool near(float x0, float y0, float x1, float y1, float d, const Rotate& r)
+    {
+      return abs(x0-r.x(x1,y1))<d && abs(y0-r.y(x1,y1))<d;
+    }
+}
+    
+   std::pair<double,Point> Item::rotatedPoints() const
+   {
+     // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+     double fm=std::fmod(rotation(),360), angle;	
+     float x1=right(),y1=bottom();  
+     if (fm==-90 || fm==270) {
+       angle=-rotation();
+       Rotate r1(angle,this->x(),this->y());
+       x1=r1.x(right(),bottom());
+       y1=r1.y(right(),bottom());						  
+     }
+     else if (abs(fm)==180) {
+       angle=rotation();
+       x1=right();
+       y1=top();					
+     }
+     else angle=0;	
+     Point p(x1,y1);  
+     return make_pair(angle,p);  
+  }
   
+  bool Item::onResizeHandle(float x, float y) const
+  {
+    float rhSize=resizeHandleSize();
+    Rotate r(rotation(),this->x(),this->y());
+    return near(x,y,left(),top(),rhSize,r) ||
+      near(x,y,right(),top(),rhSize,r) ||
+      near(x,y,left(),bottom(),rhSize,r) ||
+      near(x,y,right(),bottom(),rhSize,r); 
+  }
+
+   bool BottomRightResizerItem::onResizeHandle(float x, float y) const
+  {
+    double angle=rotatedPoints().first;		  
+    Point p=rotatedPoints().second;		  
+    Rotate r(angle,this->x(),this->y());		  
+    return near(x,y,p.x(),p.y(),resizeHandleSize(),r);
+  }
+
+ 
   bool Item::visible() const 
   {
     auto g=group.lock();
@@ -141,12 +194,8 @@ namespace minsky
         if (hypot(x-p->x(), y-p->y()) < portRadius*zoomFactor())
           return ClickType::onPort;
       }          
-     
-    // then, check whether a resize handle has been selected  
-    float z=zoomFactor();
-    if ((abs(x-left()) < portRadius*z || abs(x-right()) < portRadius*z) &&
-      (abs(y-top()) < portRadius*z || abs(y-bottom()) < portRadius*z))
-      return ClickType::onResize;         
+
+    if (onResizeHandle(x,y)) return ClickType::onResize;         
 
     ecolab::cairo::Surface dummySurf
                                 (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
@@ -213,19 +262,23 @@ namespace minsky
   
   void Item::drawResizeHandles(cairo_t* cairo) const
   {
-    double sf=portRadiusMult*zoomFactor();
-    // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203
-    // TODO(#1210) refactor to use virtual functions
-    if (!switchIconCast() && !variableCast() && (!operationCast() || operationCast()->type()==OperationType::ravel))  
-      {
-        drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
-        drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
-        drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
-        drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
-      } else drawResizeHandle(cairo,right()-x(),bottom()-y(),0.5*sf,0);
+    auto sf=resizeHandleSize();
+    drawResizeHandle(cairo,right()-x(),top()-y(),sf,0.5*M_PI);
+    drawResizeHandle(cairo,left()-x(),top()-y(),sf,M_PI);
+    drawResizeHandle(cairo,left()-x(),bottom()-y(),sf,1.5*M_PI);
+    drawResizeHandle(cairo,right()-x(),bottom()-y(),sf,0);
     cairo_stroke(cairo);
   }
 
+  void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
+  { 			  			
+    double angle=rotatedPoints().first;		  
+    Point p=rotatedPoints().second;			  
+    Rotate r(angle,this->x(),this->y());
+    drawResizeHandle(cairo,r.x(p.x(),p.y())-x(),r.y(p.x(),p.y())-y(),0.5*resizeHandleSize(),abs(rotation())==180? 0.5*M_PI : 0);
+    cairo_stroke(cairo);
+  }
+  
   
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const
@@ -309,5 +362,10 @@ namespace minsky
   ItemPtr Item::select(float x, float y) const
   {return ItemPtr();}
 
+  void Item::removeControlledItems() const
+  {
+    if (auto g=group.lock())
+      removeControlledItems(*g);
+  }
 
 }

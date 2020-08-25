@@ -19,6 +19,7 @@
 
 set fname ""
 set workDir [pwd]
+encoding system utf-8
 
 # On mac-build versions, fontconfig needs to find its config file,
 # which is packaged up in the Minsky.app directory
@@ -433,7 +434,7 @@ proc showPreferences {} {
 }
 
 menu .menubar.rungeKutta
-.menubar.rungeKutta add command -label "Runge Kutta" -command {
+.menubar.rungeKutta add command -label "Simulation" -command {
     foreach {var text} $rkVars { set rkVarInput($var) [$var] }
     set implicitSolver [implicit]
     deiconifyRKDataForm
@@ -443,7 +444,7 @@ menu .menubar.rungeKutta
     grab set .rkDataForm
     wm transient .rkDataForm .
 } -underline 0 
-.menubar add cascade -label "Runge Kutta" -menu .menubar.rungeKutta
+.menubar add cascade -label "Simulation" -menu .menubar.rungeKutta
 
 # special platform specific menus
 menu .menubar.help
@@ -714,6 +715,7 @@ proc logVarsOK {} {
 .menubar.edit add command -label "Paste" -command "minsky.paste" -accelerator $meta_menu-V
 .menubar.edit add command -label "Group selection" -command "minsky.createGroup" -accelerator $meta_menu-G
 .menubar.edit add command -label "Dimensions" -command dimensionsDialog
+.menubar.edit add command -label "Remove units" -command minsky.deleteAllUnits
 
 proc togglePaste {} {
     if {[getClipboard]==""} {
@@ -728,6 +730,7 @@ proc undo {delta} {
     doPushHistory 0
     minsky.undo $delta
     minsky.canvas.requestRedraw
+    deleteSubsidiaryTopLevels
     doPushHistory 1
 }
 
@@ -1385,7 +1388,7 @@ proc deiconifyRKDataForm {} {
 
         set row 0
 
-        grid [label .rkDataForm.label$row -text "Runge-Kutta parameters"] -column 1 -columnspan 999 -pady 10
+        grid [label .rkDataForm.label$row -text "Simulation parameters"] -column 1 -columnspan 999 -pady 10
         incr row 10
 
         foreach {var text} $rkVars {
@@ -1406,7 +1409,7 @@ proc deiconifyRKDataForm {} {
         
         bind .rkDataForm <Key-Return> {invokeOKorCancel .rkDataForm.buttonBar}
 
-        wm title .rkDataForm "Runge-Kutta parameters"
+        wm title .rkDataForm "Simulation parameters"
         # help bindings
         bind .rkDataForm  <F1>  {help RungeKutta}
         global helpTopics
@@ -1600,7 +1603,7 @@ proc exit {} {
     if {[edited]||[file exists [autoBackupName]]} {
         switch [tk_messageBox -message "Save before exiting?" -type yesnocancel] {
             yes save
-            no {}
+            no {file delete [autoBackupName]}
             cancel {return -level [info level]}
         }
     }

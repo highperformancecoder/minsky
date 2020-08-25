@@ -260,8 +260,7 @@ namespace MathDAG
   /// represents a Godley column
   struct GodleyColumnDAG: public OperationDAG<OperationType::subtract>
   {
-    //    int godleyId;
-    //GodleyColumnDAG(): godleyId(-1) {}
+    std::string name; //unqualified name of stock variable
     int order(unsigned maxOrder) const override {return 0;} // Godley columns define integration vars
   };
 

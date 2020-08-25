@@ -207,7 +207,8 @@ namespace minsky
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky(): equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
-      model->iconHeight=model->iconWidth=std::numeric_limits<float>::max();
+      model->iHeight(std::numeric_limits<float>::max());
+      model->iWidth(std::numeric_limits<float>::max());
       model->self=model;
     }
 
@@ -266,6 +267,8 @@ namespace minsky
     void evalEquations(double result[], double t, const double vars[]);
     /// performs dimension analysis, throws if there is a problem
     void dimensionalAnalysis() const;
+    /// removes units markup from all variables in model
+    void deleteAllUnits();
     
     /// consistency check of the equation order. Should return
     /// true. Outputs the operation number of the invalidly ordered
@@ -361,6 +364,9 @@ namespace minsky
     virtual void message(const std::string&) {}
     /// request all Godley table windows to redraw
     virtual void redrawAllGodleyTables() {}
+
+    /// run callback attached to \a item
+    virtual void runItemDeletedCallback(const Item&) {}
     
     /// check whether to proceed or abort, given a request to allocate
     /// \a bytes of memory. Implemented in MinskyTCL

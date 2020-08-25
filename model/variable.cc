@@ -26,6 +26,8 @@
 #include "minsky_epilogue.h"
 
 #include <boost/regex.hpp>
+#include <boost/locale.hpp>
+using namespace boost::locale::conv;
 
 using namespace classdesc;
 using namespace ecolab;
@@ -44,8 +46,6 @@ namespace minsky
         ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
     ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
       ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
-    SliderVisibleAccessor::SliderVisibleAccessor(): ecolab::TCLAccessor<VariableBase,bool>
-      ("sliderVisible",(Getter)&VariableBase::sliderVisible,(Setter)&VariableBase::sliderVisible) {}
  }
 }
 
@@ -86,9 +86,6 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
       double dx=xx-x(), dy=yy-y();         
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;
-      // Ops, vars and switch icon only resize from bottom right corner. for ticket 1203  
-      if (fabs(xx-right()) < portRadius*z && fabs(yy-bottom()) < portRadius*z)
-        return ClickType::onResize;
     }
   catch (...) {}
   return Item::clickType(xx,yy);
@@ -169,7 +166,7 @@ string VariableBase::name()  const
       if (!g || g==cminsky().model)
         return m_name.substr(1);
     }
-  return m_name;
+  return utf_to_utf<char>(m_name);
 }
 
 string VariableBase::name(const std::string& name) 
@@ -298,7 +295,7 @@ Units VariableBase::units(bool check) const
                     i->throw_error("Inconsistent units "+units.str()+"≠"+vv->units.str());
                 }
 
-              if (check)
+              if (check && controller.lock())
                 {
                   FlowCoef fc(init());
                   if (!fc.name.empty())
@@ -471,7 +468,7 @@ void VariableBase::adjustSliderBounds() const
 
 bool VariableBase::handleArrows(int dir,bool reset)
 {
-  sliderSet(value()+dir*sliderStep);
+  sliderSet(value()+dir*(sliderStepRel? value(): 1)*sliderStep);
   if (reset) minsky().reset();
   return true;
 }
@@ -516,7 +513,16 @@ void VariableBase::draw(cairo_t *cairo) const
         Pango pangoVal(cairo);
         if (!isnan(value())) {
           pangoVal.setFontSize(6*scaleFactor*z);
-          pangoVal.setMarkup(mantissa(val));
+          if (sliderBoundsSet && vv.sliderVisible)
+            pangoVal.setMarkup
+              (mantissa(val,
+                        int(1+
+                         (sliderStepRel?
+                          -log10(sliderStep):
+                          log10(value()/sliderStep)
+                          ))));
+          else
+            pangoVal.setMarkup(mantissa(val));
         }
         else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
           pangoVal.setFontSize(8*scaleFactor*z);
@@ -565,7 +571,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (type()!=constant && !ioVar() && !dynamic_cast<GodleyIcon*>(controller.lock().get()))
+    if (vv.sliderVisible)
       {
         // draw slider
         CairoSave cs(cairo);

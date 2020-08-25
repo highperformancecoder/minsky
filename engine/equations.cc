@@ -122,12 +122,15 @@ namespace MathDAG
           ri=minsky::minsky().variableValues.emplace(valueId,VariableValuePtr(VariableType::tempFlow)).first;
         result=ri->second;
         if (rhs)
-          if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
-            { // everything scalar, revert to scalar processing
-              if (result->idx()<0) result->allocValue();
-              if (rhs)
+          {
+            if ((!tensorEval() && !rhs->tensorEval()) || !addTensorOp(ev))
+              { // everything scalar, revert to scalar processing
+                if (result->idx()<0) result->allocValue();
                 rhs->addEvalOps(ev, result);
-            }
+              }
+          }
+        else
+          if (result->idx()<0) result->allocValue();
       }
     if (r && r->isFlowVar() && (r!=result || result->isFlowVar()))
       ev.emplace_back(EvalOpPtr(new TensorEval(r,result)));
@@ -509,7 +512,7 @@ namespace MathDAG
                        }
                      catch (...) {}
                      if (auto v=dynamic_cast<VariableDAG*>(init.get()))
-                       iv->init(v->name);
+                       iv->init(VariableValue::uqName(v->name));
                      else if (auto c=dynamic_cast<ConstantDAG*>(init.get()))
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value
@@ -562,7 +565,7 @@ namespace MathDAG
         //        assert(g->second.godleyId>=0);
         integVarMap[g.first]=dynamic_cast<VariableDAG*>
           (makeDAG(g.first,
-                   VariableValue::uqName(g.first), VariableValue::stock).get());
+                   g.second.name, VariableValue::stock).get());
         expressionCache.getIntegralInput(g.first)->rhs=
           expressionCache.insertAnonymous(NodePtr(new GodleyColumnDAG(g.second)));
       }
@@ -620,7 +623,8 @@ namespace MathDAG
     if (expressionCache.exists(valueId))
       return expressionCache[valueId];
 
-    assert(VariableValue::isValueId(valueId));
+    if (!VariableValue::isValueId(valueId))
+      throw runtime_error("Invalid valueId: "+valueId);
     assert(minsky.variableValues.count(valueId));
     auto vv=minsky.variableValues[valueId];
 
@@ -924,6 +928,7 @@ namespace MathDAG
         if (processedColumns.count(colName)) continue; //skip shared columns
         processedColumns.insert(colName);
         GodleyColumnDAG& gd=godleyVariables[colName];
+        gd.name=trimWS(godley.cell(0,c));
         gd.arguments.resize(2);
         vector<WeakNodePtr>& arguments=gd.arguments[0];
         for (size_t r=1; r<godley.rows(); ++r)
