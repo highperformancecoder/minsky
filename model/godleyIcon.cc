@@ -146,11 +146,18 @@ namespace minsky
   void GodleyIcon::toggleEditorMode()
   {
     if (editor)
-      editor.reset();
+      {
+        editor.reset();
+        variableDisplay=true;
+      }
     else
       if (auto g=group.lock())
         if (auto icon=dynamic_pointer_cast<GodleyIcon>(g->findItem(*this)))
+          {
             editor.reset(new GodleyTableEditor(icon));
+            editor->disableButtons();
+            variableDisplay=false;
+          }
     updateBoundingBox();
   }
 
@@ -172,14 +179,6 @@ namespace minsky
     update();
     scaleFactor(min(w/(leftMargin()+iWidth()*zoomFactor()),h/(bottomMargin()+iHeight()*zoomFactor())));
   }  
-
-  double GodleyIcon::schema1ZoomFactor() const
-  {
-    if (auto g=group.lock())
-      return scaleFactor()*g->zoomFactor();
-    else
-      return scaleFactor();
-  }
 
   void GodleyIcon::resize(const LassoBox& b)
   {

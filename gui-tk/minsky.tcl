@@ -434,7 +434,7 @@ proc showPreferences {} {
 }
 
 menu .menubar.rungeKutta
-.menubar.rungeKutta add command -label "Runge Kutta" -command {
+.menubar.rungeKutta add command -label "Simulation" -command {
     foreach {var text} $rkVars { set rkVarInput($var) [$var] }
     set implicitSolver [implicit]
     deiconifyRKDataForm
@@ -444,7 +444,7 @@ menu .menubar.rungeKutta
     grab set .rkDataForm
     wm transient .rkDataForm .
 } -underline 0 
-.menubar add cascade -label "Runge Kutta" -menu .menubar.rungeKutta
+.menubar add cascade -label "Simulation" -menu .menubar.rungeKutta
 
 # special platform specific menus
 menu .menubar.help
@@ -1388,7 +1388,7 @@ proc deiconifyRKDataForm {} {
 
         set row 0
 
-        grid [label .rkDataForm.label$row -text "Runge-Kutta parameters"] -column 1 -columnspan 999 -pady 10
+        grid [label .rkDataForm.label$row -text "Simulation parameters"] -column 1 -columnspan 999 -pady 10
         incr row 10
 
         foreach {var text} $rkVars {
@@ -1409,7 +1409,7 @@ proc deiconifyRKDataForm {} {
         
         bind .rkDataForm <Key-Return> {invokeOKorCancel .rkDataForm.buttonBar}
 
-        wm title .rkDataForm "Runge-Kutta parameters"
+        wm title .rkDataForm "Simulation parameters"
         # help bindings
         bind .rkDataForm  <F1>  {help RungeKutta}
         global helpTopics

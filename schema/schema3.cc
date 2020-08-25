@@ -419,9 +419,9 @@ namespace schema3
           }
         catch (const std::exception&) {}
         if (y.name) x1->table.title=*y.name;
-        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.editorMode && *y.editorMode!=x1->editorMode())
           x1->toggleEditorMode();
+        if (y.variableDisplay) x1->variableDisplay=*y.variableDisplay;
         if (y.buttonDisplay && *y.buttonDisplay!=x1->buttonDisplay())
           x1->toggleButtons();
         if (y.width && *y.width>0) x1->iWidth(*y.width);

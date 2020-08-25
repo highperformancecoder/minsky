@@ -39,6 +39,9 @@ namespace minsky
     for (unsigned i=ports.size(); i<n+2; ++i)
       ports.emplace_back(new Port(*this, Port::inputPort));
     ports.resize(n+2); // in case ports was larger than n+2
+    float width=8*zoomFactor()*numCases();
+    if (width>iWidth()) iWidth(width);
+    if (width>iHeight()) iHeight(width);
   }
 
   unsigned SwitchIcon::switchValue() const
@@ -75,25 +78,20 @@ namespace minsky
   void SwitchIcon::draw(cairo_t* cairo) const
   {
     cairo_set_line_width(cairo,1);
-    // square icon
-    float width=8*zoomFactor()*numCases();
-    if (width<iWidth()*zoomFactor()*numCases()) {
-      width=iWidth()*zoomFactor()*numCases();
-    }
-    cairo_rectangle(cairo,-0.5*width,-0.5*width,width,width);
+    cairo_rectangle(cairo,-0.5*iWidth(),-0.5*iHeight(),iWidth(),iHeight());
     cairo_stroke(cairo);
 
 
-    float w=flipped? -width: width;
+    float w=flipped? -iWidth(): iWidth();
     float o=flipped? -8: 8;
     // output port
     drawTriangle(cairo, 0.5*w, 0, palette[0], flipped? M_PI: 0);
     ports[0]->moveTo(x()+0.5*w, y());
     // control port
-    drawTriangle(cairo, 0, -0.5*width-8, palette[0], M_PI/2);
-    ports[1]->moveTo(x(), y()-0.5*width-8);
-    float dy=width/numCases();
-    float y1=-0.5*width+0.5*dy;
+    drawTriangle(cairo, 0, -0.5*iHeight()-8, palette[0], M_PI/2);
+    ports[1]->moveTo(x(), y()-0.5*iHeight()-8);
+    float dy=iHeight()/numCases();
+    float y1=-0.5*iHeight()+0.5*dy;
     // case ports
     for (size_t i=2; i<ports.size(); ++i, y1+=dy)
       {
@@ -104,11 +102,11 @@ namespace minsky
     cairo_move_to(cairo,0.5*w, 0);
     try
       {
-        y1=-0.5*width+0.5*dy+switchValue()*dy;
+        y1=-0.5*iWidth()+0.5*dy+switchValue()*dy;
       }
     catch (const std::exception&)
       {
-        y1=-0.5*width+0.5*dy;
+        y1=-0.5*iWidth()+0.5*dy;
       }
     cairo_line_to(cairo,-0.45*w,0.9*y1);
     cairo_stroke(cairo);
@@ -121,18 +119,9 @@ namespace minsky
       }
 
     // add 8 pt margin to allow for ports
-    cairo_rectangle(cairo,-0.5*width-8,-0.5*width-8,width+16,width+8);
+    cairo_rectangle(cairo,-0.5*iWidth()-8,-0.5*iHeight()-8,iWidth()+16,iHeight()+8);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
   }
   
-  void SwitchIcon::resize(const LassoBox& b)
-  {
-    float invZ=1/zoomFactor();
-    moveTo(0.5*(b.x0+b.x1), 0.5*(b.x0+b.x1));    
-    iWidth(0.5*abs(b.x1-b.x0)*invZ);
-    bb.update(*this);
-  }  
-
-
 }

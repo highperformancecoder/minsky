@@ -84,9 +84,6 @@ namespace minsky
     /// bottom margin of bank icon with Godley icon
     float bottomMargin() const {return variableDisplay? stockMargin*scaleFactor()*zoomFactor(): 0;}
 
-    /// helper for schema1
-    double schema1ZoomFactor() const; 
-    
     void resize(const LassoBox&) override;
     void removeControlledItems(Group&) const override;
  
