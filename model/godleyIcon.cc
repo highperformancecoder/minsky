@@ -189,7 +189,7 @@ namespace minsky
     iWidth((bw-leftMargin())*invZ);
     iHeight((bh-bottomMargin())*invZ);  
     scaleIcon(bw,bh);
-    updateBB(); 
+    updateBoundingBox();
   }
 
   void GodleyIcon::removeControlledItems(Group& g) const
@@ -308,7 +308,7 @@ namespace minsky
       }
     
     positionVariables();
-    updateBoundingBox();
+    updateBB();
   }
 
   void GodleyIcon::positionVariables() const
