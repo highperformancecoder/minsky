@@ -170,7 +170,7 @@ string VariableBase::name()  const
 }
 
 string VariableBase::name(const std::string& name) 
-{	
+{
   // cowardly refuse to set a blank name
   if (name.empty() || name==":") return name;
   // Ensure value of variable is preserved after rename. For ticket 1106.	
@@ -187,7 +187,7 @@ bool VariableBase::ioVar() const
 
 
 void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) const
-{
+{	
   string valueId=this->valueId();
   // disallow blank names
   if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_" && 
@@ -205,13 +205,19 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string& nm) c
     }
 }
 
-
 string VariableBase::init() const
 {
   auto value=minsky().variableValues.find(valueId());
-  if (value!=minsky().variableValues.end())
+  if (value!=minsky().variableValues.end()) {   	
+    // set initial value of int var to init value of input to second port. for ticket 1137
+    if (!ports[0]->wires().empty())
+      if (auto i=dynamic_cast<IntOp*>(&ports[0]->wires()[0]->to()->item()))
+        if (i->ports.size()>2 && !i->ports[2]->wires().empty())
+          if (auto lhsVar=i->ports[2]->wires()[0]->from()->item().variableCast())
+            value->second->init=lhsVar->vValue()->init;
     return value->second->init;
-  else
+  }
+  else 
     return "0";
 }
 
@@ -221,7 +227,7 @@ string VariableBase::init(const string& x)
   if (VariableValue::isValueId(valueId()))
     {
       VariableValue& val=*minsky().variableValues[valueId()];
-      val.init=x;
+      val.init=x;     
       // for constant types, we may as well set the current value. See ticket #433. Also ignore errors (for now), as they will reappear at reset time.
       try
         {
