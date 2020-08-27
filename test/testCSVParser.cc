@@ -133,31 +133,9 @@ SUITE(CSVParser)
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {
 	  spec=DataSpec();	
-      string url="https://www.dickimaw-books.com/latex/admin/html/examples/ordergroups.csv";
-      string fname = url.find("://")==string::npos? url: loadWebFile(url);
-      spec.guessFromFile(fname);
-      ifstream is(fname);
-      spec.duplicateKeyAction=DataSpec::DuplicateKeyAction::sum;            
-      
-      VariableValue v;
-      loadValueFromCSVFile(v,is,spec);
-
-      CHECK_EQUAL(1, v.rank());
-      CHECK_ARRAY_EQUAL(vector<unsigned>({4}),v.hypercube().dims(),1);
-      //CHECK_EQUAL("foo", v.hypercube().xvectors[0].name);
-      //CHECK_EQUAL("A", str(v.hypercube().xvectors[0][0]));
-      //CHECK_EQUAL("B", str(v.hypercube().xvectors[0][1]));
-      //CHECK_EQUAL("bar", v.hypercube().xvectors[1].name);
-      //CHECK_EQUAL("A", str(v.hypercube().xvectors[1][0]));
-      //CHECK_EQUAL("B", str(v.hypercube().xvectors[1][1]));
-      //CHECK_EQUAL("foobar", v.hypercube().xvectors[2].name);
-      //CHECK_EQUAL("A", str(v.hypercube().xvectors[2][0]));
-      //CHECK_EQUAL("B", str(v.hypercube().xvectors[2][1]));
-      //CHECK_EQUAL("C", str(v.hypercube().xvectors[2][2]));
-      CHECK(v.hypercube().dims()==v.tensorInit.hypercube().dims());
-      CHECK_EQUAL(4, v.tensorInit.size());
-      //CHECK_ARRAY_CLOSE(vector<double>({1.2,3,1,-1,1.3,2,2,-1,1.4,1,3,-1}),
-      //                  v.tensorInit, 12, 1e-4);
+      string url="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
+      CHECK(url.find("://")!=string::npos);
+      CHECK(loadWebFile(url)!="");      
     }     
   
   TEST_FIXTURE(DataSpec,loadVar)
