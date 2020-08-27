@@ -1116,4 +1116,29 @@ namespace minsky
       }
   }
 
+  vector<string> Group::accessibleVars() const
+{
+  set<string> r;
+  // first add local variables
+  for (auto& i: items)
+    if (auto v=i->variableCast())
+      r.insert(v->name());
+  // now add variables in outer scopes, ensuring they qualified
+  auto g=this;
+  for (g=g->group.lock().get(); g;  g=g->group.lock().get())
+    for (auto& i: g->items)
+      if (auto v=i->variableCast())
+        {
+          auto n=v->name();
+          if (n[0]==':')
+            r.insert(n);
+          else
+            r.insert(':'+n);
+        }
+
+  return vector<string>(r.begin(),r.end());
+}
+
+
+  
 }

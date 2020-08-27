@@ -177,8 +177,8 @@ namespace minsky
     bool defined() const {return inputWired() || (isStock() && controller.lock());}
     
     bool inputWired() const;
-    /// return a list of existing variables a variable in this group
-    /// could be connected to
+    
+    /// return a list of existing variables this could be connected to
     std::vector<std::string> accessibleVars() const;
 
     /// return formatted mantissa and exponent in engineering format

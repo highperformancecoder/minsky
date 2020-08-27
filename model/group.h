@@ -339,6 +339,10 @@ namespace minsky
     /// rotate all conatined items by 180 degrees
     void flipContents();
 
+    /// return a list of existing variables a variable in this group
+    /// could be connected to
+    std::vector<std::string> accessibleVars() const;
+
     std::vector<Bookmark> bookmarks;
     /// returns list of bookmark names for populating menu 
     std::vector<std::string> bookmarkList() {

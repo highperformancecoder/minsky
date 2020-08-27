@@ -103,7 +103,19 @@ namespace
 
 SUITE(Group)
 {
-  TEST_FIXTURE(TestFixture, SelectGroup)
+  TEST_FIXTURE(TestFixture, accessibleVars)
+    {
+      vector<string> globalAccessibleVars{"c"};
+      vector<string> group0AccessibleVars{"1",":c","a","b"};
+      CHECK_EQUAL(globalAccessibleVars.size(), model->accessibleVars().size());
+      CHECK_ARRAY_EQUAL(globalAccessibleVars, model->accessibleVars(), globalAccessibleVars.size());
+      CHECK_EQUAL(group0AccessibleVars.size(), group0->accessibleVars().size());
+      CHECK_ARRAY_EQUAL(group0AccessibleVars, group0->accessibleVars(), group0AccessibleVars.size());
+      CHECK_EQUAL(group0AccessibleVars.size(), a->variableCast()->accessibleVars().size());
+      CHECK_ARRAY_EQUAL(group0AccessibleVars, a->variableCast()->accessibleVars(), group0AccessibleVars.size());
+    }
+
+    TEST_FIXTURE(TestFixture, SelectGroup)
     {
       auto& g=*model->addGroup(new Group);
       g.addItem(a);

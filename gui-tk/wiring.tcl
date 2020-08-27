@@ -365,7 +365,7 @@ proc addConstantOrVariable {} {
     deiconifyInitVar
     resetItem
     garbageCollect
-    .wiring.initVar.entry10 configure -values [accessibleVars]
+    .wiring.initVar.entry10 configure -values [minsky.canvas.model.accessibleVars]
     ::tk::TabToWindow $varInput(initial_focus);
     ensureWindowVisible .wiring.initVar
     grab set .wiring.initVar
@@ -1250,7 +1250,7 @@ proc editVar {} {
     deiconifyEditVar
     wm title .wiring.editVar "Edit [$item.name]"
     # populate combobox with existing variable names
-    .wiring.editVar.entry10 configure -values [accessibleVars]
+    .wiring.editVar.entry10 configure -values [$item.accessibleVars]
     
 
     set "editVarInput(Name)" [$item.name]

@@ -295,11 +295,6 @@ namespace minsky
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
 
-    /// return a list of existing variables a variable could be
-    /// connected to. This includes all global variables, plus any
-    /// accessible from item's group
-    std::vector<std::string> accessibleVars() const;
-
     /// return the AEGIS assigned version number
     static const char* minskyVersion;
     std::string ecolabVersion() const {return VERSION;}

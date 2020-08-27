@@ -1119,6 +1119,7 @@ SUITE(Minsky)
         model->addWire(a->ports[0], b->ports[1]);
         canvas.selection.ensureItemInserted(a);
         canvas.selection.ensureItemInserted(b);
+        CHECK_EQUAL(1,canvas.selection.numWires());
         copy();
         paste();
         CHECK_EQUAL(4, model->items.size());
@@ -1137,7 +1138,8 @@ SUITE(Minsky)
         canvas.selection.ensureItemInserted(a);
         canvas.selection.ensureItemInserted(b);
         copy();
-        model->removeItem(*b);
+        model->deleteItem(*b);
+        CHECK_EQUAL(0, model->wires.size());
         paste();
         // ensure extra wire is not copied
         CHECK_EQUAL(1, model->wires.size());
