@@ -71,6 +71,14 @@ bool VariableBase::inputWired() const
   return ports.size()>1 && !ports[1]->wires().empty();
 }
 
+std::vector<std::string> VariableBase::accessibleVars() const
+{
+  if (auto g=group.lock())
+    return g->accessibleVars();
+  return {};
+}
+
+
 ClickType::Type VariableBase::clickType(float xx, float yy)
 {
   double fm=std::fmod(rotation(),360);
@@ -342,30 +350,6 @@ void VariableBase::setUnits(const string& x)
 }
 
 
-
-vector<string> VariableBase::accessibleVars() const
-{
-  set<string> r;
-  if (auto g=group.lock())
-    {
-      // first add local variables
-      for (auto& i: g->items)
-        if (auto v=i->variableCast())
-          r.insert(v->name());
-      // now add variables in outer scopes, ensuring they qualified
-      for (g=g->group.lock(); g;  g=g->group.lock())
-        for (auto& i: g->items)
-          if (auto v=i->variableCast())
-            {
-              auto n=v->name();
-              if (n[0]==':')
-                r.insert(n);
-              else
-                r.insert(':'+n);
-            }
-    }
-  return vector<string>(r.begin(),r.end());
-}
 
 void VariableBase::exportAsCSV(const std::string& filename) const
 {

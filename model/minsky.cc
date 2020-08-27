@@ -1129,39 +1129,6 @@ namespace minsky
     ofstream f(filename);
     x.output(f,schemaURL);
   }
-
-  vector<string> Minsky::accessibleVars() const
-  {
-    set<string> r;
-    // insert global variables
-    for (auto i: variableValues)
-      if (i.first[0]==':')
-        r.insert(i.first);
-    if (canvas.item)
-      if (auto g=canvas.item->group.lock())
-        {
-          // first add local variables
-          for (auto& i: g->items)
-            if (auto v=i->variableCast())
-              r.insert(v->name());
-          // now add variables in outer scopes, ensuring they qualified
-          for (g=g->group.lock(); g;  g=g->group.lock())
-            for (auto& i: g->items)
-              if (auto v=i->variableCast())
-                {
-                  auto n=v->name();
-                  if (!n.empty())
-                    {
-                      if (n[0]==':')
-                        r.insert(n);
-                      else
-                        r.insert(':'+n);
-                    }
-                }
-        }
-    return vector<string>(r.begin(),r.end());
-  }
-
   
   namespace
   {
