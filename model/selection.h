@@ -44,11 +44,8 @@ namespace minsky
     /// check if \a group already present, and if not, inserts it
     void ensureGroupInserted(const GroupPtr& item);
 
-    void insertItem(const ItemPtr& item) {
-      items.push_back(item);
-      item->insertControlled(*this);
-      item->selected=true;
-    }
+    void insertItem(const ItemPtr& item);
+
     void insertGroup(const GroupPtr& g) {
       groups.push_back(g);
       g->selected=true;

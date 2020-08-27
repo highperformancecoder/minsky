@@ -325,7 +325,7 @@ namespace minsky
                              {
                                // delete defining wire from this
                                assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
-                               canvas.model->removeWire(*v->ports[1]->wires()[0]);
+                               g->removeWire(*v->ports[1]->wires()[0]);
                              }
                          }
                      return false;

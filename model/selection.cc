@@ -71,6 +71,24 @@ namespace minsky
       insertGroup(item);
   }
 
+  void Selection::insertItem(const ItemPtr& item)
+  {
+    items.push_back(item);
+    item->insertControlled(*this);
+    item->selected=true;
+    // insert any attached wires that connect to already selected items
+    if (auto g=item->group.lock())
+      for (auto& p: item->ports)
+        for (auto w: p->wires())
+          {
+            auto& other_end=p->input()? w->from()->item(): w->to()->item();
+            if (find_if(items.begin(), items.end(),
+                        [&](const ItemPtr& i) {return i.get()==&other_end;})
+                !=items.end())
+              wires.push_back(g->findWire(*w));
+          }
+    }
+  
   bool Selection::contains(const ItemPtr& item) const
   {
     if (!item) return false;
