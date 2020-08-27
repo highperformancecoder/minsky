@@ -387,10 +387,6 @@ namespace minsky
       if (i->visible() && lasso.intersects(*i))
         selection.ensureGroupInserted(i);
 
-    for (auto& i: topLevel->wires)
-      if (i->visible() && lasso.contains(*i))
-        selection.wires.push_back(i);
-
     if (focusFollowsMouse)
       minsky().copy();
   }

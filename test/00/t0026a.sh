@@ -49,6 +49,7 @@ recentreCanvas
 canvas.mouseDown \$x1 \$y1
 canvas.mouseUp  \$x2 \$y2
 assert {[canvas.selection.numItems]==3} {}
+puts [canvas.selection.numWires]
 assert {[canvas.selection.numWires]==2} {}
 cut
 assert {[model.numItems]==23} {}
