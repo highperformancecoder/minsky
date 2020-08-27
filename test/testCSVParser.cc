@@ -133,7 +133,7 @@ SUITE(CSVParser)
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {
 	  spec=DataSpec();	
-      string url="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
+      string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
       CHECK(url.find("://")!=string::npos);
       CHECK(loadWebFile(url)!="");      
     }     
