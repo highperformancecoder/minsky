@@ -128,7 +128,38 @@ SUITE(CSVParser)
       reportFromCSVFile(isn,osn,*this);
       
       CHECK(osn.str().find("missing numerical data") != std::string::npos);
-    }    
+    }
+    
+   TEST_FIXTURE(CSVDialog,guessSpaceFile)
+    {
+      spec=DataSpec();
+      string url="../test/testEqGodley.csv";
+      // Parse path to input file. 
+      boost::regex ex(R"(^(.+)\/([^/]+)$)");      
+      boost::cmatch what;
+      if (regex_match(url.c_str(), what, ex)) {
+       // what[0] contains the whole string 	 
+       // what[1] is the directory path
+       // what[2] is the fragment   
+      } else throw runtime_error("Failure to match file: "+url);            
+      string fname = what[2].str();
+      spec.guessFromFile(fname);                                  
+      ifstream is(fname);
+
+      spec.separator=',';
+      spec.headerRow=1;
+      spec.setDataArea(3,2);     
+      spec.dimensionNames={"asset","liability","equity"};          
+      spec.dimensionCols={1,2,3};      
+          
+      VariableValue v;
+      loadValueFromCSVFile(v,is,spec);
+
+      CHECK_EQUAL(1, v.rank()); 
+      spec.toggleDimension(2);
+      CHECK_EQUAL(2,spec.dimensionCols.size());  // equity column is empty
+         
+    }      
 
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {
