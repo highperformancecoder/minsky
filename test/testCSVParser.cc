@@ -132,7 +132,6 @@ SUITE(CSVParser)
 
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {
-	  spec=DataSpec();	
       string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
       CHECK(url.find("://")!=string::npos);
       CHECK(loadWebFile(url)!="");      
