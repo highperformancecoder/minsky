@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "CSVParser.h"
+#include "CSVDialog.h"
 #include "group.h"
 #include "selection.h"
 #include "minsky_epilogue.h"
@@ -128,7 +128,35 @@ SUITE(CSVParser)
       reportFromCSVFile(isn,osn,*this);
       
       CHECK(osn.str().find("missing numerical data") != std::string::npos);
-    }    
+    }
+    
+   TEST_FIXTURE(CSVDialog,guessSpaceFile)
+    {
+      spec=DataSpec();
+      string fname="testEqGodley.csv";
+      spec.guessFromFile(fname);                                  
+      ifstream is(fname);
+
+      spec.separator=',';
+      spec.headerRow=1;
+      spec.setDataArea(3,2);     
+      spec.dimensionNames={"asset","liability","equity"};          
+      spec.dimensionCols={1,2,3};      
+          
+      VariableValue v;
+      loadValueFromCSVFile(v,is,spec);
+
+      CHECK_EQUAL(1, v.rank()); 
+      spec.toggleDimension(2);
+      CHECK_EQUAL(2,spec.dimensionCols.size());  // equity column is empty
+         
+    }      
+
+  TEST_FIXTURE(CSVDialog,loadWebFile)
+    {
+      string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
+      CHECK(loadWebFile(url)!="");      
+    }     
   
   TEST_FIXTURE(DataSpec,loadVar)
     {
