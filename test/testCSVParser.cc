@@ -133,16 +133,7 @@ SUITE(CSVParser)
    TEST_FIXTURE(CSVDialog,guessSpaceFile)
     {
       spec=DataSpec();
-      string url="../test/testEqGodley.csv";
-      // Parse path to input file. 
-      boost::regex ex(R"(^(.+)\/([^/]+)$)");      
-      boost::cmatch what;
-      if (regex_match(url.c_str(), what, ex)) {
-       // what[0] contains the whole string 	 
-       // what[1] is the directory path
-       // what[2] is the fragment   
-      } else throw runtime_error("Failure to match file: "+url);            
-      string fname = what[2].str();
+      string fname="testEqGodley.csv";
       spec.guessFromFile(fname);                                  
       ifstream is(fname);
 
@@ -164,7 +155,6 @@ SUITE(CSVParser)
   TEST_FIXTURE(CSVDialog,loadWebFile)
     {
       string url="https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv";
-      CHECK(url.find("://")!=string::npos);
       CHECK(loadWebFile(url)!="");      
     }     
   
