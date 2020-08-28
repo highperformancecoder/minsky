@@ -189,6 +189,18 @@ SUITE(Minsky)
       CHECK_CLOSE(0.3, var["h"]->value(), 1e-4);
 
     }
+    
+  TEST_FIXTURE(TestFixture,displayEquations)
+	{
+	   	equationDisplay.offsx=0;
+	   	equationDisplay.offsy=0;
+	   	equationDisplay.requestRedraw();
+	   	CHECK_EQUAL(flags & fullEqnDisplay_needed,0);
+	   	equationDisplay.offsx=100;
+	   	equationDisplay.offsy=100;
+	   	equationDisplay.requestRedraw();
+		CHECK_EQUAL(flags & fullEqnDisplay_needed,0);
+	}
 
   TEST_FIXTURE(TestFixture,godleyEval)
     {
