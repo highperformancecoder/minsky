@@ -1,16 +1,21 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.19</minskyVersion>
+  <minskyVersion>2.19.0-rc.2</minskyVersion>
   <wires>
    <Wire>
-    <id>8</id>
+    <id>12</id>
     <from>0</from>
     <to>4</to>
    </Wire>
    <Wire>
-    <id>9</id>
+    <id>13</id>
     <from>2</from>
     <to>6</to>
+   </Wire>
+   <Wire>
+    <id>14</id>
+    <from>8</from>
+    <to>10</to>
    </Wire>
   </wires>
   <items>
@@ -26,7 +31,6 @@
     </ports>
     <name>dense</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -47,7 +51,6 @@
     </ports>
     <name>sparse</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -78,6 +81,38 @@
     <rotation>0</rotation>
     <ports>
      <int>6</int>
+    </ports>
+    <width>100</width>
+    <height>100</height>
+   </Item>
+   <Item>
+    <id>9</id>
+    <type>Variable:parameter</type>
+    <x>139</x>
+    <y>378</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>8</int>
+    </ports>
+    <name>iota5</name>
+    <init>iota(5)</init>
+    <slider>
+     <stepRel>false</stepRel>
+     <min>0</min>
+     <max>0</max>
+     <step>0</step>
+    </slider>
+   </Item>
+   <Item>
+    <id>11</id>
+    <type>Sheet</type>
+    <x>362</x>
+    <y>390</y>
+    <scaleFactor>1</scaleFactor>
+    <rotation>0</rotation>
+    <ports>
+     <int>10</int>
     </ports>
     <width>100</width>
     <height>100</height>
