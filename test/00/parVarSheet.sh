@@ -33,21 +33,26 @@ trap "fail" 1 2 3 15
 # exit 0 to indicate pass, and exit 1 to indicate failure
 cat >input.tcl <<EOF
 source $here/test/assert.tcl
-minsky.load $here/test/testEq.mky
-minsky.canvas.recentre	
 proc afterMinskyStarted {} {	
-  after 100 {
-     .tabs select 1
-     assert {[lindex [.tabs tabs] [.tabs index current]]==".equations"}
-     panCanvas 100 100 
-     minsky.equationDisplay.requestRedraw
-     after 100 {
-		 assert {[minsky.equationDisplay.width]>0}
-		 assert {[minsky.equationDisplay.height]>0}
-	 }
-  }
+  minsky.load $here/examples/importedCSV.mky	
+  
+  .tabs select 2
+  assert {[lindex [.tabs tabs] [.tabs index current]]==".parameters"}
+  panCanvas 100 100
+  minsky.parameterSheet.requestRedraw
+  assert {[minsky.parameterSheet.width]>0}
+  assert {[minsky.parameterSheet.height]>0}  
+  
+  minsky.load $here/test/testEq.mky  
+  
+  .tabs select 3
+  assert {[lindex [.tabs tabs] [.tabs index current]]==".variables"}
+  panCanvas 100 100
+  minsky.variableSheet.requestRedraw
+  assert {[minsky.variableSheet.width]>0}
+  assert {[minsky.variableSheet.height]>0} 
     
-  after 200 {tcl_exit}
+  after 100 {tcl_exit}
 }
 EOF
 
