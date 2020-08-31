@@ -396,7 +396,7 @@ namespace minsky
   {
     size_t extraPen=2*numLines+1;
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen] && xvars[pen]) // xvars also vector of shared pointers and null derefencing error can likewise cause crash if the variable Value does not exist. for ticket 1248
+      if (pen<yvars.size() && yvars[pen])
         for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen]->size()); ++i)
           {
             double x,y;
@@ -407,14 +407,14 @@ namespace minsky
                 y=(*yvars[pen])[i];
                 break;
               case 1: // use the value of attached variable
-                assert(xvars[0]->idx()>=0);
+                assert(xvars[0] && xvars[0]->idx()>=0);  // xvars also vector of shared pointers and null derefencing error can likewise cause crash. for ticket 1248
                 if (xvars[0]->size()>1)
                   throw_error("Tensor valued x inputs not supported");
                 x=(*xvars[0])[0];
                 y=(*yvars[pen])[i];
                 break;
               default:
-                if (pen < xvars.size() && xvars[pen]->idx()>=0)
+                if (pen < xvars.size() && xvars[pen] && xvars[pen]->idx()>=0) // xvars also vector of shared pointers and null derefencing error can likewise cause crash. for ticket 1248
                   {
                     if (xvars[pen]->size()>1)
                       throw_error("Tensor valued x inputs not supported");
