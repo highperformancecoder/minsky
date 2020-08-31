@@ -396,7 +396,7 @@ namespace minsky
   {
     size_t extraPen=2*numLines+1;
     for (size_t pen=0; pen<2*numLines; ++pen)
-      if (pen<yvars.size() && yvars[pen])
+      if (pen<yvars.size() && yvars[pen] && xvars[pen]) // xvars also vector of shared pointers and null derefencing error can likewise cause crash if the variable Value does not exist. for ticket 1248
         for (size_t i=0; i<min(maxNumTensorElementsToPlot,yvars[pen]->size()); ++i)
           {
             double x,y;
