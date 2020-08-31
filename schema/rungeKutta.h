@@ -30,6 +30,7 @@ namespace minsky
     bool implicit{false};
     int simulationDelay{0};
     std::string timeUnit;
+    double tmax;
   };
 }
 

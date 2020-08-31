@@ -347,6 +347,7 @@ namespace schema3
     m.fileVersion=minskyVersion;
     
     static_cast<minsky::RungeKutta&>(m)=rungeKutta;
+    m.tmax=tmax;
     return m;
   }
 
@@ -407,7 +408,7 @@ namespace schema3
         if (y.arg) x1->arg=*y.arg;
       }
    if (auto x1=dynamic_cast<minsky::GodleyIcon*>(&x))
-      {
+      {	  
         std::vector<std::vector<std::string>> data;
         std::vector<minsky::GodleyAssetClass::AssetClass> assetClasses;
         if (y.data) data=*y.data;
