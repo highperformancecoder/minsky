@@ -1016,7 +1016,18 @@ namespace minsky
     pango.setFontSize(9*sf*zoomFactor());
     pango.setMarkup("∞");
     pango.show();    
-  }   
+  }
+
+  template <> void Operation<OperationType::percentConst>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor();  
+    cairo_scale(cairo,sf,sf);		  
+    cairo_move_to(cairo,-4,-7);
+    Pango pango(cairo);
+    pango.setFontSize(9*sf*zoomFactor());
+    pango.setMarkup("%");
+    pango.show();    
+  }        
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
@@ -1319,9 +1330,12 @@ namespace minsky
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 	  
-    cairo_move_to(cairo,-6,3);
-    cairo_show_text(cairo,"%");
+    cairo_scale(cairo,sf,sf); 
+    cairo_move_to(cairo,-4,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*sf*zoomFactor());
+    pango.setMarkup("%");
+    pango.show();
   }
   template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
   {

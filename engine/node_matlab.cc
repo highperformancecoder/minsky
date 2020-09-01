@@ -350,7 +350,13 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::inf>::matlab(ostream& o) const
   {
     return o<<"inf";
-  }  
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::percentConst>::matlab(ostream& o) const
+  {
+    return o<<"100";
+  }      
 
   template <>
   ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const

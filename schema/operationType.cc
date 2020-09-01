@@ -49,6 +49,7 @@ namespace minsky
     template <> int numArguments<OperationType::zero>() {return 0;}
     template <> int numArguments<OperationType::one>() {return 0;}                
     template <> int numArguments<OperationType::inf>() {return 0;}    
+    template <> int numArguments<OperationType::percentConst>() {return 0;}     
     template <> int numArguments<OperationType::add>() {return 2;}
     template <> int numArguments<OperationType::subtract>() {return 2;}
     template <> int numArguments<OperationType::multiply>() {return 2;}
