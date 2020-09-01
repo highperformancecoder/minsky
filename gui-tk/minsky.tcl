@@ -1368,24 +1368,24 @@ set rkVars {
 proc tmax {args} {
     if [llength $args] {
         if {[lindex $args 0]==""} {
-            set [tmax Inf]
+            set [minsky.tmax Inf]
         } else {
-            return [set tmax [lindex $args 0]]
+            return [set [minsky.tmax [lindex $args 0]]]
         }
     } else {
-        return [set tmax Inf]
+        return [set [minsky.tmax Inf]]
     }
 }
 
 proc t0 {args} {
     if [llength $args] {
         if {[lindex $args 0]==""} {
-            set [t0 0]
+            set [minsky.t0 0]
         } else {
-            return [set t0 [lindex $args 0]]
+            return [set [minsky.t0 [lindex $args 0]]]
         }
     } else {
-        return [t0 0]
+        return [minsky.t0 0]
     }
 }
 
