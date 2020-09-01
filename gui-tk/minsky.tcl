@@ -1155,10 +1155,8 @@ proc runstop {} {
     }
 }
 
-set simTMax Inf
-
 proc step {} {
-    global recordingReplay eventRecordR simTMax
+    global recordingReplay eventRecordR
     if {$recordingReplay} {
         if {[gets $eventRecordR cmd]>=0} {
             eval $cmd
@@ -1171,7 +1169,7 @@ proc step {} {
         global preferences
         set lastt [t]
         if {[catch minsky.step errMsg options] && [running]} {runstop}
-        if {$simTMax<[t]} {runstop}
+        if {[$t0>[t]] && [$tmax<[t]]} {runstop}
         .controls.statusbar configure -text "t: $lastt Δt: [format %g [expr [t]-$lastt]]"
         if $preferences(godleyDisplay) redrawAllGodleyTables
         update
@@ -1368,15 +1366,26 @@ set rkVars {
 }
 
 proc tmax {args} {
-    global simTMax
     if [llength $args] {
         if {[lindex $args 0]==""} {
-            set simTMax Inf
+            set [tmax Inf]
         } else {
-            return [set simTMax [lindex $args 0]]
+            return [set tmax [lindex $args 0]]
         }
     } else {
-        return [set simTMax]
+        return [set tmax Inf]
+    }
+}
+
+proc t0 {args} {
+    if [llength $args] {
+        if {[lindex $args 0]==""} {
+            set [t0 0]
+        } else {
+            return [set t0 [lindex $args 0]]
+        }
+    } else {
+        return [t0 0]
     }
 }
 

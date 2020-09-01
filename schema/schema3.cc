@@ -347,7 +347,6 @@ namespace schema3
     m.fileVersion=minskyVersion;
     
     static_cast<minsky::RungeKutta&>(m)=rungeKutta;
-    m.tmax=tmax;
     return m;
   }
 

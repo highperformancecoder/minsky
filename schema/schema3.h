@@ -232,7 +232,6 @@ namespace schema3
       Minsky(*m.model)  {
       minskyVersion=m.minskyVersion;
       rungeKutta=m;
-      tmax=m.tmax;
       zoomFactor=m.model->zoomFactor();
       bookmarks=m.model->bookmarks;
       dimensions=m.dimensions;
