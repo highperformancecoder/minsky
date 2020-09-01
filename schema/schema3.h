@@ -221,7 +221,6 @@ namespace schema3
     vector<Group> groups;
     minsky::RungeKutta rungeKutta;
     double zoomFactor=1;
-    double tmax=0;
     vector<minsky::Bookmark> bookmarks;
     minsky::Dimensions dimensions;
     minsky::ConversionsMap conversions;
