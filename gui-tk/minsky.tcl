@@ -1385,7 +1385,7 @@ proc t0 {args} {
             return [set [minsky.t0 [lindex $args 0]]]
         }
     } else {
-        return [minsky.t0 0]
+        return [set [minsky.t0 0]]
     }
 }
 
