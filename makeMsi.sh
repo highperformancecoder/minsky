@@ -54,7 +54,7 @@ cat >$minskyWxs <<EOF
     <Upgrade Id='$upgradeId'>
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
          Minimum='0.0.0' IncludeMinimum='yes'
-         Maximum='2.0.0' IncludeMaximum='no' />
+         Maximum='100.0.0' IncludeMaximum='no' />
     </Upgrade>
     <InstallExecuteSequence>
       <RemoveExistingProducts Before='InstallInitialize'/>
@@ -64,7 +64,7 @@ cat >$minskyWxs <<EOF
       <Directory Id='ProgramFilesFolder'>
         <Directory Id='Minsky' Name='$productName'>
           <Directory Id='INSTALLDIR'>
-            <Component Id='MinskyFiles' Guid='$componentId'>
+            <Component Id='MinskyFiles' Guid='$componentId' UninstallWhenSuperseded='yes'>
               <RemoveFile Id="removePreviousFiles" Name="*" On="install"/>
               <File Id='MinskyEXE' Name='minsky.exe' Source='gui-tk/minsky.exe' KeyPath='yes'>
                 <Shortcut Id="startmenuMinsky" Directory="ProgramMenuDir" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes">
