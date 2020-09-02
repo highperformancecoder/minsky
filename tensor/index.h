@@ -63,8 +63,6 @@ namespace civita
       void clear() {index.clear();}
       /// return the lineal index of hypercube index h, or size if not present 
       size_t linealOffset(size_t h) const;
-      /// insert value into v at hc index h, maintaining sorted order
-      void insert(size_t h, std::vector<double>& v, double x);
       std::vector<size_t>::const_iterator begin() const {return index.begin();}
       std::vector<size_t>::const_iterator end() const {return index.end();}
     };

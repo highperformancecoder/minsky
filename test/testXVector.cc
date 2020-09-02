@@ -178,4 +178,12 @@ SUITE(XVector)
       CHECK_THROW(push_back("foo"),std::exception);
 
     }
+
+  TEST_FIXTURE(Conversions, convert)
+    {
+      emplace("day:hour",24);
+      CHECK_EQUAL(48,convert(2,"day","hour"));
+      CHECK_EQUAL(2,convert(48,"hour","day"));
+      CHECK_THROW(convert(1,"metre","second"), std::exception);
+    }
 }
