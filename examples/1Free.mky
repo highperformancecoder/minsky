@@ -1,20 +1,20 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.19</minskyVersion>
+  <minskyVersion>2.19.0-rc.2</minskyVersion>
   <wires>
    <Wire>
     <id>64</id>
     <from>8</from>
     <to>21</to>
     <coords>
-     <float>106.48</float>
-     <float>298.831</float>
-     <float>82.6549</float>
-     <float>328.406</float>
-     <float>46.506</float>
-     <float>142.735</float>
-     <float>64.23</float>
-     <float>43.2183</float>
+     <float>104.48</float>
+     <float>326.831</float>
+     <float>78.144</float>
+     <float>359.523</float>
+     <float>38.1855</float>
+     <float>154.285</float>
+     <float>24.78</float>
+     <float>51.76</float>
     </coords>
    </Wire>
    <Wire>
@@ -22,14 +22,14 @@
     <from>4</from>
     <to>24</to>
     <coords>
-     <float>151.48</float>
-     <float>298.831</float>
-     <float>94.3334</float>
-     <float>359.026</float>
-     <float>50.9026</float>
-     <float>182.251</float>
-     <float>51.98</float>
-     <float>65.2183</float>
+     <float>149.48</float>
+     <float>326.831</float>
+     <float>85.2559</float>
+     <float>394.481</float>
+     <float>36.4464</float>
+     <float>195.813</float>
+     <float>3.28</float>
+     <float>81.76</float>
     </coords>
    </Wire>
    <Wire>
@@ -37,12 +37,12 @@
     <from>0</from>
     <to>27</to>
     <coords>
-     <float>189.48</float>
-     <float>299.831</float>
-     <float>58.4111</float>
-     <float>412.995</float>
-     <float>52.6745</float>
-     <float>87.2183</float>
+     <float>187.48</float>
+     <float>327.831</float>
+     <float>41.4556</float>
+     <float>453.907</float>
+     <float>6.78</float>
+     <float>111.76</float>
     </coords>
    </Wire>
    <Wire>
@@ -132,8 +132,8 @@
    <Item>
     <id>13</id>
     <type>Variable:stock</type>
-    <x>165.251</x>
-    <y>191.414</y>
+    <x>105.2</x>
+    <y>154.26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -142,7 +142,6 @@
     <name>:Vault</name>
     <init>99</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>99</max>
@@ -152,8 +151,8 @@
    <Item>
     <id>15</id>
     <type>Variable:stock</type>
-    <x>196.931</x>
-    <y>194.294</y>
+    <x>135.2</x>
+    <y>158.26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -162,7 +161,6 @@
     <name>:Loans</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -172,8 +170,8 @@
    <Item>
     <id>17</id>
     <type>Variable:stock</type>
-    <x>228.611</x>
-    <y>194.294</y>
+    <x>165.2</x>
+    <y>156.26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -182,7 +180,6 @@
     <name>:Firms</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -192,8 +189,8 @@
    <Item>
     <id>19</id>
     <type>Variable:stock</type>
-    <x>260.291</x>
-    <y>188.534</y>
+    <x>195.2</x>
+    <y>152.26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -202,7 +199,6 @@
     <name>:Safe</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -212,8 +208,8 @@
    <Item>
     <id>22</id>
     <type>Variable:flow</type>
-    <x>118.611</x>
-    <y>62.2344</y>
+    <x>56.28</x>
+    <y>23.76</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -223,7 +219,6 @@
     <name>:Loan</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>49.5</max>
@@ -233,8 +228,8 @@
    <Item>
     <id>25</id>
     <type>Variable:flow</type>
-    <x>109.971</x>
-    <y>93.9144</y>
+    <x>45.28</x>
+    <y>53.76</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -244,7 +239,6 @@
     <name>:IntLoan</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -254,8 +248,8 @@
    <Item>
     <id>28</id>
     <type>Variable:flow</type>
-    <x>109.971</x>
-    <y>125.594</y>
+    <x>47.28</x>
+    <y>83.76</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -265,7 +259,6 @@
     <name>:FirmInt</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -285,7 +278,6 @@
     <name>:Vault</name>
     <init>99</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>99</max>
@@ -306,7 +298,6 @@
     <name>:Loan</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>49.5</max>
@@ -326,7 +317,6 @@
     <name>:rD</name>
     <init>0.01</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -346,7 +336,6 @@
     <name>:rL</name>
     <init>0.05</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -366,7 +355,6 @@
     <name>:\tau_\mathrm{vault}</name>
     <init>0.5</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-5</min>
      <max>5</max>
@@ -615,6 +603,9 @@
      <AssetClass>liability</AssetClass>
      <AssetClass>equity</AssetClass>
     </assetClasses>
+    <editorMode>false</editorMode>
+    <buttonDisplay>false</buttonDisplay>
+    <variableDisplay>true</variableDisplay>
    </Item>
   </items>
   <groups>
@@ -629,6 +620,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
+   <tmax>inf</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

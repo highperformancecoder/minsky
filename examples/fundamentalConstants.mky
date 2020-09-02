@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.19</minskyVersion>
+  <minskyVersion>2.19.0-rc.2</minskyVersion>
   <wires>
    <Wire>
     <id>156</id>
@@ -403,7 +403,6 @@
     </ports>
     <init>0.00000001</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>0</min>
      <max>1e-06</max>
@@ -467,7 +466,7 @@
    <Item>
     <id>63</id>
     <type>Variable:integral</type>
-    <x>319.246</x>
+    <x>321.246</x>
     <y>523.39</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -477,7 +476,6 @@
     </ports>
     <name>int1</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>4.93799</max>
@@ -651,7 +649,6 @@
     </ports>
     <init>2</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-4.56573e+288</min>
      <max>2</max>
@@ -682,7 +679,6 @@
     </ports>
     <init>2</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-4.56573e+288</min>
      <max>2</max>
@@ -716,7 +712,6 @@
     </ports>
     <name>res</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>2.71427</max>
@@ -936,7 +931,6 @@
     </ports>
     <name>res1</name>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1.5708</max>
@@ -1030,7 +1024,6 @@
     </ports>
     <init>4</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>7.7486e-304</min>
      <max>4</max>
@@ -1050,6 +1043,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
+   <tmax>inf</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
