@@ -406,7 +406,7 @@ namespace MathDAG
   }
   
   template <>
-  ostream& OperationDAG<OperationType::percentConst>::latex(ostream& o) const
+  ostream& OperationDAG<OperationType::hundred>::latex(ostream& o) const
   {
     return o<<" 100 ";
   }       

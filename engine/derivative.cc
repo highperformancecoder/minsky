@@ -416,7 +416,7 @@ namespace MathDAG
   
   template <>
   NodePtr SystemOfEquations::derivative
-  (const OperationDAG<OperationType::percentConst>& expr)
+  (const OperationDAG<OperationType::hundred>& expr)
   {
     return zero;
   }    

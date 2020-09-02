@@ -363,7 +363,7 @@ namespace MathDAG
   void OperationDAG<OperationType::inf>::render(Surface& surf) const 
   {print(surf.cairo(),"<i>∞</i>",Anchor::nw);}   
   template <>
-  void OperationDAG<OperationType::percentConst>::render(Surface& surf) const 
+  void OperationDAG<OperationType::hundred>::render(Surface& surf) const 
   {print(surf.cairo(),"<i>%</i>",Anchor::nw);}       
   template <>
   void OperationDAG<OperationType::copy>::render(Surface& surf) const

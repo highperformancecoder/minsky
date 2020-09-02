@@ -353,7 +353,7 @@ namespace MathDAG
   }
   
   template <>
-  ostream& OperationDAG<OperationType::percentConst>::matlab(ostream& o) const
+  ostream& OperationDAG<OperationType::hundred>::matlab(ostream& o) const
   {
     return o<<"100";
   }      

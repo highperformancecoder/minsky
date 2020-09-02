@@ -197,13 +197,13 @@ namespace minsky
   {return 0;}
   
   template <>
-  double EvalOp<OperationType::percentConst>::evaluate(double in1, double in2) const
+  double EvalOp<OperationType::hundred>::evaluate(double in1, double in2) const
   {return 100;}
   template <> 
-  double EvalOp<OperationType::percentConst>::d1(double x1, double x2) const
+  double EvalOp<OperationType::hundred>::d1(double x1, double x2) const
   {return 0;}
   template <>
-  double EvalOp<OperationType::percentConst>::d2(double x1, double x2) const
+  double EvalOp<OperationType::hundred>::d2(double x1, double x2) const
   {return 0;}      
   
   template <>
