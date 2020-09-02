@@ -68,11 +68,24 @@ namespace civita
     void imposeDimension();
     /// @return true if all elements of this are of type T
     template <class T>
-    bool checkType() {
+    bool checkType() const {
       for (auto& i:*this)
         if (!boost::any_cast<T>(&i))
           return false;
       return true;
+    }
+    /// @return true if all elements have type described by @a dimension
+    bool checkThisType() const {
+      switch (dimension.type)
+        {
+        case Dimension::string:
+          return checkType<std::string>();
+        case Dimension::value:
+          return checkType<double>();
+        case Dimension::time:
+          return checkType<boost::posix_time::ptime>();
+        }
+      return false;
     }
 
   };

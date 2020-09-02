@@ -600,4 +600,17 @@ SUITE(TensorOps)
       vector<size_t> dims={2,2};
       CHECK_ARRAY_EQUAL(dims, chain.back()->shape(), 2);
     }
+
+    TEST_FIXTURE(TensorValFixture, imposeDimensions)
+      {
+        Dimensions dimensions;
+        dimensions.emplace("date",Dimension{Dimension::time,"%Y"});
+        arg->imposeDimensions(dimensions);
+        auto& xv=arg->hypercube().xvectors[2];
+        CHECK_EQUAL("date",xv.name);
+        CHECK_EQUAL(Dimension::time,xv.dimension.type);
+        CHECK_EQUAL("%Y",xv.dimension.units);
+        for (auto& i: xv)
+          CHECK(boost::any_cast<boost::posix_time::ptime>(&i));
+      }
 }

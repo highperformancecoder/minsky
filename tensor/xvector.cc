@@ -298,6 +298,7 @@ namespace civita
 
     for (auto& i: *this)
       i=anyVal(dimension, str(i));
+    assert(checkThisType());
   }
 
 }
