@@ -1018,7 +1018,7 @@ namespace minsky
     pango.show();    
   }
 
-  template <> void Operation<OperationType::percentConst>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::hundred>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
