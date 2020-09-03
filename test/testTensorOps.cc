@@ -646,5 +646,6 @@ SUITE(TensorOps)
         tv.index({1,4,8,12});
         for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
         CHECK_EQUAL(2,tv({3,1,0}));
+        CHECK(isnan(tv({2,1,0})));
       }
 }
