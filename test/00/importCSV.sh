@@ -36,15 +36,20 @@ proc afterMinskyStarted {} {
   editItem
   assert {[winfo ismapped .wiring.editVar]}     
   .wiring.editVar.buttonBar.import invoke
-  CSVImportDialog
   assert {[winfo ismapped .wiring.csvImport]}      
-  minsky.value.csvDialog.url https://sourceforge.net/p/minsky/ravel/20/attachment/BIS_GDP.csv
-  minsky.value.csvDialog.loadFile   
+  #.wiring.csvImport.fileUrl.load invoke    
+  minsky.value.csvDialog.url $here/test/testEqGodley.csv
+  set workDir [file dirname [minsky.value.csvDialog.url]]  
+  minsky.value.csvDialog.loadFile  
+  minsky.value.csvDialog.requestRedraw        
   # Both this button invoke and csvImportDialogOK fail with segmentation fault here and I don't understand why...
-  #after 2000 {.wiring.csvImport.buttonBar.ok invoke}
+  #after 2000 {
+	#  focus .wiring.csvImport
+  #    .wiring.csvImport.buttonBar.ok invoke
+  #}
   csvImportDialogOK
  
-  after 1000 {tcl_exit}
+  after 3000 {tcl_exit}
 }
 EOF
 
