@@ -125,20 +125,5 @@ namespace civita
         }
       return splitIndex;
     }
-  
-    /// combine a split index into a lineal hypercube index
-  size_t Hypercube::linealIndex(const std::vector<size_t>& splitIndex) const
-    {
-      assert(dims().size()==splitIndex.size());
-      size_t index=0, stride=1;
-      auto dd=dims();
-      for (size_t i=0; i<dd.size(); ++i)
-        {
-          index+=splitIndex[i]*stride;
-          stride*=dd[i];
-        }
-      return index;
-    }
-
 }
 

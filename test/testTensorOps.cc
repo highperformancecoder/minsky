@@ -637,4 +637,14 @@ SUITE(TensorOps)
         for (size_t i=0; i<reverse.size(); ++i)
           CHECK_EQUAL(expected[i], boost::any_cast<double>(reverse.hypercube().xvectors[0][i]));
       }
+
+    TEST(tensorValVectorIndex)
+      {
+        TensorVal tv(vector<unsigned>{5,3,2});
+        for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
+        CHECK_EQUAL(8,tv({3,1,0}));
+        tv.index({1,4,8,12});
+        for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
+        CHECK_EQUAL(2,tv({3,1,0}));
+      }
 }

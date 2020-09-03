@@ -61,9 +61,20 @@ namespace civita
     /// split lineal index into components along each dimension
     std::vector<size_t> splitIndex(size_t) const;
     /// combine a split index into a lineal hypercube index
-    size_t linealIndex(const std::vector<size_t>&) const;
+    template <class V>
+    size_t linealIndex(const V& splitIndex) const {
+      assert(dims().size()==splitIndex.size());
+      size_t index=0, stride=1;
+      auto dd=dims();
+      auto ii=splitIndex.begin();
+      for (size_t i=0; i<dd.size(); ++i, ++ii)
+        {
+          index+=*ii * stride;
+          stride*=dd[i];
+        }
+      return index;
+    }
   };
-  
 }
 
 #endif

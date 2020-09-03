@@ -87,7 +87,8 @@ namespace civita
       return nan("");
     }
 
-    size_t hcIndex(const std::initializer_list<size_t>& indices) const
+    template <class T>
+    size_t hcIndex(const std::initializer_list<T>& indices) const
     {return hypercube().linealIndex(indices);}
 
     template <class T>
