@@ -1,18 +1,18 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-rc.2</minskyVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>112</id>
     <from>36</from>
     <to>1</to>
     <coords>
-     <float>469.5</float>
-     <float>164.363</float>
-     <float>485.656</float>
-     <float>202.134</float>
-     <float>455</float>
-     <float>272.363</float>
+     <float>352.5</float>
+     <float>147.363</float>
+     <float>368.513</float>
+     <float>184.799</float>
+     <float>352</float>
+     <float>255.363</float>
     </coords>
    </Wire>
    <Wire>
@@ -40,12 +40,12 @@
     <from>8</from>
     <to>17</to>
     <coords>
-     <float>531.727</float>
-     <float>78.9998</float>
-     <float>657.16</float>
-     <float>74.4092</float>
-     <float>694.5</float>
-     <float>190.363</float>
+     <float>428.727</float>
+     <float>61.9998</float>
+     <float>554.16</float>
+     <float>57.4092</float>
+     <float>591.5</float>
+     <float>173.363</float>
     </coords>
    </Wire>
    <Wire>
@@ -73,12 +73,12 @@
     <from>60</from>
     <to>26</to>
     <coords>
-     <float>169</float>
-     <float>182.363</float>
-     <float>187.666</float>
-     <float>180.154</float>
-     <float>205.5</float>
-     <float>172.363</float>
+     <float>63</float>
+     <float>165.363</float>
+     <float>83.0972</float>
+     <float>162.985</float>
+     <float>102.5</float>
+     <float>155.363</float>
     </coords>
    </Wire>
    <Wire>
@@ -96,12 +96,12 @@
     <from>47</from>
     <to>25</to>
     <coords>
-     <float>205.5</float>
-     <float>138.999</float>
-     <float>212.62</float>
-     <float>137.747</float>
-     <float>205.5</float>
-     <float>154.363</float>
+     <float>89</float>
+     <float>121.999</float>
+     <float>98.4781</float>
+     <float>120.333</float>
+     <float>102.5</float>
+     <float>137.363</float>
     </coords>
    </Wire>
    <Wire>
@@ -134,12 +134,12 @@
     <from>53</from>
     <to>22</to>
     <coords>
-     <float>233.5</float>
-     <float>247.363</float>
-     <float>264.7</float>
-     <float>232.011</float>
-     <float>262.636</float>
-     <float>176.181</float>
+     <float>115.5</float>
+     <float>230.363</float>
+     <float>149.475</float>
+     <float>213.646</float>
+     <float>159.636</float>
+     <float>159.181</float>
     </coords>
    </Wire>
    <Wire>
@@ -147,12 +147,12 @@
     <from>36</from>
     <to>97</to>
     <coords>
-     <float>469.5</float>
-     <float>164.363</float>
-     <float>489.089</float>
-     <float>167.109</float>
-     <float>484.5</float>
-     <float>203.113</float>
+     <float>352.5</float>
+     <float>147.363</float>
+     <float>375.318</float>
+     <float>150.561</float>
+     <float>381.5</float>
+     <float>186.113</float>
     </coords>
    </Wire>
   </wires>
@@ -298,9 +298,10 @@
     <name>:O(t)&#32;-&#32;Output&#32;at&#32;time&#32;t</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>40</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -318,9 +319,10 @@
     <name>:I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>12</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -338,6 +340,7 @@
     <name>:L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
     <init>100</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>100</max>
@@ -347,7 +350,7 @@
    <Item>
     <id>46</id>
     <type>Variable:integral</type>
-    <x>828.545</x>
+    <x>815.545</x>
     <y>184.727</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -358,6 +361,7 @@
     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -378,9 +382,10 @@
     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>4</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -398,9 +403,10 @@
     <name>K(t)&#32;-&#32;Capital&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>4</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -418,6 +424,7 @@
     <name>:A(t)&#32;-&#32;Technology&#32;at&#32;time&#32;t</name>
     <init>2</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>2</max>
@@ -437,6 +444,7 @@
     <name>:s&#32;-&#32;Savings&#32;Rate</name>
     <init>0.3</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -456,6 +464,7 @@
     <name>:d&#32;-&#32;Depreciation&#32;Rate</name>
     <init>0.25</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -475,6 +484,7 @@
     <name>:Beta</name>
     <init>0.5</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -494,6 +504,7 @@
     <name>:1</name>
     <init>1</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -513,6 +524,7 @@
     <name>:Beta</name>
     <init>0.5</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -812,8 +824,6 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>inf</tmax>
-   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

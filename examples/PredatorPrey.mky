@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-rc.2</minskyVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>125</id>
@@ -290,6 +290,7 @@
     <name>:Predator&#32;Birth&#32;Rate</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -299,7 +300,7 @@
    <Item>
     <id>44</id>
     <type>Variable:integral</type>
-    <x>355.332</x>
+    <x>349.332</x>
     <y>280.553</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -310,6 +311,7 @@
     <name>Predator</name>
     <init>111.9</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -319,7 +321,7 @@
    <Item>
     <id>46</id>
     <type>Variable:integral</type>
-    <x>317.332</x>
+    <x>314.332</x>
     <y>403.553</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
@@ -330,6 +332,7 @@
     <name>Prey</name>
     <init>164.2</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -350,9 +353,10 @@
     <name>Prey</name>
     <init>164.2</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>164.2</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -370,6 +374,7 @@
     <name>:Predator&#32;Death&#32;Rate</name>
     <init>0.12</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -390,6 +395,7 @@
     <name>:Prey&#32;Death&#32;Rate</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -410,9 +416,10 @@
     <name>Prey</name>
     <init>164.2</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>164.2</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -430,6 +437,7 @@
     <name>:Prey&#32;Birth&#32;Rate</name>
     <init>0.16</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -450,9 +458,10 @@
     <name>Predator</name>
     <init>111.9</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>111.9</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -470,9 +479,10 @@
     <name>:Predator&#32;Deaths</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>13.428</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -490,9 +500,10 @@
     <name>:Prey&#32;Deaths</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>14.6992</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -510,9 +521,10 @@
     <name>Prey</name>
     <init>164.2</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>164.2</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -530,9 +542,10 @@
     <name>Predator</name>
     <init>111.9</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>111.9</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -550,9 +563,10 @@
     <name>:Predator&#32;Births</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>18.374</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -570,9 +584,10 @@
     <name>:Prey&#32;Births</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>26.272</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -590,9 +605,10 @@
     <name>:Prey&#32;Deaths</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>14.6992</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -610,9 +626,10 @@
     <name>:Predator&#32;Births</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>18.374</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -630,9 +647,10 @@
     <name>:Predator&#32;Deaths</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>13.428</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -650,9 +668,10 @@
     <name>:Prey&#32;Births</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>26.272</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -670,9 +689,10 @@
     <name>Predator</name>
     <init>111.9</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
-     <max>111.9</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
    </Item>
@@ -689,6 +709,7 @@
     <name>:.001</name>
     <init>0.001</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -708,6 +729,7 @@
     <name>:.0008</name>
     <init>0.0008</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -867,8 +889,6 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>inf</tmax>
-   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

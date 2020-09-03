@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-rc.2</minskyVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>102</id>
@@ -42,16 +42,16 @@
     <from>8</from>
     <to>31</to>
     <coords>
-     <float>449.002</float>
-     <float>63.0004</float>
-     <float>457.213</float>
-     <float>70.1873</float>
-     <float>494.178</float>
-     <float>81.4814</float>
-     <float>476.721</float>
-     <float>140.005</float>
-     <float>490.5</float>
-     <float>169</float>
+     <float>444.002</float>
+     <float>49.0004</float>
+     <float>452.065</float>
+     <float>56.058</float>
+     <float>488.365</float>
+     <float>67.149</float>
+     <float>471.222</float>
+     <float>124.62</float>
+     <float>479.5</float>
+     <float>155</float>
     </coords>
    </Wire>
    <Wire>
@@ -69,12 +69,12 @@
     <from>16</from>
     <to>40</to>
     <coords>
-     <float>31.0001</float>
-     <float>188</float>
-     <float>2.67339</float>
-     <float>118.195</float>
-     <float>6.4999</float>
-     <float>81.0002</float>
+     <float>26.0001</float>
+     <float>174</float>
+     <float>-2.18963</float>
+     <float>104.533</float>
+     <float>3.9999</float>
+     <float>67.0002</float>
     </coords>
    </Wire>
    <Wire>
@@ -97,14 +97,14 @@
     <from>30</from>
     <to>59</to>
     <coords>
-     <float>399.5</float>
-     <float>169</float>
-     <float>353.184</float>
-     <float>44.8514</float>
-     <float>25.6216</float>
-     <float>114.565</float>
-     <float>192</float>
-     <float>94.75</float>
+     <float>400.5</float>
+     <float>155</float>
+     <float>352.995</float>
+     <float>27.6639</float>
+     <float>17.0225</float>
+     <float>99.1674</float>
+     <float>187</float>
+     <float>80.75</float>
     </coords>
    </Wire>
    <Wire>
@@ -117,12 +117,12 @@
     <from>84</from>
     <to>13</to>
     <coords>
-     <float>169.234</float>
-     <float>319.335</float>
-     <float>120.959</float>
-     <float>187.089</float>
-     <float>95.0002</float>
-     <float>157</float>
+     <float>164.734</float>
+     <float>305.335</float>
+     <float>116.403</float>
+     <float>172.935</float>
+     <float>90.0002</float>
+     <float>143</float>
     </coords>
    </Wire>
    <Wire>
@@ -130,12 +130,12 @@
     <from>84</from>
     <to>60</to>
     <coords>
-     <float>169.234</float>
-     <float>319.335</float>
-     <float>111.555</float>
-     <float>203.87</float>
-     <float>192</float>
-     <float>132.25</float>
+     <float>164.734</float>
+     <float>305.335</float>
+     <float>107.073</float>
+     <float>189.907</float>
+     <float>187</float>
+     <float>118.25</float>
     </coords>
    </Wire>
    <Wire>
@@ -143,12 +143,12 @@
     <from>30</from>
     <to>100</to>
     <coords>
-     <float>399.5</float>
-     <float>169</float>
-     <float>416.323</float>
-     <float>291.362</float>
-     <float>338</float>
-     <float>319.335</float>
+     <float>400.5</float>
+     <float>155</float>
+     <float>417.589</float>
+     <float>279.299</float>
+     <float>332.5</float>
+     <float>305.335</float>
     </coords>
    </Wire>
    <Wire>
@@ -176,14 +176,14 @@
     <from>84</from>
     <to>93</to>
     <coords>
-     <float>169.234</float>
-     <float>319.335</float>
-     <float>171.927</float>
-     <float>273.291</float>
-     <float>174.368</float>
-     <float>272.037</float>
-     <float>232.476</float>
-     <float>321.907</float>
+     <float>164.734</float>
+     <float>305.335</float>
+     <float>167.54</float>
+     <float>257.363</float>
+     <float>170.083</float>
+     <float>256.056</float>
+     <float>230.172</float>
+     <float>313.499</float>
     </coords>
    </Wire>
    <Wire>
@@ -302,6 +302,7 @@
     <name>:Y</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>100</max>
@@ -322,6 +323,7 @@
     <name>:L</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>100</max>
@@ -342,6 +344,7 @@
     <name>:emprate</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -362,6 +365,7 @@
     <name>:L</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>100</max>
@@ -382,6 +386,7 @@
     <name>:Y</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>100</max>
@@ -402,6 +407,7 @@
     <name>:Profit</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -422,6 +428,7 @@
     <name>:Investment</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -442,6 +449,7 @@
     <name>K</name>
     <init>300</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>300</max>
@@ -461,6 +469,7 @@
     <name>:v</name>
     <init>3</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3</max>
@@ -480,6 +489,7 @@
     <name>:a</name>
     <init>1</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -499,6 +509,7 @@
     <name>:N</name>
     <init>110</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>110</max>
@@ -687,6 +698,7 @@
     <name>w</name>
     <init>1</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -735,6 +747,7 @@
     <name>:NAIRU</name>
     <init>0.95</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -754,6 +767,7 @@
     <name>:PhSlope</name>
     <init>10</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>10</max>
@@ -774,6 +788,7 @@
     <name>0</name>
     <init>0</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -822,8 +837,6 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>inf</tmax>
-   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

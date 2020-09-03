@@ -1,18 +1,18 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-rc.2</minskyVersion>
+  <minskyVersion>2.19.0-beta.19</minskyVersion>
   <wires>
    <Wire>
     <id>39</id>
     <from>0</from>
     <to>2</to>
     <coords>
-     <float>83.5</float>
-     <float>159</float>
-     <float>144.356</float>
-     <float>1.59769</float>
-     <float>291</float>
-     <float>117.25</float>
+     <float>147</float>
+     <float>208</float>
+     <float>235.369</float>
+     <float>-20.5636</float>
+     <float>451.5</float>
+     <float>166.25</float>
     </coords>
    </Wire>
    <Wire>
@@ -60,12 +60,12 @@
     <from>0</from>
     <to>29</to>
     <coords>
-     <float>83.5</float>
-     <float>159</float>
-     <float>131.086</float>
-     <float>320.593</float>
-     <float>173</float>
-     <float>357</float>
+     <float>147</float>
+     <float>208</float>
+     <float>195</float>
+     <float>371</float>
+     <float>241</float>
+     <float>406</float>
     </coords>
    </Wire>
    <Wire>
@@ -78,12 +78,12 @@
     <from>0</from>
     <to>34</to>
     <coords>
-     <float>83.5</float>
-     <float>159</float>
-     <float>97.418</float>
-     <float>382.682</float>
-     <float>234</float>
-     <float>465</float>
+     <float>147</float>
+     <float>208</float>
+     <float>161</float>
+     <float>433</float>
+     <float>302</float>
+     <float>514</float>
     </coords>
    </Wire>
    <Wire>
@@ -91,12 +91,12 @@
     <from>28</from>
     <to>35</to>
     <coords>
-     <float>193</float>
-     <float>357</float>
-     <float>160.157</float>
-     <float>488.373</float>
-     <float>234</float>
-     <float>483</float>
+     <float>261</float>
+     <float>406</float>
+     <float>228.157</float>
+     <float>537.373</float>
+     <float>302</float>
+     <float>532</float>
     </coords>
    </Wire>
    <Wire>
@@ -119,6 +119,7 @@
     <name>rand(5)</name>
     <init>rand(5,3)</init>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -164,6 +165,7 @@
     </ports>
     <name>x1</name>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -183,6 +185,7 @@
     </ports>
     <name>x2</name>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>4</max>
@@ -202,6 +205,7 @@
     </ports>
     <name>x3</name>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3.51824e+13</max>
@@ -221,6 +225,7 @@
     </ports>
     <name>x4</name>
     <slider>
+     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3.51824e+13</max>
@@ -334,8 +339,6 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>inf</tmax>
-   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
