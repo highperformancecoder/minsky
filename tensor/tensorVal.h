@@ -78,9 +78,9 @@ namespace civita
   public:
     TensorVal(): data(1) {}
     TensorVal(double x): data(1,x) {}
-    TensorVal(const Hypercube& hc): ITensorVal(hc) {}
-    TensorVal(Hypercube&& hc): ITensorVal(std::move(hc)) {}
-    TensorVal(const std::vector<unsigned>& dims): ITensorVal(dims) {}
+    TensorVal(const Hypercube& hc): ITensorVal(hc) {allocVal();}
+    TensorVal(Hypercube&& hc): ITensorVal(std::move(hc)) {allocVal();}
+    TensorVal(const std::vector<unsigned>& dims): ITensorVal(dims) {allocVal();}
 
     using ITensorVal::index;
     const Index& index(Index&& idx) override {

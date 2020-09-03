@@ -613,4 +613,28 @@ SUITE(TensorOps)
         for (auto& i: xv)
           CHECK(boost::any_cast<boost::posix_time::ptime>(&i));
       }
+
+    TEST(sortByValue)
+      {
+        auto val=make_shared<TensorVal>(vector<unsigned>{5});
+        vector<double> data={3,2,4,5,1};
+        for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
+        val->updateTimestamp();
+        SortByValue forward(minsky::RavelState::HandleState::HandleSort::forward);
+        forward.setArgument(val);
+        CHECK_EQUAL(val->timestamp(), forward.timestamp());
+        CHECK_EQUAL(val->size(), forward.size());
+        for (size_t i=1; i<forward.size(); ++i)
+          CHECK(forward[i]>forward[i-1]);
+        vector<int> expected={4,1,0,2,3};
+        for (size_t i=0; i<forward.size(); ++i)
+          CHECK_EQUAL(expected[i], boost::any_cast<double>(forward.hypercube().xvectors[0][i]));
+        SortByValue reverse(minsky::RavelState::HandleState::HandleSort::reverse);
+        reverse.setArgument(val);
+        for (size_t i=1; i<reverse.size(); ++i)
+          CHECK(reverse[i]<reverse[i-1]);
+        expected={3,2,0,1,4};
+        for (size_t i=0; i<reverse.size(); ++i)
+          CHECK_EQUAL(expected[i], boost::any_cast<double>(reverse.hypercube().xvectors[0][i]));
+      }
 }
