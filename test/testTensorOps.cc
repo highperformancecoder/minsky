@@ -648,4 +648,22 @@ SUITE(TensorOps)
         CHECK_EQUAL(2,tv({3,1,0}));
         CHECK(isnan(tv({2,1,0})));
       }
+    
+    TEST(tensorValAssignment)
+      {
+        auto arg=std::make_shared<TensorVal>(vector<unsigned>{5,3,2});
+        for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
+        Scan scan([](double& x,double y,size_t){x+=y;});
+        scan.setArgument(arg,"0",0);
+        CHECK_EQUAL(arg->rank(), scan.rank());
+        CHECK(scan.size()>1);
+        
+        TensorVal tv;
+        tv=scan;
+
+        CHECK_EQUAL(tv.size(), scan.size());
+        CHECK_ARRAY_EQUAL(tv.hypercube().dims(), scan.hypercube().dims(), scan.rank());
+        for (size_t i=0; i<tv.size(); ++i)
+          CHECK_EQUAL(scan[i], tv[i]);
+      }
 }
