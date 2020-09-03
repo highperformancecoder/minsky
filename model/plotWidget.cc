@@ -422,7 +422,7 @@ namespace minsky
                     y=(*yvars[pen])[i];
                   }
                 else
-                  throw error("x input not wired for pen %d",(int)pen+1);
+                  throw_error("x input not wired for pen "+to_string(pen+1));
                 break;
               }
             size_t p=pen;
@@ -568,14 +568,14 @@ namespace minsky
     unsigned pen=port-nBoundsPorts;
     if (pen<2*numLines)
       {
-        yvars.resize(2*numLines);
+        yvars.resize(pen+1);
         yvars[pen]=var;
         if (pen>=numLines)
           assignSide(pen,Side::right);
       }
     else if (pen<4*numLines)
       {
-        xvars.resize(2*numLines);
+        xvars.resize(pen-2*numLines+1);
         xvars[pen-2*numLines]=var;
       }
     scalePlot();
