@@ -53,11 +53,6 @@ namespace civita
     /// removes elements of xVector not found in \a a
     void makeConformant(const Hypercube& a);
 
-    /// compute stride and dimension size of dimension \a dim
-    /// @throw if dimension \a dim doesn't exist
-    /// if \a dim is empty, defaults to first dimension
-    void computeStrideAndSize(const std::string& dim, size_t& stride, size_t& size) const;
-
     /// split lineal index into components along each dimension
     std::vector<size_t> splitIndex(size_t) const;
     /// combine a split index into a lineal hypercube index
