@@ -289,6 +289,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
+   <tmax>inf</tmax>
+   <t0>0</t0>   
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>
