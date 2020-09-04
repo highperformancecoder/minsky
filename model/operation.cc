@@ -382,6 +382,12 @@ namespace minsky
     switch (classify(type()))
       {
       case function: case reduction: case scan: case tensor:
+        {
+           if (check && !ports[1]->units(check).empty())
+             throw_error("function input not dimensionless");
+           return {};
+		}
+      case constop:
         switch (type())
           {
           case percent:
@@ -397,16 +403,10 @@ namespace minsky
                   }
                 return r; 
               } else return {};
-            }
-          default:  
-           {
-             if (check && !ports[1]->units(check).empty())
-               throw_error("function input not dimensionless");
-             return {};
-		   }
-	   }
-      case constop:
-        return {};        
+            }     
+        default:           
+          return {};  
+	     }      
       case binop:
         switch (type())
           {
@@ -1018,16 +1018,16 @@ namespace minsky
     pango.show();    
   }
 
-  template <> void Operation<OperationType::hundred>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
-    double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 
     cairo_move_to(cairo,-4,-7);
     Pango pango(cairo);
-    pango.setFontSize(9*sf*zoomFactor());
+    pango.setFontSize(7*sf*zoomFactor());
     pango.setMarkup("%");
-    pango.show();    
-  }        
+    pango.show();
+  }   
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
@@ -1326,16 +1326,6 @@ namespace minsky
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"frac");
-  }
-  template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
-  {
-    double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
-    cairo_move_to(cairo,-4,-7);
-    Pango pango(cairo);
-    pango.setFontSize(7*sf*zoomFactor());
-    pango.setMarkup("%");
-    pango.show();
   }
   template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
   {

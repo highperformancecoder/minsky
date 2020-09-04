@@ -49,7 +49,7 @@ namespace minsky
     template <> int numArguments<OperationType::zero>() {return 0;}
     template <> int numArguments<OperationType::one>() {return 0;}                
     template <> int numArguments<OperationType::inf>() {return 0;}    
-    template <> int numArguments<OperationType::hundred>() {return 0;}     
+    template <> int numArguments<OperationType::percent>() {return 1;}  
     template <> int numArguments<OperationType::add>() {return 2;}
     template <> int numArguments<OperationType::subtract>() {return 2;}
     template <> int numArguments<OperationType::multiply>() {return 2;}
@@ -85,7 +85,6 @@ namespace minsky
     template <> int numArguments<OperationType::abs>() {return 1;}
     template <> int numArguments<OperationType::floor>() {return 1;}
     template <> int numArguments<OperationType::frac>() {return 1;}
-    template <> int numArguments<OperationType::percent>() {return 1;}
     template <> int numArguments<OperationType::gamma>() {return 1;}            
     template <> int numArguments<OperationType::fact>() {return 1;}        
     template <> int numArguments<OperationType::sum>() {return 1;}

@@ -363,8 +363,28 @@ namespace MathDAG
   void OperationDAG<OperationType::inf>::render(Surface& surf) const 
   {print(surf.cairo(),"<i>∞</i>",Anchor::nw);}   
   template <>
-  void OperationDAG<OperationType::hundred>::render(Surface& surf) const 
-  {print(surf.cairo(),"<i>%</i>",Anchor::nw);}       
+  void OperationDAG<OperationType::percent>::render(Surface& s) const
+  {
+      double xx,yy;
+      cairo_get_current_point(s.cairo(),&xx,&yy);
+ 
+      RecordingSurface r;
+      arguments[0][0]->render(r);
+
+      Pango pango(s.cairo());
+      double oldFs=pango.getFontSize();
+      pango.setFontSize(r.height());     
+      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
+      pango.show();
+      cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
+      cairo_rel_move_to(s.cairo(),pango.width(),0);
+      arguments[0][0]->render(s);
+      xx+=pango.width()+r.width();
+      pango.setMarkup("%");
+      cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
+      pango.show();
+      cairo_move_to(s.cairo(),xx+pango.width(),yy);
+  }     
   template <>
   void OperationDAG<OperationType::copy>::render(Surface& surf) const
   {print(surf.cairo(),"=",Anchor::nw);} 
@@ -566,30 +586,6 @@ namespace MathDAG
     print(surf.cairo(),"frac",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
-  }
-  
-  template <>
-  void OperationDAG<OperationType::percent>::render(Surface& s) const
-  {
-      double xx,yy;
-      cairo_get_current_point(s.cairo(),&xx,&yy);
- 
-      RecordingSurface r;
-      arguments[0][0]->render(r);
-
-      Pango pango(s.cairo());
-      double oldFs=pango.getFontSize();
-      pango.setFontSize(r.height());     
-      cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
-      pango.show();
-      cairo_rel_move_to(s.cairo(),0,(r.height()-oldFs));
-      cairo_rel_move_to(s.cairo(),pango.width(),0);
-      arguments[0][0]->render(s);
-      xx+=pango.width()+r.width();
-      pango.setMarkup("%");
-      cairo_move_to(s.cairo(),xx,yy-r.height()+oldFs);
-      pango.show();
-      cairo_move_to(s.cairo(),xx+pango.width(),yy);
   }
   
   template <>

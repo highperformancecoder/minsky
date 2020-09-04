@@ -353,10 +353,11 @@ namespace MathDAG
   }
   
   template <>
-  ostream& OperationDAG<OperationType::hundred>::matlab(ostream& o) const
+  ostream& OperationDAG<OperationType::percent>::matlab(ostream& o) const
   {
-    return o<<"100";
-  }      
+    checkArg(0,0);
+    return o<<"100*("<<arguments[0][0]->matlab()<<")";
+  }
 
   template <>
   ostream& OperationDAG<OperationType::copy>::matlab(ostream& o) const
@@ -498,13 +499,6 @@ namespace MathDAG
   {
     checkArg(0,0);
     return o<<"frac("<<arguments[0][0]->matlab()<<")";
-  }
-  
-  template <>
-  ostream& OperationDAG<OperationType::percent>::matlab(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"100*("<<arguments[0][0]->matlab()<<")";
   }
  
   template <>

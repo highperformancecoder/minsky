@@ -197,14 +197,14 @@ namespace minsky
   {return 0;}
   
   template <>
-  double EvalOp<OperationType::hundred>::evaluate(double in1, double in2) const
-  {return 100;}
-  template <> 
-  double EvalOp<OperationType::hundred>::d1(double x1, double x2) const
-  {return 0;}
+  double EvalOp<OperationType::percent>::evaluate(double in1, double in2) const
+  {return 100.0*in1;}
   template <>
-  double EvalOp<OperationType::hundred>::d2(double x1, double x2) const
-  {return 0;}      
+  double EvalOp<OperationType::percent>::d1(double x1, double x2) const
+  {return 100.0;}
+  template <>
+  double EvalOp<OperationType::percent>::d2(double x1, double x2) const
+  {return 0;}    
   
   template <>
   double EvalOp<OperationType::copy>::evaluate(double in1, double in2) const
@@ -504,16 +504,6 @@ namespace minsky
   {throw error("frac cannot be used with an implicit method");}
   template <>
   double EvalOp<OperationType::frac>::d2(double x1, double x2) const
-  {return 0;}
-  
-  template <>
-  double EvalOp<OperationType::percent>::evaluate(double in1, double in2) const
-  {return 100.0*in1;}
-  template <>
-  double EvalOp<OperationType::percent>::d1(double x1, double x2) const
-  {return 100.0;}
-  template <>
-  double EvalOp<OperationType::percent>::d2(double x1, double x2) const
   {return 0;}
   
   template <>
