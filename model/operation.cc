@@ -382,6 +382,12 @@ namespace minsky
     switch (classify(type()))
       {
       case function: case reduction: case scan: case tensor:
+        {
+          if (check && !ports[1]->units(check).empty())
+            throw_error("function input not dimensionless");
+          return {};
+        }
+      case constop:
         switch (type())
           {
           case percent:
@@ -397,16 +403,10 @@ namespace minsky
                   }
                 return r; 
               } else return {};
-            }
-          default:  
-           {
-             if (check && !ports[1]->units(check).empty())
-               throw_error("function input not dimensionless");
-             return {};
-		   }
-	   }
-      case constop:
-        return {};        
+            }     
+          default:           
+            return {};  
+          }      
       case binop:
         switch (type())
           {
@@ -654,44 +654,44 @@ namespace minsky
     bb.update(*this);	  
   }
   
-   std::pair<double,Point> IntOp::rotatedPoints() const
-   {
-     // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
-     double fm=std::fmod(this->rotation(),360), angle;	
-     float x1=this->right(),y1=this->bottom();
-     if (fm==-90 || fm==270) {
-       angle=-this->rotation();
-       Rotate r1(angle,this->x(),this->y());
-       x1=r1.x(this->right(),this->bottom());
-       y1=r1.y(this->right(),this->bottom());						  
-     }
-     else if (fabs(fm)==180) {
-       angle=this->rotation();
-       x1=this->right();
-       y1=this->top();					
-     }
-     else angle=0;	       
-     if (coupled()) {
-       angle=intVar->rotation();  
-       Rotate r2(angle,intVar->x(),intVar->y());		
-       if (fm==-90 || fm==270) {
-         x1=r2.x(intVar->right(),intVar->bottom());
-         y1=r2.y(intVar->right(),intVar->bottom());
-       } else if (fm==90 || fm==-270) {
-         x1=r2.x(intVar->left(),intVar->top());
-         y1=r2.y(intVar->left(),intVar->top());			       
-       } else if (fabs(fm)==180) {
-         angle=-intVar->rotation();
-         x1=intVar->right();  			  
-         y1=intVar->top();  				       		  
-       } else if (fm==0 || fm==360) {
-         angle=-intVar->rotation();
-         x1=intVar->right(); 			
-         y1=intVar->bottom(); 				  
-       } else angle=0;
-     }
-     Point p(x1,y1);  
-     return make_pair(angle,p);  
+  std::pair<double,Point> IntOp::rotatedPoints() const
+  {
+    // ensure resize handle is always active on the same corner of variable/items for 90 and 180 degree rotations. for ticket 1232   
+    double fm=std::fmod(this->rotation(),360), angle;	
+    float x1=this->right(),y1=this->bottom();
+    if (fm==-90 || fm==270) {
+      angle=-this->rotation();
+      Rotate r1(angle,this->x(),this->y());
+      x1=r1.x(this->right(),this->bottom());
+      y1=r1.y(this->right(),this->bottom());						  
+    }
+    else if (fabs(fm)==180) {
+      angle=this->rotation();
+      x1=this->right();
+      y1=this->top();					
+    }
+    else angle=0;	       
+    if (coupled()) {
+      angle=intVar->rotation();  
+      Rotate r2(angle,intVar->x(),intVar->y());		
+      if (fm==-90 || fm==270) {
+        x1=r2.x(intVar->right(),intVar->bottom());
+        y1=r2.y(intVar->right(),intVar->bottom());
+      } else if (fm==90 || fm==-270) {
+        x1=r2.x(intVar->left(),intVar->top());
+        y1=r2.y(intVar->left(),intVar->top());			       
+      } else if (fabs(fm)==180) {
+        angle=-intVar->rotation();
+        x1=intVar->right();  			  
+        y1=intVar->top();  				       		  
+      } else if (fm==0 || fm==360) {
+        angle=-intVar->rotation();
+        x1=intVar->right(); 			
+        y1=intVar->bottom(); 				  
+      } else angle=0;
+    }
+    Point p(x1,y1);  
+    return make_pair(angle,p);  
   }   
 
   void IntOp::insertControlled(Selection& selection)
@@ -822,7 +822,7 @@ namespace minsky
           minsky().model->addWire(newWire);
         intVar->controller.reset();
         intVar->rotation(rotation());
-     }
+      }
     else
       {
         // need to explicitly remove wire, as deleting the port is
@@ -845,11 +845,11 @@ namespace minsky
   {
     string r="equations not yet constructed, please reset";
     if (ports.size()>0 && ports[0]->value()==fabs(numeric_limits<double>::max())) // format outport value for infty operator. for ticket 1188 and feature 50.
-    {
-      std::stringstream ss;
-      ss <<"[out]="<<ports[0]->value();		
-      r=ss.str();
-    } else r="[out]="+to_string(ports[0]->value());
+      {
+        std::stringstream ss;
+        ss <<"[out]="<<ports[0]->value();		
+        r=ss.str();
+      } else r="[out]="+to_string(ports[0]->value());
     if (ports.size()>1)
       r+=" [in1]="+ to_string(ports[1]->value());
     if (ports.size()>2)
@@ -859,7 +859,7 @@ namespace minsky
   
   string DataOp::description() const
   {
-	return m_description;  
+    return m_description;  
   }
    
   string DataOp::description(const std::string& x)
@@ -885,7 +885,7 @@ namespace minsky
     // '/' is guaranteed not to be in fileName, so we can use that as
     // a delimiter
     description("\\verb/"+
-      ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
+                ((p!=string::npos)? fileName.substr(p+1): fileName) + "/");
   }
 
   void DataOp::initRandom(double xmin, double xmax, unsigned numSamples)
@@ -983,7 +983,7 @@ namespace minsky
     cairo_show_text(cairo,"e");
   }
   
-    template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
@@ -991,7 +991,7 @@ namespace minsky
     cairo_show_text(cairo,"π");
   }           
    
-    template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
   {
     double sf = scaleFactor();  
     cairo_scale(cairo,sf,sf);		  
@@ -1016,6 +1016,17 @@ namespace minsky
     pango.setFontSize(9*sf*zoomFactor());
     pango.setMarkup("∞");
     pango.show();    
+  }
+
+  template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
+  {
+    double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf); 
+    cairo_move_to(cairo,-4,-7);
+    Pango pango(cairo);
+    pango.setFontSize(7*sf*zoomFactor());
+    pango.setMarkup("%");
+    pango.show();
   }   
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
@@ -1315,13 +1326,6 @@ namespace minsky
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"frac");
-  }
-  template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
-  {
-    double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 	  
-    cairo_move_to(cairo,-6,3);
-    cairo_show_text(cairo,"%");
   }
   template <> void Operation<OperationType::gamma>::iconDraw(cairo_t* cairo) const
   {

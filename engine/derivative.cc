@@ -415,6 +415,19 @@ namespace MathDAG
   }  
   
   template <>
+  NodePtr SystemOfEquations::derivative<>
+  (const OperationDAG<OperationType::percent>& expr)
+  {
+    if (expr.arguments[0].empty())
+      return zero;
+    else
+      {
+        Expr x(expressionCache, expr.arguments[0][0]);
+        return (100*x)->derivative(*this);
+      }
+  }
+  
+  template <>
   NodePtr SystemOfEquations::derivative
   (const OperationDAG<OperationType::copy>& expr)
   {
@@ -638,19 +651,6 @@ namespace MathDAG
       return zero;
     else
        throw error("frac is not differentiable");
-  }
-  
-  template <>
-  NodePtr SystemOfEquations::derivative<>
-  (const OperationDAG<OperationType::percent>& expr)
-  {
-    if (expr.arguments[0].empty())
-      return zero;
-    else
-      {
-        Expr x(expressionCache, expr.arguments[0][0]);
-        return (100*x)->derivative(*this);
-      }
   }
   
   template <>

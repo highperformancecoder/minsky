@@ -397,13 +397,20 @@ namespace MathDAG
   ostream& OperationDAG<OperationType::one>::latex(ostream& o) const
   {
     return o<<" 1 ";
-  }      
+  }        
   
   template <>
   ostream& OperationDAG<OperationType::inf>::latex(ostream& o) const
   {
     return o<<"\\infty ";
-  }  
+  }
+  
+  template <>
+  ostream& OperationDAG<OperationType::percent>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\left"<<arguments[0][0]->latex()<<"\\right\\%";
+  } 
 
   template <>
   ostream& OperationDAG<OperationType::copy>::latex(ostream& o) const
@@ -528,13 +535,6 @@ namespace MathDAG
   {
     checkArg(0,0);
     return o<<"\\mathrm{frac}("<<arguments[0][0]->latex()<<")";
-  }
-  
-  template <>
-  ostream& OperationDAG<OperationType::percent>::latex(ostream& o) const
-  {
-    checkArg(0,0);
-    return o<<"\\left"<<arguments[0][0]->latex()<<"\\right\\%";
   }
   
   template <>

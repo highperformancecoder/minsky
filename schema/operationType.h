@@ -32,7 +32,7 @@ namespace minsky
                differentiate, // with respect to time
                data, // an interpolated data item
                ravel, // Ravel™
-               euler, pi, zero, one, inf, // fundamental constants
+               euler, pi, zero, one, inf, percent,// fundamental constants
                // multiwire binary ops
                add, subtract, multiply, divide, min, max, 
                and_, or_,
@@ -43,7 +43,7 @@ namespace minsky
                // functions
                copy, sqrt, exp, ln, sin, cos, tan, asin, acos, atan,
                sinh, cosh, tanh, abs,
-               floor, frac, not_, percent, gamma, fact,
+               floor, frac, not_, gamma, fact,
                // reductions
                sum, product, infimum, supremum, any, all, infIndex, supIndex,
                // scans
