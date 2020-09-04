@@ -141,7 +141,7 @@
    </Item>
    <Item>
     <id>6</id>
-    <type>Operation:1.79769e308imum</type>
+    <type>Operation:infimum</type>
     <x>240</x>
     <y>180</y>
     <scaleFactor>1</scaleFactor>
@@ -247,7 +247,7 @@
    </Item>
    <Item>
     <id>24</id>
-    <type>Operation:1.79769e308Index</type>
+    <type>Operation:infIndex</type>
     <x>244</x>
     <y>273</y>
     <scaleFactor>1</scaleFactor>

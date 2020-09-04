@@ -36,7 +36,7 @@
      <int>3</int>
      <int>4</int>
     </ports>
-    <name>:\int_0^\1.79769e308ty&#32;e^{-x^2/2}</name>
+    <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
     <init>0</init>
     <slider>
      <visible>false</visible>

@@ -3441,7 +3441,7 @@
      <int>442</int>
      <int>443</int>
     </ports>
-    <name>:inf_{Markup}</name>
+    <name>:Inf_{Markup}</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -3462,7 +3462,7 @@
      <int>445</int>
      <int>446</int>
     </ports>
-    <name>:inf_{SD}</name>
+    <name>:Inf_{SD}</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -3483,7 +3483,7 @@
      <int>448</int>
      <int>449</int>
     </ports>
-    <name>:inf_{SD}</name>
+    <name>:Inf_{SD}</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -3504,7 +3504,7 @@
      <int>451</int>
      <int>452</int>
     </ports>
-    <name>:inf_{Markup}</name>
+    <name>:Inf_{Markup}</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -3525,7 +3525,7 @@
      <int>454</int>
      <int>455</int>
     </ports>
-    <name>:inf_{Markup}</name>
+    <name>:Inf_{Markup}</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -4775,7 +4775,7 @@
     </ports>
     <width>150</width>
     <height>150</height>
-    <name>inflation</name>
+    <name>Inflation</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -4916,7 +4916,7 @@
     </ports>
     <width>150</width>
     <height>150</height>
-    <name>inf.&#32;v&#32;Emp.</name>
+    <name>Inf.&#32;v&#32;Emp.</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -5057,7 +5057,7 @@
     </ports>
     <width>366</width>
     <height>200</height>
-    <name>inflation--from&#32;two&#32;theories&#32;of&#32;prices</name>
+    <name>Inflation--from&#32;two&#32;theories&#32;of&#32;prices</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
