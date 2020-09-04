@@ -913,7 +913,7 @@
    </Item>
    <Item>
     <id>135</id>
-    <type>Operation:inf</type>
+    <type>Operation:1.79769e308</type>
     <x>73.3</x>
     <y>774.4</y>
     <scaleFactor>1</scaleFactor>
@@ -1050,7 +1050,7 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>inf</tmax>
+   <tmax>1.79769e308</tmax>
    <t0>0</t0>   
   </rungeKutta>
   <zoomFactor>1</zoomFactor>

@@ -2668,7 +2668,7 @@
      <int>324</int>
      <int>325</int>
     </ports>
-    <name>:inf_r</name>
+    <name>:1.79769e308_r</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -2689,7 +2689,7 @@
      <int>327</int>
      <int>328</int>
     </ports>
-    <name>:inf_r</name>
+    <name>:1.79769e308_r</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -2710,7 +2710,7 @@
      <int>330</int>
      <int>331</int>
     </ports>
-    <name>:inf_r</name>
+    <name>:1.79769e308_r</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -2793,7 +2793,7 @@
      <int>341</int>
      <int>342</int>
     </ports>
-    <name>:inf_r</name>
+    <name>:1.79769e308_r</name>
     <init>0</init>
     <slider>
      <visible>false</visible>
@@ -4943,7 +4943,7 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>inf</tmax>
+   <tmax>1.79769e308</tmax>
    <t0>0</t0>   
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
