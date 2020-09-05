@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.19</minskyVersion>
+  <minskyVersion>2.19.0-rc.2</minskyVersion>
   <wires>
    <Wire>
     <id>89</id>
@@ -300,7 +300,6 @@
     <name>:Y</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -321,7 +320,6 @@
     <name>:L</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -342,7 +340,6 @@
     <name>:N</name>
     <init>110</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>110</max>
@@ -363,7 +360,6 @@
     <name>:emprate</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -384,7 +380,6 @@
     <name>:L</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -405,7 +400,6 @@
     <name>:WageBill</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -426,7 +420,6 @@
     <name>:Profit</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -447,7 +440,6 @@
     <name>:Investment</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -468,7 +460,6 @@
     <name>K</name>
     <init>300</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -489,7 +480,6 @@
     <name>WageRate</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -509,7 +499,6 @@
     <name>:v</name>
     <init>3</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>3</max>
@@ -529,7 +518,6 @@
     <name>:NAIRU</name>
     <init>0.96</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -549,7 +537,6 @@
     <name>:PhillipsSlope</name>
     <init>10</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>10</max>
@@ -709,8 +696,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>1.79769e308</tmax>
-   <t0>0</t0>   
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

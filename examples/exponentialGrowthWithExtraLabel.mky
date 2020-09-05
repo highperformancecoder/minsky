@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.19</minskyVersion>
+  <minskyVersion>2.19.0-rc.2</minskyVersion>
   <wires>
    <Wire>
     <id>38</id>
@@ -88,7 +88,6 @@
     <name>y</name>
     <init>1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -109,7 +108,6 @@
     <name>:yy</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -129,7 +127,6 @@
     <name>:a</name>
     <init>-0.1</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-0.1</min>
      <max>-0.1</max>
@@ -289,8 +286,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>1.79769e308</tmax>
-   <t0>0</t0>   
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

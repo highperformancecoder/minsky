@@ -1,6 +1,6 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-beta.19</minskyVersion>
+  <minskyVersion>2.19.0-rc.2</minskyVersion>
   <wires>
    <Wire>
     <id>74</id>
@@ -204,7 +204,6 @@
     <name>:O(t)&#32;-&#32;Output&#32;at&#32;time&#32;t</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -225,7 +224,6 @@
     <name>:I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
     <init>0</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -246,7 +244,6 @@
     <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -267,7 +264,6 @@
     <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -288,7 +284,6 @@
     <name>:L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
     <init>100</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>100</max>
@@ -309,7 +304,6 @@
     <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <init>4</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -329,7 +323,6 @@
     <name>:s&#32;-&#32;Savings&#32;Rate</name>
     <init>0.3</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -349,7 +342,6 @@
     <name>:d&#32;-&#32;Depreciation&#32;Rate</name>
     <init>0.25</init>
     <slider>
-     <visible>false</visible>
      <stepRel>false</stepRel>
      <min>-1</min>
      <max>1</max>
@@ -509,8 +501,8 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>1.79769e308</tmax>
-   <t0>0</t0>   
+   <tmax>INF</tmax>
+   <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>
   <bookmarks>

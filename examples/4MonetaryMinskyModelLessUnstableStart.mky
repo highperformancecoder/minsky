@@ -9,12 +9,12 @@
     <coords>
      <float>106.48</float>
      <float>298.831</float>
-     <float>80.144</float>
-     <float>331.523</float>
-     <float>40.1855</float>
-     <float>126.285</float>
-     <float>26.78</float>
-     <float>23.76</float>
+     <float>80.3776</float>
+     <float>331.233</float>
+     <float>40.7736</float>
+     <float>127.816</float>
+     <float>27.28</float>
+     <float>26.26</float>
     </coords>
    </Wire>
    <Wire>
@@ -24,12 +24,12 @@
     <coords>
      <float>151.48</float>
      <float>298.831</float>
-     <float>87.2559</float>
-     <float>366.481</float>
-     <float>38.4464</float>
-     <float>167.813</float>
-     <float>5.28</float>
-     <float>53.76</float>
+     <float>88.1985</float>
+     <float>365.488</float>
+     <float>40.1053</float>
+     <float>169.736</float>
+     <float>9.28</float>
+     <float>56.26</float>
     </coords>
    </Wire>
    <Wire>
@@ -39,10 +39,10 @@
     <coords>
      <float>189.48</float>
      <float>299.831</float>
-     <float>43.4556</float>
-     <float>425.907</float>
-     <float>8.78</float>
-     <float>83.76</float>
+     <float>45.2811</float>
+     <float>424.331</float>
+     <float>11.28</float>
+     <float>86.26</float>
     </coords>
    </Wire>
    <Wire>
@@ -132,8 +132,8 @@
    <Item>
     <id>13</id>
     <type>Variable:stock</type>
-    <x>105.2</x>
-    <y>154.26</y>
+    <x>100.8</x>
+    <y>154.76</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -151,8 +151,8 @@
    <Item>
     <id>15</id>
     <type>Variable:stock</type>
-    <x>135.2</x>
-    <y>158.26</y>
+    <x>130.8</x>
+    <y>157.76</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -170,8 +170,8 @@
    <Item>
     <id>17</id>
     <type>Variable:stock</type>
-    <x>165.2</x>
-    <y>156.26</y>
+    <x>160.8</x>
+    <y>156.76</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -189,8 +189,8 @@
    <Item>
     <id>19</id>
     <type>Variable:stock</type>
-    <x>195.2</x>
-    <y>152.26</y>
+    <x>190.8</x>
+    <y>151.76</y>
     <scaleFactor>1</scaleFactor>
     <rotation>90</rotation>
     <ports>
@@ -208,8 +208,8 @@
    <Item>
     <id>22</id>
     <type>Variable:flow</type>
-    <x>56.28</x>
-    <y>23.76</y>
+    <x>54.28</x>
+    <y>26.26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -229,7 +229,7 @@
     <id>25</id>
     <type>Variable:flow</type>
     <x>45.28</x>
-    <y>53.76</y>
+    <y>56.26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -248,8 +248,8 @@
    <Item>
     <id>28</id>
     <type>Variable:flow</type>
-    <x>47.28</x>
-    <y>83.76</y>
+    <x>46.28</x>
+    <y>86.26</y>
     <scaleFactor>1</scaleFactor>
     <rotation>0</rotation>
     <ports>
@@ -620,7 +620,7 @@
    <implicit>false</implicit>
    <simulationDelay>0</simulationDelay>
    <timeUnit></timeUnit>
-   <tmax>1.79769e308</tmax>
+   <tmax>INF</tmax>
    <t0>0</t0>
   </rungeKutta>
   <zoomFactor>1</zoomFactor>

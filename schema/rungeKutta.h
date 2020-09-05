@@ -32,7 +32,7 @@ namespace minsky
     bool implicit{false};
     int simulationDelay{0};
     std::string timeUnit;
-    double tmax{std::numeric_limits<double>::max()}, t0{0};
+    double tmax{INFINITY}, t0{0};
   };
 }
 
