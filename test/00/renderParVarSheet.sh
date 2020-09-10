@@ -33,6 +33,7 @@ for i in *.mky; do
     echo $i
     # excluded because of random data 
     if [ "$i" = indexing.mky ]; then continue; fi
+    if [ "$i" = importedCSV.mky ]; then continue; fi
     $here/gui-tk/minsky $here/test/renderParVarSheet.tcl $i
     for j in parameters variables; do
         diff $i-$j.svg $here/test/renderedEquations/$i-$j.svg
