@@ -273,7 +273,7 @@ if {[tk windowingsystem] == "aqua"} {
     event add <<middleMouse-Motion>> <B3-Motion>
     event add <<middleMouse-ButtonRelease>> <B3-ButtonRelease>
 } else {
-    event add <<contextMenu>> <Button-3> <Control-Button-2>
+    event add <<contextMenu>> <Button-3> <Control-Button-1>
     event add <<middleMouse>> <Button-2>
     event add <<middleMouse-Motion>> <B2-Motion>
     event add <<middleMouse-ButtonRelease>> <B2-ButtonRelease>
