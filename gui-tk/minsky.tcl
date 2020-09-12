@@ -268,12 +268,12 @@ source $minskyHome/library/obj-browser.tcl
 # Macs have a weird numbering of mouse buttons, so lets virtualise B2 & B3
 # see http://wiki.tcl.tk/14728
 if {[tk windowingsystem] == "aqua"} {
-    event add <<contextMenu>> <Button-2> <Control-Button-1>
+    event add <<contextMenu>> <Button-2> <Meta-Button-1>
     event add <<middleMouse>> <Button-3>
     event add <<middleMouse-Motion>> <B3-Motion>
     event add <<middleMouse-ButtonRelease>> <B3-ButtonRelease>
 } else {
-    event add <<contextMenu>> <Button-3> <Control-Button-1>
+    event add <<contextMenu>> <Button-3>
     event add <<middleMouse>> <Button-2>
     event add <<middleMouse-Motion>> <B2-Motion>
     event add <<middleMouse-ButtonRelease>> <B2-ButtonRelease>
