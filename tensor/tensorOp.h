@@ -261,9 +261,9 @@ namespace civita
   class SortByValue: public CachedTensorOp
   {
     TensorPtr arg;
-    minsky::RavelState::HandleState::HandleSort order;
+    ravel::HandleSort::Order order;
   public:
-    SortByValue(minsky::RavelState::HandleState::HandleSort order): order(order) {}
+    SortByValue(ravel::HandleSort::Order order): order(order) {}
     void setArgument(const TensorPtr& a,const std::string& ={},double=0) override {
       if (a->rank()!=1)
         throw std::runtime_error("Sort by Value only applicable for rank 1 tensors");
@@ -286,7 +286,7 @@ namespace civita
   
   /// creates a chain of tensor operations that represents a Ravel in
   /// state \a state, operating on \a arg
-  std::vector<TensorPtr> createRavelChain(const minsky::RavelState&, const TensorPtr& arg);
+  std::vector<TensorPtr> createRavelChain(const ravel::RavelState&, const TensorPtr& arg);
 
 }
 

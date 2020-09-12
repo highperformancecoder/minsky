@@ -537,7 +537,7 @@ namespace minsky
            {
              auto state=ri->getState();
              for (auto& j: state.handleStates)
-               dimensions.emplace(j.first,Dimension());
+               dimensions.emplace(j.description,Dimension());
            }
          return false;
        });

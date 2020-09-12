@@ -52,9 +52,9 @@ FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
-VPATH= schema model engine tensor gui-tk RESTService $(ECOLAB_HOME)/include
+VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -96,7 +96,7 @@ BOOST_EXT=
 $(warning Boost extension=$(BOOST_EXT))
 endif
 
-LIBS+=	-ljson_spirit \
+LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
@@ -187,6 +187,12 @@ ifndef TRAVIS
 endif
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
+
+$(EXES): RavelCAPI/libravelCAPI.a
+
+.PHONY: RavelCAPI/libravelCAPI.a
+RavelCAPI/libravelCAPI.a:
+	cd RavelCAPI && $(MAKE) $(MAKEOVERRIDES) 
 
 tests: $(EXES)
 	cd test; $(MAKE)
