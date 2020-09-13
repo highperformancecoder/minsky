@@ -283,15 +283,13 @@ namespace minsky
   void Minsky::paste()
   {
     istringstream is(getClipboard());
-    xml_unpack_t unpacker(is); 
+    xml_unpack_t unpacker(is);
     schema3::Minsky m(unpacker);
     GroupPtr g(new Group);
     g->self=g;
     m.populateGroup(*g);
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
-    canvas.selection.clear();
-    // The following is only necessary if one pastes into an existing model. For ticket 1258   
-	if (!history.empty() || !canvas.model.get()->empty()) {     
+    canvas.selection.clear();    
     bool alreadyDefinedMessageDisplayed=false;
     
     // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
@@ -329,21 +327,18 @@ namespace minsky
                                assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
                                g->removeWire(*v->ports[1]->wires()[0]);
                              }
-                         } 
+                         }
                      return false;
                    });
-	}                              
 
     canvas.model->addGroup(g); // needed to ensure wires are correctly handled
     auto copyOfItems=g->items;
-
     for (auto& i: copyOfItems)
       {		
          canvas.model->addItem(i);			  
          canvas.selection.ensureItemInserted(i);
          assert(!i->ioVar());
       }
-
     // Attach mouse focus only to first visible item in selection. For ticket 1098.      
     for (auto& i: copyOfItems)
       if (i->visible())
@@ -351,17 +346,15 @@ namespace minsky
           canvas.setItemFocus(i);
           break;
         }
-        
     auto copyOfGroups=g->groups;
     for (auto& i: copyOfGroups)
     {	
-        canvas.model->addGroup(i);
+        canvas.model->addGroup(i);	
     }
-
     if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);
     canvas.model->removeGroup(*g);
     canvas.requestRedraw();
-  }  
+  }
 
   namespace
   {
