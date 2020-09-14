@@ -291,59 +291,57 @@ namespace minsky
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();
     // The following is only necessary if one pastes into an existing model. For ticket 1258   
-	if (!history.empty() || !canvas.model.get()->empty()) {     
-    bool alreadyDefinedMessageDisplayed=false;
-    
-    // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
-    g->recursiveDo(&GroupItems::items,
-                   [&](Items&, Items::iterator i) {
-                     if (auto v=(*i)->variableCast())
-                       if (v->defined() || v->isStock())
-                         {
-                           // if defined, check no other defining variable exists
-                           auto alreadyDefined = canvas.model->findAny
-                             (&GroupItems::items,
-                              [&v](const ItemPtr& j)
-                              {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
-                           if (v->isStock())
-                             {
-                               if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)
-                                 {
-                                   message("Integral/Stock variable "+v->name()+" already defined.");
-                                   alreadyDefinedMessageDisplayed=true;
-                                 }
-                               else if (!v->defined() && !alreadyDefined)
-                                 {
-                                   // need to do this var explicitly, as not currently part of model structure
-                                   if (auto vp=VariablePtr(*i))
-                                     {
-                                       vp.retype(VariableType::flow);
-                                       *i=vp;
-                                       convertVarType(vp->valueId(), VariableType::flow);
-                                     }
-                                 }
-                             }
-                           else if (alreadyDefined)
-                             {
-                               // delete defining wire from this
-                               assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
-                               g->removeWire(*v->ports[1]->wires()[0]);
-                             }
-                         } 
-                     return false;
-                   });
-	}                              
+    if (!history.empty() || !canvas.model.get()->empty()) {     
+      bool alreadyDefinedMessageDisplayed=false;
+      
+      // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
+      g->recursiveDo(&GroupItems::items,
+                     [&](Items&, Items::iterator i) {
+                       if (auto v=(*i)->variableCast())
+                         if (v->defined() || v->isStock())
+                           {
+                             // if defined, check no other defining variable exists
+                             auto alreadyDefined = canvas.model->findAny
+                               (&GroupItems::items,
+                                [&v](const ItemPtr& j)
+                                {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
+                             if (v->isStock())
+                               {
+                                 if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)
+                                   {
+                                     message("Integral/Stock variable "+v->name()+" already defined.");
+                                     alreadyDefinedMessageDisplayed=true;
+                                   }
+                                 else if (!v->defined() && !alreadyDefined)
+                                   {
+                                     // need to do this var explicitly, as not currently part of model structure
+                                     if (auto vp=VariablePtr(*i))
+                                       {
+                                         vp.retype(VariableType::flow);
+                                         *i=vp;
+                                         convertVarType(vp->valueId(), VariableType::flow);
+                                       }
+                                   }
+                               }
+                             else if (alreadyDefined)
+                               {
+                                 // delete defining wire from this
+                                 assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
+                                 g->removeWire(*v->ports[1]->wires()[0]);
+                               }
+                           } 
+                       return false;
+                     });
+    }                              
 
     canvas.model->addGroup(g); // needed to ensure wires are correctly handled
     auto copyOfItems=g->items;
+    auto copyOfGroups=g->groups;
+    
+    canvas.model->moveContents(*g);
 
-    for (auto& i: copyOfItems)
-      {		
-         canvas.model->addItem(i);			  
-         canvas.selection.ensureItemInserted(i);
-         assert(!i->ioVar());
-      }
-
+    for (auto& i: copyOfItems) canvas.selection.ensureItemInserted(i);
+	
     // Attach mouse focus only to first visible item in selection. For ticket 1098.      
     for (auto& i: copyOfItems)
       if (i->visible())
@@ -352,14 +350,9 @@ namespace minsky
           break;
         }
         
-    auto copyOfGroups=g->groups;
-    for (auto& i: copyOfGroups)
-    {	
-        canvas.model->addGroup(i);
-    }
+    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);   
 
-    if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);
-    canvas.model->removeGroup(*g);
+    canvas.model->removeGroup(*g);  
     canvas.requestRedraw();
   }  
 
