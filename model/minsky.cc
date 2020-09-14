@@ -288,6 +288,10 @@ namespace minsky
     GroupPtr g(new Group);
     g->self=g;
     m.populateGroup(*g);
+    // stash values of parameters in copied group, as they are reset for some unknown reason later on. for ticket 1258
+    vector<pair<string,string>> existingParms; 
+    for (auto& i: g->items) 
+        if (i->variableCast() && i->variableCast()->type()==VariableType::parameter) existingParms.push_back(make_pair(i->variableCast()->valueId(),i->variableCast()->init()));
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();
     // The following is only necessary if one pastes into an existing model. For ticket 1258   
@@ -297,7 +301,7 @@ namespace minsky
       // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
       g->recursiveDo(&GroupItems::items,
                      [&](Items&, Items::iterator i) {
-                       if (auto v=(*i)->variableCast()) {
+                       if (auto v=(*i)->variableCast())
                          if (v->defined() || v->isStock())
                            {
                              // if defined, check no other defining variable exists
@@ -330,17 +334,6 @@ namespace minsky
                                  g->removeWire(*v->ports[1]->wires()[0]);
                                }
                            }
-                         // make sure parameter values are preserved after copy/paste. for ticket 1258  
-                         if (v->type()==VariableType::parameter) 
-                         {
-                            auto existingParm = canvas.model->findAny
-                               (&GroupItems::items,
-                                [&v](const ItemPtr& j)
-                                {return j->variableCast() && j->variableCast()->valueId()==v->valueId();});
-                            if (existingParm) v->init(existingParm->variableCast()->init());
-                            else v->ensureValueExists(v->vValue().get(),v->name());   
-				         }  
-					   } 
                        return false;
                      });
     }                              
@@ -354,7 +347,16 @@ namespace minsky
     canvas.model->moveContents(*g); 
 
     // leave newly ungrouped items in selection
-    for (auto& i: copyOfItems) canvas.selection.toggleItemMembership(i);
+    for (auto& i: copyOfItems) {
+       canvas.selection.ensureItemInserted(i);
+       // ensure that initial values of pasted parameters are correct. for ticket 1258
+       if (auto v=i->variableCast())
+		 if (v->type()==VariableType::parameter && !existingParms.empty()) 
+		   for (vector<pair<string,string>>::iterator it = existingParms.begin() ; it != existingParms.end(); ++it)
+		      if (v->valueId()==(*it).first) v->init((*it).second);
+	}
+	
+	if (!existingParms.empty()) existingParms.clear();
 	
     // Attach mouse focus only to first visible item in selection. For ticket 1098.      
     for (auto& i: canvas.selection.items)
