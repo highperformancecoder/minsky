@@ -338,8 +338,11 @@ namespace minsky
     auto copyOfItems=g->items;
     auto copyOfGroups=g->groups;
     
-    canvas.model->moveContents(*g);
+    g->resizeOnContents(); // used in insertGroupFromfile(), so why not here?
+    // ungroup g, putting all its contents on the canvas
+    canvas.model->moveContents(*g); 
 
+    // leave newly ungrouped items in selection
     for (auto& i: copyOfItems) canvas.selection.ensureItemInserted(i);
 	
     // Attach mouse focus only to first visible item in selection. For ticket 1098.      
