@@ -297,7 +297,7 @@ namespace minsky
       // convert stock variables that aren't defined to flow variables, and other fix up multiply defined vars
       g->recursiveDo(&GroupItems::items,
                      [&](Items&, Items::iterator i) {
-                       if (auto v=(*i)->variableCast())
+                       if (auto v=(*i)->variableCast()) {
                          if (v->defined() || v->isStock())
                            {
                              // if defined, check no other defining variable exists
@@ -329,7 +329,18 @@ namespace minsky
                                  assert(v->ports.size()>1 && !v->ports[1]->wires().empty());
                                  g->removeWire(*v->ports[1]->wires()[0]);
                                }
-                           } 
+                           }
+                         // make sure parameter values are preserved after copy/paste. for ticket 1258  
+                         if (v->type()==VariableType::parameter) 
+                         {
+                            auto existingParm = canvas.model->findAny
+                               (&GroupItems::items,
+                                [&v](const ItemPtr& j)
+                                {return j->variableCast() && j->variableCast()->valueId()==v->valueId();});
+                            if (existingParm) v->init(existingParm->variableCast()->init());
+                            else v->ensureValueExists(v->vValue().get(),v->name());   
+				         }  
+					   } 
                        return false;
                      });
     }                              
@@ -343,16 +354,16 @@ namespace minsky
     canvas.model->moveContents(*g); 
 
     // leave newly ungrouped items in selection
-    for (auto& i: copyOfItems) canvas.selection.ensureItemInserted(i);
+    for (auto& i: copyOfItems) canvas.selection.toggleItemMembership(i);
 	
     // Attach mouse focus only to first visible item in selection. For ticket 1098.      
-    for (auto& i: copyOfItems)
+    for (auto& i: canvas.selection.items)
       if (i->visible())
         {
           canvas.setItemFocus(i);
           break;
         }
-        
+                        
     if (!copyOfGroups.empty()) canvas.setItemFocus(copyOfGroups[0]);   
 
     canvas.model->removeGroup(*g);  
