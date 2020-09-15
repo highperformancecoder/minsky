@@ -1294,6 +1294,16 @@ proc recentreCanvas {} {
             equationDisplay.offsy 0
             equationDisplay.requestRedraw
         }
+        .parameters {
+            parameterSheet.offsx 0
+            parameterSheet.offsy 0
+            parameterSheet.requestRedraw
+        }
+        .variables {
+            variableSheet.offsx 0
+            variableSheet.offsy 0
+            variableSheet.requestRedraw
+        }                
     }
 }
 
