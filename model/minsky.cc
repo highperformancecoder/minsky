@@ -354,8 +354,10 @@ namespace minsky
        // ensure that initial values of pasted parameters are correct. for ticket 1258
        if (auto v=i->variableCast())
 		 if (v->type()==VariableType::parameter && !existingParms.empty()) 
-		   for (auto& it: existingParms)
-		      if (v->valueId()==it.first) v->init(it.second);
+		 {
+		   auto it=existingParms.find(v->valueId());
+		   if (it!=existingParms.end()) v->init(it->second);
+	   }
 	}
 	
 	if (!existingParms.empty()) existingParms.clear();
