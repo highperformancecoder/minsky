@@ -289,9 +289,12 @@ namespace minsky
     g->self=g;
     m.populateGroup(*g);
     // stash values of parameters in copied group, as they are reset for some unknown reason later on. for ticket 1258
-    vector<pair<string,string>> existingParms; 
-    for (auto& i: g->items) 
-        if (i->variableCast() && i->variableCast()->type()==VariableType::parameter) existingParms.push_back(make_pair(i->variableCast()->valueId(),i->variableCast()->init()));
+    map<string,string> existingParms; 
+    for (auto& i: g->items) {
+        auto v=i->variableCast(); 
+        if (v && v->type()==VariableType::parameter) 
+			existingParms.emplace(v->valueId(),v->init());
+	}
     // Default pasting no longer occurs as grouped items or as a group within a group. Fix for tickets 1080/1098    
     canvas.selection.clear();
     // The following is only necessary if one pastes into an existing model. For ticket 1258   
@@ -342,7 +345,6 @@ namespace minsky
     auto copyOfItems=g->items;
     auto copyOfGroups=g->groups;
     
-    g->resizeOnContents(); // used in insertGroupFromfile(), so why not here?
     // ungroup g, putting all its contents on the canvas
     canvas.model->moveContents(*g); 
 
@@ -352,8 +354,8 @@ namespace minsky
        // ensure that initial values of pasted parameters are correct. for ticket 1258
        if (auto v=i->variableCast())
 		 if (v->type()==VariableType::parameter && !existingParms.empty()) 
-		   for (vector<pair<string,string>>::iterator it = existingParms.begin() ; it != existingParms.end(); ++it)
-		      if (v->valueId()==(*it).first) v->init((*it).second);
+		   for (auto& it: existingParms)
+		      if (v->valueId()==it.first) v->init(it.second);
 	}
 	
 	if (!existingParms.empty()) existingParms.clear();
