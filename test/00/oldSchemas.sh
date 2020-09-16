@@ -63,7 +63,7 @@ done
 
 for i in */*.mky; do
     $here/gui-tk/minsky $here/test/renderCanvas.tcl $i $tmp/$i.svg
-    diff -wq $tmp/$i.svg $i.svg 
+    $here/test/compareSVG.sh $tmp/$i.svg $i.svg 
     if test $? -ne 0; then
         echo "rendered $i canvas mutated"
         fail
