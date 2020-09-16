@@ -36,7 +36,7 @@ for i in *.mky; do
     if [ "$i" = importedCSV.mky ]; then continue; fi
     $here/gui-tk/minsky $here/test/renderParVarSheet.tcl $i
     for j in parameters variables; do
-        diff $i-$j.svg $here/test/renderedEquations/$i-$j.svg
+        $here/test/compareSVG.sh $i-$j.svg $here/test/renderedEquations/$i-$j.svg
         if [ $? -ne 0 ]; then fail; fi
     done
 done
