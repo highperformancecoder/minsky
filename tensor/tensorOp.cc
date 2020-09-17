@@ -549,6 +549,9 @@ namespace civita
                     perm.push_back(offsets[j]);
                 break;
               }
+            case ravel::HandleSort::numForward: case ravel::HandleSort::numReverse:
+            case ravel::HandleSort::timeForward: case ravel::HandleSort::timeReverse:
+              throw runtime_error("deprecated sort order used");
             }
           // remove any permutation items outside calipers
           if (!i.minLabel.empty())

@@ -374,8 +374,8 @@ namespace schema3
       {
         if (y.ravelState)
           {
-            x1->applyState(*y.ravelState);
-            SchemaHelper::initHandleState(*x1,*y.ravelState);
+            x1->applyState(y.ravelState->toRavelRavelState());
+            SchemaHelper::initHandleState(*x1,y.ravelState->toRavelRavelState());
           }
         
         if (y.dimensions)

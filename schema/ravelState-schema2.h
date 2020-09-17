@@ -26,12 +26,12 @@
 
 namespace schema2
 {
-  struct RavelState: ravel::RavelState
+  struct RavelState: public ravel::RavelState
   {
     // schema3 ravel state differs by how handle states are stored
     std::map<std::string, ravel::HandleState> handleStates;
     RavelState() {}
-    operator ravel::RavelState() const {
+    ravel::RavelState toRavelRavelState() const {
       ravel::RavelState r(*this);
       r.handleStates.clear();
       for (auto& i: handleStates)
