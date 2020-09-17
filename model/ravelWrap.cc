@@ -56,13 +56,13 @@ namespace minsky
   }
 
   Ravel::Ravel()
-    try
-      {}
-    catch(const std::exception& ex)
+  {
+    if (!*this)
       {
         tooltip="https://ravelation.hpcoders.com.au";
-        detailedText=ex.what();
+        detailedText=lastError();
       }
+  }
 
   void Ravel::draw(cairo_t* cairo) const
   {
