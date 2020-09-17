@@ -6,4 +6,4 @@
 	url = https://github.com/djarek/certify
 [submodule "RavelCAPI"]
 	path = RavelCAPI
-	url = git@github.com:highperformancecoder/RavelCAPI.git
+	url = https://github.com/highperformancecoder/RavelCAPI.git
