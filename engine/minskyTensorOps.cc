@@ -22,10 +22,7 @@
 #include "minsky.h"
 #include "ravelWrap.h"
 #include "minsky_epilogue.h"
-
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
+#include "SparseMatrix/SparseMatrix.h"
 
 using namespace civita;
 namespace classdesc
@@ -38,6 +35,7 @@ namespace classdesc
 namespace minsky
 {
   using namespace classdesc;
+  using namespace sparsematrix;  
 
   TensorOpFactory tensorOpFactory;
 
@@ -283,42 +281,30 @@ namespace minsky
 		
 	 if (arg1->rank()>2 || arg2->rank()>2)
         throw runtime_error("inner product of rank>2 tensors not yet implemented");
-     
-     boost::numeric::ublas::matrix<double> m1 (arg1->hypercube().dims()[0],arg1->hypercube().dims()[1]);
-     if (arg1->rank()<2) boost::numeric::ublas::vector<double> m1 (arg1->hypercube().dims()[0]);
-     
-     for (size_t i=0; i<m1.size1(); ++i)
-         for (size_t j=0; j<m1.size2(); ++j)
-           if (arg1->rank()>1) m1(i,j)=arg1->atHCIndex(j+i*arg1->hypercube().dims()[arg1->rank()-1]);
 
-      if (arg1->rank()<2) {
-		  boost::numeric::ublas::vector<double> m1 (arg1->hypercube().dims()[0]);
-		  for (size_t i=0; i<m1.size(); ++i)
-             m1(i)=(*arg1)[i];   
-		 }
-              
-     boost::numeric::ublas::matrix<double> m2 (arg2->hypercube().dims()[0],arg2->hypercube().dims()[1]);
-     if (arg2->rank()<2) boost::numeric::ublas::vector<double> m2 (arg2->hypercube().dims()[0]);     
+     SparseMatrix<double> m1(arg1->rank()>1?  arg1->hypercube().dims()[0] : 1, arg1->hypercube().dims()[1]), m2(arg2->hypercube().dims()[0], arg2->rank()>1? arg2->hypercube().dims()[1] : 1);
      
-      for (size_t i=0; i<m2.size1(); ++i)
-          for (size_t j=0; j<m2.size2(); ++j)
-             if (arg2->rank()>1) m2(i,j)=arg2->atHCIndex(j+i*arg2->hypercube().dims()[0]);
-              
-      if (arg2->rank()<2) {
-		  boost::numeric::ublas::vector<double> m2 (arg2->hypercube().dims()[0]);
-		  for (size_t i=0; i<m2.size(); ++i)
-             m2(i)=(*arg2)[i];   
-		 }
-          
-     boost::numeric::ublas::matrix<double> dotProd=prec_prod(m1,m2);          
+     for (size_t i=0; i<size_t(m1.getRowCount()); ++i)
+         for (size_t j=0; j<size_t(m1.getColumnCount()); ++j)
+           if (arg1->rank()>1) m1.set(arg1->atHCIndex(j+i*arg1->hypercube().dims()[arg1->rank()-1]),i+1,j+1);
+           else m1.set((*arg1)[j],i+1,j+1);
+           
+     for (size_t i=0; i<size_t(m2.getRowCount()); ++i)
+         for (size_t j=0; j<size_t(m2.getColumnCount()); ++j)
+           if (arg2->rank()>1) m2.set(arg2->atHCIndex(j+i*arg2->hypercube().dims()[0]),i+1,j+1); 
+           else m2.set((*arg2)[i],i+1,j+1);         
+           
+	SparseMatrix<double> product=m1*m2;   
 	
-     size_t counter=0; 
-     for (size_t i=0; i<dotProd.size1(); ++i)
-         for (size_t j=0; j<dotProd.size2(); ++j, counter++)
-               cachedResult[counter]=dotProd(i,j);
-     
+	size_t counter=0;
+     for (size_t i=0; i<size_t(product.getRowCount()); ++i)
+         for (size_t j=0; size_t(j<product.getColumnCount()); ++j) {         
+             cachedResult[counter]=product.get(i+1,j+1);
+             counter++;	             
+		 }
+           
      if (cachedResult.size()==0) 
-        for (size_t i=0; i<arg1->size(); i++) 
+        for (size_t i=0; i<arg2->size(); i++) 
            cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
@@ -328,9 +314,19 @@ namespace minsky
         if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
           throw std::runtime_error("arguments not conformal");
         
-        // ensure size of final tensor is the same as the second argument, which can be rank 1 or 2  
- 		cachedResult.hypercube(arg2->hypercube());
-		cachedResult.index(arg2->index());
+        if (arg1->rank()>1 && arg2->rank()>1) {
+           vector<XVector>&& outerXVs{arg1->hypercube().xvectors[0],arg2->hypercube().xvectors[arg2->rank()-1]};
+           cachedResult.hypercube(outerXVs);
+	    }
+        else if (arg1->rank()>1 && arg2->rank()<2) { //case mxn dot nx1
+			vector<XVector>&& outerXVs{arg2->hypercube().xvectors[0]};
+			cachedResult.hypercube(outerXVs);
+		}
+        else if (arg1->rank()<2 && arg2->rank()>1) { //case 1xn dot nxm
+            vector<XVector>&& outerXVs{arg1->hypercube().xvectors[0]};
+            cachedResult.hypercube(outerXVs);
+		}
+        else cachedResult.hypercube({});   
 	  }
     }    
   };
