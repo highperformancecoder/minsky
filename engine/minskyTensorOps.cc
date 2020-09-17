@@ -298,7 +298,7 @@ namespace minsky
 	
 	size_t counter=0;
      for (size_t i=0; i<size_t(product.getRowCount()); ++i)
-         for (size_t j=0; size_t(j<product.getColumnCount()); ++j) {         
+         for (size_t j=0; j<size_t(product.getColumnCount()); ++j) {         
              cachedResult[counter]=product.get(i+1,j+1);
              counter++;	             
 		 }
