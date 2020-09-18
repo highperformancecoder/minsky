@@ -312,8 +312,9 @@ namespace minsky
       arg1=a1; arg2=a2;
       if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
         if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
-          throw std::runtime_error("arguments not conformal");
+          throw std::runtime_error("inner dimensions of tensors do not match");
         
+        // shape of output tensor should match outer dimensions of the two rank<2 tensors originally multiplied by one another       
         if (arg1->rank()>1 && arg2->rank()>1) {
            vector<XVector>&& outerXVs{arg1->hypercube().xvectors[0],arg2->hypercube().xvectors[arg2->rank()-1]};
            cachedResult.hypercube(outerXVs);
