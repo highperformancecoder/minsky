@@ -44,9 +44,6 @@ RESTSERVICE_OBJS=RESTService.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS)
 
-EXES=gui-tk/minsky
-#RESTService/RESTService 
-
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
@@ -95,6 +92,9 @@ BOOST_EXT=
   endif
 $(warning Boost extension=$(BOOST_EXT))
 endif
+
+EXES=gui-tk/minsky$(EXE)
+#RESTService/RESTService 
 
 LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
