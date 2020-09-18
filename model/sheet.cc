@@ -77,10 +77,17 @@ void Sheet::draw(cairo_t* cairo) const
           else
             {
               if (value->hypercube().rank()==2)
-                y+=rowHeight; // allow room for header row
+                y+=rowHeight; // allow room for header row               
 
               // draw in label column
               string format=value->hypercube().xvectors[0].timeFormat();
+                { // draw horizontal grid line
+                  cairo::CairoSave cs(cairo);
+                  cairo_set_source_rgba(cairo,0,0,0,0.5);
+                  cairo_move_to(cairo,-0.5*m_width,y-2.5);
+                  cairo_line_to(cairo,0.5*m_width,y-2.5);
+                  cairo_stroke(cairo);
+                }                    
               for (auto& i: value->hypercube().xvectors[0])
                 {
                   cairo_move_to(cairo,x,y);
@@ -88,10 +95,18 @@ void Sheet::draw(cairo_t* cairo) const
                   pango.show();
                   y+=rowHeight;
                   colWidth=std::max(colWidth,5+pango.width()/z);
-                }
-              y=y0;
-              x+=colWidth;
+                }                
+              y=y0;          
+              x+=colWidth;            
               if (value->hypercube().rank()==1)
+              {
+                { // draw vertical grid line
+                  cairo::CairoSave cs(cairo);
+                  cairo_set_source_rgba(cairo,0,0,0,0.5);
+                  cairo_move_to(cairo,x,-0.5*m_height);
+                  cairo_line_to(cairo,x,0.5*m_height);
+                  cairo_stroke(cairo);
+                }                  				
                 for (size_t i=0; i<value->size(); ++i)
                   {
                     if (!value->index().empty())
@@ -102,9 +117,10 @@ void Sheet::draw(cairo_t* cairo) const
                       {
                         pango.setMarkup(str(v));
                         pango.show();
-                      }
+                      }                       
                     y+=rowHeight;
                   }
+			  }
               else
                 {
                   format=value->hypercube().xvectors[1].timeFormat();
