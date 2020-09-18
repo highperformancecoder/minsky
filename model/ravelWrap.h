@@ -22,45 +22,38 @@
 
 #include "operation.h"
 #include "cairoRenderer.h"
-#include "ravelState.h"
+#include "dynamicRavelCAPI.h"
 
 namespace minsky 
 {
   using namespace civita;
   class RavelLockGroup;
   
-  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public ravel::Ravel
   {
   public:
-    struct RavelImpl;
-    struct DataCube;
 
     CLASSDESC_ACCESS(Ravel);
   private:
-    typedef RavelState::HandleState HandleState;
-    classdesc::Exclude<RavelImpl*> ravel=nullptr;
-    classdesc::Exclude<DataCube*> dataCube=nullptr;       
-    void noRavelSetup();
+    using HandleState=ravel::HandleState;
     /// position of the "move" handle, as a proportion of radius
     const double moveX=0.5, moveY=0.5, moveSz=0.1;
-    std::string m_filename;
+    //std::string m_filename;
     std::string explanation; // explanation of Ravel bits displayed as tooltip
-    HandleState::HandleSort previousOrder=HandleState::forward;
+    ravel::HandleSort::Order previousOrder=ravel::HandleSort::forward;
     
     /// used entirely to defer persisted state data until after first
     /// load from a variable
-    RavelState initState;
+    ravel::RavelState initState;
     
     friend struct SchemaHelper;
 
-    std::vector<std::string> allSliceLabelsImpl(int axis, HandleState::HandleSort) const;
+    std::vector<std::string> allSliceLabelsImpl(int axis, ravel::HandleSort::Order) const;
 
     /// return hypercube corresponding to the current Ravel state. \a data returns a pointer to the current data slice
-    Hypercube hypercube(double*& data) const;
 
   public:
     Ravel();
-    ~Ravel();
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
     void operator=(const Ravel&) {}
@@ -77,37 +70,28 @@ namespace minsky
     /// true to indicate mouse hovering over border
     bool onBorder=false; 
     
-    std::string ravelVersion() const; ///< Ravel version string
-    const char* lastErr() const;
     void draw(cairo_t* cairo) const override;
     void resize(const LassoBox&) override;
-    double radius() const;
     ClickType::Type clickType(float x, float y) override;
     void onMouseDown(float x, float y);
     void onMouseUp(float x, float y);
     bool onMouseMotion(float x, float y);
     bool onMouseOver(float x, float y);
-    void onMouseLeave();
-    void loadFile(const std::string&);
-    const std::string& filename() const {return m_filename;}
+    //    void loadFile(const std::string&);
+    //    const std::string& filename() const {return m_filename;}
     /// return hypercube corresponding to the current Ravel state
-    Hypercube hypercube() const {double* tmp; return hypercube(tmp);}
+    Hypercube hypercube() const;
     void populateHypercube(const Hypercube&);
     /// @return input rank
     unsigned maxRank() const;
-    /// @return output rank
-    unsigned rank() const;
     /// adjust output dimensions to first \a r handles
     void setRank(unsigned r);
     void adjustSlicer(int); ///< adjust currently selected handle's slicer
     bool handleArrows(int dir, bool modifier) override;
 
-    /// return selected handle, or -1 if none
-    int selectedHandle() const;
-    
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;
-    bool setDisplayFilterCaliper(bool);
+    bool setDisplayFilterCaliper(bool x);
     bool toggleDisplayFilterCaliper()
     {return setDisplayFilterCaliper(!displayFilterCaliper());}
     /// @}
@@ -126,15 +110,15 @@ namespace minsky
     
     /// @{
     /// the handle sorting order for currently selected handle
-    HandleState::HandleSort sortOrder() const;
-    HandleState::HandleSort setSortOrder(HandleState::HandleSort);
+    ravel::HandleSort::Order sortOrder() const;
+    ravel::HandleSort::Order setSortOrder(ravel::HandleSort::Order);
     /// @}
 
     /// set a given handle sort order
-    HandleState::HandleSort setHandleSortOrder(HandleState::HandleSort, int handle);
+    ravel::HandleSort::Order setHandleSortOrder(ravel::HandleSort::Order, int handle);
 
     /// Set the sort order to sort by value. Only applicable for rank 1 ravels
-    HandleState::HandleSort sortByValue = HandleState::none;
+    ravel::HandleSort::Order sortByValue = ravel::HandleSort::none;
     /// @return true if mouse is over an output handle sortable by value
     bool handleSortableByValue() const;
     
@@ -151,10 +135,10 @@ namespace minsky
     /// @}
     
     /// get the current state of the Ravel
-    RavelState getState() const;
+    ravel::RavelState getState() const {return getRavelState();}
     /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
     /// @param preservePositions if true, do not rotate handles
-    void applyState(const RavelState&);
+    void applyState(const ravel::RavelState& state) {setRavelState(state);}
     void displayDelayedTooltip(float x, float y) override;
     void exportAsCSV(const std::string& filename) const;
 

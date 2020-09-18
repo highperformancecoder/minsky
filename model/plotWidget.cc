@@ -282,7 +282,7 @@ namespace minsky
     if (!justDataChanged)
       // label pens
       for (size_t i=0; i<yvars.size(); ++i)
-        if (yvars[i])
+        if (yvars[i] && !yvars[i]->name.empty())
           labelPen(i, latexToPango(yvars[i]->name));
   }
 
@@ -531,22 +531,38 @@ namespace minsky
             }
           
           // higher rank y objects treated as multiple y vectors to plot
-          // For feature 47
+          auto startPen=extraPen;
+          auto& idx=yv->index();
+          if (idx.empty())
             for (size_t j=0 /*d[0]*/; j<std::min(maxNumTensorElementsToPlot*d[0], yv->size()); j+=d[0])
               {
                 setPen(extraPen, x, yv->begin()+j, d[0]);
-                if (pen>=numLines)
-                  assignSide(extraPen,Side::right);
-               string label;
-                size_t stride=d[0];
-                for (size_t i=1; i<yv->hypercube().rank(); ++i)
-                  {
-                    label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
-                    stride*=d[i];
-                  }
-                labelPen(extraPen,label);
                 extraPen++;
-              }      
+              }
+          else // data is sparse
+            for (size_t j=0; j<idx.size(); ++j)
+              {
+                auto div=lldiv(idx[j], d[0]);
+                if (size_t(div.quot)<maxNumTensorElementsToPlot)
+                  {
+                    addPt(startPen+div.quot, x[div.rem], (*yv)[j]);
+                    if (extraPen<=startPen+div.quot) extraPen=startPen+div.quot+1;
+                  }
+              }
+          // compute the pen labels
+          for (int j=0; startPen<extraPen; ++startPen, ++j)
+            {
+              string label;
+              size_t stride=1;
+              for (size_t i=1; i<yv->hypercube().rank(); ++i)
+                {
+                  label+=str(yv->hypercube().xvectors[i][(j/stride)%d[i]])+" ";
+                  stride*=d[i];
+                }
+              if (pen>=numLines)
+                assignSide(extraPen,Side::right);
+              labelPen(startPen,defang(label));
+            }
         }
     scalePlot();
   }

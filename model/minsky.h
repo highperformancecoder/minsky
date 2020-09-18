@@ -298,7 +298,7 @@ namespace minsky
     /// return the AEGIS assigned version number
     static const char* minskyVersion;
     std::string ecolabVersion() const {return VERSION;}
-    std::string ravelVersion() const;
+    std::string ravelVersion() const {return ravel::Ravel::version();}
 
     std::string fileVersion; ///< Minsky version file was saved under
     

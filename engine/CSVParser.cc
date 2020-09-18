@@ -77,15 +77,14 @@ namespace
   
   double quotedStoD(const string& s,size_t& charsProcd)
   {
-    double r=stod(s,&charsProcd);
-    if (charsProcd==s.size()) return r;
     //strip possible quote characters
-    if (!s.empty() && s[0]==s[s.size()-1])
+    if (!s.empty() && s[0]==s[s.size()-1] && !isalnum(s[0]))
       {
-        r=stod(s.substr(1),&charsProcd);
+        double r=stod(s.substr(1),&charsProcd);
         charsProcd+=2;
+        return r;
       }
-    return r;
+    return stod(s,&charsProcd);
   }
 
   string stripWSAndDecimalSep(const string& s)
@@ -428,8 +427,17 @@ namespace minsky
                       if (dim>=hc.xvectors.size())
                         hc.xvectors.emplace_back("?"); // no header present
                       key.push_back(*field);
-                      if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
-                        hc.xvectors[dim].push_back(*field);
+                      try
+                        {
+                          if (dimLabels[dim].emplace(*field, dimLabels[dim].size()).second)
+                            hc.xvectors[dim].push_back(*field);
+                        }
+                      catch (...)
+                        {
+                          throw std::runtime_error("Invalid data: "+*field+" for "+
+                                                   to_string(spec.dimensions[dim].type)+
+                                                   " dimensioned column: "+spec.dimensionNames[dim]);
+                        }
                       dim++;
                     }
                     

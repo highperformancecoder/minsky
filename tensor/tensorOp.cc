@@ -390,16 +390,16 @@ namespace civita
   namespace
   {
     /// factory method for creating reduction operations
-    TensorPtr createReductionOp(minsky::RavelState::HandleState::ReductionOp op)
+    TensorPtr createReductionOp(ravel::Op::ReductionOp op)
     {
       switch (op)
         {
-        case minsky::RavelState::HandleState::sum: return make_shared<Sum>();
-        case minsky::RavelState::HandleState::prod: return make_shared<Product>();
-        case minsky::RavelState::HandleState::av: return make_shared<civita::Average>();
-        case minsky::RavelState::HandleState::stddev: return make_shared<civita::StdDeviation>();
-        case minsky::RavelState::HandleState::min: return make_shared<Min>();
-        case minsky::RavelState::HandleState::max: return make_shared<Max>();
+        case ravel::Op::sum: return make_shared<Sum>();
+        case ravel::Op::prod: return make_shared<Product>();
+        case ravel::Op::av: return make_shared<civita::Average>();
+        case ravel::Op::stddev: return make_shared<civita::StdDeviation>();
+        case ravel::Op::min: return make_shared<Min>();
+        case ravel::Op::max: return make_shared<Max>();
         default: throw runtime_error("Reduction "+to_string(op)+" not understood");
         }
     }
@@ -467,10 +467,10 @@ namespace civita
       }
     switch (order)
       {
-      case minsky::RavelState::HandleState::forward:
+      case ravel::HandleSort::forward:
         sort(idx.begin(), idx.end(), [&](size_t i, size_t j){return tmp[i]<tmp[j];});
         break;
-      case minsky::RavelState::HandleState::reverse:
+      case ravel::HandleSort::reverse:
         sort(idx.begin(), idx.end(), [&](size_t i, size_t j){return tmp[i]>tmp[j];});
         break;
       default:
@@ -488,79 +488,82 @@ namespace civita
   }
 
   
-  vector<TensorPtr> createRavelChain(const minsky::RavelState& state, const TensorPtr& arg)
+  vector<TensorPtr> createRavelChain(const ravel::RavelState& state, const TensorPtr& arg)
   {
     set<string> outputHandles(state.outputHandles.begin(), state.outputHandles.end());
     vector<TensorPtr> chain{arg};
     // TODO sorts and calipers
     for (auto& i: state.handleStates)
-      if (!outputHandles.count(i.first))
+      if (!outputHandles.count(i.description))
         {
           auto arg=chain.back();
-          if (i.second.collapsed)
+          if (i.collapsed)
             {
-              chain.emplace_back(createReductionOp(i.second.reductionOp));
-              chain.back()->setArgument(arg, i.first);
+              chain.emplace_back(createReductionOp(i.reductionOp));
+              chain.back()->setArgument(arg, i.description);
             }
           else
             {
               chain.emplace_back(new Slice);
               auto& xv=arg->hypercube().xvectors;
               auto axisIt=find_if(xv.begin(), xv.end(),
-                                  [&](const XVector& j){return j.name==i.first;});
-              if (axisIt==xv.end()) throw runtime_error("axis "+i.first+" not found");
+                                  [&](const XVector& j){return j.name==i.description;});
+              if (axisIt==xv.end()) throw runtime_error("axis "+i.description+" not found");
               auto sliceIt=find_if(axisIt->begin(), axisIt->end(),
-                                   [&](const boost::any& j){return str(j,axisIt->dimension.units)==i.second.sliceLabel;});
+                                   [&](const boost::any& j){return str(j,axisIt->dimension.units)==i.sliceLabel;});
               // determine slice index
               size_t sliceIdx=0;
               if (sliceIt!=axisIt->end())
                 sliceIdx=sliceIt-axisIt->begin();
-              chain.back()->setArgument(arg, i.first, sliceIdx);
+              chain.back()->setArgument(arg, i.description, sliceIdx);
             }
         }
-      else if (i.second.order!=minsky::RavelState::HandleState::none || i.second.displayFilterCaliper)
+      else if (i.order!=ravel::HandleSort::none || i.displayFilterCaliper)
         {
           //apply sorting/calipers
           auto permuteAxis=make_shared<PermuteAxis>();
-          permuteAxis->setArgument(chain.back(), i.first);
+          permuteAxis->setArgument(chain.back(), i.description);
           auto& xv=chain.back()->hypercube().xvectors[permuteAxis->axis()];
           vector<size_t> perm;
           for (size_t i=0; i<xv.size(); ++i)
             perm.push_back(i);
-          switch (i.second.order)
+          switch (i.order)
             {
-            case minsky::RavelState::HandleState::none: break;
-            case minsky::RavelState::HandleState::forward:
+            case ravel::HandleSort::none: break;
+            case ravel::HandleSort::forward:
               sort(perm.begin(), perm.end(),
                    [&](size_t i, size_t j) {return diff(xv[i],xv[j])<0;});
               break;
-            case minsky::RavelState::HandleState::reverse:
+            case ravel::HandleSort::reverse:
               sort(perm.begin(), perm.end(),
                    [&](size_t i, size_t j) {return diff(xv[i],xv[j])>0;});
               break;
-            case minsky::RavelState::HandleState::custom:
+            case ravel::HandleSort::custom:
               {
                 map<string, size_t> offsets;
                 for (size_t i=0; i<xv.size(); ++i)
                   offsets[str(xv[i], xv.dimension.units)]=i;
                 perm.clear();
-                for (auto& j: i.second.customOrder)
+                for (auto& j: i.customOrder)
                   if (offsets.count(j))
                     perm.push_back(offsets[j]);
                 break;
               }
+            case ravel::HandleSort::numForward: case ravel::HandleSort::numReverse:
+            case ravel::HandleSort::timeForward: case ravel::HandleSort::timeReverse:
+              throw runtime_error("deprecated sort order used");
             }
           // remove any permutation items outside calipers
-          if (!i.second.minLabel.empty())
+          if (!i.minLabel.empty())
             for (auto j=perm.begin(); j!=perm.end(); ++j)
-              if (str(xv[*j],xv.dimension.units) == i.second.minLabel)
+              if (str(xv[*j],xv.dimension.units) == i.minLabel)
                 {
                   perm.erase(perm.begin(), j);
                   break;
                 }
-          if (!i.second.maxLabel.empty())
+          if (!i.maxLabel.empty())
             for (auto j=perm.begin(); j!=perm.end(); ++j)
-              if (str(xv[*j],xv.dimension.units) == i.second.maxLabel)
+              if (str(xv[*j],xv.dimension.units) == i.maxLabel)
                 {
                   perm.erase(j+1, perm.end());
                   break;
@@ -576,7 +579,7 @@ namespace civita
         finalPivot->setOrientation(state.outputHandles);
         chain.push_back(finalPivot);
       }
-    if (state.sortByValue!=minsky::RavelState::HandleState::none && chain.back()->rank()==1)
+    if (state.sortByValue!=ravel::HandleSort::none && chain.back()->rank()==1)
       {
         auto sortByValue=make_shared<SortByValue>(state.sortByValue);
         sortByValue->setArgument(chain.back());

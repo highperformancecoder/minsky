@@ -464,7 +464,7 @@ SUITE(TensorOps)
 
   struct TensorValFixture
   {
-    RavelState state;
+    ravel::RavelState state;
     std::shared_ptr<TensorVal> arg;
     TensorValFixture() {
       Hypercube hc;
@@ -477,13 +477,19 @@ SUITE(TensorOps)
         };
       arg->hypercube(hc);
       for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
-      for (auto& xv: hc.xvectors) state.handleStates[xv.name]={};
+      for (auto& xv: hc.xvectors)
+        {
+          state.handleStates.emplace_back();
+          state.handleStates.back().description=xv.name;
+        }
     }
   };
   
   TEST_FIXTURE(TensorValFixture, sliced2dswapped)
     {
-      state.handleStates["sex"].sliceLabel="male";
+      auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="sex";});
+      sex->sliceLabel="male";
       state.outputHandles={"date","country"};
       auto chain=createRavelChain(state, arg);
       CHECK_EQUAL(2, chain.back()->rank());
@@ -501,7 +507,7 @@ SUITE(TensorOps)
       expected={0,6,12,1,7,13,2,8,14};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
 
-      state.handleStates["sex"].sliceLabel="female";
+      sex->sliceLabel="female";
       chain=createRavelChain(state, arg);
       CHECK_EQUAL(9,chain.back()->size());
       for (size_t i=0; i<chain.back()->size(); ++i)
@@ -510,8 +516,10 @@ SUITE(TensorOps)
     }
   TEST_FIXTURE(TensorValFixture, reduction2dswapped)
     {
-      state.handleStates["sex"].collapsed=true;
-      state.handleStates["sex"].reductionOp=RavelState::HandleState::sum;
+      auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="sex";});
+      sex->collapsed=true;
+      sex->reductionOp=ravel::Op::sum;
       state.outputHandles={"date","country"};
       auto chain=createRavelChain(state, arg);
       CHECK_EQUAL(2, chain.back()->rank());
@@ -525,27 +533,27 @@ SUITE(TensorOps)
       vector<double> expected={3,15,27,5,17,29,7,19,31};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
 
-      state.handleStates["sex"].reductionOp=RavelState::HandleState::prod;
+      sex->reductionOp=ravel::Op::prod;
       chain=createRavelChain(state, arg);
       expected={0,54,180,4,70,208,10,88,238};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
 
-      state.handleStates["sex"].reductionOp=RavelState::HandleState::av;
+      sex->reductionOp=ravel::Op::av;
       chain=createRavelChain(state, arg);
       expected={1.5,7.5,13.5,2.5,8.5,14.5,3.5,9.5,15.5};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
 
-      state.handleStates["sex"].reductionOp=RavelState::HandleState::stddev;
+      sex->reductionOp=ravel::Op::stddev;
       chain=createRavelChain(state, arg);
       expected={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
 
-      state.handleStates["sex"].reductionOp=RavelState::HandleState::min;
+      sex->reductionOp=ravel::Op::min;
       chain=createRavelChain(state, arg);
       expected={0,6,12,1,7,13,2,8,14};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
       
-      state.handleStates["sex"].reductionOp=RavelState::HandleState::max;
+      sex->reductionOp=ravel::Op::max;
       chain=createRavelChain(state, arg);
       expected={3,9,15,4,10,16,5,11,17};
       CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
@@ -555,8 +563,10 @@ SUITE(TensorOps)
     TEST_FIXTURE(TensorValFixture, sparseSlicedRavel)
     {
       state.outputHandles={"date","country"};
+      auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="sex";});
       arg->index({0,4,8,12,16});
-      state.handleStates["sex"].sliceLabel="male";
+      sex->sliceLabel="male";
       auto chain=createRavelChain(state, arg);
       CHECK_EQUAL(2, chain.back()->rank());
       CHECK_EQUAL(3, chain.back()->size());
@@ -571,7 +581,7 @@ SUITE(TensorOps)
       expectedf={0,3,2};
       CHECK_ARRAY_EQUAL(expectedf, *chain.back(),3);
 
-      state.handleStates["sex"].collapsed=true;
+      sex->collapsed=true;
       chain=createRavelChain(state, arg);
       CHECK_EQUAL(5, chain.back()->size());
       expectedi={0,1,5,6,7};
@@ -587,10 +597,14 @@ SUITE(TensorOps)
     TEST_FIXTURE(TensorValFixture, calipered)
     {
       state.outputHandles={"date","country"};
-      state.handleStates["country"].minLabel="Canada";
-      state.handleStates["country"].displayFilterCaliper=true;
-      state.handleStates["date"].maxLabel="2011";
-      state.handleStates["date"].displayFilterCaliper=true;
+      auto country=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="country";});
+      country->minLabel="Canada";
+      country->displayFilterCaliper=true;
+      auto date=find_if(state.handleStates.begin(), state.handleStates.end(),
+                       [](const ravel::HandleState& i){return i.description=="date";});
+      date->maxLabel="2011";
+      date->displayFilterCaliper=true;
       arg->index({0,4,8,12,16});
       auto chain=createRavelChain(state, arg);
       vector<double> expected={2};
@@ -620,7 +634,7 @@ SUITE(TensorOps)
         vector<double> data={3,2,4,5,1};
         for (size_t i=0; i<data.size(); ++i) (*val)[i]=data[i];
         val->updateTimestamp();
-        SortByValue forward(minsky::RavelState::HandleState::HandleSort::forward);
+        SortByValue forward(ravel::HandleSort::forward);
         forward.setArgument(val);
         CHECK_EQUAL(val->timestamp(), forward.timestamp());
         CHECK_EQUAL(val->size(), forward.size());
@@ -629,7 +643,7 @@ SUITE(TensorOps)
         vector<int> expected={4,1,0,2,3};
         for (size_t i=0; i<forward.size(); ++i)
           CHECK_EQUAL(expected[i], boost::any_cast<double>(forward.hypercube().xvectors[0][i]));
-        SortByValue reverse(minsky::RavelState::HandleState::HandleSort::reverse);
+        SortByValue reverse(ravel::HandleSort::reverse);
         reverse.setArgument(val);
         for (size_t i=1; i<reverse.size(); ++i)
           CHECK(reverse[i]<reverse[i-1]);

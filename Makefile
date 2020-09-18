@@ -45,17 +45,14 @@ RESTSERVICE_OBJS=RESTService.o
 
 ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(SPARSEMATRIX_OBJS) $(TENSOR_OBJS)
 
-EXES=gui-tk/minsky
-#RESTService/RESTService
-
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -ISparseMartrix -Imodel -Icertify/include -IRESTService $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -ISparseMartrix -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
-VPATH= schema model engine SparseMatrix tensor gui-tk RESTService $(ECOLAB_HOME)/include
+VPATH= schema model engine SparseMatrix tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -97,7 +94,10 @@ BOOST_EXT=
 $(warning Boost extension=$(BOOST_EXT))
 endif
 
-LIBS+=	-ljson_spirit \
+EXES=gui-tk/minsky$(EXE)
+#RESTService/RESTService 
+
+LIBS+=	-LRavelCAPI -lravelCAPI -ljson_spirit \
 	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
 	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
 	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
@@ -189,6 +189,12 @@ endif
 
 doc: gui-tk/library/help gui-tk/helpRefDb.tcl
 
+$(EXES): RavelCAPI/libravelCAPI.a
+
+.PHONY: RavelCAPI/libravelCAPI.a
+RavelCAPI/libravelCAPI.a:
+	cd RavelCAPI && $(MAKE) $(MAKEOVERRIDES) 
+
 tests: $(EXES)
 	cd test; $(MAKE)
 
@@ -203,6 +209,7 @@ clean:
 	-cd engine; $(BASIC_CLEAN)
 	-cd schema; $(BASIC_CLEAN)
 	-cd ecolab; $(MAKE) clean
+	-cd RavelCAPI; $(MAKE) clean
 
 mac-dist: gui-tk/minsky
 # create executable in the app package directory. Make it 32 bit only
@@ -261,6 +268,8 @@ dist:
 	cd ecolab/graphcode; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/ecolab/graphcode/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	cd certify; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/certify/ HEAD -o /tmp/$$.tar
+	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
+	cd RavelCAPI; git archive --format=tar --prefix=Minsky-$(MINSKY_VERSION)/RavelCAPI/ HEAD -o /tmp/$$.tar
 	tar Af /tmp/Minsky-$(MINSKY_VERSION).tar /tmp/$$.tar
 	gzip -f /tmp/Minsky-$(MINSKY_VERSION).tar
 

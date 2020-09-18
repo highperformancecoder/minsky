@@ -163,7 +163,7 @@ namespace schema3
             }
           if (auto r=dynamic_cast<minsky::Ravel*>(i))
             {
-              items.back().filename=r->filename();
+              //              items.back().filename=r->filename();
               if (r->lockGroup)
                 items.back().lockGroup=at(r->lockGroup.get());
               auto s=r->getState();
@@ -372,16 +372,10 @@ namespace schema3
       }
     if (auto x1=dynamic_cast<minsky::Ravel*>(&x))
       {
-        if (y.filename)
-          try
-            {
-              x1->loadFile(*y.filename);
-            }
-          catch (...) {}
         if (y.ravelState)
           {
-            x1->applyState(*y.ravelState);
-            SchemaHelper::initHandleState(*x1,*y.ravelState);
+            x1->applyState(y.ravelState->toRavelRavelState());
+            SchemaHelper::initHandleState(*x1,y.ravelState->toRavelRavelState());
           }
         
         if (y.dimensions)
