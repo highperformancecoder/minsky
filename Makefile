@@ -208,6 +208,7 @@ clean:
 	-cd engine; $(BASIC_CLEAN)
 	-cd schema; $(BASIC_CLEAN)
 	-cd ecolab; $(MAKE) clean
+	-cd RavelCAPI; $(MAKE) clean
 
 mac-dist: gui-tk/minsky
 # create executable in the app package directory. Make it 32 bit only
