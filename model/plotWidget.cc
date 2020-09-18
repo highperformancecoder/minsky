@@ -543,7 +543,7 @@ namespace minsky
             for (size_t j=0; j<idx.size(); ++j)
               {
                 auto div=lldiv(idx[j], d[0]);
-                if (div.quot<maxNumTensorElementsToPlot)
+                if (size_t(div.quot)<maxNumTensorElementsToPlot)
                   {
                     addPt(startPen+div.quot, x[div.rem], (*yv)[j]);
                     if (extraPen<=startPen+div.quot) extraPen=startPen+div.quot+1;
