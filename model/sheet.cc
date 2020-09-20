@@ -80,7 +80,7 @@ void Sheet::draw(cairo_t* cairo) const
                 y+=rowHeight; // allow room for header row               
 
               // draw in label column
-              string format=value->hypercube().xvectors[0].timeFormat();
+              string format=value->hypercube().xvectors[0].dimension.units;
                 { // draw horizontal grid line
                   cairo::CairoSave cs(cairo);
                   cairo_set_source_rgba(cairo,0,0,0,0.5);
@@ -123,7 +123,7 @@ void Sheet::draw(cairo_t* cairo) const
 			  }
               else
                 {
-                  format=value->hypercube().xvectors[1].timeFormat();
+                  format=value->hypercube().xvectors[1].dimension.units;
                   auto dims=value->hypercube().dims();
                   for (size_t i=0; i<dims[1]; ++i)
                     {
