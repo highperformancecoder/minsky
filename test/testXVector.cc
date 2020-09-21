@@ -186,4 +186,16 @@ SUITE(XVector)
       CHECK_EQUAL(2,convert(48,"hour","day"));
       CHECK_THROW(convert(1,"metre","second"), std::exception);
     }
+  
+  TEST(str)
+    {
+      CHECK_EQUAL("0.3",str(boost::any("0.3"),""));
+      CHECK_EQUAL("0.300000",str(boost::any(0.3),""));
+      boost::any t(boost::posix_time::time_from_string("2002-04-20 23:59:59.000"));
+      CHECK_EQUAL("2002-04-20T23:59:59", str(t,""));
+      CHECK_EQUAL("2002/04/20", str(t,"%Y/%m/%d"));
+      CHECK_EQUAL("2002-Q2", str(t,"%Y-Q%Q"));
+      CHECK_EQUAL("Q2-2002", str(t,"Q%Q-%Y"));
+      CHECK_THROW(str(t,"Q%Q"), std::exception);
+    }
 }

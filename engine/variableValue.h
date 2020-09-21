@@ -27,7 +27,7 @@
 #include "str.h"
 #include "CSVDialog.h"
 #include "latexMarkup.h"
-#include <boost/regex.hpp>
+#include <regex> 
 #include <utility>
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
@@ -176,7 +176,7 @@ namespace minsky
     /// check that name is a valid valueId (useful for assertions)
     static bool isValueId(const std::string& name) {	
       return name.length()>1 && name.substr(name.length()-2)!=":_" &&
-        boost::regex_match(utf_to_utf<char>(name), boost::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
+        std::regex_match(utf_to_utf<char>(name), std::regex(R"((constant)?\d*:[^:\s\\]+)"));   // Leave curly braces in valueIds. For ticket 1165
     }
 
     /// construct a valueId

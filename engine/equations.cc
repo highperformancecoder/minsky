@@ -89,6 +89,7 @@ namespace MathDAG
             auto ec=make_shared<EvalCommon>();
             TensorPtr rhs=tensorOpFactory.create(*state,TensorsFromPort(ec));
             if (!rhs) return false;
+            result->index(rhs->index());
             result->hypercube(rhs->hypercube());
             ev.emplace_back(EvalOpPtr(new TensorEval(result, ec, rhs)));
             return true;

@@ -100,8 +100,8 @@ namespace schema3
         unpack(b,xv);
         hc.xvectors.push_back(xv);
       }
-    a.hypercube(hc); //dimension data
     a.index(index);
+    a.hypercube(hc); //dimension data
     assert(a.size()==data.size());
     memcpy(a.begin(),&data[0],data.size()*sizeof(data[0]));
   }
