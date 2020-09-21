@@ -22,7 +22,6 @@
 #include "minsky.h"
 #include "ravelWrap.h"
 #include "minsky_epilogue.h"
-#include "SparseMatrix/SparseMatrix.h"
 
 using namespace civita;
 namespace classdesc
@@ -35,7 +34,6 @@ namespace classdesc
 namespace minsky
 {
   using namespace classdesc;
-  using namespace sparsematrix;  
 
   TensorOpFactory tensorOpFactory;
 
@@ -279,56 +277,59 @@ namespace minsky
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
 		
-	 if (arg1->rank()>2 || arg2->rank()>2)
+      if (arg1->rank()>2 || arg2->rank()>2)
         throw runtime_error("inner product of rank>2 tensors not yet implemented");
-
-     SparseMatrix<double> m1(arg1->rank()>1?  arg1->hypercube().dims()[0] : 1, arg1->hypercube().dims()[1]), m2(arg2->hypercube().dims()[0], arg2->rank()>1? arg2->hypercube().dims()[1] : 1);
-     
-     for (size_t i=0; i<size_t(m1.getRowCount()); ++i)
-         for (size_t j=0; j<size_t(m1.getColumnCount()); ++j)
-           if (arg1->rank()>1) m1.set(arg1->atHCIndex(j+i*arg1->hypercube().dims()[arg1->rank()-1]),i+1,j+1);
-           else m1.set((*arg1)[j],i+1,j+1);
-           
-     for (size_t i=0; i<size_t(m2.getRowCount()); ++i)
-         for (size_t j=0; j<size_t(m2.getColumnCount()); ++j)
-           if (arg2->rank()>1) m2.set(arg2->atHCIndex(j+i*arg2->hypercube().dims()[0]),i+1,j+1); 
-           else m2.set((*arg2)[i],i+1,j+1);         
-           
-	SparseMatrix<double> product=m1*m2;   
-	
-	size_t counter=0;
-     for (size_t i=0; i<size_t(product.getRowCount()); ++i)
-         for (size_t j=0; j<size_t(product.getColumnCount()); ++j) {         
-             cachedResult[counter]=product.get(i+1,j+1);
-             counter++;	             
-		 }
-           
-     if (cachedResult.size()==0) 
-        for (size_t i=0; i<arg2->size(); i++) 
-           cachedResult[i]=nan("");
+   		 
+      size_t stride=arg2->hypercube().dims()[0];	
+      size_t m=arg1->hypercube().dims()[0], n=arg2->hypercube().dims()[arg2->rank()-1];	 
+      double tmpSum;
+      for (size_t i=0; i< m; i++) {
+        if (arg1->rank()>1 && arg2->rank()>1)		
+          for (size_t j=0; j< n; j++)
+            {
+              tmpSum=0;  
+              for (size_t k=0; k<stride; k++)  
+                tmpSum+=arg1->atHCIndex(i*stride+k)*arg2->atHCIndex(k*stride+j);
+              cachedResult[j+i*stride]=tmpSum;
+            }
+        else {
+          for (size_t k=0; k<stride; k++) 
+            cachedResult[i]+=(arg1->rank()>1? arg1->atHCIndex(i*stride+k):(*arg1)[i]) *(*arg2)[k];
+        }
+      }	 
+    		            
+      if (cachedResult.size()==0) 
+        for (size_t i=0; i<m*n; i++) 
+          cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
       arg1=a1; arg2=a2;
       if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
-        if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
+        if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0] && (arg1->rank()<arg2->rank()))  // do not allow products of the type nx1 dot nxm
           throw std::runtime_error("inner dimensions of tensors do not match");
         
-        // shape of output tensor should match outer dimensions of the two rank<2 tensors originally multiplied by one another       
+        // shape of output tensor should match outer dimensions of the two rank<2 tensors originally multiplied by one another     
         if (arg1->rank()>1 && arg2->rank()>1) {
-           vector<XVector>&& outerXVs{arg1->hypercube().xvectors[0],arg2->hypercube().xvectors[arg2->rank()-1]};
-           cachedResult.hypercube(outerXVs);
-	    }
+          vector<XVector>&& outerXVs{arg1->hypercube().xvectors[0],arg2->hypercube().xvectors[arg2->rank()-1]};
+          cachedResult.hypercube(outerXVs);
+        }
         else if (arg1->rank()>1 && arg2->rank()<2) { //case mxn dot nx1
-			vector<XVector>&& outerXVs{arg2->hypercube().xvectors[0]};
-			cachedResult.hypercube(outerXVs);
+          vector<XVector>&& outerXVs{arg2->hypercube().xvectors[0]};
+          cachedResult.hypercube(outerXVs);
+        }
+        else {
+			//cachedResult.hypercube({});  // causes segfault: 0x00005555556d3926 in boost::any::~any (this=0x55555723f850, __in_chrg=<optimized out>) at /usr/local/include/boost/any.hpp:79 delete content; 
+			
+			// also causes the above segfault
+            auto hc=arg2->hypercube();
+            if (rank()==0) return;
+            
+            auto& xv=hc.xvectors[0];
+            xv.erase(xv.end()-xv.size()-2, xv.end());
+            cachedResult.hypercube(move(hc));
 		}
-        else if (arg1->rank()<2 && arg2->rank()>1) { //case 1xn dot nxm
-            vector<XVector>&& outerXVs{arg1->hypercube().xvectors[0]};
-            cachedResult.hypercube(outerXVs);
-		}
-        else cachedResult.hypercube({});   
-	  }
+      }
     }    
   };
 

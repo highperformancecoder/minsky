@@ -37,27 +37,26 @@ MODEL_OBJS=wire.o item.o group.o minsky.o port.o operation.o variable.o switchIc
 ENGINE_OBJS=coverage.o derivative.o equationDisplay.o equations.o evalGodley.o evalOp.o flowCoef.o godleyExport.o \
 	latexMarkup.o variableValue.o node_latex.o node_matlab.o CSVParser.o minskyTensorOps.o
 TENSOR_OBJS=hypercube.o tensorOp.o xvector.o index.o
-SPARSEMATRIX_OBJS=SparseMatrix.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o operationType.o a85.o
 #schema0.o 
 GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=RESTService.o
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(SPARSEMATRIX_OBJS) $(TENSOR_OBJS)
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(TENSOR_OBJS)
 
 ifeq ($(OS),Darwin)
 FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -ISparseMartrix -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
-VPATH= schema model engine SparseMatrix tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
+VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
 	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -I SparseMatrix -i $< xml_pack xml_unpack xsd_generate \
+	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< xml_pack xml_unpack xsd_generate \
 	json_pack json_unpack >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
@@ -158,7 +157,7 @@ endif
 MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(SPARSEMATRIX_OBJS) $(TENSOR_OBJS)
+gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)
 	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 -L. $(LIBS) $(GUI_LIBS) -o $@
 	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
 ifdef MXE
