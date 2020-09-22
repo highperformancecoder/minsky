@@ -224,7 +224,10 @@ namespace minsky
                 }
               tensorInit.hypercube(hc);
             }
-          operator=(initValue(v));
+          if (tensorInit.rank()>0)
+            operator=(tensorInit);
+          else
+            operator=(initValue(v));
         }
   }
 

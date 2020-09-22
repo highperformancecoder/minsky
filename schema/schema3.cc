@@ -20,9 +20,6 @@
 #include "sheet.h"
 #include "minsky_epilogue.h"
 
-#include "a85.h"
-#include <zlib.h>
-
 using namespace std;
 
 namespace classdesc {template <> Factory<minsky::Item,string>::Factory() {}}

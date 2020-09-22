@@ -1,6 +1,7 @@
 // a85.cpp
 
 #include "a85.h"
+#include <assert.h>
 
 namespace a85 {
 
@@ -53,10 +54,13 @@ int size_for_bin(int textlen) {
 }
 
 void from_a85(const char* text, int textlen, u8* data) {
+#ifndef NDEBUG
+  int binLen=size_for_bin(textlen);
+#endif
     while (textlen) {
         if (textlen < 5) {
             u32 val = 0;
-            int factor = 52200625;
+            unsigned factor = 52200625;
             int i;
             for (i = 0; i < textlen; i++) {
                 val += (*(text++) - 33) * factor;
@@ -73,11 +77,12 @@ void from_a85(const char* text, int textlen, u8* data) {
             }
             break;
         }
-        u32 val = (*(text++) - 33) * 52200625;
+        u32 val = (*(text++) - 33) * 52200625U;
         val += (*(text++) - 33) * 614125;
         val += (*(text++) - 33) * 7225;
         val += (*(text++) - 33) * 85;
         val += (*(text++) - 33);
+        assert((binLen-=4)>=0);
         *(data++) = val >> 24;
         *(data++) = val >> 16;
         *(data++) = val >> 8;
