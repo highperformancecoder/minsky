@@ -287,14 +287,20 @@ namespace minsky
         if (arg1->rank()>1 && arg2->rank()>1)		
           for (size_t j=0; j< n; j++)
             {
-              tmpSum=0;  
-              for (size_t k=0; k<stride; k++)  
-                tmpSum+=arg1->atHCIndex(i*stride+k)*arg2->atHCIndex(k*stride+j);
+              tmpSum=0;
+              for (size_t k=0; k<stride; k++)  {
+				auto v1=arg1->atHCIndex(i*stride+k);  
+				auto v2=arg2->atHCIndex(k*stride+j);  
+                tmpSum+=(isnan(v1)? 0 : v1) * (isnan(v2)? 0 : v2);
+			   }
               cachedResult[j+i*stride]=tmpSum;
             }
         else {
-          for (size_t k=0; k<stride; k++) 
-            cachedResult[i]+=(arg1->rank()>1? arg1->atHCIndex(i*stride+k):(*arg1)[i]) *(*arg2)[k];
+          for (size_t k=0; k<stride; k++)  {
+			auto v1=(arg1->rank()>1? arg1->atHCIndex(i*stride+k):(*arg1)[i]);   
+			auto v2=(*arg2)[k];
+            cachedResult[i]+= (isnan(v1)? 0 : v1)*(isnan(v2)? 0 : v2);
+		  }
         }
       }	 
     		            
