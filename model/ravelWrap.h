@@ -160,7 +160,7 @@ namespace minsky
 }
 
 #include "ravelWrap.cd"
-#include "ravelWrap.xcd"
+//#include "ravelWrap.xcd"
 
 #endif
 
