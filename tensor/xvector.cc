@@ -229,9 +229,18 @@ namespace civita
       return 1e-9*(*vx-any_cast<ptime>(y)).total_nanoseconds();
     throw error("unsupported type");
   }
+
+  // format a string with two integer arguments
+  string formatString(const std::string& format, int i, int j)
+  {
+    char r[512];
+    snprintf(r,sizeof(r),format.c_str(),i,j);
+    return r;
+  }
   
   string str(const boost::any& v, const string& format)
   {
+    string::size_type pq;
     if (auto s=any_cast<std::string>(&v))
       return *s;
     else if (auto s=any_cast<const char*>(&v))
@@ -241,6 +250,24 @@ namespace civita
     else if (auto s=any_cast<ptime>(&v))
       if (format.empty())
         return to_iso_extended_string(*s);
+      else if ((pq=format.find("%Q"))!=string::npos)
+        {
+          auto pY=format.find("%Y");
+          if (pY==string::npos)
+            throw error("year not specified in format string");
+            
+          // replace %Q and %Y with %d
+          string sformat=format;
+          for (size_t i=1; i<sformat.size(); ++i)
+            if (sformat[i-1]=='%' && (sformat[i]=='Q' || sformat[i]=='Y'))
+              sformat[i]='d';
+          char result[100];
+          auto tm=to_tm(s->date());
+          if (pq<pY)
+            return formatString(sformat,tm.tm_mon/3+1, tm.tm_year+1900);
+          else
+            return formatString(sformat, tm.tm_year+1900, tm.tm_mon/3+1);
+        }
       else
         {
           unique_ptr<time_facet> facet(new time_facet(format.c_str()));

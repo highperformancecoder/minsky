@@ -23,10 +23,10 @@
 #include "minsky.h"
 #include "expr.h"
 #include "minsky_epilogue.h"
-#include <boost/regex.hpp>
+#include <regex> 
 
-using boost::regex;
-using boost::smatch;
+using std::regex;
+using std::smatch;
 using namespace minsky;
 
 namespace MathDAG

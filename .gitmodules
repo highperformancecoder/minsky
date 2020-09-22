@@ -4,3 +4,6 @@
 [submodule "certify"]
 	path = certify
 	url = https://github.com/djarek/certify
+[submodule "RavelCAPI"]
+	path = RavelCAPI
+	url = https://github.com/highperformancecoder/RavelCAPI.git

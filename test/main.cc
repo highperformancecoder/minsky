@@ -25,7 +25,7 @@
 */
 #include <UnitTest++/UnitTest++.h>
 #include <UnitTest++/TestReporterStdout.h>
-#include <boost/regex.hpp>
+#include <regex> 
 #include <iostream>
 using namespace UnitTest;
 using std::string;
@@ -39,11 +39,11 @@ namespace
 
   struct RegExPredicate
   {
-    boost::regex exp;
+    std::regex exp;
     RegExPredicate(): exp(".*") {} // equivalent to true
     RegExPredicate(const string& exp): exp(exp) {}
     bool operator()(const Test* const test) const
-    {return boost::regex_match(name(*test), exp);}
+    {return std::regex_match(name(*test), exp);}
   };
 }
 

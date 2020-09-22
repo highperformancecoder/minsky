@@ -100,7 +100,7 @@ namespace schema3
     Optional<int> intVar;
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> filename;
-    Optional<minsky::RavelState> ravelState;
+    Optional<schema2::RavelState> ravelState;
     Optional<int> lockGroup;
     Optional<minsky::Dimensions> dimensions;
     // Operation tensor parameters

@@ -23,17 +23,10 @@
 #include "minskyTensorOps.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
-static const int ravelVersion=3;
 
 #include <string>
 #include <cmath>
 using namespace std;
-
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <dlfcn.h>
-#endif
 
 #include "cairoRenderer.h"
 
@@ -56,274 +49,24 @@ namespace minsky
       char separator=','; ///< field separator character
     };
 
-    typedef RavelState::HandleState::ReductionOp ReductionOp;
-    typedef RavelState::HandleState::HandleSort HandleSort;
+    typedef ravel::Op::ReductionOp ReductionOp;
+    typedef ravel::HandleSort::Order HandleSort;
     
-    struct RavelHandleState
-    {
-      double x=0,y=0; ///< handle tip coordinates (only angle important, not length)
-      size_t sliceIndex=0, sliceMin=0, sliceMax=0;
-      bool collapsed=false, displayFilterCaliper=false;
-      ReductionOp reductionOp=RavelState::HandleState::sum;
-      HandleSort order=RavelState::HandleState::none;
-      RavelHandleState() {}
-      // NB: sliceIndex, sliceMin, sliceMax need to be dealt with separately
-      RavelHandleState(const RavelState::HandleState& s):
-        x(s.x), y(s.y), collapsed(s.collapsed), displayFilterCaliper(s.displayFilterCaliper),
-        reductionOp(s.reductionOp), order(s.order) {}
-      operator RavelState::HandleState() {
-        RavelState::HandleState r;
-        r.x=x; r.y=y;
-        r.collapsed=collapsed; r.displayFilterCaliper=displayFilterCaliper;
-        r.reductionOp=reductionOp; r.order=order;
-        return r;
-      }
-    };
-    
-#ifdef WIN32
-    typedef HINSTANCE libHandle;
-    libHandle loadLibrary(const string& lib)
-    {return LoadLibraryA((lib+".dll").c_str());}
-
-    FARPROC WINAPI dlsym(HMODULE lib, const char* name)
-    {return GetProcAddress(lib,name);}
-
-    void dlclose(HINSTANCE) {}
-
-    const string dlerror() {
-      char msg[1024];
-      FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,nullptr,GetLastError(),0,msg,sizeof(msg),nullptr);
-      return msg;
-    }
-#else
-    typedef void* libHandle;
-    libHandle loadLibrary(const string& lib)
-    {return dlopen((lib+".so").c_str(),RTLD_NOW);}
-#endif
-  
-    //#define ASG_FN_PTR(f,lib) asgFnPointer(f,lib,#f)
-
-    struct RavelLib
-    {
-      libHandle lib;
-      string errorMsg;
-      string versionFound="unavailable";
-      RavelLib(): lib(loadLibrary("libravel"))
-      {
-        if (!lib)
-          {
-            errorMsg=dlerror();
-            return;
-          }
-      
-        auto version=(const char* (*)())dlsym(lib,"ravel_version");
-        auto capi_version=(int (*)())dlsym(lib,"ravel_capi_version");
-        if (version) versionFound=version();
-        if (!version || !capi_version || ravelVersion!=capi_version())
-          { // incompatible API
-            errorMsg="Incompatible libravel dynamic library found";
-            dlclose(lib);
-            lib=nullptr;
-          }
-      }
-      ~RavelLib() {
-        if (lib)
-          dlclose(lib);
-        lib=nullptr;
-      }
-      template <class F>
-      void asgFnPointer(F& f, const char* name)
-      {
-        if (lib)
-          {
-            f=(F)dlsym(lib,name);
-            if (!f)
-              {
-                errorMsg=dlerror();
-                errorMsg+="\nLooking for ";
-                errorMsg+=name;
-                errorMsg+="\nProbably libravel dynamic library is too old";
-                dlclose(lib);
-                lib=nullptr;
-              }
-          }
-      }
-    };
-
-    RavelLib ravelLib;
-
-    template <class... T> struct RavelFn;
-    
-    template <class R>
-    struct RavelFn<R>
-    {
-      R (*f)()=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      R operator()() {return f? f(): R();}
-    };
-    template <>
-    struct RavelFn<void>
-    {
-      void (*f)()=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      void operator()() {if (f) f();}
-    };
-    template <class R, class A>
-    struct RavelFn<R,A>
-    {
-      R (*f)(A)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      R operator()(A a) {return f? f(a): R{};}
-    };
-    template <class A>
-    struct RavelFn<void,A>
-    {
-      void (*f)(A)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      void operator()(A a) {if (f) f(a);}
-    };
-    template <class R, class A0, class A1>
-    struct RavelFn<R,A0,A1>
-    {
-      R (*f)(A0,A1)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      R operator()(A0 a0, A1 a1) {return f? f(a0,a1): R{};}
-    };
-    template <class A0, class A1>
-    struct RavelFn<void,A0,A1>
-    {
-      void (*f)(A0,A1)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      void operator()(A0 a0, A1 a1) {if (f) f(a0,a1);}
-    };
-    template <class R, class A0, class A1, class A2>
-    struct RavelFn<R,A0,A1,A2>
-    {
-      R (*f)(A0,A1,A2)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      R operator()(A0 a0, A1 a1,A2 a2) {return f? f(a0,a1,a2): R{};}
-    };
-    template <class A0, class A1, class A2>
-    struct RavelFn<void,A0,A1,A2>
-    {
-      void (*f)(A0,A1,A2)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      void operator()(A0 a0, A1 a1, A2 a2) {if (f) f(a0,a1,a2);}
-    };
-    template <class R, class A0, class A1, class A2, class A3>
-    struct RavelFn<R,A0,A1,A2,A3>
-    {
-      R (*f)(A0,A1,A2,A3)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      R operator()(A0 a0, A1 a1,A2 a2,A3 a3) {return f? f(a0,a1,a2,a3): R{};}
-    };
-    template <class A0, class A1, class A2,class A3>
-    struct RavelFn<void,A0,A1,A2,A3>
-    {
-      void (*f)(A0,A1,A2,A3)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      void operator()(A0 a0, A1 a1, A2 a2,A3 a3) {if (f) f(a0,a1,a2,a3);}
-    };
-    template <class A0, class A1, class A2,class A3,class A4>
-    struct RavelFn<void,A0,A1,A2,A3,A4>
-    {
-      void (*f)(A0,A1,A2,A3,A4)=nullptr;
-      RavelFn(const char*name, libHandle lib) {ravelLib.asgFnPointer(f,name);}
-      void operator()(A0 a0, A1 a1, A2 a2,A3 a3,A4 a4) {if (f) f(a0,a1,a2,a3,a4);}
-    };
-   
-#define DEFFN(f,...) RavelFn<__VA_ARGS__> f(#f,ravelLib.lib);
-    
-    DEFFN(ravel_lastErr, const char*);
-    DEFFN(ravel_version, const char*);
-    DEFFN(ravel_new, Ravel::RavelImpl*,size_t);
-    DEFFN(ravel_delete, void, Ravel::RavelImpl*);
-    DEFFN(ravel_clear, void, Ravel::RavelImpl*);
-    DEFFN(ravel_render, void, Ravel::RavelImpl*, CAPIRenderer*);
-    DEFFN(ravel_onMouseDown, void, Ravel::RavelImpl*, double, double);
-    DEFFN(ravel_onMouseUp,void, Ravel::RavelImpl*, double, double);
-    DEFFN(ravel_onMouseMotion, bool, Ravel::RavelImpl*, double, double);
-    DEFFN(ravel_onMouseOver, bool, Ravel::RavelImpl*, double, double);
-    DEFFN(ravel_onMouseLeave, void, Ravel::RavelImpl*);
-    DEFFN(ravel_rescale, void, Ravel::RavelImpl*, double);
-    DEFFN(ravel_radius, double, Ravel::RavelImpl*);
-    DEFFN(ravel_rank, size_t, Ravel::RavelImpl*);
-    DEFFN(ravel_description, const char*, Ravel::RavelImpl*);
-    DEFFN(ravel_explain, const char*, Ravel::RavelImpl*, double, double);
-    DEFFN(ravel_outputHandleIds, void, Ravel::RavelImpl*, size_t*);
-    DEFFN(ravel_setOutputHandleIds, void, Ravel::RavelImpl*, size_t, size_t*);
-    DEFFN(ravel_addHandle, void, Ravel::RavelImpl*, const char*, size_t, const char**);
-    DEFFN(ravel_numHandles, unsigned, Ravel::RavelImpl*);
-    DEFFN(ravel_selectedHandle, int, Ravel::RavelImpl*);
-    DEFFN(ravel_handleDescription, const char*, Ravel::RavelImpl*, int);
-    DEFFN(ravel_setHandleDescription, void, Ravel::RavelImpl*, int, const char*);
-    DEFFN(ravel_numSliceLabels, size_t, Ravel::RavelImpl*, size_t);
-    DEFFN(ravel_sliceLabels, void, Ravel::RavelImpl*, size_t, const char**);
-    DEFFN(ravel_displayFilterCaliper, void, Ravel::RavelImpl*, size_t, bool);
-    DEFFN(ravel_setSlicer,void,Ravel::RavelImpl*,size_t,const char*);
-    DEFFN(ravel_setCalipers,void,Ravel::RavelImpl*,size_t,const char*,const char*);
-    DEFFN(ravel_orderLabels, void, Ravel::RavelImpl*, size_t,HandleSort,Dimension::Type, const char*);
-    DEFFN(ravel_applyCustomPermutation, void, Ravel::RavelImpl*, size_t, size_t, const size_t*);
-    DEFFN(ravel_currentPermutation, void, Ravel::RavelImpl*, size_t, size_t, size_t*);
-    DEFFN(ravel_toXML, const char*, Ravel::RavelImpl*);
-    DEFFN(ravel_fromXML, int, Ravel::RavelImpl*, const char*);
-    DEFFN(ravel_getHandleState, void, const Ravel::RavelImpl*, size_t, RavelHandleState*);
-    DEFFN(ravel_setHandleState, void, Ravel::RavelImpl*, size_t, const RavelHandleState*);
-    DEFFN(ravel_adjustSlicer, void, Ravel::RavelImpl*, int);
-    DEFFN(ravel_redistributeHandles,void, Ravel::RavelImpl*);
-    
-    DEFFN(ravelDC_new, Ravel::Ravel::DataCube*);
-    DEFFN(ravelDC_delete, void, Ravel::DataCube*);
-    DEFFN(ravelDC_initRavel, bool, Ravel::DataCube*, Ravel::RavelImpl*);
-    DEFFN(ravelDC_openFile, bool, Ravel::DataCube*, const char*, RavelDataSpec);
-    DEFFN(ravelDC_loadData, void, Ravel::DataCube*, const Ravel::RavelImpl*, const double*);
-    DEFFN(ravelDC_hyperSlice, int, Ravel::DataCube*, Ravel::RavelImpl*, size_t*, double**);
-
     inline double sqr(double x) {return x*x;} 
   }
 
-  bool ravelAvailable() {return ravelLib.lib;}
-
-  string Ravel::ravelVersion() const
-  {return ravelLib.versionFound;}
-
-  const char* Ravel::lastErr() const {
-    if (ravelAvailable())
-      return ravel_lastErr();
-    return ravelLib.errorMsg.c_str();
-  }
-  
   Ravel::Ravel()
   {
-    if (ravelAvailable())
+    if (!*this)
       {
-        ravel=ravel_new(0); // rank 1 for now
-        ravel_rescale(ravel,ravelDefaultRadius);
-        dataCube=ravelDC_new();
+        tooltip="https://ravelation.hpcoders.com.au";
+        detailedText=lastError();
       }
-    else
-      noRavelSetup();
-  }
-
-  Ravel::~Ravel()
-  {
-    if (ravelAvailable()) // NB during shutdown, ravel may be unloaded before getting here
-      {
-        if (ravel) ravel_delete(ravel);
-        if (dataCube) ravelDC_delete(dataCube);
-      }
-  }
-
-  void Ravel::noRavelSetup()
-  {
-    tooltip="https://ravelation.hpcoders.com.au";
-    detailedText=ravelLib.errorMsg;
   }
 
   void Ravel::draw(cairo_t* cairo) const
   {
-    double  z=zoomFactor(), r=ravelDefaultRadius*z;
-    if (ravel) r=1.1*z*ravel_radius(ravel);
+    double  z=zoomFactor(), r=1.1*z*radius();
     ports[0]->moveTo(x()+1.1*r, y());
     ports[1]->moveTo(x()-1.1*r, y());
     if (mouseFocus)
@@ -357,31 +100,25 @@ namespace minsky
       cairo_clip(cairo);
       cairo_scale(cairo,z,z);
       ravel::CairoRenderer cr(cairo);
-      if (ravel)
-        ravel_render(ravel,&cr);
+      render(cr);
     }        
     if (selected) drawSelected(cairo);
   }
 
   void Ravel::resize(const LassoBox& b)
   {
-    if (ravel)
-      ravel_rescale(ravel, 0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor()));
+    rescale(0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor()));
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
   }
 
-  double Ravel::radius() const {
-    return ravel? ravel_radius(ravel): 0;
-  }
-  
   ClickType::Type Ravel::clickType(float xx, float yy)
   {
     double z=zoomFactor();
     for (auto& p: ports)
       if (hypot(xx-p->x(), yy-p->y()) < portRadius*z)
         return ClickType::onPort;
-    double r=1.1*z*(ravel? ravel_radius(ravel): ravelDefaultRadius);
+    double r=1.1*z*radius();
     double R=1.1*r;
     double dx=xx-x(), dy=yy-y();
     if (onResizeHandle(xx,yy))
@@ -393,84 +130,56 @@ namespace minsky
     return ClickType::onItem;
   }
 
-  int Ravel::selectedHandle() const {
-    if (ravel)
-      return ravel_selectedHandle(ravel);
-    else
-      return -1;
-  }
-
-
   void Ravel::onMouseDown(float xx, float yy)
   {
     double invZ=1/zoomFactor();
-    if (ravel) ravel_onMouseDown(ravel,(xx-x())*invZ,(yy-y())*invZ);
+    ravel::Ravel::onMouseDown((xx-x())*invZ,(yy-y())*invZ);
   }
   
   void Ravel::onMouseUp(float xx, float yy)
   {
-    if (ravel)
-      {
-        double invZ=1/zoomFactor();
-        ravel_onMouseUp(ravel,(xx-x())*invZ,(yy-y())*invZ);
-      }
+    double invZ=1/zoomFactor();
+    ravel::Ravel::onMouseUp((xx-x())*invZ,(yy-y())*invZ);
   }
   bool Ravel::onMouseMotion(float xx, float yy)
   {
     double invZ=1/zoomFactor();
-    if (ravel) return ravel_onMouseMotion(ravel,(xx-x())*invZ,(yy-y())*invZ);
-    return false;
+    return ravel::Ravel::onMouseMotion((xx-x())*invZ,(yy-y())*invZ);
   }
   
   bool Ravel::onMouseOver(float xx, float yy)
   {
     double invZ=1/zoomFactor();
-    if (ravel) return ravel_onMouseOver(ravel,(xx-x())*invZ,(yy-y())*invZ);
-    return false;
-  }
-  void Ravel::onMouseLeave()
-  {if (ravel) ravel_onMouseLeave(ravel);}
-
-  void Ravel::loadFile(const string& fileName)
-  {
-    m_filename=fileName;
-    if (dataCube && ravel)
-      {
-        if (!ravelDC_openFile(dataCube, fileName.c_str(), RavelDataSpec()))
-          throw error(ravel_lastErr());
-        else if (!ravelDC_initRavel(dataCube,ravel))
-          throw error(ravel_lastErr());
-        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
-          {
-            ravel_displayFilterCaliper(ravel,i,false);
-            setHandleSortOrder(HandleState::forward,i);
-          }
-        setRank(ravel_numHandles(ravel));
-      }
+    return ravel::Ravel::onMouseOver((xx-x())*invZ,(yy-y())*invZ);
   }
 
-  Hypercube Ravel::hypercube(double*& data) const
-  {
-    if (!ravel) return {};
+//  void Ravel::loadFile(const string& fileName)
+//  {
+//    m_filename=fileName;
+//    if (dataCube && ravel)
+//      {
+//        if (!ravelDC_openFile(dataCube, fileName.c_str(), RavelDataSpec()))
+//          throw error(ravel_lastErr());
+//        else if (!ravelDC_initRavel(dataCube,ravel))
+//          throw error(ravel_lastErr());
+//        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
+//          {
+//            ravel_displayFilterCaliper(ravel,i,false);
+//            setHandleSortOrder(HandleState::forward,i);
+//          }
+//        setRank(ravel_numHandles(ravel));
+//      }
+//  }
 
-    vector<size_t> dims(ravel_rank(ravel));
-    ravelDC_hyperSlice(dataCube, ravel, &dims[0], &data);
-    if (dims.size() && dims[0]==0) dims.clear();
-    
-    vector<size_t> outHandles(dims.size());
-    ravel_outputHandleIds(ravel, &outHandles[0]);
+  Hypercube Ravel::hypercube() const
+  {
+    auto outHandles=outputHandleIds();
     Hypercube hc;
     auto& xv=hc.xvectors;
-    for (size_t j=0; j<outHandles.size(); ++j)
+    for (auto h: outHandles)
       {
-        auto h=outHandles[j];
-        vector<const char*> labels(ravel_numSliceLabels(ravel,h));
-        assert(ravel_numSliceLabels(ravel,h)==dims[j]);
-        ravel_sliceLabels(ravel,h,&labels[0]);
-        assert(all_of(labels.begin(), labels.end(),
-                      [](const char* i){return bool(i);}));
-        xv.emplace_back
-          (ravel_handleDescription(ravel,h));
+        auto labels=sliceLabels(h);
+        xv.emplace_back(handleDescription(h));
         auto dim=axisDimensions.find(xv.back().name);
         if (dim!=axisDimensions.end())
           xv.back().dimension=dim->second;
@@ -481,72 +190,57 @@ namespace minsky
               xv.back().dimension=dim->second;
           }
         // else otherwise dimension is a string (default type)
-        for (size_t i=0; i<labels.size(); ++i)
-          xv.back().push_back(labels[i]);
+        for (auto i: labels)
+          xv.back().push_back(i);
       }
-    assert(vector<unsigned>(dims.begin(), dims.end())==hc.dims());
     return hc;
   }
   
   void Ravel::populateHypercube(const Hypercube& hc)
   {
-    if (ravel)
+    auto state=initState.empty()? getState(): initState;
+    initState.clear();
+    clear();
+    for (auto& i: hc.xvectors)
       {
-        RavelState state=initState.empty()? getState(): initState;
-        initState.clear();
-        ravel_clear(ravel);
-        for (auto& i: hc.xvectors)
-          {
-            vector<string> ss;
-            for (auto& j: i) ss.push_back(str(j,i.dimension.units));
-            vector<const char*> sl;
-            for (auto& j: ss) sl.push_back(j.c_str());
-            ravel_addHandle(ravel, i.name.c_str(), i.size(), &sl[0]);
-            size_t h=ravel_numHandles(ravel)-1;
-            ravel_displayFilterCaliper(ravel,h,false);
-          }
-        if (state.empty())
-          setRank(hc.rank());
-        else
-          applyState(state);
-#ifndef NDEBUG
-        if (state.empty())
-          {
-            auto d=hc.dims();
-            assert(d.size()==ravel_rank(ravel));
-            vector<size_t> outputHandles(d.size());
-            ravel_outputHandleIds(ravel,&outputHandles[0]);
-            for (size_t i=0; i<d.size(); ++i)
-              assert(d[i]==ravel_numSliceLabels(ravel,outputHandles[i]));
-          }
-#endif
+        vector<string> ss;
+        for (auto& j: i) ss.push_back(str(j,i.dimension.units));
+        addHandle(i.name, ss);
+        size_t h=numHandles()-1;
+        ravel::Ravel::displayFilterCaliper(h,false);
       }
+    if (state.empty())
+      setRank(hc.rank());
+    else
+      applyState(state);
+#ifndef NDEBUG
+    if (state.empty())
+      {
+        auto d=hc.dims();
+        assert(d.size()==rank());
+        auto outputHandles=outputHandleIds();
+        for (size_t i=0; i<d.size(); ++i)
+          assert(d[i]==numSliceLabels(outputHandles[i]));
+      }
+#endif
   }
+
   
   unsigned Ravel::maxRank() const
   {
-    if (ravel) return ravel_numHandles(ravel);
-    return 0;
+    return numHandles();
   }
-  unsigned Ravel::rank() const
-  {
-    if (ravel) return ravel_rank(ravel);
-    return 0;
-  }
-  
+
   void Ravel::setRank(unsigned rank)
   {
-    if (ravel)
-      {
-        vector<size_t> ids;
-        for (size_t i=0; i<rank; ++i) ids.push_back(i);
-        ravel_setOutputHandleIds(ravel,rank,&ids[0]);
-      }
+    vector<size_t> ids;
+    for (size_t i=0; i<rank; ++i) ids.push_back(i);
+    setOutputHandleIds(ids);
   }
   
   void Ravel::adjustSlicer(int n)
   {
-    ravel_adjustSlicer(ravel,n);
+    ravel::Ravel::adjustSlicer(n);
     broadcastStateToLockGroup();
   }
 
@@ -561,11 +255,10 @@ namespace minsky
   
   bool Ravel::displayFilterCaliper() const
   {
-    int h=ravel_selectedHandle(ravel);
+    int h=selectedHandle();
     if (h>=0)
       {
-        RavelHandleState state;
-        ravel_getHandleState(ravel,h,&state);
+        auto state=getHandleState(h);
         return state.displayFilterCaliper;
       }
     else
@@ -574,81 +267,63 @@ namespace minsky
     
   bool Ravel::setDisplayFilterCaliper(bool x)
   {
-    int h=ravel_selectedHandle(ravel);
+    int h=selectedHandle();
     if (h>=0)
-      ravel_displayFilterCaliper(ravel,h,x);
+      ravel::Ravel::displayFilterCaliper(h,x);
     return x;
   }
 
   vector<string> Ravel::allSliceLabels() const
   {
-      return allSliceLabelsImpl(ravel_selectedHandle(ravel),HandleState::forward);
+    return ravel::Ravel::allSliceLabels(selectedHandle(),ravel::HandleSort::forward);
   }
   
   vector<string> Ravel::allSliceLabelsAxis(int axis) const
   {
-      return allSliceLabelsImpl(axis,HandleState::forward);
+    return ravel::Ravel::allSliceLabels(axis,ravel::HandleSort::forward);
   }  
 
-  vector<string> Ravel::allSliceLabelsImpl(int axis, HandleSort order) const
-  {
-    if (axis>=0 && axis<int(ravel_numHandles(ravel)))
-      {
-        assert(order!=HandleState::custom); //custom makes no sense here
-        // grab the labels in sorted order, or forward order if a custom order is applied
-        RavelHandleState state;
-        ravel_getHandleState(ravel, axis, &state);
-        // grab the ordering in case its custom
-        vector<size_t> customOrdering(ravel_numSliceLabels(ravel,axis));
-        ravel_currentPermutation(ravel,axis,customOrdering.size(),&customOrdering[0]);
-
-        // set the order and reset calipers to full range
-        auto modifiedState=state;
-        modifiedState.order=order;
-        modifiedState.sliceMin=0;
-        modifiedState.sliceMax=~0UL;
-        ravel_setHandleState(ravel,axis,&modifiedState);
-        vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,axis));
-        ravel_sliceLabels(ravel,axis,&sliceLabels[0]);
-        ravel_setHandleState(ravel,axis,&state); // return things to how they were
-        if (state.order==HandleState::custom)
-          ravel_applyCustomPermutation(ravel,axis,customOrdering.size(),&customOrdering[0]);
-        return {sliceLabels.begin(), sliceLabels.end()};
-      }
-    return {};
-  }
+//  vector<string> Ravel::allSliceLabelsImpl(int axis, HandleSort order) const
+//  {
+//    if (axis>=0 && axis<int(numHandles()))
+//      {
+//        assert(order!=HandleState::custom); //custom makes no sense here
+//        // grab the labels in sorted order, or forward order if a custom order is applied
+//        auto state=getHandleState(axis);
+//        // grab the ordering in case its custom
+//        auto customOrdering=currentPermutation(axis);
+//
+//        // set the order and reset calipers to full range
+//        const_cast<ravel::Ravel*>(static_cast<const ravel::Ravel*>(this))->displayFilterCaliper(axis,false);
+//        auto sl=sliceLabels(axis);
+//        setHandleState(axis,state); // return things to how they were
+//        if (state.order==ravel::HandleSort::custom)
+//          applyCustomPermutation(axis,customOrdering);
+//        return sl;
+//      }
+//    return {};
+//  }
 
   vector<string> Ravel::pickedSliceLabels() const
-  {
-   int axis=ravel_selectedHandle(ravel);
-   if (axis>=0)
-     {
-       vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,axis));
-       ravel_sliceLabels(ravel,axis,&sliceLabels[0]);
-       return {sliceLabels.begin(), sliceLabels.end()};
-     }
-   return {};
-  }
+  {return sliceLabels(selectedHandle());}
 
   void Ravel::pickSliceLabels(int axis, const vector<string>& pick) 
   {
-    if (axis>=0 && axis<int(ravel_numHandles(ravel)))
+    if (axis>=0 && axis<int(numHandles()))
       {
         // stash previous handle sort order
-        RavelHandleState state;
-        ravel_getHandleState(ravel,axis,&state);
-        if (state.order!=HandleState::custom)
+        auto state=getHandleState(axis);
+        if (state.order!=ravel::HandleSort::custom)
           previousOrder=state.order;
 
-        size_t numSliceLabels=ravel_numSliceLabels(ravel,axis);
-        if (pick.size()>=numSliceLabels)
+        if (pick.size()>=numSliceLabels(axis))
           {
             // if all labels are selected, revert ordering to previous
             setHandleSortOrder(previousOrder, axis);
             return;
           }
         
-        auto allLabels=allSliceLabelsImpl(axis, HandleState::none);
+        auto allLabels=ravel::Ravel::allSliceLabels(axis, ravel::HandleSort::none);
         map<string,size_t> idxMap; // map index positions
         for (size_t i=0; i<allLabels.size(); ++i)
           idxMap[allLabels[i]]=i;
@@ -660,67 +335,63 @@ namespace minsky
               customOrder.push_back(j->second);
           }
         assert(!customOrder.empty());
-        ravel_applyCustomPermutation(ravel,axis,customOrder.size(),&customOrder[0]);
+        applyCustomPermutation(axis,customOrder);
       }
   }
 
   Dimension Ravel::dimension(int handle) const
   {
     Dimension dim;
-    auto dimitr=cminsky().dimensions.find(ravel_handleDescription(ravel,handle));
+    auto dimitr=cminsky().dimensions.find(handleDescription(handle));
     if (dimitr!=cminsky().dimensions.end())
       dim=dimitr->second;
     return dim;
   }
   
-  Ravel::HandleState::HandleSort Ravel::sortOrder() const
+  ravel::HandleSort::Order Ravel::sortOrder() const
   {
-    if (!ravel) return HandleState::none;
-    int h=ravel_selectedHandle(ravel);
+    int h=selectedHandle();
     if (h>=0)
       {
-        RavelHandleState state;
-        ravel_getHandleState(ravel,h,&state);
+        auto state=getHandleState(h);
         return state.order;
       }
     else
-      return HandleState::none;
+      return ravel::HandleSort::none;
   }
  
-  Ravel::HandleState::HandleSort Ravel::setSortOrder(Ravel::HandleState::HandleSort x)
+  ravel::HandleSort::Order Ravel::setSortOrder(ravel::HandleSort::Order x)
   {
-    if (ravel)
-        setHandleSortOrder(x, ravel_selectedHandle(ravel));
+    setHandleSortOrder(x, selectedHandle());
     return x;
   }
 
-  Ravel::HandleState::HandleSort Ravel::setHandleSortOrder(HandleState::HandleSort order, int handle)
+  ravel::HandleSort::Order Ravel::setHandleSortOrder(ravel::HandleSort::Order order, int handle)
   {
-    if (ravel && handle>=0)
+    if (handle>=0)
       {
         Dimension dim=dimension(handle);
-        ravel_orderLabels(ravel,handle,order,dim.type,dim.units.c_str());
+        orderLabels(handle,order,ravel::toEnum<ravel::HandleSort::OrderType>(dim.type),dim.units);
       }
     return order;
   }
 
   bool Ravel::handleSortableByValue() const
   {
-    if (!ravel || rank()!=1) return false;
-    size_t ids[]{0};
-    ravel_outputHandleIds(ravel,ids);
+    if (rank()!=1) return false;
+    auto ids=outputHandleIds();
     return size_t(selectedHandle())==ids[0];
   }
 
   
   string Ravel::description() const
   {
-    return ravel_handleDescription(ravel,ravel_selectedHandle(ravel));
+    return handleDescription(selectedHandle());
   }
   
   void Ravel::setDescription(const string& description)
   {
-    ravel_setHandleDescription(ravel,ravel_selectedHandle(ravel),description.c_str());
+    setHandleDescription(selectedHandle(),description);
   }
 
   Dimension::Type Ravel::dimensionType() const
@@ -773,78 +444,75 @@ namespace minsky
   }
 
   
-  RavelState Ravel::getState() const
-  {
-    RavelState state;
-    if (ravel)
-      {
-        state.radius=ravel_radius(ravel);
-        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
-          {
-            RavelHandleState hs;
-            ravel_getHandleState(ravel, i, &hs);
-            auto& s=state.handleStates[ravel_handleDescription(ravel,i)];
-            s=hs;
-            vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,i));
-            if (!sliceLabels.empty())
-              {
-                ravel_sliceLabels(ravel,i,&sliceLabels[0]);
-                s.minLabel=sliceLabels.front();
-                s.maxLabel=sliceLabels.back();
-                if (hs.sliceIndex<sliceLabels.size())
-                  s.sliceLabel=sliceLabels[hs.sliceIndex];
-                if (s.order==HandleState::custom)
-                  {
-                    s.customOrder={sliceLabels.begin(),sliceLabels.end()};
-                  }
-              }
-          }
-        vector<size_t> ids(ravel_rank(ravel));
-        ravel_outputHandleIds(ravel,&ids[0]);
-        for (size_t i=0; i<ids.size(); ++i)
-          state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
-        state.sortByValue=sortByValue;
-      }
-    return state;
-  }
+//  RavelState Ravel::getState() const
+//  {
+//    RavelState state;
+//        state.radius=ravel_radius(ravel);
+//        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
+//          {
+//            RavelHandleState hs;
+//            ravel_getHandleState(ravel, i, &hs);
+//            auto& s=state.handleStates[ravel_handleDescription(ravel,i)];
+//            s=hs;
+//            vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,i));
+//            if (!sliceLabels.empty())
+//              {
+//                ravel_sliceLabels(ravel,i,&sliceLabels[0]);
+//                s.minLabel=sliceLabels.front();
+//                s.maxLabel=sliceLabels.back();
+//                if (hs.sliceIndex<sliceLabels.size())
+//                  s.sliceLabel=sliceLabels[hs.sliceIndex];
+//                if (s.order==HandleState::custom)
+//                  {
+//                    s.customOrder={sliceLabels.begin(),sliceLabels.end()};
+//                  }
+//              }
+//          }
+//        vector<size_t> ids(ravel_rank(ravel));
+//        ravel_outputHandleIds(ravel,&ids[0]);
+//        for (size_t i=0; i<ids.size(); ++i)
+//          state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
+//        state.sortByValue=sortByValue;
+//    return state;
+//  }
 
-  /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-  void Ravel::applyState(const RavelState& state)
-  {
-    if (ravel)
-      {
-        sortByValue=state.sortByValue;
-        ravel_rescale(ravel,state.radius);
-
-        vector<size_t> ids;
-        for (auto& outName: state.outputHandles)
-          {
-            for (size_t handle=0; handle<ravel_numHandles(ravel); ++handle)
-              if (ravel_handleDescription(ravel,handle)==outName)
-                ids.push_back(handle);
-          }
-        ravel_setOutputHandleIds(ravel,ids.size(),&ids[0]);
-
-        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
-          {
-            string name=ravel_handleDescription(ravel,i);
-            auto hs=state.handleStates.find(name);
-            if (hs!=state.handleStates.end())
-              {
-                RavelHandleState state(hs->second);
-                ravel_setHandleState(ravel,i,&state);
-                setHandleSortOrder(state.order,i);
-                if (hs->second.order==HandleState::custom)
-                  pickSliceLabels(i,hs->second.customOrder);
-                else if (state.displayFilterCaliper)
-                  ravel_setCalipers(ravel,i,hs->second.minLabel.c_str(),
-                                    hs->second.maxLabel.c_str());
-                ravel_setSlicer(ravel,i,hs->second.sliceLabel.c_str());
-              }
-          }
-        ravel_redistributeHandles(ravel);
-      }
-  }
+//  /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
+//  void Ravel::applyState(const RavelState& state)
+//  {
+//    if (ravel)
+//      {
+//        sortByValue=state.sortByValue;
+//        ravel_rescale(ravel,state.radius);
+//
+//        vector<size_t> ids;
+//        for (auto& outName: state.outputHandles)
+//          {
+//            for (size_t handle=0; handle<ravel_numHandles(ravel); ++handle)
+//              if (ravel_handleDescription(ravel,handle)==outName)
+//                ids.push_back(handle);
+//          }
+//        ravel_setOutputHandleIds(ravel,ids.size(),&ids[0]);
+//
+//        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
+//          {
+//            string name=ravel_handleDescription(ravel,i);
+//            auto hs=state.handleStates.find(name);
+//            if (hs!=state.handleStates.end())
+//              {
+//                RavelHandleState state(hs->second);
+//                ravel_setHandleState(ravel,i,&state);
+//                setHandleSortOrder(state.order,i);
+//                if (hs->second.order==HandleState::custom)
+//                  pickSliceLabels(i,hs->second.customOrder);
+//                else if (state.displayFilterCaliper)
+//                  ravel_setCalipers(ravel,i,hs->second.minLabel.c_str(),
+//                                    hs->second.maxLabel.c_str());
+//                ravel_setSlicer(ravel,i,hs->second.sliceLabel.c_str());
+//              }
+//          }
+//        ravel_redistributeHandles(ravel);
+//      }
+//  }
 
   void Ravel::exportAsCSV(const string& filename) const
   {
@@ -852,23 +520,22 @@ namespace minsky
     TensorsFromPort tp(make_shared<EvalCommon>());
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     v=*tensorOpFactory.create(*this, tp);
-    // TODO: add some comment lines
-    v.exportAsCSV(filename, m_filename+": "+ravel_description(ravel));
+    // TODO: add some comment lines, such as source of data
+    v.exportAsCSV(filename, ravel::Ravel::description());
   }
 
   Units Ravel::units(bool check) const
   {
     Units inputUnits=ports[1]->units(check);
-    if (inputUnits.empty() || !ravel) return inputUnits;
+    if (inputUnits.empty()) return inputUnits;
     size_t multiplier=1;
     // at this stage, gross up exponents by the handle size of each
     // reduced by product handles
-    for (size_t h=0; h<ravel_numHandles(ravel); ++h)
+    for (size_t h=0; h<numHandles(); ++h)
       {
-        RavelHandleState state;
-        ravel_getHandleState(ravel,h,&state);
-        if (state.collapsed && state.reductionOp==HandleState::prod)
-          multiplier*=ravel_numSliceLabels(ravel,h);
+        auto state=getHandleState(h);
+        if (state.collapsed && state.reductionOp==ravel::Op::prod)
+          multiplier*=numSliceLabels(h);
       }
     if (multiplier>1)
       for (auto& u: inputUnits)
@@ -878,11 +545,11 @@ namespace minsky
   
   void Ravel::displayDelayedTooltip(float xx, float yy)
   {
-    if (ravel_rank(ravel)==0)
+    if (rank()==0)
       explanation="load CSV data from\ncontext menu";
     else
       {
-        explanation=ravel_explain(ravel,xx-x(),yy-y());
+        explanation=explain(xx-x(),yy-y());
         // line break every 5 words
         int spCnt=0;
         for (auto& c: explanation)
@@ -891,12 +558,12 @@ namespace minsky
       }
   }
     
-  string Minsky::ravelVersion() const
-  {
-    return ravelLib.versionFound+
-      ((ravelLib.lib || ravelLib.versionFound=="unavailable")?
-        "":" but incompatible");
-  }
+//  string Minsky::ravelVersion() const
+//  {
+//    return ravelLib.versionFound+
+//      ((ravelLib.lib || ravelLib.versionFound=="unavailable")?
+//        "":" but incompatible");
+//  }
 
   void Ravel::leaveLockGroup()
   {

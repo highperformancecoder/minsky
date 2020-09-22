@@ -22,7 +22,7 @@
 // below, for ticket #327
 #define DISPLAY_POW_UPSIDE_DOWN
 
-
+#define BOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
 #include <boost/geometry/geometry.hpp>
 #include "cairoItems.h"
 #include "operation.h"
