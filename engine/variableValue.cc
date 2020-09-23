@@ -364,16 +364,17 @@ namespace minsky
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
 
-    auto idx=index();
+    auto idxv=index();
     size_t i=0;
     for (auto d=begin(); d!=end(); ++i, ++d)
       if (isfinite(*d))
         {
-          size_t stride=1;
+          ssize_t idx=idxv.empty()? i: idxv[i];
           for (size_t j=0; j<rank(); ++j)
             {
-              of << "\""<<str(hypercube().xvectors[j][(idx[i]/stride) % hypercube().xvectors[j].size()]) << "\",";
-              stride*=hypercube().xvectors[j].size();
+              auto div=std::div(idx, ssize_t(hypercube().xvectors[j].size()));
+              of << "\""<<str(hypercube().xvectors[j][div.rem]) << "\",";
+              idx=div.quot;
             }
           of << *d << endl;
         }
