@@ -275,32 +275,37 @@ namespace minsky
   struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
-		
-      if (arg1->rank()>2 || arg2->rank()>2)
-        throw runtime_error("inner product of rank>2 tensors not yet implemented");
-   		 
-      size_t stride=arg2->hypercube().dims()[0];	
-      size_t m=arg1->hypercube().dims()[0], n=arg2->hypercube().dims()[arg2->rank()-1];	 
+    void computeTensor() const override {//TODO: tensors of arbitrary rank
+		   
+      size_t m=1, n=1;   
+      if (arg1->rank()>1)
+        for (size_t i=0; i<arg1->rank()-1; i++)
+          m*=arg1->hypercube().dims()[i];
+          
+      if (arg2->rank()>1)
+        for (size_t i=1; i<arg2->rank(); i++)
+          n*=arg2->hypercube().dims()[i];     
+  	
+      size_t stride=arg2->hypercube().dims()[0];	 	 
       double tmpSum;
       for (size_t i=0; i< m; i++) {
-        if (arg1->rank()>1 && arg2->rank()>1)		
+        if (m>1 && n>1)		
           for (size_t j=0; j< n; j++)
             {
               tmpSum=0;
               for (size_t k=0; k<stride; k++)  {
-				auto v1=arg1->atHCIndex(i*stride+k);  
-				auto v2=arg2->atHCIndex(k*stride+j);  
-                tmpSum+=(isnan(v1)? 0 : v1) * (isnan(v2)? 0 : v2);
-			   }
-              cachedResult[j+i*stride]=tmpSum;
+                auto v1=arg1->atHCIndex(k*m+i);  
+                auto v2=arg2->atHCIndex(j*stride + k);  
+                if (!isnan(v1) && !isnan(v2)) tmpSum+=v1*v2;
+              }
+              cachedResult[i+m*j]=tmpSum;
             }
         else {
           for (size_t k=0; k<stride; k++)  {
-			auto v1=(arg1->rank()>1? arg1->atHCIndex(i*stride+k):(*arg1)[i]);   
-			auto v2=(*arg2)[k];
-            cachedResult[i]+= (isnan(v1)? 0 : v1)*(isnan(v2)? 0 : v2);
-		  }
+            auto v1=(arg1->rank()>1? arg1->atHCIndex(k*m+i):(*arg1)[i]);   
+            auto v2=(*arg2)[k];
+            if (!isnan(v1) && !isnan(v2)) cachedResult[i]+= v1*v2;
+          }
         }
       }	 
     		            
@@ -315,26 +320,11 @@ namespace minsky
         if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0] && (arg1->rank()<arg2->rank()))  // do not allow products of the type nx1 dot nxm
           throw std::runtime_error("inner dimensions of tensors do not match");
         
-        // shape of output tensor should match outer dimensions of the two rank<2 tensors originally multiplied by one another     
-        if (arg1->rank()>1 && arg2->rank()>1) {
-          vector<XVector>&& outerXVs{arg1->hypercube().xvectors[0],arg2->hypercube().xvectors[arg2->rank()-1]};
-          cachedResult.hypercube(outerXVs);
-        }
-        else if (arg1->rank()>1 && arg2->rank()<2) { //case mxn dot nx1
-          vector<XVector>&& outerXVs{arg2->hypercube().xvectors[0]};
-          cachedResult.hypercube(outerXVs);
-        }
-        else {
-			//cachedResult.hypercube({});  // causes segfault: 0x00005555556d3926 in boost::any::~any (this=0x55555723f850, __in_chrg=<optimized out>) at /usr/local/include/boost/any.hpp:79 delete content; 
-			
-			// also causes the above segfault
-            auto hc=arg2->hypercube();
-            if (rank()==0) return;
-            
-            auto& xv=hc.xvectors[0];
-            xv.erase(xv.end()-xv.size()-2, xv.end());
-            cachedResult.hypercube(move(hc));
-		}
+        auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
+        Hypercube hc;
+        hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
+        hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());
+        cachedResult.hypercube(move(hc));
       }
     }    
   };
