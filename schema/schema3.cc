@@ -97,6 +97,7 @@ namespace schema3
         unpack(b,xv);
         hc.xvectors.push_back(xv);
       }
+    assert(std::find_if(index.begin(),index.end(),[&](size_t i){return i>=hc.numElements();})==index.end());
     a.index(index);
     a.hypercube(hc); //dimension data
     assert(a.size()==data.size());
