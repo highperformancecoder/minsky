@@ -360,17 +360,19 @@ namespace minsky
     ofstream of(filename);
     if (!comment.empty())
       of<<"\""<<comment<<"\"\n";
-    size_t i=0;
     for (auto& i: hypercube().xvectors)
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
+
+    auto idx=index();
+    size_t i=0;
     for (auto d=begin(); d!=end(); ++i, ++d)
       if (isfinite(*d))
         {
           size_t stride=1;
           for (size_t j=0; j<rank(); ++j)
             {
-              of << "\""<<str(hypercube().xvectors[j][(i/stride) % hypercube().xvectors[j].size()]) << "\",";
+              of << "\""<<str(hypercube().xvectors[j][(idx[i]/stride) % hypercube().xvectors[j].size()]) << "\",";
               stride*=hypercube().xvectors[j].size();
             }
           of << *d << endl;
