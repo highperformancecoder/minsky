@@ -803,7 +803,8 @@ namespace minsky
     catch (...)
       {
         // consume exception and try redrawing
-        requestRedraw();
+        // this leads to an endless loop...
+        //requestRedraw();
       }
   }
   

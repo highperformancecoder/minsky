@@ -516,6 +516,14 @@ namespace minsky
 
   void Ravel::exportAsCSV(const string& filename) const
   {
+    if (!ports.empty())
+      if (auto vv=ports[0]->getVariableValue())
+        {
+          vv->exportAsCSV(filename, ravel::Ravel::description());
+          return;
+        }
+
+    // if no variable value attached, create one
     VariableValue v(VariableType::flow);
     TensorsFromPort tp(make_shared<EvalCommon>());
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());

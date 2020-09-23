@@ -84,9 +84,9 @@ namespace civita
 
     using ITensorVal::index;
     const Index& index(Index&& idx) override {
-      m_index=idx;
+      m_index=std::move(idx);
       if (!m_index.empty()) {
-        data.resize(idx.size());
+        data.resize(m_index.size());
       }
       return m_index;
     }

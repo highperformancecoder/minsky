@@ -224,7 +224,10 @@ namespace minsky
                 }
               tensorInit.hypercube(hc);
             }
-          operator=(initValue(v));
+          if (tensorInit.rank()>0)
+            operator=(tensorInit);
+          else
+            operator=(initValue(v));
         }
   }
 
@@ -357,18 +360,21 @@ namespace minsky
     ofstream of(filename);
     if (!comment.empty())
       of<<"\""<<comment<<"\"\n";
-    size_t i=0;
     for (auto& i: hypercube().xvectors)
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
+
+    auto idxv=index();
+    size_t i=0;
     for (auto d=begin(); d!=end(); ++i, ++d)
       if (isfinite(*d))
         {
-          size_t stride=1;
+          ssize_t idx=idxv.empty()? i: idxv[i];
           for (size_t j=0; j<rank(); ++j)
             {
-              of << "\""<<str(hypercube().xvectors[j][(i/stride) % hypercube().xvectors[j].size()]) << "\",";
-              stride*=hypercube().xvectors[j].size();
+              auto div=std::div(idx, ssize_t(hypercube().xvectors[j].size()));
+              of << "\""<<str(hypercube().xvectors[j][div.rem]) << "\",";
+              idx=div.quot;
             }
           of << *d << endl;
         }

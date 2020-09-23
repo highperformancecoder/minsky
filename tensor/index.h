@@ -38,6 +38,10 @@ namespace civita
       Index() {}
       template <class T>
       Index(const T& indices) {*this=indices;}
+      Index(const Index&)=default;
+      Index(Index&&)=default;
+      Index& operator=(const Index&)=default;
+      Index& operator=(Index&&)=default;
 
       // can only assign ordered containers
       template <class T, class C, class A>

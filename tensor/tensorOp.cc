@@ -531,10 +531,14 @@ namespace civita
             {
             case ravel::HandleSort::none: break;
             case ravel::HandleSort::forward:
+            case ravel::HandleSort::numForward:
+            case ravel::HandleSort::timeForward:
               sort(perm.begin(), perm.end(),
                    [&](size_t i, size_t j) {return diff(xv[i],xv[j])<0;});
               break;
             case ravel::HandleSort::reverse:
+            case ravel::HandleSort::numReverse:
+            case ravel::HandleSort::timeReverse:
               sort(perm.begin(), perm.end(),
                    [&](size_t i, size_t j) {return diff(xv[i],xv[j])>0;});
               break;
@@ -549,9 +553,9 @@ namespace civita
                     perm.push_back(offsets[j]);
                 break;
               }
-            case ravel::HandleSort::numForward: case ravel::HandleSort::numReverse:
-            case ravel::HandleSort::timeForward: case ravel::HandleSort::timeReverse:
-              throw runtime_error("deprecated sort order used");
+//            case ravel::HandleSort::numForward: case ravel::HandleSort::numReverse:
+//            case ravel::HandleSort::timeForward: case ravel::HandleSort::timeReverse:
+//              throw runtime_error("deprecated sort order used");
             }
           // remove any permutation items outside calipers
           if (!i.minLabel.empty())
