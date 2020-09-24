@@ -168,8 +168,9 @@ namespace MathDAG
       {
         if (eqnNo++ < baseEqn) continue;
         // initial conditions
+        cairo_move_to(dest.cairo(), x, y); // needed to define a current point on the equations tab. for ticket 1256
         y+=print(dest.cairo(), latexToPango(mathrm(i->name))+"(0) = "+
-                 latexToPango(latexInit(i->init)),Anchor::nw);
+                 latexToPango(latexInit(i->init)),Anchor::nw);   
         
         // differential equation
         Pango num(dest.cairo());
