@@ -14,7 +14,7 @@
 
 - Install necessary prerequisites from your package manager as required by the above line (eg flex, gperf, intltool, scons).
 
-- Once these are built, unpack ecolab, and do
+- Once these are built, if ecolab hasn't been included as a submodule, unpack ecolab, and do
 
 ~~~~
    make MXE=1 install.
