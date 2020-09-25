@@ -77,7 +77,7 @@ FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor
 endif
 
 ifdef MXE
-BOOST_EXT=-mt-x32
+BOOST_EXT=-mt-x64
 EXE=.exe
 else
 EXE=
