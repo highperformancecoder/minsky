@@ -63,13 +63,13 @@ namespace minsky
                 if (rank==0)
                   { 
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
-                    pango.setMarkup(value->name+" = "+str(value->value(0)));
+                    pango.setMarkup(latexToPango(value->name)+" = "+str(value->value(0)));
                     pango.show();              
                   }
                 else if (rank==1)
                   {
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
-                    pango.setMarkup(value->name+":");
+                    pango.setMarkup(latexToPango(value->name)+":");
                     pango.show();              
                     string format=value->hypercube().xvectors[0].timeFormat();
                     for (auto& i: value->hypercube().xvectors[0])
@@ -133,7 +133,7 @@ namespace minsky
 			    else
 			      {
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
-                    pango.setMarkup(value->name+":");
+                    pango.setMarkup(latexToPango(value->name)+":");
                     pango.show();  					    
                     for (size_t k=0; k<rank-1; k++)  
                       {   

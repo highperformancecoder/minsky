@@ -334,11 +334,9 @@ namespace minsky
             // strip of any indices outside the output range
             auto t=ssize_t(j)-ssize_t(i);
             if (t>=0 && t<ssize_t(size()))  newIdx.insert(t);
-            //if (j>i)
-            //  newIdx.insert(i);
-            //else   
-            //  newIdx.insert(j);
-          }        
+          }
+          
+        cachedResult.index(Index(newIdx));           
       }
     }    
   };
