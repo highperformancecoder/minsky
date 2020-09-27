@@ -122,7 +122,7 @@ namespace minsky
                     cairo::CairoSave cs(cairo);
                     float rectHeight=0;
                     // make sure rectangle has right height
-                    if (value->size()%2!=0) rectHeight= y-y0;
+                    if ((value->size()&1)!=0) rectHeight= y-y0;
                     else rectHeight=y-y0-rowHeight;                    
                     cairo_rectangle(cairo,0.0,y0,w+colWidth,rectHeight);    
                     cairo_stroke(cairo);                          
