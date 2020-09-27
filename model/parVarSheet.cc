@@ -137,7 +137,7 @@ namespace minsky
                     pango.show();  					    
                     for (size_t k=0; k<rank-1; k++)  
                       {   
-                        if (k%2==0) y+=rowHeight; // allow room for header row
+                        if ((k&1)==0) y+=rowHeight; // allow room for header row
                         lw=0;
                         string format=value->hypercube().xvectors[k].timeFormat();
                         for (auto& i: value->hypercube().xvectors[k])
@@ -213,7 +213,7 @@ namespace minsky
                         cairo::CairoSave cs(cairo);
                         float rectHeight=0;
                         // make sure rectangle has right height
-                        if (k%2==0 && dims[k]%2==0) rectHeight= y-y0;
+                        if ((k&1)==0 && (dims[k]&1)==0) rectHeight= y-y0;
                         else rectHeight=y-y0-rowHeight;
                         cairo_rectangle(cairo,x0,y0,w+colWidth,rectHeight);    
                         cairo_stroke(cairo);                          

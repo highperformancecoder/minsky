@@ -288,26 +288,18 @@ namespace minsky
   	
       size_t stride=arg2->hypercube().dims()[0];	 	 
       double tmpSum;
-      for (size_t i=0; i< m; i++) {
-        if (m>1 && n>1)		
-          for (size_t j=0; j< n; j++)
-            {
-              tmpSum=0;
-              for (size_t k=0; k<stride; k++)  {
-                auto v1=arg1->atHCIndex(k*m+i);  
-                auto v2=arg2->atHCIndex(j*stride + k);  
+      for (size_t i=0; i< m; i++)
+        for (size_t j=0; j< n; j++)
+          {
+            tmpSum=0;
+            for (size_t k=0; k<stride; k++)  
+              {
+                auto v1=m>1? arg1->atHCIndex(k*m+i) : (*arg1)[k];  
+                auto v2=n>1? arg2->atHCIndex(j*stride + k) : (*arg2)[k];  
                 if (!isnan(v1) && !isnan(v2)) tmpSum+=v1*v2;
               }
-              cachedResult[i+m*j]=tmpSum;
-            }
-        else {
-          for (size_t k=0; k<stride; k++)  {
-            auto v1=(arg1->rank()>1? arg1->atHCIndex(k*m+i):(*arg1)[i]);   
-            auto v2=(*arg2)[k];
-            if (!isnan(v1) && !isnan(v2)) cachedResult[i]+= v1*v2;
+            cachedResult[i+m*j]=tmpSum;
           }
-        }
-      }	 
     		            
       if (cachedResult.size()==0) 
         for (size_t i=0; i<m*n; i++) 
@@ -317,26 +309,15 @@ namespace minsky
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
       arg1=a1; arg2=a2;
       if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
-        if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0] && (arg1->rank()<arg2->rank()))  // do not allow products of the type nx1 dot nxm
+        if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
           throw std::runtime_error("inner dimensions of tensors do not match");
         
         auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
         Hypercube hc;
+        hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
         hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
-        hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());
         cachedResult.hypercube(move(hc));
-        
-        auto idx1=arg1->index(), idx2=arg2->index();
-        set<size_t> newIdx;        
-        for (auto& i: idx1)
-          for (auto& j: idx2)
-          {
-            // strip of any indices outside the output range
-            auto t=ssize_t(j)-ssize_t(i);
-            if (t>=0 && t<ssize_t(size()))  newIdx.insert(t);
-          }
-          
-        cachedResult.index(Index(newIdx));           
+                
       }
     }    
   };
