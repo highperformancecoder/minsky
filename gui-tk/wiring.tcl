@@ -412,16 +412,24 @@ proc textOK {} {
     canvas.moveOffsX 0
     canvas.moveOffsY 0
     if {[lsearch [availableOperations] $textBuffer]>-1} {
-        addOperationKey $textBuffer
+		addOperationKey $textBuffer
+	} elseif {[llength $textBuffer]==1 && [string match "-" $textBuffer]} { # minus sign only creates subtract op. for ticket 145
+		addOperationKey subtract		
     } elseif [string match "\[%#\]*" $textBuffer] {
         addNote [string range $textBuffer 1 end]
     } else {
-        if [regexp "(.*)=(.*)" $textBuffer dummy name init] {            
-            minsky.addVariable $name flow
+        if [regexp "(.*)=(.*)" $textBuffer dummy name init] {
+			minsky.addVariable $name flow
 			minsky.canvas.itemFocus.init $init
             minsky.variableValues.reset
-        } else {
-            minsky.addVariable $textBuffer flow
+        } else {  # signed numbers create constant on the canvas. for ticket 145
+			if [regexp "(?:^|\s)(\[+-\]?\[\[:digit:\]\]*\.?\[\[:digit:\]\]+)(?=\$|\s)" $textBuffer] { #https://stackoverflow.com/questions/33520934/regex-with-only-numbers-in-a-string-c          
+			    minsky.addVariable $textBuffer constant
+			    minsky.canvas.itemFocus.init $textBuffer
+			    minsky.variableValues.reset
+			} else {
+				minsky.addVariable $textBuffer flow
+			}
             
             getItemAtFocus
             editVar
@@ -432,7 +440,7 @@ proc textOK {} {
 
 # operation add shortcuts
 bind . <Key-plus> {addOperationKey add}
-bind . <Key-minus> {addOperationKey subtract}
+bind . <Key-minus> {textInput "-"; .wiring.canvas configure -cursor {}}
 bind . <Key-asterisk> {addOperationKey multiply}
 bind . <Key-KP_Multiply> {addOperationKey multiply}
 bind . <Key-slash> {addOperationKey divide}
