@@ -63,13 +63,13 @@ namespace minsky
                 if (rank==0)
                   { 
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
-                    pango.setMarkup(value->name+" = "+str(value->value(0)));
+                    pango.setMarkup(latexToPango(value->name)+" = "+str(value->value(0)));
                     pango.show();              
                   }
                 else if (rank==1)
                   {
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
-                    pango.setMarkup(value->name+":");
+                    pango.setMarkup(latexToPango(value->name)+":");
                     pango.show();              
                     string format=value->hypercube().xvectors[0].timeFormat();
                     for (auto& i: value->hypercube().xvectors[0])
@@ -122,7 +122,7 @@ namespace minsky
                     cairo::CairoSave cs(cairo);
                     float rectHeight=0;
                     // make sure rectangle has right height
-                    if (value->size()%2!=0) rectHeight= y-y0;
+                    if ((value->size()&1)!=0) rectHeight= y-y0;
                     else rectHeight=y-y0-rowHeight;                    
                     cairo_rectangle(cairo,0.0,y0,w+colWidth,rectHeight);    
                     cairo_stroke(cairo);                          
@@ -133,11 +133,11 @@ namespace minsky
 			    else
 			      {
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
-                    pango.setMarkup(value->name+":");
+                    pango.setMarkup(latexToPango(value->name)+":");
                     pango.show();  					    
                     for (size_t k=0; k<rank-1; k++)  
                       {   
-                        y+=rowHeight; // allow room for header row
+                        if ((k&1)==0) y+=rowHeight; // allow room for header row
                         lw=0;
                         string format=value->hypercube().xvectors[k].timeFormat();
                         for (auto& i: value->hypercube().xvectors[k])
@@ -199,7 +199,7 @@ namespace minsky
                         w=0;h=0;      
                         cairo_get_current_point (cairo,&w,&h);   
                         if (h<h_prev) h+=h_prev; 
-                        if (w<w_prev) w+=w_prev;                                                                         
+                        if (w<w_prev) w=w_prev;                                                                         
                         // draw grid
                         {
                           cairo::CairoSave cs(cairo);
@@ -213,9 +213,8 @@ namespace minsky
                         cairo::CairoSave cs(cairo);
                         float rectHeight=0;
                         // make sure rectangle has right height
-                        if (((dims[k])%2==0 && rank%2==0) && ((dims[k+1])%2==0 && rank%2!=0)) rectHeight= y-y0;
+                        if ((k&1)==0 && (dims[k]&1)==0) rectHeight= y-y0;
                         else rectHeight=y-y0-rowHeight;
-                        if (rank > 2) rectHeight+=rowHeight;
                         cairo_rectangle(cairo,x0,y0,w+colWidth,rectHeight);    
                         cairo_stroke(cairo);                          
                         cairo_clip(cairo);		        
