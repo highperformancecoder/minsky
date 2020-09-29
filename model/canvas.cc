@@ -229,7 +229,7 @@ namespace minsky
                 if (auto v=itemFocus->variableCast())
                   {
                     RenderVariable rv(*v);
-                    double rw=fabs(v->zoomFactor()*rv.width()*cos(v->rotation()*M_PI/180));
+                    double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
                     v->sliderSet((x-v->x()) * (v->sliderMax-v->sliderMin) /
                                  rw + 0.5*(v->sliderMin+v->sliderMax));
                     // push History to prevent an unnecessary reset when
