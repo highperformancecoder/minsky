@@ -316,7 +316,7 @@ namespace minsky
         if (state.order!=ravel::HandleSort::custom)
           previousOrder=state.order;
 
-        if (pick.size()>=numSliceLabels(axis))
+        if (pick.size()>=numAllSliceLabels(axis))
           {
             // if all labels are selected, revert ordering to previous
             setHandleSortOrder(previousOrder, axis);
