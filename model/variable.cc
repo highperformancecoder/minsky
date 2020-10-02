@@ -90,7 +90,7 @@ ClickType::Type VariableBase::clickType(float xx, float yy)
     {
       double hpx=z*rv.handlePos();
       double hpy=-z*rv.height();
-      if (rv.height()<iHeight()) hpy=-z*iHeight(); 
+      if (rv.height()<0.5*iHeight()) hpy=-z*0.5*iHeight(); 
       double dx=xx-x(), dy=yy-y();         
       if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
         return ClickType::onSlider;

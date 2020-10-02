@@ -96,7 +96,7 @@ double RenderVariable::handlePos() const
 {
   var.initSliderBounds();
   var.adjustSliderBounds();
-  return w*(var.value()-0.5*(var.sliderMin+var.sliderMax))/(var.sliderMax-var.sliderMin);
+  return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(var.value()-0.5*(var.sliderMin+var.sliderMax))/(var.sliderMax-var.sliderMin);
 }
 
 void minsky::drawTriangle
