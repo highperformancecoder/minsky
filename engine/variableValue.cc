@@ -21,6 +21,7 @@
 #include "str.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
+#include <iomanip>
 #include <error.h>
 
 using namespace ecolab;
@@ -359,7 +360,16 @@ namespace minsky
   {
     ofstream of(filename);
     if (!comment.empty())
-      of<<"\""<<comment<<"\"\n";
+      of<<R"(""")"<<comment<<R"(""")"<<endl;
+               
+    auto& xv=hypercube().xvectors;
+    ostringstream os;
+    for (auto& i: xv)
+      {
+        if (&i>&xv[0]) os<<",";
+        os<<json(static_cast<const NamedDimension&>(i));
+      }
+    of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;
     for (auto& i: hypercube().xvectors)
       of<<"\""<<i.name<<"\",";
     of<<"value$\n";
@@ -373,7 +383,7 @@ namespace minsky
           for (size_t j=0; j<rank(); ++j)
             {
               auto div=std::div(idx, ssize_t(hypercube().xvectors[j].size()));
-              of << "\""<<str(hypercube().xvectors[j][div.rem]) << "\",";
+              of << "\""<<str(hypercube().xvectors[j][div.rem], hypercube().xvectors[j].dimension.units) << "\",";
               idx=div.quot;
             }
           of << *d << endl;

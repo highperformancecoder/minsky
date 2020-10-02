@@ -40,8 +40,8 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      from1.hypercube(XV{{"a",{"a1","a2","a3"}},{"b",{"b1","b3","b4"}}});
-      from2.hypercube(XV{{"c",{"c1","c2","c3"}},{"b",{"b2","b3","b4","b5"}}});
+      from1.hypercube(XV{{"a",{},{"a1","a2","a3"}},{"b",{},{"b1","b3","b4"}}});
+      from2.hypercube(XV{{"c",{},{"c1","c2","c3"}},{"b",{},{"b2","b3","b4","b5"}}});
 //      from1.allocValue();
 //      from2.allocValue();
       EvalOpPtr e(OperationType::add, nullptr, to, from1, from2);
@@ -52,7 +52,7 @@ SUITE(XVector)
       CHECK_EQUAL(3,m["a"].size());
       CHECK(m["a"]==from1.hypercube().xvectors[0]);
       CHECK(m["c"]==from2.hypercube().xvectors[0]);
-      XVector t1{"b",{"b3","b4"}};
+      XVector t1{"b",{},{"b3","b4"}};
       CHECK(m["b"]==t1);
 
       CHECK_EQUAL(3, to.hypercube().dims().size());
@@ -108,11 +108,11 @@ SUITE(XVector)
     {
       VariableValue from1(VariableType::flow), from2(VariableType::flow),
         to(VariableType::flow);
-      XV xv1{{"a",{1.0,2.0,3.0}},{"b",{1.0,3.0,4.0,6.0}}};
+      XV xv1{{"a",{},{1.0,2.0,3.0}},{"b",{},{1.0,3.0,4.0,6.0}}};
       xv1[0].dimension.type=Dimension::value;
       xv1[1].dimension.type=Dimension::value;
       from1.hypercube(xv1);
-      XV xv2{{"c",{"c1","c2","c3"}},{"b",{2.0,3.0,3.5,4.2,5.0}}};
+      XV xv2{{"c",{},{"c1","c2","c3"}},{"b",{},{2.0,3.0,3.5,4.2,5.0}}};
       xv2[1].dimension.type=Dimension::value;
       from2.hypercube(xv2);
       from1.allocValue();

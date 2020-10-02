@@ -171,6 +171,16 @@ void DataSpec::givenTFguessRemainder(std::istream& input, const TokenizerFunctio
         if (buf.back()=='\r') buf=buf.substr(0,buf.size()-1);
         boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
         vector<string> line(tok.begin(), tok.end());
+        if (!line.empty())
+          {
+            smatch match;
+            static const regex re("RavelHypercube=(.*)");
+            if (regex_match(line[0], match, re))
+              {
+                populateFromRavelMetadata(match[1], row);
+                return;
+              }
+          }
         starts.push_back(firstNumerical(line));
         nCols=std::max(nCols, line.size());
         if (starts.back()==line.size())
@@ -240,6 +250,7 @@ void DataSpec::guessFromStream(std::istream& input)
       guessRemainder(inputCopy,' ');
   }
 
+  if (dimensionNames.empty())
   {
     //fill in guessed dimension names
     istringstream inputCopy(streamBuf.str());
@@ -299,8 +310,23 @@ void DataSpec::guessDimensionsFromStream(std::istream& input, const T& tf)
       }
 }
 
-
-
+ void DataSpec::populateFromRavelMetadata(const std::string& metadata, size_t row)
+ {
+   vector<NamedDimension> ravelMetadata;
+   json(ravelMetadata,metadata);
+   columnar=true;
+   headerRow=row+2;
+   setDataArea(headerRow, ravelMetadata.size());
+   dimensionNames.clear();
+   dimensions.clear();
+   for (auto& i: ravelMetadata)
+     {
+       dimensions.push_back(i.dimension);
+       dimensionNames.push_back(i.name);
+     }
+   for (size_t i=0; i<dimensions.size(); ++i)
+     dimensionCols.insert(i);
+ }
 
 namespace minsky
 {
