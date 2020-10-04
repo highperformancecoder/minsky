@@ -231,8 +231,7 @@ namespace minsky
                     RenderVariable rv(*v);
                     double rw=fabs(v->zoomFactor()*(rv.width()<v->iWidth()? 0.5*v->iWidth() : rv.width())*cos(v->rotation()*M_PI/180));
                     double sliderPos=(x-v->x())* (v->sliderMax-v->sliderMin)/rw+0.5*(v->sliderMin+v->sliderMax);
-                    int quo;                    
-                    double sliderHatch=sliderPos-remquof(sliderPos,v->sliderStep,&quo);   // makes slider's hatch marks more "grainy". for ticket 1258
+                    double sliderHatch=sliderPos-fmod(sliderPos,v->sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
                     v->sliderSet(sliderHatch);
                     // push History to prevent an unnecessary reset when
                     // adjusting the slider whilst paused. See ticket #812
