@@ -787,8 +787,11 @@ proc contextMenu {x y X Y} {
                 set sortOrder [minsky.canvas.item.sortOrder]
             }
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
-            .wiring.context add command -label "Unlock" -command {
-                minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
+            if [llength [info commands minsky.canvas.item.lockGroup]] {
+                .wiring.context add command -label "Lock specific handles" -command lockSpecificHandles
+                .wiring.context add command -label "Unlock" -command {
+                    minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
+                }
             }
         }
     }
@@ -801,7 +804,44 @@ proc contextMenu {x y X Y} {
     tk_popup .wiring.context $X $Y
 }
 
+proc lockSpecificHandles {} {
+    global currentLockHandles
 
+    if {[winfo exists .wiring.context.lockHandles]} {destroy .wiring.context.lockHandles}
+    toplevel .wiring.context.lockHandles
+    foreach h [minsky.canvas.item.lockGroup.allLockHandles] {
+        frame .wiring.context.lockHandles."$h"
+        checkbutton .wiring.context.lockHandles."$h".button -variable currentLockHandles($h)
+        label .wiring.context.lockHandles."$h".label -text $h -anchor w -width 50
+        grid .wiring.context.lockHandles."$h".button .wiring.context.lockHandles."$h".label
+        pack .wiring.context.lockHandles."$h"
+    }
+
+    # initialise currentLockHandles array to current lock handles state
+    foreach i [array names currentLockHandles] {
+        set currentLockHandles($i) 0
+    }
+    if [llength [minsky.canvas.item.lockGroup.handlesToLock.#members]] {
+        foreach i [minsky.canvas.item.lockGroup.handlesToLock.#members] {
+            set currentLockHandles($i) 1
+        }
+    } else {
+        foreach i [minsky.canvas.item.lockGroup.allLockHandles] {
+            set currentLockHandles($i) 1
+        }
+    }        
+
+    buttonBar .wiring.context.lockHandles {
+        set lh {}
+        global currentLockHandles
+        foreach i [array names currentLockHandles] {
+            if $currentLockHandles($i) {
+                lappend lh $i
+            }
+        }
+        minsky.canvas.item.lockGroup.setLockHandles $lh
+    }
+}
 
 menu .wiring.context.axisMenu 
 .wiring.context.axisMenu add command -label "Description" -command {
