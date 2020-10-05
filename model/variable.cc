@@ -503,6 +503,8 @@ void VariableBase::draw(cairo_t *cairo) const
     try
       {
         auto val=engExp();
+        
+        if ((sliderMax-sliderMin)/sliderStep > 1.0e04) sliderStep=(sliderMax-sliderMin)/1.0e04;   // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255.        
   
         Pango pangoVal(cairo);
         if (!isnan(value())) {
