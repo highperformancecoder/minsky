@@ -72,7 +72,8 @@ cat >$minskyWxs <<EOF
                 <Shortcut Id="desktopMinsky" Directory="DesktopFolder" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes" />
               </File>
 EOF
-if [ $productName = "Minsky" -o $productName = "Ravel" ]; then
+# TODO - when Ravel 1.1 is released, switch this to ravel, not ravel beta
+if [ $productName = "Minsky" -o $productName = "Ravel" -o $productName = "RavelBeta"  ]; then
     if [ $productName = "Minsky" ]; then
 	echo "<ProgId Id='MinskyData' Description='Minsky Project File' Icon='MinskyEXE'>" >>$minskyWxs
 	echo "<Extension Id='mky' ContentType='application/minsky'>" >>$minskyWxs
