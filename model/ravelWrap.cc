@@ -22,6 +22,7 @@
 #include "dimension.h"
 #include "minskyTensorOps.h"
 #include "minsky.h"
+#include "pango.h"
 #include "minsky_epilogue.h"
 
 #include <string>
@@ -64,6 +65,34 @@ namespace minsky
       }
   }
 
+namespace
+{
+  struct CairoRenderer: public ravel::CairoRenderer
+  {
+    ecolab::Pango m_pango;
+    
+    static ecolab::Pango& pango(CAPIRenderer* r) {return static_cast<CairoRenderer*>(r)->m_pango;}
+
+    static void s_showText(CAPIRenderer* c, const char* s)
+    {
+      pango(c).setText(s);
+      pango(c).show();
+    }
+    static void s_setTextExtents(CAPIRenderer* c, const char* s)
+    {pango(c).setText(s);}
+    static double s_textWidth(CAPIRenderer* c) {return pango(c).width();}
+    static double s_textHeight(CAPIRenderer* c) {return pango(c).height();}
+
+    CairoRenderer(cairo_t* cairo): ravel::CairoRenderer(cairo), m_pango(cairo) {
+      showText=s_showText;
+      setTextExtents=s_setTextExtents;
+      textWidth=s_textWidth;
+      textHeight=s_textHeight;
+    }
+    
+  };
+}
+  
   void Ravel::draw(cairo_t* cairo) const
   {
     double  z=zoomFactor(), r=1.1*z*radius();
@@ -99,7 +128,7 @@ namespace minsky
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
       cairo_clip(cairo);
       cairo_scale(cairo,z,z);
-      ravel::CairoRenderer cr(cairo);
+      CairoRenderer cr(cairo);
       render(cr);
     }        
     if (selected) drawSelected(cairo);
