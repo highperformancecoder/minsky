@@ -265,7 +265,7 @@ namespace schema3
   }
 
 
-  Minsky::Minsky(const minsky::Group& g)
+  Minsky::Minsky(const minsky::Group& g, bool packTensorData)
   {
     IdMap itemMap;
 
@@ -278,6 +278,11 @@ namespace schema3
           itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Sheet>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
+        if (packTensorData) //pack tensor data
+          if (auto v=(*i)->variableCast())
+            if (!items.back().tensorData)
+              items.back().packTensorInit(*v);
+
         return false;
       });
     

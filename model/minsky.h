@@ -303,7 +303,7 @@ namespace minsky
     std::string fileVersion; ///< Minsky version file was saved under
     
     unsigned maxHistory{100}; ///< maximum no. of history states to save
-    int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvaas during simulation
+    int maxWaitMS=100; ///< maximum  wait in millisecond between redrawing canvas during simulation
 
     /// clear history
     void clearHistory() {history.clear(); historyPtr=0;}

@@ -134,7 +134,6 @@ namespace schema3
         slider.reset(new Slider(v.sliderStepRel,v.sliderMin,v.sliderMax,v.sliderStep));
       if (auto vv=v.vValue())
         units=vv->units.str();
-      packTensorInit(v);
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(o),ports),
@@ -226,9 +225,9 @@ namespace schema3
     minsky::ConversionsMap conversions;
     
     Minsky(): schemaVersion(0) {} // schemaVersion defined on read in
-    Minsky(const minsky::Group& g);
-    Minsky(const minsky::Minsky& m):
-      Minsky(*m.model)  {
+    Minsky(const minsky::Group& g, bool packTensorData=true);
+    Minsky(const minsky::Minsky& m, bool packTensorData=true):
+      Minsky(*m.model,packTensorData)  {
       minskyVersion=m.minskyVersion;
       rungeKutta=m;
       zoomFactor=m.model->zoomFactor();

@@ -57,6 +57,7 @@ namespace minsky
         argv0!="minsky.canvas.select" &&
         argv0!="minsky.canvas.recentre" &&
         argv0!="minsky.canvas.focusFollowsMouse" &&
+        argv0!="minsky.canvas.displayDelayedTooltip" &&
         (argv0!="minsky.canvas.requestRedraw" || m.eventRecord.get()) &&
         /* ensure we record mouse movements, but filter from history */
         (argv0!="minsky.canvas.mouseDown" || m.eventRecord.get()) &&

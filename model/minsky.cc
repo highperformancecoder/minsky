@@ -1283,7 +1283,7 @@ namespace minsky
   {
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
-    schema3::Minsky m(*this);
+    schema3::Minsky m(*this, false /* don't pack tensor data */);
     pack_t buf;
     buf<<m;
     if (history.empty())
@@ -1334,9 +1334,21 @@ namespace minsky
       {
         schema3::Minsky m;
         history[historyPtr-1].reseto()>>m;
+        // stash tensorInit data for later restoration
+        auto stashedValues=move(variableValues);
         clearAllMaps();
         model->clear();
         m.populateGroup(*model);
+        // restore tensorInit data
+        for (auto& v: variableValues)
+          {
+            auto stashedValue=stashedValues.find(v.first);
+            if (stashedValue!=stashedValues.end())
+              v.second->tensorInit=move(stashedValue->second->tensorInit);
+          }
+        try {reset();}
+        catch (...) {}
+          
       }
     else
       historyPtr+=changes; // revert
