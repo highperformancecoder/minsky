@@ -303,6 +303,10 @@ if {[tk windowingsystem] == "aqua"} {
     }
     proc ::tk::mac::ShowPreferences {} {showPreferences}
     proc ::tk::mac::ShowHelp {} {help Introduction}
+} else {
+    # keyboard accelerator introducer, which is different on macs
+    set meta Control
+    set meta_menu Ctrl
 }
 
 menu .menubar.file
@@ -559,10 +563,6 @@ proc setSimulationDelay {delay} {
 label .controls.slowSpeed -text "slow"
 label .controls.fastSpeed -text "fast"
 scale .controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
-
-# keyboard accelerator introducer, which is different on macs
-set meta Control
-set meta_menu Ctrl
 
 
 
