@@ -72,10 +72,15 @@ cat >$minskyWxs <<EOF
                 <Shortcut Id="desktopMinsky" Directory="DesktopFolder" Name="$productName" WorkingDirectory='INSTALLDIR' Icon="minsky.exe" IconIndex="0" Advertise="yes" />
               </File>
 EOF
-if [ $productName = "Minsky" ]; then
-cat >>$minskyWxs <<EOF 
-              <ProgId Id='MinskyData' Description='Minsky Project File' Icon='MinskyEXE'>
-                <Extension Id='mky' ContentType='application/minsky'>
+if [ $productName = "Minsky" -o $productName = "Ravel" ]; then
+    if [ $productName = "Minsky" ]; then
+	echo "<ProgId Id='MinskyData' Description='Minsky Project File' Icon='MinskyEXE'>" >>$minskyWxs
+	echo "<Extension Id='mky' ContentType='application/minsky'>" >>$minskyWxs
+    else
+	echo "<ProgId Id='RavelData' Description='Ravel Project File' Icon='MinskyEXE'>" >>$minskyWxs
+	echo "<Extension Id='rvl' ContentType='application/ravel'>" >>$minskyWxs
+    fi	
+    cat >>$minskyWxs <<EOF 
                   <Verb Id='open' Command='Open' TargetFile='MinskyEXE' Argument='"%1"'/>
                  </Extension>
                </ProgId>
