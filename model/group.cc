@@ -1141,7 +1141,7 @@ namespace minsky
 
   std::string Group::defaultExtension() const
   {
-    if (findAny(&GroupItems::items, [](const auto& i){return dynamic_cast<Ravel*>(i.get());}))
+    if (findAny(&GroupItems::items, [](const ItemPtr& i){return dynamic_cast<Ravel*>(i.get());}))
       return ".rvl";
     return ".mky";
   }

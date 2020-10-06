@@ -24,6 +24,20 @@
 #include <iomanip>
 #include <error.h>
 
+#ifdef WIN32
+// std::quoted not supported (yet) on MXE
+string quoted(const std::string& x)
+{
+  string r;
+  for (auto& i: x)
+    if (i=='"')
+      r+=R"(\")";
+    else
+      r+=i;
+  return r;
+}
+#endif
+
 using namespace ecolab;
 using namespace std;
 namespace minsky
