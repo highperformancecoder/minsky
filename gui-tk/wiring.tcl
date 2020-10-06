@@ -547,7 +547,9 @@ proc canvasContext {x y X Y} {
 
 proc saveSelection {} {
     global workDir
-    set f [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+    set ext [canvas.selection.defaultExtension]
+    set f [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                  -filetypes [fileTypes $ext]]            
     if [string length $f] {
         set workDir [file dirname $f]
         eval minsky.saveSelectionAsFile {$f}

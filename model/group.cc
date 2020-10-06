@@ -1139,6 +1139,11 @@ namespace minsky
   return vector<string>(r.begin(),r.end());
 }
 
-
+  std::string Group::defaultExtension() const
+  {
+    if (findAny(&GroupItems::items, [](const auto& i){return dynamic_cast<Ravel*>(i.get());}))
+      return ".rvl";
+    return ".mky";
+  }
   
 }

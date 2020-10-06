@@ -1,20 +1,20 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>2.19.0-rc.2</minskyVersion>
+  <minskyVersion>2.21.0-beta.7</minskyVersion>
   <wires>
    <Wire>
     <id>64</id>
     <from>8</from>
     <to>21</to>
     <coords>
-     <float>106.48</float>
-     <float>298.831</float>
-     <float>80.3777</float>
-     <float>331.233</float>
-     <float>40.7736</float>
-     <float>127.815</float>
-     <float>27.28</float>
-     <float>26.26</float>
+     <float>100.48</float>
+     <float>324.831</float>
+     <float>74.3777</float>
+     <float>357.233</float>
+     <float>34.7736</float>
+     <float>153.815</float>
+     <float>21.28</float>
+     <float>52.26</float>
     </coords>
    </Wire>
    <Wire>
@@ -22,14 +22,14 @@
     <from>4</from>
     <to>24</to>
     <coords>
-     <float>151.48</float>
-     <float>298.831</float>
-     <float>88.1985</float>
-     <float>365.488</float>
-     <float>40.1052</float>
-     <float>169.736</float>
-     <float>9.28</float>
-     <float>56.26</float>
+     <float>145.48</float>
+     <float>324.831</float>
+     <float>82.1985</float>
+     <float>391.488</float>
+     <float>34.1052</float>
+     <float>195.736</float>
+     <float>3.28</float>
+     <float>82.26</float>
     </coords>
    </Wire>
    <Wire>
@@ -37,12 +37,12 @@
     <from>0</from>
     <to>27</to>
     <coords>
-     <float>189.48</float>
-     <float>299.831</float>
-     <float>45.2812</float>
-     <float>424.331</float>
-     <float>11.28</float>
-     <float>86.26</float>
+     <float>183.48</float>
+     <float>325.831</float>
+     <float>39.2812</float>
+     <float>450.331</float>
+     <float>5.28</float>
+     <float>112.26</float>
     </coords>
    </Wire>
    <Wire>
