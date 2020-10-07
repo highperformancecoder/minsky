@@ -28,13 +28,13 @@
 // std::quoted not supported (yet) on MXE
 string quoted(const std::string& x)
 {
-  string r;
+  string r="\"";
   for (auto& i: x)
     if (i=='"')
       r+=R"(\")";
     else
       r+=i;
-  return r;
+  return r+"\"";
 }
 #endif
 
