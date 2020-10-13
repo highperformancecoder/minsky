@@ -423,7 +423,7 @@ void VariableBase::sliderSet(double x)
 {
   if (x<sliderMin) x=sliderMin;
   if (x>sliderMax) x=sliderMax;
-  if ((sliderMax-sliderMin)/sliderStep > 1.0e04) sliderStep=(sliderMax-sliderMin)/1.0e04;   // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255.     
+  sliderStep=maxSliderSteps();    
   init(to_string(x));
   value(x);
 }
@@ -443,12 +443,12 @@ void VariableBase::initSliderBounds() const
         {
           sliderMin=-value()*10;
           sliderMax=value()*10;
-          sliderStep=abs(0.1*value());
-          if ((sliderMax-sliderMin)/sliderStep > 1.0e04) sliderStep=(sliderMax-sliderMin)/1.0e04;   // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255.               
+          sliderStep=abs(0.1*value());           
         }
       sliderStepRel=false;
       sliderBoundsSet=true;
     }
+    sliderStep=maxSliderSteps();      
 }
 
 void VariableBase::adjustSliderBounds() const
@@ -459,8 +459,15 @@ void VariableBase::adjustSliderBounds() const
       {
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
-        if ((sliderMax-sliderMin)/sliderStep > 1.0e04) sliderStep=(sliderMax-sliderMin)/1.0e04;   // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255.     
+        sliderStep=maxSliderSteps();   
       }
+}
+
+double VariableBase::maxSliderSteps() const
+{
+    // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255. 	
+	if ((sliderMax-sliderMin)/sliderStep > 1.0e04) sliderStep=(sliderMax-sliderMin)/1.0e04;    
+	return sliderStep;
 }
 
 bool VariableBase::handleArrows(int dir,bool reset)
@@ -506,9 +513,7 @@ void VariableBase::draw(cairo_t *cairo) const
     try
       {
         auto val=engExp();    
-        
-        double tmpSliderStep=(sliderMax-sliderMin)/sliderStep > 1.0e04 ? (sliderMax-sliderMin)/1.0e04 : sliderStep;
-  
+          
         Pango pangoVal(cairo);
         if (!isnan(value())) {
           pangoVal.setFontSize(6*scaleFactor*z);
@@ -517,8 +522,8 @@ void VariableBase::draw(cairo_t *cairo) const
               (mantissa(val,
                         int(1+
                          (sliderStepRel?
-                          -log10(tmpSliderStep):
-                          log10(value()/tmpSliderStep)
+                          -log10(maxSliderSteps()):
+                          log10(value()/maxSliderSteps())
                           ))));
           else
             pangoVal.setMarkup(mantissa(val));
