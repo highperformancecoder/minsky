@@ -774,7 +774,8 @@ proc dimensionsDialog {} {
             [ttk::combobox .dimensions.g${i}_type -state readonly \
              -values {string value time}] \
             [ttk::combobox .dimensions.g${i}_units \
-                 -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\]"]
+                 -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\] {}"
+            ]
     }
     set i 2
     foreach dim [dimensions.#keys] {
@@ -784,7 +785,7 @@ proc dimensionsDialog {} {
         .dimensions.g${i}_type set [$d.type]
         .dimensions.g${i}_units delete 0 end
         .dimensions.g${i}_units insert 0 [$d.units]
-        dimFormatPopdown .dimensions.g${i}_units [$d.type]
+        dimFormatPopdown .dimensions.g${i}_units [$d.type] {}
         incr i
     }
 }
@@ -828,21 +829,22 @@ proc rewriteTimeComboBox {comboBox} {
     }
 }
 
-proc dimFormatPopdown {comboBox type} {
+# If comboBox is a format combo box for a field of \a type, then set up rewrite strings, then execute \a onSelect
+proc dimFormatPopdown {comboBox type onSelect} {
     global timeFormatStrings
     switch $type {
         string {
             $comboBox configure -values {}
             $comboBox set {}
-            bind $comboBox <<ComboboxSelected>> {}
+            bind $comboBox <<ComboboxSelected>> $onSelect
         }
         value {
             $comboBox configure -values {}
-            bind $comboBox <<ComboboxSelected>> {}
+            bind $comboBox <<ComboboxSelected>> $onSelect
         }
         time {
             $comboBox configure -values [lsort [array names timeFormatStrings]]
-            bind $comboBox <<ComboboxSelected>> "rewriteTimeComboBox $comboBox"
+            bind $comboBox <<ComboboxSelected>> "rewriteTimeComboBox $comboBox; $onSelect"
         }
     }
 }
