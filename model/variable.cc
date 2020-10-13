@@ -570,7 +570,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (vv.sliderVisible)
+    if (vv.sliderVisible && vv.size()==1)
       {
         // draw slider
         CairoSave cs(cairo);
