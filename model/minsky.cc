@@ -1036,9 +1036,9 @@ namespace minsky
             throw error("integral not wired");
           }
         // enable element-wise integration of tensor variables. for feature 147  
-		for (size_t j=0; j<i->input.size(); ++j)
-			result[i->stock.idx()+j] = reverseFactor *
-			 (i->input.isFlowVar()? flow[i->input.idx()+j] : vars[i->input.idx()+j]);
+	for (size_t j=0; j<i->input.size(); ++j)
+	    result[i->stock.idx()+j] = reverseFactor *
+	      (i->input.isFlowVar()? flow[i->input.idx()+j] : vars[i->input.idx()+j]);
       } 
   }
 
