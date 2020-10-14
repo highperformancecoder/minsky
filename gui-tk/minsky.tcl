@@ -740,15 +740,14 @@ proc cut {} {
 
 proc dimensionsDialog {} {
     populateMissingDimensions
-    if {![winfo exists .dimensions]} {
-        toplevel .dimensions
-        grid [button .dimensions.cancel -text Cancel -command "wm withdraw .dimensions"] \
-            [button .dimensions.ok -text OK -command {
-                    set colRows [grid size .dimensions]
-                    for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
-                        set dim [.dimensions.g${i}_dim get]
-                        if {$dim!=""} {
-                            set d [dimensions.@elem $dim]
+    toplevel .dimensions
+    grid [button .dimensions.cancel -text Cancel -command "destroy .dimensions"] \
+        [button .dimensions.ok -text OK -command {
+            set colRows [grid size .dimensions]
+            for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
+                set dim [.dimensions.g${i}_dim get]
+                if {$dim!=""} {
+                    set d [dimensions.@elem $dim]
                             $d.type [.dimensions.g${i}_type get]
                             if [info exists timeFormatStrings([.dimensions.g${i}_units get])] {
                                 $d.units $timeFormatStrings([.dimensions.g${i}_units get])
@@ -757,22 +756,20 @@ proc dimensionsDialog {} {
                             }
                         }
                     }
-                imposeDimensions
-                wm withdraw .dimensions
-                reset
-            }]
-        grid [label .dimensions.g1_dim -text Dimension] \
-            [label .dimensions.g1_type -text Type]\
-            [label .dimensions.g1_units -text "Units/Format"]
-        tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
-    } else {
-        wm deiconify .dimensions
-    }
+            imposeDimensions
+            destroy .dimensions
+            reset
+        }]
+    grid [label .dimensions.g1_dim -text Dimension] \
+        [label .dimensions.g1_type -text Type]\
+        [label .dimensions.g1_units -text "Units/Format"]
+    tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
+
     set colRows [grid size .dimensions]
     for {set i [lindex $colRows 1]} {$i<[dimensions.size]+3} {incr i} {
         grid [entry .dimensions.g${i}_dim] \
             [ttk::combobox .dimensions.g${i}_type -state readonly \
-             -values {string value time}] \
+                 -values {string value time}] \
             [ttk::combobox .dimensions.g${i}_units \
                  -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\] {}"
             ]
