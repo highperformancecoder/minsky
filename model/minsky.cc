@@ -571,6 +571,10 @@ namespace minsky
         auto d=dimensions.find(xv.name);
         if (d==dimensions.end())
           dimensions.emplace(xv.name, xv.dimension);
+        else if (d->second.type==xv.dimension.type)
+          d->second.units=xv.dimension.units;
+        else
+          message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog");
       }
   }
       
