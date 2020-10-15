@@ -32,7 +32,7 @@ namespace minsky
                           [sliderMin,sliderMax] */
 
     mutable double sliderMin, sliderMax, sliderStep;
-    Slider(): sliderBoundsSet(false), sliderStepRel(false) {}
+    Slider(): sliderBoundsSet(true), sliderStepRel(false) {}
   };
 }
 

@@ -460,6 +460,7 @@ void VariableBase::adjustSliderBounds() const
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
         sliderStep=maxSliderSteps();   
+        sliderBoundsSet=true;            
       }
 }
 
