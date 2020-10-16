@@ -1039,9 +1039,11 @@ namespace minsky
               displayErrorItem(*i->operation);
             throw error("integral not wired");
           }
-        result[i->stock.idx()] = reverseFactor *
-          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
-      }
+        // enable element-wise integration of tensor variables. for feature 147  
+	for (size_t j=0; j<i->input.size(); ++j)
+	    result[i->stock.idx()+j] = reverseFactor *
+	      (i->input.isFlowVar()? flow[i->input.idx()+j] : vars[i->input.idx()+j]);
+      } 
   }
 
   void Minsky::jacobian(Matrix& jac, double t, const double sv[])
