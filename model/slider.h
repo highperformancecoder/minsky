@@ -32,7 +32,7 @@ namespace minsky
                           [sliderMin,sliderMax] */
 
     mutable double sliderMin, sliderMax, sliderStep;
-    Slider(): sliderBoundsSet(true), sliderStepRel(false) {}
+    Slider(): sliderBoundsSet(true), sliderStepRel(false) {}    // ensure sliderBoundsSet is true upon creation of a variable or parameter. for tickets 1258/1263
   };
 }
 

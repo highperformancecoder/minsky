@@ -455,11 +455,12 @@ void VariableBase::adjustSliderBounds() const
 {
   if (auto vv=vValue())
   // For feature 47
-    if (vv->size()==1)
+    if (vv->size()==1 && !isnan(vv->value()))  // make sure sliderBoundsSet is defined. for tickets 1258/1263
       {
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
         sliderStep=maxSliderSteps();   
+        // ensure sliderBoundsSet is true upon creation of a variable or parameter. for tickets 1258/1263
         sliderBoundsSet=true;            
       }
 }

@@ -318,7 +318,7 @@ proc addVariablePostModal {} {
         canvas.itemFocus.sliderMax  [set "varInput(Slider Bounds: Max)"]
         canvas.itemFocus.sliderMin  [set "varInput(Slider Bounds: Min)"]
         canvas.itemFocus.sliderStep  [set "varInput(Slider Step Size)"]
-        canvas.itemFocus.sliderBoundsSet 0
+        canvas.itemFocus.sliderBoundsSet 1    
     }
     closeEditWindow .wiring.initVar
 }
