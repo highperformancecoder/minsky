@@ -879,7 +879,8 @@ namespace minsky
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            {
              if (r->ports[1]->numWires()>0)
-               r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+               if (auto vv=r->ports[1]->getVariableValue())
+                 r->populateHypercube(vv->hypercube());
            }
          else if (auto v=(*i)->variableCast())
            { //determine whether a slider should be shown
