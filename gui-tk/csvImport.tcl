@@ -178,7 +178,7 @@ proc csvImportDialogOK {} {
 
 proc doReport {inputFname} {
     global workDir
-    set fname [tk_getSaveFile -initialfile [file rootname $inputFname]-error-report.csv -initialdir $workDir]
+    set fname [tk_getSaveFile -defaultextension .csv -initialfile [file rootname $inputFname]-error-report.csv -initialdir $workDir]
     if [string length $fname] {
         eval minsky.value.csvDialog.reportFromFile {$inputFname} {$fname}
     }
