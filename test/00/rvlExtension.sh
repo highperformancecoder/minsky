@@ -29,7 +29,7 @@ pass()
 trap "fail" 1 2 3 15
 
 cat >input.tcl <<EOF
-source $here/assert.tcl
+source $here/test/assert.tcl
 proc afterMinskyStarted {} {
   minsky.load $here/examples/1Free.mky
   assert {[minsky.model.defaultExtension]==".mky"}
