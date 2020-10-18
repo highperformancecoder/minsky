@@ -474,7 +474,9 @@ namespace minsky
                   {
                     if (tabularFormat)
                       key.push_back(horizontalLabels[col]);
-
+                    else if (col)
+                      break; // only 1 value column, everything to right ignored
+                    
                     // remove thousands separators, and set decimal separator to '.' ("C" locale)
                     string s;
                     for (auto c: *field)

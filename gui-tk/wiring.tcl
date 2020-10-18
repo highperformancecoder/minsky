@@ -887,12 +887,17 @@ proc setDimension {} {
         frame .wiring.context.axisMenu.dim.type
         label .wiring.context.axisMenu.dim.type.label -text "type"
         ttk::combobox .wiring.context.axisMenu.dim.type.value -values {string value time} -state readonly -textvariable axisType
+        bind .wiring.context.axisMenu.dim.type.value <<ComboboxSelected>> {
+            minsky.value.csvDialog.spec.horizontalDimension.type [.wiring.context.axisMenu.dim.type.value get]
+            dimFormatPopdown .wiring.context.axisMenu.dim.units.value [.wiring.context.axisMenu.dim.type.value get] {}
+        }
         pack .wiring.context.axisMenu.dim.type.label .wiring.context.axisMenu.dim.type.value -side left
         frame .wiring.context.axisMenu.dim.units
         label .wiring.context.axisMenu.dim.units.label -text "units/format"
         tooltip .wiring.context.axisMenu.dim.units.label \
      "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
-        entry .wiring.context.axisMenu.dim.units.value
+        ttk::combobox .wiring.context.axisMenu.dim.units.value
+        dimFormatPopdown .wiring.context.axisMenu.dim.units.value [minsky.canvas.item.dimensionType] {}
         pack .wiring.context.axisMenu.dim.units.label .wiring.context.axisMenu.dim.units.value -side left
         pack .wiring.context.axisMenu.dim.type .wiring.context.axisMenu.dim.units
         buttonBar .wiring.context.axisMenu.dim {

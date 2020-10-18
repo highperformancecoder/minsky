@@ -423,6 +423,7 @@ void VariableBase::sliderSet(double x)
 {
   if (x<sliderMin) x=sliderMin;
   if (x>sliderMax) x=sliderMax;
+  sliderStep=maxSliderSteps();    
   init(to_string(x));
   value(x);
 }
@@ -442,11 +443,12 @@ void VariableBase::initSliderBounds() const
         {
           sliderMin=-value()*10;
           sliderMax=value()*10;
-          sliderStep=abs(0.1*value());
+          sliderStep=abs(0.1*value());           
         }
       sliderStepRel=false;
       sliderBoundsSet=true;
     }
+    sliderStep=maxSliderSteps();      
 }
 
 void VariableBase::adjustSliderBounds() const
@@ -457,7 +459,15 @@ void VariableBase::adjustSliderBounds() const
       {
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
+        sliderStep=maxSliderSteps();   
       }
+}
+
+double VariableBase::maxSliderSteps() const
+{
+    // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255. 	
+	if ((sliderMax-sliderMin)/sliderStep > 1.0e04) sliderStep=(sliderMax-sliderMin)/1.0e04;    
+	return sliderStep;
 }
 
 bool VariableBase::handleArrows(int dir,bool reset)
@@ -502,8 +512,8 @@ void VariableBase::draw(cairo_t *cairo) const
   if (type()!=constant && !ioVar() && (vv.size()==1) )
     try
       {
-        auto val=engExp();
-  
+        auto val=engExp();    
+          
         Pango pangoVal(cairo);
         if (!isnan(value())) {
           pangoVal.setFontSize(6*scaleFactor*z);
@@ -512,8 +522,8 @@ void VariableBase::draw(cairo_t *cairo) const
               (mantissa(val,
                         int(1+
                          (sliderStepRel?
-                          -log10(sliderStep):
-                          log10(value()/sliderStep)
+                          -log10(maxSliderSteps()):
+                          log10(value()/maxSliderSteps())
                           ))));
           else
             pangoVal.setMarkup(mantissa(val));
@@ -565,7 +575,7 @@ void VariableBase::draw(cairo_t *cairo) const
     cairo_close_path(cairo);
     clipPath.reset(new cairo::Path(cairo));
     cairo_stroke(cairo);
-    if (vv.sliderVisible)
+    if (vv.sliderVisible && vv.size()==1)
       {
         // draw slider
         CairoSave cs(cairo);
