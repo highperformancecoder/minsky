@@ -327,9 +327,38 @@ namespace minsky
   {
     std::shared_ptr<ITensor> arg1, arg2;
     void computeTensor() const override {//TODO
-      throw runtime_error("outer product not yet implemented");
+      //throw runtime_error("outer product not yet implemented");
+      size_t m=1, n=1;   
+      for (size_t i=0; i<arg1->rank(); i++)
+        m*=arg1->hypercube().dims()[i];
+        
+      for (size_t i=0; i<arg2->rank(); i++)
+        n*=arg2->hypercube().dims()[i];     
+  	
+      for (size_t i=0; i< m; i++)
+      {
+        auto v1=(*arg1)[i];  			
+        for (size_t j=0; j< n; j++) 
+        {
+            auto v2=(*arg2)[j];			
+            if (!isnan(v1) && !isnan(v2)) cachedResult[i+j*m]=v1*v2;			
+		}
+	  }
+    		            
+      if (cachedResult.size()==0) 
+        for (size_t i=0; i<m*n; i++) 
+          cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+      arg1=a1; arg2=a2;
+      auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
+      Hypercube hc;
+      hc.xvectors.insert(hc.xvectors.begin(), xv2.begin(), xv2.end());         
+      hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end());           
+      cachedResult.hypercube(move(hc));
+        
+    }      
   };
 
   template <>
