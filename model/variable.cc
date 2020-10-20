@@ -459,16 +459,14 @@ void VariableBase::adjustSliderBounds() const
       {
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
-        sliderStep=maxSliderSteps();   
-        // ensure sliderBoundsSet is true upon creation of a variable or parameter. for tickets 1258/1263
-        sliderBoundsSet=true;            
+        sliderStep=maxSliderSteps();           
       }
 }
 
 double VariableBase::maxSliderSteps() const
 {
     // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255. 	
-	if ((sliderMax-sliderMin)/sliderStep > 1.0e04) sliderStep=(sliderMax-sliderMin)/1.0e04;    
+	if ((sliderMax-sliderMin)/sliderStep > 1.0e04) return (sliderMax-sliderMin)/1.0e04;    
 	return sliderStep;
 }
 

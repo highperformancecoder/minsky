@@ -94,7 +94,7 @@ bool RenderVariable::inImage(float x, float y)
 
 double RenderVariable::handlePos() const
 {
-  var.initSliderBounds();
+  if (var.sliderStep<1.0e-100) var.initSliderBounds();   // this should only be used when sliderStep's value has not been set or is a nonsensical value. for tickets 1258/1263
   var.adjustSliderBounds();
   return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(var.value()-0.5*(var.sliderMin+var.sliderMax))/(var.sliderMax-var.sliderMin);
 }
