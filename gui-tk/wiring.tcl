@@ -963,7 +963,7 @@ proc setupPickMenu {} {
 
 proc exportItemAsCSV {} {
     global workDir
-    set f [tk_getSaveFile -filetypes {
+    set f [tk_getSaveFile -defaultextension .csv -filetypes {
         {"CSV" .csv TEXT} {"All" {.*} TEXT}
     } -initialdir $workDir ]
     if {$f!=""} {
