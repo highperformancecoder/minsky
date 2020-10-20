@@ -326,14 +326,8 @@ namespace minsky
   struct GeneralTensorOp<OperationType::outerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
-      //throw runtime_error("outer product not yet implemented");
-      size_t m=1, n=1;   
-      for (size_t i=0; i<arg1->rank(); i++)
-        m*=arg1->hypercube().dims()[i];
-        
-      for (size_t i=0; i<arg2->rank(); i++)
-        n*=arg2->hypercube().dims()[i];     
+    void computeTensor() const override {//TODO Sparse implementation
+      size_t m=arg1->hypercube().numElements(), n=arg2->hypercube().numElements();   
   	
       for (size_t i=0; i< m; i++)
       {
