@@ -431,7 +431,7 @@ void VariableBase::sliderSet(double x)
 
 void VariableBase::initSliderBounds() const
 {
-  if (!sliderBoundsSet) // this should only be used when sliderStep's value has not been set or is a nonsensical value. for tickets 1258/1263
+  if (!sliderBoundsSet)
     {
       if (value()==0)
         {
