@@ -431,7 +431,7 @@ void VariableBase::sliderSet(double x)
 
 void VariableBase::initSliderBounds() const
 {
-  if (!sliderBoundsSet) 
+  if (!sliderBoundsSet) // this should only be used when sliderStep's value has not been set or is a nonsensical value. for tickets 1258/1263
     {
       if (value()==0)
         {
@@ -459,7 +459,8 @@ void VariableBase::adjustSliderBounds() const
       {
         if (sliderMax<vv->value()) sliderMax=vv->value();
         if (sliderMin>vv->value()) sliderMin=vv->value();
-        sliderStep=maxSliderSteps();           
+        sliderStep=maxSliderSteps(); 
+        sliderBoundsSet=true;	                    
       }
 }
 
