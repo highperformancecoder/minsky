@@ -28,3 +28,10 @@
 ~~~~
 - Once minsky.exe is compiled, copy the entire directory onto a windows system with a posix system like cygwin installed, as well as the WiX msi generator. 
 - The run GUI/makeMsi.sh to generate the installer version, which creates an msi file.
+
+## Debugging
+With MXE, there is very limited debugging facilities. Essentially all that is possible is to add print statements. To build Minsky such that messages to the console are visible, do
+~~~~
+make MXE=1 DEBUG=1 OPT="-O3 -NDEBUG"
+~~~~
+Note that without the OPT parameter, the compiler core dumps.
