@@ -363,6 +363,19 @@ namespace
     }
     cairo_path_destroy (path);              
   }
+  
+  bool Wire::attachedToDefiningVar() const
+  {
+    auto f=from(), t=to();
+    assert(f && t);
+    bool attachedToFrom=false, attachedToTo=false;                
+    if (auto vf=f->item().variableCast()) attachedToFrom=vf->varTabDisplay;
+    //else return f->item().attachedToDefiningVar();                                // attempt at recursion...
+    if (auto vt=t->item().variableCast()) attachedToTo=vt->varTabDisplay;
+    //else return t->item().attachedToDefiningVar();                              // attempt at recursion...
+    if (attachedToFrom || attachedToTo) return true;
+    return false;       
+  }    
    
   void Wire::draw(cairo_t* cairo) const
   {

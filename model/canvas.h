@@ -175,6 +175,9 @@ namespace minsky
     /// set up.
     void lockRavelsInSelection();
     void unlockRavelsInSelection();
+    
+    void pushDefiningVarsToTab();
+    void showDefiningVarsOnCanvas();    
 
     /// delete item referenced by item
     void deleteItem();

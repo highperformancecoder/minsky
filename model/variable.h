@@ -167,6 +167,9 @@ namespace minsky
     bool isStock() const {return type()==stock || type()==integral;}
 
     virtual ~VariableBase();
+    
+    bool varTabDisplay=false;
+    void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
 
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline

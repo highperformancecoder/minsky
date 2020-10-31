@@ -469,6 +469,26 @@ namespace minsky
         r->leaveLockGroup();
   }
   
+  void Canvas::pushDefiningVarsToTab()
+  {
+    for (auto& i: selection.items)
+    {
+      auto v=i->variableCast();
+      if (v && v->defined() && !v->varTabDisplay)
+        v->varTabDisplay=!v->varTabDisplay;	  
+	  }
+  }
+  
+  void Canvas::showDefiningVarsOnCanvas()
+  {
+    for (auto& i: selection.items)
+    {
+      auto v=i->variableCast();
+      if (v && v->defined() && v->varTabDisplay)
+        v->varTabDisplay=!v->varTabDisplay;	  
+	  }	  
+  }  
+  
   void Canvas::deleteItem()
   {
     if (item)

@@ -209,12 +209,15 @@ proc wrapHoverMouse {op x y} {
     catch {minsky.canvas.$op $x $y}
     after 3000 hoverMouse
 }
-    
+  
 bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
 bind .wiring.canvas <$meta-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
 bind .wiring.canvas <Motion> {wrapHoverMouse mouseMove %x %y}
 bind .wiring.canvas <Leave> {after cancel hoverMouse}
+#set meta Control
+#bindtags .wiring.canvas [list all . controlButtonTag .wiring.canvas]
+#bind controlButtonTag <$meta-Button-1> {wrapHoverMouse controlMouseDown %x %y}
 
 proc get_pointer_x {c} {
     return [expr {[winfo pointerx $c] - [winfo rootx $c]}]
@@ -429,6 +432,7 @@ proc textOK {} {
             
             getItemAtFocus
             editVar
+            refreshEqTab
         }
     }
     canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
@@ -532,7 +536,9 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Paste selection" -command pasteAt
     if {[getClipboard]==""} {
         .wiring.context entryconfigure end -state disabled
-    } 
+    }
+    .wiring.context add command -label "Hide defining variables on tab" -command "minsky.canvas.pushDefiningVarsToTab"
+    .wiring.context add command -label "Show defining variables on canvas" -command "minsky.canvas.showDefiningVarsOnCanvas" 
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
@@ -701,6 +707,11 @@ proc contextMenu {x y X Y} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
+            if {[$item.defined]} {
+                 global varTabDisplay
+                 set varTabDisplay [$item.varTabDisplay]            
+                .wiring.context add checkbutton -label "Display variable on tab" -command "$item.toggleVarTabDisplay" -variable varTabDisplay
+            }                        
             if {[$item.type]=="parameter"} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
             }

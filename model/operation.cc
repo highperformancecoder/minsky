@@ -146,6 +146,7 @@ namespace minsky
   
   void OperationBase::draw(cairo_t* cairo) const
   {
+	if (!attachedToDefiningVar()) {   	  
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
     double angle=rotation() * M_PI / 180.0;
@@ -303,6 +304,7 @@ namespace minsky
         if (selected) drawSelected(cairo);          
         break;
       }
+  }
   }    
   
   void OperationBase::resize(const LassoBox& b)
@@ -506,6 +508,7 @@ namespace minsky
  
   void IntOp::draw(cairo_t* cairo) const
   {
+	if (!attachedToDefiningVar()) {   	  
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
     double angle=rotation() * M_PI / 180.0;
@@ -639,7 +642,8 @@ namespace minsky
     cairo_new_path(cairo);
     clipPath.appendToCurrent(cairo);
     cairo_clip(cairo);          
-    if (selected) drawSelected(cairo);           
+    if (selected) drawSelected(cairo);   
+	}        
   }
   
   void IntOp::resize(const LassoBox& b)
