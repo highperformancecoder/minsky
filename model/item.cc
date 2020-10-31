@@ -281,8 +281,8 @@ namespace minsky
   
   bool Item::attachedToDefiningVar() const
   {
-	if (ports.size()>1)
-	  for (size_t i=0; i<ports.size(); i++)
+    if (ports.size()>1)
+      for (size_t i=0; i<ports.size(); i++)
         for (auto w: ports[i]->wires())
           if (w->attachedToDefiningVar()) return true;
     return false;

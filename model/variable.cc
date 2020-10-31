@@ -481,139 +481,139 @@ bool VariableBase::handleArrows(int dir,bool reset)
 void VariableBase::draw(cairo_t *cairo) const
 {
   if (!varTabDisplay) {	
-  double angle=rotation() * M_PI / 180.0;
-  double fm=std::fmod(rotation(),360);
-  float z=zoomFactor();
+    double angle=rotation() * M_PI / 180.0;
+    double fm=std::fmod(rotation(),360);
+    float z=zoomFactor();
 
-  RenderVariable rv(*this,cairo);
-  // if rotation is in 1st or 3rd quadrant, rotate as
-  // normal, otherwise flip the text so it reads L->R
-  bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
-  Rotate r(rotation() + (notflipped? 0: 180),0,0);
-  rv.angle=angle+(notflipped? 0: M_PI);
+    RenderVariable rv(*this,cairo);
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    bool notflipped=(fm>-90 && fm<90) || fm>270 || fm<-270;
+    Rotate r(rotation() + (notflipped? 0: 180),0,0);
+    rv.angle=angle+(notflipped? 0: M_PI);
 
-  // parameters of icon in userspace (unscaled) coordinates
-  float w, h, hoffs, scaleFactor;
-  w=rv.width()*z; 
-  h=rv.height()*z;
-  scaleFactor=max(1.0f,min(0.5f*iWidth()*z/w,0.5f*iHeight()*z/h));
-  if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
-  if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
-  rv.setFontSize(12*scaleFactor*z);
-  hoffs=rv.top()*z;
+    // parameters of icon in userspace (unscaled) coordinates
+    float w, h, hoffs, scaleFactor;
+    w=rv.width()*z; 
+    h=rv.height()*z;
+    scaleFactor=max(1.0f,min(0.5f*iWidth()*z/w,0.5f*iHeight()*z/h));
+    if (rv.width()<0.5*iWidth()) w=0.5*iWidth()*z;
+    if (rv.height()<0.5*iHeight()) h=0.5*iHeight()*z;
+    rv.setFontSize(12*scaleFactor*z);
+    hoffs=rv.top()*z;
   
 
-  cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
-  rv.show();
+    cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2)/*h-2*/);
+    rv.show();
 
-  VariableValue vv;
-  if (VariableValue::isValueId(valueId()))
-    vv=*minsky::cminsky().variableValues[valueId()];
+    VariableValue vv;
+    if (VariableValue::isValueId(valueId()))
+      vv=*minsky::cminsky().variableValues[valueId()];
   
-  // For feature 47
-  if (type()!=constant && !ioVar() && (vv.size()==1) )
-    try
-      {
-        auto val=engExp();    
+    // For feature 47
+    if (type()!=constant && !ioVar() && (vv.size()==1) )
+      try
+        {
+          auto val=engExp();    
           
-        Pango pangoVal(cairo);
-        if (!isnan(value())) {
-          pangoVal.setFontSize(6*scaleFactor*z);
-          if (sliderBoundsSet && vv.sliderVisible)
-            pangoVal.setMarkup
-              (mantissa(val,
-                        int(1+
-                         (sliderStepRel?
-                          -log10(maxSliderSteps()):
-                          log10(value()/maxSliderSteps())
-                          ))));
-          else
-            pangoVal.setMarkup(mantissa(val));
-        }
-        else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-          pangoVal.setFontSize(8*scaleFactor*z);
-          if (signbit(value())) pangoVal.setMarkup("-∞");
-          else pangoVal.setMarkup("∞");
-        }
-        else {  // Display all other NaN cases as ???. For ticket 1155
-          pangoVal.setFontSize(6*scaleFactor*z);
-          pangoVal.setMarkup("???");
-        }
-        pangoVal.angle=angle+(notflipped? 0: M_PI);
-
-        cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
-                      r.y(w-pangoVal.width()-2,-h-hoffs+2));
-        pangoVal.show();
-        if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
-          {
-            pangoVal.setMarkup(expMultiplier(val.engExp));
-            cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
-            pangoVal.show();
+          Pango pangoVal(cairo);
+          if (!isnan(value())) {
+            pangoVal.setFontSize(6*scaleFactor*z);
+            if (sliderBoundsSet && vv.sliderVisible)
+              pangoVal.setMarkup
+                (mantissa(val,
+                          int(1+
+                              (sliderStepRel?
+                               -log10(maxSliderSteps()):
+                               log10(value()/maxSliderSteps())
+                               ))));
+            else
+              pangoVal.setMarkup(mantissa(val));
           }
-      }
-    catch (...) {} // ignore errors in obtaining values
-
-  unique_ptr<cairo::Path> clipPath;
-  {
-    cairo::CairoSave cs(cairo);
-    cairo_rotate(cairo, angle);
-    // constants and parameters should be rendered in blue, all others in red
-    switch (type())
-      {
-      case constant: case parameter:
-        cairo_set_source_rgb(cairo,0,0,1);
-        break;
-      default:
-        cairo_set_source_rgb(cairo,1,0,0);
-        break;
-      }
-    cairo_move_to(cairo,-w,-h);
-    if (lhs())
-      cairo_line_to(cairo,-w+2*z,0);
-    cairo_line_to(cairo,-w,h);
-    cairo_line_to(cairo,w,h);
-    cairo_line_to(cairo,w+2*z,0);
-    cairo_line_to(cairo,w,-h);
-    cairo_close_path(cairo);
-    clipPath.reset(new cairo::Path(cairo));
-    cairo_stroke(cairo);
-    if (vv.sliderVisible && vv.size()==1)
-      {
-        // draw slider
-        CairoSave cs(cairo);
-        cairo_set_source_rgb(cairo,0,0,0);
-        try
-          {
-            cairo_arc(cairo,(notflipped?1:-1)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+          else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
+            pangoVal.setFontSize(8*scaleFactor*z);
+            if (signbit(value())) pangoVal.setMarkup("-∞");
+            else pangoVal.setMarkup("∞");
           }
-        catch (const error&) {} // handlePos() may throw.
-        cairo_fill(cairo);
-      }
-  }// undo rotation
+          else {  // Display all other NaN cases as ???. For ticket 1155
+            pangoVal.setFontSize(6*scaleFactor*z);
+            pangoVal.setMarkup("???");
+          }
+          pangoVal.angle=angle+(notflipped? 0: M_PI);
 
-  double x0=w, y0=0, x1=-w+2, y1=0;
-  double sa=sin(angle), ca=cos(angle);
-  if (ports.size()>0)
-    ports[0]->moveTo(x()+(x0*ca-y0*sa), 
-                     y()+(y0*ca+x0*sa));
-  if (ports.size()>1)
-    ports[1]->moveTo(x()+(x1*ca-y1*sa), 
-                     y()+(y1*ca+x1*sa));
+          cairo_move_to(cairo,r.x(w-pangoVal.width()-2,-h-hoffs+2),
+                        r.y(w-pangoVal.width()-2,-h-hoffs+2));
+          pangoVal.show();
+          if (val.engExp!=0 && (!isnan(value()))) // Avoid large exponential number in variable value display. For ticket 1155
+            {
+              pangoVal.setMarkup(expMultiplier(val.engExp));
+              cairo_move_to(cairo,r.x(w-pangoVal.width()-2,0),r.y(w-pangoVal.width()-2,0));
+              pangoVal.show();
+            }
+        }
+      catch (...) {} // ignore errors in obtaining values
 
-  auto g=group.lock();
-  if (mouseFocus || (ioVar() && g && g->mouseFocus))
+    unique_ptr<cairo::Path> clipPath;
     {
       cairo::CairoSave cs(cairo);
-      drawPorts(cairo);
-      displayTooltip(cairo,tooltip);
-      if (onResizeHandles) drawResizeHandles(cairo);
-    }  
+      cairo_rotate(cairo, angle);
+      // constants and parameters should be rendered in blue, all others in red
+      switch (type())
+        {
+        case constant: case parameter:
+          cairo_set_source_rgb(cairo,0,0,1);
+          break;
+        default:
+          cairo_set_source_rgb(cairo,1,0,0);
+          break;
+        }
+      cairo_move_to(cairo,-w,-h);
+      if (lhs())
+        cairo_line_to(cairo,-w+2*z,0);
+      cairo_line_to(cairo,-w,h);
+      cairo_line_to(cairo,w,h);
+      cairo_line_to(cairo,w+2*z,0);
+      cairo_line_to(cairo,w,-h);
+      cairo_close_path(cairo);
+      clipPath.reset(new cairo::Path(cairo));
+      cairo_stroke(cairo);
+      if (vv.sliderVisible && vv.size()==1)
+        {
+          // draw slider
+          CairoSave cs(cairo);
+          cairo_set_source_rgb(cairo,0,0,0);
+          try
+            {
+              cairo_arc(cairo,(notflipped?1:-1)*z*rv.handlePos(), (notflipped? -h: h), sliderHandleRadius, 0, 2*M_PI);
+            }
+          catch (const error&) {} // handlePos() may throw.
+          cairo_fill(cairo);
+        }
+    }// undo rotation
 
-  cairo_new_path(cairo);
-  clipPath->appendToCurrent(cairo);
-  // Rescale size of variable attached to intop. For ticket 94
-  cairo_clip(cairo);
-  if (selected) drawSelected(cairo);
+    double x0=w, y0=0, x1=-w+2, y1=0;
+    double sa=sin(angle), ca=cos(angle);
+    if (ports.size()>0)
+      ports[0]->moveTo(x()+(x0*ca-y0*sa), 
+                       y()+(y0*ca+x0*sa));
+    if (ports.size()>1)
+      ports[1]->moveTo(x()+(x1*ca-y1*sa), 
+                       y()+(y1*ca+x1*sa));
+
+    auto g=group.lock();
+    if (mouseFocus || (ioVar() && g && g->mouseFocus))
+      {
+        cairo::CairoSave cs(cairo);
+        drawPorts(cairo);
+        displayTooltip(cairo,tooltip);
+        if (onResizeHandles) drawResizeHandles(cairo);
+      }  
+
+    cairo_new_path(cairo);
+    clipPath->appendToCurrent(cairo);
+    // Rescale size of variable attached to intop. For ticket 94
+    cairo_clip(cairo);
+    if (selected) drawSelected(cairo);
   }
 }
 
