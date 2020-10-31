@@ -281,13 +281,6 @@ namespace minsky
   
   bool Item::attachedToDefiningVar() const
   {
-    //if (auto g=group.lock())
-    //  if (any_of(g->items.begin(),g->items.end(), [&](ItemPtr i){if (auto v=i->variableCast()) return v->varTabDisplay; else return false;})) return true;
-      //else return true;
-      //  for (auto& i: g->items) {
-		//   auto v=i->variableCast();	 
-      //     if (v && v->defined() && v->varTabDisplay) return true; 
-	  // }
 	if (ports.size()>1)
 	  for (size_t i=0; i<ports.size(); i++)
         for (auto w: ports[i]->wires())
