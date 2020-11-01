@@ -161,8 +161,12 @@ namespace minsky
  
   bool Item::visible() const 
   {
+	if (auto o=operationCast()) 
+	  if (o->attachedToDefiningVar()) return false;
+	if (auto v=variableCast()) 
+	  if (v->attachedToDefiningVar()) return false;	  
     auto g=group.lock();
-    return !g || g->displayContents();
+    return (!g || g->displayContents());
   }
   
 
@@ -281,10 +285,9 @@ namespace minsky
   
   bool Item::attachedToDefiningVar() const
   {
-    if (ports.size()>1)
-      for (size_t i=0; i<ports.size(); i++)
-        for (auto w: ports[i]->wires())
-          if (w->attachedToDefiningVar()) return true;
+    for (size_t i=0; i<ports.size(); i++)
+      for (auto w: ports[i]->wires())
+        if (w->attachedToDefiningVar()) return true;
     return false;
   }    
   

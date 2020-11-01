@@ -170,6 +170,7 @@ namespace minsky
     
     bool varTabDisplay=false;
     void toggleVarTabDisplay() {varTabDisplay=!varTabDisplay;}     
+    bool attachedToDefiningVar() const override {return varTabDisplay;}     
 
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline

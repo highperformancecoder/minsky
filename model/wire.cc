@@ -101,8 +101,9 @@ namespace minsky
   bool Wire::visible() const
   {
     auto f=from(), t=to();
+    if (attachedToDefiningVar()) return false;
     assert(f->item().group.lock() && t->item().group.lock());
-    return f && t &&
+    return f && t && 
       (f->item().group.lock()->displayContents() ||
        t->item().group.lock()->displayContents());
   }
@@ -366,14 +367,9 @@ namespace
   
   bool Wire::attachedToDefiningVar() const
   {
-    auto f=from(), t=to();
-    assert(f && t);
-    bool attachedToFrom=false, attachedToTo=false;                
-    if (auto vf=f->item().variableCast()) attachedToFrom=vf->varTabDisplay;
-    //else return f->item().attachedToDefiningVar();                                // attempt at recursion...
-    if (auto vt=t->item().variableCast()) attachedToTo=vt->varTabDisplay;
-    //else return t->item().attachedToDefiningVar();                              // attempt at recursion...
-    if (attachedToFrom || attachedToTo) return true;
+    auto t=to();
+    assert(t);             
+    if (auto v=t->item().variableCast()) return v->attachedToDefiningVar();
     return false;       
   }    
    

@@ -475,7 +475,7 @@ namespace minsky
       {
         auto v=i->variableCast();
         if (v && v->defined() && !v->varTabDisplay)
-          v->varTabDisplay=!v->varTabDisplay;	  
+          v->toggleVarTabDisplay();	  
       }
   }
   
@@ -485,7 +485,7 @@ namespace minsky
       {
         auto v=i->variableCast();
         if (v && v->defined() && v->varTabDisplay)
-          v->varTabDisplay=!v->varTabDisplay;	  
+          v->toggleVarTabDisplay();	  
       }	  
   }  
   
