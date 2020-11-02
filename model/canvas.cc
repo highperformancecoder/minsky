@@ -474,19 +474,22 @@ namespace minsky
     for (auto& i: selection.items)
       {
         auto v=i->variableCast();
-        if (v && v->defined() && !v->varTabDisplay)
+        if (v && v->defined() && !v->varTabDisplay) {
+          itemVector.push_back(i);
           v->toggleVarTabDisplay();	  
+	    }
       }
   }
   
   void Canvas::showDefiningVarsOnCanvas()
   {
-    for (auto& i: selection.items)
+    for (auto& i: itemVector)
       {
-        auto v=i->variableCast();
+        auto v=(*i).variableCast();
         if (v && v->defined() && v->varTabDisplay)
           v->toggleVarTabDisplay();	  
-      }	  
+      }
+    itemVector.clear();  	  
   }  
   
   void Canvas::deleteItem()

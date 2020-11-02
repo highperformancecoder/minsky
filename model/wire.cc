@@ -22,6 +22,7 @@
 #include "port.h"
 #include "group.h"
 #include "selection.h"
+#include "operation.h"
 #include "minsky_epilogue.h"
 #include  <random>
 #include  <iterator>
@@ -369,6 +370,7 @@ namespace
   {
     auto t=to();
     assert(t);             
+    if (auto i=dynamic_cast<IntOp*>(t->item().operationCast())) return i->intVar->varTabDisplay;
     if (t->item().attachedToDefiningVar()) return true;
     return false;       
   }    

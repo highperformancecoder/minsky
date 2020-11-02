@@ -161,6 +161,8 @@ namespace minsky
  
   bool Item::visible() const 
   {
+	if (auto i=dynamic_cast<const IntOp*>(this))
+	  if (i->intVar->attachedToDefiningVar()) return false; 
 	if (auto o=operationCast()) 
 	  if (o->attachedToDefiningVar()) return false;
 	if (auto v=variableCast()) 
