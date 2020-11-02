@@ -369,7 +369,7 @@ namespace
   {
     auto t=to();
     assert(t);             
-    if (auto v=t->item().variableCast()) return v->attachedToDefiningVar();
+    if (t->item().attachedToDefiningVar()) return true;
     return false;       
   }    
    
