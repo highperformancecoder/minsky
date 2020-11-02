@@ -275,20 +275,84 @@ namespace minsky
   struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
-      throw runtime_error("inner product not yet implemented");
+    void computeTensor() const override {//TODO: tensors of arbitrary rank
+		   
+      size_t m=1, n=1;   
+      if (arg1->rank()>1)
+        for (size_t i=0; i<arg1->rank()-1; i++)
+          m*=arg1->hypercube().dims()[i];
+          
+      if (arg2->rank()>1)
+        for (size_t i=1; i<arg2->rank(); i++)
+          n*=arg2->hypercube().dims()[i];     
+  	
+      size_t stride=arg2->hypercube().dims()[0];	 	 
+      double tmpSum;
+      for (size_t i=0; i< m; i++)
+        for (size_t j=0; j< n; j++)
+          {
+            tmpSum=0;
+            for (size_t k=0; k<stride; k++)  
+              {
+                auto v1=m>1? arg1->atHCIndex(k*m+i) : (*arg1)[k];  
+                auto v2=n>1? arg2->atHCIndex(j*stride + k) : (*arg2)[k];  
+                if (!isnan(v1) && !isnan(v2)) tmpSum+=v1*v2;
+              }
+            cachedResult[i+m*j]=tmpSum;
+          }
+    		            
+      if (cachedResult.size()==0) 
+        for (size_t i=0; i<m*n; i++) 
+          cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+      arg1=a1; arg2=a2;
+      if (arg1 && arg1->rank()!=0 && arg2 && arg2->rank()!=0) {
+        if (arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
+          throw std::runtime_error("inner dimensions of tensors do not match");
+        
+        auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
+        Hypercube hc;
+        hc.xvectors.insert(hc.xvectors.begin(), xv2.begin()+1, xv2.end());        
+        hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end()-1);
+        cachedResult.hypercube(move(hc));
+                
+      }
+    }    
   };
 
   template <>
   struct GeneralTensorOp<OperationType::outerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {//TODO
-      throw runtime_error("outer product not yet implemented");
+    void computeTensor() const override {//TODO Sparse implementation
+      size_t m=arg1->hypercube().numElements(), n=arg2->hypercube().numElements();   
+  	
+      for (size_t i=0; i< m; i++)
+      {
+        auto v1=(*arg1)[i];  			
+        for (size_t j=0; j< n; j++) 
+        {
+            auto v2=(*arg2)[j];			
+            if (!isnan(v1) && !isnan(v2)) cachedResult[i+j*m]=v1*v2;			
+		}
+	  }
+    		            
+      if (cachedResult.size()==0) 
+        for (size_t i=0; i<m*n; i++) 
+          cachedResult[i]=nan("");
     }
     Timestamp timestamp() const override {return max(arg1->timestamp(), arg2->timestamp());}
+    void setArguments(const TensorPtr& a1, const TensorPtr& a2) override {
+      arg1=a1; arg2=a2;
+      auto xv1=arg1->hypercube().xvectors, xv2=arg2->hypercube().xvectors;
+      Hypercube hc;
+      hc.xvectors.insert(hc.xvectors.begin(), xv2.begin(), xv2.end());         
+      hc.xvectors.insert(hc.xvectors.begin(), xv1.begin(), xv1.end());           
+      cachedResult.hypercube(move(hc));
+        
+    }      
   };
 
   template <>

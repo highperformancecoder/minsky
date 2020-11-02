@@ -85,7 +85,9 @@ namespace eval group {
 
     proc save {} {
         global workDir
-        set fname [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+        set ext [minsky.canvas.item.defaultExtension]
+        set fname [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                      -filetypes [fileTypes $ext]]            
         if [string length $fname] {
             eval saveCanvasItemAsFile {$fname}
         }

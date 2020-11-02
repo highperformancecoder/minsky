@@ -211,7 +211,7 @@ proc wrapHoverMouse {op x y} {
 }
     
 bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
-bind .wiring.canvas <Control-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
+bind .wiring.canvas <$meta-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
 bind .wiring.canvas <Motion> {wrapHoverMouse mouseMove %x %y}
 bind .wiring.canvas <Leave> {after cancel hoverMouse}
@@ -234,11 +234,7 @@ bind .wiring.canvas <Button-5> {zoomAt  %x %y [expr 1.0/1.1]}
 # mouse wheel bindings for pc and aqua
 bind .wiring.canvas <MouseWheel> { if {%D>=0} {zoomAt %x %y 1.1} {zoomAt  %x %y [expr 1.0/(1.1)]} }
 
-if {[tk windowingsystem]=="aqua"} {
-    bind .wiring.canvas <Command-Button-1> {
-        tk_messageBox -message "Mouse coordinates %x %y"
-    }
-} else {
+if {[tk windowingsystem]!="aqua"} {
      bind .wiring.canvas <Alt-Button-1> {
         tk_messageBox -message "Mouse coordinates %x %y"
     }
@@ -322,7 +318,7 @@ proc addVariablePostModal {} {
         canvas.itemFocus.sliderMax  [set "varInput(Slider Bounds: Max)"]
         canvas.itemFocus.sliderMin  [set "varInput(Slider Bounds: Min)"]
         canvas.itemFocus.sliderStep  [set "varInput(Slider Step Size)"]
-        canvas.itemFocus.sliderBoundsSet 1
+        canvas.itemFocus.sliderBoundsSet 1    
     }
     closeEditWindow .wiring.initVar
 }
@@ -548,7 +544,9 @@ proc canvasContext {x y X Y} {
 
 proc saveSelection {} {
     global workDir
-    set f [tk_getSaveFile -defaultextension .mky -initialdir $workDir]
+    set ext [canvas.selection.defaultExtension]
+    set f [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                  -filetypes [fileTypes $ext]]            
     if [string length $f] {
         set workDir [file dirname $f]
         eval minsky.saveSelectionAsFile {$f}
@@ -788,8 +786,11 @@ proc contextMenu {x y X Y} {
                 set sortOrder [minsky.canvas.item.sortOrder]
             }
             .wiring.context add cascade -label "Axis properties" -menu .wiring.context.axisMenu
-            .wiring.context add command -label "Unlock" -command {
-                minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
+            if [llength [info commands minsky.canvas.item.lockGroup]] {
+                .wiring.context add command -label "Lock specific handles" -command lockSpecificHandles
+                .wiring.context add command -label "Unlock" -command {
+                    minsky.canvas.item.leaveLockGroup; canvas.requestRedraw
+                }
             }
         }
     }
@@ -802,7 +803,44 @@ proc contextMenu {x y X Y} {
     tk_popup .wiring.context $X $Y
 }
 
+proc lockSpecificHandles {} {
+    global currentLockHandles
 
+    if {[winfo exists .wiring.context.lockHandles]} {destroy .wiring.context.lockHandles}
+    toplevel .wiring.context.lockHandles
+    foreach h [minsky.canvas.item.lockGroup.allLockHandles] {
+        frame .wiring.context.lockHandles."$h"
+        checkbutton .wiring.context.lockHandles."$h".button -variable currentLockHandles($h)
+        label .wiring.context.lockHandles."$h".label -text $h -anchor w -width 50
+        grid .wiring.context.lockHandles."$h".button .wiring.context.lockHandles."$h".label
+        pack .wiring.context.lockHandles."$h"
+    }
+
+    # initialise currentLockHandles array to current lock handles state
+    foreach i [array names currentLockHandles] {
+        set currentLockHandles($i) 0
+    }
+    if [llength [minsky.canvas.item.lockGroup.handlesToLock.#members]] {
+        foreach i [minsky.canvas.item.lockGroup.handlesToLock.#members] {
+            set currentLockHandles($i) 1
+        }
+    } else {
+        foreach i [minsky.canvas.item.lockGroup.allLockHandles] {
+            set currentLockHandles($i) 1
+        }
+    }        
+
+    buttonBar .wiring.context.lockHandles {
+        set lh {}
+        global currentLockHandles
+        foreach i [array names currentLockHandles] {
+            if $currentLockHandles($i) {
+                lappend lh $i
+            }
+        }
+        minsky.canvas.item.lockGroup.setLockHandles $lh
+    }
+}
 
 menu .wiring.context.axisMenu 
 .wiring.context.axisMenu add command -label "Description" -command {
@@ -850,12 +888,17 @@ proc setDimension {} {
         frame .wiring.context.axisMenu.dim.type
         label .wiring.context.axisMenu.dim.type.label -text "type"
         ttk::combobox .wiring.context.axisMenu.dim.type.value -values {string value time} -state readonly -textvariable axisType
+        bind .wiring.context.axisMenu.dim.type.value <<ComboboxSelected>> {
+            minsky.value.csvDialog.spec.horizontalDimension.type [.wiring.context.axisMenu.dim.type.value get]
+            dimFormatPopdown .wiring.context.axisMenu.dim.units.value [.wiring.context.axisMenu.dim.type.value get] {}
+        }
         pack .wiring.context.axisMenu.dim.type.label .wiring.context.axisMenu.dim.type.value -side left
         frame .wiring.context.axisMenu.dim.units
         label .wiring.context.axisMenu.dim.units.label -text "units/format"
         tooltip .wiring.context.axisMenu.dim.units.label \
      "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
-        entry .wiring.context.axisMenu.dim.units.value
+        ttk::combobox .wiring.context.axisMenu.dim.units.value
+        dimFormatPopdown .wiring.context.axisMenu.dim.units.value [minsky.canvas.item.dimensionType] {}
         pack .wiring.context.axisMenu.dim.units.label .wiring.context.axisMenu.dim.units.value -side left
         pack .wiring.context.axisMenu.dim.type .wiring.context.axisMenu.dim.units
         buttonBar .wiring.context.axisMenu.dim {
@@ -921,7 +964,7 @@ proc setupPickMenu {} {
 
 proc exportItemAsCSV {} {
     global workDir
-    set f [tk_getSaveFile -filetypes {
+    set f [tk_getSaveFile -defaultextension .csv -filetypes {
         {"CSV" .csv TEXT} {"All" {.*} TEXT}
     } -initialdir $workDir ]
     if {$f!=""} {

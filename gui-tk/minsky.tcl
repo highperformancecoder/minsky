@@ -303,6 +303,10 @@ if {[tk windowingsystem] == "aqua"} {
     }
     proc ::tk::mac::ShowPreferences {} {showPreferences}
     proc ::tk::mac::ShowHelp {} {help Introduction}
+} else {
+    # keyboard accelerator introducer, which is different on macs
+    set meta Control
+    set meta_menu Ctrl
 }
 
 menu .menubar.file
@@ -560,10 +564,6 @@ label .controls.slowSpeed -text "slow"
 label .controls.fastSpeed -text "fast"
 scale .controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from 12 -length 150 -label "Simulation Speed" -orient horizontal -showvalue 0
 
-# keyboard accelerator introducer, which is different on macs
-set meta Control
-set meta_menu Ctrl
-
 
 
 pack .controls.rec .controls.runmode .controls.reverse .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
@@ -740,37 +740,38 @@ proc cut {} {
 
 proc dimensionsDialog {} {
     populateMissingDimensions
-    if {![winfo exists .dimensions]} {
-        toplevel .dimensions
-        grid [button .dimensions.cancel -text Cancel -command "wm withdraw .dimensions"] \
-            [button .dimensions.ok -text OK -command {
-                    set colRows [grid size .dimensions]
-                    for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
-                        set dim [.dimensions.g${i}_dim get]
-                        if {$dim!=""} {
-                            set d [dimensions.@elem $dim]
+    toplevel .dimensions
+    grid [button .dimensions.cancel -text Cancel -command "destroy .dimensions"] \
+        [button .dimensions.ok -text OK -command {
+            set colRows [grid size .dimensions]
+            for {set i 2} {$i<[lindex $colRows 1]} {incr i} {
+                set dim [.dimensions.g${i}_dim get]
+                if {$dim!=""} {
+                    set d [dimensions.@elem $dim]
                             $d.type [.dimensions.g${i}_type get]
-                            $d.units [.dimensions.g${i}_units get]
+                            if [info exists timeFormatStrings([.dimensions.g${i}_units get])] {
+                                $d.units $timeFormatStrings([.dimensions.g${i}_units get])
+                            } else {
+                                $d.units [.dimensions.g${i}_units get]
+                            }
                         }
                     }
-                imposeDimensions
-                wm withdraw .dimensions
-                reset
-            }]
-        grid [label .dimensions.g1_dim -text Dimension] \
-            [label .dimensions.g1_type -text Type]\
-            [label .dimensions.g1_units -text "Units/Format"]
-        tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
-    } else {
-        wm deiconify .dimensions
-    }
+            imposeDimensions
+            destroy .dimensions
+            reset
+        }]
+    grid [label .dimensions.g1_dim -text Dimension] \
+        [label .dimensions.g1_type -text Type]\
+        [label .dimensions.g1_units -text "Units/Format"]
+    tooltip .dimensions.g1_units "Value type: enter a unit string, eg m/s; time type: enter a strftime format string, eg %Y-%m-%d %H:%M:%S, or %Y-Q%Q"
+
     set colRows [grid size .dimensions]
     for {set i [lindex $colRows 1]} {$i<[dimensions.size]+3} {incr i} {
         grid [entry .dimensions.g${i}_dim] \
             [ttk::combobox .dimensions.g${i}_type -state readonly \
-             -values {string value time}] \
+                 -values {string value time}] \
             [ttk::combobox .dimensions.g${i}_units \
-         -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\]"
+                 -postcommand "dimFormatPopdown .dimensions.g${i}_units \[.dimensions.g${i}_type get\] {}"
             ]
     }
     set i 2
@@ -781,26 +782,66 @@ proc dimensionsDialog {} {
         .dimensions.g${i}_type set [$d.type]
         .dimensions.g${i}_units delete 0 end
         .dimensions.g${i}_units insert 0 [$d.units]
+        dimFormatPopdown .dimensions.g${i}_units [$d.type] {}
         incr i
     }
 }
 
-set timeFormatStrings {
-    "%Y-%m-%d" "%Y-%m-%d %H:%M:%S" "%Y-Q%Q" "%m/%d/%y"
+
+
+array set timeFormatStrings {
+    "1999-Q4" "%Y-Q%Q"
+    "12/31/99" "%m/%d/%y"
+    "12/31/1999" "%m/%d/%Y"
+    "31/12/99" "%d/%m/%y"
+    "31/12/1999" "%d/%m/%Y"
+    "1999-12-31T13:37:46" "%Y-%m-%dT%H:%M:%S"
+    "12/31/1999 01:37 PM" "%m/%d/%Y %I:%M %p"
+    "12/31/99 01:37 PM" "%m/%d/%y %I:%M %p"
+    "12/31/1999 13:37 PM" "%m/%d/%Y %H:%M %p"
+    "12/31/99 13:37 PM" "%m/%d/%y %H:%M %p"
+    "Friday, December 31, 1999" "%A, %B %d, %Y"
+    "Dec 31, 99" "%b %d, %y"
+    "Dec 31, 1999" "%b %d, %Y"
+    "31. Dec. 1999" "%d. %b. %Y"
+    "December 31, 1999" "%B %d, %Y"
+    "31. December 1999" "%d. %B %Y"
+    "Fri, Dec 31, 99" "%a, %b %d, %y"
+    "Fri 31/Dec 99" "%a %d/%b %y"
+    "Fri, Dec 31, 1999" "%a, %b %d, %Y"
+    "Friday, December 31, 1999" "%A, %B %d, %Y"
+    "12-31" "%m-%d"
+    "99-12-31" "%y-%m-%d"
+    "1999-12-31" "%Y-%m-%d"
+    "12/99" "%m/%y"
+    "Dec 31" "%b %d"
+    "December" "%B"
+    "4th quarter 99" "%Qth quarter %y"
 }
 
-proc dimFormatPopdown {comboBox type} {
+proc rewriteTimeComboBox {comboBox} {
+    global timeFormatStrings
+    if [info exists timeFormatStrings([$comboBox get])] {
+        $comboBox set $timeFormatStrings([$comboBox get])
+    }
+}
+
+# If comboBox is a format combo box for a field of \a type, then set up rewrite strings, then execute \a onSelect
+proc dimFormatPopdown {comboBox type onSelect} {
     global timeFormatStrings
     switch $type {
         string {
             $comboBox configure -values {}
             $comboBox set {}
+            bind $comboBox <<ComboboxSelected>> $onSelect
         }
         value {
             $comboBox configure -values {}
+            bind $comboBox <<ComboboxSelected>> $onSelect
         }
         time {
-            $comboBox configure -values $timeFormatStrings
+            $comboBox configure -values [lsort [array names timeFormatStrings]]
+            bind $comboBox <<ComboboxSelected>> "rewriteTimeComboBox $comboBox; $onSelect"
         }
     }
 }
@@ -1238,7 +1279,7 @@ populateRecentFiles
 proc openFile {} {
     global fname workDir preferences
     set ofname [tk_getOpenFile -multiple 1 -filetypes {
-	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
+        {Minsky {.mky}} {Ravel {.rvl}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
     if [string length $ofname] {eval openNamedFile $ofname}
 }
 
@@ -1281,7 +1322,7 @@ proc openNamedFile {ofname} {
 proc insertFile {} {
     global workDir
     set fname [tk_getOpenFile -multiple 1 -filetypes {
-	    {Minsky {.mky}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
+        {Minsky {.mky}} {Ravel {.rvl}} {XML {.xml}} {All {.*}}} -initialdir $workDir]
     eval insertGroupFromFile $fname
 }
 
@@ -1307,11 +1348,20 @@ proc recentreCanvas {} {
     }
 }
 
+proc fileTypes {defaultExtension} {
+    if {$defaultExtension==".rvl"} {
+        return {{"Ravel" .rvl TEXT} {"Minsky" .mky TEXT} {"All Files" * TEXT}}
+    } else {
+        return {{"Minsky" .mky TEXT} {"Ravel" .rvl TEXT} {"All Files" * TEXT}}
+    }
+}
+
 proc save {} {
     global fname workDir
+    set ext [minsky.model.defaultExtension]
     if {![string length $fname]} {
-        setFname [tk_getSaveFile -defaultextension .mky  -initialdir $workDir \
-                  -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]}            
+        setFname [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                      -filetypes [fileTypes $ext]]}            
     if [string length $fname] {
         set workDir [file dirname $fname]
         eval minsky.save {$fname}
@@ -1321,8 +1371,9 @@ proc save {} {
 
 proc saveAs {} {
     global fname workDir
-    setFname [tk_getSaveFile -defaultextension .mky -initialdir $workDir \
-              -filetypes {{"Minsky" .mky TEXT} {"All Files" * TEXT}}]
+    set ext [minsky.model.defaultExtension]
+    setFname [tk_getSaveFile -defaultextension $ext  -initialdir $workDir \
+                  -filetypes [fileTypes $ext]]            
     if [string length $fname] save
 }
 

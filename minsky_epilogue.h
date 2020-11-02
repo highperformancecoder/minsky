@@ -34,21 +34,23 @@
 ////#ifdef CIVITA_TENSORVAL_H
 ////#include "tensorVal.cd"
 ////#endif
-//#ifdef CIVITA_HYPERCUBE_H
-//#include "hypercube.cd"
-//#endif
+#ifdef CIVITA_HYPERCUBE_H
+#include "hypercube.cd"
+#include "hypercube.xcd"
+#endif
 
-//#ifdef CIVITA_XVECTOR_H
-//namespace classdesc_access
-//{
+#ifdef CIVITA_XVECTOR_H
+#include "xvector.xcd"
+////namespace classdesc_access
+////{
+//////  template <>
+//////  struct access_RESTProcess<civita::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
 ////  template <>
-////  struct access_RESTProcess<civita::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
-//  template <>
-//  struct access_json_pack<civita::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-//  template <>
-//  struct access_json_unpack<civita::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
-//}
-//
-//#endif
+////  struct access_json_pack<civita::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
+////  template <>
+////  struct access_json_unpack<civita::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
+////}
+////
+#endif
 
 #include <ecolab_epilogue.h>

@@ -83,24 +83,22 @@ proc CSVImportDialog {} {
 
         # horizontal dimension control
         frame .wiring.csvImport.horizontalName
-        label .wiring.csvImport.horizontalName.text -text "Horizontal dimension"
-        entry .wiring.csvImport.horizontalName.value -width 30 -textvariable csvParms(horizontalDimension)
         label .wiring.csvImport.horizontalName.duplicateKeyLabel -text "Duplicate Key Action"
         ttk::combobox .wiring.csvImport.horizontalName.duplicateKeyValue \
             -textvariable csvParms(duplicateKeyValue) \
             -values {throwException sum product min max av} -width 15
         bind .wiring.csvImport.horizontalName.duplicateKeyValue <<ComboboxSelected>> {
             minsky.value.csvDialog.spec.duplicateKeyAction $csvParms(duplicateKeyValue)}
+        label .wiring.csvImport.horizontalName.text -text "Horizontal dimension"
+        entry .wiring.csvImport.horizontalName.value -width 30 -textvariable csvParms(horizontalDimension)
         label .wiring.csvImport.horizontalName.typeLabel -text "Type"
         ttk::combobox .wiring.csvImport.horizontalName.type \
             -textvariable csvParms(horizontalType) \
             -values {string value time} -width 15 -state readonly
         bind .wiring.csvImport.horizontalName.type <<ComboboxSelected>> {
             minsky.value.csvDialog.spec.horizontalDimension.type $csvParms(horizontalType)
-            if {$csvParms(horizontalType)=="time"} {
-                .wiring.csvImport.horizontalName.format configure -values $timeFormatStrings
-            } else {
-                .wiring.csvImport.horizontalName.format configure -values ""
+            dimFormatPopdown .wiring.csvImport.horizontalName.format $csvParms(horizontalType) {
+                minsky.value.csvDialog.spec.horizontalDimension.units [.wiring.csvImport.horizontalName.format get]
             }
         }
         label .wiring.csvImport.horizontalName.formatLabel -text "Format"
@@ -178,7 +176,7 @@ proc csvImportDialogOK {} {
 
 proc doReport {inputFname} {
     global workDir
-    set fname [tk_getSaveFile -initialfile [file rootname $inputFname]-error-report.csv -initialdir $workDir]
+    set fname [tk_getSaveFile -defaultextension .csv -initialfile [file rootname $inputFname]-error-report.csv -initialdir $workDir]
     if [string length $fname] {
         eval minsky.value.csvDialog.reportFromFile {$inputFname} {$fname}
     }
@@ -238,21 +236,24 @@ proc csvImportButton1Up {x y X Y} {
             0 {minsky.value.csvDialog.spec.toggleDimension $col
                 minsky.value.csvDialog.requestRedraw
             }
-            1 {if {$col<[minsky.value.csvDialog.spec.dimensions.size]} {
-                setupCombo [[minsky.value.csvDialog.spec.dimensions.@elem $col].type] \
-                    "minsky.value.csvDialog.spec.dimensions($col).type" \
-                    "Dimension type" {-values {"string" "value" "time"} -state readonly} $X $Y
-            }}
-            2 {if {$col<[minsky.value.csvDialog.spec.dimensions.size]} {
-                set units "{}"
-                if {[[minsky.value.csvDialog.spec.dimensions.@elem $col].type]=="time"} {
-                    global timeFormatStrings
-                    set units "\{[set timeFormatStrings]\}"
+            1 {
+                if {$col<[minsky.value.csvDialog.spec.dimensions.size]} {
+                    setupCombo [[minsky.value.csvDialog.spec.dimensions.@elem $col].type] \
+                        "minsky.value.csvDialog.spec.dimensions($col).type" \
+                        "Dimension type" {-values {"string" "value" "time"} -state readonly} $X $Y
                 }
-                setupCombo [[minsky.value.csvDialog.spec.dimensions.@elem $col].units] \
-                    "minsky.value.csvDialog.spec.dimensions($col).units" \
-                    "Dimension units/format" "-values $units -state normal" $X $Y
-            }}
+            }
+            2 {
+                if {$col<[minsky.value.csvDialog.spec.dimensions.size]} {
+                    set units "{}"
+                    setupCombo [[minsky.value.csvDialog.spec.dimensions.@elem $col].units] \
+                        "minsky.value.csvDialog.spec.dimensions($col).units" \
+                        "Dimension units/format" "-values $units -state normal" $X $Y
+                    dimFormatPopdown .wiring.csvImport.text.combo [[minsky.value.csvDialog.spec.dimensions.@elem $col].type] {
+                        minsky.value.csvDialog.spec.dimensions($col).units [.wiring.csvImport.text.combo get]
+                    }
+                }
+            }
             3 {if {$col<[minsky.value.csvDialog.spec.dimensions.size]} {
                 setupCombo [[minsky.value.csvDialog.spec.dimensionNames.@elem $col]] \
                     "minsky.value.csvDialog.spec.dimensionNames($col)" \

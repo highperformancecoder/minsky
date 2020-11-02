@@ -571,9 +571,27 @@ namespace minsky
         auto d=dimensions.find(xv.name);
         if (d==dimensions.end())
           dimensions.emplace(xv.name, xv.dimension);
+        else if (d->second.type==xv.dimension.type)
+          d->second.units=xv.dimension.units;
+        else
+          message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog");
+        
       }
+    // set all such dimensions on Ravels to forward sort order
+    set<string> varDimensions;
+    for (auto& xv: v.hypercube().xvectors)
+      varDimensions.insert(xv.name);
+    model->recursiveDo
+      (&Group::items,[&](Items& m, Items::iterator it)
+      {
+        if (auto ri=dynamic_cast<Ravel*>(it->get()))
+          for (size_t i=0; i<ri->numHandles(); ++i)
+            if (varDimensions.count(ri->handleDescription(i)))
+              ri->setHandleSortOrder(ravel::HandleSort::forward, i);
+        return false;
+      });
   }
-      
+  
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;
@@ -875,7 +893,8 @@ namespace minsky
          else if (auto r=dynamic_cast<Ravel*>(i->get()))
            {
              if (r->ports[1]->numWires()>0)
-               r->populateHypercube(r->ports[1]->getVariableValue()->hypercube());
+               if (auto vv=r->ports[1]->getVariableValue())
+                 r->populateHypercube(vv->hypercube());
            }
          else if (auto v=(*i)->variableCast())
            { //determine whether a slider should be shown
@@ -1035,9 +1054,11 @@ namespace minsky
               displayErrorItem(*i->operation);
             throw error("integral not wired");
           }
-        result[i->stock.idx()] = reverseFactor *
-          (i->input.isFlowVar()? flow[i->input.idx()]: vars[i->input.idx()]);
-      }
+        // enable element-wise integration of tensor variables. for feature 147  
+	for (size_t j=0; j<i->input.size(); ++j)
+	    result[i->stock.idx()+j] = reverseFactor *
+	      (i->input.isFlowVar()? flow[i->input.idx()+j] : vars[i->input.idx()+j]);
+      } 
   }
 
   void Minsky::jacobian(Matrix& jac, double t, const double sv[])
@@ -1283,7 +1304,7 @@ namespace minsky
   {
     // go via a schema object, as serialising minsky::Minsky has
     // problems due to port management
-    schema3::Minsky m(*this);
+    schema3::Minsky m(*this, false /* don't pack tensor data */);
     pack_t buf;
     buf<<m;
     if (history.empty())
@@ -1334,9 +1355,21 @@ namespace minsky
       {
         schema3::Minsky m;
         history[historyPtr-1].reseto()>>m;
+        // stash tensorInit data for later restoration
+        auto stashedValues=move(variableValues);
         clearAllMaps();
         model->clear();
         m.populateGroup(*model);
+        // restore tensorInit data
+        for (auto& v: variableValues)
+          {
+            auto stashedValue=stashedValues.find(v.first);
+            if (stashedValue!=stashedValues.end())
+              v.second->tensorInit=move(stashedValue->second->tensorInit);
+          }
+        try {reset();}
+        catch (...) {}
+          
       }
     else
       historyPtr+=changes; // revert

@@ -157,7 +157,7 @@ std::string CSVDialog::loadWebFile(const std::string& url)
   // end::stream_setup_source[]         
 
   // Look up the domain name
-  auto const results = resolver.resolve(host, protocol);
+  auto const results = resolver.resolve(host.str(), protocol.str());
           
   // Make the connection on the IP address we get from a lookup
   boost::asio::connect(stream.next_layer(), results.begin(), results.end());                   

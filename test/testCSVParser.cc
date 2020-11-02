@@ -335,5 +335,38 @@ SUITE(CSVParser)
         CHECK_EQUAL(1.1, v.tensorInit[0]);
       }
     }
+
+  TEST(guessFromVariableExport)
+    {
+      Hypercube hc;
+      hc.xvectors=
+        {
+          XVector("height",{Dimension::value,""},{"1.5","2","2.5"}),
+          XVector("sex",{Dimension::string,""},{"male","female"}),
+          XVector("date",{Dimension::time,"%Y"},{"2010","2011","2012"})
+        };
+      
+      VariableValue v(VariableType::flow);
+      v.hypercube(hc);
+      for (size_t i=0; i<v.size(); ++i)
+        v[i]=rand();
+      v.exportAsCSV("tmp.csv");
+
+      DataSpec spec;
+      {
+        ifstream f("tmp.csv");
+        spec.guessFromStream(f);
+      }
+      VariableValue newV(VariableType::flow);
+      {
+        ifstream f("tmp.csv");
+        loadValueFromCSVFile(newV,f,spec);
+      }
+
+      CHECK(newV.hypercube().xvectors==v.hypercube().xvectors);
+      CHECK_EQUAL(v.size(), newV.size());
+      for (size_t i=0; i<v.size(); ++i)
+        CHECK_CLOSE(v[i], newV.tensorInit[i], 0.001*v[1]);
+    }
   
 }

@@ -98,8 +98,8 @@ namespace schema3
         hc.xvectors.push_back(xv);
       }
     assert(std::find_if(index.begin(),index.end(),[&](size_t i){return i>=hc.numElements();})==index.end());
-    a.index(index);
-    a.hypercube(hc); //dimension data
+    a.index(std::move(index));
+    a.hypercube(std::move(hc)); //dimension data
     assert(a.size()==data.size());
     memcpy(a.begin(),&data[0],data.size()*sizeof(data[0]));
   }
@@ -265,7 +265,7 @@ namespace schema3
   }
 
 
-  Minsky::Minsky(const minsky::Group& g)
+  Minsky::Minsky(const minsky::Group& g, bool packTensorData)
   {
     IdMap itemMap;
 
@@ -278,6 +278,11 @@ namespace schema3
           itemMap.emplaceIf<minsky::SwitchIcon>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Sheet>(items, i->get()) ||
           itemMap.emplaceIf<minsky::Item>(items, i->get());
+        if (packTensorData) //pack tensor data
+          if (auto v=(*i)->variableCast())
+            if (!items.back().tensorData)
+              items.back().packTensorInit(*v);
+
         return false;
       });
     

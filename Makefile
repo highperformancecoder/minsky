@@ -49,7 +49,7 @@ FLAGS+=-DENABLE_DARWIN_EVENTS -DMAC_OSX_TK
 LIBS+=-Wl,-framework -Wl,Security
 endif
 
-FLAGS+=-std=c++11 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
+FLAGS+=-std=c++14 -Ischema -Iengine -Itensor -Imodel -Icertify/include -IRESTService -IRavelCAPI $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -Wno-unused-local-typedefs
 
 VPATH= schema model engine tensor gui-tk RESTService RavelCAPI $(ECOLAB_HOME)/include 
 
@@ -150,11 +150,18 @@ else
 # symbolic debugger available for this build
 OPT=-O0
 endif
+ifdef RAVEL
+GUI_TK_OBJS+=RavelLogo.o
+else
 GUI_TK_OBJS+=MinskyLogo.o
+endif
 WINDRES=$(MXE_PREFIX)-windres
 endif
 
 MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
+	$(WINDRES) -O coff -i $< -o $@
+
+RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
 gui-tk/minsky$(EXE): $(GUI_TK_OBJS) $(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(TENSOR_OBJS)

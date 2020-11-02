@@ -364,7 +364,9 @@ namespace minsky
     void gotoBookmark(size_t i) 
     {if (i<bookmarks.size()) gotoBookmark_b(bookmarks[i]);}
 
-
+    /// return default extension for this group - .mky if no ravels in group, .rvl otherwise
+    std::string defaultExtension() const;
+    
   };
 
   template <class M, class C>

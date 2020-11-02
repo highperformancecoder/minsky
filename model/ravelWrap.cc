@@ -22,6 +22,7 @@
 #include "dimension.h"
 #include "minskyTensorOps.h"
 #include "minsky.h"
+#include "pango.h"
 #include "minsky_epilogue.h"
 
 #include <string>
@@ -64,6 +65,34 @@ namespace minsky
       }
   }
 
+namespace
+{
+  struct CairoRenderer: public ravel::CairoRenderer
+  {
+    ecolab::Pango m_pango;
+    
+    static ecolab::Pango& pango(CAPIRenderer* r) {return static_cast<CairoRenderer*>(r)->m_pango;}
+
+    static void s_showText(CAPIRenderer* c, const char* s)
+    {
+      pango(c).setText(s);
+      pango(c).show();
+    }
+    static void s_setTextExtents(CAPIRenderer* c, const char* s)
+    {pango(c).setText(s);}
+    static double s_textWidth(CAPIRenderer* c) {return pango(c).width();}
+    static double s_textHeight(CAPIRenderer* c) {return pango(c).height();}
+
+    CairoRenderer(cairo_t* cairo): ravel::CairoRenderer(cairo), m_pango(cairo) {
+      showText=s_showText;
+      setTextExtents=s_setTextExtents;
+      textWidth=s_textWidth;
+      textHeight=s_textHeight;
+    }
+    
+  };
+}
+  
   void Ravel::draw(cairo_t* cairo) const
   {
     double  z=zoomFactor(), r=1.1*z*radius();
@@ -99,7 +128,7 @@ namespace minsky
       cairo_rectangle(cairo,-r,-r,2*r,2*r);
       cairo_clip(cairo);
       cairo_scale(cairo,z,z);
-      ravel::CairoRenderer cr(cairo);
+      CairoRenderer cr(cairo);
       render(cr);
     }        
     if (selected) drawSelected(cairo);
@@ -152,24 +181,6 @@ namespace minsky
     double invZ=1/zoomFactor();
     return ravel::Ravel::onMouseOver((xx-x())*invZ,(yy-y())*invZ);
   }
-
-//  void Ravel::loadFile(const string& fileName)
-//  {
-//    m_filename=fileName;
-//    if (dataCube && ravel)
-//      {
-//        if (!ravelDC_openFile(dataCube, fileName.c_str(), RavelDataSpec()))
-//          throw error(ravel_lastErr());
-//        else if (!ravelDC_initRavel(dataCube,ravel))
-//          throw error(ravel_lastErr());
-//        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
-//          {
-//            ravel_displayFilterCaliper(ravel,i,false);
-//            setHandleSortOrder(HandleState::forward,i);
-//          }
-//        setRank(ravel_numHandles(ravel));
-//      }
-//  }
 
   Hypercube Ravel::hypercube() const
   {
@@ -283,27 +294,6 @@ namespace minsky
     return ravel::Ravel::allSliceLabels(axis,ravel::HandleSort::forward);
   }  
 
-//  vector<string> Ravel::allSliceLabelsImpl(int axis, HandleSort order) const
-//  {
-//    if (axis>=0 && axis<int(numHandles()))
-//      {
-//        assert(order!=HandleState::custom); //custom makes no sense here
-//        // grab the labels in sorted order, or forward order if a custom order is applied
-//        auto state=getHandleState(axis);
-//        // grab the ordering in case its custom
-//        auto customOrdering=currentPermutation(axis);
-//
-//        // set the order and reset calipers to full range
-//        const_cast<ravel::Ravel*>(static_cast<const ravel::Ravel*>(this))->displayFilterCaliper(axis,false);
-//        auto sl=sliceLabels(axis);
-//        setHandleState(axis,state); // return things to how they were
-//        if (state.order==ravel::HandleSort::custom)
-//          applyCustomPermutation(axis,customOrdering);
-//        return sl;
-//      }
-//    return {};
-//  }
-
   vector<string> Ravel::pickedSliceLabels() const
   {return sliceLabels(selectedHandle());}
 
@@ -316,7 +306,7 @@ namespace minsky
         if (state.order!=ravel::HandleSort::custom)
           previousOrder=state.order;
 
-        if (pick.size()>=numSliceLabels(axis))
+        if (pick.size()>=numAllSliceLabels(axis))
           {
             // if all labels are selected, revert ordering to previous
             setHandleSortOrder(previousOrder, axis);
@@ -444,76 +434,6 @@ namespace minsky
   }
 
   
-//  RavelState Ravel::getState() const
-//  {
-//    RavelState state;
-//        state.radius=ravel_radius(ravel);
-//        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
-//          {
-//            RavelHandleState hs;
-//            ravel_getHandleState(ravel, i, &hs);
-//            auto& s=state.handleStates[ravel_handleDescription(ravel,i)];
-//            s=hs;
-//            vector<const char*> sliceLabels(ravel_numSliceLabels(ravel,i));
-//            if (!sliceLabels.empty())
-//              {
-//                ravel_sliceLabels(ravel,i,&sliceLabels[0]);
-//                s.minLabel=sliceLabels.front();
-//                s.maxLabel=sliceLabels.back();
-//                if (hs.sliceIndex<sliceLabels.size())
-//                  s.sliceLabel=sliceLabels[hs.sliceIndex];
-//                if (s.order==HandleState::custom)
-//                  {
-//                    s.customOrder={sliceLabels.begin(),sliceLabels.end()};
-//                  }
-//              }
-//          }
-//        vector<size_t> ids(ravel_rank(ravel));
-//        ravel_outputHandleIds(ravel,&ids[0]);
-//        for (size_t i=0; i<ids.size(); ++i)
-//          state.outputHandles.push_back(ravel_handleDescription(ravel,ids[i]));
-//        state.sortByValue=sortByValue;
-//    return state;
-//  }
-
-//  /// apply the \a state to the Ravel, leaving data, slicelabels etc unchanged
-//  void Ravel::applyState(const RavelState& state)
-//  {
-//    if (ravel)
-//      {
-//        sortByValue=state.sortByValue;
-//        ravel_rescale(ravel,state.radius);
-//
-//        vector<size_t> ids;
-//        for (auto& outName: state.outputHandles)
-//          {
-//            for (size_t handle=0; handle<ravel_numHandles(ravel); ++handle)
-//              if (ravel_handleDescription(ravel,handle)==outName)
-//                ids.push_back(handle);
-//          }
-//        ravel_setOutputHandleIds(ravel,ids.size(),&ids[0]);
-//
-//        for (size_t i=0; i<ravel_numHandles(ravel); ++i)
-//          {
-//            string name=ravel_handleDescription(ravel,i);
-//            auto hs=state.handleStates.find(name);
-//            if (hs!=state.handleStates.end())
-//              {
-//                RavelHandleState state(hs->second);
-//                ravel_setHandleState(ravel,i,&state);
-//                setHandleSortOrder(state.order,i);
-//                if (hs->second.order==HandleState::custom)
-//                  pickSliceLabels(i,hs->second.customOrder);
-//                else if (state.displayFilterCaliper)
-//                  ravel_setCalipers(ravel,i,hs->second.minLabel.c_str(),
-//                                    hs->second.maxLabel.c_str());
-//                ravel_setSlicer(ravel,i,hs->second.sliceLabel.c_str());
-//              }
-//          }
-//        ravel_redistributeHandles(ravel);
-//      }
-//  }
-
   void Ravel::exportAsCSV(const string& filename) const
   {
     if (!ports.empty())
@@ -566,13 +486,6 @@ namespace minsky
       }
   }
     
-//  string Minsky::ravelVersion() const
-//  {
-//    return ravelLib.versionFound+
-//      ((ravelLib.lib || ravelLib.versionFound=="unavailable")?
-//        "":" but incompatible");
-//  }
-
   void Ravel::leaveLockGroup()
   {
     if (lockGroup)
@@ -585,13 +498,61 @@ namespace minsky
     if (lockGroup)
       {
         auto state=getState();
+        // filter by handlesToLock
+        if (!lockGroup->handlesToLock.empty())
+          {
+            decltype(state.handleStates) handleStates;
+            for (auto& h: state.handleStates)
+              if (lockGroup->handlesToLock.count(h.description))
+                handleStates.push_back(h);
+            state.handleStates=std::move(handleStates);
+            // remove output handle if not locked
+            decltype(state.outputHandles) outputHandles;
+            for (auto& h: state.outputHandles)
+              if (lockGroup->handlesToLock.count(h))
+                outputHandles.push_back(h);
+            state.outputHandles=move(outputHandles); // restore state.outputHandles
+          }
+
         for (auto& rr: lockGroup->ravels)
           if (auto r=rr.lock())
             if (r.get()!=this)
-              r->applyState(state/*,true*/);
+              {
+                // stash state.outputHandles
+                auto stateOutputHandles=state.outputHandles;
+                if (!lockGroup->handlesToLock.empty())
+                  {
+                    auto currentOutputHandles=r->getState().outputHandles;
+                    // add currentoutputHandles not in locked handle list
+                    for (auto& i: currentOutputHandles)
+                      if (!lockGroup->handlesToLock.count(i))
+                        state.outputHandles.push_back(i);
+                  }
+                r->applyState(state/*,true*/);
+                state.outputHandles=move(stateOutputHandles);
+              }
       }
   }
- 
+
+  vector<string> RavelLockGroup::allLockHandles()
+  {
+    set<string> handles;
+    for (auto& rr: ravels)
+      if (auto r=rr.lock())
+        {
+          auto state=r->getState();
+          for (auto& h: state.handleStates)
+            handles.insert(h.description);
+        }
+    return {handles.begin(), handles.end()};
+  }
+  
+  void RavelLockGroup::setLockHandles(const std::vector<std::string>& handles)
+  {
+    handlesToLock.clear();
+    handlesToLock.insert(handles.begin(), handles.end());
+  }
+
   void RavelLockGroup::removeFromGroup(const Ravel& ravel)
   {
     vector<weak_ptr<Ravel>> newRavelList;

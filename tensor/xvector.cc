@@ -57,31 +57,38 @@ namespace civita
         size()!=x.size())
       return false;
     for (auto i=begin(), j=x.begin(); i!=end(); ++i, ++j)
-      switch (dimension.type)
-        {
-        case Dimension::string:
-          try
-            {
-              if (any_cast<string>(*i)!=any_cast<string>(*j))
-                return false;
-            }
-          catch (const bad_any_cast&)
-            {
-              if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
-                return false;
-            }
-          break;
-        case Dimension::value:
-          if (any_cast<double>(*i)!=any_cast<double>(*j))
+      {
+        if (i->type()!=j->type())
+          {
+            cout << i->type().name() << " "<<j->type().name() << endl;
             return false;
-          break;
-        case Dimension::time:
-          if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
-            return false;
-          break;
-        default:
-          throw error("unknown dimension type");
-        }
+          }
+        switch (dimension.type)
+          {
+          case Dimension::string:
+            try
+              {
+                if (any_cast<string>(*i)!=any_cast<string>(*j))
+                  return false;
+              }
+            catch (const bad_any_cast&)
+              {
+                if (strcmp(any_cast<const char*>(*i), any_cast<const char*>(*j))!=0)
+                  return false;
+              }
+            break;
+          case Dimension::value:
+            if (any_cast<double>(*i)!=any_cast<double>(*j))
+              return false;
+            break;
+          case Dimension::time:
+            if (any_cast<ptime>(*i)!=any_cast<ptime>(*j))
+              return false;
+            break;
+          default:
+            throw error("unknown dimension type");
+          }
+      }
     return true;
   }
   

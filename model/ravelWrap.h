@@ -77,8 +77,6 @@ namespace minsky
     void onMouseUp(float x, float y);
     bool onMouseMotion(float x, float y);
     bool onMouseOver(float x, float y);
-    //    void loadFile(const std::string&);
-    //    const std::string& filename() const {return m_filename;}
     /// return hypercube corresponding to the current Ravel state
     Hypercube hypercube() const;
     void populateHypercube(const Hypercube&);
@@ -155,12 +153,16 @@ namespace minsky
     // an identifyin tag used to colour locked ravels on canvas
     unsigned colour() const {return m_colour;}
     std::vector<std::weak_ptr<Ravel>> ravels;
+    std::set<std::string> handlesToLock;
+    /// populate \a handlesToLock by all handles present in the lock group
+    std::vector<std::string> allLockHandles();
+    /// set handlesToLock to the handles in \a handles
+    void setLockHandles(const std::vector<std::string>& handles);
     void removeFromGroup(const Ravel&);
   };
 }
 
 #include "ravelWrap.cd"
-//#include "ravelWrap.xcd"
 
 #endif
 

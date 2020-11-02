@@ -471,9 +471,9 @@ SUITE(TensorOps)
       arg=make_shared<TensorVal>();
       hc.xvectors=
         {
-         XVector("country",{"Australia","Canada","US"}),
-         XVector("sex",{"male","female"}),
-         XVector("date",{"2010","2011","2012"})
+          XVector("country",{},{"Australia","Canada","US"}),
+          XVector("sex",{},{"male","female"}),
+          XVector("date",{},{"2010","2011","2012"})
         };
       arg->hypercube(hc);
       for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
