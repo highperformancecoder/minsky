@@ -19,12 +19,12 @@
 
 #include "xvector.h"
 #include <error.h>
+#include <regex>
 #include "minsky_epilogue.h"
 using ecolab::error;
 
 using namespace std;
 
-#include <boost/regex.hpp>
 #include <boost/date_time.hpp>
 using namespace boost;
 using namespace boost::posix_time;
@@ -147,13 +147,13 @@ namespace civita
                       try
                         {v=stoi(val[i]);}
                       catch (...)
-                        {throw runtime_error(val[i]+" is not an integer");}
+                        {throw runtime_error(val[i].str()+" is not an integer");}
                       switch (m.str(i)[0])
                         {
                         case 'd': day=v; break;
                         case 'm': month=v; break;
                         case 'y':
-                          if (v>99) throw runtime_error(val[i]+" is out of range for %y");
+                          if (v>99) throw runtime_error(val[i].str()+" is out of range for %y");
                           year=v>68? v+1900: v+2000;
                           break;
                         case 'Y': year=v; break;
