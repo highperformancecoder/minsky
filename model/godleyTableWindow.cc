@@ -162,7 +162,6 @@ namespace minsky
     if (!godleyIcon) return;
     CairoSave cs(cairo);
     cairo_scale(cairo,zoomFactor,zoomFactor);
-    ZoomablePango::zoomFactor=zoomFactor;
     ZoomablePango pango(cairo);
     pango.setMarkup("Flows ↓ / Stock Vars →");
     rowHeight=pango.height()+2;
