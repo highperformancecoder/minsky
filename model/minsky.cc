@@ -575,9 +575,23 @@ namespace minsky
           d->second.units=xv.dimension.units;
         else
           message("Incompatible dimension type for dimension "+d->first+". Please adjust the global dimension in the dimensions dialog");
+        
       }
+    // set all such dimensions on Ravels to forward sort order
+    set<string> varDimensions;
+    for (auto& xv: v.hypercube().xvectors)
+      varDimensions.insert(xv.name);
+    model->recursiveDo
+      (&Group::items,[&](Items& m, Items::iterator it)
+      {
+        if (auto ri=dynamic_cast<Ravel*>(it->get()))
+          for (size_t i=0; i<ri->numHandles(); ++i)
+            if (varDimensions.count(ri->handleDescription(i)))
+              ri->setHandleSortOrder(ravel::HandleSort::forward, i);
+        return false;
+      });
   }
-      
+  
   std::set<string> Minsky::matchingTableColumns(const GodleyIcon& godley, GodleyAssetClass::AssetClass ac)
   {
     std::set<string> r;

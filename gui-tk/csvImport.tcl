@@ -83,14 +83,14 @@ proc CSVImportDialog {} {
 
         # horizontal dimension control
         frame .wiring.csvImport.horizontalName
-        label .wiring.csvImport.horizontalName.text -text "Horizontal dimension"
-        entry .wiring.csvImport.horizontalName.value -width 30 -textvariable csvParms(horizontalDimension)
         label .wiring.csvImport.horizontalName.duplicateKeyLabel -text "Duplicate Key Action"
         ttk::combobox .wiring.csvImport.horizontalName.duplicateKeyValue \
             -textvariable csvParms(duplicateKeyValue) \
             -values {throwException sum product min max av} -width 15
         bind .wiring.csvImport.horizontalName.duplicateKeyValue <<ComboboxSelected>> {
             minsky.value.csvDialog.spec.duplicateKeyAction $csvParms(duplicateKeyValue)}
+        label .wiring.csvImport.horizontalName.text -text "Horizontal dimension"
+        entry .wiring.csvImport.horizontalName.value -width 30 -textvariable csvParms(horizontalDimension)
         label .wiring.csvImport.horizontalName.typeLabel -text "Type"
         ttk::combobox .wiring.csvImport.horizontalName.type \
             -textvariable csvParms(horizontalType) \

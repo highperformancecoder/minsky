@@ -52,33 +52,6 @@ namespace minsky
     // height of title, as a fraction of overall widget height
     const double titleHeight=0.07;
 
-    /// temporarily sets nTicks and fontScale, restoring them on scope exit
-    struct SetTicksAndFontSize
-    {
-      PlotWidget& p;
-      int nxTicks, nyTicks;
-      double fontScale;
-      bool subgrid;
-      SetTicksAndFontSize(PlotWidget& p, bool override, int n, double f, bool g):
-        p(p), nxTicks(p.nxTicks), nyTicks(p.nyTicks), 
-        fontScale(p.fontScale), subgrid(p.subgrid) 
-      {
-        if (override)
-          {
-            p.nxTicks=p.nyTicks=n;
-            p.fontScale=f;
-            p.subgrid=g;
-          }
-      }
-      ~SetTicksAndFontSize()
-      {
-        p.nxTicks=nxTicks;
-        p.nyTicks=nyTicks;
-        p.fontScale=fontScale;
-        p.subgrid=subgrid;
-      }
-    };
-
   }
 
   PlotWidget::PlotWidget()
@@ -137,7 +110,7 @@ namespace minsky
     double yoffs=0; // offset to allow for title
     if (!title.empty())
       {
-        double fx=0, fy=titleHeight*h;
+        double fx=0, fy=titleHeight*iHeight();
         cairo_user_to_device_distance(cairo,&fx,&fy);
         
         Pango pango(cairo);
@@ -206,7 +179,7 @@ namespace minsky
       case bar:  pt=Plot::bar;  break;
       default: break;
       }
-      
+
     Plot::draw(cairo,gw,gh); 
     cairo_restore(cairo);
     if (mouseFocus)
