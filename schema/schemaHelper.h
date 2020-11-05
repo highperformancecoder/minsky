@@ -63,7 +63,6 @@ namespace minsky
   */
   struct SchemaHelper
   {
-
     static void setPrivates
     (minsky::GodleyTable& g, const vector<vector<string> >& data, 
      const vector<GodleyTable::AssetClass>& assetClass)

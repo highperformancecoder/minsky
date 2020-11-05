@@ -366,6 +366,8 @@ namespace schema3
     x.m_y=y.y;
     x.m_sf=y.scaleFactor;
     x.rotation(y.rotation);
+    if (y.width) x.iWidth(*y.width);
+    if (y.height) x.iHeight(*y.height);
     if (auto x1=dynamic_cast<minsky::DataOp*>(&x))
       {
         if (y.name)
@@ -455,11 +457,11 @@ namespace schema3
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
       }
-    if (auto x1=dynamic_cast<minsky::Sheet*>(&x))
-      {
-        if (y.width) x1->m_width=*y.width;
-        if (y.height) x1->m_height=*y.height;
-      }
+//    if (auto x1=dynamic_cast<minsky::Sheet*>(&x))
+//      {
+//        if (y.width) x1->m_width=*y.width;
+//        if (y.height) x1->m_height=*y.height;
+//      }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
         if (y.width) x1->iWidth(*y.width);

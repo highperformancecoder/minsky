@@ -360,9 +360,6 @@ namespace minsky
     return r;
   }
 
-  ItemPtr Item::select(float x, float y) const
-  {return ItemPtr();}
-
   void Item::removeControlledItems() const
   {
     if (auto g=group.lock())

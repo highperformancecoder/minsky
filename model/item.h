@@ -182,6 +182,8 @@ namespace minsky
     virtual bool onMouseMotion(float x, float y) {return false;}
     /// respond to mouse motion events (hover) without button pressed
     virtual bool onMouseOver(float x, float y) {return false;}
+    /// respond to mouse leave events (when mouse leaves item)
+    virtual void onMouseLeave() {}
 
     /// delete all attached wires
     virtual void deleteAttachedWires();
@@ -236,7 +238,7 @@ namespace minsky
     
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
-    virtual std::shared_ptr<Item> select(float x, float y) const;
+    virtual std::shared_ptr<Item> select(float x, float y) const {return {};}
     virtual void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d)
     {::TCL_obj(t,d,*this);}
     /// returns a RESTProcessor appropriate for this item type

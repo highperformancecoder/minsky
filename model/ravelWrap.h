@@ -74,6 +74,7 @@ namespace minsky
     void onMouseUp(float x, float y) override;
     bool onMouseMotion(float x, float y) override;
     bool onMouseOver(float x, float y) override;
+    void onMouseLeave() override {ravel::Ravel::onMouseLeave();}
     /// return hypercube corresponding to the current Ravel state
     Hypercube hypercube() const;
     void populateHypercube(const Hypercube&);
