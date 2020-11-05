@@ -122,7 +122,7 @@ void Sheet::draw(cairo_t* cairo) const
               for (auto& i: value->hypercube().xvectors[0])
                 {
                   pango.setText(trimWS(str(i,format)));
-                  colWidth=std::max(colWidth,5+pango.width()/z);
+                  colWidth=std::max(colWidth,5+pango.width());
                 }                
 
               if (value->hypercube().rank()==2)
@@ -196,7 +196,7 @@ void Sheet::draw(cairo_t* cairo) const
                         cairo_line_to(cairo,x-2.5,0.5*m_height);
                         cairo_stroke(cairo);
                       }
-                      colWidth=std::max(colWidth, 5+pango.width()/z);
+                      colWidth=std::max(colWidth, 5+pango.width());
                       for (size_t j=0; j<dims[0]; ++j)
                         {
                           y+=rowHeight;
