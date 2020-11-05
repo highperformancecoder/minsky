@@ -49,7 +49,7 @@ namespace minsky
   /// a lasso is intended
   struct ClickType
   {
-    enum Type {onItem, onPort, outside, onSlider, onRavel, onResize, legendMove, legendResize};
+    enum Type {onItem, onPort, outside, onSlider, inItem, onResize, legendMove, legendResize};
   };
 
   /// radius of circle marking ports at zoom=1
@@ -96,6 +96,7 @@ namespace minsky
     float m_x=0, m_y=0; ///< position in canvas, or within group
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is over resize handles
+    bool onBorder=false; ///< true to indicate mouse hovering over border
     std::string deleteCallback; /// callback to be run when item deleted from group
     /// owning group of this item.
     classdesc::Exclude<std::weak_ptr<Group>> group; 
@@ -167,10 +168,21 @@ namespace minsky
     float top()    const {ensureBBValid(); return y()+bb.top()*zoomFactor();}
     float bottom() const {ensureBBValid(); return y()+bb.bottom()*zoomFactor();}
 
-    // resize handles should be at least a percentage if the icon size (#1025)
+    /// resize handles should be at least a percentage if the icon size (#1025)
     float resizeHandleSize() const {return std::max(portRadius*zoomFactor(), std::max(0.02f*width(), 0.02f*height()));}
+    /// @return true is (x,y) is located on a resize handle
     virtual bool onResizeHandle(float x, float y) const;
-    
+    /// @return true if item internally responds to the mouse, and (x,y) is within editable area
+    virtual bool inItem(float x, float y) const {return false;}
+    /// respond to mouse down events
+    virtual void onMouseDown(float x, float y) {}
+    /// respond to mouse up events
+    virtual void onMouseUp(float x, float y) {}
+    /// respond to mouse motion events with button pressed
+    virtual bool onMouseMotion(float x, float y) {return false;}
+    /// respond to mouse motion events (hover) without button pressed
+    virtual bool onMouseOver(float x, float y) {return false;}
+
     /// delete all attached wires
     virtual void deleteAttachedWires();
     

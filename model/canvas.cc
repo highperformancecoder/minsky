@@ -74,9 +74,8 @@ namespace minsky
             if (lassoMode==LassoMode::none)
               lassoMode=LassoMode::lasso;
             break;
-          case ClickType::onRavel:
-            if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-              r->onMouseDown(x,y);
+          case ClickType::inItem:
+            itemFocus->onMouseDown(x,y);
             break;
           case ClickType::onResize:
             lassoMode=LassoMode::itemResize;
@@ -137,14 +136,12 @@ namespace minsky
   {
     mouseMove(x,y);
     
-    if (clickType==ClickType::onRavel)
-      if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-        {
-          r->onMouseUp(x,y);
-          r->broadcastStateToLockGroup();
-          itemFocus.reset(); // prevent spurious mousemove events being processed
-          minsky().reset();
-        }
+    if (clickType==ClickType::inItem)
+      {
+        itemFocus->onMouseUp(x,y);
+        itemFocus.reset(); // prevent spurious mousemove events being processed
+        minsky().reset();
+      }
     if (fromPort.get())
       {
           if (auto to=closestInPort(x,y))
@@ -242,10 +239,9 @@ namespace minsky
                     requestRedraw();
                   }
                 return;
-              case ClickType::onRavel:
-                if (auto r=dynamic_cast<Ravel*>(itemFocus.get()))
-                  if (r->onMouseMotion(x,y))
-                    requestRedraw();
+              case ClickType::inItem:
+                if (itemFocus->onMouseMotion(x,y))
+                  requestRedraw();
                 return;
               case ClickType::legendMove: case ClickType::legendResize:
                 if (auto p=dynamic_cast<PlotWidget*>(itemFocus.get()))
@@ -302,15 +298,12 @@ namespace minsky
                                                 else
                                                   {
                                                     auto ct=(*i)->clickType(x,y);
-                                                    if (ct==ClickType::onRavel)
+                                                    if (ct==ClickType::inItem)
                                                       {
-                                                        if (auto r=dynamic_cast<Ravel*>(i->get()))
-                                                          {
-                                                            r->mouseFocus=true;
-                                                            r->onBorder = false;
-                                                            if (r->onMouseOver(x,y))
-                                                              requestRedraw();
-                                                          }
+                                                        (*i)->mouseFocus=true;
+                                                        (*i)->onBorder = false;
+                                                        if ((*i)->onMouseOver(x,y))
+                                                          requestRedraw();
                                                       }
                                                     else
                                                       {
