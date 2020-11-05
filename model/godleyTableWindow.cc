@@ -64,17 +64,6 @@ namespace
     pango.show();
   }
 
-  struct ZoomablePango: public Pango
-  {
-    static double zoomFactor;
-    ZoomablePango(cairo_t* c): Pango(c) {setFontSize(10*zoomFactor);}
-    double idxToPos(size_t i) const {return Pango::idxToPos(i)/zoomFactor;}
-    double width() const {return Pango::width()/zoomFactor;}
-    double height() const {return Pango::height()/zoomFactor;}
-  };
-
-  double ZoomablePango::zoomFactor=1;
-
 }
 
 namespace minsky
@@ -162,8 +151,7 @@ namespace minsky
     if (!godleyIcon) return;
     CairoSave cs(cairo);
     cairo_scale(cairo,zoomFactor,zoomFactor);
-    ZoomablePango::zoomFactor=zoomFactor;
-    ZoomablePango pango(cairo);
+    Pango pango(cairo);
     pango.setMarkup("Flows ↓ / Stock Vars →");
     rowHeight=pango.height()+2;
     double tableHeight=(godleyIcon->table.rows()-scrollRowStart+1)*rowHeight;
@@ -446,7 +434,7 @@ namespace minsky
   int GodleyTableEditor::textIdx(double x) const
   {
     cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
-    ZoomablePango pango(surf.cairo());
+    Pango pango(surf.cairo());
     if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // No text index needed for a cell that is immutable. For ticket 1064
       {
 		// Make sure non-utf8 chars converted to utf8 as far as possible. for ticket 1166.  
@@ -1091,9 +1079,9 @@ namespace {
     cairo_get_current_point(cairo,&x0, &y0);
     
     CairoSave cs(cairo);
-    ZoomablePango pango(cairo);
+    Pango pango(cairo);
     // increase text size a bit for the buttons
-    pango.setFontSize(0.8*buttonSpacing*ZoomablePango::zoomFactor);
+    pango.setFontSize(0.8*buttonSpacing);
     pango.setMarkup(label);
     cairo_set_source_rgb(cairo,r,g,b);
     pango.show();
