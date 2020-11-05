@@ -489,7 +489,19 @@ namespace minsky
         if (v && v->defined() && v->varTabDisplay)
           v->toggleVarTabDisplay();	  
       }
-    itemVector.clear();  	  
+    // ensure individual hidden defining vars can be made visible once more. for ticket 145.
+    if (itemVector.empty())
+	{
+        model->recursiveDo
+          (&GroupItems::items, [&](const Items&,Items::const_iterator i)
+           {
+             if (auto v=(*i)->variableCast())
+               if (v->defined() && v->varTabDisplay)
+				 v->toggleVarTabDisplay();	 
+             return false;
+           });
+	}      
+    itemVector.clear();  
   }  
   
   void Canvas::deleteItem()

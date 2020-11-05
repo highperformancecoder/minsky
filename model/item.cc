@@ -161,13 +161,7 @@ namespace minsky
  
   bool Item::visible() const 
   {
-	// needed in some models, such as fundamentalConstants.mky to hide coupled intop along with other defining variables. for ticket 72/73  	  
-	if (auto i=dynamic_cast<const IntOp*>(this))
-	  if (i->intVar->attachedToDefiningVar()) return false; 
-	if (auto o=operationCast()) 
-	  if (o->attachedToDefiningVar()) return false;
-	if (auto v=variableCast()) 
-	  if (v->attachedToDefiningVar()) return false;	  
+	if (attachedToDefiningVar()) return false;   
     auto g=group.lock();
     return (!g || g->displayContents());
   }
