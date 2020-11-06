@@ -132,6 +132,14 @@ namespace minsky
     {for (auto& i: m_stockVars) i->setUnits(currency);}
       
     void insertControlled(Selection& selection) override;
+
+    void onMouseDown(float x, float y) override;
+    void onMouseUp(float x, float y) override;
+    bool onMouseMotion(float x, float y) override;
+    bool onMouseOver(float x, float y) override;
+    void onMouseLeave() override;
+    bool inItem(float xx, float yy) const override;
+
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 
@@ -139,6 +147,10 @@ namespace minsky
     /// move contained variables to correct locations within icon
     void positionVariables() const;
     Variables m_flowVars, m_stockVars;
+
+    /// @{ convert mouse coordinates into editor coords
+    float toEditorX(float) const;
+    float toEditorY(float) const;
   };
 }
 

@@ -34,6 +34,9 @@ using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
 
+// width of draggable border 
+const float border=10;
+
 namespace minsky
 {
   GodleyIcon::CopiableUniquePtr::CopiableUniquePtr() {}
@@ -88,6 +91,11 @@ namespace minsky
     {return x=='.' || isdigit(x);}
 
 
+  }
+
+  bool GodleyIcon::inItem(float xx, float yy) const
+  {
+    return abs(xx-x())<0.5*width()-border && abs(yy-y())<0.5*height()-border;
   }
 
   void GodleyIcon::updateVars(GodleyIcon::Variables& vars, 
@@ -369,8 +377,20 @@ namespace minsky
       {
         CairoSave cs(cairo);
         cairo_rectangle(cairo, left, top, w, h);
+        cairo_stroke_preserve(cairo);
+        cairo_rectangle(cairo, left+border, top+border, w-2*border, h-2*border);
+        cairo_stroke_preserve(cairo);
+        if (onBorder)
+          { // shadow the border when mouse is over it
+            cairo::CairoSave cs(cairo);
+            cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
+            cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
+            cairo_fill(cairo);
+          }
+        cairo_new_path(cairo);
+        cairo_rectangle(cairo, left+border, top-border, w-2*border, h-2*border);
         cairo_clip(cairo);
-        cairo_translate(cairo,left,top+12*zoomFactor()/* space for title*/);
+        cairo_translate(cairo,left+border,top+border+12*zoomFactor()/* space for title*/);
         editor->zoomFactor=zoomFactor();
         editor->draw(cairo);
         titley=-0.5*(bottomMargin()+h);
@@ -411,10 +431,10 @@ namespace minsky
         drawResizeHandles(cairo);
       }
       
+    cairo_rectangle(cairo, left,top, w, h);    
+    cairo_clip(cairo);
     if (selected)
       {
-        cairo_rectangle(cairo, left,top, w, h);    
-        cairo_clip(cairo);
         drawSelected(cairo);
       }
   }
@@ -466,6 +486,7 @@ namespace minsky
   
   ClickType::Type GodleyIcon::clickType(float x, float y)
   {
+    if (editor) return Item::clickType(x,y);
     double dx=fabs(x-this->x()), dy=fabs(y-this->y());
     auto z=zoomFactor()*scaleFactor();
     double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
@@ -479,6 +500,37 @@ namespace minsky
       return ClickType::outside;
   }
 
+  float GodleyIcon::toEditorX(float xx) const
+  {return xx-x()+0.5f*width()-border;}
+  float GodleyIcon::toEditorY(float yy) const
+  {return yy-y()+0.5f*height()-border-12*zoomFactor();}
+  
+  void GodleyIcon::onMouseDown(float x, float y)
+  {if (editor) editor->mouseDown(toEditorX(x),toEditorY(y));}
+  
+  void GodleyIcon::onMouseUp(float x, float y)
+  {if (editor) editor->mouseUp(toEditorX(x),toEditorY(y));}
+  
+  bool GodleyIcon::onMouseMotion(float x, float y)
+  {
+    if (editor) editor->mouseMoveB1(toEditorX(x),toEditorY(y));
+    return false;
+  }
+  
+  bool GodleyIcon::onMouseOver(float x, float y)
+  {
+    if (editor) editor->mouseMove(toEditorX(x),toEditorY(y));
+    return false;
+  }
+  
+  void GodleyIcon::onMouseLeave()
+  {
+    if (editor)
+      {
+        editor->mouseMove(-1,-1);
+        editor->update();
+      }
+  }
   
   SVGRenderer GodleyIcon::svgRenderer;
 }

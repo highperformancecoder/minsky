@@ -27,6 +27,7 @@ using namespace minsky;
 using namespace ecolab;
 using namespace std;
 
+// width of draggable border 
 const float border=10;
 
 Sheet::Sheet()
@@ -85,7 +86,7 @@ void Sheet::draw(cairo_t* cairo) const
         }
       else
         {
-          float x0=-0.5*m_width+border, y0=-0.5*m_height+border;//+pango.height();
+          float x0=-0.5*m_width+border, y0=-0.5*m_height+border;
           if (value->hypercube().rank()==0)
             {
               cairo_move_to(cairo,x0,y0);
@@ -234,11 +235,3 @@ void Sheet::draw(cairo_t* cairo) const
   cairo_clip(cairo);
 }
 
-//void Sheet::resize(const LassoBox& b)
-//{
-//  auto invZ=1/zoomFactor();
-//  m_width=abs(b.x1-b.x0)*invZ;
-//  m_height=abs(b.y1-b.y0)*invZ;
-//  moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
-//  bb.update(*this);
-//}

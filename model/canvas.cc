@@ -136,7 +136,7 @@ namespace minsky
   {
     mouseMove(x,y);
     
-    if (clickType==ClickType::inItem)
+    if (itemFocus && clickType==ClickType::inItem)
       {
         itemFocus->onMouseUp(x,y);
         itemFocus.reset(); // prevent spurious mousemove events being processed
