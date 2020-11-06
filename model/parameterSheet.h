@@ -28,7 +28,7 @@ namespace minsky
   class ParameterSheet: public ParVarSheet
   {
   public:
-    bool variableSelector(ItemPtr i) override {return i->variableCast() && i->variableCast()->type()==VariableType::parameter;} 
+    bool variableSelector(ItemPtr i) override {if (auto v=i->variableCast()) return v->type()==VariableType::parameter; return false;} 
   };
   
 }

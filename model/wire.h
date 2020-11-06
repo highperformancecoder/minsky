@@ -65,7 +65,9 @@ namespace minsky
     /// switch ports this wire links to
     void moveToPorts(const std::shared_ptr<Port>& from, const std::shared_ptr<Port>& to);
     /// stash all the internal cairo coordinates along a wire 
-    void storeCairoCoords(cairo_t* cairo) const;   
+    void storeCairoCoords(cairo_t* cairo) const;
+    
+    bool attachedToDefiningVar() const;         
     /// draw this item into a cairo context
     void draw(cairo_t* cairo) const;
     
