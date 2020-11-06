@@ -418,8 +418,10 @@ proc textOK {} {
 			minsky.addVariable $name flow
 			minsky.canvas.itemFocus.init $init
             minsky.variableValues.reset
-        } else {  # signed numbers create constant on the canvas. for ticket 145
-			if [regexp "(?:^|\s)(\[+-\]?\[\[:digit:\]\]*\.?\[\[:digit:\]\]+)(?=\$|\s)" $textBuffer] { #https://stackoverflow.com/questions/33520934/regex-with-only-numbers-in-a-string-c          
+        # signed numbers create constant on the canvas. for ticket 145.
+        } else {
+			if [regexp "^\[+-\]?\\d*\\.?\\d+\[eE\]?\[+-\]?\\d*$"  $textBuffer] {
+
 			    minsky.addVariable $textBuffer constant
 			    minsky.canvas.itemFocus.init $textBuffer
 			    minsky.variableValues.reset
