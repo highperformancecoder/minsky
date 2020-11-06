@@ -531,6 +531,12 @@ namespace minsky
         editor->update();
       }
   }
+
+  bool GodleyIcon::onKeyPress(int keySym, const std::string& utf8)
+  {
+    if (editor) editor->keyPress(keySym, utf8);
+    return editor.get();
+  }
   
   SVGRenderer GodleyIcon::svgRenderer;
 }

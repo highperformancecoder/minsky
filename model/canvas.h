@@ -122,6 +122,9 @@ namespace minsky
     void controlMouseDown(float x, float y);
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);
+    /// handle key press over current itemFocus, x & y contain muse coordinates
+    /// @return true if event handled
+    bool keyPress(int keySym, const std::string& utf8, float x, float yn);
     void displayDelayedTooltip(float x, float y);
     
     /// return closest visible port to (x,y). nullptr is nothing suitable

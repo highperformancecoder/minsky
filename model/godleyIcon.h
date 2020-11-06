@@ -133,12 +133,13 @@ namespace minsky
       
     void insertControlled(Selection& selection) override;
 
-    void onMouseDown(float x, float y) override;
-    void onMouseUp(float x, float y) override;
-    bool onMouseMotion(float x, float y) override;
-    bool onMouseOver(float x, float y) override;
+    void onMouseDown(float, float) override;
+    void onMouseUp(float, float) override;
+    bool onMouseMotion(float, float) override;
+    bool onMouseOver(float, float) override;
     void onMouseLeave() override;
-    bool inItem(float xx, float yy) const override;
+    bool onKeyPress(int, const std::string&) override;
+    bool inItem(float, float) const override;
 
   private:
     void updateVars(Variables& vars, 

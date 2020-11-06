@@ -352,6 +352,18 @@ namespace minsky
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
+  bool Canvas::keyPress(int keySym, const std::string& utf8, float x, float y)
+  {
+    if (auto item=itemAt(x,y))
+      if (item->onKeyPress(keySym, utf8))
+        {
+          requestRedraw();
+          return true;
+        }
+    return false;
+  }
+
+  
   void Canvas::displayDelayedTooltip(float x, float y)
   {
     if (auto item=itemAt(x,y))

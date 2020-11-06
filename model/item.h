@@ -184,6 +184,8 @@ namespace minsky
     virtual bool onMouseOver(float x, float y) {return false;}
     /// respond to mouse leave events (when mouse leaves item)
     virtual void onMouseLeave() {}
+    /// respond to key press events
+    virtual bool onKeyPress(int keySym, const std::string& utf8) {return false;}
 
     /// delete all attached wires
     virtual void deleteAttachedWires();
