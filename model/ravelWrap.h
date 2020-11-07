@@ -83,7 +83,7 @@ namespace minsky
     /// adjust output dimensions to first \a r handles
     void setRank(unsigned r);
     void adjustSlicer(int); ///< adjust currently selected handle's slicer
-    bool handleArrows(int dir, bool modifier) override;
+    bool onKeyPress(int, const std::string&, int) override; 
 
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;

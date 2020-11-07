@@ -157,7 +157,7 @@ namespace minsky
     void setUnits(const std::string&);
     std::string unitsStr() const {return units().str();}
     
-    bool handleArrows(int dir,bool) override;
+    bool onKeyPress(int, const std::string&, int) override; 
     
     /// variable is on left hand side of flow calculation
     bool lhs() const {return type()==flow || type()==tempFlow;} 

@@ -352,10 +352,10 @@ namespace minsky
       }
     catch (...) {/* absorb any exceptions, as they're not useful here */}
 
-  bool Canvas::keyPress(int keySym, const std::string& utf8, float x, float y)
+  bool Canvas::keyPress(int keySym, const std::string& utf8, int state, float x, float y)
   {
     if (auto item=itemAt(x,y))
-      if (item->onKeyPress(keySym, utf8))
+      if (item->onKeyPress(keySym, utf8, state))
         {
           requestRedraw();
           return true;
@@ -767,16 +767,16 @@ namespace minsky
     } else throw error("no flow or stock variables to copy");    
   }
 
-  void Canvas::handleArrows(int dir, float x, float y, bool modifier)
-  {
-    if (auto item=itemAt(x,y))
-      if (item->handleArrows(dir,modifier))
-        {
-          requestRedraw();
-          minsky().pushHistory(); //for ticket #812
-        }
-    
-  }
+//  void Canvas::handleArrows(int dir, float x, float y, bool modifier)
+//  {
+//    if (auto item=itemAt(x,y))
+//      if (item->handleArrows(dir,modifier))
+//        {
+//          requestRedraw();
+//          minsky().pushHistory(); //for ticket #812
+//        }
+//    
+//  }
   
   void Canvas::zoomToDisplay()
   {

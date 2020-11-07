@@ -122,9 +122,13 @@ namespace minsky
     void controlMouseDown(float x, float y);
     void mouseUp(float x, float y);
     void mouseMove(float x, float y);
-    /// handle key press over current itemFocus, x & y contain muse coordinates
+    /// handle key press over current itemFocus,
+    /// @param keySym the X key sym code
+    /// @param utf8 utf8 encoded character
+    /// @param state modifer state 1=shift, 2=caps lock, 4=ctrl, 8=alt
+    /// @param x & y contain mouse coordinates
     /// @return true if event handled
-    bool keyPress(int keySym, const std::string& utf8, float x, float yn);
+    bool keyPress(int keySym, const std::string& utf8, int state, float x, float yn);
     void displayDelayedTooltip(float x, float y);
     
     /// return closest visible port to (x,y). nullptr is nothing suitable
@@ -218,12 +222,6 @@ namespace minsky
         copyVars(g->stockVars());
     }
 
-    /// handle arrow keys
-    /// @param int - direction (-1=left/up, +1=right/down)
-    /// @param x, y coordinates of mouse in canvas coordinates
-    /// @param reset - if true, then call Minsky::reset()
-    void handleArrows(int dir, float x, float y, bool reset);
-    
     /// zooms canvas such that group indexed by item is displayed
     void zoomToDisplay();
 

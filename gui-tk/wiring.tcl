@@ -436,8 +436,8 @@ proc textOK {} {
     canvas.mouseUp [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]
 }
 
-proc canvasKeyPress {n a} {
-    return [canvas.keyPress $n [encoding convertto utf-8 $a] \
+proc canvasKeyPress {N A s} {
+    return [canvas.keyPress $N [encoding convertto utf-8 $A] $s \
                 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]]
 }
 
@@ -457,7 +457,7 @@ bind . <Key-at> {if {![canvasKeyPress %N %A]} {addPlotKey}}
 
 #Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
 bind . <Key> {
-    if {![canvasKeyPress %N %A]} {
+    if {![canvasKeyPress %N %A %s]} {
         textInput %A
         .wiring.canvas configure -cursor {}
     }
@@ -470,69 +470,6 @@ bind . <KeyPress-Shift_L> {.wiring.canvas configure -cursor $panIcon}
 bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor {}}
 bind . <KeyPress-Shift_R> {.wiring.canvas configure -cursor $panIcon}
 bind . <KeyRelease-Shift_R> {.wiring.canvas configure -cursor {}}
-
-# slider key bindings
-# TODO - move this logic into Canvas::keyPress
-bind . <KeyPress-Left> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0
-    }
-}
-bind . <KeyPress-Right> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0
-    }
-}
-bind . <KeyPress-Up> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0
-    }
-}
-bind . <KeyPress-Down> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 0
-    }
-}
-bind . <Shift-KeyPress-Left> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
-bind . <Shift-KeyPress-Right> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
-bind . <Shift-KeyPress-Up> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
-bind . <Shift-KeyPress-Down> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
-bind . <Control-KeyPress-Left> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
-bind . <Control-KeyPress-Right> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
-bind . <Control-KeyPress-Up> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows 1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
-bind . <Control-KeyPress-Down> {
-    if {![canvasKeyPress %N %A]} {
-        canvas.handleArrows -1 [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas] 1
-    }
-}
 
 # handle processing when delete or backspace is pressed
 proc deleteKey {x y} {

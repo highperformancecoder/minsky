@@ -471,12 +471,28 @@ double VariableBase::maxSliderSteps() const
 	return sliderStep;
 }
 
-bool VariableBase::handleArrows(int dir,bool reset)
+//bool VariableBase::handleArrows(int dir,bool reset)
+//{
+//  sliderSet(value()+dir*(sliderStepRel? value(): 1)*sliderStep);
+//  if (reset) minsky().reset();
+//  return true;
+//}
+
+bool VariableBase::onKeyPress(int keySym, const std::string&,int)
 {
-  sliderSet(value()+dir*(sliderStepRel? value(): 1)*sliderStep);
-  if (reset) minsky().reset();
-  return true;
+  switch (keySym)
+    {
+    case 0xff52: case 0xff53: //Right, Up
+        sliderSet(value()+(sliderStepRel? value(): 1)*sliderStep);
+        return true;
+    case 0xff51: case 0xff54: //Left, Down
+        sliderSet(value()-(sliderStepRel? value(): 1)*sliderStep);
+        return true;
+    default:
+      return false;
+    }
 }
+
 
 void VariableBase::draw(cairo_t *cairo) const
 {	

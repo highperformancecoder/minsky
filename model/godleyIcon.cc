@@ -532,7 +532,7 @@ namespace minsky
       }
   }
 
-  bool GodleyIcon::onKeyPress(int keySym, const std::string& utf8)
+  bool GodleyIcon::onKeyPress(int keySym, const std::string& utf8, int)
   {
     if (editor) editor->keyPress(keySym, utf8);
     return editor.get();

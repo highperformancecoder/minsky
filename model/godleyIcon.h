@@ -138,7 +138,7 @@ namespace minsky
     bool onMouseMotion(float, float) override;
     bool onMouseOver(float, float) override;
     void onMouseLeave() override;
-    bool onKeyPress(int, const std::string&) override;
+    bool onKeyPress(int, const std::string&, int) override;
     bool inItem(float, float) const override;
 
   private:

@@ -185,7 +185,8 @@ namespace minsky
     /// respond to mouse leave events (when mouse leaves item)
     virtual void onMouseLeave() {}
     /// respond to key press events
-    virtual bool onKeyPress(int keySym, const std::string& utf8) {return false;}
+    virtual bool onKeyPress(int keySym, const std::string& utf8, int state)
+    {return false;}
 
     /// delete all attached wires
     virtual void deleteAttachedWires();
@@ -235,12 +236,6 @@ namespace minsky
     virtual std::shared_ptr<Port> closestOutPort(float x, float y) const; 
     virtual std::shared_ptr<Port> closestInPort(float x, float y) const;
 
-    /// respond to arrow keys.
-    /// @param dir = -1/1 if left/down, right/up pressed
-    /// @param modifier = true if modifier (eg shift/control) pressed
-    /// @return true if state changed, and item needs to be redrawn
-    virtual bool handleArrows(int dir, bool modifier=false) {return false;}
-    
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
     virtual std::shared_ptr<Item> select(float x, float y) const {return {};}

@@ -244,11 +244,20 @@ namespace
     broadcastStateToLockGroup();
   }
 
-  bool Ravel::handleArrows(int dir, bool modifier)
+  bool Ravel::onKeyPress(int keySym, const std::string& utf8, int state)
   {
-    adjustSlicer(dir);
-    if (modifier)
-      minsky().reset();
+    switch (keySym)
+      {
+      case 0xff52: case 0xff53: //Right, Up
+        adjustSlicer(1);
+        break;
+      case 0xff51: case 0xff54: //Left, Down
+        adjustSlicer(-1);
+        break;
+      default:
+        return false;
+      }
+    if (state&1) minsky().reset();
     return true;
   }
 
