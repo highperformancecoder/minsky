@@ -767,17 +767,6 @@ namespace minsky
     } else throw error("no flow or stock variables to copy");    
   }
 
-//  void Canvas::handleArrows(int dir, float x, float y, bool modifier)
-//  {
-//    if (auto item=itemAt(x,y))
-//      if (item->handleArrows(dir,modifier))
-//        {
-//          requestRedraw();
-//          minsky().pushHistory(); //for ticket #812
-//        }
-//    
-//  }
-  
   void Canvas::zoomToDisplay()
   {
     if (auto g=dynamic_cast<Group*>(item.get()))

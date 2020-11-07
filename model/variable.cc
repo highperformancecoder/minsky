@@ -471,13 +471,6 @@ double VariableBase::maxSliderSteps() const
 	return sliderStep;
 }
 
-//bool VariableBase::handleArrows(int dir,bool reset)
-//{
-//  sliderSet(value()+dir*(sliderStepRel? value(): 1)*sliderStep);
-//  if (reset) minsky().reset();
-//  return true;
-//}
-
 bool VariableBase::onKeyPress(int keySym, const std::string&,int)
 {
   switch (keySym)
