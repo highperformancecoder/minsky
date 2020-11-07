@@ -161,8 +161,9 @@ namespace minsky
  
   bool Item::visible() const 
   {
+	if (attachedToDefiningVar()) return false;   
     auto g=group.lock();
-    return !g || g->displayContents();
+    return (!g || g->displayContents());
   }
   
 
@@ -280,6 +281,13 @@ namespace minsky
     cairo_stroke(cairo);
   }
   
+  bool Item::attachedToDefiningVar() const
+  {
+	if (variableCast() || operationCast())  
+      for (auto w: ports[0]->wires())
+        if (w->attachedToDefiningVar()) return true;
+    return false;
+  }    
   
   // default is just to display the detailed text (ie a "note")
   void Item::draw(cairo_t* cairo) const

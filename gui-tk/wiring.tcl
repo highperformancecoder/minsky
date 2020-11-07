@@ -209,7 +209,7 @@ proc wrapHoverMouse {op x y} {
     catch {minsky.canvas.$op $x $y}
     after 3000 hoverMouse
 }
-    
+  
 bind .wiring.canvas <ButtonPress-1> {wrapHoverMouse mouseDown %x %y}
 bind .wiring.canvas <$meta-ButtonPress-1> {wrapHoverMouse controlMouseDown %x %y}
 bind .wiring.canvas <ButtonRelease-1> {wrapHoverMouse mouseUp %x %y}
@@ -418,8 +418,10 @@ proc textOK {} {
 			minsky.addVariable $name flow
 			minsky.canvas.itemFocus.init $init
             minsky.variableValues.reset
-        } else {  # signed numbers create constant on the canvas. for ticket 145
-			if [regexp "(?:^|\s)(\[+-\]?\[\[:digit:\]\]*\.?\[\[:digit:\]\]+)(?=\$|\s)" $textBuffer] { #https://stackoverflow.com/questions/33520934/regex-with-only-numbers-in-a-string-c          
+        # signed numbers create constant on the canvas. for ticket 145.
+        } else {
+			if [regexp "^\[+-\]?\\d*\\.?\\d+\[eE\]?\[+-\]?\\d*$"  $textBuffer] {
+
 			    minsky.addVariable $textBuffer constant
 			    minsky.canvas.itemFocus.init $textBuffer
 			    minsky.variableValues.reset
@@ -593,7 +595,9 @@ proc canvasContext {x y X Y} {
     .wiring.context add command -label "Paste selection" -command pasteAt
     if {[getClipboard]==""} {
         .wiring.context entryconfigure end -state disabled
-    } 
+    }
+    .wiring.context add command -label "Hide defining variables on tab" -command "minsky.canvas.pushDefiningVarsToTab"
+    .wiring.context add command -label "Show defining variables on canvas" -command "minsky.canvas.showDefiningVarsOnCanvas" 
     .wiring.context add command -label "Bookmark here" -command "bookmarkAt $x $y $X $Y"
     .wiring.context add command -label "Group" -command "minsky.createGroup"
     .wiring.context add command -label "Lock selected Ravels" -command "minsky.canvas.lockRavelsInSelection"
@@ -761,7 +765,12 @@ proc contextMenu {x y X Y} {
             if {![inputWired [$item.valueId]]} {
                 .wiring.context add command -label "Add integral" -command "addIntegral"
             }
-            .wiring.context add command -label "Flip" -command "$item.flip; flip_default"
+            if {[$item.defined]} {
+                 global varTabDisplay
+                 set varTabDisplay [$item.varTabDisplay]            
+                .wiring.context add checkbutton -label "Display variable on tab" -command "$item.toggleVarTabDisplay" -variable varTabDisplay
+            }            
+            .wiring.context add command -label "Flip" -command "$item.flip; flip_default"                     
             if {[$item.type]=="parameter"} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
             }

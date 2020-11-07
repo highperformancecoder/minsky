@@ -181,7 +181,8 @@ namespace minsky
 
     std::string valueId() const 
     {return intVar->valueId();}
-      
+    
+    bool attachedToDefiningVar() const override;        
     void draw(cairo_t*) const override;
     void resize(const LassoBox& b) override;  
     std::pair<double,Point> rotatedPoints() const override;        

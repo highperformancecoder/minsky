@@ -22,6 +22,7 @@
 #include "port.h"
 #include "group.h"
 #include "selection.h"
+#include "operation.h"
 #include "minsky_epilogue.h"
 #include  <random>
 #include  <iterator>
@@ -101,8 +102,9 @@ namespace minsky
   bool Wire::visible() const
   {
     auto f=from(), t=to();
+    if (attachedToDefiningVar()) return false;
     assert(f->item().group.lock() && t->item().group.lock());
-    return f && t &&
+    return f && t && 
       (f->item().group.lock()->displayContents() ||
        t->item().group.lock()->displayContents());
   }
@@ -363,6 +365,15 @@ namespace
     }
     cairo_path_destroy (path);              
   }
+  
+  bool Wire::attachedToDefiningVar() const
+  {
+    auto t=to();
+    assert(t);             
+    if (auto i=dynamic_cast<IntOp*>(t->item().operationCast())) return i->intVar->varTabDisplay;
+    if (t->item().attachedToDefiningVar()) return true;
+    return false;       
+  }    
    
   void Wire::draw(cairo_t* cairo) const
   {
