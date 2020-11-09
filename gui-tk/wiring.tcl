@@ -443,17 +443,17 @@ proc canvasKeyPress {N A s} {
 
 
 # operation add shortcuts
-bind . <Key-plus> {if {![canvasKeyPress %N %A]} {addOperationKey add}}
-bind . <Key-minus> {if {![canvasKeyPress %N %A]} {textInput "-"; .wiring.canvas configure -cursor {}}}
-bind . <Key-asterisk> {if {![canvasKeyPress %N %A]} {addOperationKey multiply}}
-bind . <Key-KP_Multiply> {if {![canvasKeyPress %N %A]} {addOperationKey multiply}}
-bind . <Key-slash> {if {![canvasKeyPress %N %A]} {addOperationKey divide}}
-bind . <Key-KP_Divide> {if {![canvasKeyPress %N %A]} {addOperationKey divide}}
-bind . <Key-asciicircum> {if {![canvasKeyPress %N %A]} {addOperationKey pow}}
+bind . <Key-plus> {if {![canvasKeyPress %N %A %s]} {addOperationKey add}}
+bind . <Key-minus> {if {![canvasKeyPress %N %A %s]} {textInput "-"; .wiring.canvas configure -cursor {}}}
+bind . <Key-asterisk> {if {![canvasKeyPress %N %A %s]} {addOperationKey multiply}}
+bind . <Key-KP_Multiply> {if {![canvasKeyPress %N %A %s]} {addOperationKey multiply}}
+bind . <Key-slash> {if {![canvasKeyPress %N %A %s]} {addOperationKey divide}}
+bind . <Key-KP_Divide> {if {![canvasKeyPress %N %A %s]} {addOperationKey divide}}
+bind . <Key-asciicircum> {if {![canvasKeyPress %N %A %s]} {addOperationKey pow}}
 #bind . <Key-backslash> {if {![canvasKeyPress %N %A]} {addOperationKey sqrt}}
-bind . <Key-ampersand> {if {![canvasKeyPress %N %A]} {addOperationKey integrate}}
-bind . <Key-equal> {if {![canvasKeyPress %N %A]} {addNewGodleyItemKey}}
-bind . <Key-at> {if {![canvasKeyPress %N %A]} {addPlotKey}}
+bind . <Key-ampersand> {if {![canvasKeyPress %N %A %s]} {addOperationKey integrate}}
+bind . <Key-equal> {if {![canvasKeyPress %N %A %s]} {addNewGodleyItemKey}}
+bind . <Key-at> {if {![canvasKeyPress %N %A %s]} {addPlotKey}}
 
 #Clear canvas pan mode in case shift key is pressed to create a capitalized variable via textInput. for ticket 1112.
 bind . <Key> {
@@ -463,8 +463,8 @@ bind . <Key> {
     }
 }  
 
-bind . <Key-Delete> {if {![canvasKeyPress %N %A]} {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}}
-bind . <Key-BackSpace> {if {![canvasKeyPress %N %A]} {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}}
+bind . <Key-Delete> {if {![canvasKeyPress %N %A %s]} {deleteKey [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}}
+bind . <Key-BackSpace> {if {![canvasKeyPress %N %A %s]} {deleteKey  [get_pointer_x .wiring.canvas] [get_pointer_y .wiring.canvas]}}
 
 bind . <KeyPress-Shift_L> {.wiring.canvas configure -cursor $panIcon}
 bind . <KeyRelease-Shift_L> {.wiring.canvas configure -cursor {}}
