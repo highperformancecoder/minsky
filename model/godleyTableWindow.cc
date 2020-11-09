@@ -252,7 +252,7 @@ namespace minsky
                           { // handle DR/CR mode and colouring of text
                             if (fc.coef<0)
                               cairo_set_source_rgb(cairo,1,0,0);
-                            if (displayStyle==DRCR)
+                            if (displayStyle==GodleyTable::DRCR)
                               {
                                 if (assetClass==GodleyAssetClass::asset ||
                                     assetClass==GodleyAssetClass::noAssetClass)

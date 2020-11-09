@@ -164,11 +164,21 @@ namespace minsky
           {
             editor.reset(new GodleyTableEditor(icon));
             editor->disableButtons();
+            setEditorDisplayValues();
             variableDisplay=false;
           }
     updateBoundingBox();
   }
 
+  void GodleyIcon::setEditorDisplayValues()
+  {
+    if (editor)
+      {
+            editor->displayValues=cminsky().displayValues;
+            editor->displayStyle=cminsky().displayStyle;
+      }
+  }
+  
   bool GodleyIcon::buttonDisplay() const {return editor && editor->drawButtons;}
   void GodleyIcon::toggleButtons()
   {

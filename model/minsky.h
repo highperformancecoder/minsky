@@ -143,6 +143,7 @@ namespace minsky
 
     Exclude<boost::posix_time::ptime> lastRedraw;
 
+    
   public:
     EquationDisplay equationDisplay;
     Panopticon panopticon{canvas};
@@ -350,6 +351,13 @@ namespace minsky
     void setAllDEmode(bool);
     /// set std library RNG seed
     void srand(int seed) {::srand(seed);}
+
+    // godley table display values preferences
+    bool displayValues=false;
+    GodleyTable::DisplayStyle displayStyle=GodleyTable::sign;
+
+    /// set display value mode on all godley table editor modes
+    void setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle);
 
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}

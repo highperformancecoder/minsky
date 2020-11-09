@@ -103,8 +103,7 @@ namespace minsky
     /// other end of selection (if mouse-swiped)
     unsigned insertIdx=0, selectIdx=0;
     bool displayValues=false;
-    enum DisplayStyle {DRCR, sign};
-    DisplayStyle displayStyle=sign;
+    GodleyTable::DisplayStyle displayStyle=GodleyTable::sign;
     double zoomFactor=1; ///< zoom the display
 
     GodleyTableEditor(const std::shared_ptr<GodleyIcon>& g): godleyIcon(g)

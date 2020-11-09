@@ -75,7 +75,10 @@ namespace minsky
 
     bool variableDisplay=true;
     void toggleVariableDisplay() {variableDisplay=!variableDisplay; updateBoundingBox();}
-    
+
+    /// sets editor's display values attributes to current global preferences
+    void setEditorDisplayValues();
+
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
     

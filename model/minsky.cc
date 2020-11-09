@@ -1488,5 +1488,17 @@ namespace minsky
       });
   }
 
+  void Minsky::setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle)
+  {
+    this->displayValues=displayValues;
+    this->displayStyle=displayStyle;
+    model->recursiveDo(&GroupItems::items, [](Items&,Items::iterator i) {
+      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+        g->setEditorDisplayValues();
+      return false;
+    });
+  }
+
+  
 }
 

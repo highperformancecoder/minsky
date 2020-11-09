@@ -1801,6 +1801,7 @@ if {[llength [info commands afterMinskyStarted]]>0} {
     afterMinskyStarted
 }
 
+setGodleyDisplayValue $preferences(godleyDisplay) $preferences(godleyDisplayStyle)
 disableEventProcessing
 popFlags
 pushHistory

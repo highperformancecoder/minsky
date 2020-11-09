@@ -39,6 +39,7 @@ namespace minsky
     friend struct SchemaHelper;
     friend class GodleyIcon;
     typedef std::vector<std::vector<string>> Data;
+    enum DisplayStyle {DRCR, sign}; ///< how to display -ve data in table
   private:
     CLASSDESC_ACCESS(GodleyTable);
     /// class of each column (used in DE compliant mode)
