@@ -1,1 +1,1 @@
-#define MINSKY_VERSION "2.21.0-beta.13"
+#define MINSKY_VERSION "2.21.0-beta.14"
