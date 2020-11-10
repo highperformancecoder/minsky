@@ -81,7 +81,8 @@ namespace civita
     TensorVal(const Hypercube& hc): ITensorVal(hc) {allocVal();}
     TensorVal(Hypercube&& hc): ITensorVal(std::move(hc)) {allocVal();}
     TensorVal(const std::vector<unsigned>& dims): ITensorVal(dims) {allocVal();}
-
+    TensorVal(const ITensor& t) {*this=t;}
+    
     using ITensorVal::index;
     const Index& index(Index&& idx) override {
       m_index=std::move(idx);

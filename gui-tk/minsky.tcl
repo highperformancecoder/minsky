@@ -481,25 +481,30 @@ if {$classicMode} {
     image create photo stopButton -file "$minskyHome/icons/Pause.gif"
     image create photo resetButton -file "$minskyHome/icons/Rewind.gif"
     image create photo stepButton -file "$minskyHome/icons/Last.gif"
-    image create photo rec -file "$minskyHome/icons/rec.gif"
-    image create photo runmode -file "$minskyHome/icons/runmode.gif"
-    image create photo recplay -file "$minskyHome/icons/recplay.gif"
     # iconic mode
     button .controls.run -image runButton -height 25 -width 25 -command runstop
     button .controls.reset -image resetButton -height 25 -width 25 -command reset
     button .controls.step -image stepButton -height 25 -width 25  -command {step}
-    checkbutton .controls.rec -image rec -height 25 -width 25 -command toggleRecording -variable eventRecording -indicatoron 0
-    checkbutton .controls.runmode -image runmode -height 25 -width 25 -selectimage recplay -variable recordingReplay -command replay -indicatoron 0 -selectcolor $backgroundColour
-    checkbutton .controls.reverse -text "Rev" -command {
-        minsky.reverse $reverse} -variable reverse
-    
-    tooltip .controls.rec "Record"
-    tooltip .controls.runmode "Simulate/Recording Replay"
-    tooltip .controls.reverse "Reverse simulation"
-    tooltip .controls.run "Run/Stop"
-    tooltip .controls.reset "Reset simulation"
-    tooltip .controls.step "Step simulation"
 }
+
+image create photo recalculate -file "$minskyHome/icons/recalculate.gif"
+button .controls.recalculate -image recalculate -height 25 -width 25  -command reset
+image create photo rec -file "$minskyHome/icons/rec.gif"
+image create photo runmode -file "$minskyHome/icons/runmode.gif"
+image create photo recplay -file "$minskyHome/icons/recplay.gif"
+
+checkbutton .controls.rec -image rec -height 25 -width 25 -command toggleRecording -variable eventRecording -indicatoron 0
+checkbutton .controls.runmode -image runmode -height 25 -width 25 -selectimage recplay -variable recordingReplay -command replay -indicatoron 0 -selectcolor $backgroundColour
+checkbutton .controls.reverse -text "Rev" -command {
+    minsky.reverse $reverse} -variable reverse
+    
+tooltip .controls.recalculate "Recalculate"
+tooltip .controls.rec "Record"
+tooltip .controls.runmode "Simulate/Recording Replay"
+tooltip .controls.reverse "Reverse simulation"
+tooltip .controls.run "Run/Stop"
+tooltip .controls.reset "Reset simulation"
+tooltip .controls.step "Step simulation"
 
 # enable auto-repeat on step button
 bind .controls.step <ButtonPress-1> {set buttonPressed 1; autoRepeatButton .controls.step}
@@ -566,7 +571,7 @@ scale .controls.simSpeed -variable delay -command setSimulationDelay -to 0 -from
 
 
 
-pack .controls.rec .controls.runmode .controls.reverse .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
+pack .controls.recalculate .controls.rec .controls.runmode .controls.reverse .controls.run .controls.reset .controls.step .controls.slowSpeed .controls.simSpeed .controls.fastSpeed -side left
 pack .controls.statusbar -side right -fill x
 
 grid .controls -row 0 -column 0 -columnspan 1000 -sticky ew
