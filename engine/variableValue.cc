@@ -45,10 +45,15 @@ namespace minsky
   std::vector<double> ValueVector::stockVars(1);
   std::vector<double> ValueVector::flowVars(1);
 
+  bool VariableValue::idxInRange() const
+  {return m_type==undefined || idx()+size()<=
+      (isFlowVar()?ValueVector::flowVars.size(): ValueVector::stockVars.size());}
+    
+
+  
   double& VariableValue::operator[](size_t i)
   {
-    assert((isFlowVar() && i+m_idx<ValueVector::flowVars.size()) ||
-           (!isFlowVar() && i+m_idx<ValueVector::stockVars.size()));
+    assert(i<size() && idxInRange());
     return *(&valRef()+i);
   }
 
@@ -56,8 +61,7 @@ namespace minsky
   {
     index(x.index());
     hypercube(x.hypercube());
-    assert((isFlowVar() && x.size()+m_idx<=ValueVector::flowVars.size()) ||
-           (!isFlowVar() && x.size()+m_idx<=ValueVector::stockVars.size()));
+    assert(idxInRange());
     memcpy(&valRef(), x.begin(), x.size()*sizeof(x[0]));
     return *this;
   }
@@ -66,6 +70,7 @@ namespace minsky
   {
     index(x.index());
     hypercube(x.hypercube());
+    assert(idxInRange());
     for (size_t i=0; i<x.size(); ++i)
       (*this)[i]=x[i];
     return *this;
@@ -103,11 +108,13 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
+        assert(idxInRange());
          if (size_t(m_idx)<ValueVector::flowVars.size())
            return ValueVector::flowVars[m_idx];
          break;
       case stock:
       case integral:
+        assert(idxInRange());
         if (size_t(m_idx)<ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx];
         break;
@@ -127,10 +134,12 @@ namespace minsky
       case tempFlow:
       case constant:
       case parameter:
+        assert(idxInRange());
         if (size_t(m_idx+size())<=ValueVector::flowVars.size())
           return ValueVector::flowVars[m_idx]; 
       case stock:
       case integral: 
+        assert(idxInRange());
         if (size_t(m_idx+size())<=ValueVector::stockVars.size())
           return ValueVector::stockVars[m_idx]; 
         break;
@@ -244,6 +253,7 @@ namespace minsky
           else
             operator=(initValue(v));
         }
+      assert(idxInRange());
   }
 
 
@@ -324,6 +334,7 @@ namespace minsky
     for (auto& v: *this) {
       v.second->reset_idx();  // Set idx of all flowvars and stockvars to -1 on reset. For ticket 1049		
       v.second->allocValue().reset(*this);
+      assert(v.second->idxInRange());
     }
 }
 

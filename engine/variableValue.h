@@ -118,7 +118,7 @@ namespace minsky
       auto idx=index();
       return idx.size() ? idx.size(): numDenseElements();
     }    
-    
+
     const Hypercube& hypercube() const override {
       if (m_type==parameter && tensorInit.rank()>0)
         return tensorInit.hypercube();
@@ -128,11 +128,15 @@ namespace minsky
 
     template <class T>                                            
     void hypercube_(T x) {    
+      assert(idx()==-1||idxInRange());
       size_t prevNumElems = size();
       ITensor::hypercube(x);    
       if (idx()==-1 || (prevNumElems<size()))    
-        allocValue();    
+        allocValue();
+      assert(idxInRange());
     }
+
+    bool idxInRange() const;
     
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}
