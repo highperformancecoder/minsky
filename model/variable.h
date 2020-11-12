@@ -76,7 +76,7 @@ namespace minsky
   private:
     CLASSDESC_ACCESS(VariableBase);
     std::string m_name; 
-    std::pair<std::string,std::string> m_dimLabelsPicked=std::make_pair("","");    
+    std::pair<std::string,std::string> m_dimLabelsPicked;    
     mutable int unitsCtr=0; ///< for detecting reentrancy in units()
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
@@ -132,8 +132,8 @@ namespace minsky
     }
 
     std::vector<std::string> dimLabels() const {
-      std::vector<std::string> tmpLabels;	
       if (auto v=vValue()) {
+        std::vector<std::string> tmpLabels;			  
         for (auto& i: v->hypercube().xvectors) tmpLabels.push_back(static_cast<std::string>(i.name));
         return tmpLabels;   
       }

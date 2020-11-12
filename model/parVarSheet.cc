@@ -54,6 +54,7 @@ namespace minsky
               {
                 auto v=it->variableCast();
                 auto value=v->vValue();
+                if (!value) return;
                 auto rank=value->hypercube().rank();
                 auto dims=value->hypercube().dims();                
                 Pango pango(cairo);      
@@ -144,6 +145,7 @@ namespace minsky
                           vName=static_cast<string>(value->hypercube().xvectors[k].name);
                           if (v->getDimLabelsPicked().first==vName) labelDim1=k;
                           if (v->getDimLabelsPicked().second==vName) labelDim2=k;
+                          else if (v->getDimLabelsPicked().second=="") labelDim2=labelDim1+1;
                         }
 						
                     if ((labelDim1&1)==0) y+=rowHeight; // allow room for header row

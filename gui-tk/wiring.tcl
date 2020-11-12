@@ -814,7 +814,7 @@ proc setupPickDimMenu {} {
     global dimLabelPicked
     if {![winfo exists .wiring.context.pick]} {
         toplevel .wiring.context.pick
-        wm title .wiring.context.pick "Pick two dimensions"
+        wm title .wiring.context.pick "Pick any two dimensions"
         frame .wiring.context.pick.select
         scrollbar .wiring.context.pick.select.vscroll -orient vertical -command {
             .wiring.context.pick.select.lb yview}
@@ -830,7 +830,11 @@ proc setupPickDimMenu {} {
             foreach i [.wiring.context.pick.select.lb curselection] {
                 lappend pick [lindex $dimLabelPicked $i]
             }
-            minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] [lindex $pick 1]
+            if {[lindex $pick 1]==""} {
+				minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] ""
+			} else {
+				minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] [lindex $pick 1]
+			}
             reset
         }
         button .wiring.context.pick.buttonBar.clear -text "Clear" -command {
