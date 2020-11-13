@@ -96,12 +96,12 @@ namespace minsky
     double operator[](size_t i) const override {return *(&valRef()+i);}
     double& operator[](size_t i) override;
 
-    const Index& index() const override {
-      if (m_type==parameter && tensorInit.size())
-        return tensorInit.index();
-      else
-        return m_index;
-    }
+//    const Index& index() const override {
+//      if (m_type==parameter && tensorInit.size())
+//        return tensorInit.index();
+//      else
+//        return m_index;
+//    }
     const Index& index(Index&& i) override {
       size_t prevNumElems = size();
       m_index=i;
@@ -111,14 +111,6 @@ namespace minsky
     }
     using ITensorVal::index;
     
-    size_t numDenseElements() const {return hypercube().numElements();}
-
-    size_t size() const override
-    {
-      auto idx=index();
-      return idx.size() ? idx.size(): numDenseElements();
-    }    
-
     const Hypercube& hypercube() const override {
       if (m_type==parameter && tensorInit.rank()>0)
         return tensorInit.hypercube();
