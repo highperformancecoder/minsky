@@ -80,6 +80,7 @@ namespace minsky
         argv0!="minsky.multipleEquities" &&
         argv0.find("minsky.panopticon")==string::npos &&
         argv0.find("minsky.equationDisplay")==string::npos && 
+        argv0.find("minsky.setGodleyDisplayValue")==string::npos && 
         (argv0.find(".get")==string::npos  || m.eventRecord.get()) && 
         argv0.find(".@elem")==string::npos && 
         argv0.find(".mouseFocus")==string::npos
