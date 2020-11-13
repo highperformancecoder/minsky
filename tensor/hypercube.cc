@@ -31,6 +31,13 @@ namespace civita
     for (auto& i: xvectors) d.push_back(i.size());
     return d;
   }
+  
+  std::vector<string> Hypercube::dimLabels() const
+  {
+    std::vector<std::string> l;			  
+    for (auto& i: xvectors) l.push_back(static_cast<std::string>(i.name));
+    return l;
+  }      
 
   const std::vector<unsigned>& Hypercube::dims(const std::vector<unsigned>& d) {
     xvectors.clear();

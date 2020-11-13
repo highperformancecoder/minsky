@@ -50,6 +50,8 @@ namespace civita
     ///the single element {1} to refer to a scalar
     const std::vector<unsigned>& dims(const std::vector<unsigned>& d);
     
+    std::vector<std::string> dimLabels() const;
+    
     /// removes elements of xVector not found in \a a
     void makeConformant(const Hypercube& a);
 

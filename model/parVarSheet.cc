@@ -49,12 +49,11 @@ namespace minsky
         if (!itemVector.empty())
           {
             float x0, y0=1.5*rowHeight;//+pango.height();	
-            double w=0,h=0,w_prev, h_prev,lh,lw; 
+            double w=0,h=0,h_prev,lh; 
             for (auto& it: itemVector)
               {
                 auto v=it->variableCast();
                 auto value=v->vValue();
-                if (!value) return;
                 auto rank=value->hypercube().rank();
                 auto dims=value->hypercube().dims();                
                 Pango pango(cairo);      
@@ -73,7 +72,7 @@ namespace minsky
                     cairo_move_to(cairo,x,y-1.5*rowHeight);
                     pango.setMarkup(latexToPango(value->name)+":");
                     pango.show();              
-                    string format=value->hypercube().xvectors[0].timeFormat();
+                    string format=value->hypercube().xvectors[0].dimension.units;
                     for (auto& i: value->hypercube().xvectors[0])
                       {
                         cairo_move_to(cairo,x,y);
@@ -149,8 +148,7 @@ namespace minsky
                         }
 						
                     if ((labelDim1&1)==0) y+=rowHeight; // allow room for header row
-                    lw=0;
-                    string format=value->hypercube().xvectors[labelDim1].timeFormat();
+                    string format=value->hypercube().xvectors[labelDim1].dimension.units;
                     for (auto& i: value->hypercube().xvectors[labelDim1])
                       {
                         cairo_move_to(cairo,x,y);
@@ -158,27 +156,18 @@ namespace minsky
                         pango.show();
                         y+=rowHeight;
                         colWidth=std::max(colWidth,5+pango.width());
-                        if (it==itemVector[0]) lw+=colWidth;
-                      }
+                      }                                             
                     y=y0;  
                     x+=colWidth;
-                    { // draw horizontal grid line
-                      cairo::CairoSave cs(cairo);
-                      cairo_set_source_rgba(cairo,0,0,0,0.5);
-                      cairo_move_to(cairo,x0,y+1.1*rowHeight);
-                      if (it==itemVector[0]) cairo_line_to(cairo,x+lw,y+1.1*rowHeight);
-                      else cairo_line_to(cairo,w+colWidth,y+1.1*rowHeight);
-                      cairo_stroke(cairo);
-                    }                           
+                    lh=0;                 
+                    for (size_t j=0; j<dims[labelDim1]; ++j)
+                      lh+=rowHeight;                         
                     format=value->hypercube().xvectors[labelDim2].timeFormat();
                     for (size_t i=0; i<dims[labelDim2]; ++i)
                       {
                         colWidth=0;
                         y=y0;
-                        lh=0;
                         cairo_move_to(cairo,x,y);
-                        for (size_t j=0; j<dims[labelDim1]; ++j)
-                          lh+=rowHeight;
                         pango.setText(trimWS(str(value->hypercube().xvectors[labelDim2][i],format)));
                         pango.show();
                         { // draw vertical grid line
@@ -206,13 +195,12 @@ namespace minsky
                         if (x>2e09) break;
                       }      
                     h_prev=h;
-                    w_prev=w;  
                     w=0;h=0;      
                     cairo_get_current_point (cairo,&w,&h);   
-                    if (h<h_prev) h+=h_prev; 
-                    if (w<w_prev) w=w_prev;                                                                         
+                    if (h<h_prev) h+=h_prev;                                                                         
                     // draw grid
                     {
+				      		
                       cairo::CairoSave cs(cairo);
                       cairo_set_source_rgba(cairo,0,0,0,0.2);
                       for (y=y0+rowHeight; y<h+rowHeight; y+=2*rowHeight)
@@ -221,17 +209,23 @@ namespace minsky
                           cairo_fill(cairo);
                         }
                     }
+                    { // draw horizontal grid line
+                      cairo::CairoSave cs(cairo);
+                      cairo_set_source_rgba(cairo,0,0,0,0.5);
+                      cairo_move_to(cairo,x0,y0+1.1*rowHeight);
+                      cairo_line_to(cairo,w+colWidth,y0+1.1*rowHeight);
+                      cairo_stroke(cairo);
+                    }                         
                     cairo::CairoSave cs(cairo);
                     float rectHeight=0;
                     // make sure rectangle has right height
-                    if ((labelDim1&1)==0 && (dims[labelDim1]&1)==0) rectHeight= y-y0;
+                    if ((labelDim1&1)==0) rectHeight= y-y0;
                     else rectHeight=y-y0-rowHeight;
                     cairo_rectangle(cairo,x0,y0,w+colWidth,rectHeight);    
                     cairo_stroke(cairo);                          	        
                     cairo_clip(cairo);		        
                    
-                    x+=0.25*colWidth;
-                    x0=x;         
+                    x+=0.25*colWidth;      
                     y=y0;                	
 			
 						

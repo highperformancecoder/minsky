@@ -130,15 +130,11 @@ namespace minsky
       if (auto v=vValue()) return v->hypercube().dims();
       else return {};
     }
-
+    
     std::vector<std::string> dimLabels() const {
-      if (auto v=vValue()) {
-        std::vector<std::string> tmpLabels;			  
-        for (auto& i: v->hypercube().xvectors) tmpLabels.push_back(static_cast<std::string>(i.name));
-        return tmpLabels;   
-      }
+      if (auto v=vValue()) return v->hypercube().dimLabels();
       else return {};
-    }
+    }    
         
     std::pair<std::string,std::string> getDimLabelsPicked() const {return m_dimLabelsPicked;}   
     std::pair<std::string,std::string> setDimLabelsPicked(const std::string& dimLabel1, const std::string& dimLabel2) {

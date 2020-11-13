@@ -710,7 +710,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"                     
             if {[$item.type]=="parameter"} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
-                .wiring.context add command -label "Select dimensions to display" -command {setupPickDimMenu}                 
+                .wiring.context add command -label "Display CSV values on tab" -command {setupPickDimMenu}                 
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
@@ -830,11 +830,7 @@ proc setupPickDimMenu {} {
             foreach i [.wiring.context.pick.select.lb curselection] {
                 lappend pick [lindex $dimLabelPicked $i]
             }
-            if {[lindex $pick 1]==""} {
-				minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] ""
-			} else {
-				minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] [lindex $pick 1]
-			}
+			minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] [lindex $pick 1]
             reset
         }
         button .wiring.context.pick.buttonBar.clear -text "Clear" -command {
