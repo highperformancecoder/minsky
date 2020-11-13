@@ -96,28 +96,17 @@ namespace minsky
     double operator[](size_t i) const override {return *(&valRef()+i);}
     double& operator[](size_t i) override;
 
-//    const Index& index() const override {
-//      if (m_type==parameter && tensorInit.size())
-//        return tensorInit.index();
-//      else
-//        return m_index;
-//    }
     const Index& index(Index&& i) override {
+      assert(idx()==-1||idxInRange());
       size_t prevNumElems = size();
       m_index=i;
       if (idx()==-1 || (prevNumElems<size()))    
         allocValue();
+      assert(idxInRange());
       return m_index;
     }
     using ITensorVal::index;
     
-    const Hypercube& hypercube() const override {
-      if (m_type==parameter && tensorInit.rank()>0)
-        return tensorInit.hypercube();
-      else
-        return ITensor::hypercube();
-    }
-
     template <class T>                                            
     void hypercube_(T x) {    
       assert(idx()==-1||idxInRange());
@@ -134,7 +123,8 @@ namespace minsky
     {hypercube_(hc); return m_hypercube;}
     const Hypercube& hypercube(Hypercube&& hc) override
     {hypercube_(hc); return m_hypercube;}
-                                                                              
+    using ITensorVal::hypercube;
+                                                                           
     void makeXConformant(const ITensor& x) {
       m_hypercube.makeConformant(x.hypercube());
     }

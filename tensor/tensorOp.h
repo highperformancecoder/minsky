@@ -58,14 +58,12 @@ namespace civita
     
     void setArguments(const TensorPtr& a1, const TensorPtr& a2) override;
 
-    // TODO merge indices
     double operator[](size_t i) const override {
       auto hcIndex=index()[i];
       // scalars are broadcast
       return f(arg1->rank()? arg1->atHCIndex(hcIndex): (*arg1)[0],
                arg2->rank()? arg2->atHCIndex(hcIndex): (*arg2)[0]);
     }
-    size_t size() const override {return arg1 && arg1->size()>1? arg1->size(): (arg2? arg2->size(): 0);}
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}
   };
