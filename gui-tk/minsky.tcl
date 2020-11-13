@@ -791,6 +791,7 @@ proc dimensionsDialog {} {
 
 array set timeFormatStrings {
     "1999-Q4" "%Y-Q%Q"
+    "1999" "%Y"
     "12/31/99" "%m/%d/%y"
     "12/31/1999" "%m/%d/%Y"
     "31/12/99" "%d/%m/%y"
