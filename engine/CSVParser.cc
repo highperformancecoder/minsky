@@ -590,11 +590,11 @@ namespace minsky
               }
 
             v.tensorInit.index(indexValue);
+            v.hypercube(hc);
+            v.tensorInit.hypercube(hc);
             size_t j=0;
             for (auto& i: indexValue)
               v.tensorInit[j++]=i.second;
-            v.hypercube(hc);
-            v.tensorInit.hypercube(hc);
           }                 
 
       }

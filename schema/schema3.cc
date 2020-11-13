@@ -457,11 +457,6 @@ namespace schema3
         if (y.ports.size()>=2)
           x1->setNumCases(y.ports.size()-2);
       }
-//    if (auto x1=dynamic_cast<minsky::Sheet*>(&x))
-//      {
-//        if (y.width) x1->m_width=*y.width;
-//        if (y.height) x1->m_height=*y.height;
-//      }
     if (auto x1=dynamic_cast<minsky::Group*>(&x))
       {
         if (y.width) x1->iWidth(*y.width);
@@ -632,8 +627,11 @@ namespace schema3
                   auto buf=minsky::decode(*i.second.tensorData);
                   try
                     {
-                      unpack(buf, val->tensorInit);
-                      val->hypercube(val->tensorInit.hypercube());
+                      civita::TensorVal tmp;
+                      unpack(buf, tmp);
+                      *val=tmp;
+                      val->tensorInit=std::move(tmp);
+                      assert(val->idxInRange());
                     }
                   catch (const std::exception& ex) {
                     val->tensorInit.hypercube({});
@@ -641,6 +639,7 @@ namespace schema3
                   }
                   catch (...) {
                     val->tensorInit.hypercube({});
+                    assert(val->idxInRange());
                   } // absorb for now - maybe log later
                 }
           }
