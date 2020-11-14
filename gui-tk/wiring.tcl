@@ -710,6 +710,7 @@ proc contextMenu {x y X Y} {
             .wiring.context add command -label "Flip" -command "$item.flip; flip_default"                     
             if {[$item.type]=="parameter"} {
                 .wiring.context add command -label "Import CSV" -command {CSVImportDialog}
+                .wiring.context add command -label "Display CSV values on tab" -command {setupPickDimMenu}                 
             }
             .wiring.context add command -label "Export as CSV" -command exportItemAsCSV
         }
@@ -808,6 +809,43 @@ proc contextMenu {x y X Y} {
     .wiring.context add command -label "Delete [minsky.canvas.item.classType]" -command "canvas.deleteItem"
     tk_popup .wiring.context $X $Y
 }
+
+proc setupPickDimMenu {} {
+    global dimLabelPicked
+    if {![winfo exists .wiring.context.pick]} {
+        toplevel .wiring.context.pick
+        wm title .wiring.context.pick "Pick any two dimensions"
+        frame .wiring.context.pick.select
+        scrollbar .wiring.context.pick.select.vscroll -orient vertical -command {
+            .wiring.context.pick.select.lb yview}
+        listbox .wiring.context.pick.select.lb -listvariable dimLabelPicked \
+            -selectmode extended -selectforeground blue \
+            -width 35 \
+            -yscrollcommand {.wiring.context.pick.select.vscroll set} 
+        pack .wiring.context.pick.select.lb -fill both  -expand y -side left
+        pack .wiring.context.pick.select.vscroll -fill y -expand y -side left
+        pack .wiring.context.pick.select
+        buttonBar .wiring.context.pick {
+            set pick {}
+            foreach i [.wiring.context.pick.select.lb curselection] {
+                lappend pick [lindex $dimLabelPicked $i]
+            }
+			minsky.canvas.item.setDimLabelsPicked [lindex $pick 0] [lindex $pick 1]
+            reset
+        }
+        button .wiring.context.pick.buttonBar.clear -text "Clear" -command {
+            .wiring.context.pick.select.lb selection clear 0 end}
+        pack .wiring.context.pick.buttonBar.clear -side left
+    } else {
+        deiconify .wiring.context.pick
+    }
+        
+    set dimLabelPicked [minsky.canvas.item.dimLabels]
+    wm transient .wiring.context.pick
+    wm geometry .wiring.context.pick +[winfo pointerx .]+[winfo pointery .]
+    ensureWindowVisible .wiring.context.pick
+    grab set .wiring.context.pick
+}    
 
 proc lockSpecificHandles {} {
     global currentLockHandles
