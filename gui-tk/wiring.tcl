@@ -841,9 +841,6 @@ proc setupPickDimMenu {} {
     }
         
     set dimLabelPicked [minsky.canvas.item.dimLabels]
-    for {set i 0} {$i<[llength $dimLabelPicked]} {incr i} {
-        set idx([lindex $dimLabelPicked $i]) $i
-    }
     wm transient .wiring.context.pick
     wm geometry .wiring.context.pick +[winfo pointerx .]+[winfo pointery .]
     ensureWindowVisible .wiring.context.pick
