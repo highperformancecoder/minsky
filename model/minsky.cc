@@ -1393,13 +1393,21 @@ namespace minsky
              if (type!=VariableType::flow)
                for (auto v: g->flowVars())
                  if (v->valueId()==name)
-                   try {newName=v->name()+"^{Flow}"; g->table.renameFlows(v->name(),newName);}
-                   catch (...) {throw error("flow variables in Godley tables cannot be converted to a different type");}                  
+                   {
+					   newName=v->name()+"^{Flow}";
+                       VariableValues::iterator iv=variableValues.find(newName);
+                       if (iv==variableValues.end()) g->table.renameFlows(v->name(),newName);
+					   else throw error("flow variables in Godley tables cannot be converted to a different type");
+					}
              if (type!=VariableType::stock)
                for (auto v: g->stockVars())
                  if (v->valueId()==name)
-                   try {newName=v->name()+"^{Stock}"; g->table.renameStock(v->name(),newName);}
-                   catch (...) {throw error("stock variables in Godley tables cannot be converted to a different type");}
+                   {
+					   newName=v->name()+"^{Stock}";
+                       VariableValues::iterator iv=variableValues.find(newName);
+                       if (iv==variableValues.end()) g->table.renameStock(v->name(),newName);
+					   else throw error("stock variables in Godley tables cannot be converted to a different type");
+				  }
            }
          return false;
        });
@@ -1407,8 +1415,7 @@ namespace minsky
     if (auto var=definingVar(name))
       // we want to be able to convert stock vars to flow vars when their input is wired
       if (var->type() != type && (!var->isStock() || var->controller.lock()))
-         try {var->name(var->name()+"^{Flow}");}      
-         catch(...) {throw error("cannot convert a variable to a type other than its defined type");}
+         throw error("cannot convert a variable to a type other than its defined type");
 
     // filter out invalid targets
     switch (type)
