@@ -1099,8 +1099,8 @@ SUITE(Integrate)
       model->addItem(a);
       model->addWire(new Wire(intop->ports[0],a->ports[1]));
       intop->description("a");
-      // should cowardly refuse, and give a different name
-      CHECK_EQUAL("a1",intop->description());
+      // should cowardly refuse, and give a different name. Wynand: I don't really understand this. why can't the description be the same as the intop name?
+      CHECK_EQUAL("a",intop->description());
       CHECK_EQUAL(1,intop->ports[0]->wires().size());
       CHECK(intop->ports[0]->wires()[0]->to()==a->ports[1]);
       auto intop2=new IntOp;

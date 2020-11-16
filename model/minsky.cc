@@ -1389,14 +1389,17 @@ namespace minsky
        {
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
            {
+			 string newName;  
              if (type!=VariableType::flow)
                for (auto v: g->flowVars())
                  if (v->valueId()==name)
-                   throw error("flow variables in Godley tables cannot be converted to a different type");
+                   try {newName=v->name()+"^{Flow}"; g->table.renameFlows(v->name(),newName);}
+                   catch (...) {throw error("flow variables in Godley tables cannot be converted to a different type");}                  
              if (type!=VariableType::stock)
                for (auto v: g->stockVars())
                  if (v->valueId()==name)
-                   throw error("stock variables in Godley tables cannot be converted to a different type");
+                   try {newName=v->name()+"^{Stock}"; g->table.renameStock(v->name(),newName);}
+                   catch (...) {throw error("stock variables in Godley tables cannot be converted to a different type");}
            }
          return false;
        });
@@ -1404,7 +1407,8 @@ namespace minsky
     if (auto var=definingVar(name))
       // we want to be able to convert stock vars to flow vars when their input is wired
       if (var->type() != type && (!var->isStock() || var->controller.lock()))
-        throw error("cannot convert a variable to a type other than its defined type");
+         try {var->name(var->name()+"^{Flow}");}      
+         catch(...) {throw error("cannot convert a variable to a type other than its defined type");}
 
     // filter out invalid targets
     switch (type)
