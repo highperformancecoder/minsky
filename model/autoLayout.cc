@@ -34,30 +34,16 @@ namespace minsky
 {
   void randomizeLayout(Group&) {/* TODO */}
 
-  namespace {
-    struct GroupGraph
-    {
-      vector<Item*> vertices;
-      vector<pair<Item*,Item*>> edges;
-      GroupGraph(const Group& g) {
-        for (auto& i: g.items) vertices.push_back(i.get());
-        for (auto& i: g.groups) vertices.push_back(i.get());
-        for (auto& i: g.wires) edges.emplace_back(&i->from()->item(), &i->to()->item());
-      }
-    };
-
-    
-  }
-
   void layoutGroup(Group& g)
   {
-    using Graph=boost::directed_graph<>;
+    
+    using Graph=boost::directed_graph<Item*>;
     Graph gg;
     map<Item*, decltype(gg.add_vertex())> vertexMap;
     for (auto& i: g.items)
-      vertexMap.emplace(i.get(), gg.add_vertex()); 
+      vertexMap.emplace(i.get(), gg.add_vertex(i.get())); 
     for (auto& i: g.groups)
-      vertexMap.emplace(i.get(), gg.add_vertex()); 
+      vertexMap.emplace(i.get(), gg.add_vertex(i.get())); 
 
     for (auto& w: g.wires)
       gg.add_edge(vertexMap[&w->from()->item()], vertexMap[&w->to()->item()]);
@@ -77,17 +63,15 @@ namespace minsky
       }
     
     boost::fruchterman_reingold_force_directed_layout(gg,pm, Topology(1000));
+
     // move items to result of algorithm
-    for (auto& i: g.items)
+    auto vertexRange=vertices(gg);
+    for (auto i=vertexRange.first; i!=vertexRange.second; ++i)
       {
-        auto& p=pm[vertexMap[i.get()]];
-        i->moveTo(p[0],p[1]);
+        auto p=pm[*i];
+        gg[*i]->moveTo(p[0],p[1]);
       }
-    for (auto& i: g.groups)
-      {
-        auto& p=pm[vertexMap[i.get()]];
-        i->moveTo(p[0],p[1]);
-      }
+    
     for (auto& i: g.groups)
       layoutGroup(*i);
   }
