@@ -27,17 +27,49 @@
 #include "minsky_epilogue.h"
 
 using namespace std;
-using boost::square_topology;
+using namespace boost;
 using namespace minsky;
 
 namespace minsky
 {
+  namespace
+  {
+    inline double sqr(double x) {return x*x;}
+    using Graph=boost::directed_graph<Item*>;
+
+    // computes minimum distance two items can appriach each other
+    double minD(const Item& item1, const Item& item2)
+    {return std::max(item1.width()+item2.width(), item1.height()+item2.height());}
+    
+    // attractive force between connected items, repulsive when too close
+    struct WireForce
+    {
+      double operator()(const Graph::edge_descriptor& e, double k, double d, const Graph& g)
+      {
+        auto from=g[source(e,g)], to=g[target(e,g)];
+        if (d<minD(*from,*to))
+          return -1000; // hard repulsion
+        return d*d/k;
+      }
+    };
+
+    struct RepulsiveForce
+    {
+      double operator()(const Graph::vertex_descriptor& v1, const Graph::vertex_descriptor& v2,
+                        double k, double d, const Graph& g)
+      {
+        if (d<minD(*g[v1],*g[v2]))
+          return 1000;
+        return k*k/d;
+      }
+    };
+  }
+  
   void randomizeLayout(Group&) {/* TODO */}
 
   void layoutGroup(Group& g)
   {
     
-    using Graph=boost::directed_graph<Item*>;
     Graph gg;
     map<Item*, decltype(gg.add_vertex())> vertexMap;
     for (auto& i: g.items)
@@ -62,7 +94,11 @@ namespace minsky
         positions[i.second]=p;
       }
     
-    boost::fruchterman_reingold_force_directed_layout(gg,pm, Topology(1000));
+    boost::fruchterman_reingold_force_directed_layout
+      (gg,pm, Topology(1000),
+       boost::attractive_force(WireForce()).
+       repulsive_force(RepulsiveForce()).
+       force_pairs(boost::all_force_pairs()));
 
     // move items to result of algorithm
     auto vertexRange=vertices(gg);
