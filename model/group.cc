@@ -22,6 +22,7 @@
 #include "wire.h"
 #include "operation.h"
 #include "minsky.h"
+#include "autoLayout.h"
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
 using namespace std;
@@ -1145,5 +1146,9 @@ namespace minsky
       return ".rvl";
     return ".mky";
   }
+
+  void Group::autoLayout()
+  {layoutGroup(*this);}
+
   
 }

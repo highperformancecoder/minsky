@@ -366,6 +366,9 @@ namespace minsky
 
     /// return default extension for this group - .mky if no ravels in group, .rvl otherwise
     std::string defaultExtension() const;
+
+    /// automatically lay out items in this group
+    void autoLayout();
     
   };
 
@@ -398,7 +401,7 @@ namespace minsky
       }
     return r;
   }
-
+  
 }
 
 #ifdef CLASSDESC
