@@ -1084,11 +1084,20 @@ namespace minsky
              i!=integrals.end(); ++i)
           {
             assert(i->stock.idx()>=0 && i->input.idx()>=0);
-            d[i->stock.idx()] = 
-              i->input.isFlowVar()? df[i->input.idx()]: ds[i->input.idx()];
+            for (size_t k=0; k<i->input.size(); ++k)
+              d[i->stock.idx()+k] = 
+                i->input.isFlowVar()? df[i->input.idx()+k]: ds[i->input.idx()+k];
           }
         for (size_t i=0; i<stockVars.size(); i++)
-          jac(i,j)=reverseFactor*d[i];
+          if (integrals.empty()) jac(i,j)=reverseFactor*d[i];
+          else for (vector<Integral>::iterator ig=integrals.begin(); 
+             ig!=integrals.end(); ++ig)
+                {
+                  assert(ig->input.idx()>=0);
+                  for (size_t k=0; k<ig->input.size(); ++k)
+                      jac(i+k,j+k)=reverseFactor*d[i+k];
+                }
+          
       }
   
   }
