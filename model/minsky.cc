@@ -1078,8 +1078,9 @@ namespace minsky
         ds[j]=1;
         for (size_t i=0; i<equations.size(); ++i)
           equations[i]->deriv(&df[0], df.size(), &ds[0], sv, &flow[0]);
-        vector<double> d(stockVars.size());
-        evalGodley.eval(&d[0], &df[0]);
+        double d[stockVars.size()];
+        for (size_t i=0; i<stockVars.size(); ++i) d[i]=0;
+        evalGodley.eval(d, &df[0]);
         for (vector<Integral>::iterator i=integrals.begin(); 
              i!=integrals.end(); ++i)
           {
@@ -1093,8 +1094,8 @@ namespace minsky
           else for (vector<Integral>::iterator ig=integrals.begin(); 
              ig!=integrals.end(); ++ig)
                 {
-                  assert(ig->input.idx()>=0);
-                  for (size_t k=0; k<ig->input.size(); ++k)
+                  assert(ig->stock.idx()>=0);
+                  for (size_t k=0; k<ig->stock.size(); ++k)
                       jac(i+k,j+k)=reverseFactor*d[i+k];
                 }
           
