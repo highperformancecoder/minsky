@@ -1148,9 +1148,17 @@ namespace minsky
   }
 
   void Group::autoLayout()
-  {layoutGroup(*this);}
+  {
+    minsky().setBusyCursor();
+    layoutGroup(*this);
+    minsky().clearBusyCursor();
+  }
 
   void Group::randomLayout()
-  {randomizeLayout(*this);}
+  {
+    minsky().setBusyCursor();
+    randomizeLayout(*this);
+    minsky().clearBusyCursor();
+  }
   
 }

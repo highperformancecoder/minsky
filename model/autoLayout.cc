@@ -118,7 +118,7 @@ namespace minsky
         positions[i.second]=p;
       }
 
-    double layoutSize=sqrt(3*totalArea(g));
+    double layoutSize=sqrt(10*totalArea(g));
     fruchterman_reingold_force_directed_layout
       (gg,pm, Topology(layoutSize), attractive_force(WireForce()).repulsive_force(RepulsiveForce()));
     // maybe not needed

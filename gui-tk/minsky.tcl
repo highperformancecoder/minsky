@@ -225,24 +225,6 @@ if {$preferences(focusFollowsMouse)} {
 }
 proc setCursor {cur} {. configure -cursor $cur; update idletasks}
 
-#source $minskyHome/library/htmllib.tcl
-#toplevel .splash
-#text .splash.text
-#button .splash.ok -text OK -command {destroy .splash}
-#pack .splash.text .splash.ok
-#
-#HMinit_win .splash.text
-#proc HMlink_callback {win url} {
-#    openURL $url
-#}
-#
-#set splashTextFile [open $minskyHome/library/splash.html]
-#set splashText ""
-#while {! [eof $splashTextFile]} {
-#    append splashText [gets $splashTextFile]
-#}
-#HMparse_html $splashText "HMrender .splash.text"
-
 if {[tk windowingsystem]=="win32"} {
     # redirect the mousewheel event to the actual window that should
     # receive the event - see ticket #114 
