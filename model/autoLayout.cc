@@ -19,12 +19,15 @@
 
 #include "autoLayout.h"
 #include "selection.h"
+#include "minsky_epilogue.h"
+
 #include <map>
+#include <random>
 #include <vector>
+
 #include <boost/graph/fruchterman_reingold.hpp>
 #include <boost/graph/topology.hpp>
 #include <boost/graph/directed_graph.hpp>
-#include "minsky_epilogue.h"
 
 using namespace std;
 using namespace boost;
@@ -48,8 +51,8 @@ namespace minsky
       {
         auto from=g[source(e,g)], to=g[target(e,g)];
         if (d<minD(*from,*to))
-          return -1000; // hard repulsion
-        return d*d/k;
+          return 0;
+        return d*d;
       }
     };
 
@@ -58,14 +61,35 @@ namespace minsky
       double operator()(const Graph::vertex_descriptor& v1, const Graph::vertex_descriptor& v2,
                         double k, double d, const Graph& g)
       {
-        if (d<minD(*g[v1],*g[v2]))
-          return 1000;
+        auto m=minD(*g[v1],*g[v2]);
+        if (d<m)
+          return k*k*m/(d*d);
         return k*k/d;
       }
     };
+
+    // compute total area occupied by items
+    double totalArea(const Group& g)
+    {
+      double area=0;
+      for (auto& i: g.items)
+        area+=i->width()*i->height();
+      for (auto& i: g.groups)
+        area+=i->width()*i->height();
+      return area;
+    }
   }
   
-  void randomizeLayout(Group&) {/* TODO */}
+  void randomizeLayout(Group& g)
+  {
+    double layoutSize=sqrt(3*totalArea(g));
+    default_random_engine gen;
+    uniform_real_distribution<double> rng(0,1);
+    for (auto& i: g.items)
+      i->moveTo(layoutSize*rng(gen), layoutSize*rng(gen));
+    for (auto& i: g.groups)
+      i->moveTo(layoutSize*rng(gen), layoutSize*rng(gen));
+  }
 
   void layoutGroup(Group& g)
   {
@@ -93,19 +117,19 @@ namespace minsky
         p[1]=i.first->y();
         positions[i.second]=p;
       }
-    
-    boost::fruchterman_reingold_force_directed_layout
-      (gg,pm, Topology(1000),
-       boost::attractive_force(WireForce()).
-       repulsive_force(RepulsiveForce()).
-       force_pairs(boost::all_force_pairs()));
 
+    double layoutSize=sqrt(3*totalArea(g));
+    fruchterman_reingold_force_directed_layout
+      (gg,pm, Topology(layoutSize), attractive_force(WireForce()).repulsive_force(RepulsiveForce()));
+    // maybe not needed
+    //.force_pairs(boost::all_force_pairs())
+    
     // move items to result of algorithm
     auto vertexRange=vertices(gg);
     for (auto i=vertexRange.first; i!=vertexRange.second; ++i)
       {
         auto p=pm[*i];
-        gg[*i]->moveTo(p[0],p[1]);
+        gg[*i]->moveTo(p[0]+layoutSize,p[1]+layoutSize);
       }
     
     for (auto& i: g.groups)

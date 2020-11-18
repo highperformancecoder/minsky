@@ -1150,5 +1150,7 @@ namespace minsky
   void Group::autoLayout()
   {layoutGroup(*this);}
 
+  void Group::randomLayout()
+  {randomizeLayout(*this);}
   
 }
