@@ -73,24 +73,24 @@ namespace minsky
                     varAttribVals.push_back(to_string(v->sliderMax));
                     varAttribVals.push_back(to_string(v->value()));
                     
-                     for (auto& i:varAttrib) 
-                     {
+                    for (auto& i:varAttrib) 
+                      {
                         cairo_move_to(cairo,x,y-1.5*rowHeight);                    
-				        pango.setMarkup(i);
-				        pango.show();                  
-				        colWidth=std::max(colWidth,5+pango.width());  
+                        pango.setMarkup(i);
+                        pango.show();                  
+                        colWidth=std::max(colWidth,5+pango.width());  
                         x+=colWidth;					    
-				     }
+                      }
 					
-					x=0;
-				    for (auto& i : varAttribVals)
-				    {
-					   cairo_move_to(cairo,x,y-0.5*rowHeight);                    
-				       pango.setMarkup(latexToPango(i));
-				       pango.show();                    
-				       if (!i.empty()) colWidth=std::max(colWidth,5+pango.width());
-                       x+=colWidth;		
-				   }
+                    x=0;
+                    for (auto& i : varAttribVals)
+                      {
+                        cairo_move_to(cairo,x,y-0.5*rowHeight);                    
+                        pango.setMarkup(latexToPango(i));
+                        pango.show();                    
+                        if (!i.empty()) colWidth=std::max(colWidth,5+pango.width());
+                        x+=colWidth;		
+                      }
                     h_prev=h;
                     w=0;h=0;      
                     cairo_get_current_point (cairo,&w,&h);   
