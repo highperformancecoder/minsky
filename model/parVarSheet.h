@@ -44,6 +44,8 @@ namespace minsky
 
     void populateItemVector();
     virtual bool variableSelector(ItemPtr i) = 0;
+    std::vector<std::string> varAttrib{"Name","Initial Value","Short Description", "Long Description","Slider Step","Slider Min","Slider Max","Value"};       
+    std::vector<std::string> varAttribVals;    
     void draw(cairo_t* cairo); 
     void redraw(int, int, int width, int height) override;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}         
