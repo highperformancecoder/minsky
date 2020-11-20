@@ -111,11 +111,11 @@ namespace minsky
                       cairo::CairoSave cs(cairo);
                       cairo_set_source_rgba(cairo,0,0,0,0.5);
                       for (x=x0; x<w+colWidth; x+=colWidth)
-                      {
-                         cairo_move_to(cairo,x,y-2*rowHeight);
-                         cairo_line_to(cairo,x,y+0.5*rowHeight);
-                         cairo_stroke(cairo);
-				      }
+                        {
+                          cairo_move_to(cairo,x,y-2*rowHeight);
+                          cairo_line_to(cairo,x,y+0.5*rowHeight);
+                          cairo_stroke(cairo);
+                        }
                     }                                            
                     { // draw horizontal grid line
                       cairo::CairoSave cs(cairo);
