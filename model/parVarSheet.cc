@@ -88,7 +88,7 @@ namespace minsky
                         cairo_move_to(cairo,x,y-0.5*rowHeight);                    
                         pango.setMarkup(latexToPango(i));
                         pango.show();                    
-                        if (!i.empty()) colWidth=std::max(colWidth,5+pango.width());
+                        colWidth=std::max(colWidth,5+pango.width());
                         x+=colWidth;		
                       }
                     h_prev=h;
@@ -107,17 +107,27 @@ namespace minsky
                         }
 
                     }
+                    { // draw vertical grid lines
+                      cairo::CairoSave cs(cairo);
+                      cairo_set_source_rgba(cairo,0,0,0,0.5);
+                      for (x=x0; x<w+colWidth; x+=colWidth)
+                      {
+                         cairo_move_to(cairo,x,y-2*rowHeight);
+                         cairo_line_to(cairo,x,y+0.5*rowHeight);
+                         cairo_stroke(cairo);
+				      }
+                    }                                            
                     { // draw horizontal grid line
                       cairo::CairoSave cs(cairo);
                       cairo_set_source_rgba(cairo,0,0,0,0.5);
                       cairo_move_to(cairo,x0,y0-0.5*rowHeight);
                       cairo_line_to(cairo,w+colWidth,y0-0.5*rowHeight);
                       cairo_stroke(cairo);
-                    }                         
+                    }                                  
                     cairo::CairoSave cs(cairo);
                     // make sure rectangle has right height
                     cairo_rectangle(cairo,x0,y0-1.5*rowHeight,w+colWidth,y-y0+2*rowHeight);    
-                    cairo_stroke(cairo);                          	        
+                    cairo_stroke(cairo);                          	          
                     cairo_clip(cairo);	                               
                   }
                 else if (rank==1)
