@@ -41,21 +41,20 @@ namespace civita
     {
       size_t index;
       double weight;
+      WeightedIndex(size_t index,double weight): index(index), weight(weight) {}
     };
 
     struct WeightedIndexVector: public vector<WeightedIndex>
     {
       bool argIsOnDestHypercube=false;
     };
-    
+  
     /// map from this tensor's index into the argument tensor
-    vector<vector<WeightedIndex>> weightedIndices;
+    vector<WeightedIndexVector> weightedIndices;
 
     /// computes the neighbourhood around a target argument index when
     /// the target index is not on the hypercube
-    vector<WeightedIndex> bodyCentredNeighbourhood(size_t idx) const;
-    /// computes neighbourhood when the centre point is on the hypercube, but missing (NaN or not in index vector
-    vector<WeightedIndex> missingBodyCentredNeighbourhood(size_t idx) const;
+    WeightedIndexVector bodyCentredNeighbourhood(size_t idx) const;
 
   public:
     void setArgument(const TensorPtr& a, const string&,double) override;

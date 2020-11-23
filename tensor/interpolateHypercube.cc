@@ -72,6 +72,12 @@ namespace civita
     for (auto& i: rotation) assert(i<rank()); // check that no indices have been doubly assigned.
     // Now we're sure rotation is a permutation
 #endif
+    if (index().empty())
+      for (size_t i=0; i<size(); ++i)
+        weightedIndices.push_back(bodyCentredNeighbourhood(i));
+    else
+      for (auto i: index())
+        weightedIndices.push_back(bodyCentredNeighbourhood(i));
   }
   
   double InterpolateHC::operator[](size_t idx) const
@@ -79,6 +85,7 @@ namespace civita
     assert(arg->size()==weightedIndices.size());
     if (idx<weightedIndices.size())
       {
+        if (weightedIndices[idx].empty()) return nan("");
         double r=0;
         for (auto& i: weightedIndices[idx])
           r+=i.weight * (*arg)[i.index];
@@ -87,10 +94,11 @@ namespace civita
     return nan("");
   }
 
-  WeightedIndexVector InterpolateHC::bodyCentredNeighbourhood(size_t destIdx) const
+  InterpolateHC::WeightedIndexVector InterpolateHC::bodyCentredNeighbourhood(size_t destIdx) const
   {
     // note this agorithm is limited in rank (typically 32 dims on 32bit machine, or 64 dims on 64bit)
-    assert(rank()<=sizeof(size_t)*8);
+    if (rank()>sizeof(size_t)*8)
+      throw runtime_error("Ranks > "+to_string(sizeof(size_t)*8)+" not supported");
     size_t numNeighbours=size_t(1)<<rank();
     vector<size_t> iIdx=splitAndRotate(destIdx);
     auto& argHC=arg->hypercube();
@@ -98,6 +106,7 @@ namespace civita
     // this point in interimHypercube space
     double sumWeight=0;
     WeightedIndexVector r;
+    size_t idx=0;
     auto argIndexVector=arg->index();
     // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
     for (size_t nbr=0; nbr<numNeighbours; ++nbr)
@@ -130,29 +139,26 @@ namespace civita
             if (d>0)
               weight *= greaterSide? diff(v,lesser): d-diff(v,lesser);
           }
-        if (index.empty())
+        if (index().empty())
           {
-            r.emplace_back({idx,weight});
+            r.emplace_back(WeightedIndex{idx,weight});
             sumWeight+=weight;
           }
         else
           {
-            auto it=binary_search(index.begin(), index.end());
-            if (it!=index.end())
+            auto indexV=index();
+            if (binary_search(indexV.begin(), indexV.end(), idx))
               {
-                r.emplace_back({idx,weight});
+                r.emplace_back(WeightedIndex{idx,weight});
                 sumWeight+=weight;
               }
           }
       nextNeighbour:;
       }
 
-    if (r.size()==1 && r[0].idx==
-
     // normalise weights
     for (auto& i: r) i.weight/=sumWeight;
     return r;
   }
 
-  WeightedIndexVector InterpolateHC::missingBodyCentredNeighbourhood(size_t idx) const
 }
