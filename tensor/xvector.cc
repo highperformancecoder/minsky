@@ -220,7 +220,7 @@ namespace civita
   double diff(const boost::any& x, const boost::any& y)
   {
     if (x.type()!=y.type())
-      throw error("incompatible types in diff");
+      throw runtime_error(string("incompatible types ")+x.type().name()+" and "+y.type().name()+" in diff");
     if (auto vx=any_cast<string>(&x))
       {
         // Hamming distance

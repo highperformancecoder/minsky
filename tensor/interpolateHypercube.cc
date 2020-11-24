@@ -83,13 +83,15 @@ namespace civita
   
   double InterpolateHC::operator[](size_t idx) const
   {
-    assert(arg->size()==weightedIndices.size());
     if (idx<weightedIndices.size())
       {
         if (weightedIndices[idx].empty()) return nan("");
         double r=0;
         for (auto& i: weightedIndices[idx])
-          r+=i.weight * (*arg)[i.index];
+          {
+            assert(i.index<arg->size());
+            r+=i.weight * (*arg)[i.index];
+          }
         return r;
       }
     return nan("");
@@ -107,30 +109,31 @@ namespace civita
     // this point in interimHypercube space
     double sumWeight=0;
     WeightedIndexVector r;
-    size_t idx=0;
     auto argIndexVector=arg->index();
     // multivariate interpolation - eg see Abramowitz & Stegun 25.2.66
     for (size_t nbr=0; nbr<numNeighbours; ++nbr)
       {
         size_t argIdx=0;
         double weight=1;
+        size_t idx=0;
         for (size_t dim=0, stride=1; dim<rank(); ++dim, stride*=argHC.xvectors[dim].size())
           {
             auto& x=argHC.xvectors[dim];
+            assert(!x.empty());
+//            for (auto& ii: x)
+//              cout<<str(ii)<<" ";
+//            cout<<endl;
             auto v=interimHC.xvectors[dim][iIdx[dim]];
-            auto lesserIt=std::lower_bound(x.begin(), x.end(), v, AnyLess());
-            boost::any lesser, greater;
-            if (lesserIt==x.end())
-              {
-                --lesserIt;
-                lesser=x.back();
-              }
-            else
-              lesser=*lesserIt;
-            if (lesserIt+1==x.end())
-              greater=x.back();
+            auto lesserIt=std::upper_bound(x.begin(), x.end(), v, AnyLess());
+            if (lesserIt!=x.begin()) --lesserIt; // find greatest value <= v, 
+            boost::any lesser=*lesserIt, greater;
+            if (diff(lesser, v)>=0)
+              greater=lesser;  // one sided interpolation for beginning or exact match 
+            else if (lesserIt+1==x.end())
+              greater=x.back(); // one sided interpolation for end
             else
               greater=*(lesserIt+1);
+            //            cout << ":"<<destIdx<<" "<<str(lesser) <<" "<<str(v)<< " "<<str(greater)<<endl;
 
             bool greaterSide = nbr&(size_t(1)<<dim); // on higher side of hypercube
             double d=diff(greater,lesser);
