@@ -22,6 +22,7 @@
 #include "wire.h"
 #include "operation.h"
 #include "minsky.h"
+#include "autoLayout.h"
 #include <cairo_base.h>
 #include "minsky_epilogue.h"
 using namespace std;
@@ -1144,6 +1145,20 @@ namespace minsky
     if (findAny(&GroupItems::items, [](const ItemPtr& i){return dynamic_cast<Ravel*>(i.get());}))
       return ".rvl";
     return ".mky";
+  }
+
+  void Group::autoLayout()
+  {
+    minsky().setBusyCursor();
+    layoutGroup(*this);
+    minsky().clearBusyCursor();
+  }
+
+  void Group::randomLayout()
+  {
+    minsky().setBusyCursor();
+    randomizeLayout(*this);
+    minsky().clearBusyCursor();
   }
   
 }
