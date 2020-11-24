@@ -90,7 +90,7 @@ namespace minsky
 
       if (a2)
         {
-          if (a2->hypercube()==hypercube() && a2->index().empty())
+          if (a2->rank()==0 || a2->hypercube()==hypercube())
             arg2=a2;
           else
             {

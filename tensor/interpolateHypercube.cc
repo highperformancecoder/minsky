@@ -37,7 +37,7 @@ namespace civita
   {
     arg=a;
     if (rank()!=arg->rank())
-      throw runtime_error("Rank of interpolated tensor doesnt match its argument");
+      throw runtime_error("Rank of interpolated tensor doesn't match its argument");
     // reorder hypercube for type and name
     interimHC.xvectors.clear();
     size_t stride=1;
