@@ -490,6 +490,34 @@ SUITE(TensorOps)
       CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 7, 0.001);
     }
   
+  TEST_FIXTURE(MinskyFixture, binOpInterpolation1Dunsorted)
+    {
+      // same example as examples/binaryInterpolation.mky
+      VariablePtr x1(VariableType::parameter,"x1"), x2(VariableType::parameter,"x2");
+      auto& x1Val=*x1->vValue();
+      auto& x2Val=*x2->vValue();
+      Hypercube hc1({7}), hc2({3});
+      hc2.xvectors[0][0]=1.0;
+      hc2.xvectors[0][1]=5.0;
+      hc2.xvectors[0][2]=3.0;
+      x1Val.hypercube(hc1);
+      x2Val.hypercube(hc2);
+      x1Val={1,2,2,1,3,2,1};
+      x2Val={3,5,4};
+      OperationPtr add(OperationType::add);
+      VariablePtr result(VariableType::flow,"result");
+      Wire w1(x1->ports[0],add->ports[1]);
+      Wire w2(x2->ports[0],add->ports[2]);
+      Wire w3(add->ports[0], result->ports[1]);
+      auto ev=make_shared<EvalCommon>();
+      TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(*add,TensorsFromPort(ev)));
+      eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
+      CHECK_EQUAL(x1Val.size(),result->vValue()->size());
+
+      vector<double> expected{4,5,5.5,5,7.5,7,6};
+      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 7, 0.001);
+    }
+  
   TEST_FIXTURE(MinskyFixture, binOpInterpolation2D)
     {
       // same example as examples/binaryInterpolation.mky

@@ -20,6 +20,19 @@
 #include "interpolateHypercube.h"
 #include <ecolab_epilogue.h>
 
+namespace
+{
+  bool sorted(civita::XVector::const_iterator begin, civita::XVector::const_iterator end)
+  {
+    civita::AnyLess less;
+    if (begin==end-1) return true;
+    for (; begin!=end-1; ++begin)
+      if (!less(*begin,*(begin+1)))
+        return false;
+    return true;
+  }
+}
+  
 namespace civita
 {
 
@@ -48,6 +61,7 @@ namespace civita
     for (size_t i=0; i<rank(); ++i)
       {
         auto& src=arg->hypercube().xvectors[i];
+        sortAndAdd(src);
         if (src.name.empty())
           {
             auto& dst=targetHC[i];
@@ -80,6 +94,21 @@ namespace civita
       for (auto i: index())
         weightedIndices.push_back(bodyCentredNeighbourhood(i));
   }
+
+  void InterpolateHC::sortAndAdd(const XVector& xv)
+  {
+    sortedArgHC.emplace_back();
+    auto& s=sortedArgHC.back();
+    for (size_t i=0; i<xv.size(); ++i)
+      s.second.push_back(i);
+    AnyLess less;
+    sort(s.second.begin(), s.second.end(),
+         [&](size_t i, size_t j){return less(xv[i],xv[j]);});
+    for (auto i: s.second)
+      s.first.push_back(xv[i]);
+    assert(sorted(s.first.begin(), s.first.end()));
+  }
+
   
   double InterpolateHC::operator[](size_t idx) const
   {
@@ -118,11 +147,9 @@ namespace civita
         size_t idx=0;
         for (size_t dim=0, stride=1; dim<rank(); ++dim, stride*=argHC.xvectors[dim].size())
           {
-            auto& x=argHC.xvectors[dim];
+            auto& x=sortedArgHC[dim].first;
             assert(!x.empty());
-//            for (auto& ii: x)
-//              cout<<str(ii)<<" ";
-//            cout<<endl;
+            assert(sorted(x.begin(),x.end()));
             auto v=interimHC.xvectors[dim][iIdx[dim]];
             auto lesserIt=std::upper_bound(x.begin(), x.end(), v, AnyLess());
             if (lesserIt!=x.begin()) --lesserIt; // find greatest value <= v, 
@@ -133,13 +160,12 @@ namespace civita
               greater=x.back(); // one sided interpolation for end
             else
               greater=*(lesserIt+1);
-            //            cout << ":"<<destIdx<<" "<<str(lesser) <<" "<<str(v)<< " "<<str(greater)<<endl;
 
             bool greaterSide = nbr&(size_t(1)<<dim); // on higher side of hypercube
             double d=diff(greater,lesser);
             if (d==0 && greaterSide) goto nextNeighbour; // already taken lesserVal at weight 1.
 
-            idx += (lesserIt-x.begin()+greaterSide)*stride;
+            idx += sortedArgHC[dim].second[(lesserIt-x.begin()+greaterSide)]*stride;
             if (d>0)
               weight *= greaterSide? diff(v,lesser): d-diff(v,lesser);
           }

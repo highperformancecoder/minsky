@@ -33,9 +33,13 @@ namespace civita
     Hypercube interimHC;
     std::vector<size_t> strides; ///<strides along each dimension of this->hypercube()
     std::vector<size_t> rotation; ///< permutation of axes of interimHC and this->hypercube()
+    
+    std::vector<std::pair<XVector, std::vector<size_t>>> sortedArgHC;
+    void sortAndAdd(const XVector&);
+
     //
     vector<size_t> splitAndRotate(size_t) const;
-
+    
     /// structure for referring to an argument index and its weight 
     struct WeightedIndex
     {
