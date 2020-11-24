@@ -119,7 +119,7 @@ namespace civita
         for (auto& i: weightedIndices[idx])
           {
             assert(i.index<arg->size());
-            r+=i.weight * (*arg)[i.index];
+            r+=i.weight * arg->atHCIndex(i.index);
           }
         return r;
       }
@@ -145,7 +145,7 @@ namespace civita
         size_t argIdx=0;
         double weight=1;
         size_t idx=0;
-        for (size_t dim=0, stride=1; dim<rank(); ++dim, stride*=argHC.xvectors[dim].size())
+        for (size_t dim=0, stride=1; dim<rank(); stride*=argHC.xvectors[dim].size(), ++dim)
           {
             auto& x=sortedArgHC[dim].first;
             assert(!x.empty());
@@ -166,6 +166,7 @@ namespace civita
             if (d==0 && greaterSide) goto nextNeighbour; // already taken lesserVal at weight 1.
 
             idx += sortedArgHC[dim].second[(lesserIt-x.begin()+greaterSide)]*stride;
+            assert(idx<argHC.numElements());
             if (d>0)
               weight *= greaterSide? diff(v,lesser): d-diff(v,lesser);
           }
